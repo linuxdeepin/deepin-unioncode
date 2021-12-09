@@ -163,9 +163,9 @@ unioncode/
 /usr/lib/unioncode/		    			// 依赖库路径，包含自研库和源码集成第三方库路径
 /usr/lib/unioncode/plugins  			// 动态库插件安装路径
 /usr/lib/unioncode/tools				// 二进制文件工具
-/usr/lib/unioncode/xxx-extensions		// 动态语言扩展插件路径
+/usr/lib/unioncode/extensions			// 动态语言扩展插件路径
 /usr/share/unioncode					// 资源文件路径
-/usr/share/unioncode/configure			// 全局配置文件路径
+/usr/share/unioncode/configures			// 全局配置文件路径
 /usr/share/unioncode/scripts			// 脚本文件安装路径
 /usr/share/unioncode/translations		// 翻译文件安装路径
 /usr/share/unioncode/template			// 文件模板目录，创建Class或者CMake等
@@ -174,7 +174,7 @@ unioncode/
 ~.cache/unioncode						// 用户使用数据缓存路径，例如打开的历史文件等
 ~.unioncode								// 扩展支持路径
 ~.unioncode/plugins						// 动态库插件调试加载路径
-~.unioncode/xxx-extensions 				// 动态语言扩展插件加载路径
+~.unioncode/extensions 					// 动态语言扩展插件加载路径
 ```
 
 

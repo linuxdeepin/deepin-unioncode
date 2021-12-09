@@ -1,7 +1,8 @@
 #include "treemenu.h"
 #include "treeproxy.h"
-#include "common/util/processutil.h"
 #include "sendevents.h"
+#include "common/util/custompaths.h"
+#include "common/util/processutil.h"
 
 #include <QFileInfo>
 #include <QAction>
@@ -17,19 +18,12 @@
 #include <QApplication>
 #include <QStandardPaths>
 
+const QString BUILD_SUPPORT_FILE_NAME {"BuilderSupport.json"};
 const QString NEW_FILE {TreeMenu::tr("New File")};
 const QString NEW_FOLDER {TreeMenu::tr("New Folder")};
 const QString MOVE_TO_TARSH {TreeMenu::tr("Move To Trash")};
 const QString DELETE {TreeMenu::tr("Delete")};
 const QString BUILD {TreeMenu::tr("Build")};
-
-const QString BUILD_SUPPORT_FILE_NAME {"BuilderSupport.json"};
-
-#ifdef GLOBAL_BUILD_SUPPORT_FILE
-const QString globalConfigPath = GLOBAL_BUILD_SUPPORT_FILE;
-#else
-const QString globalConfigPath {"/usr/share/unioncode/configure"};
-#endif
 
 class TreeMenuPrivate
 {
@@ -37,6 +31,8 @@ class TreeMenuPrivate
     QJsonDocument globalJsonDocument;
     QJsonDocument cacheJsonDocument;
     void initBuildSupport();
+    QString userBuildSupportFilePath();
+    QString globalBuildSupportFilePath();
     QString supportBuildSystem(const QString &path);
     void createNewFileAction(QMenu *menu, const QString &path);
     void createNewFolderAction(QMenu *menu, const QString &path);
@@ -85,7 +81,7 @@ void TreeMenu::createBuildAction(const QString &path)
 
 void TreeMenuPrivate::initBuildSupport() {
 
-    QString globalConfigBuildFile = globalConfigPath + QDir::separator() + BUILD_SUPPORT_FILE_NAME;
+    QString globalConfigBuildFile = globalBuildSupportFilePath();
 
     QFile globalFile(globalConfigBuildFile);
     if (!globalFile.exists()) {
@@ -101,7 +97,7 @@ void TreeMenuPrivate::initBuildSupport() {
         abort();
     }
 
-    QString appConfigLocation = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    QString appConfigLocation = CustomPaths::user(CustomPaths::Configures);
     if (!QDir(appConfigLocation).exists()) {
         QDir().mkdir(appConfigLocation); //创建缓存目录
     }
@@ -125,6 +121,17 @@ void TreeMenuPrivate::initBuildSupport() {
         qCritical() << "Failed, can't open cache build menu config file";
         abort();
     }
+}
+
+QString TreeMenuPrivate::userBuildSupportFilePath()
+{
+    return CustomPaths::user(CustomPaths::Configures);
+}
+
+QString TreeMenuPrivate::globalBuildSupportFilePath()
+{
+    return CustomPaths::global(CustomPaths::Configures)
+            + QDir::separator() + BUILD_SUPPORT_FILE_NAME;
 }
 
 QString TreeMenuPrivate::supportBuildSystem(const QString &path)

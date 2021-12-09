@@ -25,7 +25,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         abort();
 
     if (event.topic() == "FileBrowser") {
-        if(event.data() == "TreeView.Item.doubleClicked") {
+        if(event.data() == "Item.DoubleClicked") {
             return DpfEventMiddleware::instance().toOpenFile
                     (event.property("FilePath").toString());
         }

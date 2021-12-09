@@ -1,12 +1,22 @@
 project(unioncode-common)
 
+add_definitions(
+    -DLIBRARY_INSTALL_PREFIX="${LIBRARY_INSTALL_PREFIX}"
+    -DSOURCES_INSTALL_RPEFIX="${SOURCES_INSTALL_RPEFIX}"
+    -DRUNTIME_INSTALL_RPEFIX="${RUNTIME_INSTALL_RPEFIX}"
+    )
+
 set(CXX_H
     util/processutil.h
+    util/custompaths.h
+    util/eventdefinitions.h
     dialog/contextdialog.h
     )
 
 set(CXX_CPP
     util/processutil.cpp
+    util/custompaths.cpp
+    util/eventdefinitions.cpp
     dialog/contextdialog.cpp
     )
 

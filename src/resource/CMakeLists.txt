@@ -1,7 +1,5 @@
 project(unioncode-resource)
 
-set(configJson configure)
-
-install(DIRECTORY ${configJson}
+install(DIRECTORY configures
     DESTINATION
     ${SOURCES_INSTALL_RPEFIX})

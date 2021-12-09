@@ -3,14 +3,16 @@ Section: libdevel
 Priority: optional
 Maintainer: Deepin Packages Builder <packages@linuxdeepin.com>
 Build-Depends:
+ debhelper (>=9),
  cmake,
  qt5-qmake,
  qtbase5-dev,
  qttools5-dev-tools,
  libssl-dev,
+ dh-systemd,
  libqtermwidget5-0-dev,
  libutf8proc-dev
-Standards-Version: 0.0.1
+Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 
 Package: unioncode
@@ -18,11 +20,13 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
-Description: deepen code IDE
+Description: IDE 'Union Code'
+ Lightweight 'IDE' program developed by deepin company.
 
 Package: libunioncode-dev
 Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
-Description: deepen code IDE dev library
+Description: IDE 'Union Code' devel library
+ IDE 'Union Code' development can be carried out through this library

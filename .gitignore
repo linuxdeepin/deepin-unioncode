@@ -1,0 +1,67 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+.qmake.stash
+*.cmake
+CMakeLists.txt.user*
+CMakeFiles
+CMakeCache.txt
+compile_commands.json
+src/app/config.h
+moc_*
+mocs_*
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+Makefile
+Makefile.*
+*.Debug
+*.Release
+*.rc
+*.zip
+
+debug
+release
+build
+obj-x86_64-linux-gnu*
+debian/.debhelper*
+debian/libunioncode-dev.substvars
+debian/libunioncode-dev.debhelper.log
+debian/unioncode.debhelper.log
+debian/unioncode.substvars
+debian/libunioncode-dev/
+debian/tmp/*
+debian/unioncode/
+debian/files
+
+*.pro.user
+*.pro.user*
+*.qm
+*.autosave
+
+vendor/include/*
+vendor/lib/*
+
+dde-sharefiles/lib/*
+dde-sharefiles/tmp/*
+dde-sharefiles/log/*
+
+NUL
+
+# Documents
+doc/html/*
+
+tools
