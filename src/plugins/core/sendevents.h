@@ -16,8 +16,8 @@ public:
     static void NavDebugHide();
     static void navRuntimeShow();
     static void navRuntimeHide();
-    static void menuOpenFile(const QString &path);
-    static void menuOpenDirectory(const QString &path);
+    static void menuOpenFile(const QString &filePath);
+    static void menuOpenDirectory(const QString &filePath);
 };
 
 #endif // SENDEVENTS_H

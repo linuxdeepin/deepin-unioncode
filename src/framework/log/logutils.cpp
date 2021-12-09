@@ -36,7 +36,7 @@ namespace GlobalPrivate
     const QString cachePath = QStandardPaths::locate(QStandardPaths::CacheLocation,
                                                      "",
                                                      QStandardPaths::LocateDirectory);
-    const QString deepinCachePath = cachePath + "deepin/";
+    const QString deepinCachePath = cachePath + "deepin" + QDir::separator();
 }
 
 /**
@@ -55,8 +55,8 @@ void LogUtils::checkAppCacheLogDir(const QString &subDirName)
 
     if (subDirName.isEmpty()) return;
 
-    if (!QFileInfo::exists(appCacheLogPath() + "/" + subDirName))
-        QDir().mkdir(appCacheLogPath() + "/" + subDirName);
+    if (!QFileInfo::exists(appCacheLogPath() + QDir::separator() + subDirName))
+        QDir().mkdir(appCacheLogPath() + QDir::separator() + subDirName);
 }
 
 /**

@@ -7,7 +7,7 @@
 class AbstractNavPrivate
 {
     friend class AbstractNav;
-    QToolBar* toolBar = nullptr;
+    QToolBar* qToolBar = nullptr;
     std::list<AbstractAction*> actions{};
 };
 
@@ -20,7 +20,7 @@ AbstractNav::~AbstractNav()
 
 void *AbstractNav::qToolbar()
 {
-    return (void*)(d->toolBar);
+    return d->qToolBar;
 }
 
 AbstractNav::AbstractNav(void *qToolBar)
@@ -31,9 +31,9 @@ AbstractNav::AbstractNav(void *qToolBar)
         abort();
     }
 
-    d->toolBar = (QToolBar*)(qToolBar);
-    QObject::connect(d->toolBar, &QAction::destroyed,
-                     d->toolBar, [this](){
+    d->qToolBar = static_cast<QToolBar*>(qToolBar);
+    QObject::connect(d->qToolBar, &QToolBar::destroyed,
+                     d->qToolBar, [this](){
         delete this;
     }, Qt::UniqueConnection);
 }

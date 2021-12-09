@@ -35,11 +35,10 @@ namespace WindowContainer {
 class AbstractMainWindow
 {
     AbstractMainWindowPrivate *const d;
-    friend class WindowKeeper;
-    void *qMainWindow();
 public:
     explicit AbstractMainWindow(void *qMainWindow);
     virtual ~AbstractMainWindow();
+    void *qMainWindow();
 };
 
 #endif // ABSTRACTMAINWINDOW_H

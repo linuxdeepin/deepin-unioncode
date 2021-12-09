@@ -57,7 +57,7 @@ namespace GlobalPrivate {
     {
         QtConcurrent::run([=](){
             QDirIterator itera(LogUtils::appCacheLogPath()
-                               + "/" + tcDirName);
+                               + QDir::separator() + tcDirName);
             while(itera.hasNext()) {
                 itera.next();
                 auto list = itera.fileName().split("_");
@@ -70,7 +70,7 @@ namespace GlobalPrivate {
                             GlobalPrivate::dayCount))
                 {
                     qInfo("remove true(%d) not last week log: %s",
-                          QDir().remove(itera.path() + "/" + itera.fileName()),
+                          QDir().remove(itera.path() + QDir::separator() + itera.fileName()),
                           itera.fileName().toLocal8Bit().data());
                 }
             }
@@ -83,7 +83,7 @@ namespace GlobalPrivate {
         QMutexLocker lock(&GlobalPrivate::mutex);
 
         const QString &currAppLogName = LogUtils::appCacheLogPath()
-                + "/" + tcDirName + "/"
+                + QDir::separator() + tcDirName + QDir::separator()
                 + LogUtils::localDate() + "_" + tcFileName;
 
         // "codeTimeCheck" dir
@@ -117,7 +117,7 @@ namespace GlobalPrivate {
             file.flush();
         }
 
-        auto fileNameList = QString(context.file).split("/");
+        auto fileNameList = QString(context.file).split(QDir::separator());
         auto currentName = fileNameList[fileNameList.size() - 1];
 
         file.write((LogUtils::localDataTimeCSV() + ","

@@ -6,11 +6,10 @@ class AbstractNavPrivate;
 class AbstractNav
 {
     AbstractNavPrivate *const d;
-    friend class WindowKeeper;
-    void *qToolbar();
 public:
     explicit AbstractNav(void *qToolBar);
     virtual ~AbstractNav();
+    void *qToolbar();
 };
 
 #endif // ABSTRACTNAV_H

@@ -365,7 +365,7 @@ void PluginManagerPrivate::scanfAllPlugin(QQueue<PluginMetaObjectPointer> *destQ
             dirItera.next();
 
             PluginMetaObjectPointer metaObj(new PluginMetaObject);
-            metaObj->d->loader->setFileName(dirItera.path() + "/" + dirItera.fileName());
+            metaObj->d->loader->setFileName(dirItera.path() + QDir::separator() + dirItera.fileName());
             QJsonObject &&metaJson = metaObj->d->loader->metaData();
             QString &&IID = metaJson.value("IID").toString();
             if (pluginIID != IID) {

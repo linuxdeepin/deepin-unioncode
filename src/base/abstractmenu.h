@@ -14,11 +14,10 @@ class AbstractMenuPrivate;
 class AbstractMenu
 {
     AbstractMenuPrivate *const d;
-    friend class WindowKeeper;
-    void *qMenu();
 public:
     explicit AbstractMenu(void *qMenu);
     virtual ~AbstractMenu();
+    void *qMenu();
 };
 
 #endif // ABSTRACTMENU_H

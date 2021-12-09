@@ -1,0 +1,6 @@
+{
+    "cmake" : {
+        "suffix" : ["cmake"],
+        "base" : ["CMakeLists.txt"]
+    }
+}

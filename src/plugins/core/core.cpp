@@ -64,5 +64,6 @@ bool Core::start()
 
 dpf::Plugin::ShutdownFlag Core::stop()
 {
+    delete windowKeeper;
     return Sync;
 }

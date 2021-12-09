@@ -31,7 +31,7 @@ void WindowSwitcher::eventProcess(const dpf::Event &event)
 
 void WindowSwitcher::navEvent(const dpf::Event &event)
 {
-    qInfo() << __FUNCTION__ << this;
+    qInfo() << __FUNCTION__;
     for (const QString &navName : centrals.keys()) {
         if (event.data() == "Edit.Show") {
             QWidget *widget = centrals.value(navName);

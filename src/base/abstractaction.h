@@ -10,11 +10,10 @@ class AbstractActionPrivate;
 class AbstractAction
 {
     AbstractActionPrivate *const d;
-    friend class WindowKeeper;
-    void *qAction();
 public:
     explicit AbstractAction(void *qAction);
     virtual ~AbstractAction();
+    void *qAction();
 };
 
 #endif // ABSTRACTNAVACTION_H

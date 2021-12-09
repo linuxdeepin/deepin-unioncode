@@ -9,6 +9,7 @@ class Core;
 class AbstractAction;
 class AbstractMenu;
 class AbstractCentral;
+class AbstractWidget;
 namespace dpfservice {
 class WindowService final : public dpf::PluginService, dpf::AutoServiceRegister<WindowService>
 {
@@ -16,6 +17,7 @@ class WindowService final : public dpf::PluginService, dpf::AutoServiceRegister<
     Q_DISABLE_COPY(WindowService)
 public:
     static QString name();
+
     explicit WindowService(QObject *parent = nullptr);
 
 signals: // publish to other plugin interface
@@ -45,6 +47,24 @@ signals: // publish to other plugin interface
      */
     void addCentral(const QString &navName, AbstractCentral *central);
 
+    /*!
+     * \brief setEditTree 设置编辑器文件树
+     * \param editTree 设置的编辑器文件树实例对象
+     */
+    void setEditorTree(AbstractWidget *editTree);
+
+    /*!
+     * \brief setEditorConsole 设置默认终端
+     * \param console 实例对象
+     */
+    void setEditorConsole(AbstractWidget *console);
+
+    /*!
+     * \brief addContextWidget 添加交互组件
+     * \param contextTab Tab名称
+     * \param contextWidget 实例对象
+     */
+    void addContextWidget(const QString &contextTab, AbstractWidget *contextWidget);
 };
 } // namespace dpfservice
 #endif // WINDOWSERVICE_H

@@ -30,11 +30,12 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    framework
+    unioncode-framework
     unioncode-base
     unioncode-service
     ${QtUseModules}
     ${PkgUserModules}
     )
 
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_PATH})
 

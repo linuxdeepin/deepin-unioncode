@@ -7,11 +7,10 @@ class AbstractMenuBarPrivate;
 class AbstractMenuBar
 {
     AbstractMenuBarPrivate *const d;
-    friend class WindowKeeper;
-    void* qMenuBar();
 public:
     explicit AbstractMenuBar(void *qMenuBar);
     virtual ~AbstractMenuBar();
+    void* qMenuBar();
 };
 
 #endif // ABSTRACTMENUBAR_H

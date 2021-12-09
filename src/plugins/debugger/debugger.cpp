@@ -38,23 +38,46 @@ void Debugger::initialize()
 bool Debugger::start()
 {
     auto &ctx = dpfInstance.serviceContext();
-    qInfo() << "import service list" <<  ctx.services();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (!windowService) {
         qCritical() << "Failed, can't found window service";
         abort();
     }
 
-    QMenu *menu = new QMenu();
-    AbstractMenu *menuImpl = new AbstractMenu(menu);
-    windowService->addMenu(menuImpl);
+    QAction *startDebugging = new QAction("Start Debugging");
+    AbstractAction * actionImpl = new AbstractAction(startDebugging);
+    windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
-    if (menu->menuAction()) {
-        menu->menuAction()->setText("Debuger Plugin Test");
-    }
+    QAction *detachDebugger = new QAction("Detach Debugger");
+    actionImpl = new AbstractAction(detachDebugger);
+    windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
-    QAction *action = new QAction("setp");
-    AbstractAction * actionImpl = new AbstractAction(action);
+    QAction *interrupt = new QAction("Interrupt");
+    actionImpl = new AbstractAction(interrupt);
+    windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
+
+    QAction *continueAction = new QAction("Continue");
+    actionImpl = new AbstractAction(continueAction);
+    windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
+
+    QAction *abortDebugging = new QAction("Abort Debugging");
+    actionImpl = new AbstractAction(abortDebugging);
+    windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
+
+    QAction *restartDebugging = new QAction("Restart Debugging");
+    actionImpl = new AbstractAction(restartDebugging);
+    windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
+
+    QAction *setpOver = new QAction("Setp Over");
+    actionImpl = new AbstractAction(setpOver);
+    windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
+
+    QAction *setpInto = new QAction("Setp Into");
+    actionImpl = new AbstractAction(setpInto);
+    windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
+
+    QAction *setpOut = new QAction("Setp Out");
+    actionImpl = new AbstractAction(setpOut);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     return true;

@@ -44,7 +44,7 @@ namespace GlobalPrivate
 
     QString formatFrameworkLogOut(QtMsgType type, const QMessageLogContext &context, const QString &msg)
     {
-        auto fileNameList = QString(context.file).split("/");
+        auto fileNameList = QString(context.file).split(QDir::separator());
         auto currentName = fileNameList[fileNameList.size() - 1];
 
         if (type == QtMsgType::QtDebugMsg)
@@ -116,7 +116,7 @@ namespace GlobalPrivate
                                                             Framework().categoryName()
                                                         },
                                                         QString("remove true(%0) not last week log: %1")
-                                                        .arg(QDir().remove(itera.path() + "/" + itera.fileName()))
+                                                        .arg(QDir().remove(itera.path() + QDir::separator() + itera.fileName()))
                                                         .arg(itera.fileName().toLocal8Bit().data())
                                                         );
 
@@ -150,7 +150,7 @@ namespace GlobalPrivate
 
         if (GlobalPrivate::file.fileName().isEmpty()) {
             GlobalPrivate::file.setFileName(LogUtils::appCacheLogPath()
-                                            + "/"
+                                            + QDir::separator()
                                             + LogUtils::localDate()
                                             + "_" + QCoreApplication::applicationName()
                                             + ".log");
@@ -248,8 +248,8 @@ void FrameworkLog::initialize()
 #ifdef DTK_LOG
 
     QString tempPath = DTK_CORE_NAMESPACE::DLogManager::getlogFilePath();
-    QString appName = "/" + qApp->applicationName() + "/";
-    QString result = "/deepin" + appName;
+    QString appName = QDir::separator() + qApp->applicationName() + QDir::separator();
+    QString result = QDir::separator() + "deepin" + appName;
     DTK_CORE_NAMESPACE::DLogManager::setlogFilePath(tempPath.replace(appName,result));
     qInfo() << "redirect output info to log: " << DTK_CORE_NAMESPACE::DLogManager::getlogFilePath();
     DTK_CORE_NAMESPACE::DLogManager::registerConsoleAppender();

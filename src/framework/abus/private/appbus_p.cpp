@@ -141,7 +141,7 @@ QStringList AppBusPrivate::scanfUseBusApp()
             itera.next();
             QString fileName = itera.fileName();
 
-            if (QFileInfo(tmp + "/" + fileName).suffix()
+            if (QFileInfo(tmp + QDir::separator() + fileName).suffix()
                     != metaObject()->className()) {
                 continue;
             }
@@ -182,7 +182,7 @@ bool AppBusPrivate::tryPing(const QString &serverName)
     }
 
     QString tmp = QStandardPaths::standardLocations(QStandardPaths::TempLocation)[0];
-    QFile::remove(tmp + "/" + serverName);
+    QFile::remove(tmp + QDir::separator() + serverName);
     return false;
 }
 

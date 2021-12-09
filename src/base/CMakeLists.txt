@@ -8,6 +8,8 @@ set(CXX_H
     abstractnav.h
     abstractaction.h
     abstractmainwindow.h
+    abstractwidget.h
+    abstractoutputpane.h
     )
 
 set(CXX_CPP
@@ -18,6 +20,8 @@ set(CXX_CPP
     abstractnav.cpp
     abstractaction.cpp
     abstractmainwindow.cpp
+    abstractwidget.cpp
+    abstractoutputpane.cpp
     )
 
 add_library(
@@ -26,3 +30,5 @@ add_library(
     ${CXX_H}
     ${CXX_CPP}
     )
+
+install(TARGETS ${PROJECT_NAME} DESTINATION ${LIBRARY_INSTALL_PREFIX})

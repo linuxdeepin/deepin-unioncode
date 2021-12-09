@@ -26,3 +26,4 @@ link_libraries(
     ${PkgUserModules}
     )
 
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${LIBRARY_INSTALL_PREFIX})

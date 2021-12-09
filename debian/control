@@ -8,10 +8,8 @@ Build-Depends:
  qtbase5-dev,
  qttools5-dev-tools,
  libssl-dev,
- libmediainfo-dev,
- libgtest-dev,
- libgmock-dev,
- libqscintilla2-qt5-dev
+ libqtermwidget5-0-dev,
+ libutf8proc-dev
 Standards-Version: 0.0.1
 Homepage: http://www.deepin.org
 
@@ -20,5 +18,11 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
-
 Description: deepen code IDE
+
+Package: libunioncode-dev
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: deepen code IDE dev library

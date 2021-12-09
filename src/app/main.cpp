@@ -1,6 +1,7 @@
 #include "config.h"
 #include <framework/framework.h>
 #include <QApplication>
+
 /// @brief PLUGIN_INTERFACE 默认插件iid
 static const char *const FM_PLUGIN_INTERFACE = "org.deepin.plugin.unioncode";
 static const char *const PLUGIN_CORE = "plugin-core";
@@ -20,10 +21,12 @@ static bool pluginsLoad()
         // run dde-file-manager path is /usr/bin, use system install plugins
         qInfo() << "run application in /usr/bin, load system plugin";
         lifeCycle.setPluginPaths({PLUGIN_PATH});
+        qApp->setLibraryPaths(qApp->libraryPaths() += PLUGIN_PATH);
     } else {
         // if debug and any read from cmake out build path
         qInfo() << "run application not /usr/bin, load debug plugin";
         lifeCycle.setPluginPaths({BUILD_OUT_PLGUN_DIR});
+        qApp->setLibraryPaths(qApp->libraryPaths() += BUILD_OUT_PLGUN_DIR);
     }
 
     qInfo() << "Depend library paths:" << QApplication::libraryPaths();
@@ -57,8 +60,6 @@ static bool pluginsLoad()
 
     return true;
 }
-
-#include <QMainWindow>
 
 int main(int argc, char *argv[])
 {

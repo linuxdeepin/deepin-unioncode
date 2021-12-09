@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# unioncode cmake wrapper
+#
+
+
+SOURCE_DIR=""
+BUILD_PROVIDER="cmake"
+BUILD_DIR="build"
+
+# find CMakeLists.txt
+CMAKE_LISTS_TXT_STATUS=""
+find_cmakelists()
+{
+	if [ -e CMakeLists.txt ]; then
+		echo "File CMakeLists.txt was missing..."
+		CMAKE_LISTS_TXT_STATUS="MISSING"
+	fi
+	CMAKE_LISTS_TXT_STATUS="FOUND"
+}
+
+# run generate build configuration in source tree
+run_configuration()
+{
+	if [ -d ${BUILD_DIR} ]; then
+		rm -rf ${BUILD_DIR} > /dev/null
+	fi
+	cmake -B ${BUILD_DIR} 	
+}
+
+# build target in  build directory
+build_target()
+{
+	cmake --build ${BUILD_DIR}
+}
+
+# build target in build with pipe
+gen_target()
+{
+	cmake -B ${BUILD_DIR} && cmake --build ${BUILD_DIR}	
+}
+
+# main entry
+if [ $# -eq 0 ]; then
+	gen_target
+fi
+
+exit 0

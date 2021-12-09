@@ -22,29 +22,32 @@ endif()
 #       public *.h && private dir *.h
 #   /usr/share/dde-file-manager
 #       subdir"database  mimetypeassociations  mimetypes  templates  translations"
-set(LIBRARY_INSTALL_PREFIX "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}")
+set(LIBRARY_INSTALL_PREFIX "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/${PROJECT_NAME}")
 #set(ARCHIVE_INSTALL_RPEFIX "") undefined the static lib archive
 set(RUNTIME_INSTALL_RPEFIX "/usr/bin")
-set(SOURCES_INSTALL_RPEFIX "/usr/share/ide")
-set(INCLUDE_INSTALL_RPEFIX "/usr/include")
+set(SOURCES_INSTALL_RPEFIX "/usr/share/${PROJECT_NAME}")
+set(INCLUDE_INSTALL_RPEFIX "/usr/include/${PROJECT_NAME}")
 
-set(PLUGIN_PATH ${LIBRARY_INSTALL_PREFIX}/unioncode/plugins)
+set(PLUGIN_PATH ${LIBRARY_INSTALL_PREFIX}/plugins)
 
-#if no debug, can't out in code define key '__FUNCTION__' and so on
-add_definitions(-DQT_MESSAGELOGCONTEXT)
+# set install runtime path
+set(CMAKE_INSTALL_RPATH ${LIBRARY_INSTALL_PREFIX} ${PLUGIN_PATH})
 
+# build runtime path
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE})
 
+# if no debug, can't out in code define key '__FUNCTION__' and so on
+add_definitions(-DQT_MESSAGELOGCONTEXT)
+
 # Setup the environment
-# set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wl,--as-need -fPIE")
 
@@ -73,13 +76,6 @@ foreach(PkgConfigModule ${PkgConfigFindModules})
 endforeach(PkgConfigModule)
 
 include_directories(${PROJECT_SOURCE_DIR}/src)
-
-#define service source dir
-set(COMMON_SERVICE_DIR ${PROJECT_SOURCE_DIR}/src/services/common)
-set(FILEMANAGER_SERVICE_DIR ${PROJECT_SOURCE_DIR}/src/services/business/filemanager)
-set(DESKTOP_SERVICE_DIR ${PROJECT_SOURCE_DIR}/src/services/business/desktop)
-#any sub dir can use common service
-include_directories(${COMMON_SERVICE_DIR})
 
 option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
 message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")

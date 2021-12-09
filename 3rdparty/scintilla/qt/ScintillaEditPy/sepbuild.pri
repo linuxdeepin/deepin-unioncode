@@ -1,0 +1,11 @@
+SCINTILLA_VERSION=4.2.3
+PY_VERSION=2.7
+PY_VERSION_SUFFIX=2.7
+PY_PREFIX=/usr
+PY_INCLUDES=/usr/include/python2.7
+PY_LIBDIR=/usr/lib
+PYSIDE_INCLUDES=/usr/include/PySide
+PYSIDE_LIB=/usr/lib
+SHIBOKEN_INCLUDES=/usr/include/shiboken
+SHIBOKEN_LIB=/usr/lib
+CONFIG += release

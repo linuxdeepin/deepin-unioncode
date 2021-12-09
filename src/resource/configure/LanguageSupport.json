@@ -1,0 +1,14 @@
+{
+    "cpp" : {
+        "suffix" : ["cc", "c", "cxx", "cpp", "c", "hh", "h", "hxx", "hpp"]
+    },
+
+    "cmake" : {
+        "suffix" : ["cmake"],
+        "base" : ["CMakeLists.txt"]
+    },
+
+    "json" : {
+        "suffix" : ["json"]
+    }
+}

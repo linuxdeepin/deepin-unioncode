@@ -5,11 +5,10 @@ class AbstractCentralPrivate;
 class AbstractCentral
 {
     AbstractCentralPrivate *const d;
-    friend class WindowKeeper;
-    void *qWidget();
 public:
     AbstractCentral(void *qwidget);
     virtual ~AbstractCentral();
+    void *qWidget();
 };
 
 #endif // ABSTRACTCENTRAL_H
