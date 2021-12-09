@@ -1,0 +1,35 @@
+#include "abstractcentral.h"
+
+#include <QDebug>
+#include <QWidget>
+
+class AbstractCentralPrivate
+{
+    friend class AbstractCentral;
+    QWidget *widget;
+};
+
+AbstractCentral::AbstractCentral(void *qwidget)
+    : d(new AbstractCentralPrivate())
+{
+    if (!qwidget) {
+        qCritical() << "Failed, use QWidget(0x0) to AbstractCentral";
+        abort();
+    }
+
+    d->widget = (QWidget*)qwidget;
+    QWidget::connect(d->widget, &QWidget::destroyed,
+                     d->widget, [this](){
+        delete this;
+    }, Qt::UniqueConnection);
+}
+
+AbstractCentral::~AbstractCentral()
+{
+
+}
+
+void *AbstractCentral::qWidget()
+{
+    return d->widget;
+}

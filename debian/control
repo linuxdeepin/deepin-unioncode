@@ -1,0 +1,24 @@
+Source: unioncode
+Section: libdevel
+Priority: optional
+Maintainer: Deepin Packages Builder <packages@linuxdeepin.com>
+Build-Depends:
+ cmake,
+ qt5-qmake,
+ qtbase5-dev,
+ qttools5-dev-tools,
+ libssl-dev,
+ libmediainfo-dev,
+ libgtest-dev,
+ libgmock-dev,
+ libqscintilla2-qt5-dev
+Standards-Version: 0.0.1
+Homepage: http://www.deepin.org
+
+Package: unioncode
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+
+Description: deepen code IDE

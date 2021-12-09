@@ -1,0 +1,5 @@
+add_subdirectory(core)
+add_subdirectory(debugger)
+add_subdirectory(codeedit)
+add_subdirectory(collaborators)
+#add_subdirectory(builder)
