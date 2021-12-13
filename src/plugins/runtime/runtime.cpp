@@ -20,8 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "runtime.h"
-#include "outputwidget.h"
+#include "runtimewidget.h"
 #include "base/abstractwidget.h"
+#include "base/abstractaction.h"
+#include "base/abstractcentral.h"
 #include "services/window/windowservice.h"
 
 using namespace dpfservice;
@@ -33,15 +35,14 @@ void Runtime::initialize()
 
 bool Runtime::start()
 {
-#if 0
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
         //发布Console到edit导航栏界面布局
-        emit windowService->addContextWidget("Output", new AbstractWidget(new OutputWidget));
+        emit windowService->addCentral(QString::fromStdString(NAVACTION_RUNTIME),
+                                       new AbstractCentral(new RuntimeWidget));
     }
-#endif
     return true;
 }
 

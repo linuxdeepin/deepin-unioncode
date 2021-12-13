@@ -3,15 +3,17 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-runtime)
 
 set(CXX_CPP
-    outputwidget.cpp
-    processreader.cpp
+    environmentwidget.cpp
+    configurewidget.cpp
+    runtimewidget.cpp
     runtime.cpp
     runtime.json
     )
 
 set(CXX_H
-    outputwidget.h
-    processreader.h
+    environmentwidget.h
+    configurewidget.h
+    runtimewidget.h
     runtime.h
     )
 
@@ -24,6 +26,7 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     unioncode-framework
     unioncode-base
+    unioncode-common
     unioncode-service
     ${QtUseModules}
     ${PkgUserModules}

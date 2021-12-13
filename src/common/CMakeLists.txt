@@ -11,6 +11,9 @@ set(CXX_H
     util/custompaths.h
     util/eventdefinitions.h
     dialog/contextdialog.h
+    widget/omittablelabel.h
+    widget/collapsewidget.h
+    widget/detailsbutton.h
     )
 
 set(CXX_CPP
@@ -18,6 +21,9 @@ set(CXX_CPP
     util/custompaths.cpp
     util/eventdefinitions.cpp
     dialog/contextdialog.cpp
+    widget/omittablelabel.cpp
+    widget/collapsewidget.cpp
+    widget/detailsbutton.cpp
     )
 
 add_library(

@@ -10,4 +10,10 @@ add_subdirectory(common)
 add_subdirectory(plugins)
 add_subdirectory(services)
 add_subdirectory(resource)
-#add_subdirectory(tools)
+add_subdirectory(scripts)
+
+install(DIRECTORY
+    configures
+    scripts
+    DESTINATION
+    ${SOURCES_INSTALL_RPEFIX})

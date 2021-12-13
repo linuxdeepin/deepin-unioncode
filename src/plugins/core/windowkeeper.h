@@ -17,10 +17,12 @@ class QMainWindow;
 class QStatusBar;
 class QMenuBar;
 class QToolBar;
+class QActionGroup;
 
 extern QHash<QString, QWidget *> centrals;
 extern QMainWindow *window;
-
+extern QActionGroup *navActionGroup;
+extern QToolBar *toolbar;
 class WindowKeeper final :public QObject
 {
     Q_OBJECT
@@ -34,6 +36,7 @@ public slots:
     void addCentral(const QString &navName, AbstractCentral *central);
     void addMenu(AbstractMenu *menu);
     void addAction(const QString &menuName, AbstractAction *action);
+    void initUserWidget();
 
 private :
     void layoutWindow(QMainWindow *window);

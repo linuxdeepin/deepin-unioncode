@@ -10,9 +10,12 @@
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QApplication>
+#include <QActionGroup>
 
 QHash<QString, QWidget *> centrals{};
 QMainWindow *window = nullptr;
+QActionGroup *navActionGroup = nullptr;
+QToolBar *toolbar = nullptr;
 const int minWidth = 1200;
 const int minHeight = 800;
 
@@ -144,6 +147,8 @@ void WindowKeeper::createNavRecent(QToolBar *toolbar)
         return;
 
     QAction* navRecent = new QAction(toolbar);
+    navRecent->setCheckable(true);
+    navActionGroup->addAction(navRecent);
     navRecent->setText(QString::fromStdString(NAVACTION_RECENT));
     QAction::connect(navRecent, &QAction::triggered, [=](){
         SendEvents::navRecentShow(); //recent show event
@@ -158,6 +163,8 @@ void WindowKeeper::createNavEdit(QToolBar *toolbar)
         return;
 
     QAction* navEdit = new QAction(toolbar);
+    navEdit->setCheckable(true);
+    navActionGroup->addAction(navEdit);
     navEdit->setText(QString::fromStdString(NAVACTION_EDIT));
     QAction::connect(navEdit, &QAction::triggered, [=](){
         SendEvents::navEditShow();
@@ -173,6 +180,8 @@ void WindowKeeper::createNavDebug(QToolBar *toolbar)
         return;
 
     QAction* navDebug = new QAction(toolbar);
+    navDebug->setCheckable(true);
+    navActionGroup->addAction(navDebug);
     navDebug->setText(QString::fromStdString(NAVACTION_DEBUG));
     QAction::connect(navDebug, &QAction::triggered, [=](){
         SendEvents::navDebugShow();
@@ -188,6 +197,8 @@ void WindowKeeper::createNavRuntime(QToolBar *toolbar)
         return;
 
     QAction *navRuntime = new QAction(toolbar);
+    navRuntime->setCheckable(true);
+    navActionGroup->addAction(navRuntime);
     navRuntime->setText(QString::fromStdString(NAVACTION_RUNTIME));
     QAction::connect(navRuntime, &QAction::triggered, [=](){
         SendEvents::navRuntimeShow();
@@ -199,11 +210,14 @@ void WindowKeeper::createNavRuntime(QToolBar *toolbar)
 void WindowKeeper::layoutWindow(QMainWindow *window)
 {
     qInfo() << __FUNCTION__;
-    QToolBar* nav = new QToolBar();
-    createNavRecent(nav);
-    createNavEdit(nav);
-    createNavDebug(nav);
-    createNavRuntime(nav);
+    if (!navActionGroup)
+        navActionGroup = new QActionGroup(this);
+
+    toolbar = new QToolBar();
+    createNavRecent(toolbar);
+    createNavEdit(toolbar);
+    createNavDebug(toolbar);
+    createNavRuntime(toolbar);
 
     QMenuBar* menuBar = new QMenuBar();
     createFileActions(menuBar);
@@ -214,7 +228,7 @@ void WindowKeeper::layoutWindow(QMainWindow *window)
 
     createStatusBar(window);
 
-    window->addToolBar(Qt::LeftToolBarArea, nav);
+    window->addToolBar(Qt::LeftToolBarArea, toolbar);
     window->setMinimumSize(QSize(minWidth,minHeight));
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->setMenuBar(menuBar);
@@ -240,6 +254,9 @@ WindowKeeper::WindowKeeper(QObject *parent)
         });
         window->show();
     }
+
+    QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
+                     this, &WindowKeeper::initUserWidget);
 
     QObject::connect(windowService, &WindowService::addMenu,
                      this, &WindowKeeper::addMenu, Qt::UniqueConnection);
@@ -312,5 +329,13 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
             }
             qaction->menu()->addAction(inputAction);
         }
+    }
+}
+
+void WindowKeeper::initUserWidget()
+{
+    qApp->processEvents();
+    if (toolbar->actions().size() > 0) {
+        toolbar->actions().at(0)->trigger();
     }
 }

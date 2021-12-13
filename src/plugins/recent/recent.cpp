@@ -27,6 +27,7 @@
 #include "services/window/windowservice.h"
 
 #include <QAction>
+#include <QLabel>
 
 using namespace dpfservice;
 
@@ -42,6 +43,8 @@ bool Recent::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
+        windowService->addCentral(QString::fromStdString(NAVACTION_RECENT),
+                                  new AbstractCentral(new QLabel("Recent Text Widget")));
     }
     return true;
 }
