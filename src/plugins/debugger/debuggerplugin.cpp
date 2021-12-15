@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2020 ~ 2021 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2021 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huanyu<huanyub@uniontech.com>
+ * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             huangyu<huangyub@uniontech.com>
+ *             luzhen<huangyub@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "debugger.h"
+#include "debuggerplugin.h"
 #include "base/abstractnav.h"
 #include "base/abstractaction.h"
 #include "base/abstractmenu.h"
@@ -30,12 +30,12 @@
 
 using namespace dpfservice;
 
-void Debugger::initialize()
+void DebuggerPlugin::initialize()
 {
 
 }
 
-bool Debugger::start()
+bool DebuggerPlugin::start()
 {
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
@@ -44,6 +44,18 @@ bool Debugger::start()
         abort();
     }
 
+    InitUI(windowService);
+
+    return true;
+}
+
+dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
+{
+    return Sync;
+}
+
+bool DebuggerPlugin::InitUI(WindowService *windowService)
+{
     QAction *startDebugging = new QAction("Start Debugging");
     AbstractAction * actionImpl = new AbstractAction(startDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
@@ -56,8 +68,8 @@ bool Debugger::start()
     actionImpl = new AbstractAction(interrupt);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
-    QAction *continueAction = new QAction("Continue");
-    actionImpl = new AbstractAction(continueAction);
+    QAction *continueDebugging = new QAction("Continue");
+    actionImpl = new AbstractAction(continueDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *abortDebugging = new QAction("Abort Debugging");
@@ -68,22 +80,17 @@ bool Debugger::start()
     actionImpl = new AbstractAction(restartDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
-    QAction *setpOver = new QAction("Setp Over");
-    actionImpl = new AbstractAction(setpOver);
+    QAction *stepOver = new QAction("Step Over");
+    actionImpl = new AbstractAction(stepOver);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
-    QAction *setpInto = new QAction("Setp Into");
-    actionImpl = new AbstractAction(setpInto);
+    QAction *stepIn = new QAction("Step In");
+    actionImpl = new AbstractAction(stepIn);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
-    QAction *setpOut = new QAction("Setp Out");
-    actionImpl = new AbstractAction(setpOut);
+    QAction *stepOut = new QAction("Step Out");
+    actionImpl = new AbstractAction(stepOut);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     return true;
-}
-
-dpf::Plugin::ShutdownFlag Debugger::stop()
-{
-    return Sync;
 }

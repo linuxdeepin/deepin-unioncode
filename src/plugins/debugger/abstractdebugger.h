@@ -18,45 +18,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef BUILDSTEP_H
-#define BUILDSTEP_H
-
-#include "builderglobals.h"
+#ifndef ABSTRACTDEBUGGER_H
+#define ABSTRACTDEBUGGER_H
 
 #include <QObject>
-#include <QProcess>
+#include "debuggerrunparameters.h"
 
-class BuildStep : public QObject
+/**
+ * @brief TODO(mozart):AbstractDebugger class just for promote development, may
+ * be deleted future.
+ */
+class AbstractDebugger : public QObject
 {
     Q_OBJECT
 public:
-    explicit BuildStep(QObject *parent = nullptr);
+    explicit AbstractDebugger(QObject *parent = nullptr);
+    virtual ~AbstractDebugger() {}
 
-    void setToolChainType(ToolChainType type);
-    void setBuildOutputDir(const QString &outputDir);
-    void setMakeFile(const QString &makeFile);
-    void appendCmdParam(const QString param);
+    virtual void setRunParameters(DebuggerRunParameters &_rp);
+    virtual void startDebug() = 0;
+    virtual void detachDebug() = 0;
 
-    virtual void run() = 0;
+    virtual void interruptDebug() = 0;
+    virtual void continueDebug() = 0;
+    virtual void abortDebug() = 0;
+    virtual void restartDebug() = 0;
 
+    virtual void stepOver() = 0;
+    virtual void stepIn() = 0;
+    virtual void stepOut() = 0;
 signals:
-    void addOutput(const QString &content);
 
 public slots:
-    void processReadyReadStdOutput();
-    void processReadyReadStdError();
 
 protected:
-    virtual void stdOutput(const QString &line);
-    virtual void stdErrput(const QString &line);
-    virtual bool execCmd(const QString &cmd, const QStringList &args);
-
-    QString buildOutputDir;
-    QString makeFile;
-    QStringList cmdParams;
-    ToolChainType toolChainType = {UnKnown};
-
-    QScopedPointer<QProcess> process;
+    DebuggerRunParameters rp;
 };
 
-#endif // BUILDSTEP_H
+#endif // ABSTRACTDEBUGGER_H

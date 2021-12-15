@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2020 ~ 2021 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2021 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huanyu<huanyub@uniontech.com>
+ * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             huangyu<huangyub@uniontech.com>
+ * Maintainer: luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +17,28 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef DEBUGGER_H
-#define DEBUGGER_H
+*/
+#ifndef SESSIONDEBUG_H
+#define SESSIONDEBUG_H
 
-#include <framework/framework.h>
+#include <QObject>
+#include <QScopedPointer>
 
-class Debugger : public dpf::Plugin
+class AbstractDebugger;
+class SessionDebug : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "debugger.json")
 public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
+    explicit SessionDebug(QObject *parent = nullptr);
+
+    void setDebugger(AbstractDebugger *dbg);
+
+signals:
+
+public slots:
+
+private:
+    AbstractDebugger *debugger = nullptr;
 };
 
-#endif // DEBUGGER_H
+#endif // SESSIONDEBUG_H

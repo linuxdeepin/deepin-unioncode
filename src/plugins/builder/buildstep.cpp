@@ -58,6 +58,12 @@ void BuildStep::stdOutput(const QString &line)
     emit addOutput(line);
 }
 
+void BuildStep::stdErrput(const QString &line)
+{
+    PARSE(line);
+    emit addOutput(line);
+}
+
 bool BuildStep::execCmd(const QString &cmd, const QStringList &args)
 {
     bool ret = false;
@@ -79,6 +85,9 @@ bool BuildStep::execCmd(const QString &cmd, const QStringList &args)
         connect(process.get(), &QProcess::readyReadStandardOutput,
                 this, &BuildStep::processReadyReadStdOutput);
 
+        connect(process.get(), &QProcess::readyReadStandardError,
+                this, &BuildStep::processReadyReadStdError);
+
         // TODO(mozart) : should output more message here.
 
         QStringList params;
@@ -97,5 +106,14 @@ void BuildStep::processReadyReadStdOutput()
     while (process->canReadLine()) {
         QString line = QString::fromUtf8(process->readLine());
         stdOutput(line);
+    }
+}
+
+void BuildStep::processReadyReadStdError()
+{
+    process->setReadChannel(QProcess::StandardOutput);
+    while (process->canReadLine()) {
+        QString line = QString::fromUtf8(process->readLine());
+        stdErrput(line);
     }
 }
