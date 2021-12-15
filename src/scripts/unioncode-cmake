@@ -4,45 +4,49 @@
 #
 
 
+CURRENT_DIR="$(pwd)"
 SOURCE_DIR=""
 BUILD_PROVIDER="cmake"
 BUILD_DIR="build"
 
-# find CMakeLists.txt
-CMAKE_LISTS_TXT_STATUS=""
-find_cmakelists()
-{
-	if [ -e CMakeLists.txt ]; then
-		echo "File CMakeLists.txt was missing..."
-		CMAKE_LISTS_TXT_STATUS="MISSING"
-	fi
-	CMAKE_LISTS_TXT_STATUS="FOUND"
-}
-
+touch build.log
+echo "[INFO] Run CMake Tool in \"${CURRENT_DIR}\" " > build.log
 # run generate build configuration in source tree
-run_configuration()
+create_cmake_cache()
 {
 	if [ -d ${BUILD_DIR} ]; then
-		rm -rf ${BUILD_DIR} > /dev/null
+		echo "[INFO] Remove Old build cache..." >> build.log
+		rm -rf ${BUILD_DIR} >> build.log
 	fi
-	cmake -B ${BUILD_DIR} 	
+	echo "[INFO] Load CMake to Create CMake Cache..." >> build.log
+	cmake -B ${BUILD_DIR} -DCMAKE_EXPORT_COMPILE_COMMANDS=1 | tee -a build.log	
 }
 
 # build target in  build directory
-build_target()
+cmake_build_task()
 {
-	cmake --build ${BUILD_DIR}
+	echo "[INFO] Locd CMake to build project" >> build.log
+	cmake --build ${BUILD_DIR} | tee -a build.log
 }
 
 # build target in build with pipe
-gen_target()
+load_cmake_build_task()
 {
-	cmake -B ${BUILD_DIR} && cmake --build ${BUILD_DIR}	
+	# check our project was cmake drived
+	if [ -e CMakeLists.txt ]; then
+		echo "[INFO] Build CMake Based Projects Task Start..." >> build.log
+		cmake -B ${BUILD_DIR} -DCMAKE_EXPORT_COMPILE_COMMANDS=1 | tee -a build.log  && \
+			cmake --build ${BUILD_DIR} | tee -a build.log	
+		ln -s ${BUILD_DIR}/compile_commands.json compile_commands.json
+ 	else
+		echo "[ERORR] Those Projects Not are CMake Based Project!!!" > build.log
+		echo "[ERROR] Please Check YOUR PROJECT Can Build With Other Build System" >> build.log
+		exit 1
+	fi
+	echo "[INFO] Finished Run CMake Tool in \"${CURRENT_DIR}\" " >> build.log
 }
 
 # main entry
-if [ $# -eq 0 ]; then
-	gen_target
-fi
+load_cmake_build_task
 
 exit 0

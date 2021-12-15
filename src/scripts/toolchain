@@ -472,6 +472,6 @@ if [ ! -d "$UNIONCODE_CACHE" ]; then
 	mkdir -pv "$UNIONCODE_CACHE"
 fi
 
-echo "$TOOLCHAINS" > "$UNIONCODE_CONFIG"/profile.json
+echo "$TOOLCHAINS" > "$UNIONCODE_CONFIG"/toolchains.json
 
 exit 0
