@@ -11,5 +11,5 @@ void WindowTheme::setTheme(const QString &file)
         qCritical()<< "Failed can't open qss file" << file;
         return;
     }
-//    qApp->setStyleSheet(qssFile.readAll());
+    qApp->setStyleSheet(qssFile.readAll());
 }

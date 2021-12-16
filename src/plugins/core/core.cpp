@@ -52,7 +52,7 @@ void Core::initialize()
 bool Core::start()
 {
     qInfo() << "set Application Theme";
-    WindowTheme::setTheme(":/waterblue.css");
+    WindowTheme::setTheme(":/dark-one.css");
 
     //创建窗口管理器
     if (!windowKeeper) {

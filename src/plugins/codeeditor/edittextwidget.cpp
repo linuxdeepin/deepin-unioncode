@@ -1,5 +1,6 @@
 #include "edittextwidget.h"
 #include "filelangdatabase.h"
+#include "sendevents.h"
 #include "../lsp/lspclient.h"
 #include "../lsp/lspstructures.h"
 #include "../lsp/ILspDocument.h"
@@ -37,6 +38,42 @@ EditTextWidget::EditTextWidget(QWidget *parent)
         d->sessionClient = new Scintilla::LspClient();
 
     qInfo() << __FUNCTION__ << this->lexerLanguage();
+
+    QObject::connect(this, &EditTextWidget::notifyChange, [=](){
+        qInfo() << "notifyChange" << this->currentFile();
+    });
+
+    QObject::connect(this, &EditTextWidget::marginClicked, [=](int position,
+                     int modifiers, int margin){
+        qInfo() << "marginClicked" << position << modifiers << margin;
+        sptr_t line = lineFromPosition(position);
+        if (markerGet(line)) {
+            SendEvents::marginDebugPointRemove(this->currentFile(), line);
+            markerDelete(line, margin);
+        } else {
+            SendEvents::marginDebugPointAdd(this->currentFile(), line);
+            markerAdd(line, 0);
+        }
+    });
+
+    setMargins(SC_MAX_MARGIN);
+
+    setMarginWidthN(0, 50);
+    setMarginSensitiveN(0, SCN_MARGINCLICK);
+    setMarginTypeN(0, SC_MARGIN_SYMBOL);
+    setMarginMaskN(0, 0x01);    //range mark 1~32
+    markerSetFore(0, 0x0000ff); //red
+    markerSetBack(0, 0x0000ff); //red
+    markerSetAlpha(0, INDIC_GRADIENT);
+
+    qInfo() << get_text_range(0,10);
+
+    setMarginWidthN(1, 20);
+    setMarginTypeN(1, SC_MARGIN_NUMBER);
+    setMarginMaskN(1, 0x00);   // null
+    markerSetFore(1, 0x0000ff); //red
+    markerSetBack(1, 0x0000ff); //red
+    markerSetAlpha(1, INDIC_GRADIENT);
 
     //
     //	Editor configuration
@@ -162,18 +199,18 @@ EditTextWidget::EditTextWidget(QWidget *parent)
             //
             switch (e.severity)
             {
-                case Scintilla::LspDiagnosticElement::Hint:
-                    setIndicatorCurrent(IndicLspDiagnosticHint);
-                    break;
-                case Scintilla::LspDiagnosticElement::Information:
-                    setIndicatorCurrent(IndicLspDiagnosticInfo);
-                    break;
-                case Scintilla::LspDiagnosticElement::Warning:
-                    setIndicatorCurrent(IndicLspDiagnosticWarning);
-                    break;
-                case Scintilla::LspDiagnosticElement::Error:
-                    setIndicatorCurrent(IndicLspDiagnosticError);
-                    break;
+            case Scintilla::LspDiagnosticElement::Hint:
+                setIndicatorCurrent(IndicLspDiagnosticHint);
+                break;
+            case Scintilla::LspDiagnosticElement::Information:
+                setIndicatorCurrent(IndicLspDiagnosticInfo);
+                break;
+            case Scintilla::LspDiagnosticElement::Warning:
+                setIndicatorCurrent(IndicLspDiagnosticWarning);
+                break;
+            case Scintilla::LspDiagnosticElement::Error:
+                setIndicatorCurrent(IndicLspDiagnosticError);
+                break;
             }
             indicatorFillRange(posFrom, posTo - posFrom);
         }
@@ -197,7 +234,7 @@ void EditTextWidget::setCurrentFile(const QString &filePath)
     d->sessionClient->addDocument(Scintilla::LspScintillaDoc(docPointer()),
                                   uri.toString().toStdString(), "cpp");
     // Initialize and start LSP server
-    d->sessionClient->lspStartServer("clangd", "");
+    d->sessionClient->lspStartServer("clangd-7", "");
     Scintilla::LspClientConfiguration cfg;
     cfg.rootUri = QStringLiteral("file:///%1").arg(QApplication::applicationDirPath()).toStdString();
     // Default not supported for now, handling is buggy

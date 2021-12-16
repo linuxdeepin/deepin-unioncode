@@ -5,5 +5,5 @@
 EditFileTabWidget::EditFileTabWidget(QWidget *parent)
     : QTabBar (parent)
 {
-
+    setExpanding(false);
 }
