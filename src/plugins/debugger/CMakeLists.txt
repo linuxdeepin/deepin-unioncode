@@ -17,6 +17,8 @@ set(CXX_H
     debuggerrunparameters.h
     dapdebugger.h
     sessiondebug.h
+    debuggerglobals.h
+    debuggersignals.h
     )
 
 add_library(${PROJECT_NAME}

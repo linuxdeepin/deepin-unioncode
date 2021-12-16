@@ -19,11 +19,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "builderreceiver.h"
+#include "common/util/eventdefinitions.h"
+#include "buildersignals.h"
+#include "builderglobals.h"
 
-static QStringList subTopics{"Menu", "FileBrowser"};
+static QStringList subTopics{T_MENU, T_FILEBROWSER};
 typedef QMap<ToolChainType, QString> MAPToolChainType;
 static MAPToolChainType suffixMimeTypes{{ToolChainType::QMake, "pro"}};
 static MAPToolChainType fullMatchTypes{{ToolChainType::CMake, "CMakeLists.txt"}};
+static const char *const outputDirName = "build";
 
 static BuilderReceiver *ins = nullptr;
 
@@ -44,24 +48,29 @@ dpf::EventHandler::Type BuilderReceiver::type()
     return dpf::EventHandler::Type::Async;
 }
 
-QStringList BuilderReceiver::topics()
+QStringList &BuilderReceiver::topics()
 {
     return subTopics;
 }
 
-QString BuilderReceiver::projectFilePath() const
+const QString &BuilderReceiver::projectFilePath() const
 {
     return proFilePath;
 }
 
-QString BuilderReceiver::projectDirectory() const
+const QString &BuilderReceiver::projectDirectory() const
 {
     return proDirPath;
 }
 
-QString BuilderReceiver::rootProjectDirectory() const
+const QString &BuilderReceiver::rootProjectDirectory() const
 {
     return proRootPath;
+}
+
+const QString &BuilderReceiver::buildOutputDirectory() const
+{
+    return buildOutputPath;
 }
 
 ToolChainType BuilderReceiver::toolChainType() const
@@ -78,12 +87,21 @@ void BuilderReceiver::eventProcess(const dpf::Event &event)
 
     qInfo() << event;
 
+    QString topic = event.topic();
     QString data = event.data().toString();
-    if (event.topic() == "Menu") {
-        if (event.data() == "File.OpenFolder") {
-            QString filePath = event.property("FilePath").toString();
+    if (topic == T_MENU) { // TODO(mozart):Menu event should contain more info.
+        if (data == D_FILE_OPENFOLDER) { // more events may be here.
+            QString filePath = event.property(P_FILEPATH).toString();
             proDirPath = filePath;
             updatePaths(filePath);
+        }
+    } else if (topic == T_FILEBROWSER) {
+        if (data == D_ITEM_MENU_BUILD) { // more events may be here.
+            proFilePath = event.property(P_BUILDFILEPATH).toString();
+            proDirPath = QFileInfo(proFilePath).dir().path();
+            proRootPath = proDirPath; // TODO(mozart):path should get from event in the future.
+            buildOutputPath = event.property(P_BUILDDIRECTORY).toString();
+            emit builderSignals->buildTriggered();
         }
     }
 }
@@ -127,6 +145,8 @@ void BuilderReceiver::updatePaths(const QString &path)
         if (bFounded) {
             proFilePath = fileInfo.filePath();
             proRootPath = fileInfo.dir().path();
+            buildOutputPath = proDirPath + "/" + outputDirName;
+
             qInfo() << "project file path : " << proFilePath;
             qInfo() << "project root path : " << proRootPath;
             break;

@@ -25,9 +25,8 @@
 #include "project.h"
 #include "qmakestep.h"
 #include "makestep.h"
+#include "builderreceiver.h"
 
-
-static const char *const outputDirName = "build";
 
 BuildTarget::BuildTarget(Project *pro)
     : project(pro)
@@ -42,11 +41,10 @@ BuildTarget::~BuildTarget()
 
 QString BuildTarget::buildOutputDirectory() const
 {
-    QString proDirPath = project->projectDirectory();
-    QString buildOutputPath = proDirPath + "/" + outputDirName;
+    const QString &buildOutputPath = BuilderReceiver::instance()->buildOutputDirectory();
     QDir dir(buildOutputPath);
     if (!dir.exists()) {
-        dir.mkdir(buildOutputPath);
+        dir.mkpath(buildOutputPath);
     }
     return buildOutputPath;
 }

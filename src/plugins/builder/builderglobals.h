@@ -21,11 +21,16 @@
 #ifndef BUILDERGLOBALS_H
 #define BUILDERGLOBALS_H
 
+#include <common/util/singleton.h>
+
 enum ToolChainType {
     UnKnown,
     QMake,
     CMake
 };
+
+
+#define builderSignals Singleton<BuilderSignals>::instance()
 
 
 

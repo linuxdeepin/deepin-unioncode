@@ -34,11 +34,12 @@ class BuilderReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegister<B
 public:
     static BuilderReceiver *instance();
     static Type type();
-    static QStringList topics();
+    static QStringList &topics();
 
-    QString projectFilePath() const;
-    QString projectDirectory() const;
-    QString rootProjectDirectory() const;
+    const QString &projectFilePath() const;
+    const QString &projectDirectory() const;
+    const QString &rootProjectDirectory() const;
+    const QString &buildOutputDirectory() const;
 
     ToolChainType toolChainType() const;
 
@@ -51,6 +52,7 @@ private:
     QString proFilePath;
     QString proDirPath;
     QString proRootPath;
+    QString buildOutputPath;
 
     ToolChainType tlChainType = ToolChainType::UnKnown;
 };

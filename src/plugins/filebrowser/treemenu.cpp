@@ -99,7 +99,7 @@ void TreeMenuPrivate::initBuildSupport() {
 
     QString appConfigLocation = CustomPaths::user(CustomPaths::Configures);
     if (!QDir(appConfigLocation).exists()) {
-        QDir().mkdir(appConfigLocation); //创建缓存目录
+        QDir().mkpath(appConfigLocation); //创建缓存目录
     }
 
     QString appConfigBuildSupportFile = appConfigLocation + QDir::separator() + BUILD_SUPPORT_FILE_NAME;

@@ -26,6 +26,7 @@ set(CXX_H
     qmakestep.h
     makestep.h
     builderglobals.h
+    buildersignals.h
     )
 
 add_library(${PROJECT_NAME}
@@ -38,6 +39,7 @@ target_link_libraries(${PROJECT_NAME}
     unioncode-framework
     unioncode-base
     unioncode-service
+    unioncode-common
     ${QtUseModules}
     ${PkgUserModules}
     )

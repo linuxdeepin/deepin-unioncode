@@ -14,6 +14,7 @@ set(CXX_H
     widget/omittablelabel.h
     widget/collapsewidget.h
     widget/detailsbutton.h
+    util/singleton.h
     )
 
 set(CXX_CPP

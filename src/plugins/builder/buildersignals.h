@@ -3,8 +3,7 @@
  *
  * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
+ * Maintainer: luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,27 +17,25 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+#ifndef BUILDERSIGNALS_H
+#define BUILDERSIGNALS_H
+
+#include <QObject>
+
+/**
+ * @brief Global signals should
+ * emit from this class.
  */
-#ifndef BUILDERPLUGIN_H
-#define BUILDERPLUGIN_H
-
-#include <framework/framework.h>
-
-class Project;
-class BuilderPlugin : public dpf::Plugin
+class BuilderSignals : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "builder.json")
+
 public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
 
-private Q_SLOTS:
-    void buildProjects();
-
-private:
-    QSharedPointer<Project> project;
+Q_SIGNALS:
+    void buildTriggered();
 };
 
-#endif // BUILDERPLUGIN_H
+
+#endif // BUILDERSIGNALS_H

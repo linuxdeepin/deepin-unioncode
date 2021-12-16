@@ -33,6 +33,9 @@
 #include "buildoutputpane.h"
 #include "buildtarget.h"
 #include "buildmanager.h"
+#include "buildersignals.h"
+#include "builderglobals.h"
+
 
 #include <QMenu>
 
@@ -56,9 +59,10 @@ bool BuilderPlugin::start()
     QAction *action = new QAction("build");
     AbstractAction *actionImpl = new AbstractAction(action);
     windowService->addAction(QString::fromStdString(MENU_BUILD), actionImpl);
-    connect(action, &QAction::triggered, action, [&](){
-        buildProjects();
-    });
+    // triggered by top menu.
+    connect(action, &QAction::triggered, this, &BuilderPlugin::buildProjects, Qt::DirectConnection);
+    // triggerd by right menu which tree item.
+    connect(builderSignals, &BuilderSignals::buildTriggered, this, &BuilderPlugin::buildProjects, Qt::DirectConnection);
 
     // instert output pane to window.
     emit windowService->addContextWidget("Output", new AbstractWidget(BuildManager::instance()->getOutputPane()));

@@ -3,8 +3,7 @@
  *
  * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
+ * Maintainer: luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,27 +17,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef BUILDERPLUGIN_H
-#define BUILDERPLUGIN_H
+*/
+#ifndef DEBUGGERGLOBALS_H
+#define DEBUGGERGLOBALS_H
 
-#include <framework/framework.h>
+#include <common/util/singleton.h>
 
-class Project;
-class BuilderPlugin : public dpf::Plugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "builder.json")
-public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
 
-private Q_SLOTS:
-    void buildProjects();
+#define debuggerSignals Singleton<DebuggerSignals>::instance()
 
-private:
-    QSharedPointer<Project> project;
-};
-
-#endif // BUILDERPLUGIN_H
+#endif // DEBUGGERGLOBALS_H
