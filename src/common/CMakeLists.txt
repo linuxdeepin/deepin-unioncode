@@ -7,6 +7,7 @@ add_definitions(
     )
 
 set(CXX_H
+    lsp/protocol.h
     util/processutil.h
     util/custompaths.h
     util/eventdefinitions.h
@@ -18,6 +19,7 @@ set(CXX_H
     )
 
 set(CXX_CPP
+    lsp/protocol.cpp
     util/processutil.cpp
     util/custompaths.cpp
     util/eventdefinitions.cpp
