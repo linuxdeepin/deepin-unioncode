@@ -27,7 +27,7 @@ public:
     static DpfEventMiddleware& instance();
 
 signals:
-    void toOpenFile(const QString &filePath);
+    void toOpenFile(const QString &filePath, const QString &workspaceFolder);
 };
 
 #endif // CODEEDITORRECEIVER_H

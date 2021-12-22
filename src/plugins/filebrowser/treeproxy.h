@@ -23,6 +23,8 @@ private:
     // forever not nullptr, cause in class stack
     Node* folders() const;
     Node* root(Node *node) const;
+    Node* rootFromFolder(Node *node) const;
+    Node* rootFromFiles(Node *node) const;
     void loadChildren(Node *node);
     QList<int> parentsRowFind(Node *node) const;
     int row(Node *node);

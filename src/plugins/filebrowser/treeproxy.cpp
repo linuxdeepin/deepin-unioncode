@@ -74,6 +74,24 @@ Node *TreeProxy::root(Node *node) const
     return temp;
 }
 
+Node *TreeProxy::rootFromFolder(Node *node) const
+{
+    Node *temp = node;
+    while (temp->parent != folders()) {
+        temp = temp->parent;
+    }
+    return temp;
+}
+
+Node *TreeProxy::rootFromFiles(Node *node) const
+{
+    Node *temp = node;
+    while (temp->parent != files()) {
+        temp = temp->parent;
+    }
+    return temp;
+}
+
 void TreeProxy::loadChildren(Node *node)
 {
     Node *folders = TreeProxy::instance().folders();

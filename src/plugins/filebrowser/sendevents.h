@@ -8,7 +8,9 @@ class SendEvents final
     SendEvents() = delete;
     SendEvents(const SendEvents &) = delete;
 public:
-    static void treeViewDoublueClicked(const QString &filePath);
+    static void treeViewDoublueClicked(const QString &filePath,
+                                       const QString &workspaceFolder);
+
     static void buildProject(const QString &buildSystem,
                              const QString &buildDir,
                              const QString &buildFilePath,

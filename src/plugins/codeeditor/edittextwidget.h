@@ -4,6 +4,7 @@
 #include <QTextEdit>
 
 #include "ScintillaLsp/LspScintillaEdit.h"
+#include "common/lsp/protocol.h"
 
 class EditTextWidgetPrivate;
 class EditTextWidget : public LspScintillaEdit
@@ -15,7 +16,8 @@ public:
     QString currentFile();
 
 public slots:
-    void setCurrentFile(const QString &filePath);
+    void setCurrentFile(const QString &filePath, const QString &workspaceFolder);
+    void publishDiagnostics(const lsp::Protocol::Diagnostics &diagnostics);
 };
 
 #endif // EDITTEXTWIDGET_H

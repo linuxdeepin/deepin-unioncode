@@ -23,6 +23,7 @@ const QString D_ITEM_DOUBLECLICKED {"Item.DoubleClicked"};
 
 const QString P_FILELINE {"FileLine"};
 const QString P_FILEPATH {"FilePath"};
+const QString P_WORKSPACEFOLDER {"WorkspaceFolder"};
 const QString P_BUILDSYSTEM {"BuildSystem"};
 const QString P_BUILDDIRECTORY {"BuildDirectory"};
 const QString P_BUILDFILEPATH {"BuildFilePath"};

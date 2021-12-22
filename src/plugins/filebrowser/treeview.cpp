@@ -14,9 +14,9 @@ class TreeViewPrivate
     friend class TreeView;
     TreeModel *model;
     TreeViewDelegate *delegate;
-    const QString RENAME = "Rename";
-    const QString CLOSE_ALL = "Close All";
-    const QString CLOSE = "Close";
+    const QString RENAME { TreeView::tr("Rename") };
+    const QString CLOSE_ALL { TreeView::tr("Close All") };
+    const QString CLOSE { TreeView::tr("Close") };
 };
 
 TreeView::TreeView(QWidget *parent)
@@ -178,7 +178,7 @@ void TreeView::doubleClicked(const QModelIndex &index)
         Node *foldersNode = TreeProxy::instance().folders();
         if ((node != filesNode || node != foldersNode)
                 && node->type == Node::File) {
-            SendEvents::treeViewDoublueClicked(node->toolTip);
+            SendEvents::treeViewDoublueClicked(node->toolTip, TreeProxy::instance().rootFromFolder(node)->toolTip);
         }
     }
 }

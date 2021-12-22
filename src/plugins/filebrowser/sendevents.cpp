@@ -2,12 +2,13 @@
 #include "framework.h"
 #include "common/util/eventdefinitions.h"
 
-void SendEvents::treeViewDoublueClicked(const QString &filePath)
+void SendEvents::treeViewDoublueClicked(const QString &filePath, const QString &workspaceFolder)
 {
     dpf::Event event;
     event.setTopic(T_FILEBROWSER);
-    event.setData("Item.DoubleClicked");
-    event.setProperty("FilePath", filePath);
+    event.setData(D_ITEM_DOUBLECLICKED);
+    event.setProperty(P_FILEPATH, filePath);
+    event.setProperty(P_WORKSPACEFOLDER, workspaceFolder);
     dpf::EventCallProxy::instance().pubEvent(event);
 }
 

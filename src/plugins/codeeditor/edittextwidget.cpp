@@ -5,8 +5,6 @@
 #include "../lsp/lspstructures.h"
 #include "../lsp/ILspDocument.h"
 
-#include "common/lsp/protocol.h"
-
 #include <QDebug>
 #include <QApplication>
 #include <QTemporaryFile>
@@ -27,10 +25,11 @@ class EditTextWidgetPrivate
 
 enum
 {
-    IndicLspDiagnosticHint = INDICATOR_CONTAINER,
-    IndicLspDiagnosticInfo = INDICATOR_CONTAINER + 1,
-    IndicLspDiagnosticWarning = INDICATOR_CONTAINER + 2,
-    IndicLspDiagnosticError = INDICATOR_CONTAINER + 3
+    IndicDiagnosticUnkown = 0,
+    IndicDiagnosticError = 1,
+    IndicDiagnosticWarning = 2,
+    IndicDiagnosticInfo = 3,
+    IndicDiagnosticHint = 4,
 };
 
 EditTextWidget::EditTextWidget(QWidget *parent)
@@ -42,10 +41,10 @@ EditTextWidget::EditTextWidget(QWidget *parent)
 
     if (!d->client)
         d->client = new lsp::Client();
+
     d->client->setProgram("clangd-7");
     d->client->start();
-    //    d->client->initRequest("/home/funning/workspace/workspace/recode/gg/unioncode");
-    //    d->client->openRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp");
+
     //    d->client->hoverRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
     //                            lsp::Protocol::Position{10,0});
     //    d->client->signatureHelpRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
@@ -58,11 +57,14 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     //    d->client->referencesRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
     //                                 lsp::Protocol::Position{10,0});
     //    d->client->highlightRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-    //                                 lsp::Protocol::Position{10,0});
+    //                                lsp::Protocol::Position{10,0});
     //    d->client->closeRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp");
 
     //    d->client->shutdownRequest();
     //    d->client->exitRequest();
+
+    QObject::connect(d->client, QOverload<const lsp::Protocol::Diagnostics &>::of(&lsp::Client::notification),
+                     this, &EditTextWidget::publishDiagnostics);
 
     QObject::connect(this, &EditTextWidget::marginClicked, [=](int position,
                      int modifiers, int margin){
@@ -95,6 +97,18 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     markerSetFore(1, 0x0000ff); //red
     markerSetBack(1, 0x0000ff); //red
     markerSetAlpha(1, INDIC_GRADIENT);
+
+    indicSetStyle(0, INDIC_HIDDEN);
+    indicSetStyle(1, INDIC_SQUIGGLE);
+    indicSetStyle(2, INDIC_SQUIGGLE);
+    indicSetStyle(3, INDIC_PLAIN);
+    indicSetStyle(4, INDIC_PLAIN);
+
+    indicSetFore(0, 0x000000);
+    indicSetFore(1, 0x0000ff);
+    indicSetFore(2, 0x0000ff);
+    indicSetFore(3, 0x00ffff);
+    indicSetFore(4, 0x00ffff);
 
     //    //
     //    //	Editor configuration
@@ -210,7 +224,7 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     //        indicatorClearRange(0, docLen);
     //        setIndicatorCurrent(IndicLspDiagnosticError);
     //        indicatorClearRange(0, docLen);
-    //        const Scintilla::LspScintillaDoc doc(docPointer());
+    //            const Scintilla::LspScintillaDoc doc(docPointer());
     //        for (const auto &e : dd)
     //        {
     //            const Sci_Position posFrom = Scintilla::lspConv::sciPos(doc, e.range.start);
@@ -221,7 +235,7 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     //            switch (e.severity)
     //            {
     //            case Scintilla::LspDiagnosticElement::Hint:
-    //                setIndicatorCurrent(IndicLspDiagnosticHint);
+    //                    setIndicatorCurrent(IndicLspDiagnosticHint);
     //                break;
     //            case Scintilla::LspDiagnosticElement::Information:
     //                setIndicatorCurrent(IndicLspDiagnosticInfo);
@@ -243,30 +257,36 @@ QString EditTextWidget::currentFile()
     return d->file;
 }
 
-void EditTextWidget::setCurrentFile(const QString &filePath)
+void EditTextWidget::setCurrentFile(const QString &filePath, const QString &workspaceFolder)
 {
     if (d->file == filePath)
         return;
 
+    QString text;
+    QFile file(filePath);
+    if (file.open(QFile::OpenModeFlag::ReadOnly)) {
+        text = file.readAll();
+        file.close();
+    }
+    setText(text.toUtf8());
 
-    //    d->file = filePath;
-    //    QUrl uri = QUrl::fromLocalFile(filePath);
-    //    QString supportLanguage = FileLangDatabase::instance().language(filePath);
-    //    qInfo() << "supportLanguage" << supportLanguage;
-    //    d->sessionClient->addDocument(Scintilla::LspScintillaDoc(docPointer()),
-    //                                  uri.toString().toStdString(), "cpp");
-    //    // Initialize and start LSP server
-    //    d->sessionClient->lspStartServer("clangd-7", "");
-    //    Scintilla::LspClientConfiguration cfg;
-    //    cfg.rootUri = QStringLiteral("file:///%1").arg(QApplication::applicationDirPath()).toStdString();
-    //    // Default not supported for now, handling is buggy
-    //    cfg.semanticHighlighting.supported = true;
-    //    // Add document to LSP server
-    //    d->sessionClient->lspInitialize(cfg);
-    //    setupLspClient(d->sessionClient);
-    //    QFile file(filePath);
-    //    if (file.open(QFile::OpenModeFlag::ReadWrite)) {
-    //        setText(file.readAll().toStdString().c_str());
-    //    }
+    d->client->initRequest(workspaceFolder);
+    d->client->openRequest(filePath);
 }
 
+void EditTextWidget::publishDiagnostics(const lsp::Protocol::Diagnostics &diagnostics)
+{
+    const auto docLen = length();
+    indicatorClearRange(0, docLen);
+    const Scintilla::LspScintillaDoc doc(docPointer());
+    for (auto val : diagnostics) {
+        const Sci_Position posFrom = Scintilla::lspConv::sciPos(doc,
+                                                                val.range.start.line,
+                                                                val.range.start.character);
+
+        const Sci_Position posTo = Scintilla::lspConv::sciPos(doc, val.range.end.line
+                                                              , val.range.end.character);
+        setIndicatorCurrent(val.severity);
+        indicatorFillRange(posFrom, posTo - posFrom);
+    }
+}

@@ -1,6 +1,7 @@
 #include "codeeditorreceiver.h"
+#include "common/util/eventdefinitions.h"
 
-static QStringList subTopics{"Menu", "FileBrowser"};
+static QStringList subTopics { T_MENU, T_FILEBROWSER };
 
 CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
     : dpf::EventHandler (parent)
@@ -24,20 +25,26 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
     if (!subTopics.contains(event.topic()))
         abort();
 
-    if (event.topic() == "FileBrowser") {
-        if(event.data() == "Item.DoubleClicked") {
-            return DpfEventMiddleware::instance().toOpenFile
-                    (event.property("FilePath").toString());
+    if (T_FILEBROWSER == event.topic()) {
+        if(D_ITEM_DOUBLECLICKED == event.data()) {
+            return DpfEventMiddleware::instance().toOpenFile(
+                        event.property(P_FILEPATH).toString(),
+                        event.property(P_WORKSPACEFOLDER).toString()
+                        );
         }
     }
 
-    if (event.topic() == "Menu") {
-        if (event.data() == "File.OpenDocument") {
-            return DpfEventMiddleware::instance().toOpenFile
-                    (event.property("FilePath").toString());
+    if (T_MENU == event.topic()) {
+        if (D_FILE_OPENDOCUMENT == event.data()) {
+            return DpfEventMiddleware::instance().toOpenFile(
+                        event.property(P_FILEPATH).toString(),
+                        event.property(P_WORKSPACEFOLDER).toString()
+                        );
         }
-        if (event.data() == "File.OpenFolder")
+        if (D_FILE_OPENFOLDER == event.data()) {
             qInfo() << event;
+            return;
+        }
     }
 }
 

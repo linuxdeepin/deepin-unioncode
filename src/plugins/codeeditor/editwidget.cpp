@@ -77,7 +77,7 @@ int EditWidget::tabIndex(const QString &tabTooltip)
     return -1;
 }
 
-void EditWidget::openFile(const QString &filePath)
+void EditWidget::openFile(const QString &filePath, const QString &workspaceFolder)
 {
     QFileInfo info(filePath);
     if (!info.exists() || !d->tab)
@@ -95,7 +95,7 @@ void EditWidget::openFile(const QString &filePath)
     d->tab->setCurrentIndex(idx);
     EditTextWidget *edit = new EditTextWidget;
     d->textEdits.insert(info.filePath(), edit);
-    edit->setCurrentFile(info.filePath());
+    edit->setCurrentFile(info.filePath(), workspaceFolder);
 
     // set display textedit
     d->gridLayout->addWidget(edit);

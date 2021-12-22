@@ -10,6 +10,7 @@
 #include <QUrl>
 #include <QDebug>
 #include <QFile>
+#include <QFileInfo>
 
 namespace lsp {
 
@@ -53,6 +54,7 @@ const QString V_TEXTDOCUMENT_COMPLETION {"textDocument/completion"};
 const QString V_TEXTDOCUMENT_SIGNATUREHELP {"textDocument/signatureHelp"};
 const QString V_TEXTDOCUMENT_REFERENCES {"textDocument/references"};
 const QString V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT {"textDocument/documentHighlight"};
+const QString K_WORKSPACEFOLDERS {"workspaceFolders"};
 
 const QString K_CONTENTCHANGES {"contentChanges"};
 const QString K_DIAGNOSTICS {"diagnostics"};
@@ -96,12 +98,20 @@ QJsonObject Protocol::initialize(const QString &rootPath)
         }
     };
 
+    QJsonObject workspace {
+        { "name", QFileInfo(rootPath).fileName() },
+        { K_URI, QUrl::fromLocalFile(rootPath).toString() }
+    };
+
+    QJsonArray workspaceFolders{workspace};
+
     QJsonObject params {
         { K_PROCESSID, QCoreApplication::applicationPid() },
         { K_ROOTPATH, rootPath },
         { K_ROOTURI, rootPath },
         { K_CAPABILITIES, capabilities },
-        { K_INITIALIZATIONOPTIONS, V_INITIALIZATIONOPTIONS }
+        { K_INITIALIZATIONOPTIONS, V_INITIALIZATIONOPTIONS },
+        { K_WORKSPACEFOLDERS, workspaceFolders}
     };
 
     QJsonObject initRequest{
@@ -417,6 +427,7 @@ void Client::initRequest(const QString &rootPath)
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_INITIALIZE);
     qInfo() << "--> server : " << V_INITIALIZE;
+    qInfo() << qPrintable(Protocol::setHeader(Protocol::initialize(rootPath), d->requestIndex).toLatin1());
     write(Protocol::setHeader(Protocol::initialize(rootPath), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
@@ -426,6 +437,7 @@ void Client::openRequest(const QString &filePath)
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DIDOPEN);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDOPEN;
+    qInfo() << qPrintable(Protocol::setHeader(Protocol::didOpen(filePath), d->requestIndex).toLatin1());
     write(Protocol::setHeader(Protocol::didOpen(filePath), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
@@ -648,7 +660,8 @@ bool Client::highlightResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(d->requestSave.values().contains(V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT)
             && d->requestSave.key(V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT) == calledID) {
-        qInfo() << "client <-- : " << V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT;
+        qInfo() << "client <-- : " << V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT
+                << jsonObj;
         d->requestSave.remove(calledID);
         return true;
     }

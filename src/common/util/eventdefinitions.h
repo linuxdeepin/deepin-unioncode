@@ -29,6 +29,7 @@ extern const QString D_MARGIN_DEBUG_POINT_REMOVE;
 
 extern const QString P_FILELINE;       //value int
 extern const QString P_FILEPATH;       //value QString
+extern const QString P_WORKSPACEFOLDER;//value QString
 extern const QString P_BUILDSYSTEM;    //value QString
 extern const QString P_BUILDDIRECTORY; //value QString
 extern const QString P_BUILDFILEPATH;  //value QString

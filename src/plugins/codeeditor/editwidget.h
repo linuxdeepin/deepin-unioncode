@@ -13,7 +13,7 @@ public:
     virtual ~EditWidget();
 
 public slots:
-    void openFile(const QString &filePath);
+    void openFile(const QString &filePath, const QString &workspaceFolder);
     void closeFile(const QString &filePath);
 
 private:
