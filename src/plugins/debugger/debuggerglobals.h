@@ -23,7 +23,12 @@
 
 #include <common/util/singleton.h>
 
-
+/*
+ * Redefine global instance
+ */
 #define debuggerSignals Singleton<DebuggerSignals>::instance()
+#define eventSender Singleton<EventSender>::instance()
+#define eventReceiver Singleton<EventReceiver>::instance()
+#define debugManager Singleton<DebugManager>::instance()
 
 #endif // DEBUGGERGLOBALS_H

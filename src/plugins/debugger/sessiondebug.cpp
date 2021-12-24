@@ -20,6 +20,11 @@
 */
 #include "sessiondebug.h"
 
+#include "io.h"
+#include "protocol.h"
+#include "session.h"
+
+using namespace dap;
 SessionDebug::SessionDebug(QObject *parent) : QObject(parent)
 {
 
@@ -28,4 +33,29 @@ SessionDebug::SessionDebug(QObject *parent) : QObject(parent)
 void SessionDebug::setDebugger(AbstractDebugger *dbg)
 {
     debugger = dbg;
+}
+
+bool SessionDebug::initialize()
+{
+    bool bRet = false;
+    auto tmpSession = dap::Session::create();
+    if (tmpSession.get()) {
+        session = std::move(tmpSession);
+        bRet = true;
+    }
+
+    bRet &= registerHandlers();
+
+    return bRet;
+}
+
+bool SessionDebug::registerHandlers()
+{
+    return true;
+}
+
+void SessionDebug::onError(const char *err)
+{
+    Q_UNUSED(err)
+    //TODO(mozart):display the error.
 }

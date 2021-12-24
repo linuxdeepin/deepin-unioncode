@@ -19,6 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "dapdebugger.h"
+#include "io.h"
+#include "protocol.h"
+#include "session.h"
 
 DapDebugger::DapDebugger(QObject *parent)
     : AbstractDebugger(parent)

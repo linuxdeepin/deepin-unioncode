@@ -21,10 +21,15 @@
 #ifndef SESSIONDEBUG_H
 #define SESSIONDEBUG_H
 
+#include "session.h"
 #include <QObject>
-#include <QScopedPointer>
+
+#include <memory>
 
 class AbstractDebugger;
+namespace dap {
+    class Session;
+}
 class SessionDebug : public QObject
 {
     Q_OBJECT
@@ -33,12 +38,17 @@ public:
 
     void setDebugger(AbstractDebugger *dbg);
 
+    bool initialize();
+    bool registerHandlers();
+
 signals:
 
 public slots:
+    void onError(const char *err);
 
 private:
     AbstractDebugger *debugger = nullptr;
+    std::unique_ptr<dap::Session> session;
 };
 
 #endif // SESSIONDEBUG_H

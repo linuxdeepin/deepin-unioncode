@@ -25,6 +25,8 @@
 #include "base/abstractmenu.h"
 #include "base/abstractmainwindow.h"
 #include "services/window/windowservice.h"
+#include "debuggerglobals.h"
+#include "debugmanager.h"
 
 #include <QMenu>
 
@@ -46,6 +48,8 @@ bool DebuggerPlugin::start()
 
     InitUI(windowService);
 
+    debugManager->initialize();
+
     return true;
 }
 
@@ -57,38 +61,47 @@ dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 bool DebuggerPlugin::InitUI(WindowService *windowService)
 {
     QAction *startDebugging = new QAction("Start Debugging");
+    connect(startDebugging, &QAction::triggered, debugManager, &DebugManager::startDebug);
     AbstractAction * actionImpl = new AbstractAction(startDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *detachDebugger = new QAction("Detach Debugger");
+    connect(detachDebugger, &QAction::triggered, debugManager, &DebugManager::detachDebug);
     actionImpl = new AbstractAction(detachDebugger);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *interrupt = new QAction("Interrupt");
+    connect(interrupt, &QAction::triggered, debugManager, &DebugManager::interruptDebug);
     actionImpl = new AbstractAction(interrupt);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *continueDebugging = new QAction("Continue");
+    connect(continueDebugging, &QAction::triggered, debugManager, &DebugManager::continueDebug);
     actionImpl = new AbstractAction(continueDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *abortDebugging = new QAction("Abort Debugging");
+    connect(abortDebugging, &QAction::triggered, debugManager, &DebugManager::abortDebug);
     actionImpl = new AbstractAction(abortDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *restartDebugging = new QAction("Restart Debugging");
+    connect(restartDebugging, &QAction::triggered, debugManager, &DebugManager::restartDebug);
     actionImpl = new AbstractAction(restartDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *stepOver = new QAction("Step Over");
+    connect(stepOver, &QAction::triggered, debugManager, &DebugManager::stepOver);
     actionImpl = new AbstractAction(stepOver);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *stepIn = new QAction("Step In");
+    connect(stepIn, &QAction::triggered, debugManager, &DebugManager::stepIn);
     actionImpl = new AbstractAction(stepIn);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *stepOut = new QAction("Step Out");
+    connect(stepOut, &QAction::triggered, debugManager, &DebugManager::stepOut);
     actionImpl = new AbstractAction(stepOut);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 

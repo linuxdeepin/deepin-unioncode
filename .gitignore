@@ -24,7 +24,6 @@ mocs_*
 # Compiled Static libraries
 *.lai
 *.la
-*.a
 
 # Executables
 *.exe

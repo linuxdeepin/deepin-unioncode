@@ -21,8 +21,11 @@
 #ifndef DAPDEBUGGER_H
 #define DAPDEBUGGER_H
 
-#include <QObject>
 #include "abstractdebugger.h"
+
+
+#include <QObject>
+
 
 /**
  * @brief Abstraction of debugger, actual operation
@@ -48,6 +51,7 @@ public:
 signals:
 
 public slots:
+
 };
 
 #endif // DAPDEBUGGER_H
