@@ -44,8 +44,8 @@ class Protocol final
 public:
     struct Position
     {
-        int character;
         int line;
+        int character;
     };
 
     struct Range
@@ -116,7 +116,7 @@ public:
     static QJsonObject definition(const QString &filePath, const Protocol::Position &pos);
     static QJsonObject signatureHelp(const QString &filePath, const Protocol::Position &pos);
     static QJsonObject references(const QString &filePath, const Protocol::Position &pos);
-    static QJsonObject highlight(const QString &filePath, const Protocol::Position &pos);
+    static QJsonObject documentHighlight(const QString &filePath, const Protocol::Position &pos);
     static QJsonObject shutdown();
     static QJsonObject exit();
     static QString setHeader(const QJsonObject &object, int requestIndex);
@@ -143,7 +143,7 @@ public:
     void completionRequest(const QString &filePath, const Protocol::Position &pos); // yes
     void signatureHelpRequest(const QString &filePath, const Protocol::Position &pos); // yes
     void referencesRequest(const QString &filePath, const Protocol::Position &pos);
-    void highlightRequest(const QString &filePath, const Protocol::Position &pos);
+    void docHighlightRequest(const QString &filePath, const Protocol::Position &pos);
     void shutdownRequest();
     void exitRequest();
 
@@ -169,7 +169,7 @@ private:
     bool signatureHelpResult(const QJsonObject &jsonObj); // client call server rpc return
     bool hoverResult(const QJsonObject &jsonObj); // client call server rpc return
     bool referencesResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool highlightResult(const QJsonObject &jsonObj); // client call server rpc return
+    bool docHighlightResult(const QJsonObject &jsonObj); // client call server rpc return
     bool closeResult(const QJsonObject &jsonObj); // client call server rpc return
     bool shutdownResult(const QJsonObject &jsonObj);
     bool exitResult(const QJsonObject &jsonObj);

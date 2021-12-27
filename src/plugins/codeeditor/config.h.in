@@ -1,0 +1,23 @@
+#ifndef RUNTIME_INSTALL_PATH
+#define RUNTIME_INSTALL_PATH "${RUNTIME_INSTALL_RPEFIX}"
+#else
+    #error "cmake unseting definition RUNTIME_INSTALL_RPEFIX"
+#endif
+
+#ifndef RUNTIME_BUILD_PATH
+#define RUNTIME_BUILD_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+#elif
+    #error "cmake unseting definition CMAKE_RUNTIME_OUTPUT_DIRECTORY"
+#endif
+
+#ifndef LEXILLA_INSTALL_PATH
+#define LEXILLA_INSTALL_PATH "${LIBRARY_INSTALL_PREFIX}"
+#elif
+    #error "cmake unseting definition LIBRARY_INSTALL_PREFIX"
+#endif
+
+#ifndef LEXILLA_BUILD_PATH
+#define LEXILLA_BUILD_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+#elif
+    #error "cmake unseting definition CMAKE_LIBRARY_OUTPUT_DIRECTORY"
+#endif

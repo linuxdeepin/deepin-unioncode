@@ -13,6 +13,10 @@ src/app/config.h
 moc_*
 mocs_*
 
+# cmake include modules
+!3rdparty/scintilla515/lexilla514.cmake
+!3rdparty/scintilla515/scintilla515.cmake
+
 # Compiled Dynamic libraries
 *.so
 *.dylib

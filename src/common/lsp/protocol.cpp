@@ -75,33 +75,62 @@ const QJsonValue V_INITIALIZATIONOPTIONS(QJsonValue::Null);
 
 QJsonObject Protocol::initialize(const QString &rootPath)
 {
+    QJsonObject workspace {
+        {"workspaceFolders",QJsonObject{ {"supported", true}, {"changeNotifications", true}}}
+    };
+
+    QJsonObject semanticTokens{{
+            {"dynamicRegistration", true},
+            {"formats", QJsonArray{"relative"}},
+            {"multilineTokenSupport", false},
+            {"overlappingTokenSupport", false},
+            {"requests", QJsonArray{"full",QJsonObject{{"delta", true}},QJsonObject{{"range", true}}}},
+            {"tokenModifiers", QJsonArray{"declaration","definition","readonly","static","deprecated",
+                                          "abstract","async","modification","documentation","defaultLibrary"}},
+            {"tokenTypes", QJsonArray{"namespace","type","class","enum","interface","struct","typeParameter",
+                                      "parameter","variable","property","enumMember","event","function",
+                                      "method","macro","keyword","modifier","comment","string","number",
+                                      "regexp","operator"}
+            }}};
+
     QJsonObject capabilities {
         {
             K_TEXTDOCUMENT, QJsonObject {
-                {
-                    K_DOCUMENTSYMBOL, QJsonObject
-                    {
-                        {
-                            K_HIERARCHICALDOCUMENTSYMBOLSUPPORT, true
-                        }
-                    },
-                },
-                {
-                    K_PUBLISHDIAGNOSTICS, QJsonObject
-                    {
-                        {
-                            K_RELATEDINFOMATION, true
-                        }
-                    }
-                }
+                {"documentLink", QJsonObject{{"dynamicRegistration", true}}},
+                {"documentHighlight", QJsonObject{{"dynamicRegistration", true}}},
+                {K_DOCUMENTSYMBOL, QJsonObject{{K_HIERARCHICALDOCUMENTSYMBOLSUPPORT, true}},},
+                {K_PUBLISHDIAGNOSTICS, QJsonObject{{K_RELATEDINFOMATION, true}}},
+                {"definition", QJsonObject{{{"dynamicRegistration", true},{"linkSupport", true}}}},
+                {"colorProvider", QJsonObject{{"dynamicRegistration", true}}},
+                {"declaration", QJsonObject{{"dynamicRegistration", true},{"linkSupport", true}}},
+                {"semanticHighlightingCapabilities", QJsonObject{{"semanticHighlighting", true}}},
+                {"semanticTokens", semanticTokens}
             }
+        },{
+            "workspace", workspace
+        },{
+            "foldingRangeProvider", true,
         }
     };
 
-    QJsonObject workspace {
-        { "name", QFileInfo(rootPath).fileName() },
-        { K_URI, QUrl::fromLocalFile(rootPath).toString() }
+    QJsonObject highlight {
+        {"largeFileSize", 2097152},
+        {"lsRanges", false},
+        {"blacklist", QJsonArray()},
+        {"whitelist", QJsonArray()}
     };
+
+    QJsonObject client{
+        {"diagnosticsRelatedInformation", true},
+        {"hierarchicalDocumentSymbolSupport", true},
+        {"linkSupport",true},
+        {"snippetSupport",true},
+    };
+
+    //    QJsonObject workspace {
+    //        { "name", QFileInfo(rootPath).fileName() },
+    //        { K_URI, QUrl::fromLocalFile(rootPath).toString() }
+    //    };
 
     QJsonArray workspaceFolders{workspace};
 
@@ -111,12 +140,13 @@ QJsonObject Protocol::initialize(const QString &rootPath)
         { K_ROOTURI, rootPath },
         { K_CAPABILITIES, capabilities },
         { K_INITIALIZATIONOPTIONS, V_INITIALIZATIONOPTIONS },
-        { K_WORKSPACEFOLDERS, workspaceFolders}
+        { "highlight", highlight },
+        { "client", client}
     };
 
     QJsonObject initRequest{
         { K_METHOD, V_INITIALIZE},
-        { K_PARAMS, params }
+        { K_PARAMS, params },
     };
 
     return initRequest;
@@ -277,7 +307,7 @@ QJsonObject Protocol::references(const QString &filePath, const Protocol::Positi
     return signatureHelp;
 }
 
-QJsonObject Protocol::highlight(const QString &filePath, const Protocol::Position &pos)
+QJsonObject Protocol::documentHighlight(const QString &filePath, const Protocol::Position &pos)
 {
     QJsonObject textDocument {
         { K_URI, QUrl::fromLocalFile(filePath).toString() }
@@ -511,12 +541,13 @@ void Client::referencesRequest(const QString &filePath, const Protocol::Position
     waitForBytesWritten();
 }
 
-void Client::highlightRequest(const QString &filePath, const Protocol::Position &pos)
+void Client::docHighlightRequest(const QString &filePath, const Protocol::Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT;
-    write(Protocol::setHeader(Protocol::highlight(filePath, pos), d->requestIndex).toLatin1());
+    qInfo() << qPrintable(Protocol::setHeader(Protocol::documentHighlight(filePath, pos), d->requestIndex).toLatin1());
+    write(Protocol::setHeader(Protocol::documentHighlight(filePath, pos), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
@@ -565,6 +596,7 @@ bool Client::initResult(const QJsonObject &jsonObj)
     if (d->requestSave.values().contains(V_INITIALIZE)
             && d->requestSave.key(V_INITIALIZE) == calledID) {
         qInfo() << "client <-- : " << V_INITIALIZE;
+        qInfo() << jsonObj;
         d->requestSave.remove(calledID);
         return true;
     }
@@ -655,7 +687,7 @@ bool Client::referencesResult(const QJsonObject &jsonObj)
     return false;
 }
 
-bool Client::highlightResult(const QJsonObject &jsonObj)
+bool Client::docHighlightResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
     if(d->requestSave.values().contains(V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT)
@@ -725,8 +757,8 @@ bool Client::diagnostics(const QJsonObject &jsonObj)
         {
             QString { diagnosticObj.value(K_MESSAGE).toString() },
             Protocol::Range {
-                Protocol::Position { startObj.value(K_CHARACTER).toInt(), startObj.value(K_LINE).toInt() },
-                Protocol::Position { endObj.value(K_CHARACTER).toInt(), endObj.value(K_LINE).toInt() }
+                Protocol::Position { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()},
+                Protocol::Position { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()}
             },
             diagnosticObj.value(K_SEVERITY).toInt()
         };
@@ -768,7 +800,7 @@ bool Client::calledResult(const QJsonObject &jsonObj)
     if (hoverResult(jsonObj))
         return true;
 
-    if (highlightResult(jsonObj))
+    if (docHighlightResult(jsonObj))
         return true;
 
     if (closeResult(jsonObj))

@@ -38,7 +38,6 @@ add_library(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    qscintilla-lsp
     )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${LIBRARY_INSTALL_PREFIX})

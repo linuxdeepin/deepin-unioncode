@@ -3,14 +3,27 @@
 // if setting new definition, please use:
 //  #undef DFM_PLUGIN_PATH
 //  #define DFM_PLUGIN_PATH xxx
-#ifndef PLUGIN_PATH
-#define PLUGIN_PATH "${PLUGIN_PATH}"
-#elif
-    #warning "cmake unseting definition PLUGIN_PATH"
+
+#ifndef RUNTIME_INSTALL_PATH
+#define RUNTIME_INSTALL_PATH "${RUNTIME_INSTALL_RPEFIX}"
+#else
+    #error "cmake unseting definition RUNTIME_INSTALL_RPEFIX"
 #endif
 
-#ifndef BUILD_OUT_PLGUN_DIR
-#define BUILD_OUT_PLGUN_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+#ifndef RUNTIME_BUILD_PATH
+#define RUNTIME_BUILD_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+#else
+    #error "cmake unseting definition CMAKE_RUNTIME_OUTPUT_DIRECTORY"
+#endif
+
+#ifndef PLUGIN_INSTALL_PATH
+#define PLUGIN_INSTALL_PATH "${PLUGIN_INSTALL_PATH}"
 #elif
-    #warning "cmake unseting definition DFM_BUILD_OUT_PLGUN_DIR"
+    #error "cmake unseting definition PLUGIN_INSTALL_PATH"
+#endif
+
+#ifndef PLUGIN_BUILD_PATH
+#define PLUGIN_BUILD_PATH "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+#elif
+    #error "cmake unseting definition CMAKE_LIBRARY_OUTPUT_DIRECTORY"
 #endif

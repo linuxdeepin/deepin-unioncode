@@ -17,16 +17,16 @@ static bool pluginsLoad()
     lifeCycle.setPluginIID(FM_PLUGIN_INTERFACE);
 
     // cmake out definitions "DFM_PLUGIN_PATH" and "DFM_BUILD_OUT_PLGUN_DIR"
-    if (QApplication::applicationDirPath() == "/usr/bin") {
+    if (QApplication::applicationDirPath() == RUNTIME_INSTALL_PATH) {
         // run dde-file-manager path is /usr/bin, use system install plugins
-        qInfo() << "run application in /usr/bin, load system plugin";
-        lifeCycle.setPluginPaths({PLUGIN_PATH});
-        qApp->setLibraryPaths(qApp->libraryPaths() += PLUGIN_PATH);
+        qInfo() << QString("run application in %0, load system plugin").arg(RUNTIME_INSTALL_PATH);
+        lifeCycle.setPluginPaths({PLUGIN_INSTALL_PATH});
+        qApp->setLibraryPaths(qApp->libraryPaths() += PLUGIN_INSTALL_PATH);
     } else {
         // if debug and any read from cmake out build path
         qInfo() << "run application not /usr/bin, load debug plugin";
-        lifeCycle.setPluginPaths({BUILD_OUT_PLGUN_DIR});
-        qApp->setLibraryPaths(qApp->libraryPaths() += BUILD_OUT_PLGUN_DIR);
+        lifeCycle.setPluginPaths({PLUGIN_BUILD_PATH});
+        qApp->setLibraryPaths(qApp->libraryPaths() += PLUGIN_BUILD_PATH);
     }
 
     qInfo() << "Depend library paths:" << QApplication::libraryPaths();

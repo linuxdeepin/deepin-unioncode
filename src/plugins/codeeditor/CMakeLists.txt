@@ -2,19 +2,10 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-codeeditor)
 
-add_definitions(
-    -DQSCINTILLA_DLL
-    -DSCI_LEXER)
+include(${CMAKE_SOURCE_DIR}/3rdparty/scintilla515/scintilla515.cmake)
+include(${CMAKE_SOURCE_DIR}/3rdparty/scintilla515/lexilla514.cmake)
 
-set(CMAKE_CXX_STANDARD 17)
-
-include_directories(
-    ../../../3rdparty/scintilla
-    ../../../3rdparty/scintilla/qt
-    ../../../3rdparty/scintilla/src
-    ../../../3rdparty/scintilla/include
-    ../../../3rdparty/scintilla/scintilla/lexlib
-    )
+configure_file(config.h.in config.h)
 
 set(CXX_CPP
     filelangdatabase.cpp
@@ -39,6 +30,7 @@ set(CXX_H
     edittextwidget.h
     editwidget.h
     codeeditor.h
+    config.h
     )
 
 add_library(${PROJECT_NAME}
@@ -52,9 +44,8 @@ target_link_libraries(${PROJECT_NAME}
     unioncode-base
     unioncode-common
     unioncode-service
-    qscintilla-lsp
     ${QtUseModules}
     ${PkgUserModules}
     )
 
-install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_PATH})
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})

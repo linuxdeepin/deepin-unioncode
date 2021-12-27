@@ -1,13 +1,69 @@
 #include "edittextwidget.h"
 #include "filelangdatabase.h"
 #include "sendevents.h"
-#include "../lsp/lspclient.h"
-#include "../lsp/lspstructures.h"
-#include "../lsp/ILspDocument.h"
+#include "Document.h"
+#include "Lexilla.h"
+#include "config.h" //cmake build generate
+#include "Lexilla.h"
 
+#include <QDir>
 #include <QDebug>
+#include <QLibrary>
 #include <QApplication>
 #include <QTemporaryFile>
+
+Sci_Position getSciPosition(sptr_t doc, const lsp::Protocol::Position &pos)
+{
+    auto docTemp = (Scintilla::Internal::Document*)(doc);
+    return docTemp->GetRelativePosition(docTemp->LineStart(pos.line), pos.character);
+}
+
+bool isRuninInstalled()
+{
+    return QApplication::applicationDirPath() == RUNTIME_INSTALL_PATH;
+}
+
+QString lexillaFileName()
+{
+    return QString(LEXILLA_LIB) + LEXILLA_EXTENSION;
+}
+
+QString lexillaFilePath()
+{
+    if (isRuninInstalled())
+        return QString(LEXILLA_INSTALL_PATH) + QDir::separator() + lexillaFileName();
+    else
+        return QString(LEXILLA_BUILD_PATH)  + QDir::separator() + lexillaFileName();
+}
+
+sptr_t createLexerFromLib(const char *LanguageID)
+{
+    QFileInfo info(lexillaFilePath());
+    if (!info.exists()) {
+        qCritical() << "Failed, can't found lexilla library: " << info.filePath();
+        abort();
+    }
+
+    static QLibrary lexillaLibrary(info.filePath());
+    if (!lexillaLibrary.isLoaded()) {
+        if (!lexillaLibrary.load()) {
+            qCritical() << "Failed, to loading lexilla library: "
+                        << info.filePath()
+                        << lexillaLibrary.errorString();
+            abort();
+        }
+        qInfo() << "Successful, Loaded lexilla library:" << info.filePath()
+                << "\nand lexilla library support language count:"
+                << ((Lexilla::GetLexerCountFn)(lexillaLibrary.resolve(LEXILLA_GETLEXERCOUNT)))();
+    }
+    QFunctionPointer fn = lexillaLibrary.resolve(LEXILLA_CREATELEXER);
+    if (!fn) {
+        qCritical() << lexillaLibrary.errorString();
+        abort();
+    }
+    void *lexCpp = ((Lexilla::CreateLexerFn)fn)(LanguageID);
+    return sptr_t(lexCpp);
+}
 
 class EditTextWidgetPrivate
 {
@@ -19,7 +75,6 @@ class EditTextWidgetPrivate
     }
 
     QString file = "";
-    Scintilla::LspClient *sessionClient = nullptr;
     lsp::Client *client = nullptr;
 };
 
@@ -33,12 +88,9 @@ enum
 };
 
 EditTextWidget::EditTextWidget(QWidget *parent)
-    : LspScintillaEdit (parent)
+    : ScintillaEdit (parent)
     , d(new EditTextWidgetPrivate)
 {
-    if (!d->sessionClient)
-        d->sessionClient = new Scintilla::LspClient();
-
     if (!d->client)
         d->client = new lsp::Client();
 
@@ -66,18 +118,7 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     QObject::connect(d->client, QOverload<const lsp::Protocol::Diagnostics &>::of(&lsp::Client::notification),
                      this, &EditTextWidget::publishDiagnostics);
 
-    QObject::connect(this, &EditTextWidget::marginClicked, [=](int position,
-                     int modifiers, int margin){
-        qInfo() << "marginClicked" << position << modifiers << margin;
-        sptr_t line = lineFromPosition(position);
-        if (markerGet(line)) {
-            SendEvents::marginDebugPointRemove(this->currentFile(), line);
-            markerDelete(line, margin);
-        } else {
-            SendEvents::marginDebugPointAdd(this->currentFile(), line);
-            markerAdd(line, 0);
-        }
-    });
+    QObject::connect(this, &EditTextWidget::marginClicked, this, &EditTextWidget::debugMarginClieced);
 
     setMargins(SC_MAX_MARGIN);
 
@@ -88,8 +129,6 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     markerSetFore(0, 0x0000ff); //red
     markerSetBack(0, 0x0000ff); //red
     markerSetAlpha(0, INDIC_GRADIENT);
-
-    qInfo() << get_text_range(0,10);
 
     setMarginWidthN(1, 20);
     setMarginTypeN(1, SC_MARGIN_NUMBER);
@@ -110,37 +149,15 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     indicSetFore(3, 0x00ffff);
     indicSetFore(4, 0x00ffff);
 
-    //    //
-    //    //	Editor configuration
-    //    //
-    //    styleSetFont(STYLE_DEFAULT, "consolas");
-    //    styleSetSize(STYLE_DEFAULT, 12);
-    //    indicSetStyle(IndicLspDiagnosticError, INDIC_SQUIGGLE);
-    //    indicSetStyle(IndicLspDiagnosticWarning, INDIC_DIAGONAL);
-    //    indicSetStyle(IndicLspDiagnosticInfo, INDIC_TT);
-    //    indicSetStyle(IndicLspDiagnosticHint, INDIC_DOTS);
-    //    // Styles for LSP
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle, d->scintillaColor(QColor(0xFF0000)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 1, d->scintillaColor(QColor(0x880000)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 2, d->scintillaColor(QColor(0x440000)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 3, d->scintillaColor(QColor(0x00FF00)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 4, d->scintillaColor(QColor(0x008800)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 5, d->scintillaColor(QColor(0x004400)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 6, d->scintillaColor(QColor(0x0000FF)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 7, d->scintillaColor(QColor(0x000088)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 8, d->scintillaColor(QColor(0x008888)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 9, d->scintillaColor(QColor(0xFF00FF)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 10, d->scintillaColor(QColor(0x8800FF)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 11, d->scintillaColor(QColor(0x4400FF)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 12, d->scintillaColor(QColor(0xFF0088)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 13, d->scintillaColor(QColor(0x00FFFF)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 14, d->scintillaColor(QColor(0x00FF88)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 15, d->scintillaColor(QColor(0x00FF44)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 16, d->scintillaColor(QColor(0x0088FF)));
-    //    styleSetFore(Scintilla::LspClient::FirstLspStyle + 17, d->scintillaColor(QColor(0xFF0088)));
-
-    //    // NOTE: this variable is here for demonstration, it should be part of editor
-    //    Scintilla::LspCompletionList autoCompletion;
+    styleSetFore(0, d->scintillaColor(QColor(0,0,0))); // 空格
+    styleSetFore(2, d->scintillaColor(QColor(0x880000))); // //注释
+    styleSetFore(5, d->scintillaColor(QColor(0x008800)));
+    styleSetFore(6, d->scintillaColor(QColor(0x004400))); // 字符串
+    styleSetFore(9, d->scintillaColor(QColor(0x008888))); // #
+    styleSetFore(10, d->scintillaColor(QColor(0xFF00FF))); // 符号
+    styleSetFore(11, d->scintillaColor(QColor(0x8800FF))); // 其他关键字
+    styleSetFore(15, d->scintillaColor(QColor(0x00FF88))); // ///注释
+    styleSetFore(18, d->scintillaColor(QColor(0xFF0088))); // /// @
 
     //    //
     //    //	Handle autocompletion start
@@ -210,46 +227,7 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     //        callTipShow(currentPos(), text.constData());
     //        callTipSetHlt(hlt_start, hlt_end);
     //    });
-    //    //
-    //    //	Handle document diagnostics
-    //    //
-    //    connect(this, &LspScintillaEdit::lspDiagnostic, [=](const Scintilla::LspDocumentDiagnostic &dd) {
-    //        const auto docLen = length();
-    //        // Clear indicators used for diagnostics
-    //        setIndicatorCurrent(IndicLspDiagnosticHint);
-    //        indicatorClearRange(0, docLen);
-    //        setIndicatorCurrent(IndicLspDiagnosticInfo);
-    //        indicatorClearRange(0, docLen);
-    //        setIndicatorCurrent(IndicLspDiagnosticWarning);
-    //        indicatorClearRange(0, docLen);
-    //        setIndicatorCurrent(IndicLspDiagnosticError);
-    //        indicatorClearRange(0, docLen);
-    //            const Scintilla::LspScintillaDoc doc(docPointer());
-    //        for (const auto &e : dd)
-    //        {
-    //            const Sci_Position posFrom = Scintilla::lspConv::sciPos(doc, e.range.start);
-    //            const Sci_Position posTo = Scintilla::lspConv::sciPos(doc, e.range.end);
-    //            //
-    //            //	Set indicator
-    //            //
-    //            switch (e.severity)
-    //            {
-    //            case Scintilla::LspDiagnosticElement::Hint:
-    //                    setIndicatorCurrent(IndicLspDiagnosticHint);
-    //                break;
-    //            case Scintilla::LspDiagnosticElement::Information:
-    //                setIndicatorCurrent(IndicLspDiagnosticInfo);
-    //                break;
-    //            case Scintilla::LspDiagnosticElement::Warning:
-    //                setIndicatorCurrent(IndicLspDiagnosticWarning);
-    //                break;
-    //            case Scintilla::LspDiagnosticElement::Error:
-    //                setIndicatorCurrent(IndicLspDiagnosticError);
-    //                break;
-    //            }
-    //            indicatorFillRange(posFrom, posTo - posFrom);
-    //        }
-    //    });
+    //
 }
 
 QString EditTextWidget::currentFile()
@@ -261,7 +239,6 @@ void EditTextWidget::setCurrentFile(const QString &filePath, const QString &work
 {
     if (d->file == filePath)
         return;
-
     QString text;
     QFile file(filePath);
     if (file.open(QFile::OpenModeFlag::ReadOnly)) {
@@ -270,23 +247,36 @@ void EditTextWidget::setCurrentFile(const QString &filePath, const QString &work
     }
     setText(text.toUtf8());
 
+    if (!lexer()) {
+        setILexer(createLexerFromLib("cpp"));
+    }
+
     d->client->initRequest(workspaceFolder);
     d->client->openRequest(filePath);
+    d->client->docHighlightRequest(filePath, lsp::Protocol::Position{0, 0});
 }
 
 void EditTextWidget::publishDiagnostics(const lsp::Protocol::Diagnostics &diagnostics)
 {
     const auto docLen = length();
     indicatorClearRange(0, docLen);
-    const Scintilla::LspScintillaDoc doc(docPointer());
     for (auto val : diagnostics) {
-        const Sci_Position posFrom = Scintilla::lspConv::sciPos(doc,
-                                                                val.range.start.line,
-                                                                val.range.start.character);
-
-        const Sci_Position posTo = Scintilla::lspConv::sciPos(doc, val.range.end.line
-                                                              , val.range.end.character);
+        Sci_Position startPos = getSciPosition(docPointer(), val.range.start);
+        Sci_Position endPos = getSciPosition(docPointer(), val.range.end);
         setIndicatorCurrent(val.severity);
-        indicatorFillRange(posFrom, posTo - posFrom);
+        indicatorFillRange(startPos, endPos - startPos);
+    }
+}
+
+void EditTextWidget::debugMarginClieced(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin)
+{
+    Q_UNUSED(modifiers);
+    sptr_t line = lineFromPosition(position);
+    if (markerGet(line)) {
+        SendEvents::marginDebugPointRemove(this->currentFile(), line);
+        markerDelete(line, margin);
+    } else {
+        SendEvents::marginDebugPointAdd(this->currentFile(), line);
+        markerAdd(line, 0);
     }
 }

@@ -1,1 +1,1 @@
-add_subdirectory(scintilla/qt/ScintillaLsp)
+add_subdirectory(scintilla515)

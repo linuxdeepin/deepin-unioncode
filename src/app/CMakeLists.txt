@@ -1,9 +1,6 @@
 project(unioncode)
 
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/config.h"
-    )
+configure_file(config.h.in config.h)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
