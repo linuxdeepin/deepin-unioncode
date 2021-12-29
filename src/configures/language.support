@@ -1,0 +1,20 @@
+{
+    "cpp" : {
+        "suffix" : ["cc", "c", "cxx", "cpp", "c", "hh", "h", "hxx", "hpp", "h.in"],
+        "server" : "clangd",
+        "serverArguments" : []
+    },
+
+    "cmake" : {
+        "suffix" : ["cmake"],
+        "base" : ["CMakeLists.txt"],
+        "server" : "",
+        "serverArguments" : []
+    },
+
+    "json" : {
+        "suffix" : ["json", "support"],
+        "server" : "",
+        "serverArguments" : []
+    }
+}

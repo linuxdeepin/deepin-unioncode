@@ -18,7 +18,7 @@
 #include <QApplication>
 #include <QStandardPaths>
 
-const QString BUILD_SUPPORT_FILE_NAME {"BuilderSupport.json"};
+const QString BUILD_SUPPORT_FILE_NAME {"builder.support"};
 const QString NEW_FILE {TreeMenu::tr("New File")};
 const QString NEW_FOLDER {TreeMenu::tr("New Folder")};
 const QString MOVE_TO_TARSH {TreeMenu::tr("Move To Trash")};

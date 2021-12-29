@@ -50,6 +50,19 @@ bool ProcessUtil::exists(const QString &name)
     return ret;
 }
 
+QString ProcessUtil::version(const QString &name)
+{
+    QString retOut;
+#ifdef linux
+    auto outCallback = [&retOut](const QByteArray &array) {
+        retOut = QString ::fromLatin1(array);
+    };
+    ProcessUtil::execute(name, {"-version"}, outCallback);
+#else
+#endif
+    return retOut;
+}
+
 bool ProcessUtil::hasGio()
 {
     return exists("gio");

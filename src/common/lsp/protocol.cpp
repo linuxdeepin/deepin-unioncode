@@ -395,7 +395,8 @@ QString Protocol::setHeader(const QJsonObject &object, int requestIndex)
 {
     auto jsonObj = object;
     jsonObj.insert(K_JSON_RPC, V_2_0);
-    jsonObj.insert(K_ID, requestIndex);
+    if (object.value(K_METHOD) != V_TEXTDOCUMENT_DIDOPEN)
+        jsonObj.insert(K_ID, requestIndex);
     QJsonDocument jsonDoc(jsonObj);
     QString jsonStr = jsonDoc.toJson();
     return H_CONTENT_LENGTH + QString(": %0\r\n\r\n").arg(jsonStr.length()) + jsonStr;

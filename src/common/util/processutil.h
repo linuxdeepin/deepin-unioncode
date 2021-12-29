@@ -15,6 +15,7 @@ public:
                         const QStringList &arguments,
                         ReadCallBack func = nullptr);
     static bool exists(const QString &name);
+    static QString version(const QString &name);
 
     static bool hasGio();
     static bool moveToTrash(const QString &filePath);

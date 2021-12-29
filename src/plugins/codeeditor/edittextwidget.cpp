@@ -5,12 +5,16 @@
 #include "Lexilla.h"
 #include "config.h" //cmake build generate
 #include "Lexilla.h"
+#include "common/util/processutil.h"
 
 #include <QDir>
 #include <QDebug>
 #include <QLibrary>
 #include <QApplication>
 #include <QTemporaryFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 Sci_Position getSciPosition(sptr_t doc, const lsp::Protocol::Position &pos)
 {
@@ -18,7 +22,7 @@ Sci_Position getSciPosition(sptr_t doc, const lsp::Protocol::Position &pos)
     return docTemp->GetRelativePosition(docTemp->LineStart(pos.line), pos.character);
 }
 
-bool isRuninInstalled()
+bool isRuningInstalled()
 {
     return QApplication::applicationDirPath() == RUNTIME_INSTALL_PATH;
 }
@@ -30,10 +34,92 @@ QString lexillaFileName()
 
 QString lexillaFilePath()
 {
-    if (isRuninInstalled())
+    if (isRuningInstalled())
         return QString(LEXILLA_INSTALL_PATH) + QDir::separator() + lexillaFileName();
     else
         return QString(LEXILLA_BUILD_PATH)  + QDir::separator() + lexillaFileName();
+}
+
+QString languageSupportFilePath()
+{
+    if (isRuningInstalled())
+        return QString(LANGUAGE_SUPPORT_INSTALL_PATH) + QDir::separator() + "language.support";
+    else
+        return QString(LANGUAGE_SUPPORT_BUILD_PATH) + QDir::separator() + "language.support";
+}
+
+/*!
+ * \brief languageServer
+ * \param filePath
+ * \param [out] server
+ * \param [out] suffix
+ * \param [out] base
+ * \return languageID
+ */
+QString languageServer(const QString &filePath,
+                       QString *server = nullptr,
+                       QStringList *serverArguments = nullptr,
+                       QStringList *suffixs = nullptr,
+                       QStringList *bases = nullptr)
+{
+    QFile file(languageSupportFilePath());
+    QJsonDocument jsonDoc;
+    if (file.open(QFile::ReadOnly)) {
+        auto readall = file.readAll();
+        jsonDoc = QJsonDocument::fromJson(readall);
+        file.close();
+    }
+    QJsonObject jsonObj = jsonDoc.object();
+    qInfo() << "configure file support language:" << jsonObj.keys();
+    for (auto val : jsonObj.keys()) {
+        auto langObjChild = jsonObj.value(val).toObject();
+        QFileInfo info(filePath);
+        QString serverProgram = langObjChild.value("server").toString();
+        QJsonArray suffixArray = langObjChild.value("suffix").toArray();
+        QJsonArray baseArray = langObjChild.value("base").toArray();
+        QJsonArray initArguments = langObjChild.value("serverArguments").toArray();
+
+        bool isContainsSuffix = false;
+        QStringList temp;
+        for (auto suffix : suffixArray) {
+            if (info.fileName().endsWith(suffix.toString()))
+                isContainsSuffix = true;
+
+            if (info.suffix() == suffix.toString())
+                isContainsSuffix = true;
+
+            temp.append(suffix.toString());
+        }
+        if (isContainsSuffix && suffixs)
+            *suffixs = temp;
+
+        temp.clear();
+        bool isContainsBase = false;
+        for (auto base : baseArray) {
+
+            if (info.fileName() == base.toString()
+                    || info.fileName().toLower() == base.toString().toLower()) {
+                isContainsBase = true;
+            }
+
+            temp.append(base.toString());
+        }
+        if (isContainsBase && bases)
+            *bases = temp;
+
+        if (serverArguments)
+            for (auto arg: initArguments) {
+                serverArguments->append(arg.toString());
+            }
+
+        if (server)
+            *server = serverProgram;
+
+        if (isContainsBase || isContainsSuffix)
+            return val;
+    }
+
+    return "";
 }
 
 sptr_t createLexerFromLib(const char *LanguageID)
@@ -53,8 +139,16 @@ sptr_t createLexerFromLib(const char *LanguageID)
             abort();
         }
         qInfo() << "Successful, Loaded lexilla library:" << info.filePath()
-                << "\nand lexilla library support language count:"
-                << ((Lexilla::GetLexerCountFn)(lexillaLibrary.resolve(LEXILLA_GETLEXERCOUNT)))();
+                << "\nand lexilla library support language count:";
+
+#ifdef QT_DEBUG
+        int langIDCount = ((Lexilla::GetLexerCountFn)(lexillaLibrary.resolve(LEXILLA_GETLEXERCOUNT)))();
+        QStringList sciSupportLangs;
+        for (int i = 0; i < langIDCount; i++) {
+            sciSupportLangs << ((Lexilla::LexerNameFromIDFn)(lexillaLibrary.resolve(LEXILLA_LEXERNAMEFROMID)))(i);
+        }
+        qInfo() << "scintilla support language: " << sciSupportLangs;
+#endif
     }
     QFunctionPointer fn = lexillaLibrary.resolve(LEXILLA_CREATELEXER);
     if (!fn) {
@@ -91,12 +185,6 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     : ScintillaEdit (parent)
     , d(new EditTextWidgetPrivate)
 {
-    if (!d->client)
-        d->client = new lsp::Client();
-
-    d->client->setProgram("clangd-7");
-    d->client->start();
-
     //    d->client->hoverRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
     //                            lsp::Protocol::Position{10,0});
     //    d->client->signatureHelpRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
@@ -114,9 +202,6 @@ EditTextWidget::EditTextWidget(QWidget *parent)
 
     //    d->client->shutdownRequest();
     //    d->client->exitRequest();
-
-    QObject::connect(d->client, QOverload<const lsp::Protocol::Diagnostics &>::of(&lsp::Client::notification),
-                     this, &EditTextWidget::publishDiagnostics);
 
     QObject::connect(this, &EditTextWidget::marginClicked, this, &EditTextWidget::debugMarginClieced);
 
@@ -247,13 +332,48 @@ void EditTextWidget::setCurrentFile(const QString &filePath, const QString &work
     }
     setText(text.toUtf8());
 
-    if (!lexer()) {
-        setILexer(createLexerFromLib("cpp"));
-    }
+    QString serverProgram;
+    QStringList serverProgramOptions;
+    QString languageID = languageServer(filePath, &serverProgram, &serverProgramOptions);
+    if (serverProgram.isEmpty()) { //没有后端支持
+        qCritical() << "Failed, language server not support, setting default lexer";
+        if (!lexer()) {
+            setILexer(createLexerFromLib(languageID.toLatin1())); //使用默认正则语法高亮
+        }
+    } else {
+        //clang 版本特殊化处理
+        if (serverProgram == "clangd") {
+            auto versionSep = ProcessUtil::version(serverProgram).split("")[2].split(".");
+            if (versionSep.count() > 0 && versionSep[0].toInt() <= 7) { //版本小于7
+                if (!lexer()) {
+                    setILexer(createLexerFromLib(languageID.toLatin1())); //使用默认正则语法高亮
+                }
+            }
+        }
 
-    d->client->initRequest(workspaceFolder);
-    d->client->openRequest(filePath);
-    d->client->docHighlightRequest(filePath, lsp::Protocol::Position{0, 0});
+        if (!ProcessUtil::exists(serverProgram)) {
+            qCritical() << "Failed, not found language server program:"
+                        << serverProgram
+                        << "forget installed? ";
+            if (!lexer()) {
+                setILexer(createLexerFromLib(languageID.toLatin1())); //使用默认正则语法高亮
+            }
+            return; //没有依赖的语言服务器支持，直接return
+        }
+
+        if (!d->client)
+            d->client = new lsp::Client();
+
+        d->client->setProgram(serverProgram);
+        d->client->setArguments(serverProgramOptions);
+        d->client->start();
+        d->client->initRequest(workspaceFolder);
+        d->client->openRequest(filePath);
+        d->client->docHighlightRequest(filePath, lsp::Protocol::Position{0, 0});
+
+        QObject::connect(d->client, QOverload<const lsp::Protocol::Diagnostics &>::of(&lsp::Client::notification),
+                         this, &EditTextWidget::publishDiagnostics);
+    }
 }
 
 void EditTextWidget::publishDiagnostics(const lsp::Protocol::Diagnostics &diagnostics)
