@@ -1,24 +1,24 @@
 project(unioncode-common)
 
 add_definitions(
-    -DLIBRARY_INSTALL_PREFIX="${LIBRARY_INSTALL_PREFIX}"
-    -DSOURCES_INSTALL_RPEFIX="${SOURCES_INSTALL_RPEFIX}"
     -DRUNTIME_INSTALL_RPEFIX="${RUNTIME_INSTALL_RPEFIX}"
     )
 
 set(CXX_H
+    inotify/inotify.h
     lsp/protocol.h
     util/processutil.h
     util/custompaths.h
     util/eventdefinitions.h
+    util/singleton.h
     dialog/contextdialog.h
     widget/omittablelabel.h
     widget/collapsewidget.h
     widget/detailsbutton.h
-    util/singleton.h
     )
 
 set(CXX_CPP
+    inotify/inotify.cpp
     lsp/protocol.cpp
     util/processutil.cpp
     util/custompaths.cpp

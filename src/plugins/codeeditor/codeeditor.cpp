@@ -26,6 +26,7 @@
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
+#include "editfilestatusbar.h"
 
 #include <QAction>
 

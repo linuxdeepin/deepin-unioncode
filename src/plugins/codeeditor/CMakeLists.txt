@@ -25,7 +25,7 @@ set(CXX_H
     naveditwidget.h
     sendevents.h
     codeeditorreceiver.h
-    editfilestatusbar.cpp
+    editfilestatusbar.h
     editfiletabwidget.h
     edittextwidget.h
     editwidget.h

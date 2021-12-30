@@ -20,8 +20,8 @@ public:
         Translations,
         Templates
     };
-    static QString global(Flage flage);
     static QString user(Flage flage);
+    static bool installed();
 };
 
 #endif // GLOBALCONFIGURE_H

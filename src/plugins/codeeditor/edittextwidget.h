@@ -13,6 +13,7 @@ class EditTextWidget : public ScintillaEdit
     EditTextWidgetPrivate *const d;
 public:
     explicit EditTextWidget(QWidget * parent = nullptr);
+    virtual ~EditTextWidget();
     QString currentFile();
 
 public slots:

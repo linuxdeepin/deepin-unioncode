@@ -1,0 +1,23 @@
+#ifndef RUNTIME_INSTALL_PATH
+#define RUNTIME_INSTALL_PATH "${RUNTIME_INSTALL_RPEFIX}"
+#else
+    #error "cmake unseting definition RUNTIME_INSTALL_RPEFIX"
+#endif
+
+#ifndef RUNTIME_BUILD_PATH
+#define RUNTIME_BUILD_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+#elif
+    #error "cmake unseting definition CMAKE_RUNTIME_OUTPUT_DIRECTORY"
+#endif
+
+#ifndef BUILDER_SUPPORT_INSTALL_PATH
+#define BUILDER_SUPPORT_INSTALL_PATH "${SOURCES_INSTALL_RPEFIX}/configures"
+#elif
+    #error "cmake unseting definition SOURCES_INSTALL_RPEFIX"
+#endif
+
+#ifndef BUILDER_SUPPORT_BUILD_PATH
+#define BUILDER_SUPPORT_BUILD_PATH "${CMAKE_SOURCE_DIR}/src/configures"
+#elif
+    #error "cmake unseting definition ${CMAKE_SOURCE_DIR}/src/configures"
+#endif

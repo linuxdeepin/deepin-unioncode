@@ -1,8 +1,10 @@
 #include "treemenu.h"
 #include "treeproxy.h"
 #include "sendevents.h"
+#include "config.h"
 #include "common/util/custompaths.h"
 #include "common/util/processutil.h"
+#include "common/dialog/contextdialog.h"
 
 #include <QFileInfo>
 #include <QAction>
@@ -86,6 +88,7 @@ void TreeMenuPrivate::initBuildSupport() {
     QFile globalFile(globalConfigBuildFile);
     if (!globalFile.exists()) {
         qCritical() << "Failed, not found global build menu config file";
+        ContextDialog::ok(QString("Failed, not found global build menu config file: %0").arg(globalConfigBuildFile));
         abort();
     }
 
@@ -130,8 +133,13 @@ QString TreeMenuPrivate::userBuildSupportFilePath()
 
 QString TreeMenuPrivate::globalBuildSupportFilePath()
 {
-    return CustomPaths::global(CustomPaths::Configures)
-            + QDir::separator() + BUILD_SUPPORT_FILE_NAME;
+    QString filePath;
+    if (CustomPaths::installed()) {
+        filePath = QString(BUILDER_SUPPORT_INSTALL_PATH) + QDir::separator() + BUILD_SUPPORT_FILE_NAME;
+    } else {
+        filePath = QString(BUILDER_SUPPORT_BUILD_PATH) + QDir::separator() + BUILD_SUPPORT_FILE_NAME;
+    }
+    return filePath;
 }
 
 QString TreeMenuPrivate::supportBuildSystem(const QString &path)

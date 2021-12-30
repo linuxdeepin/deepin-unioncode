@@ -5,7 +5,10 @@
 #include "Lexilla.h"
 #include "config.h" //cmake build generate
 #include "Lexilla.h"
+#include "SciLexer.h"
 #include "common/util/processutil.h"
+#include "common/dialog/contextdialog.h"
+#include "common/util/custompaths.h"
 
 #include <QDir>
 #include <QDebug>
@@ -15,16 +18,12 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QLabel>
 
 Sci_Position getSciPosition(sptr_t doc, const lsp::Protocol::Position &pos)
 {
     auto docTemp = (Scintilla::Internal::Document*)(doc);
     return docTemp->GetRelativePosition(docTemp->LineStart(pos.line), pos.character);
-}
-
-bool isRuningInstalled()
-{
-    return QApplication::applicationDirPath() == RUNTIME_INSTALL_PATH;
 }
 
 QString lexillaFileName()
@@ -34,7 +33,7 @@ QString lexillaFileName()
 
 QString lexillaFilePath()
 {
-    if (isRuningInstalled())
+    if (CustomPaths::installed())
         return QString(LEXILLA_INSTALL_PATH) + QDir::separator() + lexillaFileName();
     else
         return QString(LEXILLA_BUILD_PATH)  + QDir::separator() + lexillaFileName();
@@ -42,23 +41,16 @@ QString lexillaFilePath()
 
 QString languageSupportFilePath()
 {
-    if (isRuningInstalled())
+    if (CustomPaths::installed())
         return QString(LANGUAGE_SUPPORT_INSTALL_PATH) + QDir::separator() + "language.support";
     else
         return QString(LANGUAGE_SUPPORT_BUILD_PATH) + QDir::separator() + "language.support";
 }
 
-/*!
- * \brief languageServer
- * \param filePath
- * \param [out] server
- * \param [out] suffix
- * \param [out] base
- * \return languageID
- */
 QString languageServer(const QString &filePath,
                        QString *server = nullptr,
                        QStringList *serverArguments = nullptr,
+                       QStringList *tokenWords = nullptr,
                        QStringList *suffixs = nullptr,
                        QStringList *bases = nullptr)
 {
@@ -69,6 +61,15 @@ QString languageServer(const QString &filePath,
         jsonDoc = QJsonDocument::fromJson(readall);
         file.close();
     }
+
+    if (jsonDoc.isEmpty()) {
+        ContextDialog::ok(EditTextWidget::tr("The format of the language configuration file is incorrect or damaged. "
+                                             "Check that the file is released correctly. "
+                                             "If it cannot be solved, reinstall the software to solve the problem"));
+        qCritical() << QString("Failed, %0 jsonDoc is Empty.").arg(languageSupportFilePath());
+        abort();
+    }
+
     QJsonObject jsonObj = jsonDoc.object();
     qInfo() << "configure file support language:" << jsonObj.keys();
     for (auto val : jsonObj.keys()) {
@@ -78,6 +79,7 @@ QString languageServer(const QString &filePath,
         QJsonArray suffixArray = langObjChild.value("suffix").toArray();
         QJsonArray baseArray = langObjChild.value("base").toArray();
         QJsonArray initArguments = langObjChild.value("serverArguments").toArray();
+        QJsonArray tokenWordSet = langObjChild.value("tokenWords").toArray();
 
         bool isContainsSuffix = false;
         QStringList temp;
@@ -110,6 +112,11 @@ QString languageServer(const QString &filePath,
         if (serverArguments)
             for (auto arg: initArguments) {
                 serverArguments->append(arg.toString());
+            }
+
+        if (tokenWords)
+            for (auto set : tokenWordSet) {
+                tokenWords->append(set.toString());
             }
 
         if (server)
@@ -185,23 +192,6 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     : ScintillaEdit (parent)
     , d(new EditTextWidgetPrivate)
 {
-    //    d->client->hoverRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-    //                            lsp::Protocol::Position{10,0});
-    //    d->client->signatureHelpRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-    //                                    lsp::Protocol::Position{10,0});
-    //    d->client->completionRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-    //                                 lsp::Protocol::Position{10,0});
-    //    d->client->definitionRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-    //                                 lsp::Protocol::Position{10,0});
-    //    d->client->symbolRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp");
-    //    d->client->referencesRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-    //                                 lsp::Protocol::Position{10,0});
-    //    d->client->highlightRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-    //                                lsp::Protocol::Position{10,0});
-    //    d->client->closeRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp");
-
-    //    d->client->shutdownRequest();
-    //    d->client->exitRequest();
 
     QObject::connect(this, &EditTextWidget::marginClicked, this, &EditTextWidget::debugMarginClieced);
 
@@ -234,15 +224,34 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     indicSetFore(3, 0x00ffff);
     indicSetFore(4, 0x00ffff);
 
-    styleSetFore(0, d->scintillaColor(QColor(0,0,0))); // 空格
-    styleSetFore(2, d->scintillaColor(QColor(0x880000))); // //注释
-    styleSetFore(5, d->scintillaColor(QColor(0x008800)));
-    styleSetFore(6, d->scintillaColor(QColor(0x004400))); // 字符串
-    styleSetFore(9, d->scintillaColor(QColor(0x008888))); // #
-    styleSetFore(10, d->scintillaColor(QColor(0xFF00FF))); // 符号
-    styleSetFore(11, d->scintillaColor(QColor(0x8800FF))); // 其他关键字
-    styleSetFore(15, d->scintillaColor(QColor(0x00FF88))); // ///注释
-    styleSetFore(18, d->scintillaColor(QColor(0xFF0088))); // /// @
+    styleSetFore(SCE_C_DEFAULT, d->scintillaColor(QColor(0,0,0))); // 空格
+    styleSetFore(SCE_C_COMMENT, d->scintillaColor(QColor(255,200,20))); // #整行
+    styleSetFore(SCE_C_COMMENTLINE, d->scintillaColor(QColor(0,200,200))); // //注释
+    styleSetFore(SCE_C_COMMENTDOC, d->scintillaColor(QColor(255,200,20)));
+    styleSetFore(SCE_C_NUMBER, d->scintillaColor(QColor(255,200,20)));
+    styleSetFore(SCE_C_WORD, d->scintillaColor(QColor(0,200,0)));
+    styleSetFore(SCE_C_STRING, d->scintillaColor(QColor(230,0,255))); // 字符串
+    styleSetFore(SCE_C_CHARACTER, d->scintillaColor(QColor(230,0,255)));
+    styleSetFore(SCE_C_UUID,d->scintillaColor(QColor(230,0,255)));
+    styleSetFore(SCE_C_PREPROCESSOR, d->scintillaColor(QColor(0,0,255))); // #
+    styleSetFore(SCE_C_OPERATOR, d->scintillaColor(QColor(0,0,0))); // 符号
+    styleSetFore(SCE_C_IDENTIFIER, d->scintillaColor(QColor(0,0,0)));
+    styleSetFore(SCE_C_STRINGEOL, d->scintillaColor(QColor(255,200,20)));
+    styleSetFore(SCE_C_VERBATIM, d->scintillaColor(QColor(255,200,20)));
+    styleSetFore(SCE_C_REGEX, d->scintillaColor(QColor(255,200,20)));
+    styleSetFore(SCE_C_COMMENTLINEDOC, d->scintillaColor(QColor(0,200,200))); // ///注释
+    styleSetFore(SCE_C_WORD2, d->scintillaColor(QColor(255,200,20))); // 1 一般关键字
+    //    styleSetFore(SCE_C_COMMENTDOCKEYWORD, d->scintillaColor(QColor(255,200,20)));
+    //    styleSetFore(SCE_C_COMMENTDOCKEYWORDERROR, d->scintillaColor(QColor(0,200,200))); // /// @
+    styleSetFore(SCE_C_GLOBALCLASS, d->scintillaColor(QColor(255,200,0))); // 3 关键字
+    //    styleSetFore(SCE_C_STRINGRAW, d->scintillaColor(QColor(255,200,0)));
+    //    styleSetFore(SCE_C_TRIPLEVERBATIM, d->scintillaColor(QColor(255,200,0)));
+    //    styleSetFore(SCE_C_HASHQUOTEDSTRING, d->scintillaColor(QColor(255,200,0)));
+    //    styleSetFore(SCE_C_PREPROCESSORCOMMENT, d->scintillaColor(QColor(255,200,0)));
+    //    styleSetFore(SCE_C_PREPROCESSORCOMMENTDOC, d->scintillaColor(QColor(255,200,0)));
+    //    styleSetFore(SCE_C_USERLITERAL, d->scintillaColor(QColor(255,200,0)));
+    //    styleSetFore(SCE_C_TASKMARKER, d->scintillaColor(QColor(255,200,0)));
+    //    styleSetFore(SCE_C_ESCAPESEQUENCE, d->scintillaColor(QColor(255,200,0)));
 
     //    //
     //    //	Handle autocompletion start
@@ -315,6 +324,20 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     //
 }
 
+EditTextWidget::~EditTextWidget()
+{
+    if (d) {
+        if (d->client) {
+            d->client->shutdownRequest();
+            d->client->waitForBytesWritten();
+            d->client->kill();
+            d->client->waitForFinished();
+            delete d->client;
+        }
+        delete d;
+    }
+}
+
 QString EditTextWidget::currentFile()
 {
     return d->file;
@@ -334,31 +357,27 @@ void EditTextWidget::setCurrentFile(const QString &filePath, const QString &work
 
     QString serverProgram;
     QStringList serverProgramOptions;
-    QString languageID = languageServer(filePath, &serverProgram, &serverProgramOptions);
-    if (serverProgram.isEmpty()) { //没有后端支持
-        qCritical() << "Failed, language server not support, setting default lexer";
-        if (!lexer()) {
-            setILexer(createLexerFromLib(languageID.toLatin1())); //使用默认正则语法高亮
+    QStringList tokenWords;
+    QString languageID = languageServer(filePath, &serverProgram, &serverProgramOptions, &tokenWords);
+    if (!lexer()) {
+        setILexer(createLexerFromLib(languageID.toLatin1())); //set token splitter
+        for (int i = 0; i < tokenWords.size(); i++) {
+            if (i < KEYWORDSET_MAX)
+                /* SCI_SETKEYWORDS(int keyWordSet, const char *keyWords)
+                 * more see link https://www.scintilla.org/ScintillaDoc.html#SCI_SETKEYWORDS */
+                setKeyWords(i, tokenWords.at(i).toLatin1()); //setting IDE self default token
         }
-    } else {
-        //clang 版本特殊化处理
+    }
+
+    // exists language server
+    if (!serverProgram.isEmpty() || ProcessUtil::exists(serverProgram)) {
+
+        // clang version lower 7
         if (serverProgram == "clangd") {
             auto versionSep = ProcessUtil::version(serverProgram).split("")[2].split(".");
             if (versionSep.count() > 0 && versionSep[0].toInt() <= 7) { //版本小于7
-                if (!lexer()) {
-                    setILexer(createLexerFromLib(languageID.toLatin1())); //使用默认正则语法高亮
-                }
+                return;
             }
-        }
-
-        if (!ProcessUtil::exists(serverProgram)) {
-            qCritical() << "Failed, not found language server program:"
-                        << serverProgram
-                        << "forget installed? ";
-            if (!lexer()) {
-                setILexer(createLexerFromLib(languageID.toLatin1())); //使用默认正则语法高亮
-            }
-            return; //没有依赖的语言服务器支持，直接return
         }
 
         if (!d->client)
@@ -369,8 +388,27 @@ void EditTextWidget::setCurrentFile(const QString &filePath, const QString &work
         d->client->start();
         d->client->initRequest(workspaceFolder);
         d->client->openRequest(filePath);
-        d->client->docHighlightRequest(filePath, lsp::Protocol::Position{0, 0});
+        d->client->docHighlightRequest(filePath, lsp::Protocol::Position{0, 30});
 
+        //    d->client->hoverRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
+        //                            lsp::Protocol::Position{10,0});
+        //    d->client->signatureHelpRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
+        //                                    lsp::Protocol::Position{10,0});
+        //    d->client->completionRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
+        //                                 lsp::Protocol::Position{10,0});
+        //    d->client->definitionRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
+        //                                 lsp::Protocol::Position{10,0});
+        //    d->client->symbolRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp");
+        //    d->client->referencesRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
+        //                                 lsp::Protocol::Position{10,0});
+        //    d->client->highlightRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
+        //                                lsp::Protocol::Position{10,0});
+        //    d->client->closeRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp");
+
+        //    d->client->shutdownRequest();
+        //    d->client->exitRequest();
+
+        //bind signals to file diagnostics
         QObject::connect(d->client, QOverload<const lsp::Protocol::Diagnostics &>::of(&lsp::Client::notification),
                          this, &EditTextWidget::publishDiagnostics);
     }

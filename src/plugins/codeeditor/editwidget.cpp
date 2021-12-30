@@ -3,6 +3,7 @@
 #include "editfilestatusbar.h"
 #include "edittextwidget.h"
 #include "codeeditorreceiver.h"
+#include "common/inotify/inotify.h"
 
 #include <QGridLayout>
 #include <QFileInfo>
@@ -46,6 +47,10 @@ EditWidget::EditWidget(QWidget *parent)
 
     QObject::connect(d->tab, &EditFileTabWidget::tabCloseRequested,
                      this, &EditWidget::removeFileTab, Qt::QueuedConnection);
+
+    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf, this, &EditWidget::fileDeleted);
+    QObject::connect(Inotify::globalInstance(), &Inotify::movedSelf, this, &EditWidget::fileMoved);
+    QObject::connect(Inotify::globalInstance(), &Inotify::modified, this, &EditWidget::fileModifyed);
 }
 
 EditWidget::~EditWidget()
@@ -96,7 +101,8 @@ void EditWidget::openFile(const QString &filePath, const QString &workspaceFolde
     EditTextWidget *edit = new EditTextWidget;
     d->textEdits.insert(info.filePath(), edit);
     edit->setCurrentFile(info.filePath(), workspaceFolder);
-
+    // 添加监听
+    Inotify::globalInstance()->addPath(info.filePath());
     // set display textedit
     d->gridLayout->addWidget(edit);
 
@@ -108,12 +114,14 @@ void EditWidget::openFile(const QString &filePath, const QString &workspaceFolde
 
 void EditWidget::closeFile(const QString &filePath)
 {
+    Inotify::globalInstance()->removePath(filePath);
+
     if (!d->tab)
         return;
     int index = tabIndex(filePath);
+
     if (index >=0 && index < d->tab->count())
         emit d->tab->tabCloseRequested(index);
-
 }
 
 void EditWidget::setDefaultFileEdit()
@@ -126,7 +134,6 @@ void EditWidget::setDefaultFileEdit()
     d->defaultEdit.show();
 }
 
-// Edit多开准备
 void EditWidget::hideFileEdit(int tabIndex)
 {
     if (!d->gridLayout)
@@ -163,15 +170,29 @@ void EditWidget::showFileEdit(int tabIndex)
     edit->show();
 }
 
-//Edit多开准备
 void EditWidget::hideFileStatusBar(int tabIndex)
 {
-
+    QString filePath = d->tab->tabToolTip(tabIndex);
+    auto statusBar = d->statusBars.value(filePath);
+    statusBar->hide();
 }
 
 void EditWidget::showFileStatusBar(int tabIndex)
 {
+    QString filePath = d->tab->tabToolTip(tabIndex);
+    auto statusBar = d->statusBars.value(filePath);
+    statusBar->show();
+}
 
+void EditWidget::removeFileStatusBar(int tabIndex)
+{
+    QString filePath = d->tab->tabToolTip(tabIndex);
+    auto statusBar = d->statusBars.value(filePath);
+    if (!statusBar)
+        return;
+
+    delete statusBar;
+    d->statusBars.remove(filePath);
 }
 
 void EditWidget::removeFileEdit(int tabIndex)
@@ -194,4 +215,32 @@ void EditWidget::removeFileTab(int tabIndex)
         return;
 
     d->tab->removeTab(tabIndex);
+}
+
+void EditWidget::fileModifyed(const QString &file)
+{
+    if (!d->statusBars[file]) {
+        d->statusBars[file] = EditFileStatusBar::changedReload(file);
+    }
+    auto editor = d->textEdits[file];
+    if (editor && !editor->isHidden()) {
+        d->gridLayout->addWidget(d->statusBars[file], 1, 0);
+        d->statusBars[file]->show();
+    }
+}
+
+void EditWidget::fileDeleted(const QString &file)
+{
+    Inotify::globalInstance()->removePath(file);
+    QFileInfo info(file);
+    if (info.exists()) {
+        Inotify::globalInstance()->addPath(file);
+        return fileModifyed(file);
+    }
+    qInfo() << "fileDeleted" << file;
+}
+
+void EditWidget::fileMoved(const QString &file)
+{
+    qInfo() << "fileMoved" << file;
 }

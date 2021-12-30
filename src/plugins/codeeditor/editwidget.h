@@ -25,8 +25,12 @@ private slots:
     void showFileEdit(int tabIndex);
     void hideFileStatusBar(int tabIndex);
     void showFileStatusBar(int tabIndex);
+    void removeFileStatusBar(int tabIndex);
     void removeFileEdit(int tabIndex);
     void removeFileTab(int tabIndex);
+    void fileModifyed(const QString &file);
+    void fileDeleted(const QString &file);
+    void fileMoved(const QString &file);
 };
 
 #endif // EDITWIDGET_H
