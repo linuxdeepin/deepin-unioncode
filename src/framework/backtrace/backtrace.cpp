@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 ~ 2021 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2020 ~ 2022 Uniontech Software Technology Co., Ltd.
  *
  * Author:     luzhen<luzhen@uniontech.com>
  *
