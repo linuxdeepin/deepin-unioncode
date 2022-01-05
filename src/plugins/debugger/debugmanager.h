@@ -21,12 +21,11 @@
 #ifndef DEBUGMANAGER_H
 #define DEBUGMANAGER_H
 
-#include "abstractdebugger.h"
-#include "sessiondebug.h"
-
+#include <QSharedPointer>
 #include <QObject>
 
-class DebugManager : public AbstractDebugger
+class Debugger;
+class DebugManager : public QObject
 {
     Q_OBJECT
 public:
@@ -36,21 +35,20 @@ public:
 signals:
 
 public slots:
-    void startDebug() override;
-    void detachDebug() override;
+    void startDebug();
+    void detachDebug();
 
-    void interruptDebug() override;
-    void continueDebug() override;
-    void abortDebug() override;
-    void restartDebug() override;
+    void interruptDebug();
+    void continueDebug();
+    void abortDebug();
+    void restartDebug();
 
-    void stepOver() override;
-    void stepIn() override;
-    void stepOut() override;
+    void stepOver();
+    void stepIn();
+    void stepOut();
 
 private:
-    QScopedPointer<AbstractDebugger> debugger;
-    QScopedPointer<SessionDebug> sessionDebug;
+    QSharedPointer<Debugger> debugger;
 };
 
 #endif // DEBUGMANAGER_H

@@ -18,40 +18,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DAPDEBUGGER_H
-#define DAPDEBUGGER_H
-
-#include "abstractdebugger.h"
-
+#ifndef DEBUGGER_H
+#define DEBUGGER_H
 
 #include <QObject>
+#include <QSharedPointer>
 
-
+class DebugSession;
 /**
- * @brief Abstraction of debugger, actual operation
- * processed by remote debugger through DAP protocol.
+ * @brief The Debugger class wrap
  */
-class DapDebugger : public AbstractDebugger
+class Debugger : public QObject
 {
     Q_OBJECT
 public:
-    explicit DapDebugger(QObject *parent = nullptr);
+    explicit Debugger(QObject *parent = nullptr);
 
-    void startDebug() override;
-    void detachDebug() override;
+    void startDebug();
+    void detachDebug();
 
-    void interruptDebug() override;
-    void continueDebug() override;
-    void abortDebug() override;
-    void restartDebug() override;
+    void interruptDebug();
+    void continueDebug();
+    void abortDebug();
+    void restartDebug();
 
-    void stepOver() override;
-    void stepIn() override;
-    void stepOut() override;
+    void stepOver();
+    void stepIn();
+    void stepOut();
 signals:
 
 public slots:
 
+private:
+    QSharedPointer<DebugSession> session;
 };
 
-#endif // DAPDEBUGGER_H
+#endif // DEBUGGER_H

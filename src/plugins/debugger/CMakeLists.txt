@@ -8,10 +8,9 @@ include_directories(${CPPDAP_DIR}/include)
 set(CXX_CPP
     debugger.json
     debuggerplugin.cpp
-    abstractdebugger.cpp
     debuggerrunparameters.cpp
-    dapdebugger.cpp
-    sessiondebug.cpp
+    debugger.cpp
+    debugsession.cpp
     eventsender.cpp
     eventreceiver.cpp
     debugmanager.cpp
@@ -20,10 +19,9 @@ set(CXX_CPP
 
 set(CXX_H
     debuggerplugin.h
-    abstractdebugger.h
     debuggerrunparameters.h
-    dapdebugger.h
-    sessiondebug.h
+    debugger.h
+    debugsession.h
     debuggerglobals.h
     debuggersignals.h
     eventsender.h

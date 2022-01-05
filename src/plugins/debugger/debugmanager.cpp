@@ -19,19 +19,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "debugmanager.h"
-#include "dapdebugger.h"
-#include "sessiondebug.h"
+#include "debugger.h"
 
-DebugManager::DebugManager(QObject *parent) : AbstractDebugger(parent)
+DebugManager::DebugManager(QObject *parent) : QObject(parent)
 {
 
 }
 
 bool DebugManager::initialize()
 {
-    debugger.reset(new DapDebugger());
-    sessionDebug.reset(new SessionDebug());
-    sessionDebug->setDebugger(debugger.get());
+    debugger.reset(new Debugger(this));
 
     return true;
 }

@@ -36,17 +36,19 @@ namespace dap {
  * @brief RawDebugSession is implemented by orignal
  * DAP protocol,used by top level class DapDebugger.
  */
-class rawDebugSession : public QObject
+class RawDebugSession : public QObject
 {
     Q_OBJECT
 public:
     template<typename T>
     using promiseEx = promise<ResponseOrError<typename T::Response>>;
 
-    // Similar with the promise in ts.
-    #define Promise rawDebugSession::promiseEx
+    using ErrorHandler = std::function<void(const std::string&)>;
 
-    explicit rawDebugSession(QObject *parent = nullptr);
+    // Similar with the promise in ts.
+    #define Promise RawDebugSession::promiseEx
+
+    explicit RawDebugSession(std::shared_ptr<Session>&, QObject *parent = nullptr);
 
     bool initialize();
 
@@ -54,8 +56,8 @@ public:
     Promise<InitializeRequest> initialize(const InitializeRequest &request);
     bool disconnect(const DisconnectRequest &request);
 
-    Promise<LaunchRequest> launch();
-    Promise<AttachRequest> attach();
+    Promise<LaunchRequest> launch(const LaunchRequest &request);
+    Promise<AttachRequest> attach(const AttachRequest &request);
 
     bool terminate(bool restart);
     bool restart(const RestartRequest &request);
@@ -76,7 +78,23 @@ public slots:
 private:    
     void mergeCapabilities(const InitializeResponse &capabilities);
 
-    std::unique_ptr<Session> session;
+    // Send sends the request to the debugger, waits for the request to complete,
+    // and then assigns the response to |res|.
+    // Returns true on success, false on error.
+    template <typename REQUEST, typename RESPONSE>
+    bool send(const REQUEST& request, RESPONSE* res);
+
+    // Send sends the request to the debugger, and waits for the request to
+    // complete.
+    // Returns true on success, false on error.
+    template <typename REQUEST>
+    bool send(const REQUEST& request);
+
+    void onError(const std::string& error);
+
+    ErrorHandler errHandler;
+
+    std::shared_ptr<Session> session;
 
     Capabilities _capabilities;
 

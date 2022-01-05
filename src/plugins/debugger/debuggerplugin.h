@@ -19,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DEBUGGER_H
-#define DEBUGGER_H
+#ifndef DEBUGGERPLUGIN_H
+#define DEBUGGERPLUGIN_H
 
 #include <framework/framework.h>
 
@@ -40,4 +40,4 @@ private:
     bool InitUI(dpfservice::WindowService *windowService);
 };
 
-#endif // DEBUGGER_H
+#endif // DEBUGGERPLUGIN_H

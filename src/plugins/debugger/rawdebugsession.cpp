@@ -27,6 +27,7 @@
 
 namespace dap {
 
+
 // Similar with the promise in ts
 //#define Promise rawDebugSession::promiseEx
 // Make promise,T is type and R is future.
@@ -40,34 +41,30 @@ namespace dap {
  * or asynchronous.
  * @param parent
  */
-rawDebugSession::rawDebugSession(QObject *parent) : QObject(parent)
+RawDebugSession::RawDebugSession(std::shared_ptr<Session> &_session, QObject *parent)
+    : QObject(parent)
+    , session(_session)
 {
 }
 
-bool rawDebugSession::initialize()
+bool RawDebugSession::initialize()
 {
-    bool bRet = false;
-    auto tmpSession = dap::Session::create();
-    if (tmpSession.get()) {
-        session = std::move(tmpSession);
-        bRet = true;
-    }
-    return bRet;
+    errHandler = [&](const std::string& err){
+        onError(err);
+    };
+    return true;
 }
 
-Promise<InitializeRequest> rawDebugSession::initialize(const InitializeRequest &args)
+Promise<InitializeRequest> RawDebugSession::initialize(const InitializeRequest &args)
 {
     auto response = session->send(args);
-    if (response.valid()) {
-        response.wait();
-        auto capabilities = response.get().response;
-        mergeCapabilities(capabilities);
-    }
+    auto capabilities = response.get().response;
+    mergeCapabilities(capabilities);
     MakePromise(InitializeRequest, response.get());
     return p;
 }
 
-bool rawDebugSession::disconnect(const DisconnectRequest &args)
+bool RawDebugSession::disconnect(const DisconnectRequest &args)
 {
     optional<boolean> terminateDebuggee;
     if (capabilities().supportTerminateDebuggee)
@@ -75,43 +72,44 @@ bool rawDebugSession::disconnect(const DisconnectRequest &args)
     return shutdown(terminateDebuggee, args.restart);
 }
 
-void rawDebugSession::mergeCapabilities(const InitializeResponse &capabilities)
+void RawDebugSession::mergeCapabilities(const InitializeResponse &capabilities)
 {
     _capabilities = objects::mixin(_capabilities, capabilities);
 }
 
-void rawDebugSession::start()
+void RawDebugSession::onError(const std::string& error)
+{
+    qDebug() << "Error :" << error.data();
+}
+
+void RawDebugSession::start()
 {
     // All the handlers we care about have now been registered.
     // We now bind the session to stdin and stdout to connect to the client.
     // After the call to bind() we should start receiving requests, starting with
     // the Initialize request.
-    std::shared_ptr<dap::Reader> in = dap::file(stdin, false);
-    std::shared_ptr<dap::Writer> out = dap::file(stdout, false);
+//    std::shared_ptr<dap::Reader> in = dap::file(stdin, false);
+//    std::shared_ptr<dap::Writer> out = dap::file(stdout, false);
 
-    // connect to server.
-    session->connect(in, out);
+//    // connect to server.
+//    session->connect(in, out);
 }
 
-Promise<LaunchRequest> rawDebugSession::launch()
+Promise<LaunchRequest> RawDebugSession::launch(const LaunchRequest &request)
 {
-    LaunchRequest request;
     auto response = session->send(request);
-    response.wait();
     MakePromise(LaunchRequest, response.get());
     return p;
 }
 
-Promise<AttachRequest> rawDebugSession::attach()
+Promise<AttachRequest> RawDebugSession::attach(const AttachRequest &request)
 {
-    AttachRequest request;
     auto response = session->send(request);
-    response.wait();
     MakePromise(AttachRequest, response.get());
     return p;
 }
 
-bool rawDebugSession::terminate(bool restart)
+bool RawDebugSession::terminate(bool restart)
 {
     if (capabilities().supportsTerminateRequest) {
         if (!terminated) {
@@ -132,7 +130,7 @@ bool rawDebugSession::terminate(bool restart)
     return false;
 }
 
-bool rawDebugSession::restart(const RestartRequest &request)
+bool RawDebugSession::restart(const RestartRequest &request)
 {
     if (capabilities().supportsRestartRequest) {
         session->send(request);
@@ -142,7 +140,7 @@ bool rawDebugSession::restart(const RestartRequest &request)
     return false;
 }
 
-Promise<NextRequest> rawDebugSession::next(const NextRequest &request)
+Promise<NextRequest> RawDebugSession::next(const NextRequest &request)
 {
     auto response = session->send(request);
     response.wait();
@@ -151,7 +149,7 @@ Promise<NextRequest> rawDebugSession::next(const NextRequest &request)
     return p;
 }
 
-Promise<StepInRequest> rawDebugSession::stepIn(const StepInRequest &request)
+Promise<StepInRequest> RawDebugSession::stepIn(const StepInRequest &request)
 {
     auto response = session->send(request);
     response.wait();
@@ -160,7 +158,7 @@ Promise<StepInRequest> rawDebugSession::stepIn(const StepInRequest &request)
     return p;
 }
 
-Promise<StepOutRequest> rawDebugSession::stepOut(const StepOutRequest &request)
+Promise<StepOutRequest> RawDebugSession::stepOut(const StepOutRequest &request)
 {
     auto response = session->send(request);
     response.wait();
@@ -169,7 +167,7 @@ Promise<StepOutRequest> rawDebugSession::stepOut(const StepOutRequest &request)
     return p;
 }
 
-Promise<ContinueRequest> rawDebugSession::continueDbg(const ContinueRequest &request)
+Promise<ContinueRequest> RawDebugSession::continueDbg(const ContinueRequest &request)
 {
     auto response = session->send(request);
     response.wait();
@@ -180,28 +178,49 @@ Promise<ContinueRequest> rawDebugSession::continueDbg(const ContinueRequest &req
     return p;
 }
 
-Promise<PauseRequest> rawDebugSession::pause(PauseRequest &request)
+Promise<PauseRequest> RawDebugSession::pause(PauseRequest &request)
 {
     auto response = session->send(request);
-    MakePromise(PauseRequest, response.get());
+//    MakePromise(PauseRequest, response.get());
 
-    return p;
+    return {};
 }
 
-const Capabilities &rawDebugSession::capabilities() const
+const Capabilities &RawDebugSession::capabilities() const
 {
     return _capabilities;
 }
 
-bool rawDebugSession::shutdown(optional<boolean> terminateDebuggee, optional<boolean> restart)
+bool RawDebugSession::shutdown(optional<boolean> terminateDebuggee, optional<boolean> restart)
 {
     if (!inShutdown) {
         inShutdown = true;
         DisconnectRequest request;
         request.restart = restart;
         request.terminateDebuggee = terminateDebuggee;
-        session->send(request);
+        send(request);
     }
     return true;
 }
+
+template<typename REQUEST, typename RESPONSE>
+bool RawDebugSession::send(const REQUEST &request, RESPONSE *res)
+{
+    auto r = session->send(request).get();
+    if (r.error) {
+        errHandler(r.error.message);
+        return false;
+    }
+    *res = r.response;
+    return true;
+}
+
+template<typename REQUEST>
+bool RawDebugSession::send(const REQUEST &request)
+{
+    using RESPONSE = typename REQUEST::Response;
+    RESPONSE response;
+    return send(request, &response);
+}
+
 } // end namespace.

@@ -18,37 +18,55 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef SESSIONDEBUG_H
-#define SESSIONDEBUG_H
+#ifndef DEBUGSESSION_H
+#define DEBUGSESSION_H
 
 #include "session.h"
+#include "rawdebugsession.h"
+#include "protocol.h"
+
 #include <QObject>
+#include <QSharedPointer>
 
 #include <memory>
 
-class AbstractDebugger;
 namespace dap {
-    class Session;
+class RawDebugSession;
 }
-class SessionDebug : public QObject
+
+class DebugSession : public QObject
 {
     Q_OBJECT
 public:
-    explicit SessionDebug(QObject *parent = nullptr);
-
-    void setDebugger(AbstractDebugger *dbg);
+    explicit DebugSession(QObject *parent = nullptr);
 
     bool initialize();
-    bool registerHandlers();
+
+    void launch(bool noDebug = false);
+    void attach();
+
+    void restart();
+    void terminate(bool restart = false);
+    void disconnect(bool terminateDebuggee = true, bool restart = false);
+
+    void continueDbg(int threadId);
+    void pause(int threadId);
+
+    void stepIn(int threadId, int targetId, dap::SteppingGranularity granularity);
+    void stepOut(int threadId, dap::SteppingGranularity granularity);
+    void next(int threadId, dap::SteppingGranularity granularity);
 
 signals:
 
 public slots:
-    void onError(const char *err);
 
 private:
-    AbstractDebugger *debugger = nullptr;
-    std::unique_ptr<dap::Session> session;
+    void shutdown();
+    QSharedPointer<dap::RawDebugSession> raw;
+
+    bool initialized = false;
+
+    std::shared_ptr<dap::Session> session;
 };
 
-#endif // SESSIONDEBUG_H
+#endif // DEBUGSESSION_H
