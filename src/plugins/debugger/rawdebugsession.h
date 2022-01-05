@@ -21,9 +21,9 @@
 #ifndef RAWDEBUGSESSION_H
 #define RAWDEBUGSESSION_H
 
-#include "session.h"
-#include "protocol.h"
-#include "future.h"
+#include "dap/session.h"
+#include "dap/protocol.h"
+#include "dap/future.h"
 
 #include <QObject>
 

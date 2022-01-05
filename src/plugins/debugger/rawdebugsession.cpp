@@ -19,8 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "rawdebugsession.h"
-#include "session.h"
-#include "protocol.h"
+#include "dap/session.h"
+#include "dap/protocol.h"
 #include "objects.hpp"
 
 #include <QDebug>

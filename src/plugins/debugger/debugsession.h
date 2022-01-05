@@ -21,9 +21,9 @@
 #ifndef DEBUGSESSION_H
 #define DEBUGSESSION_H
 
-#include "session.h"
 #include "rawdebugsession.h"
-#include "protocol.h"
+#include "dap/session.h"
+#include "dap/protocol.h"
 
 #include <QObject>
 #include <QSharedPointer>

@@ -20,11 +20,11 @@
 */
 #include "debugsession.h"
 
-#include "io.h"
-#include "protocol.h"
-#include "session.h"
 #include "rawdebugsession.h"
-#include "network.h"
+#include "dap/io.h"
+#include "dap/protocol.h"
+#include "dap/session.h"
+#include "dap/network.h"
 
 #include <QDebug>
 

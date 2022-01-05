@@ -37,12 +37,11 @@ add_library(${PROJECT_NAME}
     ${CXX_CPP}
     )
 
-link_libraries(${CPPDAP_DIR}/lib/libcppdap.a)
-
 target_link_libraries(${PROJECT_NAME}
     unioncode-framework
     unioncode-base
     unioncode-service
+    cppdap
     ${QtUseModules}
     ${PkgUserModules}
     )

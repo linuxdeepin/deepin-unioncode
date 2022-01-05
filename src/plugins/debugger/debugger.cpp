@@ -19,8 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "debugger.h"
-#include "io.h"
-#include "protocol.h"
+#include "dap/io.h"
+#include "dap/protocol.h"
 #include "debugsession.h"
 #include "stdlib.h"
 
