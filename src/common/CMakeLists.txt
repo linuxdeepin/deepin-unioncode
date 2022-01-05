@@ -15,6 +15,7 @@ set(CXX_H
     widget/omittablelabel.h
     widget/collapsewidget.h
     widget/detailsbutton.h
+    constants.h
     )
 
 set(CXX_CPP

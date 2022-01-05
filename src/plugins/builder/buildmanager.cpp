@@ -61,6 +61,11 @@ void BuildManager::destroy()
     }
 }
 
+void BuildManager::slotOutput(const QString &content, BuildStep::OutputFormat format)
+{
+    outputPane->appendText(content, format);
+}
+
 BuildManager::BuildManager(QObject *parent) : QObject(parent)
 {
     outputPane = new BuildOutputPane();
@@ -73,9 +78,7 @@ bool BuildManager::initBuildList(const QList<BuildStep *> &bsl)
 
     // TODO(mozart) : more initialization will be done here.
     for (auto step : bsl) {
-        connect(step, &BuildStep::addOutput, this, [&](const QString &content){
-            outputPane->appendText(content);
-        }, Qt::QueuedConnection);
+        connect(step, &BuildStep::addOutput, this, &BuildManager::slotOutput, Qt::QueuedConnection);
     }
     return true;
 }

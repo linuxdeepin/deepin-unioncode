@@ -21,10 +21,10 @@
 #ifndef BUILDMANAGER_H
 #define BUILDMANAGER_H
 
+#include "buildstep.h"
+
 #include <QObject>
 
-
-class BuildStep;
 class BuildOutputPane;
 class BuildManager : public QObject
 {
@@ -41,6 +41,7 @@ public:
 signals:
 
 public slots:
+    void slotOutput(const QString &content, BuildStep::OutputFormat format);
 
 private:
     explicit BuildManager(QObject *parent = nullptr);

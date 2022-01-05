@@ -18,31 +18,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef BUILDOUTPUTPANE_H
-#define BUILDOUTPUTPANE_H
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 
-#include "base/abstractoutputpane.h"
-#include "buildstep.h"
+/**
+*
+* Write global contants here.
+*/
+const int K_DEFAULT_MAX_CHAR_COUNT = 10000000;
 
-#include <QPlainTextEdit>
-
-class OutputWindowPrivate;
-class BuildOutputPane : public QPlainTextEdit
-{
-    Q_OBJECT
-public:
-    BuildOutputPane();
-    ~BuildOutputPane() override;
-
-    void clearContents();
-    void appendText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
-    void appendText(const QString &text, BuildStep::OutputFormat format);
-
-    bool isScrollbarAtBottom() const;
-    QString doNewlineEnforcement(const QString &out);
-    void scrollToBottom();
-private:
-    OutputWindowPrivate *d = nullptr;
-};
-
-#endif // BUILDOUTPUTPANE_H
+#endif // CONSTANTS_H

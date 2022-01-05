@@ -22,6 +22,7 @@
 #define BUILDERGLOBALS_H
 
 #include <common/util/singleton.h>
+#include <QColor>
 
 enum ToolChainType {
     UnKnown,
@@ -29,9 +30,13 @@ enum ToolChainType {
     CMake
 };
 
+/**
+ * @brief Output text color.
+ */
+const QColor kTextColorNormal(150, 150, 150);
+const QColor kErrorMessageTextColor(255, 108, 108);
+const QColor kMessageOutput(0, 135, 135);
 
 #define builderSignals Singleton<BuilderSignals>::instance()
-
-
 
 #endif // BUILDERGLOBALS_H

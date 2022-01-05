@@ -21,6 +21,7 @@
 #include "buildstep.h"
 
 #include <QDir>
+#include <QDebug>
 
 /*
  *  Parser not implemented, use macro to be holder.
@@ -29,7 +30,7 @@
 
 BuildStep::BuildStep(QObject *parent) : QObject(parent)
 {
-
+    qRegisterMetaType<OutputFormat>("OutputFormat");
 }
 
 void BuildStep::setToolChainType(ToolChainType type)
@@ -55,13 +56,13 @@ void BuildStep::appendCmdParam(const QString param)
 void BuildStep::stdOutput(const QString &line)
 {
     PARSE(line);
-    emit addOutput(line);
+    emit addOutput(line, OutputFormat::Stdout);
 }
 
 void BuildStep::stdErrput(const QString &line)
 {
     PARSE(line);
-    emit addOutput(line);
+    emit addOutput(line, OutputFormat::Stderr);
 }
 
 bool BuildStep::execCmd(const QString &cmd, const QStringList &args)
@@ -74,12 +75,12 @@ bool BuildStep::execCmd(const QString &cmd, const QStringList &args)
 
         connect(process.get(), static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),
                 [&](int, QProcess::ExitStatus) {
-            emit addOutput(QString(tr("build step finished...................")));
+            qDebug() << "build step finished";
         });
 
         connect(process.get(), &QProcess::started,
                 [&](){
-            emit addOutput(QString(tr("build step starting...................")));
+            qDebug() << "build step starting";
         });
 
         connect(process.get(), &QProcess::readyReadStandardOutput,
@@ -111,7 +112,7 @@ void BuildStep::processReadyReadStdOutput()
 
 void BuildStep::processReadyReadStdError()
 {
-    process->setReadChannel(QProcess::StandardOutput);
+    process->setReadChannel(QProcess::StandardError);
     while (process->canReadLine()) {
         QString line = QString::fromUtf8(process->readLine());
         stdErrput(line);

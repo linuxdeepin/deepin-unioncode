@@ -30,6 +30,18 @@ class BuildStep : public QObject
 {
     Q_OBJECT
 public:
+    enum OutputFormat {
+        Stdout,
+        Stderr, // These are for forwarded output from external tools
+        NormalMessage,
+        ErrorMessage // These are for messages from Creator itself
+    };
+
+    enum OutputNewlineSetting {
+        DoAppendNewline,
+        DontAppendNewline
+    };
+
     explicit BuildStep(QObject *parent = nullptr);
 
     void setToolChainType(ToolChainType type);
@@ -40,7 +52,7 @@ public:
     virtual void run() = 0;
 
 signals:
-    void addOutput(const QString &content);
+    void addOutput(const QString &content, OutputFormat format);
 
 public slots:
     void processReadyReadStdOutput();
