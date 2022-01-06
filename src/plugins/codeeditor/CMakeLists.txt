@@ -15,6 +15,7 @@ set(CXX_CPP
     editfilestatusbar.cpp
     editfiletabwidget.cpp
     edittextwidget.cpp
+    edittextwidgetstyle.cpp
     editwidget.cpp
     codeeditor.cpp
     codeeditor.json
@@ -28,6 +29,7 @@ set(CXX_H
     editfilestatusbar.h
     editfiletabwidget.h
     edittextwidget.h
+    edittextwidgetstyle.h
     editwidget.h
     codeeditor.h
     config.h

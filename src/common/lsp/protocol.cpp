@@ -57,6 +57,7 @@ const QString K_CONTAINERNAME {"containerName"};
 const QString K_KIND {"kind"};
 const QString K_LOCATION {"location"};
 const QString K_POSITION {"position"};
+const QString K_DATA{"data"};
 
 const QString H_CONTENT_LENGTH {"Content-Length"};
 const QString V_2_0 {"2.0"};
@@ -74,6 +75,7 @@ const QString V_TEXTDOCUMENT_COMPLETION {"textDocument/completion"};
 const QString V_TEXTDOCUMENT_SIGNATUREHELP {"textDocument/signatureHelp"};
 const QString V_TEXTDOCUMENT_REFERENCES {"textDocument/references"};
 const QString V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT {"textDocument/documentHighlight"};
+const QString V_TEXTDOCUMENT_SEMANTICTOKENS {"textDocument/semanticTokens"};
 const QString K_WORKSPACEFOLDERS {"workspaceFolders"};
 
 const QString K_CONTENTCHANGES {"contentChanges"};
@@ -93,7 +95,143 @@ const QString K_CODE {"code"};
 
 const QJsonValue V_INITIALIZATIONOPTIONS(QJsonValue::Null);
 
-QJsonObject Protocol::initialize(const QString &rootPath)
+QString fromTokenType(SemanticTokenType type)
+{
+    switch (type) {
+    case Namespace:
+        return "namespace";
+    case Type:
+        return "type";
+    case Class:
+        return "class";
+    case Enum:
+        return "enum";
+    case Interface:
+        return "interface";
+    case Struct:
+        return "struct";
+    case TypeParameter:
+        return "typeParameter";
+    case Parameter:
+        return "parameter";
+    case Variable:
+        return "variable";
+    case Property:
+        return "property";
+    case EnumMember:
+        return "enumMember";
+    case Event:
+        return "event";
+    case Function:
+        return "function";
+    case Method:
+        return "method";
+    case Macro:
+        return "macro";
+    case Keyword:
+        return "keyword";
+    case Modifier:
+        return "modifier";
+    case Comment:
+        return "comment";
+    case String:
+        return "string";
+    case Number:
+        return "number";
+    case Regexp:
+        return "regexp";
+    case Operator:
+        return "operator";
+    }
+
+    return "";
+}
+
+QString fromTokenModifier(SemanticTokenModifier modifier)
+{
+    switch (modifier) {
+    case Declaration:
+        return "declaration";
+    case Definition:
+        return "definition";
+    case Readonly:
+        return "readonly";
+    case Static:
+        return "static";
+    case Deprecated:
+        return "deprecated";
+    case Abstract:
+        return "abstract";
+    case Async:
+        return "async";
+    case Modification:
+        return "modification";
+    case Documentation:
+        return "documentation";
+    case DefaultLibrary:
+        return "defaultLibrary";
+    }
+    return "";
+}
+
+QList<SemanticTokenModifier> fromTokenModifiers(int modifiers)
+{
+    QList<SemanticTokenModifier> ret;
+    int temp = modifiers;
+    ret.push_front((SemanticTokenModifier)(temp %10));
+    while (temp / 10 >= 1) {
+        temp = temp / 10;
+        ret.push_front((SemanticTokenModifier)(temp %10));
+    }
+
+    return ret;
+}
+
+QJsonArray tokenTypes()
+{
+    return {
+        "namespace",
+        "type",
+        "class",
+        "enum",
+        "interface",
+        "struct",
+        "typeParameter",
+        "parameter",
+        "variable",
+        "property",
+        "enumMember",
+        "event",
+        "function",
+        "method",
+        "macro",
+        "keyword",
+        "modifier",
+        "comment",
+        "string",
+        "number",
+        "regexp",
+        "operator"
+    };
+}
+
+QJsonArray tokenModifiers()
+{
+    return {
+        "declaration",
+        "definition",
+        "readonly",
+        "static",
+        "deprecated",
+        "abstract",
+        "async",
+        "modification",
+        "documentation",
+        "defaultLibrary"
+    };
+}
+
+QJsonObject initialize(const QString &rootPath)
 {
     QJsonObject workspace {
         {"workspaceFolders",QJsonObject{ {"supported", true}, {"changeNotifications", true}}}
@@ -105,13 +243,8 @@ QJsonObject Protocol::initialize(const QString &rootPath)
             {"multilineTokenSupport", false},
             {"overlappingTokenSupport", false},
             {"requests", QJsonArray{"full",QJsonObject{{"delta", true}},QJsonObject{{"range", true}}}},
-            {"tokenModifiers", QJsonArray{"declaration","definition","readonly","static","deprecated",
-                                          "abstract","async","modification","documentation","defaultLibrary"}},
-            {"tokenTypes", QJsonArray{"namespace","type","class","enum","interface","struct","typeParameter",
-                                      "parameter","variable","property","enumMember","event","function",
-                                      "method","macro","keyword","modifier","comment","string","number",
-                                      "regexp","operator"}
-            }}};
+            {"tokenModifiers", tokenModifiers()},
+            {"tokenTypes", tokenTypes()}}};
 
     QJsonObject capabilities {
         {
@@ -172,7 +305,7 @@ QJsonObject Protocol::initialize(const QString &rootPath)
     return initRequest;
 }
 
-QJsonObject Protocol::didOpen(const QString &filePath)
+QJsonObject didOpen(const QString &filePath)
 {
     QFile file(filePath);
     QString text;
@@ -202,13 +335,48 @@ QJsonObject Protocol::didOpen(const QString &filePath)
     return didOpenRequest;
 }
 
-QJsonObject Protocol::didChange(const QString &filePath)
+// full mode
+QJsonObject didChange(const QString &filePath, int version)
 {
-    //noting to do
-    return {};
+    QFile file(filePath);
+    QString text;
+    if (!file.open(QFile::ReadOnly)) {
+        qCritical()<< "Failed, open file: "
+                   << filePath <<file.errorString();
+    }
+    text = file.readAll();
+    file.close();
+
+    QJsonObject changeEvent
+    {
+        { K_TEXT, text}
+    };
+
+    QJsonArray contentChanges
+    {
+        changeEvent
+    };
+
+    QJsonObject textDocument
+    {
+        { K_URI, QUrl::fromLocalFile(filePath).toString() },
+        { K_VERSION, version }
+    };
+
+    QJsonObject params{
+        { K_TEXTDOCUMENT, textDocument },
+        { "contentChanges", contentChanges }
+    };
+
+    QJsonObject didChangeRequest{
+        { K_METHOD, V_TEXTDOCUMENT_DIDCHANGE },
+        { K_PARAMS, params}
+    };
+
+    return didChangeRequest;
 }
 
-QJsonObject Protocol::didClose(const QString &filePath)
+QJsonObject didClose(const QString &filePath)
 {
     QJsonObject textDocument {
         { K_URI, QUrl::fromLocalFile(filePath).toString() }
@@ -226,7 +394,7 @@ QJsonObject Protocol::didClose(const QString &filePath)
     return didClose;
 }
 
-QJsonObject Protocol::hover(const QString &filePath, const Protocol::Position &pos)
+QJsonObject hover(const QString &filePath, const Position &pos)
 {
     QJsonObject textDocument{
         { K_URI, QUrl::fromLocalFile(filePath).toString() },
@@ -250,7 +418,7 @@ QJsonObject Protocol::hover(const QString &filePath, const Protocol::Position &p
     return hover;
 }
 
-QJsonObject Protocol::definition(const QString &filePath, const Position &pos)
+QJsonObject definition(const QString &filePath, const Position &pos)
 {
     QJsonObject textDocument {
         { K_URI, QUrl::fromLocalFile(filePath).toString() }
@@ -274,7 +442,7 @@ QJsonObject Protocol::definition(const QString &filePath, const Position &pos)
     return definition;
 }
 
-QJsonObject Protocol::signatureHelp(const QString &filePath, const Protocol::Position &pos)
+QJsonObject signatureHelp(const QString &filePath, const Position &pos)
 {
     QJsonObject textDocument {
         { K_URI, QUrl::fromLocalFile(filePath).toString() }
@@ -298,7 +466,7 @@ QJsonObject Protocol::signatureHelp(const QString &filePath, const Protocol::Pos
     return signatureHelp;
 }
 
-QJsonObject Protocol::references(const QString &filePath, const Protocol::Position &pos)
+QJsonObject references(const QString &filePath, const Position &pos)
 {
     QJsonObject textDocument {
         { K_URI, QUrl::fromLocalFile(filePath).toString() }
@@ -327,7 +495,7 @@ QJsonObject Protocol::references(const QString &filePath, const Protocol::Positi
     return signatureHelp;
 }
 
-QJsonObject Protocol::documentHighlight(const QString &filePath, const Protocol::Position &pos)
+QJsonObject documentHighlight(const QString &filePath, const Position &pos)
 {
     QJsonObject textDocument {
         { K_URI, QUrl::fromLocalFile(filePath).toString() }
@@ -351,7 +519,31 @@ QJsonObject Protocol::documentHighlight(const QString &filePath, const Protocol:
     return highlight;
 }
 
-QJsonObject Protocol::shutdown()
+//more see https://microsoft.github.io/language-server-protocol/specifications/specification-current/#textDocument_semanticTokens
+QJsonObject documentSemanticTokensFull(const QString &filePath)
+{
+    QJsonObject textDocument {
+        { K_URI, QUrl::fromLocalFile(filePath).toString() }
+    };
+
+    QJsonObject params {
+        { K_TEXTDOCUMENT, textDocument }
+    };
+
+    QJsonObject semanticTokensFull {
+        { K_METHOD, V_TEXTDOCUMENT_SEMANTICTOKENS + "/full"},
+        { K_PARAMS, params}
+    };
+
+    return semanticTokensFull;
+}
+
+QJsonObject documentSemanticTokensDelta(const QString &filePath)
+{
+
+}
+
+QJsonObject shutdown()
 {
     QJsonObject shutdown {
         { K_METHOD, V_SHUTDOWN }
@@ -360,7 +552,7 @@ QJsonObject Protocol::shutdown()
     return shutdown;
 }
 
-QJsonObject Protocol::exit()
+QJsonObject exit()
 {
     QJsonObject exit {
         { K_METHOD, V_EXIT },
@@ -369,7 +561,7 @@ QJsonObject Protocol::exit()
     return exit;
 }
 
-QJsonObject Protocol::symbol(const QString &filePath)
+QJsonObject symbol(const QString &filePath)
 {
     QJsonObject textDocument {
         { K_URI, QUrl::fromLocalFile(filePath).toString() }
@@ -387,7 +579,7 @@ QJsonObject Protocol::symbol(const QString &filePath)
     return documentSymbol;
 }
 
-QJsonObject Protocol::completion(const QString &filePath, const Protocol::Position &pos)
+QJsonObject completion(const QString &filePath, const Position &pos)
 {
     QJsonObject textDocument {
         { K_URI, QUrl::fromLocalFile(filePath).toString() }
@@ -411,7 +603,7 @@ QJsonObject Protocol::completion(const QString &filePath, const Protocol::Positi
     return completion;
 }
 
-QString Protocol::setHeader(const QJsonObject &object, int requestIndex)
+QString setHeader(const QJsonObject &object, int requestIndex)
 {
     auto jsonObj = object;
     jsonObj.insert(K_JSON_RPC, V_2_0);
@@ -422,7 +614,7 @@ QString Protocol::setHeader(const QJsonObject &object, int requestIndex)
     return H_CONTENT_LENGTH + QString(": %0\r\n\r\n").arg(jsonStr.length()) + jsonStr;
 }
 
-QString Protocol::setHeader(const QJsonObject &object)
+QString setHeader(const QJsonObject &object)
 {
     auto jsonObj = object;
     jsonObj.insert(K_JSON_RPC, V_2_0);
@@ -431,7 +623,7 @@ QString Protocol::setHeader(const QJsonObject &object)
     return H_CONTENT_LENGTH + QString(": %0\r\n\r\n").arg(jsonStr.length()) + jsonStr;
 }
 
-bool Protocol::isRequestResult(const QJsonObject &object)
+bool isRequestResult(const QJsonObject &object)
 {
     QStringList keys = object.keys();
     if (keys.contains(K_ID) && keys.contains(K_RESULT))
@@ -439,7 +631,7 @@ bool Protocol::isRequestResult(const QJsonObject &object)
     return false;
 }
 
-bool Protocol::isRequestError(const QJsonObject &object)
+bool isRequestError(const QJsonObject &object)
 {
     if (object.keys().contains(K_ERROR)) {
         qInfo() << "Failed, Request error";
@@ -453,19 +645,23 @@ class ClientPrivate
     friend class Client;
     int requestIndex = 0;
     QHash<int, QString> requestSave;
+    int semanticTokenResultId = 0;
+    QHash<QString, int> fileVersion;
 };
 
 Client::Client(QObject *parent)
-    : QProcess(parent)
+    : QProcess (parent)
     , d (new ClientPrivate)
 {
     QObject::connect(this, &QProcess::readyRead,
                      this, &Client::readJson);
+}
 
-    QObject::connect(this, QOverload<int,QProcess::ExitStatus>::of(&QProcess::finished),
-                     [=](int exitCode, QProcess::ExitStatus exitStatus) {
-        qInfo() << "finished" << exitCode << exitStatus;
-    });
+Client::~Client()
+{
+    if (d) {
+        delete d;
+    }
 }
 
 bool Client::exists(const QString &progrma)
@@ -478,8 +674,8 @@ void Client::initRequest(const QString &rootPath)
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_INITIALIZE);
     qInfo() << "--> server : " << V_INITIALIZE;
-    qInfo() << qPrintable(Protocol::setHeader(Protocol::initialize(rootPath), d->requestIndex).toLatin1());
-    write(Protocol::setHeader(Protocol::initialize(rootPath), d->requestIndex).toLatin1());
+    qInfo() << qPrintable(setHeader(initialize(rootPath), d->requestIndex).toLatin1());
+    write(setHeader(initialize(rootPath), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
@@ -488,8 +684,8 @@ void Client::openRequest(const QString &filePath)
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DIDOPEN);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDOPEN;
-    qInfo() << qPrintable(Protocol::setHeader(Protocol::didOpen(filePath), d->requestIndex).toLatin1());
-    write(Protocol::setHeader(Protocol::didOpen(filePath), d->requestIndex).toLatin1());
+    qInfo() << qPrintable(setHeader(didOpen(filePath), d->requestIndex).toLatin1());
+    write(setHeader(didOpen(filePath), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
@@ -498,14 +694,19 @@ void Client::closeRequest(const QString &filePath)
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DIDCLOSE);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCLOSE
-            << qPrintable(Protocol::setHeader(Protocol::didClose(filePath), d->requestIndex).toLatin1());
-    write(Protocol::setHeader(Protocol::didClose(filePath), d->requestIndex).toLatin1());
+            << qPrintable(setHeader(didClose(filePath), d->requestIndex).toLatin1());
+    write(setHeader(didClose(filePath), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
 void Client::changeRequest(const QString &filePath)
 {
-
+    d->requestIndex ++;
+    d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DIDCHANGE);
+    qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCHANGE
+            << qPrintable(setHeader(didChange(filePath, d->fileVersion[filePath])));
+    write(setHeader(didChange(filePath, d->fileVersion[filePath])).toLatin1());
+    waitForBytesWritten();
 }
 
 void Client::symbolRequest(const QString &filePath)
@@ -513,62 +714,74 @@ void Client::symbolRequest(const QString &filePath)
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DOCUMENTSYMBOL);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DOCUMENTSYMBOL;
-    write(Protocol::setHeader(Protocol::symbol(filePath), d->requestIndex).toLatin1());
+    write(setHeader(symbol(filePath), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
-void Client::hoverRequest(const QString &filePath, const Protocol::Position &pos)
-{
-    d->requestIndex ++;
-    d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_HOVER);
-    qInfo() << "--> server : " << V_TEXTDOCUMENT_HOVER;
-    write(Protocol::setHeader(Protocol::hover(filePath, pos), d->requestIndex).toLatin1());
-    waitForBytesWritten();
-}
-
-void Client::definitionRequest(const QString &filePath, const Protocol::Position &pos)
+void Client::definitionRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DEFINITION);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DEFINITION;
-    write(Protocol::setHeader(Protocol::definition(filePath, pos), d->requestIndex).toLatin1());
+    write(setHeader(definition(filePath, pos), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
-void Client::completionRequest(const QString &filePath, const Protocol::Position &pos)
+void Client::completionRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_COMPLETION);
-    qInfo() << "--> server : " << V_TEXTDOCUMENT_COMPLETION;
-    write(Protocol::setHeader(Protocol::completion(filePath, pos), d->requestIndex).toLatin1());
+    qInfo() << "--> server : " << V_TEXTDOCUMENT_COMPLETION
+            << qPrintable(setHeader(completion(filePath, pos), d->requestIndex).toLatin1());
+    write(setHeader(completion(filePath, pos), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
-void Client::signatureHelpRequest(const QString &filePath, const Protocol::Position &pos)
+void Client::signatureHelpRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_SIGNATUREHELP);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_SIGNATUREHELP;
-    write(Protocol::setHeader(Protocol::signatureHelp(filePath, pos), d->requestIndex).toLatin1());
+    write(setHeader(signatureHelp(filePath, pos), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
-void Client::referencesRequest(const QString &filePath, const Protocol::Position &pos)
+void Client::referencesRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_REFERENCES);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_REFERENCES;
-    write(Protocol::setHeader(Protocol::references(filePath, pos), d->requestIndex).toLatin1());
+    write(setHeader(references(filePath, pos), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
-void Client::docHighlightRequest(const QString &filePath, const Protocol::Position &pos)
+void Client::docHighlightRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT;
-    qInfo() << qPrintable(Protocol::setHeader(Protocol::documentHighlight(filePath, pos), d->requestIndex).toLatin1());
-    write(Protocol::setHeader(Protocol::documentHighlight(filePath, pos), d->requestIndex).toLatin1());
+    qInfo() << qPrintable(setHeader(documentHighlight(filePath, pos), d->requestIndex).toLatin1());
+    write(setHeader(documentHighlight(filePath, pos), d->requestIndex).toLatin1());
+    waitForBytesWritten();
+}
+
+void Client::docSemanticTokensFull(const QString &filePath)
+{
+    d->requestIndex ++;
+    d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_SEMANTICTOKENS + "/full");
+    qInfo() << "--> server : " << V_TEXTDOCUMENT_SEMANTICTOKENS + "/full";
+    qInfo() << qPrintable(setHeader(documentSemanticTokensFull(filePath), d->requestIndex).toLatin1());
+    write(setHeader(documentSemanticTokensFull(filePath), d->requestIndex).toLatin1());
+    waitForBytesWritten();
+}
+
+void Client::docHoverRequest(const QString &filePath, const Position &pos)
+{
+    d->requestIndex ++;
+    d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_HOVER);
+    qInfo() << "--> server : " << V_TEXTDOCUMENT_HOVER;
+    qInfo() << qPrintable(setHeader(hover(filePath, pos), d->requestIndex).toLatin1());
+    write(setHeader(hover(filePath, pos), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
@@ -577,8 +790,8 @@ void Client::shutdownRequest()
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_SHUTDOWN);
     qInfo() << "--> server : " << V_SHUTDOWN
-            << qPrintable(Protocol::setHeader(Protocol::shutdown(), d->requestIndex).toLatin1());
-    write(Protocol::setHeader(Protocol::shutdown(), d->requestIndex).toLatin1());
+            << qPrintable(setHeader(shutdown(), d->requestIndex).toLatin1());
+    write(setHeader(shutdown(), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
@@ -587,8 +800,8 @@ void Client::exitRequest()
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_EXIT);
     qInfo() << "--> server : " << V_EXIT
-            << qPrintable(Protocol::setHeader(Protocol::exit(), d->requestIndex).toLatin1());
-    write(Protocol::setHeader(Protocol::exit(), d->requestIndex).toLatin1());
+            << qPrintable(setHeader(exit(), d->requestIndex).toLatin1());
+    write(setHeader(exit(), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
@@ -619,6 +832,28 @@ bool Client::initResult(const QJsonObject &jsonObj)
         qInfo() << "client <-- : " << V_INITIALIZE;
         qInfo() << jsonObj;
         d->requestSave.remove(calledID);
+
+        QJsonObject semanticTokensProviderObj = jsonObj.value("result").toObject()
+                .value("capabilities").toObject()
+                .value("semanticTokensProvider").toObject();
+        QJsonObject fullObj = semanticTokensProviderObj.value("full").toObject();
+        QJsonObject legendObj = semanticTokensProviderObj.value("legend").toObject();
+
+        SemanticTokensProvider provider
+        {
+            SemanticTokensProvider::Full
+            {
+                fullObj.value("delta").toBool()
+            },
+            SemanticTokensProvider::Legend
+            {
+                cvtStringList(legendObj.value("tokenTypes").toArray()),
+                        cvtStringList(legendObj.value("tokenModifiers").toArray())
+            },
+            semanticTokensProviderObj.value("range").toBool()
+        };
+
+        emit requestResult(provider);
         return true;
     }
     return false;
@@ -630,6 +865,18 @@ bool Client::openResult(const QJsonObject &jsonObj)
     if (d->requestSave.values().contains(V_TEXTDOCUMENT_DIDOPEN)
             && d->requestSave.key(V_TEXTDOCUMENT_DIDOPEN) == calledID) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_DIDOPEN;
+        d->requestSave.remove(calledID);
+        return true;
+    }
+    return false;
+}
+
+bool Client::changeResult(const QJsonObject &jsonObj)
+{
+    auto calledID = jsonObj.value(K_ID).toInt();
+    if (d->requestSave.values().contains(V_TEXTDOCUMENT_DIDCHANGE)
+            && d->requestSave.key(V_TEXTDOCUMENT_DIDCHANGE) == calledID) {
+        qInfo() << "client <-- : " << V_TEXTDOCUMENT_DOCUMENTSYMBOL;
         d->requestSave.remove(calledID);
         return true;
     }
@@ -665,8 +912,60 @@ bool Client::completionResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(d->requestSave.values().contains(V_TEXTDOCUMENT_COMPLETION)
             && d->requestSave.key(V_TEXTDOCUMENT_COMPLETION) == calledID) {
-        qInfo() << "client <-- : " << V_TEXTDOCUMENT_COMPLETION;
+        qInfo() << "client <-- : " << V_TEXTDOCUMENT_COMPLETION /*<< jsonObj*/;
         d->requestSave.remove(calledID);
+        QJsonObject resultObj = jsonObj.value("result").toObject();
+        QJsonArray itemsArray = resultObj.value("items").toArray();
+        CompletionProvider completionProvider;
+        CompletionItems items;
+        for (auto item : itemsArray) {
+            QJsonObject itemObj = item.toObject();
+            QJsonArray editsArray = itemObj.value("additionalTextEdits").toArray();
+            AdditionalTextEdits additionalTextEdits;
+            for (auto edit : editsArray) {
+                QJsonObject textEditObj = edit.toObject();
+                QString newText = textEditObj.value("newText").toString();
+                QJsonObject rangeObj = textEditObj.value("range").toObject();
+                QJsonObject startObj = rangeObj.value(K_START).toObject();
+                QJsonObject endObj = rangeObj.value(K_END).toObject();
+                Position start{startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()};
+                Position end{endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()};
+                additionalTextEdits << TextEdit{ newText, Range{ start, end} };
+            }
+
+            QJsonObject documentationObj = itemObj.value("documentation").toObject();
+            struct Documentation documentation {
+                documentationObj.value("kind").toString(), documentationObj.value("value").toString()
+            };
+
+            QJsonObject textEditObj = itemObj.value("textEdit").toObject();
+            QJsonObject textEditRangeObj = textEditObj.value("range").toObject();
+            QJsonObject textEditStartObj = textEditRangeObj.value(K_START).toObject();
+            QJsonObject textEditEndObj = textEditRangeObj.value(K_END).toObject();
+            QString newText = textEditObj.value("newText").toString();
+            Position start{textEditStartObj.value(K_LINE).toInt(), textEditStartObj.value(K_CHARACTER).toInt()};
+            Position end{textEditEndObj.value(K_LINE).toInt(), textEditEndObj.value(K_CHARACTER).toInt()};
+            TextEdit textEdit{newText, Range{start, end} };
+
+            ;
+
+            items << CompletionItem {
+                     additionalTextEdits,
+                     documentation,
+                     itemObj.value("filterText").toString(),
+                     itemObj.value("insertText").toString(),
+                     (InsertTextFormat)itemObj.value("insertTextFormat").toInt(),
+                     (CompletionItem::Kind)(itemObj.value("kind").toInt()),
+                     itemObj.value("label").toString(),
+                     itemObj.value("score").toDouble(),
+                     itemObj.value("sortText").toString(),
+                     textEdit };
+        }
+
+        completionProvider.items = items;
+        completionProvider.isIncomplete = resultObj.value("isIncomplete").toBool();
+
+        emit requestResult(completionProvider);
         return true;
     }
     return false;
@@ -689,8 +988,22 @@ bool Client::hoverResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(d->requestSave.values().contains(V_TEXTDOCUMENT_HOVER)
             && d->requestSave.key(V_TEXTDOCUMENT_HOVER) == calledID) {
-        qInfo() << "client <-- : " << V_TEXTDOCUMENT_HOVER;
+        qInfo() << "client <-- : " << V_TEXTDOCUMENT_HOVER << jsonObj;
         d->requestSave.remove(calledID);
+        QJsonObject resultObj = jsonObj.value("result").toObject();
+        QJsonObject contentsObj = resultObj.value("contents").toObject();
+        QJsonObject rangeObj = resultObj.value("range").toObject();
+        QJsonObject startObj = rangeObj.value(K_START).toObject();
+        QJsonObject endObj = rangeObj.value(K_END).toObject();
+        Hover hover {
+            Contents { contentsObj.value("kind").toString(), contentsObj.value("value").toString() },
+            Range {
+                Position { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt() },
+                Position { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt() }
+            }
+        };
+
+        emit requestResult(hover);
         return true;
     }
     return false;
@@ -716,6 +1029,37 @@ bool Client::docHighlightResult(const QJsonObject &jsonObj)
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT
                 << jsonObj;
         d->requestSave.remove(calledID);
+        return true;
+    }
+    return false;
+}
+
+bool Client::docSemanticTokensFullResult(const QJsonObject &jsonObj)
+{
+    auto calledID = jsonObj.value(K_ID).toInt();
+    if(d->requestSave.values().contains(V_TEXTDOCUMENT_SEMANTICTOKENS + "/full")
+            && d->requestSave.key(V_TEXTDOCUMENT_SEMANTICTOKENS + "/full") == calledID) {
+        qInfo() << "client <-- : " << V_TEXTDOCUMENT_SEMANTICTOKENS + "full"
+                << jsonObj;
+        d->requestSave.remove(calledID);
+
+        QJsonObject result = jsonObj.value(K_RESULT).toObject();
+        d->semanticTokenResultId = jsonObj.value("resultId").toInt();
+
+        QJsonArray dataArray = result.value(K_DATA).toArray();
+        if(dataArray.isEmpty())
+            return true;
+
+        QList<Data> results;
+        auto itera = dataArray.begin();
+        while (itera != dataArray.end()) {
+            results << Data {
+                       Position{itera++->toInt(), itera++->toInt()},
+                       int(itera++->toInt()),
+                       (SemanticTokenType)itera++->toInt(),
+                       fromTokenModifiers(itera++->toInt())};
+        }
+        emit requestResult(results);
         return true;
     }
     return false;
@@ -761,7 +1105,7 @@ bool Client::shutdownResult(const QJsonObject &jsonObj)
 
 bool Client::diagnostics(const QJsonObject &jsonObj)
 {
-    Protocol::Diagnostics diagnostics;
+    Diagnostics diagnostics;
     if (!jsonObj.keys().contains(K_METHOD)
             || jsonObj.value(K_METHOD).toString() != V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS)
         return false;
@@ -774,12 +1118,12 @@ bool Client::diagnostics(const QJsonObject &jsonObj)
         QJsonObject rangeObj = diagnosticObj.value(K_RANGE).toObject();
         QJsonObject startObj = rangeObj.value(K_START).toObject();
         QJsonObject endObj = rangeObj.value(K_END).toObject();
-        Protocol::Diagnostic diagnostic
+        Diagnostic diagnostic
         {
             QString { diagnosticObj.value(K_MESSAGE).toString() },
-            Protocol::Range {
-                Protocol::Position { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()},
-                Protocol::Position { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()}
+            Range {
+                Position { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()},
+                Position { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()}
             },
             diagnosticObj.value(K_SEVERITY).toInt()
         };
@@ -824,6 +1168,9 @@ bool Client::calledResult(const QJsonObject &jsonObj)
     if (docHighlightResult(jsonObj))
         return true;
 
+    if (docSemanticTokensFullResult(jsonObj))
+        return true;
+
     if (closeResult(jsonObj))
         return true;
 
@@ -838,36 +1185,85 @@ bool Client::calledResult(const QJsonObject &jsonObj)
 
 void Client::readJson()
 {
-    QString jsonStrAtOne;
+    static QString readed;
+    static int readedCount = 0;
+    QString current;
+    int currentCount = 0;
     QList<QJsonObject> jsonObjs;
-    char ch;
-    while (read(&ch, 1)) {
-        jsonStrAtOne += ch;
-        if (jsonStrAtOne.contains("\r\n\r\n")) {
-            auto contentLength = jsonStrAtOne.split("\r\n\r\n")[0].split(":");
-            if (contentLength.size() != 2
-                    || contentLength.at(0) != H_CONTENT_LENGTH){
-                qCritical() << "Failed, Process Header error"
-                            << jsonStrAtOne;
+    qInfo() << "bytesAvailable: " << bytesAvailable();
+    while (bytesAvailable()) {
+        current += read(1);
+        if (!readed.isEmpty() && readedCount != 0) {
+            if (readed.length() + current.length() == readedCount) {
+                processJson(QJsonDocument::fromJson((readed += current).toLatin1()).object());
+                current.clear();
+                readed.clear();
+                readedCount = 0;
+                qInfo() << "call next end";
                 continue;
+            } else if (readed.length() + current.length() < readedCount) {
+                readed += current;
+                current.clear();
+            } else {
+                qCritical() << "error";
             }
-            int readCount = contentLength[1].toInt();
-            jsonStrAtOne = read(readCount);
-            jsonObjs << QJsonDocument::fromJson(jsonStrAtOne.toLatin1()).object();
-            jsonStrAtOne.clear();
+        }
+
+        if (current.contains("\r\n\r\n")) {
+            auto list = current.split("\r\n\r\n");
+            auto contentLength = list[0].split(":");
+            if (contentLength.size() != 2) {
+                qCritical() << "Failed, Process Header error size != 2";
+                return;
+            }
+            if (contentLength.at(0) != H_CONTENT_LENGTH){
+                qCritical() << "Failed, Process Header error, not found H_CONTENT_LENGTH";
+                return;
+            }
+            currentCount = contentLength[1].toInt();
+            current.clear();
+            current += list[1];
+            break;
         }
     }
 
-    foreach (auto jsonObj, jsonObjs) {
-        if (calledError(jsonObj))
-            continue;
-
-        if (calledResult(jsonObj))
-            continue;
-
-        if (serverCalled(jsonObj))
-            continue;
+    if (currentCount == 0) {
+        qInfo() << "Failed, can process jsonLenght is 0";
     }
+
+    current += read(currentCount);
+    //to UTF8 code size
+    qInfo() << current.toUtf8().length()
+            << currentCount;
+    if (current.toUtf8().length() < currentCount) {
+        qInfo() << "read json lenght not real lenght, data for next";
+        readedCount = currentCount;
+        readed = current;
+        readJson();
+    }
+
+    processJson(QJsonDocument::fromJson(current.toLatin1()).object());
+}
+
+void Client::processJson(const QJsonObject &jsonObj)
+{
+    if (calledError(jsonObj))
+        return;
+
+    if (calledResult(jsonObj))
+        return;
+
+    if (serverCalled(jsonObj))
+        return;
+}
+
+QStringList Client::cvtStringList(const QJsonArray &array)
+{
+    QStringList ret;
+    for (auto val : array) {
+        ret << val.toString();
+    }
+    return ret;
 }
 
 }

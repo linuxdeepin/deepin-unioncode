@@ -38,8 +38,26 @@ public:
 
 public slots:
     void setCurrentFile(const QString &filePath, const QString &workspaceFolder);
-    void publishDiagnostics(const lsp::Protocol::Diagnostics &diagnostics);
+
+private slots:
+    // lsp server called
+    void publishDiagnostics(const lsp::Diagnostics &diagnostics);
+    void tokenFullResult(const QList<lsp::Data> &tokens);
     void debugMarginClieced(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin);
+    void tokenDefinitionsSave(const lsp::SemanticTokensProvider &provider);
+    void completionsSave(const lsp::CompletionProvider &provider);
+    void hoverMessage(const lsp::Hover &hover);
+
+    // scintilla called
+    void sciModified(Scintilla::ModificationFlags type, Scintilla::Position position,
+                     Scintilla::Position length, Scintilla::Position linesAdded, const QByteArray &text, Scintilla::Position line,
+                     Scintilla::FoldLevel foldNow, Scintilla::FoldLevel foldPrev);
+    void dwellStartNotify(int x, int y);
+    void dwellEndNotify(int x, int y);
+
+private:
+    void setDefaultStyle();
+    bool setLspIndicStyle(const QString &languageID);
 };
 
 #endif // EDITTEXTWIDGET_H

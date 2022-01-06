@@ -57,93 +57,269 @@ extern const QString V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS; //save QString, from K_M
 
 extern const QString K_DIAGNOSTICS; //value is jsonArray
 
-class Protocol final
-{
-    Protocol() = delete;
-    Protocol(const Protocol &) = delete;
-public:
-    struct Position
-    {
-        int line;
-        int character;
-    };
-
-    struct Range
-    {
-        Position start;
-        Position end;
-    };
-
-    struct Diagnostic
-    {
-        QString message;
-        Range range;
-        int severity;
-    };
-    typedef QList<Diagnostic> Diagnostics;
-
-    struct Location
-    {
-        Range range;
-        QUrl fileUrl;
-    };
-    typedef QList<Location> Locations;
-
-    struct Symbol
-    {
-        QString containerName;
-        int kind;
-        Location location;
-        QString name;
-    };
-    typedef QList<Symbol> Symbols;
-
-    struct CompletionItem
-    {
-        QString filterText;
-        QString insertText;
-        int insertTextFormat;
-        int kind;
-        int label;
-        QString sortText;
-    };
-    typedef QList<CompletionItem> CompletionItems;
-
-    struct SignatureHelp //暂时留空
-    {
-
-    };
-    typedef QList<SignatureHelp> SignatureHelps;
-
-    struct Hover //暂时留空
-    {
-
-    };
-
-    struct Highlight //暂时留空
-    {
-
-    };
-    typedef QList<Highlight> Highlights;
-
-    static QJsonObject initialize(const QString &rootPath);
-    static QJsonObject didOpen(const QString &filePath);
-    static QJsonObject didChange(const QString &filePath);
-    static QJsonObject didClose(const QString &filePath);
-    static QJsonObject hover(const QString &filePath, const Protocol::Position &pos);
-    static QJsonObject symbol(const QString &filePath);
-    static QJsonObject completion(const QString &filePath, const Protocol::Position &pos);
-    static QJsonObject definition(const QString &filePath, const Protocol::Position &pos);
-    static QJsonObject signatureHelp(const QString &filePath, const Protocol::Position &pos);
-    static QJsonObject references(const QString &filePath, const Protocol::Position &pos);
-    static QJsonObject documentHighlight(const QString &filePath, const Protocol::Position &pos);
-    static QJsonObject shutdown();
-    static QJsonObject exit();
-    static QString setHeader(const QJsonObject &object, int requestIndex);
-    static QString setHeader(const QJsonObject &object);
-    static bool isRequestResult(const QJsonObject &object);
-    static bool isRequestError(const QJsonObject &object);
+enum SemanticTokenType {
+    Namespace = 0,
+    Type,
+    Class,
+    Enum,
+    Interface,
+    Struct,
+    TypeParameter,
+    Parameter,
+    Variable,
+    Property,
+    EnumMember,
+    Event,
+    Function,
+    Method,
+    Macro,
+    Keyword,
+    Modifier,
+    Comment,
+    String,
+    Number,
+    Regexp,
+    Operator
 };
+
+enum SemanticTokenModifier {
+    Declaration = 0, //声明
+    Definition,  //定义
+    Readonly,
+    Static,
+    Deprecated,
+    Abstract,
+    Async,
+    Modification,
+    Documentation,
+    DefaultLibrary
+};
+
+struct Position
+{
+    int line;
+    int character;
+};
+
+struct Range
+{
+    Position start;
+    Position end;
+};
+
+struct Diagnostic
+{
+    QString message;
+    Range range;
+    int severity;
+};
+typedef QList<Diagnostic> Diagnostics;
+
+struct Location
+{
+    Range range;
+    QUrl fileUrl;
+};
+typedef QList<Location> Locations;
+
+struct Symbol
+{
+    QString containerName;
+    int kind;
+    Location location;
+    QString name;
+};
+typedef QList<Symbol> Symbols;
+
+enum InsertTextFormat
+{
+    PlainText = 1,
+    Snippet = 2,
+};
+
+struct TextEdit
+{
+    QString newText;
+    Range range;
+};
+
+typedef QList<TextEdit> AdditionalTextEdits;
+
+struct Documentation
+{
+    QString kind; // markdown or plaintext
+    QString value;
+};
+
+struct CompletionItem
+{
+    enum Kind {
+        Text = 1,
+        Method = 2,
+        Function = 3,
+        Constructor = 4,
+        Field = 5,
+        Variable = 6,
+        Class = 7,
+        Interface = 8,
+        Module = 9,
+        Property = 10,
+        Unit = 11,
+        Value = 12,
+        Enum = 13,
+        Keyword = 14,
+        Snippet = 15,
+        Color = 16,
+        File = 17,
+        Reference = 18,
+        Folder = 19,
+        EnumMember = 20,
+        Constant = 21,
+        Struct = 22,
+        Event = 23,
+        Operator = 24,
+        TypeParameter = 25
+    };
+    AdditionalTextEdits additionalTextEdits;
+    struct Documentation documentation;
+    QString filterText;
+    QString insertText;
+    InsertTextFormat insertTextFormat;
+    CompletionItem::Kind kind;
+    QString label;
+    double score;
+    QString sortText;
+    TextEdit textEdit;
+};
+
+typedef QList<CompletionItem> CompletionItems;
+
+struct CompletionProvider
+{
+    bool isIncomplete;
+    CompletionItems items;
+};
+
+struct SignatureHelp //暂时留空
+{
+
+};
+typedef QList<SignatureHelp> SignatureHelps;
+
+struct Contents
+{
+    QString kind;
+    QString value;
+};
+
+struct Hover //暂时留空
+{
+    Contents contents;
+    Range range;
+};
+
+struct Highlight //暂时留空
+{
+
+};
+typedef QList<Highlight> Highlights;
+
+struct Data //from result key "data"
+{
+    Position start;
+    int length;
+    SemanticTokenType tokenType;
+    QList<SemanticTokenModifier> tokenModifiers;
+};
+
+struct SemanticTokensProvider
+{
+    struct Full{bool delta;};
+    struct Legend{
+        QStringList tokenTypes;
+        QStringList tokenModifiers;
+    };
+    Full full;
+    Legend legend;
+    bool range;
+};
+
+enum TextDocumentSyncKind
+{
+    None = 0,
+    Full = 1,
+    Incremental = 2
+};
+
+struct TextDocumentSyncOptions
+{
+    bool openColse;
+    TextDocumentSyncKind change;
+};
+
+struct TextDocumentIdentifier
+{
+    QUrl documentUri;
+};
+
+struct VersionedTextDocumentIdentifier: public TextDocumentIdentifier
+{
+    int version;
+};
+
+struct TextDocumentPositionParams
+{
+    TextDocumentIdentifier textDocument;
+    Position position;
+};
+
+struct TextDocumentItem
+{
+    QUrl DocumentUri;
+    QString languageId;
+    int version;
+    QString text;
+};
+
+struct TextDocumentContentChangeEvent
+{
+    Range range;
+    int rangeLength;
+    QString text;
+};
+
+struct DidChangeTextDocumentParams
+{
+    VersionedTextDocumentIdentifier textDocument;
+    QList<TextDocumentContentChangeEvent> contentChanges;
+};
+
+QString fromTokenType(SemanticTokenType type);
+QString fromTokenModifier(SemanticTokenModifier modifier);
+QList<SemanticTokenModifier> fromTokenModifiers(int modifiers);
+QJsonArray tokenTypes();
+QJsonArray tokenModifiers();
+
+QJsonObject initialize(const QString &rootPath);
+QJsonObject didOpen(const QString &filePath);
+QJsonObject didChange(const QString &filePath, int version);
+QJsonObject didClose(const QString &filePath);
+QJsonObject hover(const QString &filePath, const Position &pos);
+QJsonObject symbol(const QString &filePath);
+QJsonObject completion(const QString &filePath, const Position &pos);
+QJsonObject definition(const QString &filePath, const Position &pos);
+QJsonObject signatureHelp(const QString &filePath, const Position &pos);
+QJsonObject references(const QString &filePath, const Position &pos);
+QJsonObject documentHighlight(const QString &filePath, const Position &pos);
+QJsonObject documentSemanticTokensFull(const QString &filePath);
+QJsonObject documentSemanticTokensRange(const QString &filePath);
+QJsonObject documentSemanticTokensDelta(const QString &filePath);
+QJsonObject shutdown();
+QJsonObject exit();
+QString setHeader(const QJsonObject &object, int requestIndex);
+QString setHeader(const QJsonObject &object);
+bool isRequestResult(const QJsonObject &object);
+bool isRequestError(const QJsonObject &object);
 
 class ClientPrivate;
 class Client : public QProcess
@@ -152,37 +328,42 @@ class Client : public QProcess
     ClientPrivate *const d;
 public:
     explicit Client(QObject *parent = nullptr);
+    virtual ~Client();
     static bool exists(const QString &progrma);
     void initRequest(const QString &rootPath); // yes
     void openRequest(const QString &filePath); // no
     void closeRequest(const QString &filePath); // no
     void changeRequest(const QString &filePath); // no
     void symbolRequest(const QString &filePath); // yes
-    void hoverRequest(const QString &filePath, const Protocol::Position &pos); // yes
-    void definitionRequest(const QString &filePath, const Protocol::Position &pos); // yes
-    void completionRequest(const QString &filePath, const Protocol::Position &pos); // yes
-    void signatureHelpRequest(const QString &filePath, const Protocol::Position &pos); // yes
-    void referencesRequest(const QString &filePath, const Protocol::Position &pos);
-    void docHighlightRequest(const QString &filePath, const Protocol::Position &pos);
+    void definitionRequest(const QString &filePath, const Position &pos); // yes
+    void completionRequest(const QString &filePath, const Position &pos); // yes
+    void signatureHelpRequest(const QString &filePath, const Position &pos); // yes
+    void referencesRequest(const QString &filePath, const Position &pos);
+    void docHighlightRequest(const QString &filePath, const Position &pos);
+    void docSemanticTokensFull(const QString &filePath); //yes
+    void docHoverRequest(const QString &filePath, const Position &pos); // yes
     void shutdownRequest();
     void exitRequest();
 
 signals:
     void request();
     void notification(const QString &jsonStr);
-    void notification(const Protocol::Diagnostics &diagnostics);
-    void requestResult(const Protocol::Symbols &symbols);
-    void requestResult(const Protocol::Locations &locations);
-    void requestResult(const Protocol::CompletionItems &completionItems);
-    void requestResult(const Protocol::SignatureHelps &signatureHelps);
-    void requestResult(const Protocol::Hover &hover);
-    void requestResult(const Protocol::Highlights &highlights);
+    void notification(const Diagnostics &diagnostics);
+    void requestResult(const SemanticTokensProvider &tokensProvider);
+    void requestResult(const Symbols &symbols);
+    void requestResult(const Locations &locations);
+    void requestResult(const CompletionProvider &completionProvider);
+    void requestResult(const SignatureHelps &signatureHelps);
+    void requestResult(const Hover &hover);
+    void requestResult(const Highlights &highlights);
+    void requestResult(const QList<Data> &tokensResult);
 
 private:
     bool calledError(const QJsonObject &jsonObj);
     bool calledResult(const QJsonObject &jsonObj); //found result key from json && not found method
     bool initResult(const QJsonObject &jsonObj); // client call server rpc return
     bool openResult(const QJsonObject &jsonObj); // client call server rpc return
+    bool changeResult(const QJsonObject &jsonObj); // client call server rpc return
     bool symbolResult(const QJsonObject &jsonObj); // client call server rpc return
     bool definitionResult(const QJsonObject &jsonObj); // client call server rpc return
     bool completionResult(const QJsonObject &jsonObj); // client call server rpc return
@@ -190,15 +371,18 @@ private:
     bool hoverResult(const QJsonObject &jsonObj); // client call server rpc return
     bool referencesResult(const QJsonObject &jsonObj); // client call server rpc return
     bool docHighlightResult(const QJsonObject &jsonObj); // client call server rpc return
+    bool docSemanticTokensFullResult(const QJsonObject &jsonObj); // client call server rpc return
     bool closeResult(const QJsonObject &jsonObj); // client call server rpc return
     bool shutdownResult(const QJsonObject &jsonObj);
     bool exitResult(const QJsonObject &jsonObj);
 
     bool serverCalled(const QJsonObject &jsonObj); // not found result key from json && found key method
-    bool diagnostics(const QJsonObject &jsonObj); // server call client
+    bool diagnostics(const QJsonObject &jsonObj);
+    void processJson(const QJsonObject &jsonObj);
 
 private slots:
     void readJson();
+    QStringList cvtStringList(const QJsonArray &array);
 };
 
 } // namespace lsp

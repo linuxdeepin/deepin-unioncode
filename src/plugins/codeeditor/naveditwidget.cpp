@@ -63,7 +63,7 @@ NavEditWidget::NavEditWidget(QWidget *parent)
     verSplitter = new QSplitter(Qt::Vertical, this);
     createCodeWidget(verSplitter);
     createContextWidget(verSplitter);
-    setStyleSheet("border:1px solid rgb(0,136,221);");
+    // setStyleSheet("border:1px solid rgb(255,255,255);");
 }
 
 void NavEditWidget::createCodeWidget(QSplitter *splitter)

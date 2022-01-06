@@ -42,14 +42,14 @@
     #error "cmake unseting definition CMAKE_LIBRARY_OUTPUT_DIRECTORY"
 #endif
 
-#ifndef LANGUAGE_SUPPORT_INSTALL_PATH
-#define LANGUAGE_SUPPORT_INSTALL_PATH "${SOURCES_INSTALL_RPEFIX}/configures"
+#ifndef SUPPORT_INSTALL_PATH
+#define SUPPORT_INSTALL_PATH "${SOURCES_INSTALL_RPEFIX}/configures"
 #elif
     #error "cmake unseting definition SOURCES_INSTALL_RPEFIX"
 #endif
 
-#ifndef LANGUAGE_SUPPORT_BUILD_PATH
-#define LANGUAGE_SUPPORT_BUILD_PATH "${CMAKE_SOURCE_DIR}/src/configures"
+#ifndef SUPPORT_BUILD_PATH
+#define SUPPORT_BUILD_PATH "${CMAKE_SOURCE_DIR}/src/configures"
 #elif
     #error "cmake unseting definition ${CMAKE_SOURCE_DIR}/src/configures"
 #endif

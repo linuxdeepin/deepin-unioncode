@@ -18,6 +18,7 @@
 #include "ScintillaTypes.h"
 #include "CharacterCategoryMap.h"
 
+#include <optional>
 #include <vector>
 #include <memory>
 

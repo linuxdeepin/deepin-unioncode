@@ -42,11 +42,9 @@ void FileBrowserReceiver::eventProcess(const dpf::Event &event)
     qInfo() << event;
     if (event.topic() == "Menu") {
         if (event.data() == "File.OpenDocument")
-            return TreeProxy::instance().appendFile
-                    (event.property("FilePath").toString());
+            return TreeProxy::instance().appendFile(event.property("FilePath").toString());
         if (event.data() == "File.OpenFolder")
-            return TreeProxy::instance().appendFolder
-                    (event.property("FilePath").toString());
+            return TreeProxy::instance().appendFolder(event.property("FilePath").toString());
     }
 
 }
