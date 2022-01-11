@@ -313,6 +313,9 @@ class Session {
   // 'eventTypeInfo' is the type info for the event data structure.
   // 'event' is a pointer to the event data structure.
   virtual bool send(const TypeInfo* eventTypeInfo, const void* event) = 0;
+
+  // mozart:sometime we should send something by ourself.
+  virtual bool send(const std::string& s) = 0;
 };
 
 template <typename F, typename RequestType>

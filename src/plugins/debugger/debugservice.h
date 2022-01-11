@@ -3,7 +3,8 @@
  *
  * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,41 +19,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DEBUGGER_H
-#define DEBUGGER_H
+#ifndef DEBUGSERVICE_H
+#define DEBUGSERVICE_H
 
 #include <QObject>
 #include <QSharedPointer>
 
+class DebugModel;
 class DebugSession;
-class RunTimeCfgProvider;
-/**
- * @brief The Debugger class wrap
- */
-class Debugger : public QObject
+class DebugService : public QObject
 {
     Q_OBJECT
 public:
-    explicit Debugger(QObject *parent = nullptr);
+    explicit DebugService(QObject *parent = nullptr);
 
-    void startDebug();
-    void detachDebug();
+    void sendAllBreakpoints(DebugSession *session);
 
-    void interruptDebug();
-    void continueDebug();
-    void abortDebug();
-    void restartDebug();
-
-    void stepOver();
-    void stepIn();
-    void stepOut();
 signals:
 
 public slots:
 
 private:
-    QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
-    QSharedPointer<DebugSession> session;
+    void sendBreakpoints(QUrl uri, DebugSession *session, bool sourceModified = false);
+    void sendFunctionBreakpoints(DebugSession *session);
+    void sendDataBreakpoints(DebugSession *session);
+    void sendInstructionBreakpoints(DebugSession *session);
+    void sendExceptionBreakpoints(DebugSession *session);
+
+    QSharedPointer<DebugModel> model;
 };
 
-#endif // DEBUGGER_H
+#endif // DEBUGSERVICE_H

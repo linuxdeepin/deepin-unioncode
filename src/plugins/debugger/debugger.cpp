@@ -19,40 +19,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "debugger.h"
+#include "runtimecfgprovider.h"
+#include "debugsession.h"
+
 #include "dap/io.h"
 #include "dap/protocol.h"
-#include "debugsession.h"
+
+#include <QDebug>
+
 #include "stdlib.h"
 
 /**
  * @brief Debugger::Debugger
  * For serial debugging service
  */
+using namespace dap;
 Debugger::Debugger(QObject *parent) : QObject (parent)
 {
     session.reset(new DebugSession(this));
+    rtCfgProvider.reset(new RunTimeCfgProvider(this));
 }
 
 void Debugger::startDebug()
 {
-    session->initialize();
+    // Setup debug environment.
+    auto iniRequet = rtCfgProvider->initalizeRequest();
+    bool bSuccess = session->initialize(rtCfgProvider->ip(),
+                        rtCfgProvider->port(),
+                        iniRequet);
+
+    // Launch debuggee.
+    if (bSuccess) {
+        bSuccess &= session->launch(rtCfgProvider->launchRequest().c_str());
+    }
+    if (!bSuccess) {
+        qCritical() << "startDebug failed!";
+    }
 }
 
 void Debugger::detachDebug()
 {
-    session->attach();
 }
 
 void Debugger::interruptDebug()
 {
     // Just use temporary parameters now, same for the back
-    int threadId = 1;
+    integer threadId = session->getThreadId();
     session->pause(threadId);
 }
 
 void Debugger::continueDebug()
 {
-    int threadId = 1;
+    integer threadId = session->getThreadId();
     session->continueDbg(threadId);
 }
 
@@ -68,14 +86,14 @@ void Debugger::restartDebug()
 
 void Debugger::stepOver()
 {
-    int threadId = 1;
+    integer threadId = session->getThreadId();
     const char *granularity = "statement";
     session->next(threadId, granularity);
 }
 
 void Debugger::stepIn()
 {
-    int threadId = 1;
+    integer threadId = session->getThreadId();
     int targetId = 1;
     const char *granularity = "statement";
     session->stepIn(threadId, targetId, granularity);
@@ -83,7 +101,7 @@ void Debugger::stepIn()
 
 void Debugger::stepOut()
 {
-    int threadId = 1;
+    integer threadId = session->getThreadId();
     const char *granularity = "statement";
     session->stepOut(threadId, granularity);
 }

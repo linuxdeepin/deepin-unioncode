@@ -126,6 +126,16 @@ class Impl : public dap::Session {
     return send(s.dump());
   }
 
+  //mozart: added time:2022/1/10
+  bool send(const std::string& s) override {
+    std::unique_lock<std::mutex> lock(sendMutex);
+    if (!writer.isOpen()) {
+      handlers.error("Send failed as the writer is closed");
+      return false;
+    }
+    return writer.write(s);
+  }
+
   ~Impl() {
     inbox.close();
     reader.close();
@@ -452,15 +462,6 @@ class Impl : public dap::Session {
       auto error = dap::Error("%s", message.c_str());
       handler(nullptr, &error);
     }
-  }
-
-  bool send(const std::string& s) {
-    std::unique_lock<std::mutex> lock(sendMutex);
-    if (!writer.isOpen()) {
-      handlers.error("Send failed as the writer is closed");
-      return false;
-    }
-    return writer.write(s);
   }
 
   std::atomic<bool> isBound = {false};

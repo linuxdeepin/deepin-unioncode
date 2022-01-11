@@ -31,4 +31,7 @@
 #define eventReceiver Singleton<EventReceiver>::instance()
 #define debugManager Singleton<DebugManager>::instance()
 
+// Do some test when valued 1
+#define DBG_TEST   1
+
 #endif // DEBUGGERGLOBALS_H

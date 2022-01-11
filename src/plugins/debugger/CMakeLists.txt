@@ -15,6 +15,9 @@ set(CXX_CPP
     eventreceiver.cpp
     debugmanager.cpp
     rawdebugsession.cpp
+    runtimecfgprovider.cpp
+    debugservice.cpp
+    debugmodel.cpp
     )
 
 set(CXX_H
@@ -29,6 +32,10 @@ set(CXX_H
     debugmanager.h
     rawdebugsession.h
     objects.hpp
+    runtimecfgprovider.h
+    debug.h
+    debugservice.h
+    debugmodel.h
     )
 
 add_library(${PROJECT_NAME}

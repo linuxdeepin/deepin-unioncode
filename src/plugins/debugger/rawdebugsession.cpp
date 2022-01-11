@@ -27,14 +27,6 @@
 
 namespace dap {
 
-
-// Similar with the promise in ts
-//#define Promise rawDebugSession::promiseEx
-// Make promise,T is type and R is future.
-#define MakePromise(T, F)  \
-    Promise<T> p; \
-    p.set_value(F);
-
 /**
  * @brief rawDebugSession implimented by original dap
  * protocol.TODO(mozart):Decide whether to use synchronous
@@ -45,6 +37,7 @@ RawDebugSession::RawDebugSession(std::shared_ptr<Session> &_session, QObject *pa
     : QObject(parent)
     , session(_session)
 {
+    initialize();
 }
 
 bool RawDebugSession::initialize()
@@ -57,11 +50,10 @@ bool RawDebugSession::initialize()
 
 Promise<InitializeRequest> RawDebugSession::initialize(const InitializeRequest &args)
 {
-    auto response = session->send(args);
+    auto response = send(args);
     auto capabilities = response.get().response;
     mergeCapabilities(capabilities);
-    MakePromise(InitializeRequest, response.get());
-    return p;
+    return response;
 }
 
 bool RawDebugSession::disconnect(const DisconnectRequest &args)
@@ -79,7 +71,7 @@ void RawDebugSession::mergeCapabilities(const InitializeResponse &capabilities)
 
 void RawDebugSession::onError(const std::string& error)
 {
-    qDebug() << "Error :" << error.data();
+    qInfo() << "Error :" << error.data();
 }
 
 void RawDebugSession::start()
@@ -97,16 +89,14 @@ void RawDebugSession::start()
 
 Promise<LaunchRequest> RawDebugSession::launch(const LaunchRequest &request)
 {
-    auto response = session->send(request);
-    MakePromise(LaunchRequest, response.get());
-    return p;
+    auto response = send(request);
+    return response;
 }
 
 Promise<AttachRequest> RawDebugSession::attach(const AttachRequest &request)
 {
-    auto response = session->send(request);
-    MakePromise(AttachRequest, response.get());
-    return p;
+    auto response = send(request);
+    return response;
 }
 
 bool RawDebugSession::terminate(bool restart)
@@ -116,7 +106,7 @@ bool RawDebugSession::terminate(bool restart)
             terminated = true;
 
             TerminateRequest request;
-            auto response = session->send(request);
+            auto response = send(request);
             response.wait();
             return true;
         }
@@ -126,63 +116,294 @@ bool RawDebugSession::terminate(bool restart)
         disconnect(request);
         return true;
     }
-    qDebug() << "terminated not supported";
+    qInfo() << "terminated not supported";
     return false;
 }
 
 bool RawDebugSession::restart(const RestartRequest &request)
 {
-    if (capabilities().supportsRestartRequest) {
-        session->send(request);
+    if (_capabilities.supportsRestartRequest) {
+        send(request);
         return true;
     }
-    qDebug() << "restart not supported";
+    qInfo() << "restart not supported";
     return false;
 }
 
 Promise<NextRequest> RawDebugSession::next(const NextRequest &request)
 {
-    auto response = session->send(request);
+    auto response = send(request);
     response.wait();
-    MakePromise(NextRequest, response.get());
     // fire notify event.
-    return p;
+    return response;
 }
 
 Promise<StepInRequest> RawDebugSession::stepIn(const StepInRequest &request)
 {
-    auto response = session->send(request);
+    auto response = send(request);
     response.wait();
-    MakePromise(StepInRequest, response.get());
     // fire notify event.
-    return p;
+    return response;
 }
 
 Promise<StepOutRequest> RawDebugSession::stepOut(const StepOutRequest &request)
 {
-    auto response = session->send(request);
+    auto response = send(request);
     response.wait();
-    MakePromise(StepOutRequest, response.get());
     // fire notify event.
-    return p;
+    return response;
 }
 
 Promise<ContinueRequest> RawDebugSession::continueDbg(const ContinueRequest &request)
 {
-    auto response = session->send(request);
+    auto response = send(request);
     response.wait();
-    allThreadsContinued = static_cast<bool>(response.get().response.allThreadsContinued);
+    auto responseBody = response.get().response;
+    if (responseBody.allThreadsContinued.has_value()) {
+        allThreadsContinued = responseBody.allThreadsContinued.value();
+    }
+    // fire event.
 
-    MakePromise(ContinueRequest, response.get());
-
-    return p;
+    return response;
 }
 
-Promise<PauseRequest> RawDebugSession::pause(PauseRequest &request)
+Promise<PauseRequest> RawDebugSession::pause(const PauseRequest &request)
 {
-    auto response = session->send(request);
-//    MakePromise(PauseRequest, response.get());
+    auto response = send(request);
+    return response;
+}
 
+Promise<TerminateThreadsRequest> RawDebugSession::terminateThreads(const TerminateThreadsRequest &request)
+{
+    if (_capabilities.supportsTerminateThreadsRequest) {
+        return send(request);
+    }
+    qInfo() << "terminateThreads not supported";
+    return {};
+}
+
+Promise<SetVariableRequest> RawDebugSession::setVariable(const SetVariableRequest &request)
+{
+    if (_capabilities.supportsSetVariable) {
+        return send(request);
+    }
+    qInfo() << "supportsSetVariable not supported";
+    return {};
+}
+
+Promise<SetExpressionRequest> RawDebugSession::setExpression(const SetExpressionRequest &request)
+{
+    if (_capabilities.supportsSetExpression) {
+        return send(request);
+    }
+    qInfo() << "supportsSetExpression not supported";
+    return {};
+}
+
+Promise<RestartFrameRequest> RawDebugSession::restartFrame(const RestartFrameRequest &request)
+{
+    if (_capabilities.supportsRestartFrame) {
+        auto response = send(request);
+        response.wait();
+        return response;
+    }
+    qInfo() << "supportsRestartFrame not supported";
+    return {};
+}
+
+Promise<StepInTargetsRequest> RawDebugSession::stepInTargets(const StepInTargetsRequest &request)
+{
+    if (_capabilities.supportsStepInTargetsRequest) {
+        return send(request);
+    }
+    qInfo() << "supportsStepInTargetsRequest not supported";
+    return {};
+}
+
+Promise<CompletionsRequest> RawDebugSession::completions(const CompletionsRequest &request)
+{
+    if (_capabilities.supportsCompletionsRequest) {
+        return send(request);
+    }
+    qInfo() << "supportsCompletionsRequest not supported";
+    return {};
+}
+
+Promise<SetBreakpointsRequest> RawDebugSession::setBreakpoints(const SetBreakpointsRequest &request)
+{
+    if (_capabilities.supportsCompletionsRequest) {
+        return send(request);
+    }
+    qInfo() << "supportsCompletionsRequest not supported";
+    return {};
+}
+
+Promise<SetFunctionBreakpointsRequest> RawDebugSession::setFunctionBreakpoints(
+        const SetFunctionBreakpointsRequest &request)
+{
+    if (_capabilities.supportsFunctionBreakpoints) {
+        return send(request);
+    }
+    qInfo() << "supportsFunctionBreakpoints not supported";
+    return {};
+}
+
+Promise<DataBreakpointInfoRequest> RawDebugSession::dataBreakpointInfo(const DataBreakpointInfoRequest &request)
+{
+    if (_capabilities.supportsDataBreakpoints) {
+        return send(request);
+    }
+    qInfo() << "supportsDataBreakpoints not supported";
+    return {};
+}
+
+Promise<SetDataBreakpointsRequest> RawDebugSession::setDataBreakpoints(const SetDataBreakpointsRequest &request)
+{
+    if (_capabilities.supportsDataBreakpoints) {
+        return send(request);
+    }
+    qInfo() << "supportsDataBreakpoints not supported";
+    return {};
+}
+
+Promise<SetExceptionBreakpointsRequest> RawDebugSession::setExceptionBreakpoints(
+        const SetExceptionBreakpointsRequest &request)
+{
+    return send(request);
+}
+
+Promise<BreakpointLocationsRequest> RawDebugSession::breakpointLocations(const BreakpointLocationsRequest &request)
+{
+    if (_capabilities.supportsBreakpointLocationsRequest) {
+        return send(request);
+    }
+    qInfo() << "supportsBreakpointLocationsRequest not supported";
+    return {};
+}
+
+Promise<ConfigurationDoneRequest> RawDebugSession::configurationDone()
+{
+    if (_capabilities.supportsConfigurationDoneRequest)
+        return send(ConfigurationDoneRequest());
+    qInfo() << "supportsConfigurationDoneRequest not supported";
+    return {};
+}
+
+Promise<StackTraceRequest> RawDebugSession::stackTrace(const StackTraceRequest &request)
+{
+    return send(request);
+}
+
+Promise<ExceptionInfoRequest> RawDebugSession::exceptionInfoTrace(const ExceptionInfoRequest &request)
+{
+    if (_capabilities.supportsExceptionInfoRequest) {
+        return send(request);
+    }
+    qInfo() << "supportsExceptionInfoRequest not supported";
+    return {};
+}
+
+Promise<ScopesRequest> RawDebugSession::scopes(const ScopesRequest &request)
+{
+    return send(request);
+}
+
+Promise<VariablesRequest> RawDebugSession::variables(const VariablesRequest &request)
+{
+    return send(request);
+}
+
+Promise<SourceRequest> RawDebugSession::source(const SourceRequest &request)
+{
+    return send(request);
+}
+
+Promise<LoadedSourcesRequest> RawDebugSession::loadedSources(const LoadedSourcesRequest &request)
+{
+    if (_capabilities.supportsLoadedSourcesRequest) {
+        return send(request);
+    }
+    qInfo() << "supportsLoadedSourcesRequest not supported";
+    return {};
+}
+
+Promise<ThreadsRequest> RawDebugSession::threads()
+{
+    ThreadsRequest request;
+    return send(request);
+}
+
+Promise<EvaluateRequest> RawDebugSession::evaluate(const EvaluateRequest &request)
+{
+    return send(request);
+}
+
+Promise<StepBackRequest> RawDebugSession::stepBack(const StepBackRequest &request)
+{
+    if (_capabilities.supportsStepBack) {
+        auto response = send(request);
+        response.wait();
+        // fire event.
+        return response;
+    }
+    qInfo() << "supportsStepBack not supported";
+    return {};
+}
+
+Promise<ReverseContinueRequest> RawDebugSession::reverseContinue(const ReverseContinueRequest &request)
+{
+    if (_capabilities.supportsStepBack) {
+        auto response = send(request);
+        response.wait();
+        // fire event.
+        return response;
+    }
+    qInfo() << "supportsStepBack not supported";
+    return {};
+}
+
+Promise<GotoTargetsRequest> RawDebugSession::gotoTargets(const GotoTargetsRequest &request)
+{
+    if (_capabilities.supportsGotoTargetsRequest) {
+        return send(request);
+    }
+    qInfo() << "supportsGotoTargetsRequest not supported";
+    return {};
+}
+
+Promise<GotoRequest> RawDebugSession::goto_(const GotoRequest &request)
+{
+    if (_capabilities.supportsGotoTargetsRequest) {
+        auto response = send(request);
+        response.wait();
+        // fire event.
+        return response;
+    }
+    qInfo() << "supportsGotoTargetsRequest not supported";
+    return {};
+}
+
+Promise<SetInstructionBreakpointsRequest> RawDebugSession::setInstructionBreakpoints(const SetInstructionBreakpointsRequest &request)
+{
+    if (_capabilities.supportsInstructionBreakpoints) {
+        auto response = send(request);
+        response.wait();
+        // fire event.
+        return response;
+    }
+    qInfo() << "supportsInstructionBreakpoints not supported";
+    return {};
+}
+
+Promise<DisassembleRequest> RawDebugSession::disassemble(const DisassembleRequest &request)
+{
+    if (_capabilities.supportsDisassembleRequest) {
+        auto response = send(request);
+        response.wait();
+        // fire event.
+        return response;
+    }
+    qInfo() << "supportsDisassembleRequest not supported";
     return {};
 }
 
@@ -198,9 +419,39 @@ bool RawDebugSession::shutdown(optional<boolean> terminateDebuggee, optional<boo
         DisconnectRequest request;
         request.restart = restart;
         request.terminateDebuggee = terminateDebuggee;
-        send(request);
+        syncSend(request);
     }
     return true;
+}
+
+bool RawDebugSession::readyForBreakpoints() const
+{
+    return _readyForBreakpoints;
+}
+
+void RawDebugSession::setReadyForBreakpoints(bool bReady)
+{
+    _readyForBreakpoints = bReady;
+}
+
+void RawDebugSession::registerHandlers()
+{
+    /*
+     *  Register events.
+     */
+
+    // The event indicates that one or more capabilities have changed.
+    session->registerHandler([&](const CapabilitiesEvent &event){
+        _capabilities = objects::mixin(_capabilities, event.capabilities);
+        qInfo() << "\n--> recv : " << "CapabilitiesEvent";
+    });
+
+    // The event indicates that the execution of the debuggee has continued.
+    session->registerHandler([&](const ContinuedEvent &event){
+        allThreadsContinued = event.allThreadsContinued.value();
+        Q_UNUSED(event)
+        qInfo() << "\n--> recv : " << "ContinuedEvent";
+    });
 }
 
 template<typename REQUEST, typename RESPONSE>
@@ -216,11 +467,16 @@ bool RawDebugSession::send(const REQUEST &request, RESPONSE *res)
 }
 
 template<typename REQUEST>
-bool RawDebugSession::send(const REQUEST &request)
+bool RawDebugSession::syncSend(const REQUEST &request)
 {
     using RESPONSE = typename REQUEST::Response;
     RESPONSE response;
     return send(request, &response);
 }
 
+template<typename REQUEST>
+Promise<REQUEST> RawDebugSession::send(const REQUEST &request)
+{
+    return session->send(request);
+}
 } // end namespace.

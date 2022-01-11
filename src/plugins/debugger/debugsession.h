@@ -24,6 +24,7 @@
 #include "rawdebugsession.h"
 #include "dap/session.h"
 #include "dap/protocol.h"
+#include "debug.h"
 
 #include <QObject>
 #include <QSharedPointer>
@@ -33,6 +34,8 @@
 namespace dap {
 class RawDebugSession;
 }
+class RunTimeCfgProvider;
+class DebugService;
 
 class DebugSession : public QObject
 {
@@ -40,33 +43,50 @@ class DebugSession : public QObject
 public:
     explicit DebugSession(QObject *parent = nullptr);
 
-    bool initialize();
+    dap::Capabilities capabilities() const;
 
-    void launch(bool noDebug = false);
-    void attach();
+    bool initialize(const char *ip, int port, dap::InitializeRequest &iniRequest);
+
+    bool launch(const char *config, bool noDebug = false);
+    bool attach(dap::AttachRequest &config);
 
     void restart();
     void terminate(bool restart = false);
     void disconnect(bool terminateDebuggee = true, bool restart = false);
 
-    void continueDbg(int threadId);
-    void pause(int threadId);
+    void continueDbg(dap::integer threadId);
+    void pause(dap::integer threadId);
 
-    void stepIn(int threadId, int targetId, dap::SteppingGranularity granularity);
-    void stepOut(int threadId, dap::SteppingGranularity granularity);
-    void next(int threadId, dap::SteppingGranularity granularity);
+    void stepIn(dap::integer threadId, int targetId, dap::SteppingGranularity granularity);
+    void stepOut(dap::integer threadId, dap::SteppingGranularity granularity);
+    void next(dap::integer threadId, dap::SteppingGranularity granularity);
 
+    void sendBreakpoints(dap::array<IBreakpoint> &breakpointsToSend);
+
+    dap::string getId();
+    dap::integer getThreadId();
 signals:
 
 public slots:
 
 private:
     void shutdown();
+    void registerHandlers();
+    void fetchThreads(IRawStoppedDetails stoppedDetails);
+    void onBreakpointHit(dap::integer threadId);
+    void onStep(dap::integer threadId);
+
     QSharedPointer<dap::RawDebugSession> raw;
+    QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
+    QSharedPointer<DebugService> debugService;
 
     bool initialized = false;
 
     std::shared_ptr<dap::Session> session;
+
+    std::string id;
+
+    dap::integer threadId = 0;
 };
 
 #endif // DEBUGSESSION_H

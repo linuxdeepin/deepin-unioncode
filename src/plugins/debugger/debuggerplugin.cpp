@@ -73,6 +73,7 @@ bool DebuggerPlugin::InitUI(WindowService *windowService)
     QAction *interrupt = new QAction("Interrupt");
     connect(interrupt, &QAction::triggered, debugManager, &DebugManager::interruptDebug);
     actionImpl = new AbstractAction(interrupt);
+    interrupt->setEnabled(false);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *continueDebugging = new QAction("Continue");

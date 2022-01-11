@@ -41,7 +41,7 @@ class RawDebugSession : public QObject
     Q_OBJECT
 public:
     template<typename T>
-    using promiseEx = promise<ResponseOrError<typename T::Response>>;
+    using promiseEx = future<ResponseOrError<typename T::Response>>;
 
     using ErrorHandler = std::function<void(const std::string&)>;
 
@@ -65,17 +65,46 @@ public:
     Promise<StepInRequest> stepIn(const StepInRequest &request);
     Promise<StepOutRequest> stepOut(const StepOutRequest &request);
     Promise<ContinueRequest> continueDbg(const ContinueRequest &request);
-    Promise<PauseRequest> pause(PauseRequest &args);
+    Promise<PauseRequest> pause(const PauseRequest &args);
+    Promise<TerminateThreadsRequest> terminateThreads(const TerminateThreadsRequest &request);
+    Promise<SetVariableRequest> setVariable(const SetVariableRequest &request);
+    Promise<SetExpressionRequest> setExpression(const SetExpressionRequest &request);
+    Promise<RestartFrameRequest> restartFrame(const RestartFrameRequest &request);
+    Promise<StepInTargetsRequest> stepInTargets(const StepInTargetsRequest &request);
+    Promise<CompletionsRequest> completions(const CompletionsRequest &request);
+    Promise<SetBreakpointsRequest> setBreakpoints(const SetBreakpointsRequest &request);
+    Promise<SetFunctionBreakpointsRequest> setFunctionBreakpoints(const SetFunctionBreakpointsRequest &request);
+    Promise<DataBreakpointInfoRequest> dataBreakpointInfo(const DataBreakpointInfoRequest &request);
+    Promise<SetDataBreakpointsRequest> setDataBreakpoints(const SetDataBreakpointsRequest &request);
+    Promise<SetExceptionBreakpointsRequest> setExceptionBreakpoints(const SetExceptionBreakpointsRequest &request);
+    Promise<BreakpointLocationsRequest> breakpointLocations(const BreakpointLocationsRequest &request);
+    Promise<ConfigurationDoneRequest> configurationDone();
+    Promise<StackTraceRequest> stackTrace(const StackTraceRequest &request);
+    Promise<ExceptionInfoRequest> exceptionInfoTrace(const ExceptionInfoRequest &request);
+    Promise<ScopesRequest> scopes(const ScopesRequest &request);
+    Promise<VariablesRequest> variables(const VariablesRequest &request);
+    Promise<SourceRequest> source(const SourceRequest &request);
+    Promise<LoadedSourcesRequest> loadedSources(const LoadedSourcesRequest &request);
+    Promise<ThreadsRequest> threads();
+    Promise<EvaluateRequest> evaluate(const EvaluateRequest &request);
+    Promise<StepBackRequest> stepBack(const StepBackRequest &request);
+    Promise<ReverseContinueRequest> reverseContinue(const ReverseContinueRequest &request);
+    Promise<GotoTargetsRequest> gotoTargets(const GotoTargetsRequest &request);
+    Promise<GotoRequest> goto_(const GotoRequest &request);
+    Promise<SetInstructionBreakpointsRequest> setInstructionBreakpoints(const SetInstructionBreakpointsRequest &request);
+    Promise<DisassembleRequest> disassemble(const DisassembleRequest &request);
 
     const dap::Capabilities &capabilities() const;
-
     bool shutdown(optional<boolean> terminateDebuggee, optional<boolean> restart = false);
 
+    bool readyForBreakpoints() const;
+    void setReadyForBreakpoints(bool bReady);
 signals:
 
 public slots:
 
 private:    
+    void registerHandlers();
     void mergeCapabilities(const InitializeResponse &capabilities);
 
     // Send sends the request to the debugger, waits for the request to complete,
@@ -88,19 +117,28 @@ private:
     // complete.
     // Returns true on success, false on error.
     template <typename REQUEST>
-    bool send(const REQUEST& request);
+    bool syncSend(const REQUEST& request);
+
+    // Send sends the request to the debugger and return future result.
+    template <typename REQUEST>
+    Promise<REQUEST> send(const REQUEST &request);
 
     void onError(const std::string& error);
 
+    /**
+     * private parameters.
+     */
     ErrorHandler errHandler;
 
     std::shared_ptr<Session> session;
 
+    bool allThreadsContinued = true;
+    bool _readyForBreakpoints = false;
     Capabilities _capabilities;
 
+    // shutdown
     bool inShutdown = false;
     bool terminated = false;
-    bool allThreadsContinued = true;
 };
 
 } // end dap namespace.
