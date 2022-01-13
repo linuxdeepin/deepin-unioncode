@@ -11,11 +11,12 @@ set(CXX_H
     util/custompaths.h
     util/eventdefinitions.h
     util/singleton.h
+    util/polkit.h
     dialog/contextdialog.h
     widget/omittablelabel.h
     widget/collapsewidget.h
     widget/detailsbutton.h
-    constants.h
+    type/constants.h
     )
 
 set(CXX_CPP
@@ -23,6 +24,7 @@ set(CXX_CPP
     lsp/protocol.cpp
     util/processutil.cpp
     util/custompaths.cpp
+    util/polkit.cpp
     util/eventdefinitions.cpp
     dialog/contextdialog.cpp
     widget/omittablelabel.cpp
