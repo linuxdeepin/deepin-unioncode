@@ -225,14 +225,17 @@ class EditTextWidgetPrivate
     int editInsertCount = 0;
 };
 
+#include <QTimer>
+
 EditTextWidget::EditTextWidget(QWidget *parent)
     : ScintillaEdit (parent)
     , d(new EditTextWidgetPrivate)
 {
+
     setMouseDwellTime(1000);
     setDefaultStyle();
 
-    QObject::connect(this, &EditTextWidget::marginClicked, this, &EditTextWidget::debugMarginClieced);
+    QObject::connect(this, &EditTextWidget::marginClicked, this, &EditTextWidget::debugMarginClicked);
 
     QObject::connect(this, &ScintillaEditBase::horizontalScrolled, this, [=](int value)
     {qInfo() << "horizontalScrolled" ;});
@@ -399,7 +402,7 @@ QString EditTextWidget::currentFile()
     return d->file;
 }
 
-void EditTextWidget::setCurrentFile(const QString &filePath, const QString &workspaceFolder)
+void EditTextWidget::setCurrentFile(const QString &filePath)
 {
     if (d->file == filePath) {
         return;
@@ -499,7 +502,7 @@ void EditTextWidget::setCurrentFile(const QString &filePath, const QString &work
         d->client->setProgram(serverProgram);
         d->client->setArguments(serverProgramOptions);
         d->client->start();
-        d->client->initRequest(workspaceFolder);
+        d->client->initRequest("");
         d->client->openRequest(filePath);
         d->client->docSemanticTokensFull(filePath);
 
@@ -525,6 +528,21 @@ void EditTextWidget::setCurrentFile(const QString &filePath, const QString &work
         //    d->client->shutdownRequest();
         //    d->client->exitRequest();
     }
+}
+
+void EditTextWidget::debugPointAllDelete()
+{
+    markerDeleteAll(0);
+}
+
+void EditTextWidget::runningToLine(int line)
+{
+    markerAdd(line, 2);
+}
+
+void EditTextWidget::runningEnd()
+{
+    markerDeleteAll(2);
 }
 
 void EditTextWidget::publishDiagnostics(const lsp::Diagnostics &diagnostics)
@@ -573,13 +591,14 @@ void EditTextWidget::tokenFullResult(const QList<lsp::Data> &tokens)
     }
 }
 
-void EditTextWidget::debugMarginClieced(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin)
+void EditTextWidget::debugMarginClicked(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin)
 {
+    qInfo() << __FUNCTION__;
     Q_UNUSED(modifiers);
     sptr_t line = lineFromPosition(position);
     if (markerGet(line)) {
         SendEvents::marginDebugPointRemove(this->currentFile(), line);
-        markerDelete(line, margin);
+        markerDelete(line, 0);
     } else {
         SendEvents::marginDebugPointAdd(this->currentFile(), line);
         markerAdd(line, 0);
@@ -725,7 +744,7 @@ void EditTextWidget::dwellEndNotify(int x, int y)
 void EditTextWidget::setDefaultStyle()
 {
     setMargins(SC_MAX_MARGIN);
-    setMarginWidthN(0, 50);
+    setMarginWidthN(0, 12);
     setMarginSensitiveN(0, SCN_MARGINCLICK);
     setMarginTypeN(0, SC_MARGIN_SYMBOL);
     setMarginMaskN(0, 0x01);    //range mark 1~32
@@ -738,6 +757,14 @@ void EditTextWidget::setDefaultStyle()
     setMarginMaskN(1, 0x00);   // null
     markerSetFore(1, 0x0000ff); //red
     markerSetBack(1, 0x0000ff); //red
+    markerSetAlpha(1, INDIC_GRADIENT);
+
+    setMarginWidthN(2, 12);
+    setMarginTypeN(2, SC_MARGIN_SYMBOL);
+    setMarginMaskN(2, SC_MARK_SHORTARROW);
+    markerDefine(2, SC_MARK_SHORTARROW);
+    markerSetFore(2, 0x00ffff); //yellow
+    markerSetFore(2, 0x00ffff);
     markerSetAlpha(1, INDIC_GRADIENT);
 
     styleSetFore(SCE_C_DEFAULT, d->scintillaColor(QColor(0,0,0))); // 空格

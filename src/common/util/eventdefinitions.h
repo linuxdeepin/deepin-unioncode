@@ -29,6 +29,7 @@ extern const QString T_NAV;
 extern const QString T_MENU;
 extern const QString T_FILEBROWSER;
 extern const QString T_CODEEDITOR;
+extern const QString T_DEBUGGER;
 
 extern const QString D_RECENT_SHOW;
 extern const QString D_RECENT_HIDE;
@@ -39,6 +40,9 @@ extern const QString D_DEBUG_HIDE;
 extern const QString D_RUNTIME_SHOW;
 extern const QString D_RUNTIME_HIDE;
 
+extern const QString D_DEBUG_EXECUTION_START;
+extern const QString D_DEBUG_EXECUTION_END;
+extern const QString D_DEBUG_EXECUTION_JUMP;
 extern const QString D_FILE_OPENDOCUMENT;
 extern const QString D_FILE_OPENFOLDER;
 extern const QString D_ITEM_MENU_BUILD;

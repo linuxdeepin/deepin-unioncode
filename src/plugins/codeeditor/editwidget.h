@@ -33,8 +33,10 @@ public:
     virtual ~EditWidget();
 
 public slots:
-    void openFile(const QString &filePath, const QString &workspaceFolder);
+    void openFile(const QString &filePath);
     void closeFile(const QString &filePath);
+    void runningToLine(const QString &filePath, int line);
+    void runningEnd();
 
 private:
     int tabIndex(const QString &tabTooltip);

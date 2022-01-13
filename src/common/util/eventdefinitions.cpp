@@ -24,6 +24,7 @@ const QString T_NAV {"Nav"};
 const QString T_MENU {"Menu"};
 const QString T_FILEBROWSER {"FileBrowser"};
 const QString T_CODEEDITOR {"CodeEditor"};
+const QString T_DEBUGGER {"Debugger"};
 
 const QString D_RECENT_SHOW {"Recent.Show"};
 const QString D_RECENT_HIDE {"Recent.Hide"};
@@ -34,6 +35,9 @@ const QString D_DEBUG_HIDE {"Debug.Hide"};
 const QString D_RUNTIME_SHOW {"Runtime.Show"};
 const QString D_RUNTIME_HIDE {"Runtime.Hide"};
 
+const QString D_DEBUG_EXECUTION_START {"Debug.Execution.Start"};
+const QString D_DEBUG_EXECUTION_END {"Debug.Execution.End"};
+const QString D_DEBUG_EXECUTION_JUMP {"Debug.Execution.Jump"};
 const QString D_MARGIN_DEBUG_POINT_ADD {"Margin.Debug.Point.Add"};
 const QString D_MARGIN_DEBUG_POINT_REMOVE {"Margin.Debug.Point.Remove"};
 const QString D_FILE_OPENDOCUMENT {"File.OpenDocument"};

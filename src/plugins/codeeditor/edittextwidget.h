@@ -37,13 +37,16 @@ public:
     QString currentFile();
 
 public slots:
-    void setCurrentFile(const QString &filePath, const QString &workspaceFolder);
+    void setCurrentFile(const QString &filePath);
+    void debugPointAllDelete();
+    void runningToLine(int line);
+    void runningEnd();
 
 private slots:
     // lsp server called
     void publishDiagnostics(const lsp::Diagnostics &diagnostics);
     void tokenFullResult(const QList<lsp::Data> &tokens);
-    void debugMarginClieced(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin);
+    void debugMarginClicked(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin);
     void tokenDefinitionsSave(const lsp::SemanticTokensProvider &provider);
     void completionsSave(const lsp::CompletionProvider &provider);
     void hoverMessage(const lsp::Hover &hover);

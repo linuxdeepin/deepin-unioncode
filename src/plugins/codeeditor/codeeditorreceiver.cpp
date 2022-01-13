@@ -21,7 +21,10 @@
 #include "codeeditorreceiver.h"
 #include "common/util/eventdefinitions.h"
 
-static QStringList subTopics { T_MENU, T_FILEBROWSER };
+static QStringList subTopics
+{
+    T_MENU, T_FILEBROWSER , T_DEBUGGER
+};
 
 CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
     : dpf::EventHandler (parent)
@@ -47,23 +50,26 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 
     if (T_FILEBROWSER == event.topic()) {
         if(D_ITEM_DOUBLECLICKED == event.data()) {
-            return DpfEventMiddleware::instance().toOpenFile(
-                        event.property(P_FILEPATH).toString(),
-                        event.property(P_WORKSPACEFOLDER).toString()
-                        );
+            return DpfEventMiddleware::instance().toOpenFile(event.property(P_FILEPATH).toString());
         }
     }
 
     if (T_MENU == event.topic()) {
         if (D_FILE_OPENDOCUMENT == event.data()) {
-            return DpfEventMiddleware::instance().toOpenFile(
-                        event.property(P_FILEPATH).toString(),
-                        event.property(P_WORKSPACEFOLDER).toString()
-                        );
+            return DpfEventMiddleware::instance().toOpenFile(event.property(P_FILEPATH).toString());
         }
         if (D_FILE_OPENFOLDER == event.data()) {
             qInfo() << event;
             return;
+        }
+    }
+
+    if (T_DEBUGGER == event.topic()) {
+        if (D_DEBUG_EXECUTION_JUMP == event.data()) {
+            return DpfEventMiddleware::instance().toRunFileLine(
+                        event.property(P_FILEPATH).toString(),
+                        event.property(P_FILELINE).toInt()
+                        );
         }
     }
 }

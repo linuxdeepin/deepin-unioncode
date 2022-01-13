@@ -36,6 +36,7 @@ class EditWidgetPrivate
     QHash<QString, EditTextWidget*> textEdits;
     QHash<QString, EditFileStatusBar*> statusBars;
     EditTextWidget defaultEdit;
+    QString runningFilePathCache;
 };
 
 EditWidget::EditWidget(QWidget *parent)
@@ -61,6 +62,9 @@ EditWidget::EditWidget(QWidget *parent)
 
     QObject::connect(&DpfEventMiddleware::instance(), &DpfEventMiddleware::toOpenFile,
                      this, &EditWidget::openFile);
+
+    QObject::connect(&DpfEventMiddleware::instance(), &DpfEventMiddleware::toRunFileLine,
+                     this, &EditWidget::runningToLine);
 
     QObject::connect(d->tab, &EditFileTabWidget::tabCloseRequested,
                      this, &EditWidget::removeFileEdit, Qt::QueuedConnection);
@@ -102,7 +106,7 @@ int EditWidget::tabIndex(const QString &tabTooltip)
     return -1;
 }
 
-void EditWidget::openFile(const QString &filePath, const QString &workspaceFolder)
+void EditWidget::openFile(const QString &filePath)
 {
     QFileInfo info(filePath);
     if (!info.exists() || !d->tab)
@@ -120,7 +124,7 @@ void EditWidget::openFile(const QString &filePath, const QString &workspaceFolde
     d->tab->setCurrentIndex(idx);
     EditTextWidget *edit = new EditTextWidget;
     d->textEdits.insert(info.filePath(), edit);
-    edit->setCurrentFile(info.filePath(), workspaceFolder);
+    edit->setCurrentFile(info.filePath());
     // 添加监听
     Inotify::globalInstance()->addPath(info.filePath());
     // set display textedit
@@ -142,6 +146,41 @@ void EditWidget::closeFile(const QString &filePath)
 
     if (index >=0 && index < d->tab->count())
         emit d->tab->tabCloseRequested(index);
+}
+
+void EditWidget::runningToLine(const QString &filePath, int line)
+{
+    int fileTabIndex = tabIndex(filePath);
+    if ( 0 <= fileTabIndex) {
+        showFileEdit(fileTabIndex);
+    } else {
+        openFile(filePath);
+    }
+
+    for (auto editor : d->textEdits) {
+        if (!editor) {
+            qCritical() << "Error, Crashed from iteration hash";
+            abort();
+        }
+
+        if (editor->currentFile() != filePath) {
+            editor->runningEnd();
+        } else {
+            editor->runningToLine(line);
+            showFileEdit(tabIndex(filePath));
+        }
+    }
+}
+
+void EditWidget::runningEnd()
+{
+    for (auto editor : d->textEdits) {
+        if (!editor) {
+            qCritical() << "Error, Crashed from iteration hash";
+            abort();
+        }
+        editor->runningEnd();
+    }
 }
 
 void EditWidget::setDefaultFileEdit()
