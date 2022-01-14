@@ -231,13 +231,78 @@ QJsonArray tokenModifiers()
     };
 }
 
-QJsonObject initialize(const QString &rootPath)
+QJsonObject workspace()
 {
-    QJsonObject workspace {
-        {"workspaceFolders",QJsonObject{ {"supported", true}, {"changeNotifications", true}}}
+    QJsonObject didChangeConfiguration {
+        { "dynamicRegistration", true }
+    };
+    QJsonObject codeLens {
+        { "refreshSupport", true }
+    };
+    QJsonObject didChangeWatchedFiles {
+        { "dynamicRegistration", true}
+    };
+    QJsonObject executeCommand{
+        { "dynamicRegistration", true}
+    };
+    QJsonObject fileOperations {
+        { "didCreate", true},
+        { "didDelete", true},
+        { "didRename", true},
+        { "dynamicRegistration", true},
+        { "willCreate", true},
+        { "willDelete", true},
+        { "willRename", true}
+    };
+    QJsonObject semanticTokens{
+        { "refreshSupport", true }
     };
 
-    QJsonObject semanticTokens{{
+    QJsonArray symbolKind_valueSet { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26 };
+    QJsonObject symbolKind{ { "valueSet", symbolKind_valueSet } };
+    QJsonArray tagSupport_valueSet{1};
+    QJsonObject tagSupport{ { "valueSet", tagSupport_valueSet } };
+    QJsonObject symbol{
+        { "dynamicRegistration", true},
+        { "symbolKind", symbolKind },
+        { "tagSupport", tagSupport }
+    };
+
+    QJsonArray resourceOperations{
+        { "create", "rename", "delete" }
+    };
+
+    QJsonObject changeAnnotationSupport{
+        { "groupsOnLabel", true }
+    };
+    QJsonObject workspaceEdit{
+        { "changeAnnotationSupport",changeAnnotationSupport },
+        { "documentChanges", true },
+        { "failureHandling", "textOnlyTransactional" },
+        { "normalizesLineEndings", true },
+        { "resourceOperations", resourceOperations}
+    };
+
+    QJsonObject workspace {
+        { "applyEdit", true },
+        { "codeLens", codeLens },
+        { "configuration", true },
+        { "didChangeConfiguration", didChangeConfiguration },
+        { "didChangeWatchedFiles", didChangeWatchedFiles },
+        { "executeCommand", executeCommand },
+        { "fileOperations", fileOperations },
+        { "semanticTokens", semanticTokens },
+        { "symbol",symbol },
+        { "workspaceEdit", workspaceEdit },
+        { "workspaceFolders", true }
+    };
+
+    return workspace;
+}
+
+QJsonObject initialize(const QString &rootPath)
+{
+    QJsonObject capabilitiesSemanticTokens{{
             {"dynamicRegistration", true},
             {"formats", QJsonArray{"relative"}},
             {"multilineTokenSupport", false},
@@ -257,10 +322,10 @@ QJsonObject initialize(const QString &rootPath)
                 {"colorProvider", QJsonObject{{"dynamicRegistration", true}}},
                 {"declaration", QJsonObject{{"dynamicRegistration", true},{"linkSupport", true}}},
                 {"semanticHighlightingCapabilities", QJsonObject{{"semanticHighlighting", true}}},
-                {"semanticTokens", semanticTokens}
+                {"semanticTokens", capabilitiesSemanticTokens}
             }
         },{
-            "workspace", workspace
+            "workspace", workspace()
         },{
             "foldingRangeProvider", true,
         }
@@ -280,10 +345,10 @@ QJsonObject initialize(const QString &rootPath)
         {"snippetSupport",true},
     };
 
-    //    QJsonObject workspace {
-    //        { "name", QFileInfo(rootPath).fileName() },
-    //        { K_URI, QUrl::fromLocalFile(rootPath).toString() }
-    //    };
+    QJsonObject workspace {
+        { "name", QFileInfo(rootPath).fileName() },
+            { K_URI, QUrl::fromLocalFile(rootPath).toString() }
+    };
 
     QJsonArray workspaceFolders{workspace};
 
@@ -294,7 +359,8 @@ QJsonObject initialize(const QString &rootPath)
         { K_CAPABILITIES, capabilities },
         { K_INITIALIZATIONOPTIONS, V_INITIALIZATIONOPTIONS },
         { "highlight", highlight },
-        { "client", client}
+        { "client", client },
+        { "workspaceFolders", workspaceFolders }
     };
 
     QJsonObject initRequest{

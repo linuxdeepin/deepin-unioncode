@@ -18,25 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef OMITTABLELABEL_H
-#define OMITTABLELABEL_H
+#ifndef FILEBROWSERRECEIVER_H
+#define FILEBROWSERRECEIVER_H
 
-#include <QLabel>
-class OmittableLabelPrivate;
-class OmittableLabel : public QLabel
+#include <framework/framework.h>
+
+class WorkspaceReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegister<WorkspaceReceiver>
 {
-    OmittableLabelPrivate *const d;
+    friend class dpf::AutoEventHandlerRegister<WorkspaceReceiver>;
 public:
-    explicit OmittableLabel(QWidget * parent = nullptr);
-    virtual ~OmittableLabel() override;
-    void setTextElideMode(Qt::TextElideMode mode = Qt::ElideRight);
+    explicit WorkspaceReceiver(QObject * parent = nullptr);
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
+    static Type type()
+    {
+        return dpf::EventHandler::Type::Async;
+    }
 
-public Q_SLOTS:
-    void setText(const QString &);
-    QString text();
+    static QStringList topics();
+
+    virtual void eventProcess(const dpf::Event& event) override;
 };
 
-#endif // OMITTABLELABEL_H
+#endif // FILEBROWSERRECEIVER_H

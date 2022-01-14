@@ -20,7 +20,6 @@
 */
 #include "collapsewidget.h"
 #include "detailsbutton.h"
-#include "omittablelabel.h"
 
 #include <QLabel>
 #include <QToolBox>
@@ -30,20 +29,22 @@
 #include <QPropertyAnimation>
 #include <QDebug>
 #include <QEvent>
+#include <QPainter>
 #include <QtAlgorithms>
 
 class CollapseWidgetPrivate
 {
     friend class CollapseWidget;
-    OmittableLabel *titleLabel = nullptr;
+    QString title;
     DetailsButton *detailsButton = nullptr;
     int defaultWidgetHeight = 500;
     int minHeight = 0;
     int maxHeight = 0;
+    int widgetSpace = 8;
+    QWidget *widget = nullptr;
     QRect titleLabelRect;
     QRect detailsButtonRect;
     QRect widgetRect;
-    QWidget *widget = nullptr;
     QVariantAnimation animation = nullptr;
 };
 
@@ -51,12 +52,11 @@ CollapseWidget::CollapseWidget(QWidget *parent)
     : QWidget (parent)
     , d (new CollapseWidgetPrivate)
 {
+    setObjectName("CollapseWidget");
     setBackgroundRole(QPalette::Light);
-    d->titleLabel = new OmittableLabel(this);
     d->detailsButton = new DetailsButton(this);
-    d->widget = new QWidget(this);
-    d->minHeight = qMax(d->titleLabel->height(), d->detailsButton->height());
-    d->maxHeight = qMax(d->widget->height(), d->defaultWidgetHeight + d->minHeight);
+    d->minHeight = d->detailsButton->height();
+    d->maxHeight = d->detailsButton->height() + d->widgetSpace * 2;
     setMinimumWidth(260);
 
     d->animation.setDuration(200);
@@ -78,8 +78,15 @@ CollapseWidget::CollapseWidget(const QString &title, QWidget *widget, QWidget *p
 
 CollapseWidget::~CollapseWidget()
 {
-    if (d)
+    if (d) {
+        if (d->detailsButton) {
+            delete d->detailsButton;
+        }
+        if (d->widget) {
+            delete d->widget;
+        }
         delete d;
+    }
 }
 
 QWidget *CollapseWidget::takeWidget()
@@ -94,16 +101,19 @@ QWidget *CollapseWidget::takeWidget()
 void CollapseWidget::setWidget(QWidget *widget)
 {
     if (d->widget) {
-        d->widget->setParent(this);
         delete d->widget;
         d->widget = nullptr;
+    }
 
-        if (widget){
-            d->widget = widget;
-            d->widget->setParent(this);
-            d->maxHeight = qMax(widget->height(), d->maxHeight);
-            d->widget->show();
+    if (widget){
+        d->widget = widget;
+        d->widget->setParent(this);
+        if (d->maxHeight == d->minHeight + d->widgetSpace * 2) {
+            d->maxHeight += d->defaultWidgetHeight;
         }
+        d->maxHeight = qMax(d->maxHeight, widget->height() + d->widgetSpace * 2);
+        d->widget->resize(width(), d->maxHeight);
+        d->widget->show();
     }
 }
 
@@ -114,15 +124,12 @@ QWidget *CollapseWidget::widget()
 
 void CollapseWidget::setTitle(const QString &title)
 {
-    if (d->titleLabel)
-        d->titleLabel->setText(title);
+    d->title = title;
 }
 
 QString CollapseWidget::title()
 {
-    if (d->titleLabel)
-        return d->titleLabel->text();
-    return "";
+    return d->title;
 }
 
 void CollapseWidget::setCheckable(bool checkable)
@@ -147,28 +154,47 @@ bool CollapseWidget::isChecked()
 
 void CollapseWidget::resizeEvent(QResizeEvent *event)
 {
-    d->detailsButtonRect = QRect(QPoint(event->size().width() - d->detailsButton->width(), 0),
-                                 d->detailsButton->size()); //button rect
-    d->titleLabelRect = QRect(QPoint(0, 0), d->titleLabel->size());
-    d->widgetRect = QRect(QPoint(0, d->minHeight), d->widget->size());
-    d->detailsButton->resize(d->detailsButton->width(), d->minHeight);
-    d->titleLabel->resize(event->size().width() - d->detailsButton->width(), d->minHeight);
-
-    if (d->titleLabel)
-        d->titleLabel->setGeometry(d->titleLabelRect);
-
-    if (d->detailsButton)
-        d->detailsButton->setGeometry(d->detailsButtonRect);
-
-    if(d->widget)
-        d->widget->setGeometry(0, d->minHeight, width(), d->widget->height() + d->minHeight);
-
     QWidget::resizeEvent(event);
+
+    if (d->detailsButton) {
+        d->detailsButtonRect = { QPoint(event->size().width() - d->detailsButton->width(), 0),
+                                 d->detailsButton->size() };
+        d->detailsButton->setGeometry(d->detailsButtonRect);
+    }
+
+    if (d->widget) {
+        if (d->widget->width() != width() - d->widgetSpace * 2) {
+            d->widget->resize(width() - d->widgetSpace * 2, d->widget->height());
+        }
+        d->maxHeight = qMax(d->widget->height() + d->widgetSpace * 2, d->maxHeight);
+        QPoint widgetOffset = {d->widgetSpace, d->widgetSpace + d->minHeight};
+        QSize widgetResize = event->size() - QSize{d->widgetSpace * 2, d->widgetSpace * 2 + d->minHeight};
+        d->widget->setGeometry(QRect{widgetOffset, widgetResize});
+    }
 }
 
 void CollapseWidget::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
+    QPainter painter(this);
+    QRect rect = CollapseWidget::rect();
+    painter.drawLine(rect.topLeft() + QPoint{0, d->minHeight -1},
+                     rect.topRight() + QPoint{0, d->minHeight -1});
+    painter.drawLine(rect.topLeft(), rect.topRight());
+    painter.drawLine(rect.topLeft(), rect.bottomLeft());
+    painter.drawLine(rect.topRight(), rect.bottomRight());
+    painter.drawLine(rect.bottomLeft(), rect.bottomRight());
+
+    QFont font(d->title);
+    QFontMetrics fontMetrics(this->font());
+    QRect textBoundingRect = fontMetrics.boundingRect(d->title);
+    QSize fontSize = textBoundingRect.size();
+    int fontPosX = textBoundingRect.x();
+    int fontPosY = textBoundingRect.y();
+    int textPosX = 4 + ( fontPosX > 0 ? fontPosX : - fontPosX);;
+    int textPosY = (d->detailsButton->height() - fontSize.height()) / 2
+            + ( fontPosY > 0 ? fontPosY: - fontPosY);
+    painter.drawText(QPoint{textPosX, textPosY}, d->title);
 }
 
 void CollapseWidget::setChecked(bool checked)
@@ -185,7 +211,7 @@ void CollapseWidget::doChecked(bool checked)
     if (d->widget) {
         if (checked){
             d->widget->hide();
-            d->animation.setStartValue(qMax(d->maxHeight, d->minHeight));
+            d->animation.setStartValue(d->maxHeight);
             d->animation.setEndValue(d->minHeight);
         } else{
             d->widget->show();

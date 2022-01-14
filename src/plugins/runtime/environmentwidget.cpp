@@ -36,6 +36,8 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     : QWidget (parent)
     , d(new EnvironmentWidgetPrivate)
 {
+    setAutoFillBackground(true);
+
     if (!d->vLayout)
         d->vLayout = new QVBoxLayout();
     this->setLayout(d->vLayout);

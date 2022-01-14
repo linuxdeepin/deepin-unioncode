@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2020 ~ 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     huanyu<huanyub@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             huangyu<huangyub@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,25 +18,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef CONFIGUREWIDGET_H
-#define CONFIGUREWIDGET_H
+ */
+#ifndef RECENT_H
+#define RECENT_H
 
-#include <QScrollArea>
+#include <framework/framework.h>
 
-class CollapseWidget;
-class ConfigureWidgetPrivate;
-class ConfigureWidget : public QScrollArea
+class Workspace : public dpf::Plugin
 {
     Q_OBJECT
-    ConfigureWidgetPrivate *const d;
+    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "workspace.json")
 public:
-    explicit ConfigureWidget(QWidget *parent = nullptr);
-    virtual ~ConfigureWidget() override;
-    void addCollapseWidget(CollapseWidget *widget);
-
-protected:
-    void resizeEvent(QResizeEvent *event) override;
+    virtual void initialize() override;
+    virtual bool start() override;
+    virtual dpf::Plugin::ShutdownFlag stop() override;
 };
 
-#endif // CONFIGUREWIDGET_H
+#endif // RECENT_H

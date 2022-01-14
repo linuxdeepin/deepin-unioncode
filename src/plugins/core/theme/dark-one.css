@@ -1,9 +1,27 @@
 /* === Shared === */
 QStackedWidget, QLabel, QPushButton, QRadioButton, QCheckBox, 
-QGroupBox, QStatusBar, QToolButton, QComboBox, QDialog {
+QGroupBox, QStatusBar, QToolButton, QComboBox, QDialog, QScrollArea, QWidget{
     background-color: #222222;
     color: #BBBBBB;
     font-family: "Segoe UI";
+}
+
+QComboBox QAbstractItemView {
+    font-family: "Segoe UI";
+    color: #BBBBBB;
+    background-color: #555555;
+}
+
+QComboBox QAbstractItemView::item {
+    font-family: "Segoe UI";
+    color: #BBBBBB;
+    background: transparent;
+}
+
+QComboBox QAbstractItemView::item:selected {
+    font-family: "Segoe UI";
+    border-color: gray;
+    background: #222222;
 }
  
 /* === QWidget === */
@@ -17,7 +35,7 @@ QWidget:window {
 QToolTip {
     background-color: #000000;
     border: 2px solid #333333;
-    color: yellow;
+    color: skyblue;
 }
  
 /* === QPushButton === */
@@ -36,35 +54,19 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #111111;
     border-color: #333333;
-    color: yellow;
+    color: skyblue;
 }
  
 QPushButton:disabled {
     color: #333333;
 }
- 
+
 /* === Checkable items === */
 QCheckBox::indicator, QRadioButton::indicator, QTreeView::indicator {
     width: 16px;
     height: 16px;
     background-color: #111111;
     border: 1px solid #333333;
-}
- 
-QRadioButton::indicator {
-    border-radius: 8px;
-}
- 
-QCheckBox::indicator::checked, QRadioButton::indicator::checked, QTreeView::indicator::checked {
-    background-color: qradialgradient(cx:0.5, cy:0.5, fx:0.25, fy:0.15, radius:0.3, stop:0 #BBBBBB, stop:1 #111111);
-}
- 
-QCheckBox::indicator:disabled, QRadioButton::indicator:disabled, QTreeView::indicator:disabled {
-    background-color: #444444;
-}
- 
-QCheckBox::indicator::checked:disabled, QRadioButton::indicator::checked:disabled, QTreeView::indicator::checked:disabled {
-    background-color: qradialgradient(cx:0.5, cy:0.5, fx:0.25, fy:0.15, radius:0.3, stop:0 #BBBBBB, stop:1 #444444);
 }
  
 /* === QComboBox === */
@@ -95,7 +97,7 @@ QGroupBox {
 }
  
 QGroupBox::title {
-    color: yellow;
+    color: skyblue;
     subcontrol-origin: margin;
     subcontrol-position: top left;
     margin-left: 5px;
@@ -128,9 +130,9 @@ QTabBar::tab:hover {
 QTabBar::tab:selected {
     background-color: #111111;
     border: 1px solid #333333;
-    border-top: 1px solid yellow;
+    border-top: 1px solid skyblue;
     border-bottom: none;
-    color: yellow
+    color: skyblue
 }
  
 /* === QToolBar === */
@@ -142,7 +144,7 @@ QToolBar {
  
 QToolBar:handle {
     background: #222222;
-    border-left: 1px dotted yellow;
+    border-left: 1px dotted skyblue;
     color: #BBBBBB;
 }
  
@@ -155,6 +157,8 @@ QToolBar::separator {
 QToolButton {
     border: 1px solid #333333;
     margin: 1px;
+    min-width: 65px;
+    min-height: 20px;
 }
  
 QToolButton:hover {
@@ -180,7 +184,7 @@ QToolButton::menu-button:hover {
  
 QToolButton:checked, QToolButton:pressed {
     background-color: #111111;
-    color: yellow;
+    color: skyblue;
 }
  
 /* === QMenu === */
@@ -244,7 +248,7 @@ QMenuBar::item:selected {
 QMenuBar::item:pressed {
     background: #444444;
 }
- 
+
 /* === QScrollBar:vertical === */
 QScrollBar:vertical {
     background: #111111;
@@ -326,12 +330,6 @@ QLineEdit, QListView, QTreeView, QTableView, QAbstractSpinBox {
     border: 1px solid #333333;
 }
  
-QAbstractScrollArea, QLineEdit, QTextEdit, QAbstractSpinBox, QComboBox {
-    border-color: #333333;
-    border: 1px solid #333333;
- 
-}
- 
 /* === QHeaderView === */
 QHeaderView::section {
     background: #222222;
@@ -339,7 +337,12 @@ QHeaderView::section {
     color: #BBBBBB;
     padding: 3px 0 3px 4px;
 }
- 
+
+/* === QScrollArea === */
+QScrollArea {
+    background-color: #111111;
+}
+
 /* === QListView === */
 QListView::item:hover {
     background: #333333;
@@ -347,7 +350,7 @@ QListView::item:hover {
  
 QListView::item:selected {
     background: #111111;
-    color: yellow;
+    color: skyblue;
 }
  
 /* === QTableView === */
@@ -357,7 +360,7 @@ QTableView::item:hover {
  
 QTableView::item:hover {
     background: #111111;
-    color: yellow;
+    color: skyblue;
 }
  
 /* === QTreeView === */
@@ -371,5 +374,13 @@ QTreeView::item:hover {
  
 QTreeView::item:selected {
     background: #111111;
-    color: yellow;
+    color: skyblue;
+}
+
+QTextEdit{
+    background: #111111;
+}
+
+QPlainTextEdit{
+    background: #111111;
 }

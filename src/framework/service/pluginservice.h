@@ -28,6 +28,10 @@
 #include <QObject>
 #include <QHash>
 
+#include <functional>
+
+#define DPF_INTERFACE(ret, method, ...) std::function<ret(__VA_ARGS__)> method
+
 DPF_BEGIN_NAMESPACE
 
 class PluginService : public QObject

@@ -13,9 +13,9 @@ set(CXX_H
     util/singleton.h
     util/polkit.h
     dialog/contextdialog.h
-    widget/omittablelabel.h
     widget/collapsewidget.h
     widget/detailsbutton.h
+    widget/statuswidget.h
     type/constants.h
     )
 
@@ -27,9 +27,9 @@ set(CXX_CPP
     util/polkit.cpp
     util/eventdefinitions.cpp
     dialog/contextdialog.cpp
-    widget/omittablelabel.cpp
     widget/collapsewidget.cpp
     widget/detailsbutton.cpp
+    widget/statuswidget.cpp
     )
 
 add_library(

@@ -4,12 +4,14 @@ project(unioncode-service)
 set(CXX_H
     window/windowservice.h
     debugger/debuggerservice.h
+    workspace/workspaceservice.h
     )
 
 set(CXX_CPP
     treeview/
     window/windowservice.cpp
     debugger/debuggerservice.cpp
+    workspace/workspaceservice.cpp
     )
 
 add_library(

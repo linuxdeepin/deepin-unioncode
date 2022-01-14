@@ -300,6 +300,7 @@ QList<SemanticTokenModifier> fromTokenModifiers(int modifiers);
 QJsonArray tokenTypes();
 QJsonArray tokenModifiers();
 
+QJsonObject workspace();
 QJsonObject initialize(const QString &rootPath);
 QJsonObject didOpen(const QString &filePath);
 QJsonObject didChange(const QString &filePath, int version);

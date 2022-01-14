@@ -85,6 +85,13 @@ signals: // publish to other plugin interface
      * \param contextWidget 实例对象
      */
     void addContextWidget(const QString &contextTab, AbstractWidget *contextWidget);
+
+    /*!
+     * \brief addOptionWidget 添加功能项组件
+     * \param optionName option名称
+     * \param optionWidget option显示的组件
+     */
+    void addOptionWidget(const QIcon &icon, const QString &optionName, AbstractWidget *optionWidget);
 };
 } // namespace dpfservice
 #endif // WINDOWSERVICE_H

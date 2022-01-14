@@ -1,43 +1,40 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(plugin-core)
+project(plugin-workspace)
 
 set(CXX_CPP
-    windowtheme.cpp
-    windowswitcher.cpp
-    windowkeeper.cpp
-    optionsdialog.cpp
-    sendevents.cpp
-    core.cpp
-    core.json
+    workspace.cpp
+    workspace.json
+    workspacedata.cpp
+    workspacereceiver.cpp
+    workspacecmake.cpp
+    processdialog.cpp
     )
 
 set(CXX_H
-    windowtheme.h
-    windowswitcher.h
-    windowkeeper.h
-    optionsdialog.h
-    sendevents.h
-    core.h
+    workspacecmake.h
+    workspaceadapter.h
+    workspace.h
+    workspacedata.h
+    workspacereceiver.h
+    processdialog.h
     )
-
-set(QT_THEME
-    theme/theme.qrc)
 
 add_library(${PROJECT_NAME}
     SHARED
     ${CXX_CPP}
     ${CXX_H}
-    ${QT_THEME}
     )
 
 target_link_libraries(${PROJECT_NAME}
     unioncode-framework
     unioncode-base
     unioncode-service
+    unioncode-common
     ${QtUseModules}
     ${PkgUserModules}
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
+
 

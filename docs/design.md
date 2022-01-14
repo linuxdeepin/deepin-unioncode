@@ -148,9 +148,12 @@ unioncode/
 │   │   ├── filebrowser		//文件浏览插件（文件树）
 │   │   ├── runtime			//运行时插件
 │   │   ├── codeedit		//智能编辑器插件，文件树，代码编辑器
+|   |   ├── workspace		//工程项目插件，取决于工程配置文件
+|   |   ├── toolchecker		//工具检查插件，例如clangd的网络源配置与工具动态更新
 │   ├── resource			//资源文件目录
 │   ├── services			//插件服务目录，适配器
-│   │   ├── debugger		//调试服务
+│   │   ├── debugger		//调试服务
+│   │   ├── workspace		//工程项目服务，可用于工作空间的增删查，plugins/workspace的接口
 │   │   └── window			//窗口服务
 │   └── tools				//自封装工具
 └── tests					//单元测试目录

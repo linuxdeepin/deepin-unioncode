@@ -48,19 +48,29 @@ DetailsButton::~DetailsButton()
         delete d;
 }
 
-void DetailsButton::paintEvent(QPaintEvent *e)
+void DetailsButton::paintEvent(QPaintEvent *event)
 {
     QPainter p(this);
     int arrowsize = 15;
+    auto pen = p.pen();
+
+    QRect rect = DetailsButton::rect();
+    p.drawLine(rect.topLeft(), rect.topRight());
+    p.drawLine(rect.topLeft(), rect.bottomLeft());
+    p.drawLine(rect.topRight(), rect.bottomRight());
+    p.drawLine(rect.bottomLeft(), rect.bottomRight());
 
     if (!d->hover) {
-        p.save();
         p.setPen(Qt::NoPen);
-        p.setBrush(palette().brush(QPalette::Light));
-        p.drawRoundedRect(rect(), 1, 1);
-        p.restore();
+        p.setBrush(palette().background().color());
+        p.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 0, 0);
+    } else {
+        p.setPen(Qt::NoPen);
+        p.setBrush(QColor(0, 0, 0, 255));
+        p.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 0, 0 );
     }
 
+    p.setPen(pen);
     QFont font(text());
     QFontMetrics fontMetrics(this->font());
     QRect textBoundingRect = fontMetrics.boundingRect(text());
@@ -81,12 +91,6 @@ void DetailsButton::paintEvent(QPaintEvent *e)
     arrowOpt.rect = QRect{size().width() - arrowsize - 6, (height() - arrowsize) / 2  , arrowsize, arrowsize};
     arrowOpt.palette = pal;
     style()->drawPrimitive(checked ? QStyle::PE_IndicatorArrowUp : QStyle::PE_IndicatorArrowDown, &arrowOpt, &p, this);
-
-    if (d->hover) {
-        p.setPen(Qt::NoPen);
-        p.setBrush(QColor(0, 0, 0, 20));
-        p.drawRoundedRect(rect(), 1, 1 );
-    }
 }
 
 void DetailsButton::enterEvent(QEvent *event)

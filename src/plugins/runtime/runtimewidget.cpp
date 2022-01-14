@@ -67,6 +67,7 @@ RuntimeWidget::RuntimeWidget(QWidget *parent)
 
     if (!d->configWidget)
         d->configWidget = new ConfigureWidget();
+
     d->configWidget->addCollapseWidget(new CollapseWidget("Runtime Env", new EnvironmentWidget));
     d->configWidget->addCollapseWidget(new CollapseWidget("Debug Env", new EnvironmentWidget));
 
