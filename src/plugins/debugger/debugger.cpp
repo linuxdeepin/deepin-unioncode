@@ -21,11 +21,14 @@
 #include "debugger.h"
 #include "runtimecfgprovider.h"
 #include "debugsession.h"
+#include "debugservice.h"
+#include "debuggerglobals.h"
 
 #include "dap/io.h"
 #include "dap/protocol.h"
 
 #include <QDebug>
+#include <QUuid>
 
 #include "stdlib.h"
 
@@ -54,6 +57,8 @@ void Debugger::startDebug()
     }
     if (!bSuccess) {
         qCritical() << "startDebug failed!";
+    } else {
+        started = true;
     }
 }
 
@@ -77,6 +82,7 @@ void Debugger::continueDebug()
 void Debugger::abortDebug()
 {
     session->terminate();
+    started = false;
 }
 
 void Debugger::restartDebug()
@@ -87,21 +93,33 @@ void Debugger::restartDebug()
 void Debugger::stepOver()
 {
     integer threadId = session->getThreadId();
-    const char *granularity = "statement";
-    session->next(threadId, granularity);
+    session->next(threadId, undefined);
 }
 
 void Debugger::stepIn()
 {
     integer threadId = session->getThreadId();
-    int targetId = 1;
-    const char *granularity = "statement";
-    session->stepIn(threadId, targetId, granularity);
+    session->stepIn(threadId, undefined, undefined);
 }
 
 void Debugger::stepOut()
 {
     integer threadId = session->getThreadId();
-    const char *granularity = "statement";
-    session->stepOut(threadId, granularity);
+    session->stepOut(threadId, undefined);
+}
+
+void Debugger::addBreakpoint(const QString &filepath, int lineNumber)
+{
+    dap::array<IBreakpointData> rawBreakpoints;
+    IBreakpointData bpData;
+    bpData.id = QUuid::createUuid().toString().toStdString();
+    bpData.lineNumber = lineNumber;
+    bpData.enabled = true; // TODO(mozart):get from editor.
+    rawBreakpoints.push_back(bpData);
+
+    if (started) {
+        debugService->addBreakpoints(filepath, rawBreakpoints, session.get());
+    } else {
+        debugService->addBreakpoints(filepath, rawBreakpoints, undefined);
+    }
 }

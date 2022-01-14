@@ -22,41 +22,59 @@
 #ifndef DEBUGMODEL_H
 #define DEBUGMODEL_H
 
-#include <QObject>
 #include "debug.h"
 #include "debugsession.h"
+
+#include <QObject>
 
 class DebugModel : public QObject, IDebugModel
 {
     Q_OBJECT
 public:
-    explicit DebugModel(DebugSession *session, QObject *parent = nullptr);
+    explicit DebugModel(QObject *parent = nullptr);
 
-//    IDebugSession getSessions(bool includeInactive);
-    ReadonlyArray<IBreakpoint> getBreakpoints(dap::optional<QUrl> url, dap::optional<int> lineNumber, dap::optional<int> column, dap::optional<bool> enabledOnly);
-    bool areBreakpointsActivated();
+    void clearThreads(dap::string id, bool removeThreads, dap::optional<number> reference);
+
+    ReadonlyArray<IBreakpoint> getBreakpoints(dap::optional<QUrl> url, dap::optional<int> lineNumber,
+                                              dap::optional<int> column, dap::optional<bool> enabledOnly);
     ReadonlyArray<IFunctionBreakpoint> getFunctionBreakpoints();
     ReadonlyArray<IDataBreakpoint> getDataBreakpoints();
     ReadonlyArray<IExceptionBreakpoint> getExceptionBreakpoints();
     ReadonlyArray<IInstructionBreakpoint> getInstructionBreakpoints();
 
-    ReadonlyArray<IBreakpoint> addBreakpoints(QUrl &uri, dap::array<IBreakpoint> &rawData, bool fireEvent = true);
-
+    bool areBreakpointsActivated();
     void setBreakpointsActivated(bool activated);
-
+    ReadonlyArray<IBreakpoint> addBreakpoints(QUrl &uri, dap::array<IBreakpointData> &rawData, bool fireEvent = true);
+    void removeBreakpoints(dap::array<IBreakpoint> &toRemove);
+    void updateBreakpoints(std::map<dap::string, IBreakpointUpdateData> &data);
+    void setBreakpointSessionData(dap::string &sessionId, dap::Capabilities &capabilites, dap::optional<std::map<dap::string, dap::Breakpoint>> data);
+    void enableOrDisableAllBreakpoints(bool enable);
+    IFunctionBreakpoint addFunctionBreakpoint(dap::string &functionName, dap::string &id);
+    void updateFunctionBreakpoint(dap::string &id, dap::optional<dap::string> name, dap::optional<dap::string> hitCondition, dap::optional<dap::string> condition);
+    void removeFunctionBreakpoints(dap::string &id);
+    void addDataBreakpoint(dap::string &label, dap::string &dataId, bool canPersist, dap::optional<dap::array<dap::DataBreakpointAccessType>> accessTypes, dap::DataBreakpointAccessType accessType);
+    void removeDataBreakpoints(dap::string &id);
+#if 0
+    void addInstructionBreakpoint(dap::string address, number offset, dap::optional<dap::string> condition, dap::optional<dap::string> hitCondition);
+    void removeInstructionBreakpoints(dap::optional<dap::string> address);
+    dap::array<Expression> getWatchExpressions();
+    IExpression addWatchExpression(dap::optional<dap::string> name);
+    void renameWatchExpression(dap::string &id, dap::string &newName);
+    void removeWatchExpressions(dap::string &id);
+    void moveWatchExpression(dap::string id, number position);
+#endif
+    void sourceIsNotAvailable(QUrl uri);
 signals:
 
 public slots:
 
 private:
     bool breakpointsActivated = true;
-    dap::array<IBreakpoint> breakPoints;
+    dap::array<Breakpoint> breakPoints;
     dap::array<IFunctionBreakpoint> functionBreakpoints;
     dap::array<IExceptionBreakpoint> exceptionBreakpoints;
     dap::array<IDataBreakpoint> dataBreakpoints;
     dap::array<IInstructionBreakpoint> instructionBreakpoints;
-
-    DebugSession *session = nullptr;
 };
 
-#endif // DEBUGMODEL_H
+#endif   // DEBUGMODEL_H

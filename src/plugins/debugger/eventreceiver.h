@@ -21,17 +21,24 @@
 #ifndef EVENTRECEIVER_H
 #define EVENTRECEIVER_H
 
+#include <framework/framework.h>
 #include <QObject>
 
-class EventReceiver : public QObject
+class EventReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<EventReceiver>
 {
-    Q_OBJECT
+    friend class dpf::AutoEventHandlerRegister<EventReceiver>;
+
 public:
     explicit EventReceiver(QObject *parent = nullptr);
+    static Type type();
+    static QStringList &topics();
 
 signals:
 
 public slots:
+
+private:
+    virtual void eventProcess(const dpf::Event &event) override;
 };
 
-#endif // EVENTRECEIVER_H
+#endif   // EVENTRECEIVER_H

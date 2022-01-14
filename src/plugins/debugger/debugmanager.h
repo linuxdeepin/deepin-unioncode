@@ -47,6 +47,9 @@ public slots:
     void stepIn();
     void stepOut();
 
+private slots:
+    void slotBreakpointAdded(const QString &filepath, int lineNumber);
+
 private:
     QSharedPointer<Debugger> debugger;
 };

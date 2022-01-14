@@ -46,6 +46,8 @@ public:
     void stepOver();
     void stepIn();
     void stepOut();
+
+    void addBreakpoint(const QString &filepath, int lineNumber);
 signals:
 
 public slots:
@@ -53,6 +55,8 @@ public slots:
 private:
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
     QSharedPointer<DebugSession> session;
+
+    bool started = false;
 };
 
 #endif // DEBUGGER_H

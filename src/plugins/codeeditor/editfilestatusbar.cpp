@@ -33,16 +33,14 @@ class EditFileStatusBarPrivate
 };
 
 EditFileStatusBar::EditFileStatusBar(QWidget *parent)
-    : QStatusBar (parent)
-    , d(new EditFileStatusBarPrivate)
+    : QStatusBar(parent), d(new EditFileStatusBarPrivate)
 {
-
 }
 
 EditFileStatusBar::~EditFileStatusBar()
 {
-    if (d){
-        for(auto button: d->buttons.values()) {
+    if (d) {
+        for (auto button : d->buttons.values()) {
             delete button;
         }
         d->buttons.clear();
@@ -59,9 +57,9 @@ EditFileStatusBar *EditFileStatusBar::changedReload(const QString &filePath)
 {
     auto self = new EditFileStatusBar();
     self->d->infoLabel.setText(
-                tr("File Path: %0").arg(filePath)
-                + "\n"
-                + tr("The current file has changed. Do you want to reload the current file?"));
+            tr("File Path: %0").arg(filePath)
+            + "\n"
+            + tr("The current file has changed. Do you want to reload the current file?"));
     self->d->buttons[StandardButton::Reload] = new QPushButton("Reload");
     self->d->buttons[StandardButton::Cancel] = new QPushButton("Cancel");
     self->d->background = QColor(0xff0000);
@@ -69,7 +67,7 @@ EditFileStatusBar *EditFileStatusBar::changedReload(const QString &filePath)
 
     self->addWidget(&(self->d->infoLabel), 0);
     for (auto button : self->d->buttons) {
-        button->setFixedSize(60,20);
+        button->setFixedSize(60, 20);
         self->addWidget(button);
     }
 
@@ -78,5 +76,3 @@ EditFileStatusBar *EditFileStatusBar::changedReload(const QString &filePath)
     self->setPalette(palette);
     return self;
 }
-
-

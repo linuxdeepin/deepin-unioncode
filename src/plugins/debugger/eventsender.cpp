@@ -19,8 +19,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "eventsender.h"
+#include "framework.h"
+#include "common/util/eventdefinitions.h"
 
-EventSender::EventSender(QObject *parent) : QObject(parent)
+void EventSender::jumpTo(dap::string filepath, int numberline)
 {
+    if (!filepath.c_str())
+        return;
 
+    dpf::Event event;
+    event.setTopic(T_DEBUGGER);
+    event.setData(D_DEBUG_EXECUTION_JUMP);
+    event.setProperty(P_FILEPATH, QString(filepath.c_str()));
+    event.setProperty(P_FILELINE, numberline); // -1
+    dpf::EventCallProxy::instance().pubEvent(event);
 }

@@ -2,7 +2,8 @@
 #include "debuggerglobals.h"
 
 using namespace dap;
-RunTimeCfgProvider::RunTimeCfgProvider(QObject *parent) : QObject(parent)
+RunTimeCfgProvider::RunTimeCfgProvider(QObject *parent)
+    : QObject(parent)
 {
 }
 

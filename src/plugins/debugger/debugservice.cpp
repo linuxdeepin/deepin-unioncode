@@ -21,14 +21,17 @@
 */
 #include "debugservice.h"
 #include "debugmodel.h"
+#include "debugsession.h"
 
-DebugService::DebugService(QObject *parent) : QObject(parent)
+DebugService::DebugService(QObject *parent)
+    : QObject(parent)
 {
+    model.reset(new DebugModel(this));
 }
 
 void DebugService::sendAllBreakpoints(DebugSession *session)
 {
-    sendBreakpoints({}, session, false);
+    sendBreakpoints(undefined, session, false);
     sendFunctionBreakpoints(session);
     sendDataBreakpoints(session);
     sendInstructionBreakpoints(session);
@@ -36,30 +39,43 @@ void DebugService::sendAllBreakpoints(DebugSession *session)
     sendExceptionBreakpoints(session);
 }
 
-void DebugService::sendBreakpoints(QUrl uri, DebugSession *session, bool sourceModified)
+dap::array<IBreakpoint> DebugService::addBreakpoints(
+        QUrl uri, dap::array<IBreakpointData> rawBreakpoints, dap::optional<DebugSession *> session)
 {
-//    auto breakpointsToSend = model->getBreakpoints(uri, {}, {}, true);
-    // TODO(mozart):should be reimpliment.
-    dap::array<IBreakpoint> breakpointsToSend;
+    auto breakpoints = model->addBreakpoints(uri, rawBreakpoints);
+    if (session)
+        sendBreakpoints(uri, session.value());
+
+    return breakpoints;
+}
+
+void DebugService::sendBreakpoints(dap::optional<QUrl> uri, DebugSession *session, bool sourceModified)
+{
+    Q_UNUSED(sourceModified)
+    auto breakpointsToSend = model->getBreakpoints(uri, undefined, undefined, true);
     session->sendBreakpoints(breakpointsToSend);
 }
 
 void DebugService::sendFunctionBreakpoints(DebugSession *session)
 {
+    Q_UNUSED(session)
     // TODO(mozart)
 }
 
 void DebugService::sendDataBreakpoints(DebugSession *session)
 {
+    Q_UNUSED(session)
     // TODO(mozart)
 }
 
 void DebugService::sendInstructionBreakpoints(DebugSession *session)
 {
+    Q_UNUSED(session)
     // TODO(mozart)
 }
 
 void DebugService::sendExceptionBreakpoints(DebugSession *session)
 {
+    Q_UNUSED(session)
     // TODO(mozart)
 }

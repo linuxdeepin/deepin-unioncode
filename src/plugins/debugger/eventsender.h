@@ -22,16 +22,18 @@
 #define EVENTSENDER_H
 
 #include <QObject>
+#include <dap/protocol.h>
 
 class EventSender : public QObject
 {
     Q_OBJECT
 public:
-    explicit EventSender(QObject *parent = nullptr);
-
+    static void jumpTo(dap::string, int numberline);
 signals:
 
 public slots:
+private:
+    EventSender() = delete;
 };
 
-#endif // EVENTSENDER_H
+#endif   // EVENTSENDER_H

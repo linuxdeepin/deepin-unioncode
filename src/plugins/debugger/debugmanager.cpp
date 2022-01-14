@@ -20,6 +20,8 @@
 */
 #include "debugmanager.h"
 #include "debugger.h"
+#include "debuggersignals.h"
+#include "debuggerglobals.h"
 
 DebugManager::DebugManager(QObject *parent) : QObject(parent)
 {
@@ -29,6 +31,8 @@ DebugManager::DebugManager(QObject *parent) : QObject(parent)
 bool DebugManager::initialize()
 {
     debugger.reset(new Debugger(this));
+
+    connect(debuggerSignals, &DebuggerSignals::breakpointAdded, this, &DebugManager::slotBreakpointAdded);
 
     return true;
 }
@@ -76,4 +80,9 @@ void DebugManager::stepIn()
 void DebugManager::stepOut()
 {
     debugger->stepOut();
+}
+
+void DebugManager::slotBreakpointAdded(const QString &filepath, int lineNumber)
+{
+    debugger->addBreakpoint(filepath, lineNumber);
 }

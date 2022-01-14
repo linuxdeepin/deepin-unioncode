@@ -20,26 +20,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "debugmodel.h"
+#include "debug.h"
+#include "debuggerglobals.h"
 
-using namespace dap;
-DebugModel::DebugModel(DebugSession *_session, QObject *parent) :
-    QObject(parent),
-    session(_session)
+#include <QUuid>
+
+#include "stdlib.h"
+
+DebugModel::DebugModel(QObject *parent)
+    : QObject(parent)
 {
+}
 
+IBreakpoint convertToIBreakpoint(Breakpoint &bp)
+{
+    IBreakpoint ibp;
+    ibp.condition = bp.condition;
+    ibp.hitCondition = bp.hitCondition;
+    ibp.logMessage = bp.logMessage;
+    ibp.verified = bp.verified();
+    ibp.support = bp.supported();
+    ibp.message = bp.message();
+    ibp.sessionsThatVerified = bp.sessionsThatVerified();
+
+    ibp.uri = bp.uri();
+    ibp.lineNumber = bp.lineNumber();
+    ibp.endLineNumber = bp.endLineNumber();
+    ibp.column = bp.column();
+    ibp.endColumn = bp.endColumn();
+    ibp.adapterData = bp.adapterData();
+
+    return ibp;
 }
 
 dap::array<IBreakpoint> DebugModel::getBreakpoints(dap::optional<QUrl> url, dap::optional<int> lineNumber, dap::optional<int> column, dap::optional<bool> enabledOnly)
 {
     dap::array<IBreakpoint> ret;
-    string uriStr = url ? url->toString().toStdString() : "";
+    dap::string uriStr = url ? url->toString().toStdString() : "";
     for (auto it : breakPoints) {
-        if ((url && it.uri.toString().toStdString() != uriStr)
-                || (lineNumber && lineNumber.value() != it.lineNumber)
-                || (enabledOnly && (!breakpointsActivated || enabledOnly.value() != it.enabled))) {
+        if ((url && it.uri().toString().toStdString() != uriStr)
+            || (lineNumber && lineNumber.value() != it.lineNumber())
+            || (enabledOnly && (!breakpointsActivated || enabledOnly.value() != it.enabled))) {
             continue;
         }
-        ret.push_back(it);
+        auto ibp = convertToIBreakpoint(it);
+        ret.push_back(ibp);
     }
     return ret;
 }
@@ -69,12 +94,76 @@ dap::array<IInstructionBreakpoint> DebugModel::getInstructionBreakpoints()
     return instructionBreakpoints;
 }
 
-dap::array<IBreakpoint> DebugModel::addBreakpoints(QUrl &uri, dap::array<IBreakpoint> &rawData, bool fireEvent)
+dap::array<IBreakpoint> DebugModel::addBreakpoints(
+        QUrl &uri, dap::array<IBreakpointData> &rawData, bool fireEvent)
 {
     Q_UNUSED(uri)
     Q_UNUSED(fireEvent)
-    breakPoints.insert(breakPoints.end(), rawData.begin(), rawData.end());
-    return breakPoints;
+
+    dap::array<IBreakpoint> retBreakpoints;
+    for (auto rawBp : rawData) {
+        Breakpoint bp(uri, rawBp.lineNumber.value(), rawBp.column, rawBp.enabled,
+                      rawBp.condition, rawBp.hitCondition, rawBp.logMessage, undefined, rawBp.id.value());
+        auto ibp = convertToIBreakpoint(bp);
+        retBreakpoints.push_back(ibp);
+        breakPoints.push_back(bp);
+    }
+
+    return retBreakpoints;
+}
+
+void DebugModel::removeBreakpoints(dap::array<IBreakpoint> &toRemove)
+{
+    for (auto bp = breakPoints.begin(); bp != breakPoints.end(); ++bp) {
+        dap::string id = bp->getId();
+        for (auto it : toRemove) {
+            if (id == it.getId()) {
+                bp = breakPoints.erase(bp);
+            }
+        }
+    }
+    // fire event.
+}
+
+void DebugModel::updateBreakpoints(std::map<dap::string, IBreakpointUpdateData> &data)
+{
+    //    dap::array<IBreakpoint> updated;
+    //    for (auto bp : breakPoints) {
+    //        auto bpData = data.find(bp.Enablement::getId());
+    //        if (bpData != data.end()) {
+    //            bp.update(bpData->second);
+    //            updated.push_back(bp);
+    //        }
+    //    }
+}
+
+IBreakpointSessionData toBreakpointSessionData(dap::Breakpoint &data, dap::Capabilities &capabilities)
+{
+    Q_UNUSED(data)
+    Q_UNUSED(capabilities)
+    return {};
+}
+
+void DebugModel::setBreakpointSessionData(dap::string &sessionId, dap::Capabilities &capabilites, dap::optional<std::map<dap::string, dap::Breakpoint>> data)
+{
+    for (auto bp : breakPoints) {
+        if (!data) {
+            bp.setSessionData(sessionId, undefined);
+        } else {
+            auto bpData = data.value().find(bp.getId());
+            if (bpData != data->end()) {
+                // TODO(mozart):write session data.
+                bp.setSessionData(sessionId, undefined);
+            }
+        }
+    }
+}
+
+void DebugModel::enableOrDisableAllBreakpoints(bool enable)
+{
+    for (auto bp : breakPoints) {
+        bp.enabled = enable;
+    }
 }
 
 void DebugModel::setBreakpointsActivated(bool activated)

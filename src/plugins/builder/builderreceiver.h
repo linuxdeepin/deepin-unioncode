@@ -28,7 +28,7 @@
  * @brief This is a tempory class for provide project info.
  * TODO(mozart) : delete this class
  */
-class BuilderReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegister<BuilderReceiver>
+class BuilderReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<BuilderReceiver>
 {
     friend class dpf::AutoEventHandlerRegister<BuilderReceiver>;
 public:

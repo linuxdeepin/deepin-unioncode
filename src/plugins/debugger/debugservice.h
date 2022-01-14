@@ -22,11 +22,13 @@
 #ifndef DEBUGSERVICE_H
 #define DEBUGSERVICE_H
 
+#include "debug.h"
+#include "debugsession.h"
+
 #include <QObject>
 #include <QSharedPointer>
 
 class DebugModel;
-class DebugSession;
 class DebugService : public QObject
 {
     Q_OBJECT
@@ -34,13 +36,15 @@ public:
     explicit DebugService(QObject *parent = nullptr);
 
     void sendAllBreakpoints(DebugSession *session);
+    dap::array<IBreakpoint> addBreakpoints(QUrl uri, dap::array<IBreakpointData> rawBreakpoints,
+                                           dap::optional<DebugSession *> session);
 
 signals:
 
 public slots:
 
 private:
-    void sendBreakpoints(QUrl uri, DebugSession *session, bool sourceModified = false);
+    void sendBreakpoints(dap::optional<QUrl> uri, DebugSession *session, bool sourceModified = false);
     void sendFunctionBreakpoints(DebugSession *session);
     void sendDataBreakpoints(DebugSession *session);
     void sendInstructionBreakpoints(DebugSession *session);
@@ -49,4 +53,4 @@ private:
     QSharedPointer<DebugModel> model;
 };
 
-#endif // DEBUGSERVICE_H
+#endif   // DEBUGSERVICE_H

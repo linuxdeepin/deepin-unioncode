@@ -48,6 +48,7 @@ target_link_libraries(${PROJECT_NAME}
     unioncode-framework
     unioncode-base
     unioncode-service
+    unioncode-common
     cppdap
     ${QtUseModules}
     ${PkgUserModules}

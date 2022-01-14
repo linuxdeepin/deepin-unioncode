@@ -31,6 +31,7 @@ public:
 
 Q_SIGNALS:
     void debugTriggered();
+    void breakpointAdded(const QString filepath, int lineNumber);
 };
 
 

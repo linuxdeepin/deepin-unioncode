@@ -57,9 +57,9 @@ public:
     void continueDbg(dap::integer threadId);
     void pause(dap::integer threadId);
 
-    void stepIn(dap::integer threadId, int targetId, dap::SteppingGranularity granularity);
-    void stepOut(dap::integer threadId, dap::SteppingGranularity granularity);
-    void next(dap::integer threadId, dap::SteppingGranularity granularity);
+    void stepIn(dap::integer threadId, dap::optional<dap::integer> targetId, dap::optional<dap::SteppingGranularity> granularity);
+    void stepOut(dap::integer threadId, dap::optional<dap::SteppingGranularity> granularity);
+    void next(dap::integer threadId, dap::optional<dap::SteppingGranularity> granularity);
 
     void sendBreakpoints(dap::array<IBreakpoint> &breakpointsToSend);
 
@@ -73,12 +73,11 @@ private:
     void shutdown();
     void registerHandlers();
     void fetchThreads(IRawStoppedDetails stoppedDetails);
-    void onBreakpointHit(dap::integer threadId);
-    void onStep(dap::integer threadId);
+    void onBreakpointHit(const dap::StoppedEvent &event);
+    void onStep(const dap::StoppedEvent &event);
 
     QSharedPointer<dap::RawDebugSession> raw;
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
-    QSharedPointer<DebugService> debugService;
 
     bool initialized = false;
 
@@ -89,4 +88,4 @@ private:
     dap::integer threadId = 0;
 };
 
-#endif // DEBUGSESSION_H
+#endif   // DEBUGSESSION_H

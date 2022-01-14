@@ -106,7 +106,11 @@ DAP_IMPLEMENT_STRUCT_TYPEINFO(StoppedEvent,
                               DAP_FIELD(preserveFocusHint, "preserveFocusHint"),
                               DAP_FIELD(reason, "reason"),
                               DAP_FIELD(text, "text"),
-                              DAP_FIELD(threadId, "threadId"));
+                              DAP_FIELD(threadId, "threadId"),
+                              // mozart added:2022/1/14
+                              DAP_FIELD(source, "source"),
+                              DAP_FIELD(line, "line"),
+                              DAP_FIELD(column, "column"));
 
 DAP_IMPLEMENT_STRUCT_TYPEINFO(TerminatedEvent,
                               "terminated",
