@@ -21,6 +21,8 @@
 #ifndef DEBUGGERSIGNALS_H
 #define DEBUGGERSIGNALS_H
 
+#include "debuggerglobals.h"
+
 #include <QObject>
 
 class DebuggerSignals : public QObject
@@ -31,7 +33,8 @@ public:
 
 Q_SIGNALS:
     void debugTriggered();
-    void breakpointAdded(const QString filepath, int lineNumber);
+    void breakpointAdded(const QString &filepath, int lineNumber);
+    void addOutput(const QString &content, OutputFormat format);
 };
 
 

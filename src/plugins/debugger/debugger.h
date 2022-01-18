@@ -21,14 +21,15 @@
 #ifndef DEBUGGER_H
 #define DEBUGGER_H
 
+#include "debug.h"
+
 #include <QObject>
 #include <QSharedPointer>
 
-class DebugSession;
-class RunTimeCfgProvider;
 /**
  * @brief The Debugger class wrap
  */
+class RunTimeCfgProvider;
 class Debugger : public QObject
 {
     Q_OBJECT
@@ -54,7 +55,7 @@ public slots:
 
 private:
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
-    QSharedPointer<DebugSession> session;
+    QSharedPointer<DEBUG_NAMESPACE::IDebugSession> session;
 
     bool started = false;
 };

@@ -1,9 +1,10 @@
 #ifndef RUNTIMECFGPROVIDER_H
 #define RUNTIMECFGPROVIDER_H
 
-#include <QObject>
 #include "dap/types.h"
 #include "dap/protocol.h"
+
+#include <QObject>
 
 class RunTimeCfgProvider : public QObject
 {

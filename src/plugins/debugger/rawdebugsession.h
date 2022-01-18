@@ -45,7 +45,7 @@ public:
 
     using ErrorHandler = std::function<void(const std::string&)>;
 
-    // Similar with the promise in ts.
+    // value type returned.
     #define Promise RawDebugSession::promiseEx
 
     explicit RawDebugSession(std::shared_ptr<Session>&, QObject *parent = nullptr);
@@ -80,7 +80,7 @@ public:
     Promise<BreakpointLocationsRequest> breakpointLocations(const BreakpointLocationsRequest &request);
     Promise<ConfigurationDoneRequest> configurationDone();
     Promise<StackTraceRequest> stackTrace(const StackTraceRequest &request);
-    Promise<ExceptionInfoRequest> exceptionInfoTrace(const ExceptionInfoRequest &request);
+    Promise<ExceptionInfoRequest> exceptionInfo(const ExceptionInfoRequest &request);
     Promise<ScopesRequest> scopes(const ScopesRequest &request);
     Promise<VariablesRequest> variables(const VariablesRequest &request);
     Promise<SourceRequest> source(const SourceRequest &request);
@@ -93,6 +93,7 @@ public:
     Promise<GotoRequest> goto_(const GotoRequest &request);
     Promise<SetInstructionBreakpointsRequest> setInstructionBreakpoints(const SetInstructionBreakpointsRequest &request);
     Promise<DisassembleRequest> disassemble(const DisassembleRequest &request);
+    Promise<CancelRequest> cancel(const CancelRequest &request);
 
     const dap::Capabilities &capabilities() const;
     bool shutdown(optional<boolean> terminateDebuggee, optional<boolean> restart = false);

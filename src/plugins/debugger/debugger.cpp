@@ -23,6 +23,7 @@
 #include "debugsession.h"
 #include "debugservice.h"
 #include "debuggerglobals.h"
+#include "debugmodel.h"
 
 #include "dap/io.h"
 #include "dap/protocol.h"
@@ -37,9 +38,11 @@
  * For serial debugging service
  */
 using namespace dap;
-Debugger::Debugger(QObject *parent) : QObject (parent)
+using namespace DEBUG_NAMESPACE;
+Debugger::Debugger(QObject *parent)
+    : QObject(parent)
 {
-    session.reset(new DebugSession(this));
+    session.reset(new DebugSession(debugService->getModel(), this));
     rtCfgProvider.reset(new RunTimeCfgProvider(this));
 }
 
@@ -48,8 +51,8 @@ void Debugger::startDebug()
     // Setup debug environment.
     auto iniRequet = rtCfgProvider->initalizeRequest();
     bool bSuccess = session->initialize(rtCfgProvider->ip(),
-                        rtCfgProvider->port(),
-                        iniRequet);
+                                        rtCfgProvider->port(),
+                                        iniRequet);
 
     // Launch debuggee.
     if (bSuccess) {
@@ -60,6 +63,7 @@ void Debugger::startDebug()
     } else {
         started = true;
     }
+    debugService->getModel()->addSession(session.get());
 }
 
 void Debugger::detachDebug()
@@ -114,7 +118,7 @@ void Debugger::addBreakpoint(const QString &filepath, int lineNumber)
     IBreakpointData bpData;
     bpData.id = QUuid::createUuid().toString().toStdString();
     bpData.lineNumber = lineNumber;
-    bpData.enabled = true; // TODO(mozart):get from editor.
+    bpData.enabled = true;   // TODO(mozart):get from editor.
     rawBreakpoints.push_back(bpData);
 
     if (started) {

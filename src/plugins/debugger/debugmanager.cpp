@@ -22,19 +22,27 @@
 #include "debugger.h"
 #include "debuggersignals.h"
 #include "debuggerglobals.h"
+#include "appoutputpane.h"
 
 DebugManager::DebugManager(QObject *parent) : QObject(parent)
 {
-
+    qRegisterMetaType<OutputFormat>("OutputFormat");
 }
 
 bool DebugManager::initialize()
 {
     debugger.reset(new Debugger(this));
+    outputPane.reset(new AppOutputPane());
 
     connect(debuggerSignals, &DebuggerSignals::breakpointAdded, this, &DebugManager::slotBreakpointAdded);
+    connect(debuggerSignals, &DebuggerSignals::addOutput, this, &DebugManager::slotOutput);
 
     return true;
+}
+
+AppOutputPane *DebugManager::getOutputPane() const
+{
+    return outputPane.get();
 }
 
 void DebugManager::startDebug()
@@ -85,4 +93,9 @@ void DebugManager::stepOut()
 void DebugManager::slotBreakpointAdded(const QString &filepath, int lineNumber)
 {
     debugger->addBreakpoint(filepath, lineNumber);
+}
+
+void DebugManager::slotOutput(const QString &content, OutputFormat format)
+{
+     outputPane->appendText(content, format);
 }

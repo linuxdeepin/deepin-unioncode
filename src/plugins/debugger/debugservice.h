@@ -28,6 +28,8 @@
 #include <QObject>
 #include <QSharedPointer>
 
+namespace DEBUG_NAMESPACE {
+
 class DebugModel;
 class DebugService : public QObject
 {
@@ -35,22 +37,26 @@ class DebugService : public QObject
 public:
     explicit DebugService(QObject *parent = nullptr);
 
-    void sendAllBreakpoints(DebugSession *session);
+    void sendAllBreakpoints(IDebugSession *session);
     dap::array<IBreakpoint> addBreakpoints(QUrl uri, dap::array<IBreakpointData> rawBreakpoints,
-                                           dap::optional<DebugSession *> session);
+                                           dap::optional<IDebugSession *> session);
+
+    DebugModel *getModel() const;
 
 signals:
 
 public slots:
 
 private:
-    void sendBreakpoints(dap::optional<QUrl> uri, DebugSession *session, bool sourceModified = false);
-    void sendFunctionBreakpoints(DebugSession *session);
-    void sendDataBreakpoints(DebugSession *session);
-    void sendInstructionBreakpoints(DebugSession *session);
-    void sendExceptionBreakpoints(DebugSession *session);
+    void sendBreakpoints(dap::optional<QUrl> uri, IDebugSession *session, bool sourceModified = false);
+    void sendFunctionBreakpoints(IDebugSession *session);
+    void sendDataBreakpoints(IDebugSession *session);
+    void sendInstructionBreakpoints(IDebugSession *session);
+    void sendExceptionBreakpoints(IDebugSession *session);
 
     QSharedPointer<DebugModel> model;
 };
+
+} // end namespace.
 
 #endif   // DEBUGSERVICE_H

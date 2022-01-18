@@ -27,27 +27,34 @@
 
 #include <QObject>
 
-class DebugModel : public QObject, IDebugModel
+namespace DEBUG_NAMESPACE {
+class DebugModel : public QObject, public IDebugModel
 {
     Q_OBJECT
+
 public:
-    explicit DebugModel(QObject *parent = nullptr);
+    DebugModel(dap::optional<dap::array<IDebugSession *>> _sessions, QObject *parent = nullptr);
+    dap::array<IDebugSession *> getSessions(bool includeInactive = false) override;
+    dap::optional<IDebugSession *> getSession(dap::optional<dap::string> sessionId, bool includeInactive = false) override;
+    void addSession(IDebugSession *session);
 
+    void rawUpdate(IRawModelUpdate *data);
     void clearThreads(dap::string id, bool removeThreads, dap::optional<number> reference);
-
+    void fetchCallStack(Thread &thread);
     ReadonlyArray<IBreakpoint> getBreakpoints(dap::optional<QUrl> url, dap::optional<int> lineNumber,
-                                              dap::optional<int> column, dap::optional<bool> enabledOnly);
-    ReadonlyArray<IFunctionBreakpoint> getFunctionBreakpoints();
-    ReadonlyArray<IDataBreakpoint> getDataBreakpoints();
-    ReadonlyArray<IExceptionBreakpoint> getExceptionBreakpoints();
-    ReadonlyArray<IInstructionBreakpoint> getInstructionBreakpoints();
+                                              dap::optional<int> column, dap::optional<bool> enabledOnly) override;
+    ReadonlyArray<IFunctionBreakpoint> getFunctionBreakpoints() override;
+    ReadonlyArray<IDataBreakpoint> getDataBreakpoints() override;
+    ReadonlyArray<IExceptionBreakpoint> getExceptionBreakpoints() override;
+    ReadonlyArray<IInstructionBreakpoint> getInstructionBreakpoints() override;
 
-    bool areBreakpointsActivated();
+    bool areBreakpointsActivated() override;
     void setBreakpointsActivated(bool activated);
     ReadonlyArray<IBreakpoint> addBreakpoints(QUrl &uri, dap::array<IBreakpointData> &rawData, bool fireEvent = true);
     void removeBreakpoints(dap::array<IBreakpoint> &toRemove);
     void updateBreakpoints(std::map<dap::string, IBreakpointUpdateData> &data);
-    void setBreakpointSessionData(dap::string &sessionId, dap::Capabilities &capabilites, dap::optional<std::map<dap::string, dap::Breakpoint>> data);
+    void setBreakpointSessionData(dap::string &sessionId, const dap::Capabilities &capabilites, dap::optional<std::map<dap::string, dap::Breakpoint>> data);
+    dap::optional<dap::Breakpoint> getDebugProtocolBreakpoint(dap::string &breakpointId, dap::string &sessionId);
     void enableOrDisableAllBreakpoints(bool enable);
     IFunctionBreakpoint addFunctionBreakpoint(dap::string &functionName, dap::string &id);
     void updateFunctionBreakpoint(dap::string &id, dap::optional<dap::string> name, dap::optional<dap::string> hitCondition, dap::optional<dap::string> condition);
@@ -75,6 +82,9 @@ private:
     dap::array<IExceptionBreakpoint> exceptionBreakpoints;
     dap::array<IDataBreakpoint> dataBreakpoints;
     dap::array<IInstructionBreakpoint> instructionBreakpoints;
+    dap::array<IDebugSession *> sessions;
 };
+
+} // end namespace.
 
 #endif   // DEBUGMODEL_H

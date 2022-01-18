@@ -18,6 +18,7 @@ set(CXX_CPP
     runtimecfgprovider.cpp
     debugservice.cpp
     debugmodel.cpp
+    appoutputpane.cpp
     )
 
 set(CXX_H
@@ -36,6 +37,7 @@ set(CXX_H
     debug.h
     debugservice.h
     debugmodel.h
+    appoutputpane.h
     )
 
 add_library(${PROJECT_NAME}

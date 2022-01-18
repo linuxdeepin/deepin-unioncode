@@ -24,6 +24,7 @@
 #include "base/abstractaction.h"
 #include "base/abstractmenu.h"
 #include "base/abstractmainwindow.h"
+#include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "debuggerglobals.h"
 #include "debugmanager.h"
@@ -49,6 +50,9 @@ bool DebuggerPlugin::start()
     InitUI(windowService);
 
     debugManager->initialize();
+
+    // instert output pane to window.
+    emit windowService->addContextWidget("AppOutput", new AbstractWidget(debugManager->getOutputPane()));
 
     return true;
 }

@@ -294,7 +294,7 @@ Promise<StackTraceRequest> RawDebugSession::stackTrace(const StackTraceRequest &
     return send(request);
 }
 
-Promise<ExceptionInfoRequest> RawDebugSession::exceptionInfoTrace(const ExceptionInfoRequest &request)
+Promise<ExceptionInfoRequest> RawDebugSession::exceptionInfo(const ExceptionInfoRequest &request)
 {
     if (_capabilities.supportsExceptionInfoRequest) {
         return send(request);
@@ -405,6 +405,11 @@ Promise<DisassembleRequest> RawDebugSession::disassemble(const DisassembleReques
     }
     qInfo() << "supportsDisassembleRequest not supported";
     return {};
+}
+
+Promise<CancelRequest> RawDebugSession::cancel(const CancelRequest &request)
+{
+    return send(request);
 }
 
 const Capabilities &RawDebugSession::capabilities() const

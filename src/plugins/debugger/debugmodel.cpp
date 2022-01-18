@@ -24,12 +24,87 @@
 #include "debuggerglobals.h"
 
 #include <QUuid>
+#include <QString>
 
 #include "stdlib.h"
 
-DebugModel::DebugModel(QObject *parent)
+namespace DEBUG_NAMESPACE {
+DebugModel::DebugModel(dap::optional<dap::array<IDebugSession *>> _sessions, QObject *parent)
     : QObject(parent)
 {
+    if (_sessions) {
+        auto sessionArray = _sessions.value();
+        sessions.insert(sessions.end(), sessionArray.begin(), sessionArray.end());
+    }
+}
+
+dap::array<IDebugSession *> DebugModel::getSessions(bool includeInactive)
+{
+    dap::array<IDebugSession *> ret;
+
+    std::copy_if(sessions.begin(), sessions.end(), std::back_inserter(ret), [&](const IDebugSession *item){
+         return (includeInactive || item->state != State::kInactive);
+    });
+
+    return ret;
+}
+
+dap::optional<IDebugSession *> DebugModel::getSession(dap::optional<dap::string> sessionId, bool includeInactive)
+{
+    if (sessionId) {
+        auto filteredSessions = getSessions(includeInactive);
+        for (auto s : filteredSessions) {
+            if (s->getId() == sessionId.value()) {
+                return s;
+            }
+        }
+    }
+    return undefined;
+}
+
+void DebugModel::addSession(IDebugSession *session)
+{
+    Q_ASSERT(session);
+    dap::array<IDebugSession *> filterdSessions;
+    for (auto s = sessions.begin(); s != sessions.end();) {
+        if ((*s)->getId() == session->getId()) {
+            s = sessions.erase(s);
+            return;
+        }
+        if ((*s)->state == State::kInactive && (*s)->configuration->name == session->configuration->name) {
+            s = sessions.erase(s);
+            return;
+        }
+        ++s;
+    }
+    int i = 1;
+    char szBuf[10] = { 0 };
+    for (auto s = sessions.begin(); s != sessions.end(); ++s) {
+        while ((*s)->getLabel() == session->getLabel()) {
+            sprintf(szBuf, "%d", i);
+            auto newName = session->configuration->name + szBuf;
+            session->setName(newName);
+            memset(szBuf, 0, sizeof(szBuf));
+        }
+    }
+
+    sessions.push_back(session);
+}
+
+void DebugModel::rawUpdate(IRawModelUpdate *data)
+{
+    for (auto it : sessions) {
+        if (it->getId() == data->sessionId) {
+            it->rawUpdate(data);
+            // fire event.
+        }
+    }
+}
+
+void DebugModel::fetchCallStack(Thread &thread)
+{
+    // fetch whole threads.
+    thread.fetchCallStack();
 }
 
 IBreakpoint convertToIBreakpoint(Breakpoint &bp)
@@ -144,7 +219,7 @@ IBreakpointSessionData toBreakpointSessionData(dap::Breakpoint &data, dap::Capab
     return {};
 }
 
-void DebugModel::setBreakpointSessionData(dap::string &sessionId, dap::Capabilities &capabilites, dap::optional<std::map<dap::string, dap::Breakpoint>> data)
+void DebugModel::setBreakpointSessionData(dap::string &sessionId, const dap::Capabilities &capabilites, dap::optional<std::map<dap::string, dap::Breakpoint>> data)
 {
     for (auto bp : breakPoints) {
         if (!data) {
@@ -159,6 +234,17 @@ void DebugModel::setBreakpointSessionData(dap::string &sessionId, dap::Capabilit
     }
 }
 
+dap::optional<dap::Breakpoint> DebugModel::getDebugProtocolBreakpoint(
+        dap::string &breakpointId, dap::string &sessionId)
+{
+    for (auto bp : breakPoints) {
+        if (bp.getId() == breakpointId) {
+            return bp.getDebugProtocolBreakpoint(sessionId);
+        }
+    }
+    return undefined;
+}
+
 void DebugModel::enableOrDisableAllBreakpoints(bool enable)
 {
     for (auto bp : breakPoints) {
@@ -171,3 +257,4 @@ void DebugModel::setBreakpointsActivated(bool activated)
     breakpointsActivated = activated;
     // fire event.
 }
+} // end namespace.

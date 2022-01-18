@@ -18,19 +18,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "eventsender.h"
-#include "framework.h"
-#include "common/util/eventdefinitions.h"
+#ifndef APPOUTPUTPANE_H
+#define APPOUTPUTPANE_H
 
-void EventSender::jumpTo(dap::string filepath, int numberline)
+#include "base/abstractoutputpane.h"
+#include "debuggerglobals.h"
+
+#include <QPlainTextEdit>
+
+class OutputWindowPrivate;
+class AppOutputPane : public QPlainTextEdit
 {
-    if (!filepath.c_str())
-        return;
+    Q_OBJECT
+public:
+    AppOutputPane();
+    ~AppOutputPane() override;
 
-    dpf::Event event;
-    event.setTopic(T_DEBUGGER);
-    event.setData(D_DEBUG_EXECUTION_JUMP);
-    event.setProperty(P_FILEPATH, QString(filepath.c_str()));
-    event.setProperty(P_FILELINE, numberline - 1);   // -1
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
+    void clearContents();
+    void appendText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
+    void appendText(const QString &text, OutputFormat format);
+
+    bool isScrollbarAtBottom() const;
+    QString doNewlineEnforcement(const QString &out);
+    void scrollToBottom();
+private:
+    OutputWindowPrivate *d = nullptr;
+};
+
+#endif // APPOUTPUTPANE_H

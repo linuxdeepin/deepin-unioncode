@@ -22,6 +22,7 @@
 #define DEBUGGERGLOBALS_H
 
 #include <common/util/singleton.h>
+#include <QColor>
 
 /*
  * Redefine global instance
@@ -33,6 +34,28 @@
 #define debugService Singleton<DebugService>::instance()
 
 // Do some test when valued 1
-#define DBG_TEST   1
+#define DBG_TEST 1
+#define DEBUG_NAMESPACE DEBUG
+
+enum OutputFormat
+{
+    NormalMessageFormat,
+    ErrorMessageFormat,
+    LogMessageFormat,
+    DebugFormat,
+    StdOutFormat,
+    StdErrFormat,
+    StdOutFormatSameLine,
+    StdErrFormatSameLine,
+    NumberOfFormats // Keep this entry last.
+};
+
+/**
+ * @brief Output text color.
+ */
+const QColor kTextColorNormal(150, 150, 150);
+const QColor kErrorMessageTextColor(255, 108, 108);
+const QColor kMessageOutput(0, 135, 135);
+
 
 #endif // DEBUGGERGLOBALS_H

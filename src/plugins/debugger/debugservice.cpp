@@ -23,13 +23,16 @@
 #include "debugmodel.h"
 #include "debugsession.h"
 
+namespace DEBUG_NAMESPACE {
+
+
 DebugService::DebugService(QObject *parent)
     : QObject(parent)
 {
-    model.reset(new DebugModel(this));
+    model.reset(new DebugModel(undefined, this));
 }
 
-void DebugService::sendAllBreakpoints(DebugSession *session)
+void DebugService::sendAllBreakpoints(IDebugSession *session)
 {
     sendBreakpoints(undefined, session, false);
     sendFunctionBreakpoints(session);
@@ -40,7 +43,7 @@ void DebugService::sendAllBreakpoints(DebugSession *session)
 }
 
 dap::array<IBreakpoint> DebugService::addBreakpoints(
-        QUrl uri, dap::array<IBreakpointData> rawBreakpoints, dap::optional<DebugSession *> session)
+        QUrl uri, dap::array<IBreakpointData> rawBreakpoints, dap::optional<IDebugSession *> session)
 {
     auto breakpoints = model->addBreakpoints(uri, rawBreakpoints);
     if (session)
@@ -49,33 +52,39 @@ dap::array<IBreakpoint> DebugService::addBreakpoints(
     return breakpoints;
 }
 
-void DebugService::sendBreakpoints(dap::optional<QUrl> uri, DebugSession *session, bool sourceModified)
+DebugModel *DebugService::getModel() const
+{
+    return model.get();
+}
+
+void DebugService::sendBreakpoints(dap::optional<QUrl> uri, IDebugSession *session, bool sourceModified)
 {
     Q_UNUSED(sourceModified)
     auto breakpointsToSend = model->getBreakpoints(uri, undefined, undefined, true);
     session->sendBreakpoints(breakpointsToSend);
 }
 
-void DebugService::sendFunctionBreakpoints(DebugSession *session)
+void DebugService::sendFunctionBreakpoints(IDebugSession *session)
 {
     Q_UNUSED(session)
     // TODO(mozart)
 }
 
-void DebugService::sendDataBreakpoints(DebugSession *session)
+void DebugService::sendDataBreakpoints(IDebugSession *session)
 {
     Q_UNUSED(session)
     // TODO(mozart)
 }
 
-void DebugService::sendInstructionBreakpoints(DebugSession *session)
+void DebugService::sendInstructionBreakpoints(IDebugSession *session)
 {
     Q_UNUSED(session)
     // TODO(mozart)
 }
 
-void DebugService::sendExceptionBreakpoints(DebugSession *session)
+void DebugService::sendExceptionBreakpoints(IDebugSession *session)
 {
     Q_UNUSED(session)
     // TODO(mozart)
 }
+} // end namespace.

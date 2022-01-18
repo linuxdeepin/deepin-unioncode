@@ -21,16 +21,20 @@
 #ifndef DEBUGMANAGER_H
 #define DEBUGMANAGER_H
 
+#include "debuggerglobals.h"
+
 #include <QSharedPointer>
 #include <QObject>
 
 class Debugger;
+class AppOutputPane;
 class DebugManager : public QObject
 {
     Q_OBJECT
 public:
     explicit DebugManager(QObject *parent = nullptr);
     bool initialize();
+    AppOutputPane *getOutputPane() const;
 
 signals:
 
@@ -47,11 +51,12 @@ public slots:
     void stepIn();
     void stepOut();
 
-private slots:
     void slotBreakpointAdded(const QString &filepath, int lineNumber);
+    void slotOutput(const QString &content, OutputFormat format);
 
 private:
     QSharedPointer<Debugger> debugger;
+    QSharedPointer<AppOutputPane> outputPane;
 };
 
 #endif // DEBUGMANAGER_H
