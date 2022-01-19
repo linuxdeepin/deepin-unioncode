@@ -125,43 +125,38 @@ bool PluginManagerPrivate::loadPlugin(PluginMetaObjectPointer &pluginMetaObj)
 {
     dpfCheckTimeBegin();
 
+    QMutexLocker lock(&GlobalPrivate::mutex);
+
     //流程互斥
     if (pluginMetaObj->d->state >= PluginMetaObject::State::Loaded) {
-        dpfCritical() << "State error: " << pluginMetaObj->d->state;
-        return false;
+        dpfDebug() << "Plugin"
+                   << pluginMetaObj->d->name
+                   << "already loaded and state: "
+                   << pluginMetaObj->d->state;
+        return true;
     }
+
     if (pluginMetaObj.isNull()) {
-        dpfCritical() << "Failed load plugin is nullptr";
+        dpfCritical() << "Failed, load plugin is nullptr";
         return false;
     }
 
-    auto controller = QtConcurrent::run([=]() {
-
-        QMutexLocker lock(&GlobalPrivate::mutex);
-
-        bool result = pluginMetaObj->d->loader->load();
-        pluginMetaObj->d->plugin = QSharedPointer<Plugin>
-                (qobject_cast<Plugin*>(pluginMetaObj->d->loader->instance()));
-        if (!pluginMetaObj->d->plugin.isNull()) {
-            pluginMetaObj->d->state = PluginMetaObject::State::Loaded;
-            dpfDebug() << "Loaded plugin: " << pluginMetaObj->d->name;
-        } else {
-            pluginMetaObj->d->error = "Failed get plugin instance is nullptr: "
-                    + pluginMetaObj->d->loader->errorString();
-            dpfCritical() << pluginMetaObj->d->error;
-            result = false;
-        }
-        return result;
-    });
-    controller.waitForFinished();
-
-    if (!controller.result()) {
-        dpfCritical() << "Failed load plugin: " << pluginMetaObj->name();
-        return false;
+    bool result = pluginMetaObj->d->loader->load();
+    pluginMetaObj->d->plugin = QSharedPointer<Plugin>(
+                qobject_cast<Plugin*>(pluginMetaObj->d->loader->instance()));
+    if (!pluginMetaObj->d->plugin.isNull()) {
+        pluginMetaObj->d->state = PluginMetaObject::State::Loaded;
+        dpfDebug() << "Loaded plugin: " << pluginMetaObj->d->name;
+    } else {
+        pluginMetaObj->d->error = "Failed, get plugin instance is nullptr: "
+                + pluginMetaObj->d->loader->errorString();
+        dpfCritical() << pluginMetaObj->d->error;
+        result = false;
     }
 
     dpfCheckTimeEnd();
-    return true;
+
+    return result;
 }
 
 /*!
@@ -174,31 +169,30 @@ bool PluginManagerPrivate::initPlugin(PluginMetaObjectPointer &pluginMetaObj)
 
     //流程互斥
     if (pluginMetaObj->d->state >= PluginMetaObject::State::Initialized) {
-        dpfCritical() << "State error: " << pluginMetaObj->d->state;
-        return false;
+        dpfCritical() << "Plugin"
+                      << pluginMetaObj->d->name
+                      << "already initialized and state: "
+                      << pluginMetaObj->d->state;
+        return true;
     }
 
     if (pluginMetaObj.isNull()) {
-        dpfCritical() << "Failed init plugin is nullptr";
+        dpfCritical() << "Failed, init plugin is nullptr";
         return false;
     }
 
     auto pluginInterface = pluginMetaObj->plugin();
 
     if (pluginInterface.isNull()) {
-        dpfCritical() << "Failed init plugin interface is nullptr";
+        dpfCritical() << "Failed, init plugin interface is nullptr";
         return false;
     }
 
     //线程互斥
     QMutexLocker lock(&GlobalPrivate::mutex);
 
-    //    auto controller = QtConcurrent::run([=](){
     pluginMetaObj->d->plugin->initialize();
     dpfDebug() << "Initialized plugin: " << pluginMetaObj->d->name;
-    //    });
-    //    controller.waitForFinished();
-
     pluginMetaObj->d->state = PluginMetaObject::State::Initialized;
 
     dpfCheckTimeEnd();
@@ -220,14 +214,14 @@ bool PluginManagerPrivate::startPlugin(PluginMetaObjectPointer &pluginMetaObj)
     }
 
     if (pluginMetaObj.isNull()) {
-        dpfCritical() << "Failed start plugin is nullptr";
+        dpfCritical() << "Failed, start plugin is nullptr";
         return false;
     }
 
     auto pluginInterface = pluginMetaObj->plugin();
 
     if (pluginInterface.isNull()) {
-        dpfCritical() << "Failed start plugin interface is nullptr";
+        dpfCritical() << "Failed, start plugin interface is nullptr";
         return false;
     }
 
@@ -238,7 +232,7 @@ bool PluginManagerPrivate::startPlugin(PluginMetaObjectPointer &pluginMetaObj)
         pluginMetaObj->d->state = PluginMetaObject::State::Started;
         dpfDebug() << "Started plugin: " << pluginMetaObj->d->name;
     } else {
-        pluginMetaObj->d->error = "Failed start plugin in function start() logic";
+        pluginMetaObj->d->error = "Failed, start plugin in function start() logic";
         dpfCritical() << pluginMetaObj->d->error.toLocal8Bit().data();
     }
 
@@ -307,31 +301,26 @@ void PluginManagerPrivate::stopPlugin(PluginMetaObjectPointer &pluginMetaObj)
 
 /*!
  * \brief 读取所有插件的Json源数据
- * \return
+ * \return 如果未读到任何插件则false
  */
 bool PluginManagerPrivate::readPlugins()
 {
     dpfCheckTimeBegin();
 
+    // 内部已有线程互斥
+    scanfAllPlugin(readQueue, pluginLoadPaths, pluginLoadIID);
+
+    QMutexLocker lock(&GlobalPrivate::mutex);
     int currMaxCountThread = QThreadPool::globalInstance()->maxThreadCount();
     if (currMaxCountThread < 4) {
         QThreadPool::globalInstance()->setMaxThreadCount(4);
     }
 
-    // 内部已有线程互斥
-    QFuture<void> scanController = QtConcurrent::run(scanfAllPlugin,
-                                                     &readQueue,
-                                                     pluginLoadPaths,
-                                                     pluginLoadIID);
-    scanController.waitForFinished();
-
-    QMutexLocker lock(&GlobalPrivate::mutex);
-
+    // 并发读取数据
     QFuture<void> mapController = QtConcurrent::map(readQueue.begin(),
                                                     readQueue.end(),
                                                     readJsonToMeta);
     mapController.waitForFinished();
-
     dpfDebug() << readQueue;
 
     dpfCheckTimeEnd();
@@ -340,11 +329,11 @@ bool PluginManagerPrivate::readPlugins()
 
 /*!
  * \brief 扫描所有插件到目标队列
- * \param destQueue
- * \param pluginPaths
- * \param pluginIID
+ * \param destQueue 目标队列
+ * \param pluginPaths 插件路径列表
+ * \param pluginIID 插件身份
  */
-void PluginManagerPrivate::scanfAllPlugin(QQueue<PluginMetaObjectPointer> *destQueue,
+void PluginManagerPrivate::scanfAllPlugin(PluginMetaQueue &destQueue,
                                           const QStringList &pluginPaths,
                                           const QString &pluginIID)
 {
@@ -372,7 +361,7 @@ void PluginManagerPrivate::scanfAllPlugin(QQueue<PluginMetaObjectPointer> *destQ
                 continue;
             }
 
-            destQueue->append(metaObj);
+            destQueue.append(metaObj);
             metaObj->d->state = PluginMetaObject::Readed;
         }
     }
@@ -451,65 +440,97 @@ void PluginManagerPrivate::readJsonToMeta(const PluginMetaObjectPointer &metaObj
 }
 
 /*!
+ * \brief PluginManagerPrivate::dependsSort 插件依赖排序算法
+ * \param srcQueue 传入需要排序的插件源队列
+ * \return 返回排序后的Queue
+ */
+PluginManagerPrivate::PluginMetaQueue PluginManagerPrivate::dependsSort(
+        const PluginManagerPrivate::PluginMetaQueue &srcQueue)
+{
+    dpfCheckTimeBegin();
+
+    QMutexLocker lock(&GlobalPrivate::mutex);
+
+    PluginMetaQueue result;
+
+    if (srcQueue.isEmpty())
+        return result;
+
+    PluginMetaQueue temp = srcQueue;
+    auto itera = temp.begin();
+    while (itera != temp.end()) {
+        if ((*itera)->depends().isEmpty()) {
+            result.append(*itera);
+            itera = temp.erase(itera);
+            continue;
+        }
+        itera ++;
+    }
+
+    auto dependsNoContains = [=](const PluginMetaQueue &src, const PluginMetaObjectPointer &elem) {
+        QList<QString> result;
+        QList<QString> srcPluginNames;
+        for (auto val : src) {
+            srcPluginNames << val->name();
+        }
+
+        for (auto depend : elem->depends()) {
+            if (!srcPluginNames.contains(depend.name())) {
+                result << depend.name();
+            }
+        }
+        return result;
+    };
+
+    while (!temp.isEmpty()) {
+        auto itera = temp.begin();
+        while (itera != temp.end()) {
+            auto srcNoContains = dependsNoContains(srcQueue, *itera);
+            auto dstNoContains = dependsNoContains(result, *itera);
+            if (!srcNoContains.isEmpty()) {
+                qCritical() << "Error, invalid plugin depends: " << srcNoContains
+                            << " from plugin: " << (*itera)->name();
+                for (auto noContainsVal : srcNoContains) {
+                    // Delete not existen plugin depend from plugin-name
+                    dstNoContains.removeOne(noContainsVal);
+                }
+                // claer not existen plugin depend from plugin-name
+                srcNoContains.clear();
+            }
+
+            if (dstNoContains.isEmpty()) {
+                result.append(*itera);
+                itera = temp.erase(itera);
+                continue;
+            }
+            itera ++;
+        }
+    }
+
+    dpfCheckTimeEnd();
+
+    return result;
+}
+
+/*!
  * \brief 内部使用QPluginLoader加载所有插件
  */
 bool PluginManagerPrivate::loadPlugins()
 {
     dpfCheckTimeBegin();
 
-    QFuture<void> sortController = QtConcurrent::run(dependsSort,
-                                                     &loadQueue,
-                                                     &readQueue);
-    sortController.waitForFinished();
-
+    loadQueue = dependsSort(readQueue);
     bool ret = true;
-    QFuture<void> mapController = QtConcurrent::map(readQueue.begin(),
-                                                    readQueue.end(),
-                                                    [&ret] (PluginMetaObjectPointer &pointer) {
-            // 流程互斥
-            if (pointer->d->state >= PluginMetaObject::State::Loaded) {
-            dpfDebug() << "Is Loaded plugin: "
-                       << pointer->d->name
-                       << pointer->fileName();
-            return;
-}
 
-            // 必须执行了读取操作
-            if (pointer->d->state != PluginMetaObject::State::Readed) {
-            dpfDebug() << "Failed load plugin: "
-                       << pointer->d->name
-                       << pointer->fileName();
-            ret = false;
-            return;
-}
-
-            //设置当前正在加载的标志位
-            pointer->d->state = PluginMetaObject::State::Loading;
-
-            if (!pointer->d->loader->load()) {
-            pointer->d->error = "Failed load plugin: " + pointer->d->loader->errorString();
-            dpfCritical() << pointer->errorString();
-            ret = false;
-            return;
-}
-
-            pointer->d->plugin = QSharedPointer<Plugin>
-            (qobject_cast<Plugin*>(pointer->d->loader->instance()));
-
-            if (pointer.isNull()) {
-            pointer->d->error = "Failed get plugin instance is nullptr";
-            dpfCritical() << pointer->d->error;
-            ret = false;
-            return;
-}
-
-            pointer->d->state = PluginMetaObject::State::Loaded;
-            dpfDebug() << "Loaded plugin: " << pointer->d->name;
-});
-    mapController.waitForFinished();
+    for (auto val : loadQueue) {
+        if (val->depends().isEmpty()) {
+            QtConcurrent::run(this, &PluginManagerPrivate::loadPlugin, val);
+        } else {
+            ret &= loadPlugin(val);
+        }
+    }
 
     dpfDebug() << loadQueue;
-
     dpfCheckTimeEnd();
     return ret;
 }
@@ -521,39 +542,9 @@ void PluginManagerPrivate::initPlugins()
 {
     dpfCheckTimeBegin();
 
-    QFuture<void> runController = QtConcurrent::run([=](){
-        QQueue<PluginMetaObjectPointer> initQueue = loadQueue;
-        QQueue<PluginMetaObjectPointer>::iterator itera = initQueue.begin();
-        while(itera != initQueue.end())
-        {
-            auto pointer = *itera;
-            //流程互斥
-            if (pointer->d->state >= PluginMetaObject::State::Initialized) {
-                dpfDebug() << "Is initialized plugin: "
-                           << pointer->d->name
-                           << pointer->fileName();
-                ++ itera;
-                continue;
-            }
-
-            if (pointer->d->state != PluginMetaObject::State::Loaded) {
-                dpfCritical() << "Failed initialized plugin"
-                              << pointer->d->name
-                              << pointer->fileName();
-                ++ itera;
-                continue;
-            }
-
-            if (!pointer->d->plugin.isNull()) {
-                pointer->d->plugin->initialize();
-                dpfDebug() << "Initialized plugin: " << pointer->d->name;
-                pointer->d->state = PluginMetaObject::State::Initialized;
-            }
-            ++ itera;
-        }
-    });
-
-    runController.waitForFinished();
+    QtConcurrent::map(loadQueue.begin(), loadQueue.end(), [=](auto pointer){
+        this->initPlugin(pointer);
+    }).waitForFinished();
 
     // 私有类转发进行Sendler闭包
     emit Listener::instance().d->pluginsInitialized();
@@ -568,37 +559,8 @@ void PluginManagerPrivate::startPlugins()
 {
     dpfCheckTimeBegin();
 
-    QQueue<PluginMetaObjectPointer> startQueue = loadQueue;
-    QQueue<PluginMetaObjectPointer>::iterator itera = startQueue.begin();
-    while(itera != startQueue.end())
-    {
-        PluginMetaObjectPointer pointer = *itera;
-        //流程互斥
-        if (pointer->d->state >= PluginMetaObject::State::Started) {
-            dpfDebug() << "Is started plugin:"
-                       << pointer->d->name
-                       << pointer->fileName();
-            ++ itera;
-            continue;
-        }
-
-        if (pointer->d->state != PluginMetaObject::State::Initialized) {
-            dpfCritical() << "Failed start plugin:"
-                          << pointer->d->name
-                          << pointer->fileName();
-            ++ itera;
-            continue;
-        }
-
-        if (pointer->d->plugin->start()) {
-            dpfDebug() << "Started plugin: " << pointer->d->name;
-            pointer->d->state = PluginMetaObject::State::Started;
-        } else {
-            pointer->d->error = "Failed start plugin in function start() logic";
-            dpfCritical() << pointer->d->error.toLocal8Bit().data();
-        }
-
-        ++ itera;
+    for (auto val: loadQueue) {
+        startPlugin(val);
     }
 
     // 私有类转发进行Sendler闭包
@@ -614,7 +576,7 @@ void PluginManagerPrivate::stopPlugins()
 {
     dpfCheckTimeBegin();
 
-    QQueue<PluginMetaObjectPointer> stopQueue = loadQueue;
+    PluginMetaQueue stopQueue = loadQueue;
     auto itera = stopQueue.rbegin();
     while(itera != stopQueue.rend())
     {
@@ -668,54 +630,6 @@ void PluginManagerPrivate::stopPlugins()
 
     // 私有类转发进行Sendler闭包
     emit Listener::instance().d->pluginsStoped();
-
-    dpfCheckTimeEnd();
-}
-
-/*!
- * \brief 按照依赖排序
- * \param dstQueue
- * \param srcQueue
- */
-void PluginManagerPrivate::dependsSort(QQueue<PluginMetaObjectPointer> *dstQueue,
-                                       QQueue<PluginMetaObjectPointer> *srcQueue)
-{
-    dpfCheckTimeBegin();
-
-    QMutexLocker lock(&GlobalPrivate::mutex);
-
-    *dstQueue = (*srcQueue);
-    typedef PluginMetaObjectPointer EmleTPointer;
-    std::sort(dstQueue->begin(), dstQueue->end(), [=](EmleTPointer after, EmleTPointer befor)
-    {
-        dpfDebug() << after->d->name << befor->d->name;
-        if (after->depends().isEmpty()) {
-            //前节点没有依赖则保持顺序
-            return true;
-        } else { //前节点存在依赖
-            if(befor->depends().isEmpty()) {
-                //后节点为空则调整顺序
-                return false;
-            } else { //后节点存在依赖
-                //遍历后节点依赖
-                for (auto depend : befor->d->depends)
-                {
-                    //后节点依赖存在前节点
-                    if (depend.name() == after->name())
-                        return true;
-                }
-                //遍历前节点依赖
-                for (auto depend : after->d->depends)
-                {
-                    //前节点依赖存在后节点
-                    if (depend.name() == befor->name())
-                        return false;
-                }
-            }
-        }
-        dpfDebug() << "Unknown Error from" << Q_FUNC_INFO;
-        return false;
-    });
 
     dpfCheckTimeEnd();
 }

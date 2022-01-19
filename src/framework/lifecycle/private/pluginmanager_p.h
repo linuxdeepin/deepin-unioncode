@@ -54,6 +54,7 @@ class PluginManagerPrivate : public QSharedData
     QQueue<PluginMetaObjectPointer> loadQueue;
     PluginSetting setting;
 public:
+    typedef QQueue<PluginMetaObjectPointer> PluginMetaQueue;
     explicit PluginManagerPrivate(PluginManager *qq);
     virtual ~PluginManagerPrivate();
     QString pluginIID() const;
@@ -73,12 +74,11 @@ public:
     void initPlugins();
     void startPlugins();
     void stopPlugins();
-    static void scanfAllPlugin(QQueue<PluginMetaObjectPointer> *destQueue,
+    static void scanfAllPlugin(PluginMetaQueue &destQueue,
                                const QStringList& pluginPaths,
                                const QString &pluginIID);
     static void readJsonToMeta(const PluginMetaObjectPointer &metaObject);
-    static void dependsSort(QQueue<PluginMetaObjectPointer>* dstQueue,
-                            QQueue<PluginMetaObjectPointer>* srcQueue);
+    static PluginMetaQueue dependsSort(const PluginMetaQueue &srcQueue);
 };
 
 DPF_END_NAMESPACE
