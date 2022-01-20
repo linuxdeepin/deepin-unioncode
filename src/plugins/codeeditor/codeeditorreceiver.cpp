@@ -50,13 +50,13 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 
     if (T_FILEBROWSER == event.topic()) {
         if(D_ITEM_DOUBLECLICKED == event.data()) {
-            return DpfEventMiddleware::instance().toOpenFile(event.property(P_FILEPATH).toString());
+            return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString());
         }
     }
 
     if (T_MENU == event.topic()) {
         if (D_FILE_OPENDOCUMENT == event.data()) {
-            return DpfEventMiddleware::instance().toOpenFile(event.property(P_FILEPATH).toString());
+            return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString());
         }
         if (D_FILE_OPENFOLDER == event.data()) {
             qInfo() << event;
@@ -66,7 +66,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 
     if (T_DEBUGGER == event.topic()) {
         if (D_DEBUG_EXECUTION_JUMP == event.data()) {
-            return DpfEventMiddleware::instance().toRunFileLine(
+            return DpfEventMiddleware::instance()->toRunFileLine(
                         event.property(P_FILEPATH).toString(),
                         event.property(P_FILELINE).toInt()
                         );
@@ -74,8 +74,8 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
     }
 }
 
-DpfEventMiddleware &DpfEventMiddleware::instance()
+DpfEventMiddleware *DpfEventMiddleware::instance()
 {
     static DpfEventMiddleware ins;
-    return ins;
+    return &ins;
 }

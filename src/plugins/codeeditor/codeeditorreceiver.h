@@ -44,7 +44,7 @@ class DpfEventMiddleware : public QObject
     DpfEventMiddleware(const DpfEventMiddleware&) = delete;
 
 public:
-    static DpfEventMiddleware& instance();
+    static DpfEventMiddleware* instance();
 
 signals:
     void toOpenFile(const QString &filePath);

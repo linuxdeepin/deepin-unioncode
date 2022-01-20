@@ -60,10 +60,10 @@ EditWidget::EditWidget(QWidget *parent)
     QObject::connect(d->tab, &EditFileTabWidget::currentChanged,
                      this, &EditWidget::showFileEdit);
 
-    QObject::connect(&DpfEventMiddleware::instance(), &DpfEventMiddleware::toOpenFile,
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toOpenFile,
                      this, &EditWidget::openFile);
 
-    QObject::connect(&DpfEventMiddleware::instance(), &DpfEventMiddleware::toRunFileLine,
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toRunFileLine,
                      this, &EditWidget::runningToLine);
 
     QObject::connect(d->tab, &EditFileTabWidget::tabCloseRequested,

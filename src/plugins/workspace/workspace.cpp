@@ -79,8 +79,5 @@ bool Workspace::start()
 
 dpf::Plugin::ShutdownFlag Workspace::stop()
 {
-    if (data) {
-        delete data;
-    }
     return Sync;
 }

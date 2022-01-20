@@ -576,55 +576,9 @@ void PluginManagerPrivate::stopPlugins()
 {
     dpfCheckTimeBegin();
 
-    PluginMetaQueue stopQueue = loadQueue;
-    auto itera = stopQueue.rbegin();
-    while(itera != stopQueue.rend())
-    {
-        PluginMetaObjectPointer pointer = *itera;
-        if (pointer->d->state != PluginMetaObject::State::Started) {
-            continue;
-        }
-
-        Plugin::ShutdownFlag stFlag = pointer->d->plugin->stop();
-        pointer->d->state = PluginMetaObject::State::Stoped;
-
-        if (stFlag == Plugin::ShutdownFlag::Async) {
-
-            dpfDebug() << "Stoped async plugin: " << pointer->d->name;
-
-            pointer->d->state = PluginMetaObject::State::Stoped;
-
-            QObject::connect(pointer->d->plugin.data(), &Plugin::asyncStopFinished,
-                             pointer->d->plugin.data(), [=]()
-            {
-                pointer->d->plugin = nullptr;
-
-                if (!pointer->d->loader->unload()) {
-                    dpfDebug() << pointer->d->loader->errorString();
-                }
-
-                pointer->d->state = PluginMetaObject::State::Shutdown;
-                dpfDebug() << "shutdown" << pointer->d->loader->fileName();
-
-            },Qt::ConnectionType::DirectConnection); //同步信号直接调用无需等待
-
-        } else {
-
-            if (pointer->d->plugin) {
-                dpfDebug() << "Stoped sync plugin: " << pointer->d->name;
-                pointer->d->plugin = nullptr;
-                pointer->d->state = PluginMetaObject::State::Stoped;
-            }
-
-            if (!pointer->d->loader->unload()) {
-                dpfDebug() << pointer->d->loader->errorString();
-                continue;
-            }
-
-            pointer->d->state = PluginMetaObject::State::Shutdown;
-            dpfDebug() << "shutdown" << pointer->d->loader->fileName();
-        }
-
+    auto itera = loadQueue.rbegin();
+    while(itera != loadQueue.rend()) {
+        stopPlugin(*itera);
         ++ itera;
     }
 

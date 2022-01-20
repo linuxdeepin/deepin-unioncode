@@ -64,6 +64,7 @@ class PollRunable : public QRunnable
 public:
     PollRunable(int inotifyFd, WatcherHash* hash, pollfd *pfd, nfds_t num  = 1 ,int timeout = -1) :
         inotifyFd(inotifyFd), watcherHash(hash), pfdCache(pfd), numCache(num), timeOut(timeout) { }
+    virtual ~PollRunable(){ qInfo() << "class PollRunable destoryed"; }
     void setWatcherCallback(Inotify::Type type,FuncCB cb) { callbacks[type] = cb;}
     void stop() { stopFlag = true; }
     virtual void run() override;
@@ -91,7 +92,8 @@ Inotify::Inotify(QObject *parent)
     d->inotifyInput.fd = d->inotifyFD;
     d->inotifyInput.events = POLLIN;
 
-    d->runable = new PollRunable(d->inotifyFD, &d->watchers, &(d->inotifyInput));
+    d->runable = new PollRunable(d->inotifyFD, &d->watchers, &(d->inotifyInput), 1, 25);
+    d->runable->setAutoDelete(false);
     d->runable->setWatcherCallback(MODIFY, [=](const QString &filePath){this->modified(filePath);});
     d->runable->setWatcherCallback(CLOSE, [=](const QString &filePath){this->closed(filePath);});
     d->runable->setWatcherCallback(OPEN, [=](const QString &filePath){this->opened(filePath);});
@@ -101,14 +103,25 @@ Inotify::Inotify(QObject *parent)
     d->runable->setWatcherCallback(DELETE_SELF, [=](const QString &filePath){this->deletedSelf(filePath);});
     d->runable->setWatcherCallback(MOVE_SELF, [=](const QString &filePath){this->movedSelf(filePath);});
     QThreadPool::globalInstance()->start(d->runable);
+
+    QObject::connect(qApp, &QCoreApplication::aboutToQuit, [=](){
+        d->runable->stop();
+        if (d->inotifyFD != -1) {
+            if ( 0 == close(d->inotifyFD) ) {
+                qInfo() << "close inotify fd";
+            } else {
+                qCritical() << "Failed, close inotify fd error";
+            }
+        }
+        QThreadPool::globalInstance()->waitForDone(3000);
+    });
 }
 
 Inotify::~Inotify()
 {
+    qInfo() << "class Inotify destoryed";
     if (d) {
         if (d->runable) {
-            d->runable->stop();
-            QThreadPool::globalInstance()->waitForDone();
             delete d->runable;
         }
         delete d;
@@ -168,8 +181,7 @@ void PollRunable::run()
                 for (;;) {
                     ssize_t len = read(inotifyFd, buf, sizeof(buf));
                     if (len == -1 && errno != EAGAIN) {
-                        qCritical() << "Failed, poll read events";
-                        abort();
+                        continue;
                     }
                     if (len <= 0)
                         break;
