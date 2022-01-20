@@ -1,4 +1,8 @@
 #include "workspacedata.h"
+#include "workspaceobject.h"
+#include "common/util/custompaths.h"
+#include "common/util/supportfile.h"
+
 #include <QSet>
 #include <QFileInfo>
 #include <QFile>
@@ -62,4 +66,43 @@ QStringList WorkspaceData::findWorkspace(const QString &filePath)
         }
     }
     return result;
+}
+
+QString WorkspaceData::targetPath(const QString &dirPath)
+{
+    if (QFileInfo(dirPath).isDir()) {
+        if (dirPath.endsWith(QDir::separator())) {
+            return dirPath + ".unioncode";
+        } else {
+            return dirPath + QDir::separator()+ ".unioncode";
+        }
+    }
+    return "";
+}
+
+/*!
+ * \brief WorkspaceData::doGenerate
+ * \param dirPath
+ *  这里将产生三条不同的分支逻辑
+ *  1. 即有一个工程被扫描到则支持一种
+ *  2. 多种工程需要用户进行选择，建议使用分组checkbox更为直观
+ *  3. 如果没有相关工程支持，则将其视为文件浏览进行打开
+ */
+void WorkspaceData::doGenerate(const QString &dirPath)
+{
+    auto buildInfos = SupportFile::Builder::buildInfos(dirPath);
+
+    if (buildInfos.size() == 1) {
+        qInfo() << "build system: " << buildInfos[0].buildSystem;
+        qInfo() << "project system: " << buildInfos[0].projectPath;
+    } else if (buildInfos.size() > 1) {
+        qInfo() << "need to select project do generate: ";
+        for (auto val : buildInfos) {
+            qInfo() << "    build system: " << val.buildSystem;
+            qInfo() << "    project system: " << val.projectPath;
+        }
+    } else {
+        qInfo() << "can't found any project support, open show file browser: "
+                << dirPath;
+    }
 }

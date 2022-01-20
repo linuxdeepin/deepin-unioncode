@@ -1,0 +1,75 @@
+/*
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ *
+ * Author:     huangyu<huangyub@uniontech.com>
+ *
+ * Maintainer: huangyu<huangyub@uniontech.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef LIBRARY_INSTALL_PREFIX
+#define LIBRARY_INSTALL_PREFIX "${LIBRARY_INSTALL_PREFIX}"
+#else
+#error "cmake unseting definition LIBRARY_INSTALL_PREFIX"
+#endif
+
+#ifndef LIBRARY_BUILD_PREFIX
+#define LIBRARY_BUILD_PREFIX "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+#else
+#error "cmake unseting definition CMAKE_LIBRARY_OUTPUT_DIRECTORY"
+#endif
+
+#ifndef ARCHIVE_INSTALL_RPEFIX
+#define ARCHIVE_INSTALL_RPEFIX "${ARCHIVE_INSTALL_RPEFIX}"
+#else
+#error "cmake unseting definition ARCHIVE_INSTALL_RPEFIX"
+#endif
+
+#ifndef RUNTIME_INSTALL_RPEFIX
+#define RUNTIME_INSTALL_RPEFIX "${RUNTIME_INSTALL_RPEFIX}"
+#else
+#error "cmake unseting definition RUNTIME_INSTALL_RPEFIX"
+#endif
+
+#ifndef RUNTIME_BUILD_RPEFIX
+#define RUNTIME_BUILD_RPEFIX "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+#else
+#error "cmake unseting definition RUNTIME_BUILD_RPEFIX"
+#endif
+
+/* /usr/share/"applicationName" */
+#ifndef SOURCES_INSTALL_RPEFIX
+#define SOURCES_INSTALL_RPEFIX "${SOURCES_INSTALL_RPEFIX}"
+#else
+#error "cmake unseting definition SOURCES_INSTALL_RPEFIX"
+#endif
+
+#ifndef PROJECT_SOURCE_RPEFIX
+#define PROJECT_SOURCE_RPEFIX "${CMAKE_SOURCE_DIR}/src"
+#else
+#error "cmake unseting definition PROJECT_BUILD_RPEFIX"
+#endif
+
+#ifndef PLUGIN_INSTALL_RPEFIX
+#define PLUGIN_INSTALL_RPEFIX "${PLUGIN_INSTALL_PATH}"
+#else
+#error "cmake unseting definition PLUGIN_INSTALL_PATH"
+#endif
+
+#ifndef PLUGIN_BUILD_RPEFIX
+#define PLUGIN_BUILD_RPEFIX "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}"
+#else
+#error "cmake unseting definition PLUGIN_BUILD_RPEFIX"
+#endif

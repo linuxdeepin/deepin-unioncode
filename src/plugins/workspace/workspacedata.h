@@ -7,13 +7,17 @@ class WorkspaceData : public QObject
 {
     Q_OBJECT
     WorkspaceDataPrivate *const d;
+
 public:
     explicit WorkspaceData(QObject *parent = nullptr);
     virtual ~WorkspaceData() override;
     static WorkspaceData *globalInstance();
+
 public slots:
     void addWorkspace(const QString &dirPath);
     void delWorkspace(const QString &dirPath);
     QStringList findWorkspace(const QString &filePath);
+    QString targetPath(const QString &dirPath);
+    void doGenerate(const QString &dirPath);
 };
 #endif // WORKSPACEDATA_H

@@ -24,11 +24,11 @@
 #include "sendevents.h"
 #include "Document.h"
 #include "Lexilla.h"
-#include "config.h" //cmake build generate
 #include "SciLexer.h"
 #include "common/util/processutil.h"
 #include "common/dialog/contextdialog.h"
 #include "common/util/custompaths.h"
+#include "common/util/supportfile.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -42,6 +42,7 @@
 #include <QJsonArray>
 #include <QLabel>
 #include <QRegularExpression>
+#include <QCoreApplication>
 
 #include <iostream>
 
@@ -71,18 +72,13 @@ QString lexillaFileName()
 
 QString lexillaFilePath()
 {
-    if (CustomPaths::installed())
-        return QString(LEXILLA_INSTALL_PATH) + QDir::separator() + lexillaFileName();
-    else
-        return QString(LEXILLA_BUILD_PATH)  + QDir::separator() + lexillaFileName();
+    return CustomPaths::global(CustomPaths::DependLibs)
+            + QDir::separator() + lexillaFileName();
 }
 
 QString languageSupportFilePath()
 {
-    if (CustomPaths::installed())
-        return QString(SUPPORT_INSTALL_PATH) + QDir::separator() + "language.support";
-    else
-        return QString(SUPPORT_BUILD_PATH) + QDir::separator() + "language.support";
+    return SupportFile::Language::globalPath();
 }
 
 QString languageServer(const QString &filePath,

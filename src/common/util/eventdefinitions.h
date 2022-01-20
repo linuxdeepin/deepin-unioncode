@@ -30,6 +30,7 @@ extern const QString T_MENU;
 extern const QString T_FILEBROWSER;
 extern const QString T_CODEEDITOR;
 extern const QString T_DEBUGGER;
+extern const QString T_WORKSPACE;
 
 extern const QString D_RECENT_SHOW;
 extern const QString D_RECENT_HIDE;
@@ -40,6 +41,8 @@ extern const QString D_DEBUG_HIDE;
 extern const QString D_RUNTIME_SHOW;
 extern const QString D_RUNTIME_HIDE;
 
+extern const QString D_WORKSPACE_GENERATE_BEGIN;
+extern const QString D_WORKSPACE_GENERATE_END;
 extern const QString D_DEBUG_EXECUTION_START;
 extern const QString D_DEBUG_EXECUTION_END;
 extern const QString D_DEBUG_EXECUTION_JUMP;
@@ -53,6 +56,8 @@ extern const QString D_MARGIN_DEBUG_POINT_REMOVE;
 
 extern const QString P_FILELINE;       //value int
 extern const QString P_FILEPATH;       //value QString
+extern const QString P_PROJECTPATH;    //value QString
+extern const QString P_TARGETPATH;     //value QString
 extern const QString P_WORKSPACEFOLDER;//value QString
 extern const QString P_BUILDSYSTEM;    //value QString
 extern const QString P_BUILDDIRECTORY; //value QString

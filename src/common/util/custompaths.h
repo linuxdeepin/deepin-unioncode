@@ -28,20 +28,25 @@ class CustomPaths final
     CustomPaths() = delete;
     Q_DISABLE_COPY(CustomPaths)
 public:
-    enum Flage{
+    enum Flags{
         Applition,
         DependLibs,
         Plugins,
         Tools,
+        Packages,
         Extensions,
-        Sources,
+        Resources,
         Configures,
         Scripts,
         Translations,
         Templates
     };
-    static QString user(Flage flage);
+    static QString user(Flags flags);
+    static QString global(Flags flags);
     static bool installed();
+    static QString endSeparator(const QString &path);
+    static QString projectGeneratePath(const QString &path);
+    static void checkDir(const QString &path);
 };
 
 #endif // GLOBALCONFIGURE_H

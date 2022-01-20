@@ -1,7 +1,7 @@
 #include "edittextwidgetstyle.h"
 #include "SciLexer.h"
-#include "config.h"
 #include "common/util/custompaths.h"
+#include "common/util/supportfile.h"
 #include "common/dialog/contextdialog.h"
 
 #include <QDebug>
@@ -12,12 +12,7 @@
 
 QString styleSupportFilePath(QString languageID)
 {
-    if (CustomPaths::installed())
-        return QString(SUPPORT_INSTALL_PATH) + QDir::separator()
-                + QString("editorstyle_%0.support").arg(languageID);
-    else
-        return QString(SUPPORT_BUILD_PATH) + QDir::separator()
-                + QString("editorstyle_%0.support").arg(languageID);
+    return SupportFile::EditorStyle::globalPath(languageID);
 }
 
 class EditTextWidgetStylePrivate

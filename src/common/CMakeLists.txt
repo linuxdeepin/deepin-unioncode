@@ -1,14 +1,13 @@
 project(unioncode-common)
 
-add_definitions(
-    -DRUNTIME_INSTALL_RPEFIX="${RUNTIME_INSTALL_RPEFIX}"
-    )
+configure_file(util/config.h.in config.h)
 
 set(CXX_H
     inotify/inotify.h
     lsp/protocol.h
     util/processutil.h
     util/custompaths.h
+    util/supportfile.h
     util/eventdefinitions.h
     util/singleton.h
     util/polkit.h
@@ -24,6 +23,7 @@ set(CXX_CPP
     lsp/protocol.cpp
     util/processutil.cpp
     util/custompaths.cpp
+    util/supportfile.cpp
     util/polkit.cpp
     util/eventdefinitions.cpp
     dialog/contextdialog.cpp

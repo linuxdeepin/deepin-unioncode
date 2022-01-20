@@ -25,6 +25,7 @@ const QString T_MENU {"Menu"};
 const QString T_FILEBROWSER {"FileBrowser"};
 const QString T_CODEEDITOR {"CodeEditor"};
 const QString T_DEBUGGER {"Debugger"};
+const QString T_WORKSPACE {"Workspace"};
 
 const QString D_RECENT_SHOW {"Recent.Show"};
 const QString D_RECENT_HIDE {"Recent.Hide"};
@@ -35,6 +36,8 @@ const QString D_DEBUG_HIDE {"Debug.Hide"};
 const QString D_RUNTIME_SHOW {"Runtime.Show"};
 const QString D_RUNTIME_HIDE {"Runtime.Hide"};
 
+const QString D_WORKSPACE_GENERATE_BEGIN {"Workspace.Generate.Begin"};
+const QString D_WORKSPACE_GENERATE_END {"Workspace.Generate.End"};
 const QString D_DEBUG_EXECUTION_START {"Debug.Execution.Start"};
 const QString D_DEBUG_EXECUTION_END {"Debug.Execution.End"};
 const QString D_DEBUG_EXECUTION_JUMP {"Debug.Execution.Jump"};
@@ -47,6 +50,8 @@ const QString D_ITEM_DOUBLECLICKED {"Item.DoubleClicked"};
 
 const QString P_FILELINE {"FileLine"};
 const QString P_FILEPATH {"FilePath"};
+const QString P_PROJECTPATH {"ProjectPath"};
+const QString P_TARGETPATH {"TargetPath"};
 const QString P_WORKSPACEFOLDER {"WorkspaceFolder"};
 const QString P_BUILDSYSTEM {"BuildSystem"};
 const QString P_BUILDDIRECTORY {"BuildDirectory"};

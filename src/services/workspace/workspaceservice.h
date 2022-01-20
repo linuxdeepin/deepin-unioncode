@@ -12,6 +12,7 @@ public:
     static QString name();
     explicit WorkspaceService(QObject *parent = nullptr);
     static QString workspaceName(const QString &dirPath);
+    DPF_INTERFACE(QString, targetPath, const QString &);
     DPF_INTERFACE(QStringList, findWorkspace, const QString &);
 
 signals:

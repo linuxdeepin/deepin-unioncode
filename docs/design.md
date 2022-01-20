@@ -167,6 +167,7 @@ unioncode/
 /usr/lib/unioncode/plugins  			// 动态库插件安装路径
 /usr/lib/unioncode/tools				// 二进制文件工具
 /usr/lib/unioncode/extensions			// 动态语言扩展插件路径
+/usr/lib/unioncode/packages             // 网络下载安装的包路径
 /usr/share/unioncode					// 资源文件路径
 /usr/share/unioncode/configures			// 全局配置文件路径
 /usr/share/unioncode/scripts			// 脚本文件安装路径
@@ -183,6 +184,17 @@ unioncode/
 
 
 ## 技术细节
+
+### 程序资源组合状态
+一个程序包含插件、资源文件脚本文件等任意资源，这里称为程序资源组合状态（简称组态）。在程序运行时具有不同的组态，而对于用户或者开发者来说，需要理解该概念，常用的 `ifndef` 等宏判断 `Release` 或者 `Debug`等构建版本或平台区分，是具体组态的某个实现细节。而在繁杂的组态中进行各种判断，会造成逻辑重复，也并不利于管理。所以针对程序在不同组态下进行以下规定：
+
+1. 程序运行于 `/usr/bin` 则成为 `installed` 组态，主要面向资源统筹如下：
+   - `installed` 状态下运行程序时，分别对应加载全局配置文件、插件资源等(安装时的资源路径)。
+   - 还会加载用户目录下会存在相应副本，用于用户临时更改的任何配置文件、插件资源(用户使用生成，用户作用域)。这么做的原因是，区别于用户绑定的插件、或者配置项。即切换用户后在用户目录下存在不同的插件场景
+
+2. 程序运行于非 `/usr/bin` 则统称为 `builded` 组态，该状态下默认指向源码以及构建。
+
+明确以上两点后，`unioncode` 工程中将提供公有模块进行路径和组态识别，详见 `unioncode/src/common/util/custompaths` 。
 
 ### 插件实例
 

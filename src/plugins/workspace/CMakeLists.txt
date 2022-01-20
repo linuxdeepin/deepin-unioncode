@@ -7,17 +7,20 @@ set(CXX_CPP
     workspace.json
     workspacedata.cpp
     workspacereceiver.cpp
+    workspaceobject.cpp
     workspacecmake.cpp
     processdialog.cpp
+    sendevents.cpp
     )
 
 set(CXX_H
     workspacecmake.h
-    workspaceadapter.h
+    workspaceobject.h
     workspace.h
     workspacedata.h
     workspacereceiver.h
     processdialog.h
+    sendevents.h
     )
 
 add_library(${PROJECT_NAME}

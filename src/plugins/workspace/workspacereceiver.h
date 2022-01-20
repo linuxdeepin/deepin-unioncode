@@ -28,14 +28,8 @@ class WorkspaceReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegister
     friend class dpf::AutoEventHandlerRegister<WorkspaceReceiver>;
 public:
     explicit WorkspaceReceiver(QObject * parent = nullptr);
-
-    static Type type()
-    {
-        return dpf::EventHandler::Type::Async;
-    }
-
+    static Type type();
     static QStringList topics();
-
     virtual void eventProcess(const dpf::Event& event) override;
 };
 

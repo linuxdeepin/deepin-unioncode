@@ -21,8 +21,8 @@
 #include "treemenu.h"
 #include "treeproxy.h"
 #include "sendevents.h"
-#include "config.h"
 #include "common/util/custompaths.h"
+#include "common/util/supportfile.h"
 #include "common/util/processutil.h"
 #include "common/dialog/contextdialog.h"
 
@@ -40,7 +40,6 @@
 #include <QApplication>
 #include <QStandardPaths>
 
-const QString BUILD_SUPPORT_FILE_NAME {"builder.support"};
 const QString NEW_FILE {TreeMenu::tr("New File")};
 const QString NEW_FOLDER {TreeMenu::tr("New Folder")};
 const QString MOVE_TO_TARSH {TreeMenu::tr("Move To Trash")};
@@ -54,8 +53,6 @@ class TreeMenuPrivate
     QJsonDocument cacheJsonDocument;
     void initBuildSupport();
     QString userBuildSupportFilePath();
-    QString globalBuildSupportFilePath();
-    QString supportBuildSystem(const QString &path);
     void createNewFileAction(QMenu *menu, const QString &path);
     void createNewFolderAction(QMenu *menu, const QString &path);
     void createMoveToTrash(QMenu *menu, const QString &path);
@@ -103,7 +100,7 @@ void TreeMenu::createBuildAction(const QString &path)
 
 void TreeMenuPrivate::initBuildSupport() {
 
-    QString globalConfigBuildFile = globalBuildSupportFilePath();
+    QString globalConfigBuildFile = SupportFile::Builder::globalPath();
 
     QFile globalFile(globalConfigBuildFile);
     if (!globalFile.exists()) {
@@ -125,7 +122,7 @@ void TreeMenuPrivate::initBuildSupport() {
         QDir().mkpath(appConfigLocation); //创建缓存目录
     }
 
-    QString appConfigBuildSupportFile = appConfigLocation + QDir::separator() + BUILD_SUPPORT_FILE_NAME;
+    QString appConfigBuildSupportFile = SupportFile::Builder::userPath();
     QFileInfo fileInfo(appConfigBuildSupportFile);
     if (!fileInfo.exists()) {
         QFile::copy(globalConfigBuildFile, fileInfo.filePath());
@@ -149,41 +146,6 @@ void TreeMenuPrivate::initBuildSupport() {
 QString TreeMenuPrivate::userBuildSupportFilePath()
 {
     return CustomPaths::user(CustomPaths::Configures);
-}
-
-QString TreeMenuPrivate::globalBuildSupportFilePath()
-{
-    QString filePath;
-    if (CustomPaths::installed()) {
-        filePath = QString(BUILDER_SUPPORT_INSTALL_PATH) + QDir::separator() + BUILD_SUPPORT_FILE_NAME;
-    } else {
-        filePath = QString(BUILDER_SUPPORT_BUILD_PATH) + QDir::separator() + BUILD_SUPPORT_FILE_NAME;
-    }
-    return filePath;
-}
-
-QString TreeMenuPrivate::supportBuildSystem(const QString &path)
-{
-    QFileInfo fileInfo(path);
-    QJsonObject globalJsonObj = globalJsonDocument.object();
-    QStringList globalJsonObjKeys = globalJsonObj.keys();
-    foreach (auto val, globalJsonObjKeys) {
-        if (globalJsonObj.value(val).toObject().value("suffix").toArray().contains(fileInfo.suffix()))
-            return val;
-        if (globalJsonObj.value(val).toObject().value("base").toArray().contains(fileInfo.fileName()))
-            return val;
-    }
-
-    QJsonObject cacheJsonObj = cacheJsonDocument.object();
-    QStringList cacheJsonObjKeys = cacheJsonObj.keys();
-    foreach (auto val, cacheJsonObjKeys) {
-        if (cacheJsonObj.value(val).toObject().value("suffix").toArray().contains(fileInfo.suffix()))
-            return val;
-        if (cacheJsonObj.value(val).toObject().value("base").toArray().contains(fileInfo.fileName()))
-            return val;
-    }
-
-    return "";
 }
 
 void TreeMenuPrivate::createNewFileAction(QMenu *menu, const QString &path)
@@ -279,7 +241,7 @@ void TreeMenuPrivate::createBuildAction(QMenu *menu, const QString &path)
     if (!info.isFile())
         return;
 
-    QString buildSystem = supportBuildSystem(path);
+    QString buildSystem = SupportFile::Builder::buildSystem(path);
     if (!buildSystem.isEmpty()) {
         QAction *newAction = new QAction(BUILD, menu);
         menu->addAction(newAction);

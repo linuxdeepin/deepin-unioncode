@@ -34,7 +34,6 @@
 using namespace dpfservice;
 namespace  {
 static WorkspaceData *data = nullptr;
-static WorkspaceObjectFactory *factory = nullptr;
 }
 
 void Workspace::initialize()
@@ -42,9 +41,7 @@ void Workspace::initialize()
     if (!data)
         data = WorkspaceData::globalInstance();
 
-    if (!factory)
-        factory = WorkspaceObjectFactory::globalInstance();
-    factory->regClass<WorkspaceCMake>(WorkspaceCMake::buildSystemName());
+    WorkspaceObjectFactory::regClass<WorkspaceCMake>(WorkspaceCMake::buildSystemName());
 
     QString errStr;
 
@@ -54,13 +51,8 @@ void Workspace::initialize()
         qCritical() << errStr;
         abort();
     }
-}
 
-bool Workspace::start()
-{
-    qInfo() << __FUNCTION__;
     using namespace std::placeholders;
-    auto &ctx = dpfInstance.serviceContext();
     WorkspaceService *workspaceService = ctx.service<WorkspaceService>(WorkspaceService::name());
 
     if (workspaceService) {
@@ -73,7 +65,15 @@ bool Workspace::start()
         if (!workspaceService->findWorkspace) {
             workspaceService->findWorkspace = std::bind(&WorkspaceData::findWorkspace, data, _1);
         }
+        if (!workspaceService->targetPath) {
+            workspaceService->targetPath = std::bind(&WorkspaceData::targetPath, data, _1);
+        }
     }
+}
+
+bool Workspace::start()
+{
+    qInfo() << __FUNCTION__;
     return true;
 }
 

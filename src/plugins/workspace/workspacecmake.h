@@ -1,7 +1,7 @@
 #ifndef WORKSPACECMAKE_H
 #define WORKSPACECMAKE_H
 
-#include "workspaceadapter.h"
+#include "workspaceobject.h"
 
 class WorkspaceCMake : public WorkspaceObject
 {

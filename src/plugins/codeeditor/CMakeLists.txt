@@ -5,8 +5,6 @@ project(plugin-codeeditor)
 include(${CMAKE_SOURCE_DIR}/3rdparty/scintilla515/scintilla515.cmake)
 include(${CMAKE_SOURCE_DIR}/3rdparty/scintilla515/lexilla514.cmake)
 
-configure_file(config.h.in config.h)
-
 set(CXX_CPP
     filelangdatabase.cpp
     naveditwidget.cpp
@@ -32,7 +30,6 @@ set(CXX_H
     edittextwidgetstyle.h
     editwidget.h
     codeeditor.h
-    config.h
     )
 
 add_library(${PROJECT_NAME}
