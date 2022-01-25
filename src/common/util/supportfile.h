@@ -36,6 +36,8 @@ struct SupportFile
     {
         static QString globalPath(const QString &languageID);
         static QString userPath(const QString &languageID);
+        static void initialize(const QString &languageID);
+        static bool recovery(const QString &languageID);
     };
 
     struct WindowStyle

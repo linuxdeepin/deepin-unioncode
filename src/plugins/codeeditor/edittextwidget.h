@@ -50,7 +50,9 @@ private slots:
     void debugMarginClicked(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin);
     void tokenDefinitionsSave(const lsp::SemanticTokensProvider &provider);
     void completionsSave(const lsp::CompletionProvider &provider);
+    void hoverRequest();
     void hoverMessage(const lsp::Hover &hover);
+    void definitionSave(const lsp::DefinitionProvider &provider);
 
     // scintilla called
     void sciModified(Scintilla::ModificationFlags type, Scintilla::Position position,
@@ -58,14 +60,22 @@ private slots:
                      Scintilla::FoldLevel foldNow, Scintilla::FoldLevel foldPrev);
     void dwellStartNotify(int x, int y);
     void dwellEndNotify(int x, int y);
+    void setDefinitionWordStyle();
+    void cleanDefinitionWordStyle();
 
 private:
     void setDefaultStyle();
     bool setLspIndicStyle(const QString &languageID);
 
 protected:
+    virtual void focusInEvent(QFocusEvent *event);
+    virtual void focusOutEvent(QFocusEvent *event);
     virtual void leaveEvent(QEvent *event);
     virtual void enterEvent(QEvent *event);
+    virtual void keyPressEvent(QKeyEvent *event);
+    virtual void keyReleaseEvent(QKeyEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 };
 
 #endif // EDITTEXTWIDGET_H

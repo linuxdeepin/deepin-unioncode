@@ -163,6 +163,24 @@ QString SupportFile::EditorStyle::userPath(const QString &languageID)
     return result + QString("editorstyle_%0.support").arg(languageID);
 }
 
+void SupportFile::EditorStyle::initialize(const QString &languageID)
+{
+    auto user = userPath(languageID);
+    auto global = globalPath(languageID);
+    if (!QFileInfo(user).exists()) {
+        QFile::copy(global, user);
+    }
+}
+
+bool SupportFile::EditorStyle::recovery(const QString &languageID)
+{
+    bool result = false;
+    auto user = userPath(languageID);
+    result = QFile::remove(user);
+    initialize(languageID);
+    return result;
+}
+
 QString SupportFile::WindowStyle::globalPath()
 {
     auto result = CustomPaths::endSeparator(CustomPaths::global(CustomPaths::Configures));

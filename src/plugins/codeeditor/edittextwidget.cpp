@@ -42,6 +42,7 @@
 #include <QLabel>
 #include <QRegularExpression>
 #include <QCoreApplication>
+#include <QTimer>
 
 #include <iostream>
 
@@ -208,6 +209,16 @@ class EditTextWidgetPrivate
         return (col.blue() << 16) | (col.green() << 8) | col.red();
     }
 
+    inline int scintillaColorAlpha(const QColor &col) {
+        return (col.alpha() << 24) | (col.blue() << 16) | (col.green() << 8) | col.red();
+    }
+
+    // from ascii code
+    inline bool isCharSymbol(const char ch) {
+        return (ch >= 0x21 && ch < 0x2F + 1) || (ch >= 0x3A && ch < 0x40 + 1)
+                || (ch >= 0x5B && ch < 0x60 + 1) || (ch >= 0x7B && ch < 0x7E + 1);
+    }
+
     QPoint hoverPos = {-1, -1};
     QString file = "";
     lsp::Client *client = nullptr;
@@ -219,16 +230,19 @@ class EditTextWidgetPrivate
     lsp::Position editInsertPostion{-1, -1};
     int editInsertCount = 0;
     bool isLeave = true;
+    bool isCtrlKeyPressed = false;
+    QPoint definitionPos {-1, -1};
+    lsp::DefinitionProvider definitionsCache;
+    QList<lsp::Data> tokensCache;
+    QTimer hoverTimer;
 };
-
-#include <QTimer>
 
 EditTextWidget::EditTextWidget(QWidget *parent)
     : ScintillaEdit (parent)
     , d(new EditTextWidgetPrivate)
 {
 
-    setMouseDwellTime(1000);
+    setMouseDwellTime(0);
     setDefaultStyle();
 
     QObject::connect(this, &EditTextWidget::marginClicked, this, &EditTextWidget::debugMarginClicked);
@@ -257,8 +271,7 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     {qInfo() << "savePointChanged" ;});
     QObject::connect(this, &ScintillaEditBase::modifyAttemptReadOnly, this, [=]()
     {qInfo() << "modifyAttemptReadOnly" ;});
-    QObject::connect(this, &ScintillaEditBase::key, this, [=](int key)
-    {qInfo() << "key" ;});
+
     QObject::connect(this, &ScintillaEditBase::doubleClick, this, [=](Scintilla::Position position, Scintilla::Position line)
     {qInfo() <<"doubleClick" ;});
     //    QObject::connect(this, &ScintillaEditBase::updateUi, this, [=](Scintilla::Update updated)
@@ -383,7 +396,7 @@ EditTextWidget::~EditTextWidget()
         if (d->client) {
             d->client->shutdownRequest();
             d->client->waitForBytesWritten();
-            d->client->kill();
+            d->client->close();
             d->client->waitForFinished();
             delete d->client;
         }
@@ -511,11 +524,15 @@ void EditTextWidget::setCurrentFile(const QString &filePath)
         QObject::connect(d->client, QOverload<const lsp::CompletionProvider&>::of(&lsp::Client::requestResult),
                          this, &EditTextWidget::completionsSave, Qt::UniqueConnection);
 
+        QObject::connect(d->client, QOverload<const lsp::DefinitionProvider&>::of(&lsp::Client::requestResult),
+                         this, &EditTextWidget::definitionSave, Qt::UniqueConnection);
+
+
         d->client->setProgram(serverProgram);
         d->client->setArguments(serverProgramOptions);
         d->client->start();
-        QObject::connect(d->client, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),[](int code, auto status){
-            abort();
+        QObject::connect(d->client, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),[=](int code, auto status) {
+            qInfo() << code << status;
         });
         d->client->waitForStarted();
         d->client->initRequest("");
@@ -525,24 +542,7 @@ void EditTextWidget::setCurrentFile(const QString &filePath)
         QObject::connect(this, &ScintillaEditBase::modified, this, &EditTextWidget::sciModified, Qt::UniqueConnection);
         QObject::connect(this, &EditTextWidget::dwellStart, this, &EditTextWidget::dwellStartNotify, Qt::UniqueConnection);
         QObject::connect(this, &EditTextWidget::dwellEnd, this, &EditTextWidget::dwellEndNotify, Qt::UniqueConnection);
-        //    d->client->docHighlightRequest(filePath, lsp::Position{0, 30});
-        //    d->client->hoverRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-        //                            lsp::Position{10,0});
-        //    d->client->signatureHelpRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-        //                                    lsp::Position{10,0});
-        //    d->client->completionRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-        //                                 lsp::Position{10,0});
-        //    d->client->definitionRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-        //                                 lsp::Position{10,0});
-        //    d->client->symbolRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp");
-        //    d->client->referencesRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-        //                                 lsp::Position{10,0});
-        //    d->client->highlightRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp",
-        //                                lsp::Position{10,0});
-        //    d->client->closeRequest("/home/funning/workspace/workspace/recode/gg/unioncode/src/app/main.cpp");
-
-        //    d->client->shutdownRequest();
-        //    d->client->exitRequest();
+        QObject::connect(&d->hoverTimer, &QTimer::timeout, this, &EditTextWidget::hoverRequest, Qt::UniqueConnection);
     }
 }
 
@@ -574,13 +574,22 @@ void EditTextWidget::runningEnd()
 
 void EditTextWidget::publishDiagnostics(const lsp::Diagnostics &diagnostics)
 {
+    eOLAnnotationClearAll();
+    markerDeleteAll(3);
     const auto docLen = length();
     indicatorClearRange(0, docLen);
     for (auto val : diagnostics) {
-        Sci_Position startPos = getSciPosition(docPointer(), val.range.start);
-        Sci_Position endPos = getSciPosition(docPointer(), val.range.end);
-        setIndicatorCurrent(val.severity);
-        indicatorFillRange(startPos, endPos - startPos);
+        if (val.severity == 1) { // error
+            Sci_Position startPos = getSciPosition(docPointer(), val.range.start);
+            Sci_Position endPos = getSciPosition(docPointer(), val.range.end);
+            setIndicatorCurrent(EditTextWidgetStyle::Indic::DiagnosticUnkown + val.severity);
+            indicatorFillRange(startPos, endPos - startPos);
+            eOLAnnotationSetStyle(val.range.start.line, 28);
+            eOLAnnotationSetText(val.range.start.line, "                Error: "
+                                 + val.message.toLatin1());
+            eOLAnnotationSetVisible(EOLANNOTATION_STANDARD);
+            markerAdd(val.range.start.line, 3);
+        }
     }
 }
 
@@ -601,11 +610,11 @@ void EditTextWidget::tokenFullResult(const QList<lsp::Data> &tokens)
     int cacheLine = 0;
     for (auto val : tokens) {
         cacheLine += val.start.line;
-        qInfo() << "line:" << val.start.line;
+        qInfo() << "line:" << cacheLine;
         qInfo() << "charStart:" << val.start.character;
         qInfo() << "charLength:" << val.length;
         qInfo() << "tokenType:" << val.tokenType;
-        qInfo() << "tokenModifiers" << val.tokenModifiers;
+        qInfo() << "tokenModifiers:" << val.tokenModifiers;
 
         if (val.tokenType >= d->tokenTypesCache.size())
             continue;
@@ -613,9 +622,22 @@ void EditTextWidget::tokenFullResult(const QList<lsp::Data> &tokens)
         QString tokenTypeStr = d->tokenTypesCache[val.tokenType]; // token name
         EditTextWidgetStyle::Indic indic = d->style.tokenKey(tokenTypeStr); //
         setIndicatorCurrent(indic);
-        Sci_Position startPos = getSciPosition(docPointer(), {cacheLine, val.start.character});
-        indicatorFillRange(startPos, val.length);
+        auto sciStartPos = getSciPosition(docPointer(), {cacheLine, val.start.character});
+        auto sciEndPos = wordEndPosition(sciStartPos, true);
+
+        auto doc = (Scintilla::Internal::Document*)(docPointer());
+        if (sciStartPos != 0 && sciEndPos != doc->Length()) {
+            QString sourceText = textRange(sciStartPos, sciEndPos);
+            QString tempText = textRange(sciStartPos - 1, sciEndPos + 1);
+            // text is word
+            if ( ((d->isCharSymbol(tempText.begin()->toLatin1()) || tempText.startsWith(" "))
+                  && (d->isCharSymbol(tempText.end()->toLatin1()) || tempText.endsWith(" "))) ) {
+                qInfo() << "text:" << sourceText;
+                indicatorFillRange(sciStartPos, sciEndPos - sciStartPos);
+            }
+        }
     }
+    d->tokensCache = tokens;
 }
 
 void EditTextWidget::debugMarginClicked(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin)
@@ -623,12 +645,14 @@ void EditTextWidget::debugMarginClicked(Scintilla::Position position, Scintilla:
     qInfo() << __FUNCTION__;
     Q_UNUSED(modifiers);
     sptr_t line = lineFromPosition(position);
-    if (markerGet(line)) {
-        SendEvents::marginDebugPointRemove(this->currentFile(), line);
-        markerDelete(line, 0);
-    } else {
-        SendEvents::marginDebugPointAdd(this->currentFile(), line);
-        markerAdd(line, 0);
+    if (margin == 0) {
+        if (markerGet(line)) {
+            SendEvents::marginDebugPointRemove(this->currentFile(), line);
+            markerDelete(line, 0);
+        } else {
+            SendEvents::marginDebugPointAdd(this->currentFile(), line);
+            markerAdd(line, 0);
+        }
     }
 }
 
@@ -684,6 +708,31 @@ void EditTextWidget::hoverMessage(const lsp::Hover &hover)
     }
 }
 
+void EditTextWidget::definitionSave(const lsp::DefinitionProvider &provider)
+{
+    if (!d->isCtrlKeyPressed){
+        cleanDefinitionWordStyle();
+        d->definitionPos = QPoint{-1, -1};
+        d->definitionsCache.clear();
+        return;
+    }
+
+    if (d->definitionPos != QPoint{-1, -1}) {
+        d->definitionsCache = provider;
+        qInfo() << "** save definitionsCache";
+        if (!d->definitionsCache.isEmpty()) {
+            setDefinitionWordStyle();
+        }
+    }
+}
+
+void EditTextWidget::hoverRequest()
+{
+    auto startPos = positionFromPoint(d->hoverPos.x(), d->hoverPos.y());
+    d->client->docHoverRequest(currentFile(), getLspPosition(docPointer(), startPos));
+    d->hoverTimer.stop();
+}
+
 void EditTextWidget::sciModified(Scintilla::ModificationFlags type, Scintilla::Position position, Scintilla::Position length,
                                  Scintilla::Position linesAdded, const QByteArray &text, Scintilla::Position line,
                                  Scintilla::FoldLevel foldNow, Scintilla::FoldLevel foldPrev)
@@ -705,6 +754,8 @@ void EditTextWidget::sciModified(Scintilla::ModificationFlags type, Scintilla::P
     }
 
     if (bool(type & Scintilla::ModificationFlags::InsertText)) {
+
+        eOLAnnotationClearAll();
 
         if (text == " ") {
             d->editInsertPostion = {-1, -1};
@@ -746,6 +797,9 @@ void EditTextWidget::sciModified(Scintilla::ModificationFlags type, Scintilla::P
     }
 
     if (bool(type & Scintilla::ModificationFlags::DeleteText)) {
+
+        eOLAnnotationClearAll();
+
         if (d->editInsertPostion.line != -1 && d->editInsertPostion.character != -1) {
             lsp::Position currentPostion = getLspPosition(docPointer(), position);
             if (d->editInsertPostion.line == currentPostion.line &&
@@ -765,19 +819,93 @@ void EditTextWidget::sciModified(Scintilla::ModificationFlags type, Scintilla::P
 
 void EditTextWidget::dwellStartNotify(int x, int y)
 {
+    if (d->isCtrlKeyPressed) {
+        if (d->definitionPos.x() == -1 && d->definitionPos.y() == -1) {
+            d->definitionPos = {x, y};
+            auto lspPointer = getLspPosition(docPointer(), positionFromPoint(x, y));
+            if (!d->tokensCache.isEmpty()) {
+                static int line = 0;
+                for (auto token : d->tokensCache) {
+                    line += token.start.line;
+                    if (line < lspPointer.line) {
+                        continue;
+                    } else if (line == lspPointer.line) {
+                        qInfo() << "symbol definitions";
+                        qInfo() << "lspPointer.line: " << lspPointer.line;
+                        qInfo() << "lspPointer.character: " << lspPointer.character;
+                        qInfo() << "token.tokenModifiers: " << token.tokenModifiers;
+                        qInfo() << "token.tokenType: " << token.tokenType;
+                        auto startPos = wordStartPosition(positionFromPoint(x, y), true);
+                        auto lspStartPos = getLspPosition(docPointer(), startPos);
+                        if (token.start.character == lspStartPos.character
+                                && token.tokenModifiers.contains(lsp::SemanticTokenModifier::Definition)) {
+                            d->client->definitionRequest(currentFile(), lspPointer);
+                        }
+                    }else {
+                        break;
+                    }
+                }
+                line = 0;
+            }
+        }
+        return;
+    }
+
     if (d->hoverPos.x() == -1 && d->hoverPos.y() == -1) {
-        auto startPosition = positionFromPoint(x, y);
-        d->client->docHoverRequest(currentFile(), getLspPosition(docPointer(), startPosition));
+        if (d->hoverTimer.isActive()) {
+            d->hoverTimer.stop();
+        }
+        d->hoverTimer.start(500); //如果间隔较小，导致收发管道溢出最终程序崩溃
         d->hoverPos = {x, y};
+        return;
     }
 }
 
 void EditTextWidget::dwellEndNotify(int x, int y)
 {
+    if (d->isCtrlKeyPressed) {
+        if (d->definitionPos.x() != -1 && d->definitionPos.y() != -1) {
+            cleanDefinitionWordStyle();
+            d->definitionsCache.clear();
+            d->definitionPos = {-1, -1};
+            qInfo() << "** clear definitionsCache";
+        }
+        return;
+    }
+
     if (d->hoverPos.x() == x && d->hoverPos.y() == y) {
+        if (d->hoverTimer.isActive()) {
+            d->hoverTimer.stop();
+        }
         callTipCancel();
         d->hoverPos = {-1, -1};
+        return;
     }
+}
+
+void EditTextWidget::setDefinitionWordStyle()
+{
+    if (d->definitionPos.x() != -1 && d->definitionPos.y() != -1) {
+        auto hoverPos = positionFromPoint(d->definitionPos.x(), d->definitionPos.y());
+        auto defsStartPos = wordStartPosition(hoverPos, true);
+        auto defsEndPos = wordEndPosition(hoverPos, true);
+        auto lspDefsStartPos = getLspPosition(docPointer(), defsStartPos);
+        auto lspDefsEndPos = getLspPosition(docPointer(), defsEndPos);
+        qInfo() << "defsStartPos.line: " << lspDefsStartPos.line
+                << "defsStartPos.character: " << lspDefsStartPos.character;
+        qInfo() << "defsEndPos.line: " << lspDefsEndPos.line
+                << "defsEndPos.character: " << lspDefsEndPos.character;
+        setIndicatorCurrent(EditTextWidgetStyle::Indic::HoverDefinitionCanJump);
+        indicatorFillRange(defsStartPos, defsEndPos - defsStartPos);
+    }
+}
+
+void EditTextWidget::cleanDefinitionWordStyle()
+{
+    auto hoverPos = positionFromPoint(d->definitionPos.x(), d->definitionPos.y());
+    auto defsStartPos = wordStartPosition(hoverPos, true);
+    auto defsEndPos = wordEndPosition(hoverPos, true);
+    indicatorClearRange(defsStartPos, defsEndPos - defsStartPos);
 }
 
 void EditTextWidget::setDefaultStyle()
@@ -785,7 +913,7 @@ void EditTextWidget::setDefaultStyle()
     setMargins(SC_MAX_MARGIN);
     setMarginWidthN(0, 12);
     setMarginSensitiveN(0, SCN_MARGINCLICK);
-    setMarginTypeN(0, SC_MARGIN_SYMBOL);
+    setMarginTypeN(0, SC_MARK_CIRCLE);
     setMarginMaskN(0, 0x01);    //range mark 1~32
     markerSetFore(0, 0x0000ff); //red
     markerSetBack(0, 0x0000ff); //red
@@ -804,28 +932,44 @@ void EditTextWidget::setDefaultStyle()
     markerDefine(2, SC_MARK_SHORTARROW);
     markerSetFore(2, 0x00ffff); //yellow
     markerSetFore(2, 0x00ffff);
-    markerSetAlpha(1, INDIC_GRADIENT);
+    markerSetAlpha(2, INDIC_GRADIENT);
 
-    styleSetFore(SCE_C_DEFAULT, d->scintillaColor(QColor(0,0,0))); // 空格
-    styleSetFore(SCE_C_COMMENT, d->scintillaColor(QColor(255,200,20))); // #整行
-    styleSetFore(SCE_C_COMMENTLINE, d->scintillaColor(QColor(0,200,200))); // //注释
-    styleSetFore(SCE_C_COMMENTDOC, d->scintillaColor(QColor(255,200,20)));
-    styleSetFore(SCE_C_NUMBER, d->scintillaColor(QColor(255,200,20)));
-    styleSetFore(SCE_C_WORD, d->scintillaColor(QColor(0,200,0)));
-    styleSetFore(SCE_C_STRING, d->scintillaColor(QColor(230,0,255))); // 字符串
-    styleSetFore(SCE_C_CHARACTER, d->scintillaColor(QColor(230,0,255)));
-    styleSetFore(SCE_C_UUID,d->scintillaColor(QColor(230,0,255)));
-    styleSetFore(SCE_C_PREPROCESSOR, d->scintillaColor(QColor(0,0,255))); // #
-    styleSetFore(SCE_C_OPERATOR, d->scintillaColor(QColor(0,0,0))); // 符号
-    styleSetFore(SCE_C_IDENTIFIER, d->scintillaColor(QColor(0,0,0)));
-    styleSetFore(SCE_C_STRINGEOL, d->scintillaColor(QColor(255,200,20)));
-    styleSetFore(SCE_C_VERBATIM, d->scintillaColor(QColor(255,200,20)));
-    styleSetFore(SCE_C_REGEX, d->scintillaColor(QColor(255,200,20)));
-    styleSetFore(SCE_C_COMMENTLINEDOC, d->scintillaColor(QColor(0,200,200))); // ///注释
-    styleSetFore(SCE_C_WORD2, d->scintillaColor(QColor(255,200,20))); // 1 一般关键字
+    setMarginWidthN(3, 12);
+    setMarginTypeN(3, SC_MARK_BACKGROUND);
+    setMarginMaskN(3, SC_MARK_BACKGROUND);    //range mark 1~32
+    //    markerSetFore(3, 0x0000ff); //red
+    markerSetBack(3, 0x0000ff); //red
+    markerSetAlpha(3, 40);
+
+    styleSetFore(SCE_C_DEFAULT, d->scintillaColorAlpha(QColor(0,0,0))); // 空格
+    styleSetFore(SCE_C_COMMENT, d->scintillaColorAlpha(QColor(255,200,20))); // #整行
+    styleSetFore(SCE_C_COMMENTLINE, d->scintillaColorAlpha(QColor(0,200,200))); // //注释
+    styleSetFore(SCE_C_COMMENTDOC, d->scintillaColorAlpha(QColor(255,200,20)));
+    styleSetFore(SCE_C_NUMBER, d->scintillaColorAlpha(QColor(255,200,20)));
+    styleSetFore(SCE_C_WORD, d->scintillaColorAlpha(QColor(0,200,0)));
+    styleSetFore(SCE_C_STRING, d->scintillaColorAlpha(QColor(230,0,255))); // 字符串
+    styleSetFore(SCE_C_CHARACTER, d->scintillaColorAlpha(QColor(230,0,255)));
+    styleSetFore(SCE_C_UUID,d->scintillaColorAlpha(QColor(230,0,255)));
+    styleSetFore(SCE_C_PREPROCESSOR, d->scintillaColorAlpha(QColor(0,0,255))); // #
+    styleSetFore(SCE_C_OPERATOR, d->scintillaColorAlpha(QColor(0,0,0))); // 符号
+    styleSetFore(SCE_C_IDENTIFIER, d->scintillaColorAlpha(QColor(0,0,0)));
+    styleSetFore(SCE_C_STRINGEOL, d->scintillaColorAlpha(QColor(255,200,20)));
+    styleSetFore(SCE_C_VERBATIM, d->scintillaColorAlpha(QColor(255,200,20)));
+    styleSetFore(SCE_C_REGEX, d->scintillaColorAlpha(QColor(255,200,20)));
+    styleSetFore(SCE_C_COMMENTLINEDOC, d->scintillaColorAlpha(QColor(0,200,200))); // ///注释
+    styleSetFore(SCE_C_WORD2, d->scintillaColorAlpha(QColor(255,200,20))); // 1 一般关键字
     //    styleSetFore(SCE_C_COMMENTDOCKEYWORD, d->scintillaColor(QColor(255,200,20)));
     //    styleSetFore(SCE_C_COMMENTDOCKEYWORDERROR, d->scintillaColor(QColor(0,200,200))); // /// @
-    styleSetFore(SCE_C_GLOBALCLASS, d->scintillaColor(QColor(255,200,0))); // 3 关键字
+    styleSetFore(SCE_C_GLOBALCLASS, d->scintillaColorAlpha(QColor(255,200,0))); // 3 关键字
+
+    typedef EditTextWidgetStyle::Indic Indic;
+    //    typedef EditTextWidgetStyle::Indic Indic;
+    styleSetBack(28, d->scintillaColorAlpha(QColor(0, 0, 0)));
+    styleSetFore(28, d->scintillaColorAlpha(QColor(0xff, 0x33, 0x33, 80)));
+
+    styleSetBack(Indic::HoverDefinitionCanJump, d->scintillaColor(QColor(0, 0, 0)));
+    styleSetFore(Indic::HoverDefinitionCanJump, d->scintillaColor(QColor(0x22, 0x4b, 0x8f)));
+
     //    styleSetFore(SCE_C_STRINGRAW, d->scintillaColor(QColor(255,200,0)));
     //    styleSetFore(SCE_C_TRIPLEVERBATIM, d->scintillaColor(QColor(255,200,0)));
     //    styleSetFore(SCE_C_HASHQUOTEDSTRING, d->scintillaColor(QColor(255,200,0)));
@@ -863,6 +1007,7 @@ bool EditTextWidget::setLspIndicStyle(const QString &languageID)
     indicSetStyle(Indic::TokenTypeEnumMember, INDIC_TEXTFORE);
     indicSetStyle(Indic::TokenTypeEvent, INDIC_TEXTFORE);
     indicSetStyle(Indic::TokenTypeFunction, INDIC_TEXTFORE);
+    indicSetStyle(Indic::TokenTypeMacro, INDIC_TEXTFORE);
     indicSetStyle(Indic::TokenTypeMethod, INDIC_TEXTFORE);
     indicSetStyle(Indic::TokenTypeKeyword, INDIC_TEXTFORE);
     indicSetStyle(Indic::TokenTypeModifier, INDIC_TEXTFORE);
@@ -883,6 +1028,7 @@ bool EditTextWidget::setLspIndicStyle(const QString &languageID)
     indicSetStyle(Indic::TokenModifierDocumentation, INDIC_TEXTFORE);
     indicSetStyle(Indic::TokenModifierDefaultLibrary, INDIC_TEXTFORE);
 
+
     //set language keys style
     QStringList themes = d->style.styleThemes(languageID);
     QList<Indic> lspKeys = d->style.lspKeys();
@@ -895,11 +1041,28 @@ bool EditTextWidget::setLspIndicStyle(const QString &languageID)
         QCursor cursor = QWidget::cursor();
         auto foreground = d->style.foreground(languageID, themes.first(), d->style.styleValue(lspKey));
         auto background = d->style.background(languageID, themes.first(), d->style.styleValue(lspKey));
+        Q_UNUSED(background)
         // indicSetFore(lspKey, d->scintillaColor(QColor(Qt::red)));
         indicSetFore(lspKey, d->scintillaColor(QColor(foreground)));
         // styleSetFont(lspKey,) 预留
     }
+
+    indicSetStyle(Indic::HoverDefinitionCanJump, INDIC_TEXTFORE);
+    indicSetFore(Indic::HoverDefinitionCanJump, d->scintillaColor(QColor(0x00,0x00,0xcc)));
+    indicSetUnder(Indic::HoverDefinitionCanJump, INDIC_PLAIN);
+
     return true;
+}
+
+void EditTextWidget::focusInEvent(QFocusEvent *event)
+{
+    return ScintillaEdit::focusInEvent(event);
+}
+
+void EditTextWidget::focusOutEvent(QFocusEvent *event)
+{
+    callTipCancel(); //cancel hover;
+    return ScintillaEdit::focusOutEvent(event);
 }
 
 void EditTextWidget::enterEvent(QEvent *event)
@@ -914,3 +1077,35 @@ void EditTextWidget::leaveEvent(QEvent *event)
     ScintillaEdit::leaveEvent(event);
 }
 
+void EditTextWidget::keyPressEvent(QKeyEvent *event)
+{
+    if (qApp->keyboardModifiers().testFlag(Qt::NoModifier)) {
+        if (event->key() == Qt::Key::Key_Control) {
+            d->isCtrlKeyPressed = true;
+            qInfo() << "Key Control press";
+        }
+    }
+    return ScintillaEdit::keyPressEvent(event);
+}
+
+void EditTextWidget::keyReleaseEvent(QKeyEvent *event)
+{
+    if (qApp->keyboardModifiers().testFlag(Qt::ControlModifier)) {
+        if (event->key() == Qt::Key::Key_Control) {
+            cleanDefinitionWordStyle();
+            d->isCtrlKeyPressed = false;
+            qInfo() << "Key Control release";
+        }
+    }
+    return ScintillaEdit::keyReleaseEvent(event);
+}
+
+void EditTextWidget::mousePressEvent(QMouseEvent *event)
+{
+    return ScintillaEdit::mousePressEvent(event);
+}
+
+void EditTextWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    return ScintillaEdit::mouseReleaseEvent(event);
+}

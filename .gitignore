@@ -5,6 +5,7 @@
 *.obj
 .qmake.stash
 *.cmake
+.cache
 CMakeLists.txt.user*
 CMakeFiles
 CMakeCache.txt

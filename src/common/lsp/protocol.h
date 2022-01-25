@@ -137,11 +137,21 @@ struct Range
     Position end;
 };
 
+
+
 struct Diagnostic
 {
+    enum Severity{
+        Unkown = 0,
+        Error = 1,
+        Warning = 2,
+        Info = 3,
+        Hint = 4,
+    };
+
     QString message;
     Range range;
-    int severity;
+    Severity severity;
 };
 typedef QList<Diagnostic> Diagnostics;
 
@@ -235,6 +245,8 @@ struct SignatureHelp //暂时留空
 
 };
 typedef QList<SignatureHelp> SignatureHelps;
+
+class DefinitionProvider : public Locations{};
 
 struct Contents
 {

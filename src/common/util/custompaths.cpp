@@ -129,7 +129,7 @@ QString CustomPaths::endSeparator(const QString &path)
 
 QString CustomPaths::projectGeneratePath(const QString &path)
 {
-    auto result = endSeparator(path) + ".unioncode";
+    auto result = endSeparator(path) + "build";
     if (!QDir(result).exists()) {
         QDir().mkdir(result);
     }

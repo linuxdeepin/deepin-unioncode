@@ -5,6 +5,7 @@
 
 #include "common/common.h"
 
+#include "SciLexer.h"
 #include "Scintilla.h"
 
 class EditTextWidgetStylePrivate;
@@ -14,12 +15,12 @@ class EditTextWidgetStyle final : public QObject
 public:
     enum Indic
     {
-        DiagnosticUnkown = 0,
-        DiagnosticError = 1,
-        DiagnosticWarning = 2,
-        DiagnosticInfo = 3,
-        DiagnosticHint = 4,
-        TokenTypeNamespace = 5,
+        DiagnosticUnkown = SCE_C_ESCAPESEQUENCE + 1,
+        DiagnosticError,
+        DiagnosticWarning,
+        DiagnosticInfo,
+        DiagnosticHint,
+        TokenTypeNamespace,
         TokenTypeType,
         TokenTypeClass,
         TokenTypeEnum,
@@ -50,7 +51,8 @@ public:
         TokenModifierAsync,
         TokenModifierModification,
         TokenModifierDocumentation,
-        TokenModifierDefaultLibrary
+        TokenModifierDefaultLibrary,
+        HoverDefinitionCanJump
     };
 
     struct Underline

@@ -7,6 +7,11 @@
             "Background": "000000",
             "FontSize": 16
         },
+        "Macro": {
+            "Foreground": "0000CC",
+            "Background": "000000",
+            "FontSize" : 16 
+        },
         "Type": {
             "Foreground": "aaaaaa",
             "Background": "000000",
@@ -129,11 +134,6 @@
         },
         "Primitive Type": {
             "Foreground": "ffff55",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Type": {
-            "Foreground": "55ff55",
             "Background": "000000",
             "FontSize": 16
         },

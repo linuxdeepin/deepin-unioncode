@@ -21,6 +21,7 @@ set(CXX_H
     widget/singlechoicebox.h
     widget/elidedlabel.h
     type/constants.h
+    type/menuext.h
     )
 
 set(CXX_CPP

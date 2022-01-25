@@ -45,6 +45,7 @@ signals:
     void requestResult(const SignatureHelps &signatureHelps);
     void requestResult(const Hover &hover);
     void requestResult(const Highlights &highlights);
+    void requestResult(const DefinitionProvider &definitionProvider);
     void requestResult(const QList<Data> &tokensResult);
 
 private:
@@ -69,6 +70,7 @@ private:
     bool diagnostics(const QJsonObject &jsonObj);
 
 private slots:
+    void readForThread();
     QStringList cvtStringList(const QJsonArray &array);
 };
 

@@ -13,6 +13,11 @@ set(CXX_CPP
     editfilestatusbar.cpp
     editfiletabwidget.cpp
     edittextwidget.cpp
+    style/stylesci.cpp
+    style/stylelsp.cpp
+    style/stylekeeper.cpp
+    style/stylejsonfile.cpp
+    style/language/stylescicpp.cpp
     edittextwidgetstyle.cpp
     editwidget.cpp
     codeeditor.cpp
@@ -27,6 +32,11 @@ set(CXX_H
     editfilestatusbar.h
     editfiletabwidget.h
     edittextwidget.h
+    style/stylekeeper.h
+    style/stylesci.h
+    style/stylelsp.h
+    style/stylejsonfile.h
+    style/language/stylescicpp.h
     edittextwidgetstyle.h
     editwidget.h
     codeeditor.h

@@ -18,13 +18,14 @@ namespace lsp {
 
 static QMutex mutex;
 
-static void readForThread(Client *client)
+static void clientStepReadLoop(Client *client)
 {
     if (!client)
         return;
 
-    qInfo() << "bytesAvailable: " << client->bytesAvailable();
+    QMutexLocker locker(&mutex);
     QString head;
+    qInfo() << "bytesAvailable: " << client->bytesAvailable();
     while (client->bytesAvailable()) {
         head += client->read(1);
         if (head.contains("\r\n\r\n")) {
@@ -85,11 +86,11 @@ Client::Client(QObject *parent)
     qRegisterMetaType<Hover>("Hover");
     qRegisterMetaType<Highlights>("Highlights");
     qRegisterMetaType<QList<Data>>("QList<Data>");
+    qRegisterMetaType<DefinitionProvider>("DefinitionProvider");
 
     // 每一个读任务都开启一个线程处理
-    QObject::connect(this, &Client::readyRead, this, [=](){
-        QtConcurrent::run([=](){readForThread(this);});
-    }, Qt::QueuedConnection);
+    QObject::connect(this, &Client::readyRead, this, &Client::readForThread,
+                     Qt::DirectConnection);
 }
 
 Client::~Client()
@@ -335,8 +336,25 @@ bool Client::definitionResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (d->requestSave.values().contains(V_TEXTDOCUMENT_DEFINITION)
             && d->requestSave.key(V_TEXTDOCUMENT_DEFINITION) == calledID) {
-        qInfo() << "client <-- : " << V_TEXTDOCUMENT_DEFINITION;
+        qInfo() << "client <-- : "
+                << V_TEXTDOCUMENT_DEFINITION
+                << jsonObj;
         d->requestSave.remove(calledID);
+        QJsonArray definitionProviderArray = jsonObj.value("result").toArray();
+        qInfo() << "definitionProviderArray"
+                << definitionProviderArray;
+        DefinitionProvider definitionProvider;
+        foreach(auto val , definitionProviderArray){
+            auto valObj = val.toObject();
+            auto rangeObj = valObj.value(K_RANGE).toObject();
+            auto startObj = rangeObj.value(K_START).toObject();
+            auto endObj = rangeObj.value(K_END).toObject();
+            definitionProvider <<  Location { Range {
+                                   Position{startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()},
+                                   Position{endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()}},
+                                   QUrl{valObj.value(K_URI).toString()}};
+        }
+        emit requestResult(definitionProvider);
         return true;
     }
     return false;
@@ -419,7 +437,8 @@ bool Client::signatureHelpResult(const QJsonObject &jsonObj)
 bool Client::hoverResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if(d->requestSave.keys().contains(calledID)) {
+    if(d->requestSave.keys().contains(calledID)
+            && d->requestSave.key(V_TEXTDOCUMENT_HOVER) == calledID) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_HOVER << jsonObj;
         d->requestSave.remove(calledID);
         QJsonObject resultObj = jsonObj.value("result").toObject();
@@ -557,13 +576,18 @@ bool Client::diagnostics(const QJsonObject &jsonObj)
                 Position { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()},
                 Position { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()}
             },
-            diagnosticObj.value(K_SEVERITY).toInt()
+            Diagnostic::Severity(diagnosticObj.value(K_SEVERITY).toInt())
         };
         diagnostics << diagnostic;
     }
 
     emit notification(diagnostics);
     return true;
+}
+
+void Client::readForThread()
+{
+    QtConcurrent::run(clientStepReadLoop, this);
 }
 
 bool Client::serverCalled(const QJsonObject &jsonObj)

@@ -63,7 +63,7 @@ class EditTextWidgetStylePrivate
         { EditTextWidgetStyle::Indic::TokenTypeEvent, "Text"},
         { EditTextWidgetStyle::Indic::TokenTypeFunction, "Function" },
         { EditTextWidgetStyle::Indic::TokenTypeMethod, "Function" },
-        { EditTextWidgetStyle::Indic::TokenTypeMacro, "Text"},
+        { EditTextWidgetStyle::Indic::TokenTypeMacro, "Macro"},
         { EditTextWidgetStyle::Indic::TokenTypeKeyword, "Keyword"},
         { EditTextWidgetStyle::Indic::TokenTypeModifier, "Text"},
         { EditTextWidgetStyle::Indic::TokenTypeComment, "Comment"},
