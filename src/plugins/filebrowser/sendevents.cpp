@@ -20,7 +20,7 @@
 */
 #include "sendevents.h"
 #include "framework.h"
-#include "common/util/eventdefinitions.h"
+#include "common/common.h"
 
 void SendEvents::treeViewDoublueClicked(const QString &filePath, const QString &workspaceFolder)
 {
@@ -44,6 +44,16 @@ void SendEvents::buildProject(const QString &buildSystem,
     event.setProperty(P_BUILDDIRECTORY, buildDir);
     event.setProperty(P_BUILDFILEPATH, buildFilePath);
     event.setProperty(P_BUILDARGUMENTS, buildArgs);
+    qInfo() << __FUNCTION__ << event;
+    dpf::EventCallProxy::instance().pubEvent(event);
+}
+
+void SendEvents::gengrateWorkspace(const QString &projectPath)
+{
+    dpf::Event event;
+    event.setTopic(T_FILEBROWSER);
+    event.setData(D_ITEM_MENU_BUILD);
+    event.setProperty(P_PROJECTPATH, projectPath);
     qInfo() << __FUNCTION__ << event;
     dpf::EventCallProxy::instance().pubEvent(event);
 }

@@ -19,11 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "workspacereceiver.h"
-#include "common/util/supportfile.h"
-#include "common/util/eventdefinitions.h"
+#include "workspacedata.h"
+#include "common/common.h"
 
-static QStringList subTopics { T_MENU };
-
+static QStringList subTopics { T_MENU, T_NAV };
+static QString projectPath;
 WorkspaceReceiver::WorkspaceReceiver(QObject *parent)
     : dpf::EventHandler (parent)
     , dpf::AutoEventHandlerRegister<WorkspaceReceiver> ()
@@ -33,7 +33,7 @@ WorkspaceReceiver::WorkspaceReceiver(QObject *parent)
 
 dpf::EventHandler::Type WorkspaceReceiver::type()
 {
-    return dpf::EventHandler::Type::Async;
+    return dpf::EventHandler::Type::Sync;
 }
 
 QStringList WorkspaceReceiver::topics()
@@ -48,9 +48,12 @@ void WorkspaceReceiver::eventProcess(const dpf::Event &event)
     qInfo() << event;
     if (event.topic() == T_MENU) {
         if (event.data() == D_FILE_OPENFOLDER) {
-            auto val = SupportFile::Builder::buildInfos(event.property(P_FILEPATH).toString());
-            int a = 20;
-            return;
+            projectPath = event.property(P_FILEPATH).toString();
+        }
+    }
+    if (event.topic() == T_NAV) {
+        if (event.data() == D_EDIT_SHOW) {
+            WorkspaceData::globalInstance()->doGenerate(projectPath);
         }
     }
 }

@@ -1,6 +1,6 @@
 #include "sendevents.h"
 #include "framework/framework.h"
-#include "common/util/eventdefinitions.h"
+#include "common/common.h"
 
 void SendEvents::generateStart(const QString &buildSystem, const QString &projectPath, const QString &targetPath)
 {

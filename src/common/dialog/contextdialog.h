@@ -21,9 +21,13 @@
 #ifndef CONTEXTDIALOG_H
 #define CONTEXTDIALOG_H
 
+#include "common/widget/singlechoicebox.h"
+
 #include <QIcon>
 #include <QString>
 #include <QMessageBox>
+#include <QSet>
+
 #include <functional>
 
 class ContextDialog final
@@ -41,6 +45,12 @@ public:
                    QString title = "Error",
                    QMessageBox::Icon icon = QMessageBox::Critical,
                    std::function<void(bool)> okCallBack = nullptr);
+
+    static void singleChoice(QSet<SingleChoiceBox::Info> infos,
+                             QString windowTitle = "Infos Selection",
+                             QString choiceTitle = "Single Choice",
+                             std::function<void(const SingleChoiceBox::Info&)> okCallBack = nullptr,
+                             std::function<void(const SingleChoiceBox::Info&)> cancelCallBack = nullptr);
 };
 
 #endif

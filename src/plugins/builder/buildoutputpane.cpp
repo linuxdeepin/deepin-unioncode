@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "buildoutputpane.h"
-#include "common/type/constants.h"
+#include "common/common.h"
 
 #include <QScrollBar>
 #include <QDebug>

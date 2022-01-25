@@ -1,8 +1,6 @@
 #include "edittextwidgetstyle.h"
 #include "SciLexer.h"
-#include "common/util/custompaths.h"
-#include "common/util/supportfile.h"
-#include "common/dialog/contextdialog.h"
+#include "common/common.h"
 
 #include <QDebug>
 #include <QHash>

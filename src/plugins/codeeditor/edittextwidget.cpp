@@ -25,10 +25,9 @@
 #include "Document.h"
 #include "Lexilla.h"
 #include "SciLexer.h"
-#include "common/util/processutil.h"
-#include "common/dialog/contextdialog.h"
-#include "common/util/custompaths.h"
-#include "common/util/supportfile.h"
+#include "common/common.h"
+#include "framework/framework.h"
+#include "services/workspace/workspaceservice.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -219,6 +218,7 @@ class EditTextWidgetPrivate
     QStringList tokenModifiersCache{};
     lsp::Position editInsertPostion{-1, -1};
     int editInsertCount = 0;
+    bool isLeave = true;
 };
 
 #include <QTimer>
@@ -289,8 +289,6 @@ EditTextWidget::EditTextWidget(QWidget *parent)
     {qInfo()<< "autoCompleteSelection";});
     QObject::connect(this, &ScintillaEditBase::autoCompleteCancelled, this, [=]()
     {qInfo()<< "autoCompleteCancelled";});
-    QObject::connect(this, &ScintillaEditBase::focusChanged, this, [=](bool focused)
-    {qInfo()<< "focusChanged";});
 
     // Base notifications for compatibility with other Scintilla implementations
     //    QObject::connect(this, &ScintillaEditBase::notify, this, &EditTextWidget::sciNotify);
@@ -418,6 +416,24 @@ void EditTextWidget::setCurrentFile(const QString &filePath)
     QStringList serverProgramOptions;
     QStringList tokenWords;
     QString languageID = languageServer(filePath, &serverProgram, &serverProgramOptions, &tokenWords);
+
+    using namespace dpfservice;
+    auto &&ctx = dpfInstance.serviceContext();
+    auto workspaceService = ctx.service<WorkspaceService>(WorkspaceService::name());
+    QString workspaceGenPath;
+    if (workspaceService) {
+        QStringList workspaceDirs = workspaceService->findWorkspace(filePath);
+        if (workspaceDirs.size() != 1) {
+            qCritical() << "Failed, match workspace to much!!!";
+        } else {
+            workspaceGenPath = workspaceService->targetPath(workspaceDirs[0]);
+        }
+    }
+
+    //    if (!workspaceGenPath.isEmpty()) {
+    //        serverProgramOptions << "--compile-commands-dir=" << workspaceGenPath;
+    //    }
+
     if (!lexer()) {
         setILexer(createLexerFromLib(languageID.toLatin1())); //set token splitter
         d->currentLanguageId = languageID;
@@ -498,6 +514,10 @@ void EditTextWidget::setCurrentFile(const QString &filePath)
         d->client->setProgram(serverProgram);
         d->client->setArguments(serverProgramOptions);
         d->client->start();
+        QObject::connect(d->client, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),[](int code, auto status){
+            abort();
+        });
+        d->client->waitForStarted();
         d->client->initRequest("");
         d->client->openRequest(filePath);
         d->client->docSemanticTokensFull(filePath);
@@ -529,6 +549,17 @@ void EditTextWidget::setCurrentFile(const QString &filePath)
 void EditTextWidget::debugPointAllDelete()
 {
     markerDeleteAll(0);
+}
+
+void EditTextWidget::jumpToLine(int line)
+{
+    int displayLines = linesOnScreen();
+    if (displayLines > 0) {
+        int offsetLines = displayLines / 2;
+        if (line > offsetLines) {
+            setFirstVisibleLine(line - offsetLines);
+        }
+    }
 }
 
 void EditTextWidget::runningToLine(int line)
@@ -607,6 +638,7 @@ void EditTextWidget::tokenDefinitionsSave(const lsp::SemanticTokensProvider &pro
     d->tokenModifiersCache = provider.legend.tokenModifiers;
 }
 
+const unsigned char sep = 0x7C; // "|"
 void EditTextWidget::completionsSave(const lsp::CompletionProvider &provider)
 {
     //    if (!provider.isIncomplete) {
@@ -615,23 +647,34 @@ void EditTextWidget::completionsSave(const lsp::CompletionProvider &provider)
     if (d->editInsertCount == 0) {
         return;
     }
+
+    autoCSetSeparator((sptr_t)sep);
+
     QString labels;
     for (auto item : provider.items) {
         // extension completions for symbol
         if (!item.label.isEmpty()) {
-            labels += item.label;
+            QString itemLabel = item.label;
+            if (itemLabel.startsWith("•")) {
+                itemLabel = itemLabel.replace(0, 1, "|");
+            }
+            if (itemLabel.startsWith(" ")) {
+                itemLabel = itemLabel.replace(0, 1, "|");
+            }
+            labels += itemLabel;
         }
-        qInfo() << "\n**************"
-                << "\ninsertText:" << item.insertText
-                << "\nfilterText:" << item.filterText
-                << "\nlabel:" << item.label;
     }
+    if (labels.startsWith(" ")) {
+        labels.remove(0, 1);
+    }
+    qInfo() << "lables" << labels;
     autoCShow(d->editInsertCount, labels.toUtf8());
 }
 
 void EditTextWidget::hoverMessage(const lsp::Hover &hover)
 {
-    if (d->hoverPos.x() != -1 && d->hoverPos.y() != -1) {
+    if (d->hoverPos.x() != -1 && d->hoverPos.y() != -1
+            && !d->isLeave) {
         qInfo() << hover.contents.value;
         callTipSetBack(STYLE_DEFAULT);
         if (!hover.contents.value.isEmpty()) {
@@ -708,7 +751,7 @@ void EditTextWidget::sciModified(Scintilla::ModificationFlags type, Scintilla::P
             if (d->editInsertPostion.line == currentPostion.line &&
                     currentPostion.character >= d->editInsertPostion.character) {
                 d->editInsertCount --;
-                d->client->completionRequest(currentFile(), getLspPosition(docPointer(), position));
+                //                d->client->completionRequest(currentFile(), getLspPosition(docPointer(), position));
                 qInfo() << "\n************************"
                         << "\n edit start position:"
                         << "\n  line: " << d->editInsertPostion.line
@@ -857,5 +900,17 @@ bool EditTextWidget::setLspIndicStyle(const QString &languageID)
         // styleSetFont(lspKey,) 预留
     }
     return true;
+}
+
+void EditTextWidget::enterEvent(QEvent *event)
+{
+    d->isLeave = false;
+    ScintillaEdit::enterEvent(event);
+}
+
+void EditTextWidget::leaveEvent(QEvent *event)
+{
+    d->isLeave = true;
+    ScintillaEdit::leaveEvent(event);
 }
 

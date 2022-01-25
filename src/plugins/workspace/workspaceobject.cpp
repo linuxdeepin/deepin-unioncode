@@ -37,11 +37,12 @@ WorkspaceObject::~WorkspaceObject()
 
 }
 
-void WorkspaceObject::generate(const QString &rootPath, const QString &targetPath)
+bool WorkspaceObject::generate(const QString &rootPath, const QString &targetPath)
 {
     Q_UNUSED(rootPath)
     Q_UNUSED(targetPath)
     // emit generateStart(rootPath, targetPath);
     // do something
     // emit generateEnd(rootPath, targetPath);
+    return false;
 }

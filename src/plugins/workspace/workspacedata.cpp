@@ -1,7 +1,7 @@
 #include "workspacedata.h"
 #include "workspaceobject.h"
-#include "common/util/custompaths.h"
-#include "common/util/supportfile.h"
+#include "common/common.h"
+#include "processdialog.h"
 
 #include <QSet>
 #include <QFileInfo>
@@ -59,7 +59,7 @@ QStringList WorkspaceData::findWorkspace(const QString &filePath)
         }
 
         QDir dir(info.filePath());
-        while(!dir.cdUp()) {
+        while(dir.cdUp()) {
             if (d->workspaceFolders.contains(dir.absolutePath())) {
                 result << dir.absolutePath();
             }
@@ -91,16 +91,27 @@ QString WorkspaceData::targetPath(const QString &dirPath)
 void WorkspaceData::doGenerate(const QString &dirPath)
 {
     auto buildInfos = SupportFile::Builder::buildInfos(dirPath);
-
+    QString cacheWorkspaceDir = CustomPaths::projectGeneratePath(dirPath);
     if (buildInfos.size() == 1) {
         qInfo() << "build system: " << buildInfos[0].buildSystem;
-        qInfo() << "project system: " << buildInfos[0].projectPath;
-    } else if (buildInfos.size() > 1) {
-        qInfo() << "need to select project do generate: ";
-        for (auto val : buildInfos) {
-            qInfo() << "    build system: " << val.buildSystem;
-            qInfo() << "    project system: " << val.projectPath;
+        qInfo() << "project path: " << buildInfos[0].projectPath;
+        QString error;
+        auto generateObject = WorkspaceObjectFactory::create(buildInfos[0].buildSystem, &error);
+        if (!generateObject) {
+             qCritical() << "Failed, can't open dir" << dirPath
+                         << "generate workspace from " << buildInfos[0].buildSystem;
         }
+        bool genResult = generateObject->generate(dirPath, cacheWorkspaceDir);
+        if (genResult)
+            addWorkspace(dirPath);
+    } else if (buildInfos.size() > 1) {
+        QSet<SingleChoiceBox::Info> infos;
+        for (auto val : buildInfos) {
+            infos << SingleChoiceBox::Info{val.buildSystem, val.projectPath, QIcon()};
+        }
+        ContextDialog::singleChoice(infos,
+                                    WorkspaceData::tr("Generate Project Workspace"),
+                                    WorkspaceData::tr("Selection Build System"));
     } else {
         qInfo() << "can't found any project support, open show file browser: "
                 << dirPath;

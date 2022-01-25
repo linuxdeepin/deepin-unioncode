@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "eventreceiver.h"
-#include "common/util/eventdefinitions.h"
+#include "common/common.h"
 #include "debuggersignals.h"
 #include "debuggerglobals.h"
 

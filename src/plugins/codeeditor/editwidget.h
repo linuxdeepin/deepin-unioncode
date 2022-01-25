@@ -27,6 +27,7 @@ class EditWidgetPrivate;
 class EditWidget : public QWidget
 {
     Q_OBJECT
+    friend class EditWidgetPrivate;
     EditWidgetPrivate *const d;
 public:
     explicit EditWidget(QWidget *parent = nullptr);
@@ -35,6 +36,7 @@ public:
 public slots:
     void openFile(const QString &filePath);
     void closeFile(const QString &filePath);
+    void jumpToLine(const QString &filePath, int line);
     void runningToLine(const QString &filePath, int line);
     void runningEnd();
 

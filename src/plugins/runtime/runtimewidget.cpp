@@ -21,7 +21,7 @@
 #include "runtimewidget.h"
 #include "configurewidget.h"
 #include "environmentwidget.h"
-#include "common/widget/collapsewidget.h"
+#include "common/common.h"
 
 #include <QListWidget>
 #include <QSplitter>

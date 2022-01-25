@@ -1,4 +1,4 @@
-#include "common/util/custompaths.h"
+#include "common/common.h"
 
 #include <framework/framework.h>
 #include <QApplication>

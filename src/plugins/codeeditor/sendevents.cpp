@@ -20,7 +20,7 @@
 */
 #include "sendevents.h"
 #include "framework.h"
-#include "common/util/eventdefinitions.h"
+#include "common/common.h"
 
 void SendEvents::marginDebugPointAdd(const QString filePath, quint64 fileLine)
 {

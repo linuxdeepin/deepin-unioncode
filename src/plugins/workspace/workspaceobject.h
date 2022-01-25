@@ -33,7 +33,7 @@ public:
     WorkspaceObject();
     virtual ~WorkspaceObject();
     static QString buildSystemName(){return "";}
-    virtual void generate(const QString &rootPath, const QString &targetPath);
+    virtual bool generate(const QString &rootPath, const QString &targetPath);
 
 signals:
     /*!

@@ -35,6 +35,8 @@ public:
                              const QString &buildDir,
                              const QString &buildFilePath,
                              const QStringList &buildArgs);
+
+    static void gengrateWorkspace(const QString &projectPath);
 };
 
 #endif // SENDEVENTS_H

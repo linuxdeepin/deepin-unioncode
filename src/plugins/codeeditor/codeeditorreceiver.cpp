@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "codeeditorreceiver.h"
-#include "common/util/eventdefinitions.h"
+#include "common/common.h"
 
 static QStringList subTopics
 {
@@ -35,7 +35,7 @@ CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
 
 dpf::EventHandler::Type CodeEditorReceiver::type()
 {
-    return dpf::EventHandler::Type::Async;
+    return dpf::EventHandler::Type::Sync;
 }
 
 QStringList CodeEditorReceiver::topics()

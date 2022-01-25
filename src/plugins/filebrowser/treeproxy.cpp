@@ -21,7 +21,7 @@
 #include "treeproxy.h"
 #include "treenodewatcher.h"
 
-#include "common/dialog/contextdialog.h"
+#include "common/common.h"
 
 #include <QMutex>
 #include <QDebug>

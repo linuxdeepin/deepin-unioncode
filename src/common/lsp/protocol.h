@@ -28,34 +28,64 @@
 
 namespace lsp {
 
-extern const QString K_ID; //int
-extern const QString K_JSON_RPC; //value QString
-extern const QString K_METHOD; //value QString
-extern const QString K_RESULT; //value json
-extern const QString K_PARAMS; //value json
-extern const QString K_CAPABILITIES; //value json
-extern const QString K_TEXTDOCUMENT; //value json
-extern const QString K_DOCUMENTSYMBOL; //value json
-extern const QString K_HIERARCHICALDOCUMENTSYMBOLSUPPORT; //value bool
-extern const QString K_PUBLISHDIAGNOSTICS; //value json
-extern const QString K_RELATEDINFOMATION; //value bool;
-extern const QString K_INITIALIZATIONOPTIONS; // value defaule is null;
-extern const QString K_PROCESSID; //value qint64 current client pid
-extern const QString K_ROOTPATH; //value QString project root path
-extern const QString K_ROOTURI; //value QString project root url
+extern const QString K_ID;
+extern const QString K_JSON_RPC;
+extern const QString K_METHOD;
+extern const QString K_RESULT;
+extern const QString K_PARAMS;
+extern const QString K_CAPABILITIES;
+extern const QString K_TEXTDOCUMENT;
+extern const QString K_DOCUMENTSYMBOL;
+extern const QString K_HIERARCHICALDOCUMENTSYMBOLSUPPORT;
+extern const QString K_PUBLISHDIAGNOSTICS;
+extern const QString K_RELATEDINFOMATION;
+extern const QString K_INITIALIZATIONOPTIONS;
+extern const QString K_PROCESSID;
+extern const QString K_ROOTPATH;
+extern const QString K_ROOTURI;
 extern const QString K_URI; // value QString from file url
-extern const QString K_VERSION; //value int
-extern const QString K_LANGUAGEID; //value QString
-extern const QString K_TEXT; //value QString from didOpen request document text
+extern const QString K_VERSION; // value int
+extern const QString K_LANGUAGEID;
+extern const QString K_TEXT;
+extern const QString K_CONTAINERNAME;
+extern const QString K_KIND;
+extern const QString K_LOCATION;
+extern const QString K_POSITION;
+extern const QString K_DATA;
 
-extern const QString H_CONTENT_LENGTH; //value int, from json length, call server request header
+extern const QString H_CONTENT_LENGTH;
+extern const QString V_2_0;
+extern const QString V_INITIALIZE; //has request result
+extern const QString V_SHUTDOWN; //has request result
+extern const QString V_EXIT; //has request result
+extern const QString V_TEXTDOCUMENT_DIDOPEN; //no request result
+extern const QString V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS; //server call
+extern const QString V_TEXTDOCUMENT_DIDCHANGE; //no request result, json error
+extern const QString V_TEXTDOCUMENT_DOCUMENTSYMBOL; // has request result
+extern const QString V_TEXTDOCUMENT_HOVER; // has request result
+extern const QString V_TEXTDOCUMENT_DEFINITION ;
+extern const QString V_TEXTDOCUMENT_DIDCLOSE;
+extern const QString V_TEXTDOCUMENT_COMPLETION;
+extern const QString V_TEXTDOCUMENT_SIGNATUREHELP;
+extern const QString V_TEXTDOCUMENT_REFERENCES;
+extern const QString V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT;
+extern const QString V_TEXTDOCUMENT_SEMANTICTOKENS;
+extern const QString K_WORKSPACEFOLDERS;
 
-extern const QString V_2_0; // save QString, from K_JSON_RPC value
-extern const QString V_INITIALIZE; //save QString, from K_METHOD value
-extern const QString V_TEXTDOCUMENT_DIDOPEN; //save QString, from K_METHOD key
-extern const QString V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS; //save QString, from K_METHOD key
+extern const QString K_CONTENTCHANGES;
+extern const QString K_DIAGNOSTICS;
+extern const QString K_RANGE;
+extern const QString K_MESSAGE;
+extern const QString K_SEVERITY;
+extern const QString K_END;
+extern const QString K_START;
+extern const QString K_CHARACTER;
+extern const QString K_LINE;
+extern const QString K_CONTEXT;
+extern const QString K_INCLUDEDECLARATION;
 
-extern const QString K_DIAGNOSTICS; //value is jsonArray
+extern const QString K_ERROR;
+extern const QString K_CODE;
 
 enum SemanticTokenType {
     Namespace = 0,
@@ -322,69 +352,6 @@ QString setHeader(const QJsonObject &object);
 bool isRequestResult(const QJsonObject &object);
 bool isRequestError(const QJsonObject &object);
 
-class ClientPrivate;
-class Client : public QProcess
-{
-    Q_OBJECT
-    ClientPrivate *const d;
-public:
-    explicit Client(QObject *parent = nullptr);
-    virtual ~Client();
-    static bool exists(const QString &progrma);
-    void initRequest(const QString &rootPath); // yes
-    void openRequest(const QString &filePath); // no
-    void closeRequest(const QString &filePath); // no
-    void changeRequest(const QString &filePath); // no
-    void symbolRequest(const QString &filePath); // yes
-    void definitionRequest(const QString &filePath, const Position &pos); // yes
-    void completionRequest(const QString &filePath, const Position &pos); // yes
-    void signatureHelpRequest(const QString &filePath, const Position &pos); // yes
-    void referencesRequest(const QString &filePath, const Position &pos);
-    void docHighlightRequest(const QString &filePath, const Position &pos);
-    void docSemanticTokensFull(const QString &filePath); //yes
-    void docHoverRequest(const QString &filePath, const Position &pos); // yes
-    void shutdownRequest();
-    void exitRequest();
-
-signals:
-    void request();
-    void notification(const QString &jsonStr);
-    void notification(const Diagnostics &diagnostics);
-    void requestResult(const SemanticTokensProvider &tokensProvider);
-    void requestResult(const Symbols &symbols);
-    void requestResult(const Locations &locations);
-    void requestResult(const CompletionProvider &completionProvider);
-    void requestResult(const SignatureHelps &signatureHelps);
-    void requestResult(const Hover &hover);
-    void requestResult(const Highlights &highlights);
-    void requestResult(const QList<Data> &tokensResult);
-
-private:
-    bool calledError(const QJsonObject &jsonObj);
-    bool calledResult(const QJsonObject &jsonObj); //found result key from json && not found method
-    bool initResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool openResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool changeResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool symbolResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool definitionResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool completionResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool signatureHelpResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool hoverResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool referencesResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool docHighlightResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool docSemanticTokensFullResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool closeResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool shutdownResult(const QJsonObject &jsonObj);
-    bool exitResult(const QJsonObject &jsonObj);
-
-    bool serverCalled(const QJsonObject &jsonObj); // not found result key from json && found key method
-    bool diagnostics(const QJsonObject &jsonObj);
-    void processJson(const QJsonObject &jsonObj);
-
-private slots:
-    void readJson();
-    QStringList cvtStringList(const QJsonArray &array);
-};
 
 } // namespace lsp
 

@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "common/lsp/protocol.h"
+#include "common/common.h"
 
 #include "Scintilla.h"
 

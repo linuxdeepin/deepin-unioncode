@@ -23,7 +23,7 @@
 #include "editfilestatusbar.h"
 #include "edittextwidget.h"
 #include "codeeditorreceiver.h"
-#include "common/inotify/inotify.h"
+#include "common/common.h"
 
 #include <QGridLayout>
 #include <QFileInfo>
@@ -148,6 +148,28 @@ void EditWidget::closeFile(const QString &filePath)
         emit d->tab->tabCloseRequested(index);
 }
 
+void EditWidget::jumpToLine(const QString &filePath, int line)
+{
+    int fileTabIndex = tabIndex(filePath);
+    if ( 0 <= fileTabIndex) {
+        showFileEdit(fileTabIndex);
+    } else {
+        openFile(filePath);
+    }
+
+    for (auto editor : d->textEdits) {
+        if (!editor) {
+            qCritical() << "Error, Crashed from iteration hash";
+            abort();
+        }
+
+        if (editor->currentFile() == filePath) {
+            editor->jumpToLine(line);
+            showFileEdit(tabIndex(filePath));
+        }
+    }
+}
+
 void EditWidget::runningToLine(const QString &filePath, int line)
 {
     int fileTabIndex = tabIndex(filePath);
@@ -163,9 +185,9 @@ void EditWidget::runningToLine(const QString &filePath, int line)
             abort();
         }
 
-        if (editor->currentFile() != filePath) {
-            editor->runningEnd();
-        } else {
+        editor->runningEnd();
+        if (editor->currentFile() == filePath) {
+            editor->jumpToLine(line);
             editor->runningToLine(line);
             showFileEdit(tabIndex(filePath));
         }

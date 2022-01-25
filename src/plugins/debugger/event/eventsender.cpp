@@ -20,7 +20,7 @@
 */
 #include "eventsender.h"
 #include "framework.h"
-#include "common/util/eventdefinitions.h"
+#include "common/common.h"
 
 void EventSender::jumpTo(dap::string filepath, int numberline)
 {

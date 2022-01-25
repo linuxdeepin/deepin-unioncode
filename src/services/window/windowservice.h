@@ -39,59 +39,79 @@ public:
     static QString name();
 
     explicit WindowService(QObject *parent = nullptr);
-
-signals: // publish to other plugin interface
     /*!
      * \brief addNavAction 添加导航栏action
      * \param action 实例对象
      */
-    void addNavAction(AbstractAction *action);
+    DPF_INTERFACE(void, addNavAction, AbstractAction *action);
 
     /*!
      * \brief addMenu 添加菜单项
      * \param menu 实例对象
      */
-    void addMenu(AbstractMenu *menu);
+    DPF_INTERFACE(void, addMenu, AbstractMenu *menu);
 
     /*!
      * \brief addAction 添加到其他由框架发布的可扩展menu
      * \param menuName 框架扩展menu发布名称
      * \param action 实例对象
      */
-    void addAction(const QString &menuName, AbstractAction *action);
+    DPF_INTERFACE(void, addAction, const QString &menuName, AbstractAction *action);
 
     /*!
      * \brief addCentral 添加中心显示组件
      * \param navName 导航栏名称，从AbstractAction获取
      * \param central 添加的居中组件实例对象
      */
-    void addCentral(const QString &navName, AbstractCentral *central);
+    DPF_INTERFACE(void, addCentral, const QString &navName, AbstractCentral *central);
 
     /*!
      * \brief setEditTree 设置编辑器文件树
      * \param editTree 设置的编辑器文件树实例对象
      */
-    void setEditorTree(AbstractWidget *editTree);
+    DPF_INTERFACE(void, setEditorTree, AbstractWidget *editTree);
 
     /*!
      * \brief setEditorConsole 设置默认终端
      * \param console 实例对象
      */
-    void setEditorConsole(AbstractWidget *console);
+    DPF_INTERFACE(void, setEditorConsole, AbstractWidget *console);
 
     /*!
      * \brief addContextWidget 添加交互组件
      * \param contextTab Tab名称
      * \param contextWidget 实例对象
      */
-    void addContextWidget(const QString &contextTab, AbstractWidget *contextWidget);
+    DPF_INTERFACE(void, addContextWidget, const QString &contextTab, AbstractWidget *contextWidget);
 
     /*!
      * \brief addOptionWidget 添加功能项组件
      * \param optionName option名称
      * \param optionWidget option显示的组件
      */
-    void addOptionWidget(const QIcon &icon, const QString &optionName, AbstractWidget *optionWidget);
+    DPF_INTERFACE(void, addOptionWidget, const QIcon &icon, const QString &optionName, AbstractWidget *optionWidget);
+
+    /*!
+     * \brief showProcessStatus
+     * \param message
+     */
+    DPF_INTERFACE(void, setStatusBar, AbstractWidget *statusBar);
+
+    /*!
+     * \brief addWidget
+     * \param widget
+     * \param stretch
+     */
+    DPF_INTERFACE(void, addWidgetToStatusBar, QWidget *widget);
+
+    /*!
+     * \brief DPF_INTERFACE
+     * \param index
+     * \param widget
+     */
+    DPF_INTERFACE(int, insertWidgetToStatusBar, int index, QWidget *widget);
 };
+
 } // namespace dpfservice
+
 #endif // WINDOWSERVICE_H

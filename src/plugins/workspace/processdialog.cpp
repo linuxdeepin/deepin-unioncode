@@ -1,6 +1,7 @@
 #include "processdialog.h"
-#include "common/widget/statuswidget.h"
+#include "common/common.h"
 #include <QLabel>
+#include <QTextBrowser>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
@@ -8,7 +9,7 @@ class ProcessDialogPrivate
 {
     friend class ProcessDialog;
     StatusWidget *statusWidget = nullptr;
-    QLabel *messageLabel = nullptr;
+    QTextBrowser *messageBrowser = nullptr;
     QHBoxLayout *hLayout = nullptr;
 };
 
@@ -23,12 +24,12 @@ ProcessDialog::ProcessDialog(QWidget *parent, Qt::WindowFlags f)
     d->statusWidget = new StatusWidget();
     d->statusWidget->setPatternFlags(StatusWidget::PatternFlag::Ring);
     d->statusWidget->setFixedSize(lineHeight * 2, lineHeight * 2);
-    d->messageLabel = new QLabel();
+    d->messageBrowser = new QTextBrowser();
     d->hLayout = new QHBoxLayout();
 
     this->setLayout(d->hLayout);
     d->hLayout->addWidget(d->statusWidget);
-    d->hLayout->addWidget(d->messageLabel);
+    d->hLayout->addWidget(d->messageBrowser);
 }
 
 ProcessDialog::~ProcessDialog()
@@ -52,9 +53,10 @@ void ProcessDialog::setRunning(bool runable)
         d->statusWidget->stop();
 }
 
-void ProcessDialog::setMessage(const QString &message)
+ProcessDialog &ProcessDialog::operator <<(const QString &message)
 {
-    d->messageLabel->setText(message);
+    d->messageBrowser->append(message);
+    return *this;
 }
 
 void ProcessDialog::setTitle(const QString &title)

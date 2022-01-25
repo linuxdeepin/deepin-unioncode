@@ -53,17 +53,18 @@ bool CodeEditor::start()
         windowService->addCentral(QString::fromStdString(NAVACTION_EDIT),
                                   new AbstractCentral(navEditWidget));
 
-        QObject::connect(windowService, &WindowService::setEditorTree,
-                         navEditWidget, &NavEditWidget::setTreeWidget,
-                         Qt::UniqueConnection);
+        using namespace std::placeholders;
+        if (!windowService->setEditorTree) {
+            windowService->setEditorTree = std::bind(&NavEditWidget::setTreeWidget, navEditWidget, _1);
+        };
 
-        QObject::connect(windowService, &WindowService::setEditorConsole,
-                         navEditWidget, &NavEditWidget::setConsole,
-                         Qt::UniqueConnection);
+        if (!windowService->setEditorConsole) {
+            windowService->setEditorConsole = std::bind(&NavEditWidget::setConsole, navEditWidget, _1);
+        }
 
-        QObject::connect(windowService, &WindowService::addContextWidget,
-                         navEditWidget, &NavEditWidget::addContextWidget,
-                         Qt::UniqueConnection);
+        if (!windowService->addContextWidget) {
+            windowService->addContextWidget = std::bind(&NavEditWidget::addContextWidget, navEditWidget, _1, _2);
+        }
 
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);
         windowService->addAction(QString::fromStdString(MENU_FILE),

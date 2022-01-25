@@ -1,9 +1,17 @@
 /* === Shared === */
 QStackedWidget, QLabel, QPushButton, QRadioButton, QCheckBox, 
-QGroupBox, QStatusBar, QToolButton, QComboBox, QDialog, QScrollArea, QWidget{
+QProgressBar, QGroupBox, QStatusBar, QToolButton, QComboBox, QDialog, QScrollArea, QWidget{
     background-color: #222222;
     color: #BBBBBB;
     font-family: "Segoe UI";
+}
+
+QProgressBar {
+    border: 0px solid #222222;
+    border-radius: 0px;
+    font: 8px;
+    color: #BBBBBB;
+    background-color: #555555;
 }
 
 QComboBox QAbstractItemView {
@@ -59,14 +67,6 @@ QPushButton:pressed {
  
 QPushButton:disabled {
     color: #333333;
-}
-
-/* === Checkable items === */
-QCheckBox::indicator, QRadioButton::indicator, QTreeView::indicator {
-    width: 16px;
-    height: 16px;
-    background-color: #111111;
-    border: 1px solid #333333;
 }
  
 /* === QComboBox === */

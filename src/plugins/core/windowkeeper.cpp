@@ -20,6 +20,7 @@
 */
 #include "windowkeeper.h"
 #include "sendevents.h"
+#include "windowstatusbar.h"
 #include "services/window/windowservice.h"
 
 #include <QAction>
@@ -156,7 +157,7 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
 void WindowKeeper::createStatusBar(QMainWindow *window)
 {
     qInfo() << __FUNCTION__;
-    QStatusBar* statusBar = new QStatusBar();
+    QStatusBar* statusBar = new WindowStatusBar();
     window->setStatusBar(statusBar);
 }
 
@@ -277,20 +278,22 @@ WindowKeeper::WindowKeeper(QObject *parent)
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
                      this, &WindowKeeper::initUserWidget);
+    using namespace std::placeholders;
+    if (!windowService->addMenu) {
+        windowService->addMenu = std::bind(&WindowKeeper::addMenu, this, _1);
+    }
 
-    QObject::connect(windowService, &WindowService::addMenu,
-                     this, &WindowKeeper::addMenu, Qt::UniqueConnection);
+    if (!windowService->addCentral) {
+        windowService->addCentral = std::bind(&WindowKeeper::addCentral, this, _1, _2);
+    }
 
-    QObject::connect(windowService, &WindowService::addCentral,
-                     this, &WindowKeeper::addCentral, Qt::UniqueConnection);
+    if (!windowService->addNavAction) {
+        windowService->addNavAction = std::bind(&WindowKeeper::addNavAction, this, _1);
+    }
 
-    QObject::connect(windowService, &WindowService::addNavAction,
-                     this, &WindowKeeper::addNavAction, Qt::UniqueConnection);
-
-    QObject::connect(windowService, QOverload<const QString &, AbstractAction *>
-                     ::of(&WindowService::addAction),
-                     this, QOverload<const QString &, AbstractAction *>
-                     ::of(&WindowKeeper::addAction));
+    if (!windowService->addAction) {
+        windowService->addAction = std::bind(&WindowKeeper::addAction, this, _1, _2);
+    }
 }
 
 void WindowKeeper::addNavAction(AbstractAction *action)

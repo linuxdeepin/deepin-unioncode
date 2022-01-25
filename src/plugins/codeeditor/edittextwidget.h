@@ -24,7 +24,7 @@
 #include <QTextEdit>
 
 #include "ScintillaEdit.h"
-#include "common/lsp/protocol.h"
+#include "common/common.h"
 
 class EditTextWidgetPrivate;
 class EditTextWidget : public ScintillaEdit
@@ -39,6 +39,7 @@ public:
 public slots:
     void setCurrentFile(const QString &filePath);
     void debugPointAllDelete();
+    void jumpToLine(int line);
     void runningToLine(int line);
     void runningEnd();
 
@@ -61,6 +62,10 @@ private slots:
 private:
     void setDefaultStyle();
     bool setLspIndicStyle(const QString &languageID);
+
+protected:
+    virtual void leaveEvent(QEvent *event);
+    virtual void enterEvent(QEvent *event);
 };
 
 #endif // EDITTEXTWIDGET_H

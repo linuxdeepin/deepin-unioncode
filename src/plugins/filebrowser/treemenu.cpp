@@ -21,10 +21,7 @@
 #include "treemenu.h"
 #include "treeproxy.h"
 #include "sendevents.h"
-#include "common/util/custompaths.h"
-#include "common/util/supportfile.h"
-#include "common/util/processutil.h"
-#include "common/dialog/contextdialog.h"
+#include "common/common.h"
 
 #include <QFileInfo>
 #include <QAction>

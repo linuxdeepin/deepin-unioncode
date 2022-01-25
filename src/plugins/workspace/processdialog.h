@@ -13,7 +13,7 @@ public:
     virtual ~ProcessDialog();
     static ProcessDialog* globalInstance();
     void setRunning(bool runable);
-    void setMessage(const QString &message);
+    ProcessDialog& operator << (const QString &message);
     void setTitle(const QString &title);
 };
 

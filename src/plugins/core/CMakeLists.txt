@@ -6,6 +6,8 @@ set(CXX_CPP
     windowtheme.cpp
     windowswitcher.cpp
     windowkeeper.cpp
+    windowstatusbar.cpp
+    progressbar.cpp
     optionsdialog.cpp
     sendevents.cpp
     core.cpp
@@ -16,6 +18,8 @@ set(CXX_H
     windowtheme.h
     windowswitcher.h
     windowkeeper.h
+    windowstatusbar.h
+    progressbar.h
     optionsdialog.h
     sendevents.h
     core.h

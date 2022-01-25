@@ -20,7 +20,7 @@
 */
 #include "configurewidget.h"
 #include "environmentwidget.h"
-#include "common/widget/collapsewidget.h"
+#include "common/common.h"
 
 #include <QVBoxLayout>
 #include <QLabel>
