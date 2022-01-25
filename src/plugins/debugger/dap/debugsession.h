@@ -25,6 +25,7 @@
 #include "dap/session.h"
 #include "dap/protocol.h"
 #include "debug.h"
+#include "interface/variable.h"
 
 #include <QObject>
 #include <QSharedPointer>
@@ -38,6 +39,7 @@ class RawDebugSession;
 class RunTimeCfgProvider;
 
 namespace DEBUG_NAMESPACE {
+
 class DebugModel;
 class DebugSession : public QObject, public IDebugSession
 {
@@ -64,9 +66,9 @@ public:
             dap::string &name, dap::optional<number> variablesReference) override;
     void sendDataBreakpoints(dap::array<IDataBreakpoint> dataBreakpoints) override;
     void sendInstructionBreakpoints(dap::array<IInstructionBreakpoint> instructionBreakpoints) override;
-//    dap::array<IPosition> breakpointsLocations(URI uri, number lineNumber);
+    //    dap::array<IPosition> breakpointsLocations(URI uri, number lineNumber);
     dap::optional<dap::Breakpoint> getDebugProtocolBreakpoint(dap::string &breakpointId) override;
-//    dap::optional<dap::Response> customRequest(dap::string &request, dap::any args);
+    //    dap::optional<dap::Response> customRequest(dap::string &request, dap::any args);
     dap::optional<dap::StackTraceResponse> stackTrace(number threadId, number startFrame, number levels) override;
     dap::optional<IExceptionInfo> exceptionInfo(number threadId) override;
     dap::optional<dap::ScopesResponse> scopes(number frameId, number threadId) override;
@@ -95,34 +97,24 @@ public:
     dap::optional<dap::GotoTargetsResponse> gotoTargets(
             dap::Source &source, number line, number column) override;
     dap::optional<dap::GotoResponse> goto_(number threadId, number targetId) override;
-//    dap::optional<dap::SourceResponse> loadSource(QUrl &resource);
-//    dap::array<dap::Source> getLoadedSources();
-//    dap::optional<dap::CompletionsResponse> completions(
-//            dap::optional<number> frameId,
-//            dap::optional<number> threadId,
-//            dap::string &text,
-//            dap::Position &position,
-//            number overwriteBefore);
     dap::optional<dap::StepInTargetsResponse> stepInTargets(number frameId) override;
     dap::optional<dap::CancelResponse> cancel(dap::string &progressId) override;
-//    dap::optional<dap::array<dap::DisassembledInstruction>> disassemble(dap::string &memoryReference, number offset, number instructionOffset, number instructionCount);
-//    dap::optional<dap::ReadMemoryResponse> readMemory(dap::string &memoryReference, number offset, number count);
-//    dap::optional<dap::WriteMemoryResponse> writeMemory(dap::string &memoryReference, number offset, dap::string &data, dap::optional<bool> allowPartial);
     // threads.
     dap::optional<Thread *> getThread(number threadId) override;
-    dap::optional<dap::array<IThread *> > getAllThreads() const override;
+    dap::optional<dap::array<IThread *>> getAllThreads() const override;
     void clearThreads(bool removeThreads, dap::optional<number> reference) override;
     dap::optional<IRawStoppedDetails> getStoppedDetails() const override;
     void rawUpdate(IRawModelUpdate *data) override;
     void fetchThreads(dap::optional<IRawStoppedDetails> stoppedDetails) override;
     dap::optional<dap::Source> getSourceForUri(QUrl &uri) override;
-//    dap::Source getSource(dap::optional<dap::Source> raw) override;
     Source *getSource(dap::optional<dap::Source> raw) override;
 
     dap::string getId() override;
     dap::integer getThreadId() override;
     dap::string getLabel() const override;
     void setName(dap::string &name) override;
+
+    bool getLocals(dap::integer frameId, IVariables *out) override;
 signals:
 
 public slots:
@@ -137,6 +129,7 @@ private:
     dap::Source getRawSource(QUrl &uri);
     void cancelAllRequests();
 
+    bool getVariables(dap::integer variablesRef, IVariables *out);
 
     QSharedPointer<dap::RawDebugSession> raw;
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;

@@ -22,12 +22,17 @@
 #define DEBUGMANAGER_H
 
 #include "debuggerglobals.h"
+#include "interface/stackframemodel.h"
+#include "interface/localtreemodel.h"
+#include "interface/variable.h"
 
+#include <QTreeView>
 #include <QSharedPointer>
 #include <QObject>
 
 class Debugger;
 class AppOutputPane;
+class StackFrameView;
 class DebugManager : public QObject
 {
     Q_OBJECT
@@ -35,10 +40,15 @@ public:
     explicit DebugManager(QObject *parent = nullptr);
     bool initialize();
     AppOutputPane *getOutputPane() const;
+    QTreeView *getStackPane() const;
+    QTreeView *getLocalsPane() const;
 
 signals:
 
 public slots:
+    /**
+     * UI triggered.
+     */
     void startDebug();
     void detachDebug();
 
@@ -51,12 +61,30 @@ public slots:
     void stepIn();
     void stepOut();
 
+    /**
+     * Editor Triggered.
+     */
     void slotBreakpointAdded(const QString &filepath, int lineNumber);
-    void slotOutput(const QString &content, OutputFormat format);
 
+    /**
+     * Dap Server Triggered.
+     */
+    void slotOutput(const QString &content, OutputFormat format);
+    void slotProcessFrames(const StackFrames &stackFrames);
+    void slotProcessVariables(IVariables vars);
+
+    void slotFrameSelected(const QModelIndex &index);
 private:
+    void initializeView();
+
     QSharedPointer<Debugger> debugger;
     QSharedPointer<AppOutputPane> outputPane;
+
+    QSharedPointer<StackFrameView> stackView;
+    StackFrameModel stackModel;
+
+    QSharedPointer<QTreeView> localsView;
+    LocalTreeModel localsModel;
 };
 
-#endif // DEBUGMANAGER_H
+#endif   // DEBUGMANAGER_H

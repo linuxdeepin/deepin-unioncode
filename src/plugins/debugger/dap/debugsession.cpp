@@ -25,8 +25,10 @@
 #include "debugservice.h"
 #include "debuggersignals.h"
 #include "debuggerglobals.h"
-#include "eventsender.h"
+#include "event/eventsender.h"
 #include "debugmodel.h"
+#include "stackframe.h"
+#include "interface/variable.h"
 
 #include "dap/io.h"
 #include "dap/protocol.h"
@@ -41,6 +43,8 @@
 #include <algorithm>
 
 namespace DEBUG_NAMESPACE {
+
+static constexpr const char *kLocals = "locals";
 
 using namespace dap;
 DebugSession::DebugSession(DebugModel *_model, QObject *parent)
@@ -388,11 +392,10 @@ void DebugSession::rawUpdate(IRawModelUpdate *data)
         if (stoppedDetails->allThreadsStopped) {
             for (auto thread : threads) {
                 if (thread.second->threadId == stoppedDetails->threadId.value()) {
-                     thread.second->stoppedDetails = stoppedDetails;
-                     thread.second->stopped = true;
-                     thread.second->clearCallStack();
+                    thread.second->stoppedDetails = stoppedDetails;
+                    thread.second->stopped = true;
+                    thread.second->clearCallStack();
                 }
-
             }
         } else {
             if (stoppedDetails->threadId) {
@@ -417,7 +420,7 @@ void DebugSession::fetchThreads(dap::optional<IRawStoppedDetails> stoppedDetails
     if (raw) {
         auto response = raw->threads();
         if (response.valid()) {
-            IRawModelUpdate args{getId(), response.get().response.threads, stoppedDetails};
+            IRawModelUpdate args { getId(), response.get().response.threads, stoppedDetails };
             model->rawUpdate(&args);
         }
     }
@@ -439,7 +442,7 @@ Source *DebugSession::getSource(dap::optional<dap::Source> raw)
         delete source;
         source = nullptr;
     } else {
-        sources.insert(std::pair<dap::string, Source*>(uriKey, source));
+        sources.insert(std::pair<dap::string, Source *>(uriKey, source));
     }
 
     return source;
@@ -780,6 +783,53 @@ void DebugSession::shutdown()
     }
 }
 
+// GetVariables fetches the fully traversed set of Variables from the debugger
+// for the given reference identifier.
+// Returns true on success, false on error.
+bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out)
+{
+    dap::VariablesRequest request;
+    request.variablesReference = variablesRef;
+    if (!raw->variables(request).valid()) {
+        return false;
+    }
+    auto response = raw->variables(request).get().response;
+    for (auto var : response.variables) {
+        IVariable v;
+        v.name = var.name;
+        v.var = var;
+        if (var.variablesReference > 0) {
+            if (!getVariables(var.variablesReference, &v.children)) {
+                return false;
+            }
+        }
+        out->push_back(v);
+    }
+    return true;
+}
+
+// GetLocals fetches the fully traversed set of local Variables from the
+// debugger for the given stack frame.
+// Returns true on success, false on error.
+bool DebugSession::getLocals(dap::integer frameId, IVariables *out)
+{
+    dap::ScopesRequest scopeReq;
+    scopeReq.frameId = frameId;
+
+    if (!raw->scopes(scopeReq).valid()) {
+        return false;
+    }
+    auto scopeRes = raw->scopes(scopeReq).get().response;
+    for (auto scope : scopeRes.scopes) {
+        if (scope.presentationHint.value("") == kLocals) {
+            return getVariables(scope.variablesReference, out);
+        }
+    }
+
+    qInfo() << "Locals scope not found";
+    return false;
+}
+
 void DebugSession::registerHandlers()
 {
     /*
@@ -817,9 +867,9 @@ void DebugSession::registerHandlers()
         details->description = event.description;
         details->threadId = event.threadId;
         details->text = event.text;
-//        details.totalFrames = event.;
+        //        details.totalFrames = event.;
         details->allThreadsStopped = event.allThreadsStopped.value();
-//        details.framesErrorMessage = even;
+        //        details.framesErrorMessage = even;
         details->hitBreakpointIds = event.hitBreakpointIds;
         stoppedDetails.push_back(details);
 
@@ -832,13 +882,33 @@ void DebugSession::registerHandlers()
             if (thread) {
                 model->fetchCallStack(*thread.value());
                 auto stacks = thread.value()->getCallStack();
+                StackFrames frames;
+                int level = 0;
                 for (auto it : stacks) {
-                    Q_UNUSED(it)
                     // TODO(mozart):send to ui.
+                    StackFrameData sf;
+                    sf.level = std::to_string(level++).c_str();
+                    sf.function = it.name.c_str();
+                    if (it.source) {
+                        sf.file = it.source.value().path ? it.source.value().path->c_str() : "";
+                    } else {
+                        sf.file = "No file found.";
+                    }
+
+                    if (it.moduleId) {
+                        auto v = it.moduleId.value();
+                        auto module = v.get<dap::string>();
+                        sf.module = module.c_str();
+                    }
+
+                    sf.line = static_cast<qint32>(it.line);
+                    sf.address = it.instructionPointerReference ? it.instructionPointerReference.value().c_str() : "";
+                    sf.frameId = it.id;
+                    frames.push_back(sf);
                 }
+                emit debuggerSignals->processStackFrames(frames);
             }
         }
-
 
         threadId = event.threadId.value(0);
         if (event.reason == "function breakpoint"
@@ -975,7 +1045,7 @@ void DebugSession::fetchThreads(IRawStoppedDetails *stoppedDetails)
             if (stoppedDetails) {
                 details = *stoppedDetails;
             }
-            IRawModelUpdate args{getId(), response.get().response.threads, details};
+            IRawModelUpdate args { getId(), response.get().response.threads, details };
             model->rawUpdate(&args);
         }
     }
@@ -983,22 +1053,10 @@ void DebugSession::fetchThreads(IRawStoppedDetails *stoppedDetails)
 
 void DebugSession::onBreakpointHit(const StoppedEvent &event)
 {
-    auto source = event.source;
-    if (source) {
-        auto path = source.value().path.value();
-        int line = static_cast<int>(event.line.value());
-        EventSender::jumpTo(path, line);
-    }
 }
 
 void DebugSession::onStep(const StoppedEvent &event)
 {
-    auto source = event.source;
-    if (source) {
-        auto path = source.value().path.value();
-        int line = static_cast<int>(event.line.value());
-        EventSender::jumpTo(path, line);
-    }
 }
 
-} // endnamespace
+}   // endnamespace

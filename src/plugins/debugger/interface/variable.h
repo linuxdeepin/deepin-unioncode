@@ -3,7 +3,8 @@
  *
  * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,28 +19,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DEBUGGERSIGNALS_H
-#define DEBUGGERSIGNALS_H
+#ifndef VARIABLE_H
+#define VARIABLE_H
 
-#include "debuggerglobals.h"
-#include "stackframe.h"
-#include "interface/variable.h"
+#include "dap/protocol.h"
 
-#include <QObject>
+#include <stdlib.h>
+#include <vector>
+#include <string>
+#include <QVector>
 
-class DebuggerSignals : public QObject
+struct IVariable;
+using IVariables = QVector<IVariable>;
+struct IVariable
 {
-    Q_OBJECT
-
-public:
-
-Q_SIGNALS:
-    void debugTriggered();
-    void breakpointAdded(const QString &filepath, int lineNumber);
-    void addOutput(const QString &content, OutputFormat format);
-    void processStackFrames(const StackFrames &stackFrames);
-    void processVariables(IVariables vars);
+    dap::string name;
+    dap::Variable var;
+    IVariables children;
 };
 
-
-#endif // DEBUGGERSIGNALS_H
+#endif // VARIABLE_H

@@ -24,6 +24,7 @@
 
 #include "dap/protocol.h"
 #include "debuggerglobals.h"
+#include "interface/variable.h"
 
 #include <QString>
 #include <QUrl>
@@ -32,7 +33,6 @@
 #include <map>
 
 namespace DEBUG_NAMESPACE {
-
 
 #define undefined \
     {             \
@@ -87,7 +87,7 @@ struct IBreakpointUpdateData
 
 struct ITreeElement
 {
-    virtual dap::string getId(){return "";}
+    virtual dap::string getId() { return ""; }
 };
 
 struct IEnablement : public ITreeElement
@@ -712,49 +712,14 @@ struct IDebugSession : public ITreeElement
     virtual dap::integer getThreadId() = 0;
     virtual void setName(dap::string &name) = 0;
 
+    virtual bool getLocals(dap::integer frameId, IVariables *out) = 0;
+
     State state = kInactive;
     IConfig *configuration = nullptr;
 };
 
 struct ExpressionContainer : public IExpressionContainer
 {
-};
-
-struct Scope : public ExpressionContainer, public IScope
-{
-    Scope(
-        IStackFrame *stackFrame,
-        number index,
-        dap::string name,
-        number reference,
-        bool expensive,
-        dap::optional<number> namedVariables,
-        dap::optional<number> indexedVariables,
-        dap::optional<IRange> range
-    )
-    {
-        // TODO(mozart) vaule parent here.
-    }
-
-     dap::string toString() /*override*/
-     {
-        return name;
-    }
-
-    dap::Scope toDebugProtocolObject()
-    {
-        dap::Scope scope;
-        scope.name = name;
-        scope.expensive = expensive;
-        scope.variablesReference = ExpressionContainer::reference.value();
-
-        return scope;
-    }
-
-    IStackFrame *stackFrame = nullptr;
-    number index = 0;
-    dap::optional<number> namedVariables;
-    dap::optional<number> indexedVariables;
 };
 
 struct Range : public IRange
@@ -766,7 +731,6 @@ struct Range : public IRange
         endLineNumber = _endLineNumber;
         endColumn = _endColumn;
     }
-
 };
 
 struct Source
@@ -802,6 +766,11 @@ struct Source
         return raw.origin;
     }
 
+    dap::optional<dap::string> path() const
+    {
+        return raw.path;
+    }
+
     dap::optional<dap::string> presentationHint() const
     {
         return raw.presentationHint;
@@ -835,83 +804,16 @@ struct Source
     dap::Source raw;
 };
 
-struct StackFrame : public IStackFrame
-{
-    dap::optional<dap::array<Scope>> scopes;
-    number index = 0;
-
-    StackFrame(
-        IThread *_thread,
-        number _frameId,
-        Source *_source,
-        dap::string &_name,
-        dap::optional<dap::string> _presentationHint,
-        IRange _range,
-        number _index,
-        bool _canRestart,
-        dap::optional<dap::string> _instructionPointerReference
-    ) : index(_index)
-    {
-        thread = _thread;
-        frameId = _frameId;
-        name = _name;
-        presentationHint = _presentationHint;
-        range = _range;
-        canRestart = _canRestart;
-        instructionPointerReference = _instructionPointerReference;
-        source = _source;
-    }
-
-    virtual ~StackFrame() override{}
-
-    dap::string getId() override
-    {
-        QString id = QString("stackframe:%s:%d:%s")
-                .arg(thread->getId().c_str())
-                .arg(index)
-                .arg(source->name().value().c_str());
-        return id.toStdString();
-    }
-
-    dap::array<IScope> getScopes()
-    {
-        dap::array<IScope> ret;
-        if (!scopes) {
-            auto sc = thread->session->scopes(frameId, thread->threadId);
-            if (sc) {
-                auto scopeNameIndexes = new std::map<dap::string, number>();
-
-                for (auto rs : sc.value().scopes) {
-                    auto previousIndex = scopeNameIndexes->find(rs.name);
-                    int index = 0;
-                    if (previousIndex != scopeNameIndexes->end()) {
-                        index = previousIndex->second + 1;
-                    }
-                    scopeNameIndexes->insert(std::pair<dap::string, number>(rs.name, index));
-                    dap::optional<IRange> range = undefined;
-//                    if (rs.line && rs.column && rs.endLine && rs.endColumn)
-//                        range = Range(rs.line, rs.column, rs.endLine, rs.endColumn);
-                    auto ptr = Scope(this, index, rs.name, rs.variablesReference, rs.expensive, rs.namedVariables, rs.indexedVariables,
-                        range);
-                    scopes->push_back(ptr);
-                }
-            }
-        }
-
-        return ret;
-    }
-};
-
 // Thread
 struct Thread : public IThread
 {
-    dap::array<IStackFrame *> callStack;
-    dap::array<IStackFrame *> staleCallStack;
-//    dap::optional<IRawStoppedDetails> stoppedDetails;
-//    bool stopped = false;
+    dap::array<dap::StackFrame> callStack;
+    dap::array<dap::StackFrame> staleCallStack;
+    //    dap::optional<IRawStoppedDetails> stoppedDetails;
+    //    bool stopped = false;
     bool reachedEndOfCallStack = false;
     dap::optional<dap::SteppingGranularity> lastSteppingGranularity;
-//    dap::string name;
+    //    dap::string name;
 
     Thread(IDebugSession *_session, dap::string _name, number _threadId)
     {
@@ -923,13 +825,6 @@ struct Thread : public IThread
 
     virtual ~Thread()
     {
-        for (auto it : callStack) {
-            if (it) {
-                delete it;
-                it = nullptr;
-            }
-        }
-        callStack.clear();
     }
 
     dap::string getId() override
@@ -945,12 +840,12 @@ struct Thread : public IThread
         callStack.clear();
     }
 
-    dap::array<IStackFrame *> getCallStack()
+    dap::array<dap::StackFrame> getCallStack()
     {
         return callStack;
     }
 
-    ReadonlyArray<IStackFrame *> getStaleCallStack()
+    ReadonlyArray<dap::StackFrame> getStaleCallStack()
     {
         return staleCallStack;
     }
@@ -985,12 +880,6 @@ struct Thread : public IThread
             reachedEndOfCallStack = static_cast<int>(callStack.size()) < levels;
             if (start < this->callStack.size()) {
                 size_t endIndex = callStack.size() - start;
-                for (size_t i = start; i < endIndex; i++) {
-                    if (callStack[i]) {
-                        delete callStack[i];
-                        callStack[i] = nullptr;
-                    }
-                }
                 this->callStack.erase(callStack.begin() + static_cast<int>(start), callStack.begin() + static_cast<int>(endIndex));
             }
             this->callStack.insert(this->callStack.end(), callStack.begin(), callStack.end());
@@ -1001,7 +890,7 @@ struct Thread : public IThread
     }
 
 private:
-    dap::array<IStackFrame *> getCallStackImpl(number startFrame, number levels)
+    dap::array<dap::StackFrame> getCallStackImpl(number startFrame, number levels)
     {
         auto response = session->stackTrace(threadId, startFrame, levels);
         if (!response) {
@@ -1012,34 +901,14 @@ private:
             stoppedDetails.value().totalFrames = response.value().totalFrames.value();
         }
 
-        dap::array<IStackFrame*> ret;
         auto stackFrames = response.value().stackFrames;
-        for (size_t i = 0; i < stackFrames.size(); i++) {
-            Source *source = session->getSource(stackFrames[i].source);
-
-            bool canRestart = false;
-            if (stackFrames[i].canRestart) {
-                canRestart = stackFrames[i].canRestart.value();
-            }
-            IStackFrame *sf = new StackFrame(this,
-                                             stackFrames[i].id,
-                                             source,
-                                             stackFrames[i].name,
-                                             stackFrames[i].presentationHint,
-                                             IRange(),
-                                             static_cast<int>(i),
-                                             canRestart,
-                                             stackFrames[i].instructionPointerReference);
-            ret.push_back(sf);
-        }
-
-        return ret;
+        return stackFrames;
     }
 
     /**
      * Returns exception info promise if the exception was thrown, otherwise undefined
      */
-#if 0 // TODO(mozart):not used.
+#if 0   // TODO(mozart):not used.
     dap::optional<IExceptionInfo> exceptionInfo()
     {
         // TODO(mozart)
@@ -1066,7 +935,7 @@ private:
     {
         session->stepBack(threadId, granularity);
     }
-#if 0 // TODO(mozart):not used.
+#if 0   // TODO(mozart):not used.
     void continue_()
     {
         session->continueDbg(threadId);
@@ -1077,7 +946,7 @@ private:
     {
         session->pause(threadId);
     }
-#if 0 // TODO(mozart):not used.
+#if 0   // TODO(mozart):not used.
     void terminate()
     {
         dap::array<number> threadIds;
@@ -1092,6 +961,6 @@ private:
     }
 };
 
-}
+} // end namespace.
 
 #endif   // DEBUG_H

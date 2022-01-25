@@ -53,6 +53,8 @@ bool DebuggerPlugin::start()
 
     // instert output pane to window.
     emit windowService->addContextWidget("AppOutput", new AbstractWidget(debugManager->getOutputPane()));
+    emit windowService->addContextWidget("StackFrame", new AbstractWidget(debugManager->getStackPane()));
+    emit windowService->addContextWidget("Locals", new AbstractWidget(debugManager->getLocalsPane()));
 
     return true;
 }

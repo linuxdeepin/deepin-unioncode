@@ -49,6 +49,7 @@ public:
     void stepOut();
 
     void addBreakpoint(const QString &filepath, int lineNumber);
+    bool getLocals(dap::integer frameId, IVariables *out);
 signals:
 
 public slots:

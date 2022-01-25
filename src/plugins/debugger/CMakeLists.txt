@@ -9,35 +9,46 @@ set(CXX_CPP
     debugger.json
     debuggerplugin.cpp
     debuggerrunparameters.cpp
-    debugger.cpp
-    debugsession.cpp
-    eventsender.cpp
-    eventreceiver.cpp
+    dap/debugger.cpp
+    dap/debugsession.cpp
+    event/eventsender.cpp
+    event/eventreceiver.cpp
     debugmanager.cpp
-    rawdebugsession.cpp
+    dap/rawdebugsession.cpp
     runtimecfgprovider.cpp
-    debugservice.cpp
-    debugmodel.cpp
-    appoutputpane.cpp
+    dap/debugservice.cpp
+    dap/debugmodel.cpp
+    interface/appoutputpane.cpp
+    interface/stackframemodel.cpp
+    stackframe.cpp
+    interface/localtreeitem.cpp
+    interface/localtreemodel.cpp
+    interface/stackframeview.cpp
     )
 
 set(CXX_H
     debuggerplugin.h
     debuggerrunparameters.h
-    debugger.h
-    debugsession.h
+    dap/debugger.h
+    dap/debugsession.h
     debuggerglobals.h
     debuggersignals.h
-    eventsender.h
-    eventreceiver.h
+    event/eventsender.h
+    event/eventreceiver.h
     debugmanager.h
-    rawdebugsession.h
-    objects.hpp
+    dap/rawdebugsession.h
+    dap/objects.hpp
     runtimecfgprovider.h
     debug.h
-    debugservice.h
-    debugmodel.h
-    appoutputpane.h
+    dap/debugservice.h
+    dap/debugmodel.h
+    interface/appoutputpane.h
+    interface/stackframemodel.h
+    stackframe.h
+    interface/localtreeitem.h
+    interface/localtreemodel.h
+    interface/variable.h
+    interface/stackframeview.h
     )
 
 add_library(${PROJECT_NAME}

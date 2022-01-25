@@ -3,7 +3,8 @@
  *
  * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,28 +19,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DEBUGGERSIGNALS_H
-#define DEBUGGERSIGNALS_H
+#ifndef BASETREEVIEW_H
+#define BASETREEVIEW_H
 
-#include "debuggerglobals.h"
-#include "stackframe.h"
-#include "interface/variable.h"
+#include <QTreeView>
 
-#include <QObject>
-
-class DebuggerSignals : public QObject
+class StackFrameView : public QTreeView
 {
     Q_OBJECT
-
 public:
+    explicit StackFrameView(QWidget *parent = nullptr);
+    ~StackFrameView() override;
 
-Q_SIGNALS:
-    void debugTriggered();
-    void breakpointAdded(const QString &filepath, int lineNumber);
-    void addOutput(const QString &content, OutputFormat format);
-    void processStackFrames(const StackFrames &stackFrames);
-    void processVariables(IVariables vars);
+private:
+    QModelIndex eventIndex(QMouseEvent *ev);
+    void rowActivated(const QModelIndex &index);
+    void rowClicked(const QModelIndex &index);
 };
 
 
-#endif // DEBUGGERSIGNALS_H
+#endif // BASETREEVIEW_H
