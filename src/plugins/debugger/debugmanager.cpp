@@ -27,6 +27,9 @@
 #include "interface/stackframemodel.h"
 #include "stackframe.h"
 #include "interface/stackframeview.h"
+#include "breakpoint.h"
+
+#include <QFileInfo>
 
 using namespace DEBUG_NAMESPACE;
 DebugManager::DebugManager(QObject *parent)
@@ -45,6 +48,7 @@ bool DebugManager::initialize()
     debugger.reset(new Debugger(this));
 
     connect(debuggerSignals, &DebuggerSignals::breakpointAdded, this, &DebugManager::slotBreakpointAdded);
+    connect(debuggerSignals, &DebuggerSignals::breakpointRemoved, this, &DebugManager::slotBreakpointRemoved);
     connect(debuggerSignals, &DebuggerSignals::addOutput, this, &DebugManager::slotOutput);
 
     initializeView();
@@ -65,6 +69,11 @@ QTreeView *DebugManager::getStackPane() const
 QTreeView *DebugManager::getLocalsPane() const
 {
     return localsView.get();
+}
+
+QTreeView *DebugManager::getBreakpointPane() const
+{
+    return breakpointView.get();
 }
 
 void DebugManager::startDebug()
@@ -115,6 +124,22 @@ void DebugManager::stepOut()
 void DebugManager::slotBreakpointAdded(const QString &filepath, int lineNumber)
 {
     debugger->addBreakpoint(filepath, lineNumber);
+    Internal::Breakpoint bp;
+    bp.filePath = filepath;
+    bp.fileName = QFileInfo(filepath).fileName();
+    bp.lineNumber = lineNumber;
+    breakpointModel.insertBreakpoint(bp);
+}
+
+void DebugManager::slotBreakpointRemoved(const QString &filepath, int lineNumber)
+{
+    debugger->removeBreakpoint(filepath, lineNumber);
+
+    Internal::Breakpoint bp;
+    bp.filePath = filepath;
+    bp.fileName = QFileInfo(filepath).fileName();
+    bp.lineNumber = lineNumber;
+    breakpointModel.removeBreakpoint(bp);
 }
 
 void DebugManager::slotOutput(const QString &content, OutputFormat format)
@@ -135,11 +160,6 @@ void DebugManager::slotProcessFrames(const StackFrames &stackFrames)
     localsModel.setDatas(locals);
 }
 
-void DebugManager::slotProcessVariables(IVariables vars)
-{
-    localsModel.setDatas(vars);
-}
-
 void DebugManager::slotFrameSelected(const QModelIndex &index)
 {
     Q_UNUSED(index);
@@ -152,6 +172,13 @@ void DebugManager::slotFrameSelected(const QModelIndex &index)
     localsModel.setDatas(locals);
 }
 
+void DebugManager::slotBreakpointSelected(const QModelIndex &index)
+{
+    Q_UNUSED(index);
+    auto curBP = breakpointModel.currentBreakpoint();
+    EventSender::jumpTo(curBP.filePath.toStdString(), curBP.lineNumber);
+}
+
 void DebugManager::initializeView()
 {
     // initialize output pane.
@@ -161,6 +188,10 @@ void DebugManager::initializeView()
     stackView.reset(new StackFrameView());
     stackView->setModel(stackModel.model());
 
+    // intialize breakpint pane.
+    breakpointView.reset(new StackFrameView());
+    breakpointView->setModel(breakpointModel.model());
+
     localsView.reset(new QTreeView());
     localsView->setModel(&localsModel);
     QStringList headers{"name", "value", "reference"};
@@ -168,5 +199,5 @@ void DebugManager::initializeView()
 
     connect(stackView.get(), &QTreeView::doubleClicked, this, &DebugManager::slotFrameSelected);
     connect(debuggerSignals, &DebuggerSignals::processStackFrames, this, &DebugManager::slotProcessFrames);
-    connect(debuggerSignals, &DebuggerSignals::processVariables, this, &DebugManager::slotProcessVariables);
+    connect(breakpointView.get(), &QTreeView::doubleClicked, this, &DebugManager::slotBreakpointSelected);
 }

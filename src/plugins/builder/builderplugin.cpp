@@ -36,7 +36,6 @@
 #include "buildersignals.h"
 #include "builderglobals.h"
 
-
 #include <QMenu>
 
 using namespace dpfservice;
@@ -56,7 +55,8 @@ bool BuilderPlugin::start()
     }
 
     // insert build action.
-    QAction *action = new QAction("build");
+    QAction *action = new QAction("Build");
+    action->setShortcut(QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
     AbstractAction *actionImpl = new AbstractAction(action);
     windowService->addAction(QString::fromStdString(MENU_BUILD), actionImpl);
     // triggered by top menu.

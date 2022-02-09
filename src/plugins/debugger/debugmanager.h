@@ -25,6 +25,7 @@
 #include "interface/stackframemodel.h"
 #include "interface/localtreemodel.h"
 #include "interface/variable.h"
+#include "interface/breakpointmodel.h"
 
 #include <QTreeView>
 #include <QSharedPointer>
@@ -42,6 +43,7 @@ public:
     AppOutputPane *getOutputPane() const;
     QTreeView *getStackPane() const;
     QTreeView *getLocalsPane() const;
+    QTreeView *getBreakpointPane() const;
 
 signals:
 
@@ -65,15 +67,16 @@ public slots:
      * Editor Triggered.
      */
     void slotBreakpointAdded(const QString &filepath, int lineNumber);
+    void slotBreakpointRemoved(const QString &filepath, int lineNumber);
 
     /**
      * Dap Server Triggered.
      */
     void slotOutput(const QString &content, OutputFormat format);
     void slotProcessFrames(const StackFrames &stackFrames);
-    void slotProcessVariables(IVariables vars);
 
     void slotFrameSelected(const QModelIndex &index);
+    void slotBreakpointSelected(const QModelIndex &index);
 private:
     void initializeView();
 
@@ -85,6 +88,9 @@ private:
 
     QSharedPointer<QTreeView> localsView;
     LocalTreeModel localsModel;
+
+    QSharedPointer<StackFrameView> breakpointView;
+    BreakpointModel breakpointModel;
 };
 
 #endif   // DEBUGMANAGER_H

@@ -128,6 +128,15 @@ void Debugger::addBreakpoint(const QString &filepath, int lineNumber)
     }
 }
 
+void Debugger::removeBreakpoint(const QString &filepath, int lineNumber)
+{
+    if (started) {
+        debugService->removeBreakpoints(filepath, lineNumber, session.get());
+    } else {
+        debugService->removeBreakpoints(filepath, lineNumber, undefined);
+    }
+}
+
 bool Debugger::getLocals(dap::integer frameId, IVariables *out)
 {
     return session->getLocals(frameId, out);

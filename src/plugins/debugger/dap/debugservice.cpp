@@ -52,6 +52,16 @@ dap::array<IBreakpoint> DebugService::addBreakpoints(
     return breakpoints;
 }
 
+dap::array<IBreakpoint> DebugService::removeBreakpoints(
+        const QString &filePath, int lineNumber, dap::optional<IDebugSession *> session)
+{
+    auto breakpoints = model->removeBreakpoint(filePath, lineNumber);
+    if (session)
+        sendBreakpoints(QUrl(filePath), session.value());
+
+    return breakpoints;
+}
+
 DebugModel *DebugService::getModel() const
 {
     return model.get();

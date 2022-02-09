@@ -55,6 +55,7 @@ bool DebuggerPlugin::start()
     emit windowService->addContextWidget("AppOutput", new AbstractWidget(debugManager->getOutputPane()));
     emit windowService->addContextWidget("StackFrame", new AbstractWidget(debugManager->getStackPane()));
     emit windowService->addContextWidget("Locals", new AbstractWidget(debugManager->getLocalsPane()));
+    emit windowService->addContextWidget("Breakpoints", new AbstractWidget(debugManager->getBreakpointPane()));
 
     return true;
 }
@@ -67,8 +68,9 @@ dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 bool DebuggerPlugin::InitUI(WindowService *windowService)
 {
     QAction *startDebugging = new QAction("Start Debugging");
+    startDebugging->setShortcut(QKeySequence(Qt::Key::Key_F5));
     connect(startDebugging, &QAction::triggered, debugManager, &DebugManager::startDebug);
-    AbstractAction * actionImpl = new AbstractAction(startDebugging);
+    AbstractAction *actionImpl = new AbstractAction(startDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *detachDebugger = new QAction("Detach Debugger");
@@ -98,16 +100,19 @@ bool DebuggerPlugin::InitUI(WindowService *windowService)
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *stepOver = new QAction("Step Over");
+    stepOver->setShortcut(QKeySequence(Qt::Key::Key_F10));
     connect(stepOver, &QAction::triggered, debugManager, &DebugManager::stepOver);
     actionImpl = new AbstractAction(stepOver);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *stepIn = new QAction("Step In");
+    stepIn->setShortcut(QKeySequence(Qt::Key::Key_F11));
     connect(stepIn, &QAction::triggered, debugManager, &DebugManager::stepIn);
     actionImpl = new AbstractAction(stepIn);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *stepOut = new QAction("Step Out");
+    stepOut->setShortcut(QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F11));
     connect(stepOut, &QAction::triggered, debugManager, &DebugManager::stepOut);
     actionImpl = new AbstractAction(stepOut);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);

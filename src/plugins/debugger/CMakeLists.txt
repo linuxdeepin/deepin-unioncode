@@ -24,6 +24,9 @@ set(CXX_CPP
     interface/localtreeitem.cpp
     interface/localtreemodel.cpp
     interface/stackframeview.cpp
+    interface/breakpointitem.cpp
+    breakpoint.cpp
+    interface/breakpointmodel.cpp
     )
 
 set(CXX_H
@@ -49,6 +52,9 @@ set(CXX_H
     interface/localtreemodel.h
     interface/variable.h
     interface/stackframeview.h
+    interface/breakpointitem.h
+    breakpoint.h
+    interface/breakpointmodel.h
     )
 
 add_library(${PROJECT_NAME}

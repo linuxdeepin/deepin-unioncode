@@ -41,6 +41,9 @@ public:
     dap::array<IBreakpoint> addBreakpoints(QUrl uri, dap::array<IBreakpointData> rawBreakpoints,
                                            dap::optional<IDebugSession *> session);
 
+    dap::array<IBreakpoint> removeBreakpoints(const QString &filePath, int lineNumber,
+                                           dap::optional<IDebugSession *> session);
+
     DebugModel *getModel() const;
 
 signals:

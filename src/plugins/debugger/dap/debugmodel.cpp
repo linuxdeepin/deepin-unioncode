@@ -187,21 +187,29 @@ dap::array<IBreakpoint> DebugModel::addBreakpoints(
     return retBreakpoints;
 }
 
-void DebugModel::removeBreakpoints(dap::array<IBreakpoint> &toRemove)
+dap::array<IBreakpoint> DebugModel::removeBreakpoint(const QString &filePath, int lineNumber)
 {
-    for (auto bp = breakPoints.begin(); bp != breakPoints.end(); ++bp) {
-        dap::string id = bp->getId();
-        for (auto it : toRemove) {
-            if (id == it.getId()) {
-                bp = breakPoints.erase(bp);
-            }
+    for (auto bp = breakPoints.begin(); bp != breakPoints.end(); ) {
+        if (bp->lineNumber() == lineNumber
+                && bp->uri().toString() == filePath) {
+            bp = breakPoints.erase(bp);
+        } else {
+            ++bp;
         }
     }
+
+    dap::array<IBreakpoint> retBreakpoints;
+    for (auto bp : breakPoints) {
+        auto ibp = convertToIBreakpoint(bp);
+        retBreakpoints.push_back(ibp);
+    }
+    return retBreakpoints;
     // fire event.
 }
 
 void DebugModel::updateBreakpoints(std::map<dap::string, IBreakpointUpdateData> &data)
 {
+    Q_UNUSED(data)
     //    dap::array<IBreakpoint> updated;
     //    for (auto bp : breakPoints) {
     //        auto bpData = data.find(bp.Enablement::getId());

@@ -3,7 +3,8 @@
  *
  * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +19,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DEBUGGERSIGNALS_H
-#define DEBUGGERSIGNALS_H
+#include "breakpoint.h"
 
-#include "debuggerglobals.h"
-#include "stackframe.h"
-#include "interface/variable.h"
-
-#include <QObject>
-
-class DebuggerSignals : public QObject
+namespace Internal
 {
-    Q_OBJECT
+Breakpoint::Breakpoint()
+{
 
-public:
+}
 
-Q_SIGNALS:
-    void debugTriggered();
-    void breakpointAdded(const QString &filepath, int lineNumber);
-    void breakpointRemoved(const QString &filepath, int lineNumber);
-    void addOutput(const QString &content, OutputFormat format);
-    void processStackFrames(const StackFrames &stackFrames);
-    void processVariables(IVariables vars);
-};
+void Breakpoint::update(dap::Breakpoint &bp)
+{
+    if (bp.source.has_value() && bp.source.value().name.has_value()
+            && bp.source.value().path.has_value()) {
+        fileName = bp.source.value().name.value().c_str();
+        filePath = bp.source.value().path.value().c_str();
+    }
 
-
-#endif // DEBUGGERSIGNALS_H
+    if (bp.line.has_value()) {
+        lineNumber = static_cast<int>(bp.line.value());
+    }
+}
+} // end namespace.

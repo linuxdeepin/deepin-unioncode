@@ -509,7 +509,7 @@ void DebugSession::sendBreakpoints(dap::array<IBreakpoint> &breakpointsToSend)
         source.name = undefined;
         request.source = source;
         SourceBreakpoint bt;
-        bt.line = it.lineNumber + 1;   // + 1
+        bt.line = it.lineNumber;
         breakpoints.push_back(bt);
     }
 
@@ -793,8 +793,13 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out)
     if (!raw->variables(request).valid()) {
         return false;
     }
-    auto response = raw->variables(request).get().response;
-    for (auto var : response.variables) {
+
+    auto response = raw->variables(request);
+    if(!response.valid())
+        return false;
+
+    array<Variable> &&variables = response.get().response.variables;
+    for (auto var : variables) {
         IVariable v;
         v.name = var.name;
         v.var = var;
@@ -897,8 +902,9 @@ void DebugSession::registerHandlers()
 
                     if (it.moduleId) {
                         auto v = it.moduleId.value();
-                        auto module = v.get<dap::string>();
-                        sf.module = module.c_str();
+                        if (v.is<dap::integer>()) {
+                            // TODO(mozart)
+                        }
                     }
 
                     sf.line = static_cast<qint32>(it.line);
