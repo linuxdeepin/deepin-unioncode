@@ -11,5 +11,6 @@ add_subdirectory(plugins)
 add_subdirectory(services)
 add_subdirectory(resource)
 add_subdirectory(scripts)
+add_subdirectory(tools)
 
 install(DIRECTORY configures scripts DESTINATION ${SOURCES_INSTALL_RPEFIX})
