@@ -6,15 +6,14 @@ set(CPPDAP_DIR ${CMAKE_SOURCE_DIR}/3rdparty/cppdap)
 include_directories(${CPPDAP_DIR}/include)
 
 set(CXXDBG_HEADERS
-    server.h
-    protocol.h
-    context.h
-    cxxdebugger.h
+    debugmanager.h
+    gdbproxy.h
+    protocol_extend.h
    )
+
 set(CXXDBG_SOURCES
-    server.cpp
-    context.cpp
-    cxxdebugger.cpp
+    debugmanager.cpp
+    gdbproxy.cpp
     main.cpp
     )
 
