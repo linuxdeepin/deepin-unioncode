@@ -87,6 +87,9 @@ Client::Client(QObject *parent)
     qRegisterMetaType<Highlights>("Highlights");
     qRegisterMetaType<QList<Data>>("QList<Data>");
     qRegisterMetaType<DefinitionProvider>("DefinitionProvider");
+    qRegisterMetaType<DiagnosticsParams>("DiagnosticsParams");
+    qRegisterMetaType<Data>("Data");
+    qRegisterMetaType<QList<Data>>("QList<Data>");
 
     // 每一个读任务都开启一个线程处理
     QObject::connect(this, &Client::readyRead, this, &Client::readForThread,
@@ -135,13 +138,13 @@ void Client::closeRequest(const QString &filePath)
     waitForBytesWritten();
 }
 
-void Client::changeRequest(const QString &filePath)
+void Client::changeRequest(const QString &filePath, const QByteArray &text)
 {
     d->requestIndex ++;
     //    d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DIDCHANGE);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCHANGE
-            << qPrintable(setHeader(didChange(filePath, d->fileVersion[filePath])));
-    write(setHeader(didChange(filePath, d->fileVersion[filePath])).toLatin1());
+            << qPrintable(setHeader(didChange(filePath, text, d->fileVersion[filePath])));
+    write(setHeader(didChange(filePath, text, d->fileVersion[filePath])).toLatin1());
     waitForBytesWritten();
 }
 
@@ -556,13 +559,14 @@ bool Client::shutdownResult(const QJsonObject &jsonObj)
 
 bool Client::diagnostics(const QJsonObject &jsonObj)
 {
-    Diagnostics diagnostics;
+    DiagnosticsParams diagnosticsParams;
     if (!jsonObj.keys().contains(K_METHOD)
             || jsonObj.value(K_METHOD).toString() != V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS)
         return false;
     qInfo() << "client <-- : " << V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS;
 
-    QJsonArray array = jsonObj.value(K_PARAMS).toObject().value(K_DIAGNOSTICS).toArray();
+    QJsonObject paramsObj = jsonObj.value(K_PARAMS).toObject();
+    QJsonArray array = paramsObj.value(K_DIAGNOSTICS).toArray();
 
     for (auto val : array) {
         QJsonObject diagnosticObj = val.toObject();
@@ -578,10 +582,12 @@ bool Client::diagnostics(const QJsonObject &jsonObj)
             },
             Diagnostic::Severity(diagnosticObj.value(K_SEVERITY).toInt())
         };
-        diagnostics << diagnostic;
+        diagnosticsParams.diagnostics << diagnostic;
     }
 
-    emit notification(diagnostics);
+    diagnosticsParams.version = paramsObj.value(K_VERSION).toInt();
+    diagnosticsParams.uri = paramsObj.value(K_URI).toString();
+    emit notification(diagnosticsParams);
     return true;
 }
 

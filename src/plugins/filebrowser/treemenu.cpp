@@ -97,7 +97,7 @@ void TreeMenu::createBuildAction(const QString &path)
 
 void TreeMenuPrivate::initBuildSupport() {
 
-    QString globalConfigBuildFile = SupportFile::Builder::globalPath();
+    QString globalConfigBuildFile = support_file::Builder::globalPath();
 
     QFile globalFile(globalConfigBuildFile);
     if (!globalFile.exists()) {
@@ -119,7 +119,7 @@ void TreeMenuPrivate::initBuildSupport() {
         QDir().mkpath(appConfigLocation); //创建缓存目录
     }
 
-    QString appConfigBuildSupportFile = SupportFile::Builder::userPath();
+    QString appConfigBuildSupportFile = support_file::Builder::userPath();
     QFileInfo fileInfo(appConfigBuildSupportFile);
     if (!fileInfo.exists()) {
         QFile::copy(globalConfigBuildFile, fileInfo.filePath());
@@ -238,7 +238,7 @@ void TreeMenuPrivate::createBuildAction(QMenu *menu, const QString &path)
     if (!info.isFile())
         return;
 
-    QString buildSystem = SupportFile::Builder::buildSystem(path);
+    QString buildSystem = support_file::Builder::buildSystem(path);
     if (!buildSystem.isEmpty()) {
         QAction *newAction = new QAction(BUILD, menu);
         menu->addAction(newAction);

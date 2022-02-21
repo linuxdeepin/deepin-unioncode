@@ -1,0 +1,7 @@
+#include "stylecolor.h"
+
+
+
+
+
+

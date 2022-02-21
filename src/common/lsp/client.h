@@ -19,9 +19,9 @@ public:
     virtual ~Client();
     static bool exists(const QString &progrma);
     void initRequest(const QString &rootPath); // yes
-    void openRequest(const QString &filePath); // no
-    void closeRequest(const QString &filePath); // no
-    void changeRequest(const QString &filePath); // no
+    void openRequest(const QString &filePath); // yes
+    void closeRequest(const QString &filePath); // yes
+    void changeRequest(const QString &filePath, const QByteArray &text); // yes
     void symbolRequest(const QString &filePath); // yes
     void definitionRequest(const QString &filePath, const Position &pos); // yes
     void completionRequest(const QString &filePath, const Position &pos); // yes
@@ -37,7 +37,7 @@ public:
 signals:
     void request();
     void notification(const QString &jsonStr);
-    void notification(const Diagnostics &diagnostics);
+    void notification(const DiagnosticsParams &diagnostics);
     void requestResult(const SemanticTokensProvider &tokensProvider);
     void requestResult(const Symbols &symbols);
     void requestResult(const Locations &locations);

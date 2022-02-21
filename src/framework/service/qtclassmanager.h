@@ -109,6 +109,11 @@ public:
         return classList.keys();
     }
 
+    virtual const QString key(CT *value)
+    {
+        return classList.key(value);
+    }
+
     virtual bool remove(const QString &name)
     {
         auto itera = classList.begin();

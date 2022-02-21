@@ -50,20 +50,22 @@ static QHash<Inotify::Type, int> typeMapping
 };
 
 typedef QHash<int, QString> WatcherHash;
+typedef QList<QString> IgnoreList;
 
 class PollRunable : public QRunnable
 {
     typedef std::function<void(const QString &filePath)> FuncCB;
     int inotifyFd = -1;
-    WatcherHash *watcherHash;
+    WatcherHash *watcherHash = nullptr;
+    IgnoreList *ignores = nullptr;
     pollfd *pfdCache = nullptr;
     nfds_t numCache = 0;
     int timeOut = -1;
-    QHash<Inotify::Type, FuncCB> callbacks;
+    QHash<Inotify::Type, FuncCB> callbacks{};
     bool stopFlag = false;
 public:
-    PollRunable(int inotifyFd, WatcherHash* hash, pollfd *pfd, nfds_t num  = 1 ,int timeout = -1) :
-        inotifyFd(inotifyFd), watcherHash(hash), pfdCache(pfd), numCache(num), timeOut(timeout) { }
+    PollRunable(int inotifyFd, WatcherHash* hash, IgnoreList *list, pollfd *pfd, nfds_t num  = 1 ,int timeout = -1) :
+        inotifyFd(inotifyFd), watcherHash(hash), ignores(list), pfdCache(pfd), numCache(num), timeOut(timeout) { }
     virtual ~PollRunable(){ qInfo() << "class PollRunable destoryed"; }
     void setWatcherCallback(Inotify::Type type,FuncCB cb) { callbacks[type] = cb;}
     void stop() { stopFlag = true; }
@@ -76,6 +78,7 @@ class InotifyPrivate
     int inotifyFD = -1;
     struct pollfd inotifyInput{};
     WatcherHash watchers{};
+    IgnoreList ignores{};
     PollRunable *runable = nullptr;
 };
 
@@ -92,7 +95,7 @@ Inotify::Inotify(QObject *parent)
     d->inotifyInput.fd = d->inotifyFD;
     d->inotifyInput.events = POLLIN;
 
-    d->runable = new PollRunable(d->inotifyFD, &d->watchers, &(d->inotifyInput), 1, 25);
+    d->runable = new PollRunable(d->inotifyFD, &d->watchers, &d->ignores, &(d->inotifyInput), 1, 25);
     d->runable->setAutoDelete(false);
     d->runable->setWatcherCallback(MODIFY, [=](const QString &filePath){this->modified(filePath);});
     d->runable->setWatcherCallback(CLOSE, [=](const QString &filePath){this->closed(filePath);});
@@ -163,8 +166,21 @@ void Inotify::removePath(const QString &path)
     d->watchers.remove(wd);
 }
 
+void Inotify::addIgnorePath(const QString &path)
+{
+    d->ignores.append(path);
+}
+
+void Inotify::removeIgnorePath(const QString &path)
+{
+    d->ignores.removeOne(path);
+}
+
 void PollRunable::run()
 {
+    if (!watcherHash || !ignores)
+        return;
+
     while(!stopFlag && pfdCache && inotifyFd > 0) {
         int poll_num = -1;
         poll_num = poll(pfdCache, numCache, timeOut);
@@ -188,6 +204,9 @@ void PollRunable::run()
                     for (char *ptr = buf; ptr < buf + len; ptr += sizeof(struct inotify_event) + event->len) {
                         event = (const struct inotify_event *) ptr;
                         QString filePath = watcherHash->value(event->wd);
+                        if (ignores->contains(filePath)){
+                            continue;
+                        };
                         if (!filePath.isEmpty()) {
                             if (event->mask & IN_OPEN) {
                                 FuncCB callback = callbacks[typeMapping.key(IN_OPEN)];

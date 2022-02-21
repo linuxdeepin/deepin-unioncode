@@ -9,10 +9,13 @@ set(CXX_H
     lsp/client.h
     util/processutil.h
     util/custompaths.h
-    util/supportfile.h
     util/eventdefinitions.h
     util/singleton.h
     util/polkit.h
+    supportfile/editorstyle.h
+    supportfile/language.h
+    supportfile/windowstyle.h
+    supportfile/builder.h
     util/markdownparser.cpp
     dialog/contextdialog.h
     widget/collapsewidget.h
@@ -30,10 +33,13 @@ set(CXX_CPP
     lsp/client.cpp
     util/processutil.cpp
     util/custompaths.cpp
-    util/supportfile.cpp
+    supportfile/language.cpp
     util/polkit.cpp
     util/eventdefinitions.cpp
     util/markdownparser.cpp
+    supportfile/editorstyle.cpp
+    supportfile/windowstyle.cpp
+    supportfile/builder.cpp
     dialog/contextdialog.cpp
     widget/collapsewidget.cpp
     widget/detailsbutton.cpp

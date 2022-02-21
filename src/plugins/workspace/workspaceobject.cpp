@@ -6,11 +6,6 @@ WorkspaceObjectFactory *WorkspaceObjectFactory::globalInstance()
     return &ins;
 }
 
-QString WorkspaceObjectFactory::findkey(WorkspaceObject *ins)
-{
-    return classList.key(ins);
-}
-
 WorkspaceObject *WorkspaceObjectFactory::create(const QString &name, QString *errorString)
 {
     WorkspaceObject* cache = globalInstance()->value(name);
@@ -20,11 +15,6 @@ WorkspaceObject *WorkspaceObjectFactory::create(const QString &name, QString *er
         globalInstance()->append(name, cache, errorString);
     }
     return cache;
-}
-
-QString WorkspaceObjectFactory::key(WorkspaceObject *ins)
-{
-    return globalInstance()->findkey(ins);
 }
 
 WorkspaceObject::WorkspaceObject()

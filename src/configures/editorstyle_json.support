@@ -1,0 +1,10 @@
+{
+    "Dark": {
+        "Self": {
+            "Background": "000000",
+            "Foreground": "bbbbbb",
+            "Cursor" : "ffffff",
+            "FontSize" : 16
+        }
+    }
+}

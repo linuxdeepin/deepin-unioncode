@@ -404,20 +404,11 @@ QJsonObject didOpen(const QString &filePath)
 }
 
 // full mode
-QJsonObject didChange(const QString &filePath, int version)
+QJsonObject didChange(const QString &filePath, const QByteArray &text, int version)
 {
-    QFile file(filePath);
-    QString text;
-    if (!file.open(QFile::ReadOnly)) {
-        qCritical()<< "Failed, open file: "
-                   << filePath <<file.errorString();
-    }
-    text = file.readAll();
-    file.close();
-
     QJsonObject changeEvent
     {
-        { K_TEXT, text}
+        { K_TEXT, QString::fromUtf8(text)}
     };
 
     QJsonArray contentChanges

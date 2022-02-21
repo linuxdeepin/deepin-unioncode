@@ -90,7 +90,7 @@ QString WorkspaceData::targetPath(const QString &dirPath)
  */
 void WorkspaceData::doGenerate(const QString &dirPath)
 {
-    auto buildInfos = SupportFile::Builder::buildInfos(dirPath);
+    auto buildInfos = support_file::Builder::buildInfos(dirPath);
     QString cacheWorkspaceDir = CustomPaths::projectGeneratePath(dirPath);
     if (buildInfos.size() == 1) {
         qInfo() << "build system: " << buildInfos[0].buildSystem;

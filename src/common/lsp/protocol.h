@@ -25,6 +25,7 @@
 #include <QString>
 #include <QJsonValue>
 #include <QProcess>
+#include <QVector>
 
 namespace lsp {
 
@@ -137,7 +138,7 @@ struct Range
     Position end;
 };
 
-
+typedef QUrl DocumentUri;
 
 struct Diagnostic
 {
@@ -153,7 +154,13 @@ struct Diagnostic
     Range range;
     Severity severity;
 };
-typedef QList<Diagnostic> Diagnostics;
+typedef QVector<Diagnostic> Diagnostics;
+struct DiagnosticsParams
+{
+    DocumentUri uri;
+    int version;
+    Diagnostics diagnostics;
+};
 
 struct Location
 {
@@ -345,7 +352,7 @@ QJsonArray tokenModifiers();
 QJsonObject workspace();
 QJsonObject initialize(const QString &rootPath);
 QJsonObject didOpen(const QString &filePath);
-QJsonObject didChange(const QString &filePath, int version);
+QJsonObject didChange(const QString &filePath, const QByteArray &text, int version);
 QJsonObject didClose(const QString &filePath);
 QJsonObject hover(const QString &filePath, const Position &pos);
 QJsonObject symbol(const QString &filePath);

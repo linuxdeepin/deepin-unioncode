@@ -56,6 +56,8 @@ public:
     void subscribeTypes(Types types);
     bool addPath(const QString &path);
     void removePath(const QString &path);
+    void addIgnorePath(const QString &path);
+    void removeIgnorePath(const QString &path);
     static Inotify *globalInstance();
 
 signals:

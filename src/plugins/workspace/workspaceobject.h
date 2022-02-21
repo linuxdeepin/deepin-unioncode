@@ -11,8 +11,6 @@ class WorkspaceObjectFactory : dpf::QtClassFactory<WorkspaceObject>,
 {
     static WorkspaceObjectFactory *globalInstance();
 
-    QString findkey(WorkspaceObject *ins);
-
 public:
     template<class T>
     static bool regClass(const QString &name, QString *errorString = nullptr)
@@ -22,8 +20,6 @@ public:
     }
 
     static WorkspaceObject* create(const QString &name, QString *errorString = nullptr);
-
-    static QString key(WorkspaceObject *ins);
 };
 
 class WorkspaceObject : public QObject

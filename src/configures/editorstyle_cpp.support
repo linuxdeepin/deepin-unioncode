@@ -1,7 +1,11 @@
 {
     "Dark": {
-        "BackgroundSelf": "000000",
-        "Cursor" : "ffffff",
+        "Self": {
+            "Background": "000000",
+            "Foreground": "bbbbbb",
+            "Cursor" : "ffffff",
+            "FontSize" : 16
+        },
         "Namespace": {
             "Foreground": "55ff55",
             "Background": "000000",
