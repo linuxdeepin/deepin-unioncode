@@ -29,6 +29,8 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QPointer>
+#include <QWidget>
 
 #include <memory>
 
@@ -118,6 +120,7 @@ public:
 signals:
 
 public slots:
+    bool showStoppedBySignalMessageBox(QString meaning, QString name);
 
 private:
     void shutdown();
@@ -130,6 +133,7 @@ private:
     void cancelAllRequests();
 
     bool getVariables(dap::integer variablesRef, IVariables *out);
+
 
     QSharedPointer<dap::RawDebugSession> raw;
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
@@ -151,6 +155,8 @@ private:
     dap::array<IRawStoppedDetails *> stoppedDetails;
 
     std::map<dap::string, Source *> sources;
+
+    QPointer<QWidget> alertBox;
 };
 }
 

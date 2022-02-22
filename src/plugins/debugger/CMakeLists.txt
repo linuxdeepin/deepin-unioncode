@@ -27,6 +27,7 @@ set(CXX_CPP
     interface/breakpointitem.cpp
     breakpoint.cpp
     interface/breakpointmodel.cpp
+    interface/messagebox.cpp
     )
 
 set(CXX_H
@@ -55,6 +56,7 @@ set(CXX_H
     interface/breakpointitem.h
     breakpoint.h
     interface/breakpointmodel.h
+    interface/messagebox.h
     )
 
 add_library(${PROJECT_NAME}

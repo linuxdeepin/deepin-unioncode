@@ -3,7 +3,8 @@
  *
  * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,31 +19,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DEBUGGERSIGNALS_H
-#define DEBUGGERSIGNALS_H
+#ifndef MESSAGEBOX_H
+#define MESSAGEBOX_H
 
-#include "debuggerglobals.h"
-#include "stackframe.h"
-#include "interface/variable.h"
+#include <qglobal.h>
 
-#include <QObject>
+QT_BEGIN_NAMESPACE
+class QString;
+class QWidget;
+QT_END_NAMESPACE
 
-class DebuggerSignals : public QObject
-{
-    Q_OBJECT
+namespace Internal {
 
-public:
+QWidget *warning(const QString &title, const QString &desciption);
+QWidget *information(const QString &title, const QString &desciption);
+QWidget *critical(const QString &title, const QString &desciption);
 
-Q_SIGNALS:
-    void debugTriggered();
-    void breakpointAdded(const QString &filepath, int lineNumber);
-    void breakpointRemoved(const QString &filepath, int lineNumber);
-    void addOutput(const QString &content, OutputFormat format);
-    void processStackFrames(const StackFrames &stackFrames);
-    void processVariables(IVariables vars);
+}
 
-    void exception(QString meaing, QString name);
-};
-
-
-#endif // DEBUGGERSIGNALS_H
+#endif // MESSAGEBOX_H

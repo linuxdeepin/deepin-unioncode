@@ -29,6 +29,7 @@
 #include "debugmodel.h"
 #include "stackframe.h"
 #include "interface/variable.h"
+#include "interface/messagebox.h"
 
 #include "dap/io.h"
 #include "dap/protocol.h"
@@ -71,6 +72,8 @@ DebugSession::~DebugSession()
         }
     }
     threads.clear();
+
+    delete alertBox;
 }
 
 const Capabilities &DebugSession::capabilities() const
@@ -122,6 +125,8 @@ bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &
         raw->setExceptionBreakpoints({});
     }
     registerHandlers();
+
+    connect(debuggerSignals, &DebuggerSignals::exception, this, &DebugSession::showStoppedBySignalMessageBox);
 
     return initialized;
 }
@@ -813,6 +818,25 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out)
     return true;
 }
 
+bool DebugSession::showStoppedBySignalMessageBox(QString meaning, QString name)
+{
+    if (alertBox)
+        return false;
+
+    if (name.isEmpty())
+        name = ' ' + tr("<Unknown>", "name") + ' ';
+    if (meaning.isEmpty())
+        meaning = ' ' + tr("<Unknown>", "meaning") + ' ';
+    const QString msg = tr("<p>The inferior stopped because it received a "
+                           "signal from the operating system.<p>"
+                           "<table><tr><td>Signal name : </td><td>%1</td></tr>"
+                           "<tr><td>Signal meaning : </td><td>%2</td></tr></table>")
+            .arg(name, meaning);
+
+    alertBox = Internal::information(tr("Signal Received"), msg);
+    return true;
+}
+
 // GetLocals fetches the fully traversed set of local Variables from the
 // debugger for the given stack frame.
 // Returns true on success, false on error.
@@ -881,50 +905,58 @@ void DebugSession::registerHandlers()
         fetchThreads(details);
 
         // ui focus on the active frame.
-
-        if (event.threadId) {
-            auto thread = getThread(event.threadId.value());
-            if (thread) {
-                model->fetchCallStack(*thread.value());
-                auto stacks = thread.value()->getCallStack();
-                StackFrames frames;
-                int level = 0;
-                for (auto it : stacks) {
-                    // TODO(mozart):send to ui.
-                    StackFrameData sf;
-                    sf.level = std::to_string(level++).c_str();
-                    sf.function = it.name.c_str();
-                    if (it.source) {
-                        sf.file = it.source.value().path ? it.source.value().path->c_str() : "";
-                    } else {
-                        sf.file = "No file found.";
-                    }
-
-                    if (it.moduleId) {
-                        auto v = it.moduleId.value();
-                        if (v.is<dap::integer>()) {
-                            // TODO(mozart)
-                        }
-                    }
-
-                    sf.line = static_cast<qint32>(it.line);
-                    sf.address = it.instructionPointerReference ? it.instructionPointerReference.value().c_str() : "";
-                    sf.frameId = it.id;
-                    frames.push_back(sf);
-                }
-                emit debuggerSignals->processStackFrames(frames);
-            }
-        }
-
-        threadId = event.threadId.value(0);
         if (event.reason == "function breakpoint"
-            || event.reason == "breakpoint") {
-            onBreakpointHit(event);
-        } else if (event.reason == "step") {
-            onStep(event);
+            || event.reason == "breakpoint"
+                || event.reason == "step") {
+
+            if (event.threadId) {
+                threadId = event.threadId.value(0);
+                auto thread = getThread(event.threadId.value());
+                if (thread) {
+                    model->fetchCallStack(*thread.value());
+                    auto stacks = thread.value()->getCallStack();
+                    StackFrames frames;
+                    int level = 0;
+                    for (auto it : stacks) {
+                        // TODO(mozart):send to ui.
+                        StackFrameData sf;
+                        sf.level = std::to_string(level++).c_str();
+                        sf.function = it.name.c_str();
+                        if (it.source) {
+                            sf.file = it.source.value().path ? it.source.value().path->c_str() : "";
+                        } else {
+                            sf.file = "No file found.";
+                        }
+
+                        if (it.moduleId) {
+                            auto v = it.moduleId.value();
+                            if (v.is<dap::integer>()) {
+                                // TODO(mozart)
+                            }
+                        }
+
+                        sf.line = static_cast<qint32>(it.line);
+                        sf.address = it.instructionPointerReference ? it.instructionPointerReference.value().c_str() : "";
+                        sf.frameId = it.id;
+                        frames.push_back(sf);
+                    }
+                    emit debuggerSignals->processStackFrames(frames);
+                }
+            }
+
         } else if (event.reason == "exception") {
-            qInfo() << "\n description : " << event.description->c_str();
-            qInfo() << "\n text :" << event.text->c_str();
+            QString name;
+            if (event.description) {
+                name = event.description.value().c_str();
+            } else {
+                name = event.reason.c_str();
+            }
+            QString meaning;
+            if (event.text) {
+                meaning = event.text.value().c_str();
+            }
+
+            emit debuggerSignals->exception(meaning, name);
         }
     });
 
@@ -940,6 +972,8 @@ void DebugSession::registerHandlers()
         Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "ExitedEvent";
+        emit debuggerSignals->addOutput(tr("\nThe debugee has Exited.\n"), LogMessageFormat);
+        // TODO(mozart):clear all breakpoints.
     });
 
     // The event indicates that debugging of the debuggee has terminated.
@@ -948,6 +982,7 @@ void DebugSession::registerHandlers()
         Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "TerminatedEvent";
+        emit debuggerSignals->addOutput(tr("\nThe debugee has Terminated.\n"), LogMessageFormat);
     });
 
     // The event indicates that a thread has started or exited.
@@ -977,6 +1012,10 @@ void DebugSession::registerHandlers()
         }
 
         QString output = event.output.c_str();
+        if (output.contains("received signal")
+                || output.contains("Program")) {
+            format = OutputFormat::StdErrFormat;
+        }
         emit debuggerSignals->addOutput(output, format);
     });
 
