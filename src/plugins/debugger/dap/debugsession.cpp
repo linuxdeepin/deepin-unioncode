@@ -29,7 +29,6 @@
 #include "debugmodel.h"
 #include "stackframe.h"
 #include "interface/variable.h"
-#include "interface/messagebox.h"
 
 #include "dap/io.h"
 #include "dap/protocol.h"
@@ -124,9 +123,9 @@ bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &
         initialized = true;
         raw->setExceptionBreakpoints({});
     }
-    registerHandlers();
 
-    connect(debuggerSignals, &DebuggerSignals::exception, this, &DebugSession::showStoppedBySignalMessageBox);
+    // Notify outter register handlers.
+    emit sigRegisterHandlers();
 
     return initialized;
 }
@@ -415,9 +414,9 @@ void DebugSession::rawUpdate(IRawModelUpdate *data)
     }
 }
 
-dap::optional<IRawStoppedDetails> DebugSession::getStoppedDetails() const
+dap::array<IRawStoppedDetails *> &DebugSession::getStoppedDetails()
 {
-    return undefined;
+    return stoppedDetails;
 }
 
 void DebugSession::fetchThreads(dap::optional<IRawStoppedDetails> stoppedDetails)
@@ -800,7 +799,7 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out)
     }
 
     auto response = raw->variables(request);
-    if(!response.valid())
+    if (!response.valid())
         return false;
 
     array<Variable> &&variables = response.get().response.variables;
@@ -815,25 +814,6 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out)
         }
         out->push_back(v);
     }
-    return true;
-}
-
-bool DebugSession::showStoppedBySignalMessageBox(QString meaning, QString name)
-{
-    if (alertBox)
-        return false;
-
-    if (name.isEmpty())
-        name = ' ' + tr("<Unknown>", "name") + ' ';
-    if (meaning.isEmpty())
-        meaning = ' ' + tr("<Unknown>", "meaning") + ' ';
-    const QString msg = tr("<p>The inferior stopped because it received a "
-                           "signal from the operating system.<p>"
-                           "<table><tr><td>Signal name : </td><td>%1</td></tr>"
-                           "<tr><td>Signal meaning : </td><td>%2</td></tr></table>")
-            .arg(name, meaning);
-
-    alertBox = Internal::information(tr("Signal Received"), msg);
     return true;
 }
 
@@ -859,226 +839,14 @@ bool DebugSession::getLocals(dap::integer frameId, IVariables *out)
     return false;
 }
 
-void DebugSession::registerHandlers()
+Session *DebugSession::getDapSession() const
 {
-    /*
-     *  Process the only one reverse request.
-     */
-    session->registerHandler([&](const RunInTerminalRequest &request) {
-        Q_UNUSED(request)
-        qInfo() << "\n--> recv : "
-                << "RunInTerminalRequest";
-        return RunInTerminalResponse();
-    });
+    return session.get();
+}
 
-    /*
-     *  Register events.
-     */
-    // This event indicates that the debug adapter is ready to accept configuration requests.
-    session->registerHandler([&](const InitializedEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "InitializedEvent";
-        raw->setReadyForBreakpoints(true);
-        debugService->sendAllBreakpoints(this);
-        raw->configurationDone().wait();
-        fetchThreads(nullptr);
-    });
-
-    // The event indicates that the execution of the debuggee has stopped due to some condition.
-    session->registerHandler([&](const StoppedEvent &event) {
-        qInfo() << "\n--> recv : "
-                << "StoppedEvent";
-        qInfo() << "\n THREAD STOPPED. Reason : " << event.reason.c_str();
-
-        IRawStoppedDetails *details = new IRawStoppedDetails();
-        details->reason = event.reason;
-        details->description = event.description;
-        details->threadId = event.threadId;
-        details->text = event.text;
-        //        details.totalFrames = event.;
-        details->allThreadsStopped = event.allThreadsStopped.value();
-        //        details.framesErrorMessage = even;
-        details->hitBreakpointIds = event.hitBreakpointIds;
-        stoppedDetails.push_back(details);
-
-        fetchThreads(details);
-
-        // ui focus on the active frame.
-        if (event.reason == "function breakpoint"
-            || event.reason == "breakpoint"
-                || event.reason == "step") {
-
-            if (event.threadId) {
-                threadId = event.threadId.value(0);
-                auto thread = getThread(event.threadId.value());
-                if (thread) {
-                    model->fetchCallStack(*thread.value());
-                    auto stacks = thread.value()->getCallStack();
-                    StackFrames frames;
-                    int level = 0;
-                    for (auto it : stacks) {
-                        // TODO(mozart):send to ui.
-                        StackFrameData sf;
-                        sf.level = std::to_string(level++).c_str();
-                        sf.function = it.name.c_str();
-                        if (it.source) {
-                            sf.file = it.source.value().path ? it.source.value().path->c_str() : "";
-                        } else {
-                            sf.file = "No file found.";
-                        }
-
-                        if (it.moduleId) {
-                            auto v = it.moduleId.value();
-                            if (v.is<dap::integer>()) {
-                                // TODO(mozart)
-                            }
-                        }
-
-                        sf.line = static_cast<qint32>(it.line);
-                        sf.address = it.instructionPointerReference ? it.instructionPointerReference.value().c_str() : "";
-                        sf.frameId = it.id;
-                        frames.push_back(sf);
-                    }
-                    emit debuggerSignals->processStackFrames(frames);
-                }
-            }
-
-        } else if (event.reason == "exception") {
-            QString name;
-            if (event.description) {
-                name = event.description.value().c_str();
-            } else {
-                name = event.reason.c_str();
-            }
-            QString meaning;
-            if (event.text) {
-                meaning = event.text.value().c_str();
-            }
-
-            emit debuggerSignals->exception(meaning, name);
-        }
-    });
-
-    // The event indicates that the execution of the debuggee has continued.
-    //    session->registerHandler([&](const ContinuedEvent &event){
-    //        allThreadsContinued = event.allThreadsContinued;
-    //        Q_UNUSED(event)
-    //        qInfo() << "\n--> recv : " << "ContinuedEvent";
-    //    });
-
-    // The event indicates that the debuggee has exited and returns its exit code.
-    session->registerHandler([&](const ExitedEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "ExitedEvent";
-        emit debuggerSignals->addOutput(tr("\nThe debugee has Exited.\n"), LogMessageFormat);
-        // TODO(mozart):clear all breakpoints.
-    });
-
-    // The event indicates that debugging of the debuggee has terminated.
-    // This does not mean that the debuggee itself has exited.
-    session->registerHandler([&](const TerminatedEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "TerminatedEvent";
-        emit debuggerSignals->addOutput(tr("\nThe debugee has Terminated.\n"), LogMessageFormat);
-    });
-
-    // The event indicates that a thread has started or exited.
-    session->registerHandler([&](const ThreadEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "ThreadEvent";
-    });
-
-    // The event indicates that the target has produced some output.
-    session->registerHandler([&](const OutputEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "OutputEvent\n"
-                << "content : " << event.output.c_str();
-
-        OutputFormat format = NormalMessageFormat;
-        if (event.category) {
-            dap::string category = event.category.value();
-            if (category == "stdout") {
-                format = OutputFormat::StdOutFormat;
-            } else if (category == "stderr") {
-                format = OutputFormat::StdErrFormat;
-            } else {
-                format = OutputFormat::NormalMessageFormat;
-            }
-        }
-
-        QString output = event.output.c_str();
-        if (output.contains("received signal")
-                || output.contains("Program")) {
-            format = OutputFormat::StdErrFormat;
-        }
-        emit debuggerSignals->addOutput(output, format);
-    });
-
-    // The event indicates that some information about a breakpoint has changed.
-    session->registerHandler([&](const BreakpointEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "BreakpointEvent";
-    });
-
-    // The event indicates that some information about a module has changed.
-    session->registerHandler([&](const ModuleEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "ModuleEvent";
-    });
-
-    // The event indicates that some source has been added, changed,
-    // or removed from the set of all loaded sources.
-    session->registerHandler([&](const LoadedSourceEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "LoadedSourceEvent";
-    });
-
-    // The event indicates that the debugger has begun debugging a new process.
-    session->registerHandler([&](const ProcessEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "ProcessEvent";
-    });
-
-    //    // The event indicates that one or more capabilities have changed.
-    //    session->registerHandler([&](const CapabilitiesEvent &event){
-    //        Q_UNUSED(event)
-    //        qInfo() << "\n--> recv : " << "CapabilitiesEvent";
-    //    });
-
-    session->registerHandler([&](const ProgressStartEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "ProgressStartEvent";
-    });
-
-    session->registerHandler([&](const ProgressUpdateEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "ProgressUpdateEvent";
-    });
-
-    session->registerHandler([&](const ProgressEndEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "ProgressEndEvent";
-    });
-
-    // This event signals that some state in the debug adapter has changed
-    // and requires that the client needs to re-render the data snapshot previously requested.
-    session->registerHandler([&](const InvalidatedEvent &event) {
-        Q_UNUSED(event)
-        qInfo() << "\n--> recv : "
-                << "InvalidatedEvent";
-    });
+RawDebugSession *DebugSession::getRawSession() const
+{
+    return raw.get();
 }
 
 void DebugSession::fetchThreads(IRawStoppedDetails *stoppedDetails)

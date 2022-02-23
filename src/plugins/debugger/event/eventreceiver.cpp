@@ -23,13 +23,10 @@
 #include "debuggersignals.h"
 #include "debuggerglobals.h"
 
-
-static QStringList subTopics{T_CODEEDITOR};
+static QStringList subTopics { T_CODEEDITOR };
 EventReceiver::EventReceiver(QObject *parent)
-    : dpf::EventHandler(parent)
-    , dpf::AutoEventHandlerRegister<EventReceiver>()
+    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<EventReceiver>()
 {
-
 }
 
 dpf::EventHandler::Type EventReceiver::type()
@@ -45,18 +42,5 @@ QStringList &EventReceiver::topics()
 void EventReceiver::eventProcess(const dpf::Event &event)
 {
     qInfo() << event;
-    if (!topics().contains(event.topic()))
-        return;
-
-    QString topic = event.topic();
-    QString data = event.data().toString();
-    if (topic == T_CODEEDITOR) {
-        QString filePath = event.property(P_FILEPATH).toString();
-        int lineNumber = event.property(P_FILELINE).toInt();
-        if (data == D_MARGIN_DEBUG_POINT_ADD) {
-            emit debuggerSignals->breakpointAdded(filePath, lineNumber + 1); // TODO(mozart):remove "+1" when editor send correct line number.
-        } else if (data == D_MARGIN_DEBUG_POINT_REMOVE) {
-            emit debuggerSignals->breakpointRemoved(filePath, lineNumber + 1);
-        }
-    }
+    emit debuggerSignals->receivedEvent(event);
 }

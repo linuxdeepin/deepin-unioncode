@@ -156,19 +156,6 @@ struct IExceptionInfo
     dap::optional<dap::ExceptionDetails> details;
 };
 
-struct IDebugModel : public ITreeElement
-{
-    virtual ~IDebugModel() {}
-    virtual dap::array<IDebugSession *> getSessions(bool includeInactive = false) = 0;
-    virtual dap::optional<IDebugSession *> getSession(dap::optional<dap::string> sessionId, bool includeInactive = false) = 0;
-    virtual ReadonlyArray<IBreakpoint> getBreakpoints(dap::optional<QUrl> url, dap::optional<int> lineNumber, dap::optional<int> column, dap::optional<bool> enabledOnly) = 0;
-    virtual bool areBreakpointsActivated() = 0;
-    virtual ReadonlyArray<IFunctionBreakpoint> getFunctionBreakpoints() = 0;
-    virtual ReadonlyArray<IDataBreakpoint> getDataBreakpoints() = 0;
-    virtual ReadonlyArray<IExceptionBreakpoint> getExceptionBreakpoints() = 0;
-    virtual ReadonlyArray<IInstructionBreakpoint> getInstructionBreakpoints() = 0;
-};
-
 /**
   * Base structs.
   */
@@ -703,7 +690,7 @@ struct IDebugSession : public ITreeElement
     virtual dap::optional<dap::array<IThread *>> getAllThreads() const = 0;
     virtual void rawUpdate(IRawModelUpdate *data) = 0;
     virtual void clearThreads(bool removeThreads, dap::optional<number> reference) = 0;
-    virtual dap::optional<IRawStoppedDetails> getStoppedDetails() const = 0;
+    virtual dap::array<IRawStoppedDetails *> &getStoppedDetails() = 0;
     virtual void fetchThreads(dap::optional<IRawStoppedDetails> stoppedDetails) = 0;
     virtual dap::optional<dap::Source> getSourceForUri(QUrl &uri) = 0;
     virtual Source *getSource(dap::optional<dap::Source> raw) = 0;
@@ -961,6 +948,6 @@ private:
     }
 };
 
-} // end namespace.
+}   // end namespace.
 
 #endif   // DEBUG_H

@@ -28,27 +28,27 @@
 #include <QObject>
 
 namespace DEBUG_NAMESPACE {
-class DebugModel : public QObject, public IDebugModel
+class DebugModel : public QObject /*, public IDebugModel*/
 {
     Q_OBJECT
 
 public:
-    DebugModel(dap::optional<dap::array<IDebugSession *>> _sessions, QObject *parent = nullptr);
-    dap::array<IDebugSession *> getSessions(bool includeInactive = false) override;
-    dap::optional<IDebugSession *> getSession(dap::optional<dap::string> sessionId, bool includeInactive = false) override;
-    void addSession(IDebugSession *session);
+    DebugModel(dap::optional<dap::array<DebugSession *>> _sessions, QObject *parent = nullptr);
+    dap::array<DebugSession *> getSessions(bool includeInactive = false);
+    dap::optional<DebugSession *> getSession(dap::optional<dap::string> sessionId, bool includeInactive = false);
+    void addSession(DebugSession *session);
 
     void rawUpdate(IRawModelUpdate *data);
     void clearThreads(dap::string id, bool removeThreads, dap::optional<number> reference);
     void fetchCallStack(Thread &thread);
     ReadonlyArray<IBreakpoint> getBreakpoints(dap::optional<QUrl> url, dap::optional<int> lineNumber,
-                                              dap::optional<int> column, dap::optional<bool> enabledOnly) override;
-    ReadonlyArray<IFunctionBreakpoint> getFunctionBreakpoints() override;
-    ReadonlyArray<IDataBreakpoint> getDataBreakpoints() override;
-    ReadonlyArray<IExceptionBreakpoint> getExceptionBreakpoints() override;
-    ReadonlyArray<IInstructionBreakpoint> getInstructionBreakpoints() override;
+                                              dap::optional<int> column, dap::optional<bool> enabledOnly);
+    ReadonlyArray<IFunctionBreakpoint> getFunctionBreakpoints();
+    ReadonlyArray<IDataBreakpoint> getDataBreakpoints();
+    ReadonlyArray<IExceptionBreakpoint> getExceptionBreakpoints();
+    ReadonlyArray<IInstructionBreakpoint> getInstructionBreakpoints();
 
-    bool areBreakpointsActivated() override;
+    bool areBreakpointsActivated();
     void setBreakpointsActivated(bool activated);
     ReadonlyArray<IBreakpoint> addBreakpoints(QUrl &uri, dap::array<IBreakpointData> &rawData, bool fireEvent = true);
     dap::array<IBreakpoint> removeBreakpoint(const QString &filePath, int lineNumber);
@@ -82,9 +82,9 @@ private:
     dap::array<IExceptionBreakpoint> exceptionBreakpoints;
     dap::array<IDataBreakpoint> dataBreakpoints;
     dap::array<IInstructionBreakpoint> instructionBreakpoints;
-    dap::array<IDebugSession *> sessions;
+    dap::array<DebugSession *> sessions;
 };
 
-} // end namespace.
+}   // end namespace.
 
 #endif   // DEBUGMODEL_H

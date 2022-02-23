@@ -32,7 +32,7 @@ DebugService::DebugService(QObject *parent)
     model.reset(new DebugModel(undefined, this));
 }
 
-void DebugService::sendAllBreakpoints(IDebugSession *session)
+void DebugService::sendAllBreakpoints(DebugSession *session)
 {
     sendBreakpoints(undefined, session, false);
     sendFunctionBreakpoints(session);
@@ -43,7 +43,7 @@ void DebugService::sendAllBreakpoints(IDebugSession *session)
 }
 
 dap::array<IBreakpoint> DebugService::addBreakpoints(
-        QUrl uri, dap::array<IBreakpointData> rawBreakpoints, dap::optional<IDebugSession *> session)
+        QUrl uri, dap::array<IBreakpointData> rawBreakpoints, dap::optional<DebugSession *> session)
 {
     auto breakpoints = model->addBreakpoints(uri, rawBreakpoints);
     if (session)
@@ -53,7 +53,7 @@ dap::array<IBreakpoint> DebugService::addBreakpoints(
 }
 
 dap::array<IBreakpoint> DebugService::removeBreakpoints(
-        const QString &filePath, int lineNumber, dap::optional<IDebugSession *> session)
+        const QString &filePath, int lineNumber, dap::optional<DebugSession *> session)
 {
     auto breakpoints = model->removeBreakpoint(filePath, lineNumber);
     if (session)
@@ -67,32 +67,32 @@ DebugModel *DebugService::getModel() const
     return model.get();
 }
 
-void DebugService::sendBreakpoints(dap::optional<QUrl> uri, IDebugSession *session, bool sourceModified)
+void DebugService::sendBreakpoints(dap::optional<QUrl> uri, DebugSession *session, bool sourceModified)
 {
     Q_UNUSED(sourceModified)
     auto breakpointsToSend = model->getBreakpoints(uri, undefined, undefined, true);
     session->sendBreakpoints(breakpointsToSend);
 }
 
-void DebugService::sendFunctionBreakpoints(IDebugSession *session)
+void DebugService::sendFunctionBreakpoints(DebugSession *session)
 {
     Q_UNUSED(session)
     // TODO(mozart)
 }
 
-void DebugService::sendDataBreakpoints(IDebugSession *session)
+void DebugService::sendDataBreakpoints(DebugSession *session)
 {
     Q_UNUSED(session)
     // TODO(mozart)
 }
 
-void DebugService::sendInstructionBreakpoints(IDebugSession *session)
+void DebugService::sendInstructionBreakpoints(DebugSession *session)
 {
     Q_UNUSED(session)
     // TODO(mozart)
 }
 
-void DebugService::sendExceptionBreakpoints(IDebugSession *session)
+void DebugService::sendExceptionBreakpoints(DebugSession *session)
 {
     Q_UNUSED(session)
     // TODO(mozart)

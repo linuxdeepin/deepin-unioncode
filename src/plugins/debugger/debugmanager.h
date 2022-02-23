@@ -63,34 +63,8 @@ public slots:
     void stepIn();
     void stepOut();
 
-    /**
-     * Editor Triggered.
-     */
-    void slotBreakpointAdded(const QString &filepath, int lineNumber);
-    void slotBreakpointRemoved(const QString &filepath, int lineNumber);
-
-    /**
-     * Dap Server Triggered.
-     */
-    void slotOutput(const QString &content, OutputFormat format);
-    void slotProcessFrames(const StackFrames &stackFrames);
-
-    void slotFrameSelected(const QModelIndex &index);
-    void slotBreakpointSelected(const QModelIndex &index);
 private:
-    void initializeView();
-
     QSharedPointer<Debugger> debugger;
-    QSharedPointer<AppOutputPane> outputPane;
-
-    QSharedPointer<StackFrameView> stackView;
-    StackFrameModel stackModel;
-
-    QSharedPointer<QTreeView> localsView;
-    LocalTreeModel localsModel;
-
-    QSharedPointer<StackFrameView> breakpointView;
-    BreakpointModel breakpointModel;
 };
 
 #endif   // DEBUGMANAGER_H

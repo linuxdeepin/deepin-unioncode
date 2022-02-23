@@ -20,184 +20,84 @@
 */
 #include "debugmanager.h"
 #include "dap/debugger.h"
-#include "event/eventsender.h"
-#include "debuggersignals.h"
 #include "debuggerglobals.h"
-#include "interface/appoutputpane.h"
-#include "interface/stackframemodel.h"
-#include "stackframe.h"
-#include "interface/stackframeview.h"
-#include "breakpoint.h"
-
-#include <QFileInfo>
 
 using namespace DEBUG_NAMESPACE;
 DebugManager::DebugManager(QObject *parent)
     : QObject(parent)
 {
-    qRegisterMetaType<OutputFormat>("OutputFormat");
-    qRegisterMetaType<StackFrameData>("StackFrameData");
-    qRegisterMetaType<StackFrames>("StackFrames");
-
-    qRegisterMetaType<IVariable>("IVariable");
-    qRegisterMetaType<IVariables>("IVariables");
 }
 
 bool DebugManager::initialize()
 {
     debugger.reset(new Debugger(this));
 
-    connect(debuggerSignals, &DebuggerSignals::breakpointAdded, this, &DebugManager::slotBreakpointAdded);
-    connect(debuggerSignals, &DebuggerSignals::breakpointRemoved, this, &DebugManager::slotBreakpointRemoved);
-    connect(debuggerSignals, &DebuggerSignals::addOutput, this, &DebugManager::slotOutput);
-
-    initializeView();
+    debugger->initializeView();
 
     return true;
 }
 
 AppOutputPane *DebugManager::getOutputPane() const
 {
-    return outputPane.get();
+    return debugger->getOutputPane();
 }
 
 QTreeView *DebugManager::getStackPane() const
 {
-    return stackView.get();
+    return debugger->getStackPane();
 }
 
 QTreeView *DebugManager::getLocalsPane() const
 {
-    return localsView.get();
+    return debugger->getLocalsPane();
 }
 
 QTreeView *DebugManager::getBreakpointPane() const
 {
-    return breakpointView.get();
+    return debugger->getBreakpointPane();
 }
 
 void DebugManager::startDebug()
 {
-    debugger->startDebug();
+    AsynInvoke(debugger->startDebug());
 }
 
 void DebugManager::detachDebug()
 {
-    debugger->detachDebug();
+    AsynInvoke(debugger->detachDebug());
 }
 
 void DebugManager::interruptDebug()
 {
-    debugger->interruptDebug();
+    AsynInvoke(debugger->interruptDebug());
 }
 
 void DebugManager::continueDebug()
 {
-    debugger->continueDebug();
+    AsynInvoke(debugger->continueDebug());
 }
 
 void DebugManager::abortDebug()
 {
-    debugger->abortDebug();
+    AsynInvoke(debugger->abortDebug());
 }
 
 void DebugManager::restartDebug()
 {
-    debugger->restartDebug();
+    AsynInvoke(debugger->restartDebug());
 }
 
 void DebugManager::stepOver()
 {
-    debugger->stepOver();
+    AsynInvoke(debugger->stepOver());
 }
 
 void DebugManager::stepIn()
 {
-    debugger->stepIn();
+    AsynInvoke(debugger->stepIn());
 }
 
 void DebugManager::stepOut()
 {
-    debugger->stepOut();
-}
-
-void DebugManager::slotBreakpointAdded(const QString &filepath, int lineNumber)
-{
-    debugger->addBreakpoint(filepath, lineNumber);
-    Internal::Breakpoint bp;
-    bp.filePath = filepath;
-    bp.fileName = QFileInfo(filepath).fileName();
-    bp.lineNumber = lineNumber;
-    breakpointModel.insertBreakpoint(bp);
-}
-
-void DebugManager::slotBreakpointRemoved(const QString &filepath, int lineNumber)
-{
-    debugger->removeBreakpoint(filepath, lineNumber);
-
-    Internal::Breakpoint bp;
-    bp.filePath = filepath;
-    bp.fileName = QFileInfo(filepath).fileName();
-    bp.lineNumber = lineNumber;
-    breakpointModel.removeBreakpoint(bp);
-}
-
-void DebugManager::slotOutput(const QString &content, OutputFormat format)
-{
-    outputPane->appendText(content, format);
-}
-
-void DebugManager::slotProcessFrames(const StackFrames &stackFrames)
-{
-    stackModel.setFrames(stackFrames);
-
-    auto curFrame = stackModel.currentFrame();
-    EventSender::jumpTo(curFrame.file.toStdString(), curFrame.line);
-
-    // update local variables.
-    IVariables locals;
-    debugger->getLocals(curFrame.frameId, &locals);
-    localsModel.setDatas(locals);
-}
-
-void DebugManager::slotFrameSelected(const QModelIndex &index)
-{
-    Q_UNUSED(index);
-    auto curFrame = stackModel.currentFrame();
-    EventSender::jumpTo(curFrame.file.toStdString(), curFrame.line);
-
-    // update local variables.
-    IVariables locals;
-    debugger->getLocals(curFrame.frameId, &locals);
-    localsModel.setDatas(locals);
-}
-
-void DebugManager::slotBreakpointSelected(const QModelIndex &index)
-{
-    Q_UNUSED(index);
-    auto curBP = breakpointModel.currentBreakpoint();
-    EventSender::jumpTo(curBP.filePath.toStdString(), curBP.lineNumber);
-}
-
-void DebugManager::initializeView()
-{
-    // initialize output pane.
-    outputPane.reset(new AppOutputPane());
-
-    // initialize stack monitor pane.
-    stackView.reset(new StackFrameView());
-    stackView->setModel(stackModel.model());
-
-    // intialize breakpint pane.
-    breakpointView.reset(new StackFrameView());
-    breakpointView->setModel(breakpointModel.model());
-
-    localsView.reset(new QTreeView());
-    localsView->setModel(&localsModel);
-    QStringList headers{"name", "value", "reference"};
-    localsModel.setHeaders(headers);
-
-    connect(stackView.get(), &QTreeView::doubleClicked, this, &DebugManager::slotFrameSelected);
-    connect(debuggerSignals, &DebuggerSignals::processStackFrames, this, &DebugManager::slotProcessFrames);
-    connect(breakpointView.get(), &QTreeView::doubleClicked, this, &DebugManager::slotBreakpointSelected);
+    AsynInvoke(debugger->stepOut());
 }

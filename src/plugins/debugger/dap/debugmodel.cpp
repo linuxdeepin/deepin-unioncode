@@ -29,7 +29,7 @@
 #include "stdlib.h"
 
 namespace DEBUG_NAMESPACE {
-DebugModel::DebugModel(dap::optional<dap::array<IDebugSession *>> _sessions, QObject *parent)
+DebugModel::DebugModel(dap::optional<dap::array<DebugSession *>> _sessions, QObject *parent)
     : QObject(parent)
 {
     if (_sessions) {
@@ -38,18 +38,18 @@ DebugModel::DebugModel(dap::optional<dap::array<IDebugSession *>> _sessions, QOb
     }
 }
 
-dap::array<IDebugSession *> DebugModel::getSessions(bool includeInactive)
+dap::array<DebugSession *> DebugModel::getSessions(bool includeInactive)
 {
-    dap::array<IDebugSession *> ret;
+    dap::array<DebugSession *> ret;
 
-    std::copy_if(sessions.begin(), sessions.end(), std::back_inserter(ret), [&](const IDebugSession *item){
+    std::copy_if(sessions.begin(), sessions.end(), std::back_inserter(ret), [&](const DebugSession *item){
          return (includeInactive || item->state != State::kInactive);
     });
 
     return ret;
 }
 
-dap::optional<IDebugSession *> DebugModel::getSession(dap::optional<dap::string> sessionId, bool includeInactive)
+dap::optional<DebugSession *> DebugModel::getSession(dap::optional<dap::string> sessionId, bool includeInactive)
 {
     if (sessionId) {
         auto filteredSessions = getSessions(includeInactive);
@@ -62,10 +62,10 @@ dap::optional<IDebugSession *> DebugModel::getSession(dap::optional<dap::string>
     return undefined;
 }
 
-void DebugModel::addSession(IDebugSession *session)
+void DebugModel::addSession(DebugSession *session)
 {
     Q_ASSERT(session);
-    dap::array<IDebugSession *> filterdSessions;
+    dap::array<DebugSession *> filterdSessions;
     for (auto s = sessions.begin(); s != sessions.end();) {
         if ((*s)->getId() == session->getId()) {
             s = sessions.erase(s);

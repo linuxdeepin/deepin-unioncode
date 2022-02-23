@@ -37,12 +37,12 @@ class DebugService : public QObject
 public:
     explicit DebugService(QObject *parent = nullptr);
 
-    void sendAllBreakpoints(IDebugSession *session);
+    void sendAllBreakpoints(DebugSession *session);
     dap::array<IBreakpoint> addBreakpoints(QUrl uri, dap::array<IBreakpointData> rawBreakpoints,
-                                           dap::optional<IDebugSession *> session);
+                                           dap::optional<DebugSession *> session);
 
     dap::array<IBreakpoint> removeBreakpoints(const QString &filePath, int lineNumber,
-                                           dap::optional<IDebugSession *> session);
+                                           dap::optional<DebugSession *> session);
 
     DebugModel *getModel() const;
 
@@ -51,11 +51,11 @@ signals:
 public slots:
 
 private:
-    void sendBreakpoints(dap::optional<QUrl> uri, IDebugSession *session, bool sourceModified = false);
-    void sendFunctionBreakpoints(IDebugSession *session);
-    void sendDataBreakpoints(IDebugSession *session);
-    void sendInstructionBreakpoints(IDebugSession *session);
-    void sendExceptionBreakpoints(IDebugSession *session);
+    void sendBreakpoints(dap::optional<QUrl> uri, DebugSession *session, bool sourceModified = false);
+    void sendFunctionBreakpoints(DebugSession *session);
+    void sendDataBreakpoints(DebugSession *session);
+    void sendInstructionBreakpoints(DebugSession *session);
+    void sendExceptionBreakpoints(DebugSession *session);
 
     QSharedPointer<DebugModel> model;
 };

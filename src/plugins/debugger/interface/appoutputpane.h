@@ -35,14 +35,18 @@ public:
     ~AppOutputPane() override;
 
     void clearContents();
-    void appendText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
-    void appendText(const QString &text, OutputFormat format);
 
     bool isScrollbarAtBottom() const;
     QString doNewlineEnforcement(const QString &out);
     void scrollToBottom();
+
+public slots:
+    void appendText(const QString &text, OutputFormat format);
+
 private:
+    void appendText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
+
     OutputWindowPrivate *d = nullptr;
 };
 
-#endif // APPOUTPUTPANE_H
+#endif   // APPOUTPUTPANE_H

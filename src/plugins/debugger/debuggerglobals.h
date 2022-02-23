@@ -23,6 +23,7 @@
 
 #include <common/util/singleton.h>
 #include <QColor>
+#include <QtConcurrent>
 
 /*
  * Redefine global instance
@@ -37,8 +38,7 @@
 #define DBG_TEST 1
 #define DEBUG_NAMESPACE DEBUG
 
-enum OutputFormat
-{
+enum OutputFormat {
     NormalMessageFormat,
     ErrorMessageFormat,
     LogMessageFormat,
@@ -47,7 +47,7 @@ enum OutputFormat
     StdErrFormat,
     StdOutFormatSameLine,
     StdErrFormatSameLine,
-    NumberOfFormats // Keep this entry last.
+    NumberOfFormats   // Keep this entry last.
 };
 
 /**
@@ -57,5 +57,9 @@ const QColor kTextColorNormal(150, 150, 150);
 const QColor kErrorMessageTextColor(255, 108, 108);
 const QColor kMessageOutput(0, 135, 135);
 
+#define AsynInvoke(Fun)          \
+    QtConcurrent::run([this]() { \
+        Fun;                     \
+    });
 
-#endif // DEBUGGERGLOBALS_H
+#endif   // DEBUGGERGLOBALS_H

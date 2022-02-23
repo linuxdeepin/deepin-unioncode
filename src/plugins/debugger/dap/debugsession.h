@@ -27,7 +27,6 @@
 #include "debug.h"
 #include "interface/variable.h"
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QPointer>
 #include <QWidget>
@@ -105,7 +104,7 @@ public:
     dap::optional<Thread *> getThread(number threadId) override;
     dap::optional<dap::array<IThread *>> getAllThreads() const override;
     void clearThreads(bool removeThreads, dap::optional<number> reference) override;
-    dap::optional<IRawStoppedDetails> getStoppedDetails() const override;
+    dap::array<IRawStoppedDetails *> &getStoppedDetails() override;
     void rawUpdate(IRawModelUpdate *data) override;
     void fetchThreads(dap::optional<IRawStoppedDetails> stoppedDetails) override;
     dap::optional<dap::Source> getSourceForUri(QUrl &uri) override;
@@ -117,15 +116,18 @@ public:
     void setName(dap::string &name) override;
 
     bool getLocals(dap::integer frameId, IVariables *out) override;
+
+    dap::Session *getDapSession() const;
+    dap::RawDebugSession *getRawSession() const;
+
+    void fetchThreads(IRawStoppedDetails *stoppedDetails);
 signals:
+    void sigRegisterHandlers();
 
 public slots:
-    bool showStoppedBySignalMessageBox(QString meaning, QString name);
 
 private:
     void shutdown();
-    void registerHandlers();
-    void fetchThreads(IRawStoppedDetails *stoppedDetails);
     void onBreakpointHit(const dap::StoppedEvent &event);
     void onStep(const dap::StoppedEvent &event);
 
@@ -133,7 +135,6 @@ private:
     void cancelAllRequests();
 
     bool getVariables(dap::integer variablesRef, IVariables *out);
-
 
     QSharedPointer<dap::RawDebugSession> raw;
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;

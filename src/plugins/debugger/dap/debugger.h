@@ -22,19 +22,43 @@
 #define DEBUGGER_H
 
 #include "debug.h"
+#include "event/event.h"
+#include "interface/stackframemodel.h"
+#include "interface/localtreemodel.h"
+#include "interface/breakpointmodel.h"
 
-#include <QObject>
 #include <QSharedPointer>
+#include <QTreeView>
+#include <QPointer>
 
 /**
  * @brief The Debugger class wrap
  */
+namespace DEBUG {
+class DebugSession;
+}
+
+namespace dap {
+class Session;
+}
+
+class Debugger;
+class AppOutputPane;
+class StackFrameView;
 class RunTimeCfgProvider;
 class Debugger : public QObject
 {
     Q_OBJECT
 public:
     explicit Debugger(QObject *parent = nullptr);
+    ~Debugger();
+
+    void initializeView();
+
+    AppOutputPane *getOutputPane() const;
+    QTreeView *getStackPane() const;
+    QTreeView *getLocalsPane() const;
+    QTreeView *getBreakpointPane() const;
 
     void startDebug();
     void detachDebug();
@@ -48,19 +72,48 @@ public:
     void stepIn();
     void stepOut();
 
-    void addBreakpoint(const QString &filepath, int lineNumber);
-    void removeBreakpoint(const QString &filepath, int lineNumber);
-
-    bool getLocals(dap::integer frameId, IVariables *out);
 signals:
 
 public slots:
+    void registerDapHandlers();
+    void handleFrameEvent(const dpf::Event &event);
+    void printOutput(const QString &content, OutputFormat format = NormalMessageFormat);
+    /**
+     * interface triggered.
+     */
+    void slotFrameSelected(const QModelIndex &index);
+    void slotBreakpointSelected(const QModelIndex &index);
+    bool showStoppedBySignalMessageBox(QString meaning, QString name);
 
 private:
+    void handleFrames(const StackFrames &stackFrames);
+
+    void addBreakpoint(const QString &filepath, int lineNumber);
+    void removeBreakpoint(const QString &filepath, int lineNumber);
+    bool getLocals(dap::integer frameId, IVariables *out);
+
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
-    QSharedPointer<DEBUG_NAMESPACE::IDebugSession> session;
+    QSharedPointer<DEBUG::DebugSession> session;
+
+    dap::integer threadId = 0;
 
     bool started = false;
+
+    /**
+     * @brief interface objects.
+     */
+    QSharedPointer<AppOutputPane> outputPane;
+
+    QSharedPointer<StackFrameView> stackView;
+    StackFrameModel stackModel;
+
+    QSharedPointer<QTreeView> localsView;
+    LocalTreeModel localsModel;
+
+    QSharedPointer<StackFrameView> breakpointView;
+    BreakpointModel breakpointModel;
+
+    QPointer<QWidget> alertBox;
 };
 
-#endif // DEBUGGER_H
+#endif   // DEBUGGER_H

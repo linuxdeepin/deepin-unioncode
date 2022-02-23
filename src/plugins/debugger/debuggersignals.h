@@ -24,6 +24,7 @@
 #include "debuggerglobals.h"
 #include "stackframe.h"
 #include "interface/variable.h"
+#include "event/event.h"
 
 #include <QObject>
 
@@ -32,17 +33,8 @@ class DebuggerSignals : public QObject
     Q_OBJECT
 
 public:
-
 Q_SIGNALS:
-    void debugTriggered();
-    void breakpointAdded(const QString &filepath, int lineNumber);
-    void breakpointRemoved(const QString &filepath, int lineNumber);
-    void addOutput(const QString &content, OutputFormat format);
-    void processStackFrames(const StackFrames &stackFrames);
-    void processVariables(IVariables vars);
-
-    void exception(QString meaing, QString name);
+    void receivedEvent(const dpf::Event &event);
 };
 
-
-#endif // DEBUGGERSIGNALS_H
+#endif   // DEBUGGERSIGNALS_H
