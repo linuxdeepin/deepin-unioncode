@@ -19,17 +19,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 #include "debugengine.h"
 
-#include <QCoreApplication>
+#include "dapsession.h"
 
-int main(int argc, char *argv[])
+DebugEngine::DebugEngine(QObject *parent)
+    : QObject(parent)
 {
-    QCoreApplication a(argc, argv);
+    dapSession.reset(new DapSession());
+}
 
-    DebugEngine engine;
-    engine.start();
+bool DebugEngine::start()
+{
+    return dapSession->start();
+}
 
-    return a.exec();
+void DebugEngine::stop()
+{
+    dapSession->stop();
+}
+
+bool DebugEngine::exit()
+{
+    // TODO(mozart)
+    return true;
+}
+
+bool DebugEngine::initialize()
+{
+    // TODO(mozart)
+    return true;
 }

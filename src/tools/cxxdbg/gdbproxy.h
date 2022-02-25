@@ -28,9 +28,6 @@
 #include "debugmanager.h"
 #include <QObject>
 
-extern bool isGdbProcessStarted;
-extern bool isGDbProcessTerminated;
-
 class GDBProxy : public QObject
 {
     Q_OBJECT
@@ -59,15 +56,7 @@ Q_SIGNALS:
     void sigScopes(const QString& cmd);
     void sigVariables(const QString& cmd);
     void sigSource(const QString& cmd);
-
-public slots:
-    void gdbProcessStarted();
-    void gdbProcessTerminated();
-    void asyncRunning(/*const QString& thid*/);
-    void asyncStopped(/*const gdb::AsyncContext& ctx*/);
-    void breakpointModified(/*const gdb::Breakpoint& bp*/);
-    void librayLoaded();
-    void libraryUnloaded();
+    void sigStreamOutput(const QString sOut);
 private:
     explicit GDBProxy();
 };

@@ -280,7 +280,7 @@ struct DebugManager::Priv_t
     QMap<int, gdb::Breakpoint> breakpoints;
     QMap<QString, gdb::Variable> varsWatched;
 
-    Priv_t(DebugManager *self) : gdb(new QProcess(self))
+    explicit Priv_t(DebugManager *self) : gdb(new QProcess(self))
     {
     }
 };
@@ -405,7 +405,6 @@ QStringList DebugManager::gdbArgs() const
     return self->gdb->arguments();
 }
 
-#include <QCoreApplication>
 // gdb command line from QCommandLineParser
 void DebugManager::execute()
 {
@@ -610,6 +609,11 @@ void DebugManager::processLine(const QString &line)
             { "library-unloaded", [this](const mi::Response& r) {
                 auto data = r.payload.toMap();
                 emit libraryUnloaded();
+            } },
+            {
+                "thread-group-added", [this](const mi::Response& r) {
+                    auto data = r.payload.toMap();
+                    emit threadGroupAdded();
             } },
         };
         responseDispatcher.value(r.message, [](const mi::Response&){})(r);

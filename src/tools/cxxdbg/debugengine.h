@@ -19,17 +19,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef DEBUGENGINE_H
+#define DEBUGENGINE_H
 
-#include "debugengine.h"
+#include <QSharedPointer>
+#include <QObject>
 
-#include <QCoreApplication>
-
-int main(int argc, char *argv[])
+class DapSession;
+class DebugEngine : public QObject
 {
-    QCoreApplication a(argc, argv);
+    Q_OBJECT
+public:
+    explicit DebugEngine(QObject *parent = nullptr);
 
-    DebugEngine engine;
-    engine.start();
+    bool start();
+    void stop();
+    bool exit();
 
-    return a.exec();
-}
+signals:
+
+public slots:
+private:
+    bool initialize();
+
+    bool isRunning = false;
+
+    QSharedPointer<DapSession> dapSession;
+};
+
+#endif   // DEBUGENGINE_H

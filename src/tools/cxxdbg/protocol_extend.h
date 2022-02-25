@@ -26,20 +26,40 @@
 #define PROTOCOL_EXTEND_H
 
 #include "dap/protocol.h"
-#include <QJsonArray>
-#include <QJsonValue>
-#include <QJsonObject>
-#include <QJsonDocument>
 
 namespace  dap {
 
-// extend dap::LaunchRequest
+struct setupCommand
+{
+    optional<string> description;
+    optional<string> text;
+    optional<boolean> ignoreFailures;
+};
+
+struct logging
+{
+    optional<boolean> trace;
+    optional<boolean> traceResponse;
+    optional<boolean> engineLogging;
+};
+
 class LaunchRequestExtend : public LaunchRequest
 {
 public:
-    dap::string name;
-    dap::string type;
-    dap::string program;
+    optional<string> name;
+    optional<string> type;
+    optional<string> request;
+    optional<string> program;
+    optional<array<string>> args;
+    optional<boolean> stopAtEntry;
+    optional<string> cwd;
+    optional<array<string>> environment;
+    optional<boolean> externalConsole;
+    optional<string> MIMode;
+    //optional<array<setupCommand>> setupCommands;
+    //optional<logging> logging;
+    optional<integer> __configurationTarget;
+    optional<string> __sessionId;
 };
 
 DAP_STRUCT_TYPEINFO_EXT(LaunchRequestExtend,
@@ -47,7 +67,18 @@ DAP_STRUCT_TYPEINFO_EXT(LaunchRequestExtend,
                         "launch",
                         DAP_FIELD(name, "name"),
                         DAP_FIELD(type, "type"),
-                        DAP_FIELD(program, "program"));
+                        DAP_FIELD(request, "request"),
+                        DAP_FIELD(program, "program"),
+                        DAP_FIELD(args, "args"),
+                        DAP_FIELD(stopAtEntry, "stopAtEntry"),
+                        DAP_FIELD(environment, "environment"),
+                        DAP_FIELD(cwd, "cwd"),
+                        DAP_FIELD(externalConsole, "externalConsole"),
+                        DAP_FIELD(MIMode, "MIMode"),
+                        //DAP_FIELD(setupCommands, "setupCommands"),
+                        //DAP_FIELD(logging, "logging"),
+                        DAP_FIELD(__configurationTarget, "__configurationTarget"),
+                        DAP_FIELD(__sessionId, "__sessionId"));
 } //namespace dap
 
 #endif // PROTOCOL_EXTEND_H

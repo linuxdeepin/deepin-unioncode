@@ -89,14 +89,14 @@ struct Thread {
 struct AsyncContext {
     enum class Reason {
         Unknown,
-        breakpointHhit,
+        breakpointHhit, // breakpoint Hit
         watchpointTrigger,
         readWatchpointTrigger,
         accessWatchpointTrigger,
-        functionFinished,
+        functionFinished, // StepOut
         locationReached,
         watchpointScope,
-        endSteppingRange,
+        endSteppingRange, // StepIn
         exitedSignalled,
         exited,
         exitedNormally,
@@ -210,6 +210,7 @@ signals:
 
     void libraryLoaded();
     void libraryUnloaded();
+    void threadGroupAdded();
 private slots:
     void processLine(const QString& line);
 

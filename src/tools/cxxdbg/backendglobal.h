@@ -19,17 +19,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef BACKENDGLOBAL_H
+#define BACKENDGLOBAL_H
 
-#include "debugengine.h"
+//! May change output channal later.
+#define Log(message) printf("%s", message);
 
-#include <QCoreApplication>
-
-int main(int argc, char *argv[])
-{
-    QCoreApplication a(argc, argv);
-
-    DebugEngine engine;
-    engine.start();
-
-    return a.exec();
-}
+#endif // BACKENDGLOBAL_H

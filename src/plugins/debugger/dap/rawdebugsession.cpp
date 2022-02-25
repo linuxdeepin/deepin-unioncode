@@ -231,11 +231,7 @@ Promise<CompletionsRequest> RawDebugSession::completions(const CompletionsReques
 
 Promise<SetBreakpointsRequest> RawDebugSession::setBreakpoints(const SetBreakpointsRequest &request)
 {
-    if (_capabilities.supportsCompletionsRequest) {
-        return send(request);
-    }
-    qInfo() << "supportsCompletionsRequest not supported";
-    return {};
+    return send(request);
 }
 
 Promise<SetFunctionBreakpointsRequest> RawDebugSession::setFunctionBreakpoints(
