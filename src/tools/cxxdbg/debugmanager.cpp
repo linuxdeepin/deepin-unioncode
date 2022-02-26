@@ -295,6 +295,7 @@ void registerMetatypes() {
     qRegisterMetaType<gdb::Variable>();
     qRegisterMetaType<gdb::Thread>();
     qRegisterMetaType<gdb::AsyncContext>();
+    qRegisterMetaType<gdb::Library>();
     registered = true;
 }
 }
@@ -400,6 +401,11 @@ bool DebugManager::isInferiorRunning() const
     return self->m_inferiorRunning;
 }
 
+qint64 DebugManager::getProcessId()
+{
+    return self->gdb->processId();
+}
+
 QStringList DebugManager::gdbArgs() const
 {
     return self->gdb->arguments();
@@ -409,6 +415,7 @@ QStringList DebugManager::gdbArgs() const
 void DebugManager::execute()
 {
     auto a = self->gdb->arguments();
+    a.prepend("-q");
     a.prepend("-interpreter=mi");
     self->gdb->setArguments(a);
     self->gdb->setProgram(gdbCommand());
@@ -437,6 +444,40 @@ void DebugManager::commandAndResponse(const QString& cmd,
 {
     self->resposeExpected.insert(self->tokenCounter, { action, handler });
     command(cmd);
+}
+
+void DebugManager::breakAfter(int bpid, int count)
+{
+    command(QString{"-break-after %1 %2"}.arg(bpid, count));
+}
+
+void DebugManager::breakCondition(const int bpid, const QString& expr)
+{
+    command(QString{"-break-condition %1 %2"}.arg(bpid).arg(expr));
+}
+
+void DebugManager::breakDisable(int bpid)
+{
+    command(QString{"-break-disable %1"}.arg(bpid));
+}
+
+void DebugManager::breakEnable(int bpid)
+{
+    command(QString{"-break-enable %1"}.arg(bpid));
+}
+
+void DebugManager::breakInfo(int bpid)
+{
+    auto tokStr = QString{"-break-info %1"}.arg(bpid);
+    commandAndResponse(tokStr, [this, bpid](const QVariant&) {
+        auto bp = self->breakpoints.value(bpid);
+        emit breakpointInfo(bp);
+    });
+}
+
+void DebugManager::breakList()
+{
+    command(QString{"-break-list"});
 }
 
 void DebugManager::breakRemove(int bpid)
@@ -469,10 +510,70 @@ void DebugManager::launchLocal()
     self->m_remote = false;
 }
 
+void DebugManager::attachProcess(const int pid)
+{
+    command(QString{"-target-attach %1"}.arg(pid));
+}
+
+void DebugManager::attachThreadGroup(const QString &gid)
+{
+    command(QString{"-target-attach %1"}.arg(gid));
+}
+
+void DebugManager::detach()
+{
+    command(QString{"-target-detach"});
+}
+
+void DebugManager::detachProcess(const int pid)
+{
+    command(QString{"-target-detach %1"}.arg(pid));
+}
+
+void DebugManager::detachThreadGroup(const QString &gid)
+{
+    command(QString{"-target-detach %1"}.arg(gid));
+}
+
+void DebugManager::disconnect()
+{
+    command(QString{"-target-disconnect"});
+}
+
+void DebugManager::enableFrameFilters()
+{
+    command("-enable-frame-filters");
+}
+
+void DebugManager::stackListFrames()
+{
+    command("-stack-list-frames");
+}
+
+void DebugManager::stackListLocals()
+{
+    command("-stack-list-locals 2");
+}
+
+void DebugManager::stackListVariables()
+{
+    command("-stack-list-variables 2");
+}
+
+void DebugManager::stackListFrame(const gdb::Frame &frame)
+{
+
+}
+
 void DebugManager::launchRemote(const QString &remoteTarget)
 {
     command(QString{"-target-select remote %1"}.arg(remoteTarget));
     self->m_remote = true;
+}
+
+void DebugManager::commandPause()
+{
+    command("-exec-until");
 }
 
 void DebugManager::commandContinue()
@@ -480,9 +581,29 @@ void DebugManager::commandContinue()
     command("-exec-continue");
 }
 
+void DebugManager::commandContinueReverse()
+{
+    command("-exec-continue --reverse");
+}
+
 void DebugManager::commandNext()
 {
     command("-exec-next");
+}
+
+void DebugManager::commandNextReverse()
+{
+    command("-exec-next --reverse");
+}
+
+void DebugManager::commandNexti()
+{
+    command("-exec-next-instruction");
+}
+
+void DebugManager::commandNextiReverse()
+{
+    command("-exec-next-instruction --reverse");
 }
 
 void DebugManager::commandStep()
@@ -490,14 +611,71 @@ void DebugManager::commandStep()
     command("-exec-step");
 }
 
+void DebugManager::commandStepReverse()
+{
+    command("-exec-step --reverse");
+}
+
+void DebugManager::commandStepi()
+{
+    command("-exec-step-instruction");
+}
+
+void DebugManager::commandStepiReverse()
+{
+    command("-exec-step-instruction --reverse");
+}
+
+void DebugManager::commandReturn()
+{
+    command("-exec-return");
+}
+
 void DebugManager::commandFinish()
 {
     command("-exec-finish");
 }
 
+void DebugManager::commandFinishReverse()
+{
+    command("-exec-finish --reverse");
+}
+
 void DebugManager::commandInterrupt()
 {
     ::kill(self->gdb->processId(), SIGINT);
+    //command(QString{"-exec-interrupt"});
+}
+
+void DebugManager::commandUntil(const QString& location)
+{
+    command(QString{"-exec-until %1"}.arg(location));
+}
+
+void DebugManager::commandJump(const QString &location)
+{
+    command(QString{"-exec-jump %1"}.arg(location));
+}
+
+void DebugManager::threadInfo()
+{
+    command("-thread-info");
+}
+
+void DebugManager::threadListIds()
+{
+    command("-thread-list-ids");
+}
+
+void DebugManager::threadSelect(const gdb::Thread &thread)
+{
+    auto id = thread.id;
+    command(QString{"-thread-select %1"}.arg(id));
+}
+
+void DebugManager::listSourceFiles()
+{
+    command("-file-list-exec-source-files");
 }
 
 void DebugManager::traceAddVariable(const QString& expr, const QString& name, int frame)
@@ -567,7 +745,8 @@ void DebugManager::processLine(const QString &line)
     switch (r.type) {
     case mi::Response::notify:
         static const QMap<QString, dispatcher_t> responseDispatcher{
-            { "stopped", [this](const mi::Response& r) {
+            {  // *stopped, reason="reason",thread-id="id",stopped-threads="stopped",core="core"
+                "stopped", [this](const mi::Response& r) {
                 auto data = r.payload.toMap();
                 gdb::AsyncContext ctx;
                 ctx.reason = gdb::AsyncContext::textToReason(data.value("reason").toString());
@@ -577,44 +756,108 @@ void DebugManager::processLine(const QString &line)
                 self->m_inferiorRunning = false;
                 emit asyncStopped(ctx);
              } },
-             { "running", [this](const mi::Response& r) {
+             {  // *running,thread-id="thread"
+                "running", [this](const mi::Response& r) {
                  auto data = r.payload.toMap();
                  auto thid = data.value("thread-id").toString();
                  self->m_inferiorRunning = true;
                  emit asyncRunning(thid);
              } },
-            { "breakpoint-modified", [this](const mi::Response& r) {
+            {   // =breakpoint-modified,bkpt={...}
+                "breakpoint-modified", [this](const mi::Response& r) {
                  auto data = r.payload.toMap();
                  auto bp = gdb::Breakpoint::parseMap(data.value("bkpt").toMap());
                  self->breakpoints.insert(bp.number, bp);
                  emit breakpointModified(bp);
              } },
-            { "breakpoint-created", [this](const mi::Response& r) {
+            {   // =breakpoint-created,bkpt={...}
+                "breakpoint-created", [this](const mi::Response& r) {
                  auto data = r.payload.toMap();
                  auto bp = gdb::Breakpoint::parseMap(data.value("bkpt").toMap());
                  self->breakpoints.insert(bp.number, bp);
                  emit breakpointModified(bp);
              } },
-            { "breakpoint-deleted", [this](const mi::Response& r) {
+            {    // =breakpoint-deleted,id=number
+                 "breakpoint-deleted", [this](const mi::Response& r) {
                  auto data = r.payload.toMap();
                  auto id = data.value("id").toInt();
                  auto bp = self->breakpoints.value(id);
                  self->breakpoints.remove(id);
                  emit breakpointRemoved(bp);
              } },
-            { "library-loaded", [this](const mi::Response& r) {
-                auto data = r.payload.toMap();
-                emit libraryLoaded();
-            } },
-            { "library-unloaded", [this](const mi::Response& r) {
-                auto data = r.payload.toMap();
-                emit libraryUnloaded();
-            } },
             {
+                // =thread-group-added,id="id"
                 "thread-group-added", [this](const mi::Response& r) {
-                    auto data = r.payload.toMap();
-                    emit threadGroupAdded();
-            } },
+                auto data = r.payload.toMap();
+                auto id = data.value("id").toInt();
+                gdb::Thread thid;
+                thid.id = id;
+                emit threadGroupAdded(thid);
+            }},
+            {
+                // =thread-group-removed,id="id"
+                "thread-group-removed", [this](const mi::Response& r) {
+                auto data = r.payload.toMap();
+                auto id = data.value("id").toInt();
+                gdb::Thread thid;
+                thid.id = id;
+                emit threadGroupRemoved(thid);
+            }},
+            {
+                // =thread-group-started,id="id",pid="pid"
+                "thread-group-started", [this](const mi::Response& r) {
+                 auto data = r.payload.toMap();
+                 auto id = data.value("id").toInt();
+                 auto pid = data.value("pid").toInt();
+                 gdb::Thread threadId;
+                 gdb::Thread processId;
+                 threadId.id = id;
+                 processId.id = pid;
+                 emit threadGroupStarted(threadId, processId);
+            }},
+            {
+                // =thread-gorup-exited,id="id"[,exit-code="code"]
+                "thread-group-exited", [this](const mi::Response& r) {
+                 auto data = r.payload.toMap();
+                 auto id = data.value("id").toInt();
+                 gdb::Thread threadId;
+                 threadId.id = id;
+                 auto exitCode = data.value("exit-code").toString();
+                 emit threadGroupExited(threadId, exitCode);
+            }},
+            {
+                // =library-loaded,...
+                "library-loaded", [this](const mi::Response& r) {
+                 auto data = r.payload.toMap();
+                 auto id = data.value("id").toInt();
+                 auto targetName = data.value("target-name").toString();
+                 auto hostName = data.value("host-name").toString();
+                 auto symbolsLoaded = data.value("symbols-loaded").toString();
+                 auto ranges = data.value("ranges").toMap();
+                 auto fromRange = ranges.value("fromRange").toString();
+                 auto toRange = ranges.value("toRange").toString();
+                 gdb::Library library;
+                 library.id = id;
+                 library.targetName = targetName;
+                 library.hostName = hostName;
+                 library.symbolsLoaded = symbolsLoaded;
+                 library.ranges.fromRange = fromRange;
+                 library.ranges.toRange = toRange;
+                 emit libraryLoaded(library);
+            }},
+            {
+                // =library-unloaded,...
+                "library-unloaded", [this](const mi::Response& r) {
+                 auto data = r.payload.toMap();
+                 auto id = data.value("id").toInt();
+                 auto targetName = data.value("target-name").toString();
+                 auto hostName = data.value("host-name").toString();
+                 gdb::Library library;
+                 library.id = id;
+                 library.targetName = targetName;
+                 library.hostName = hostName;
+                 emit libraryUnloaded(library);
+            }},
         };
         responseDispatcher.value(r.message, [](const mi::Response&){})(r);
         break;
@@ -624,14 +867,14 @@ void DebugManager::processLine(const QString &line)
                 { "frame", [this](const mi::Response& r) {
                      auto f = gdb::Frame::parseMap(r.payload.toMap().value("frame").toMap());
                      emit updateCurrentFrame(f);
-                 }},
+                 }}, // -stack-list-varablbes => Scopes Request
                 { "variables", [this](const mi::Response& r) {
                      QList<gdb::Variable> variableList;
                      auto locals = r.payload.toMap().value("variables").toList();
                      for (const auto& e: locals)
                          variableList.append(gdb::Variable::parseMap(e.toMap()));
                      emit updateLocalVariables(variableList);
-                 }},
+                 }}, // -thread-info => Thread Request
                 { "threads", [this](const mi::Response& r) {
                      QList<gdb::Thread> threadList;
                      auto data =  r.payload.toMap();
@@ -640,7 +883,7 @@ void DebugManager::processLine(const QString &line)
                      for (const auto& e: threads)
                          threadList.append(gdb::Thread::parseMap(e.toMap()));
                      emit updateThreads(currId, threadList);
-                 }},
+                 }}, // -stack-list-frames => StackTrace Reqeust
                 { "stack", [this](const mi::Response& r) {
                      QList<gdb::Frame> stackFrames;
                      auto stackTrace = r.payload.toMap().value("stack").toList().first().toMap().values("frame");
@@ -649,7 +892,13 @@ void DebugManager::processLine(const QString &line)
                          stackFrames.append(frame);
                      }
                      emit updateStackFrame(stackFrames);
-                 }},
+                 }}, // -break-insert location
+                { "bkpt", [this](const mi::Response& r) {
+                     auto data = r.payload.toMap();
+                     auto bp = gdb::Breakpoint::parseMap(data.value("bkpt").toMap());
+                     self->breakpoints.insert(bp.number, bp);
+                     emit breakpointInserted(bp);
+                }},
             };
             for (const auto& k: r.payload.toMap().keys())
                 doneDispatcher.value(k, [](const mi::Response&){})(r);
@@ -796,4 +1045,17 @@ QString gdb::AsyncContext::reasonToText(gdb::AsyncContext::Reason r)
     case Reason::exec                    : return "exec";
     default: return "unknown";
     }
+}
+
+gdb::Library gdb::Library::parseMap(const QVariantMap &data)
+{
+    gdb::Library l;
+    l.id = data.value("id").toInt();
+    l.targetName = data.value("target-name").toString();
+    l.hostName = data.value("host-name").toString();
+    l.symbolsLoaded = data.value("symbols-loaded").toString();
+    auto ranges = data.value("ranges").toMap();
+    l.ranges.fromRange = ranges.value("from").toString();
+    l.ranges.toRange = ranges.value("to").toString();
+    return l;
 }

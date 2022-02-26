@@ -116,6 +116,20 @@ struct AsyncContext {
     static QString reasonToText(Reason r);
 };
 
+struct Library {
+    QString id;
+    QString targetName;
+    QString hostName;
+    QString symbolsLoaded;
+    QString threadGroup;
+    struct Ranges {
+        QString fromRange;
+        QString toRange;
+    } ranges;
+
+    static Library parseMap(const QVariantMap& data);
+};
+
 } // namespace gdb
 
 class DebugManager : public QObject
@@ -143,6 +157,7 @@ public:
     gdb::Breakpoint breakpointById(int id) const;
     gdb::Breakpoint breakpointByFileLine(const QString& path, int line) const;
     bool isInferiorRunning() const;
+    qint64 getProcessId();
 
 public slots:
     void execute();
@@ -152,19 +167,54 @@ public slots:
     void commandAndResponse(const QString& cmd,
                             const ResponseHandler_t& handler,
                             ResponseAction_t action = ResponseAction_t::Temporal);
-
+    void breakAfter(int bpid, int count);
+    void breakCondition(const int bpid, const QString &expr);
+    void breakDisable(int bpid);
+    void breakEnable(int bpid);
+    void breakInfo(int bpid);
+    void breakList();
     void breakRemove(int bpid);
     void breakInsert(const QString& path);
 
     void loadExecutable(const QString& file);
     void launchRemote(const QString& remoteTarget);
     void launchLocal();
+    void attachProcess(const int pid);
+    void attachThreadGroup(const QString& gid);
+    void detach();
+    void detachProcess(const int pid);
+    void detachThreadGroup(const QString& gid);
+    void disconnect();
 
+    void enableFrameFilters();
+    void stackListFrames();
+    void stackListLocals();
+    void stackListVariables();
+    void stackListFrame(const gdb::Frame& frame);
+
+    void commandPause();
     void commandContinue();
+    void commandContinueReverse();
     void commandNext();
+    void commandNextReverse();
+    void commandNexti();
+    void commandNextiReverse();
     void commandStep();
+    void commandStepReverse();
+    void commandStepi();
+    void commandStepiReverse();
+    void commandReturn();
     void commandFinish();
+    void commandFinishReverse();
     void commandInterrupt();
+    void commandUntil(const QString& location);
+    void commandJump(const QString& location);
+
+    void threadInfo();
+    void threadListIds();
+    void threadSelect(const gdb::Thread& thread);
+
+    void listSourceFiles();
 
     void traceAddVariable(const QString& expr, const QString& name="-", int frame=-1);
     void traceDelVariable(const QString& name);
@@ -188,12 +238,22 @@ signals:
 
     void asyncRunning(const QString& thid);
     void asyncStopped(const gdb::AsyncContext& ctx);
-
+    void threadGroupAdded(const gdb::Thread& thid);
+    void threadGroupRemoved(const gdb::Thread& thid);
+    void threadGroupStarted(const gdb::Thread& thid, const gdb::Thread& pid);
+    void threadGroupExited(const gdb::Thread& thid, const QString& exitCode);
+    void threadCreated(const gdb::Thread& thid, const QString& groupId);
+    void threadExited(const gdb::Thread& thid, const QString& groupId);
+    void threadSelected(const gdb::Thread& thid, const gdb::Frame& frame);
     void updateThreads(int currentId, const QList<gdb::Thread>& threads);
+    void libraryLoaded(const gdb::Library& library);
+    void libraryUnloaded(const gdb::Library& library);
+
     void updateCurrentFrame(const gdb::Frame& frame);
     void updateStackFrame(const QList<gdb::Frame>& stackFrames);
     void updateLocalVariables(const QList<gdb::Variable>& variableList);
 
+    void breakpointInfo(const gdb::Breakpoint& bp);
     void breakpointInserted(const gdb::Breakpoint& bp);
     void breakpointModified(const gdb::Breakpoint& bp);
     void breakpointRemoved(const gdb::Breakpoint& bp);
@@ -208,9 +268,6 @@ signals:
     void streamGdb(const QString& text);
     void streamDebugInternal(const QString& text);
 
-    void libraryLoaded();
-    void libraryUnloaded();
-    void threadGroupAdded();
 private slots:
     void processLine(const QString& line);
 
@@ -227,5 +284,6 @@ Q_DECLARE_METATYPE(gdb::Frame)
 Q_DECLARE_METATYPE(gdb::Breakpoint)
 Q_DECLARE_METATYPE(gdb::Thread)
 Q_DECLARE_METATYPE(gdb::AsyncContext)
+Q_DECLARE_METATYPE(gdb::Library)
 
 #endif // DEBUGMANAGER_H

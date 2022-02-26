@@ -25,6 +25,7 @@
 #include "dap/session.h"
 #include "dap/protocol.h"
 #include "dap/network.h"
+#include "debugmanager.h"
 
 #include <QObject>
 
@@ -47,6 +48,19 @@ private:
     void initializeDebugMgr();
     void registerHanlder();
     void handleEvent(const QString &sOut);
+    void handleAsyncStopped(const gdb::AsyncContext& ctx);
+    void handleThreadGroupAdded(const gdb::Thread& thid);
+    void handleThreadGroupRemoved(const gdb::Thread& thid);
+    void handleThreadGroupStarted(const gdb::Thread& thid, const gdb::Thread& pid);
+    void handleThreadGroupExited(const gdb::Thread& thid, const QString& exitCode);
+    void hanleThreadCreated(const gdb::Thread& thid, const QString& groupId);
+    void handleThreadExited(const gdb::Thread& thid, const QString& groupId);
+    void handleThreadSelected(const gdb::Thread& thid, const gdb::Frame& frame);
+    void hanldeUpdateThreads(int currentId, const QList<gdb::Thread>& threads);
+    void handleLibraryLoaded(const gdb::Library& library);
+    void handleLibraryUnloaded(const gdb::Library& library);
+    void handleStreamConsole(const QString& text);
+
     dap::SetBreakpointsResponse handleBreakpointReq(const dap::SetBreakpointsRequest &request);
     dap::InitializeResponse handleInitializeReq(const dap::InitializeRequest &request);
 
@@ -60,7 +74,14 @@ private:
     bool isSupportsTerminateDebuggee = true;
     bool isGdbProcessStarted = false;
     bool isGDbProcessTerminated = false;
+    bool isLaunchLocalTarget = false;
+    bool isThreadRequestReceived = false;
 
+    QString threadGroupId;
+    qint64 processId;
+    qint64 threadId;
+    QString processName;
+    QString debuggerName;
     DebugManager *debugger = nullptr;
 };
 

@@ -83,23 +83,54 @@ void DapSession::initializeDebugMgr()
         handleEvent(sOut);
     });
 
+    connect(debugger, &DebugManager::asyncStopped, GDBProxy::instance(), [this](const gdb::AsyncContext& ctx) mutable {
+        handleAsyncStopped(ctx);
+    });
+
+    connect(debugger, &DebugManager::threadGroupAdded, GDBProxy::instance(), [this](const gdb::Thread& thid) mutable {
+        handleThreadGroupAdded(thid);
+    });
+
+    connect(debugger, &DebugManager::threadGroupExited, GDBProxy::instance(), [this](const gdb::Thread& thid, const QString& exitCode) mutable {
+        handleThreadGroupExited(thid, exitCode);
+    });
+
+    connect(debugger, &DebugManager::threadGroupRemoved, GDBProxy::instance(), [this](const gdb::Thread& thid) mutable {
+        handleThreadGroupRemoved(thid);
+    });
+
+    connect(debugger, &DebugManager::threadGroupStarted, GDBProxy::instance(), [this](const gdb::Thread& thid, const gdb::Thread& pid) mutable {
+        handleThreadGroupStarted(thid, pid);
+    });
+
+    connect(debugger, &DebugManager::libraryLoaded, GDBProxy::instance(), [this](const gdb::Library& library) mutable {
+        handleLibraryLoaded(library);
+    });
+
+    connect(debugger, &DebugManager::libraryUnloaded, GDBProxy::instance(), [this](const gdb::Library& library) mutable {
+        handleLibraryUnloaded(library);
+    });
+
+    QObject::connect(debugger, &DebugManager::streamConsole, [&](const QString& text) mutable {
+        handleStreamConsole(text);
+    });
+
+    connect(debugger, &DebugManager::gdbProcessStarted, GDBProxy::instance(), [this](){isGdbProcessStarted = true;});
     connect(GDBProxy::instance(), &GDBProxy::sigQuit, debugger, &DebugManager::quit);
     connect(GDBProxy::instance(), &GDBProxy::sigStart, debugger, &DebugManager::execute);
     connect(GDBProxy::instance(), &GDBProxy::sigBreakInsert, debugger, &DebugManager::breakInsert);
     connect(GDBProxy::instance(), &GDBProxy::sigLaunchLocal, debugger, &DebugManager::launchLocal);
-
-    connect(debugger, &DebugManager::gdbProcessStarted, GDBProxy::instance(), /*&GDBProxy::gdbProcessStarted*/[this](){isGdbProcessStarted = true;});
     connect(GDBProxy::instance(), &GDBProxy::sigContinue, debugger, &DebugManager::commandContinue);
-    connect(GDBProxy::instance(), &GDBProxy::sigPause, debugger, &DebugManager::command);
+    connect(GDBProxy::instance(), &GDBProxy::sigPause, debugger, &DebugManager::commandPause);
     connect(GDBProxy::instance(), &GDBProxy::sigNext, debugger, &DebugManager::commandNext);
     connect(GDBProxy::instance(), &GDBProxy::sigStepin, debugger, &DebugManager::commandStep);
     connect(GDBProxy::instance(), &GDBProxy::sigStepout, debugger, &DebugManager::commandFinish);
-    connect(GDBProxy::instance(), &GDBProxy::sigThreads, debugger, &DebugManager::command);
-    connect(GDBProxy::instance(), &GDBProxy::sigSelectThread, debugger, &DebugManager::command);
-    connect(GDBProxy::instance(), &GDBProxy::sigStackTrace, debugger, &DebugManager::command);
-    connect(GDBProxy::instance(), &GDBProxy::sigScopes, debugger, &DebugManager::command);
-    connect(GDBProxy::instance(), &GDBProxy::sigVariables, debugger, &DebugManager::command);
-    connect(GDBProxy::instance(), &GDBProxy::sigSource, debugger, &DebugManager::command);
+    connect(GDBProxy::instance(), &GDBProxy::sigThreads, debugger, &DebugManager::threadInfo);
+    connect(GDBProxy::instance(), &GDBProxy::sigSelectThread, debugger, &DebugManager::threadSelect);
+    connect(GDBProxy::instance(), &GDBProxy::sigStackTrace, debugger, &DebugManager::stackListFrames);
+    connect(GDBProxy::instance(), &GDBProxy::sigScopes, debugger, &DebugManager::stackListVariables);
+    connect(GDBProxy::instance(), &GDBProxy::sigVariables, debugger, &DebugManager::stackListLocals);
+    connect(GDBProxy::instance(), &GDBProxy::sigSource, debugger, &DebugManager::listSourceFiles);
 }
 
 void DapSession::registerHanlder()
@@ -119,8 +150,6 @@ void DapSession::registerHanlder()
         Q_UNUSED(request);
         printf("<-- Server received setExceptionBreakpoints request from client\n");
         dap::SetExceptionBreakpointsResponse response;
-        //QObject::connect(GDBProxy::instance(), &GDBProxy::sigBreakInsert, debugger, &DebugManager::breakInsert);
-        //emit GDBProxy::instance()->sigBreakInsert(QString("/home/zhxiao/workspaces/qtcreator/demo/main.cpp:main"));
 
         printf("--> Server sent setExceptionBreakpoints response to client\n");
         return response;
@@ -139,14 +168,12 @@ void DapSession::registerHanlder()
         Q_UNUSED(request);
         dap::SetFunctionBreakpointsResponse response;
         printf("<-- Server received setFunctionBreakpoints request from client\n");
-
         auto breakpoints = request.breakpoints;
         for (auto &breakpoint : breakpoints) {
             auto functionName = breakpoint.name;
             qInfo() << functionName.c_str();
             emit GDBProxy::instance()->sigBreakInsert(QString("/home/zhxiao/workspaces/qtcreator/demo/main.cpp:swap"));
         }
-
         // Generic setFunctionBreakpointResponse
         printf("--> Server sent setFunctionBreakpoints response to client\n");
         return response;
@@ -155,16 +182,14 @@ void DapSession::registerHanlder()
     // The SetDataBreakpoints request instructs the debugger to set a data breakpoints
     session->registerHandler([&](const dap::SetDataBreakpointsRequest &request) {
         Q_UNUSED(request);
-        printf("<-- Server received SetDataBreakpoints request from client\n");
         dap::SetDataBreakpointsResponse response;
+        printf("<-- Server received SetDataBreakpoints request from client\n");
 
         printf("--> Server sent SetDataBreakpoints response to client\n");
         return response;
     });
 
     // Signal used to configurate the server session when ConfigurationDoneReqeust
-//    std::condition_variable configurated_cv;
-//    std::mutex configurated_mutex;
     // The ConfigurationDone request is made by the client once all configuration
     // requests have been made.
     //
@@ -172,46 +197,66 @@ void DapSession::registerHanlder()
     session->registerHandler([&](const dap::ConfigurationDoneRequest &request) {
         Q_UNUSED(request);
         printf("<-- Server received configurationDone request from client\n");
-
-//        std::unique_lock<std::mutex> lock(configurated_mutex);
         isConfiguratedDone = true;
-//        configurated_cv.notify_one();
         auto response = dap::ConfigurationDoneResponse();
-
         printf("--> Server sent configurationDone response to client\n");
         return response;
     });
 
+    // execute debugger and debuggee after configurate done response
+    session->registerSentHandler([&](const dap::ResponseOrError<dap::ConfigurationDoneResponse>& response){
+        Q_UNUSED(response);
+        if (isConfiguratedDone && isDebuggeIsStartWithLaunchRequest && !isLaunchLocalTarget) {
+            emit GDBProxy::instance()->sigLaunchLocal();
+        }
+        isLaunchLocalTarget = true;
+        connect(debugger, &DebugManager::asyncRunning, GDBProxy::instance(), [this](const QString& thid) mutable {
+            processId = debugger->getProcessId();
+            threadId = processId;
+            dap::integer pointerSize;
+            dap::ProcessEvent processEvent;
+            processEvent.name = processName.toStdString();
+            processEvent.startMethod = "launch";
+            processEvent.systemProcessId = processId;
+            processEvent.pointerSize = pointerSize;
+            if (isLaunchLocalTarget) {
+                session->send(processEvent);
+                printf("--> Server sent process Event to client\n");
+            }
+
+            dap::ThreadEvent threadEvent;
+            threadEvent.reason = "started";
+            threadEvent.threadId = processId;
+            if (isLaunchLocalTarget) {
+                session->send(threadEvent);
+                printf("--> Server sent thread Event to client\n");
+            }
+        });
+    });
+
     // The Launch request is made when the client instructs the debugger adapter
     // to start the debuggee. This request contains the launch arguments.
-    //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Launch
-    //
-    // must launch gdb process in the main thread.
-    // default, lauch request will stop at entry(main)
     session->registerHandler([&](const dap::LaunchRequestExtend &request) {
         Q_UNUSED(request);
         dap::LaunchResponse response {};
-
         printf("<-- Server received launch request from client\n");
-
-
         isDebuggeIsStartWithLaunchRequest = true;
         if (request.type.has_value()) {
-            debugger->setGdbCommand("gdb");
+            debuggerName = "gdb";
+            debugger->setGdbCommand(debuggerName);
         }
         if (request.program.has_value()) {
-            debugger->setGdbArgs(QStringList(request.program.value().c_str()));
+            processName = request.program.value().c_str();
+            debugger->setGdbArgs(QStringList(processName));
         }
         emit GDBProxy::instance()->sigStart();
-
         printf("--> Server sent launch response to client\n");
         return response;
     });
 
     session->registerSentHandler([&](const dap::ResponseOrError<dap::LaunchResponse> &response) {
         Q_UNUSED(response);
-
         printf("--> Server sent initialized event to client\n");
         session->send(dap::InitializedEvent());
     });
@@ -220,15 +265,8 @@ void DapSession::registerHanlder()
     session->registerHandler([=](const dap::AttachRequest &request) {
         Q_UNUSED(request);
         printf("<-- Server received attach reqeust from client\n");
-
         isDebuggeIsStartWithAttachRequest = true;
         dap::AttachResponse response;
-        //            qint64 pid = 28343; // from attach request
-        //            QObject::connect(GDBProxy::instance(), &GDBProxy::sigAttach, debugger, &DebugManager::command);
-        //            QString cmd("-target-attach ");
-        //            cmd.append(QString::number(pid));
-        //            emit GDBProxy::instance()->sigAttach(cmd);
-
         printf("--> Server sent attach response to client\n");
         return response;
     });
@@ -238,16 +276,15 @@ void DapSession::registerHanlder()
     // ‘supportsRestartRequest’ is true
     session->registerHandler([=](const dap::RestartRequest &request) {
         Q_UNUSED(request);
+        dap::RestartResponse response;
         printf("<-- Server received restart request from client\n");
 
         isDebuggeIsStartWithLaunchRequest = true;
-        dap::RestartResponse response;
-
         // send quit signal to debugger
         emit GDBProxy::instance()->sigQuit();
 
-        debugger->setGdbCommand("gdb");
-        debugger->setGdbArgs({ "input your program path." });
+        debugger->setGdbCommand(debuggerName);
+        debugger->setGdbArgs(QStringList(processName));
         emit GDBProxy::instance()->sigStart();
         emit GDBProxy::instance()->sigBreakInsert("main");
         emit GDBProxy::instance()->sigLaunchLocal();
@@ -263,10 +300,8 @@ void DapSession::registerHanlder()
         Q_UNUSED(request);
         dap::TerminateResponse response;
         printf("<-- Server received terminate request from client\n");
-
         // send quit command to debugger
         emit GDBProxy::instance()->sigQuit();
-
         printf("--> Server sent terminate response to client\n");
         return response;
     });
@@ -277,9 +312,7 @@ void DapSession::registerHanlder()
     session->registerHandler([&](const dap::PauseRequest &request) {
         Q_UNUSED(request);
         printf("<-- Server received pause request from client\n");
-
-        emit GDBProxy::instance()->sigPause("-exec-pause");
-
+        emit GDBProxy::instance()->sigPause();
         printf("--> Server sent pause response to client\n");
         return dap::PauseResponse();
     });
@@ -289,10 +322,9 @@ void DapSession::registerHanlder()
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Continue
     session->registerHandler([&](const dap::ContinueRequest &request) {
         Q_UNUSED(request);
+//        auto threadId = request.threadId;
         printf("<-- Server received continue request from client\n");
-
         emit GDBProxy::instance()->sigContinue();
-
         printf("--> Server received continue request from client\n");
         return dap::ContinueResponse();
     });
@@ -302,10 +334,10 @@ void DapSession::registerHanlder()
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Next
     session->registerHandler([&](const dap::NextRequest &request) {
         Q_UNUSED(request);
+//        auto threadId = request.threadId;
+//        auto granularity = request.granularity;
         printf("<-- Server received next request from client\n");
-
         emit GDBProxy::instance()->sigNext();
-
         printf("--> Server sent to  next response client\n");
         return dap::NextResponse();
     });
@@ -314,10 +346,11 @@ void DapSession::registerHanlder()
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_StepIn
     session->registerHandler([&](const dap::StepInRequest &request) {
         Q_UNUSED(request);
+//        auto targetId = request.targetId;
+//        auto threadId = request.threadId;
+//        auto granularity = request.granularity;
         printf("<-- Server received stepin request from client\n");
-
         emit GDBProxy::instance()->sigStepin();
-
         printf("--> Server sent stepin response to client\n");
         return dap::StepInResponse();
     });
@@ -327,9 +360,10 @@ void DapSession::registerHanlder()
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_StepOut
     session->registerHandler([&](const dap::StepOutRequest &request) {
         Q_UNUSED(request);
+//        auto threadId = request.threadId;
+//        auto granularity = request.granularity;
         printf("<-- Server received stepout request from client\n");
         emit GDBProxy::instance()->sigStepout();
-
         printf("--> Server sent stepout response to client\n");
         return dap::StepOutResponse();
     });
@@ -348,97 +382,115 @@ void DapSession::registerHanlder()
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Threads
     session->registerHandler([&](const dap::ThreadsRequest &request) {
         Q_UNUSED(request);
-        printf("<-- Server recevied Thread request from client\n");
+        isThreadRequestReceived = true;
         dap::ThreadsResponse response;
-        dap::Thread thread;
-        QString cmd("-thread-list-ids");
-        emit GDBProxy::instance()->sigThreads(cmd);
+        printf("<-- Server recevied Thread request from client\n");
+        emit GDBProxy::instance()->sigThreads();
+//        connect(debugger, &DebugManager::updateThreads, this,  [&](int currentId, const QList<gdb::Thread>& threads) mutable {
+//            Q_UNUSED(currentId);
+//            dap::ThreadsResponse response;
+//            for (auto& thread : threads) {
+//                dap::Thread thid;
+//                thid.id = threadId;
+//                thid.name = processName.toStdString();
+//                response.threads.push_back(thid);
+//            }
+//        });
 
         printf("--> Server sent Thread response to client\n");
+        dap::Thread thread;
+        thread.id = processId;
+        thread.name = processName.toStdString();
+        dap::array<dap::Thread> threads;
+        threads.push_back(thread);
+        response.threads = threads;
         return response;
     });
 
     // The request returns a stacktrace from the current execution state of a given thread.
-    //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_StackTrace
-    //
-    // the given thread id was get from StackTrace request object.
-    //
-    session->registerHandler(
-            [&](const dap::StackTraceRequest &request)
+    session->registerHandler([&](const dap::StackTraceRequest &request)
                     -> dap::ResponseOrError<dap::StackTraceResponse> {
-                Q_UNUSED(request);
-                printf("<-- Server received StackTrace request from the client\n");
-                auto threadid = request.threadId.operator long();
-                dap::ResponseOrError<dap::StackTraceResponse> response;
-
-                // select a given thread id
-                // -thread-select 3
-                QString selectThread("-thread-select ");
-                selectThread.append(QString::number(threadid));
-                emit GDBProxy::instance()->sigSelectThread(selectThread);
-
-                // request all stack frames by omitting
-                // the startFrame and levels arguments.
-                QString cmd("-stack-list-frames");
-                emit GDBProxy::instance()->sigStackTrace(cmd);
-
-                printf("--> Server sent StackTrace response to the client\n");
-                return response;
-            });
+        Q_UNUSED(request);
+//        auto threadId = request.threadId;
+//        auto startFrame = request.startFrame;
+//        auto levels = request.levels;
+        printf("<-- Server received StackTrace request from the client\n");
+        dap::ResponseOrError<dap::StackTraceResponse> response;
+        emit GDBProxy::instance()->sigStackTrace();
+        connect(debugger, &DebugManager::updateStackFrame, this, [&](const QList<gdb::Frame>& stackFrames) mutable {
+            dap::StackFrame sf;
+            for (auto& stackFrame : stackFrames) {
+                sf.id = 1000;
+                sf.name = stackFrame.func.toStdString();
+                sf.source->name = stackFrame.file.toStdString();
+                sf.source->path = stackFrame.fullpath.toStdString();
+                sf.line = stackFrame.line;
+                sf.column = 1;
+                // sf.instructionPointerReference = stackFrame.addr;
+                response.response.stackFrames.push_back(sf);
+            }
+            return response;
+        });
+        printf("--> Server sent StackTrace response to the client\n");
+        return StackTraceResponse();
+    });
 
     // The Scopes(all variables in selected thread and frame) request reports all the scopes of the given stack frame.
-    //
-    // frameId was given by Scope request
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Scopes
     session->registerHandler([&](const dap::ScopesRequest &request)
                                      -> dap::ResponseOrError<dap::ScopesResponse> {
         Q_UNUSED(request);
+//        auto frameId = request.frameId;
         printf("<-- Server received Scopes request from the client\n");
-        dap::ResponseOrError<dap::ScopesResponse> response {};
-        auto threadId = 1;
-        auto frameId = request.frameId.operator long();
-
-        // -stack-list-variables --thread threadId --frame frameId --all-values
-        QString scopes { "-stack-list-variables --thread " };
-        scopes.append(QString::number(threadId));
-        scopes.append("--frame ");
-        scopes.append(QString::number(frameId));
-        scopes.append(" --all-values");
-        emit GDBProxy::instance()->sigScopes(scopes);
-
+        dap::ResponseOrError<dap::ScopesResponse> response;
+        emit GDBProxy::instance()->sigScopes();
+        connect(debugger, &DebugManager::updateLocalVariables, this, [&](const QList<gdb::Variable>& variableList) mutable {
+            dap::array<dap::Scope> scopes;
+            for (auto& variable : variableList) {
+                dap::Scope scope;
+                scope.name = variable.name.toStdString();
+                scopes.push_back(scope);
+            }
+            response.response.scopes = scopes;
+        });
         printf("--> Server sent Scopes response to the client\n");
         return response;
     });
 
     // Retrieves all child variables for the given variable reference(the given scope).
-    //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Variables
     session->registerHandler([&](const dap::VariablesRequest &request)
                                      -> dap::ResponseOrError<dap::VariablesResponse> {
         Q_UNUSED(request);
+//        auto count = request.count;
+//        auto start = request.start;
+//        auto filter = request.filter;
+//        auto variableReference = request.variablesReference;
         printf("<-- Server received Variables request from the client\n");
-        dap::ResponseOrError<dap::VariablesResponse> response;
-        QString variables { "-stack-list-locals" };
-        emit GDBProxy::instance()->sigVariables(variables);
-
+        ResponseOrError<dap::VariablesResponse> response;
+        emit GDBProxy::instance()->sigVariables();
+        connect(debugger, &DebugManager::variablesChanged, this, [&](const QStringList& changedNames) mutable {
+            dap::array<dap::Variable> variables;
+            for (auto& name : changedNames) {
+                dap::Variable variable;
+                variable.name = name.toStdString();
+                variables.push_back(variable);
+            }
+            response.response.variables = variables;
+        });
         printf("--> Server sent Variables response to the client\n");
         return response;
     });
 
     // The Source request retrieves the source code for a given source file.
-    //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Source
-    // gdb list command???
     session->registerHandler([&](const dap::SourceRequest &request)
                                      -> dap::ResponseOrError<dap::SourceResponse> {
         Q_UNUSED(request);
-        printf("<-- Server received Source request from the client\n");
         dap::ResponseOrError<dap::SourceResponse> response;
-        //auto sourcePath = request.source->path.value().c_str();
-        QString source { "-file-list-exec-source-files" };
-        emit GDBProxy::instance()->sigSource(source);
-
+        printf("<-- Server received Source request from the client\n");
+        emit GDBProxy::instance()->sigSource();
         printf("--> Server sent Source response to the client\n");
         return response;
     });
@@ -449,28 +501,194 @@ void DapSession::registerHanlder()
     // map to Debug Plugin Menu: Deattach
     session->registerHandler([&](const dap::DisconnectRequest &request) {
         Q_UNUSED(request);
-
         printf("<-- Server received disconnnect request from client\n");
         if (isSupportsTerminateDebuggee) {
             if (isDebuggeIsStartWithLaunchRequest) {
                 emit GDBProxy::instance()->sigQuit();
             } else if (isDebuggeIsStartWithAttachRequest) {
-                //                        QObject::connect(GDBProxy::instance(), &GDBProxy::sigDetach, debugger, &DebugManager::command);
-                //                        QString cmd("-target-detach ");
-                //                        cmd.append(QString::number(pid));
-                //                        emit GDBProxy::instance()->sigDetach(cmd);
+                qInfo() << "no supports terminate with attach target\n";
             }
         }
-
         return dap::DisconnectResponse {};
     });
+}
+
+void DapSession::handleAsyncStopped(const gdb::AsyncContext& ctx)
+{
+    dap::StoppedEvent stoppedEvent;
+    switch (ctx.reason) {
+            case gdb::AsyncContext::Reason::breakpointHhit: {
+                stoppedEvent.reason = "breakpoint-hit";
+                break;
+            }
+            case gdb::AsyncContext::Reason::endSteppingRange: {
+                stoppedEvent.reason = "step";
+                break;
+            }
+            case gdb::AsyncContext::Reason::exitedNormally: {
+                stoppedEvent.reason = "exited-normally";
+                break;
+            }
+            case gdb::AsyncContext::Reason::exitedSignalled: {
+                stoppedEvent.reason = "exited-signalled";
+                break;
+            }
+            case gdb::AsyncContext::Reason::signalReceived: {
+                stoppedEvent.reason = "signal-received";
+                break;
+            }
+            case gdb::AsyncContext::Reason::Unknown: {
+                stoppedEvent.reason = "unknown";
+                break;
+            }
+            case gdb::AsyncContext::Reason::readWatchpointTrigger: {
+                stoppedEvent.reason = "read-watchporint-trigger";
+                break;
+            }
+                case gdb::AsyncContext::Reason::accessWatchpointTrigger:{
+                stoppedEvent.reason = "access-wathcpoint-trigger";
+                break;
+            }
+                case gdb::AsyncContext::Reason::functionFinished:{
+                stoppedEvent.reason = "function-finished";
+                break;
+            }
+                case gdb::AsyncContext::Reason::locationReached:{
+                stoppedEvent.reason = "location-reached";
+                break;
+            }
+                case gdb::AsyncContext::Reason::watchpointScope:{
+                stoppedEvent.reason = "wathcpoint-scope";
+                break;
+            }
+                case gdb::AsyncContext::Reason::exec:{
+                stoppedEvent.reason = "exec";
+                break;
+            }
+                case gdb::AsyncContext::Reason::exited:{
+                stoppedEvent.reason = "exit";
+                break;
+            }
+                case gdb::AsyncContext::Reason::solibEvent:{
+                stoppedEvent.reason = "solib-event";
+                break;
+            }
+                case gdb::AsyncContext::Reason::fork:{
+                stoppedEvent.reason = "fork";
+                break;
+            }
+                case gdb::AsyncContext::Reason::vfork:{
+                stoppedEvent.reason = "vfork";
+                break;
+            }
+                case gdb::AsyncContext::Reason::syscallEntry:{
+                stoppedEvent.reason = "syscall-entry";
+                break;
+            }
+                case gdb::AsyncContext::Reason::syscallReturn:{
+                stoppedEvent.reason = "syscall-return";
+                break;
+            }
+                case gdb::AsyncContext::Reason::watchpointTrigger:{
+                stoppedEvent.reason = "watchpoint-trigger";
+                break;
+            }
+     }
+     dap::Source source;
+     source.name = ctx.frame.file.toStdString();
+     source.path = ctx.frame.fullpath.toStdString();
+     stoppedEvent.threadId = ctx.threadId.toInt();
+     stoppedEvent.allThreadsStopped = true;
+     stoppedEvent.source = source;
+     session->send(stoppedEvent);
+     printf("--> Server sent stopped Event to client\n");
+}
+
+void DapSession::handleThreadGroupAdded(const gdb::Thread &thid)
+{
+    threadGroupId = QString::number(thid.id);
+}
+
+void DapSession::handleThreadGroupRemoved(const gdb::Thread &thid)
+{
+    threadGroupId = QString::number(thid.id);
+}
+
+void DapSession::handleThreadGroupStarted(const gdb::Thread &thid, const gdb::Thread &pid)
+{
+//    processId = pid.id;
+//    threadId = pid.id + thid.id;
+}
+
+void DapSession::handleThreadGroupExited(const gdb::Thread &thid, const QString &exitCode)
+{
+    qInfo() << "thread group exited\n";
+}
+
+void DapSession::hanleThreadCreated(const gdb::Thread &thid, const QString &groupId)
+{
+//    threadId = processId + thid.id;
+//    threadGroupId = groupId;
+}
+
+void DapSession::handleThreadExited(const gdb::Thread &thid, const QString &groupId)
+{
+//    threadId = processId + thid.id;
+//    threadGroupId = groupId;
+}
+
+void DapSession::handleThreadSelected(const gdb::Thread &thid, const gdb::Frame &frame)
+{
+
+}
+
+void DapSession::hanldeUpdateThreads(int currentId, const QList<gdb::Thread> &threads)
+{
+
+}
+
+void DapSession::handleLibraryLoaded(const gdb::Library& library)
+{
+    dap::OutputEvent outputEvent;
+    dap::ModuleEvent moduleEvent;
+    outputEvent.category = "console";
+    auto targetName = library.targetName;
+    outputEvent.output = QString{"Loaded %1. Symbols loaded.\n"}.arg(targetName).toStdString();
+    moduleEvent.reason = "new";
+    dap::Module module;
+    module.id = library.id.toStdString();
+    module.name = library.targetName.toStdString();
+    module.path = library.hostName.toStdString();
+    module.symbolFilePath = library.hostName.toStdString();
+    moduleEvent.module = module;
+    session->send(outputEvent);
+    printf("--> Server sent output event to client\n");
+    session->send(moduleEvent);
+    printf("--> Server sent module event to client\n");
+}
+
+void DapSession::handleLibraryUnloaded(const gdb::Library &library)
+{
+
+}
+
+void DapSession::handleStreamConsole(const QString &text)
+{
+    if (isLaunchLocalTarget) {
+        dap::OutputEvent outputEvent;
+        QString output = text;
+        outputEvent.category = "stdout";
+        outputEvent.output = output.toStdString();
+        if (isConfiguratedDone) {
+            session->send(outputEvent);
+            printf("--> Server sent output event to client\n");
+        }
+    }
 }
 
 void DapSession::handleEvent(const QString &sOut)
 {
     QString eventOutput;
-    qInfo() << sOut;
-    // for =thread-group-added output
     do {
         if (!sOut.contains("gdbCommand")) {
             eventOutput += sOut.split(":").last();
@@ -479,272 +697,13 @@ void DapSession::handleEvent(const QString &sOut)
         if (eventOutput.contains("=thread-group-added") && eventOutput.contains("\(gdb\)")) {
             dap::OutputEvent outputEvent;
             outputEvent.output = eventOutput.toStdString();
-            session->send(outputEvent);
+            if (!isLaunchLocalTarget && isConfiguratedDone) {
+                session->send(outputEvent);
+                printf("--> Server sent output event to client.\n");
+            }
             eventOutput.clear();
         }
     } while (sOut.contains("~\"done.\n"));
-
-    if (sOut.contains("=thread-group-started")) {
-        eventOutput.clear();
-        eventOutput = sOut.split(":").last();
-
-        // sent process event
-        dap::ProcessEvent processEvent;
-        QString threadGroupId;
-        QString processId;
-        auto outList = QList(eventOutput.split(","));
-        for (auto &out : outList) {
-            auto kv = out.remove("\"").remove("\n");
-            if (kv.contains("id")) {
-                threadGroupId = kv.split("=").last();
-                continue;
-            }
-            if (kv.contains("pid")) {
-                processId = kv.split("=").last();
-                continue;
-            }
-        }
-        processEvent.startMethod = "launch";
-        processEvent.systemProcessId = processId.toInt();
-        session->send(processEvent);
-        eventOutput.clear();
-    }
-
-    if (sOut.contains("-thread-created")) {
-        eventOutput.clear();
-        eventOutput = sOut.split(":").last();
-        qInfo() << eventOutput;
-
-        dap::ThreadEvent threadEvent;
-        threadEvent.threadId = eventOutput.contains("id=");
-        session->send(threadEvent);
-        eventOutput.clear();
-    }
-
-    if (sOut.contains("=library-loaded")) {
-        eventOutput.clear();
-        eventOutput = sOut.split(":").last();
-
-        QString libraryId;
-        QString targetName;
-        QString hostName;
-        QString symbolsLoaded;
-        QString threadGroupId;
-        QString ranges;
-        auto outList = QList(eventOutput.split(","));
-        for (auto &out : outList) {
-            auto kv = out.remove("\n").remove("\"");
-            if (kv.contains("id")) {
-                libraryId = kv.split("=").last();
-                continue;
-            }
-            if (kv.contains("target-name")) {
-                targetName = kv.split("=").last();
-                continue;
-            }
-            if (kv.contains("host-name")) {
-                hostName = kv.split("=").last();
-                continue;
-            }
-            if (kv.contains("sysbols-loaded")) {
-                symbolsLoaded = kv.split("=").last();
-                continue;
-            }
-            if (kv.contains("thread-group")) {
-                threadGroupId = kv.split("=").last();
-                continue;
-            }
-            if (kv.contains("ranges")) {
-                ranges = kv.split("=").last();
-                continue;
-            }
-        }
-
-        dap::OutputEvent outputEvent;
-        outputEvent.category = "console";
-        outputEvent.output = targetName.toStdString();
-        session->send(outputEvent);
-
-        dap::ModuleEvent moduleEvent;
-        moduleEvent.reason = "new";
-        //moduleEvent.module.id = 1;
-        moduleEvent.module.name = targetName.toStdString();
-        moduleEvent.module.path = targetName.toStdString();
-        moduleEvent.module.symbolFilePath = targetName.toStdString();
-        session->send(moduleEvent);
-        eventOutput.clear();
-    }
-
-    // *running,thread-id=all
-    if (sOut.contains("*running")) {
-        eventOutput.clear();
-        eventOutput = sOut.split(":").last();
-        QString threadId;
-        auto outList = QList(eventOutput.split(","));
-        for (auto &out : outList) {
-            if (out.contains("thread-id")) {
-                threadId = out.split("=").last().remove("\"").remove("\n");
-                continue;
-            }
-        }
-
-        dap::OutputEvent outputEvent;
-        outputEvent.output = threadId.toStdString();
-        session->send(outputEvent);
-        eventOutput.clear();
-    }
-
-    if (sOut.contains("=breakpoint-modified")) {
-        eventOutput.clear();
-        eventOutput = sOut.split(":").last();
-        QString bkpt;
-        auto outList = QList(eventOutput.split(","));
-        for (auto &out : outList) {
-            if (out.contains("bkpt")) {
-                bkpt = out.split("=").last().remove("{").remove("}");
-                qInfo() << bkpt;
-                continue;
-            }
-        }
-        QString bkptNumber;
-        QString bkptFunc;
-        QString bkptFile;
-        QString bkptLine;
-        auto bkptList = QList(bkpt.split(","));
-        for (auto &out : bkptList) {
-            if (out.contains("number")) {
-                bkptNumber = out.split("=").last().remove("\"").remove("\n");
-                continue;
-            }
-            if (out.contains("func")) {
-                bkptFunc = out.split("=").last().remove("\"").remove("\n");
-                continue;
-            }
-            if (out.contains("file")) {
-                bkptFile = out.split("=").last().remove("\"").remove("\n");
-                continue;
-            }
-            if (out.contains("line")) {
-                bkptLine = out.split("=").last().remove("\"").remove("\n");
-                continue;
-            }
-        }
-        dap::OutputEvent outputEvent;
-        outputEvent.category = "stdout";
-        //outputEvent.output = {"Breakpoint %1, %2 at %3:%4\n"}.arg(bkptNumber, bkptFunc, bkptFile, bkptLine);
-        session->send(outputEvent);
-        eventOutput.clear();
-    }
-
-    if (sOut.contains("*stopped")) {
-        eventOutput.clear();
-        eventOutput = sOut.split(":").last();
-        QString reason;
-        QString disp;
-        QString bkptno;
-        QString frame;
-        QString threadId;
-        QString stoppedThreads;
-        auto outList = QList(eventOutput.split(","));
-        for (auto &out : outList) {
-            if (out.contains("reason")) {
-                reason = out.split("=").last().remove("\"");
-                continue;
-            }
-            if (reason == "breakpoint hit") {
-                if (out.contains("disp")) {
-                    disp = out.split("=").last().remove("\"");
-                }
-
-                if (out.contains("bkptno")) {
-                    bkptno = out.split("=").last().remove("\"");
-                }
-
-                if (out.contains("frame")) {
-                    frame = out.split("=").last().remove("{").remove("}");
-                }
-
-                if (out.contains("thread-id")) {
-                    threadId = out.split("=").last().remove("\"");
-                }
-
-                if (out.contains("stopped-threads")) {
-                    stoppedThreads = out.split("=").last().remove("\"");
-                }
-
-                if (out.contains("core")) {
-                    auto cpuCore = out.split("=").last().remove("\"").remove("\n");
-                }
-            }
-        }
-
-        if (reason == "breakpoint hit") {
-            dap::StoppedEvent stoppedEvent;
-            stoppedEvent.reason = reason.toStdString();
-            stoppedEvent.description = "breakpoint";
-            stoppedEvent.threadId = threadId.toInt();
-            stoppedEvent.text = "breakpoint";
-            if (stoppedThreads == "all") {
-                stoppedEvent.allThreadsStopped = true;
-            }
-            dap::integer hitBreakpointId = bkptno.toInt();
-            //stoppedEvent.hitBreakpointIds.value();
-            session->send(stoppedEvent);
-            eventOutput.clear();
-        }
-    }
-
-    if (sOut.contains("~\"[Inferior ")) {
-        eventOutput.clear();
-        eventOutput = sOut.split(":").last();
-
-        dap::OutputEvent outputEvent;
-        outputEvent.output = eventOutput.remove("~\"").remove("\"").remove("\n").toStdString();
-        session->send(outputEvent);
-        eventOutput.clear();
-    }
-
-    if (sOut.contains("=thread-exited")) {
-        eventOutput.clear();
-        eventOutput = sOut.split(":").last();
-        QString threadId;
-        QString threadGroupId;
-        auto outList = QList(eventOutput.split(","));
-        for (auto &out : outList) {
-            auto kv = out.remove("\"").remove("\n");
-            if (kv.contains("id")) {
-                threadId = kv.split("=").last();
-            }
-            if (kv.contains("group-id")) {
-                threadGroupId = kv.split("=").last();
-            }
-        }
-
-        dap::OutputEvent outputEvent;
-        outputEvent.category = "console";
-        outputEvent.output = threadId.toStdString();
-        session->send(outputEvent);
-        eventOutput.clear();
-    }
-
-    if (sOut.contains("=thread-group-exited")) {
-        eventOutput.clear();
-        eventOutput = sOut.split(":").last();
-        QString exitCode;
-        QString threadGroupId;
-        auto outList = QList(eventOutput.split(","));
-        for (auto &out : outList) {
-            auto kv = out.remove("\"").remove("\n");
-            if (kv.contains("exit-code")) {
-                exitCode = kv.split("=").last();
-            }
-        }
-
-        dap::OutputEvent outputEvent;
-        outputEvent.output = exitCode.toStdString();
-        session->send(outputEvent);
-        eventOutput.clear();
-    }
 }
 
 dap::SetBreakpointsResponse DapSession::handleBreakpointReq(const SetBreakpointsRequest &request)

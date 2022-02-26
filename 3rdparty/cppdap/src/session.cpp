@@ -54,6 +54,7 @@ class Impl : public dap::Session {
 
   std::function<void()> getPayload() override {
     auto request = reader.read();
+    printf("%s\n", request.c_str());
     if (request.size() > 0) {
       if (auto payload = processMessage(request)) {
         return payload;
@@ -133,6 +134,7 @@ class Impl : public dap::Session {
       handlers.error("Send failed as the writer is closed");
       return false;
     }
+    printf("%s\n", s.c_str());
     return writer.write(s);
   }
 
@@ -358,6 +360,7 @@ class Impl : public dap::Session {
                        return typeinfo->serialize(s, data);
                      });
             });
+            //printf("%s\n", s.dump().c_str());
             send(s.dump());
 
             if (auto handler = handlers.responseSent(typeinfo)) {
@@ -375,6 +378,7 @@ class Impl : public dap::Session {
                      fs->field("command", command) &&
                      fs->field("message", error.message);
             });
+            printf("%s\n", s.dump().c_str());
             send(s.dump());
 
             if (auto handler = handlers.responseSent(typeinfo)) {
