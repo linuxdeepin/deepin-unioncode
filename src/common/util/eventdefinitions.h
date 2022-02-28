@@ -46,6 +46,7 @@ extern const QString D_WORKSPACE_GENERATE_END;
 extern const QString D_DEBUG_EXECUTION_START;
 extern const QString D_DEBUG_EXECUTION_END;
 extern const QString D_DEBUG_EXECUTION_JUMP;
+extern const QString D_DEBUG_EXECUTION_JUMP_CLEAN;
 extern const QString D_FILE_OPENDOCUMENT;
 extern const QString D_FILE_OPENFOLDER;
 extern const QString D_ITEM_MENU_BUILD;
@@ -53,6 +54,7 @@ extern const QString D_ITEM_DOUBLECLICKED;
 
 extern const QString D_MARGIN_DEBUG_POINT_ADD;
 extern const QString D_MARGIN_DEBUG_POINT_REMOVE;
+extern const QString D_MARGIN_DEBUG_POINT_CLEAN;
 
 extern const QString P_FILELINE;       //value int
 extern const QString P_FILEPATH;       //value QString

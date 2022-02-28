@@ -4,11 +4,13 @@
 #include "stylecolor.h"
 #include "textedittabwidget/scintillaeditextern.h"
 
+#include "services/workspace/workspaceservice.h"
 #include "common/common.h"
+
 #include "framework/service/qtclassmanager.h"
 
-#include "services/workspace/workspaceservice.h"
 #include "Document.h"
+
 #include <QHash>
 #include <QTimer>
 
@@ -20,7 +22,6 @@ class StyleLspPrivate
     ScintillaEditExtern *currEditorCache = nullptr;
     QString editText = "";
     uint editCount = 0;
-    bool checkVersionOk = false;
     friend class StyleLsp;
 };
 
@@ -204,35 +205,13 @@ lsp::Client &StyleLsp::client()
         support_file::Language::initialize();
         auto serverInfo = support_file::Language::sever(StyleKeeper::key(this));
 
-        // exists language server
-        if (!serverInfo.progrma.isEmpty() || ProcessUtil::exists(serverInfo.progrma)) {
-            // clang version lower 7
-            if (serverInfo.progrma == "clangd") {
-                QRegularExpression regExp("[0-9]*\\.[0-9]*\\.[0-9]*");
-                auto versionMatchs = regExp.match(ProcessUtil::version(serverInfo.progrma)).capturedTexts();
-                for (auto versionMatch : versionMatchs){
-                    QStringList versions = versionMatch.split(".");
-                    if (versions.size() == 3) {
-                        auto major =  versions[0];
-                        if (major.toInt() >= 10) { //版本需要大于等于10
-                            d->checkVersionOk = true;
-                        }
-                    }
-                }
+        serverInfo = clientInfoSpec(serverInfo);
 
-                if (!d->checkVersionOk) {
-#if 0//TODO(any):dialog will pop in loop, fix should be done.
-                    ContextDialog::ok(lsp::Client::tr("clangd lower verion: 10, "
-                                                     "Does not meet the current operating environment"));
-#endif
-                    return lspClient;
-                }
-            }
+        if (!serverInfo.progrma.isEmpty()) {
+            lspClient.setProgram(serverInfo.progrma);
+            lspClient.setArguments(serverInfo.arguments);
+            lspClient.start();
         }
-
-        lspClient.setProgram(serverInfo.progrma);
-        lspClient.setArguments(serverInfo.arguments);
-        lspClient.start();
     }
 
     return lspClient;
@@ -335,6 +314,11 @@ QString StyleLsp::sciEditFile(ScintillaEditExtern * const sciEdit)
     return d->editors.key(sciEdit);
 }
 
+StyleLsp::ServerInfo StyleLsp::clientInfoSpec(StyleLsp::ServerInfo info)
+{
+    return info;
+}
+
 void StyleLsp::setIndicStyle(ScintillaEdit &edit)
 {
     edit.indicSetStyle(RedSquiggle, INDIC_SQUIGGLE);
@@ -347,43 +331,51 @@ void StyleLsp::setIndicStyle(ScintillaEdit &edit)
 void StyleLsp::setMargin(ScintillaEdit &edit)
 {
     edit.setMargins(SC_MAX_MARGIN);
-    edit.setMarginTypeN(LspCustom, SC_MARGIN_SYMBOL);
-    edit.setMarginMaskN(Margin::LspCustom, 1 << LspCustomMarker::Error | 1 << LspCustomMarker::ErrorLineBackground
-                        | 1 << LspCustomMarker::Warning | 1 << LspCustomMarker::WarningLineBackground
-                        | 1 << LspCustomMarker::Information | 1 << LspCustomMarker::InformationLineBackground
-                        | 1 << LspCustomMarker::Hint | 1 << LspCustomMarker::HintLineBackground);
+    edit.setMarginTypeN(Margin::LspCustom, SC_MARGIN_SYMBOL);
+    edit.setMarginWidthN(Margin::LspCustom, 16);
+    edit.setMarginMaskN(Margin::LspCustom, 1 << MarkerNumber::Error | 1 << MarkerNumber::ErrorLineBackground
+                        | 1 << MarkerNumber::Warning | 1 << MarkerNumber::WarningLineBackground
+                        | 1 << MarkerNumber::Information | 1 << MarkerNumber::InformationLineBackground
+                        | 1 << MarkerNumber::Hint | 1 << MarkerNumber::HintLineBackground);
 
-    edit.markerDefine(LspCustomMarker::Error, SC_MARK_ROUNDRECT);
-    edit.markerDefine(LspCustomMarker::Warning, SC_MARK_ROUNDRECT);
-    edit.markerDefine(LspCustomMarker::Information, SC_MARK_ROUNDRECT);
-    edit.markerDefine(LspCustomMarker::Hint, SC_MARK_ROUNDRECT);
+    edit.markerDefine(MarkerNumber::Error, SC_MARK_CIRCLE);
+    edit.markerDefine(MarkerNumber::Warning, SC_MARK_CIRCLE);
+    edit.markerDefine(MarkerNumber::Information, SC_MARK_CIRCLE);
+    edit.markerDefine(MarkerNumber::Hint, SC_MARK_CIRCLE);
 
-    edit.markerDefine(LspCustomMarker::ErrorLineBackground, SC_MARK_BACKGROUND);
-    edit.markerDefine(LspCustomMarker::WarningLineBackground, SC_MARK_BACKGROUND);
-    edit.markerDefine(LspCustomMarker::InformationLineBackground, SC_MARK_BACKGROUND);
-    edit.markerDefine(LspCustomMarker::HintLineBackground, SC_MARK_BACKGROUND);
+    edit.markerDefine(MarkerNumber::ErrorLineBackground, SC_MARK_BACKGROUND);
+    edit.markerDefine(MarkerNumber::WarningLineBackground, SC_MARK_BACKGROUND);
+    edit.markerDefine(MarkerNumber::InformationLineBackground, SC_MARK_BACKGROUND);
+    edit.markerDefine(MarkerNumber::HintLineBackground, SC_MARK_BACKGROUND);
 
-    edit.markerSetFore(LspCustomMarker::Error, StyleColor::color(StyleColor::Table::get()->Red));
-    edit.markerSetBack(LspCustomMarker::Error, StyleColor::color(StyleColor::Table::get()->Red));
-    edit.markerSetFore(LspCustomMarker::Warning, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetBack(LspCustomMarker::Warning, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetFore(LspCustomMarker::Information, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetBack(LspCustomMarker::Information, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetFore(LspCustomMarker::Hint, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetBack(LspCustomMarker::Hint, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetFore(MarkerNumber::Error, StyleColor::color(StyleColor::Table::get()->Red));
+    edit.markerSetBackTranslucent(MarkerNumber::Error, 0);
+    edit.markerSetStrokeWidth(MarkerNumber::Error, 300);
 
-    edit.markerSetFore(LspCustomMarker::ErrorLineBackground, StyleColor::color(StyleColor::Table::get()->Red));
-    edit.markerSetBack(LspCustomMarker::ErrorLineBackground, StyleColor::color(StyleColor::Table::get()->Red));
-    edit.markerSetAlpha(LspCustomMarker::ErrorLineBackground, 0x22);
-    edit.markerSetFore(LspCustomMarker::WarningLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetBack(LspCustomMarker::WarningLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetAlpha(LspCustomMarker::WarningLineBackground, 0x55);
-    edit.markerSetFore(LspCustomMarker::InformationLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetBack(LspCustomMarker::InformationLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetAlpha(LspCustomMarker::InformationLineBackground, 0x55);
-    edit.markerSetFore(LspCustomMarker::HintLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetBack(LspCustomMarker::HintLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
-    edit.markerSetAlpha(LspCustomMarker::HintLineBackground, 0x55);
+    edit.markerSetFore(MarkerNumber::Warning, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetBackTranslucent(MarkerNumber::Warning, 0);
+    edit.markerSetStrokeWidth(MarkerNumber::Warning, 300);
+
+    edit.markerSetFore(MarkerNumber::Information, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetBackTranslucent(MarkerNumber::Information, 0);
+    edit.markerSetStrokeWidth(MarkerNumber::Information, 300);
+
+    edit.markerSetFore(MarkerNumber::Hint, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetBackTranslucent(MarkerNumber::Hint, 0);
+    edit.markerSetStrokeWidth(MarkerNumber::Hint, 300);
+
+    edit.markerSetFore(MarkerNumber::ErrorLineBackground, StyleColor::color(StyleColor::Table::get()->Red));
+    edit.markerSetBack(MarkerNumber::ErrorLineBackground, StyleColor::color(StyleColor::Table::get()->Red));
+    edit.markerSetAlpha(MarkerNumber::ErrorLineBackground, 0x22);
+    edit.markerSetFore(MarkerNumber::WarningLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetBack(MarkerNumber::WarningLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetAlpha(MarkerNumber::WarningLineBackground, 0x22);
+    edit.markerSetFore(MarkerNumber::InformationLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetBack(MarkerNumber::InformationLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetAlpha(MarkerNumber::InformationLineBackground, 0x22);
+    edit.markerSetFore(MarkerNumber::HintLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetBack(MarkerNumber::HintLineBackground, StyleColor::color(StyleColor::Table::get()->Yellow));
+    edit.markerSetAlpha(MarkerNumber::HintLineBackground, 0x22);
 }
 
 void StyleLsp::setDiagnostics(ScintillaEdit &edit, const lsp::DiagnosticsParams &params)
@@ -483,6 +475,8 @@ void StyleLsp::setHover(ScintillaEdit &edit, const lsp::Hover &hover)
 
 void StyleLsp::setDefinition(ScintillaEdit &edit, const lsp::DefinitionProvider &provider)
 {
+    Q_UNUSED(edit);
+    Q_UNUSED(provider);
     //    auto hoverPos = positionFromPoint(d->definitionPos.x(), d->definitionPos.y());
     //    auto defsStartPos = wordStartPosition(hoverPos, true);
     //    auto defsEndPos = wordEndPosition(hoverPos, true);

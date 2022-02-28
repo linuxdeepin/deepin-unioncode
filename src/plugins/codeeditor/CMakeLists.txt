@@ -6,6 +6,8 @@ include(${CMAKE_SOURCE_DIR}/3rdparty/scintilla515/scintilla515.cmake)
 include(${CMAKE_SOURCE_DIR}/3rdparty/scintilla515/lexilla514.cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR true)
 
+add_definitions(-DLIBRARY_INSTALL_PREFIX="${LIBRARY_INSTALL_PREFIX}")
+
 set(CXX_CPP
     mainframe/naveditframe.cpp
     transceiver/sendevents.cpp

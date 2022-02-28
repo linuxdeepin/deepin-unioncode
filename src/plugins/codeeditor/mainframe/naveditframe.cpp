@@ -30,6 +30,7 @@
 #include <QGridLayout>
 #include <QTabWidget>
 #include <QDebug>
+#include <QEvent>
 
 const int treeWidgtMinWidth = 100;
 const int treeWidgetMinHeight = 400;
@@ -39,6 +40,11 @@ const int codeWidgetMinHeight = 200;
 
 const int contextWidgetMinWidth = 400;
 const int contextWidgetMinHeight = 240;
+
+const int watchWidgetMinWidth = 200;
+const int watchWidgetMinHeight = 200;
+
+#define TREEWIDGET_INDEX 0
 
 const QString CONSOLE_TAB_TEXT = NavEditFrame::tr("Console");
 
@@ -61,12 +67,13 @@ NavEditFrame::NavEditFrame(QWidget *parent)
     setSizes({treeWidgtMinWidth, treeWidgetMinHeight});
     //右侧纵向分割
     verSplitter = new QSplitter(Qt::Vertical, this);
-    createCodeWidget(verSplitter);
+    horSplitter = new QSplitter(Qt::Horizontal, verSplitter);
+    createEditorWidget(horSplitter);
     createContextWidget(verSplitter);
     // setStyleSheet("border:1px solid rgb(255,255,255);");
 }
 
-void NavEditFrame::createCodeWidget(QSplitter *splitter)
+void NavEditFrame::createEditorWidget(QSplitter *splitter)
 {
     qInfo() << __FUNCTION__;
     QWidget *codeWidget = new QWidget();
@@ -74,13 +81,13 @@ void NavEditFrame::createCodeWidget(QSplitter *splitter)
     splitter->addWidget(codeWidget);
     splitter->setChildrenCollapsible(false);
 
-    QGridLayout* gridLayout = new QGridLayout();
-    gridLayout->setSpacing(0);
-    gridLayout->setMargin(0);
-    codeWidget->setLayout(gridLayout);
+    NavEditFrame::editorLayout = new QGridLayout();
+    editorLayout->setSpacing(0);
+    editorLayout->setMargin(0);
+    codeWidget->setLayout(editorLayout);
 
     TextEditTabWidget* edit = new TextEditTabWidget();
-    gridLayout->addWidget(edit);
+    editorLayout->addWidget(edit);
 }
 
 void NavEditFrame::createContextWidget(QSplitter *splitter)
@@ -100,6 +107,31 @@ void NavEditFrame::createContextWidget(QSplitter *splitter)
     gridLayout->addWidget(tabWidget);
 }
 
+bool NavEditFrame::eventFilter(QObject *obj, QEvent *e)
+{
+    if (obj == NavEditFrame::watchWidget) {
+        if (e->type() == QEvent::Show) {
+            int miniWidth = qMax(NavEditFrame::watchWidget->minimumWidth(), watchWidgetMinWidth);
+            NavEditFrame::watchWidget->setMinimumWidth(miniWidth);
+            NavEditFrame::watchWidget->setMinimumHeight(watchWidgetMinHeight);
+            if (NavEditFrame::horSplitter) {
+                NavEditFrame::horSplitter->addWidget(NavEditFrame::watchWidget);
+                NavEditFrame::horSplitter->setStretchFactor(0, 8);
+                NavEditFrame::horSplitter->setStretchFactor(1, 2);
+                return true;
+            }
+        }
+        if (e->type() == QEvent::Hide) {
+            int watchWidgetIndex = NavEditFrame::horSplitter->indexOf(NavEditFrame::watchWidget);
+            if (NavEditFrame::horSplitter && watchWidgetIndex != -1) {
+                NavEditFrame::horSplitter->replaceWidget(watchWidgetIndex, nullptr);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void NavEditFrame::setTreeWidget(AbstractWidget *treeWidget)
 {
     qInfo() << __FUNCTION__;
@@ -107,12 +139,12 @@ void NavEditFrame::setTreeWidget(AbstractWidget *treeWidget)
     if (!qWidget)
         return;
 
-    if (count() >= 2) {
-        QWidget *srcWidget = widget(0);
-        delete srcWidget;
+    if (NavEditFrame::treeWidget) {
+        delete NavEditFrame::treeWidget;
+        NavEditFrame::treeWidget = nullptr;
     }
-
-    insertWidget(0, qWidget);
+    NavEditFrame::treeWidget = qWidget;
+    insertWidget(TREEWIDGET_INDEX, qWidget);
     setSizes({treeWidgtMinWidth,treeWidgetMinHeight});
     setChildrenCollapsible(false);
 }
@@ -133,6 +165,23 @@ void NavEditFrame::setConsole(AbstractWidget *console)
     }
 
     tabWidget->insertTab(0, qWidget, CONSOLE_TAB_TEXT);
+}
+
+void NavEditFrame::setWatchWidget(AbstractWidget *watchWidget)
+{
+    qInfo() << __FUNCTION__;
+    QWidget *qWidget = static_cast<QWidget*>(watchWidget->qWidegt());
+    if (!qWidget || !NavEditFrame::horSplitter) {
+        return;
+    }
+
+    if (NavEditFrame::watchWidget) {
+        delete NavEditFrame::watchWidget;
+        NavEditFrame::watchWidget = nullptr;
+    }
+
+    NavEditFrame::watchWidget = qWidget;
+    qWidget->installEventFilter(this);
 }
 
 void NavEditFrame::addContextWidget(const QString &title, AbstractWidget *contextWidget)

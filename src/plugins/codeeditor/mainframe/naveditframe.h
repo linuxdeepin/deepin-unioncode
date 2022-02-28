@@ -23,6 +23,7 @@
 
 #include <QSplitter>
 
+class QGridLayout;
 class QTabWidget;
 class AbstractWidget;
 class NavEditFrame final : public QSplitter
@@ -34,13 +35,20 @@ public:
 public slots:
     void setTreeWidget(AbstractWidget *treeWidget);
     void setConsole(AbstractWidget *console);
+    void setWatchWidget(AbstractWidget *watchWidget);
     void addContextWidget(const QString &title, AbstractWidget *contextWidget);
 
 private:
-    void createCodeWidget(QSplitter *splitter);
+    void createEditorWidget(QSplitter *splitter);
     void createContextWidget(QSplitter *splitter);
-    QTabWidget *tabWidget;
-    QSplitter *verSplitter;
+    QGridLayout *editorLayout = nullptr;
+    QTabWidget *tabWidget = nullptr;
+    QSplitter *verSplitter = nullptr;
+    QSplitter *horSplitter = nullptr;
+    QWidget *watchWidget = nullptr;
+    QWidget *treeWidget = nullptr;
+protected:
+    bool eventFilter(QObject *obj, QEvent *e);
 };
 
 #endif // NAVEDITWIDGET_H

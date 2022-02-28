@@ -21,11 +21,12 @@ public:
         Custom = 3,
     };
 
-    enum RuntimeMarker
+    enum MarkerNumber
     {
         Debug = 0,
         Running = 1,
         RunningLineBackground = 2,
+        Extern = 3
     };
 
     void setKeyWords(ScintillaEdit &edit);

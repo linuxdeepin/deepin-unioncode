@@ -49,6 +49,8 @@ public:
 signals:
     void toOpenFile(const QString &filePath, const QString &rootPath);
     void toRunFileLine(const QString &filePath, int line);
+    void toRunClean();
+    void toDebugPointClean();
 };
 
 #endif // CODEEDITORRECEIVER_H

@@ -17,19 +17,19 @@ class StyleLsp : public QObject
 public:
     enum Margin
     {
-        LspCustom = StyleSci::Custom
+        LspCustom = StyleSci::Margin::Custom
     };
 
-    enum LspCustomMarker
+    enum MarkerNumber
     {
-        Error = 1,
-        Warning = 2,
-        Information = 3,
-        Hint = 4,
-        ErrorLineBackground = 5,
-        WarningLineBackground = 6,
-        InformationLineBackground = 7,
-        HintLineBackground = 8,
+        Error = StyleSci::MarkerNumber::Extern,
+        Warning,
+        Information,
+        Hint,
+        ErrorLineBackground,
+        WarningLineBackground,
+        InformationLineBackground,
+        HintLineBackground,
     };
 
     enum DiagnosticsStyle
@@ -57,6 +57,14 @@ public:
     virtual void appendEdit(ScintillaEditExtern *editor); //setting main
     virtual ScintillaEditExtern *findSciEdit(const QString &file);
     virtual QString sciEditFile(ScintillaEditExtern * const sciEdit);
+
+    /* Client Info Specialization, matching client portals for various environments.
+     * If to use "clangd" client, exist more "clangd" from folder /usr/bin and in other folder,
+     * you should make it clear where you should use it.
+     * This function does this work, which is similar to the specialized template function
+     */
+    typedef support_file::Language::ServerInfo ServerInfo;
+    virtual ServerInfo clientInfoSpec(ServerInfo info);
 
     virtual void setIndicStyle(ScintillaEdit &edit);
     virtual void setMargin(ScintillaEdit &edit);

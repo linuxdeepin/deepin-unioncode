@@ -33,7 +33,7 @@ class TextEditTabWidgetPrivate
     friend class TextEditTabWidget;
     TextEditTabBar *tab = nullptr;
     QGridLayout *gridLayout = nullptr;
-    QHash<QString, TextEdit*> textEdits;
+    QHash<QString, ScintillaEditExtern*> textEdits;
     QHash<QString, TextEditTitleBar*> titleBars;
     TextEdit defaultEdit;
     QString runningFilePathCache;
@@ -62,6 +62,12 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
 
     QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toRunFileLine,
                      this, &TextEditTabWidget::runningToLine);
+
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toRunClean,
+                     this, &TextEditTabWidget::runningEnd);
+
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toDebugPointClean,
+                     this, &TextEditTabWidget::debugPointClean);
 
     QObject::connect(d->tab, &TextEditTabBar::fileSwitched,
                      this, &TextEditTabWidget::showFileEdit);
@@ -187,11 +193,14 @@ void TextEditTabWidget::runningToLine(const QString &filePath, int line)
 void TextEditTabWidget::runningEnd()
 {
     for (auto editor : d->textEdits) {
-        if (!editor) {
-            qCritical() << "Error, Crashed from iteration hash";
-            abort();
-        }
         editor->runningEnd();
+    }
+}
+
+void TextEditTabWidget::debugPointClean()
+{
+    for (auto editor : d->textEdits) {
+        editor->debugPointAllDelete();
     }
 }
 

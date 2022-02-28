@@ -46,6 +46,7 @@ bool Console::start()
 
     if (windowService) {
         console = new QTermWidget();
+        qInfo() << "console" << console;
         console->setMargin(0);
         console->setTerminalOpacity(0);
         if (console->availableColorSchemes().contains("Linux"))
@@ -54,7 +55,7 @@ bool Console::start()
             console->setKeyBindings("linux");
         console->setScrollBarPosition(QTermWidget::ScrollBarRight);
         console->setTerminalSizeHint(false);
-        console->setAutoClose(false);
+        console->setAutoClose(true);
         console->changeDir(QDir::homePath());
         console->sendText("clear\n");
         emit windowService->setEditorConsole(new AbstractWidget(console));

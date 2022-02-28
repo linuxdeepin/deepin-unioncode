@@ -113,25 +113,25 @@ void StyleSci::setMargin(ScintillaEdit &edit)
 
     //runtime margin
     edit.setMarginSensitiveN(Margin::Runtime, SCN_MARGINCLICK);
+    edit.setMarginWidthN(Margin::Runtime, 16);
     edit.setMarginTypeN(Margin::Runtime, SC_MARGIN_SYMBOL);
-    edit.setMarginMaskN(Margin::Runtime,
-                        1 << RuntimeMarker::Debug
-                        | 1 << RuntimeMarker::Running
-                        | 1<< RuntimeMarker::RunningLineBackground);
+    edit.setMarginMaskN(Margin::Runtime, 1 << MarkerNumber::Debug
+                        | 1 << MarkerNumber::Running
+                        | 1<< MarkerNumber::RunningLineBackground);
 
-    edit.markerDefine(RuntimeMarker::Debug, SC_MARK_CIRCLE);
-    edit.markerDefine(RuntimeMarker::Running, SC_MARK_SHORTARROW);
-    edit.markerDefine(RuntimeMarker::RunningLineBackground, SC_MARK_BACKGROUND);
+    edit.markerDefine(MarkerNumber::Debug, SC_MARK_CIRCLE);
+    edit.markerDefine(MarkerNumber::Running, SC_MARK_SHORTARROW);
+    edit.markerDefine(MarkerNumber::RunningLineBackground, SC_MARK_BACKGROUND);
 
-    edit.markerSetFore(RuntimeMarker::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));
-    edit.markerSetBack(RuntimeMarker::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));
+    edit.markerSetFore(MarkerNumber::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));
+    edit.markerSetBack(MarkerNumber::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));
 
-    edit.markerSetFore(RuntimeMarker::Running, StyleColor::color(StyleColor::Table::get()->YellowGreen));
-    edit.markerSetBack(RuntimeMarker::Running, StyleColor::color(StyleColor::Table::get()->YellowGreen));
+    edit.markerSetFore(MarkerNumber::Running, StyleColor::color(StyleColor::Table::get()->YellowGreen));
+    edit.markerSetBack(MarkerNumber::Running, StyleColor::color(StyleColor::Table::get()->YellowGreen));
 
-    edit.markerSetFore(RuntimeMarker::RunningLineBackground, StyleColor::color(StyleColor::Table::get()->YellowGreen));
-    edit.markerSetBack(RuntimeMarker::RunningLineBackground, StyleColor::color(StyleColor::Table::get()->YellowGreen));
-    edit.markerSetAlpha(RuntimeMarker::RunningLineBackground, 0x55);
+    edit.markerSetFore(MarkerNumber::RunningLineBackground, StyleColor::color(StyleColor::Table::get()->YellowGreen));
+    edit.markerSetBack(MarkerNumber::RunningLineBackground, StyleColor::color(StyleColor::Table::get()->YellowGreen));
+    edit.markerSetAlpha(MarkerNumber::RunningLineBackground, 0x55);
 }
 
 void StyleSci::setLexer(ScintillaEdit &edit)

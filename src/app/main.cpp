@@ -20,6 +20,7 @@ static bool pluginsLoad()
     QString pluginsPath = CustomPaths::global(CustomPaths::Plugins);
     qInfo() << QString("run application in %0").arg(pluginsPath);
     lifeCycle.setPluginPaths({pluginsPath});
+
     qInfo() << "Depend library paths:" << QApplication::libraryPaths();
     qInfo() << "Load plugin paths: " << dpf::LifeCycle::pluginPaths();
 

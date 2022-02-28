@@ -39,6 +39,7 @@ public slots:
     void jumpToLine(const QString &filePath, int line);
     void runningToLine(const QString &filePath, int line);
     void runningEnd();
+    void debugPointClean();
 
 private slots:
     void setDefaultFileEdit();

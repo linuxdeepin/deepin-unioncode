@@ -92,24 +92,30 @@ public:
     DPF_INTERFACE(void, addOptionWidget, const QIcon &icon, const QString &optionName, AbstractWidget *optionWidget);
 
     /*!
-     * \brief showProcessStatus
+     * \brief setStatusBar
      * \param message
      */
     DPF_INTERFACE(void, setStatusBar, AbstractWidget *statusBar);
 
     /*!
-     * \brief addWidget
+     * \brief addWidgetToStatusBar
      * \param widget
      * \param stretch
      */
     DPF_INTERFACE(void, addWidgetToStatusBar, QWidget *widget);
 
     /*!
-     * \brief DPF_INTERFACE
+     * \brief insertWidgetToStatusBar
      * \param index
      * \param widget
      */
     DPF_INTERFACE(int, insertWidgetToStatusBar, int index, QWidget *widget);
+
+    /*!
+     * \brief setWatchWidget 添加监视器组件
+     * \param widget 抽象接口
+     */
+    DPF_INTERFACE(void, setWatchWidget, AbstractWidget *widget);
 };
 
 } // namespace dpfservice

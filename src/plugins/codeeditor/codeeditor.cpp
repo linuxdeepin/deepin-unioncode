@@ -75,6 +75,10 @@ bool CodeEditor::start()
             windowService->addContextWidget = std::bind(&NavEditFrame::addContextWidget, navEditWidget, _1, _2);
         }
 
+        if (!windowService->setWatchWidget) {
+            windowService->setWatchWidget = std::bind(&NavEditFrame::setWatchWidget, navEditWidget, _1);
+        }
+
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);
         windowService->addAction(QString::fromStdString(MENU_FILE),
                                  new AbstractAction(saveAllDocuments));

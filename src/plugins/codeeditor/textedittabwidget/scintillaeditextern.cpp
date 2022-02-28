@@ -117,25 +117,25 @@ void ScintillaEditExtern::debugPointAllDelete()
 
 void ScintillaEditExtern::jumpToLine(int line)
 {
-    int offSizeLine = line - 1;
+    int lineOffSet = line - 1;
     int displayLines = linesOnScreen();
     if (displayLines > 0) {
         int offsetLines = displayLines / 2;
-        if (offSizeLine > offsetLines) {
-            setFirstVisibleLine(offSizeLine - offsetLines);
+        if (lineOffSet > offsetLines) {
+            setFirstVisibleLine(lineOffSet - offsetLines);
         }
     }
 }
 
 void ScintillaEditExtern::runningToLine(int line)
 {
-    int offSizeLine = line - 1;
+    int lineOffSet = line - 1;
 
     markerDeleteAll(StyleSci::Running);
     markerDeleteAll(StyleSci::RunningLineBackground);
 
-    markerAdd(offSizeLine,StyleSci::Running);
-    markerAdd(offSizeLine, StyleSci::RunningLineBackground);
+    markerAdd(lineOffSet, StyleSci::Running);
+    markerAdd(lineOffSet, StyleSci::RunningLineBackground);
 }
 
 void ScintillaEditExtern::runningEnd()

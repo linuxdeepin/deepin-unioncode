@@ -73,6 +73,14 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
                         event.property(P_FILELINE).toInt()
                         );
         }
+
+        if (D_DEBUG_EXECUTION_JUMP_CLEAN == event.data()) {
+            return DpfEventMiddleware::instance()->toRunClean();
+        }
+
+        if (D_MARGIN_DEBUG_POINT_REMOVE == event.data()) {
+            return DpfEventMiddleware::instance()->toDebugPointClean();
+        }
     }
 }
 
