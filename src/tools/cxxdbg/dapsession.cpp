@@ -30,6 +30,36 @@
 #include "gdbproxy.h"
 
 #include <QDebug>
+#include <QThread>
+
+// Event provides a basic wait and signal synchronization primitive.
+class ConditionLock {
+ public:
+  // wait() blocks until the event is fired.
+  void wait();
+
+  // fire() sets signals the event, and unblocks any calls to wait().
+  void fire();
+
+ private:
+  std::mutex mutex;
+  std::condition_variable cv;
+  bool fired = false;
+};
+
+void ConditionLock::wait() {
+  std::unique_lock<std::mutex> lock(mutex);
+  cv.wait(lock, [&] { return fired; });
+}
+
+void ConditionLock::fire() {
+  std::unique_lock<std::mutex> lock(mutex);
+  fired = true;
+  cv.notify_all();
+}
+
+// keep the initialization in order.
+static ConditionLock configured;
 
 constexpr int kPort = 4711;
 using namespace dap;
@@ -211,6 +241,7 @@ void DapSession::registerHanlder()
         }
         isLaunchLocalTarget = true;
         connect(debugger, &DebugManager::asyncRunning, GDBProxy::instance(), [this](const QString& thid) mutable {
+            // TODO(Any):multi-thread condition should be done.
             processId = debugger->getProcessId();
             threadId = processId;
             dap::integer pointerSize;
@@ -224,13 +255,7 @@ void DapSession::registerHanlder()
                 printf("--> Server sent process Event to client\n");
             }
 
-            dap::ThreadEvent threadEvent;
-            threadEvent.reason = "started";
-            threadEvent.threadId = processId;
-            if (isLaunchLocalTarget) {
-                session->send(threadEvent);
-                printf("--> Server sent thread Event to client\n");
-            }
+            configured.fire();
         });
     });
 
@@ -381,6 +406,7 @@ void DapSession::registerHanlder()
     //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Threads
     session->registerHandler([&](const dap::ThreadsRequest &request) {
+        configured.wait();
         Q_UNUSED(request);
         isThreadRequestReceived = true;
         dap::ThreadsResponse response;
@@ -410,41 +436,47 @@ void DapSession::registerHanlder()
     // The request returns a stacktrace from the current execution state of a given thread.
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_StackTrace
     session->registerHandler([&](const dap::StackTraceRequest &request)
-                    -> dap::ResponseOrError<dap::StackTraceResponse> {
+                    -> dap::StackTraceResponse {
         Q_UNUSED(request);
-//        auto threadId = request.threadId;
-//        auto startFrame = request.startFrame;
-//        auto levels = request.levels;
         printf("<-- Server received StackTrace request from the client\n");
-        dap::ResponseOrError<dap::StackTraceResponse> response;
         emit GDBProxy::instance()->sigStackTrace();
+        //TODO(any):synchronous mode should be used here.
+        static dap::StackTraceResponse response;
+        int framenum = 1000;
+        response.stackFrames.clear();
         connect(debugger, &DebugManager::updateStackFrame, this, [&](const QList<gdb::Frame>& stackFrames) mutable {
             dap::StackFrame sf;
             for (auto& stackFrame : stackFrames) {
-                sf.id = 1000;
+                sf.id = framenum;
                 sf.name = stackFrame.func.toStdString();
-                sf.source->name = stackFrame.file.toStdString();
-                sf.source->path = stackFrame.fullpath.toStdString();
+                Source source;
+                source.name = stackFrame.file.toStdString();
+                source.path = stackFrame.fullpath.toStdString();
+                sf.source = source;
                 sf.line = stackFrame.line;
                 sf.column = 1;
                 // sf.instructionPointerReference = stackFrame.addr;
-                response.response.stackFrames.push_back(sf);
+                response.stackFrames.push_back(sf);
             }
-            return response;
         });
+         //TODO(any):will be removed when synchronize done.
+        QThread::msleep(1);
         printf("--> Server sent StackTrace response to the client\n");
-        return StackTraceResponse();
+
+        return response;
     });
 
     // The Scopes(all variables in selected thread and frame) request reports all the scopes of the given stack frame.
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Scopes
     session->registerHandler([&](const dap::ScopesRequest &request)
-                                     -> dap::ResponseOrError<dap::ScopesResponse> {
+                                     -> dap::ScopesResponse {
         Q_UNUSED(request);
 //        auto frameId = request.frameId;
         printf("<-- Server received Scopes request from the client\n");
-        dap::ResponseOrError<dap::ScopesResponse> response;
         emit GDBProxy::instance()->sigScopes();
+        //TODO(any):synchronize mode should be used here.
+        static dap::ScopesResponse response;
+        response.scopes.clear();
         connect(debugger, &DebugManager::updateLocalVariables, this, [&](const QList<gdb::Variable>& variableList) mutable {
             dap::array<dap::Scope> scopes;
             for (auto& variable : variableList) {
@@ -452,8 +484,10 @@ void DapSession::registerHanlder()
                 scope.name = variable.name.toStdString();
                 scopes.push_back(scope);
             }
-            response.response.scopes = scopes;
+            response.scopes = scopes;
         });
+        //TODO(any):will be removed when synchronize done.
+        QThread::msleep(1);
         printf("--> Server sent Scopes response to the client\n");
         return response;
     });
@@ -597,7 +631,7 @@ void DapSession::handleAsyncStopped(const gdb::AsyncContext& ctx)
      dap::Source source;
      source.name = ctx.frame.file.toStdString();
      source.path = ctx.frame.fullpath.toStdString();
-     stoppedEvent.threadId = ctx.threadId.toInt();
+     stoppedEvent.threadId = debugger->getProcessId();
      stoppedEvent.allThreadsStopped = true;
      stoppedEvent.source = source;
      session->send(stoppedEvent);

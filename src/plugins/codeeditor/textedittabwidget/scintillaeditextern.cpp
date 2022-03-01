@@ -117,7 +117,7 @@ void ScintillaEditExtern::debugPointAllDelete()
 
 void ScintillaEditExtern::jumpToLine(int line)
 {
-    int offSizeLine = line + 1;
+    int offSizeLine = line - 1;
     int displayLines = linesOnScreen();
     if (displayLines > 0) {
         int offsetLines = displayLines / 2;
@@ -129,7 +129,7 @@ void ScintillaEditExtern::jumpToLine(int line)
 
 void ScintillaEditExtern::runningToLine(int line)
 {
-    int offSizeLine = line + 1;
+    int offSizeLine = line - 1;
 
     markerDeleteAll(StyleSci::Running);
     markerDeleteAll(StyleSci::RunningLineBackground);

@@ -884,7 +884,7 @@ private:
             return undefined;
         }
 
-        if (stoppedDetails) {
+        if (stoppedDetails && response && response->totalFrames) {
             stoppedDetails.value().totalFrames = response.value().totalFrames.value();
         }
 

@@ -31,6 +31,6 @@ void EventSender::jumpTo(dap::string filepath, int numberline)
     event.setTopic(T_DEBUGGER);
     event.setData(D_DEBUG_EXECUTION_JUMP);
     event.setProperty(P_FILEPATH, QString(filepath.c_str()));
-    event.setProperty(P_FILELINE, numberline - 1);   // -1
+    event.setProperty(P_FILELINE, numberline);
     dpf::EventCallProxy::instance().pubEvent(event);
 }

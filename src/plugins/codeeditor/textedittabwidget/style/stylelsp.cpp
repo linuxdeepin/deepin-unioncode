@@ -221,8 +221,10 @@ lsp::Client &StyleLsp::client()
                 }
 
                 if (!d->checkVersionOk) {
+#if 0//TODO(any):dialog will pop in loop, fix should be done.
                     ContextDialog::ok(lsp::Client::tr("clangd lower verion: 10, "
-                                                      "Does not meet the current operating environment"));
+                                                     "Does not meet the current operating environment"));
+#endif
                     return lspClient;
                 }
             }

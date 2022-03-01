@@ -243,7 +243,8 @@ void Debugger::registerDapHandlers()
         // ui focus on the active frame.
         if (event.reason == "function breakpoint"
             || event.reason == "breakpoint"
-            || event.reason == "step") {
+            || event.reason == "step"
+                || event.reason == "breakpoint-hit") {
 
             if (event.threadId) {
                 threadId = event.threadId.value(0);
@@ -429,7 +430,7 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
     QString data = event.data().toString();
     if (topic == T_CODEEDITOR) {
         QString filePath = event.property(P_FILEPATH).toString();
-        int lineNumber = event.property(P_FILELINE).toInt() + 1;   // TODO(mozart):remove "+1" when editor send correct line number.
+        int lineNumber = event.property(P_FILELINE).toInt();
         if (data == D_MARGIN_DEBUG_POINT_ADD) {
             addBreakpoint(filePath, lineNumber);
         } else if (data == D_MARGIN_DEBUG_POINT_REMOVE) {
@@ -455,6 +456,11 @@ void Debugger::handleFrames(const StackFrames &stackFrames)
     stackModel.setFrames(stackFrames);
 
     auto curFrame = stackModel.currentFrame();
+    if (curFrame.line == -1) {
+        // none of frame in model.
+        return;
+    }
+
     EventSender::jumpTo(curFrame.file.toStdString(), curFrame.line);
 
     // update local variables.

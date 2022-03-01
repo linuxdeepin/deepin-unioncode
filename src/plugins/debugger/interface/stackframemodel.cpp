@@ -133,7 +133,7 @@ void StackFrameModel::removeAll()
 
 StackFrameData StackFrameModel::currentFrame() const
 {
-    if (currentIndex == -1)
+    if (currentIndex == -1 || stackFrames.size() == 0)
         return StackFrameData();
 
     return stackFrames.at(currentIndex);
