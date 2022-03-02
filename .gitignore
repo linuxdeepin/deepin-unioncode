@@ -15,8 +15,7 @@ moc_*
 mocs_*
 
 # cmake include modules
-!3rdparty/scintilla515/lexilla514.cmake
-!3rdparty/scintilla515/scintilla515.cmake
+!3rdparty/*.cmake
 
 # Compiled Dynamic libraries
 *.so

@@ -7,10 +7,11 @@ Build-Depends:
  cmake,
  qt5-qmake,
  qtbase5-dev,
+ qttools5-dev,
  qttools5-dev-tools,
+ lxqt-build-tools (>= 0.6.0~),
  libssl-dev,
  dh-systemd,
- libqtermwidget5-0-dev,
  libutf8proc-dev
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
@@ -20,6 +21,11 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
+ cmake,
+ make,
+ gdb,
+ g++,
+ gcc
 Description: IDE 'Union Code'
  Lightweight 'IDE' program developed by deepin company.
 

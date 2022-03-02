@@ -20,13 +20,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "console.h"
-#include "base/abstractwidget.h"
+#include "base/abstractconsole.h"
 #include "services/window/windowservice.h"
 #include "qtermwidget.h" // 3drparty
+#include "ColorScheme.h"
 
 using namespace dpfservice;
 
-static QTermWidget *console = nullptr;
+class ConsoleWidget : public QTermWidget
+{
+public:
+    ConsoleWidget(QWidget *parent = nullptr)
+        : QTermWidget(parent)
+    {
+        setMargin(0);
+        setTerminalOpacity(0);
+        setForegroundRole(QPalette::ColorRole::Background);
+        setAutoFillBackground(true);
+        if (availableColorSchemes().contains("Linux"))
+            setColorScheme("Linux");
+        if (availableKeyBindings().contains("linux"))
+            setKeyBindings("linux");
+        setScrollBarPosition(QTermWidget::ScrollBarRight);
+        setTerminalSizeHint(false);
+        setAutoClose(false);
+        changeDir(QDir::homePath());
+        sendText("clear\n");
+    }
+
+    virtual ~ConsoleWidget()
+    {
+        qInfo() << __FUNCTION__;
+    }
+};
 
 void Console::initialize()
 {
@@ -45,20 +71,8 @@ bool Console::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
-        console = new QTermWidget();
-        qInfo() << "console" << console;
-        console->setMargin(0);
-        console->setTerminalOpacity(0);
-        if (console->availableColorSchemes().contains("Linux"))
-            console->setColorScheme("Linux");
-        if (console->availableKeyBindings().contains("linux"))
-            console->setKeyBindings("linux");
-        console->setScrollBarPosition(QTermWidget::ScrollBarRight);
-        console->setTerminalSizeHint(false);
-        console->setAutoClose(true);
-        console->changeDir(QDir::homePath());
-        console->sendText("clear\n");
-        emit windowService->setEditorConsole(new AbstractWidget(console));
+        ConsoleWidget* console = new ConsoleWidget();
+        emit windowService->setEditorConsole(new AbstractConsole(console));
     }
     return true;
 }

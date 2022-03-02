@@ -20,6 +20,7 @@
 */
 #include "naveditframe.h"
 #include "base/abstractwidget.h"
+#include "base/abstractconsole.h"
 #include "textedittabwidget/textedittabwidget.h"
 
 #include <QLabel>
@@ -135,7 +136,7 @@ bool NavEditFrame::eventFilter(QObject *obj, QEvent *e)
 void NavEditFrame::setTreeWidget(AbstractWidget *treeWidget)
 {
     qInfo() << __FUNCTION__;
-    QWidget *qWidget = static_cast<QWidget*>(treeWidget->qWidegt());
+    QWidget *qWidget = static_cast<QWidget*>(treeWidget->qWidget());
     if (!qWidget)
         return;
 
@@ -149,10 +150,10 @@ void NavEditFrame::setTreeWidget(AbstractWidget *treeWidget)
     setChildrenCollapsible(false);
 }
 
-void NavEditFrame::setConsole(AbstractWidget *console)
+void NavEditFrame::setConsole(AbstractConsole *console)
 {
     qInfo() << __FUNCTION__;
-    QWidget *qWidget = static_cast<QWidget*>(console->qWidegt());
+    QWidget *qWidget = static_cast<QWidget*>(console->qWidget());
     if (!qWidget || !tabWidget) {
         return;
     }
@@ -163,14 +164,14 @@ void NavEditFrame::setConsole(AbstractWidget *console)
         tabWidget->insertTab(consoleIndex, qWidget, CONSOLE_TAB_TEXT);
         return;
     }
-
+    qWidget->setParent(this);
     tabWidget->insertTab(0, qWidget, CONSOLE_TAB_TEXT);
 }
 
 void NavEditFrame::setWatchWidget(AbstractWidget *watchWidget)
 {
     qInfo() << __FUNCTION__;
-    QWidget *qWidget = static_cast<QWidget*>(watchWidget->qWidegt());
+    QWidget *qWidget = static_cast<QWidget*>(watchWidget->qWidget());
     if (!qWidget || !NavEditFrame::horSplitter) {
         return;
     }
@@ -187,7 +188,7 @@ void NavEditFrame::setWatchWidget(AbstractWidget *watchWidget)
 void NavEditFrame::addContextWidget(const QString &title, AbstractWidget *contextWidget)
 {
     qInfo() << __FUNCTION__;
-    QWidget *qWidget = static_cast<QWidget*>(contextWidget->qWidegt());
+    QWidget *qWidget = static_cast<QWidget*>(contextWidget->qWidget());
     if (!qWidget || !tabWidget) {
         return;
     }

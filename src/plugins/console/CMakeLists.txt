@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-console)
 
-find_package(QTermWidget5 REQUIRED)
+include(${CMAKE_SOURCE_DIR}/3rdparty/qtermwidget-0.14.1.cmake)
+
+set(CMAKE_INCLUDE_CURRENT_DIR true)
 
 set(CXX_CPP
     console.cpp
@@ -20,10 +22,9 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-        unioncode-framework
+    unioncode-framework
     unioncode-base
     unioncode-service
-    qtermwidget5
     ${QtUseModules}
     ${PkgUserModules}
     )

@@ -10,6 +10,7 @@ set(CXX_H
     abstractmainwindow.h
     abstractwidget.h
     abstractoutputpane.h
+    abstractconsole.h
     )
 
 set(CXX_CPP
@@ -22,6 +23,7 @@ set(CXX_CPP
     abstractmainwindow.cpp
     abstractwidget.cpp
     abstractoutputpane.cpp
+    abstractconsole.cpp
     )
 
 add_library(

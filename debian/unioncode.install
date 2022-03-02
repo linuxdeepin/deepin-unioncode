@@ -1,8 +1,8 @@
 /usr/bin/unioncode
-/usr/share/unioncode/configures
+/usr/share/unioncode
+/usr/share/unioncode/configures/*.support
+/usr/share/applications/*.desktop
+/usr/lib/*/unioncode/lib*.so*
 /usr/lib/*/unioncode/plugins/libplugin-*.so
-/usr/lib/*/unioncode/libunioncode-framework.so*
-/usr/lib/*/unioncode/libunioncode-base.so*
-/usr/lib/*/unioncode/libunioncode-service.so*
-/usr/lib/*/unioncode/libscintillaedit.so*
-/usr/lib/*/unioncode/liblexilla.so*
+/usr/lib/*/unioncode/scripts
+/usr/lib/*/unioncode/tools

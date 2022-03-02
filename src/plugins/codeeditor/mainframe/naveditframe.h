@@ -26,6 +26,7 @@
 class QGridLayout;
 class QTabWidget;
 class AbstractWidget;
+class AbstractConsole;
 class NavEditFrame final : public QSplitter
 {
     Q_OBJECT
@@ -34,7 +35,7 @@ public:
 
 public slots:
     void setTreeWidget(AbstractWidget *treeWidget);
-    void setConsole(AbstractWidget *console);
+    void setConsole(AbstractConsole *console);
     void setWatchWidget(AbstractWidget *watchWidget);
     void addContextWidget(const QString &title, AbstractWidget *contextWidget);
 

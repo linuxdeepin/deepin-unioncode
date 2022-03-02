@@ -21,8 +21,8 @@
 #ifndef WINDOWSERVICE_H
 #define WINDOWSERVICE_H
 
-#include "base/abstractmainwindow.h"
 #include <framework/framework.h>
+
 #include <QMap>
 
 class Core;
@@ -30,6 +30,7 @@ class AbstractAction;
 class AbstractMenu;
 class AbstractCentral;
 class AbstractWidget;
+class AbstractConsole;
 namespace dpfservice {
 class WindowService final : public dpf::PluginService, dpf::AutoServiceRegister<WindowService>
 {
@@ -75,7 +76,7 @@ public:
      * \brief setEditorConsole 设置默认终端
      * \param console 实例对象
      */
-    DPF_INTERFACE(void, setEditorConsole, AbstractWidget *console);
+    DPF_INTERFACE(void, setEditorConsole, AbstractConsole *console);
 
     /*!
      * \brief addContextWidget 添加交互组件

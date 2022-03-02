@@ -1,0 +1,15 @@
+[Desktop Entry]
+Actions=new-empty-window;
+Categories=Utility;TextEditor;Development;IDE;
+Comment=Code Editing. Redefined.
+Exec=/usr/bin/unioncode
+Path=/usr/bin
+GenericName=Text Editor
+Icon=
+Keywords=unioncode;
+MimeType=text/plain;inode/directory;application/x-code-workspace;
+Name=Union Code
+StartupNotify=false
+StartupWMClass=Code
+Type=Application
+X-Deepin-Vendor=user-custom

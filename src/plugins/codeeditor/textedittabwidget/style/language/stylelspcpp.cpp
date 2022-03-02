@@ -5,8 +5,8 @@
 #include <QDir>
 #include <QRegularExpression>
 
-namespace  {
-bool checkVersionOk = false;
+namespace {
+static bool checkVersionOk = false;
 }
 
 StyleLspCpp::StyleLspCpp()
@@ -16,15 +16,13 @@ StyleLspCpp::StyleLspCpp()
 
 StyleLsp::ServerInfo StyleLspCpp::clientInfoSpec(StyleLsp::ServerInfo info)
 {
-    // exists language server
-    if (info.progrma.isEmpty()) {
-        return info;
-    }
-
     QString customClangd = QString(LIBRARY_INSTALL_PREFIX) + QDir::separator() + "tools"
             + QDir::separator() + info.progrma;
     QFileInfo customClangdInfo(customClangd);
+    qInfo() << "custom clangd path:" << customClangdInfo.filePath();
+    qInfo() << "source clangd path:" << info.progrma;
 
+    // 优先使用自定义环境
     if (customClangdInfo.exists() && customClangdInfo.isExecutable()) {
         return { customClangd, info.arguments };
     }
@@ -36,17 +34,16 @@ StyleLsp::ServerInfo StyleLspCpp::clientInfoSpec(StyleLsp::ServerInfo info)
             QStringList versions = versionMatch.split(".");
             if (versions.size() == 3) {
                 auto major =  versions[0];
-                if (major.toInt() >= 10) { // 版本需要大于等于10
-                    ::checkVersionOk = true;
+                if (major.toInt() < 10 && !::checkVersionOk) {
+                    checkVersionOk = true;
+                    QString mess = lsp::Client::tr("clangd lower verion: 10 from %0.\n"
+                                                   "Does not meet the current operating environment");
+                    mess += QString("\n%0").arg(info.progrma);
+                    mess += QString("\n%0").arg(customClangd);
+                    ContextDialog::ok(mess);
                 }
             }
         }
-    }
-
-    if (!::checkVersionOk) {
-        ContextDialog::ok(lsp::Client::tr("clangd lower verion: 10, "
-                                          "Does not meet the current operating environment"));
-        return {};
     }
 
     return info;

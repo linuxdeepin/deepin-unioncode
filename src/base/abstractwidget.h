@@ -8,7 +8,7 @@ class AbstractWidget
 public:
     AbstractWidget(void *qWidget);
     virtual ~AbstractWidget();
-    void* qWidegt();
+    void* qWidget();
 };
 
 #endif // ABSTRACTWIDGET_H

@@ -86,14 +86,17 @@ void StyleSci::setStyle(ScintillaEdit &edit)
 
         auto selfObj = fileJson->value(StyleJsonFile::Key_1::get()->Self).toObject();
         auto self_foreground = selfObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16);
-        edit.styleSetFore(STYLE_DEFAULT, self_foreground);
         auto self_background = selfObj.value(StyleJsonFile::Key_2::get()->Background).toString().toInt(nullptr, 16);
+        auto self_cursor = selfObj.value(StyleJsonFile::Key_2::get()->Cursor).toString().toInt(nullptr, 16);
+        edit.styleSetFore(STYLE_DEFAULT, self_foreground);
         edit.styleSetBack(STYLE_DEFAULT, self_background);
+        edit.setCaretFore(self_cursor);
+        qInfo() << "Editor self jsonObject:" << selfObj;
+        qInfo() << "Editor self setting Style fore: " << hex << self_foreground;
+        qInfo() << "Editor self setting Style back: " << hex << self_background;
+        qInfo() << "Editor self setting Style cursor: " << hex << self_cursor;
         // auto self_fontSize = selfObj.value(key_2.FontSize).toInt();
         // edit.styleSetSize(STYLE_DEFAULT, self_fontSize);
-        auto self_cursor = selfObj.value(StyleJsonFile::Key_2::get()->Cursor).toString().toInt(nullptr, 16);
-        edit.setCaretFore(self_cursor);
-
         for(int i = 0; i <= styleOffset(); i++) {
             if (i == 0)
                 edit.styleSetFore(0, self_foreground);

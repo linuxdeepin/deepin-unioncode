@@ -18,16 +18,15 @@ AbstractWidget::AbstractWidget(void *qWidget)
         abort();
     }
 
+    qInfo() << "AbstractWidget construct from: " << (QWidget*)(qWidget);
     d->qWidget = (QWidget*)qWidget;
-    qInfo() << "d->qWidget->objectName" << d->qWidget;
     QObject::connect(d->qWidget, &QWidget::destroyed,
                      d->qWidget, [this](QObject *obj){
-        qApp->processEvents(QEventLoop::ProcessEventsFlag::WaitForMoreEvents);
         if (obj == d->qWidget) {
-            qInfo() << "delete obj" << obj;
+            qInfo() << "AbstractWidget QWidget::destroyed" << obj;
             delete this;
         }
-    }, Qt::UniqueConnection);
+    }, Qt::DirectConnection);
 }
 
 AbstractWidget::~AbstractWidget()
@@ -36,7 +35,7 @@ AbstractWidget::~AbstractWidget()
         delete d;
 }
 
-void *AbstractWidget::qWidegt()
+void *AbstractWidget::qWidget()
 {
     return d->qWidget;
 }
