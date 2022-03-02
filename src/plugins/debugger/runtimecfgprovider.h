@@ -15,7 +15,7 @@ public:
     const char *ip() const;
     int port() const;
 
-    dap::string launchRequest();
+    dap::string launchRequest(const QString &target);
     dap::InitializeRequest initalizeRequest();
 
 signals:

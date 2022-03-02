@@ -130,18 +130,24 @@ bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &
     return initialized;
 }
 
-bool DebugSession::launch(const char *config, bool noDebug)
+bool DebugSession::launch(const QString &targetPath, bool noDebug)
 {
     Q_UNUSED(noDebug)
     if (!raw)
         return false;
 
-    bool bSuccess = session->send(config);
-    if (!bSuccess) {
-        qDebug() << "launch request failed.";
-        return false;
-    }
-    return true;
+    LaunchRequest request;
+    request.name = "(gdb) Launch";
+    request.type = "cppdbg";
+    request.request = "launch";
+    request.program = targetPath.toStdString();
+    request.stopAtEntry = false;
+//    request.cwd = "your project config directory.";
+    request.externalConsole = false;
+    request.MIMode = "gdb";
+    request.__sessionId = QUuid::createUuid().toString().toStdString();
+    auto ret = raw->launch(request);
+    return ret.valid();
 }
 
 bool DebugSession::attach(dap::AttachRequest &config)

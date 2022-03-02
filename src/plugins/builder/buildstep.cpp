@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "buildstep.h"
+#include "eventsender.h"
 
 #include <QDir>
 #include <QDebug>
@@ -55,7 +56,7 @@ void BuildStep::appendCmdParam(const QString param)
 
 void BuildStep::stdOutput(const QString &line)
 {
-    PARSE(line);
+    parse(line);
     emit addOutput(line, OutputFormat::Stdout);
 }
 
@@ -75,6 +76,10 @@ bool BuildStep::execCmd(const QString &cmd, const QStringList &args)
 
         connect(process.get(), static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),
                 [&](int, QProcess::ExitStatus) {
+            if (!buildOutputDir.isEmpty() && !targetName.isEmpty()) {
+                QString fullPath = buildOutputDir + "/" + targetName;
+                EventSender::notifyTargetPath(fullPath);
+            }
             qDebug() << "build step finished";
         });
 
@@ -99,6 +104,28 @@ bool BuildStep::execCmd(const QString &cmd, const QStringList &args)
             ret = true;
     }
     return ret;
+}
+
+void BuildStep::parse(const QString &line)
+{
+    auto formateString = [](QString &str){
+        str.remove(QChar('\n'));
+        str.remove(QChar(' '));
+    };
+
+    if (line.contains("Build files have been written to:")) {
+        QStringList items = line.split(":");
+        buildOutputDir = items.last();
+        formateString(buildOutputDir);
+        qInfo() << "----Buildoutputpath:" <<buildOutputDir;
+    }
+
+    if (line.contains("Built target") && !line.contains("autogen")) {
+        QStringList items = line.split("Built target ");
+        targetName = items.last();
+        formateString(targetName);
+        qInfo() << "----Built target:" << targetName;
+    }
 }
 
 void BuildStep::processReadyReadStdOutput()

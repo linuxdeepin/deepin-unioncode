@@ -30,6 +30,7 @@ extern const QString T_MENU;
 extern const QString T_FILEBROWSER;
 extern const QString T_CODEEDITOR;
 extern const QString T_DEBUGGER;
+extern const QString T_BUILDER;
 extern const QString T_WORKSPACE;
 
 extern const QString D_RECENT_SHOW;
@@ -40,6 +41,7 @@ extern const QString D_DEBUG_SHOW;
 extern const QString D_DEBUG_HIDE;
 extern const QString D_RUNTIME_SHOW;
 extern const QString D_RUNTIME_HIDE;
+extern const QString D_BUILD_TARGET;
 
 extern const QString D_WORKSPACE_GENERATE_BEGIN;
 extern const QString D_WORKSPACE_GENERATE_END;

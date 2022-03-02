@@ -25,6 +25,7 @@ const QString T_MENU {"Menu"};
 const QString T_FILEBROWSER {"FileBrowser"};
 const QString T_CODEEDITOR {"CodeEditor"};
 const QString T_DEBUGGER {"Debugger"};
+const QString T_BUILDER {"Builder"};
 const QString T_WORKSPACE {"Workspace"};
 
 const QString D_RECENT_SHOW {"Recent.Show"};
@@ -35,6 +36,7 @@ const QString D_DEBUG_SHOW {"Debug.Show"};
 const QString D_DEBUG_HIDE {"Debug.Hide"};
 const QString D_RUNTIME_SHOW {"Runtime.Show"};
 const QString D_RUNTIME_HIDE {"Runtime.Hide"};
+const QString D_BUILD_TARGET {"Build.Target"};
 
 const QString D_WORKSPACE_GENERATE_BEGIN {"Workspace.Generate.Begin"};
 const QString D_WORKSPACE_GENERATE_END {"Workspace.Generate.End"};

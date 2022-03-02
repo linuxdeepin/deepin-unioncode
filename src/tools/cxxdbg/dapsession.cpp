@@ -25,7 +25,6 @@
 #include "dap/protocol.h"
 #include "dap/session.h"
 #include "dap/network.h"
-#include "protocol_extend.h"
 #include "debugmanager.h"
 #include "gdbproxy.h"
 
@@ -262,7 +261,7 @@ void DapSession::registerHanlder()
     // The Launch request is made when the client instructs the debugger adapter
     // to start the debuggee. This request contains the launch arguments.
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Launch
-    session->registerHandler([&](const dap::LaunchRequestExtend &request) {
+    session->registerHandler([&](const dap::LaunchRequest &request) {
         Q_UNUSED(request);
         dap::LaunchResponse response {};
         printf("<-- Server received launch request from client\n");

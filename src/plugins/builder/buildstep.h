@@ -62,8 +62,10 @@ protected:
     virtual void stdOutput(const QString &line);
     virtual void stdErrput(const QString &line);
     virtual bool execCmd(const QString &cmd, const QStringList &args);
+    virtual void parse(const QString &line);
 
     QString buildOutputDir;
+    QString targetName;
     QString makeFile;
     QStringList cmdParams;
     ToolChainType toolChainType = {UnKnown};

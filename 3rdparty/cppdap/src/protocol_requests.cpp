@@ -113,7 +113,22 @@ DAP_IMPLEMENT_STRUCT_TYPEINFO(
 DAP_IMPLEMENT_STRUCT_TYPEINFO(LaunchRequest,
                               "launch",
                               DAP_FIELD(restart, "__restart"),
-                              DAP_FIELD(noDebug, "noDebug"));
+                              DAP_FIELD(noDebug, "noDebug"),
+                              // Added by mozart at 2022/03/02
+                              // Original struct not meet the requirment,some items added as follow.
+                              DAP_FIELD(name, "name"),
+                              DAP_FIELD(type, "type"),
+                              DAP_FIELD(request, "request"),
+                              DAP_FIELD(program, "program"),
+                              DAP_FIELD(args, "args"),
+                              DAP_FIELD(stopAtEntry, "stopAtEntry"),
+                              DAP_FIELD(environment, "environment"),
+                              DAP_FIELD(cwd, "cwd"),
+                              DAP_FIELD(externalConsole, "externalConsole"),
+                              DAP_FIELD(MIMode, "MIMode"),
+                              DAP_FIELD(__configurationTarget, "__configurationTarget"),
+                              DAP_FIELD(__sessionId, "__sessionId"),
+                              );
 
 DAP_IMPLEMENT_STRUCT_TYPEINFO(LoadedSourcesRequest, "loadedSources");
 

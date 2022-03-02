@@ -13,6 +13,7 @@ set(CXX_CPP
     buildstep.cpp
     qmakestep.cpp
     makestep.cpp
+    eventsender.cpp
     )
 
 set(CXX_H
@@ -27,6 +28,8 @@ set(CXX_H
     makestep.h
     builderglobals.h
     buildersignals.h
+    eventsender.h
+
     )
 
 add_library(${PROJECT_NAME}

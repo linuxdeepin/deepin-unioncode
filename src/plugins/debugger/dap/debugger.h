@@ -114,6 +114,8 @@ private:
     BreakpointModel breakpointModel;
 
     QPointer<QWidget> alertBox;
+
+    QString targetPath;
 };
 
 #endif   // DEBUGGER_H

@@ -33,6 +33,7 @@
 #include "common/util/eventdefinitions.h"
 #include "event/eventsender.h"
 #include "event/eventreceiver.h"
+#include "common/dialog/contextdialog.h"
 
 #include <QDateTime>
 
@@ -87,6 +88,11 @@ QTreeView *Debugger::getBreakpointPane() const
 
 void Debugger::startDebug()
 {
+    if (targetPath.isEmpty()) {
+        ContextDialog::ok("Please build first.\n build:ctrl+b");
+        return;
+    }
+
     printOutput(tr("Debugging starts"));
 
     // Setup debug environment.
@@ -97,7 +103,7 @@ void Debugger::startDebug()
 
     // Launch debuggee.
     if (bSuccess) {
-        bSuccess &= session->launch(rtCfgProvider->launchRequest().c_str());
+        bSuccess &= session->launch(targetPath);
     }
     if (!bSuccess) {
         qCritical() << "startDebug failed!";
@@ -436,6 +442,8 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
         } else if (data == D_MARGIN_DEBUG_POINT_REMOVE) {
             removeBreakpoint(filePath, lineNumber);
         }
+    } else if (topic == T_BUILDER) {
+        targetPath = event.property(P_FILEPATH).toString();
     }
 }
 

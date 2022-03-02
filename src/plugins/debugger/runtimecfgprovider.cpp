@@ -18,16 +18,15 @@ int RunTimeCfgProvider::port() const
     return iPort;
 }
 
-dap::string RunTimeCfgProvider::launchRequest()
+dap::string RunTimeCfgProvider::launchRequest(const QString &target)
 {
-    string launchRequest;
 #if DBG_TEST
-    launchRequest = "{ \
+    QString launchRequest = QString("{ \
         \"arguments\":{\
                 \"name\": \"(gdb) Launch\",\
                 \"type\": \"cppdbg\",\
                 \"request\": \"launch\",\
-                \"program\": \"your program path.\",\
+                \"program\": 1%,\
                 \"args\": [],\
                 \"stopAtEntry\": false,\
                 \"cwd\": \"your project config directory.\",\
@@ -54,11 +53,12 @@ dap::string RunTimeCfgProvider::launchRequest()
         \"command\":\"launch\",\
         \"seq\":4,\
         \"type\":\"request\"\
-    }";
+    }").arg(target);
 #else
     // get cfg from local file.
 #endif
-    return launchRequest;
+    std::string ret = launchRequest.toStdString();
+    return ret;
 }
 
 dap::InitializeRequest RunTimeCfgProvider::initalizeRequest()

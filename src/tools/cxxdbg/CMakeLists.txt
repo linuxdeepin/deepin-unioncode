@@ -8,7 +8,6 @@ include_directories(${CPPDAP_DIR}/include)
 set(CXXDBG_HEADERS
     debugmanager.h
     gdbproxy.h
-    protocol_extend.h
     debugengine.h
     dapsession.h
     backendglobal.h

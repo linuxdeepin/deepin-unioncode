@@ -18,29 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "eventreceiver.h"
+#include "eventsender.h"
+#include "framework.h"
 #include "common/common.h"
-#include "debuggersignals.h"
-#include "debuggerglobals.h"
 
-static QStringList subTopics { T_CODEEDITOR, T_BUILDER };
-EventReceiver::EventReceiver(QObject *parent)
-    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<EventReceiver>()
+void EventSender::notifyTargetPath(const QString &targetPath)
 {
-}
+    if (targetPath.isEmpty())
+        return;
 
-dpf::EventHandler::Type EventReceiver::type()
-{
-    return dpf::EventHandler::Type::Async;
-}
-
-QStringList &EventReceiver::topics()
-{
-    return subTopics;
-}
-
-void EventReceiver::eventProcess(const dpf::Event &event)
-{
-    qInfo() << event;
-    emit debuggerSignals->receivedEvent(event);
+    dpf::Event event;
+    event.setTopic(T_BUILDER);
+    event.setData(D_BUILD_TARGET);
+    event.setProperty(P_FILEPATH, targetPath);
+    dpf::EventCallProxy::instance().pubEvent(event);
 }

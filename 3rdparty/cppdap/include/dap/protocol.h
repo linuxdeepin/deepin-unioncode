@@ -1176,6 +1176,7 @@ DAP_DECLARE_STRUCT_TYPEINFO(LaunchResponse);
 // debuggee with or without debugging (if 'noDebug' is true). Since launching is
 // debugger/runtime specific, the arguments for this request are not part of
 // this specification.
+#if 0 // the struct not meet the requirment,re-write it.
 struct LaunchRequest : public Request
 {
     using Response = LaunchResponse;
@@ -1187,6 +1188,32 @@ struct LaunchRequest : public Request
     // If noDebug is true the launch request should launch the program without
     // enabling debugging.
     optional<boolean> noDebug;
+};
+#endif
+
+struct LaunchRequest : public Request
+{
+    using Response = LaunchResponse;
+
+    optional<variant<array<any>, boolean, integer, null, number, object, string>>
+            restart;
+
+    // If noDebug is true the launch request should launch the program without
+    // enabling debugging.
+    optional<boolean> noDebug;
+
+    optional<string> name;
+    optional<string> type;
+    optional<string> request;
+    optional<string> program;
+    optional<array<string>> args;
+    optional<boolean> stopAtEntry;
+    optional<string> cwd;
+    optional<array<string>> environment;
+    optional<boolean> externalConsole;
+    optional<string> MIMode;
+    optional<integer> __configurationTarget;
+    optional<string> __sessionId;
 };
 
 DAP_DECLARE_STRUCT_TYPEINFO(LaunchRequest);

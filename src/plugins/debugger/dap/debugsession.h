@@ -53,7 +53,7 @@ public:
 
     bool initialize(const char *ip, int port, dap::InitializeRequest &iniRequest) override;
 
-    bool launch(const char *config, bool noDebug = false) override;
+    bool launch(const QString &targetPath, bool noDebug = false) override;
     bool attach(dap::AttachRequest &config) override;
 
     void restart() override;
