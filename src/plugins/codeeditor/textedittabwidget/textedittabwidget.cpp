@@ -167,7 +167,10 @@ void TextEditTabWidget::jumpToLine(const QString &filePath, int line)
             }
         }
     }
-    edit->jumpToLine(line);
+
+    if (edit) {
+        edit->jumpToLine(line);
+    }
 }
 
 void TextEditTabWidget::runningToLine(const QString &filePath, int line)
@@ -186,8 +189,10 @@ void TextEditTabWidget::runningToLine(const QString &filePath, int line)
         }
     }
 
-    edit->jumpToLine(line);
-    edit->runningToLine(line);
+    if (edit) {
+        edit->jumpToLine(line);
+        edit->runningToLine(line);
+    }
 }
 
 void TextEditTabWidget::runningEnd()
