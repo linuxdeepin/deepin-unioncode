@@ -23,7 +23,7 @@
 MakeStep::MakeStep(QObject *parent) : BuildStep(parent)
 {
     // TODO(mozart) : those parameters should get from other place.
-    cmakeArgs << "-B";
+    cmakeArgs <<"-DCMAKE_BUILD_TYPE=Debug" << "-B";
     cmakeCmd = "cmake";
 
     makeArgs << "-j4";
