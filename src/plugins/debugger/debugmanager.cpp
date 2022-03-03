@@ -112,7 +112,7 @@ void DebugManager::launchBackend()
     QProcess::execute("killall -9 cxxdbg");
 
     QString toolPath = CustomPaths::global(CustomPaths::Tools);
-    QString backendPath = toolPath + "cxxdbg";
+    QString backendPath = toolPath + QDir::separator() + "cxxdbg";
 
     backend.close();
     backend.startDetached(backendPath);

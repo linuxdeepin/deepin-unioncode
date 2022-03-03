@@ -20,6 +20,7 @@
 */
 #include "custompaths.h"
 #include "config.h"
+
 #include <QDir>
 #include <QStandardPaths>
 #include <QCoreApplication>
@@ -50,29 +51,37 @@ public:
     static QString userConfigurePath();
 };
 
+QString formatString(QString str)
+{
+    if (str.back() == QDir::separator()) {
+        str.chop(1);
+    }
+    return str;
+}
+
 QString PathMode::installed(CustomPaths::Flags flags)
 {
     switch (flags) {
     case CustomPaths::Applition:
-        return RUNTIME_INSTALL_RPEFIX;
+        return formatString(RUNTIME_INSTALL_RPEFIX);
     case CustomPaths::DependLibs:
-        return LIBRARY_INSTALL_PREFIX;
+        return formatString(LIBRARY_INSTALL_PREFIX);
     case CustomPaths::Plugins:
-        return PLUGIN_INSTALL_RPEFIX;
+        return formatString(PLUGIN_INSTALL_RPEFIX);
     case CustomPaths::Tools:
-        return QString(LIBRARY_INSTALL_PREFIX) + QDir::separator() + "tools";
+        return formatString(LIBRARY_INSTALL_PREFIX) + QDir::separator() + "tools";
     case CustomPaths::Packages:
-        return QString(LIBRARY_INSTALL_PREFIX) + QDir::separator() + "packages";
+        return formatString(LIBRARY_INSTALL_PREFIX) + QDir::separator() + "packages";
     case CustomPaths::Resources:
-        return QString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "resource";
+        return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "resource";
     case CustomPaths::Configures:
-        return QString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "configures";
+        return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "configures";
     case CustomPaths::Scripts:
-        return QString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "scripts";
+        return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "scripts";
     case CustomPaths::Translations:
-        return QString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "translations";
+        return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "translations";
     case CustomPaths::Templates:
-        return QString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "template";
+        return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "template";
     default:
         return "";
     }
@@ -92,19 +101,19 @@ QString PathMode::builded(CustomPaths::Flags flags)
 {
     switch (flags) {
     case CustomPaths::Applition:
-        return RUNTIME_BUILD_RPEFIX;
+        return formatString(RUNTIME_BUILD_RPEFIX);
     case CustomPaths::DependLibs:
-        return LIBRARY_BUILD_PREFIX;
+        return formatString(LIBRARY_BUILD_PREFIX);
     case CustomPaths::Plugins:
-        return PLUGIN_BUILD_RPEFIX;
+        return formatString(PLUGIN_BUILD_RPEFIX);
     case CustomPaths::Tools:
-        return RUNTIME_BUILD_RPEFIX;
+        return formatString(RUNTIME_BUILD_RPEFIX);
     case CustomPaths::Resources:
-        return QString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "resource";
+        return formatString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "resource";
     case CustomPaths::Configures:
-        return QString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "configures";
+        return formatString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "configures";
     case CustomPaths::Scripts:
-        return QString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "scripts";
+        return formatString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "scripts";
     default:
         return "";
     }
