@@ -51,7 +51,7 @@ public slots:
     /**
      * UI triggered.
      */
-    void startDebug();
+    void run();
     void detachDebug();
 
     void interruptDebug();

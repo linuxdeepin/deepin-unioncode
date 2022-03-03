@@ -109,8 +109,9 @@ void Debugger::startDebug()
         qCritical() << "startDebug failed!";
     } else {
         started = true;
+        debugService->getModel()->addSession(session.get());
+        runState = Debugger::RunState::kRunning;
     }
-    debugService->getModel()->addSession(session.get());
 }
 
 void Debugger::detachDebug()
@@ -126,6 +127,8 @@ void Debugger::interruptDebug()
 void Debugger::continueDebug()
 {
     session->continueDbg(threadId);
+    // TODO(mozart):remove it when backend support exit event.
+    EventSender::clearEditorPointer();
 }
 
 void Debugger::abortDebug()
@@ -152,6 +155,11 @@ void Debugger::stepIn()
 void Debugger::stepOut()
 {
     session->stepOut(threadId, undefined);
+}
+
+Debugger::RunState Debugger::getRunState() const
+{
+    return runState;
 }
 
 void Debugger::addBreakpoint(const QString &filePath, int lineNumber)
@@ -288,8 +296,8 @@ void Debugger::registerDapHandlers()
                     handleFrames(frames);
                 }
             }
-
-        } else if (event.reason == "exception") {
+            runState = Debugger::RunState::kStopped;
+        } else if (event.reason == "exception" || event.reason == "signal-received") {
             QString name;
             if (event.description) {
                 name = event.description.value().c_str();
@@ -303,6 +311,10 @@ void Debugger::registerDapHandlers()
 
             QMetaObject::invokeMethod(this, "showStoppedBySignalMessageBox",
                                       Q_ARG(QString, meaning), Q_ARG(QString, name));
+
+            printOutput(tr("\nThe debugee has Terminated.\n"), NormalMessageFormat);
+
+            exitDebug();
         }
     });
 
@@ -319,7 +331,7 @@ void Debugger::registerDapHandlers()
         qInfo() << "\n--> recv : "
                 << "ExitedEvent";
         printOutput(tr("\nThe debugee has Exited.\n"), NormalMessageFormat);
-        // TODO(mozart):clear all breakpoints.
+        exitDebug();
     });
 
     // The event indicates that debugging of the debuggee has terminated.
@@ -329,6 +341,7 @@ void Debugger::registerDapHandlers()
         qInfo() << "\n--> recv : "
                 << "TerminatedEvent";
         printOutput(tr("\nThe debugee has Terminated.\n"), NormalMessageFormat);
+        exitDebug();
     });
 
     // The event indicates that a thread has started or exited.
@@ -535,4 +548,13 @@ void Debugger::initializeView()
 
     connect(stackView.get(), &QTreeView::doubleClicked, this, &Debugger::slotFrameSelected);
     connect(breakpointView.get(), &QTreeView::doubleClicked, this, &Debugger::slotBreakpointSelected);
+}
+
+void Debugger::exitDebug()
+{
+    EventSender::clearEditorPointer();
+    runState = Debugger::RunState::kNoRun;
+
+    // TODO(mozart):kill backend when debug exit;
+    QProcess::execute("killall -9 cxxdbg");
 }

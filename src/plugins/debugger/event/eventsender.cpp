@@ -34,3 +34,11 @@ void EventSender::jumpTo(dap::string filepath, int numberline)
     event.setProperty(P_FILELINE, numberline);
     dpf::EventCallProxy::instance().pubEvent(event);
 }
+
+void EventSender::clearEditorPointer()
+{
+    dpf::Event event;
+    event.setTopic(T_DEBUGGER);
+    event.setData(D_DEBUG_EXECUTION_JUMP_CLEAN);
+    dpf::EventCallProxy::instance().pubEvent(event);
+}

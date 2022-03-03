@@ -29,6 +29,7 @@ class EventSender : public QObject
     Q_OBJECT
 public:
     static void jumpTo(dap::string, int numberline);
+    static void clearEditorPointer();
 signals:
 
 public slots:

@@ -50,6 +50,13 @@ class Debugger : public QObject
 {
     Q_OBJECT
 public:
+    enum RunState
+    {
+        kNoRun,
+        kRunning,
+        kStopped,
+    };
+
     explicit Debugger(QObject *parent = nullptr);
     ~Debugger();
 
@@ -72,6 +79,8 @@ public:
     void stepIn();
     void stepOut();
 
+    RunState getRunState() const;
+
 signals:
 
 public slots:
@@ -91,6 +100,7 @@ private:
     void addBreakpoint(const QString &filepath, int lineNumber);
     void removeBreakpoint(const QString &filepath, int lineNumber);
     bool getLocals(dap::integer frameId, IVariables *out);
+    void exitDebug();
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
     QSharedPointer<DEBUG::DebugSession> session;
@@ -116,6 +126,8 @@ private:
     QPointer<QWidget> alertBox;
 
     QString targetPath;
+
+    RunState runState = kNoRun;
 };
 
 #endif   // DEBUGGER_H

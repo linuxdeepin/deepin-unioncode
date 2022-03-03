@@ -58,10 +58,21 @@ QTreeView *DebugManager::getBreakpointPane() const
     return debugger->getBreakpointPane();
 }
 
-void DebugManager::startDebug()
+void DebugManager::run()
 {
-    launchBackend();
-    AsynInvoke(debugger->startDebug());
+    Debugger::RunState state = debugger->getRunState();
+    switch (state) {
+    case Debugger::RunState::kNoRun:
+        launchBackend();
+        AsynInvoke(debugger->startDebug());
+        break;
+    case Debugger::RunState::kRunning:
+        // TODO(mozart):stop debug
+        break;
+    case Debugger::RunState::kStopped:
+        continueDebug();
+        break;
+    }
 }
 
 void DebugManager::detachDebug()

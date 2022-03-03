@@ -69,7 +69,7 @@ bool DebuggerPlugin::InitUI(WindowService *windowService)
 {
     QAction *startDebugging = new QAction("Start Debugging");
     startDebugging->setShortcut(QKeySequence(Qt::Key::Key_F5));
-    connect(startDebugging, &QAction::triggered, debugManager, &DebugManager::startDebug);
+    connect(startDebugging, &QAction::triggered, debugManager, &DebugManager::run);
     AbstractAction *actionImpl = new AbstractAction(startDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
