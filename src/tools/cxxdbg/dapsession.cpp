@@ -326,6 +326,9 @@ void DapSession::registerHanlder()
         printf("<-- Server received terminate request from client\n");
         // send quit command to debugger
         emit GDBProxy::instance()->sigQuit();
+
+        dap::TerminatedEvent terminatedEvent;
+        session->send(terminatedEvent);
         printf("--> Server sent terminate response to client\n");
         return response;
     });
@@ -446,6 +449,7 @@ void DapSession::registerHanlder()
             stackframe.source = source;
             stackFrames.push_back(stackframe);
         }
+
         response.stackFrames = stackFrames;
         printf("--> Server sent StackTrace response to the client\n");
 
@@ -556,10 +560,14 @@ void DapSession::handleAsyncStopped(const gdb::AsyncContext& ctx)
             }
             case gdb::AsyncContext::Reason::exitedNormally: {
                 stoppedEvent.reason = "exited-normally";
+                dap::ExitedEvent exitEvent;
+                session->send(exitEvent);
                 break;
             }
             case gdb::AsyncContext::Reason::exitedSignalled: {
                 stoppedEvent.reason = "exited-signalled";
+                dap::ExitedEvent exitEvent;
+                session->send(exitEvent);
                 break;
             }
             case gdb::AsyncContext::Reason::signalReceived: {
@@ -568,6 +576,8 @@ void DapSession::handleAsyncStopped(const gdb::AsyncContext& ctx)
             }
             case gdb::AsyncContext::Reason::Unknown: {
                 stoppedEvent.reason = "unknown";
+                dap::ExitedEvent exitEvent;
+                session->send(exitEvent);
                 break;
             }
             case gdb::AsyncContext::Reason::readWatchpointTrigger: {
@@ -596,6 +606,8 @@ void DapSession::handleAsyncStopped(const gdb::AsyncContext& ctx)
             }
                 case gdb::AsyncContext::Reason::exited:{
                 stoppedEvent.reason = "exit";
+                dap::ExitedEvent exitEvent;
+                session->send(exitEvent);
                 break;
             }
                 case gdb::AsyncContext::Reason::solibEvent:{
@@ -664,6 +676,8 @@ void DapSession::handleThreadExited(const gdb::Thread &thid, const QString &grou
 {
 //    threadId = processId + thid.id;
 //    threadGroupId = groupId;
+    dap::ThreadEvent threadEvent;
+    session->send(threadEvent);
 }
 
 void DapSession::handleThreadSelected(const gdb::Thread &thid, const gdb::Frame &frame)
@@ -717,6 +731,7 @@ void DapSession::handleStreamConsole(const QString &text)
 
 void DapSession::handleEvent(const QString &sOut)
 {
+    //qInfo() << sOut;
     QString eventOutput;
     do {
         if (!sOut.contains("gdbCommand")) {
