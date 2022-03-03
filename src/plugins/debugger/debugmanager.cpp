@@ -21,6 +21,7 @@
 #include "debugmanager.h"
 #include "dap/debugger.h"
 #include "debuggerglobals.h"
+#include "common/util/custompaths.h"
 
 using namespace DEBUG_NAMESPACE;
 DebugManager::DebugManager(QObject *parent)
@@ -59,6 +60,7 @@ QTreeView *DebugManager::getBreakpointPane() const
 
 void DebugManager::startDebug()
 {
+    launchBackend();
     AsynInvoke(debugger->startDebug());
 }
 
@@ -100,4 +102,19 @@ void DebugManager::stepIn()
 void DebugManager::stepOut()
 {
     AsynInvoke(debugger->stepOut());
+}
+
+void DebugManager::launchBackend()
+{
+    // TODO(mozart):backend not support multi-start,so re-launch
+    // it when debugger start debug.
+    // may not use those code when backend got modified.
+    QProcess::execute("killall -9 cxxdbg");
+
+    QString toolPath = CustomPaths::global(CustomPaths::Tools);
+    QString backendPath = toolPath + "cxxdbg";
+
+    backend.close();
+    backend.startDetached(backendPath);
+    backend.waitForFinished();
 }

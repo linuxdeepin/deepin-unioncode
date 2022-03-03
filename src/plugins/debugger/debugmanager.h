@@ -64,7 +64,10 @@ public slots:
     void stepOut();
 
 private:
+    void launchBackend();
+
     QSharedPointer<Debugger> debugger;
+    QProcess backend;
 };
 
 #endif   // DEBUGMANAGER_H

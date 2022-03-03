@@ -84,7 +84,8 @@ bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &
 {
     if (raw) {
         // if there was already a connection make sure to remove old listeners
-        shutdown();
+        // TODO(mozart):crashed when re-start debug.
+//        shutdown();
     }
 
     rtCfgProvider.reset(new RunTimeCfgProvider(/*this*/));
