@@ -219,9 +219,11 @@ bool BuildFileInfo::isEmpty()
     return buildSystem.isEmpty() || projectPath.isEmpty();
 }
 
-} // namespace support_file
-
 uint qHash(const support_file::BuildFileInfo &info, uint seed)
 {
     return qHash(info.buildSystem + " " + info.projectPath, seed);
 }
+
+} // namespace support_file
+
+

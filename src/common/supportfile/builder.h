@@ -27,7 +27,8 @@ struct Builder
     static bool load();
 };
 
+uint qHash(const support_file::BuildFileInfo &info, uint seed = 0);
 }
 
-uint qHash(const support_file::BuildFileInfo &info, uint seed = 0);
+
 #endif // SUPPORTFILE_H

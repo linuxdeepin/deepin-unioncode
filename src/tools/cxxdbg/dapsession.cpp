@@ -157,8 +157,8 @@ void DapSession::initializeDebugMgr()
     connect(GDBProxy::instance(), &GDBProxy::sigThreads, debugger, &DebugManager::threadInfo);
     connect(GDBProxy::instance(), &GDBProxy::sigSelectThread, debugger, &DebugManager::threadSelect);
     connect(GDBProxy::instance(), &GDBProxy::sigStackTrace, debugger, &DebugManager::stackListFrames);
-    connect(GDBProxy::instance(), &GDBProxy::sigScopes, debugger, &DebugManager::stackListVariables);
-    connect(GDBProxy::instance(), &GDBProxy::sigVariables, debugger, &DebugManager::stackListLocals);
+    //connect(GDBProxy::instance(), &GDBProxy::sigScopes, debugger, &DebugManager::stackListVariables);
+    connect(GDBProxy::instance(), &GDBProxy::sigVariables, debugger, &DebugManager::stackListVariables);
     connect(GDBProxy::instance(), &GDBProxy::sigSource, debugger, &DebugManager::listSourceFiles);
 }
 
@@ -411,16 +411,6 @@ void DapSession::registerHanlder()
         dap::ThreadsResponse response;
         printf("<-- Server recevied Thread request from client\n");
         emit GDBProxy::instance()->sigThreads();
-//        connect(debugger, &DebugManager::updateThreads, this,  [&](int currentId, const QList<gdb::Thread>& threads) mutable {
-//            Q_UNUSED(currentId);
-//            dap::ThreadsResponse response;
-//            for (auto& thread : threads) {
-//                dap::Thread thid;
-//                thid.id = threadId;
-//                thid.name = processName.toStdString();
-//                response.threads.push_back(thid);
-//            }
-//        });
 
         printf("--> Server sent Thread response to client\n");
         dap::Thread thread;
@@ -437,29 +427,26 @@ void DapSession::registerHanlder()
     session->registerHandler([&](const dap::StackTraceRequest &request)
                     -> dap::StackTraceResponse {
         Q_UNUSED(request);
+        dap::StackTraceResponse response;
+        dap::array<dap::StackFrame> stackFrames;
         printf("<-- Server received StackTrace request from the client\n");
         emit GDBProxy::instance()->sigStackTrace();
-        //TODO(any):synchronous mode should be used here.
-        static dap::StackTraceResponse response;
-        int framenum = 1000;
-        response.stackFrames.clear();
-        connect(debugger, &DebugManager::updateStackFrame, this, [&](const QList<gdb::Frame>& stackFrames) mutable {
-            dap::StackFrame sf;
-            for (auto& stackFrame : stackFrames) {
-                sf.id = framenum;
-                sf.name = stackFrame.func.toStdString();
-                Source source;
-                source.name = stackFrame.file.toStdString();
-                source.path = stackFrame.fullpath.toStdString();
-                sf.source = source;
-                sf.line = stackFrame.line;
-                sf.column = 1;
-                // sf.instructionPointerReference = stackFrame.addr;
-                response.stackFrames.push_back(sf);
-            }
-        });
-         //TODO(any):will be removed when synchronize done.
-        QThread::msleep(1);
+
+        auto frames = debugger->allStackframes();
+        for(const auto& frame : frames) {
+            dap::Source source;
+            dap::StackFrame stackframe;
+            stackframe.id = frame.level;
+            stackframe.line = frame.line;
+            stackframe.column = 1;
+            stackframe.name = frame.func.toStdString();
+            stackframe.instructionPointerReference = QString::number(frame.addr).toStdString();
+            source.name = frame.func.toStdString();
+            source.path = frame.fullpath.toStdString();
+            stackframe.source = source;
+            stackFrames.push_back(stackframe);
+        }
+        response.stackFrames = stackFrames;
         printf("--> Server sent StackTrace response to the client\n");
 
         return response;
@@ -470,23 +457,28 @@ void DapSession::registerHanlder()
     session->registerHandler([&](const dap::ScopesRequest &request)
                                      -> dap::ScopesResponse {
         Q_UNUSED(request);
-//        auto frameId = request.frameId;
-        printf("<-- Server received Scopes request from the client\n");
-        emit GDBProxy::instance()->sigScopes();
-        //TODO(any):synchronize mode should be used here.
+        auto frameId = request.frameId;
         static dap::ScopesResponse response;
-        response.scopes.clear();
-        connect(debugger, &DebugManager::updateLocalVariables, this, [&](const QList<gdb::Variable>& variableList) mutable {
-            dap::array<dap::Scope> scopes;
-            for (auto& variable : variableList) {
-                dap::Scope scope;
-                scope.name = variable.name.toStdString();
-                scopes.push_back(scope);
-            }
-            response.scopes = scopes;
-        });
-        //TODO(any):will be removed when synchronize done.
-        QThread::msleep(1);
+        dap::array<dap::Scope> scopes;
+        printf("<-- Server received Scopes request from the client\n");
+        //emit GDBProxy::instance()->sigScopes(frameId);
+
+        // locals
+        dap::Scope scopeLocals;
+        scopeLocals.presentationHint = "locals";
+        scopeLocals.name = "Locals";
+        scopeLocals.expensive = false;
+        scopeLocals.variablesReference = frameId;
+        scopes.push_back(scopeLocals);
+
+        // register
+        dap::Scope scopeRegisters;
+        scopeRegisters.presentationHint = "=registers";
+        scopeRegisters.name = "Registers";
+        scopeRegisters.expensive = false;
+        scopeRegisters.variablesReference = frameId+1;
+        scopes.push_back(scopeRegisters);
+        response.scopes = scopes;
         printf("--> Server sent Scopes response to the client\n");
         return response;
     });
@@ -501,17 +493,21 @@ void DapSession::registerHanlder()
 //        auto filter = request.filter;
 //        auto variableReference = request.variablesReference;
         printf("<-- Server received Variables request from the client\n");
-        ResponseOrError<dap::VariablesResponse> response;
+        static ResponseOrError<dap::VariablesResponse> response;
         emit GDBProxy::instance()->sigVariables();
-        connect(debugger, &DebugManager::variablesChanged, this, [&](const QStringList& changedNames) mutable {
-            dap::array<dap::Variable> variables;
-            for (auto& name : changedNames) {
-                dap::Variable variable;
-                variable.name = name.toStdString();
-                variables.push_back(variable);
-            }
-            response.response.variables = variables;
-        });
+        response.response.variables.clear();
+        dap::array<dap::Variable> variables;
+        auto variableList = debugger->allVariableList();
+        for (const auto& var : variableList) {
+            dap::Variable variable;
+            variable.name = var.name.toStdString();
+            variable.type = var.type.toStdString();
+            variable.value = var.value.toStdString();
+            variable.variablesReference = 0;
+            variable.memoryReference = "0x0000000000000000";
+            variables.push_back(variable);
+        }
+        response.response.variables = variables;
         printf("--> Server sent Variables response to the client\n");
         return response;
     });

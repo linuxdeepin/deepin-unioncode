@@ -279,6 +279,9 @@ struct DebugManager::Priv_t
     std::atomic_bool m_firstPromt{true};
     QMap<int, gdb::Breakpoint> breakpoints;
     QMap<QString, gdb::Variable> varsWatched;
+    QList<gdb::Frame> stackFrames;
+    QList<gdb::Thread> threadList;
+    QList<gdb::Variable> variableList;
 
     explicit Priv_t(DebugManager *self) : gdb(new QProcess(self))
     {
@@ -406,6 +409,21 @@ qint64 DebugManager::getProcessId()
     return self->gdb->processId();
 }
 
+QList<gdb::Frame> DebugManager::allStackframes()
+{
+    return self->stackFrames;
+}
+
+QList<gdb::Thread> DebugManager::allThreadList()
+{
+    return self->threadList;
+}
+
+QList<gdb::Variable> DebugManager::allVariableList()
+{
+    return self->variableList;
+}
+
 QStringList DebugManager::gdbArgs() const
 {
     return self->gdb->arguments();
@@ -433,6 +451,7 @@ void DebugManager::command(const QString &cmd)
     auto line = QString{"%1%2%3"}.arg(tokStr, cmd, mi::EOL);
     self->tokenCounter = (self->tokenCounter + 1) % 999999;
     self->gdb->write(line.toLocal8Bit());
+    self->gdb->waitForBytesWritten();
     QString sOut;
     QTextStream(&sOut) << "gdbCommand: " << line << "\n";
     emit streamDebugInternal(sOut);
@@ -545,24 +564,46 @@ void DebugManager::enableFrameFilters()
     command("-enable-frame-filters");
 }
 
-void DebugManager::stackListFrames()
+void DebugManager::stackInfoDepth(const gdb::Thread &thid, const int depth)
 {
-    command("-stack-list-frames");
+    const int maxDepth = 1000;
+    Q_UNUSED(thid);
+    if (depth <= maxDepth) {
+        command(QString{"-stack-info-depth %1"}.arg(depth));
+    } else {
+        command(QString{"-stack-info-depth %1"}.arg(maxDepth));
+    }
 }
 
-void DebugManager::stackListLocals()
+void DebugManager::stackListFrames(/*const int lowFrameLevel, const int highFrameLevel*/)
 {
-    command("-stack-list-locals 2");
+    //command(QString{"-stack-list-frames"}.arg(lowFrameLevel, highFrameLevel));
+    command(QString{"-stack-list-frames"});
 }
 
-void DebugManager::stackListVariables()
+void DebugManager::stackInfoFrame()
 {
-    command("-stack-list-variables 2");
+    command("-stack-info-frame");
 }
 
-void DebugManager::stackListFrame(const gdb::Frame &frame)
+void DebugManager::stackListLocals(const gdb::Thread& thid, const int frameLevel)
 {
+    // select threadid
+    command(QString{"-thread-select %1"}.arg(thid.id));
+    // select frame level
+    command(QString{"-stack-select-frame %1"}.arg(frameLevel));
+    command("-stack-list-locals 1");
+    // find locals in results
+}
 
+void DebugManager::stackListVariables(/*const gdb::Thread& thid, const int frameLevel*/)
+{
+//    // select threadid
+//    command(QString{"-thread-select %1"}.arg(thid.id));
+//    // select frame level
+//    command(QString{"-stack-select-frame %1"}.arg(frameLevel));
+    command("-stack-list-variables 1");
+    // find variables in results
 }
 
 void DebugManager::launchRemote(const QString &remoteTarget)
@@ -660,6 +701,7 @@ void DebugManager::commandJump(const QString &location)
 void DebugManager::threadInfo()
 {
     command("-thread-info");
+    // find current-thread-id in results
 }
 
 void DebugManager::threadListIds()
@@ -873,6 +915,7 @@ void DebugManager::processLine(const QString &line)
                      auto locals = r.payload.toMap().value("variables").toList();
                      for (const auto& e: locals)
                          variableList.append(gdb::Variable::parseMap(e.toMap()));
+                     self->variableList = variableList;
                      emit updateLocalVariables(variableList);
                  }}, // -thread-info => Thread Request
                 { "threads", [this](const mi::Response& r) {
@@ -882,6 +925,7 @@ void DebugManager::processLine(const QString &line)
                      auto currId = data.value("current-thread-id").toInt();
                      for (const auto& e: threads)
                          threadList.append(gdb::Thread::parseMap(e.toMap()));
+                     self->threadList = threadList;
                      emit updateThreads(currId, threadList);
                  }}, // -stack-list-frames => StackTrace Reqeust
                 { "stack", [this](const mi::Response& r) {
@@ -891,6 +935,7 @@ void DebugManager::processLine(const QString &line)
                          auto frame = gdb::Frame::parseMap(e.toMap());
                          stackFrames.append(frame);
                      }
+                     self->stackFrames = stackFrames;
                      emit updateStackFrame(stackFrames);
                  }}, // -break-insert location
                 { "bkpt", [this](const mi::Response& r) {
@@ -1059,3 +1104,4 @@ gdb::Library gdb::Library::parseMap(const QVariantMap &data)
     l.ranges.toRange = ranges.value("to").toString();
     return l;
 }
+

@@ -14,7 +14,7 @@
 #include <QObject>
 
 #include <functional>
-
+#include <QProcess>
 namespace gdb {
 
 struct VariableChange {
@@ -158,7 +158,9 @@ public:
     gdb::Breakpoint breakpointByFileLine(const QString& path, int line) const;
     bool isInferiorRunning() const;
     qint64 getProcessId();
-
+    QList<gdb::Frame> allStackframes();
+    QList<gdb::Thread> allThreadList();
+    QList<gdb::Variable> allVariableList();
 public slots:
     void execute();
     void quit();
@@ -187,10 +189,11 @@ public slots:
     void disconnect();
 
     void enableFrameFilters();
-    void stackListFrames();
-    void stackListLocals();
-    void stackListVariables();
-    void stackListFrame(const gdb::Frame& frame);
+    void stackInfoDepth(const gdb::Thread& thid, const int depth);
+    void stackListFrames(/*const int lowFrameLevel, const int highFrameLevel*/);
+    void stackInfoFrame();
+    void stackListLocals(const gdb::Thread& thid, const int frameLevel);
+    void stackListVariables(/*const gdb::Thread& thid, const int frameLevel*/);
 
     void commandPause();
     void commandContinue();
