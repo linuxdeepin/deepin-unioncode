@@ -56,7 +56,7 @@ Q_SIGNALS:
     void sigBreakInsert(const QString& path);
     void sigThreads();
     void sigSelectThread(const gdb::Thread& thread);
-    void sigStackTrace(/*const int lowFrameLevel, const int highFrameLevel*/);
+    void sigStackTrace(/*const int startFrame*/);
     void sigSelectStackFrame(const gdb::Frame& frame);
     void sigScopes(const qint64 frame);
     void sigVariables(/*const gdb::Thread& thid, const int frameLevel*/);

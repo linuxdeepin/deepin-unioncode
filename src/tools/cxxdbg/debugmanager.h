@@ -190,7 +190,7 @@ public slots:
 
     void enableFrameFilters();
     void stackInfoDepth(const gdb::Thread& thid, const int depth);
-    void stackListFrames(/*const int lowFrameLevel, const int highFrameLevel*/);
+    void stackListFrames(/*const int startFrame*/);
     void stackInfoFrame();
     void stackListLocals(const gdb::Thread& thid, const int frameLevel);
     void stackListVariables(/*const gdb::Thread& thid, const int frameLevel*/);

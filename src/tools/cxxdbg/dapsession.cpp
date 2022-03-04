@@ -430,10 +430,11 @@ void DapSession::registerHanlder()
     session->registerHandler([&](const dap::StackTraceRequest &request)
                     -> dap::StackTraceResponse {
         Q_UNUSED(request);
+//        auto startFrame = request.startFrame.value();
         dap::StackTraceResponse response;
         dap::array<dap::StackFrame> stackFrames;
         printf("<-- Server received StackTrace request from the client\n");
-        emit GDBProxy::instance()->sigStackTrace();
+        emit GDBProxy::instance()->sigStackTrace(/*startFrame*/);
 
         auto frames = debugger->allStackframes();
         for(const auto& frame : frames) {

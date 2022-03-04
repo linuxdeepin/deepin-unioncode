@@ -190,7 +190,10 @@ QVariantMap parseKeyVal(const QString& str, QString::const_iterator& it, QChar t
     while (it != str.cend() && *it != terminator) {
         auto k = parseKey(str, skipspaces(it));
         auto v = parseValue(str, skipspaces(++it), terminator);
-        m.insert(k, v); //insertMulti??
+//        qInfo() << "Key => " << k;
+//        qInfo() << "Value => " << k;
+        m.insertMulti(k,v);
+        //m.insert(k, v); //insertMulti??
         if (*it == terminator) {
             break;
         }
@@ -245,6 +248,8 @@ Response parse_response(const QString& gdb_mi_text)
     if ((m = _GDB_MI_NOTIFY_RE.match(gdb_mi_text)).hasMatch()) {
         return { Response::notify, m.captured(2), parseElements(m.captured(3)), strToInt(m.captured(1), -1) };
     } else if ((m = _GDB_MI_RESULT_RE.match(gdb_mi_text)).hasMatch()) {
+//        qInfo() << "captured =>" << m.captured(3);
+//        qInfo() << "parsed =>" << parseElements(m.captured(3));
         return { Response::result, m.captured(2), parseElements(m.captured(3)), strToInt(m.captured(1), -1) };
     } else if ((m = _GDB_MI_CONSOLE_RE.match(gdb_mi_text)).hasMatch()) {
         return { Response::console, m.captured(1), m.captured(0) };
@@ -575,9 +580,9 @@ void DebugManager::stackInfoDepth(const gdb::Thread &thid, const int depth)
     }
 }
 
-void DebugManager::stackListFrames(/*const int lowFrameLevel, const int highFrameLevel*/)
+void DebugManager::stackListFrames()
 {
-    //command(QString{"-stack-list-frames"}.arg(lowFrameLevel, highFrameLevel));
+//    command(QString{"-stack-select-frame"}.arg(startFrame));
     command(QString{"-stack-list-frames"});
 }
 
@@ -777,9 +782,10 @@ const QMap<QString, gdb::Variable> &DebugManager::vatchVars() const
 void DebugManager::processLine(const QString &line)
 {
     using dispatcher_t = std::function<void(const mi::Response&)>;
-
+//    qInfo() << "GDB => " << line;
     auto r = mi::parse_response(line);
-
+//    qInfo() << "Type =>" << r.type;
+//    qInfo() << "Payload => " << r.payload;
     QString sOut;
     QTextStream(&sOut) << "gdbResponse: " << line << "\n";
     emit streamDebugInternal(sOut);
@@ -930,6 +936,7 @@ void DebugManager::processLine(const QString &line)
                  }}, // -stack-list-frames => StackTrace Reqeust
                 { "stack", [this](const mi::Response& r) {
                      QList<gdb::Frame> stackFrames;
+//                     qInfo() << "stackFrames => " << r.payload.toMap().value("stack").toList();
                      auto stackTrace = r.payload.toMap().value("stack").toList().first().toMap().values("frame");
                      for (const auto& e: stackTrace) {
                          auto frame = gdb::Frame::parseMap(e.toMap());
