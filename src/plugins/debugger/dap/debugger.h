@@ -101,6 +101,7 @@ private:
     void removeBreakpoint(const QString &filepath, int lineNumber);
     bool getLocals(dap::integer frameId, IVariables *out);
     void exitDebug();
+    void updateRunState(Debugger::RunState state);
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
     QSharedPointer<DEBUG::DebugSession> session;
