@@ -95,6 +95,7 @@ bool DebuggerPlugin::InitUI(WindowService *windowService)
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 
     QAction *restartDebugging = new QAction("Restart Debugging");
+    restartDebugging->setEnabled(false);
     connect(restartDebugging, &QAction::triggered, debugManager, &DebugManager::restartDebug);
     actionImpl = new AbstractAction(restartDebugging);
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);

@@ -119,40 +119,54 @@ void Debugger::detachDebug()
 
 void Debugger::interruptDebug()
 {
-    // Just use temporary parameters now, same for the back
-    session->pause(threadId);
+    if (runState == kRunning) {
+        // Just use temporary parameters now, same for the back
+        session->pause(threadId);
+    }
 }
 
 void Debugger::continueDebug()
 {
-    session->continueDbg(threadId);
-    EventSender::clearEditorPointer();
+    if (runState == kStopped) {
+        session->continueDbg(threadId);
+        EventSender::clearEditorPointer();
+    }
 }
 
 void Debugger::abortDebug()
 {
-    session->terminate();
-    started = false;
+    if (runState == kRunning || runState == kStopped) {
+        session->terminate();
+        started = false;
+    }
 }
 
 void Debugger::restartDebug()
 {
-    session->restart();
+    if (runState == kStopped || runState == kRunning) {
+        session->restart();
+    }
 }
 
 void Debugger::stepOver()
 {
-    session->next(threadId, undefined);
+    if (runState == kStopped) {
+        session->next(threadId, undefined);
+    }
 }
 
 void Debugger::stepIn()
 {
-    session->stepIn(threadId, undefined, undefined);
+    if (runState == kStopped) {
+        session->stepIn(threadId, undefined, undefined);
+    }
 }
 
 void Debugger::stepOut()
 {
-    session->stepOut(threadId, undefined);
+    if (runState == kStopped) {
+        session->stepOut(threadId, undefined);
+    }
 }
 
 Debugger::RunState Debugger::getRunState() const

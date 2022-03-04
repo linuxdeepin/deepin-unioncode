@@ -24,3 +24,8 @@ AbstractOutputPane::AbstractOutputPane(QObject *parent) : QObject(parent)
 {
 
 }
+
+AbstractOutputPane::~AbstractOutputPane()
+{
+
+}
