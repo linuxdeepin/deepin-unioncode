@@ -563,22 +563,26 @@ void DapSession::handleAsyncStopped(const gdb::AsyncContext& ctx)
                 stoppedEvent.reason = "exited-normally";
                 dap::ExitedEvent exitEvent;
                 session->send(exitEvent);
+                isLaunchLocalTarget = false;
                 break;
             }
             case gdb::AsyncContext::Reason::exitedSignalled: {
                 stoppedEvent.reason = "exited-signalled";
                 dap::ExitedEvent exitEvent;
                 session->send(exitEvent);
+                isLaunchLocalTarget = false;
                 break;
             }
             case gdb::AsyncContext::Reason::signalReceived: {
                 stoppedEvent.reason = "signal-received";
+                isLaunchLocalTarget = false;
                 break;
             }
             case gdb::AsyncContext::Reason::Unknown: {
                 stoppedEvent.reason = "unknown";
                 dap::ExitedEvent exitEvent;
                 session->send(exitEvent);
+                isLaunchLocalTarget = false;
                 break;
             }
             case gdb::AsyncContext::Reason::readWatchpointTrigger: {
@@ -609,6 +613,7 @@ void DapSession::handleAsyncStopped(const gdb::AsyncContext& ctx)
                 stoppedEvent.reason = "exit";
                 dap::ExitedEvent exitEvent;
                 session->send(exitEvent);
+                isLaunchLocalTarget = false;
                 break;
             }
                 case gdb::AsyncContext::Reason::solibEvent:{

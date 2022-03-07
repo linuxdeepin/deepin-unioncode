@@ -37,6 +37,7 @@ public:
     dap::array<DebugSession *> getSessions(bool includeInactive = false);
     dap::optional<DebugSession *> getSession(dap::optional<dap::string> sessionId, bool includeInactive = false);
     void addSession(DebugSession *session);
+    void clear();
 
     void rawUpdate(IRawModelUpdate *data);
     void clearThreads(dap::string id, bool removeThreads, dap::optional<number> reference);

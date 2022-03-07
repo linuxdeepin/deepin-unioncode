@@ -4,7 +4,7 @@
  * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,23 +18,44 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef DEBUGGERPLUGIN_H
-#define DEBUGGERPLUGIN_H
+*/
+#ifndef MENUMANAGER_H
+#define MENUMANAGER_H
 
-#include <framework/framework.h>
+#include <dap/debugger.h>
+
+#include <QObject>
+#include <QAction>
 
 namespace dpfservice {
 class WindowService;
 }
-class DebuggerPlugin : public dpf::Plugin
+
+class MenuManager : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "debugger.json")
 public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
+    explicit MenuManager(QObject *parent = nullptr);
+
+    void initialize(dpfservice::WindowService *service);
+
+    void handleRunStateChanged(Debugger::RunState state);
+
+signals:
+
+public slots:
+
+
+private:
+    QSharedPointer<QAction> startDebugging;
+    QSharedPointer<QAction> detachDebugger;
+    QSharedPointer<QAction> interrupt;
+    QSharedPointer<QAction> continueDebugging;
+    QSharedPointer<QAction> abortDebugging;
+    QSharedPointer<QAction> restartDebugging;
+    QSharedPointer<QAction> stepOver;
+    QSharedPointer<QAction> stepIn;
+    QSharedPointer<QAction> stepOut;
 };
 
-#endif // DEBUGGERPLUGIN_H
+#endif // MENUMANAGER_H

@@ -82,36 +82,35 @@ const Capabilities &DebugSession::capabilities() const
 
 bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &iniRequest)
 {
-    if (raw) {
+    if (!raw) {
         // if there was already a connection make sure to remove old listeners
         // TODO(mozart):crashed when re-start debug.
 //        shutdown();
-    }
+        rtCfgProvider.reset(new RunTimeCfgProvider(/*this*/));
 
-    rtCfgProvider.reset(new RunTimeCfgProvider(/*this*/));
+        constexpr int kMaxAttempts = 10;
+        bool connected = false;
+        // The socket might take a while to open - retry connecting.
+        for (int attempt = 0; attempt < kMaxAttempts; attempt++) {
+            auto connection = net::connect(ip, port);
+            if (!connection) {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                continue;
+            }
 
-    constexpr int kMaxAttempts = 10;
-    bool connected = false;
-    // The socket might take a while to open - retry connecting.
-    for (int attempt = 0; attempt < kMaxAttempts; attempt++) {
-        auto connection = net::connect(ip, port);
-        if (!connection) {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-            continue;
+            // Socket opened. Create the debugger session and bind.
+            session = dap::Session::create();
+            session->bind(connection);
+
+            raw.reset(new RawDebugSession(session /*, this*/));
+
+            connected = true;
+            break;
         }
 
-        // Socket opened. Create the debugger session and bind.
-        session = dap::Session::create();
-        session->bind(connection);
-
-        raw.reset(new RawDebugSession(session /*, this*/));
-
-        connected = true;
-        break;
-    }
-
-    if (!connected) {
-        return false;
+        if (!connected) {
+            return false;
+        }
     }
 
     auto init_res = raw->initialize(iniRequest).get();
@@ -122,7 +121,6 @@ bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &
         return false;
     } else {
         initialized = true;
-        raw->setExceptionBreakpoints({});
     }
 
     // Notify outter register handlers.

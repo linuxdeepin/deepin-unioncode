@@ -53,6 +53,7 @@ Debugger::Debugger(QObject *parent)
     qRegisterMetaType<IVariable>("IVariable");
     qRegisterMetaType<IVariables>("IVariables");
     qRegisterMetaType<dpf::Event>("dpf::Event");
+    qRegisterMetaType<RunState>("RunState");
 
     session.reset(new DebugSession(debugService->getModel(), this));
     connect(session.get(), &DebugSession::sigRegisterHandlers, this, &Debugger::registerDapHandlers);
@@ -108,7 +109,7 @@ void Debugger::startDebug()
     if (!bSuccess) {
         qCritical() << "startDebug failed!";
     } else {
-        started = true;
+        debugService->getModel()->clear();
         debugService->getModel()->addSession(session.get());
     }
 }
@@ -137,7 +138,6 @@ void Debugger::abortDebug()
 {
     if (runState == kRunning || runState == kStopped) {
         session->terminate();
-        started = false;
     }
 }
 
@@ -191,7 +191,7 @@ void Debugger::addBreakpoint(const QString &filePath, int lineNumber)
     bpData.enabled = true;   // TODO(mozart):get from editor.
     rawBreakpoints.push_back(bpData);
 
-    if (started) {
+    if (runState == kStopped || runState == kRunning) {
         debugService->addBreakpoints(filePath, rawBreakpoints, session.get());
     } else {
         debugService->addBreakpoints(filePath, rawBreakpoints, undefined);
@@ -208,7 +208,7 @@ void Debugger::removeBreakpoint(const QString &filePath, int lineNumber)
     breakpointModel.removeBreakpoint(bp);
 
     // send to backend.
-    if (started) {
+    if (runState == kStopped || runState == kRunning) {
         debugService->removeBreakpoints(filePath, lineNumber, session.get());
     } else {
         debugService->removeBreakpoints(filePath, lineNumber, undefined);
@@ -573,21 +573,23 @@ void Debugger::exitDebug()
     localsModel.clear();
     stackModel.removeAll();
 
-    // TODO(mozart):kill backend when debug exit;
-    QProcess::execute("killall -9 cxxdbg");
+    threadId = 0;
 }
 
 void Debugger::updateRunState(Debugger::RunState state)
 {
-    runState = state;
-    switch (state) {
-    case kNoRun:
-        exitDebug();
-        break;
-    case kRunning:
-        QMetaObject::invokeMethod(localsView.get(), "show");
-        break;
-    case kStopped:
-        break;
+    if (runState != state) {
+        runState = state;
+        switch (state) {
+        case kNoRun:
+            exitDebug();
+            break;
+        case kRunning:
+            QMetaObject::invokeMethod(localsView.get(), "show");
+            break;
+        case kStopped:
+            break;
+        }
+        emit runStateChanged(runState);
     }
 }

@@ -437,6 +437,9 @@ QStringList DebugManager::gdbArgs() const
 // gdb command line from QCommandLineParser
 void DebugManager::execute()
 {
+    if (isGdbExecuting())
+        return;
+
     auto a = self->gdb->arguments();
     a.prepend("-q");
     a.prepend("-interpreter=mi");

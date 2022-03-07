@@ -82,6 +82,7 @@ public:
     RunState getRunState() const;
 
 signals:
+    void runStateChanged(RunState state);
 
 public slots:
     void registerDapHandlers();
@@ -107,8 +108,6 @@ private:
     QSharedPointer<DEBUG::DebugSession> session;
 
     dap::integer threadId = 0;
-
-    bool started = false;
 
     /**
      * @brief interface objects.

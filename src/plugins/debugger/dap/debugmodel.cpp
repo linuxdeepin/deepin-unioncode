@@ -91,6 +91,11 @@ void DebugModel::addSession(DebugSession *session)
     sessions.push_back(session);
 }
 
+void DebugModel::clear()
+{
+    sessions.clear();
+}
+
 void DebugModel::rawUpdate(IRawModelUpdate *data)
 {
     for (auto it : sessions) {

@@ -22,18 +22,27 @@
 #include "dap/debugger.h"
 #include "debuggerglobals.h"
 #include "common/util/custompaths.h"
+#include "interface/menumanager.h"
 
 using namespace DEBUG_NAMESPACE;
 DebugManager::DebugManager(QObject *parent)
     : QObject(parent)
 {
+    // TODO(mozart):backend not support re-connect yet,
+    // so kill it when client launched.
+    // those code will be removed when backend got modified.
+    QProcess::execute("killall -9 cxxdbg");
 }
 
-bool DebugManager::initialize()
+bool DebugManager::initialize(dpfservice::WindowService *service)
 {
     debugger.reset(new Debugger(this));
-
     debugger->initializeView();
+
+    menuManager.reset(new MenuManager());
+    menuManager->initialize(service);
+
+    connect(debugger.get(), &Debugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
 
     return true;
 }
@@ -115,17 +124,21 @@ void DebugManager::stepOut()
     AsynInvoke(debugger->stepOut());
 }
 
+void DebugManager::handleRunStateChanged(Debugger::RunState state)
+{
+    menuManager->handleRunStateChanged(state);
+}
+
 void DebugManager::launchBackend()
 {
-    // TODO(mozart):backend not support multi-start,so re-launch
-    // it when debugger start debug.
-    // may not use those code when backend got modified.
-    QProcess::execute("killall -9 cxxdbg");
+    // launch backend by client.
+    if (backend.isOpen())
+        return;
 
     QString toolPath = CustomPaths::global(CustomPaths::Tools);
     QString backendPath = toolPath + QDir::separator() + "cxxdbg";
 
-    backend.close();
-    backend.startDetached(backendPath);
-    backend.waitForFinished();
+    backend.setProgram(backendPath);
+    backend.start();
+    backend.waitForStarted();
 }

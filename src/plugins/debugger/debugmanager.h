@@ -26,20 +26,24 @@
 #include "interface/localtreemodel.h"
 #include "interface/variable.h"
 #include "interface/breakpointmodel.h"
+#include "dap/debugger.h"
 
 #include <QTreeView>
 #include <QSharedPointer>
 #include <QObject>
 
-class Debugger;
 class AppOutputPane;
 class StackFrameView;
+class MenuManager;
+namespace dpfservice {
+    class WindowService;
+}
 class DebugManager : public QObject
 {
     Q_OBJECT
 public:
     explicit DebugManager(QObject *parent = nullptr);
-    bool initialize();
+    bool initialize(dpfservice::WindowService *service);
     AppOutputPane *getOutputPane() const;
     QTreeView *getStackPane() const;
     QTreeView *getLocalsPane() const;
@@ -63,11 +67,15 @@ public slots:
     void stepIn();
     void stepOut();
 
+    void handleRunStateChanged(Debugger::RunState state);
+
 private:
     void launchBackend();
 
     QSharedPointer<Debugger> debugger;
     QProcess backend;
+
+    QSharedPointer<MenuManager> menuManager;
 };
 
 #endif   // DEBUGMANAGER_H
