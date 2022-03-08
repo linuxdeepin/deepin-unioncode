@@ -19,9 +19,9 @@
 #include <optional>
 #include <memory>
 
+#include "ScintillaTypes.h"
 #include "Debugging.h"
 #include "Geometry.h"
-#include "ScintillaTypes.h"
 #include "ScintillaMessages.h"
 #include "ScintillaStructures.h"
 #include "Platform.h"

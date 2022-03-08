@@ -28,6 +28,8 @@ public:
 signals:
     void hovered(Scintilla::Position position);
     void hoverCleaned(Scintilla::Position position);
+    void definitionHover(Scintilla::Position position);
+    void definitionHoverCleaned(Scintilla::Position position);
     void textInserted(Scintilla::Position position,
                       Scintilla::Position length, Scintilla::Position linesAdded,
                       const QByteArray &text, Scintilla::Position line);
@@ -36,6 +38,8 @@ signals:
                      const QByteArray &text, Scintilla::Position line);
     void completed(Scintilla::Position position);
     void completeCleaned();
+    void indicClicked(Scintilla::Position position);
+    void indicReleased(Scintilla::Position position);
     void saved(const QString &file);
 
 private slots:
@@ -43,7 +47,8 @@ private slots:
                      Scintilla::Position length, Scintilla::Position linesAdded,
                      const QByteArray &text, Scintilla::Position line,
                      Scintilla::FoldLevel foldNow, Scintilla::FoldLevel foldPrev);
-
+    void sciNotify(Scintilla::NotificationData *data);
+    void sciUpdateUi(Scintilla::Update update);
     void sciDwellStart(int x, int y);
     void sciDwellEnd(int x, int y);
 

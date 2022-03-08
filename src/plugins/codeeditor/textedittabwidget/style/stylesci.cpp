@@ -102,6 +102,8 @@ void StyleSci::setStyle(ScintillaEdit &edit)
                 edit.styleSetFore(0, self_foreground);
             edit.styleSetBack(i, self_background);
         }
+        edit.styleHotSpot(styleOffset() + 1);
+        edit.styleSetUnderline(styleOffset() + 1, true);
     }
     return;
 }

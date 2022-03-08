@@ -493,7 +493,7 @@ LexicalClass lexicalClasses[] = {
 	24, "SCE_C_PREPROCESSORCOMMENTDOC", "comment preprocessor documentation", "Preprocessor stream doc comment",
 	25, "SCE_C_USERLITERAL", "literal", "User defined literals",
 	26, "SCE_C_TASKMARKER", "comment taskmarker", "Task Marker",
-	27, "SCE_C_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
+    27, "SCE_C_ESCAPESEQUENCE", "literal string escapesequence", "Escape sequence",
 };
 
 const int sizeLexicalClasses = static_cast<int>(std::size(lexicalClasses));

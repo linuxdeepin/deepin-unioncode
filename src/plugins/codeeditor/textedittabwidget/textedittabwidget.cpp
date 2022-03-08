@@ -102,6 +102,12 @@ TextEditTabWidget::~TextEditTabWidget()
     }
 }
 
+TextEditTabWidget *TextEditTabWidget::instance()
+{
+    static TextEditTabWidget widget;
+    return &widget;
+}
+
 void TextEditTabWidget::openFile(const QString &filePath, const QString &rootPath)
 {
     QFileInfo info(filePath);

@@ -87,7 +87,7 @@ void NavEditFrame::createEditorWidget(QSplitter *splitter)
     editorLayout->setMargin(0);
     codeWidget->setLayout(editorLayout);
 
-    TextEditTabWidget* edit = new TextEditTabWidget();
+    TextEditTabWidget* edit = TextEditTabWidget::instance();
     editorLayout->addWidget(edit);
 }
 

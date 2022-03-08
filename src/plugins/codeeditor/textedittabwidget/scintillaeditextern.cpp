@@ -19,6 +19,7 @@ class ScintillaEditExternPrivate
     bool isLeave;
     Scintilla::Position hoverPos = -1;
     QTimer hoverTimer;
+    QTimer definitionHoverTimer;
     QString filePath;
     QString rootPath;
     QString language;
@@ -83,10 +84,17 @@ void ScintillaEditExtern::setFile(const QString &path)
     QObject::connect(this, &ScintillaEditExtern::modified, this, &ScintillaEditExtern::sciModified, Qt::UniqueConnection);
     QObject::connect(this, &ScintillaEditExtern::dwellStart, this, &ScintillaEditExtern::sciDwellStart, Qt::UniqueConnection);
     QObject::connect(this, &ScintillaEditExtern::dwellEnd, this, &ScintillaEditExtern::sciDwellEnd, Qt::UniqueConnection);
+    QObject::connect(this, &ScintillaEditExtern::notify, this, &ScintillaEditExtern::sciNotify, Qt::UniqueConnection);
+    QObject::connect(this, &ScintillaEditExtern::updateUi, this, &ScintillaEditExtern::sciUpdateUi, Qt::UniqueConnection);
 
     QObject::connect(&d->hoverTimer, &QTimer::timeout, &d->hoverTimer, [=](){
-        this->hovered(d->hoverPos);
+        emit this->hovered(d->hoverPos);
         d->hoverTimer.stop();
+    }, Qt::UniqueConnection);
+
+    QObject::connect(&d->definitionHoverTimer, &QTimer::timeout, &d->definitionHoverTimer, [=](){
+        emit this->definitionHover(d->hoverPos);
+        d->definitionHoverTimer.stop();
     }, Qt::UniqueConnection);
 }
 
@@ -194,27 +202,59 @@ void ScintillaEditExtern::sciModified(Scintilla::ModificationFlags type, Scintil
     }
 }
 
+void ScintillaEditExtern::sciNotify(Scintilla::NotificationData *data)
+{
+    switch (data->nmhdr.code) {
+    case Scintilla::Notification::IndicatorClick :
+        emit indicClicked(data->position);
+        break;
+    case Scintilla::Notification::IndicatorRelease:
+        emit indicReleased(data->position);
+        break;
+    default:
+        break;
+    }
+}
+
+void ScintillaEditExtern::sciUpdateUi(Scintilla::Update update)
+{
+    Q_UNUSED(update);
+    if (d->hoverTimer.isActive()) {
+        d->hoverTimer.stop();
+    }
+}
+
 void ScintillaEditExtern::sciDwellStart(int x, int y)
 {
     if (d->hoverPos == -1) {
-//        if (d->hoverTimer.isActive()) {
-//            d->hoverTimer.stop();
-//        }
-        d->hoverTimer.start(500); //如果间隔较小，导致收发管道溢出最终程序崩溃
-        d->hoverPos = positionFromPoint(x, y);
-        return;
+        d->hoverPos = positionFromPoint(x, y); // cache position
+        bool isKeyCtrl = QApplication::keyboardModifiers().testFlag(Qt::ControlModifier);
+        if (isKeyCtrl) {
+            d->definitionHoverTimer.start(20);
+        } else {
+            d->hoverTimer.start(500); // 如果间隔较小，导致收发管道溢出最终程序崩溃
+        }
     }
 }
 
 void ScintillaEditExtern::sciDwellEnd(int x, int y)
 {
+    Q_UNUSED(x)
+    Q_UNUSED(y)
     if (d->hoverPos != -1) {
+        //        bool isKeyCtrl = QApplication::keyboardModifiers().testFlag(Qt::ControlModifier);
+        //        if (isKeyCtrl) {
+        if (d->definitionHoverTimer.isActive()) {
+            d->definitionHoverTimer.stop();
+        }
+        emit definitionHoverCleaned(d->hoverPos);
+        //        } else {
         if (d->hoverTimer.isActive()) {
             d->hoverTimer.stop();
         }
         emit hoverCleaned(d->hoverPos);
-        d->hoverPos = -1;
-        return;
+        //        }
+        d->hoverPos = -1; // clean cache postion
     }
 }
 
@@ -227,11 +267,9 @@ void ScintillaEditExtern::keyPressEvent(QKeyEvent *event)
 {
     bool isKeyCtrl = QApplication::keyboardModifiers().testFlag(Qt::ControlModifier);
     bool isKeyS = event->key() == Qt::Key_S;
-
     if (isKeyCtrl && isKeyS) {
         saveText();
     }
-
     return ScintillaEdit::keyPressEvent(event);
 }
 

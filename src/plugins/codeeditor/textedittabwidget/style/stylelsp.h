@@ -32,18 +32,15 @@ public:
         HintLineBackground,
     };
 
-    enum DiagnosticsStyle
+    enum Indic
     {
         RedSquiggle = 0,
+        HotSpotUnderline = 1,
     };
 
     enum EOLAnnotation
     {
         RedTextFore = 63,
-    };
-
-    enum HotSpot{
-        CanJumpLink = 0
     };
 
     static Sci_Position getSciPosition(sptr_t doc, const lsp::Position &pos);
@@ -70,16 +67,20 @@ public:
     virtual void setMargin(ScintillaEdit &edit);
 
     virtual void setDiagnostics(ScintillaEdit &edit, const lsp::DiagnosticsParams &params);
-    virtual void setTokenFull(ScintillaEdit &edit, const QList<lsp::Data> &tokens);
-    virtual void setCompletion(ScintillaEdit &edit, const lsp::CompletionProvider &provider);
-    virtual void setHover(ScintillaEdit &edit, const lsp::Hover &hover);
-    virtual void setDefinition(ScintillaEdit &edit, const lsp::DefinitionProvider &provider);
-
     virtual void cleanDiagnostics(ScintillaEdit &edit);
+
+    virtual void setTokenFull(ScintillaEdit &edit, const QList<lsp::Data> &tokens);
     virtual void cleanTokenFull(ScintillaEdit &edit);
+
+    virtual void setCompletion(ScintillaEdit &edit, const lsp::CompletionProvider &provider);
     virtual void cleanCompletion(ScintillaEdit &edit);
+
+    virtual void setHover(ScintillaEdit &edit, const lsp::Hover &hover);
     virtual void cleanHover(ScintillaEdit &edit);
-    virtual void cleanDefinition(ScintillaEdit &edit);
+
+    virtual void setDefinition(ScintillaEdit &edit, const lsp::DefinitionProvider &provider);
+    virtual void cleanDefinition(ScintillaEdit &edit, Scintilla::Position pos);
+
 
 private slots:
     void sciTextInserted(Scintilla::Position position,
@@ -92,6 +93,11 @@ private slots:
 
     void sciHovered(Scintilla::Position position);
     void sciHoverCleaned(Scintilla::Position position);
+
+    void sciDefinitionHover(Scintilla::Position position);
+    void sciDefinitionHoverCleaned(Scintilla::Position position);
+    void sciIndicClicked(Scintilla::Position position);
+    void sciIndicReleased(Scintilla::Position position);
 
 private:
     QList<lsp::Data> tokensCache;

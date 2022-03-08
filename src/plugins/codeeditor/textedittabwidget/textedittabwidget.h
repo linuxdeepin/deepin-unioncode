@@ -32,6 +32,7 @@ class TextEditTabWidget : public QWidget
 public:
     explicit TextEditTabWidget(QWidget *parent = nullptr);
     virtual ~TextEditTabWidget();
+    static TextEditTabWidget * instance();
 
 public slots:
     void openFile(const QString &filePath, const QString &rootPath);
