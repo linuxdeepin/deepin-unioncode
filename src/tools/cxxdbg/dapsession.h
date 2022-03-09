@@ -76,7 +76,14 @@ private:
     bool isGDbProcessTerminated = false;
     bool isLaunchLocalTarget = false;
     bool isThreadRequestReceived = false;
+    bool isInferiorStopped = false;
+    bool isStackframesUpdated = false;
+    bool isBreakpointHit = false;
+    bool isSteppingRangeEnd = false;
 
+    QString currentFile;
+    qint64 currentLine;
+    QList<gdb::Frame> stackframes;
     QString threadGroupId;
     qint64 processId;
     qint64 threadId;

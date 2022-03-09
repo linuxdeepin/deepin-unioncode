@@ -938,15 +938,18 @@ void DebugManager::processLine(const QString &line)
                      emit updateThreads(currId, threadList);
                  }}, // -stack-list-frames => StackTrace Reqeust
                 { "stack", [this](const mi::Response& r) {
-                     QList<gdb::Frame> stackFrames;
-//                     qInfo() << "stackFrames => " << r.payload.toMap().value("stack").toList();
-                     auto stackTrace = r.payload.toMap().value("stack").toList().first().toMap().values("frame");
-                     for (const auto& e: stackTrace) {
-                         auto frame = gdb::Frame::parseMap(e.toMap());
-                         stackFrames.append(frame);
-                     }
-                     self->stackFrames = stackFrames;
-                     emit updateStackFrame(stackFrames);
+                        if (!self->m_inferiorRunning) {
+                            QList<gdb::Frame> stackFrames;
+       //                     qInfo() << "stackFrames => " << r.payload.toMap().value("stack").toList();
+                            auto stackTrace = r.payload.toMap().value("stack").toList().first().toMap().values("frame");
+                            for (const auto& e: stackTrace) {
+                                auto frame = gdb::Frame::parseMap(e.toMap());
+                                stackFrames.prepend(frame);
+                            }
+                            self->stackFrames = stackFrames;
+                            emit updateStackFrame(stackFrames);
+                        }
+
                  }}, // -break-insert location
                 { "bkpt", [this](const mi::Response& r) {
                      auto data = r.payload.toMap();

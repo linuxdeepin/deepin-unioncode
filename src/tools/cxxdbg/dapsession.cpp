@@ -114,6 +114,11 @@ void DapSession::initializeDebugMgr()
 
     connect(debugger, &DebugManager::asyncStopped, GDBProxy::instance(), [this](const gdb::AsyncContext& ctx) mutable {
         handleAsyncStopped(ctx);
+        isInferiorStopped = true;
+    });
+
+    connect(debugger, &DebugManager::asyncRunning, GDBProxy::instance(), [this](const QString&) mutable {
+        isInferiorStopped = false;
     });
 
     connect(debugger, &DebugManager::threadGroupAdded, GDBProxy::instance(), [this](const gdb::Thread& thid) mutable {
@@ -142,6 +147,10 @@ void DapSession::initializeDebugMgr()
 
     QObject::connect(debugger, &DebugManager::streamConsole, [&](const QString& text) mutable {
         handleStreamConsole(text);
+    });
+
+    QObject::connect(debugger, &DebugManager::updateStackFrame, GDBProxy::instance(), [this](const QList<gdb::Frame>&) {
+        isStackframesUpdated = true;
     });
 
     connect(debugger, &DebugManager::gdbProcessStarted, GDBProxy::instance(), [this](){isGdbProcessStarted = true;});
@@ -430,13 +439,21 @@ void DapSession::registerHanlder()
     session->registerHandler([&](const dap::StackTraceRequest &request)
                     -> dap::StackTraceResponse {
         Q_UNUSED(request);
-//        auto startFrame = request.startFrame.value();
+        auto startFrame = request.startFrame.value();
         dap::StackTraceResponse response;
         dap::array<dap::StackFrame> stackFrames;
         printf("<-- Server received StackTrace request from the client\n");
-        emit GDBProxy::instance()->sigStackTrace(/*startFrame*/);
-
-        auto frames = debugger->allStackframes();
+        QList<gdb::Frame> frames;
+        if (isInferiorStopped) {
+            emit GDBProxy::instance()->sigStackTrace(/*startFrame*/);
+            frames = debugger->allStackframes();
+        }
+//        if (frames.first().file != currentFile) {
+//            return response;
+//        }
+        if (frames.first().line != currentLine) {
+            return response;
+        }
         for(const auto& frame : frames) {
             dap::Source source;
             dap::StackFrame stackframe;
@@ -451,7 +468,9 @@ void DapSession::registerHanlder()
             stackFrames.push_back(stackframe);
         }
 
+        stackframes = frames;
         response.stackFrames = stackFrames;
+        isStackframesUpdated = false;
         printf("--> Server sent StackTrace response to the client\n");
 
         return response;
@@ -478,7 +497,7 @@ void DapSession::registerHanlder()
 
         // register
         dap::Scope scopeRegisters;
-        scopeRegisters.presentationHint = "=registers";
+        scopeRegisters.presentationHint = "registers";
         scopeRegisters.name = "Registers";
         scopeRegisters.expensive = false;
         scopeRegisters.variablesReference = frameId+1;
@@ -550,13 +569,17 @@ void DapSession::registerHanlder()
 void DapSession::handleAsyncStopped(const gdb::AsyncContext& ctx)
 {
     dap::StoppedEvent stoppedEvent;
+    currentFile = ctx.frame.file;
+    currentLine = ctx.frame.line;
     switch (ctx.reason) {
             case gdb::AsyncContext::Reason::breakpointHhit: {
                 stoppedEvent.reason = "breakpoint-hit";
+                isBreakpointHit = true;
                 break;
             }
             case gdb::AsyncContext::Reason::endSteppingRange: {
                 stoppedEvent.reason = "step";
+                isSteppingRangeEnd = true;
                 break;
             }
             case gdb::AsyncContext::Reason::exitedNormally: {
@@ -647,6 +670,7 @@ void DapSession::handleAsyncStopped(const gdb::AsyncContext& ctx)
      stoppedEvent.threadId = debugger->getProcessId();
      stoppedEvent.allThreadsStopped = true;
      stoppedEvent.source = source;
+     stoppedEvent.line = ctx.frame.line;
      session->send(stoppedEvent);
      printf("--> Server sent stopped Event to client\n");
 }
