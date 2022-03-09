@@ -163,6 +163,7 @@ void TextEditTabWidget::jumpToLine(const QString &filePath, int line)
 {
     auto edit = d->textEdits.value(filePath);
     if (edit) {
+        d->tab->switchFile(filePath);
         showFileEdit(filePath);
     } else {
         openFile(filePath, "");
@@ -183,6 +184,7 @@ void TextEditTabWidget::runningToLine(const QString &filePath, int line)
 {
     auto edit = d->textEdits.value(filePath);
     if (edit) {
+        d->tab->switchFile(filePath);
         showFileEdit(filePath);
     } else {
         openFile(filePath, "");
