@@ -278,7 +278,7 @@ void Debugger::registerDapHandlers()
                 threadId = event.threadId.value(0);
                 auto thread = session->getThread(event.threadId.value());
                 if (thread) {
-                    debugService->getModel()->fetchCallStack(*thread.value());
+//                    debugService->getModel()->fetchCallStack(*thread.value());
                     thread.value()->fetchCallStack();
                     auto stacks = thread.value()->getCallStack();
                     StackFrames frames;

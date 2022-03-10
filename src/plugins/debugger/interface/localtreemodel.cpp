@@ -108,7 +108,7 @@ QModelIndex LocalTreeModel::parent(const QModelIndex &index) const
     LocalTreeItem *childItem = static_cast<LocalTreeItem*>(index.internalPointer());
     LocalTreeItem *parentItem = childItem->getParentItem();
 
-    if (parentItem == rootItem)
+    if (!parentItem || parentItem == rootItem)
         return QModelIndex();
 
     return createIndex(parentItem->row(), 0, parentItem);

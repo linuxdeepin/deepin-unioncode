@@ -11,6 +11,7 @@ set(CXXDBG_HEADERS
     debugengine.h
     dapsession.h
     backendglobal.h
+    locker.h
    )
 
 set(CXXDBG_SOURCES

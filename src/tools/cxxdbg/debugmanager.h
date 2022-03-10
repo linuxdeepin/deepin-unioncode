@@ -10,11 +10,14 @@
 #ifndef DEBUGMANAGER_H
 #define DEBUGMANAGER_H
 
+#include "locker.h"
+
 #include <QHash>
 #include <QObject>
+#include <QProcess>
 
 #include <functional>
-#include <QProcess>
+
 namespace gdb {
 
 struct VariableChange {
@@ -161,6 +164,7 @@ public:
     QList<gdb::Frame> allStackframes();
     QList<gdb::Thread> allThreadList();
     QList<gdb::Variable> allVariableList();
+    void wait();
 public slots:
     void execute();
     void quit();
@@ -280,6 +284,7 @@ private:
 
     struct Priv_t;
     Priv_t *self;
+    ConditionLockEx locker;
 };
 
 Q_DECLARE_METATYPE(gdb::Variable)

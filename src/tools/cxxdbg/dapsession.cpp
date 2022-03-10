@@ -31,31 +31,6 @@
 #include <QDebug>
 #include <QThread>
 
-// Event provides a basic wait and signal synchronization primitive.
-class ConditionLock {
- public:
-  // wait() blocks until the event is fired.
-  void wait();
-
-  // fire() sets signals the event, and unblocks any calls to wait().
-  void fire();
-
- private:
-  std::mutex mutex;
-  std::condition_variable cv;
-  bool fired = false;
-};
-
-void ConditionLock::wait() {
-  std::unique_lock<std::mutex> lock(mutex);
-  cv.wait(lock, [&] { return fired; });
-}
-
-void ConditionLock::fire() {
-  std::unique_lock<std::mutex> lock(mutex);
-  fired = true;
-  cv.notify_all();
-}
 
 // keep the initialization in order.
 static ConditionLock configured;
@@ -373,7 +348,7 @@ void DapSession::registerHanlder()
 //        auto threadId = request.threadId;
 //        auto granularity = request.granularity;
         printf("<-- Server received next request from client\n");
-        emit GDBProxy::instance()->sigNext();
+        debugger->commandNext();
         printf("--> Server sent to  next response client\n");
         return dap::NextResponse();
     });
@@ -386,7 +361,7 @@ void DapSession::registerHanlder()
 //        auto threadId = request.threadId;
 //        auto granularity = request.granularity;
         printf("<-- Server received stepin request from client\n");
-        emit GDBProxy::instance()->sigStepin();
+        debugger->commandStep();
         printf("--> Server sent stepin response to client\n");
         return dap::StepInResponse();
     });
@@ -399,7 +374,7 @@ void DapSession::registerHanlder()
 //        auto threadId = request.threadId;
 //        auto granularity = request.granularity;
         printf("<-- Server received stepout request from client\n");
-        emit GDBProxy::instance()->sigStepout();
+        debugger->commandFinish();
         printf("--> Server sent stepout response to client\n");
         return dap::StepOutResponse();
     });
@@ -445,15 +420,11 @@ void DapSession::registerHanlder()
         printf("<-- Server received StackTrace request from the client\n");
         QList<gdb::Frame> frames;
         if (isInferiorStopped) {
-            emit GDBProxy::instance()->sigStackTrace(/*startFrame*/);
+
+            debugger->stackListFrames();
             frames = debugger->allStackframes();
         }
-//        if (frames.first().file != currentFile) {
-//            return response;
-//        }
-        if (frames.first().line != currentLine) {
-            return response;
-        }
+
         for(const auto& frame : frames) {
             dap::Source source;
             dap::StackFrame stackframe;

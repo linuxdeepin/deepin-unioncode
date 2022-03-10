@@ -429,6 +429,11 @@ QList<gdb::Variable> DebugManager::allVariableList()
     return self->variableList;
 }
 
+void DebugManager::wait()
+{
+    locker.wait();
+}
+
 QStringList DebugManager::gdbArgs() const
 {
     return self->gdb->arguments();
@@ -587,6 +592,7 @@ void DebugManager::stackListFrames()
 {
 //    command(QString{"-stack-select-frame"}.arg(startFrame));
     command(QString{"-stack-list-frames"});
+    locker.wait();
 }
 
 void DebugManager::stackInfoFrame()
@@ -949,6 +955,7 @@ void DebugManager::processLine(const QString &line)
                             self->stackFrames = stackFrames;
                             emit updateStackFrame(stackFrames);
                         }
+                        locker.fire();
 
                  }}, // -break-insert location
                 { "bkpt", [this](const mi::Response& r) {
