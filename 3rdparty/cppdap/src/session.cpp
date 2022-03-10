@@ -31,6 +31,12 @@
 #include <unordered_map>
 #include <vector>
 
+#ifdef ENABLE_LOG
+#define Log(message) printf("%s", message);
+#else
+#define Log(message)
+#endif
+
 namespace {
 
 class Impl : public dap::Session {
@@ -54,7 +60,7 @@ class Impl : public dap::Session {
 
   std::function<void()> getPayload() override {
     auto request = reader.read();
-    printf("%s\n", request.c_str());
+    Log(request.c_str());
     if (request.size() > 0) {
       if (auto payload = processMessage(request)) {
         return payload;
@@ -134,7 +140,7 @@ class Impl : public dap::Session {
       handlers.error("Send failed as the writer is closed");
       return false;
     }
-    printf("%s\n", s.c_str());
+    Log(s.c_str());
     return writer.write(s);
   }
 
@@ -378,7 +384,7 @@ class Impl : public dap::Session {
                      fs->field("command", command) &&
                      fs->field("message", error.message);
             });
-            printf("%s\n", s.dump().c_str());
+            Log(s.dump().c_str());
             send(s.dump());
 
             if (auto handler = handlers.responseSent(typeinfo)) {

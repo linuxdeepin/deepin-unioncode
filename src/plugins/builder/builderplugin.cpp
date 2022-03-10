@@ -20,21 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "builderplugin.h"
-#include "base/abstractaction.h"
 #include "base/abstractmenu.h"
 #include "base/abstractmainwindow.h"
 #include "base/abstractwidget.h"
 
 #include "services/window/windowservice.h"
-#include "services/window/windowservice.h"
 #include "service/pluginservicecontext.h"
 
-#include "project.h"
 #include "buildoutputpane.h"
-#include "buildtarget.h"
 #include "buildmanager.h"
-#include "buildersignals.h"
-#include "builderglobals.h"
 
 #include <QMenu>
 
@@ -54,20 +48,10 @@ bool BuilderPlugin::start()
         abort();
     }
 
-    // insert build action.
-    QAction *action = new QAction("Build");
-    action->setShortcut(QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
-    AbstractAction *actionImpl = new AbstractAction(action);
-    windowService->addAction(QString::fromStdString(MENU_BUILD), actionImpl);
-    // triggered by top menu.
-    connect(action, &QAction::triggered, this, &BuilderPlugin::buildProjects, Qt::DirectConnection);
-    // triggerd by right menu which tree item.
-    connect(builderSignals, &BuilderSignals::buildTriggered, this, &BuilderPlugin::buildProjects, Qt::DirectConnection);
+    BuildManager::instance()->initialize(windowService);
 
     // instert output pane to window.
     emit windowService->addContextWidget("Output", new AbstractWidget(BuildManager::instance()->getOutputPane()));
-
-    project.reset(new Project(this));
 
     return true;
 }
@@ -75,15 +59,4 @@ bool BuilderPlugin::start()
 dpf::Plugin::ShutdownFlag BuilderPlugin::stop()
 {
     return Sync;
-}
-
-void BuilderPlugin::buildProjects()
-{
-    // TODO(mozart):steps should get from other place.
-    auto buildList = project->activeTarget()->getbuildSteps();
-    if (buildList.size() > 0)
-        BuildManager::instance()->buildList(buildList);
-    else {
-        BuildManager::instance()->getOutputPane()->appendText("Nothing to do.");
-    }
 }

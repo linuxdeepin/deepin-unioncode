@@ -24,15 +24,31 @@
 #include "buildstep.h"
 
 #include <QObject>
+#include <QSharedPointer>
+#include <QMutex>
 
 class BuildOutputPane;
+class Project;
+class MenuManager;
+namespace dpfservice {
+class WindowService;
+}
+
 class BuildManager : public QObject
 {
     Q_OBJECT
 public:
+
+    enum BuildState
+    {
+        kNoBuild,
+        kBuilding,
+    };
+
     static BuildManager *instance();
 
-    bool isBuilding() const;
+    void initialize(dpfservice::WindowService *service);
+
     bool buildList(const QList<BuildStep*> &bsl);
     BuildOutputPane *getOutputPane() const;
 
@@ -42,15 +58,22 @@ signals:
 
 public slots:
     void slotOutput(const QString &content, BuildStep::OutputFormat format);
+    void buildProject();
 
 private:
     explicit BuildManager(QObject *parent = nullptr);
-    bool initBuildList(const QList<BuildStep*> &bsl);
+    ~BuildManager();
+    bool initBuildList(const QList<BuildStep*> &_bsl);
 
     BuildOutputPane *outputPane = nullptr;
 
-    bool isBuild = false;
+    QList<BuildStep *> bsl;
 
+    QSharedPointer<Project> project;
+    QSharedPointer<MenuManager> menuManager;
+    BuildState buildState = kNoBuild;
+
+    QMutex releaseMutex;
 };
 
 #endif // BUILDMANAGER_H

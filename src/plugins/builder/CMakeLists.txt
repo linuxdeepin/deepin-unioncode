@@ -14,6 +14,7 @@ set(CXX_CPP
     qmakestep.cpp
     makestep.cpp
     eventsender.cpp
+    menumanager.cpp
     )
 
 set(CXX_H
@@ -29,7 +30,7 @@ set(CXX_H
     builderglobals.h
     buildersignals.h
     eventsender.h
-
+    menumanager.h
     )
 
 add_library(${PROJECT_NAME}
