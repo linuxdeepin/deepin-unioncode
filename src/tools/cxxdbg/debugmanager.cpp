@@ -16,6 +16,7 @@
 #include <QRegularExpression>
 #include <QJsonDocument>
 #include <QtDebug>
+
 #include <csignal>
 #include <atomic>
 
@@ -617,6 +618,7 @@ void DebugManager::stackListVariables(/*const gdb::Thread& thid, const int frame
 //    // select frame level
 //    command(QString{"-stack-select-frame %1"}.arg(frameLevel));
     command("-stack-list-variables 1");
+    locker.wait();
     // find variables in results
 }
 
@@ -932,6 +934,7 @@ void DebugManager::processLine(const QString &line)
                          variableList.append(gdb::Variable::parseMap(e.toMap()));
                      self->variableList = variableList;
                      emit updateLocalVariables(variableList);
+                     locker.fire();
                  }}, // -thread-info => Thread Request
                 { "threads", [this](const mi::Response& r) {
                      QList<gdb::Thread> threadList;

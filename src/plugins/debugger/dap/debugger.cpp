@@ -557,7 +557,7 @@ void Debugger::initializeView()
 
     localsView.reset(new QTreeView());
     localsView->setModel(&localsModel);
-    QStringList headers { "name", "value", "reference" };
+    QStringList headers { "name", "value"/*, "reference" */};
     localsModel.setHeaders(headers);
 
     connect(stackView.get(), &QTreeView::doubleClicked, this, &Debugger::slotFrameSelected);

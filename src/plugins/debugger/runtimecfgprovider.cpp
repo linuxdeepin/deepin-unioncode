@@ -1,7 +1,11 @@
 #include "runtimecfgprovider.h"
 #include "debuggerglobals.h"
 
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusReply>
+
 using namespace dap;
+static const int kPort = 4711;
 RunTimeCfgProvider::RunTimeCfgProvider(QObject *parent)
     : QObject(parent)
 {
@@ -14,7 +18,20 @@ const char *RunTimeCfgProvider::ip() const
 
 int RunTimeCfgProvider::port() const
 {
-    int iPort = 4711;
+    int iPort = kPort;
+
+    QDBusInterface interface("com.deepin.unioncode.service", "/",
+                             "com.deepin.unioncode.interface",
+                             QDBusConnection::sessionBus());
+    if (!interface.isValid()) {
+        qDebug() << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        return iPort;
+    }
+
+    QDBusReply<int> reply = interface.call("port");
+    if (reply.isValid()) {
+        iPort = reply.value();
+    }
     return iPort;
 }
 
