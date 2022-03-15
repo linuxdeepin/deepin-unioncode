@@ -53,6 +53,8 @@ extern const QString K_KIND;
 extern const QString K_LOCATION;
 extern const QString K_POSITION;
 extern const QString K_DATA;
+extern const QString K_NewName;
+extern const QString K_NewText;
 
 extern const QString H_CONTENT_LENGTH;
 extern const QString V_2_0;
@@ -64,6 +66,7 @@ extern const QString V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS; //server call
 extern const QString V_TEXTDOCUMENT_DIDCHANGE; //no request result, json error
 extern const QString V_TEXTDOCUMENT_DOCUMENTSYMBOL; // has request result
 extern const QString V_TEXTDOCUMENT_HOVER; // has request result
+extern const QString V_TEXTDOCUMENT_RENAME;
 extern const QString V_TEXTDOCUMENT_DEFINITION ;
 extern const QString V_TEXTDOCUMENT_DIDCLOSE;
 extern const QString V_TEXTDOCUMENT_COMPLETION;
@@ -154,7 +157,8 @@ struct Diagnostic
     Range range;
     Severity severity;
 };
-typedef QVector<Diagnostic> Diagnostics;
+struct Diagnostics : QVector<Diagnostic>{};
+
 struct DiagnosticsParams
 {
     DocumentUri uri;
@@ -167,7 +171,7 @@ struct Location
     Range range;
     QUrl fileUrl;
 };
-typedef QList<Location> Locations;
+struct Locations :public QList<Location>{};
 
 struct Symbol
 {
@@ -190,7 +194,7 @@ struct TextEdit
     Range range;
 };
 
-typedef QList<TextEdit> AdditionalTextEdits;
+struct AdditionalTextEdits:QList<TextEdit>{};
 
 struct Documentation
 {
@@ -239,7 +243,7 @@ struct CompletionItem
     TextEdit textEdit;
 };
 
-typedef QList<CompletionItem> CompletionItems;
+struct CompletionItems : public QList<CompletionItem>{};
 
 struct CompletionProvider
 {
@@ -251,9 +255,9 @@ struct SignatureHelp //暂时留空
 {
 
 };
-typedef QList<SignatureHelp> SignatureHelps;
+struct SignatureHelps : QList<SignatureHelp>{};
 
-class DefinitionProvider : public Locations{};
+struct DefinitionProvider : public Locations{};
 
 struct Contents
 {
@@ -343,6 +347,16 @@ struct DidChangeTextDocumentParams
     QList<TextDocumentContentChangeEvent> contentChanges;
 };
 
+struct RenameChange : public TextDocumentIdentifier
+{
+    AdditionalTextEdits edits;
+};
+
+struct RenameChanges : public QList<RenameChange>{};
+
+struct References : public Locations{};
+
+
 QString fromTokenType(SemanticTokenType type);
 QString fromTokenModifier(SemanticTokenModifier modifier);
 QList<SemanticTokenModifier> fromTokenModifiers(int modifiers);
@@ -356,6 +370,7 @@ QJsonObject didChange(const QString &filePath, const QByteArray &text, int versi
 QJsonObject didClose(const QString &filePath);
 QJsonObject hover(const QString &filePath, const Position &pos);
 QJsonObject symbol(const QString &filePath);
+QJsonObject rename(const QString &filePath, const Position &pos, const QString &newName);
 QJsonObject completion(const QString &filePath, const Position &pos);
 QJsonObject definition(const QString &filePath, const Position &pos);
 QJsonObject signatureHelp(const QString &filePath, const Position &pos);
@@ -373,5 +388,8 @@ bool isRequestError(const QJsonObject &object);
 
 
 } // namespace lsp
+
+
+Q_DECLARE_METATYPE(lsp::Range)
 
 #endif // LANGUAGESERVERPROTOCOL_H

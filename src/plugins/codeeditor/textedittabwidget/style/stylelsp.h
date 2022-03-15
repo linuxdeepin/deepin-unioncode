@@ -79,8 +79,7 @@ public:
     virtual void cleanHover(ScintillaEdit &edit);
 
     virtual void setDefinition(ScintillaEdit &edit, const lsp::DefinitionProvider &provider);
-    virtual void cleanDefinition(ScintillaEdit &edit, Scintilla::Position pos);
-
+    virtual void cleanDefinition(ScintillaEdit &edit, const Scintilla::Position &pos);
 
 private slots:
     void sciTextInserted(Scintilla::Position position,
@@ -98,6 +97,7 @@ private slots:
     void sciDefinitionHoverCleaned(Scintilla::Position position);
     void sciIndicClicked(Scintilla::Position position);
     void sciIndicReleased(Scintilla::Position position);
+    void sciSelectionMenu(QContextMenuEvent *event);
 
 private:
     QList<lsp::Data> tokensCache;

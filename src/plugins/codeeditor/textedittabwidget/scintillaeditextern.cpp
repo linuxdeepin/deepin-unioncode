@@ -135,6 +135,13 @@ void ScintillaEditExtern::jumpToLine(int line)
     }
 }
 
+void ScintillaEditExtern::jumpToRange(Scintilla::Position start, Scintilla::Position end)
+{
+    jumpToLine(lineFromPosition(end));
+    setSelectionStart(start);
+    setSelectionEnd(end);
+}
+
 void ScintillaEditExtern::runningToLine(int line)
 {
     int lineOffSet = line - 1;
@@ -304,6 +311,15 @@ void ScintillaEditExtern::focusOutEvent(QFocusEvent *event)
 {
     callTipCancel(); //cancel hover;
     return ScintillaEdit::focusOutEvent(event);
+}
+
+void ScintillaEditExtern::contextMenuEvent(QContextMenuEvent *event)
+{
+    if (selectionStart() == selectionEnd()) {
+        ScintillaEdit::contextMenuEvent(event);
+    } else {
+        emit selectionMenu(event);
+    }
 }
 
 void ScintillaEditExtern::enterEvent(QEvent *event)

@@ -32,12 +32,11 @@ class NavEditFrame final : public QSplitter
     Q_OBJECT
 public:
     explicit NavEditFrame(QWidget *parent = nullptr);
-
-public slots:
     void setTreeWidget(AbstractWidget *treeWidget);
     void setConsole(AbstractConsole *console);
     void setWatchWidget(AbstractWidget *watchWidget);
     void addContextWidget(const QString &title, AbstractWidget *contextWidget);
+    bool switchContextWidget(const QString &title);
 
 private:
     void createEditorWidget(QSplitter *splitter);

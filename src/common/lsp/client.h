@@ -23,6 +23,7 @@ public:
     void closeRequest(const QString &filePath); // yes
     void changeRequest(const QString &filePath, const QByteArray &text); // yes
     void symbolRequest(const QString &filePath); // yes
+    void renameRequest(const QString &filePath, const Position &pos, const QString &newName); //yes
     void definitionRequest(const QString &filePath, const Position &pos); // yes
     void completionRequest(const QString &filePath, const Position &pos); // yes
     void signatureHelpRequest(const QString &filePath, const Position &pos); // yes
@@ -47,6 +48,8 @@ signals:
     void requestResult(const Highlights &highlights);
     void requestResult(const DefinitionProvider &definitionProvider);
     void requestResult(const QList<Data> &tokensResult);
+    void requestResult(const RenameChanges &changes);
+    void requestResult(const References &refs);
 
 private:
     bool calledError(const QJsonObject &jsonObj);
@@ -55,6 +58,7 @@ private:
     bool openResult(const QJsonObject &jsonObj); // client call server rpc return
     bool changeResult(const QJsonObject &jsonObj); // client call server rpc return
     bool symbolResult(const QJsonObject &jsonObj); // client call server rpc return
+    bool renameResult(const QJsonObject &jsonObj); // client call server rpc return
     bool definitionResult(const QJsonObject &jsonObj); // client call server rpc return
     bool completionResult(const QJsonObject &jsonObj); // client call server rpc return
     bool signatureHelpResult(const QJsonObject &jsonObj); // client call server rpc return

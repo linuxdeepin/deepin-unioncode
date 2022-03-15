@@ -20,6 +20,7 @@ public:
     QString rootPath();
     void debugPointAllDelete();
     void jumpToLine(int line);
+    void jumpToRange(Scintilla::Position start, Scintilla::Position end);
     void runningToLine(int line);
     void runningEnd();
     void saveText();
@@ -41,6 +42,7 @@ signals:
     void indicClicked(Scintilla::Position position);
     void indicReleased(Scintilla::Position position);
     void saved(const QString &file);
+    void selectionMenu(QContextMenuEvent *event);
 
 private slots:
     void sciModified(Scintilla::ModificationFlags type, Scintilla::Position position,
@@ -59,6 +61,7 @@ protected:
     virtual void leaveEvent(QEvent *event) override;
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual void focusOutEvent(QFocusEvent *event) override;
+    virtual void contextMenuEvent(QContextMenuEvent *event) override;
     virtual void sciMarginClicked(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin);
 };
 

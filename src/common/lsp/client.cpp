@@ -90,6 +90,8 @@ Client::Client(QObject *parent)
     qRegisterMetaType<DiagnosticsParams>("DiagnosticsParams");
     qRegisterMetaType<Data>("Data");
     qRegisterMetaType<QList<Data>>("QList<Data>");
+    qRegisterMetaType<RenameChanges>("RenameChanges");
+    qRegisterMetaType<References>("References");
 
     // 每一个读任务都开启一个线程处理
     QObject::connect(this, &Client::readyRead, this, &Client::readForThread,
@@ -154,6 +156,16 @@ void Client::symbolRequest(const QString &filePath)
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DOCUMENTSYMBOL);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DOCUMENTSYMBOL;
     write(setHeader(symbol(filePath), d->requestIndex).toLatin1());
+    waitForBytesWritten();
+}
+
+void Client::renameRequest(const QString &filePath, const Position &pos, const QString &newName)
+{
+    d->requestIndex ++;
+    d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_RENAME);
+    qInfo() << "--> server : " << V_TEXTDOCUMENT_RENAME;
+    qInfo() << qPrintable(setHeader(rename(filePath, pos, newName), d->requestIndex).toLatin1());
+    write(setHeader(rename(filePath, pos, newName), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
@@ -334,6 +346,40 @@ bool Client::symbolResult(const QJsonObject &jsonObj)
     return false;
 }
 
+bool Client::renameResult(const QJsonObject &jsonObj)
+{
+    auto calledID = jsonObj.value(K_ID).toInt();
+    if (d->requestSave.values().contains(V_TEXTDOCUMENT_RENAME)
+            && d->requestSave.key(V_TEXTDOCUMENT_RENAME) == calledID) {
+        qInfo() << "client <-- : " << V_TEXTDOCUMENT_RENAME
+                << jsonObj;
+        d->requestSave.remove(calledID);
+        QJsonObject resultObj = jsonObj.value(K_RESULT).toObject();
+        QJsonObject changes = resultObj.value("changes").toObject();
+        lsp::RenameChanges changesResult;
+        for (auto fileKey : changes.keys()) {
+            RenameChange change;
+            change.documentUri = fileKey;
+            auto addionTextEditArray = changes[fileKey].toArray();
+            for (auto addion : addionTextEditArray){
+                auto addionObj = addion.toObject();
+                auto rangeObj = addionObj.value(K_RANGE).toObject();
+                auto startObj = rangeObj.value(K_START).toObject();
+                auto endObj = rangeObj.value(K_END).toObject();
+                QString newText = addionObj.value(K_NewText).toString();
+                Position startPos = {startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()};
+                Position endPos = {endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()};
+                Range range = {startPos, endPos} ;
+                change.edits << TextEdit {newText, range};
+            }
+            changesResult << change;
+        }
+        emit requestResult(changesResult);
+        return true;
+    }
+    return false;
+}
+
 bool Client::definitionResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
@@ -343,7 +389,7 @@ bool Client::definitionResult(const QJsonObject &jsonObj)
                 << V_TEXTDOCUMENT_DEFINITION
                 << jsonObj;
         d->requestSave.remove(calledID);
-        QJsonArray definitionProviderArray = jsonObj.value("result").toArray();
+        QJsonArray definitionProviderArray = jsonObj.value(K_RESULT).toArray();
         qInfo() << "definitionProviderArray"
                 << definitionProviderArray;
         DefinitionProvider definitionProvider;
@@ -370,7 +416,7 @@ bool Client::completionResult(const QJsonObject &jsonObj)
             && d->requestSave.key(V_TEXTDOCUMENT_COMPLETION) == calledID) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_COMPLETION /*<< jsonObj*/;
         d->requestSave.remove(calledID);
-        QJsonObject resultObj = jsonObj.value("result").toObject();
+        QJsonObject resultObj = jsonObj.value(K_RESULT).toObject();
         QJsonArray itemsArray = resultObj.value("items").toArray();
         CompletionProvider completionProvider;
         CompletionItems items;
@@ -469,6 +515,21 @@ bool Client::referencesResult(const QJsonObject &jsonObj)
     if(d->requestSave.values().contains(V_TEXTDOCUMENT_REFERENCES)
             && d->requestSave.key(V_TEXTDOCUMENT_REFERENCES) == calledID) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_REFERENCES;
+        References refs;
+        auto resultArray = jsonObj.value(K_RESULT).toArray();
+        for (auto item : resultArray) {
+            auto itemObj = item.toObject();
+            auto rangeObj = itemObj.value(K_RANGE).toObject();
+            auto startObj = rangeObj.value(K_START).toObject();
+            auto endObj = rangeObj.value(K_END).toObject();
+            QString url = itemObj.value(K_URI).toString();
+            Location location;
+            location.fileUrl = url;
+            location.range.start = Position{startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()};
+            location.range.end = Position{endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()};
+            refs << location;
+        }
+        emit requestResult(refs);
         d->requestSave.remove(calledID);
         return true;
     }
@@ -616,6 +677,12 @@ bool Client::calledResult(const QJsonObject &jsonObj)
         return true;
 
     if (definitionResult(jsonObj))
+        return true;
+
+    if (referencesResult(jsonObj))
+        return true;
+
+    if (renameResult(jsonObj))
         return true;
 
     if (completionResult(jsonObj))

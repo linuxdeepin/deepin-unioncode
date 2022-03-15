@@ -30,7 +30,10 @@
 
 #include <functional>
 
-#define DPF_INTERFACE(ret, method, ...) std::function<ret(__VA_ARGS__)> method
+#define DPF_INTERFACE(ret, method, ...) std::function<ret(__VA_ARGS__)> method{nullptr}
+#define DPF_CALL(method, ...) \
+    if (method) method(__VA_ARGS__)  \
+    else qCritical() << "not use std::bind callback function" << #method;
 
 DPF_BEGIN_NAMESPACE
 

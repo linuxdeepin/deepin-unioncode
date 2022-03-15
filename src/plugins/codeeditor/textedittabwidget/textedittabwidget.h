@@ -21,8 +21,11 @@
 #ifndef TEXTEDITTABWIDGET_H
 #define TEXTEDITTABWIDGET_H
 
+#include "common/common.h"
+
 #include <QWidget>
 
+class ScintillaEditExtern;
 class TextEditTabWidgetPrivate;
 class TextEditTabWidget : public QWidget
 {
@@ -32,12 +35,13 @@ class TextEditTabWidget : public QWidget
 public:
     explicit TextEditTabWidget(QWidget *parent = nullptr);
     virtual ~TextEditTabWidget();
-    static TextEditTabWidget * instance();
+    static TextEditTabWidget *instance();
 
 public slots:
     void openFile(const QString &filePath, const QString &rootPath);
     void closeFile(const QString &filePath);
     void jumpToLine(const QString &filePath, int line);
+    void jumpToRange(const QString &filePath, const lsp::Range &range);
     void runningToLine(const QString &filePath, int line);
     void runningEnd();
     void debugPointClean();
@@ -54,6 +58,7 @@ private slots:
     void fileModifyed(const QString &file);
     void fileDeleted(const QString &file);
     void fileMoved(const QString &file);
+    ScintillaEditExtern *switchFileAndToOpen(const QString &filePath);
 };
 
 #endif // TEXTEDITTABWIDGET_H

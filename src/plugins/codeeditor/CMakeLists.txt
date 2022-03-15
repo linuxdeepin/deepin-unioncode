@@ -12,6 +12,11 @@ set(CXX_CPP
     mainframe/naveditframe.cpp
     transceiver/sendevents.cpp
     transceiver/codeeditorreceiver.cpp
+    refactorwidget/codelentype.cpp
+    refactorwidget/codelens.cpp
+    refactorwidget/codelensdelegate.cpp
+    refactorwidget/refactorwidget.cpp
+    renamepopup/renamepopup.cpp
     textedittabwidget/scintillaeditextern.cpp
     textedittabwidget/textedittabwidget.cpp
     textedittabwidget/textedittabbar.cpp
@@ -34,6 +39,11 @@ set(CXX_H
     mainframe/naveditframe.h
     transceiver/sendevents.h
     transceiver/codeeditorreceiver.h
+    refactorwidget/codelentype.h
+    refactorwidget/codelens.h
+    refactorwidget/codelensdelegate.h
+    refactorwidget/refactorwidget.h
+    renamepopup/renamepopup.h
     textedittabwidget/scintillaeditextern.h
     textedittabwidget/textedittabwidget.h
     textedittabwidget/textedittitlebar.h

@@ -22,6 +22,7 @@
 #include "textedittitlebar.h"
 #include "textedittabbar.h"
 #include "textedit.h"
+#include "style/stylekeeper.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
 
@@ -78,9 +79,9 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     QObject::connect(d->tab, &TextEditTabBar::fileClosed,
                      this, &TextEditTabWidget::removeFileStatusBar, Qt::QueuedConnection);
 
-//    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf, this, &TextEditTabWidget::fileDeleted);
-//    QObject::connect(Inotify::globalInstance(), &Inotify::movedSelf, this, &TextEditTabWidget::fileMoved);
-//    QObject::connect(Inotify::globalInstance(), &Inotify::modified, this, &TextEditTabWidget::fileModifyed);
+    //    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf, this, &TextEditTabWidget::fileDeleted);
+    //    QObject::connect(Inotify::globalInstance(), &Inotify::movedSelf, this, &TextEditTabWidget::fileMoved);
+    //    QObject::connect(Inotify::globalInstance(), &Inotify::modified, this, &TextEditTabWidget::fileModifyed);
 
 }
 
@@ -161,41 +162,30 @@ void TextEditTabWidget::closeFile(const QString &filePath)
 
 void TextEditTabWidget::jumpToLine(const QString &filePath, int line)
 {
-    auto edit = d->textEdits.value(filePath);
-    if (edit) {
-        d->tab->switchFile(filePath);
-        showFileEdit(filePath);
-    } else {
-        openFile(filePath, "");
-        for (auto editor : d->textEdits) {
-            if (editor->file() == filePath) {
-                showFileEdit(filePath);
-                edit = editor;
-            }
-        }
-    }
+    auto edit = switchFileAndToOpen(filePath);
 
     if (edit) {
         edit->jumpToLine(line);
     }
 }
 
-void TextEditTabWidget::runningToLine(const QString &filePath, int line)
+void TextEditTabWidget::jumpToRange(const QString &filePath, const lsp::Range &range)
 {
-    auto edit = d->textEdits.value(filePath);
+    auto edit = switchFileAndToOpen(filePath);
+
     if (edit) {
-        d->tab->switchFile(filePath);
-        showFileEdit(filePath);
-    } else {
-        openFile(filePath, "");
-        for (auto editor : d->textEdits) {
-            editor->runningEnd();
-            if (editor->file() == filePath) {
-                showFileEdit(filePath);
-                edit = editor;
-            }
+        auto set = StyleKeeper::create(edit->langueage());
+        if (set.lsp) {
+            auto start = set.lsp->getSciPosition(edit->docPointer(), range.start);
+            auto end = set.lsp->getSciPosition(edit->docPointer(), range.end);
+            edit->jumpToRange(start, end);
         }
     }
+}
+
+void TextEditTabWidget::runningToLine(const QString &filePath, int line)
+{
+    auto edit = switchFileAndToOpen(filePath);
 
     if (edit) {
         edit->jumpToLine(line);
@@ -327,4 +317,23 @@ void TextEditTabWidget::fileDeleted(const QString &file)
 void TextEditTabWidget::fileMoved(const QString &file)
 {
     qInfo() << "fileMoved" << file;
+}
+
+ScintillaEditExtern* TextEditTabWidget::switchFileAndToOpen(const QString &filePath)
+{
+    auto edit = d->textEdits.value(filePath);
+    if (edit) {
+        d->tab->switchFile(filePath);
+        showFileEdit(filePath);
+    } else {
+        openFile(filePath, "");
+        for (auto editor : d->textEdits) {
+            editor->runningEnd();
+            if (editor->file() == filePath) {
+                showFileEdit(filePath);
+                edit = editor;
+            }
+        }
+    }
+    return edit;
 }

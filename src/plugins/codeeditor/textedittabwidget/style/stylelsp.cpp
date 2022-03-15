@@ -5,6 +5,8 @@
 #include "stylecolor.h"
 #include "textedittabwidget/textedittabwidget.h"
 #include "textedittabwidget/scintillaeditextern.h"
+#include "refactorwidget/refactorwidget.h"
+#include "renamepopup/renamepopup.h"
 
 #include "services/workspace/workspaceservice.h"
 #include "common/common.h"
@@ -17,6 +19,9 @@
 #include <QTimer>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QMenu>
+#include <QLineEdit>
+#include <QVBoxLayout>
 
 class EditorCache
 {
@@ -172,6 +177,7 @@ class StyleLspPrivate
     CompletionCache completionCache;
     DefinitionCache definitionCache;
     HoverCache hoverCache;
+    RenamePopup renamePopup;
     QString editText = "";
     uint editCount = 0;
     friend class StyleLsp;
@@ -391,6 +397,41 @@ void StyleLsp::sciIndicReleased(Scintilla::Position position)
     Q_UNUSED(position);
 }
 
+void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
+{
+    auto edit = qobject_cast<ScintillaEditExtern*>(sender());
+    if (!edit)
+        return;
+
+    QPoint showPos = edit->mapToGlobal(event->pos());
+    QByteArray sourceText = edit->textRange(
+                edit->wordStartPosition(edit->selectionStart(), true),
+                edit->wordEndPosition(edit->selectionEnd(), true));
+
+    QObject::connect(&d->renamePopup, &RenamePopup::editingFinished, [=](const QString &newName){
+        client().renameRequest(edit->file(), getLspPosition(edit->docPointer(), edit->selectionStart()) , newName);
+        //        client().referencesRequest(edit->file(), getLspPosition(edit->docPointer(), edit->selectionStart()));
+    });
+
+    QMenu contextMenu;
+    QMenu refactor(QMenu::tr("Refactor"));
+
+    QAction *renameAction = refactor.addAction(QAction::tr("Rename"));
+    QObject::connect(renameAction, &QAction::triggered, [&](){
+        d->renamePopup.setOldName(sourceText);
+        d->renamePopup.exec(showPos);
+    });
+    contextMenu.addMenu(&refactor);
+
+    QAction * findSymbol = contextMenu.addAction(QAction::tr("Find Usages"));
+    QObject::connect(findSymbol, &QAction::triggered, [&](){
+        this->client().referencesRequest(edit->file(), getLspPosition(edit->docPointer(), edit->selectionStart()));
+    });
+
+    contextMenu.move(showPos);
+    contextMenu.exec();
+}
+
 lsp::Client &StyleLsp::client()
 {
     if (lspClient.program().isEmpty()
@@ -427,7 +468,8 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
     QObject::connect(editor, &ScintillaEditExtern::definitionHover, this, &StyleLsp::sciDefinitionHover);
     QObject::connect(editor, &ScintillaEditExtern::definitionHoverCleaned, this, &StyleLsp::sciDefinitionHoverCleaned);
     QObject::connect(editor, &ScintillaEditExtern::indicClicked, this, &StyleLsp::sciIndicClicked);
-    QObject::connect(editor, &ScintillaEditExtern::indicReleased, this, &StyleLsp::sciIndicClicked);
+    QObject::connect(editor, &ScintillaEditExtern::indicReleased, this, &StyleLsp::sciIndicReleased);
+    QObject::connect(editor, &ScintillaEditExtern::selectionMenu, this, &StyleLsp::sciSelectionMenu);
 
     QObject::connect(editor, &ScintillaEditExtern::destroyed, this, [=](QObject *obj){
         auto itera = d->editors.begin();
@@ -479,9 +521,20 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
         setDefinition(*d->definitionCache.getEditor(), provider);
     });
 
+    QObject::connect(&client(), QOverload<const lsp::RenameChanges&>::of(&lsp::Client::requestResult),
+                     RefactorWidget::instance(), &RefactorWidget::displayRename);
+
+    QObject::connect(&client(), QOverload<const lsp::References&>::of(&lsp::Client::requestResult),
+                     RefactorWidget::instance(), &RefactorWidget::displayReference);
+
     QObject::connect(&client(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [=](int code, auto status) {
         qInfo() << code << status;
+    });
+
+    QObject::connect(RefactorWidget::instance(), &RefactorWidget::doubleClicked,
+                     this, [=](const QString &filePath, const lsp::Range &range){
+        TextEditTabWidget::instance()->jumpToRange(filePath, range);
     });
 
     using namespace dpfservice;
@@ -716,7 +769,7 @@ void StyleLsp::setDefinition(ScintillaEdit &edit, const lsp::DefinitionProvider 
     }
 }
 
-void StyleLsp::cleanDefinition(ScintillaEdit &edit, Scintilla::Position pos)
+void StyleLsp::cleanDefinition(ScintillaEdit &edit, const Scintilla::Position &pos)
 {
     qInfo() << &edit << pos;
     if (edit.indicatorValueAt(HotSpotUnderline, pos) == HotSpotUnderline) {

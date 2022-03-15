@@ -59,6 +59,8 @@ const QString K_KIND {"kind"};
 const QString K_LOCATION {"location"};
 const QString K_POSITION {"position"};
 const QString K_DATA{"data"};
+const QString K_NewName{"newName"};
+const QString K_NewText{"newText"};
 
 const QString H_CONTENT_LENGTH {"Content-Length"};
 const QString V_2_0 {"2.0"};
@@ -70,6 +72,7 @@ const QString V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS {"textDocument/publishDiagnostic
 const QString V_TEXTDOCUMENT_DIDCHANGE {"textDocument/didChange"}; //no request result, json error
 const QString V_TEXTDOCUMENT_DOCUMENTSYMBOL {"textDocument/documentSymbol"}; // has request result
 const QString V_TEXTDOCUMENT_HOVER {"textDocument/hover"}; // has request result
+const QString V_TEXTDOCUMENT_RENAME {"textDocument/rename"}; // has request result
 const QString V_TEXTDOCUMENT_DEFINITION {"textDocument/definition"};
 const QString V_TEXTDOCUMENT_DIDCLOSE {"textDocument/didClose"};
 const QString V_TEXTDOCUMENT_COMPLETION {"textDocument/completion"};
@@ -348,7 +351,7 @@ QJsonObject initialize(const QString &rootPath)
 
     QJsonObject workspace {
         { "name", QFileInfo(rootPath).fileName() },
-//        { K_URI, QUrl::fromLocalFile(rootPath + QDir::separator() + ".unioncode").toString() }
+        //        { K_URI, QUrl::fromLocalFile(rootPath + QDir::separator() + ".unioncode").toString() }
         { K_URI, QUrl::fromLocalFile(rootPath).toString() }
     };
 
@@ -636,6 +639,19 @@ QJsonObject symbol(const QString &filePath)
     };
 
     return documentSymbol;
+}
+
+QJsonObject rename(const QString &filePath, const Position &pos, const QString &newName)
+{
+    QJsonObject params;
+    params[K_NewName] = newName;
+    params[K_POSITION] = QJsonObject{{K_LINE, pos.line},{K_CHARACTER, pos.character}};
+    params[K_TEXTDOCUMENT] = QJsonObject{{K_URI, QUrl::fromLocalFile(filePath).toString()}} ;
+
+    QJsonObject result;
+    result[K_METHOD] = V_TEXTDOCUMENT_RENAME;
+    result[K_PARAMS] = {params};
+    return result;
 }
 
 QJsonObject completion(const QString &filePath, const Position &pos)

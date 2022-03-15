@@ -22,6 +22,7 @@
 #include "base/abstractwidget.h"
 #include "base/abstractconsole.h"
 #include "textedittabwidget/textedittabwidget.h"
+#include "refactorwidget/refactorwidget.h"
 
 #include <QLabel>
 #include <QSplitter>
@@ -106,6 +107,7 @@ void NavEditFrame::createContextWidget(QSplitter *splitter)
 
     tabWidget = new QTabWidget();
     gridLayout->addWidget(tabWidget);
+    tabWidget->addTab(RefactorWidget::instance(), NavEditFrame::tr("Refactor"));
 }
 
 bool NavEditFrame::eventFilter(QObject *obj, QEvent *e)
@@ -194,4 +196,15 @@ void NavEditFrame::addContextWidget(const QString &title, AbstractWidget *contex
     }
 
     tabWidget->addTab(qWidget, title);
+}
+
+bool NavEditFrame::switchContextWidget(const QString &title)
+{
+    for (int i = 0; i < tabWidget->count(); i++){
+        if (tabWidget->tabText(i) == title) {
+            tabWidget->setCurrentIndex(i);
+            return true;
+        }
+    }
+    return false;
 }
