@@ -81,6 +81,8 @@ public:
     virtual void setDefinition(ScintillaEdit &edit, const lsp::DefinitionProvider &provider);
     virtual void cleanDefinition(ScintillaEdit &edit, const Scintilla::Position &pos);
 
+    virtual void doRenameReplace(const lsp::RenameChanges &changes);
+
 private slots:
     void sciTextInserted(Scintilla::Position position,
                          Scintilla::Position length, Scintilla::Position linesAdded,
@@ -98,6 +100,9 @@ private slots:
     void sciIndicClicked(Scintilla::Position position);
     void sciIndicReleased(Scintilla::Position position);
     void sciSelectionMenu(QContextMenuEvent *event);
+    void sciReplaced(const QString &file, Scintilla::Position start,
+                     Scintilla::Position end, const QString &text);
+    void renameRequest(const QString &newText);
 
 private:
     QList<lsp::Data> tokensCache;

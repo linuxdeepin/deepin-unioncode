@@ -45,6 +45,7 @@ public slots:
     void runningToLine(const QString &filePath, int line);
     void runningEnd();
     void debugPointClean();
+    void replaceRange(const QString &filePath, const lsp::Range &range,const QString &text);
 
 private slots:
     void setDefaultFileEdit();

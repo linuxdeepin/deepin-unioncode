@@ -88,6 +88,9 @@ class SciPositionCache
 {
     Scintilla::Position sciPosition = -1;
 public:
+    SciPositionCache(){}
+    SciPositionCache(const Scintilla::Position &pos)
+        : sciPosition(pos){}
     void clean()
     {
         sciPosition = -1;
@@ -168,6 +171,41 @@ public:
     }
 };
 
+class RenameCache : public EditorCache
+{
+    SciPositionCache start;
+    SciPositionCache end;
+public:
+    void clean()
+    {
+        EditorCache::clean();
+        start.clean();
+        end.clean();
+    }
+    bool isEmpty()
+    {
+        return EditorCache::isEmpty()
+                && start.isEmpty()
+                && end.isEmpty();
+    }
+    SciPositionCache getStart() const
+    {
+        return start;
+    }
+    void setStart(const SciPositionCache &value)
+    {
+        start = value;
+    }
+    SciPositionCache getEnd() const
+    {
+        return end;
+    }
+    void setEnd(const SciPositionCache &value)
+    {
+        end = value;
+    }
+};
+
 class CompletionCache : public EditorCache {};
 
 class StyleLspPrivate
@@ -178,6 +216,7 @@ class StyleLspPrivate
     DefinitionCache definitionCache;
     HoverCache hoverCache;
     RenamePopup renamePopup;
+    RenameCache renameCache;
     QString editText = "";
     uint editCount = 0;
     friend class StyleLsp;
@@ -206,7 +245,19 @@ lsp::Position StyleLsp::getLspPosition(sptr_t doc, sptr_t sciPosition)
 StyleLsp::StyleLsp()
     : d (new StyleLspPrivate())
 {
+    QObject::connect(&d->renamePopup, &RenamePopup::editingFinished,
+                     this, &StyleLsp::renameRequest, Qt::UniqueConnection);
 
+    QObject::connect(&d->renamePopup, &RenamePopup::editingFinished,
+                     [](){
+        qInfo() << "only shit mother fucker???";
+    });
+
+    QObject::connect(&client(), QOverload<const lsp::RenameChanges&>::of(&lsp::Client::requestResult),
+                     this, &StyleLsp::doRenameReplace);
+
+    QObject::connect(&client(), QOverload<const lsp::References&>::of(&lsp::Client::requestResult),
+                     RefactorWidget::instance(), &RefactorWidget::displayReference);
 }
 
 StyleLsp::~StyleLsp()
@@ -330,7 +381,6 @@ void StyleLsp::sciDefinitionHover(Scintilla::Position position)
 
     // 编辑器不相等, 直接刷新数据
     if  (edit != d->definitionCache.getEditor()) {
-        // qInfo() << "11111";
         d->definitionCache.setEditor(edit);
         d->definitionCache.setSciPosition(position);
         d->definitionCache.setTextRange(currTextRange);
@@ -339,11 +389,9 @@ void StyleLsp::sciDefinitionHover(Scintilla::Position position)
         d->definitionCache.setCursor(edit->cursor());
     } else { // 编辑器相等
         if (isSameTextRange) { // 相同的关键字不再触发Definition的绘制
-            // qInfo() << "22222";
             d->definitionCache.setSciPosition(position); // 更新坐标点
             return;
         } else {
-            // qInfo() << "33333";
             d->definitionCache.setTextRange(currTextRange);
             d->definitionCache.setSciPosition(position);
             d->definitionCache.setProvider({}); // 清空Provider
@@ -403,15 +451,14 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
     if (!edit)
         return;
 
+    d->renameCache.setEditor(edit);
+    d->renameCache.setStart(edit->selectionStart());
+    d->renameCache.setEnd(edit->selectionEnd());
+
     QPoint showPos = edit->mapToGlobal(event->pos());
     QByteArray sourceText = edit->textRange(
                 edit->wordStartPosition(edit->selectionStart(), true),
                 edit->wordEndPosition(edit->selectionEnd(), true));
-
-    QObject::connect(&d->renamePopup, &RenamePopup::editingFinished, [=](const QString &newName){
-        client().renameRequest(edit->file(), getLspPosition(edit->docPointer(), edit->selectionStart()) , newName);
-        //        client().referencesRequest(edit->file(), getLspPosition(edit->docPointer(), edit->selectionStart()));
-    });
 
     QMenu contextMenu;
     QMenu refactor(QMenu::tr("Refactor"));
@@ -423,13 +470,35 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
     });
     contextMenu.addMenu(&refactor);
 
-    QAction * findSymbol = contextMenu.addAction(QAction::tr("Find Usages"));
+    QAction *findSymbol = contextMenu.addAction(QAction::tr("Find Usages"));
     QObject::connect(findSymbol, &QAction::triggered, [&](){
         this->client().referencesRequest(edit->file(), getLspPosition(edit->docPointer(), edit->selectionStart()));
     });
 
     contextMenu.move(showPos);
     contextMenu.exec();
+}
+
+void StyleLsp::sciReplaced(const QString &file, Scintilla::Position start, Scintilla::Position end, const QString &text)
+{
+    auto edit = qobject_cast<ScintillaEditExtern*>(sender());
+    if (!edit)
+        return;
+
+    Q_UNUSED(start);
+    Q_UNUSED(end);
+    client().changeRequest(file, edit->textRange(0, edit->length()));
+}
+
+void StyleLsp::renameRequest(const QString &newText)
+{
+    auto editor = d->renameCache.getEditor();
+    auto sciPostion = d->renameCache.getStart().getSciPosition();
+    if (editor) {
+        client().renameRequest(editor->file(),
+                               getLspPosition(editor->docPointer(), sciPostion),
+                               newText);
+    }
 }
 
 lsp::Client &StyleLsp::client()
@@ -470,6 +539,7 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
     QObject::connect(editor, &ScintillaEditExtern::indicClicked, this, &StyleLsp::sciIndicClicked);
     QObject::connect(editor, &ScintillaEditExtern::indicReleased, this, &StyleLsp::sciIndicReleased);
     QObject::connect(editor, &ScintillaEditExtern::selectionMenu, this, &StyleLsp::sciSelectionMenu);
+    QObject::connect(editor, &ScintillaEditExtern::replaceed, this, &StyleLsp::sciReplaced);
 
     QObject::connect(editor, &ScintillaEditExtern::destroyed, this, [=](QObject *obj){
         auto itera = d->editors.begin();
@@ -520,12 +590,6 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
         if (!d->definitionCache.getEditor()) { return; }
         setDefinition(*d->definitionCache.getEditor(), provider);
     });
-
-    QObject::connect(&client(), QOverload<const lsp::RenameChanges&>::of(&lsp::Client::requestResult),
-                     RefactorWidget::instance(), &RefactorWidget::displayRename);
-
-    QObject::connect(&client(), QOverload<const lsp::References&>::of(&lsp::Client::requestResult),
-                     RefactorWidget::instance(), &RefactorWidget::displayReference);
 
     QObject::connect(&client(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [=](int code, auto status) {
@@ -784,5 +848,15 @@ void StyleLsp::cleanDefinition(ScintillaEdit &edit, const Scintilla::Position &p
         edit.setCursor(d->definitionCache.getCursor());
         //        edit.indicatorClearRange(hotSpotStart, hotSpotEnd);
         edit.indicatorClearRange(0, edit.length());
+    }
+}
+
+void StyleLsp::doRenameReplace(const lsp::RenameChanges &changes)
+{
+    for (auto change : changes) {
+        QString filePath = change.documentUri.toLocalFile();
+        for (auto edit : change.edits) {
+            TextEditTabWidget::instance()->replaceRange(filePath, edit.range, edit.newText);
+        }
     }
 }

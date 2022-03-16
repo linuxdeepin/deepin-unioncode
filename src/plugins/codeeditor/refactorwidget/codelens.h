@@ -12,7 +12,6 @@ class CodeLens : public QTreeView
     Q_OBJECT
 public:
     explicit CodeLens(QWidget *parent = nullptr);
-    void setData(const lsp::RenameChanges &changes);
     void setData(const lsp::References &refs);
 
 signals:

@@ -25,6 +25,7 @@ public:
     void runningEnd();
     void saveText();
     bool isLeave();
+    void replaceRange(Scintilla::Position start, Scintilla::Position end, const QString &text);
 
 signals:
     void hovered(Scintilla::Position position);
@@ -42,6 +43,8 @@ signals:
     void indicClicked(Scintilla::Position position);
     void indicReleased(Scintilla::Position position);
     void saved(const QString &file);
+    void replaceed(const QString &file, Scintilla::Position start,
+                   Scintilla::Position end, const QString &text);
     void selectionMenu(QContextMenuEvent *event);
 
 private slots:

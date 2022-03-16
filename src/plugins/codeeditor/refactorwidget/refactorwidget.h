@@ -14,7 +14,6 @@ public:
     explicit RefactorWidget(QWidget *parent = nullptr);
     virtual ~RefactorWidget();
     void displayReference(const lsp::References &data);
-    void displayRename(const lsp::RenameChanges &data);
 
 signals:
     void doubleClicked(const QString &filePath, const lsp::Range range);

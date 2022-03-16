@@ -15,7 +15,7 @@ class RenamePopupPrivate
     QLineEdit *renameEdit{nullptr};
     QLabel *renameLabel{nullptr};
     QVBoxLayout *vLayout{nullptr};
-    QEventLoop loop;
+    QEventLoop *loop{nullptr};
 };
 
 RenamePopup *RenamePopup::instance()
@@ -27,16 +27,18 @@ RenamePopup *RenamePopup::instance()
 RenamePopup::RenamePopup(QWidget *parent)
     :d (new RenamePopupPrivate())
 {
+
     RenamePopup::setWindowFlag(Qt::Popup, true);
 
+    d->loop = new QEventLoop();
     d->renameEdit = new QLineEdit();
     d->renameLabel = new QLabel();
     d->vLayout = new QVBoxLayout();
 
-    QObject::connect(d->renameEdit, &QLineEdit::editingFinished, [=](){
+    QObject::connect(d->renameEdit, &QLineEdit::returnPressed, [=](){
         emit this->editingFinished(d->renameEdit->text());
         this->close();
-        d->loop.exec();
+        d->loop->quit();
     });
 
     d->vLayout->addWidget(d->renameLabel);
@@ -47,6 +49,10 @@ RenamePopup::RenamePopup(QWidget *parent)
 RenamePopup::~RenamePopup()
 {
     if (d) {
+        if (d->loop) {
+            d->loop->quit();
+            delete d->loop;
+        }
         delete d;
     }
 }
@@ -63,15 +69,17 @@ QString RenamePopup::oldName()
 
 int RenamePopup::exec(const QPoint &pos)
 {
+    QEventLoop loop;
     this->move(pos);
     this->show();
-    return d->loop.exec();
+    return loop.exec();
 }
 
 int RenamePopup::exec()
 {
+    QEventLoop loop;
     this->show();
-    return d->loop.exec();
+    return loop.exec();
 }
 
 void RenamePopup::showEvent(QShowEvent *event)

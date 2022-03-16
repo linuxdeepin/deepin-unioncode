@@ -37,8 +37,3 @@ void RefactorWidget::displayReference(const lsp::References &data)
 {
     d->lens->setData(data);
 }
-
-void RefactorWidget::displayRename(const lsp::RenameChanges &data)
-{
-    d->lens->setData(data);
-}

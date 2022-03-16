@@ -25,6 +25,7 @@
 #include "style/stylekeeper.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
+#include "services/workspace/workspaceservice.h"
 
 #include <QGridLayout>
 #include <QFileInfo>
@@ -204,6 +205,64 @@ void TextEditTabWidget::debugPointClean()
 {
     for (auto editor : d->textEdits) {
         editor->debugPointAllDelete();
+    }
+}
+
+void TextEditTabWidget::replaceRange(const QString &filePath, const lsp::Range &range, const QString &text)
+{
+    auto editor = d->textEdits.value(filePath);
+    if (editor) {
+        auto set = StyleKeeper::create(editor->langueage());
+        if (set.lsp) {
+            auto start = set.lsp->getSciPosition(editor->docPointer(), range.start);
+            auto end = set.lsp->getSciPosition(editor->docPointer(), range.end);
+            editor->replaceRange(start, end, text);
+        }
+    } else { //直接更改磁盘数据
+        using namespace dpfservice;
+        auto &ctx = dpfInstance.serviceContext();
+        WorkspaceService *workspace = ctx.service<WorkspaceService>(WorkspaceService::name());
+        QStringList workspaceFolders;
+        if (workspace && workspace->findWorkspace) {
+            workspaceFolders = workspace->findWorkspace(filePath);
+        }
+        if (workspaceFolders.isEmpty()) {
+            return;
+        }
+        else {
+            if (range.start.line != range.end.line) {
+                qCritical() << "Failed, Unknown error";
+                abort();
+            }
+            QFile changeFile(filePath);
+            QString cacheData;
+            if (changeFile.open(QFile::ReadOnly)) {
+                int i = 0;
+                while (i != range.start.line) {
+                    cacheData += changeFile.readLine();
+                    i++;
+                }
+                QString changeLine = changeFile.readLine();
+                int removeLength = range.end.character - range.start.character;
+                changeLine = changeLine.replace(range.start.character, removeLength, text);
+                cacheData += changeLine;
+                QByteArray array = changeFile.readLine();
+                while (!array.isEmpty()) {
+                    cacheData += array;
+                    array = changeFile.readLine();
+                }
+                changeFile.close();
+            }
+
+            if (changeFile.open(QFile::WriteOnly | QFile::Truncate)) {
+               int writeCount = changeFile.write(cacheData.toLatin1());
+               if (writeCount != cacheData.size()) {
+                   qCritical() << "Failed, Unknown error";
+                   abort();
+               }
+               changeFile.close();
+            }
+        }
     }
 }
 

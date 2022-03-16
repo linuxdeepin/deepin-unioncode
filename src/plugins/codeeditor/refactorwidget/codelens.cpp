@@ -53,22 +53,6 @@ QString codeDataFormat(int line, const QString &codeText)
     return QString::number(line) + " " + codeText;
 }
 
-void CodeLens::setData(const lsp::RenameChanges &changes)
-{
-    auto model = qobject_cast<QStandardItemModel*>(CodeLens::model());
-    for(auto change : changes) {
-        QString filePath = change.documentUri.toLocalFile();
-        QStandardItem *fileItem = new QStandardItem(filePath);
-        model->appendRow(fileItem);
-        for (auto edit : change.edits) {
-            if (edit.range.end.line == edit.range.start.line) {
-                auto line = edit.range.start.line;
-                fileItem->appendRow(new QStandardItem());
-            }
-        }
-    }
-}
-
 void CodeLens::setData(const lsp::References &refs)
 {
     auto model = qobject_cast<QStandardItemModel*>(CodeLens::model());

@@ -181,6 +181,16 @@ bool ScintillaEditExtern::isLeave()
     return d->isLeave;
 }
 
+void ScintillaEditExtern::replaceRange(Scintilla::Position start,
+                                       Scintilla::Position end, const QString &text)
+{
+    clearSelections();
+    setSelectionStart(start);
+    setSelectionEnd(end);
+    replaceSel(text.toLatin1());
+    emit replaceed(file(), start, end, text);
+}
+
 void ScintillaEditExtern::sciModified(Scintilla::ModificationFlags type, Scintilla::Position position,
                                       Scintilla::Position length, Scintilla::Position linesAdded,
                                       const QByteArray &text, Scintilla::Position line,
