@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "windowkeeper.h"
-#include "sendevents.h"
+#include "transceiver/sendevents.h"
 #include "windowstatusbar.h"
 #include "services/window/windowservice.h"
 
@@ -33,10 +33,6 @@
 #include <QApplication>
 #include <QActionGroup>
 
-QHash<QString, QWidget *> centrals{};
-QMainWindow *window = nullptr;
-QActionGroup *navActionGroup = nullptr;
-QToolBar *toolbar = nullptr;
 const int minWidth = 1200;
 const int minHeight = 800;
 
@@ -51,7 +47,17 @@ const QString OPEN_RECENT_FOLDER { WindowKeeper::tr("Open Recent Folders") };
 const QString DIALOG_OPEN_DOCUMENT_TITLE { WindowKeeper::tr("Open Document") };
 const QString DIALOG_OPEN_FOLDER_TITLE { WindowKeeper::tr("Open Folder") };
 
+static WindowKeeper *ins{nullptr};
+
 using namespace dpfservice;
+class WindowKeeperPrivate
+{
+    friend class WindowKeeper;
+    QHash<QString, QWidget *> centrals{};
+    QMainWindow *window{nullptr};
+    QActionGroup *navActionGroup{nullptr};
+    QToolBar *toolbar{nullptr};
+};
 
 void WindowKeeper::createFileActions(QMenuBar *menuBar)
 {
@@ -169,7 +175,7 @@ void WindowKeeper::createNavRecent(QToolBar *toolbar)
 
     QAction* navRecent = new QAction(toolbar);
     navRecent->setCheckable(true);
-    navActionGroup->addAction(navRecent);
+    d->navActionGroup->addAction(navRecent);
     navRecent->setText(QString::fromStdString(NAVACTION_RECENT));
     QAction::connect(navRecent, &QAction::triggered, [=](){
         SendEvents::navRecentShow(); //recent show event
@@ -185,7 +191,7 @@ void WindowKeeper::createNavEdit(QToolBar *toolbar)
 
     QAction* navEdit = new QAction(toolbar);
     navEdit->setCheckable(true);
-    navActionGroup->addAction(navEdit);
+    d->navActionGroup->addAction(navEdit);
     navEdit->setText(QString::fromStdString(NAVACTION_EDIT));
     QAction::connect(navEdit, &QAction::triggered, [=](){
         SendEvents::navEditShow();
@@ -202,7 +208,7 @@ void WindowKeeper::createNavDebug(QToolBar *toolbar)
 
     QAction* navDebug = new QAction(toolbar);
     navDebug->setCheckable(true);
-    navActionGroup->addAction(navDebug);
+    d->navActionGroup->addAction(navDebug);
     navDebug->setText(QString::fromStdString(NAVACTION_DEBUG));
     QAction::connect(navDebug, &QAction::triggered, [=](){
         SendEvents::navDebugShow();
@@ -219,7 +225,7 @@ void WindowKeeper::createNavRuntime(QToolBar *toolbar)
 
     QAction *navRuntime = new QAction(toolbar);
     navRuntime->setCheckable(true);
-    navActionGroup->addAction(navRuntime);
+    d->navActionGroup->addAction(navRuntime);
     navRuntime->setText(QString::fromStdString(NAVACTION_RUNTIME));
     QAction::connect(navRuntime, &QAction::triggered, [=](){
         SendEvents::navRuntimeShow();
@@ -231,14 +237,14 @@ void WindowKeeper::createNavRuntime(QToolBar *toolbar)
 void WindowKeeper::layoutWindow(QMainWindow *window)
 {
     qInfo() << __FUNCTION__;
-    if (!navActionGroup)
-        navActionGroup = new QActionGroup(this);
+    if (!d->navActionGroup)
+        d->navActionGroup = new QActionGroup(window);
 
-    toolbar = new QToolBar();
-    createNavRecent(toolbar);
-    createNavEdit(toolbar);
-    createNavDebug(toolbar);
-    createNavRuntime(toolbar);
+    d->toolbar = new QToolBar(QToolBar::tr("Navigation"));
+    createNavRecent(d->toolbar);
+    createNavEdit(d->toolbar);
+    createNavDebug(d->toolbar);
+    createNavRuntime(d->toolbar);
 
     QMenuBar* menuBar = new QMenuBar();
     createFileActions(menuBar);
@@ -249,14 +255,22 @@ void WindowKeeper::layoutWindow(QMainWindow *window)
 
     createStatusBar(window);
 
-    window->addToolBar(Qt::LeftToolBarArea, toolbar);
+    window->addToolBar(Qt::LeftToolBarArea, d->toolbar);
     window->setMinimumSize(QSize(minWidth,minHeight));
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->setMenuBar(menuBar);
 }
 
+WindowKeeper *WindowKeeper::instace()
+{
+    if (!ins)
+        ins = new WindowKeeper;
+    return ins;
+}
+
 WindowKeeper::WindowKeeper(QObject *parent)
-    :QObject (parent)
+    : QObject (parent)
+    , d (new WindowKeeperPrivate)
 {
     qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
@@ -266,18 +280,19 @@ WindowKeeper::WindowKeeper(QObject *parent)
         windowService->name();
     }
 
-    if (!window) {
-        window = new QMainWindow();
-        window->setWindowTitle("Union Code");
-        layoutWindow(window);
-        QMainWindow::connect(window, &QMainWindow::destroyed, [=](){
-            window = nullptr;
+    if (!d->window) {
+        d->window = new QMainWindow();
+        d->window->setWindowTitle("Union Code");
+        QObject::connect(d->window, &QMainWindow::destroyed, [&](){
+            d->window->takeCentralWidget();
         });
-        window->show();
+        layoutWindow(d->window);
+        d->window->show();
     }
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
                      this, &WindowKeeper::initUserWidget);
+
     using namespace std::placeholders;
     if (!windowService->addMenu) {
         windowService->addMenu = std::bind(&WindowKeeper::addMenu, this, _1);
@@ -296,6 +311,28 @@ WindowKeeper::WindowKeeper(QObject *parent)
     }
 }
 
+WindowKeeper::~WindowKeeper()
+{
+    if (d) {
+        delete d;
+    }
+}
+
+QActionGroup *WindowKeeper::navActionGroup() const
+{
+    return d->navActionGroup;
+}
+
+QMainWindow *WindowKeeper::mainWindow() const
+{
+    return d->window;
+}
+
+QHash<QString, QWidget *> WindowKeeper::centrals() const
+{
+    return d->centrals;
+}
+
 void WindowKeeper::addNavAction(AbstractAction *action)
 {
     Q_UNUSED(action);
@@ -309,10 +346,11 @@ void WindowKeeper::addCentral(const QString &navName, AbstractCentral *central)
     if(!central || !inputWidget || navName.isEmpty())
         return;
 
-    if (centrals.values().contains(inputWidget))
+    if (d->centrals.values().contains(inputWidget))
         return;
 
-    centrals.insert(navName, inputWidget);
+    inputWidget->setParent(d->window);
+    d->centrals.insert(navName, inputWidget);
 }
 
 void WindowKeeper::addMenu(AbstractMenu *menu)
@@ -320,19 +358,19 @@ void WindowKeeper::addMenu(AbstractMenu *menu)
     qInfo() << __FUNCTION__;
 
     QMenu *inputMenu = static_cast<QMenu*>(menu->qMenu());
-    if (!window || !inputMenu)
+    if (!d->window || !inputMenu)
         return;
 
     //始终将Helper置末
-    for (QAction *action : window->menuBar()->actions()) {
+    for (QAction *action : d->window->menuBar()->actions()) {
         if (action->text() == QString::fromStdString(MENU_HELP)) {
-            window->menuBar()->insertMenu(action, inputMenu);
+            d->window->menuBar()->insertMenu(action, inputMenu);
             return; //提前返回
         }
     }
 
     //直接添加到最后
-    window->menuBar()->addMenu(inputMenu);
+    d->window->menuBar()->addMenu(inputMenu);
 }
 
 void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
@@ -342,7 +380,7 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
     if (!action || !inputAction)
         return;
 
-    for (QAction *qaction : window->menuBar()->actions()) {
+    for (QAction *qaction : d->window->menuBar()->actions()) {
         if (qaction->text() == menuName) {
             if (qaction->text() == QString::fromStdString(MENU_FILE)) {
                 auto endAction = *(qaction->menu()->actions().rbegin());
@@ -358,7 +396,7 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
 void WindowKeeper::initUserWidget()
 {
     qApp->processEvents();
-    if (toolbar->actions().size() > 0) {
-        toolbar->actions().at(0)->trigger();
+    if (d->toolbar->actions().size() > 0) {
+        d->toolbar->actions().at(0)->trigger();
     }
 }

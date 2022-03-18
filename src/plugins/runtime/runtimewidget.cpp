@@ -31,50 +31,44 @@
 #include <QPushButton>
 #include <QStyleFactory>
 
+static RuntimeWidget *ins{nullptr};
 class RuntimeWidgetPrivate
 {
     friend class RuntimeWidget;
-    QVBoxLayout *leftLayout = nullptr;
-    QVBoxLayout *rightLayout = nullptr;
-    QGroupBox *folderGroupBox = nullptr;
-    QComboBox *openFolderBox = nullptr;
-    QPushButton *openNewFolder = nullptr;
-    ConfigureWidget *configWidget = nullptr;
+    QVBoxLayout *leftLayout{nullptr};
+    QVBoxLayout *rightLayout{nullptr};
+    QGroupBox *folderGroupBox{nullptr};
+    QComboBox *openFolderBox{nullptr};
+    QPushButton *openNewFolder{nullptr};
+    ConfigureWidget *configWidget{nullptr};
 };
+
+RuntimeWidget *RuntimeWidget::instance()
+{
+    if (!ins)
+        ins = new RuntimeWidget();
+    return ins;
+}
 
 RuntimeWidget::RuntimeWidget(QWidget *parent)
     : QSplitter (parent)
     , d(new RuntimeWidgetPrivate())
 {
-    if (!d->leftLayout)
-        d->leftLayout = new QVBoxLayout();
-
-    if (!d->folderGroupBox)
-        d->folderGroupBox = new QGroupBox(tr("Open Folder"));
+    d->leftLayout = new QVBoxLayout();
+    d->folderGroupBox = new QGroupBox(tr("Open Folder"));
+    d->openFolderBox = new QComboBox();
+    d->openNewFolder = new QPushButton(tr("Open New Folder"));
     d->folderGroupBox->setLayout(d->leftLayout);
-
-    if (!d->openFolderBox)
-        d->openFolderBox = new QComboBox();
     d->leftLayout->addWidget(d->openFolderBox, 0, Qt::AlignTop);
-
-    if (!d->openNewFolder)
-        d->openNewFolder = new QPushButton(tr("Open New Folder"));
     d->leftLayout->addWidget(d->openNewFolder, 0, Qt::AlignTop);
     d->leftLayout->addStretch();
-
-    // test project name
-    d->openFolderBox->addItems({"unioncode", "dde-file-manager"});
-
-    if (!d->configWidget)
-        d->configWidget = new ConfigureWidget();
-
+    d->openFolderBox->addItems({"unioncode", "dde-file-manager"});// test project name
+    d->configWidget = new ConfigureWidget(this);
     d->configWidget->addCollapseWidget(new CollapseWidget("Runtime Env", new EnvironmentWidget));
     d->configWidget->addCollapseWidget(new CollapseWidget("Debug Env", new EnvironmentWidget));
-
     addWidget(d->folderGroupBox);
     addWidget(d->configWidget);
     setStretchFactor(1, 3);
-
     setChildrenCollapsible(false);
 }
 

@@ -27,6 +27,7 @@ const QString T_CODEEDITOR {"CodeEditor"};
 const QString T_DEBUGGER {"Debugger"};
 const QString T_BUILDER {"Builder"};
 const QString T_WORKSPACE {"Workspace"};
+const QString T_RECENT{"Recent"};
 
 const QString D_RECENT_SHOW {"Recent.Show"};
 const QString D_RECENT_HIDE {"Recent.Hide"};

@@ -20,11 +20,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "codeeditor.h"
-#include "mainframe/naveditframe.h"
+#include "mainframe/naveditmainwindow.h"
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
+#include "textedittabwidget/textedittabwidget.h"
 #include "textedittabwidget/style/stylekeeper.h"
 #include "textedittabwidget/style/stylejsonfile.h"
 #include "services/window/windowservice.h"
@@ -57,26 +58,27 @@ bool CodeEditor::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
-        NavEditFrame *navEditWidget = new NavEditFrame;
-
+        NavEditMainWindow *navEditWindow = NavEditMainWindow::instance();
+        TextEditTabWidget *editTabWidget = TextEditTabWidget::instance();
+        navEditWindow->setEditWidget(new AbstractCentral(editTabWidget));
         windowService->addCentral(QString::fromStdString(NAVACTION_EDIT),
-                                  new AbstractCentral(navEditWidget));
+                                  new AbstractCentral(navEditWindow));
 
         using namespace std::placeholders;
         if (!windowService->setEditorTree) {
-            windowService->setEditorTree = std::bind(&NavEditFrame::setTreeWidget, navEditWidget, _1);
+            windowService->setEditorTree = std::bind(&NavEditMainWindow::setTreeWidget, navEditWindow, _1);
         };
 
         if (!windowService->setEditorConsole) {
-            windowService->setEditorConsole = std::bind(&NavEditFrame::setConsole, navEditWidget, _1);
+            windowService->setEditorConsole = std::bind(&NavEditMainWindow::setConsole, navEditWindow, _1);
         }
 
         if (!windowService->addContextWidget) {
-            windowService->addContextWidget = std::bind(&NavEditFrame::addContextWidget, navEditWidget, _1, _2);
+            windowService->addContextWidget = std::bind(&NavEditMainWindow::addContextWidget, navEditWindow, _1, _2);
         }
 
         if (!windowService->setWatchWidget) {
-            windowService->setWatchWidget = std::bind(&NavEditFrame::setWatchWidget, navEditWidget, _1);
+            windowService->setWatchWidget = std::bind(&NavEditMainWindow::setWatchWidget, navEditWindow, _1);
         }
 
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);

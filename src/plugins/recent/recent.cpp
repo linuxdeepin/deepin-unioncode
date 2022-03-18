@@ -25,6 +25,8 @@
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
+#include "mainframe/recentdisplay.h"
+#include "transceiver/recentreceiver.h"
 
 #include <QAction>
 #include <QLabel>
@@ -43,8 +45,14 @@ bool Recent::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
-        windowService->addCentral(QString::fromStdString(NAVACTION_RECENT),
-                                  new AbstractCentral(new QLabel("Recent Text Widget")));
+        QObject::connect(RecentProxy::instance(), &RecentProxy::addFolder,
+                         RecentDisplay::instance(), &RecentDisplay::addFolder);
+        QObject::connect(RecentProxy::instance(), &RecentProxy::addDocument,
+                         RecentDisplay::instance(), &RecentDisplay::addDocument);
+        auto recentWidgetImpl = new AbstractCentral(RecentDisplay::instance());
+        if (windowService->addCentral) {
+            windowService->addCentral(QString::fromStdString(NAVACTION_RECENT), recentWidgetImpl);
+        }
     }
     return true;
 }

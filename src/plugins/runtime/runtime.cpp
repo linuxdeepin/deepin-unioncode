@@ -39,9 +39,8 @@ bool Runtime::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
-        //发布Console到edit导航栏界面布局
         emit windowService->addCentral(QString::fromStdString(NAVACTION_RUNTIME),
-                                       new AbstractCentral(new RuntimeWidget));
+                                       new AbstractCentral(RuntimeWidget::instance()));
     }
     return true;
 }

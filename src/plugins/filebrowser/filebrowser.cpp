@@ -39,7 +39,6 @@ using namespace dpfservice;
 
 const int treeWidgtMinWidth = 70;
 const int treeWidgetMinHeight = 400;
-const QString EXPLORER_TEXT = FileBrowser::tr("Explorer");
 
 void FileBrowser::initialize()
 {
@@ -70,7 +69,6 @@ AbstractWidget *FileBrowser::createTreeWidget()
     gridLayout->setSpacing(0);
     gridLayout->setMargin(0);
     treeWidget->setLayout(gridLayout);
-    gridLayout->addWidget(new QLabel(EXPLORER_TEXT));
 
     TreeView* treeView = new TreeView();
     treeView->setMinimumSize({treeWidgtMinWidth, treeWidgetMinHeight});

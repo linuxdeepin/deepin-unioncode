@@ -20,8 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "core.h"
-#include "windowkeeper.h"
-#include "windowtheme.h"
+#include "mainframe/windowkeeper.h"
+#include "mainframe/windowtheme.h"
 #include "services/window/windowservice.h"
 
 #include <framework/framework.h>
@@ -33,8 +33,6 @@
 #include <QFileDialog>
 
 using namespace dpfservice;
-
-static WindowKeeper *windowKeeper = nullptr;
 
 void Core::initialize()
 {
@@ -52,18 +50,13 @@ void Core::initialize()
 bool Core::start()
 {
     qInfo() << "set Application Theme";
+    WindowKeeper::instace();
     WindowTheme::setTheme(":/dark-one.css");
-
-    //创建窗口管理器
-    if (!windowKeeper) {
-        windowKeeper = new WindowKeeper();
-    }
-
     return true;
 }
 
 dpf::Plugin::ShutdownFlag Core::stop()
 {
-    delete windowKeeper;
+    delete WindowKeeper::instace();
     return Sync;
 }

@@ -26,7 +26,9 @@ AbstractCentral::AbstractCentral(void *qwidget)
 
 AbstractCentral::~AbstractCentral()
 {
-
+    if (d) {
+        delete d;
+    }
 }
 
 void *AbstractCentral::qWidget()

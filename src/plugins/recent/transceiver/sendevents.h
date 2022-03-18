@@ -18,25 +18,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNTIMEWIDGET_H
-#define RUNTIMEWIDGET_H
+#ifndef SENDEVENTS_H
+#define SENDEVENTS_H
 
-#include <QWidget>
-#include <QSplitter>
+#include <QString>
 
-class RuntimeWidgetPrivate;
-class RuntimeWidget : public QSplitter
+class SendEvents final
 {
-    Q_OBJECT
-    RuntimeWidgetPrivate *const d;
+    SendEvents() = delete;
+    SendEvents(const SendEvents &) = delete;
 public:
-    static RuntimeWidget *instance();
-    explicit RuntimeWidget(QWidget *parent = nullptr);
-    virtual ~RuntimeWidget();
-
-signals:
-
-public slots:
+    static void navEditShow();
+    static void recentOpenFile(const QString &filePath);
+    static void recentOpenDirectory(const QString &filePath);
 };
 
-#endif // RUNTIMEWIDGET_H
+#endif // SENDEVENTS_H

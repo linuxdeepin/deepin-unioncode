@@ -30,6 +30,8 @@
 #include <QGridLayout>
 #include <QFileInfo>
 
+static TextEditTabWidget *ins{nullptr};
+
 class TextEditTabWidgetPrivate
 {
     friend class TextEditTabWidget;
@@ -96,18 +98,17 @@ TextEditTabWidget::~TextEditTabWidget()
         auto itera = d->textEdits.begin();
         while (itera != d->textEdits.end()){
             delete itera.value(); // free instance
-            *itera = nullptr; // set instance nullptr
-            itera ++;
+            itera = d->textEdits.erase(itera);
         }
-        d->textEdits.clear(); // clear hash
         delete d; // free private
     }
 }
 
 TextEditTabWidget *TextEditTabWidget::instance()
 {
-    static TextEditTabWidget widget;
-    return &widget;
+    if (!ins)
+        ins = new TextEditTabWidget;
+    return ins;
 }
 
 void TextEditTabWidget::openFile(const QString &filePath, const QString &rootPath)
@@ -255,12 +256,12 @@ void TextEditTabWidget::replaceRange(const QString &filePath, const lsp::Range &
             }
 
             if (changeFile.open(QFile::WriteOnly | QFile::Truncate)) {
-               int writeCount = changeFile.write(cacheData.toLatin1());
-               if (writeCount != cacheData.size()) {
-                   qCritical() << "Failed, Unknown error";
-                   abort();
-               }
-               changeFile.close();
+                int writeCount = changeFile.write(cacheData.toLatin1());
+                if (writeCount != cacheData.size()) {
+                    qCritical() << "Failed, Unknown error";
+                    abort();
+                }
+                changeFile.close();
             }
         }
     }

@@ -22,38 +22,9 @@
 #include "console.h"
 #include "base/abstractconsole.h"
 #include "services/window/windowservice.h"
-#include "qtermwidget.h" // 3drparty
-#include "ColorScheme.h"
+#include "consolewidget.h"
 
 using namespace dpfservice;
-
-class ConsoleWidget : public QTermWidget
-{
-public:
-    ConsoleWidget(QWidget *parent = nullptr)
-        : QTermWidget(parent)
-    {
-        setMargin(0);
-        setTerminalOpacity(0);
-        setForegroundRole(QPalette::ColorRole::Background);
-        setAutoFillBackground(true);
-        if (availableColorSchemes().contains("Linux"))
-            setColorScheme("Linux");
-        if (availableKeyBindings().contains("linux"))
-            setKeyBindings("linux");
-        setScrollBarPosition(QTermWidget::ScrollBarRight);
-        setTerminalSizeHint(false);
-        setAutoClose(false);
-        changeDir(QDir::homePath());
-        sendText("clear\n");
-    }
-
-    virtual ~ConsoleWidget()
-    {
-        qInfo() << __FUNCTION__;
-    }
-};
-
 void Console::initialize()
 {
     qInfo() << __FUNCTION__;
@@ -69,10 +40,8 @@ bool Console::start()
 
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-
     if (windowService) {
-        ConsoleWidget* console = new ConsoleWidget();
-        emit windowService->setEditorConsole(new AbstractConsole(console));
+        windowService->setEditorConsole(new AbstractConsole(ConsoleWidget::instance()));
     }
     return true;
 }

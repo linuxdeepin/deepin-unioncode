@@ -39,17 +39,21 @@ class QMenuBar;
 class QToolBar;
 class QActionGroup;
 
-extern QHash<QString, QWidget *> centrals;
-extern QMainWindow *window;
-extern QActionGroup *navActionGroup;
-extern QToolBar *toolbar;
+class WindowKeeperPrivate;
 class WindowKeeper final :public QObject
 {
     Q_OBJECT
+    WindowKeeperPrivate *const d;
     friend class WindowSwitcher;
 
 public:
+    static WindowKeeper *instace();
     explicit WindowKeeper(QObject *parent = nullptr);
+    virtual ~WindowKeeper();
+    QActionGroup *navActionGroup() const;
+    QMainWindow *mainWindow() const;
+    QHash<QString, QWidget *> centrals() const;
+
 
 public slots:
     void addNavAction(AbstractAction *action);

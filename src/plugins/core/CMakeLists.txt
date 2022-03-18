@@ -3,25 +3,25 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-core)
 
 set(CXX_CPP
-    windowtheme.cpp
-    windowswitcher.cpp
-    windowkeeper.cpp
-    windowstatusbar.cpp
-    progressbar.cpp
-    optionsdialog.cpp
-    sendevents.cpp
+    mainframe/windowtheme.cpp
+    mainframe/windowswitcher.cpp
+    mainframe/windowkeeper.cpp
+    mainframe/windowstatusbar.cpp
+    mainframe/progressbar.cpp
+    mainframe/optionsdialog.cpp
+    transceiver/sendevents.cpp
     core.cpp
     core.json
     )
 
 set(CXX_H
-    windowtheme.h
-    windowswitcher.h
-    windowkeeper.h
-    windowstatusbar.h
-    progressbar.h
-    optionsdialog.h
-    sendevents.h
+    mainframe/windowtheme.h
+    mainframe/windowswitcher.h
+    mainframe/windowkeeper.h
+    mainframe/windowstatusbar.h
+    mainframe/progressbar.h
+    mainframe/optionsdialog.h
+    transceiver/sendevents.h
     core.h
     )
 

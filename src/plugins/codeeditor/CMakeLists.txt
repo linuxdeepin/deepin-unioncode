@@ -9,7 +9,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR true)
 add_definitions(-DLIBRARY_INSTALL_PREFIX="${LIBRARY_INSTALL_PREFIX}")
 
 set(CXX_CPP
-    mainframe/naveditframe.cpp
+#    mainframe/naveditframe.cpp
+    mainframe/naveditmainwindow.cpp
     transceiver/sendevents.cpp
     transceiver/codeeditorreceiver.cpp
     refactorwidget/codelentype.cpp
@@ -36,7 +37,8 @@ set(CXX_CPP
     )
 
 set(CXX_H
-    mainframe/naveditframe.h
+#    mainframe/naveditframe.h
+    mainframe/naveditmainwindow.h
     transceiver/sendevents.h
     transceiver/codeeditorreceiver.h
     refactorwidget/codelentype.h

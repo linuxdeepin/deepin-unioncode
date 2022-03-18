@@ -41,11 +41,6 @@ bool ToolChecker::start()
     qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-
-    if (windowService) {
-        windowService->addCentral(QString::fromStdString(NAVACTION_RECENT),
-                                  new AbstractCentral(new QLabel("Recent Text Widget")));
-    }
     return true;
 }
 

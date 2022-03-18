@@ -84,6 +84,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
     }
 }
 
+
 DpfEventMiddleware *DpfEventMiddleware::instance()
 {
     static DpfEventMiddleware ins;

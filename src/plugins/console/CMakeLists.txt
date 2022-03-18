@@ -7,11 +7,13 @@ include(${CMAKE_SOURCE_DIR}/3rdparty/qtermwidget-0.14.1.cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR true)
 
 set(CXX_CPP
+    consolewidget.cpp
     console.cpp
     console.json
     )
 
 set(CXX_H
+    consolewidget.h
     console.h
     )
 

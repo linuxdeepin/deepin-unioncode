@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "windowswitcher.h"
+#include "windowkeeper.h"
 #include "common/common.h"
 
 #include <QGridLayout>
@@ -26,10 +27,13 @@
 
 void setNavActionChecked(const QString ActionName, bool checked)
 {
-    if (navActionGroup->actions().size() > 0) {
-        for (auto action : navActionGroup->actions()) {
-            if (action->text() == ActionName){
-                action->setChecked(checked);
+    auto navActionGroup = WindowKeeper::instace()->navActionGroup();
+    if (navActionGroup) {
+        if (navActionGroup->actions().size() > 0) {
+            for (auto action : navActionGroup->actions()) {
+                if (action->text() == ActionName){
+                    action->setChecked(checked);
+                }
             }
         }
     }
@@ -65,6 +69,8 @@ void WindowSwitcher::eventProcess(const dpf::Event &event)
 void WindowSwitcher::navEvent(const dpf::Event &event)
 {
     qInfo() << __FUNCTION__;
+    auto centrals = WindowKeeper::instace()->centrals();
+    auto window = WindowKeeper::instace()->mainWindow();
     for (const QString &navName : centrals.keys()) {
         QString data = event.data().toString();
         QWidget *widget = centrals.value(navName);
@@ -72,8 +78,10 @@ void WindowSwitcher::navEvent(const dpf::Event &event)
             continue;
 
         if (data.contains(navName) && data.contains("Show")) {
-            window->takeCentralWidget();
-            window->setCentralWidget(widget);
+            if (window) {
+                window->takeCentralWidget();
+                window->setCentralWidget(widget);
+            }
             setNavActionChecked(navName, true);
             widget->show();
         } else {
