@@ -36,6 +36,7 @@
 #include "common/dialog/contextdialog.h"
 
 #include <QDateTime>
+#include <QTextBlock>
 
 /**
  * @brief Debugger::Debugger
@@ -272,7 +273,8 @@ void Debugger::registerDapHandlers()
         if (event.reason == "function breakpoint"
             || event.reason == "breakpoint"
             || event.reason == "step"
-                || event.reason == "breakpoint-hit") {
+                || event.reason == "breakpoint-hit"
+                || event.reason == "function-finished") {
 
             if (event.threadId) {
                 threadId = event.threadId.value(0);
@@ -344,7 +346,7 @@ void Debugger::registerDapHandlers()
         Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "ExitedEvent";
-        printOutput(tr("\nThe debugee has Exited.\n"), NormalMessageFormat);
+        printOutput(tr("The debugee has Exited.\n"), NormalMessageFormat);
         updateRunState(kNoRun);
     });
 
@@ -478,9 +480,16 @@ void Debugger::printOutput(const QString &content, OutputFormat format)
 {
     QString outputContent = content;
     if (format == NormalMessageFormat) {
+        QTextDocument *doc = outputPane->document();
+        QTextBlock tb = doc->lastBlock();
+        QString lastLineText = tb.text();
+        QString prefix = "\n";
+        if (lastLineText.isEmpty()) {
+            prefix = "";
+        }
         QDateTime curDatetime = QDateTime::currentDateTime();
         QString time = curDatetime.toString("hh:mm:ss");
-        outputContent = time + ":" + content + "\n";
+        outputContent = prefix + time + ":" + content + "\n";
     }
     QMetaObject::invokeMethod(outputPane.get(), "appendText",
                               Q_ARG(QString, outputContent), Q_ARG(OutputFormat, format));

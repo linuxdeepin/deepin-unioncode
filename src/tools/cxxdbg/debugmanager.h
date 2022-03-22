@@ -180,6 +180,7 @@ public slots:
     void breakInfo(int bpid);
     void breakList();
     void breakRemove(int bpid);
+    void breakRemoveAll();
     void breakInsert(const QString& path);
 
     void loadExecutable(const QString& file);

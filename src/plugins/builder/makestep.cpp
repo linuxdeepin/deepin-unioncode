@@ -32,8 +32,10 @@ MakeStep::MakeStep(QObject *parent) : BuildStep(parent)
 
 void MakeStep::run()
 {
+    emit addOutput("Build starts", OutputFormat::NormalMessage);
     runCMake();
     runMake();
+    emit addOutput("Build has finished", OutputFormat::NormalMessage);
 }
 
 bool MakeStep::runMake()

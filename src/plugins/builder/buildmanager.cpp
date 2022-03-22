@@ -27,6 +27,7 @@
 #include "menumanager.h"
 
 #include <QtConcurrent>
+#include <QTextBlock>
 
 using namespace dpfservice;
 BuildManager *BuildManager::instance()
@@ -71,26 +72,38 @@ BuildOutputPane *BuildManager::getOutputPane() const
 
 void BuildManager::destroy()
 {
-    if (outputPane) {
-        delete outputPane;
-    }
-
     // Wait for finished.
     QMutexLocker locker(&releaseMutex);
+
+    // Do something.
 }
 
 void BuildManager::slotOutput(const QString &content, BuildStep::OutputFormat format)
 {
-    outputPane->appendText(content, format);
+    QString outputContent = content;
+    if (format == BuildStep::NormalMessage) {
+        QTextDocument *doc = outputPane->document();
+        QTextBlock tb = doc->end();
+        QString lastLineText = tb.text();
+        QString prefix = "\n";
+        if (lastLineText.isEmpty() || lastLineText.endsWith("\n")) {
+            prefix = "";
+        }
+        QDateTime curDatetime = QDateTime::currentDateTime();
+        QString time = curDatetime.toString("hh:mm:ss");
+        outputContent = prefix + time + ":" + content + "\n";
+    }
+
+    outputPane->appendText(outputContent, format);
 }
 
 void BuildManager::buildProject()
 {
     // TODO(mozart):steps should get from other place.
     auto buildList = project->activeTarget()->getbuildSteps();
-    if (buildList.size() > 0)
+    if (buildList.size() > 0) {
         BuildManager::instance()->buildList(buildList);
-    else {
+    } else {
         BuildManager::instance()->getOutputPane()->appendText("Nothing to do.");
     }
 }

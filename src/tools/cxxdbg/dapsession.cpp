@@ -783,36 +783,39 @@ dap::SetBreakpointsResponse DapSession::handleBreakpointReq(const SetBreakpoints
     // breakpoints : [{"line": 26}, {"line": 30}]
     // source : {"path": "/home/zhxiao/workspaces/qtcreator/demo/main.cpp"}
 
+    dap::SetBreakpointsResponse response;
+
     if (request.breakpoints.has_value()) {
-        dap::array<dap::Breakpoint> breakpoints;
-        for (auto &breakpoint : request.breakpoints.value()) {
-            dap::Breakpoint bp;
-            dap::Source source;
-            QString location;
-            if (request.source.path.has_value()) {
-                source = request.source;
+        if (0 == request.breakpoints.value().size()) {
+            debugger->breakRemoveAll();
+        } else {
+            dap::array<dap::Breakpoint> breakpoints;
+            for (auto &breakpoint : request.breakpoints.value()) {
+                dap::Breakpoint bp;
+                dap::Source source;
+                QString location;
+                if (request.source.path.has_value()) {
+                    source = request.source;
+                }
+                location = source.path.value().c_str();
+                location.append(":");
+                location.append(QString::number(breakpoint.line));
+                emit GDBProxy::instance()->sigBreakInsert(location);
+
+                bp.line = breakpoint.line;
+                bp.source = request.source;
+                breakpoints.push_back(bp);
             }
-            location = source.path.value().c_str();
-            location.append(":");
-            location.append(QString::number(breakpoint.line));
-            emit GDBProxy::instance()->sigBreakInsert(location);
 
-            bp.line = breakpoint.line;
-            bp.source = request.source;
-            breakpoints.push_back(bp);
+            // Generic response
+            printf("--> Server sent  setBreakpoints response to client\n");
+            response.breakpoints = breakpoints;
         }
-        dap::SetBreakpointsResponse response;
-
-        // Generic response
-        printf("--> Server sent  setBreakpoints response to client\n");
-        response.breakpoints = breakpoints;
-        return response;
     }
 
     // return empty response to client, when lines and breakpoints all empty.
     // Generic response
     printf("--> Server sent  setBreakpoints response to client\n");
-    dap::SetBreakpointsResponse response;
     return response;
 }
 

@@ -522,6 +522,13 @@ void DebugManager::breakRemove(int bpid)
     });
 }
 
+void DebugManager::breakRemoveAll()
+{
+    commandAndResponse(QString{"-break-delete"}, [this](const QVariant&) {
+        self->breakpoints.clear();
+    });
+}
+
 void DebugManager::breakInsert(const QString &path)
 {
     commandAndResponse(QString{"-break-insert %1"}.arg(path), [this](const QVariant& r) {
