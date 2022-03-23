@@ -94,6 +94,7 @@ public slots:
     void slotFrameSelected(const QModelIndex &index);
     void slotBreakpointSelected(const QModelIndex &index);
     bool showStoppedBySignalMessageBox(QString meaning, QString name);
+    void message(QString msg);
 
 private:
     void handleFrames(const StackFrames &stackFrames);

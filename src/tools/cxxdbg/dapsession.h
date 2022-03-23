@@ -67,19 +67,12 @@ private:
     std::unique_ptr<dap::Session> session;
     std::unique_ptr<dap::net::Server> server;
 
-    bool isConfiguratedDone = false;
-
     bool isDebuggeIsStartWithLaunchRequest = false;
     bool isDebuggeIsStartWithAttachRequest = false;
     bool isSupportsTerminateDebuggee = true;
-    bool isGdbProcessStarted = false;
     bool isGDbProcessTerminated = false;
-    bool isLaunchLocalTarget = false;
     bool isThreadRequestReceived = false;
     bool isInferiorStopped = false;
-    bool isStackframesUpdated = false;
-    bool isBreakpointHit = false;
-    bool isSteppingRangeEnd = false;
 
     QString currentFile;
     qint64 currentLine;

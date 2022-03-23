@@ -91,7 +91,7 @@ QTreeView *Debugger::getBreakpointPane() const
 void Debugger::startDebug()
 {
     if (targetPath.isEmpty()) {
-        ContextDialog::ok("Please build first.\n build:ctrl+b");
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Please build first.\n Build : Ctrl + B"));
         return;
     }
 
@@ -99,8 +99,14 @@ void Debugger::startDebug()
 
     // Setup debug environment.
     auto iniRequet = rtCfgProvider->initalizeRequest();
+    int port = rtCfgProvider->port();
+    if (!port) {
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Could not find server port!"));
+        return;
+    }
+
     bool bSuccess = session->initialize(rtCfgProvider->ip(),
-                                        rtCfgProvider->port(),
+                                        port,
                                         iniRequet);
 
     // Launch debuggee.
@@ -601,4 +607,9 @@ void Debugger::updateRunState(Debugger::RunState state)
         }
         emit runStateChanged(runState);
     }
+}
+
+void Debugger::message(QString msg)
+{
+    ContextDialog::ok(msg);
 }

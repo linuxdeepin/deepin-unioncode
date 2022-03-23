@@ -168,6 +168,7 @@ public:
 public slots:
     void execute();
     void quit();
+    void kill();
 
     void command(const QString& cmd);
     void commandAndResponse(const QString& cmd,

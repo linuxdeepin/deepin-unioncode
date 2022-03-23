@@ -101,19 +101,11 @@ Promise<AttachRequest> RawDebugSession::attach(const AttachRequest &request)
 
 bool RawDebugSession::terminate(bool restart)
 {
+    Q_UNUSED(restart)
     if (capabilities().supportsTerminateRequest) {
-        if (!terminated) {
-            terminated = true;
-
-            TerminateRequest request;
-            auto response = send(request);
-            response.wait();
-            return true;
-        }
-        DisconnectRequest request;
-        request.terminateDebuggee = true;
-        request.restart = restart;
-        disconnect(request);
+        TerminateRequest request;
+        auto response = send(request);
+        response.wait();
         return true;
     }
     qInfo() << "terminated not supported";

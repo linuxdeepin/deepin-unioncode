@@ -16,22 +16,36 @@ const char *RunTimeCfgProvider::ip() const
     return "localhost";
 }
 
-int RunTimeCfgProvider::port() const
+int RunTimeCfgProvider::port()
 {
-    int iPort = kPort;
-
-    QDBusInterface interface("com.deepin.unioncode.service", "/",
-                             "com.deepin.unioncode.interface",
-                             QDBusConnection::sessionBus());
-    if (!interface.isValid()) {
-        qDebug() << qPrintable(QDBusConnection::sessionBus().lastError().message());
+    if (iPort > 0)
         return iPort;
-    }
 
-    QDBusReply<int> reply = interface.call("port");
-    if (reply.isValid()) {
-        iPort = reply.value();
-    }
+    int numAttempt = 10;
+    while (numAttempt-- > 0) {
+        QDBusInterface interface("com.deepin.unioncode.service", "/",
+                                 "com.deepin.unioncode.interface",
+                                 QDBusConnection::sessionBus());
+
+        if (interface.isValid()) {
+            QDBusReply<int> reply = interface.call("port");
+            if (reply.isValid()) {
+                iPort = reply.value();
+                break;
+            }
+        } else {
+            qInfo() << "qdbus error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
+
+            QDBusError::ErrorType errtype = QDBusConnection::sessionBus().lastError().type();
+            if (errtype == QDBusError::ErrorType::ServiceUnknown) {
+                QThread::msleep(200);
+                continue;
+            } else {
+                break;
+            }
+        }
+    };
+
     return iPort;
 }
 

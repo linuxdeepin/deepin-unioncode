@@ -39,6 +39,7 @@ public:
 Q_SIGNALS:
     void sigStart();
     void sigQuit();
+    void sigKill();
     void sigLaunchLocal();
     void sigLaunchRemote(const QString& remoteTarget);
     void sigAttachProcess(const int pid);
@@ -62,6 +63,7 @@ Q_SIGNALS:
     void sigVariables(/*const gdb::Thread& thid, const int frameLevel*/);
     void sigSource();
     void sigStreamOutput(const QString sOut);
+    void sigBreakRemoveAll();
 private:
     explicit GDBProxy();
 };

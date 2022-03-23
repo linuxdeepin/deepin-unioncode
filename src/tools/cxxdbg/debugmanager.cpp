@@ -89,7 +89,8 @@ struct Response {
         console,
         log,
         target,
-        promt
+        promt,
+        program
     } type;
 
     QString message;
@@ -253,7 +254,8 @@ Response parse_response(const QString& gdb_mi_text)
 //        qInfo() << "parsed =>" << parseElements(m.captured(3));
         return { Response::result, m.captured(2), parseElements(m.captured(3)), strToInt(m.captured(1), -1) };
     } else if ((m = _GDB_MI_CONSOLE_RE.match(gdb_mi_text)).hasMatch()) {
-        return { Response::console, m.captured(1), m.captured(0) };
+        // Mozart: use original text directly.
+        return { Response::console, gdb_mi_text, gdb_mi_text/*m.captured(1), m.captured(0)*/ };
     } else if ((m = _GDB_MI_LOG_RE.match(gdb_mi_text)).hasMatch()) {
         return { Response::log, m.captured(1), m.captured(0) };
     } else if ((m = _GDB_MI_TARGET_OUTPUT_RE.match(gdb_mi_text)).hasMatch()) {
@@ -263,7 +265,7 @@ Response parse_response(const QString& gdb_mi_text)
     } else {
         // This was not gdb mi output, so it must have just been printed by
         // the inferior program that's being debugged
-        return { Response::unknown, {}, gdb_mi_text };
+        return { Response::program, {}, gdb_mi_text };
     }
 }
 
@@ -457,6 +459,11 @@ void DebugManager::execute()
 void DebugManager::quit()
 {
     command("-gdb-exit");
+}
+
+void DebugManager::kill()
+{
+    command("kill");
 }
 
 void DebugManager::command(const QString &cmd)
@@ -800,8 +807,9 @@ const QMap<QString, gdb::Variable> &DebugManager::vatchVars() const
 void DebugManager::processLine(const QString &line)
 {
     using dispatcher_t = std::function<void(const mi::Response&)>;
-//    qInfo() << "GDB => " << line;
+    qInfo() << "GDB => " << line;
     auto r = mi::parse_response(line);
+
 //    qInfo() << "Type =>" << r.type;
 //    qInfo() << "Payload => " << r.payload;
     QString sOut;
@@ -1003,6 +1011,9 @@ void DebugManager::processLine(const QString &line)
         if (self->m_firstPromt.exchange(false))
             emit started();
         emit gdbPromt();
+        break;
+    case mi::Response::program:
+        emit streamConsole(r.payload.toString());
         break;
     case mi::Response::log:
     case mi::Response::unknown:
