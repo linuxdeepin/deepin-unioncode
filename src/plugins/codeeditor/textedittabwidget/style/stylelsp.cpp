@@ -298,10 +298,12 @@ void StyleLsp::sciTextInserted(Scintilla::Position position,
     if (text != " ") {
         d->editCount += length;
         d->editText += text;
+        d->completionCache.setEditor(edit);
         client().completionRequest(edit->file(), getLspPosition(edit->docPointer(), position));
     } else {
         d->editCount = 0;
         d->editText.clear();
+        d->completionCache.clean();
         cleanCompletion(*edit);
     }
 }
@@ -337,11 +339,14 @@ void StyleLsp::sciTextDeleted(Scintilla::Position position,
         d->editCount -= length;
         if (d->editCount != 0) {
             d->editText.remove(d->editText.count() - 1 , length);
+            d->completionCache.setEditor(edit);
             client().completionRequest(edit->file(), getLspPosition(edit->docPointer(), position));
         } else {
+            d->completionCache.clean();
             d->editText.clear();
         }
     } else {
+        d->completionCache.clean();
         d->editCount = 0;
         d->editText.clear();
     }
@@ -850,7 +855,7 @@ void StyleLsp::setCompletion(ScintillaEdit &edit, const lsp::CompletionProvider 
 
 void StyleLsp::cleanCompletion(ScintillaEdit &edit)
 {
-
+    Q_UNUSED(edit);
 }
 
 void StyleLsp::setHover(ScintillaEdit &edit, const lsp::Hover &hover)

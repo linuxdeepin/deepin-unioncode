@@ -9,12 +9,13 @@ class AbstractCentral;
 class AbstractWidget;
 class AbstractConsole;
 class QDockWidget;
+class AutoHideDockWidget;
 class NavEditMainWindow : public QMainWindow
 {
     Q_OBJECT
-    QDockWidget *qTreeWidgetDock{nullptr};
-    QDockWidget *qTabWidgetDock{nullptr};
-    QDockWidget *qWatchWidgetDock{nullptr};
+    AutoHideDockWidget *qTreeWidgetDock{nullptr};
+    AutoHideDockWidget *qTabWidgetDock{nullptr};
+    AutoHideDockWidget *qWatchWidgetDock{nullptr};
     QWidget *qTreeWidget{nullptr};
     QWidget *qEditWidget{nullptr};
     QWidget *qWatchWidget{nullptr};
@@ -29,9 +30,6 @@ public:
     void setWatchWidget(AbstractWidget *watchWidget);
     void addContextWidget(const QString &title, AbstractWidget *contextWidget);
     bool switchContextWidget(const QString &title);
-
-protected:
-    bool eventFilter(QObject *obj, QEvent *e);
 };
 
 #endif // NAVEDITMAINWINDOW_H

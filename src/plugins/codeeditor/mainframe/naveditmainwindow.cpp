@@ -1,4 +1,5 @@
 #include "naveditmainwindow.h"
+#include "autohidedockwidget.h"
 #include "base/abstractwidget.h"
 #include "base/abstractcentral.h"
 #include "base/abstractconsole.h"
@@ -29,7 +30,7 @@ NavEditMainWindow *NavEditMainWindow::instance()
 NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow (parent, flags)
 {
-    qTabWidgetDock = new QDockWidget(QDockWidget::tr("Context"), this);
+    qTabWidgetDock = new AutoHideDockWidget(QDockWidget::tr("Context"), this);
     qTabWidgetDock->setFeatures(QDockWidget::DockWidgetMovable);
     qTabWidget = new QTabWidget(qTabWidgetDock);
     qTabWidgetDock->setWidget(qTabWidget);
@@ -62,7 +63,7 @@ void NavEditMainWindow::setConsole(AbstractConsole *console)
 void NavEditMainWindow::setTreeWidget(AbstractWidget *treeWidget)
 {
     if (!qTreeWidgetDock) {
-        qTreeWidgetDock = new QDockWidget(QDockWidget::tr("Workspace"), this);
+        qTreeWidgetDock = new AutoHideDockWidget(QDockWidget::tr("Workspace"), this);
         qTreeWidgetDock->setFeatures(QDockWidget::DockWidgetMovable);
         qTreeWidgetDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
         addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, qTreeWidgetDock);
@@ -75,7 +76,6 @@ void NavEditMainWindow::setTreeWidget(AbstractWidget *treeWidget)
         }
         qTreeWidget = (QWidget*)treeWidget->qWidget();
         qTreeWidget->setParent(qTreeWidgetDock);
-        qTreeWidget->installEventFilter(this);
         qTreeWidgetDock->setWidget(qTreeWidget);
     }
 }
@@ -87,14 +87,13 @@ void NavEditMainWindow::setEditWidget(AbstractCentral *editWidget)
         qEditWidget = nullptr;
     }
     qEditWidget = (QWidget*)editWidget->qWidget();
-    qEditWidget->installEventFilter(this);
     setCentralWidget(qEditWidget);
 }
 
 void NavEditMainWindow::setWatchWidget(AbstractWidget *watchWidget)
 {
     if (!qWatchWidgetDock) {
-        qWatchWidgetDock = new QDockWidget(QDockWidget::tr("Watcher"), this);
+        qWatchWidgetDock = new AutoHideDockWidget(QDockWidget::tr("Watcher"), this);
         qWatchWidgetDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
         qWatchWidgetDock->hide();
         addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, qWatchWidgetDock);
@@ -106,8 +105,8 @@ void NavEditMainWindow::setWatchWidget(AbstractWidget *watchWidget)
         }
         qWatchWidget = static_cast<QWidget*>(watchWidget->qWidget());
         qWatchWidget->setParent(qWatchWidgetDock);
-        qWatchWidget->installEventFilter(this);
         qWatchWidgetDock->setWidget(qWatchWidget);
+        qWatchWidgetDock->hide();
     }
 }
 
@@ -125,52 +124,6 @@ bool NavEditMainWindow::switchContextWidget(const QString &title)
     for (int i = 0; i < qTabWidget->count(); i++){
         if (qTabWidget->tabText(i) == title) {
             qTabWidget->setCurrentIndex(i);
-            return true;
-        }
-    }
-    return false;
-}
-
-bool NavEditMainWindow::eventFilter(QObject *obj, QEvent *e)
-{
-    if (e->type() == QEvent::Hide) {
-        if (!NavEditMainWindow::isHidden()) {
-            if (obj == qTreeWidget) {
-                qTreeWidgetDock->hide();
-                e->setAccepted(true);
-                return true;
-            }
-
-            if (obj == qWatchWidget) {
-                qWatchWidgetDock->hide();
-                e->setAccepted(true);
-                return true;
-            }
-        }
-    }
-    if (e->type() == QEvent::Show) {
-        if (!NavEditMainWindow::isHidden()) {
-            if (obj == qTreeWidget) {
-                qTreeWidgetDock->show();
-                e->setAccepted(true);
-                return true;
-            }
-            if (obj == qWatchWidget) {
-                qWatchWidgetDock->show();
-                e->setAccepted(true);
-                return true;
-            }
-        }
-    }
-    if (e->type() == QEvent::Destroy) {
-        if (obj == qTreeWidget) {
-            qTreeWidgetDock->hide();
-            qTreeWidget = nullptr;
-            return true;
-        }
-        if (obj == qWatchWidget) {
-            qWatchWidgetDock->hide();
-            qWatchWidget = nullptr;
             return true;
         }
     }
