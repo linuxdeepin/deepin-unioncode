@@ -21,6 +21,8 @@
 #ifndef LANGUAGESERVERPROTOCOL_H
 #define LANGUAGESERVERPROTOCOL_H
 
+#include "common/type/menuext.h"
+
 #include <QUrl>
 #include <QString>
 #include <QJsonValue>
@@ -91,42 +93,44 @@ extern const QString K_INCLUDEDECLARATION;
 extern const QString K_ERROR;
 extern const QString K_CODE;
 
-enum SemanticTokenType {
-    Namespace = 0,
-    Type,
-    Class,
-    Enum,
-    Interface,
-    Struct,
-    TypeParameter,
-    Parameter,
-    Variable,
-    Property,
-    EnumMember,
-    Event,
-    Function,
-    Method,
-    Macro,
-    Keyword,
-    Modifier,
-    Comment,
-    String,
-    Number,
-    Regexp,
-    Operator
+enum_def(SemanticTokenType, QString)
+{
+    enum_exp Namespace = "namespace";
+    enum_exp Type = "type";
+    enum_exp Class = "class";
+    enum_exp Enum = "enum";
+    enum_exp Interface = "interface";
+    enum_exp Struct = "struct";
+    enum_exp TypeParameter = "typeParameter";
+    enum_exp Parameter = "parameter";
+    enum_exp Variable = "variable";
+    enum_exp Property = "property";
+    enum_exp EnumMember = "enumMember";
+    enum_exp Event = "event";
+    enum_exp Function = "function";
+    enum_exp Method = "method";
+    enum_exp Macro = "macro";
+    enum_exp Keyword = "keyword";
+    enum_exp Modifier = "modifier";
+    enum_exp Comment = "comment";
+    enum_exp String = "string";
+    enum_exp Number = "number";
+    enum_exp Regexp = "regexp";
+    enum_exp Operator = "operator";
 };
 
-enum SemanticTokenModifier {
-    Declaration = 0, //声明
-    Definition,  //定义
-    Readonly,
-    Static,
-    Deprecated,
-    Abstract,
-    Async,
-    Modification,
-    Documentation,
-    DefaultLibrary
+enum_def(SemanticTokenModifier, QString)
+{
+    enum_exp Declaration = "declaration"; //声明
+    enum_exp Definition = "declaration";  //定义
+    enum_exp Readonly = "readonly";
+    enum_exp Static = "static";
+    enum_exp Deprecated = "deprecated";
+    enum_exp Abstract = "abstract";
+    enum_exp Async = "async";
+    enum_exp Modification = "modification";
+    enum_exp Documentation = "documentation";
+    enum_exp DefaultLibrary = "defaultLibrary";
 };
 
 struct Position
@@ -281,8 +285,8 @@ struct Data //from result key "data"
 {
     Position start;
     int length;
-    SemanticTokenType tokenType;
-    QList<SemanticTokenModifier> tokenModifiers;
+    int tokenType;
+    QList<int> tokenModifiers;
 };
 
 struct SemanticTokensProvider
@@ -359,7 +363,7 @@ struct References : public Locations{};
 
 QString fromTokenType(SemanticTokenType type);
 QString fromTokenModifier(SemanticTokenModifier modifier);
-QList<SemanticTokenModifier> fromTokenModifiers(int modifiers);
+QList<int> fromTokenModifiers(int modifiers);
 QJsonArray tokenTypes();
 QJsonArray tokenModifiers();
 

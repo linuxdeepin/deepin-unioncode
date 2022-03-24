@@ -18,12 +18,18 @@ class StyleJsonFile : public QObject
     Q_OBJECT
     StyleJsonFilePrivate *const d;
 public:
+    enum_def(Theme, QString)
+    {
+        enum_exp Dark = "Dark";
+    };
+
     enum_def(Key_1, QString)
     {
         enum_exp Self = "Self";
         enum_exp Namespace = "Namespace";
+        enum_exp Macro = "Macro";
         enum_exp Type = "Type";
-        enum_exp Class = "class";
+        enum_exp Class = "Class";
         enum_exp Variable = "Variable";
         enum_exp Property = "Property";
         enum_exp Text = "Text";
@@ -57,6 +63,7 @@ public:
         enum_exp FunctionDefinition = "Function Definition";
         enum_exp VirtualFunction = "Virtual Function";
         enum_exp Comment = "Comment";
+        enum_exp Error = "Error";
         enum_exp ErrorContext = "Error Context";
         enum_exp Warning = "Warning";
         enum_exp WarningContext = "Warning Context";

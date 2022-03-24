@@ -15,6 +15,7 @@ class StyleLsp : public QObject
     Q_OBJECT
     StyleLspPrivate *const d;
 public:
+
     enum Margin
     {
         LspCustom = StyleSci::Margin::Custom
@@ -32,10 +33,9 @@ public:
         HintLineBackground,
     };
 
-    enum Indic
+    struct IndicStyleExt
     {
-        RedSquiggle = 0,
-        HotSpotUnderline = 1,
+        QMap<int, int> fore;
     };
 
     enum EOLAnnotation
@@ -62,6 +62,15 @@ public:
      */
     typedef support_file::Language::ServerInfo ServerInfo;
     virtual ServerInfo clientInfoSpec(ServerInfo info);
+    virtual IndicStyleExt symbolIndic(ScintillaEdit &edit,
+                                      lsp::SemanticTokenType::type_value token,
+                                      QList<lsp::SemanticTokenType::type_index> modifier);
+    /*!
+     * \brief tokenFromServProvider find local token from lsp protocol init response provider data
+     * \param token from token request (tokenFull) key
+     * \return local key
+     */
+    virtual lsp::SemanticTokenType::type_value tokenToDefine(int token);
 
     virtual void setIndicStyle(ScintillaEdit &edit);
     virtual void setMargin(ScintillaEdit &edit);

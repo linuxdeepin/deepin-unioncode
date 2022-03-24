@@ -99,93 +99,14 @@ const QString K_CODE {"code"};
 
 const QJsonValue V_INITIALIZATIONOPTIONS(QJsonValue::Null);
 
-QString fromTokenType(SemanticTokenType type)
+QList<int> fromTokenModifiers(int modifiers)
 {
-    switch (type) {
-    case Namespace:
-        return "namespace";
-    case Type:
-        return "type";
-    case Class:
-        return "class";
-    case Enum:
-        return "enum";
-    case Interface:
-        return "interface";
-    case Struct:
-        return "struct";
-    case TypeParameter:
-        return "typeParameter";
-    case Parameter:
-        return "parameter";
-    case Variable:
-        return "variable";
-    case Property:
-        return "property";
-    case EnumMember:
-        return "enumMember";
-    case Event:
-        return "event";
-    case Function:
-        return "function";
-    case Method:
-        return "method";
-    case Macro:
-        return "macro";
-    case Keyword:
-        return "keyword";
-    case Modifier:
-        return "modifier";
-    case Comment:
-        return "comment";
-    case String:
-        return "string";
-    case Number:
-        return "number";
-    case Regexp:
-        return "regexp";
-    case Operator:
-        return "operator";
-    }
-
-    return "";
-}
-
-QString fromTokenModifier(SemanticTokenModifier modifier)
-{
-    switch (modifier) {
-    case Declaration:
-        return "declaration";
-    case Definition:
-        return "definition";
-    case Readonly:
-        return "readonly";
-    case Static:
-        return "static";
-    case Deprecated:
-        return "deprecated";
-    case Abstract:
-        return "abstract";
-    case Async:
-        return "async";
-    case Modification:
-        return "modification";
-    case Documentation:
-        return "documentation";
-    case DefaultLibrary:
-        return "defaultLibrary";
-    }
-    return "";
-}
-
-QList<SemanticTokenModifier> fromTokenModifiers(int modifiers)
-{
-    QList<SemanticTokenModifier> ret;
+    QList<int> ret;
     int temp = modifiers;
-    ret.push_front((SemanticTokenModifier)(temp %10));
+    ret.push_front((int)(temp %10));
     while (temp / 10 >= 1) {
         temp = temp / 10;
-        ret.push_front((SemanticTokenModifier)(temp %10));
+        ret.push_front((int)(temp %10));
     }
 
     return ret;

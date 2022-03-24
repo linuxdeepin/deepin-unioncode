@@ -16,7 +16,6 @@ QMap<int, QString> StyleSciCmake::keyWords() const
 void StyleSciCmake::setStyle(ScintillaEdit &edit)
 {
     StyleSci::setStyle(edit);
-
     edit.styleSetFore(SCE_CMAKE_COMMENT, StyleColor::color(StyleColor::Table::get()->SkyBlue));
     edit.styleSetFore(SCE_CMAKE_STRINGDQ, StyleColor::color(StyleColor::Table::get()->Magenta));
     edit.styleSetFore(SCE_CMAKE_STRINGLQ, StyleColor::color(StyleColor::Table::get()->Magenta));
@@ -31,8 +30,6 @@ void StyleSciCmake::setStyle(ScintillaEdit &edit)
     edit.styleSetFore(SCE_CMAKE_MACRODEF, StyleColor::color(StyleColor::Table::get()->Gold));
     edit.styleSetFore(SCE_CMAKE_STRINGVAR, StyleColor::color(StyleColor::Table::get()->Magenta));
     edit.styleSetFore(SCE_CMAKE_NUMBER, StyleColor::color(StyleColor::Table::get()->Magenta));
-
-    return;
 }
 
 void StyleSciCmake::setLexer(ScintillaEdit &edit)

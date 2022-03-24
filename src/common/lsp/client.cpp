@@ -571,7 +571,7 @@ bool Client::docSemanticTokensFullResult(const QJsonObject &jsonObj)
             results << Data {
                        Position{itera++->toInt(), itera++->toInt()},
                        int(itera++->toInt()),
-                       (SemanticTokenType)itera++->toInt(),
+                       itera++->toInt(),
                        fromTokenModifiers(itera++->toInt())};
         }
         emit requestResult(results);

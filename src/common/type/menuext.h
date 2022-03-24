@@ -1,17 +1,21 @@
 #ifndef MENUEXT_H
 #define MENUEXT_H
 
+#include <QList>
+#include <QJsonArray>
+
 template <class T, class EnumExt_T>
 struct __ext_enum
 {
     typedef T type_value;
+    typedef int type_index;
 
     static T value(int index) {
         auto baseAddr = (const char*)(EnumExt_T::get());
         return T (*(const T*)(baseAddr + sizeof(T) *index));
     }
 
-    static int index(const T &elem)
+    static type_index index(const T &elem)
     {
         for (int i = 0; i < EnumExt_T::count(); i++) {
             if (value(i) == elem)
@@ -31,6 +35,22 @@ struct __ext_enum
     static auto get(){
         static EnumExt_T instance;
         return &instance;
+    }
+
+    static QList<type_index> toQList() {
+        QList<type_index> result;
+        for (int i = 0; i< EnumExt_T::count() ; i ++) {
+            result << EnumExt_T::value(i);
+        }
+        return result;
+    }
+
+    QJsonArray toArray(){
+        QJsonArray result;
+        for (int i = 0; i < EnumExt_T::count(); i++) {
+            result << EnumExt_T::value(i);
+        }
+        return result;
     }
 };
 

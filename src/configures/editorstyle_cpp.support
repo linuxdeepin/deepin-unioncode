@@ -12,9 +12,9 @@
             "FontSize": 16
         },
         "Macro": {
-            "Foreground": "0000CC",
+            "Foreground": "5555ff",
             "Background": "000000",
-            "FontSize" : 16 
+            "FontSize" : 16
         },
         "Type": {
             "Foreground": "aaaaaa",
@@ -123,6 +123,7 @@
             "FontSize": 16
         },
         "Renaming Occurrences": {
+            "Foreground": "aaaaaa",
             "Background": "553636",
             "FontSize": 16
         },

@@ -23,6 +23,8 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 
+#include <bitset>
+
 class EditorCache
 {
     ScintillaEditExtern *editor = nullptr;
@@ -217,6 +219,8 @@ class StyleLspPrivate
     HoverCache hoverCache;
     RenamePopup renamePopup;
     RenameCache renameCache;
+    EditorCache editCache;
+    lsp::SemanticTokensProvider tokensProvider;
     QString editText = "";
     uint editCount = 0;
     friend class StyleLsp;
@@ -248,11 +252,6 @@ StyleLsp::StyleLsp()
     QObject::connect(&d->renamePopup, &RenamePopup::editingFinished,
                      this, &StyleLsp::renameRequest, Qt::UniqueConnection);
 
-    QObject::connect(&d->renamePopup, &RenamePopup::editingFinished,
-                     [](){
-        qInfo() << "only shit mother fucker???";
-    });
-
     QObject::connect(&client(), QOverload<const lsp::RenameChanges&>::of(&lsp::Client::requestResult),
                      this, &StyleLsp::doRenameReplace);
 
@@ -283,9 +282,14 @@ void StyleLsp::sciTextInserted(Scintilla::Position position,
     if (!edit)
         return;
 
+    edit->indicatorClearRange(0, edit->length()); // clean all indicator range style
+
     cleanCompletion(*edit);
     cleanDiagnostics(*edit);
     client().changeRequest(edit->file(), edit->textRange(0, edit->length()));
+
+    d->editCache.setEditor(edit);
+    client().docSemanticTokensFull(edit->file());
 
     if (length != 1){
         return;
@@ -310,6 +314,8 @@ void StyleLsp::sciTextDeleted(Scintilla::Position position,
     if (!edit)
         return;
 
+    edit->indicatorClearRange(0, edit->length()); // clean all indicator range style
+
     qInfo() << "position" << position
             << "length" << length
             << "linesAdded" << linesAdded
@@ -319,6 +325,9 @@ void StyleLsp::sciTextDeleted(Scintilla::Position position,
     cleanCompletion(*edit);
     cleanDiagnostics(*edit);
     client().changeRequest(edit->file(), edit->textRange(0, edit->length()));
+
+    d->editCache.setEditor(edit);
+    client().docSemanticTokensFull(edit->file());
 
     if (length != 1){
         return;
@@ -431,7 +440,8 @@ void StyleLsp::sciIndicClicked(Scintilla::Position position)
     if (!edit)
         return;
 
-    if ( HotSpotUnderline == edit->indicatorValueAt(HotSpotUnderline, position)) {
+    std::bitset<32> flags(edit->indicatorAllOnFor(position));
+    if (flags[INDIC_COMPOSITIONTHICK]) {
         if (d->definitionCache.getProvider().count() > 0) {
             auto providerAtOne = d->definitionCache.getProvider().first();
             TextEditTabWidget::instance()->jumpToLine(providerAtOne.fileUrl.toLocalFile(), providerAtOne.range.end.line);
@@ -565,12 +575,12 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
     QObject::connect(&client(), QOverload<const QList<lsp::Data>&>::of(&lsp::Client::requestResult),
                      this, [=](const QList<lsp::Data> &data)
     {
-        //        this, &EditTextWidget::tokenFullResult, Qt::UniqueConnection);
+        this->setTokenFull(*d->editCache.getEditor(), data);
     });
 
     QObject::connect(&client(), QOverload<const lsp::SemanticTokensProvider&>::of(&lsp::Client::requestResult),
                      this, [=](const lsp::SemanticTokensProvider& provider){
-        //        this, &EditTextWidget::tokenDefinitionsSave, Qt::UniqueConnection);
+        d->tokensProvider = provider;
     });
 
     QObject::connect(&client(), QOverload<const lsp::Hover&>::of(&lsp::Client::requestResult),
@@ -616,6 +626,9 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
 
     client().initRequest(editor->rootPath());
     client().openRequest(editor->file());
+
+    d->editCache.setEditor(editor); // 事件回调缓存
+    client().docSemanticTokensFull(editor->file());
 }
 
 QString StyleLsp::sciEditFile(ScintillaEditExtern * const sciEdit)
@@ -628,16 +641,47 @@ StyleLsp::ServerInfo StyleLsp::clientInfoSpec(StyleLsp::ServerInfo info)
     return info;
 }
 
+StyleLsp::IndicStyleExt StyleLsp::symbolIndic(ScintillaEdit &edit,
+                                              lsp::SemanticTokenType::type_value token,
+                                              QList<lsp::SemanticTokenType::type_index> modifier)
+{
+    Q_UNUSED(edit);
+    Q_UNUSED(token);
+    Q_UNUSED(modifier);
+    return {};
+}
+
+lsp::SemanticTokenType::type_value StyleLsp::tokenToDefine(int token)
+{
+    if (0 <= token && token < d->tokensProvider.legend.tokenTypes.size())
+        return d->tokensProvider.legend.tokenTypes[token];
+    return {};
+}
+
 void StyleLsp::setIndicStyle(ScintillaEdit &edit)
 {
-    edit.indicSetStyle(RedSquiggle, INDIC_SQUIGGLE);
-    edit.indicSetFore(RedSquiggle, StyleColor::color(StyleColor::Table::get()->Red));
-
-    edit.indicSetStyle(RedTextFore, INDIC_TEXTFORE);
-    edit.indicSetFore(RedTextFore, StyleColor::color(StyleColor::Table::get()->Red));
-
-    edit.indicSetStyle(HotSpotUnderline, INDIC_COMPOSITIONTHICK);
-    edit.indicSetFore(HotSpotUnderline, edit.styleFore(0));
+    edit.indicSetStyle(INDIC_PLAIN, INDIC_PLAIN);
+    edit.indicSetStyle(INDIC_SQUIGGLE, INDIC_SQUIGGLE);
+    edit.indicSetStyle(INDIC_TT, INDIC_TT);
+    edit.indicSetStyle(INDIC_DIAGONAL, INDIC_DIAGONAL);
+    edit.indicSetStyle(INDIC_STRIKE, INDIC_STRIKE);
+    edit.indicSetStyle(INDIC_HIDDEN, INDIC_HIDDEN);
+    edit.indicSetStyle(INDIC_BOX, INDIC_BOX);
+    edit.indicSetStyle(INDIC_ROUNDBOX, INDIC_ROUNDBOX);
+    edit.indicSetStyle(INDIC_STRAIGHTBOX, INDIC_STRAIGHTBOX);
+    edit.indicSetStyle(INDIC_FULLBOX, INDIC_FULLBOX);
+    edit.indicSetStyle(INDIC_DASH, INDIC_DASH);
+    edit.indicSetStyle(INDIC_DOTS, INDIC_DOTS);
+    edit.indicSetStyle(INDIC_SQUIGGLELOW, INDIC_SQUIGGLELOW);
+    edit.indicSetStyle(INDIC_DOTBOX, INDIC_DOTBOX);
+    edit.indicSetStyle(INDIC_GRADIENT, INDIC_GRADIENT);
+    edit.indicSetStyle(INDIC_GRADIENTCENTRE, INDIC_GRADIENTCENTRE);
+    edit.indicSetStyle(INDIC_SQUIGGLEPIXMAP, INDIC_SQUIGGLEPIXMAP);
+    edit.indicSetStyle(INDIC_COMPOSITIONTHICK, INDIC_COMPOSITIONTHICK);
+    edit.indicSetStyle(INDIC_COMPOSITIONTHIN, INDIC_COMPOSITIONTHIN);
+    edit.indicSetStyle(INDIC_TEXTFORE, INDIC_TEXTFORE);
+    edit.indicSetStyle(INDIC_POINT, INDIC_POINT);
+    edit.indicSetStyle(INDIC_POINTCHARACTER, INDIC_POINTCHARACTER);
 }
 
 void StyleLsp::setMargin(ScintillaEdit &edit)
@@ -696,7 +740,8 @@ void StyleLsp::setDiagnostics(ScintillaEdit &edit, const lsp::DiagnosticsParams 
         if (val.severity == lsp::Diagnostic::Severity::Error) { // error
             Sci_Position startPos = getSciPosition(edit.docPointer(), val.range.start);
             Sci_Position endPos = getSciPosition(edit.docPointer(), val.range.end);
-            edit.setIndicatorCurrent(RedSquiggle);
+            edit.setIndicatorCurrent(INDIC_SQUIGGLE);
+            edit.indicSetFore(INDIC_SQUIGGLE, StyleColor::color(StyleColor::Table::get()->Red));
             edit.indicatorFillRange(startPos, endPos - startPos);
 
             edit.eOLAnnotationSetText(val.range.start.line,"Error: " + val.message.toLatin1());
@@ -713,8 +758,6 @@ void StyleLsp::setDiagnostics(ScintillaEdit &edit, const lsp::DiagnosticsParams 
 void StyleLsp::cleanDiagnostics(ScintillaEdit &edit)
 {
     edit.eOLAnnotationClearAll();
-    const auto docLen = edit.length();
-    edit.indicatorClearRange(0, docLen); // clean all indicator range style
     for (int line = 0; line < edit.lineCount(); line ++) {
         edit.markerDelete(line, Error);
         edit.markerDelete(line, ErrorLineBackground);
@@ -754,19 +797,26 @@ void StyleLsp::setTokenFull(ScintillaEdit &edit, const QList<lsp::Data> &tokens)
         qInfo() << "charLength:" << val.length;
         qInfo() << "tokenType:" << val.tokenType;
         qInfo() << "tokenModifiers:" << val.tokenModifiers;
-
         auto sciStartPos = StyleLsp::getSciPosition(edit.docPointer(), {cacheLine, val.start.character});
         auto sciEndPos = edit.wordEndPosition(sciStartPos, true);
-
-        auto doc = (Scintilla::Internal::Document*)(edit.docPointer());
-        if (sciStartPos != 0 && sciEndPos != doc->Length()) {
+        if (sciStartPos != 0 && sciEndPos != edit.length()) {
             QString sourceText = edit.textRange(sciStartPos, sciEndPos);
-            QString tempText = edit.textRange(sciStartPos - 1, sciEndPos + 1);
+            int wordLength = sciEndPos - sciStartPos;
+            qInfo() << "text:" << sourceText;
             // text is word
-            if ( ((isCharSymbol(tempText.begin()->toLatin1()) || tempText.startsWith(" "))
-                  && (isCharSymbol(tempText.end()->toLatin1()) || tempText.endsWith(" "))) ) {
-                qInfo() << "text:" << sourceText;
-                edit.indicatorFillRange(sciStartPos, sciEndPos - sciStartPos);
+            if (!sourceText.isEmpty() && wordLength == val.length) {
+                QString tokenValue = tokenToDefine(val.tokenType);
+                qInfo() << "tokenValue:" << tokenValue;
+                auto indics = symbolIndic(edit, tokenValue, val.tokenModifiers);
+                for (int i = 0; i < INDIC_MAX; i++) {
+                    if (indics.fore.keys().contains(i)) {
+                        qInfo() << "fillRangeColor:" << hex << indics.fore[i];
+                        edit.setIndicatorCurrent(i);
+                        edit.indicSetFlags(i, SC_INDICFLAG_VALUEFORE);
+                        edit.setIndicatorValue(indics.fore[i]);
+                        edit.indicatorFillRange(sciStartPos, wordLength);
+                    }
+                }
             }
         }
     }
@@ -775,7 +825,7 @@ void StyleLsp::setTokenFull(ScintillaEdit &edit, const QList<lsp::Data> &tokens)
 
 void StyleLsp::cleanTokenFull(ScintillaEdit &edit)
 {
-
+    Q_UNUSED(edit);
 }
 
 void StyleLsp::setCompletion(ScintillaEdit &edit, const lsp::CompletionProvider &provider)
@@ -824,7 +874,8 @@ void StyleLsp::setDefinition(ScintillaEdit &edit, const lsp::DefinitionProvider 
     auto sciEndPos = edit.wordEndPosition(d->definitionCache.getSciPosition(), true);
 
     if (provider.count() >= 1) {
-        edit.setIndicatorCurrent(HotSpotUnderline);
+        edit.setIndicatorCurrent(INDIC_COMPOSITIONTHICK);
+        edit.indicSetFore(INDIC_COMPOSITIONTHICK, edit.styleFore(0));
         edit.indicatorFillRange(sciStartPos, sciEndPos - sciStartPos);
         if (edit.cursor() != 8) {
             d->definitionCache.setCursor(edit.cursor());
@@ -835,18 +886,12 @@ void StyleLsp::setDefinition(ScintillaEdit &edit, const lsp::DefinitionProvider 
 
 void StyleLsp::cleanDefinition(ScintillaEdit &edit, const Scintilla::Position &pos)
 {
-    qInfo() << &edit << pos;
-    if (edit.indicatorValueAt(HotSpotUnderline, pos) == HotSpotUnderline) {
-        auto hotSpotStart = edit.indicatorStart(HotSpotUnderline, pos);
-        auto hotSpotEnd = edit.indicatorEnd(HotSpotUnderline, pos);
-        //        qInfo() << "11111" << "clean indic"
-        //                << "start line:" << getLspPosition(edit.docPointer(), hotSpotStart).line
-        //                << "start char:" << getLspPosition(edit.docPointer(), hotSpotStart).character
-        //                << "end line:" << getLspPosition(edit.docPointer(), hotSpotEnd).line
-        //                << "end char:" << getLspPosition(edit.docPointer(), hotSpotEnd).character
-        //                << "text:" << edit.textRange(hotSpotStart, hotSpotEnd);
+    std::bitset<32> flags(edit.indicatorAllOnFor(pos));
+    if (flags[INDIC_COMPOSITIONTHICK]) {
+        // auto hotSpotStart = edit.indicatorStart(INDIC_COMPOSITIONTHICK, pos);
+        // auto hotSpotEnd = edit.indicatorEnd(INDIC_COMPOSITIONTHICK, pos);
         edit.setCursor(d->definitionCache.getCursor());
-        //        edit.indicatorClearRange(hotSpotStart, hotSpotEnd);
+        // edit.indicatorClearRange(hotSpotStart, hotSpotEnd);
         edit.indicatorClearRange(0, edit.length());
     }
 }
