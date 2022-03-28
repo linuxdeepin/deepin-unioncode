@@ -34,9 +34,9 @@ StatusWidget::~StatusWidget()
     }
 }
 
-void StatusWidget::setElemCount(int number)
+void StatusWidget::setElemCount(int count)
 {
-    d->elem = number;
+    d->elem = count;
 }
 
 int StatusWidget::elemCount()

@@ -29,15 +29,8 @@ const QString T_BUILDER {"Builder"};
 const QString T_WORKSPACE {"Workspace"};
 const QString T_RECENT{"Recent"};
 
-const QString D_RECENT_SHOW {"Recent.Show"};
-const QString D_RECENT_HIDE {"Recent.Hide"};
-const QString D_EDIT_SHOW {"Edit.Show"};
-const QString D_EDIT_HIDE {"Edit.Hide"};
-const QString D_DEBUG_SHOW {"Debug.Show"};
-const QString D_DEBUG_HIDE {"Debug.Hide"};
-const QString D_RUNTIME_SHOW {"Runtime.Show"};
-const QString D_RUNTIME_HIDE {"Runtime.Hide"};
-const QString D_BUILD_TARGET {"Build.Target"};
+const QString D_ACTION_SHOW {"Action.Show"};
+const QString D_ACTION_HIDE {"Action.Hide"};
 
 const QString D_WORKSPACE_GENERATE_BEGIN {"Workspace.Generate.Begin"};
 const QString D_WORKSPACE_GENERATE_END {"Workspace.Generate.End"};
@@ -52,7 +45,9 @@ const QString D_FILE_OPENDOCUMENT {"File.OpenDocument"};
 const QString D_FILE_OPENFOLDER {"File.OpenFolder"};
 const QString D_ITEM_MENU_BUILD {"Item.Menu.Build"};
 const QString D_ITEM_DOUBLECLICKED {"Item.DoubleClicked"};
+const QString D_BUILD_TARGET {"Build.Target"};
 
+const QString P_ACTION_TEXT {"ActionText"};
 const QString P_FILELINE {"FileLine"};
 const QString P_FILEPATH {"FilePath"};
 const QString P_PROJECTPATH {"ProjectPath"};

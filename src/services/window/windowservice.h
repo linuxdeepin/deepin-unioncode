@@ -117,6 +117,18 @@ public:
      * \param widget 抽象接口
      */
     DPF_INTERFACE(void, setWatchWidget, AbstractWidget *widget);
+
+    /*!
+     * \brief switchNavWidget
+     * \param name
+     */
+    DPF_INTERFACE(void, switchNavWidget, const QString &name);
+
+    /*!
+     * \brief switchContextWidget
+     * \param name
+     */
+    DPF_INTERFACE(void, switchContextWidget, const QString &name);
 };
 
 } // namespace dpfservice

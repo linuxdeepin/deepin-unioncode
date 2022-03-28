@@ -1,0 +1,19 @@
+Source: gitqlient
+Section: devel
+Priority: optional
+Homepage: https://github.com/francescmm/GitQlient
+Maintainer: Francesc M. <francescmm@gmail.com>
+Package: gitqlient
+Architecture: amd64
+Pre-Depends: git (>= 2.0.0), libqt5core5a (>= 5.12.0), libqt5gui5 (>= 5.12.0), libqt5widgets5 (>= 5.12.0), libqt5network5 (>= 5.12.0), libqt5webchannel5 (>= 5.12.0), libqt5webenginewidgets5 (>= 5.12.0), libstdc++6 (>= 5), libgcc-s1 (>= 3.0)
+Description: GitQlient os a multi-platform Git client written with Qt
+ Some of the major feature you can find are:
+ - Easy access to remote actions like: push, pull, submodules management and branches
+ - Branches management
+ - Tags and stashes management
+ - Submodules handling
+ - Allow to open several repositories in the same window
+ - Better visualization of the commits and the work in progress
+ - Better visualization of the repository view
+ - GitHub/GitLab integration
+ - Embedded text editor with syntax highlight for C++

@@ -2,12 +2,17 @@ cmake_minimum_required(VERSION 3.1.0)
 
 project(unioncode)
 
+function(print_directory arg)
+    execute_process(COMMAND ls ${ARGV0} OUTPUT_VARIABLE outVar)
+    message(STATUS "print_directory native: ${ARGV0}\n" ${outVar})
+endfunction()
+
+set(CMAKE_VERBOSE_MAKEFILE ON)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("debug type open sanitize check")
     set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
     set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
     set(CMAKE_L_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
-    set(CMAKE_VERBOSE_MAKEFILE ON)
 #    set(CMAKE_CXX_FLAGS "-fsanitize=thread")
 #    set(CMAKE_C_FLAGS "-fsanitize=thread")
 #    set(CMAKE_L_FLAGS "-fsanitize=thread")
@@ -51,7 +56,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wl,--as-need -fPIE")
 
-# Use Qt modules
+# Use Qt modules no WebEngineWidgets WebChannel
 set(QtFindModules Core Gui Widgets Concurrent Network DBus)
 foreach(QtModule ${QtFindModules})
     find_package(Qt5 COMPONENTS ${QtModule} REQUIRED)

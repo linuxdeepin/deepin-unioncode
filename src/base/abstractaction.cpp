@@ -3,11 +3,6 @@
 #include <QDebug>
 #include <QAction>
 
-const std::string NAVACTION_RECENT { QAction::tr("Recent").toStdString() };
-const std::string NAVACTION_EDIT { QAction::tr("Edit").toStdString() };
-const std::string NAVACTION_DEBUG { QAction::tr("Debug").toStdString() };
-const std::string NAVACTION_RUNTIME { QAction::tr("Runtime").toStdString() };
-
 class AbstractActionPrivate
 {
     friend class AbstractAction;

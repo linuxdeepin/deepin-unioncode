@@ -25,7 +25,8 @@ Depends:
  make,
  gdb,
  g++,
- gcc
+ gcc,
+ git
 Description: IDE 'Union Code'
  Lightweight 'IDE' program developed by deepin company.
 

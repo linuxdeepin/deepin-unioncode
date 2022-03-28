@@ -3,13 +3,6 @@
 #include <QMenu>
 #include <QDebug>
 
-const std::string MENU_FILE { QMenu::tr("File").toStdString() };
-const std::string MENU_BUILD { QMenu::tr("Build").toStdString() };
-const std::string MENU_DEBUG { QMenu::tr("Debug").toStdString() };
-const std::string MENU_TOOLS { QMenu::tr("Tools").toStdString() };
-const std::string MENU_HELP { QMenu::tr("Help").toStdString() };
-const std::string MENU_CODETREE { QMenu::tr("CodeTree").toStdString() };
-
 class AbstractMenuPrivate
 {
     friend class AbstractMenu;

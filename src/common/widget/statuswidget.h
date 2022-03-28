@@ -1,5 +1,5 @@
-#ifndef STATUSTOOL_H
-#define STATUSTOOL_H
+#ifndef STATUSWIDGET_H
+#define STATUSWIDGET_H
 
 #include <QWidget>
 #include <QTimer>
@@ -46,7 +46,7 @@ public:
     explicit StatusWidget(QWidget *parent = nullptr);
     StatusWidget(PatternFlags flags, QWidget *parent = nullptr);
     virtual ~StatusWidget();
-    void setElemCount(int number);
+    void setElemCount(int count);
     int elemCount();
     void setPatternFlags(StatusWidget::PatternFlags flags);
     StatusWidget::PatternFlags patternFlags();
@@ -80,4 +80,4 @@ protected:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(StatusWidget::PatternFlags)
 
-#endif // STATUSTOOL_H
+#endif // STATUSWIDGET_H

@@ -52,8 +52,10 @@ void WorkspaceReceiver::eventProcess(const dpf::Event &event)
         }
     }
     if (event.topic() == T_NAV) {
-        if (event.data() == D_EDIT_SHOW) {
-            WorkspaceData::globalInstance()->doGenerate(projectPath);
+        if (event.data() == D_ACTION_SHOW) {
+            if (event.property(P_ACTION_TEXT).toString() == MWNA_EDIT) {
+                WorkspaceData::globalInstance()->doGenerate(projectPath);
+            }
         }
     }
 }

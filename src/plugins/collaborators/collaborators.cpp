@@ -20,7 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "collaborators.h"
+#include "services/window/windowservice.h"
+#include "mainframe/gitqlientwidget.h"
+#include "base/abstractaction.h"
+#include "base/abstractcentral.h"
+#include <QAction>
 
+using namespace dpfservice;
 void Collaborators::initialize()
 {
 
@@ -28,7 +34,12 @@ void Collaborators::initialize()
 
 bool Collaborators::start()
 {
-
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    if (windowService) {
+        windowService->addNavAction(new AbstractAction(new QAction(QAction::tr("Git"))));
+        windowService->addCentral(QAction::tr("Git"), new AbstractCentral(new GitQlientWidget));
+    }
     return true;
 }
 

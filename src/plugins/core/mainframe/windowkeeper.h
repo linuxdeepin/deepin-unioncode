@@ -50,10 +50,6 @@ public:
     static WindowKeeper *instace();
     explicit WindowKeeper(QObject *parent = nullptr);
     virtual ~WindowKeeper();
-    QActionGroup *navActionGroup() const;
-    QMainWindow *mainWindow() const;
-    QHash<QString, QWidget *> centrals() const;
-
 
 public slots:
     void addNavAction(AbstractAction *action);
@@ -61,6 +57,7 @@ public slots:
     void addMenu(AbstractMenu *menu);
     void addAction(const QString &menuName, AbstractAction *action);
     void initUserWidget();
+    void switchNavWidget(const QString &navName);
 
 private :
     void layoutWindow(QMainWindow *window);
@@ -74,6 +71,7 @@ private :
     void createDebugActions(QMenuBar *menuBar);
     void createBuildActions(QMenuBar *menuBar);
     void createFileActions(QMenuBar *menuBar);
+    void setNavActionChecked(const QString &actionName, bool checked);
 };
 
 #endif // WINDOWKEEPER_H

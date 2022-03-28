@@ -21,6 +21,7 @@
  */
 #include "runtime.h"
 #include "runtimewidget.h"
+#include "common/common.h"
 #include "base/abstractwidget.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
@@ -39,8 +40,7 @@ bool Runtime::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
-        emit windowService->addCentral(QString::fromStdString(NAVACTION_RUNTIME),
-                                       new AbstractCentral(RuntimeWidget::instance()));
+        emit windowService->addCentral(MWNA_RUNTIME, new AbstractCentral(RuntimeWidget::instance()));
     }
     return true;
 }

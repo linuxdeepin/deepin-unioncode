@@ -4,24 +4,24 @@ project(plugin-core)
 
 set(CXX_CPP
     mainframe/windowtheme.cpp
-    mainframe/windowswitcher.cpp
     mainframe/windowkeeper.cpp
     mainframe/windowstatusbar.cpp
     mainframe/progressbar.cpp
     mainframe/optionsdialog.cpp
     transceiver/sendevents.cpp
+    transceiver/corereceiver.cpp
     core.cpp
     core.json
     )
 
 set(CXX_H
     mainframe/windowtheme.h
-    mainframe/windowswitcher.h
     mainframe/windowkeeper.h
     mainframe/windowstatusbar.h
     mainframe/progressbar.h
     mainframe/optionsdialog.h
     transceiver/sendevents.h
+    transceiver/corereceiver.h
     core.h
     )
 

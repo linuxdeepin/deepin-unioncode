@@ -20,9 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "menumanager.h"
+#include "buildmanager.h"
+
 #include "base/abstractmenu.h"
 #include "services/window/windowservice.h"
-#include "buildmanager.h"
+#include "common/common.h"
 
 #include <QMenu>
 
@@ -40,7 +42,7 @@ void MenuManager::initialize(WindowService *windowService)
     buildAction.reset(new QAction("Build"));
     buildAction->setShortcut(QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
     AbstractAction *actionImpl = new AbstractAction(buildAction.get());
-    windowService->addAction(QString::fromStdString(MENU_BUILD), actionImpl);
+    windowService->addAction(MWM_BUILD, actionImpl);
     // triggered by top menu.
     connect(buildAction.get(), &QAction::triggered, BuildManager::instance(), &BuildManager::buildProject, Qt::DirectConnection);
 }

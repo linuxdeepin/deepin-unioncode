@@ -51,7 +51,7 @@ bool Recent::start()
                          RecentDisplay::instance(), &RecentDisplay::addDocument);
         auto recentWidgetImpl = new AbstractCentral(RecentDisplay::instance());
         if (windowService->addCentral) {
-            windowService->addCentral(QString::fromStdString(NAVACTION_RECENT), recentWidgetImpl);
+            windowService->addCentral(MWNA_RECENT, recentWidgetImpl);
         }
     }
     return true;

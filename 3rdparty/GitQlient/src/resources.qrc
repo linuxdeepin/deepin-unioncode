@@ -1,0 +1,137 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="git_pull">resources/icons/git_pull.svg</file>
+        <file alias="git_push">resources/icons/git_push.svg</file>
+        <file alias="git_stash">resources/icons/git_stash.svg</file>
+        <file alias="git_pop">resources/icons/git_stash_pop.svg</file>
+        <file alias="go_to">resources/icons/go_to.svg</file>
+        <file alias="git">resources/icons/git.svg</file>
+        <file alias="git_orange">resources/icons/git_orange.svg</file>
+        <file alias="server">resources/icons/server.svg</file>
+        <file alias="stashes">resources/icons/stashes.svg</file>
+        <file alias="folder">resources/icons/folder.svg</file>
+        <file alias="local">resources/icons/local.svg</file>
+        <file alias="tags">resources/icons/tags.svg</file>
+        <file alias="file">resources/icons/file.svg</file>
+        <file alias="git_prune">resources/icons/git_prune.svg</file>
+        <file alias="arrow_down">resources/icons/arrow_down.svg</file>
+        <file alias="arrow_up">resources/icons/arrow_up.svg</file>
+        <file alias="staged">resources/icons/files_staged.svg</file>
+        <file alias="unstaged">resources/icons/files_unstaged.svg</file>
+        <file alias="submodules">resources/icons/submodules.svg</file>
+        <file alias="back">resources/icons/back.svg</file>
+        <file alias="go_down">resources/icons/go_down.svg</file>
+        <file alias="go_up">resources/icons/go_up.svg</file>
+        <file alias="home">resources/icons/home.svg</file>
+        <file alias="terminal">resources/icons/terminal.svg</file>
+        <file alias="open_repo">resources/icons/open_repo.svg</file>
+        <file alias="warning_error">resources/icons/warning_error.svg</file>
+        <file alias="close">resources/icons/remove-symbol.svg</file>
+        <file alias="close_hover">resources/icons/remove-symbol_hover.svg</file>
+        <file alias="close_press">resources/icons/remove-symbol_press.svg</file>
+        <file alias="add_tab">resources/icons/add_tab.svg</file>
+        <file alias="folder_indicator">resources/icons/folder_indicator.svg</file>
+        <file alias="repo_indicator">resources/icons/git_orange_indicator.svg</file>
+        <file alias="untracked">resources/icons/untracked.svg</file>
+        <file alias="git_apply">resources/icons/apply.svg</file>
+        <file alias="sign-in">resources/icons/sign-in.svg</file>
+        <file alias="squash">resources/icons/squash.svg</file>
+        <file alias="down-arrow">resources/icons/down-arrow.svg</file>
+        <file alias="up-arrow">resources/icons/up-arrow.svg</file>
+        <file alias="left-arrow">resources/icons/left-arrow.svg</file>
+        <file alias="right-arrow">resources/icons/right-arrow.svg</file>
+        <file alias="blame">resources/icons/blame.svg</file>
+        <file alias="config">resources/icons/cog-wheel-silhouette.svg</file>
+        <file alias="refresh">resources/icons/refresh-page-option.svg</file>
+        <file alias="diff">resources/icons/diff.svg</file>
+        <file alias="options">resources/icons/options.svg</file>
+        <file alias="commit-list">resources/icons/listing-option.svg</file>
+        <file alias="GitQlientLogoMedium">resources/icons/GitQlientLogoMedium.png</file>
+        <file alias="GitQlientLogo">resources/icons/GitQlientLogoLarge.png</file>
+        <file alias="GitQlientLogo32">resources/icons/GitQlientLogo32.png</file>
+        <file alias="GitQlientLogoSVG">resources/icons/GitQlientLogo.svg</file>
+        <file alias="GitQlientLogoIco">resources/icons/GitQlientLogo.ico</file>
+        <file alias="remove">resources/icons/remove.svg</file>
+        <file alias="add">resources/icons/add.svg</file>
+        <file alias="check">resources/icons/check.svg</file>
+        <file alias="text-file">resources/icons/text-file.svg</file>
+        <file alias="arrow_down_full">resources/icons/arrow_down_full.svg</file>
+        <file alias="arrow_up_full">resources/icons/arrow_up_full.svg</file>
+        <file alias="save">resources/icons/save.svg</file>
+        <file alias="edit">resources/icons/edit.svg</file>
+        <file alias="bitbucket">resources/icons/bitbucket-brands.svg</file>
+        <file alias="github">resources/icons/github-brands.svg</file>
+        <file alias="gitlab">resources/icons/gitlab-brands.svg</file>
+        <file alias="failure">resources/icons/failure.svg</file>
+        <file alias="pending">resources/icons/pending.svg</file>
+        <file alias="success">resources/icons/success.svg</file>
+        <file alias="get_gitqlient">resources/icons/file-download-solid.svg</file>
+        <file alias="qcb">resources/icons/qcheckbox.svg</file>
+        <file alias="qcb_c">resources/icons/qcheckbox_checked.svg</file>
+        <file alias="qcb_d">resources/icons/qcheckbox_disabled.svg</file>
+        <file alias="qcb_d_c">resources/icons/qcheckbox_disabled_checked.svg</file>
+        <file alias="qcb_d_i">resources/icons/qcheckbox_disabled_indeterminate.svg</file>
+        <file alias="qcb_i">resources/icons/qcheckbox_indet.svg</file>
+        <file alias="qcbb">resources/icons/qcheckbox_bright.svg</file>
+        <file alias="qcbb_c">resources/icons/qcheckbox_bright_checked.svg</file>
+        <file alias="qcbb_d">resources/icons/qcheckbox_bright_disabled.svg</file>
+        <file alias="qcbb_d_c">resources/icons/qcheckbox_bright_disabled_checked.svg</file>
+        <file alias="qcbb_d_i">resources/icons/qcheckbox_bright_disabled_indeterminate.svg</file>
+        <file alias="qcbb_i">resources/icons/qcheckbox_bright_indet.svg</file>
+        <file alias="split_view">resources/icons/split_view.svg</file>
+        <file alias="arrow_right">resources/icons/arrow_right.svg</file>
+        <file alias="unified_view">resources/icons/unified_view.svg</file>
+        <file alias="pull_request">resources/icons/pull_request.svg</file>
+        <file alias="comment">resources/icons/comment.svg</file>
+        <file alias="comments">resources/icons/comments.svg</file>
+        <file alias="commit">resources/icons/commit.svg</file>
+        <file alias="add_comment">resources/icons/add_comment.svg</file>
+        <file alias="changes">resources/icons/changes.svg</file>
+        <file alias="new_issue">resources/icons/new_issue.svg</file>
+        <file alias="issues">resources/icons/issues.svg</file>
+        <file alias="new_pr">resources/icons/new_pull_request.svg</file>
+        <file alias="build_system">resources/icons/build_system.svg</file>
+        <file alias="yellow">resources/icons/yellow.svg</file>
+        <file alias="red">resources/icons/red.svg</file>
+        <file alias="orange">resources/icons/orange.svg</file>
+        <file alias="grey">resources/icons/grey.svg</file>
+        <file alias="green">resources/icons/green.svg</file>
+        <file alias="dark_grey">resources/icons/dark_grey.svg</file>
+        <file alias="review_comment">resources/icons/add_review.svg</file>
+        <file alias="review_approve">resources/icons/review_approved.svg</file>
+        <file alias="review_change">resources/icons/review_change.svg</file>
+        <file alias="signed">resources/icons/green_check.svg</file>
+        <file alias="close_issue">resources/icons/close_issue.svg</file>
+        <file alias="close_pr">resources/icons/close_pr.svg</file>
+        <file alias="pomodoro">resources/icons/pomodoro.svg</file>
+        <file alias="pomodoro_running">resources/icons/pomodoro_running.svg</file>
+        <file alias="pomodoro_timeout">resources/icons/pomodoro_timeout.svg</file>
+        <file alias="ahead">resources/icons/ahead.svg</file>
+        <file>resources/icons/arrow_down.png</file>
+        <file>resources/icons/arrow_up.png</file>
+        <file>resources/icons/remove-symbol.png</file>
+        <file>resources/icons/remove-symbol_hover.png</file>
+        <file>resources/icons/remove-symbol_press.png</file>
+        <file alias="tag_indicator">resources/icons/tag_indicator.svg</file>
+        <file alias="burger_menu">resources/icons/burger_menu.svg</file>
+        <file alias="unsigned">resources/icons/unsigned.svg</file>
+    </qresource>
+    <qresource prefix="/">
+        <file alias="stylesheet">resources/stylesheet.css</file>
+        <file alias="colors_bright">resources/stylesheet_colors_bright.css</file>
+        <file alias="colors_dark">resources/stylesheet_colors_dark.css</file>
+        <file>resources.rc</file>
+        <file alias="DejaVuSans">resources/DejaVuSans.ttf</file>
+        <file alias="DejaVuSansMono">resources/DejaVuSansMono.ttf</file>
+        <file>resources/3rdparty/marked.js</file>
+        <file>resources/3rdparty/qt_attribution.json</file>
+        <file>resources/3rdparty/markdown_bright.css</file>
+        <file>resources/3rdparty/markdown_dark.css</file>
+        <file>resources/index_bright.html</file>
+        <file>resources/index_dark.html</file>
+    </qresource>
+    <qresource prefix="/translations">
+        <file alias="gitqlient_en.qm">resources/translations/gitqlient_en.qm</file>
+        <file alias="gitqlient_en.ts">resources/translations/gitqlient_en.ts</file>
+    </qresource>
+</RCC>

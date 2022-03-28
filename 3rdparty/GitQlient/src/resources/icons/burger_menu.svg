@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   aria-hidden="true"
+   focusable="false"
+   data-prefix="fas"
+   data-icon="bars"
+   class="svg-inline--fa fa-bars fa-w-14"
+   role="img"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="burger_menu.svg"
+   width="512"
+   height="512"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3440"
+     inkscape:window-height="1403"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="1.4169757"
+     inkscape:cx="206.95834"
+     inkscape:cy="224.84613"
+     inkscape:window-x="1080"
+     inkscape:window-y="239"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4"
+     inkscape:document-rotation="0" />
+  <path
+     fill="#d89000"
+     d="m 93.5,145.28572 h 325 c 6.9039,0 12.5,-6.39554 12.5,-14.28572 V 95.285714 C 431,87.395536 425.4039,81 418.5,81 H 93.5 C 86.596094,81 81,87.395536 81,95.285714 V 131 c 0,7.89018 5.596094,14.28572 12.5,14.28572 z m 0,142.85714 h 325 c 6.9039,0 12.5,-6.39554 12.5,-14.28572 v -35.71428 c 0,-7.89018 -5.5961,-14.28572 -12.5,-14.28572 h -325 c -6.903906,0 -12.5,6.39554 -12.5,14.28572 v 35.71428 c 0,7.89018 5.596094,14.28572 12.5,14.28572 z M 93.5,431 h 325 c 6.9039,0 12.5,-6.39554 12.5,-14.28571 V 381 c 0,-7.89018 -5.5961,-14.28572 -12.5,-14.28572 H 93.5 C 86.596094,366.71428 81,373.10982 81,381 v 35.71429 C 81,424.60446 86.596094,431 93.5,431 Z"
+     id="path"
+     style="stroke-width:0.683594" />
+</svg>

@@ -1,0 +1,28 @@
+<header>
+  <h1 class="header">{{ site.title | default: site.github.repository_name }}</h1>
+  <p class="header">{{ site.description | default: site.github.project_tagline }}</p>
+  <ol>
+    <li><a href="https://francescmm.github.io/GitQlient/#home">Home</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#initial-screen">Initial screen</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#quick-access-actions">Quick access actions</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#the-tree-view">The Tree view</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#the-diff-view">The Diff view</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#the-blame-history-view">The Blame &amp; History view</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#the-merge-view">The Merge view</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#appendix-a-releases">Appendix A: Releases</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#appendix-b-build">Appendix B: Build</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#appendix-c-contributing">Appendix C: Contributing</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#appendix-d-recognition">Appendix D: Recognition</a></li>
+    <li><a href="https://francescmm.github.io/GitQlient/#appendix-e-license">Appendix E: License</a></li>
+  </ol>
+
+  <p><a class="header name" href="{{ site.github.repository_url }}">Go to the repo</a></p>
+  {% if site.github.is_project_page %}
+  <p class="header">GitQlient is maintained by <a class="header name" href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
+  {% endif %}
+  {% if site.github.is_user_page %}
+  <ul>
+    <li><a class="buttons github" href="{{ site.github.owner_url }}">GitHub Profile</a></li>
+  </ul>
+  {% endif %}
+</header>

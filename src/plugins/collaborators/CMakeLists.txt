@@ -2,12 +2,16 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-collaborators)
 
+include(${CMAKE_SOURCE_DIR}/3rdparty/GitQlient.cmake)
+
 set(CXX_CPP
+    mainframe/gitqlientwidget.cpp
     collaborators.cpp
     collaborators.json
     )
 
 set(CXX_H
+    mainframe/gitqlientwidget.h
     collaborators.h
     )
 

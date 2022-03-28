@@ -28,14 +28,8 @@ class SendEvents final
     SendEvents() = delete;
     SendEvents(const SendEvents &) = delete;
 public:
-    static void navRecentShow();
-    static void navRecentHide();
-    static void navEditHide();
-    static void navEditShow();
-    static void navDebugShow();
-    static void NavDebugHide();
-    static void navRuntimeShow();
-    static void navRuntimeHide();
+    static void navActionShow(const QString &navName);
+    static void navActionHide(const QString &navName);
     static void menuOpenFile(const QString &filePath);
     static void menuOpenDirectory(const QString &filePath);
 };

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Capa_1"
+   x="0px"
+   y="0px"
+   width="512px"
+   height="512px"
+   viewBox="0 0 401.991 401.991"
+   style="enable-background:new 0 0 401.991 401.991;"
+   xml:space="preserve"
+   sodipodi:docname="remove.svg"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"><metadata
+   id="metadata26"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs24" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1298"
+   inkscape:window-height="973"
+   id="namedview22"
+   showgrid="false"
+   inkscape:zoom="0.4609375"
+   inkscape:cx="256"
+   inkscape:cy="429.55932"
+   inkscape:window-x="2277"
+   inkscape:window-y="12"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="Capa_1" /><g
+   id="g19"
+   transform="matrix(0.64,0,0,0.64,72.3582,72.3582)"><g
+     id="g17">
+	<path
+   d="m 394,154.174 c -5.331,-5.33 -11.806,-7.995 -19.417,-7.995 H 27.406 c -7.611,0 -14.084,2.665 -19.414,7.995 C 2.662,159.503 0,165.972 0,173.587 v 54.82 c 0,7.617 2.662,14.086 7.992,19.41 5.33,5.332 11.803,7.994 19.414,7.994 h 347.176 c 7.611,0 14.086,-2.662 19.417,-7.994 5.325,-5.324 7.991,-11.793 7.991,-19.41 v -54.82 c 10e-4,-7.615 -2.658,-14.087 -7.99,-19.413 z"
+   data-original="#000000"
+   class="active-path"
+   data-old_color="#000000"
+   id="path15"
+   inkscape:connector-curvature="0"
+   style="fill:#d89000" />
+</g></g> </svg>

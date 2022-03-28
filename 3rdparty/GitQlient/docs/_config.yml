@@ -1,0 +1,6 @@
+theme: jekyll-theme-minimal
+google_analytics: UA-3598915-3
+title: GitQlient User Manual!
+description: GitQlient, pronounced as git+client (/gɪtˈklaɪənt/) is a multi-platform Git client originally forked from QGit. Nowadays it just keeps some old functionality to store the data that is used to later paint the repo tree.
+include: [UserManual.md]
+

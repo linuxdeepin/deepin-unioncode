@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Capa_1"
+   x="0px"
+   y="0px"
+   width="300"
+   height="512"
+   viewBox="0 0 166.95059 284.929"
+   xml:space="preserve"
+   sodipodi:docname="arrow_right.svg"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"><metadata
+   id="metadata13"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs11" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1864"
+   inkscape:window-height="1016"
+   id="namedview9"
+   showgrid="false"
+   inkscape:zoom="0.4609375"
+   inkscape:cx="-130.16949"
+   inkscape:cy="247.32203"
+   inkscape:window-x="56"
+   inkscape:window-y="27"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Capa_1" /><g
+   id="g6"
+   transform="matrix(0,-1,1.0047277,0,-59.662735,284.929)"><g
+     id="g4">
+	<path
+   d="M 282.082,76.511 267.808,62.238 c -1.902,-1.906 -4.093,-2.856 -6.57,-2.856 -2.471,0 -4.661,0.95 -6.563,2.856 L 142.466,174.441 30.262,62.241 c -1.903,-1.906 -4.093,-2.856 -6.567,-2.856 -2.475,0 -4.665,0.95 -6.567,2.856 L 2.856,76.515 C 0.95,78.417 0,80.607 0,83.082 c 0,2.473 0.953,4.663 2.856,6.565 l 133.043,133.046 c 1.902,1.903 4.093,2.854 6.567,2.854 2.474,0 4.661,-0.951 6.562,-2.854 L 282.082,89.647 c 1.902,-1.903 2.847,-4.093 2.847,-6.565 0,-2.475 -0.945,-4.665 -2.847,-6.571 z"
+   data-original="#000000"
+   class="active-path"
+   data-old_color="#000000"
+   id="path2"
+   inkscape:connector-curvature="0"
+   style="fill:#d89000" />
+</g></g> </svg>

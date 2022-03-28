@@ -22,6 +22,7 @@
 #include "transceiver/sendevents.h"
 #include "windowstatusbar.h"
 #include "services/window/windowservice.h"
+#include "common/common.h"
 
 #include <QAction>
 #include <QMenu>
@@ -33,22 +34,7 @@
 #include <QApplication>
 #include <QActionGroup>
 
-const int minWidth = 1200;
-const int minHeight = 800;
-
-const QString MENU_FILE_FILE_NEW { WindowKeeper::tr("New Document") };
-const QString MENU_FILE_FOLDER_NEW { WindowKeeper::tr("New Folder") };
-const QString MENU_FILE_OPEN_FILE { WindowKeeper::tr("Open Document") };
-const QString MENU_FILE_OPEN_DIR { WindowKeeper::tr("Open Folder") };
-const QString MENU_FILE_QUIT { WindowKeeper::tr("Quit") };
-const QString OPEN_RECENT_DOCUMENTS { WindowKeeper::tr("Open Recent Documents") };
-const QString OPEN_RECENT_FOLDER { WindowKeeper::tr("Open Recent Folders") };
-
-const QString DIALOG_OPEN_DOCUMENT_TITLE { WindowKeeper::tr("Open Document") };
-const QString DIALOG_OPEN_FOLDER_TITLE { WindowKeeper::tr("Open Folder") };
-
 static WindowKeeper *ins{nullptr};
-
 using namespace dpfservice;
 class WindowKeeperPrivate
 {
@@ -63,37 +49,37 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
     QMenu* fileMenu = new QMenu();
-    QAction* actionQuit = new QAction(MENU_FILE_QUIT);
+    QAction* actionQuit = new QAction(MWMFA_QUIT);
     QAction::connect(actionQuit, &QAction::triggered, [](){
         qApp->closeAllWindows();
     });
 
-    QAction* actionNewDocument = new QAction(MENU_FILE_FILE_NEW);
+    QAction* actionNewDocument = new QAction(MWMFA_DOCUMENT_NEW);
     QAction::connect(actionNewDocument, &QAction::triggered, [=](){
         qInfo() << "nothing to do";
     });
 
-    QAction* actionNewFolder = new QAction(MENU_FILE_FOLDER_NEW);
+    QAction* actionNewFolder = new QAction(MWMFA_FOLDER_NEW);
     QAction::connect(actionNewFolder, &QAction::triggered, [=](){
         qInfo() << "nothing to do";
     });
 
-    QAction* actionOpenDocument = new QAction(MENU_FILE_OPEN_FILE);
+    QAction* actionOpenDocument = new QAction(MWMFA_OPEN_DOCUMENT);
     QAction::connect(actionOpenDocument, &QAction::triggered, [=](){
         QString file = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE);
         if (file.isEmpty()) return;
         SendEvents::menuOpenFile(file);
     });
 
-    QAction* actionOpenFolder = new QAction(MENU_FILE_OPEN_DIR);
+    QAction* actionOpenFolder = new QAction(MWMFA_OPEN_FOLDER);
     QAction::connect(actionOpenFolder, &QAction::triggered, [=](){
         QString directory = QFileDialog::getExistingDirectory(nullptr, DIALOG_OPEN_FOLDER_TITLE);
         if (directory.isEmpty()) return;
         SendEvents::menuOpenDirectory(directory);
     });
 
-    auto openRecentDocuments = new QAction(OPEN_RECENT_DOCUMENTS);
-    auto openRecentFolders = new QAction(OPEN_RECENT_FOLDER);
+    auto openRecentDocuments = new QAction(MWMFA_OPEN_RECENT_DOCUMENTS);
+    auto openRecentFolders = new QAction(MWMFA_OPEN_RECENT_FOLDER);
 
     fileMenu->addAction(actionNewDocument);
     fileMenu->addAction(actionNewFolder);
@@ -105,7 +91,7 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     fileMenu->addSeparator();
     fileMenu->addAction(actionQuit);
     QAction* fileAction = menuBar->addMenu(fileMenu);
-    fileAction->setText(QString::fromStdString(MENU_FILE));
+    fileAction->setText(MWM_FILE);
 }
 
 void WindowKeeper::createBuildActions(QMenuBar *menuBar)
@@ -113,20 +99,20 @@ void WindowKeeper::createBuildActions(QMenuBar *menuBar)
     qInfo() << __FUNCTION__;
     QMenu* buildMenu = new QMenu();
     QAction* buildAction = menuBar->addMenu(buildMenu);
-    buildAction->setText(QString::fromStdString(MENU_BUILD));
+    buildAction->setText(MWM_BUILD);
 }
 
 void WindowKeeper::createDebugActions(QMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
     QAction* debugAction = menuBar->addMenu(new QMenu());
-    debugAction->setText(QString::fromStdString(MENU_DEBUG));
+    debugAction->setText(MWM_DEBUG);
 }
 
 void WindowKeeper::createToolsActions(QMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
-    auto toolsMenu = new QMenu(QString::fromStdString(MENU_TOOLS));
+    auto toolsMenu = new QMenu(MWM_TOOLS);
     menuBar->addMenu(toolsMenu);
 
     QAction* actionSearch = new QAction("Search");
@@ -150,7 +136,7 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
 void WindowKeeper::createHelpActions(QMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
-    auto helpMenu = new QMenu(QString::fromStdString(MENU_HELP));
+    auto helpMenu = new QMenu(MWM_HELP);
     menuBar->addMenu(helpMenu);
 
     QAction* actionReportBug = new QAction("Report Bug");
@@ -173,12 +159,11 @@ void WindowKeeper::createNavRecent(QToolBar *toolbar)
     if (!toolbar)
         return;
 
-    QAction* navRecent = new QAction(toolbar);
+    QAction* navRecent = new QAction(MWNA_RECENT, toolbar);
     navRecent->setCheckable(true);
     d->navActionGroup->addAction(navRecent);
-    navRecent->setText(QString::fromStdString(NAVACTION_RECENT));
     QAction::connect(navRecent, &QAction::triggered, [=](){
-        SendEvents::navRecentShow(); //recent show event
+        WindowKeeper::switchNavWidget(MWNA_RECENT);
     });
     toolbar->addAction(navRecent);
 }
@@ -192,9 +177,9 @@ void WindowKeeper::createNavEdit(QToolBar *toolbar)
     QAction* navEdit = new QAction(toolbar);
     navEdit->setCheckable(true);
     d->navActionGroup->addAction(navEdit);
-    navEdit->setText(QString::fromStdString(NAVACTION_EDIT));
+    navEdit->setText(MWNA_EDIT);
     QAction::connect(navEdit, &QAction::triggered, [=](){
-        SendEvents::navEditShow();
+        WindowKeeper::switchNavWidget(MWNA_EDIT);
     });
 
     toolbar->addAction(navEdit);
@@ -209,9 +194,9 @@ void WindowKeeper::createNavDebug(QToolBar *toolbar)
     QAction* navDebug = new QAction(toolbar);
     navDebug->setCheckable(true);
     d->navActionGroup->addAction(navDebug);
-    navDebug->setText(QString::fromStdString(NAVACTION_DEBUG));
+    navDebug->setText(MWNA_DEBUG);
     QAction::connect(navDebug, &QAction::triggered, [=](){
-        SendEvents::navDebugShow();
+        WindowKeeper::switchNavWidget(MWNA_DEBUG);
     });
 
     toolbar->addAction(navDebug);
@@ -226,9 +211,9 @@ void WindowKeeper::createNavRuntime(QToolBar *toolbar)
     QAction *navRuntime = new QAction(toolbar);
     navRuntime->setCheckable(true);
     d->navActionGroup->addAction(navRuntime);
-    navRuntime->setText(QString::fromStdString(NAVACTION_RUNTIME));
+    navRuntime->setText(MWNA_RUNTIME);
     QAction::connect(navRuntime, &QAction::triggered, [=](){
-        SendEvents::navRuntimeShow();
+        WindowKeeper::switchNavWidget(MWNA_RUNTIME);
     });
 
     toolbar->addAction(navRuntime);
@@ -256,7 +241,7 @@ void WindowKeeper::layoutWindow(QMainWindow *window)
     createStatusBar(window);
 
     window->addToolBar(Qt::LeftToolBarArea, d->toolbar);
-    window->setMinimumSize(QSize(minWidth,minHeight));
+    window->setMinimumSize(QSize(MW_MIN_WIDTH,MW_MIN_HEIGHT));
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->setMenuBar(menuBar);
 }
@@ -318,25 +303,18 @@ WindowKeeper::~WindowKeeper()
     }
 }
 
-QActionGroup *WindowKeeper::navActionGroup() const
-{
-    return d->navActionGroup;
-}
-
-QMainWindow *WindowKeeper::mainWindow() const
-{
-    return d->window;
-}
-
-QHash<QString, QWidget *> WindowKeeper::centrals() const
-{
-    return d->centrals;
-}
-
 void WindowKeeper::addNavAction(AbstractAction *action)
 {
-    Q_UNUSED(action);
-    qInfo() << __FUNCTION__;
+    if (!action || !action->qAction() || !d->toolbar || !d->navActionGroup)
+        return;
+
+    auto qAction = (QAction*)action->qAction();
+    qAction->setCheckable(true);
+    d->navActionGroup->addAction(qAction);
+    d->toolbar->addAction(qAction);
+    QObject::connect(qAction, &QAction::triggered,[=](){
+        switchNavWidget(qAction->text());
+    });
 }
 
 void WindowKeeper::addCentral(const QString &navName, AbstractCentral *central)
@@ -363,7 +341,7 @@ void WindowKeeper::addMenu(AbstractMenu *menu)
 
     //始终将Helper置末
     for (QAction *action : d->window->menuBar()->actions()) {
-        if (action->text() == QString::fromStdString(MENU_HELP)) {
+        if (action->text() == MWM_HELP) {
             d->window->menuBar()->insertMenu(action, inputMenu);
             return; //提前返回
         }
@@ -382,9 +360,9 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
 
     for (QAction *qaction : d->window->menuBar()->actions()) {
         if (qaction->text() == menuName) {
-            if (qaction->text() == QString::fromStdString(MENU_FILE)) {
+            if (qaction->text() == MWM_FILE) {
                 auto endAction = *(qaction->menu()->actions().rbegin());
-                if (endAction->text() == MENU_FILE_QUIT) {
+                if (endAction->text() == MWMFA_QUIT) {
                     return qaction->menu()->insertAction(endAction, inputAction);
                 }
             }
@@ -398,5 +376,37 @@ void WindowKeeper::initUserWidget()
     qApp->processEvents();
     if (d->toolbar->actions().size() > 0) {
         d->toolbar->actions().at(0)->trigger();
+    }
+}
+
+void WindowKeeper::switchNavWidget(const QString &navName)
+{
+    auto beforWidget = d->window->takeCentralWidget();
+    if (beforWidget)
+        beforWidget->hide();
+
+    setNavActionChecked(navName, true);
+
+    if (d->centrals.isEmpty() || !d->window)
+        return;
+
+    auto widget = d->centrals[navName];
+    if (!widget)
+        return;
+
+    d->window->setCentralWidget(widget);
+    d->window->centralWidget()->show();
+}
+
+void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)
+{
+    if (!d->navActionGroup)
+        return;
+
+    for (auto action : d->navActionGroup->actions()) {
+        if (action->text() == actionName){
+            qInfo() << action->text();
+            action->setChecked(checked);
+        }
     }
 }

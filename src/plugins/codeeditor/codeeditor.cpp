@@ -61,8 +61,7 @@ bool CodeEditor::start()
         NavEditMainWindow *navEditWindow = NavEditMainWindow::instance();
         TextEditTabWidget *editTabWidget = TextEditTabWidget::instance();
         navEditWindow->setEditWidget(new AbstractCentral(editTabWidget));
-        windowService->addCentral(QString::fromStdString(NAVACTION_EDIT),
-                                  new AbstractCentral(navEditWindow));
+        windowService->addCentral(MWNA_EDIT, new AbstractCentral(navEditWindow));
 
         using namespace std::placeholders;
         if (!windowService->setEditorTree) {
@@ -82,21 +81,17 @@ bool CodeEditor::start()
         }
 
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);
-        windowService->addAction(QString::fromStdString(MENU_FILE),
-                                 new AbstractAction(saveAllDocuments));
+        windowService->addAction(MWM_FILE, new AbstractAction(saveAllDocuments));
 
         auto closeAllDocuments = new QAction(CLOSE_ALL_DOCUMENTS);
-        windowService->addAction(QString::fromStdString(MENU_FILE),
-                                 new AbstractAction(closeAllDocuments));
+        windowService->addAction(MWM_FILE, new AbstractAction(closeAllDocuments));
 
         auto sep = new QAction();
         sep->setSeparator(true);
-        windowService->addAction(QString::fromStdString(MENU_FILE),
-                                 new AbstractAction(sep));
+        windowService->addAction(MWM_FILE, new AbstractAction(sep));
 
         auto print = new QAction(PRINT);
-        windowService->addAction(QString::fromStdString(MENU_FILE),
-                                 new AbstractAction(print));
+        windowService->addAction(MWM_FILE, new AbstractAction(print));
     }
     return true;
 }
