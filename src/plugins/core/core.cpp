@@ -50,6 +50,17 @@ void Core::initialize()
 bool Core::start()
 {
     qInfo() << "set Application Theme";
+    qInfo() << __FUNCTION__;
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+
+    if (windowService) {
+        using namespace std::placeholders;
+        if (!windowService->switchNavWidget) {
+            windowService->switchNavWidget = std::bind(&WindowKeeper::switchNavWidget, WindowKeeper::instace(), _1);
+        };
+    }
+
     WindowKeeper::instace();
     WindowTheme::setTheme(":/dark-one.css");
     return true;

@@ -80,6 +80,10 @@ bool CodeEditor::start()
             windowService->setWatchWidget = std::bind(&NavEditMainWindow::setWatchWidget, navEditWindow, _1);
         }
 
+        if (!windowService->switchContextWidget) {
+            windowService->switchContextWidget = std::bind(&NavEditMainWindow::switchContextWidget, navEditWindow, _1);
+        }
+
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);
         windowService->addAction(MWM_FILE, new AbstractAction(saveAllDocuments));
 

@@ -24,6 +24,7 @@ public:
     static NavEditMainWindow *instance();
     explicit NavEditMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
     virtual ~NavEditMainWindow();
+    QStringList contextWidgetTitles() const;
     void setConsole(AbstractConsole *console);
     void setTreeWidget(AbstractWidget *treeWidget);
     void setEditWidget(AbstractCentral *editWidget);

@@ -3,29 +3,29 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-filebrowser)
 
 set(CXX_CPP
-    sendevents.cpp
-    filebrowserreceiver.cpp
-    treenodewatcher.cpp
-    treenode.cpp
-    treeproxy.cpp
-    treemenu.cpp
-    treeviewdelegate.cpp
-    treemodel.cpp
-    treeview.cpp
+    transceiver/sendevents.cpp
+    transceiver/filebrowserreceiver.cpp
+    mainframe/treenodewatcher.cpp
+    mainframe/treenode.cpp
+    mainframe/treeproxy.cpp
+    mainframe/treemenu.cpp
+    mainframe/treeviewdelegate.cpp
+    mainframe/treemodel.cpp
+    mainframe/treeview.cpp
     filebrowser.cpp
     filebrowser.json
     )
 
 set(CXX_H
-    sendevents.h
-    filebrowserreceiver.h
-    treenodewatcher.h
-    treenode.h
-    treeproxy.h
-    treemenu.h
-    treeviewdelegate.h
-    treemodel.h
-    treeview.h
+    transceiver/sendevents.h
+    transceiver/filebrowserreceiver.h
+    mainframe/treenodewatcher.h
+    mainframe/treenode.h
+    mainframe/treeproxy.h
+    mainframe/treemenu.h
+    mainframe/treeviewdelegate.h
+    mainframe/treemodel.h
+    mainframe/treeview.h
     filebrowser.h
     )
 

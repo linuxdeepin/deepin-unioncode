@@ -20,8 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "filebrowser.h"
-#include "treeview.h"
-#include "treeproxy.h"
+#include "mainframe/treeview.h"
+#include "mainframe/treeproxy.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"

@@ -22,22 +22,12 @@
 #include "common/common.h"
 #include <framework/framework.h>
 
-void SendEvents::navActionShow(const QString &navName)
+void SendEvents::navActionSwitch(const QString &navName)
 {
     qInfo() << __FUNCTION__;
     dpf::Event showNavRecent;
     showNavRecent.setTopic(T_NAV);
-    showNavRecent.setData(D_ACTION_SHOW);
-    showNavRecent.setProperty(P_ACTION_TEXT, navName);
-    dpf::EventCallProxy::instance().pubEvent(showNavRecent);
-}
-
-void SendEvents::navActionHide(const QString &navName)
-{
-    qInfo() << __FUNCTION__;
-    dpf::Event showNavRecent;
-    showNavRecent.setTopic(T_NAV);
-    showNavRecent.setData(D_ACTION_HIDE);
+    showNavRecent.setData(D_ACTION_SWITCH);
     showNavRecent.setProperty(P_ACTION_TEXT, navName);
     dpf::EventCallProxy::instance().pubEvent(showNavRecent);
 }
@@ -50,6 +40,7 @@ void SendEvents::menuOpenFile(const QString &filePath)
     menuOpenFile.setData(D_FILE_OPENDOCUMENT);
     menuOpenFile.setProperty(P_FILEPATH, filePath);
     dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
+    SendEvents::navActionSwitch(MWNA_EDIT);
 }
 
 void SendEvents::menuOpenDirectory(const QString &filePath)
@@ -60,4 +51,5 @@ void SendEvents::menuOpenDirectory(const QString &filePath)
     menuOpenFile.setData(D_FILE_OPENFOLDER);
     menuOpenFile.setProperty(P_FILEPATH, filePath);
     dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
+    SendEvents::navActionSwitch(MWNA_EDIT);
 }

@@ -20,7 +20,7 @@
 */
 #include "treemenu.h"
 #include "treeproxy.h"
-#include "sendevents.h"
+#include "transceiver/sendevents.h"
 #include "common/common.h"
 
 #include <QFileInfo>

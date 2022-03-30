@@ -19,7 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "filebrowserreceiver.h"
-#include "treeproxy.h"
+#include "mainframe/treeproxy.h"
+#include "common/common.h"
 
 static QStringList subTopics{"Menu"};
 
@@ -37,14 +38,15 @@ QStringList FileBrowserReceiver::topics()
 
 void FileBrowserReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!subTopics.contains(event.topic()))
+    if (!subTopics.contains(event.topic())) {
+        qCritical() << event;
         abort();
-    qInfo() << event;
-    if (event.topic() == "Menu") {
-        if (event.data() == "File.OpenDocument")
-            return TreeProxy::instance().appendFile(event.property("FilePath").toString());
-        if (event.data() == "File.OpenFolder")
-            return TreeProxy::instance().appendFolder(event.property("FilePath").toString());
     }
-
+    if (event.topic() == T_MENU) {
+        if (event.data() == D_FILE_OPENDOCUMENT) {
+            TreeProxy::instance().appendFile(event.property(P_FILEPATH).toString());
+        } else if (event.data() == D_FILE_OPENFOLDER) {
+            TreeProxy::instance().appendFolder(event.property(P_FILEPATH).toString());
+        }
+    }
 }

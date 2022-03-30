@@ -26,14 +26,15 @@ QStringList RecentReceiver::topics()
 void RecentReceiver::eventProcess(const dpf::Event &event)
 {
     if (!subTopics.contains(event.topic())) {
-        qInfo() << event;
+        qCritical() << event;
         abort();
     }
-    if (event.topic() == "Menu") {
-        if (event.data() == "File.OpenDocument")
-            return RecentProxy::instance()->addDocument(event.property("FilePath").toString());
-        if (event.data() == "File.OpenFolder")
-            return RecentProxy::instance()->addFolder(event.property("FilePath").toString());
+    if (event.topic() == T_MENU) {
+        if (event.data() == D_FILE_OPENDOCUMENT) {
+            return RecentProxy::instance()->addDocument(event.property(P_FILEPATH).toString());
+        } else if (event.data() == D_FILE_OPENFOLDER) {
+            return RecentProxy::instance()->addFolder(event.property(P_FILEPATH).toString());
+        }
     }
 }
 

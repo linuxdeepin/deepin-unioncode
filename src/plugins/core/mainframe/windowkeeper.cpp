@@ -303,6 +303,11 @@ WindowKeeper::~WindowKeeper()
     }
 }
 
+QStringList WindowKeeper::navActionTexts() const
+{
+    return d->centrals.keys();
+}
+
 void WindowKeeper::addNavAction(AbstractAction *action)
 {
     if (!action || !action->qAction() || !d->toolbar || !d->navActionGroup)

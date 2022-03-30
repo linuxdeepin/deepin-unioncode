@@ -34,8 +34,7 @@ extern const QString T_BUILDER;
 extern const QString T_WORKSPACE;
 extern const QString T_RECENT;
 
-extern const QString D_ACTION_SHOW;
-extern const QString D_ACTION_HIDE;
+extern const QString D_ACTION_SWITCH;
 
 extern const QString D_WORKSPACE_GENERATE_BEGIN;
 extern const QString D_WORKSPACE_GENERATE_END;

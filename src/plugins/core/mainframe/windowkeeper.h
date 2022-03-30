@@ -50,6 +50,7 @@ public:
     static WindowKeeper *instace();
     explicit WindowKeeper(QObject *parent = nullptr);
     virtual ~WindowKeeper();
+    QStringList navActionTexts() const;
 
 public slots:
     void addNavAction(AbstractAction *action);

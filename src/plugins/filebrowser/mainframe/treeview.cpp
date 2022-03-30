@@ -22,8 +22,8 @@
 #include "treemodel.h"
 #include "treeproxy.h"
 #include "treemenu.h"
-#include "sendevents.h"
 #include "treeviewdelegate.h"
+#include "transceiver/sendevents.h"
 
 #include <QDebug>
 #include <QMouseEvent>

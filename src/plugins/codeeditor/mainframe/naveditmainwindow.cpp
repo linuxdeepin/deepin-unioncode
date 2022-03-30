@@ -43,6 +43,15 @@ NavEditMainWindow::~NavEditMainWindow()
     qInfo() << __FUNCTION__;
 }
 
+QStringList NavEditMainWindow::contextWidgetTitles() const
+{
+    QStringList result;
+    for (int index = 0; index < qTabWidget->count(); index ++) {
+        result<< qTabWidget->tabText(index);
+    }
+    return result;
+}
+
 void NavEditMainWindow::setConsole(AbstractConsole *console)
 {
     QWidget *qConsoleWidget = static_cast<QWidget*>(console->qWidget());

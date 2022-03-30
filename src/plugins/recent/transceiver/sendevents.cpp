@@ -27,8 +27,8 @@ void SendEvents::recentOpenFile(const QString &filePath)
     qInfo() << __FUNCTION__;
     dpf::Event menuOpenFile;
     menuOpenFile.setTopic(T_MENU);
-    menuOpenFile.setData("File.OpenDocument");
-    menuOpenFile.setProperty("FilePath", filePath);
+    menuOpenFile.setData(D_FILE_OPENDOCUMENT);
+    menuOpenFile.setProperty(P_FILEPATH, filePath);
     dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
     navEditShow();
 }
@@ -38,8 +38,8 @@ void SendEvents::recentOpenDirectory(const QString &filePath)
     qInfo() << __FUNCTION__;
     dpf::Event menuOpenFile;
     menuOpenFile.setTopic(T_MENU);
-    menuOpenFile.setData("File.OpenFolder");
-    menuOpenFile.setProperty("FilePath", filePath);
+    menuOpenFile.setData(D_FILE_OPENFOLDER);
+    menuOpenFile.setProperty(P_FILEPATH, filePath);
     dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
     navEditShow();
 }
@@ -48,7 +48,8 @@ void SendEvents::navEditShow()
 {
     qInfo() << __FUNCTION__;
     dpf::Event showNavEdit;
-    showNavEdit.setTopic("Nav");
-    showNavEdit.setData("Edit.Show");
+    showNavEdit.setTopic(T_NAV);
+    showNavEdit.setData(D_ACTION_SWITCH);
+    showNavEdit.setProperty(P_ACTION_TEXT, MWNA_EDIT);
     dpf::EventCallProxy::instance().pubEvent(showNavEdit);
 }

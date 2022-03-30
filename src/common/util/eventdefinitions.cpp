@@ -29,8 +29,7 @@ const QString T_BUILDER {"Builder"};
 const QString T_WORKSPACE {"Workspace"};
 const QString T_RECENT{"Recent"};
 
-const QString D_ACTION_SHOW {"Action.Show"};
-const QString D_ACTION_HIDE {"Action.Hide"};
+const QString D_ACTION_SWITCH {"Action.Switch"};
 
 const QString D_WORKSPACE_GENERATE_BEGIN {"Workspace.Generate.Begin"};
 const QString D_WORKSPACE_GENERATE_END {"Workspace.Generate.End"};

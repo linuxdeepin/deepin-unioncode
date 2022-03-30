@@ -54,6 +54,7 @@ void CoreReceiver::eventProcess(const dpf::Event &event)
 
 void CoreReceiver::navEvent(const dpf::Event &event)
 {
-    qInfo() << __FUNCTION__ << event;
-    WindowKeeper::instace()->switchNavWidget(event.data().toString());
+    if (event.data().toString() == D_ACTION_SWITCH) {
+        WindowKeeper::instace()->switchNavWidget(event.property(P_ACTION_TEXT).toString());
+    }
 }
