@@ -207,7 +207,7 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
                                                  "tools-report-bug.png");
     helpMenu->addAction(actionReportBug);
 
-    QAction* actionAboutUnionCode = new QAction("About \"Union Code\"");
+    QAction* actionAboutUnionCode = new QAction("About \"Deepin Union Code\"");
     ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
                                                  "About", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A),
                                                  "help-about.svg");
@@ -340,7 +340,7 @@ WindowKeeper::WindowKeeper(QObject *parent)
 
     if (!d->window) {
         d->window = new QMainWindow();
-        d->window->setWindowTitle("Union Code");
+        d->window->setWindowTitle("Deepin Union Code");
         d->window->setWindowIcon(QIcon(":/core/images/unioncode@128.png"));
         QObject::connect(d->window, &QMainWindow::destroyed, [&](){
             d->window->takeCentralWidget();

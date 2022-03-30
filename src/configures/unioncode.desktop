@@ -2,12 +2,12 @@
 Actions=new-empty-window;
 Categories=Utility;TextEditor;Development;IDE;
 Comment=Code Editing. Redefined.
-Exec=/usr/bin/unioncode
+Exec=/usr/bin/deepin-unioncode
 GenericName=Text Editor
-Icon=/usr/share/unioncode/configures/icons/unioncode.png
-Keywords=unioncode;
+Icon=/usr/share/deepin-unioncode/configures/icons/deepin-unioncode.png
+Keywords=deepin-unioncode;
 MimeType=text/plain;inode/directory;application/x-code-workspace;
-Name=deepin-unioncode
+Name=Deepin Union Code
 Path=/usr/bin
 StartupNotify=false
 StartupWMClass=Code

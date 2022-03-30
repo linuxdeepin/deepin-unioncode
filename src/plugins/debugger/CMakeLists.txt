@@ -68,10 +68,10 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    unioncode-framework
-    unioncode-base
-    unioncode-service
-    unioncode-common
+    framework
+    base
+    services
+    common
     cppdap
     ${QtUseModules}
     ${PkgUserModules}

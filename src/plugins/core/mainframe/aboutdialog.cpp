@@ -42,7 +42,7 @@ AboutDialog::~AboutDialog()
 
 void AboutDialog::setupUi()
 {
-    setWindowTitle(tr("About Union Code"));
+    setWindowTitle(tr("About Deepin Union Code"));
 
     QLabel *logoLabel = new QLabel;
     logoLabel->setPixmap(QPixmap(ICON_LOGO_128PX));
@@ -51,7 +51,7 @@ void AboutDialog::setupUi()
             .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ProcessUtil::localPlatform());
 
     const QString description = tr(
-        "<h3>Union Code %1</h3>"
+        "<h3>Deepin Union Code %1</h3>"
         "%2<br/>"
         "Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.<br/>"
         "<br/>")

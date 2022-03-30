@@ -132,17 +132,17 @@ QString PathMode::builded(CustomPaths::Flags flags)
 
 QString PathMode::usreCachePath()
 {
-    return FO::checkCreateDir(FO::checkCreateDir(userHome(), ".cache"), "unioncode");
+    return FO::checkCreateDir(FO::checkCreateDir(userHome(), ".cache"), "deepin-unioncode");
 }
 
 QString PathMode::userConfigurePath()
 {
-    return FO::checkCreateDir(FO::checkCreateDir(userHome(), ".config"), "unioncode");
+    return FO::checkCreateDir(FO::checkCreateDir(userHome(), ".config"), "deepin-unioncode");
 }
 
 QString PathMode::userDataPath()
 {
-    return FO::checkCreateDir(FO::checkCreateDir(userHome(), ".data"), "unioncode");
+    return FO::checkCreateDir(FO::checkCreateDir(userHome(), ".data"), "deepin-unioncode");
 }
 
 QString CustomPaths::endSeparator(const QString &path)

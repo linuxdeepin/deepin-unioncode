@@ -39,10 +39,10 @@ add_library(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    unioncode-framework
-    unioncode-service
-    unioncode-base
-    unioncode-common
+    framework
+    services
+    base
+    common
     eventman
     ${QtUseModules}
     ${PkgUserModules}

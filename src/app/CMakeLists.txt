@@ -1,11 +1,11 @@
-project(unioncode)
+project(deepin-unioncode)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
 target_link_libraries(
-    unioncode
-    unioncode-framework
-    unioncode-common
+    ${PROJECT_NAME}
+    framework
+    common
     ${QtUseModules}
     ${PkgUseModule}
     )

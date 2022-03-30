@@ -1,4 +1,4 @@
-Source: unioncode
+Source: deepin-unioncode
 Section: libdevel
 Priority: optional
 Maintainer: Deepin Packages Builder <packages@linuxdeepin.com>
@@ -32,7 +32,7 @@ Build-Depends:
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 
-Package: unioncode
+Package: deepin-unioncode
 Architecture: any
 Depends:
  ${shlibs:Depends},
@@ -43,10 +43,10 @@ Recommends: cmake,
             g++,
             gcc,
             git
-Description: IDE 'Union Code'
+Description: IDE 'Deepin Union Code'
  Lightweight cross-platform integrated development environment
 
-Package: libunioncode-dev
+Package: libdeepin-unioncode-dev
 Architecture: any
 Depends:
  ${shlibs:Depends},

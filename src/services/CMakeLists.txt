@@ -1,5 +1,4 @@
-
-project(unioncode-service)
+project(services)
 
 set(CPPDAP_DIR ${CMAKE_SOURCE_DIR}/3rdparty/cppdap)
 include_directories(${CPPDAP_DIR}/include)
@@ -51,7 +50,7 @@ add_library(
 
 link_libraries(
     ${PROJECT_NAME}
-    unioncode-base
+    base
     cppdap
     ${QtUseModules}
     ${PkgUserModules}

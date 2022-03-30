@@ -1,4 +1,4 @@
-project(unioncode-base)
+project(base)
 
 set(CXX_H
     abstractcentral.h

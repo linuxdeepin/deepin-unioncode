@@ -34,7 +34,7 @@ add_executable(${PROJECT_NAME} main.cpp
     ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
-    unioncode-common
+    common
     )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "${LIBRARY_INSTALL_PREFIX}/tools")

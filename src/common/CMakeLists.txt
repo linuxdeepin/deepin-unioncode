@@ -1,4 +1,4 @@
-project(unioncode-common)
+project(common)
 
 include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 

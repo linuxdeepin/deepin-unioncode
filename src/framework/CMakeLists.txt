@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(unioncode-framework)
+project(framework)
 
 add_definitions(
     -DDPF_LIBRARY
