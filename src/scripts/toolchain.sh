@@ -23,7 +23,6 @@
 # 
 #  Init The Native Runtime Environments For UnionCode IDE
 #
-
 export UNIONCODE_VERSION="1.0.0"
 export UNIONCODE_LIBEXEC="/usr/libexec/unioncode/"
 
@@ -33,7 +32,9 @@ GCC_COMPILER=""
 probe_gcc()
 {
 	pkg="gcc"
-	gcc_c_compiler_path="" gcc_cpp_compiler_path="" gcc_c_compiler_version=""
+	gcc_c_compiler_path=""
+	gcc_cpp_compiler_path=""
+       	gcc_c_compiler_version=""
 	gcc_cpp_compiler_version="" 
 	if ! command -v $pkg >/dev/null; then
 		apt install $pkg -y
@@ -75,6 +76,153 @@ EOD
 	#echo "$GCC_COMPILER"
 }
 
+# probe x86_64-linux-gcc
+X86_64_LINUX_GCC_COMPILER=""
+probe_amd64_gcc()
+{
+	pkg="crossbuild-essential-amd64"
+	x86_64_linux_gcc_c_compiler_path=""
+       	x86_64_linux_gcc_cpp_compiler_path=""
+       	x86_64_linux_gcc_c_compiler_version=""
+	x86_64_linux_gcc_cpp_compiler_version="" 
+	if ! command -v $pkg >/dev/null; then
+		apt install $pkg -y
+	fi
+	x86_64_linux_gcc_c_compiler_version=$(x86_64-linux-gnu-gcc --version | head -1)
+	x86_64_linux_gcc_c_compiler_path=$(command -v x86_64-linux-gnu-gcc)
+	x86_64_linux_gcc_cpp_compiler_version=$(x86_64-linux-gnu-gcc --version | head -1)
+	x86_64_linux_gcc_cpp_compiler_path=$(command -v x86_64-linux-gnu-g++)	
+
+	X86_64_LINUX_GCC_C_COMPILER=$(
+cat <<-EOD
+{
+  "name": "GCC C COMPILER in $x86_64_linux_gcc_c_compiler_path",
+  "version": "$x86_64_linux_gcc_c_compiler_version",
+  "command": "x86_64-linux-gnu-gcc",
+  "path": "$x86_64_linux_gcc_c_compiler_path"
+}
+EOD
+)
+	X86_64_LINUX_GCC_CPP_COMPILER=$(
+cat <<-EOD
+{
+  "name": "GCC CPP COMPILER in $x86_64_linux_gcc_cpp_compiler_path",
+  "version": "$x86_64_linux_gcc_cpp_compiler_version",
+  "command": "x86_64-linux-gnu-g++",
+  "path": "$x86_64_linux_gcc_cpp_compiler_path"
+}
+EOD
+)
+
+	X86_64_LINUX_GGCC_COMPILER=$(
+cat <<-EOD
+[
+    $X86_64_LINUX_GCC_C_COMPILER,
+    $X86_64_LINUX_GCC_CPP_COMPILER
+]
+EOD
+)
+#	echo "$X86_64_LINUX_GCC_COMPILER"
+}
+
+# probe aarch64-linux-gcc
+AARCH64_LINUX_GCC_COMPILER=""
+probe_aarch64_gcc()
+{
+	pkg="crossbuild-essential-arm64"
+	aarch64_linux_gcc_c_compiler_path=""
+       	aarch64_linux_gcc_cpp_compiler_path=""
+       	aarch64_linux_gcc_c_compiler_version=""
+	aarch64_linux_gcc_cpp_compiler_version="" 
+	if ! command -v $pkg >/dev/null; then
+		apt install $pkg -y
+	fi
+	aarch64_linux_gcc_c_compiler_version=$(aarch64-linux-gnu-gcc --version | head -1)
+	aarch64_linux_gcc_c_compiler_path=$(command -v aarch64-linux-gnu-gcc)
+	aarch64_linux_gcc_cpp_compiler_version=$(aarch64-linux-gnu-gcc --version | head -1)
+	aarch64_linux_gcc_cpp_compiler_path=$(command -v aarch64-linux-gnu-g++)	
+
+	AARCH64_LINUX_GCC_C_COMPILER=$(
+cat <<-EOD
+{
+  "name": "GCC C COMPILER in $aarch64_linux_gcc_c_compiler_path",
+  "version": "$aarch64_linux_gcc_c_compiler_version",
+  "command": "aarch64-linux-gnu-gcc",
+  "path": "$aarch64_linux_gcc_c_compiler_path"
+}
+EOD
+)
+	AARCH64_LINUX_GCC_CPP_COMPILER=$(
+cat <<-EOD
+{
+  "name": "GCC CPP COMPILER in $aarch64_linux_gcc_cpp_compiler_path",
+  "version": "$aarch64_linux_gcc_cpp_compiler_version",
+  "command": "aarch64-linux-gnu-g++",
+  "path": "$aarch64_linux_gcc_cpp_compiler_path"
+}
+EOD
+)
+
+	AARCH64_LINUX_GGCC_COMPILER=$(
+cat <<-EOD
+[
+    $AARCH64_LINUX_GCC_C_COMPILER,
+    $AARCH64_LINUX_GCC_CPP_COMPILER
+]
+EOD
+)
+#	echo "$AARCH64_LINUX_GCC_COMPILER"
+}
+
+# probe mips64el-linux-gcc
+MIPS64EL_LINUX_GCC_COMPILER=""
+probe_mips64el_gcc()
+{
+	pkg="crossbuild-essential-mips64el"
+	mips64el_linux_gcc_c_compiler_path=""
+       	mips64el_linux_gcc_cpp_compiler_path=""
+       	mips64el_linux_gcc_c_compiler_version=""
+	mips64el_linux_gcc_cpp_compiler_version="" 
+	if ! command -v $pkg >/dev/null; then
+		apt install $pkg -y
+	fi
+	mips64el_linux_gcc_c_compiler_version=$(mips64el-linux-gnuabi64-gcc --version | head -1)
+	mips64el_linux_gcc_c_compiler_path=$(command -v mips64el-linux-gnuabi64-gcc)
+	mips64el_linux_gcc_cpp_compiler_version=$(mips64el-linux-gnuabi64-gcc --version | head -1)
+	mips64el_linux_gcc_cpp_compiler_path=$(command -v mips64el-linux-gnuabi64-g++)	
+
+	MIPS64EL_LINUX_GCC_C_COMPILER=$(
+cat <<-EOD
+{
+  "name": "GCC C COMPILER in $mips64el_linux_gcc_c_compiler_path",
+  "version": "$mips64el_linux_gcc_c_compiler_version",
+  "command": "mips64el-linux-gnuabi64-gcc",
+  "path": "$mips64el_linux_gcc_c_compiler_path"
+}
+EOD
+)
+	MIPS64EL_LINUX_GCC_CPP_COMPILER=$(
+cat <<-EOD
+{
+  "name": "GCC CPP COMPILER in $mips64el_linux_gcc_cpp_compiler_path",
+  "version": "$mips64el_linux_gcc_cpp_compiler_version",
+  "command": "mips64el-linux-gnuabi64-g++",
+  "path": "$mips64el_linux_gcc_cpp_compiler_path"
+}
+EOD
+)
+
+	MIPS64EL_LINUX_GGCC_COMPILER=$(
+cat <<-EOD
+[
+    $MIPS64EL_LINUX_GCC_C_COMPILER,
+    $MIPS64EL_LINUX_GCC_CPP_COMPILER
+]
+EOD
+)
+#	echo "$MIPS64EL_LINUX_GCC_COMPILER"
+}
+
 # probe gdb
 GDB_DEBUGGER=""
 probe_gdb()
@@ -99,7 +247,7 @@ cat <<-EOD
 }
 EOD
 )
-	#echo "$GDB_DEBUGGER"
+	echo "$GDB_DEBUGGER"
 }
 
 # probe asmembler
@@ -118,7 +266,64 @@ cat <<-EOD
 }
 EOD
 )
-	#echo "$GNU_ASMEMBLER"
+	echo "$GNU_ASMEMBLER"
+}
+
+# probe x86_64-linux asmembler
+X86_64_LINUX_GNU_ASMEMBLER=""
+probe_amd64_as()
+{
+	ASMEMBLER_VERSION="$(x86_64-linux-gnu-as --version | head -1)"
+	ASMEMBLER_PATH="$(command -v x86_64-linux-gnu-as)"
+	X86_64_LINUX_GNU_ASMEMBLER=$(
+cat <<-EOD
+{
+   "name": "GNU Asmembler as in $ASMEMBLER_PATH",
+   "command": "x86_64-linux-gnu-as",
+   "version": "$ASMEMBLER_VERSION",
+   "path": "$ASMEMBLER_PATH"
+}
+EOD
+)
+#	echo "$X86_64_LINUX_GNU_ASMEMBLER"
+}
+
+# probe aarch64-linux asmembler
+AARCH64_LINUX_GNU_ASMEMBLER=""
+probe_aarch64_as()
+{
+	ASMEMBLER_VERSION="$(aarch64-linux-gnu-as --version | head -1)"
+	ASMEMBLER_PATH="$(command -v aarch64-linux-gnu-as)"
+	AARCH64_LINUX_GNU_ASMEMBLER=$(
+cat <<-EOD
+{
+   "name": "GNU Asmembler as in $ASMEMBLER_PATH",
+   "command": "aarch64-linux-gnu-as",
+   "version": "$ASMEMBLER_VERSION",
+   "path": "$ASMEMBLER_PATH"
+}
+EOD
+)
+#	echo "$AARCH64_LINUX_GNU_ASMEMBLER"
+}
+
+# probe mips64el-linux asmembler
+MIPS64EL_LINUX_GNU_ASMEMBLER=""
+probe_mips64el_as()
+{
+	ASMEMBLER_VERSION="$(mips64el-linux-gnuabi64-as --version | head -1)"
+	ASMEMBLER_PATH="$(command -v mips64el-linux-gnuabi64-as)"
+	MIPS64EL_LINUX_GNU_ASMEMBLER=$(
+cat <<-EOD
+{
+   "name": "GNU Asmembler as in $ASMEMBLER_PATH",
+   "command": "mips64el-linux-gnuabi64-as",
+   "version": "$ASMEMBLER_VERSION",
+   "path": "$ASMEMBLER_PATH"
+}
+EOD
+)
+#	echo "$MIPS64EL_LINUX_GNU_ASMEMBLER"
 }
 
 # probe linker
@@ -137,7 +342,64 @@ cat <<-EOD
 }
 EOD
 )
-	#echo "$GNU_LINKER"
+#	echo "$GNU_LINKER"
+}
+
+# probe x86_64-linux linker
+X86_64_LINUX_GNU_LINKER=""
+probe_amd64_ld()
+{
+	LINKER_VERSION="$(x86_64-linux-gnu-ld --version | head -1)"
+	LINKER_PATH="$(command -v x86_64-linux-gnu-ld)"
+	X86_64_LINUX_GNU_LINKER=$(
+cat <<-EOD
+{
+  "name": "GNU Linker ld in $LINKER_PATH",
+  "command": "x86_64-linux-gnu-ld",
+  "version": "$LINKER_VERSION",
+  "path": "$LINKER_PATH"
+}
+EOD
+)
+#	echo "$X86_64_LINUX_GNU_LINKER"
+}
+
+# probe aarch64-linux linker
+AARCH64_LINUX_GNU_LINKER=""
+probe_aarch64_ld()
+{
+	LINKER_VERSION="$(aarch64-linux-gnu-ld --version | head -1)"
+	LINKER_PATH="$(command -v aarch64-linux-gnu-ld)"
+	AARCH64_LINUX_GNU_LINKER=$(
+cat <<-EOD
+{
+  "name": "GNU Linker ld in $LINKER_PATH",
+  "command": "aarch64-linux-gnu-ld",
+  "version": "$LINKER_VERSION",
+  "path": "$LINKER_PATH"
+}
+EOD
+)
+#	echo "$AARCH64_LINUX_GNU_LINKER"
+}
+
+# probe MIPS64el linux linker
+MIPS64EL_LINUX_GNU_LINKER=""
+probe_mips64el_ld()
+{
+	LINKER_VERSION="$(mips64el-linux-gnuabi64-ld --version | head -1)"
+	LINKER_PATH="$(command -v mips64el-linux-gnuabi64-ld)"
+	MIPS64EL_LINUX_GNU_LINKER=$(
+cat <<-EOD
+{
+  "name": "GNU Linker ld in $LINKER_PATH",
+  "command": "mips64-linux-gnuabi64-ld",
+  "version": "$LINKER_VERSION",
+  "path": "$LINKER_PATH"
+}
+EOD
+)
+#	echo "$MIPS64EL_LINUX_GNU_LINKER"
 }
 
 # probe glibc 
@@ -156,7 +418,64 @@ cat <<-EOD
 }
 EOD
 )
-	#echo $GNU_GLiBC
+#	echo $GNU_GLIBC
+}
+
+# probe amd glibc 
+X86_64_LINUX_GNU_GLIBC=""
+probe_amd64_glibc()
+{
+	GLIBC_VERSION="$(x86_64-linux-gnu-ldd --version | head -1)"
+	GLIBC_PATH="$(command -v x86_64-linux-gnu-ldd)"
+	GNU_GLIBC=$(
+cat <<-EOD
+{
+   "name": "GNU Glibc ldd in $GLIBC_PATH",
+   "command": "x86_64-linux-gnu-ldd",
+   "version": "$GLIBC_VERSION",
+   "path": "$GLIBC_PATH"
+}
+EOD
+)
+#	echo $X86_64_LINUX_GNU_GLIBC
+}
+
+# probe arm64 glibc 
+AARCH64_LINUX_GNU_GLIBC=""
+probe_arm64_glibc()
+{
+	GLIBC_VERSION="$(aarch64-linux-gnu-ldd --version | head -1)"
+	GLIBC_PATH="$(command -v aarch64-linux-gnu-ldd)"
+	AARCH64_LINUX_GNU_GLIBC=$(
+cat <<-EOD
+{
+   "name": "GNU Glibc ldd in $GLIBC_PATH",
+   "command": "aarch64-linux-gnu-ldd",
+   "version": "$GLIBC_VERSION",
+   "path": "$GLIBC_PATH"
+}
+EOD
+)
+#	echo $AARCH64_LINUX_GNU_GLIBC
+}
+
+# probe mips64el glibc 
+MIPS64EL_LINUX_GNU_GLIBC=""
+probe_mips64el_glibc()
+{
+	GLIBC_VERSION="$(mips64el-linux-gnuabi64-ldd --version | head -1)"
+	GLIBC_PATH="$(command -v mips64el-linux-gnuabi64-ldd)"
+	MIPS64EL_LINUX_GNU_GLIBC=$(
+cat <<-EOD
+{
+   "name": "GNU Glibc ldd in $GLIBC_PATH",
+   "command": "mips64el-linux-gnuabi64-ldd",
+   "version": "$GLIBC_VERSION",
+   "path": "$GLIBC_PATH"
+}
+EOD
+)
+#	echo $MIPS64EL_LINUX_GNU_GLIBC
 }
 
 # probe make 
@@ -225,6 +544,152 @@ EOD
 )
 	#echo "$GNU_TOOLCHAIN"
 }
+
+# scan gnu cross x86_64 toolchain
+CROSS_AMD64_GNU_TOOLCHAIN=""
+scan_cross_amd64_gnu_toolchain()
+{
+	# probe gcc
+	probe_amd64_gcc
+	COMPILER="$X86_64_LINUX_GCC_COMPILER"
+
+	# probe gdb
+	probe_gdb
+	DEBUGGER="$GDB_DEBUGGER"
+
+	# probe as
+	probe_amd64_as
+	ASMEMBLER="$X86_64_LINUX_GNU_ASMEMBLER"
+
+	# probe ld
+	probe_amd64_ld
+	LINKER="$X86_64_LINUX_GNU_LINKER"	
+
+	# probc glibc
+	probe_amd64_glibc
+	GLIBC="$X86_64_LINUX_GNU_GLIBC"
+
+	# probe make
+	probe_make
+	MAKE=$GNU_MAKE
+
+	CROSS_AMD64_GNU_TOOLCHAIN=$(
+cat <<-EOD
+{
+  "name": "cross gnu linux toolchain",
+  "arch": "x86_64",
+  "toolchain":
+  [ 
+       {"asmembler": $ASMEMBLER}, 
+       {"linker": $LINKER},
+       {"glibc": $GLIBC},
+       {"compiler": $COMPILER},
+       {"debugger": $DEBUGGER},
+       {"make": $MAKE}
+  ] 
+}
+EOD
+)
+	echo "$CROSS_AMD64_GNU_TOOLCHAIN"
+}
+
+# scan gnu cross arm64 toolchain
+CROSS_AARCH64_GNU_TOOLCHAIN=""
+scan_cross_aarch64_gnu_toolchain()
+{
+	# probe gcc
+	probe_aarch64_gcc
+	COMPILER="$AARCH64_LINUX_GCC_COMPILER"
+
+	# probe gdb
+	probe_gdb
+	DEBUGGER="$GDB_DEBUGGER"
+
+	# probe as
+	probe_aarch64_as
+	ASMEMBLER="$AARCH64_LINUX_GNU_ASMEMBLER"
+
+	# probe ld
+	probe_aarch64_ld
+	LINKER="$AARCH64_LINUX_GNU_LINKER"	
+
+	# probc glibc
+	probe_aarch64_glibc
+	GLIBC="$AARCH64_LINUX_GNU_GLIBC"
+
+	# probe make
+	probe_make
+	MAKE=$GNU_MAKE
+
+	CROSS_AARCH64_GNU_TOOLCHAIN=$(
+cat <<-EOD
+{
+  "name": "cross gnu linux toolchain",
+  "arch": "arm64",
+  "toolchain":
+  [ 
+       {"asmembler": $ASMEMBLER}, 
+       {"linker": $LINKER},
+       {"glibc": $GLIBC},
+       {"compiler": $COMPILER},
+       {"debugger": $DEBUGGER},
+       {"make": $MAKE}
+  ] 
+}
+EOD
+)
+	echo "$CROSS_AARCH64_GNU_TOOLCHAIN"
+}
+
+
+# scan gnu mips64el toolchain
+CROSS_MIPS64EL_GNU_TOOLCHAIN=""
+scan_cross_mips64_gnu_toolchain()
+{
+	# probe gcc
+	probe_mips64el_gcc
+	COMPILER="$MIPS64EL_LINUX_GCC_COMPILER"
+
+	# probe gdb
+	probe_gdb
+	DEBUGGER="$GDB_DEBUGGER"
+
+	# probe as
+	probe_mips64el_as
+	ASMEMBLER="$MIPS64EL_LINUX_GNU_ASMEMBLER"
+
+	# probe ld
+	probe_mips64el_ld
+	LINKER="$MIPS64EL_LINUX_GNU_LINKER"	
+
+	# probc glibc
+	probe_mips64el_glibc
+	GLIBC="$MIPS64EL_LINUX_GNU_GLIBC"
+
+	# probe make
+	probe_make
+	MAKE=$GNU_MAKE
+
+	CROSS_MIPS64EL_GNU_TOOLCHAIN=$(
+cat <<-EOD
+{
+  "name": "cross gnu linux toolchain",
+  "arch": "mips64el",
+  "toolchain":
+  [ 
+       {"asmembler": $ASMEMBLER}, 
+       {"linker": $LINKER},
+       {"glibc": $GLIBC},
+       {"compiler": $COMPILER},
+       {"debugger": $DEBUGGER},
+       {"make": $MAKE}
+  ] 
+}
+EOD
+)
+	echo "$CROSS_MIPS64EL_GNU_TOOLCHAIN"
+}
+
 
 ###########################################################
 # probe clang
@@ -427,11 +892,15 @@ cat <<-EOD
 EOD
 )	
 }
+
 # scan toolchains
 TOOLCHAINS=""
 scan_toolchains()
 {
 	scan_gnu_toolchain
+	scan_cross_amd64_gnu_toolchain
+	scan_cross_aarch64_gnu_toolchain
+	scan_cross_mips64_gnu_toolchain
 	scan_llvm_toolchain
 	
 	# probe cmake
@@ -451,6 +920,9 @@ cat <<-EOD
    "ninja": $NINJA_BUILD,
    "toolchains": [
       {"toolchain": $GNU_TOOLCHAIN},
+      {"toolchain": $CROSS_AMD64_GNU_TOOLCHAIN},
+      {"toolchain": $CROSS_AARCH64_GNU_TOOLCHAIN},
+      {"toolchain": $CROSS_MIPS64EL_GNU_TOOLCHAIN},      
       {"toolchain": $LLVM_TOOLCHAIN}
    ]   
 }

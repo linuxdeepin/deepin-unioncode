@@ -5,6 +5,7 @@ set(CXX_H
     window/windowservice.h
     debugger/debuggerservice.h
     workspace/workspaceservice.h
+    container/containerservice.h
     )
 
 set(CXX_CPP
@@ -12,6 +13,7 @@ set(CXX_CPP
     window/windowservice.cpp
     debugger/debuggerservice.cpp
     workspace/workspaceservice.cpp
+    container/containerservice.cpp
     )
 
 add_library(

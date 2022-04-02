@@ -25,6 +25,7 @@ set(CXX_H
     widget/elidedlabel.h
     type/constants.h
     type/menuext.h
+    toolchain/toolchain.h
     )
 
 set(CXX_CPP
@@ -46,6 +47,7 @@ set(CXX_CPP
     widget/statuswidget.cpp
     widget/elidedlabel.cpp
     widget/singlechoicebox.cpp
+    toolchain/toolchain.cpp
     )
 
 add_library(
