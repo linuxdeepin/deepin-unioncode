@@ -124,22 +124,22 @@ void BuildOutputPane::appendText(const QString &textIn, const QTextCharFormat &f
         scrollToBottom();
 }
 
-void BuildOutputPane::appendText(const QString &text, BuildStep::OutputFormat format)
+void BuildOutputPane::appendText(const QString &text, OutputFormat format)
 {
     QTextCharFormat textFormat;
     switch (format) {
-    case BuildStep::OutputFormat::Stdout:
+    case OutputFormat::Stdout:
         textFormat.setForeground(kTextColorNormal);
         textFormat.setFontWeight(QFont::Normal);
         break;
-    case BuildStep::OutputFormat::Stderr:
+    case OutputFormat::Stderr:
         textFormat.setForeground(kErrorMessageTextColor);
         textFormat.setFontWeight(QFont::Normal);
         break;
-    case BuildStep::OutputFormat::NormalMessage:
+    case OutputFormat::NormalMessage:
         textFormat.setForeground(kMessageOutput);
         break;
-    case BuildStep::OutputFormat::ErrorMessage:
+    case OutputFormat::ErrorMessage:
         textFormat.setForeground(kErrorMessageTextColor);
         textFormat.setFontWeight(QFont::Bold);
         break;

@@ -25,6 +25,9 @@
 #include <framework/framework.h>
 
 class Project;
+namespace dpfservice {
+class WindowService;
+}
 class BuilderPlugin : public dpf::Plugin
 {
     Q_OBJECT
@@ -33,6 +36,12 @@ public:
     virtual void initialize() override;
     virtual bool start() override;
     virtual dpf::Plugin::ShutdownFlag stop() override;
+
+public slots:
+    void slotBuildStarted();
+
+private:
+    dpfservice::WindowService *windowService = nullptr;
 };
 
 #endif // BUILDERPLUGIN_H

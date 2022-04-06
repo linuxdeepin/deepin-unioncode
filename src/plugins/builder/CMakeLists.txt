@@ -15,6 +15,18 @@ set(CXX_CPP
     makestep.cpp
     eventsender.cpp
     menumanager.cpp
+    tasks/ioutputparser.cpp
+    tasks/cmakeparser.cpp
+    tasks/fileutils.cpp
+    tasks/task.cpp
+    tasks/ansifilterparser.cpp
+    tasks/gnumakeparser.cpp
+    tasks/gccparser.cpp
+    tasks/ldparser.cpp
+    tasks/taskmodel.cpp
+    tasks/taskmanager.cpp
+    tasks/taskdelegate.cpp
+    tasks/taskview.cpp
     )
 
 set(CXX_H
@@ -31,12 +43,26 @@ set(CXX_H
     buildersignals.h
     eventsender.h
     menumanager.h
+    tasks/ioutputparser.h
+    tasks/cmakeparser.h
+    tasks/qtcassert.h
+    tasks/fileutils.h
+    tasks/task.h
+    tasks/ansifilterparser.h
+    tasks/gnumakeparser.h
+    tasks/gccparser.h
+    tasks/ldparser.h
+    tasks/taskmodel.h
+    tasks/taskmanager.h
+    tasks/taskdelegate.h
+    tasks/taskview.h
     )
 
 add_library(${PROJECT_NAME}
     SHARED
     ${CXX_H}
     ${CXX_CPP}
+    tasks/resources.qrc
     )
 
 target_link_libraries(${PROJECT_NAME}

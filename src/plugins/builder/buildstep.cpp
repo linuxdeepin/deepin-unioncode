@@ -20,6 +20,8 @@
 */
 #include "buildstep.h"
 #include "eventsender.h"
+#include "tasks/ansifilterparser.h"
+#include "tasks/qtcassert.h"
 
 #include <QDir>
 #include <QDebug>
@@ -27,7 +29,7 @@
 /*
  *  Parser not implemented, use macro to be holder.
  */
-#define PARSE(O)
+//#define PARSE(O)
 
 BuildStep::BuildStep(QObject *parent) : QObject(parent)
 {
@@ -54,15 +56,45 @@ void BuildStep::appendCmdParam(const QString param)
     cmdParams << param;
 }
 
+void BuildStep::setOutputParser(IOutputParser *parser)
+{
+    outputParserChain.reset(new AnsiFilterParser);
+    outputParserChain->appendOutputParser(parser);
+
+//    connect(m_outputParserChain.get(), &IOutputParser::addOutput, this, &BuildStep::outputAdded);
+    connect(outputParserChain.get(), &IOutputParser::addTask, this, &BuildStep::taskAdded);
+}
+
+void BuildStep::appendOutputParser(IOutputParser *parser)
+{
+    if (!parser)
+        return;
+
+    QTC_ASSERT(outputParserChain, return);
+    outputParserChain->appendOutputParser(parser);
+}
+
+IOutputParser *BuildStep::outputParser() const
+{
+    return outputParserChain.get();
+}
+
 void BuildStep::stdOutput(const QString &line)
 {
+    // Get target infomation.
     parse(line);
+
+    if (outputParserChain)
+        outputParserChain->stdOutput(line);
+
     emit addOutput(line, OutputFormat::Stdout);
 }
 
 void BuildStep::stdErrput(const QString &line)
 {
-    PARSE(line);
+    if (outputParserChain)
+        outputParserChain->stdError(line);
+
     emit addOutput(line, OutputFormat::Stderr);
 }
 
@@ -126,6 +158,11 @@ void BuildStep::parse(const QString &line)
         formateString(targetName);
         qInfo() << "----Built target:" << targetName;
     }
+}
+
+void BuildStep::taskAdded(const Task &task, int linkedOutputLines, int skipLines)
+{
+    emit addTask(task, linkedOutputLines, skipLines);
 }
 
 void BuildStep::processReadyReadStdOutput()

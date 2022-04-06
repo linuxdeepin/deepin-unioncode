@@ -4,7 +4,7 @@
  * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,26 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef DEBUGGERPLUGIN_H
-#define DEBUGGERPLUGIN_H
+*/
+#ifndef LDPARSER_H
+#define LDPARSER_H
 
-#include <framework/framework.h>
+#include "ioutputparser.h"
 
-namespace dpfservice {
-class WindowService;
-}
-class DebuggerPlugin : public dpf::Plugin
+#include <QRegularExpression>
+
+class LdParser : public IOutputParser
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "debugger.json")
-public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
 
-public slots:
-    void slotDebugStarted();
+public:
+    LdParser();
+    void stdError(const QString &line) override;
 
 private:
-    dpfservice::WindowService *windowService = nullptr;
+    QRegularExpression ranlib;
+    QRegularExpression regExpLinker;
+    QRegularExpression regExpGccNames;
 };
 
-#endif // DEBUGGERPLUGIN_H
+#endif // LDPARSER_H

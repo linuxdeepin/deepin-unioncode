@@ -19,6 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "makestep.h"
+#include "tasks/gnumakeparser.h"
+#include "tasks/gccparser.h"
+
+#include <QTimer>
 
 MakeStep::MakeStep(QObject *parent) : BuildStep(parent)
 {
@@ -28,6 +32,9 @@ MakeStep::MakeStep(QObject *parent) : BuildStep(parent)
 
     makeArgs << "-j4";
     makeCmd = "make";
+
+    setOutputParser(new GnuMakeParser());
+    appendOutputParser(new GccParser());
 }
 
 void MakeStep::run()
@@ -35,7 +42,9 @@ void MakeStep::run()
     emit addOutput("Build starts", OutputFormat::NormalMessage);
     runCMake();
     runMake();
-    emit addOutput("Build has finished", OutputFormat::NormalMessage);
+    QTimer::singleShot(0, this, [this]{
+        emit addOutput("Build has finished", OutputFormat::NormalMessage);
+    });
 }
 
 bool MakeStep::runMake()

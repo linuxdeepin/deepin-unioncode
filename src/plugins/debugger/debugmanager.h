@@ -50,6 +50,7 @@ public:
     QTreeView *getBreakpointPane() const;
 
 signals:
+    void debugStarted();
 
 public slots:
     /**

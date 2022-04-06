@@ -33,3 +33,18 @@ void EventSender::notifyTargetPath(const QString &targetPath)
     event.setProperty(P_FILEPATH, targetPath);
     dpf::EventCallProxy::instance().pubEvent(event);
 }
+
+void EventSender::jumpTo(const QString &filePath, int lineNum)
+{
+    if (filePath.isEmpty() || lineNum < 0)
+        return;
+
+    dpf::Event event;
+    // TODO(Mozart): Events definition in editor not suitable,
+    // we should use more generic event instead of T_DEBUGGER.
+    event.setTopic(T_DEBUGGER);
+    event.setData(D_DEBUG_EXECUTION_JUMP);
+    event.setProperty(P_FILEPATH, filePath);
+    event.setProperty(P_FILELINE, lineNum);
+    dpf::EventCallProxy::instance().pubEvent(event);
+}

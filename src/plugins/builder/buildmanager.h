@@ -55,9 +55,10 @@ public:
     void destroy();
 
 signals:
+    void buildStarted();
 
 public slots:
-    void slotOutput(const QString &content, BuildStep::OutputFormat format);
+    void slotOutput(const QString &content, OutputFormat format);
     void buildProject();
 
 private:

@@ -19,28 +19,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DEBUGGERPLUGIN_H
-#define DEBUGGERPLUGIN_H
+#ifndef FILEUTILS_H
+#define FILEUTILS_H
 
-#include <framework/framework.h>
+#include <QString>
+#include <QFileInfo>
 
-namespace dpfservice {
-class WindowService;
-}
-class DebuggerPlugin : public dpf::Plugin
+namespace Utils {
+class FileName : private QString
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "debugger.json")
 public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
+    FileName();
 
-public slots:
-    void slotDebugStarted();
+    explicit FileName(const QFileInfo &info);
+
+    static FileName fromUserInput(const QString &filename);
+
+    const QString &toString() const;
+
+    bool exists() const;
 
 private:
-    dpfservice::WindowService *windowService = nullptr;
+    explicit FileName(const QString &string);
 };
+}
 
-#endif // DEBUGGERPLUGIN_H
+#endif // FILEUTILS_H

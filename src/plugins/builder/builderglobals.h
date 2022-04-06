@@ -30,6 +30,14 @@ enum ToolChainType {
     CMake
 };
 
+enum OutputFormat {
+    Stdout,
+    Stderr,
+    NormalMessage,
+    ErrorMessage
+};
+
+
 /**
  * @brief Output text color.
  */

@@ -4,7 +4,7 @@
  * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,19 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef DEBUGGERPLUGIN_H
-#define DEBUGGERPLUGIN_H
+*/
+#ifndef TASKVIEW_H
+#define TASKVIEW_H
 
-#include <framework/framework.h>
+#include <QListView>
 
-namespace dpfservice {
-class WindowService;
-}
-class DebuggerPlugin : public dpf::Plugin
+class TaskView : public QListView
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "debugger.json")
 public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
-
-public slots:
-    void slotDebugStarted();
-
-private:
-    dpfservice::WindowService *windowService = nullptr;
+    explicit TaskView(QWidget *parent = nullptr);
+    ~TaskView() override;
+    void resizeEvent(QResizeEvent *e) override;
 };
 
-#endif // DEBUGGERPLUGIN_H
+#endif // TASKVIEW_H

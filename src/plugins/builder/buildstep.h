@@ -22,20 +22,19 @@
 #define BUILDSTEP_H
 
 #include "builderglobals.h"
+#include "tasks/task.h"
+#include "tasks/ioutputparser.h"
 
 #include <QObject>
 #include <QProcess>
 
+#include <memory>
+
+class IOutputParser;
 class BuildStep : public QObject
 {
     Q_OBJECT
 public:
-    enum OutputFormat {
-        Stdout,
-        Stderr, // These are for forwarded output from external tools
-        NormalMessage,
-        ErrorMessage // These are for messages from Creator itself
-    };
 
     enum OutputNewlineSetting {
         DoAppendNewline,
@@ -51,8 +50,13 @@ public:
 
     virtual void run() = 0;
 
+    void setOutputParser(IOutputParser *parser);
+    void appendOutputParser(IOutputParser *parser);
+    IOutputParser *outputParser() const;
+
 signals:
     void addOutput(const QString &content, OutputFormat format);
+    void addTask(const Task &task, int linkedOutputLines = 0, int skipLines = 0);
 
 public slots:
     void processReadyReadStdOutput();
@@ -63,6 +67,9 @@ protected:
     virtual void stdErrput(const QString &line);
     virtual bool execCmd(const QString &cmd, const QStringList &args);
     virtual void parse(const QString &line);
+    void taskAdded(const Task &task, int linkedOutputLines = 0, int skipLines = 0);
+
+    std::unique_ptr<IOutputParser> outputParserChain;
 
     QString buildOutputDir;
     QString targetName;

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/resources">
+        <file>icons/attention.svg</file>
+        <file>icons/error.png</file>
+    </qresource>
+</RCC>

@@ -29,6 +29,7 @@
 
 #include "buildoutputpane.h"
 #include "buildmanager.h"
+#include "tasks/taskmanager.h"
 
 #include <QMenu>
 
@@ -36,13 +37,14 @@ using namespace dpfservice;
 
 void BuilderPlugin::initialize()
 {
+
 }
 
 bool BuilderPlugin::start()
 {
     // get window service.
     auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    windowService = ctx.service<WindowService>(WindowService::name());
     if (!windowService) {
         qCritical() << "Failed, can't found window service";
         abort();
@@ -51,7 +53,10 @@ bool BuilderPlugin::start()
     BuildManager::instance()->initialize(windowService);
 
     // instert output pane to window.
-    emit windowService->addContextWidget("Output", new AbstractWidget(BuildManager::instance()->getOutputPane()));
+    emit windowService->addContextWidget("Compile Output", new AbstractWidget(BuildManager::instance()->getOutputPane()));
+    emit windowService->addContextWidget("Issues", new AbstractWidget(TaskManager::instance()->getView()));
+
+    connect(BuildManager::instance(), &BuildManager::buildStarted, this, &BuilderPlugin::slotBuildStarted);
 
     return true;
 }
@@ -59,4 +64,12 @@ bool BuilderPlugin::start()
 dpf::Plugin::ShutdownFlag BuilderPlugin::stop()
 {
     return Sync;
+}
+
+void BuilderPlugin::slotBuildStarted()
+{
+    // get window service.
+    if (windowService) {
+        emit windowService->switchContextWidget("Compile Output");
+    }
 }

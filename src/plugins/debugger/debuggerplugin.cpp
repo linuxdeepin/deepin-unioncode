@@ -41,7 +41,7 @@ void DebuggerPlugin::initialize()
 bool DebuggerPlugin::start()
 {
     auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    windowService = ctx.service<WindowService>(WindowService::name());
     if (!windowService) {
         qCritical() << "Failed, can't found window service";
         abort();
@@ -50,10 +50,12 @@ bool DebuggerPlugin::start()
     debugManager->initialize(windowService);
 
     // instert output pane to window.
-    emit windowService->addContextWidget("AppOutput", new AbstractWidget(debugManager->getOutputPane()));
+    emit windowService->addContextWidget("Application Output", new AbstractWidget(debugManager->getOutputPane()));
     emit windowService->addContextWidget("StackFrame", new AbstractWidget(debugManager->getStackPane()));
     emit windowService->setWatchWidget(new AbstractWidget(debugManager->getLocalsPane()));
     emit windowService->addContextWidget("Breakpoints", new AbstractWidget(debugManager->getBreakpointPane()));
+
+    connect(debugManager, &DebugManager::debugStarted, this, &DebuggerPlugin::slotDebugStarted);
 
     return true;
 }
@@ -61,4 +63,11 @@ bool DebuggerPlugin::start()
 dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 {
     return Sync;
+}
+
+void DebuggerPlugin::slotDebugStarted()
+{
+    if (windowService) {
+        emit windowService->switchContextWidget("Application Output");
+    }
 }

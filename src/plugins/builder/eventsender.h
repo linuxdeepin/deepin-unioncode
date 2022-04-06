@@ -28,7 +28,7 @@ class EventSender : public QObject
     Q_OBJECT
 public:
     static void notifyTargetPath(const QString &targetPath);
-
+    static void jumpTo(const QString &filePath, int lineNum);
 signals:
 
 public slots:

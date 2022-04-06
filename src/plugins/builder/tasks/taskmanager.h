@@ -4,7 +4,7 @@
  * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,41 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+#ifndef TASKMANAGER_H
+#define TASKMANAGER_H
+
+#include "taskmodel.h"
+#include "taskdelegate.h"
+#include "taskview.h"
+
+/**
+ * @brief Used to manage and display the information about build error,
+ * move it to seperate plugin when more type information need be processed.
  */
-#ifndef DEBUGGERPLUGIN_H
-#define DEBUGGERPLUGIN_H
-
-#include <framework/framework.h>
-
-namespace dpfservice {
-class WindowService;
-}
-class DebuggerPlugin : public dpf::Plugin
+class TaskManager : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "debugger.json")
 public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
+    static TaskManager *instance();
+
+    QListView *getView() const;
+
+    void clearTasks();
+
+signals:
 
 public slots:
-    void slotDebugStarted();
+    void slotAddTask(const Task &task, int linkedOutputLines, int skipLines);
+
+     void currentChanged(const QModelIndex &index);
+     void triggerDefaultHandler(const QModelIndex &index);
 
 private:
-    dpfservice::WindowService *windowService = nullptr;
+    explicit TaskManager(QObject *parent = nullptr);
+
+    QSharedPointer<TaskView> view;
+    QSharedPointer<TaskModel> model;
 };
 
-#endif // DEBUGGERPLUGIN_H
+#endif // TASKMANAGER_H

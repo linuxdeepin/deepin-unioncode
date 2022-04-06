@@ -127,6 +127,10 @@ void DebugManager::stepOut()
 void DebugManager::handleRunStateChanged(Debugger::RunState state)
 {
     menuManager->handleRunStateChanged(state);
+
+    if(state == Debugger::kRunning) {
+        emit debugStarted();
+    }
 }
 
 void DebugManager::launchBackend()

@@ -19,28 +19,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DEBUGGERPLUGIN_H
-#define DEBUGGERPLUGIN_H
+#include "fileutils.h"
 
-#include <framework/framework.h>
+#include <QDir>
 
-namespace dpfservice {
-class WindowService;
-}
-class DebuggerPlugin : public dpf::Plugin
+namespace Utils {
+FileName::FileName()
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "debugger.json")
-public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
 
-public slots:
-    void slotDebugStarted();
+}
 
-private:
-    dpfservice::WindowService *windowService = nullptr;
-};
+FileName::FileName(const QFileInfo &info)
+    : QString(info.absoluteFilePath())
+{
+}
 
-#endif // DEBUGGERPLUGIN_H
+FileName FileName::fromUserInput(const QString &filename)
+{
+    QString clean = QDir::cleanPath(filename);
+    if (clean.startsWith(QLatin1String("~/")))
+        clean = QDir::homePath() + clean.mid(1);
+    return FileName(clean);
+}
+
+const QString &FileName::toString() const
+{
+    return *this;
+}
+
+bool FileName::exists() const
+{
+    return !isEmpty() && QFileInfo::exists(*this);
+}
+
+FileName::FileName(const QString &string)
+    : QString(string)
+{
+
+}
+
+}

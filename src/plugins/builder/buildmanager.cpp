@@ -25,6 +25,7 @@
 #include "buildtarget.h"
 #include "services/window/windowservice.h"
 #include "menumanager.h"
+#include "tasks/taskmanager.h"
 
 #include <QtConcurrent>
 #include <QTextBlock>
@@ -48,6 +49,9 @@ void BuildManager::initialize(WindowService *windowService)
 
 bool BuildManager::buildList(const QList<BuildStep *> &_bsl)
 {
+    // Notify listeners.
+    emit buildStarted();
+
     bsl = _bsl;
     initBuildList(bsl);
 
@@ -78,10 +82,10 @@ void BuildManager::destroy()
     // Do something.
 }
 
-void BuildManager::slotOutput(const QString &content, BuildStep::OutputFormat format)
+void BuildManager::slotOutput(const QString &content, OutputFormat format)
 {
     QString outputContent = content;
-    if (format == BuildStep::NormalMessage) {
+    if (format == NormalMessage) {
         QTextDocument *doc = outputPane->document();
         QTextBlock tb = doc->end();
         QString lastLineText = tb.text();
@@ -99,6 +103,8 @@ void BuildManager::slotOutput(const QString &content, BuildStep::OutputFormat fo
 
 void BuildManager::buildProject()
 {
+    TaskManager::instance()->clearTasks();
+
     // TODO(mozart):steps should get from other place.
     auto buildList = project->activeTarget()->getbuildSteps();
     if (buildList.size() > 0) {
@@ -126,6 +132,7 @@ bool BuildManager::initBuildList(const QList<BuildStep *> &bsl)
     // TODO(mozart) : more initialization will be done here.
     for (auto step : bsl) {
         connect(step, &BuildStep::addOutput, this, &BuildManager::slotOutput, Qt::QueuedConnection);
+        connect(step, &BuildStep::addTask, TaskManager::instance(), &TaskManager::slotAddTask, Qt::QueuedConnection);
     }
     return true;
 }

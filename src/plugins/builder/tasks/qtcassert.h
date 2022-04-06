@@ -19,28 +19,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef DEBUGGERPLUGIN_H
-#define DEBUGGERPLUGIN_H
+#ifndef QTCASSERT_H
+#define QTCASSERT_H
 
-#include <framework/framework.h>
+//namespace Utils { void writeAssertLocation(const char *msg){} }
 
-namespace dpfservice {
-class WindowService;
-}
-class DebuggerPlugin : public dpf::Plugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "debugger.json")
-public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
+#define QTC_ASSERT_STRINGIFY_HELPER(x) #x
+#define QTC_ASSERT_STRINGIFY(x) QTC_ASSERT_STRINGIFY_HELPER(x)
+#define QTC_ASSERT_STRING(cond) /*::Utils::writeAssertLocation(\
+    "\"" cond"\" in file " __FILE__ ", line " QTC_ASSERT_STRINGIFY(__LINE__))*/
 
-public slots:
-    void slotDebugStarted();
+// The 'do {...} while (0)' idiom is not used for the main block here to be
+// able to use 'break' and 'continue' as 'actions'.
 
-private:
-    dpfservice::WindowService *windowService = nullptr;
-};
+#define QTC_ASSERT(cond, action) if (cond) {} else { QTC_ASSERT_STRING(#cond); action; } do {} while (0)
+#define QTC_CHECK(cond) if (cond) {} else { QTC_ASSERT_STRING(#cond); } do {} while (0)
+#define QTC_GUARD(cond) ((cond) ? true : (QTC_ASSERT_STRING(#cond), false))
 
-#endif // DEBUGGERPLUGIN_H
+#endif // QTCASSERT_H
