@@ -37,8 +37,10 @@ bool Collaborators::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        windowService->addNavAction(new AbstractAction(new QAction(QAction::tr("Git"))));
-        windowService->addCentral(QAction::tr("Git"), new AbstractCentral(new GitQlientWidget));
+        if (windowService->addActionNavigation)
+            windowService->addActionNavigation(new AbstractAction(new QAction(QAction::tr("Git"))));
+        if (windowService->addCentralNavigation)
+            windowService->addCentralNavigation(QAction::tr("Git"), new AbstractCentral(new GitQlientWidget));
     }
     return true;
 }

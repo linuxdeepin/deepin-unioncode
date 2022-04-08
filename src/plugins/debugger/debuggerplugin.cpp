@@ -52,7 +52,7 @@ bool DebuggerPlugin::start()
     // instert output pane to window.
     emit windowService->addContextWidget("Application Output", new AbstractWidget(debugManager->getOutputPane()));
     emit windowService->addContextWidget("StackFrame", new AbstractWidget(debugManager->getStackPane()));
-    emit windowService->setWatchWidget(new AbstractWidget(debugManager->getLocalsPane()));
+    emit windowService->setWidgetWatch(new AbstractWidget(debugManager->getLocalsPane()));
     emit windowService->addContextWidget("Breakpoints", new AbstractWidget(debugManager->getBreakpointPane()));
 
     connect(debugManager, &DebugManager::debugStarted, this, &DebuggerPlugin::slotDebugStarted);
@@ -68,6 +68,6 @@ dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 void DebuggerPlugin::slotDebugStarted()
 {
     if (windowService) {
-        emit windowService->switchContextWidget("Application Output");
+        emit windowService->switchWidgetContext("Application Output");
     }
 }

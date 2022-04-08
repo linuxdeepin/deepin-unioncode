@@ -43,6 +43,7 @@ class WindowKeeperPrivate
     QMainWindow *window{nullptr};
     QActionGroup *navActionGroup{nullptr};
     QToolBar *toolbar{nullptr};
+    ProcessDialog processDisplay;
 };
 
 void WindowKeeper::createFileActions(QMenuBar *menuBar)
@@ -78,12 +79,15 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
         SendEvents::menuOpenDirectory(directory);
     });
 
+    QMenu* menuOpenProject = new QMenu(MWMFA_OPEN_PROJECT);
+
     auto openRecentDocuments = new QAction(MWMFA_OPEN_RECENT_DOCUMENTS);
     auto openRecentFolders = new QAction(MWMFA_OPEN_RECENT_FOLDER);
 
     fileMenu->addAction(actionNewDocument);
     fileMenu->addAction(actionNewFolder);
     fileMenu->addSeparator();
+    fileMenu->addMenu(menuOpenProject);
     fileMenu->addAction(actionOpenDocument);
     fileMenu->addAction(actionOpenFolder);
     fileMenu->addAction(openRecentDocuments);
@@ -163,7 +167,7 @@ void WindowKeeper::createNavRecent(QToolBar *toolbar)
     navRecent->setCheckable(true);
     d->navActionGroup->addAction(navRecent);
     QAction::connect(navRecent, &QAction::triggered, [=](){
-        WindowKeeper::switchNavWidget(MWNA_RECENT);
+        WindowKeeper::switchWidgetNavigation(MWNA_RECENT);
     });
     toolbar->addAction(navRecent);
 }
@@ -179,7 +183,7 @@ void WindowKeeper::createNavEdit(QToolBar *toolbar)
     d->navActionGroup->addAction(navEdit);
     navEdit->setText(MWNA_EDIT);
     QAction::connect(navEdit, &QAction::triggered, [=](){
-        WindowKeeper::switchNavWidget(MWNA_EDIT);
+        WindowKeeper::switchWidgetNavigation(MWNA_EDIT);
     });
 
     toolbar->addAction(navEdit);
@@ -196,7 +200,7 @@ void WindowKeeper::createNavDebug(QToolBar *toolbar)
     d->navActionGroup->addAction(navDebug);
     navDebug->setText(MWNA_DEBUG);
     QAction::connect(navDebug, &QAction::triggered, [=](){
-        WindowKeeper::switchNavWidget(MWNA_DEBUG);
+        WindowKeeper::switchWidgetNavigation(MWNA_DEBUG);
     });
 
     toolbar->addAction(navDebug);
@@ -213,7 +217,7 @@ void WindowKeeper::createNavRuntime(QToolBar *toolbar)
     d->navActionGroup->addAction(navRuntime);
     navRuntime->setText(MWNA_RUNTIME);
     QAction::connect(navRuntime, &QAction::triggered, [=](){
-        WindowKeeper::switchNavWidget(MWNA_RUNTIME);
+        WindowKeeper::switchWidgetNavigation(MWNA_RUNTIME);
     });
 
     toolbar->addAction(navRuntime);
@@ -283,12 +287,12 @@ WindowKeeper::WindowKeeper(QObject *parent)
         windowService->addMenu = std::bind(&WindowKeeper::addMenu, this, _1);
     }
 
-    if (!windowService->addCentral) {
-        windowService->addCentral = std::bind(&WindowKeeper::addCentral, this, _1, _2);
+    if (!windowService->addCentralNavigation) {
+        windowService->addCentralNavigation = std::bind(&WindowKeeper::addCentralNavigation, this, _1, _2);
     }
 
-    if (!windowService->addNavAction) {
-        windowService->addNavAction = std::bind(&WindowKeeper::addNavAction, this, _1);
+    if (!windowService->addActionNavigation) {
+        windowService->addActionNavigation = std::bind(&WindowKeeper::addActionNavigation, this, _1);
     }
 
     if (!windowService->addAction) {
@@ -308,7 +312,7 @@ QStringList WindowKeeper::navActionTexts() const
     return d->centrals.keys();
 }
 
-void WindowKeeper::addNavAction(AbstractAction *action)
+void WindowKeeper::addActionNavigation(AbstractAction *action)
 {
     if (!action || !action->qAction() || !d->toolbar || !d->navActionGroup)
         return;
@@ -318,11 +322,11 @@ void WindowKeeper::addNavAction(AbstractAction *action)
     d->navActionGroup->addAction(qAction);
     d->toolbar->addAction(qAction);
     QObject::connect(qAction, &QAction::triggered,[=](){
-        switchNavWidget(qAction->text());
+        switchWidgetNavigation(qAction->text());
     });
 }
 
-void WindowKeeper::addCentral(const QString &navName, AbstractCentral *central)
+void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral *central)
 {
     qInfo() << __FUNCTION__;
     QWidget* inputWidget = static_cast<QWidget*>(central->qWidget());
@@ -356,6 +360,31 @@ void WindowKeeper::addMenu(AbstractMenu *menu)
     d->window->menuBar()->addMenu(inputMenu);
 }
 
+void WindowKeeper::insertAction(const QString &menuName,
+                                const QString &beforActionName,
+                                AbstractAction *action)
+{
+    qInfo() << __FUNCTION__;
+    QAction *inputAction = static_cast<QAction*>(action->qAction());
+    if (!action || !inputAction)
+        return;
+
+    for (QAction *qAction : d->window->menuBar()->actions()) {
+        if (qAction->text() == menuName) {
+            for (auto childAction : qAction->menu()->actions()) {
+                if (childAction->text() == beforActionName) {
+                    qAction->menu()->insertAction(childAction, inputAction);
+                    break;
+                } else if (qAction->text() == MWM_FILE
+                           && childAction->text() == MWMFA_QUIT) {
+                    qAction->menu()->insertAction(qAction, inputAction);
+                    break;
+                }
+            }
+        }
+    }
+}
+
 void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
 {
     qInfo() << __FUNCTION__;
@@ -363,15 +392,34 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
     if (!action || !inputAction)
         return;
 
-    for (QAction *qaction : d->window->menuBar()->actions()) {
-        if (qaction->text() == menuName) {
-            if (qaction->text() == MWM_FILE) {
-                auto endAction = *(qaction->menu()->actions().rbegin());
+    for (QAction *qAction : d->window->menuBar()->actions()) {
+        if (qAction->text() == menuName) {
+            if (qAction->text() == MWM_FILE) {
+                auto endAction = *(qAction->menu()->actions().rbegin());
                 if (endAction->text() == MWMFA_QUIT) {
-                    return qaction->menu()->insertAction(endAction, inputAction);
+                    return qAction->menu()->insertAction(endAction, inputAction);
                 }
             }
-            qaction->menu()->addAction(inputAction);
+            qAction->menu()->addAction(inputAction);
+        }
+    }
+}
+
+void WindowKeeper::addOpenProjectAction(AbstractAction *action)
+{
+    qInfo() << __FUNCTION__;
+    if (!action || !action->qAction())
+        return;
+
+    QAction *inputAction = static_cast<QAction*>(action->qAction());
+    for (QAction *qAction : d->window->menuBar()->actions()) {
+        if (qAction->text() == MWM_FILE) {
+            for(QAction *childAction : qAction->menu()->actions()) {
+                if (childAction->text() == MWMFA_OPEN_PROJECT) {
+                    childAction->menu()->addAction(inputAction);
+                    return;
+                }
+            }
         }
     }
 }
@@ -384,7 +432,7 @@ void WindowKeeper::initUserWidget()
     }
 }
 
-void WindowKeeper::switchNavWidget(const QString &navName)
+void WindowKeeper::switchWidgetNavigation(const QString &navName)
 {
     auto beforWidget = d->window->takeCentralWidget();
     if (beforWidget)
@@ -401,6 +449,42 @@ void WindowKeeper::switchNavWidget(const QString &navName)
 
     d->window->setCentralWidget(widget);
     d->window->centralWidget()->show();
+}
+
+void WindowKeeper::showProcessDisplay()
+{
+    if (d->processDisplay.width() != 300 || d->processDisplay.height() != 200) {
+        d->processDisplay.setFixedSize(300, 200);
+    }
+    if (!d->processDisplay.windowFlags().testFlag(Qt::ToolTip))
+        d->processDisplay.setWindowFlag(Qt::ToolTip);
+    d->window->geometry();
+    d->processDisplay.move(d->window->geometry().topLeft());
+    d->processDisplay.show();
+}
+
+void WindowKeeper::appendProcessMessage(const QString &mess, int currentPercent, int maxPrecent)
+{
+    Q_UNUSED(currentPercent)
+    Q_UNUSED(maxPrecent)
+    d->processDisplay << mess;
+}
+
+void WindowKeeper::hideProcessDisplay()
+{
+    static QTimer timer;
+    static qreal lever = d->processDisplay.windowOpacity();
+    d->processDisplay.hide();
+    QObject::connect(&timer, &QTimer::timeout, [=](){
+        if (d->processDisplay.windowOpacity() < 0.1) {
+            d->processDisplay.hide();
+            d->processDisplay.setWindowOpacity(1);
+        } else {
+            lever -= 0.1;
+            d->processDisplay.setWindowOpacity(lever);
+        }
+    });
+    timer.start(200);
 }
 
 void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)

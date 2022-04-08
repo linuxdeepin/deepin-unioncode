@@ -7,6 +7,7 @@
 template <class T, class EnumExt_T>
 struct __ext_enum
 {
+public:
     typedef T type_value;
     typedef int type_index;
 

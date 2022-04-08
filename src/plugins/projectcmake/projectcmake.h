@@ -19,34 +19,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "runtime.h"
-#include "runtimewidget.h"
-#include "common/common.h"
-#include "base/abstractwidget.h"
-#include "base/abstractaction.h"
-#include "base/abstractcentral.h"
-#include "services/window/windowservice.h"
+#ifndef PROJECTCMAKE_H
+#define PROJECTCMAKE_H
 
-using namespace dpfservice;
+#include <framework/framework.h>
 
-void Runtime::initialize()
+class ProjectCMake : public dpf::Plugin
 {
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "projectcmake.json")
+public:
+    virtual void initialize() override;
+    virtual bool start() override;
+    virtual dpf::Plugin::ShutdownFlag stop() override;
+};
 
-}
-
-bool Runtime::start()
-{
-    auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-
-    if (windowService) {
-        if (windowService->addCentralNavigation)
-            windowService->addCentralNavigation(MWNA_RUNTIME, new AbstractCentral(RuntimeWidget::instance()));
-    }
-    return true;
-}
-
-dpf::Plugin::ShutdownFlag Runtime::stop()
-{
-    return Sync;
-}
+#endif // PROJECTCMAKE_H

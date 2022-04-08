@@ -23,6 +23,7 @@ set(CXX_H
     widget/statuswidget.h
     widget/singlechoicebox.h
     widget/elidedlabel.h
+    widget/generator.h
     type/constants.h
     type/menuext.h
     toolchain/toolchain.h
@@ -47,6 +48,7 @@ set(CXX_CPP
     widget/statuswidget.cpp
     widget/elidedlabel.cpp
     widget/singlechoicebox.cpp
+    widget/generator.cpp
     toolchain/toolchain.cpp
     )
 

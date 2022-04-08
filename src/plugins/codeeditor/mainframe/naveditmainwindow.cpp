@@ -3,12 +3,13 @@
 #include "base/abstractwidget.h"
 #include "base/abstractcentral.h"
 #include "base/abstractconsole.h"
+#include "common/common.h"
+
 #include <QDebug>
 #include <QDockWidget>
 #include <QEvent>
 #include <QWidget>
 
-const QString CONSOLE_TAB_TEXT = NavEditMainWindow::tr("Console");
 static NavEditMainWindow *ins{nullptr};
 int findIndex(QTabWidget* tabWidget, const QString &text)
 {
@@ -30,24 +31,24 @@ NavEditMainWindow *NavEditMainWindow::instance()
 NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow (parent, flags)
 {
-    qTabWidgetDock = new AutoHideDockWidget(QDockWidget::tr("Context"), this);
-    qTabWidgetDock->setFeatures(QDockWidget::DockWidgetMovable);
-    qTabWidget = new QTabWidget(qTabWidgetDock);
-    qTabWidgetDock->setWidget(qTabWidget);
-    addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qTabWidgetDock);
+    qDockWidgetContext = new AutoHideDockWidget(QDockWidget::tr("Context"), this);
+    qDockWidgetContext->setFeatures(QDockWidget::DockWidgetMovable);
+    qTabWidgetContext = new QTabWidget(qDockWidgetContext);
+    qDockWidgetContext->setWidget(qTabWidgetContext);
+    addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qDockWidgetContext);
 }
 
 NavEditMainWindow::~NavEditMainWindow()
 {
-    qTabWidget->removeTab(findIndex(qTabWidget, CONSOLE_TAB_TEXT));
+    qTabWidgetContext->removeTab(findIndex(qTabWidgetContext, CONSOLE_TAB_TEXT));
     qInfo() << __FUNCTION__;
 }
 
 QStringList NavEditMainWindow::contextWidgetTitles() const
 {
     QStringList result;
-    for (int index = 0; index < qTabWidget->count(); index ++) {
-        result<< qTabWidget->tabText(index);
+    for (int index = 0; index < qTabWidgetContext->count(); index ++) {
+        result<< qTabWidgetContext->tabText(index);
     }
     return result;
 }
@@ -55,84 +56,82 @@ QStringList NavEditMainWindow::contextWidgetTitles() const
 void NavEditMainWindow::setConsole(AbstractConsole *console)
 {
     QWidget *qConsoleWidget = static_cast<QWidget*>(console->qWidget());
-    if (!qConsoleWidget || !qTabWidget) {
+    if (!qConsoleWidget || !qTabWidgetContext) {
         return;
     }
 
-    int consoleIndex = findIndex(qTabWidget, CONSOLE_TAB_TEXT);
+    int consoleIndex = findIndex(qTabWidgetContext, CONSOLE_TAB_TEXT);
     if (consoleIndex >= 0) {
-        qTabWidget->removeTab(consoleIndex);
-        qTabWidget->insertTab(consoleIndex, qConsoleWidget, CONSOLE_TAB_TEXT);
+        qTabWidgetContext->removeTab(consoleIndex);
+        qTabWidgetContext->insertTab(consoleIndex, qConsoleWidget, CONSOLE_TAB_TEXT);
         return;
     }
-    qConsoleWidget->setParent(qTabWidget);
-    qTabWidget->insertTab(0, qConsoleWidget, CONSOLE_TAB_TEXT);
+    qConsoleWidget->setParent(qTabWidgetContext);
+    qTabWidgetContext->insertTab(0, qConsoleWidget, CONSOLE_TAB_TEXT);
 }
 
-void NavEditMainWindow::setTreeWidget(AbstractWidget *treeWidget)
+void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget)
 {
-    if (!qTreeWidgetDock) {
-        qTreeWidgetDock = new AutoHideDockWidget(QDockWidget::tr("Workspace"), this);
-        qTreeWidgetDock->setFeatures(QDockWidget::DockWidgetMovable);
-        qTreeWidgetDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-        addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, qTreeWidgetDock);
+    if (!qDockWidgetWorkspace) {
+        qTabWidgetWorkspace = new QTabWidget();
+        qTabWidgetWorkspace->setTabPosition(QTabWidget::West);
+        qDockWidgetWorkspace = new AutoHideDockWidget(QDockWidget::tr("Workspace"), this);
+        qDockWidgetWorkspace->setFeatures(QDockWidget::DockWidgetMovable);
+        qDockWidgetWorkspace->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+        addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, qDockWidgetWorkspace);
+        qDockWidgetWorkspace->setWidget(qTabWidgetWorkspace);
     }
 
-    if (qTreeWidgetDock) {
-        if (qTreeWidget) {
-            delete qTreeWidget;
-            qTreeWidget = nullptr;
-        }
-        qTreeWidget = (QWidget*)treeWidget->qWidget();
-        qTreeWidget->setParent(qTreeWidgetDock);
-        qTreeWidgetDock->setWidget(qTreeWidget);
+    if (qTabWidgetWorkspace) {
+        auto qTreeWidget = (QWidget*)treeWidget->qWidget();
+        qTabWidgetWorkspace->addTab(qTreeWidget, title);
     }
 }
 
-void NavEditMainWindow::setEditWidget(AbstractCentral *editWidget)
+void NavEditMainWindow::setWidgetEdit(AbstractCentral *editWidget)
 {
     if (centralWidget()) {
-        delete qEditWidget;
-        qEditWidget = nullptr;
+        delete qWidgetEdit;
+        qWidgetEdit = nullptr;
     }
-    qEditWidget = (QWidget*)editWidget->qWidget();
-    setCentralWidget(qEditWidget);
+    qWidgetEdit = (QWidget*)editWidget->qWidget();
+    setCentralWidget(qWidgetEdit);
 }
 
-void NavEditMainWindow::setWatchWidget(AbstractWidget *watchWidget)
+void NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
 {
-    if (!qWatchWidgetDock) {
-        qWatchWidgetDock = new AutoHideDockWidget(QDockWidget::tr("Watcher"), this);
-        qWatchWidgetDock->setFeatures(QDockWidget::AllDockWidgetFeatures);
-        qWatchWidgetDock->hide();
-        addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, qWatchWidgetDock);
+    if (!qDockWidgetWatch) {
+        qDockWidgetWatch = new AutoHideDockWidget(QDockWidget::tr("Watcher"), this);
+        qDockWidgetWatch->setFeatures(QDockWidget::AllDockWidgetFeatures);
+        qDockWidgetWatch->hide();
+        addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, qDockWidgetWatch);
     }
-    if (qWatchWidgetDock) {
-        if (qWatchWidget) {
-            delete qWatchWidget;
-            qWatchWidget = nullptr;
+    if (qDockWidgetWatch) {
+        if (qWidgetWatch) {
+            delete qWidgetWatch;
+            qWidgetWatch = nullptr;
         }
-        qWatchWidget = static_cast<QWidget*>(watchWidget->qWidget());
-        qWatchWidget->setParent(qWatchWidgetDock);
-        qWatchWidgetDock->setWidget(qWatchWidget);
-        qWatchWidgetDock->hide();
+        qWidgetWatch = static_cast<QWidget*>(watchWidget->qWidget());
+        qWidgetWatch->setParent(qDockWidgetWatch);
+        qDockWidgetWatch->setWidget(qWidgetWatch);
+        qDockWidgetWatch->hide();
     }
 }
 
-void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *contextWidget)
+void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *contextWidget)
 {
     QWidget *qWidget = static_cast<QWidget*>(contextWidget->qWidget());
-    if (!qWidget || !qTabWidget) {
+    if (!qWidget || !qTabWidgetContext) {
         return;
     }
-    qTabWidget->addTab(qWidget, title);
+    qTabWidgetContext->addTab(qWidget, title);
 }
 
-bool NavEditMainWindow::switchContextWidget(const QString &title)
+bool NavEditMainWindow::switchWidgetContext(const QString &title)
 {
-    for (int i = 0; i < qTabWidget->count(); i++){
-        if (qTabWidget->tabText(i) == title) {
-            qTabWidget->setCurrentIndex(i);
+    for (int i = 0; i < qTabWidgetContext->count(); i++){
+        if (qTabWidgetContext->tabText(i) == title) {
+            qTabWidgetContext->setCurrentIndex(i);
             return true;
         }
     }

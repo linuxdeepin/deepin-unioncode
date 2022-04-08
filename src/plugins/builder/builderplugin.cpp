@@ -70,6 +70,6 @@ void BuilderPlugin::slotBuildStarted()
 {
     // get window service.
     if (windowService) {
-        emit windowService->switchContextWidget("Compile Output");
+        emit windowService->switchWidgetContext("Compile Output");
     }
 }

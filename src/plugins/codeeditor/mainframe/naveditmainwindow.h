@@ -13,24 +13,24 @@ class AutoHideDockWidget;
 class NavEditMainWindow : public QMainWindow
 {
     Q_OBJECT
-    AutoHideDockWidget *qTreeWidgetDock{nullptr};
-    AutoHideDockWidget *qTabWidgetDock{nullptr};
-    AutoHideDockWidget *qWatchWidgetDock{nullptr};
-    QWidget *qTreeWidget{nullptr};
-    QWidget *qEditWidget{nullptr};
-    QWidget *qWatchWidget{nullptr};
-    QTabWidget *qTabWidget{nullptr};
+    AutoHideDockWidget *qDockWidgetWorkspace{nullptr};
+    AutoHideDockWidget *qDockWidgetContext{nullptr};
+    AutoHideDockWidget *qDockWidgetWatch{nullptr};
+    QWidget *qWidgetEdit{nullptr};
+    QWidget *qWidgetWatch{nullptr};
+    QTabWidget *qTabWidgetContext{nullptr};
+    QTabWidget *qTabWidgetWorkspace{nullptr};
 public:
     static NavEditMainWindow *instance();
     explicit NavEditMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
     virtual ~NavEditMainWindow();
     QStringList contextWidgetTitles() const;
     void setConsole(AbstractConsole *console);
-    void setTreeWidget(AbstractWidget *treeWidget);
-    void setEditWidget(AbstractCentral *editWidget);
-    void setWatchWidget(AbstractWidget *watchWidget);
-    void addContextWidget(const QString &title, AbstractWidget *contextWidget);
-    bool switchContextWidget(const QString &title);
+    void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget);
+    void setWidgetEdit(AbstractCentral *editWidget);
+    void setWidgetWatch(AbstractWidget *watchWidget);
+    void addWidgetContext(const QString &title, AbstractWidget *contextWidget);
+    bool switchWidgetContext(const QString &title);
 };
 
 #endif // NAVEDITMAINWINDOW_H

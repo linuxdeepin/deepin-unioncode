@@ -19,45 +19,58 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "recent.h"
+#include "projectcmake.h"
+#include "mainframe/cmakeopenhandler.h"
+#include "mainframe/cmakegenerator.h"
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
-#include "mainframe/recentdisplay.h"
-#include "transceiver/recentreceiver.h"
+#include "services/project/projectservice.h"
 
 #include <QAction>
 #include <QLabel>
 
 using namespace dpfservice;
 
-void Recent::initialize()
+void ProjectCMake::initialize()
 {
 
 }
 
-bool Recent::start()
+bool ProjectCMake::start()
 {
     qInfo() << __FUNCTION__;
-    auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
+    auto &ctx = dpfInstance.serviceContext();
+    // 註冊生成器
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService) {
+        QString errorString;
+        projectService->implGenerator<CMakeGenerator>("cmake", &errorString);
+    }
+
+    // 註冊工程打開按鈕後續邏輯
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        QObject::connect(RecentProxy::instance(), &RecentProxy::addFolder,
-                         RecentDisplay::instance(), &RecentDisplay::addFolder);
-        QObject::connect(RecentProxy::instance(), &RecentProxy::addDocument,
-                         RecentDisplay::instance(), &RecentDisplay::addDocument);
-        auto recentWidgetImpl = new AbstractCentral(RecentDisplay::instance());
-        if (windowService->addCentralNavigation) {
-            windowService->addCentralNavigation(MWNA_RECENT, recentWidgetImpl);
+        CMakeOpenHandler *openHandler = CMakeOpenHandler::instance();
+        QObject::connect(openHandler, &CMakeOpenHandler::projectOpened,
+                         [=](const QString &name, const QString &filePath) {
+            if (projectService) {
+                ProjectGenerator *generator = projectService->createGenerator(name);
+                projectService->addProjectRootItem(generator->createRootItem(filePath));
+            }
+        });
+
+        if(windowService->addOpenProjectAction) {
+            windowService->addOpenProjectAction(new AbstractAction(openHandler->openAction()));
         }
     }
     return true;
 }
 
-dpf::Plugin::ShutdownFlag Recent::stop()
+dpf::Plugin::ShutdownFlag ProjectCMake::stop()
 {
     return Sync;
 }

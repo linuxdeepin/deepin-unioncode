@@ -6,14 +6,15 @@ set(CXX_H
     debugger/debuggerservice.h
     workspace/workspaceservice.h
     container/containerservice.h
+    project/projectservice.h
     )
 
 set(CXX_CPP
-    treeview/
     window/windowservice.cpp
     debugger/debuggerservice.cpp
     workspace/workspaceservice.cpp
     container/containerservice.cpp
+    project/projectservice.cpp
     )
 
 add_library(

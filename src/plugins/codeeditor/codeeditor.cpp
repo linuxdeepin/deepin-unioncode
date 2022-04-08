@@ -60,28 +60,28 @@ bool CodeEditor::start()
     if (windowService) {
         NavEditMainWindow *navEditWindow = NavEditMainWindow::instance();
         TextEditTabWidget *editTabWidget = TextEditTabWidget::instance();
-        navEditWindow->setEditWidget(new AbstractCentral(editTabWidget));
-        windowService->addCentral(MWNA_EDIT, new AbstractCentral(navEditWindow));
+        navEditWindow->setWidgetEdit(new AbstractCentral(editTabWidget));
+        windowService->addCentralNavigation(MWNA_EDIT, new AbstractCentral(navEditWindow));
 
         using namespace std::placeholders;
-        if (!windowService->setEditorTree) {
-            windowService->setEditorTree = std::bind(&NavEditMainWindow::setTreeWidget, navEditWindow, _1);
+        if (!windowService->addWidgetWorkspace) {
+            windowService->addWidgetWorkspace = std::bind(&NavEditMainWindow::addWidgetWorkspace, navEditWindow, _1, _2);
         };
 
-        if (!windowService->setEditorConsole) {
-            windowService->setEditorConsole = std::bind(&NavEditMainWindow::setConsole, navEditWindow, _1);
+        if (!windowService->setWidgetConsole) {
+            windowService->setWidgetConsole = std::bind(&NavEditMainWindow::setConsole, navEditWindow, _1);
         }
 
         if (!windowService->addContextWidget) {
-            windowService->addContextWidget = std::bind(&NavEditMainWindow::addContextWidget, navEditWindow, _1, _2);
+            windowService->addContextWidget = std::bind(&NavEditMainWindow::addWidgetContext, navEditWindow, _1, _2);
         }
 
-        if (!windowService->setWatchWidget) {
-            windowService->setWatchWidget = std::bind(&NavEditMainWindow::setWatchWidget, navEditWindow, _1);
+        if (!windowService->setWidgetWatch) {
+            windowService->setWidgetWatch = std::bind(&NavEditMainWindow::setWidgetWatch, navEditWindow, _1);
         }
 
-        if (!windowService->switchContextWidget) {
-            windowService->switchContextWidget = std::bind(&NavEditMainWindow::switchContextWidget, navEditWindow, _1);
+        if (!windowService->switchWidgetContext) {
+            windowService->switchWidgetContext = std::bind(&NavEditMainWindow::switchWidgetContext, navEditWindow, _1);
         }
 
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);

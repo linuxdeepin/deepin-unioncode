@@ -2,6 +2,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QDialog>
+#include <QTabWidget>
 
 const int MW_MIN_WIDTH { 1200 };
 const int MW_MIN_HEIGHT { 800 };
@@ -14,6 +15,7 @@ const QString MWNA_RUNTIME { QAction::tr("Runtime") };
 const QString MWM_FILE { QMenu::tr("File") };
 const QString MWMFA_DOCUMENT_NEW { QAction::tr("New Document") };
 const QString MWMFA_FOLDER_NEW { QAction::tr("New Folder") };
+const QString MWMFA_OPEN_PROJECT { QAction::tr("Open Project") };
 const QString MWMFA_OPEN_DOCUMENT { QAction::tr("Open Document") };
 const QString MWMFA_OPEN_FOLDER { QAction::tr("Open Folder") };
 const QString MWMFA_OPEN_RECENT_DOCUMENTS { QAction::tr("Open Recent Documents") };
@@ -34,7 +36,9 @@ const QString MWMTA_TEST { QAction::tr("Test") };
 const QString MWMTA_PLUGINS { QAction::tr("Plugins") };
 const QString MWMTA_OPTIONS { QAction::tr("Options") };
 
-const QString MWM_HELP {QMenu::tr("Help")};
+const QString MWM_HELP { QMenu::tr("Help") };
 
 const QString DIALOG_OPEN_DOCUMENT_TITLE { QDialog::tr("Open Document") };
 const QString DIALOG_OPEN_FOLDER_TITLE { QDialog::tr("Open Folder") };
+const QString CONSOLE_TAB_TEXT { QTabWidget::tr("Console") };
+

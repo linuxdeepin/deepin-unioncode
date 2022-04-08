@@ -19,45 +19,61 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "recent.h"
+#include "projectcore.h"
+#include "mainframe/projectkeeper.h"
+#include "mainframe/projecttreeview.h"
+#include "common/common.h"
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
+#include "services/workspace/workspaceservice.h"
 #include "services/window/windowservice.h"
-#include "mainframe/recentdisplay.h"
-#include "transceiver/recentreceiver.h"
-
+#include "services/project/projectservice.h"
 #include <QAction>
 #include <QLabel>
+#include <QTreeView>
 
 using namespace dpfservice;
-
-void Recent::initialize()
+void ProjectCore::initialize()
 {
-
+    qInfo() << __FUNCTION__;
+    // 发布工程服务
+    QString errStr;
+    auto &ctx = dpfInstance.serviceContext();
+    if (!ctx.load(ProjectService::name(), &errStr)) {
+        qCritical() << errStr;
+        abort();
+    }
 }
 
-bool Recent::start()
+bool ProjectCore::start()
 {
     qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-
     if (windowService) {
-        QObject::connect(RecentProxy::instance(), &RecentProxy::addFolder,
-                         RecentDisplay::instance(), &RecentDisplay::addFolder);
-        QObject::connect(RecentProxy::instance(), &RecentProxy::addDocument,
-                         RecentDisplay::instance(), &RecentDisplay::addDocument);
-        auto recentWidgetImpl = new AbstractCentral(RecentDisplay::instance());
-        if (windowService->addCentralNavigation) {
-            windowService->addCentralNavigation(MWNA_RECENT, recentWidgetImpl);
+        if (windowService->addWidgetWorkspace) {
+            windowService->addWidgetWorkspace(QTreeView::tr("Projects"),
+                                              new AbstractWidget(ProjectKeeper::instance()->treeView()));
+        }
+    }
+
+    using namespace std::placeholders;
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService) {
+        if (!projectService->addProjectRootItem) {
+            projectService->addProjectRootItem =
+                    std::bind(&ProjectTreeView::appendRootItem,
+                              ProjectKeeper::instance()->treeView(),
+                              _1);
         }
     }
     return true;
 }
 
-dpf::Plugin::ShutdownFlag Recent::stop()
+dpf::Plugin::ShutdownFlag ProjectCore::stop()
 {
+    qInfo() << __FUNCTION__;
     return Sync;
 }

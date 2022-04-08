@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-core)
 
 set(CXX_CPP
+    mainframe/processdialog.cpp
     mainframe/windowtheme.cpp
     mainframe/windowkeeper.cpp
     mainframe/windowstatusbar.cpp
@@ -15,6 +16,7 @@ set(CXX_CPP
     )
 
 set(CXX_H
+    mainframe/processdialog.h
     mainframe/windowtheme.h
     mainframe/windowkeeper.h
     mainframe/windowstatusbar.h

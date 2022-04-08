@@ -41,10 +41,10 @@ public:
 
     explicit WindowService(QObject *parent = nullptr);
     /*!
-     * \brief addNavAction 添加导航栏action
+     * \brief addActionNavigation 添加导航栏action
      * \param action 实例对象
      */
-    DPF_INTERFACE(void, addNavAction, AbstractAction *action);
+    DPF_INTERFACE(void, addActionNavigation, AbstractAction *action);
 
     /*!
      * \brief addMenu 添加菜单项
@@ -53,30 +53,40 @@ public:
     DPF_INTERFACE(void, addMenu, AbstractMenu *menu);
 
     /*!
-     * \brief addAction 添加到其他由框架发布的可扩展menu
+     * \brief addAction 添加Action到其他由框架发布的可扩展menu
      * \param menuName 框架扩展menu发布名称
      * \param action 实例对象
      */
     DPF_INTERFACE(void, addAction, const QString &menuName, AbstractAction *action);
 
     /*!
-     * \brief addCentral 添加中心显示组件
-     * \param navName 导航栏名称，从AbstractAction获取
+     * \brief insertAction 添加Action到其他由框架发布的可扩展menu
+     * \param menuName 框架扩展menu发布名称
+     * \param beforActionName 之后的Action名称
+     * \param action 实例对象
+     */
+    DPF_INTERFACE(void, insertAction, const QString &menuName,
+                                      const QString &beforActionName,
+                                      AbstractAction *action);
+    /*!
+     * \brief addCentralNavigation 添加中心显示组件
+     * \param name 导航栏名称，从AbstractAction获取
      * \param central 添加的居中组件实例对象
      */
-    DPF_INTERFACE(void, addCentral, const QString &navName, AbstractCentral *central);
+    DPF_INTERFACE(void, addCentralNavigation, const QString &name, AbstractCentral *central);
 
     /*!
-     * \brief setEditTree 设置编辑器文件树
-     * \param editTree 设置的编辑器文件树实例对象
+     * \brief addWidgetWorkspace 左侧工作空间组件,可以是文件树,工程管理等
+     * \param title 设置
+     * \param widget 设置的编辑器文件树实例对象
      */
-    DPF_INTERFACE(void, setEditorTree, AbstractWidget *editTree);
+    DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget);
 
     /*!
-     * \brief setEditorConsole 设置默认终端
+     * \brief setWidgetConsole 设置默认终端
      * \param console 实例对象
      */
-    DPF_INTERFACE(void, setEditorConsole, AbstractConsole *console);
+    DPF_INTERFACE(void, setWidgetConsole, AbstractConsole *console);
 
     /*!
      * \brief addContextWidget 添加交互组件
@@ -86,11 +96,11 @@ public:
     DPF_INTERFACE(void, addContextWidget, const QString &contextTab, AbstractWidget *contextWidget);
 
     /*!
-     * \brief addOptionWidget 添加功能项组件
+     * \brief addWidgetOption 添加功能项组件
      * \param optionName option名称
      * \param optionWidget option显示的组件
      */
-    DPF_INTERFACE(void, addOptionWidget, const QIcon &icon, const QString &optionName, AbstractWidget *optionWidget);
+    DPF_INTERFACE(void, addWidgetOption, const QIcon &icon, const QString &optionName, AbstractWidget *optionWidget);
 
     /*!
      * \brief setStatusBar
@@ -113,22 +123,48 @@ public:
     DPF_INTERFACE(int, insertWidgetToStatusBar, int index, QWidget *widget);
 
     /*!
-     * \brief setWatchWidget 添加监视器组件
+     * \brief setWidgetWatch 添加监视器组件
      * \param widget 抽象接口
      */
-    DPF_INTERFACE(void, setWatchWidget, AbstractWidget *widget);
+    DPF_INTERFACE(void, setWidgetWatch, AbstractWidget *widget);
 
     /*!
-     * \brief switchNavWidget
-     * \param name
+     * \brief switchWidgetNavigation 切换导航栏组件
+     * \param name 导航栏组件名称（来自 Action Navigation）
      */
-    DPF_INTERFACE(void, switchNavWidget, const QString &name);
+    DPF_INTERFACE(void, switchWidgetNavigation, const QString &name);
 
     /*!
-     * \brief switchContextWidget
-     * \param name
+     * \brief switchContextWidget 切换上下文组件
+     * \param name 上下文组件名称
      */
-    DPF_INTERFACE(void, switchContextWidget, const QString &name);
+    DPF_INTERFACE(void, switchWidgetContext, const QString &name);
+
+    /*!
+     * \brief addOpenProjectAction 添加打開工程的Action
+     * \param action 實例對象
+     */
+    DPF_INTERFACE(void, addOpenProjectAction, AbstractAction *action);
+
+signals:
+
+    /*!
+     * \brief showMessageDisplay 展示处理消息提示框
+     */
+    void showMessageDisplay();
+
+    /*!
+     * \brief appendProcessMessage 添加处理消息
+     * \param mess 消息
+     * \param currentPercent 当前百分比
+     * \param maxPercent 最大的百分比
+     */
+    void appendProcessMessage(const QString &mess, int currentPercent, int maxPrecent = 100);
+
+    /*!
+     * \brief hideMessageDisplay 隐藏处理消息提示框
+     */
+    void hideMessageDisplay();
 };
 
 } // namespace dpfservice

@@ -18,43 +18,44 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "corereceiver.h"
-#include "mainframe/windowkeeper.h"
+#include "workspacereceiver.h"
+#include "workspacedata.h"
 #include "common/common.h"
 
-#include <QGridLayout>
-#include <QActionGroup>
-
-CoreReceiver::CoreReceiver(QObject *parent)
+static QStringList subTopics { T_MENU, T_NAV };
+static QString projectPath;
+WorkspaceReceiver::WorkspaceReceiver(QObject *parent)
     : dpf::EventHandler (parent)
+    , dpf::AutoEventHandlerRegister<WorkspaceReceiver> ()
 {
 
 }
 
-dpf::EventHandler::Type CoreReceiver::type()
+dpf::EventHandler::Type WorkspaceReceiver::type()
 {
     return dpf::EventHandler::Type::Sync;
 }
 
-QStringList CoreReceiver::topics()
+QStringList WorkspaceReceiver::topics()
 {
-    return QStringList() << T_NAV;
+    return subTopics; //绑定menu 事件
 }
 
-void CoreReceiver::eventProcess(const dpf::Event &event)
+void WorkspaceReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!CoreReceiver::topics().contains(event.topic())) {
-        qCritical() << "Fatal error, unsubscribed message received";
+    if (!subTopics.contains(event.topic()))
         abort();
+    qInfo() << event;
+    if (event.topic() == T_MENU) {
+        if (event.data() == D_FILE_OPENFOLDER) {
+            projectPath = event.property(P_FILEPATH).toString();
+        }
     }
-
-    if (event.topic() == T_NAV)
-        navEvent(event);
-}
-
-void CoreReceiver::navEvent(const dpf::Event &event)
-{
-    if (event.data().toString() == D_ACTION_SWITCH) {
-        WindowKeeper::instace()->switchWidgetNavigation(event.property(P_ACTION_TEXT).toString());
+    if (event.topic() == T_NAV) {
+        if (event.data() == D_ACTION_SWITCH) {
+            if (event.property(P_ACTION_TEXT).toString() == MWNA_EDIT) {
+                WorkspaceData::globalInstance()->doGenerate(projectPath);
+            }
+        }
     }
 }

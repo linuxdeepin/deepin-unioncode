@@ -22,5 +22,6 @@
 #include "widget/singlechoicebox.h"
 #include "widget/statuswidget.h"
 #include "widget/elidedlabel.h"
+#include "widget/generator.h"
 
 #endif // COMMON_H

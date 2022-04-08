@@ -37,8 +37,11 @@
 
 using namespace dpfservice;
 
+namespace  {
 const int treeWidgtMinWidth = 70;
 const int treeWidgetMinHeight = 400;
+const QString FileBrowser_TEXT = QWidget::tr("File Browser");
+}
 
 void FileBrowser::initialize()
 {
@@ -49,8 +52,8 @@ bool FileBrowser::start()
 {
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (windowService) {
-        emit windowService->setEditorTree(createTreeWidget());
+    if (windowService && windowService->addWidgetWorkspace) {
+        emit windowService->addWidgetWorkspace(FileBrowser_TEXT,createTreeWidget());
     }
     return true;
 }

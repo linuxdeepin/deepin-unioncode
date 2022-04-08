@@ -68,6 +68,11 @@ public:
         }
     }
 
+    QStringList createKeys()
+    {
+        return constructList.keys();
+    }
+
 protected:
     QHash<QString, CreateFunc> constructList;
 };

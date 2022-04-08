@@ -40,8 +40,8 @@ bool Console::start()
 
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (windowService) {
-        windowService->setEditorConsole(new AbstractConsole(ConsoleWidget::instance()));
+    if (windowService && windowService->setWidgetConsole) {
+        windowService->setWidgetConsole(new AbstractConsole(ConsoleWidget::instance()));
     }
     return true;
 }

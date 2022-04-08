@@ -27,6 +27,7 @@
 #include "base/abstractmenubar.h"
 #include "base/abstractmainwindow.h"
 #include "base/abstractcentral.h"
+#include "processdialog.h"
 
 #include <framework/framework.h>
 
@@ -53,12 +54,19 @@ public:
     QStringList navActionTexts() const;
 
 public slots:
-    void addNavAction(AbstractAction *action);
-    void addCentral(const QString &navName, AbstractCentral *central);
+    void addActionNavigation(AbstractAction *action);
+    void addCentralNavigation(const QString &navName, AbstractCentral *central);
     void addMenu(AbstractMenu *menu);
+    void insertAction(const QString &menuName, const QString &beforActionName,
+                      AbstractAction *action);
     void addAction(const QString &menuName, AbstractAction *action);
+    void addOpenProjectAction(AbstractAction *action);
     void initUserWidget();
-    void switchNavWidget(const QString &navName);
+    void switchWidgetNavigation(const QString &navName);
+    void showProcessDisplay();
+    void appendProcessMessage(const QString &mess, int currentPercent,
+                              int maxPrecent = 100);
+    void hideProcessDisplay();
 
 private :
     void layoutWindow(QMainWindow *window);

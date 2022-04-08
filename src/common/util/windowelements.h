@@ -2,6 +2,7 @@
 #define WINDOWELEMENTS_H
 
 #include <QString>
+
 // MW = MainWindow
 extern const int MW_MIN_WIDTH;
 extern const int MW_MIN_HEIGHT;
@@ -17,6 +18,7 @@ extern const QString MWNA_RUNTIME;
 extern const QString MWM_FILE;
 extern const QString MWMFA_DOCUMENT_NEW;
 extern const QString MWMFA_FOLDER_NEW;
+extern const QString MWMFA_OPEN_PROJECT;
 extern const QString MWMFA_OPEN_DOCUMENT;
 extern const QString MWMFA_OPEN_FOLDER;
 extern const QString MWMFA_OPEN_RECENT_DOCUMENTS;
@@ -43,8 +45,11 @@ extern const QString MWMTA_OPTIONS;
 // MWMH: MainWindow Menu Help
 extern const QString MWM_HELP;
 
-// MWMD = MainWindow Menu Dialog
+// Dialog Title text
 extern const QString DIALOG_OPEN_DOCUMENT_TITLE;
 extern const QString DIALOG_OPEN_FOLDER_TITLE;
+
+// TabWidget Tab Text from editor
+extern const QString CONSOLE_TAB_TEXT; // text's "Console"
 
 #endif // WINDOWELEMENTS_H
