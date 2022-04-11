@@ -19,6 +19,11 @@ void ProjectGenerator::setToolKitName(QStandardItem *item, const QString &name)
     setToolKitProperty(item, ToolKitPropertyKey::get()->ToolKitName, name);
 }
 
+QString ProjectGenerator::toolKitName(QStandardItem *item)
+{
+    return toolKitPropertyMap(item)[ToolKitPropertyKey::get()->ToolKitName].toString();
+}
+
 void ProjectGenerator::setToolKitProperty(QStandardItem *item, const QString &key, const QVariant &value)
 {
     if (!item)
@@ -26,6 +31,20 @@ void ProjectGenerator::setToolKitProperty(QStandardItem *item, const QString &ke
     auto map = item->data(ToolKitProperty).toMap();
     map[key] = value;
     item->setData(map, ToolKitProperty);
+}
+
+QVariant ProjectGenerator::toolKitProperty(QStandardItem *item, const QString &key)
+{
+    if (!item)
+        return {};
+    return toolKitPropertyMap(item)[key];
+}
+
+QVariantMap ProjectGenerator::toolKitPropertyMap(QStandardItem *item)
+{
+    if (!item)
+        return {};
+    return item->data(ToolKitProperty).toMap();
 }
 
 }

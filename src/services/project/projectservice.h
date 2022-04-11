@@ -38,7 +38,7 @@ struct ProjectGenerator : public Generator
 public:
     enum ItemDataRole
     {
-        ToolKitProperty = Qt::ItemDataRole::UserRole
+        ToolKitProperty = Qt::ItemDataRole::UserRole,
     };
 
     enum_def(ToolKitPropertyKey, QString)
@@ -77,6 +77,12 @@ protected:
     static void setToolKitName(QStandardItem *item, const QString &name);
 
     /*!
+     * \brief toolKitName 获取工具套件名称
+     * \param item 文件树节点
+     */
+    static QString toolKitName(QStandardItem *item);
+
+    /*!
      * \brief setToolKitProperty設置工具套件特性, createRootItem實現時方便函數
      * \param item 文件樹節點
      * \param key 鍵
@@ -84,6 +90,20 @@ protected:
      */
     static void setToolKitProperty(QStandardItem *item, const QString &key, const QVariant &value);
 
+    /*!
+     * \brief toolKitProperty 获取共计套件特性
+     * \param item 文件树节点
+     * \param key 键
+     * \return 万能类型，需要知道存入方类型进行转换后使用
+     */
+    static QVariant toolKitProperty(QStandardItem *item, const QString &key);
+
+    /*!
+     * \brief toolKiyPropertyMap 获取所有特性值
+     * \param item 文件树节点
+     * \return 存入所有的特性Map
+     */
+    static QVariantMap toolKitPropertyMap(QStandardItem *item);
 };
 
 class ProjectService final : public dpf::PluginService,
@@ -142,6 +162,14 @@ public:
      * \param aitem
      */
     DPF_INTERFACE(void, addProjectRootItem, QStandardItem *aitem);
+
+    /*!
+     * \brief DPF_INTERFACE
+     * \param level
+     */
+    DPF_INTERFACE(void, expandedProjectDepth, QStandardItem *aitem, int depth);
+
+    DPF_INTERFACE(void, expandedProjectAll, QStandardItem *aitem);
 };
 } //namespace dpfservice
 

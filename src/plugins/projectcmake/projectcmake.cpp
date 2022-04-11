@@ -44,14 +44,14 @@ bool ProjectCMake::start()
     qInfo() << __FUNCTION__;
 
     auto &ctx = dpfInstance.serviceContext();
-    // 註冊生成器
+    // 注册生成器
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {
         QString errorString;
         projectService->implGenerator<CMakeGenerator>("cmake", &errorString);
     }
 
-    // 註冊工程打開按鈕後續邏輯
+    // 注册工程打开后续逻辑
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
         CMakeOpenHandler *openHandler = CMakeOpenHandler::instance();
@@ -59,7 +59,9 @@ bool ProjectCMake::start()
                          [=](const QString &name, const QString &filePath) {
             if (projectService) {
                 ProjectGenerator *generator = projectService->createGenerator(name);
-                projectService->addProjectRootItem(generator->createRootItem(filePath));
+                auto rootItem = generator->createRootItem(filePath);
+                projectService->addProjectRootItem(rootItem); // 设置项目根节点
+                projectService->expandedProjectDepth(rootItem, 2); // 初始化展开两级
             }
         });
 

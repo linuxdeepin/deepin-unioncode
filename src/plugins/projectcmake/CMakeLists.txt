@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-projectcmake)
 
+find_package(Qt5 COMPONENTS Xml REQUIRED)
+
 set(CXX_CPP
     mainframe/cmakeopenhandler.cpp
     mainframe/cmakegenerator.cpp
@@ -25,6 +27,7 @@ target_link_libraries(${PROJECT_NAME}
     unioncode-framework
     unioncode-base
     unioncode-service
+    Qt5::Xml
     ${QtUseModules}
     ${PkgUserModules}
     )

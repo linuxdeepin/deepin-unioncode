@@ -20,7 +20,7 @@ public:
 signals:
     void message(const Procedure &procedure);
     void started();
-    void finished();
+    void finished(bool isNormal = true);
 
 protected:
     bool setErrorString(const QString &error); //子類調用
