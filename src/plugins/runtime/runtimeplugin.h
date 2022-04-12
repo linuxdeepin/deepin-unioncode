@@ -24,7 +24,7 @@
 
 #include <framework/framework.h>
 
-class Runtime : public dpf::Plugin
+class RuntimePlugin : public dpf::Plugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "runtime.json")

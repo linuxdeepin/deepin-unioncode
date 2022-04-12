@@ -1,9 +1,10 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,22 +19,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef ENVIRONMENTWIDGET_H
-#define ENVIRONMENTWIDGET_H
+#ifndef BUILDSTEPSPANE_H
+#define BUILDSTEPSPANE_H
 
-#include <QTableView>
+#include <QWidget>
 
-class EnvironmentWidgetPrivate;
-class EnvironmentWidget : public QWidget
+class BuildStepsPanePrivate;
+class StepsPane : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit EnvironmentWidget(QWidget *parent = nullptr);
-    virtual ~EnvironmentWidget();
+    enum StepType
+    {
+        kBuild,
+        kClean
+    };
+
+    explicit StepsPane(StepType stepType = kBuild, QWidget *parent = nullptr);
+    virtual ~StepsPane();
+
+protected:
+    QString getActiveTarget() const;
 
 private:
-    EnvironmentWidgetPrivate *const d;
+    void setupUi();
+    QString getCombinedBuildText();
+    void updateSummaryText();
+
+    void toolArgumentsEdited();
+    void dataChanged();
+
+    BuildStepsPanePrivate *const d;
 };
 
-#endif // ENVIRONMENTWIDGET_H
+#endif // BUILDSTEPSPANE_H

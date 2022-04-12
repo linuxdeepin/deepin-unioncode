@@ -19,22 +19,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "runtime.h"
+#include "runtimeplugin.h"
 #include "runtimewidget.h"
 #include "common/common.h"
 #include "base/abstractwidget.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include "services/window/windowservice.h"
+#include "projectparser.h"
 
 using namespace dpfservice;
 
-void Runtime::initialize()
+void RuntimePlugin::initialize()
 {
 
 }
 
-bool Runtime::start()
+bool RuntimePlugin::start()
 {
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
@@ -43,10 +44,11 @@ bool Runtime::start()
         if (windowService->addCentralNavigation)
             windowService->addCentralNavigation(MWNA_RUNTIME, new AbstractCentral(RuntimeWidget::instance()));
     }
+
     return true;
 }
 
-dpf::Plugin::ShutdownFlag Runtime::stop()
+dpf::Plugin::ShutdownFlag RuntimePlugin::stop()
 {
     return Sync;
 }

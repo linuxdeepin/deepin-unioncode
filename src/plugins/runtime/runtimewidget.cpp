@@ -22,6 +22,7 @@
 #include "configurewidget.h"
 #include "environmentwidget.h"
 #include "common/common.h"
+#include "stepspane.h"
 
 #include <QListWidget>
 #include <QSplitter>
@@ -64,12 +65,17 @@ RuntimeWidget::RuntimeWidget(QWidget *parent)
     d->leftLayout->addStretch();
     d->openFolderBox->addItems({"unioncode", "dde-file-manager"});// test project name
     d->configWidget = new ConfigureWidget(this);
+    auto buldStepPane = new CollapseWidget("Build Steps", new StepsPane(StepsPane::kBuild));
+    d->configWidget->addCollapseWidget(buldStepPane);
+    d->configWidget->addCollapseWidget(new CollapseWidget("Clean Steps", new StepsPane(StepsPane::kClean)));
     d->configWidget->addCollapseWidget(new CollapseWidget("Runtime Env", new EnvironmentWidget));
-    d->configWidget->addCollapseWidget(new CollapseWidget("Debug Env", new EnvironmentWidget));
     addWidget(d->folderGroupBox);
     addWidget(d->configWidget);
     setStretchFactor(1, 3);
     setChildrenCollapsible(false);
+
+    // expand environment tree widget.
+    buldStepPane->setChecked(false);
 }
 
 RuntimeWidget::~RuntimeWidget()
