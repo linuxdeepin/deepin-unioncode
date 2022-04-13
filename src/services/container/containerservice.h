@@ -26,6 +26,22 @@
 #include <QMap>
 
 namespace dpfservice {
+
+struct  ContainerInfo
+{
+    const QString projectPath;
+    const QUuid uuid;
+    const qint64 pid;
+    const QString imageName;
+    const QString paltfromInfo;
+};
+
+struct ContainerError
+{
+    const bool result;
+    const QString errString;
+};
+
 class ContainerService final : public dpf::PluginService, dpf::AutoServiceRegister<ContainerService>
 {
     Q_OBJECT
@@ -35,18 +51,26 @@ public:
 
     explicit ContainerService(QObject *parent = nullptr);
 
-    // 添加容器挂载点
-    DPF_INTERFACE(void, addContainerMount, const QString& containrId);
-    // 添加容器网络
-    DPF_INTERFACE(void, addContainerNetwork, const QString& containerId);
-    // 添加容器根文件系统
-    DPF_INTERFACE(void, addConntainerBundle, const QString& containerId);
-    // 添加容器配置文件
-    DPF_INTERFACE(void, addContainerConfig, const QString& containerId);
-    // 运行容器虚拟环境
-    DPF_INTERFACE(void, addContainerVirtenv, const QString& containerId);
-    // 杀死容器虚拟环境
-    DPF_INTERFACE(void, killContainerVirtenv, const QString& containerId);
+    // 生成config.json文件 -> projectPath, name changed to container.support
+    // 生成UUID
+    DPF_INTERFACE(ContainerError, addProject, const QString &projectPath);
+
+    // setp1. scanf container.support, copy that to rootfs exits dir and changed name to config.json
+    // setp2. execute runc run "projectPath";
+    // setp3. addWidgetContext to mainWindow
+    DPF_INTERFACE(ContainerInfo, initContainer, const QString &projectPath);
+
+    // setp1. selection uuid and kill from runc command
+    DPF_INTERFACE(ContainerInfo, stopContainer, const QString &projectPath);
+
+    // delete container.support
+    // delete UUID
+    // remove contex
+    DPF_INTERFACE(ContainerError, removeProject, const QString &projectPath);
+
+    // exec interface
+    DPF_INTERFACE(ContainerError, execContainerCommand, const QString &projectPath, const QString &command, const QStringList &arguments);
+
 };
 
 } // namespace dpfservice

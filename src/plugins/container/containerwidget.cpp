@@ -32,5 +32,5 @@ ContainerWidget::ContainerWidget(QWidget *parent)
 ContainerWidget::~ContainerWidget()
 {
     qInfo() << __FUNCTION__;
-    //sendText("container-down.sh\n");
+    sendText("container-down.sh\n");
 }

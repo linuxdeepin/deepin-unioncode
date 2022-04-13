@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd $HOME
-NIC="enp3s0"
+NIC=$(ip route | grep default | awk '{print $5}')
 BRIDGE="runc0"
 CONTAINER_ID="uos-amd64"
 MIRROR="https://pools.uniontech.com/deepin"
@@ -17,7 +17,7 @@ sudo ip link set veth-${CONTAINER_ID} up
 sudo ip netns exec ${CONTAINER_ID} ip link set lo up
 sudo ip netns exec ${CONTAINER_ID} ip link set ceth0 up
 sudo ip netns exec ${CONTAINER_ID} ip addr add 172.16.0.101/16 dev ceth0
-sudo ip netns exec ${CONTINAER_ID} ip route add default via 172.16.0.1
+sudo ip netns exec ${CONTAINER_ID} ip route add default via 172.16.0.1
 
 sudo iptables -t nat -I POSTROUTING 1 --source 172.16.0.1/16 -o ${NIC} -j MASQUERADE
 sudo iptables -t filter -A FORWARD -o ${NIC} -i ${BRIDGE} -j ACCEPT
@@ -236,7 +236,7 @@ cat>>${CONTAINER_ID}/config.json<<EOF
 			},
 			{
 				"type": "network",
-				"path": "/var/run/netns/runc0"
+				"path": "/var/run/netns/${CONTAINER_ID}"
 			},
 			{
 				"type": "ipc"

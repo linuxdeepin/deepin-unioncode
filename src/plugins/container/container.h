@@ -22,7 +22,9 @@
 #ifndef CONTAINERPLUGIN_H
 #define CONTAINERPLUGIN_H
 #include <framework/framework.h>
-
+#include "services/container/containerservice.h"
+#include <QMap>
+#include <QString>
 class Container : public dpf::Plugin
 {
     Q_OBJECT
@@ -31,6 +33,14 @@ public:
     virtual void initialize() override;
     virtual bool start() override;
     virtual dpf::Plugin::ShutdownFlag stop() override;
+
+    dpfservice::ContainerError addProject(const QString& projectPath);
+    dpfservice::ContainerError initContainer(const QString& projectPath);
+    dpfservice::ContainerError stopContainer(const QString& projectPath);
+    dpfservice::ContainerError removeProject(const QString& projectPath);
+    dpfservice::ContainerError execContainerCommand(const QString &projectPath,  const QString &command, const QStringList &arguments);
+private:
+    QMap<QString, QString> pathUuidMap;
 };
 
 #endif // CONTAINERPLUGIN_H
