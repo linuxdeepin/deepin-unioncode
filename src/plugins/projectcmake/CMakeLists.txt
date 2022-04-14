@@ -5,6 +5,7 @@ project(plugin-projectcmake)
 find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
+    mainframe/cmakeconfigwidget.cpp
     mainframe/cmakeopenhandler.cpp
     mainframe/cmakegenerator.cpp
     projectcmake.cpp
@@ -12,6 +13,7 @@ set(CXX_CPP
     )
 
 set(CXX_H
+    mainframe/cmakeconfigwidget.h
     mainframe/cmakeopenhandler.h
     mainframe/cmakegenerator.h
     projectcmake.h

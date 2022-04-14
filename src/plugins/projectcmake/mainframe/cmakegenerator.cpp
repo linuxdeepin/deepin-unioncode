@@ -1,4 +1,5 @@
 ﻿#include "cmakegenerator.h"
+#include "cmakeconfigwidget.h"
 #include <QtXml>
 #include <QFileIconProvider>
 
@@ -53,11 +54,28 @@ enum_def(CDT_FILES_TYPE, QString)
 static int currentCount = 0;
 static int maxCount = 100;
 static QFileIconProvider iconProvider;
+
+QHash<QString, QString> optionHash {
+    { "-S", "source directory" },
+    { "-B", "build directory" },
+    { "-G", "build system generator" },
+    { "-DCMAKE_EXPORT_COMPILE_COMMANDS", "build clangd use compile json file"},
+    { "-DCMAKE_BUILD_TYPE", "build type"}
+};
+
 }
 
 CMakeGenerator::CMakeGenerator()
 {
 
+}
+
+bool CMakeGenerator::configure(const QString &projectPath)
+{
+    Q_UNUSED(projectPath);
+    CMakeConfigWidget configDialog;
+    configDialog.show();
+    return true;
 }
 
 QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
@@ -76,7 +94,7 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
     arguments << "-G";
     arguments << ProjectKit::get()->CDT;
     arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
-    arguments << "-DCMAKE_BUILD_TYPE=Debug";
+    arguments << "-DCMAKE_BUILD_TYPE=\"Release\"";
     process.setArguments(arguments);
 
     // 消息和進度轉發

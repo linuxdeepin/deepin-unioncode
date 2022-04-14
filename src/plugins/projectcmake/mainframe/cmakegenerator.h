@@ -12,6 +12,7 @@ class CMakeGenerator : public dpfservice::ProjectGenerator
     QProcess process;
 public:
     explicit CMakeGenerator();
+    virtual bool configure(const QString &projectPath) override;
     virtual QStandardItem *createRootItem(const QString &projectPath) override;
     virtual QMenu* createIndexMenu(const QModelIndex &index) override;
 private slots:
