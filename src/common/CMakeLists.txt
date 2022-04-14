@@ -8,6 +8,7 @@ set(CXX_H
     lsp/protocol.h
     lsp/client.h
     util/processutil.h
+    util/customicons.h
     util/custompaths.h
     util/eventdefinitions.h
     util/windowelements.h
@@ -34,6 +35,7 @@ set(CXX_CPP
     lsp/protocol.cpp
     lsp/client.cpp
     util/processutil.cpp
+    util/customicons.cpp
     util/custompaths.cpp
     util/polkit.cpp
     util/eventdefinitions.cpp

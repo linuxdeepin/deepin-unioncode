@@ -50,6 +50,7 @@ void ProjectCore::initialize()
 bool ProjectCore::start()
 {
     qInfo() << __FUNCTION__;
+    toolchains::cxx::generatGlobalFile();
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {

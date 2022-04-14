@@ -42,18 +42,16 @@ enum_def(CDT_TARGETS_TYPE, QString)
 
 enum_def(CDT_FILES_TYPE, QString)
 {
-    enum_exp Unknown = "//";
-    enum_exp ObjectLibraries = "/Object Libraries/";
-    enum_exp ObjectFiles = "/Object Files/";
-    enum_exp SourceFiles = "/Source Files/";
-    enum_exp HeaderFiles = "/Header Files/";
-    enum_exp CMakeRules = "/CMake Rules/";
-    enum_exp Resources = "/Resources/";
+    enum_exp ObjectLibraries = "Object Libraries";
+    enum_exp ObjectFiles = "Object Files";
+    enum_exp SourceFiles = "Source Files";
+    enum_exp HeaderFiles = "Header Files";
+    enum_exp CMakeRules = "CMake Rules";
+    enum_exp Resources = "Resources";
 };
 
 static int currentCount = 0;
 static int maxCount = 100;
-static QFileIconProvider iconProvider;
 
 QHash<QString, QString> optionHash {
     { "-S", "source directory" },
@@ -62,6 +60,35 @@ QHash<QString, QString> optionHash {
     { "-DCMAKE_EXPORT_COMPILE_COMMANDS", "build clangd use compile json file"},
     { "-DCMAKE_BUILD_TYPE", "build type"}
 };
+
+QIcon cmakeFolderIcon()
+{
+    static QIcon cmakeFolderIcon;
+    if (cmakeFolderIcon.isNull()) {
+        cmakeFolderIcon = CustomIcons::icon(QFileIconProvider::Folder);
+        cmakeFolderIcon.addFile(":/cmakeproject/images/fileoverlay_cmake@2x.png");
+    }
+    return cmakeFolderIcon;
+}
+
+QIcon libBuildIcon() {
+    static QIcon libBuildIcon;
+    if (libBuildIcon.isNull()) {
+        libBuildIcon = CustomIcons::icon(CustomIcons::Lib);
+        libBuildIcon.addFile(":/cmakeproject/images/build@2x.png");
+    }
+    return libBuildIcon;
+}
+
+QIcon exeBuildIcon()
+{
+    static QIcon exeBuildIcon;
+    if (exeBuildIcon.isNull()) {
+        exeBuildIcon = CustomIcons::icon(CustomIcons::Exe);
+        exeBuildIcon.addFile(":/cmakeproject/images/build@2x.png");
+    }
+    return exeBuildIcon;
+}
 
 }
 
@@ -123,6 +150,7 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
             if (!rootItem && e.tagName() == CDT_XML_KEY::get()->name) {
                 rootItem = new QStandardItem();
                 rootItem->setText(e.text());
+                rootItem->setIcon(::cmakeFolderIcon());
                 rootItem->setToolTip(projectPath);
             }
             if (rootItem && e.tagName() == CDT_XML_KEY::get()->linkedResources) {
@@ -146,8 +174,8 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
                                 }
                             }
                             if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->location) {
+                                childItem->setIcon(CustomIcons::icon(QFileInfo(linkChildElem.text()))); // 设置本地文件图标
                                 childItem->setToolTip(linkChildElem.text());
-                                childItem->setIcon(iconProvider.icon(QFileIconProvider::File));
                             }
                             if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->locationURI) {
                                 childItem->setToolTip(linkChildElem.text());
@@ -244,6 +272,19 @@ QStandardItem *CMakeGenerator::cmakeCDT4DisplayOptimize(QStandardItem *rootItem)
     if (!rootItem) {
         return nullptr;
     }
+
+    // 优化二级目录节点
+    for (int row = 0; row < rootItem->rowCount(); row ++) {
+        QStandardItem *childItem = rootItem->child(row);
+        QString displayName = childItem->data(Qt::DisplayRole).toString();
+        // cmake folder setting
+        if (displayName.contains(CDT_TARGETS_TYPE::get()->Targets)
+                || displayName.contains(CDT_TARGETS_TYPE::get()->Subprojects)) {
+            childItem->setIcon(::cmakeFolderIcon());
+        }
+    }
+
+    // 优化target及子节点
     QString targetsName = CDT_TARGETS_TYPE::get()->Targets;
     QStandardItem *targetsItem = cmakeCDT4FindItem(rootItem, targetsName); //targets 顶层item
     QHash<QString, QString> subprojectsMap = cmakeCDT4Subporjects(rootItem);
@@ -253,12 +294,32 @@ QStandardItem *CMakeGenerator::cmakeCDT4DisplayOptimize(QStandardItem *rootItem)
 
 void CMakeGenerator::cmakeCDT4TargetsDisplayOptimize(QStandardItem *item, const QHash<QString, QString> &subprojectsMap)
 {
+    if (!item)
+        return;
+
     QStandardItem * addRows = new QStandardItem("Temp");
+
     for (int row = 0; row < item->rowCount(); row ++) {
         QStandardItem *childItem = item->child(row);
-        if (childItem->hasChildren())
+        QString displayName = childItem->data(Qt::DisplayRole).toString();
+        // build lib icon setting
+        if (displayName.contains(CDT_TARGETS_TYPE::get()->Lib)) {
+            childItem->setIcon(::libBuildIcon());
+        }
+        // build exe icon setting
+        if (displayName.contains(CDT_TARGETS_TYPE::get()->Exe)) {
+            childItem->setIcon(::exeBuildIcon());
+        }
+        // cmake folder setting
+        for (int index = 0; index < CDT_FILES_TYPE::get()->count(); index ++) {
+            if (CDT_FILES_TYPE::get()->value(index) == displayName) {
+                childItem->setIcon(::cmakeFolderIcon());
+            }
+        }
+
+        if (childItem->hasChildren()) {
             cmakeCDT4TargetsDisplayOptimize(item->child(row), subprojectsMap);
-        else {
+        } else {
             QVariantMap map = ProjectGenerator::toolKitPropertyMap(childItem); //当前节点特性
             if (map.keys().contains(CDT_XML_KEY::get()->location)) { // 本地文件
                 for (auto val : subprojectsMap.values()) {
@@ -274,7 +335,7 @@ void CMakeGenerator::cmakeCDT4TargetsDisplayOptimize(QStandardItem *item, const 
                             // 获取当前是否已经新建文件夹
                             QStandardItem *findNewItem = cmakeCDT4FindItem(addRows, suffixPath);
                             if (!suffixPath.isEmpty()) { // 新建子文件夹
-                                QIcon icon = iconProvider.icon(QFileIconProvider::Folder);
+                                QIcon icon = CustomIcons::icon(QFileIconProvider::Folder);
                                 auto newChild = new QStandardItem(icon, suffixPath);
                                 findNewItem->insertRow(0, newChild); //置顶文件夹
                                 findNewItem = newChild;

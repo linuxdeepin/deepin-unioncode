@@ -19,10 +19,15 @@ set(CXX_H
     projectcmake.h
     )
 
+set(CXX_QRC
+    mainframe/cmakeproject.qrc
+    )
+
 add_library(${PROJECT_NAME}
     SHARED
     ${CXX_CPP}
     ${CXX_H}
+    ${CXX_QRC}
     )
 
 target_link_libraries(${PROJECT_NAME}

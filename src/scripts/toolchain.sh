@@ -934,16 +934,16 @@ EOD
 # main entry
 scan_toolchains
 
-export UNIONCODE_CONFIG="$HOME/.config/unioncode"
-export UNIONCODE_CACHE="$HOME/.cache/unioncode"
+export UNIONCODE_CONFIG="$HOME/.config/unioncode/configures"
+# export UNIONCODE_CACHE="$HOME/.cache/unioncode"
 if [ ! -d "$UNIONCODE_CONFIG" ] ; then
 	mkdir -pv "$UNIONCODE_CONFIG"
 fi
 
-if [ ! -d "$UNIONCODE_CACHE" ]; then
-	mkdir -pv "$UNIONCODE_CACHE"
-fi
+# if [ ! -d "$UNIONCODE_CACHE" ]; then
+# 	mkdir -pv "$UNIONCODE_CACHE"
+# fi
 
-echo "$TOOLCHAINS" > "$UNIONCODE_CONFIG"/toolchains.json
+echo "$TOOLCHAINS" > "$UNIONCODE_CONFIG"/toolchains_cxx.support
 
 exit 0

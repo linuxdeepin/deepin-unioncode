@@ -1,7 +1,9 @@
 #ifndef TOOLCHAIN_H
 #define TOOLCHAIN_H
 #include <QString>
-namespace toolchain {
+
+namespace toolchains {
+namespace cxx {
 extern const QString K_VERSION;
 extern const QString K_HOST_OS;
 extern const QString K_HOST_ARCH;
@@ -14,5 +16,11 @@ extern const QString K_TOOLCHAIN_PATH;
 extern const QString K_TOOLCHAIN_C_COMPILER;
 extern const QString K_TOOLCHAIN_CXX_COMPILER;
 extern const QString K_TOOLCHAIN_DEBUGGER;
-} // namespace toolchain
+
+bool generatGlobalFile();
+
+} //cxx
+
+} // namespace toolchains
+
 #endif

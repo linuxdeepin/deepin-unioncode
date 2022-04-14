@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/cmakeproject">
+        <file>images/fileoverlay_cmake.png</file>
+        <file>images/fileoverlay_cmake@2x.png</file>
+        <file>images/build@2x.png</file>
+        <file>images/build.png</file>
+        <file>images/lib@2x.png</file>
+        <file>images/lib.png</file>
+    </qresource>
+</RCC>

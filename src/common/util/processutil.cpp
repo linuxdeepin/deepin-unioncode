@@ -46,7 +46,7 @@ bool ProcessUtil::execute(const QString &program,
     }
     process.start();
     process.waitForFinished();
-
+    qCritical() << process.errorString();
     return ret;
 }
 

@@ -7,6 +7,7 @@
 #include "lsp/protocol.h"
 #include "type/constants.h"
 #include "type/menuext.h"
+#include "util/customicons.h"
 #include "util/custompaths.h"
 #include "util/eventdefinitions.h"
 #include "util/polkit.h"
@@ -23,5 +24,6 @@
 #include "widget/statuswidget.h"
 #include "widget/elidedlabel.h"
 #include "widget/generator.h"
+#include "toolchain/toolchain.h"
 
 #endif // COMMON_H
