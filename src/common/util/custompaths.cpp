@@ -77,7 +77,7 @@ QString PathMode::installed(CustomPaths::Flags flags)
     case CustomPaths::Configures:
         return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "configures";
     case CustomPaths::Scripts:
-        return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "scripts";
+        return formatString(LIBRARY_INSTALL_PREFIX) + QDir::separator() + "scripts";
     case CustomPaths::Translations:
         return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "translations";
     case CustomPaths::Templates:
