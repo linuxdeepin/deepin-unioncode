@@ -111,40 +111,10 @@ public:
     }
 
 protected:
-    /*!
-     * \brief setToolKitName设置工具套件名称, createRootItem实现时内部方便使用
-     * \param item 文件樹節點
-     * \param toolkit 名稱
-     */
     static void setToolKitName(QStandardItem *item, const QString &name);
-
-    /*!
-     * \brief toolKitName 获取工具套件名称
-     * \param item 文件树节点
-     */
     static QString toolKitName(QStandardItem *item);
-
-    /*!
-     * \brief setToolKitProperty 设置工具套件特性, createRootItem实现时内部方便使用
-     * \param item 文件树节点
-     * \param key 键
-     * \param value 值
-     */
     static void setToolKitProperty(QStandardItem *item, const QString &key, const QVariant &value);
-
-    /*!
-     * \brief toolKitProperty 获取工具套件特性
-     * \param item 文件树节点
-     * \param key 键
-     * \return 万能类型，需要知道存入方类型进行转换后使用
-     */
     static QVariant toolKitProperty(QStandardItem *item, const QString &key);
-
-    /*!
-     * \brief toolKiyPropertyMap 获取所有特性值
-     * \param item 文件树节点
-     * \return 存入所有的特性Map
-     */
     static QVariantMap toolKitPropertyMap(QStandardItem *item);
 };
 
@@ -218,6 +188,12 @@ public:
      */
     DPF_INTERFACE(void, expandedProjectAll, QStandardItem *aitem);
 };
+
+/* MainWindow codeediter workspace title,
+ * use in window service swtich workspace
+ */
+extern const QString MWCWT_PROJECTS;
+
 } //namespace dpfservice
 
 #endif // PROJECTSERVICE_H

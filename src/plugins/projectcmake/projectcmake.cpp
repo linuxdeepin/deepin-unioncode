@@ -60,8 +60,14 @@ bool ProjectCMake::start()
             if (projectService) {
                 ProjectGenerator *generator = projectService->createGenerator(name);
                 auto rootItem = generator->createRootItem(filePath);
-                projectService->addProjectRootItem(rootItem); // 设置项目根节点
-                projectService->expandedProjectDepth(rootItem, 2); // 初始化展开两级
+                if (projectService->addProjectRootItem)
+                    projectService->addProjectRootItem(rootItem); // 设置项目根节点
+                if (projectService->expandedProjectDepth)
+                    projectService->expandedProjectDepth(rootItem, 2); // 初始化展开两级
+                if (windowService->switchWidgetNavigation)
+                    windowService->switchWidgetNavigation(MWNA_EDIT); // 切换编辑器导航栏
+                if (windowService->switchWidgetWorkspace)
+                    windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
             }
         });
 

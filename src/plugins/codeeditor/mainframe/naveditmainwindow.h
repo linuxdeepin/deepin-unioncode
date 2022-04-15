@@ -30,6 +30,7 @@ public:
     void setWidgetEdit(AbstractCentral *editWidget);
     void setWidgetWatch(AbstractWidget *watchWidget);
     void addWidgetContext(const QString &title, AbstractWidget *contextWidget);
+    bool switchWidgetWorkspace(const QString &title);
     bool switchWidgetContext(const QString &title);
 };
 

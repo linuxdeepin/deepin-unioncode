@@ -84,6 +84,10 @@ bool CodeEditor::start()
             windowService->switchWidgetContext = std::bind(&NavEditMainWindow::switchWidgetContext, navEditWindow, _1);
         }
 
+        if (!windowService->switchWidgetWorkspace) {
+            windowService->switchWidgetWorkspace = std::bind(&NavEditMainWindow::switchWidgetWorkspace, navEditWindow, _1);
+        }
+
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);
         windowService->addAction(MWM_FILE, new AbstractAction(saveAllDocuments));
 

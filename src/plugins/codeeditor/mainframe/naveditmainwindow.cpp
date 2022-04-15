@@ -3,6 +3,7 @@
 #include "base/abstractwidget.h"
 #include "base/abstractcentral.h"
 #include "base/abstractconsole.h"
+#include "services/window/windowservice.h"
 #include "common/common.h"
 
 #include <QDebug>
@@ -40,7 +41,7 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
 NavEditMainWindow::~NavEditMainWindow()
 {
-    qTabWidgetContext->removeTab(findIndex(qTabWidgetContext, CONSOLE_TAB_TEXT));
+    qTabWidgetContext->removeTab(findIndex(qTabWidgetContext, dpfservice::CONSOLE_TAB_TEXT));
     qInfo() << __FUNCTION__;
 }
 
@@ -60,14 +61,14 @@ void NavEditMainWindow::setConsole(AbstractConsole *console)
         return;
     }
 
-    int consoleIndex = findIndex(qTabWidgetContext, CONSOLE_TAB_TEXT);
+    int consoleIndex = findIndex(qTabWidgetContext, dpfservice::CONSOLE_TAB_TEXT);
     if (consoleIndex >= 0) {
         qTabWidgetContext->removeTab(consoleIndex);
-        qTabWidgetContext->insertTab(consoleIndex, qConsoleWidget, CONSOLE_TAB_TEXT);
+        qTabWidgetContext->insertTab(consoleIndex, qConsoleWidget, dpfservice::CONSOLE_TAB_TEXT);
         return;
     }
     qConsoleWidget->setParent(qTabWidgetContext);
-    qTabWidgetContext->insertTab(0, qConsoleWidget, CONSOLE_TAB_TEXT);
+    qTabWidgetContext->insertTab(0, qConsoleWidget, dpfservice::CONSOLE_TAB_TEXT);
 }
 
 void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget)
@@ -125,6 +126,17 @@ void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *c
         return;
     }
     qTabWidgetContext->addTab(qWidget, title);
+}
+
+bool NavEditMainWindow::switchWidgetWorkspace(const QString &title)
+{
+    for (int i = 0; i < qTabWidgetWorkspace->count(); i++) {
+        if (qTabWidgetWorkspace->tabText(i) == title) {
+            qTabWidgetWorkspace->setCurrentIndex(i);
+            return true;
+        }
+    }
+    return false;
 }
 
 bool NavEditMainWindow::switchWidgetContext(const QString &title)

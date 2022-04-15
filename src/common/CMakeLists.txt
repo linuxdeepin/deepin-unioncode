@@ -11,7 +11,6 @@ set(CXX_H
     util/customicons.h
     util/custompaths.h
     util/eventdefinitions.h
-    util/windowelements.h
     util/singleton.h
     util/polkit.h
     supportfile/editorstyle.h
@@ -39,7 +38,6 @@ set(CXX_CPP
     util/custompaths.cpp
     util/polkit.cpp
     util/eventdefinitions.cpp
-    util/windowelements.cpp
     supportfile/language.cpp
     supportfile/editorstyle.cpp
     supportfile/windowstyle.cpp

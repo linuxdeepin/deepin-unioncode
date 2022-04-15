@@ -31,7 +31,60 @@ class AbstractMenu;
 class AbstractCentral;
 class AbstractWidget;
 class AbstractConsole;
+
 namespace dpfservice {
+// window display elements
+// MW = MainWindow
+extern const int MW_MIN_WIDTH;
+extern const int MW_MIN_HEIGHT;
+
+// MWNA = MainWindow Navtion Action
+extern const QString MWNA_RECENT;
+extern const QString MWNA_EDIT;
+extern const QString MWNA_DEBUG;
+extern const QString MWNA_RUNTIME;
+
+// MWM_FILE: MainWindow Menu File
+// MWMFA: MainWindow Menu File Action
+extern const QString MWM_FILE;
+extern const QString MWMFA_DOCUMENT_NEW;
+extern const QString MWMFA_FOLDER_NEW;
+extern const QString MWMFA_OPEN_PROJECT;
+extern const QString MWMFA_OPEN_DOCUMENT;
+extern const QString MWMFA_OPEN_FOLDER;
+extern const QString MWMFA_OPEN_RECENT_DOCUMENTS;
+extern const QString MWMFA_OPEN_RECENT_FOLDER;
+extern const QString MWMFA_QUIT;
+
+// MWMB: MainWindow Menu Build
+extern const QString MWM_BUILD;
+
+// MWMB: MainWindow Menu Debug
+extern const QString MWM_DEBUG;
+
+// MWMT: MainWindow Menu Tools
+extern const QString MWM_TOOLS;
+extern const QString MWMTA_SEARCH;
+extern const QString MWMTA_PACKAGE_TOOLS;
+extern const QString MWMTA_VERSION_TOOLS;
+extern const QString MWMTA_CODE_FORMATTING;
+extern const QString MWMTA_RUNTIME_ANALYSIS;
+extern const QString MWMTA_TEST;
+extern const QString MWMTA_PLUGINS;
+extern const QString MWMTA_OPTIONS;
+
+// MWMH: MainWindow Menu Help
+extern const QString MWM_HELP;
+
+// Dialog Title text
+extern const QString DIALOG_OPEN_DOCUMENT_TITLE;
+extern const QString DIALOG_OPEN_FOLDER_TITLE;
+
+// TabWidget Tab Text from editor
+extern const QString CONSOLE_TAB_TEXT; // text's "Console"
+
+
+// service interface
 class WindowService final : public dpf::PluginService, dpf::AutoServiceRegister<WindowService>
 {
     Q_OBJECT
@@ -139,6 +192,12 @@ public:
      * \param name 上下文组件名称
      */
     DPF_INTERFACE(void, switchWidgetContext, const QString &name);
+
+    /*!
+     * \brief switchWidgetLeftTree 切换左侧树图
+     * \param name 树图名称
+     */
+    DPF_INTERFACE(void, switchWidgetWorkspace, const QString &name);
 
     /*!
      * \brief addOpenProjectAction 添加打開工程的Action

@@ -21,6 +21,7 @@
 #include "sendevents.h"
 #include "framework.h"
 #include "common/common.h"
+#include "services/window/windowservice.h"
 
 void SendEvents::recentOpenFile(const QString &filePath)
 {
@@ -50,6 +51,6 @@ void SendEvents::navEditShow()
     dpf::Event showNavEdit;
     showNavEdit.setTopic(T_NAV);
     showNavEdit.setData(D_ACTION_SWITCH);
-    showNavEdit.setProperty(P_ACTION_TEXT, MWNA_EDIT);
+    showNavEdit.setProperty(P_ACTION_TEXT, dpfservice::MWNA_EDIT);
     dpf::EventCallProxy::instance().pubEvent(showNavEdit);
 }

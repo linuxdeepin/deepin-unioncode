@@ -55,7 +55,7 @@ bool ProjectCore::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
         if (windowService->addWidgetWorkspace) {
-            windowService->addWidgetWorkspace(QTreeView::tr("Projects"),
+            windowService->addWidgetWorkspace(MWCWT_PROJECTS,
                                               new AbstractWidget(ProjectKeeper::instance()->treeView()));
         }
     }

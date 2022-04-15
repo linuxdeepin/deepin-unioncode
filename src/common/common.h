@@ -13,7 +13,6 @@
 #include "util/polkit.h"
 #include "util/processutil.h"
 #include "util/singleton.h"
-#include "util/windowelements.h"
 #include "supportfile/builder.h"
 #include "supportfile/editorstyle.h"
 #include "supportfile/windowstyle.h"

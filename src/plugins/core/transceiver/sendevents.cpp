@@ -20,6 +20,7 @@
 */
 #include "sendevents.h"
 #include "common/common.h"
+#include "services/window/windowservice.h"
 #include <framework/framework.h>
 
 void SendEvents::navActionSwitch(const QString &navName)
@@ -40,7 +41,7 @@ void SendEvents::menuOpenFile(const QString &filePath)
     menuOpenFile.setData(D_FILE_OPENDOCUMENT);
     menuOpenFile.setProperty(P_FILEPATH, filePath);
     dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
-    SendEvents::navActionSwitch(MWNA_EDIT);
+    SendEvents::navActionSwitch(dpfservice::MWNA_EDIT);
 }
 
 void SendEvents::menuOpenDirectory(const QString &filePath)
@@ -51,5 +52,5 @@ void SendEvents::menuOpenDirectory(const QString &filePath)
     menuOpenFile.setData(D_FILE_OPENFOLDER);
     menuOpenFile.setProperty(P_FILEPATH, filePath);
     dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
-    SendEvents::navActionSwitch(MWNA_EDIT);
+    SendEvents::navActionSwitch(dpfservice::MWNA_EDIT);
 }
