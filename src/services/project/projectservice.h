@@ -102,20 +102,21 @@ public:
     /*!
      * \brief createIndexMenu 文件树index点击时触发，子类需要重载实现
      *  文件树中右键触发的创建Menu，传入树中QModelIndex，它与Item数据相通(Qt规范)
+     *  QMenu对象在插件使用方会被释放
      * \param index 索引数据
      * \return
      */
-    virtual QMenu* createIndexMenu(const QModelIndex &index) {
-        Q_UNUSED(index);
+    virtual QMenu* createItemMenu(const QStandardItem *item) {
+        Q_UNUSED(item);
         return nullptr;
     }
 
-protected:
     static void setToolKitName(QStandardItem *item, const QString &name);
-    static QString toolKitName(QStandardItem *item);
+    static QString toolKitName(const QStandardItem *item);
     static void setToolKitProperty(QStandardItem *item, const QString &key, const QVariant &value);
-    static QVariant toolKitProperty(QStandardItem *item, const QString &key);
-    static QVariantMap toolKitPropertyMap(QStandardItem *item);
+    static QVariant toolKitProperty(const QStandardItem *item, const QString &key);
+    static QVariantMap toolKitPropertyMap(const QStandardItem *item);
+    static const QStandardItem *top(const QStandardItem *item);
 };
 
 class ProjectService final : public dpf::PluginService,

@@ -1,5 +1,6 @@
 #include "scintillaeditextern.h"
 #include "style/stylekeeper.h"
+#include "style/stylecolor.h"
 #include "transceiver/sendevents.h"
 
 #include "common/common.h"
@@ -31,7 +32,7 @@ ScintillaEditExtern::ScintillaEditExtern(QWidget *parent)
     : ScintillaEdit (parent)
     , d(new ScintillaEditExternPrivate)
 {
-
+    styleSetBack(STYLE_DEFAULT, StyleColor::color(QColor(22,22,22)));
 }
 
 ScintillaEditExtern::~ScintillaEditExtern()

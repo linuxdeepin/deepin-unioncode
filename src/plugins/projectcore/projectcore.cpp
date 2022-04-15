@@ -63,18 +63,32 @@ bool ProjectCore::start()
     using namespace std::placeholders;
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {
+        ProjectTreeView *treeView = ProjectKeeper::instance()->treeView();
         if (!projectService->addProjectRootItem) {
             projectService->addProjectRootItem = std::bind(&ProjectTreeView::appendRootItem,
-                                                           ProjectKeeper::instance()->treeView(), _1);
+                                                           treeView, _1);
         }
         if (!projectService->expandedProjectDepth) {
             projectService->expandedProjectDepth = std::bind(&ProjectTreeView::expandedProjectDepth,
-                              ProjectKeeper::instance()->treeView(), _1, _2);
+                                                             treeView, _1, _2);
         }
         if (!projectService->expandedProjectAll) {
             projectService->expandedProjectAll = std::bind(&ProjectTreeView::expandedProjectAll,
-                                                           ProjectKeeper::instance()->treeView(), _1);
+                                                           treeView, _1);
         }
+        // 右键菜单创建
+        QObject::connect(treeView, &ProjectTreeView::itemMenuRequest, [=](const QStandardItem *item, QContextMenuEvent *event) {
+            QString toolKitName = ProjectGenerator::toolKitName(ProjectGenerator::top(item));
+            // 获取支持右键菜单生成器
+            if (projectService->supportGeneratorName().contains(toolKitName)) {
+                QMenu* itemMenu = projectService->createGenerator(toolKitName)->createItemMenu(item);
+                if (itemMenu) {
+                    itemMenu->move(event->globalPos());
+                    itemMenu->exec();
+                    delete itemMenu;
+                }
+            }
+        });
     }
     return true;
 }

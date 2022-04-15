@@ -15,6 +15,11 @@ public:
     void appendRootItem(QStandardItem *item);
     void expandedProjectDepth(QStandardItem *rootItem, int depth);
     void expandedProjectAll(QStandardItem *rootItem);
+Q_SIGNALS:
+    void indexMenuRequest(const QModelIndex &index, QContextMenuEvent *event);
+    void itemMenuRequest(const QStandardItem *item, QContextMenuEvent *event);
+protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 #endif // PROJECTTREEVIEW_H

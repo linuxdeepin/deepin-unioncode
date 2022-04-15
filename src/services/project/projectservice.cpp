@@ -32,7 +32,7 @@ void ProjectGenerator::setToolKitName(QStandardItem *item, const QString &name)
  * \param key 键
  * \param value 值
  */
-QString ProjectGenerator::toolKitName(QStandardItem *item)
+QString ProjectGenerator::toolKitName(const QStandardItem *item)
 {
     return toolKitPropertyMap(item)[ToolKitPropertyKey::get()->ToolKitName].toString();
 }
@@ -58,7 +58,7 @@ void ProjectGenerator::setToolKitProperty(QStandardItem *item, const QString &ke
  * \param key 键
  * \return 万能类型，需要知道存入方类型进行转换后使用
  */
-QVariant ProjectGenerator::toolKitProperty(QStandardItem *item, const QString &key)
+QVariant ProjectGenerator::toolKitProperty(const QStandardItem *item, const QString &key)
 {
     if (!item)
         return {};
@@ -70,11 +70,22 @@ QVariant ProjectGenerator::toolKitProperty(QStandardItem *item, const QString &k
  * \param item 文件树节点
  * \return 存入所有的特性Map
  */
-QVariantMap ProjectGenerator::toolKitPropertyMap(QStandardItem *item)
+QVariantMap ProjectGenerator::toolKitPropertyMap(const QStandardItem *item)
 {
     if (!item)
         return {};
     return item->data(ToolKitProperty).toMap();
+}
+
+const QStandardItem *ProjectGenerator::top(const QStandardItem *item)
+{
+    if (!item)
+        return nullptr;
+
+    const QStandardItem *parent = item->parent();
+    if (parent)
+        return top(parent);
+    return item;
 }
 
 }

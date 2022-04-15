@@ -48,7 +48,7 @@ bool ProjectCMake::start()
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {
         QString errorString;
-        projectService->implGenerator<CMakeGenerator>("cmake", &errorString);
+        projectService->implGenerator<CMakeGenerator>(CMakeGenerator::toolKitName(), &errorString);
     }
 
     // 注册工程打开后续逻辑

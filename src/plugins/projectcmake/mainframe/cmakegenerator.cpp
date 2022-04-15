@@ -4,11 +4,15 @@
 #include <QFileIconProvider>
 
 namespace  {
-enum_def(ProjectKit, QString)
+
+enum_def(CDT_PROJECT_KIT, QString)
 {
-    enum_exp CDT = "Eclipse CDT4 - Unix Makefiles";
-    enum_exp CDT_PROJECT = ".project";
-    enum_exp CDT_CPROJECT = ".cproject";
+    enum_exp CDT4_GENERATOR = "Eclipse CDT4 - Unix Makefiles";
+    enum_exp PROJECT_FILE = ".project";
+    enum_exp CPROJECT_FILE = ".cproject";
+    enum_exp CMAKE_BUILD_PATH = "buildPath";
+    enum_exp CMAKE_SOURCE_PATH = "sourcePath";
+    enum_exp CMAKE_FILE_PATH = "cmakeFilePath";
 };
 
 enum_def(CDT_XML_KEY, QString)
@@ -111,15 +115,17 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
     currentCount = 0;
     maxCount = 100;
 
+    QString buildPath = cmakeBuildPath(projectPath);
+    QString sourcePath = QFileInfo(projectPath).path();
     process.setProgram("cmake");
 
     QStringList arguments;
     arguments << "-S";
-    arguments << QFileInfo(projectPath).path();
+    arguments << sourcePath;
     arguments << "-B";
-    arguments << cmakeBuildPath(projectPath);
+    arguments << buildPath;
     arguments << "-G";
-    arguments << ProjectKit::get()->CDT;
+    arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
     arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
     arguments << "-DCMAKE_BUILD_TYPE=\"Release\"";
     process.setArguments(arguments);
@@ -141,7 +147,7 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
 
     // step.2 read project from CDT4 xml file;
     QStandardItem * rootItem = nullptr;
-    auto projectXmlDoc = cdt4LoadXmlDoc(projectPath);
+    auto projectXmlDoc = cdt4LoadProjectXmlDoc(projectPath);
     QDomElement docElem = projectXmlDoc.documentElement();
     QDomNode n = docElem.firstChild();
     while(!n.isNull()) {
@@ -150,6 +156,11 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
             if (!rootItem && e.tagName() == CDT_XML_KEY::get()->name) {
                 QFileInfo rootCMakeInfo(projectPath);
                 rootItem = new QStandardItem();
+                // 设置顶层节点当前构建系统信息，该过程不可少
+                ProjectGenerator::setToolKitName(rootItem, CMakeGenerator::toolKitName());
+                ProjectGenerator::setToolKitProperty(rootItem, CDT_PROJECT_KIT::get()->CMAKE_BUILD_PATH, buildPath);
+                ProjectGenerator::setToolKitProperty(rootItem, CDT_PROJECT_KIT::get()->CMAKE_SOURCE_PATH, sourcePath);
+                ProjectGenerator::setToolKitProperty(rootItem, CDT_PROJECT_KIT::get()->CMAKE_FILE_PATH, projectPath);
                 rootItem->setText(e.text());
                 rootItem->setIcon(::cmakeFolderIcon());
                 rootItem->setToolTip(rootCMakeInfo.dir().path());
@@ -201,10 +212,19 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
     return cdt4DisplayOptimize(rootItem);
 }
 
-QMenu *CMakeGenerator::createIndexMenu(const QModelIndex &index)
+QMenu *CMakeGenerator::createItemMenu(const QStandardItem *item)
 {
-    Q_UNUSED(index);
-    return nullptr;
+    // 读取文件
+    auto rootItem = ProjectGenerator::top(item);
+
+    QString buildPath = ProjectGenerator::toolKitProperty
+            (rootItem, CDT_PROJECT_KIT::get()->CMAKE_BUILD_PATH).toString();
+
+    QDomDocument doc = cdt4LoadMenuXmlDoc(cdt4FilePath(buildPath));
+
+    QMenu *result = new QMenu;
+    result->addAction(new QAction("Test"));
+    return result;
 }
 
 void CMakeGenerator::processReadAll()
@@ -393,15 +413,42 @@ void CMakeGenerator::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash
     delete addRows;
 }
 
-QDomDocument CMakeGenerator::cdt4LoadXmlDoc(const QString &cmakePath)
+QDomDocument CMakeGenerator::cdt4LoadProjectXmlDoc(const QString &cmakePath)
 {
     QDomDocument xmlDoc;
     QString cdtProjectFile = cdt4FilePath(cmakePath) + QDir::separator()
-            + ProjectKit::get()->CDT_PROJECT;
+            + CDT_PROJECT_KIT::get()->PROJECT_FILE;
     QFile docFile(cdtProjectFile);
 
     if (!docFile.exists()) {
         Generator::setErrorString("Failed, cdtProjectFile not exists!: " + cdtProjectFile);
+        Generator::finished(false);
+        return xmlDoc;
+    }
+
+    if (!docFile.open(QFile::OpenModeFlag::ReadOnly)) {
+        Generator::setErrorString(docFile.errorString());
+        Generator::finished(false);
+        return xmlDoc;
+    }
+
+    if (!xmlDoc.setContent(&docFile)) {
+        docFile.close();
+        return xmlDoc;
+    }
+    docFile.close();
+    return xmlDoc;
+}
+
+QDomDocument CMakeGenerator::cdt4LoadMenuXmlDoc(const QString &cmakePath)
+{
+    QDomDocument xmlDoc;
+    QString cdtMenuFile = cdt4FilePath(cmakePath) + QDir::separator()
+            + CDT_PROJECT_KIT::get()->CPROJECT_FILE;
+    QFile docFile(cdtMenuFile);
+
+    if (!docFile.exists()) {
+        Generator::setErrorString("Failed, cdtMenuFile not exists!: " + cdtMenuFile);
         Generator::finished(false);
         return xmlDoc;
     }
