@@ -54,6 +54,32 @@ enum_def(CDT_FILES_TYPE, QString)
     enum_exp Resources = "Resources";
 };
 
+enum_def(CDT_CPROJECT_KEY, QString)
+{
+    enum_exp storageModuled = "storageModule";
+    enum_exp cconfiguration = "cconfiguration";
+    enum_exp buildCommand = "buildCommand";
+    enum_exp buildArguments = "buildArguments";
+    enum_exp buildTarget = "buildTarget";
+    enum_exp stopOnError = "stopOnError";
+    enum_exp useDefaultCommand = "useDefaultCommand";
+};
+
+enum_def(CDT_CPROJECT_ATTR_KEY, QString)
+{
+    enum_exp moduleId = "moduleId";
+    enum_exp id = "id";
+    enum_exp name = "name";
+    enum_exp path = "path";
+    enum_exp targetID = "targetID";
+};
+
+// noly selection build targets
+enum_def(CDT_MODULE_ID_VAL, QString)
+{
+    enum_exp org_eclipse_cdt_make_core_buildtargets = "org.eclipse.cdt.make.core.buildtargets";
+};
+
 static int currentCount = 0;
 static int maxCount = 100;
 
@@ -94,7 +120,25 @@ QIcon exeBuildIcon()
     return exeBuildIcon;
 }
 
-}
+struct TargetBuild
+{
+    QString buildName;
+    QString buildCommand;
+    QString buildArguments;
+    QString buildTarget;
+    QString stopOnError;
+    QString useDefaultCommand;
+    // 全部都存在数据则有效
+    inline bool isInvalid() {
+        if (buildName.isEmpty() || buildCommand.isEmpty()
+                || buildArguments.isEmpty() || stopOnError.isEmpty()
+                || useDefaultCommand.isEmpty())
+            return true;
+        return false;
+    }
+};
+
+} // namespace
 
 CMakeGenerator::CMakeGenerator()
 {
@@ -147,7 +191,7 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
 
     // step.2 read project from CDT4 xml file;
     QStandardItem * rootItem = nullptr;
-    auto projectXmlDoc = cdt4LoadProjectXmlDoc(projectPath);
+    QDomDocument projectXmlDoc = cdt4LoadProjectXmlDoc(projectPath);
     QDomElement docElem = projectXmlDoc.documentElement();
     QDomNode n = docElem.firstChild();
     while(!n.isNull()) {
@@ -214,17 +258,96 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
 
 QMenu *CMakeGenerator::createItemMenu(const QStandardItem *item)
 {
+    if (!item)
+        return nullptr;
+
+    QString itemName = ProjectGenerator::toolKitProperty(item, CDT_XML_KEY::get()->name).toString();
+    QString itemLocalURI = ProjectGenerator::toolKitProperty(item, CDT_XML_KEY::get()->locationURI).toString();
+
     // 读取文件
-    auto rootItem = ProjectGenerator::top(item);
+    const QStandardItem *rootItem = ProjectGenerator::top(item);
 
-    QString buildPath = ProjectGenerator::toolKitProperty
-            (rootItem, CDT_PROJECT_KIT::get()->CMAKE_BUILD_PATH).toString();
+    QList<TargetBuild> buildMenuList;
 
-    QDomDocument doc = cdt4LoadMenuXmlDoc(cdt4FilePath(buildPath));
+    // 顶层文件存在 并且名称存在 并且是虚拟路径
+    if (rootItem && !itemName.isEmpty() && !itemLocalURI.isEmpty()) {
 
-    QMenu *result = new QMenu;
-    result->addAction(new QAction("Test"));
-    return result;
+        QString buildPath = ProjectGenerator::toolKitProperty
+                (rootItem, CDT_PROJECT_KIT::get()->CMAKE_BUILD_PATH).toString();
+
+        QDomDocument menuXmlDoc = cdt4LoadMenuXmlDoc(cdt4FilePath(buildPath));
+        QDomElement docElem = menuXmlDoc.documentElement();
+        QDomNode n = docElem.firstChild().firstChild().firstChild(); // 过滤三层
+        while(!n.isNull()) {
+            QDomElement e = n.toElement(); // try to convert the node to an element.
+            if(!e.isNull() && e.tagName() == CDT_CPROJECT_KEY::get()->storageModuled
+                    && e.attribute(CDT_CPROJECT_ATTR_KEY::get()->moduleId)
+                    == CDT_MODULE_ID_VAL::get()->org_eclipse_cdt_make_core_buildtargets) {
+                QDomNode targetNode = e.firstChild().firstChild(); // 过滤两层
+                while (!targetNode.isNull()) {
+                    QDomElement targetElem = targetNode.toElement();
+                    if (targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->path) == itemName) {
+                        QDomNode targetBuildChild = targetElem.firstChild();
+                        struct TargetBuild targetBuild;
+                        targetBuild.buildName = targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->name);
+                        qInfo() << targetBuild.buildName;
+                        while (!targetBuildChild.isNull()) {
+                            auto targetBuildTargetElem = targetBuildChild.toElement();
+                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->buildCommand) {
+                                targetBuild.buildCommand = targetBuildTargetElem.text();
+                                qInfo() << targetBuild.buildCommand;
+                            }
+                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->buildArguments) {
+                                targetBuild.buildArguments = targetBuildTargetElem.text();
+                                qInfo() << targetBuild.buildArguments;
+                            }
+                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->buildTarget) {
+                                targetBuild.buildTarget = targetBuildTargetElem.text();
+                                qInfo() << targetBuild.buildTarget;
+                            }
+                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->stopOnError) {
+                                targetBuild.stopOnError = targetBuildTargetElem.text();
+                                qInfo() << targetBuild.stopOnError;
+                            }
+                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->useDefaultCommand) {
+                                targetBuild.useDefaultCommand = targetBuildTargetElem.text();
+                                qInfo() << targetBuild.useDefaultCommand;
+                            }
+                            targetBuildChild = targetBuildChild.nextSibling();
+                        }
+                        if (!targetBuild.isInvalid()) {
+                            buildMenuList << targetBuild;
+                        }
+                    }
+                    qInfo() << targetElem.tagName()
+                            << targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->name)
+                            << targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->path)
+                            << targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->targetID)
+                            << targetElem.text();
+                    targetNode = targetNode.nextSibling();
+                }
+            }
+            n = n.nextSibling();
+        }
+    }
+
+    QMenu *menu = nullptr;
+    for (auto val : buildMenuList) {
+        if (!menu) {
+            menu = new QMenu();
+        }
+        QAction *action = new QAction();
+        action->setText(val.buildName);
+        // 这里为了执行指令分开避免写lambda
+        action->setProperty(CDT_CPROJECT_KEY::get()->buildCommand.toLatin1(), val.buildCommand);
+        action->setProperty(CDT_CPROJECT_KEY::get()->buildArguments.toLatin1(), val.buildArguments);
+        action->setProperty(CDT_CPROJECT_KEY::get()->buildTarget.toLatin1(), val.buildTarget);
+        action->setProperty(CDT_CPROJECT_KEY::get()->stopOnError.toLatin1(), val.stopOnError);
+        action->setProperty(CDT_CPROJECT_KEY::get()->useDefaultCommand.toLatin1(), val.useDefaultCommand);
+        QObject::connect(action, &QAction::triggered, this, &CMakeGenerator::actionTriggered, Qt::UniqueConnection);
+        menu->addAction(action);
+    }
+    return menu;
 }
 
 void CMakeGenerator::processReadAll()
@@ -245,6 +368,17 @@ void CMakeGenerator::processFinished(int code, QProcess::ExitStatus status)
     message({mess, maxCount, maxCount});
 }
 
+void CMakeGenerator::actionTriggered()
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if (action) {
+        QString program = action->property(CDT_CPROJECT_KEY::get()->buildCommand.toLatin1()).toString();
+        QStringList args = action->property(CDT_CPROJECT_KEY::get()->buildArguments.toLatin1()).toString().split(" ");
+        args << action->property(CDT_CPROJECT_KEY::get()->buildTarget.toLatin1()).toString();
+        emit targetExecute(program, args);
+    }
+}
+
 void CMakeGenerator::cdt4SubprojectsDisplayOptimize(QStandardItem *item)
 {
     if (!item) {
@@ -255,11 +389,11 @@ void CMakeGenerator::cdt4SubprojectsDisplayOptimize(QStandardItem *item)
         QString location = ProjectGenerator::toolKitProperty(childItem, CDT_XML_KEY::get()->location).toString();
         QFileInfo cmakeFileInfo(location, "CMakeLists.txt");
         if (cmakeFileInfo.exists()) {
-           auto cmakeFileItem = new QStandardItem();
-           cmakeFileItem->setIcon(CustomIcons::icon(cmakeFileInfo));
-           cmakeFileItem->setText(cmakeFileInfo.fileName());
-           cmakeFileItem->setToolTip(cmakeFileInfo.filePath());
-           childItem->appendRow(cmakeFileItem);
+            auto cmakeFileItem = new QStandardItem();
+            cmakeFileItem->setIcon(CustomIcons::icon(cmakeFileInfo));
+            cmakeFileItem->setText(cmakeFileInfo.fileName());
+            cmakeFileItem->setToolTip(cmakeFileInfo.filePath());
+            childItem->appendRow(cmakeFileItem);
         }
     }
 }

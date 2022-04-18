@@ -59,6 +59,9 @@ bool ProjectCMake::start()
                          [=](const QString &name, const QString &filePath) {
             if (projectService) {
                 ProjectGenerator *generator = projectService->createGenerator(name);
+                // 转发构建目标参数
+                QObject::connect(generator, &ProjectGenerator::targetExecute,
+                                 projectService, &ProjectService::targetExecute, Qt::UniqueConnection);
                 auto rootItem = generator->createRootItem(filePath);
                 if (projectService->addProjectRootItem)
                     projectService->addProjectRootItem(rootItem); // 设置项目根节点

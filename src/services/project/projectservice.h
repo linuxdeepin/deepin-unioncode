@@ -117,6 +117,15 @@ public:
     static QVariant toolKitProperty(const QStandardItem *item, const QString &key);
     static QVariantMap toolKitPropertyMap(const QStandardItem *item);
     static const QStandardItem *top(const QStandardItem *item);
+
+Q_SIGNALS:
+    /*!
+     * \brief targetExecute 工程目标执行指令.
+     *  使用该信号, 由于当前插件不隶属于构建系统,需要构建生成并且统计构建错误，则需要与builder插件通信
+     * \param program 执行程序
+     * \param arguments 参数
+     */
+    void targetExecute(const QString &program, const QStringList &arguments);
 };
 
 class ProjectService final : public dpf::PluginService,
@@ -188,6 +197,15 @@ public:
      * \param aitem root节点
      */
     DPF_INTERFACE(void, expandedProjectAll, QStandardItem *aitem);
+
+Q_SIGNALS:
+    /*!
+     * \brief targetExecute 工程目标执行指令, 调用构建系统的入口
+     *  当前projectservice不属于构建系统的一部分，需要构建系统支持
+     * \param program 程序
+     * \param arguments 程序参数
+     */
+    void targetExecute(const QString &program, const QStringList &arguments);
 };
 
 /* MainWindow codeediter workspace title,

@@ -19,6 +19,7 @@ public:
 private slots:
     void processReadAll();
     void processFinished(int code, QProcess::ExitStatus status);
+    void actionTriggered();
 private:
     QString cmakeBuildPath(const QString &cmakePath);
 
