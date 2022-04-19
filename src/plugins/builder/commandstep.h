@@ -4,7 +4,7 @@
  * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,31 +18,30 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef BUILDERPLUGIN_H
-#define BUILDERPLUGIN_H
+*/
+#ifndef COMMANDSTEP_H
+#define COMMANDSTEP_H
 
-#include <framework/framework.h>
+#include "buildstep.h"
 
-class Project;
-namespace dpfservice {
-class WindowService;
-}
-class BuilderPlugin : public dpf::Plugin
+#include <QObject>
+
+class CommandStep : public BuildStep
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "builder.json")
 public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
+    explicit CommandStep(QObject *parent = nullptr);
 
-public slots:
-    void slotBuildStarted();
-    void slotProjectTreeMenu(const QString &program, const QStringList &arguments);
+    void setCommand(const QString &cmd, const QStringList &cmdParams);
+
+protected:
+    void run() override;
 
 private:
-    dpfservice::WindowService *windowService = nullptr;
+    bool runCommand();
+
+    QString cmd;
+    QStringList cmdParams;
 };
 
-#endif // BUILDERPLUGIN_H
+#endif // COMMANDSTEP_H

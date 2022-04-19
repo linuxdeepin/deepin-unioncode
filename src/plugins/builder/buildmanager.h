@@ -50,6 +50,7 @@ public:
     void initialize(dpfservice::WindowService *service);
 
     bool buildList(const QList<BuildStep*> &bsl);
+    bool buildByCommand(const QString &cmd, const QStringList &args);
     BuildOutputPane *getOutputPane() const;
 
     void destroy();

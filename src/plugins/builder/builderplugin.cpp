@@ -26,6 +26,7 @@
 
 #include "services/window/windowservice.h"
 #include "service/pluginservicecontext.h"
+#include "services/project/projectservice.h"
 
 #include "buildoutputpane.h"
 #include "buildmanager.h"
@@ -58,6 +59,12 @@ bool BuilderPlugin::start()
 
     connect(BuildManager::instance(), &BuildManager::buildStarted, this, &BuilderPlugin::slotBuildStarted);
 
+    // Project tree right menu triggered.
+    auto projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService) {
+        connect(projectService, &ProjectService::targetExecute, this, &BuilderPlugin::slotProjectTreeMenu);
+    }
+
     return true;
 }
 
@@ -72,4 +79,9 @@ void BuilderPlugin::slotBuildStarted()
     if (windowService) {
         emit windowService->switchWidgetContext("Compile Output");
     }
+}
+
+void BuilderPlugin::slotProjectTreeMenu(const QString &program, const QStringList &arguments)
+{
+    BuildManager::instance()->buildByCommand(program, arguments);
 }

@@ -26,6 +26,7 @@
 #include "services/window/windowservice.h"
 #include "menumanager.h"
 #include "tasks/taskmanager.h"
+#include "commandstep.h"
 
 #include <QtConcurrent>
 #include <QTextBlock>
@@ -67,6 +68,13 @@ bool BuildManager::buildList(const QList<BuildStep *> &_bsl)
                                   Q_ARG(BuildManager::BuildState, buildState));
     });
     return true;
+}
+
+bool BuildManager::buildByCommand(const QString &cmd, const QStringList &args)
+{
+    auto cmdStep = new CommandStep();
+    cmdStep->setCommand(cmd, args);
+    return buildList({cmdStep});
 }
 
 BuildOutputPane *BuildManager::getOutputPane() const

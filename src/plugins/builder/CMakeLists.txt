@@ -27,6 +27,7 @@ set(CXX_CPP
     tasks/taskmanager.cpp
     tasks/taskdelegate.cpp
     tasks/taskview.cpp
+    commandstep.cpp
     )
 
 set(CXX_H
@@ -56,6 +57,7 @@ set(CXX_H
     tasks/taskmanager.h
     tasks/taskdelegate.h
     tasks/taskview.h
+    commandstep.h
     )
 
 add_library(${PROJECT_NAME}

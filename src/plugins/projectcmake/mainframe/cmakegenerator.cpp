@@ -319,11 +319,13 @@ QMenu *CMakeGenerator::createItemMenu(const QStandardItem *item)
                             buildMenuList << targetBuild;
                         }
                     }
+#if 0
                     qInfo() << targetElem.tagName()
                             << targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->name)
                             << targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->path)
                             << targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->targetID)
                             << targetElem.text();
+#endif
                     targetNode = targetNode.nextSibling();
                 }
             }
@@ -375,7 +377,15 @@ void CMakeGenerator::actionTriggered()
         QString program = action->property(CDT_CPROJECT_KEY::get()->buildCommand.toLatin1()).toString();
         QStringList args = action->property(CDT_CPROJECT_KEY::get()->buildArguments.toLatin1()).toString().split(" ");
         args << action->property(CDT_CPROJECT_KEY::get()->buildTarget.toLatin1()).toString();
-        emit targetExecute(program, args);
+
+        // remove extra quotes and empty argument.
+        QStringList argsFiltered;
+        for (auto &arg : args) {
+            if (!arg.isEmpty()) {
+                argsFiltered << arg.replace("\"", "");
+            }
+        }
+        emit targetExecute(program, argsFiltered);
     }
 }
 
@@ -509,7 +519,7 @@ void CMakeGenerator::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash
             if (map.keys().contains(CDT_XML_KEY::get()->location)) { // 本地文件
                 for (auto val : subprojectsMap.values()) {
                     QString childLocation = map.value(CDT_XML_KEY::get()->location).toString();
-                    qInfo() << "childLocation:" << childLocation;
+//                    qInfo() << "childLocation:" << childLocation;
                     QString childFileName = childItem->data(Qt::DisplayRole).toString();
                     // 获取中间需要展示的文件夹
                     if (!val.isEmpty() && childLocation.startsWith(val)) {
