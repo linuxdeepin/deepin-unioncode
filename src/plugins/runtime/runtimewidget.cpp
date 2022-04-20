@@ -23,6 +23,9 @@
 #include "environmentwidget.h"
 #include "common/common.h"
 #include "stepspane.h"
+#include "overviewpane.h"
+#include "runconfigpane.h"
+#include "projectoptionpane.h"
 
 #include <QListWidget>
 #include <QSplitter>
@@ -31,17 +34,21 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include <QStyleFactory>
+#include <QStackedWidget>
 
 static RuntimeWidget *ins{nullptr};
+
+enum PaneType {
+    kBuildCfgPane,
+    kRunCfgPane
+};
+
 class RuntimeWidgetPrivate
 {
     friend class RuntimeWidget;
-    QVBoxLayout *leftLayout{nullptr};
-    QVBoxLayout *rightLayout{nullptr};
-    QGroupBox *folderGroupBox{nullptr};
-    QComboBox *openFolderBox{nullptr};
-    QPushButton *openNewFolder{nullptr};
-    ConfigureWidget *configWidget{nullptr};
+    ConfigureWidget *buildCfgWidget{nullptr};
+    ConfigureWidget *runCfgWidget{nullptr};
+    QStackedWidget *stackedWidget{nullptr};
 };
 
 RuntimeWidget *RuntimeWidget::instance()
@@ -55,23 +62,37 @@ RuntimeWidget::RuntimeWidget(QWidget *parent)
     : QSplitter (parent)
     , d(new RuntimeWidgetPrivate())
 {
-    d->leftLayout = new QVBoxLayout();
-    d->folderGroupBox = new QGroupBox(tr("Open Folder"));
-    d->openFolderBox = new QComboBox();
-    d->openNewFolder = new QPushButton(tr("Open New Folder"));
-    d->folderGroupBox->setLayout(d->leftLayout);
-    d->leftLayout->addWidget(d->openFolderBox, 0, Qt::AlignTop);
-    d->leftLayout->addWidget(d->openNewFolder, 0, Qt::AlignTop);
-    d->leftLayout->addStretch();
-    d->openFolderBox->addItems({"unioncode", "dde-file-manager"});// test project name
-    d->configWidget = new ConfigureWidget(this);
-    auto buldStepPane = new CollapseWidget("Build Steps", new StepsPane(StepsPane::kBuild));
-    d->configWidget->addCollapseWidget(buldStepPane);
-    d->configWidget->addCollapseWidget(new CollapseWidget("Clean Steps", new StepsPane(StepsPane::kClean)));
-    d->configWidget->addCollapseWidget(new CollapseWidget("Runtime Env", new EnvironmentWidget));
-    addWidget(d->folderGroupBox);
-    addWidget(d->configWidget);
-    setStretchFactor(1, 3);
+    // Initialize stackedWidget.
+    d->stackedWidget = new QStackedWidget(this);
+
+    // Initialize build config widget.
+    d->buildCfgWidget = new ConfigureWidget(d->stackedWidget);
+    auto overViewPane = new OverviewPane(d->buildCfgWidget);
+    auto buldStepPane = new CollapseWidget("Build Steps", new StepsPane(StepsPane::kBuild), d->buildCfgWidget);
+    d->buildCfgWidget->addWidget(overViewPane);
+    d->buildCfgWidget->addCollapseWidget(buldStepPane);
+    d->buildCfgWidget->addCollapseWidget(new CollapseWidget("Clean Steps", new StepsPane(StepsPane::kClean, d->buildCfgWidget)));
+    d->buildCfgWidget->addCollapseWidget(new CollapseWidget("Runtime Env", new EnvironmentWidget(d->buildCfgWidget)));
+
+    // Initialize run config widget.
+    d->runCfgWidget = new ConfigureWidget(d->stackedWidget);
+    d->runCfgWidget->addWidget(new RunConfigPane(d->runCfgWidget));
+    d->runCfgWidget->addWidget(new EnvironmentWidget(d->runCfgWidget));
+
+    d->stackedWidget->addWidget(d->buildCfgWidget);
+    d->stackedWidget->addWidget(d->runCfgWidget);
+
+    // Bind option pane signal to config panes.
+    auto optionPane = new ProjectOptionPane(this);
+    connect(optionPane, &ProjectOptionPane::activeRunCfgPane, this, &RuntimeWidget::slotRunCfgPaneActived);
+    connect(optionPane, &ProjectOptionPane::activeBuildCfgPane, this, &RuntimeWidget::slotBuildCfgPaneActived);
+
+    // Insert widgets.
+    addWidget(optionPane);
+    addWidget(d->stackedWidget);
+
+    setStretchFactor(0, 1);
+    setStretchFactor(1, 2);
     setChildrenCollapsible(false);
 
     // expand environment tree widget.
@@ -82,4 +103,14 @@ RuntimeWidget::~RuntimeWidget()
 {
     if (d)
         delete d;
+}
+
+void RuntimeWidget::slotBuildCfgPaneActived()
+{
+    d->stackedWidget->setCurrentIndex(kBuildCfgPane);
+}
+
+void RuntimeWidget::slotRunCfgPaneActived()
+{
+    d->stackedWidget->setCurrentIndex(kRunCfgPane);
 }

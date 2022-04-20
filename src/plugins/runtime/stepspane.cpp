@@ -261,7 +261,7 @@ void StepsPane::setupUi()
         d->toolArguments = new QLineEdit(this);
         d->toolArguments->setPlaceholderText(tr("Input your arguments."));
         QLabel *label = new QLabel(this);
-        label->setText("Tool arguments:");
+        label->setText(tr("Tool arguments:"));
 
         hLay->addWidget(label);
         hLay->addWidget(d->toolArguments);

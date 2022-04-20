@@ -1,9 +1,10 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,27 +19,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNTIMEWIDGET_H
-#define RUNTIMEWIDGET_H
+#ifndef PROJECTOPTIONPANE_H
+#define PROJECTOPTIONPANE_H
 
-#include <QWidget>
-#include <QSplitter>
+#include <QGroupBox>
 
-class RuntimeWidgetPrivate;
-class RuntimeWidget : public QSplitter
+class QPushButton;
+class ProjectOptionPane : public QGroupBox
 {
     Q_OBJECT
-    RuntimeWidgetPrivate *const d;
 public:
-    static RuntimeWidget *instance();
-    explicit RuntimeWidget(QWidget *parent = nullptr);
-    virtual ~RuntimeWidget();
+    explicit ProjectOptionPane(QWidget *parent = nullptr);
 
 signals:
+    void activeBuildCfgPane();
+    void activeRunCfgPane();
 
 public slots:
-    void slotBuildCfgPaneActived();
-    void slotRunCfgPaneActived();
+    void buildBtnClicked();
+    void runBtnClicked();
+
+private:
+    void setupUI();
+
+    QPushButton *buildButton = nullptr;
+    QPushButton *runButton = nullptr;
 };
 
-#endif // RUNTIMEWIDGET_H
+#endif // PROJECTOPTIONPANE_H

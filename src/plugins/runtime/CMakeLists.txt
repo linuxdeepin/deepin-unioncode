@@ -13,6 +13,9 @@ set(CXX_CPP
     projectparser.cpp
     stepspane.cpp
     targetsmanager.cpp
+    overviewpane.cpp
+    runconfigpane.cpp
+    projectoptionpane.cpp
     )
 
 set(CXX_H
@@ -23,6 +26,9 @@ set(CXX_H
     projectparser.h
     stepspane.h
     targetsmanager.h
+    overviewpane.h
+    runconfigpane.h
+    projectoptionpane.h
     )
 
 add_library(${PROJECT_NAME}

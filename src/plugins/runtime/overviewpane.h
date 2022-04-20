@@ -1,9 +1,10 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,27 +19,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNTIMEWIDGET_H
-#define RUNTIMEWIDGET_H
+#ifndef OVERVIEWPANE_H
+#define OVERVIEWPANE_H
 
 #include <QWidget>
-#include <QSplitter>
 
-class RuntimeWidgetPrivate;
-class RuntimeWidget : public QSplitter
+class QVBoxLayout;
+class QLineEdit;
+class OverviewPane : public QWidget
 {
     Q_OBJECT
-    RuntimeWidgetPrivate *const d;
 public:
-    static RuntimeWidget *instance();
-    explicit RuntimeWidget(QWidget *parent = nullptr);
-    virtual ~RuntimeWidget();
+    explicit OverviewPane(QWidget *parent = nullptr);
 
 signals:
 
 public slots:
-    void slotBuildCfgPaneActived();
-    void slotRunCfgPaneActived();
+    void showFileDialog();
+
+private:
+    void setupUi();
+
+    QVBoxLayout *vLayout = nullptr;
+    QLineEdit *outputDirEdit = nullptr;
 };
 
-#endif // RUNTIMEWIDGET_H
+#endif // OVERVIEWPANE_H

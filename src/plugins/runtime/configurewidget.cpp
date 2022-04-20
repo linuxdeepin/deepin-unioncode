@@ -72,6 +72,14 @@ void ConfigureWidget::addCollapseWidget(CollapseWidget *widget)
     qInfo() << widget->size();
 }
 
+void ConfigureWidget::addWidget(QWidget *widget)
+{
+    if (!widget)
+        return;
+
+    d->layout->insertWidget(d->layout->count() - 1, widget);
+}
+
 void ConfigureWidget::resizeEvent(QResizeEvent *event)
 {
     d->centrelWidget->resize(d->centrelWidget->width(), event->size().width());

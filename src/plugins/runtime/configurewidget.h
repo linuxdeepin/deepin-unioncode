@@ -33,6 +33,7 @@ public:
     explicit ConfigureWidget(QWidget *parent = nullptr);
     virtual ~ConfigureWidget() override;
     void addCollapseWidget(CollapseWidget *widget);
+    void addWidget(QWidget *widget);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
