@@ -23,6 +23,7 @@
 #define CONTAINERPLUGIN_H
 #include <framework/framework.h>
 #include "services/container/containerservice.h"
+#include "mainframe/virtualconsole.h"
 #include <QMap>
 #include <QString>
 class Container : public dpf::Plugin
@@ -38,9 +39,12 @@ public:
     dpfservice::ContainerError initContainer(const QString& projectPath);
     dpfservice::ContainerError stopContainer(const QString& projectPath);
     dpfservice::ContainerError removeProject(const QString& projectPath);
-    dpfservice::ContainerError execContainerCommand(const QString &projectPath,  const QString &command, const QStringList &arguments);
+    dpfservice::ContainerError execContainerCommand(const QString &projectPath,  const QString &text);
 private:
+    QString containerId;
+    QString scriptsPath;
     QMap<QString, QString> pathUuidMap;
+    VirtualConsole *virtualConsole{nullptr};
 };
 
 #endif // CONTAINERPLUGIN_H

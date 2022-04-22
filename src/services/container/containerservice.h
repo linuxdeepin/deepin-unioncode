@@ -33,13 +33,37 @@ struct  ContainerInfo
     const QUuid uuid;
     const qint64 pid;
     const QString imageName;
-    const QString paltfromInfo;
+    const QString platformInfo;
+
+    explicit ContainerInfo()
+        : projectPath(QString{"project"})
+        , uuid(QUuid())
+        , pid(0)
+        , imageName(QString{})
+        , platformInfo{QString{"amd64"}}
+    {
+
+    }
+    ~ContainerInfo()
+    {
+
+    }
 };
 
 struct ContainerError
 {
     const bool result;
     const QString errString;
+    explicit ContainerError()
+        : result(false)
+        , errString{QString{"failed"}}
+    {
+
+    }
+    ~ContainerError()
+    {
+
+    }
 };
 
 class ContainerService final : public dpf::PluginService, dpf::AutoServiceRegister<ContainerService>
@@ -69,7 +93,7 @@ public:
     DPF_INTERFACE(ContainerError, removeProject, const QString &projectPath);
 
     // exec interface
-    DPF_INTERFACE(ContainerError, execContainerCommand, const QString &projectPath, const QString &command, const QStringList &arguments);
+    DPF_INTERFACE(ContainerError, execContainerCommand, const QString &projectPath, const QString &text);
 
 };
 

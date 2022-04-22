@@ -1,28 +1,40 @@
 #!/bin/bash
 
-cd $HOME
-NIC=$(ip route | grep default | awk '{print $5}')
-BRIDGE="runc0"
-CONTAINER_ID="uos-amd64"
+PLATFORM="$HOME/.config/unioncode/configures/platform"
+cd $PLATFORM
+set -x
+ARCH=$1
+NIC="$(ip route | grep default | awk '{print $5}')"
+CONTAINER_ID=$2
+PROJECT_PATH=$3
+CID=${CONTAINER_ID:0:7}
+CID_NETMASK="16"
+CID_IP="172.16.0.101/16"
+VETH_ID="veth${CID}"
+NETNS_ID="netns${CID}"
+BR_ID="br${CID}"
+BR_IP="172.16.0.1/16"
+BR_GW="172.16.0.1"
 MIRROR="https://pools.uniontech.com/deepin"
 
-sudo ip netns add ${CONTAINER_ID}
-sudo ip link add ${BRIDGE} type bridge
-sudo ip link set ${BRIDGE} up
-sudo ip addr add 172.16.0.1/16 dev ${BRIDGE} 
-sudo ip link add veth-${CONTAINER_ID} type veth peer name ceth0
-sudo ip link set veth-${CONTAINER_ID} master ${BRIDGE} 
-sudo ip link set ceth0 netns ${CONTAINER_ID}
-sudo ip link set veth-${CONTAINER_ID} up
-sudo ip netns exec ${CONTAINER_ID} ip link set lo up
-sudo ip netns exec ${CONTAINER_ID} ip link set ceth0 up
-sudo ip netns exec ${CONTAINER_ID} ip addr add 172.16.0.101/16 dev ceth0
-sudo ip netns exec ${CONTAINER_ID} ip route add default via 172.16.0.1
+sudo ip netns add ${NETNS_ID}
+sudo ip link add ${BR_ID} type bridge
+sudo ip link set ${BR_ID} up
+sudo ip addr add ${BR_IP} dev ${BR_ID} 
+sudo ip link add ${VETH_ID} type veth peer name ceth0
+sudo ip link set ${VETH_ID} master ${BR_ID} 
+sudo ip link set ceth0 netns ${NETNS_ID}
+sudo ip link set ${VETH_ID} up
+sudo ip netns exec ${NETNS_ID} ip link set lo up
+sudo ip netns exec ${NETNS_ID} ip link set ceth0 up
+sudo ip netns exec ${NETNS_ID} ip addr add ${CID_IP} dev ceth0
+sudo ip netns exec ${NETNS_ID} ip route add default via ${BR_GW}
 
-sudo iptables -t nat -I POSTROUTING 1 --source 172.16.0.1/16 -o ${NIC} -j MASQUERADE
-sudo iptables -t filter -A FORWARD -o ${NIC} -i ${BRIDGE} -j ACCEPT
-sudo iptables -t filter -A FORWARD -i ${NIC} -o ${BRIDGE} -j ACCEPT
-
+sudo iptables -t nat -I POSTROUTING 1 --source ${BR_IP} -o ${NIC} -j MASQUERADE
+sudo iptables -t filter -A FORWARD -o ${NIC} -i ${BR_ID} -j ACCEPT
+sudo iptables -t filter -A FORWARD -i ${NIC} -o ${BR_ID} -j ACCEPT
+set +x
+cd $ARCH 
 if [ ! -e ${CONTAINER_ID} ]; then
 	mkdir -pv ${CONTAINER_ID}
 
@@ -41,7 +53,8 @@ cat>>${CONTAINER_ID}/config.json<<EOF
 		"env": [
 			"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
 			"TERM=xterm-256color",
-			"SHELL=/bin/bash"
+			"SHELL=/bin/bash",
+			"DISPLAY=:0"
 		],
 		"cwd": "/",
 		"capabilities": {
@@ -144,7 +157,7 @@ cat>>${CONTAINER_ID}/config.json<<EOF
 		"path": "rootfs",
 		"readonly": false
 	},
-	"hostname": "uos-amd64",
+	"hostname": "${CONTAINER_ID}",
 	"mounts": [
 		{
 			"destination": "/proc",
@@ -219,6 +232,15 @@ cat>>${CONTAINER_ID}/config.json<<EOF
 				"relatime",
 				"ro"
 			]
+		},
+		{
+			"destination": "${PROJECT_PATH}",
+			"type": "bind",
+			"source": "${PROJECT_PATH}",
+			"options": [
+				"rbind",
+				"rw"
+			]
 		}
 	],
 	"linux": {
@@ -236,7 +258,7 @@ cat>>${CONTAINER_ID}/config.json<<EOF
 			},
 			{
 				"type": "network",
-				"path": "/var/run/netns/${CONTAINER_ID}"
+				"path": "/var/run/netns/${NETNS_ID}"
 			},
 			{
 				"type": "ipc"
@@ -276,8 +298,15 @@ fi
 #docker export $(docker image uos-amd64) > uos-amd64.tar
 #tar -C rootfs -xvf uos-amd64.tar
 
-sudo debootstrap --arch=amd64 apricot ${CONTAINER_ID}/rootfs ${MIRROR}
+BUILD_INCLUDE_DEBS1="git,subversion,build-essential,crossbuild-essential-amd64,crossbuild-essential-arm64,crossbuild-essential-mips64el"
+BUILD_INCLUDE_DEBS2="cmake,ninja-build,llvm,clang,libqt5dbus5"
+INCLUDE_DEBS="$BUILD_INCLUDE_DEBS1,$BUILD_INCLUDE_DEBS2"
+if [ ! -d rootfs ]; then
+	sudo debootstrap --arch=$ARCH --include=$INCLUDE_DEBS apricot ${CONTAINER_ID}/rootfs ${MIRROR}
+fi
 sudo runc kill ${CONTAINER_ID} KILL > /dev/null 2>&1
+# mount bind workspaces to runc container
+# mount -o bind $HOME/workspaces $RUNC_CID_ROOTFS
 sudo runc run --bundle ${CONTAINER_ID} ${CONTAINER_ID}
 
 exit 0
