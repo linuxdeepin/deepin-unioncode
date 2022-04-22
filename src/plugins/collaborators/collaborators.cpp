@@ -21,9 +21,11 @@
  */
 #include "collaborators.h"
 #include "services/window/windowservice.h"
-#include "mainframe/gitqlientwidget.h"
+#include "mainframe/git/gitqlientwidget.h"
+#include "mainframe/svn/svnclientwidget.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
+#include "mainframe/svn/executor.h"
 #include <QAction>
 
 using namespace dpfservice;
@@ -37,10 +39,14 @@ bool Collaborators::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        if (windowService->addActionNavigation)
+        if (windowService->addActionNavigation) {
             windowService->addActionNavigation(new AbstractAction(new QAction(QAction::tr("Git"))));
-        if (windowService->addCentralNavigation)
+            windowService->addActionNavigation(new AbstractAction(new QAction(QAction::tr("Svn"))));
+        }
+        if (windowService->addCentralNavigation) {
             windowService->addCentralNavigation(QAction::tr("Git"), new AbstractCentral(new GitQlientWidget));
+            windowService->addCentralNavigation(QAction::tr("Svn"), new AbstractCentral(new SvnClientWidget));
+        }
     }
     return true;
 }
