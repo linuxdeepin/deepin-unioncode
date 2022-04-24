@@ -3,7 +3,6 @@
 #include <QString>
 
 namespace toolchains {
-namespace cxx {
 extern const QString K_VERSION;
 extern const QString K_HOST_OS;
 extern const QString K_HOST_ARCH;
@@ -16,10 +15,9 @@ extern const QString K_TOOLCHAIN_PATH;
 extern const QString K_TOOLCHAIN_C_COMPILER;
 extern const QString K_TOOLCHAIN_CXX_COMPILER;
 extern const QString K_TOOLCHAIN_DEBUGGER;
+extern const QString K_TOOLCHAINFILE;
 
 bool generatGlobalFile();
-
-} //cxx
 
 } // namespace toolchains
 

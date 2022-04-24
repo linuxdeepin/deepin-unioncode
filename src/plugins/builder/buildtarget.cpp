@@ -26,8 +26,9 @@
 #include "qmakestep.h"
 #include "makestep.h"
 #include "builderreceiver.h"
+#include "services/project/projectservice.h"
 
-
+using namespace dpfservice;
 BuildTarget::BuildTarget(Project *pro)
     : project(pro)
 {
@@ -41,12 +42,15 @@ BuildTarget::~BuildTarget()
 
 QString BuildTarget::buildOutputDirectory() const
 {
-    const QString &buildOutputPath = BuilderReceiver::instance()->buildOutputDirectory();
-    QDir dir(buildOutputPath);
-    if (!dir.exists()) {
-        dir.mkpath(buildOutputPath);
+    QString ret;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projService = ctx.service<ProjectService>(ProjectService::name());
+    if (projService) {
+        if (projService->getDefaultOutputPath) {
+            ret = projService->getDefaultOutputPath();
+        }
     }
-    return buildOutputPath;
+    return ret;
 }
 
 QList<BuildStep *> &BuildTarget::getbuildSteps()

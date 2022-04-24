@@ -19,30 +19,54 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNCONFIGPANE_H
-#define RUNCONFIGPANE_H
+#ifndef KITSMANAGERWIDGET_H
+#define KITSMANAGERWIDGET_H
 
 #include <QWidget>
+#include <QSet>
+#include <QMap>
 
-class QVBoxLayout;
-class QLineEdit;
-class RunConfigPane : public QWidget
+class ToolChainData
+{
+public:
+    struct ToolChainParam
+    {
+        QString name;
+        QString path;
+    };
+    using Params = QVector<ToolChainParam>;
+
+    // ToolChain type & Parameters.
+    using ToolChains = QMap<QString, Params>;
+
+    ToolChainData();
+
+    bool readToolChain(QString &filePath);
+    const ToolChains &getToolChanins() const;
+
+private:
+    ToolChains toolChains;
+};
+
+class KitsManagerWidgetPrivate;
+class KitsManagerWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RunConfigPane(QWidget *parent = nullptr);
+    explicit KitsManagerWidget(QWidget *parent = nullptr);
 
 signals:
 
 public slots:
-    void showFileDialog();
 
 private:
-    void setupUi();
+    ~KitsManagerWidget();
+
+    void setupUi(QWidget *Widget);
     void updateUi();
 
-    QVBoxLayout *vLayout = nullptr;
-    QLineEdit *workingDirLineEdit = nullptr;
+    QSharedPointer<ToolChainData> toolChainData;
+    KitsManagerWidgetPrivate *const d;
 };
 
-#endif // RUNCONFIGPANE_H
+#endif // KITSMANAGERWIDGET_H

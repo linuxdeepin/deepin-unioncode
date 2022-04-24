@@ -19,30 +19,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNCONFIGPANE_H
-#define RUNCONFIGPANE_H
+#ifndef RUNTIMEMANAGER_H
+#define RUNTIMEMANAGER_H
 
-#include <QWidget>
+#include <QObject>
 
-class QVBoxLayout;
-class QLineEdit;
-class RunConfigPane : public QWidget
+class RuntimeWidget;
+class RuntimeManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit RunConfigPane(QWidget *parent = nullptr);
+
+    static RuntimeManager *instance();
+    explicit RuntimeManager(QObject *parent = nullptr);
+
+    RuntimeWidget *getRuntimeWidget() const;
+    void showConfigureProjDlg(QString &projectPath);
 
 signals:
 
 public slots:
-    void showFileDialog();
 
 private:
-    void setupUi();
-    void updateUi();
-
-    QVBoxLayout *vLayout = nullptr;
-    QLineEdit *workingDirLineEdit = nullptr;
+    RuntimeWidget *runtimeWidget = nullptr;
 };
 
-#endif // RUNCONFIGPANE_H
+#endif // RUNTIMEMANAGER_H

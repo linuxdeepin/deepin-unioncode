@@ -67,6 +67,7 @@ public slots:
     void appendProcessMessage(const QString &mess, int currentPercent,
                               int maxPrecent = 100);
     void hideProcessDisplay();
+    void showOptionsDlg();
 
 private :
     void layoutWindow(QMainWindow *window);

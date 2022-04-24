@@ -14,7 +14,7 @@ public:
     explicit CMakeGenerator();
     static QString toolKitName() { return "cmake"; }
     virtual bool configure(const QString &projectPath) override;
-    virtual QStandardItem *createRootItem(const QString &projectPath) override;
+    virtual QStandardItem *createRootItem(const QString &projectPath, const QString &outputPath) override;
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
 private slots:
     void processReadAll();

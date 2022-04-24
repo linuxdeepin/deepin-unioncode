@@ -1,1 +1,1 @@
-add_subdirectory(ucbackend)
+add_subdirectory(debugadapter)

@@ -31,7 +31,7 @@ DebugManager::DebugManager(QObject *parent)
     // TODO(mozart):backend not support re-connect yet,
     // so kill it when client launched.
     // those code will be removed when backend got modified.
-    QProcess::execute("killall -9 ucbackend");
+    QProcess::execute("killall -9 debugadapter");
 }
 
 bool DebugManager::initialize(dpfservice::WindowService *service)
@@ -140,7 +140,7 @@ void DebugManager::launchBackend()
         return;
 
     QString toolPath = CustomPaths::global(CustomPaths::Tools);
-    QString backendPath = toolPath + QDir::separator() + "ucbackend";
+    QString backendPath = toolPath + QDir::separator() + "debugadapter";
 
     backend.setProgram(backendPath);
     backend.start();

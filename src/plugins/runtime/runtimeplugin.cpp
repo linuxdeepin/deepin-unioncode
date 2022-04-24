@@ -26,10 +26,13 @@
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include "services/window/windowservice.h"
+#include "services/project/projectservice.h"
 #include "projectparser.h"
+#include "runtimemanager.h"
+#include "configureprojpane.h"
+#include "kitmanager.h"
 
 using namespace dpfservice;
-
 void RuntimePlugin::initialize()
 {
 
@@ -42,7 +45,14 @@ bool RuntimePlugin::start()
 
     if (windowService) {
         if (windowService->addCentralNavigation)
-            windowService->addCentralNavigation(MWNA_RUNTIME, new AbstractCentral(RuntimeWidget::instance()));
+            windowService->addCentralNavigation(MWNA_RUNTIME, new AbstractCentral(RuntimeManager::instance()->getRuntimeWidget()));
+    }
+
+    ProjectService *projService = ctx.service<ProjectService>(ProjectService::name());
+    if (projService) {
+        if (!projService->getDefaultOutputPath) {
+            projService->getDefaultOutputPath = std::bind(&KitManager::getDefaultOutputPath, KitManager::instance());
+        }
     }
 
     return true;

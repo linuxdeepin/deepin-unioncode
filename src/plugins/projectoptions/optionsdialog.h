@@ -19,30 +19,44 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNCONFIGPANE_H
-#define RUNCONFIGPANE_H
+#ifndef OPTIONSDIALOG_H
+#define OPTIONSDIALOG_H
 
-#include <QWidget>
+#include <QtWidgets/QDialog>
+#include <QMap>
 
+class QHBoxLayout;
 class QVBoxLayout;
 class QLineEdit;
-class RunConfigPane : public QWidget
+class QListView;
+class QLabel;
+class QSpacerItem;
+class QStringListModel;
+class QStackedWidget;
+
+class OptionsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit RunConfigPane(QWidget *parent = nullptr);
+    explicit OptionsDialog(QWidget *parent = nullptr);
 
+    bool insertOptionPanel(const QString &itemName, QWidget *panel);
+    void showProjectOptionsDlg(const QString &itemName, const QString &tabName);
 signals:
 
 public slots:
-    void showFileDialog();
+    void slotLeftBarClicked(const QModelIndex &index);
 
 private:
-    void setupUi();
-    void updateUi();
+    void setupUi(QDialog *Dialog);
 
-    QVBoxLayout *vLayout = nullptr;
-    QLineEdit *workingDirLineEdit = nullptr;
+    QLineEdit *filterEdit = nullptr;
+    QListView *leftSideBar = nullptr;
+    QLabel *headTitle = nullptr;
+
+    QMap<QString, QWidget *> widgts;
+    QStringListModel *leftBarModel = nullptr;
+    QStackedWidget *stackWidget = nullptr;
 };
 
-#endif // RUNCONFIGPANE_H
+#endif // OPTIONSDIALOG_H

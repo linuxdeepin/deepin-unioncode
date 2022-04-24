@@ -19,30 +19,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNCONFIGPANE_H
-#define RUNCONFIGPANE_H
+#include "kitmanager.h"
 
-#include <QWidget>
-
-class QVBoxLayout;
-class QLineEdit;
-class RunConfigPane : public QWidget
+KitManager::KitManager(QObject *parent) : QObject(parent)
 {
-    Q_OBJECT
-public:
-    explicit RunConfigPane(QWidget *parent = nullptr);
 
-signals:
+}
 
-public slots:
-    void showFileDialog();
+KitManager *KitManager::instance()
+{
+    static KitManager ins;
+    return &ins;
+}
 
-private:
-    void setupUi();
-    void updateUi();
+void KitManager::setSelectedKit(KitManager::Kit &kit)
+{
+    selectedKit = kit;
+}
 
-    QVBoxLayout *vLayout = nullptr;
-    QLineEdit *workingDirLineEdit = nullptr;
-};
+const KitManager::Kit &KitManager::getSelectedKit()
+{
+    return selectedKit;
+}
 
-#endif // RUNCONFIGPANE_H
+QString KitManager::getDefaultOutputPath() const
+{
+    return selectedKit.defaultOutput;
+}

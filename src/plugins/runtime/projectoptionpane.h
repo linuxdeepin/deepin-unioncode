@@ -25,6 +25,10 @@
 #include <QGroupBox>
 
 class QPushButton;
+class KitsManagerWidget;
+namespace dpfservice {
+    class ProjectService;
+}
 class ProjectOptionPane : public QGroupBox
 {
     Q_OBJECT
@@ -38,12 +42,17 @@ signals:
 public slots:
     void buildBtnClicked();
     void runBtnClicked();
+    void showKitDialog();
 
 private:
     void setupUI();
+    void initializeKitManageWidget();
 
     QPushButton *buildButton = nullptr;
     QPushButton *runButton = nullptr;
+    KitsManagerWidget *kitManagerWidget = nullptr;
+
+    dpfservice::ProjectService *projectService = nullptr;
 };
 
 #endif // PROJECTOPTIONPANE_H

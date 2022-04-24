@@ -19,30 +19,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNCONFIGPANE_H
-#define RUNCONFIGPANE_H
+#ifndef PROJOPTIONSPLUGIN_H
+#define PROJOPTIONSPLUGIN_H
 
-#include <QWidget>
+#include <framework/framework.h>
+#include <QSharedPointer>
 
-class QVBoxLayout;
-class QLineEdit;
-class RunConfigPane : public QWidget
+class OptionsDialog;
+class ProjOptionsPlugin : public dpf::Plugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "projectoptions.json")
 public:
-    explicit RunConfigPane(QWidget *parent = nullptr);
-
-signals:
+    virtual void initialize() override;
+    virtual bool start() override;
+    virtual dpf::Plugin::ShutdownFlag stop() override;
 
 public slots:
-    void showFileDialog();
 
 private:
-    void setupUi();
-    void updateUi();
-
-    QVBoxLayout *vLayout = nullptr;
-    QLineEdit *workingDirLineEdit = nullptr;
+    QSharedPointer<OptionsDialog> optionsDlg;
 };
 
-#endif // RUNCONFIGPANE_H
+#endif // PROJOPTIONSPLUGIN_H

@@ -20,6 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "runconfigpane.h"
+#include "services/project/projectservice.h"
 
 #include <QVBoxLayout>
 #include <QLabel>
@@ -29,15 +30,26 @@
 #include <QComboBox>
 #include <QFormLayout>
 
+using namespace dpfservice;
 RunConfigPane::RunConfigPane(QWidget *parent) : QWidget(parent)
 {
     setupUi();
+
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projService = ctx.service<ProjectService>(ProjectService::name());
+    if (projService) {
+        connect(projService, &ProjectService::projectConfigureDone, [this](){
+            updateUi();
+        });
+    }
 }
 
 void RunConfigPane::showFileDialog()
 {
     QString outputDirectory = QFileDialog::getExistingDirectory(this, tr("Working directory:"));
-    workingDirLineEdit->setText(outputDirectory.toUtf8());
+    if (!outputDirectory.isEmpty()) {
+        workingDirLineEdit->setText(outputDirectory.toUtf8());
+    }
 }
 
 void RunConfigPane::setupUi()
@@ -96,4 +108,16 @@ void RunConfigPane::setupUi()
     vLayout->addWidget(mainFrame);
 
     vLayout->setMargin(0);
+}
+
+void RunConfigPane::updateUi()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projService = ctx.service<ProjectService>(ProjectService::name());
+    if (projService) {
+        if (projService->getDefaultOutputPath) {
+            QString workingDir = projService->getDefaultOutputPath();
+            workingDirLineEdit->setText(workingDir);
+        }
+    }
 }

@@ -20,6 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "projectoptionpane.h"
+#include "services/project/projectservice.h"
+#include "kitsmanagerwidget.h"
 
 #include <QComboBox>
 #include <QVBoxLayout>
@@ -27,6 +29,7 @@
 #include <QPushButton>
 #include <QLabel>
 
+using namespace dpfservice;
 ProjectOptionPane::ProjectOptionPane(QWidget *parent) : QGroupBox(parent)
 {
     setupUI();
@@ -49,6 +52,8 @@ void ProjectOptionPane::setupUI()
 
     auto kitButton = new QPushButton(tr("Manage Kits..."), this);
     leftLayout->addWidget(kitButton);
+    connect(kitButton, &QPushButton::clicked, this, &ProjectOptionPane::showKitDialog);
+    initializeKitManageWidget();
 
     // Active Project ui.
     auto activeProjectLabel = new QLabel(tr("Active Project"), this);
@@ -72,9 +77,26 @@ void ProjectOptionPane::setupUI()
     leftLayout->addStretch();
 }
 
+void ProjectOptionPane::initializeKitManageWidget()
+{
+    // Initialize kit config panel.
+    auto &ctx = dpfInstance.serviceContext();
+    projectService = ctx.service<ProjectService>(ProjectService::name());
+
+    if (projectService) {
+        kitManagerWidget = new KitsManagerWidget(this);
+        projectService->insertOptionPanel("kit", kitManagerWidget);
+    }
+}
+
 void ProjectOptionPane::runBtnClicked()
 {
     emit activeRunCfgPane();
+}
+
+void ProjectOptionPane::showKitDialog()
+{
+    projectService->showProjectOptionsDlg("kit", "");
 }
 
 void ProjectOptionPane::buildBtnClicked()

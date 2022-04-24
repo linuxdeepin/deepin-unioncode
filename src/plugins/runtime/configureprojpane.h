@@ -19,30 +19,44 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef RUNCONFIGPANE_H
-#define RUNCONFIGPANE_H
+#ifndef CONFIGUREPROJPANE_H
+#define CONFIGUREPROJPANE_H
 
 #include <QWidget>
 
-class QVBoxLayout;
-class QLineEdit;
-class RunConfigPane : public QWidget
+class ConfigureProjPanePrivate;
+class ConfigureProjPane : public QWidget
 {
     Q_OBJECT
+    enum BuildType {
+        Debug,
+        Relase,
+        RelWithDebInfo,
+        MinSizeRel
+    };
 public:
-    explicit RunConfigPane(QWidget *parent = nullptr);
+    explicit ConfigureProjPane(QWidget *parent = nullptr);
+    ~ConfigureProjPane();
+
+    void setProjectPath(QString &projectPath);
+
+    BuildType getDefaultBuildType() const;
+    QString getDefaultOutputPath() const;
 
 signals:
+    void configureDone();
 
 public slots:
-    void showFileDialog();
+    void slotConfigureDone();
+    void slotBrowseBtnClicked();
 
 private:
-    void setupUi();
-    void updateUi();
+    void setupUi(QWidget *widget);
+    void setAllChecked(bool checked);
+    void updateOutputPath();
+    void updateKitInfo();
 
-    QVBoxLayout *vLayout = nullptr;
-    QLineEdit *workingDirLineEdit = nullptr;
+    ConfigureProjPanePrivate *const d;
 };
 
-#endif // RUNCONFIGPANE_H
+#endif   // CONFIGUREPROJPANE_H

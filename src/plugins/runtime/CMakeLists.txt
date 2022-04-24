@@ -16,6 +16,11 @@ set(CXX_CPP
     overviewpane.cpp
     runconfigpane.cpp
     projectoptionpane.cpp
+    runtime.json
+    kitsmanagerwidget.cpp
+    configureprojpane.cpp
+    runtimemanager.cpp
+    kitmanager.cpp
     )
 
 set(CXX_H
@@ -29,6 +34,10 @@ set(CXX_H
     overviewpane.h
     runconfigpane.h
     projectoptionpane.h
+    kitsmanagerwidget.h
+    configureprojpane.h
+    runtimemanager.h
+    kitmanager.cpp
     )
 
 add_library(${PROJECT_NAME}

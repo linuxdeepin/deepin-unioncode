@@ -20,16 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "targetsmanager.h"
-
-#include <QSet>
-#include <QApplication>
+#include "services/project/projectservice.h"
 
 static const char *kCleanName = "clean";
 static const char *kProjectFile = ".cproject";
 
+using namespace dpfservice;
 TargetsManager::TargetsManager(QObject *parent) : QObject(parent)
 {
-    intialize();
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+
+    if (projectService) {
+        connect(projectService, &ProjectService::projectConfigureDone, [this](){
+            intialize();
+        });
+    }
 }
 
 TargetsManager *TargetsManager::instance()
@@ -40,8 +46,20 @@ TargetsManager *TargetsManager::instance()
 
 void TargetsManager::intialize()
 {
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+
     // TODO(Mozart):cproject path should get from workspace.
-    QString buildDirectory = QApplication::instance()->applicationDirPath();
+    QString buildDirectory;
+    if (projectService && projectService->getDefaultOutputPath) {
+        buildDirectory = projectService->getDefaultOutputPath();
+    }
+
+    if (buildDirectory.isEmpty()) {
+        qCritical() << "build directory not set!";
+        return;
+    }
+
     QString cprojectPath = buildDirectory + "/" + kProjectFile;
     parser.parse(cprojectPath);
 

@@ -153,13 +153,13 @@ bool CMakeGenerator::configure(const QString &projectPath)
     return true;
 }
 
-QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath)
+QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath, const QString &outputPath)
 {
     Generator::started();
     currentCount = 0;
     maxCount = 100;
 
-    QString buildPath = cmakeBuildPath(projectPath);
+    QString buildPath = outputPath;
     QString sourcePath = QFileInfo(projectPath).path();
     process.setProgram("cmake");
 

@@ -22,6 +22,7 @@
 #include "transceiver/sendevents.h"
 #include "windowstatusbar.h"
 #include "services/window/windowservice.h"
+#include "services/project/projectservice.h"
 #include "common/common.h"
 
 #include <QAction>
@@ -126,7 +127,10 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     QAction* actionRuntimeAnalysis = new QAction("Runtime Analysis");
     QAction* actionTest = new QAction("Test");
     QAction* actionPlugins = new QAction("Plugins");
+
     QAction* actionOptions = new QAction("Options");
+    connect(actionOptions, &QAction::triggered, this, &WindowKeeper::showOptionsDlg);
+
     toolsMenu->addAction(actionSearch);
     toolsMenu->addAction(actionPackageTools);
     toolsMenu->addAction(actionVersionTools);
@@ -485,6 +489,16 @@ void WindowKeeper::hideProcessDisplay()
         }
     });
     timer.start(200);
+}
+
+void WindowKeeper::showOptionsDlg()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    auto projectService = ctx.service<ProjectService>(ProjectService::name());
+
+    if (projectService) {
+        projectService->showProjectOptionsDlg("", "");
+    }
 }
 
 void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)

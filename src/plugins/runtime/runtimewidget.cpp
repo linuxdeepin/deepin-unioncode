@@ -26,6 +26,7 @@
 #include "overviewpane.h"
 #include "runconfigpane.h"
 #include "projectoptionpane.h"
+#include "configureprojpane.h"
 
 #include <QListWidget>
 #include <QSplitter>
@@ -38,25 +39,15 @@
 
 static RuntimeWidget *ins{nullptr};
 
-enum PaneType {
-    kBuildCfgPane,
-    kRunCfgPane
-};
-
 class RuntimeWidgetPrivate
 {
     friend class RuntimeWidget;
     ConfigureWidget *buildCfgWidget{nullptr};
     ConfigureWidget *runCfgWidget{nullptr};
     QStackedWidget *stackedWidget{nullptr};
+    ConfigureWidget *configureProjWidget{nullptr};
+    ConfigureProjPane *configureProjPane{nullptr};
 };
-
-RuntimeWidget *RuntimeWidget::instance()
-{
-    if (!ins)
-        ins = new RuntimeWidget();
-    return ins;
-}
 
 RuntimeWidget::RuntimeWidget(QWidget *parent)
     : QSplitter (parent)
@@ -79,8 +70,19 @@ RuntimeWidget::RuntimeWidget(QWidget *parent)
     d->runCfgWidget->addWidget(new RunConfigPane(d->runCfgWidget));
     d->runCfgWidget->addWidget(new EnvironmentWidget(d->runCfgWidget));
 
+    // Initialize configure project widget.
+    d->configureProjWidget = new ConfigureWidget(d->stackedWidget);
+    d->configureProjPane = new ConfigureProjPane(d->configureProjWidget);
+    connect(d->configureProjPane, &ConfigureProjPane::configureDone, [this](){
+        emit configureDone();
+        // reset runtime pane.
+        showPane(kBuildCfgPane);
+    });
+    d->configureProjWidget->addWidget(d->configureProjPane);
+
     d->stackedWidget->addWidget(d->buildCfgWidget);
     d->stackedWidget->addWidget(d->runCfgWidget);
+    d->stackedWidget->addWidget(d->configureProjWidget);
 
     // Bind option pane signal to config panes.
     auto optionPane = new ProjectOptionPane(this);
@@ -105,12 +107,20 @@ RuntimeWidget::~RuntimeWidget()
         delete d;
 }
 
+void RuntimeWidget::showPane(RuntimeWidget::PaneType type, QString args)
+{
+    d->stackedWidget->setCurrentIndex(type);
+    if (type == kConfigurePane) {
+        d->configureProjPane->setProjectPath(args);
+    }
+}
+
 void RuntimeWidget::slotBuildCfgPaneActived()
 {
-    d->stackedWidget->setCurrentIndex(kBuildCfgPane);
+    showPane(kBuildCfgPane);
 }
 
 void RuntimeWidget::slotRunCfgPaneActived()
 {
-    d->stackedWidget->setCurrentIndex(kRunCfgPane);
+    showPane(kRunCfgPane);
 }

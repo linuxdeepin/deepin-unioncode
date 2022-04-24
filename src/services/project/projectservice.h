@@ -94,8 +94,9 @@ public:
      * \param projectPath 工程文件路径
      * \return
      */
-    virtual QStandardItem *createRootItem(const QString &projectPath) {
+    virtual QStandardItem *createRootItem(const QString &projectPath, const QString &outputPath) {
         Q_UNUSED(projectPath);
+        Q_UNUSED(outputPath);
         return nullptr;
     }
 
@@ -198,6 +199,31 @@ public:
      */
     DPF_INTERFACE(void, expandedProjectAll, QStandardItem *aitem);
 
+    /*!
+     * \brief DPF_INTERFACE
+     * insert one item to option dialog with item name and widget.
+     */
+    DPF_INTERFACE(bool, insertOptionPanel, const QString &itemName, QWidget *panel);
+
+    /*!
+     * \brief showProjectOptionsDlg
+     * \param show options dialog at panel witch
+     */
+    DPF_INTERFACE(void, showProjectOptionsDlg, const QString &itemName, const QString &tabName);
+
+    /**
+     * @brief showConfigureProjDlg
+     * @param outOutputPath return output path
+     * @param outBuildTypes return build types user selected
+     */
+    DPF_INTERFACE(void, showConfigureProjDlg, QString &projectPath);
+
+    /**
+     * @brief getDefaultOutputPath
+     * @param projectPath
+     */
+    DPF_INTERFACE(QString, getDefaultOutputPath);
+
 Q_SIGNALS:
     /*!
      * \brief targetExecute 工程目标执行指令, 调用构建系统的入口
@@ -205,7 +231,12 @@ Q_SIGNALS:
      * \param program 程序
      * \param arguments 程序参数
      */
-    void targetExecute(const QString &program, const QStringList &arguments);
+    void targetCommand(const QString &program, const QStringList &arguments);
+
+    /*!
+     * \brief projectConfigureDone
+     */
+    void projectConfigureDone();
 };
 
 /* MainWindow codeediter workspace title,

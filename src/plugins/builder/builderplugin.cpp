@@ -62,7 +62,7 @@ bool BuilderPlugin::start()
     // Project tree right menu triggered.
     auto projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {
-        connect(projectService, &ProjectService::targetExecute, this, &BuilderPlugin::slotProjectTreeMenu);
+        connect(projectService, &ProjectService::targetCommand, this, &BuilderPlugin::slotProjectTreeMenu);
     }
 
     return true;

@@ -28,17 +28,27 @@ class RuntimeWidgetPrivate;
 class RuntimeWidget : public QSplitter
 {
     Q_OBJECT
-    RuntimeWidgetPrivate *const d;
 public:
-    static RuntimeWidget *instance();
+    enum PaneType {
+        kBuildCfgPane,
+        kRunCfgPane,
+        kConfigurePane
+    };
+
     explicit RuntimeWidget(QWidget *parent = nullptr);
     virtual ~RuntimeWidget();
 
+    void showPane(PaneType type, QString args = "");
+
 signals:
+    void configureDone();
 
 public slots:
     void slotBuildCfgPaneActived();
     void slotRunCfgPaneActived();
+
+private:
+    RuntimeWidgetPrivate *const d;
 };
 
 #endif // RUNTIMEWIDGET_H

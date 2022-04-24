@@ -10,12 +10,11 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-namespace toolchain {
-namespace cxx {
+namespace toolchains {
 const QString K_SCIRPTNAME{"toolchain.sh"};
-const QString K_FILENAME{"toolchains_cxx.support"};
+const QString K_TOOLCHAINFILE{"toolchains_cxx.support"};
 const QString K_VERSION{"version"};
-const QString K_HOST_OS{"host_os"};
+const QString K_HOSTK_TOOLCHAINFILEK_TOOLCHAINFILEK_TOOLCHAINFILE_OS{"host_os"};
 const QString K_HOST_ARCH{"host_arch"};
 const QString K_HOST_KERNEL{"host_kernel"};
 const QString K_TOOLCHAINS{"toolchains"};
@@ -26,12 +25,11 @@ const QString K_TOOLCHAIN_PATH{"toolchain_path"};
 const QString K_TOOLCHAIN_C_COMPILER{"toolchain_c_compiler"};
 const QString K_TOOLCHAIN_CXX_COMPILER{"toolchain_cxx_compiler"};
 const QString K_TOOLCHAIN_DEBUGGER{"toolchain_debugger"};
-} // namespace cxx
 } // namespace toolchain
 
-bool toolchains::cxx::generatGlobalFile()
+bool toolchains::generatGlobalFile()
 {
-    using namespace toolchain::cxx;
+    using namespace toolchains;
     // 获取已安装的工具链扫描脚本
     auto script = CustomPaths::global(CustomPaths::Scripts) + QDir::separator() + K_SCIRPTNAME;
     // 执行扫描脚本，隐式规则 "$HOME/.config/unioncode/configures/toolchains.support"
@@ -39,7 +37,7 @@ bool toolchains::cxx::generatGlobalFile()
         qInfo() << out;
     });
     // 返回脚本标定路径
-    QString result = CustomPaths::user(CustomPaths::Configures) + QDir::separator() + K_FILENAME;
+    QString result = CustomPaths::user(CustomPaths::Configures) + QDir::separator() + K_TOOLCHAINFILE;
     if (QFile(result).exists())
         return true;
     else

@@ -36,7 +36,6 @@ using namespace dpfservice;
 
 void ProjectCMake::initialize()
 {
-
 }
 
 bool ProjectCMake::start()
@@ -57,26 +56,42 @@ bool ProjectCMake::start()
         CMakeOpenHandler *openHandler = CMakeOpenHandler::instance();
         QObject::connect(openHandler, &CMakeOpenHandler::projectOpened,
                          [=](const QString &name, const QString &filePath) {
+
+            dpf::Event menuOpenFile;
+            menuOpenFile.setTopic(T_MENU);
+            menuOpenFile.setData(D_FILE_OPENFOLDER);
+            QFileInfo fileInfo(filePath);
+            menuOpenFile.setProperty(P_FILEPATH, fileInfo.dir().path());
+            dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
+
             if (projectService) {
                 ProjectGenerator *generator = projectService->createGenerator(name);
-                // 转发构建目标参数
+                QString projectFilePath = filePath;
+                // show build type config pane.
+                projectService->showConfigureProjDlg(projectFilePath);
+                // get config result.
+                QString outputPath = projectService->getDefaultOutputPath();
+
                 QObject::connect(generator, &ProjectGenerator::targetExecute,
-                                 [=](const QString &cmd, const QStringList &args){
-                    emit projectService->targetExecute(cmd, args);
+                                 [=](const QString &cmd, const QStringList &args) {
+                    // Execute project tree command.
+                    emit projectService->targetCommand(cmd, args);
                 });
-                auto rootItem = generator->createRootItem(filePath);
+                auto rootItem = generator->createRootItem(filePath, outputPath);
                 if (projectService->addProjectRootItem)
-                    projectService->addProjectRootItem(rootItem); // 设置项目根节点
+                    projectService->addProjectRootItem(rootItem);   // 设置项目根节点
                 if (projectService->expandedProjectDepth)
-                    projectService->expandedProjectDepth(rootItem, 2); // 初始化展开两级
+                    projectService->expandedProjectDepth(rootItem, 2);   // 初始化展开两级
                 if (windowService->switchWidgetNavigation)
-                    windowService->switchWidgetNavigation(MWNA_EDIT); // 切换编辑器导航栏
+                    windowService->switchWidgetNavigation(MWNA_EDIT);   // 切换编辑器导航栏
                 if (windowService->switchWidgetWorkspace)
                     windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
+
+                emit projectService->projectConfigureDone();
             }
         });
 
-        if(windowService->addOpenProjectAction) {
+        if (windowService->addOpenProjectAction) {
             windowService->addOpenProjectAction(new AbstractAction(openHandler->openAction()));
         }
     }

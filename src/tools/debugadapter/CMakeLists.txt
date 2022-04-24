@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(ucbackend)
+project(debugadapter)
 
 set(CPPDAP_DIR ${CMAKE_SOURCE_DIR}/3rdparty/cppdap)
 include_directories(${CPPDAP_DIR}/include)
 find_package(Qt5 CONFIG REQUIRED Core DBus)
 
-set(UCBACKEND_HEADERS
+set(${PROJECT_NAME}_HEADERS
     debugmanager.h
     gdbproxy.h
     debugengine.h
@@ -16,7 +16,7 @@ set(UCBACKEND_HEADERS
     serverinfo.h
    )
 
-set(UCBACKEND_SOURCES
+set(${PROJECT_NAME}_SOURCES
     debugmanager.cpp
     gdbproxy.cpp
     main.cpp
@@ -30,11 +30,11 @@ link_libraries(
     pthread
     )
 
-add_executable(ucbackend main.cpp
-    ${UCBACKEND_HEADERS}
-    ${UCBACKEND_SOURCES})
+add_executable(${PROJECT_NAME} main.cpp
+    ${${PROJECT_NAME}_HEADERS}
+    ${${PROJECT_NAME}_SOURCES})
 
-target_link_libraries(ucbackend
+target_link_libraries(${PROJECT_NAME}
   Qt5::DBus
   )
 
