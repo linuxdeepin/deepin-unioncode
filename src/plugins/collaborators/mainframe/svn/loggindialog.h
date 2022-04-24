@@ -39,11 +39,15 @@ public:
     QString passwd() const;
     void setTitleText(const QString &name);
     QString titleText() const;
+
 private:
     QLabel *titleLabel{nullptr};
     QLineEdit *nameEdit{nullptr};
     QLineEdit *passwdEdit{nullptr};
     QPushButton *pbtOk{nullptr};
+
+Q_SIGNALS:
+    void logginOk();
 };
 
 #endif // LOGGINDIALOG_H

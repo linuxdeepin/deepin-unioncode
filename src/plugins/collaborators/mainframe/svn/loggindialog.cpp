@@ -14,11 +14,35 @@ LogginDialog::LogginDialog(QWidget *parent, Qt::WindowFlags f)
     QVBoxLayout *vLayoutMain = new QVBoxLayout();
 
     setFixedWidth(300);
+    QFont font1;
+    font1.setBold(true);
+    font1.setWeight(QFont::Bold);
+    titleLabel->setFont(font1);
+    titleLabel->setObjectName("HeaderTitle");
     titleLabel->setAlignment(Qt::AlignCenter);
     pbtOk->setFixedWidth(60);
-    nameEdit->setPlaceholderText("User Name");
+    pbtOk->setEnabled(false);
+    nameEdit->setPlaceholderText("User");
     passwdEdit->setPlaceholderText("Password");
     passwdEdit->setEchoMode(QLineEdit::EchoMode::Password);
+    QObject::connect(nameEdit, &QLineEdit::textChanged, [=](const QString &text){
+        Q_UNUSED(text);
+        if (!nameEdit->text().isEmpty() && !passwdEdit->text().isEmpty()){
+            pbtOk->setEnabled(true);
+        } else {
+            pbtOk->setEnabled(false);
+        }
+    });
+    QObject::connect(passwdEdit, &QLineEdit::textChanged, [=](const QString &text){
+        Q_UNUSED(text);
+        if (!nameEdit->text().isEmpty() && !passwdEdit->text().isEmpty()){
+            pbtOk->setEnabled(true);
+        } else {
+            pbtOk->setEnabled(false);
+        }
+    });
+    QObject::connect(pbtOk, &QPushButton::pressed, this, &LogginDialog::logginOk);
+
     hLayoutPbt->addStrut(10);
     hLayoutPbt->addWidget(pbtOk);
     hLayoutPbt->setAlignment(Qt::AlignRight);
@@ -27,10 +51,6 @@ LogginDialog::LogginDialog(QWidget *parent, Qt::WindowFlags f)
     vLayoutMain->addWidget(passwdEdit);
     vLayoutMain->addLayout(hLayoutPbt);
     setLayout(vLayoutMain);
-
-    QObject::connect(pbtOk, &QPushButton::pressed, [=](){
-        this->close();
-    });
 }
 
 void LogginDialog::setName(const QString &name)

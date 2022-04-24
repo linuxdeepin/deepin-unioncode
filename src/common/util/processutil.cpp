@@ -26,27 +26,29 @@
 
 bool ProcessUtil::execute(const QString &program,
                           const QStringList &arguments,
-                          ProcessUtil::ReadCallBack func)
+                          ProcessUtil::ReadCallBack func,
+                          int cmpExitCode)
 {
     bool ret = false;
     QProcess process;
     process.setProgram(program);
     process.setArguments(arguments);
     process.connect(&process, QOverload<int, QProcess::ExitStatus >::of(&QProcess::finished),
-                    [&ret, &process](int exitCode, QProcess::ExitStatus exitStatus){
-        if (exitCode == 0 && exitStatus == QProcess::NormalExit)
+                    [&ret, &cmpExitCode](int exitCode, QProcess::ExitStatus exitStatus){
+        if (exitCode == cmpExitCode && exitStatus == QProcess::NormalExit)
             ret = true;
-        qInfo() << process.program() << process.arguments();
     });
 
-    if (func) {
-        QProcess::connect(&process, &QProcess::readyRead, [&process, &func](){
-            func(process.readAll());
-        });
-    }
     process.start();
     process.waitForFinished();
-    qCritical() << process.errorString();
+
+    if (func) {
+        func(process.readAll());
+    }
+
+    if (!ret) {
+        qCritical() << process.errorString();
+    }
     return ret;
 }
 

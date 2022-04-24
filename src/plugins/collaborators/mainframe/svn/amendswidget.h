@@ -34,10 +34,7 @@ class QPushButton;
 class QLineEdit;
 class QHBoxLayout;
 class QVBoxLayout;
-
-namespace collaborators {
-class FileListWidget;
-}
+class FileModifyWidget;
 
 extern const QString Description;
 extern const QString Summary;
@@ -50,17 +47,23 @@ class AmendsWidget : public QFrame
 public:
     explicit AmendsWidget(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
     virtual ~AmendsWidget();
-    void reflashAmends(const QSet<QString> &keys = {Summary, Description});
+    void reflashAmends(const QSet<QString> &keys = {Description});
     QHash<QString, QString> amendValues();
     QString amendValue(const QString &key);
+    FileModifyWidget *fileAddedWidget();
+    FileModifyWidget *fileSourceWidget();
+
+signals:
+    void commitClicked();
+    void revertAllClicked();
 
 private:
-    collaborators::FileListWidget *fListCanAdd{nullptr};
-    collaborators::FileListWidget *fListCanRemove{nullptr};
+    FileModifyWidget *fListAdded{nullptr};
+    FileModifyWidget *fListSource{nullptr};
     QVBoxLayout *vLayoutAmend{nullptr};
     QHBoxLayout *hLayPbt{nullptr};
     QPushButton *pbtCommit{nullptr};
-    QPushButton *pbtCancel{nullptr};
+    QPushButton *pbtRevertAll{nullptr};
     QVBoxLayout *vLayoutMain{nullptr};
 };
 

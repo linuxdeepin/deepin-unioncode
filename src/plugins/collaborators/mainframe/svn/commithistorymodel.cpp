@@ -5,12 +5,12 @@ namespace collaborators {
 CommitHistoryModel::CommitHistoryModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
-    mColumns.insert(CommitDataRole::TreeViewIcon, QAbstractItemModel::tr(""));
-    mColumns.insert(CommitDataRole::Graph, QAbstractItemModel::tr(""));
-    mColumns.insert(CommitDataRole::Sha, QAbstractItemModel::tr("Sha"));
-    mColumns.insert(CommitDataRole::Log, QAbstractItemModel::tr("History"));
-    mColumns.insert(CommitDataRole::Author, QAbstractItemModel::tr("Author"));
-    mColumns.insert(CommitDataRole::Date, QAbstractItemModel::tr("Date"));
+    mColumns.insert(CommitHistoryRole::TreeViewIcon, QAbstractItemModel::tr(""));
+    mColumns.insert(CommitHistoryRole::Graph, QAbstractItemModel::tr(""));
+    mColumns.insert(CommitHistoryRole::Sha, QAbstractItemModel::tr("Sha"));
+    mColumns.insert(CommitHistoryRole::Log, QAbstractItemModel::tr("History"));
+    mColumns.insert(CommitHistoryRole::Author, QAbstractItemModel::tr("Author"));
+    mColumns.insert(CommitHistoryRole::Date, QAbstractItemModel::tr("Date"));
 }
 
 QVariant CommitHistoryModel::data(const QModelIndex &index, int role) const

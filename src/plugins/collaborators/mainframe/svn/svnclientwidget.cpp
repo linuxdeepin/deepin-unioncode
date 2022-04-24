@@ -44,7 +44,9 @@ void SvnClientWidget::addNewRepoTab(const QString &repoPathArg, bool pinned)
 
     if (!mCurrentRepos.contains(repoPath)) {
         const auto repoName = repoPath.contains("/") ? repoPath.split("/").last() : "";
-        const int index = mRepos->addPinnedTab(new ReposWidget, repoName);
+        auto reposWidget = new ReposWidget;
+        reposWidget->setReposPath(repoPathArg);
+        const int index = mRepos->addPinnedTab(reposWidget, repoName);
         mRepos->setTabIcon(index, QIcon(QString(":/icons/local")));
     }
 }

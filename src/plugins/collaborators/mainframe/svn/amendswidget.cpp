@@ -1,6 +1,6 @@
 #include "amendswidget.h"
 #include "CommitInfo.h"
-#include "filelistwidget.h"
+#include "filemodifywidget.h"
 #include "CommitInfoPanel.h"
 
 #include <QBoxLayout>
@@ -12,24 +12,28 @@
 const QString Description = QTextEdit::tr("Description");
 const QString Summary = QLineEdit::tr("Summary");
 const QString Commit = QPushButton::tr("Commit");
-const QString Cancel = QPushButton::tr("Cancel");
+const QString RevertAll = QPushButton::tr("Revert All");
 
 AmendsWidget::AmendsWidget(QWidget *parent, Qt::WindowFlags f)
     : QFrame (parent, f)
-    , fListCanAdd(new collaborators::FileListWidget)
-    , fListCanRemove(new collaborators::FileListWidget)
+    , fListAdded(new FileModifyWidget)
+    , fListSource(new FileModifyWidget)
     , vLayoutAmend(new QVBoxLayout)
     , hLayPbt(new QHBoxLayout)
     , pbtCommit(new QPushButton(Commit))
-    , pbtCancel(new QPushButton(Cancel))
+    , pbtRevertAll(new QPushButton(RevertAll))
     , vLayoutMain(new QVBoxLayout)
 {
-    pbtCancel->setObjectName("warningButton");
+    pbtRevertAll->setObjectName("warningButton");
     pbtCommit->setObjectName("applyActionBtn");
-    vLayoutMain->addWidget(fListCanAdd);
+    QObject::connect(pbtRevertAll, &QPushButton::clicked,
+                     this, &AmendsWidget::revertAllClicked);
+    QObject::connect(pbtCommit, &QPushButton::clicked,
+                     this, &AmendsWidget::commitClicked);
+    vLayoutMain->addWidget(fListSource);
     vLayoutMain->addLayout(vLayoutAmend);
-    vLayoutMain->addWidget(fListCanRemove);
-    hLayPbt->addWidget(pbtCancel);
+    vLayoutMain->addWidget(fListAdded);
+    hLayPbt->addWidget(pbtRevertAll);
     hLayPbt->addWidget(pbtCommit);
     vLayoutMain->addLayout(hLayPbt);
     setLayout(vLayoutMain);
@@ -53,7 +57,6 @@ void AmendsWidget::reflashAmends(const QSet<QString> &keys)
         lineEdit->setObjectName("leCommitTitle");
         lineEdit->setPlaceholderText(Summary);
         lineLayout->addWidget(lineEdit);
-        vLayoutAmend->addLayout(lineLayout);
     }
 
     if (labelKey.contains(Description)) {
@@ -61,7 +64,7 @@ void AmendsWidget::reflashAmends(const QSet<QString> &keys)
         auto textEdit = new QTextEdit();
         textEdit->setObjectName("teDescription");
         textEdit->setPlaceholderText(Description);
-        vLayoutAmend->addWidget(textEdit);
+        lineLayout->addWidget(textEdit);
     }
 
     auto itera = labelKey.rbegin();
@@ -101,7 +104,7 @@ QHash<QString, QString> AmendsWidget::amendValues()
 QString AmendsWidget::amendValue(const QString &key)
 {
     QString result{};
-    auto item = vLayoutAmend->layout()->itemAt(0);
+    QLayoutItem *item = vLayoutAmend->layout()->itemAt(0);
     if (item) {
         auto childLayout = item->layout();
         if (childLayout) {
@@ -119,4 +122,14 @@ QString AmendsWidget::amendValue(const QString &key)
         }
     }
     return result;
+}
+
+FileModifyWidget *AmendsWidget::fileAddedWidget()
+{
+    return fListAdded;
+}
+
+FileModifyWidget *AmendsWidget::fileSourceWidget()
+{
+    return fListSource;
 }

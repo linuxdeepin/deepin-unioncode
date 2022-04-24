@@ -25,7 +25,6 @@
 #include "mainframe/svn/svnclientwidget.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
-#include "mainframe/svn/executor.h"
 #include <QAction>
 
 using namespace dpfservice;

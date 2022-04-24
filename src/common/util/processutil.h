@@ -33,7 +33,9 @@ public:
     typedef std::function<void(const QByteArray &)> ReadCallBack;
     static bool execute(const QString &program,
                         const QStringList &arguments,
-                        ReadCallBack func = nullptr);
+                        ReadCallBack func = nullptr,
+                        int cmpExitCode = 0);
+
     static bool exists(const QString &name);
     static QString version(const QString &name);
 

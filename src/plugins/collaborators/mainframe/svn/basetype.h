@@ -24,7 +24,7 @@
 
 #include <QMetaEnum>
 
-enum CommitDataRole
+enum CommitHistoryRole
 {
     TreeViewIcon = Qt::ItemDataRole::UserRole,
     Graph,
@@ -33,5 +33,44 @@ enum CommitDataRole
     Date,
     Sha
 };
+
+enum FileModifyRole
+{
+    FilePath = Qt::ItemDataRole::UserRole,
+    FileIconType,
+    RevisionType,
+};
+
+struct RevisionFile
+{
+    QString displayName;
+    QString filePath;
+    QString revisionType;
+
+    RevisionFile(){}
+
+    RevisionFile(const QString displayName,
+                 const QString filePath,
+                 const QString revisionType)
+        : displayName(displayName)
+        , filePath(filePath)
+        , revisionType(revisionType)
+    {}
+
+    bool isInvalid() {
+        if (displayName.isEmpty() || filePath.isEmpty()
+                || revisionType.isEmpty())
+            return true;
+        return false;
+    }
+
+    bool operator == (const RevisionFile &file) {
+        return displayName == file.displayName
+                && filePath == file.filePath
+                && revisionType == file.revisionType;
+    }
+};
+
+typedef QList<RevisionFile> RevisionFiles;
 
 #endif // COMMITDATAROLE_H

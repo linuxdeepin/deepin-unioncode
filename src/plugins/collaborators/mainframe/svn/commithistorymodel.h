@@ -22,7 +22,7 @@
 #ifndef COMMITHISTORYMODEL_H
 #define COMMITHISTORYMODEL_H
 
-#include "commitdatarole.h"
+#include "basetype.h"
 
 #include <QAbstractItemModel>
 
@@ -42,7 +42,7 @@ public:
     int columnCount(const QModelIndex &) const override;
 
 private:
-    QHash<CommitDataRole, QString> mColumns;
+    QHash<CommitHistoryRole, QString> mColumns;
 };
 
 } //namespace collaborators

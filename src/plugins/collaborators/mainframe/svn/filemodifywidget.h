@@ -22,32 +22,32 @@
 #ifndef FILELISTWIDGET_H
 #define FILELISTWIDGET_H
 
+#include "basetype.h"
+
 #include <QListWidget>
-#include "RevisionFiles.h"
+#include <QFileIconProvider>
 
 class FileListDelegate; // gitqlient class;
-
-namespace collaborators {
-
-class FileListWidget : public QListWidget
+class FileModifyWidget : public QListWidget
 {
     Q_OBJECT
 
 signals:
-   void signalShowFileHistory(const QString &fileName);
-   void signalEditFile(const QString &fileName, int line, int column);
+    void fileDiffChecked(const RevisionFile &file);
+    void fileMenuRequest(const RevisionFile &file, const QPoint &global);
 
 public:
-    explicit FileListWidget(QWidget *parent = nullptr);
-    void insertFiles(const std::optional<RevisionFiles> &files);
+    explicit FileModifyWidget(QWidget *parent = nullptr);
+    RevisionFile file(int index);
+    void addFile(const RevisionFile &file);
+    void addFiles(const RevisionFiles &files);
+    void setFiles(const RevisionFiles &files);
+    void removeFile(const RevisionFile &file);
 
 private:
-    FileListDelegate *mFileDelegate {nullptr};
-
     void showContextMenu(const QPoint &);
-    void addItem(const QString &label, const QColor &clr);
+    QListWidgetItem *createItem(const RevisionFile &file);
+    RevisionFile createRevi(const QListWidgetItem *item);
 };
-
-} // namespace collaborators
 
 #endif // FILELISTWIDGET_H

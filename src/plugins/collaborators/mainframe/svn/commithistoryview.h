@@ -22,7 +22,7 @@
 #ifndef COMMITHISTORYVIEW_H
 #define COMMITHISTORYVIEW_H
 
-#include "commitdatarole.h"
+#include "basetype.h"
 
 #include <QTreeView>
 
