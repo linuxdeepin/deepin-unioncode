@@ -64,10 +64,10 @@ bool Container::start()
         windowService->addContextWidget("Virtual", new AbstractWidget(ContainerKeeper::instance()->tabWidget()));
     }
 
-    auto projectPath="/home/zhxiao/Workspaces/QThreadWorker";
-    addProject(projectPath);
-    static auto initInfo = initContainer(projectPath);
-    execContainerCommand(projectPath, QString{"git clone -b dev https://gerrit.uniontech.com/unioncode.git /usr/src/unioncode\n"});
+//    auto projectPath="/home/zhxiao/Workspaces/QThreadWorker";
+//    addProject(projectPath);
+//    static auto initInfo = initContainer(projectPath);
+//    execContainerCommand(projectPath, QString{"git clone -b dev https://gerrit.uniontech.com/unioncode.git /usr/src/unioncode\n"});
     return true;
 }
 

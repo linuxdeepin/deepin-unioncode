@@ -24,21 +24,11 @@
 
 #include <QMetaEnum>
 
-enum CommitHistoryRole
-{
-    TreeViewIcon = Qt::ItemDataRole::UserRole,
-    Graph,
-    Log,
-    Author,
-    Date,
-    Sha
-};
-
 enum FileModifyRole
 {
-    FilePath = Qt::ItemDataRole::UserRole,
-    FileIconType,
-    RevisionType,
+    FilePathRole = Qt::ItemDataRole::UserRole,
+    FileIconTypeRole,
+    RevisionTypeRole,
 };
 
 struct RevisionFile
@@ -57,14 +47,14 @@ struct RevisionFile
         , revisionType(revisionType)
     {}
 
-    bool isInvalid() {
-        if (displayName.isEmpty() || filePath.isEmpty()
-                || revisionType.isEmpty())
+    bool isValid() const {
+        if (!displayName.isEmpty() || !filePath.isEmpty()
+                || !revisionType.isEmpty())
             return true;
         return false;
     }
 
-    bool operator == (const RevisionFile &file) {
+    bool operator == (const RevisionFile &file) const {
         return displayName == file.displayName
                 && filePath == file.filePath
                 && revisionType == file.revisionType;
@@ -72,5 +62,61 @@ struct RevisionFile
 };
 
 typedef QList<RevisionFile> RevisionFiles;
+
+Q_DECLARE_METATYPE(RevisionFile)
+Q_DECLARE_METATYPE(RevisionFiles)
+
+
+enum HistoryRole
+{
+    DescriptionRole = Qt::ItemDataRole::UserRole,
+    RevisionFilesRole,
+};
+
+struct HistoryData
+{
+    QString revision;
+    QString user;
+    QString dateTime;
+    QString lineCount;
+    QString description;
+    RevisionFiles changedFiles;
+
+    HistoryData(){}
+
+    HistoryData(const QString &revision,
+                const QString &user,
+                const QString &dateTime,
+                const QString &lineCount,
+                const QString &description = "",
+                const RevisionFiles &changedFiles= {})
+        : revision(revision)
+        , user(user)
+        , dateTime(dateTime)
+        , lineCount(lineCount)
+        , description(description)
+        , changedFiles(changedFiles)
+    {
+
+    }
+
+    bool isValid() const {
+        if (!revision.isEmpty() || !user.isEmpty()
+                || !dateTime.isEmpty() || !lineCount.isEmpty())
+            return true;
+        return false;
+    }
+
+    bool operator == (const HistoryData &data) const {
+        return revision == data.revision
+                && user == data.user
+                && dateTime == data.dateTime
+                && lineCount == data.lineCount
+                && description == data.description
+                && changedFiles == data.changedFiles;
+    }
+};
+
+typedef QList<HistoryData> HistoryDatas;
 
 #endif // COMMITDATAROLE_H

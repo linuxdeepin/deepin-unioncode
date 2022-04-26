@@ -12,6 +12,9 @@
 #include <QMessageBox>
 #include <QLabel>
 
+#include "FileEditor.h"
+#include "FileDiffView.h"
+
 SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow (parent, flags)
     , mRepos(new QPinnableTabWidget())
@@ -30,7 +33,20 @@ SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
     mRepos->setStyleSheet(GitQlientStyles::getStyles());
     mRepos->setCornerWidget(homeMenu, Qt::TopLeftCorner);
     setCentralWidget(mRepos);
-    //    addRepoTab("/home/funning/Documents/svn");
+//    addRepoTab("/home/funning/Documents/svn");
+//    auto diffWidget = new FileDiffView();
+//    auto text = "123\n1234\n12345\n123456\n1234567\n12345678\n";
+//    ChunkDiffInfo::ChunkInfo info1{};
+//    info1.startLine = 0;
+//    info1.endLine = 1;
+//    info1.addition = false;
+//    ChunkDiffInfo::ChunkInfo info2{};
+//    info2.startLine = 3;
+//    info2.endLine  = 4;
+//    info2.addition = true;
+//    diffWidget->loadDiff(text, {info1});
+//    diffWidget->loadDiff(text, {info2});
+//    diffWidget->show();
 }
 
 void SvnClientWidget::addRepoTab(const QString &repoPath)

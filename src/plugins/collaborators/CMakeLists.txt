@@ -6,29 +6,35 @@ include(${CMAKE_SOURCE_DIR}/3rdparty/GitQlient.cmake)
 
 set(CXX_CPP
     mainframe/git/gitqlientwidget.cpp
+    mainframe/svn/historydiffview.cpp
+    mainframe/svn/historydiffwidget.cpp
+    mainframe/svn/historylogwidget.cpp
+    mainframe/svn/historydisplaywidget.cpp
+    mainframe/svn/historyview.cpp
+    mainframe/svn/filesourceview.cpp
     mainframe/svn/loggindialog.cpp
     mainframe/svn/svnclientwidget.cpp
     mainframe/svn/reposwidget.cpp
-    mainframe/svn/commithistorywidget.cpp
-    mainframe/svn/commithistorymodel.cpp
-    mainframe/svn/commithistoryview.cpp
     mainframe/svn/amendswidget.cpp
-    mainframe/svn/filemodifywidget.cpp
+    mainframe/svn/filemodifyview.cpp
     collaborators.cpp
     collaborators.json
     )
 
 set(CXX_H
     mainframe/git/gitqlientwidget.h
+    mainframe/svn/historydiffview.h
+    mainframe/svn/historydiffwidget.h
+    mainframe/svn/historylogwidget.h
+    mainframe/svn/historydisplaywidget.h
+    mainframe/svn/historyview.h
+    mainframe/svn/filesourceview.h
     mainframe/svn/loggindialog.h
     mainframe/svn/svnclientwidget.h
     mainframe/svn/reposwidget.h
     mainframe/svn/basetype.h
-    mainframe/svn/commithistorywidget.h
-    mainframe/svn/commithistorymodel.h
-    mainframe/svn/commithistoryview.h
     mainframe/svn/amendswidget.h
-    mainframe/svn/filemodifywidget.h
+    mainframe/svn/filemodifyview.h
     collaborators.h
     )
 

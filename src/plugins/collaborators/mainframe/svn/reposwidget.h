@@ -46,22 +46,31 @@ public:
     void setPasswd(const QString &value);
     void setLogginDisplay(const QString &name = "", const QString &passwd = "");
 
-    bool loadRevisionFiles();
-    bool reloadRevisionFiles();
+public slots:
+    void doLoggin(); // main func
+    void doUpdateRepos();
+    void doRefresh();
+    void doAmendsCommit();
+    void doAmendsRevertAll();
+
+private:
     bool add(const QString &display);
     bool revert(const QString &display);
 
-public slots:
-    void doLoggin();
-    void amendsFileMenu(const RevisionFile &file, const QPoint &pos);
-    void amendsCommit();
-    void amendsRevertAll();
+private slots:
+    void loadRevisionFiles();
+    void reloadRevisionFiles();
+    void loadHistory();
+    void reloadHistory();
+    void modFileMenu(const RevisionFile &file, const QPoint &pos);
+    void srcFileMenu(const QString &file, const QPoint &pos);
 
 private:
     void fileModifyMenu();
     static bool testUserLoggin(const QString &reposPath,
                                const QString &name,
                                const QString &passwd);
+    QWidget *initControlBar();
 };
 
 #endif // REPOSWIDGET_H

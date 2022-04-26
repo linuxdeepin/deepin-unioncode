@@ -24,7 +24,7 @@
 
 #include "common/common.h"
 
-#include <QFrame>
+#include <QSplitter>
 #include <QLineEdit>
 #include <QTextEdit>
 
@@ -34,37 +34,29 @@ class QPushButton;
 class QLineEdit;
 class QHBoxLayout;
 class QVBoxLayout;
-class FileModifyWidget;
+class FileModifyView;
+class FileSourceView;
 
-extern const QString Description;
-extern const QString Summary;
-extern const QString Commit;
-extern const QString Cancel;
-
-class AmendsWidget : public QFrame
+class AmendsWidget : public QSplitter
 {
     Q_OBJECT
 public:
-    explicit AmendsWidget(QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit AmendsWidget(QWidget* parent = nullptr);
     virtual ~AmendsWidget();
-    void reflashAmends(const QSet<QString> &keys = {Description});
-    QHash<QString, QString> amendValues();
-    QString amendValue(const QString &key);
-    FileModifyWidget *fileAddedWidget();
-    FileModifyWidget *fileSourceWidget();
+    QString description();
+    FileModifyView *modView();
 
 signals:
     void commitClicked();
     void revertAllClicked();
 
 private:
-    FileModifyWidget *fListAdded{nullptr};
-    FileModifyWidget *fListSource{nullptr};
-    QVBoxLayout *vLayoutAmend{nullptr};
+    FileModifyView *modifyView{nullptr};
     QHBoxLayout *hLayPbt{nullptr};
     QPushButton *pbtCommit{nullptr};
     QPushButton *pbtRevertAll{nullptr};
-    QVBoxLayout *vLayoutMain{nullptr};
+    QTextEdit *descEdit{nullptr};
+    QFrame *pbtWidget{nullptr};
 };
 
 #endif // AMENDSWIDGET_H

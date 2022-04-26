@@ -60,7 +60,15 @@ QLineEdit
     color: white;
 }
 
-QListWidget, QListView, QTreeWidget, QTreeView
+QTextBrowser
+{
+   color: white;
+   background: #2E2F30;
+   border-color: #202122;
+   border-bottom-color: #404142;
+}
+
+QListWidget, QListView, QTreeWidget, QTreeView, QTableView
 {
    color: white;
    background-color: #2E2F30;

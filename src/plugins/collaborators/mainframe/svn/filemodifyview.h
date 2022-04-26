@@ -19,25 +19,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef COMMITHISTORYVIEW_H
-#define COMMITHISTORYVIEW_H
+#ifndef FILELISTWIDGET_H
+#define FILELISTWIDGET_H
 
 #include "basetype.h"
 
-#include <QTreeView>
+#include <QTableView>
+#include <QFileIconProvider>
 
-namespace collaborators {
-
-class CommitHistoryModel;
-class CommitHistoryView : public QTreeView
+class QStandardItem;
+class FileListDelegate; // gitqlient class;
+class FileModifyViewPrivate;
+class FileModifyView : public QTableView
 {
     Q_OBJECT
+    FileModifyViewPrivate *const d;
+signals:
+    void diffChecked(const RevisionFile &file);
+    void menuRequest(const RevisionFile &file, const QPoint &global);
+
 public:
-    explicit CommitHistoryView(QWidget *parent = nullptr);
+    explicit FileModifyView(QWidget *parent = nullptr);
+    RevisionFile file(int row);
+    void clean();
+    void addFile(const RevisionFile &file);
+    void addFiles(const RevisionFiles &files);
+    void setFiles(const RevisionFiles &files);
+    void removeFile(const RevisionFile &file);
+    int rowCount();
+
 private:
-    CommitHistoryModel *model{nullptr};
+    void showContextMenu(const QPoint &);
+    QList<QStandardItem *> createRows(const RevisionFile &file);
+    RevisionFile createFile(int row);
 };
 
-} // namespace collaborators
-
-#endif // COMMITHISTORYVIEW_H
+#endif // FILELISTWIDGET_H
