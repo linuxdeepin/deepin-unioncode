@@ -41,13 +41,13 @@ signals:
 public:
     explicit FileModifyView(QWidget *parent = nullptr);
     RevisionFile file(int row);
+    RevisionFiles files();
     void clean();
     void addFile(const RevisionFile &file);
     void addFiles(const RevisionFiles &files);
     void setFiles(const RevisionFiles &files);
-    void removeFile(const RevisionFile &file);
+    bool removeFile(const RevisionFile &file);
     int rowCount();
-
 private:
     void showContextMenu(const QPoint &);
     QList<QStandardItem *> createRows(const RevisionFile &file);

@@ -28,6 +28,7 @@ const QString T_DEBUGGER {"Debugger"};
 const QString T_BUILDER {"Builder"};
 const QString T_WORKSPACE {"Workspace"};
 const QString T_RECENT{"Recent"};
+const QString T_PROCESSMESSAGE{"ProcessMessage"};
 
 const QString D_ACTION_SWITCH {"Action.Switch"};
 
@@ -45,6 +46,9 @@ const QString D_FILE_OPENFOLDER {"File.OpenFolder"};
 const QString D_ITEM_MENU_BUILD {"Item.Menu.Build"};
 const QString D_ITEM_DOUBLECLICKED {"Item.DoubleClicked"};
 const QString D_BUILD_TARGET {"Build.Target"};
+const QString D_SHOW {"Show"};
+const QString D_HIDE {"Hide"};
+const QString D_ADDTEXT {"AddText"};
 
 const QString P_ACTION_TEXT {"ActionText"};
 const QString P_FILELINE {"FileLine"};
@@ -56,3 +60,6 @@ const QString P_BUILDSYSTEM {"BuildSystem"};
 const QString P_BUILDDIRECTORY {"BuildDirectory"};
 const QString P_BUILDFILEPATH {"BuildFilePath"};
 const QString P_BUILDARGUMENTS {"BuildArguments"};
+const QString P_TEXT {"Text"};
+const QString P_PERCENT {"Percent"};
+const QString P_MAX_PERCENT {"MaxPerCent"};

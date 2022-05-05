@@ -47,6 +47,15 @@ void HistoryView::setDatas(const HistoryDatas &datas)
     setUpdatesEnabled(true);
 }
 
+void HistoryView::insertTopDatas(const HistoryDatas &datas)
+{
+    setUpdatesEnabled(false);
+    for (int i = 0; i < datas.size(); ++i) {
+        d->model->insertRow(i, createRow(datas.at(i)));
+    }
+    setUpdatesEnabled(true);
+}
+
 void HistoryView::addData(const HistoryData &one)
 {
     setUpdatesEnabled(false);
@@ -81,6 +90,11 @@ RevisionFiles HistoryView::revisionFiles(int row) const
     return rFiles;
 }
 
+HistoryData HistoryView::data(int row) const
+{
+    return createData(row);
+}
+
 QList<QStandardItem *> HistoryView::createRow(const HistoryData &data) const
 {
     QList<QStandardItem *> result;
@@ -100,6 +114,9 @@ QList<QStandardItem *> HistoryView::createRow(const HistoryData &data) const
 HistoryData HistoryView::createData(int row) const
 {
     HistoryData result;
+
+    if (row <=0 || row > d->model->rowCount())
+        return result;
 
     QStandardItem *revisionItem = d->model->item(row, 0);
     QStandardItem *userItem = d->model->item(row, 1);

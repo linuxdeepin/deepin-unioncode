@@ -9,6 +9,8 @@ class HistoryDiffWidget : public QSplitter
     Q_OBJECT
 public:
     explicit HistoryDiffWidget(QWidget *parent = nullptr);
+    HistoryDiffView *getOldView() const;
+    HistoryDiffView *getNewView() const;
 
 private:
     HistoryDiffView *oldView{nullptr};

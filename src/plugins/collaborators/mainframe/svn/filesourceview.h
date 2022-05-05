@@ -1,6 +1,8 @@
 #ifndef FILESOURCEVIEW_H
 #define FILESOURCEVIEW_H
 
+#include "basetype.h"
+
 #include <QTreeView>
 
 class QVBoxLayout;
@@ -12,11 +14,6 @@ class FileSourceView : public QTreeView
 public:
     explicit FileSourceView(QWidget *parent = nullptr);
     void setRootPath(const QString &filePath);
-
-signals:
-    void menuRequest(const QString &file, const QPoint &global);
-
-public slots:
 };
 
 #endif // FILESOURCEVIEW_H

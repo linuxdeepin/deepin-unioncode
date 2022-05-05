@@ -33,6 +33,7 @@ extern const QString T_DEBUGGER;
 extern const QString T_BUILDER;
 extern const QString T_WORKSPACE;
 extern const QString T_RECENT;
+extern const QString T_PROCESSMESSAGE;
 
 extern const QString D_ACTION_SWITCH;
 
@@ -47,18 +48,24 @@ extern const QString D_FILE_OPENFOLDER;
 extern const QString D_ITEM_MENU_BUILD;
 extern const QString D_ITEM_DOUBLECLICKED;
 extern const QString D_BUILD_TARGET;
+extern const QString D_SHOW;
+extern const QString D_HIDE;
+extern const QString D_ADDTEXT;
 
 extern const QString D_MARGIN_DEBUG_POINT_ADD;
 extern const QString D_MARGIN_DEBUG_POINT_REMOVE;
 extern const QString D_MARGIN_DEBUG_POINT_CLEAN;
 
-extern const QString P_ACTION_TEXT;    //value QString
-extern const QString P_FILELINE;       //value int
-extern const QString P_FILEPATH;       //value QString
-extern const QString P_PROJECTPATH;    //value QString
-extern const QString P_TARGETPATH;     //value QString
-extern const QString P_WORKSPACEFOLDER;//value QString
-extern const QString P_BUILDSYSTEM;    //value QString
-extern const QString P_BUILDDIRECTORY; //value QString
-extern const QString P_BUILDFILEPATH;  //value QString
-extern const QString P_BUILDARGUMENTS; //value QStringList
+extern const QString P_ACTION_TEXT;    // value QString
+extern const QString P_FILELINE;       // value int
+extern const QString P_FILEPATH;       // value QString
+extern const QString P_PROJECTPATH;    // value QString
+extern const QString P_TARGETPATH;     // value QString
+extern const QString P_WORKSPACEFOLDER;// value QString
+extern const QString P_BUILDSYSTEM;    // value QString
+extern const QString P_BUILDDIRECTORY; // value QString
+extern const QString P_BUILDFILEPATH;  // value QString
+extern const QString P_BUILDARGUMENTS; // value QStringList
+extern const QString P_TEXT;           // value QString
+extern const QString P_PERCENT;        // value int
+extern const QString P_MAX_PERCENT;    // value int

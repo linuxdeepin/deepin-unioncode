@@ -48,6 +48,15 @@ RevisionFile FileModifyView::file(int row)
     return {};
 }
 
+RevisionFiles FileModifyView::files()
+{
+    RevisionFiles files;
+    for (int i = 0; i < d->model->rowCount(); i++) {
+        files << file(i);
+    }
+    return files;
+}
+
 void FileModifyView::clean()
 {
     d->model->removeRows(0, d->model->rowCount());
@@ -77,15 +86,18 @@ void FileModifyView::setFiles(const RevisionFiles &files)
     addFiles(files);
 }
 
-void FileModifyView::removeFile(const RevisionFile &file)
+bool FileModifyView::removeFile(const RevisionFile &file)
 {
     for (int row = 0; row < d->model->rowCount(); row++) {
         if (createFile(row) == file) {
             auto rowItem = d->model->takeItem(row);
-            if (rowItem)
+            if (rowItem) {
                 delete rowItem;
+                return d->model->removeRow(row);
+            }
         }
     }
+    return false;
 }
 
 int FileModifyView::rowCount()

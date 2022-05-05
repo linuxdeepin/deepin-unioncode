@@ -1,5 +1,7 @@
 #include "svnclientwidget.h"
 #include "reposwidget.h"
+#include "checkoutdialog.h"
+#include "common/common.h"
 
 #include "QPinnableTabWidget.h"
 #include "GitQlientStyles.h"
@@ -11,9 +13,8 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QLabel>
-
-#include "FileEditor.h"
-#include "FileDiffView.h"
+#include <QProcess>
+#include <QFileDialog>
 
 SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow (parent, flags)
@@ -29,48 +30,94 @@ SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
     homeMenu->setToolTip("Options");
     homeMenu->setMenu(menu);
     homeMenu->setObjectName("MainMenuBtn");
+
+    const auto clone = menu->addAction(QAction::tr("Checkout repository"));
+    connect(clone, &QAction::triggered, this, &SvnClientWidget::showCheckoutDialog);
+
+    const auto open = menu->addAction(QAction::tr("Open repository"));
+    connect(open, &QAction::triggered, this, &SvnClientWidget::showOpenLocalRepos);
+
     mRepos->setObjectName("GitQlientTab");
     mRepos->setStyleSheet(GitQlientStyles::getStyles());
     mRepos->setCornerWidget(homeMenu, Qt::TopLeftCorner);
     setCentralWidget(mRepos);
-//    addRepoTab("/home/funning/Documents/svn");
-//    auto diffWidget = new FileDiffView();
-//    auto text = "123\n1234\n12345\n123456\n1234567\n12345678\n";
-//    ChunkDiffInfo::ChunkInfo info1{};
-//    info1.startLine = 0;
-//    info1.endLine = 1;
-//    info1.addition = false;
-//    ChunkDiffInfo::ChunkInfo info2{};
-//    info2.startLine = 3;
-//    info2.endLine  = 4;
-//    info2.addition = true;
-//    diffWidget->loadDiff(text, {info1});
-//    diffWidget->loadDiff(text, {info2});
-//    diffWidget->show();
+    addRepoTab("/home/funning/Documents/svn");
 }
 
-void SvnClientWidget::addRepoTab(const QString &repoPath)
+void SvnClientWidget::addRepoTab(const QString &repoPath, const QString &user, const QString &passwd)
 {
-    addNewRepoTab(repoPath, false);
+    if (!isSvnDir(repoPath)) {
+        ContextDialog::ok(QDialog::tr("Open path failed, current repos not svn subdir"));
+        return;
+    }
+    addNewRepoTab(repoPath, user, passwd);
 }
 
-void SvnClientWidget::addNewRepoTab(const QString &repoPathArg, bool pinned)
+void SvnClientWidget::addNewRepoTab(const QString &repoPathArg, const QString &user, const QString &passwd)
 {
     const auto repoPath = QFileInfo(repoPathArg).canonicalFilePath();
 
     if (!mCurrentRepos.contains(repoPath)) {
         const auto repoName = repoPath.contains("/") ? repoPath.split("/").last() : "";
         auto reposWidget = new ReposWidget;
+        reposWidget->setName(user);
+        reposWidget->setPasswd(passwd);
         reposWidget->setReposPath(repoPathArg);
-        const int index = mRepos->addPinnedTab(reposWidget, repoName);
+        const int index = mRepos->addTab(reposWidget, repoName);
         mRepos->setTabIcon(index, QIcon(QString(":/icons/local")));
     }
 }
 
+void SvnClientWidget::showCheckoutDialog()
+{
+    CheckoutDialog dialog;
+    dialog.connect(&dialog, &CheckoutDialog::checkoutRepos, this, &SvnClientWidget::doCheckoutRepos);
+    dialog.exec();
+}
+
+void SvnClientWidget::showOpenLocalRepos()
+{
+    QFileDialog dialog;
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::DirectoryOnly);
+    dialog.setWindowTitle(QDialog::tr("select local reops"));
+    dialog.exec();
+    auto urls = dialog.selectedUrls();
+    if (!urls.isEmpty()) {
+       addRepoTab(urls.first().toLocalFile());
+    }
+}
+
+void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &local, const QString &user, const QString &passwd)
+{
+    QProcess process;
+    process.setProgram(svnProgram());
+    process.setArguments({"checkout", remote, local, "--username", user, "--password", passwd});
+    process.start();
+    process.waitForStarted();
+    process.waitForFinished();
+    if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
+        ContextDialog::ok(process.readAllStandardError());
+        return;
+    }
+
+    auto okCb = [=](bool checked){
+        Q_UNUSED(checked)
+        addRepoTab(local, user, passwd);
+    };
+
+    ContextDialog::okCancel(QString("checkout repos successful, now to open with user %0?").arg(user),
+                            "Message", QMessageBox::Icon::Question, okCb);
+}
+
+bool SvnClientWidget::isSvnDir(const QString &repoPath)
+{
+    QDir dir(repoPath + QDir::separator() + ".svn");
+    return dir.exists();
+}
 
 bool SvnClientWidget::eventFilter(QObject *obj, QEvent *event)
 {
-
     const auto menu = qobject_cast<QMenu *>(obj);
     if (menu && event->type() == QEvent::Show) {
         auto localPos = menu->parentWidget()->pos();

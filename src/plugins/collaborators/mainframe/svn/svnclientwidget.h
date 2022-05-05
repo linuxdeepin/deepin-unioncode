@@ -37,8 +37,17 @@ public:
 signals:
 
 public slots:
-    void addRepoTab(const QString &repoPath);
-    void addNewRepoTab(const QString &repoPathArg, bool pinned);
+    void addRepoTab(const QString &repoPath,
+                    const QString &user = "", const QString &passwd = "");
+    void addNewRepoTab(const QString &repoPathArg,
+                       const QString &user = "", const QString &passwd = "");
+    void showCheckoutDialog();
+    void showOpenLocalRepos();
+private slots:
+    void doCheckoutRepos(const QString &remote, const QString &local,
+                         const QString &user, const QString &passwd);
+private:
+    bool isSvnDir(const QString &repoPath);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

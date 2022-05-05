@@ -50,11 +50,27 @@ void CoreReceiver::eventProcess(const dpf::Event &event)
 
     if (event.topic() == T_NAV)
         navEvent(event);
+    else if (event.topic() == T_PROCESSMESSAGE)
+        processMessageEvent(event);
 }
 
 void CoreReceiver::navEvent(const dpf::Event &event)
 {
     if (event.data().toString() == D_ACTION_SWITCH) {
         WindowKeeper::instace()->switchWidgetNavigation(event.property(P_ACTION_TEXT).toString());
+    }
+}
+
+void CoreReceiver::processMessageEvent(const dpf::Event &event)
+{
+    if (event.data().toString() == D_SHOW) {
+        WindowKeeper::instace()->showProcessDisplay();
+    } else if (event.data().toString() == D_HIDE) {
+        WindowKeeper::instace()->hideProcessDisplay();
+    } else if (event.data().toString() == D_ADDTEXT) {
+        QString message = event.property(P_TEXT).toString();
+        int percent = event.property(P_PERCENT).toInt();
+        int maxPercent = event.property(P_MAX_PERCENT).toInt();
+        WindowKeeper::instace()->appendProcessMessage(message, percent, maxPercent);
     }
 }

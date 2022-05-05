@@ -52,6 +52,7 @@ public slots:
     void doRefresh();
     void doAmendsCommit();
     void doAmendsRevertAll();
+    void doDiffFileAtRevision();
 
 private:
     bool add(const QString &display);
@@ -63,7 +64,9 @@ private slots:
     void loadHistory();
     void reloadHistory();
     void modFileMenu(const RevisionFile &file, const QPoint &pos);
-    void srcFileMenu(const QString &file, const QPoint &pos);
+    void historyDataClicked(const QModelIndex &index);
+    void historyFileClicked(const QModelIndex &index);
+    void setSrcViewReviFiles(const QString &path);
 
 private:
     void fileModifyMenu();

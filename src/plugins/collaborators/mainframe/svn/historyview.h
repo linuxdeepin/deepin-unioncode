@@ -15,9 +15,11 @@ public:
     explicit HistoryView(QWidget *parent = nullptr);
     HistoryData topData() const;
     void setDatas(const HistoryDatas &datas);
+    void insertTopDatas(const HistoryDatas &datas);
     void addData(const HistoryData &one);
     QString description(int row) const;
     RevisionFiles revisionFiles(int row) const;
+    HistoryData data(int row) const;
 
 private:
     QList<QStandardItem*> createRow(const HistoryData &data) const;
