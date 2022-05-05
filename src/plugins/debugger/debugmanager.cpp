@@ -36,13 +36,12 @@ DebugManager::DebugManager(QObject *parent)
 
 bool DebugManager::initialize(dpfservice::WindowService *service)
 {
-    debugger.reset(new Debugger(this));
-    debugger->initializeView();
+    debugger = new Debugger(this);
 
     menuManager.reset(new MenuManager());
     menuManager->initialize(service);
 
-    connect(debugger.get(), &Debugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
+    connect(debugger, &Debugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
 
     return true;
 }
@@ -52,7 +51,7 @@ AppOutputPane *DebugManager::getOutputPane() const
     return debugger->getOutputPane();
 }
 
-QTreeView *DebugManager::getStackPane() const
+QWidget *DebugManager::getStackPane() const
 {
     return debugger->getStackPane();
 }

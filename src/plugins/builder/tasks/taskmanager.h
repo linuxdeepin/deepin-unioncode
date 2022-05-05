@@ -51,7 +51,7 @@ public slots:
 private:
     explicit TaskManager(QObject *parent = nullptr);
 
-    QSharedPointer<TaskView> view;
+    TaskView *view = nullptr;
     QSharedPointer<TaskModel> model;
 };
 

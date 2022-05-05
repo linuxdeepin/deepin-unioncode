@@ -161,9 +161,9 @@ public:
     gdb::Breakpoint breakpointByFileLine(const QString& path, int line) const;
     bool isInferiorRunning() const;
     qint64 getProcessId();
-    QList<gdb::Frame> allStackframes();
-    QList<gdb::Thread> allThreadList();
-    QList<gdb::Variable> allVariableList();
+    QList<gdb::Frame> &allStackframes();
+    QList<gdb::Thread> &allThreadList();
+    QList<gdb::Variable> &allVariableList();
     void wait();
 public slots:
     void execute();

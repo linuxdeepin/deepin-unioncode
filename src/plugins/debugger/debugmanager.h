@@ -45,7 +45,7 @@ public:
     explicit DebugManager(QObject *parent = nullptr);
     bool initialize(dpfservice::WindowService *service);
     AppOutputPane *getOutputPane() const;
-    QTreeView *getStackPane() const;
+    QWidget *getStackPane() const;
     QTreeView *getLocalsPane() const;
     QTreeView *getBreakpointPane() const;
 
@@ -73,7 +73,7 @@ public slots:
 private:
     void launchBackend();
 
-    QSharedPointer<Debugger> debugger;
+    Debugger *debugger = nullptr;
     QProcess backend;
 
     QSharedPointer<MenuManager> menuManager;

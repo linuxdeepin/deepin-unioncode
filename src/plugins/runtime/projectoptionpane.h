@@ -34,6 +34,7 @@ class ProjectOptionPane : public QGroupBox
     Q_OBJECT
 public:
     explicit ProjectOptionPane(QWidget *parent = nullptr);
+    ~ProjectOptionPane();
 
 signals:
     void activeBuildCfgPane();

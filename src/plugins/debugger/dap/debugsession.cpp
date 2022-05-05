@@ -376,7 +376,7 @@ void DebugSession::rawUpdate(IRawModelUpdate *data)
         threadIds.push_back(thread.id);
         if (threads.find(thread.id) == threads.end()) {
             // save the new thread.
-            threads.insert(std::pair<number, Thread *>(thread.id, new Thread(this, thread.name, thread.id)));
+            threads.insert(std::pair<dapNumber, Thread *>(thread.id, new Thread(this, thread.name, thread.id)));
         } else if (!thread.name.empty()) {
             // update thread name.
             auto oldThread = threads.find(thread.id);
@@ -854,7 +854,7 @@ RawDebugSession *DebugSession::getRawSession() const
     return raw.get();
 }
 
-void DebugSession::fetchThreads(IRawStoppedDetails *stoppedDetails)
+dap::array<dap::Thread> DebugSession::fetchThreads(IRawStoppedDetails *stoppedDetails)
 {
     if (raw) {
         auto response = raw->threads();
@@ -865,8 +865,10 @@ void DebugSession::fetchThreads(IRawStoppedDetails *stoppedDetails)
             }
             IRawModelUpdate args { getId(), response.get().response.threads, details };
             model->rawUpdate(&args);
+            return response.get().response.threads;
         }
     }
+    return {};
 }
 
 void DebugSession::onBreakpointHit(const StoppedEvent &event)

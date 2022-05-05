@@ -32,6 +32,7 @@
 #include <QThread>
 #include <QProcess>
 #include <QtDBus/QDBusConnection>
+#include <QList>
 
 // keep the initialization in order.
 static ConditionLock configured;
@@ -254,7 +255,7 @@ void DapSession::registerHanlder()
             // TODO(Any):multi-thread condition should be done.
             Q_UNUSED(thid)
             processId = debugger->getProcessId();
-            threadId = processId;
+            threadId = thid.toInt();
             dap::integer pointerSize;
             dap::ProcessEvent processEvent;
             processEvent.name = processName.toStdString();
@@ -419,15 +420,19 @@ void DapSession::registerHanlder()
         isThreadRequestReceived = true;
         dap::ThreadsResponse response;
         Log("<-- Server recevied Thread request from client\n");
-        emit GDBProxy::instance()->sigThreads();
+        debugger->threadInfo();
 
         Log("--> Server sent Thread response to client\n");
-        dap::Thread thread;
-        thread.id = debugger->getProcessId();
-        thread.name = processName.toStdString();
-        dap::array<dap::Thread> threads;
-        threads.push_back(thread);
-        response.threads = threads;
+        QList<gdb::Thread> allThreads = debugger->allThreadList();
+        dap::array<dap::Thread> retThreads;
+        for (auto it : allThreads) {
+            dap::Thread thread;
+            thread.id = it.id;
+            thread.name = it.name.toStdString();
+            retThreads.push_back(thread);
+        }
+
+        response.threads = retThreads;
         return response;
     });
 
@@ -435,13 +440,20 @@ void DapSession::registerHanlder()
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_StackTrace
     session->registerHandler([&](const dap::StackTraceRequest &request)
                                      -> dap::StackTraceResponse {
-        Q_UNUSED(request);
+
+        auto threadid = request.threadId.operator long();
+
+        // select a given thread id
+        // -thread-select 3
+        gdb::Thread threadSelected;
+        threadSelected.id = static_cast<int>(threadid);
+        emit GDBProxy::instance()->sigSelectThread(threadSelected);
+
         dap::StackTraceResponse response;
         dap::array<dap::StackFrame> stackFrames;
         Log("<-- Server received StackTrace request from the client\n");
         QList<gdb::Frame> frames;
         if (isInferiorStopped) {
-
             debugger->stackListFrames();
             frames = debugger->allStackframes();
         }
@@ -645,7 +657,7 @@ void DapSession::handleAsyncStopped(const gdb::AsyncContext &ctx)
     dap::Source source;
     source.name = ctx.frame.file.toStdString();
     source.path = ctx.frame.fullpath.toStdString();
-    stoppedEvent.threadId = debugger->getProcessId();
+    stoppedEvent.threadId = ctx.threadId.toInt();
     stoppedEvent.allThreadsStopped = true;
     stoppedEvent.source = source;
     stoppedEvent.line = ctx.frame.line;

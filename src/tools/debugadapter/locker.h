@@ -25,6 +25,9 @@
 #include <mutex>
 #include <condition_variable>
 
+#include <QMessageBox>
+#include <QDebug>
+
 // Event provides a basic wait and signal synchronization primitive.
 class ConditionLock {
  public:
@@ -52,10 +55,17 @@ class ConditionLock {
 class ConditionLockEx {
  public:
   // wait() blocks until the event is fired.
-  void wait()
+  void wait(int seconds = 3)
   {
       std::unique_lock<std::mutex> lock(mutex);
-      cv.wait(lock);
+      if (cv.wait_for(lock, std::chrono::seconds(seconds)) == std::cv_status::timeout) {
+          qCritical() << "!!!Time Out!!!";
+#ifndef QT_NO_DEBUG
+          QMessageBox box;
+          box.setText("Time Out!");
+          box.exec();
+#endif
+      }
   }
 
   // fire() sets signals the event, and unblocks any calls to wait().

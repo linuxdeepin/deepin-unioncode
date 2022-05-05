@@ -38,7 +38,7 @@ public:
 public slots:
 
 private:
-    QSharedPointer<OptionsDialog> optionsDlg;
+    OptionsDialog *optionsDlg = nullptr;
 };
 
 #endif // PROJOPTIONSPLUGIN_H

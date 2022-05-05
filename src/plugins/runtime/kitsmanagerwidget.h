@@ -54,14 +54,13 @@ class KitsManagerWidget : public QWidget
     Q_OBJECT
 public:
     explicit KitsManagerWidget(QWidget *parent = nullptr);
+    ~KitsManagerWidget();
 
 signals:
 
 public slots:
 
 private:
-    ~KitsManagerWidget();
-
     void setupUi(QWidget *Widget);
     void updateUi();
 

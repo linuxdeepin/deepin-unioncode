@@ -21,6 +21,8 @@
 */
 #include "stackframemodel.h"
 
+#include <QFile>
+
 enum StackColumns {
     kStackLevelColumn,
     kStackFunctionNameColumn,
@@ -156,10 +158,19 @@ void StackFrameModel::setFrames(const StackFrames &frames, bool canExpand)
     contentsValid = true;
     this->canExpand = canExpand;
     stackFrames = frames;
-    if (stackFrames.size() >= 0)
-        setCurrentIndex(0);
-    else
+
+    if (stackFrames.size() > 0) {
+        for (int i = 0; i < stackFrames.size(); i++) {
+            bool bExists = QFile::exists(stackFrames[i].file);
+            if (bExists) {
+                setCurrentIndex(i);
+                break;
+            }
+        }
+    } else {
         currentIndex = -1;
+    }
+
     endResetModel();
     emit stackChanged();
 }

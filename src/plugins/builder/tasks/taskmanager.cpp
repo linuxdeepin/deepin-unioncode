@@ -30,7 +30,7 @@ TaskManager *TaskManager::instance()
 
 QListView *TaskManager::getView() const
 {
-    return view.get();
+    return view;
 }
 
 void TaskManager::clearTasks()
@@ -40,7 +40,7 @@ void TaskManager::clearTasks()
 
 TaskManager::TaskManager(QObject *parent) : QObject(parent)
 {
-    view.reset(new TaskView());
+    view = new TaskView();
     model.reset(new TaskModel());
     view->setModel(model.get());
     auto tld = new TaskDelegate;
@@ -54,7 +54,7 @@ TaskManager::TaskManager(QObject *parent) : QObject(parent)
 
     connect(view->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &TaskManager::currentChanged);
-    connect(view.get(), &QAbstractItemView::activated,
+    connect(view, &QAbstractItemView::activated,
             this, &TaskManager::triggerDefaultHandler);
 }
 

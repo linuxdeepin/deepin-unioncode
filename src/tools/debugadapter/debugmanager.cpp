@@ -417,17 +417,17 @@ qint64 DebugManager::getProcessId()
     return self->gdb->processId();
 }
 
-QList<gdb::Frame> DebugManager::allStackframes()
+QList<gdb::Frame> &DebugManager::allStackframes()
 {
     return self->stackFrames;
 }
 
-QList<gdb::Thread> DebugManager::allThreadList()
+QList<gdb::Thread> &DebugManager::allThreadList()
 {
     return self->threadList;
 }
 
-QList<gdb::Variable> DebugManager::allVariableList()
+QList<gdb::Variable> &DebugManager::allVariableList()
 {
     return self->variableList;
 }
@@ -731,6 +731,7 @@ void DebugManager::commandJump(const QString &location)
 void DebugManager::threadInfo()
 {
     command("-thread-info");
+    locker.wait();
     // find current-thread-id in results
 }
 
@@ -960,6 +961,7 @@ void DebugManager::processLine(const QString &line)
                          threadList.append(gdb::Thread::parseMap(e.toMap()));
                      self->threadList = threadList;
                      emit updateThreads(currId, threadList);
+                     locker.fire();
                  }}, // -stack-list-frames => StackTrace Reqeust
                 { "stack", [this](const mi::Response& r) {
                         if (!self->m_inferiorRunning) {

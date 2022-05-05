@@ -46,6 +46,7 @@ class Debugger;
 class AppOutputPane;
 class StackFrameView;
 class RunTimeCfgProvider;
+class QComboBox;
 class Debugger : public QObject
 {
     Q_OBJECT
@@ -60,10 +61,8 @@ public:
     explicit Debugger(QObject *parent = nullptr);
     ~Debugger();
 
-    void initializeView();
-
     AppOutputPane *getOutputPane() const;
-    QTreeView *getStackPane() const;
+    QWidget *getStackPane() const;
     QTreeView *getLocalsPane() const;
     QTreeView *getBreakpointPane() const;
 
@@ -95,9 +94,13 @@ public slots:
     void slotBreakpointSelected(const QModelIndex &index);
     bool showStoppedBySignalMessageBox(QString meaning, QString name);
     void message(QString msg);
+    void currentThreadChanged(const QString &text);
 
 private:
+    void initializeView();
     void handleFrames(const StackFrames &stackFrames);
+    void updateThreadList(int curr, const dap::array<dap::Thread> &threads);
+    void switchCurrentThread(int curThreadID);
 
     void addBreakpoint(const QString &filepath, int lineNumber);
     void removeBreakpoint(const QString &filepath, int lineNumber);
@@ -113,15 +116,17 @@ private:
     /**
      * @brief interface objects.
      */
-    QSharedPointer<AppOutputPane> outputPane;
+    AppOutputPane *outputPane = nullptr;
 
-    QSharedPointer<StackFrameView> stackView;
+    QWidget *stackPane = nullptr;
+    StackFrameView *stackView = nullptr;
     StackFrameModel stackModel;
+    QComboBox *threadSelector = nullptr;
 
-    QSharedPointer<QTreeView> localsView;
+    QTreeView *localsView = nullptr;
     LocalTreeModel localsModel;
 
-    QSharedPointer<StackFrameView> breakpointView;
+    StackFrameView *breakpointView = nullptr;
     BreakpointModel breakpointModel;
 
     QPointer<QWidget> alertBox;

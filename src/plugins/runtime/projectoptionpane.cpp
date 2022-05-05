@@ -29,10 +29,17 @@
 #include <QPushButton>
 #include <QLabel>
 
+#define SAFE_DELETE(pData) { try { delete pData; } catch (...) { Q_ASSERT(false); } pData = nullptr; }
+
 using namespace dpfservice;
 ProjectOptionPane::ProjectOptionPane(QWidget *parent) : QGroupBox(parent)
 {
     setupUI();
+}
+
+ProjectOptionPane::~ProjectOptionPane()
+{
+    SAFE_DELETE(kitManagerWidget);
 }
 
 void ProjectOptionPane::setupUI()
@@ -84,7 +91,7 @@ void ProjectOptionPane::initializeKitManageWidget()
     projectService = ctx.service<ProjectService>(ProjectService::name());
 
     if (projectService) {
-        kitManagerWidget = new KitsManagerWidget(this);
+        kitManagerWidget = new KitsManagerWidget();
         projectService->insertOptionPanel("kit", kitManagerWidget);
     }
 }

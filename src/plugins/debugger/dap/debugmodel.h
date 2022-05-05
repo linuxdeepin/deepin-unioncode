@@ -40,7 +40,7 @@ public:
     void clear();
 
     void rawUpdate(IRawModelUpdate *data);
-    void clearThreads(dap::string id, bool removeThreads, dap::optional<number> reference);
+    void clearThreads(dap::string id, bool removeThreads, dap::optional<dapNumber> reference);
     void fetchCallStack(Thread &thread);
     ReadonlyArray<IBreakpoint> getBreakpoints(dap::optional<QUrl> url, dap::optional<int> lineNumber,
                                               dap::optional<int> column, dap::optional<bool> enabledOnly);

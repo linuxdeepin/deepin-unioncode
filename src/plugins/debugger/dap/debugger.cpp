@@ -37,6 +37,10 @@
 
 #include <QDateTime>
 #include <QTextBlock>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QComboBox>
+#include <QLabel>
 
 /**
  * @brief Debugger::Debugger
@@ -44,6 +48,7 @@
  */
 using namespace dap;
 using namespace DEBUG_NAMESPACE;
+
 Debugger::Debugger(QObject *parent)
     : QObject(parent)
 {
@@ -61,31 +66,34 @@ Debugger::Debugger(QObject *parent)
     rtCfgProvider.reset(new RunTimeCfgProvider(this));
 
     connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &Debugger::handleFrameEvent);
+
+    initializeView();
 }
 
 Debugger::~Debugger()
 {
     delete alertBox;
+    // all widgets in tabWidget will be deleted automatically.
 }
 
 AppOutputPane *Debugger::getOutputPane() const
 {
-    return outputPane.get();
+    return outputPane;
 }
 
-QTreeView *Debugger::getStackPane() const
+QWidget *Debugger::getStackPane() const
 {
-    return stackView.get();
+    return stackPane;
 }
 
 QTreeView *Debugger::getLocalsPane() const
 {
-    return localsView.get();
+    return localsView;
 }
 
 QTreeView *Debugger::getBreakpointPane() const
 {
-    return breakpointView.get();
+    return breakpointView;
 }
 
 void Debugger::startDebug()
@@ -273,7 +281,10 @@ void Debugger::registerDapHandlers()
         details->hitBreakpointIds = event.hitBreakpointIds;
         session->getStoppedDetails().push_back(details);
 
-        session->fetchThreads(details);
+        auto threads = session->fetchThreads(details);
+
+        int curThreadID = static_cast<int>(event.threadId.value(0));
+        updateThreadList(curThreadID, threads);
 
         // ui focus on the active frame.
         if (event.reason == "function breakpoint"
@@ -284,39 +295,7 @@ void Debugger::registerDapHandlers()
 
             if (event.threadId) {
                 threadId = event.threadId.value(0);
-                auto thread = session->getThread(event.threadId.value());
-                if (thread) {
-//                    debugService->getModel()->fetchCallStack(*thread.value());
-                    thread.value()->fetchCallStack();
-                    auto stacks = thread.value()->getCallStack();
-                    StackFrames frames;
-                    int level = 0;
-                    for (auto it : stacks) {
-                        // TODO(mozart):send to ui.
-                        StackFrameData sf;
-                        sf.level = std::to_string(level++).c_str();
-                        sf.function = it.name.c_str();
-                        if (it.source) {
-                            sf.file = it.source.value().path ? it.source.value().path->c_str() : "";
-                        } else {
-                            sf.file = "No file found.";
-                        }
-
-                        if (it.moduleId) {
-                            auto v = it.moduleId.value();
-                            if (v.is<dap::integer>()) {
-                                // TODO(mozart)
-                            }
-                        }
-
-                        sf.line = static_cast<qint32>(it.line);
-                        sf.address = it.instructionPointerReference ? it.instructionPointerReference.value().c_str() : "";
-                        sf.frameId = it.id;
-                        frames.push_back(sf);
-                    }
-                    //                    emit debuggerSignals->processStackFrames(frames);
-                    handleFrames(frames);
-                }
+                switchCurrentThread(static_cast<int>(threadId));
             }
             updateRunState(Debugger::RunState::kStopped);
         } else if (event.reason == "exception" || event.reason == "signal-received") {
@@ -497,7 +476,7 @@ void Debugger::printOutput(const QString &content, OutputFormat format)
         QString time = curDatetime.toString("hh:mm:ss");
         outputContent = prefix + time + ":" + content + "\n";
     }
-    QMetaObject::invokeMethod(outputPane.get(), "appendText",
+    QMetaObject::invokeMethod(outputPane, "appendText",
                               Q_ARG(QString, outputContent), Q_ARG(OutputFormat, format));
 }
 
@@ -517,6 +496,56 @@ void Debugger::handleFrames(const StackFrames &stackFrames)
     IVariables locals;
     getLocals(curFrame.frameId, &locals);
     localsModel.setDatas(locals);
+}
+
+void Debugger::updateThreadList(int curr, const dap::array<dap::Thread> &threads)
+{
+    threadSelector->clear();
+    int currIdx = -1;
+    for (const auto& e: threads) {
+        QString itemText = "#" + QString::number(e.id) + " " + e.name.c_str();
+        threadSelector->addItem(itemText);
+        if (curr == e.id)
+            currIdx = threadSelector->count() - 1;
+    }
+    if (currIdx != -1)
+        threadSelector->setCurrentIndex(currIdx);
+}
+
+void Debugger::switchCurrentThread(int threadId)
+{
+    auto thread = session->getThread(threadId);
+    if (thread) {
+        thread.value()->fetchCallStack();
+        auto stacks = thread.value()->getCallStack();
+        StackFrames frames;
+        int level = 0;
+        for (auto it : stacks) {
+            // TODO(mozart):send to ui.
+            StackFrameData sf;
+            sf.level = std::to_string(level++).c_str();
+            sf.function = it.name.c_str();
+            if (it.source) {
+                sf.file = it.source.value().path ? it.source.value().path->c_str() : "";
+            } else {
+                sf.file = "No file found.";
+            }
+
+            if (it.moduleId) {
+                auto v = it.moduleId.value();
+                if (v.is<dap::integer>()) {
+                    // TODO(mozart)
+                }
+            }
+
+            sf.line = static_cast<qint32>(it.line);
+            sf.address = it.instructionPointerReference ? it.instructionPointerReference.value().c_str() : "";
+            sf.frameId = it.id;
+            frames.push_back(sf);
+        }
+        //                    emit debuggerSignals->processStackFrames(frames);
+        handleFrames(frames);
+    }
 }
 
 bool Debugger::showStoppedBySignalMessageBox(QString meaning, QString name)
@@ -560,35 +589,54 @@ void Debugger::slotBreakpointSelected(const QModelIndex &index)
 void Debugger::initializeView()
 {
     // initialize output pane.
-    outputPane.reset(new AppOutputPane());
+    outputPane = new AppOutputPane();
 
     // initialize stack monitor pane.
-    stackView.reset(new StackFrameView());
+    stackPane = new QWidget;
+    QVBoxLayout *vLayout = new QVBoxLayout(stackPane);
+    stackPane->setLayout(vLayout);
+
+    stackView = new StackFrameView();
     stackView->setModel(stackModel.model());
 
+    threadSelector = new QComboBox(stackPane);
+    threadSelector->setMinimumWidth(200);
+    connect(threadSelector, QOverload<const QString &>::of(&QComboBox::activated), this, &Debugger::currentThreadChanged);
+
+    QHBoxLayout *hLayout = new QHBoxLayout(stackPane);
+    hLayout->setAlignment(Qt::AlignLeft);
+    QLabel *label = new QLabel(tr("Threads:"), stackPane);
+    hLayout->addWidget(label);
+    hLayout->addWidget(threadSelector);
+
+    vLayout->addLayout(hLayout);
+    vLayout->addWidget(stackView);
+
     // intialize breakpint pane.
-    breakpointView.reset(new StackFrameView());
+    breakpointView = new StackFrameView();
     breakpointView->setModel(breakpointModel.model());
 
-    localsView.reset(new QTreeView());
+    localsView = new QTreeView();
     localsView->setModel(&localsModel);
     QStringList headers { "name", "value"/*, "reference" */};
     localsModel.setHeaders(headers);
 
-    connect(stackView.get(), &QTreeView::doubleClicked, this, &Debugger::slotFrameSelected);
-    connect(breakpointView.get(), &QTreeView::doubleClicked, this, &Debugger::slotBreakpointSelected);
+    connect(stackView, &QTreeView::doubleClicked, this, &Debugger::slotFrameSelected);
+    connect(breakpointView, &QTreeView::doubleClicked, this, &Debugger::slotBreakpointSelected);
 }
 
 void Debugger::exitDebug()
 {
     // Change UI.
     EventSender::clearEditorPointer();
-    QMetaObject::invokeMethod(localsView.get(), "hide");
+    QMetaObject::invokeMethod(localsView, "hide");
 
     localsModel.clear();
     stackModel.removeAll();
 
     threadId = 0;
+
+    threadSelector->clear();
 }
 
 void Debugger::updateRunState(Debugger::RunState state)
@@ -600,7 +648,7 @@ void Debugger::updateRunState(Debugger::RunState state)
             exitDebug();
             break;
         case kRunning:
-            QMetaObject::invokeMethod(localsView.get(), "show");
+            QMetaObject::invokeMethod(localsView, "show");
             break;
         case kStopped:
             break;
@@ -612,4 +660,11 @@ void Debugger::updateRunState(Debugger::RunState state)
 void Debugger::message(QString msg)
 {
     ContextDialog::ok(msg);
+}
+
+void Debugger::currentThreadChanged(const QString &text)
+{
+    QStringList l = text.split("#");
+    QString threadNumber = l.last().split(" ").first();
+    switchCurrentThread(threadNumber.toInt());
 }

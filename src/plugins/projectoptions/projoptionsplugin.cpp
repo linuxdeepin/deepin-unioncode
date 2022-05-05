@@ -37,7 +37,7 @@ bool ProjOptionsPlugin::start()
 {
     qInfo() << __FUNCTION__;
 
-    optionsDlg.reset(new OptionsDialog());
+    optionsDlg = new OptionsDialog();
 
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
@@ -57,5 +57,10 @@ bool ProjOptionsPlugin::start()
 dpf::Plugin::ShutdownFlag ProjOptionsPlugin::stop()
 {
     qInfo() << __FUNCTION__;
+
+    if (optionsDlg) {
+        delete optionsDlg;
+        optionsDlg = nullptr;
+    }
     return Sync;
 }

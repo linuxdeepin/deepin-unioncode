@@ -64,46 +64,46 @@ public:
     void sendFunctionBreakpoints(dap::array<IFunctionBreakpoint> &fbpts) override;
     void sendExceptionBreakpoints(dap::array<IExceptionBreakpoint> &exbpts) override;
     dap::optional<dap::DataBreakpointInfoResponse> dataBreakpointInfo(
-            dap::string &name, dap::optional<number> variablesReference) override;
+            dap::string &name, dap::optional<dapNumber> variablesReference) override;
     void sendDataBreakpoints(dap::array<IDataBreakpoint> dataBreakpoints) override;
     void sendInstructionBreakpoints(dap::array<IInstructionBreakpoint> instructionBreakpoints) override;
     //    dap::array<IPosition> breakpointsLocations(URI uri, number lineNumber);
     dap::optional<dap::Breakpoint> getDebugProtocolBreakpoint(dap::string &breakpointId) override;
     //    dap::optional<dap::Response> customRequest(dap::string &request, dap::any args);
-    dap::optional<dap::StackTraceResponse> stackTrace(number threadId, number startFrame, number levels) override;
-    dap::optional<IExceptionInfo> exceptionInfo(number threadId) override;
-    dap::optional<dap::ScopesResponse> scopes(number frameId, number threadId) override;
-    dap::optional<dap::VariablesResponse> variables(number variablesReference,
-                                                    dap::optional<number> threadId,
+    dap::optional<dap::StackTraceResponse> stackTrace(dapNumber threadId, dapNumber startFrame, dapNumber levels) override;
+    dap::optional<IExceptionInfo> exceptionInfo(dapNumber threadId) override;
+    dap::optional<dap::ScopesResponse> scopes(dapNumber frameId, dapNumber threadId) override;
+    dap::optional<dap::VariablesResponse> variables(dapNumber variablesReference,
+                                                    dap::optional<dapNumber> threadId,
                                                     dap::optional<dap::string> filter,
-                                                    dap::optional<number> start,
-                                                    dap::optional<number> count) override;
+                                                    dap::optional<dapNumber> start,
+                                                    dap::optional<dapNumber> count) override;
     dap::optional<dap::EvaluateResponse> evaluate(
-            dap::string &expression, number frameId, dap::optional<dap::string> context) override;
-    void restartFrame(number frameId, number threadId) override;
-    void setLastSteppingGranularity(number threadId, dap::optional<dap::SteppingGranularity> granularity) override;
+            dap::string &expression, dapNumber frameId, dap::optional<dap::string> context) override;
+    void restartFrame(dapNumber frameId, dapNumber threadId) override;
+    void setLastSteppingGranularity(dapNumber threadId, dap::optional<dap::SteppingGranularity> granularity) override;
 
     void next(dap::integer threadId, dap::optional<dap::SteppingGranularity> granularity) override;
     void stepIn(dap::integer threadId, dap::optional<dap::integer> targetId, dap::optional<dap::SteppingGranularity> granularity) override;
     void stepOut(dap::integer threadId, dap::optional<dap::SteppingGranularity> granularity) override;
-    void stepBack(number threadId, dap::optional<dap::SteppingGranularity> granularity) override;
+    void stepBack(dapNumber threadId, dap::optional<dap::SteppingGranularity> granularity) override;
     void continueDbg(dap::integer threadId) override;
-    void reverseContinue(number threadId) override;
+    void reverseContinue(dapNumber threadId) override;
     void pause(dap::integer threadId) override;
-    void terminateThreads(dap::array<number> &threadIds) override;
+    void terminateThreads(dap::array<dapNumber> &threadIds) override;
     dap::optional<dap::SetVariableResponse> setVariable(
-            number variablesReference, dap::string &name, dap::string &value) override;
+            dapNumber variablesReference, dap::string &name, dap::string &value) override;
     dap::optional<dap::SetExpressionResponse> setExpression(
-            number frameId, dap::string &expression, dap::string &value) override;
+            dapNumber frameId, dap::string &expression, dap::string &value) override;
     dap::optional<dap::GotoTargetsResponse> gotoTargets(
-            dap::Source &source, number line, number column) override;
-    dap::optional<dap::GotoResponse> goto_(number threadId, number targetId) override;
-    dap::optional<dap::StepInTargetsResponse> stepInTargets(number frameId) override;
+            dap::Source &source, dapNumber line, dapNumber column) override;
+    dap::optional<dap::GotoResponse> goto_(dapNumber threadId, dapNumber targetId) override;
+    dap::optional<dap::StepInTargetsResponse> stepInTargets(dapNumber frameId) override;
     dap::optional<dap::CancelResponse> cancel(dap::string &progressId) override;
     // threads.
-    dap::optional<Thread *> getThread(number threadId) override;
+    dap::optional<Thread *> getThread(dapNumber threadId) override;
     dap::optional<dap::array<IThread *>> getAllThreads() const override;
-    void clearThreads(bool removeThreads, dap::optional<number> reference) override;
+    void clearThreads(bool removeThreads, dap::optional<dapNumber> reference) override;
     dap::array<IRawStoppedDetails *> &getStoppedDetails() override;
     void rawUpdate(IRawModelUpdate *data) override;
     void fetchThreads(dap::optional<IRawStoppedDetails> stoppedDetails) override;
@@ -120,7 +120,7 @@ public:
     dap::Session *getDapSession() const;
     dap::RawDebugSession *getRawSession() const;
 
-    void fetchThreads(IRawStoppedDetails *stoppedDetails);
+    dap::array<dap::Thread> fetchThreads(IRawStoppedDetails *stoppedDetails);
 signals:
     void sigRegisterHandlers();
 
@@ -146,8 +146,8 @@ private:
     std::string id;
 
     dap::integer threadId = 0;
-    std::map<number, Thread *> threads;
-    dap::array<number> threadIds;
+    std::map<dapNumber, Thread *> threads;
+    dap::array<dapNumber> threadIds;
 
     DebugModel *model = nullptr;
 
