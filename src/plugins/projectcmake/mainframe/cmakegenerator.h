@@ -10,6 +10,8 @@ class CMakeGenerator : public dpfservice::ProjectGenerator
 {
     Q_OBJECT
     QProcess process;
+    QString outputPath;
+    QSet<QString> projects;
 public:
     explicit CMakeGenerator();
     static QString toolKitName() { return "cmake"; }
@@ -21,8 +23,6 @@ private slots:
     void processFinished(int code, QProcess::ExitStatus status);
     void actionTriggered();
 private:
-    QString cmakeBuildPath(const QString &cmakePath);
-
     // cmake CDT4 options
     QStandardItem *cdt4FindItem(QStandardItem *rootItem, QString &name);
     QStandardItem *cdt4FindParentItem(QStandardItem *rootItem, QString &name);

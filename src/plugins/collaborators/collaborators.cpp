@@ -21,8 +21,7 @@
  */
 #include "collaborators.h"
 #include "services/window/windowservice.h"
-#include "mainframe/git/gitqlientwidget.h"
-#include "mainframe/svn/svnclientwidget.h"
+#include "mainframe/cvskeeper.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include <QAction>
@@ -43,8 +42,10 @@ bool Collaborators::start()
             windowService->addActionNavigation(new AbstractAction(new QAction(QAction::tr("Svn"))));
         }
         if (windowService->addCentralNavigation) {
-            windowService->addCentralNavigation(QAction::tr("Git"), new AbstractCentral(new GitQlientWidget));
-            windowService->addCentralNavigation(QAction::tr("Svn"), new AbstractCentral(new SvnClientWidget));
+            windowService->addCentralNavigation(QAction::tr("Git"),
+                                                new AbstractCentral(CVSkeeper::instance()->gitMainWidget()));
+            windowService->addCentralNavigation(QAction::tr("Svn"),
+                                                new AbstractCentral(CVSkeeper::instance()->svnMainWidget()));
         }
     }
     return true;

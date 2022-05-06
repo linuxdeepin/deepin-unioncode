@@ -23,3 +23,13 @@ void SendEvents::gengrateEnd(const QString &buildSystem, const QString &projectP
     event.setProperty(P_TARGETPATH, targetPath);
     dpf::EventCallProxy::instance().pubEvent(event);
 }
+
+void SendEvents::doubleCliekedOpenFile(const QString &filePath, const QString &workspaceFolder)
+{
+    dpf::Event event;
+    event.setTopic(T_PROJECT);
+    event.setData(D_ITEM_DOUBLECLICKED);
+    event.setProperty(P_FILEPATH, filePath);
+    event.setProperty(P_WORKSPACEFOLDER, workspaceFolder);
+    dpf::EventCallProxy::instance().pubEvent(event);
+}

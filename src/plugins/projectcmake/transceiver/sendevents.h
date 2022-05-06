@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2020 ~ 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huanyu<huanyub@uniontech.com>
+ * Author:     huangyu<huangyub@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             huangyu<huangyub@uniontech.com>
+ * Maintainer: huangyu<huangyub@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +17,18 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef GITQLIENTWIDGET_H
-#define GITQLIENTWIDGET_H
+*/
+#ifndef SENDEVENTS_H
+#define SENDEVENTS_H
 
-#include "GitQlient.h"
-#include "QLogger.h"
+#include <QString>
 
-class GitQlientWidget : public GitQlient
+class SendEvents final
 {
-    Q_OBJECT
+    SendEvents() = delete;
+    SendEvents(const SendEvents &) = delete;
 public:
-    explicit GitQlientWidget(QWidget *parent = nullptr);
-    bool isGitDir(const QString &repoPath);
+    static void menuOpenProject(const QString &filePath);
 };
 
-#endif // GITQLIENTWIDGET_H
+#endif // SENDEVENTS_H

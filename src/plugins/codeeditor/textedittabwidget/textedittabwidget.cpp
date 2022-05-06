@@ -229,8 +229,7 @@ void TextEditTabWidget::replaceRange(const QString &filePath, const lsp::Range &
         }
         if (workspaceFolders.isEmpty()) {
             return;
-        }
-        else {
+        } else {
             if (range.start.line != range.end.line) {
                 qCritical() << "Failed, Unknown error";
                 abort();

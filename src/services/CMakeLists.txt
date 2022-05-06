@@ -6,6 +6,7 @@ set(CXX_H
     debugger/debuggerservice.h
     workspace/workspaceservice.h
     container/containerservice.h
+    project/projectgenerator.h
     project/projectservice.h
     )
 
@@ -13,6 +14,7 @@ set(CXX_CPP
     window/windowservice.cpp
     debugger/debuggerservice.cpp
     workspace/workspaceservice.cpp
+    project/projectgenerator.cpp
     container/containerservice.cpp
     project/projectservice.cpp
     )

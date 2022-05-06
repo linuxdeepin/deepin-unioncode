@@ -5,6 +5,7 @@ project(plugin-collaborators)
 include(${CMAKE_SOURCE_DIR}/3rdparty/GitQlient.cmake)
 
 set(CXX_CPP
+    transceiver/collaboratorsreceiver.cpp
     mainframe/git/gitqlientwidget.cpp
     mainframe/svn/checkoutdialog.cpp
     mainframe/svn/historydiffview.cpp
@@ -20,11 +21,13 @@ set(CXX_CPP
     mainframe/svn/reposwidget.cpp
     mainframe/svn/amendswidget.cpp
     mainframe/svn/filemodifyview.cpp
+    mainframe/cvskeeper.cpp
     collaborators.cpp
     collaborators.json
     )
 
 set(CXX_H
+    transceiver/collaboratorsreceiver.h
     mainframe/git/gitqlientwidget.h
     mainframe/svn/checkoutdialog.h
     mainframe/svn/historydiffview.h
@@ -41,6 +44,7 @@ set(CXX_H
     mainframe/svn/basetype.h
     mainframe/svn/amendswidget.h
     mainframe/svn/filemodifyview.h
+    mainframe/cvskeeper.h
     collaborators.h
     )
 

@@ -9,8 +9,8 @@
 #include "renamepopup/renamepopup.h"
 
 #include "services/workspace/workspaceservice.h"
-#include "common/common.h"
 
+#include "common/common.h"
 #include "framework/service/qtclassmanager.h"
 
 #include "Document.h"

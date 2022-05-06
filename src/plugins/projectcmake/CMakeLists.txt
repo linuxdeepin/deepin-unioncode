@@ -8,6 +8,7 @@ set(CXX_CPP
     mainframe/cmakeconfigwidget.cpp
     mainframe/cmakeopenhandler.cpp
     mainframe/cmakegenerator.cpp
+    transceiver/sendevents.cpp
     projectcmake.cpp
     projectcmake.json
     )
@@ -16,6 +17,7 @@ set(CXX_H
     mainframe/cmakeconfigwidget.h
     mainframe/cmakeopenhandler.h
     mainframe/cmakegenerator.h
+    transceiver/sendevents.h
     projectcmake.h
     )
 

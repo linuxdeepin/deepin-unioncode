@@ -22,6 +22,8 @@
 #include "projectcmake.h"
 #include "mainframe/cmakeopenhandler.h"
 #include "mainframe/cmakegenerator.h"
+#include "transceiver/sendevents.h"
+
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
@@ -56,14 +58,7 @@ bool ProjectCMake::start()
         CMakeOpenHandler *openHandler = CMakeOpenHandler::instance();
         QObject::connect(openHandler, &CMakeOpenHandler::projectOpened,
                          [=](const QString &name, const QString &filePath) {
-
-            dpf::Event menuOpenFile;
-            menuOpenFile.setTopic(T_MENU);
-            menuOpenFile.setData(D_FILE_OPENFOLDER);
-            QFileInfo fileInfo(filePath);
-            menuOpenFile.setProperty(P_FILEPATH, fileInfo.dir().path());
-            dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
-
+            // 打开工程后续流程
             if (projectService) {
                 ProjectGenerator *generator = projectService->createGenerator(name);
                 QString projectFilePath = filePath;
@@ -78,16 +73,19 @@ bool ProjectCMake::start()
                     emit projectService->targetCommand(cmd, args);
                 });
                 auto rootItem = generator->createRootItem(filePath, outputPath);
-                if (projectService->addProjectRootItem)
-                    projectService->addProjectRootItem(rootItem);   // 设置项目根节点
-                if (projectService->expandedProjectDepth)
-                    projectService->expandedProjectDepth(rootItem, 2);   // 初始化展开两级
-                if (windowService->switchWidgetNavigation)
-                    windowService->switchWidgetNavigation(MWNA_EDIT);   // 切换编辑器导航栏
-                if (windowService->switchWidgetWorkspace)
-                    windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
+                if (rootItem) {
+                    SendEvents::menuOpenProject(filePath); // 发送打开事件
+                    if (projectService->addProjectRootItem)
+                        projectService->addProjectRootItem(rootItem);   // 设置项目根节点
+                    if (projectService->expandedProjectDepth)
+                        projectService->expandedProjectDepth(rootItem, 2);   // 初始化展开两级
+                    if (windowService->switchWidgetNavigation)
+                        windowService->switchWidgetNavigation(MWNA_EDIT);   // 切换编辑器导航栏
+                    if (windowService->switchWidgetWorkspace)
+                        windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
 
-                emit projectService->projectConfigureDone();
+                    emit projectService->projectConfigureDone();
+                }
             }
         });
 

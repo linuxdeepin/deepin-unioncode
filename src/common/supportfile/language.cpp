@@ -144,4 +144,15 @@ QSet<QString> Language::bases(const QString &id)
     return result;
 }
 
+QSet<QString> Language::mimeTypes(const QString &id)
+{
+    QSet<QString> result;
+    auto idObj = documents::languageGlobal.object().value(id).toObject();
+    auto baseArray = idObj.value(Key_2::get()->mimeType).toArray();
+    for (auto value : baseArray) {
+        result.insert(value.toString());
+    }
+    return result;
+}
+
 } // namespace support_file

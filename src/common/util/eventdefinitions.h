@@ -33,6 +33,7 @@ extern const QString T_DEBUGGER;
 extern const QString T_BUILDER;
 extern const QString T_WORKSPACE;
 extern const QString T_RECENT;
+extern const QString T_PROJECT;
 extern const QString T_PROCESSMESSAGE;
 
 extern const QString D_ACTION_SWITCH;
@@ -45,6 +46,7 @@ extern const QString D_DEBUG_EXECUTION_JUMP;
 extern const QString D_DEBUG_EXECUTION_JUMP_CLEAN;
 extern const QString D_FILE_OPENDOCUMENT;
 extern const QString D_FILE_OPENFOLDER;
+extern const QString D_FILE_OPENPROJECT;
 extern const QString D_ITEM_MENU_BUILD;
 extern const QString D_ITEM_DOUBLECLICKED;
 extern const QString D_BUILD_TARGET;

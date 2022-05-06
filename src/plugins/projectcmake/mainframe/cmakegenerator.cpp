@@ -1,5 +1,7 @@
 ﻿#include "cmakegenerator.h"
 #include "cmakeconfigwidget.h"
+#include "common/common.h"
+
 #include <QtXml>
 #include <QFileIconProvider>
 
@@ -10,9 +12,6 @@ enum_def(CDT_PROJECT_KIT, QString)
     enum_exp CDT4_GENERATOR = "Eclipse CDT4 - Unix Makefiles";
     enum_exp PROJECT_FILE = ".project";
     enum_exp CPROJECT_FILE = ".cproject";
-    enum_exp CMAKE_BUILD_PATH = "buildPath";
-    enum_exp CMAKE_SOURCE_PATH = "sourcePath";
-    enum_exp CMAKE_FILE_PATH = "cmakeFilePath";
 };
 
 enum_def(CDT_XML_KEY, QString)
@@ -155,11 +154,17 @@ bool CMakeGenerator::configure(const QString &projectPath)
 
 QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath, const QString &outputPath)
 {
+    if (projects.contains(projectPath)) {
+        ContextDialog::ok(QDialog::tr("project is opened:\n project file %0").arg(projectPath));
+        return nullptr;
+    }
+    projects.insert(projectPath);
+
     Generator::started();
     currentCount = 0;
     maxCount = 100;
 
-    QString buildPath = outputPath;
+    CMakeGenerator::outputPath = outputPath;
     QString sourcePath = QFileInfo(projectPath).path();
     process.setProgram("cmake");
 
@@ -167,7 +172,7 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath, const 
     arguments << "-S";
     arguments << sourcePath;
     arguments << "-B";
-    arguments << buildPath;
+    arguments << CMakeGenerator::outputPath;
     arguments << "-G";
     arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
     arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
@@ -202,9 +207,10 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath, const 
                 rootItem = new QStandardItem();
                 // 设置顶层节点当前构建系统信息，该过程不可少
                 ProjectGenerator::setToolKitName(rootItem, CMakeGenerator::toolKitName());
-                ProjectGenerator::setToolKitProperty(rootItem, CDT_PROJECT_KIT::get()->CMAKE_BUILD_PATH, buildPath);
-                ProjectGenerator::setToolKitProperty(rootItem, CDT_PROJECT_KIT::get()->CMAKE_SOURCE_PATH, sourcePath);
-                ProjectGenerator::setToolKitProperty(rootItem, CDT_PROJECT_KIT::get()->CMAKE_FILE_PATH, projectPath);
+                ProjectGenerator::setToolKitProperty(rootItem, RootToolKitKey::get()->BuildPath, CMakeGenerator::outputPath);
+                ProjectGenerator::setToolKitProperty(rootItem, RootToolKitKey::get()->SourcePath, sourcePath);
+                ProjectGenerator::setToolKitProperty(rootItem, RootToolKitKey::get()->WorkspacePath, sourcePath);
+                ProjectGenerator::setToolKitProperty(rootItem, RootToolKitKey::get()->FilePath, projectPath);
                 rootItem->setText(e.text());
                 rootItem->setIcon(::cmakeFolderIcon());
                 rootItem->setToolTip(rootCMakeInfo.dir().path());
@@ -265,7 +271,7 @@ QMenu *CMakeGenerator::createItemMenu(const QStandardItem *item)
     QString itemLocalURI = ProjectGenerator::toolKitProperty(item, CDT_XML_KEY::get()->locationURI).toString();
 
     // 读取文件
-    const QStandardItem *rootItem = ProjectGenerator::top(item);
+    const QStandardItem *rootItem = ProjectGenerator::root(item);
 
     QList<TargetBuild> buildMenuList;
 
@@ -273,9 +279,9 @@ QMenu *CMakeGenerator::createItemMenu(const QStandardItem *item)
     if (rootItem && !itemName.isEmpty() && !itemLocalURI.isEmpty()) {
 
         QString buildPath = ProjectGenerator::toolKitProperty
-                (rootItem, CDT_PROJECT_KIT::get()->CMAKE_BUILD_PATH).toString();
+                (rootItem, RootToolKitKey::get()->BuildPath).toString();
 
-        QDomDocument menuXmlDoc = cdt4LoadMenuXmlDoc(cdt4FilePath(buildPath));
+        QDomDocument menuXmlDoc = cdt4LoadMenuXmlDoc(CMakeGenerator::outputPath);
         QDomElement docElem = menuXmlDoc.documentElement();
         QDomNode n = docElem.firstChild().firstChild().firstChild(); // 过滤三层
         while(!n.isNull()) {
@@ -493,9 +499,11 @@ void CMakeGenerator::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash
         return;
 
     QStandardItem * addRows = new QStandardItem("Temp");
-
-    for (int row = 0; row < item->rowCount(); row ++) {
+    for (int row = 0; row < item->rowCount(); ++row) {
         QStandardItem *childItem = item->child(row);
+        qInfo() << item->toolTip()
+                << item->data(Qt::DisplayRole).toString()
+                << item->rowCount();
         QString displayName = childItem->data(Qt::DisplayRole).toString();
         // build lib icon setting
         if (displayName.contains(CDT_TARGETS_TYPE::get()->Lib)) {
@@ -517,33 +525,41 @@ void CMakeGenerator::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash
         } else {
             QVariantMap map = ProjectGenerator::toolKitPropertyMap(childItem); //当前节点特性
             if (map.keys().contains(CDT_XML_KEY::get()->location)) { // 本地文件
-                for (auto val : subprojectsMap.values()) {
-                    QString childLocation = map.value(CDT_XML_KEY::get()->location).toString();
-//                    qInfo() << "childLocation:" << childLocation;
-                    QString childFileName = childItem->data(Qt::DisplayRole).toString();
-                    // 获取中间需要展示的文件夹
+                QString childLocation = map.value(CDT_XML_KEY::get()->location).toString();
+                // qInfo() << "childLocation:" << childLocation;
+                QString childFileName = childItem->data(Qt::DisplayRole).toString();
+                QString prefixPath;
+                QString suffixPath;
+                for (auto val : subprojectsMap.values()) { // 获取中间需要展示的文件夹
                     if (!val.isEmpty() && childLocation.startsWith(val)) {
-                        QString suffixPath = childLocation.replace(val + "/","");
+                        suffixPath = childLocation.replace(val + "/","");
                         if (suffixPath.endsWith("/" + childFileName)) {
                             suffixPath = suffixPath.remove(suffixPath.size() - childFileName.size() - 1,
                                                            childFileName.size() + 1);
-                            // 获取当前是否已经新建文件夹
-                            QStandardItem *findNewItem = cdt4FindItem(addRows, suffixPath);
-                            if (!suffixPath.isEmpty()) { // 新建子文件夹
-                                QIcon icon = CustomIcons::icon(QFileIconProvider::Folder);
-                                auto newChild = new QStandardItem(icon, suffixPath);
-                                findNewItem->insertRow(0, newChild); //置顶文件夹
-                                findNewItem = newChild;
-                            }
-                            // 当前子节点移动到找到的节点下
-                            qInfo() << item->rowCount();
-                            findNewItem->appendRow(item->takeRow(row));
-                            row --; //takeRow自动删除一行，此处屏蔽差异
-                            qInfo() << item->rowCount();
-                            qInfo() << findNewItem->data(Qt::DisplayRole).toString();
-                            qInfo() << findNewItem->parent()->data(Qt::DisplayRole).toString();
+                            prefixPath = val;
+                        } else if (suffixPath == childFileName) {
+                            suffixPath = "";
                         }
                     }
+                }
+                if (!suffixPath.isEmpty()) {
+                    QString suffixPathTemp = suffixPath;
+                    // 获取当前是否已经新建文件夹，此函数会处理 suffixPathTemp
+                    QStandardItem *findNewItem = cdt4FindItem(addRows, suffixPathTemp);
+                    if (!suffixPathTemp.isEmpty()) { // 新建子文件夹
+                        QIcon icon = CustomIcons::icon(QFileIconProvider::Folder);
+                        auto newChild = new QStandardItem(icon, suffixPathTemp);
+                        newChild->setToolTip(prefixPath + QDir::separator() + suffixPath);
+                        findNewItem->insertRow(0, newChild); //置顶文件夹
+                        findNewItem = newChild;
+                    }
+                    // 当前子节点移动到找到的节点下
+                    qInfo() << item->rowCount();
+                    findNewItem->appendRow(item->takeRow(row));
+                    -- row;
+                    qInfo() << item->rowCount();
+                    qInfo() << findNewItem->data(Qt::DisplayRole).toString();
+                    qInfo() << findNewItem->parent()->data(Qt::DisplayRole).toString();
                 }
             }
         }
@@ -560,7 +576,7 @@ void CMakeGenerator::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash
 QDomDocument CMakeGenerator::cdt4LoadProjectXmlDoc(const QString &cmakePath)
 {
     QDomDocument xmlDoc;
-    QString cdtProjectFile = cdt4FilePath(cmakePath) + QDir::separator()
+    QString cdtProjectFile = CMakeGenerator::outputPath + QDir::separator()
             + CDT_PROJECT_KIT::get()->PROJECT_FILE;
     QFile docFile(cdtProjectFile);
 
@@ -587,7 +603,7 @@ QDomDocument CMakeGenerator::cdt4LoadProjectXmlDoc(const QString &cmakePath)
 QDomDocument CMakeGenerator::cdt4LoadMenuXmlDoc(const QString &cmakePath)
 {
     QDomDocument xmlDoc;
-    QString cdtMenuFile = cdt4FilePath(cmakePath) + QDir::separator()
+    QString cdtMenuFile = CMakeGenerator::outputPath + QDir::separator()
             + CDT_PROJECT_KIT::get()->CPROJECT_FILE;
     QFile docFile(cdtMenuFile);
 
@@ -609,14 +625,4 @@ QDomDocument CMakeGenerator::cdt4LoadMenuXmlDoc(const QString &cmakePath)
     }
     docFile.close();
     return xmlDoc;
-}
-
-QString CMakeGenerator::cdt4FilePath(const QString &cmakePath)
-{
-    return cmakeBuildPath(cmakePath);
-}
-
-QString CMakeGenerator::cmakeBuildPath(const QString &cmakePath)
-{
-    return QFileInfo(cmakePath).path() + QDir::separator() + "build";
 }

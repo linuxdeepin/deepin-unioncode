@@ -20,6 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "projectcore.h"
+#include "transceiver/sendevents.h"
 #include "mainframe/projectkeeper.h"
 #include "mainframe/projecttreeview.h"
 #include "common/common.h"
@@ -27,7 +28,6 @@
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
-#include "services/workspace/workspaceservice.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include <QAction>
@@ -53,6 +53,7 @@ bool ProjectCore::start()
     toolchains::generatGlobalFile();
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+
     if (windowService) {
         if (windowService->addWidgetWorkspace) {
             windowService->addWidgetWorkspace(MWCWT_PROJECTS,
@@ -78,7 +79,7 @@ bool ProjectCore::start()
         }
         // 右键菜单创建
         QObject::connect(treeView, &ProjectTreeView::itemMenuRequest, [=](const QStandardItem *item, QContextMenuEvent *event) {
-            QString toolKitName = ProjectGenerator::toolKitName(ProjectGenerator::top(item));
+            QString toolKitName = ProjectGenerator::toolKitName(ProjectGenerator::root(item));
             // 获取支持右键菜单生成器
             if (projectService->supportGeneratorName().contains(toolKitName)) {
                 QMenu* itemMenu = projectService->createGenerator(toolKitName)->createItemMenu(item);
@@ -86,6 +87,23 @@ bool ProjectCore::start()
                     itemMenu->move(event->globalPos());
                     itemMenu->exec();
                     delete itemMenu;
+                }
+            }
+        });
+
+        QObject::connect(treeView, &ProjectTreeView::doubleClicked, [=](const QModelIndex &index) {
+            QFileInfo info(index.data(Qt::ToolTipRole).toString());
+            if (info.exists() && info.isFile()) {
+                QString workspaceFolder;
+                QModelIndex rootIndex = ProjectGenerator::root(index);
+                if (rootIndex.isValid()) {
+                    workspaceFolder = ProjectGenerator::toolKitProperty(rootIndex, ProjectGenerator::RootToolKitKey::get()->WorkspacePath).toString();
+                    workspaceFolder = ProjectGenerator::RootToolKitKey::get()->SourcePath;
+                }
+                if (!workspaceFolder.isEmpty()) {
+                    SendEvents::doubleCliekedOpenFile(info.filePath(), workspaceFolder);
+                } else {
+                    ContextDialog::ok(QDialog::tr("Can't find workspace from file :%0").arg(info.filePath()));
                 }
             }
         });

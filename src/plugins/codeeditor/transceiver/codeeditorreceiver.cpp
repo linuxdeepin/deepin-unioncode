@@ -23,7 +23,7 @@
 
 static QStringList subTopics
 {
-    T_MENU, T_FILEBROWSER , T_DEBUGGER
+    T_MENU, T_FILEBROWSER , T_DEBUGGER, T_PROJECT
 };
 
 CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
@@ -48,42 +48,62 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
     if (!subTopics.contains(event.topic()))
         abort();
 
-    if (T_FILEBROWSER == event.topic()) {
-        if(D_ITEM_DOUBLECLICKED == event.data()) {
-            return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString(),
-                                                              event.property(P_WORKSPACEFOLDER).toString());
-        }
-    }
-
-    if (T_MENU == event.topic()) {
-        if (D_FILE_OPENDOCUMENT == event.data()) {
-            return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString(),
-                                                              event.property(P_WORKSPACEFOLDER).toString());
-        }
-        if (D_FILE_OPENFOLDER == event.data()) {
-            qInfo() << event;
-            return;
-        }
-    }
-
     if (T_DEBUGGER == event.topic()) {
-        if (D_DEBUG_EXECUTION_JUMP == event.data()) {
-            return DpfEventMiddleware::instance()->toRunFileLine(
-                        event.property(P_FILEPATH).toString(),
-                        event.property(P_FILELINE).toInt()
-                        );
-        }
-
-        if (D_DEBUG_EXECUTION_JUMP_CLEAN == event.data()) {
-            return DpfEventMiddleware::instance()->toRunClean();
-        }
-
-        if (D_MARGIN_DEBUG_POINT_REMOVE == event.data()) {
-            return DpfEventMiddleware::instance()->toDebugPointClean();
-        }
+        eventDebugger(event);
+    } else if (T_PROJECT == event.topic()) {
+        eventProject(event);
+    } else if (T_MENU == event.topic()) {
+        eventMenu(event);
+    } else if (T_FILEBROWSER == event.topic()) {
+        eventFileBrowser(event);
     }
 }
 
+void CodeEditorReceiver::eventFileBrowser(const dpf::Event &event)
+{
+    if(D_ITEM_DOUBLECLICKED == event.data()) {
+        return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString(),
+                                                          event.property(P_WORKSPACEFOLDER).toString());
+    }
+}
+
+void CodeEditorReceiver::eventDebugger(const dpf::Event &event)
+{
+    if (D_DEBUG_EXECUTION_JUMP == event.data()) {
+        return DpfEventMiddleware::instance()->toRunFileLine(
+                    event.property(P_FILEPATH).toString(),
+                    event.property(P_FILELINE).toInt()
+                    );
+    }
+
+    if (D_DEBUG_EXECUTION_JUMP_CLEAN == event.data()) {
+        return DpfEventMiddleware::instance()->toRunClean();
+    }
+
+    if (D_MARGIN_DEBUG_POINT_REMOVE == event.data()) {
+        return DpfEventMiddleware::instance()->toDebugPointClean();
+    }
+}
+
+void CodeEditorReceiver::eventProject(const dpf::Event &event)
+{
+    if (D_ITEM_DOUBLECLICKED == event.data()) {
+        return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString(),
+                                                          event.property(P_WORKSPACEFOLDER).toString());
+    }
+}
+
+void CodeEditorReceiver::eventMenu(const dpf::Event &event)
+{
+    if (D_FILE_OPENDOCUMENT == event.data()) {
+        return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString(),
+                                                          event.property(P_WORKSPACEFOLDER).toString());
+    }
+    if (D_FILE_OPENFOLDER == event.data()) {
+        qInfo() << event;
+        return;
+    }
+}
 
 DpfEventMiddleware *DpfEventMiddleware::instance()
 {

@@ -33,8 +33,7 @@ class SvnClientWidget : public QMainWindow
     Q_OBJECT
 public:
     explicit SvnClientWidget(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
-
-signals:
+    bool isSvnDir(const QString &repoPath);
 
 public slots:
     void addRepoTab(const QString &repoPath,
@@ -43,11 +42,10 @@ public slots:
                        const QString &user = "", const QString &passwd = "");
     void showCheckoutDialog();
     void showOpenLocalRepos();
+
 private slots:
     void doCheckoutRepos(const QString &remote, const QString &local,
                          const QString &user, const QString &passwd);
-private:
-    bool isSvnDir(const QString &repoPath);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

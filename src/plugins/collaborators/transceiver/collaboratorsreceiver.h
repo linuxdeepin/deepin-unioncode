@@ -18,16 +18,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef CODEEDITORRECEIVER_H
-#define CODEEDITORRECEIVER_H
+#ifndef COLLABORATORSRECEIVER_H
+#define COLLABORATORSRECEIVER_H
 
 #include <framework/framework.h>
 
-class CodeEditorReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegister<CodeEditorReceiver>
+class CollaboratorsReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegister<CollaboratorsReceiver>
 {
-    friend class dpf::AutoEventHandlerRegister<CodeEditorReceiver>;
+    friend class dpf::AutoEventHandlerRegister<CollaboratorsReceiver>;
 public:
-    explicit CodeEditorReceiver(QObject * parent = nullptr);
+    explicit CollaboratorsReceiver(QObject * parent = nullptr);
 
     static Type type();
 
@@ -35,30 +35,7 @@ public:
 
     virtual void eventProcess(const dpf::Event& event) override;
 
-    virtual void eventFileBrowser(const dpf::Event& event);
-
-    virtual void eventDebugger(const dpf::Event& event);
-
-    virtual void eventProject(const dpf::Event& event);
-
-    virtual void eventMenu(const dpf::Event &event);
+    virtual void eventMenu(const dpf::Event& event);
 };
 
-
-class DpfEventMiddleware : public QObject
-{
-    Q_OBJECT
-    DpfEventMiddleware(){}
-    DpfEventMiddleware(const DpfEventMiddleware&) = delete;
-
-public:
-    static DpfEventMiddleware* instance();
-
-signals:
-    void toOpenFile(const QString &filePath, const QString &rootPath);
-    void toRunFileLine(const QString &filePath, int line);
-    void toRunClean();
-    void toDebugPointClean();
-};
-
-#endif // CODEEDITORRECEIVER_H
+#endif // COLLABORATORSRECEIVER_H

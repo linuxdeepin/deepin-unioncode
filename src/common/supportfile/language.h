@@ -14,6 +14,7 @@ struct Language
     {
         enum_exp suffix = "suffix";
         enum_exp base = "base";
+        enum_exp mimeType = "mimeType";
         enum_exp server = "server";
         enum_exp serverArguments = "serverArguments";
         enum_exp tokenWords = "tokenWords";
@@ -37,6 +38,7 @@ struct Language
     static QMap<int, QString> tokenWords(const QString &id);
     static QSet<QString> suffixs(const QString &id);
     static QSet<QString> bases(const QString &id);
+    static QSet<QString> mimeTypes(const QString &id);
 };
 
 }

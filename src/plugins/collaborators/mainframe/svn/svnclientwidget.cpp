@@ -41,7 +41,6 @@ SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
     mRepos->setStyleSheet(GitQlientStyles::getStyles());
     mRepos->setCornerWidget(homeMenu, Qt::TopLeftCorner);
     setCentralWidget(mRepos);
-    addRepoTab("/home/funning/Documents/svn");
 }
 
 void SvnClientWidget::addRepoTab(const QString &repoPath, const QString &user, const QString &passwd)
