@@ -101,6 +101,15 @@ void BuildStep::stdErrput(const QString &line)
 bool BuildStep::execCmd(const QString &cmd, const QStringList &args)
 {
     bool ret = false;
+    if (buildOutputDir.isEmpty()) {
+        for (auto arg : args) {
+            QFileInfo fileInfo(arg);
+            if (fileInfo.isDir()) {
+                buildOutputDir = arg;
+                break;
+            }
+        }
+    }
     QDir outputDir(buildOutputDir);
     if (outputDir.exists()) {
         process.reset(new QProcess());

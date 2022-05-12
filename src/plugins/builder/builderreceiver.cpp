@@ -90,8 +90,12 @@ void BuilderReceiver::eventProcess(const dpf::Event &event)
     QString topic = event.topic();
     QString data = event.data().toString();
     if (topic == T_MENU) { // TODO(mozart):Menu event should contain more info.
-        if (data == D_FILE_OPENFOLDER) { // more events may be here.
+        if (data == D_FILE_OPENFOLDER || data == D_FILE_OPENPROJECT) { // more events may be here.
             QString filePath = event.property(P_FILEPATH).toString();
+            if (data == D_FILE_OPENPROJECT) {
+                QFileInfo fileInfo(filePath);
+                filePath = fileInfo.dir().path();
+            }
             proDirPath = filePath;
             updatePaths(filePath);
         }

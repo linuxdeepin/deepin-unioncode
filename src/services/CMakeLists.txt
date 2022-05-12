@@ -8,6 +8,7 @@ set(CXX_H
     container/containerservice.h
     project/projectgenerator.h
     project/projectservice.h
+    runtime/runtimeservice.h
     )
 
 set(CXX_CPP
@@ -17,6 +18,7 @@ set(CXX_CPP
     project/projectgenerator.cpp
     container/containerservice.cpp
     project/projectservice.cpp
+    runtime/runtimeservice.cpp
     )
 
 add_library(
