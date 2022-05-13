@@ -176,7 +176,7 @@ QStandardItem *CMakeGenerator::createRootItem(const QString &projectPath, const 
     arguments << "-G";
     arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
     arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
-    arguments << "-DCMAKE_BUILD_TYPE=\"Release\"";
+    arguments << "-DCMAKE_BUILD_TYPE=\"Debug\"";
     process.setArguments(arguments);
 
     // 消息和進度轉發
