@@ -21,7 +21,8 @@
 #ifndef CODEEDITORRECEIVER_H
 #define CODEEDITORRECEIVER_H
 
-#include <framework/framework.h>
+#include "common/common.h"
+#include "framework.h"
 
 class CodeEditorReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegister<CodeEditorReceiver>
 {
@@ -55,7 +56,8 @@ public:
     static DpfEventMiddleware* instance();
 
 signals:
-    void toOpenFile(const QString &filePath, const QString &rootPath);
+    void toOpenFile(const QString &filePath);
+    void toOpenFile(const Head &head, const QString &filePath);
     void toRunFileLine(const QString &filePath, int line);
     void toRunClean();
     void toDebugPointClean();

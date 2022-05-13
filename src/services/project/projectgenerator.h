@@ -1,6 +1,8 @@
 #ifndef PROJECTGENERATOR_H
 #define PROJECTGENERATOR_H
 
+#include "projectinfo.h"
+
 #include "common/common.h"
 
 #include <framework/framework.h>
@@ -24,25 +26,6 @@ class ProjectGenerator : public Generator
 {
     Q_OBJECT
 public:
-    /*!
-     * \brief The ItemDataRole enum
-     *  获得QModelIndex 与Item数据互通支持(Qt规范)
-     *  关联数据为QVariantMap
-     */
-    enum ItemDataRole
-    {
-        RootToolKitRole = Qt::ItemDataRole::UserRole,
-    };
-
-    // ProjectToolKitRole 的关联数据结构键
-    enum_def(RootToolKitKey, QString)
-    {
-        enum_exp KitName = "KitName";
-        enum_exp BuildPath = "BuildPath";
-        enum_exp SourcePath = "SourcePath";
-        enum_exp WorkspacePath = "WorkspacePath";
-        enum_exp FilePath = "FilePath";
-    };
 
     ProjectGenerator(){}
 
@@ -77,9 +60,8 @@ public:
      * \param projectPath 工程文件路径
      * \return
      */
-    virtual QStandardItem *createRootItem(const QString &projectPath, const QString &outputPath) {
-        Q_UNUSED(projectPath);
-        Q_UNUSED(outputPath);
+    virtual QStandardItem *createRootItem(const ProjectInfo &info) {
+        Q_UNUSED(info);
         return nullptr;
     }
 
@@ -96,58 +78,34 @@ public:
     }
 
     /*!
-     * \brief setToolKitName 设置树节点的工具套件名称, 该函数传入顶层节点
-     * \param root 顶层节点
-     * \param name 套件名称
+     * \brief root 获取子节点的根节点
+     * \param child 子节点
+     * \return 根节点
      */
-    static void setToolKitName(QStandardItem *root,
-                               const RootToolKitKey::type_value &name);
+    inline static const QStandardItem *root(const QStandardItem *child)
+    {
+        if (!child)
+            return nullptr;
+        const QStandardItem *parent = child->parent();
+        if (parent)
+            return root(parent);
+        return child;
+    }
 
     /*!
-     * \brief setToolKitProperty 设置工作套件附件字段
-     * \param root 顶层节点
-     * \param key 附加字段键
-     * \param value 附加字段值
+     * \brief root 获取子节点的根节点
+     * \param child 子节点
+     * \return 根节点
      */
-    static void setToolKitProperty(QStandardItem *root,
-                                   const RootToolKitKey::type_value &key,
-                                   const QVariant &value);
-
-    /*!
-     * \brief toolKitName 获取套件名称
-     * \param root 顶层节点
-     * \return 套件名称
-     */
-    static QString toolKitName(const QStandardItem *root);
-    static QString toolKitName(const QModelIndex &root);
-
-
-    /*!
-     * \brief toolKitProperty 获取工作套件附加字段
-     * \param root 顶层节点
-     * \param key 附加字段键
-     * \return
-     */
-    static QVariant toolKitProperty(const QStandardItem *root,
-                                    const RootToolKitKey::type_value &key);
-    static QVariant toolKitProperty(const QModelIndex &root,
-                                    const RootToolKitKey::type_value &key);
-
-    /*!
-     * \brief toolKitPropertyMap 获取所有附加字段
-     * \param root 顶层节点
-     * \return 所有附加的字段
-     */
-    static QVariantMap toolKitPropertyMap(const QStandardItem *root);
-    static QVariantMap toolKitPropertyMap(const QModelIndex &root);
-
-    /*!
-     * \brief root 获取子项的顶层根节点
-     * \param child 任意子节点
-     * \return 顶层根节点
-     */
-    static const QStandardItem *root(const QStandardItem *child);
-    static const QModelIndex root(const QModelIndex &child);
+    static const QModelIndex root(const QModelIndex &child)
+    {
+        if (!child.isValid())
+            return {};
+        const QModelIndex parent = child.parent();
+        if (parent.isValid())
+            return root(parent);
+        return child;
+    }
 
 Q_SIGNALS:
     /*!

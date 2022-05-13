@@ -12,14 +12,19 @@ class ProjectTreeView : public QTreeView
 public:
     explicit ProjectTreeView(QWidget *parent = nullptr);
     virtual ~ProjectTreeView();
-    void appendRootItem(QStandardItem *item);
-    void expandedProjectDepth(QStandardItem *rootItem, int depth);
-    void expandedProjectAll(QStandardItem *rootItem);
+    void appendRootItem(QStandardItem *root);
+    void removeRootItem(const QStandardItem *root);
+    void expandedProjectDepth(const QStandardItem *root, int depth);
+    void expandedProjectAll(const QStandardItem *root);
 Q_SIGNALS:
     void indexMenuRequest(const QModelIndex &index, QContextMenuEvent *event);
     void itemMenuRequest(const QStandardItem *item, QContextMenuEvent *event);
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
+
+private slots:
+    void doItemMenuRequest(const QStandardItem *item, QContextMenuEvent *event);
+    void doDoubleClieked(const QModelIndex &index);
 };
 
 #endif // PROJECTTREEVIEW_H

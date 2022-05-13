@@ -22,7 +22,8 @@ class ScintillaEditExternPrivate
     QTimer hoverTimer;
     QTimer definitionHoverTimer;
     QString filePath;
-    QString rootPath;
+    QString projectWorkspace;
+    QString projectLanguage;
     QString language;
     Scintilla::Position editInsertPostion = -1;
     int editInsertCount = 0;
@@ -77,6 +78,13 @@ void ScintillaEditExtern::setFile(const QString &path)
     if (!set.lsp) {
         qCritical() << "Failed, can't create lsp style from ScintillaEdit!";
     } else { // lsp default;
+        auto client = lsp::ClientManager::instance()->get({d->projectWorkspace, d->projectLanguage});
+        if (!client) {
+            qCritical() << "Failed, client is nullptr"
+                        << "project workspace: " << d->projectWorkspace
+                        << "project language: " << d->projectLanguage;
+        }
+        set.lsp->setClient(client);
         set.lsp->appendEdit(this);
     }
 
@@ -104,19 +112,20 @@ QString ScintillaEditExtern::file() const
     return d->filePath;
 }
 
-QString ScintillaEditExtern::langueage() const
+void ScintillaEditExtern::setHeadInfo(const QString &proWorkspace, const QString &proLanguage)
 {
-    return d->language;
+    d->projectWorkspace = proWorkspace;
+    d->projectLanguage = proLanguage;
 }
 
-void ScintillaEditExtern::setRootPath(const QString &path)
+QString ScintillaEditExtern::proWorkspace() const
 {
-    d->rootPath = path;
+    return d->projectWorkspace;
 }
 
-QString ScintillaEditExtern::rootPath()
+QString ScintillaEditExtern::proLanguage() const
 {
-    return d->rootPath;
+    return d->projectLanguage;
 }
 
 void ScintillaEditExtern::debugPointAllDelete()
@@ -210,13 +219,10 @@ void ScintillaEditExtern::sciModified(Scintilla::ModificationFlags type, Scintil
 
     if (bool(type & Scintilla::ModificationFlags::InsertText)) {
         textInserted(position, length, linesAdded, text, line);
-        completed(position);
     }
 
     if (bool(type & Scintilla::ModificationFlags::DeleteText)) {
         textDeleted(position, length, linesAdded, text, line);
-        autoCCancel();
-        completeCleaned();
     }
 }
 

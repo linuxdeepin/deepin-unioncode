@@ -19,6 +19,7 @@ set(CXX_H
     supportfile/windowstyle.h
     supportfile/builder.h
     dialog/contextdialog.h
+    widget/configurewidget.h
     widget/collapsewidget.h
     widget/detailsbutton.h
     widget/statuswidget.h
@@ -49,6 +50,7 @@ set(CXX_CPP
     supportfile/windowstyle.cpp
     supportfile/builder.cpp
     dialog/contextdialog.cpp
+    widget/configurewidget.cpp
     widget/collapsewidget.cpp
     widget/detailsbutton.cpp
     widget/statuswidget.cpp

@@ -8,8 +8,6 @@
 #include "refactorwidget/refactorwidget.h"
 #include "renamepopup/renamepopup.h"
 
-#include "services/workspace/workspaceservice.h"
-
 #include "common/common.h"
 #include "framework/service/qtclassmanager.h"
 
@@ -208,7 +206,25 @@ public:
     }
 };
 
-class CompletionCache : public EditorCache {};
+class CompletionCache : public EditorCache
+{
+public:
+    lsp::CompletionProvider provider;
+};
+
+struct TextChangeCache
+{
+    enum State{
+        Inserted,
+        Deleted
+    };
+    State state;
+    Scintilla::Position positionCache;
+    Scintilla::Position lengthCache;
+    Scintilla::Position linesAddedCache;
+    QByteArray textCache;
+    Scintilla::Position lineCache;
+};
 
 class StyleLspPrivate
 {
@@ -216,13 +232,14 @@ class StyleLspPrivate
     // response not return url, cache send to callback method
     CompletionCache completionCache;
     DefinitionCache definitionCache;
+    QTimer textChangedTimer;
     HoverCache hoverCache;
     RenamePopup renamePopup;
     RenameCache renameCache;
     EditorCache editCache;
-    lsp::SemanticTokensProvider tokensProvider;
-    QString editText = "";
-    uint editCount = 0;
+    TextChangeCache textChangedCache;
+    QList<lsp::Data> tokensCache;
+    lsp::Client *lspClient;
     friend class StyleLsp;
 };
 
@@ -252,21 +269,26 @@ StyleLsp::StyleLsp()
     QObject::connect(&d->renamePopup, &RenamePopup::editingFinished,
                      this, &StyleLsp::renameRequest, Qt::UniqueConnection);
 
-    QObject::connect(&client(), QOverload<const lsp::RenameChanges&>::of(&lsp::Client::requestResult),
+    QObject::connect(getClient(), QOverload<const lsp::RenameChanges&>::of(&lsp::Client::requestResult),
                      this, &StyleLsp::doRenameReplace);
 
-    QObject::connect(&client(), QOverload<const lsp::References&>::of(&lsp::Client::requestResult),
+    QObject::connect(getClient(), QOverload<const lsp::References&>::of(&lsp::Client::requestResult),
                      RefactorWidget::instance(), &RefactorWidget::displayReference);
 }
 
 StyleLsp::~StyleLsp()
 {
-    if (lspClient.state() == QProcess::Starting) {
-        lspClient.shutdownRequest();
-        lspClient.waitForBytesWritten();
-        lspClient.close();
-        lspClient.waitForFinished();
-    }
+
+}
+
+void StyleLsp::setClient(lsp::Client *client)
+{
+    d->lspClient = client;
+}
+
+lsp::Client *StyleLsp::getClient() const
+{
+    return d->lspClient;
 }
 
 int StyleLsp::getLspCharacter(sptr_t doc, sptr_t sciPosition)
@@ -274,83 +296,106 @@ int StyleLsp::getLspCharacter(sptr_t doc, sptr_t sciPosition)
     return getLspPosition(doc, sciPosition).character;
 }
 
-void StyleLsp::sciTextInserted(Scintilla::Position position,
-                               Scintilla::Position length, Scintilla::Position linesAdded,
-                               const QByteArray &text, Scintilla::Position line)
+void StyleLsp::sciTextInsertedTotal(Scintilla::Position position,
+                                    Scintilla::Position length, Scintilla::Position linesAdded,
+                                    const QByteArray &text, Scintilla::Position line)
 {
     auto edit = qobject_cast<ScintillaEditExtern*>(sender());
-    if (!edit)
+    if (!edit || !getClient())
         return;
 
-    edit->indicatorClearRange(0, edit->length()); // clean all indicator range style
-
-    cleanCompletion(*edit);
-    cleanDiagnostics(*edit);
-    client().changeRequest(edit->file(), edit->textRange(0, edit->length()));
-
+    d->completionCache.setEditor(edit);
     d->editCache.setEditor(edit);
-    client().docSemanticTokensFull(edit->file());
 
-    if (length != 1){
-        return;
+    if (d->textChangedTimer.isActive()) {
+        d->textChangedTimer.stop();
     }
 
-    if (text != " ") {
-        d->editCount += length;
-        d->editText += text;
-        d->completionCache.setEditor(edit);
-        client().completionRequest(edit->file(), getLspPosition(edit->docPointer(), position));
+    // 补全
+    auto wordStartPos = edit->wordStartPosition(position - length, true);
+    setCompletion(*edit, edit->textRange(wordStartPos, position).replace(" ","") + text,
+                  position - wordStartPos, d->completionCache.provider);
+
+    if (position == d->textChangedCache.positionCache + d->textChangedCache.lengthCache) {
+        d->textChangedCache.lengthCache += length;
+        d->textChangedCache.textCache += text;
     } else {
-        d->editCount = 0;
-        d->editText.clear();
-        d->completionCache.clean();
-        cleanCompletion(*edit);
+        d->textChangedCache.positionCache = position;
+        d->textChangedCache.lengthCache = length;
+        d->textChangedCache.textCache = text;
+        d->textChangedCache.state = TextChangeCache::State::Inserted; //设置增量标志
     }
+
+    d->textChangedTimer.start(500);
+    QObject::connect(&d->textChangedTimer, &QTimer::timeout,
+                     this, &StyleLsp::sciTextChangedTotal,
+                     Qt::UniqueConnection);
 }
 
-void StyleLsp::sciTextDeleted(Scintilla::Position position,
-                              Scintilla::Position length, Scintilla::Position linesAdded,
-                              const QByteArray &text, Scintilla::Position line)
+void StyleLsp::sciTextDeletedTotal(Scintilla::Position position,
+                                   Scintilla::Position length, Scintilla::Position linesAdded,
+                                   const QByteArray &text, Scintilla::Position line)
 {
     auto edit = qobject_cast<ScintillaEditExtern*>(sender());
-    if (!edit)
+    if (!edit || !getClient())
         return;
 
-    edit->indicatorClearRange(0, edit->length()); // clean all indicator range style
-
-    qInfo() << "position" << position
-            << "length" << length
-            << "linesAdded" << linesAdded
-            << "text" << text
-            << "line" << line;
-
-    cleanCompletion(*edit);
-    cleanDiagnostics(*edit);
-    client().changeRequest(edit->file(), edit->textRange(0, edit->length()));
-
+    d->completionCache.setEditor(edit);
     d->editCache.setEditor(edit);
-    client().docSemanticTokensFull(edit->file());
 
-    if (length != 1){
-        return;
+    if (d->textChangedTimer.isActive()) {
+        d->textChangedTimer.stop();
     }
 
-    if (d->editCount > 0) {
-        d->editCount -= length;
-        if (d->editCount != 0) {
-            d->editText.remove(d->editText.count() - 1 , length);
-            d->completionCache.setEditor(edit);
-            client().completionRequest(edit->file(), getLspPosition(edit->docPointer(), position));
-        } else {
-            d->completionCache.clean();
-            d->editText.clear();
+    if (d->textChangedCache.lengthCache == 0) { // 性质跳变
+        d->textChangedCache.state = TextChangeCache::State::Deleted; // 设置为减量
+        d->textChangedCache.positionCache = position + length;
+        d->textChangedCache.lengthCache = length;
+        d->textChangedCache.textCache.insert(0, text);
+    }
+
+    // 增量删除
+    if (d->textChangedCache.state == TextChangeCache::State::Inserted) {
+        if (d->textChangedCache.positionCache + d->textChangedCache.lengthCache - length  == position) {
+            d->textChangedCache.textCache.remove(d->textChangedCache.textCache.size() - length,
+                                                 d->textChangedCache.textCache.size());
+            d->textChangedCache.lengthCache -= length;
+            d->textChangedCache.state = TextChangeCache::State::Inserted; // 设置增量标志
+
+            // 补全
+            auto wordStartPos = edit->wordStartPosition(position, true);
+            setCompletion(*edit, edit->textRange(wordStartPos, position),
+                          wordStartPos, d->completionCache.provider);
         }
-    } else {
-        d->completionCache.clean();
-        d->editCount = 0;
-        d->editText.clear();
+    } else if (d->textChangedCache.state == TextChangeCache::State::Deleted){
+        if (d->textChangedCache.positionCache == position + d->textChangedCache.lengthCache) {
+            d->textChangedCache.lengthCache += length; // 删除文字数量统计
+            d->textChangedCache.textCache.insert(0, text);  // 删除文字总览
+        }
     }
+
+    d->textChangedTimer.start(500);
+    QObject::connect(&d->textChangedTimer, &QTimer::timeout,
+                     this, &StyleLsp::sciTextChangedTotal,
+                     Qt::UniqueConnection);
 }
+
+void StyleLsp::sciTextChangedTotal()
+{
+    if (d->textChangedTimer.isActive())
+        d->textChangedTimer.stop();
+
+    auto edit =  d->editCache.getEditor();
+    if (!edit)
+        return;
+
+    edit->indicatorClearRange(0, edit->length()); // clean all indicator range style
+    cleanDiagnostics(*edit);
+
+    getClient()->changeRequest(edit->file(), edit->textRange(0, edit->length()));
+    getClient()->completionRequest(edit->file(), getLspPosition(edit->docPointer(), d->textChangedCache.positionCache));
+    getClient()->docSemanticTokensFull(edit->file());
+};
 
 void StyleLsp::sciHovered(Scintilla::Position position)
 {
@@ -365,7 +410,7 @@ void StyleLsp::sciHovered(Scintilla::Position position)
     d->hoverCache.setSciPosition(position);
 
     auto lspPostion = getLspPosition(edit->docPointer(), d->hoverCache.getSciPosition());
-    client().docHoverRequest(edit->file(), lspPostion);
+    getClient()->docHoverRequest(edit->file(), lspPostion);
 }
 
 void StyleLsp::sciHoverCleaned(Scintilla::Position position)
@@ -412,7 +457,7 @@ void StyleLsp::sciDefinitionHover(Scintilla::Position position)
         }
     }
     auto lspPostion = getLspPosition(edit->docPointer(), d->definitionCache.getSciPosition());
-    client().definitionRequest(edit->file(), lspPostion);
+    getClient()->definitionRequest(edit->file(), lspPostion);
 }
 
 void StyleLsp::sciDefinitionHoverCleaned(Scintilla::Position position)
@@ -487,7 +532,7 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
 
     QAction *findSymbol = contextMenu.addAction(QAction::tr("Find Usages"));
     QObject::connect(findSymbol, &QAction::triggered, [&](){
-        this->client().referencesRequest(edit->file(), getLspPosition(edit->docPointer(), edit->selectionStart()));
+        getClient()->referencesRequest(edit->file(), getLspPosition(edit->docPointer(), edit->selectionStart()));
     });
 
     contextMenu.move(showPos);
@@ -502,7 +547,7 @@ void StyleLsp::sciReplaced(const QString &file, Scintilla::Position start, Scint
 
     Q_UNUSED(start);
     Q_UNUSED(end);
-    client().changeRequest(file, edit->textRange(0, edit->length()));
+    getClient()->changeRequest(file, edit->textRange(0, edit->length()));
 }
 
 void StyleLsp::renameRequest(const QString &newText)
@@ -510,29 +555,10 @@ void StyleLsp::renameRequest(const QString &newText)
     auto editor = d->renameCache.getEditor();
     auto sciPostion = d->renameCache.getStart().getSciPosition();
     if (editor) {
-        client().renameRequest(editor->file(),
-                               getLspPosition(editor->docPointer(), sciPostion),
-                               newText);
+        getClient()->renameRequest(editor->file(),
+                                   getLspPosition(editor->docPointer(), sciPostion),
+                                   newText);
     }
-}
-
-lsp::Client &StyleLsp::client()
-{
-    if (lspClient.program().isEmpty()
-            && lspClient.state() == QProcess::ProcessState::NotRunning) {
-        support_file::Language::initialize();
-        auto serverInfo = support_file::Language::sever(StyleKeeper::key(this));
-
-        serverInfo = clientInfoSpec(serverInfo);
-
-        if (!serverInfo.progrma.isEmpty()) {
-            lspClient.setProgram(serverInfo.progrma);
-            lspClient.setArguments(serverInfo.arguments);
-            lspClient.start();
-        }
-    }
-
-    return lspClient;
 }
 
 void StyleLsp::appendEdit(ScintillaEditExtern *editor)
@@ -545,8 +571,8 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
     setMargin(*editor);
     d->editors.insert(editor->file(), editor);
 
-    QObject::connect(editor, &ScintillaEditExtern::textInserted, this, &StyleLsp::sciTextInserted);
-    QObject::connect(editor, &ScintillaEditExtern::textDeleted, this, &StyleLsp::sciTextDeleted);
+    QObject::connect(editor, &ScintillaEditExtern::textInserted, this, &StyleLsp::sciTextInsertedTotal);
+    QObject::connect(editor, &ScintillaEditExtern::textDeleted, this, &StyleLsp::sciTextDeletedTotal);
     QObject::connect(editor, &ScintillaEditExtern::hovered, this, &StyleLsp::sciHovered);
     QObject::connect(editor, &ScintillaEditExtern::hoverCleaned, this, &StyleLsp::sciHoverCleaned);
     QObject::connect(editor, &ScintillaEditExtern::definitionHover, this, &StyleLsp::sciDefinitionHover);
@@ -560,7 +586,7 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
         auto itera = d->editors.begin();
         while (itera != d->editors.end()) {
             if (itera.value() == obj) {
-                client().closeRequest(itera.key());
+                getClient()->closeRequest(itera.key());
                 d->editors.erase(itera);
                 return;
             }
@@ -569,7 +595,7 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
     });
 
     //bind signals to file diagnostics
-    QObject::connect(&client(), QOverload<const lsp::DiagnosticsParams &>::of(&lsp::Client::notification),
+    QObject::connect(getClient(), QOverload<const lsp::DiagnosticsParams &>::of(&lsp::Client::notification),
                      this, [=](const lsp::DiagnosticsParams &params){
         auto editor = findSciEdit(params.uri.toLocalFile());
         if (!editor) { return; }
@@ -577,63 +603,57 @@ void StyleLsp::appendEdit(ScintillaEditExtern *editor)
         this->setDiagnostics(*editor, params);
     });
 
-    QObject::connect(&client(), QOverload<const QList<lsp::Data>&>::of(&lsp::Client::requestResult),
+    QObject::connect(getClient(), QOverload<const QList<lsp::Data>&>::of(&lsp::Client::requestResult),
                      this, [=](const QList<lsp::Data> &data)
     {
         this->setTokenFull(*d->editCache.getEditor(), data);
     });
 
-    QObject::connect(&client(), QOverload<const lsp::SemanticTokensProvider&>::of(&lsp::Client::requestResult),
-                     this, [=](const lsp::SemanticTokensProvider& provider){
-        d->tokensProvider = provider;
-    });
-
-    QObject::connect(&client(), QOverload<const lsp::Hover&>::of(&lsp::Client::requestResult),
+    QObject::connect(getClient(), QOverload<const lsp::Hover&>::of(&lsp::Client::requestResult),
                      this, [=](const lsp::Hover& hover){
         if (!d->hoverCache.getEditor()) { return; }
         setHover(*d->hoverCache.getEditor(), hover);
     });
 
-    QObject::connect(&client(), QOverload<const lsp::CompletionProvider&>::of(&lsp::Client::requestResult),
+    QObject::connect(getClient(), QOverload<const lsp::CompletionProvider&>::of(&lsp::Client::requestResult),
                      this, [=](const lsp::CompletionProvider& provider){
         if (!d->completionCache.getEditor()) { return; }
-        setCompletion(*d->completionCache.getEditor(), provider);
+        d->completionCache.provider = provider;
     });
 
-    QObject::connect(&client(), QOverload<const lsp::DefinitionProvider&>::of(&lsp::Client::requestResult),
+    QObject::connect(getClient(), QOverload<const lsp::DefinitionProvider&>::of(&lsp::Client::requestResult),
                      this, [=](const lsp::DefinitionProvider& provider){
         if (!d->definitionCache.getEditor()) { return; }
         setDefinition(*d->definitionCache.getEditor(), provider);
     });
 
-    QObject::connect(&client(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                     this, [=](int code, auto status) {
-        qInfo() << code << status;
-    });
+    //    QObject::connect(getClient(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+    //                     this, [=](int code, auto status) {
+    //        qInfo() << code << status;
+    //    });
 
     QObject::connect(RefactorWidget::instance(), &RefactorWidget::doubleClicked,
                      this, [=](const QString &filePath, const lsp::Range &range){
         TextEditTabWidget::instance()->jumpToRange(filePath, range);
     });
 
-    using namespace dpfservice;
-    auto &&ctx = dpfInstance.serviceContext();
-    auto workspaceService = ctx.service<WorkspaceService>(WorkspaceService::name());
-    QString workspaceGenPath;
-    if (workspaceService) {
-        QStringList workspaceDirs = workspaceService->findWorkspace(editor->file());
-        if (workspaceDirs.size() != 1) {
-            qCritical() << "Failed, match workspace to much!!!";
-        } else {
-            workspaceGenPath = workspaceService->targetPath(workspaceDirs[0]);
-        }
-    }
+    //    using namespace dpfservice;
+    //    auto &&ctx = dpfInstance.serviceContext();
+    //    auto workspaceService = ctx.service<WorkspaceService>(WorkspaceService::name());
+    //    QString workspaceGenPath;
+    //    if (workspaceService) {
+    //        QStringList workspaceDirs = workspaceService->findWorkspace(editor->file());
+    //        if (workspaceDirs.size() != 1) {
+    //            qCritical() << "Failed, match workspace to much!!!";
+    //        } else {
+    //            workspaceGenPath = workspaceService->targetPath(workspaceDirs[0]);
+    //        }
+    //    }
 
-    client().initRequest(editor->rootPath());
-    client().openRequest(editor->file());
+    getClient()->openRequest(editor->file());
 
     d->editCache.setEditor(editor); // 事件回调缓存
-    client().docSemanticTokensFull(editor->file());
+    getClient()->docSemanticTokensFull(editor->file());
 }
 
 QString StyleLsp::sciEditFile(ScintillaEditExtern * const sciEdit)
@@ -658,8 +678,12 @@ StyleLsp::IndicStyleExt StyleLsp::symbolIndic(ScintillaEdit &edit,
 
 lsp::SemanticTokenType::type_value StyleLsp::tokenToDefine(int token)
 {
-    if (0 <= token && token < d->tokensProvider.legend.tokenTypes.size())
-        return d->tokensProvider.legend.tokenTypes[token];
+    auto client = getClient();
+    if (!client)
+        return {};
+    auto initSecTokensProvider = client->initSecTokensProvider();
+    if (0 <= token && token < initSecTokensProvider.legend.tokenTypes.size())
+        return initSecTokensProvider.legend.tokenTypes[token];
     return {};
 }
 
@@ -797,25 +821,25 @@ void StyleLsp::setTokenFull(ScintillaEdit &edit, const QList<lsp::Data> &tokens)
     int cacheLine = 0;
     for (auto val : tokens) {
         cacheLine += val.start.line;
-        qInfo() << "line:" << cacheLine;
+        /* qInfo() << "line:" << cacheLine;
         qInfo() << "charStart:" << val.start.character;
         qInfo() << "charLength:" << val.length;
         qInfo() << "tokenType:" << val.tokenType;
-        qInfo() << "tokenModifiers:" << val.tokenModifiers;
+        qInfo() << "tokenModifiers:" << val.tokenModifiers; */
         auto sciStartPos = StyleLsp::getSciPosition(edit.docPointer(), {cacheLine, val.start.character});
         auto sciEndPos = edit.wordEndPosition(sciStartPos, true);
         if (sciStartPos != 0 && sciEndPos != edit.length()) {
             QString sourceText = edit.textRange(sciStartPos, sciEndPos);
             int wordLength = sciEndPos - sciStartPos;
-            qInfo() << "text:" << sourceText;
+            // qInfo() << "text:" << sourceText;
             // text is word
             if (!sourceText.isEmpty() && wordLength == val.length) {
                 QString tokenValue = tokenToDefine(val.tokenType);
-                qInfo() << "tokenValue:" << tokenValue;
+                // qInfo() << "tokenValue:" << tokenValue;
                 auto indics = symbolIndic(edit, tokenValue, val.tokenModifiers);
                 for (int i = 0; i < INDIC_MAX; i++) {
                     if (indics.fore.keys().contains(i)) {
-                        qInfo() << "fillRangeColor:" << hex << indics.fore[i];
+                        // qInfo() << "fillRangeColor:" << hex << indics.fore[i];
                         edit.setIndicatorCurrent(i);
                         edit.indicSetFlags(i, SC_INDICFLAG_VALUEFORE);
                         edit.setIndicatorValue(indics.fore[i]);
@@ -825,35 +849,9 @@ void StyleLsp::setTokenFull(ScintillaEdit &edit, const QList<lsp::Data> &tokens)
             }
         }
     }
-    this->tokensCache = tokens;
 }
 
 void StyleLsp::cleanTokenFull(ScintillaEdit &edit)
-{
-    Q_UNUSED(edit);
-}
-
-void StyleLsp::setCompletion(ScintillaEdit &edit, const lsp::CompletionProvider &provider)
-{
-    if (provider.items.isEmpty())
-        return;
-
-    const unsigned char sep = 0x7C; // "|"
-    edit.autoCSetSeparator((sptr_t)sep);
-    QString inserts;
-    for (auto item : provider.items) {
-        if (!item.insertText.startsWith(d->editText))
-            continue;
-        inserts += (item.insertText += sep);
-    }
-    if (inserts.endsWith(sep)){
-        inserts.remove(inserts.count() - 1 , 1);
-    }
-
-    edit.autoCShow(d->editCount, inserts.toUtf8());
-}
-
-void StyleLsp::cleanCompletion(ScintillaEdit &edit)
 {
     Q_UNUSED(edit);
 }
@@ -909,4 +907,26 @@ void StyleLsp::doRenameReplace(const lsp::RenameChanges &changes)
             TextEditTabWidget::instance()->replaceRange(filePath, edit.range, edit.newText);
         }
     }
+}
+
+void StyleLsp::setCompletion(ScintillaEdit &edit, const QByteArray &text,
+                             const Scintilla::Position enterLenght,
+                             const lsp::CompletionProvider &provider)
+{
+    if (provider.items.isEmpty() || d->textChangedCache.textCache.isEmpty())
+        return;
+
+    const unsigned char sep = 0x7C; // "|"
+    edit.autoCSetSeparator((sptr_t)sep);
+    QString inserts;
+    for (auto item : provider.items) {
+        if (!item.insertText.startsWith(text))
+            continue;
+        inserts += (item.insertText += sep);
+    }
+    if (inserts.endsWith(sep)){
+        inserts.remove(inserts.count() - 1 , 1);
+    }
+
+    edit.autoCShow(enterLenght, inserts.toUtf8());
 }

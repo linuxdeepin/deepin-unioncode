@@ -61,9 +61,9 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 
 void CodeEditorReceiver::eventFileBrowser(const dpf::Event &event)
 {
-    if(D_ITEM_DOUBLECLICKED == event.data()) {
-        return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString(),
-                                                          event.property(P_WORKSPACEFOLDER).toString());
+    if (D_ITEM_DOUBLECLICKED == event.data()) {
+        return DpfEventMiddleware::instance()->toOpenFile(
+                    event.property(P_FILEPATH).toString());
     }
 }
 
@@ -72,8 +72,7 @@ void CodeEditorReceiver::eventDebugger(const dpf::Event &event)
     if (D_DEBUG_EXECUTION_JUMP == event.data()) {
         return DpfEventMiddleware::instance()->toRunFileLine(
                     event.property(P_FILEPATH).toString(),
-                    event.property(P_FILELINE).toInt()
-                    );
+                    event.property(P_FILELINE).toInt());
     }
 
     if (D_DEBUG_EXECUTION_JUMP_CLEAN == event.data()) {
@@ -88,16 +87,19 @@ void CodeEditorReceiver::eventDebugger(const dpf::Event &event)
 void CodeEditorReceiver::eventProject(const dpf::Event &event)
 {
     if (D_ITEM_DOUBLECLICKED == event.data()) {
-        return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString(),
-                                                          event.property(P_WORKSPACEFOLDER).toString());
+        Head head{ event.property(P_WORKSPACEFOLDER).toString(),
+                    event.property(P_LANGUAGE).toString() };
+        return DpfEventMiddleware::instance()->toOpenFile(
+                    head,
+                    event.property(P_FILEPATH).toString());
     }
 }
 
 void CodeEditorReceiver::eventMenu(const dpf::Event &event)
 {
     if (D_FILE_OPENDOCUMENT == event.data()) {
-        return DpfEventMiddleware::instance()->toOpenFile(event.property(P_FILEPATH).toString(),
-                                                          event.property(P_WORKSPACEFOLDER).toString());
+        return DpfEventMiddleware::instance()->toOpenFile(
+                    event.property(P_FILEPATH).toString());
     }
     if (D_FILE_OPENFOLDER == event.data()) {
         qInfo() << event;

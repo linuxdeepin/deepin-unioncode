@@ -47,6 +47,9 @@ extern const QString MWNA_RUNTIME;
 // MWM_FILE: MainWindow Menu File
 // MWMFA: MainWindow Menu File Action
 extern const QString MWM_FILE;
+extern const QString MWMFA_CXX;
+extern const QString MWMFA_JAVA;
+extern const QString MWMFA_PYTHON;
 extern const QString MWMFA_DOCUMENT_NEW;
 extern const QString MWMFA_FOLDER_NEW;
 extern const QString MWMFA_OPEN_PROJECT;
@@ -201,9 +204,10 @@ public:
 
     /*!
      * \brief addOpenProjectAction 添加打開工程的Action
+     * \param name 语言分类名称 MWMFA_CXX|MWMFA_Java|MWMFA_Python
      * \param action 實例對象
      */
-    DPF_INTERFACE(void, addOpenProjectAction, AbstractAction *action);
+    DPF_INTERFACE(void, addOpenProjectAction, const QString &name, AbstractAction *action);
 
 signals:
 

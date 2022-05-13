@@ -24,12 +24,34 @@ void SendEvents::gengrateEnd(const QString &buildSystem, const QString &projectP
     dpf::EventCallProxy::instance().pubEvent(event);
 }
 
-void SendEvents::doubleCliekedOpenFile(const QString &filePath, const QString &workspaceFolder)
+void SendEvents::doubleCliekedOpenFile(const QString &workspace, const QString &language, const QString &filePath)
 {
     dpf::Event event;
     event.setTopic(T_PROJECT);
     event.setData(D_ITEM_DOUBLECLICKED);
     event.setProperty(P_FILEPATH, filePath);
-    event.setProperty(P_WORKSPACEFOLDER, workspaceFolder);
+    event.setProperty(P_WORKSPACEFOLDER, workspace);
+    event.setProperty(P_LANGUAGE, language);
+    dpf::EventCallProxy::instance().pubEvent(event);
+}
+
+void SendEvents::projectCreate(const QString &workspace, const QString &language, const QString &complieFolder)
+{
+    dpf::Event event;
+    event.setTopic(T_PROJECT);
+    event.setData(D_CRETE);
+    event.setProperty(P_WORKSPACEFOLDER, workspace);
+    event.setProperty(P_LANGUAGE, language);
+    event.setProperty(P_WORKSPACEFOLDER, complieFolder);
+    dpf::EventCallProxy::instance().pubEvent(event);
+}
+
+void SendEvents::projectDelete(const QString &workspace, const QString &language)
+{
+    dpf::Event event;
+    event.setTopic(T_PROJECT);
+    event.setData(D_DELTE);
+    event.setProperty(P_WORKSPACEFOLDER, workspace);
+    event.setProperty(P_LANGUAGE, language);
     dpf::EventCallProxy::instance().pubEvent(event);
 }

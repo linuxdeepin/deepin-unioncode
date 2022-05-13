@@ -452,7 +452,7 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
     }
 }
 
-void WindowKeeper::addOpenProjectAction(AbstractAction *action)
+void WindowKeeper::addOpenProjectAction(const QString &name, AbstractAction *action)
 {
     qInfo() << __FUNCTION__;
     if (!action || !action->qAction())
@@ -465,7 +465,15 @@ void WindowKeeper::addOpenProjectAction(AbstractAction *action)
         if (qAction->text() == MWM_FILE) {
             for(QAction *childAction : qAction->menu()->actions()) {
                 if (childAction->text() == MWMFA_OPEN_PROJECT) {
-                    childAction->menu()->addAction(inputAction);
+                    for (auto langAction : childAction->menu()->menuAction()->menu()->actions()) {
+                        if (name == langAction->text()) {
+                            langAction->menu()->addAction(inputAction);
+                            return;
+                        }
+                    }
+                    auto langMenu = new QMenu(name);
+                    childAction->menu()->addMenu(langMenu);
+                    langMenu->addAction(inputAction);
                     return;
                 }
             }

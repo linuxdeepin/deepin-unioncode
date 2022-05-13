@@ -1,4 +1,5 @@
 #include "cmakeopenhandler.h"
+#include "services/window/windowservice.h"
 #include <QFileDialog>
 
 namespace {
@@ -23,7 +24,7 @@ QAction *CMakeOpenHandler::openAction()
     QObject::connect(result, &QAction::triggered, [=](){
         QFileDialog fileDialog(nullptr, "Open CMake Project", QDir::homePath(), "CMakeLists.txt");
         if(fileDialog.exec()) {
-            CMakeOpenHandler::projectOpened(result->text(), fileDialog.selectedFiles()[0]);
+            CMakeOpenHandler::projectOpened(result->text(), dpfservice::MWMFA_CXX, fileDialog.selectedFiles()[0]);
         }
     });
     return result;

@@ -3,22 +3,35 @@
 
 #include "common/lsp/protocol.h"
 
-#include <QProcess>
+#include <QTcpSocket>
 #include <QThread>
+
+struct Head
+{
+    QString workspace;
+    QString language;
+
+    Head();
+    Head(const QString &workspace, const QString &language);
+    Head(const Head &head);
+    bool isValid() const;
+};
 
 namespace lsp {
 
 class ClientPrivate;
-class Client : public QProcess
+class Client : public QTcpSocket
 {
     Q_OBJECT
-    friend class ReadThread;
+    friend class ClientManager;
     ClientPrivate *const d;
+    void initRequest(const Head &head, const QString &compile); // yes
+    void shutdownRequest();
+    void exitRequest();
 public:
     explicit Client(QObject *parent = nullptr);
     virtual ~Client();
     static bool exists(const QString &progrma);
-    void initRequest(const QString &rootPath); // yes
     void openRequest(const QString &filePath); // yes
     void closeRequest(const QString &filePath); // yes
     void changeRequest(const QString &filePath, const QByteArray &text); // yes
@@ -31,9 +44,9 @@ public:
     void docHighlightRequest(const QString &filePath, const Position &pos);
     void docSemanticTokensFull(const QString &filePath); //yes
     void docHoverRequest(const QString &filePath, const Position &pos); // yes
-    void shutdownRequest();
-    void exitRequest();
     void processJson(const QJsonObject &jsonObj);
+
+    lsp::SemanticTokensProvider initSecTokensProvider();
 
 signals:
     void request();
@@ -74,9 +87,41 @@ private:
     bool diagnostics(const QJsonObject &jsonObj);
 
 private slots:
-    void readForThread();
     QStringList cvtStringList(const QJsonArray &array);
 };
 
+class ClientReadThreadPrivate;
+class ClientReadThread : public QThread
+{
+    Q_OBJECT
+    ClientReadThreadPrivate *const d;
+public:
+    ClientReadThread(Client *client);
+    virtual void stop();
+    virtual void run();
+};
+
+class ClientManager final
+{
+    Q_DISABLE_COPY(ClientManager)
+public:
+    ClientManager() {}
+
+    static ClientManager *instance();
+
+    void initClient(const Head &head, const QString &complie);
+
+    void shutdownClient(const Head &head);
+
+    Client *get(const Head &head);
+
+private:
+    QHash<Head, Client*> clients;
+};
+
 } // namespace lsp
+
+uint qHash(const Head &key, uint seed = 0);
+bool operator == (const Head &t1, const Head &t2);
+
 #endif // CLIENT_H

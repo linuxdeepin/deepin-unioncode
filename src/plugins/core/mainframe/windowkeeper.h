@@ -60,7 +60,7 @@ public slots:
     void insertAction(const QString &menuName, const QString &beforActionName,
                       AbstractAction *action);
     void addAction(const QString &menuName, AbstractAction *action);
-    void addOpenProjectAction(AbstractAction *action);
+    void addOpenProjectAction(const QString &name, AbstractAction *action);
     void initUserWidget();
     void switchWidgetNavigation(const QString &navName);
     void showProcessDisplay();

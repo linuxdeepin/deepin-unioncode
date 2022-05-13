@@ -10,14 +10,13 @@ class CMakeGenerator : public dpfservice::ProjectGenerator
 {
     Q_OBJECT
     QProcess process;
-    QString outputPath;
-    QSet<QString> projects;
 public:
     explicit CMakeGenerator();
     static QString toolKitName() { return "cmake"; }
     virtual bool configure(const QString &projectPath) override;
-    virtual QStandardItem *createRootItem(const QString &projectPath, const QString &outputPath) override;
+    virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
+
 private slots:
     void processReadAll();
     void processFinished(int code, QProcess::ExitStatus status);
@@ -30,9 +29,8 @@ private:
     QStandardItem *cdt4DisplayOptimize(QStandardItem *rootItem);
     void cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash<QString, QString> &subprojectsMap);
     void cdt4SubprojectsDisplayOptimize(QStandardItem *item);
-    QDomDocument cdt4LoadProjectXmlDoc(const QString &cmakePath);
-    QDomDocument cdt4LoadMenuXmlDoc(const QString &cmakePath);
-    QString cdt4FilePath(const QString &cmakePath);
+    QDomDocument cdt4LoadProjectXmlDoc(const QString &buildFolder);
+    QDomDocument cdt4LoadMenuXmlDoc(const QString &buildFolder);
 };
 
 #endif // CMAKEGENERATOR_H

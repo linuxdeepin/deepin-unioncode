@@ -53,6 +53,8 @@ extern const QString D_BUILD_TARGET;
 extern const QString D_SHOW;
 extern const QString D_HIDE;
 extern const QString D_ADDTEXT;
+extern const QString D_CRETE;
+extern const QString D_DELTE;
 
 extern const QString D_MARGIN_DEBUG_POINT_ADD;
 extern const QString D_MARGIN_DEBUG_POINT_REMOVE;
@@ -64,6 +66,7 @@ extern const QString P_FILEPATH;       // value QString
 extern const QString P_PROJECTPATH;    // value QString
 extern const QString P_TARGETPATH;     // value QString
 extern const QString P_WORKSPACEFOLDER;// value QString
+extern const QString P_COMPILEFOLDER;  // value QString
 extern const QString P_BUILDSYSTEM;    // value QString
 extern const QString P_BUILDDIRECTORY; // value QString
 extern const QString P_BUILDFILEPATH;  // value QString
@@ -71,3 +74,4 @@ extern const QString P_BUILDARGUMENTS; // value QStringList
 extern const QString P_TEXT;           // value QString
 extern const QString P_PERCENT;        // value int
 extern const QString P_MAX_PERCENT;    // value int
+extern const QString P_LANGUAGE;       // value QString

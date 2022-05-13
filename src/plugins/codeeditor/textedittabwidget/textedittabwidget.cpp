@@ -25,7 +25,6 @@
 #include "style/stylekeeper.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
-#include "services/workspace/workspaceservice.h"
 
 #include <QGridLayout>
 #include <QFileInfo>
@@ -61,8 +60,9 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
 
     setDefaultFileEdit();
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toOpenFile,
-                     this, &TextEditTabWidget::openFile);
+    QObject::connect(DpfEventMiddleware::instance(),
+                     QOverload<const Head &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
+                     this, QOverload<const Head &, const QString &>::of(&TextEditTabWidget::openFile));
 
     QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toRunFileLine,
                      this, &TextEditTabWidget::runningToLine);
@@ -111,7 +111,7 @@ TextEditTabWidget *TextEditTabWidget::instance()
     return ins;
 }
 
-void TextEditTabWidget::openFile(const QString &filePath, const QString &rootPath)
+void TextEditTabWidget::openFile(const QString &filePath)
 {
     QFileInfo info(filePath);
     if (!info.exists() || !d->tab)
@@ -134,7 +134,46 @@ void TextEditTabWidget::openFile(const QString &filePath, const QString &rootPat
     QObject::connect(edit, &TextEdit::fileSaved, d->tab,
                      &TextEditTabBar::doFileSaved, Qt::UniqueConnection);
 
-    edit->setRootPath(rootPath);
+    edit->setHeadInfo("","");
+    edit->setFile(info.filePath());
+    d->textEdits[filePath] = edit;
+
+    // 添加监听
+    Inotify::globalInstance()->addPath(info.filePath());
+    // set display textedit
+    d->gridLayout->addWidget(edit);
+
+    if (!d->defaultEdit.isHidden())
+        d->defaultEdit.hide();
+
+    d->tab->switchFile(filePath);
+    showFileEdit(filePath);
+}
+
+void TextEditTabWidget::openFile(const Head &head, const QString &filePath)
+{
+    QFileInfo info(filePath);
+    if (!info.exists() || !d->tab)
+        return;
+
+    // can't add widget to much
+    if (d->textEdits.keys().contains(info.filePath())) {
+        d->tab->switchFile(filePath);
+        return;
+    }
+
+    d->tab->setFile(filePath);
+
+
+    TextEdit *edit = new TextEdit;
+
+    QObject::connect(edit, &TextEdit::fileChanged, d->tab,
+                     &TextEditTabBar::doFileChanged, Qt::UniqueConnection);
+
+    QObject::connect(edit, &TextEdit::fileSaved, d->tab,
+                     &TextEditTabBar::doFileSaved, Qt::UniqueConnection);
+
+    edit->setHeadInfo(head.workspace, head.language);
     edit->setFile(info.filePath());
     d->textEdits[filePath] = edit;
 
@@ -176,7 +215,7 @@ void TextEditTabWidget::jumpToRange(const QString &filePath, const lsp::Range &r
     auto edit = switchFileAndToOpen(filePath);
 
     if (edit) {
-        auto set = StyleKeeper::create(edit->langueage());
+        auto set = StyleKeeper::create(edit->fileLangueage());
         if (set.lsp) {
             auto start = set.lsp->getSciPosition(edit->docPointer(), range.start);
             auto end = set.lsp->getSciPosition(edit->docPointer(), range.end);
@@ -213,55 +252,44 @@ void TextEditTabWidget::replaceRange(const QString &filePath, const lsp::Range &
 {
     auto editor = d->textEdits.value(filePath);
     if (editor) {
-        auto set = StyleKeeper::create(editor->langueage());
+        auto set = StyleKeeper::create(editor->fileLangueage());
         if (set.lsp) {
             auto start = set.lsp->getSciPosition(editor->docPointer(), range.start);
             auto end = set.lsp->getSciPosition(editor->docPointer(), range.end);
             editor->replaceRange(start, end, text);
         }
     } else { //直接更改磁盘数据
-        using namespace dpfservice;
-        auto &ctx = dpfInstance.serviceContext();
-        WorkspaceService *workspace = ctx.service<WorkspaceService>(WorkspaceService::name());
-        QStringList workspaceFolders;
-        if (workspace && workspace->findWorkspace) {
-            workspaceFolders = workspace->findWorkspace(filePath);
+        if (range.start.line != range.end.line) {
+            qCritical() << "Failed, Unknown error";
+            abort();
         }
-        if (workspaceFolders.isEmpty()) {
-            return;
-        } else {
-            if (range.start.line != range.end.line) {
+        QFile changeFile(filePath);
+        QString cacheData;
+        if (changeFile.open(QFile::ReadOnly)) {
+            int i = 0;
+            while (i != range.start.line) {
+                cacheData += changeFile.readLine();
+                i++;
+            }
+            QString changeLine = changeFile.readLine();
+            int removeLength = range.end.character - range.start.character;
+            changeLine = changeLine.replace(range.start.character, removeLength, text);
+            cacheData += changeLine;
+            QByteArray array = changeFile.readLine();
+            while (!array.isEmpty()) {
+                cacheData += array;
+                array = changeFile.readLine();
+            }
+            changeFile.close();
+        }
+
+        if (changeFile.open(QFile::WriteOnly | QFile::Truncate)) {
+            int writeCount = changeFile.write(cacheData.toLatin1());
+            if (writeCount != cacheData.size()) {
                 qCritical() << "Failed, Unknown error";
                 abort();
             }
-            QFile changeFile(filePath);
-            QString cacheData;
-            if (changeFile.open(QFile::ReadOnly)) {
-                int i = 0;
-                while (i != range.start.line) {
-                    cacheData += changeFile.readLine();
-                    i++;
-                }
-                QString changeLine = changeFile.readLine();
-                int removeLength = range.end.character - range.start.character;
-                changeLine = changeLine.replace(range.start.character, removeLength, text);
-                cacheData += changeLine;
-                QByteArray array = changeFile.readLine();
-                while (!array.isEmpty()) {
-                    cacheData += array;
-                    array = changeFile.readLine();
-                }
-                changeFile.close();
-            }
-
-            if (changeFile.open(QFile::WriteOnly | QFile::Truncate)) {
-                int writeCount = changeFile.write(cacheData.toLatin1());
-                if (writeCount != cacheData.size()) {
-                    qCritical() << "Failed, Unknown error";
-                    abort();
-                }
-                changeFile.close();
-            }
+            changeFile.close();
         }
     }
 }
@@ -385,7 +413,7 @@ ScintillaEditExtern* TextEditTabWidget::switchFileAndToOpen(const QString &fileP
         d->tab->switchFile(filePath);
         showFileEdit(filePath);
     } else {
-        openFile(filePath, "");
+        openFile(filePath);
         for (auto editor : d->textEdits) {
             editor->runningEnd();
             if (editor->file() == filePath) {

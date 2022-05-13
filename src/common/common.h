@@ -18,6 +18,7 @@
 #include "supportfile/editorstyle.h"
 #include "supportfile/windowstyle.h"
 #include "supportfile/language.h"
+#include "widget/configurewidget.h"
 #include "widget/collapsewidget.h"
 #include "widget/detailsbutton.h"
 #include "widget/singlechoicebox.h"

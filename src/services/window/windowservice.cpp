@@ -36,6 +36,9 @@ const QString MWNA_DEBUG { QAction::tr("Debug") };
 const QString MWNA_RUNTIME { QAction::tr("Runtime") };
 
 const QString MWM_FILE { QMenu::tr("File") };
+const QString MWMFA_CXX { "C/C++" };
+const QString MWMFA_JAVA { "Java" };
+const QString MWMFA_PYTHON { "Python" };
 const QString MWMFA_DOCUMENT_NEW { QAction::tr("New Document") };
 const QString MWMFA_FOLDER_NEW { QAction::tr("New Folder") };
 const QString MWMFA_OPEN_PROJECT { QAction::tr("Open Project") };

@@ -4,8 +4,8 @@ project(unioncode-service)
 set(CXX_H
     window/windowservice.h
     debugger/debuggerservice.h
-    workspace/workspaceservice.h
     container/containerservice.h
+    project/projectinfo.h
     project/projectgenerator.h
     project/projectservice.h
     runtime/runtimeservice.h
@@ -14,8 +14,6 @@ set(CXX_H
 set(CXX_CPP
     window/windowservice.cpp
     debugger/debuggerservice.cpp
-    workspace/workspaceservice.cpp
-    project/projectgenerator.cpp
     container/containerservice.cpp
     project/projectservice.cpp
     runtime/runtimeservice.cpp

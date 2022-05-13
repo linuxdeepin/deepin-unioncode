@@ -50,7 +50,8 @@ public:
 
     StyleLsp();
     virtual ~StyleLsp();
-    virtual lsp::Client &client();
+    virtual void setClient(lsp::Client *client);
+    virtual lsp::Client *getClient() const;
     virtual void appendEdit(ScintillaEditExtern *editor); //setting main
     virtual ScintillaEditExtern *findSciEdit(const QString &file);
     virtual QString sciEditFile(ScintillaEditExtern * const sciEdit);
@@ -81,9 +82,6 @@ public:
     virtual void setTokenFull(ScintillaEdit &edit, const QList<lsp::Data> &tokens);
     virtual void cleanTokenFull(ScintillaEdit &edit);
 
-    virtual void setCompletion(ScintillaEdit &edit, const lsp::CompletionProvider &provider);
-    virtual void cleanCompletion(ScintillaEdit &edit);
-
     virtual void setHover(ScintillaEdit &edit, const lsp::Hover &hover);
     virtual void cleanHover(ScintillaEdit &edit);
 
@@ -93,13 +91,20 @@ public:
     virtual void doRenameReplace(const lsp::RenameChanges &changes);
 
 private slots:
-    void sciTextInserted(Scintilla::Position position,
-                         Scintilla::Position length, Scintilla::Position linesAdded,
-                         const QByteArray &text, Scintilla::Position line);
+    void setCompletion(ScintillaEdit &edit,
+                       const QByteArray &text,
+                       const Scintilla::Position enterLenght,
+                       const lsp::CompletionProvider &provider);
 
-    void sciTextDeleted(Scintilla::Position position,
-                        Scintilla::Position length, Scintilla::Position linesAdded,
-                        const QByteArray &text, Scintilla::Position line);
+    void sciTextInsertedTotal(Scintilla::Position position,
+                              Scintilla::Position length, Scintilla::Position linesAdded,
+                              const QByteArray &text, Scintilla::Position line);
+
+    void sciTextDeletedTotal(Scintilla::Position position,
+                             Scintilla::Position length, Scintilla::Position linesAdded,
+                             const QByteArray &text, Scintilla::Position line);
+
+    void sciTextChangedTotal();
 
     void sciHovered(Scintilla::Position position);
     void sciHoverCleaned(Scintilla::Position position);
@@ -112,10 +117,6 @@ private slots:
     void sciReplaced(const QString &file, Scintilla::Position start,
                      Scintilla::Position end, const QString &text);
     void renameRequest(const QString &newText);
-
-private:
-    QList<lsp::Data> tokensCache;
-    lsp::Client lspClient;
 };
 
 #endif // STYLELSP_H

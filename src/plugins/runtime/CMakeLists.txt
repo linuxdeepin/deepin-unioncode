@@ -6,7 +6,6 @@ find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
     environmentwidget.cpp
-    configurewidget.cpp
     runtimewidget.cpp
     runtimeplugin.cpp
     runtime.json
@@ -27,7 +26,6 @@ set(CXX_CPP
 
 set(CXX_H
     environmentwidget.h
-    configurewidget.h
     runtimewidget.h
     runtimeplugin.h
     projectparser.h

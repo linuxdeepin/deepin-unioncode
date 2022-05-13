@@ -19,7 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "runtimewidget.h"
-#include "configurewidget.h"
 #include "environmentwidget.h"
 #include "common/common.h"
 #include "stepspane.h"
@@ -27,6 +26,8 @@
 #include "runconfigpane.h"
 #include "projectoptionpane.h"
 #include "configureprojpane.h"
+
+#include "common/common.h"
 
 #include <QListWidget>
 #include <QSplitter>

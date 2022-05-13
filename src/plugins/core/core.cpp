@@ -75,7 +75,7 @@ bool Core::start()
 
         if (!windowService->addOpenProjectAction) {
             windowService->addOpenProjectAction = std::bind(&WindowKeeper::addOpenProjectAction,
-                                                            WindowKeeper::instace(), _1);
+                                                            WindowKeeper::instace(), _1, _2);
         }
     }
 

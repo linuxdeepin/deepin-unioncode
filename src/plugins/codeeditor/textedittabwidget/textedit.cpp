@@ -24,7 +24,6 @@
 #include "SciLexer.h"
 #include "common/common.h"
 #include "framework/framework.h"
-#include "services/workspace/workspaceservice.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>

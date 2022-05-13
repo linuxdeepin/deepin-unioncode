@@ -13,11 +13,14 @@ class ScintillaEditExtern : public ScintillaEdit
 public:
     explicit ScintillaEditExtern(QWidget *parent = nullptr);
     virtual ~ScintillaEditExtern();
+
     void setFile(const QString &path);
     QString file() const;
-    QString langueage() const;
-    void setRootPath(const QString &path);
-    QString rootPath();
+    QString fileLangueage() const;
+    void setHeadInfo(const QString &proWorkspace, const QString &proLanguage);
+    QString proWorkspace() const;
+    QString proLanguage() const;
+
     void debugPointAllDelete();
     void jumpToLine(int line);
     void jumpToRange(Scintilla::Position start, Scintilla::Position end);

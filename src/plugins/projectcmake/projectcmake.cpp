@@ -57,7 +57,7 @@ bool ProjectCMake::start()
     if (windowService) {
         CMakeOpenHandler *openHandler = CMakeOpenHandler::instance();
         QObject::connect(openHandler, &CMakeOpenHandler::projectOpened,
-                         [=](const QString &name, const QString &filePath) {
+                         [=](const QString &name, const QString &language, const QString &filePath) {
             // 打开工程后续流程
             if (projectService) {
                 ProjectGenerator *generator = projectService->createGenerator(name);
@@ -72,7 +72,17 @@ bool ProjectCMake::start()
                     // Execute project tree command.
                     emit projectService->targetCommand(cmd, args);
                 });
-                auto rootItem = generator->createRootItem(filePath, outputPath);
+
+                ProjectInfo info;
+                info.setLanguage(language);
+                info.setKitName(CMakeGenerator::toolKitName());
+                info.setBuildFolder(outputPath);
+                info.setWorkspaceFolder(QFileInfo(filePath).path());
+                info.setProjectFilePath(filePath);
+                info.setBuildType("Debug");
+                info.setBuildCustomArgs({"-DCMAKE_EXPORT_COMPILE_COMMANDS=1"});
+
+                auto rootItem = generator->createRootItem(info);
                 if (rootItem) {
                     SendEvents::menuOpenProject(filePath); // 发送打开事件
                     if (projectService->addProjectRootItem)
@@ -90,7 +100,7 @@ bool ProjectCMake::start()
         });
 
         if (windowService->addOpenProjectAction) {
-            windowService->addOpenProjectAction(new AbstractAction(openHandler->openAction()));
+            windowService->addOpenProjectAction(MWMFA_CXX, new AbstractAction(openHandler->openAction()));
         }
     }
     return true;

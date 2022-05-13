@@ -38,7 +38,8 @@ public:
     static TextEditTabWidget *instance();
 
 public slots:
-    void openFile(const QString &filePath, const QString &rootPath);
+    void openFile(const QString &filePath);
+    void openFile(const Head &head, const QString &filePath);
     void closeFile(const QString &filePath);
     void jumpToLine(const QString &filePath, int line);
     void jumpToRange(const QString &filePath, const lsp::Range &range);

@@ -30,9 +30,19 @@
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
+
+#include <QProcess>
 #include <QAction>
 #include <QLabel>
 #include <QTreeView>
+
+#define LANGUAGE_ADAPTER_NAME  "languageadapter"
+#define LANGUAGE_ADAPTER_PATH CustomPaths::global(CustomPaths::Tools) \
+    + QDir::separator() + LANGUAGE_ADAPTER_NAME
+
+namespace {
+QProcess *process{nullptr};
+}
 
 using namespace dpfservice;
 void ProjectCore::initialize()
@@ -49,11 +59,21 @@ void ProjectCore::initialize()
 
 bool ProjectCore::start()
 {
+    if (!::process) {
+        ::process = new QProcess;
+        ::process->setProgram(LANGUAGE_ADAPTER_PATH);
+        ::process->setReadChannelMode(QProcess::SeparateChannels);
+        QObject::connect(::process, &QProcess::readyRead, [=](){
+            qInfo() << ::process->readAll();
+        });
+        ::process->start();
+        if (process->state() != QProcess::ProcessState::Running)
+            qInfo() << ::process->errorString() << LANGUAGE_ADAPTER_PATH;
+    }
+
     qInfo() << __FUNCTION__;
-    toolchains::generatGlobalFile();
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-
     if (windowService) {
         if (windowService->addWidgetWorkspace) {
             windowService->addWidgetWorkspace(MWCWT_PROJECTS,
@@ -77,42 +97,17 @@ bool ProjectCore::start()
             projectService->expandedProjectAll = std::bind(&ProjectTreeView::expandedProjectAll,
                                                            treeView, _1);
         }
-        // 右键菜单创建
-        QObject::connect(treeView, &ProjectTreeView::itemMenuRequest, [=](const QStandardItem *item, QContextMenuEvent *event) {
-            QString toolKitName = ProjectGenerator::toolKitName(ProjectGenerator::root(item));
-            // 获取支持右键菜单生成器
-            if (projectService->supportGeneratorName().contains(toolKitName)) {
-                QMenu* itemMenu = projectService->createGenerator(toolKitName)->createItemMenu(item);
-                if (itemMenu) {
-                    itemMenu->move(event->globalPos());
-                    itemMenu->exec();
-                    delete itemMenu;
-                }
-            }
-        });
-
-        QObject::connect(treeView, &ProjectTreeView::doubleClicked, [=](const QModelIndex &index) {
-            QFileInfo info(index.data(Qt::ToolTipRole).toString());
-            if (info.exists() && info.isFile()) {
-                QString workspaceFolder;
-                QModelIndex rootIndex = ProjectGenerator::root(index);
-                if (rootIndex.isValid()) {
-                    workspaceFolder = ProjectGenerator::toolKitProperty(rootIndex, ProjectGenerator::RootToolKitKey::get()->WorkspacePath).toString();
-                    workspaceFolder = ProjectGenerator::RootToolKitKey::get()->SourcePath;
-                }
-                if (!workspaceFolder.isEmpty()) {
-                    SendEvents::doubleCliekedOpenFile(info.filePath(), workspaceFolder);
-                } else {
-                    ContextDialog::ok(QDialog::tr("Can't find workspace from file :%0").arg(info.filePath()));
-                }
-            }
-        });
     }
     return true;
 }
 
 dpf::Plugin::ShutdownFlag ProjectCore::stop()
 {
+    if (::process) {
+        ::process->kill();
+        delete ::process;
+        process = nullptr;
+    }
     qInfo() << __FUNCTION__;
     return Sync;
 }

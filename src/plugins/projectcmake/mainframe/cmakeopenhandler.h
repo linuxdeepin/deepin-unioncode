@@ -13,7 +13,7 @@ public:
     QAction *openAction();
 
 signals:
-    void projectOpened(const QString &generatorName, const QString &filePath);
+    void projectOpened(const QString &generatorName, const QString &language, const QString &filePath);
 
 public slots:
     void open();

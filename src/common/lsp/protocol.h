@@ -368,7 +368,7 @@ QJsonArray tokenTypes();
 QJsonArray tokenModifiers();
 
 QJsonObject workspace();
-QJsonObject initialize(const QString &rootPath);
+QJsonObject initialize(const QString &workspaceFolder, const QString &language, const QString &compile);
 QJsonObject didOpen(const QString &filePath);
 QJsonObject didChange(const QString &filePath, const QByteArray &text, int version);
 QJsonObject didClose(const QString &filePath);

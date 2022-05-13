@@ -1,1 +1,2 @@
 add_subdirectory(debugadapter)
+add_subdirectory(languageadapter)

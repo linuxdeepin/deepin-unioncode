@@ -97,8 +97,6 @@ const QString K_INCLUDEDECLARATION {"includeDeclaration"};
 const QString K_ERROR {"error"};
 const QString K_CODE {"code"};
 
-const QJsonValue V_INITIALIZATIONOPTIONS(QJsonValue::Null);
-
 QList<int> fromTokenModifiers(int modifiers)
 {
     QList<int> ret;
@@ -225,7 +223,7 @@ QJsonObject workspace()
     return workspace;
 }
 
-QJsonObject initialize(const QString &rootPath)
+QJsonObject initialize(const QString &workspaceFolder, const QString &language, const QString &compile)
 {
     QJsonObject capabilitiesSemanticTokens{{
             {"dynamicRegistration", true},
@@ -271,22 +269,26 @@ QJsonObject initialize(const QString &rootPath)
     };
 
     QJsonObject workspace {
-        { "name", QFileInfo(rootPath).fileName() },
-        //        { K_URI, QUrl::fromLocalFile(rootPath + QDir::separator() + ".unioncode").toString() }
-        { K_URI, QUrl::fromLocalFile(rootPath).toString() }
+        { "name", QFileInfo(workspaceFolder).fileName() },
+        { K_URI, QUrl::fromLocalFile(workspaceFolder).toString() }
     };
 
     QJsonArray workspaceFolders{workspace};
 
+    QJsonObject initializationOptions {
+        {"compilationDatabasePath", compile}
+    };
+
     QJsonObject params {
         { K_PROCESSID, QCoreApplication::applicationPid() },
-        { K_ROOTPATH, rootPath },
-        { K_ROOTURI, rootPath },
+        { K_ROOTPATH, workspace },
+        { K_ROOTURI, workspace },
         { K_CAPABILITIES, capabilities },
-        { K_INITIALIZATIONOPTIONS, V_INITIALIZATIONOPTIONS },
         { "highlight", highlight },
         { "client", client },
-        { "workspaceFolders", workspaceFolders }
+        { "initializationOptions", initializationOptions},
+        { "workspaceFolders", workspaceFolders },
+        { "language", language}
     };
 
     QJsonObject initRequest{
@@ -535,15 +537,6 @@ QJsonObject shutdown()
     return shutdown;
 }
 
-QJsonObject exit()
-{
-    QJsonObject exit {
-        { K_METHOD, V_EXIT },
-        { K_PARAMS, QJsonValue(QJsonValue::Object)}
-    };
-    return exit;
-}
-
 QJsonObject symbol(const QString &filePath)
 {
     QJsonObject textDocument {
@@ -634,6 +627,16 @@ bool isRequestError(const QJsonObject &object)
         return true;
     }
     return false;
+}
+
+QJsonObject exit()
+{
+    QJsonObject exit {
+        { K_METHOD, V_EXIT },
+        { K_PARAMS, QJsonValue(QJsonValue::Null)}
+    };
+
+    return exit;
 }
 
 }

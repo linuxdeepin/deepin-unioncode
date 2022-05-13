@@ -5,9 +5,6 @@ project(plugin-projectcore)
 set(CXX_CPP
     mainframe/projecttreeview.cpp
     mainframe/projectkeeper.cpp
-    mainframe/workspaceobject.cpp
-    mainframe/workspacedata.cpp
-    mainframe/workspacecmake.cpp
     transceiver/projectreceiver.cpp
     transceiver/sendevents.cpp
     projectcore.cpp
@@ -17,9 +14,6 @@ set(CXX_CPP
 set(CXX_H
     mainframe/projecttreeview.h
     mainframe/projectkeeper.h
-    mainframe/workspaceobject.h
-    mainframe/workspacedata.h
-    mainframe/workspacecmake.h
     transceiver/projectreceiver.h
     transceiver/sendevents.h
     projectcore.h

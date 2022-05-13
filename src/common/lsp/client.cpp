@@ -13,56 +13,12 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QtConcurrent>
+#include <QHostAddress>
+#include <QReadWriteLock>
 
 namespace lsp {
 
 static QMutex mutex;
-
-static void clientStepReadLoop(Client *client)
-{
-    if (!client)
-        return;
-
-    QMutexLocker locker(&mutex);
-    QString head;
-    qInfo() << "bytesAvailable: " << client->bytesAvailable();
-    while (client->bytesAvailable()) {
-        head += client->read(1);
-        if (head.contains("\r\n\r\n")) {
-            auto list = head.split("\r\n\r\n");
-            auto contentLength = list[0].split(":");
-            if (contentLength.size() != 2) {
-                qCritical() << "contentLength error, count != 2";
-                qCritical() << "\n********Content LSP**********\n";
-                qCritical() << head;
-                qCritical() << "\n";
-                abort();
-            }
-            int currentCount = contentLength[1].toInt();
-            QString byteArrary = client->read(currentCount);
-            while(byteArrary.toUtf8().size() < currentCount) {
-                while(!client->waitForReadyRead());
-                byteArrary += client->read(currentCount - byteArrary.toUtf8().size());
-            }
-            qInfo() << "contentLength:\n" << contentLength;
-            qInfo() << "#####################";
-            qInfo() << "toUtf8()" << byteArrary.toUtf8().size();
-            qInfo() << "toLocal8Bit()"<< byteArrary.toLocal8Bit().size();
-            qInfo() << "toLatin1()"<< byteArrary.toLatin1().size();
-            if (byteArrary.toUtf8().size() == currentCount) {
-                qInfo() << "**********************"
-                        << qPrintable(byteArrary);
-                client->processJson(QJsonDocument::fromJson(byteArrary.toUtf8()).object());
-                head.clear();
-                qInfo() << "Remaining unread bytes: " << client->bytesAvailable();
-                continue;
-            } else {
-                qCritical() << "Failed, read json error";
-                abort();
-            }
-        }
-    }
-}
 
 class ClientPrivate
 {
@@ -71,10 +27,11 @@ class ClientPrivate
     QHash<int, QString> requestSave;
     int semanticTokenResultId = 0;
     QHash<QString, int> fileVersion;
+    lsp::SemanticTokensProvider secTokensProvider;
 };
 
 Client::Client(QObject *parent)
-    : QProcess (parent)
+    : QTcpSocket (parent)
     , d (new ClientPrivate)
 {
     qRegisterMetaType<Diagnostics>("Diagnostics");
@@ -92,10 +49,12 @@ Client::Client(QObject *parent)
     qRegisterMetaType<QList<Data>>("QList<Data>");
     qRegisterMetaType<RenameChanges>("RenameChanges");
     qRegisterMetaType<References>("References");
-
-    // 每一个读任务都开启一个线程处理
-    QObject::connect(this, &Client::readyRead, this, &Client::readForThread,
-                     Qt::DirectConnection);
+    connectToHost(QHostAddress("127.0.0.1"), 3307);
+    if (!waitForConnected(1000)) {
+        qCritical() << "can't connect to local, port 3307"
+                    << this->errorString()
+                    << QTcpSocket::localAddress();
+    }
 }
 
 Client::~Client()
@@ -110,13 +69,13 @@ bool Client::exists(const QString &progrma)
     return ProcessUtil::exists(progrma);
 }
 
-void Client::initRequest(const QString &rootPath)
+void Client::initRequest(const Head &head, const QString &compile)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_INITIALIZE);
     qInfo() << "--> server : " << V_INITIALIZE;
-    qInfo() << qPrintable(setHeader(initialize(rootPath), d->requestIndex).toLatin1());
-    write(setHeader(initialize(rootPath), d->requestIndex).toLatin1());
+    qInfo() << qPrintable(setHeader(initialize(head.workspace, head.language, compile), d->requestIndex).toLatin1());
+    write(setHeader(initialize(head.workspace, head.language, compile), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
@@ -248,11 +207,9 @@ void Client::shutdownRequest()
 
 void Client::exitRequest()
 {
-    d->requestIndex ++;
-    d->requestSave.insert(d->requestIndex, V_EXIT);
-    qInfo() << "--> server : " << V_EXIT
+    qInfo() << "--> server : " << V_SHUTDOWN
             << qPrintable(setHeader(exit(), d->requestIndex).toLatin1());
-    write(setHeader(exit(), d->requestIndex).toLatin1());
+    write(setHeader(exit()).toLatin1());
     waitForBytesWritten();
 }
 
@@ -303,6 +260,8 @@ bool Client::initResult(const QJsonObject &jsonObj)
             },
             semanticTokensProviderObj.value("range").toBool()
         };
+
+        d->secTokensProvider = provider;
 
         emit requestResult(provider);
         return true;
@@ -652,11 +611,6 @@ bool Client::diagnostics(const QJsonObject &jsonObj)
     return true;
 }
 
-void Client::readForThread()
-{
-    QtConcurrent::run(clientStepReadLoop, this);
-}
-
 bool Client::serverCalled(const QJsonObject &jsonObj)
 {
     if (diagnostics(jsonObj))
@@ -724,6 +678,11 @@ void Client::processJson(const QJsonObject &jsonObj)
         return;
 }
 
+SemanticTokensProvider Client::initSecTokensProvider()
+{
+    return d->secTokensProvider;
+}
+
 QStringList Client::cvtStringList(const QJsonArray &array)
 {
     QStringList ret;
@@ -733,4 +692,130 @@ QStringList Client::cvtStringList(const QJsonArray &array)
     return ret;
 }
 
+ClientManager *ClientManager::instance()
+{
+    static ClientManager ins;
+    return &ins;
+}
+
+void ClientManager::initClient(const Head &head, const QString &complie)
+{
+    if (head.isValid()) {
+        auto client = new Client();
+        client->initRequest(head, complie);
+        new ClientReadThread(client);
+        clients[head] = client;
+    }
+}
+
+void ClientManager::shutdownClient(const Head &head)
+{
+    auto client = clients[head];
+    if (client) {
+        client->shutdownRequest();
+        client->exitRequest();
+        clients.remove(head);
+    }
+}
+
+Client *ClientManager::get(const Head &head)
+{
+    return clients[head];
+}
+
+class ClientReadThreadPrivate
+{
+    friend class ClientReadThread;
+    Client *client;
+    QByteArray array;
+    bool stopFlag = false;
+};
+
+ClientReadThread::ClientReadThread(Client *client)
+    : d(new ClientReadThreadPrivate())
+{
+    d->client = client;
+    client->moveToThread(this);
+    QObject::connect(client, &QObject::destroyed,[=]() {
+        this->stop();
+        this->wait(3000);
+        delete this;
+    });
+    start();
+}
+
+void ClientReadThread::stop()
+{
+    d->stopFlag = true;
+}
+
+void ClientReadThread::run()
+{
+    if (!d->client)
+        return;
+
+    while (!d->stopFlag) {
+        d->client->waitForReadyRead(3000);
+        d->array += d->client->readAll();
+        while (d->array.startsWith("Content-Length:")) {
+            int index = d->array.indexOf("\r\n\r\n");
+            QByteArray head = d->array.mid(0, index);
+            QList<QByteArray> headList = head.split(':');
+            int readCount = headList[1].toInt();
+            QByteArray data = d->array.mid(head.size() + 4, readCount);
+            if (data.size() < readCount) {
+                break;
+            } else if (data.size() > readCount) {
+                qCritical() << "process data error";
+                abort();
+            } else {
+                QJsonParseError err;
+                QJsonObject jsonObj = QJsonDocument::fromJson(data, &err).object();
+                if (jsonObj.isEmpty()) {
+                    qCritical() << err.errorString() << qPrintable(data);
+                    abort();
+                }
+                d->client->processJson(jsonObj);
+                d->array.remove(0, index);
+                d->array.remove(0, readCount + 4);
+            }
+        }
+        int headIndex = d->array.indexOf("Content-Length:");
+        if(headIndex > 0) {
+             d->array.remove(0, headIndex);
+        }
+    }
+}
+
 } // namespace lsp
+
+bool Head::isValid() const
+{
+    return !workspace.isEmpty()
+            && !language.isEmpty();
+}
+
+Head::Head(){}
+
+Head::Head(const QString &workspace, const QString &language)
+    : workspace(workspace)
+    , language(language)
+{
+}
+
+Head::Head(const Head &head)
+    : workspace(head.workspace)
+    , language(head.language)
+{
+}
+
+uint qHash(const Head &key, uint seed)
+{
+    return qHash(key.workspace + key.language, seed);
+}
+
+bool operator ==(const Head &t1, const Head &t2)
+{
+    return t1.workspace == t2.workspace
+            && t2.language == t2.language;
+}

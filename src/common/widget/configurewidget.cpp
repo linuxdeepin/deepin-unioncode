@@ -19,15 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "configurewidget.h"
-#include "environmentwidget.h"
-#include "common/common.h"
+#include "collapsewidget.h"
 
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QDebug>
-
-const QString runtimeEnvTitle {"Runtime Environment"};
-const QString buildEnvTitle {"build Environment"};
 
 class ConfigureWidgetPrivate
 {
