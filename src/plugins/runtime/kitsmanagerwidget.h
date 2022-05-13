@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +22,8 @@
 */
 #ifndef KITSMANAGERWIDGET_H
 #define KITSMANAGERWIDGET_H
+
+#include "common/widget/pagewidget.h"
 
 #include <QWidget>
 #include <QSet>
@@ -49,7 +52,7 @@ private:
 };
 
 class KitsManagerWidgetPrivate;
-class KitsManagerWidget : public QWidget
+class KitsManagerWidget : public PageWidget
 {
     Q_OBJECT
 public:

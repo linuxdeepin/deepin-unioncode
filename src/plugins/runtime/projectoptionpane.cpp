@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
 #include "projectoptionpane.h"
 #include "services/project/projectservice.h"
 #include "kitsmanagerwidget.h"
+#include "environmentmanagerwidget.h"
 
 #include <QComboBox>
 #include <QVBoxLayout>
@@ -39,7 +41,8 @@ ProjectOptionPane::ProjectOptionPane(QWidget *parent) : QGroupBox(parent)
 
 ProjectOptionPane::~ProjectOptionPane()
 {
-    SAFE_DELETE(kitManagerWidget);
+    SAFE_DELETE(kitManagerWidget)
+    SAFE_DELETE(envManagerWidget)
 }
 
 void ProjectOptionPane::setupUI()
@@ -93,6 +96,8 @@ void ProjectOptionPane::initializeKitManageWidget()
     if (projectService) {
         kitManagerWidget = new KitsManagerWidget();
         projectService->insertOptionPanel("kit", kitManagerWidget);
+        envManagerWidget = new EnvironmentManagerWidget();
+        projectService->insertOptionPanel("Environment", envManagerWidget);
     }
 }
 

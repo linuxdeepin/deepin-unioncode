@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,7 +134,7 @@ class KitsManagerWidgetPrivate
 };
 
 KitsManagerWidget::KitsManagerWidget(QWidget *parent)
-    : QWidget(parent)
+    : PageWidget(parent)
     , d(new KitsManagerWidgetPrivate)
 {
     toolChainData.reset(new ToolChainData());

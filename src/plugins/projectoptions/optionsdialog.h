@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +47,8 @@ signals:
 
 public slots:
     void slotLeftBarClicked(const QModelIndex &index);
+    void saveSingleConfig();
+    void saveAllConfig();
 
 private:
     void setupUi(QDialog *Dialog);

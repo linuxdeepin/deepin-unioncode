@@ -21,6 +21,8 @@ set(CXX_CPP
     configureprojpane.cpp
     runtimemanager.cpp
     kitmanager.cpp
+    environmentmanagerwidget.cpp
+    shortcutsettingwidget.cpp
     )
 
 set(CXX_H
@@ -38,6 +40,8 @@ set(CXX_H
     configureprojpane.h
     runtimemanager.h
     kitmanager.cpp
+    environmentmanagerwidget.h
+    shortcutsettingwidget.h
     )
 
 add_library(${PROJECT_NAME}

@@ -24,6 +24,8 @@ set(CXX_H
     widget/singlechoicebox.h
     widget/elidedlabel.h
     widget/generator.h
+    widget/pagewidget.h
+    widget/hotkeylineedit.h
     type/constants.h
     type/menuext.h
     toolchain/toolchain.h
@@ -49,6 +51,8 @@ set(CXX_CPP
     widget/elidedlabel.cpp
     widget/singlechoicebox.cpp
     widget/generator.cpp
+    widget/pagewidget.cpp
+    widget/hotkeylineedit.cpp
     toolchain/toolchain.cpp
     )
 

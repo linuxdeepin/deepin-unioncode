@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +21,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "optionsdialog.h"
+#include "common/widget/pagewidget.h"
 
 #include <QtDebug>
 #include <QtWidgets/QHBoxLayout>
@@ -123,19 +125,15 @@ void OptionsDialog::setupUi(QDialog *Dialog)
     buttonLayout->addItem(horizontalSpacer);
 
     auto okBtn = new QPushButton(tr("OK"), Dialog);
-    connect(okBtn, &QPushButton::clicked, [this] {
-        // TODO(Mozart)
-        this->accept();
-    });
+    connect(okBtn, SIGNAL(clicked()), this, SLOT(saveAllConfig()));
+
     auto cancelBtn = new QPushButton(tr("Cancel"), Dialog);
     connect(cancelBtn, &QPushButton::clicked, [this] {
         // TODO(Mozart)
         this->close();
     });
     auto applyBtn = new QPushButton(tr("Apply"), Dialog);
-    connect(applyBtn, &QPushButton::clicked, [] {
-        // TODO(Mozart)
-    });
+    connect(applyBtn, SIGNAL(clicked()), this, SLOT(saveSingleConfig()));
 
     buttonLayout->addWidget(okBtn);
     buttonLayout->addWidget(cancelBtn);
@@ -149,4 +147,29 @@ void OptionsDialog::setupUi(QDialog *Dialog)
 
     mainLayout->setStretch(0, 1);
     mainLayout->setStretch(1, 4);
+}
+
+void OptionsDialog::saveAllConfig()
+{
+    for (int nIndex = 0; nIndex < stackWidget->count(); nIndex++)
+    {
+        PageWidget* pWidget = dynamic_cast<PageWidget*>(stackWidget->widget(nIndex));
+        if (pWidget) {
+            pWidget->saveConfig();
+        }
+    }
+
+    accept();
+}
+
+void OptionsDialog::saveSingleConfig()
+{
+    int nIndex = stackWidget->currentIndex();
+    if (nIndex > 0 && nIndex < stackWidget->count())
+    {
+        PageWidget* pWidget = dynamic_cast<PageWidget*>(stackWidget->widget(nIndex));
+        if (pWidget) {
+            pWidget->saveConfig();
+        }
+    }
 }

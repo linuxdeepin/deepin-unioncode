@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@
 
 class QPushButton;
 class KitsManagerWidget;
+class EnvironmentManagerWidget;
 namespace dpfservice {
     class ProjectService;
 }
@@ -52,6 +54,7 @@ private:
     QPushButton *buildButton = nullptr;
     QPushButton *runButton = nullptr;
     KitsManagerWidget *kitManagerWidget = nullptr;
+    EnvironmentManagerWidget *envManagerWidget = nullptr;
 
     dpfservice::ProjectService *projectService = nullptr;
 };
