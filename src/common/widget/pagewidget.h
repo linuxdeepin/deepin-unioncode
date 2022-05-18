@@ -29,10 +29,8 @@ class PageWidget : public QWidget
     Q_OBJECT
 public:
     explicit PageWidget(QWidget *parent = nullptr);
-    virtual void saveConfig(){}
-
-signals:
-
+    virtual ~PageWidget();
+    virtual void saveConfig();
 };
 
 #endif // PAGEWIDGET_H

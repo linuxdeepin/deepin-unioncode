@@ -22,20 +22,8 @@
 #ifndef SHORTCUTSETTINGWIDGET_H
 #define SHORTCUTSETTINGWIDGET_H
 
-#include "common/widget/hotkeylineedit.h"
-
 #include <QWidget>
-#include <QKeySequence>
-#include <QTreeWidgetItem>
-#include <QPushButton>
-
-struct ShortcutItem
-{
-    QString m_cmd;
-    QKeySequence m_key;
-    QTreeWidgetItem *m_item;
-};
-
+#include <QAbstractTableModel>
 
 enum ColumnID
 {
@@ -45,40 +33,39 @@ enum ColumnID
     _KCount
 };
 
+class ShortcutTableModelPrivate;
 class ShortcutTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
     explicit ShortcutTableModel(QObject *parent = nullptr);
+    virtual ~ShortcutTableModel();
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-    void updateShortcut(QString qsID, QString qsShortcut);
-    void resetShortcut(QString qsID);
+    void updateShortcut(QString id, QString shortcut);
+    void resetShortcut(QString id);
     void resetAllShortcut();
     void saveShortcut();
-    bool readFromJson(const QString &qsFilePath, QMap<QString, QStringList> &mapShortcutItem);
-    bool writeToJson(const QString &qsFilePath, const QMap<QString, QStringList> &mapShortcutItem);
-    void importExternalJson(const QString &qsFilePath);
-    void exportExternalJson(const QString &qsFilePath);
+    void importExternalJson(const QString &filePath);
+    void exportExternalJson(const QString &filePath);
+
+signals:
 
 private:
-    QMap<QString, QStringList> m_mapShortcutItem;
-    QMap<QString, QStringList> m_mapShortcutItemShadow;
-    QString m_qsConfigFilePath;
+    ShortcutTableModelPrivate *d;
 };
 
-
-class QTableView;
-class QLineEdit;
+class ShortcutSettingWidgetPrivate;
 class ShortcutSettingWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit ShortcutSettingWidget(QWidget *parent = nullptr);
+    virtual ~ShortcutSettingWidget();
     void saveConfig();
 
 signals:
@@ -94,11 +81,7 @@ public slots:
 private:
     void setupUi();
     void setSelectedShortcut();
-
-    QTableView *m_tableView;
-    HotkeyLineEdit *m_editShortCut;
-    ShortcutTableModel *m_model;
-    QPushButton *m_btnRecord;
+    ShortcutSettingWidgetPrivate *const d;
 };
 
 #endif // SHORTCUTSETTINGWIDGET_H

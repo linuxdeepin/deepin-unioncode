@@ -24,22 +24,18 @@
 #include "common/widget/pagewidget.h"
 
 #include <QWidget>
-class ShortcutSettingWidget;
+class EnvironmentManagerWidgetPrivate;
 class EnvironmentManagerWidget : public PageWidget
 {
     Q_OBJECT
 public:
     explicit EnvironmentManagerWidget(QWidget *parent = nullptr);
+    virtual ~EnvironmentManagerWidget();
     void saveConfig();
-
-signals:
-
-public slots:
 
 private:
     void setupUi();
-
-    ShortcutSettingWidget* m_widgetShortcutSetting;
+    EnvironmentManagerWidgetPrivate *const d;
 };
 
 #endif // ENVIRONMENTMANAGERWIDGET_H

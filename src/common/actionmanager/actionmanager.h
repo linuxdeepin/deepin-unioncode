@@ -19,20 +19,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "pagewidget.h"
+#ifndef ACTIONMANAGER_H
+#define ACTIONMANAGER_H
 
-PageWidget::PageWidget(QWidget *parent)
-    : QWidget(parent)
+#include "command.h"
+#include <QObject>
+#include <QHash>
+
+class ActionManagerPrivate;
+class ActionManager : public QObject
 {
+    Q_OBJECT
+public:
+    static ActionManager *getInstance();
 
-}
+    Command *registerAction(QAction *action, const QString id,
+                            const QString description = nullptr,
+                            const QKeySequence defaultShortcut = QKeySequence());
+    void unregisterAction(QString id);
 
-PageWidget::~PageWidget()
-{
+    Command *command(QString id);
+    QList<Command *> commands();
 
-}
+signals:
 
-void PageWidget::saveConfig()
-{
+private:
+    explicit ActionManager(QObject *parent = nullptr);
+    virtual ~ActionManager() override;
 
-}
+    ActionManagerPrivate *const d;
+};
+
+#endif // ACTIONMANAGER_H

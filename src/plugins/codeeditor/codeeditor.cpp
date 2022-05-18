@@ -66,7 +66,7 @@ bool CodeEditor::start()
         using namespace std::placeholders;
         if (!windowService->addWidgetWorkspace) {
             windowService->addWidgetWorkspace = std::bind(&NavEditMainWindow::addWidgetWorkspace, navEditWindow, _1, _2);
-        };
+        }
 
         if (!windowService->setWidgetConsole) {
             windowService->setWidgetConsole = std::bind(&NavEditMainWindow::setConsole, navEditWindow, _1);
@@ -89,9 +89,13 @@ bool CodeEditor::start()
         }
 
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);
+        ActionManager::getInstance()->registerAction(saveAllDocuments, "File.Save.All.Documents",
+                                                     SAVE_ALL_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S));
         windowService->addAction(MWM_FILE, new AbstractAction(saveAllDocuments));
 
         auto closeAllDocuments = new QAction(CLOSE_ALL_DOCUMENTS);
+        ActionManager::getInstance()->registerAction(closeAllDocuments, "File.Close.All.Documents",
+                                                     CLOSE_ALL_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_W));
         windowService->addAction(MWM_FILE, new AbstractAction(closeAllDocuments));
 
         auto sep = new QAction();
@@ -99,6 +103,8 @@ bool CodeEditor::start()
         windowService->addAction(MWM_FILE, new AbstractAction(sep));
 
         auto print = new QAction(PRINT);
+        ActionManager::getInstance()->registerAction(print, "File.Print",
+                                                     PRINT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_P));
         windowService->addAction(MWM_FILE, new AbstractAction(print));
     }
     return true;

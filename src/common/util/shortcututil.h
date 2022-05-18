@@ -19,20 +19,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "pagewidget.h"
+#ifndef SHORTCUTUTIL_H
+#define SHORTCUTUTIL_H
 
-PageWidget::PageWidget(QWidget *parent)
-    : QWidget(parent)
+#include <QObject>
+
+class ShortcutUtil final: public QObject
 {
+    Q_OBJECT
+public:
+    static bool readFromJson(const QString &qsFilePath, QMap<QString, QStringList> &mapShortcutItem);
+    static bool writeToJson(const QString &qsFilePath, const QMap<QString, QStringList> &mapShortcutItem);
+signals:
 
-}
+private:
+    ShortcutUtil(QObject *parent = nullptr);
+    virtual ~ShortcutUtil();
+};
 
-PageWidget::~PageWidget()
-{
-
-}
-
-void PageWidget::saveConfig()
-{
-
-}
+#endif // SHORTCUTUTIL_H

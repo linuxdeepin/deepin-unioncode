@@ -40,7 +40,8 @@ void MenuManager::initialize(WindowService *windowService)
         return;
 
     startDebugging.reset(new QAction("Start Debugging"));
-    startDebugging->setShortcut(QKeySequence(Qt::Key::Key_F5));
+    ActionManager::getInstance()->registerAction(startDebugging.get(), "Debug.Start.Debugging",
+                                                 "Start Debugging", QKeySequence(Qt::Key::Key_F5));
     connect(startDebugging.get(), &QAction::triggered, debugManager, &DebugManager::run);
     AbstractAction *actionImpl = new AbstractAction(startDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
@@ -53,7 +54,8 @@ void MenuManager::initialize(WindowService *windowService)
 #endif
 
     interrupt.reset(new QAction("Interrupt"));
-    interrupt->setShortcut(QKeySequence(Qt::Key::Key_F5));
+    ActionManager::getInstance()->registerAction(interrupt.get(), "Debug.Interrupt",
+                                                 "Interrupt", QKeySequence(Qt::Key::Key_F5));
     interrupt->setEnabled(false);
     connect(interrupt.get(), &QAction::triggered, debugManager, &DebugManager::interruptDebug);
     actionImpl = new AbstractAction(interrupt.get());
@@ -61,41 +63,49 @@ void MenuManager::initialize(WindowService *windowService)
     windowService->addAction(MWM_DEBUG, actionImpl);
 
     continueDebugging.reset(new QAction("Continue"));
+    ActionManager::getInstance()->registerAction(continueDebugging.get(), "Debug.Continue",
+                                                 "Continue", QKeySequence(Qt::Key::Key_F5));
     continueDebugging->setEnabled(false);
-    continueDebugging->setShortcut(QKeySequence(Qt::Key::Key_F5));
     connect(continueDebugging.get(), &QAction::triggered, debugManager, &DebugManager::continueDebug);
     actionImpl = new AbstractAction(continueDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
     abortDebugging.reset(new QAction("Abort Debugging"));
+    ActionManager::getInstance()->registerAction(abortDebugging.get(), "Debug.Abort.Debugging",
+                                                 "Abort Debugging", QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace));
     abortDebugging->setEnabled(false);
     connect(abortDebugging.get(), &QAction::triggered, debugManager, &DebugManager::abortDebug);
     actionImpl = new AbstractAction(abortDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
     restartDebugging.reset(new QAction("Restart Debugging"));
+    ActionManager::getInstance()->registerAction(restartDebugging.get(), "Debug.Restart.Debugging",
+                                                 "Restart Debugging", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
     restartDebugging->setEnabled(false);
     connect(restartDebugging.get(), &QAction::triggered, debugManager, &DebugManager::restartDebug);
     actionImpl = new AbstractAction(restartDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
     stepOver.reset(new QAction("Step Over"));
+    ActionManager::getInstance()->registerAction(stepOver.get(), "Debug.Step.Over",
+                                                 "Step Over", QKeySequence(Qt::Key::Key_F10));
     stepOver->setEnabled(false);
-    stepOver->setShortcut(QKeySequence(Qt::Key::Key_F10));
     connect(stepOver.get(), &QAction::triggered, debugManager, &DebugManager::stepOver);
     actionImpl = new AbstractAction(stepOver.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
     stepIn.reset(new QAction("Step In"));
+    ActionManager::getInstance()->registerAction(stepIn.get(), "Debug.Step.In",
+                                                 "Step In", QKeySequence(Qt::Key::Key_F11));
     stepIn->setEnabled(false);
-    stepIn->setShortcut(QKeySequence(Qt::Key::Key_F11));
     connect(stepIn.get(), &QAction::triggered, debugManager, &DebugManager::stepIn);
     actionImpl = new AbstractAction(stepIn.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
     stepOut.reset(new QAction("Step Out"));
+    ActionManager::getInstance()->registerAction(stepOut.get(), "Debug.Step.Out",
+                                                 "Step Out", QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F11));
     stepOut->setEnabled(false);
-    stepOut->setShortcut(QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F11));
     connect(stepOut.get(), &QAction::triggered, debugManager, &DebugManager::stepOut);
     actionImpl = new AbstractAction(stepOut.get());
     windowService->addAction(MWM_DEBUG, actionImpl);

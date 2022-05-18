@@ -29,32 +29,43 @@
 #include <QHeaderView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
-#include <QFile>
-#include <QJsonParseError>
-#include <QJsonObject>
 #include <QDebug>
 #include <QDir>
 #include <QFileDialog>
 
 #define BTN_WIDTH (180)
 
-ShortcutTableModel::ShortcutTableModel(QObject *parent) :
-    QAbstractTableModel(parent)
-  , m_qsConfigFilePath(CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support"))
+class ShortcutTableModelPrivate
 {
+    QMap<QString, QStringList> shortcutItemMap;
+    QMap<QString, QStringList> shortcutItemShadowMap;
+    QString configFilePath;
 
-    bool bRet = readFromJson(m_qsConfigFilePath, m_mapShortcutItem);
+    friend class ShortcutTableModel;
+};
+
+ShortcutTableModel::ShortcutTableModel(QObject *parent)
+    : QAbstractTableModel(parent)
+    , d(new ShortcutTableModelPrivate())
+{
+    d->configFilePath = (CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support"));
+    bool bRet = ShortcutUtil::readFromJson(d->configFilePath, d->shortcutItemMap);
     if (!bRet) {
         qInfo() << "Read shortcut setting error!" << endl;
     }
-    m_mapShortcutItemShadow = m_mapShortcutItem;
+    d->shortcutItemShadowMap = d->shortcutItemMap;
+}
+
+ShortcutTableModel::~ShortcutTableModel()
+{
+
 }
 
 int ShortcutTableModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
-    return m_mapShortcutItem.size();
+    return d->shortcutItemMap.size();
 }
 
 int ShortcutTableModel::columnCount(const QModelIndex &parent) const
@@ -72,22 +83,22 @@ QVariant ShortcutTableModel::data(const QModelIndex &index, int role) const
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    if (index.row() >= m_mapShortcutItem.keys().size())
+    if (index.row() >= d->shortcutItemMap.keys().size())
         return QVariant();
 
-    QString qsID = m_mapShortcutItem.keys()[index.row()];
-    QStringList qsListValue = m_mapShortcutItem[qsID];
+    QString id = d->shortcutItemMap.keys()[index.row()];
+    QStringList valueList = d->shortcutItemMap[id];
 
-    QString qsDesc = qsListValue.first();
-    QString qsShortcut = qsListValue.last();
+    QString description = valueList.first();
+    QString shortcut = valueList.last();
 
     switch (index.column()) {
         case ColumnID::kID:
-            return qsID;
+            return id;
         case ColumnID::kDescriptions:
-            return qsDesc;
+            return description;
         case ColumnID::kShortcut:
-            return qsShortcut;
+            return shortcut;
         default:
             return QVariant();
     }
@@ -113,120 +124,90 @@ QVariant ShortcutTableModel::headerData(int section, Qt::Orientation orientation
     }
 }
 
-void ShortcutTableModel::updateShortcut(QString qsID, QString qsShortcut)
+void ShortcutTableModel::updateShortcut(QString id, QString shortcut)
 {
-    if (m_mapShortcutItem.keys().contains(qsID))
+    if (d->shortcutItemMap.keys().contains(id))
     {
-        QStringList qsListValue = m_mapShortcutItem.value(qsID);
-        QStringList qsNewListValue = {qsListValue.first(), qsShortcut};
-        m_mapShortcutItem[qsID] = qsNewListValue;
+        QStringList valueList = d->shortcutItemMap.value(id);
+        QStringList newValueList = {valueList.first(), shortcut};
+        d->shortcutItemMap[id] = newValueList;
     }
 }
 
-void ShortcutTableModel::resetShortcut(QString qsID)
+void ShortcutTableModel::resetShortcut(QString id)
 {
-    if (m_mapShortcutItem.keys().contains(qsID) && m_mapShortcutItemShadow.keys().contains(qsID))
+    if (d->shortcutItemMap.keys().contains(id) && d->shortcutItemShadowMap.keys().contains(id))
     {
-        QStringList qsListShadowValue = m_mapShortcutItemShadow.value(qsID);
-        m_mapShortcutItem[qsID] = qsListShadowValue;
+        QStringList shadowValueList = d->shortcutItemShadowMap.value(id);
+        d->shortcutItemMap[id] = shadowValueList;
     }
 }
 
 void ShortcutTableModel::resetAllShortcut()
 {
-    m_mapShortcutItem = m_mapShortcutItemShadow;
+    d->shortcutItemMap = d->shortcutItemShadowMap;
 }
 
 void ShortcutTableModel::saveShortcut()
 {
-    writeToJson(m_qsConfigFilePath, m_mapShortcutItem);
-}
+    ShortcutUtil::writeToJson(d->configFilePath, d->shortcutItemMap);
 
-bool ShortcutTableModel::readFromJson(const QString &qsFilePath, QMap<QString, QStringList> &mapShortcutItem)
-{
-    Q_UNUSED(mapShortcutItem)
-    QFile file(qsFilePath);
-    if (!file.open(QIODevice::ReadOnly))
-        return false;
-
-    QByteArray data = file.readAll();
-    file.close();
-
-    QJsonParseError parseError;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
-    if (QJsonParseError::NoError != parseError.error) {
-        return false;
-    }
-
-    if (!doc.isObject())
-        return false;
-
-    QJsonObject rootObject = doc.object();
-    mapShortcutItem.clear();
-    for (auto key : rootObject.keys()) {
-        if (!rootObject.value(key).isArray())
-            continue;
-        QJsonArray valueArray = rootObject.value(key).toArray();
-        if (valueArray.count() < 2)
-            continue;
-
-        QStringList qsListValue = {valueArray.first().toString(), valueArray.last().toString()};
-        mapShortcutItem[key] = qsListValue;
-    }
-
-    return true;
-}
-
-bool ShortcutTableModel::writeToJson(const QString &qsFilePath, const QMap<QString, QStringList> &mapShortcutItem)
-{
-    Q_UNUSED(mapShortcutItem)
-
-    QJsonObject rootObject;
-    QMap<QString, QStringList>::const_iterator iter = mapShortcutItem.begin();
-    for (; iter != mapShortcutItem.end(); ++iter)
+    QList<Command *> commandsList = ActionManager::getInstance()->commands();
+    QList<Command *>::iterator iter = commandsList.begin();
+    for (; iter != commandsList.end(); ++iter)
     {
-        QString qsID = iter.key();
-        QString qsDesc = iter.value().first();
-        QString qsShortcut = iter.value().last();
+        Action * action = dynamic_cast<Action *>(*iter);
+        QString id = action->id();
 
-        QJsonArray valueArray;
-        valueArray.append(QJsonValue(qsDesc));
-        valueArray.append(QJsonValue(qsShortcut));
-
-        rootObject.insert(qsID, valueArray);
+        if (d->shortcutItemMap.contains(id)) {
+            QStringList valueList = d->shortcutItemMap[id];
+            action->setKeySequence(QKeySequence(valueList.last()));
+        }
     }
-
-    QJsonDocument doc;
-    doc.setObject(rootObject);
-    QString jsonStr(doc.toJson(QJsonDocument::Indented));
-
-    QFile file(qsFilePath);
-    if (!file.open(QIODevice::WriteOnly))
-        return false;
-    file.write(jsonStr.toUtf8());
-    file.close();
-
-    return true;
 }
 
-void ShortcutTableModel::importExternalJson(const QString &qsFilePath)
+void ShortcutTableModel::importExternalJson(const QString &filePath)
 {
-    readFromJson(qsFilePath, m_mapShortcutItem);
-    m_mapShortcutItemShadow = m_mapShortcutItem;
+    ShortcutUtil::readFromJson(filePath, d->shortcutItemMap);
+    d->shortcutItemShadowMap = d->shortcutItemMap;
 }
 
-void ShortcutTableModel::exportExternalJson(const QString &qsFilePath)
+void ShortcutTableModel::exportExternalJson(const QString &filePath)
 {
-    writeToJson(qsFilePath, m_mapShortcutItem);
+    ShortcutUtil::writeToJson(filePath, d->shortcutItemMap);
+}
+
+class ShortcutTableModel;
+class ShortcutSettingWidgetPrivate
+{
+    ShortcutSettingWidgetPrivate();
+    QTableView *tableView;
+    HotkeyLineEdit *editShortCut;
+    ShortcutTableModel *model;
+    QPushButton *btnRecord;
+
+    friend class ShortcutSettingWidget;
+};
+
+ShortcutSettingWidgetPrivate::ShortcutSettingWidgetPrivate()
+    : tableView(nullptr)
+    , editShortCut(nullptr)
+    , model(nullptr)
+    , btnRecord(nullptr)
+{
+
 }
 
 ShortcutSettingWidget::ShortcutSettingWidget(QWidget *parent)
     : QWidget(parent)
-    , m_tableView(nullptr)
-    , m_editShortCut(nullptr)
-    , m_model(nullptr)
+    , d(new ShortcutSettingWidgetPrivate())
 {
     setupUi();
+}
+
+ShortcutSettingWidget::~ShortcutSettingWidget()
+{
+
 }
 
 void ShortcutSettingWidget::setupUi()
@@ -234,14 +215,14 @@ void ShortcutSettingWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
 
-    m_tableView = new QTableView();
-    m_tableView->setShowGrid(false);
-    m_tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    m_tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    m_model = new ShortcutTableModel();
-    m_tableView->setModel(m_model);
-    vLayout->addWidget(m_tableView);
+    d->tableView = new QTableView();
+    d->tableView->setShowGrid(false);
+    d->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    d->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+    d->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    d->model = new ShortcutTableModel();
+    d->tableView->setModel(d->model);
+    vLayout->addWidget(d->tableView);
 
     QWidget *widgetOperate = new QWidget();
     vLayout->addWidget(widgetOperate);
@@ -266,31 +247,31 @@ void ShortcutSettingWidget::setupUi()
     QHBoxLayout *hLayoutShortcut = new QHBoxLayout();
     widgetShortcut->setLayout(hLayoutShortcut);
     QLabel *labelTip = new QLabel("Shortcut:");
-    m_editShortCut = new HotkeyLineEdit();
-    m_btnRecord = new QPushButton("Record");
-    m_btnRecord->setFixedWidth(BTN_WIDTH);
+    d->editShortCut = new HotkeyLineEdit();
+    d->btnRecord = new QPushButton("Record");
+    d->btnRecord->setFixedWidth(BTN_WIDTH);
     QPushButton *btnReset = new QPushButton("Reset");
     btnReset->setFixedWidth(BTN_WIDTH);
     hLayoutShortcut->addWidget(labelTip);
-    hLayoutShortcut->addWidget(m_editShortCut);
-    hLayoutShortcut->addWidget(m_btnRecord);
+    hLayoutShortcut->addWidget(d->editShortCut);
+    hLayoutShortcut->addWidget(d->btnRecord);
     hLayoutShortcut->addWidget(btnReset);
 
-    connect(m_tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableViewClicked(const QModelIndex &)));
+    connect(d->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableViewClicked(const QModelIndex &)));
     connect(btnResetAll, SIGNAL(clicked()), this, SLOT(onBtnResetAllClicked()));
-    connect(m_editShortCut, SIGNAL(textChanged(const QString &)), this, SLOT(onShortcutEditTextChanged(const QString &)));
+    connect(d->editShortCut, SIGNAL(textChanged(const QString &)), this, SLOT(onShortcutEditTextChanged(const QString &)));
     connect(btnImport, SIGNAL(clicked()), this, SLOT(onBtnImportClicked()));
     connect(btnExport, SIGNAL(clicked()), this, SLOT(onBtnExportClicked()));
     connect(btnReset, SIGNAL(clicked()), this, SLOT(onBtnResetClicked()));
-    connect(m_btnRecord, SIGNAL(clicked()), this, SLOT(onBtnRecordClicked()));
+    connect(d->btnRecord, SIGNAL(clicked()), this, SLOT(onBtnRecordClicked()));
 }
 
 void ShortcutSettingWidget::setSelectedShortcut()
 {
-    int row = m_tableView->currentIndex().row();
-    QModelIndex index = m_model->index(row, ColumnID::kShortcut);
-    QString qsShortcut = m_model->data(index, Qt::DisplayRole).toString();
-    m_editShortCut->setText(qsShortcut);
+    int row = d->tableView->currentIndex().row();
+    QModelIndex index = d->model->index(row, ColumnID::kShortcut);
+    QString qsShortcut = d->model->data(index, Qt::DisplayRole).toString();
+    d->editShortCut->setText(qsShortcut);
 }
 
 void ShortcutSettingWidget::onTableViewClicked(const QModelIndex &)
@@ -300,41 +281,41 @@ void ShortcutSettingWidget::onTableViewClicked(const QModelIndex &)
 
 void ShortcutSettingWidget::onBtnResetAllClicked()
 {
-    m_model->resetAllShortcut();
-    m_tableView->update();
+    d->model->resetAllShortcut();
+    d->tableView->update();
 }
 
 void ShortcutSettingWidget::onBtnResetClicked()
 {
-    int row = m_tableView->currentIndex().row();
-    QModelIndex indexID = m_model->index(row, ColumnID::kID);
-    QString qsID = m_model->data(indexID, Qt::DisplayRole).toString();
-    m_model->resetShortcut(qsID);
+    int row = d->tableView->currentIndex().row();
+    QModelIndex indexID = d->model->index(row, ColumnID::kID);
+    QString qsID = d->model->data(indexID, Qt::DisplayRole).toString();
+    d->model->resetShortcut(qsID);
 
     setSelectedShortcut();
 }
 
 void ShortcutSettingWidget::onShortcutEditTextChanged(const QString &text)
 {
-    int row = m_tableView->currentIndex().row();
-    QModelIndex indexID = m_model->index(row, ColumnID::kID);
-    QString qsID = m_model->data(indexID, Qt::DisplayRole).toString();
-    m_model->updateShortcut(qsID, text);
+    int row = d->tableView->currentIndex().row();
+    QModelIndex indexID = d->model->index(row, ColumnID::kID);
+    QString qsID = d->model->data(indexID, Qt::DisplayRole).toString();
+    d->model->updateShortcut(qsID, text);
 
-    QModelIndex indexShortcut = m_model->index(row, ColumnID::kShortcut);
-    m_tableView->update(indexShortcut);
+    QModelIndex indexShortcut = d->model->index(row, ColumnID::kShortcut);
+    d->tableView->update(indexShortcut);
 }
 
 void ShortcutSettingWidget::saveConfig()
 {
-    m_model->saveShortcut();
+    d->model->saveShortcut();
 }
 
 void ShortcutSettingWidget::onBtnImportClicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), tr(""), tr("Json File(*.json)"));
     if (!fileName.isEmpty()) {
-        m_model->importExternalJson(fileName);
+        d->model->importExternalJson(fileName);
     }
 }
 
@@ -342,18 +323,18 @@ void ShortcutSettingWidget::onBtnExportClicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), tr(""), tr("Json File(*.json)"));
     if (!fileName.isEmpty()) {
-        m_model->exportExternalJson(fileName);
+        d->model->exportExternalJson(fileName);
     }
 }
 
 void ShortcutSettingWidget::onBtnRecordClicked()
 {
-    bool bRet = m_editShortCut->isHotkeyMode();
+    bool bRet = d->editShortCut->isHotkeyMode();
     if (bRet) {
-        m_btnRecord->setText("Start Record");
-        m_editShortCut->setHotkeyMode(false);
+        d->btnRecord->setText("Record");
+        d->editShortCut->setHotkeyMode(false);
     } else {
-        m_btnRecord->setText("Stop Record");
-        m_editShortCut->setHotkeyMode(true);
+        d->btnRecord->setText("Stop Recording");
+        d->editShortCut->setHotkeyMode(true);
     }
 }

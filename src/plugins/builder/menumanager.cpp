@@ -40,7 +40,8 @@ void MenuManager::initialize(WindowService *windowService)
 
     // insert build action.
     buildAction.reset(new QAction("Build"));
-    buildAction->setShortcut(QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
+    ActionManager::getInstance()->registerAction(buildAction.get(), "Build.Build",
+                                                 "Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
     AbstractAction *actionImpl = new AbstractAction(buildAction.get());
     windowService->addAction(MWM_BUILD, actionImpl);
     // triggered by top menu.

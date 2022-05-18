@@ -26,27 +26,25 @@
 #include <QKeyEvent>
 #include <QFocusEvent>
 
+class HotkeyLineEditPrivate;
 class HotkeyLineEdit : public QLineEdit
 {
     Q_OBJECT
 public:
     explicit HotkeyLineEdit(QWidget *parent = nullptr);
-    ~HotkeyLineEdit() override;
-    void setKey(int nKey);
+    virtual ~HotkeyLineEdit() override;
+    void setKey(int key);
     int getKey();
-    void setText(QString qsText);
-    void setHotkeyMode(bool bHotkeyMode);
+    void setText(QString text);
+    void setHotkeyMode(bool hotkeyMode);
     bool isHotkeyMode();
 
 signals:
-    void sigKeyChanged(int nKey);
+    void sigKeyChanged(int key);
 
 protected:
     void keyPressEvent(QKeyEvent *e) override;
-
-private:
-    int m_nKey;
-    bool m_bHotkeyMode;
+    HotkeyLineEditPrivate *const d;
 };
 
 #endif // HOTKEYLINEEDIT_H

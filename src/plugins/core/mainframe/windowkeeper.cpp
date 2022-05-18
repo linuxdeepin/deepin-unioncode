@@ -4,7 +4,7 @@
  * Author:     huangyu<huangyub@uniontech.com>
  *
  * Maintainer: huangyu<huangyub@uniontech.com>
- *
+ *             zhouyi<zhouyi1@uniontech.com>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -39,41 +39,59 @@ static WindowKeeper *ins{nullptr};
 using namespace dpfservice;
 class WindowKeeperPrivate
 {
-    friend class WindowKeeper;
+    WindowKeeperPrivate();
     QHash<QString, QWidget *> centrals{};
     QMainWindow *window{nullptr};
     QActionGroup *navActionGroup{nullptr};
     QToolBar *toolbar{nullptr};
     ProcessDialog processDisplay;
+
+    friend class WindowKeeper;
 };
+
+WindowKeeperPrivate::WindowKeeperPrivate()
+{
+
+}
 
 void WindowKeeper::createFileActions(QMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
     QMenu* fileMenu = new QMenu();
     QAction* actionQuit = new QAction(MWMFA_QUIT);
+    ActionManager::getInstance()->registerAction(actionQuit, "File.Quit",
+                                                 MWMFA_QUIT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Q));
     QAction::connect(actionQuit, &QAction::triggered, [](){
         qApp->closeAllWindows();
     });
 
     QAction* actionNewDocument = new QAction(MWMFA_DOCUMENT_NEW);
+    ActionManager::getInstance()->registerAction(actionNewDocument, "File.New.Document",
+                                                 MWMFA_DOCUMENT_NEW, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_N));
     QAction::connect(actionNewDocument, &QAction::triggered, [=](){
         qInfo() << "nothing to do";
     });
 
     QAction* actionNewFolder = new QAction(MWMFA_FOLDER_NEW);
+    ActionManager::getInstance()->registerAction(actionNewFolder, "File.New.Folder",
+                                                 MWMFA_FOLDER_NEW, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_N));
     QAction::connect(actionNewFolder, &QAction::triggered, [=](){
         qInfo() << "nothing to do";
     });
 
     QAction* actionOpenDocument = new QAction(MWMFA_OPEN_DOCUMENT);
+    ActionManager::getInstance()->registerAction(actionOpenDocument, "File.Open.Document",
+                                                 MWMFA_OPEN_DOCUMENT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O));
     QAction::connect(actionOpenDocument, &QAction::triggered, [=](){
         QString file = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE);
-        if (file.isEmpty()) return;
+        if (file.isEmpty())
+            return;
         SendEvents::menuOpenFile(file);
     });
 
     QAction* actionOpenFolder = new QAction(MWMFA_OPEN_FOLDER);
+    ActionManager::getInstance()->registerAction(actionOpenFolder, "File.Open.Folder",
+                                                 MWMFA_OPEN_FOLDER, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_F));
     QAction::connect(actionOpenFolder, &QAction::triggered, [=](){
         QString directory = QFileDialog::getExistingDirectory(nullptr, DIALOG_OPEN_FOLDER_TITLE);
         if (directory.isEmpty()) return;
@@ -83,7 +101,11 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     QMenu* menuOpenProject = new QMenu(MWMFA_OPEN_PROJECT);
 
     auto openRecentDocuments = new QAction(MWMFA_OPEN_RECENT_DOCUMENTS);
+    ActionManager::getInstance()->registerAction(openRecentDocuments, "File.Open.Recent.Documents",
+                                                 MWMFA_OPEN_RECENT_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_D));
     auto openRecentFolders = new QAction(MWMFA_OPEN_RECENT_FOLDER);
+    ActionManager::getInstance()->registerAction(openRecentFolders, "File.Open.Recent.Folders",
+                                                 MWMFA_OPEN_RECENT_FOLDER, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_F));
 
     fileMenu->addAction(actionNewDocument);
     fileMenu->addAction(actionNewFolder);
@@ -131,6 +153,23 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     QAction* actionOptions = new QAction("Options");
     connect(actionOptions, &QAction::triggered, this, &WindowKeeper::showOptionsDlg);
 
+    ActionManager::getInstance()->registerAction(actionSearch, "Tools.Search",
+                                                 "Search", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S));
+    ActionManager::getInstance()->registerAction(actionPackageTools, "Tools.Package.Tools",
+                                                 "Package Tools", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_P));
+    ActionManager::getInstance()->registerAction(actionVersionTools, "Tools.Version.Tools",
+                                                 "Version Tools", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_V));
+    ActionManager::getInstance()->registerAction(actionCodeFormatting, "Tools.Code.Formatting",
+                                                 "Code Formatting", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C));
+    ActionManager::getInstance()->registerAction(actionRuntimeAnalysis, "Tools.Runtime.Analysis",
+                                                 "Runtime Analysis", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R));
+    ActionManager::getInstance()->registerAction(actionTest, "Tools.Test",
+                                                 "Test", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_T));
+    ActionManager::getInstance()->registerAction(actionPlugins, "Tools.Plugins",
+                                                 "Plugins", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_G));
+    ActionManager::getInstance()->registerAction(actionOptions, "Tools.Options",
+                                                 "Options", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_H));
+
     toolsMenu->addAction(actionSearch);
     toolsMenu->addAction(actionPackageTools);
     toolsMenu->addAction(actionVersionTools);
@@ -148,9 +187,13 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
     menuBar->addMenu(helpMenu);
 
     QAction* actionReportBug = new QAction("Report Bug");
+    ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
+                                                 "Report Bug", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R));
     helpMenu->addAction(actionReportBug);
 
     QAction* actionAboutUnionCode = new QAction("About \"Union Code\"");
+    ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
+                                                 "About", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A));
     helpMenu->addAction(actionAboutUnionCode);
 }
 
@@ -416,6 +459,8 @@ void WindowKeeper::addOpenProjectAction(AbstractAction *action)
         return;
 
     QAction *inputAction = static_cast<QAction*>(action->qAction());
+    ActionManager::getInstance()->registerAction(inputAction, "File.Open.Project",
+                                                 inputAction->text(), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_O));
     for (QAction *qAction : d->window->menuBar()->actions()) {
         if (qAction->text() == MWM_FILE) {
             for(QAction *childAction : qAction->menu()->actions()) {

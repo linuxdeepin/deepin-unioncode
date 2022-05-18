@@ -151,11 +151,11 @@ void OptionsDialog::setupUi(QDialog *Dialog)
 
 void OptionsDialog::saveAllConfig()
 {
-    for (int nIndex = 0; nIndex < stackWidget->count(); nIndex++)
+    for (int index = 0; index < stackWidget->count(); index++)
     {
-        PageWidget* pWidget = dynamic_cast<PageWidget*>(stackWidget->widget(nIndex));
-        if (pWidget) {
-            pWidget->saveConfig();
+        PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
+        if (widget) {
+            widget->saveConfig();
         }
     }
 
@@ -164,12 +164,12 @@ void OptionsDialog::saveAllConfig()
 
 void OptionsDialog::saveSingleConfig()
 {
-    int nIndex = stackWidget->currentIndex();
-    if (nIndex > 0 && nIndex < stackWidget->count())
+    int index = stackWidget->currentIndex();
+    if (index > 0 && index < stackWidget->count())
     {
-        PageWidget* pWidget = dynamic_cast<PageWidget*>(stackWidget->widget(nIndex));
-        if (pWidget) {
-            pWidget->saveConfig();
+        PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
+        if (widget) {
+            widget->saveConfig();
         }
     }
 }

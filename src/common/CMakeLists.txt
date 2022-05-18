@@ -13,6 +13,7 @@ set(CXX_H
     util/eventdefinitions.h
     util/singleton.h
     util/polkit.h
+    util/shortcututil.h
     supportfile/editorstyle.h
     supportfile/language.h
     supportfile/windowstyle.h
@@ -29,6 +30,8 @@ set(CXX_H
     type/constants.h
     type/menuext.h
     toolchain/toolchain.h
+    actionmanager/actionmanager.h
+    actionmanager/command.h
     )
 
 set(CXX_CPP
@@ -40,6 +43,7 @@ set(CXX_CPP
     util/custompaths.cpp
     util/polkit.cpp
     util/eventdefinitions.cpp
+    util/shortcututil.cpp
     supportfile/language.cpp
     supportfile/editorstyle.cpp
     supportfile/windowstyle.cpp
@@ -54,6 +58,8 @@ set(CXX_CPP
     widget/pagewidget.cpp
     widget/hotkeylineedit.cpp
     toolchain/toolchain.cpp
+    actionmanager/actionmanager.cpp
+    actionmanager/command.cpp
     )
 
 add_library(

@@ -22,12 +22,32 @@
 #include "environmentmanagerwidget.h"
 #include "shortcutsettingwidget.h"
 #include <QtWidgets/QVBoxLayout>
+#include <QTabWidget>
+
+class EnvironmentManagerWidgetPrivate
+{
+    EnvironmentManagerWidgetPrivate();
+    ShortcutSettingWidget* shortcutSettingWidget;
+
+    friend class EnvironmentManagerWidget;
+};
+
+EnvironmentManagerWidgetPrivate::EnvironmentManagerWidgetPrivate()
+    : shortcutSettingWidget(nullptr)
+{
+
+}
 
 EnvironmentManagerWidget::EnvironmentManagerWidget(QWidget *parent)
     : PageWidget(parent)
-    , m_widgetShortcutSetting(nullptr)
+    , d(new EnvironmentManagerWidgetPrivate())
 {
     setupUi();
+}
+
+EnvironmentManagerWidget::~EnvironmentManagerWidget()
+{
+
 }
 
 void EnvironmentManagerWidget::setupUi()
@@ -35,9 +55,9 @@ void EnvironmentManagerWidget::setupUi()
     setWindowTitle(tr("Environment"));
 
     auto tabWidget = new QTabWidget();
-    m_widgetShortcutSetting = new ShortcutSettingWidget();
+    d->shortcutSettingWidget = new ShortcutSettingWidget();
 
-    tabWidget->addTab(m_widgetShortcutSetting, QString("Commands"));
+    tabWidget->addTab(d->shortcutSettingWidget, QString("Commands"));
     tabWidget->addTab(new QWidget(), QString("Others"));
     tabWidget->setCurrentIndex(0);
 
@@ -48,6 +68,6 @@ void EnvironmentManagerWidget::setupUi()
 
 void EnvironmentManagerWidget::saveConfig()
 {
-    m_widgetShortcutSetting->saveConfig();
+    d->shortcutSettingWidget->saveConfig();
 }
 

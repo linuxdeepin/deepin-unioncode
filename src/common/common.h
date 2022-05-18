@@ -13,6 +13,7 @@
 #include "util/polkit.h"
 #include "util/processutil.h"
 #include "util/singleton.h"
+#include "util/shortcututil.h"
 #include "supportfile/builder.h"
 #include "supportfile/editorstyle.h"
 #include "supportfile/windowstyle.h"
@@ -23,6 +24,9 @@
 #include "widget/statuswidget.h"
 #include "widget/elidedlabel.h"
 #include "widget/generator.h"
+#include "widget/hotkeylineedit.h"
 #include "toolchain/toolchain.h"
+#include "actionmanager/actionmanager.h"
+#include "actionmanager/command.h"
 
 #endif // COMMON_H
