@@ -14,6 +14,7 @@ set(CXX_H
     util/singleton.h
     util/polkit.h
     util/shortcututil.h
+    util/fileoperation.h
     supportfile/editorstyle.h
     supportfile/language.h
     supportfile/windowstyle.h
@@ -45,6 +46,7 @@ set(CXX_CPP
     util/polkit.cpp
     util/eventdefinitions.cpp
     util/shortcututil.cpp
+    util/fileoperation.cpp
     supportfile/language.cpp
     supportfile/editorstyle.cpp
     supportfile/windowstyle.cpp

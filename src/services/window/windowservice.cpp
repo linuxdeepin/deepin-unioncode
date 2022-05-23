@@ -43,7 +43,6 @@ const QString MWMFA_DOCUMENT_NEW { QAction::tr("New Document") };
 const QString MWMFA_FOLDER_NEW { QAction::tr("New Folder") };
 const QString MWMFA_OPEN_PROJECT { QAction::tr("Open Project") };
 const QString MWMFA_OPEN_DOCUMENT { QAction::tr("Open Document") };
-const QString MWMFA_OPEN_FOLDER { QAction::tr("Open Folder") };
 const QString MWMFA_OPEN_RECENT_DOCUMENTS { QAction::tr("Open Recent Documents") };
 const QString MWMFA_OPEN_RECENT_FOLDER { QAction::tr("Open Recent Folders") };
 const QString MWMFA_QUIT { QAction::tr("Quit") };
@@ -65,7 +64,6 @@ const QString MWMTA_OPTIONS { QAction::tr("Options") };
 const QString MWM_HELP { QMenu::tr("Help") };
 
 const QString DIALOG_OPEN_DOCUMENT_TITLE { QDialog::tr("Open Document") };
-const QString DIALOG_OPEN_FOLDER_TITLE { QDialog::tr("Open Folder") };
 const QString CONSOLE_TAB_TEXT { QTabWidget::tr("Console") };
 
 WindowService::WindowService(QObject *parent)

@@ -1,4 +1,7 @@
 #include "projecttreeview.h"
+#include "projectpropertydialog.h"
+#include "projectselectionmodel.h"
+#include "projectdelegate.h"
 #include "transceiver/sendevents.h"
 
 #include "services/project/projectservice.h"
@@ -15,7 +18,9 @@ using namespace dpfservice;
 class ProjectTreeViewPrivate
 {
     friend class ProjectTreeView;
-    QStandardItemModel *model{nullptr};
+    QStandardItemModel *itemModel {nullptr};
+    ProjectSelectionModel *sectionModel {nullptr};
+    ProjectDelegate *delegate {nullptr};
     int itemDepth(const QStandardItem *item)
     {
         int depth = 0;
@@ -38,8 +43,8 @@ ProjectTreeView::ProjectTreeView(QWidget *parent)
     setFocusPolicy(Qt::NoFocus);                          //去掉鼠标移到节点上时的虚线框
     this->header()->hide();
 
-    d->model = new QStandardItemModel(this);
-    setModel(d->model);
+    d->itemModel = new QStandardItemModel(this);
+    setModel(d->itemModel);
 
     // 右键菜单创建
     QObject::connect(this, &ProjectTreeView::itemMenuRequest,
@@ -49,6 +54,12 @@ ProjectTreeView::ProjectTreeView(QWidget *parent)
     // 双击操作
     QObject::connect(this, &ProjectTreeView::doubleClicked,
                      this, &ProjectTreeView::doDoubleClieked);
+
+    d->sectionModel = new ProjectSelectionModel(d->itemModel);
+    setSelectionModel(d->sectionModel);
+
+    d->delegate = new ProjectDelegate(this);
+    setItemDelegate(d->delegate);
 }
 
 ProjectTreeView::~ProjectTreeView()
@@ -70,22 +81,26 @@ void ProjectTreeView::appendRootItem(QStandardItem *root)
     QString language = info.language();
     QString buildFolder = info.buildFolder();
     if (!workspaceFolder.isEmpty() && !language.isEmpty()) {
+        // 初始化lsp客户端
         lsp::ClientManager::instance()->initClient({workspaceFolder, language}, buildFolder);
-        SendEvents::projectCreate(workspaceFolder, language, buildFolder);
     }
 
     // 添加工程节点
     QStandardItemModel *model = static_cast<QStandardItemModel*>(QTreeView::model());
     if (model)
         model->appendRow(root);
+
+    // 发送工程节点已创建信号
+    SendEvents::projectCreated(info);
+
+    // 激活当前工程节点
+    doActiveProject(root);
 }
 
 void ProjectTreeView::removeRootItem(const QStandardItem *root)
 {
     using namespace dpfservice;
     auto info = ProjectInfo::get(ProjectGenerator::root(root));
-    QString workspaceFolder = info.workspaceFolder();
-    QString language = info.language();
 
     // 遍历删除工程根节点
     bool isDeleted = false;
@@ -99,46 +114,41 @@ void ProjectTreeView::removeRootItem(const QStandardItem *root)
         }
     }
 
-    // 发送工程删除信号
+    QString workspaceFolder = info.workspaceFolder();
+    QString language = info.language();
     if (!workspaceFolder.isEmpty() && !language.isEmpty() && isDeleted) {
+        // 停止lspClient
         lsp::ClientManager::instance()->shutdownClient({workspaceFolder, language});
-        SendEvents::projectDelete(workspaceFolder, language);
+    }
+
+    // 发送工程删除信号
+    SendEvents::projectDeleted(info);
+
+    int rowCount = d->itemModel->rowCount();
+    if ( 0 < rowCount) { // 存在其他工程时
+        // 始终保持首选项
+        auto index = d->itemModel->index(0, 0);
+        doActiveProject(d->itemModel->itemFromIndex(index));
     }
 }
 
 void ProjectTreeView::doItemMenuRequest(const QStandardItem *item, QContextMenuEvent *event)
 {
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     auto rootItem = ProjectGenerator::root(item);
-    QString toolKitName = ProjectInfo::get(rootItem).kitName();
-    // 获取支持右键菜单生成器
-    if (projectService->supportGeneratorName().contains(toolKitName)) {
-        QMenu *itemMenu = projectService->createGenerator(toolKitName)->createItemMenu(item);
-        if (itemMenu) {
-            itemMenu->move(event->globalPos());
-            itemMenu->exec();
-            delete itemMenu;
-        } else if (rootItem == item) {
-            QMenu * rootItemMenu = new QMenu;
-            QAction* closeAction = new QAction(QAction::tr("Close"));
-            QAction* propertyAction = new QAction(QAction::tr("Property"));
-            QObject::connect(closeAction, &QAction::triggered, [=](){
-                this->removeRootItem(rootItem);
-            });
-            QObject::connect(propertyAction, &QAction::triggered, [=](){
-                qInfo() << "project root item show property";
-            });
-            rootItemMenu->addAction(closeAction);
-            rootItemMenu->addAction(propertyAction);
-            rootItemMenu->move(event->globalPos());
-            rootItemMenu->exec();
-            delete rootItemMenu;
-        } else {
+    QMenu *menu = nullptr;
 
-        }
+    if (rootItem == item) {
+        menu = rootMenu(rootItem);
+    } else {
+        menu = childMenu(rootItem, item);
     }
-};
+
+    if (menu) {
+        menu->move(event->globalPos());
+        menu->exec();
+        delete menu;
+    }
+}
 
 void ProjectTreeView::expandedProjectDepth(const QStandardItem *root, int depth)
 {
@@ -147,7 +157,7 @@ void ProjectTreeView::expandedProjectDepth(const QStandardItem *root, int depth)
 
     qInfo() << root->data(Qt::DisplayRole);
     if (d->itemDepth(root) < depth) { //满足深度
-        expand(d->model->indexFromItem(root));
+        expand(d->itemModel->indexFromItem(root));
         for(int i = 0; i < root->rowCount(); i++) {
             QStandardItem * childitem = root->child(i);
             if (root->hasChildren()) {
@@ -162,7 +172,7 @@ void ProjectTreeView::expandedProjectAll(const QStandardItem *root)
     if (!root)
         return;
 
-    expand(d->model->indexFromItem(root));
+    expand(d->itemModel->indexFromItem(root));
     if (root->hasChildren()) {
         for(int i = 0; i < root->rowCount(); i++) {
             QStandardItem * childitem = root->child(i);
@@ -177,10 +187,39 @@ void ProjectTreeView::contextMenuEvent(QContextMenuEvent *event)
     QModelIndex index = indexAt(event->pos());
     selectionModel()->select(index, QItemSelectionModel::SelectCurrent);
     indexMenuRequest(index, event);
-    itemMenuRequest(d->model->itemFromIndex(index), event);
+    itemMenuRequest(d->itemModel->itemFromIndex(index), event);
 }
 
-void ProjectTreeView::doDoubleClieked(const QModelIndex &index) {
+QMenu *ProjectTreeView::childMenu(const QStandardItem *root, const QStandardItem *child)
+{
+    QMenu *menu = nullptr;
+    QString toolKitName = ProjectInfo::get(root).kitName();
+    // 获取支持右键菜单生成器
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService->supportGeneratorName().contains(toolKitName)) {
+        menu = projectService->createGenerator(toolKitName)->createItemMenu(child);
+    }
+    return menu;
+}
+
+QMenu *ProjectTreeView::rootMenu(const QStandardItem *root)
+{
+    QMenu * menu = new QMenu;
+    QAction* activeProjectAction = new QAction(QAction::tr("Active"));
+    QAction* closeAction = new QAction(QAction::tr("Close"));
+    QAction* propertyAction = new QAction(QAction::tr("Property"));
+    QObject::connect(activeProjectAction, &QAction::triggered, [=](){doActiveProject(root);});
+    QObject::connect(closeAction, &QAction::triggered, [=](){doCloseProject(root);});
+    QObject::connect(propertyAction, &QAction::triggered, [=](){doShowProjectProperty(root);});
+    menu->addAction(activeProjectAction);
+    menu->addAction(closeAction);
+    menu->addAction(propertyAction);
+    return menu;
+}
+
+void ProjectTreeView::doDoubleClieked(const QModelIndex &index)
+{
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
     if (info.exists() && info.isFile()) {
         QString workspaceFolder, language;
@@ -196,4 +235,38 @@ void ProjectTreeView::doDoubleClieked(const QModelIndex &index) {
             ContextDialog::ok(QDialog::tr("Can't find workspace from file :%0").arg(info.filePath()));
         }
     }
+}
+
+void ProjectTreeView::doCloseProject(const QStandardItem *root)
+{
+    if (!root && root != ProjectGenerator::root(root))
+        return;
+    auto info = ProjectInfo::get(root);
+    this->removeRootItem(root);
+}
+
+void ProjectTreeView::doActiveProject(const QStandardItem *root)
+{
+    if (!root && root != ProjectGenerator::root(root))
+        return;
+    d->delegate->setActiveProject(d->itemModel->indexFromItem(root));
+    SendEvents::projectActived(ProjectInfo::get(root));
+}
+
+void ProjectTreeView::doShowProjectProperty(const QStandardItem *root)
+{
+    if (!root && root != ProjectGenerator::root(root))
+        return;
+
+    ProjectPropertyDialog dialog;
+    QString propertyText = "Language: " + ProjectInfo::get(root).language() + "\n"
+            + "KitName: " + ProjectInfo::get(root).kitName() + "\n"
+            + "BuildFolder: " + ProjectInfo::get(root).buildFolder() + "\n"
+            + "SourceFolder: " + ProjectInfo::get(root).buildType() + "\n"
+            + "WorkspaceFolder: " + ProjectInfo::get(root).workspaceFolder() + "\n"
+            + "ProjectFileFolder: " + ProjectInfo::get(root).projectFilePath() + "\n"
+            + "BuildType: " + ProjectInfo::get(root).buildType() + "\n"
+            + "BuildCustomArgs: " + "\n    " + ProjectInfo::get(root).buildCustomArgs().join("\n    ");
+    dialog.setPropertyText(propertyText);
+    dialog.exec();
 }

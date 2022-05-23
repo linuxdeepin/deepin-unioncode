@@ -74,10 +74,12 @@ bool ProjectCMake::start()
                 });
 
                 ProjectInfo info;
+                QString sourceFolder = QFileInfo(filePath).path();
                 info.setLanguage(language);
+                info.setSourceFolder(sourceFolder);
                 info.setKitName(CMakeGenerator::toolKitName());
                 info.setBuildFolder(outputPath);
-                info.setWorkspaceFolder(QFileInfo(filePath).path());
+                info.setWorkspaceFolder(sourceFolder);
                 info.setProjectFilePath(filePath);
                 info.setBuildType("Debug");
                 info.setBuildCustomArgs({"-DCMAKE_EXPORT_COMPILE_COMMANDS=1"});
@@ -95,6 +97,8 @@ bool ProjectCMake::start()
                         windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
 
                     emit projectService->projectConfigureDone();
+                } else {
+                    ContextDialog::ok(QDialog::tr("Open Project Error: %0").arg(filePath));
                 }
             }
         });

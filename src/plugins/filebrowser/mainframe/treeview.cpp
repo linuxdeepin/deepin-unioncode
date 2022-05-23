@@ -1,204 +1,253 @@
-/*
- * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
- *
- * Author:     huangyu<huangyub@uniontech.com>
- *
- * Maintainer: huangyu<huangyub@uniontech.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
 #include "treeview.h"
-#include "treemodel.h"
-#include "treeproxy.h"
-#include "treemenu.h"
-#include "treeviewdelegate.h"
-#include "transceiver/sendevents.h"
+#include "common/common.h"
 
+#include <QHeaderView>
+#include <QMenu>
 #include <QDebug>
-#include <QMouseEvent>
-#include <QApplication>
+#include <QContextMenuEvent>
+#include <QFileSystemModel>
+#include <QStack>
+
+const QString NEW_DOCUMENT_NAME = "NewDocument.txt";
+const QString NEW_FOLDER_NAME = "NewFolder";
+const QString DELETE_MESSAGE_TEXT {QTreeView::tr("The delete operation will be removed from"
+                                                 "the disk and will not be recoverable "
+                                                 "after this operation.\nDelete anyway?")};
+
+const QString DELETE_WINDOW_TEXT {QTreeView::tr("Delete Warning")};
 
 class TreeViewPrivate
 {
     friend class TreeView;
-    TreeModel *model;
-    TreeViewDelegate *delegate;
-    const QString RENAME { TreeView::tr("Rename") };
-    const QString CLOSE_ALL { TreeView::tr("Close All") };
-    const QString CLOSE { TreeView::tr("Close") };
+    QFileSystemModel *model {nullptr};
+    QMenu* menu {nullptr};
+    QStack<QStringList> moveToTrashStack;
 };
 
 TreeView::TreeView(QWidget *parent)
-    : QTreeView(parent)
-    , d(new TreeViewPrivate())
+    : QTreeView (parent)
+    , d (new TreeViewPrivate)
 {
-
-    d->model = new TreeModel(this);
+    d->model = new QFileSystemModel(this);
+    d->menu = new QMenu(this);
     setModel(d->model);
-
-    d->delegate = new TreeViewDelegate(this);
-    setItemDelegate(d->delegate);
-
-    setHeaderHidden(true);
-
-    setEditTriggers(EditKeyPressed);
-
-    QObject::connect(this, &QTreeView::doubleClicked,
-                     this, &TreeView::doubleClicked);
-
-    QObject::connect(&TreeProxy::instance(), &TreeProxy::appendedFile,
-                     this, &TreeView::selectNode);
-
-    QObject::connect(&TreeProxy::instance(), &TreeProxy::appendedFolder,
-                     this, &TreeView::selectNode);
-
-    QObject::connect(d->model, &TreeModel::renamedChild,
-                     this, &TreeView::selectNode, Qt::QueuedConnection);
-
-    QObject::connect(d->model, &TreeModel::createdChild,
-                     this, &TreeView::selectNode, Qt::QueuedConnection);
-
-    QObject::connect(d->model, &TreeModel::createdChild,
-                     this, &TreeView::rename, Qt::QueuedConnection);
+    header()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
 }
 
 TreeView::~TreeView()
 {
+    if (d) {
+        delete d;
+    }
+}
+
+void TreeView::setRootPath(const QString &rootPath)
+{
+    d->model->setRootPath(rootPath);
+    auto index = d->model->index(rootPath);
+    QTreeView::expand(index);
+    QTreeView::setRootIndex(index);
+    emit rootPathChanged(rootPath);
+}
+
+void TreeView::selOpen()
+{
 
 }
 
-void TreeView::mousePressEvent(QMouseEvent *event)
+void TreeView::selMoveToTrash()
 {
-    QModelIndex index = indexAt(event->pos());
-    if (index.isValid() && !isExpanded(index)) {
-        Node* pressNode = static_cast<Node*>(index.internalPointer());
-        if (pressNode) {
-            TreeProxy::instance().loadChildren(pressNode);
-            pressNode->isLoaded = true; //初始化数据
+    QModelIndexList indexs = selectedIndexes();
+    QSet<QString> countPaths;
+    for (auto index : indexs) {
+        countPaths << d->model->filePath(index);
+    }
+
+    QStringList errFilePaths;
+    QStringList okFilePaths;
+    bool hasError = false;
+    for (auto path : countPaths) {
+        bool currErr = !FileOperation::doMoveMoveToTrash(path);
+        if (currErr){
+            errFilePaths << path;
+            hasError = true;
+        } else {
+            okFilePaths << path;
         }
     }
-    return QTreeView::mousePressEvent(event);
+
+    if (!hasError) {
+        d->moveToTrashStack.push(okFilePaths);
+    } else {
+        QString errMess;
+        for (auto errFilePath : errFilePaths) {
+            errMess = QTreeView::tr("Error, Can't move to trash: ") + "\n"
+                    + errFilePath  + "\n";
+        }
+        ContextDialog::ok(errMess);
+    }
+}
+
+void TreeView::selRemove()
+{
+    QModelIndexList indexs = selectedIndexes();
+    QSet<QString> countPaths;
+    for (auto index : indexs) {
+        countPaths << d->model->filePath(index);
+    }
+
+    bool doDeleta = false;
+    auto okCallBack = [&](bool checked) {
+        Q_UNUSED(checked);
+        doDeleta = true;
+    };
+
+    QString mess = DELETE_MESSAGE_TEXT + "\n";
+    for (auto path : countPaths)  {
+        mess += path  + "\n";
+    }
+
+    ContextDialog::okCancel(mess,
+                            DELETE_WINDOW_TEXT,
+                            QMessageBox::Warning,
+                            okCallBack,
+                            nullptr);
+
+    if (!doDeleta)
+        return;
+
+    bool hasError = false;
+    QStringList errFilePaths;
+    for (auto currPath : countPaths){
+        bool currErr = !FileOperation::doRemove(currPath);
+        if (currErr){
+            errFilePaths << currPath;
+            hasError = true;
+        }
+    }
+
+    if (hasError)  {
+        QString errMess;
+        for (auto errFilePath : errFilePaths) {
+            errMess = QTreeView::tr("Error, Can't move to trash: ") + "\n"
+                    + errFilePath  + "\n";
+        }
+        ContextDialog::ok(errMess);
+    }
+}
+
+void TreeView::selNewDocument()
+{
+    QModelIndexList indexs = selectedIndexes();
+    bool hasErr = false;
+    QString errString;
+    if (indexs.size() == 1) {
+        QString filePath = d->model->filePath(indexs[0]);
+        QFileInfo info(filePath);
+        if (info.isDir()) {
+            hasErr = !FileOperation::doNewDocument(filePath, NEW_DOCUMENT_NAME);
+            if (hasErr)
+                errString =  QTreeView::tr("Error: Can't create New Document");
+        } else {
+            hasErr = true;
+            errString =  QTreeView::tr("Error: Create New Document, parent not's dir");
+        }
+    }
+
+    if (hasErr)
+        ContextDialog::ok(errString);
+}
+
+void TreeView::selNewFolder()
+{
+    QModelIndexList indexs = selectedIndexes();
+    bool hasErr = false;
+    QString errString;
+    if (indexs.size() == 1) {
+        QString filePath = d->model->filePath(indexs[0]);
+        QFileInfo info(filePath);
+        if (info.isDir()) {
+            hasErr = !FileOperation::doNewFolder(filePath, NEW_FOLDER_NAME);
+            if (hasErr)
+                errString =  QTreeView::tr("Error: Can't create new folder");
+        } else {
+            hasErr = true;
+            errString =  QTreeView::tr("Error: Create new folder, parent not's dir");
+        }
+    }
+
+    if (hasErr)
+        ContextDialog::ok(errString);
+}
+
+void TreeView::recoverFromTrash()
+{
+    if (!d->moveToTrashStack.isEmpty()) {
+        auto filePaths = d->moveToTrashStack.pop();
+        for (auto filePath : filePaths) {
+            FileOperation::doRecoverFromTrash(filePath);
+        }
+    }
 }
 
 void TreeView::contextMenuEvent(QContextMenuEvent *event)
 {
-    QModelIndex index = indexAt(event->pos());
+    QModelIndex index = QTreeView::indexAt(event->pos());
+    QMenu *menu = nullptr;
     if (index.isValid()) {
-        Node *node = static_cast<Node *>(index.internalPointer());
-        Node *filesNode = TreeProxy::instance().files();
-        Node *foldersNode = TreeProxy::instance().folders();
-        TreeMenu menu(this);
-        menu.move(this->mapToGlobal(event->pos()));
-
-        if (node == filesNode || node == foldersNode) {
-            QAction *colseAllAction = new QAction(d->CLOSE_ALL, &menu);
-            QAction::connect(colseAllAction, &QAction::triggered, this, [=](){
-                this->closeAll(node); // close all node
-            });
-            menu.addAction(colseAllAction);
-        }
-
-        if (node->parent == filesNode || node->parent == foldersNode) {
-            QAction *colseAllAction = new QAction(d->CLOSE, &menu);
-            QAction::connect(colseAllAction, &QAction::triggered, colseAllAction, [=](){
-                if (node->parent == filesNode)
-                    this->closeTheFile(node); // close the file
-                if (node->parent == foldersNode)
-                    this->closeTheFolder(node); // colse the folder
-            });
-            menu.addAction(colseAllAction);
-        }
-
-        if (node->parent && node->parent != foldersNode
-                && node->parent != filesNode) {
-            QAction *renameAction = new QAction(d->RENAME, &menu);
-            QAction::connect(renameAction, &QAction::triggered, renameAction, [=](){
-                this->rename(node);
-            });
-            menu.addAction(renameAction);
-            menu.createNewFileAction(node->toolTip);
-            menu.createNewFolderAction(node->toolTip);
-            menu.createMoveToTrash(node->toolTip);
-            menu.createBuildAction(node->toolTip);
-            menu.createDeleteAction(node->toolTip);
-        }
-
-        menu.exec();
+        menu = createContextMenu(selectedIndexes());
+    } else {
+        menu = createEmptyMenu();
     }
+    menu->exec(viewport()->mapToGlobal(event->pos()));
+    delete menu;
 }
 
-void TreeView::selectNode(Node *node)
+QMenu *TreeView::createContextMenu(const QModelIndexList &indexs)
 {
-    if (!node)
-        return;
-
-    selectionModel()->clear();
-
-    QModelIndex expandIndex = d->model->index(TreeProxy::instance().root(node->parent));
-    expand(expandIndex);
-
-    QModelIndex selectIndex = d->model->index(node);
-    selectionModel()->select(selectIndex, QItemSelectionModel::ClearAndSelect);
-}
-
-void TreeView::closeTheFile(Node *node)
-{
-    if (d && d->model)
-        d->model->removeFile(node);
-}
-
-void TreeView::closeTheFolder(Node *node)
-{
-    if (d && d->model)
-        d->model->removeFolder(node);
-}
-
-void TreeView::closeAll(Node *node)
-{
-    Node *filesNode = TreeProxy::instance().files();
-    Node *foldersNode = TreeProxy::instance().folders();
-    if (node == filesNode)
-        d->model->removeAllFile();
-    if (node == foldersNode)
-        d->model->removeAllFolder();
-}
-
-void TreeView::rename(Node *node)
-{
-    auto renameIndex = d->model->index(node);
-
-    if (!node && !node->parent)
-        return;
-
-    if (node->parent == TreeProxy::instance().files()
-            || node->parent == TreeProxy::instance().folders()
-            || node == TreeProxy::instance().files()
-            || node == TreeProxy::instance().folders())
-        return;
-
-    emit edit(renameIndex);
-}
-
-void TreeView::doubleClicked(const QModelIndex &index)
-{
-    if (index.isValid()) {
-        Node *node = static_cast<Node *>(index.internalPointer());
-        Node *filesNode = TreeProxy::instance().files();
-        Node *foldersNode = TreeProxy::instance().folders();
-        if ((node != filesNode || node != foldersNode)
-                && node->type == Node::File) {
-            SendEvents::treeViewDoublueClicked(node->toolTip, TreeProxy::instance().rootFromFolder(node)->toolTip);
-        }
+    QMenu *menu = new QMenu();
+    bool hasDir = false;
+    bool selOne = indexs.size() == 0;
+    for (auto index: indexs)  {
+        if (d->model->isDir(index))
+            hasDir = true;
     }
+
+    QAction *openAction = new QAction(QAction::tr("Open"));
+    QObject::connect(openAction, &QAction::triggered, this, &TreeView::selOpen);
+    menu->addAction(openAction);
+    if (hasDir) {
+        openAction->setEnabled(false);
+    }
+
+    if (selOne && hasDir) {
+        QAction *newFolderAction = new QAction(QAction::tr("New Folder"));
+        QAction *newDocumentAction = new QAction(QAction::tr("New Document"));
+
+        QObject::connect(newFolderAction, &QAction::triggered, this, &TreeView::selNewFolder);
+        QObject::connect(newDocumentAction, &QAction::triggered, this, &TreeView::selNewDocument);
+        menu->addSeparator();
+        menu->addAction(newFolderAction);
+        menu->addAction(newDocumentAction);
+    }
+
+    QAction *moveToTrashAction = new QAction(QAction::tr("Move To Trash"));
+    QAction *removeAction = new QAction(QAction::tr("Remove"));
+    QObject::connect(moveToTrashAction, &QAction::triggered, this, &TreeView::selMoveToTrash);
+    QObject::connect(removeAction, &QAction::triggered, this, &TreeView::selRemove);
+
+    menu->addSeparator();
+    menu->addAction(moveToTrashAction);
+    menu->addAction(removeAction);
+    return menu;
+}
+
+QMenu *TreeView::createEmptyMenu()
+{
+    QMenu *menu = new QMenu();
+    QAction *recoverFromTrashAction = new QAction(QAction::tr("Recover From Trash"));
+    QObject::connect(recoverFromTrashAction, &QAction::triggered,
+                     this, &TreeView::recoverFromTrash);
+    menu->addAction(recoverFromTrashAction);
+    return menu;
 }

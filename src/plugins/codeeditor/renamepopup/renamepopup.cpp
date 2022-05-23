@@ -25,7 +25,7 @@ RenamePopup *RenamePopup::instance()
 }
 
 RenamePopup::RenamePopup(QWidget *parent)
-    :d (new RenamePopupPrivate())
+    : d(new RenamePopupPrivate())
 {
 
     RenamePopup::setWindowFlag(Qt::Popup, true);

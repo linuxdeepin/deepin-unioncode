@@ -35,23 +35,29 @@ void SendEvents::doubleCliekedOpenFile(const QString &workspace, const QString &
     dpf::EventCallProxy::instance().pubEvent(event);
 }
 
-void SendEvents::projectCreate(const QString &workspace, const QString &language, const QString &complieFolder)
+void SendEvents::projectActived(const dpfservice::ProjectInfo &info)
 {
     dpf::Event event;
     event.setTopic(T_PROJECT);
-    event.setData(D_CRETE);
-    event.setProperty(P_WORKSPACEFOLDER, workspace);
-    event.setProperty(P_LANGUAGE, language);
-    event.setProperty(P_WORKSPACEFOLDER, complieFolder);
+    event.setData(D_ACTIVED);
+    event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
     dpf::EventCallProxy::instance().pubEvent(event);
 }
 
-void SendEvents::projectDelete(const QString &workspace, const QString &language)
+void SendEvents::projectCreated(const dpfservice::ProjectInfo &info)
 {
     dpf::Event event;
     event.setTopic(T_PROJECT);
-    event.setData(D_DELTE);
-    event.setProperty(P_WORKSPACEFOLDER, workspace);
-    event.setProperty(P_LANGUAGE, language);
+    event.setData(D_CRETED);
+    event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
+    dpf::EventCallProxy::instance().pubEvent(event);
+}
+
+void SendEvents::projectDeleted(const dpfservice::ProjectInfo &info)
+{
+    dpf::Event event;
+    event.setTopic(T_PROJECT);
+    event.setData(D_DELETED);
+    event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
     dpf::EventCallProxy::instance().pubEvent(event);
 }

@@ -31,12 +31,16 @@ public:
 
     static Type type()
     {
-        return dpf::EventHandler::Type::Async;
+        return dpf::EventHandler::Type::Sync;
     }
 
     static QStringList topics();
 
-    virtual void eventProcess(const dpf::Event& event) override;
+    void eventProcess(const dpf::Event &event) override;
+
+private:
+    void menuEvent(const dpf::Event &event);
+    void projectEvent(const dpf::Event &event);
 };
 
 #endif // FILEBROWSERRECEIVER_H

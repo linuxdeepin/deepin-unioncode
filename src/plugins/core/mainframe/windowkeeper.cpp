@@ -89,15 +89,6 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
         SendEvents::menuOpenFile(file);
     });
 
-    QAction* actionOpenFolder = new QAction(MWMFA_OPEN_FOLDER);
-    ActionManager::getInstance()->registerAction(actionOpenFolder, "File.Open.Folder",
-                                                 MWMFA_OPEN_FOLDER, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_F));
-    QAction::connect(actionOpenFolder, &QAction::triggered, [=](){
-        QString directory = QFileDialog::getExistingDirectory(nullptr, DIALOG_OPEN_FOLDER_TITLE);
-        if (directory.isEmpty()) return;
-        SendEvents::menuOpenDirectory(directory);
-    });
-
     QMenu* menuOpenProject = new QMenu(MWMFA_OPEN_PROJECT);
 
     auto openRecentDocuments = new QAction(MWMFA_OPEN_RECENT_DOCUMENTS);
@@ -112,7 +103,6 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     fileMenu->addSeparator();
     fileMenu->addMenu(menuOpenProject);
     fileMenu->addAction(actionOpenDocument);
-    fileMenu->addAction(actionOpenFolder);
     fileMenu->addAction(openRecentDocuments);
     fileMenu->addAction(openRecentFolders);
     fileMenu->addSeparator();

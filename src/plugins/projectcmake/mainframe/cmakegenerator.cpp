@@ -176,6 +176,7 @@ QStandardItem *CMakeGenerator::createRootItem(const dpfservice::ProjectInfo &inf
     QObject::connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this , &CMakeGenerator::processFinished, Qt::UniqueConnection);
     process.start();
+    process.waitForFinished();
 
     // step.1 cmake generator CDT4 project and compile json file
     if (process.exitCode() != 0 || QProcess::ExitStatus::NormalExit) {

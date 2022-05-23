@@ -51,8 +51,9 @@ const QString D_BUILD_TARGET {"Build.Target"};
 const QString D_SHOW {"Show"};
 const QString D_HIDE {"Hide"};
 const QString D_ADDTEXT {"AddText"};
-const QString D_CRETE {"Create"};
-const QString D_DELTE {"Delete"};
+const QString D_CRETED {"Created"};
+const QString D_DELETED {"Deleted"};
+const QString D_ACTIVED {"Actived"};
 
 const QString P_ACTION_TEXT {"ActionText"};
 const QString P_FILELINE {"FileLine"};
@@ -69,3 +70,4 @@ const QString P_TEXT {"Text"};
 const QString P_PERCENT {"Percent"};
 const QString P_MAX_PERCENT {"MaxPerCent"};
 const QString P_LANGUAGE {"Language"};
+const QString P_PROJECT_INFO{"ProjectInfo"};

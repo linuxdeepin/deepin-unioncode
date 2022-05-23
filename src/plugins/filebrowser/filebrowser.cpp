@@ -20,8 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "filebrowser.h"
-#include "mainframe/treeview.h"
-#include "mainframe/treeproxy.h"
+#include "mainframe/treeviewkeeper.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
@@ -53,7 +52,7 @@ bool FileBrowser::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService && windowService->addWidgetWorkspace) {
-        emit windowService->addWidgetWorkspace(FileBrowser_TEXT,createTreeWidget());
+        windowService->addWidgetWorkspace(FileBrowser_TEXT, createTreeWidget());
     }
     return true;
 }
@@ -71,11 +70,18 @@ AbstractWidget *FileBrowser::createTreeWidget()
     QGridLayout* gridLayout = new QGridLayout();
     gridLayout->setSpacing(0);
     gridLayout->setMargin(0);
-    treeWidget->setLayout(gridLayout);
 
-    TreeView* treeView = new TreeView();
+    auto treeView = TreeViewKeeper::instance()->treeView();
     treeView->setMinimumSize({treeWidgtMinWidth, treeWidgetMinHeight});
+
+    auto folderLabel = new QLabel();
+    QObject::connect(treeView, &TreeView::rootPathChanged,
+                     folderLabel, &QLabel::setText,
+                     Qt::UniqueConnection);
+
+    gridLayout->addWidget(folderLabel);
     gridLayout->addWidget(treeView);
+    treeWidget->setLayout(gridLayout);
 
     return new AbstractWidget(treeWidget);
 }

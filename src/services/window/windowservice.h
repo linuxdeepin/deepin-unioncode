@@ -54,7 +54,6 @@ extern const QString MWMFA_DOCUMENT_NEW;
 extern const QString MWMFA_FOLDER_NEW;
 extern const QString MWMFA_OPEN_PROJECT;
 extern const QString MWMFA_OPEN_DOCUMENT;
-extern const QString MWMFA_OPEN_FOLDER;
 extern const QString MWMFA_OPEN_RECENT_DOCUMENTS;
 extern const QString MWMFA_OPEN_RECENT_FOLDER;
 extern const QString MWMFA_QUIT;
@@ -81,7 +80,6 @@ extern const QString MWM_HELP;
 
 // Dialog Title text
 extern const QString DIALOG_OPEN_DOCUMENT_TITLE;
-extern const QString DIALOG_OPEN_FOLDER_TITLE;
 
 // TabWidget Tab Text from editor
 extern const QString CONSOLE_TAB_TEXT; // text's "Console"

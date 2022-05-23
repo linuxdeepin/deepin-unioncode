@@ -21,10 +21,15 @@ Q_SIGNALS:
     void itemMenuRequest(const QStandardItem *item, QContextMenuEvent *event);
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
-
+private:
+    QMenu *childMenu(const QStandardItem *root, const QStandardItem *child);
+    QMenu *rootMenu(const QStandardItem *root);
 private slots:
     void doItemMenuRequest(const QStandardItem *item, QContextMenuEvent *event);
     void doDoubleClieked(const QModelIndex &index);
+    void doCloseProject(const QStandardItem *root);
+    void doShowProjectProperty(const QStandardItem *root);
+    void doActiveProject(const QStandardItem *root);
 };
 
 #endif // PROJECTTREEVIEW_H

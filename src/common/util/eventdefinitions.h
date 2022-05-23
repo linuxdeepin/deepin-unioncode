@@ -53,8 +53,9 @@ extern const QString D_BUILD_TARGET;
 extern const QString D_SHOW;
 extern const QString D_HIDE;
 extern const QString D_ADDTEXT;
-extern const QString D_CRETE;
-extern const QString D_DELTE;
+extern const QString D_CRETED;
+extern const QString D_DELETED;
+extern const QString D_ACTIVED;
 
 extern const QString D_MARGIN_DEBUG_POINT_ADD;
 extern const QString D_MARGIN_DEBUG_POINT_REMOVE;
@@ -75,3 +76,4 @@ extern const QString P_TEXT;           // value QString
 extern const QString P_PERCENT;        // value int
 extern const QString P_MAX_PERCENT;    // value int
 extern const QString P_LANGUAGE;       // value QString
+extern const QString P_PROJECT_INFO;   // value dpfService::ProjectInfo

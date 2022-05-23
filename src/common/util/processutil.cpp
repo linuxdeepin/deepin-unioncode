@@ -22,7 +22,9 @@
 
 #include <QProcess>
 #include <QFileInfo>
+#include <QDirIterator>
 #include <QDebug>
+#include <QUrl>
 
 bool ProcessUtil::execute(const QString &program,
                           const QStringList &arguments,
@@ -99,4 +101,59 @@ bool ProcessUtil::moveToTrash(const QString &filePath)
 #else
 
 #endif
+}
+
+bool ProcessUtil::recoverFromTrash(const QString &filePath)
+{
+#ifdef linux
+    if (!hasGio() || filePath.isEmpty())
+        return false;
+
+    QDirIterator itera(QDir::homePath() + QDir::separator() + ".local/share/Trash/files");
+    while (itera.hasNext()){
+        itera.next();
+        QFileInfo info(filePath);
+        if(info.suffix() == itera.fileInfo().suffix()
+                && info.baseName() == itera.fileInfo().baseName()) {
+            QByteArray readArray;
+            auto readCB = [&](const QByteArray array){readArray = array;};
+            QString trashFileUri = QString("trash:///%0").arg(info.fileName());
+            QStringList queryArgs;
+            queryArgs << "info";
+            queryArgs << trashFileUri;
+            queryArgs << "| grep trash::orig-path";
+            bool execResult = ProcessUtil::execute("gio", queryArgs, readCB);
+            if (!execResult && readArray.isEmpty()) {
+                qCritical() << "Unknown Error";
+                abort();
+            }
+            readArray = readArray.replace(" ", "");
+            auto list = readArray.split('\n');
+            auto itera = list.rbegin();
+            while (itera != list.rend()) {
+                if (itera->startsWith("trash::orig-path:")) {
+                    readArray = *itera;
+                    break;
+                }
+                itera ++;
+            }
+            if (!readArray.startsWith("trash::orig-path:")) {
+                qCritical() << "Error from: " <<QString::fromUtf8(readArray);
+                abort();
+            }
+            readArray = readArray.replace("trash::orig-path:", "");
+            if (readArray == filePath) {
+                QStringList args;
+                args << "move";
+                args << trashFileUri;
+                args << QUrl::fromLocalFile(filePath).toString();
+                return ProcessUtil::execute("gio", args);
+            }
+        }
+    }
+
+#else
+
+#endif
+    return false;
 }

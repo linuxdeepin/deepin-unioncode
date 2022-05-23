@@ -19,10 +19,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "filebrowserreceiver.h"
-#include "mainframe/treeproxy.h"
+#include "mainframe/treeviewkeeper.h"
+
+#include "services/project/projectservice.h"
+
 #include "common/common.h"
 
-static QStringList subTopics{"Menu"};
+static QStringList subTopics{ T_MENU, T_PROJECT };
 
 FileBrowserReceiver::FileBrowserReceiver(QObject *parent)
     : dpf::EventHandler (parent)
@@ -43,10 +46,38 @@ void FileBrowserReceiver::eventProcess(const dpf::Event &event)
         abort();
     }
     if (event.topic() == T_MENU) {
-        if (event.data() == D_FILE_OPENDOCUMENT) {
-            TreeProxy::instance().appendFile(event.property(P_FILEPATH).toString());
-        } else if (event.data() == D_FILE_OPENFOLDER) {
-            TreeProxy::instance().appendFolder(event.property(P_FILEPATH).toString());
+        menuEvent(event);
+    } else if (event.topic() == T_PROJECT) {
+        projectEvent(event);
+    }
+}
+
+void FileBrowserReceiver::menuEvent(const dpf::Event &event)
+{
+    if (event.data() == D_FILE_OPENPROJECT) {
+        TreeViewKeeper::instance()->treeView()->setRootPath(event.property(P_WORKSPACEFOLDER).toString());
+    }
+}
+
+void FileBrowserReceiver::projectEvent(const dpf::Event &event)
+{
+    if (event.data() == D_ACTIVED) {
+        auto projectInfoVar = event.property(P_PROJECT_INFO);
+        if (projectInfoVar.canConvert<dpfservice::ProjectInfo>()) {
+            auto proInfo = qvariant_cast<dpfservice::ProjectInfo>(projectInfoVar);
+            TreeViewKeeper::instance()->treeView()->setRootPath(proInfo.sourceFolder());
+        }
+    }
+
+    if (event.data() == D_DELETED) {
+        TreeViewKeeper::instance()->treeView()->setRootPath("");
+    }
+
+    if (event.data() == D_CRETED) {
+        auto projectInfoVar = event.property(P_PROJECT_INFO);
+        if (projectInfoVar.canConvert<dpfservice::ProjectInfo>()) {
+            auto proInfo = qvariant_cast<dpfservice::ProjectInfo>(projectInfoVar);
+            TreeViewKeeper::instance()->treeView()->setRootPath(proInfo.sourceFolder());
         }
     }
 }
