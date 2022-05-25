@@ -1,4 +1,5 @@
 #include "stylejsonfile.h"
+#include "textedittabwidget/textedit.h"
 #include "common/common.h"
 
 #include <QJsonArray>
@@ -13,23 +14,30 @@ static QMutex mutex;
 class StyleJsonFilePrivate
 {
     friend class StyleJsonFile;
+    TextEdit *edit;
     QHash<QString, QJsonObject> userObjects{};
     QString languageID;
     QJsonObject themeObj;
     bool load(const QString &languageID);
 };
 
-StyleJsonFile::StyleJsonFile()
-    : d(new StyleJsonFilePrivate())
+StyleJsonFile::StyleJsonFile(TextEdit *edit)
+    : QObject (edit)
+    , d(new StyleJsonFilePrivate())
 {
+    d->edit = edit;
+}
 
+TextEdit *StyleJsonFile::edit()
+{
+    return d->edit;
 }
 
 StyleJsonFile::~StyleJsonFile()
 {
-     if (d) {
+    if (d) {
         delete d;
-     }
+    }
 }
 
 bool StyleJsonFile::setLanguage(const QString &languageID)
@@ -44,7 +52,7 @@ bool StyleJsonFile::setLanguage(const QString &languageID)
     return result;
 }
 
-QStringList StyleJsonFile::themes()
+QStringList StyleJsonFile::themes() const
 {
     QMutexLocker locker(&::mutex);
 

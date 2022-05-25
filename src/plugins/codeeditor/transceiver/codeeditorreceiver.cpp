@@ -20,6 +20,7 @@
 */
 #include "codeeditorreceiver.h"
 #include "common/common.h"
+#include "services/project/projectservice.h"
 
 static QStringList subTopics
 {
@@ -62,7 +63,9 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 void CodeEditorReceiver::eventFileBrowser(const dpf::Event &event)
 {
     if (D_ITEM_DOUBLECLICKED == event.data()) {
+        auto proInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
         return DpfEventMiddleware::instance()->toOpenFile(
+                    Head { proInfo.workspaceFolder(), proInfo.language()} ,
                     event.property(P_FILEPATH).toString());
     }
 }

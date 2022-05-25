@@ -39,7 +39,6 @@ public:
     void eventProcess(const dpf::Event &event) override;
 
 private:
-    void menuEvent(const dpf::Event &event);
     void projectEvent(const dpf::Event &event);
 };
 

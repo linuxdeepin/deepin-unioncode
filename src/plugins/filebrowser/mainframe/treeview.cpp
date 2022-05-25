@@ -1,4 +1,6 @@
 #include "treeview.h"
+#include "transceiver/sendevents.h"
+
 #include "common/common.h"
 
 #include <QHeaderView>
@@ -22,6 +24,7 @@ class TreeViewPrivate
     QFileSystemModel *model {nullptr};
     QMenu* menu {nullptr};
     QStack<QStringList> moveToTrashStack;
+    dpfservice::ProjectInfo proInfo;
 };
 
 TreeView::TreeView(QWidget *parent)
@@ -32,6 +35,7 @@ TreeView::TreeView(QWidget *parent)
     d->menu = new QMenu(this);
     setModel(d->model);
     header()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+    QObject::connect(this, &QTreeView::doubleClicked, this, &TreeView::doDoubleClicked);
 }
 
 TreeView::~TreeView()
@@ -41,18 +45,27 @@ TreeView::~TreeView()
     }
 }
 
-void TreeView::setRootPath(const QString &rootPath)
+void TreeView::setProjectInfo(const dpfservice::ProjectInfo &proInfo)
 {
-    d->model->setRootPath(rootPath);
-    auto index = d->model->index(rootPath);
+    d->proInfo = proInfo;
+    d->model->setRootPath(proInfo.workspaceFolder());
+    auto index = d->model->index(proInfo.workspaceFolder());
     QTreeView::expand(index);
     QTreeView::setRootIndex(index);
-    emit rootPathChanged(rootPath);
+    emit rootPathChanged(proInfo.workspaceFolder());
 }
 
 void TreeView::selOpen()
 {
+    QModelIndexList indexs = selectedIndexes();
+    QSet<QString> countPaths;
+    for (auto index : indexs) {
+        countPaths << d->model->filePath(index);
+    }
 
+    for (auto path : countPaths) {
+        SendEvents::treeViewDoublueClicked(path, d->proInfo);
+    }
 }
 
 void TreeView::selMoveToTrash()
@@ -188,6 +201,11 @@ void TreeView::recoverFromTrash()
             FileOperation::doRecoverFromTrash(filePath);
         }
     }
+}
+
+void TreeView::doDoubleClicked(const QModelIndex &index)
+{
+    SendEvents::treeViewDoublueClicked(d->model->filePath(index), d->proInfo);
 }
 
 void TreeView::contextMenuEvent(QContextMenuEvent *event)

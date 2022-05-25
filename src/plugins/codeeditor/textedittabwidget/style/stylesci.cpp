@@ -1,6 +1,8 @@
 #include "stylesci.h"
-#include "stylekeeper.h"
 #include "stylecolor.h"
+#include "stylejsonfile.h"
+#include "textedittabwidget/textedit.h"
+
 #include "common/common.h"
 #include "ILexer.h"
 #include "Lexilla.h"
@@ -60,94 +62,119 @@ sptr_t createLexerFromLib(const char *LanguageID)
     return sptr_t(lexCpp);
 }
 
-void StyleSci::setKeyWords(ScintillaEdit &edit)
+class StyleSciPrivate
 {
-    auto language = StyleKeeper::key(this);
-    auto tokens = support_file::Language::tokenWords(language);
+    friend class StyleSci;
+    TextEdit *edit;
+};
+
+void StyleSci::setKeyWords()
+{
+    auto tokens = support_file::Language::tokenWords(d->edit->supportLanguage());
     auto codeKeyWordsMap = this->keyWords();
 
     for (auto key : codeKeyWordsMap.keys()) {
         auto codeKeyWords = codeKeyWordsMap[key].split(" ").toSet();
         auto fileKeyWords = tokens.value(key).split(" ").toSet();
         auto mergeKeywords = (codeKeyWords + fileKeyWords).toList().join(" ").toLatin1();
-        edit.setKeyWords(key, mergeKeywords);
+        d->edit->setKeyWords(key, mergeKeywords);
     }
 
     return;
 }
 
-void StyleSci::setStyle(ScintillaEdit &edit)
+void StyleSci::setStyle()
 {
-    auto fileJson = StyleKeeper::fileJson(StyleKeeper::key(this));
+    auto fileJson = d->edit->getStyleFile();
+
     auto themes = fileJson->themes();
     if (!themes.isEmpty()) {
-        edit.styleResetDefault(); //clean all
+        d->edit->styleResetDefault(); //clean all
         fileJson->setTheme(themes.first());
 
         auto selfObj = fileJson->value(StyleJsonFile::Key_1::get()->Self).toObject();
         auto self_foreground = selfObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16);
         auto self_background = selfObj.value(StyleJsonFile::Key_2::get()->Background).toString().toInt(nullptr, 16);
         auto self_cursor = selfObj.value(StyleJsonFile::Key_2::get()->Cursor).toString().toInt(nullptr, 16);
-        edit.styleSetFore(STYLE_DEFAULT, self_foreground);
-        edit.styleSetBack(STYLE_DEFAULT, self_background);
-        edit.setCaretFore(self_cursor);
+        d->edit->styleSetFore(STYLE_DEFAULT, self_foreground);
+        d->edit->styleSetBack(STYLE_DEFAULT, self_background);
+        d->edit->setCaretFore(self_cursor);
         qInfo() << "Editor self jsonObject:" << selfObj;
         qInfo() << "Editor self setting Style fore: " << hex << self_foreground;
         qInfo() << "Editor self setting Style back: " << hex << self_background;
         qInfo() << "Editor self setting Style cursor: " << hex << self_cursor;
         // auto self_fontSize = selfObj.value(key_2.FontSize).toInt();
-        // edit.styleSetSize(STYLE_DEFAULT, self_fontSize);
+        // d->edit->styleSetSize(STYLE_DEFAULT, self_fontSize);
         for(int i = 0; i <= styleOffset(); i++) {
             if (i == 0)
-                edit.styleSetFore(0, self_foreground);
-            edit.styleSetBack(i, self_background);
+                d->edit->styleSetFore(0, self_foreground);
+            d->edit->styleSetBack(i, self_background);
         }
-        edit.styleHotSpot(styleOffset() + 1);
-        edit.styleSetUnderline(styleOffset() + 1, true);
+        d->edit->styleHotSpot(styleOffset() + 1);
+        d->edit->styleSetUnderline(styleOffset() + 1, true);
     }
     return;
 }
 
-void StyleSci::setMargin(ScintillaEdit &edit)
+void StyleSci::setMargin()
 {
-    edit.setMargins(SC_MAX_MARGIN);
+    d->edit->setMargins(SC_MAX_MARGIN);
 
-    edit.setMarginSensitiveN(Margin::LineNumber, SCN_MARGINCLICK);
-    edit.setMarginWidthN(Margin::LineNumber, edit.textWidth(STYLE_LINENUMBER ,"999999"));
-    edit.setMarginBackN(Margin::LineNumber, edit.styleBack(STYLE_DEFAULT));
+    d->edit->setMarginSensitiveN(Margin::LineNumber, SCN_MARGINCLICK);
+    d->edit->setMarginWidthN(Margin::LineNumber, d->edit->textWidth(STYLE_LINENUMBER ,"999999"));
+    d->edit->setMarginBackN(Margin::LineNumber, d->edit->styleBack(STYLE_DEFAULT));
 
     //runtime margin
-    edit.setMarginSensitiveN(Margin::Runtime, SCN_MARGINCLICK);
-    edit.setMarginWidthN(Margin::Runtime, 16);
-    edit.setMarginTypeN(Margin::Runtime, SC_MARGIN_SYMBOL);
-    edit.setMarginMaskN(Margin::Runtime, 1 << MarkerNumber::Debug
+    d->edit->setMarginSensitiveN(Margin::Runtime, SCN_MARGINCLICK);
+    d->edit->setMarginWidthN(Margin::Runtime, 16);
+    d->edit->setMarginTypeN(Margin::Runtime, SC_MARGIN_SYMBOL);
+    d->edit->setMarginMaskN(Margin::Runtime, 1 << MarkerNumber::Debug
                         | 1 << MarkerNumber::Running
                         | 1<< MarkerNumber::RunningLineBackground);
 
-    edit.markerDefine(MarkerNumber::Debug, SC_MARK_CIRCLE);
-    edit.markerDefine(MarkerNumber::Running, SC_MARK_SHORTARROW);
-    edit.markerDefine(MarkerNumber::RunningLineBackground, SC_MARK_BACKGROUND);
+    d->edit->markerDefine(MarkerNumber::Debug, SC_MARK_CIRCLE);
+    d->edit->markerDefine(MarkerNumber::Running, SC_MARK_SHORTARROW);
+    d->edit->markerDefine(MarkerNumber::RunningLineBackground, SC_MARK_BACKGROUND);
 
-    edit.markerSetFore(MarkerNumber::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));
-    edit.markerSetBack(MarkerNumber::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));
+    d->edit->markerSetFore(MarkerNumber::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));
+    d->edit->markerSetBack(MarkerNumber::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));
 
-    edit.markerSetFore(MarkerNumber::Running, StyleColor::color(StyleColor::Table::get()->YellowGreen));
-    edit.markerSetBack(MarkerNumber::Running, StyleColor::color(StyleColor::Table::get()->YellowGreen));
+    d->edit->markerSetFore(MarkerNumber::Running, StyleColor::color(StyleColor::Table::get()->YellowGreen));
+    d->edit->markerSetBack(MarkerNumber::Running, StyleColor::color(StyleColor::Table::get()->YellowGreen));
 
-    edit.markerSetFore(MarkerNumber::RunningLineBackground, StyleColor::color(StyleColor::Table::get()->YellowGreen));
-    edit.markerSetBack(MarkerNumber::RunningLineBackground, StyleColor::color(StyleColor::Table::get()->YellowGreen));
-    edit.markerSetAlpha(MarkerNumber::RunningLineBackground, 0x55);
+    d->edit->markerSetFore(MarkerNumber::RunningLineBackground, StyleColor::color(StyleColor::Table::get()->YellowGreen));
+    d->edit->markerSetBack(MarkerNumber::RunningLineBackground, StyleColor::color(StyleColor::Table::get()->YellowGreen));
+    d->edit->markerSetAlpha(MarkerNumber::RunningLineBackground, 0x55);
 }
 
-void StyleSci::setLexer(ScintillaEdit &edit)
+void StyleSci::setLexer()
 {
-    if (!edit.lexer()) {
+    if (!d->edit->lexer()) {
         //set token splitter
-        edit.setILexer(createLexerFromLib(StyleKeeper::key(this).toLatin1()));
-        if (!edit.lexer()) {
+        d->edit->setILexer(createLexerFromLib(d->edit->supportLanguage().toLatin1()));
+        if (!d->edit->lexer()) {
             qCritical() << "Failed, can't create and load sci lexer";
         }
     }
+}
+
+StyleSci::StyleSci(TextEdit *parent)
+    : QObject (parent)
+    , d (new StyleSciPrivate())
+{
+    d->edit = parent;
+}
+
+StyleSci::~StyleSci()
+{
+    if (d) {
+        delete d;
+    }
+}
+
+TextEdit *StyleSci::edit()
+{
+    return d->edit;
 }
 
 QMap<int, QString> StyleSci::keyWords() const

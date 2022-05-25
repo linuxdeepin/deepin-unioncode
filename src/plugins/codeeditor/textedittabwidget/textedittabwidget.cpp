@@ -22,7 +22,7 @@
 #include "textedittitlebar.h"
 #include "textedittabbar.h"
 #include "textedit.h"
-#include "style/stylekeeper.h"
+#include "texteditkeeper.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
 
@@ -36,7 +36,7 @@ class TextEditTabWidgetPrivate
     friend class TextEditTabWidget;
     TextEditTabBar *tab = nullptr;
     QGridLayout *gridLayout = nullptr;
-    QHash<QString, ScintillaEditExtern*> textEdits;
+    QHash<QString, TextEdit*> textEdits;
     QHash<QString, TextEditTitleBar*> titleBars;
     TextEdit defaultEdit;
     QString runningFilePathCache;
@@ -134,7 +134,6 @@ void TextEditTabWidget::openFile(const QString &filePath)
     QObject::connect(edit, &TextEdit::fileSaved, d->tab,
                      &TextEditTabBar::doFileSaved, Qt::UniqueConnection);
 
-    edit->setHeadInfo("","");
     edit->setFile(info.filePath());
     d->textEdits[filePath] = edit;
 
@@ -164,8 +163,14 @@ void TextEditTabWidget::openFile(const Head &head, const QString &filePath)
 
     d->tab->setFile(filePath);
 
+    lsp::Client *client = lsp::ClientManager::instance()->get(head);
 
-    TextEdit *edit = new TextEdit;
+    // 全局rename操作
+    QObject::connect(client, QOverload<const lsp::RenameChanges&>::of(&lsp::Client::requestResult),
+                     this, &TextEditTabWidget::doRenameReplace, Qt::UniqueConnection);
+
+    // 使用取出适用的编辑器
+    TextEdit *edit  = TextEditKeeper::create(TextEdit::fileLanguage(filePath));
 
     QObject::connect(edit, &TextEdit::fileChanged, d->tab,
                      &TextEditTabBar::doFileChanged, Qt::UniqueConnection);
@@ -173,8 +178,7 @@ void TextEditTabWidget::openFile(const Head &head, const QString &filePath)
     QObject::connect(edit, &TextEdit::fileSaved, d->tab,
                      &TextEditTabBar::doFileSaved, Qt::UniqueConnection);
 
-    edit->setHeadInfo(head.workspace, head.language);
-    edit->setFile(info.filePath());
+    edit->setFile(info.filePath(), head);
     d->textEdits[filePath] = edit;
 
     // 添加监听
@@ -201,6 +205,15 @@ void TextEditTabWidget::closeFile(const QString &filePath)
         emit d->tab->tabCloseRequested(index);
 }
 
+void TextEditTabWidget::jumpToLine(const Head &head, const QString &filePath, int line)
+{
+    auto edit = switchFileAndToOpen(head, filePath);
+
+    if (edit) {
+        edit->jumpToLine(line);
+    }
+}
+
 void TextEditTabWidget::jumpToLine(const QString &filePath, int line)
 {
     auto edit = switchFileAndToOpen(filePath);
@@ -215,10 +228,10 @@ void TextEditTabWidget::jumpToRange(const QString &filePath, const lsp::Range &r
     auto edit = switchFileAndToOpen(filePath);
 
     if (edit) {
-        auto set = StyleKeeper::create(edit->fileLangueage());
-        if (set.lsp) {
-            auto start = set.lsp->getSciPosition(edit->docPointer(), range.start);
-            auto end = set.lsp->getSciPosition(edit->docPointer(), range.end);
+        auto styleLsp = edit->getStyleLsp();
+        if (styleLsp) {
+            auto start = styleLsp->getSciPosition(edit->docPointer(), range.start);
+            auto end = styleLsp->getSciPosition(edit->docPointer(), range.end);
             edit->jumpToRange(start, end);
         }
     }
@@ -236,27 +249,27 @@ void TextEditTabWidget::runningToLine(const QString &filePath, int line)
 
 void TextEditTabWidget::runningEnd()
 {
-    for (auto editor : d->textEdits) {
-        editor->runningEnd();
+    for (auto edit : d->textEdits) {
+        edit->runningEnd();
     }
 }
 
 void TextEditTabWidget::debugPointClean()
 {
-    for (auto editor : d->textEdits) {
-        editor->debugPointAllDelete();
+    for (auto edit : d->textEdits) {
+        edit->debugPointAllDelete();
     }
 }
 
 void TextEditTabWidget::replaceRange(const QString &filePath, const lsp::Range &range, const QString &text)
 {
-    auto editor = d->textEdits.value(filePath);
-    if (editor) {
-        auto set = StyleKeeper::create(editor->fileLangueage());
-        if (set.lsp) {
-            auto start = set.lsp->getSciPosition(editor->docPointer(), range.start);
-            auto end = set.lsp->getSciPosition(editor->docPointer(), range.end);
-            editor->replaceRange(start, end, text);
+    auto edit = d->textEdits.value(filePath);
+    if (edit) {
+        auto styleLsp = edit->getStyleLsp();
+        if (styleLsp) {
+            auto start = styleLsp->getSciPosition(edit->docPointer(), range.start);
+            auto end = styleLsp->getSciPosition(edit->docPointer(), range.end);
+            edit->replaceRange(start, end, text);
         }
     } else { //直接更改磁盘数据
         if (range.start.line != range.end.line) {
@@ -366,7 +379,7 @@ void TextEditTabWidget::removeFileEdit(const QString &file)
     if (!edit)
         return;
 
-    delete edit;
+    edit->deleteLater();
     d->textEdits.remove(file);
 
     if (d->textEdits.size() == 0)
@@ -383,8 +396,8 @@ void TextEditTabWidget::fileModifyed(const QString &file)
     if (!d->titleBars[file]) {
         d->titleBars[file] = TextEditTitleBar::changedReload(file);
     }
-    auto editor = d->textEdits[file];
-    if (editor && !editor->isHidden()) {
+    auto edit = d->textEdits[file];
+    if (edit && !edit->isHidden()) {
         d->gridLayout->addWidget(d->titleBars[file], 1, 0);
         d->titleBars[file]->show();
     }
@@ -406,7 +419,37 @@ void TextEditTabWidget::fileMoved(const QString &file)
     qInfo() << "fileMoved" << file;
 }
 
-ScintillaEditExtern* TextEditTabWidget::switchFileAndToOpen(const QString &filePath)
+void TextEditTabWidget::doRenameReplace(const lsp::RenameChanges &changes)
+{
+    for (auto change : changes) {
+        QString filePath = change.documentUri.toLocalFile();
+        for (auto edit : change.edits) {
+            replaceRange(filePath, edit.range, edit.newText);
+        }
+    }
+}
+
+TextEdit* TextEditTabWidget::switchFileAndToOpen(const Head &head,
+                                                 const QString &filePath)
+{
+    auto edit = d->textEdits.value(filePath);
+    if (edit) {
+        d->tab->switchFile(filePath);
+        showFileEdit(filePath);
+    } else {
+        openFile(head, filePath);
+        for (auto edit : d->textEdits) {
+            edit->runningEnd();
+            if (edit->file() == filePath) {
+                showFileEdit(filePath);
+                edit = edit;
+            }
+        }
+    }
+    return edit;
+}
+
+TextEdit* TextEditTabWidget::switchFileAndToOpen(const QString &filePath)
 {
     auto edit = d->textEdits.value(filePath);
     if (edit) {
@@ -414,11 +457,11 @@ ScintillaEditExtern* TextEditTabWidget::switchFileAndToOpen(const QString &fileP
         showFileEdit(filePath);
     } else {
         openFile(filePath);
-        for (auto editor : d->textEdits) {
-            editor->runningEnd();
-            if (editor->file() == filePath) {
+        for (auto edit : d->textEdits) {
+            edit->runningEnd();
+            if (edit->file() == filePath) {
                 showFileEdit(filePath);
-                edit = editor;
+                edit = edit;
             }
         }
     }

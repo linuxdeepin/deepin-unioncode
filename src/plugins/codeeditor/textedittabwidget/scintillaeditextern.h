@@ -2,7 +2,8 @@
 #define SCINTILLAEDITEXTERN_H
 
 #include "ScintillaEdit.h"
-
+#include "style/stylelsp.h"
+#include "style/stylesci.h"
 #include <QString>
 
 class ScintillaEditExternPrivate;
@@ -14,12 +15,14 @@ public:
     explicit ScintillaEditExtern(QWidget *parent = nullptr);
     virtual ~ScintillaEditExtern();
 
-    void setFile(const QString &path);
+    virtual QString supportLanguage(){return "";} // 当前编辑器支持的语言类型
+    static QString fileLanguage(const QString &path); // 获取注册文件中语言支持
+
+    virtual void setFile(const QString &filePath);
+    virtual void setFile(const QString &filePath, const Head &projectHead);
+
     QString file() const;
-    QString fileLangueage() const;
-    void setHeadInfo(const QString &proWorkspace, const QString &proLanguage);
-    QString proWorkspace() const;
-    QString proLanguage() const;
+    Head projectHead();
 
     void debugPointAllDelete();
     void jumpToLine(int line);

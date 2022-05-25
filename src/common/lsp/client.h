@@ -72,7 +72,7 @@ private:
     bool changeResult(const QJsonObject &jsonObj); // client call server rpc return
     bool symbolResult(const QJsonObject &jsonObj); // client call server rpc return
     bool renameResult(const QJsonObject &jsonObj); // client call server rpc return
-    bool definitionResult(const QJsonObject &jsonObj); // client call server rpc return
+    bool definitionResult(const QJsonObject &jsonObj); // client call server rpc return above uri
     bool completionResult(const QJsonObject &jsonObj); // client call server rpc return
     bool signatureHelpResult(const QJsonObject &jsonObj); // client call server rpc return
     bool hoverResult(const QJsonObject &jsonObj); // client call server rpc return

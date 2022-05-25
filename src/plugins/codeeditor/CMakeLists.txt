@@ -22,16 +22,18 @@ set(CXX_CPP
     textedittabwidget/textedittabwidget.cpp
     textedittabwidget/textedittabbar.cpp
     textedittabwidget/textedittitlebar.cpp
+    textedittabwidget/texteditkeeper.cpp
     textedittabwidget/textedit.cpp
     textedittabwidget/style/stylecolor.cpp
     textedittabwidget/style/stylesci.cpp
     textedittabwidget/style/stylelsp.cpp
-    textedittabwidget/style/stylekeeper.cpp
     textedittabwidget/style/stylejsonfile.cpp
-    textedittabwidget/style/language/stylelspcpp.cpp
-    textedittabwidget/style/language/stylescicpp.cpp
-    textedittabwidget/style/language/stylelspcmake.cpp
-    textedittabwidget/style/language/stylescicmake.cpp
+    textedittabwidget/language/texteditcpp.cpp
+    textedittabwidget/language/stylelspcpp.cpp
+    textedittabwidget/language/stylescicpp.cpp
+    textedittabwidget/language/texteditcmake.cpp
+    textedittabwidget/language/stylelspcmake.cpp
+    textedittabwidget/language/stylescicmake.cpp
     codeeditor.cpp
     codeeditor.json
     )
@@ -50,16 +52,18 @@ set(CXX_H
     textedittabwidget/textedittabwidget.h
     textedittabwidget/textedittitlebar.h
     textedittabwidget/textedittabbar.h
+    textedittabwidget/texteditkeeper.h
     textedittabwidget/textedit.h
     textedittabwidget/style/stylecolor.h
-    textedittabwidget/style/stylekeeper.h
     textedittabwidget/style/stylesci.h
     textedittabwidget/style/stylelsp.h
     textedittabwidget/style/stylejsonfile.h
-    textedittabwidget/style/language/stylelspcpp.h
-    textedittabwidget/style/language/stylescicpp.h
-    textedittabwidget/style/language/stylelspcmake.h
-    textedittabwidget/style/language/stylescicmake.h
+    textedittabwidget/language/texteditcmake.h
+    textedittabwidget/language/stylelspcmake.h
+    textedittabwidget/language/stylescicmake.h
+    textedittabwidget/language/texteditcpp.h
+    textedittabwidget/language/stylelspcpp.h
+    textedittabwidget/language/stylescicpp.h
     codeeditor.h
     )
 

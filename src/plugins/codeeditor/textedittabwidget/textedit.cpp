@@ -43,8 +43,16 @@
 #include <bitset>
 #include <iostream>
 
+class TextEditPrivate
+{
+    friend class TextEdit;
+    StyleLsp *styleLsp {nullptr};
+    StyleSci *styleSci {nullptr};
+};
+
 TextEdit::TextEdit(QWidget *parent)
     : ScintillaEditExtern (parent)
+    , d (new TextEditPrivate)
 {
     QObject::connect(this, &ScintillaEditExtern::textInserted, this,
                      [=](Scintilla::Position position,
@@ -77,4 +85,36 @@ TextEdit::TextEdit(QWidget *parent)
 TextEdit::~TextEdit()
 {
     emit fileClosed(file());
+}
+
+void TextEdit::setFile(const QString &filePath)
+{
+    ScintillaEditExtern::setFile(filePath); //顶层设置
+
+    // 设置正则匹配规则
+    if (getStyleSci()) {
+        getStyleSci()->setLexer();
+        getStyleSci()->setStyle();
+        getStyleSci()->setMargin();
+        getStyleSci()->setKeyWords();
+    }
+}
+
+void TextEdit::setFile(const QString &filePath, const Head &projectHead)
+{
+    setFile(filePath);
+
+    QString currFileLanguage = fileLanguage(filePath);
+    if (supportLanguage() != currFileLanguage) {
+        //        ContextDialog::ok(QDialog::tr("Failed, Open file language is %0, but edit support language is %1")
+        //                          .arg("\"" + currFileLanguage + "\"")
+        //                          .arg("\"" + supportLanguage() + "\""));
+        return;
+    }
+
+    if (getStyleLsp()) {
+        lsp::Client* proClient = lsp::ClientManager::instance()->get(projectHead);
+        getStyleLsp()->setClient(proClient); //设置
+        getStyleLsp()->initLspConnection(); // 初始化所有lsp client设置
+    }
 }

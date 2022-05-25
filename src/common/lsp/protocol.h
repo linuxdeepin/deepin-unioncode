@@ -147,6 +147,19 @@ struct Range
 
 typedef QUrl DocumentUri;
 
+struct Location
+{
+    Range range;
+    QUrl fileUrl;
+};
+struct Locations :public QList<Location>{};
+
+struct DiagnosticRelatedInformation
+{
+    Location location;
+    QString message;
+};
+
 struct Diagnostic
 {
     enum Severity{
@@ -156,10 +169,12 @@ struct Diagnostic
         Info = 3,
         Hint = 4,
     };
-
+    QString code;
     QString message;
     Range range;
+    QVector<DiagnosticRelatedInformation> relatedInfomation;
     Severity severity;
+    QString source;
 };
 struct Diagnostics : QVector<Diagnostic>{};
 
@@ -169,13 +184,6 @@ struct DiagnosticsParams
     int version;
     Diagnostics diagnostics;
 };
-
-struct Location
-{
-    Range range;
-    QUrl fileUrl;
-};
-struct Locations :public QList<Location>{};
 
 struct Symbol
 {

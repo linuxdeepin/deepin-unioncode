@@ -6,10 +6,10 @@
 class StyleSciCmake : public StyleSci
 {
 public:
-    StyleSciCmake();
+    StyleSciCmake(TextEdit *parent);
     virtual QMap<int, QString> keyWords() const override;
-    virtual void setStyle(ScintillaEdit &edit) override;
-    virtual void setLexer(ScintillaEdit &edit) override;
+    virtual void setStyle() override;
+    virtual void setLexer() override;
     virtual int styleOffset() const override;
 };
 

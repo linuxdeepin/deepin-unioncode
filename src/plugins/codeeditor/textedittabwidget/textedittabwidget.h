@@ -25,7 +25,7 @@
 
 #include <QWidget>
 
-class ScintillaEditExtern;
+class TextEdit;
 class TextEditTabWidgetPrivate;
 class TextEditTabWidget : public QWidget
 {
@@ -41,6 +41,7 @@ public slots:
     void openFile(const QString &filePath);
     void openFile(const Head &head, const QString &filePath);
     void closeFile(const QString &filePath);
+    void jumpToLine(const Head &head, const QString &filePath, int line);
     void jumpToLine(const QString &filePath, int line);
     void jumpToRange(const QString &filePath, const lsp::Range &range);
     void runningToLine(const QString &filePath, int line);
@@ -60,7 +61,9 @@ private slots:
     void fileModifyed(const QString &file);
     void fileDeleted(const QString &file);
     void fileMoved(const QString &file);
-    ScintillaEditExtern *switchFileAndToOpen(const QString &filePath);
+    void doRenameReplace(const lsp::RenameChanges &changes);
+    TextEdit *switchFileAndToOpen(const Head &head, const QString &filePath);
+    TextEdit *switchFileAndToOpen(const QString &filePath);
 };
 
 #endif // TEXTEDITTABWIDGET_H

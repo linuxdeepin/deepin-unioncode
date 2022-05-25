@@ -25,15 +25,14 @@
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
-#include "textedittabwidget/textedittabwidget.h"
-#include "textedittabwidget/style/stylekeeper.h"
-#include "textedittabwidget/style/stylejsonfile.h"
-#include "services/window/windowservice.h"
 
-#include "textedittabwidget/style/language/stylescicpp.h"
-#include "textedittabwidget/style/language/stylescicmake.h"
-#include "textedittabwidget/style/language/stylelspcpp.h"
-#include "textedittabwidget/style/language/stylelspcmake.h"
+#include "refactorwidget/refactorwidget.h"
+#include "textedittabwidget/texteditkeeper.h"
+#include "textedittabwidget/textedittabwidget.h"
+#include "textedittabwidget/language/texteditcpp.h"
+#include "textedittabwidget/language/texteditcmake.h"
+
+#include "services/window/windowservice.h"
 
 #include <QAction>
 
@@ -46,9 +45,9 @@ const QString PRINT = CodeEditor::tr("Print");
 void CodeEditor::initialize()
 {
     qInfo() << __FUNCTION__;
-    StyleKeeper::regClass<StyleSciCpp, StyleLspCpp>("cpp");
-    StyleKeeper::regClass<StyleSciCmake, StyleLspCmake>("cmake");
-    StyleKeeper::regClass<StyleSci, StyleLsp>("json");
+    TextEditKeeper::impl<TextEdit>("");
+    TextEditKeeper::impl<TextEditCpp>(TextEditCpp::implLanguage());
+    TextEditKeeper::impl<TextEditCmake>(TextEditCmake::implLanguage());
 }
 
 bool CodeEditor::start()
@@ -75,6 +74,8 @@ bool CodeEditor::start()
         if (!windowService->addContextWidget) {
             windowService->addContextWidget = std::bind(&NavEditMainWindow::addWidgetContext, navEditWindow, _1, _2);
         }
+
+        navEditWindow->addWidgetContext(QTabWidget::tr("Code Lens"), new AbstractWidget(RefactorWidget::instance()));
 
         if (!windowService->setWidgetWatch) {
             windowService->setWidgetWatch = std::bind(&NavEditMainWindow::setWidgetWatch, navEditWindow, _1);
@@ -111,6 +112,7 @@ bool CodeEditor::start()
         closeAllDocuments->setEnabled(false);
         print->setEnabled(false);
     }
+
     return true;
 }
 

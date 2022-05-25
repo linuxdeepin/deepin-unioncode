@@ -1,17 +1,20 @@
 #include "stylelspcpp.h"
+#include "textedittabwidget/textedit.h"
 #include "textedittabwidget/style/stylecolor.h"
-#include "textedittabwidget/style/stylekeeper.h"
+#include "textedittabwidget/style/stylejsonfile.h"
 #include "common/common.h"
 
 #include <QDir>
 #include <QJsonObject>
 #include <QRegularExpression>
 
+
 namespace {
 static bool checkVersionOk = false;
 }
 
-StyleLspCpp::StyleLspCpp()
+StyleLspCpp::StyleLspCpp(TextEdit *parent)
+ : StyleLsp (parent)
 {
 
 }
@@ -51,16 +54,13 @@ StyleLsp::ServerInfo StyleLspCpp::clientInfoSpec(StyleLsp::ServerInfo info)
     return info;
 }
 
-StyleLsp::IndicStyleExt StyleLspCpp::symbolIndic(ScintillaEdit &edit,
-                                                 lsp::SemanticTokenType::type_value token,
+StyleLsp::IndicStyleExt StyleLspCpp::symbolIndic(lsp::SemanticTokenType::type_value token,
                                                  QList<lsp::SemanticTokenModifier::type_index> modifier)
 {
-    Q_UNUSED(edit);
     Q_UNUSED(modifier);
     IndicStyleExt result;
 
-    QString language = StyleKeeper::key(this);
-    auto jsonFile = StyleKeeper::fileJson(language);
+    auto jsonFile = edit()->getStyleFile();
     if (jsonFile->setTheme(StyleJsonFile::Theme::get()->Dark)) {
         QJsonObject tempObj;
         int tempFore = 0;

@@ -2,9 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(debugadapter)
 
-set(CPPDAP_DIR ${CMAKE_SOURCE_DIR}/3rdparty/cppdap)
-include_directories(${CPPDAP_DIR}/include)
-find_package(Qt5 CONFIG REQUIRED Core DBus)
+#include(${CMAKE_SOURCE_DIR}/3rdparty/cppdap.cmake)
 
 set(${PROJECT_NAME}_HEADERS
     debugmanager.h

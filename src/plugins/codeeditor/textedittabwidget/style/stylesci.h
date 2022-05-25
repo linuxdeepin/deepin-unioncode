@@ -2,17 +2,17 @@
 #define STYLESCI_H
 
 #include "common/common.h"
-#include "ScintillaEdit.h"
 
 #include <QObject>
 #include <QColor>
 
+class TextEdit;
+class StyleSciPrivate;
 class StyleSci : public QObject
 {
     Q_OBJECT
+    StyleSciPrivate *const d;
 public:
-    StyleSci(){}
-
     enum Margin
     {
         LineNumber = 0,
@@ -29,11 +29,14 @@ public:
         Extern = 3
     };
 
-    void setKeyWords(ScintillaEdit &edit);
+    StyleSci(TextEdit *parent);
+    virtual ~StyleSci();
 
-    virtual void setStyle(ScintillaEdit &edit);
-    virtual void setMargin(ScintillaEdit &edit);
-    virtual void setLexer(ScintillaEdit &edit);
+    TextEdit *edit();
+    void setKeyWords();
+    virtual void setStyle();
+    virtual void setMargin();
+    virtual void setLexer();
 
     virtual QMap<int, QString> keyWords() const;
     virtual int styleOffset() const;

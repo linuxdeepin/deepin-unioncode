@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QFileInfo>
+#include <QMimeDatabase>
 
 namespace support_file {
 
@@ -76,6 +77,7 @@ QString Language::id(const QString &filePath)
         auto langObjChild = jsonObj.value(id).toObject();
         QJsonArray suffixArray = langObjChild.value(Key_2::get()->suffix).toArray();
         QJsonArray baseArray = langObjChild.value(Key_2::get()->base).toArray();
+        QJsonArray mimeArray = langObjChild.value(Key_2::get()->mimeType).toArray();
 
         for (auto suffix : suffixArray) {
             if (info.fileName().endsWith(suffix.toString()))
@@ -89,6 +91,13 @@ QString Language::id(const QString &filePath)
 
             if (info.fileName() == base.toString()
                     || info.fileName().toLower() == base.toString().toLower()) {
+                return id;
+            }
+        }
+
+        QMimeDatabase mimeDB;
+        for (auto mime : mimeArray) {
+            if (mimeDB.mimeTypeForFile(filePath).name() == mime.toString()) {
                 return id;
             }
         }

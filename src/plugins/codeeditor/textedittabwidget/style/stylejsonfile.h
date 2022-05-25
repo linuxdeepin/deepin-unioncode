@@ -12,6 +12,7 @@
  * \brief The StyleJsonFile class
  * 该类线程安全
  */
+class TextEdit;
 class StyleJsonFilePrivate;
 class StyleJsonFile : public QObject
 {
@@ -84,10 +85,11 @@ public:
         enum_exp Style = "Style";
     };
 
-    StyleJsonFile();
+    StyleJsonFile(TextEdit *edit);
+    TextEdit *edit();
     virtual ~StyleJsonFile();
     bool setLanguage(const QString &languageID);
-    QStringList themes();
+    QStringList themes() const;
     bool setTheme(const QString &theme);
     QJsonValue value(const QString &Key) const;
 };

@@ -1,5 +1,4 @@
 #include "scintillaeditextern.h"
-#include "style/stylekeeper.h"
 #include "style/stylecolor.h"
 #include "transceiver/sendevents.h"
 
@@ -10,7 +9,6 @@
 #include <QFile>
 #include <QPoint>
 #include <QRegularExpression>
-
 #include <bitset>
 
 class ScintillaEditExternPrivate
@@ -22,9 +20,8 @@ class ScintillaEditExternPrivate
     QTimer hoverTimer;
     QTimer definitionHoverTimer;
     QString filePath;
-    QString projectWorkspace;
-    QString projectLanguage;
     QString language;
+    Head proHead;
     Scintilla::Position editInsertPostion = -1;
     int editInsertCount = 0;
 };
@@ -43,12 +40,18 @@ ScintillaEditExtern::~ScintillaEditExtern()
     }
 }
 
-void ScintillaEditExtern::setFile(const QString &path)
+QString ScintillaEditExtern::fileLanguage(const QString &path)
 {
-    if (d->filePath == path) {
+    using namespace support_file;
+    return Language::id(path);
+}
+
+void ScintillaEditExtern::setFile(const QString &filePath)
+{
+    if (d->filePath == filePath) {
         return;
     } else {
-        d->filePath = path;
+        d->filePath = filePath;
     }
 
     QString text;
@@ -60,33 +63,6 @@ void ScintillaEditExtern::setFile(const QString &path)
     setText(text.toUtf8());
     emptyUndoBuffer();
     setSavePoint();
-
-    using namespace support_file;
-    d->language = Language::id(d->filePath);
-    StyleSet set = StyleKeeper::create(d->language);
-
-    if (!set.sci) {
-        qCritical() << "Failed, can't create sci style from ScintillaEdit!";
-        // abort();
-    } else { // sci default;
-        set.sci->setStyle(*this);
-        set.sci->setLexer(*this);
-        set.sci->setKeyWords(*this);
-        set.sci->setMargin(*this);
-    }
-
-    if (!set.lsp) {
-        qCritical() << "Failed, can't create lsp style from ScintillaEdit!";
-    } else { // lsp default;
-        auto client = lsp::ClientManager::instance()->get({d->projectWorkspace, d->projectLanguage});
-        if (!client) {
-            qCritical() << "Failed, client is nullptr"
-                        << "project workspace: " << d->projectWorkspace
-                        << "project language: " << d->projectLanguage;
-        }
-        set.lsp->setClient(client);
-        set.lsp->appendEdit(this);
-    }
 
     setMouseDwellTime(0);
     QObject::connect(this, &ScintillaEditExtern::marginClicked, this, &ScintillaEditExtern::sciMarginClicked, Qt::UniqueConnection);
@@ -107,25 +83,20 @@ void ScintillaEditExtern::setFile(const QString &path)
     }, Qt::UniqueConnection);
 }
 
+void ScintillaEditExtern::setFile(const QString &filePath, const Head &projectHead)
+{
+    d->proHead = projectHead;
+    setFile(filePath);
+}
+
+Head ScintillaEditExtern::projectHead()
+{
+    return d->proHead;
+}
+
 QString ScintillaEditExtern::file() const
 {
     return d->filePath;
-}
-
-void ScintillaEditExtern::setHeadInfo(const QString &proWorkspace, const QString &proLanguage)
-{
-    d->projectWorkspace = proWorkspace;
-    d->projectLanguage = proLanguage;
-}
-
-QString ScintillaEditExtern::proWorkspace() const
-{
-    return d->projectWorkspace;
-}
-
-QString ScintillaEditExtern::proLanguage() const
-{
-    return d->projectLanguage;
 }
 
 void ScintillaEditExtern::debugPointAllDelete()
@@ -266,18 +237,14 @@ void ScintillaEditExtern::sciDwellEnd(int x, int y)
     Q_UNUSED(x)
     Q_UNUSED(y)
     if (d->hoverPos != -1) {
-        //        bool isKeyCtrl = QApplication::keyboardModifiers().testFlag(Qt::ControlModifier);
-        //        if (isKeyCtrl) {
         if (d->definitionHoverTimer.isActive()) {
             d->definitionHoverTimer.stop();
         }
         emit definitionHoverCleaned(d->hoverPos);
-        //        } else {
         if (d->hoverTimer.isActive()) {
             d->hoverTimer.stop();
         }
         emit hoverCleaned(d->hoverPos);
-        //        }
         d->hoverPos = -1; // clean cache postion
     }
 }
@@ -300,11 +267,6 @@ void ScintillaEditExtern::keyPressEvent(QKeyEvent *event)
 void ScintillaEditExtern::sciMarginClicked(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin)
 {
     Q_UNUSED(modifiers);
-
-    StyleSet set = StyleKeeper::create(d->language);
-    if (!set.sci) {
-        return;
-    }
 
     sptr_t line = lineFromPosition(position);
     if (margin == StyleSci::Margin::LineNumber || margin == StyleSci::Margin::Runtime) {

@@ -81,28 +81,22 @@ void Client::initRequest(const Head &head, const QString &compile)
 
 void Client::openRequest(const QString &filePath)
 {
-    d->requestIndex ++;
-    //    d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DIDOPEN);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDOPEN;
-    qInfo() << qPrintable(setHeader(didOpen(filePath), d->requestIndex).toLatin1());
+    qInfo() << qPrintable(setHeader(didOpen(filePath)).toLatin1());
     write(setHeader(didOpen(filePath), d->requestIndex).toLatin1());
     waitForBytesWritten();
 }
 
 void Client::closeRequest(const QString &filePath)
 {
-    d->requestIndex ++;
-    d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DIDCLOSE);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCLOSE
-            << qPrintable(setHeader(didClose(filePath), d->requestIndex).toLatin1());
-    write(setHeader(didClose(filePath), d->requestIndex).toLatin1());
+            << qPrintable(setHeader(didClose(filePath)).toLatin1());
+    write(setHeader(didClose(filePath)).toLatin1());
     waitForBytesWritten();
 }
 
 void Client::changeRequest(const QString &filePath, const QByteArray &text)
 {
-    d->requestIndex ++;
-    //    d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DIDCHANGE);
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCHANGE
             << qPrintable(setHeader(didChange(filePath, text, d->fileVersion[filePath])));
     write(setHeader(didChange(filePath, text, d->fileVersion[filePath])).toLatin1());
@@ -590,18 +584,46 @@ bool Client::diagnostics(const QJsonObject &jsonObj)
 
     for (auto val : array) {
         QJsonObject diagnosticObj = val.toObject();
+        QString codeStr = diagnosticObj.value(K_CODE).toString();
+        QString messageStr = diagnosticObj.value(K_MESSAGE).toString();
         QJsonObject rangeObj = diagnosticObj.value(K_RANGE).toObject();
         QJsonObject startObj = rangeObj.value(K_START).toObject();
         QJsonObject endObj = rangeObj.value(K_END).toObject();
-        Diagnostic diagnostic
-        {
-            QString { diagnosticObj.value(K_MESSAGE).toString() },
-            Range {
-                Position { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()},
-                Position { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()}
-            },
-            Diagnostic::Severity(diagnosticObj.value(K_SEVERITY).toInt())
+        QVector<DiagnosticRelatedInformation>  reletedInformation;
+        for (auto reInfo : diagnosticObj.value(K_RELATEDINFOMATION).toArray()) {
+            auto reInfoObj = reInfo.toObject();
+            QJsonObject reInfoLocationObj = reInfoObj.value(K_LOCATION).toObject();
+            QJsonObject reInfoLocationRangeObj = reInfoLocationObj.value(K_RANGE).toObject();
+            QJsonObject reInfoLocationStartObj = reInfoLocationRangeObj.value(K_START).toObject();
+            QJsonObject reInfoLocationEndObj = reInfoLocationRangeObj.value(K_END).toObject();
+            QUrl reInfoLocationUrl = reInfoLocationObj.value(K_URI).toString();
+
+            DiagnosticRelatedInformation infomationOne;
+            infomationOne.location = {
+                Location {
+                    Range { Position { reInfoLocationRangeObj.value(K_LINE).toInt(),
+                                       reInfoLocationRangeObj.value(K_CHARACTER).toInt()},
+                            Position { reInfoLocationEndObj.value(K_LINE).toInt(),
+                                       reInfoLocationEndObj.value(K_CHARACTER).toInt()}},
+                    QUrl {reInfoLocationUrl}
+                }
+            };
+            infomationOne.message = reInfoObj.value(K_MESSAGE).toString();
+
+            reletedInformation << infomationOne;
+        }
+
+        Diagnostic diagnostic;
+        diagnostic.code = codeStr;
+        diagnostic.message = messageStr;
+        diagnostic.range = {
+            { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()},
+            { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()}
         };
+        diagnostic.relatedInfomation = reletedInformation;
+        diagnostic.severity = Diagnostic::Severity(diagnosticObj.value(K_SEVERITY).toInt());
+        diagnostic.source = diagnosticObj.value("source").toString();
+
         diagnosticsParams.diagnostics << diagnostic;
     }
 
@@ -782,7 +804,7 @@ void ClientReadThread::run()
         }
         int headIndex = d->array.indexOf("Content-Length:");
         if(headIndex > 0) {
-             d->array.remove(0, headIndex);
+            d->array.remove(0, headIndex);
         }
     }
 }

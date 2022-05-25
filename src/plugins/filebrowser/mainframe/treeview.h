@@ -2,6 +2,7 @@
 #define TREEVIEW_H
 
 #include <QTreeView>
+#include "services/project/projectservice.h"
 
 class TreeViewPrivate;
 class TreeView : public QTreeView
@@ -11,7 +12,7 @@ class TreeView : public QTreeView
 public:
     explicit TreeView(QWidget *parent = nullptr);
     virtual ~TreeView();
-    void setRootPath(const QString  &rootPath);
+    void setProjectInfo(const dpfservice::ProjectInfo &proInfo);
 public slots:
     void selOpen();
     void selMoveToTrash();
@@ -19,6 +20,7 @@ public slots:
     void selNewDocument();
     void selNewFolder();
     void recoverFromTrash();
+    void doDoubleClicked(const QModelIndex &index);
 signals:
     void rootPathChanged(const QString &folder);
 protected:

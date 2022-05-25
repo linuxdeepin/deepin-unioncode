@@ -5,10 +5,13 @@
 #include <QList>
 
 #include "stylesci.h"
+#include "ScintillaEditBase.h"
 
 #include "common/common.h"
 
-class ScintillaEditExtern;
+#include <iostream>
+
+class TextEdit;
 class StyleLspPrivate;
 class StyleLsp : public QObject
 {
@@ -48,13 +51,12 @@ public:
     static int getLspCharacter(sptr_t doc, sptr_t sciPosition);
     static bool isCharSymbol(const char ch);
 
-    StyleLsp();
+    StyleLsp(TextEdit *parent);
+    TextEdit *edit();
     virtual ~StyleLsp();
     virtual void setClient(lsp::Client *client);
     virtual lsp::Client *getClient() const;
-    virtual void appendEdit(ScintillaEditExtern *editor); //setting main
-    virtual ScintillaEditExtern *findSciEdit(const QString &file);
-    virtual QString sciEditFile(ScintillaEditExtern * const sciEdit);
+    virtual void initLspConnection(); //setting main
 
     /* Client Info Specialization, matching client portals for various environments.
      * If to use "clangd" client, exist more "clangd" from folder /usr/bin and in other folder,
@@ -63,8 +65,7 @@ public:
      */
     typedef support_file::Language::ServerInfo ServerInfo;
     virtual ServerInfo clientInfoSpec(ServerInfo info);
-    virtual IndicStyleExt symbolIndic(ScintillaEdit &edit,
-                                      lsp::SemanticTokenType::type_value token,
+    virtual IndicStyleExt symbolIndic(lsp::SemanticTokenType::type_value token,
                                       QList<lsp::SemanticTokenType::type_index> modifier);
     /*!
      * \brief tokenFromServProvider find local token from lsp protocol init response provider data
@@ -73,26 +74,23 @@ public:
      */
     virtual lsp::SemanticTokenType::type_value tokenToDefine(int token);
 
-    virtual void setIndicStyle(ScintillaEdit &edit);
-    virtual void setMargin(ScintillaEdit &edit);
+    virtual void setIndicStyle();
+    virtual void setMargin();
 
-    virtual void setDiagnostics(ScintillaEdit &edit, const lsp::DiagnosticsParams &params);
-    virtual void cleanDiagnostics(ScintillaEdit &edit);
+    virtual void setDiagnostics(const lsp::DiagnosticsParams &params);
+    virtual void cleanDiagnostics();
 
-    virtual void setTokenFull(ScintillaEdit &edit, const QList<lsp::Data> &tokens);
-    virtual void cleanTokenFull(ScintillaEdit &edit);
+    virtual void setTokenFull(const QList<lsp::Data> &tokens);
+    virtual void cleanTokenFull();
 
-    virtual void setHover(ScintillaEdit &edit, const lsp::Hover &hover);
-    virtual void cleanHover(ScintillaEdit &edit);
+    virtual void setHover(const lsp::Hover &hover);
+    virtual void cleanHover();
 
-    virtual void setDefinition(ScintillaEdit &edit, const lsp::DefinitionProvider &provider);
-    virtual void cleanDefinition(ScintillaEdit &edit, const Scintilla::Position &pos);
-
-    virtual void doRenameReplace(const lsp::RenameChanges &changes);
+    virtual void setDefinition(const lsp::DefinitionProvider &provider);
+    virtual void cleanDefinition(const Scintilla::Position &pos);
 
 private slots:
-    void setCompletion(ScintillaEdit &edit,
-                       const QByteArray &text,
+    void setCompletion(const QByteArray &text,
                        const Scintilla::Position enterLenght,
                        const lsp::CompletionProvider &provider);
 

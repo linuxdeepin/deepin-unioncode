@@ -11,8 +11,8 @@ class RefactorWidgetPrivate
 
 RefactorWidget *RefactorWidget::instance()
 {
-    static RefactorWidget ins;
-    return &ins;
+    static RefactorWidget *ins = new RefactorWidget;
+    return ins;
 }
 
 RefactorWidget::RefactorWidget(QWidget *parent)

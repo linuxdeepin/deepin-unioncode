@@ -22,15 +22,24 @@
 #define TEXTEDIT_H
 
 #include <QTextEdit>
-
 #include "scintillaeditextern.h"
 
+class StyleLsp;
+class StyleSci;
+class StyleJsonFile;
+class TextEditPrivate;
 class TextEdit : public ScintillaEditExtern
 {
     Q_OBJECT
+    TextEditPrivate *const d;
 public:
     explicit TextEdit(QWidget * parent = nullptr);
     virtual ~TextEdit();
+    virtual void setFile(const QString &filePath) override;
+    virtual void setFile(const QString &filePath, const Head &projectHead) override;
+    virtual StyleLsp *getStyleLsp() const {return nullptr;}
+    virtual StyleSci *getStyleSci() const {return nullptr;}
+    virtual StyleJsonFile *getStyleFile() const {return nullptr;}
 
 signals:
     void fileChanged(const QString &file);

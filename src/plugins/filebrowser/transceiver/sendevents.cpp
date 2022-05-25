@@ -22,13 +22,13 @@
 #include "framework.h"
 #include "common/common.h"
 
-void SendEvents::treeViewDoublueClicked(const QString &filePath, const QString &workspaceFolder)
+void SendEvents::treeViewDoublueClicked(const QString &filePath, const dpfservice::ProjectInfo &proInfo)
 {
     dpf::Event event;
     event.setTopic(T_FILEBROWSER);
     event.setData(D_ITEM_DOUBLECLICKED);
+    event.setProperty(P_PROJECT_INFO, QVariant::fromValue(proInfo));
     event.setProperty(P_FILEPATH, filePath);
-    event.setProperty(P_WORKSPACEFOLDER, workspaceFolder);
     dpf::EventCallProxy::instance().pubEvent(event);
 }
 

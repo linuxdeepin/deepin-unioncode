@@ -25,7 +25,7 @@
 
 #include "common/common.h"
 
-static QStringList subTopics{ T_MENU, T_PROJECT };
+static QStringList subTopics{ T_PROJECT };
 
 FileBrowserReceiver::FileBrowserReceiver(QObject *parent)
     : dpf::EventHandler (parent)
@@ -45,17 +45,8 @@ void FileBrowserReceiver::eventProcess(const dpf::Event &event)
         qCritical() << event;
         abort();
     }
-    if (event.topic() == T_MENU) {
-        menuEvent(event);
-    } else if (event.topic() == T_PROJECT) {
+    if (event.topic() == T_PROJECT) {
         projectEvent(event);
-    }
-}
-
-void FileBrowserReceiver::menuEvent(const dpf::Event &event)
-{
-    if (event.data() == D_FILE_OPENPROJECT) {
-        TreeViewKeeper::instance()->treeView()->setRootPath(event.property(P_WORKSPACEFOLDER).toString());
     }
 }
 
@@ -65,19 +56,19 @@ void FileBrowserReceiver::projectEvent(const dpf::Event &event)
         auto projectInfoVar = event.property(P_PROJECT_INFO);
         if (projectInfoVar.canConvert<dpfservice::ProjectInfo>()) {
             auto proInfo = qvariant_cast<dpfservice::ProjectInfo>(projectInfoVar);
-            TreeViewKeeper::instance()->treeView()->setRootPath(proInfo.sourceFolder());
+            TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
         }
     }
 
     if (event.data() == D_DELETED) {
-        TreeViewKeeper::instance()->treeView()->setRootPath("");
+        TreeViewKeeper::instance()->treeView()->setProjectInfo({});
     }
 
     if (event.data() == D_CRETED) {
         auto projectInfoVar = event.property(P_PROJECT_INFO);
         if (projectInfoVar.canConvert<dpfservice::ProjectInfo>()) {
             auto proInfo = qvariant_cast<dpfservice::ProjectInfo>(projectInfoVar);
-            TreeViewKeeper::instance()->treeView()->setRootPath(proInfo.sourceFolder());
+            TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
         }
     }
 }

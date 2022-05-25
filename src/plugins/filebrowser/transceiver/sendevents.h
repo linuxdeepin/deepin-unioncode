@@ -22,6 +22,7 @@
 #define SENDEVENTS_H
 
 #include <QString>
+#include "services/project/projectservice.h"
 
 class SendEvents final
 {
@@ -29,7 +30,7 @@ class SendEvents final
     SendEvents(const SendEvents &) = delete;
 public:
     static void treeViewDoublueClicked(const QString &filePath,
-                                       const QString &workspaceFolder);
+                                       const dpfservice::ProjectInfo &proInfo);
 
     static void buildProject(const QString &buildSystem,
                              const QString &buildDir,
