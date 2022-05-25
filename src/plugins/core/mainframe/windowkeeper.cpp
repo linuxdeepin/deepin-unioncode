@@ -109,6 +109,12 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     fileMenu->addAction(actionQuit);
     QAction* fileAction = menuBar->addMenu(fileMenu);
     fileAction->setText(MWM_FILE);
+
+    actionNewDocument->setDisabled(true);
+    actionNewFolder->setDisabled(true);
+    actionOpenDocument->setDisabled(true);
+    openRecentDocuments->setDisabled(true);
+    openRecentFolders->setDisabled(true);
 }
 
 void WindowKeeper::createBuildActions(QMenuBar *menuBar)
@@ -168,6 +174,14 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     toolsMenu->addAction(actionTest);
     toolsMenu->addAction(actionPlugins);
     toolsMenu->addAction(actionOptions);
+
+    actionSearch->setEnabled(false);
+    actionPackageTools->setEnabled(false);
+    actionVersionTools->setEnabled(false);
+    actionCodeFormatting->setEnabled(false);
+    actionRuntimeAnalysis->setEnabled(false);
+    actionTest->setEnabled(false);
+    actionPlugins->setEnabled(false);
 }
 
 void WindowKeeper::createHelpActions(QMenuBar *menuBar)
@@ -185,6 +199,9 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
     ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
                                                  "About", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A));
     helpMenu->addAction(actionAboutUnionCode);
+
+    actionReportBug->setEnabled(false);
+    actionAboutUnionCode->setEnabled(false);
 }
 
 void WindowKeeper::createStatusBar(QMainWindow *window)

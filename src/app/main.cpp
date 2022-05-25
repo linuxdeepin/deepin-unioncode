@@ -2,6 +2,7 @@
 
 #include <framework/framework.h>
 #include <QApplication>
+#include <QStyleFactory>
 
 /// @brief PLUGIN_INTERFACE 默认插件iid
 static const char *const FM_PLUGIN_INTERFACE = "org.deepin.plugin.unioncode";
@@ -57,6 +58,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    QApplication::setStyle(QStyleFactory::create("Fusion"));
     dpfInstance.initialize();
 
     if (!pluginsLoad()) {

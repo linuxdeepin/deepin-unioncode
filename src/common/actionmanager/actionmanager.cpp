@@ -33,6 +33,7 @@ class ActionManagerPrivate final
 public:
     using IdCmdMap = QHash<QString, Action *>;
 
+    ActionManagerPrivate();
     Action *addOverrideAction(QString id, QAction *action);
     Action *removeOverrideAction(QString id);
     Command *command(QString id);
@@ -41,10 +42,18 @@ public:
     void addSetting(QString id, Action *action);
     void removeSetting(QString id);
     void saveAllSetting();
+    void readUserSetting();
 
 private:
     IdCmdMap idCmdMap;
+    QString configFilePath;
 };
+
+ActionManagerPrivate::ActionManagerPrivate()
+    : configFilePath(CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support"))
+{
+
+}
 
 Action *ActionManagerPrivate::addOverrideAction(QString id, QAction *action)
 {
@@ -88,8 +97,6 @@ void ActionManagerPrivate::addSetting(QString id, Action *action)
     QString description = action->description();
 
     QMap<QString, QStringList> shortcutItemMap;
-    QString configFilePath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support");
-
     ShortcutUtil::readFromJson(configFilePath, shortcutItemMap);
     QStringList valueList = {description, shortcut};
     shortcutItemMap[id] = valueList;
@@ -99,8 +106,6 @@ void ActionManagerPrivate::addSetting(QString id, Action *action)
 void ActionManagerPrivate::removeSetting(QString id)
 {
     QMap<QString, QStringList> shortcutItemMap;
-    QString configFilePath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support");
-
     ShortcutUtil::readFromJson(configFilePath, shortcutItemMap);
     if (shortcutItemMap.contains(id)) {
         shortcutItemMap.remove(id);
@@ -111,8 +116,6 @@ void ActionManagerPrivate::removeSetting(QString id)
 void ActionManagerPrivate::saveAllSetting()
 {
     QMap<QString, QStringList> shortcutItemMap;
-    QString qsConfigFilePath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support");
-
     IdCmdMap::const_iterator iter = idCmdMap.begin();
     for (; iter != idCmdMap.end(); ++iter)
     {
@@ -120,7 +123,23 @@ void ActionManagerPrivate::saveAllSetting()
         shortcutItemMap.insert(iter.key(), valueList);
     }
 
-    ShortcutUtil::writeToJson(qsConfigFilePath, shortcutItemMap);
+    ShortcutUtil::writeToJson(configFilePath, shortcutItemMap);
+}
+
+void ActionManagerPrivate::readUserSetting()
+{
+    QMap<QString, QStringList> shortcutItemMap;
+    ShortcutUtil::readFromJson(configFilePath, shortcutItemMap);
+
+    IdCmdMap::const_iterator iter = idCmdMap.begin();
+    for (; iter != idCmdMap.end(); ++iter)
+    {
+        QString id = iter.key();
+        if (shortcutItemMap.contains(id) && iter.value()->action()) {
+            QString shortcut = shortcutItemMap.value(id).last();
+            iter.value()->action()->setShortcut(QKeySequence(shortcut));
+        }
+    }
 }
 
 ActionManager::ActionManager(QObject *parent)
@@ -165,12 +184,14 @@ Command *ActionManager::registerAction(QAction *action, const QString id,
     if(!action || id.isEmpty())
         return nullptr;
 
+    connect(action, &QAction::destroyed, [=] {
+        unregisterAction(id);
+    });
+
     Action *a = d->addOverrideAction(id, action);
     if (a) {
         a->setKeySequence(defaultShortcut);
         a->setDescription(description);
-
-        d->addSetting(id, a);
     }
 
     return a;
@@ -189,7 +210,6 @@ void ActionManager::unregisterAction(QString id)
     Action *a = d->removeOverrideAction(id);
     if (a) {
         a->setKeySequence(QKeySequence());
-        d->removeSetting(id);
     }
 }
 
@@ -201,5 +221,15 @@ Command *ActionManager::command(QString id)
 QList<Command *> ActionManager::commands()
 {
     return d->commands();
+}
+
+void ActionManager::readUserSetting()
+{
+    return d->readUserSetting();
+}
+
+void ActionManager::saveSetting()
+{
+    return d->saveAllSetting();
 }
 

@@ -52,6 +52,7 @@ public slots:
 
 private:
     void setupUi(QDialog *Dialog);
+    void readConfig();
 
     QLineEdit *filterEdit = nullptr;
     QListView *leftSideBar = nullptr;

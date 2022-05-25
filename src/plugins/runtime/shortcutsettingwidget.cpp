@@ -49,11 +49,6 @@ ShortcutTableModel::ShortcutTableModel(QObject *parent)
     , d(new ShortcutTableModelPrivate())
 {
     d->configFilePath = (CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support"));
-    bool bRet = ShortcutUtil::readFromJson(d->configFilePath, d->shortcutItemMap);
-    if (!bRet) {
-        qInfo() << "Read shortcut setting error!" << endl;
-    }
-    d->shortcutItemShadowMap = d->shortcutItemMap;
 }
 
 ShortcutTableModel::~ShortcutTableModel()
@@ -75,22 +70,55 @@ int ShortcutTableModel::columnCount(const QModelIndex &parent) const
     return ColumnID::_KCount;
 }
 
+
+bool ShortcutTableModel::keySequenceIsInvalid(const QKeySequence &sequence) const
+{
+    for (uint i = 0; i < static_cast<uint>(sequence.count()); i++) {
+        if (Qt::Key_unknown == sequence[i]) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ShortcutTableModel::shortcutRepeat(const QString &text) const
+{
+    int count  = 0;
+    foreach (QString key, d->shortcutItemMap.keys()) {
+        QStringList valueList = d->shortcutItemMap.value(key);
+        if (0 == text.compare(valueList.last(), Qt::CaseInsensitive)) {
+            if (count++ > 0)
+                return true;
+        }
+    }
+
+    return false;
+}
+
 QVariant ShortcutTableModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
 
-    if (role != Qt::DisplayRole)
+    if (role != Qt::DisplayRole && role != Qt::TextColorRole)
         return QVariant();
 
     if (index.row() >= d->shortcutItemMap.keys().size())
         return QVariant();
 
     QString id = d->shortcutItemMap.keys()[index.row()];
-    QStringList valueList = d->shortcutItemMap[id];
+    QStringList valueList = d->shortcutItemMap.value(id);
 
     QString description = valueList.first();
     QString shortcut = valueList.last();
+
+    if(role == Qt::TextColorRole && index.column() == ColumnID::kShortcut) {
+        if(shortcutRepeat(shortcut) || keySequenceIsInvalid(QKeySequence(shortcut))) {
+            return QColor(Qt::darkRed);
+        }
+        return QVariant();
+    }
 
     switch (index.column()) {
         case ColumnID::kID:
@@ -166,10 +194,44 @@ void ShortcutTableModel::saveShortcut()
     }
 }
 
+void ShortcutTableModel::readShortcut()
+{
+    beginResetModel();
+
+    QList<Command *> commandsList = ActionManager::getInstance()->commands();
+    QList<Command *>::iterator iter = commandsList.begin();
+    for (; iter != commandsList.end(); ++iter)
+    {
+        Action * action = dynamic_cast<Action *>(*iter);
+        QString id = action->id();
+        QStringList valueList = QStringList{action->description(), action->keySequence().toString()};
+        d->shortcutItemMap[id] = valueList;
+    }
+
+    QMap<QString, QStringList> shortcutItemMap;
+    ShortcutUtil::readFromJson(d->configFilePath, shortcutItemMap);
+    foreach (const QString key, shortcutItemMap.keys()) {
+        d->shortcutItemMap[key] = shortcutItemMap.value(key);
+    }
+
+    d->shortcutItemShadowMap = d->shortcutItemMap;
+
+    endResetModel();
+}
+
 void ShortcutTableModel::importExternalJson(const QString &filePath)
 {
-    ShortcutUtil::readFromJson(filePath, d->shortcutItemMap);
+    beginResetModel();
+
+    QMap<QString, QStringList> shortcutItemMap;
+    ShortcutUtil::readFromJson(filePath, shortcutItemMap);
+    foreach (QString key, shortcutItemMap.keys()) {
+        d->shortcutItemMap[key] = shortcutItemMap.value(key);
+    }
+
     d->shortcutItemShadowMap = d->shortcutItemMap;
+
+    endResetModel();
 }
 
 void ShortcutTableModel::exportExternalJson(const QString &filePath)
@@ -185,6 +247,7 @@ class ShortcutSettingWidgetPrivate
     HotkeyLineEdit *editShortCut;
     ShortcutTableModel *model;
     QPushButton *btnRecord;
+    QLabel *tipLabel;
 
     friend class ShortcutSettingWidget;
 };
@@ -194,6 +257,7 @@ ShortcutSettingWidgetPrivate::ShortcutSettingWidgetPrivate()
     , editShortCut(nullptr)
     , model(nullptr)
     , btnRecord(nullptr)
+    , tipLabel(nullptr)
 {
 
 }
@@ -257,6 +321,11 @@ void ShortcutSettingWidget::setupUi()
     hLayoutShortcut->addWidget(d->btnRecord);
     hLayoutShortcut->addWidget(btnReset);
 
+    d->tipLabel = new QLabel();
+    d->tipLabel->setMargin(10);
+    d->tipLabel->setStyleSheet("color:darkred;");
+    vLayout->addWidget(d->tipLabel);
+
     connect(d->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(onTableViewClicked(const QModelIndex &)));
     connect(btnResetAll, SIGNAL(clicked()), this, SLOT(onBtnResetAllClicked()));
     connect(d->editShortCut, SIGNAL(textChanged(const QString &)), this, SLOT(onShortcutEditTextChanged(const QString &)));
@@ -270,8 +339,36 @@ void ShortcutSettingWidget::setSelectedShortcut()
 {
     int row = d->tableView->currentIndex().row();
     QModelIndex index = d->model->index(row, ColumnID::kShortcut);
-    QString qsShortcut = d->model->data(index, Qt::DisplayRole).toString();
-    d->editShortCut->setText(qsShortcut);
+    QString shortcut = d->model->data(index, Qt::DisplayRole).toString();
+    d->editShortCut->setText(shortcut);
+
+    checkShortcutValidity(row, shortcut);
+}
+
+bool ShortcutSettingWidget::shortcutIsRepeat(const int row, const QString &text)
+{
+    for (int i = 0; i < d->model->rowCount(); i++) {
+        if (row == i)
+            continue;
+        QModelIndex index = d->model->index(i, ColumnID::kShortcut);
+        QString shortcut = d->model->data(index, Qt::DisplayRole).toString();
+        if (text == shortcut) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void ShortcutSettingWidget::checkShortcutValidity(const int row, const QString &shortcut)
+{
+    if (d->model->keySequenceIsInvalid(QKeySequence(shortcut))) {
+        d->tipLabel->setText("Invalid shortcut!");
+    } else if (shortcutIsRepeat(row, shortcut)){
+        d->tipLabel->setText("shortcut Repeated!");
+    } else {
+        d->tipLabel->setText("");
+    }
 }
 
 void ShortcutSettingWidget::onTableViewClicked(const QModelIndex &)
@@ -297,18 +394,26 @@ void ShortcutSettingWidget::onBtnResetClicked()
 
 void ShortcutSettingWidget::onShortcutEditTextChanged(const QString &text)
 {
+    QString shortcut = text.trimmed();
     int row = d->tableView->currentIndex().row();
     QModelIndex indexID = d->model->index(row, ColumnID::kID);
     QString qsID = d->model->data(indexID, Qt::DisplayRole).toString();
-    d->model->updateShortcut(qsID, text);
+    d->model->updateShortcut(qsID, shortcut);
 
     QModelIndex indexShortcut = d->model->index(row, ColumnID::kShortcut);
     d->tableView->update(indexShortcut);
+
+    checkShortcutValidity(row, shortcut);
 }
 
 void ShortcutSettingWidget::saveConfig()
 {
     d->model->saveShortcut();
+}
+
+void ShortcutSettingWidget::readConfig()
+{
+    d->model->readShortcut();
 }
 
 void ShortcutSettingWidget::onBtnImportClicked()

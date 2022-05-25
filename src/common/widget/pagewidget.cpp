@@ -36,3 +36,8 @@ void PageWidget::saveConfig()
 {
 
 }
+
+void PageWidget::readConfig()
+{
+
+}

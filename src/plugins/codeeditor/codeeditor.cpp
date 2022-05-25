@@ -106,6 +106,10 @@ bool CodeEditor::start()
         ActionManager::getInstance()->registerAction(print, "File.Print",
                                                      PRINT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_P));
         windowService->addAction(MWM_FILE, new AbstractAction(print));
+
+        saveAllDocuments->setEnabled(false);
+        closeAllDocuments->setEnabled(false);
+        print->setEnabled(false);
     }
     return true;
 }

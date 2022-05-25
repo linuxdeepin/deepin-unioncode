@@ -25,6 +25,7 @@
 #include "services/window/windowservice.h"
 
 #include <framework/framework.h>
+#include "common/common.h"
 
 #include <QStatusBar>
 #include <QApplication>
@@ -81,6 +82,11 @@ bool Core::start()
 
     WindowKeeper::instace();
     WindowTheme::setTheme(":/dark-one.css");
+
+    QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
+        ActionManager::getInstance()->readUserSetting();
+    });
+
     return true;
 }
 

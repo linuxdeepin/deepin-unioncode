@@ -517,15 +517,15 @@ void ScintillaBase::ContextMenu(Point pt) {
 	if (displayPopupMenu != PopUp::Never) {
 		const bool writable = !WndProc(Message::GetReadOnly, 0, 0);
 		popup.CreatePopUp();
-		AddToPopUp("Undo", idcmdUndo, writable && pdoc->CanUndo());
-		AddToPopUp("Redo", idcmdRedo, writable && pdoc->CanRedo());
+        AddToPopUp("Undo         Ctrl+Z", idcmdUndo, writable && pdoc->CanUndo());
+        AddToPopUp("Redo          Ctrl+Shift+Z", idcmdRedo, writable && pdoc->CanRedo());
 		AddToPopUp("");
-		AddToPopUp("Cut", idcmdCut, writable && !sel.Empty());
-		AddToPopUp("Copy", idcmdCopy, !sel.Empty());
-		AddToPopUp("Paste", idcmdPaste, writable && WndProc(Message::CanPaste, 0, 0));
-		AddToPopUp("Delete", idcmdDelete, writable && !sel.Empty());
+        AddToPopUp("Cut              Ctrl+X", idcmdCut, writable && !sel.Empty());
+        AddToPopUp("Copy           Ctrl+C", idcmdCopy, !sel.Empty());
+        AddToPopUp("Paste           Ctrl+V", idcmdPaste, writable && WndProc(Message::CanPaste, 0, 0));
+        AddToPopUp("Delete         Back Space", idcmdDelete, writable && !sel.Empty());
 		AddToPopUp("");
-		AddToPopUp("Select All", idcmdSelectAll);
+        AddToPopUp("Select All   Ctrl+A", idcmdSelectAll);
 		popup.Show(pt, wMain);
 	}
 }

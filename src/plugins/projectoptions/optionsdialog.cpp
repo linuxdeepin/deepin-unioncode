@@ -68,6 +68,8 @@ void OptionsDialog::showProjectOptionsDlg(const QString &itemName, const QString
         headTitle->setText(itemName);
     }
 
+    readConfig();
+
     this->exec();
 }
 
@@ -84,7 +86,7 @@ void OptionsDialog::slotLeftBarClicked(const QModelIndex &index)
 
 void OptionsDialog::setupUi(QDialog *Dialog)
 {
-    Dialog->resize(1000, 600);
+    Dialog->resize(1000, 650);
     setWindowTitle(tr("Project Options"));
 
     // Center layout.
@@ -170,6 +172,17 @@ void OptionsDialog::saveSingleConfig()
         PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
         if (widget) {
             widget->saveConfig();
+        }
+    }
+}
+
+void OptionsDialog::readConfig()
+{
+    for (int index = 0; index < stackWidget->count(); index++)
+    {
+        PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
+        if (widget) {
+            widget->readConfig();
         }
     }
 }

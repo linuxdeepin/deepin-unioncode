@@ -33,8 +33,12 @@ public:
     virtual ~EnvironmentManagerWidget();
     void saveConfig();
 
+public slots:
+    void tabChanged(int index);
+
 private:
     void setupUi();
+    void readConfig();
     EnvironmentManagerWidgetPrivate *const d;
 };
 

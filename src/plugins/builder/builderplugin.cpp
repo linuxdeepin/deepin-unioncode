@@ -54,8 +54,8 @@ bool BuilderPlugin::start()
     BuildManager::instance()->initialize(windowService);
 
     // instert output pane to window.
-    emit windowService->addContextWidget("Compile Output", new AbstractWidget(BuildManager::instance()->getOutputPane()));
-    emit windowService->addContextWidget("Issues", new AbstractWidget(TaskManager::instance()->getView()));
+    emit windowService->addContextWidget("Co&mpile Output", new AbstractWidget(BuildManager::instance()->getOutputPane()));
+    emit windowService->addContextWidget("&Issues", new AbstractWidget(TaskManager::instance()->getView()));
 
     connect(BuildManager::instance(), &BuildManager::buildStarted, this, &BuilderPlugin::slotBuildStarted);
 

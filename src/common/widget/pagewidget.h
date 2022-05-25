@@ -31,6 +31,7 @@ public:
     explicit PageWidget(QWidget *parent = nullptr);
     virtual ~PageWidget();
     virtual void saveConfig();
+    virtual void readConfig();
 };
 
 #endif // PAGEWIDGET_H

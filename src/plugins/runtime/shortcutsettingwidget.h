@@ -50,8 +50,11 @@ public:
     void resetShortcut(QString id);
     void resetAllShortcut();
     void saveShortcut();
+    void readShortcut();
     void importExternalJson(const QString &filePath);
     void exportExternalJson(const QString &filePath);
+    bool shortcutRepeat(const QString &text) const;
+    bool keySequenceIsInvalid(const QKeySequence &sequence) const;
 
 signals:
 
@@ -67,6 +70,9 @@ public:
     explicit ShortcutSettingWidget(QWidget *parent = nullptr);
     virtual ~ShortcutSettingWidget();
     void saveConfig();
+    void readConfig();
+    void checkShortcutValidity(const int row, const QString &shortcut);
+    bool shortcutIsRepeat(const int row, const QString &text);
 
 signals:
 

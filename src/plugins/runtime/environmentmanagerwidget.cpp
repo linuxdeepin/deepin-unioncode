@@ -54,7 +54,7 @@ void EnvironmentManagerWidget::setupUi()
 {
     setWindowTitle(tr("Environment"));
 
-    auto tabWidget = new QTabWidget();
+    QTabWidget *tabWidget = new QTabWidget();
     d->shortcutSettingWidget = new ShortcutSettingWidget();
 
     tabWidget->addTab(d->shortcutSettingWidget, QString("Commands"));
@@ -71,3 +71,7 @@ void EnvironmentManagerWidget::saveConfig()
     d->shortcutSettingWidget->saveConfig();
 }
 
+void EnvironmentManagerWidget::readConfig()
+{
+    d->shortcutSettingWidget->readConfig();
+}

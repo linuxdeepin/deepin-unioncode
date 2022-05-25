@@ -41,6 +41,9 @@ public:
     Command *command(QString id);
     QList<Command *> commands();
 
+    void readUserSetting();
+    void saveSetting();
+
 signals:
 
 private:
