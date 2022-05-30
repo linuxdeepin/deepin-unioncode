@@ -16,6 +16,7 @@ class NavEditMainWindow : public QMainWindow
     AutoHideDockWidget *qDockWidgetWorkspace{nullptr};
     AutoHideDockWidget *qDockWidgetContext{nullptr};
     AutoHideDockWidget *qDockWidgetWatch{nullptr};
+    AutoHideDockWidget *qDockWidgetFindToolBar{nullptr};
     QWidget *qWidgetEdit{nullptr};
     QWidget *qWidgetWatch{nullptr};
     QTabWidget *qTabWidgetContext{nullptr};
@@ -32,6 +33,8 @@ public:
     void addWidgetContext(const QString &title, AbstractWidget *contextWidget);
     bool switchWidgetWorkspace(const QString &title);
     bool switchWidgetContext(const QString &title);
+    void addFindToolBar(AbstractWidget *findToolbar);
+    void showFindToolBar();
 };
 
 #endif // NAVEDITMAINWINDOW_H

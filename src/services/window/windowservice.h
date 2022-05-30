@@ -207,6 +207,18 @@ public:
      */
     DPF_INTERFACE(void, addOpenProjectAction, const QString &name, AbstractAction *action);
 
+    /*!
+     * \brief addFindToolBar
+     * \param widget FindToolBar Widget
+     */
+
+    DPF_INTERFACE(void, addFindToolBar, AbstractWidget *widget);
+
+    /*!
+     * \brief showFindToolBar
+     */
+    DPF_INTERFACE(void, showFindToolBar);
+
 signals:
 
     /*!

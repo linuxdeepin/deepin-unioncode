@@ -149,3 +149,24 @@ bool NavEditMainWindow::switchWidgetContext(const QString &title)
     }
     return false;
 }
+
+void NavEditMainWindow::addFindToolBar(AbstractWidget *findToolbar)
+{
+    if (!findToolbar)
+        return;
+
+    if (!qDockWidgetFindToolBar) {
+        qDockWidgetFindToolBar = new AutoHideDockWidget("Find ToolBar");
+        addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, qDockWidgetFindToolBar);
+        QWidget *widget = static_cast<QWidget*>(findToolbar->qWidget());
+        qDockWidgetFindToolBar->setWidget(widget);
+        qDockWidgetFindToolBar->hide();
+    }
+}
+
+void NavEditMainWindow::showFindToolBar()
+{
+     if (qDockWidgetFindToolBar) {
+         qDockWidgetFindToolBar->show();
+     }
+}

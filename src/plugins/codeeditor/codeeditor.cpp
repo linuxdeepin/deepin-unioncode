@@ -89,6 +89,14 @@ bool CodeEditor::start()
             windowService->switchWidgetWorkspace = std::bind(&NavEditMainWindow::switchWidgetWorkspace, navEditWindow, _1);
         }
 
+        if (!windowService->addFindToolBar) {
+            windowService->addFindToolBar = std::bind(&NavEditMainWindow::addFindToolBar, navEditWindow, _1);
+        }
+
+        if (!windowService->showFindToolBar) {
+            windowService->showFindToolBar = std::bind(&NavEditMainWindow::showFindToolBar, navEditWindow);
+        }
+
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);
         ActionManager::getInstance()->registerAction(saveAllDocuments, "File.Save.All.Documents",
                                                      SAVE_ALL_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S));

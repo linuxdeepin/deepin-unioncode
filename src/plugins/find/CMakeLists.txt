@@ -1,0 +1,41 @@
+cmake_minimum_required(VERSION 3.0.2)
+
+project(plugin-find)
+
+set(CXX_CPP
+    currentdocumentfind.cpp
+    findtoolbar.cpp
+    findtoolwindow.cpp
+    searchresultwindow.cpp
+    findplugin.cpp
+    findplugin.json
+    )
+
+set(CXX_H
+    currentdocumentfind.h
+    findtoolbar.h
+    findtoolwindow.h
+    searchresultwindow.h
+    findplugin.h
+    )
+
+set(QT_THEME)
+
+add_library(${PROJECT_NAME}
+    SHARED
+    ${CXX_CPP}
+    ${CXX_H}
+    ${QT_THEME}
+    )
+
+target_link_libraries(${PROJECT_NAME}
+    unioncode-framework
+    unioncode-base
+    unioncode-service
+    unioncode-common
+    ${QtUseModules}
+    ${PkgUserModules}
+    )
+
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
+

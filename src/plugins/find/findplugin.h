@@ -1,0 +1,27 @@
+#ifndef FINDPLUGIN_H
+#define FINDPLUGIN_H
+
+#include <framework/framework.h>
+
+namespace dpfservice {
+    class WindowService;
+}
+
+class FindPlugin : public dpf::Plugin
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "findplugin.json")
+public:
+    virtual void initialize() override;
+    virtual bool start() override;
+    virtual dpf::Plugin::ShutdownFlag stop() override;
+
+signals:
+    void asyncStopFinished();
+
+private:
+    void sendSwitchSearchResult();
+    dpfservice::WindowService *windowService = nullptr;
+};
+
+#endif // FINDPLUGIN_H
