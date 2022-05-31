@@ -15,7 +15,7 @@
 #define CONFIG_FILE_PATH CONFIG_PATH + QDir::separator() + CONFIG_FILE_NAME
 
 namespace {
-QJsonDocument configDoc;
+static QJsonDocument configDoc;
 QString configTemplate{
     "{\n"
     "    \"C/C++\" : {\n"
@@ -42,7 +42,7 @@ QString configCache{
     "{\n"
     "    \"C/C++\" : {\n"
     "           \"mode\": \"process\",\n"
-    "           \"program\": \"/usr/bin/clangd\",\n"
+    "           \"program\": \"/usr/bin/unioncode-clangd\",\n"
     "           \"arguments\": []\n"
     "    },\n"
     "    \"Java\" : {\n"
@@ -92,14 +92,37 @@ SettingInfo Setting::getInfo(const QString &language)
     checkConfigFile();
     QJsonObject docObj = configDoc.object();
     QJsonObject secObj = docObj.value(language).toObject();
-    QString mode = secObj.value("mode").toString();
     QString program = secObj.value("program").toString();
-    QJsonArray array = secObj.value("arguments").toArray();
-    QStringList result;
-    for (auto val : array) {
-        result << val.toString();
+
+    // program not exists from config file
+    QFileInfo fInfo(program);
+    if (!fInfo.exists() || fInfo.isExecutable()) {
+        // load default profram
+        auto defObj = QJsonDocument::fromJson(::configCache.toUtf8()).object()
+                .value(language).toObject();
+        QString defProgram = defObj.value("program").toString();
+        std::cout << "Failed, can't find lauch backend from program: "
+                  << program.toLatin1().data()
+                  << ", load default backend: " << defProgram.toLatin1().data()
+                  << std::endl;
+
+        QString defMode = defObj.value("mode").toString();
+        QJsonArray defArray = defObj.value("arguments").toArray();
+        QStringList defArgs;
+        for (auto val : defArray) {
+            defArgs << val.toString();
+        }
+        return { language, defMode, program, defArgs };
     }
-    return {language, mode, program, result };
+
+    QString mode = secObj.value("mode").toString();
+    QJsonArray array = secObj.value("arguments").toArray();
+    QStringList args;
+    for (auto val : array) {
+        args << val.toString();
+    }
+
+    return { language, mode, program, args };
 }
 
 bool Setting::genConfigFile(const QString &configPath)
