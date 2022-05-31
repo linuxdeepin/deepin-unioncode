@@ -96,7 +96,7 @@ SettingInfo Setting::getInfo(const QString &language)
 
     // program not exists from config file
     QFileInfo fInfo(program);
-    if (!fInfo.exists() || fInfo.isExecutable()) {
+    if (!fInfo.exists() || !fInfo.isExecutable()) {
         // load default profram
         auto defObj = QJsonDocument::fromJson(::configCache.toUtf8()).object()
                 .value(language).toObject();
@@ -112,7 +112,7 @@ SettingInfo Setting::getInfo(const QString &language)
         for (auto val : defArray) {
             defArgs << val.toString();
         }
-        return { language, defMode, program, defArgs };
+        return { language, defMode, defProgram, defArgs };
     }
 
     QString mode = secObj.value("mode").toString();
