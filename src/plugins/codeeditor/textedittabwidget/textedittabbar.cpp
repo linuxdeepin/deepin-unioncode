@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "textedittabbar.h"
-
+#include "transceiver/sendevents.h"
 #include <QFileInfo>
 #include <QDebug>
 
@@ -61,6 +61,7 @@ void TextEditTabBar::switchFile(const QString &file)
     int index = fileIndex(file);
     if (index != -1) {
         setCurrentIndex(index);
+        SendEvents::sendCurrentEditFileStatus(file, true);
     }
 }
 
@@ -114,6 +115,7 @@ void TextEditTabBar::removeTab(const QString &file)
     int index = fileIndex(file);
     if (index != -1){
         emit fileClosed(indexFile(index));
+        SendEvents::sendCurrentEditFileStatus(file, false);
         QTabBar::removeTab(index);
     }
 }

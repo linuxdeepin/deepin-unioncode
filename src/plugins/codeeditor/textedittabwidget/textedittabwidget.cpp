@@ -82,6 +82,10 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     QObject::connect(d->tab, &TextEditTabBar::fileClosed,
                      this, &TextEditTabWidget::removeFileStatusBar, Qt::QueuedConnection);
 
+    QObject::connect(DpfEventMiddleware::instance(),
+                     QOverload<const Head &, const QString &, int>::of(&DpfEventMiddleware::toJumpFileLine),
+                     this, QOverload<const Head &, const QString &, int>::of(&TextEditTabWidget::jumpToLine));
+
     //    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf, this, &TextEditTabWidget::fileDeleted);
     //    QObject::connect(Inotify::globalInstance(), &Inotify::movedSelf, this, &TextEditTabWidget::fileMoved);
     //    QObject::connect(Inotify::globalInstance(), &Inotify::modified, this, &TextEditTabWidget::fileModifyed);
@@ -190,6 +194,7 @@ void TextEditTabWidget::openFile(const Head &head, const QString &filePath)
         d->defaultEdit.hide();
 
     d->tab->switchFile(filePath);
+
     showFileEdit(filePath);
 }
 

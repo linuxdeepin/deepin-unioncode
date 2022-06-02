@@ -30,6 +30,7 @@ const QString T_PROJECT {"Project"};
 const QString T_WORKSPACE {"Workspace"};
 const QString T_RECENT{"Recent"};
 const QString T_PROCESSMESSAGE{"ProcessMessage"};
+const QString T_FIND {"Find"};
 
 const QString D_ACTION_SWITCH {"Action.Switch"};
 
@@ -55,6 +56,10 @@ const QString D_CRETED {"Created"};
 const QString D_DELETED {"Deleted"};
 const QString D_ACTIVED {"Actived"};
 
+const QString D_SEARCH {"Search"};
+const QString D_REPLACE {"Replace"};
+const QString D_OPENFILE {"OpenFile"};
+
 const QString P_ACTION_TEXT {"ActionText"};
 const QString P_FILELINE {"FileLine"};
 const QString P_FILEPATH {"FilePath"};
@@ -71,3 +76,7 @@ const QString P_PERCENT {"Percent"};
 const QString P_MAX_PERCENT {"MaxPerCent"};
 const QString P_LANGUAGE {"Language"};
 const QString P_PROJECT_INFO{"ProjectInfo"};
+
+const QString P_OPRATETYPE {"OperateType"};
+const QString P_SRCTEXT {"SrcText"};
+const QString P_DESTTEXT {"DestText"};

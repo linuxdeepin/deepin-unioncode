@@ -18,34 +18,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef FINDTOOLWINDOW_H
-#define FINDTOOLWINDOW_H
+#ifndef FINDRECEIVER_H
+#define FINDRECEIVER_H
 
-#include "searchresultwindow.h"
+#include <framework/framework.h>
 
-#include <QWidget>
-
-class FindToolWindowPrivate;
-class FindToolWindow : public QWidget
+class FindReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<FindReceiver>
 {
     Q_OBJECT
 public:
-    explicit FindToolWindow(QWidget *parent = nullptr);
-
-signals:
-
-private:
-    void setupUi();
-    void search();
-    void searchText();
-    void replace();
-    void addSearchParamWidget(QWidget *parentWidget);
-    void addSearchResultWidget(QWidget *parentWidget);
-    void switchSearchParamWidget();
-    bool checkSelectedScopeValid();
-    bool getSearchParams(SearchParams *searchParams);
-
-    FindToolWindowPrivate *const d;
+    explicit FindReceiver(QObject *parent = nullptr);
+    static Type type();
+    static QStringList topics();
+    virtual void eventProcess(const dpf::Event& event) override;
 };
 
-#endif // FINDTOOLWINDOW_H
+class FindEventTransmit : public QObject
+{
+    Q_OBJECT
+public:
+    static FindEventTransmit* getInstance();
+
+signals:
+    void sendProjectPath(const QString &projectPath, const QString &language);
+    void sendRemovedProject(const QString &projectPath);
+    void sendCurrentEditFile(const QString &filePath, bool actived);
+
+private:
+    explicit FindEventTransmit(QObject *parent = nullptr);
+    ~FindEventTransmit();
+};
+
+
+#endif // FINDRECEIVER_H

@@ -9,6 +9,8 @@ set(CXX_H
     project/projectgenerator.h
     project/projectservice.h
     runtime/runtimeservice.h
+    find/enums.h
+    find/findservice.h
     )
 
 set(CXX_CPP

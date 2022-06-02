@@ -1,8 +1,27 @@
+/*
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ *
+ * Author:     zhouyi<zhouyi1@uniontech.com>
+ *
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include "findplugin.h"
 
 #include "services/window/windowservice.h"
 #include "findtoolbar.h"
-#include "currentdocumentfind.h"
 #include "findtoolwindow.h"
 #include "searchresultwindow.h"
 #include "common/common.h"
@@ -31,14 +50,14 @@ bool FindPlugin::start()
         abort();
     }
 
-    QMenu* editMenu = new QMenu("&Edit");
+    QMenu* editMenu = new QMenu(QMenu::tr("&Edit"));
     QAction* findAction = new QAction();
     QAction* advancedFindAction = new QAction();
 
     ActionManager::getInstance()->registerAction(findAction, "Edit.Find",
-                                                 "Find/Replace", QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
+                                                 tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
     ActionManager::getInstance()->registerAction(advancedFindAction, "Edit.Advanced.Find",
-                                                 "Advanced Find", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT |Qt::Key_F));
+                                                 tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT |Qt::Key_F));
 
     editMenu->addAction(findAction);
     editMenu->addAction(advancedFindAction);
@@ -48,16 +67,16 @@ bool FindPlugin::start()
     });
 
     connect(advancedFindAction, &QAction::triggered, [=] {
-        emit windowService->switchWidgetContext ("&Search Results");
+        emit windowService->switchWidgetContext(tr("&Search Results"));
     });
 
     AbstractMenu * menuImpl = new AbstractMenu(editMenu);
     windowService->addMenu(menuImpl);
 
     AbstractWidget *widgetImpl = new AbstractWidget(new FindToolWindow());
-    emit windowService->addContextWidget("&Search Results", widgetImpl);
+    emit windowService->addContextWidget(tr("&Search Results"), widgetImpl);
 
-    FindToolBar * findToolBar = new FindToolBar(new CurrentDocumentFind());
+    FindToolBar * findToolBar = new FindToolBar();
     AbstractWidget *abstractFindToolBar = new AbstractWidget(findToolBar);
     emit windowService->addFindToolBar(abstractFindToolBar);
     connect(findToolBar, &FindToolBar::advanced, this, &FindPlugin::sendSwitchSearchResult);
@@ -67,7 +86,7 @@ bool FindPlugin::start()
 
 void FindPlugin::sendSwitchSearchResult()
 {
-    emit windowService->switchWidgetContext ("&Search Results");
+    emit windowService->switchWidgetContext(tr("&Search Results"));
 }
 
 dpf::Plugin::ShutdownFlag FindPlugin::stop()

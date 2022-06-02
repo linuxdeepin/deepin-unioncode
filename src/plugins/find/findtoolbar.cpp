@@ -1,6 +1,26 @@
+/*
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ *
+ * Author:     zhouyi<zhouyi1@uniontech.com>
+ *
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include "findtoolbar.h"
-
-#include "currentdocumentfind.h"
+#include "transceiver/findsender.h"
+#include "services/find/findservice.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -10,23 +30,22 @@
 
 #define LABEL_WIDTH           (80)
 #define OPERATOR_WIDGET_WIDTH (400)
+using namespace dpfservice;
 
 class FindToolBarPrivate
 {
-    CurrentDocumentFind *currentDocumentFind;
+    FindToolBarPrivate(){}
+    QLineEdit *findLineEdit{nullptr};
+    QLineEdit *replaceLineEdit{nullptr};
 
     friend class FindToolBar;
 };
 
-FindToolBar::FindToolBar(CurrentDocumentFind *currentDocumentFind)
+FindToolBar::FindToolBar(QWidget *parent)
+    : QWidget(parent)
+    , d(new FindToolBarPrivate())
 {
-    //d->currentDocumentFind = currentDocumentFind;
     setupUi();
-}
-
-FindToolBar::~FindToolBar()
-{
-
 }
 
 void FindToolBar::setupUi()
@@ -37,11 +56,11 @@ void FindToolBar::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     QHBoxLayout *findLayout = new QHBoxLayout();
     vLayout->addLayout(findLayout);
-    QLabel *findLabel = new QLabel("Find:");
+    QLabel *findLabel = new QLabel(QLabel::tr("Find:"));
     findLabel->setFixedWidth(LABEL_WIDTH);
     findLabel->setAlignment(Qt::AlignRight);
 
-    QLineEdit *findLineEdit = new QLineEdit();
+    d->findLineEdit = new QLineEdit();
 
     QWidget *findWidget = new QWidget();
     findWidget->setFixedWidth(OPERATOR_WIDGET_WIDTH);
@@ -49,24 +68,24 @@ void FindToolBar::setupUi()
     findWidgetLayout->setMargin(0);
     findWidget->setLayout(findWidgetLayout);
 
-    QPushButton *findPreBtn = new QPushButton("Find Previous");
-    QPushButton *findNextBtn = new QPushButton("Find Next");
-    QPushButton *advancedBtn = new QPushButton("Advanced...");
+    QPushButton *findPreBtn = new QPushButton(QPushButton::tr("Find Previous"));
+    QPushButton *findNextBtn = new QPushButton(QPushButton::tr("Find Next"));
+    QPushButton *advancedBtn = new QPushButton(QPushButton::tr("Advanced..."));
     findWidgetLayout->addWidget(findPreBtn);
     findWidgetLayout->addWidget(findNextBtn);
     findWidgetLayout->addWidget(advancedBtn);
 
     findLayout->addWidget(findLabel);
-    findLayout->addWidget(findLineEdit);
+    findLayout->addWidget(d->findLineEdit);
     findLayout->addWidget(findWidget);
 
     QHBoxLayout *repalceLayout = new QHBoxLayout();
     vLayout->addLayout(repalceLayout);
-    QLabel *repalceLabel = new QLabel("Repalce:");
+    QLabel *repalceLabel = new QLabel(QLabel::tr("Repalce:"));
     repalceLabel->setFixedWidth(LABEL_WIDTH);
     repalceLabel->setAlignment(Qt::AlignRight);
 
-    QLineEdit *replaceLineEdit = new QLineEdit();
+    d->replaceLineEdit = new QLineEdit();
 
     QWidget *replaceWidget = new QWidget();
     replaceWidget->setFixedWidth(OPERATOR_WIDGET_WIDTH);
@@ -74,15 +93,15 @@ void FindToolBar::setupUi()
     replaceWidgetLayout->setMargin(0);
     replaceWidget->setLayout(replaceWidgetLayout);
 
-    QPushButton *replaceBtn = new QPushButton("Replace");
-    QPushButton *replaceFindBtn = new QPushButton("Replace && Find");
-    QPushButton *replaceAllBtn = new QPushButton("Repalce All");
+    QPushButton *replaceBtn = new QPushButton(QPushButton::tr("Replace"));
+    QPushButton *replaceFindBtn = new QPushButton(QPushButton::tr("Replace && Find"));
+    QPushButton *replaceAllBtn = new QPushButton(QPushButton::tr("Repalce All"));
     replaceWidgetLayout->addWidget(replaceBtn);
     replaceWidgetLayout->addWidget(replaceFindBtn);
     replaceWidgetLayout->addWidget(replaceAllBtn);
 
     repalceLayout->addWidget(repalceLabel);
-    repalceLayout->addWidget(replaceLineEdit);
+    repalceLayout->addWidget(d->replaceLineEdit);
     repalceLayout->addWidget(replaceWidget);
 
     connect(findPreBtn, &QAbstractButton::clicked, this, &FindToolBar::findPrevious);
@@ -98,12 +117,18 @@ void FindToolBar::setupUi()
 
 void FindToolBar::findPrevious()
 {
-
+    QString text = d->findLineEdit->text();
+    if (text.isEmpty())
+        return;
+    FindSender::sendSearchCommand(text, FindType::Previous);
 }
 
 void FindToolBar::findNext()
 {
-
+    QString text = d->findLineEdit->text();
+    if (text.isEmpty())
+        return;
+    FindSender::sendSearchCommand(text, FindType::Next);
 }
 
 void FindToolBar::advancedSearch()
@@ -113,16 +138,28 @@ void FindToolBar::advancedSearch()
 
 void FindToolBar::replace()
 {
-
+    QString srcText = d->findLineEdit->text();
+    if (srcText.isEmpty())
+        return;
+    QString destText = d->replaceLineEdit->text();
+    FindSender::sendReplaceCommand(srcText, destText, RepalceType::Repalce);
 }
 
 void FindToolBar::replaceSearch()
 {
-
+    QString srcText = d->findLineEdit->text();
+    if (srcText.isEmpty())
+        return;
+    QString destText = d->replaceLineEdit->text();
+    FindSender::sendReplaceCommand(srcText, destText, RepalceType::FindAndReplace);
 }
 
 void FindToolBar::replaceAll()
 {
-
+    QString srcText = d->findLineEdit->text();
+    if (srcText.isEmpty())
+        return;
+    QString destText = d->replaceLineEdit->text();
+    FindSender::sendReplaceCommand(srcText, destText, RepalceType::RepalceAll);
 }
 

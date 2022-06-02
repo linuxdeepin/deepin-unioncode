@@ -24,6 +24,8 @@
 #include "SciLexer.h"
 #include "common/common.h"
 #include "framework/framework.h"
+#include "transceiver/codeeditorreceiver.h"
+#include "services/find/findservice.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -42,7 +44,7 @@
 
 #include <bitset>
 #include <iostream>
-
+using namespace dpfservice;
 class TextEditPrivate
 {
     friend class TextEdit;
@@ -80,6 +82,12 @@ TextEdit::TextEdit(QWidget *parent)
 
     QObject::connect(this, &ScintillaEditExtern::saved, this,
                      &TextEdit::fileSaved, Qt::UniqueConnection);
+
+    QObject::connect(DpfEventMiddleware::instance(), QOverload<const QString &, int>::of(&DpfEventMiddleware::toSearchText),
+                     this, &TextEdit::find);
+
+    QObject::connect(DpfEventMiddleware::instance(), QOverload<const QString &, const QString &, int>::of(&DpfEventMiddleware::toReplaceText),
+                     [=](const QString &srcText, const QString &destText, int mark){ replace(srcText, destText, mark); });
 }
 
 TextEdit::~TextEdit()
@@ -116,5 +124,56 @@ void TextEdit::setFile(const QString &filePath, const Head &projectHead)
         lsp::Client* proClient = lsp::ClientManager::instance()->get(projectHead);
         getStyleLsp()->setClient(proClient); //设置
         getStyleLsp()->initLspConnection(); // 初始化所有lsp client设置
+    }
+}
+
+void TextEdit::find(const QString &srcText, int operateType)
+{
+    switch (operateType) {
+    case FindType::Previous:
+    {
+        searchAnchor();
+        searchPrev(SCFIND_NONE, srcText.toLatin1().data());
+        break;
+    }
+    case FindType::Next:
+    {
+        findNext(srcText);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void TextEdit::replace(const QString &srcText, const QString &destText, int operateType)
+{
+    switch (operateType) {
+    case RepalceType::Repalce:
+    {
+        QByteArray byteArray = getSelText();
+        if (0 == QString(byteArray).compare(srcText, Qt::CaseInsensitive)) {
+            replaceSel(destText.toLatin1().data());
+        }
+
+        break;
+    }
+    case RepalceType::FindAndReplace:
+    {
+        QByteArray byteArray = getSelText();
+        if (0 == QString(byteArray).compare(srcText, Qt::CaseInsensitive)) {
+            replaceSel(destText.toLatin1().data());
+            searchAnchor();
+            searchNext(SCFIND_NONE, srcText.toLatin1().data());
+        }
+        break;
+    }
+    case RepalceType::RepalceAll:
+    {
+        replaceAll(srcText, destText);
+        break;
+    }
+    default:
+        break;
     }
 }

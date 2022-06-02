@@ -24,7 +24,7 @@
 
 static QStringList subTopics
 {
-    T_MENU, T_FILEBROWSER , T_DEBUGGER, T_PROJECT
+    T_MENU, T_FILEBROWSER , T_DEBUGGER, T_PROJECT, T_FIND
 };
 
 CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
@@ -57,6 +57,8 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         eventMenu(event);
     } else if (T_FILEBROWSER == event.topic()) {
         eventFileBrowser(event);
+    } else if (T_FIND == event.topic()) {
+        eventFind(event);
     }
 }
 
@@ -107,6 +109,25 @@ void CodeEditorReceiver::eventMenu(const dpf::Event &event)
     if (D_FILE_OPENFOLDER == event.data()) {
         qInfo() << event;
         return;
+    }
+}
+
+void CodeEditorReceiver::eventFind(const dpf::Event &event)
+{
+    if (D_SEARCH == event.data()) {
+        return DpfEventMiddleware::instance()->toSearchText(
+                    event.property(P_SRCTEXT).toString(),
+                    event.property(P_OPRATETYPE).toInt());
+    } else if (D_REPLACE == event.data()) {
+        return DpfEventMiddleware::instance()->toReplaceText(
+                    event.property(P_SRCTEXT).toString(),
+                    event.property(P_DESTTEXT).toString(),
+                    event.property(P_OPRATETYPE).toInt());
+    } else if (D_OPENFILE == event.data()) {
+        return DpfEventMiddleware::instance()->toJumpFileLine(
+                    Head(event.property(P_WORKSPACEFOLDER).toString(), event.property(P_LANGUAGE).toString()),
+                    event.property(P_FILEPATH).toString(),
+                    event.property(P_FILELINE).toInt());
     }
 }
 

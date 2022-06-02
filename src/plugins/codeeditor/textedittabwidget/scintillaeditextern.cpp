@@ -172,6 +172,36 @@ void ScintillaEditExtern::replaceRange(Scintilla::Position start,
     emit replaceed(file(), start, end, text);
 }
 
+QPair<long int, long int> ScintillaEditExtern::findText(long int start, long int end, const QString &text)
+{
+    return ScintillaEdit::findText(STYLE_DEFAULT, text.toLatin1().data(), start, end);
+}
+
+void ScintillaEditExtern::findNext(const QString &srcText)
+{
+    long int currentPos = ScintillaEditExtern::currentPos();
+    QPair<int, int> position = ScintillaEditExtern::findText(currentPos, length(), srcText.toLatin1().data());
+    if (position.first > -1 && position.first != position.second) {
+        ScintillaEditExtern::jumpToRange(position.first, position.second);
+    }
+}
+
+void ScintillaEditExtern::replaceAll(const QString &srcText, const QString &destText)
+{
+    ScintillaEdit::searchAnchor();
+    long int textLength = length();
+    for (long int index = 0; index < textLength;) {
+        QPair<int, int> position = ScintillaEditExtern::findText(index, textLength, srcText.toLatin1().data());
+        if (position.first > -1 && position.first != position.second) {
+            index = position.second;
+            replaceRange(position.first, position.second, destText);
+        }
+
+        if (position.second >= textLength || index < 0)
+            return;
+    }
+}
+
 void ScintillaEditExtern::sciModified(Scintilla::ModificationFlags type, Scintilla::Position position,
                                       Scintilla::Position length, Scintilla::Position linesAdded,
                                       const QByteArray &text, Scintilla::Position line,

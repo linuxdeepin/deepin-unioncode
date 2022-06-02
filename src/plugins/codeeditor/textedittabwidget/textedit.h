@@ -45,6 +45,10 @@ signals:
     void fileChanged(const QString &file);
     void fileClosed(const QString &file);
     void fileSaved(const QString &file);
+
+private:
+    void find(const QString &srcText, int operateType);
+    void replace(const QString &srcText, const QString &destText, int operateType);
 };
 
 #endif // TEXTEDIT_H

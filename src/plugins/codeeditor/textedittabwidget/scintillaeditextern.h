@@ -32,6 +32,9 @@ public:
     void saveText();
     bool isLeave();
     void replaceRange(Scintilla::Position start, Scintilla::Position end, const QString &text);
+    QPair<long int, long int> findText(long int start, long int end, const QString &text);
+    void findNext(const QString &srcText);
+    void replaceAll(const QString &srcText, const QString &destText);
 
 signals:
     void hovered(Scintilla::Position position);

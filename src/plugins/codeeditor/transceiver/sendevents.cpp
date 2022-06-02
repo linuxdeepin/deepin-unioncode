@@ -43,3 +43,13 @@ void SendEvents::marginDebugPointRemove(const QString filePath, quint64 fileLine
     dpf::EventCallProxy::instance().pubEvent(event);
     qInfo() << event;
 }
+
+void SendEvents::sendCurrentEditFileStatus(const QString &filePath, bool actived)
+{
+    dpf::Event event;
+    event.setTopic(T_PROJECT);
+    event.setData(D_FILE_OPENDOCUMENT);
+    event.setProperty(P_FILEPATH, filePath);
+    event.setProperty(P_OPRATETYPE, actived);
+    dpf::EventCallProxy::instance().pubEvent(event);
+}

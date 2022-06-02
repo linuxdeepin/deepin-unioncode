@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef SENDEVENTS_H
-#define SENDEVENTS_H
+#ifndef FINDSERVICE_H
+#define FINDSERVICE_H
 
-#include <QString>
+#include "enums.h"
 
-class SendEvents final
-{
-    SendEvents() = delete;
-    SendEvents(const SendEvents &) = delete;
-public:
-    static void marginDebugPointAdd(const QString filePath, quint64 fileLine);
-    static void marginDebugPointRemove(const QString filePath, quint64 fileLine);
-    static void sendCurrentEditFileStatus(const QString &filePath, bool actived);
-};
-
-#endif // SENDEVENTS_H
+#endif

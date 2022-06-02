@@ -68,6 +68,6 @@ dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 void DebuggerPlugin::slotDebugStarted()
 {
     if (windowService) {
-        emit windowService->switchWidgetContext("Application Output");
+        emit windowService->switchWidgetContext("&Application Output");
     }
 }

@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef SENDEVENTS_H
-#define SENDEVENTS_H
+#ifndef FINDSENDER_H
+#define FINDSENDER_H
 
 #include <QString>
+#include "services/project/projectservice.h"
 
-class SendEvents final
+class FindSender final : QObject
 {
-    SendEvents() = delete;
-    SendEvents(const SendEvents &) = delete;
+    Q_OBJECT
 public:
-    static void marginDebugPointAdd(const QString filePath, quint64 fileLine);
-    static void marginDebugPointRemove(const QString filePath, quint64 fileLine);
-    static void sendCurrentEditFileStatus(const QString &filePath, bool actived);
+    static void sendSearchCommand(const QString &searchText, int operateType);
+    static void sendReplaceCommand(const QString &searchText, const QString &replaceText, int operateType);
+    static void sendDoubleClickFileInfo(const QString &workspace, const QString &language, const QString &filePath, int line);
+
+private:
+    explicit FindSender(QObject *parent = nullptr);
+    ~FindSender();
 };
 
-#endif // SENDEVENTS_H
+#endif // FINDSENDER_H

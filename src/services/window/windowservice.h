@@ -84,7 +84,6 @@ extern const QString DIALOG_OPEN_DOCUMENT_TITLE;
 // TabWidget Tab Text from editor
 extern const QString CONSOLE_TAB_TEXT; // text's "Console"
 
-
 // service interface
 class WindowService final : public dpf::PluginService, dpf::AutoServiceRegister<WindowService>
 {

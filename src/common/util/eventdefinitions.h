@@ -35,6 +35,7 @@ extern const QString T_WORKSPACE;
 extern const QString T_RECENT;
 extern const QString T_PROJECT;
 extern const QString T_PROCESSMESSAGE;
+extern const QString T_FIND;
 
 extern const QString D_ACTION_SWITCH;
 
@@ -61,6 +62,10 @@ extern const QString D_MARGIN_DEBUG_POINT_ADD;
 extern const QString D_MARGIN_DEBUG_POINT_REMOVE;
 extern const QString D_MARGIN_DEBUG_POINT_CLEAN;
 
+extern const QString D_SEARCH;
+extern const QString D_REPLACE;
+extern const QString D_OPENFILE;
+
 extern const QString P_ACTION_TEXT;    // value QString
 extern const QString P_FILELINE;       // value int
 extern const QString P_FILEPATH;       // value QString
@@ -77,3 +82,7 @@ extern const QString P_PERCENT;        // value int
 extern const QString P_MAX_PERCENT;    // value int
 extern const QString P_LANGUAGE;       // value QString
 extern const QString P_PROJECT_INFO;   // value dpfService::ProjectInfo
+
+extern const QString P_OPRATETYPE;
+extern const QString P_SRCTEXT;
+extern const QString P_DESTTEXT;
