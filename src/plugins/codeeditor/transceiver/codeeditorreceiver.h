@@ -45,6 +45,8 @@ public:
     virtual void eventMenu(const dpf::Event &event);
 
     virtual void eventFind(const dpf::Event &event);
+
+    virtual void eventSymbol(const dpf::Event &event);
 };
 
 

@@ -23,30 +23,57 @@
 #define PROJECTSERVICE_H
 
 #include "projectgenerator.h"
+#include "projectinfo.h"
+#include "projectviewinterface.h"
+#include "symbolgenerator.h"
+#include "symbolinfo.h"
+#include "symbolviewinterface.h"
+
+#include <QTabWidget>
 
 namespace dpfservice {
 
 class ProjectService final : public dpf::PluginService,
         dpf::AutoServiceRegister<ProjectService>,
         dpf::QtClassFactory<ProjectGenerator>,
-        dpf::QtClassManager<ProjectGenerator>
-
+        dpf::QtClassManager<ProjectGenerator>,
+        dpf::QtClassFactory<SymbolGenerator>,
+        dpf::QtClassManager<SymbolGenerator>
 {
     Q_OBJECT
     Q_DISABLE_COPY(ProjectService)
-    typedef dpf::QtClassManager<ProjectGenerator> GeneratorManager;
-    typedef dpf::QtClassFactory<ProjectGenerator> GeneratorFactory;
+    typedef dpf::QtClassManager<ProjectGenerator> GeneratorProManager;
+    typedef dpf::QtClassFactory<ProjectGenerator> GeneratorProFactory;
+    typedef dpf::QtClassManager<SymbolGenerator> GeneratorSymManager;
+    typedef dpf::QtClassFactory<SymbolGenerator> GeneratorSymFactory;
 public:
-    static QString name();
-    explicit ProjectService(QObject *parent = nullptr);
+    static QString name()
+    {
+        return "org.deepin.service.ProjectService";
+    }
+
+    explicit ProjectService(QObject *parent = nullptr)
+        : dpf::PluginService (parent)
+    {
+
+    }
 
     /*!
      * \brief supportGenerator 獲取支持的工程名稱
      * \return
      */
+    template<class T>
     QStringList supportGeneratorName()
     {
-        return GeneratorFactory::createKeys();
+        if (std::is_same<ProjectGenerator, T>())
+            return GeneratorProFactory::createKeys();
+        else if (std::is_same<SymbolGenerator, T>())
+            return GeneratorProFactory::createKeys();
+        else {
+            qCritical() << "must SymbolGenerator or ProjectGenerator, "
+                        << "not support " << typeid (T).name();
+            abort();
+        }
     }
 
     /*!
@@ -54,10 +81,18 @@ public:
      * \param name 生成器對象名稱(唯一鍵)
      * \param errorString 錯誤信息
      */
-    template<class T = ProjectGenerator>
+    template<class T>
     bool implGenerator(const QString &name, QString *errorString = nullptr)
     {
-        return GeneratorFactory::regClass<T>(name, errorString);
+        if (std::is_base_of<ProjectGenerator, T>())
+            return GeneratorProFactory::regClass<T>(name, errorString);
+        else if (std::is_base_of<SymbolGenerator, T>())
+            return GeneratorSymFactory::regClass<T>(name, errorString);
+        else {
+            qCritical() << "must base class SymbolGenerator or ProjectGenerator, "
+                        << "not support " << typeid (T).name();
+            abort();
+        }
     }
 
     /*!
@@ -66,35 +101,42 @@ public:
      * \param errorString 錯誤信息
      * \return 生成器對象實例
      */
-    ProjectGenerator *createGenerator(const QString &name, QString *errorString = nullptr)
+    template<class T>
+    T *createGenerator(const QString &name, QString *errorString = nullptr)
     {
-        auto generator = GeneratorManager::value(name);
-        if (!generator) {
-            generator = GeneratorFactory::create(name, errorString);
-            if (generator)
-                GeneratorManager::append(name, generator);
+        if (std::is_base_of<ProjectGenerator, T>()) {
+            Generator *generator = GeneratorProManager::value(name);
+            if (!generator) {
+                generator = GeneratorProFactory::create(name, errorString);
+                if (generator)
+                    GeneratorProManager::append(name, dynamic_cast<ProjectGenerator*>(generator));
+            }
+            return dynamic_cast<T*>(generator);
+        } else if (std::is_base_of<SymbolGenerator, T>()) {
+            Generator *generator = GeneratorSymManager::value(name);
+            if (!generator) {
+                generator = GeneratorSymFactory::create(name, errorString);
+                if (generator)
+                    GeneratorSymManager::append(name, dynamic_cast<SymbolGenerator*>(generator));
+            }
+            return dynamic_cast<T*>(generator);
+        } else {
+            qCritical() << "must base class SymbolGenerator or ProjectGenerator, "
+                        << "not support "<< typeid (T).name();
+            abort();
         }
-        return generator;
     }
 
-    /*!
-     * \brief addProjectRootItem 添加根數據到TreeView
-     * \param aitem
-     */
-    DPF_INTERFACE(void, addProjectRootItem, QStandardItem *aitem);
 
     /*!
-     * \brief expandedProjectDepth 展开工程子项根据深度
-     * \param aitem root节点
-     * \param depth 深度
+     * \brief projectView 工程视图接口对象
      */
-    DPF_INTERFACE(void, expandedProjectDepth, QStandardItem *aitem, int depth);
+    ProjectViewInterface projectView;
 
     /*!
-     * \brief expandedProjectAll 展开工程所有子项
-     * \param aitem root节点
+     * \brief symbolView 符号视图接口对象
      */
-    DPF_INTERFACE(void, expandedProjectAll, QStandardItem *aitem);
+    SymbolViewInterface symbolView;
 
     /*!
      * \brief DPF_INTERFACE
@@ -139,7 +181,8 @@ Q_SIGNALS:
 /* MainWindow codeediter workspace title,
  * use in window service swtich workspace
  */
-extern const QString MWCWT_PROJECTS;
+inline const QString MWCWT_PROJECTS {QTabWidget::tr("Projects")};
+inline const QString MWCWT_SYMBOL {QTabWidget::tr("Symbol")};
 
 } //namespace dpfservice
 

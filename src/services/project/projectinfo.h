@@ -1,12 +1,33 @@
+/*
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ *
+ * Author:     huangyu<huangyub@uniontech.com>
+ *
+ * Maintainer: huangyu<huangyub@uniontech.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #ifndef PROJECTINFO_H
 #define PROJECTINFO_H
 
+#include <QSet>
 #include <QVariantHash>
 #include <QStandardItem>
 
 namespace dpfservice {
 
-enum ItemDataRole
+enum
 {
     ProjectInfoRole = Qt::ItemDataRole::UserRole,
 };
@@ -32,6 +53,7 @@ public:
     inline void setProjectFilePath(const QString &projectFilePath) {data["ProjectFilePath"] = projectFilePath;}
     inline void setBuildType(const QString &buildType) {data["BuildType"] = buildType;}
     inline void setBuildCustomArgs(const QStringList &args) {data["BuildCustomArgs"] = args;}
+    inline void setSourceFiles(const QSet<QString> &files) {data["SourceFiles"] = QVariant::fromValue(files);}
 
     inline QString language() const {return data["Language"].toString();}
     inline QString kitName() const {return data["KitName"].toString();}
@@ -41,24 +63,25 @@ public:
     inline QString projectFilePath() const {return data["ProjectFilePath"].toString();}
     inline QString buildType() const {return data["BuildType"].toString();}
     inline QStringList buildCustomArgs() const {return data["BuildCustomArgs"].toStringList();}
+    inline QSet<QString> sourceFiles() const {return qvariant_cast<QSet<QString>>(data["SourceFiles"]);}
 
     inline static void set(QStandardItem *root, const ProjectInfo &info)
     {
         if (root)
-            root->setData(QVariant::fromValue(info), ItemDataRole::ProjectInfoRole);
+            root->setData(QVariant::fromValue(info), ProjectInfoRole);
     }
 
     inline static ProjectInfo get(const QModelIndex &root)
     {
         if (root.isValid())
-            return qvariant_cast<ProjectInfo>(root.data(ItemDataRole::ProjectInfoRole));
+            return qvariant_cast<ProjectInfo>(root.data(ProjectInfoRole));
         return {};
     }
 
     inline static ProjectInfo get(const QStandardItem *root)
     {
         if (root)
-            return qvariant_cast<ProjectInfo>(root->data(ItemDataRole::ProjectInfoRole));
+            return qvariant_cast<ProjectInfo>(root->data(ProjectInfoRole));
         return {};
     }
 

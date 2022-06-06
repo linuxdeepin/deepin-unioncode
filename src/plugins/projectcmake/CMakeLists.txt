@@ -22,7 +22,7 @@ set(CXX_H
     )
 
 set(CXX_QRC
-    mainframe/cmakeproject.qrc
+    mainframe/cmake.qrc
     )
 
 add_library(${PROJECT_NAME}

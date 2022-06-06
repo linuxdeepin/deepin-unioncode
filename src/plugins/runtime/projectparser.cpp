@@ -91,7 +91,7 @@ bool ProjectParser::read(QIODevice *device)
     }
 
     auto printName = [](QDomElement ele){
-        qInfo() << ele.tagName();
+        // qInfo() << ele.tagName();
     };
 
     QDomElement cproject = domDocument.documentElement();
@@ -145,7 +145,7 @@ bool ProjectParser::write(QIODevice *device) const
 void ProjectParser::parseTargetElement(const QDomElement &element)
 {
     auto printName = [](QDomElement ele) {
-        qInfo() << ele.tagName();
+        // qInfo() << ele.tagName();
     };
 
     auto getAttr = [](QDomElement ele, QString attr)->QString {

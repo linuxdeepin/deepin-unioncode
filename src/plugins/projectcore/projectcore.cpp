@@ -76,8 +76,8 @@ bool ProjectCore::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
         if (windowService->addWidgetWorkspace) {
-            windowService->addWidgetWorkspace(MWCWT_PROJECTS,
-                                              new AbstractWidget(ProjectKeeper::instance()->treeView()));
+            auto view = new AbstractWidget(ProjectKeeper::instance()->treeView());
+            windowService->addWidgetWorkspace(MWCWT_PROJECTS, view);
         }
     }
 
@@ -85,17 +85,17 @@ bool ProjectCore::start()
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {
         ProjectTreeView *treeView = ProjectKeeper::instance()->treeView();
-        if (!projectService->addProjectRootItem) {
-            projectService->addProjectRootItem = std::bind(&ProjectTreeView::appendRootItem,
-                                                           treeView, _1);
+        if (!projectService->projectView.addRootItem) {
+            projectService->projectView.addRootItem
+                    = std::bind(&ProjectTreeView::appendRootItem, treeView, _1);
         }
-        if (!projectService->expandedProjectDepth) {
-            projectService->expandedProjectDepth = std::bind(&ProjectTreeView::expandedProjectDepth,
-                                                             treeView, _1, _2);
+        if (!projectService->projectView.expandedDepth) {
+            projectService->projectView.expandedDepth
+                    = std::bind(&ProjectTreeView::expandedProjectDepth, treeView, _1, _2);
         }
-        if (!projectService->expandedProjectAll) {
-            projectService->expandedProjectAll = std::bind(&ProjectTreeView::expandedProjectAll,
-                                                           treeView, _1);
+        if (!projectService->projectView.expandedAll) {
+            projectService->projectView.expandedAll
+                    = std::bind(&ProjectTreeView::expandedProjectAll, treeView, _1);
         }
     }
     return true;

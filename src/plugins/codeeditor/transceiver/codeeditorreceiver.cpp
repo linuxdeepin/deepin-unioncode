@@ -22,11 +22,6 @@
 #include "common/common.h"
 #include "services/project/projectservice.h"
 
-static QStringList subTopics
-{
-    T_MENU, T_FILEBROWSER , T_DEBUGGER, T_PROJECT, T_FIND
-};
-
 CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
     : dpf::EventHandler (parent)
     , dpf::AutoEventHandlerRegister<CodeEditorReceiver> ()
@@ -41,12 +36,14 @@ dpf::EventHandler::Type CodeEditorReceiver::type()
 
 QStringList CodeEditorReceiver::topics()
 {
-    return subTopics; //绑定menu 事件
+    return {
+        T_MENU, T_FILEBROWSER , T_DEBUGGER, T_PROJECT, T_FIND, T_SYMBOL
+    }; //绑定menu 事件
 }
 
 void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!subTopics.contains(event.topic()))
+    if (!topics().contains(event.topic()))
         abort();
 
     if (T_DEBUGGER == event.topic()) {
@@ -59,6 +56,8 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         eventFileBrowser(event);
     } else if (T_FIND == event.topic()) {
         eventFind(event);
+    } else if (T_SYMBOL == event.topic()) {
+        eventSymbol(event);
     }
 }
 
@@ -126,6 +125,18 @@ void CodeEditorReceiver::eventFind(const dpf::Event &event)
     } else if (D_OPENFILE == event.data()) {
         return DpfEventMiddleware::instance()->toJumpFileLine(
                     Head(event.property(P_WORKSPACEFOLDER).toString(), event.property(P_LANGUAGE).toString()),
+                    event.property(P_FILEPATH).toString(),
+                    event.property(P_FILELINE).toInt());
+    }
+}
+
+void CodeEditorReceiver::eventSymbol(const dpf::Event &event)
+{
+    if (D_JUMP_TO_LINE == event.data()) {
+        Head head{  event.property(P_WORKSPACEFOLDER).toString(),
+                    event.property(P_LANGUAGE).toString()  };
+        DpfEventMiddleware::instance()->toJumpFileLine(
+                    head,
                     event.property(P_FILEPATH).toString(),
                     event.property(P_FILELINE).toInt());
     }

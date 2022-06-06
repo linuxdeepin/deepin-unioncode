@@ -5,6 +5,10 @@ set(CXX_H
     window/windowservice.h
     debugger/debuggerservice.h
     container/containerservice.h
+    project/symbolinfo.h
+    project/symbolgenerator.h
+    project/symbolviewinterface.h
+    project/projectviewinterface.h
     project/projectinfo.h
     project/projectgenerator.h
     project/projectservice.h
@@ -17,7 +21,6 @@ set(CXX_CPP
     window/windowservice.cpp
     debugger/debuggerservice.cpp
     container/containerservice.cpp
-    project/projectservice.cpp
     runtime/runtimeservice.cpp
     )
 

@@ -34,6 +34,7 @@ extern const QString T_BUILDER;
 extern const QString T_WORKSPACE;
 extern const QString T_RECENT;
 extern const QString T_PROJECT;
+extern const QString T_SYMBOL;
 extern const QString T_PROCESSMESSAGE;
 extern const QString T_FIND;
 
@@ -58,6 +59,7 @@ extern const QString D_ADDTEXT;
 extern const QString D_CRETED;
 extern const QString D_DELETED;
 extern const QString D_ACTIVED;
+extern const QString D_JUMP_TO_LINE;
 
 extern const QString D_MARGIN_DEBUG_POINT_ADD;
 extern const QString D_MARGIN_DEBUG_POINT_REMOVE;

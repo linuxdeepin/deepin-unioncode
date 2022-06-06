@@ -1,4 +1,24 @@
-﻿#include "cmakegenerator.h"
+﻿/*
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ *
+ * Author:     huangyu<huangyub@uniontech.com>
+ *
+ * Maintainer: huangyu<huangyub@uniontech.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+#include "cmakegenerator.h"
 #include "cmakeconfigwidget.h"
 #include "common/common.h"
 
@@ -187,19 +207,19 @@ QStandardItem *CMakeGenerator::createRootItem(const dpfservice::ProjectInfo &inf
     }
 
     // step.2 read project from CDT4 xml file;
+    using namespace dpfservice;
+    QSet<QString> allFiles{};
+    ProjectInfo proInfo = info;
     QStandardItem * rootItem = nullptr;
-    QDomDocument projectXmlDoc = cdt4LoadProjectXmlDoc(info.buildFolder());
+    QDomDocument projectXmlDoc = cdt4LoadProjectXmlDoc(proInfo.buildFolder());
     QDomElement docElem = projectXmlDoc.documentElement();
     QDomNode n = docElem.firstChild();
     while(!n.isNull()) {
         QDomElement e = n.toElement(); // try to convert the node to an element.
         if(!e.isNull()) {
             if (!rootItem && e.tagName() == CDT_XML_KEY::get()->name) {
-                QFileInfo rootCMakeInfo(info.projectFilePath());
+                QFileInfo rootCMakeInfo(proInfo.projectFilePath());
                 rootItem = new QStandardItem();
-
-                // 设置顶层节点当前构建系统信息，该过程不可少
-                dpfservice::ProjectInfo::set(rootItem, info);
 
                 rootItem->setText(e.text());
                 rootItem->setIcon(::cmakeFolderIcon());
@@ -233,7 +253,11 @@ QStandardItem *CMakeGenerator::createRootItem(const dpfservice::ProjectInfo &inf
                                 }
                             }
                             if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->location) {
-                                childItem->setIcon(CustomIcons::icon(QFileInfo(linkChildElem.text()))); // 设置本地文件图标
+                                QFileInfo fileInfo(linkChildElem.text());
+                                if (fileInfo.isFile()) {
+                                    allFiles << linkChildElem.text();
+                                }
+                                childItem->setIcon(CustomIcons::icon(fileInfo)); // 设置本地文件图标
                                 childItem->setToolTip(linkChildElem.text());
                             }
                             if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->locationURI) {
@@ -250,6 +274,10 @@ QStandardItem *CMakeGenerator::createRootItem(const dpfservice::ProjectInfo &inf
         }
         n = n.nextSibling();
     }
+
+    // 设置顶层节点当前构建系统信息，该过程不可少
+    proInfo.setSourceFiles(allFiles);
+    ProjectInfo::set(rootItem, proInfo);
     return cdt4DisplayOptimize(rootItem);
 }
 

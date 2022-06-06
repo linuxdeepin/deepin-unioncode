@@ -27,6 +27,7 @@ const QString T_CODEEDITOR {"CodeEditor"};
 const QString T_DEBUGGER {"Debugger"};
 const QString T_BUILDER {"Builder"};
 const QString T_PROJECT {"Project"};
+const QString T_SYMBOL {"Symbol"};
 const QString T_WORKSPACE {"Workspace"};
 const QString T_RECENT{"Recent"};
 const QString T_PROCESSMESSAGE{"ProcessMessage"};
@@ -56,6 +57,7 @@ const QString D_ADDTEXT {"AddText"};
 const QString D_CRETED {"Created"};
 const QString D_DELETED {"Deleted"};
 const QString D_ACTIVED {"Actived"};
+const QString D_JUMP_TO_LINE {"JumpToLine"};
 
 const QString D_SEARCH {"Search"};
 const QString D_REPLACE {"Replace"};

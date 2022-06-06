@@ -60,7 +60,7 @@ bool ProjectCMake::start()
                          [=](const QString &name, const QString &language, const QString &filePath) {
             // 打开工程后续流程
             if (projectService) {
-                ProjectGenerator *generator = projectService->createGenerator(name);
+                ProjectGenerator *generator = projectService->createGenerator<ProjectGenerator>(name);
                 QString projectFilePath = filePath;
                 // show build type config pane.
                 projectService->showConfigureProjDlg(projectFilePath);
@@ -87,10 +87,10 @@ bool ProjectCMake::start()
                 auto rootItem = generator->createRootItem(info);
                 if (rootItem) {
                     SendEvents::menuOpenProject(filePath); // 发送打开事件
-                    if (projectService->addProjectRootItem)
-                        projectService->addProjectRootItem(rootItem);   // 设置项目根节点
-                    if (projectService->expandedProjectDepth)
-                        projectService->expandedProjectDepth(rootItem, 2);   // 初始化展开两级
+                    if (projectService->projectView.addRootItem)
+                        projectService->projectView.addRootItem(rootItem);   // 设置项目根节点
+                    if (projectService->projectView.expandedDepth)
+                        projectService->projectView.expandedDepth(rootItem, 2);   // 初始化展开两级
                     if (windowService->switchWidgetNavigation)
                         windowService->switchWidgetNavigation(MWNA_EDIT);   // 切换编辑器导航栏
                     if (windowService->switchWidgetWorkspace)

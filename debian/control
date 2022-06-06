@@ -11,6 +11,8 @@ Build-Depends:
  qttools5-dev-tools,
  lxqt-build-tools (>= 0.6.0~),
  libssl-dev,
+ llvm (>=1:7~),
+ libclang-dev (>=1:7~),
  dh-systemd,
  libutf8proc-dev
 Standards-version: 3.9.8
