@@ -14,6 +14,7 @@
 class ScintillaEditExternPrivate
 {
     friend class ScintillaEditExtern;
+    ScintillaEditExternPrivate() {}
     bool isCtrlKeyPressed;
     bool isLeave;
     Scintilla::Position hoverPos = -1;
@@ -89,6 +90,19 @@ void ScintillaEditExtern::setFile(const QString &filePath, const Head &projectHe
     setFile(filePath);
 }
 
+void ScintillaEditExtern::updateFile()
+{
+    QString text;
+    QFile file(d->filePath);
+    if (file.open(QFile::OpenModeFlag::ReadOnly)) {
+        text = file.readAll();
+        file.close();
+    }
+    setText(text.toUtf8());
+    emptyUndoBuffer();
+    setSavePoint();
+}
+
 Head ScintillaEditExtern::projectHead()
 {
     return d->proHead;
@@ -147,6 +161,20 @@ void ScintillaEditExtern::saveText()
         return;
 
     if (!file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate)) {
+        return;
+    }
+    Inotify::globalInstance()->addIgnorePath(d->filePath);
+    file.write(textRange(0, length()));
+    emit saved(d->filePath);
+    file.close();
+    Inotify::globalInstance()->removeIgnorePath(d->filePath);
+}
+
+
+void ScintillaEditExtern::saveAsText()
+{
+    QFile file(d->filePath);
+    if (!file.open(QFile::ReadWrite | QFile::Text | QFile::Truncate)) {
         ContextDialog::ok("Can't save current: " + file.errorString());
         return;
     }

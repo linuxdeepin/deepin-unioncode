@@ -206,7 +206,7 @@ void PollRunable::run()
                         QString filePath = watcherHash->value(event->wd);
                         if (ignores->contains(filePath)){
                             continue;
-                        };
+                        }
                         if (!filePath.isEmpty()) {
                             if (event->mask & IN_OPEN) {
                                 FuncCB callback = callbacks[typeMapping.key(IN_OPEN)];
@@ -246,6 +246,24 @@ void PollRunable::run()
                             }
                             if (event->mask & IN_DELETE_SELF) {
                                 FuncCB callback = callbacks[typeMapping.key(IN_DELETE_SELF)];
+                                if (callback) {
+                                    callback(filePath);
+                                }
+                            }
+                            if (event->mask & IN_MOVED_TO) {
+                                FuncCB callback = callbacks[typeMapping.key(IN_MOVED_TO)];
+                                if (callback) {
+                                    callback(filePath);
+                                }
+                            }
+                            if (event->mask & IN_MOVED_FROM) {
+                                FuncCB callback = callbacks[typeMapping.key(IN_MOVED_FROM)];
+                                if (callback) {
+                                    callback(filePath);
+                                }
+                            }
+                            if (event->mask & IN_MOVE_SELF) {
+                                FuncCB callback = callbacks[typeMapping.key(IN_MOVE_SELF)];
                                 if (callback) {
                                     callback(filePath);
                                 }

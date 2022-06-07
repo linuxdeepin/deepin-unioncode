@@ -370,7 +370,7 @@ void StyleLsp::sciTextDeletedTotal(Scintilla::Position position,
 
     // 增量删除
     if (d->textChangedCache.state == TextChangeCache::State::Inserted) {
-        if (d->textChangedCache.positionCache + d->textChangedCache.lengthCache - length  == position) {
+        if (d->textChangedCache.positionCache + d->textChangedCache.lengthCache - length == position && 0 != position) {
             d->textChangedCache.textCache.remove(d->textChangedCache.textCache.size() - length,
                                                  d->textChangedCache.textCache.size());
             d->textChangedCache.lengthCache -= length;

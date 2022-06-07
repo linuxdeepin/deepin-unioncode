@@ -35,6 +35,8 @@ public:
     QPair<long int, long int> findText(long int start, long int end, const QString &text);
     void findNext(const QString &srcText);
     void replaceAll(const QString &srcText, const QString &destText);
+    void updateFile();
+    void saveAsText();
 
 signals:
     void hovered(Scintilla::Position position);

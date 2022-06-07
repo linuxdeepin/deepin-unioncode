@@ -64,6 +64,8 @@ private slots:
     void doRenameReplace(const lsp::RenameChanges &changes);
     TextEdit *switchFileAndToOpen(const Head &head, const QString &filePath);
     TextEdit *switchFileAndToOpen(const QString &filePath);
+    void saveEditFile(const QString &file);
+    void handleDeletedFile(const QString &file);
 };
 
 #endif // TEXTEDITTABWIDGET_H

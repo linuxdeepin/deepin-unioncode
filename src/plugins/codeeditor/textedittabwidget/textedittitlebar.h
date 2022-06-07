@@ -47,6 +47,10 @@ public:
     virtual ~TextEditTitleBar();
     QPushButton * button(StandardButton button);
     static TextEditTitleBar* changedReload(const QString &filePath);
+
+signals:
+    void reloadfile();
+
 };
 
 #endif // TEXTEDITTITLEBAR_H

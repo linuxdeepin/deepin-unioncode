@@ -86,9 +86,9 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
                      QOverload<const Head &, const QString &, int>::of(&DpfEventMiddleware::toJumpFileLine),
                      this, QOverload<const Head &, const QString &, int>::of(&TextEditTabWidget::jumpToLine));
 
-    //    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf, this, &TextEditTabWidget::fileDeleted);
-    //    QObject::connect(Inotify::globalInstance(), &Inotify::movedSelf, this, &TextEditTabWidget::fileMoved);
-    //    QObject::connect(Inotify::globalInstance(), &Inotify::modified, this, &TextEditTabWidget::fileModifyed);
+    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf, this, &TextEditTabWidget::fileDeleted);
+    QObject::connect(Inotify::globalInstance(), &Inotify::movedSelf, this, &TextEditTabWidget::fileMoved);
+    QObject::connect(Inotify::globalInstance(), &Inotify::modified, this, &TextEditTabWidget::fileModifyed);
 
 }
 
@@ -181,6 +181,8 @@ void TextEditTabWidget::openFile(const Head &head, const QString &filePath)
 
     QObject::connect(edit, &TextEdit::fileSaved, d->tab,
                      &TextEditTabBar::doFileSaved, Qt::UniqueConnection);
+
+    QObject::connect(d->tab, &TextEditTabBar::saveFile, this, &TextEditTabWidget::saveEditFile, Qt::UniqueConnection);
 
     edit->setFile(info.filePath(), head);
     d->textEdits[filePath] = edit;
@@ -364,8 +366,11 @@ void TextEditTabWidget::hideFileStatusBar(const QString &file)
 
 void TextEditTabWidget::showFileStatusBar(const QString &file)
 {
-    auto statusBar = d->titleBars.value(file);
-    statusBar->show();
+    if (d->titleBars.contains(file)) {
+        auto statusBar = d->titleBars.value(file);
+        if (statusBar)
+            statusBar->show();
+    }
 }
 
 void TextEditTabWidget::removeFileStatusBar(const QString &file)
@@ -400,6 +405,12 @@ void TextEditTabWidget::fileModifyed(const QString &file)
 {
     if (!d->titleBars[file]) {
         d->titleBars[file] = TextEditTitleBar::changedReload(file);
+
+        QObject::connect(d->titleBars[file], &TextEditTitleBar::reloadfile, [=](){
+            if(d->titleBars.contains(file) && d->textEdits.contains(file)) {
+                d->textEdits[file]->updateFile();
+            }
+        });
     }
     auto edit = d->textEdits[file];
     if (edit && !edit->isHidden()) {
@@ -410,18 +421,35 @@ void TextEditTabWidget::fileModifyed(const QString &file)
 
 void TextEditTabWidget::fileDeleted(const QString &file)
 {
+    qInfo() << "file Deleted" << file;
     Inotify::globalInstance()->removePath(file);
-    QFileInfo info(file);
-    if (info.exists()) {
-        Inotify::globalInstance()->addPath(file);
-        return fileModifyed(file);
-    }
-    qInfo() << "fileDeleted" << file;
+    handleDeletedFile(file);
 }
 
 void TextEditTabWidget::fileMoved(const QString &file)
 {
-    qInfo() << "fileMoved" << file;
+    qInfo() << "file Moved" << file;
+    QFileInfo info(file);
+    if (!info.exists()) {
+        Inotify::globalInstance()->removePath(file);
+        handleDeletedFile(file);
+    }
+}
+
+void TextEditTabWidget::handleDeletedFile(const QString &file)
+{
+    int ret = QMessageBox::question(this, QMessageBox::tr("File Has Been Removed"),
+                                    QMessageBox::tr("The file has been removed, Do you want to save it?"),
+                                    QMessageBox::Save | QMessageBox::Discard, QMessageBox::Discard);
+    if (QMessageBox::Save == ret) {
+        TextEdit* edit = d->textEdits.value(file);
+        if (edit) {
+            edit->saveAsText();
+            Inotify::globalInstance()->addPath(file);
+        }
+    } else {
+        closeFile(file);
+    }
 }
 
 void TextEditTabWidget::doRenameReplace(const lsp::RenameChanges &changes)
@@ -443,11 +471,11 @@ TextEdit* TextEditTabWidget::switchFileAndToOpen(const Head &head,
         showFileEdit(filePath);
     } else {
         openFile(head, filePath);
-        for (auto edit : d->textEdits) {
-            edit->runningEnd();
-            if (edit->file() == filePath) {
+        for (auto textEdit : d->textEdits.values()) {
+            textEdit->runningEnd();
+            if (textEdit->file() == filePath) {
                 showFileEdit(filePath);
-                edit = edit;
+                edit = textEdit;
             }
         }
     }
@@ -462,13 +490,23 @@ TextEdit* TextEditTabWidget::switchFileAndToOpen(const QString &filePath)
         showFileEdit(filePath);
     } else {
         openFile(filePath);
-        for (auto edit : d->textEdits) {
-            edit->runningEnd();
-            if (edit->file() == filePath) {
+        for (auto textEdit : d->textEdits.values()) {
+            textEdit->runningEnd();
+            if (textEdit->file() == filePath) {
                 showFileEdit(filePath);
-                edit = edit;
+                edit = textEdit;
             }
         }
     }
+
+    showFileStatusBar(filePath);
     return edit;
+}
+
+void TextEditTabWidget::saveEditFile(const QString &file)
+{
+    TextEdit* edit = d->textEdits.value(file);
+    if (edit) {
+        edit->saveText();
+    }
 }

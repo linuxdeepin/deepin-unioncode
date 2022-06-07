@@ -37,6 +37,7 @@ public:
 signals:
     void fileClosed(const QString &file);
     void fileSwitched(const QString &file);
+    void saveFile(const QString &file);
 
 public slots:
     void doFileChanged(const QString &file);

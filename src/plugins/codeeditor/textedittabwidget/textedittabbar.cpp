@@ -22,6 +22,7 @@
 #include "transceiver/sendevents.h"
 #include <QFileInfo>
 #include <QDebug>
+#include <QMessageBox>
 
 TextEditTabBar::TextEditTabBar(QWidget *parent)
     : QTabBar (parent)
@@ -114,6 +115,19 @@ void TextEditTabBar::removeTab(const QString &file)
 {
     int index = fileIndex(file);
     if (index != -1){
+        QString text = tabText(index);
+        QFileInfo info(file);
+        if (info.exists() && text.length() > 0 && text.at(0) == "*") {
+            int ret = QMessageBox::question(this, QMessageBox::tr("Save Changes"),
+                                            QMessageBox::tr("The file has unsaved changes, will save?"),
+                                            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
+                                            QMessageBox::Cancel);
+            if (QMessageBox::Yes != ret && QMessageBox::No != ret) {
+                return;
+            } else if (QMessageBox::Yes == ret) {
+                emit saveFile(file);
+            }
+        }
         emit fileClosed(indexFile(index));
         SendEvents::sendCurrentEditFileStatus(file, false);
         QTabBar::removeTab(index);

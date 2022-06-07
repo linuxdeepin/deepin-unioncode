@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QDebug>
 
 class TextEditTitleBarPrivate
 {
@@ -58,17 +59,26 @@ TextEditTitleBar *TextEditTitleBar::changedReload(const QString &filePath)
 {
     auto self = new TextEditTitleBar();
     self->d->infoLabel.setText(
-            tr("File Path: %0").arg(filePath)
+            QLabel::tr("File Path: %0").arg(filePath)
             + "\n"
-            + tr("The current file has changed. Do you want to reload the current file?"));
-    self->d->buttons[StandardButton::Reload] = new QPushButton("Reload");
-    self->d->buttons[StandardButton::Cancel] = new QPushButton("Cancel");
+            + QLabel::tr("The current file has changed. Do you want to reload the current file?"));
+    self->d->buttons[StandardButton::Reload] = new QPushButton(QPushButton::tr("Reload"));
+    self->d->buttons[StandardButton::Cancel] = new QPushButton(QPushButton::tr("Cancel"));
     self->d->background = QColor(0xff0000);
     self->setAutoFillBackground(true);
 
+    connect(self->d->buttons[StandardButton::Reload], &QPushButton::clicked, [=](){
+        self->reloadfile();
+        self->close();
+    });
+
+    connect(self->d->buttons[StandardButton::Cancel], &QPushButton::clicked, [=](){
+        self->close();
+    });
+
     self->addWidget(&(self->d->infoLabel), 0);
     for (auto button : self->d->buttons) {
-        button->setFixedSize(60, 20);
+        button->setFixedSize(60, 30);
         self->addWidget(button);
     }
 
