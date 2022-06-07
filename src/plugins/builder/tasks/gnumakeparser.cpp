@@ -23,7 +23,7 @@
 
 #include "task.h"
 
-#include "qtcassert.h"
+#include "common/util/qtcassert.h"
 #include "fileutils.h"
 
 #include <QDir>

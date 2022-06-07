@@ -22,7 +22,7 @@
 #include "cmakeparser.h"
 
 #include "fileutils.h"
-#include "qtcassert.h"
+#include "common/util/qtcassert.h"
 
 
 const char COMMON_ERROR_PATTERN[] = "^CMake Error at (.*):([0-9]*)( \\((.*)\\))?:";

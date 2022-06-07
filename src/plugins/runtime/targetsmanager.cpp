@@ -21,6 +21,7 @@
 */
 #include "targetsmanager.h"
 #include "services/project/projectservice.h"
+#include "kitmanager.h"
 
 static const char *kCleanName = "clean";
 static const char *kProjectFile = ".cproject";
@@ -66,14 +67,17 @@ void TargetsManager::intialize()
     auto targets = parser.getTargets();
     for (auto target : targets) {
         if (target.buildTarget.contains(kCleanName, Qt::CaseInsensitive)) {
-            cleanTargets.push_back(target);
             if (target.path.isEmpty()) {
-                activeCleanTargetName = target.buildTarget;
+                cleanTargetSelected = target;
             }
         } else {
             buildTargets.push_back(target);
             if (target.path.isEmpty()) {
-                activeBuildTargetName = target.buildTarget;
+                buildTargetSelected = target;
+            }
+            auto targetName = target.name;
+            if (targetName.contains("[exe]") && !targetName.contains("/fast")) {
+                exeTargets.push_back(target);
             }
         }
 
@@ -86,14 +90,26 @@ void TargetsManager::intialize()
     targetNamesList = targetNamesList.toSet().toList();
 }
 
-const QString &TargetsManager::getActiveBuildTargetName() const
+Target TargetsManager::getSelectedTargetInList()
 {
-    return activeBuildTargetName;
+    return buildTargetSelected;
 }
 
-const QString &TargetsManager::getActiveCleanTargetName() const
+Target TargetsManager::getActiveBuildTarget()
 {
-    return activeCleanTargetName;
+    Target retTarget;
+    // TODO(Mozart):re-write here when ui support target choose.
+    if (exeTargets.size() > 0)
+        retTarget = exeTargets.front();
+
+    retTarget.outputPath = KitManager::instance()->getDefaultOutputPath();
+
+    return retTarget;
+}
+
+const Target &TargetsManager::getActiveCleanTarget() const
+{
+    return cleanTargetSelected;
 }
 
 const QStringList &TargetsManager::getTargetNamesList() const
@@ -106,23 +122,24 @@ const Targets &TargetsManager::getTargets() const
     return parser.getTargets();
 }
 
-const Targets &TargetsManager::getBuildTargets() const
-{
-    return buildTargets;
-}
-
-const Targets &TargetsManager::getCleanTargets() const
-{
-    return cleanTargets;
-}
-
 void TargetsManager::updateActiveBuildTarget(const QString &target)
 {
-    activeBuildTargetName = target;
+    for (auto t : buildTargets) {
+        if (t.buildTarget == target) {
+            buildTargetSelected = t;
+            break;
+        }
+    }
 }
 
 void TargetsManager::updateActiveCleanTarget(const QString &target)
 {
-    activeCleanTargetName = target;
+    for (auto t : buildTargets) {
+        // TODO(Mozart)
+        if (t.buildTarget == target) {
+            cleanTargetSelected = t;
+            break;
+        }
+    }
 }
 

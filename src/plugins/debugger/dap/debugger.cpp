@@ -34,6 +34,7 @@
 #include "event/eventsender.h"
 #include "event/eventreceiver.h"
 #include "common/dialog/contextdialog.h"
+#include "services/runtime/runtimeservice.h"
 
 #include <QDateTime>
 #include <QTextBlock>
@@ -48,6 +49,7 @@
  */
 using namespace dap;
 using namespace DEBUG_NAMESPACE;
+using namespace dpfservice;
 
 Debugger::Debugger(QObject *parent)
     : QObject(parent)
@@ -458,6 +460,13 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
         }
     } else if (topic == T_BUILDER) {
         targetPath = event.property(P_FILEPATH).toString();
+
+        auto &ctx = dpfInstance.serviceContext();
+        RuntimeService *runTimeService = ctx.service<RuntimeService>(RuntimeService::name());
+        if (runTimeService && runTimeService->getActiveTarget) {
+            auto target = runTimeService->getActiveTarget();
+            targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
+        }
     }
 }
 

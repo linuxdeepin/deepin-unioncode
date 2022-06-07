@@ -25,7 +25,7 @@
 #include "task.h"
 #include "buildmanager.h"
 
-#include "qtcassert.h"
+#include "common/util/qtcassert.h"
 
 #include <QTextLayout>
 

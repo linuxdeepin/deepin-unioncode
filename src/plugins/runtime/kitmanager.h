@@ -22,18 +22,28 @@
 #ifndef KITMANAGER_H
 #define KITMANAGER_H
 
+#include "kit.h"
+
 #include <QObject>
 
 class KitManager : public QObject
 {
     Q_OBJECT
 public:
-    struct Kit {
-        QString defaultOutput;
-        // TODO(Mozart):more parameters should added.
-    };
-
     static KitManager *instance();
+    ~KitManager() override;
+
+    static QList<Kit *> kits();
+    static Kit *kit(QString id);
+    static Kit *defaultKit();
+
+    static bool registerKit(std::unique_ptr<Kit> &&k);
+    static void deregisterKit(Kit *k);
+    static void setDefaultKit(Kit *k);
+
+    static void saveKits();
+
+    static bool isLoaded();
 
     void setSelectedKit(Kit &kit);
     const Kit &getSelectedKit();
@@ -46,7 +56,17 @@ public slots:
 private:
     explicit KitManager(QObject *parent = nullptr);
 
-    Kit selectedKit;
+    void restoreKits();
+
+    class KitList
+    {
+    public:
+        KitList() {}
+        QString defaultKit;
+        std::vector<std::unique_ptr<Kit>> kits;
+    };
+
+    KitList restoreKits(const QString &fileName);
 };
 
 #endif // KITMANAGER_H

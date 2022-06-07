@@ -179,9 +179,9 @@ private:
     QString getActiveTarget() const
     {
         if (StepsPane::kBuild == stepType) {
-            return TargetsManager::instance()->getActiveBuildTargetName();
+            return TargetsManager::instance()->getSelectedTargetInList().buildTarget;
         }
-        return TargetsManager::instance()->getActiveCleanTargetName();
+        return TargetsManager::instance()->getActiveCleanTarget().buildTarget;
     }
 
     void updateActiveTarget(bool bChecked, const QString &target)
@@ -222,9 +222,9 @@ StepsPane::~StepsPane()
 QString StepsPane::getActiveTarget() const
 {
     if (StepsPane::kBuild == d->stepType) {
-        return TargetsManager::instance()->getActiveBuildTargetName();
+        return TargetsManager::instance()->getSelectedTargetInList().name;
     }
-    return TargetsManager::instance()->getActiveCleanTargetName();
+    return TargetsManager::instance()->getActiveCleanTarget().name;
 }
 
 void StepsPane::setupUi()

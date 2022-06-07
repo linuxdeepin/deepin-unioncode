@@ -27,15 +27,22 @@
 #include "base/abstractcentral.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
+#include "services/runtime/runtimeservice.h"
 #include "projectparser.h"
 #include "runtimemanager.h"
 #include "configureprojpane.h"
 #include "kitmanager.h"
+#include "targetsmanager.h"
 
 using namespace dpfservice;
 void RuntimePlugin::initialize()
 {
-
+    auto &ctx = dpfInstance.serviceContext();
+    QString errStr;
+    if (!ctx.load(RuntimeService::name(), &errStr)) {
+        qCritical() << errStr;
+        abort();
+    }
 }
 
 bool RuntimePlugin::start()
@@ -43,16 +50,20 @@ bool RuntimePlugin::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
-    if (windowService) {
-        if (windowService->addCentralNavigation)
-            windowService->addCentralNavigation(MWNA_RUNTIME, new AbstractCentral(RuntimeManager::instance()->getRuntimeWidget()));
+    if (windowService && windowService->addCentralNavigation) {
+        windowService->addCentralNavigation(MWNA_RUNTIME, new AbstractCentral(RuntimeManager::instance()->getRuntimeWidget()));
     }
 
+    // bind interface that get default output path.
     ProjectService *projService = ctx.service<ProjectService>(ProjectService::name());
-    if (projService) {
-        if (!projService->getDefaultOutputPath) {
-            projService->getDefaultOutputPath = std::bind(&KitManager::getDefaultOutputPath, KitManager::instance());
-        }
+    if (projService && !projService->getDefaultOutputPath) {
+        projService->getDefaultOutputPath = std::bind(&KitManager::getDefaultOutputPath, KitManager::instance());
+    }
+
+    // bind interface that get default output path.
+    RuntimeService *runTimeService = ctx.service<RuntimeService>(RuntimeService::name());
+    if (runTimeService && !runTimeService->getActiveTarget) {
+        runTimeService->getActiveTarget = std::bind(&TargetsManager::getActiveBuildTarget, TargetsManager::instance());
     }
 
     return true;

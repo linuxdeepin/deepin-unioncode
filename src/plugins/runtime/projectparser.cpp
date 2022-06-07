@@ -40,6 +40,7 @@ static const char *TARGET_USEDEFAULTCOMMAND = "useDefaultCommand";
 
 #define PRINT_CPROJECT  0
 
+using namespace dpfservice;
 ProjectParser::ProjectParser(QObject *parent) : QObject(parent)
 {
 

@@ -21,7 +21,7 @@
 #include "buildstep.h"
 #include "eventsender.h"
 #include "tasks/ansifilterparser.h"
-#include "tasks/qtcassert.h"
+#include "common/util/qtcassert.h"
 
 #include <QDir>
 #include <QDebug>

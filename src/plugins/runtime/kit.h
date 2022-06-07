@@ -19,38 +19,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef PROJECTPARSER_H
-#define PROJECTPARSER_H
+#ifndef KIT_H
+#define KIT_H
 
-#include "services/runtime/runtimeservice.h"
+#include <QHash>
+#include <QVariant>
 
-#include <QDomDocument>
-#include <QObject>
-#include <QVector>
+#include <memory>
 
-class QIODevice;
-class ProjectParser : public QObject
+class KitPrivate;
+class Kit : public QObject
 {
     Q_OBJECT
 public:
-    explicit ProjectParser(QObject *parent = nullptr);
+    explicit Kit(QString id = "", QObject *parent = nullptr);
+    explicit Kit(const QVariantMap &data);
+    ~Kit();
 
-    void parse(const QString &filePath);
-    const dpfservice::Targets &getTargets() const;
+    QString displayName() const;
+    void setUnexpandedDisplayName(const QString &name);
+    QString id() const;
+    QList<QString> allKeys() const;
+    QVariant value(QString key, const QVariant &unset = QVariant()) const;
+    bool hasValue(QString key) const;
+    void setValue(QString key, const QVariant &value);
 
+    void setDefaultOutput(QString &defaultOutput);
+    const QString &getDefaultOutput() const;
+
+    void copyFrom(const Kit &k);
+
+    Kit(const Kit &other);
+    Kit &operator=(const Kit &other);
 signals:
 
 public slots:
 
 private:
-    bool read(QIODevice *device);
-    bool write(QIODevice *device) const;
+    QVariantMap toMap() const;
 
-    void parseTargetElement(const QDomElement &element);
-
-    QDomDocument domDocument;
-
-    dpfservice::Targets targets;
+    const std::unique_ptr<KitPrivate> d;
 };
 
-#endif // PROJECTPARSER_H
+#endif // KIT_H

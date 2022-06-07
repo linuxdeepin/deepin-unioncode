@@ -46,7 +46,6 @@ set(CXX_H
     menumanager.h
     tasks/ioutputparser.h
     tasks/cmakeparser.h
-    tasks/qtcassert.h
     tasks/fileutils.h
     tasks/task.h
     tasks/ansifilterparser.h

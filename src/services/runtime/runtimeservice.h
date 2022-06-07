@@ -36,6 +36,8 @@ struct Target {
     bool stopOnError = false;
     bool useDefaultCommand = false;
 
+    QString outputPath;
+
     bool operator==(const Target &other) const
     {
         if (name == other.name
@@ -47,7 +49,7 @@ struct Target {
 };
 using Targets = QVector<Target>;
 
-class RuntimeService : public dpf::PluginService, dpf::AutoServiceRegister<RuntimeService>
+class RuntimeService final : public dpf::PluginService, dpf::AutoServiceRegister<RuntimeService>
 {
     Q_OBJECT
     Q_DISABLE_COPY(RuntimeService)

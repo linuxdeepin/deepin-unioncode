@@ -15,6 +15,7 @@ set(CXX_H
     util/polkit.h
     util/shortcututil.h
     util/fileoperation.h
+    util/qtcassert.h
     supportfile/editorstyle.h
     supportfile/language.h
     supportfile/windowstyle.h

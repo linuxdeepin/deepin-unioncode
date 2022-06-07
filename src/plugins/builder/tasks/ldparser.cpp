@@ -24,7 +24,7 @@
 #include "ldparser.h"
 #include "task.h"
 
-#include "qtcassert.h"
+#include "common/util/qtcassert.h"
 
 namespace {
     // opt. drive letter + filename: (2 brackets)

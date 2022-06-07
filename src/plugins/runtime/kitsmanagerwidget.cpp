@@ -142,7 +142,7 @@ KitsManagerWidget::KitsManagerWidget(QWidget *parent)
     // Read toolChain data.
     QString toolChainFilePath = CustomPaths::user(CustomPaths::Configures) + QDir::separator() + toolchains::K_TOOLCHAINFILE;
     if (QFile(toolChainFilePath).exists()) {
-        bool ret =toolChainData->readToolChain(toolChainFilePath);
+        bool ret = toolChainData->readToolChain(toolChainFilePath);
         qInfo() << (ret ? "read tool chain successful!" : "read tool chain failed!");
     }
 

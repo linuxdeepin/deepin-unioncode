@@ -253,7 +253,8 @@ void ConfigureProjPane::updateOutputPath()
 
 void ConfigureProjPane::updateKitInfo()
 {
-    KitManager::Kit kit;
-    kit.defaultOutput = getDefaultOutputPath();
+    Kit kit;
+    QString outputPath = getDefaultOutputPath();
+    kit.setDefaultOutput(outputPath);
     KitManager::instance()->setSelectedKit(kit);
 }

@@ -23,6 +23,7 @@
 #define TARGETSMANAGER_H
 
 #include "projectparser.h"
+#include "services/runtime/runtimeservice.h"
 
 #include <QObject>
 
@@ -34,13 +35,12 @@ public:
 
     void intialize();
 
-    const QString &getActiveBuildTargetName() const;
-    const QString &getActiveCleanTargetName() const;
+    dpfservice::Target getSelectedTargetInList();
+    dpfservice::Target getActiveBuildTarget();
+    const dpfservice::Target &getActiveCleanTarget() const;
     const QStringList &getTargetNamesList() const;
 
-    const Targets &getTargets() const;
-    const Targets &getBuildTargets() const;
-    const Targets &getCleanTargets() const;
+    const dpfservice::Targets &getTargets() const;
 
     void updateActiveBuildTarget(const QString &target);
     void updateActiveCleanTarget(const QString &target);
@@ -53,11 +53,13 @@ private:
     explicit TargetsManager(QObject *parent = nullptr);
 
     ProjectParser parser;
-    QString activeBuildTargetName;
     QString activeCleanTargetName;
 
-    Targets buildTargets;
-    Targets cleanTargets;
+    dpfservice::Target buildTargetSelected;
+    dpfservice::Target cleanTargetSelected;
+
+    dpfservice::Targets buildTargets;
+    dpfservice::Targets exeTargets;
 
     QStringList targetNamesList;
 };

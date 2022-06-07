@@ -22,6 +22,8 @@ set(CXX_CPP
     kitmanager.cpp
     environmentmanagerwidget.cpp
     shortcutsettingwidget.cpp
+    kit.cpp
+    persistentsettings.cpp
     )
 
 set(CXX_H
@@ -40,6 +42,8 @@ set(CXX_H
     kitmanager.cpp
     environmentmanagerwidget.h
     shortcutsettingwidget.h
+    kit.h
+    persistentsettings.h
     )
 
 add_library(${PROJECT_NAME}
