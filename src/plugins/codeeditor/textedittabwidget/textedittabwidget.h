@@ -65,7 +65,10 @@ private slots:
     TextEdit *switchFileAndToOpen(const Head &head, const QString &filePath);
     TextEdit *switchFileAndToOpen(const QString &filePath);
     void saveEditFile(const QString &file);
+
+private:
     void handleDeletedFile(const QString &file);
+    void detectFile(const QString &file);
 };
 
 #endif // TEXTEDITTABWIDGET_H

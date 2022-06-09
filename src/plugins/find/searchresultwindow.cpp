@@ -30,6 +30,7 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QtConcurrent>
 
 class SearchResultTreeViewPrivate
 {
@@ -102,12 +103,19 @@ void SearchResultTreeView::setData(FindItemList &itemList, QMap<QString, QString
     }
 }
 
+void SearchResultTreeView::clearData()
+{
+    auto model = qobject_cast<QStandardItemModel*>(SearchResultTreeView::model());
+    model->clear();
+}
+
 class SearchResultWindowPrivate
 {
     SearchResultWindowPrivate(){}
     SearchResultTreeView *treeView{nullptr};
     QWidget *replaceWidget{nullptr};
     QLineEdit *replaceEdit{nullptr};
+    QLabel *resultLabel{nullptr};
 
     SearchParams searchParams;
 
@@ -142,8 +150,11 @@ void SearchResultWindow::setupUi()
     QHBoxLayout *hLayout = new QHBoxLayout();
     QPushButton *cleanBtn = new QPushButton(QPushButton::tr("Clean"));
     cleanBtn->setFixedHeight(30);
+    d->resultLabel = new QLabel();
+    d->resultLabel->setFixedWidth(300);
     hLayout->addWidget(d->replaceWidget, 0, Qt::AlignLeft);
     hLayout->addWidget(cleanBtn, 0, Qt::AlignLeft);
+    hLayout->addWidget(d->resultLabel, 0, Qt::AlignLeft);
     hLayout->addStretch(0);
 
     d->treeView = new SearchResultTreeView();
@@ -166,8 +177,9 @@ void SearchResultWindow::setRepalceWidgtVisible(bool visible)
 
 void SearchResultWindow::search(SearchParams *params)
 {
+    d->treeView->clearData();
+    showMsg(true, "Searching, please wait...");
     // exam: grep -rn -i -w "main" --include="*.txt" --exclude="*.txt" /project/test
-    QProcess process;
     QString filePath;
     for (QString path : params->filePathList) {
         filePath += path;
@@ -185,38 +197,11 @@ void SearchResultWindow::search(SearchParams *params)
         exPatternList += " --exclude=" + expattern;
     }
 
-    process.start("grep -rn " + sensitiveFlag + wholeWordsFlag
-                  + "\"" + params->searchText + "\" "
-                  + patternList + exPatternList + " " + filePath);
-    process.waitForFinished();
-    QString output = QString(process.readAllStandardOutput());
-    QStringList outputList = output.split(QRegExp("[\r\n]"),QString::SkipEmptyParts);
+    QString cmd = QString("grep -rn " + sensitiveFlag + wholeWordsFlag
+                   + "\"" + params->searchText + "\" "
+                   + patternList + exPatternList + " " + filePath);
 
-    FindItemList findItemList;
-
-    QSet<QString> resultFilePathSet;
-    foreach (QString line, outputList) {
-        QStringList contentList = line.split(":");
-        if (contentList.count() == 2) {
-            FindItem findItem;
-            findItem.filePathName = filePath;
-            findItem.lineNumber = contentList[0].toInt();
-            findItem.context = contentList[1];
-            findItem.projectInfoMap = params->projectInfoMap;
-            findItemList.append(findItem);
-            resultFilePathSet.insert(filePath);
-        } else if (contentList.count() == 3) {
-            FindItem findItem;
-            findItem.filePathName = contentList[0];
-            findItem.lineNumber = contentList[1].toInt();
-            findItem.context = contentList[2];
-            findItem.projectInfoMap = params->projectInfoMap;
-            findItemList.append(findItem);
-            resultFilePathSet.insert(filePath);
-        }
-    }
-
-    d->searchParams.filePathList = resultFilePathSet.toList();
+    d->searchParams.filePathList = params->filePathList;
     d->searchParams.searchText = params->searchText;
     d->searchParams.sensitiveFlag = params->sensitiveFlag;
     d->searchParams.wholeWordsFlag = params->wholeWordsFlag;
@@ -224,25 +209,68 @@ void SearchResultWindow::search(SearchParams *params)
     d->searchParams.exPatternsList = params->exPatternsList;
     d->searchParams.projectInfoMap = params->projectInfoMap;
 
-    d->treeView->setData(findItemList, params->projectInfoMap);
+    QtConcurrent::run(this, &SearchResultWindow::startSearch, cmd, filePath, params->projectInfoMap);
+}
+
+void SearchResultWindow::startSearch(const QString &cmd, const QString &filePath, QMap<QString, QString> projectInfoMap)
+{
+    QProcess process;
+    connect(&process, static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),
+            [&](int exitcode, QProcess::ExitStatus exitStatus) {
+        if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
+            QString output = QString(process.readAllStandardOutput());
+            QStringList outputList = output.split(QRegExp("[\r\n]"),QString::SkipEmptyParts);
+            FindItemList findItemList;
+            int resultCount = 0;
+            foreach (QString line, outputList) {
+                QStringList contentList = line.split(":");
+                if (contentList.count() == 2) {
+                    FindItem findItem;
+                    findItem.filePathName = filePath;
+                    findItem.lineNumber = contentList[0].toInt();
+                    findItem.context = contentList[1];
+                    findItemList.append(findItem);
+                    resultCount++;
+                } else if (contentList.count() == 3) {
+                    FindItem findItem;
+                    findItem.filePathName = contentList[0];
+                    findItem.lineNumber = contentList[1].toInt();
+                    findItem.context = contentList[2];
+                    findItemList.append(findItem);
+                    resultCount++;
+                }
+            }
+            d->treeView->setData(findItemList, projectInfoMap);
+            QString msg = QString::number(resultCount) + " matches found.";
+            showMsg(true, msg);
+        } else {
+            showMsg(false, "Search failed!");
+        }
+    });
+
+    process.start(cmd);
+    process.waitForFinished();
 }
 
 void SearchResultWindow::clean()
 {
+    d->treeView->clearData();
     emit back();
 }
 
 void SearchResultWindow::replace()
 {
+    d->treeView->clearData();
+    showMsg(true, "Replacing, please wait...");
     QString replaceText = d->replaceEdit->text();
     if (replaceText.isEmpty()) {
-        if (QMessageBox::Yes != QMessageBox::warning(this, tr("Warning"), tr("Repalce text is empty, will continue?"),
+        if (QMessageBox::Yes != QMessageBox::warning(this, QMessageBox::tr("Warning"), QMessageBox::tr("Repalce text is empty, will continue?"),
                                                      QMessageBox::Yes, QMessageBox::No)) {
             return;
         }
     }
 
-    if (QMessageBox::Yes != QMessageBox::warning(this, tr("Warning"), tr("Will replace permanent, continue?"),
+    if (QMessageBox::Yes != QMessageBox::warning(this, QMessageBox::tr("Warning"), QMessageBox::tr("Will replace permanent, continue?"),
                                                  QMessageBox::Yes, QMessageBox::No)) {
         return;
     }
@@ -260,10 +288,37 @@ void SearchResultWindow::replace()
     QStringList options;
     options << "-c" << cmd;
 
+    QtConcurrent::run(this, &SearchResultWindow::startReplace, options);
+}
+
+void SearchResultWindow::startReplace(const QStringList &options)
+{
     QProcess process;
+    connect(&process, static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),
+            [&](int exitcode, QProcess::ExitStatus exitStatus) {
+        if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
+            QString output = QString(process.readAllStandardOutput());
+            searchAgain();
+        } else {
+            showMsg(false, "Replace failed!");
+        }
+    });
+
     process.start("/bin/sh", options);
     process.waitForFinished();
-    QString output = QString(process.readAllStandardOutput());
+}
 
+void SearchResultWindow::searchAgain()
+{
     search(&d->searchParams);
+}
+
+void SearchResultWindow::showMsg(bool succeed, QString msg)
+{
+    if (succeed) {
+        d->resultLabel->setStyleSheet("color:white;");
+    } else {
+        d->resultLabel->setStyleSheet("color:red;");
+    }
+    d->resultLabel->setText(msg);
 }

@@ -349,7 +349,7 @@ void TextEditTabWidget::showFileEdit(const QString &file)
 
     auto itera = d->textEdits.begin();
     while (itera != d->textEdits.end()){
-        if (itera.key() != file){
+        if (itera.key() != file && itera.value()){
             itera.value()->hide(); // hide other;
         }
         itera ++;
@@ -421,16 +421,21 @@ void TextEditTabWidget::fileModifyed(const QString &file)
 
 void TextEditTabWidget::fileDeleted(const QString &file)
 {
-    qInfo() << "file Deleted" << file;
-    Inotify::globalInstance()->removePath(file);
-    handleDeletedFile(file);
+    detectFile(file);
 }
 
 void TextEditTabWidget::fileMoved(const QString &file)
 {
-    qInfo() << "file Moved" << file;
+    detectFile(file);
+}
+
+void TextEditTabWidget::detectFile(const QString &file)
+{
     QFileInfo info(file);
-    if (!info.exists()) {
+    if (info.exists()) {
+        fileModifyed(file);
+        Inotify::globalInstance()->addPath(file);
+    } else {
         Inotify::globalInstance()->removePath(file);
         handleDeletedFile(file);
     }

@@ -38,7 +38,6 @@ typedef struct{
     QString filePathName;
     int lineNumber;
     QString context;
-    QMap<QString, QString> projectInfoMap;
 }FindItem;
 
 using FindItemList = QList<FindItem>;
@@ -50,6 +49,7 @@ class SearchResultTreeView : public QTreeView
 public:
     explicit SearchResultTreeView(QWidget *parent = nullptr);
     void setData(FindItemList &itemList, QMap<QString, QString> projectInfoMap);
+    void clearData();
 
 signals:
 private:
@@ -64,6 +64,10 @@ public:
     explicit SearchResultWindow(QWidget *parent = nullptr);
     void search(SearchParams *params);
     void setRepalceWidgtVisible(bool hide);
+    void startSearch(const QString &cmd, const QString &filePath, QMap<QString, QString> projectInfoMap);
+    void startReplace(const QStringList &options);
+    void searchAgain();
+    void showMsg(bool succeed, QString msg);
 
 signals:
     void back();
