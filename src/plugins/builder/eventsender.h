@@ -21,14 +21,18 @@
 #ifndef EVENTSENDER_H
 #define EVENTSENDER_H
 
+#include "buildmanager.h"
+
 #include <QObject>
 
 class EventSender : public QObject
 {
     Q_OBJECT
 public:
-    static void notifyTargetPath(const QString &targetPath);
     static void jumpTo(const QString &filePath, int lineNum);
+
+    static void notifyBuildState(BuildManager::BuildState state);
+
 signals:
 
 public slots:

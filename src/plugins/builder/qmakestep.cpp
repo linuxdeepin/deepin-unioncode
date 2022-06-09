@@ -32,10 +32,10 @@ QMakeStep::QMakeStep(QObject *parent) : BuildStep(parent)
     makeCmd = "make";
 }
 
-void QMakeStep::run()
+bool QMakeStep::run()
 {
-    runQMake();
-    runMake();
+    bool ret = runQMake() & runMake();
+    return ret;
 }
 
 bool QMakeStep::runMake()

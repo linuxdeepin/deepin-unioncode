@@ -100,35 +100,10 @@ QTreeView *Debugger::getBreakpointPane() const
 
 void Debugger::startDebug()
 {
-    if (targetPath.isEmpty()) {
-        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Please build first.\n Build : Ctrl + B"));
-        return;
-    }
-
-    printOutput(tr("Debugging starts"));
-
-    // Setup debug environment.
-    auto iniRequet = rtCfgProvider->initalizeRequest();
-    int port = rtCfgProvider->port();
-    if (!port) {
-        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Could not find server port!"));
-        return;
-    }
-
-    bool bSuccess = session->initialize(rtCfgProvider->ip(),
-                                        port,
-                                        iniRequet);
-
-    // Launch debuggee.
-    if (bSuccess) {
-        bSuccess &= session->launch(targetPath);
-    }
-    if (!bSuccess) {
-        qCritical() << "startDebug failed!";
-    } else {
-        debugService->getModel()->clear();
-        debugService->getModel()->addSession(session.get());
-    }
+    // build project everytime before debug.
+    updateRunState(kPreparing);
+    requestBuild();
+    // start debug when received build success event in handleFrameEvent().
 }
 
 void Debugger::detachDebug()
@@ -445,12 +420,13 @@ void Debugger::registerDapHandlers()
 
 void Debugger::handleFrameEvent(const dpf::Event &event)
 {
-    if (!EventReceiver::topics().contains(event.topic()))
+    if (!DebugEventReceiver::topics().contains(event.topic()))
         return;
 
     QString topic = event.topic();
     QString data = event.data().toString();
     if (topic == T_CODEEDITOR) {
+        // breakpoint process.
         QString filePath = event.property(P_FILEPATH).toString();
         int lineNumber = event.property(P_FILELINE).toInt();
         if (data == D_MARGIN_DEBUG_POINT_ADD) {
@@ -459,13 +435,12 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
             removeBreakpoint(filePath, lineNumber);
         }
     } else if (topic == T_BUILDER) {
-        targetPath = event.property(P_FILEPATH).toString();
-
-        auto &ctx = dpfInstance.serviceContext();
-        RuntimeService *runTimeService = ctx.service<RuntimeService>(RuntimeService::name());
-        if (runTimeService && runTimeService->getActiveTarget) {
-            auto target = runTimeService->getActiveTarget();
-            targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
+        if (data == D_BUILD_STATE) {
+            int state = event.property(P_STATE).toInt();
+            int buildSuccess = 0;
+            if (state == buildSuccess && runState == kPreparing) {
+                start();
+            }
         }
     }
 }
@@ -661,8 +636,63 @@ void Debugger::updateRunState(Debugger::RunState state)
             break;
         case kStopped:
             break;
+        default:
+            // do nothing.
+            break;
         }
         emit runStateChanged(runState);
+    }
+}
+
+bool Debugger::checkTargetIsReady()
+{
+    targetPath.clear();
+
+    auto &ctx = dpfInstance.serviceContext();
+    RuntimeService *runTimeService = ctx.service<RuntimeService>(RuntimeService::name());
+    if (runTimeService && runTimeService->getActiveTarget) {
+        auto target = runTimeService->getActiveTarget(kActiveExecTarget);
+        targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
+    }
+
+    return QFile::exists(targetPath);
+}
+
+void Debugger::requestBuild()
+{
+    EventSender::notifyDebugStarted();
+}
+
+void Debugger::start()
+{
+    if (!checkTargetIsReady()) {
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Please build first.\n Build : Ctrl + B"));
+        return;
+    }
+
+    printOutput(tr("Debugging starts"));
+
+    // Setup debug environment.
+    auto iniRequet = rtCfgProvider->initalizeRequest();
+    int port = rtCfgProvider->port();
+    if (!port) {
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Could not find server port!"));
+        return;
+    }
+
+    bool bSuccess = session->initialize(rtCfgProvider->ip(),
+                                        port,
+                                        iniRequet);
+
+    // Launch debuggee.
+    if (bSuccess) {
+        bSuccess &= session->launch(targetPath);
+    }
+    if (!bSuccess) {
+        qCritical() << "startDebug failed!";
+    } else {
+        debugService->getModel()->clear();
+        debugService->getModel()->addSession(session.get());
     }
 }
 

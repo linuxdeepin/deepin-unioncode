@@ -35,6 +35,7 @@ public:
 
     void intialize();
 
+    dpfservice::Target getTarget(dpfservice::TargetType type);
     dpfservice::Target getSelectedTargetInList();
     dpfservice::Target getActiveBuildTarget();
     const dpfservice::Target &getActiveCleanTarget() const;
@@ -51,17 +52,18 @@ public slots:
 
 private:
     explicit TargetsManager(QObject *parent = nullptr);
+    bool isGloablTarget(dpfservice::Target &target);
 
     ProjectParser parser;
     QString activeCleanTargetName;
 
     dpfservice::Target buildTargetSelected;
     dpfservice::Target cleanTargetSelected;
+    dpfservice::Target rebuildTargetSelected;
 
-    dpfservice::Targets buildTargets;
     dpfservice::Targets exeTargets;
 
-    QStringList targetNamesList;
+    QStringList buildTargetList;
 };
 
 #endif // TARGETSMANAGER_H

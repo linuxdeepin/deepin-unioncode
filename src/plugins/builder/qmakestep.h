@@ -29,7 +29,7 @@ class QMakeStep : public BuildStep
 public:
     explicit QMakeStep(QObject *parent = nullptr);
 
-    virtual void run() override;
+    virtual bool run() override;
 
 signals:
 

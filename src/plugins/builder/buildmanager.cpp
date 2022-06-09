@@ -27,6 +27,7 @@
 #include "menumanager.h"
 #include "tasks/taskmanager.h"
 #include "commandstep.h"
+#include "eventsender.h"
 
 #include <QtConcurrent>
 #include <QTextBlock>
@@ -50,6 +51,10 @@ void BuildManager::initialize(WindowService *windowService)
 
 bool BuildManager::buildList(const QList<BuildStep *> &_bsl)
 {
+    TaskManager::instance()->clearTasks();
+    if (outputPane)
+        outputPane->clearContents();
+
     // Notify listeners.
     emit buildStarted();
 
@@ -60,21 +65,27 @@ bool BuildManager::buildList(const QList<BuildStep *> &_bsl)
     menuManager->handleRunStateChanged(buildState);
     QtConcurrent::run([&](){
         QMutexLocker locker(&releaseMutex);
+        bool success = true;
         for (auto step : bsl) {
-            step->run();
+            if (step) {
+                success &= step->run();
+            }
         }
-        buildState = kNoBuild;
+        buildState = success ? kNoBuild : kBuildFailed;
         QMetaObject::invokeMethod(menuManager.get(), "handleRunStateChanged",
                                   Q_ARG(BuildManager::BuildState, buildState));
+
+        EventSender::notifyBuildState(buildState);
     });
     return true;
 }
 
-bool BuildManager::buildByCommand(const QString &cmd, const QStringList &args)
+BuildStep *BuildManager::makeCommandStep(const QString &cmd, const QStringList &args, QString outputDirectory)
 {
     auto cmdStep = new CommandStep();
+    cmdStep->setBuildOutputDir(outputDirectory);
     cmdStep->setCommand(cmd, args);
-    return buildList({cmdStep});
+    return cmdStep;
 }
 
 BuildOutputPane *BuildManager::getOutputPane() const
@@ -94,16 +105,9 @@ void BuildManager::slotOutput(const QString &content, OutputFormat format)
 {
     QString outputContent = content;
     if (format == NormalMessage) {
-        QTextDocument *doc = outputPane->document();
-        QTextBlock tb = doc->end();
-        QString lastLineText = tb.text();
-        QString prefix = "\n";
-        if (lastLineText.isEmpty() || lastLineText.endsWith("\n")) {
-            prefix = "";
-        }
         QDateTime curDatetime = QDateTime::currentDateTime();
         QString time = curDatetime.toString("hh:mm:ss");
-        outputContent = prefix + time + ":" + content + "\n";
+        outputContent = time + ":" + content + "\r";
     }
 
     outputPane->appendText(outputContent, format);
@@ -111,15 +115,21 @@ void BuildManager::slotOutput(const QString &content, OutputFormat format)
 
 void BuildManager::buildProject()
 {
-    TaskManager::instance()->clearTasks();
+    auto step = makeBuildStep();
+    buildList({step});
+}
 
-    // TODO(mozart):steps should get from other place.
-    auto buildList = project->activeTarget()->getbuildSteps();
-    if (buildList.size() > 0) {
-        BuildManager::instance()->buildList(buildList);
-    } else {
-        BuildManager::instance()->getOutputPane()->appendText("Nothing to do.");
-    }
+void BuildManager::rebuildProject()
+{
+    auto cleanStep = makeCleanStep();
+    auto buildStep = makeBuildStep();
+    buildList({cleanStep, buildStep});
+}
+
+void BuildManager::cleanProject()
+{
+    auto step = makeCleanStep();
+    buildList({step});
 }
 
 BuildManager::BuildManager(QObject *parent) : QObject(parent)
@@ -143,4 +153,30 @@ bool BuildManager::initBuildList(const QList<BuildStep *> &bsl)
         connect(step, &BuildStep::addTask, TaskManager::instance(), &TaskManager::slotAddTask, Qt::QueuedConnection);
     }
     return true;
+}
+
+BuildStep *BuildManager::makeBuildStep()
+{
+    return makeStep(kBuildTarget);
+}
+
+BuildStep *BuildManager::makeCleanStep()
+{
+    return makeStep(kCleanTarget);
+}
+
+BuildStep *BuildManager::makeStep(TargetType type)
+{
+    auto &ctx = dpfInstance.serviceContext();
+    RuntimeService *runTimeService = ctx.service<RuntimeService>(RuntimeService::name());
+    if (runTimeService && runTimeService->getActiveTarget) {
+        auto target = runTimeService->getActiveTarget(type);
+        if (target.buildCommand.isEmpty()) {
+            BuildManager::instance()->getOutputPane()->appendText("Nothing to do.");
+        } else {
+            QStringList args = target.buildArguments << target.buildTarget;
+            return makeCommandStep(target.buildCommand, args, target.outputPath);
+        }
+    }
+    return nullptr;
 }

@@ -35,7 +35,7 @@ public:
     void setCommand(const QString &cmd, const QStringList &cmdParams);
 
 protected:
-    void run() override;
+    bool run() override;
 
 private:
     bool runCommand();

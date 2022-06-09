@@ -23,23 +23,22 @@
 #include "debuggersignals.h"
 #include "debuggerglobals.h"
 
-static QStringList subTopics { T_CODEEDITOR, T_BUILDER };
-EventReceiver::EventReceiver(QObject *parent)
-    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<EventReceiver>()
+DebugEventReceiver::DebugEventReceiver(QObject *parent)
+    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<DebugEventReceiver>()
 {
 }
 
-dpf::EventHandler::Type EventReceiver::type()
+dpf::EventHandler::Type DebugEventReceiver::type()
 {
     return dpf::EventHandler::Type::Async;
 }
 
-QStringList &EventReceiver::topics()
+QStringList DebugEventReceiver::topics()
 {
-    return subTopics;
+    return { T_CODEEDITOR, T_BUILDER };
 }
 
-void EventReceiver::eventProcess(const dpf::Event &event)
+void DebugEventReceiver::eventProcess(const dpf::Event &event)
 {
     qInfo() << event;
     emit debuggerSignals->receivedEvent(event);

@@ -45,6 +45,7 @@ extern const QString D_DEBUG_EXECUTION_START;
 extern const QString D_DEBUG_EXECUTION_END;
 extern const QString D_DEBUG_EXECUTION_JUMP;
 extern const QString D_DEBUG_EXECUTION_JUMP_CLEAN;
+extern const QString D_BUILD_STATE;
 extern const QString D_FILE_OPENDOCUMENT;
 extern const QString D_FILE_OPENFOLDER;
 extern const QString D_FILE_OPENPROJECT;
@@ -80,6 +81,7 @@ extern const QString P_BUILDARGUMENTS; // value QStringList
 extern const QString P_TEXT;           // value QString
 extern const QString P_PERCENT;        // value int
 extern const QString P_MAX_PERCENT;    // value int
+extern const QString P_STATE;          // value int
 extern const QString P_LANGUAGE;       // value QString
 extern const QString P_PROJECT_INFO;   // value dpfService::ProjectInfo
 

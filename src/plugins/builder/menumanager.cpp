@@ -38,20 +38,33 @@ void MenuManager::initialize(WindowService *windowService)
     if (!windowService)
         return;
 
-    // insert build action.
+    auto actionInit = [windowService](QAction *action, QString actionID, QString menuID, QKeySequence key){
+        ActionManager::getInstance()->registerAction(action, actionID,
+                                                     action->text(), key);
+        AbstractAction *actionImpl = new AbstractAction(action);
+        windowService->addAction(menuID, actionImpl);
+    };
+
     buildAction.reset(new QAction("Build"));
-    ActionManager::getInstance()->registerAction(buildAction.get(), "Build.Build",
-                                                 "Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
-    AbstractAction *actionImpl = new AbstractAction(buildAction.get());
-    windowService->addAction(MWM_BUILD, actionImpl);
+    actionInit(buildAction.get(), "Build.Build", MWM_BUILD, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
+
+    rebuildAction.reset(new QAction("Rebuild"));
+    actionInit(rebuildAction.get(), "Build.Rebuild", MWM_BUILD, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B));
+
+    cleanAction.reset(new QAction("Clean"));
+    actionInit(cleanAction.get(), "Build.Clean", MWM_BUILD, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_C));
+
     // triggered by top menu.
     connect(buildAction.get(), &QAction::triggered, BuildManager::instance(), &BuildManager::buildProject, Qt::DirectConnection);
+    connect(rebuildAction.get(), &QAction::triggered, BuildManager::instance(), &BuildManager::rebuildProject, Qt::DirectConnection);
+    connect(cleanAction.get(), &QAction::triggered, BuildManager::instance(), &BuildManager::cleanProject, Qt::DirectConnection);
 }
 
 void MenuManager::handleRunStateChanged(BuildManager::BuildState state)
 {
     switch (state) {
     case BuildManager::kNoBuild:
+    case BuildManager::kBuildFailed:
         buildAction->setEnabled(true);
         break;
     case BuildManager::kBuilding:

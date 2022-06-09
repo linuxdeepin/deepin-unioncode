@@ -54,6 +54,7 @@ public:
     enum RunState
     {
         kNoRun,
+        kPreparing, // e.g. build preparation
         kRunning,
         kStopped,
     };
@@ -107,6 +108,9 @@ private:
     bool getLocals(dap::integer frameId, IVariables *out);
     void exitDebug();
     void updateRunState(Debugger::RunState state);
+    bool checkTargetIsReady();
+    void requestBuild();
+    void start();
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
     QSharedPointer<DEBUG::DebugSession> session;

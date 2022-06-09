@@ -166,6 +166,7 @@ QStandardItem *CMakeGenerator::createRootItem(const dpfservice::ProjectInfo &inf
     arguments << info.buildFolder();
     arguments << "-G";
     arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
+    arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
     arguments << info.buildCustomArgs();
     process.setArguments(arguments);
 

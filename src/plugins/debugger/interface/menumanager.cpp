@@ -115,6 +115,7 @@ void MenuManager::handleRunStateChanged(Debugger::RunState state)
 {
     switch (state) {
     case Debugger::kNoRun:
+    case Debugger::kPreparing:
         startDebugging->setEnabled(true);
 #if 0 // not used yet.
         detachDebugger->setEnabled(true);
@@ -152,6 +153,9 @@ void MenuManager::handleRunStateChanged(Debugger::RunState state)
         stepOver->setEnabled(true);
         stepIn->setEnabled(true);
         stepOut->setEnabled(true);
+        break;
+    default:
+        // do nothing.
         break;
     }
 }

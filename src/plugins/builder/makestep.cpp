@@ -37,14 +37,14 @@ MakeStep::MakeStep(QObject *parent) : BuildStep(parent)
     appendOutputParser(new GccParser());
 }
 
-void MakeStep::run()
+bool MakeStep::run()
 {
     emit addOutput("Build starts", OutputFormat::NormalMessage);
-    runCMake();
-    runMake();
+    bool ret = runCMake() & runMake();
     QTimer::singleShot(0, this, [this]{
         emit addOutput("Build has finished", OutputFormat::NormalMessage);
     });
+    return ret;
 }
 
 bool MakeStep::runMake()

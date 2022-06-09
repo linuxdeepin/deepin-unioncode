@@ -22,18 +22,6 @@
 #include "framework.h"
 #include "common/common.h"
 
-void EventSender::notifyTargetPath(const QString &targetPath)
-{
-    if (targetPath.isEmpty())
-        return;
-
-    dpf::Event event;
-    event.setTopic(T_BUILDER);
-    event.setData(D_BUILD_TARGET);
-    event.setProperty(P_FILEPATH, targetPath);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
 void EventSender::jumpTo(const QString &filePath, int lineNum)
 {
     if (filePath.isEmpty() || lineNum < 0)
@@ -46,5 +34,14 @@ void EventSender::jumpTo(const QString &filePath, int lineNum)
     event.setData(D_DEBUG_EXECUTION_JUMP);
     event.setProperty(P_FILEPATH, filePath);
     event.setProperty(P_FILELINE, lineNum);
+    dpf::EventCallProxy::instance().pubEvent(event);
+}
+
+void EventSender::notifyBuildState(BuildManager::BuildState state)
+{
+    dpf::Event event;
+    event.setTopic(T_BUILDER);
+    event.setData(D_BUILD_STATE);
+    event.setProperty(P_STATE, static_cast<int>(state));
     dpf::EventCallProxy::instance().pubEvent(event);
 }

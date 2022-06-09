@@ -21,7 +21,7 @@
 #include "project.h"
 #include "buildtarget.h"
 
-#include "builderreceiver.h"
+#include "eventreceiver.h"
 
 Project::Project(QObject *parent) : QObject(parent)
 {
@@ -30,17 +30,17 @@ Project::Project(QObject *parent) : QObject(parent)
 
 QString Project::projectFilePath() const
 {
-    return BuilderReceiver::instance()->projectFilePath();
+    return EventReceiver::instance()->projectFilePath();
 }
 
 QString Project::projectDirectory() const
 {
-    return BuilderReceiver::instance()->projectDirectory();
+    return EventReceiver::instance()->projectDirectory();
 }
 
 QString Project::rootProjectDirectory() const
 {
-    return BuilderReceiver::instance()->rootProjectDirectory();
+    return EventReceiver::instance()->rootProjectDirectory();
 }
 
 BuildTarget *Project::activeTarget() const
@@ -50,8 +50,8 @@ BuildTarget *Project::activeTarget() const
 
 ToolChainType Project::toolChainType() const
 {
-    if (BuilderReceiver::instance()) {
-        return BuilderReceiver::instance()->toolChainType();
+    if (EventReceiver::instance()) {
+        return EventReceiver::instance()->toolChainType();
     }
     return UnKnown;
 }

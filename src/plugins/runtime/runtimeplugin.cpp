@@ -63,7 +63,8 @@ bool RuntimePlugin::start()
     // bind interface that get default output path.
     RuntimeService *runTimeService = ctx.service<RuntimeService>(RuntimeService::name());
     if (runTimeService && !runTimeService->getActiveTarget) {
-        runTimeService->getActiveTarget = std::bind(&TargetsManager::getActiveBuildTarget, TargetsManager::instance());
+        using namespace std::placeholders;
+        runTimeService->getActiveTarget = std::bind(&TargetsManager::getTarget, TargetsManager::instance(), _1);
     }
 
     return true;

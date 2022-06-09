@@ -48,7 +48,7 @@ public:
     void setMakeFile(const QString &makeFile);
     void appendCmdParam(const QString param);
 
-    virtual void run() = 0;
+    virtual bool run() = 0;
 
     void setOutputParser(IOutputParser *parser);
     void appendOutputParser(IOutputParser *parser);
@@ -66,13 +66,11 @@ protected:
     virtual void stdOutput(const QString &line);
     virtual void stdErrput(const QString &line);
     virtual bool execCmd(const QString &cmd, const QStringList &args);
-    virtual void parse(const QString &line);
     void taskAdded(const Task &task, int linkedOutputLines = 0, int skipLines = 0);
 
     std::unique_ptr<IOutputParser> outputParserChain;
 
     QString buildOutputDir;
-    QString targetName;
     QString makeFile;
     QStringList cmdParams;
     ToolChainType toolChainType = {UnKnown};

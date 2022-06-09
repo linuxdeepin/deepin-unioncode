@@ -31,7 +31,7 @@ class MakeStep : public BuildStep
 public:
     explicit MakeStep(QObject *parent = nullptr);
 
-    virtual void run() override;
+    virtual bool run() override;
 signals:
 
 

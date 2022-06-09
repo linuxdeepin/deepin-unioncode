@@ -81,9 +81,6 @@ IOutputParser *BuildStep::outputParser() const
 
 void BuildStep::stdOutput(const QString &line)
 {
-    // Get target infomation.
-    parse(line);
-
     if (outputParserChain)
         outputParserChain->stdOutput(line);
 
@@ -100,73 +97,45 @@ void BuildStep::stdErrput(const QString &line)
 
 bool BuildStep::execCmd(const QString &cmd, const QStringList &args)
 {
-    bool ret = false;
-    if (buildOutputDir.isEmpty()) {
-        for (auto arg : args) {
-            QFileInfo fileInfo(arg);
-            if (fileInfo.isDir()) {
-                buildOutputDir = arg;
-                break;
-            }
+    bool ret = true;
+
+    process.reset(new QProcess());
+    process->setWorkingDirectory(buildOutputDir);
+
+    connect(process.get(), static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),
+            [&](int exitCode, QProcess::ExitStatus status) {
+        if (status == QProcess::NormalExit && exitCode == 0) {
+            emit addOutput(tr("The process \"%1\" exited normally.").arg(process->program()),
+                           OutputFormat::NormalMessage);
+        } else if (status == QProcess::NormalExit) {
+            ret = false;
+            emit addOutput(tr("The process \"%1\" exited with code %2.")
+                           .arg(process->program(), QString::number(exitCode)),
+                           OutputFormat::ErrorMessage);
+        } else {
+            ret = false;
+            emit addOutput(tr("The process \"%1\" crashed.").arg(process->program()), OutputFormat::ErrorMessage);
         }
-    }
-    QDir outputDir(buildOutputDir);
-    if (outputDir.exists()) {
-        process.reset(new QProcess());
-        process->setWorkingDirectory(buildOutputDir);
+    });
 
-        connect(process.get(), static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),
-                [&](int, QProcess::ExitStatus) {
-            if (!buildOutputDir.isEmpty() && !targetName.isEmpty()) {
-                QString fullPath = buildOutputDir + "/" + targetName;
-                EventSender::notifyTargetPath(fullPath);
-            }
-            qDebug() << "build step finished";
-        });
+    connect(process.get(), &QProcess::started,
+            [&](){
+        qDebug() << "build step starting";
+    });
 
-        connect(process.get(), &QProcess::started,
-                [&](){
-            qDebug() << "build step starting";
-        });
+    connect(process.get(), &QProcess::readyReadStandardOutput,
+            this, &BuildStep::processReadyReadStdOutput);
 
-        connect(process.get(), &QProcess::readyReadStandardOutput,
-                this, &BuildStep::processReadyReadStdOutput);
+    connect(process.get(), &QProcess::readyReadStandardError,
+            this, &BuildStep::processReadyReadStdError);
 
-        connect(process.get(), &QProcess::readyReadStandardError,
-                this, &BuildStep::processReadyReadStdError);
+    // TODO(mozart) : should output more message here.
 
-        // TODO(mozart) : should output more message here.
+    QStringList params;
+    process->start(cmd, args);
+    process->waitForFinished();
 
-        QStringList params;
-        process->start(cmd, args);
-        process->waitForFinished();
-
-        if (process->exitStatus() == QProcess::ExitStatus::NormalExit)
-            ret = true;
-    }
     return ret;
-}
-
-void BuildStep::parse(const QString &line)
-{
-    auto formateString = [](QString &str){
-        str.remove(QChar('\n'));
-        str.remove(QChar(' '));
-    };
-
-    if (line.contains("Build files have been written to:")) {
-        QStringList items = line.split(":");
-        buildOutputDir = items.last();
-        formateString(buildOutputDir);
-        qInfo() << "----Buildoutputpath:" <<buildOutputDir;
-    }
-
-    if (line.contains("Built target") && !line.contains("autogen")) {
-        QStringList items = line.split("Built target ");
-        targetName = items.last();
-        formateString(targetName);
-        qInfo() << "----Built target:" << targetName;
-    }
 }
 
 void BuildStep::taskAdded(const Task &task, int linkedOutputLines, int skipLines)

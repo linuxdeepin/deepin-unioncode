@@ -20,12 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "commandstep.h"
+#include "tasks/gnumakeparser.h"
+#include "tasks/gccparser.h"
 
 #include <QTimer>
 
 CommandStep::CommandStep(QObject *parent) : BuildStep(parent)
 {
-
+    setOutputParser(new GnuMakeParser());
+    appendOutputParser(new GccParser());
 }
 
 void CommandStep::setCommand(const QString &_cmd, const QStringList &_params)
@@ -34,7 +37,7 @@ void CommandStep::setCommand(const QString &_cmd, const QStringList &_params)
     cmdParams = _params;
 }
 
-void CommandStep::run()
+bool CommandStep::run()
 {
     QString printText;
     printText += cmd;
@@ -42,11 +45,12 @@ void CommandStep::run()
     printText += cmdParams.join(" ");
 
     emit addOutput("Start running: " + printText, OutputFormat::NormalMessage);
-    runCommand();
+    bool success = runCommand();
     QTimer::singleShot(0, this, [this]{
         emit addOutput("Run finished", OutputFormat::NormalMessage);
         this->deleteLater();
     });
+    return success;
 }
 
 bool CommandStep::runCommand()

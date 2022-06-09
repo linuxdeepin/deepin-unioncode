@@ -46,6 +46,8 @@ public slots:
 
 private:
     QSharedPointer<QAction> buildAction;
+    QSharedPointer<QAction> rebuildAction;
+    QSharedPointer<QAction> cleanAction;
 };
 
 #endif // MENUMANAGER_H

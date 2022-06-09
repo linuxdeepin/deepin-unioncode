@@ -23,8 +23,16 @@
 #include "services/project/projectservice.h"
 #include "kitmanager.h"
 
-static const char *kCleanName = "clean";
 static const char *kProjectFile = ".cproject";
+
+// target name build all.
+static const char *kGlobalBuild = ": all";
+
+// target name rebuild all.
+static const char *kGlobalRebuild = ": rebuild_cache";
+
+// target name rebuild all.
+static const char *kGlobalClean = ": clean";
 
 using namespace dpfservice;
 TargetsManager::TargetsManager(QObject *parent) : QObject(parent)
@@ -39,6 +47,11 @@ TargetsManager::TargetsManager(QObject *parent) : QObject(parent)
     }
 }
 
+bool TargetsManager::isGloablTarget(Target &target)
+{
+    return target.path.isEmpty();
+}
+
 TargetsManager *TargetsManager::instance()
 {
     static TargetsManager instance;
@@ -47,15 +60,8 @@ TargetsManager *TargetsManager::instance()
 
 void TargetsManager::intialize()
 {
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-
     // TODO(Mozart):cproject path should get from workspace.
-    QString buildDirectory;
-    if (projectService && projectService->getDefaultOutputPath) {
-        buildDirectory = projectService->getDefaultOutputPath();
-    }
-
+    QString buildDirectory = KitManager::instance()->getDefaultOutputPath();
     if (buildDirectory.isEmpty()) {
         qCritical() << "build directory not set!";
         return;
@@ -66,28 +72,50 @@ void TargetsManager::intialize()
 
     auto targets = parser.getTargets();
     for (auto target : targets) {
-        if (target.buildTarget.contains(kCleanName, Qt::CaseInsensitive)) {
-            if (target.path.isEmpty()) {
-                cleanTargetSelected = target;
-            }
-        } else {
-            buildTargets.push_back(target);
-            if (target.path.isEmpty()) {
+        target.outputPath = buildDirectory;
+        auto targetName = target.name;
+        if (targetName.contains("[exe]") && !targetName.contains("/fast")) {
+            exeTargets.push_back(target);
+        } else if (isGloablTarget(target)) {
+            if (target.name == kGlobalBuild) {
                 buildTargetSelected = target;
-            }
-            auto targetName = target.name;
-            if (targetName.contains("[exe]") && !targetName.contains("/fast")) {
-                exeTargets.push_back(target);
+            } else if (target.name == kGlobalClean) {
+                cleanTargetSelected = target;
+            } else if (target.name == kGlobalRebuild) {
+                rebuildTargetSelected = target;
             }
         }
 
         if (!target.buildTarget.isEmpty()) {
-            targetNamesList.append(target.buildTarget);
+            buildTargetList.append(target.buildTarget);
         }
     }
 
     // remove the repeat items.
-    targetNamesList = targetNamesList.toSet().toList();
+    buildTargetList = buildTargetList.toSet().toList();
+}
+
+Target TargetsManager::getTarget(TargetType type)
+{
+    Target result;
+    switch (type) {
+    case kBuildTarget:
+        result = buildTargetSelected;
+        break;
+    case kRebuildTarget:
+        result = rebuildTargetSelected;
+        break;
+    case kCleanTarget:
+        result = cleanTargetSelected;
+        break;
+    case kActiveExecTarget:
+        result = getActiveBuildTarget();
+        break;
+    default:
+        // do nothing.
+        break;
+    }
+    return result;
 }
 
 Target TargetsManager::getSelectedTargetInList()
@@ -102,8 +130,6 @@ Target TargetsManager::getActiveBuildTarget()
     if (exeTargets.size() > 0)
         retTarget = exeTargets.front();
 
-    retTarget.outputPath = KitManager::instance()->getDefaultOutputPath();
-
     return retTarget;
 }
 
@@ -114,7 +140,7 @@ const Target &TargetsManager::getActiveCleanTarget() const
 
 const QStringList &TargetsManager::getTargetNamesList() const
 {
-    return targetNamesList;
+    return buildTargetList;
 }
 
 const Targets &TargetsManager::getTargets() const
@@ -124,7 +150,7 @@ const Targets &TargetsManager::getTargets() const
 
 void TargetsManager::updateActiveBuildTarget(const QString &target)
 {
-    for (auto t : buildTargets) {
+    for (auto t : getTargets()) {
         if (t.buildTarget == target) {
             buildTargetSelected = t;
             break;
@@ -134,7 +160,7 @@ void TargetsManager::updateActiveBuildTarget(const QString &target)
 
 void TargetsManager::updateActiveCleanTarget(const QString &target)
 {
-    for (auto t : buildTargets) {
+    for (auto t : getTargets()) {
         // TODO(Mozart)
         if (t.buildTarget == target) {
             cleanTargetSelected = t;

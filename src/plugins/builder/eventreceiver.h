@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef BUILDERRECEIVER_H
-#define BUILDERRECEIVER_H
+#ifndef EVENTRECEIVER_H
+#define EVENTRECEIVER_H
 
 #include <framework/framework.h>
 #include "builderglobals.h"
@@ -28,13 +28,13 @@
  * @brief This is a tempory class for provide project info.
  * TODO(mozart) : delete this class
  */
-class BuilderReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<BuilderReceiver>
+class EventReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<EventReceiver>
 {
-    friend class dpf::AutoEventHandlerRegister<BuilderReceiver>;
+    friend class dpf::AutoEventHandlerRegister<EventReceiver>;
 public:
-    static BuilderReceiver *instance();
+    static EventReceiver *instance();
     static Type type();
-    static QStringList &topics();
+    static QStringList topics();
 
     const QString &projectFilePath() const;
     const QString &projectDirectory() const;
@@ -44,7 +44,7 @@ public:
     ToolChainType toolChainType() const;
 
 private:
-    explicit BuilderReceiver(QObject * parent = nullptr);
+    explicit EventReceiver(QObject * parent = nullptr);
 
     virtual void eventProcess(const dpf::Event& event) override;
     void updatePaths(const QString &path);
@@ -57,4 +57,4 @@ private:
     ToolChainType tlChainType = ToolChainType::UnKnown;
 };
 
-#endif // BUILDERRECEIVER_H
+#endif // EVENTRECEIVER_H

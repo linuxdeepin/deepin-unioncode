@@ -30,6 +30,7 @@ class EventSender : public QObject
 public:
     static void jumpTo(dap::string, int numberline);
     static void clearEditorPointer();
+    static void notifyDebugStarted();
 signals:
 
 public slots:

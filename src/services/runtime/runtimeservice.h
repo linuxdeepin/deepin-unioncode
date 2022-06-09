@@ -49,6 +49,13 @@ struct Target {
 };
 using Targets = QVector<Target>;
 
+enum TargetType {
+    kBuildTarget,
+    kRebuildTarget,
+    kCleanTarget,
+    kActiveExecTarget
+};
+
 class RuntimeService final : public dpf::PluginService, dpf::AutoServiceRegister<RuntimeService>
 {
     Q_OBJECT
@@ -58,7 +65,7 @@ public:
 
     explicit RuntimeService(QObject *parent = nullptr);
 
-    DPF_INTERFACE(Target, getActiveTarget);
+    DPF_INTERFACE(Target, getActiveTarget, TargetType);
 };
 
 }

@@ -22,6 +22,7 @@
 #define BUILDMANAGER_H
 
 #include "buildstep.h"
+#include "services/runtime/runtimeservice.h"
 
 #include <QObject>
 #include <QSharedPointer>
@@ -43,6 +44,7 @@ public:
     {
         kNoBuild,
         kBuilding,
+        kBuildFailed
     };
 
     static BuildManager *instance();
@@ -50,7 +52,7 @@ public:
     void initialize(dpfservice::WindowService *service);
 
     bool buildList(const QList<BuildStep*> &bsl);
-    bool buildByCommand(const QString &cmd, const QStringList &args);
+    BuildStep *makeCommandStep(const QString &cmd, const QStringList &args, QString outputDirectory = "");
     BuildOutputPane *getOutputPane() const;
 
     void destroy();
@@ -61,11 +63,17 @@ signals:
 public slots:
     void slotOutput(const QString &content, OutputFormat format);
     void buildProject();
+    void rebuildProject();
+    void cleanProject();
 
 private:
     explicit BuildManager(QObject *parent = nullptr);
     ~BuildManager();
     bool initBuildList(const QList<BuildStep*> &_bsl);
+
+    BuildStep *makeBuildStep();
+    BuildStep *makeCleanStep();
+    BuildStep *makeStep(dpfservice::TargetType type);
 
     BuildOutputPane *outputPane = nullptr;
 

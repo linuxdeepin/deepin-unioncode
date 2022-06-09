@@ -24,14 +24,14 @@
 #include <framework/framework.h>
 #include <QObject>
 
-class EventReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<EventReceiver>
+class DebugEventReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<DebugEventReceiver>
 {
-    friend class dpf::AutoEventHandlerRegister<EventReceiver>;
+    friend class dpf::AutoEventHandlerRegister<DebugEventReceiver>;
 
 public:
-    explicit EventReceiver(QObject *parent = nullptr);
+    explicit DebugEventReceiver(QObject *parent = nullptr);
     static Type type();
-    static QStringList &topics();
+    static QStringList topics();
 
 signals:
 

@@ -8,7 +8,7 @@ set(CXX_CPP
     buildoutputpane.cpp
     project.cpp
     buildtarget.cpp
-    builderreceiver.cpp
+    eventreceiver.cpp
     buildmanager.cpp
     buildstep.cpp
     qmakestep.cpp
@@ -35,7 +35,7 @@ set(CXX_H
     buildoutputpane.h
     project.h
     buildtarget.h
-    builderreceiver.h
+    eventreceiver.h
     buildmanager.h
     buildstep.h
     qmakestep.h

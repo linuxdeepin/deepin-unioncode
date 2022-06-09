@@ -20,12 +20,11 @@
 */
 #include "buildtarget.h"
 
-#include "builderreceiver.h"
+#include "eventreceiver.h"
 #include "buildstep.h"
 #include "project.h"
 #include "qmakestep.h"
 #include "makestep.h"
-#include "builderreceiver.h"
 #include "services/project/projectservice.h"
 
 using namespace dpfservice;
