@@ -46,6 +46,10 @@ public:
         Q_UNUSED(info);
         return nullptr;
     }
+
+    virtual void removeRootItem(QStandardItem *root) {
+        Q_UNUSED(root);
+    }
 };
 
 

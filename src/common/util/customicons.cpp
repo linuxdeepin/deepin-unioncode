@@ -40,6 +40,7 @@ QIcon CustomIcons::icon(CustomIcons::CustomIconType type)
     case CustomIcons::Lib:
         return QIcon::fromTheme("application/x-sharedlib");
     }
+    return {};
 }
 
 QIcon CustomIcons::icon(const QFileInfo &info)

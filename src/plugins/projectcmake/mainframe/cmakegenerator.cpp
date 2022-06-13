@@ -19,7 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "cmakegenerator.h"
-#include "cmakeconfigwidget.h"
+#include "transceiver/sendevents.h"
+#include "transceiver/projectcmakereceiver.h"
+#include "services/window/windowservice.h"
 #include "common/common.h"
 
 #include <QtXml>
@@ -99,9 +101,6 @@ enum_def(CDT_MODULE_ID_VAL, QString)
     enum_exp org_eclipse_cdt_make_core_buildtargets = "org.eclipse.cdt.make.core.buildtargets";
 };
 
-static int currentCount = 0;
-static int maxCount = 100;
-
 QHash<QString, QString> optionHash {
     { "-S", "source directory" },
     { "-B", "build directory" },
@@ -159,26 +158,59 @@ struct TargetBuild
 
 } // namespace
 
-CMakeGenerator::CMakeGenerator()
-{
 
+
+class CmakeGeneratorPrivate
+{
+    friend class CmakeGenerator;
+    QHash<QStandardItem *, QThreadPool*> asynItemThreadPolls;
+    dpfservice::ProjectInfo configureProjectInfo;
+};
+
+CmakeGenerator::CmakeGenerator()
+    : d(new CmakeGeneratorPrivate())
+{
+    QObject::connect(this, &CmakeGenerator::createRootItemAsynEnd,
+                     this, &CmakeGenerator::setRootItemToView);
+
+    // when execute command end can create root Item
+    QObject::connect(ProjectCmakeProxy::instance(),
+                     &ProjectCmakeProxy::buildExecuteEnd,
+                     this, &CmakeGenerator::doBuildCmdExecuteEnd);
 }
 
-bool CMakeGenerator::configure(const QString &projectPath)
+QWidget *CmakeGenerator::configureWidget(const QString &language,
+                                         const QString &projectPath)
 {
-    Q_UNUSED(projectPath);
-    CMakeConfigWidget configDialog;
-    configDialog.show();
-    return true;
-}
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService)
+        return nullptr;
 
-QStandardItem *CMakeGenerator::createRootItem(const dpfservice::ProjectInfo &info)
-{
-    Generator::started();
-    currentCount = 0;
-    maxCount = 100;
+    QString projectFilePath = projectPath;
+    // show build type config pane.
+    projectService->showConfigureProjDlg(projectFilePath);
+    // get config result.
+    QString outputPath = projectService->getDefaultOutputPath();
 
-    process.setProgram("cmake");
+    QObject::connect(this, &ProjectGenerator::targetExecute,
+                     [=](const QString &cmd, const QStringList &args) {
+        // Execute project tree command.
+        emit projectService->targetCommand(cmd, args);
+    });
+
+    ProjectInfo info;
+    QString sourceFolder = QFileInfo(projectPath).path();
+    info.setLanguage(language);
+    info.setSourceFolder(sourceFolder);
+    info.setKitName(CmakeGenerator::toolKitName());
+    info.setBuildFolder(outputPath);
+    info.setWorkspaceFolder(sourceFolder);
+    info.setProjectFilePath(projectFilePath);
+    info.setBuildType("Debug");
+    info.setBuildProgram("cmake");
+
     QStringList arguments;
     arguments << "-S";
     arguments << info.sourceFolder();
@@ -187,101 +219,131 @@ QStandardItem *CMakeGenerator::createRootItem(const dpfservice::ProjectInfo &inf
     arguments << "-G";
     arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
     arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
+    arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
     arguments << info.buildCustomArgs();
-    process.setArguments(arguments);
+    info.setBuildCustomArgs(arguments);
 
-    // 消息和进度转发
-    QObject::connect(&process, &QProcess::readyRead,
-                     this, &CMakeGenerator::processReadAll, Qt::UniqueConnection);
+    configure(info);
 
-    QObject::connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                     this , &CMakeGenerator::processFinished, Qt::UniqueConnection);
-    process.start();
-    process.waitForFinished();
-
-    // step.1 cmake generator CDT4 project and compile json file
-    if (process.exitCode() != 0 || QProcess::ExitStatus::NormalExit) {
-        Generator::setErrorString(process.errorString());
-        Generator::finished(false);
-        return nullptr; // nullptr root item
-    }
-
-    // step.2 read project from CDT4 xml file;
-    using namespace dpfservice;
-    QSet<QString> allFiles{};
-    ProjectInfo proInfo = info;
-    QStandardItem * rootItem = nullptr;
-    QDomDocument projectXmlDoc = cdt4LoadProjectXmlDoc(proInfo.buildFolder());
-    QDomElement docElem = projectXmlDoc.documentElement();
-    QDomNode n = docElem.firstChild();
-    while(!n.isNull()) {
-        QDomElement e = n.toElement(); // try to convert the node to an element.
-        if(!e.isNull()) {
-            if (!rootItem && e.tagName() == CDT_XML_KEY::get()->name) {
-                QFileInfo rootCMakeInfo(proInfo.projectFilePath());
-                rootItem = new QStandardItem();
-
-                rootItem->setText(e.text());
-                rootItem->setIcon(::cmakeFolderIcon());
-                rootItem->setToolTip(rootCMakeInfo.dir().path());
-
-                // 添加子集cmake文件
-                auto rootCMakeItem = new QStandardItem();
-                rootCMakeItem->setText(rootCMakeInfo.fileName());
-                rootCMakeItem->setIcon(CustomIcons::icon(rootCMakeInfo));
-                rootCMakeItem->setToolTip(rootCMakeInfo.filePath());
-                rootItem->appendRow(rootCMakeItem);
-            }
-            if (rootItem && e.tagName() == CDT_XML_KEY::get()->linkedResources) {
-                QDomNode linkedResChildNode = e.firstChild();
-                while (!linkedResChildNode.isNull()) {
-                    QDomElement linkElem = linkedResChildNode.toElement();
-                    if (linkElem.tagName() == CDT_XML_KEY::get()->link) {
-                        QDomNode linkChildNode = linkElem.firstChild();
-                        QStandardItem *childItem = nullptr;
-                        while (!linkChildNode.isNull()) {
-                            QDomElement linkChildElem = linkChildNode.toElement();
-                            if (!childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->name) {
-                                QString name = linkChildElem.text();
-                                auto parentItem = cdt4FindParentItem(rootItem, name); // 查找上级节点
-                                if (!name.isEmpty()) { // 节点为有效数据 避免 dir/ 和dir解析歧义生成空节点
-                                    childItem = new QStandardItem(); // 创建子节点
-                                    childItem->setText(name); // 设置子节点名称
-                                    if (parentItem) {
-                                        parentItem->appendRow(childItem);
-                                    }
-                                }
-                            }
-                            if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->location) {
-                                QFileInfo fileInfo(linkChildElem.text());
-                                if (fileInfo.isFile()) {
-                                    allFiles << linkChildElem.text();
-                                }
-                                childItem->setIcon(CustomIcons::icon(fileInfo)); // 设置本地文件图标
-                                childItem->setToolTip(linkChildElem.text());
-                            }
-                            if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->locationURI) {
-                                childItem->setToolTip(linkChildElem.text());
-                            }
-                            // 节点缓存来自xml的所有数据
-                            dpfservice::ProjectInfo::set(childItem, linkChildElem.tagName(), linkChildElem.text());
-                            linkChildNode = linkChildNode.nextSibling();
-                        }
-                    }
-                    linkedResChildNode = linkedResChildNode.nextSibling();
-                }
-            }
-        }
-        n = n.nextSibling();
-    }
-
-    // 设置顶层节点当前构建系统信息，该过程不可少
-    proInfo.setSourceFiles(allFiles);
-    ProjectInfo::set(rootItem, proInfo);
-    return cdt4DisplayOptimize(rootItem);
+    return nullptr;
 }
 
-QMenu *CMakeGenerator::createItemMenu(const QStandardItem *item)
+bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
+{
+    auto Cmd = info.buildProgram() + " " + info.buildCustomArgs().join(" ");
+
+    // cache project info
+    d->configureProjectInfo = info;
+
+    // asyn execute command generat project file from cmake
+    ProjectCmakeProxy::instance()->setbuildOriginCmd(Cmd);
+
+    emit targetExecute(info.buildProgram(), info.buildCustomArgs());
+
+    Generator::started(); // emit starded
+    return true;
+}
+
+QStandardItem *CmakeGenerator::createRootItem(const dpfservice::ProjectInfo &info)
+{
+    // step.1 read project from CDT4 xml file;
+    using namespace dpfservice;
+    QStandardItem * rootItem {nullptr};
+    d->asynItemThreadPolls[rootItem] = new QThreadPool;
+
+    auto runable = [=](QStandardItem *rootItem)
+    {
+        QSet<QString> allFiles{};
+        ProjectInfo tempInfo = info;
+        QDomDocument projectXmlDoc = cdt4LoadProjectXmlDoc(tempInfo.buildFolder());
+        QDomElement docElem = projectXmlDoc.documentElement();
+        QDomNode n = docElem.firstChild();
+        while(!n.isNull()) {
+            QDomElement e = n.toElement(); // try to convert the node to an element.
+            if(!e.isNull()) {
+                if (!rootItem && e.tagName() == CDT_XML_KEY::get()->name) {
+                    QFileInfo rootCMakeInfo(tempInfo.projectFilePath());
+                    rootItem = new QStandardItem();
+
+                    rootItem->setText(e.text());
+                    rootItem->setIcon(::cmakeFolderIcon());
+                    rootItem->setToolTip(rootCMakeInfo.dir().path());
+
+                    // 添加子集cmake文件
+                    auto rootCMakeItem = new QStandardItem();
+                    rootCMakeItem->setText(rootCMakeInfo.fileName());
+                    rootCMakeItem->setIcon(CustomIcons::icon(rootCMakeInfo));
+                    rootCMakeItem->setToolTip(rootCMakeInfo.filePath());
+                    rootItem->appendRow(rootCMakeItem);
+                }
+                if (rootItem && e.tagName() == CDT_XML_KEY::get()->linkedResources) {
+                    QDomNode linkedResChildNode = e.firstChild();
+                    while (!linkedResChildNode.isNull()) {
+                        QDomElement linkElem = linkedResChildNode.toElement();
+                        if (linkElem.tagName() == CDT_XML_KEY::get()->link) {
+                            QDomNode linkChildNode = linkElem.firstChild();
+                            QStandardItem *childItem = nullptr;
+                            while (!linkChildNode.isNull()) {
+                                QDomElement linkChildElem = linkChildNode.toElement();
+                                if (!childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->name) {
+                                    QString name = linkChildElem.text();
+                                    auto parentItem = cdt4FindParentItem(rootItem, name); // 查找上级节点
+                                    if (!name.isEmpty()) { // 节点为有效数据 避免 dir/ 和dir解析歧义生成空节点
+                                        childItem = new QStandardItem(); // 创建子节点
+                                        childItem->setText(name); // 设置子节点名称
+                                        if (parentItem) {
+                                            parentItem->appendRow(childItem);
+                                        }
+                                    }
+                                }
+                                if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->location) {
+                                    QFileInfo fileInfo(linkChildElem.text());
+                                    if (fileInfo.isFile()) {
+                                        allFiles << linkChildElem.text();
+                                    }
+                                    childItem->setIcon(CustomIcons::icon(fileInfo)); // 设置本地文件图标
+                                    childItem->setToolTip(linkChildElem.text());
+                                }
+                                if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->locationURI) {
+                                    childItem->setToolTip(linkChildElem.text());
+                                }
+                                // 节点缓存来自xml的所有数据
+                                dpfservice::ProjectInfo::set(childItem, linkChildElem.tagName(), linkChildElem.text());
+                                linkChildNode = linkChildNode.nextSibling();
+                            }
+                        }
+                        linkedResChildNode = linkedResChildNode.nextSibling();
+                    }
+                }
+            }
+            n = n.nextSibling();
+        }
+
+        // 设置顶层节点当前构建系统信息，该过程不可少
+        tempInfo.setSourceFiles(allFiles);
+        ProjectInfo::set(rootItem, tempInfo);
+        rootItem = cdt4DisplayOptimize(rootItem);
+        emit createRootItemAsynEnd(rootItem);
+    };
+
+    // 异步执行生成过程
+    QtConcurrent::run(d->asynItemThreadPolls[rootItem], runable, rootItem);
+
+    return rootItem;
+}
+
+void CmakeGenerator::removeRootItem(QStandardItem *root)
+{
+    auto threadPoll = d->asynItemThreadPolls[root];
+    if (threadPoll) {
+        threadPoll->clear();
+        while(threadPoll->waitForDone());
+    }
+
+    recursionRemoveItem(root);
+}
+
+QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
 {
     if (!item)
         return nullptr;
@@ -290,7 +352,7 @@ QMenu *CMakeGenerator::createItemMenu(const QStandardItem *item)
     QString itemLocalURI = dpfservice::ProjectInfo::get(item).property(CDT_XML_KEY::get()->locationURI).toString();
 
     // 读取文件
-    const QStandardItem *rootItem = ProjectGenerator::root(item);
+    const QStandardItem *rootItem = ProjectGenerator::root(const_cast<QStandardItem*>(item));
 
     QList<TargetBuild> buildMenuList;
 
@@ -368,31 +430,13 @@ QMenu *CMakeGenerator::createItemMenu(const QStandardItem *item)
         action->setProperty(CDT_CPROJECT_KEY::get()->buildTarget.toLatin1(), val.buildTarget);
         action->setProperty(CDT_CPROJECT_KEY::get()->stopOnError.toLatin1(), val.stopOnError);
         action->setProperty(CDT_CPROJECT_KEY::get()->useDefaultCommand.toLatin1(), val.useDefaultCommand);
-        QObject::connect(action, &QAction::triggered, this, &CMakeGenerator::actionTriggered, Qt::UniqueConnection);
+        QObject::connect(action, &QAction::triggered, this, &CmakeGenerator::actionTriggered, Qt::UniqueConnection);
         menu->addAction(action);
     }
     return menu;
 }
 
-void CMakeGenerator::processReadAll()
-{
-    QString mess = process.readAll();
-    currentCount += 10;
-    qInfo() << mess;
-    message({mess, currentCount, maxCount});
-}
-
-void CMakeGenerator::processFinished(int code, QProcess::ExitStatus status)
-{
-    QString mess = process.readAll();
-    QMetaEnum mateEnum = QMetaEnum::fromType<QProcess::ExitStatus>();
-    mess += "\n";
-    mess += QString("return code: %0, return Status: %1").arg(code).arg(mateEnum.key(status));
-    qInfo() << mess;
-    message({mess, maxCount, maxCount});
-}
-
-void CMakeGenerator::actionTriggered()
+void CmakeGenerator::actionTriggered()
 {
     QAction *action = qobject_cast<QAction*>(sender());
     if (action) {
@@ -411,7 +455,54 @@ void CMakeGenerator::actionTriggered()
     }
 }
 
-void CMakeGenerator::cdt4SubprojectsDisplayOptimize(QStandardItem *item)
+void CmakeGenerator::setRootItemToView(QStandardItem *root)
+{
+    d->asynItemThreadPolls.remove(root);
+
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService)
+        return;
+
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    if (!windowService)
+        return;
+
+    if (root) {
+        if (projectService->projectView.addRootItem)
+            projectService->projectView.addRootItem(root);   // 设置项目根节点
+
+        if (projectService->projectView.expandedDepth)
+            projectService->projectView.expandedDepth(root, 2);   // 初始化展开两级
+
+        if (windowService->switchWidgetNavigation)
+            windowService->switchWidgetNavigation(MWNA_EDIT);   // 切换编辑器导航栏
+
+        if (windowService->switchWidgetWorkspace)
+            windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
+    }
+}
+
+void CmakeGenerator::doBuildCmdExecuteEnd(const QString &cmd, int status)
+{
+    if (d->configureProjectInfo.isEmpty())
+        return;
+
+    if (status == 0)
+        createRootItem(d->configureProjectInfo);
+    d->configureProjectInfo = {};
+
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService)
+        return;
+
+    emit projectService->projectConfigureDone();
+}
+
+void CmakeGenerator::cdt4SubprojectsDisplayOptimize(QStandardItem *item)
 {
     if (!item) {
         return;
@@ -430,7 +521,7 @@ void CMakeGenerator::cdt4SubprojectsDisplayOptimize(QStandardItem *item)
     }
 }
 
-QStandardItem *CMakeGenerator::cdt4FindParentItem(QStandardItem *rootItem, QString &name)
+QStandardItem *CmakeGenerator::cdt4FindParentItem(QStandardItem *rootItem, QString &name)
 {
     if (!rootItem) {
         return nullptr;
@@ -446,7 +537,7 @@ QStandardItem *CMakeGenerator::cdt4FindParentItem(QStandardItem *rootItem, QStri
     return rootItem;
 }
 
-QStandardItem *CMakeGenerator::cdt4FindItem(QStandardItem *rootItem, QString &name)
+QStandardItem *CmakeGenerator::cdt4FindItem(QStandardItem *rootItem, QString &name)
 {
     if (!rootItem) {
         return nullptr;
@@ -466,7 +557,7 @@ QStandardItem *CMakeGenerator::cdt4FindItem(QStandardItem *rootItem, QString &na
     return parentItem;
 }
 
-QHash<QString, QString> CMakeGenerator::cdt4Subporjects(QStandardItem *rootItem)
+QHash<QString, QString> CmakeGenerator::cdt4Subporjects(QStandardItem *rootItem)
 {
     QString subprojectsKey = CDT_TARGETS_TYPE::get()->Subprojects;
     QStandardItem * subprojectsItem = cdt4FindItem(rootItem, subprojectsKey);
@@ -479,7 +570,7 @@ QHash<QString, QString> CMakeGenerator::cdt4Subporjects(QStandardItem *rootItem)
     return subprojectHash;
 }
 
-QStandardItem *CMakeGenerator::cdt4DisplayOptimize(QStandardItem *rootItem)
+QStandardItem *CmakeGenerator::cdt4DisplayOptimize(QStandardItem *rootItem)
 {
     if (!rootItem) {
         return nullptr;
@@ -506,10 +597,11 @@ QStandardItem *CMakeGenerator::cdt4DisplayOptimize(QStandardItem *rootItem)
     QStandardItem *targetsItem = cdt4FindItem(rootItem, targetsName);
     QHash<QString, QString> subprojectsMap = cdt4Subporjects(rootItem);
     cdt4TargetsDisplayOptimize(targetsItem, subprojectsMap);
+
     return rootItem;
 }
 
-void CMakeGenerator::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash<QString, QString> &subprojectsMap)
+void CmakeGenerator::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash<QString, QString> &subprojectsMap)
 {
     if (!item)
         return;
@@ -589,7 +681,7 @@ void CMakeGenerator::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash
     delete addRows;
 }
 
-QDomDocument CMakeGenerator::cdt4LoadProjectXmlDoc(const QString &buildFolder)
+QDomDocument CmakeGenerator::cdt4LoadProjectXmlDoc(const QString &buildFolder)
 {
     QDomDocument xmlDoc;
     QString cdtProjectFile = buildFolder + QDir::separator()
@@ -616,7 +708,7 @@ QDomDocument CMakeGenerator::cdt4LoadProjectXmlDoc(const QString &buildFolder)
     return xmlDoc;
 }
 
-QDomDocument CMakeGenerator::cdt4LoadMenuXmlDoc(const QString &buildFolder)
+QDomDocument CmakeGenerator::cdt4LoadMenuXmlDoc(const QString &buildFolder)
 {
     QDomDocument xmlDoc;
     QString cdtMenuFile = buildFolder + QDir::separator()

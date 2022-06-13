@@ -19,7 +19,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "cmakeopenhandler.h"
+#include "cmakegenerator.h"
+#include "transceiver/sendevents.h"
+
 #include "services/window/windowservice.h"
+#include "services/project/projectservice.h"
+
+#include "base/abstractaction.h"
+
 #include <QFileDialog>
 
 namespace {
@@ -44,8 +51,29 @@ QAction *CMakeOpenHandler::openAction()
     QObject::connect(result, &QAction::triggered, [=](){
         QFileDialog fileDialog(nullptr, "Open CMake Project", QDir::homePath(), "CMakeLists.txt");
         if(fileDialog.exec()) {
-            CMakeOpenHandler::projectOpened(result->text(), dpfservice::MWMFA_CXX, fileDialog.selectedFiles()[0]);
+            doProjectOpen(result->text(), dpfservice::MWMFA_CXX, fileDialog.selectedFiles()[0]);
         }
     });
     return result;
+}
+
+void CMakeOpenHandler::doProjectOpen(const QString &name, const QString &language, const QString &filePath)
+{
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    if (!projectService || !windowService)
+        return;
+
+    auto generator = projectService->createGenerator<CmakeGenerator>(name);
+    if (!generator)
+        return;
+
+    auto widget = generator->configureWidget(language, filePath);
+    if (widget) {
+        widget->setWindowFlag(Qt::Dialog);
+        widget->show();
+        SendEvents::menuOpenProject(filePath); // 发送打开事件
+    }
 }

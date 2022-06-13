@@ -37,12 +37,13 @@ enum_def(MimeSrc, QString)
 
 }
 
-class SymbolCppGeneratorPrivate{
+class SymbolCppGeneratorPrivate
+{
     friend class SymbolCppGenerator;
     QThread *thread {nullptr};
     SymbolCppAsynParser *parser{nullptr};
     QStandardItem *currentRootItem {nullptr};
-
+    QHash<QStandardItem*, QPair<QThreadPool*, QPair<int, int>>> itemAsynThreadPolls;
 };
 
 QSet<QString> scanfSubDirs(const QString &filePath)
@@ -91,39 +92,61 @@ SymbolCppGenerator::SymbolCppGenerator()
 
 QStandardItem *SymbolCppGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
-    //    auto files = scanfWorkspaceFiles(info.workspaceFolder());
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService)
+        return nullptr;
+
     QFileInfo fileInfo(info.workspaceFolder());
     auto root = new QStandardItem(fileInfo.fileName());
+
+    // 关联item线程池
+
     dpfservice::ProjectInfo::set(root, info);
-    //    QtConcurrent::run(QThreadPool::globalInstance(),
-    //                      new SymbolCppAsynParser,
-    //                      &SymbolCppAsynParser::doParser,
-    //                      root, files);
     auto files = info.sourceFiles();
+
+    d->itemAsynThreadPolls[root].first = new QThreadPool();
+    d->itemAsynThreadPolls[root].second.first = files.size();
+    d->itemAsynThreadPolls[root].second.second = 0;
+
     for (auto file : files) {
-        static int deleteCount = 0;
-        static int filesCount = files.size();
-        if (files.size() != filesCount){
-            filesCount = file.size();
-        }
         auto parser = new SymbolCppAsynParser();
+
         QObject::connect(parser, &SymbolCppAsynParser::parserEnd, [=](bool){
-            deleteCount ++;
             delete parser;
-            if (deleteCount == filesCount) {
+            int allCount = d->itemAsynThreadPolls[root].second.first;
+            int currentCount = d->itemAsynThreadPolls[root].second.second;
+            d->itemAsynThreadPolls[root].second.second = currentCount ++;
+            // remove threadPoll
+            if (allCount == currentCount) {
+                auto threadPoll = d->itemAsynThreadPolls[root].first;
+                delete threadPoll;
+                d->itemAsynThreadPolls.remove(root);
                 emit Generator::finished(true);
             }
         });
 
-        QtConcurrent::run(QThreadPool::globalInstance(),
+        QtConcurrent::run(d->itemAsynThreadPolls[root].first,
                           parser, &SymbolCppAsynParser::doParserOne,
                           root, file, files);
     }
+
     emit Generator::started();
 
     return root;
 }
 
+void SymbolCppGenerator::removeRootItem(QStandardItem *root)
+{
+    auto threadPoll = d->itemAsynThreadPolls[root].first;
+    if (threadPoll) {
+        threadPoll->clear();
+        while(threadPoll->waitForDone());
+    }
+
+    recursionRemoveItem(root);
+}
 
 QSet<QString> SymbolCppGenerator::scanfWorkspaceFiles(const QString &workspaceFolder)
 {

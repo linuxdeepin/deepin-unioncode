@@ -21,6 +21,8 @@
 #ifndef PROJECTKEEPER_H
 #define PROJECTKEEPER_H
 
+#include "services/project/projectservice.h"
+
 #include <QObject>
 
 class QAction;

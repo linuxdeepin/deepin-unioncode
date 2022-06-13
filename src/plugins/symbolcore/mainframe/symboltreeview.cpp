@@ -97,34 +97,36 @@ QStandardItem *SymbolTreeView::itemFromProjectInfo(const dpfservice::ProjectInfo
 
 void SymbolTreeView::removeRootItem(QStandardItem *root)
 {
+    this->viewport()->setUpdatesEnabled(false);
+
     using namespace dpfservice;
+
     auto info = ProjectInfo::get(ProjectGenerator::root(root));
 
-    // 遍历删除工程根节点
-    bool isDeleted = false;
+    // 从展示的模型中删除
     QStandardItemModel *model = static_cast<QStandardItemModel*>(QTreeView::model());
-    if (model) {
-        for (int row = 0; row < model->rowCount(); row ++) {
-            if (info == ProjectInfo::get(model->item(row))) {
-                model->removeRow(row);
-                isDeleted = true;
-            }
-        }
-    }
+    QModelIndex index = model->indexFromItem(root);
+    model->takeRow(index.row());
 
-    QString workspaceFolder = info.workspaceFolder();
-    QString language = info.language();
-    if (!workspaceFolder.isEmpty() && !language.isEmpty() && isDeleted) {
-        // 停止lspClient
-        lsp::ClientManager::instance()->shutdownClient({workspaceFolder, language});
-    }
+    // 从生成器中删除
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService)
+        return;
 
+    auto generator = projectService->createGenerator<SymbolGenerator>(info.kitName());
+    if (generator)
+        generator->removeRootItem(root);
+
+    // 始终保持首选项
     int rowCount = d->model->rowCount();
     if ( 0 < rowCount) { // 存在其他工程时
-        // 始终保持首选项
         auto index = d->model->index(0, 0);
         activeRoot(d->model->itemFromIndex(index));
     }
+
+    this->viewport()->setUpdatesEnabled(true);
 }
 
 QStandardItem *SymbolTreeView::itemFromIndex(const QModelIndex &index)

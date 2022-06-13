@@ -97,6 +97,10 @@ bool ProjectCore::start()
             projectService->projectView.expandedAll
                     = std::bind(&ProjectTreeView::expandedProjectAll, treeView, _1);
         }
+        if (!projectService->projectView.getAllProjectInfo) {
+            projectService->projectView.getAllProjectInfo
+                    = std::bind(&ProjectTreeView::getAllProjectInfo, treeView);
+        }
     }
     return true;
 }

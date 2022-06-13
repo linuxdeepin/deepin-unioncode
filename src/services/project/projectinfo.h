@@ -30,7 +30,18 @@ namespace dpfservice {
 enum
 {
     ProjectInfoRole = Qt::ItemDataRole::UserRole,
+    ProjectGenIdleRole = Qt::ItemDataRole::UserRole + 1
 };
+
+static void setProjectRootIdel(QStandardItem *root, bool state)
+{
+    root->setData(state, ProjectGenIdleRole);
+}
+
+static bool projectRootIdel(const QStandardItem *root)
+{
+    return root->data(ProjectGenIdleRole).toBool();
+}
 
 class ProjectInfo
 {
@@ -52,6 +63,7 @@ public:
     inline void setWorkspaceFolder(const QString &workspaceFolder) {data["WorkspaceFolder"] = workspaceFolder;}
     inline void setProjectFilePath(const QString &projectFilePath) {data["ProjectFilePath"] = projectFilePath;}
     inline void setBuildType(const QString &buildType) {data["BuildType"] = buildType;}
+    inline void setBuildProgram(const QString &program) {data["BuildProgram"] = program;}
     inline void setBuildCustomArgs(const QStringList &args) {data["BuildCustomArgs"] = args;}
     inline void setSourceFiles(const QSet<QString> &files) {data["SourceFiles"] = QVariant::fromValue(files);}
 
@@ -62,6 +74,7 @@ public:
     inline QString workspaceFolder() const {return data["WorkspaceFolder"].toString();}
     inline QString projectFilePath() const {return data["ProjectFilePath"].toString();}
     inline QString buildType() const {return data["BuildType"].toString();}
+    inline QString buildProgram() const {return data["BuildProgram"].toString();}
     inline QStringList buildCustomArgs() const {return data["BuildCustomArgs"].toStringList();}
     inline QSet<QString> sourceFiles() const {return qvariant_cast<QSet<QString>>(data["SourceFiles"]);}
 

@@ -18,19 +18,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef FILEBROWSERRECEIVER_H
-#define FILEBROWSERRECEIVER_H
+#ifndef PROJECTRECEIVER_H
+#define PROJECTRECEIVER_H
 
 #include <framework/framework.h>
 
-class WorkspaceReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegister<WorkspaceReceiver>
+class ProjectCmakeReceiver : public dpf::EventHandler,
+        dpf::AutoEventHandlerRegister<ProjectCmakeReceiver>
 {
-    friend class dpf::AutoEventHandlerRegister<WorkspaceReceiver>;
+    Q_OBJECT
+    friend class dpf::AutoEventHandlerRegister<ProjectCmakeReceiver>;
 public:
-    explicit WorkspaceReceiver(QObject * parent = nullptr);
+    explicit ProjectCmakeReceiver(QObject * parent = nullptr);
+
     static Type type();
+
     static QStringList topics();
+
     virtual void eventProcess(const dpf::Event& event) override;
+
+    virtual void builderEvent(const dpf::Event& event);
 };
 
-#endif // FILEBROWSERRECEIVER_H
+class ProjectCmakeProxy : public QObject
+{
+    Q_OBJECT
+    ProjectCmakeProxy(){}
+    ProjectCmakeProxy(const ProjectCmakeProxy&) = delete;
+    static QString buildOriginCmdCache;
+public:
+    static ProjectCmakeProxy* instance();
+    static void setbuildOriginCmd(const QString &originCmd);
+    static QString buildOriginCmd();
+signals:
+    void buildExecuteEnd(const QString &cmd, int status = 0);
+};
+
+#endif // PROJECTRECEIVER_H

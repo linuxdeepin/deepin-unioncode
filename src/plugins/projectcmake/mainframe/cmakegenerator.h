@@ -26,21 +26,27 @@
 #include <QObject>
 #include <QDomDocument>
 
-class CMakeGenerator : public dpfservice::ProjectGenerator
+class CmakeGeneratorPrivate;
+class CmakeGenerator : public dpfservice::ProjectGenerator
 {
     Q_OBJECT
-    QProcess process;
+    CmakeGeneratorPrivate *const d;
 public:
-    explicit CMakeGenerator();
+    explicit CmakeGenerator();
     static QString toolKitName() { return "cmake"; }
-    virtual bool configure(const QString &projectPath) override;
+    virtual QWidget* configureWidget(const QString &language,
+                                     const QString &projectPath) override;
+    virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
+    virtual void removeRootItem(QStandardItem* root) override;
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
 
+signals:
+    void createRootItemAsynEnd(QStandardItem *root);
 private slots:
-    void processReadAll();
-    void processFinished(int code, QProcess::ExitStatus status);
     void actionTriggered();
+    void setRootItemToView(QStandardItem *root);
+    void doBuildCmdExecuteEnd(const QString &cmd, int status);
 private:
     // cmake CDT4 options
     QStandardItem *cdt4FindItem(QStandardItem *rootItem, QString &name);

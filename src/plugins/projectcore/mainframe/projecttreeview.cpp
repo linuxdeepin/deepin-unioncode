@@ -117,42 +117,51 @@ void ProjectTreeView::appendRootItem(QStandardItem *root)
     doActiveProject(root);
 }
 
-void ProjectTreeView::removeRootItem(const QStandardItem *root)
+void ProjectTreeView::removeRootItem(QStandardItem *root)
 {
-    using namespace dpfservice;
-    auto info = ProjectInfo::get(ProjectGenerator::root(root));
+    this->viewport()->setUpdatesEnabled(false);
 
-    // 遍历删除工程根节点
-    bool isDeleted = false;
+    ProjectInfo info = ProjectInfo::get(ProjectGenerator::root(root));
+
+    // 从展示的模型中删除
     QStandardItemModel *model = static_cast<QStandardItemModel*>(QTreeView::model());
-    if (model) {
-        for (int row = 0; row < model->rowCount(); row ++) {
-            if (info == ProjectInfo::get(model->item(row))) {
-                model->removeRow(row);
-                isDeleted = true;
-            }
-        }
-    }
+    QModelIndex index = model->indexFromItem(root);
+    qInfo() << model->rowCount();
+    model->takeRow(index.row());
+    qInfo() << model->rowCount();
 
     QString workspaceFolder = info.workspaceFolder();
     QString language = info.language();
-    if (!workspaceFolder.isEmpty() && !language.isEmpty() && isDeleted) {
+    if (!workspaceFolder.isEmpty() && !language.isEmpty()) {
         // 停止lspClient
         lsp::ClientManager::instance()->shutdownClient({workspaceFolder, language});
     }
 
+    // 从生成器中删除
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService)
+        return;
+
+    auto generator = projectService->createGenerator<ProjectGenerator>(info.kitName());
+    if (generator)
+        generator->removeRootItem(root);
+
     // 发送工程删除信号
     SendEvents::projectDeleted(info);
 
+    // 始终保持首选项
     int rowCount = d->itemModel->rowCount();
     if ( 0 < rowCount) { // 存在其他工程时
-        // 始终保持首选项
         auto index = d->itemModel->index(0, 0);
         doActiveProject(d->itemModel->itemFromIndex(index));
     }
+
+    this->viewport()->setUpdatesEnabled(true);
 }
 
-void ProjectTreeView::doItemMenuRequest(const QStandardItem *item, QContextMenuEvent *event)
+void ProjectTreeView::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event)
 {
     auto rootItem = ProjectGenerator::root(item);
     QMenu *menu = nullptr;
@@ -201,6 +210,16 @@ void ProjectTreeView::expandedProjectAll(const QStandardItem *root)
     }
 }
 
+QList<dpfservice::ProjectInfo> ProjectTreeView::getAllProjectInfo()
+{
+    using namespace dpfservice;
+    QList<ProjectInfo> result;
+    for (int row = 0; row < d->itemModel->rowCount(); row++) {
+        result <<  ProjectInfo::get(d->itemModel->index(row, 0));
+    }
+    return result;
+}
+
 void ProjectTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
     QTreeView::contextMenuEvent(event);
@@ -223,14 +242,16 @@ QMenu *ProjectTreeView::childMenu(const QStandardItem *root, const QStandardItem
     return menu;
 }
 
-QMenu *ProjectTreeView::rootMenu(const QStandardItem *root)
+QMenu *ProjectTreeView::rootMenu(QStandardItem *root)
 {
     QMenu * menu = new QMenu;
     QAction* activeProjectAction = new QAction(QAction::tr("Active"));
     QAction* closeAction = new QAction(QAction::tr("Close"));
     QAction* propertyAction = new QAction(QAction::tr("Property"));
     QObject::connect(activeProjectAction, &QAction::triggered, [=](){doActiveProject(root);});
+
     QObject::connect(closeAction, &QAction::triggered, [=](){doCloseProject(root);});
+
     QObject::connect(propertyAction, &QAction::triggered, [=](){doShowProjectProperty(root);});
     menu->addAction(activeProjectAction);
     menu->addAction(closeAction);
@@ -257,7 +278,7 @@ void ProjectTreeView::doDoubleClieked(const QModelIndex &index)
     }
 }
 
-void ProjectTreeView::doCloseProject(const QStandardItem *root)
+void ProjectTreeView::doCloseProject(QStandardItem *root)
 {
     if (!root && root != ProjectGenerator::root(root))
         return;
@@ -265,7 +286,7 @@ void ProjectTreeView::doCloseProject(const QStandardItem *root)
     this->removeRootItem(root);
 }
 
-void ProjectTreeView::doActiveProject(const QStandardItem *root)
+void ProjectTreeView::doActiveProject(QStandardItem *root)
 {
     if (!root && root != ProjectGenerator::root(root))
         return;
@@ -273,7 +294,7 @@ void ProjectTreeView::doActiveProject(const QStandardItem *root)
     SendEvents::projectActived(ProjectInfo::get(root));
 }
 
-void ProjectTreeView::doShowProjectProperty(const QStandardItem *root)
+void ProjectTreeView::doShowProjectProperty(QStandardItem *root)
 {
     if (!root && root != ProjectGenerator::root(root))
         return;

@@ -27,7 +27,7 @@
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
-#include "base/abstractwidget.h"
+
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 
@@ -45,68 +45,20 @@ bool ProjectCMake::start()
     qInfo() << __FUNCTION__;
 
     auto &ctx = dpfInstance.serviceContext();
-    // 注册生成器
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {
         QString errorString;
-        projectService->implGenerator<CMakeGenerator>(CMakeGenerator::toolKitName(), &errorString);
+        projectService->implGenerator<CmakeGenerator>(CmakeGenerator::toolKitName(), &errorString);
     }
 
-    // 注册工程打开后续逻辑
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        CMakeOpenHandler *openHandler = CMakeOpenHandler::instance();
-        QObject::connect(openHandler, &CMakeOpenHandler::projectOpened,
-                         [=](const QString &name, const QString &language, const QString &filePath) {
-            // 打开工程后续流程
-            if (projectService) {
-                ProjectGenerator *generator = projectService->createGenerator<ProjectGenerator>(name);
-                QString projectFilePath = filePath;
-                // show build type config pane.
-                projectService->showConfigureProjDlg(projectFilePath);
-                // get config result.
-                QString outputPath = projectService->getDefaultOutputPath();
-
-                QObject::connect(generator, &ProjectGenerator::targetExecute,
-                                 [=](const QString &cmd, const QStringList &args) {
-                    // Execute project tree command.
-                    emit projectService->targetCommand(cmd, args);
-                });
-
-                ProjectInfo info;
-                QString sourceFolder = QFileInfo(filePath).path();
-                info.setLanguage(language);
-                info.setSourceFolder(sourceFolder);
-                info.setKitName(CMakeGenerator::toolKitName());
-                info.setBuildFolder(outputPath);
-                info.setWorkspaceFolder(sourceFolder);
-                info.setProjectFilePath(filePath);
-                info.setBuildType("Debug");
-                info.setBuildCustomArgs({"-DCMAKE_EXPORT_COMPILE_COMMANDS=1"});
-
-                auto rootItem = generator->createRootItem(info);
-                if (rootItem) {
-                    SendEvents::menuOpenProject(filePath); // 发送打开事件
-                    if (projectService->projectView.addRootItem)
-                        projectService->projectView.addRootItem(rootItem);   // 设置项目根节点
-                    if (projectService->projectView.expandedDepth)
-                        projectService->projectView.expandedDepth(rootItem, 2);   // 初始化展开两级
-                    if (windowService->switchWidgetNavigation)
-                        windowService->switchWidgetNavigation(MWNA_EDIT);   // 切换编辑器导航栏
-                    if (windowService->switchWidgetWorkspace)
-                        windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
-
-                    emit projectService->projectConfigureDone();
-                } else {
-                    ContextDialog::ok(QDialog::tr("Open Project Error: %0").arg(filePath));
-                }
-            }
-        });
-
         if (windowService->addOpenProjectAction) {
-            windowService->addOpenProjectAction(MWMFA_CXX, new AbstractAction(openHandler->openAction()));
+            auto action = new AbstractAction(CMakeOpenHandler::instance()->openAction());
+            windowService->addOpenProjectAction(MWMFA_CXX, action);
         }
     }
+
     return true;
 }
 

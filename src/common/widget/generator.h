@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QVariant>
 
+class QStandardItem;
 class Generator : public QObject
 {
     Q_OBJECT
@@ -46,6 +47,7 @@ protected:
     bool setErrorString(const QString &error); //子類調用
     bool setProperty(const QString &name, const QVariant &value); //子類調用
     QVariant property(const QString &name) const; //子類調用
+    virtual void recursionRemoveItem(QStandardItem *item);
 };
 
 #endif // GENERATOR_H

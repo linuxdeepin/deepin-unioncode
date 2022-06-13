@@ -20,6 +20,8 @@
 */
 #include "generator.h"
 
+#include <QStandardItem>
+
 Generator::Generator(QObject *parent)
     : QObject(parent)
 {
@@ -44,4 +46,26 @@ bool Generator::setProperty(const QString &name, const QVariant &value)
 QVariant Generator::property(const QString &name) const
 {
     return QObject::property(name.toLatin1());
+}
+
+#include <QDebug>
+void Generator::recursionRemoveItem(QStandardItem *item)
+{
+    if (!item)
+        return;
+
+
+    for (int row = 0; row < item->rowCount(); row ++) {
+        auto child = item->takeChild(row);
+        if (!child->hasChildren()) {
+            qInfo() << "delete child Item:" << child->data(Qt::DisplayRole).toString();
+            delete child;
+        } else {
+            recursionRemoveItem(child);
+        }
+    }
+
+    qInfo() << "delete current Item:" << item->data(Qt::DisplayRole).toString();
+    delete item;
+    return;
 }

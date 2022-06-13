@@ -104,12 +104,12 @@ public:
         return classList.values();
     }
 
-    virtual const QStringList keys() const
+    virtual QStringList keys() const
     {
         return classList.keys();
     }
 
-    virtual const QString key(CT *value)
+    virtual QString key(CT *value) const
     {
         return classList.key(value);
     }

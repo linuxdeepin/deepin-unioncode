@@ -5,18 +5,20 @@ project(plugin-projectcmake)
 find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
-    mainframe/cmakeconfigwidget.cpp
+    mainframe/cmakeasynparse.cpp
     mainframe/cmakeopenhandler.cpp
     mainframe/cmakegenerator.cpp
+    transceiver/projectcmakereceiver.cpp
     transceiver/sendevents.cpp
     projectcmake.cpp
     projectcmake.json
     )
 
 set(CXX_H
-    mainframe/cmakeconfigwidget.h
+    mainframe/cmakeasynparse.h
     mainframe/cmakeopenhandler.h
     mainframe/cmakegenerator.h
+    transceiver/projectcmakereceiver.h
     transceiver/sendevents.h
     projectcmake.h
     )

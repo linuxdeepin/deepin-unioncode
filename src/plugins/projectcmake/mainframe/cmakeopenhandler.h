@@ -32,11 +32,9 @@ public:
     static CMakeOpenHandler *instance();
     QAction *openAction();
 
-signals:
-    void projectOpened(const QString &generatorName, const QString &language, const QString &filePath);
-
 public slots:
-    void open();
+    void doProjectOpen(const QString &name, const QString &language,
+                       const QString &filePath);
 };
 
 #endif // PROJECTCMAKEOPEN_H

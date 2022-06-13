@@ -56,7 +56,8 @@ public:
      * \param projectPath 工程路径
      * \return 返回工程配置界面
      */
-    virtual QWidget* configureWidget(const QString &projectPath) {
+    virtual QWidget* configureWidget(const QString &language, const QString &projectPath) {
+        Q_UNUSED(language)
         Q_UNUSED(projectPath)
         return nullptr;
     }
@@ -69,7 +70,7 @@ public:
      * \param projectPath 工程路径
      * \return 过程执行结果
      */
-    virtual bool configure(const QString &projectPath) {
+    virtual bool configure(const ProjectInfo &projectPath) {
         Q_UNUSED(projectPath)
         return false;
     }
@@ -77,12 +78,21 @@ public:
     /*!
      * \brief createRootItem 创建文件树路径，子类需要重载实现
      *  执行该函数应当首先确定前置条件的满足，比如已经执行了生成器的过程。
-     * \param projectPath 工程文件路径
+     * \param ProjectInfo 工程信息
      * \return
      */
     virtual QStandardItem *createRootItem(const ProjectInfo &info) {
         Q_UNUSED(info);
         return nullptr;
+    }
+
+    /*!
+     * \brief removeRootItem 删除文件树根节点，子类需要重载实现
+     *  执行函数如果存在异步加载的情况，则需要通过该接口实现异步释放
+     * \param info
+     */
+    virtual void removeRootItem(QStandardItem *root) {
+        Q_UNUSED(root);
     }
 
     /*!
@@ -102,11 +112,11 @@ public:
      * \param child 子节点
      * \return 根节点
      */
-    inline static const QStandardItem *root(const QStandardItem *child)
+    inline static QStandardItem *root(QStandardItem *child)
     {
         if (!child)
             return nullptr;
-        const QStandardItem *parent = child->parent();
+        QStandardItem *parent = child->parent();
         if (parent)
             return root(parent);
         return child;

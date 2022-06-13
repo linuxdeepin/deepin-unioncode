@@ -127,6 +127,13 @@ public:
         }
     }
 
+    /*!
+     * \brief name
+     */
+    template<class T>
+    QString name(T* value) const{
+        return QtClassManager<T>::key(value);
+    }
 
     /*!
      * \brief projectView 工程视图接口对象
