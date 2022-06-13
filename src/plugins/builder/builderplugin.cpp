@@ -84,5 +84,9 @@ void BuilderPlugin::slotBuildStarted()
 void BuilderPlugin::slotProjectTreeMenu(const QString &program, const QStringList &arguments)
 {
     auto buildstep = BuildManager::instance()->makeCommandStep(program, arguments);
-    BuildManager::instance()->buildList({buildstep});
+    QString originCmd = program;
+    for (auto arg : arguments) {
+        originCmd.append(arg);
+    }
+    BuildManager::instance()->buildList({buildstep}, originCmd);
 }

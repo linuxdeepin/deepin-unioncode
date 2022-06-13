@@ -31,7 +31,7 @@ class EventSender : public QObject
 public:
     static void jumpTo(const QString &filePath, int lineNum);
 
-    static void notifyBuildState(BuildManager::BuildState state);
+    static void notifyBuildState(BuildManager::BuildState state, QString originCmd);
 
 signals:
 

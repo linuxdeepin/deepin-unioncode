@@ -37,11 +37,12 @@ void EventSender::jumpTo(const QString &filePath, int lineNum)
     dpf::EventCallProxy::instance().pubEvent(event);
 }
 
-void EventSender::notifyBuildState(BuildManager::BuildState state)
+void EventSender::notifyBuildState(BuildManager::BuildState state, QString originCmd)
 {
     dpf::Event event;
     event.setTopic(T_BUILDER);
     event.setData(D_BUILD_STATE);
     event.setProperty(P_STATE, static_cast<int>(state));
+    event.setProperty(P_ORIGINCMD, originCmd);
     dpf::EventCallProxy::instance().pubEvent(event);
 }

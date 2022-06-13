@@ -81,6 +81,7 @@ extern const QString P_BUILDDIRECTORY; // value QString
 extern const QString P_BUILDFILEPATH;  // value QString
 extern const QString P_BUILDARGUMENTS; // value QStringList
 extern const QString P_TEXT;           // value QString
+extern const QString P_ORIGINCMD;       // value QString, event sender id.
 extern const QString P_PERCENT;        // value int
 extern const QString P_MAX_PERCENT;    // value int
 extern const QString P_STATE;          // value int

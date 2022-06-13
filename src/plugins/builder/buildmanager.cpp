@@ -49,7 +49,7 @@ void BuildManager::initialize(WindowService *windowService)
     menuManager->initialize(windowService);
 }
 
-bool BuildManager::buildList(const QList<BuildStep *> &_bsl)
+bool BuildManager::buildList(const QList<BuildStep *> &_bsl, QString originCmd)
 {
     TaskManager::instance()->clearTasks();
     if (outputPane)
@@ -63,7 +63,7 @@ bool BuildManager::buildList(const QList<BuildStep *> &_bsl)
 
     buildState = kBuilding;
     menuManager->handleRunStateChanged(buildState);
-    QtConcurrent::run([&](){
+    QtConcurrent::run([=](){
         QMutexLocker locker(&releaseMutex);
         bool success = true;
         for (auto step : bsl) {
@@ -75,7 +75,7 @@ bool BuildManager::buildList(const QList<BuildStep *> &_bsl)
         QMetaObject::invokeMethod(menuManager.get(), "handleRunStateChanged",
                                   Q_ARG(BuildManager::BuildState, buildState));
 
-        EventSender::notifyBuildState(buildState);
+        EventSender::notifyBuildState(buildState, originCmd);
     });
     return true;
 }

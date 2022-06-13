@@ -51,7 +51,7 @@ public:
 
     void initialize(dpfservice::WindowService *service);
 
-    bool buildList(const QList<BuildStep*> &bsl);
+    bool buildList(const QList<BuildStep*> &bsl, QString originCmd = "");
     BuildStep *makeCommandStep(const QString &cmd, const QStringList &args, QString outputDirectory = "");
     BuildOutputPane *getOutputPane() const;
 

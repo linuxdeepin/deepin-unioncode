@@ -74,6 +74,7 @@ const QString P_BUILDSYSTEM {"BuildSystem"};
 const QString P_BUILDDIRECTORY {"BuildDirectory"};
 const QString P_BUILDFILEPATH {"BuildFilePath"};
 const QString P_BUILDARGUMENTS {"BuildArguments"};
+const QString P_ORIGINCMD {"OriginCommand"};
 const QString P_TEXT {"Text"};
 const QString P_PERCENT {"Percent"};
 const QString P_STATE {"State"};
