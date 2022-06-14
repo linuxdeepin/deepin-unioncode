@@ -157,6 +157,7 @@ public:
 
     QList<gdb::Breakpoint> allBreakpoints() const;
     QList<gdb::Breakpoint> breakpointsForFile(const QString& filePath) const;
+    void removeBreakpointInFile(const QString& filePath);
     gdb::Breakpoint breakpointById(int id) const;
     gdb::Breakpoint breakpointByFileLine(const QString& path, int line) const;
     bool isInferiorRunning() const;

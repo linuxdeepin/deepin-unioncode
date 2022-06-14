@@ -634,7 +634,7 @@ struct IDebugSession : public ITreeElement
     virtual void terminate(bool restart = false) = 0;
     virtual void disconnect(bool terminateDebuggee = true, bool restart = false) = 0;
 
-    virtual void sendBreakpoints(dap::array<IBreakpoint> &breakpointsToSend) = 0;
+    virtual void sendBreakpoints(const QString &sourcePath, dap::array<IBreakpoint> &breakpointsToSend) = 0;
     virtual void sendFunctionBreakpoints(dap::array<IFunctionBreakpoint> &fbpts) = 0;
     virtual void sendExceptionBreakpoints(dap::array<IExceptionBreakpoint> &exbpts) = 0;
     virtual dap::optional<dap::DataBreakpointInfoResponse> dataBreakpointInfo(

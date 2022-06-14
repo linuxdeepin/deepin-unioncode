@@ -770,11 +770,16 @@ void DapSession::handleEvent(const QString &sOut)
 
 dap::SetBreakpointsResponse DapSession::handleBreakpointReq(const SetBreakpointsRequest &request)
 {
-    Q_UNUSED(request);
-    Log("<-- Server received setBreakpoints request from client\n");
-
-    emit GDBProxy::instance()->sigBreakRemoveAll();
     dap::SetBreakpointsResponse response;
+
+    Log("<-- Server received setBreakpoints request from client\n");
+    if (request.source.path->empty()) {
+        emit GDBProxy::instance()->sigBreakRemoveAll();
+        return response;
+    }
+
+    const char *sourcePath = request.source.path->c_str();
+    DebugManager::instance()->removeBreakpointInFile(sourcePath);
     if (request.breakpoints.has_value()) {
         dap::array<dap::Breakpoint> breakpoints;
         for (auto &breakpoint : request.breakpoints.value()) {

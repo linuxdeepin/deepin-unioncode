@@ -392,6 +392,14 @@ QList<gdb::Breakpoint> DebugManager::breakpointsForFile(const QString &filePath)
     return list;
 }
 
+void DebugManager::removeBreakpointInFile(const QString &filePath)
+{
+    auto breakpoints = breakpointsForFile(filePath);
+    for (auto bp : breakpoints) {
+        breakRemove(bp.number);
+    }
+}
+
 gdb::Breakpoint DebugManager::breakpointById(int id) const
 {
     return self->breakpoints.value(id);

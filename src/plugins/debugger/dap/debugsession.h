@@ -60,7 +60,7 @@ public:
     void terminate(bool restart = false) override;
     void disconnect(bool terminateDebuggee = true, bool restart = false) override;
 
-    void sendBreakpoints(dap::array<IBreakpoint> &breakpointsToSend) override;
+    void sendBreakpoints(const QString &sourcePath, dap::array<IBreakpoint> &breakpointsToSend) override;
     void sendFunctionBreakpoints(dap::array<IFunctionBreakpoint> &fbpts) override;
     void sendExceptionBreakpoints(dap::array<IExceptionBreakpoint> &exbpts) override;
     dap::optional<dap::DataBreakpointInfoResponse> dataBreakpointInfo(

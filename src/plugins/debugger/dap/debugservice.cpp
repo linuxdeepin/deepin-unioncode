@@ -34,12 +34,22 @@ DebugService::DebugService(QObject *parent)
 
 void DebugService::sendAllBreakpoints(DebugSession *session)
 {
+#if 0 // breakpoint type not supported now.
     sendBreakpoints(undefined, session, false);
     sendFunctionBreakpoints(session);
     sendDataBreakpoints(session);
     sendInstructionBreakpoints(session);
     // send exception breakpoints at the end since some debug adapters rely on the order
     sendExceptionBreakpoints(session);
+#endif
+
+    // remove all previous breakpoints.
+    sendBreakpoints({}, session);
+
+    auto breakpoints = model->getAllBreakpoints();
+    for (auto it = breakpoints.begin(); it != breakpoints.end(); ++it) {
+        sendBreakpoints(it.key(), session);
+    }
 }
 
 dap::array<IBreakpoint> DebugService::addBreakpoints(
@@ -70,8 +80,13 @@ DebugModel *DebugService::getModel() const
 void DebugService::sendBreakpoints(dap::optional<QUrl> uri, DebugSession *session, bool sourceModified)
 {
     Q_UNUSED(sourceModified)
-    auto breakpointsToSend = model->getBreakpoints(uri, undefined, undefined, true);
-    session->sendBreakpoints(breakpointsToSend);
+    if (!uri.has_value()) {
+        dap::array<IBreakpoint> empty;
+        session->sendBreakpoints({}, empty);
+    } else {
+        auto breakpointsToSend = model->getBreakpoints(uri, undefined, undefined, true);
+        session->sendBreakpoints(uri->path(), breakpointsToSend);
+    }
 }
 
 void DebugService::sendFunctionBreakpoints(DebugSession *session)

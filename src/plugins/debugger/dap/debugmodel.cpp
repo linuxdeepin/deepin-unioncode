@@ -149,6 +149,21 @@ dap::array<IBreakpoint> DebugModel::getBreakpoints(dap::optional<QUrl> url, dap:
     return ret;
 }
 
+QMap<QString, dap::array<IBreakpoint>> DebugModel::getAllBreakpoints()
+{
+    QMap<QString, dap::array<IBreakpoint>> allBreakpoints;
+    for (auto it : breakPoints) {
+        auto ibp = convertToIBreakpoint(it);
+        QString path = ibp.uri.path();
+        if (allBreakpoints.contains(path)) {
+            allBreakpoints[path].push_back(ibp);
+        } else {
+            allBreakpoints.insert(path, {ibp});
+        }
+    }
+    return allBreakpoints;
+}
+
 bool DebugModel::areBreakpointsActivated()
 {
     return breakpointsActivated;

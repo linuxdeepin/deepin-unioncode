@@ -44,6 +44,8 @@ public:
     void fetchCallStack(Thread &thread);
     ReadonlyArray<IBreakpoint> getBreakpoints(dap::optional<QUrl> url, dap::optional<int> lineNumber,
                                               dap::optional<int> column, dap::optional<bool> enabledOnly);
+
+    QMap<QString, dap::array<IBreakpoint>> getAllBreakpoints();
     ReadonlyArray<IFunctionBreakpoint> getFunctionBreakpoints();
     ReadonlyArray<IDataBreakpoint> getDataBreakpoints();
     ReadonlyArray<IExceptionBreakpoint> getExceptionBreakpoints();

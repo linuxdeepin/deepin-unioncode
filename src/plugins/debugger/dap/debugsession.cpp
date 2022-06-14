@@ -501,16 +501,13 @@ void DebugSession::next(integer threadId, dap::optional<dap::SteppingGranularity
     raw->next(request);
 }
 
-void DebugSession::sendBreakpoints(dap::array<IBreakpoint> &breakpointsToSend)
+void DebugSession::sendBreakpoints(const QString &sourcePath, dap::array<IBreakpoint> &breakpointsToSend)
 {
-    if (!raw)
+    if (!raw || !raw->readyForBreakpoints())
         return;
 
-    if (!raw->readyForBreakpoints()) {
-        qInfo() << "break point not ready!";
-        return;
-    }
     SetBreakpointsRequest request;
+    request.source.path = sourcePath.toStdString();
     dap::array<SourceBreakpoint> breakpoints;
     for (auto it : breakpointsToSend) {
         dap::Source source;
