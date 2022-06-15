@@ -703,7 +703,9 @@ void Debugger::message(QString msg)
 
 void Debugger::currentThreadChanged(const QString &text)
 {
-    QStringList l = text.split("#");
-    QString threadNumber = l.last().split(" ").first();
-    switchCurrentThread(threadNumber.toInt());
+    QtConcurrent::run([&]() { // run in thread to avoid blocked when get variables.
+        QStringList l = text.split("#");
+        QString threadNumber = l.last().split(" ").first();
+        switchCurrentThread(threadNumber.toInt());
+    });
 }

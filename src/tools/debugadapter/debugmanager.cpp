@@ -326,8 +326,11 @@ DebugManager::DebugManager(QObject *parent) :
     connect(self->gdb, &QProcess::readyReadStandardOutput, [this]() {
         for (const auto& c: QString{self->gdb->readAllStandardOutput()})
             switch (c.toLatin1()) {
-            case '\r': break;
+            case '\r':
             case '\n':
+                // keep newline symbol.
+                self->buffer.append(c);
+
                 processLine(self->buffer);
                 self->buffer.clear();
                 break;
