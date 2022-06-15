@@ -49,11 +49,25 @@ QString EditorStyle::globalPath(const QString &languageID)
 QString EditorStyle::userPath(const QString &languageID)
 {
     auto result = CustomPaths::endSeparator(CustomPaths::user(CustomPaths::Configures));
-    if (!CustomPaths::installed()) {
-       result = CustomPaths::endSeparator(result + "temp");
-       if (!QDir(result).exists()) {
-           QDir().mkdir(result);
-       }
+    QDir dir(result);
+    if (!dir.exists()) {
+        QStringList list = result.split(QDir::separator());
+        list.removeFirst();
+        QDir dir(QDir::separator());
+        for (auto &val : list) {
+            if (dir.cd(val)) {
+                continue;
+            } else {
+                dir.mkdir(val);
+            }
+        }
+        if (!CustomPaths::installed()) {
+            auto tempConfigFile = CustomPaths::endSeparator(result + "temp");
+            QDir dir(tempConfigFile);
+            if (!dir.exists())
+                QDir(result).mkdir("temp");
+            result = tempConfigFile;
+        }
     }
     return result + QString("editorstyle_%0.support").arg(languageID);
 }

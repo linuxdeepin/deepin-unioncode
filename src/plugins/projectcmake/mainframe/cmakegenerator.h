@@ -33,6 +33,7 @@ class CmakeGenerator : public dpfservice::ProjectGenerator
     CmakeGeneratorPrivate *const d;
 public:
     explicit CmakeGenerator();
+    virtual ~CmakeGenerator();
     static QString toolKitName() { return "cmake"; }
     virtual QWidget* configureWidget(const QString &language,
                                      const QString &projectPath) override;
@@ -43,20 +44,22 @@ public:
 
 signals:
     void createRootItemAsynEnd(QStandardItem *root);
+
 private slots:
     void actionTriggered();
     void setRootItemToView(QStandardItem *root);
     void doBuildCmdExecuteEnd(const QString &cmd, int status);
+    void doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files);
+
 private:
     // cmake CDT4 options
     QStandardItem *cdt4FindItem(QStandardItem *rootItem, QString &name);
     QStandardItem *cdt4FindParentItem(QStandardItem *rootItem, QString &name);
     QHash<QString, QString> cdt4Subporjects(QStandardItem *rootItem);
-    QStandardItem *cdt4DisplayOptimize(QStandardItem *rootItem);
     void cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash<QString, QString> &subprojectsMap);
     void cdt4SubprojectsDisplayOptimize(QStandardItem *item);
-    QDomDocument cdt4LoadProjectXmlDoc(const QString &buildFolder);
     QDomDocument cdt4LoadMenuXmlDoc(const QString &buildFolder);
+    QStringList infoBuildCmd(const dpfservice::ProjectInfo &info) const;
 };
 
 #endif // CMAKEGENERATOR_H

@@ -36,6 +36,7 @@ public:
     virtual ~ProjectTreeView();
     void appendRootItem(QStandardItem *root);
     void removeRootItem(QStandardItem *root);
+    void takeRootItem(QStandardItem *root);
     void expandedProjectDepth(const QStandardItem *root, int depth);
     void expandedProjectAll(const QStandardItem *root);
     QList<dpfservice::ProjectInfo> getAllProjectInfo();

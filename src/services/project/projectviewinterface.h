@@ -36,6 +36,18 @@ public:
     DPF_INTERFACE(void, addRootItem, QStandardItem *aitem);
 
     /*!
+     * \brief removeRootItem 删除工程根数据节点
+     * \param aitem
+     */
+    DPF_INTERFACE(void, removeRootItem, QStandardItem *aitem);
+
+    /*!
+     * \brief takeRootItem 从View移除但不删除工程节点
+     * \param aitem
+     */
+    DPF_INTERFACE(void, takeRootItem, QStandardItem *aitem);
+
+    /*!
      * \brief expandedDepth 展开工程子项根据深度
      * \param aitem root节点
      * \param depth 深度
@@ -52,7 +64,7 @@ public:
     /*!
      * \brief getAllProjectInfo 获取所有工程信息
      */
-    DPF_INTERFACE(QList<dpfservice::ProjectInfo> , getAllProjectInfo, void);
+    DPF_INTERFACE(QList<dpfservice::ProjectInfo>, getAllProjectInfo, void);
 };
 
 #endif // PROJECTVIEWINTERFACE_H

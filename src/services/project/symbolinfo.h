@@ -176,18 +176,7 @@ namespace dpfservice {
 
 enum {
     SymbolInfoRole = Qt::ItemDataRole::UserRole + 100,
-    SymbolGenIdelRole = SymbolInfoRole + 1
 };
-
-static void setSymbolRootIdel(QStandardItem *root, bool state)
-{
-    root->setData(state, SymbolGenIdelRole);
-}
-
-static bool symbolRootIdel(QStandardItem *root)
-{
-    return root->data(SymbolGenIdelRole).toBool();
-}
 
 class SymbolInfo : public libClang::KindInfoLocations
 {

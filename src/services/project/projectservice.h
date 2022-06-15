@@ -135,6 +135,11 @@ public:
         return QtClassManager<T>::key(value);
     }
 
+    template<class T>
+    QList<T*> values() const {
+        return QtClassManager<T>::values();
+    }
+
     /*!
      * \brief projectView 工程视图接口对象
      */

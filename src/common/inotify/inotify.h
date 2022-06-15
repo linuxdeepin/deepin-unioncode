@@ -53,12 +53,13 @@ public:
 
     explicit Inotify(QObject *parent = nullptr);
     virtual ~Inotify();
-    void subscribeTypes(Types types);
-    bool addPath(const QString &path);
+    static Inotify *globalInstance();
+
+public slots:
+    void addPath(const QString &path);
     void removePath(const QString &path);
     void addIgnorePath(const QString &path);
     void removeIgnorePath(const QString &path);
-    static Inotify *globalInstance();
 
 signals:
     void modified(const QString &filePath); //File && Dir
@@ -69,6 +70,15 @@ signals:
     void deletedSub(const QString &filePath); //Dir
     void movedSelf(const QString &filePath); //File & &Dir
     void deletedSelf(const QString &filePath); //File && Dir
+
+    void ignoreModified(const QString &filePath); //File && Dir
+    void ignoreOpened(const QString &filePath); //File && Dir
+    void ignoreClosed(const QString &filePath); //File && Dir
+    void ignoreMovedSub(const QString &filePath); //Dir
+    void ignoreCreatedSub(const QString &filePath); //Dir
+    void ignoreDeletedSub(const QString &filePath); //Dir
+    void ignoreMovedSelf(const QString &filePath); //File & &Dir
+    void ignoreDeletedSelf(const QString &filePath); //File && Dir
 };
 
 #endif // INOTIFY_H

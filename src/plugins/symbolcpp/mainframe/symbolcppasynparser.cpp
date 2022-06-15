@@ -31,11 +31,14 @@
 #include <QMutex>
 #include <QReadLocker>
 #include <QWriteLocker>
+#include <QApplication>
 
+#include <memory>
 #include <iostream>
 
 namespace {
-static QReadWriteLock rwLock;
+QSharedPointer<QReadWriteLock> rwLock {new QReadWriteLock};
+static bool canRunAllThread = true;
 }
 
 std::ostream& operator<<(std::ostream& stream, const CXString& str)
@@ -196,13 +199,16 @@ QStandardItem *findItem(QStandardItem *root, const dpfservice::SymbolInfo &findS
 
 CXChildVisitResult parseVisitChildren(CXCursor current, CXCursor parent, CXClientData client_data)
 {
+    if (!canRunAllThread) {
+        return CXChildVisit_Break;
+    }
+
     using namespace dpfservice;
     using namespace libClang;
 
     VisitData *iRoot = static_cast<VisitData*>(client_data);
 
     auto rootItem = iRoot->root;
-
     if (!iRoot->files.contains(clang_getCursorLocationFileNameSeplling(parent))) {
         return CXChildVisit_Recurse;
     }
@@ -215,14 +221,14 @@ CXChildVisitResult parseVisitChildren(CXCursor current, CXCursor parent, CXClien
         auto parentSymInfo = clang_getCursorCustomSymbolInfo(parent);
 
         // read lock
-        rwLock.lockForRead();
+        rwLock->lockForRead();
         auto parentItem = findItem(rootItem, parentSymInfo);
-        rwLock.unlock();
+        rwLock->unlock();
         // read unlock
 
 
         // write lock
-        rwLock.lockForWrite();
+        rwLock->lockForWrite();
         if (!parentItem) {
             parentItem = new QStandardItem(parentSymInfo.getValue() + " " + parentSymInfo.getType());
             SymbolInfo::set(parentItem, parentSymInfo);
@@ -251,7 +257,7 @@ CXChildVisitResult parseVisitChildren(CXCursor current, CXCursor parent, CXClien
         parentTooltip += "Location Count:" +
                 QString::number(SymbolInfo::get(parentItem).getLocations().size());
         parentItem->setToolTip(parentTooltip);
-        rwLock.unlock();
+        rwLock->unlock();
         // write unlock
 
 
@@ -259,14 +265,14 @@ CXChildVisitResult parseVisitChildren(CXCursor current, CXCursor parent, CXClien
 
 
         // read lock
-        rwLock.lockForRead();
+        rwLock->lockForRead();
         auto currentItem = findItem(parentItem, currentSymInfo);
-        rwLock.unlock();
+        rwLock->unlock();
         // read unlock
 
 
         // write lock
-        rwLock.lockForWrite();
+        rwLock->lockForWrite();
         if (!currentItem) {
             currentItem = new QStandardItem(currentSymInfo.getValue()
                                             + " " + currentSymInfo.getType());
@@ -283,17 +289,18 @@ CXChildVisitResult parseVisitChildren(CXCursor current, CXCursor parent, CXClien
         currentTooltip += "Location Count:" +
                 QString::number(SymbolInfo::get(currentItem).getLocations().size());
         currentItem->setToolTip(currentTooltip);
-        rwLock.unlock();
+        rwLock->unlock();
         // write unlock
     }
 
     return CXChildVisit_Recurse;
 };
 
-SymbolCppAsynParser::SymbolCppAsynParser(QObject *parent)
-    : QObject (parent)
+SymbolCppAsynParser::SymbolCppAsynParser()
 {
-
+    QObject::connect(qApp, &QApplication::destroyed, [=](){
+        ::canRunAllThread = true;
+    });
 }
 
 SymbolCppAsynParser::~SymbolCppAsynParser()
@@ -301,7 +308,18 @@ SymbolCppAsynParser::~SymbolCppAsynParser()
     qDebug() << __FUNCTION__;
 }
 
-void SymbolCppAsynParser::doParserOne(QStandardItem *item, const QString &file, const QSet<QString> &srcFiles)
+void SymbolCppAsynParser::setGlobalRunFlags(bool canRun)
+{
+    canRunAllThread = canRun;
+}
+
+bool SymbolCppAsynParser::globalRunFlags()
+{
+    return canRunAllThread;
+}
+
+void SymbolCppAsynParser::doParserOne(QStandardItem *item, const QString &file,
+                                      const QSet<QString> &srcFiles)
 {
 
     CXIndex index = clang_createIndex(0, 0);

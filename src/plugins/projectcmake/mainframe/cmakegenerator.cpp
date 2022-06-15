@@ -19,151 +19,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "cmakegenerator.h"
+#include "cmakeasynparse.h"
+#include "cmakeitemkeeper.h"
 #include "transceiver/sendevents.h"
 #include "transceiver/projectcmakereceiver.h"
 #include "services/window/windowservice.h"
-#include "common/common.h"
+
 
 #include <QtXml>
 #include <QFileIconProvider>
 
-namespace  {
-
-enum_def(CDT_PROJECT_KIT, QString)
-{
-    enum_exp CDT4_GENERATOR = "Eclipse CDT4 - Unix Makefiles";
-    enum_exp PROJECT_FILE = ".project";
-    enum_exp CPROJECT_FILE = ".cproject";
-};
-
-enum_def(CDT_XML_KEY, QString)
-{
-    enum_exp projectDescription = "projectDescription";
-    enum_exp name = "name";
-    enum_exp comment = "comment";
-    enum_exp project = "project";
-    enum_exp buildSpec = "buildSpec";
-    enum_exp buildCommand = "buildCommand";
-    enum_exp triggers = "triggers";
-    enum_exp arguments = "arguments";
-    enum_exp dictionary = "dictionary";
-    enum_exp link = "link";
-    enum_exp type = "type";
-    enum_exp location = "location";
-    enum_exp locationURI = "locationURI";
-    enum_exp key = "key";
-    enum_exp value = "value";
-    enum_exp natures = "natures";
-    enum_exp linkedResources = "linkedResources";
-};
-
-enum_def(CDT_TARGETS_TYPE, QString)
-{
-    enum_exp Subprojects = "[Subprojects]";
-    enum_exp Targets = "[Targets]";
-    enum_exp Lib = "[lib]";
-    enum_exp Exe = "[exe]";
-};
-
-enum_def(CDT_FILES_TYPE, QString)
-{
-    enum_exp ObjectLibraries = "Object Libraries";
-    enum_exp ObjectFiles = "Object Files";
-    enum_exp SourceFiles = "Source Files";
-    enum_exp HeaderFiles = "Header Files";
-    enum_exp CMakeRules = "CMake Rules";
-    enum_exp Resources = "Resources";
-};
-
-enum_def(CDT_CPROJECT_KEY, QString)
-{
-    enum_exp storageModuled = "storageModule";
-    enum_exp cconfiguration = "cconfiguration";
-    enum_exp buildCommand = "buildCommand";
-    enum_exp buildArguments = "buildArguments";
-    enum_exp buildTarget = "buildTarget";
-    enum_exp stopOnError = "stopOnError";
-    enum_exp useDefaultCommand = "useDefaultCommand";
-};
-
-enum_def(CDT_CPROJECT_ATTR_KEY, QString)
-{
-    enum_exp moduleId = "moduleId";
-    enum_exp id = "id";
-    enum_exp name = "name";
-    enum_exp path = "path";
-    enum_exp targetID = "targetID";
-};
-
-// noly selection build targets
-enum_def(CDT_MODULE_ID_VAL, QString)
-{
-    enum_exp org_eclipse_cdt_make_core_buildtargets = "org.eclipse.cdt.make.core.buildtargets";
-};
-
-QHash<QString, QString> optionHash {
-    { "-S", "source directory" },
-    { "-B", "build directory" },
-    { "-G", "build system generator" },
-    { "-DCMAKE_EXPORT_COMPILE_COMMANDS", "build clangd use compile json file"},
-    { "-DCMAKE_BUILD_TYPE", "build type"}
-};
-
-QIcon cmakeFolderIcon()
-{
-    static QIcon cmakeFolderIcon;
-    if (cmakeFolderIcon.isNull()) {
-        cmakeFolderIcon = CustomIcons::icon(QFileIconProvider::Folder);
-        cmakeFolderIcon.addFile(":/cmakeproject/images/fileoverlay_cmake@2x.png");
-    }
-    return cmakeFolderIcon;
-}
-
-QIcon libBuildIcon() {
-    static QIcon libBuildIcon;
-    if (libBuildIcon.isNull()) {
-        libBuildIcon = CustomIcons::icon(CustomIcons::Lib);
-        libBuildIcon.addFile(":/cmakeproject/images/build@2x.png");
-    }
-    return libBuildIcon;
-}
-
-QIcon exeBuildIcon()
-{
-    static QIcon exeBuildIcon;
-    if (exeBuildIcon.isNull()) {
-        exeBuildIcon = CustomIcons::icon(CustomIcons::Exe);
-        exeBuildIcon.addFile(":/cmakeproject/images/build@2x.png");
-    }
-    return exeBuildIcon;
-}
-
-struct TargetBuild
-{
-    QString buildName;
-    QString buildCommand;
-    QString buildArguments;
-    QString buildTarget;
-    QString stopOnError;
-    QString useDefaultCommand;
-    // 全部都存在数据则有效
-    inline bool isInvalid() {
-        if (buildName.isEmpty() || buildCommand.isEmpty()
-                || buildArguments.isEmpty() || stopOnError.isEmpty()
-                || useDefaultCommand.isEmpty())
-            return true;
-        return false;
-    }
-};
-
-} // namespace
-
-
-
 class CmakeGeneratorPrivate
 {
     friend class CmakeGenerator;
-    QHash<QStandardItem *, QThreadPool*> asynItemThreadPolls;
+
+    enum CreateItemMode{
+        NewCreateProject,
+        RebuildProject,
+    };
+
+    QHash<QStandardItem*, QThreadPool*> asynItemThreadPolls;
+    QList<QStandardItem*> reloadCmakeFileItems;
     dpfservice::ProjectInfo configureProjectInfo;
 };
 
@@ -177,6 +53,46 @@ CmakeGenerator::CmakeGenerator()
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::buildExecuteEnd,
                      this, &CmakeGenerator::doBuildCmdExecuteEnd);
+
+    // main thread init watcher class
+    CmakeItemKeeper::instance();
+
+    // build cmake file changed notify
+    QObject::connect(CmakeItemKeeper::instance(),
+                     &CmakeItemKeeper::cmakeFileNodeNotify,
+                     this, &CmakeGenerator::doCmakeFileNodeChanged);
+
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService) {
+        qCritical() << "Failed, not found service : projectService";
+        abort();
+    }
+
+    QObject::connect(this, &ProjectGenerator::targetExecute,
+                     [=](const QString &cmd, const QStringList &args) {
+        // Execute project tree command.
+        emit projectService->targetCommand(cmd, args);
+    });
+}
+
+CmakeGenerator::~CmakeGenerator()
+{
+    qInfo() << __FUNCTION__;
+    for (auto val : d->asynItemThreadPolls.keys()) {
+        auto threadPoll = d->asynItemThreadPolls[val];
+        if (threadPoll) {
+            threadPoll->clear();
+            while (threadPoll->activeThreadCount() != 0) {}
+            delete threadPoll;
+        }
+    }
+
+    d->asynItemThreadPolls.clear();
+
+    if (d)
+        delete d;
 }
 
 QWidget *CmakeGenerator::configureWidget(const QString &language,
@@ -193,12 +109,6 @@ QWidget *CmakeGenerator::configureWidget(const QString &language,
     projectService->showConfigureProjDlg(projectFilePath);
     // get config result.
     QString outputPath = projectService->getDefaultOutputPath();
-
-    QObject::connect(this, &ProjectGenerator::targetExecute,
-                     [=](const QString &cmd, const QStringList &args) {
-        // Execute project tree command.
-        emit projectService->targetCommand(cmd, args);
-    });
 
     ProjectInfo info;
     QString sourceFolder = QFileInfo(projectPath).path();
@@ -230,13 +140,11 @@ QWidget *CmakeGenerator::configureWidget(const QString &language,
 
 bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
 {
-    auto Cmd = info.buildProgram() + " " + info.buildCustomArgs().join(" ");
-
-    // cache project info
+    // cache project info, asyn end to use
     d->configureProjectInfo = info;
 
     // asyn execute command generat project file from cmake
-    ProjectCmakeProxy::instance()->setbuildOriginCmd(Cmd);
+    ProjectCmakeProxy::instance()->setbuildOriginCmd(infoBuildCmd(info).join(" "));
 
     emit targetExecute(info.buildProgram(), info.buildCustomArgs());
 
@@ -246,98 +154,39 @@ bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
 
 QStandardItem *CmakeGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
-    // step.1 read project from CDT4 xml file;
     using namespace dpfservice;
-    QStandardItem * rootItem {nullptr};
+    QStandardItem * rootItem = new QStandardItem();
     d->asynItemThreadPolls[rootItem] = new QThreadPool;
 
-    auto runable = [=](QStandardItem *rootItem)
-    {
-        QSet<QString> allFiles{};
-        ProjectInfo tempInfo = info;
-        QDomDocument projectXmlDoc = cdt4LoadProjectXmlDoc(tempInfo.buildFolder());
-        QDomElement docElem = projectXmlDoc.documentElement();
-        QDomNode n = docElem.firstChild();
-        while(!n.isNull()) {
-            QDomElement e = n.toElement(); // try to convert the node to an element.
-            if(!e.isNull()) {
-                if (!rootItem && e.tagName() == CDT_XML_KEY::get()->name) {
-                    QFileInfo rootCMakeInfo(tempInfo.projectFilePath());
-                    rootItem = new QStandardItem();
+    auto parse = new CmakeAsynParse;
 
-                    rootItem->setText(e.text());
-                    rootItem->setIcon(::cmakeFolderIcon());
-                    rootItem->setToolTip(rootCMakeInfo.dir().path());
+    // asyn free parse, that .project file parse
+    QObject::connect(parse, &CmakeAsynParse::parseProjectEnd,
+                     [=](CmakeAsynParse::ParseInfo<QStandardItem*> info){
+        d->asynItemThreadPolls.remove(info.result);
+        delete parse;
+        createRootItemAsynEnd(info.result);
+    });
 
-                    // 添加子集cmake文件
-                    auto rootCMakeItem = new QStandardItem();
-                    rootCMakeItem->setText(rootCMakeInfo.fileName());
-                    rootCMakeItem->setIcon(CustomIcons::icon(rootCMakeInfo));
-                    rootCMakeItem->setToolTip(rootCMakeInfo.filePath());
-                    rootItem->appendRow(rootCMakeItem);
-                }
-                if (rootItem && e.tagName() == CDT_XML_KEY::get()->linkedResources) {
-                    QDomNode linkedResChildNode = e.firstChild();
-                    while (!linkedResChildNode.isNull()) {
-                        QDomElement linkElem = linkedResChildNode.toElement();
-                        if (linkElem.tagName() == CDT_XML_KEY::get()->link) {
-                            QDomNode linkChildNode = linkElem.firstChild();
-                            QStandardItem *childItem = nullptr;
-                            while (!linkChildNode.isNull()) {
-                                QDomElement linkChildElem = linkChildNode.toElement();
-                                if (!childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->name) {
-                                    QString name = linkChildElem.text();
-                                    auto parentItem = cdt4FindParentItem(rootItem, name); // 查找上级节点
-                                    if (!name.isEmpty()) { // 节点为有效数据 避免 dir/ 和dir解析歧义生成空节点
-                                        childItem = new QStandardItem(); // 创建子节点
-                                        childItem->setText(name); // 设置子节点名称
-                                        if (parentItem) {
-                                            parentItem->appendRow(childItem);
-                                        }
-                                    }
-                                }
-                                if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->location) {
-                                    QFileInfo fileInfo(linkChildElem.text());
-                                    if (fileInfo.isFile()) {
-                                        allFiles << linkChildElem.text();
-                                    }
-                                    childItem->setIcon(CustomIcons::icon(fileInfo)); // 设置本地文件图标
-                                    childItem->setToolTip(linkChildElem.text());
-                                }
-                                if (childItem && linkChildElem.tagName() == CDT_XML_KEY::get()->locationURI) {
-                                    childItem->setToolTip(linkChildElem.text());
-                                }
-                                // 节点缓存来自xml的所有数据
-                                dpfservice::ProjectInfo::set(childItem, linkChildElem.tagName(), linkChildElem.text());
-                                linkChildNode = linkChildNode.nextSibling();
-                            }
-                        }
-                        linkedResChildNode = linkedResChildNode.nextSibling();
-                    }
-                }
-            }
-            n = n.nextSibling();
-        }
-
-        // 设置顶层节点当前构建系统信息，该过程不可少
-        tempInfo.setSourceFiles(allFiles);
-        ProjectInfo::set(rootItem, tempInfo);
-        rootItem = cdt4DisplayOptimize(rootItem);
-        emit createRootItemAsynEnd(rootItem);
-    };
-
-    // 异步执行生成过程
-    QtConcurrent::run(d->asynItemThreadPolls[rootItem], runable, rootItem);
+    // asyn execute logic,  that .project file parse
+    QtConcurrent::run(d->asynItemThreadPolls[rootItem],
+                      parse, &CmakeAsynParse::parseProject,
+                      rootItem, info);
 
     return rootItem;
 }
 
 void CmakeGenerator::removeRootItem(QStandardItem *root)
 {
+    // remove watcher from current root item
+    CmakeItemKeeper::instance()->delCmakeFileNode(root);
+
     auto threadPoll = d->asynItemThreadPolls[root];
     if (threadPoll) {
         threadPoll->clear();
         while(threadPoll->waitForDone());
+        delete threadPoll;
+        d->asynItemThreadPolls.remove(root);
     }
 
     recursionRemoveItem(root);
@@ -345,94 +194,32 @@ void CmakeGenerator::removeRootItem(QStandardItem *root)
 
 QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
 {
-    if (!item)
-        return nullptr;
-
-    QString itemName = dpfservice::ProjectInfo::get(item).property(CDT_XML_KEY::get()->name).toString();
-    QString itemLocalURI = dpfservice::ProjectInfo::get(item).property(CDT_XML_KEY::get()->locationURI).toString();
-
-    // 读取文件
-    const QStandardItem *rootItem = ProjectGenerator::root(const_cast<QStandardItem*>(item));
-
-    QList<TargetBuild> buildMenuList;
-
-    // 顶层文件存在 并且名称存在 并且是虚拟路径
-    if (rootItem && !itemName.isEmpty() && !itemLocalURI.isEmpty()) {
-        QString buildPath = dpfservice::ProjectInfo::get(rootItem).buildFolder();
-        QDomDocument menuXmlDoc = cdt4LoadMenuXmlDoc(buildPath);
-        QDomElement docElem = menuXmlDoc.documentElement();
-        QDomNode n = docElem.firstChild().firstChild().firstChild(); // 过滤三层
-        while(!n.isNull()) {
-            QDomElement e = n.toElement(); // try to convert the node to an element.
-            if(!e.isNull() && e.tagName() == CDT_CPROJECT_KEY::get()->storageModuled
-                    && e.attribute(CDT_CPROJECT_ATTR_KEY::get()->moduleId)
-                    == CDT_MODULE_ID_VAL::get()->org_eclipse_cdt_make_core_buildtargets) {
-                QDomNode targetNode = e.firstChild().firstChild(); // 过滤两层
-                while (!targetNode.isNull()) {
-                    QDomElement targetElem = targetNode.toElement();
-                    if (targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->path) == itemName) {
-                        QDomNode targetBuildChild = targetElem.firstChild();
-                        struct TargetBuild targetBuild;
-                        targetBuild.buildName = targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->name);
-                        qInfo() << targetBuild.buildName;
-                        while (!targetBuildChild.isNull()) {
-                            auto targetBuildTargetElem = targetBuildChild.toElement();
-                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->buildCommand) {
-                                targetBuild.buildCommand = targetBuildTargetElem.text();
-                                qInfo() << targetBuild.buildCommand;
-                            }
-                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->buildArguments) {
-                                targetBuild.buildArguments = targetBuildTargetElem.text();
-                                qInfo() << targetBuild.buildArguments;
-                            }
-                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->buildTarget) {
-                                targetBuild.buildTarget = targetBuildTargetElem.text();
-                                qInfo() << targetBuild.buildTarget;
-                            }
-                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->stopOnError) {
-                                targetBuild.stopOnError = targetBuildTargetElem.text();
-                                qInfo() << targetBuild.stopOnError;
-                            }
-                            if (targetBuildTargetElem.tagName() == CDT_CPROJECT_KEY::get()->useDefaultCommand) {
-                                targetBuild.useDefaultCommand = targetBuildTargetElem.text();
-                                qInfo() << targetBuild.useDefaultCommand;
-                            }
-                            targetBuildChild = targetBuildChild.nextSibling();
-                        }
-                        if (!targetBuild.isInvalid()) {
-                            buildMenuList << targetBuild;
-                        }
-                    }
-#if 0
-                    qInfo() << targetElem.tagName()
-                            << targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->name)
-                            << targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->path)
-                            << targetElem.attribute(CDT_CPROJECT_ATTR_KEY::get()->targetID)
-                            << targetElem.text();
-#endif
-                    targetNode = targetNode.nextSibling();
-                }
-            }
-            n = n.nextSibling();
-        }
-    }
-
     QMenu *menu = nullptr;
-    for (auto val : buildMenuList) {
-        if (!menu) {
-            menu = new QMenu();
+
+    // create parse
+    CmakeAsynParse *parse = new CmakeAsynParse();
+
+    // create item from syn
+    auto targetBuilds = parse->parseActions(item);
+
+    // free parse from syn
+    delete parse;
+
+    if (!targetBuilds.isEmpty()) {
+        menu = new QMenu();
+        for (auto val : targetBuilds) {
+            QAction *action = new QAction();
+            action->setText(val.buildName);
+            action->setProperty(CDT_CPROJECT_KEY::get()->buildCommand.toLatin1(), val.buildCommand);
+            action->setProperty(CDT_CPROJECT_KEY::get()->buildArguments.toLatin1(), val.buildArguments);
+            action->setProperty(CDT_CPROJECT_KEY::get()->buildTarget.toLatin1(), val.buildTarget);
+            action->setProperty(CDT_CPROJECT_KEY::get()->stopOnError.toLatin1(), val.stopOnError);
+            action->setProperty(CDT_CPROJECT_KEY::get()->useDefaultCommand.toLatin1(), val.useDefaultCommand);
+            QObject::connect(action, &QAction::triggered, this, &CmakeGenerator::actionTriggered, Qt::UniqueConnection);
+            menu->addAction(action);
         }
-        QAction *action = new QAction();
-        action->setText(val.buildName);
-        // 这里为了执行指令分开避免写lambda
-        action->setProperty(CDT_CPROJECT_KEY::get()->buildCommand.toLatin1(), val.buildCommand);
-        action->setProperty(CDT_CPROJECT_KEY::get()->buildArguments.toLatin1(), val.buildArguments);
-        action->setProperty(CDT_CPROJECT_KEY::get()->buildTarget.toLatin1(), val.buildTarget);
-        action->setProperty(CDT_CPROJECT_KEY::get()->stopOnError.toLatin1(), val.stopOnError);
-        action->setProperty(CDT_CPROJECT_KEY::get()->useDefaultCommand.toLatin1(), val.useDefaultCommand);
-        QObject::connect(action, &QAction::triggered, this, &CmakeGenerator::actionTriggered, Qt::UniqueConnection);
-        menu->addAction(action);
     }
+
     return menu;
 }
 
@@ -470,28 +257,29 @@ void CmakeGenerator::setRootItemToView(QStandardItem *root)
         return;
 
     if (root) {
+        // setting item to view
         if (projectService->projectView.addRootItem)
-            projectService->projectView.addRootItem(root);   // 设置项目根节点
+            projectService->projectView.addRootItem(root);
 
+        // expand view from tree two level
         if (projectService->projectView.expandedDepth)
-            projectService->projectView.expandedDepth(root, 2);   // 初始化展开两级
+            projectService->projectView.expandedDepth(root, 2);
 
+        // switch navigation to edit
         if (windowService->switchWidgetNavigation)
-            windowService->switchWidgetNavigation(MWNA_EDIT);   // 切换编辑器导航栏
-
+            windowService->switchWidgetNavigation(MWNA_EDIT);
+        // switch workspace view to projects
         if (windowService->switchWidgetWorkspace)
             windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
     }
 }
 
+static QMutex mutex;
 void CmakeGenerator::doBuildCmdExecuteEnd(const QString &cmd, int status)
 {
+    // configure function cached info
     if (d->configureProjectInfo.isEmpty())
         return;
-
-    if (status == 0)
-        createRootItem(d->configureProjectInfo);
-    d->configureProjectInfo = {};
 
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
@@ -499,238 +287,57 @@ void CmakeGenerator::doBuildCmdExecuteEnd(const QString &cmd, int status)
     if (!projectService)
         return;
 
+    // get reload item from reload cmake file cache
+    mutex.lock();
+    QStandardItem *reloadItem = nullptr;
+    for (auto val : d->reloadCmakeFileItems) {
+        if(cmd == infoBuildCmd(ProjectInfo::get(val)).join(" ")) {
+            reloadItem = val;
+            break;
+        }
+    }
+    mutex.unlock();
+
+    if (reloadItem) {
+        d->reloadCmakeFileItems.removeOne(reloadItem); //clean cache
+        if (status == 0) {
+            projectService->projectView.removeRootItem(reloadItem);
+            createRootItem(d->configureProjectInfo);
+        } else {
+            qCritical() << "Failed execute cmd : " << cmd << "status : " << status;
+        }
+    } else {
+        createRootItem(d->configureProjectInfo);
+    }
+
+    d->configureProjectInfo = {};
+
     emit projectService->projectConfigureDone();
 }
 
-void CmakeGenerator::cdt4SubprojectsDisplayOptimize(QStandardItem *item)
+void CmakeGenerator::doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files)
 {
-    if (!item) {
-        return;
-    }
-    for (int row = 0; row < item->rowCount(); row ++) {
-        QStandardItem *childItem = item->child(row);
-        QString location = dpfservice::ProjectInfo::get(childItem).property(CDT_XML_KEY::get()->location).toString();
-        QFileInfo cmakeFileInfo(location, "CMakeLists.txt");
-        if (cmakeFileInfo.exists()) {
-            auto cmakeFileItem = new QStandardItem();
-            cmakeFileItem->setIcon(CustomIcons::icon(cmakeFileInfo));
-            cmakeFileItem->setText(cmakeFileInfo.fileName());
-            cmakeFileItem->setToolTip(cmakeFileInfo.filePath());
-            childItem->appendRow(cmakeFileItem);
-        }
-    }
-}
+    Q_UNUSED(files);
 
-QStandardItem *CmakeGenerator::cdt4FindParentItem(QStandardItem *rootItem, QString &name)
-{
-    if (!rootItem) {
-        return nullptr;
-    }
-    for (int row = 0; row < rootItem->rowCount(); row ++) {
-        QStandardItem *childItem = rootItem->child(row);
-        QString childDisplayText = childItem->data(Qt::DisplayRole).toString();
-        if (name.startsWith(childDisplayText + "/")) {
-            name = name.replace(childDisplayText + "/", "");
-            return cdt4FindParentItem(childItem, name);
-        }
-    }
-    return rootItem;
-}
-
-QStandardItem *CmakeGenerator::cdt4FindItem(QStandardItem *rootItem, QString &name)
-{
-    if (!rootItem) {
-        return nullptr;
-    }
-
-    QStandardItem *parentItem = cdt4FindParentItem(rootItem, name);
-    if (parentItem) {
-        for (int row = 0; row < parentItem->rowCount(); row ++) {
-            QStandardItem * childItem = parentItem->child(row);
-            qInfo() << parentItem->data(Qt::DisplayRole) << childItem->data(Qt::DisplayRole);
-            if (childItem->data(Qt::DisplayRole) == name) {
-                name = name.replace(childItem->data(Qt::DisplayRole).toString(), "");
-                return childItem;
-            }
-        }
-    }
-    return parentItem;
-}
-
-QHash<QString, QString> CmakeGenerator::cdt4Subporjects(QStandardItem *rootItem)
-{
-    QString subprojectsKey = CDT_TARGETS_TYPE::get()->Subprojects;
-    QStandardItem * subprojectsItem = cdt4FindItem(rootItem, subprojectsKey);
-    QHash<QString, QString> subprojectHash;
-    for (int row = 0; row < subprojectsItem->rowCount(); row ++) {
-        auto name = dpfservice::ProjectInfo::get(subprojectsItem->child(row)).property(CDT_XML_KEY::get()->name).toString();
-        auto location = dpfservice::ProjectInfo::get(subprojectsItem->child(row)).property(CDT_XML_KEY::get()->location).toString();
-        subprojectHash[name] = location;
-    }
-    return subprojectHash;
-}
-
-QStandardItem *CmakeGenerator::cdt4DisplayOptimize(QStandardItem *rootItem)
-{
-    if (!rootItem) {
-        return nullptr;
-    }
-
-    // 优化二级目录节点
-    for (int row = 0; row < rootItem->rowCount(); row ++) {
-        QStandardItem *childItem = rootItem->child(row);
-        QString displayName = childItem->data(Qt::DisplayRole).toString();
-        // cmake folder setting
-        if (displayName.contains(CDT_TARGETS_TYPE::get()->Targets)
-                || displayName.contains(CDT_TARGETS_TYPE::get()->Subprojects)) {
-            childItem->setIcon(::cmakeFolderIcon());
-        }
-    }
-
-    // 优化subprojects及子节点
-    QString subprojectsName = CDT_TARGETS_TYPE::get()->Subprojects;
-    QStandardItem *subprojectItem = cdt4FindItem(rootItem, subprojectsName);
-    cdt4SubprojectsDisplayOptimize(subprojectItem);
-
-    // 优化targets及子节点
-    QString targetsName = CDT_TARGETS_TYPE::get()->Targets;
-    QStandardItem *targetsItem = cdt4FindItem(rootItem, targetsName);
-    QHash<QString, QString> subprojectsMap = cdt4Subporjects(rootItem);
-    cdt4TargetsDisplayOptimize(targetsItem, subprojectsMap);
-
-    return rootItem;
-}
-
-void CmakeGenerator::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash<QString, QString> &subprojectsMap)
-{
-    if (!item)
+    if (d->reloadCmakeFileItems.contains(root))
         return;
 
-    QStandardItem * addRows = new QStandardItem("Temp");
-    for (int row = 0; row < item->rowCount(); ++row) {
-        QStandardItem *childItem = item->child(row);
-        qInfo() << item->toolTip()
-                << item->data(Qt::DisplayRole).toString()
-                << item->rowCount();
-        QString displayName = childItem->data(Qt::DisplayRole).toString();
-        // build lib icon setting
-        if (displayName.contains(CDT_TARGETS_TYPE::get()->Lib)) {
-            childItem->setIcon(::libBuildIcon());
-        }
-        // build exe icon setting
-        if (displayName.contains(CDT_TARGETS_TYPE::get()->Exe)) {
-            childItem->setIcon(::exeBuildIcon());
-        }
-        // cmake folder setting
-        for (int index = 0; index < CDT_FILES_TYPE::get()->count(); index ++) {
-            if (CDT_FILES_TYPE::get()->value(index) == displayName) {
-                childItem->setIcon(::cmakeFolderIcon());
-            }
-        }
+    qInfo() << __FUNCTION__;
+    using namespace dpfservice;
 
-        if (childItem->hasChildren()) {
-            cdt4TargetsDisplayOptimize(item->child(row), subprojectsMap);
-        } else {
-            auto info = dpfservice::ProjectInfo::get(childItem); //当前节点特性
-            if (info.hasKey(CDT_XML_KEY::get()->location)) { // 本地文件
-                QString childLocation = info.property(CDT_XML_KEY::get()->location).toString();
-                // qInfo() << "childLocation:" << childLocation;
-                QString childFileName = childItem->data(Qt::DisplayRole).toString();
-                QString prefixPath;
-                QString suffixPath;
-                for (auto val : subprojectsMap.values()) { // 获取中间需要展示的文件夹
-                    if (!val.isEmpty() && childLocation.startsWith(val)) {
-                        suffixPath = childLocation.replace(val + "/","");
-                        if (suffixPath.endsWith("/" + childFileName)) {
-                            suffixPath = suffixPath.remove(suffixPath.size() - childFileName.size() - 1,
-                                                           childFileName.size() + 1);
-                            prefixPath = val;
-                        } else if (suffixPath == childFileName) {
-                            suffixPath = "";
-                        }
-                    }
-                }
-                if (!suffixPath.isEmpty()) {
-                    QString suffixPathTemp = suffixPath;
-                    // 获取当前是否已经新建文件夹，此函数会处理 suffixPathTemp
-                    QStandardItem *findNewItem = cdt4FindItem(addRows, suffixPathTemp);
-                    if (!suffixPathTemp.isEmpty()) { // 新建子文件夹
-                        QIcon icon = CustomIcons::icon(QFileIconProvider::Folder);
-                        auto newChild = new QStandardItem(icon, suffixPathTemp);
-                        newChild->setToolTip(prefixPath + QDir::separator() + suffixPath);
-                        findNewItem->insertRow(0, newChild); //置顶文件夹
-                        findNewItem = newChild;
-                    }
-                    // 当前子节点移动到找到的节点下
-                    qInfo() << item->rowCount();
-                    findNewItem->appendRow(item->takeRow(row));
-                    -- row;
-                    qInfo() << item->rowCount();
-                    qInfo() << findNewItem->data(Qt::DisplayRole).toString();
-                    qInfo() << findNewItem->parent()->data(Qt::DisplayRole).toString();
-                }
-            }
-        }
-    }
-    // 新增项
-    while (addRows->hasChildren()) {
-        QStandardItem *addRowItem = addRows->takeRow(0).first();
-        qInfo() << addRowItem->data(Qt::DisplayRole).toString();
-        item->appendRow(addRowItem);
-    }
-    delete addRows;
+    // get current project info
+    auto proInfo = ProjectInfo::get(root);
+
+    // cache the reload item
+    d->reloadCmakeFileItems.append(root);
+
+    // reconfigure project info
+    configure(proInfo);
 }
 
-QDomDocument CmakeGenerator::cdt4LoadProjectXmlDoc(const QString &buildFolder)
+QStringList CmakeGenerator::infoBuildCmd(const dpfservice::ProjectInfo &info) const
 {
-    QDomDocument xmlDoc;
-    QString cdtProjectFile = buildFolder + QDir::separator()
-            + CDT_PROJECT_KIT::get()->PROJECT_FILE;
-    QFile docFile(cdtProjectFile);
-
-    if (!docFile.exists()) {
-        Generator::setErrorString("Failed, cdtProjectFile not exists!: " + cdtProjectFile);
-        Generator::finished(false);
-        return xmlDoc;
-    }
-
-    if (!docFile.open(QFile::OpenModeFlag::ReadOnly)) {
-        Generator::setErrorString(docFile.errorString());
-        Generator::finished(false);
-        return xmlDoc;
-    }
-
-    if (!xmlDoc.setContent(&docFile)) {
-        docFile.close();
-        return xmlDoc;
-    }
-    docFile.close();
-    return xmlDoc;
-}
-
-QDomDocument CmakeGenerator::cdt4LoadMenuXmlDoc(const QString &buildFolder)
-{
-    QDomDocument xmlDoc;
-    QString cdtMenuFile = buildFolder + QDir::separator()
-            + CDT_PROJECT_KIT::get()->CPROJECT_FILE;
-    QFile docFile(cdtMenuFile);
-
-    if (!docFile.exists()) {
-        Generator::setErrorString("Failed, cdtMenuFile not exists!: " + cdtMenuFile);
-        Generator::finished(false);
-        return xmlDoc;
-    }
-
-    if (!docFile.open(QFile::OpenModeFlag::ReadOnly)) {
-        Generator::setErrorString(docFile.errorString());
-        Generator::finished(false);
-        return xmlDoc;
-    }
-
-    if (!xmlDoc.setContent(&docFile)) {
-        docFile.close();
-        return xmlDoc;
-    }
-    docFile.close();
-    return xmlDoc;
+    QStringList args = info.buildCustomArgs();
+    args.push_front(info.buildProgram());
+    return args;
 }

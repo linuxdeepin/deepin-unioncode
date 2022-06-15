@@ -89,6 +89,10 @@ bool ProjectCore::start()
             projectService->projectView.addRootItem
                     = std::bind(&ProjectTreeView::appendRootItem, treeView, _1);
         }
+        if (!projectService->projectView.removeRootItem) {
+            projectService->projectView.removeRootItem
+                    = std::bind(&ProjectTreeView::removeRootItem, treeView, _1);
+        }
         if (!projectService->projectView.expandedDepth) {
             projectService->projectView.expandedDepth
                     = std::bind(&ProjectTreeView::expandedProjectDepth, treeView, _1, _2);

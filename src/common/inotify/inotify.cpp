@@ -23,6 +23,7 @@
 #include <QHash>
 #include <QRunnable>
 #include <QtConcurrent>
+#include <QReadWriteLock>
 
 #include <poll.h>
 #include <stdio.h>
@@ -54,6 +55,7 @@ typedef QList<QString> IgnoreList;
 
 class PollRunable : public QRunnable
 {
+    friend class Inotify;
     typedef std::function<void(const QString &filePath)> FuncCB;
     int inotifyFd = -1;
     WatcherHash *watcherHash = nullptr;
@@ -62,12 +64,14 @@ class PollRunable : public QRunnable
     nfds_t numCache = 0;
     int timeOut = -1;
     QHash<Inotify::Type, FuncCB> callbacks{};
+    QHash<Inotify::Type, FuncCB> ignoreCallbacks{};
     bool stopFlag = false;
 public:
-    PollRunable(int inotifyFd, WatcherHash* hash, IgnoreList *list, pollfd *pfd, nfds_t num  = 1 ,int timeout = -1) :
-        inotifyFd(inotifyFd), watcherHash(hash), ignores(list), pfdCache(pfd), numCache(num), timeOut(timeout) { }
+    PollRunable(int inotifyFd, WatcherHash* hash, IgnoreList *list, pollfd *pfd, nfds_t num  = 1 ,int timeout = -1)
+        : inotifyFd(inotifyFd), watcherHash(hash), ignores(list), pfdCache(pfd), numCache(num), timeOut(timeout) { }
     virtual ~PollRunable(){ qInfo() << "class PollRunable destoryed"; }
-    void setWatcherCallback(Inotify::Type type,FuncCB cb) { callbacks[type] = cb;}
+    void setWatcherCallback(Inotify::Type type, FuncCB cb) { callbacks[type] = cb;}
+    void setWatcherIgnoreCallback(Inotify::Type type, FuncCB cb) {ignoreCallbacks[type] = cb;}
     void stop() { stopFlag = true; }
     virtual void run() override;
 };
@@ -81,6 +85,10 @@ class InotifyPrivate
     IgnoreList ignores{};
     PollRunable *runable = nullptr;
 };
+
+namespace  {
+static QReadWriteLock rwLock;
+}
 
 Inotify::Inotify(QObject *parent)
     : QObject(parent)
@@ -105,6 +113,16 @@ Inotify::Inotify(QObject *parent)
     d->runable->setWatcherCallback(CREATE, [=](const QString &filePath){this->createdSub(filePath);});
     d->runable->setWatcherCallback(DELETE_SELF, [=](const QString &filePath){this->deletedSelf(filePath);});
     d->runable->setWatcherCallback(MOVE_SELF, [=](const QString &filePath){this->movedSelf(filePath);});
+
+    d->runable->setWatcherIgnoreCallback(MODIFY, [=](const QString &filePath){this->ignoreModified(filePath);});
+    d->runable->setWatcherIgnoreCallback(CLOSE, [=](const QString &filePath){this->ignoreClosed(filePath);});
+    d->runable->setWatcherIgnoreCallback(OPEN, [=](const QString &filePath){this->ignoreOpened(filePath);});
+    d->runable->setWatcherIgnoreCallback(MOVE, [=](const QString &filePath){this->ignoreMovedSub(filePath);});
+    d->runable->setWatcherIgnoreCallback(DELETE, [=](const QString &filePath){this->ignoreDeletedSub(filePath);});
+    d->runable->setWatcherIgnoreCallback(CREATE, [=](const QString &filePath){this->ignoreCreatedSub(filePath);});
+    d->runable->setWatcherIgnoreCallback(DELETE_SELF, [=](const QString &filePath){this->ignoreDeletedSelf(filePath);});
+    d->runable->setWatcherIgnoreCallback(MOVE_SELF, [=](const QString &filePath){this->ignoreMovedSelf(filePath);});
+
     QThreadPool::globalInstance()->start(d->runable);
 
     QObject::connect(qApp, &QCoreApplication::aboutToQuit, [=](){
@@ -123,6 +141,15 @@ Inotify::Inotify(QObject *parent)
 Inotify::~Inotify()
 {
     qInfo() << "class Inotify destoryed";
+
+    for(auto wd : d->watchers.keys()) {
+        inotify_rm_watch(d->inotifyFD, wd);
+    }
+
+    if (d->inotifyFD > 0) {
+        close(d->inotifyFD);
+    }
+
     if (d) {
         if (d->runable) {
             delete d->runable;
@@ -137,43 +164,58 @@ Inotify *Inotify::globalInstance()
     return &ins;
 }
 
-bool Inotify::addPath(const QString &path)
+void Inotify::addPath(const QString &path)
 {
-    if (d->inotifyFD == -1)
-        return false;
+    QtConcurrent::run([=](){
 
-    int watcherID = inotify_add_watch(d->inotifyFD, path.toLatin1(),
-                                      IN_MODIFY| IN_OPEN| IN_CLOSE| IN_CREATE|
-                                      IN_MOVED_TO| IN_MOVED_FROM| IN_MOVE_SELF| IN_MOVE|
-                                      IN_DELETE| IN_DELETE_SELF);
+        QWriteLocker lock(&rwLock);
 
-    if (watcherID == -1) {
-        qInfo() << "Failed, Create watcher from called inotify_add_watch";
-        return false;
-    }
+        if (d->inotifyFD == -1)
+            return ;
 
-    d->watchers[watcherID] = path;
-    return true;
+        int watcherID = inotify_add_watch(d->inotifyFD, path.toLatin1(),
+                                          IN_MODIFY| IN_OPEN| IN_CLOSE| IN_CREATE|
+                                          IN_MOVED_TO| IN_MOVED_FROM| IN_MOVE_SELF| IN_MOVE|
+                                          IN_DELETE| IN_DELETE_SELF);
+
+        if (watcherID == -1) {
+            qInfo() << "Failed, Create watcher from called inotify_add_watch";
+            return ;
+        }
+
+        d->watchers[watcherID] = path;
+
+        return ;
+    });
 }
 
 void Inotify::removePath(const QString &path)
 {
-    int wd = d->watchers.key(path);
-    if (wd < 0)
-        return;
+    QtConcurrent::run([=](){
+        QWriteLocker lock(&rwLock);
 
-    inotify_rm_watch(d->inotifyFD, wd);
-    d->watchers.remove(wd);
+        int wd = d->watchers.key(path);
+        if (wd < 0)
+            return;
+
+        d->watchers.remove(wd);
+    });
 }
 
 void Inotify::addIgnorePath(const QString &path)
 {
-    d->ignores.append(path);
+    QtConcurrent::run([=](){
+        QWriteLocker lock(&rwLock);
+        d->ignores.append(path);
+    });
 }
 
 void Inotify::removeIgnorePath(const QString &path)
 {
-    d->ignores.removeOne(path);
+    QtConcurrent::run([=](){
+        QWriteLocker lock(&rwLock);
+        d->ignores.removeOne(path);
+    });
 }
 
 void PollRunable::run()
@@ -194,6 +236,7 @@ void PollRunable::run()
             if (pfdCache->revents & POLLIN) {
                 char buf[4096] __attribute__ ((aligned(__alignof__(struct inotify_event))));
                 const struct inotify_event *event;
+                QReadLocker rlock(&rwLock);
                 for (;;) {
                     ssize_t len = read(inotifyFd, buf, sizeof(buf));
                     if (len == -1 && errno != EAGAIN) {
@@ -202,80 +245,109 @@ void PollRunable::run()
                     if (len <= 0)
                         break;
                     for (char *ptr = buf; ptr < buf + len; ptr += sizeof(struct inotify_event) + event->len) {
+
                         event = (const struct inotify_event *) ptr;
+
                         QString filePath = watcherHash->value(event->wd);
-                        if (ignores->contains(filePath)){
+                        if (filePath.isEmpty())
                             continue;
-                        }
-                        if (!filePath.isEmpty()) {
+
+                        if (ignores->contains(filePath)){ // in ignore
+
                             if (event->mask & IN_OPEN) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_OPEN)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb = ignoreCallbacks[typeMapping.key(IN_OPEN)];
+                                if (icb) icb(filePath);
                             }
                             if (event->mask & IN_CLOSE) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_CLOSE)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb = ignoreCallbacks[typeMapping.key(IN_CLOSE)];
+                                if (icb) icb(filePath);
                             }
                             if (event->mask & IN_CREATE) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_CREATE)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb = ignoreCallbacks[typeMapping.key(IN_CREATE)];
+                                if (icb) icb(filePath);
                             }
                             if (event->mask & IN_DELETE) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_DELETE)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb = ignoreCallbacks[typeMapping.key(IN_DELETE)];
+                                if (icb) icb(filePath);
                             }
                             if (event->mask & IN_MOVE) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_MOVE)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb = ignoreCallbacks[typeMapping.key(IN_MOVE)];
+                                if (icb) icb(filePath);
                             }
                             if (event->mask & IN_MODIFY) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_MODIFY)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb = ignoreCallbacks[typeMapping.key(IN_MODIFY)];
+                                if (icb) icb(filePath);
                             }
                             if (event->mask & IN_DELETE_SELF) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_DELETE_SELF)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb  = ignoreCallbacks[typeMapping.key(IN_DELETE_SELF)];
+                                if (icb) icb(filePath);
                             }
                             if (event->mask & IN_MOVED_TO) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_MOVED_TO)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb = ignoreCallbacks[typeMapping.key(IN_MOVED_TO)];
+                                if (icb) icb(filePath);
                             }
                             if (event->mask & IN_MOVED_FROM) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_MOVED_FROM)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb = ignoreCallbacks[typeMapping.key(IN_MOVED_FROM)];
+                                if (icb) icb(filePath);
                             }
                             if (event->mask & IN_MOVE_SELF) {
-                                FuncCB callback = callbacks[typeMapping.key(IN_MOVE_SELF)];
-                                if (callback) {
-                                    callback(filePath);
-                                }
+                                auto icb = ignoreCallbacks[typeMapping.key(IN_MOVE_SELF)];
+                                if (icb) icb(filePath);
                             }
+
+                        } else if (watcherHash->values().contains(filePath)) { // in watcher
+
+                            if (event->mask & IN_OPEN) {
+                                auto cb = callbacks[typeMapping.key(IN_OPEN)];
+                                if (cb) cb(filePath);
+                            }
+                            if (event->mask & IN_CLOSE) {
+                                auto cb = callbacks[typeMapping.key(IN_CLOSE)];
+                                if (cb) cb(filePath);
+                            }
+                            if (event->mask & IN_CREATE) {
+                                auto cb = callbacks[typeMapping.key(IN_CREATE)];
+                                if (cb) cb(filePath);
+                            }
+                            if (event->mask & IN_DELETE) {
+                                auto cb = callbacks[typeMapping.key(IN_DELETE)];
+                                if (cb) cb(filePath);
+                            }
+                            if (event->mask & IN_MOVE) {
+                                auto cb = callbacks[typeMapping.key(IN_MOVE)];
+                                if (cb) cb(filePath);
+                            }
+                            if (event->mask & IN_MODIFY) {
+                                auto cb = callbacks[typeMapping.key(IN_MODIFY)];
+                                if (cb) cb(filePath);
+                            }
+                            if (event->mask & IN_DELETE_SELF) {
+                                auto cb = callbacks[typeMapping.key(IN_DELETE_SELF)];
+                                if (cb) cb(filePath);
+                            }
+                            if (event->mask & IN_MOVED_TO) {
+                                auto cb = callbacks[typeMapping.key(IN_MOVED_TO)];
+                                if (cb) cb(filePath);
+                            }
+                            if (event->mask & IN_MOVED_FROM) {
+                                auto cb = callbacks[typeMapping.key(IN_MOVED_FROM)];
+                                if (cb) cb(filePath);
+                            }
+                            if (event->mask & IN_MOVE_SELF) {
+                                auto cb = callbacks[typeMapping.key(IN_MOVE_SELF)];
+                                if (cb) cb(filePath);
+                            }
+                        } else {
+                            qCritical() << "Inotify file path error" << filePath;
                         }
+
                         /* Print type of filesystem object. */
                         // if (event->mask & IN_ISDIR)
                         // printf(" [directory]\n");
                         // else
                         // printf(" [file]\n");
                     }
-                }
+                } // for read event
             }
         }
     }

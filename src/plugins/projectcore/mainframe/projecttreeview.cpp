@@ -123,12 +123,7 @@ void ProjectTreeView::removeRootItem(QStandardItem *root)
 
     ProjectInfo info = ProjectInfo::get(ProjectGenerator::root(root));
 
-    // 从展示的模型中删除
-    QStandardItemModel *model = static_cast<QStandardItemModel*>(QTreeView::model());
-    QModelIndex index = model->indexFromItem(root);
-    qInfo() << model->rowCount();
-    model->takeRow(index.row());
-    qInfo() << model->rowCount();
+    this->takeRootItem(root);
 
     QString workspaceFolder = info.workspaceFolder();
     QString language = info.language();
@@ -159,6 +154,14 @@ void ProjectTreeView::removeRootItem(QStandardItem *root)
     }
 
     this->viewport()->setUpdatesEnabled(true);
+}
+
+void ProjectTreeView::takeRootItem(QStandardItem *root)
+{
+    // 从展示的模型中删除
+    QStandardItemModel *model = static_cast<QStandardItemModel*>(QTreeView::model());
+    QModelIndex index = model->indexFromItem(root);
+    model->takeRow(index.row());
 }
 
 void ProjectTreeView::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event)
@@ -249,9 +252,7 @@ QMenu *ProjectTreeView::rootMenu(QStandardItem *root)
     QAction* closeAction = new QAction(QAction::tr("Close"));
     QAction* propertyAction = new QAction(QAction::tr("Property"));
     QObject::connect(activeProjectAction, &QAction::triggered, [=](){doActiveProject(root);});
-
     QObject::connect(closeAction, &QAction::triggered, [=](){doCloseProject(root);});
-
     QObject::connect(propertyAction, &QAction::triggered, [=](){doShowProjectProperty(root);});
     menu->addAction(activeProjectAction);
     menu->addAction(closeAction);

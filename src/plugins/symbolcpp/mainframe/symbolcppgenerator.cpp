@@ -41,9 +41,9 @@ class SymbolCppGeneratorPrivate
 {
     friend class SymbolCppGenerator;
     QThread *thread {nullptr};
-    SymbolCppAsynParser *parser{nullptr};
     QStandardItem *currentRootItem {nullptr};
     QHash<QStandardItem*, QPair<QThreadPool*, QPair<int, int>>> itemAsynThreadPolls;
+    QSet<SymbolCppAsynParser*> parsers;
 };
 
 QSet<QString> scanfSubDirs(const QString &filePath)
@@ -79,7 +79,7 @@ QSet<QString> scanfSubFilesMap(const QString &dirPath) {
     return files;
 }
 
-void scanfSubFilesReduce(QSet<QString> &result,const QSet<QString> &files)
+void scanfSubFilesReduce(QSet<QString> &result, const QSet<QString> &files)
 {
     result += files;
 }
@@ -88,6 +88,28 @@ SymbolCppGenerator::SymbolCppGenerator()
     : d (new SymbolCppGeneratorPrivate)
 {
 
+}
+
+SymbolCppGenerator::~SymbolCppGenerator()
+{
+    qInfo() << __FUNCTION__;
+
+    for (auto &val : d->itemAsynThreadPolls.keys()) {
+        auto threadPoll = d->itemAsynThreadPolls[val].first;
+        if (threadPoll) {
+            threadPoll->clear();
+            SymbolCppAsynParser::setGlobalRunFlags(false);
+            while (threadPoll->activeThreadCount() != 0) {
+                threadPoll->waitForDone(100);
+            }
+            delete thread();
+        }
+    }
+
+    d->itemAsynThreadPolls.clear();
+
+    if (d)
+        delete d;
 }
 
 QStandardItem *SymbolCppGenerator::createRootItem(const dpfservice::ProjectInfo &info)
@@ -111,6 +133,7 @@ QStandardItem *SymbolCppGenerator::createRootItem(const dpfservice::ProjectInfo 
     d->itemAsynThreadPolls[root].second.second = 0;
 
     for (auto file : files) {
+
         auto parser = new SymbolCppAsynParser();
 
         QObject::connect(parser, &SymbolCppAsynParser::parserEnd, [=](bool){
@@ -127,9 +150,9 @@ QStandardItem *SymbolCppGenerator::createRootItem(const dpfservice::ProjectInfo 
             }
         });
 
-        QtConcurrent::run(d->itemAsynThreadPolls[root].first,
-                          parser, &SymbolCppAsynParser::doParserOne,
-                          root, file, files);
+        //        QtConcurrent::run(d->itemAsynThreadPolls[root].first,
+        //                          parser, &SymbolCppAsynParser::doParserOne,
+        //                          root, file, files);
     }
 
     emit Generator::started();
@@ -142,7 +165,11 @@ void SymbolCppGenerator::removeRootItem(QStandardItem *root)
     auto threadPoll = d->itemAsynThreadPolls[root].first;
     if (threadPoll) {
         threadPoll->clear();
-        while(threadPoll->waitForDone());
+        SymbolCppAsynParser::setGlobalRunFlags(false);
+        while(threadPoll->waitForDone(3000));
+        delete threadPoll;
+        d->itemAsynThreadPolls.remove(root);
+        SymbolCppAsynParser::setGlobalRunFlags(true);
     }
 
     recursionRemoveItem(root);

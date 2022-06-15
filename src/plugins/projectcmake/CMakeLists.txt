@@ -6,6 +6,7 @@ find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
     mainframe/cmakeasynparse.cpp
+    mainframe/cmakeitemkeeper.cpp
     mainframe/cmakeopenhandler.cpp
     mainframe/cmakegenerator.cpp
     transceiver/projectcmakereceiver.cpp
@@ -16,6 +17,7 @@ set(CXX_CPP
 
 set(CXX_H
     mainframe/cmakeasynparse.h
+    mainframe/cmakeitemkeeper.h
     mainframe/cmakeopenhandler.h
     mainframe/cmakegenerator.h
     transceiver/projectcmakereceiver.h

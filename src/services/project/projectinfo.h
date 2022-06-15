@@ -30,18 +30,7 @@ namespace dpfservice {
 enum
 {
     ProjectInfoRole = Qt::ItemDataRole::UserRole,
-    ProjectGenIdleRole = Qt::ItemDataRole::UserRole + 1
 };
-
-static void setProjectRootIdel(QStandardItem *root, bool state)
-{
-    root->setData(state, ProjectGenIdleRole);
-}
-
-static bool projectRootIdel(const QStandardItem *root)
-{
-    return root->data(ProjectGenIdleRole).toBool();
-}
 
 class ProjectInfo
 {

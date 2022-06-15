@@ -26,18 +26,24 @@
 
 #include <clang-c/Index.h>
 
+class QReadWriteLock;
 class SymbolCppAsynParser : public QObject
 {
     Q_OBJECT
+    bool stopFlag = false;
 public:
-    explicit SymbolCppAsynParser(QObject *parent = nullptr);
+    explicit SymbolCppAsynParser();
     virtual ~SymbolCppAsynParser();
+
+    static void setGlobalRunFlags(bool canRun);
+    static bool globalRunFlags();
 
 signals:
     void parserEnd(bool isNormal = true);
 
 public slots:
-    void doParserOne(QStandardItem *item, const QString &file, const QSet<QString> &srcFiles);
+    void doParserOne(QStandardItem *item, const QString &file,
+                     const QSet<QString> &srcFiles);
     void doParser(QStandardItem *item, const QSet<QString> &srcFiles);
 };
 

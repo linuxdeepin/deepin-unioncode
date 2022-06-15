@@ -31,6 +31,7 @@ class SymbolCppGenerator : public dpfservice::SymbolGenerator
     SymbolCppGeneratorPrivate *const d;
 public:
     SymbolCppGenerator();
+    virtual ~SymbolCppGenerator();
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
     virtual void removeRootItem(QStandardItem *root) override;
 private:
