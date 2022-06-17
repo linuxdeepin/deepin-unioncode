@@ -108,19 +108,20 @@ void ConfigureProjPane::slotBrowseBtnClicked()
     auto sender = QObject::sender();
     QString objName = sender->objectName();
 
-    QLineEdit *lineEdit = nullptr;
     QString outputDirectory = QFileDialog::getExistingDirectory(this, "Output directory");
-    if (objName == "btnDebug") {
-        lineEdit = d->lineEditDebug;
-    } else if (objName == "btnRelease") {
-        lineEdit = d->lineEditRelease;
-    } else if (objName == "btnRWithDInfo") {
-        lineEdit = d->lineEditRWithDInfo;
-    } else if (objName == "btnMinimumSize") {
-        lineEdit = d->lineEditMiniSize;
+    if (!outputDirectory.isEmpty()) {
+        QLineEdit *lineEdit = nullptr;
+        if (objName == "btnDebug") {
+            lineEdit = d->lineEditDebug;
+        } else if (objName == "btnRelease") {
+            lineEdit = d->lineEditRelease;
+        } else if (objName == "btnRWithDInfo") {
+            lineEdit = d->lineEditRWithDInfo;
+        } else if (objName == "btnMinimumSize") {
+            lineEdit = d->lineEditMiniSize;
+        }
+        lineEdit->setText(outputDirectory.toUtf8());
     }
-
-    lineEdit->setText(outputDirectory.toUtf8());
 }
 
 void ConfigureProjPane::setupUi(QWidget *widget)

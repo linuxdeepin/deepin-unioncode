@@ -51,7 +51,12 @@ void BuildManager::initialize(WindowService *windowService)
 
 bool BuildManager::buildList(const QList<BuildStep *> &_bsl, QString originCmd)
 {
+    if (buildState == kBuilding) {
+        return false;
+    }
+
     TaskManager::instance()->clearTasks();
+
     if (outputPane)
         outputPane->clearContents();
 
