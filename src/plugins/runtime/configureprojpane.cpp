@@ -20,6 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "configureprojpane.h"
+#include "kitmanager.h"
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
@@ -32,7 +33,14 @@
 #include <QtWidgets/QSpacerItem>
 #include <QFileDialog>
 #include <QUrl>
-#include "kitmanager.h"
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QTimer>
+
+// TODO(mozart):should get from kitmanager.
+static const char *kDefaultKitName = "Desktop";
+static const char *kConfigFileName = "configure.support";
 
 class ConfigureProjPanePrivate
 {
@@ -53,11 +61,12 @@ class ConfigureProjPanePrivate
     QPushButton *btnConfigure = nullptr;
 
     QString projectPath;
+    // TODO(mozart):just recored one config item now.
+    QVector<ConfigureProjPane::ConfigureParam> cfgItems;
 };
 
 ConfigureProjPane::ConfigureProjPane(QWidget *parent)
-    : QWidget(parent)
-    , d(new ConfigureProjPanePrivate)
+    : QWidget(parent), d(new ConfigureProjPanePrivate)
 {
     setupUi(this);
 }
@@ -71,7 +80,20 @@ ConfigureProjPane::~ConfigureProjPane()
 void ConfigureProjPane::setProjectPath(QString &projectPath)
 {
     d->projectPath = projectPath;
-    updateOutputPath();
+
+    // restore ui parameters from local config file.
+    bool successful = restore();
+    if (!successful) {
+        useDefaultValue();
+        refreshUi();
+    } else {
+        // no need show config pane again.
+        updateKitInfo();
+
+        QTimer::singleShot(0, this, [this] {
+            emit configureDone();
+        });
+    }
 }
 
 ConfigureProjPane::BuildType ConfigureProjPane::getDefaultBuildType() const
@@ -82,24 +104,32 @@ ConfigureProjPane::BuildType ConfigureProjPane::getDefaultBuildType() const
 
 QString ConfigureProjPane::getDefaultOutputPath() const
 {
-    QString ret;
-    if (d->cbDebug->isChecked()) {
-        ret = d->lineEditDebug->text();
-    } else if (d->cbRelease->isChecked()) {
-        ret = d->lineEditRelease->text();
-    } else if (d->cbRWithDInfo->isChecked()) {
-        ret = d->lineEditRWithDInfo->text();
-    } else if (d->cbMiniSize->isChecked()) {
-        ret = d->lineEditMiniSize->text();
-    } else {
-        ret = "../build-Default";
+    QFileInfo f(d->projectPath);
+    QDir dir = f.dir();
+    dir.cdUp();
+    QString defaultOutputPath = dir.path() + "/build-Default";
+    for (auto &item : d->cfgItems) {
+        if (item.kitName == kDefaultKitName) {
+            if (item.checked) {
+                if (item.debug.checked) {
+                    defaultOutputPath = item.debug.folder;
+                } else if (item.release.checked) {
+                    defaultOutputPath = item.release.folder;
+                } else if (item.relWithDebInfo.checked) {
+                    defaultOutputPath = item.relWithDebInfo.folder;
+                } else if (item.minSizeRel.checked) {
+                    defaultOutputPath = item.minSizeRel.folder;
+                }
+            }
+        }
     }
-    return ret;
+    return defaultOutputPath;
 }
 
 void ConfigureProjPane::slotConfigureDone()
 {
     updateKitInfo();
+    save();
     emit configureDone();
 }
 
@@ -124,6 +154,11 @@ void ConfigureProjPane::slotBrowseBtnClicked()
     }
 }
 
+void ConfigureProjPane::slotParameterChanged()
+{
+    refreshParameters();
+}
+
 void ConfigureProjPane::setupUi(QWidget *widget)
 {
     // center layout.
@@ -132,7 +167,7 @@ void ConfigureProjPane::setupUi(QWidget *widget)
     horizontalLayout->setContentsMargins(11, 11, 11, 11);
 
     // content layout.
-    auto btnSignalConnect = [this](QPushButton *btn){
+    auto btnSignalConnect = [this](QPushButton *btn) {
         connect(btn, &QPushButton::clicked, this, &ConfigureProjPane::slotBrowseBtnClicked);
     };
 
@@ -170,8 +205,8 @@ void ConfigureProjPane::setupUi(QWidget *widget)
     d->lineEditRelease = new QLineEdit(widget);
 
     d->cbDesktop = new QCheckBox(widget);
-    d->cbDesktop->setText(tr("Desktop"));
-    connect(d->cbDesktop, &QCheckBox::stateChanged, [this](int state){
+    d->cbDesktop->setText(kDefaultKitName);
+    connect(d->cbDesktop, &QCheckBox::stateChanged, [this](int state) {
         this->setAllChecked(state);
     });
 
@@ -213,6 +248,17 @@ void ConfigureProjPane::setupUi(QWidget *widget)
     // leave space at right.
     auto horizontalSpacer = new QSpacerItem(200, 0, QSizePolicy::Preferred, QSizePolicy::Preferred);
     horizontalLayout->addItem(horizontalSpacer);
+
+    connect(d->lineEditDebug, &QLineEdit::textChanged, this, &ConfigureProjPane::slotParameterChanged);
+    connect(d->lineEditRelease, &QLineEdit::textChanged, this, &ConfigureProjPane::slotParameterChanged);
+    connect(d->lineEditMiniSize, &QLineEdit::textChanged, this, &ConfigureProjPane::slotParameterChanged);
+    connect(d->lineEditRelease, &QLineEdit::textChanged, this, &ConfigureProjPane::slotParameterChanged);
+
+    connect(d->cbDesktop, &QCheckBox::stateChanged, this, &ConfigureProjPane::slotParameterChanged);
+    connect(d->cbDebug, &QCheckBox::stateChanged, this, &ConfigureProjPane::slotParameterChanged);
+    connect(d->cbRelease, &QCheckBox::stateChanged, this, &ConfigureProjPane::slotParameterChanged);
+    connect(d->cbMiniSize, &QCheckBox::stateChanged, this, &ConfigureProjPane::slotParameterChanged);
+    connect(d->cbRWithDInfo, &QCheckBox::stateChanged, this, &ConfigureProjPane::slotParameterChanged);
 }
 
 void ConfigureProjPane::setAllChecked(bool checked)
@@ -224,7 +270,7 @@ void ConfigureProjPane::setAllChecked(bool checked)
     d->cbDesktop->setChecked(checked);
 }
 
-void ConfigureProjPane::updateOutputPath()
+void ConfigureProjPane::useDefaultValue()
 {
     if (d->projectPath.isEmpty())
         return;
@@ -233,23 +279,60 @@ void ConfigureProjPane::updateOutputPath()
     QString folderName = folder.dirName();
     folder.cdUp();
     QString upDirectory = folder.path();
-    QString kit = "Desktop";
 
-    auto fillLineEdit = [&](QString &buildType, QLineEdit *lineEdit) {
-        QString text = upDirectory + QDir::separator() + "build" + "-" + folderName + "-" + kit + "-" + buildType;
-        if (lineEdit) {
-            lineEdit->setText(text);
-        }
+    auto folerPath = [&](QString buildType) -> QString {
+        return (upDirectory + QDir::separator() + "build" + "-" + folderName + "-" + kDefaultKitName + "-" + buildType);
     };
 
-    QString buildType = "Debug";
-    fillLineEdit(buildType, d->lineEditDebug);
-    buildType = "Release";
-    fillLineEdit(buildType, d->lineEditRelease);
-    buildType = "Release With DebugInfo";
-    fillLineEdit(buildType, d->lineEditRWithDInfo);
-    buildType = "Minimum Size Release";
-    fillLineEdit(buildType, d->lineEditMiniSize);
+    d->cfgItems.clear();
+
+    ConfigureParam item;
+    item.kitName = kDefaultKitName;
+
+    item.debug.folder = folerPath("Debug");
+    item.release.folder = folerPath("Release");
+    item.relWithDebInfo.folder = folerPath("Release With DebugInfo");
+    item.minSizeRel.folder = folerPath("Minimum Size Release");
+
+    d->cfgItems.push_back(item);
+}
+
+void ConfigureProjPane::refreshUi()
+{
+    for (auto item : d->cfgItems) {
+        if (item.kitName == kDefaultKitName) {
+            d->cbDesktop->setChecked(item.checked);
+
+            d->cbDebug->setChecked(item.debug.checked);
+            d->lineEditDebug->setText(item.debug.folder);
+
+            d->cbRelease->setChecked(item.release.checked);
+            d->lineEditRelease->setText(item.release.folder);
+
+            d->cbMiniSize->setChecked(item.minSizeRel.checked);
+            d->lineEditMiniSize->setText(item.minSizeRel.folder);
+
+            d->cbRWithDInfo->setChecked(item.relWithDebInfo.checked);
+            d->lineEditRWithDInfo->setText(item.relWithDebInfo.folder);
+        }
+    }
+}
+
+void ConfigureProjPane::refreshParameters()
+{
+    for (auto &item : d->cfgItems) {
+        if (item.kitName == kDefaultKitName) {   // TODO(mozart):just save one kit now.
+            item.checked = d->cbDesktop->isChecked();
+            item.debug.checked = d->cbDebug->isChecked();
+            item.debug.folder = d->lineEditDebug->text();
+            item.release.checked = d->cbRelease->isChecked();
+            item.release.folder = d->lineEditRelease->text();
+            item.minSizeRel.checked = d->cbMiniSize->isChecked();
+            item.minSizeRel.folder = d->lineEditMiniSize->text();
+            item.relWithDebInfo.checked = d->cbRWithDInfo->isChecked();
+            item.relWithDebInfo.folder = d->lineEditRWithDInfo->text();
+        }
+    }
 }
 
 void ConfigureProjPane::updateKitInfo()
@@ -258,4 +341,121 @@ void ConfigureProjPane::updateKitInfo()
     QString outputPath = getDefaultOutputPath();
     kit.setDefaultOutput(outputPath);
     KitManager::instance()->setSelectedKit(kit);
+}
+
+QString ConfigureProjPane::configFilePath()
+{
+    QString cfgFilePath;
+
+    QString newFolder = QFileInfo(d->projectPath).dir().path() + QDir::separator() + ".unioncode";
+    QDir dir(newFolder);
+    if (!dir.exists()) {
+        dir.mkdir(newFolder);
+    }
+    cfgFilePath = newFolder + QDir::separator() + kConfigFileName;
+
+    return cfgFilePath;
+}
+
+bool ConfigureProjPane::restore()
+{
+    QString cfgFilePath = configFilePath();
+
+    QFile file(cfgFilePath);
+    if (!file.open(QIODevice::ReadOnly))
+        return false;
+
+    QByteArray data = file.readAll();
+    file.close();
+
+    QJsonParseError parseError;
+    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
+    if (QJsonParseError::NoError != parseError.error) {
+        return false;
+    }
+
+    if (!doc.isObject())
+        return false;
+
+    QJsonObject rootObject = doc.object();
+    d->cfgItems.clear();
+    for (auto key : rootObject.keys()) {
+        if (!rootObject.value(key).isArray() || !rootObject.keys().contains("Configure"))
+            continue;
+
+        if (rootObject.keys().contains("Configure")) {
+            QJsonArray valueArray = rootObject.value("Configure").toArray();
+
+            for (QJsonValue value : valueArray) {
+                ConfigureParam param;
+                QJsonObject obj = value.toObject();
+
+                param.kitName = obj.value("KitName").toString();
+                param.checked = obj.value("KitChecked").toBool();
+
+                QJsonObject debugObj = obj.value("Debug").toObject();
+                param.debug.checked = debugObj.value("checked").toBool();
+                param.debug.folder = debugObj.value("folder").toString();
+
+                QJsonObject releaseObj = obj.value("Release").toObject();
+                param.release.checked = releaseObj.value("checked").toBool();
+                param.release.folder = releaseObj.value("folder").toString();
+
+                QJsonObject relWithDebObj = obj.value("RelWithDebInfo").toObject();
+                param.relWithDebInfo.checked = relWithDebObj.value("checked").toBool();
+                param.relWithDebInfo.folder = relWithDebObj.value("folder").toString();
+
+                QJsonObject minSizeRelObj = obj.value("MinSizeRel").toObject();
+                param.minSizeRel.checked = minSizeRelObj.value("checked").toBool();
+                param.minSizeRel.folder = minSizeRelObj.value("folder").toString();
+
+                d->cfgItems.append(param);
+            }
+        }
+    }
+    return true;
+}
+
+bool ConfigureProjPane::save()
+{
+    QString cfgFilePath = configFilePath();
+
+    auto setParam = [](QJsonObject *obj, const QString &key, const BuildTypeItem &param) {
+        QJsonObject value;
+        value.insert("checked", param.checked);
+        value.insert("folder", param.folder);
+        obj->insert(key, value);
+    };
+
+    refreshParameters();
+
+    QJsonArray paramsArray;
+    QVector<ConfigureParam>::const_iterator iter = d->cfgItems.begin();
+    for (; iter != d->cfgItems.end(); ++iter) {
+        const ConfigureParam &param = *iter;
+        QJsonObject valueObj;
+        valueObj.insert("KitName", param.kitName);
+        valueObj.insert("KitChecked", param.checked);
+
+        setParam(&valueObj, "Debug", param.debug);
+        setParam(&valueObj, "Release", param.release);
+        setParam(&valueObj, "RelWithDebInfo", param.relWithDebInfo);
+        setParam(&valueObj, "MinSizeRel", param.minSizeRel);
+        paramsArray.append(valueObj);
+    }
+
+    QJsonObject rootObject;
+    rootObject.insert("Configure", paramsArray);
+    QJsonDocument doc;
+    doc.setObject(rootObject);
+    QString jsonStr(doc.toJson(QJsonDocument::Indented));
+
+    QFile file(cfgFilePath);
+    if (!file.open(QIODevice::WriteOnly))
+        return false;
+
+    file.write(jsonStr.toUtf8());
+    file.close();
+
+    return true;
 }

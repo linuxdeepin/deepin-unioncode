@@ -48,7 +48,8 @@ static QString settingsFileName()
 
 static KitManagerPrivate *d = nullptr;
 
-KitManager::KitManager(QObject *parent) : QObject(parent)
+KitManager::KitManager(QObject *parent)
+    : QObject(parent)
 {
     d = new KitManagerPrivate;
 }
@@ -64,48 +65,9 @@ decltype(auto) equal(R (S::*function)() const, T value)
     return std::bind<bool>(std::equal_to<T>(), value, std::bind(function, std::placeholders::_1));
 }
 
-
 void KitManager::restoreKits()
 {
-    QTC_ASSERT(!d->initialized, return );
-
-    std::vector<std::unique_ptr<Kit>> resultList;
-
-    // read all kits from user file
-    QString defaultUserKit;
-    std::vector<std::unique_ptr<Kit>> kitsToCheck;
-    {
-        KitList userKits = restoreKits(settingsFileName());
-        defaultUserKit = userKits.defaultKit;
-
-        for (auto &k : userKits.kits) {
-            resultList.emplace_back(std::move(k));
-        }
-    }
-
-    // Delete all loaded autodetected kits that were not rediscovered:
-    kitsToCheck.clear();
-
-    if (resultList.size() == 0) {
-        auto defaultKit = std::make_unique<Kit>(""); // One kit using default values
-        defaultKit->setUnexpandedDisplayName(tr("Desktop"));
-
-        resultList.emplace_back(std::move(defaultKit));
-    }
-
-    std::vector<std::unique_ptr<Kit>>::const_iterator begin = std::begin(resultList);
-    std::vector<std::unique_ptr<Kit>>::const_iterator end = std::end(resultList);
-
-    auto it = std::find_if(begin, end, equal(&Kit::id, defaultUserKit));
-
-    Kit *k = it->get();
-    if (!k)
-        k = resultList.front().get();
-    std::swap(resultList, d->kitList);
-    setDefaultKit(k);
-
-    d->writer = std::make_unique<PersistentSettingsWriter>(settingsFileName(), "QtCreatorProfiles");
-    d->initialized = true;
+    // TODO(Mozart)
 }
 
 KitManager::KitList KitManager::restoreKits(const QString &fileName)
@@ -135,12 +97,10 @@ KitManager::KitList KitManager::restoreKits(const QString &fileName)
         auto k = std::make_unique<Kit>(stMap);
 
         result.kits.emplace_back(std::move(k));
-
     }
     const QString id = data.value(QLatin1String(KIT_DEFAULT_KEY)).toString();
     if (id.isEmpty())
         return result;
-
 
     std::vector<std::unique_ptr<Kit>>::iterator it;
     for (; it != result.kits.end(); ++it) {
@@ -161,51 +121,6 @@ KitManager *KitManager::instance()
 
 KitManager::~KitManager()
 {
-}
-
-QList<Kit *> KitManager::kits()
-{
-    // TODO(Mozart):
-    return {};
-}
-
-Kit *KitManager::kit(QString id)
-{
-    // TODO(Mozart):
-    return nullptr;
-}
-
-Kit *KitManager::defaultKit()
-{
-    // TODO(Mozart):
-    return nullptr;
-}
-
-bool KitManager::registerKit(std::unique_ptr<Kit> &&k)
-{
-    // TODO(Mozart):
-    return true;
-}
-
-void KitManager::deregisterKit(Kit *k)
-{
-    // TODO(Mozart)
-}
-
-void KitManager::setDefaultKit(Kit *k)
-{
-    // TODO(Mozart)
-}
-
-void KitManager::saveKits()
-{
-    // TODO(Mozart)
-}
-
-bool KitManager::isLoaded()
-{
-    // TODO(Mozart):
-    return true;
 }
 
 void KitManager::setSelectedKit(Kit &kit)

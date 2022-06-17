@@ -38,6 +38,9 @@ struct Target {
 
     QString outputPath;
 
+    // TODO(mozart):tempory
+    bool enableEnv;
+
     bool operator==(const Target &other) const
     {
         if (name == other.name

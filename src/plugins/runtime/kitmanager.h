@@ -33,17 +33,7 @@ public:
     static KitManager *instance();
     ~KitManager() override;
 
-    static QList<Kit *> kits();
-    static Kit *kit(QString id);
-    static Kit *defaultKit();
-
-    static bool registerKit(std::unique_ptr<Kit> &&k);
-    static void deregisterKit(Kit *k);
-    static void setDefaultKit(Kit *k);
-
-    static void saveKits();
-
-    static bool isLoaded();
+    void save();
 
     void setSelectedKit(Kit &kit);
     const Kit &getSelectedKit();

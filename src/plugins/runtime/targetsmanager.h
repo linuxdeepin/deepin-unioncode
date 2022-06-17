@@ -46,6 +46,8 @@ public:
     void updateActiveBuildTarget(const QString &target);
     void updateActiveCleanTarget(const QString &target);
 
+    void save();
+
 signals:
 
 public slots:

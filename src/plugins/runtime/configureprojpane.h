@@ -28,12 +28,31 @@ class ConfigureProjPanePrivate;
 class ConfigureProjPane : public QWidget
 {
     Q_OBJECT
+
+public:
     enum BuildType {
         Debug,
         Relase,
         RelWithDebInfo,
         MinSizeRel
     };
+
+    struct BuildTypeItem
+    {
+        bool checked = true;
+        QString folder;
+    };
+
+    struct ConfigureParam
+    {
+        QString kitName;
+        BuildTypeItem debug;
+        BuildTypeItem release;
+        BuildTypeItem relWithDebInfo;
+        BuildTypeItem minSizeRel;
+        bool checked = true;
+    };
+
 public:
     explicit ConfigureProjPane(QWidget *parent = nullptr);
     ~ConfigureProjPane();
@@ -49,12 +68,19 @@ signals:
 public slots:
     void slotConfigureDone();
     void slotBrowseBtnClicked();
+    void slotParameterChanged();
 
 private:
     void setupUi(QWidget *widget);
     void setAllChecked(bool checked);
-    void updateOutputPath();
+    void useDefaultValue();
+    void refreshUi();
+    void refreshParameters();
     void updateKitInfo();
+    QString configFilePath();
+
+    bool restore();
+    bool save();
 
     ConfigureProjPanePrivate *const d;
 };

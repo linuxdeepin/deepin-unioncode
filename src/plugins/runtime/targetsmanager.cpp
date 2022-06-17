@@ -169,3 +169,8 @@ void TargetsManager::updateActiveCleanTarget(const QString &target)
     }
 }
 
+void TargetsManager::save()
+{
+
+}
+
