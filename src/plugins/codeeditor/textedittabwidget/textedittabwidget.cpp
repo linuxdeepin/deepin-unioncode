@@ -184,7 +184,12 @@ void TextEditTabWidget::openFile(const Head &head, const QString &filePath)
 
     QObject::connect(d->tab, &TextEditTabBar::saveFile, this, &TextEditTabWidget::saveEditFile, Qt::UniqueConnection);
 
-    edit->setFile(info.filePath(), head);
+    if (edit)
+        edit->setFile(info.filePath(), head);
+    else {
+        edit = new TextEdit();
+        edit->setFile(info.filePath());
+    }
     d->textEdits[filePath] = edit;
 
     // 添加监听

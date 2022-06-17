@@ -65,9 +65,11 @@ void CodeEditorReceiver::eventFileBrowser(const dpf::Event &event)
 {
     if (D_ITEM_DOUBLECLICKED == event.data()) {
         auto proInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-        return DpfEventMiddleware::instance()->toOpenFile(
-                    Head { proInfo.workspaceFolder(), proInfo.language()} ,
-                    event.property(P_FILEPATH).toString());
+        QString filePath = event.property(P_FILEPATH).toString();
+        Head head{ proInfo.workspaceFolder(), proInfo.language()};
+        if (QFileInfo(filePath).isFile()) {
+            DpfEventMiddleware::instance()->toOpenFile(head, filePath);
+        }
     }
 }
 

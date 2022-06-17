@@ -475,7 +475,7 @@ void ReposWidget::doAmendsCommit()
     processCommit.setWorkingDirectory(d->reposPath);
     processCommit.setProgram(svnProgram());
     QString commitDesc = d->amendsWidget->description();
-    processCommit.setArguments({"commit", "-m", commitDesc});
+    processCommit.setArguments({"commit", "-m", commitDesc, "--username", d->name, "--password", d->passwd});
     processCommit.start();
     processCommit.waitForFinished();
     if (processCommit.exitCode() != 0 || processCommit.exitStatus() != QProcess::ExitStatus::NormalExit) {

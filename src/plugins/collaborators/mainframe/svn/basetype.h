@@ -205,7 +205,13 @@ enum_def(AmendsState_Col9, QString)
 
 inline static QString svnProgram()
 {
-    return "/usr/bin/svn";
+    QString program("/usr/bin/svn");
+    QFileInfo fileInfo(program);
+    if (!fileInfo.exists() || !fileInfo.isExecutable()) {
+        ContextDialog::ok(QDialog::tr("Please install \"subversion\" software from terminal:"
+                                      "$ sudo apt install subversion"));
+    }
+    return program;
 }
 
 inline static QString svnLogSplitStr()

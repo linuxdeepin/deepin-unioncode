@@ -52,6 +52,10 @@ ScintillaEditExtern::ScintillaEditExtern(QWidget *parent)
     , d(new ScintillaEditExternPrivate)
 {
     styleSetBack(STYLE_DEFAULT, StyleColor::color(QColor(22,22,22)));
+    for (int i = 0; i < KEYWORDSET_MAX; i ++) {
+        styleSetFore(i, StyleColor::color(QColor(0xdd, 0xdd, 0xdd)));
+        styleSetBack(i,  StyleColor::color(QColor(22,22,22)));
+    }
 }
 
 ScintillaEditExtern::~ScintillaEditExtern()
