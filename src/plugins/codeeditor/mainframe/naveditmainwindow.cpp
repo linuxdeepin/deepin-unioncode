@@ -55,6 +55,7 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     qDockWidgetContext = new AutoHideDockWidget(QDockWidget::tr("Context"), this);
     qDockWidgetContext->setFeatures(QDockWidget::DockWidgetMovable);
     qTabWidgetContext = new QTabWidget(qDockWidgetContext);
+    qTabWidgetContext->setMinimumHeight(100);
     qDockWidgetContext->setWidget(qTabWidgetContext);
     addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qDockWidgetContext);
 }
@@ -95,6 +96,7 @@ void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget 
 {
     if (!qDockWidgetWorkspace) {
         qTabWidgetWorkspace = new QTabWidget();
+        qTabWidgetWorkspace->setMinimumHeight(300);
         qTabWidgetWorkspace->setTabPosition(QTabWidget::West);
         qDockWidgetWorkspace = new AutoHideDockWidget(QDockWidget::tr("Workspace"), this);
         qDockWidgetWorkspace->setFeatures(QDockWidget::DockWidgetMovable);

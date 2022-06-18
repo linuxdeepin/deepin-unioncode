@@ -9,6 +9,7 @@ set(CXX_CPP
     mainframe/windowstatusbar.cpp
     mainframe/progressbar.cpp
     mainframe/optionsdialog.cpp
+    mainframe/aboutdialog.cpp
     transceiver/sendevents.cpp
     transceiver/corereceiver.cpp
     core.cpp
@@ -22,6 +23,7 @@ set(CXX_H
     mainframe/windowstatusbar.h
     mainframe/progressbar.h
     mainframe/optionsdialog.h
+    mainframe/aboutdialog.h
     transceiver/sendevents.h
     transceiver/corereceiver.h
     core.h
@@ -35,6 +37,7 @@ add_library(${PROJECT_NAME}
     ${CXX_CPP}
     ${CXX_H}
     ${QT_THEME}
+    core.qrc
     )
 
 target_link_libraries(${PROJECT_NAME}

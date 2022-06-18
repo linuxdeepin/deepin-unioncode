@@ -33,6 +33,7 @@
 #include <QStackedWidget>
 #include <QProcess>
 #include <QMessageBox>
+#include <QScrollArea>
 
 #define LABEL_WIDTH (150)
 
@@ -90,7 +91,11 @@ void FindToolWindow::setupUi()
 {
     d->stackedWidget = new QStackedWidget();
     QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->addWidget(d->stackedWidget);
+
+    QScrollArea *scrollArea = new QScrollArea();
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setWidget(d->stackedWidget);
+    vLayout->addWidget(scrollArea);
 
     QWidget *searchParamWidget = new QWidget();
     QWidget *searchResultWidget = new QWidget();

@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef ABOUTDIALOG_H
+#define ABOUTDIALOG_H
 
-#include <QString>
-/**
-*
-* Write global contants here.
-*/
-const int K_DEFAULT_MAX_CHAR_COUNT = 10000000;
-const QString VERSION = "1.1.10";
-const QString ARCH = "amd64";
+#include <QDialog>
 
-#endif // CONSTANTS_H
+class AboutDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    explicit AboutDialog(QDialog *parent = nullptr);
+    virtual ~AboutDialog();
+
+signals:
+
+private:
+    void setupUi();
+
+};
+
+#endif // ABOUTDIALOG_H

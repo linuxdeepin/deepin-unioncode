@@ -24,6 +24,7 @@
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include "common/common.h"
+#include "aboutdialog.h"
 
 #include <QAction>
 #include <QMenu>
@@ -34,6 +35,7 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QActionGroup>
+#include <QDesktopServices>
 
 static WindowKeeper *ins{nullptr};
 using namespace dpfservice;
@@ -200,8 +202,10 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
                                                  "About", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A));
     helpMenu->addAction(actionAboutUnionCode);
 
-    actionReportBug->setEnabled(false);
-    actionAboutUnionCode->setEnabled(false);
+    QAction::connect(actionAboutUnionCode, &QAction::triggered, this, &WindowKeeper::showAboutDlg);
+    QAction::connect(actionReportBug, &QAction::triggered, [=](){
+        QDesktopServices::openUrl(QUrl("https://pms.uniontech.com/project-bug-1039.html"));
+    });
 }
 
 void WindowKeeper::createStatusBar(QMainWindow *window)
@@ -326,6 +330,7 @@ WindowKeeper::WindowKeeper(QObject *parent)
     if (!d->window) {
         d->window = new QMainWindow();
         d->window->setWindowTitle("Union Code");
+        d->window->setWindowIcon(QIcon(":/core/images/unioncode@48.png"));
         QObject::connect(d->window, &QMainWindow::destroyed, [&](){
             d->window->takeCentralWidget();
         });
@@ -572,4 +577,10 @@ void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)
             action->setChecked(checked);
         }
     }
+}
+
+void WindowKeeper::showAboutDlg()
+{
+    AboutDialog dlg;
+    dlg.exec();
 }

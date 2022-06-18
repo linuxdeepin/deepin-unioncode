@@ -68,6 +68,7 @@ public slots:
                               int maxPrecent = 100);
     void hideProcessDisplay();
     void showOptionsDlg();
+    void showAboutDlg();
 
 private :
     void layoutWindow(QMainWindow *window);
