@@ -46,7 +46,6 @@ const QString D_MARGIN_DEBUG_POINT_ADD {"Margin.Debug.Point.Add"};
 const QString D_MARGIN_DEBUG_POINT_REMOVE {"Margin.Debug.Point.Remove"};
 const QString D_MARGIN_DEBUG_POINT_CLEAN {"Margin.Debug.Point.Clean"};
 const QString D_FILE_OPENDOCUMENT {"File.OpenDocument"};
-const QString D_FILE_OPENFOLDER {"File.OpenFolder"};
 const QString D_FILE_OPENPROJECT {"File.OpenProject"};
 const QString D_ITEM_MENU_BUILD {"Item.Menu.Build"};
 const QString D_ITEM_DOUBLECLICKED {"Item.DoubleClicked"};
@@ -79,6 +78,7 @@ const QString P_TEXT {"Text"};
 const QString P_PERCENT {"Percent"};
 const QString P_STATE {"State"};
 const QString P_MAX_PERCENT {"MaxPerCent"};
+const QString P_KITNAME {"KitName"};
 const QString P_LANGUAGE {"Language"};
 const QString P_PROJECT_INFO{"ProjectInfo"};
 

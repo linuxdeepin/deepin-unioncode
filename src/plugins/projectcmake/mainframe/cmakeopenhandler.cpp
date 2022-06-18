@@ -49,9 +49,24 @@ QAction *CMakeOpenHandler::openAction()
 {
     auto result = new QAction("cmake");
     QObject::connect(result, &QAction::triggered, [=](){
-        QFileDialog fileDialog(nullptr, "Open CMake Project", QDir::homePath(), "CMakeLists.txt");
-        if(fileDialog.exec()) {
-            doProjectOpen(result->text(), dpfservice::MWMFA_CXX, fileDialog.selectedFiles()[0]);
+
+        QString iniPath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("setting.ini");
+        QSettings setting(iniPath, QSettings::IniFormat);
+        QString lastPath = setting.value("cmakelastpath").toString();
+
+        QFileDialog fileDialog;
+        QString filePath = fileDialog.getOpenFileName(nullptr, "Open CMake Project", lastPath, "CMakeLists.txt");
+        if(!filePath.isEmpty()) {
+
+            // save open history
+            QString lastPath = filePath.left(filePath.lastIndexOf('/'));
+            QVariant varPath(lastPath);
+            setting.setValue("cmakelastpath", varPath);
+
+            QString kitName = result->text();
+            QString language = dpfservice::MWMFA_CXX;
+            doProjectOpen(kitName, language, filePath);
+            SendEvents::menuOpenProject(filePath, kitName, language); // 发送打开事件
         }
     });
     return result;
@@ -59,6 +74,10 @@ QAction *CMakeOpenHandler::openAction()
 
 void CMakeOpenHandler::doProjectOpen(const QString &name, const QString &language, const QString &filePath)
 {
+    if (filePath.isEmpty()) {
+        return;
+    }
+
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
@@ -74,6 +93,5 @@ void CMakeOpenHandler::doProjectOpen(const QString &name, const QString &languag
     if (widget) {
         widget->setWindowFlag(Qt::Dialog);
         widget->show();
-        SendEvents::menuOpenProject(filePath); // 发送打开事件
     }
 }

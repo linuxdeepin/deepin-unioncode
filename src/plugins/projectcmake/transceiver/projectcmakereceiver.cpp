@@ -19,6 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "projectcmakereceiver.h"
+#include "mainframe/cmakeopenhandler.h"
+
 #include "common/common.h"
 
 QString ProjectCmakeProxy::buildOriginCmdCache{};
@@ -37,7 +39,7 @@ dpf::EventHandler::Type ProjectCmakeReceiver::type()
 
 QStringList ProjectCmakeReceiver::topics()
 {
-    return { T_BUILDER }; //绑定menu 事件
+    return { T_BUILDER, T_RECENT };
 }
 
 void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
@@ -46,8 +48,13 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
         qCritical() << event;
         abort();
     }
-    if (event.topic() == T_BUILDER){
+
+    if (event.topic() == T_BUILDER) {
         builderEvent(event);
+    }
+
+    if (event.topic() == T_RECENT) {
+        recentEvent(event);
     }
 }
 
@@ -66,6 +73,16 @@ void ProjectCmakeReceiver::builderEvent(const dpf::Event &event)
             //clean sended cmd
             ProjectCmakeProxy::setbuildOriginCmd("");
         }
+    }
+}
+
+void ProjectCmakeReceiver::recentEvent(const dpf::Event &event)
+{
+    if (event.data() == D_FILE_OPENPROJECT) {
+        CMakeOpenHandler::instance()->doProjectOpen(
+                    event.property(P_KITNAME).toString(),
+                    event.property(P_LANGUAGE).toString(),
+                    event.property(P_FILEPATH).toString());
     }
 }
 

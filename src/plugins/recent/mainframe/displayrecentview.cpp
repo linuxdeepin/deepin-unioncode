@@ -9,7 +9,7 @@
 #include <QStandardItem>
 #include <QStandardItemModel>
 
-#define INIT_DATA "{\n    \"Documents\":[],\n    \"Folders\":[]\n}\n"
+#define INIT_DATA "{\n    \"Projects\":[],\n    \"Documents\":[]\n}\n"
 
 QJsonDocument DisplayRecentView::readRecent()
 {
@@ -20,7 +20,22 @@ QJsonDocument DisplayRecentView::readRecent()
             file.write(INIT_DATA);
             file.close();
         }
+    } else {
+        if (file.open(QFile::ReadOnly)) {
+            recentDoc = QJsonDocument::fromJson(file.readAll());
+            file.close();
+        }
+
+        if (!recentDoc.object().keys().contains("Projects")
+                || !recentDoc.object().keys().contains("Documents")) {
+            file.remove();
+            file.close();
+            file.open(QFile::Truncate| QFile::WriteOnly);
+            file.write(INIT_DATA);
+            file.close();
+        }
     }
+
     if (file.open(QFile::ReadOnly)) {
         recentDoc = QJsonDocument::fromJson(file.readAll());
         file.close();

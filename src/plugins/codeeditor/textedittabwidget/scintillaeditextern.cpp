@@ -56,6 +56,7 @@ ScintillaEditExtern::ScintillaEditExtern(QWidget *parent)
         styleSetFore(i, StyleColor::color(QColor(0xdd, 0xdd, 0xdd)));
         styleSetBack(i,  StyleColor::color(QColor(22,22,22)));
     }
+    setCaretFore(StyleColor::color(QColor(255,255,255)));
 }
 
 ScintillaEditExtern::~ScintillaEditExtern()

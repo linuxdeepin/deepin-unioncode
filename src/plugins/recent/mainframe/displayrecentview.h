@@ -11,7 +11,6 @@ class DisplayRecentView : public QListView
     Q_OBJECT
     QStringList cache;
     QFileIconProvider iconProvider;
-    QStandardItemModel *model;
 public:
     explicit DisplayRecentView(QWidget *parent = nullptr);
     virtual QString cachePath();
@@ -19,11 +18,13 @@ public:
     virtual QIcon icon(const QString &data);
     virtual QString title() = 0;
     virtual void load();
+    virtual QList<QStandardItem*> itemsFromFile();
 protected:
     virtual void saveToFile(const QStringList &cache);
-private:
+protected:
+    QStandardItemModel *model;
     QJsonDocument readRecent();
-    QList<QStandardItem*> itemsFromFile();
+private:
 };
 
 #endif // DISPLAYRECENTVIEW_H

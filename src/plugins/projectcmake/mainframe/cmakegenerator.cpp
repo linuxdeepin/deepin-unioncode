@@ -104,6 +104,17 @@ QWidget *CmakeGenerator::configureWidget(const QString &language,
     if (!projectService)
         return nullptr;
 
+    auto proInfos = projectService->projectView.getAllProjectInfo();
+    for (auto &val : proInfos) {
+        if (val.language() == language && projectPath == val.projectFilePath()) {
+            ContextDialog::ok(QDialog::tr("Cannot open repeatedly!\n"
+                                          "language : %0\n"
+                                          "projectPath : %1")
+                              .arg(language, projectPath));
+            return nullptr;
+        }
+    }
+
     QString projectFilePath = projectPath;
     // show build type config pane.
     projectService->showConfigureProjDlg(projectFilePath);

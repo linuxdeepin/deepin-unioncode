@@ -44,13 +44,3 @@ void SendEvents::menuOpenFile(const QString &filePath)
     SendEvents::navActionSwitch(dpfservice::MWNA_EDIT);
 }
 
-void SendEvents::menuOpenDirectory(const QString &filePath)
-{
-    qInfo() << __FUNCTION__;
-    dpf::Event menuOpenFile;
-    menuOpenFile.setTopic(T_MENU);
-    menuOpenFile.setData(D_FILE_OPENFOLDER);
-    menuOpenFile.setProperty(P_FILEPATH, filePath);
-    dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
-    SendEvents::navActionSwitch(dpfservice::MWNA_EDIT);
-}

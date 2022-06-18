@@ -30,7 +30,6 @@ class SendEvents final
 public:
     static void navActionSwitch(const QString &navName);
     static void menuOpenFile(const QString &filePath);
-    static void menuOpenDirectory(const QString &filePath);
 };
 
 #endif // SENDEVENTS_H

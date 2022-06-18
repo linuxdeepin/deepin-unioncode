@@ -324,11 +324,12 @@ void SymbolCppAsynParser::doParserOne(QStandardItem *item, const QString &file,
 
     CXIndex index = clang_createIndex(0, 0);
 
-    CXTranslationUnit unit ;
+    CXTranslationUnit unit;
+
     CXErrorCode err = clang_parseTranslationUnit2(index, file.toLatin1(),
                                                   nullptr, 0,
                                                   nullptr, 0,
-                                                  CXTranslationUnit_None, // CXTranslationUnit_SingleFileParse
+                                                  CXTranslationUnit_None,    // CXTranslationUnit_SingleFileParse
                                                   &unit);
     if (err != CXErrorCode::CXError_Success) {
         qCritical() << "Filaed, clang_parseTranslationUnit2 craete CXTranslationUnit: "

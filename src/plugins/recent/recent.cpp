@@ -45,8 +45,8 @@ bool Recent::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
-        QObject::connect(RecentProxy::instance(), &RecentProxy::addFolder,
-                         RecentDisplay::instance(), &RecentDisplay::addFolder);
+        QObject::connect(RecentProxy::instance(), &RecentProxy::addProject,
+                         RecentDisplay::instance(), &RecentDisplay::addProject);
         QObject::connect(RecentProxy::instance(), &RecentProxy::addDocument,
                          RecentDisplay::instance(), &RecentDisplay::addDocument);
         auto recentWidgetImpl = new AbstractCentral(RecentDisplay::instance());

@@ -150,9 +150,9 @@ QStandardItem *SymbolCppGenerator::createRootItem(const dpfservice::ProjectInfo 
             }
         });
 
-        //        QtConcurrent::run(d->itemAsynThreadPolls[root].first,
-        //                          parser, &SymbolCppAsynParser::doParserOne,
-        //                          root, file, files);
+        QtConcurrent::run(d->itemAsynThreadPolls[root].first,
+                          parser, &SymbolCppAsynParser::doParserOne,
+                          root, file, files);
     }
 
     emit Generator::started();

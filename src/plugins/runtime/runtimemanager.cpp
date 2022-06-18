@@ -62,8 +62,8 @@ void RuntimeManager::showConfigureProjDlg(QString &projectPath)
     }
 
     runtimeWidget->showPane(RuntimeWidget::kConfigurePane, projectPath);
-    QEventLoop eventLoop;
-    connect(runtimeWidget, &RuntimeWidget::configureDone, [&]() {
+    static QEventLoop eventLoop;
+    connect(runtimeWidget, &RuntimeWidget::configureDone, [=]() {
         eventLoop.quit();
     });
     eventLoop.exec();

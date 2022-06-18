@@ -107,7 +107,7 @@ void CodeEditorReceiver::eventMenu(const dpf::Event &event)
         return DpfEventMiddleware::instance()->toOpenFile(
                     event.property(P_FILEPATH).toString());
     }
-    if (D_FILE_OPENFOLDER == event.data()) {
+    if (D_FILE_OPENPROJECT == event.data()) {
         qInfo() << event;
         return;
     }

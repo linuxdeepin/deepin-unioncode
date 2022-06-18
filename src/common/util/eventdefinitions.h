@@ -48,7 +48,6 @@ extern const QString D_DEBUG_EXECUTION_JUMP;
 extern const QString D_DEBUG_EXECUTION_JUMP_CLEAN;
 extern const QString D_BUILD_STATE;
 extern const QString D_FILE_OPENDOCUMENT;
-extern const QString D_FILE_OPENFOLDER;
 extern const QString D_FILE_OPENPROJECT;
 extern const QString D_ITEM_MENU_BUILD;
 extern const QString D_ITEM_DOUBLECLICKED;
@@ -85,6 +84,7 @@ extern const QString P_ORIGINCMD;       // value QString, event sender id.
 extern const QString P_PERCENT;        // value int
 extern const QString P_MAX_PERCENT;    // value int
 extern const QString P_STATE;          // value int
+extern const QString P_KITNAME;        // value QString
 extern const QString P_LANGUAGE;       // value QString
 extern const QString P_PROJECT_INFO;   // value dpfService::ProjectInfo
 

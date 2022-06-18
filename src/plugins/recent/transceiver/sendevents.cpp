@@ -26,22 +26,28 @@
 void SendEvents::recentOpenFile(const QString &filePath)
 {
     qInfo() << __FUNCTION__;
-    dpf::Event menuOpenFile;
-    menuOpenFile.setTopic(T_MENU);
-    menuOpenFile.setData(D_FILE_OPENDOCUMENT);
-    menuOpenFile.setProperty(P_FILEPATH, filePath);
-    dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
+    dpf::Event recentOpenFile;
+    recentOpenFile.setTopic(T_RECENT);
+    recentOpenFile.setData(D_FILE_OPENDOCUMENT);
+    recentOpenFile.setProperty(P_FILEPATH, filePath);
+    dpf::EventCallProxy::instance().pubEvent(recentOpenFile);
     navEditShow();
 }
 
-void SendEvents::recentOpenDirectory(const QString &filePath)
+void SendEvents::recentOpenProject(const QString &filePath,
+                                   const QString &kitName,
+                                   const QString &language,
+                                   const QString &workspace)
 {
     qInfo() << __FUNCTION__;
-    dpf::Event menuOpenFile;
-    menuOpenFile.setTopic(T_MENU);
-    menuOpenFile.setData(D_FILE_OPENFOLDER);
-    menuOpenFile.setProperty(P_FILEPATH, filePath);
-    dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
+    dpf::Event recentOpenFile;
+    recentOpenFile.setTopic(T_RECENT);
+    recentOpenFile.setData(D_FILE_OPENPROJECT);
+    recentOpenFile.setProperty(P_FILEPATH, filePath);
+    recentOpenFile.setProperty(P_KITNAME, kitName);
+    recentOpenFile.setProperty(P_LANGUAGE, language);
+    recentOpenFile.setProperty(P_WORKSPACEFOLDER, workspace);
+    dpf::EventCallProxy::instance().pubEvent(recentOpenFile);
     navEditShow();
 }
 
