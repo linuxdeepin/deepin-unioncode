@@ -57,6 +57,8 @@ public:
     void replaceAll(const QString &srcText, const QString &destText);
     void updateFile();
     void saveAsText();
+    bool isSaveText();
+    void cleanIsSaveText();
 
 signals:
     void hovered(Scintilla::Position position);

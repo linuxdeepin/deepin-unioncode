@@ -37,6 +37,7 @@ class ScintillaEditExternPrivate
     ScintillaEditExternPrivate() {}
     bool isCtrlKeyPressed;
     bool isLeave;
+    bool isSaveText = false;
     Scintilla::Position hoverPos = -1;
     QTimer hoverTimer;
     QTimer definitionHoverTimer;
@@ -188,11 +189,10 @@ void ScintillaEditExtern::saveText()
     if (!file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate)) {
         return;
     }
-    Inotify::globalInstance()->addIgnorePath(d->filePath);
+    d->isSaveText = true;
     file.write(textRange(0, length()));
     emit saved(d->filePath);
     file.close();
-    Inotify::globalInstance()->removeIgnorePath(d->filePath);
 }
 
 
@@ -203,11 +203,20 @@ void ScintillaEditExtern::saveAsText()
         ContextDialog::ok("Can't save current: " + file.errorString());
         return;
     }
-    Inotify::globalInstance()->addIgnorePath(d->filePath);
+    d->isSaveText = true;
     file.write(textRange(0, length()));
     emit saved(d->filePath);
     file.close();
-    Inotify::globalInstance()->removeIgnorePath(d->filePath);
+}
+
+bool ScintillaEditExtern::isSaveText()
+{
+    return d->isSaveText;
+}
+
+void ScintillaEditExtern::cleanIsSaveText()
+{
+    d->isSaveText = false;
 }
 
 bool ScintillaEditExtern::isLeave()

@@ -408,20 +408,24 @@ void TextEditTabWidget::removeFileTab(const QString &file)
 
 void TextEditTabWidget::fileModifyed(const QString &file)
 {
-    if (!d->titleBars[file]) {
-        d->titleBars[file] = TextEditTitleBar::changedReload(file);
-
-        QObject::connect(d->titleBars[file], &TextEditTitleBar::reloadfile, [=](){
-            if(d->titleBars.contains(file) && d->textEdits.contains(file)) {
-                d->textEdits[file]->updateFile();
-            }
-        });
-    }
     auto edit = d->textEdits[file];
-    if (edit && !edit->isHidden()) {
+    if (edit && !edit->isHidden() && !edit->isSaveText()) {
+
+        if (!d->titleBars[file]) {
+            d->titleBars[file] = TextEditTitleBar::changedReload(file);
+            QObject::connect(d->titleBars[file], &TextEditTitleBar::reloadfile, [=](){
+                if(d->titleBars.contains(file) && d->textEdits.contains(file)) {
+                    d->textEdits[file]->updateFile();
+                }
+            });
+        }
+
         d->gridLayout->addWidget(d->titleBars[file], 1, 0);
         d->titleBars[file]->show();
     }
+
+    // 100 ms 内多次出发变动将忽略
+    QTimer::singleShot(100, [=](){edit->cleanIsSaveText();});
 }
 
 void TextEditTabWidget::fileDeleted(const QString &file)
