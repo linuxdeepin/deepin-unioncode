@@ -87,7 +87,7 @@ TextEdit::TextEdit(QWidget *parent)
                      this, &TextEdit::find);
 
     QObject::connect(DpfEventMiddleware::instance(), QOverload<const QString &, const QString &, int>::of(&DpfEventMiddleware::toReplaceText),
-                     [=](const QString &srcText, const QString &destText, int mark){ replace(srcText, destText, mark); });
+                     this, &TextEdit::replace);
 }
 
 TextEdit::~TextEdit()
