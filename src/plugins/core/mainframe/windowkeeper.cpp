@@ -330,7 +330,7 @@ WindowKeeper::WindowKeeper(QObject *parent)
     if (!d->window) {
         d->window = new QMainWindow();
         d->window->setWindowTitle("Union Code");
-        d->window->setWindowIcon(QIcon(":/core/images/unioncode@48.png"));
+        d->window->setWindowIcon(QIcon(":/core/images/unioncode@128.png"));
         QObject::connect(d->window, &QMainWindow::destroyed, [&](){
             d->window->takeCentralWidget();
         });

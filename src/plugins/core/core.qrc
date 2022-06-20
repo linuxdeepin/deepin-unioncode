@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/core">
         <file>images/unioncode@128.png</file>
-        <file>images/unioncode@48.png</file>
     </qresource>
 </RCC>
