@@ -1,0 +1,59 @@
+/*
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ *
+ * Author:     huangyu<huangyub@uniontech.com>
+ *
+ * Maintainer: huangyu<huangyub@uniontech.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+#ifndef PROJECTRECEIVER_H
+#define PROJECTRECEIVER_H
+
+#include <framework/framework.h>
+
+class ProjectMavenReceiver : public dpf::EventHandler,
+        dpf::AutoEventHandlerRegister<ProjectMavenReceiver>
+{
+    Q_OBJECT
+    friend class dpf::AutoEventHandlerRegister<ProjectMavenReceiver>;
+public:
+    explicit ProjectMavenReceiver(QObject * parent = nullptr);
+
+    static Type type();
+
+    static QStringList topics();
+
+    virtual void eventProcess(const dpf::Event& event) override;
+
+    virtual void builderEvent(const dpf::Event& event);
+
+    virtual void recentEvent(const dpf::Event& event);
+};
+
+class ProjectMavenProxy : public QObject
+{
+    Q_OBJECT
+    ProjectMavenProxy(){}
+    ProjectMavenProxy(const ProjectMavenProxy&) = delete;
+    static QString buildOriginCmdCache;
+public:
+    static ProjectMavenProxy* instance();
+    static void setbuildOriginCmd(const QString &originCmd);
+    static QString buildOriginCmd();
+signals:
+    void buildExecuteEnd(const QString &cmd, int status = 0);
+};
+
+#endif // PROJECTRECEIVER_H

@@ -1,0 +1,3 @@
+add_subdirectory(projectcore)
+add_subdirectory(projectmaven)
+add_subdirectory(projectcmake)

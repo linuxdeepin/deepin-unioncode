@@ -37,8 +37,10 @@ Makefile.*
 *.zip
 
 debug
+debug
 release
 build
+build-*
 obj-x86_64-linux-gnu*
 debian/.debhelper*
 debian/libunioncode-dev.substvars
@@ -67,3 +69,6 @@ NUL
 # Documents
 doc/html/*
 
+# union code gen
+.unioncode
+*.unioncode
