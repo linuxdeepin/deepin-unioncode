@@ -9,6 +9,20 @@ set(CXX_CPP
     mainframe/cmakeitemkeeper.cpp
     mainframe/cmakeopenhandler.cpp
     mainframe/cmakegenerator.cpp
+    mainframe/properties/environmentwidget.cpp
+    mainframe/properties/projectparser.cpp
+    mainframe/properties/stepspane.cpp
+    mainframe/properties/targetsmanager.cpp
+    mainframe/properties/overviewpane.cpp
+    mainframe/properties/runconfigpane.cpp
+    mainframe/properties/configureprojpane.cpp
+    mainframe/properties/kitmanager.cpp
+    mainframe/properties/kit.cpp
+    mainframe/properties/persistentsettings.cpp
+    mainframe/properties/propertiesdialog.cpp
+    mainframe/properties/buildpropertywidget.cpp
+    mainframe/properties/runpropertywidget.cpp
+    mainframe/properties/configpropertywidget.cpp
     transceiver/projectcmakereceiver.cpp
     transceiver/sendevents.cpp
     projectcmake.cpp
@@ -20,6 +34,20 @@ set(CXX_H
     mainframe/cmakeitemkeeper.h
     mainframe/cmakeopenhandler.h
     mainframe/cmakegenerator.h
+    mainframe/properties/environmentwidget.h
+    mainframe/properties/projectparser.h
+    mainframe/properties/stepspane.h
+    mainframe/properties/targetsmanager.h
+    mainframe/properties/overviewpane.h
+    mainframe/properties/runconfigpane.h
+    mainframe/properties/configureprojpane.h
+    mainframe/properties/kitmanager.h
+    mainframe/properties/kit.h
+    mainframe/properties/persistentsettings.h
+    mainframe/properties/propertiesdialog.h
+    mainframe/properties/buildpropertywidget.h
+    mainframe/properties/runpropertywidget.h
+    mainframe/properties/configpropertywidget.h
     transceiver/projectcmakereceiver.h
     transceiver/sendevents.h
     projectcmake.h

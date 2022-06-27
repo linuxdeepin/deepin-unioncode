@@ -2,6 +2,7 @@
 project(unioncode-service)
 
 set(CXX_H
+    window/windowelement.h
     window/windowservice.h
     debugger/debuggerservice.h
     container/containerservice.h
@@ -15,20 +16,14 @@ set(CXX_H
     runtime/runtimeservice.h
     find/enums.h
     find/findservice.h
-    )
-
-set(CXX_CPP
-    window/windowservice.cpp
-    debugger/debuggerservice.cpp
-    container/containerservice.cpp
-    runtime/runtimeservice.cpp
+    option/optionservice.h
+    option/optiongenerator.h
     )
 
 add_library(
     ${PROJECT_NAME}
     SHARED
     ${CXX_H}
-    ${CXX_CPP}
     )
 
 link_libraries(

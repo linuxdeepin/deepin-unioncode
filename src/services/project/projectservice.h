@@ -150,31 +150,6 @@ public:
      */
     SymbolViewInterface symbolView;
 
-    /*!
-     * \brief DPF_INTERFACE
-     * insert one item to option dialog with item name and widget.
-     */
-    DPF_INTERFACE(bool, insertOptionPanel, const QString &itemName, QWidget *panel);
-
-    /*!
-     * \brief showProjectOptionsDlg
-     * \param show options dialog at panel witch
-     */
-    DPF_INTERFACE(void, showProjectOptionsDlg, const QString &itemName, const QString &tabName);
-
-    /**
-     * @brief showConfigureProjDlg
-     * @param outOutputPath return output path
-     * @param outBuildTypes return build types user selected
-     */
-    DPF_INTERFACE(void, showConfigureProjDlg, QString &projectPath);
-
-    /**
-     * @brief getDefaultOutputPath
-     * @param projectPath
-     */
-    DPF_INTERFACE(QString, getDefaultOutputPath);
-
 Q_SIGNALS:
     /*!
      * \brief targetExecute 工程目标执行指令, 调用构建系统的入口

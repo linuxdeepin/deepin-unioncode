@@ -148,9 +148,6 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     QAction* actionTest = new QAction("Test");
     QAction* actionPlugins = new QAction("Plugins");
 
-    QAction* actionOptions = new QAction("Options");
-    connect(actionOptions, &QAction::triggered, this, &WindowKeeper::showOptionsDlg);
-
     ActionManager::getInstance()->registerAction(actionSearch, "Tools.Search",
                                                  "Search", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S));
     ActionManager::getInstance()->registerAction(actionPackageTools, "Tools.Package.Tools",
@@ -165,8 +162,6 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
                                                  "Test", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_T));
     ActionManager::getInstance()->registerAction(actionPlugins, "Tools.Plugins",
                                                  "Plugins", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_G));
-    ActionManager::getInstance()->registerAction(actionOptions, "Tools.Options",
-                                                 "Options", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_H));
 
     toolsMenu->addAction(actionSearch);
     toolsMenu->addAction(actionPackageTools);
@@ -175,7 +170,6 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     toolsMenu->addAction(actionRuntimeAnalysis);
     toolsMenu->addAction(actionTest);
     toolsMenu->addAction(actionPlugins);
-    toolsMenu->addAction(actionOptions);
 
     actionSearch->setEnabled(false);
     actionPackageTools->setEnabled(false);
@@ -556,12 +550,6 @@ void WindowKeeper::hideProcessDisplay()
 
 void WindowKeeper::showOptionsDlg()
 {
-    auto &ctx = dpfInstance.serviceContext();
-    auto projectService = ctx.service<ProjectService>(ProjectService::name());
-
-    if (projectService) {
-        projectService->showProjectOptionsDlg("", "");
-    }
 }
 
 void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)

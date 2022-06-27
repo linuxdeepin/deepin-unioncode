@@ -21,6 +21,8 @@
 #ifndef WINDOWSERVICE_H
 #define WINDOWSERVICE_H
 
+#include "windowelement.h"
+
 #include <framework/framework.h>
 
 #include <QMap>
@@ -33,66 +35,23 @@ class AbstractWidget;
 class AbstractConsole;
 
 namespace dpfservice {
-// window display elements
-// MW = MainWindow
-extern const int MW_MIN_WIDTH;
-extern const int MW_MIN_HEIGHT;
-
-// MWNA = MainWindow Navtion Action
-extern const QString MWNA_RECENT;
-extern const QString MWNA_EDIT;
-extern const QString MWNA_DEBUG;
-extern const QString MWNA_RUNTIME;
-
-// MWM_FILE: MainWindow Menu File
-// MWMFA: MainWindow Menu File Action
-extern const QString MWM_FILE;
-extern const QString MWMFA_CXX;
-extern const QString MWMFA_JAVA;
-extern const QString MWMFA_PYTHON;
-extern const QString MWMFA_DOCUMENT_NEW;
-extern const QString MWMFA_FOLDER_NEW;
-extern const QString MWMFA_OPEN_PROJECT;
-extern const QString MWMFA_OPEN_DOCUMENT;
-extern const QString MWMFA_OPEN_RECENT_DOCUMENTS;
-extern const QString MWMFA_OPEN_RECENT_FOLDER;
-extern const QString MWMFA_QUIT;
-
-// MWMB: MainWindow Menu Build
-extern const QString MWM_BUILD;
-
-// MWMB: MainWindow Menu Debug
-extern const QString MWM_DEBUG;
-
-// MWMT: MainWindow Menu Tools
-extern const QString MWM_TOOLS;
-extern const QString MWMTA_SEARCH;
-extern const QString MWMTA_PACKAGE_TOOLS;
-extern const QString MWMTA_VERSION_TOOLS;
-extern const QString MWMTA_CODE_FORMATTING;
-extern const QString MWMTA_RUNTIME_ANALYSIS;
-extern const QString MWMTA_TEST;
-extern const QString MWMTA_PLUGINS;
-extern const QString MWMTA_OPTIONS;
-
-// MWMH: MainWindow Menu Help
-extern const QString MWM_HELP;
-
-// Dialog Title text
-extern const QString DIALOG_OPEN_DOCUMENT_TITLE;
-
-// TabWidget Tab Text from editor
-extern const QString CONSOLE_TAB_TEXT; // text's "Console"
-
 // service interface
 class WindowService final : public dpf::PluginService, dpf::AutoServiceRegister<WindowService>
 {
     Q_OBJECT
     Q_DISABLE_COPY(WindowService)
 public:
-    static QString name();
+    static QString name()
+    {
+        return "org.deepin.service.WindowService";
+    }
 
-    explicit WindowService(QObject *parent = nullptr);
+    explicit WindowService(QObject *parent = nullptr)
+        : dpf::PluginService (parent)
+    {
+
+    }
+
     /*!
      * \brief addActionNavigation 添加导航栏action
      * \param action 实例对象
@@ -147,13 +106,6 @@ public:
      * \param contextWidget 实例对象
      */
     DPF_INTERFACE(void, addContextWidget, const QString &contextTab, AbstractWidget *contextWidget);
-
-    /*!
-     * \brief addWidgetOption 添加功能项组件
-     * \param optionName option名称
-     * \param optionWidget option显示的组件
-     */
-    DPF_INTERFACE(void, addWidgetOption, const QIcon &icon, const QString &optionName, AbstractWidget *optionWidget);
 
     /*!
      * \brief setStatusBar

@@ -81,6 +81,11 @@ bool ProjectCore::start()
         }
     }
 
+    if (windowService && windowService->addCentralNavigation) {
+        //windowService->addCentralNavigation(MWNA_RUNTIME, new AbstractCentral(RuntimeManager::instance()->getRuntimeWidget()));
+    }
+
+
     using namespace std::placeholders;
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {

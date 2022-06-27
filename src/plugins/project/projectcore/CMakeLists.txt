@@ -21,7 +21,7 @@ set(CXX_H
     mainframe/projecttreeview.h
     mainframe/projectkeeper.h
     transceiver/projectreceiver.h
-    transceiver/sendevents.h
+    transceiver/sendevents.h    
     projectcore.h
     )
 

@@ -24,10 +24,14 @@
 #include "transceiver/sendevents.h"
 #include "transceiver/projectcmakereceiver.h"
 #include "services/window/windowservice.h"
-
+#include "properties/propertiesdialog.h"
+#include "properties/buildpropertywidget.h"
+#include "properties/runpropertywidget.h"
+#include "properties/configpropertywidget.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
+#include <QPushButton>
 
 class CmakeGeneratorPrivate
 {
@@ -115,38 +119,13 @@ QWidget *CmakeGenerator::configureWidget(const QString &language,
         }
     }
 
-    QString projectFilePath = projectPath;
     // show build type config pane.
-    projectService->showConfigureProjDlg(projectFilePath);
-    // get config result.
-    QString outputPath = projectService->getDefaultOutputPath();
+    ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, projectPath);
+    QObject::connect(configPropertyWidget, &ConfigPropertyWidget::configureDone, [this](const dpfservice::ProjectInfo &info) {
+        configure(info);
+    });
 
-    ProjectInfo info;
-    QString sourceFolder = QFileInfo(projectPath).path();
-    info.setLanguage(language);
-    info.setSourceFolder(sourceFolder);
-    info.setKitName(CmakeGenerator::toolKitName());
-    info.setBuildFolder(outputPath);
-    info.setWorkspaceFolder(sourceFolder);
-    info.setProjectFilePath(projectFilePath);
-    info.setBuildType("Debug");
-    info.setBuildProgram("cmake");
-
-    QStringList arguments;
-    arguments << "-S";
-    arguments << info.sourceFolder();
-    arguments << "-B";
-    arguments << info.buildFolder();
-    arguments << "-G";
-    arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
-    arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
-    arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
-    arguments << info.buildCustomArgs();
-    info.setBuildCustomArgs(arguments);
-
-    configure(info);
-
-    return nullptr;
+    return configPropertyWidget;
 }
 
 bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
@@ -230,6 +209,14 @@ QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
             menu->addAction(action);
         }
     }
+
+    if (!menu) {
+        menu = new QMenu();
+    }
+
+    QAction *action = new QAction("Properties");
+    menu->addAction(action);
+    QObject::connect(action, &QAction::triggered, this, &CmakeGenerator::actionProperties, Qt::UniqueConnection);
 
     return menu;
 }
@@ -351,4 +338,18 @@ QStringList CmakeGenerator::infoBuildCmd(const dpfservice::ProjectInfo &info) co
     QStringList args = info.buildCustomArgs();
     args.push_front(info.buildProgram());
     return args;
+}
+
+void CmakeGenerator::actionProperties()
+{
+    PropertiesDialog dlg;
+    ConfigPropertyWidget *configWidget = new ConfigPropertyWidget("", "");
+    BuildPropertyWidget *buildWidget = new BuildPropertyWidget();
+    RunPropertyWidget *runWidget = new RunPropertyWidget();
+
+    dlg.insertPropertyPanel("Config", configWidget);
+    dlg.insertPropertyPanel("Build", buildWidget);
+    dlg.insertPropertyPanel("Run", runWidget);
+
+    dlg.exec();
 }

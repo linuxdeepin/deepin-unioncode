@@ -25,10 +25,16 @@
 
 namespace dpfservice {
 
-class DebuggerService final : public dpf::PluginService, dpf::AutoServiceRegister<DebuggerService>
+class DebuggerService final : public dpf::PluginService,
+        dpf::AutoServiceRegister<DebuggerService>
 {
 public:
-    explicit DebuggerService(QObject *parent = nullptr);
+    explicit DebuggerService(QObject *parent = nullptr)
+        : dpf::PluginService (parent)
+    {
+
+    }
+
     static QString name()
     {
         return "org.deepin.service.DebuggerService";

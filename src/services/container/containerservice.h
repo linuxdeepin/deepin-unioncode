@@ -71,9 +71,16 @@ class ContainerService final : public dpf::PluginService, dpf::AutoServiceRegist
     Q_OBJECT
     Q_DISABLE_COPY(ContainerService)
 public:
-    static QString name();
+    static QString name()
+    {
+        return "org.deepin.service.ContainerService";
+    }
 
-    explicit ContainerService(QObject *parent = nullptr);
+    explicit ContainerService(QObject *parent = nullptr)
+        : dpf::PluginService (parent)
+    {
+
+    }
 
     // 生成config.json文件 -> projectPath, name changed to container.support
     // 生成UUID

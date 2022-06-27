@@ -64,13 +64,20 @@ class RuntimeService final : public dpf::PluginService, dpf::AutoServiceRegister
     Q_OBJECT
     Q_DISABLE_COPY(RuntimeService)
 public:
-    static QString name();
+    static QString name()
+    {
+        return "org.deepin.service.RuntimeService";
+    }
 
-    explicit RuntimeService(QObject *parent = nullptr);
+    explicit RuntimeService(QObject *parent = nullptr)
+        : dpf::PluginService (parent)
+    {
+
+    }
 
     DPF_INTERFACE(Target, getActiveTarget, TargetType);
 };
 
-}
+} // namespace dpfservice
 
 #endif // RUNTIMESERVICE_H

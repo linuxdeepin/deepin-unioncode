@@ -50,6 +50,7 @@ private slots:
     void setRootItemToView(QStandardItem *root);
     void doBuildCmdExecuteEnd(const QString &cmd, int status);
     void doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files);
+    void actionProperties();
 
 private:
     // cmake CDT4 options

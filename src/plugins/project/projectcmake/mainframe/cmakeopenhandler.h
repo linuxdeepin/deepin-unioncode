@@ -33,7 +33,8 @@ public:
     QAction *openAction();
 
 public slots:
-    void doProjectOpen(const QString &name, const QString &language,
+    void doProjectOpen(const QString &name,
+                       const QString &language,
                        const QString &filePath);
 };
 

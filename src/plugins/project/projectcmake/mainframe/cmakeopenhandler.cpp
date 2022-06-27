@@ -27,10 +27,12 @@
 
 #include "base/abstractaction.h"
 
+#include <QBoxLayout>
 #include <QFileDialog>
+#include <QHBoxLayout>
 
 namespace {
-CMakeOpenHandler *ins{ nullptr };
+CMakeOpenHandler *ins {nullptr};
 }
 
 CMakeOpenHandler::CMakeOpenHandler(QObject *parent) : QObject(parent)
@@ -97,9 +99,12 @@ void CMakeOpenHandler::doProjectOpen(const QString &name, const QString &languag
     if (!generator)
         return;
 
-    auto widget = generator->configureWidget(language, filePath);
-    if (widget) {
-        widget->setWindowFlag(Qt::Dialog);
-        widget->show();
+    auto configWidget = generator->configureWidget(language, filePath);
+    if (configWidget) {
+        configWidget->setWindowFlags(configWidget->windowFlags() | Qt::Tool | Qt::Dialog);
+        configWidget->setAttribute(Qt::WA_DeleteOnClose, true);
+        configWidget->setWindowModality(Qt::ApplicationModal);
+        configWidget->setAttribute(Qt::WA_ShowModal, true);
+        configWidget->show();
     }
 }
