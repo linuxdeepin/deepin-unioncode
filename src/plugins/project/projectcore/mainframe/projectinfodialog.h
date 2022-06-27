@@ -18,23 +18,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef PROJECTPROPERTYDIALOG_H
-#define PROJECTPROPERTYDIALOG_H
+#ifndef PROJECTINFODIALOG_H
+#define PROJECTINFODIALOG_H
 
 #include <QTextBrowser>
 #include <QDialog>
 #include <QVBoxLayout>
 
-class ProjectPropertyDialog : public QDialog
+class ProjectInfoDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ProjectPropertyDialog(QWidget *parent = nullptr,
-                                   Qt::WindowFlags f = Qt::WindowFlags());
+    explicit ProjectInfoDialog(QWidget *parent = nullptr,
+                               Qt::WindowFlags f = Qt::WindowFlags());
     void setPropertyText(const QString &text);
 private:
     QVBoxLayout *vLayout {nullptr};
     QTextBrowser *textBrowser {nullptr};
 };
 
-#endif // PROJECTPROPERTYDIALOG_H
+#endif // PROJECTINFODIALOG_H

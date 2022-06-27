@@ -52,7 +52,7 @@ private slots:
     void doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event);
     void doDoubleClieked(const QModelIndex &index);
     void doCloseProject(QStandardItem *root);
-    void doShowProjectProperty(QStandardItem *root);
+    void doShowProjectInfo(QStandardItem *root);
     void doActiveProject(QStandardItem *root);
 };
 

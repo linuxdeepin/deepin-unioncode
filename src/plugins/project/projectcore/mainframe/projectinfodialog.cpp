@@ -18,20 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "projectpropertydialog.h"
+#include "projectinfodialog.h"
 
-ProjectPropertyDialog::ProjectPropertyDialog(QWidget *parent, Qt::WindowFlags f)
-    : QDialog (parent)
+ProjectInfoDialog::ProjectInfoDialog(QWidget *parent, Qt::WindowFlags f)
+    : QDialog (parent, f)
     , vLayout (new QVBoxLayout)
     , textBrowser (new QTextBrowser)
 {
-    setWindowTitle(QDialog::tr("Project Property"));
+    setWindowTitle(QDialog::tr("Project Info"));
     vLayout->addWidget(textBrowser);
     setLayout(vLayout);
     setMinimumSize(450, 600);
 }
 
-void ProjectPropertyDialog::setPropertyText(const QString &text)
+void ProjectInfoDialog::setPropertyText(const QString &text)
 {
     textBrowser->setText(text);
 }

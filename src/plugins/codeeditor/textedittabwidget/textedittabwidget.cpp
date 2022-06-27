@@ -86,9 +86,12 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
                      QOverload<const Head &, const QString &, int>::of(&DpfEventMiddleware::toJumpFileLine),
                      this, QOverload<const Head &, const QString &, int>::of(&TextEditTabWidget::jumpToLine));
 
-    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf, this, &TextEditTabWidget::fileDeleted);
-    QObject::connect(Inotify::globalInstance(), &Inotify::movedSelf, this, &TextEditTabWidget::fileMoved);
-    QObject::connect(Inotify::globalInstance(), &Inotify::modified, this, &TextEditTabWidget::fileModifyed);
+    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf,
+                     this, &TextEditTabWidget::fileDeleted, Qt::QueuedConnection);
+    QObject::connect(Inotify::globalInstance(), &Inotify::movedSelf,
+                     this, &TextEditTabWidget::fileMoved, Qt::QueuedConnection);
+    QObject::connect(Inotify::globalInstance(), &Inotify::modified,
+                     this, &TextEditTabWidget::fileModifyed, Qt::QueuedConnection);
 
 }
 

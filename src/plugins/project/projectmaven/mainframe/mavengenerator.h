@@ -44,7 +44,6 @@ public:
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
 private slots:
     void doProjectAddRows(const MavenAsynParse::ParseInfo<QList<QStandardItem*>> &info);
-    void actionTriggered();
 };
 
 #endif // CMAKEGENERATOR_H

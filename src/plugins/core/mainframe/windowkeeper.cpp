@@ -471,8 +471,6 @@ void WindowKeeper::addOpenProjectAction(const QString &name, AbstractAction *act
         return;
 
     QAction *inputAction = static_cast<QAction*>(action->qAction());
-    ActionManager::getInstance()->registerAction(inputAction, "File.Open.Project",
-                                                 inputAction->text(), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_O));
     for (QAction *qAction : d->window->menuBar()->actions()) {
         if (qAction->text() == MWM_FILE) {
             for(QAction *childAction : qAction->menu()->actions()) {

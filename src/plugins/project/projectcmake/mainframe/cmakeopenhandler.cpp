@@ -47,7 +47,15 @@ CMakeOpenHandler *CMakeOpenHandler::instance()
 
 QAction *CMakeOpenHandler::openAction()
 {
-    auto result = new QAction("cmake");
+    auto result = new QAction(CmakeGenerator::toolKitName());
+
+    ActionManager::getInstance()->registerAction(result,
+                                                 "File.Open.Project",
+                                                 result->text(),
+                                                 QKeySequence(Qt::Modifier::CTRL |
+                                                              Qt::Modifier::SHIFT |
+                                                              Qt::Key::Key_O));
+
     QObject::connect(result, &QAction::triggered, [=](){
 
         QString iniPath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("setting.ini");

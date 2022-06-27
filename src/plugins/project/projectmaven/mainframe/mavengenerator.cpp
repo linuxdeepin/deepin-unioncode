@@ -101,15 +101,17 @@ QWidget *MavenGenerator::configureWidget(const QString &language,
 
 bool MavenGenerator::configure(const dpfservice::ProjectInfo &info)
 {
-    // cache project info, asyn end to use
-    //    emit targetExecute(info.buildProgram(), info.buildCustomArgs());
+    auto root = createRootItem(info);
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (!projectService)
-        return false;
-
-    projectService->projectView.addRootItem(createRootItem(info));
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    if (projectService && windowService && root) {
+        projectService->projectView.addRootItem(root);
+        projectService->projectView.expandedDepth(root, 1);
+        windowService->switchWidgetNavigation(MWNA_EDIT);
+        windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
+    }
 
     Generator::started(); // emit starded
     return true;
@@ -118,36 +120,53 @@ bool MavenGenerator::configure(const dpfservice::ProjectInfo &info)
 QStandardItem *MavenGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
-    QStandardItem * rootItem = new QStandardItem();
+
+    QStandardItem * rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
+    dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new MavenAsynParse();
     QObject::connect(d->projectParses[rootItem], &MavenAsynParse::parsedProject,
                      this, &MavenGenerator::doProjectAddRows, Qt::UniqueConnection);
     d->projectParses[rootItem]->parseProject(info);
+
     return rootItem;
 }
 
 void MavenGenerator::removeRootItem(QStandardItem *root)
 {
-    // remove watcher from current root item
-    MavenItemKeeper::instance()->delCmakeFileNode(root);
     recursionRemoveItem(root);
 }
 
 QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
 {
-    QMenu *menu = nullptr;
+    if (item->parent())
+        return nullptr;
+
+    QMenu *menu = new QMenu;
+
+    QAction *action = nullptr;
+
+    action = new QAction(QAction::tr("Maven Compiler"));
+    menu->addAction(action);
+    QObject::connect(action, &QAction::triggered, [](){});
+
+    action = new QAction(QAction::tr("Maven Clean"));
+    menu->addAction(action);
+    QObject::connect(action, &QAction::triggered, [](){});
+
+    action = new QAction(QAction::tr("Maven Package"));
+    menu->addAction(action);
+    QObject::connect(action, &QAction::triggered, [](){});
+
+    action = new QAction(QAction::tr("Maven Priorities"));
+    menu->addAction(action);
+    QObject::connect(action, &QAction::triggered, [](){});
 
     return menu;
 }
 
 void MavenGenerator::doProjectAddRows(const MavenAsynParse::ParseInfo<QList<QStandardItem *>> &info)
 {
-   auto rootItem = d->projectParses.key(qobject_cast<MavenAsynParse*>(sender()));
-   if (rootItem)
-       rootItem->appendRows(info.result);
-}
-
-void MavenGenerator::actionTriggered()
-{
-
+    auto rootItem = d->projectParses.key(qobject_cast<MavenAsynParse*>(sender()));
+    if (rootItem)
+        rootItem->appendRows(info.result);
 }

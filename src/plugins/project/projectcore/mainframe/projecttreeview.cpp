@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "projecttreeview.h"
-#include "projectpropertydialog.h"
+#include "projectinfodialog.h"
 #include "projectselectionmodel.h"
 #include "projectdelegate.h"
 #include "transceiver/sendevents.h"
@@ -247,16 +247,26 @@ QMenu *ProjectTreeView::childMenu(const QStandardItem *root, const QStandardItem
 
 QMenu *ProjectTreeView::rootMenu(QStandardItem *root)
 {
-    QMenu * menu = new QMenu;
-    QAction* activeProjectAction = new QAction(QAction::tr("Active"));
-    QAction* closeAction = new QAction(QAction::tr("Close"));
-    QAction* propertyAction = new QAction(QAction::tr("Property"));
+    QMenu * menu = nullptr;
+    QString toolKitName = ProjectInfo::get(root).kitName();
+    // 获取支持右键菜单生成器
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService->supportGeneratorName<ProjectGenerator>().contains(toolKitName)) {
+        menu = projectService->createGenerator<ProjectGenerator>(toolKitName)->createItemMenu(root);
+    }
+    if (!menu)
+        menu = new QMenu();
+
+    QAction* activeProjectAction = new QAction(QAction::tr("Project Active"));
+    QAction* closeAction = new QAction(QAction::tr("Project Close"));
+    QAction* propertyAction = new QAction(QAction::tr("Project Info"));
     QObject::connect(activeProjectAction, &QAction::triggered, [=](){doActiveProject(root);});
     QObject::connect(closeAction, &QAction::triggered, [=](){doCloseProject(root);});
-    QObject::connect(propertyAction, &QAction::triggered, [=](){doShowProjectProperty(root);});
-    menu->addAction(activeProjectAction);
-    menu->addAction(closeAction);
-    menu->addAction(propertyAction);
+    QObject::connect(propertyAction, &QAction::triggered, [=](){doShowProjectInfo(root);});
+    menu->insertAction(nullptr, activeProjectAction);
+    menu->insertAction(nullptr, closeAction);
+    menu->insertAction(nullptr, propertyAction);
     return menu;
 }
 
@@ -295,12 +305,12 @@ void ProjectTreeView::doActiveProject(QStandardItem *root)
     SendEvents::projectActived(ProjectInfo::get(root));
 }
 
-void ProjectTreeView::doShowProjectProperty(QStandardItem *root)
+void ProjectTreeView::doShowProjectInfo(QStandardItem *root)
 {
     if (!root && root != ProjectGenerator::root(root))
         return;
 
-    ProjectPropertyDialog dialog;
+    ProjectInfoDialog dialog;
     QString propertyText = "Language: " + ProjectInfo::get(root).language() + "\n"
             + "KitName: " + ProjectInfo::get(root).kitName() + "\n"
             + "BuildFolder: " + ProjectInfo::get(root).buildFolder() + "\n"

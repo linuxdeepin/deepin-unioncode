@@ -15,17 +15,6 @@ class MavenItemKeeper : public QObject
 public:
     static MavenItemKeeper *instance();
     virtual ~MavenItemKeeper();
-
-signals:
-    void cmakeFileNodeNotify(QStandardItem *rootItem, const QPair<QString, QStringList> &files);
-
-public slots:
-    void addCmakeRootFile(QStandardItem *root, const QString rootPath);
-    void addCmakeSubFiles(QStandardItem *root, const QStringList subPaths);
-    void delCmakeFileNode(QStandardItem *rootItem);
-
-private:
-    void notifyFromWatcher(const QString &filePath);
 };
 
 #endif // CMAKEITEMKEEPER_H

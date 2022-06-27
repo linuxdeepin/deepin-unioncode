@@ -76,14 +76,21 @@ public slots:
     void loadPoms(const dpfservice::ProjectInfo &info);
     void parseProject(const dpfservice::ProjectInfo &info);
     void parseActions(const QStandardItem *item);
+
+private slots:
+    void doDirWatchModify(const QString &path);
+    void doWatchCreatedSub(const QString &path);
+    void doWatchDeletedSub(const QString &path);
+
 private:
     bool isSame(QStandardItem *t1, QStandardItem *t2, Qt::ItemDataRole role = Qt::DisplayRole) const;
     QList<QStandardItem *> generatorChildItem(const QString &path) const;
     QList<QStandardItem *> parents(QStandardItem *item) const;
     QString path(QStandardItem *item) const;
     QList<QStandardItem*> rows(const QStandardItem *item) const;
+    int findRowWithDisplay(QStandardItem *item, const QString &fileName);
+    int findRowWithDisplay(QList<QStandardItem*> rowList, const QString &fileName);
     QStandardItem *findItem(QList<QStandardItem*> rowList, QString &path, QStandardItem *parent = nullptr) const;
-    QList<QStandardItem*> createFileItem(QList<QStandardItem*> item, const QString &Path) const;
 };
 
 #endif // CMAKEASYNPARSE_H

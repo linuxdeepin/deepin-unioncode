@@ -8,112 +8,28 @@
 #include <QDebug>
 #include <QtXml>
 
-namespace  {
-
-enum_def(CDT_XML_KEY, QString)
-{
-    enum_exp projectDescription = "projectDescription";
-    enum_exp name = "name";
-    enum_exp comment = "comment";
-    enum_exp project = "project";
-    enum_exp buildSpec = "buildSpec";
-    enum_exp buildCommand = "buildCommand";
-    enum_exp triggers = "triggers";
-    enum_exp arguments = "arguments";
-    enum_exp dictionary = "dictionary";
-    enum_exp link = "link";
-    enum_exp type = "type";
-    enum_exp location = "location";
-    enum_exp locationURI = "locationURI";
-    enum_exp key = "key";
-    enum_exp value = "value";
-    enum_exp natures = "natures";
-    enum_exp linkedResources = "linkedResources";
-};
-
-enum_def(CDT_TARGETS_TYPE, QString)
-{
-    enum_exp Subprojects = "[Subprojects]";
-    enum_exp Targets = "[Targets]";
-    enum_exp Lib = "[lib]";
-    enum_exp Exe = "[exe]";
-};
-
-enum_def(CDT_FILES_TYPE, QString)
-{
-    enum_exp ObjectLibraries = "Object Libraries";
-    enum_exp ObjectFiles = "Object Files";
-    enum_exp SourceFiles = "Source Files";
-    enum_exp HeaderFiles = "Header Files";
-    enum_exp CMakeRules = "CMake Rules";
-    enum_exp Resources = "Resources";
-};
-
-enum_def(CDT_CPROJECT_ATTR_KEY, QString)
-{
-    enum_exp moduleId = "moduleId";
-    enum_exp id = "id";
-    enum_exp name = "name";
-    enum_exp path = "path";
-    enum_exp targetID = "targetID";
-};
-
-// noly selection build targets
-enum_def(CDT_MODULE_ID_VAL, QString)
-{
-    enum_exp org_eclipse_cdt_make_core_buildtargets = "org.eclipse.cdt.make.core.buildtargets";
-};
-
-QHash<QString, QString> optionHash {
-    { "-S", "source directory" },
-    { "-B", "build directory" },
-    { "-G", "build system generator" },
-    { "-DCMAKE_EXPORT_COMPILE_COMMANDS", "build clangd use compile json file"},
-    { "-DCMAKE_BUILD_TYPE", "build type"}
-};
-
-QIcon cmakeFolderIcon()
-{
-    static QIcon cmakeFolderIcon;
-    if (cmakeFolderIcon.isNull()) {
-        cmakeFolderIcon = CustomIcons::icon(QFileIconProvider::Folder);
-        cmakeFolderIcon.addFile(":/cmakeproject/images/fileoverlay_cmake@2x.png");
-    }
-    return cmakeFolderIcon;
-}
-
-QIcon libBuildIcon() {
-    static QIcon libBuildIcon;
-    if (libBuildIcon.isNull()) {
-        libBuildIcon = CustomIcons::icon(CustomIcons::Lib);
-        libBuildIcon.addFile(":/cmakeproject/images/build@2x.png");
-    }
-    return libBuildIcon;
-}
-
-QIcon exeBuildIcon()
-{
-    static QIcon exeBuildIcon;
-    if (exeBuildIcon.isNull()) {
-        exeBuildIcon = CustomIcons::icon(CustomIcons::Exe);
-        exeBuildIcon.addFile(":/cmakeproject/images/build@2x.png");
-    }
-    return exeBuildIcon;
-}
-
-} // namespace
-
 class MavenAsynParsePrivate
 {
     friend  class MavenAsynParse;
-    QThread *thread {nullptr};
     QDomDocument xmlDoc;
-    QFileSystemWatcher watcher;
+    QThread *thread {nullptr};
+    QString rootPath;
+    QList<QStandardItem *> rows {};
 };
 
 MavenAsynParse::MavenAsynParse()
     : d(new MavenAsynParsePrivate)
 {
+    QObject::connect(Inotify::globalInstance(), &Inotify::modified,
+                     this, &MavenAsynParse::doDirWatchModify,
+                     Qt::DirectConnection);
+    QObject::connect(Inotify::globalInstance(), &Inotify::createdSub,
+                     this, &MavenAsynParse::doWatchCreatedSub,
+                     Qt::DirectConnection);
+    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSub,
+                     this, &MavenAsynParse::doWatchDeletedSub,
+                     Qt::DirectConnection);
+
     d->thread = new QThread();
     this->moveToThread(d->thread);
 }
@@ -163,6 +79,54 @@ void MavenAsynParse::parseActions(const QStandardItem *item)
 
 }
 
+void MavenAsynParse::doDirWatchModify(const QString &path)
+{
+    //    QString pathTemp = path;
+    //    auto changedItem = findItem(d->rows, pathTemp);
+}
+
+void MavenAsynParse::doWatchCreatedSub(const QString &path)
+{
+    //    if (!path.startsWith(d->rootPath))
+    //        return;
+
+    //    QString pathTemp = path;
+    //    pathTemp = pathTemp.remove(0, d->rootPath.size());
+    //    auto parent = findItem(d->rows, pathTemp);
+    //    if (pathTemp.startsWith(QDir::separator()))
+    //        pathTemp = pathTemp.remove(0, QString(QDir::separator()).size());
+
+    //    auto insertItem = new QStandardItem(CustomIcons::icon(path), pathTemp);
+    //    if (!parent) {
+    //        int findRow = findRowWithDisplay(d->rows, pathTemp);
+    //        if (findRow > 0) {
+    //            d->rows.insert(findRow, insertItem);
+    //        } else {
+    //            d->rows.append(insertItem);
+    //        }
+    //    } else {
+    //        int findRow = findRowWithDisplay(parent, pathTemp);
+    //        if (findRow > 0) {
+    //            parent->insertRow(findRow, insertItem);
+    //        } else {
+    //            parent->appendRow(insertItem);
+    //        }
+    //    }
+}
+
+void MavenAsynParse::doWatchDeletedSub(const QString &path)
+{
+    //    if (!path.startsWith(d->rootPath))
+    //        return;
+
+    //    QString pathTemp = path;
+    //    pathTemp = pathTemp.remove(0, d->rootPath.size());
+    //    auto parent = findItem(d->rows, pathTemp);
+    //    if (parent && pathTemp.isEmpty()) {
+    //        delete parent;
+    //    }
+}
+
 bool MavenAsynParse::isSame(QStandardItem *t1, QStandardItem *t2, Qt::ItemDataRole role) const
 {
     if (!t1 || !t2)
@@ -178,6 +142,9 @@ QList<QStandardItem *> MavenAsynParse::generatorChildItem(const QString &path) c
         rootPath = rootPath.remove(rootPath.size() - separatorSize, separatorSize);
     }
 
+    // 缓存当前工程目录
+    d->rootPath = rootPath;
+    Inotify::globalInstance()->addPath(d->rootPath);
     QList<QStandardItem *> result;
 
     {// 避免变量冲突 迭代文件夹
@@ -187,13 +154,16 @@ QList<QStandardItem *> MavenAsynParse::generatorChildItem(const QString &path) c
         dir.setSorting(QDir::Name);
         QDirIterator dirItera(dir, QDirIterator::Subdirectories);
         while (dirItera.hasNext()) {
+            Inotify::globalInstance()->addPath(dirItera.filePath());
             QString childPath = dirItera.next().remove(0, rootPath.size());
             QStandardItem *item = findItem(result, childPath);
             QIcon icon = CustomIcons::icon(dirItera.fileInfo());
+            auto newItem = new QStandardItem(icon, dirItera.fileName());
+            newItem->setToolTip(dirItera.filePath());
             if (!item) {
-                result << new QStandardItem(icon, dirItera.fileName());
+                result.append(newItem);
             } else {
-                item->appendRow(new QStandardItem(icon, dirItera.fileName()));
+                item->appendRow(newItem);
             }
         }
     }
@@ -207,10 +177,12 @@ QList<QStandardItem *> MavenAsynParse::generatorChildItem(const QString &path) c
             QString childPath = fileItera.next().remove(0, rootPath.size());
             QStandardItem *item = findItem(result, childPath);
             QIcon icon = CustomIcons::icon(fileItera.fileInfo());
+            auto newItem = new QStandardItem(icon, fileItera.fileName());
+            newItem->setToolTip(fileItera.filePath());
             if (!item) {
-                result << new QStandardItem(icon, fileItera.fileName());
+                result.append(newItem);
             } else {
-                item->appendRow(new QStandardItem(icon, fileItera.fileName()));
+                item->appendRow(newItem);
             }
         }
     }
@@ -240,7 +212,33 @@ QList<QStandardItem *> MavenAsynParse::rows(const QStandardItem *item) const
     return result;
 }
 
-QStandardItem *MavenAsynParse::findItem(QList<QStandardItem *> rowList, QString &path, QStandardItem *parent) const
+int MavenAsynParse::findRowWithDisplay(QStandardItem *item, const QString &fileName)
+{
+    if (item->hasChildren()) {
+        for (int i = 0; i < d->rows.size(); i++) {
+            if (item->child(i)->data(Qt::DisplayRole) < fileName) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+int MavenAsynParse::findRowWithDisplay(QList<QStandardItem *> rowList, const QString &fileName)
+{
+    if (rowList.size() > 0) {
+        for (int i = 0; i < d->rows.size(); i++) {
+            if (rowList[i]->data(Qt::DisplayRole) < fileName) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+QStandardItem *MavenAsynParse::findItem(QList<QStandardItem *> rowList,
+                                        QString &path,
+                                        QStandardItem *parent) const
 {
     if (path.endsWith(QDir::separator())) {
         int separatorSize = QString(QDir::separator()).size();
@@ -249,7 +247,7 @@ QStandardItem *MavenAsynParse::findItem(QList<QStandardItem *> rowList, QString 
 
     for (int i = 0; i < rowList.size(); i++) {
         QString pathSplit = QDir::separator() + rowList[i]->data(Qt::DisplayRole).toString();
-        if (path.startsWith(pathSplit)) {
+        if (QFileInfo(rowList[i]->toolTip()).isDir() && path.startsWith(pathSplit)) {
             path = path.remove(0, pathSplit.size());
             return findItem(rows(rowList[i]), path, rowList[i]);
         }

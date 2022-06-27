@@ -4,6 +4,10 @@ configure_file(util/config.h.in config.h)
 
 set(CXX_H
     common.h
+    inotify/private/inotify_hook.h
+    inotify/private/inotify_impl.h
+    inotify/private/inotify_linux.h
+    inotify/private/inotify_p.h
     inotify/inotify.h
     lsp/protocol.h
     lsp/client.h

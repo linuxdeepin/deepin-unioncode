@@ -22,12 +22,10 @@ CmakeItemKeeper::CmakeItemKeeper()
 {
     // 全量变动监听，避免因为业务逻辑导致无法监听某个文件
     QObject::connect(Inotify::globalInstance(), &Inotify::modified,
-                     this, &CmakeItemKeeper::notifyFromWatcher,
-                     Qt::ConnectionType::BlockingQueuedConnection);
+                     this, &CmakeItemKeeper::notifyFromWatcher);
 
     QObject::connect(Inotify::globalInstance(), &Inotify::ignoreModified,
-                     this, &CmakeItemKeeper::notifyFromWatcher,
-                     Qt::ConnectionType::BlockingQueuedConnection);
+                     this, &CmakeItemKeeper::notifyFromWatcher);
 }
 
 CmakeItemKeeper *CmakeItemKeeper::instance() {

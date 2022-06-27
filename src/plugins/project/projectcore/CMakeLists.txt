@@ -5,7 +5,7 @@ project(plugin-projectcore)
 set(CXX_CPP
     mainframe/projectdelegate.cpp
     mainframe/projectselectionmodel.cpp
-    mainframe/projectpropertydialog.cpp
+    mainframe/projectinfodialog.cpp
     mainframe/projecttreeview.cpp
     mainframe/projectkeeper.cpp
     transceiver/projectreceiver.cpp
@@ -17,7 +17,7 @@ set(CXX_CPP
 set(CXX_H
     mainframe/projectdelegate.h
     mainframe/projectselectionmodel.h
-    mainframe/projectpropertydialog.h
+    mainframe/projectinfodialog.h
     mainframe/projecttreeview.h
     mainframe/projectkeeper.h
     transceiver/projectreceiver.h
