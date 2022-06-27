@@ -20,18 +20,18 @@ class GradleAsynParsePrivate
 GradleAsynParse::GradleAsynParse()
     : d(new GradleAsynParsePrivate)
 {
-    QObject::connect(Inotify::globalInstance(), &Inotify::modified,
-                     this, &GradleAsynParse::doDirWatchModify,
-                     Qt::DirectConnection);
-    QObject::connect(Inotify::globalInstance(), &Inotify::createdSub,
-                     this, &GradleAsynParse::doWatchCreatedSub,
-                     Qt::DirectConnection);
-    QObject::connect(Inotify::globalInstance(), &Inotify::deletedSub,
-                     this, &GradleAsynParse::doWatchDeletedSub,
-                     Qt::DirectConnection);
-
     d->thread = new QThread();
     this->moveToThread(d->thread);
+
+    QObject::connect(this, &Inotify::modified,
+                     this, &GradleAsynParse::doDirWatchModify,
+                     Qt::DirectConnection);
+    QObject::connect(this, &Inotify::createdSub,
+                     this, &GradleAsynParse::doWatchCreatedSub,
+                     Qt::DirectConnection);
+    QObject::connect(this, &Inotify::deletedSub,
+                     this, &GradleAsynParse::doWatchDeletedSub,
+                     Qt::DirectConnection);
 }
 
 GradleAsynParse::~GradleAsynParse()
@@ -68,58 +68,92 @@ void GradleAsynParse::loadPoms(const dpfservice::ProjectInfo &info)
 
 void GradleAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
-    ParseInfo<QList<QStandardItem*>> itemsResult;
-    itemsResult.result = generatorChildItem(info.sourceFolder());
-    itemsResult.isNormal = true;
-    emit parsedProject(itemsResult);
+    createRows(info.sourceFolder());
+    emit itemsModified({d->rows, true});
 }
 
 void GradleAsynParse::doDirWatchModify(const QString &path)
 {
-    //    QString pathTemp = path;
-    //    auto changedItem = findItem(d->rows, pathTemp);
+    Q_UNUSED(path)
 }
 
 void GradleAsynParse::doWatchCreatedSub(const QString &path)
 {
-    //    if (!path.startsWith(d->rootPath))
-    //        return;
+    if (!path.startsWith(d->rootPath))
+        return;
 
-    //    QString pathTemp = path;
-    //    pathTemp = pathTemp.remove(0, d->rootPath.size());
-    //    auto parent = findItem(d->rows, pathTemp);
-    //    if (pathTemp.startsWith(QDir::separator()))
-    //        pathTemp = pathTemp.remove(0, QString(QDir::separator()).size());
+    QString pathTemp = path;
+    if (pathTemp.startsWith(d->rootPath))
+        pathTemp = pathTemp.remove(0, d->rootPath.size());
 
-    //    auto insertItem = new QStandardItem(CustomIcons::icon(path), pathTemp);
-    //    if (!parent) {
-    //        int findRow = findRowWithDisplay(d->rows, pathTemp);
-    //        if (findRow > 0) {
-    //            d->rows.insert(findRow, insertItem);
-    //        } else {
-    //            d->rows.append(insertItem);
-    //        }
-    //    } else {
-    //        int findRow = findRowWithDisplay(parent, pathTemp);
-    //        if (findRow > 0) {
-    //            parent->insertRow(findRow, insertItem);
-    //        } else {
-    //            parent->appendRow(insertItem);
-    //        }
-    //    }
+    QStringList createds = createdFileNames(path);
+    for (auto &created : createds) {
+        QStandardItem *item = findItem(pathTemp);
+        QString createdFilePath = path + QDir::separator() + created;
+        QStandardItem *createItem = new QStandardItem(created);
+        createItem->setIcon(CustomIcons::icon(createdFilePath));
+        createItem->setToolTip(createdFilePath);
+
+        // add watcher
+        if (QFileInfo(createdFilePath).isDir())
+            Inotify::addPath(createdFilePath);
+
+        if (item) {
+            int insertRow = findRowWithDisplay(rows(item), created);
+            if (insertRow >= 0) {
+                item->insertRow(insertRow, createItem);
+            } else {
+                item->appendRow(createItem);
+            }
+        } else {
+            int insertRow = findRowWithDisplay(d->rows, created);
+            if (insertRow >= 0) {
+                d->rows.insert(insertRow, createItem);
+            } else {
+                d->rows.append(createItem);
+            }
+        }
+    }
+
+    emit itemsModified({d->rows, true});
 }
 
 void GradleAsynParse::doWatchDeletedSub(const QString &path)
 {
-    //    if (!path.startsWith(d->rootPath))
-    //        return;
+    if (!path.startsWith(d->rootPath))
+        return;
 
-    //    QString pathTemp = path;
-    //    pathTemp = pathTemp.remove(0, d->rootPath.size());
-    //    auto parent = findItem(d->rows, pathTemp);
-    //    if (parent && pathTemp.isEmpty()) {
-    //        delete parent;
-    //    }
+    QString pathTemp = path;
+    if (pathTemp.startsWith(d->rootPath))
+        pathTemp = pathTemp.remove(0, d->rootPath.size());
+
+    QStringList deleteds = deletedFileNames(path);
+    for (QString deleted : deleteds) {
+        QStandardItem *currPathItem = findItem(pathTemp);
+        if (currPathItem) {
+            for (int i = 0; i < currPathItem->rowCount(); i++) {
+                QStandardItem *child = currPathItem->child(i);
+                if (itemDisplayName(child) == deleted) {
+                    currPathItem->removeRow(i);
+                }
+            }
+        } else {
+            for (int i = 0; i < d->rows.size(); i++) {
+                if (itemDisplayName(d->rows[i]) == deleted) {
+                    d->rows.removeAt(i);
+                }
+            }
+        }
+    }
+
+    emit itemsModified({d->rows, true});
+}
+
+QString GradleAsynParse::itemDisplayName(const QStandardItem *item) const
+{
+    if (!item)
+        return "";
+    return item->data(Qt::DisplayRole).toString();
 }
 
 bool GradleAsynParse::isSame(QStandardItem *t1, QStandardItem *t2, Qt::ItemDataRole role) const
@@ -128,8 +162,7 @@ bool GradleAsynParse::isSame(QStandardItem *t1, QStandardItem *t2, Qt::ItemDataR
         return false;
     return t1->data(role) == t2->data(role);
 }
-
-QList<QStandardItem *> GradleAsynParse::generatorChildItem(const QString &path) const
+void GradleAsynParse::createRows(const QString &path)
 {
     QString rootPath = path;
     if (rootPath.endsWith(QDir::separator())) {
@@ -139,8 +172,7 @@ QList<QStandardItem *> GradleAsynParse::generatorChildItem(const QString &path) 
 
     // 缓存当前工程目录
     d->rootPath = rootPath;
-    Inotify::globalInstance()->addPath(d->rootPath);
-    QList<QStandardItem *> result;
+    Inotify::addPath(d->rootPath);
 
     {// 避免变量冲突 迭代文件夹
         QDir dir;
@@ -149,14 +181,14 @@ QList<QStandardItem *> GradleAsynParse::generatorChildItem(const QString &path) 
         dir.setSorting(QDir::Name);
         QDirIterator dirItera(dir, QDirIterator::Subdirectories);
         while (dirItera.hasNext()) {
-            Inotify::globalInstance()->addPath(dirItera.filePath());
             QString childPath = dirItera.next().remove(0, rootPath.size());
-            QStandardItem *item = findItem(result, childPath);
+            Inotify::addPath(dirItera.filePath());
+            QStandardItem *item = findItem(childPath);
             QIcon icon = CustomIcons::icon(dirItera.fileInfo());
             auto newItem = new QStandardItem(icon, dirItera.fileName());
             newItem->setToolTip(dirItera.filePath());
             if (!item) {
-                result.append(newItem);
+                d->rows.append(newItem);
             } else {
                 item->appendRow(newItem);
             }
@@ -170,32 +202,49 @@ QList<QStandardItem *> GradleAsynParse::generatorChildItem(const QString &path) 
         QDirIterator fileItera(dir, QDirIterator::Subdirectories);
         while (fileItera.hasNext()) {
             QString childPath = fileItera.next().remove(0, rootPath.size());
-            QStandardItem *item = findItem(result, childPath);
+            QStandardItem *item = findItem(childPath);
             QIcon icon = CustomIcons::icon(fileItera.fileInfo());
             auto newItem = new QStandardItem(icon, fileItera.fileName());
             newItem->setToolTip(fileItera.filePath());
             if (!item) {
-                result.append(newItem);
+                d->rows.append(newItem);
             } else {
                 item->appendRow(newItem);
             }
         }
     }
-    return result;
 }
 
-QString GradleAsynParse::path(QStandardItem *item) const
+void GradleAsynParse::removeRows()
+{
+    d->rootPath.clear();
+    for (int i = 0; i < d->rows.size(); i++) {
+        removeSelfSubWatch(d->rows[i]);
+    }
+    d->rows.clear();
+    emit itemsModified({d->rows, true});
+}
+
+void GradleAsynParse::removeSelfSubWatch(QStandardItem *item)
 {
     if (!item)
-        return "";
+        return;
 
-    QStandardItem *currItem = item;
-    QString result = item->data(Qt::DisplayRole).toString();
-    while (currItem->parent()) {
-        result.insert(0, QDir::separator());
-        result.insert(0, path(currItem->parent()));
+    Inotify::removePath(item->toolTip());
+
+    for (int i = 0; i < item->rowCount(); i++) {
+        QStandardItem *child = item->child(i);
+        if (!child)
+            continue;
+
+        if (QFileInfo(child->toolTip()).isDir()) {
+            Inotify::removePath(child->toolTip());
+        }
+
+        if (child->hasChildren())
+            removeSelfSubWatch(child);
+        item->removeRow(i);
     }
-    return result;
 }
 
 QList<QStandardItem *> GradleAsynParse::rows(const QStandardItem *item) const
@@ -207,46 +256,149 @@ QList<QStandardItem *> GradleAsynParse::rows(const QStandardItem *item) const
     return result;
 }
 
-int GradleAsynParse::findRowWithDisplay(QStandardItem *item, const QString &fileName)
-{
-    if (item->hasChildren()) {
-        for (int i = 0; i < d->rows.size(); i++) {
-            if (item->child(i)->data(Qt::DisplayRole) < fileName) {
-                return i;
-            }
-        }
-    }
-    return -1;
-}
-
 int GradleAsynParse::findRowWithDisplay(QList<QStandardItem *> rowList, const QString &fileName)
 {
-    if (rowList.size() > 0) {
-        for (int i = 0; i < d->rows.size(); i++) {
-            if (rowList[i]->data(Qt::DisplayRole) < fileName) {
+    if (fileName.isEmpty() || rowList.size() <= 0)
+        return -1;
+
+    QString currPath = rowList.first()->toolTip();
+    QFileInfo currInfo(currPath);
+    if (currInfo.isDir()) {
+        int removeCount = currInfo.fileName().size();
+        currInfo = currPath.remove(currPath.size() - removeCount, removeCount);
+    }
+    QFileInfo infoFile(currPath + fileName);
+
+    for (int i = 0; i < rowList.size(); i++) {
+        QString name = itemDisplayName(rowList[i]);
+        QStandardItem *child = rowList[i];
+        if (name.isEmpty())
+            continue;
+
+        if (infoFile.isDir() && itemIsDir(child) == infoFile.isDir()) {
+            if (*name.begin() >= *fileName.begin()) {
                 return i;
             }
+        } else if (infoFile.isFile() && itemIsFile(child) == infoFile.isFile()) {
+            if (*name.begin() < *fileName.begin()) {
+                return i;
+            }
+        } else if (infoFile.isDir() && itemIsFile(child)) {
+            return i;
         }
     }
+
     return -1;
 }
 
-QStandardItem *GradleAsynParse::findItem(QList<QStandardItem *> rowList,
-                                        QString &path,
-                                        QStandardItem *parent) const
+QStandardItem *GradleAsynParse::findItem(const QString &path,
+                                         QStandardItem *parent) const
 {
-    if (path.endsWith(QDir::separator())) {
-        int separatorSize = QString(QDir::separator()).size();
-        path = path.remove(path.size() - separatorSize, separatorSize);
+    QString pathTemp = path;
+    if (pathTemp.endsWith(QDir::separator())) {
+        pathTemp = pathTemp.remove(pathTemp.size() - separatorSize(), separatorSize());
     }
 
-    for (int i = 0; i < rowList.size(); i++) {
-        QString pathSplit = QDir::separator() + rowList[i]->data(Qt::DisplayRole).toString();
-        if (QFileInfo(rowList[i]->toolTip()).isDir() && path.startsWith(pathSplit)) {
-            path = path.remove(0, pathSplit.size());
-            return findItem(rows(rowList[i]), path, rowList[i]);
+    if (pathTemp.startsWith(QDir::separator()))
+        pathTemp.remove(0, separatorSize());
+
+    if (pathTemp.endsWith(QDir::separator()))
+        pathTemp.remove(pathTemp.size() - separatorSize(), separatorSize());
+
+    if (pathTemp.isEmpty())
+        return parent;
+
+    QStringList splitPaths = pathTemp.split(QDir::separator());
+    QString name = splitPaths.takeFirst();
+
+    QList<QStandardItem*> currRows{};
+    if (parent) {
+        currRows = rows(parent);
+    } else {
+        currRows = d->rows;
+    }
+
+    for (int i = 0; i < currRows.size(); i++) {
+        QStandardItem *child = currRows[i];
+        if (name == itemDisplayName(child)) {
+            if (splitPaths.isEmpty()) {
+                return child;
+            } else {
+                return findItem(splitPaths.join(QDir::separator()), child);
+            }
         }
     }
-
     return parent;
+}
+
+bool GradleAsynParse::itemIsDir(const QStandardItem *item) const
+{
+    return QFileInfo(item->toolTip()).isDir();
+}
+
+bool GradleAsynParse::itemIsFile(const QStandardItem *item) const
+{
+    return QFileInfo(item->toolTip()).isFile();
+}
+
+int GradleAsynParse::separatorSize() const
+{
+    return QString(QDir::separator()).size();
+}
+
+QStringList GradleAsynParse::pathChildFileNames(const QString &path) const
+{
+    QStringList result;
+    QDir dir;
+    dir.setPath(path);
+    dir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+    dir.setSorting(QDir::Name);
+    QDirIterator dirItera(dir, QDirIterator::NoIteratorFlags);
+    while (dirItera.hasNext()) {
+        dirItera.next();
+        result << dirItera.fileName();
+    }
+    return result;
+}
+
+QStringList GradleAsynParse::createdFileNames(const QString &path) const
+{
+    QString pathTemp = path;
+    if (pathTemp.startsWith(d->rootPath))
+        pathTemp = pathTemp.remove(0, d->rootPath.size());
+
+    auto item = findItem(pathTemp);
+    QSet<QString> childDisplays;
+    QSet<QString> currentDisplays = pathChildFileNames(path).toSet();
+    if (!item) {
+        childDisplays = displayNames(d->rows).toSet();
+    } else {
+        childDisplays = displayNames(rows(item)).toSet();
+    }
+    return (currentDisplays- childDisplays).toList();
+}
+
+QStringList GradleAsynParse::displayNames(const QList<QStandardItem *> items) const
+{
+    QStringList names;
+    for (int i = 0; i < items.size(); i++) {
+        names << items[i]->data(Qt::DisplayRole).toString();
+    }
+    return names;
+}
+
+QStringList GradleAsynParse::deletedFileNames(const QString &path) const
+{
+    QString pathTemp = path;
+    if (pathTemp.startsWith(d->rootPath))
+        pathTemp = pathTemp.remove(0, d->rootPath.size());
+
+    auto item = findItem(pathTemp);
+    QSet<QString> childDisplays;
+    if (!item) {
+        childDisplays = displayNames(d->rows).toSet();
+    } else {
+        childDisplays = displayNames(rows(item)).toSet();
+    }
+    return (childDisplays - pathChildFileNames(path).toSet()).toList();
 }

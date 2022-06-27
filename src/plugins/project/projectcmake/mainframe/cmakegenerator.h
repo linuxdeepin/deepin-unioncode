@@ -51,6 +51,7 @@ private slots:
     void doBuildCmdExecuteEnd(const QString &cmd, int status);
     void doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files);
     void actionProperties();
+    void recursionRemoveItem(QStandardItem *item);
 
 private:
     // cmake CDT4 options

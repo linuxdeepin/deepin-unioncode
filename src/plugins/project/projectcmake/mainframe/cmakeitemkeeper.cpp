@@ -21,10 +21,10 @@ CmakeItemKeeper::CmakeItemKeeper()
     : d (new CmakeItemKeeperPrivate)
 {
     // 全量变动监听，避免因为业务逻辑导致无法监听某个文件
-    QObject::connect(Inotify::globalInstance(), &Inotify::modified,
+    QObject::connect(this, &Inotify::modified,
                      this, &CmakeItemKeeper::notifyFromWatcher);
 
-    QObject::connect(Inotify::globalInstance(), &Inotify::ignoreModified,
+    QObject::connect(this, &Inotify::ignoreModified,
                      this, &CmakeItemKeeper::notifyFromWatcher);
 }
 
@@ -43,25 +43,25 @@ CmakeItemKeeper::~CmakeItemKeeper()
 void CmakeItemKeeper::addCmakeRootFile(QStandardItem *root, const QString rootPath)
 {
     d->itemCmakeFileNodes[root].first = rootPath;
-    Inotify::globalInstance()->addPath(rootPath);
-    Inotify::globalInstance()->removeIgnorePath(rootPath);
+    Inotify::addPath(rootPath);
+    Inotify::removeIgnorePath(rootPath);
 }
 
 void CmakeItemKeeper::addCmakeSubFiles(QStandardItem *root, const QStringList subPaths)
 {
     d->itemCmakeFileNodes[root].second = subPaths;
     for (auto &val : subPaths) {
-        Inotify::globalInstance()->addPath(val);
-        Inotify::globalInstance()->removeIgnorePath(val);
+        Inotify::addPath(val);
+        Inotify::removeIgnorePath(val);
     }
 }
 
 void CmakeItemKeeper::delCmakeFileNode(QStandardItem *rootItem)
 {
-    Inotify::globalInstance()->removePath(d->itemCmakeFileNodes.value(rootItem).first);
+    Inotify::removePath(d->itemCmakeFileNodes.value(rootItem).first);
     auto subFiles = d->itemCmakeFileNodes.value(rootItem).second;
     for (auto &val : subFiles) {
-        Inotify::globalInstance()->removePath(val);
+        Inotify::removePath(val);
     }
 
     d->itemCmakeFileNodes.remove(rootItem);

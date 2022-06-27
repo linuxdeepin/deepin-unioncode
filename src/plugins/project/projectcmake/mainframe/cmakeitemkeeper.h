@@ -1,11 +1,13 @@
 #ifndef CMAKEITEMKEEPER_H
 #define CMAKEITEMKEEPER_H
 
+#include "common/common.h"
+
 #include <QObject>
 #include <QStandardItem>
 
 class CmakeItemKeeperPrivate;
-class CmakeItemKeeper : public QObject
+class CmakeItemKeeper : public Inotify
 {
     Q_OBJECT
     Q_DISABLE_COPY(CmakeItemKeeper)

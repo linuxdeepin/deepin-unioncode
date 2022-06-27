@@ -124,8 +124,10 @@ QStandardItem *MavenGenerator::createRootItem(const dpfservice::ProjectInfo &inf
     QStandardItem * rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new MavenAsynParse();
-    QObject::connect(d->projectParses[rootItem], &MavenAsynParse::parsedProject,
-                     this, &MavenGenerator::doProjectAddRows, Qt::UniqueConnection);
+    QObject::connect(d->projectParses[rootItem],
+                     &MavenAsynParse::itemsModified,
+                     this, &MavenGenerator::doProjectChildsModified,
+                     Qt::UniqueConnection);
     d->projectParses[rootItem]->parseProject(info);
 
     return rootItem;
@@ -133,7 +135,14 @@ QStandardItem *MavenGenerator::createRootItem(const dpfservice::ProjectInfo &inf
 
 void MavenGenerator::removeRootItem(QStandardItem *root)
 {
-    recursionRemoveItem(root);
+    if (!root)
+        return;
+
+    auto parse = d->projectParses[root];
+    if (parse)
+        parse->removeRows();
+    delete root;
+    d->projectParses.remove(root);
 }
 
 QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
@@ -175,11 +184,15 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
     return menu;
 }
 
-void MavenGenerator::doProjectAddRows(const dpfservice::ParseInfo<QList<QStandardItem *>> &info)
+void MavenGenerator::doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem *> > &info)
 {
     auto rootItem = d->projectParses.key(qobject_cast<MavenAsynParse*>(sender()));
-    if (rootItem)
+    if (rootItem) {
+        while (rootItem->hasChildren()) {
+            rootItem->takeRow(0);
+        }
         rootItem->appendRows(info.result);
+    }
 }
 
 void MavenGenerator::doAddMavenMeue(const dpfservice::ParseInfo<dpfservice::ProjectActionInfos> &info)

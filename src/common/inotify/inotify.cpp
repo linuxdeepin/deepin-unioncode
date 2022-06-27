@@ -86,7 +86,7 @@ InotifyPrivate::InotifyPrivate(Inotify *q)
 {
     QObject::connect(hook, &InotifyHook::inotifyEvent,
                      this, &InotifyPrivate::doInotifyEvent,
-                     Qt::ConnectionType::QueuedConnection);
+                     Qt::QueuedConnection);
 }
 
 InotifyPrivate::~InotifyPrivate()

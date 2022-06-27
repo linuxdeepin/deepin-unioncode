@@ -355,3 +355,21 @@ void CmakeGenerator::actionProperties()
 
     dlg.exec();
 }
+
+void CmakeGenerator::recursionRemoveItem(QStandardItem *item)
+{
+    if (!item)
+        return;
+
+    for (int row = 0; row < item->rowCount(); row ++) {
+        auto child = item->takeChild(row);
+        if (!child->hasChildren()) {
+            delete child;
+        } else {
+            recursionRemoveItem(child);
+        }
+    }
+
+    delete item;
+    return;
+}

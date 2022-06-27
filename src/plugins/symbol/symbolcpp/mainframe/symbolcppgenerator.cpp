@@ -171,8 +171,8 @@ void SymbolCppGenerator::removeRootItem(QStandardItem *root)
         d->itemAsynThreadPolls.remove(root);
         SymbolCppAsynParser::setGlobalRunFlags(true);
     }
-
-    recursionRemoveItem(root);
+    if (root)
+        delete root;
 }
 
 QSet<QString> SymbolCppGenerator::scanfWorkspaceFiles(const QString &workspaceFolder)

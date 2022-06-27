@@ -10,33 +10,12 @@
 
 class QStandardItem;
 class QAction;
-
-namespace {
-enum_def(CDT_PROJECT_KIT, QString)
-{
-    enum_exp CDT4_GENERATOR = "Eclipse CDT4 - Unix Makefiles";
-    enum_exp PROJECT_FILE = ".project";
-    enum_exp CPROJECT_FILE = ".cproject";
-};
-
-enum_def(CDT_CPROJECT_KEY, QString)
-{
-    enum_exp storageModuled = "storageModule";
-    enum_exp cconfiguration = "cconfiguration";
-    enum_exp buildCommand = "buildCommand";
-    enum_exp buildArguments = "buildArguments";
-    enum_exp buildTarget = "buildTarget";
-    enum_exp stopOnError = "stopOnError";
-    enum_exp useDefaultCommand = "useDefaultCommand";
-};
-
-} //namespace
-
 class GradleAsynParsePrivate;
-class GradleAsynParse : public QObject
+class GradleAsynParse : public Inotify
 {
     Q_OBJECT
-    GradleAsynParsePrivate  *const d;
+    friend class GradleGenerator;
+    GradleAsynParsePrivate *const d;
 public:
     template<class T>
     struct ParseInfo{
@@ -48,7 +27,7 @@ public:
     virtual ~GradleAsynParse();
 
 signals:
-    void parsedProject(const ParseInfo<QList<QStandardItem*>> &info);
+    void itemsModified(const dpfservice::ParseInfo<QList<QStandardItem*>> &info);
     void parsedError(const ParseInfo<QString> &info);
 
 public slots:
@@ -62,13 +41,20 @@ private slots:
 
 private:
     bool isSame(QStandardItem *t1, QStandardItem *t2, Qt::ItemDataRole role = Qt::DisplayRole) const;
-    QList<QStandardItem *> generatorChildItem(const QString &path) const;
-    QList<QStandardItem *> parents(QStandardItem *item) const;
-    QString path(QStandardItem *item) const;
-    QList<QStandardItem*> rows(const QStandardItem *item) const;
-    int findRowWithDisplay(QStandardItem *item, const QString &fileName);
+    void createRows(const QString &path);
+    void removeRows();
+    void removeSelfSubWatch(QStandardItem *item);
+    QList<QStandardItem *> rows(const QStandardItem *item) const;
     int findRowWithDisplay(QList<QStandardItem*> rowList, const QString &fileName);
-    QStandardItem *findItem(QList<QStandardItem*> rowList, QString &path, QStandardItem *parent = nullptr) const;
+    QString itemDisplayName(const QStandardItem *item) const;
+    QStandardItem *findItem(const QString &path, QStandardItem *parent = nullptr) const;
+    int separatorSize() const;
+    bool itemIsDir(const QStandardItem *item) const;
+    bool itemIsFile(const QStandardItem *item) const;
+    QStringList pathChildFileNames(const QString &path) const;
+    QStringList displayNames(const QList<QStandardItem *> items) const;
+    QStringList createdFileNames(const QString &path) const;
+    QStringList deletedFileNames(const QString &path) const;
 };
 
 #endif // CMAKEASYNPARSE_H

@@ -95,12 +95,6 @@ GradleGenerator::GradleGenerator()
         qCritical() << "Failed, not found service : projectService";
         abort();
     }
-
-//    QObject::connect(this, &ProjectGenerator::targetExecute,
-//                     [=](const QString &cmd, const QStringList &args) {
-//        // Execute project tree command.
-//        emit projectService->targetCommand(cmd, args);
-//    });
 }
 
 GradleGenerator::~GradleGenerator()
@@ -168,8 +162,10 @@ QStandardItem *GradleGenerator::createRootItem(const dpfservice::ProjectInfo &in
     QStandardItem * rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new GradleAsynParse();
-    QObject::connect(d->projectParses[rootItem], &GradleAsynParse::parsedProject,
-                     this, &GradleGenerator::doProjectAddRows, Qt::UniqueConnection);
+    QObject::connect(d->projectParses[rootItem],
+                     &GradleAsynParse::itemsModified,
+                     this, &GradleGenerator::doProjectChildsModified,
+                     Qt::UniqueConnection);
     d->projectParses[rootItem]->parseProject(info);
 
     return rootItem;
@@ -177,7 +173,14 @@ QStandardItem *GradleGenerator::createRootItem(const dpfservice::ProjectInfo &in
 
 void GradleGenerator::removeRootItem(QStandardItem *root)
 {
-    recursionRemoveItem(root);
+    if (!root)
+        return;
+
+    auto parse = d->projectParses[root];
+    if (parse)
+        parse->removeRows();
+    delete root;
+    d->projectParses.remove(root);
 }
 
 QMenu *GradleGenerator::createItemMenu(const QStandardItem *item)
@@ -204,11 +207,15 @@ QMenu *GradleGenerator::createItemMenu(const QStandardItem *item)
     return menu;
 }
 
-void GradleGenerator::doProjectAddRows(const GradleAsynParse::ParseInfo<QList<QStandardItem *>> &info)
+void GradleGenerator::doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem *> > &info)
 {
     auto rootItem = d->projectParses.key(qobject_cast<GradleAsynParse*>(sender()));
-    if (rootItem)
+    if (rootItem) {
+        while (rootItem->hasChildren()) {
+            rootItem->takeRow(0);
+        }
         rootItem->appendRows(info.result);
+    }
 }
 
 void GradleGenerator::doGradleGeneratMenu(const QString &program,
