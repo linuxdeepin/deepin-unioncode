@@ -1,5 +1,5 @@
-#include "mavenasynparse.h"
-#include "mavenitemkeeper.h"
+#include "gradleasynparse.h"
+#include "gradleitemkeeper.h"
 #include "services/project/projectgenerator.h"
 
 #include "common/common.h"
@@ -8,33 +8,33 @@
 #include <QDebug>
 #include <QtXml>
 
-class MavenAsynParsePrivate
+class GradleAsynParsePrivate
 {
-    friend  class MavenAsynParse;
+    friend  class GradleAsynParse;
     QDomDocument xmlDoc;
     QThread *thread {nullptr};
     QString rootPath;
     QList<QStandardItem *> rows {};
 };
 
-MavenAsynParse::MavenAsynParse()
-    : d(new MavenAsynParsePrivate)
+GradleAsynParse::GradleAsynParse()
+    : d(new GradleAsynParsePrivate)
 {
     QObject::connect(Inotify::globalInstance(), &Inotify::modified,
-                     this, &MavenAsynParse::doDirWatchModify,
+                     this, &GradleAsynParse::doDirWatchModify,
                      Qt::DirectConnection);
     QObject::connect(Inotify::globalInstance(), &Inotify::createdSub,
-                     this, &MavenAsynParse::doWatchCreatedSub,
+                     this, &GradleAsynParse::doWatchCreatedSub,
                      Qt::DirectConnection);
     QObject::connect(Inotify::globalInstance(), &Inotify::deletedSub,
-                     this, &MavenAsynParse::doWatchDeletedSub,
+                     this, &GradleAsynParse::doWatchDeletedSub,
                      Qt::DirectConnection);
 
     d->thread = new QThread();
     this->moveToThread(d->thread);
 }
 
-MavenAsynParse::~MavenAsynParse()
+GradleAsynParse::~GradleAsynParse()
 {
     if (d) {
         if (d->thread) {
@@ -48,7 +48,7 @@ MavenAsynParse::~MavenAsynParse()
     }
 }
 
-void MavenAsynParse::loadPoms(const dpfservice::ProjectInfo &info)
+void GradleAsynParse::loadPoms(const dpfservice::ProjectInfo &info)
 {
     QFile docFile(info.projectFilePath());
 
@@ -66,120 +66,21 @@ void MavenAsynParse::loadPoms(const dpfservice::ProjectInfo &info)
     docFile.close();
 }
 
-void MavenAsynParse::parseProject(const dpfservice::ProjectInfo &info)
+void GradleAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
-    using namespace dpfservice;
     ParseInfo<QList<QStandardItem*>> itemsResult;
     itemsResult.result = generatorChildItem(info.sourceFolder());
     itemsResult.isNormal = true;
     emit parsedProject(itemsResult);
 }
 
-void MavenAsynParse::parseActions(const dpfservice::ProjectInfo &info)
-{
-    using namespace dpfservice;
-    ProjectInfo proInfo = info;
-    if (proInfo.isEmpty()) {
-        return;
-    }
-
-    QFileInfo xmlFileInfo(proInfo.projectFilePath());
-    if (!xmlFileInfo.exists())
-        return;
-
-    d->xmlDoc = QDomDocument(xmlFileInfo.fileName());
-    QFile xmlFile(xmlFileInfo.filePath());
-    if (!xmlFile.open(QIODevice::ReadOnly)) {
-        qCritical() << "Failed, Can't open xml file: "
-                    << xmlFileInfo.filePath();
-        return;
-    }
-    if (!d->xmlDoc.setContent(&xmlFile)) {
-        qCritical() << "Failed, Can't load to XmlDoc class: "
-                    << xmlFileInfo.filePath();
-        return;
-    }
-
-    QDomNode n = d->xmlDoc.firstChild();
-    while (!n.isNull()) {
-        QDomElement e = n.toElement();
-        if (!e.isNull() && e.tagName() == "project") {
-            n = n.firstChild();
-        }
-
-        if (e.tagName() == "dependencies") {
-            QDomNode depNode = e.firstChild();
-            while (!depNode.isNull()) {
-                QDomElement depElem = depNode.toElement();
-                if (depElem.tagName() == "dependency") {
-                    auto depcyNode = depElem.firstChild();
-                    while (!depcyNode.isNull()) {
-                        auto depcyElem = depcyNode.toElement();
-                        qInfo() << "dependencies.dependency."
-                                   + depcyElem.tagName()
-                                   + ":" + depcyElem.text();
-                        depcyNode = depcyNode.nextSibling();
-                    }
-                }
-                depNode = depNode.nextSibling();
-            }
-        }
-
-        if (e.tagName() == "build")
-        {
-            QDomNode buildNode = e.firstChild();
-            while (!buildNode.isNull()) {
-                auto buildElem = buildNode.toElement();
-                QDomNode pmChildNode = buildElem.firstChild();
-                if (buildElem.tagName() == "pluginManagement") {
-                    while (!pmChildNode.isNull()) {
-                        auto pmChildElem = pmChildNode.toElement();
-                        QDomNode pluginsChild = pmChildElem.firstChild();
-                        ProjectActionInfos actionInfos;
-                        if (pmChildElem.tagName() == "plugins") {
-                            while (!pluginsChild.isNull()) {
-                                auto pluginsElem = pluginsChild.toElement();
-                                QDomNode pluginChild = pluginsElem.firstChild();
-                                if (pluginsElem.tagName() == "plugin") {
-                                    while (!pluginChild.isNull()) {
-                                        auto pluginElem = pluginChild.toElement();
-                                        if ("artifactId" == pluginElem.tagName()) {
-                                            ProjectActionInfo actionInfo;
-                                            actionInfo.buildCommand = "mvn";
-                                            actionInfo.workingDirectory = xmlFileInfo.filePath();
-                                            QString buildArg = pluginElem.text()
-                                                    .replace("maven-", "")
-                                                    .replace("-plugin", "");
-                                            actionInfo.buildArguments.append(buildArg);
-                                            actionInfo.displyText = buildArg;
-                                            actionInfo.tooltip = pluginElem.text();
-                                            actionInfos.append(actionInfo);
-                                        }
-                                        pluginChild = pluginChild.nextSibling();
-                                    }
-                                } // pluginsElem.tagName() == "plugin"
-                                pluginsChild = pluginsChild.nextSibling();
-                            }
-                            if (!actionInfos.isEmpty())
-                                emit parsedActions({actionInfos, true});
-                        } // pmChildElem.tagName() == "plugins"
-                        pmChildNode = pmChildNode.nextSibling();
-                    }
-                } // buildElem.tagName() == "pluginManagement"
-                buildNode = buildNode.nextSibling();
-            }
-        }// e.tagName() == "build"
-        n = n.nextSibling();
-    }
-}
-
-void MavenAsynParse::doDirWatchModify(const QString &path)
+void GradleAsynParse::doDirWatchModify(const QString &path)
 {
     //    QString pathTemp = path;
     //    auto changedItem = findItem(d->rows, pathTemp);
 }
 
-void MavenAsynParse::doWatchCreatedSub(const QString &path)
+void GradleAsynParse::doWatchCreatedSub(const QString &path)
 {
     //    if (!path.startsWith(d->rootPath))
     //        return;
@@ -208,7 +109,7 @@ void MavenAsynParse::doWatchCreatedSub(const QString &path)
     //    }
 }
 
-void MavenAsynParse::doWatchDeletedSub(const QString &path)
+void GradleAsynParse::doWatchDeletedSub(const QString &path)
 {
     //    if (!path.startsWith(d->rootPath))
     //        return;
@@ -221,14 +122,14 @@ void MavenAsynParse::doWatchDeletedSub(const QString &path)
     //    }
 }
 
-bool MavenAsynParse::isSame(QStandardItem *t1, QStandardItem *t2, Qt::ItemDataRole role) const
+bool GradleAsynParse::isSame(QStandardItem *t1, QStandardItem *t2, Qt::ItemDataRole role) const
 {
     if (!t1 || !t2)
         return false;
     return t1->data(role) == t2->data(role);
 }
 
-QList<QStandardItem *> MavenAsynParse::generatorChildItem(const QString &path) const
+QList<QStandardItem *> GradleAsynParse::generatorChildItem(const QString &path) const
 {
     QString rootPath = path;
     if (rootPath.endsWith(QDir::separator())) {
@@ -283,7 +184,7 @@ QList<QStandardItem *> MavenAsynParse::generatorChildItem(const QString &path) c
     return result;
 }
 
-QString MavenAsynParse::path(QStandardItem *item) const
+QString GradleAsynParse::path(QStandardItem *item) const
 {
     if (!item)
         return "";
@@ -297,7 +198,7 @@ QString MavenAsynParse::path(QStandardItem *item) const
     return result;
 }
 
-QList<QStandardItem *> MavenAsynParse::rows(const QStandardItem *item) const
+QList<QStandardItem *> GradleAsynParse::rows(const QStandardItem *item) const
 {
     QList<QStandardItem *> result;
     for (int i = 0; i < item->rowCount(); i++) {
@@ -306,7 +207,7 @@ QList<QStandardItem *> MavenAsynParse::rows(const QStandardItem *item) const
     return result;
 }
 
-int MavenAsynParse::findRowWithDisplay(QStandardItem *item, const QString &fileName)
+int GradleAsynParse::findRowWithDisplay(QStandardItem *item, const QString &fileName)
 {
     if (item->hasChildren()) {
         for (int i = 0; i < d->rows.size(); i++) {
@@ -318,7 +219,7 @@ int MavenAsynParse::findRowWithDisplay(QStandardItem *item, const QString &fileN
     return -1;
 }
 
-int MavenAsynParse::findRowWithDisplay(QList<QStandardItem *> rowList, const QString &fileName)
+int GradleAsynParse::findRowWithDisplay(QList<QStandardItem *> rowList, const QString &fileName)
 {
     if (rowList.size() > 0) {
         for (int i = 0; i < d->rows.size(); i++) {
@@ -330,7 +231,7 @@ int MavenAsynParse::findRowWithDisplay(QList<QStandardItem *> rowList, const QSt
     return -1;
 }
 
-QStandardItem *MavenAsynParse::findItem(QList<QStandardItem *> rowList,
+QStandardItem *GradleAsynParse::findItem(QList<QStandardItem *> rowList,
                                         QString &path,
                                         QStandardItem *parent) const
 {

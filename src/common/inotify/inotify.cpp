@@ -107,7 +107,9 @@ void InotifyPrivate::removePath(const QString &path)
 
 void InotifyPrivate::doInotifyEvent(InotifyHook::Type type, const QString &path)
 {
-    qInfo() << qApp->thread() << QThread::currentThread();
+    if (qApp->thread() != QThread::currentThread())
+        qInfo() << qApp->thread() << QThread::currentThread();
+
     if (ignoreList.contains(path)) {
         if (type == InotifyHook::Type::MODIFY)
             emit q->ignoreModified(path);

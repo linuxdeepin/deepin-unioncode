@@ -145,9 +145,14 @@ Q_SIGNALS:
      * \param arguments 参数
      */
     void targetExecute(const QString &program, const QStringList &arguments);
+
+protected:
+    template<class T> struct ParseInfo
+    {
+        T result;
+        bool isNormal = true;
+    };
 };
-
-
 } // namespace dpfservice
 
 #endif // PROJECTGENERATOR_H

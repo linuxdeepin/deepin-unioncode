@@ -28,29 +28,43 @@
 
 bool ProcessUtil::execute(const QString &program,
                           const QStringList &arguments,
-                          ProcessUtil::ReadCallBack func,
-                          int cmpExitCode)
+                          ProcessUtil::ReadCallBack func)
 {
-    bool ret = false;
+    return ProcessUtil::execute(program, arguments, "", func);
+}
+
+bool ProcessUtil::execute(const QString &program,
+                          const QStringList &arguments,
+                          const QString &workdir,
+                          ProcessUtil::ReadCallBack func)
+{
+    bool ret = true;
     QProcess process;
+    process.setWorkingDirectory(workdir);
     process.setProgram(program);
     process.setArguments(arguments);
     process.connect(&process, QOverload<int, QProcess::ExitStatus >::of(&QProcess::finished),
-                    [&ret, &cmpExitCode](int exitCode, QProcess::ExitStatus exitStatus){
-        if (exitCode == cmpExitCode && exitStatus == QProcess::NormalExit)
-            ret = true;
+                    [&](int exitCode, QProcess::ExitStatus exitStatus){
+        qInfo() << program << arguments.join(" ")
+                << "exitCode: " << exitCode
+                << "exitStatus: " << exitStatus;
+    });
+    process.connect(&process, &QProcess::errorOccurred,
+                    [&](QProcess::ProcessError error){
+        ret = false;
+        qCritical() << program << arguments.join(" ")
+                    << "error: " << error
+                    << "errorString: " << process.errorString();
     });
 
     process.start();
     process.waitForFinished();
 
     if (func) {
-        func(process.readAll());
+        QByteArray array = process.readAll();
+        func(array);
     }
 
-    if (!ret) {
-        qCritical() << process.errorString();
-    }
     return ret;
 }
 

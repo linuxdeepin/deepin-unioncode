@@ -21,31 +21,34 @@
 #ifndef CMAKEGENERATOR_H
 #define CMAKEGENERATOR_H
 
-#include "mavenasynparse.h"
+#include "gradleasynparse.h"
 #include "services/project/projectservice.h"
 
 #include <QObject>
 #include <QDomDocument>
 
-class MavenGeneratorPrivate;
-class MavenGenerator : public dpfservice::ProjectGenerator
+class GradleGeneratorPrivate;
+class GradleGenerator : public dpfservice::ProjectGenerator
 {
     Q_OBJECT
-    MavenGeneratorPrivate *const d;
+    GradleGeneratorPrivate *const d;
 public:
-    explicit MavenGenerator();
-    virtual ~MavenGenerator();
-    static QString toolKitName() { return "maven"; }
+    explicit GradleGenerator();
+    virtual ~GradleGenerator();
+    static QString toolKitName() { return "gradle"; }
     virtual QWidget* configureWidget(const QString &language,
                                      const QString &projectPath) override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
     virtual void removeRootItem(QStandardItem* root) override;
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
+
 private slots:
-    void doProjectAddRows(const dpfservice::ParseInfo<QList<QStandardItem*>> &info);
-    void doAddMavenMeue(const dpfservice::ParseInfo<dpfservice::ProjectActionInfos> &info);
-    void doActionTriggered();
+    void doProjectAddRows(const GradleAsynParse::ParseInfo<QList<QStandardItem*>> &info);
+    void doGradleGeneratMenu(const QString &program, const QStringList &args, const QString &workdir);
+    void doGradleCleanMenu();
+    void doGradleSplitTasksOutput(const QByteArray &array);
+    void doGradleTaskActionTriggered();
 };
 
 #endif // CMAKEGENERATOR_H

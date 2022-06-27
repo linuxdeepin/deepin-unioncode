@@ -32,24 +32,28 @@ enum_def(CDT_CPROJECT_KEY, QString)
 
 } //namespace
 
-class MavenAsynParsePrivate;
-class MavenAsynParse : public QObject
+class GradleAsynParsePrivate;
+class GradleAsynParse : public QObject
 {
     Q_OBJECT
-    MavenAsynParsePrivate  *const d;
+    GradleAsynParsePrivate  *const d;
 public:
-    MavenAsynParse();
-    virtual ~MavenAsynParse();
+    template<class T>
+    struct ParseInfo{
+        T result;
+        bool isNormal = true;
+    };
+
+    GradleAsynParse();
+    virtual ~GradleAsynParse();
 
 signals:
-    void parsedProject(const dpfservice::ParseInfo<QList<QStandardItem*>> &info);
-    void parsedActions(const dpfservice::ParseInfo<dpfservice::ProjectActionInfos> &info);
-    void parsedError(const dpfservice::ParseInfo<QString> &info);
+    void parsedProject(const ParseInfo<QList<QStandardItem*>> &info);
+    void parsedError(const ParseInfo<QString> &info);
 
 public slots:
     void loadPoms(const dpfservice::ProjectInfo &info);
     void parseProject(const dpfservice::ProjectInfo &info);
-    void parseActions(const dpfservice::ProjectInfo &info);
 
 private slots:
     void doDirWatchModify(const QString &path);

@@ -32,8 +32,9 @@
 class MavenGeneratorPrivate
 {
     friend class MavenGenerator;
-    QStandardItem* configureRootItem;
-    QHash<QStandardItem*, MavenAsynParse*> projectParses;
+    QStandardItem* configureRootItem {nullptr};
+    QMenu *mavenMenu {nullptr};
+    QHash<QStandardItem*, MavenAsynParse*> projectParses {};
 };
 
 MavenGenerator::MavenGenerator()
@@ -140,32 +141,62 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
     if (item->parent())
         return nullptr;
 
-    QMenu *menu = new QMenu;
+    QMenu *menu = new QMenu();
+    if (!d->mavenMenu) {
+        d->mavenMenu = new QMenu("Maven", menu);
+        QObject::connect(d->mavenMenu, &QMenu::destroyed,
+                         [=](){ d->mavenMenu = nullptr; });
+    }
 
-    QAction *action = nullptr;
+    menu->addMenu(d->mavenMenu);
 
-    action = new QAction(QAction::tr("Maven Compiler"));
-    menu->addAction(action);
-    QObject::connect(action, &QAction::triggered, [](){});
+    // asyn parse
+    using namespace dpfservice;
 
-    action = new QAction(QAction::tr("Maven Clean"));
-    menu->addAction(action);
-    QObject::connect(action, &QAction::triggered, [](){});
+    QStandardItem *itemTemp = const_cast<QStandardItem *>(item);
+    if (!itemTemp)
+        return d->mavenMenu;
 
-    action = new QAction(QAction::tr("Maven Package"));
-    menu->addAction(action);
-    QObject::connect(action, &QAction::triggered, [](){});
+    auto parse = d->projectParses[itemTemp];
+    if (!parse)
+        return d->mavenMenu;
 
-    action = new QAction(QAction::tr("Maven Priorities"));
-    menu->addAction(action);
-    QObject::connect(action, &QAction::triggered, [](){});
+    ProjectInfo info = ProjectInfo::get(item);
+    if (info.isEmpty())
+        return d->mavenMenu;
+
+    // add menu generat call back
+    QObject::connect(parse, &MavenAsynParse::parsedActions,
+                     this, &MavenGenerator::doAddMavenMeue,
+                     Qt::UniqueConnection);
+    // execute logic
+    parse->parseActions(info);
 
     return menu;
 }
 
-void MavenGenerator::doProjectAddRows(const MavenAsynParse::ParseInfo<QList<QStandardItem *>> &info)
+void MavenGenerator::doProjectAddRows(const dpfservice::ParseInfo<QList<QStandardItem *>> &info)
 {
     auto rootItem = d->projectParses.key(qobject_cast<MavenAsynParse*>(sender()));
     if (rootItem)
         rootItem->appendRows(info.result);
+}
+
+void MavenGenerator::doAddMavenMeue(const dpfservice::ParseInfo<dpfservice::ProjectActionInfos> &info)
+{
+    if (d->mavenMenu) {
+        for (auto actionInfo : info.result) {
+            QAction *action = new QAction(actionInfo.displyText, d->mavenMenu);
+            dpfservice::ProjectActionInfo::set(action, actionInfo);
+            d->mavenMenu->addAction(action);
+        }
+    }
+}
+
+void MavenGenerator::doActionTriggered()
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if (action) {
+        dpfservice::ProjectActionInfo::get(action);
+    }
 }

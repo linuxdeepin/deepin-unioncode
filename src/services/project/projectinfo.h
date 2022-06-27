@@ -21,6 +21,8 @@
 #ifndef PROJECTINFO_H
 #define PROJECTINFO_H
 
+#include "projectactioninfo.h"
+
 #include <QSet>
 #include <QVariantHash>
 #include <QStandardItem>

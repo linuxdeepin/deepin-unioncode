@@ -6,6 +6,7 @@ set(CXX_H
     window/windowservice.h
     debugger/debuggerservice.h
     container/containerservice.h
+    project/projectactioninfo.h
     project/symbolinfo.h
     project/symbolgenerator.h
     project/symbolviewinterface.h

@@ -74,7 +74,7 @@ public:
     }
 
 protected:
-    QHash<QString, CreateFunc> constructList;
+    QMap<QString, CreateFunc> constructList;
 };
 
 DPF_END_NAMESPACE
