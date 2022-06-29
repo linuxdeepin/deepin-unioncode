@@ -13,11 +13,11 @@ set(CXX_H
     project/projectinfo.h
     project/projectgenerator.h
     project/projectservice.h
-    runtime/runtimeservice.h
     find/enums.h
     find/findservice.h
     option/optionservice.h
     option/optiongenerator.h
+    builder/builderservice.h
     )
 
 add_library(

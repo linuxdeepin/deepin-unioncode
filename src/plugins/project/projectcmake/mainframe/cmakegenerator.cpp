@@ -28,6 +28,7 @@
 #include "properties/buildpropertywidget.h"
 #include "properties/runpropertywidget.h"
 #include "properties/configpropertywidget.h"
+#include "services/builder/builderservice.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
@@ -68,16 +69,15 @@ CmakeGenerator::CmakeGenerator()
 
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (!projectService) {
-        qCritical() << "Failed, not found service : projectService";
+    BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
+    if (!builderService) {
+        qCritical() << "Failed, not found service : builderService";
         abort();
     }
 
     QObject::connect(this, &ProjectGenerator::targetExecute,
                      [=](const QString &cmd, const QStringList &args) {
-        // Execute project tree command.
-        emit projectService->targetCommand(cmd, args);
+        emit builderService->builderCommand(cmd, args);
     });
 }
 
@@ -308,7 +308,7 @@ void CmakeGenerator::doBuildCmdExecuteEnd(const QString &cmd, int status)
         createRootItem(d->configureProjectInfo);
     }
 
-    d->configureProjectInfo = {};
+    //d->configureProjectInfo = {};
 
     emit projectService->projectConfigureDone();
 }
@@ -343,7 +343,9 @@ QStringList CmakeGenerator::infoBuildCmd(const dpfservice::ProjectInfo &info) co
 void CmakeGenerator::actionProperties()
 {
     PropertiesDialog dlg;
-    ConfigPropertyWidget *configWidget = new ConfigPropertyWidget("", "");
+
+    ConfigPropertyWidget *configWidget = new ConfigPropertyWidget(d->configureProjectInfo.language(),
+                                                                  d->configureProjectInfo.projectFilePath());
     BuildPropertyWidget *buildWidget = new BuildPropertyWidget();
     RunPropertyWidget *runWidget = new RunPropertyWidget();
 

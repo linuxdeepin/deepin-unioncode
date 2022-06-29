@@ -8,8 +8,6 @@ set(CXX_CPP
     mainframe/buildtarget.cpp
     mainframe/buildmanager.cpp
     mainframe/buildstep.cpp
-    mainframe/qmakestep.cpp
-    mainframe/makestep.cpp
     mainframe/menumanager.cpp
     mainframe/commandstep.cpp
     mainframe/buildstep.cpp
@@ -37,8 +35,6 @@ set(CXX_H
     mainframe/buildtarget.h
     mainframe/buildmanager.h
     mainframe/buildstep.h
-    mainframe/qmakestep.h
-    mainframe/makestep.h
     mainframe/builderglobals.h
     mainframe/buildersignals.h
     mainframe/menumanager.h

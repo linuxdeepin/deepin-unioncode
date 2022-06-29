@@ -22,7 +22,7 @@
 #ifndef PROJECTPARSER_H
 #define PROJECTPARSER_H
 
-#include "services/runtime/runtimeservice.h"
+#include "services/project/projectservice.h"
 
 #include <QtXml/QDomDocument>
 #include <QObject>

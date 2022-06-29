@@ -23,8 +23,6 @@
 #include "transceiver/eventreceiver.h"
 #include "buildstep.h"
 #include "project.h"
-#include "qmakestep.h"
-#include "makestep.h"
 #include "services/project/projectservice.h"
 
 using namespace dpfservice;
@@ -49,42 +47,6 @@ QString BuildTarget::buildOutputDirectory() const
     //            ret = projService->getDefaultOutputPath();
     //        }
     //    }
-    return ret;
-}
-
-QList<BuildStep *> &BuildTarget::getbuildSteps()
-{
-    clear();
-    constructBuildSteps();
-    return buildSteps;
-}
-
-bool BuildTarget::constructBuildSteps()
-{
-    bool ret = true;
-    BuildStep *step = nullptr;
-    if (project) {
-        ToolChainType tlChainType = project->toolChainType();
-        switch (tlChainType) {
-        case ToolChainType::QMake:
-            step = new QMakeStep;
-            break;
-        case ToolChainType::CMake:
-            step = new MakeStep;
-            break;
-        default:
-            ret = false;
-        }
-
-        if (step) {
-            step->setBuildOutputDir(buildOutputDirectory());
-            step->appendCmdParam("-B"); // TODO(mozart) : those params not used and should get from other place.
-            step->appendCmdParam("-j4");
-            step->setMakeFile(project->projectFilePath());
-            buildSteps << step;
-        }
-    }
-
     return ret;
 }
 

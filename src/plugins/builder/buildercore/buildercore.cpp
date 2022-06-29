@@ -28,6 +28,7 @@
 #include "services/window/windowservice.h"
 #include "service/pluginservicecontext.h"
 #include "services/project/projectservice.h"
+#include "services/builder/builderservice.h"
 
 #include "mainframe/buildoutputpane.h"
 #include "mainframe/buildmanager.h"
@@ -39,7 +40,12 @@ using namespace dpfservice;
 
 void BuilderCore::initialize()
 {
-
+    auto &ctx = dpfInstance.serviceContext();
+    QString errStr;
+    if (!ctx.load(BuilderService::name(), &errStr)) {
+        qCritical() << errStr;
+        abort();
+    }
 }
 
 bool BuilderCore::start()
@@ -60,10 +66,9 @@ bool BuilderCore::start()
 
     connect(BuildManager::instance(), &BuildManager::buildStarted, this, &BuilderCore::slotBuildStarted);
 
-    // Project tree right menu triggered.
-    auto projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (projectService) {
-        connect(projectService, &ProjectService::targetCommand, this, &BuilderCore::slotProjectTreeMenu);
+    auto builderService = ctx.service<BuilderService>(BuilderService::name());
+    if (builderService) {
+        connect(builderService, &BuilderService::builderCommand, this, &BuilderCore::slotProjectTreeMenu);
     }
 
     return true;

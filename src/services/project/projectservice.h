@@ -33,6 +33,40 @@
 
 namespace dpfservice {
 
+struct Target {
+    QString name;
+    QString path;
+    QString targetID;
+
+    QString buildCommand;
+    QStringList buildArguments;
+    QString buildTarget;
+    bool stopOnError = false;
+    bool useDefaultCommand = false;
+
+    QString outputPath;
+
+    // TODO(mozart):tempory
+    bool enableEnv;
+
+    bool operator==(const Target &other) const
+    {
+        if (name == other.name
+                && path == other.path)
+            return true;
+
+        return false;
+    }
+};
+using Targets = QVector<Target>;
+
+enum TargetType {
+    kBuildTarget,
+    kRebuildTarget,
+    kCleanTarget,
+    kActiveExecTarget
+};
+
 class ProjectService final : public dpf::PluginService,
         dpf::AutoServiceRegister<ProjectService>,
         dpf::QtClassFactory<ProjectGenerator>,
@@ -150,15 +184,14 @@ public:
      */
     SymbolViewInterface symbolView;
 
-Q_SIGNALS:
     /*!
-     * \brief targetExecute 工程目标执行指令, 调用构建系统的入口
-     *  当前projectservice不属于构建系统的一部分，需要构建系统支持
-     * \param program 程序
-     * \param arguments 程序参数
+     * \brief getActiveTarget
+     * \param TargetType
+     * \return Target
      */
-    void targetCommand(const QString &program, const QStringList &arguments);
+    DPF_INTERFACE(Target, getActiveTarget, TargetType);
 
+Q_SIGNALS:
     /*!
      * \brief projectConfigureDone
      */

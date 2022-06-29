@@ -22,6 +22,7 @@
 #include "projectcmake.h"
 #include "mainframe/cmakeopenhandler.h"
 #include "mainframe/cmakegenerator.h"
+#include "mainframe/properties/targetsmanager.h"
 #include "transceiver/sendevents.h"
 
 #include "base/abstractmenu.h"
@@ -49,6 +50,11 @@ bool ProjectCMake::start()
     if (projectService) {
         QString errorString;
         projectService->implGenerator<CmakeGenerator>(CmakeGenerator::toolKitName(), &errorString);
+    }
+
+    if (projectService && !projectService->getActiveTarget) {
+        using namespace std::placeholders;
+        projectService->getActiveTarget = std::bind(&TargetsManager::getTarget, TargetsManager::instance(), _1);
     }
 
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());

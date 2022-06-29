@@ -24,7 +24,7 @@
 #include "transceiver/sendevents.h"
 #include "transceiver/projectmavenreceiver.h"
 #include "services/window/windowservice.h"
-
+#include "services/builder/builderservice.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
@@ -41,16 +41,15 @@ MavenGenerator::MavenGenerator()
 {
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (!projectService) {
-        qCritical() << "Failed, not found service : projectService";
+    BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
+    if (!builderService) {
+        qCritical() << "Failed, not found service : builderService";
         abort();
     }
 
     QObject::connect(this, &ProjectGenerator::targetExecute,
                      [=](const QString &cmd, const QStringList &args) {
-        // Execute project tree command.
-        emit projectService->targetCommand(cmd, args);
+        emit builderService->builderCommand(cmd, args);
     });
 }
 

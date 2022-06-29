@@ -22,6 +22,9 @@
 #include "configureprojpane.h"
 #include "kitmanager.h"
 
+#include "mainframe/cmakeasynparse.h"
+#include "mainframe/cmakegenerator.h"
+
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
@@ -146,7 +149,7 @@ void ConfigureProjPane::slotConfigureDone()
     QString sourceFolder = QFileInfo(d->projectPath).path();
     info.setLanguage(d->language);
     info.setSourceFolder(sourceFolder);
-    //info.setKitName(CmakeGenerator::toolKitName());
+    info.setKitName(CmakeGenerator::toolKitName());
     //    info.setBuildFolder(outputPath);
     info.setWorkspaceFolder(sourceFolder);
     info.setProjectFilePath(d->projectPath);
@@ -163,7 +166,7 @@ void ConfigureProjPane::slotConfigureDone()
     arguments << "-B";
     arguments << info.buildFolder();
     arguments << "-G";
-    //arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
+    arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
     arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
     arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
     arguments << info.buildCustomArgs();
@@ -296,8 +299,9 @@ void ConfigureProjPane::setupUi(QWidget *widget)
     d->group = new QButtonGroup();
     d->group->addButton(d->cbDebug, 0);
     d->group->addButton(d->cbRelease, 1);
-    d->group->addButton(d->cbMiniSize, 2);
-    d->group->addButton(d->cbRWithDInfo, 3);
+    d->group->addButton(d->cbRWithDInfo, 2);
+    d->group->addButton(d->cbMiniSize, 3);
+    d->cbDebug->setChecked(true);
 
     connect(d->cbDesktop, &QCheckBox::stateChanged, this, &ConfigureProjPane::slotParameterChanged);
     connect(d->group, QOverload<int>::of(&QButtonGroup::buttonClicked), this, &ConfigureProjPane::slotParameterChanged);
@@ -386,10 +390,10 @@ void ConfigureProjPane::getSelectedItem(QString &type, QString &path)
         type = "Release";
         path = d->lineEditRelease->text();
     } else if(d->cbRWithDInfo->isChecked()) {
-        type = "Release With DebugInfo";
-        path = d->lineEditDebug->text();
+        type = "RelWithDebInfo";
+        path = d->lineEditRWithDInfo->text();
     } else if(d->cbMiniSize->isChecked()) {
-        type = "Minimum Size Release";
+        type = "MinSizeRel";
         path = d->lineEditMiniSize->text();
     }
 }

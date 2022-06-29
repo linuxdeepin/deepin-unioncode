@@ -22,7 +22,7 @@
 #define BUILDMANAGER_H
 
 #include "buildstep.h"
-#include "services/runtime/runtimeservice.h"
+#include "services/project/projectservice.h"
 
 #include <QObject>
 #include <QSharedPointer>

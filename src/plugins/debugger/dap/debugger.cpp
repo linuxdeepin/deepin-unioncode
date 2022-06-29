@@ -34,7 +34,7 @@
 #include "event/eventsender.h"
 #include "event/eventreceiver.h"
 #include "common/dialog/contextdialog.h"
-#include "services/runtime/runtimeservice.h"
+#include "services/project/projectservice.h"
 
 #include <QDateTime>
 #include <QTextBlock>
@@ -649,9 +649,9 @@ bool Debugger::checkTargetIsReady()
     targetPath.clear();
 
     auto &ctx = dpfInstance.serviceContext();
-    RuntimeService *runTimeService = ctx.service<RuntimeService>(RuntimeService::name());
-    if (runTimeService && runTimeService->getActiveTarget) {
-        auto target = runTimeService->getActiveTarget(kActiveExecTarget);
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService && projectService->getActiveTarget) {
+        auto target = projectService->getActiveTarget(kActiveExecTarget);
         targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
     }
 

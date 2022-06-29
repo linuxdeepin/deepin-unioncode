@@ -173,9 +173,9 @@ BuildStep *BuildManager::makeCleanStep()
 BuildStep *BuildManager::makeStep(TargetType type)
 {
     auto &ctx = dpfInstance.serviceContext();
-    RuntimeService *runTimeService = ctx.service<RuntimeService>(RuntimeService::name());
-    if (runTimeService && runTimeService->getActiveTarget) {
-        auto target = runTimeService->getActiveTarget(type);
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService && projectService->getActiveTarget) {
+        auto target = projectService->getActiveTarget(type);
         if (target.buildCommand.isEmpty()) {
             BuildManager::instance()->getOutputPane()->appendText("Nothing to do.");
         } else {

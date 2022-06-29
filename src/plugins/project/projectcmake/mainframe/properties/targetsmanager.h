@@ -23,7 +23,6 @@
 #define TARGETSMANAGER_H
 
 #include "projectparser.h"
-#include "services/runtime/runtimeservice.h"
 
 #include <QObject>
 
