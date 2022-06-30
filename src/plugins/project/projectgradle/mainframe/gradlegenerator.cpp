@@ -96,11 +96,11 @@ GradleGenerator::GradleGenerator()
         abort();
     }
 
-    QObject::connect(this, &ProjectGenerator::targetExecute,
-                     [=](const QString &cmd, const QStringList &args) {
-        // Execute project tree command.
-        emit projectService->targetCommand(cmd, args);
-    });
+//    QObject::connect(this, &ProjectGenerator::targetExecute,
+//                     [=](const QString &cmd, const QStringList &args) {
+//        // Execute project tree command.
+//        emit projectService->targetCommand(cmd, args);
+//    });
 }
 
 GradleGenerator::~GradleGenerator()
