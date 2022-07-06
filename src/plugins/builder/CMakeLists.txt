@@ -1,2 +1,4 @@
 add_subdirectory(buildercore)
 add_subdirectory(buildercmake)
+add_subdirectory(buildermaven)
+add_subdirectory(buildergradle)

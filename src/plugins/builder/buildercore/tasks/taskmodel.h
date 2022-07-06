@@ -22,7 +22,7 @@
 #ifndef TASKMODEL_H
 #define TASKMODEL_H
 
-#include "task.h"
+#include "services/builder/task.h"
 
 #include <QAbstractItemModel>
 #include <QFont>

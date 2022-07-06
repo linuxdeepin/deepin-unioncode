@@ -47,11 +47,6 @@ MavenGenerator::MavenGenerator()
         qCritical() << "Failed, not found service : builderService";
         abort();
     }
-
-    QObject::connect(this, &ProjectGenerator::targetExecute,
-                     [=](const QString &cmd, const QStringList &args) {
-        emit builderService->builderCommand(cmd, args);
-    });
 }
 
 MavenGenerator::~MavenGenerator()
@@ -202,6 +197,9 @@ void MavenGenerator::doAddMavenMeue(const dpfservice::ParseInfo<dpfservice::Proj
             QAction *action = new QAction(actionInfo.displyText, d->mavenMenu);
             dpfservice::ProjectActionInfo::set(action, actionInfo);
             d->mavenMenu->addAction(action);
+            QObject::connect(action, &QAction::triggered,
+                             this, &MavenGenerator::doActionTriggered,
+                             Qt::UniqueConnection);
         }
     }
 }
@@ -210,6 +208,14 @@ void MavenGenerator::doActionTriggered()
 {
     QAction *action = qobject_cast<QAction*>(sender());
     if (action) {
-        dpfservice::ProjectActionInfo::get(action);
+        auto value = dpfservice::ProjectActionInfo::get(action);
+
+        auto &ctx = dpfInstance.serviceContext();
+        auto builderService = ctx.service<dpfservice::BuilderService>(dpfservice::BuilderService::name());
+        if (builderService) {
+            builderService->interface.builderCommand(value.buildProgram,
+                                                     value.buildArguments,
+                                                     value.workingDirectory);
+        }
     }
 }

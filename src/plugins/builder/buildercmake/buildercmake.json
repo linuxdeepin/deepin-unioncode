@@ -17,8 +17,9 @@
             will be met: https://www.gnu.org/licenses/gpl-3.0.html."
     ],
     "Category" : "",
-    "Description" : "The core plugin for the unioncode.",
+    "Description" : "The buildercmake plugin for the unioncode.",
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [
+        {"Name" : "plugin-buildercore"}
     ]
 }

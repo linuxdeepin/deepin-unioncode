@@ -21,12 +21,17 @@
 #ifndef BUILDERSERVICE_H
 #define BUILDERSERVICE_H
 
+#include "buildergenerator.h"
+#include "builderglobals.h"
+#include "builderinterface.h"
 #include <framework/framework.h>
 
 namespace dpfservice {
 
 class BuilderService final : public dpf::PluginService,
-        dpf::AutoServiceRegister<BuilderService>
+        dpf::AutoServiceRegister<BuilderService>,
+        dpf::QtClassFactory<BuilderGenerator>,
+        dpf::QtClassManager<BuilderGenerator>
 {
     Q_OBJECT
     Q_DISABLE_COPY(BuilderService)
@@ -42,13 +47,32 @@ public:
         return "org.deepin.service.BuilderService";
     }
 
-signals:
-    /*!
-     * \brief builderCommand 工程目标执行指令, 调用构建系统的入口
-     * \param program 程序
-     * \param arguments 程序参数
-     */
-    void builderCommand(const QString &program, const QStringList &arguments);
+    template<class T>
+    bool regClass(const QString &name, QString *error= nullptr) {
+        return dpf::QtClassFactory<BuilderGenerator>::regClass<T>(name, error);
+    }
+
+    template<class T>
+    T* create(const QString &name, QString *error = nullptr) {
+        auto value = dpf::QtClassManager<BuilderGenerator>::value(name);
+        if (!value) {
+            value = dpf::QtClassFactory<BuilderGenerator>::create(name);
+            dpf::QtClassManager<BuilderGenerator>::append(name, value, error);
+        }
+        return dynamic_cast<T*>(value);
+    }
+
+    template<class T>
+    QString name(T* value) const{
+        return QtClassManager<T>::key(value);
+    }
+
+    template<class T>
+    QList<T*> values() const {
+        return QtClassManager<T>::values();
+    }
+
+    BuilderInterface interface;
 };
 
 } // namespace dpfservice

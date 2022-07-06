@@ -57,6 +57,10 @@ const QString D_CRETED {"Created"};
 const QString D_DELETED {"Deleted"};
 const QString D_ACTIVED {"Actived"};
 const QString D_JUMP_TO_LINE {"JumpToLine"};
+const QString D_BUILD_COMMAND {"Build.Command"};
+const QString D_MENU_BUILD {"Menu.Build"};
+const QString D_MENU_REBUILD {"Menu.ReBuild"};
+const QString D_MENU_CLEAN {"Menu.Clean"};
 
 const QString D_SEARCH {"Search"};
 const QString D_REPLACE {"Replace"};
@@ -85,3 +89,7 @@ const QString P_PROJECT_INFO{"ProjectInfo"};
 const QString P_OPRATETYPE {"OperateType"};
 const QString P_SRCTEXT {"SrcText"};
 const QString P_DESTTEXT {"DestText"};
+
+const QString P_BUILDPROGRAM {"BuildProgram"};
+const QString P_BUILDWORKINGDIR {"BuildWorkingdir"};
+

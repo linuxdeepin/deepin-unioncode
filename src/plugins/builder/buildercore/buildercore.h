@@ -1,11 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
- *             zhouyi<zhouyi1@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +37,7 @@ public:
     virtual dpf::Plugin::ShutdownFlag stop() override;
 
 public slots:
-    void slotBuildStarted();
-    void slotProjectTreeMenu(const QString &program, const QStringList &arguments);
+    void slotSwitchOutputPane();
 
 private:
     dpfservice::WindowService *windowService = nullptr;

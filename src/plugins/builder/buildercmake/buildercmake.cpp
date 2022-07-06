@@ -1,11 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
- *             zhouyi<zhouyi1@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "buildercmake.h"
-#include "base/abstractmenu.h"
-#include "base/abstractmainwindow.h"
-#include "base/abstractwidget.h"
+#include "mainframe/cmakegenerator.h"
 
 #include "services/window/windowservice.h"
+#include "services/builder/builderservice.h"
 #include "service/pluginservicecontext.h"
-#include "services/project/projectservice.h"
-
-#include <QMenu>
 
 using namespace dpfservice;
 
@@ -40,12 +34,14 @@ void BuilderCMake::initialize()
 
 bool BuilderCMake::start()
 {
-    // get window service.
     auto &ctx = dpfInstance.serviceContext();
-    windowService = ctx.service<WindowService>(WindowService::name());
-    if (!windowService) {
-        qCritical() << "Failed, can't found window service";
-        abort();
+    BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
+    if (builderService) {
+        QString errorString;
+        bool ret = builderService->regClass<CMakeGenerator>(CMakeGenerator::toolKitName(), &errorString);
+        if (ret) {
+            builderService->create<CMakeGenerator>(CMakeGenerator::toolKitName(), &errorString);
+        }
     }
 
     return true;

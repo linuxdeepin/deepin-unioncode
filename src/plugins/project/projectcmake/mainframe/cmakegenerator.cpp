@@ -77,7 +77,7 @@ CmakeGenerator::CmakeGenerator()
 
     QObject::connect(this, &ProjectGenerator::targetExecute,
                      [=](const QString &cmd, const QStringList &args) {
-        emit builderService->builderCommand(cmd, args);
+        emit builderService->interface.builderCommand(cmd, args, "");
     });
 }
 

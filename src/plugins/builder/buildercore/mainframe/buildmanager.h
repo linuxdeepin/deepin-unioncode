@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,73 +17,57 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+
 #ifndef BUILDMANAGER_H
 #define BUILDMANAGER_H
 
-#include "buildstep.h"
-#include "services/project/projectservice.h"
+#include "services/builder/builderglobals.h"
+#include "services/builder/task.h"
 
 #include <QObject>
 #include <QSharedPointer>
 #include <QMutex>
 
-class BuildOutputPane;
-class Project;
-class MenuManager;
 namespace dpfservice {
 class WindowService;
 }
 
+class CompileOutputPane;
+class ProblemOutputPane;
+class BuildManagerPrivate;
 class BuildManager : public QObject
 {
     Q_OBJECT
 public:
-
-    enum BuildState
-    {
-        kNoBuild,
-        kBuilding,
-        kBuildFailed
-    };
-
     static BuildManager *instance();
-
     void initialize(dpfservice::WindowService *service);
 
-    bool buildList(const QList<BuildStep*> &bsl, QString originCmd = "");
-    BuildStep *makeCommandStep(const QString &cmd, const QStringList &args, QString outputDirectory = "");
-    BuildOutputPane *getOutputPane() const;
+    CompileOutputPane *getCompileOutputPane() const;
+    ProblemOutputPane *getProblemOutputPane() const;
 
-    void destroy();
+    void outputCompileInfo(const QString &content, OutputFormat format);
+    void outputProblemInfo(const Task &task, int linkedOutputLines, int skipLines);
+
+    void dispatchCommand(const QString &program, const QStringList &arguments, const QString &workingDir);
+    void buildStateChanged(BuildState state, QString originCmd);
 
 signals:
     void buildStarted();
 
 public slots:
-    void slotOutput(const QString &content, OutputFormat format);
-    void buildProject();
-    void rebuildProject();
-    void cleanProject();
+    void buildActivedProject();
+    void rebuildActivedProject();
+    void cleanActivedProject();
 
 private:
     explicit BuildManager(QObject *parent = nullptr);
-    ~BuildManager();
-    bool initBuildList(const QList<BuildStep*> &_bsl);
+    virtual ~BuildManager();
 
-    BuildStep *makeBuildStep();
-    BuildStep *makeCleanStep();
-    BuildStep *makeStep(dpfservice::TargetType type);
+    void startBuild();
 
-    BuildOutputPane *outputPane = nullptr;
-
-    QList<BuildStep *> bsl;
-
-    QSharedPointer<Project> project;
-    QSharedPointer<MenuManager> menuManager;
-    BuildState buildState = kNoBuild;
-
-    QMutex releaseMutex;
+    BuildManagerPrivate *const d;
 };
 
 #endif // BUILDMANAGER_H
+

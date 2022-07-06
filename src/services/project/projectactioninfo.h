@@ -17,13 +17,13 @@ struct ProjectActionInfo
 {
     QString displyText;
     QString tooltip;
-    QString buildCommand;
-    QString buildArguments;
+    QString buildProgram;
+    QStringList buildArguments;
     QString workingDirectory;
 
     inline bool isInvalid() {
         if (displyText.isEmpty()
-                || buildCommand.isEmpty()
+                || buildProgram.isEmpty()
                 || buildArguments.isEmpty()
                 || workingDirectory.isEmpty()
                 || workingDirectory.isEmpty())

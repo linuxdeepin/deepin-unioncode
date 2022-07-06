@@ -41,7 +41,7 @@ public:
 
     struct BuildTypeItem
     {
-        bool checked = true;
+        bool checked = false;
         QString folder;
     };
 

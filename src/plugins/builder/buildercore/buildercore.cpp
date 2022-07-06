@@ -1,11 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
- *             zhouyi<zhouyi1@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,20 +19,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "buildercore.h"
-#include "base/abstractmenu.h"
-#include "base/abstractmainwindow.h"
-#include "base/abstractwidget.h"
+#include "mainframe/buildmanager.h"
 
 #include "services/window/windowservice.h"
-#include "service/pluginservicecontext.h"
 #include "services/project/projectservice.h"
 #include "services/builder/builderservice.h"
 
-#include "mainframe/buildoutputpane.h"
-#include "mainframe/buildmanager.h"
-#include "tasks/taskmanager.h"
+#include "base/abstractwidget.h"
 
-#include <QMenu>
 
 using namespace dpfservice;
 
@@ -50,7 +42,6 @@ void BuilderCore::initialize()
 
 bool BuilderCore::start()
 {
-    // get window service.
     auto &ctx = dpfInstance.serviceContext();
     windowService = ctx.service<WindowService>(WindowService::name());
     if (!windowService) {
@@ -60,15 +51,18 @@ bool BuilderCore::start()
 
     BuildManager::instance()->initialize(windowService);
 
-    // instert output pane to window.
-    emit windowService->addContextWidget("Co&mpile Output", new AbstractWidget(BuildManager::instance()->getOutputPane()));
-    emit windowService->addContextWidget("&Issues", new AbstractWidget(TaskManager::instance()->getView()));
+    emit windowService->addContextWidget("Co&mpile Output", new AbstractWidget(BuildManager::instance()->getCompileOutputPane()));
+    emit windowService->addContextWidget("&Problems", new AbstractWidget(BuildManager::instance()->getProblemOutputPane()));
 
-    connect(BuildManager::instance(), &BuildManager::buildStarted, this, &BuilderCore::slotBuildStarted);
+    connect(BuildManager::instance(), &BuildManager::buildStarted, this, &BuilderCore::slotSwitchOutputPane);
 
     auto builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
-        connect(builderService, &BuilderService::builderCommand, this, &BuilderCore::slotProjectTreeMenu);
+        using namespace std::placeholders;
+        builderService->interface.compileOutput = std::bind(&BuildManager::outputCompileInfo, BuildManager::instance(), _1, _2);
+        builderService->interface.problemOutput = std::bind(&BuildManager::outputProblemInfo, BuildManager::instance(), _1, _2, _3);
+        builderService->interface.builderCommand = std::bind(&BuildManager::dispatchCommand, BuildManager::instance(), _1, _2, _3);
+        builderService->interface.buildStateChanged = std::bind(&BuildManager::buildStateChanged, BuildManager::instance(), _1, _2);
     }
 
     return true;
@@ -79,16 +73,10 @@ dpf::Plugin::ShutdownFlag BuilderCore::stop()
     return Sync;
 }
 
-void BuilderCore::slotBuildStarted()
+
+void BuilderCore::slotSwitchOutputPane()
 {
-    // get window service.
     if (windowService) {
         emit windowService->switchWidgetContext("Co&mpile Output");
     }
-}
-
-void BuilderCore::slotProjectTreeMenu(const QString &program, const QStringList &arguments)
-{
-    auto buildstep = BuildManager::instance()->makeCommandStep(program, arguments);
-    BuildManager::instance()->buildList({buildstep}, program + " " + arguments.join(" "));
 }

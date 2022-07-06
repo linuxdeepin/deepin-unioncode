@@ -59,6 +59,10 @@ extern const QString D_CRETED;
 extern const QString D_DELETED;
 extern const QString D_ACTIVED;
 extern const QString D_JUMP_TO_LINE;
+extern const QString D_BUILD_COMMAND;
+extern const QString D_MENU_BUILD;
+extern const QString D_MENU_REBUILD;
+extern const QString D_MENU_CLEAN;
 
 extern const QString D_MARGIN_DEBUG_POINT_ADD;
 extern const QString D_MARGIN_DEBUG_POINT_REMOVE;
@@ -91,3 +95,6 @@ extern const QString P_PROJECT_INFO;   // value dpfService::ProjectInfo
 extern const QString P_OPRATETYPE;
 extern const QString P_SRCTEXT;
 extern const QString P_DESTTEXT;
+
+extern const QString P_BUILDPROGRAM;
+extern const QString P_BUILDWORKINGDIR;

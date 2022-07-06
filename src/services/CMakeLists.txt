@@ -19,12 +19,23 @@ set(CXX_H
     option/optionservice.h
     option/optiongenerator.h
     builder/builderservice.h
+    builder/buildergenerator.h
+    builder/builderglobals.h
+    builder/builderinterface.h
+    builder/task.h
+    builder/task.cpp
+    builder/fileutils.h
+    builder/fileutils.cpp
+    builder/ioutputparser.h
+    builder/ioutputparser.cpp
     )
 
 add_library(
     ${PROJECT_NAME}
     SHARED
     ${CXX_H}
+    ${CXX_CPP}
+    builder/resources.qrc
     )
 
 link_libraries(

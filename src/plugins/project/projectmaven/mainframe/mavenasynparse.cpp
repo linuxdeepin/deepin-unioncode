@@ -148,8 +148,8 @@ void MavenAsynParse::parseActions(const dpfservice::ProjectInfo &info)
                                         auto pluginElem = pluginChild.toElement();
                                         if ("artifactId" == pluginElem.tagName()) {
                                             ProjectActionInfo actionInfo;
-                                            actionInfo.buildCommand = "mvn";
-                                            actionInfo.workingDirectory = xmlFileInfo.filePath();
+                                            actionInfo.buildProgram = "mvn";
+                                            actionInfo.workingDirectory = xmlFileInfo.path();
                                             QString buildArg = pluginElem.text()
                                                     .replace("maven-", "")
                                                     .replace("-plugin", "");

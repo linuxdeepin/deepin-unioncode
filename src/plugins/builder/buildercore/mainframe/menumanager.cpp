@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,20 +21,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "menumanager.h"
-#include "buildmanager.h"
 
 #include "base/abstractmenu.h"
 #include "services/window/windowservice.h"
+#include "services/window/windowelement.h"
 #include "common/common.h"
 
 #include <QMenu>
 
-using namespace dpfservice;
-MenuManager::MenuManager(QObject *parent) : QObject(parent)
+class MenuManagerPrivate{
+    friend class MenuManager;
+
+    QSharedPointer<QAction> buildAction;
+    QSharedPointer<QAction> rebuildAction;
+    QSharedPointer<QAction> cleanAction;
+};
+
+MenuManager::MenuManager(dpfservice::WindowService *windowService, QObject *parent)
+    : QObject(parent)
+    , d(new MenuManagerPrivate())
 {
+    initialize(windowService);
 }
 
-void MenuManager::initialize(WindowService *windowService)
+void MenuManager::initialize(dpfservice::WindowService *windowService)
 {
     if (!windowService)
         return;
@@ -45,30 +56,38 @@ void MenuManager::initialize(WindowService *windowService)
         windowService->addAction(menuID, actionImpl);
     };
 
-    buildAction.reset(new QAction("Build"));
-    actionInit(buildAction.get(), "Build.Build", MWM_BUILD, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
+    d->buildAction.reset(new QAction("Build"));
+    actionInit(d->buildAction.get(), "Build.Build", dpfservice::MWM_BUILD, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
 
-    rebuildAction.reset(new QAction("Rebuild"));
-    actionInit(rebuildAction.get(), "Build.Rebuild", MWM_BUILD, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B));
+    d->rebuildAction.reset(new QAction("Rebuild"));
+    actionInit(d->rebuildAction.get(), "Build.Rebuild", dpfservice::MWM_BUILD, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B));
 
-    cleanAction.reset(new QAction("Clean"));
-    actionInit(cleanAction.get(), "Build.Clean", MWM_BUILD, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_C));
-
-    // triggered by top menu.
-    connect(buildAction.get(), &QAction::triggered, BuildManager::instance(), &BuildManager::buildProject, Qt::DirectConnection);
-    connect(rebuildAction.get(), &QAction::triggered, BuildManager::instance(), &BuildManager::rebuildProject, Qt::DirectConnection);
-    connect(cleanAction.get(), &QAction::triggered, BuildManager::instance(), &BuildManager::cleanProject, Qt::DirectConnection);
+    d->cleanAction.reset(new QAction("Clean"));
+    actionInit(d->cleanAction.get(), "Build.Clean", dpfservice::MWM_BUILD, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_C));
 }
 
-void MenuManager::handleRunStateChanged(BuildManager::BuildState state)
+QSharedPointer<QAction> MenuManager::getActionPointer(ActionType actiontype)
+{
+    switch (actiontype) {
+    case ActionType::build:
+        return d->buildAction;
+    case ActionType::rebuild:
+        return d->rebuildAction;
+    case ActionType::clean:
+        return d->cleanAction;
+    }
+    return nullptr;
+}
+
+void MenuManager::handleRunStateChanged(BuildState state)
 {
     switch (state) {
-    case BuildManager::kNoBuild:
-    case BuildManager::kBuildFailed:
-        buildAction->setEnabled(true);
+    case BuildState::kNoBuild:
+    case BuildState::kBuildFailed:
+        d->buildAction->setEnabled(true);
         break;
-    case BuildManager::kBuilding:
-        buildAction->setEnabled(false);
+    case BuildState::kBuilding:
+        d->buildAction->setEnabled(false);
         break;
     }
 }

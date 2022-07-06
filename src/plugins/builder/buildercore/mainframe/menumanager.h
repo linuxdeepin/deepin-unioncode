@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,32 +23,38 @@
 #ifndef MENUMANAGER_H
 #define MENUMANAGER_H
 
-#include "buildmanager.h"
+#include "services/builder/builderglobals.h"
 
 #include <QObject>
 #include <QAction>
+
+enum ActionType
+{
+    build = 0,
+    rebuild,
+    clean
+};
 
 namespace dpfservice {
 class WindowService;
 }
 
+class MenuManagerPrivate;
 class MenuManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit MenuManager(QObject *parent = nullptr);
-
-    void initialize(dpfservice::WindowService *service);
+    explicit MenuManager(dpfservice::WindowService *service, QObject *parent = nullptr);
+    QSharedPointer<QAction> getActionPointer(ActionType actiontype);
 
 signals:
 
 public slots:
-    void handleRunStateChanged(BuildManager::BuildState state);
+    void handleRunStateChanged(BuildState state);
 
-private:
-    QSharedPointer<QAction> buildAction;
-    QSharedPointer<QAction> rebuildAction;
-    QSharedPointer<QAction> cleanAction;
+private:    
+    void initialize(dpfservice::WindowService *service);
+    MenuManagerPrivate *const d;
 };
 
 #endif // MENUMANAGER_H

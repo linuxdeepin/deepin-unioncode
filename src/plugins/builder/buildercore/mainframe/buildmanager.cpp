@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,96 +17,104 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#include "buildmanager.h"
-#include "buildstep.h"
-#include "buildoutputpane.h"
-#include "project.h"
-#include "buildtarget.h"
-#include "services/window/windowservice.h"
-#include "menumanager.h"
-#include "tasks/taskmanager.h"
-#include "commandstep.h"
-#include "transceiver/eventsender.h"
+ */
 
-#include <QtConcurrent>
-#include <QTextBlock>
+#include "buildmanager.h"
+#include "menumanager.h"
+#include "compileoutputpane.h"
+#include "problemoutputpane.h"
+#include "transceiver/buildersender.h"
+
+#include "services/builder/builderservice.h"
+#include "services/project/projectinfo.h"
 
 using namespace dpfservice;
+
+class BuildManagerPrivate
+{
+    friend class BuildManager;
+
+    QSharedPointer<MenuManager> menuManager;
+    CompileOutputPane *compileOutputPane = nullptr;
+    ProblemOutputPane *problemOutputPane = nullptr;
+};
+
 BuildManager *BuildManager::instance()
 {
     static BuildManager ins;
     return &ins;
 }
 
-void BuildManager::initialize(WindowService *windowService)
+BuildManager::BuildManager(QObject *parent)
+    : QObject(parent)
+    , d(new BuildManagerPrivate())
 {
-    qRegisterMetaType<BuildManager::BuildState>("BuildManager::BuildState");
 
-    project.reset(new Project(this));
-    menuManager.reset(new MenuManager(this));
-
-    menuManager->initialize(windowService);
 }
 
-bool BuildManager::buildList(const QList<BuildStep *> &_bsl, QString originCmd)
+BuildManager::~BuildManager()
 {
-    if (buildState == kBuilding) {
-        return false;
+    if (d) {
+        delete d;
     }
+}
 
-    TaskManager::instance()->clearTasks();
+void BuildManager::initialize(dpfservice::WindowService *windowService)
+{
+    d->menuManager.reset(new MenuManager(windowService));
+    d->compileOutputPane = new CompileOutputPane();
+    d->problemOutputPane = new ProblemOutputPane();
 
-    if (outputPane)
-        outputPane->clearContents();
+    QObject::connect(d->menuManager->getActionPointer(ActionType::build).get(), &QAction::triggered,
+                     BuildManager::instance(), &BuildManager::buildActivedProject, Qt::DirectConnection);
+    QObject::connect(d->menuManager->getActionPointer(ActionType::rebuild).get(), &QAction::triggered,
+                     BuildManager::instance(), &BuildManager::rebuildActivedProject, Qt::DirectConnection);
+    QObject::connect(d->menuManager->getActionPointer(ActionType::clean).get(), &QAction::triggered,
+                     BuildManager::instance(), &BuildManager::cleanActivedProject, Qt::DirectConnection);
 
-    // Notify listeners.
+}
+
+CompileOutputPane *BuildManager::getCompileOutputPane() const
+{
+    return d->compileOutputPane;
+}
+
+ProblemOutputPane *BuildManager::getProblemOutputPane() const
+{
+    return d->problemOutputPane;
+}
+
+void BuildManager::buildActivedProject()
+{
+    BuilderSender::menuBuild();
+    startBuild();
+}
+
+void BuildManager::rebuildActivedProject()
+{
+    BuilderSender::menuReBuild();
+    startBuild();
+}
+
+void BuildManager::cleanActivedProject()
+{
+    BuilderSender::menuClean();
+    startBuild();
+}
+
+void BuildManager::dispatchCommand(const QString &program, const QStringList &arguments, const QString &workingDir)
+{
+    BuilderSender::sendCommand(program, arguments, workingDir);
+}
+
+void BuildManager::startBuild()
+{
+    d->compileOutputPane->clearContents();
+    d->problemOutputPane->clearContents();
     emit buildStarted();
-
-    bsl = _bsl;
-    initBuildList(bsl);
-
-    buildState = kBuilding;
-    menuManager->handleRunStateChanged(buildState);
-    QtConcurrent::run([=](){
-        QMutexLocker locker(&releaseMutex);
-        bool success = true;
-        for (auto step : bsl) {
-            if (step) {
-                success &= step->run();
-            }
-        }
-        buildState = success ? kNoBuild : kBuildFailed;
-        QMetaObject::invokeMethod(menuManager.get(), "handleRunStateChanged",
-                                  Q_ARG(BuildManager::BuildState, buildState));
-
-        EventSender::notifyBuildState(buildState, originCmd);
-    });
-    return true;
 }
 
-BuildStep *BuildManager::makeCommandStep(const QString &cmd, const QStringList &args, QString outputDirectory)
-{
-    auto cmdStep = new CommandStep();
-    cmdStep->setBuildOutputDir(outputDirectory);
-    cmdStep->setCommand(cmd, args);
-    return cmdStep;
-}
-
-BuildOutputPane *BuildManager::getOutputPane() const
-{
-    return outputPane;
-}
-
-void BuildManager::destroy()
-{
-    // Wait for finished.
-    QMutexLocker locker(&releaseMutex);
-
-    // Do something.
-}
-
-void BuildManager::slotOutput(const QString &content, OutputFormat format)
+void BuildManager::outputCompileInfo(const QString &content, OutputFormat format)
 {
     QString outputContent = content;
     if (format == NormalMessage) {
@@ -115,73 +123,16 @@ void BuildManager::slotOutput(const QString &content, OutputFormat format)
         outputContent = time + ":" + content + "\r";
     }
 
-    outputPane->appendText(outputContent, format);
+    d->compileOutputPane->appendText(outputContent, format);
 }
 
-void BuildManager::buildProject()
+void BuildManager::outputProblemInfo(const Task &task, int linkedOutputLines, int skipLines)
 {
-    auto step = makeBuildStep();
-    buildList({step});
+    d->problemOutputPane->addTask(task, linkedOutputLines, skipLines);
 }
 
-void BuildManager::rebuildProject()
+void BuildManager::buildStateChanged(BuildState state, QString originCmd)
 {
-    auto cleanStep = makeCleanStep();
-    auto buildStep = makeBuildStep();
-    buildList({cleanStep, buildStep});
-}
-
-void BuildManager::cleanProject()
-{
-    auto step = makeCleanStep();
-    buildList({step});
-}
-
-BuildManager::BuildManager(QObject *parent) : QObject(parent)
-{
-    outputPane = new BuildOutputPane();
-}
-
-BuildManager::~BuildManager()
-{
-    destroy();
-}
-
-bool BuildManager::initBuildList(const QList<BuildStep *> &bsl)
-{
-    if (!outputPane)
-        return false;
-
-    // TODO(mozart) : more initialization will be done here.
-    for (auto step : bsl) {
-        connect(step, &BuildStep::addOutput, this, &BuildManager::slotOutput, Qt::QueuedConnection);
-        connect(step, &BuildStep::addTask, TaskManager::instance(), &TaskManager::slotAddTask, Qt::QueuedConnection);
-    }
-    return true;
-}
-
-BuildStep *BuildManager::makeBuildStep()
-{
-    return makeStep(kBuildTarget);
-}
-
-BuildStep *BuildManager::makeCleanStep()
-{
-    return makeStep(kCleanTarget);
-}
-
-BuildStep *BuildManager::makeStep(TargetType type)
-{
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (projectService && projectService->getActiveTarget) {
-        auto target = projectService->getActiveTarget(type);
-        if (target.buildCommand.isEmpty()) {
-            BuildManager::instance()->getOutputPane()->appendText("Nothing to do.");
-        } else {
-            QStringList args = target.buildArguments << target.buildTarget;
-            return makeCommandStep(target.buildCommand, args, target.outputPath);
-        }
-    }
-    return nullptr;
+    BuilderSender::notifyBuildState(state, originCmd);
+    d->menuManager->handleRunStateChanged(state);
 }

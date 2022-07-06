@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "taskmanager.h"
-#include "transceiver/eventsender.h"
+#include "transceiver/buildersender.h"
 
 TaskManager *TaskManager::instance()
 {
@@ -81,6 +81,6 @@ void TaskManager::triggerDefaultHandler(const QModelIndex &index)
         return;
 
     if (task.file.exists()) {
-        EventSender::jumpTo(task.file.toString(), task.movedLine);
+        BuilderSender::jumpTo(task.file.toString(), task.movedLine);
     }
 }
