@@ -13,6 +13,8 @@ compile_commands.json
 src/app/config.h
 moc_*
 mocs_*
+*.pyc
+*.vscode
 
 # cmake include modules
 !3rdparty/*.cmake
