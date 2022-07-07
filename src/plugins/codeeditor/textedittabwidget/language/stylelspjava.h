@@ -18,40 +18,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef LANGUAGE_H
-#define LANGUAGE_H
+#ifndef STYLELSPJAVA_H
+#define STYLELSPJAVA_H
 
-#include "common/type/menuext.h"
+#include "textedittabwidget/style/stylelsp.h"
 
-#include <QString>
-#include <QSet>
-
-namespace support_file {
-
-struct Language
+class TextEdit;
+class StyleLspJava : public StyleLsp
 {
-    enum_def(Key_2, QString)
-    {
-        enum_exp suffix = "suffix";
-        enum_exp base = "base";
-        enum_exp mimeType = "mimeType";
-        enum_exp tokenWords = "tokenWords";
-    };
-
-    static QString globalPath();
-    static QString userPath();
-
-    static void initialize();
-    static bool recovery();
-
-    static QStringList ids();
-    static QString id(const QString &filePath);
-    static QMap<int, QString> tokenWords(const QString &id);
-    static QSet<QString> suffixs(const QString &id);
-    static QSet<QString> bases(const QString &id);
-    static QSet<QString> mimeTypes(const QString &id);
+public:
+    StyleLspJava(TextEdit *parent);
 };
 
-}
-
-#endif // LANGUAGE_H
+#endif // STYLELSPJAVA_H

@@ -599,11 +599,6 @@ void StyleLsp::renameRequest(const QString &newText)
     }
 }
 
-StyleLsp::ServerInfo StyleLsp::clientInfoSpec(StyleLsp::ServerInfo info)
-{
-    return info;
-}
-
 StyleLsp::IndicStyleExt StyleLsp::symbolIndic(lsp::SemanticTokenType::type_value token,
                                               QList<lsp::SemanticTokenType::type_index> modifier)
 {

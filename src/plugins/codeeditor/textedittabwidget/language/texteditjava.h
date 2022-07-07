@@ -18,40 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef LANGUAGE_H
-#define LANGUAGE_H
+#ifndef TEXTEDITJAVA_H
+#define TEXTEDITJAVA_H
 
-#include "common/type/menuext.h"
+#include "textedittabwidget/textedit.h"
 
-#include <QString>
-#include <QSet>
-
-namespace support_file {
-
-struct Language
+class TextEditJavaPrivate;
+class TextEditJava : public TextEdit
 {
-    enum_def(Key_2, QString)
-    {
-        enum_exp suffix = "suffix";
-        enum_exp base = "base";
-        enum_exp mimeType = "mimeType";
-        enum_exp tokenWords = "tokenWords";
-    };
+    Q_OBJECT
+    TextEditJavaPrivate *const d;
+public:
+    explicit TextEditJava(QWidget * parent = nullptr);
+    virtual ~TextEditJava();
+    virtual QString supportLanguage();
+    static QString implLanguage();
 
-    static QString globalPath();
-    static QString userPath();
-
-    static void initialize();
-    static bool recovery();
-
-    static QStringList ids();
-    static QString id(const QString &filePath);
-    static QMap<int, QString> tokenWords(const QString &id);
-    static QSet<QString> suffixs(const QString &id);
-    static QSet<QString> bases(const QString &id);
-    static QSet<QString> mimeTypes(const QString &id);
+    virtual StyleLsp *getStyleLsp() const;
+    virtual StyleSci *getStyleSci() const;
+    virtual StyleJsonFile *getStyleFile() const;
 };
 
-}
-
-#endif // LANGUAGE_H
+#endif // TEXTEDITJAVA_H

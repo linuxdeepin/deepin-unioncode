@@ -78,13 +78,6 @@ public:
     virtual lsp::Client *getClient() const;
     virtual void initLspConnection(); //setting main
 
-    /* Client Info Specialization, matching client portals for various environments.
-     * If to use "clangd" client, exist more "clangd" from folder /usr/bin and in other folder,
-     * you should make it clear where you should use it.
-     * This function does this work, which is similar to the specialized template function
-     */
-    typedef support_file::Language::ServerInfo ServerInfo;
-    virtual ServerInfo clientInfoSpec(ServerInfo info);
     virtual IndicStyleExt symbolIndic(lsp::SemanticTokenType::type_value token,
                                       QList<lsp::SemanticTokenType::type_index> modifier);
     /*!

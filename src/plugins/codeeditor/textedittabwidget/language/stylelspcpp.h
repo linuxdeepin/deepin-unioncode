@@ -28,7 +28,6 @@ class StyleLspCpp : public StyleLsp
     Q_OBJECT
 public:
     StyleLspCpp(TextEdit *parent);
-    virtual ServerInfo clientInfoSpec(ServerInfo info) override;
     virtual IndicStyleExt symbolIndic(lsp::SemanticTokenType::type_value token,
                                       QList<lsp::SemanticTokenModifier::type_index> modifier) override;
 };

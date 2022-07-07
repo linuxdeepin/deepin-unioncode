@@ -28,6 +28,9 @@ set(CXX_CPP
     textedittabwidget/style/stylesci.cpp
     textedittabwidget/style/stylelsp.cpp
     textedittabwidget/style/stylejsonfile.cpp
+    textedittabwidget/language/texteditjava.cpp
+    textedittabwidget/language/stylelspjava.cpp
+    textedittabwidget/language/stylescijava.cpp
     textedittabwidget/language/texteditcpp.cpp
     textedittabwidget/language/stylelspcpp.cpp
     textedittabwidget/language/stylescicpp.cpp
@@ -58,7 +61,10 @@ set(CXX_H
     textedittabwidget/style/stylesci.h
     textedittabwidget/style/stylelsp.h
     textedittabwidget/style/stylejsonfile.h
+    textedittabwidget/language/texteditjava.h
     textedittabwidget/language/texteditcmake.h
+    textedittabwidget/language/stylelspjava.h
+    textedittabwidget/language/stylescijava.h
     textedittabwidget/language/stylelspcmake.h
     textedittabwidget/language/stylescicmake.h
     textedittabwidget/language/texteditcpp.h

@@ -130,46 +130,45 @@ void MavenAsynParse::parseActions(const dpfservice::ProjectInfo &info)
 
         if (e.tagName() == "build")
         {
-            QDomNode buildNode = e.firstChild();
-            while (!buildNode.isNull()) {
-                auto buildElem = buildNode.toElement();
-                QDomNode pmChildNode = buildElem.firstChild();
-                if (buildElem.tagName() == "pluginManagement") {
-                    while (!pmChildNode.isNull()) {
-                        auto pmChildElem = pmChildNode.toElement();
-                        QDomNode pluginsChild = pmChildElem.firstChild();
-                        ProjectActionInfos actionInfos;
-                        if (pmChildElem.tagName() == "plugins") {
-                            while (!pluginsChild.isNull()) {
-                                auto pluginsElem = pluginsChild.toElement();
-                                QDomNode pluginChild = pluginsElem.firstChild();
-                                if (pluginsElem.tagName() == "plugin") {
-                                    while (!pluginChild.isNull()) {
-                                        auto pluginElem = pluginChild.toElement();
-                                        if ("artifactId" == pluginElem.tagName()) {
-                                            ProjectActionInfo actionInfo;
-                                            actionInfo.buildProgram = "mvn";
-                                            actionInfo.workingDirectory = xmlFileInfo.path();
-                                            QString buildArg = pluginElem.text()
-                                                    .replace("maven-", "")
-                                                    .replace("-plugin", "");
-                                            actionInfo.buildArguments.append(buildArg);
-                                            actionInfo.displyText = buildArg;
-                                            actionInfo.tooltip = pluginElem.text();
-                                            actionInfos.append(actionInfo);
-                                        }
-                                        pluginChild = pluginChild.nextSibling();
-                                    }
-                                } // pluginsElem.tagName() == "plugin"
-                                pluginsChild = pluginsChild.nextSibling();
-                            }
-                            if (!actionInfos.isEmpty())
-                                emit parsedActions({actionInfos, true});
-                        } // pmChildElem.tagName() == "plugins"
-                        pmChildNode = pmChildNode.nextSibling();
+            QDomNode findNode = e.firstChild();
+            while (!findNode.isNull()) {
+                qInfo() << findNode.toElement().tagName();
+                auto findElem = findNode.toElement();
+                if (findElem.tagName() != "plugins") {
+                    if (findElem.hasChildNodes()) {
+                        findNode = findElem.firstChild();
+                        continue;
                     }
+                } else {
+                    ProjectActionInfos actionInfos;
+                    QDomNode pluginsChild = findElem.firstChild();
+                    while (!pluginsChild.isNull()) {
+                        auto pluginsElem = pluginsChild.toElement();
+                        QDomNode pluginChild = pluginsElem.firstChild();
+                        if (pluginsElem.tagName() == "plugin") {
+                            while (!pluginChild.isNull()) {
+                                auto pluginElem = pluginChild.toElement();
+                                if ("artifactId" == pluginElem.tagName()) {
+                                    ProjectActionInfo actionInfo;
+                                    actionInfo.buildProgram = "mvn";
+                                    actionInfo.workingDirectory = xmlFileInfo.filePath();
+                                    QString buildArg = pluginElem.text()
+                                            .replace("maven-", "")
+                                            .replace("-plugin", "");
+                                    actionInfo.buildArguments.append(buildArg);
+                                    actionInfo.displyText = buildArg;
+                                    actionInfo.tooltip = pluginElem.text();
+                                    actionInfos.append(actionInfo);
+                                }
+                                pluginChild = pluginChild.nextSibling();
+                            }
+                        } // pluginsElem.tagName() == "plugin"
+                        pluginsChild = pluginsChild.nextSibling();
+                    }
+                    if (!actionInfos.isEmpty())
+                        emit parsedActions({actionInfos, true});
                 } // buildElem.tagName() == "pluginManagement"
-                buildNode = buildNode.nextSibling();
+                findNode = findNode.nextSibling();
             }
         }// e.tagName() == "build"
         n = n.nextSibling();

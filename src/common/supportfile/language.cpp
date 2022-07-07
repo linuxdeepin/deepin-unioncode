@@ -61,10 +61,11 @@ void Language::initialize()
         return;
     }
 
+    QJsonParseError err;
     QFile file(globalPath());
     if (file.open(QFile::ReadOnly)) {
         auto data = file.readAll();
-        documents::languageGlobal = QJsonDocument::fromJson(data);
+        documents::languageGlobal = QJsonDocument::fromJson(data, &err);
         file.close();
     }
 
@@ -72,7 +73,8 @@ void Language::initialize()
         ContextDialog::ok(QObject::tr("The format of the language configuration file is incorrect or damaged. "
                                       "Check that the file is released correctly. "
                                       "If it cannot be solved, reinstall the software to solve the problem"));
-        qCritical() << QString("Failed, %0 jsonDoc is Empty.").arg(globalPath());
+        qCritical() << QString("Failed, %0 jsonDoc is Empty. ").arg(globalPath())
+                       + "errorString: " + err.errorString();
         abort();
     }
 }
@@ -124,18 +126,6 @@ QString Language::id(const QString &filePath)
     }
 
     return "";
-}
-
-Language::ServerInfo Language::sever(const QString &id)
-{
-    auto idObj = documents::languageGlobal.object().value(id).toObject();
-    auto server = idObj.value(Key_2::get()->server).toString();
-    auto serverArguments = idObj.value(Key_2::get()->serverArguments).toArray();
-    QStringList args;
-    for (auto arg : serverArguments) {
-        args << arg.toString();
-    }
-    return ServerInfo{server, args};
 }
 
 QMap<int, QString> Language::tokenWords(const QString &id)

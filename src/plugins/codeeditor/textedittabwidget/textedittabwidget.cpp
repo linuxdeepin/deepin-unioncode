@@ -185,7 +185,9 @@ void TextEditTabWidget::openFile(const Head &head, const QString &filePath)
     QObject::connect(edit, &TextEdit::fileSaved, d->tab,
                      &TextEditTabBar::doFileSaved, Qt::UniqueConnection);
 
-    QObject::connect(d->tab, &TextEditTabBar::saveFile, this, &TextEditTabWidget::saveEditFile, Qt::UniqueConnection);
+    QObject::connect(d->tab, &TextEditTabBar::saveFile,
+                     this, &TextEditTabWidget::saveEditFile,
+                     Qt::UniqueConnection);
 
     if (edit)
         edit->setFile(info.filePath(), head);

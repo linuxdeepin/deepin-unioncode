@@ -31,6 +31,7 @@
 #include "textedittabwidget/textedittabwidget.h"
 #include "textedittabwidget/language/texteditcpp.h"
 #include "textedittabwidget/language/texteditcmake.h"
+#include "textedittabwidget/language/texteditjava.h"
 
 #include "services/window/windowservice.h"
 
@@ -48,6 +49,7 @@ void CodeEditor::initialize()
     TextEditKeeper::impl<TextEdit>("");
     TextEditKeeper::impl<TextEditCpp>(TextEditCpp::implLanguage());
     TextEditKeeper::impl<TextEditCmake>(TextEditCmake::implLanguage());
+    TextEditKeeper::impl<TextEditJava>(TextEditJava::implLanguage());
 }
 
 bool CodeEditor::start()
