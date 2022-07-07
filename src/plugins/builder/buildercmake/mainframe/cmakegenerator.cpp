@@ -57,6 +57,11 @@ CMakeGenerator::CMakeGenerator()
                      [=](BuildState state, QString originCmds) {
         builderService->interface.buildStateChanged(state, originCmds);
     });
+
+    QObject::connect(CMakeManager::instance(), &CMakeManager::buildStart,
+                     [=]() {
+        builderService->interface.buildStart();
+    });
 }
 
 CMakeGenerator::~CMakeGenerator()

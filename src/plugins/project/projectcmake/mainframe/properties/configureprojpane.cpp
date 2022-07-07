@@ -203,18 +203,11 @@ void ConfigureProjPane::slotParameterChanged()
 
 void ConfigureProjPane::setupUi(QWidget *widget)
 {
-    // center layout.
-    auto horizontalLayout = new QHBoxLayout(widget);
-    horizontalLayout->setSpacing(6);
-    horizontalLayout->setContentsMargins(11, 11, 11, 11);
-
     // content layout.
     auto btnSignalConnect = [this](QPushButton *btn) {
         connect(btn, &QPushButton::clicked, this, &ConfigureProjPane::slotBrowseBtnClicked);
     };
 
-    auto gridLayout = new QGridLayout();
-    gridLayout->setSpacing(6);
     auto btnDebug = new QPushButton(widget);
     btnDebug->setText(tr("Browse..."));
     btnDebug->setObjectName(QStringLiteral("btnDebug"));
@@ -239,7 +232,7 @@ void ConfigureProjPane::setupUi(QWidget *widget)
     d->cbRelease->setText(tr("Release"));
 
     d->cbRWithDInfo = new QRadioButton(widget);
-    d->cbRWithDInfo->setText(tr("Release with Debug Information"));
+    d->cbRWithDInfo->setText(tr("Release with Debug Info"));
 
     d->cbMiniSize = new QRadioButton(widget);
     d->cbMiniSize->setText(tr("Minimum Size Release"));
@@ -267,28 +260,39 @@ void ConfigureProjPane::setupUi(QWidget *widget)
 
     auto btnConfigure = new QPushButton(widget);
     btnConfigure->setText(tr("Configure"));
+    btnConfigure->setMinimumHeight(40);
     btnConfigure->connect(btnConfigure, &QPushButton::clicked, this, &ConfigureProjPane::slotConfigureDone);
 
+    d->lineEditDebug->setMinimumWidth(300);
+    d->lineEditRelease->setMinimumWidth(300);
+    d->lineEditMiniSize->setMinimumWidth(300);
+    d->lineEditRWithDInfo->setMinimumWidth(300);
+
     // add to layout.
-    gridLayout->addWidget(btnDebug, 1, 2, 1, 1);
-    gridLayout->addWidget(btnRelease, 2, 2, 1, 1);
-    gridLayout->addWidget(d->lineEditDebug, 1, 1, 1, 1);
-    gridLayout->addWidget(btnRWithDInfo, 3, 2, 1, 1);
+    auto gridLayout = new QGridLayout();
+    gridLayout->setSpacing(5);
+    gridLayout->addWidget(d->cbDesktop, 0, 0, 1, 1);
     gridLayout->addWidget(d->cbDebug, 1, 0, 1, 1);
     gridLayout->addWidget(d->cbRelease, 2, 0, 1, 1);
     gridLayout->addWidget(d->cbRWithDInfo, 3, 0, 1, 1);
     gridLayout->addWidget(d->cbMiniSize, 4, 0, 1, 1);
+    gridLayout->addWidget(d->lineEditDebug, 1, 1, 1, 1);
     gridLayout->addWidget(d->lineEditRelease, 2, 1, 1, 1);
-    gridLayout->addWidget(d->cbDesktop, 0, 0, 1, 1);
-    gridLayout->addWidget(d->lineEditMiniSize, 4, 1, 1, 1);
-    gridLayout->addWidget(btnMinimumSize, 4, 2, 1, 1);
     gridLayout->addWidget(d->lineEditRWithDInfo, 3, 1, 1, 1);
+    gridLayout->addWidget(d->lineEditMiniSize, 4, 1, 1, 1);
+    gridLayout->addWidget(btnDebug, 1, 2, 1, 1);
+    gridLayout->addWidget(btnRelease, 2, 2, 1, 1);
+    gridLayout->addWidget(btnRWithDInfo, 3, 2, 1, 1);
+    gridLayout->addWidget(btnMinimumSize, 4, 2, 1, 1);
     gridLayout->addWidget(btnConfigure, 5, 2, 1, 1);
 
+
+    // center layout.
+    auto horizontalLayout = new QHBoxLayout(widget);
     horizontalLayout->addLayout(gridLayout);
 
     // leave space at right.
-    auto horizontalSpacer = new QSpacerItem(200, 0, QSizePolicy::Preferred, QSizePolicy::Preferred);
+    auto horizontalSpacer = new QSpacerItem(10, 0, QSizePolicy::Preferred, QSizePolicy::Preferred);
     horizontalLayout->addItem(horizontalSpacer);
 
     connect(d->lineEditDebug, &QLineEdit::textChanged, this, &ConfigureProjPane::slotParameterChanged);

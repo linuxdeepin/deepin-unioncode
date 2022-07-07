@@ -45,6 +45,7 @@ ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
     : QWidget (parent)
     , d(new ConfigPropertyWidgetPrivate())
 {
+    setWindowTitle(tr("Config"));
     // Initialize stackedWidget.
     d->stackedWidget = new QStackedWidget(this);
 

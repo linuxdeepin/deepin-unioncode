@@ -27,6 +27,7 @@
 
 #include <QtConcurrent>
 
+const QString CMD_CMAKE = "cmake";
 using namespace dpfservice;
 
 class CMakeManagerPrivate
@@ -57,9 +58,10 @@ CMakeManager::~CMakeManager()
 
 void CMakeManager::executeBuildCommand(const QString &program, const QStringList &arguments, const QString &workingDir)
 {
-    if (program.trimmed() != "cmake")
+    if (program.trimmed() != CMD_CMAKE)
         return;
 
+    emit buildStart();
     auto buildstep = BuildManager::instance()->makeCommandStep(program, arguments);
     BuildManager::instance()->buildList({buildstep}, program + " " + arguments.join(" "));
 }

@@ -46,6 +46,7 @@ signals:
     void addCompileOutput(const QString &content, OutputFormat format);
     void addProblemOutput(const Task &task, int linkedOutputLines, int skipLines);
     void buildStateChanged(BuildState state, QString originCmds);
+    void buildStart();
 
 public slots:
 

@@ -58,6 +58,11 @@ public:
      * \param originCmds
      */
     DPF_INTERFACE(void, buildStateChanged, BuildState state, QString originCmds);
+
+    /*!
+     * \brief buildStart
+     */
+    DPF_INTERFACE(void, buildStart);
 };
 
 #endif // BUILDERINTERFACE_H

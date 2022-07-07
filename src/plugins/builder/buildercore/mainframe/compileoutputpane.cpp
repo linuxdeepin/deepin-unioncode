@@ -121,7 +121,7 @@ void CompileOutputPane::appendText(const QString &textIn, const QTextCharFormat 
         d->cursor.insertText(doNewlineEnforcement(tr("Additional output omitted") + QLatin1Char('\n')), tmp);
     }
 
-    //d->cursor.endEditBlock(); //todo
+    d->cursor.endEditBlock();
     if (atBottom)
         scrollToBottom();
 }

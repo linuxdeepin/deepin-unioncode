@@ -57,6 +57,11 @@ MavenGenerator::MavenGenerator()
                      [=](BuildState state, QString originCmds) {
         builderService->interface.buildStateChanged(state, originCmds);
     });
+
+    QObject::connect(MavenManager::instance(), &MavenManager::buildStart,
+                     [=]() {
+        builderService->interface.buildStart();
+    });
 }
 
 MavenGenerator::~MavenGenerator()

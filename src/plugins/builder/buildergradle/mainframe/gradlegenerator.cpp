@@ -57,6 +57,11 @@ GradleGenerator::GradleGenerator()
                      [=](BuildState state, QString originCmds) {
         builderService->interface.buildStateChanged(state, originCmds);
     });
+
+    QObject::connect(GradleManager::instance(), &GradleManager::buildStart,
+                     [=]() {
+        builderService->interface.buildStart();
+    });
 }
 
 GradleGenerator::~GradleGenerator()

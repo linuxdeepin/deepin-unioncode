@@ -63,6 +63,7 @@ bool BuilderCore::start()
         builderService->interface.problemOutput = std::bind(&BuildManager::outputProblemInfo, BuildManager::instance(), _1, _2, _3);
         builderService->interface.builderCommand = std::bind(&BuildManager::dispatchCommand, BuildManager::instance(), _1, _2, _3);
         builderService->interface.buildStateChanged = std::bind(&BuildManager::buildStateChanged, BuildManager::instance(), _1, _2);
+        builderService->interface.buildStart = std::bind(&BuildManager::startBuild, BuildManager::instance());
     }
 
     return true;

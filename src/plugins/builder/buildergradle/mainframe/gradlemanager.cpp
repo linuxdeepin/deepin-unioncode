@@ -26,6 +26,7 @@
 
 #include <QtConcurrent>
 
+const QString CMD_GRADLE = "gradle";
 using namespace dpfservice;
 
 class GradleManagerPrivate
@@ -56,9 +57,10 @@ GradleManager::~GradleManager()
 
 void GradleManager::executeBuildCommand(const QString &program, const QStringList &arguments, const QString &workingDir)
 {
-    if (program.trimmed() != "gradle")
+    if (program.trimmed() != CMD_GRADLE)
         return;
 
+    emit buildStart();
     QtConcurrent::run(this, &GradleManager::execCommand, program, arguments, workingDir);
 }
 

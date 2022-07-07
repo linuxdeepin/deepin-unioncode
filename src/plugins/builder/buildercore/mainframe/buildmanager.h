@@ -51,6 +51,7 @@ public:
 
     void dispatchCommand(const QString &program, const QStringList &arguments, const QString &workingDir);
     void buildStateChanged(BuildState state, QString originCmd);
+    void startBuild();
 
 signals:
     void buildStarted();
@@ -63,8 +64,6 @@ public slots:
 private:
     explicit BuildManager(QObject *parent = nullptr);
     virtual ~BuildManager();
-
-    void startBuild();
 
     BuildManagerPrivate *const d;
 };

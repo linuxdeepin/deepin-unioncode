@@ -30,6 +30,8 @@
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QHBoxLayout>
+#include <QDesktopWidget>
+#include <QApplication>
 
 namespace {
 CMakeOpenHandler *ins {nullptr};
@@ -105,6 +107,9 @@ void CMakeOpenHandler::doProjectOpen(const QString &name, const QString &languag
         configWidget->setAttribute(Qt::WA_DeleteOnClose, true);
         configWidget->setWindowModality(Qt::ApplicationModal);
         configWidget->setAttribute(Qt::WA_ShowModal, true);
+        QDesktopWidget *desktop = QApplication::desktop();
+        configWidget->move((desktop->width() - configWidget->width()) / 2,
+                           (desktop->height() - configWidget->height()) / 2);
         configWidget->show();
     }
 }

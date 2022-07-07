@@ -28,6 +28,7 @@
 
 #include <QtConcurrent>
 
+const QString CMD_MAVEN = "mvn";
 using namespace dpfservice;
 
 class MavenManagerPrivate
@@ -58,9 +59,10 @@ MavenManager::~MavenManager()
 
 void MavenManager::executeBuildCommand(const QString &program, const QStringList &arguments, const QString &workingDir)
 {
-    if (program.trimmed() != "mvn")
+    if (program.trimmed() != CMD_MAVEN)
         return;
 
+    emit buildStart();
     QtConcurrent::run(this, &MavenManager::execCommand, program, arguments, workingDir);
 }
 
