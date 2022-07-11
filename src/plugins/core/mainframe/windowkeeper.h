@@ -27,7 +27,6 @@
 #include "base/abstractmenubar.h"
 #include "base/abstractmainwindow.h"
 #include "base/abstractcentral.h"
-#include "processdialog.h"
 
 #include <framework/framework.h>
 
@@ -63,11 +62,6 @@ public slots:
     void addOpenProjectAction(const QString &name, AbstractAction *action);
     void initUserWidget();
     void switchWidgetNavigation(const QString &navName);
-    void showProcessDisplay();
-    void appendProcessMessage(const QString &mess, int currentPercent,
-                              int maxPrecent = 100);
-    void hideProcessDisplay();
-    void showOptionsDlg();
     void showAboutDlg();
 
 private :

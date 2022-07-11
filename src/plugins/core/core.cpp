@@ -56,13 +56,6 @@ bool Core::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
-        QObject::connect(windowService, &WindowService::showMessageDisplay,
-                         WindowKeeper::instace(), &WindowKeeper::showProcessDisplay);
-        QObject::connect(windowService, &WindowService::hideMessageDisplay,
-                         WindowKeeper::instace(), &WindowKeeper::hideProcessDisplay);
-        QObject::connect(windowService, &WindowService::appendProcessMessage,
-                         WindowKeeper::instace(), &WindowKeeper::appendProcessMessage);
-
         using namespace std::placeholders;
         if (!windowService->switchWidgetNavigation) {
             windowService->switchWidgetNavigation = std::bind(&WindowKeeper::switchWidgetNavigation,

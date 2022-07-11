@@ -20,6 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "toolchecker.h"
+#include "mainframe/backendchecker.h"
+
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
 #include "base/abstractcentral.h"
@@ -28,9 +30,13 @@
 
 #include <QAction>
 #include <QLabel>
+#include <QDialog>
+#include <QProgressBar>
 
 using namespace dpfservice;
-
+namespace {
+    BackendChecker *check;
+}
 void ToolChecker::initialize()
 {
 
@@ -39,12 +45,12 @@ void ToolChecker::initialize()
 bool ToolChecker::start()
 {
     qInfo() << __FUNCTION__;
-    auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    check = new BackendChecker;
     return true;
 }
 
 dpf::Plugin::ShutdownFlag ToolChecker::stop()
 {
+    delete check;
     return Sync;
 }

@@ -1,65 +1,90 @@
 #include "processdialog.h"
-#include "common/common.h"
-#include <QLabel>
-#include <QTextBrowser>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 
-class ProcessDialogPrivate
-{
-    friend class ProcessDialog;
-    StatusWidget *statusWidget = nullptr;
-    QTextBrowser *messageBrowser = nullptr;
-    QHBoxLayout *hLayout = nullptr;
-};
+#include <QDebug>
 
 ProcessDialog::ProcessDialog(QWidget *parent, Qt::WindowFlags f)
     : QDialog (parent, f)
-    , d (new ProcessDialogPrivate)
+    , progressBar(new QProgressBar)
+    , textBrowser(new QTextBrowser)
+    , vLayout(new QVBoxLayout)
 {
-    setAutoFillBackground(true);
-    int lineHeight = this->fontMetrics().height();
-    this->setMinimumWidth(500);
-    this->setMinimumHeight(lineHeight * 2);
-    d->statusWidget = new StatusWidget();
-    d->statusWidget->setPatternFlags(StatusWidget::PatternFlag::Ring);
-    d->statusWidget->setFixedSize(lineHeight * 2, lineHeight * 2);
-    d->messageBrowser = new QTextBrowser();
-    d->hLayout = new QHBoxLayout();
+    setWindowTitle(__FUNCTION__);
+    setMinimumSize(600, 400);
+    setAttribute(Qt::WA_DeleteOnClose);
 
-    this->setLayout(d->hLayout);
-    d->hLayout->addWidget(d->statusWidget);
-    d->hLayout->addWidget(d->messageBrowser);
+    vLayout->addWidget(textBrowser);
+    vLayout->addWidget(progressBar);
+    setLayout(vLayout);
+
+    setAttribute(Qt::WA_DeleteOnClose);
+    QObject::connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                     this, &ProcessDialog::doRequestFinished);
+    QObject::connect(&process, &QProcess::readyReadStandardOutput,
+                     this, [&](){
+        auto data = process.readAllStandardOutput();
+        this->doShowRequestError(data);
+    });
+    QObject::connect(&process, &QProcess::readyReadStandardError,
+                     this, [&](){
+        auto data = process.readAllStandardError();
+        this->doShowRequestError(data);
+    });
 }
 
-ProcessDialog::~ProcessDialog()
+void ProcessDialog::setProgram(const QString &program)
 {
-    if (d) {
-        delete d;
-    }
+    process.setProgram(program);
 }
 
-ProcessDialog *ProcessDialog::globalInstance()
+QString ProcessDialog::program() const
 {
-    static ProcessDialog dialog;
-    return &dialog;
+    return process.program();
 }
 
-void ProcessDialog::setRunning(bool runable)
+void ProcessDialog::setArguments(const QStringList &args)
 {
-    if (runable)
-        d->statusWidget->start();
-    else
-        d->statusWidget->stop();
+    process.setArguments(args);
 }
 
-ProcessDialog &ProcessDialog::operator <<(const QString &message)
+QStringList ProcessDialog::arguments()
 {
-    d->messageBrowser->append(message);
-    return *this;
+    return process.arguments();
 }
 
-void ProcessDialog::setTitle(const QString &title)
+void ProcessDialog::setWorkDirectory(const QString &workDir)
 {
-    setWindowTitle(title);
+    process.setWorkingDirectory(workDir);
+}
+
+QString ProcessDialog::workDirectory() const
+{
+    return process.workingDirectory();
+}
+
+void ProcessDialog::doShowRequestError(const QByteArray &array)
+{
+    textBrowser->append(array);
+}
+
+void ProcessDialog::doShowRequestOutput(const QByteArray &array)
+{
+    textBrowser->append(array);
+}
+
+void ProcessDialog::doRequestFinished(int exitCode, QProcess::ExitStatus status)
+{
+    this->close();
+    qInfo() << exitCode << status;
+}
+
+void ProcessDialog::doShowProgress(int current, int count)
+{
+    progressBar->setRange(0, count);
+    progressBar->setValue(current);
+}
+
+void ProcessDialog::showEvent(QShowEvent *event)
+{
+    process.start();
+    return QDialog::showEvent(event);
 }

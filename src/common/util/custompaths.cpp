@@ -165,6 +165,8 @@ QString CustomPaths::user(CustomPaths::Flags flage)
         return PathMode::usreCachePath() + QDir::separator() + "extensions";
     case Configures:
         return PathMode::userConfigurePath() + QDir::separator() + "configures";
+    case Scripts:
+        return PathMode::userConfigurePath() + QDir::separator() + "Scripts";
     default:
         return "";
     }

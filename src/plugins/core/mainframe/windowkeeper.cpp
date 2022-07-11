@@ -46,7 +46,6 @@ class WindowKeeperPrivate
     QMainWindow *window{nullptr};
     QActionGroup *navActionGroup{nullptr};
     QToolBar *toolbar{nullptr};
-    ProcessDialog processDisplay;
 
     friend class WindowKeeper;
 };
@@ -510,46 +509,6 @@ void WindowKeeper::switchWidgetNavigation(const QString &navName)
 
     d->window->setCentralWidget(widget);
     d->window->centralWidget()->show();
-}
-
-void WindowKeeper::showProcessDisplay()
-{
-    if (d->processDisplay.width() != 300 || d->processDisplay.height() != 200) {
-        d->processDisplay.setFixedSize(300, 200);
-    }
-    if (!d->processDisplay.windowFlags().testFlag(Qt::ToolTip))
-        d->processDisplay.setWindowFlag(Qt::ToolTip);
-    d->window->geometry();
-    d->processDisplay.move(d->window->geometry().topLeft());
-    d->processDisplay.show();
-}
-
-void WindowKeeper::appendProcessMessage(const QString &mess, int currentPercent, int maxPrecent)
-{
-    Q_UNUSED(currentPercent)
-    Q_UNUSED(maxPrecent)
-    d->processDisplay << mess;
-}
-
-void WindowKeeper::hideProcessDisplay()
-{
-    static QTimer timer;
-    static qreal lever = d->processDisplay.windowOpacity();
-    d->processDisplay.hide();
-    QObject::connect(&timer, &QTimer::timeout, [=](){
-        if (d->processDisplay.windowOpacity() < 0.1) {
-            d->processDisplay.hide();
-            d->processDisplay.setWindowOpacity(1);
-        } else {
-            lever -= 0.1;
-            d->processDisplay.setWindowOpacity(lever);
-        }
-    });
-    timer.start(200);
-}
-
-void WindowKeeper::showOptionsDlg()
-{
 }
 
 void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)

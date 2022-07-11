@@ -3,11 +3,17 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-toolchecker)
 
 set(CXX_CPP
+    mainframe/processdialog.cpp
+    mainframe/wgetdialog.cpp
+    mainframe/backendchecker.cpp
     toolchecker.cpp
     toolchecker.json
     )
 
 set(CXX_H
+    mainframe/processdialog.h
+    mainframe/wgetdialog.h
+    mainframe/backendchecker.h
     toolchecker.h
     )
 

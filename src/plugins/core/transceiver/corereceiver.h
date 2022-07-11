@@ -35,6 +35,5 @@ public:
     static QStringList topics();
     virtual void eventProcess(const dpf::Event& event);
     virtual void navEvent(const dpf::Event& event);
-    virtual void processMessageEvent(const dpf::Event &event);
 };
 #endif // CORERECEIVER_H

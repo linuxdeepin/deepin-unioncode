@@ -2,19 +2,35 @@
 #define PROCESSDIALOG_H
 
 #include <QDialog>
+#include <QProcess>
+#include <QProgressBar>
+#include <QTextBrowser>
+#include <QVBoxLayout>
 
-class ProcessDialogPrivate;
 class ProcessDialog : public QDialog
 {
     Q_OBJECT
-    ProcessDialogPrivate *const d;
 public:
     explicit ProcessDialog(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
-    virtual ~ProcessDialog();
-    static ProcessDialog* globalInstance();
-    void setRunning(bool runable);
-    ProcessDialog& operator << (const QString &message);
-    void setTitle(const QString &title);
+    void setProgram(const QString & program);
+    QString program() const;
+    void setArguments(const QStringList &args);
+    QStringList arguments();
+    void setWorkDirectory(const QString &workDir);
+    QString workDirectory() const;
+
+protected:
+    virtual void doShowRequestError(const QByteArray &array);
+    virtual void doShowRequestOutput(const QByteArray &array);
+    virtual void doRequestFinished(int exitCode, QProcess::ExitStatus status);
+    virtual void doShowProgress(int current, int count);
+    virtual void showEvent(QShowEvent *event) override;
+
+protected:
+    QProcess process;
+    QProgressBar *progressBar{nullptr};
+    QTextBrowser *textBrowser{nullptr};
+    QVBoxLayout *vLayout{nullptr};
 };
 
 #endif // PROCESSDIALOG_H
