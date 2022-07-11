@@ -30,7 +30,5 @@ target_link_libraries(${PROJECT_NAME}
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
-
-file(GLOB SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/porting-script/*.*")
-install(FILES ${SCRIPT} DESTINATION "${PLUGIN_INSTALL_PATH}/porting-script")
+install(DIRECTORY porting-script/ DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/porting-script")
 

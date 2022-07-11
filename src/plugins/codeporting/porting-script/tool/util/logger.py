@@ -20,7 +20,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 """
-"""logger"""
 
 import logging
 import logging.handlers
@@ -56,7 +55,7 @@ class Logger:
         timestamp = time.strftime("%Y-%m-%d",time.localtime())
         logfilename = '%s.txt' % timestamp
         logfilepath = os.path.join(cls.logs_dir, logfilename)
-        rotatingFileHandler = logging.handlers.RotatingFileHandler(filename=logfilename,
+        rotatingFileHandler = logging.handlers.RotatingFileHandler(filename=logfilepath,
         maxBytes=1024*1024*50, backupCount=2)
         
         # set log formate

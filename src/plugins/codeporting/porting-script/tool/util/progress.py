@@ -20,49 +20,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 """
-# global config parameters
 
 from collections import namedtuple
-from enum import Enum, unique
 
+MigrateProgress = namedtuple('MigrateProgress', ['status', 'progress', 'phase', 'info'])
 
-@unique
-class MatcherType(Enum):
-    InvalidMatcher = -1
-    CppMatcher = 0
-    MakefileMatcher = 1
+class Progress:
+    def __init__(self):
+        self.status = 0
+        self.progress = 0
+        self.phase = 0
+        self.info = 'has not start'
+        self.base = 0
+        self.max = 100
+    
+    def get(self):
+        return self.status, self.phase, self.progress, self.info
 
-
-file_matcher = {'cppfiles': MatcherType.CppMatcher,
-                'makefiles': MatcherType.MakefileMatcher,
-                'cheaders': '', # TODO(mozart):todo
-                'sofiles': ''} # TODO(mozart):todo
-
-MatchResult = namedtuple('MatchResult', [
-    'file_path',
-    'code_range',
-    'key',
-    'suggestion',
-    'file_type'
-])
-
-RulesPattern = namedtuple('RulesPattern', [
-    'c',
-    'make'
-])
-
-RulesDict = namedtuple('RulesDict', [
-    'c',
-    'make',
-    'dest_asm'
-])
-
-
-class ToolConfig:
-    SUPPORT_CPU_ARCH = ["x86_64", "arm64", "mips64el", "alpha"]
-    tool_dir = ''
-    work_dir = ''
-    config_dir = ''
-    dirs = {}
-    log_name = 'temp'
-    porting_tool_db_path = ''
+    def start_phase(self, base, ulimit, phase, info):
+        self.base = base 
+        self.ulimit = ulimit
+        self.phase = phase
+        self.info = info
+    
+    def step_file(self, current_num, total_num):
+        self.progress = self.base + current_num / total_num * (self.ulimit - self.base)

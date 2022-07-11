@@ -29,6 +29,7 @@ import os
 import sys
 import threading
 import time
+from tool.api.scan import ScanApi
 
 from tool.tool_config import ToolConfig
 from tool.util.logger import Logger
@@ -76,32 +77,37 @@ def args():
 
     return {"src": args.src, "src_cpu": args.scpu, "dest_cpu": args.dcpu}
 
-def get_progress():
-    i = 0
-    while i <= 100:
-        print("\r", end="")
-        print("Scan progress [{}]: {}%: ".format("this is output", i),
-        "▋" * (i // 2), end="")
+def get_progress(scan_api):
+    while int(scan_api.progress.progress) <= 100:
+        print('\r', end='')
+        print('Scan progress [{}]: {}%:'.format(scan_api.progress.info, int(scan_api.progress.progress)),
+        "▋" * (int(scan_api.progress.progress) // 2), end="")
         sys.stdout.flush()
-        time.sleep(0.02)
-        i += 1
+        time.sleep(0.05)
+        if int(scan_api.progress.progress) == 100:
+            break
 
-def scaning(argumnets):
-    t = threading.Thread(target=get_progress)
+def start_scan_src(input_dict):
+    scan_api = ScanApi(input_dict)
+    t = threading.Thread(target=get_progress, args=(scan_api,))
     t.start()
-
-    # Wait until the thread terminates
+    scan_api.import_rules()
+    no_make_file = scan_api.start_scan()
+    if len(no_make_file):
+        LOGGER.warning('no makefile in [%s]' % no_make_file)
+    # scan_api.scan_src()
+    scan_api.progress.progress = 100
     t.join()
 
 
 if __name__ == '__main__':
     config_tool()
-    Logger.config(ToolConfig.dirs["log_dir"], ToolConfig.log_name, 'WARN', 'DEBUG')
+    # Logger.config(ToolConfig.dirs["log_dir"], ToolConfig.log_name, 'WARN', 'DEBUG')
+    Logger.config(ToolConfig.dirs["log_dir"], ToolConfig.log_name, 'INFO', 'INFO')
     cmdArguments = args()
     print(cmdArguments)
     LOGGER.info("info test")
-    LOGGER.debug("debug test")
-    scaning(cmdArguments)
+    start_scan_src(cmdArguments)
     
 
 
