@@ -60,7 +60,7 @@ bool GnuMakeParser::hasFatalErrors() const
     return (fatalErrorCount > 0) || IOutputParser::hasFatalErrors();
 }
 
-void GnuMakeParser::stdOutput(const QString &line)
+void GnuMakeParser::stdOutput(const QString &line, OutputFormat format)
 {
     const QString lne = rightTrimmed(line);
 
@@ -73,7 +73,7 @@ void GnuMakeParser::stdOutput(const QString &line)
         return;
     }
 
-    IOutputParser::stdOutput(line);
+    IOutputParser::stdOutput(line, format);
 }
 
 class Result {

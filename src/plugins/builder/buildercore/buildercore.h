@@ -37,10 +37,7 @@ public:
     virtual dpf::Plugin::ShutdownFlag stop() override;
 
 public slots:
-    void slotSwitchOutputPane();
-
 private:
-    dpfservice::WindowService *windowService = nullptr;
 };
 
 #endif // BUILDERPLUGIN_H

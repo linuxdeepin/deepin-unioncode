@@ -74,11 +74,6 @@ CmakeGenerator::CmakeGenerator()
         qCritical() << "Failed, not found service : builderService";
         abort();
     }
-
-    QObject::connect(this, &ProjectGenerator::targetExecute,
-                     [=](const QString &cmd, const QStringList &args) {
-        emit builderService->interface.builderCommand(cmd, args, "");
-    });
 }
 
 CmakeGenerator::~CmakeGenerator()
@@ -121,7 +116,8 @@ QWidget *CmakeGenerator::configureWidget(const QString &language,
 
     // show build type config pane.
     ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, projectPath);
-    QObject::connect(configPropertyWidget, &ConfigPropertyWidget::configureDone, [this](const dpfservice::ProjectInfo &info) {
+    QObject::connect(configPropertyWidget, &ConfigPropertyWidget::configureDone,
+                     [this](const dpfservice::ProjectInfo &info) {
         configure(info);
     });
 
@@ -130,15 +126,25 @@ QWidget *CmakeGenerator::configureWidget(const QString &language,
 
 bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
 {
-    // cache project info, asyn end to use
-    d->configureProjectInfo = info;
 
-    // asyn execute command generat project file from cmake
-    ProjectCmakeProxy::instance()->setbuildOriginCmd(infoBuildCmd(info).join(" "));
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
+    if (builderService) {
+        // cache project info, asyn end to use
+        d->configureProjectInfo = info;
 
-    emit targetExecute(info.buildProgram(), info.buildCustomArgs());
+        BuildCommandInfo commandInfo;
+        commandInfo.kitName = info.kitName();
+        commandInfo.program = info.buildProgram();
+        commandInfo.arguments = info.buildCustomArgs();
+        commandInfo.workingDir = info.workspaceFolder();
+
+        builderService->interface.builderCommand(commandInfo, true);
+    }
 
     Generator::started(); // emit starded
+
     return true;
 }
 
@@ -195,11 +201,16 @@ QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
     // free parse from syn
     delete parse;
 
+    auto root = ProjectGenerator::root(const_cast<QStandardItem *>(item));
+    if (!root)
+        return menu;
+
     if (!targetBuilds.isEmpty()) {
         menu = new QMenu();
         for (auto val : targetBuilds) {
             QAction *action = new QAction();
             action->setText(val.buildName);
+            action->setProperty("workDir", dpfservice::ProjectInfo::get(root).workspaceFolder());
             action->setProperty(CDT_CPROJECT_KEY::get()->buildCommand.toLatin1(), val.buildCommand);
             action->setProperty(CDT_CPROJECT_KEY::get()->buildArguments.toLatin1(), val.buildArguments);
             action->setProperty(CDT_CPROJECT_KEY::get()->buildTarget.toLatin1(), val.buildTarget);
@@ -223,11 +234,13 @@ QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
 
 void CmakeGenerator::actionTriggered()
 {
+    using namespace dpfservice;
     QAction *action = qobject_cast<QAction*>(sender());
     if (action) {
         QString program = action->property(CDT_CPROJECT_KEY::get()->buildCommand.toLatin1()).toString();
         QStringList args = action->property(CDT_CPROJECT_KEY::get()->buildArguments.toLatin1()).toString().split(" ");
         args << action->property(CDT_CPROJECT_KEY::get()->buildTarget.toLatin1()).toString();
+        QString workDir = action->property("workDir").toString();
 
         // remove extra quotes and empty argument.
         QStringList argsFiltered;
@@ -236,7 +249,18 @@ void CmakeGenerator::actionTriggered()
                 argsFiltered << arg.replace("\"", "");
             }
         }
-        emit targetExecute(program, argsFiltered);
+
+        using namespace dpfservice;
+        auto &ctx = dpfInstance.serviceContext();
+        BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
+        if (builderService) {
+            BuildCommandInfo commandInfo;
+            commandInfo.kitName = CmakeGenerator::toolKitName();
+            commandInfo.program = program;
+            commandInfo.arguments = args;
+            commandInfo.workingDir = workDir;
+            builderService->interface.builderCommand(commandInfo, false);
+        }
     }
 }
 
@@ -272,8 +296,7 @@ void CmakeGenerator::setRootItemToView(QStandardItem *root)
     }
 }
 
-static QMutex mutex;
-void CmakeGenerator::doBuildCmdExecuteEnd(const QString &cmd, int status)
+void CmakeGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, int status)
 {
     // configure function cached info
     if (d->configureProjectInfo.isEmpty())
@@ -289,7 +312,8 @@ void CmakeGenerator::doBuildCmdExecuteEnd(const QString &cmd, int status)
     mutex.lock();
     QStandardItem *reloadItem = nullptr;
     for (auto val : d->reloadCmakeFileItems) {
-        if(cmd == infoBuildCmd(ProjectInfo::get(val)).join(" ")) {
+        if(info.program == d->configureProjectInfo.buildProgram()
+                && info.arguments == d->configureProjectInfo.buildCustomArgs()) {
             reloadItem = val;
             break;
         }
@@ -302,7 +326,10 @@ void CmakeGenerator::doBuildCmdExecuteEnd(const QString &cmd, int status)
             projectService->projectView.removeRootItem(reloadItem);
             createRootItem(d->configureProjectInfo);
         } else {
-            qCritical() << "Failed execute cmd : " << cmd << "status : " << status;
+            qCritical() << "Failed execute cmd : "
+                        << info.program
+                        << info.arguments.join(" ")
+                        << "status : " << status;
         }
     } else {
         createRootItem(d->configureProjectInfo);
@@ -315,7 +342,7 @@ void CmakeGenerator::doBuildCmdExecuteEnd(const QString &cmd, int status)
 
 void CmakeGenerator::doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files)
 {
-    Q_UNUSED(files);
+    Q_UNUSED(files)
 
     if (d->reloadCmakeFileItems.contains(root))
         return;
@@ -331,13 +358,6 @@ void CmakeGenerator::doCmakeFileNodeChanged(QStandardItem *root, const QPair<QSt
 
     // reconfigure project info
     configure(proInfo);
-}
-
-QStringList CmakeGenerator::infoBuildCmd(const dpfservice::ProjectInfo &info) const
-{
-    QStringList args = info.buildCustomArgs();
-    args.push_front(info.buildProgram());
-    return args;
 }
 
 void CmakeGenerator::actionProperties()

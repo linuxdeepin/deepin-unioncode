@@ -37,14 +37,15 @@ public:
     ~CompileOutputPane() override;
 
     void clearContents();
-    void appendText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
     void appendText(const QString &text, OutputFormat format);
 
+private:
+    QString normalizeNewlines(const QString &text);
+
+    void appendCustomText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
     bool isScrollbarAtBottom() const;
     QString doNewlineEnforcement(const QString &out);
     void scrollToBottom();
-private:
-    QString normalizeNewlines(const QString &text);
 
     CompileOutputPanePrivate *d = nullptr;
 };

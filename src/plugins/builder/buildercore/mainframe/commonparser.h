@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,36 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef BUILDTARGET_H
-#define BUILDTARGET_H
+#ifndef COMMONPARSER_H
+#define COMMONPARSER_H
 
-#include <QObject>
+#include "services/builder/ioutputparser.h"
 
-/**
- * @brief Will be refactored in the future.
- */
-class BuildStep;
-class Project;
-class BuildTarget : public QObject
+class CommonParser : public IOutputParser
 {
     Q_OBJECT
 public:
-    BuildTarget(Project *pro);
-    ~BuildTarget();
-
-    QString buildOutputDirectory() const;
-    QList<BuildStep *> &getbuildSteps();
-
-private:
-    bool constructBuildSteps();
-    void clear();
-
-    QList<BuildStep *> buildSteps;
-    Project *project;
-
-signals:
-
-public slots:
+    CommonParser();
+    void stdOutput(const QString &line, OutputFormat format) override;
+    void stdError(const QString &line) override;
 };
 
-#endif // BUILDTARGET_H
+#endif // ANSIFILTERPARSER_H

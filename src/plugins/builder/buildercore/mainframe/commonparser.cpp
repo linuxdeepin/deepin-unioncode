@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,31 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef PROJECT_H
-#define PROJECT_H
+#include "commonparser.h"
 
-#include <QObject>
-#include "services/builder/builderglobals.h"
-
-class BuildTarget;
-class Project : public QObject
+CommonParser::CommonParser()
 {
-    Q_OBJECT
-public:
-    explicit Project(QObject *parent = nullptr);
+    setObjectName(QLatin1String("CommonParser"));
+}
 
-    QString projectFilePath() const;
-    QString projectDirectory() const;
-    QString rootProjectDirectory() const;
+void CommonParser::stdOutput(const QString &line, OutputFormat format)
+{
+    IOutputParser::stdOutput(line, format);
+}
 
-    BuildTarget *activeTarget() const;
-    ToolChainType toolChainType() const;
-signals:
+void CommonParser::stdError(const QString &line)
+{
+    IOutputParser::stdError(line);
+}
 
-public slots:
-
-private:
-    BuildTarget *curTarget = nullptr;
-};
-
-#endif // PROJECT_H

@@ -82,7 +82,7 @@ public:
      * \return
      */
     virtual QStandardItem *createRootItem(const ProjectInfo &info) {
-        Q_UNUSED(info);
+        Q_UNUSED(info)
         return nullptr;
     }
 
@@ -92,7 +92,7 @@ public:
      * \param info
      */
     virtual void removeRootItem(QStandardItem *root) {
-        Q_UNUSED(root);
+        Q_UNUSED(root)
     }
 
     /*!
@@ -103,7 +103,7 @@ public:
      * \return
      */
     virtual QMenu* createItemMenu(const QStandardItem *item) {
-        Q_UNUSED(item);
+        Q_UNUSED(item)
         return nullptr;
     }
 
@@ -136,15 +136,6 @@ public:
             return root(parent);
         return child;
     }
-
-Q_SIGNALS:
-    /*!
-     * \brief targetExecute 工程目标执行指令.
-     *  使用该信号, 由于当前插件不隶属于构建系统,需要构建生成并且统计构建错误，则需要与builder插件通信
-     * \param program 执行程序
-     * \param arguments 参数
-     */
-    void targetExecute(const QString &program, const QStringList &arguments);
 
 protected:
     template<class T> struct ParseInfo

@@ -42,7 +42,6 @@ bool BuilderMaven::start()
             builderService->create<MavenGenerator>(MavenGenerator::toolKitName(), &errorString);
         }
     }
-
     return true;
 }
 

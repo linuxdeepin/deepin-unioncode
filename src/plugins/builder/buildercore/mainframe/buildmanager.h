@@ -24,6 +24,7 @@
 
 #include "services/builder/builderglobals.h"
 #include "services/builder/task.h"
+#include "services/project/projectinfo.h"
 
 #include <QObject>
 #include <QSharedPointer>
@@ -41,29 +42,43 @@ class BuildManager : public QObject
     Q_OBJECT
 public:
     static BuildManager *instance();
-    void initialize(dpfservice::WindowService *service);
 
     CompileOutputPane *getCompileOutputPane() const;
     ProblemOutputPane *getProblemOutputPane() const;
 
-    void outputCompileInfo(const QString &content, OutputFormat format);
-    void outputProblemInfo(const Task &task, int linkedOutputLines, int skipLines);
+    void setActivedProjectInfo(const QString &kitName, const QString &workingDir);
+    void clearActivedProjectInfo();
 
-    void dispatchCommand(const QString &program, const QStringList &arguments, const QString &workingDir);
-    void buildStateChanged(BuildState state, QString originCmd);
-    void startBuild();
+    void handleCommand(const BuildCommandInfo &info, const bool needBack);
 
 signals:
-    void buildStarted();
+    void sigOutputCompileInfo(const QString &content, const OutputFormat format);
+    void sigOutputProblemInfo(const QString &content);
 
 public slots:
-    void buildActivedProject();
-    void rebuildActivedProject();
-    void cleanActivedProject();
+    void slotOutputCompileInfo(const QString &content, const OutputFormat format);
+    void slotOutputProblemInfo(const QString &content);
+    void addOutput(const QString &content, const OutputFormat format);
+    void buildProject();
+    void rebuildProject();
+    void cleanProject();
 
 private:
     explicit BuildManager(QObject *parent = nullptr);
     virtual ~BuildManager();
+
+    void addMenu();
+
+    void startBuild();
+    void outputLog(const QString &content, const OutputFormat format);
+    void outputError(const QString &content);
+
+    bool execCommands(const QList<BuildCommandInfo> &commandList, const bool needBack);
+    bool execCommand(const BuildCommandInfo &info, const bool needBack);
+
+    void execBuildStep(QList<BuildMenuType> menuTypelist);
+
+    QMutex releaseMutex;
 
     BuildManagerPrivate *const d;
 };

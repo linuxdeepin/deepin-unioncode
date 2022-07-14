@@ -24,6 +24,7 @@
 #include "transceiver/sendevents.h"
 #include "transceiver/projectgradlereceiver.h"
 #include "services/window/windowservice.h"
+#include "services/builder/builderservice.h"
 
 #include <QtConcurrent>
 #include <QtXml>
@@ -165,7 +166,7 @@ QStandardItem *GradleGenerator::createRootItem(const dpfservice::ProjectInfo &in
     QObject::connect(d->projectParses[rootItem],
                      &GradleAsynParse::itemsModified,
                      this, &GradleGenerator::doProjectChildsModified,
-                     Qt::UniqueConnection);
+                     Qt::ConnectionType::UniqueConnection);
     d->projectParses[rootItem]->parseProject(info);
 
     return rootItem;
@@ -271,8 +272,16 @@ void GradleGenerator::doGradleGeneratMenu(const QString &program,
                             QStringList taskChild = taskEnd.split(" - ");
                             if (taskChild.size() == 2) {
                                 QAction *action = new QAction(taskChild[0]);
-                                qInfo() << taskChild[1];
+                                qInfo() << taskChild[0] << taskChild[1];
                                 action->setToolTip(taskChild[1]);
+                                action->setProperty("kitName", GradleGenerator::toolKitName());
+#ifdef __WIN32__
+                                action->setPriority("program", "./gradlew.bat");
+#elif __linux__ ||  __apple__
+                                action->setProperty("program", "./gradlew");
+#endif
+                                action->setProperty("arguments", QStringList({"task", taskChild[0]}));
+                                action->setProperty("workDir", d->menuGenProcess->workingDirectory());
                                 QObject::connect(action, &QAction::triggered, this,
                                                  &GradleGenerator::doGradleTaskActionTriggered,
                                                  Qt::UniqueConnection);
@@ -303,7 +312,16 @@ void GradleGenerator::doGradleCleanMenu()
 void GradleGenerator::doGradleTaskActionTriggered()
 {
     QAction *action = qobject_cast<QAction*>(sender());
-    if (!action->text().isEmpty()){
-        // befor do execute gradle command
+    if (action) {
+        auto &ctx = dpfInstance.serviceContext();
+        auto builderService = ctx.service<dpfservice::BuilderService>(dpfservice::BuilderService::name());
+        if (builderService) {
+            BuildCommandInfo commandInfo;
+            commandInfo.kitName = action->property("kitName").toString();
+            commandInfo.program = action->property("program").toString();
+            commandInfo.arguments = action->property("arguments").toStringList();
+            commandInfo.workingDir = action->property("workDir").toString();
+            builderService->interface.builderCommand(commandInfo, false);
+        }
     }
 }

@@ -30,7 +30,7 @@ class AnsiFilterParser : public IOutputParser
 
 public:
     AnsiFilterParser();
-    void stdOutput(const QString &line) override;
+    void stdOutput(const QString &line, OutputFormat format) override;
     void stdError(const QString &line) override;
 
 private:

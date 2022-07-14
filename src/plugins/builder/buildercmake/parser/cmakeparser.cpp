@@ -45,6 +45,12 @@ CMakeParser::CMakeParser()
     QTC_CHECK(locationLine.isValid());
 }
 
+void CMakeParser::stdOutput(const QString &line, OutputFormat format)
+{
+    emit outputAdded(line, format);
+    IOutputParser::stdOutput(line, format);
+}
+
 void CMakeParser::stdError(const QString &line)
 {
     QString trimmedLine = rightTrimmed(line);

@@ -29,12 +29,8 @@ class BuilderSender final : QObject
 {
     Q_OBJECT
 public:
-    static void sendCommand(const QString &program, const QStringList &arguments, const QString &workingDir);
-    static void menuBuild();
-    static void menuReBuild();
-    static void menuClean();
     static void jumpTo(const QString &filePath, int lineNum);
-    static void notifyBuildState(BuildState state, QString originCmd);
+    static void notifyBuildState(BuildState state, const BuildCommandInfo &commandInfo);
 
 private:
     explicit BuilderSender(QObject *parent = nullptr);

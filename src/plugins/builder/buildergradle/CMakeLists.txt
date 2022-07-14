@@ -4,16 +4,14 @@ project(plugin-buildergradle)
 
 set(CXX_CPP
     mainframe/gradlegenerator.cpp
-    mainframe/gradlemanager.cpp
-    transceiver/gradlereceiver.cpp
+    parser/gradleparser.cpp
     buildergradle.cpp
     buildergradle.json
     )
 
 set(CXX_H
     mainframe/gradlegenerator.h
-    mainframe/gradlemanager.h
-    transceiver/gradlereceiver.h
+    parser/gradleparser.h
     buildergradle.h
     )
 

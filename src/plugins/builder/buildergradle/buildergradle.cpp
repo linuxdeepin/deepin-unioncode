@@ -25,16 +25,9 @@
 #include "service/pluginservicecontext.h"
 #include "services/project/projectservice.h"
 
-#include <QMenu>
-
 using namespace dpfservice;
 
 void BuilderGradle::initialize()
-{
-
-}
-
-bool BuilderGradle::start()
 {
     auto &ctx = dpfInstance.serviceContext();
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
@@ -45,6 +38,10 @@ bool BuilderGradle::start()
             builderService->create<GradleGenerator>(GradleGenerator::toolKitName(), &errorString);
         }
     }
+}
+
+bool BuilderGradle::start()
+{
     return true;
 }
 

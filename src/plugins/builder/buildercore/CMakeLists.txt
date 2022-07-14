@@ -7,11 +7,12 @@ set(CXX_CPP
     tasks/taskmanager.cpp
     tasks/taskdelegate.cpp
     tasks/taskview.cpp
+    transceiver/builderreceiver.cpp
     transceiver/buildersender.cpp
     mainframe/buildmanager.cpp
-    mainframe/menumanager.cpp
     mainframe/compileoutputpane.cpp
     mainframe/problemoutputpane.cpp
+    mainframe/commonparser.cpp
     buildercore.cpp
     buildercore.json
     )
@@ -21,11 +22,12 @@ set(CXX_H
     tasks/taskmanager.h
     tasks/taskdelegate.h
     tasks/taskview.h
+    transceiver/builderreceiver.h
     transceiver/buildersender.h
     mainframe/buildmanager.h
-    mainframe/menumanager.h
     mainframe/compileoutputpane.h
     mainframe/problemoutputpane.h
+    mainframe/commonparser.h
     buildercore.h
     )
 

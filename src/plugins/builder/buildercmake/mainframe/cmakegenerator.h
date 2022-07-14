@@ -36,6 +36,9 @@ public:
 
     static QString toolKitName() { return "cmake"; }
 
+    void getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType) override;
+    void appendOutputParser(std::unique_ptr<IOutputParser>& outputParser) override;
+
 signals:
 
 private slots:

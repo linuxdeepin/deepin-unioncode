@@ -350,6 +350,10 @@ WindowKeeper::WindowKeeper(QObject *parent)
     if (!windowService->addAction) {
         windowService->addAction = std::bind(&WindowKeeper::addAction, this, _1, _2);
     }
+
+    if (!windowService->removeActions) {
+        windowService->removeActions = std::bind(&WindowKeeper::removeActions, this, _1);
+    }
 }
 
 WindowKeeper::~WindowKeeper()
@@ -453,6 +457,20 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
                 }
             }
             qAction->menu()->addAction(inputAction);
+        }
+    }
+}
+
+void WindowKeeper::removeActions(const QString &menuName)
+{
+    qInfo() << __FUNCTION__;
+    for (QAction *qAction : d->window->menuBar()->actions()) {
+        if (qAction->text() == menuName) {
+            foreach (QAction *action, qAction->menu()->actions()) {
+                qAction->menu()->removeAction(action);
+            }
+
+            break;
         }
     }
 }

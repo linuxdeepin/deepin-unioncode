@@ -4,18 +4,14 @@ project(plugin-buildermaven)
 
 set(CXX_CPP
     mainframe/mavengenerator.cpp
-    mainframe/mavenmanager.cpp
     parser/mavenparser.cpp
-    transceiver/mavenreceiver.cpp
     buildermaven.cpp
     buildermaven.json
     )
 
 set(CXX_H
     mainframe/mavengenerator.h
-    mainframe/mavenmanager.h
     parser/mavenparser.h
-    transceiver/mavenreceiver.h
     buildermaven.h
     )
 

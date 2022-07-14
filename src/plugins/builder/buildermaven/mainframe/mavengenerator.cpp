@@ -19,49 +19,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "mavengenerator.h"
-#include "mavenmanager.h"
+#include "parser/mavenparser.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
-
-#include <QPushButton>
-
-using namespace dpfservice;
 
 class MavenGeneratorPrivate
 {
     friend class MavenGenerator;
-
 };
 
 MavenGenerator::MavenGenerator()
     : d(new MavenGeneratorPrivate())
 {
-    auto &ctx = dpfInstance.serviceContext();
-    auto builderService = ctx.service<BuilderService>(BuilderService::name());
-    if (!builderService) {
-        qCritical() << "Failed, not found service : builderService";
-        abort();
-    }
 
-    QObject::connect(MavenManager::instance(), &MavenManager::addCompileOutput,
-                     [=](const QString &content, OutputFormat outputFormat) {
-        builderService->interface.compileOutput(content, outputFormat);
-    });
-
-    QObject::connect(MavenManager::instance(), &MavenManager::addProblemOutput,
-                     [=](const Task &task, int linkedOutputLines, int skipLines) {
-        builderService->interface.problemOutput(task, linkedOutputLines, skipLines);
-    });
-
-    QObject::connect(MavenManager::instance(), &MavenManager::buildStateChanged,
-                     [=](BuildState state, QString originCmds) {
-        builderService->interface.buildStateChanged(state, originCmds);
-    });
-
-    QObject::connect(MavenManager::instance(), &MavenManager::buildStart,
-                     [=]() {
-        builderService->interface.buildStart();
-    });
 }
 
 MavenGenerator::~MavenGenerator()
@@ -70,3 +40,23 @@ MavenGenerator::~MavenGenerator()
         delete d;
 }
 
+void MavenGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType)
+{
+    info.program = "mvn";
+    switch (buildMenuType) {
+    case Build:
+        info.arguments.append("compile");
+        break;
+    case Clean:
+        info.arguments.append("clean");
+        break;
+    }
+}
+
+void MavenGenerator::appendOutputParser(std::unique_ptr<IOutputParser> &outputParser)
+{
+    if (outputParser) {
+        outputParser->takeOutputParserChain();
+        outputParser->appendOutputParser(new MavenParser());
+    }
+}

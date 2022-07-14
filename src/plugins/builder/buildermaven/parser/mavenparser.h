@@ -17,37 +17,24 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 #ifndef MAVENPARSER_H
 #define MAVENPARSER_H
 
 #include "services/builder/ioutputparser.h"
-#include "services/builder/task.h"
-
-#include <QObject>
-#include <QRegularExpression>
 
 class MavenParser : public IOutputParser
 {
     Q_OBJECT
+
 public:
     explicit MavenParser();
-    void stdError(const QString &line) override;
 
-protected:
-    void doFlush() override;
+    void stdOutput(const QString &line, OutputFormat format) override;
+    void stdError(const QString &line) override;
+    void taskAdded(const Task &task, int linkedLines, int skippedLines) override;
 
 private:
-    enum TripleLineError { NONE, LINE_LOCATION, LINE_DESCRIPTION, LINE_DESCRIPTION2 };
-
-    TripleLineError expectTripleLineErrorData = NONE;
-
-    Task lastTask;
-    QRegExp commonError;
-    QRegExp nextSubError;
-    QRegularExpression locationLine;
-    bool skippedFirstEmptyLine = false;
-    int lines = 0;
 };
 
 #endif // MAVENPARSER_H

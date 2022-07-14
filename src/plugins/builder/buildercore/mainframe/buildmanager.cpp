@@ -20,13 +20,18 @@
  */
 
 #include "buildmanager.h"
-#include "menumanager.h"
 #include "compileoutputpane.h"
 #include "problemoutputpane.h"
+#include "commonparser.h"
 #include "transceiver/buildersender.h"
 
 #include "services/builder/builderservice.h"
+#include "services/builder/ioutputparser.h"
+#include "services/window/windowservice.h"
 #include "services/project/projectinfo.h"
+#include "services/builder/buildergenerator.h"
+
+#include "base/abstractaction.h"
 
 using namespace dpfservice;
 
@@ -34,9 +39,17 @@ class BuildManagerPrivate
 {
     friend class BuildManager;
 
-    QSharedPointer<MenuManager> menuManager;
+    QSharedPointer<QAction> buildAction;
+    QSharedPointer<QAction> rebuildAction;
+    QSharedPointer<QAction> cleanAction;
+
     CompileOutputPane *compileOutputPane = nullptr;
     ProblemOutputPane *problemOutputPane = nullptr;
+
+    QString activedKitName;
+    QString activedWorkingDir;
+
+    std::unique_ptr<IOutputParser> outputParser = nullptr;
 };
 
 BuildManager *BuildManager::instance()
@@ -49,7 +62,16 @@ BuildManager::BuildManager(QObject *parent)
     : QObject(parent)
     , d(new BuildManagerPrivate())
 {
+    addMenu();
 
+    d->compileOutputPane = new CompileOutputPane();
+    d->problemOutputPane = new ProblemOutputPane();
+    d->outputParser.reset(new CommonParser());
+    connect(d->outputParser.get(), &IOutputParser::addOutput, this, &BuildManager::addOutput, Qt::DirectConnection);
+    connect(d->outputParser.get(), &IOutputParser::addTask, d->problemOutputPane, &ProblemOutputPane::addTask, Qt::DirectConnection);
+
+    QObject::connect(this, &BuildManager::sigOutputCompileInfo, this, &BuildManager::slotOutputCompileInfo);
+    QObject::connect(this, &BuildManager::sigOutputProblemInfo, this, &BuildManager::slotOutputProblemInfo);
 }
 
 BuildManager::~BuildManager()
@@ -59,19 +81,71 @@ BuildManager::~BuildManager()
     }
 }
 
-void BuildManager::initialize(dpfservice::WindowService *windowService)
+void BuildManager::addMenu()
 {
-    d->menuManager.reset(new MenuManager(windowService));
-    d->compileOutputPane = new CompileOutputPane();
-    d->problemOutputPane = new ProblemOutputPane();
+    auto &ctx = dpfInstance.serviceContext();
+    auto windowService = ctx.service<WindowService>(WindowService::name());
+    if (!windowService)
+        return;
 
-    QObject::connect(d->menuManager->getActionPointer(ActionType::build).get(), &QAction::triggered,
-                     BuildManager::instance(), &BuildManager::buildActivedProject, Qt::DirectConnection);
-    QObject::connect(d->menuManager->getActionPointer(ActionType::rebuild).get(), &QAction::triggered,
-                     BuildManager::instance(), &BuildManager::rebuildActivedProject, Qt::DirectConnection);
-    QObject::connect(d->menuManager->getActionPointer(ActionType::clean).get(), &QAction::triggered,
-                     BuildManager::instance(), &BuildManager::cleanActivedProject, Qt::DirectConnection);
+    auto actionInit = [&](QAction *action, QString actionID, QKeySequence key){
+        ActionManager::getInstance()->registerAction(action, actionID, action->text(), key);
+        AbstractAction *actionImpl = new AbstractAction(action);
+        windowService->addAction(dpfservice::MWM_BUILD, actionImpl);
+    };
 
+    d->buildAction.reset(new QAction("Build"));
+    actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
+
+    d->rebuildAction.reset(new QAction("Rebuild"));
+    actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B));
+
+    d->cleanAction.reset(new QAction("Clean"));
+    actionInit(d->cleanAction.get(), "Build.Clean", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_C));
+
+    QObject::connect(d->buildAction.get(), &QAction::triggered,
+                     this, &BuildManager::buildProject, Qt::DirectConnection);
+    QObject::connect(d->rebuildAction.get(), &QAction::triggered,
+                     this, &BuildManager::rebuildProject, Qt::DirectConnection);
+    QObject::connect(d->cleanAction.get(), &QAction::triggered,
+                     this, &BuildManager::cleanProject, Qt::DirectConnection);
+}
+
+void BuildManager::buildProject()
+{
+    execBuildStep({Build});
+}
+
+void BuildManager::rebuildProject()
+{
+    execBuildStep({Clean, Build});
+}
+
+void BuildManager::cleanProject()
+{
+    execBuildStep({Clean});
+}
+
+
+void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
+{
+    auto &ctx = dpfInstance.serviceContext();
+    auto builderService = ctx.service<BuilderService>(BuilderService::name());
+    if (builderService) {
+        auto generator = builderService->create<BuilderGenerator>(d->activedKitName);
+        if (generator) {
+            QList<BuildCommandInfo> list;
+            foreach (auto menuType, menuTypelist) {
+                BuildCommandInfo info;
+                info.kitName = d->activedKitName;
+                info.workingDir = d->activedWorkingDir;
+                generator->getMenuCommand(info, menuType);
+                list.append(info);
+            }
+            generator->appendOutputParser(d->outputParser);
+            execCommands(list, false);
+        }
+    }
 }
 
 CompileOutputPane *BuildManager::getCompileOutputPane() const
@@ -84,55 +158,145 @@ ProblemOutputPane *BuildManager::getProblemOutputPane() const
     return d->problemOutputPane;
 }
 
-void BuildManager::buildActivedProject()
-{
-    BuilderSender::menuBuild();
-    startBuild();
-}
-
-void BuildManager::rebuildActivedProject()
-{
-    BuilderSender::menuReBuild();
-    startBuild();
-}
-
-void BuildManager::cleanActivedProject()
-{
-    BuilderSender::menuClean();
-    startBuild();
-}
-
-void BuildManager::dispatchCommand(const QString &program, const QStringList &arguments, const QString &workingDir)
-{
-    BuilderSender::sendCommand(program, arguments, workingDir);
-}
-
 void BuildManager::startBuild()
 {
     d->compileOutputPane->clearContents();
     d->problemOutputPane->clearContents();
-    emit buildStarted();
+
+    auto &ctx = dpfInstance.serviceContext();
+    auto windowService = ctx.service<WindowService>(WindowService::name());
+    if (windowService) {
+        windowService->switchWidgetContext("Co&mpile Output");
+    }
 }
 
-void BuildManager::outputCompileInfo(const QString &content, OutputFormat format)
+void BuildManager::setActivedProjectInfo(const QString &kitName, const QString &workingDir)
 {
-    QString outputContent = content;
-    if (format == NormalMessage) {
-        QDateTime curDatetime = QDateTime::currentDateTime();
-        QString time = curDatetime.toString("hh:mm:ss");
-        outputContent = time + ":" + content + "\r";
+    d->activedKitName = kitName;
+    d->activedWorkingDir = workingDir;
+}
+
+void BuildManager::clearActivedProjectInfo()
+{
+    d->activedKitName.clear();
+    d->activedWorkingDir.clear();
+}
+
+void BuildManager::handleCommand(const BuildCommandInfo &commandInfo, const bool needBack)
+{
+    auto &ctx = dpfInstance.serviceContext();
+    auto builderService = ctx.service<BuilderService>(BuilderService::name());
+    if (builderService) {
+        auto generator = builderService->create<BuilderGenerator>(commandInfo.kitName);
+        if (generator) {
+            generator->appendOutputParser(d->outputParser);
+            execCommands({commandInfo}, needBack);
+        }
+    }
+}
+
+bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList, const bool needBack)
+{
+    if (!commandList.isEmpty()) {
+        startBuild();
+        QtConcurrent::run([=](){
+            QMutexLocker locker(&releaseMutex);
+            for (auto command : commandList) {
+                execCommand(command, needBack);
+            }
+        });
     }
 
-    d->compileOutputPane->appendText(outputContent, format);
+    return true;
 }
 
-void BuildManager::outputProblemInfo(const Task &task, int linkedOutputLines, int skipLines)
+bool BuildManager::execCommand(const BuildCommandInfo &info, const bool needBack)
 {
-    d->problemOutputPane->addTask(task, linkedOutputLines, skipLines);
+    bool ret = false;
+    QString retMsg;
+    QProcess process;
+    process.setWorkingDirectory(info.workingDir);
+
+    QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
+            .arg(info.program, info.arguments.join(" "), info.workingDir);
+    outputLog(startMsg, OutputFormat::NormalMessage);
+
+    connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+            [&](int exitcode, QProcess::ExitStatus exitStatus) {
+        if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
+            ret = true;
+            retMsg = tr("The process \"%1\" exited normally.\n").arg(process.program());
+        } else if (exitStatus == QProcess::NormalExit) {
+            ret = false;
+            retMsg = tr("The process \"%1\" exited with code %2.\n")
+                           .arg(process.program(), QString::number(exitcode));
+        } else {
+            ret = false;
+            retMsg = tr("The process \"%1\" crashed.\n")
+                           .arg(process.program());
+        }
+    });
+
+    connect(&process, &QProcess::readyReadStandardOutput, [&]() {
+        process.setReadChannel(QProcess::StandardOutput);
+        while (process.canReadLine()) {
+            QString line = QString::fromUtf8(process.readLine());
+            outputLog(line, OutputFormat::NormalMessage);
+        }
+    });
+
+    connect(&process, &QProcess::readyReadStandardError, [&]() {
+        process.setReadChannel(QProcess::StandardError);
+        while (process.canReadLine()) {
+            QString line = QString::fromUtf8(process.readLine());
+            outputLog(line, OutputFormat::Stderr);
+            outputError(line);
+        }
+    });
+
+    process.start(info.program, info.arguments);
+    process.waitForFinished();
+
+    outputLog(retMsg, ret ? OutputFormat::NormalMessage : OutputFormat::Stderr);
+
+    if (needBack) {
+        BuilderSender::notifyBuildState(ret ? BuildState::kNoBuild : BuildState::kBuildFailed, info);
+    }
+
+    QString endMsg = tr("Execute command finished.\n");
+    outputLog(endMsg, OutputFormat::NormalMessage);
+
+    return ret;
 }
 
-void BuildManager::buildStateChanged(BuildState state, QString originCmd)
+void BuildManager::outputLog(const QString &content, const OutputFormat format)
 {
-    BuilderSender::notifyBuildState(state, originCmd);
-    d->menuManager->handleRunStateChanged(state);
+    emit sigOutputCompileInfo(content, format);
+}
+
+void BuildManager::outputError(const QString &content)
+{
+    emit sigOutputProblemInfo(content);
+}
+
+void BuildManager::slotOutputCompileInfo(const QString &content, const OutputFormat format)
+{
+    d->outputParser->stdOutput(content, format);
+}
+
+void BuildManager::slotOutputProblemInfo(const QString &content)
+{
+    d->outputParser->stdError(content);
+}
+
+void BuildManager::addOutput(const QString &content, const OutputFormat format)
+{
+    QString newContent = content;
+    if (OutputFormat::NormalMessage == format
+            || OutputFormat::ErrorMessage == format) {
+        QDateTime curDatetime = QDateTime::currentDateTime();
+        QString time = curDatetime.toString("hh:mm:ss");
+        newContent = time + ": " + newContent + "\r";
+    }
+    d->compileOutputPane->appendText(newContent, format);
 }

@@ -1,10 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,29 +18,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef COMMANDSTEP_H
-#define COMMANDSTEP_H
+#ifndef GRADLEPARSER_H
+#define GRADLEPARSER_H
 
-#include "buildstep.h"
+#include "services/builder/ioutputparser.h"
 
-#include <QObject>
-
-class CommandStep : public BuildStep
+class GradleParser : public IOutputParser
 {
     Q_OBJECT
+
 public:
-    explicit CommandStep(QObject *parent = nullptr);
+    explicit GradleParser();
 
-    void setCommand(const QString &cmd, const QStringList &cmdParams);
-
-protected:
-    bool run() override;
+    void stdOutput(const QString &line, OutputFormat format) override;
+    void stdError(const QString &line) override;
+    void taskAdded(const Task &task, int linkedLines, int skippedLines) override;
 
 private:
-    bool runCommand();
 
-    QString cmd;
-    QStringList cmdParams;
 };
 
-#endif // COMMANDSTEP_H
+#endif // GRADLEPARSER_H

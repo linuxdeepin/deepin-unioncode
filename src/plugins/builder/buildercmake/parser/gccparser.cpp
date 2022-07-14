@@ -23,7 +23,6 @@
 
 #include "ldparser.h"
 #include "services/builder/task.h"
-#include "mainframe/buildmanager.h"
 
 #include "common/util/qtcassert.h"
 
@@ -134,10 +133,10 @@ void GccParser::stdError(const QString &line)
     IOutputParser::stdError(line);
 }
 
-void GccParser::stdOutput(const QString &line)
+void GccParser::stdOutput(const QString &line, OutputFormat format)
 {
     doFlush();
-    IOutputParser::stdOutput(line);
+    IOutputParser::stdOutput(line, format);
 }
 
 QString GccParser::id()

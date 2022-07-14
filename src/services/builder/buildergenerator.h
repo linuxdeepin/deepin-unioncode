@@ -21,18 +21,29 @@
 #ifndef BUILDERGENERATOR_H
 #define BUILDERGENERATOR_H
 
+#include "builderglobals.h"
 #include "common/common.h"
+#include "services/builder/ioutputparser.h"
 
 #include <QWidget>
+#include <QMenu>
 
 namespace dpfservice {
-
 class BuilderGenerator : public Generator
 {
     Q_OBJECT
 public:
     BuilderGenerator(){}
     virtual ~BuilderGenerator(){}
+
+    virtual void getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType) {
+        Q_UNUSED(info)
+        Q_UNUSED(buildMenuType)
+    }
+
+    virtual void appendOutputParser(std::unique_ptr<IOutputParser>& outputParser) {
+        Q_UNUSED(outputParser)
+    }
 };
 
 } // namespace dpfservice

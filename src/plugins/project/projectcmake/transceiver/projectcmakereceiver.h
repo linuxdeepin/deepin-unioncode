@@ -21,6 +21,9 @@
 #ifndef PROJECTRECEIVER_H
 #define PROJECTRECEIVER_H
 
+#include "services/project/projectinfo.h"
+#include "services/builder/builderglobals.h"
+
 #include <framework/framework.h>
 
 class ProjectCmakeReceiver : public dpf::EventHandler,
@@ -47,13 +50,12 @@ class ProjectCmakeProxy : public QObject
     Q_OBJECT
     ProjectCmakeProxy(){}
     ProjectCmakeProxy(const ProjectCmakeProxy&) = delete;
-    static QString buildOriginCmdCache;
+
 public:
     static ProjectCmakeProxy* instance();
-    static void setbuildOriginCmd(const QString &originCmd);
-    static QString buildOriginCmd();
+
 signals:
-    void buildExecuteEnd(const QString &cmd, int status = 0);
+    void buildExecuteEnd(const BuildCommandInfo &commandInfo, int status = 0);
 };
 
 #endif // PROJECTRECEIVER_H

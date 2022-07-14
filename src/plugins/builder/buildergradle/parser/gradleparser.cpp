@@ -18,35 +18,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "mavenparser.h"
+#include "gradleparser.h"
 
 #include "services/builder/task.h"
 #include "services/builder/fileutils.h"
 
 const char TASK_CATEGORY_BUILDSYSTEM[] = "Task.Category.Buildsystem";
 
-MavenParser::MavenParser()
+GradleParser::GradleParser()
 {
-    setObjectName(QLatin1String("MavenParser"));
+    setObjectName(QLatin1String("GradleParser"));
 }
 
-void MavenParser::stdOutput(const QString &line, OutputFormat format)
+void GradleParser::stdOutput(const QString &line, OutputFormat format)
 {
     QString newContent = line;
-    QRegExp exp("\\033\\[(\\d*;*\\d*)m");
-    newContent.replace(exp, "");
-
-    if (newContent.indexOf("[ERROR]") != -1) {
-        format = OutputFormat::ErrorMessage;
-        stdError(newContent);
-    }
-
     emit outputAdded(newContent, format);
 
     IOutputParser::stdOutput(newContent, format);
 }
 
-void MavenParser::stdError(const QString &line)
+void GradleParser::stdError(const QString &line)
 {
     taskAdded(Task(Task::Error,
                    line,
@@ -55,7 +47,7 @@ void MavenParser::stdError(const QString &line)
                    TASK_CATEGORY_BUILDSYSTEM), 1, 0);
 }
 
-void MavenParser::taskAdded(const Task &task, int linkedLines, int skippedLines)
+void GradleParser::taskAdded(const Task &task, int linkedLines, int skippedLines)
 {
     emit addTask(task, linkedLines, skippedLines);
 }

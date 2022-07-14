@@ -22,6 +22,7 @@
 #define CMAKEGENERATOR_H
 
 #include "services/project/projectservice.h"
+#include "services/builder/builderservice.h"
 
 #include <QObject>
 #include <QDomDocument>
@@ -48,7 +49,7 @@ signals:
 private slots:
     void actionTriggered();
     void setRootItemToView(QStandardItem *root);
-    void doBuildCmdExecuteEnd(const QString &cmd, int status);
+    void doBuildCmdExecuteEnd(const BuildCommandInfo &info, int status);
     void doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files);
     void actionProperties();
     void recursionRemoveItem(QStandardItem *item);
@@ -61,7 +62,8 @@ private:
     void cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash<QString, QString> &subprojectsMap);
     void cdt4SubprojectsDisplayOptimize(QStandardItem *item);
     QDomDocument cdt4LoadMenuXmlDoc(const QString &buildFolder);
-    QStringList infoBuildCmd(const dpfservice::ProjectInfo &info) const;
+
+    QMutex mutex;
 };
 
 #endif // CMAKEGENERATOR_H

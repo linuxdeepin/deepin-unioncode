@@ -62,16 +62,6 @@ public:
         return dynamic_cast<T*>(value);
     }
 
-    template<class T>
-    QString name(T* value) const{
-        return QtClassManager<T>::key(value);
-    }
-
-    template<class T>
-    QList<T*> values() const {
-        return QtClassManager<T>::values();
-    }
-
     BuilderInterface interface;
 };
 

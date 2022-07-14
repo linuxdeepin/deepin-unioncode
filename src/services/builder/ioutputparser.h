@@ -42,7 +42,7 @@ public:
     IOutputParser *childParser() const;
     void setChildParser(IOutputParser *parser);
 
-    virtual void stdOutput(const QString &line);
+    virtual void stdOutput(const QString &line, OutputFormat format);
     virtual void stdError(const QString &line);
 
     virtual bool hasFatalErrors() const;

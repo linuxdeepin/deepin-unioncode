@@ -19,49 +19,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "cmakegenerator.h"
-#include "cmakemanager.h"
-#include "services/window/windowservice.h"
-#include "services/builder/builderservice.h"
+#include "parser/ansifilterparser.h"
+#include "parser/gnumakeparser.h"
+#include "parser/gccparser.h"
+#include "parser/cmakeparser.h"
 
-#include <QPushButton>
+#include "services/builder/builderservice.h"
+#include "services/builder/ioutputparser.h"
+#include "services/project/projectservice.h"
 
 using namespace dpfservice;
 
 class CMakeGeneratorPrivate
 {
     friend class CMakeGenerator;
-
 };
 
 CMakeGenerator::CMakeGenerator()
     : d(new CMakeGeneratorPrivate())
 {
-    auto &ctx = dpfInstance.serviceContext();
-    auto builderService = ctx.service<BuilderService>(BuilderService::name());
-    if (!builderService) {
-        qCritical() << "Failed, not found service : builderService";
-        abort();
-    }
 
-    QObject::connect(CMakeManager::instance(), &CMakeManager::addCompileOutput,
-                     [=](const QString &content, OutputFormat outputFormat) {
-        builderService->interface.compileOutput(content, outputFormat);
-    });
-
-    QObject::connect(CMakeManager::instance(), &CMakeManager::addProblemOutput,
-                     [=](const Task &task, int linkedOutputLines, int skipLines) {
-        builderService->interface.problemOutput(task, linkedOutputLines, skipLines);
-    });
-
-    QObject::connect(CMakeManager::instance(), &CMakeManager::buildStateChanged,
-                     [=](BuildState state, QString originCmds) {
-        builderService->interface.buildStateChanged(state, originCmds);
-    });
-
-    QObject::connect(CMakeManager::instance(), &CMakeManager::buildStart,
-                     [=]() {
-        builderService->interface.buildStart();
-    });
 }
 
 CMakeGenerator::~CMakeGenerator()
@@ -70,3 +47,38 @@ CMakeGenerator::~CMakeGenerator()
         delete d;
 }
 
+void CMakeGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType)
+{
+    info.program = "cmake";
+    TargetType type = kBuildTarget;
+    switch (buildMenuType) {
+    case Build:
+        type = kBuildTarget;
+        break;
+    case Clean:
+        type = kCleanTarget;
+        break;
+    }
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService && projectService->getActiveTarget) {
+        auto target = projectService->getActiveTarget(type);
+        if (!target.buildCommand.isEmpty()) {
+            QStringList args = target.buildArguments << target.buildTarget;
+            info.program = target.buildCommand;
+            info.arguments = args;
+            info.workingDir = target.outputPath;
+        }
+    }
+}
+
+void CMakeGenerator::appendOutputParser(std::unique_ptr<IOutputParser>& outputParser)
+{
+    if (outputParser) {
+        outputParser->takeOutputParserChain();
+        outputParser->appendOutputParser(new AnsiFilterParser());
+        outputParser->appendOutputParser(new GnuMakeParser());
+        outputParser->appendOutputParser(new GccParser());
+        outputParser->appendOutputParser(new CMakeParser());
+    }
+}

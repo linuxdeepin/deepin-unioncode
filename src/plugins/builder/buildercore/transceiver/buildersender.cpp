@@ -33,41 +33,6 @@ BuilderSender::~BuilderSender()
 
 }
 
-void BuilderSender::sendCommand(const QString &program, const QStringList &arguments, const QString &workingDir)
-{
-    dpf::Event event;
-    event.setTopic(T_BUILDER);
-    event.setData(D_BUILD_COMMAND);
-    event.setProperty(P_BUILDPROGRAM, program);
-    event.setProperty(P_BUILDARGUMENTS, arguments);
-    event.setProperty(P_BUILDWORKINGDIR, workingDir);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
-void BuilderSender::menuBuild()
-{
-    dpf::Event event;
-    event.setTopic(T_BUILDER);
-    event.setData(D_MENU_BUILD);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
-void BuilderSender::menuReBuild()
-{
-    dpf::Event event;
-    event.setTopic(T_BUILDER);
-    event.setData(D_MENU_REBUILD);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
-void BuilderSender::menuClean()
-{
-    dpf::Event event;
-    event.setTopic(T_BUILDER);
-    event.setData(D_MENU_CLEAN);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
 void BuilderSender::jumpTo(const QString &filePath, int lineNum)
 {
     if (filePath.isEmpty() || lineNum < 0)
@@ -81,12 +46,13 @@ void BuilderSender::jumpTo(const QString &filePath, int lineNum)
     dpf::EventCallProxy::instance().pubEvent(event);
 }
 
-void BuilderSender::notifyBuildState(BuildState state, QString originCmd)
+void BuilderSender::notifyBuildState(BuildState state, const BuildCommandInfo &commandInfo)
 {
     dpf::Event event;
     event.setTopic(T_BUILDER);
     event.setData(D_BUILD_STATE);
     event.setProperty(P_STATE, static_cast<int>(state));
-    event.setProperty(P_ORIGINCMD, originCmd);
+    event.setProperty(P_ORIGINCMD, QVariant::fromValue(commandInfo));
     dpf::EventCallProxy::instance().pubEvent(event);
 }
+

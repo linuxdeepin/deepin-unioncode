@@ -21,6 +21,9 @@
 #ifndef PROJECTRECEIVER_H
 #define PROJECTRECEIVER_H
 
+#include "services/project/projectinfo.h"
+#include "services/builder/builderglobals.h"
+
 #include <framework/framework.h>
 
 class ProjectMavenReceiver : public dpf::EventHandler,
@@ -53,7 +56,7 @@ public:
     static void setbuildOriginCmd(const QString &originCmd);
     static QString buildOriginCmd();
 signals:
-    void buildExecuteEnd(const QString &cmd, int status = 0);
+    void buildExecuteEnd(const BuildCommandInfo &commandInfo, int status = 0);
 };
 
 #endif // PROJECTRECEIVER_H

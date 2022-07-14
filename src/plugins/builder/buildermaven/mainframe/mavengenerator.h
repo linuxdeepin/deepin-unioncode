@@ -23,24 +23,26 @@
 
 #include "services/builder/buildergenerator.h"
 
-#include <QObject>
-
 class MavenGeneratorPrivate;
 class MavenGenerator : public dpfservice::BuilderGenerator
 {
     Q_OBJECT
-    MavenGeneratorPrivate *const d;
 public:
     explicit MavenGenerator();
     virtual ~MavenGenerator() override;
 
     static QString toolKitName() { return "maven"; }
 
+    void getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType) override;
+    void appendOutputParser(std::unique_ptr<IOutputParser> &outputParser) override;
+
 signals:
 
 private slots:
 
 private:
+
+    MavenGeneratorPrivate *const d;
 };
 
 #endif // MAVENGENERATOR_H

@@ -115,14 +115,13 @@ bool MavenGenerator::configure(const dpfservice::ProjectInfo &info)
 QStandardItem *MavenGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
-
     QStandardItem * rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new MavenAsynParse();
     QObject::connect(d->projectParses[rootItem],
                      &MavenAsynParse::itemsModified,
                      this, &MavenGenerator::doProjectChildsModified,
-                     Qt::UniqueConnection);
+                     Qt::ConnectionType::DirectConnection);
     d->projectParses[rootItem]->parseProject(info);
 
     return rootItem;
@@ -132,7 +131,6 @@ void MavenGenerator::removeRootItem(QStandardItem *root)
 {
     if (!root)
         return;
-
     auto parse = d->projectParses[root];
     if (parse)
         parse->removeRows();
@@ -186,7 +184,7 @@ void MavenGenerator::doProjectChildsModified(const dpfservice::ParseInfo<QList<Q
         while (rootItem->hasChildren()) {
             rootItem->takeRow(0);
         }
-        rootItem->appendRows(info.result);
+        rootItem->appendRow(info.result);
     }
 }
 
@@ -213,9 +211,12 @@ void MavenGenerator::doActionTriggered()
         auto &ctx = dpfInstance.serviceContext();
         auto builderService = ctx.service<dpfservice::BuilderService>(dpfservice::BuilderService::name());
         if (builderService) {
-            builderService->interface.builderCommand(value.buildProgram,
-                                                     value.buildArguments,
-                                                     value.workingDirectory);
+            BuildCommandInfo commandInfo;
+            commandInfo.kitName = toolKitName();
+            commandInfo.program = value.buildProgram;
+            commandInfo.arguments = value.buildArguments;
+            commandInfo.workingDir = QFileInfo(value.workingDirectory).path();
+            builderService->interface.builderCommand(commandInfo, false);
         }
     }
 }

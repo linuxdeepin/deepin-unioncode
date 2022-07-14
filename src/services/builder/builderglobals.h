@@ -22,6 +22,7 @@
 #define BUILDERGLOBALS_H
 
 #include <common/util/singleton.h>
+#include <QMetaType>
 #include <QColor>
 
 enum ToolChainType {
@@ -44,6 +45,20 @@ enum BuildState
     kBuildFailed
 };
 
+enum BuildMenuType
+{
+    Build = 0,
+    Clean
+};
+
+struct BuildCommandInfo {
+    QString kitName;
+    QString program;
+    QStringList arguments;
+    QString workingDir;
+};
+
+Q_DECLARE_METATYPE(BuildCommandInfo);
 
 /**
  * @brief Output text color.

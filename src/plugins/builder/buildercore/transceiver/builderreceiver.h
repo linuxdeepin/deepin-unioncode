@@ -18,25 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef GRADLERECEIVER_H
-#define GRADLERECEIVER_H
+#ifndef BUILDERRECEIVER_H
+#define BUILDERRECEIVER_H
 
 #include <framework/framework.h>
-#include "services/builder/builderglobals.h"
 
-class GradleReceiver : public dpf::EventHandler
-        , dpf::AutoEventHandlerRegister<GradleReceiver>
+class BuilderReceiver : public dpf::EventHandler
+        , dpf::AutoEventHandlerRegister<BuilderReceiver>
 {
-    friend class dpf::AutoEventHandlerRegister<GradleReceiver>;
+    Q_OBJECT
 public:
-    static GradleReceiver *instance();
+    explicit BuilderReceiver(QObject *parent = nullptr);
     static Type type();
     static QStringList topics();
-
-private:
-    explicit GradleReceiver(QObject * parent = nullptr);
-
     virtual void eventProcess(const dpf::Event& event) override;
 };
 
-#endif // GRADLERECEIVER_H
+#endif // BUILDERRECEIVER_H

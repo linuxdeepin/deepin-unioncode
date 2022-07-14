@@ -34,7 +34,7 @@ class GnuMakeParser : public IOutputParser
 public:
     explicit GnuMakeParser();
 
-    void stdOutput(const QString &line) override;
+    void stdOutput(const QString &line, OutputFormat format) override;
     void stdError(const QString &line) override;
 
     void setWorkingDirectory(const QString &workingDirectory) override;

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
  * Author:     zhouyi<zhouyi1@uniontech.com>
@@ -19,49 +19,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "gradlegenerator.h"
-#include "gradlemanager.h"
+#include "parser/gradleparser.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
-
-#include <QPushButton>
 
 using namespace dpfservice;
 
 class GradleGeneratorPrivate
 {
     friend class GradleGenerator;
-
 };
 
 GradleGenerator::GradleGenerator()
     : d(new GradleGeneratorPrivate())
 {
-    auto &ctx = dpfInstance.serviceContext();
-    auto builderService = ctx.service<BuilderService>(BuilderService::name());
-    if (!builderService) {
-        qCritical() << "Failed, not found service : builderService";
-        abort();
-    }
 
-    QObject::connect(GradleManager::instance(), &GradleManager::addCompileOutput,
-                     [=](const QString &content, OutputFormat outputFormat) {
-        builderService->interface.compileOutput(content, outputFormat);
-    });
-
-    QObject::connect(GradleManager::instance(), &GradleManager::addProblemOutput,
-                     [=](const Task &task, int linkedOutputLines, int skipLines) {
-        builderService->interface.problemOutput(task, linkedOutputLines, skipLines);
-    });
-
-    QObject::connect(GradleManager::instance(), &GradleManager::buildStateChanged,
-                     [=](BuildState state, QString originCmds) {
-        builderService->interface.buildStateChanged(state, originCmds);
-    });
-
-    QObject::connect(GradleManager::instance(), &GradleManager::buildStart,
-                     [=]() {
-        builderService->interface.buildStart();
-    });
 }
 
 GradleGenerator::~GradleGenerator()
@@ -69,4 +41,26 @@ GradleGenerator::~GradleGenerator()
     if (d)
         delete d;
 }
+
+void GradleGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType)
+{
+    info.program = "./gradlew";
+    switch (buildMenuType) {
+    case Build:
+        info.arguments.append("build");
+        break;
+    case Clean:
+        info.arguments.append("clean");
+        break;
+    }
+}
+
+void GradleGenerator::appendOutputParser(std::unique_ptr<IOutputParser> &outputParser)
+{
+    if (outputParser) {
+        outputParser->takeOutputParserChain();
+        outputParser->appendOutputParser(new GradleParser());
+    }
+}
+
 

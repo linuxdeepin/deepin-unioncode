@@ -22,8 +22,6 @@
 #define BUILDERINTERFACE_H
 
 #include "builderglobals.h"
-#include "task.h"
-#include "services/project/projectinfo.h"
 #include <framework/framework.h>
 
 class BuilderInterface
@@ -31,38 +29,10 @@ class BuilderInterface
 public:
     /*!
      * \brief builderCommand
-     * \param program
-     * \param arguments
-     * \param workingDir
+     * \param commandInfo
+     * \param needBack
      */
-    DPF_INTERFACE(void, builderCommand, const QString &program, const QStringList &arguments, const QString &workingDir);
-
-    /*!
-     * \brief compileOutput
-     * \param content
-     * \param format
-     */
-    DPF_INTERFACE(void, compileOutput, const QString &content, OutputFormat format);
-
-    /*!
-     * \brief problemOutput
-     * \param task
-     * \param linkedOutputLines
-     * \param skipLines
-     */
-    DPF_INTERFACE(void, problemOutput, const Task &task, int linkedOutputLines, int skipLines);
-
-    /*!
-     * \brief buildStateChanged
-     * \param state
-     * \param originCmds
-     */
-    DPF_INTERFACE(void, buildStateChanged, BuildState state, QString originCmds);
-
-    /*!
-     * \brief buildStart
-     */
-    DPF_INTERFACE(void, buildStart);
+    DPF_INTERFACE(void, builderCommand, const BuildCommandInfo &commandInfo, const bool needBack);
 };
 
 #endif // BUILDERINTERFACE_H

@@ -62,17 +62,14 @@ void ProjectMavenReceiver::builderEvent(const dpf::Event &event)
 {
     if (event.data() == D_BUILD_STATE) {
         int endStatus = event.property(P_STATE).toInt();
-        QString cmd = event.property(P_ORIGINCMD).toString();
-        QString sendedCmd = ProjectMavenProxy::instance()->buildOriginCmd();
-        if (!sendedCmd.isEmpty() && cmd == sendedCmd) {
-            if (endStatus == 0) {
-                emit ProjectMavenProxy::instance()->buildExecuteEnd(sendedCmd);
-            } else {
-                ContextDialog::ok(QDialog::tr("Failed open project, whith build step."));
-            }
-            //clean sended cmd
-            ProjectMavenProxy::setbuildOriginCmd("");
+        if (endStatus == 0) {
+            BuildCommandInfo commandInfo = qvariant_cast<BuildCommandInfo>(event.property(P_ORIGINCMD));
+            emit ProjectMavenProxy::instance()->buildExecuteEnd(commandInfo);
+        } else {
+            ContextDialog::ok(QDialog::tr("Failed open project, whith build step."));
         }
+        //clean sended cmd
+        ProjectMavenProxy::setbuildOriginCmd("");
     }
 }
 

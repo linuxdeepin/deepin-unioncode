@@ -72,6 +72,12 @@ public:
     DPF_INTERFACE(void, addAction, const QString &menuName, AbstractAction *action);
 
     /*!
+     * \brief removeActions
+     * \param menuName 框架扩展menu发布名称
+     */
+    DPF_INTERFACE(void, removeActions, const QString &menuName);
+
+    /*!
      * \brief insertAction 添加Action到其他由框架发布的可扩展menu
      * \param menuName 框架扩展menu发布名称
      * \param beforActionName 之后的Action名称

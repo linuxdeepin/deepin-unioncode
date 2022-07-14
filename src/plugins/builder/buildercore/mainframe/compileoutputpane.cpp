@@ -102,7 +102,7 @@ void CompileOutputPane::scrollToBottom()
     verticalScrollBar()->setValue(verticalScrollBar()->maximum());
 }
 
-void CompileOutputPane::appendText(const QString &textIn, const QTextCharFormat &format)
+void CompileOutputPane::appendCustomText(const QString &textIn, const QTextCharFormat &format)
 {
     const QString text = normalizeNewlines(textIn);
     if (d->maxCharCount > 0 && document()->characterCount() >= d->maxCharCount) {
@@ -147,5 +147,5 @@ void CompileOutputPane::appendText(const QString &text, OutputFormat format)
         break;
     }
 
-    appendText(text, textFormat);
+    appendCustomText(text, textFormat);
 }

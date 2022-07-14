@@ -23,24 +23,24 @@
 
 #include "services/builder/buildergenerator.h"
 
-#include <QObject>
-
 class GradleGeneratorPrivate;
 class GradleGenerator : public dpfservice::BuilderGenerator
 {
     Q_OBJECT
-    GradleGeneratorPrivate *const d;
 public:
     explicit GradleGenerator();
     virtual ~GradleGenerator() override;
 
     static QString toolKitName() { return "gradle"; }
 
+    void getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType) override;
+    void appendOutputParser(std::unique_ptr<IOutputParser> &outputParser) override;
+
 signals:
 
 private slots:
-
 private:
+    GradleGeneratorPrivate *const d;
 };
 
 #endif // GRADLEGENERATOR_H

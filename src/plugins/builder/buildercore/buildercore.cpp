@@ -22,11 +22,9 @@
 #include "mainframe/buildmanager.h"
 
 #include "services/window/windowservice.h"
-#include "services/project/projectservice.h"
 #include "services/builder/builderservice.h"
 
 #include "base/abstractwidget.h"
-
 
 using namespace dpfservice;
 
@@ -43,29 +41,18 @@ void BuilderCore::initialize()
 bool BuilderCore::start()
 {
     auto &ctx = dpfInstance.serviceContext();
-    windowService = ctx.service<WindowService>(WindowService::name());
-    if (!windowService) {
-        qCritical() << "Failed, can't found window service";
+    auto windowService = ctx.service<WindowService>(WindowService::name());
+    auto builderService = ctx.service<BuilderService>(BuilderService::name());
+    if (!windowService || !builderService) {
+        qCritical() << "Failed, can't found window service or build service";
         abort();
     }
 
-    BuildManager::instance()->initialize(windowService);
+    windowService->addContextWidget("Co&mpile Output", new AbstractWidget(BuildManager::instance()->getCompileOutputPane()));
+    windowService->addContextWidget("&Issues", new AbstractWidget(BuildManager::instance()->getProblemOutputPane()));
 
-    emit windowService->addContextWidget("Co&mpile Output", new AbstractWidget(BuildManager::instance()->getCompileOutputPane()));
-    emit windowService->addContextWidget("&Problems", new AbstractWidget(BuildManager::instance()->getProblemOutputPane()));
-
-    connect(BuildManager::instance(), &BuildManager::buildStarted, this, &BuilderCore::slotSwitchOutputPane);
-
-    auto builderService = ctx.service<BuilderService>(BuilderService::name());
-    if (builderService) {
-        using namespace std::placeholders;
-        builderService->interface.compileOutput = std::bind(&BuildManager::outputCompileInfo, BuildManager::instance(), _1, _2);
-        builderService->interface.problemOutput = std::bind(&BuildManager::outputProblemInfo, BuildManager::instance(), _1, _2, _3);
-        builderService->interface.builderCommand = std::bind(&BuildManager::dispatchCommand, BuildManager::instance(), _1, _2, _3);
-        builderService->interface.buildStateChanged = std::bind(&BuildManager::buildStateChanged, BuildManager::instance(), _1, _2);
-        builderService->interface.buildStart = std::bind(&BuildManager::startBuild, BuildManager::instance());
-    }
-
+    using namespace std::placeholders;
+    builderService->interface.builderCommand = std::bind(&BuildManager::handleCommand, BuildManager::instance(), _1, _2);
     return true;
 }
 
@@ -74,10 +61,3 @@ dpf::Plugin::ShutdownFlag BuilderCore::stop()
     return Sync;
 }
 
-
-void BuilderCore::slotSwitchOutputPane()
-{
-    if (windowService) {
-        emit windowService->switchWidgetContext("Co&mpile Output");
-    }
-}
