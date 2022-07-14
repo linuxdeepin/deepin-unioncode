@@ -28,6 +28,10 @@
 #include <QJsonValue>
 #include <QProcess>
 #include <QVector>
+#include <QVariant>
+
+#include <any>
+#include <variant>
 
 namespace lsp {
 
@@ -368,6 +372,39 @@ struct RenameChanges : public QList<RenameChange>{};
 
 struct References : public Locations{};
 
+namespace new_initialize{
+
+}
+
+typedef QVariant ProgressToken; // integer | string;
+struct WorkDoneProgressParams
+{
+    ProgressToken token;
+    std::any value;  // any
+};
+
+struct WorkspaceEditClientCapabilities
+{
+    struct changeAnnotationSupport_t{
+        /**
+         * Whether the client groups edits with equal labels into tree nodes,
+         * for instance all edits labelled with "Changes in Strings" would
+         * be a tree node.
+         */
+        std::optional<bool> groupsOnLabel;
+    };
+
+    // documentChanges?: boolean;
+    std::optional<bool> documentChanges;
+    // resourceOperations?: ResourceOperationKind[];
+    std::optional<bool> resourceOperations;
+    // failureHandling?: FailureHandlingKind;
+    std::optional<int> failureHandling;
+    // normalizesLineEndings?: boolean;
+    std::optional<bool> normalizesLineEndings;
+    // changeAnnotationSupport?: {groupsOnLabel?: boolean;}
+    std::optional<changeAnnotationSupport_t> changeAnnotationSupport;
+};
 
 QString fromTokenType(SemanticTokenType type);
 QString fromTokenModifier(SemanticTokenModifier modifier);

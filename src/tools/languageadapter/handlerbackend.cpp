@@ -36,12 +36,27 @@ HandlerBackend::HandlerBackend(const SettingInfo &info)
 void HandlerBackend::bind(QProcess *qIODevice)
 {
     Handler::bind(qIODevice);
+
+    connect(qIODevice, &QProcess::readyReadStandardError,
+            this, [=](){
+        qInfo() << QString(qIODevice->readAllStandardError());
+    });
+
+    connect(qIODevice, &QProcess::errorOccurred,
+            this, [=](auto err){
+        qInfo() << err << qIODevice->errorString();
+    });
+
+    connect(qIODevice, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            this, &HandlerBackend::doFinished, Qt::UniqueConnection);
+
+    qInfo() << "launch: " <<  info.program << info.arguments;
+    qInfo() << "workdir: " <<  info.workDir;
+    qIODevice->setWorkingDirectory(info.workDir);
     qIODevice->setProgram(info.program);
     qIODevice->setArguments(info.arguments);
     qIODevice->start();
     qIODevice->waitForStarted(3000);
-    connect(qIODevice, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            this, &HandlerBackend::doFinished, Qt::UniqueConnection);
 }
 
 void HandlerBackend::filterData(const QByteArray &array)

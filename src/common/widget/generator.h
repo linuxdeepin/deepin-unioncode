@@ -24,7 +24,6 @@
 #include <QObject>
 #include <QVariant>
 
-class QStandardItem;
 class Generator : public QObject
 {
     Q_OBJECT

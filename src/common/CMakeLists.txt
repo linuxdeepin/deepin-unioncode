@@ -9,6 +9,7 @@ set(CXX_H
     inotify/private/inotify_linux.h
     inotify/private/inotify_p.h
     inotify/inotify.h
+    lsp/newprotocol.h
     lsp/protocol.h
     lsp/client.h
     util/processutil.h

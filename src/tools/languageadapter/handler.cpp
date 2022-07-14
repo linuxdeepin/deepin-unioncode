@@ -51,7 +51,7 @@ Handler::~Handler()
 void Handler::bind(QProcess *qIODevice)
 {
     device = qIODevice;
-    QObject::connect(qIODevice, &QProcess::readyRead,
+    QObject::connect(qIODevice, &QProcess::readyReadStandardOutput,
                      this, &Handler::doReadAll,
                      Qt::UniqueConnection);
 }
@@ -59,7 +59,7 @@ void Handler::bind(QProcess *qIODevice)
 void Handler::bind(QTcpSocket *qIODevice)
 {
     device = qIODevice;
-    QObject::connect(qIODevice, &   QTcpSocket::readyRead,
+    QObject::connect(qIODevice, &QTcpSocket::readyRead,
                      this, &Handler::doReadAll,
                      Qt::UniqueConnection);
 }

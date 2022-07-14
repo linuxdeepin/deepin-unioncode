@@ -27,6 +27,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QRegularExpression>
+#include <QProcess>
 
 #include <iostream>
 
@@ -41,41 +43,46 @@ QString configTemplate{
     "    \"C/C++\" : {\n"
     "           \"mode\": \"process\",\n"
     "           \"program\": \"/usr/bin/xxx\",\n"
-    "           \"arguments\": []\n"
+    "           \"arguments\": [], \n"
+    "           \"workdir\": \"\"\n"
     "    },\n"
     "    \"Java\" : {\n"
     "           \"mode\": \"socket\",\n"
     "           \"port\": \"3308\",\n"
     "           \"program\" : \"/usr/bin/xxx\",\n"
     "           \"arguments\" : []\n"
+    "           \"workDir\": \"\"\n"
     "    },\n"
     "    \"Python\" : {\n"
     "           \"mode\": \"socket\",\n"
     "           \"port\": \"3308\",\n"
     "           \"program\" : \"/usr/bin/xxx\",\n"
     "           \"arguments\" : []\n"
+    "           \"workdir\": \"\"\n"
     "    }\n"
     "}\n"
 };
 
 QString configCache{
-    "{\n"
-    "    \"C/C++\" : {\n"
-    "           \"mode\": \"process\",\n"
-    "           \"program\": \"/usr/bin/unioncode-clangd\",\n"
-    "           \"arguments\": []\n"
-    "    },\n"
-    "    \"Java\" : {\n"
-    "           \"mode\": \"process\",\n"
-    "           \"program\" : \"\",\n"
-    "           \"arguments\" : []\n"
-    "    },\n"
-    "    \"Python\" : {\n"
-    "           \"mode\": \"process\",\n"
-    "           \"program\" : \"\",\n"
-    "           \"arguments\" : []\n"
-    "    }\n"
-    "}\n"
+    "{ \n"
+    "    \"C/C++\" : { \n"
+    "           \"mode\": \"process\", \n"
+    "           \"program\": \"/usr/bin/unioncode-clangd\", \n"
+    "           \"arguments\": [], \n"
+    "           \"workdir\": \"\" \n"
+    "    }, \n"
+    "    \"Java\" : { \n"
+    "           \"mode\": \"process\", \n"
+    "           \"program\" : \"${HOME}/.config/languageadapter/Java/jdtls_run.sh\", \n"
+    "           \"arguments\" : [\"${HOME}/.config/languageadapter/Java\"], \n"
+    "           \"workdir\": \"${HOME}/.config/languageadapter/Java\" \n"
+    "    }, \n"
+    "    \"Python\" : { \n"
+    "           \"mode\": \"process\", \n"
+    "           \"program\" : \"\", \n"
+    "           \"arguments\" : [] \n"
+    "    } \n"
+    "} \n"
 };
 }
 
@@ -112,7 +119,9 @@ SettingInfo Setting::getInfo(const QString &language)
     checkConfigFile();
     QJsonObject docObj = configDoc.object();
     QJsonObject secObj = docObj.value(language).toObject();
-    QString program = secObj.value("program").toString();
+    QString program = replaceEnvValue(secObj.value("program").toString());
+    QString workDir = replaceEnvValue(secObj.value("workdir").toString());
+    QString mode = secObj.value("mode").toString();
 
     // program not exists from config file
     QFileInfo fInfo(program);
@@ -130,19 +139,20 @@ SettingInfo Setting::getInfo(const QString &language)
         QJsonArray defArray = defObj.value("arguments").toArray();
         QStringList defArgs;
         for (auto val : defArray) {
-            defArgs << val.toString();
+            defArgs << replaceEnvValue(val.toString());
         }
-        return { language, defMode, defProgram, defArgs };
+        QString defWorkDir = defObj.value("workdir").toString();
+        defWorkDir = replaceEnvValue(defWorkDir);
+        return { language, defMode, defProgram, defArgs, defWorkDir};
     }
 
-    QString mode = secObj.value("mode").toString();
     QJsonArray array = secObj.value("arguments").toArray();
     QStringList args;
     for (auto val : array) {
-        args << val.toString();
+        args << replaceEnvValue(val.toString());
     }
 
-    return { language, mode, program, args };
+    return { language, mode, program, args, workDir};
 }
 
 bool Setting::genConfigFile(const QString &configPath)
@@ -188,4 +198,18 @@ bool Setting::genConfigFile(const QString &configPath)
 
     std::cerr << "Failed, Unknown error!" << std::endl;
     return false;
+}
+
+QString Setting::replaceEnvValue(const QString &str)
+{
+    QString result = str;
+    QRegularExpression regExp("\\$\\{(\\w+)\\}");
+    auto matchItera = regExp.globalMatch(result);
+    while(matchItera.hasNext()) {
+        auto match = matchItera.next();
+        QString envVal(getenv(match.captured(1).toStdString().c_str()));
+        if (!envVal.isEmpty())
+            result.replace(match.captured(0), envVal);
+    }
+    return result;
 }

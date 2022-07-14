@@ -30,6 +30,7 @@ struct SettingInfo
     QString mode;
     QString program;
     QStringList arguments;
+    QString workDir;
 };
 
 inline QDebug operator << (QDebug debug, const SettingInfo &info) {
@@ -37,7 +38,8 @@ inline QDebug operator << (QDebug debug, const SettingInfo &info) {
           << info.language
           << info.mode
           << info.program
-          << info.arguments;
+          << info.arguments
+          << info.workDir;
     return debug;
 }
 #endif // SETTINGINFO_H

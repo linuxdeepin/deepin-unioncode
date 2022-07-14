@@ -26,6 +26,7 @@
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <QDir>
 
 #include <iostream>
 
@@ -105,6 +106,7 @@ int main(int argc, char *argv[])
     LangServer server(port);
 
     qInfo() << Setting::getInfo("C/C++");
+    qInfo() << Setting::getInfo("Java");
 
     return a.exec();
 }

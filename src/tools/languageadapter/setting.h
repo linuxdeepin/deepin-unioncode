@@ -30,6 +30,7 @@ class Setting
 public:
     static SettingInfo getInfo(const QString &language);
     static bool genConfigFile(const QString &configPath);
+    static QString replaceEnvValue(const QString &str);
 };
 
 #endif // SETTING_H
