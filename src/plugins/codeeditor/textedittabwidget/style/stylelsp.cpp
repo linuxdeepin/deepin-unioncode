@@ -758,25 +758,32 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
     int cacheLine = 0;
     for (auto val : tokens) {
         cacheLine += val.start.line;
-        /* qInfo() << "line:" << cacheLine;
+#ifdef QT_DEBUG
+        qInfo() << "line:" << cacheLine;
         qInfo() << "charStart:" << val.start.character;
         qInfo() << "charLength:" << val.length;
         qInfo() << "tokenType:" << val.tokenType;
-        qInfo() << "tokenModifiers:" << val.tokenModifiers; */
+        qInfo() << "tokenModifiers:" << val.tokenModifiers;
+#endif
         auto sciStartPos = StyleLsp::getSciPosition(d->edit->docPointer(), {cacheLine, val.start.character});
         auto sciEndPos = d->edit->wordEndPosition(sciStartPos, true);
         if (sciStartPos != 0 && sciEndPos != d->edit->length()) {
             QString sourceText = d->edit->textRange(sciStartPos, sciEndPos);
             int wordLength = sciEndPos - sciStartPos;
-            // qInfo() << "text:" << sourceText;
-            // text is word
+#ifdef QT_DEBUG
+            qInfo() << "text:" << sourceText;
+#endif
             if (!sourceText.isEmpty() && wordLength == val.length) {
                 QString tokenValue = tokenToDefine(val.tokenType);
-                // qInfo() << "tokenValue:" << tokenValue;
+#ifdef QT_DEBUG
+                qInfo() << "tokenValue:" << tokenValue;
+#endif
                 auto indics = symbolIndic(tokenValue, val.tokenModifiers);
                 for (int i = 0; i < INDIC_MAX; i++) {
                     if (indics.fore.keys().contains(i)) {
-                        // qInfo() << "fillRangeColor:" << hex << indics.fore[i];
+#ifdef QT_DEBUG
+                        qInfo() << "fillRangeColor:" << hex << indics.fore[i];
+#endif
                         d->edit->setIndicatorCurrent(i);
                         d->edit->indicSetFlags(i, SC_INDICFLAG_VALUEFORE);
                         d->edit->setIndicatorValue(indics.fore[i]);

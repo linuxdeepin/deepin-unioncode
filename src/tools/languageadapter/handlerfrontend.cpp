@@ -101,6 +101,8 @@ bool HandlerFrontend::initRequest(const QJsonObject &obj)
         Route::instance()->saveBackend(head, backend);
         QObject::connect(backend, &HandlerBackend::nowReadedAll, this, &HandlerFrontend::nowToWrite, Qt::UniqueConnection);
         QObject::connect(this, &HandlerFrontend::nowReadedAll, backend, &HandlerBackend::nowToWrite, Qt::UniqueConnection);
+        //手动发送初始化
+        backend->nowToWrite(QJsonDocument(obj).toJson());
         result = true;
     }
     return result;

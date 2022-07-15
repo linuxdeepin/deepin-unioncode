@@ -78,8 +78,8 @@ sptr_t createLexerFromLib(const char *LanguageID)
         qCritical() << lexillaLibrary.errorString();
         abort();
     }
-    void *lexCpp = ((Lexilla::CreateLexerFn)fn)(LanguageID);
-    return sptr_t(lexCpp);
+    void *lexer = ((Lexilla::CreateLexerFn)fn)(LanguageID);
+    return sptr_t(lexer);
 }
 
 class StyleSciPrivate

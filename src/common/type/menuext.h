@@ -23,6 +23,7 @@
 
 #include <QList>
 #include <QJsonArray>
+#include <vector>
 
 template <class T, class EnumExt_T>
 struct __ext_enum
@@ -78,6 +79,14 @@ public:
         QJsonArray result;
         for (int i = 0; i < EnumExt_T::count(); i++) {
             result << EnumExt_T::value(i);
+        }
+        return result;
+    }
+
+    static std::vector<type_value> toStdVector() {
+        std::vector<type_value> result;
+        for (int i = 0; i < EnumExt_T::count(); i++) {
+            result.push_back(EnumExt_T::value(i));
         }
         return result;
     }

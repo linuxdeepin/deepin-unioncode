@@ -28,6 +28,8 @@ class StyleLspJava : public StyleLsp
 {
 public:
     StyleLspJava(TextEdit *parent);
+    virtual IndicStyleExt symbolIndic(lsp::SemanticTokenType::type_value token,
+                                      QList<lsp::SemanticTokenModifier::type_index> modifier) override;
 };
 
 #endif // STYLELSPJAVA_H

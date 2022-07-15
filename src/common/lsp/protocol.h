@@ -385,7 +385,7 @@ struct WorkDoneProgressParams
 
 struct WorkspaceEditClientCapabilities
 {
-    struct changeAnnotationSupport_t{
+    struct changeAnnotationSupport{
         /**
          * Whether the client groups edits with equal labels into tree nodes,
          * for instance all edits labelled with "Changes in Strings" would
@@ -403,7 +403,7 @@ struct WorkspaceEditClientCapabilities
     // normalizesLineEndings?: boolean;
     std::optional<bool> normalizesLineEndings;
     // changeAnnotationSupport?: {groupsOnLabel?: boolean;}
-    std::optional<changeAnnotationSupport_t> changeAnnotationSupport;
+    std::optional<changeAnnotationSupport> changeAnnotationSupport;
 };
 
 QString fromTokenType(SemanticTokenType type);

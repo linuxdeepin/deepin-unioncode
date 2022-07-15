@@ -56,7 +56,7 @@ TextEditJava::~TextEditJava()
 
 QString TextEditJava::supportLanguage()
 {
-    return "cpp"; // 向上兼容Scintilla中Lexer
+    return "java"; // 向上兼容Scintilla中Lexer
 }
 
 QString TextEditJava::implLanguage()

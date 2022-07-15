@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "protocol.h"
+#include "newprotocol.h"
 #include "common/util/processutil.h"
 
 #include <QVariantMap>
@@ -34,7 +35,8 @@
 #include <QFileInfo>
 
 namespace lsp {
-
+const QString C_CPP{"C/C++"};
+const QString JAVA{"Java"};
 const QString K_ID {"id"};
 const QString K_JSON_RPC {"jsonrpc"};
 const QString K_METHOD {"method"};
@@ -225,78 +227,484 @@ QJsonObject workspace()
 
 QJsonObject initialize(const QString &workspaceFolder, const QString &language, const QString &compile)
 {
-    QJsonObject capabilitiesSemanticTokens{{
-            {"dynamicRegistration", true},
-            {"formats", QJsonArray{"relative"}},
-            {"multilineTokenSupport", false},
-            {"overlappingTokenSupport", false},
-            {"requests", QJsonArray{"full",QJsonObject{{"delta", true}},QJsonObject{{"range", true}}}},
-            {"tokenModifiers", tokenModifiers()},
-            {"tokenTypes", tokenTypes()}}};
+    QJsonObject retInitRequest;
+    if (language == C_CPP) {
+        QJsonObject capabilitiesSemanticTokens{{
+                {"dynamicRegistration", true},
+                {"formats", QJsonArray{"relative"}},
+                {"multilineTokenSupport", false},
+                {"overlappingTokenSupport", false},
+                {"requests", QJsonArray{"full",QJsonObject{{"delta", true}},QJsonObject{{"range", true}}}},
+                {"tokenModifiers", tokenModifiers()},
+                {"tokenTypes", tokenTypes()}}};
 
-    QJsonObject capabilities {
-        {
-            K_TEXTDOCUMENT, QJsonObject {
-                {"documentLink", QJsonObject{{"dynamicRegistration", true}}},
-                {"documentHighlight", QJsonObject{{"dynamicRegistration", true}}},
-                {K_DOCUMENTSYMBOL, QJsonObject{{K_HIERARCHICALDOCUMENTSYMBOLSUPPORT, true}},},
-                {K_PUBLISHDIAGNOSTICS, QJsonObject{{K_RELATEDINFOMATION, true}}},
-                {"definition", QJsonObject{{{"dynamicRegistration", true},{"linkSupport", true}}}},
-                {"colorProvider", QJsonObject{{"dynamicRegistration", true}}},
-                {"declaration", QJsonObject{{"dynamicRegistration", true},{"linkSupport", true}}},
-                {"semanticHighlightingCapabilities", QJsonObject{{"semanticHighlighting", true}}},
-                {"semanticTokens", capabilitiesSemanticTokens}
+        QJsonObject capabilities {
+            {
+                K_TEXTDOCUMENT, QJsonObject {
+                    {"documentLink", QJsonObject{{"dynamicRegistration", true}}},
+                    {"documentHighlight", QJsonObject{{"dynamicRegistration", true}}},
+                    {K_DOCUMENTSYMBOL, QJsonObject{{K_HIERARCHICALDOCUMENTSYMBOLSUPPORT, true}},},
+                    {K_PUBLISHDIAGNOSTICS, QJsonObject{{K_RELATEDINFOMATION, true}}},
+                    {"definition", QJsonObject{{{"dynamicRegistration", true},{"linkSupport", true}}}},
+                    {"colorProvider", QJsonObject{{"dynamicRegistration", true}}},
+                    {"declaration", QJsonObject{{"dynamicRegistration", true},{"linkSupport", true}}},
+                    {"semanticHighlightingCapabilities", QJsonObject{{"semanticHighlighting", true}}},
+                    {"semanticTokens", capabilitiesSemanticTokens}
+                }
+            },{
+                "workspace", workspace()
+            },{
+                "foldingRangeProvider", true,
             }
-        },{
-            "workspace", workspace()
-        },{
-            "foldingRangeProvider", true,
+        };
+
+        QJsonObject highlight {
+            {"largeFileSize", 2097152},
+            {"lsRanges", false},
+            {"blacklist", QJsonArray()},
+            {"whitelist", QJsonArray()}
+        };
+
+        QJsonObject client{
+            {"diagnosticsRelatedInformation", true},
+            {"hierarchicalDocumentSymbolSupport", true},
+            {"linkSupport",true},
+            {"snippetSupport",true},
+        };
+
+        QJsonObject workspace {
+            { "name", QFileInfo(workspaceFolder).fileName() },
+            { K_URI, QUrl::fromLocalFile(workspaceFolder).toString() }
+        };
+
+        QJsonArray workspaceFolders{workspace};
+
+        QJsonObject initializationOptions {
+            {"compilationDatabasePath", compile}
+        };
+
+        QJsonObject params {
+            { K_PROCESSID, QCoreApplication::applicationPid() },
+            { K_ROOTPATH, workspace },
+            { K_ROOTURI, workspace },
+            { K_CAPABILITIES, capabilities },
+            { "highlight", highlight },
+            { "client", client },
+            { "initializationOptions", initializationOptions},
+            { "workspaceFolders", workspaceFolders },
+            { "language", language}
+        };
+
+        QJsonObject initRequest{
+            { K_METHOD, V_INITIALIZE},
+            { K_PARAMS, params },
+        };
+
+        retInitRequest = initRequest;
+
+    } else if (language == JAVA) {
+
+        using namespace lsp::Lifecycle;
+        using namespace lsp::Lifecycle::Initialize;
+
+        std::string workspaceFolderUriStr = QUrl::fromLocalFile(workspaceFolder).toString().toStdString();
+        std::string workspaceNameStr = QFileInfo(workspaceFolder).fileName().toStdString();
+
+        InitializeParams params;
+
+        /* processId */
+        params.processId = QCoreApplication::applicationPid();
+
+        /* rootUri */
+        params.rootUri = workspaceFolderUriStr;
+
+        /* rootPath */
+        params.rootPath = workspaceFolder.toStdString();
+
+        /* capabilities
+         * std::optional<Workspace> workspace{};
+         * std::optional<TextDocumentClientCapabilities> textDocument{};
+         * std::optional<NotebookDocumentClientCapabilities> notebookDocument{};
+         * std::optional<Window> window{};
+         * std::optional<General> general{};
+         */
+        {
+            /* workspace */
+            {
+                params.capabilities.workspace = Workspace{};
+                params.capabilities.workspace->applyEdit = true;
+                /* WorkspaceEditClientCapabilities */
+                params.capabilities.workspace->workspaceEdit = Initialize::WorkspaceEditClientCapabilities{};
+                params.capabilities.workspace->workspaceEdit->documentChanges = true;
+                params.capabilities.workspace->workspaceEdit->resourceOperations = BasicEnum::ResourceOperationKind::toStdVector();
+                params.capabilities.workspace->workspaceEdit->failureHandling = BasicEnum::FailureHandlingKind::get()->TextOnlyTransactional;
+                params.capabilities.workspace->workspaceEdit->normalizesLineEndings = true;
+                params.capabilities.workspace->workspaceEdit->changeAnnotationSupport = ChangeAnotationSupport{};
+                params.capabilities.workspace->workspaceEdit->changeAnnotationSupport->groupsOnLabel = true;
+
+                /* DidChangeConfigurationClientCapabilities */
+                params.capabilities.workspace->didChangeConfiguration = DidChangeConfigurationClientCapabilities{};
+                params.capabilities.workspace->didChangeConfiguration->dynamicRegistration = true;
+
+                /* DidChangeWatchedFilesClientCapabilities */
+                params.capabilities.workspace->didChangeWatchedFiles = DidChangeWatchedFilesClientCapabilities{};
+                params.capabilities.workspace->didChangeWatchedFiles->dynamicRegistration = true;
+                // no setting from vscode
+                // params.capabilities.workspace->didChangeWatchedFiles->relativePatternSupport = true;
+
+                /* WorkspaceSymbolClientCapabilities*/
+                params.capabilities.workspace->symbol = WorkspaceSymbolClientCapabilities{};
+                params.capabilities.workspace->symbol->dynamicRegistration = true;
+                params.capabilities.workspace->symbol->symbolKind = SymbolKind{};
+                params.capabilities.workspace->symbol->symbolKind->valueSet = BasicEnum::SymbolKind::toStdVector();
+                params.capabilities.workspace->symbol->tagSupport = WorkspaceSymbolClientCapabilities::TagSupport{};
+                params.capabilities.workspace->symbol->tagSupport->valueSet = BasicEnum::SymbolTag::toStdVector();
+                // no setting from vscode
+                // params.capabilities.workspace->symbol->resolveSupport = {};
+
+                /* ExecuteCommandClientCapabilities */
+                params.capabilities.workspace->executeCommand = ExecuteCommandClientCapabilities{};
+                params.capabilities.workspace->executeCommand->dynamicRegistration = true;
+
+                /* workspaceFolders */
+                params.capabilities.workspace->workspaceFolders = true;
+
+                /* configuration */
+                params.capabilities.workspace->configuration = true;
+
+                /* SemanticTokensWorkspaceClientCapabilities */
+                params.capabilities.workspace->semanticTokens = SemanticTokensWorkspaceClientCapabilities{};
+                params.capabilities.workspace->semanticTokens->refreshSupport = true;
+
+                /* CodeLensWorkspaceClientCapabilities */
+                params.capabilities.workspace->codeLens = CodeLensWorkspaceClientCapabilities{};
+                params.capabilities.workspace->codeLens->refreshSupport = true;
+
+                /* FileOperations */
+                params.capabilities.workspace->fileOperations = FileOperations{};
+                params.capabilities.workspace->fileOperations->dynamicRegistration = true;
+                params.capabilities.workspace->fileOperations->didCreate = true;
+                params.capabilities.workspace->fileOperations->willCreate = true;
+                params.capabilities.workspace->fileOperations->didRename = true;
+                params.capabilities.workspace->fileOperations->willRename = true;
+                params.capabilities.workspace->fileOperations->didDelete = true;
+                params.capabilities.workspace->fileOperations->willDelete = true;
+
+                /* InlineValueWorkspaceClientCapabilities */
+                //no setting from vscode
+                // params.capabilities.workspace->inlineValue = InlineValueWorkspaceClientCapabilities{};
+                // params.capabilities.workspace->inlineValue->refreshSupport = true;
+
+                /* InlayHintWorkspaceClientCapabilities */
+                // no setting from vscode
+                // params.capabilities.workspace->inlayHint = InlayHintWorkspaceClientCapabilities{};
+                // params.capabilities.workspace->inlayHint->refreshSupport = true;
+
+                /* DiagnosticWorkspaceClientCapabilities */
+                // no setting from vscode
+                // params.capabilities.workspace->diagnostics = DiagnosticWorkspaceClientCapabilities{};
+                // params.capabilities.workspace->diagnostics->refreshSupport = true;
+            }
+            /* textDocument */
+            {
+                params.capabilities.textDocument = TextDocumentClientCapabilities{};
+
+                /* TextDocumentSyncClientCapabilities */
+                params.capabilities.textDocument->synchronization = TextDocumentSyncClientCapabilities{};
+                params.capabilities.textDocument->synchronization->dynamicRegistration = true;
+                params.capabilities.textDocument->synchronization->willSave = true;
+                params.capabilities.textDocument->synchronization->willSaveWaitUntil = true;
+                params.capabilities.textDocument->synchronization->didSave = true;
+
+                /* CompletionClientCapabilities */
+                params.capabilities.textDocument->completion = CompletionClientCapabilities{};
+                params.capabilities.textDocument->completion->dynamicRegistration = true;
+                params.capabilities.textDocument->completion->contextSupport = true;
+
+                params.capabilities.textDocument->completion->completionItem = CompletionClientCapabilities::CompletionItem{};
+                params.capabilities.textDocument->completion->completionItem->snippetSupport = true;
+                params.capabilities.textDocument->completion->completionItem->commitCharactersSupport = true;
+                params.capabilities.textDocument->completion->completionItem->documentationFormat = BasicEnum::MarkupKind::toStdVector();
+                params.capabilities.textDocument->completion->completionItem->deprecatedSupport = true;
+                params.capabilities.textDocument->completion->completionItem->preselectSupport = true;
+                params.capabilities.textDocument->completion->completionItem->tagSupport
+                        = CompletionClientCapabilities::CompletionItem::TagSupport{};
+                params.capabilities.textDocument->completion->completionItem->tagSupport->valueSet
+                        = BasicEnum::CompletionItemTag::toStdVector();
+                params.capabilities.textDocument->completion->completionItem->insertReplaceSupport = true;
+                params.capabilities.textDocument->completion->completionItem->resolveSupport = ResolveSupport{};
+                params.capabilities.textDocument->completion->completionItem->resolveSupport->properties = {
+                    "documentation",
+                    "detail",
+                    "additionalTextEdits"
+                }; // from vs code
+                params.capabilities.textDocument->completion->completionItem->insertTextModeSupport
+                        = CompletionClientCapabilities::CompletionItem::InsertTextModeSupport{};
+                params.capabilities.textDocument->completion->completionItem->insertTextModeSupport->valueSet
+                        = BasicEnum::InsertTextMode::toStdVector();
+                params.capabilities.textDocument->completion->completionItem->labelDetailsSupport = true;
+
+                /* insertTextMode: 2 */
+                params.capabilities.textDocument->completion->insertTextMode
+                        = BasicEnum::InsertTextMode::get()->adjustIndentation; // from vscode
+
+                /* completionItemKind */
+                params.capabilities.textDocument->completion->completionItemKind
+                        = CompletionClientCapabilities::CompletionItemKind{};
+                params.capabilities.textDocument->completion->completionItemKind->valueSet
+                        = BasicEnum::CompletionItemKind::toStdVector();
+
+                /* itemDefaults */ // no setting from vscode
+                // params.capabilities.textDocument->completion->itemDefaults = {std::nullopt};
+
+                /* contextSupport */
+                params.capabilities.textDocument->completion->contextSupport = true;
+
+                /* HoverClientCapabilities */
+                params.capabilities.textDocument->hover = HoverClientCapabilities{};
+                params.capabilities.textDocument->hover->dynamicRegistration = true;
+                params.capabilities.textDocument->hover->contentFormat = BasicEnum::MarkupKind::toStdVector();
+
+                /* SignatureHelpClientCapabilities */
+                params.capabilities.textDocument->signatureHelp = SignatureHelpClientCapabilities{};
+                params.capabilities.textDocument->signatureHelp->dynamicRegistration = true;
+                params.capabilities.textDocument->signatureHelp->signatureInformation = SignatureInformation{};
+                params.capabilities.textDocument->signatureHelp->signatureInformation->documentationFormat = BasicEnum::MarkupKind::toStdVector();
+                params.capabilities.textDocument->signatureHelp->signatureInformation->parameterInformation = ParameterInformation{};
+                params.capabilities.textDocument->signatureHelp->signatureInformation->parameterInformation->labelOffsetSupport = true;
+                params.capabilities.textDocument->signatureHelp->signatureInformation->activeParameterSupport = true;
+                params.capabilities.textDocument->signatureHelp->contextSupport = true;
+
+                /* DeclarationClientCapabilities */
+                params.capabilities.textDocument->declaration = DeclarationClientCapabilities{};
+                params.capabilities.textDocument->declaration->dynamicRegistration = true;
+                params.capabilities.textDocument->declaration->linkSupport = true;
+
+                /* DefinitionClientCapabilities */
+                params.capabilities.textDocument->definition = DefinitionClientCapabilities{};
+                params.capabilities.textDocument->definition->dynamicRegistration = true;
+                params.capabilities.textDocument->definition->linkSupport = true;
+
+                /* TypeDefinitionClientCapabilities */
+                params.capabilities.textDocument->typeDefinition = TypeDefinitionClientCapabilities{};
+                params.capabilities.textDocument->typeDefinition->dynamicRegistration = true;
+                params.capabilities.textDocument->typeDefinition->linkSupport = true;
+
+                /* ImplementationClientCapabilities */
+                params.capabilities.textDocument->implementation = ImplementationClientCapabilities{};
+                params.capabilities.textDocument->implementation->dynamicRegistration = true;
+                params.capabilities.textDocument->implementation->linkSupport = true;
+
+                /* ReferenceClientCapabilities */
+                params.capabilities.textDocument->references = ReferenceClientCapabilities{};
+                params.capabilities.textDocument->references->dynamicRegistration = true;
+
+                /* DocumentHighlightClientCapabilities */
+                params.capabilities.textDocument->documentHighlight = DocumentHighlightClientCapabilities{};
+                params.capabilities.textDocument->documentHighlight->dynamicRegistration = true;
+
+                /* DocumentSymbolClientCapabilities */
+                params.capabilities.textDocument->documentSymbol = DocumentSymbolClientCapabilities{};
+                params.capabilities.textDocument->documentSymbol->dynamicRegistration = true;
+                params.capabilities.textDocument->documentSymbol->symbolKind = SymbolKind{};
+                params.capabilities.textDocument->documentSymbol->symbolKind->valueSet = BasicEnum::SymbolKind::toStdVector();
+                params.capabilities.textDocument->documentSymbol->hierarchicalDocumentSymbolSupport = true;
+                params.capabilities.textDocument->documentSymbol->tagSupport = DocumentSymbolClientCapabilities::TagSupport{};
+                params.capabilities.textDocument->documentSymbol->tagSupport->valueSet = BasicEnum::SymbolTag::toStdVector();
+                params.capabilities.textDocument->documentSymbol->labelSupport = true;
+
+                /* CodeActionClientCapabilities */ //func
+                params.capabilities.textDocument->codeAction = CodeActionClientCapabilities{};
+                params.capabilities.textDocument->codeAction->dynamicRegistration = true;
+                params.capabilities.textDocument->codeAction->isPreferredSupport = true;
+                params.capabilities.textDocument->codeAction->disabledSupport = true;
+                params.capabilities.textDocument->codeAction->dataSupport = true;
+                params.capabilities.textDocument->codeAction->resolveSupport = ResolveSupport{};
+                params.capabilities.textDocument->codeAction->resolveSupport->properties = {BasicEnum::Properties::get()->edit};
+                params.capabilities.textDocument->codeAction->codeActionLiteralSupport = CodeActionLiteralSupport{};
+                params.capabilities.textDocument->codeAction->codeActionLiteralSupport->codeActionKind = CodeActionKind{};
+                params.capabilities.textDocument->codeAction->codeActionLiteralSupport->codeActionKind.valueSet
+                        = BasicEnum::CodeActionKind::toStdVector();
+                params.capabilities.textDocument->codeAction->honorsChangeAnnotations = false;
+
+                /* CodeLensClientCapabilities */
+                params.capabilities.textDocument->codeLens = CodeLensClientCapabilities{};
+                params.capabilities.textDocument->codeLens->dynamicRegistration = true;
+
+                /* DocumentLinkClientCapabilities */
+                params.capabilities.textDocument->documentLink = DocumentLinkClientCapabilities {};
+                params.capabilities.textDocument->documentLink->dynamicRegistration = true;
+                params.capabilities.textDocument->documentLink->tooltipSupport = true;
+
+                /* DocumentColorClientCapabilities */
+                params.capabilities.textDocument->colorProvider = DocumentColorClientCapabilities{};
+                params.capabilities.textDocument->colorProvider->dynamicRegistration = true;
+
+                /* DocumentFormattingClientCapabilities */
+                params.capabilities.textDocument->formatting = DocumentFormattingClientCapabilities{};
+                params.capabilities.textDocument->formatting->dynamicRegistration = true;
+
+                /* DocumentFormattingClientCapabilities */
+                params.capabilities.textDocument->rangeFormatting = DocumentRangeFormattingClientCapabilities{};
+                params.capabilities.textDocument->rangeFormatting->dynamicRegistration = true;
+
+                /* DocumentRangeFormattingClientCapabilities */
+                params.capabilities.textDocument->onTypeFormatting = DocumentOnTypeFormattingClientCapabilities{};
+                params.capabilities.textDocument->onTypeFormatting->dynamicRegistration = true;
+
+                /* RenameClientCapabilities */
+                params.capabilities.textDocument->rename = RenameClientCapabilities{};
+                params.capabilities.textDocument->rename->dynamicRegistration = true;
+                params.capabilities.textDocument->rename->prepareSupport = true;
+                params.capabilities.textDocument->rename->prepareSupportDefaultBehavior
+                        = BasicEnum::PrepareSupportDefaultBehavior::get()->Identifier;
+                params.capabilities.textDocument->rename->honorsChangeAnnotations = true;
+
+                /* PublishDiagnosticsClientCapabilities */
+                params.capabilities.textDocument->publishDiagnostics = PublishDiagnosticsClientCapabilities{};
+                params.capabilities.textDocument->publishDiagnostics->relatedInformation = true;
+                params.capabilities.textDocument->publishDiagnostics->tagSupport
+                        = PublishDiagnosticsClientCapabilities::TagSupport{};
+                params.capabilities.textDocument->publishDiagnostics->tagSupport->valueSet = BasicEnum::DiagnosticTag::toStdVector();
+                params.capabilities.textDocument->publishDiagnostics->versionSupport = false;
+                params.capabilities.textDocument->publishDiagnostics->codeDescriptionSupport = true;
+                params.capabilities.textDocument->publishDiagnostics->dataSupport = true;
+
+                /* FoldingRangeClientCapabilities */
+                params.capabilities.textDocument->foldingRange = FoldingRangeClientCapabilities{};
+                params.capabilities.textDocument->foldingRange->dynamicRegistration = true;
+                params.capabilities.textDocument->foldingRange->rangeLimit = 5000; // vscode 5000
+                params.capabilities.textDocument->foldingRange->lineFoldingOnly = true;
+                // no setting from vscode
+                // params.capabilities.textDocument->foldingRange->foldingRangeKind = FoldingRangeKind{};
+                // params.capabilities.textDocument->foldingRange->foldingRangeKind->valueSet = {BasicEnum::FoldingRangeKind::toStdVector()};
+                // params.capabilities.textDocument->foldingRange->foldingRange = FoldingRange{};
+                // params.capabilities.textDocument->foldingRange->foldingRange->collapsedText = true;
+
+                /* SelectionRangeClientCapabilities */
+                params.capabilities.textDocument->selectionRange = SelectionRangeClientCapabilities{};
+                params.capabilities.textDocument->selectionRange->dynamicRegistration = true;
+
+                /* LinkedEditingRangeClientCapabilities */
+                params.capabilities.textDocument->linkedEditingRange = LinkedEditingRangeClientCapabilities{};
+                params.capabilities.textDocument->linkedEditingRange->dynamicRegistration = true;
+
+                /* CallHierarchyClientCapabilities */
+                params.capabilities.textDocument->callHierarchy = CallHierarchyClientCapabilities{};
+                params.capabilities.textDocument->callHierarchy->dynamicRegistration = true;
+
+                /* SemanticTokensClientCapabilities */
+                params.capabilities.textDocument->semanticTokens = SemanticTokensClientCapabilities{};
+                params.capabilities.textDocument->semanticTokens->dynamicRegistration = true;
+                params.capabilities.textDocument->semanticTokens->tokenTypes = BasicEnum::SemanticTokenTypes::toStdVector();
+                params.capabilities.textDocument->semanticTokens->tokenModifiers = BasicEnum::SemanticTokenModifiers::toStdVector();
+                params.capabilities.textDocument->semanticTokens->formats = BasicEnum::TokenFormat::toStdVector();
+                params.capabilities.textDocument->semanticTokens->requests = SemanticTokensClientCapabilities::Requests{};
+                params.capabilities.textDocument->semanticTokens->requests.full = SemanticTokensClientCapabilities::Requests::Full{};
+                params.capabilities.textDocument->semanticTokens->requests.full->delta = true;
+                params.capabilities.textDocument->semanticTokens->requests.range = {std::any(true)};
+                params.capabilities.textDocument->semanticTokens->multilineTokenSupport = false; // from vscode
+                params.capabilities.textDocument->semanticTokens->overlappingTokenSupport = false; // from vscode
+                // no setting from vscode
+                // params.capabilities.textDocument->semanticTokens->serverCancelSupport = true;
+                // params.capabilities.textDocument->semanticTokens->augmentsSyntaxTokens = true;
+
+                /* MonikerClientCapabilities */ // no setting from vscode
+                // MonikerClientCapabilities monikerClientCapabilities{};
+                // monikerClientCapabilities.dynamicRegistration = true;
+                // params.capabilities.textDocument->moniker = {monikerClientCapabilities};
+
+                /* TypeHierarchyClientCapabilities */ // no setting from vscode
+                // TypeHierarchyClientCapabilities typeHierarchyClientCapabilities{};
+                // typeHierarchyClientCapabilities.dynamicRegistration = true;
+                // params.capabilities.textDocument->typeHierarchy = {typeHierarchyClientCapabilities};
+
+                /* InlineValueClientCapabilities */ // no setting from vscode
+                // InlineValueClientCapabilities inlineValueClientCapabilities{};
+                // inlineValueClientCapabilities.dynamicRegistration = true;
+                // params.capabilities.textDocument->inlineValue = {inlineValueClientCapabilities};
+
+                /* InlayHintClientCapabilities */ // no setting from vscode
+                // params.capabilities.textDocument->inlayHint = InlayHintClientCapabilities{};
+                // params.capabilities.textDocument->inlayHint->dynamicRegistration = true;
+                // params.capabilities.textDocument->inlayHint->resolveSupport = ResolveSupport{};
+                // params.capabilities.textDocument->inlayHint->resolveSupport->properties
+                //         = {BasicEnum::Properties::get()->label_location};
+
+                /* DiagnosticClientCapabilities */ // no setting from vscode
+                // DiagnosticClientCapabilities diagnosticClientCapabilities{};
+                // diagnosticClientCapabilities.dynamicRegistration = true;
+                // diagnosticClientCapabilities.relatedDocumentSupport = true;
+                // params.capabilities.textDocument->diagnostic = {diagnosticClientCapabilities};
+            }
+            /* notebookDocument */
+            {
+                // no setting from vscode
+                // params.capabilities.notebookDocument = NotebookDocumentClientCapabilities{};
+                // params.capabilities.notebookDocument->synchronization.dynamicRegistration = true;
+                // params.capabilities.notebookDocument->synchronization.executionSummarySupport = true;
+            }
+            /* window */
+            {
+                params.capabilities.window = Window{};
+                params.capabilities.window->workDoneProgress = true;
+                params.capabilities.window->showMessage = ShowMessageRequestClientCapabilities{};
+                params.capabilities.window->showMessage->messageActionItem = MessageActionItem{};
+                params.capabilities.window->showMessage->messageActionItem->additionalPropertiesSupport = true;
+                params.capabilities.window->showDocument = ShowDocumentClientCapabilities{};
+                params.capabilities.window->showDocument->support = true;
+            }
+            /* general */
+            {
+                params.capabilities.general = General{};
+                params.capabilities.general->staleRequestSupport = StaleRequestSupport{};
+                params.capabilities.general->staleRequestSupport->cancel = true;
+                params.capabilities.general->staleRequestSupport->retryOnContentModified = {
+                    "textDocument/semanticTokens/full",
+                    "textDocument/semanticTokens/range",
+                    "textDocument/semanticTokens/full/delta"
+                };
+                params.capabilities.general->regularExpressions = RegularExpressionsClientCapabilities{};
+                params.capabilities.general->regularExpressions->engine = "ECMAScript";
+                params.capabilities.general->regularExpressions->version = "ES2020";
+                params.capabilities.general->markdown = MarkdownClientCapabilities{};
+                params.capabilities.general->markdown->parser = "marked";
+                params.capabilities.general->markdown->version = "1.1.0";
+            }
         }
-    };
 
-    QJsonObject highlight {
-        {"largeFileSize", 2097152},
-        {"lsRanges", false},
-        {"blacklist", QJsonArray()},
-        {"whitelist", QJsonArray()}
-    };
+        /* trace */
+        {
+            params.trace = BasicEnum::TraceValue::get()->Verbose;
+        }
 
-    QJsonObject client{
-        {"diagnosticsRelatedInformation", true},
-        {"hierarchicalDocumentSymbolSupport", true},
-        {"linkSupport",true},
-        {"snippetSupport",true},
-    };
+        /* workspaceFolders */
+        {
+            std::vector<WorkspaceFolder> workspaceFolders{};
+            WorkspaceFolder folderParams;
+            folderParams.uri = workspaceFolderUriStr;
+            folderParams.name = workspaceNameStr;
+            workspaceFolders.push_back(folderParams);
+            params.workspaceFolders = {workspaceFolders};
+        }
 
-    QJsonObject workspace {
-        { "name", QFileInfo(workspaceFolder).fileName() },
-        { K_URI, QUrl::fromLocalFile(workspaceFolder).toString() }
-    };
+        /* extend language*/
+        {
+            params.language = language.toStdString();
+        }
 
-    QJsonArray workspaceFolders{workspace};
+        std::string initRequestStr;
+        initRequestStr = JsonConvert::addValue(initRequestStr, {"method", JsonConvert::formatValue(std::string("initialize"))});
+        initRequestStr = JsonConvert::addValue(initRequestStr, {K_PARAMS.toStdString(), params.toStdString()});
+        initRequestStr = JsonConvert::formatScope(initRequestStr);
 
-    QJsonObject initializationOptions {
-        {"compilationDatabasePath", compile}
-    };
-
-    QJsonObject params {
-        { K_PROCESSID, QCoreApplication::applicationPid() },
-        { K_ROOTPATH, workspace },
-        { K_ROOTURI, workspace },
-        { K_CAPABILITIES, capabilities },
-        { "highlight", highlight },
-        { "client", client },
-        { "initializationOptions", initializationOptions},
-        { "workspaceFolders", workspaceFolders },
-        { "language", language}
-    };
-
-    QJsonObject initRequest{
-        { K_METHOD, V_INITIALIZE},
-        { K_PARAMS, params },
-    };
-
-    return initRequest;
+        QJsonParseError err;
+        auto jsonDoc = QJsonDocument::fromJson(QByteArray::fromStdString(initRequestStr), &err);
+        if (err.error != QJsonParseError::NoError)
+            qCritical() << err.errorString();
+        retInitRequest = jsonDoc.object();
+    }
+    return retInitRequest;
 }
 
 QJsonObject didOpen(const QString &filePath)
@@ -599,7 +1007,7 @@ QString setHeader(const QJsonObject &object, int requestIndex)
     if (object.value(K_METHOD) != V_TEXTDOCUMENT_DIDOPEN)
         jsonObj.insert(K_ID, requestIndex);
     QJsonDocument jsonDoc(jsonObj);
-    QString jsonStr = jsonDoc.toJson();
+    QString jsonStr = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
     return H_CONTENT_LENGTH + QString(": %0\r\n\r\n").arg(jsonStr.length()) + jsonStr;
 }
 
@@ -608,7 +1016,7 @@ QString setHeader(const QJsonObject &object)
     auto jsonObj = object;
     jsonObj.insert(K_JSON_RPC, V_2_0);
     QJsonDocument jsonDoc(jsonObj);
-    QString jsonStr = jsonDoc.toJson();
+    QString jsonStr = jsonDoc.toJson(QJsonDocument::JsonFormat::Compact);
     return H_CONTENT_LENGTH + QString(": %0\r\n\r\n").arg(jsonStr.length()) + jsonStr;
 }
 

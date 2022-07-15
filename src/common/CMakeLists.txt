@@ -44,6 +44,7 @@ set(CXX_H
 
 set(CXX_CPP
     inotify/inotify.cpp
+    lsp/newprotocol.cpp
     lsp/protocol.cpp
     lsp/client.cpp
     util/processutil.cpp
