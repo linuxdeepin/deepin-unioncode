@@ -138,6 +138,8 @@ private:
     QString targetPath;
 
     RunState runState = kNoRun;
+
+    QString activedProjectKitName;
 };
 
 #endif   // DEBUGGER_H

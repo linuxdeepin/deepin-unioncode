@@ -30,9 +30,8 @@ public:
     /*!
      * \brief builderCommand
      * \param commandInfo
-     * \param needBack
      */
-    DPF_INTERFACE(void, builderCommand, const BuildCommandInfo &commandInfo, const bool needBack);
+    DPF_INTERFACE(void, builderCommand, const BuildCommandInfo &commandInfo);
 };
 
 #endif // BUILDERINTERFACE_H

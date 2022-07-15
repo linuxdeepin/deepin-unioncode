@@ -49,10 +49,6 @@ void ProjectMavenReceiver::eventProcess(const dpf::Event &event)
         abort();
     }
 
-    if (event.topic() == T_BUILDER) {
-        builderEvent(event);
-    }
-
     if (event.topic() == T_RECENT) {
         recentEvent(event);
     }
@@ -60,17 +56,7 @@ void ProjectMavenReceiver::eventProcess(const dpf::Event &event)
 
 void ProjectMavenReceiver::builderEvent(const dpf::Event &event)
 {
-    if (event.data() == D_BUILD_STATE) {
-        int endStatus = event.property(P_STATE).toInt();
-        if (endStatus == 0) {
-            BuildCommandInfo commandInfo = qvariant_cast<BuildCommandInfo>(event.property(P_ORIGINCMD));
-            emit ProjectMavenProxy::instance()->buildExecuteEnd(commandInfo);
-        } else {
-            ContextDialog::ok(QDialog::tr("Failed open project, whith build step."));
-        }
-        //clean sended cmd
-        ProjectMavenProxy::setbuildOriginCmd("");
-    }
+    Q_UNUSED(event)
 }
 
 void ProjectMavenReceiver::recentEvent(const dpf::Event &event)

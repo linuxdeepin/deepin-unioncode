@@ -52,7 +52,7 @@ bool BuilderCore::start()
     windowService->addContextWidget("&Issues", new AbstractWidget(BuildManager::instance()->getProblemOutputPane()));
 
     using namespace std::placeholders;
-    builderService->interface.builderCommand = std::bind(&BuildManager::handleCommand, BuildManager::instance(), _1, _2);
+    builderService->interface.builderCommand = std::bind(&BuildManager::handleCommand, BuildManager::instance(), _1);
     return true;
 }
 

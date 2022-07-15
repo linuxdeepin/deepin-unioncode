@@ -49,11 +49,12 @@ public:
     void setActivedProjectInfo(const QString &kitName, const QString &workingDir);
     void clearActivedProjectInfo();
 
-    void handleCommand(const BuildCommandInfo &info, const bool needBack);
+    void handleCommand(const BuildCommandInfo &info);
 
 signals:
     void sigOutputCompileInfo(const QString &content, const OutputFormat format);
     void sigOutputProblemInfo(const QString &content);
+    void sigBuildState(const BuildState &buildstate);
 
 public slots:
     void slotOutputCompileInfo(const QString &content, const OutputFormat format);
@@ -62,6 +63,7 @@ public slots:
     void buildProject();
     void rebuildProject();
     void cleanProject();
+    void slotBuildState(const BuildState &buildstate);
 
 private:
     explicit BuildManager(QObject *parent = nullptr);
@@ -73,10 +75,11 @@ private:
     void outputLog(const QString &content, const OutputFormat format);
     void outputError(const QString &content);
 
-    bool execCommands(const QList<BuildCommandInfo> &commandList, const bool needBack);
-    bool execCommand(const BuildCommandInfo &info, const bool needBack);
+    bool execCommands(const QList<BuildCommandInfo> &commandList);
+    bool execCommand(const BuildCommandInfo &info);
 
     void execBuildStep(QList<BuildMenuType> menuTypelist);
+    void outBuildState(const BuildState &buildState);
 
     QMutex releaseMutex;
 

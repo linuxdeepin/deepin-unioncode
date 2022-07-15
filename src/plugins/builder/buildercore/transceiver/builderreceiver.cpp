@@ -36,7 +36,7 @@ dpf::EventHandler::Type BuilderReceiver::type()
 
 QStringList BuilderReceiver::topics()
 {
-    return QStringList() << T_PROJECT;
+    return QStringList() << T_PROJECT << T_DEBUGGER;
 }
 
 void BuilderReceiver::eventProcess(const dpf::Event &event)
@@ -49,6 +49,10 @@ void BuilderReceiver::eventProcess(const dpf::Event &event)
             dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
             BuildManager::instance()->clearActivedProjectInfo();
         }
-    }
+    } else if (event.topic() == T_DEBUGGER) {
+       if (event.data() == D_DEBUG_EXECUTION_START) {
+           BuildManager::instance()->buildProject();
+       }
+   }
 }
 

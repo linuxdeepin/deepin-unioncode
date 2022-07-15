@@ -40,10 +40,30 @@ void GradleParser::stdOutput(const QString &line, OutputFormat format)
 
 void GradleParser::stdError(const QString &line)
 {
+    QString newContent = line;
+    QRegExp exp("/.*:(\\d*):");
+    int ret = newContent.indexOf(exp);
+    QString filePath;
+    int lineNumber = -1;
+    if (ret != -1) {
+        QStringList list = newContent.split(":");
+        if (list.count() > 1) {
+            filePath = list.at(0);
+            lineNumber = list.at(1).toInt();
+        }
+    }
+
+    Utils::FileName fileName;
+    if (QFileInfo(filePath).isFile()) {
+        fileName = Utils::FileName::fromUserInput(filePath);
+    } else {
+        fileName = Utils::FileName();
+    }
+
     taskAdded(Task(Task::Error,
                    line,
-                   Utils::FileName::fromUserInput(""),
-                   0,
+                   fileName,
+                   lineNumber,
                    TASK_CATEGORY_BUILDSYSTEM), 1, 0);
 }
 

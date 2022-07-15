@@ -24,6 +24,7 @@
 #include <common/util/singleton.h>
 #include <QMetaType>
 #include <QColor>
+#include <QUuid>
 
 enum ToolChainType {
     UnKnown,
@@ -56,6 +57,11 @@ struct BuildCommandInfo {
     QString program;
     QStringList arguments;
     QString workingDir;
+    QString uuid;
+
+    BuildCommandInfo() {
+        uuid = QUuid::createUuid().toString();
+    }
 };
 
 Q_DECLARE_METATYPE(BuildCommandInfo);

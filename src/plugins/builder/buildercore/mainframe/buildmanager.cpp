@@ -72,6 +72,7 @@ BuildManager::BuildManager(QObject *parent)
 
     QObject::connect(this, &BuildManager::sigOutputCompileInfo, this, &BuildManager::slotOutputCompileInfo);
     QObject::connect(this, &BuildManager::sigOutputProblemInfo, this, &BuildManager::slotOutputProblemInfo);
+    QObject::connect(this, &BuildManager::sigBuildState, this, &BuildManager::slotBuildState);
 }
 
 BuildManager::~BuildManager()
@@ -143,7 +144,7 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
                 list.append(info);
             }
             generator->appendOutputParser(d->outputParser);
-            execCommands(list, false);
+            execCommands(list);
         }
     }
 }
@@ -182,7 +183,7 @@ void BuildManager::clearActivedProjectInfo()
     d->activedWorkingDir.clear();
 }
 
-void BuildManager::handleCommand(const BuildCommandInfo &commandInfo, const bool needBack)
+void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
 {
     auto &ctx = dpfInstance.serviceContext();
     auto builderService = ctx.service<BuilderService>(BuilderService::name());
@@ -190,19 +191,19 @@ void BuildManager::handleCommand(const BuildCommandInfo &commandInfo, const bool
         auto generator = builderService->create<BuilderGenerator>(commandInfo.kitName);
         if (generator) {
             generator->appendOutputParser(d->outputParser);
-            execCommands({commandInfo}, needBack);
+            execCommands({commandInfo});
         }
     }
 }
 
-bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList, const bool needBack)
+bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList)
 {
     if (!commandList.isEmpty()) {
         startBuild();
         QtConcurrent::run([=](){
             QMutexLocker locker(&releaseMutex);
             for (auto command : commandList) {
-                execCommand(command, needBack);
+                execCommand(command);
             }
         });
     }
@@ -210,10 +211,11 @@ bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList, cons
     return true;
 }
 
-bool BuildManager::execCommand(const BuildCommandInfo &info, const bool needBack)
+bool BuildManager::execCommand(const BuildCommandInfo &info)
 {
+    outBuildState(BuildState::kBuilding);
     bool ret = false;
-    QString retMsg;
+    QString retMsg = tr("Error: The \"%1\" command not found, please install.\n").arg(info.program);
     QProcess process;
     process.setWorkingDirectory(info.workingDir);
 
@@ -259,13 +261,13 @@ bool BuildManager::execCommand(const BuildCommandInfo &info, const bool needBack
 
     outputLog(retMsg, ret ? OutputFormat::NormalMessage : OutputFormat::Stderr);
 
-    if (needBack) {
-        BuilderSender::notifyBuildState(ret ? BuildState::kNoBuild : BuildState::kBuildFailed, info);
-    }
-
     QString endMsg = tr("Execute command finished.\n");
     outputLog(endMsg, OutputFormat::NormalMessage);
 
+    BuildState buildState = ret ? BuildState::kNoBuild : BuildState::kBuildFailed;
+    outBuildState(buildState);
+
+    BuilderSender::notifyBuildState(buildState, info);
     return ret;
 }
 
@@ -299,4 +301,26 @@ void BuildManager::addOutput(const QString &content, const OutputFormat format)
         newContent = time + ": " + newContent + "\r";
     }
     d->compileOutputPane->appendText(newContent, format);
+}
+
+void BuildManager::outBuildState(const BuildState &buildState)
+{
+    emit sigBuildState(buildState);
+}
+
+void BuildManager::slotBuildState(const BuildState &buildState)
+{
+    switch (buildState) {
+    case BuildState::kNoBuild:
+    case BuildState::kBuildFailed:
+        d->buildAction->setEnabled(true);
+        d->rebuildAction->setEnabled(true);
+        d->cleanAction->setEnabled(true);
+        break;
+    case BuildState::kBuilding:
+        d->buildAction->setEnabled(false);
+        d->rebuildAction->setEnabled(false);
+        d->cleanAction->setEnabled(false);
+        break;
+    }
 }

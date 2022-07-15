@@ -140,7 +140,8 @@ bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
         commandInfo.arguments = info.buildCustomArgs();
         commandInfo.workingDir = info.workspaceFolder();
 
-        builderService->interface.builderCommand(commandInfo, true);
+        ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
+        builderService->interface.builderCommand(commandInfo);
     }
 
     Generator::started(); // emit starded
@@ -259,7 +260,7 @@ void CmakeGenerator::actionTriggered()
             commandInfo.program = program;
             commandInfo.arguments = args;
             commandInfo.workingDir = workDir;
-            builderService->interface.builderCommand(commandInfo, false);
+            builderService->interface.builderCommand(commandInfo);
         }
     }
 }

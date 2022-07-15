@@ -54,8 +54,14 @@ class ProjectCmakeProxy : public QObject
 public:
     static ProjectCmakeProxy* instance();
 
+    void setBuildCommandUuid(QString buildCommandUuid);
+    QString getBuildCommandUuid();
+
 signals:
     void buildExecuteEnd(const BuildCommandInfo &commandInfo, int status = 0);
+
+private:
+    QString buildCommandUuid;
 };
 
 #endif // PROJECTRECEIVER_H

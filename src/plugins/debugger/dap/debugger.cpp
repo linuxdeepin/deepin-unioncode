@@ -438,9 +438,19 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
         if (data == D_BUILD_STATE) {
             int state = event.property(P_STATE).toInt();
             int buildSuccess = 0;
-            if (state == buildSuccess && runState == kPreparing) {
+            if (state == buildSuccess
+                    && runState == kPreparing
+                    && activedProjectKitName == "cmake") { //temporary, add "cmake" to avoid debug java and python
                 start();
             }
+        }
+    } else if (event.topic() == T_PROJECT) {
+        if (event.data() == D_ACTIVED || event.data() == D_CRETED) {
+            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
+            activedProjectKitName = projectInfo.kitName();
+        } else if (event.data() == D_DELETED){
+            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
+            activedProjectKitName.clear();
         }
     }
 }

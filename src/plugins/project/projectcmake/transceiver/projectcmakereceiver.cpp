@@ -20,7 +20,10 @@
 */
 #include "projectcmakereceiver.h"
 #include "mainframe/cmakeopenhandler.h"
+#include "mainframe/cmakegenerator.h"
 #include "services/project/projectinfo.h"
+#include "services/project/projectservice.h"
+#include "services/project/projectgenerator.h"
 #include "services/builder/builderglobals.h"
 #include "common/common.h"
 
@@ -60,12 +63,14 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
 void ProjectCmakeReceiver::builderEvent(const dpf::Event &event)
 {
     if (event.data() == D_BUILD_STATE) {
-        int endStatus = event.property(P_STATE).toInt();
-        if (endStatus == 0) {
-            BuildCommandInfo commandInfo = qvariant_cast<BuildCommandInfo>(event.property(P_ORIGINCMD));
-            emit ProjectCmakeProxy::instance()->buildExecuteEnd(commandInfo);
-        } else {
-            ContextDialog::ok(QDialog::tr("Failed open project, whith build step."));
+        BuildCommandInfo commandInfo = qvariant_cast<BuildCommandInfo>(event.property(P_ORIGINCMD));
+        if (ProjectCmakeProxy::instance()->getBuildCommandUuid() == commandInfo.uuid) {
+            int endStatus = event.property(P_STATE).toInt();
+            if (0 == endStatus) {
+                emit ProjectCmakeProxy::instance()->buildExecuteEnd(commandInfo);
+            } else {
+                ContextDialog::ok(QDialog::tr("Failed open project, whith build step."));
+            }
         }
     }
 }
@@ -84,4 +89,14 @@ ProjectCmakeProxy *ProjectCmakeProxy::instance()
 {
     static ProjectCmakeProxy ins;
     return &ins;
+}
+
+void ProjectCmakeProxy::setBuildCommandUuid(QString buildCommandUuid)
+{
+    ProjectCmakeProxy::buildCommandUuid = buildCommandUuid;
+}
+
+QString ProjectCmakeProxy::getBuildCommandUuid()
+{
+    return buildCommandUuid;
 }

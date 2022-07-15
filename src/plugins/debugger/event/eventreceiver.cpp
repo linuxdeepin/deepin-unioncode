@@ -35,7 +35,7 @@ dpf::EventHandler::Type DebugEventReceiver::type()
 
 QStringList DebugEventReceiver::topics()
 {
-    return { T_CODEEDITOR, T_BUILDER };
+    return { T_CODEEDITOR, T_BUILDER, T_PROJECT };
 }
 
 void DebugEventReceiver::eventProcess(const dpf::Event &event)
