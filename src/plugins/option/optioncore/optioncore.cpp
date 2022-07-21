@@ -21,8 +21,7 @@
  */
 #include "optioncore.h"
 #include "mainframe/optiondefaultkeeper.h"
-#include "mainframe/optioncmdgenerator.h"
-#include "mainframe/optionenvgenerator.h"
+#include "mainframe/optiongeneralgenerator.h"
 
 #include "common/common.h"
 #include "base/abstractwidget.h"
@@ -55,9 +54,21 @@ bool OptionCore::start()
         abort();
     }
 
+    optionDialog->setModal(true);
+
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     OptionService *optionService = ctx.service<OptionService>(OptionService::name());
+    if (optionService) {
+        optionService->implGenerator<OptionGeneralGenerator>(OptionGeneralGenerator::kitName());
+        auto generator = optionService->createGenerator<OptionGeneralGenerator>(OptionGeneralGenerator::kitName());
+        if (generator) {
+            auto pageWidget = dynamic_cast<PageWidget*>(generator->optionWidget());
+            if (pageWidget) {
+                optionDialog->insertOptionPanel(OptionGeneralGenerator::kitName(), pageWidget);
+            }
+        }
+    }
 
     if (windowService && windowService->addAction) {
         QAction* actionOptions = new QAction(QAction::tr("Options"));
@@ -72,19 +83,20 @@ bool OptionCore::start()
                          optionDialog, &QDialog::show);
     }
 
-    DPF_USE_NAMESPACE // 此处需要将后加入插件选项置顶
+    DPF_USE_NAMESPACE
     QObject::connect(&Listener::instance(), &Listener::pluginsStarted, [=](){
-        if (optionService && optionDialog) {
-            optionService->implGenerator<OptionEnvGenerator>(OptionEnvGenerator::kitName());
-            optionService->implGenerator<OptionCmdGenerator>(OptionCmdGenerator::kitName());
+        if (optionDialog) {
             auto list = optionService->supportGeneratorName<OptionGenerator>();
             for (auto name : list) {
+                if (0 == name.compare(OptionGeneralGenerator::kitName()))
+                    continue;
                 auto generator = optionService->createGenerator<OptionGenerator>(name);
-                QWidget *optionWidget = nullptr;
-                if (generator)
-                    optionWidget = generator->optionWidget();
-                if (optionWidget)
-                    optionDialog->insertOptionPanel(name, optionWidget);
+                if (generator) {
+                    PageWidget *optionWidget = dynamic_cast<PageWidget*>(generator->optionWidget());
+                    if (optionWidget) {
+                        optionDialog->insertOptionPanel(name, optionWidget);
+                    }
+                }
             }
         }
     });

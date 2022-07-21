@@ -22,6 +22,7 @@
 #include "parser/mavenparser.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
+#include "services/option/optionmanager.h"
 
 class MavenGeneratorPrivate
 {
@@ -42,7 +43,7 @@ MavenGenerator::~MavenGenerator()
 
 void MavenGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType)
 {
-    info.program = "mvn";
+    info.program = OptionManager::getInstance()->getMavenToolPath();
     switch (buildMenuType) {
     case Build:
         info.arguments.append("compile");

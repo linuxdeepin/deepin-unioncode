@@ -27,6 +27,7 @@
 #include "services/builder/builderservice.h"
 #include "services/builder/ioutputparser.h"
 #include "services/project/projectservice.h"
+#include "services/option/optionmanager.h"
 
 using namespace dpfservice;
 
@@ -49,7 +50,7 @@ CMakeGenerator::~CMakeGenerator()
 
 void CMakeGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType)
 {
-    info.program = "cmake";
+    info.program = OptionManager::getInstance()->getCMakeToolPath();
     TargetType type = kBuildTarget;
     switch (buildMenuType) {
     case Build:

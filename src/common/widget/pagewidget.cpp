@@ -32,12 +32,3 @@ PageWidget::~PageWidget()
 
 }
 
-void PageWidget::saveConfig()
-{
-
-}
-
-void PageWidget::readConfig()
-{
-
-}

@@ -1,10 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             huangyu<huangyub@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,17 +18,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef OPTIONCMDGENERATOR_H
-#define OPTIONCMDGENERATOR_H
 
-#include "services/option/optiongenerator.h"
+#ifndef OPTIONMANAGER_H
+#define OPTIONMANAGER_H
 
-class OptionCmdGenerator : public dpfservice::OptionGenerator
+#include "optiondatastruct.h"
+#include <QObject>
+
+class OptionManagerPrivate;
+class OptionManager : public QObject
 {
+    Q_OBJECT
 public:
-    OptionCmdGenerator();
-    inline static QString kitName() {return "commands";}
-    virtual QWidget *optionWidget() override;
+    static OptionManager *getInstance();
+
+    void updateData();
+
+    QString getMavenToolPath();
+    QString getJdkToolPath();
+    QString getGradleToolPath();
+    QString getPythonToolPath();
+    QString getCMakeToolPath();
+
+signals:
+
+private:
+    explicit OptionManager(QObject *parent = nullptr);
+    virtual ~OptionManager() override;
+
+    OptionManagerPrivate *const d;
 };
 
-#endif // OPTIONCMDGENERATOR_H
+#endif // OPTIONMANAGER_H

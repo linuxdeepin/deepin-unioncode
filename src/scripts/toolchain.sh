@@ -169,6 +169,94 @@ probe_lsp_servers()
 	echo "]}" >> $TOOLCHAINS
 }
 
+# probe jdk
+probe_jdk()
+{
+	JDK_VERSIONS=($(find $search_path -name 'java'))
+	echo "{\"JDK\": [" >> $TOOLCHAINS
+	count=${#JDK_VERSIONS[@]}
+	for ((i=0;i<$count;i++)) do
+		jdkversion=${JDK_VERSIONS[i]}
+		echo "{" >> $TOOLCHAINS
+		name=$(java -version 2>&1 |awk 'NR==1{gsub(/"/,"");print $1 " " $3}')
+		path=$jdkversion
+		echo "\"name\":\"$name\"," >> $TOOLCHAINS
+		echo "\"path\":\"$path\"" >> $TOOLCHAINS
+		echo "}" >>  $TOOLCHAINS
+		last=$[$count-1]
+		if [ $i -ne $last ]; then
+			echo "," >>  $TOOLCHAINS
+		fi		
+	done
+	echo "]}" >> $TOOLCHAINS
+}
+
+# probe maven
+probe_maven()
+{
+	MAVEN_VERSIONS=($(find $search_path -name 'mvn'))
+	echo "{\"Maven\": [" >> $TOOLCHAINS
+	count=${#MAVEN_VERSIONS[@]}
+	for ((i=0;i<$count;i++)) do
+		mavenversion=${MAVEN_VERSIONS[i]}
+		echo "{" >> $TOOLCHAINS
+		name=$(basename $mavenversion)
+		path=$mavenversion
+		echo "\"name\":\"$name\"," >> $TOOLCHAINS
+		echo "\"path\":\"$path\"" >> $TOOLCHAINS
+		echo "}" >>  $TOOLCHAINS
+		last=$[$count-1]
+		if [ $i -ne $last ]; then
+			echo "," >>  $TOOLCHAINS
+		fi		
+	done
+	echo "]}" >> $TOOLCHAINS
+}
+
+# probe gradle
+probe_gradle()
+{
+	GRADLE_VERSIONS=($(find $search_path -name 'gradle'))
+	echo "{\"Gradle\": [" >> $TOOLCHAINS
+	count=${#GRADLE_VERSIONS[@]}
+	for ((i=0;i<$count;i++)) do
+		gradleversion=${GRADLE_VERSIONS[i]}
+		echo "{" >> $TOOLCHAINS
+		name=$(basename $gradleversion)
+		path=$gradleversion
+		echo "\"name\":\"$name\"," >> $TOOLCHAINS
+		echo "\"path\":\"$path\"" >> $TOOLCHAINS
+		echo "}" >>  $TOOLCHAINS
+		last=$[$count-1]
+		if [ $i -ne $last ]; then
+			echo "," >>  $TOOLCHAINS
+		fi		
+	done
+	echo "]}" >> $TOOLCHAINS
+}
+
+# probe python
+probe_python()
+{
+	PYTHON_VERSIONS=($(find $search_path -name 'python[0-9]*\.*[0-9]*' | grep -P 'python[0-9]*\.*[0-9]*$'))
+	echo "{\"Python\": [" >> $TOOLCHAINS
+	count=${#PYTHON_VERSIONS[@]}
+	for ((i=0;i<$count;i++)) do
+		pythonversion=${PYTHON_VERSIONS[i]}
+		echo "{" >> $TOOLCHAINS
+		name=$(basename $pythonversion)
+		path=$pythonversion
+		echo "\"name\":\"$name\"," >> $TOOLCHAINS
+		echo "\"path\":\"$path\"" >> $TOOLCHAINS
+		echo "}" >>  $TOOLCHAINS
+		last=$[$count-1]
+		if [ $i -ne $last ]; then
+			echo "," >>  $TOOLCHAINS
+		fi		
+	done
+	echo "]}" >> $TOOLCHAINS
+}
+
 ############################################################
 # main entry
 probe_c_compilers
@@ -180,6 +268,14 @@ echo "," >> $TOOLCHAINS
 probe_build_systems
 echo "," >> $TOOLCHAINS
 probe_lsp_servers
+echo "," >> $TOOLCHAINS
+probe_jdk
+echo "," >> $TOOLCHAINS
+probe_maven
+echo "," >> $TOOLCHAINS
+probe_gradle
+echo "," >> $TOOLCHAINS
+probe_python
 
 echo "]" >> $TOOLCHAINS
 

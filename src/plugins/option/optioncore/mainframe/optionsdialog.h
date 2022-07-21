@@ -34,13 +34,14 @@ class QLabel;
 class QSpacerItem;
 class QStringListModel;
 class QStackedWidget;
+class PageWidget;
 
 class OptionsDialog : public QDialog
 {
     Q_OBJECT
 public:
     explicit OptionsDialog(QWidget *parent = nullptr);
-    bool insertOptionPanel(const QString &itemName, QWidget *panel);
+    bool insertOptionPanel(const QString &itemName, PageWidget *panel);
 
 public slots:
     void slotLeftBarClicked(const QModelIndex &index);
@@ -57,7 +58,7 @@ protected:
     QListView *leftSideBar = nullptr;
     QLabel *headTitle = nullptr;
     QString activeOptName {};
-    QMap<QString, QWidget *> widgts{};
+    QMap<QString, PageWidget *> widgts{};
     QStringListModel *leftBarModel = nullptr;
     QStackedWidget *stackWidget = nullptr;
 };

@@ -5,7 +5,7 @@ project(plugin-optioncmake)
 set(CXX_CPP
     mainframe/kitsmanagerwidget.cpp
     mainframe/optioncmakegenerator.cpp
-    mainframe/optioncmaketabwidget.cpp
+    mainframe/cmakeoptionwidget.cpp
     mainframe/kitmanager.cpp
     mainframe/kit.cpp
     mainframe/persistentsettings.cpp
@@ -16,7 +16,7 @@ set(CXX_CPP
 set(CXX_H
     mainframe/kitsmanagerwidget.h
     mainframe/optioncmakegenerator.h
-    mainframe/optioncmaketabwidget.h
+    mainframe/cmakeoptionwidget.h
     mainframe/kitmanager.h
     mainframe/kit.h
     mainframe/persistentsettings.h

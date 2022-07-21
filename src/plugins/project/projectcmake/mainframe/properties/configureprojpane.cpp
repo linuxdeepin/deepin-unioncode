@@ -25,6 +25,8 @@
 #include "mainframe/cmakeasynparse.h"
 #include "mainframe/cmakegenerator.h"
 
+#include "services/option/optionmanager.h"
+
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
@@ -158,7 +160,7 @@ void ConfigureProjPane::slotConfigureDone()
     getSelectedItem(type, path);
     info.setBuildType(type);
     info.setBuildFolder(path);
-    info.setBuildProgram("cmake");
+    info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
 
     QStringList arguments;
     arguments << "-S";

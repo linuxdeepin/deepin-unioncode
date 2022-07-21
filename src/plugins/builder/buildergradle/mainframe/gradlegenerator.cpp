@@ -22,6 +22,7 @@
 #include "parser/gradleparser.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
+#include "services/option/optionmanager.h"
 
 using namespace dpfservice;
 
@@ -44,7 +45,7 @@ GradleGenerator::~GradleGenerator()
 
 void GradleGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType)
 {
-    info.program = "./gradlew";
+    info.program = OptionManager::getInstance()->getGradleToolPath();
     switch (buildMenuType) {
     case Build:
         info.arguments.append("build");

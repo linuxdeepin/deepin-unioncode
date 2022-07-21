@@ -264,7 +264,7 @@ ShortcutSettingWidgetPrivate::ShortcutSettingWidgetPrivate()
 }
 
 ShortcutSettingWidget::ShortcutSettingWidget(QWidget *parent)
-    : QWidget(parent)
+    : PageWidget(parent)
     , d(new ShortcutSettingWidgetPrivate())
 {
     setupUi();

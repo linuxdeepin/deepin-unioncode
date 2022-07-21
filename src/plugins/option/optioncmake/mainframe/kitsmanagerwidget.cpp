@@ -21,17 +21,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "kitsmanagerwidget.h"
+#include "services/option/toolchaindata.h"
 #include "common/util/custompaths.h"
 #include "common/toolchain/toolchain.h"
 
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QByteArray>
-#include <QFile>
-#include <QJsonArray>
 #include <QDebug>
 #include <QDir>
-
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
@@ -46,108 +41,35 @@
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include <QStringListModel>
+#include <QAbstractItemView>
+#include <QJsonObject>
 
-static const char *kCCompilers = "C compilers";
-static const char *kCXXCompilers = "C++ compilers";
-static const char *kCCXXDebuggers = "C/C++ debuggers";
-static const char *kCCXXBuildSystems = "C/C++ build systems";
-
-static const char *kNameItem = "name";
-static const char *kPathItem = "path";
-
-ToolChainData::ToolChainData()
-{
-}
-
-bool ToolChainData::readToolChain(QString &filePath)
-{
-    // Read all contents from toolchain file.
-    QFile file(filePath);
-    file.open(QIODevice::ReadOnly);
-    QByteArray data = file.readAll();
-    file.close();
-
-    // Parse.
-    QJsonParseError parseError;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
-    if (parseError.error != QJsonParseError::NoError) {
-        qInfo() << "Toolchain file read failed!";
-        return false;
-    }
-
-    auto parseSubObj = [this](QJsonObject &obj, const QString &subobjName) {
-        if (obj.contains(subobjName)) {
-            QJsonValue cCompilersArray = obj.value(subobjName);
-            QJsonArray array = cCompilersArray.toArray();
-
-            QStringList parameters;
-            Params params;
-            for (int i = 0; i < array.size(); ++i) {
-                QJsonValue sub = array.at(i);
-                QJsonObject subObj = sub.toObject();
-
-                QJsonValue nameVal = subObj.value(kNameItem);
-                QString name = nameVal.toString();
-
-                QJsonValue pathVal = subObj.value(kPathItem);
-                QString path = pathVal.toString();
-
-                ToolChainParam param;
-                param.name = name;
-                param.path = path;
-
-                params.push_back(param);
-            }
-            toolChains.insert(subobjName, params);
-        }
-    };
-
-    QJsonArray array = doc.array();
-    for (auto node : array) {
-        auto obj = node.toObject();
-        for (auto it = obj.begin(); it != obj.end(); it++) {
-            parseSubObj(obj, it.key());
-        }
-    }
-
-    return true;
-}
-
-const ToolChainData::ToolChains &ToolChainData::getToolChanins() const
-{
-    return toolChains;
-}
-
-///
-/// \brief KitsManagerWidget::KitsManagerWidget
-/// \param parent
-///
 class KitsManagerWidgetPrivate
 {
     friend class KitsManagerWidget;
     QListView *listView = nullptr;
+    QLineEdit *nameEidt = nullptr;
     QComboBox *cbCXXComplier = nullptr;
     QComboBox *cbCMake = nullptr;
     QComboBox *cbCComplier = nullptr;
     QComboBox *cbDebugger = nullptr;
     QLabel *labelGeneratorExpression = nullptr;
+
+    QSharedPointer<ToolChainData> toolChainData;
 };
 
 KitsManagerWidget::KitsManagerWidget(QWidget *parent)
     : PageWidget(parent)
     , d(new KitsManagerWidgetPrivate)
 {
-    toolChainData.reset(new ToolChainData());
-
-    // Read toolChain data.
-    QString toolChainFilePath = CustomPaths::user(CustomPaths::Configures)
-            + QDir::separator() + toolchains::K_TOOLCHAINFILE;
-    if (QFile(toolChainFilePath).exists()) {
-        bool ret = toolChainData->readToolChain(toolChainFilePath);
-        qInfo() << (ret ? "read tool chain successful!" : "read tool chain failed!");
+    d->toolChainData.reset(new ToolChainData());
+    QString retMsg;
+    bool ret = d->toolChainData->readToolChainData(retMsg);
+    if (ret) {
+        qInfo() << retMsg;
     }
 
-    setupUi(this);
+    setupUi();
     updateUi();
 }
 
@@ -158,17 +80,12 @@ KitsManagerWidget::~KitsManagerWidget()
     }
 }
 
-void KitsManagerWidget::setupUi(QWidget *Widget)
+void KitsManagerWidget::setupUi()
 {
-    setWindowTitle(tr("Kits"));
-
-    // Center layout.
-    auto centerLayout = new QGridLayout(Widget);
+    auto centerLayout = new QGridLayout();
     centerLayout->setSpacing(6);
     centerLayout->setContentsMargins(11, 11, 11, 11);
 
-    // Tab widget.
-    auto tabWidget = new QTabWidget(Widget);
     auto tab = new QWidget();
     auto horizontalLayout = new QHBoxLayout(tab);
     horizontalLayout->setSpacing(6);
@@ -183,6 +100,7 @@ void KitsManagerWidget::setupUi(QWidget *Widget)
     verticalLayout->setSpacing(6);
     // List tree.
     d->listView = new QListView(scrollAreaWidget);
+    d->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     verticalLayout->addWidget(d->listView);
     QStringList list;
     list << "Desktop";
@@ -196,8 +114,9 @@ void KitsManagerWidget::setupUi(QWidget *Widget)
     detailGridLayout->setSpacing(6);
     d->cbCXXComplier = new QComboBox(scrollAreaWidget);
 
-    auto nameEidt = new QLineEdit(scrollAreaWidget);
-    nameEidt->setText(tr("Desktop"));
+    d->nameEidt = new QLineEdit(scrollAreaWidget);
+    d->nameEidt->setText(tr("Desktop"));
+    d->nameEidt->setEnabled(false);
 
     d->cbCMake = new QComboBox(scrollAreaWidget);
 
@@ -239,7 +158,7 @@ void KitsManagerWidget::setupUi(QWidget *Widget)
     labelCXXCompiler->setText("C++:");
 
     detailGridLayout->addWidget(d->cbCXXComplier, 3, 2, 1, 1);
-    detailGridLayout->addWidget(nameEidt, 1, 2, 1, 1);
+    detailGridLayout->addWidget(d->nameEidt, 1, 2, 1, 1);
     detailGridLayout->addWidget(d->cbCMake, 5, 2, 1, 1);
     detailGridLayout->addWidget(labelCMake, 5, 0, 1, 1);
     detailGridLayout->addWidget(d->cbCComplier, 2, 2, 1, 1);
@@ -265,24 +184,22 @@ void KitsManagerWidget::setupUi(QWidget *Widget)
 
     horizontalLayout->addWidget(scrollArea);
 
-    tabWidget->addTab(tab, QString("kits"));
-    auto tab_2 = new QWidget();
-    tabWidget->addTab(tab_2, QString("Compilers"));
-
-    centerLayout->addWidget(tabWidget, 0, 0, 1, 1);
-
-    tabWidget->setCurrentIndex(0);
+    centerLayout->addWidget(tab, 0, 0, 1, 1);
+    setLayout(centerLayout);
 }
 
 void KitsManagerWidget::updateUi()
 {
-    const ToolChainData::ToolChains &data = toolChainData->getToolChanins();
+    const ToolChainData::ToolChains &data = d->toolChainData->getToolChanins();
 
     // Update compiler combox.
-    auto updateComplier = [](QComboBox *cb, ToolChainData::Params &params) {
+    auto updateComplier = [](QComboBox *cb, ToolChainData::Params &params) {        
+        int i = 0;
         for (auto p : params) {
             QString text = p.name + "(" + p.path + ")";
-            cb->addItem(text);
+            cb->insertItem(i, text);
+            cb->setItemData(i, QVariant::fromValue(p), Qt::UserRole + 1);
+            i++;
         }
     };
 
@@ -302,4 +219,102 @@ void KitsManagerWidget::updateUi()
 
     // Update Generator.
     d->labelGeneratorExpression->setText("Eclipse CDT4 - Unix Makefiles");
+}
+
+bool KitsManagerWidget::getControlValue(QMap<QString, QVariant> &map)
+{
+    KitConfig config;
+    config.name = d->nameEidt->text();
+
+    auto comboBoxValue = [](QComboBox *cb) {
+        int index = cb->currentIndex();
+        if (index > -1) {
+            return qvariant_cast<ToolChainData::ToolChainParam>(cb->itemData(index, Qt::UserRole + 1));
+        } else {
+            return ToolChainData::ToolChainParam();
+        }
+    };
+
+    config.ccompiler = comboBoxValue(d->cbCComplier);
+    config.cppcompiler = comboBoxValue(d->cbCXXComplier);
+    config.debugger = comboBoxValue(d->cbDebugger);
+    config.cmake = comboBoxValue(d->cbCMake);
+    config.cmakeGenerator = d->labelGeneratorExpression->text();
+
+    dataToMap(config, map);
+
+    return true;
+}
+
+void KitsManagerWidget::setControlValue(const QMap<QString, QVariant> &map)
+{
+    KitConfig config;
+    mapToData(map, config);
+
+    auto updateComplier = [](QComboBox *cb, ToolChainData::ToolChainParam &params) {
+        cb->setCurrentIndex(-1);
+        for (int i = 0; i < cb->count(); i++) {
+            ToolChainData::ToolChainParam data = qvariant_cast<ToolChainData::ToolChainParam>(cb->itemData(i, Qt::UserRole + 1));
+            if (data.name == params.name && data.path == params.path) {
+                cb->setCurrentIndex(i);
+                return;
+            }
+        }
+    };
+
+    updateComplier(d->cbCComplier, config.ccompiler);
+    updateComplier(d->cbCXXComplier, config.cppcompiler);
+    updateComplier(d->cbDebugger, config.debugger);
+    updateComplier(d->cbCMake, config.cmake);
+
+    //d->labelGeneratorExpression->setText(config.cmakeGenerator);
+}
+
+bool KitsManagerWidget::dataToMap(const KitConfig &config, QMap<QString, QVariant> &map)
+{
+    auto updateComplier = [](QMap<QString, QVariant> &map, const QString key, const ToolChainData::ToolChainParam &params) {
+        QMap<QString, QVariant> version;
+        version.insert("name", params.name);
+        version.insert("path", params.path);
+        map.insert(key, version);
+    };
+
+    updateComplier(map, "ccompiler", config.ccompiler);
+    updateComplier(map, "cppcompiler", config.cppcompiler);
+    updateComplier(map, "debugger", config.debugger);
+    updateComplier(map, "cmake", config.cmake);
+
+    map.insert("name", config.name);
+    map.insert("cmakeGenerator", config.cmakeGenerator);
+
+    return true;
+}
+
+bool KitsManagerWidget::mapToData(const QMap<QString, QVariant> &map, KitConfig &config)
+{
+    auto updateComplier = [](const QMap<QString, QVariant> &map, const QString key, ToolChainData::ToolChainParam &params) {
+        QMap<QString, QVariant> version = map.value(key).toMap();
+        params.name = version.value("name").toString();
+        params.path = version.value("path").toString();
+    };
+
+    updateComplier(map, "ccompiler", config.ccompiler);
+    updateComplier(map, "cppcompiler", config.cppcompiler);
+    updateComplier(map, "debugger", config.debugger);
+    updateComplier(map, "cmake", config.cmake);
+
+    config.name = map.value("name").toString();
+    config.cmakeGenerator = map.value("cmakeGenerator").toString();
+
+    return true;
+}
+
+void KitsManagerWidget::setUserConfig(const QMap<QString, QVariant> &map)
+{
+    setControlValue(map);
+}
+
+void KitsManagerWidget::getUserConfig(QMap<QString, QVariant> &map)
+{
+    getControlValue(map);
 }

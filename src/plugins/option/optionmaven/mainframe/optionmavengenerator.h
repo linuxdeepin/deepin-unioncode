@@ -1,10 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             huangyu<huangyub@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +18,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "optioncmdgenerator.h"
-#include "shortcutsettingwidget.h"
+#ifndef OPTIONMAVENGENERATOR_H
+#define OPTIONMAVENGENERATOR_H
 
-OptionCmdGenerator::OptionCmdGenerator()
+#include "services/option/optiongenerator.h"
+
+class OptionMavenGeneratorPrivate;
+class OptionMavenGenerator : public dpfservice::OptionGenerator
 {
+public:
+    OptionMavenGenerator();
+    inline static QString kitName() {return "maven";}
+    virtual QWidget *optionWidget() override;
 
-}
+private:
+    OptionMavenGeneratorPrivate *const d;
+};
 
-QWidget *OptionCmdGenerator::optionWidget()
-{
-    return new ShortcutSettingWidget;
-}
+#endif // OPTIONMAVENGENERATOR_H

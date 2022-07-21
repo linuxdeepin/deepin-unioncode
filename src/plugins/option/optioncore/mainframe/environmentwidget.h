@@ -22,9 +22,10 @@
 #define ENVIRONMENTWIDGET_H
 
 #include <QTableView>
+#include <common/widget/pagewidget.h>
 
 class EnvironmentWidgetPrivate;
-class EnvironmentWidget : public QWidget
+class EnvironmentWidget : public PageWidget
 {
     Q_OBJECT
 

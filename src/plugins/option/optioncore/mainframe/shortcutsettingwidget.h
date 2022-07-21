@@ -24,6 +24,7 @@
 
 #include <QWidget>
 #include <QAbstractTableModel>
+#include <common/widget/pagewidget.h>
 
 enum ColumnID
 {
@@ -63,7 +64,7 @@ private:
 };
 
 class ShortcutSettingWidgetPrivate;
-class ShortcutSettingWidget : public QWidget
+class ShortcutSettingWidget : public PageWidget
 {
     Q_OBJECT
 public:

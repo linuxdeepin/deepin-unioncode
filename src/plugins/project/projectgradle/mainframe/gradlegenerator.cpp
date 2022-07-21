@@ -25,6 +25,7 @@
 #include "transceiver/projectgradlereceiver.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
+#include "services/option/optionmanager.h"
 
 #include <QtConcurrent>
 #include <QtXml>
@@ -278,7 +279,7 @@ void GradleGenerator::doGradleGeneratMenu(const QString &program,
 #ifdef __WIN32__
                                 action->setPriority("program", "./gradlew.bat");
 #elif __linux__ ||  __apple__
-                                action->setProperty("program", "./gradlew");
+                                action->setProperty("program", OptionManager::getInstance()->getGradleToolPath());
 #endif
                                 action->setProperty("arguments", QStringList({"task", taskChild[0]}));
                                 action->setProperty("workDir", d->menuGenProcess->workingDirectory());

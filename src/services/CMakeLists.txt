@@ -18,6 +18,13 @@ set(CXX_H
     find/findservice.h
     option/optionservice.h
     option/optiongenerator.h
+    option/toolchaindata.h
+    option/toolchaindata.cpp
+    option/optionutils.cpp
+    option/optionutils.h
+    option/optionmanager.h
+    option/optionmanager.cpp
+    option/optiondatastruct.h
     builder/builderservice.h
     builder/buildergenerator.h
     builder/builderglobals.h

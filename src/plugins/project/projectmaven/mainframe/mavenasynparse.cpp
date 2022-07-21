@@ -1,6 +1,7 @@
 #include "mavenasynparse.h"
 #include "mavenitemkeeper.h"
 #include "services/project/projectgenerator.h"
+#include "services/option/optionmanager.h"
 
 #include "common/common.h"
 
@@ -150,7 +151,7 @@ void MavenAsynParse::parseActions(const dpfservice::ProjectInfo &info)
                                 auto pluginElem = pluginChild.toElement();
                                 if ("artifactId" == pluginElem.tagName()) {
                                     ProjectActionInfo actionInfo;
-                                    actionInfo.buildProgram = "mvn";
+                                    actionInfo.buildProgram = OptionManager::getInstance()->getMavenToolPath();
                                     actionInfo.workingDirectory = xmlFileInfo.filePath();
                                     QString buildArg = pluginElem.text()
                                             .replace("maven-", "")

@@ -1,3 +1,7 @@
 add_subdirectory(optioncore)
 add_subdirectory(optioncmake)
 add_subdirectory(optionlsp)
+add_subdirectory(optionjava)
+add_subdirectory(optionmaven)
+add_subdirectory(optiongradle)
+add_subdirectory(optionpython)

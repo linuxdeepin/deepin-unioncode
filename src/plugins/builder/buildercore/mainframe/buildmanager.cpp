@@ -30,6 +30,7 @@
 #include "services/window/windowservice.h"
 #include "services/project/projectinfo.h"
 #include "services/builder/buildergenerator.h"
+#include "services/option/optionmanager.h"
 
 #include "base/abstractaction.h"
 
@@ -72,6 +73,8 @@ BuildManager::BuildManager(QObject *parent)
 
     QObject::connect(this, &BuildManager::sigOutputCompileInfo, this, &BuildManager::slotOutputCompileInfo);
     QObject::connect(this, &BuildManager::sigOutputProblemInfo, this, &BuildManager::slotOutputProblemInfo);
+
+    qRegisterMetaType<BuildState>("BuildState");
     QObject::connect(this, &BuildManager::sigBuildState, this, &BuildManager::slotBuildState);
 }
 

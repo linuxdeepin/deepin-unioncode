@@ -109,7 +109,7 @@ private:
 };
 
 EnvironmentWidget::EnvironmentWidget(QWidget *parent)
-    : QWidget (parent)
+    : PageWidget(parent)
     , d(new EnvironmentWidgetPrivate)
 {
     setAutoFillBackground(true);
@@ -137,9 +137,9 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     d->checkBox->setText(ENABLE_ALL_ENV);
     d->checkBox->setChecked(true);
     d->vLayout->setSpacing(0);
-    d->vLayout->setMargin(0);
-    d->vLayout->addWidget(d->checkBox);
+    d->vLayout->setMargin(5);
     d->vLayout->addWidget(d->tableView);
+    d->vLayout->addWidget(d->checkBox);
 }
 
 EnvironmentWidget::~EnvironmentWidget()

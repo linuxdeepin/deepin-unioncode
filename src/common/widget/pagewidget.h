@@ -29,9 +29,15 @@ class PageWidget : public QWidget
     Q_OBJECT
 public:
     explicit PageWidget(QWidget *parent = nullptr);
-    virtual ~PageWidget();
-    virtual void saveConfig();
-    virtual void readConfig();
+    virtual ~PageWidget() = 0;
+    virtual void saveConfig(){}
+    virtual void readConfig(){}
+
+    virtual void setUserConfig(const QJsonObject &jsonObject){ Q_UNUSED(jsonObject) }
+    virtual void getUserConfig(QJsonObject &jsonObject){ Q_UNUSED(jsonObject) }
+
+    virtual void setUserConfig(const QMap<QString, QVariant> &map){}
+    virtual void getUserConfig( QMap<QString, QVariant> &map){}
 };
 
 #endif // PAGEWIDGET_H

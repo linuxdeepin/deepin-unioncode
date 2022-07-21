@@ -7,12 +7,12 @@ find_package(Qt5 COMPONENTS Xml REQUIRED)
 set(CXX_CPP
     mainframe/projectparser.cpp
     mainframe/environmentwidget.cpp
-    mainframe/optioncmdgenerator.cpp
-    mainframe/optionenvgenerator.cpp
+    mainframe/optiongeneralgenerator.cpp
     mainframe/shortcutsettingwidget.cpp
     mainframe/persistentsettings.cpp
     mainframe/optionsdialog.cpp
     mainframe/optiondefaultkeeper.cpp
+    mainframe/generaloptionwidget.cpp
     optioncore.cpp
     optioncore.json
     )
@@ -20,12 +20,12 @@ set(CXX_CPP
 set(CXX_H
     mainframe/projectparser.h
     mainframe/environmentwidget.h
-    mainframe/optioncmdgenerator.h
-    mainframe/optionenvgenerator.h
+    mainframe/optiongeneralgenerator.h
     mainframe/shortcutsettingwidget.h
     mainframe/persistentsettings.h
     mainframe/optionsdialog.h
     mainframe/optiondefaultkeeper.h
+    mainframe/generaloptionwidget.h
     optioncore.h
     )
 

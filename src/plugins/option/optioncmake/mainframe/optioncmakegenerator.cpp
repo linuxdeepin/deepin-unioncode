@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "optioncmakegenerator.h"
-#include "kitsmanagerwidget.h"
+#include "cmakeoptionwidget.h"
 
 OptionCmakeGenerator::OptionCmakeGenerator()
 {
@@ -29,5 +29,5 @@ OptionCmakeGenerator::OptionCmakeGenerator()
 
 QWidget *OptionCmakeGenerator::optionWidget()
 {
-    return new KitsManagerWidget;
+    return new CMakeOptionWidget();
 }

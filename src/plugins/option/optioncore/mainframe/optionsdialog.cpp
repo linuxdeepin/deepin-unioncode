@@ -42,7 +42,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     setupUi(this);
 }
 
-bool OptionsDialog::insertOptionPanel(const QString &itemName, QWidget *panel)
+bool OptionsDialog::insertOptionPanel(const QString &itemName, PageWidget *panel)
 {
     widgts.insert(itemName, panel);
     leftBarModel->setStringList(leftBarModel->stringList() << itemName);
@@ -61,6 +61,7 @@ void OptionsDialog::slotLeftBarClicked(const QModelIndex &index)
 
     // Update head title.
     headTitle->setText(itemName);
+    widget->readConfig();
 }
 
 void OptionsDialog::setupUi(QDialog *Dialog)
@@ -150,7 +151,7 @@ void OptionsDialog::saveAllConfig()
 void OptionsDialog::saveSingleConfig()
 {
     int index = stackWidget->currentIndex();
-    if (index > 0 && index < stackWidget->count())
+    if (index >= 0 && index < stackWidget->count())
     {
         PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
         if (widget) {
