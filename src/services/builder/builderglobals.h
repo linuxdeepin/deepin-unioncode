@@ -32,13 +32,6 @@ enum ToolChainType {
     CMake
 };
 
-enum OutputFormat {
-    Stdout,
-    Stderr,
-    NormalMessage,
-    ErrorMessage
-};
-
 enum BuildState
 {
     kNoBuild,
@@ -66,11 +59,6 @@ struct BuildCommandInfo {
 
 Q_DECLARE_METATYPE(BuildCommandInfo);
 
-/**
- * @brief Output text color.
- */
-const QColor kTextColorNormal(150, 150, 150);
-const QColor kErrorMessageTextColor(255, 108, 108);
-const QColor kMessageOutput(0, 135, 135);
+
 
 #endif // BUILDERGLOBALS_H

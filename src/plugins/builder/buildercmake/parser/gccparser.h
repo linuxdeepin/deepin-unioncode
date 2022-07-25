@@ -35,7 +35,7 @@ public:
     GccParser();
 
     void stdError(const QString &line) override;
-    void stdOutput(const QString &line, OutputFormat format) override;
+    void stdOutput(const QString &line, OutputPane::OutputFormat format) override;
 
     static QString id();
 

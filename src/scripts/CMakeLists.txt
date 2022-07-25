@@ -6,3 +6,6 @@ install(
     GROUP_EXECUTE GROUP_READ WORLD_READ WORLD_EXECUTE
     DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts"
     )
+
+install(DIRECTORY porting-script/
+    DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/porting-script")

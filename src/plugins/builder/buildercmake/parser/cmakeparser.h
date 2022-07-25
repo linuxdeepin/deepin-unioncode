@@ -33,7 +33,7 @@ class CMakeParser : public IOutputParser
     Q_OBJECT
 public:
     explicit CMakeParser();
-    virtual void stdOutput(const QString &line, OutputFormat format) override;
+    virtual void stdOutput(const QString &line, OutputPane::OutputFormat format) override;
     void stdError(const QString &line) override;
 
 protected:

@@ -20,10 +20,11 @@
  */
 
 #include "buildmanager.h"
-#include "compileoutputpane.h"
+#include "common/widget/outputpane.h"
 #include "problemoutputpane.h"
 #include "commonparser.h"
 #include "transceiver/buildersender.h"
+#include "compileoutputpane.h"
 
 #include "services/builder/builderservice.h"
 #include "services/builder/ioutputparser.h"
@@ -150,7 +151,7 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
                 QString retMsg;
                 bool ret = generator->checkCommandValidity(info, retMsg);
                 if (!ret) {
-                    outputLog(retMsg, OutputFormat::Stderr);
+                    outputLog(retMsg, OutputPane::OutputFormat::Stderr);
                     continue;
                 }
 
@@ -207,7 +208,7 @@ void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
             QString retMsg;
             bool ret = generator->checkCommandValidity(commandInfo, retMsg);
             if (!ret) {
-                outputLog(retMsg, OutputFormat::Stderr);
+                outputLog(retMsg, OutputPane::OutputFormat::Stderr);
                 return;
             }
             execCommands({commandInfo});
@@ -240,7 +241,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
 
     QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
             .arg(info.program, info.arguments.join(" "), info.workingDir);
-    outputLog(startMsg, OutputFormat::NormalMessage);
+    outputLog(startMsg, OutputPane::OutputFormat::NormalMessage);
 
     connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             [&](int exitcode, QProcess::ExitStatus exitStatus) {
@@ -262,7 +263,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
         process.setReadChannel(QProcess::StandardOutput);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputLog(line, OutputFormat::Stdout);
+            outputLog(line, OutputPane::OutputFormat::Stdout);
         }
     });
 
@@ -270,7 +271,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
         process.setReadChannel(QProcess::StandardError);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputLog(line, OutputFormat::Stderr);
+            outputLog(line, OutputPane::OutputFormat::Stderr);
             outputError(line);
         }
     });
@@ -278,10 +279,10 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
     process.start(info.program, info.arguments);
     process.waitForFinished();
 
-    outputLog(retMsg, ret ? OutputFormat::NormalMessage : OutputFormat::Stderr);
+    outputLog(retMsg, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::Stderr);
 
     QString endMsg = tr("Execute command finished.\n");
-    outputLog(endMsg, OutputFormat::NormalMessage);
+    outputLog(endMsg, OutputPane::OutputFormat::NormalMessage);
 
     BuildState buildState = ret ? BuildState::kNoBuild : BuildState::kBuildFailed;
     outBuildState(buildState);
@@ -290,7 +291,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
     return ret;
 }
 
-void BuildManager::outputLog(const QString &content, const OutputFormat format)
+void BuildManager::outputLog(const QString &content, const OutputPane::OutputFormat format)
 {
     emit sigOutputCompileInfo(content, format);
 }
@@ -300,7 +301,7 @@ void BuildManager::outputError(const QString &content)
     emit sigOutputProblemInfo(content);
 }
 
-void BuildManager::slotOutputCompileInfo(const QString &content, const OutputFormat format)
+void BuildManager::slotOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format)
 {
     d->outputParser->stdOutput(content, format);
 }
@@ -310,12 +311,13 @@ void BuildManager::slotOutputProblemInfo(const QString &content)
     d->outputParser->stdError(content);
 }
 
-void BuildManager::addOutput(const QString &content, const OutputFormat format)
+void BuildManager::addOutput(const QString &content, const OutputPane::OutputFormat format)
 {
     QString newContent = content;
-    if (OutputFormat::NormalMessage == format
-            || OutputFormat::ErrorMessage == format
-            || OutputFormat::Stdout == format) {
+    if (OutputPane::OutputFormat::NormalMessage == format
+            || OutputPane::OutputFormat::ErrorMessage == format
+            || OutputPane::OutputFormat::Stdout == format) {
+
         QDateTime curDatetime = QDateTime::currentDateTime();
         QString time = curDatetime.toString("hh:mm:ss");
         newContent = time + ": " + newContent;

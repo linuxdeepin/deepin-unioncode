@@ -25,6 +25,7 @@
 #include "services/builder/builderglobals.h"
 #include "services/builder/task.h"
 #include "services/project/projectinfo.h"
+#include "common/widget/outputpane.h"
 
 #include <QObject>
 #include <QSharedPointer>
@@ -52,14 +53,14 @@ public:
     void handleCommand(const BuildCommandInfo &info);
 
 signals:
-    void sigOutputCompileInfo(const QString &content, const OutputFormat format);
+    void sigOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format);
     void sigOutputProblemInfo(const QString &content);
     void sigBuildState(const BuildState &buildstate);
 
 public slots:
-    void slotOutputCompileInfo(const QString &content, const OutputFormat format);
+    void slotOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format);
     void slotOutputProblemInfo(const QString &content);
-    void addOutput(const QString &content, const OutputFormat format);
+    void addOutput(const QString &content, const OutputPane::OutputFormat format);
     void buildProject();
     void rebuildProject();
     void cleanProject();
@@ -72,7 +73,7 @@ private:
     void addMenu();
 
     void resetBuildUI();
-    void outputLog(const QString &content, const OutputFormat format);
+    void outputLog(const QString &content, const OutputPane::OutputFormat format);
     void outputError(const QString &content);
 
     bool execCommands(const QList<BuildCommandInfo> &commandList);

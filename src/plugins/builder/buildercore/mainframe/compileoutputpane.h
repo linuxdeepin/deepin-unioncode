@@ -22,32 +22,13 @@
 #ifndef COMPILEOUTPUTPANE_H
 #define COMPILEOUTPUTPANE_H
 
-#include "services/builder/builderglobals.h"
+#include "common/widget/outputpane.h"
 
-#include "base/abstractoutputpane.h"
-
-#include <QPlainTextEdit>
-
-class CompileOutputPanePrivate;
-class CompileOutputPane : public QPlainTextEdit
+class CompileOutputPane : public OutputPane
 {
     Q_OBJECT
 public:
     CompileOutputPane(QWidget *parent = nullptr);
-    ~CompileOutputPane() override;
-
-    void clearContents();
-    void appendText(const QString &text, OutputFormat format);
-
-private:
-    QString normalizeNewlines(const QString &text);
-
-    void appendCustomText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
-    bool isScrollbarAtBottom() const;
-    QString doNewlineEnforcement(const QString &out);
-    void scrollToBottom();
-
-    CompileOutputPanePrivate *d = nullptr;
 };
 
 #endif // COMPILEOUTPUTPANE_H

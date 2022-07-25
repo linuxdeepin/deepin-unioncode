@@ -19,12 +19,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "compileoutputpane.h"
-#include "common/common.h"
+#ifndef OUTPUTPANE_H
+#define OUTPUTPANE_H
 
-CompileOutputPane::CompileOutputPane(QWidget *parent)
-    : OutputPane(parent)
+#include <QPlainTextEdit>
+
+class OutputPanePrivate;
+class OutputPane : public QPlainTextEdit
 {
-}
+    Q_OBJECT
+public:
 
-// Add more future here when you need.
+    enum OutputFormat {
+        Stdout,
+        Stderr,
+        NormalMessage,
+        ErrorMessage
+    };
+
+    OutputPane(QWidget *parent = nullptr);
+    ~OutputPane() override;
+
+    void clearContents();
+    void appendText(const QString &text, OutputFormat format);
+
+private:
+    QString normalizeNewlines(const QString &text);
+
+    void appendCustomText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
+    bool isScrollbarAtBottom() const;
+    QString doNewlineEnforcement(const QString &out);
+    void scrollToBottom();
+
+    OutputPanePrivate *d = nullptr;
+};
+
+#endif // OUTPUTPANE_H

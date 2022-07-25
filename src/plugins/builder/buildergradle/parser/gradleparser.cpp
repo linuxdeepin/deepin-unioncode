@@ -30,7 +30,7 @@ GradleParser::GradleParser()
     setObjectName(QLatin1String("GradleParser"));
 }
 
-void GradleParser::stdOutput(const QString &line, OutputFormat format)
+void GradleParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     QString newContent = line;
     emit outputAdded(newContent, format);

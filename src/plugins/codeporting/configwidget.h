@@ -32,7 +32,7 @@ public:
     explicit ConfigWidget(QWidget *parent = nullptr);
 
 signals:
-    void sigStartPorting();
+    void sigStartPorting(const QString &project, const QString &srcCPU, const QString &destCPU);
 
 public slots:
     void configDone();

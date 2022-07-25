@@ -37,7 +37,7 @@ AnsiFilterParser::AnsiFilterParser()
     setObjectName(QLatin1String("AnsiFilterParser"));
 }
 
-void AnsiFilterParser::stdOutput(const QString &line, OutputFormat format)
+void AnsiFilterParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     IOutputParser::stdOutput(filterLine(line), format);
 }

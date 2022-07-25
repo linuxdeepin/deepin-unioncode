@@ -38,6 +38,11 @@ static const char *kConfigFileName = "codeporting.cfg";
 static const char *kSrcCPU = "Src CPU";
 static const char *kTargetCPU = "Target CPU";
 
+// TODO(mozart):These value should get from backend later.
+static const char *kX86_64 = "x86_64";
+static const char *kArm = "arm64";
+static const char *kMips = "mips";
+
 using namespace dpfservice;
 
 struct ConfigParameter
@@ -107,7 +112,7 @@ void ConfigWidget::configDone()
 
     d->lbWarning->clear();
 
-    emit sigStartPorting();
+    emit sigStartPorting(d->cfgParam.project, d->cfgParam.srcCPU, d->cfgParam.targetCPU);
 }
 
 void ConfigWidget::showEvent(QShowEvent *e)
@@ -119,13 +124,13 @@ void ConfigWidget::showEvent(QShowEvent *e)
 
 void ConfigWidget::initializeUi()
 {
-    d->combSrc->addItem("x86_64");
-    d->combSrc->addItem("arm64");
-    d->combSrc->addItem("mips");
+    d->combSrc->addItem(kX86_64);
+    d->combSrc->addItem(kArm);
+    d->combSrc->addItem(kMips);
 
-    d->combTarget->addItem("x86_64");
-    d->combTarget->addItem("arm64");
-    d->combTarget->addItem("mips");
+    d->combTarget->addItem(kX86_64);
+    d->combTarget->addItem(kArm);
+    d->combTarget->addItem(kMips);
 }
 
 void ConfigWidget::setDefaultValue()

@@ -133,7 +133,7 @@ void GccParser::stdError(const QString &line)
     IOutputParser::stdError(line);
 }
 
-void GccParser::stdOutput(const QString &line, OutputFormat format)
+void GccParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     doFlush();
     IOutputParser::stdOutput(line, format);

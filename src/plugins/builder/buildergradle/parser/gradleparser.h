@@ -30,7 +30,7 @@ class GradleParser : public IOutputParser
 public:
     explicit GradleParser();
 
-    void stdOutput(const QString &line, OutputFormat format) override;
+    void stdOutput(const QString &line, OutputPane::OutputFormat format) override;
     void stdError(const QString &line) override;
     void taskAdded(const Task &task, int linkedLines, int skippedLines) override;
 

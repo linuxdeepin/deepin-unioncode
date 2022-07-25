@@ -69,7 +69,7 @@ void IOutputParser::setChildParser(IOutputParser *parser)
     }
 }
 
-void IOutputParser::stdOutput(const QString &line, OutputFormat format)
+void IOutputParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     if (outParser)
         outParser->stdOutput(line, format);
@@ -81,7 +81,7 @@ void IOutputParser::stdError(const QString &line)
         outParser->stdError(line);
 }
 
-void IOutputParser::outputAdded(const QString &string, OutputFormat format)
+void IOutputParser::outputAdded(const QString &string, OutputPane::OutputFormat format)
 {
     emit addOutput(string, format);
 }

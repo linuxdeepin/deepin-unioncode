@@ -40,14 +40,14 @@ arm_macro_pattern = '(%s)' % '|'.join(MACROS_ARM)
 # x86
 x86_macro_pattern = '(%s)' % '|'.join(MACROS_X86)
 # mips
-mips_macro_pattern = '(%s)' % '|'.join(MACROS_MIPS)
+mips_macro_pattern = '(mips)'#'(%s)' % '|'.join(MACROS_MIPS)
 # alpha
 alpha_macro_pattern = '(%s)' % '|'.join(MACROS_ALPHA)
 
-cpu_list = ['arm64', 'x86_64', 'mips64el', 'alpha']
+cpu_list = ['arm64', 'x86_64', 'mips64el']#, 'alpha'
 
 macro_pattern = {'x86_64': x86_macro_pattern, 'arm64': arm_macro_pattern,
-                 'mips64el': mips_macro_pattern, 'alpha': alpha_macro_pattern}
+                 'mips64el': mips_macro_pattern} # 'alpha': alpha_macro_pattern
 macro_suggestion = {'x86_64': 'Suggestion: Modify those code to adapt x86_64 platform.',
                     'arm64': 'Suggestion: Modify those code to adapt AArch64 platform.',
                     'mips64el': 'Suggestion: Modify those code to adapt Mips64el platform.',
@@ -77,8 +77,8 @@ class InlineAsm:
                 inline_asm = re.search(self.inline_content, asm)
                 current_instruction = inline_asm.group().replace('"', "").split()[0]
                 if current_instruction.upper() not in self.instructions:
-                    LOGGER.debug("find need to migrated [%s] asm :%s" % (
-                        self.dest_cpu, asm))
+                    LOGGER.debug("find need to migrated [%s] asm :%s" % (self.dest_cpu, asm))
+                    return 'migrated'
             except (AttributeError, IndexError):
                 continue
         return self.dest_cpu

@@ -25,7 +25,7 @@ CommonParser::CommonParser()
     setObjectName(QLatin1String("CommonParser"));
 }
 
-void CommonParser::stdOutput(const QString &line, OutputFormat format)
+void CommonParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     IOutputParser::stdOutput(line, format);
 }

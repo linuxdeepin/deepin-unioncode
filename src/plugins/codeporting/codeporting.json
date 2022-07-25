@@ -20,5 +20,6 @@
     "Description" : "Help porting project code to other platform.",
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [
+        {"Name" : "plugin-codeeditor"}
     ]
 }

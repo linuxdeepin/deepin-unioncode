@@ -23,7 +23,7 @@
 #define IOUTPUTPARSER_H
 
 #include "task.h"
-#include "builderglobals.h"
+#include "common/widget/outputpane.h"
 
 #include <QObject>
 
@@ -42,7 +42,7 @@ public:
     IOutputParser *childParser() const;
     void setChildParser(IOutputParser *parser);
 
-    virtual void stdOutput(const QString &line, OutputFormat format);
+    virtual void stdOutput(const QString &line, OutputPane::OutputFormat format);
     virtual void stdError(const QString &line);
 
     virtual bool hasFatalErrors() const;
@@ -53,11 +53,11 @@ public:
     static QString rightTrimmed(const QString &in);
 
 signals:
-    void addOutput(const QString &string, OutputFormat format);
+    void addOutput(const QString &string, OutputPane::OutputFormat format);
     void addTask(const Task &task, int linkedOutputLines = 0, int skipLines = 0);
 
 public slots:
-    virtual void outputAdded(const QString &string, OutputFormat format);
+    virtual void outputAdded(const QString &string, OutputPane::OutputFormat format);
     virtual void taskAdded(const Task &task, int linkedOutputLines = 0, int skipLines = 0);
 
 private:

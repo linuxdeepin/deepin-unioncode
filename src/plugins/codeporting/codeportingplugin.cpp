@@ -20,11 +20,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "codeportingplugin.h"
+#include "codeportingmanager.h"
+#include "configwidget.h"
 #include "base/abstractmenu.h"
+#include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "common/actionmanager/actionmanager.h"
-#include "configwidget.h"
-#include "codeportingmanager.h"
 
 #include <QMenu>
 
@@ -50,6 +51,9 @@ bool CodePortingPlugin::start()
 
     AbstractAction *actionImpl = new AbstractAction(action);
     windowService->addAction(MWM_TOOLS, actionImpl);
+
+    // Add output pane
+    windowService->addContextWidget(tr("Code Porting"), new AbstractWidget(CodePortingManager::instance()->getOutputPane()));
 
     return true;
 }

@@ -7,12 +7,14 @@ set(CXX_CPP
     codeportingmanager.cpp
     codeportingplugin.cpp
     configwidget.cpp
+    codeporting.cpp
     )
 
 set(CXX_H
     codeportingmanager.h
     codeportingplugin.h
     configwidget.h
+    codeporting.h
     )
 
 add_library(${PROJECT_NAME}
@@ -30,5 +32,4 @@ target_link_libraries(${PROJECT_NAME}
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
-install(DIRECTORY porting-script/ DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/porting-script")
 

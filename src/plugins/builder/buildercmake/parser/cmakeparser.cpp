@@ -45,7 +45,7 @@ CMakeParser::CMakeParser()
     QTC_CHECK(locationLine.isValid());
 }
 
-void CMakeParser::stdOutput(const QString &line, OutputFormat format)
+void CMakeParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     emit outputAdded(line, format);
     IOutputParser::stdOutput(line, format);

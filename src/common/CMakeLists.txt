@@ -35,6 +35,7 @@ set(CXX_H
     widget/generator.h
     widget/pagewidget.h
     widget/hotkeylineedit.h
+    widget/outputpane.h
     type/constants.h
     type/menuext.h
     toolchain/toolchain.h
@@ -68,6 +69,7 @@ set(CXX_CPP
     widget/generator.cpp
     widget/pagewidget.cpp
     widget/hotkeylineedit.cpp
+    widget/outputpane.cpp
     toolchain/toolchain.cpp
     actionmanager/actionmanager.cpp
     actionmanager/command.cpp

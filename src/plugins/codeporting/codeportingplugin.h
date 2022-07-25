@@ -19,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef CODEPORTING_H
-#define CODEPORTING_H
+#ifndef CODEPORTINGPLUGIN_H
+#define CODEPORTINGPLUGIN_H
 
 #include <framework/framework.h>
 
@@ -40,4 +40,4 @@ private:
     dpfservice::WindowService *windowService = nullptr;
 };
 
-#endif   // CODEPORTING_H
+#endif   // CODEPORTINGPLUGIN_H

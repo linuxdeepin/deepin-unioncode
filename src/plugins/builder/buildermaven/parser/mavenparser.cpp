@@ -30,14 +30,14 @@ MavenParser::MavenParser()
     setObjectName(QLatin1String("MavenParser"));
 }
 
-void MavenParser::stdOutput(const QString &line, OutputFormat format)
+void MavenParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     QString newContent = line;
     QRegExp exp("\\033\\[(\\d*;*\\d*)m");
     newContent.replace(exp, "");
 
     if (newContent.indexOf("[ERROR]") != -1) {
-        format = OutputFormat::ErrorMessage;
+        format = OutputPane::OutputFormat::ErrorMessage;
         stdError(newContent);
     }
 

@@ -22,24 +22,36 @@
 #ifndef CODEPORTINGMANAGER_H
 #define CODEPORTINGMANAGER_H
 
+#include "codeporting.h"
+
 #include <QObject>
 
 class ConfigWidget;
+class OutputPane;
 class CodePortingManager : public QObject
 {
     Q_OBJECT
 public:
     static CodePortingManager *instance();
+    OutputPane *getOutputPane() const;
 
 signals:
 
 public slots:
     void slotShowConfigWidget();
+    void slotPortingStart(const QString &project, const QString &srcCPU, const QString &destCPU);
+    void slotAppendOutput(const QString &, OutputPane::OutputFormat format);
 
 private:
     explicit CodePortingManager(QObject *parent = nullptr);
+    ~CodePortingManager();
+
+    void resetUI();
 
     ConfigWidget *cfgWidget = nullptr;
+    OutputPane *outputPane = nullptr;
+
+    CodePorting codeporting;
 };
 
 #endif // CODEPORTINGMANAGER_H

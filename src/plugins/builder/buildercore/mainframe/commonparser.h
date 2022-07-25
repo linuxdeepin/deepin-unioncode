@@ -28,7 +28,7 @@ class CommonParser : public IOutputParser
     Q_OBJECT
 public:
     CommonParser();
-    void stdOutput(const QString &line, OutputFormat format) override;
+    void stdOutput(const QString &line, OutputPane::OutputFormat format) override;
     void stdError(const QString &line) override;
 };
 
