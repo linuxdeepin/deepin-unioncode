@@ -1,5 +1,7 @@
 project(unioncode-common)
 
+include(${CMAKE_SOURCE_DIR}/3rdparty/archive-jsonrpccpp.cmake)
+
 configure_file(util/config.h.in config.h)
 
 set(CXX_H
@@ -84,6 +86,7 @@ add_library(
 
 target_link_libraries(
     ${PROJECT_NAME}
+    archive-jsonrpcclient
     )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${LIBRARY_INSTALL_PREFIX})

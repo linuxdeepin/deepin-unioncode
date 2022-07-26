@@ -20,13 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "langserver.h"
+#include "serverproxy.h"
 #include "setting.h"
+#include "log.h"
 
-#include <QCoreApplication>
+#include <QApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <QDir>
+#include <QDialog>
+#include <QMessageBox>
 
 #include <iostream>
 
@@ -78,8 +81,9 @@ void implAllLSPServer()
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QApplication a(argc, argv);
 
+    Log log;
     QCommandLineParser parser;
 
     parser.addOptions(options);
@@ -98,15 +102,31 @@ int main(int argc, char *argv[])
         }
     }
 
+    qInfo() << Setting::getInfo("C/C++");
+    qInfo() << Setting::getInfo("Java");
+
     quint16 port = DefaultValues::port.toUShort();
     if (list.contains(OptionNames::port)) {
         port = parser.value(OptionNames::port).toUShort();
     }
 
-    LangServer server(port);
-
-    qInfo() << Setting::getInfo("C/C++");
-    qInfo() << Setting::getInfo("Java");
+    jsonrpc::TcpSocketServer server("127.0.0.1", port);
+    ServerProxy proxy(server);
+    if (proxy.StartListening()) {
+        std::cout << "Server started successfully" << std::endl;
+        QObject::connect(qApp, &QCoreApplication::aboutToQuit, [&proxy](){
+            proxy.StopListening();
+        });
+    } else {
+        QMessageBox messBox;
+        messBox.setText(QString("There may be port occupation from %0, "
+                        "please check whether the "
+                        "languageadapter has been started").arg(port));
+        messBox.exec();
+        proxy.StopListening();
+        std::cout << "Error starting Server" << std::endl;
+        exit(-1);
+    }
 
     return a.exec();
 }

@@ -21,8 +21,7 @@
 #ifndef ROUTE_H
 #define ROUTE_H
 
-#include "handler.h"
-
+#include "backend.h"
 #include <QHash>
 #include <QTcpSocket>
 
@@ -43,23 +42,12 @@ public:
 
     static Route *instance();
 
-    Handler *backend(const Head &head) const;
-    Handler *frontend(const Head &head) const;
-
-    bool saveFrontend(const Head &head, Handler *front);
-    bool saveBackend(const Head &head, Handler *back);
-    bool removeFreeFronted(Handler *front);
-    bool removeFreeBackend(Handler *back);
-    Route::Head findHead(Handler *front = nullptr,
-                         Handler *back = nullptr) const;
-    Handler *findFrontend(Handler *backend) const;
-    Handler *findBackend(Handler *frontend) const;
-    Handler *getFrontend(const Head &head) const;
-    Handler *getBackend(const Head &head) const;
-    Handler *createBackend(const Head &head) const;
+    Backend *backend(const Head &head);
+    bool removeBackend(const Head &head);
+    bool saveBackend(const Head &head, Backend *backend);
 
 private:
-    QHash<Head, QPair<Handler *, Handler *>> handlerHash;
+    QHash<Head, Backend*> backends;
 };
 
 uint qHash(const Route::Head &key, uint seed = 0);

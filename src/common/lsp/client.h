@@ -40,16 +40,17 @@ struct Head
 namespace lsp {
 
 class ClientPrivate;
-class Client : public QTcpSocket
+class Client : public QObject
 {
     Q_OBJECT
     friend class ClientManager;
     ClientPrivate *const d;
-    void initRequest(const Head &head, const QString &compile); // yes
+    void initRequest(const QString &compile); // yes
     void shutdownRequest();
     void exitRequest();
 public:
     explicit Client(QObject *parent = nullptr);
+    void setHead(const Head &head);
     virtual ~Client();
     static bool exists(const QString &progrma);
     void openRequest(const QString &filePath); // yes
@@ -108,17 +109,6 @@ private:
 
 private slots:
     QStringList cvtStringList(const QJsonArray &array);
-};
-
-class ClientReadThreadPrivate;
-class ClientReadThread : public QThread
-{
-    Q_OBJECT
-    ClientReadThreadPrivate *const d;
-public:
-    ClientReadThread(Client *client);
-    virtual void stop();
-    virtual void run();
 };
 
 class ClientManager final

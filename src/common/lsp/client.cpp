@@ -20,6 +20,9 @@
 */
 #include "client.h"
 
+#include "jsonrpccpp/client.h"
+#include "jsonrpccpp/client/connectors/tcpsocketclient.h"
+
 #include "common/util/processutil.h"
 
 #include <QMetaType>
@@ -39,20 +42,29 @@
 namespace lsp {
 
 static QMutex mutex;
-
+class Client;
 class ClientPrivate
 {
     friend class Client;
+    Client *const q;
     int requestIndex = 0;
     QHash<int, QString> requestSave;
     int semanticTokenResultId = 0;
     QHash<QString, int> fileVersion;
     lsp::SemanticTokensProvider secTokensProvider;
+    jsonrpc::TcpSocketClient rpcClient{"127.0.0.1", 3307};
+    Head head;
+    ClientPrivate(Client *q) : q (q){}
+    void callLanguageRequest(const QJsonObject &request);
+    void callLanguageRequest(const QString &request);
+    void callLanguageNotify(const QJsonObject &notify);
+    void callLanguageNotify(const QString &notify);
+    void responseProcess(const QByteArray &result);
 };
 
 Client::Client(QObject *parent)
-    : QTcpSocket (parent)
-    , d (new ClientPrivate)
+    : QObject (parent)
+    , d (new ClientPrivate(this))
 {
     qRegisterMetaType<Diagnostics>("Diagnostics");
     qRegisterMetaType<SemanticTokensProvider>("SemanticTokensProvider");
@@ -69,12 +81,11 @@ Client::Client(QObject *parent)
     qRegisterMetaType<QList<Data>>("QList<Data>");
     qRegisterMetaType<RenameChanges>("RenameChanges");
     qRegisterMetaType<References>("References");
-    connectToHost(QHostAddress("127.0.0.1"), 3307);
-    if (!waitForConnected(1000)) {
-        qCritical() << "can't connect to local, port 3307"
-                    << this->errorString()
-                    << QTcpSocket::localAddress();
-    }
+}
+
+void Client::setHead(const Head &head)
+{
+    d->head = head;
 }
 
 Client::~Client()
@@ -89,142 +100,216 @@ bool Client::exists(const QString &progrma)
     return ProcessUtil::exists(progrma);
 }
 
-void Client::initRequest(const Head &head, const QString &compile)
+void ClientPrivate::callLanguageRequest(const QJsonObject &request)
+{
+    if (!head.isValid())
+        return;
+
+    callLanguageRequest(QJsonDocument(request).toJson());
+}
+
+void ClientPrivate::callLanguageRequest(const QString &request)
+{
+    if (!head.isValid())
+        return;
+
+    std::string data = request.toStdString();
+    Json::Value orgParams;
+    orgParams["workspace"] = head.workspace.toStdString();
+    orgParams["language"] = head.language.toStdString();
+    orgParams["data"] = data;
+
+    QtConcurrent::run([=](){
+        auto resultJsonValue = jsonrpc::Client(rpcClient).CallMethod("fromRequest", orgParams);
+        this->responseProcess(QByteArray::fromStdString(resultJsonValue["data"].asString()));
+    });
+}
+
+void ClientPrivate::callLanguageNotify(const QJsonObject &notify)
+{
+    if (!head.isValid())
+        return;
+
+    callLanguageNotify(QJsonDocument(notify).toJson());
+}
+
+void ClientPrivate::callLanguageNotify(const QString &notify)
+{
+    if (!head.isValid())
+        return;
+
+    std::string data = notify.toStdString();
+    Json::Value orgParams;
+    orgParams["workspace"] = head.workspace.toStdString();
+    orgParams["language"] = head.language.toStdString();
+    orgParams["data"] = data;
+
+    QtConcurrent::run([=](){
+        jsonrpc::Client(rpcClient).CallNotification("fromNotify", orgParams);
+    });
+}
+
+void ClientPrivate::responseProcess(const QByteArray &result)
+{
+    QByteArray temp = result;
+    QByteArray dataHead{"Content-Length:"};
+    QByteArray dataHeadEnd{"\r\n\r\n"};
+    while (!temp.isEmpty()) {
+        int headEndIndex = temp.indexOf(dataHeadEnd) + dataHeadEnd.length();
+        int headBeginIndex = temp.indexOf(dataHead);
+        QByteArray head = temp.mid(headBeginIndex, headEndIndex);
+        temp = temp.remove(0, headEndIndex);
+        int jsonCount = head.replace(dataHead, "").replace(dataHeadEnd, "").toInt();
+        QByteArray jsonData = temp.mid(0, jsonCount);
+        temp = temp.remove(0, jsonCount);
+        QJsonParseError err;
+        QJsonObject jsonObj = QJsonDocument::fromJson(jsonData, &err).object();
+        if (err.error != QJsonParseError::NoError){
+            qInfo() << "covert json error" << err.errorString() << jsonData << temp;
+        } else {
+            q->processJson(jsonObj);
+        }
+    }
+}
+
+void Client::initRequest(const QString &compile)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_INITIALIZE);
+    QString data = setHeader(initialize(d->head.workspace, d->head.language, compile), d->requestIndex);
     qInfo() << "--> server : " << V_INITIALIZE;
-    qInfo() << qPrintable(setHeader(initialize(head.workspace, head.language, compile), d->requestIndex).toLatin1());
-    write(setHeader(initialize(head.workspace, head.language, compile), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    qInfo() << qPrintable(data);
+    d->callLanguageRequest(data);
 }
 
 void Client::openRequest(const QString &filePath)
 {
+    QString data = setHeader(didOpen(filePath)).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDOPEN;
-    qInfo() << qPrintable(setHeader(didOpen(filePath)).toLatin1());
-    write(setHeader(didOpen(filePath), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    qInfo() << qPrintable(data);
+    d->callLanguageNotify(data);
 }
 
 void Client::closeRequest(const QString &filePath)
 {
-    qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCLOSE
-            << qPrintable(setHeader(didClose(filePath)).toLatin1());
-    write(setHeader(didClose(filePath)).toLatin1());
-    waitForBytesWritten();
+    QString data = setHeader(didClose(filePath)).toLatin1();
+    qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCLOSE;
+    qInfo() << qPrintable(data);
+    d->callLanguageNotify(data);
 }
 
 void Client::changeRequest(const QString &filePath, const QByteArray &text)
 {
-    qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCHANGE
-            << qPrintable(setHeader(didChange(filePath, text, d->fileVersion[filePath])));
-    write(setHeader(didChange(filePath, text, d->fileVersion[filePath])).toLatin1());
-    waitForBytesWritten();
+    QString data = setHeader(didChange(filePath, text, d->fileVersion[filePath]));
+    qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCHANGE;
+    qInfo() << qPrintable(data);
+    d->callLanguageNotify(data);
 }
 
 void Client::symbolRequest(const QString &filePath)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DOCUMENTSYMBOL);
+    QString data = setHeader(symbol(filePath), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DOCUMENTSYMBOL;
-    write(setHeader(symbol(filePath), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    qInfo() << qPrintable(data);
+    d->callLanguageRequest(data);
 }
 
 void Client::renameRequest(const QString &filePath, const Position &pos, const QString &newName)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_RENAME);
+    QString data = setHeader(rename(filePath, pos, newName), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_RENAME;
-    qInfo() << qPrintable(setHeader(rename(filePath, pos, newName), d->requestIndex).toLatin1());
-    write(setHeader(rename(filePath, pos, newName), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    qInfo() << qPrintable(data);
+    d->callLanguageRequest(data);
 }
 
 void Client::definitionRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DEFINITION);
+    QString data = setHeader(definition(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DEFINITION;
-    write(setHeader(definition(filePath, pos), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    qInfo() << qPrintable(data);
+    d->callLanguageRequest(data);
 }
 
 void Client::completionRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_COMPLETION);
-    qInfo() << "--> server : " << V_TEXTDOCUMENT_COMPLETION
-            << qPrintable(setHeader(completion(filePath, pos), d->requestIndex).toLatin1());
-    write(setHeader(completion(filePath, pos), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    QString data = setHeader(completion(filePath, pos), d->requestIndex).toLatin1();
+    qInfo() << "--> server : " << V_TEXTDOCUMENT_COMPLETION;
+    qInfo() << qPrintable(data);
+    d->callLanguageRequest(data);
 }
 
 void Client::signatureHelpRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_SIGNATUREHELP);
+    QString data = setHeader(signatureHelp(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_SIGNATUREHELP;
-    write(setHeader(signatureHelp(filePath, pos), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    d->callLanguageRequest(data);
 }
 
 void Client::referencesRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_REFERENCES);
+    QString data = setHeader(references(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_REFERENCES;
-    write(setHeader(references(filePath, pos), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    d->callLanguageRequest(data);
 }
 
 void Client::docHighlightRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT);
+    QString data = setHeader(documentHighlight(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT;
-    qInfo() << qPrintable(setHeader(documentHighlight(filePath, pos), d->requestIndex).toLatin1());
-    write(setHeader(documentHighlight(filePath, pos), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    qInfo() << qPrintable(data);
+    d->callLanguageRequest(data);
 }
 
 void Client::docSemanticTokensFull(const QString &filePath)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_SEMANTICTOKENS + "/full");
+    QString data = setHeader(documentSemanticTokensFull(filePath), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_SEMANTICTOKENS + "/full";
-    qInfo() << qPrintable(setHeader(documentSemanticTokensFull(filePath), d->requestIndex).toLatin1());
-    write(setHeader(documentSemanticTokensFull(filePath), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    qInfo() << qPrintable(data);
+    d->callLanguageRequest(data);
 }
 
 void Client::docHoverRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_HOVER);
+    QString data = setHeader(hover(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_HOVER;
-    qInfo() << qPrintable(setHeader(hover(filePath, pos), d->requestIndex).toLatin1());
-    write(setHeader(hover(filePath, pos), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    qInfo() << qPrintable(data);
+    d->callLanguageRequest(data);
 }
 
 void Client::shutdownRequest()
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_SHUTDOWN);
-    qInfo() << "--> server : " << V_SHUTDOWN
-            << qPrintable(setHeader(shutdown(), d->requestIndex).toLatin1());
-    write(setHeader(shutdown(), d->requestIndex).toLatin1());
-    waitForBytesWritten();
+    QString data = setHeader(shutdown(), d->requestIndex).toLatin1();
+    qInfo() << "--> server : " << V_SHUTDOWN;
+    qInfo() << qPrintable(data);
+    d->callLanguageRequest(data);
 }
 
 void Client::exitRequest()
 {
-    qInfo() << "--> server : " << V_SHUTDOWN
-            << qPrintable(setHeader(exit(), d->requestIndex).toLatin1());
-    write(setHeader(exit()).toLatin1());
-    waitForBytesWritten();
+    QString data = setHeader(exit()).toLatin1();
+    qInfo() << "--> server : " << V_SHUTDOWN;
+    qInfo() << qPrintable(data);
+    d->callLanguageNotify(data);
 }
 
 bool Client::calledError(const QJsonObject &jsonObj)
@@ -744,8 +829,8 @@ void ClientManager::initClient(const Head &head, const QString &complie)
 {
     if (head.isValid()) {
         auto client = new Client();
-        client->initRequest(head, complie);
-        new ClientReadThread(client);
+        client->setHead(head);
+        client->initRequest(complie);
         clients[head] = client;
     }
 }
@@ -764,71 +849,6 @@ Client *ClientManager::get(const Head &head)
 {
     return clients[head];
 }
-
-class ClientReadThreadPrivate
-{
-    friend class ClientReadThread;
-    Client *client;
-    QByteArray array;
-    bool stopFlag = false;
-};
-
-ClientReadThread::ClientReadThread(Client *client)
-    : d(new ClientReadThreadPrivate())
-{
-    d->client = client;
-    client->moveToThread(this);
-    QObject::connect(client, &QObject::destroyed,[=]() {
-        this->stop();
-        this->wait(3000);
-        delete this;
-    });
-    start();
-}
-
-void ClientReadThread::stop()
-{
-    d->stopFlag = true;
-}
-
-void ClientReadThread::run()
-{
-    if (!d->client)
-        return;
-
-    while (!d->stopFlag) {
-        d->client->waitForReadyRead(3000);
-        d->array += d->client->readAll();
-        while (d->array.startsWith("Content-Length:")) {
-            int index = d->array.indexOf("\r\n\r\n");
-            QByteArray head = d->array.mid(0, index);
-            QList<QByteArray> headList = head.split(':');
-            int readCount = headList[1].toInt();
-            QByteArray data = d->array.mid(head.size() + 4, readCount);
-            if (data.size() < readCount) {
-                break;
-            } else if (data.size() > readCount) {
-                qCritical() << "process data error";
-                abort();
-            } else {
-                QJsonParseError err;
-                QJsonObject jsonObj = QJsonDocument::fromJson(data, &err).object();
-                if (jsonObj.isEmpty()) {
-                    qCritical() << err.errorString() << qPrintable(data);
-                    abort();
-                }
-                d->client->processJson(jsonObj);
-                d->array.remove(0, index);
-                d->array.remove(0, readCount + 4);
-            }
-        }
-        int headIndex = d->array.indexOf("Content-Length:");
-        if(headIndex > 0) {
-            d->array.remove(0, headIndex);
-        }
-    }
-}
-
 } // namespace lsp
 
 bool Head::isValid() const

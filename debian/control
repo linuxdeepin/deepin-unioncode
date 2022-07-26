@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Deepin Packages Builder <packages@linuxdeepin.com>
 Build-Depends:
  debhelper (>=9),
+ dh-systemd,
  cmake,
  qt5-qmake,
  qtbase5-dev,
@@ -13,8 +14,13 @@ Build-Depends:
  libssl-dev,
  llvm (>=1:7~),
  libclang-dev (>=1:7~),
- dh-systemd,
- libutf8proc-dev
+ libutf8proc-dev,
+ libcurl-dev,
+ libmicrohttpd-dev,
+ libjsoncpp-dev,
+ libargtable2-dev,
+ libhiredis-dev,
+ catch
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 

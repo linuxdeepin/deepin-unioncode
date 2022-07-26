@@ -292,7 +292,6 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
             { "client", client },
             { "initializationOptions", initializationOptions},
             { "workspaceFolders", workspaceFolders },
-            { "language", language}
         };
 
         QJsonObject initRequest{
@@ -686,11 +685,6 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
             folderParams.name = workspaceNameStr;
             workspaceFolders.push_back(folderParams);
             params.workspaceFolders = {workspaceFolders};
-        }
-
-        /* extend language*/
-        {
-            params.language = language.toStdString();
         }
 
         std::string initRequestStr;

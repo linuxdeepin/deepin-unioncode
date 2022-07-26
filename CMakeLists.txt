@@ -28,13 +28,14 @@ endif()
 #   /usr/share/dde-file-manager
 #       subdir"database  mimetypeassociations  mimetypes  templates  translations"
 set(LIBRARY_INSTALL_PREFIX "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/${PROJECT_NAME}")
+
 #set(ARCHIVE_INSTALL_RPEFIX "") undefined the static lib archive
 set(RUNTIME_INSTALL_RPEFIX "/usr/bin")
 set(SOURCES_INSTALL_RPEFIX "/usr/share/${PROJECT_NAME}")
 set(INCLUDE_INSTALL_RPEFIX "/usr/include/${PROJECT_NAME}")
 
 set(PLUGIN_INSTALL_PATH ${LIBRARY_INSTALL_PREFIX}/plugins)
-
+set(TOOLS_INSTALL_PATH ${LIBRARY_INSTALL_PREFIX}/tools)
 # set install runtime path
 set(CMAKE_INSTALL_RPATH ${LIBRARY_INSTALL_PREFIX} ${PLUGIN_PATH})
 
@@ -42,6 +43,7 @@ set(CMAKE_INSTALL_RPATH ${LIBRARY_INSTALL_PREFIX} ${PLUGIN_PATH})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE})
+link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 # if no debug, can't out in code define key '__FUNCTION__' and so on
 add_definitions(-DQT_MESSAGELOGCONTEXT)
@@ -82,7 +84,7 @@ endforeach(PkgConfigModule)
 
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
-option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
+option(ENABLE_UNIT_TESTS "Enable unit tests" OFF)
 message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
 if(ENABLE_UNIT_TESTS)
     enable_testing()
