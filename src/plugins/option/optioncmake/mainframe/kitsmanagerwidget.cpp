@@ -252,7 +252,6 @@ void KitsManagerWidget::setControlValue(const QMap<QString, QVariant> &map)
     mapToData(map, config);
 
     auto updateComplier = [](QComboBox *cb, ToolChainData::ToolChainParam &params) {
-        cb->setCurrentIndex(-1);
         for (int i = 0; i < cb->count(); i++) {
             ToolChainData::ToolChainParam data = qvariant_cast<ToolChainData::ToolChainParam>(cb->itemData(i, Qt::UserRole + 1));
             if (data.name == params.name && data.path == params.path) {

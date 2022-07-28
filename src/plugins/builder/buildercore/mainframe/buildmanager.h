@@ -71,7 +71,7 @@ private:
 
     void addMenu();
 
-    void startBuild();
+    void resetBuildUI();
     void outputLog(const QString &content, const OutputFormat format);
     void outputError(const QString &content);
 

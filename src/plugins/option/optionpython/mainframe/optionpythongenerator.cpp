@@ -25,12 +25,20 @@
 #include <QHBoxLayout>
 #include <QTabWidget>
 
-OptionPythonGenerator::OptionPythonGenerator()
+class OptionPythonGeneratorPrivate
 {
+    friend class OptionPythonGenerator;
 
+    PythonOptionWidget *widget = nullptr;
+};
+
+OptionPythonGenerator::OptionPythonGenerator()
+    : d(new OptionPythonGeneratorPrivate())
+{
+    d->widget = new PythonOptionWidget();
 }
 
 QWidget *OptionPythonGenerator::optionWidget()
 {
-    return new PythonOptionWidget();
+    return d->widget;
 }

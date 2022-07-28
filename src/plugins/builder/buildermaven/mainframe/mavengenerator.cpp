@@ -61,3 +61,16 @@ void MavenGenerator::appendOutputParser(std::unique_ptr<IOutputParser> &outputPa
         outputParser->appendOutputParser(new MavenParser());
     }
 }
+
+bool MavenGenerator::checkCommandValidity(const BuildCommandInfo &info, QString &retMsg)
+{
+    if (info.program.trimmed().isEmpty()) {
+        retMsg = tr("The build command of %1 project is null! "\
+                    "please install it in console with \"sudo apt install maven\", and then restart the tool.")
+                .arg(info.kitName.toUpper());
+
+        return false;
+    }
+
+    return true;
+}

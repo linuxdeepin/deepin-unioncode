@@ -27,7 +27,7 @@
 * Write global contants here.
 */
 const int K_DEFAULT_MAX_CHAR_COUNT = 10000000;
-const QString VERSION = "1.1.10";
+const QString VERSION = "1.1.11";
 const QString ARCH = "amd64";
 
 #endif // CONSTANTS_H

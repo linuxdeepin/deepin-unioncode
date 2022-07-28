@@ -35,6 +35,7 @@ public:
 
     void getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType) override;
     void appendOutputParser(std::unique_ptr<IOutputParser> &outputParser) override;
+    bool checkCommandValidity(const BuildCommandInfo &info, QString &retMsg) override;
 
 signals:
 

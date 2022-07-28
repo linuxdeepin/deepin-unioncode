@@ -83,3 +83,17 @@ void CMakeGenerator::appendOutputParser(std::unique_ptr<IOutputParser>& outputPa
         outputParser->appendOutputParser(new CMakeParser());
     }
 }
+
+bool CMakeGenerator::checkCommandValidity(const BuildCommandInfo &info, QString &retMsg)
+{
+    if (info.program.trimmed().isEmpty()) {
+        retMsg = tr("The build command of %1 project is null! "\
+                    "please install it in console with \"sudo apt install cmake\", and then restart the tool.")
+                .arg(info.kitName.toUpper());
+
+        return false;
+    }
+
+    return true;
+}
+

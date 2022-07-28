@@ -22,12 +22,20 @@
 #include "optioncmakegenerator.h"
 #include "cmakeoptionwidget.h"
 
-OptionCmakeGenerator::OptionCmakeGenerator()
+class OptionCmakeGeneratorPrivate
 {
+    friend class OptionCmakeGenerator;
 
+    CMakeOptionWidget *widget = nullptr;
+};
+
+OptionCmakeGenerator::OptionCmakeGenerator()
+    : d(new OptionCmakeGeneratorPrivate())
+{
+    d->widget = new CMakeOptionWidget();
 }
 
 QWidget *OptionCmakeGenerator::optionWidget()
 {
-    return new CMakeOptionWidget();
+    return d->widget;
 }

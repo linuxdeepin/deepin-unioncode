@@ -138,15 +138,24 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
     if (builderService) {
         auto generator = builderService->create<BuilderGenerator>(d->activedKitName);
         if (generator) {
+            resetBuildUI();
+            generator->appendOutputParser(d->outputParser);
             QList<BuildCommandInfo> list;
             foreach (auto menuType, menuTypelist) {
                 BuildCommandInfo info;
                 info.kitName = d->activedKitName;
                 info.workingDir = d->activedWorkingDir;
                 generator->getMenuCommand(info, menuType);
+
+                QString retMsg;
+                bool ret = generator->checkCommandValidity(info, retMsg);
+                if (!ret) {
+                    outputLog(retMsg, OutputFormat::Stderr);
+                    continue;
+                }
+
                 list.append(info);
             }
-            generator->appendOutputParser(d->outputParser);
             execCommands(list);
         }
     }
@@ -162,7 +171,7 @@ ProblemOutputPane *BuildManager::getProblemOutputPane() const
     return d->problemOutputPane;
 }
 
-void BuildManager::startBuild()
+void BuildManager::resetBuildUI()
 {
     d->compileOutputPane->clearContents();
     d->problemOutputPane->clearContents();
@@ -193,7 +202,14 @@ void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
     if (builderService) {
         auto generator = builderService->create<BuilderGenerator>(commandInfo.kitName);
         if (generator) {
+            resetBuildUI();
             generator->appendOutputParser(d->outputParser);
+            QString retMsg;
+            bool ret = generator->checkCommandValidity(commandInfo, retMsg);
+            if (!ret) {
+                outputLog(retMsg, OutputFormat::Stderr);
+                return;
+            }
             execCommands({commandInfo});
         }
     }
@@ -202,7 +218,7 @@ void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
 bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList)
 {
     if (!commandList.isEmpty()) {
-        startBuild();
+        resetBuildUI();
         QtConcurrent::run([=](){
             QMutexLocker locker(&releaseMutex);
             for (auto command : commandList) {
@@ -218,7 +234,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
 {
     outBuildState(BuildState::kBuilding);
     bool ret = false;
-    QString retMsg = tr("Error: The \"%1\" command not found, please install.\n").arg(info.program);
+    QString retMsg = tr("Error: The \"%1\" command not found, please install it and then restart the tool.\n").arg(info.program);
     QProcess process;
     process.setWorkingDirectory(info.workingDir);
 
@@ -246,7 +262,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
         process.setReadChannel(QProcess::StandardOutput);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputLog(line, OutputFormat::NormalMessage);
+            outputLog(line, OutputFormat::Stdout);
         }
     });
 
@@ -298,10 +314,11 @@ void BuildManager::addOutput(const QString &content, const OutputFormat format)
 {
     QString newContent = content;
     if (OutputFormat::NormalMessage == format
-            || OutputFormat::ErrorMessage == format) {
+            || OutputFormat::ErrorMessage == format
+            || OutputFormat::Stdout == format) {
         QDateTime curDatetime = QDateTime::currentDateTime();
         QString time = curDatetime.toString("hh:mm:ss");
-        newContent = time + ": " + newContent + "\r";
+        newContent = time + ": " + newContent;
     }
     d->compileOutputPane->appendText(newContent, format);
 }

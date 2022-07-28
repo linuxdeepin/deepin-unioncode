@@ -58,27 +58,33 @@ GradleOptionWidget::~GradleOptionWidget()
 
 void GradleOptionWidget::saveConfig()
 {
-    PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->currentWidget());
-    if (pageWidget) {
-        QString parentNode = QString::fromLatin1(option::CATEGORY_GRADLE);
-        QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
-        QMap<QString, QVariant> map;
-        pageWidget->getUserConfig(map);
-        OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(), parentNode, itemNode, map);
+    for (int index = 0; index < d->tabWidget->count(); index++)
+    {
+        PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
+        if (pageWidget) {
+            QString parentNode = QString::fromLatin1(option::CATEGORY_GRADLE);
+            QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
+            QMap<QString, QVariant> map;
+            pageWidget->getUserConfig(map);
+            OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(), parentNode, itemNode, map);
 
-        OptionManager::getInstance()->updateData();
+            OptionManager::getInstance()->updateData();
+        }
     }
 }
 
 void GradleOptionWidget::readConfig()
 {
-    PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->currentWidget());
-    if (pageWidget) {
-        QString parentNode = QString::fromLatin1(option::CATEGORY_GRADLE);
-        QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
-        QMap<QString, QVariant> map;
-        OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(), parentNode, itemNode, map);
-        pageWidget->setUserConfig(map);
+    for (int index = 0; index < d->tabWidget->count(); index++)
+    {
+        PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
+        if (pageWidget) {
+            QString parentNode = QString::fromLatin1(option::CATEGORY_GRADLE);
+            QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
+            QMap<QString, QVariant> map;
+            OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(), parentNode, itemNode, map);
+            pageWidget->setUserConfig(map);
+        }
     }
 }
 

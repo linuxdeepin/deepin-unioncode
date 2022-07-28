@@ -44,6 +44,12 @@ public:
     virtual void appendOutputParser(std::unique_ptr<IOutputParser>& outputParser) {
         Q_UNUSED(outputParser)
     }
+
+    virtual bool checkCommandValidity(const BuildCommandInfo &info, QString &retMsg) {
+        Q_UNUSED(info)
+        Q_UNUSED(retMsg)
+        return true;
+    }
 };
 
 } // namespace dpfservice

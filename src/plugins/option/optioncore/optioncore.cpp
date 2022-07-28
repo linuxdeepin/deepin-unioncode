@@ -95,6 +95,8 @@ bool OptionCore::start()
                     PageWidget *optionWidget = dynamic_cast<PageWidget*>(generator->optionWidget());
                     if (optionWidget) {
                         optionDialog->insertOptionPanel(name, optionWidget);
+                        optionWidget->readConfig();
+                        optionWidget->saveConfig();
                     }
                 }
             }

@@ -33,9 +33,6 @@ public:
     virtual void saveConfig(){}
     virtual void readConfig(){}
 
-    virtual void setUserConfig(const QJsonObject &jsonObject){ Q_UNUSED(jsonObject) }
-    virtual void getUserConfig(QJsonObject &jsonObject){ Q_UNUSED(jsonObject) }
-
     virtual void setUserConfig(const QMap<QString, QVariant> &map){}
     virtual void getUserConfig( QMap<QString, QVariant> &map){}
 };

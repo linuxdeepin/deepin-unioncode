@@ -23,12 +23,16 @@
 
 #include "services/option/optiongenerator.h"
 
+class OptionGradleGeneratorPrivate;
 class OptionGradleGenerator : public dpfservice::OptionGenerator
 {
 public:
     OptionGradleGenerator();
     inline static QString kitName() {return "gradle";}
     virtual QWidget *optionWidget() override;
+
+private:
+    OptionGradleGeneratorPrivate *const d;
 };
 
 #endif // OPTIONGRADLEGENERATOR_H

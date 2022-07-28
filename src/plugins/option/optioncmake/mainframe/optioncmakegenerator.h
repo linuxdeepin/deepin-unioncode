@@ -24,12 +24,16 @@
 
 #include "services/option/optiongenerator.h"
 
+class OptionCmakeGeneratorPrivate;
 class OptionCmakeGenerator : public dpfservice::OptionGenerator
 {
 public:
     OptionCmakeGenerator();
     inline static QString kitName() {return "cmake";}
     virtual QWidget *optionWidget() override;
+
+private:
+    OptionCmakeGeneratorPrivate *const d;
 };
 
 #endif // OPTIONCMAKEGENERATOR_H

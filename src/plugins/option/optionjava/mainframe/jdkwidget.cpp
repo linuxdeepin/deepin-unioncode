@@ -104,10 +104,10 @@ bool JDKWidget::getControlValue(QMap<QString, QVariant> &map)
     JDKConfig config;
     int index = d->jdkDetail->currentIndex();
     if (index < 0) {
-        return false;
+        config.version = ToolChainData::ToolChainParam();
+    } else {
+        config.version = qvariant_cast<ToolChainData::ToolChainParam>(d->jdkDetail->itemData(index, Qt::UserRole + 1));
     }
-
-    config.version = qvariant_cast<ToolChainData::ToolChainParam>(d->jdkDetail->itemData(index, Qt::UserRole + 1));
 
     dataToMap(config, map);
 

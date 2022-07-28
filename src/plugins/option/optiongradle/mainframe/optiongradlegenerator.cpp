@@ -27,12 +27,20 @@
 #include <QHBoxLayout>
 #include <QTabWidget>
 
-OptionGradleGenerator::OptionGradleGenerator()
+class OptionGradleGeneratorPrivate
 {
+    friend class OptionGradleGenerator;
 
+    GradleOptionWidget *widget = nullptr;
+};
+
+OptionGradleGenerator::OptionGradleGenerator()
+    : d(new OptionGradleGeneratorPrivate())
+{
+    d->widget = new GradleOptionWidget();
 }
 
 QWidget *OptionGradleGenerator::optionWidget()
 {
-    return new GradleOptionWidget();
+    return d->widget;
 }
