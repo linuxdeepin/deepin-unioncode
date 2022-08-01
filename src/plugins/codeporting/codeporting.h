@@ -33,7 +33,9 @@ class CodePorting : public QObject
 public:
     enum PortingStatus {
         kNoRuning,
-        kRuning
+        kRuning,
+        kSuccessful,
+        kFailed
     };
 
     enum ReportItems {
@@ -41,10 +43,12 @@ public:
         kCodeRange,
         kKey,
         kSuggestion,
-        kFileType
+        kFileType,
+        kItemsCount
     };
 
     using Report = QMap<QString, QList<QStringList>>;
+    using ReportIterator = QMapIterator<QString, QList<QStringList>>;
 
     explicit CodePorting(QObject *parent = nullptr);
 
@@ -54,9 +58,11 @@ public:
     PortingStatus getStatus() const;
     bool isRunning();
     const Report &getReport() const;
+    const QStringList &getItemNames() const;
 
 signals:
     QString outputInformation(const QString &line, OutputPane::OutputFormat format);
+    void notifyPortingStatus(PortingStatus status);
 
 public slots:
 private:
@@ -70,6 +76,7 @@ private:
 
     QString pythonCmd;
     Report report;
+    QString projSrcPath;
 
     PortingStatus status { kNoRuning };
 };

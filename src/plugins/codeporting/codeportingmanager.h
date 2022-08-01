@@ -28,12 +28,14 @@
 
 class ConfigWidget;
 class OutputPane;
+class ReportPane;
 class CodePortingManager : public QObject
 {
     Q_OBJECT
 public:
     static CodePortingManager *instance();
     OutputPane *getOutputPane() const;
+    QWidget *getReportPane() const;
 
 signals:
 
@@ -41,6 +43,8 @@ public slots:
     void slotShowConfigWidget();
     void slotPortingStart(const QString &project, const QString &srcCPU, const QString &destCPU);
     void slotAppendOutput(const QString &, OutputPane::OutputFormat format);
+    void slotPortingStatus(CodePorting::PortingStatus status);
+    void slotSelectedChanged(const QString &filePath, const QString &suggestion, int startLine, int endLine);
 
 private:
     explicit CodePortingManager(QObject *parent = nullptr);
@@ -50,6 +54,7 @@ private:
 
     ConfigWidget *cfgWidget = nullptr;
     OutputPane *outputPane = nullptr;
+    ReportPane *reportPane = nullptr;
 
     CodePorting codeporting;
 };

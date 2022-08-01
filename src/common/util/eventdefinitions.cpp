@@ -40,7 +40,7 @@ const QString D_WORKSPACE_GENERATE_END {"Workspace.Generate.End"};
 const QString D_DEBUG_EXECUTION_START {"Debug.Execution.Start"};
 const QString D_DEBUG_EXECUTION_END {"Debug.Execution.End"};
 const QString D_DEBUG_EXECUTION_JUMP {"Debug.Execution.Jump"};
-const QString D_DEBUG_EXECUTION_JUMP_CLEAN {"Debug.Execution.Jump.Clean"};
+const QString D_JUMP_CURSOR_CLEAN {"Editor.Jump.Cursor.Clean"};
 const QString D_BUILD_STATE {"Build.State"};
 const QString D_MARGIN_DEBUG_POINT_ADD {"Margin.Debug.Point.Add"};
 const QString D_MARGIN_DEBUG_POINT_REMOVE {"Margin.Debug.Point.Remove"};

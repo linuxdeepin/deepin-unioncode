@@ -39,8 +39,8 @@ void BuilderSender::jumpTo(const QString &filePath, int lineNum)
         return;
 
     dpf::Event event;
-    event.setTopic(T_DEBUGGER);
-    event.setData(D_DEBUG_EXECUTION_JUMP);
+    event.setTopic(T_CODEEDITOR);
+    event.setData(D_JUMP_TO_LINE);
     event.setProperty(P_FILEPATH, filePath);
     event.setProperty(P_FILELINE, lineNum);
     dpf::EventCallProxy::instance().pubEvent(event);

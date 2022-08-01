@@ -27,6 +27,7 @@
 #include <QRegularExpression>
 #include <QDir>
 
+static QStringList kItemNames{"FilePath", "CodeRange", "Key", "Suggestion", "FileType"};
 CodePorting::CodePorting(QObject *parent)
     : QObject(parent)
 {
@@ -73,17 +74,18 @@ CodePorting::CodePorting(QObject *parent)
                 OutputPane::OutputFormat format = OutputPane::NormalMessage;
                 if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
                     retMsg = tr("The process \"%1\" exited normally.\n").arg(process.program());
+                    this->updateStatus(kSuccessful);
                 } else if (exitStatus == QProcess::NormalExit) {
                     retMsg = tr("The process \"%1\" exited with code %2.\n")
                                      .arg(process.program(), QString::number(exitcode));
+                    this->updateStatus(kSuccessful);
                 } else {
                     retMsg = tr("The process \"%1\" crashed.\n")
                                      .arg(process.program());
                     format = OutputPane::ErrorMessage;
+                    this->updateStatus(kFailed);
                 }
                 emit outputInformation(retMsg, format);
-
-                this->updateStatus(kNoRuning);
             });
 }
 
@@ -98,6 +100,8 @@ bool CodePorting::start(const QString &projectSrcPath, const QString &srcCPU, co
     QDir dir;
     if (!QFile::exists(portingCli) || !dir.exists(projectSrcPath))
         return false;
+
+    projSrcPath = projectSrcPath;
 
     process.setProgram(getPython());
     QStringList args;
@@ -133,6 +137,11 @@ bool CodePorting::isRunning()
 const CodePorting::Report &CodePorting::getReport() const
 {
     return report;
+}
+
+const QStringList &CodePorting::getItemNames() const
+{
+    return kItemNames;
 }
 
 /**
@@ -189,19 +198,29 @@ QString CodePorting::getPython()
 void CodePorting::updateStatus(CodePorting::PortingStatus _status)
 {
     status = _status;
+    emit notifyPortingStatus(status);
 }
 
 bool CodePorting::parseReportFromFile(const QString &reportPath)
 {
     bool successful = false;
-    if (!reportPath.isEmpty() && QFile::exists(reportPath)) {
+
+    bool isReportExists = QFile::exists(reportPath);
+    qInfo() << "Report exists: " << isReportExists;
+
+    if (isReportExists) {
         QFile file(reportPath);
         if (file.open(QIODevice::ReadOnly)) {
             report.clear();
+            const char *quotes = "\"";
             while (!file.atEnd()) {
                 QString line = file.readLine();
                 QStringList cols = line.split("\",\"");
-                if (cols.length() > kFileType) {
+                if (cols.length() == kItemsCount) {
+                    // remove redundant quotes
+                    cols.first().remove(quotes);
+                    cols.last().remove(quotes);
+
                     QString type = cols[kFileType];
                     if (report.find(type) == report.end()) {
                         report.insert(type, {cols});

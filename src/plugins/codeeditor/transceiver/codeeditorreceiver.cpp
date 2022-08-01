@@ -37,7 +37,7 @@ dpf::EventHandler::Type CodeEditorReceiver::type()
 QStringList CodeEditorReceiver::topics()
 {
     return {
-        T_MENU, T_FILEBROWSER , T_DEBUGGER, T_PROJECT, T_FIND, T_SYMBOL
+        T_MENU, T_FILEBROWSER , T_CODEEDITOR, T_PROJECT, T_FIND, T_SYMBOL
     }; //绑定menu 事件
 }
 
@@ -46,7 +46,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
     if (!topics().contains(event.topic()))
         abort();
 
-    if (T_DEBUGGER == event.topic()) {
+    if (T_CODEEDITOR == event.topic()) {
         eventDebugger(event);
     } else if (T_PROJECT == event.topic()) {
         eventProject(event);
@@ -75,13 +75,13 @@ void CodeEditorReceiver::eventFileBrowser(const dpf::Event &event)
 
 void CodeEditorReceiver::eventDebugger(const dpf::Event &event)
 {
-    if (D_DEBUG_EXECUTION_JUMP == event.data()) {
+    if (D_JUMP_TO_LINE == event.data()) {
         return DpfEventMiddleware::instance()->toRunFileLine(
                     event.property(P_FILEPATH).toString(),
                     event.property(P_FILELINE).toInt());
     }
 
-    if (D_DEBUG_EXECUTION_JUMP_CLEAN == event.data()) {
+    if (D_JUMP_CURSOR_CLEAN == event.data()) {
         return DpfEventMiddleware::instance()->toRunClean();
     }
 

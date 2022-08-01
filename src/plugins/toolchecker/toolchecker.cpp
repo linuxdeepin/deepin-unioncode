@@ -45,7 +45,8 @@ void ToolChecker::initialize()
 bool ToolChecker::start()
 {
     qInfo() << __FUNCTION__;
-    check = new BackendChecker;
+    // TODO(huangyu):Open it when refactor done.
+//    check = new BackendChecker;
     return true;
 }
 

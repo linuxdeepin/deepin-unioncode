@@ -3,7 +3,8 @@
  *
  * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,33 +23,20 @@
 #include "framework.h"
 #include "common/common.h"
 
-void EventSender::jumpTo(dap::string filepath, int numberline)
+void EventSender::jumpTo(const QString &filePath, int lineNum)
 {
-    if (!filepath.c_str())
+    if (filePath.isEmpty() || lineNum < 0)
         return;
 
     dpf::Event event;
     event.setTopic(T_CODEEDITOR);
     event.setData(D_JUMP_TO_LINE);
-    event.setProperty(P_FILEPATH, QString(filepath.c_str()));
-    event.setProperty(P_FILELINE, numberline);
+    event.setProperty(P_FILEPATH, filePath);
+    event.setProperty(P_FILELINE, lineNum);
     dpf::EventCallProxy::instance().pubEvent(event);
 }
 
-void EventSender::clearEditorPointer()
+EventSender::EventSender(QObject *parent) : QObject(parent)
 {
-    dpf::Event event;
-    event.setTopic(T_CODEEDITOR);
-    event.setData(D_JUMP_CURSOR_CLEAN);
-    dpf::EventCallProxy::instance().pubEvent(event);
+
 }
-
-void EventSender::notifyDebugStarted()
-{
-    dpf::Event event;
-    event.setTopic(T_DEBUGGER);
-    event.setData(D_DEBUG_EXECUTION_START);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
-

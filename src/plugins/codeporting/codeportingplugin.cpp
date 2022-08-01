@@ -55,6 +55,9 @@ bool CodePortingPlugin::start()
     // Add output pane
     windowService->addContextWidget(tr("Code Porting"), new AbstractWidget(CodePortingManager::instance()->getOutputPane()));
 
+    // Add report pane
+    windowService->addContextWidget(tr("Porting &Report"), new AbstractWidget(CodePortingManager::instance()->getReportPane()));
+
     return true;
 }
 

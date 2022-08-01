@@ -45,7 +45,7 @@ extern const QString D_WORKSPACE_GENERATE_END;
 extern const QString D_DEBUG_EXECUTION_START;
 extern const QString D_DEBUG_EXECUTION_END;
 extern const QString D_DEBUG_EXECUTION_JUMP;
-extern const QString D_DEBUG_EXECUTION_JUMP_CLEAN;
+extern const QString D_JUMP_CURSOR_CLEAN;
 extern const QString D_BUILD_STATE;
 extern const QString D_FILE_OPENDOCUMENT;
 extern const QString D_FILE_OPENPROJECT;

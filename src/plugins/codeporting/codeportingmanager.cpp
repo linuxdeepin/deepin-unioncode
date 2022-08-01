@@ -24,6 +24,8 @@
 #include "common/widget/outputpane.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
+#include "reportpane.h"
+#include "eventsender.h"
 
 #include <QtConcurrent>
 
@@ -32,6 +34,7 @@
         Fun;                  \
     });
 
+static const int kLineNumberAdaptation = 1;
 using namespace dpfservice;
 CodePortingManager *CodePortingManager::instance()
 {
@@ -42,6 +45,11 @@ CodePortingManager *CodePortingManager::instance()
 OutputPane *CodePortingManager::getOutputPane() const
 {
     return outputPane;
+}
+
+QWidget *CodePortingManager::getReportPane() const
+{
+    return reportPane;
 }
 
 void CodePortingManager::slotShowConfigWidget()
@@ -80,10 +88,29 @@ void CodePortingManager::slotPortingStart(const QString &project, const QString 
     AsynInvoke(codeporting.start(projectSrcPath, srcCPU, destCPU));
 }
 
-void CodePortingManager::slotAppendOutput(const QString &text, OutputPane::OutputFormat format)
+void CodePortingManager::slotPortingStatus(CodePorting::PortingStatus status)
+{
+    if (status == CodePorting::kSuccessful) {
+        reportPane->refreshDispaly();
+    }
+}
+
+void CodePortingManager::slotSelectedChanged(const QString &filePath, const QString &suggestion, int startLine, int endLine)
+{
+    Q_UNUSED(endLine)
+
+    EventSender::jumpTo(filePath, startLine + kLineNumberAdaptation);
+
+    // TODO(mozart): Temporary display.
+    QMessageBox msgBox;
+    msgBox.setText(suggestion);
+    msgBox.exec();
+}
+
+void CodePortingManager::slotAppendOutput(const QString &content, OutputPane::OutputFormat format)
 {
     if (outputPane) {
-        QString newContent = text;
+        QString newContent = content;
         if (OutputPane::OutputFormat::NormalMessage == format
                 || OutputPane::OutputFormat::ErrorMessage == format) {
             QDateTime curDatetime = QDateTime::currentDateTime();
@@ -95,12 +122,18 @@ void CodePortingManager::slotAppendOutput(const QString &text, OutputPane::Outpu
 }
 
 CodePortingManager::CodePortingManager(QObject *parent)
-    : QObject(parent), cfgWidget(new ConfigWidget), outputPane(new OutputPane)
+    : QObject(parent),
+      cfgWidget(new ConfigWidget),
+      outputPane(new OutputPane),
+      reportPane(new ReportPane(&codeporting))
 {
     qRegisterMetaType<OutputPane::OutputFormat>("OutputPane::OutputFormat");
+    qRegisterMetaType<CodePorting::PortingStatus>("PortingStatus");
 
     connect(cfgWidget, &ConfigWidget::sigStartPorting, this, &CodePortingManager::slotPortingStart);
     connect(&codeporting, &CodePorting::outputInformation, this, &CodePortingManager::slotAppendOutput);
+    connect(&codeporting, &CodePorting::notifyPortingStatus, this, &CodePortingManager::slotPortingStatus);
+    connect(reportPane, &ReportPane::selectedChanged, this, &CodePortingManager::slotSelectedChanged);
 }
 
 CodePortingManager::~CodePortingManager()
@@ -113,6 +146,11 @@ CodePortingManager::~CodePortingManager()
     if (outputPane) {
         delete outputPane;
         outputPane = nullptr;
+    }
+
+    if (reportPane) {
+        delete reportPane;
+        reportPane = nullptr;
     }
 }
 
