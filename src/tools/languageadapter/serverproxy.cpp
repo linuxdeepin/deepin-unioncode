@@ -54,7 +54,7 @@ void ServerProxy::fromRequest(const Json::Value &request, Json::Value &response)
         }
     }
     Route::Head head{workspace, language};
-    if (orginJsonObject.value("method") == "initialize") {
+    if (orginJsonObject.value("method").toString() == "initialize") {
         auto backend = new Backend(Setting::getInfo(language));
         Route::instance()->saveBackend(head, backend);
     }
@@ -64,12 +64,12 @@ void ServerProxy::fromRequest(const Json::Value &request, Json::Value &response)
         qInfo() << "-> to backend request\n" << requestData;
         backend->writeAndWait(requestData);
 
-        QByteArray resultData;
-        while (backend->canRead() || !resultData.contains("\"result\":")) {
-            resultData += backend->readAndWait();
+        while (backend->canRead() || !Private::readBuffer.contains("\"result\":")) {
+            Private::readBuffer += backend->readAndWait();
         }
-        response["data"] = Json::Value(resultData.toStdString());
-        qInfo() << "<-- front request result\n" << resultData;
+        response["data"] = Json::Value(Private::readBuffer.toStdString());
+        Private::readBuffer.clear();
+        qInfo() << "<-- front request result\n" << Private::readBuffer;
     } // can find backend main
 }
 
@@ -93,6 +93,15 @@ void ServerProxy::fromNotify(const Json::Value &request)
         auto requestData = orginList.join("\r\n\r\n").toLatin1();
         qInfo() << "-> to backend notify\n" << requestData;
         backend->writeAndWait(requestData);
+
+        QString methodName = orginJsonObject.value("method").toString();
+        if ( methodName == "textDocument/didOpen"
+                || methodName == "textDocument/didChange") {
+            while (backend->canRead() ||
+                   !Private::readBuffer.contains("\"method\":\"textDocument/publishDiagnostics\"")) {
+                Private::readBuffer += backend->readAndWait();
+            }
+        }
     }
 }
 
