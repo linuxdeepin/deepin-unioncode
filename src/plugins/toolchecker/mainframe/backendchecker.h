@@ -72,6 +72,8 @@ class BackendChecker : public QWidget
     Q_OBJECT
 public:
     explicit BackendChecker(QWidget *parent = nullptr);
+    static BackendChecker &instance();
+    void checkLanguageBackend(const QString &languageID);
     bool existRunMain(const QString &languageID);
     bool existShellRemain(const QString &languageID);
     bool createShellRemain(const QString &languageID);

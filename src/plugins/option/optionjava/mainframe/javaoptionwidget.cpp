@@ -62,11 +62,10 @@ void JavaOptionWidget::saveConfig()
     {
         PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
         if (pageWidget) {
-            QString parentNode = QString::fromLatin1(option::CATEGORY_JAVA);
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
             QMap<QString, QVariant> map;
             pageWidget->getUserConfig(map);
-            OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(), parentNode, itemNode, map);
+            OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(), option::CATEGORY_JAVA, itemNode, map);
 
             OptionManager::getInstance()->updateData();
         }
@@ -79,10 +78,10 @@ void JavaOptionWidget::readConfig()
     {
         PageWidget *pageWidget = qobject_cast<PageWidget*>(d->tabWidget->widget(index));
         if (pageWidget) {
-            QString parentNode = QString::fromLatin1(option::CATEGORY_JAVA);
             QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
             QMap<QString, QVariant> map;
-            OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(), parentNode, itemNode, map);
+            OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(),
+                                         option::CATEGORY_JAVA, itemNode, map);
             pageWidget->setUserConfig(map);
         }
     }

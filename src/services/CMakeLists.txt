@@ -2,6 +2,7 @@
 project(unioncode-service)
 
 set(CXX_H
+    toolchecker/toolcheckerservice.h
     window/windowelement.h
     window/windowservice.h
     debugger/debuggerservice.h

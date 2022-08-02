@@ -51,7 +51,16 @@ BackendChecker::BackendChecker(QWidget *parent)
     info.setCheckNumMode(JDTLS_CHECKPROGRAM_MODE);
 
     requestInfos["Java"] = info;
+}
 
+BackendChecker &BackendChecker::instance()
+{
+    static BackendChecker ins;
+    return ins;
+}
+
+void BackendChecker::checkLanguageBackend(const QString &languageID)
+{
     QDir dir = QDir::home();
     if (!dir.cd(".config")) { dir.mkdir(".config"); }
     if (!dir.cd("languageadapter")) { dir.mkdir("languageadapter"); }
@@ -66,7 +75,7 @@ BackendChecker::BackendChecker(QWidget *parent)
         itera ++;
     }
 
-    for (auto languageID : requestInfos.keys()) {
+    if (requestInfos.keys().contains(languageID)) {
         auto info = requestInfos.value(languageID);
         if (!existRunMain(languageID)) { // install
             if (!checkCachePackage(languageID)) { // Sha256 check
@@ -88,7 +97,7 @@ BackendChecker::BackendChecker(QWidget *parent)
         if (!existShellRemain(languageID)) {
             createShellRemain(languageID);
         }
-    };
+    }
 }
 
 bool BackendChecker::existShellRemain(const QString &languageID)

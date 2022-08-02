@@ -25,17 +25,19 @@
 #include <QMap>
 #include <QMetaType>
 
-static const char *kCCompilers = "C compilers";
-static const char *kCXXCompilers = "C++ compilers";
-static const char *kCCXXDebuggers = "C/C++ debuggers";
-static const char *kCCXXBuildSystems = "C/C++ build systems";
-static const char *kJDK = "JDK";
-static const char *kMaven = "Maven";
-static const char *kGradle = "Gradle";
-static const char *kPython = "Python";
+namespace  {
+static const QString kCCompilers{"C compilers"};
+static const QString kCXXCompilers{"C++ compilers"};
+static const QString kCCXXDebuggers{"C/C++ debuggers"};
+static const QString kCCXXBuildSystems{"C/C++ build systems"};
+static const QString kJDK{"JDK"};
+static const QString kMaven{"Maven"};
+static const QString kGradle{"Gradle"};
+static const QString kPython{"Python"};
 
-static const char *kNameItem = "name";
-static const char *kPathItem = "path";
+static const QString kNameItem{"name"};
+static const QString kPathItem{"path"};
+}
 
 class ToolChainData
 {
@@ -52,7 +54,7 @@ public:
 
     ToolChainData();
 
-    const ToolChains &getToolChanins() const;    
+    const ToolChains &getToolChanins() const;
     bool readToolChainData(QString &retMsg);
 
 private:    

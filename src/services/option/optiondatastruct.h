@@ -24,10 +24,10 @@
 #include "toolchaindata.h"
 
 namespace option {
-    static const char *CATEGORY_CMAKE = "CMake";
-    static const char *CATEGORY_MAVEN = "Maven";
-    static const char *CATEGORY_GRADLE = "Gradle";
-    static const char *CATEGORY_JAVA = "Java";
-    static const char *CATEGORY_PYTHON = "Python";
+static const QString CATEGORY_CMAKE{"CMake"};
+static const QString CATEGORY_MAVEN{"Maven"};
+static const QString CATEGORY_GRADLE{"Gradle"};
+static const QString CATEGORY_JAVA{"Java"};
+static const QString CATEGORY_PYTHON{"Python"};
 }
 #endif // OPTIONDATASTRUCT_H

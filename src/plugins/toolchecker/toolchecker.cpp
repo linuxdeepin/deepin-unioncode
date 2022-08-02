@@ -22,36 +22,42 @@
 #include "toolchecker.h"
 #include "mainframe/backendchecker.h"
 
-#include "base/abstractmenu.h"
-#include "base/abstractaction.h"
-#include "base/abstractcentral.h"
-#include "base/abstractwidget.h"
-#include "services/window/windowservice.h"
+#include "services/toolchecker/toolcheckerservice.h"
 
 #include <QAction>
 #include <QLabel>
 #include <QDialog>
 #include <QProgressBar>
 
-using namespace dpfservice;
-namespace {
-    BackendChecker *check;
-}
 void ToolChecker::initialize()
 {
-
+    qInfo() << Q_FUNC_INFO;
+    QString errStr;
+    // 发布窗口服务
+    auto &ctx = dpfInstance.serviceContext();
+    if (!ctx.load(dpfservice::ToolCheckerSevice::name(), &errStr)) {
+        qCritical() << errStr;
+        abort();
+    }
 }
 
 bool ToolChecker::start()
 {
     qInfo() << __FUNCTION__;
-    // TODO(huangyu):Open it when refactor done.
-//    check = new BackendChecker;
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    auto toolCheckerService = ctx.service<ToolCheckerSevice>(ToolCheckerSevice::name());
+    if (!toolCheckerService->checkLanguageBackend) {
+        using namespace std::placeholders;
+        toolCheckerService->checkLanguageBackend
+                = std::bind(&BackendChecker::checkLanguageBackend,
+                            &BackendChecker::instance(), _1);
+    }
+
     return true;
 }
 
 dpf::Plugin::ShutdownFlag ToolChecker::stop()
 {
-    delete check;
     return Sync;
 }
