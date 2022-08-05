@@ -368,8 +368,6 @@ struct RenameChange : public TextDocumentIdentifier
     AdditionalTextEdits edits;
 };
 
-struct RenameChanges : public QList<RenameChange>{};
-
 struct References : public Locations{};
 
 namespace new_initialize{

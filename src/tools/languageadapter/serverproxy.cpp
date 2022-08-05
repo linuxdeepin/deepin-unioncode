@@ -25,6 +25,7 @@
 #include <QtAlgorithms>
 #include <QRunnable>
 #include <QtConcurrent>
+#include <QRegularExpression>
 
 #include <iostream>
 namespace Private {
@@ -60,16 +61,22 @@ void ServerProxy::fromRequest(const Json::Value &request, Json::Value &response)
     }
     auto backend = Route::instance()->backend(head);
     if (backend) {
+        // send to backend
+        int id = orginJsonObject.value("id").toInt();
         auto requestData = orginList.join("\r\n\r\n").toLatin1();
-        qInfo() << "-> to backend request\n" << requestData;
         backend->writeAndWait(requestData);
+        qInfo() << "-> to backend request\n" << requestData;
 
-        while (backend->canRead() || !Private::readBuffer.contains("\"result\":")) {
-            Private::readBuffer += backend->readAndWait();
+        // recv backend and wait
+        QVector<QJsonObject> retJsonObjs;
+        while (!jsonObjsContainsId(retJsonObjs, id)) {
+            backend->readAndWait(retJsonObjs, Private::readBuffer);
         }
+
+        //send data to frontend;
         response["data"] = Json::Value(Private::readBuffer.toStdString());
-        Private::readBuffer.clear();
         qInfo() << "<-- front request result\n" << Private::readBuffer;
+        Private::readBuffer.clear();
     } // can find backend main
 }
 
@@ -90,29 +97,57 @@ void ServerProxy::fromNotify(const Json::Value &request)
     Route::Head head{workspace, language};
     auto backend = Route::instance()->backend(head);
     if (backend) {
-        auto requestData = orginList.join("\r\n\r\n").toLatin1();
-        qInfo() << "-> to backend notify\n" << requestData;
-        backend->writeAndWait(requestData);
 
-        QString methodName = orginJsonObject.value("method").toString();
-        if ( methodName == "textDocument/didOpen"
-                || methodName == "textDocument/didChange") {
-            while (backend->canRead() ||
-                   !Private::readBuffer.contains("\"method\":\"textDocument/publishDiagnostics\"")) {
-                Private::readBuffer += backend->readAndWait();
+        // send to backend
+        auto requestData = orginList.join("\r\n\r\n").toLatin1();
+        backend->writeAndWait(requestData);
+        qInfo() << "-> to backend notify\n" << requestData;
+
+        // recv wait from backend
+        if (jsonObjContainsMethod(orginJsonObject, "textDocument/didOpen")
+                || jsonObjContainsMethod(orginJsonObject, "textDocument/didChange")) {
+            QVector<QJsonObject> retJsonObjs;
+            while (!jsonObjsContainsMethod(retJsonObjs, "textDocument/publishDiagnostics")) {
+                if (!backend->readAndWait(retJsonObjs, Private::readBuffer)) {
+                    if (Private::readBuffer.contains("\"method\":\"textDocument/publishDiagnostics\""))
+                        return;
+                }
             }
+        }
+
+        if (jsonObjContainsMethod(orginJsonObject, "exit")) {
+            Route::instance()->removeBackend(head);
         }
     }
 }
 
-bool ServerProxy::jsonObjectIsResult(const QJsonObject &jsonObj)
+bool ServerProxy::jsonObjsContainsId(QVector<QJsonObject> &jsonObj, int id)
+{
+    for (auto val : jsonObj) {
+        if (val.value("id").toInt() == id)
+            return true;
+    }
+    return false;
+}
+
+bool ServerProxy::jsonObjsContainsMethod(QVector<QJsonObject> &jsonObjs, const QString &methedName)
+{
+    for (auto val : jsonObjs) {
+        if (val.value("method").toString() == methedName)
+            return true;
+    }
+    return false;
+}
+
+bool ServerProxy::jsonObjContainsMethod(const QJsonObject &jsonObj, const QString &methodName)
+{
+    if (jsonObj.value("method").toString() == methodName)
+        return true;
+    return false;
+}
+
+bool ServerProxy::jsonObjIsResult(const QJsonObject &jsonObj)
 {
     auto keys = jsonObj.keys();
     return keys.contains("id") && keys.contains("result");
-}
-
-bool ServerProxy::jsonObjectIsMethod(const QJsonObject &jsonObj)
-{
-    auto keys = jsonObj.keys();
-    return keys.contains("method");
 }

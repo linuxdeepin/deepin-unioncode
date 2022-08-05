@@ -21,6 +21,9 @@
 #include "backend.h"
 
 #include <QProcess>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QRegularExpression>
 
 struct BackendPrivate
 {
@@ -67,18 +70,50 @@ Backend::~Backend()
     }
 }
 
-QByteArray Backend::readAndWait()
-{
-    d->backendIns->waitForReadyRead(-1);
-    return d->backendIns->readAll();
-}
-
 void Backend::writeAndWait(const QByteArray &data)
 {
     if (!d->backendIns)
         return;
     d->backendIns->write(data);
     d->backendIns->waitForBytesWritten(-1);
+}
+
+bool Backend::readAndWait(QVector<QJsonObject> &jsonObjs, QByteArray &source)
+{
+    int waitCount = 0;
+    qInfo() << "waitForReadyRead";
+    while(d->backendIns->waitForReadyRead(100)) {
+        if ( 3 == waitCount ++) {
+            qCritical() << "wait timeOut";
+        }
+        return false;
+    }
+
+    QRegularExpression regExp("^Content-Length:\\s+(\\d+)\\r\\n\\r\\n");
+    QByteArray head, jsonSrc;
+    while (d->backendIns->bytesAvailable()) {
+        head += d->backendIns->read(1);
+        auto matchs = regExp.match(head);
+        if (matchs.hasMatch()) {
+            int jsonObjSize = matchs.captured(1).toInt();
+            while (jsonSrc.size() != jsonObjSize) {
+                QByteArray readChar = d->backendIns->read(1);
+                if (readChar.isEmpty()) {
+                    qInfo() << "readChar wait";
+                    d->backendIns->waitForReadyRead(1);
+                } else {
+                    jsonSrc += readChar;
+                }
+            }
+            QJsonObject jsonObj = QJsonDocument::fromJson(jsonSrc).object();
+            qInfo() << "read jsonobject:\n" << jsonObj;
+            jsonObjs.append(jsonObj);
+            source += head += jsonSrc;
+            head.clear();
+            jsonSrc.clear();
+        }
+    }
+    return true;
 }
 
 SettingInfo Backend::info() const

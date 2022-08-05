@@ -56,9 +56,6 @@ bool Route::saveBackend(const Route::Head &head, Backend *backend)
     }
 
     backends.insert(head, backend);
-    QObject::connect(backend, &Backend::aboutToClose, [=](){
-        backends.key(backend);
-    });
     return true;
 }
 

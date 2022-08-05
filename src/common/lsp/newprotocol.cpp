@@ -20,27 +20,27 @@
 */
 #include "newprotocol.h"
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::formatScope(const std::string &src)
+std::string newlsp::Lifecycle::Initialize::JsonConvert::formatScope(const std::string &src)
 {
     return "{" + src + "}";
 }
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::formatKey(const std::string &key)
+std::string newlsp::Lifecycle::Initialize::JsonConvert::formatKey(const std::string &key)
 {
     return "\"" + key + "\"";
 }
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::formatValue(unsigned int value)
+std::string newlsp::Lifecycle::Initialize::JsonConvert::formatValue(unsigned int value)
 {
     return std::to_string(value);
 }
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::formatValue(int value)
+std::string newlsp::Lifecycle::Initialize::JsonConvert::formatValue(int value)
 {
     return std::to_string(value);
 }
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::formatValue(bool value)
+std::string newlsp::Lifecycle::Initialize::JsonConvert::formatValue(bool value)
 {
     if (true == value)
         return "true";
@@ -49,12 +49,12 @@ std::string lsp::Lifecycle::Initialize::JsonConvert::formatValue(bool value)
     return "false";
 }
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::formatValue(const std::string &value)
+std::string newlsp::Lifecycle::Initialize::JsonConvert::formatValue(const std::string &value)
 {
     return "\"" + value + "\"";
 }
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::formatValue(const std::vector<int> &vecInt)
+std::string newlsp::Lifecycle::Initialize::JsonConvert::formatValue(const std::vector<int> &vecInt)
 {
     std::string ret;
     if (vecInt.size() < 0)
@@ -71,7 +71,7 @@ std::string lsp::Lifecycle::Initialize::JsonConvert::formatValue(const std::vect
     return ret;
 }
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::formatValue(const std::vector<std::string> &vecString)
+std::string newlsp::Lifecycle::Initialize::JsonConvert::formatValue(const std::vector<std::string> &vecString)
 {
     std::string ret;
     if (vecString.size() < 0)
@@ -88,7 +88,7 @@ std::string lsp::Lifecycle::Initialize::JsonConvert::formatValue(const std::vect
     return ret;
 }
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::addValue(const std::string &src,
+std::string newlsp::Lifecycle::Initialize::JsonConvert::addValue(const std::string &src,
                                                               const std::pair<std::string,
                                                               std::any> &elem)
 {
@@ -113,7 +113,7 @@ std::string lsp::Lifecycle::Initialize::JsonConvert::addValue(const std::string 
         return temp;
 }
 
-std::string lsp::Lifecycle::Initialize::JsonConvert::addValue(const std::string &src,
+std::string newlsp::Lifecycle::Initialize::JsonConvert::addValue(const std::string &src,
                                                               std::initializer_list<std::pair<std::string,
                                                               std::any>> &elems)
 {
@@ -124,7 +124,7 @@ std::string lsp::Lifecycle::Initialize::JsonConvert::addValue(const std::string 
     return ret;
 }
 
-std::string lsp::Lifecycle::Initialize::WorkDoneProgressParams::toStdString() const
+std::string newlsp::Lifecycle::Initialize::WorkDoneProgressParams::toStdString() const
 {
     std::string ret;
     if (workDoneToken) {
@@ -136,7 +136,7 @@ std::string lsp::Lifecycle::Initialize::WorkDoneProgressParams::toStdString() co
     return ret;
 }
 
-std::string lsp::Lifecycle::Initialize::ResolveSupport::toStdString() const
+std::string newlsp::Lifecycle::Initialize::ResolveSupport::toStdString() const
 {
     return formatScope(
                 addValue({}, {
@@ -146,12 +146,12 @@ std::string lsp::Lifecycle::Initialize::ResolveSupport::toStdString() const
                 );
 }
 
-std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionItem::InsertTextModeSupport::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionItem::InsertTextModeSupport::toStdString() const
 {
     return formatScope(addValue({}, {"valueSet", formatValue(valueSet)}));
 }
 
-std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionList::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionList::toStdString() const
 {
     std::string ret;
     if (itemDefaults)
@@ -159,7 +159,7 @@ std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::Completion
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionItemKind::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionItemKind::toStdString() const
 {
     std::string ret;
     if (valueSet)
@@ -167,12 +167,12 @@ std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::Completion
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionItem::TagSupport::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionItem::TagSupport::toStdString() const
 {
     return formatScope(addValue({}, {"valueSet", formatValue(valueSet)}));
 }
 
-std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionItem::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CompletionClientCapabilities::CompletionItem::toStdString() const
 {
     std::string ret;
     if (snippetSupport)
@@ -239,14 +239,14 @@ std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::Completion
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::CodeActionLiteralSupport::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CodeActionLiteralSupport::toStdString() const
 {
     std::string ret;
     ret = addValue(ret, {"codeActionKind", codeActionKind.toStdString()});
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::ParameterInformation::toStdString() const
+std::string newlsp::Lifecycle::Initialize::ParameterInformation::toStdString() const
 {
     std::string ret;
     if (labelOffsetSupport)
@@ -257,7 +257,7 @@ std::string lsp::Lifecycle::Initialize::ParameterInformation::toStdString() cons
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::SignatureInformation::toStdString() const
+std::string newlsp::Lifecycle::Initialize::SignatureInformation::toStdString() const
 {
     std::string ret;
 
@@ -280,14 +280,14 @@ std::string lsp::Lifecycle::Initialize::SignatureInformation::toStdString() cons
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::CodeActionKind::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CodeActionKind::toStdString() const
 {
     std::string ret;
     ret = addValue(ret, {"valueSet", formatValue(valueSet)});
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::ChangeAnotationSupport::toStdString() const
+std::string newlsp::Lifecycle::Initialize::ChangeAnotationSupport::toStdString() const
 {
     std::string ret;
     if (groupsOnLabel)
@@ -295,12 +295,12 @@ std::string lsp::Lifecycle::Initialize::ChangeAnotationSupport::toStdString() co
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::SymbolKind::toStdString() const
+std::string newlsp::Lifecycle::Initialize::SymbolKind::toStdString() const
 {
     return formatScope(addValue({}, {"valueSet", formatValue(valueSet)}));
 }
 
-std::string lsp::Lifecycle::Initialize::FoldingRangeKind::toStdString() const
+std::string newlsp::Lifecycle::Initialize::FoldingRangeKind::toStdString() const
 {
     std::string ret;
     if (valueSet)
@@ -308,7 +308,7 @@ std::string lsp::Lifecycle::Initialize::FoldingRangeKind::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::FoldingRange::toStdString() const
+std::string newlsp::Lifecycle::Initialize::FoldingRange::toStdString() const
 {
     std::string ret;
     if (collapsedText)
@@ -316,7 +316,7 @@ std::string lsp::Lifecycle::Initialize::FoldingRange::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::WorkspaceEditClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::WorkspaceEditClientCapabilities::toStdString() const
 {
     std::string ret;
     if (documentChanges)
@@ -332,7 +332,7 @@ std::string lsp::Lifecycle::Initialize::WorkspaceEditClientCapabilities::toStdSt
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DidChangeConfigurationClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DidChangeConfigurationClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -340,7 +340,7 @@ std::string lsp::Lifecycle::Initialize::DidChangeConfigurationClientCapabilities
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DidChangeWatchedFilesClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DidChangeWatchedFilesClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -350,7 +350,7 @@ std::string lsp::Lifecycle::Initialize::DidChangeWatchedFilesClientCapabilities:
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::ExecuteCommandClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::ExecuteCommandClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -358,14 +358,14 @@ std::string lsp::Lifecycle::Initialize::ExecuteCommandClientCapabilities::toStdS
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::WorkspaceSymbolClientCapabilities::TagSupport::toStdString() const
+std::string newlsp::Lifecycle::Initialize::WorkspaceSymbolClientCapabilities::TagSupport::toStdString() const
 {
     std::string ret;
     ret = addValue(ret, {"valueSet", formatValue(valueSet)});
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::WorkspaceSymbolClientCapabilities::toStdString() const{
+std::string newlsp::Lifecycle::Initialize::WorkspaceSymbolClientCapabilities::toStdString() const{
     std::string ret;
     if (dynamicRegistration)
         ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
@@ -378,7 +378,7 @@ std::string lsp::Lifecycle::Initialize::WorkspaceSymbolClientCapabilities::toStd
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::SemanticTokensWorkspaceClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::SemanticTokensWorkspaceClientCapabilities::toStdString() const
 {
     std::string ret;
     if (refreshSupport.value())
@@ -386,7 +386,7 @@ std::string lsp::Lifecycle::Initialize::SemanticTokensWorkspaceClientCapabilitie
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::CodeLensWorkspaceClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CodeLensWorkspaceClientCapabilities::toStdString() const
 {
     std::string ret;
     if (refreshSupport)
@@ -394,7 +394,7 @@ std::string lsp::Lifecycle::Initialize::CodeLensWorkspaceClientCapabilities::toS
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::InlineValueWorkspaceClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::InlineValueWorkspaceClientCapabilities::toStdString() const
 {
     std::string ret;
     if (refreshSupport)
@@ -402,7 +402,7 @@ std::string lsp::Lifecycle::Initialize::InlineValueWorkspaceClientCapabilities::
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::InlayHintWorkspaceClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::InlayHintWorkspaceClientCapabilities::toStdString() const
 {
     std::string ret;
     if (refreshSupport)
@@ -410,7 +410,7 @@ std::string lsp::Lifecycle::Initialize::InlayHintWorkspaceClientCapabilities::to
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DiagnosticWorkspaceClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DiagnosticWorkspaceClientCapabilities::toStdString() const
 {
     std::string ret;
     if (refreshSupport)
@@ -418,7 +418,7 @@ std::string lsp::Lifecycle::Initialize::DiagnosticWorkspaceClientCapabilities::t
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::TextDocumentSyncClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::TextDocumentSyncClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -432,7 +432,7 @@ std::string lsp::Lifecycle::Initialize::TextDocumentSyncClientCapabilities::toSt
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CompletionClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -450,7 +450,7 @@ std::string lsp::Lifecycle::Initialize::CompletionClientCapabilities::toStdStrin
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::HoverClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::HoverClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -460,7 +460,7 @@ std::string lsp::Lifecycle::Initialize::HoverClientCapabilities::toStdString() c
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::SignatureHelpClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::SignatureHelpClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -472,7 +472,7 @@ std::string lsp::Lifecycle::Initialize::SignatureHelpClientCapabilities::toStdSt
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DeclarationClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DeclarationClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -482,7 +482,7 @@ std::string lsp::Lifecycle::Initialize::DeclarationClientCapabilities::toStdStri
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DefinitionClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DefinitionClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -492,7 +492,7 @@ std::string lsp::Lifecycle::Initialize::DefinitionClientCapabilities::toStdStrin
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::TypeDefinitionClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::TypeDefinitionClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -502,7 +502,7 @@ std::string lsp::Lifecycle::Initialize::TypeDefinitionClientCapabilities::toStdS
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::ImplementationClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::ImplementationClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -512,7 +512,7 @@ std::string lsp::Lifecycle::Initialize::ImplementationClientCapabilities::toStdS
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::ReferenceClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::ReferenceClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -520,7 +520,7 @@ std::string lsp::Lifecycle::Initialize::ReferenceClientCapabilities::toStdString
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DocumentHighlightClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DocumentHighlightClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -528,7 +528,7 @@ std::string lsp::Lifecycle::Initialize::DocumentHighlightClientCapabilities::toS
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DocumentSymbolClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DocumentSymbolClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -545,7 +545,7 @@ std::string lsp::Lifecycle::Initialize::DocumentSymbolClientCapabilities::toStdS
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::CodeActionClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CodeActionClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -565,7 +565,7 @@ std::string lsp::Lifecycle::Initialize::CodeActionClientCapabilities::toStdStrin
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::CodeLensClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CodeLensClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -573,7 +573,7 @@ std::string lsp::Lifecycle::Initialize::CodeLensClientCapabilities::toStdString(
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DocumentLinkClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DocumentLinkClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -583,7 +583,7 @@ std::string lsp::Lifecycle::Initialize::DocumentLinkClientCapabilities::toStdStr
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DocumentColorClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DocumentColorClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -591,7 +591,7 @@ std::string lsp::Lifecycle::Initialize::DocumentColorClientCapabilities::toStdSt
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DocumentFormattingClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DocumentFormattingClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -599,7 +599,7 @@ std::string lsp::Lifecycle::Initialize::DocumentFormattingClientCapabilities::to
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DocumentRangeFormattingClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DocumentRangeFormattingClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -607,7 +607,7 @@ std::string lsp::Lifecycle::Initialize::DocumentRangeFormattingClientCapabilitie
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DocumentOnTypeFormattingClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DocumentOnTypeFormattingClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -615,7 +615,7 @@ std::string lsp::Lifecycle::Initialize::DocumentOnTypeFormattingClientCapabiliti
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::RenameClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::RenameClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -629,7 +629,7 @@ std::string lsp::Lifecycle::Initialize::RenameClientCapabilities::toStdString() 
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::PublishDiagnosticsClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::PublishDiagnosticsClientCapabilities::toStdString() const
 {
     std::string ret;
     if (relatedInformation)
@@ -645,7 +645,7 @@ std::string lsp::Lifecycle::Initialize::PublishDiagnosticsClientCapabilities::to
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::FoldingRangeClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::FoldingRangeClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -661,7 +661,7 @@ std::string lsp::Lifecycle::Initialize::FoldingRangeClientCapabilities::toStdStr
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::SelectionRangeClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::SelectionRangeClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -669,7 +669,7 @@ std::string lsp::Lifecycle::Initialize::SelectionRangeClientCapabilities::toStdS
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::LinkedEditingRangeClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::LinkedEditingRangeClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -677,7 +677,7 @@ std::string lsp::Lifecycle::Initialize::LinkedEditingRangeClientCapabilities::to
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::CallHierarchyClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::CallHierarchyClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -685,7 +685,7 @@ std::string lsp::Lifecycle::Initialize::CallHierarchyClientCapabilities::toStdSt
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::SemanticTokensClientCapabilities::Requests::Full::toStdString() const
+std::string newlsp::Lifecycle::Initialize::SemanticTokensClientCapabilities::Requests::Full::toStdString() const
 {
     std::string ret;
     if (delta) {
@@ -694,7 +694,7 @@ std::string lsp::Lifecycle::Initialize::SemanticTokensClientCapabilities::Reques
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::SemanticTokensClientCapabilities::Requests::toStdString() const
+std::string newlsp::Lifecycle::Initialize::SemanticTokensClientCapabilities::Requests::toStdString() const
 {
     std::string ret;
     if (range) {
@@ -708,7 +708,7 @@ std::string lsp::Lifecycle::Initialize::SemanticTokensClientCapabilities::Reques
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::SemanticTokensClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::SemanticTokensClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -730,7 +730,7 @@ std::string lsp::Lifecycle::Initialize::SemanticTokensClientCapabilities::toStdS
 
 
 
-std::string lsp::Lifecycle::Initialize::MonikerClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::MonikerClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -738,7 +738,7 @@ std::string lsp::Lifecycle::Initialize::MonikerClientCapabilities::toStdString()
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::TypeHierarchyClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::TypeHierarchyClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -746,7 +746,7 @@ std::string lsp::Lifecycle::Initialize::TypeHierarchyClientCapabilities::toStdSt
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::InlineValueClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::InlineValueClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -754,7 +754,7 @@ std::string lsp::Lifecycle::Initialize::InlineValueClientCapabilities::toStdStri
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::InlayHintClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::InlayHintClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -764,7 +764,7 @@ std::string lsp::Lifecycle::Initialize::InlayHintClientCapabilities::toStdString
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DiagnosticClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DiagnosticClientCapabilities::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -774,7 +774,7 @@ std::string lsp::Lifecycle::Initialize::DiagnosticClientCapabilities::toStdStrin
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::TextDocumentClientCapabilities::toStdString() const {
+std::string newlsp::Lifecycle::Initialize::TextDocumentClientCapabilities::toStdString() const {
     std::string ret;
     if (synchronization)
         ret = addValue(ret, {"synchronization", synchronization.value().toStdString()});
@@ -839,7 +839,7 @@ std::string lsp::Lifecycle::Initialize::TextDocumentClientCapabilities::toStdStr
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::FileOperations::toStdString() const
+std::string newlsp::Lifecycle::Initialize::FileOperations::toStdString() const
 {
     std::string ret;
     if (dynamicRegistration)
@@ -859,7 +859,7 @@ std::string lsp::Lifecycle::Initialize::FileOperations::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::Workspace::toStdString() const
+std::string newlsp::Lifecycle::Initialize::Workspace::toStdString() const
 {
     std::string ret;
     if (applyEdit)
@@ -893,7 +893,7 @@ std::string lsp::Lifecycle::Initialize::Workspace::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::ClientInfo::toStdString() const
+std::string newlsp::Lifecycle::Initialize::ClientInfo::toStdString() const
 {
     std::string result{};
     result = addValue(result, {"name", formatValue(name)});
@@ -902,7 +902,7 @@ std::string lsp::Lifecycle::Initialize::ClientInfo::toStdString() const
     return formatScope(result);
 }
 
-std::string lsp::Lifecycle::Initialize::NotebookDocumentSyncClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::NotebookDocumentSyncClientCapabilities::toStdString() const
 {
     std::string ret = "";
     if (dynamicRegistration)
@@ -912,14 +912,14 @@ std::string lsp::Lifecycle::Initialize::NotebookDocumentSyncClientCapabilities::
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::NotebookDocumentClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::NotebookDocumentClientCapabilities::toStdString() const
 {
     std::string ret;
     ret = addValue({}, {"synchronization", synchronization.toStdString()});
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::MessageActionItem::toStdString() const
+std::string newlsp::Lifecycle::Initialize::MessageActionItem::toStdString() const
 {
     std::string ret;
     if (additionalPropertiesSupport)
@@ -927,7 +927,7 @@ std::string lsp::Lifecycle::Initialize::MessageActionItem::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::ShowMessageRequestClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::ShowMessageRequestClientCapabilities::toStdString() const
 {
     std::string ret;
     if (messageActionItem)
@@ -935,13 +935,13 @@ std::string lsp::Lifecycle::Initialize::ShowMessageRequestClientCapabilities::to
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::ShowDocumentClientCapabilities::toStdString() const {
+std::string newlsp::Lifecycle::Initialize::ShowDocumentClientCapabilities::toStdString() const {
     std::string ret;
     ret = addValue(ret, {"support", formatValue(support)});
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::Window::toStdString() const
+std::string newlsp::Lifecycle::Initialize::Window::toStdString() const
 {
     std::string ret;
     if (workDoneProgress)
@@ -953,7 +953,7 @@ std::string lsp::Lifecycle::Initialize::Window::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::StaleRequestSupport::toStdString() const
+std::string newlsp::Lifecycle::Initialize::StaleRequestSupport::toStdString() const
 {
     std::string ret;
     ret = addValue(ret, {"cancel", formatValue(cancel)});
@@ -961,7 +961,7 @@ std::string lsp::Lifecycle::Initialize::StaleRequestSupport::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::RegularExpressionsClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::RegularExpressionsClientCapabilities::toStdString() const
 {
     std::string ret;
     ret = addValue(ret, {"engine", formatValue(engine)});
@@ -970,7 +970,7 @@ std::string lsp::Lifecycle::Initialize::RegularExpressionsClientCapabilities::to
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::MarkdownClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::MarkdownClientCapabilities::toStdString() const
 {
     std::string ret;
     ret = addValue(ret, {"parser", formatValue(parser)});
@@ -981,7 +981,7 @@ std::string lsp::Lifecycle::Initialize::MarkdownClientCapabilities::toStdString(
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::General::toStdString() const
+std::string newlsp::Lifecycle::Initialize::General::toStdString() const
 {
     std::string ret;
     if (staleRequestSupport)
@@ -997,7 +997,7 @@ std::string lsp::Lifecycle::Initialize::General::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::ClientCapabilities::toStdString() const
+std::string newlsp::Lifecycle::Initialize::ClientCapabilities::toStdString() const
 {
     std::string ret;
     if (workspace)
@@ -1013,7 +1013,7 @@ std::string lsp::Lifecycle::Initialize::ClientCapabilities::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::WorkspaceFolder::toStdString() const
+std::string newlsp::Lifecycle::Initialize::WorkspaceFolder::toStdString() const
 {
     std::string ret;
     ret = addValue(ret, {"uri", formatValue(uri)});
@@ -1021,8 +1021,8 @@ std::string lsp::Lifecycle::Initialize::WorkspaceFolder::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::InitializeParams::formatValue(
-        const std::vector<lsp::Lifecycle::Initialize::WorkspaceFolder> &workspaceFolders) const
+std::string newlsp::Lifecycle::Initialize::InitializeParams::formatValue(
+        const std::vector<newlsp::Lifecycle::Initialize::WorkspaceFolder> &workspaceFolders) const
 {
     std::string ret;
     ret += "[";
@@ -1036,7 +1036,7 @@ std::string lsp::Lifecycle::Initialize::InitializeParams::formatValue(
     return ret;
 }
 
-std::string lsp::Lifecycle::Initialize::InitializeParams::toStdString() const
+std::string newlsp::Lifecycle::Initialize::InitializeParams::toStdString() const
 {
     std::string ret;
 
@@ -1068,14 +1068,14 @@ std::string lsp::Lifecycle::Initialize::InitializeParams::toStdString() const
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::DocumentSymbolClientCapabilities::TagSupport::toStdString() const
+std::string newlsp::Lifecycle::Initialize::DocumentSymbolClientCapabilities::TagSupport::toStdString() const
 {
     std::string ret;
     ret = addValue(ret, {"valueSet", formatValue(valueSet)});
     return formatScope(ret);
 }
 
-std::string lsp::Lifecycle::Initialize::PublishDiagnosticsClientCapabilities::TagSupport::toStdString() const
+std::string newlsp::Lifecycle::Initialize::PublishDiagnosticsClientCapabilities::TagSupport::toStdString() const
 {
     std::string ret;
     ret = addValue(ret, {"valueSet", formatValue(valueSet)});

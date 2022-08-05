@@ -139,20 +139,17 @@ CodePortingManager::CodePortingManager(QObject *parent)
 CodePortingManager::~CodePortingManager()
 {
     if (cfgWidget) {
-        // delete cfgWidget;
-        // TODO: luzhen, mainwindow double free
+        // delete cfgWidget; mainwindow released
         cfgWidget = nullptr;
     }
 
     if (outputPane) {
-        // delete outputPane;
-        // TODO: luzhen, mainwindow double free
+        // delete outputPane; mainwindow released
         outputPane = nullptr;
     }
 
     if (reportPane) {
-        // delete reportPane;
-        // TODO: luzhen, mainwindow double free
+        // delete reportPane; mainwindow released
         reportPane = nullptr;
     }
 }

@@ -26,9 +26,9 @@
 #include <QDirIterator>
 #include <QMimeDatabase>
 
-#define JDTLS_PACKAGE_URL "https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.10.0-202203040350.tar.gz"
+#define JDTLS_PACKAGE_URL "https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.11.0-202205051421.tar.gz"
 #define JDTLS_PACKAGE_NAME "jdt-language-server.tar.gz"
-#define JDTLS_CHECKFILE_URL "https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.10.0-202203040350.tar.gz.sha256"
+#define JDTLS_CHECKFILE_URL "https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.11.0-202205051421.tar.gz.sha256"
 #define JDTLS_CHECKFILE_NAME "jdt-language-server.tar.gz.sha256"
 #define JDTLS_CHECKPROGRAM_NAME "shasum"
 #define JDTLS_CHECKPROGRAM_MODE "256"

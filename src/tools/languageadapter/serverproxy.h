@@ -32,9 +32,10 @@ public:
   void fromRequest(const Json::Value &request, Json::Value &response);
   void fromNotify(const Json::Value &request);
 private:
-  bool tryCastJsonObject(const QByteArray &array, QJsonObject &jsonObj);
-  bool jsonObjectIsResult(const QJsonObject &jsonObj);
-  bool jsonObjectIsMethod(const QJsonObject &jsonObj);
+  bool jsonObjsContainsId(QVector<QJsonObject> &jsonObjs, int id);
+  bool jsonObjsContainsMethod(QVector<QJsonObject> &jsonObjs, const QString &methedName);
+  bool jsonObjContainsMethod(const QJsonObject &jsonObj, const QString &methodName);
+  bool jsonObjIsResult(const QJsonObject &jsonObj);
 };
 
 #endif // SERVERPROXY_H

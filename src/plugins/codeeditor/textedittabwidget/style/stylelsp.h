@@ -66,7 +66,7 @@ public:
         RedTextFore = 63,
     };
 
-    static Sci_Position getSciPosition(sptr_t doc, const lsp::Position &pos);
+    static Sci_Position getSciPosition(sptr_t doc, const newlsp::Position &pos);
     static lsp::Position getLspPosition(sptr_t doc, sptr_t sciPosition);
     static int getLspCharacter(sptr_t doc, sptr_t sciPosition);
     static bool isCharSymbol(const char ch);

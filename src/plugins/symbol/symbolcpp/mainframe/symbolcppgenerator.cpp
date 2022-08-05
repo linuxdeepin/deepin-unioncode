@@ -99,9 +99,9 @@ SymbolCppGenerator::~SymbolCppGenerator()
         if (threadPoll) {
             threadPoll->clear();
             SymbolCppAsynParser::setGlobalRunFlags(false);
-            while (threadPoll->activeThreadCount() != 0) {
-                threadPoll->waitForDone(100);
-            }
+//            while (threadPoll->activeThreadCount() != 0) {
+//                threadPoll->waitForDone(100);
+//            }
             delete thread();
         }
     }

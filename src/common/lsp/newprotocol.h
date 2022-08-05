@@ -21,7 +21,7 @@
 #ifndef NEWPROTOCOL_H
 #define NEWPROTOCOL_H
 
-#include "type/menuext.h"
+#include "common/type/menuext.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -32,7 +32,24 @@
 #include <optional>
 #include <any>
 
-namespace lsp {
+#include <QDebug>
+namespace newlsp {
+
+template<class T>
+static bool any_contrast(const std::any &any)
+{
+    qInfo() << any.type().name();
+    qInfo() << std::any(T()).type().name();
+    if (any.type() == std::any(T()).type()) {
+        return true;
+    }
+    return false;
+}
+
+typedef std::string DocumentUri;
+typedef std::string URI ;
+typedef std::any ProgressToken; // integer | string;
+
 namespace Lifecycle {
 namespace Initialize {
 namespace BasicEnum {
@@ -251,25 +268,12 @@ struct JsonConvert
     static std::string formatValue(const std::vector<int> &vecInt);
     static std::string formatValue(const std::vector<std::string> &vecString);
 
-    template<class T>
-    static bool any_contrast(const std::any &any)
-    {
-        if (any.type() == std::any(T()).type()) {
-            return true;
-        }
-        return false;
-    }
+    static std::string addValue(const std::string &src,
+                                const std::pair<std::string, std::any> &elem);
 
     static std::string addValue(const std::string &src,
-                         const std::pair<std::string, std::any> &elem);
-
-    static std::string addValue(const std::string &src,
-                         std::initializer_list<std::pair<std::string, std::any>> &elems);
+                                std::initializer_list<std::pair<std::string, std::any>> &elems);
 };
-
-typedef std::string DocumentUri;
-typedef std::string URI ;
-typedef std::any ProgressToken; // integer | string;
 
 struct WorkDoneProgressParams: JsonConvert
 {
@@ -877,5 +881,103 @@ struct InitializeParams : WorkDoneProgressParams
 };
 } // Initialize
 } // Lifecycle
-} // lsp
+
+typedef std::string ChangeAnnotationIdentifier;
+
+struct Position{
+    int line;
+    int character;
+};
+struct Range
+{
+    Position start;
+    Position end;
+};
+
+struct TextEdit {
+    Range range;
+    std::string newText;
+};
+
+struct AnnotatedTextEdit : TextEdit
+{
+    ChangeAnnotationIdentifier annotationId;
+};
+
+struct TextDocumentIdentifier
+{
+    DocumentUri uri;
+};
+
+struct OptionalVersionedTextDocumentIdentifier : TextDocumentIdentifier
+{
+    std::optional<int> version;
+};
+
+struct TextDocumentEdit
+{
+    OptionalVersionedTextDocumentIdentifier textDocument;
+    std::vector<AnnotatedTextEdit> edits;
+};
+
+namespace Workspace
+{
+struct CreateFileOptions {
+    std::optional<bool> overwrite;
+    std::optional<bool> ignoreIfExists;
+};
+
+struct RenameFileOptions {
+    std::optional<bool> overwrite;
+    std::optional<bool> ignoreIfExists;
+};
+
+struct CreateFile
+{
+    std::string kind{"create"};
+    DocumentUri uri;
+    std::optional<CreateFileOptions> options;
+    std::optional<ChangeAnnotationIdentifier> annotationId;
+};
+
+struct RenameFile
+{
+    std::string kind{"rename"};
+    DocumentUri oldUri;
+    DocumentUri newUri;
+    std::optional<RenameFileOptions> options;
+    std::optional<ChangeAnnotationIdentifier> annotationId;
+};
+
+struct DeleteFileOptions
+{
+    std::optional<bool> recursive;
+    std::optional<bool> ignoreIfNotExists;
+};
+
+struct DeleteFile
+{
+    std::string kind{"delete"};
+    DocumentUri uri;
+    std::optional<DeleteFileOptions> options;
+    std::optional<ChangeAnnotationIdentifier> annotationId;
+};
+
+struct ChangeAnnotation
+{
+    std::string label;
+    bool needsConfirmation;
+    std::optional<std::string> description;
+};
+
+struct WorkspaceEdit
+{
+    // { [uri: DocumentUri]: TextEdit[]; };
+    std::optional<std::map<DocumentUri, std::vector<TextEdit>>> changes;
+    // ( TextDocumentEdit[] | (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]);
+    std::optional<std::any> documentChanges;
+    std::optional<std::map<std::string, ChangeAnnotation>> changeAnnotations;
+};
+}
+} // newlsp
 #endif // NEWPROTOCOL_H

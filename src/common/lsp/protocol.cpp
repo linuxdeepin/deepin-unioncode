@@ -303,8 +303,8 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
 
     } else if (language == JAVA) {
 
-        using namespace lsp::Lifecycle;
-        using namespace lsp::Lifecycle::Initialize;
+        using namespace newlsp::Lifecycle;
+        using namespace newlsp::Lifecycle::Initialize;
 
         std::string workspaceFolderUriStr = QUrl::fromLocalFile(workspaceFolder).toString().toStdString();
         std::string workspaceNameStr = QFileInfo(workspaceFolder).fileName().toStdString();

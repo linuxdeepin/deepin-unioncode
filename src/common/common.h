@@ -25,6 +25,7 @@
 #include "inotify/inotify.h"
 #include "lsp/client.h"
 #include "lsp/protocol.h"
+#include "lsp/newprotocol.h"
 #include "type/constants.h"
 #include "type/menuext.h"
 #include "util/customicons.h"

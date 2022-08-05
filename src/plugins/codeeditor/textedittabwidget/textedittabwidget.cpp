@@ -173,7 +173,7 @@ void TextEditTabWidget::openFile(const Head &head, const QString &filePath)
     lsp::Client *client = lsp::ClientManager::instance()->get(head);
 
     // 全局rename操作
-    QObject::connect(client, QOverload<const lsp::RenameChanges&>::of(&lsp::Client::requestResult),
+    QObject::connect(client, QOverload<const newlsp::Workspace::WorkspaceEdit&>::of(&lsp::Client::requestResult),
                      this, &TextEditTabWidget::doRenameReplace, Qt::UniqueConnection);
 
     // 使用取出适用的编辑器
@@ -240,7 +240,7 @@ void TextEditTabWidget::jumpToLine(const QString &filePath, int line)
     }
 }
 
-void TextEditTabWidget::jumpToRange(const QString &filePath, const lsp::Range &range)
+void TextEditTabWidget::jumpToRange(const QString &filePath, const newlsp::Range &range)
 {
     auto edit = switchFileAndToOpen(filePath);
 
@@ -278,7 +278,7 @@ void TextEditTabWidget::debugPointClean()
     }
 }
 
-void TextEditTabWidget::replaceRange(const QString &filePath, const lsp::Range &range, const QString &text)
+void TextEditTabWidget::replaceRange(const QString &filePath, const newlsp::Range &range, const QString &text)
 {
     auto edit = d->textEdits.value(filePath);
     if (edit) {
@@ -471,12 +471,32 @@ void TextEditTabWidget::handleDeletedFile(const QString &file)
     }
 }
 
-void TextEditTabWidget::doRenameReplace(const lsp::RenameChanges &changes)
+void TextEditTabWidget::doRenameReplace(const newlsp::Workspace::WorkspaceEdit &renameResult)
 {
-    for (auto change : changes) {
-        QString filePath = change.documentUri.toLocalFile();
-        for (auto edit : change.edits) {
-            replaceRange(filePath, edit.range, edit.newText);
+    if (renameResult.changes) {
+        auto changes = renameResult.changes;
+        auto itera = changes->begin();
+        while (itera != changes->end()) {
+            for (auto edit : itera->second) {
+                QString filePath = QUrl(QString::fromStdString(itera->first)).toLocalFile();
+                QString newText = QString::fromStdString(edit.newText);
+                replaceRange(filePath, edit.range, newText);
+            }
+            itera ++;
+        }
+    }
+    if (renameResult.documentChanges) {
+        std::any documentChangesAny = renameResult.documentChanges.value();
+        if (newlsp::any_contrast<std::vector<newlsp::TextDocumentEdit>>(documentChangesAny)) {
+           auto documentChanges = std::any_cast<std::vector<newlsp::TextDocumentEdit>>(documentChangesAny);
+           for (auto documentChange : documentChanges) {
+                QString filePath = QUrl(QString::fromStdString(documentChange.textDocument.uri)).toLocalFile();
+                std::vector<newlsp::AnnotatedTextEdit> edits = documentChange.edits;
+                for (auto edit : edits) {
+                    QString newText = QString::fromStdString(edit.newText);
+                    replaceRange(filePath, edit.range, newText);
+                }
+           }
         }
     }
 }

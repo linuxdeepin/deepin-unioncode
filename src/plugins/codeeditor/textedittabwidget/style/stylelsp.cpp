@@ -240,7 +240,7 @@ inline bool StyleLsp::isCharSymbol(const char ch) {
             || (ch >= 0x5B && ch < 0x60 + 1) || (ch >= 0x7B && ch < 0x7E + 1);
 }
 
-Sci_Position StyleLsp::getSciPosition(sptr_t doc, const lsp::Position &pos)
+Sci_Position StyleLsp::getSciPosition(sptr_t doc, const newlsp::Position &pos)
 {
     auto docTemp = (Scintilla::Internal::Document*)(doc);
     return docTemp->GetRelativePosition(docTemp->LineStart(pos.line), pos.character);
@@ -250,7 +250,7 @@ lsp::Position StyleLsp::getLspPosition(sptr_t doc, sptr_t sciPosition)
 {
     auto docTemp = (Scintilla::Internal::Document*)(doc);
     int line = docTemp->LineFromPosition(sciPosition);
-    Sci_Position lineChStartPos = getSciPosition(doc, lsp::Position{line, 0});
+    Sci_Position lineChStartPos = getSciPosition(doc, newlsp::Position{line, 0});
     return lsp::Position{line, (int)(sciPosition - lineChStartPos)};
 }
 
@@ -276,7 +276,12 @@ StyleLsp::StyleLsp(TextEdit *parent)
     QObject::connect(&d->renamePopup, &RenamePopup::editingFinished, this, &StyleLsp::renameRequest, Qt::UniqueConnection);
     QObject::connect(RefactorWidget::instance(), &RefactorWidget::doubleClicked,
                      this, [=](const QString &filePath, const lsp::Range &range){
-        TextEditTabWidget::instance()->jumpToRange(filePath, range);
+        newlsp::Range newRange;
+        newRange.start.line = range.start.line;
+        newRange.start.character = range.start.character;
+        newRange.end.line = range.end.line;
+        newRange.end.character = range.end.character;
+        TextEditTabWidget::instance()->jumpToRange(filePath, newRange);
     });
 }
 
@@ -706,8 +711,10 @@ void StyleLsp::setDiagnostics(const lsp::DiagnosticsParams &params)
     this->cleanDiagnostics();
     for (auto val : params.diagnostics) {
         if (val.severity == lsp::Diagnostic::Severity::Error) { // error
-            Sci_Position startPos = getSciPosition(d->edit->docPointer(), val.range.start);
-            Sci_Position endPos = getSciPosition(d->edit->docPointer(), val.range.end);
+            newlsp::Position start{val.range.start.line, val.range.start.character};
+            newlsp::Position end{val.range.end.line, val.range.start.character};
+            Sci_Position startPos = getSciPosition(d->edit->docPointer(), start);
+            Sci_Position endPos = getSciPosition(d->edit->docPointer(), end);
             d->edit->setIndicatorCurrent(INDIC_SQUIGGLE);
             d->edit->indicSetFore(INDIC_SQUIGGLE, StyleColor::color(StyleColor::Table::get()->Red));
             d->edit->indicatorFillRange(startPos, endPos - startPos);

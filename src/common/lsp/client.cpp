@@ -79,7 +79,7 @@ Client::Client(QObject *parent)
     qRegisterMetaType<DiagnosticsParams>("DiagnosticsParams");
     qRegisterMetaType<Data>("Data");
     qRegisterMetaType<QList<Data>>("QList<Data>");
-    qRegisterMetaType<RenameChanges>("RenameChanges");
+    qRegisterMetaType<newlsp::Workspace::WorkspaceEdit>("newlsp::Workspace::WorkspaceEdit");
     qRegisterMetaType<References>("References");
 }
 
@@ -413,24 +413,80 @@ bool Client::renameResult(const QJsonObject &jsonObj)
                 << jsonObj;
         d->requestSave.remove(calledID);
         QJsonObject resultObj = jsonObj.value(K_RESULT).toObject();
-        QJsonObject changes = resultObj.value("changes").toObject();
-        lsp::RenameChanges changesResult;
-        for (auto fileKey : changes.keys()) {
-            RenameChange change;
-            change.documentUri = fileKey;
-            auto addionTextEditArray = changes[fileKey].toArray();
-            for (auto addion : addionTextEditArray){
-                auto addionObj = addion.toObject();
-                auto rangeObj = addionObj.value(K_RANGE).toObject();
-                auto startObj = rangeObj.value(K_START).toObject();
-                auto endObj = rangeObj.value(K_END).toObject();
-                QString newText = addionObj.value(K_NewText).toString();
-                Position startPos = {startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()};
-                Position endPos = {endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()};
-                Range range = {startPos, endPos} ;
-                change.edits << TextEdit {newText, range};
+        QJsonObject changesObj = resultObj.value("changes").toObject();
+        newlsp::Workspace::WorkspaceEdit changesResult;
+        if (!changesObj.isEmpty()) {
+            // std::optional<> changes;
+            std::map<newlsp::DocumentUri, std::vector<newlsp::TextEdit>> changes;
+            for (auto fileKey : changesObj.keys()) {
+                auto addionTextEditArray = changesObj[fileKey].toArray();
+                std::vector<newlsp::TextEdit> textEdits;
+                for (auto addion : addionTextEditArray){
+                    auto addionObj = addion.toObject();
+                    auto rangeObj = addionObj.value(K_RANGE).toObject();
+                    auto startObj = rangeObj.value(K_START).toObject();
+                    auto endObj = rangeObj.value(K_END).toObject();
+                    std::string newText = addionObj.value(K_NewText).toString().toStdString();
+                    newlsp::Position startPos = {startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()};
+                    newlsp::Position endPos = {endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()};
+                    newlsp::Range range = {startPos, endPos} ;
+                    textEdits.push_back(newlsp::TextEdit{range, newText});
+                }
+                changes[fileKey.toStdString()] = textEdits;
             }
-            changesResult << change;
+            changesResult.changes = changes;
+        }
+
+        QJsonArray documentChangesArray = resultObj.value("documentChanges").toArray();
+        if (!documentChangesArray.isEmpty()) {
+            std::vector<newlsp::TextDocumentEdit> documentChanges;
+            for (auto val : documentChangesArray) {
+                std::vector<newlsp::AnnotatedTextEdit> edits;
+                QJsonArray editsArray = val.toObject().value("edits").toArray();
+                for (auto val : editsArray) {
+                    newlsp::AnnotatedTextEdit annotatedTextEdit;
+                    std::string newText = val.toObject().value(K_NewText).toString().toStdString();
+                    QJsonObject rangeObj = val.toObject().value(K_RANGE).toObject();
+                    QJsonObject startObj = rangeObj.value(K_START).toObject();
+                    QJsonObject endObj = rangeObj.value(K_END).toObject();
+                    newlsp::Position start = {startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()};
+                    newlsp::Position end = {endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()};
+                    newlsp::Range range{start, end};
+                    annotatedTextEdit.annotationId = {};
+                    annotatedTextEdit.range = range;
+                    annotatedTextEdit.newText = newText;
+                    edits.push_back(annotatedTextEdit);
+                }
+                QJsonObject textDoumentObj = val.toObject().value("textDocument").toObject();
+                newlsp::OptionalVersionedTextDocumentIdentifier textDocument;
+                textDocument.version = textDoumentObj.value(K_VERSION).toInt();
+                textDocument.uri = textDoumentObj.value(K_URI).toString().toStdString();
+
+                newlsp::TextDocumentEdit documentChangesElem;
+                documentChangesElem.edits = edits;
+                documentChangesElem.textDocument = textDocument;
+                documentChanges.push_back(documentChangesElem);
+            }
+            changesResult.documentChanges = documentChanges;
+        }
+
+        QJsonObject changeAnnotationsObj = resultObj.value("changeAnnotations").toObject();
+        if (!changeAnnotationsObj.isEmpty()) {
+            std::map<std::string, newlsp::Workspace::ChangeAnnotation> changeAnnotations;
+            for (auto idKey: changeAnnotationsObj.keys()) {
+                QJsonObject changeAnnotationObj = changeAnnotationsObj[idKey].toObject();
+                newlsp::Workspace::ChangeAnnotation changeAnnotation;
+                std::string label = changeAnnotationObj.value("label").toString().toStdString();
+                changeAnnotation.label = label;
+                if (changeAnnotationObj.contains("needsConfirmation")) {
+                    changeAnnotation.needsConfirmation = changeAnnotationObj.value("needsConfirmation").toBool();
+                }
+                if (changeAnnotationObj.contains("description")) {
+                    changeAnnotation.description = changeAnnotationObj.value("description").toString().toStdString();
+                }
+                changeAnnotations[idKey.toStdString()] = changeAnnotation;
+            }
+            changesResult.changeAnnotations = changeAnnotations;
         }
         emit requestResult(changesResult);
         return true;

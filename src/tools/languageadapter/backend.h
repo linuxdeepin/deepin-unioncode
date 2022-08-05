@@ -34,7 +34,7 @@ public:
     explicit Backend(const SettingInfo &info);
     virtual ~Backend();
     void writeAndWait(const QByteArray &data);
-    QByteArray readAndWait();
+    bool readAndWait(QVector<QJsonObject> &jsonObjs, QByteArray &source);
     SettingInfo info() const;
     bool canRead();
 signals:

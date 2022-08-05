@@ -22,6 +22,7 @@
 #define CLIENT_H
 
 #include "common/lsp/protocol.h"
+#include "common/lsp/newprotocol.h"
 
 #include <QTcpSocket>
 #include <QThread>
@@ -82,7 +83,7 @@ signals:
     void requestResult(const Highlights &highlights);
     void requestResult(const DefinitionProvider &definitionProvider);
     void requestResult(const QList<Data> &tokensResult);
-    void requestResult(const RenameChanges &changes);
+    void requestResult(const newlsp::Workspace::WorkspaceEdit &changes);
     void requestResult(const References &refs);
 
 private:
