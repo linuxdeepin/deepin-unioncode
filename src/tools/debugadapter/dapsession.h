@@ -22,23 +22,23 @@
 #ifndef DAPSESSION_H
 #define DAPSESSION_H
 
+#include "serverinfo.h"
+
 #include "dap/session.h"
 #include "dap/protocol.h"
 #include "dap/network.h"
-#include "debugmanager.h"
-#include "serverinfo.h"
 
 #include <QObject>
 
-class DebugManager;
+class DapSessionPrivate;
 class DapSession : public QObject
 {
     Q_OBJECT
 public:
-    DapSession();
+    explicit DapSession(QObject *parent = nullptr);
+    virtual ~DapSession();
 
     bool start();
-
     void stop();
 
 public slots:
@@ -47,44 +47,19 @@ public slots:
 private:
     void initializeDebugMgr();
     void registerHanlder();
-    void handleEvent(const QString &sOut);
-    void handleAsyncStopped(const gdb::AsyncContext &ctx);
-    void handleThreadGroupAdded(const gdb::Thread &thid);
-    void handleThreadGroupRemoved(const gdb::Thread &thid);
-    void handleThreadGroupStarted(const gdb::Thread &thid, const gdb::Thread &pid);
-    void handleThreadGroupExited(const gdb::Thread &thid, const QString &exitCode);
-    void hanleThreadCreated(const gdb::Thread &thid, const QString &groupId);
-    void handleThreadExited(const gdb::Thread &thid, const QString &groupId);
-    void handleThreadSelected(const gdb::Thread &thid, const gdb::Frame &frame);
-    void hanldeUpdateThreads(int currentId, const QList<gdb::Thread> &threads);
-    void handleLibraryLoaded(const gdb::Library &library);
-    void handleLibraryUnloaded(const gdb::Library &library);
+
+    void handleOutputTextEvent(const QStringList &textList);
     void handleStreamConsole(const QString &text);
+    void handleAsyncStopped(const dap::StoppedEvent &stoppedevent);
+    void handleAsyncExited(const dap::ExitedEvent &exitedEvent);
+    void handleLibraryLoaded(const dap::ModuleEvent &moduleEvent);
+    void handleLibraryUnloaded(const dap::ModuleEvent &moduleEvent);
+    void handleThreadExited(const int threadId, const QString &groupId);
 
     dap::SetBreakpointsResponse handleBreakpointReq(const dap::SetBreakpointsRequest &request);
     dap::InitializeResponse handleInitializeReq(const dap::InitializeRequest &request);
 
-    std::unique_ptr<dap::Session> session;
-    std::unique_ptr<dap::net::Server> server;
-
-    bool isDebuggeIsStartWithLaunchRequest = false;
-    bool isDebuggeIsStartWithAttachRequest = false;
-    bool isSupportsTerminateDebuggee = true;
-    bool isGDbProcessTerminated = false;
-    bool isThreadRequestReceived = false;
-    bool isInferiorStopped = false;
-
-    QString currentFile;
-    qint64 currentLine;
-    QList<gdb::Frame> stackframes;
-    QString threadGroupId;
-    qint64 processId;
-    qint64 threadId;
-    QString processName;
-    QString debuggerName;
-    DebugManager *debugger = nullptr;
-
-    ServerInfo serverInfo;
+    DapSessionPrivate *const d;
 };
 
 #endif   // DAPSESSION_H

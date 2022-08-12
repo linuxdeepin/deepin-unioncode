@@ -6,7 +6,7 @@
  * Author:     xiaozaihu<xiaozaihu@uniontech.com>
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             xiaozaihu<xiaozaihu@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,20 +22,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GDBPROXY_H
-#define GDBPROXY_H
+#ifndef DAPPROXY_H
+#define DAPPROXY_H
 
-#include "debugmanager.h"
+#include "dap/protocol.h"
 #include <QObject>
 
-class GDBProxy : public QObject
+class DapProxy final: public QObject
 {
     Q_OBJECT
 public:
-    // return GDBProxy instance
-    static GDBProxy *instance();
+    static DapProxy *instance();
 
-    // signals to control debugger and debuggee.
 Q_SIGNALS:
     void sigStart();
     void sigQuit();
@@ -56,18 +54,18 @@ Q_SIGNALS:
     void sigStepover();
     void sigBreakInsert(const QString& path);
     void sigThreads();
-    void sigSelectThread(const gdb::Thread& thread);
-    void sigStackTrace(/*const int startFrame*/);
-    void sigSelectStackFrame(const gdb::Frame& frame);
+    void sigSelectThread(const int threadId);
+    void sigStackTrace();
+    void sigSelectStackFrame(const dap::StackFrame& stackFrame);
     void sigScopes(const qint64 frame);
-    void sigVariables(/*const gdb::Thread& thid, const int frameLevel*/);
+    void sigVariables();
     void sigSource();
     void sigStreamOutput(const QString sOut);
     void sigBreakRemoveAll();
+
 private:
-    explicit GDBProxy();
+    explicit DapProxy(QObject *parent = nullptr);
+    virtual ~DapProxy();
 };
 
-
-
-#endif
+#endif //DAPPROXY_H

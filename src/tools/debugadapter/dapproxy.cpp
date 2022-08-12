@@ -7,6 +7,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             xiaozaihu<xiaozaihu@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,15 +22,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "gdbproxy.h"
-#include <QDebug>
+#include "dapproxy.h"
 
-GDBProxy *GDBProxy::instance(){
-    static GDBProxy instance;
-    return &instance;
-}
-
-GDBProxy::GDBProxy()
+DapProxy::DapProxy(QObject *parent)
+    : QObject(parent)
 {
 
+}
+
+DapProxy::~DapProxy()
+{
+
+}
+
+DapProxy *DapProxy::instance()
+{
+    static DapProxy instance;
+    return &instance;
 }

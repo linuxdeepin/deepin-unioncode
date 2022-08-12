@@ -6,21 +6,27 @@ project(debugadapter)
 
 set(${PROJECT_NAME}_HEADERS
     debugmanager.h
-    gdbproxy.h
+    dapproxy.h
     debugengine.h
     dapsession.h
     backendglobal.h
     locker.h
     serverinfo.h
+    debugger/debugger.h
+    debugger/gdbmi/gdbmi.h
+    debugger/gdbmi/gdbdebugger.h
    )
 
 set(${PROJECT_NAME}_SOURCES
     debugmanager.cpp
-    gdbproxy.cpp
+    dapproxy.cpp
     main.cpp
     debugengine.cpp
     dapsession.cpp
     serverinfo.cpp
+    debugger/debugger.cpp
+    debugger/gdbmi/gdbmi.cpp
+    debugger/gdbmi/gdbdebugger.cpp
     )
 
 link_libraries(
