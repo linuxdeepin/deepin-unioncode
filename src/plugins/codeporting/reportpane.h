@@ -37,12 +37,15 @@ signals:
     void selectedChanged(const QString &filePath, const QString &suggestion, int startLine, int endLiness);
 
 public slots:
-    void cellSelected(int row, int col);
+    void srcCellSelected(int row, int col);
+    void libCellSelected(int row, int col);
 
 private:
     void initTableWidget();
+    void setTableWidgetStyle(QTableWidget *srcTableWidget, const QStringList &colNames);
 
-    QTableWidget *tableWidget {nullptr};
+    QTableWidget *srcTableWidget {nullptr};
+    QTableWidget *libTableWidget {nullptr};
     CodePorting *codePorting {nullptr};
 };
 

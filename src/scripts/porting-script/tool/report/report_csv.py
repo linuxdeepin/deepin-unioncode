@@ -41,11 +41,11 @@ class CsvReport:
             if not os.path.exists(os.path.join(ToolConfig.dirs["report_dir"], task_path)):
                 os.makedirs(os.path.join(ToolConfig.dirs["report_dir"], task_path))
             file_path = os.path.join(ToolConfig.dirs["report_dir"], task_path, report_file).replace('\\', '/')
-            LOGGER.info("porting advisor for %s : %s" % (report_suffix, file_path))
             with open(file_path, 'w+', newline='', encoding='utf-8') as (file_desc):
                 csv_write = csv.writer(file_desc, quoting=1)
                 for result in scan_results:
                     csv_write.writerow(result)
+            LOGGER.info("porting advisor for %s : %s" % (report_suffix, file_path))
         except IOError as io_error:
             try:
                 LOGGER.error('Except:%s.', io_error)

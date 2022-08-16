@@ -27,7 +27,9 @@
 #include <QRegularExpression>
 #include <QDir>
 
-static QStringList kItemNames{"FilePath", "CodeRange", "Key", "Suggestion", "FileType"};
+static QStringList kSrcItemNames{QObject::tr("FilePath"), QObject::tr("CodeRange"),
+            QObject::tr("Key"), QObject::tr("Suggestion"), QObject::tr("FileType")};
+static QStringList kLibItemNames{QObject::tr("FileName"), QObject::tr("Installed"), QObject::tr("Detail")};
 CodePorting::CodePorting(QObject *parent)
     : QObject(parent)
 {
@@ -139,9 +141,14 @@ const CodePorting::Report &CodePorting::getReport() const
     return report;
 }
 
-const QStringList &CodePorting::getItemNames() const
+const QStringList &CodePorting::getSrcItemNames() const
 {
-    return kItemNames;
+    return kSrcItemNames;
+}
+
+const QStringList &CodePorting::getLibItemNames() const
+{
+    return kLibItemNames;
 }
 
 /**

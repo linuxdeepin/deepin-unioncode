@@ -58,7 +58,8 @@ public:
     PortingStatus getStatus() const;
     bool isRunning();
     const Report &getReport() const;
-    const QStringList &getItemNames() const;
+    const QStringList &getSrcItemNames() const;
+    const QStringList &getLibItemNames() const;
 
 signals:
     QString outputInformation(const QString &line, OutputPane::OutputFormat format);

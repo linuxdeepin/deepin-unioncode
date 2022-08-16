@@ -28,7 +28,8 @@
 #include <QHBoxLayout>
 
 ReportPane::ReportPane(CodePorting *_codePorting, QWidget *parent) : QWidget(parent)
-  , tableWidget(new QTableWidget(this))
+  , srcTableWidget(new QTableWidget(this))
+  , libTableWidget(new QTableWidget(this))
   , codePorting(_codePorting)
 {
     initTableWidget();
@@ -36,7 +37,7 @@ ReportPane::ReportPane(CodePorting *_codePorting, QWidget *parent) : QWidget(par
 
 void ReportPane::refreshDispaly()
 {
-    tableWidget->clearContents();
+    srcTableWidget->clearContents();
 
     const CodePorting::Report &report = codePorting->getReport();
     CodePorting::ReportIterator i(report);
@@ -48,7 +49,7 @@ void ReportPane::refreshDispaly()
     if (itemsCount == 0)
         return;
 
-    tableWidget->setRowCount(itemsCount);
+    srcTableWidget->setRowCount(itemsCount);
 
     // Get types.
     int row = 0;
@@ -59,18 +60,18 @@ void ReportPane::refreshDispaly()
             int col = 0;
             // Get item.
             for (auto item : items) {
-                tableWidget->setItem(row, col, new QTableWidgetItem(item));
+                srcTableWidget->setItem(row, col, new QTableWidgetItem(item));
                 col++;
             }
             row++;
         }
     }
-    tableWidget->resizeColumnsToContents();
+    srcTableWidget->resizeColumnsToContents();
 }
 
-void ReportPane::cellSelected(int row, int col)
+void ReportPane::srcCellSelected(int row, int col)
 {
-    qInfo() << "cellSelected: " << row << col;
+    qDebug() << "srcCellSelected: " << row << col;
 
     const CodePorting::Report &report = codePorting->getReport();
     if (report.size()) {
@@ -94,19 +95,39 @@ void ReportPane::cellSelected(int row, int col)
     }
 }
 
+void ReportPane::libCellSelected(int row, int col)
+{
+    qDebug() << "libCellSelected: " << row << col;
+    // TODO(mozart)
+}
+
 void ReportPane::initTableWidget()
 {
-    tableWidget->setColumnCount(CodePorting::kItemsCount);
-    tableWidget->setHorizontalHeaderLabels(codePorting->getItemNames());
+    setTableWidgetStyle(srcTableWidget, codePorting->getSrcItemNames());
+    setTableWidgetStyle(libTableWidget, codePorting->getLibItemNames());
+
+    connect(srcTableWidget, &QTableWidget::cellDoubleClicked, this, &ReportPane::srcCellSelected);
+    connect(libTableWidget, &QTableWidget::cellDoubleClicked, this, &ReportPane::libCellSelected);
+
+    QTabWidget *tabWidget = new QTabWidget(this);
+    tabWidget->addTab(srcTableWidget, tr("Source files to migrate"));
+
+    tabWidget->addTab(libTableWidget, tr("Architecture-dependent library files"));
+    tabWidget->setTabPosition(QTabWidget::South);
+
+    auto hLayout = new QHBoxLayout(this);
+    hLayout->setContentsMargins(0, 0, 0, 9);
+    this->setLayout(hLayout);
+    hLayout->addWidget(tabWidget);
+}
+
+void ReportPane::setTableWidgetStyle(QTableWidget *tableWidget, const QStringList &colNames)
+{
+    tableWidget->setColumnCount(colNames.count());
+    tableWidget->setHorizontalHeaderLabels(colNames);
     tableWidget->verticalHeader()->setVisible(true);
     tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     tableWidget->setShowGrid(true);
-
-    connect(tableWidget, &QTableWidget::cellDoubleClicked, this, &ReportPane::cellSelected);
-
-    auto hLayout = new QHBoxLayout(this);
-    this->setLayout(hLayout);
-    hLayout->addWidget(tableWidget);
 }
