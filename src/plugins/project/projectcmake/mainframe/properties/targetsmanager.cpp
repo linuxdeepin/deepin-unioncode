@@ -41,8 +41,8 @@ TargetsManager::TargetsManager(QObject *parent) : QObject(parent)
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
 
     if (projectService) {
-        connect(projectService, &ProjectService::projectConfigureDone, [this](){
-            intialize();
+        connect(projectService, &ProjectService::projectConfigureDone, [this](const QString &buildDirectory){
+            intialize(buildDirectory);
         });
     }
 }
@@ -58,17 +58,21 @@ TargetsManager *TargetsManager::instance()
     return &instance;
 }
 
-void TargetsManager::intialize()
+void TargetsManager::intialize(const QString &buildDirectory)
 {
     // TODO(Mozart):cproject path should get from workspace.
-    QString buildDirectory = KitManager::instance()->getDefaultOutputPath();
-    if (buildDirectory.isEmpty()) {
+    QString outputPath = buildDirectory;
+    if (outputPath.isEmpty())
+        outputPath= KitManager::instance()->getDefaultOutputPath();
+
+    if (outputPath.isEmpty()) {
         qCritical() << "build directory not set!";
         return;
     }
 
-    QString cprojectPath = buildDirectory + "/" + kProjectFile;
+    QString cprojectPath = outputPath + "/" + kProjectFile;
     parser.parse(cprojectPath);
+    exeTargets.clear();
 
     auto targets = parser.getTargets();
     for (auto target : targets) {

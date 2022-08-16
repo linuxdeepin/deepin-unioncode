@@ -32,7 +32,7 @@ class TargetsManager : public QObject
 public:
     static TargetsManager *instance();
 
-    void intialize();
+    void intialize(const QString &buildDirectory);
 
     dpfservice::Target getTarget(dpfservice::TargetType type);
     dpfservice::Target getSelectedTargetInList();

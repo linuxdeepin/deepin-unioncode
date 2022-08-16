@@ -36,6 +36,7 @@ public slots:
     void doProjectOpen(const QString &name,
                        const QString &language,
                        const QString &filePath);
+    void doActiveProject(const QString &buildDirectory);
 };
 
 #endif // PROJECTCMAKEOPEN_H

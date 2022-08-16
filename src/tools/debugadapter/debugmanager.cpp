@@ -31,10 +31,11 @@ class DebugManagerPrivate {
     friend class DebugManager;
 
     QSharedPointer<Debugger> debugger;
-    QSharedPointer<QProcess> process;
+    QSharedPointer<QProcess> process{nullptr};
     QString tempBuffer;
     ConditionLockEx locker;
     QHash<int, DebugManager::ResponseEntry> resposeExpected;
+    QStringList arguments;
     int tokenCounter = 0;
 };
 
@@ -42,7 +43,25 @@ DebugManager::DebugManager(QObject *parent)
     : QObject(parent)
     , d(new DebugManagerPrivate())
 {
-    d->process.reset(new QProcess(this));
+
+}
+
+DebugManager::~DebugManager()
+{
+    if (d) {
+        delete d;
+    }
+}
+
+DebugManager *DebugManager::instance()
+{
+    static DebugManager ins;
+    return &ins;
+}
+
+void DebugManager::initProcess()
+{
+    d->process.reset(new QProcess());
 
     connect(d->process.data(), &QProcess::readyReadStandardOutput, [this]() {
         for (const auto& c: QString{d->process->readAllStandardOutput()})
@@ -73,22 +92,13 @@ DebugManager::DebugManager(QObject *parent)
             this, &DebugManager::gdbProcessTerminated);
 }
 
-DebugManager::~DebugManager()
-{
-    if (d) {
-        delete d;
-    }
-}
-
-DebugManager *DebugManager::instance()
-{
-    static DebugManager ins;
-    return &ins;
-}
-
 void DebugManager::initDebugger(const QString &program, const QStringList &arguments)
 {
-    d->process->setArguments(arguments);
+    if (d->process)
+        d->process->kill();
+
+    d->arguments = arguments;
+
     if (program.contains("gdb")) {
         d->debugger.reset(new GDBDebugger());
     }
@@ -116,20 +126,21 @@ bool DebugManager::isExecuting() const
 
 void DebugManager::execute()
 {
-    if (isExecuting())
-        return;
+    initProcess();
 
-    auto a = d->process->arguments();
-    foreach (QString arg, d->debugger->preArguments()) {
-        a.prepend(arg);
+    foreach (auto arg, d->debugger->preArguments()) {
+        d->arguments.prepend(arg);
     }
-    d->process->setArguments(a);
+    d->process->setArguments(d->arguments);
     d->process->setProgram(d->debugger->program());
     d->process->start();
 }
 
-void DebugManager::command(const QString &cmd)
+bool DebugManager::command(const QString &cmd)
 {
+    if (d->debugger->isInferiorRunning())
+        return false;
+
     auto tokStr = QString{"%1"}.arg(d->tokenCounter, 6, 10, QChar{'0'});
     auto line = QString{"%1%2%3"}.arg(tokStr, cmd, "\n");
     d->tokenCounter = (d->tokenCounter + 1) % 999999;
@@ -138,6 +149,8 @@ void DebugManager::command(const QString &cmd)
     QString sOut;
     QTextStream(&sOut) << "Command:" << line << "\n";
     d->debugger->handleOutputStreamText(sOut);
+
+    return true;
 }
 
 void DebugManager::commandAndResponse(const QString& cmd,
@@ -204,20 +217,20 @@ void DebugManager::breakRemove(int bpid)
 
 void DebugManager::stackListFrames()
 {
-    command(d->debugger->stackListFrames());
-    waitLocker();
+    if (command(d->debugger->stackListFrames()))
+        waitLocker();
 }
 
 void DebugManager::stackListVariables()
 {
-    command(d->debugger->stackListVariables());
-    waitLocker();
+    if (command(d->debugger->stackListVariables()))
+        waitLocker();
 }
 
 void DebugManager::threadInfo()
 {
-    command(d->debugger->threadInfo());
-    waitLocker();
+    if (command(d->debugger->threadInfo()))
+        waitLocker();
 }
 
 void DebugManager::commandPause()

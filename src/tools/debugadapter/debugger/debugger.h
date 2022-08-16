@@ -67,6 +67,8 @@ public:
     virtual void clearBreakPoint() = 0;
     virtual QList<int> breakpointsForFile(const QString &filePath) = 0;
 
+    virtual bool isInferiorRunning() = 0;
+
 signals:
 
 public slots:

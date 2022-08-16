@@ -338,7 +338,7 @@ void CmakeGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, int stat
 
     //d->configureProjectInfo = {};
 
-    emit projectService->projectConfigureDone();
+    emit projectService->projectConfigureDone(QString());
 }
 
 void CmakeGenerator::doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files)

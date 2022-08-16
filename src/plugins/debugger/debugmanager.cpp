@@ -71,8 +71,9 @@ void DebugManager::run()
     Debugger::RunState state = debugger->getRunState();
     switch (state) {
     case Debugger::RunState::kNoRun:
+    case Debugger::RunState::kPreparing:
         launchBackend();
-        AsynInvoke(debugger->startDebug());
+        AsynInvoke(debugger->startDebug())
         break;
     case Debugger::RunState::kRunning:
         // TODO(mozart):stop debug

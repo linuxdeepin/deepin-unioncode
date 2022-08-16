@@ -66,6 +66,11 @@ QStringList GDBDebugger::preArguments()
     return QStringList{"-q", "-interpreter=mi"};
 }
 
+bool GDBDebugger::isInferiorRunning()
+{
+    return d->inferiorRunning;
+}
+
 QString GDBDebugger::quit()
 {
     return ("-dap-exit");
@@ -340,7 +345,7 @@ void GDBDebugger::parseNotifyData(gdbmi::Record &record)
         threadId.id = id;
         processId.id = pid;
         emit threadGroupStarted(threadId, processId);
-    } else if (record.message == "thread-group-removed") {
+    } else if (record.message == "thread-group-exited") {
         // =thread-gorup-exited,id="id"[,exit-code="code"]
         auto data = record.payload.toMap();
         gdbmi::Thread threadId;

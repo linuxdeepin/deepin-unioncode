@@ -34,7 +34,7 @@
 #include "event/eventsender.h"
 #include "event/eventreceiver.h"
 #include "common/dialog/contextdialog.h"
-#include "services/project/projectservice.h"
+#include "services/builder/builderservice.h"
 
 #include <QDateTime>
 #include <QTextBlock>
@@ -101,6 +101,9 @@ QTreeView *Debugger::getBreakpointPane() const
 void Debugger::startDebug()
 {
     // build project everytime before debug.
+    if (activeProjectKitName != "cmake") //temporary, TODO for java python
+        return;
+
     updateRunState(kPreparing);
     requestBuild();
     // start debug when received build success event in handleFrameEvent().
@@ -437,20 +440,21 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
     } else if (topic == T_BUILDER) {
         if (data == D_BUILD_STATE) {
             int state = event.property(P_STATE).toInt();
-            int buildSuccess = 0;
-            if (state == buildSuccess
-                    && runState == kPreparing
-                    && activedProjectKitName == "cmake") { //temporary, add "cmake" to avoid debug java and python
-                start();
+            BuildCommandInfo commandInfo = qvariant_cast<BuildCommandInfo>(event.property(P_ORIGINCMD));
+            if (commandInfo.uuid == currentBuildUuid) {
+                int buildSuccess = 0;
+                if (state == buildSuccess && runState == kPreparing)
+                    start();
             }
         }
     } else if (event.topic() == T_PROJECT) {
         if (event.data() == D_ACTIVED || event.data() == D_CRETED) {
             dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-            activedProjectKitName = projectInfo.kitName();
+            activeProjectKitName = projectInfo.kitName();
+            updateRunState(kNoRun);
         } else if (event.data() == D_DELETED){
-            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-            activedProjectKitName.clear();
+            activeProjectKitName.clear();
+            updateRunState(kNoRun);
         }
     }
 }
@@ -670,7 +674,23 @@ bool Debugger::checkTargetIsReady()
 
 void Debugger::requestBuild()
 {
-    EventSender::notifyDebugStarted();
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
+    if (builderService && projectService && projectService->getActiveTarget) {
+        auto target = projectService->getActiveTarget(TargetType::kBuildTarget);
+        if (!target.buildCommand.isEmpty()) {
+            QStringList args = target.buildArguments << target.buildTarget;
+            BuildCommandInfo commandInfo;
+            commandInfo.kitName = activeProjectKitName;
+            commandInfo.program = target.buildCommand;
+            commandInfo.arguments = args;
+            commandInfo.workingDir = target.outputPath;
+
+            currentBuildUuid = commandInfo.uuid;
+            builderService->interface.builderCommand(commandInfo);
+        }
+    }
 }
 
 void Debugger::start()

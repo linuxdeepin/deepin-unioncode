@@ -41,7 +41,7 @@ dpf::EventHandler::Type ProjectCmakeReceiver::type()
 
 QStringList ProjectCmakeReceiver::topics()
 {
-    return { T_BUILDER, T_RECENT };
+    return { T_BUILDER, T_RECENT, T_PROJECT };
 }
 
 void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
@@ -57,6 +57,10 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
 
     if (event.topic() == T_RECENT) {
         recentEvent(event);
+    }
+
+    if (event.topic() == T_PROJECT) {
+        projectEvent(event);
     }
 }
 
@@ -82,6 +86,16 @@ void ProjectCmakeReceiver::recentEvent(const dpf::Event &event)
                     event.property(P_KITNAME).toString(),
                     event.property(P_LANGUAGE).toString(),
                     event.property(P_FILEPATH).toString());
+    }
+}
+
+void ProjectCmakeReceiver::projectEvent(const dpf::Event &event)
+{
+    if (event.topic() == T_PROJECT) {
+        if (event.data() == D_ACTIVED) {
+            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
+            CMakeOpenHandler::instance()->doActiveProject(projectInfo.buildFolder());
+        }
     }
 }
 

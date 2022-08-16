@@ -27,6 +27,8 @@
 #include "interface/localtreemodel.h"
 #include "interface/breakpointmodel.h"
 
+#include "services/project/projectservice.h"
+
 #include <QSharedPointer>
 #include <QTreeView>
 #include <QPointer>
@@ -139,7 +141,10 @@ private:
 
     RunState runState = kNoRun;
 
-    QString activedProjectKitName;
+    QString activeProjectKitName;
+
+    QString currentBuildUuid;
+
 };
 
 #endif   // DEBUGGER_H

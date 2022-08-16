@@ -118,3 +118,14 @@ void CMakeOpenHandler::doProjectOpen(const QString &name, const QString &languag
         configWidget->show();
     }
 }
+
+void CMakeOpenHandler::doActiveProject(const QString &buildDirectory)
+{
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService)
+        return;
+
+    emit projectService->projectConfigureDone(buildDirectory);
+}

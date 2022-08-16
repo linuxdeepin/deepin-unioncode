@@ -195,7 +195,7 @@ Q_SIGNALS:
     /*!
      * \brief projectConfigureDone
      */
-    void projectConfigureDone();
+    void projectConfigureDone(const QString &buildDirectory);
 };
 
 /* MainWindow codeediter workspace title,

@@ -98,7 +98,9 @@ private:
     explicit DebugManager(QObject *parent = nullptr);
     virtual ~DebugManager();
 
-    void command(const QString &cmd);
+    void initProcess();
+
+    bool command(const QString &cmd);
     void commandAndResponse(const QString& cmd,
                             const ResponseEntry::ResponseHandler_t& handler,
                             ResponseEntry::ResponseAction_t action = ResponseEntry::ResponseAction_t::Temporal);

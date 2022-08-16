@@ -74,6 +74,8 @@ public:
     void clearBreakPoint() override;
     QList<int> breakpointsForFile(const QString &filePath) override;
 
+    bool isInferiorRunning() override;
+
 signals:
     void streamDebugInternal(const QStringList& textList);
     void streamConsole(const QString& text);
