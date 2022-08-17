@@ -1,0 +1,354 @@
+{
+    "-G<number>": {
+        "suggestion": {
+            "arm64": "Please check the -G<number> option on arm64 platform",
+            "x86_64": "Please check the -G<number> option on x86_64 platform",
+            "mips64el": "Please check the -G<number> option on mips64el platform"
+        },
+        "range": []
+    },
+    "-fsw-int-div-opt": {
+        "suggestion": {
+            "arm64": "Please check the -fsw-int-div-opt option on arm64 platform",
+            "x86_64": "Please check the -fsw-int-div-opt option on x86_64 platform",
+            "mips64el": "Please check the -fsw-int-div-opt option on mips64el platform"
+        },
+        "range": []
+    },
+    "-fsw-prefetch-add": {
+        "suggestion": {
+            "arm64": "Please check the -fsw-prefetch-add option on arm64 platform",
+            "x86_64": "Please check the -fsw-prefetch-add option on x86_64 platform",
+            "mips64el": "Please check the -fsw-prefetch-add option on mips64el platform"
+        },
+        "range": []
+    },
+    "-fsw-prefetch-dc": {
+        "suggestion": {
+            "arm64": "Please check the -fsw-prefetch-dc option on arm64 platform",
+            "x86_64": "Please check the -fsw-prefetch-dc option on x86_64 platform",
+            "mips64el": "Please check the -fsw-prefetch-dc option on mips64el platform"
+        },
+        "range": []
+    },
+    "-fsw-prefetch-l1": {
+        "suggestion": {
+            "arm64": "Please check the -fsw-prefetch-l1 option on arm64 platform",
+            "x86_64": "Please check the -fsw-prefetch-l1 option on x86_64 platform",
+            "mips64el": "Please check the -fsw-prefetch-l1 option on mips64el platform"
+        },
+        "range": []
+    },
+    "-fsw-prefetch-sc": {
+        "suggestion": {
+            "arm64": "Please check the -fsw-prefetch-sc option on arm64 platform",
+            "x86_64": "Please check the -fsw-prefetch-sc option on x86_64 platform",
+            "mips64el": "Please check the -fsw-prefetch-sc option on mips64el platform"
+        },
+        "range": []
+    },
+    "-fsw-prefetch-tc": {
+        "suggestion": {
+            "arm64": "Please check the -fsw-prefetch-tc option on arm64 platform",
+            "x86_64": "Please check the -fsw-prefetch-tc option on x86_64 platform",
+            "mips64el": "Please check the -fsw-prefetch-tc option on mips64el platform"
+        },
+        "range": []
+    },
+    "-m6a": {
+        "suggestion": {
+            "arm64": "Please check the -m6a option on arm64 platform",
+            "x86_64": "Please check the -m6a option on x86_64 platform",
+            "mips64el": "Please check the -m6a option on mips64el platform"
+        },
+        "range": []
+    },
+    "-m6b": {
+        "suggestion": {
+            "arm64": "Please check the -m6b option on arm64 platform",
+            "x86_64": "Please check the -m6b option on x86_64 platform",
+            "mips64el": "Please check the -m6b option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mbionic": {
+        "suggestion": {
+            "arm64": "Please check the -mbionic option on arm64 platform",
+            "x86_64": "Please check the -mbionic option on x86_64 platform",
+            "mips64el": "Please check the -mbionic option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mbuild-constants": {
+        "suggestion": {
+            "arm64": "Please check the -mbuild-constants option on arm64 platform",
+            "x86_64": "Please check the -mbuild-constants option on x86_64 platform",
+            "mips64el": "Please check the -mbuild-constants option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mbwx": {
+        "suggestion": {
+            "arm64": "Please check the -mbwx option on arm64 platform",
+            "x86_64": "Please check the -mbwx option on x86_64 platform",
+            "mips64el": "Please check the -mbwx option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mcix": {
+        "suggestion": {
+            "arm64": "Please check the -mcix option on arm64 platform",
+            "x86_64": "Please check the -mcix option on x86_64 platform",
+            "mips64el": "Please check the -mcix option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mcpu=": {
+        "suggestion": {
+            "arm64": "Please check the -mcpu= option on arm64 platform",
+            "x86_64": "Please check the -mcpu= option on x86_64 platform",
+            "mips64el": "Please check the -mcpu= option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mexplicit-relocs": {
+        "suggestion": {
+            "arm64": "Please check the -mexplicit-relocs option on arm64 platform",
+            "x86_64": "Please check the -mexplicit-relocs option on x86_64 platform",
+            "mips64el": "Please check the -mexplicit-relocs option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mfix": {
+        "suggestion": {
+            "arm64": "Please check the -mfix option on arm64 platform",
+            "x86_64": "Please check the -mfix option on x86_64 platform",
+            "mips64el": "Please check the -mfix option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mfloat-ieee": {
+        "suggestion": {
+            "arm64": "Please check the -mfloat-ieee option on arm64 platform",
+            "x86_64": "Please check the -mfloat-ieee option on x86_64 platform",
+            "mips64el": "Please check the -mfloat-ieee option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mfloat-vax": {
+        "suggestion": {
+            "arm64": "Please check the -mfloat-vax option on arm64 platform",
+            "x86_64": "Please check the -mfloat-vax option on x86_64 platform",
+            "mips64el": "Please check the -mfloat-vax option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mfp-regs": {
+        "suggestion": {
+            "arm64": "Please check the -mfp-regs option on arm64 platform",
+            "x86_64": "Please check the -mfp-regs option on x86_64 platform",
+            "mips64el": "Please check the -mfp-regs option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mfp-rounding-mode=": {
+        "suggestion": {
+            "arm64": "Please check the -mfp-rounding-mode= option on arm64 platform",
+            "x86_64": "Please check the -mfp-rounding-mode= option on x86_64 platform",
+            "mips64el": "Please check the -mfp-rounding-mode= option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mfp-trap-mode=": {
+        "suggestion": {
+            "arm64": "Please check the -mfp-trap-mode= option on arm64 platform",
+            "x86_64": "Please check the -mfp-trap-mode= option on x86_64 platform",
+            "mips64el": "Please check the -mfp-trap-mode= option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mgas": {
+        "suggestion": {
+            "arm64": "Please check the -mgas option on arm64 platform",
+            "x86_64": "Please check the -mgas option on x86_64 platform",
+            "mips64el": "Please check the -mgas option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mglibc": {
+        "suggestion": {
+            "arm64": "Please check the -mglibc option on arm64 platform",
+            "x86_64": "Please check the -mglibc option on x86_64 platform",
+            "mips64el": "Please check the -mglibc option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mieee": {
+        "suggestion": {
+            "arm64": "Please check the -mieee option on arm64 platform",
+            "x86_64": "Please check the -mieee option on x86_64 platform",
+            "mips64el": "Please check the -mieee option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mieee-conformant": {
+        "suggestion": {
+            "arm64": "Please check the -mieee-conformant option on arm64 platform",
+            "x86_64": "Please check the -mieee-conformant option on x86_64 platform",
+            "mips64el": "Please check the -mieee-conformant option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mieee-main": {
+        "suggestion": {
+            "arm64": "Please check the -mieee-main option on arm64 platform",
+            "x86_64": "Please check the -mieee-main option on x86_64 platform",
+            "mips64el": "Please check the -mieee-main option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mlarge-data": {
+        "suggestion": {
+            "arm64": "Please check the -mlarge-data option on arm64 platform",
+            "x86_64": "Please check the -mlarge-data option on x86_64 platform",
+            "mips64el": "Please check the -mlarge-data option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mlarge-text": {
+        "suggestion": {
+            "arm64": "Please check the -mlarge-text option on arm64 platform",
+            "x86_64": "Please check the -mlarge-text option on x86_64 platform",
+            "mips64el": "Please check the -mlarge-text option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mlong-double-128": {
+        "suggestion": {
+            "arm64": "Please check the -mlong-double-128 option on arm64 platform",
+            "x86_64": "Please check the -mlong-double-128 option on x86_64 platform",
+            "mips64el": "Please check the -mlong-double-128 option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mlong-double-64": {
+        "suggestion": {
+            "arm64": "Please check the -mlong-double-64 option on arm64 platform",
+            "x86_64": "Please check the -mlong-double-64 option on x86_64 platform",
+            "mips64el": "Please check the -mlong-double-64 option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mlra": {
+        "suggestion": {
+            "arm64": "Please check the -mlra option on arm64 platform",
+            "x86_64": "Please check the -mlra option on x86_64 platform",
+            "mips64el": "Please check the -mlra option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mmax": {
+        "suggestion": {
+            "arm64": "Please check the -mmax option on arm64 platform",
+            "x86_64": "Please check the -mmax option on x86_64 platform",
+            "mips64el": "Please check the -mmax option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mmemory-latency=": {
+        "suggestion": {
+            "arm64": "Please check the -mmemory-latency= option on arm64 platform",
+            "x86_64": "Please check the -mmemory-latency= option on x86_64 platform",
+            "mips64el": "Please check the -mmemory-latency= option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mmusl": {
+        "suggestion": {
+            "arm64": "Please check the -mmusl option on arm64 platform",
+            "x86_64": "Please check the -mmusl option on x86_64 platform",
+            "mips64el": "Please check the -mmusl option on mips64el platform"
+        },
+        "range": []
+    },
+    "-msmall-data": {
+        "suggestion": {
+            "arm64": "Please check the -msmall-data option on arm64 platform",
+            "x86_64": "Please check the -msmall-data option on x86_64 platform",
+            "mips64el": "Please check the -msmall-data option on mips64el platform"
+        },
+        "range": []
+    },
+    "-msmall-text": {
+        "suggestion": {
+            "arm64": "Please check the -msmall-text option on arm64 platform",
+            "x86_64": "Please check the -msmall-text option on x86_64 platform",
+            "mips64el": "Please check the -msmall-text option on mips64el platform"
+        },
+        "range": []
+    },
+    "-msoft-float": {
+        "suggestion": {
+            "arm64": "Please check the -msoft-float option on arm64 platform",
+            "x86_64": "Please check the -msoft-float option on x86_64 platform",
+            "mips64el": "Please check the -msoft-float option on mips64el platform"
+        },
+        "range": []
+    },
+    "-msw6a": {
+        "suggestion": {
+            "arm64": "Please check the -msw6a option on arm64 platform",
+            "x86_64": "Please check the -msw6a option on x86_64 platform",
+            "mips64el": "Please check the -msw6a option on mips64el platform"
+        },
+        "range": []
+    },
+    "-msw6b": {
+        "suggestion": {
+            "arm64": "Please check the -msw6b option on arm64 platform",
+            "x86_64": "Please check the -msw6b option on x86_64 platform",
+            "mips64el": "Please check the -msw6b option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mtls-kernel": {
+        "suggestion": {
+            "arm64": "Please check the -mtls-kernel option on arm64 platform",
+            "x86_64": "Please check the -mtls-kernel option on x86_64 platform",
+            "mips64el": "Please check the -mtls-kernel option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mtls-size=": {
+        "suggestion": {
+            "arm64": "Please check the -mtls-size= option on arm64 platform",
+            "x86_64": "Please check the -mtls-size= option on x86_64 platform",
+            "mips64el": "Please check the -mtls-size= option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mtrap-precision=": {
+        "suggestion": {
+            "arm64": "Please check the -mtrap-precision= option on arm64 platform",
+            "x86_64": "Please check the -mtrap-precision= option on x86_64 platform",
+            "mips64el": "Please check the -mtrap-precision= option on mips64el platform"
+        },
+        "range": []
+    },
+    "-mtune=": {
+        "suggestion": {
+            "arm64": "Please check the -mtune= option on arm64 platform",
+            "x86_64": "Please check the -mtune= option on x86_64 platform",
+            "mips64el": "Please check the -mtune= option on mips64el platform"
+        },
+        "range": []
+    },
+    "-muclibc": {
+        "suggestion": {
+            "arm64": "Please check the -muclibc option on arm64 platform",
+            "x86_64": "Please check the -muclibc option on x86_64 platform",
+            "mips64el": "Please check the -muclibc option on mips64el platform"
+        },
+        "range": []
+    }
+}

@@ -1,0 +1,48 @@
+FABS (scalar)	Floating-point absolute value	FABS (scalar)
+FADD (scalar)	Floating-point add	FADD (scalar)
+FCCMP	Floating-point conditional quiet compare, setting condition flags to result of comparison or an immediate value	FCCMP
+FCCMPE	Floating-point conditional signaling compare, setting condition flags to result of comparison or an immediate value	FCCMPE
+FCMP	Floating-point quiet compare	FCMP
+FCMPE	Floating-point signaling compare	FCMPE
+FCSEL	Floating-point conditional select	FCSEL
+FCVT	Floating-point convert precision	FCVT
+FCVTAS (scalar)	Floating-point convert to signed integer, rounding to nearest with ties to away	FCVTAS (scalar)
+FCVTAU (scalar)	Floating-point convert to unsigned integer, rounding to nearest with ties to away	FCVTAU (scalar)
+FCVTMS (scalar)	Floating-point convert to signed integer, rounding toward minus infinity	FCVTMS (scalar)
+FCVTMU (scalar)	Floating-point convert to unsigned integer, rounding toward minus infinity	FCVTMU (scalar)
+FCVTNS (scalar)	Floating-point convert to signed integer, rounding to nearest with ties to even	FCVTNS (scalar)
+FCVTNU (scalar)	Floating-point convert to unsigned integer, rounding to nearest with ties to even	FCVTNU (scalar)
+FCVTPS (scalar)	Floating-point convert to signed integer, rounding toward positive infinity	FCVTPS (scalar)
+FCVTPU (scalar)	Floating-point convert to unsigned integer, rounding toward positive infinity	FCVTPU (scalar)
+FCVTZS (scalar, fixed-point)	Floating-point convert to signed fixed-point, rounding toward zero	FCVTZS (scalar, fixed-point)
+FCVTZS (scalar, integer)	Floating-point convert to signed integer, rounding toward zero	FCVTZS (scalar, integer)
+FCVTZU (scalar, fixed-point)	Floating-point convert to unsigned fixed-point, rounding toward zero	FCVTZU (scalar, fixed-point)
+FCVTZU (scalar, integer)	Floating-point convert to unsigned integer, rounding toward zero	FCVTZU (scalar, integer)
+FDIV (scalar)	Floating-point divide	FDIV (scalar)
+FMADD	Floating-point fused multiply-add	FMADD
+FMAX (scalar)	Floating-point maximum	FMAX (scalar)
+FMAXNM (scalar)	Floating-point maximum number	FMAXNM (scalar)
+FMIN (scalar)	Floating-point minimum	FMIN (scalar)
+FMINNM (scalar)	Floating-point minimum number	FMINNM (scalar)
+FMOV (register)	Floating-point move register without conversion	FMOV (register)
+FMOV (general)	Floating-point move to or from general-purpose register without conversion	FMOV (general)
+FMOV (scalar, immediate)	Floating-point move immediate	FMOV (scalar, immediate)
+FMSUB	Floating-point fused multiply-subtract	FMSUB
+FMUL (scalar)	Floating-point multiply	FMUL (scalar)
+FNEG (scalar)	Floating-point negate	FNEG (scalar)
+FNMADD	Floating-point negated fused multiply-add	FNMADD
+FNMSUB	Floating-point negated fused multiply-subtract	FNMSUB
+FNMUL	Floating-point multiply-negate	FNMUL
+FRINTA (scalar)	Floating-point round to integral, to nearest with ties to away	FRINTA (scalar)
+FRINTI (scalar)	Floating-point round to integral, using current rounding mode	FRINTI (scalar)
+FRINTM (scalar)	Floating-point round to integral, toward minus infinity	FRINTM (scalar)
+FRINTN (scalar)	Floating-point round to integral, to nearest with ties to even	FRINTN (scalar)
+FRINTP (scalar)	Floating-point round to integral, toward positive infinity	FRINTP (scalar)
+FRINTX (scalar)	Floating-point round to integral exact, using current rounding mode	FRINTX (scalar)
+FRINTZ (scalar)	Floating-point round to integral, toward zero	FRINTZ (scalar)
+FSQRT (scalar)	Floating-point square root	FSQRT (scalar)
+FSUB (scalar)	Floating-point subtract	FSUB (scalar)
+SCVTF (scalar, fixed-point)	Signed fixed-point convert to floating-point	SCVTF (scalar, fixed-point)
+SCVTF (scalar, integer)	Signed integer convert to floating-point	SCVTF (scalar, integer)
+UCVTF (scalar, fixed-point)	Unsigned fixed-point convert to floating-point	UCVTF (scalar, fixed-point)
+UCVTF (scalar, integer)	Unsigned integer convert to floating-point	UCVTF (scalar, integer)

@@ -75,7 +75,7 @@ def get_c_rules(cpu_arch):
     return pattern, c_dict
 
 def get_gcc_options(cpu_arch):
-    json_path = os.path.join(ToolConfig.config_dir, 'GCC_8_3', 'X86_64_GCC_OPTION.json')
+    json_path = os.path.join(ToolConfig.config_dir, 'GCC_8_3', 'x86_64_GCC_OPTION.json')
     gcc_options = ReadJsonToDict.dict_from_path(json_path)
     keys = []
     for key, value in gcc_options.items():

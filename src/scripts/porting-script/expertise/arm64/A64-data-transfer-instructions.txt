@@ -1,0 +1,81 @@
+LDAR	Load-acquire register	LDAR
+LDARB	Load-acquire register byte	LDARB
+LDARH	Load-acquire register halfword	LDARH
+LDAXP	Load-acquire exclusive pair of registers	LDAXP
+LDAXR	Load-acquire exclusive register	LDAXR
+LDAXRB	Load-acquire exclusive register byte	LDAXRB
+LDAXRH	Load-acquire exclusive register halfword	LDAXRH
+LDNP (SIMD and FP)	Load pair of SIMD and FP registers, with non-temporal hint	LDNP (SIMD and FP)
+LDNP	Load pair of registers, with non-temporal hint	LDNP
+LDP (SIMD and FP)	Load pair of SIMD and FP registers	LDP (SIMD and FP)
+LDP	Load pair of registers	LDP
+LDPSW	Load pair of registers signed word	LDPSW
+LDR (immediate, SIMD and FP)	Load SIMD and FP register (immediate offset)	LDR (immediate, SIMD and FP)
+LDR (immediate)	Load register (immediate offset)	LDR (immediate)
+LDR (literal, SIMD and FP)	Load SIMD and FP register (PC-relative literal)	LDR (literal, SIMD and FP)
+LDR (literal)	Load register (PC-relative literal)	LDR (literal)
+LDR pseudo-instruction	Load a register	LDR pseudo-instruction
+LDR (register, SIMD and FP)	Load SIMD and FP register (register offset)	LDR (register, SIMD and FP)
+LDR (register)	Load register (register offset)	LDR (register)
+LDRB (immediate)	Load register byte (immediate offset)	LDRB (immediate)
+LDRB (register)	Load register byte (register offset)	LDRB (register)
+LDRH (immediate)	Load register halfword (register offset)	LDRH (immediate)
+LDRH (register)	Load register halfword (register offset)	LDRH (register)
+LDRSB (immediate)	Load register signed byte (immediate offset)	LDRSB (immediate)
+LDRSB (register)	Load register signed byte (register offset)	LDRSB (register)
+LDRSH (immediate)	Load register signed halfword (immediate offset)	LDRSH (immediate)
+LDRSH (register)	Load register signed halfword (register offset)	LDRSH (register)
+LDRSW (immediate)	Load register signed word (immediate offset)	LDRSW (immediate)
+LDRSW (literal)	Load register signed word (PC-relative literal)	LDRSW (literal)
+LDRSW (register)	Load register signed word (register offset)	LDRSW (register)
+LDTR	Load register (unprivileged)	LDTR
+LDTRB	Load register byte (unprivileged)	LDTRB
+LDTRH	Load register halfword (unprivileged)	LDTRH
+LDTRSB	Load register signed byte (unprivileged)	LDTRSB
+LDTRSH	Load register signed halfword (unprivileged)	LDTRSH
+LDTRSW	Load register signed word (unprivileged)	LDTRSW
+LDUR (SIMD and FP)	Load SIMD and FP register (unscaled offset)	LDUR (SIMD and FP)
+LDUR	Load register (unscaled offset)	LDUR
+LDURB	Load register byte (unscaled offset)	LDURB
+LDURH	Load register halfword (unscaled offset)	LDURH
+LDURSB	Load register signed byte (unscaled offset)	LDURSB
+LDURSH	Load register signed halfword (unscaled offset)	LDURSH
+LDURSW	Load register signed word (unscaled offset)	LDURSW
+LDXP	Load exclusive pair of registers	LDXP
+LDXR	Load exclusive register	LDXR
+LDXRB	Load exclusive register byte	LDXRB
+LDXRH	Load exclusive register halfword	LDXRH
+PRFM (immediate)	Prefetch memory (immediate offset)	PRFM (immediate)
+PRFM (literal)	Prefetch memory (PC-relative offset)	PRFM (literal)
+PRFM (register)	Prefetch memory (register offset)	PRFM (register)
+PRFUM	Prefetch memory (unscaled offset)	PRFUM
+STLR	Store-release register	STLR
+STLRB	Store-release register byte	STLRB
+STLRH	Store-release register halfword	STLRH
+STLXP	Store-release exclusive pair of registers, returning status	STLXP
+STLXR	Store-release exclusive register, returning status	STLXR
+STLXRB	Store-release exclusive register byte, returning status	STLXRB
+STLXRH	Store-release exclusive register halfword, returning status	STLXRH
+STNP (SIMD and FP)	Store pair of SIMD and FP registers, with non-temporal hint	STNP (SIMD and FP)
+STNP	Store pair of registers, with non-temporal hint	STNP
+STP (SIMD and FP)	Store pair of SIMD and FP registers	STP (SIMD and FP)
+STP	Store pair of registers	STP
+STR (immediate, SIMD and FP)	Store SIMD and FP register (immediate offset)	STR (immediate, SIMD and FP)
+STR (immediate)	Store register (immediate offset)	STR (immediate)
+STR (register, SIMD and FP)	Store SIMD and FP register (register offset)	STR (register, SIMD and FP)
+STR (register)	Store register (register offset)	STR (register)
+STRB (immediate)	Store register byte (immediate offset)	STRB (immediate)
+STRB (register)	Store register byte (register offset)	STRB (register)
+STRH (immediate)	Store register halfword (immediate offset)	STRH (immediate)
+STRH (register)	Store register halfword (register offset)	STRH (register)
+STTR	Store register (unprivileged)	STTR
+STTRB	Store register byte (unprivileged)	STTRB
+STTRH	Store register halfword (unprivileged)	STTRH
+STUR (SIMD and FP)	Store SIMD and FP register (unscaled offset)	STUR (SIMD and FP)
+STUR	Store register (unscaled offset)	STUR
+STURB	Store register byte (unscaled offset)	STURB
+STURH	Store register halfword (unscaled offset)	STURH
+STXP	Store exclusive pair of registers, returning status	STXP
+STXR	Store exclusive register, returning status	STXR
+STXRB	Store exclusive register byte, returning status	STXRB
+STXRH	Store exclusive register halfword, returning status	STXRH

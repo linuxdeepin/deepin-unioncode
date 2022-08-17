@@ -52,9 +52,12 @@ MACROS_ARM = [
     '__FP_FAST_FMAF']
 
 MACROS_MIPS = [
-    #TODO(Mozart):to do
+    '__mips__', 'mips', '_R3000', '_R4000', '_R5900', 
+    '__mips', '__mips', '__MIPS__', '__MIPS_ISA2__', 
+    '__MIPS_ISA3__', '__MIPS_ISA4__', '__MIPS_ISA4__' 
 ]
 
 MACROS_ALPHA = [
-    #TODO(Mozart):to do
+    '__alpha__', '__alpha_ev__', '__alpha', 
+    '_M_ALPHA'
 ]

@@ -59,7 +59,7 @@ RulesDict = namedtuple('RulesDict', [
 
 
 class ToolConfig:
-    SUPPORT_CPU_ARCH = ["x86_64", "arm64", "mips64el", "alpha"]
+    SUPPORT_CPU_ARCH = ["x86_64", "arm64", "mips64el", "sw_64"]
     tool_dir = ''
     work_dir = ''
     config_dir = ''

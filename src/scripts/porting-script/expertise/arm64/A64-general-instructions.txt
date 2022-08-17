@@ -1,0 +1,157 @@
+ADC	Add with carry	ADC
+ADCS	Add with carry, setting the condition flags	ADCS
+ADD (extended register)	Add (extended register)	ADD (extended register)
+ADD (immediate)	Add (immediate)	ADD (immediate)
+ADD (shifted register)	Add (shifted register)	ADD (shifted register)
+ADDS (extended register)	Add (extended register), setting the condition flags	ADDS (extended register)
+ADDS (immediate)	Add (immediate), setting the condition flags	ADDS (immediate)
+ADDS (shifted register)	Add (shifted register), setting the condition flags	ADDS (shifted register)
+ADR	Address of label at a PC-relative offset	ADR
+ADRL pseudo-instruction	Load a PC-relative address into a register	ADRL pseudo-instruction
+ADRP	Address of 4KB page at a PC-relative offset	ADRP
+AND (immediate)	Bitwise AND (immediate)	AND (immediate)
+AND (shifted register)	Bitwise AND (shifted register)	AND (shifted register)
+ANDS (immediate)	Bitwise AND (immediate), setting the condition flags	ANDS (immediate)
+ANDS (shifted register)	Bitwise AND (shifted register), setting the condition flags	ANDS (shifted register)
+ASR (register)	Arithmetic shift right (register)	ASR (register)
+ASR (immediate)	Arithmetic shift right (immediate)	ASR (immediate)
+ASRV	Arithmetic shift right variable	ASRV
+AT	Address translate	AT
+B.cond	Branch conditionally to a label at a PC-relative offset, with a hint that this is not a subroutine call or return	B.cond
+B	Branch unconditionally to a label at a PC-relative offset, with a hint that this is not a subroutine call or return	B
+BFI	Bitfield insert, leaving other bits unchanged	BFI
+BFM	Bitfield move, leaving other bits unchanged	BFM
+BFXIL	Bitfield extract and insert at low end, leaving other bits unchanged	BFXIL
+BIC (shifted register)	Bitwise bit clear (shifted register)	BIC (shifted register)
+BICS (shifted register)	Bitwise bit clear (shifted register), setting the condition flags	BICS (shifted register)
+BL	Branch with link, calls a subroutine at a PC-relative offset, setting register X30 to PC + 4	BL
+BLR	Branch with link to register, calls a subroutine at an address in a register, setting register X30 to PC + 4	BLR
+BR	Branch to register, branches unconditionally to an address in a register, with a hint that this is not a subroutine return	BR
+BRK	Self-hosted debug breakpoint	BRK
+CBNZ	Compare and branch if nonzero to a label at a PC-relative offset, without affecting the condition flags, and with a hint that this is not a subroutine call or return	CBNZ
+CBZ	Compare and branch if zero to a label at a PC-relative offset, without affecting the condition flags, and with a hint that this is not a subroutine call or return	CBZ
+CCMN (immediate)	Conditional compare negative (immediate), setting condition flags to result of comparison or an immediate value	CCMN (immediate)
+CCMN (register)	Conditional compare negative (register), setting condition flags to result of comparison or an immediate value	CCMN (register)
+CCMP (immediate)	Conditional compare (immediate), setting condition flags to result of comparison or an immediate value	CCMP (immediate)
+CCMP (register)	Conditional compare (register), setting condition flags to result of comparison or an immediate value	CCMP (register)
+CINC	Conditional increment	CINC
+CINV	Conditional invert	CINV
+CLREX	Clear exclusive monitor	CLREX
+CLS	Count leading sign bits	CLS
+CLZ	Count leading zero bits	CLZ
+CMN (extended register)	Compare negative (extended register), setting the condition flags and discarding the result	CMN (extended register)
+CMN (immediate)	Compare negative (immediate), setting the condition flags and discarding the result	CMN (immediate)
+CMN (shifted register)	Compare negative (shifted register), setting the condition flags and discarding the result	CMN (shifted register)
+CMP (extended register)	Compare (extended register), setting the condition flags and discarding the result	CMP (extended register)
+CMP (immediate)	Compare (immediate), setting the condition flags and discarding the result	CMP (immediate)
+CMP (shifted register)	Compare (shifted register), setting the condition flags and discarding the result	CMP (shifted register)
+CNEG	Conditional negate	CNEG
+CRC32B, CRC32H, CRC32W, CRC32X	CRC-32 checksum from byte, halfword, word or doubleword	CRC32B, CRC32H, CRC32W, CRC32X
+CRC32CB, CRC32CH, CRC32CW, CRC32CX	CRC-32C checksum from byte, halfword, word, or doubleword	CRC32CB, CRC32CH, CRC32CW, CRC32CX
+CSEL	Conditional select, returning the first or second input	CSEL
+CSET	Conditional set	CSET
+CSETM	Conditional set mask	CSETM
+CSINC	Conditional select increment, returning the first input or incremented second input	CSINC
+CSINV	Conditional select inversion, returning the first input or inverted second input	CSINV
+CSNEG	Conditional select negation, returning the first input or negated second input	CSNEG
+DC	Data cache operation	DC
+DCPS1	Debug switch to exception level 1	DCPS1
+DCPS2	Debug switch to exception level 2	DCPS2
+DCPS3	Debug switch to exception level 3	DCPS3
+DMB	Data memory barrier	DMB
+DRPS	Debug restore processor state	DRPS
+DSB	Data synchronization barrier	DSB
+EON (shifted register)	Bitwise exclusive OR NOT (shifted register)	EON (shifted register)
+EOR (immediate)	Bitwise exclusive OR (immediate)	EOR (immediate)
+EOR (shifted register)	Bitwise exclusive OR (shifted register)	EOR (shifted register)
+ERET	Returns from an exception	ERET
+EXTR	Extract register from pair of registers	EXTR
+HINT	Hint instruction	HINT
+HLT	External debug breakpoint	HLT
+HVC	Hypervisor call to allow OS code to call the Hypervisor	HVC
+IC	Instruction cache operation	IC
+ISB	Instruction synchronization barrier	ISB
+LSL (register)	Logical shift left (register)	LSL (register)
+LSL (immediate)	Logical shift left (immediate)	LSL (immediate)
+LSLV	Logical shift left variable	LSLV
+LSR (register)	Logical shift right (register)	LSR (register)
+LSR (immediate)	Logical shift right (immediate)	LSR (immediate)
+LSRV	Logical shift right variable	LSRV
+MADD	Multiply-add	MADD
+MNEG	Multiply-negate	MNEG
+MOV (to or from SP)	Move between register and stack pointer	MOV (to or from SP)
+MOV (inverted wide immediate)	Move inverted 16-bit immediate to register	MOV (inverted wide immediate)
+MOV (wide immediate)	Move 16-bit immediate to register	MOV (wide immediate)
+MOV (bitmask immediate)	Move bitmask immediate to register	MOV (bitmask immediate)
+MOV (register)	Move register to register	MOV (register)
+MOVK	Move 16-bit immediate into register, keeping other bits unchanged	MOVK
+MOVL pseudo-instruction	Load a register	MOVL pseudo-instruction
+MOVN	Move inverse of shifted 16-bit immediate to register	MOVN
+MOVZ	Move shifted 16-bit immediate to register	MOVZ
+MRS	Move from system register	MRS
+MSR (immediate)	Move immediate to processor state field	MSR (immediate)
+MSR (register)	Move to system register	MSR (register)
+MSUB	Multiply-subtract	MSUB
+MUL	Multiply	MUL
+MVN	Bitwise NOT (shifted register)	MVN
+NEG	Negate	NEG
+NEGS	Negate, setting the condition flags	NEGS
+NGC	Negate with carry	NGC
+NGCS	Negate with carry, setting the condition flags	NGCS
+NOP	No operation	NOP
+ORN (shifted register)	Bitwise inclusive OR NOT (shifted register)	ORN (shifted register)
+ORR (immediate)	Bitwise inclusive OR (immediate)	ORR (immediate)
+ORR (shifted register)	Bitwise inclusive OR (shifted register)	ORR (shifted register)
+RBIT	Reverse bit order	RBIT
+RET	Return from subroutine, branches unconditionally to an address in a register, with a hint that this is a subroutine return	RET
+REV	Reverse bytes	REV
+REV16	Reverse bytes in 16-bit halfwords	REV16
+REV32	Reverse bytes in 32-bit words	REV32
+ROR (immediate)	Rotate right (immediate)	ROR (immediate)
+ROR (register)	Rotate right (register)	ROR (register)
+RORV	Rotate right variable	RORV
+SBC	Subtract with carry	SBC
+SBCS	Subtract with carry, setting the condition flags	SBCS
+SBFIZ	Signed bitfield insert in zero, with sign replication to left and zeros to right	SBFIZ
+SBFM	Signed bitfield move, with sign replication to left and zeros to right	SBFM
+SBFX	Signed bitfield extract	SBFX
+SDIV	Signed divide	SDIV
+SEV	Send event	SEV
+SEVL	Send event locally	SEVL
+SMADDL	Signed multiply-add long	SMADDL
+SMC	Supervisor call to allow OS or Hypervisor code to call the Secure Monitor	SMC
+SMNEGL	Signed multiply-negate long	SMNEGL
+SMSUBL	Signed multiply-subtract long	SMSUBL
+SMULH	Signed multiply high	SMULH
+SMULL	Signed multiply long	SMULL
+SUB (extended register)	Subtract (extended register)	SUB (extended register)
+SUB (immediate)	Subtract (immediate)	SUB (immediate)
+SUB (shifted register)	Subtract (shifted register)	SUB (shifted register)
+SUBS (extended register)	Subtract (extended register), setting the condition flags	SUBS (extended register)
+SUBS (immediate)	Subtract (immediate), setting the condition flags	SUBS (immediate)
+SUBS (shifted register)	Subtract (shifted register), setting the condition flags	SUBS (shifted register)
+SVC	Supervisor call to allow application code to call the OS	SVC
+SXTB	Signed extend byte	SXTB
+SXTH	Signed extend halfword	SXTH
+SXTW	Signed extend word	SXTW
+SYS	System instruction	SYS
+SYSL	System instruction with result	SYSL
+TBNZ	Test bit and branch if nonzero to a label at a PC-relative offset, without affecting the condition flags, and with a hint that this is not a subroutine call or return	TBNZ
+TBZ	Test bit and branch if zero to a label at a PC-relative offset, without affecting the condition flags, and with a hint that this is not a subroutine call or return	TBZ
+TLBI	TLB invalidate operation	TLBI
+TST (immediate)	Test bits (immediate), setting the condition flags and discarding the result	TST (immediate)
+TST (shifted register)	Test bits (shifted register), setting the condition flags and discarding the result	TST (shifted register)
+UBFIZ	Unsigned bitfield insert in zero, with zeros to left and right	UBFIZ
+UBFM	Unsigned bitfield move, with zeros to left and right	UBFM
+UBFX	Unsigned bitfield extract	UBFX
+UDIV	Unsigned divide	UDIV
+UMADDL	Unsigned multiply-add long	UMADDL
+UMNEGL	Unsigned multiply-negate long	UMNEGL
+UMSUBL	Unsigned multiply-subtract long	UMSUBL
+UMULH	Unsigned multiply high	UMULH
+UMULL	Unsigned multiply long	UMULL
+UXTB	Unsigned extend byte	UXTB
+UXTH	Unsigned extend halfword	UXTH
+WFE	Wait for event	WFE
+WFI	Wait for interrupt	WFI
+YIELD	Yield hint	YIELD

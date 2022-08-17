@@ -1,0 +1,1330 @@
+{
+    "-m128bit-long-double": {
+        "suggestion": {
+            "arm64": "Please check the -m128bit-long-double option on arm64 platform",
+            "mips64el": "Please check the -m128bit-long-double option on mips64el platform",
+            "sw_64": "Please check the -m128bit-long-double option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-m16": {
+        "suggestion": {
+            "arm64": "Please check the -m16 option on arm64 platform",
+            "mips64el": "Please check the -m16 option on mips64el platform",
+            "sw_64": "Please check the -m16 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-m32": {
+        "suggestion": {
+            "arm64": "Please check the -m32 option on arm64 platform",
+            "mips64el": "Please check the -m32 option on mips64el platform",
+            "sw_64": "Please check the -m32 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-m3dnow": {
+        "suggestion": {
+            "arm64": "Please check the -m3dnow option on arm64 platform",
+            "mips64el": "Please check the -m3dnow option on mips64el platform",
+            "sw_64": "Please check the -m3dnow option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-m3dnowa": {
+        "suggestion": {
+            "arm64": "Please check the -m3dnowa option on arm64 platform",
+            "mips64el": "Please check the -m3dnowa option on mips64el platform",
+            "sw_64": "Please check the -m3dnowa option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-m64": {
+        "suggestion": {
+            "arm64": "Please check the -m64 option on arm64 platform",
+            "mips64el": "Please check the -m64 option on mips64el platform",
+            "sw_64": "Please check the -m64 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-m80387": {
+        "suggestion": {
+            "arm64": "Please check the -m80387 option on arm64 platform",
+            "mips64el": "Please check the -m80387 option on mips64el platform",
+            "sw_64": "Please check the -m80387 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-m8bit-idiv": {
+        "suggestion": {
+            "arm64": "Please check the -m8bit-idiv option on arm64 platform",
+            "mips64el": "Please check the -m8bit-idiv option on mips64el platform",
+            "sw_64": "Please check the -m8bit-idiv option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-m96bit-long-double": {
+        "suggestion": {
+            "arm64": "Please check the -m96bit-long-double option on arm64 platform",
+            "mips64el": "Please check the -m96bit-long-double option on mips64el platform",
+            "sw_64": "Please check the -m96bit-long-double option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mabi=": {
+        "suggestion": {
+            "arm64": "Please check the -mabi= option on arm64 platform",
+            "mips64el": "Please check the -mabi= option on mips64el platform",
+            "sw_64": "Please check the -mabi= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mabm": {
+        "suggestion": {
+            "arm64": "Please check the -mabm option on arm64 platform",
+            "mips64el": "Please check the -mabm option on mips64el platform",
+            "sw_64": "Please check the -mabm option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-maccumulate-outgoing-args": {
+        "suggestion": {
+            "arm64": "Please check the -maccumulate-outgoing-args option on arm64 platform",
+            "mips64el": "Please check the -maccumulate-outgoing-args option on mips64el platform",
+            "sw_64": "Please check the -maccumulate-outgoing-args option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-maddress-mode=": {
+        "suggestion": {
+            "arm64": "Please check the -maddress-mode= option on arm64 platform",
+            "mips64el": "Please check the -maddress-mode= option on mips64el platform",
+            "sw_64": "Please check the -maddress-mode= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-madx": {
+        "suggestion": {
+            "arm64": "Please check the -madx option on arm64 platform",
+            "mips64el": "Please check the -madx option on mips64el platform",
+            "sw_64": "Please check the -madx option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-maes": {
+        "suggestion": {
+            "arm64": "Please check the -maes option on arm64 platform",
+            "mips64el": "Please check the -maes option on mips64el platform",
+            "sw_64": "Please check the -maes option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-malign-data=": {
+        "suggestion": {
+            "arm64": "Please check the -malign-data= option on arm64 platform",
+            "mips64el": "Please check the -malign-data= option on mips64el platform",
+            "sw_64": "Please check the -malign-data= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-malign-double": {
+        "suggestion": {
+            "arm64": "Please check the -malign-double option on arm64 platform",
+            "mips64el": "Please check the -malign-double option on mips64el platform",
+            "sw_64": "Please check the -malign-double option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-malign-functions=": {
+        "suggestion": {
+            "arm64": "Please check the -malign-functions= option on arm64 platform",
+            "mips64el": "Please check the -malign-functions= option on mips64el platform",
+            "sw_64": "Please check the -malign-functions= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-malign-jumps=": {
+        "suggestion": {
+            "arm64": "Please check the -malign-jumps= option on arm64 platform",
+            "mips64el": "Please check the -malign-jumps= option on mips64el platform",
+            "sw_64": "Please check the -malign-jumps= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-malign-loops=": {
+        "suggestion": {
+            "arm64": "Please check the -malign-loops= option on arm64 platform",
+            "mips64el": "Please check the -malign-loops= option on mips64el platform",
+            "sw_64": "Please check the -malign-loops= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-malign-stringops": {
+        "suggestion": {
+            "arm64": "Please check the -malign-stringops option on arm64 platform",
+            "mips64el": "Please check the -malign-stringops option on mips64el platform",
+            "sw_64": "Please check the -malign-stringops option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mandroid": {
+        "suggestion": {
+            "arm64": "Please check the -mandroid option on arm64 platform",
+            "mips64el": "Please check the -mandroid option on mips64el platform",
+            "sw_64": "Please check the -mandroid option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-march=": {
+        "suggestion": {
+            "arm64": "Please check the -march= option on arm64 platform",
+            "mips64el": "Please check the -march= option on mips64el platform",
+            "sw_64": "Please check the -march= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-masm=": {
+        "suggestion": {
+            "arm64": "Please check the -masm= option on arm64 platform",
+            "mips64el": "Please check the -masm= option on mips64el platform",
+            "sw_64": "Please check the -masm= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx": {
+        "suggestion": {
+            "arm64": "Please check the -mavx option on arm64 platform",
+            "mips64el": "Please check the -mavx option on mips64el platform",
+            "sw_64": "Please check the -mavx option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx2": {
+        "suggestion": {
+            "arm64": "Please check the -mavx2 option on arm64 platform",
+            "mips64el": "Please check the -mavx2 option on mips64el platform",
+            "sw_64": "Please check the -mavx2 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx256-split-unaligned-load": {
+        "suggestion": {
+            "arm64": "Please check the -mavx256-split-unaligned-load option on arm64 platform",
+            "mips64el": "Please check the -mavx256-split-unaligned-load option on mips64el platform",
+            "sw_64": "Please check the -mavx256-split-unaligned-load option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx256-split-unaligned-store": {
+        "suggestion": {
+            "arm64": "Please check the -mavx256-split-unaligned-store option on arm64 platform",
+            "mips64el": "Please check the -mavx256-split-unaligned-store option on mips64el platform",
+            "sw_64": "Please check the -mavx256-split-unaligned-store option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx5124fmaps": {
+        "suggestion": {
+            "arm64": "Please check the -mavx5124fmaps option on arm64 platform",
+            "mips64el": "Please check the -mavx5124fmaps option on mips64el platform",
+            "sw_64": "Please check the -mavx5124fmaps option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx5124vnniw": {
+        "suggestion": {
+            "arm64": "Please check the -mavx5124vnniw option on arm64 platform",
+            "mips64el": "Please check the -mavx5124vnniw option on mips64el platform",
+            "sw_64": "Please check the -mavx5124vnniw option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512bitalg": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512bitalg option on arm64 platform",
+            "mips64el": "Please check the -mavx512bitalg option on mips64el platform",
+            "sw_64": "Please check the -mavx512bitalg option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512bw": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512bw option on arm64 platform",
+            "mips64el": "Please check the -mavx512bw option on mips64el platform",
+            "sw_64": "Please check the -mavx512bw option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512cd": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512cd option on arm64 platform",
+            "mips64el": "Please check the -mavx512cd option on mips64el platform",
+            "sw_64": "Please check the -mavx512cd option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512dq": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512dq option on arm64 platform",
+            "mips64el": "Please check the -mavx512dq option on mips64el platform",
+            "sw_64": "Please check the -mavx512dq option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512er": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512er option on arm64 platform",
+            "mips64el": "Please check the -mavx512er option on mips64el platform",
+            "sw_64": "Please check the -mavx512er option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512f": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512f option on arm64 platform",
+            "mips64el": "Please check the -mavx512f option on mips64el platform",
+            "sw_64": "Please check the -mavx512f option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512ifma": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512ifma option on arm64 platform",
+            "mips64el": "Please check the -mavx512ifma option on mips64el platform",
+            "sw_64": "Please check the -mavx512ifma option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512pf": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512pf option on arm64 platform",
+            "mips64el": "Please check the -mavx512pf option on mips64el platform",
+            "sw_64": "Please check the -mavx512pf option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512vbmi": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512vbmi option on arm64 platform",
+            "mips64el": "Please check the -mavx512vbmi option on mips64el platform",
+            "sw_64": "Please check the -mavx512vbmi option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512vbmi2": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512vbmi2 option on arm64 platform",
+            "mips64el": "Please check the -mavx512vbmi2 option on mips64el platform",
+            "sw_64": "Please check the -mavx512vbmi2 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512vl": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512vl option on arm64 platform",
+            "mips64el": "Please check the -mavx512vl option on mips64el platform",
+            "sw_64": "Please check the -mavx512vl option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512vnni": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512vnni option on arm64 platform",
+            "mips64el": "Please check the -mavx512vnni option on mips64el platform",
+            "sw_64": "Please check the -mavx512vnni option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mavx512vpopcntdq": {
+        "suggestion": {
+            "arm64": "Please check the -mavx512vpopcntdq option on arm64 platform",
+            "mips64el": "Please check the -mavx512vpopcntdq option on mips64el platform",
+            "sw_64": "Please check the -mavx512vpopcntdq option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mbionic": {
+        "suggestion": {
+            "arm64": "Please check the -mbionic option on arm64 platform",
+            "mips64el": "Please check the -mbionic option on mips64el platform",
+            "sw_64": "Please check the -mbionic option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mbmi": {
+        "suggestion": {
+            "arm64": "Please check the -mbmi option on arm64 platform",
+            "mips64el": "Please check the -mbmi option on mips64el platform",
+            "sw_64": "Please check the -mbmi option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mbmi2": {
+        "suggestion": {
+            "arm64": "Please check the -mbmi2 option on arm64 platform",
+            "mips64el": "Please check the -mbmi2 option on mips64el platform",
+            "sw_64": "Please check the -mbmi2 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mbranch-cost=<0,5>": {
+        "suggestion": {
+            "arm64": "Please check the -mbranch-cost=<0,5> option on arm64 platform",
+            "mips64el": "Please check the -mbranch-cost=<0,5> option on mips64el platform",
+            "sw_64": "Please check the -mbranch-cost=<0,5> option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mcall-ms2sysv-xlogues": {
+        "suggestion": {
+            "arm64": "Please check the -mcall-ms2sysv-xlogues option on arm64 platform",
+            "mips64el": "Please check the -mcall-ms2sysv-xlogues option on mips64el platform",
+            "sw_64": "Please check the -mcall-ms2sysv-xlogues option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mcld": {
+        "suggestion": {
+            "arm64": "Please check the -mcld option on arm64 platform",
+            "mips64el": "Please check the -mcld option on mips64el platform",
+            "sw_64": "Please check the -mcld option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mclflushopt": {
+        "suggestion": {
+            "arm64": "Please check the -mclflushopt option on arm64 platform",
+            "mips64el": "Please check the -mclflushopt option on mips64el platform",
+            "sw_64": "Please check the -mclflushopt option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mclwb": {
+        "suggestion": {
+            "arm64": "Please check the -mclwb option on arm64 platform",
+            "mips64el": "Please check the -mclwb option on mips64el platform",
+            "sw_64": "Please check the -mclwb option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mclzero": {
+        "suggestion": {
+            "arm64": "Please check the -mclzero option on arm64 platform",
+            "mips64el": "Please check the -mclzero option on mips64el platform",
+            "sw_64": "Please check the -mclzero option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mcmodel=": {
+        "suggestion": {
+            "arm64": "Please check the -mcmodel= option on arm64 platform",
+            "mips64el": "Please check the -mcmodel= option on mips64el platform",
+            "sw_64": "Please check the -mcmodel= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mcrc32": {
+        "suggestion": {
+            "arm64": "Please check the -mcrc32 option on arm64 platform",
+            "mips64el": "Please check the -mcrc32 option on mips64el platform",
+            "sw_64": "Please check the -mcrc32 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mcx16": {
+        "suggestion": {
+            "arm64": "Please check the -mcx16 option on arm64 platform",
+            "mips64el": "Please check the -mcx16 option on mips64el platform",
+            "sw_64": "Please check the -mcx16 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mdispatch-scheduler": {
+        "suggestion": {
+            "arm64": "Please check the -mdispatch-scheduler option on arm64 platform",
+            "mips64el": "Please check the -mdispatch-scheduler option on mips64el platform",
+            "sw_64": "Please check the -mdispatch-scheduler option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mf16c": {
+        "suggestion": {
+            "arm64": "Please check the -mf16c option on arm64 platform",
+            "mips64el": "Please check the -mf16c option on mips64el platform",
+            "sw_64": "Please check the -mf16c option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mfancy-math-387": {
+        "suggestion": {
+            "arm64": "Please check the -mfancy-math-387 option on arm64 platform",
+            "mips64el": "Please check the -mfancy-math-387 option on mips64el platform",
+            "sw_64": "Please check the -mfancy-math-387 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mfentry": {
+        "suggestion": {
+            "arm64": "Please check the -mfentry option on arm64 platform",
+            "mips64el": "Please check the -mfentry option on mips64el platform",
+            "sw_64": "Please check the -mfentry option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mfma": {
+        "suggestion": {
+            "arm64": "Please check the -mfma option on arm64 platform",
+            "mips64el": "Please check the -mfma option on mips64el platform",
+            "sw_64": "Please check the -mfma option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mfma4": {
+        "suggestion": {
+            "arm64": "Please check the -mfma4 option on arm64 platform",
+            "mips64el": "Please check the -mfma4 option on mips64el platform",
+            "sw_64": "Please check the -mfma4 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mforce-drap": {
+        "suggestion": {
+            "arm64": "Please check the -mforce-drap option on arm64 platform",
+            "mips64el": "Please check the -mforce-drap option on mips64el platform",
+            "sw_64": "Please check the -mforce-drap option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mforce-indirect-call": {
+        "suggestion": {
+            "arm64": "Please check the -mforce-indirect-call option on arm64 platform",
+            "mips64el": "Please check the -mforce-indirect-call option on mips64el platform",
+            "sw_64": "Please check the -mforce-indirect-call option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mfp-ret-in-387": {
+        "suggestion": {
+            "arm64": "Please check the -mfp-ret-in-387 option on arm64 platform",
+            "mips64el": "Please check the -mfp-ret-in-387 option on mips64el platform",
+            "sw_64": "Please check the -mfp-ret-in-387 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mfpmath=": {
+        "suggestion": {
+            "arm64": "Please check the -mfpmath= option on arm64 platform",
+            "mips64el": "Please check the -mfpmath= option on mips64el platform",
+            "sw_64": "Please check the -mfpmath= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mfsgsbase": {
+        "suggestion": {
+            "arm64": "Please check the -mfsgsbase option on arm64 platform",
+            "mips64el": "Please check the -mfsgsbase option on mips64el platform",
+            "sw_64": "Please check the -mfsgsbase option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mfunction-return=": {
+        "suggestion": {
+            "arm64": "Please check the -mfunction-return= option on arm64 platform",
+            "mips64el": "Please check the -mfunction-return= option on mips64el platform",
+            "sw_64": "Please check the -mfunction-return= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mfxsr": {
+        "suggestion": {
+            "arm64": "Please check the -mfxsr option on arm64 platform",
+            "mips64el": "Please check the -mfxsr option on mips64el platform",
+            "sw_64": "Please check the -mfxsr option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mgeneral-regs-only": {
+        "suggestion": {
+            "arm64": "Please check the -mgeneral-regs-only option on arm64 platform",
+            "mips64el": "Please check the -mgeneral-regs-only option on mips64el platform",
+            "sw_64": "Please check the -mgeneral-regs-only option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mgfni": {
+        "suggestion": {
+            "arm64": "Please check the -mgfni option on arm64 platform",
+            "mips64el": "Please check the -mgfni option on mips64el platform",
+            "sw_64": "Please check the -mgfni option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mglibc": {
+        "suggestion": {
+            "arm64": "Please check the -mglibc option on arm64 platform",
+            "mips64el": "Please check the -mglibc option on mips64el platform",
+            "sw_64": "Please check the -mglibc option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mhard-float": {
+        "suggestion": {
+            "arm64": "Please check the -mhard-float option on arm64 platform",
+            "mips64el": "Please check the -mhard-float option on mips64el platform",
+            "sw_64": "Please check the -mhard-float option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mhle": {
+        "suggestion": {
+            "arm64": "Please check the -mhle option on arm64 platform",
+            "mips64el": "Please check the -mhle option on mips64el platform",
+            "sw_64": "Please check the -mhle option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-miamcu": {
+        "suggestion": {
+            "arm64": "Please check the -miamcu option on arm64 platform",
+            "mips64el": "Please check the -miamcu option on mips64el platform",
+            "sw_64": "Please check the -miamcu option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mieee-fp": {
+        "suggestion": {
+            "arm64": "Please check the -mieee-fp option on arm64 platform",
+            "mips64el": "Please check the -mieee-fp option on mips64el platform",
+            "sw_64": "Please check the -mieee-fp option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mincoming-stack-boundary=": {
+        "suggestion": {
+            "arm64": "Please check the -mincoming-stack-boundary= option on arm64 platform",
+            "mips64el": "Please check the -mincoming-stack-boundary= option on mips64el platform",
+            "sw_64": "Please check the -mincoming-stack-boundary= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mindirect-branch-register": {
+        "suggestion": {
+            "arm64": "Please check the -mindirect-branch-register option on arm64 platform",
+            "mips64el": "Please check the -mindirect-branch-register option on mips64el platform",
+            "sw_64": "Please check the -mindirect-branch-register option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mindirect-branch=": {
+        "suggestion": {
+            "arm64": "Please check the -mindirect-branch= option on arm64 platform",
+            "mips64el": "Please check the -mindirect-branch= option on mips64el platform",
+            "sw_64": "Please check the -mindirect-branch= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-minline-all-stringops": {
+        "suggestion": {
+            "arm64": "Please check the -minline-all-stringops option on arm64 platform",
+            "mips64el": "Please check the -minline-all-stringops option on mips64el platform",
+            "sw_64": "Please check the -minline-all-stringops option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-minline-stringops-dynamically": {
+        "suggestion": {
+            "arm64": "Please check the -minline-stringops-dynamically option on arm64 platform",
+            "mips64el": "Please check the -minline-stringops-dynamically option on mips64el platform",
+            "sw_64": "Please check the -minline-stringops-dynamically option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mlarge-data-threshold=<number>": {
+        "suggestion": {
+            "arm64": "Please check the -mlarge-data-threshold=<number> option on arm64 platform",
+            "mips64el": "Please check the -mlarge-data-threshold=<number> option on mips64el platform",
+            "sw_64": "Please check the -mlarge-data-threshold=<number> option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mlong-double-128": {
+        "suggestion": {
+            "arm64": "Please check the -mlong-double-128 option on arm64 platform",
+            "mips64el": "Please check the -mlong-double-128 option on mips64el platform",
+            "sw_64": "Please check the -mlong-double-128 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mlong-double-64": {
+        "suggestion": {
+            "arm64": "Please check the -mlong-double-64 option on arm64 platform",
+            "mips64el": "Please check the -mlong-double-64 option on mips64el platform",
+            "sw_64": "Please check the -mlong-double-64 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mlong-double-80": {
+        "suggestion": {
+            "arm64": "Please check the -mlong-double-80 option on arm64 platform",
+            "mips64el": "Please check the -mlong-double-80 option on mips64el platform",
+            "sw_64": "Please check the -mlong-double-80 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mlwp": {
+        "suggestion": {
+            "arm64": "Please check the -mlwp option on arm64 platform",
+            "mips64el": "Please check the -mlwp option on mips64el platform",
+            "sw_64": "Please check the -mlwp option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mlzcnt": {
+        "suggestion": {
+            "arm64": "Please check the -mlzcnt option on arm64 platform",
+            "mips64el": "Please check the -mlzcnt option on mips64el platform",
+            "sw_64": "Please check the -mlzcnt option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmemcpy-strategy=": {
+        "suggestion": {
+            "arm64": "Please check the -mmemcpy-strategy= option on arm64 platform",
+            "mips64el": "Please check the -mmemcpy-strategy= option on mips64el platform",
+            "sw_64": "Please check the -mmemcpy-strategy= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmemset-strategy=": {
+        "suggestion": {
+            "arm64": "Please check the -mmemset-strategy= option on arm64 platform",
+            "mips64el": "Please check the -mmemset-strategy= option on mips64el platform",
+            "sw_64": "Please check the -mmemset-strategy= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmitigate-rop": {
+        "suggestion": {
+            "arm64": "Please check the -mmitigate-rop option on arm64 platform",
+            "mips64el": "Please check the -mmitigate-rop option on mips64el platform",
+            "sw_64": "Please check the -mmitigate-rop option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmmx": {
+        "suggestion": {
+            "arm64": "Please check the -mmmx option on arm64 platform",
+            "mips64el": "Please check the -mmmx option on mips64el platform",
+            "sw_64": "Please check the -mmmx option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmovbe": {
+        "suggestion": {
+            "arm64": "Please check the -mmovbe option on arm64 platform",
+            "mips64el": "Please check the -mmovbe option on mips64el platform",
+            "sw_64": "Please check the -mmovbe option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmovdir64b": {
+        "suggestion": {
+            "arm64": "Please check the -mmovdir64b option on arm64 platform",
+            "mips64el": "Please check the -mmovdir64b option on mips64el platform",
+            "sw_64": "Please check the -mmovdir64b option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmovdiri": {
+        "suggestion": {
+            "arm64": "Please check the -mmovdiri option on arm64 platform",
+            "mips64el": "Please check the -mmovdiri option on mips64el platform",
+            "sw_64": "Please check the -mmovdiri option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmpx": {
+        "suggestion": {
+            "arm64": "Please check the -mmpx option on arm64 platform",
+            "mips64el": "Please check the -mmpx option on mips64el platform",
+            "sw_64": "Please check the -mmpx option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mms-bitfields": {
+        "suggestion": {
+            "arm64": "Please check the -mms-bitfields option on arm64 platform",
+            "mips64el": "Please check the -mms-bitfields option on mips64el platform",
+            "sw_64": "Please check the -mms-bitfields option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmusl": {
+        "suggestion": {
+            "arm64": "Please check the -mmusl option on arm64 platform",
+            "mips64el": "Please check the -mmusl option on mips64el platform",
+            "sw_64": "Please check the -mmusl option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mmwaitx": {
+        "suggestion": {
+            "arm64": "Please check the -mmwaitx option on arm64 platform",
+            "mips64el": "Please check the -mmwaitx option on mips64el platform",
+            "sw_64": "Please check the -mmwaitx option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mno-default": {
+        "suggestion": {
+            "arm64": "Please check the -mno-default option on arm64 platform",
+            "mips64el": "Please check the -mno-default option on mips64el platform",
+            "sw_64": "Please check the -mno-default option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mno-sse4": {
+        "suggestion": {
+            "arm64": "Please check the -mno-sse4 option on arm64 platform",
+            "mips64el": "Please check the -mno-sse4 option on mips64el platform",
+            "sw_64": "Please check the -mno-sse4 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mnop-mcount": {
+        "suggestion": {
+            "arm64": "Please check the -mnop-mcount option on arm64 platform",
+            "mips64el": "Please check the -mnop-mcount option on mips64el platform",
+            "sw_64": "Please check the -mnop-mcount option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-momit-leaf-frame-pointer": {
+        "suggestion": {
+            "arm64": "Please check the -momit-leaf-frame-pointer option on arm64 platform",
+            "mips64el": "Please check the -momit-leaf-frame-pointer option on mips64el platform",
+            "sw_64": "Please check the -momit-leaf-frame-pointer option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mpc32": {
+        "suggestion": {
+            "arm64": "Please check the -mpc32 option on arm64 platform",
+            "mips64el": "Please check the -mpc32 option on mips64el platform",
+            "sw_64": "Please check the -mpc32 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mpc64": {
+        "suggestion": {
+            "arm64": "Please check the -mpc64 option on arm64 platform",
+            "mips64el": "Please check the -mpc64 option on mips64el platform",
+            "sw_64": "Please check the -mpc64 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mpc80": {
+        "suggestion": {
+            "arm64": "Please check the -mpc80 option on arm64 platform",
+            "mips64el": "Please check the -mpc80 option on mips64el platform",
+            "sw_64": "Please check the -mpc80 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mpclmul": {
+        "suggestion": {
+            "arm64": "Please check the -mpclmul option on arm64 platform",
+            "mips64el": "Please check the -mpclmul option on mips64el platform",
+            "sw_64": "Please check the -mpclmul option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mpconfig": {
+        "suggestion": {
+            "arm64": "Please check the -mpconfig option on arm64 platform",
+            "mips64el": "Please check the -mpconfig option on mips64el platform",
+            "sw_64": "Please check the -mpconfig option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mpku": {
+        "suggestion": {
+            "arm64": "Please check the -mpku option on arm64 platform",
+            "mips64el": "Please check the -mpku option on mips64el platform",
+            "sw_64": "Please check the -mpku option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mpopcnt": {
+        "suggestion": {
+            "arm64": "Please check the -mpopcnt option on arm64 platform",
+            "mips64el": "Please check the -mpopcnt option on mips64el platform",
+            "sw_64": "Please check the -mpopcnt option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mprefer-avx128": {
+        "suggestion": {
+            "arm64": "Please check the -mprefer-avx128 option on arm64 platform",
+            "mips64el": "Please check the -mprefer-avx128 option on mips64el platform",
+            "sw_64": "Please check the -mprefer-avx128 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mprefer-vector-width=": {
+        "suggestion": {
+            "arm64": "Please check the -mprefer-vector-width= option on arm64 platform",
+            "mips64el": "Please check the -mprefer-vector-width= option on mips64el platform",
+            "sw_64": "Please check the -mprefer-vector-width= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mpreferred-stack-boundary=": {
+        "suggestion": {
+            "arm64": "Please check the -mpreferred-stack-boundary= option on arm64 platform",
+            "mips64el": "Please check the -mpreferred-stack-boundary= option on mips64el platform",
+            "sw_64": "Please check the -mpreferred-stack-boundary= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mprefetchwt1": {
+        "suggestion": {
+            "arm64": "Please check the -mprefetchwt1 option on arm64 platform",
+            "mips64el": "Please check the -mprefetchwt1 option on mips64el platform",
+            "sw_64": "Please check the -mprefetchwt1 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mprfchw": {
+        "suggestion": {
+            "arm64": "Please check the -mprfchw option on arm64 platform",
+            "mips64el": "Please check the -mprfchw option on mips64el platform",
+            "sw_64": "Please check the -mprfchw option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mpush-args": {
+        "suggestion": {
+            "arm64": "Please check the -mpush-args option on arm64 platform",
+            "mips64el": "Please check the -mpush-args option on mips64el platform",
+            "sw_64": "Please check the -mpush-args option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mrdpid": {
+        "suggestion": {
+            "arm64": "Please check the -mrdpid option on arm64 platform",
+            "mips64el": "Please check the -mrdpid option on mips64el platform",
+            "sw_64": "Please check the -mrdpid option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mrdrnd": {
+        "suggestion": {
+            "arm64": "Please check the -mrdrnd option on arm64 platform",
+            "mips64el": "Please check the -mrdrnd option on mips64el platform",
+            "sw_64": "Please check the -mrdrnd option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mrdseed": {
+        "suggestion": {
+            "arm64": "Please check the -mrdseed option on arm64 platform",
+            "mips64el": "Please check the -mrdseed option on mips64el platform",
+            "sw_64": "Please check the -mrdseed option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mrecip": {
+        "suggestion": {
+            "arm64": "Please check the -mrecip option on arm64 platform",
+            "mips64el": "Please check the -mrecip option on mips64el platform",
+            "sw_64": "Please check the -mrecip option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mrecip=": {
+        "suggestion": {
+            "arm64": "Please check the -mrecip= option on arm64 platform",
+            "mips64el": "Please check the -mrecip= option on mips64el platform",
+            "sw_64": "Please check the -mrecip= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mrecord-mcount": {
+        "suggestion": {
+            "arm64": "Please check the -mrecord-mcount option on arm64 platform",
+            "mips64el": "Please check the -mrecord-mcount option on mips64el platform",
+            "sw_64": "Please check the -mrecord-mcount option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mred-zone": {
+        "suggestion": {
+            "arm64": "Please check the -mred-zone option on arm64 platform",
+            "mips64el": "Please check the -mred-zone option on mips64el platform",
+            "sw_64": "Please check the -mred-zone option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mregparm=": {
+        "suggestion": {
+            "arm64": "Please check the -mregparm= option on arm64 platform",
+            "mips64el": "Please check the -mregparm= option on mips64el platform",
+            "sw_64": "Please check the -mregparm= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mrtd": {
+        "suggestion": {
+            "arm64": "Please check the -mrtd option on arm64 platform",
+            "mips64el": "Please check the -mrtd option on mips64el platform",
+            "sw_64": "Please check the -mrtd option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mrtm": {
+        "suggestion": {
+            "arm64": "Please check the -mrtm option on arm64 platform",
+            "mips64el": "Please check the -mrtm option on mips64el platform",
+            "sw_64": "Please check the -mrtm option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msahf": {
+        "suggestion": {
+            "arm64": "Please check the -msahf option on arm64 platform",
+            "mips64el": "Please check the -msahf option on mips64el platform",
+            "sw_64": "Please check the -msahf option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msgx": {
+        "suggestion": {
+            "arm64": "Please check the -msgx option on arm64 platform",
+            "mips64el": "Please check the -msgx option on mips64el platform",
+            "sw_64": "Please check the -msgx option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msha": {
+        "suggestion": {
+            "arm64": "Please check the -msha option on arm64 platform",
+            "mips64el": "Please check the -msha option on mips64el platform",
+            "sw_64": "Please check the -msha option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mshstk": {
+        "suggestion": {
+            "arm64": "Please check the -mshstk option on arm64 platform",
+            "mips64el": "Please check the -mshstk option on mips64el platform",
+            "sw_64": "Please check the -mshstk option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mskip-rax-setup": {
+        "suggestion": {
+            "arm64": "Please check the -mskip-rax-setup option on arm64 platform",
+            "mips64el": "Please check the -mskip-rax-setup option on mips64el platform",
+            "sw_64": "Please check the -mskip-rax-setup option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msoft-float": {
+        "suggestion": {
+            "arm64": "Please check the -msoft-float option on arm64 platform",
+            "mips64el": "Please check the -msoft-float option on mips64el platform",
+            "sw_64": "Please check the -msoft-float option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msse": {
+        "suggestion": {
+            "arm64": "Please check the -msse option on arm64 platform",
+            "mips64el": "Please check the -msse option on mips64el platform",
+            "sw_64": "Please check the -msse option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msse2": {
+        "suggestion": {
+            "arm64": "Please check the -msse2 option on arm64 platform",
+            "mips64el": "Please check the -msse2 option on mips64el platform",
+            "sw_64": "Please check the -msse2 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msse2avx": {
+        "suggestion": {
+            "arm64": "Please check the -msse2avx option on arm64 platform",
+            "mips64el": "Please check the -msse2avx option on mips64el platform",
+            "sw_64": "Please check the -msse2avx option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msse3": {
+        "suggestion": {
+            "arm64": "Please check the -msse3 option on arm64 platform",
+            "mips64el": "Please check the -msse3 option on mips64el platform",
+            "sw_64": "Please check the -msse3 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msse4": {
+        "suggestion": {
+            "arm64": "Please check the -msse4 option on arm64 platform",
+            "mips64el": "Please check the -msse4 option on mips64el platform",
+            "sw_64": "Please check the -msse4 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msse4.1": {
+        "suggestion": {
+            "arm64": "Please check the -msse4.1 option on arm64 platform",
+            "mips64el": "Please check the -msse4.1 option on mips64el platform",
+            "sw_64": "Please check the -msse4.1 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msse4.2": {
+        "suggestion": {
+            "arm64": "Please check the -msse4.2 option on arm64 platform",
+            "mips64el": "Please check the -msse4.2 option on mips64el platform",
+            "sw_64": "Please check the -msse4.2 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msse4a": {
+        "suggestion": {
+            "arm64": "Please check the -msse4a option on arm64 platform",
+            "mips64el": "Please check the -msse4a option on mips64el platform",
+            "sw_64": "Please check the -msse4a option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-msseregparm": {
+        "suggestion": {
+            "arm64": "Please check the -msseregparm option on arm64 platform",
+            "mips64el": "Please check the -msseregparm option on mips64el platform",
+            "sw_64": "Please check the -msseregparm option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mssse3": {
+        "suggestion": {
+            "arm64": "Please check the -mssse3 option on arm64 platform",
+            "mips64el": "Please check the -mssse3 option on mips64el platform",
+            "sw_64": "Please check the -mssse3 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mstack-arg-probe": {
+        "suggestion": {
+            "arm64": "Please check the -mstack-arg-probe option on arm64 platform",
+            "mips64el": "Please check the -mstack-arg-probe option on mips64el platform",
+            "sw_64": "Please check the -mstack-arg-probe option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mstack-protector-guard-offset=": {
+        "suggestion": {
+            "arm64": "Please check the -mstack-protector-guard-offset= option on arm64 platform",
+            "mips64el": "Please check the -mstack-protector-guard-offset= option on mips64el platform",
+            "sw_64": "Please check the -mstack-protector-guard-offset= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mstack-protector-guard-reg=": {
+        "suggestion": {
+            "arm64": "Please check the -mstack-protector-guard-reg= option on arm64 platform",
+            "mips64el": "Please check the -mstack-protector-guard-reg= option on mips64el platform",
+            "sw_64": "Please check the -mstack-protector-guard-reg= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mstack-protector-guard-symbol=": {
+        "suggestion": {
+            "arm64": "Please check the -mstack-protector-guard-symbol= option on arm64 platform",
+            "mips64el": "Please check the -mstack-protector-guard-symbol= option on mips64el platform",
+            "sw_64": "Please check the -mstack-protector-guard-symbol= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mstack-protector-guard=": {
+        "suggestion": {
+            "arm64": "Please check the -mstack-protector-guard= option on arm64 platform",
+            "mips64el": "Please check the -mstack-protector-guard= option on mips64el platform",
+            "sw_64": "Please check the -mstack-protector-guard= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mstackrealign": {
+        "suggestion": {
+            "arm64": "Please check the -mstackrealign option on arm64 platform",
+            "mips64el": "Please check the -mstackrealign option on mips64el platform",
+            "sw_64": "Please check the -mstackrealign option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mstringop-strategy=": {
+        "suggestion": {
+            "arm64": "Please check the -mstringop-strategy= option on arm64 platform",
+            "mips64el": "Please check the -mstringop-strategy= option on mips64el platform",
+            "sw_64": "Please check the -mstringop-strategy= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mstv": {
+        "suggestion": {
+            "arm64": "Please check the -mstv option on arm64 platform",
+            "mips64el": "Please check the -mstv option on mips64el platform",
+            "sw_64": "Please check the -mstv option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mtbm": {
+        "suggestion": {
+            "arm64": "Please check the -mtbm option on arm64 platform",
+            "mips64el": "Please check the -mtbm option on mips64el platform",
+            "sw_64": "Please check the -mtbm option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mtls-dialect=": {
+        "suggestion": {
+            "arm64": "Please check the -mtls-dialect= option on arm64 platform",
+            "mips64el": "Please check the -mtls-dialect= option on mips64el platform",
+            "sw_64": "Please check the -mtls-dialect= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mtls-direct-seg-refs": {
+        "suggestion": {
+            "arm64": "Please check the -mtls-direct-seg-refs option on arm64 platform",
+            "mips64el": "Please check the -mtls-direct-seg-refs option on mips64el platform",
+            "sw_64": "Please check the -mtls-direct-seg-refs option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mtune-ctrl=": {
+        "suggestion": {
+            "arm64": "Please check the -mtune-ctrl= option on arm64 platform",
+            "mips64el": "Please check the -mtune-ctrl= option on mips64el platform",
+            "sw_64": "Please check the -mtune-ctrl= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mtune=": {
+        "suggestion": {
+            "arm64": "Please check the -mtune= option on arm64 platform",
+            "mips64el": "Please check the -mtune= option on mips64el platform",
+            "sw_64": "Please check the -mtune= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-muclibc": {
+        "suggestion": {
+            "arm64": "Please check the -muclibc option on arm64 platform",
+            "mips64el": "Please check the -muclibc option on mips64el platform",
+            "sw_64": "Please check the -muclibc option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mvaes": {
+        "suggestion": {
+            "arm64": "Please check the -mvaes option on arm64 platform",
+            "mips64el": "Please check the -mvaes option on mips64el platform",
+            "sw_64": "Please check the -mvaes option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mveclibabi=": {
+        "suggestion": {
+            "arm64": "Please check the -mveclibabi= option on arm64 platform",
+            "mips64el": "Please check the -mveclibabi= option on mips64el platform",
+            "sw_64": "Please check the -mveclibabi= option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mvect8-ret-in-mem": {
+        "suggestion": {
+            "arm64": "Please check the -mvect8-ret-in-mem option on arm64 platform",
+            "mips64el": "Please check the -mvect8-ret-in-mem option on mips64el platform",
+            "sw_64": "Please check the -mvect8-ret-in-mem option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mvpclmulqdq": {
+        "suggestion": {
+            "arm64": "Please check the -mvpclmulqdq option on arm64 platform",
+            "mips64el": "Please check the -mvpclmulqdq option on mips64el platform",
+            "sw_64": "Please check the -mvpclmulqdq option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mvzeroupper": {
+        "suggestion": {
+            "arm64": "Please check the -mvzeroupper option on arm64 platform",
+            "mips64el": "Please check the -mvzeroupper option on mips64el platform",
+            "sw_64": "Please check the -mvzeroupper option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mwbnoinvd": {
+        "suggestion": {
+            "arm64": "Please check the -mwbnoinvd option on arm64 platform",
+            "mips64el": "Please check the -mwbnoinvd option on mips64el platform",
+            "sw_64": "Please check the -mwbnoinvd option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mx32": {
+        "suggestion": {
+            "arm64": "Please check the -mx32 option on arm64 platform",
+            "mips64el": "Please check the -mx32 option on mips64el platform",
+            "sw_64": "Please check the -mx32 option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mxop": {
+        "suggestion": {
+            "arm64": "Please check the -mxop option on arm64 platform",
+            "mips64el": "Please check the -mxop option on mips64el platform",
+            "sw_64": "Please check the -mxop option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mxsave": {
+        "suggestion": {
+            "arm64": "Please check the -mxsave option on arm64 platform",
+            "mips64el": "Please check the -mxsave option on mips64el platform",
+            "sw_64": "Please check the -mxsave option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mxsavec": {
+        "suggestion": {
+            "arm64": "Please check the -mxsavec option on arm64 platform",
+            "mips64el": "Please check the -mxsavec option on mips64el platform",
+            "sw_64": "Please check the -mxsavec option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mxsaveopt": {
+        "suggestion": {
+            "arm64": "Please check the -mxsaveopt option on arm64 platform",
+            "mips64el": "Please check the -mxsaveopt option on mips64el platform",
+            "sw_64": "Please check the -mxsaveopt option on sw_64 platform"
+        },
+        "range": []
+    },
+    "-mxsaves": {
+        "suggestion": {
+            "arm64": "Please check the -mxsaves option on arm64 platform",
+            "mips64el": "Please check the -mxsaves option on mips64el platform",
+            "sw_64": "Please check the -mxsaves option on sw_64 platform"
+        },
+        "range": []
+    }
+}

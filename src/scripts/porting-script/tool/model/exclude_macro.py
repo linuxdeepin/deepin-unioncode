@@ -25,7 +25,7 @@
 ignore it.'''
 
 COMMON_EXCLUDE_MACROS = [
-    'PPC', 'PPC64', 's390', 's390x', 'powerpc', 'alpha',
+    'PPC', 'PPC64', 's390', 's390x', 'powerpc'
     'itanium', 'win32', 'win64', 'intel', 'freebsd', 'sparc', 'sparc64', 'm68k',
     'hppa', 'riscv']
 
