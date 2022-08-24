@@ -27,8 +27,8 @@ if [ "$arch" = "x86_64" ];then
     optionNum=168
 elif [ "$arch" = "arm64" ];then
     optionNum=100
-elif [ "$arch" = "mips64el" ];then
-    optionNum=100
+elif [ "$arch" = "mips64" ];then
+    optionNum=106
 elif [ "$arch" = "sw_64" ];then
     optionNum=100
 fi
