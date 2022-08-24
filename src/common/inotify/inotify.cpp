@@ -52,8 +52,12 @@ Inotify::~Inotify()
 
 Inotify *Inotify::globalInstance()
 {
-    if (ins == nullptr)
+    if (ins == nullptr) {
         ::ins = new Inotify;
+        QObject::connect(qApp, &QCoreApplication::aboutToQuit, [=](){
+            delete ::ins;
+        });
+    }
     if (qApp->thread() != QThread::currentThread())
         ins->moveToThread(qApp->thread());
     return ins;

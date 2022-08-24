@@ -100,6 +100,7 @@ void OptionUtils::convert(const QString &key, const QVariant &variant, QJsonObje
     {
         QJsonObject object;
         foreach (const QVariant &var, variant.toList()) {
+            Q_UNUSED(var)
             //TODO
         }
         jsonObject.insert(key, object);

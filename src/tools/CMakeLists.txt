@@ -1,2 +1,3 @@
 add_subdirectory(debugadapter)
 add_subdirectory(languageadapter)
+add_subdirectory(performancedapter)

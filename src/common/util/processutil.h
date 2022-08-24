@@ -22,7 +22,9 @@
 #define PROCESSCALLER_H
 
 #include <QString>
+#include <QProcess>
 #include <QByteArray>
+
 #include <functional>
 
 class ProcessUtil final
@@ -30,6 +32,7 @@ class ProcessUtil final
     Q_DISABLE_COPY(ProcessUtil)
     ProcessUtil() = delete;
 public:
+    typedef std::function<void(int, QProcess::ExitStatus)> FinishedCallBack;
     typedef std::function<void(const QByteArray &)> ReadCallBack;
     static bool execute(const QString &program,
                         const QStringList &arguments,

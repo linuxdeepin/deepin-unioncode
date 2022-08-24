@@ -34,7 +34,7 @@
 #include <iostream>
 
 namespace OptionNames {
-const QString port {"prot"};
+const QString port {"port"};
 const QString session {"session"};
 const QString language {"language"};
 const QString generate {"generate"};
