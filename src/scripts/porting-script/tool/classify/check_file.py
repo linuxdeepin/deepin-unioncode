@@ -51,7 +51,7 @@ MAKEFILE = ['makefile.in', 'makefile.am', 'makefile',
 
 
 class FileClassify:
-    def __init__(self, inputs) -> None:
+    def __init__(self, inputs) -> None: 
         self.file_type_dict = defaultdict(list)
         self.inputs = inputs
 
@@ -119,17 +119,18 @@ class FileClassify:
 
     def scan_make_file(self, src_path):
         LOGGER.info('full path scan file: [%s]' % src_path)
-        # TODO(mozart):luzhen comment here
+        make_re = re.compile('make\\.\\w+', re.I)
 
-        for (root, dirs, files) in os.walk(src_path):
+        for (root, _, files) in os.walk(src_path):
             for filename in files:
                 absolute_path = os.path.join(root, filename)
-                r, ext = os.path.splitext(filename)
+                _, ext = os.path.splitext(filename)
                 if self.exclude_file(absolute_path):
                     continue
+
                 for key, value in POSTFIX_TYPES.items():
-                    make_re = re.compile('make\\.\\w+', re.I)
-                    if key == 'makefiles' and (make_re.match(filename) or ext.lower() in value or filename.lower in MAKEFILE):
+                    if key == 'makefiles' and (
+                        make_re.match(filename) or ext.lower() in value or filename.lower() in MAKEFILE):
                         self.file_type_dict[key].append(absolute_path)
                         break
                     elif ext.lower() in value:

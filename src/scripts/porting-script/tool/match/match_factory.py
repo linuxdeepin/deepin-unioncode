@@ -25,6 +25,8 @@ from soupsieve import match
 from tool.match.cpp_matcher import CppMatcher
 from tool.tool_config import MatcherType
 from tool.match.match_rules import *
+from tool.match.makefile_matcher import MakefileMatcher
+
 
 class MatcherFactory:
     def __init__(self, file_type_dicts, inputs_dict, rules_pattern, rules_dict, progress):
@@ -37,10 +39,11 @@ class MatcherFactory:
 
     def get_matcher(self, matcher_type):
         if matcher_type == MatcherType.CppMatcher:
-            matcher = CppMatcher(self.files_type_dicts['cppfiles'], self.rules_pattern.c, self.rules_dict.c, 
-            self.inputs_dict, self.asm_dict, self.progress)
+            matcher = CppMatcher(self.files_type_dicts['cppfiles'], self.rules_pattern.c, self.rules_dict.c,
+                                 self.inputs_dict, self.asm_dict, self.progress)
             return matcher
         elif matcher_type == MatcherType.MakefileMatcher:
-            #TODO(mozart):todo
-            pass
+            matcher = MakefileMatcher(self.files_type_dicts['makefiles'], self.rules_pattern.make,
+                                                            self.rules_dict.make, self.inputs_dict, self.progress)
+            return matcher
         return None
