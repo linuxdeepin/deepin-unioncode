@@ -37,46 +37,19 @@ ReportPane::ReportPane(CodePorting *_codePorting, QWidget *parent) : QWidget(par
 
 void ReportPane::refreshDispaly()
 {
-    srcTableWidget->clearContents();
-
-    const CodePorting::Report &report = codePorting->getReport();
-    CodePorting::ReportIterator i(report);
-    int itemsCount = 0;
-    while (i.hasNext()) {
-        i.next();
-        itemsCount += i.value().count();
-    }
-    if (itemsCount == 0)
-        return;
-
-    srcTableWidget->setRowCount(itemsCount);
-
-    // Get types.
-    int row = 0;
-    for (auto itType = report.begin(); itType != report.end(); ++itType) {
-        auto &listItems = itType.value();
-        // Get items.
-        for (auto items : listItems) {
-            int col = 0;
-            // Get item.
-            for (auto item : items) {
-                srcTableWidget->setItem(row, col, new QTableWidgetItem(item));
-                col++;
-            }
-            row++;
-        }
-    }
-    srcTableWidget->resizeColumnsToContents();
+    auto &&srcReport = codePorting->getSourceReport();
+    auto &&libReport = codePorting->getDependLibReport();
+    refreshTableView(srcTableWidget, srcReport);
+    refreshTableView(libTableWidget, libReport);
 }
 
 void ReportPane::srcCellSelected(int row, int col)
 {
     qDebug() << "srcCellSelected: " << row << col;
 
-    const CodePorting::Report &report = codePorting->getReport();
+    auto &&report = codePorting->getSourceReport();
     if (report.size()) {
-        auto itemsList = report.first();
-        auto items = itemsList[row];
+        auto items = report[row];
         if (items.size() == CodePorting::kItemsCount) {
             QString range = items[CodePorting::kCodeRange];
             QRegularExpression reg("(?<=\\()(\\d)*, (\\d)*(?=\\))");
@@ -119,6 +92,28 @@ void ReportPane::initTableWidget()
     hLayout->setContentsMargins(0, 0, 0, 9);
     this->setLayout(hLayout);
     hLayout->addWidget(tabWidget);
+}
+
+void ReportPane::refreshTableView(QTableWidget *widget, const QList<QStringList> &report)
+{
+    if (widget && report.size() > 0) {
+        widget->clearContents();
+
+        int itemsCount = report.size();
+        widget->setRowCount(itemsCount);
+
+        int row = 0;
+        int col = 0;
+        for (auto itItem = report.begin(); itItem != report.end(); ++itItem) {
+            for (auto data : *itItem) {
+                widget->setItem(row, col, new QTableWidgetItem(data));
+                col++;
+            }
+            row++;
+            col = 0;
+        }
+        widget->resizeColumnsToContents();
+    }
 }
 
 void ReportPane::setTableWidgetStyle(QTableWidget *tableWidget, const QStringList &colNames)

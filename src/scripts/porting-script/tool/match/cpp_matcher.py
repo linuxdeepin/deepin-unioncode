@@ -69,7 +69,6 @@ class InlineAsm:
             LOGGER.error(
                 'Asm json file for arch [%s] is not right, please check it in [config/ASM/*.json]' % self.dest_cpu
             )
-            exit(0)
 
     def judge_asm_arch(self, inline_asm_segment):
         for asm in inline_asm_segment:

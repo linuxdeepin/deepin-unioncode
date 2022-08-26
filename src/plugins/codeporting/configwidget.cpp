@@ -41,7 +41,7 @@ static const char *kTargetCPU = "Target CPU";
 // TODO(mozart):These value should get from backend later.
 static const char *kX86_64 = "x86_64";
 static const char *kArm = "arm64";
-static const char *kMips = "mips";
+static const char *kMips = "mips64el";
 
 using namespace dpfservice;
 
@@ -99,10 +99,17 @@ void ConfigWidget::configDone()
     d->cfgParam.targetCPU = d->combTarget->currentText();
     d->cfgParam.reserve = d->combReserve->currentText();
 
+    // empty parameter check.
     if (d->cfgParam.project.isEmpty()
             || d->cfgParam.srcCPU.isEmpty()
             || d->cfgParam.targetCPU.isEmpty()) {
-        d->lbWarning->setText("Warning: parameter is empty!");
+        d->lbWarning->setText(tr("Warning: parameter is empty!"));
+        return;
+    }
+
+    // repeat paramter check.
+    if (d->cfgParam.srcCPU == d->cfgParam.targetCPU) {
+        d->lbWarning->setText(tr("Warning: source cpu and target cpu should not be the same!"));
         return;
     }
 

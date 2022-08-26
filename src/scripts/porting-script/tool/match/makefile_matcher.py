@@ -74,7 +74,7 @@ class MakefileMatcher(Matcher):
     def finally_save_result(self):
         for item in self.make_lib:
             name = self.adjust_lib_name(item)
-            self.scan_results.append(MatchResult(name, ' ', ' ', ' ', 'sofiles'))
+            self.scan_results.append(MatchResult(name, ' ', ' ', 'check the compatibility of the library on the target platform', 'sofiles'))
 
     def adjust_lib_name(self, lib_name):
         if lib_name in LIB_DICT:

@@ -61,6 +61,9 @@ public:
     const QStringList &getSrcItemNames() const;
     const QStringList &getLibItemNames() const;
 
+    const QList<QStringList> getSourceReport() const;
+    const QList<QStringList> getDependLibReport() const;
+
 signals:
     QString outputInformation(const QString &line, OutputPane::OutputFormat format);
     void notifyPortingStatus(PortingStatus status);

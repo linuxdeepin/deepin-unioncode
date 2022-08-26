@@ -31,11 +31,12 @@ class MatcherType(Enum):
     InvalidMatcher = -1
     CppMatcher = 0
     MakefileMatcher = 1
+    HeadfileMatcher = 2
 
 
 file_matcher = {'cppfiles': MatcherType.CppMatcher,
                 'makefiles': MatcherType.MakefileMatcher,
-                'cheaders': '', # TODO(mozart):todo
+                'cheaders': MatcherType.HeadfileMatcher,
                 'sofiles': ''} # TODO(mozart):todo
 
 MatchResult = namedtuple('MatchResult', [

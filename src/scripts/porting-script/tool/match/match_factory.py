@@ -46,4 +46,9 @@ class MatcherFactory:
             matcher = MakefileMatcher(self.files_type_dicts['makefiles'], self.rules_pattern.make,
                                                             self.rules_dict.make, self.inputs_dict, self.progress)
             return matcher
+        elif matcher_type == MatcherType.HeadfileMatcher:
+            matcher = CppMatcher(self.files_type_dicts["cheaders"], self.rules_pattern.c, self.rules_dict.c,
+                                 self.inputs_dict,
+                                 self.asm_dict, self.progress)
+            return matcher
         return None

@@ -151,6 +151,16 @@ const QStringList &CodePorting::getLibItemNames() const
     return kLibItemNames;
 }
 
+const QList<QStringList> CodePorting::getSourceReport() const
+{
+    return report["cppfiles"];
+}
+
+const QList<QStringList> CodePorting::getDependLibReport() const
+{
+    return report["sofiles"];
+}
+
 /**
  * @brief findAll
  * @param pattern
@@ -228,7 +238,7 @@ bool CodePorting::parseReportFromFile(const QString &reportPath)
                     cols.first().remove(quotes);
                     cols.last().remove(quotes);
 
-                    QString type = cols[kFileType];
+                    QString type = cols[kFileType].simplified();
                     if (report.find(type) == report.end()) {
                         report.insert(type, {cols});
                     } else {

@@ -101,10 +101,8 @@ void CodePortingManager::slotSelectedChanged(const QString &filePath, const QStr
 
     EventSender::jumpTo(filePath, startLine + kLineNumberAdaptation);
 
-    // TODO(mozart): Temporary display.
-    QMessageBox msgBox;
-    msgBox.setText(suggestion);
-    msgBox.exec();
+    // TODO(mozart): Display suggestion in editor.
+    qInfo() << suggestion;
 }
 
 void CodePortingManager::slotAppendOutput(const QString &content, OutputPane::OutputFormat format)

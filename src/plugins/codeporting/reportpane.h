@@ -43,6 +43,7 @@ public slots:
 private:
     void initTableWidget();
     void setTableWidgetStyle(QTableWidget *srcTableWidget, const QStringList &colNames);
+    void refreshTableView(QTableWidget *widget, const QList<QStringList> &report);
 
     QTableWidget *srcTableWidget {nullptr};
     QTableWidget *libTableWidget {nullptr};
