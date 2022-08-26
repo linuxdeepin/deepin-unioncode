@@ -86,11 +86,17 @@ void CMakeGenerator::appendOutputParser(std::unique_ptr<IOutputParser>& outputPa
 
 bool CMakeGenerator::checkCommandValidity(const BuildCommandInfo &info, QString &retMsg)
 {
-    if (info.program.trimmed().isEmpty()) {
+    if (!QFileInfo(info.program.trimmed()).exists()) {
         retMsg = tr("The build command of %1 project is null! "\
                     "please install it in console with \"sudo apt install cmake\", and then restart the tool.")
                 .arg(info.kitName.toUpper());
+        return false;
+    }
 
+    if (!QFileInfo(info.workingDir.trimmed()).exists()) {
+        retMsg = tr("The path of \"%1\" is not exist! "\
+                    "please check and reopen the project.")
+                .arg(info.workingDir);
         return false;
     }
 

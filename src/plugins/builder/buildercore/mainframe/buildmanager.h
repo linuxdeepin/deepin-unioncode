@@ -56,6 +56,7 @@ signals:
     void sigOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format);
     void sigOutputProblemInfo(const QString &content);
     void sigBuildState(const BuildState &buildstate);
+    void sigOutputNotify(const BuildState &state, const BuildCommandInfo &commandInfo);
 
 public slots:
     void slotOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format);
@@ -65,6 +66,7 @@ public slots:
     void rebuildProject();
     void cleanProject();
     void slotBuildState(const BuildState &buildstate);
+    void slotOutputNotify(const BuildState &state, const BuildCommandInfo &commandInfo);
 
 private:
     explicit BuildManager(QObject *parent = nullptr);
@@ -75,6 +77,7 @@ private:
     void resetBuildUI();
     void outputLog(const QString &content, const OutputPane::OutputFormat format);
     void outputError(const QString &content);
+    void outputNotify(const BuildState &state, const BuildCommandInfo &commandInfo);
 
     bool execCommands(const QList<BuildCommandInfo> &commandList);
     bool execCommand(const BuildCommandInfo &info);

@@ -76,7 +76,9 @@ BuildManager::BuildManager(QObject *parent)
     QObject::connect(this, &BuildManager::sigOutputProblemInfo, this, &BuildManager::slotOutputProblemInfo);
 
     qRegisterMetaType<BuildState>("BuildState");
+    qRegisterMetaType<BuildCommandInfo>("BuildCommandInfo");
     QObject::connect(this, &BuildManager::sigBuildState, this, &BuildManager::slotBuildState);
+    QObject::connect(this, &BuildManager::sigOutputNotify, this, &BuildManager::slotOutputNotify);
 }
 
 BuildManager::~BuildManager()
@@ -235,7 +237,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
 {
     outBuildState(BuildState::kBuilding);
     bool ret = false;
-    QString retMsg = tr("Error: The \"%1\" command not found, please install it and then restart the tool.\n").arg(info.program);
+    QString retMsg = tr("Error: execute command error! The reason is unknown.\n");
     QProcess process;
     process.setWorkingDirectory(info.workingDir);
 
@@ -287,7 +289,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
     BuildState buildState = ret ? BuildState::kNoBuild : BuildState::kBuildFailed;
     outBuildState(buildState);
 
-    BuilderSender::notifyBuildState(buildState, info);
+    outputNotify(buildState, info);
     return ret;
 }
 
@@ -301,6 +303,11 @@ void BuildManager::outputError(const QString &content)
     emit sigOutputProblemInfo(content);
 }
 
+void BuildManager::outputNotify(const BuildState &state, const BuildCommandInfo &commandInfo)
+{
+    emit sigOutputNotify(state, commandInfo);
+}
+
 void BuildManager::slotOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format)
 {
     d->outputParser->stdOutput(content, format);
@@ -309,6 +316,11 @@ void BuildManager::slotOutputCompileInfo(const QString &content, const OutputPan
 void BuildManager::slotOutputProblemInfo(const QString &content)
 {
     d->outputParser->stdError(content);
+}
+
+void BuildManager::slotOutputNotify(const BuildState &state, const BuildCommandInfo &commandInfo)
+{
+    BuilderSender::notifyBuildState(state, commandInfo);
 }
 
 void BuildManager::addOutput(const QString &content, const OutputPane::OutputFormat format)
