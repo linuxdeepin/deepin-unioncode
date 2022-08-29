@@ -52,6 +52,8 @@ class BuildManagerPrivate
     QString activedWorkingDir;
 
     std::unique_ptr<IOutputParser> outputParser = nullptr;
+
+    BuildState currentState = BuildState::kNoBuild;
 };
 
 BuildManager *BuildManager::instance()
@@ -136,6 +138,12 @@ void BuildManager::cleanProject()
 
 void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
 {
+    if(!canStartBuild()) {
+        QMetaObject::invokeMethod(this, "message",
+                                  Q_ARG(QString, "The builder is running, please try again later!"));
+        return;
+    }
+
     auto &ctx = dpfInstance.serviceContext();
     auto builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
@@ -200,6 +208,12 @@ void BuildManager::clearActivedProjectInfo()
 
 void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
 {
+    if(!canStartBuild()) {
+        QMetaObject::invokeMethod(this, "message",
+                                  Q_ARG(QString, "The builder is running, please try again later!"));
+        return;
+    }
+
     auto &ctx = dpfInstance.serviceContext();
     auto builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
@@ -221,7 +235,6 @@ void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
 bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList)
 {
     if (!commandList.isEmpty()) {
-        resetBuildUI();
         QtConcurrent::run([=](){
             QMutexLocker locker(&releaseMutex);
             for (auto command : commandList) {
@@ -344,6 +357,8 @@ void BuildManager::outBuildState(const BuildState &buildState)
 
 void BuildManager::slotBuildState(const BuildState &buildState)
 {
+    d->currentState = buildState;
+
     switch (buildState) {
     case BuildState::kNoBuild:
     case BuildState::kBuildFailed:
@@ -357,4 +372,9 @@ void BuildManager::slotBuildState(const BuildState &buildState)
         d->cleanAction->setEnabled(false);
         break;
     }
+}
+
+bool BuildManager::canStartBuild()
+{
+    return BuildState::kBuilding != d->currentState;
 }

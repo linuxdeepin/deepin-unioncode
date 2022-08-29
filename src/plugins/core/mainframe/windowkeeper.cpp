@@ -283,8 +283,8 @@ void WindowKeeper::layoutWindow(QMainWindow *window)
     d->toolbar = new QToolBar(QToolBar::tr("Navigation"));
     createNavRecent(d->toolbar);
     createNavEdit(d->toolbar);
-    createNavDebug(d->toolbar);
-    createNavRuntime(d->toolbar);
+    //createNavDebug(d->toolbar);
+    //createNavRuntime(d->toolbar);
 
     QMenuBar* menuBar = new QMenuBar();
     createFileActions(menuBar);

@@ -271,8 +271,8 @@ void Debugger::registerDapHandlers()
             || event.reason == "breakpoint"
             || event.reason == "step"
                 || event.reason == "breakpoint-hit"
-                || event.reason == "function-finished") {
-
+                || event.reason == "function-finished"
+                || event.reason == "end-stepping-range") {
             if (event.threadId) {
                 threadId = event.threadId.value(0);
                 switchCurrentThread(static_cast<int>(threadId));

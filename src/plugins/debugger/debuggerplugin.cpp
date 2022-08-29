@@ -62,6 +62,7 @@ bool DebuggerPlugin::start()
 
 dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 {
+    QProcess::execute("killall -9 debugadapter");
     return Sync;
 }
 
