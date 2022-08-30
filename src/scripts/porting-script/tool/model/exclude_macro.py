@@ -30,23 +30,23 @@ COMMON_EXCLUDE_MACROS = [
     'hppa', 'riscv']
 
 # x86
-FROM_X86_EXCLUDE_MACROS = ['mips', 'arm', 'aarch64', 'alpha']
+FROM_X86_EXCLUDE_MACROS = ['mips', 'arm', 'aarch64', 'sw_64']
 FROM_X86_EXCLUDE_MACROS.extend(COMMON_EXCLUDE_MACROS)
 
 # arm
-FROM_ARM_EXCLUDE_MACROS = ['x86', 'mips', 'alpha']
+FROM_ARM_EXCLUDE_MACROS = ['x86', 'mips', 'sw_64']
 FROM_ARM_EXCLUDE_MACROS.extend(COMMON_EXCLUDE_MACROS)
 
 # mips
-FROM_MIPSEL64_EXCLUDE_MACROS = ['x86', 'arm', 'aarch64', 'alpha']
+FROM_MIPSEL64_EXCLUDE_MACROS = ['x86', 'arm', 'aarch64', 'sw_64']
 FROM_MIPSEL64_EXCLUDE_MACROS.extend(COMMON_EXCLUDE_MACROS)
 
-# alpha
-FROM_ALPHA_EXCLUDE_MACROS = ['mips', 'arm', 'aarch64', 'x86']
-FROM_ALPHA_EXCLUDE_MACROS.extend(COMMON_EXCLUDE_MACROS)
+# sw_64
+FROM_SW_64_EXCLUDE_MACROS = ['mips', 'arm', 'aarch64', 'x86']
+FROM_SW_64_EXCLUDE_MACROS.extend(COMMON_EXCLUDE_MACROS)
 
 exclude_pattern = {
     "arm64": FROM_ARM_EXCLUDE_MACROS, 
     "mips64el": FROM_MIPSEL64_EXCLUDE_MACROS,
     "x86_64": FROM_X86_EXCLUDE_MACROS, 
-    "alpha": FROM_ALPHA_EXCLUDE_MACROS}
+    "sw_64": FROM_SW_64_EXCLUDE_MACROS}

@@ -24,13 +24,11 @@
 """cli entry"""
 
 import argparse
-from importlib import import_module
 import os
 import sys
 import threading
 import time
 from tool.api.scan import ScanApi
-
 from tool.tool_config import ToolConfig
 from tool.util.logger import Logger
 

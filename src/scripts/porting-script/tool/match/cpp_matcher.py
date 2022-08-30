@@ -21,16 +21,13 @@
 *
 """
 
-from asyncio.log import logger
 import re
 
-from soupsieve import match
-from tool.model import pre_macro
 from tool.util.logger import Logger
 from tool.match.comment_delete import CommentDelete
 from tool.match.matcher import Matcher
 from tool.model.inline_assemble import INLINE_ASSEMBLES
-from tool.model.pre_macro import MACROS_X86, MACROS_ARM, MACROS_ALPHA, MACROS_MIPS
+from tool.model.pre_macro import MACROS_X86, MACROS_ARM, MACROS_SW_64, MACROS_MIPS
 from tool.tool_config import MatchResult
 
 LOGGER = Logger().getlogger()
@@ -40,18 +37,18 @@ arm_macro_pattern = '(%s)' % '|'.join(MACROS_ARM)
 # x86
 x86_macro_pattern = '(%s)' % '|'.join(MACROS_X86)
 # mips
-mips_macro_pattern = '(mips)'#'(%s)' % '|'.join(MACROS_MIPS)
-# alpha
-alpha_macro_pattern = '(%s)' % '|'.join(MACROS_ALPHA)
+mips_macro_pattern = '(%s)' % '|'.join(MACROS_MIPS)
+# sw_64
+sw_64_macro_pattern = '(%s)' % '|'.join(MACROS_SW_64)
 
-cpu_list = ['arm64', 'x86_64', 'mips64el']#, 'alpha'
+cpu_list = ['arm64', 'x86_64', 'mips64el', 'sw_64']
 
 macro_pattern = {'x86_64': x86_macro_pattern, 'arm64': arm_macro_pattern,
-                 'mips64el': mips_macro_pattern} # 'alpha': alpha_macro_pattern
+                 'mips64el': mips_macro_pattern, 'sw_64': sw_64_macro_pattern}
 macro_suggestion = {'x86_64': 'Suggestion: Modify those code to adapt x86_64 platform.',
                     'arm64': 'Suggestion: Modify those code to adapt AArch64 platform.',
                     'mips64el': 'Suggestion: Modify those code to adapt Mips64el platform.',
-                    'alpha': 'Suggestion: Modify those code to adapt Alpha platform.'}
+                    'sw_64': 'Suggestion: Modify those code to adapt sw_64 platform.'}
 
 
 class InlineAsm:

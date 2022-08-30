@@ -21,16 +21,10 @@
 *
 """
 
-from asyncio.log import logger
-from compileall import compile_dir
-from importlib.resources import path
-from posixpath import splitext
 import subprocess
 import os
-import os.path
 import re
 from collections import defaultdict
-from sys import stdout
 from tool.util.read_json import ReadJsonToDict
 from tool.model.exclude_macro import exclude_pattern
 from tool.util.logger import Logger

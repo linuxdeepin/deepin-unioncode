@@ -20,6 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 """
+
 import re
 from tool.match.comment_delete import CommentDelete
 from tool.match.matcher import Matcher

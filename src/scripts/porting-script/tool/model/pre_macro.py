@@ -57,7 +57,7 @@ MACROS_MIPS = [
     '__MIPS_ISA3__', '__MIPS_ISA4__', '__MIPS_ISA4__' 
 ]
 
-MACROS_ALPHA = [
+MACROS_SW_64 = [
     '__alpha__', '__alpha_ev__', '__alpha', 
     '_M_ALPHA'
 ]

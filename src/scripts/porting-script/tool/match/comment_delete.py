@@ -20,10 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 *
 """
-from importlib.abc import ExecutionLoader
-import math
+
 import re
-from sys import flags
 
 class CommentDelete:
     MULTI_COMMENT_C = ('/*', '*/')

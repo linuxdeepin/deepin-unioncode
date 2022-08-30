@@ -21,7 +21,6 @@
 *
 """
 
-from soupsieve import match
 from tool.match.cpp_matcher import CppMatcher
 from tool.tool_config import MatcherType
 from tool.match.match_rules import *

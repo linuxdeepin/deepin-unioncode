@@ -25,8 +25,9 @@ ASSEMBLES_DICT = {
     '__assembles__': {'description': "Found arch specific assembles using '__asm'/'__asm__'/'asm'/'_asm'.",
                       'suggestion':
                       {"arm64": 'Check these assembles to see if it need to port.',
-                       "mips64el": 'Check these assembles to see if it need to port.'}
-                    #   TODO(mozart):alpha
+                       "mips64el": 'Check these assembles to see if it need to port.',
+                       "x86_64": 'Check these assembles to see if it need to port.',
+                       "sw_64": 'Check these assembles to see if it need to port.'}
                       }
 }
 INLINE_ASSEMBLES = {'asm': {'description': '',

@@ -42,6 +42,7 @@ static const char *kTargetCPU = "Target CPU";
 static const char *kX86_64 = "x86_64";
 static const char *kArm = "arm64";
 static const char *kMips = "mips64el";
+static const char *kSW_64 = "sw_64";
 
 using namespace dpfservice;
 
@@ -134,10 +135,12 @@ void ConfigWidget::initializeUi()
     d->combSrc->addItem(kX86_64);
     d->combSrc->addItem(kArm);
     d->combSrc->addItem(kMips);
+    d->combSrc->addItem(kSW_64);
 
     d->combTarget->addItem(kX86_64);
     d->combTarget->addItem(kArm);
     d->combTarget->addItem(kMips);
+    d->combTarget->addItem(kSW_64);
 }
 
 void ConfigWidget::setDefaultValue()
@@ -149,15 +152,15 @@ void ConfigWidget::setDefaultValue()
 void ConfigWidget::setupUi(QWidget *Widget)
 {
     Widget->setWindowTitle(tr("CodePorting config"));
-    Widget->resize(655, 300);
+    Widget->resize(500, 200);
     d->verticalLayout = new QVBoxLayout(Widget);
     d->verticalLayout->setSpacing(6);
     d->verticalLayout->setContentsMargins(11, 11, 11, 11);
-    d->verticalLayout->setContentsMargins(40, 20, 40, 0);
+    d->verticalLayout->setContentsMargins(40, 20, 40, 20);
     d->gridLayout = new QGridLayout();
     d->gridLayout->setSpacing(6);
     d->lbProject = new QLabel(Widget);
-    d->lbProject->setText(tr("Project"));
+    d->lbProject->setText(tr("Project:"));
 
     d->gridLayout->addWidget(d->lbProject, 0, 0, 1, 1);
 
@@ -166,7 +169,7 @@ void ConfigWidget::setupUi(QWidget *Widget)
     d->gridLayout->addWidget(d->combProject, 0, 1, 1, 1);
 
     d->lbSrc = new QLabel(Widget);
-    d->lbSrc->setText(tr("Source CPU Architecture"));
+    d->lbSrc->setText(tr("Source CPU Architecture:"));
 
     d->gridLayout->addWidget(d->lbSrc, 1, 0, 1, 1);
 
@@ -175,7 +178,7 @@ void ConfigWidget::setupUi(QWidget *Widget)
     d->gridLayout->addWidget(d->combSrc, 1, 1, 1, 1);
 
     d->lbTarget = new QLabel(Widget);
-    d->lbTarget->setText(tr("Target CPU Architecture"));
+    d->lbTarget->setText(tr("Target CPU Architecture:"));
 
     d->gridLayout->addWidget(d->lbTarget, 2, 0, 1, 1);
 
@@ -184,7 +187,7 @@ void ConfigWidget::setupUi(QWidget *Widget)
     d->gridLayout->addWidget(d->combTarget, 2, 1, 1, 1);
 
     d->lbReserve = new QLabel(Widget);
-    d->lbReserve->setText(tr("Reserve"));
+    d->lbReserve->setText(tr("Reserve:"));
 
     d->gridLayout->addWidget(d->lbReserve, 3, 0, 1, 1);
 
@@ -206,8 +209,7 @@ void ConfigWidget::setupUi(QWidget *Widget)
     d->verticalLayout->addItem(d->verticalSpacer);
 
     d->horizontalLayout = new QHBoxLayout();
-    d->horizontalLayout->setSpacing(6);
-    d->horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    d->horizontalSpacer = new QSpacerItem(40, 30, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     d->horizontalLayout->addItem(d->horizontalSpacer);
 

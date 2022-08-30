@@ -21,14 +21,11 @@
 *
 """
 
-import csv
 from datetime import datetime
 from enum import Enum, unique
-from logging import exception
 import os
 from pickle import TRUE
 
-from soupsieve import match
 from tool.classify.check_file import FileClassify
 from tool.match.cpp_matcher import LOGGER
 from tool.match.match_factory import MatcherFactory
