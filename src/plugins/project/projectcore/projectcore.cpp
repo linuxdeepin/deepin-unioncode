@@ -118,6 +118,7 @@ dpf::Plugin::ShutdownFlag ProjectCore::stop()
 {
     if (::process) {
         ::process->kill();
+        ::process->waitForFinished();
         delete ::process;
         process = nullptr;
     }

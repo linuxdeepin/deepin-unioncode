@@ -47,8 +47,7 @@ Backend::Backend(const SettingInfo &info)
             qCritical() << process->readAllStandardError();
         });
         QObject::connect(process, &QProcess::aboutToClose,
-                         this, &Backend::aboutToClose,
-                         Qt::UniqueConnection);
+                         this, &Backend::aboutToClose, Qt::UniqueConnection);
         process->setProgram(info.program);
         process->setArguments(info.arguments);
         process->setWorkingDirectory(info.workDir);

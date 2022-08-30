@@ -84,6 +84,18 @@ ProjectTreeView::ProjectTreeView(QWidget *parent)
 
 ProjectTreeView::~ProjectTreeView()
 {
+
+    auto infos = getAllProjectInfo();
+
+    for (auto info : infos) {
+        QString workspaceFolder = info.workspaceFolder();
+        QString language = info.language();
+        if (!workspaceFolder.isEmpty() && !language.isEmpty()) {
+            // 停止lspClient
+            lsp::ClientManager::instance()->shutdownClient({workspaceFolder, language});
+        }
+    }
+
     if (d) {
         delete d;
     }
