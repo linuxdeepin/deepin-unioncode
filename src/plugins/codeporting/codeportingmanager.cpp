@@ -68,6 +68,7 @@ void CodePortingManager::slotPortingStart(const QString &project, const QString 
     resetUI();
 
     QString projectSrcPath;
+    QString buildDir;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService && projectService->projectView.getAllProjectInfo) {
@@ -80,12 +81,13 @@ void CodePortingManager::slotPortingStart(const QString &project, const QString 
                 QString dirName = path.split("/").back();
                 if (dirName == project) {
                     projectSrcPath = path;
+                    buildDir = projInfo.buildFolder();
                     break;
                 }
             }
         }
     }
-    AsynInvoke(codeporting.start(projectSrcPath, srcCPU, destCPU));
+    AsynInvoke(codeporting.start(projectSrcPath, srcCPU, buildDir, destCPU));
 }
 
 void CodePortingManager::slotPortingStatus(CodePorting::PortingStatus status)
@@ -105,7 +107,7 @@ void CodePortingManager::slotSelectedChanged(const QString &filePath, const QStr
     qInfo() << suggestion;
 }
 
-void CodePortingManager::slotAppendOutput(const QString &content, OutputPane::OutputFormat format)
+void CodePortingManager::slotAppendOutput(const QString &content, OutputPane::OutputFormat format, OutputPane::AppendMode mode)
 {
     if (outputPane) {
         QString newContent = content;
@@ -115,7 +117,7 @@ void CodePortingManager::slotAppendOutput(const QString &content, OutputPane::Ou
             QString time = curDatetime.toString("hh:mm:ss");
             newContent = time + ": " + newContent;
         }
-        outputPane->appendText(newContent, format);
+        outputPane->appendText(newContent, format, mode);
     }
 }
 
@@ -126,6 +128,7 @@ CodePortingManager::CodePortingManager(QObject *parent)
       reportPane(new ReportPane(&codeporting))
 {
     qRegisterMetaType<OutputPane::OutputFormat>("OutputPane::OutputFormat");
+    qRegisterMetaType<OutputPane::AppendMode>("OutputPane::AppendMode");
     qRegisterMetaType<CodePorting::PortingStatus>("PortingStatus");
 
     connect(cfgWidget, &ConfigWidget::sigStartPorting, this, &CodePortingManager::slotPortingStart);

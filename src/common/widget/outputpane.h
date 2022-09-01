@@ -37,16 +37,21 @@ public:
         ErrorMessage
     };
 
+    enum AppendMode {
+        Normal,
+        OverWrite
+    };
+
     OutputPane(QWidget *parent = nullptr);
     ~OutputPane() override;
 
     void clearContents();
-    void appendText(const QString &text, OutputFormat format);
+    void appendText(const QString &text, OutputFormat format, AppendMode mode = Normal);
 
 private:
     QString normalizeNewlines(const QString &text);
 
-    void appendCustomText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
+    void appendCustomText(const QString &text, AppendMode mode, const QTextCharFormat &format = QTextCharFormat());
     bool isScrollbarAtBottom() const;
     QString doNewlineEnforcement(const QString &out);
     void scrollToBottom();

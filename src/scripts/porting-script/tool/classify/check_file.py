@@ -21,10 +21,12 @@
 *
 """
 
+from pickle import TRUE
 import subprocess
 import os
 import re
 from collections import defaultdict
+from tool.tool_config import ToolConfig
 from tool.util.read_json import ReadJsonToDict
 from tool.model.exclude_macro import exclude_pattern
 from tool.util.logger import Logger
@@ -48,6 +50,7 @@ class FileClassify:
     def __init__(self, inputs) -> None: 
         self.file_type_dict = defaultdict(list)
         self.inputs = inputs
+        self.headlist = []
 
     def setup_files_type(self, src_path):
         LOGGER.info('Begin to Classify files in path [%s]' % src_path)
@@ -55,46 +58,39 @@ class FileClassify:
             self.make_and_compiledb_main(src_path)
         return dict(self.file_type_dict)
 
+    def classify_header_file(self):
+        headers = self.find_head_file_path(self.file_type_dict['cppfiles'])
+        self.file_type_dict['cheaders'].extend(headers)
+
     def make_and_compiledb_main(self, path):
         # Clang's Compilation Database generator for make-based build systems
-        json_content = self.make_and_compiledb(path)
+        json_content = self.make_and_compiledb(ToolConfig.build_dir)
         if json_content:
-            LOGGER.info('compiledb is successful, json file is [%s]' % path)
-            self.classifyFileType(json_content)
+            LOGGER.info('compiledb is successful, json file is [%s]' % ToolConfig.build_dir)
+            LOGGER.info("classify_file_type...")
+            self.classify_file_type(json_content)
+            LOGGER.info("classify_header_file...")
+            self.classify_header_file()
+            LOGGER.info("scan_make_file...")
+            self.scan_make_file(path, TRUE)
         else:
             LOGGER.info(
                 "compile_commands.json is None, scan files manually in this path:[%s]" % path)
             self.scan_make_file(path)
+            self.classify_header_file()
 
     def make_and_compiledb(self, path):
         compiledbJson = path + '/compile_commands.json'
-        stdout_path = '/dev/null'
-        write_make_file = './make_content.txt'
         if os.path.exists(compiledbJson):
             os.remove(compiledbJson)
         os.chdir(path)
 
-        command = 'cd ' + path + '&&make clean'
-        with open(stdout_path, 'w+') as f:
-            subprocess.call(command, stdout=f,
-                            stderr=subprocess.DEVNULL, shell=True)
-        try:
-            command = 'cd ' + path + '&&make -nkwi > make_log.txt'
-            with open(write_make_file, 'w+') as fp:
-                subprocess.call(command, stdout=fp,
-                                stderr=subprocess.DEVNULL, shell=True)
-        except IOError:
-            LOGGER.info('Error: IO error')
-        else:
-            LOGGER.info('make log write successfully')
-            fp.close()
-
-        command = 'cd ' + path + '&&compiledb --parse make_content.txt'
-        subprocess.call(command, stderr=subprocess.DEVNULL, shell=True)
+        command = 'cd ' + path + '&&compiledb -n make'
+        subprocess.call(command, stderr = subprocess.DEVNULL, shell = True)
         json_content = ReadJsonToDict.dict_from_path(compiledbJson)
         return json_content
 
-    def classifyFileType(self, json_content):
+    def classify_file_type(self, json_content):
         for item in json_content:
             if os.path.exists(item['file']):
                 full_path = os.path.abspath(item['file'])
@@ -111,7 +107,7 @@ class FileClassify:
         if extension[1] in POSTFIX_TYPES['cppfiles']:
             self.file_type_dict['cppfiles'].append(full_path)
 
-    def scan_make_file(self, src_path):
+    def scan_make_file(self, src_path, json_content = False):
         LOGGER.info('full path scan file: [%s]' % src_path)
         make_re = re.compile('make\\.\\w+', re.I)
 
@@ -127,7 +123,11 @@ class FileClassify:
                         make_re.match(filename) or ext.lower() in value or filename.lower() in MAKEFILE):
                         self.file_type_dict[key].append(absolute_path)
                         break
-                    elif ext.lower() in value:
+                    if key == "cheaders": 
+                        #In order to ensure that the header file scanning is as accurate as possible, 
+                        #the header files to be used are deduced from the c/cpp files
+                        continue
+                    elif (ext.lower() in value) and (json_content == False):
                         self.file_type_dict[key].append(absolute_path)
                         break
 
@@ -146,3 +146,56 @@ class FileClassify:
                 if os.path.isfile(absolute_path) and file_name in SOURCE_MAKEFILE:
                     return True
         return False
+
+    def find_all_include_file(self, file_type_list):
+        '''find all include files accord cpp.'''
+        headfilelist = []
+        for file in file_type_list:
+            if os.path.isfile(file):
+                with open(file, errors='ignore') as f:
+                    contents = f.read()
+                    matches = re.finditer('(^\\s*#\\s*)include(\\s*)(")(\\s*\\S*)(")', contents, re.M)
+                    for match in matches:
+                        headfilelist.append(match.group(4))
+        return list(set(headfilelist))
+
+    def find_include_file_path(self, head_file_list, out):
+        '''return header absolute path.'''
+        headpathlist = []
+        headfilepattern = '(%s)'%'|'.join(POSTFIX_TYPES["cheaders"]).replace('.', '\.')
+        for filename in head_file_list:
+            file,_ = os.path.splitext(filename)
+            special_characters_list = ['*', '+', '.']
+            for special_characters in special_characters_list:
+                if special_characters in file:
+                    replace_str = "\\"+special_characters
+                    file = file.replace(special_characters, replace_str)
+            pattern = '^\\s*\\S*' + file + headfilepattern + '\\S*'
+            matches = re.finditer(pattern, out, re.M)
+            for match in matches:
+                if os.path.splitext(match.group(0))[1] not in POSTFIX_TYPES["cheaders"]:
+                    continue
+                if match.group(0) not in headpathlist:
+                    headpathlist.append(match.group(0))
+        return headpathlist
+
+    def find_head_file_path(self, file_type_list, out = '', level = 1):
+        '''return header absolute path list according to cpp.'''
+        if out == '':
+            LOGGER.info("start find head file path.")
+            cmd = 'find ' + self.inputs['src'] + ' -name \'*\''
+            res = subprocess.Popen(cmd, stdout = subprocess.PIPE, shell = True)
+            out = res.stdout.read().decode("utf8", "ignore")
+
+        headlist=[]
+        headfilelist = self.find_all_include_file(file_type_list)
+        headlist = self.find_include_file_path(headfilelist, out)
+        if headlist:
+            [self.headlist.append(i) for i in headlist if i not in self.headlist]
+            if level > 0:
+                level -= 1
+                self.find_head_file_path(headlist, out, level)
+                
+        LOGGER.info("end find head file path.")
+        return list(set(self.headlist))
+

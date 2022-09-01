@@ -67,3 +67,4 @@ class ToolConfig:
     dirs = {}
     log_name = 'temp'
     porting_tool_db_path = ''
+    build_dir = ''

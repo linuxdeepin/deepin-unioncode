@@ -108,31 +108,35 @@ void OutputPane::scrollToBottom()
     verticalScrollBar()->setValue(verticalScrollBar()->maximum());
 }
 
-void OutputPane::appendCustomText(const QString &textIn, const QTextCharFormat &format)
+void OutputPane::appendCustomText(const QString &textIn, AppendMode mode, const QTextCharFormat &format)
 {
-    const QString text = normalizeNewlines(textIn);
     if (d->maxCharCount > 0 && document()->characterCount() >= d->maxCharCount) {
         qDebug() << "Maximum limit exceeded : " << d->maxCharCount;
         return;
     }
-    const bool atBottom = isScrollbarAtBottom();
     if (!d->cursor.atEnd())
         d->cursor.movePosition(QTextCursor::End);
+
+    if (mode == OverWrite) {
+        d->cursor.select(QTextCursor::LineUnderCursor);
+        d->cursor.removeSelectedText();
+    }
+
     d->cursor.beginEditBlock();
-    d->cursor.insertText(doNewlineEnforcement(text), format);
+    auto text = mode == OverWrite ? textIn.trimmed() : normalizeNewlines(doNewlineEnforcement(textIn));
+    d->cursor.insertText(text, format);
 
     if (d->maxCharCount > 0 && document()->characterCount() >= d->maxCharCount) {
         QTextCharFormat tmp;
         tmp.setFontWeight(QFont::Bold);
         d->cursor.insertText(doNewlineEnforcement(tr("Additional output omitted") + QLatin1Char('\n')), tmp);
     }
-
     d->cursor.endEditBlock();
-    if (atBottom)
-        scrollToBottom();
+
+    scrollToBottom();
 }
 
-void OutputPane::appendText(const QString &text, OutputFormat format)
+void OutputPane::appendText(const QString &text, OutputFormat format, AppendMode mode)
 {
     QTextCharFormat textFormat;
     switch (format) {
@@ -153,5 +157,5 @@ void OutputPane::appendText(const QString &text, OutputFormat format)
         break;
     }
 
-    appendCustomText(text, textFormat);
+    appendCustomText(text, mode, textFormat);
 }

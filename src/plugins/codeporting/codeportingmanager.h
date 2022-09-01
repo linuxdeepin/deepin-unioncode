@@ -42,7 +42,7 @@ signals:
 public slots:
     void slotShowConfigWidget();
     void slotPortingStart(const QString &project, const QString &srcCPU, const QString &destCPU);
-    void slotAppendOutput(const QString &, OutputPane::OutputFormat format);
+    void slotAppendOutput(const QString &, OutputPane::OutputFormat format, OutputPane::AppendMode);
     void slotPortingStatus(CodePorting::PortingStatus status);
     void slotSelectedChanged(const QString &filePath, const QString &suggestion, int startLine, int endLine);
 

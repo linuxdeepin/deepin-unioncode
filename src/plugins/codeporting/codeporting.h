@@ -52,7 +52,7 @@ public:
 
     explicit CodePorting(QObject *parent = nullptr);
 
-    bool start(const QString &projectSrcPath, const QString &srcCPU, const QString &destCPU);
+    bool start(const QString &projectSrcPath, const QString &srcCPU, const QString &buildDir, const QString &destCPU);
     bool abort();
 
     PortingStatus getStatus() const;
@@ -65,7 +65,7 @@ public:
     const QList<QStringList> getDependLibReport() const;
 
 signals:
-    QString outputInformation(const QString &line, OutputPane::OutputFormat format);
+    QString outputInformation(const QString &line, OutputPane::OutputFormat format, OutputPane::AppendMode mode = OutputPane::Normal);
     void notifyPortingStatus(PortingStatus status);
 
 public slots:
@@ -74,6 +74,7 @@ private:
     void resetUI();
     void updateStatus(PortingStatus _status);
     QString parseReportPath(const QString &line);
+    OutputPane::AppendMode parseFormat(const QString &line);
     bool parseReportFromFile(const QString &reportPath);
 
     QProcess process;

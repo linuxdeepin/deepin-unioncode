@@ -44,7 +44,8 @@ CodePorting::CodePorting(QObject *parent)
         process.setReadChannel(QProcess::StandardOutput);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            emit outputInformation(line, OutputPane::OutputFormat::Stdout);
+            auto mode = parseFormat(line);
+            emit outputInformation(line, OutputPane::OutputFormat::Stdout, mode);
         }
     });
 
@@ -55,16 +56,17 @@ CodePorting::CodePorting(QObject *parent)
             QRegularExpression reg("\\s\\[INFO\\]\\s");
             bool isInfo = reg.match(line).hasMatch();
             OutputPane::OutputFormat format = isInfo ? OutputPane::Stdout : OutputPane::Stderr;
-            emit outputInformation(line, format);
+            auto mode = parseFormat(line);
+            emit outputInformation(line, format, mode);
 
             // The output content include report path, so get it.
             QString reportPath = parseReportPath(line);
             if (!reportPath.isEmpty()) {
                 bool bSuccessful = parseReportFromFile(reportPath);
                 if (bSuccessful) {
-                    emit outputInformation(tr("Parse report successful.\n"), OutputPane::Stdout);
+                    emit outputInformation(tr("Parse report successful.\n"), OutputPane::Stdout, mode);
                 } else {
-                    emit outputInformation(tr("Parse report Failed.\n"), OutputPane::Stderr);
+                    emit outputInformation(tr("Parse report Failed.\n"), OutputPane::Stderr, mode);
                 }
             }
         }
@@ -91,7 +93,7 @@ CodePorting::CodePorting(QObject *parent)
             });
 }
 
-bool CodePorting::start(const QString &projectSrcPath, const QString &srcCPU, const QString &destCPU)
+bool CodePorting::start(const QString &projectSrcPath, const QString &srcCPU, const QString &buildDir, const QString &destCPU)
 {
     if (status == kRuning)
         return false;
@@ -110,6 +112,8 @@ bool CodePorting::start(const QString &projectSrcPath, const QString &srcCPU, co
     args.append(portingCli);
     args.append("-S");
     args.append(projectSrcPath);
+    args.append("-B");
+    args.append(buildDir);
     args.append("--scpu");
     args.append(srcCPU);
     args.append("--dcpu");
@@ -262,4 +266,15 @@ QString CodePorting::parseReportPath(const QString &line)
         reportPath = match.captured();
     }
     return reportPath;
+}
+
+OutputPane::AppendMode CodePorting::parseFormat(const QString &line)
+{
+    OutputPane::AppendMode mode = OutputPane::Normal;
+    QRegularExpression reg("Scan progress");
+    auto match = reg.match(line);
+    if (match.hasMatch()) {
+        mode = OutputPane::OverWrite;
+    }
+    return mode;
 }

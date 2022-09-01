@@ -28,13 +28,15 @@ import os
 import sys
 import threading
 import time
+from tool import tool_config
 from tool.api.scan import ScanApi
 from tool.tool_config import ToolConfig
 from tool.util.logger import Logger
 
 LOGGER = Logger().getlogger()
 
-def config_tool():
+def config_tool(input_dict):
+    ToolConfig.build_dir = input_dict['build_dir']
     # python script directory.
     ToolConfig.tool_dir = os.path.dirname(os.path.abspath(__file__))
     # dict directory.
@@ -55,17 +57,16 @@ def config_tool():
 def args():
     """
     -S source path
+    -B build path
     --cpu CPU Type
     """
     '''return command args'''
     parser = argparse.ArgumentParser()
-    parser.add_argument('-S', '--source', dest='src', required=False, default=None, help='source foleder')
+    parser.add_argument('-S', '--source', dest='src', required=True, default=None, help='source foleder')
+    parser.add_argument('-B', '--build', dest='build', required=True, default=None, help='build output foleder')
     parser.add_argument('--dcpu', dest='dcpu', required=True, help='architecture of dest cpu')
     parser.add_argument('--scpu', dest='scpu', required=False, default='x86_64', help='architecture of source cpu')
     args = parser.parse_args()
-    if args.src is None:
-        print("usage: [-h] [-S SRC] --cpu CPU \n error: the following arguments are requered: -S")
-        exit(1)
 
     if  args.scpu.lower() not in ToolConfig.SUPPORT_CPU_ARCH or args.dcpu.lower() not in ToolConfig.SUPPORT_CPU_ARCH:
         LOGGER.error(
@@ -73,7 +74,7 @@ def args():
         )
         exit(1)
 
-    return {"src": args.src, "src_cpu": args.scpu, "dest_cpu": args.dcpu}
+    return {"src": args.src, "build_dir": args.build, "src_cpu": args.scpu, "dest_cpu": args.dcpu}
 
 def get_progress(scan_api):
     while int(scan_api.progress.progress) <= 100:
@@ -82,6 +83,9 @@ def get_progress(scan_api):
         "▋" * (int(scan_api.progress.progress) // 2), end="")
         sys.stdout.flush()
         time.sleep(0.05)
+
+        progressInfo = "Scan progress %s %s %d%%" % (scan_api.progress.info, "▋" * (int(scan_api.progress.progress) // 2), int(scan_api.progress.progress))
+        LOGGER.info(progressInfo)
         if int(scan_api.progress.progress) == 100:
             break
 
@@ -99,10 +103,10 @@ def start_scan_src(input_dict):
 
 
 if __name__ == '__main__':
-    config_tool()
+    cmdArguments = args()
+    config_tool(cmdArguments)
     # Logger.config(ToolConfig.dirs["log_dir"], ToolConfig.log_name, 'WARN', 'DEBUG')
     Logger.config(ToolConfig.dirs["log_dir"], ToolConfig.log_name, 'INFO', 'INFO')
-    cmdArguments = args()
     print(cmdArguments)
     LOGGER.info("info test")
     start_scan_src(cmdArguments)
