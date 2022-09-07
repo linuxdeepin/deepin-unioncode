@@ -53,7 +53,7 @@ class FileClassify:
         self.headlist = []
 
     def setup_files_type(self, src_path):
-        LOGGER.info('Begin to Classify files in path [%s]' % src_path)
+        # LOGGER.info('Begin to Classify files in path [%s]' % src_path)
         if os.path.isdir(src_path):
             self.make_and_compiledb_main(src_path)
         return dict(self.file_type_dict)
@@ -67,11 +67,8 @@ class FileClassify:
         json_content = self.make_and_compiledb(ToolConfig.build_dir)
         if json_content:
             LOGGER.info('compiledb is successful, json file is [%s]' % ToolConfig.build_dir)
-            LOGGER.info("classify_file_type...")
             self.classify_file_type(json_content)
-            LOGGER.info("classify_header_file...")
             self.classify_header_file()
-            LOGGER.info("scan_make_file...")
             self.scan_make_file(path, TRUE)
         else:
             LOGGER.info(
@@ -182,7 +179,7 @@ class FileClassify:
     def find_head_file_path(self, file_type_list, out = '', level = 1):
         '''return header absolute path list according to cpp.'''
         if out == '':
-            LOGGER.info("start find head file path.")
+            # LOGGER.info("start find head file path.")
             cmd = 'find ' + self.inputs['src'] + ' -name \'*\''
             res = subprocess.Popen(cmd, stdout = subprocess.PIPE, shell = True)
             out = res.stdout.read().decode("utf8", "ignore")
@@ -196,6 +193,5 @@ class FileClassify:
                 level -= 1
                 self.find_head_file_path(headlist, out, level)
                 
-        LOGGER.info("end find head file path.")
         return list(set(self.headlist))
 

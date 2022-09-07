@@ -55,7 +55,7 @@ class InlineAsm:
     '''inline asm will be scaned in cpp file'''
     def __init__(self, dest_cpu, asm_dict):
         self.inline_start = re.compile('(?:(?:^|(?<=\\s))(?:asm|__asm|__asm__|_asm)(?:(?:(?:\\s+)('
-                                       '?:volatile|__volatile__|_volatile_|inline|goto)(?:\\s*[({]))|(?:\\s*[({])|(?:\\s[^(\\n]+)))', re.I)
+                                       '?:volatile|__volatile__|_volatile_|inline|goto)(?:\\s*[({]))|(?:\\s*[({])|(?:\\s[(\\n]+)))', re.I)
         self.inline_end = re.compile('(?:^|\\s)*[)}]\\s*(?:;)?', re.I)
         self.inline_content = re.compile('(\\".*?\\")', re.I)
         self.dest_cpu = dest_cpu
@@ -123,7 +123,7 @@ class CppMatcher(Matcher):
         self.asm_dict = asm_dict
 
     def match(self):
-        LOGGER.info('Begin to match files [totoal num: %s]' % len(self.file_list))
+        # LOGGER.info('Begin to match files [totoal num: %s]' % len(self.file_list))
         current_num = 0
         for file_path in self.file_list:
             self.match_main(file_path, re.M)

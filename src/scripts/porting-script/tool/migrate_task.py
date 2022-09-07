@@ -116,6 +116,7 @@ class SrcMigrateTask(MigrateTask):
 
     def scan_src(self):
         self.report_suffix = os.path.split(self.src_path.rstrip('/'))[1]
+        self.progress.set_info("setup files type")
         self.file_type_dict = self.file_classifier.setup_files_type(self.src_path)
         matcher_factory = MatcherFactory(self.file_type_dict, self.inputs, self.rules_pattern, self.rules_dict, self.progress)
         for file_type in self.file_type_dict.keys():
@@ -125,6 +126,7 @@ class SrcMigrateTask(MigrateTask):
             matcher_type = file_matcher[file_type]
             matcher = matcher_factory.get_matcher(matcher_type)
             if matcher:
+                self.progress.set_info("%s matcher" % file_type)
                 results = matcher.match()
                 self.scan_results.extend(results)
             else:
@@ -139,7 +141,7 @@ class SrcMigrateTask(MigrateTask):
         for result in self.scan_results:
             files.add(result[0])
         if len(files):
-            LOGGER.info('save migration files info [need to be migrated files numer %s]' % len(files))
+            # LOGGER.info('save migration files info [need to be migrated files numer %s]' % len(files))
             reproter = CsvReport()
             reproter.generate(task_id, self.report_suffix, self.scan_results)
 

@@ -260,10 +260,14 @@ bool CodePorting::parseReportFromFile(const QString &reportPath)
 QString CodePorting::parseReportPath(const QString &line)
 {
     QString reportPath;
-    QRegularExpression reg("(?<=\\s:\\s)(.*)");
+    QRegularExpression reg("porting advisor for");
     auto match = reg.match(line);
     if (match.hasMatch()) {
-        reportPath = match.captured();
+        reg.setPattern("(?<=\\s:\\s)(.*)");
+        match = reg.match(line);
+        if (match.hasMatch()) {
+            reportPath = match.captured();
+        }
     }
     return reportPath;
 }
@@ -271,7 +275,7 @@ QString CodePorting::parseReportPath(const QString &line)
 OutputPane::AppendMode CodePorting::parseFormat(const QString &line)
 {
     OutputPane::AppendMode mode = OutputPane::Normal;
-    QRegularExpression reg("Scan progress");
+    QRegularExpression reg("Running task:");
     auto match = reg.match(line);
     if (match.hasMatch()) {
         mode = OutputPane::OverWrite;

@@ -37,6 +37,9 @@ class Progress:
     def get(self):
         return self.status, self.phase, self.progress, self.info
 
+    def set_info(self, text):
+        self.info = text
+
     def start_phase(self, base, ulimit, phase, info):
         self.base = base 
         self.ulimit = ulimit

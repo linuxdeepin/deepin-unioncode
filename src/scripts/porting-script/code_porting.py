@@ -28,7 +28,6 @@ import os
 import sys
 import threading
 import time
-from tool import tool_config
 from tool.api.scan import ScanApi
 from tool.tool_config import ToolConfig
 from tool.util.logger import Logger
@@ -77,15 +76,22 @@ def args():
     return {"src": args.src, "build_dir": args.build, "src_cpu": args.scpu, "dest_cpu": args.dcpu}
 
 def get_progress(scan_api):
+    count = 0
+    run_in_terminal = sys.stdin and sys.stdin.isatty()
     while int(scan_api.progress.progress) <= 100:
         print('\r', end='')
-        print('Scan progress [{}]: {}%:'.format(scan_api.progress.info, int(scan_api.progress.progress)),
-        "▋" * (int(scan_api.progress.progress) // 2), end="")
-        sys.stdout.flush()
-        time.sleep(0.05)
 
-        progressInfo = "Scan progress %s %s %d%%" % (scan_api.progress.info, "▋" * (int(scan_api.progress.progress) // 2), int(scan_api.progress.progress))
-        LOGGER.info(progressInfo)
+        if run_in_terminal:
+            print('Scan progress [{}]: {}%:'.format(scan_api.progress.info, int(scan_api.progress.progress)),
+            "▋" * (int(scan_api.progress.progress) // 2), end="", flush=True)
+        else:
+            remainder = count % 4
+            count += 1
+            shapes = {0:'', 1:'.', 2:'..', 3:'...'}
+            progressInfo = "Running task: {} {}".format(scan_api.progress.info, shapes.get(remainder))
+            LOGGER.info(progressInfo)
+
+        time.sleep(0.2)
         if int(scan_api.progress.progress) == 100:
             break
 
@@ -107,8 +113,6 @@ if __name__ == '__main__':
     config_tool(cmdArguments)
     # Logger.config(ToolConfig.dirs["log_dir"], ToolConfig.log_name, 'WARN', 'DEBUG')
     Logger.config(ToolConfig.dirs["log_dir"], ToolConfig.log_name, 'INFO', 'INFO')
-    print(cmdArguments)
-    LOGGER.info("info test")
     start_scan_src(cmdArguments)
     
 
