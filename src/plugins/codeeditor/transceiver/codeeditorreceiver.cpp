@@ -36,9 +36,7 @@ dpf::EventHandler::Type CodeEditorReceiver::type()
 
 QStringList CodeEditorReceiver::topics()
 {
-    return {
-        T_MENU, T_FILEBROWSER , T_CODEEDITOR, T_PROJECT, T_FIND, T_SYMBOL
-    }; //绑定menu 事件
+    return {T_CODEEDITOR}; //绑定menu 事件
 }
 
 void CodeEditorReceiver::eventProcess(const dpf::Event &event)
@@ -46,101 +44,129 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
     if (!topics().contains(event.topic()))
         abort();
 
-    if (T_CODEEDITOR == event.topic()) {
-        eventDebugger(event);
-    } else if (T_PROJECT == event.topic()) {
-        eventProject(event);
-    } else if (T_MENU == event.topic()) {
-        eventMenu(event);
-    } else if (T_FILEBROWSER == event.topic()) {
-        eventFileBrowser(event);
-    } else if (T_FIND == event.topic()) {
-        eventFind(event);
-    } else if (T_SYMBOL == event.topic()) {
-        eventSymbol(event);
-    }
-}
-
-void CodeEditorReceiver::eventFileBrowser(const dpf::Event &event)
-{
-    if (D_ITEM_DOUBLECLICKED == event.data()) {
-        auto proInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-        QString filePath = event.property(P_FILEPATH).toString();
-        Head head{ proInfo.workspaceFolder(), proInfo.language()};
-        if (QFileInfo(filePath).isFile()) {
-            DpfEventMiddleware::instance()->toOpenFile(head, filePath);
+    if (D_SET_ANNOTATION == event.data()) {
+        QVariant filePathVar = event.property(P_FILEPATH);
+        QVariant fileLineVar = event.property(P_FILELINE);//.toInt(),
+        QVariant textVar = event.property(P_TEXT);
+        if (filePathVar.isValid() && fileLineVar.isValid() && textVar.isValid()) {
+            int role = 0; // set default Note;
+            /* Note = 767 Warning = 766 Error = 765 Fatal = 764*/
+            role = event.property(P_ANNOTATION_ROLE).toInt();
+            if (0 <= role && role <= 3) {
+                role = 767 - role;
+                DpfEventMiddleware::instance()->toSetAnnotation(
+                            filePathVar.toString(),
+                            fileLineVar.toInt(),
+                            textVar.toString(),
+                            role);
+            }
         }
-    }
-}
+    } else if (D_CLEAN_ANNOTATION == event.data()) {
+        QVariant filePathVar =  event.property(P_FILEPATH);
+        if (filePathVar.isValid()) {
+            DpfEventMiddleware::instance()->toCleanAnnotation(filePathVar.toString());
+        }
+    } else if (D_SET_LINE_BACKGROUND == event.data()) {
 
-void CodeEditorReceiver::eventDebugger(const dpf::Event &event)
-{
-    if (D_JUMP_TO_LINE == event.data()) {
-        return DpfEventMiddleware::instance()->toRunFileLine(
-                    event.property(P_FILEPATH).toString(),
-                    event.property(P_FILELINE).toInt());
-    }
+        QVariant colorVar = event.property(P_COLOR);
+        QVariant filePathVar = event.property(P_FILEPATH);
+        QVariant fileLineVar = event.property(P_FILELINE);
+        if (colorVar.isValid() && filePathVar.isValid() && fileLineVar.isValid()) {
+            DpfEventMiddleware::instance()->toSetLineBackground(
+                        filePathVar.toString(),
+                        fileLineVar.toInt(),
+                        qvariant_cast<QColor>(colorVar));
+        }
 
-    if (D_JUMP_CURSOR_CLEAN == event.data()) {
+    } else if (D_DEL_LINE_BACKGROUND == event.data()) {
+
+        QVariant filePathVar = event.property(P_FILEPATH);
+        QVariant fileLineVar = event.property(P_FILELINE);
+        if (filePathVar.isValid() && fileLineVar.isValid()) {
+            DpfEventMiddleware::instance()->toDelLineBackground(
+                        filePathVar.toString(),
+                        fileLineVar.toInt());
+        }
+
+    } else if (D_CLEAN_LINE_BACKGROUND == event.data()) {
+
+        QVariant filePathVar = event.property(P_FILEPATH);
+        if (filePathVar.isValid()) {
+            DpfEventMiddleware::instance()->toCleanLineBackground(
+                        filePathVar.toString());
+        }
+
+    } else if (D_JUMP_CURSOR_CLEAN == event.data()) {
+
         return DpfEventMiddleware::instance()->toRunClean();
-    }
 
-    if (D_MARGIN_DEBUG_POINT_REMOVE == event.data()) {
+    } else if (D_MARGIN_DEBUG_POINT_REMOVE == event.data()) {
+
         return DpfEventMiddleware::instance()->toDebugPointClean();
-    }
-}
 
-void CodeEditorReceiver::eventProject(const dpf::Event &event)
-{
-    if (D_ITEM_DOUBLECLICKED == event.data()) {
-        Head head{ event.property(P_WORKSPACEFOLDER).toString(),
-                    event.property(P_LANGUAGE).toString() };
-        return DpfEventMiddleware::instance()->toOpenFile(
-                    head,
-                    event.property(P_FILEPATH).toString());
-    }
-}
+    } else if (D_OPENFILE == event.data()) {
 
-void CodeEditorReceiver::eventMenu(const dpf::Event &event)
-{
-    if (D_FILE_OPENDOCUMENT == event.data()) {
-        return DpfEventMiddleware::instance()->toOpenFile(
-                    event.property(P_FILEPATH).toString());
-    }
-    if (D_FILE_OPENPROJECT == event.data()) {
+        QVariant workspaceVar = event.property(P_WORKSPACEFOLDER);
+        QVariant languageVar = event.property(P_LANGUAGE);
+        QVariant filePathVar = event.property(P_FILEPATH);
+        if (workspaceVar.isValid() && languageVar.isValid() && filePathVar.isValid()) {
+            Head head { workspaceVar.toString(), languageVar.toString() };
+            return DpfEventMiddleware::instance()->toOpenFile(head, filePathVar.toString());
+        }
+
+    } else if (D_OPENDOCUMENT == event.data()) {
+
+        QVariant filePathVar = event.property(P_FILELINE);
+        if (filePathVar.isValid()) {
+            return DpfEventMiddleware::instance()->toOpenFile(
+                        filePathVar.toString());
+        }
+
+    } else if (D_OPENPROJECT == event.data()) {
+
         qInfo() << event;
         return;
-    }
-}
 
-void CodeEditorReceiver::eventFind(const dpf::Event &event)
-{
-    if (D_SEARCH == event.data()) {
-        return DpfEventMiddleware::instance()->toSearchText(
-                    event.property(P_SRCTEXT).toString(),
-                    event.property(P_OPRATETYPE).toInt());
+    } else if (D_SEARCH == event.data()) {
+
+        QVariant srcTextVar = event.property(P_SRCTEXT);
+        QVariant opeateTypeVar = event.property(P_OPRATETYPE);
+        if (srcTextVar.isValid() && opeateTypeVar.isValid()) {
+            return DpfEventMiddleware::instance()->toSearchText(
+                        srcTextVar.toString(),
+                        opeateTypeVar.toInt());
+        }
+
     } else if (D_REPLACE == event.data()) {
-        return DpfEventMiddleware::instance()->toReplaceText(
-                    event.property(P_SRCTEXT).toString(),
-                    event.property(P_DESTTEXT).toString(),
-                    event.property(P_OPRATETYPE).toInt());
-    } else if (D_OPENFILE == event.data()) {
-        return DpfEventMiddleware::instance()->toJumpFileLine(
-                    Head(event.property(P_WORKSPACEFOLDER).toString(), event.property(P_LANGUAGE).toString()),
-                    event.property(P_FILEPATH).toString(),
-                    event.property(P_FILELINE).toInt());
-    }
-}
 
-void CodeEditorReceiver::eventSymbol(const dpf::Event &event)
-{
-    if (D_JUMP_TO_LINE == event.data()) {
-        Head head{  event.property(P_WORKSPACEFOLDER).toString(),
-                    event.property(P_LANGUAGE).toString()  };
-        DpfEventMiddleware::instance()->toJumpFileLine(
-                    head,
-                    event.property(P_FILEPATH).toString(),
-                    event.property(P_FILELINE).toInt());
+        QVariant srcTextVar = event.property(P_SRCTEXT);
+        QVariant destTextVar = event.property(P_DESTTEXT);
+        QVariant opeateTypeVar = event.property(P_OPRATETYPE);
+        if (srcTextVar.isValid() && destTextVar.isValid() && opeateTypeVar.isValid()) {
+            return DpfEventMiddleware::instance()->toReplaceText(
+                        srcTextVar.toString(),
+                        destTextVar.toString(),
+                        opeateTypeVar.toInt());
+        }
+
+    } else if (D_JUMP_TO_LINE == event.data()) {
+
+        QVariant wpFolderVar = event.property(P_WORKSPACEFOLDER);
+        QVariant languageVar = event.property(P_LANGUAGE);
+        QVariant filePathVar = event.property(P_FILEPATH);
+        QVariant fileLineVar = event.property(P_FILELINE);
+        if (wpFolderVar.isValid() && languageVar.isValid()
+                && filePathVar.isValid() && fileLineVar.isValid()) {
+            return DpfEventMiddleware::instance()->toJumpFileLine(
+                        Head(wpFolderVar.toString(), languageVar.toString()),
+                        filePathVar.toString(),
+                        fileLineVar.toInt());
+        } else if (filePathVar.isValid() && fileLineVar.isValid()) {
+            return DpfEventMiddleware::instance()->toRunFileLine(
+                        filePathVar.toString(),
+                        fileLineVar.toInt());
+        }
+
     }
 }
 

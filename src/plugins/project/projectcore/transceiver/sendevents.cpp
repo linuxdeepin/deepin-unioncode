@@ -47,8 +47,8 @@ void SendEvents::gengrateEnd(const QString &buildSystem, const QString &projectP
 void SendEvents::doubleCliekedOpenFile(const QString &workspace, const QString &language, const QString &filePath)
 {
     dpf::Event event;
-    event.setTopic(T_PROJECT);
-    event.setData(D_ITEM_DOUBLECLICKED);
+    event.setTopic(T_CODEEDITOR);
+    event.setData(D_OPENFILE);
     event.setProperty(P_FILEPATH, filePath);
     event.setProperty(P_WORKSPACEFOLDER, workspace);
     event.setProperty(P_LANGUAGE, language);

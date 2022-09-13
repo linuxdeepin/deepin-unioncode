@@ -42,8 +42,6 @@ public:
 
     virtual void builderEvent(const dpf::Event& event);
 
-    virtual void recentEvent(const dpf::Event& event);
-
     void projectEvent(const dpf::Event &event);
 };
 

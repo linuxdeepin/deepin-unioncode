@@ -35,7 +35,7 @@ public:
 
     virtual void eventProcess(const dpf::Event& event) override;
 
-    virtual void eventMenu(const dpf::Event& event);
+    virtual void eventProject(const dpf::Event& event);
 };
 
 #endif // COLLABORATORSRECEIVER_H

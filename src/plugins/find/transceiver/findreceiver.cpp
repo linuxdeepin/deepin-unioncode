@@ -50,7 +50,7 @@ void FindReceiver::eventProcess(const dpf::Event &event)
             dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
             QString filePath = projectInfo.workspaceFolder();
             emit FindEventTransmit::getInstance()->sendRemovedProject(filePath);
-        } else if (event.data() == D_FILE_OPENDOCUMENT) {
+        } else if (event.data() == D_OPENDOCUMENT) {
             QString filePath = event.property(P_FILEPATH).toString();
             bool actived = event.property(P_OPRATETYPE).toBool();
             emit FindEventTransmit::getInstance()->sendCurrentEditFile(filePath, actived);

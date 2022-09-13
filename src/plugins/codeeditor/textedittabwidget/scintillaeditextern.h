@@ -55,6 +55,12 @@ public:
     QPair<long int, long int> findText(long int start, long int end, const QString &text);
     void findNext(const QString &srcText);
     void replaceAll(const QString &srcText, const QString &destText);
+    void setLineBackground(int line, const QColor &color);
+    void delLineBackground(int line);
+    void cleanLineBackground();
+    /* Note = 767 Warning = 766 Error = 765 Fatal = 764*/
+    void setAnnotation(int line, const QString &text, int role = 767);
+    void cleanAnnotation();
     void updateFile();
     void saveAsText();
     bool isSaveText();

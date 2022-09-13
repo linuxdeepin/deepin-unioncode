@@ -264,6 +264,39 @@ void ScintillaEditExtern::replaceAll(const QString &srcText, const QString &dest
     }
 }
 
+void ScintillaEditExtern::setLineBackground(int line, const QColor &color)
+{
+    int lineOffSet = line - 1;
+    markerAdd(lineOffSet, StyleSci::CustomLineBackground);
+    markerSetBack(StyleSci::CustomLineBackground, StyleColor::color(color));
+    markerSetAlpha(StyleSci::CustomLineBackground, color.alpha());
+}
+
+void ScintillaEditExtern::delLineBackground(int line)
+{
+    int lineOffSet = line - 1;
+    markerDelete(lineOffSet, StyleSci::CustomLineBackground);
+}
+
+void ScintillaEditExtern::cleanLineBackground()
+{
+    markerDeleteAll(StyleSci::CustomLineBackground);
+}
+
+void ScintillaEditExtern::setAnnotation(int line, const QString &text, int role)
+{
+    int lineOffSet = line - 1;
+    if (StyleSci::Note >= role && role >= StyleSci::Fatal) {
+        annotationSetText(lineOffSet, text.toStdString().c_str());
+        annotationSetStyle(lineOffSet, role - annotationStyleOffset());
+    }
+}
+
+void ScintillaEditExtern::cleanAnnotation()
+{
+    annotationClearAll();
+}
+
 void ScintillaEditExtern::sciModified(Scintilla::ModificationFlags type, Scintilla::Position position,
                                       Scintilla::Position length, Scintilla::Position linesAdded,
                                       const QByteArray &text, Scintilla::Position line,

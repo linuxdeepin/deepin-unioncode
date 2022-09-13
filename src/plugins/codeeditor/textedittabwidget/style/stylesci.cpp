@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
  * Author:     huangyu<huangyub@uniontech.com>
@@ -109,6 +109,7 @@ void StyleSci::setStyle()
 
     auto themes = fileJson->themes();
     if (!themes.isEmpty()) {
+
         d->edit->styleResetDefault(); //clean all
         fileJson->setTheme(themes.first());
 
@@ -133,6 +134,25 @@ void StyleSci::setStyle()
         d->edit->styleHotSpot(styleOffset() + 1);
         d->edit->styleSetUnderline(styleOffset() + 1, true);
     }
+
+    d->edit->annotationSetStyleOffset(AnnotationStyle::Fatal);
+    d->edit->annotationSetVisible(ANNOTATION_BOXED);
+
+    d->edit->styleSetBack(AnnotationStyle::Note, StyleColor::color(StyleColor::Table::get()->Blue));
+    d->edit->styleSetItalic(AnnotationStyle::Note, true);
+
+    d->edit->styleSetFore(AnnotationStyle::Warning , StyleColor::color(StyleColor::Table::get()->Yellow));
+    d->edit->styleSetBack(AnnotationStyle::Warning, StyleColor::color(StyleColor::Table::get()->Blue));
+    d->edit->styleSetItalic(AnnotationStyle::Warning, true);
+
+    d->edit->styleSetFore(AnnotationStyle::Error , StyleColor::color(StyleColor::Table::get()->Red));
+    d->edit->styleSetBack(AnnotationStyle::Error, StyleColor::color(StyleColor::Table::get()->Blue));
+    d->edit->styleSetItalic(AnnotationStyle::Error, true);
+
+    d->edit->styleSetFore(AnnotationStyle::Fatal , StyleColor::color(StyleColor::Table::get()->Red));
+    d->edit->styleSetBack(AnnotationStyle::Fatal, StyleColor::color(StyleColor::Table::get()->Blue));
+    d->edit->styleSetItalic(AnnotationStyle::Fatal, true);
+
     return;
 }
 
@@ -149,12 +169,14 @@ void StyleSci::setMargin()
     d->edit->setMarginWidthN(Margin::Runtime, 16);
     d->edit->setMarginTypeN(Margin::Runtime, SC_MARGIN_SYMBOL);
     d->edit->setMarginMaskN(Margin::Runtime, 1 << MarkerNumber::Debug
-                        | 1 << MarkerNumber::Running
-                        | 1<< MarkerNumber::RunningLineBackground);
+                            | 1 << MarkerNumber::Running
+                            | 1 << MarkerNumber::RunningLineBackground
+                            | 1 << MarkerNumber::CustomLineBackground);
 
     d->edit->markerDefine(MarkerNumber::Debug, SC_MARK_CIRCLE);
     d->edit->markerDefine(MarkerNumber::Running, SC_MARK_SHORTARROW);
     d->edit->markerDefine(MarkerNumber::RunningLineBackground, SC_MARK_BACKGROUND);
+    d->edit->markerDefine(MarkerNumber::CustomLineBackground, SC_MARK_BACKGROUND);
 
     d->edit->markerSetFore(MarkerNumber::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));
     d->edit->markerSetBack(MarkerNumber::Debug, StyleColor::color(StyleColor::Table::get()->FireBrick));

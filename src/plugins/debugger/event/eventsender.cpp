@@ -46,7 +46,7 @@ void EventSender::clearEditorPointer()
 void EventSender::notifyDebugStarted()
 {
     dpf::Event event;
-    event.setTopic(T_DEBUGGER);
+    event.setTopic(T_CODEEDITOR);
     event.setData(D_DEBUG_EXECUTION_START);
     dpf::EventCallProxy::instance().pubEvent(event);
 }

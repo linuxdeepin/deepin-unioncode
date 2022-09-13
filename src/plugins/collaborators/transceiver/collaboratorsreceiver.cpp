@@ -23,11 +23,6 @@
 
 #include "common/common.h"
 
-static QStringList subTopics
-{
-    T_MENU
-};
-
 CollaboratorsReceiver::CollaboratorsReceiver(QObject *parent)
     : dpf::EventHandler (parent)
     , dpf::AutoEventHandlerRegister<CollaboratorsReceiver> ()
@@ -42,22 +37,22 @@ dpf::EventHandler::Type CollaboratorsReceiver::type()
 
 QStringList CollaboratorsReceiver::topics()
 {
-    return subTopics; //绑定menu 事件
+    return {T_PROJECT}; //绑定menu 事件
 }
 
 void CollaboratorsReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!subTopics.contains(event.topic()))
+    if (!topics().contains(event.topic()))
         abort();
 
-    if (T_MENU == event.topic()) {
-        eventMenu(event);
+    if (T_PROJECT == event.topic()) {
+        eventProject(event);
     }
 }
 
-void CollaboratorsReceiver::eventMenu(const dpf::Event &event)
+void CollaboratorsReceiver::eventProject(const dpf::Event &event)
 {
-    if (D_FILE_OPENPROJECT == event.data()) {
+    if (D_OPENPROJECT == event.data()) {
         CVSkeeper::instance()->openRepos(event.property(P_WORKSPACEFOLDER).toString());
     }
 }

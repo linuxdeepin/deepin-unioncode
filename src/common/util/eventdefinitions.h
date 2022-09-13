@@ -47,10 +47,9 @@ extern const QString D_DEBUG_EXECUTION_END;
 extern const QString D_DEBUG_EXECUTION_JUMP;
 extern const QString D_JUMP_CURSOR_CLEAN;
 extern const QString D_BUILD_STATE;
-extern const QString D_FILE_OPENDOCUMENT;
-extern const QString D_FILE_OPENPROJECT;
+extern const QString D_OPENDOCUMENT;
+extern const QString D_OPENPROJECT;
 extern const QString D_ITEM_MENU_BUILD;
-extern const QString D_ITEM_DOUBLECLICKED;
 extern const QString D_BUILD_TARGET;
 extern const QString D_SHOW;
 extern const QString D_HIDE;
@@ -59,6 +58,11 @@ extern const QString D_CRETED;
 extern const QString D_DELETED;
 extern const QString D_ACTIVED;
 extern const QString D_JUMP_TO_LINE;
+extern const QString D_SET_ANNOTATION;
+extern const QString D_CLEAN_ANNOTATION;
+extern const QString D_SET_LINE_BACKGROUND;
+extern const QString D_DEL_LINE_BACKGROUND;
+extern const QString D_CLEAN_LINE_BACKGROUND;
 extern const QString D_BUILD_COMMAND;
 extern const QString D_MENU_BUILD;
 extern const QString D_MENU_REBUILD;
@@ -91,6 +95,8 @@ extern const QString P_STATE;          // value int
 extern const QString P_KITNAME;        // value QString
 extern const QString P_LANGUAGE;       // value QString
 extern const QString P_PROJECT_INFO;   // value dpfService::ProjectInfo
+extern const QString P_ANNOTATION_ROLE; // only with 0:Note 1:Warning 2:Error 3:Fatal
+extern const QString P_COLOR;          // value QColor
 
 extern const QString P_OPRATETYPE;
 extern const QString P_SRCTEXT;

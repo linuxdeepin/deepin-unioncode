@@ -63,7 +63,7 @@ void ProjectGradleReceiver::builderEvent(const dpf::Event &event)
 
 void ProjectGradleReceiver::recentEvent(const dpf::Event &event)
 {
-    if (event.data() == D_FILE_OPENPROJECT) {
+    if (event.data() == D_OPENPROJECT) {
         GradleOpenHandler::instance()->doProjectOpen(
                     event.property(P_KITNAME).toString(),
                     event.property(P_LANGUAGE).toString(),

@@ -27,8 +27,8 @@ void SendEvents::menuOpenProject(const QString &filePath, const QString &kitName
 {
     // 发送打开工程消息
     dpf::Event menuOpenFile;
-    menuOpenFile.setTopic(T_MENU);
-    menuOpenFile.setData(D_FILE_OPENPROJECT);
+    menuOpenFile.setTopic(T_PROJECT);
+    menuOpenFile.setData(D_OPENPROJECT);
     menuOpenFile.setProperty(P_KITNAME, kitName);
     menuOpenFile.setProperty(P_LANGUAGE, language);
     menuOpenFile.setProperty(P_FILEPATH, filePath);

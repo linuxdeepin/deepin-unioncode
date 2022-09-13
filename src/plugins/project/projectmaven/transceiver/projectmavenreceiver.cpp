@@ -61,7 +61,7 @@ void ProjectMavenReceiver::builderEvent(const dpf::Event &event)
 
 void ProjectMavenReceiver::recentEvent(const dpf::Event &event)
 {
-    if (event.data() == D_FILE_OPENPROJECT) {
+    if (event.data() == D_OPENPROJECT) {
         CmakeOpenHandler::instance()->doProjectOpen(
                     event.property(P_KITNAME).toString(),
                     event.property(P_LANGUAGE).toString(),

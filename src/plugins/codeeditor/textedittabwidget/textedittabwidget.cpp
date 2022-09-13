@@ -73,6 +73,25 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toDebugPointClean,
                      this, &TextEditTabWidget::debugPointClean);
 
+    QObject::connect(DpfEventMiddleware::instance(),
+                     QOverload<const Head &, const QString &, int>::of(&DpfEventMiddleware::toJumpFileLine),
+                     this, QOverload<const Head &, const QString &, int>::of(&TextEditTabWidget::jumpToLine));
+
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toSetLineBackground,
+                     this, &TextEditTabWidget::setLineBackground);
+
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toDelLineBackground,
+                     this, &TextEditTabWidget::delLineBackground);
+
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toCleanLineBackground,
+                     this, &TextEditTabWidget::cleanLineBackground);
+
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toSetAnnotation,
+                     this, &TextEditTabWidget::setAnnotation);
+
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toCleanAnnotation,
+                     this, &TextEditTabWidget::cleanAnnotation);
+
     QObject::connect(d->tab, &TextEditTabBar::fileSwitched,
                      this, &TextEditTabWidget::showFileEdit);
 
@@ -82,9 +101,6 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     QObject::connect(d->tab, &TextEditTabBar::fileClosed,
                      this, &TextEditTabWidget::removeFileStatusBar, Qt::QueuedConnection);
 
-    QObject::connect(DpfEventMiddleware::instance(),
-                     QOverload<const Head &, const QString &, int>::of(&DpfEventMiddleware::toJumpFileLine),
-                     this, QOverload<const Head &, const QString &, int>::of(&TextEditTabWidget::jumpToLine));
 
     QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf,
                      this, &TextEditTabWidget::fileDeleted, Qt::QueuedConnection);
@@ -322,6 +338,71 @@ void TextEditTabWidget::replaceRange(const QString &filePath, const newlsp::Rang
             changeFile.close();
         }
     }
+}
+
+void TextEditTabWidget::setLineBackground(const QString &filePath, int line, const QColor &color)
+{
+    if (!d->gridLayout)
+        return;
+
+    auto edit = d->textEdits.value(filePath);
+
+    if (!edit)
+        return;
+
+    edit->setLineBackground(line, color);
+}
+
+void TextEditTabWidget::delLineBackground(const QString &filePath, int line)
+{
+    if (!d->gridLayout)
+        return;
+
+    auto edit = d->textEdits.value(filePath);
+
+    if (!edit)
+        return;
+
+    edit->delLineBackground(line);
+}
+
+void TextEditTabWidget::cleanLineBackground(const QString &filePath)
+{
+    if (!d->gridLayout)
+        return;
+
+    auto edit = d->textEdits.value(filePath);
+
+    if (!edit)
+        return;
+
+    edit->cleanLineBackground();
+}
+
+void TextEditTabWidget::setAnnotation(const QString &filePath, int line, const QString &text, int role)
+{
+    if (!d->gridLayout)
+        return;
+
+    auto edit = d->textEdits.value(filePath);
+
+    if (!edit)
+        return;
+
+    edit->setAnnotation(line, text, role);
+}
+
+void TextEditTabWidget::cleanAnnotation(const QString &filePath)
+{
+    if (!d->gridLayout)
+        return;
+
+    auto edit = d->textEdits.value(filePath);
+
+    if (!edit)
+        return;
+
+    edit->cleanAnnotation();
 }
 
 void TextEditTabWidget::setDefaultFileEdit()

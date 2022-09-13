@@ -46,7 +46,16 @@ public:
         Debug = 0,
         Running = 1,
         RunningLineBackground = 2,
-        Extern = 3
+        CustomLineBackground = 3,
+        Extern = 4
+    };
+
+    enum AnnotationStyle
+    {
+        Note = 767,
+        Warning = 766,
+        Error = 765,
+        Fatal = 764
     };
 
     StyleSci(TextEdit *parent);

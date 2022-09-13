@@ -27,9 +27,9 @@ void RecentReceiver::eventProcess(const dpf::Event &event)
         abort();
     }
     if (event.topic() == T_MENU) {
-        if (event.data() == D_FILE_OPENDOCUMENT) {
+        if (event.data() == D_OPENDOCUMENT) {
             return RecentProxy::instance()->addDocument(event.property(P_FILEPATH).toString());
-        } else if (event.data() == D_FILE_OPENPROJECT) {
+        } else if (event.data() == D_OPENPROJECT) {
             return RecentProxy::instance()->addProject(
                         event.property(P_FILEPATH).toString(),
                         event.property(P_KITNAME).toString(),

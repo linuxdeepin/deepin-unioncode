@@ -35,18 +35,6 @@ public:
     static QStringList topics();
 
     virtual void eventProcess(const dpf::Event& event) override;
-
-    virtual void eventFileBrowser(const dpf::Event& event);
-
-    virtual void eventDebugger(const dpf::Event& event);
-
-    virtual void eventProject(const dpf::Event& event);
-
-    virtual void eventMenu(const dpf::Event &event);
-
-    virtual void eventFind(const dpf::Event &event);
-
-    virtual void eventSymbol(const dpf::Event &event);
 };
 
 
@@ -68,6 +56,12 @@ signals:
     void toSearchText(const QString &srcText, int operateType);
     void toReplaceText(const QString &srcText, const QString &destText, int operateType);
     void toJumpFileLine(const Head &head, const QString &filePath, int line);
+    void toSetLineBackground(const QString &filePath, int line, const QColor &color);
+    void toDelLineBackground(const QString &filePath, int line);
+    void toCleanLineBackground(const QString &filePath);
+    /* Note = 767 Warning = 766 Error = 765 Fatal = 764*/
+    void toSetAnnotation(const QString &filePath, int line, const QString &text, int role = 767);
+    void toCleanAnnotation(const QString &filePath);
 };
 
 #endif // CODEEDITORRECEIVER_H

@@ -25,8 +25,8 @@
 void SendEvents::treeViewDoublueClicked(const QString &filePath, const dpfservice::ProjectInfo &proInfo)
 {
     dpf::Event event;
-    event.setTopic(T_FILEBROWSER);
-    event.setData(D_ITEM_DOUBLECLICKED);
+    event.setTopic(T_CODEEDITOR);
+    event.setData(D_OPENFILE);
     event.setProperty(P_PROJECT_INFO, QVariant::fromValue(proInfo));
     event.setProperty(P_FILEPATH, filePath);
     dpf::EventCallProxy::instance().pubEvent(event);
