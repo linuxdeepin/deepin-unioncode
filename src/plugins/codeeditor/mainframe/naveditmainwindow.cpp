@@ -138,6 +138,7 @@ void NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
         qWidgetWatch->setParent(qDockWidgetWatch);
         qDockWidgetWatch->setWidget(qWidgetWatch);
         qDockWidgetWatch->hide();
+        qWidgetWatch->hide();
     }
 }
 
