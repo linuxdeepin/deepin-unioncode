@@ -38,8 +38,6 @@ namespace newlsp {
 template<class T>
 static bool any_contrast(const std::any &any)
 {
-    qInfo() << any.type().name();
-    qInfo() << std::any(T()).type().name();
     if (any.type() == std::any(T()).type()) {
         return true;
     }

@@ -24,6 +24,10 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QRegularExpression>
+#include <QMetaEnum>
+#include <QDir>
+
+#include <iostream>
 
 struct BackendPrivate
 {
@@ -39,12 +43,16 @@ Backend::Backend(const SettingInfo &info)
     if (d->saveInfo.mode == "process") {
         QProcess *process = new QProcess(this);
         QObject::connect(process, &QProcess::errorOccurred,
-                         [=](QProcess::ProcessError error){
-            qCritical() << process->errorString() << error;
+                         [=](QProcess::ProcessError error)
+        {
+            std::cout << process->errorString().toStdString()
+                      << QMetaEnum::fromType<QProcess::ProcessError>().valueToKey(error)
+                      << std::endl;
         });
         QObject::connect(process, &QProcess::readyReadStandardError,
                          [=](){
-            qCritical() << process->readAllStandardError();
+            std::cout << process->readAllStandardError().toStdString()
+                      << std::endl;
         });
         QObject::connect(process, &QProcess::aboutToClose,
                          this, &Backend::aboutToClose, Qt::UniqueConnection);
@@ -55,9 +63,17 @@ Backend::Backend(const SettingInfo &info)
         process->setReadChannelMode(QProcess::SeparateChannels);
         d->backendIns = process;
         process->start();
-        process->waitForStarted();
         if (info.language == "Java") {
-            while (!process->waitForReadyRead());
+            while (!process->waitForReadyRead()) {
+                if (process->state() == QProcess::ProcessState::NotRunning) {
+                    std::cout << "quit:"
+                              << process->program().toStdString() << " "
+                              << process->exitCode() << ","
+                              << QMetaEnum::fromType<QProcess::ExitStatus>().valueToKey(process->exitStatus())
+                              << std::endl;
+                    break;
+                }
+            };
         }
     }
 }

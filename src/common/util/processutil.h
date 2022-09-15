@@ -49,5 +49,6 @@ public:
     static bool hasGio();
     static bool moveToTrash(const QString &filePath);
     static bool recoverFromTrash(const QString &filePath);
+    static bool portOverhead(unsigned int port);
 };
 #endif // PROCESSCALLER_H

@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+#include "procidwatcher.h"
 #include "serverproxy.h"
 #include "setting.h"
 #include "log.h"
@@ -30,6 +30,7 @@
 #include <QDir>
 #include <QDialog>
 #include <QMessageBox>
+#include <QTimer>
 
 #include <iostream>
 
@@ -38,6 +39,7 @@ const QString port {"port"};
 const QString session {"session"};
 const QString language {"language"};
 const QString generate {"generate"};
+const QString parentPid {"parentPid"};
 };
 
 namespace OptionValNames {
@@ -55,29 +57,30 @@ const QString python = {"python"};
 
 namespace DefaultValues {
 const QString port {"3307"};
+const QString parentPid {"0"};
 }
 
 // 默认为
 const QList<QCommandLineOption> options
 {
-    {OptionNames::port, "Server open port, default 3307.\n", "number", DefaultValues::port},
-    {OptionNames::session, "[" + OptionValues::single + "]" + " Use this program just as you would with Clangd.\n" +
+    {
+        OptionNames::port, "Server open port, default 3307.\n", "number", DefaultValues::port
+    }, {
+        OptionNames::session, "[" + OptionValues::single + "]" + " Use this program just as you would with Clangd.\n" +
                 "[" + OptionValues::many + "]" + " Start multiple backend at the same time.\n",
                 OptionValNames::mode,
                 OptionValues::many
-    },
-    {OptionNames::language , "with session mode " + OptionValues::single + " to used,\n" +
+    }, {
+        OptionNames::language , "with session mode " + OptionValues::single + " to used,\n" +
                 "   [" + OptionValues::cxx + "]" +" lauch C++ language lsp server.\n" +
                 "   [" + OptionValues::java + "]" +" lauch Java language lsp server.\n" +
                 "   [" + OptionValues::python + "]" + " lauch Python language lsp server.\n"
-    },
-    {OptionNames::generate, "generate config file to path.\n", OptionValNames::path}
+    }, {
+        OptionNames::generate, "generate config file to path.\n", OptionValNames::path
+    } , {
+        OptionNames::parentPid, "Server use timer to watch parent process id, if process id no exist, well quit this program.\n", DefaultValues::parentPid
+    }
 };
-
-void implAllLSPServer()
-{
-
-}
 
 int main(int argc, char *argv[])
 {
@@ -110,6 +113,14 @@ int main(int argc, char *argv[])
         port = parser.value(OptionNames::port).toUShort();
     }
 
+    if (list.contains(OptionNames::parentPid)) {
+        std::cout << parser.value(OptionNames::parentPid).toStdString() << std::endl;
+        uint ppid = parser.value(OptionNames::parentPid).toUInt();
+        std::cout << "watch parent process pid: " << ppid;
+        static ProcIdWatcher Watcher(ppid);
+    }
+
+    std::cout << "init server use port: " << port << std::endl;
     jsonrpc::TcpSocketServer server("127.0.0.1", port);
     ServerProxy proxy(server);
     if (proxy.StartListening()) {
@@ -120,11 +131,11 @@ int main(int argc, char *argv[])
     } else {
         QMessageBox messBox;
         messBox.setText(QString("There may be port occupation from %0, "
-                        "please check whether the "
-                        "languageadapter has been started").arg(port));
+                                "please check whether the "
+                                "languageadapter has been started").arg(port));
         messBox.exec();
         proxy.StopListening();
-        std::cout << "Error starting Server" << std::endl;
+        std::cout << "Server started Error" << std::endl;
         exit(-1);
     }
 

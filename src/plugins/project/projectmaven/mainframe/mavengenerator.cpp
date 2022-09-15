@@ -108,7 +108,8 @@ bool MavenGenerator::configure(const dpfservice::ProjectInfo &info)
         windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
     }
 
-    Generator::started(); // emit starded
+    dpfservice::ProjectGenerator::configure(info);
+
     return true;
 }
 
@@ -184,7 +185,7 @@ void MavenGenerator::doProjectChildsModified(const dpfservice::ParseInfo<QList<Q
         while (rootItem->hasChildren()) {
             rootItem->takeRow(0);
         }
-        rootItem->appendRow(info.result);
+        rootItem->appendRows(info.result);
     }
 }
 

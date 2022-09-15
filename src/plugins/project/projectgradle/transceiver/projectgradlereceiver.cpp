@@ -37,7 +37,7 @@ dpf::EventHandler::Type ProjectGradleReceiver::type()
 
 QStringList ProjectGradleReceiver::topics()
 {
-    return { T_BUILDER, T_RECENT };
+    return { T_BUILDER, T_PROJECT };
 }
 
 void ProjectGradleReceiver::eventProcess(const dpf::Event &event)
@@ -51,8 +51,8 @@ void ProjectGradleReceiver::eventProcess(const dpf::Event &event)
         builderEvent(event);
     }
 
-    if (event.topic() == T_RECENT) {
-        recentEvent(event);
+    if (event.topic() == T_PROJECT) {
+        projectEvent(event);
     }
 }
 
@@ -61,7 +61,7 @@ void ProjectGradleReceiver::builderEvent(const dpf::Event &event)
 
 }
 
-void ProjectGradleReceiver::recentEvent(const dpf::Event &event)
+void ProjectGradleReceiver::projectEvent(const dpf::Event &event)
 {
     if (event.data() == D_OPENPROJECT) {
         GradleOpenHandler::instance()->doProjectOpen(

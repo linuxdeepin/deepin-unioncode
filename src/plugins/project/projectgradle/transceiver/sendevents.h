@@ -27,8 +27,6 @@ class SendEvents final
 {
     SendEvents() = delete;
     SendEvents(const SendEvents &) = delete;
-public:
-    static void menuOpenProject(const QString &filePath, const QString &kitName, const QString &language);
 };
 
 #endif // SENDEVENTS_H

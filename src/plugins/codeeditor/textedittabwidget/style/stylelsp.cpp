@@ -39,6 +39,7 @@
 #include <QMenu>
 #include <QLineEdit>
 #include <QVBoxLayout>
+#include <QCoreApplication>
 
 #include <bitset>
 
@@ -333,8 +334,8 @@ void StyleLsp::initLspConnection()
                      this, &StyleLsp::setDefinition);
 
     if (getClient()) {
-        getClient()->openRequest(d->edit->file());
-        getClient()->docSemanticTokensFull(d->edit->file());
+        qApp->metaObject()->invokeMethod(getClient(), "openRequest", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
+        qApp->metaObject()->invokeMethod(getClient(), "docSemanticTokensFull", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
     }
 }
 
@@ -438,9 +439,14 @@ void StyleLsp::sciTextChangedTotal()
     cleanDiagnostics();
 
     if (getClient()) {
-        getClient()->changeRequest(d->edit->file(), d->edit->textRange(0, d->edit->length()));
-        getClient()->completionRequest(d->edit->file(), getLspPosition(d->edit->docPointer(), d->textChangedCache.positionCache));
-        getClient()->docSemanticTokensFull(d->edit->file());
+        qApp->metaObject()->invokeMethod(getClient(), "changeRequest",
+                                         Q_ARG(const QString &, d->edit->file()),
+                                         Q_ARG(const QByteArray &, d->edit->textRange(0, d->edit->length())));
+        qApp->metaObject()->invokeMethod(getClient(), "completionRequest",
+                                         Q_ARG(const QString &, d->edit->file()),
+                                         Q_ARG(const lsp::Position &, getLspPosition(d->edit->docPointer(), d->textChangedCache.positionCache)));
+        qApp->metaObject()->invokeMethod(getClient(), "docSemanticTokensFull",
+                                         Q_ARG(const QString &, d->edit->file()));
     }
 };
 
@@ -454,10 +460,10 @@ void StyleLsp::sciHovered(Scintilla::Position position)
 
     d->hoverCache.setSciPosition(position);
 
-    auto lspPostion = getLspPosition(d->edit->docPointer(), d->hoverCache.getSciPosition());
-
     if(getClient()) {
-        getClient()->docHoverRequest(d->edit->file(), lspPostion);
+        qApp->metaObject()->invokeMethod(getClient(), "docHoverRequest",
+                                         Q_ARG(const QString &, d->edit->file()),
+                                         Q_ARG(const lsp::Position &, getLspPosition(d->edit->docPointer(), d->hoverCache.getSciPosition())));
     }
 }
 
@@ -500,7 +506,9 @@ void StyleLsp::sciDefinitionHover(Scintilla::Position position)
     }
     auto lspPostion = getLspPosition(d->edit->docPointer(), d->definitionCache.getSciPosition());
     if (getClient()){
-        getClient()->definitionRequest(d->edit->file(), lspPostion);
+        qApp->metaObject()->invokeMethod(getClient(), "definitionRequest",
+                                         Q_ARG(const QString &, d->edit->file()),
+                                         Q_ARG(const lsp::Position &, lspPostion));
     }
 }
 
@@ -572,7 +580,9 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
     QObject::connect(findSymbol, &QAction::triggered, [&](){
         if (getClient()) {
             auto lspPos = getLspPosition(d->edit->docPointer(), d->edit->selectionStart());
-            getClient()->referencesRequest(d->edit->file(), lspPos);
+            qApp->metaObject()->invokeMethod(getClient(), "referencesRequest",
+                                             Q_ARG(const QString &, d->edit->file()),
+                                             Q_ARG(const lsp::Position &, lspPos));
         }
     });
 
@@ -588,7 +598,9 @@ void StyleLsp::sciReplaced(const QString &file, Scintilla::Position start, Scint
     Q_UNUSED(start);
     Q_UNUSED(end);
     if (getClient()) {
-        getClient()->changeRequest(file, d->edit->textRange(0, d->edit->length()));
+        qApp->metaObject()->invokeMethod(getClient(), "changeRequest",
+                                         Q_ARG(const QString &, file),
+                                         Q_ARG(const QByteArray &, d->edit->textRange(0, d->edit->length())));
     }
 }
 
@@ -597,9 +609,10 @@ void StyleLsp::renameRequest(const QString &newText)
     auto sciPostion = d->renameCache.getStart().getSciPosition();
     if (d->edit) {
         if (getClient()) {
-            getClient()->renameRequest(d->edit->file(),
-                                       getLspPosition(d->edit->docPointer(), sciPostion),
-                                       newText);
+            qApp->metaObject()->invokeMethod(getClient(), "renameRequest",
+                                             Q_ARG(const QString &, d->edit->file()),
+                                             Q_ARG(const lsp::Position &, getLspPosition(d->edit->docPointer(), sciPostion)),
+                                             Q_ARG(const QString &, newText));
         }
     }
 }
@@ -747,7 +760,8 @@ void StyleLsp::cleanDiagnostics()
 
 void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
 {
-    if (!edit() || edit()->isLeave())
+    qInfo() << Q_FUNC_INFO << tokens.size();
+    if (!edit())
         return;
 
     if (!d->edit->lexer())
@@ -761,7 +775,6 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
                                        "to solve the problem!"));
         return;
     }
-
     int cacheLine = 0;
     for (auto val : tokens) {
         cacheLine += val.start.line;

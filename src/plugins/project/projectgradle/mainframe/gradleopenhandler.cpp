@@ -69,7 +69,6 @@ QAction *GradleOpenHandler::openAction()
             QString kitName = result->text();
             QString language = dpfservice::MWMFA_JAVA;
             doProjectOpen(kitName, language, filePath);
-            SendEvents::menuOpenProject(filePath, kitName, language); // 发送打开事件
         }
     });
     return result;

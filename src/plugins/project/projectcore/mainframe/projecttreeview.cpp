@@ -84,18 +84,6 @@ ProjectTreeView::ProjectTreeView(QWidget *parent)
 
 ProjectTreeView::~ProjectTreeView()
 {
-
-    auto infos = getAllProjectInfo();
-
-    for (auto info : infos) {
-        QString workspaceFolder = info.workspaceFolder();
-        QString language = info.language();
-        if (!workspaceFolder.isEmpty() && !language.isEmpty()) {
-            // 停止lspClient
-            lsp::ClientManager::instance()->shutdownClient({workspaceFolder, language});
-        }
-    }
-
     if (d) {
         delete d;
     }
@@ -109,13 +97,6 @@ void ProjectTreeView::appendRootItem(QStandardItem *root)
     // 发送工程创建信号
     using namespace dpfservice;
     auto info = ProjectInfo::get(ProjectGenerator::root(root));
-    QString workspaceFolder = info.workspaceFolder();
-    QString language = info.language();
-    QString buildFolder = info.buildFolder();
-    if (!workspaceFolder.isEmpty() && !language.isEmpty()) {
-        // 初始化lsp客户端
-        lsp::ClientManager::instance()->initClient({workspaceFolder, language}, buildFolder);
-    }
 
     // 添加工程节点
     QStandardItemModel *model = static_cast<QStandardItemModel*>(QTreeView::model());
@@ -136,13 +117,6 @@ void ProjectTreeView::removeRootItem(QStandardItem *root)
     ProjectInfo info = ProjectInfo::get(ProjectGenerator::root(root));
 
     this->takeRootItem(root);
-
-    QString workspaceFolder = info.workspaceFolder();
-    QString language = info.language();
-    if (!workspaceFolder.isEmpty() && !language.isEmpty()) {
-        // 停止lspClient
-        lsp::ClientManager::instance()->shutdownClient({workspaceFolder, language});
-    }
 
     // 从生成器中删除
     using namespace dpfservice;

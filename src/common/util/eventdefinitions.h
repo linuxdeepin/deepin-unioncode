@@ -37,6 +37,7 @@ extern const QString T_PROJECT;
 extern const QString T_SYMBOL;
 extern const QString T_PROCESSMESSAGE;
 extern const QString T_FIND;
+extern const QString T_COLLABORATORS;
 
 extern const QString D_ACTION_SWITCH;
 
@@ -67,6 +68,7 @@ extern const QString D_BUILD_COMMAND;
 extern const QString D_MENU_BUILD;
 extern const QString D_MENU_REBUILD;
 extern const QString D_MENU_CLEAN;
+extern const QString D_OPEN_REPOS;
 
 extern const QString D_MARGIN_DEBUG_POINT_ADD;
 extern const QString D_MARGIN_DEBUG_POINT_REMOVE;

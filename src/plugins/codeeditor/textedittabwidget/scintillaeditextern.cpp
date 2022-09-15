@@ -43,7 +43,7 @@ class ScintillaEditExternPrivate
     QTimer definitionHoverTimer;
     QString filePath;
     QString language;
-    Head proHead;
+    lsp::Head proHead;
     Scintilla::Position editInsertPostion = -1;
     int editInsertCount = 0;
 };
@@ -110,7 +110,7 @@ void ScintillaEditExtern::setFile(const QString &filePath)
     }, Qt::UniqueConnection);
 }
 
-void ScintillaEditExtern::setFile(const QString &filePath, const Head &projectHead)
+void ScintillaEditExtern::setFile(const QString &filePath, const lsp::Head &projectHead)
 {
     d->proHead = projectHead;
     setFile(filePath);
@@ -129,7 +129,7 @@ void ScintillaEditExtern::updateFile()
     setSavePoint();
 }
 
-Head ScintillaEditExtern::projectHead()
+lsp::Head ScintillaEditExtern::projectHead()
 {
     return d->proHead;
 }

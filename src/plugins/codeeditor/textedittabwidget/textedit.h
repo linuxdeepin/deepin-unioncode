@@ -36,7 +36,7 @@ public:
     explicit TextEdit(QWidget * parent = nullptr);
     virtual ~TextEdit();
     virtual void setFile(const QString &filePath) override;
-    virtual void setFile(const QString &filePath, const Head &projectHead) override;
+    virtual void setFile(const QString &filePath, const lsp::Head &projectHead) override;
     virtual StyleLsp *getStyleLsp() const {return nullptr;}
     virtual StyleSci *getStyleSci() const {return nullptr;}
     virtual StyleJsonFile *getStyleFile() const {return nullptr;}

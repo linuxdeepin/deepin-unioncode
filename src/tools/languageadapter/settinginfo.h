@@ -39,7 +39,20 @@ inline QDebug operator << (QDebug debug, const SettingInfo &info) {
           << info.mode
           << info.program
           << info.arguments
-          << info.workDir;
+          << info.workDir
+          << ")";
     return debug;
 }
+
+inline std::ostream& operator <<(std::ostream &os, const SettingInfo &info) {
+    os << "SettingInfo("
+       << info.language.toStdString() << ","
+       << info.mode.toStdString() << ","
+       << info.program.toStdString() << ","
+       << "(" << info.arguments.join(",").toStdString() << ")" << ","
+       << info.workDir.toStdString()
+       << ")";
+    return os;
+}
+
 #endif // SETTINGINFO_H

@@ -39,7 +39,7 @@ dpf::EventHandler::Type ProjectMavenReceiver::type()
 
 QStringList ProjectMavenReceiver::topics()
 {
-    return { T_BUILDER, T_RECENT };
+    return { T_BUILDER, T_PROJECT };
 }
 
 void ProjectMavenReceiver::eventProcess(const dpf::Event &event)
@@ -49,8 +49,8 @@ void ProjectMavenReceiver::eventProcess(const dpf::Event &event)
         abort();
     }
 
-    if (event.topic() == T_RECENT) {
-        recentEvent(event);
+    if (event.topic() == T_PROJECT) {
+        projectEvent(event);
     }
 }
 
@@ -59,7 +59,7 @@ void ProjectMavenReceiver::builderEvent(const dpf::Event &event)
     Q_UNUSED(event)
 }
 
-void ProjectMavenReceiver::recentEvent(const dpf::Event &event)
+void ProjectMavenReceiver::projectEvent(const dpf::Event &event)
 {
     if (event.data() == D_OPENPROJECT) {
         CmakeOpenHandler::instance()->doProjectOpen(

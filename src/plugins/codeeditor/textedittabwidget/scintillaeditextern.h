@@ -39,10 +39,10 @@ public:
     static QString fileLanguage(const QString &path); // 获取注册文件中语言支持
 
     virtual void setFile(const QString &filePath);
-    virtual void setFile(const QString &filePath, const Head &projectHead);
+    virtual void setFile(const QString &filePath, const lsp::Head &projectHead);
 
     QString file() const;
-    Head projectHead();
+    lsp::Head projectHead();
 
     void debugPointAllDelete();
     void jumpToLine(int line);

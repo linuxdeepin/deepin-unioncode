@@ -43,18 +43,29 @@ namespace lsp {
 
 static QMutex mutex;
 class Client;
-class ClientPrivate
+class ClientPrivate : public jsonrpc::TcpSocketClient
 {
     friend class Client;
     Client *const q;
-    int requestIndex = 0;
+    int requestIndex;
     QHash<int, QString> requestSave;
-    int semanticTokenResultId = 0;
+    int semanticTokenResultId;
     QHash<QString, int> fileVersion;
     lsp::SemanticTokensProvider secTokensProvider;
-    jsonrpc::TcpSocketClient rpcClient{"127.0.0.1", 3307};
     Head head;
-    ClientPrivate(Client *q) : q (q){}
+    ClientPrivate(Client *q, const std::string &ipToConnect, const unsigned int &port)
+        : jsonrpc::TcpSocketClient(ipToConnect, port)
+        , q (q)
+        , requestIndex (0)
+        , requestSave ({})
+        , semanticTokenResultId (0)
+        , fileVersion ({})
+        , secTokensProvider ({})
+        , head ({})
+    {
+
+    }
+
     void callLanguageRequest(const QJsonObject &request);
     void callLanguageRequest(const QString &request);
     void callLanguageNotify(const QJsonObject &notify);
@@ -62,25 +73,26 @@ class ClientPrivate
     void responseProcess(const QByteArray &result);
 };
 
-Client::Client(QObject *parent)
-    : QObject (parent)
-    , d (new ClientPrivate(this))
+Client::Client(unsigned int port, const QString &host)
+    : d (new ClientPrivate(this, host.toStdString(), port))
 {
-    qRegisterMetaType<Diagnostics>("Diagnostics");
-    qRegisterMetaType<SemanticTokensProvider>("SemanticTokensProvider");
-    qRegisterMetaType<Symbols>("Symbols");
-    qRegisterMetaType<Locations>("Locations");
-    qRegisterMetaType<CompletionProvider>("CompletionProvider");
-    qRegisterMetaType<SignatureHelps>("SignatureHelps");
-    qRegisterMetaType<Hover>("Hover");
-    qRegisterMetaType<Highlights>("Highlights");
-    qRegisterMetaType<QList<Data>>("QList<Data>");
-    qRegisterMetaType<DefinitionProvider>("DefinitionProvider");
-    qRegisterMetaType<DiagnosticsParams>("DiagnosticsParams");
-    qRegisterMetaType<Data>("Data");
-    qRegisterMetaType<QList<Data>>("QList<Data>");
+    qRegisterMetaType<lsp::Diagnostics>("lsp::Diagnostics");
+    qRegisterMetaType<lsp::SemanticTokensProvider>("lsp::SemanticTokensProvider");
+    qRegisterMetaType<lsp::Symbols>("lsp::Symbols");
+    qRegisterMetaType<lsp::Locations>("lsp::Locations");
+    qRegisterMetaType<lsp::CompletionProvider>("lsp::CompletionProvider");
+    qRegisterMetaType<lsp::SignatureHelps>("lsp::SignatureHelps");
+    qRegisterMetaType<lsp::Hover>("lsp::Hover");
+    qRegisterMetaType<lsp::Highlights>("lsp::Highlights");
+    qRegisterMetaType<QList<lsp::Data>>("QList<lsp::Data>");
+    qRegisterMetaType<lsp::DefinitionProvider>("lsp::DefinitionProvider");
+    qRegisterMetaType<lsp::DiagnosticsParams>("lsp::DiagnosticsParams");
+    qRegisterMetaType<lsp::Data>("lsp::Data");
+    qRegisterMetaType<lsp::References>("lsp::References");
+    qRegisterMetaType<lsp::Position>("lsp::Position");
     qRegisterMetaType<newlsp::Workspace::WorkspaceEdit>("newlsp::Workspace::WorkspaceEdit");
-    qRegisterMetaType<References>("References");
+    qRegisterMetaType<newlsp::Position>("newlsp::Position");
+    qRegisterMetaType<newlsp::Range>("newlsp::Range");
 }
 
 void Client::setHead(const Head &head)
@@ -119,10 +131,8 @@ void ClientPrivate::callLanguageRequest(const QString &request)
     orgParams["language"] = head.language.toStdString();
     orgParams["data"] = data;
 
-    QtConcurrent::run([=](){
-        auto resultJsonValue = jsonrpc::Client(rpcClient).CallMethod("fromRequest", orgParams);
-        this->responseProcess(QByteArray::fromStdString(resultJsonValue["data"].asString()));
-    });
+    auto resultJsonValue = jsonrpc::Client(*this).CallMethod("fromRequest", orgParams);
+    this->responseProcess(QByteArray::fromStdString(resultJsonValue["data"].asString()));
 }
 
 void ClientPrivate::callLanguageNotify(const QJsonObject &notify)
@@ -144,9 +154,7 @@ void ClientPrivate::callLanguageNotify(const QString &notify)
     orgParams["language"] = head.language.toStdString();
     orgParams["data"] = data;
 
-    QtConcurrent::run([=](){
-        jsonrpc::Client(rpcClient).CallNotification("fromNotify", orgParams);
-    });
+    jsonrpc::Client(*this).CallNotification("fromNotify", orgParams);
 }
 
 void ClientPrivate::responseProcess(const QByteArray &result)
@@ -679,10 +687,10 @@ bool Client::docSemanticTokensFullResult(const QJsonObject &jsonObj)
         if(dataArray.isEmpty())
             return true;
 
-        QList<Data> results;
+        QList<lsp::Data> results;
         auto itera = dataArray.begin();
         while (itera != dataArray.end()) {
-            results << Data {
+            results << lsp::Data {
                        Position{itera++->toInt(), itera++->toInt()},
                        int(itera++->toInt()),
                        itera++->toInt(),
@@ -875,44 +883,6 @@ QStringList Client::cvtStringList(const QJsonArray &array)
     return ret;
 }
 
-ClientManager *ClientManager::instance()
-{
-    static ClientManager ins;
-    return &ins;
-}
-
-void ClientManager::initClient(const Head &head, const QString &complie)
-{
-    if (head.isValid()) {
-        auto client = new Client();
-        client->setHead(head);
-        client->initRequest(complie);
-        clients[head] = client;
-    }
-}
-
-void ClientManager::shutdownClient(const Head &head)
-{
-    auto client = clients[head];
-    if (client) {
-        client->shutdownRequest();
-        client->exitRequest();
-        clients.remove(head);
-    }
-}
-
-Client *ClientManager::get(const Head &head)
-{
-    return clients[head];
-}
-} // namespace lsp
-
-bool Head::isValid() const
-{
-    return !workspace.isEmpty()
-            && !language.isEmpty();
-}
-
 Head::Head(){}
 
 Head::Head(const QString &workspace, const QString &language)
@@ -927,6 +897,12 @@ Head::Head(const Head &head)
 {
 }
 
+bool Head::isValid() const
+{
+    return !workspace.isEmpty()
+            && !language.isEmpty();
+}
+
 uint qHash(const Head &key, uint seed)
 {
     return qHash(key.workspace + key.language, seed);
@@ -937,3 +913,7 @@ bool operator ==(const Head &t1, const Head &t2)
     return t1.workspace == t2.workspace
             && t2.language == t2.language;
 }
+
+} // namespace lsp
+
+

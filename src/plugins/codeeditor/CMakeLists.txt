@@ -18,6 +18,7 @@ set(CXX_CPP
     refactorwidget/codelensdelegate.cpp
     refactorwidget/refactorwidget.cpp
     renamepopup/renamepopup.cpp
+    textedittabwidget/lspclientkeeper.cpp
     textedittabwidget/scintillaeditextern.cpp
     textedittabwidget/textedittabwidget.cpp
     textedittabwidget/textedittabbar.cpp
@@ -51,6 +52,7 @@ set(CXX_H
     refactorwidget/codelensdelegate.h
     refactorwidget/refactorwidget.h
     renamepopup/renamepopup.h
+    textedittabwidget/lspclientkeeper.h
     textedittabwidget/scintillaeditextern.h
     textedittabwidget/textedittabwidget.h
     textedittabwidget/textedittitlebar.h

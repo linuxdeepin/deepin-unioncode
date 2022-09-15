@@ -81,3 +81,12 @@ void SendEvents::projectDeleted(const dpfservice::ProjectInfo &info)
     event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
     dpf::EventCallProxy::instance().pubEvent(event);
 }
+
+void SendEvents::collaboratorsOpenRepos(const QString &workspace)
+{
+    dpf::Event event;
+    event.setTopic(T_COLLABORATORS);
+    event.setData(D_OPEN_REPOS);
+    event.setProperty(P_WORKSPACEFOLDER, workspace);
+    dpf::EventCallProxy::instance().pubEvent(event);
+}

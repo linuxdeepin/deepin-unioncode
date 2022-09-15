@@ -18,7 +18,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "sendevents.h"
+#ifndef LSPCLIENTKEEPER_H
+#define LSPCLIENTKEEPER_H
+
 #include "common/common.h"
-#include "services/window/windowservice.h"
-#include <framework/framework.h>
+
+class LSPClientKeeper final
+{
+    Q_DISABLE_COPY(LSPClientKeeper)
+public:
+    LSPClientKeeper();
+
+    virtual ~LSPClientKeeper();
+
+    static LSPClientKeeper *instance();
+
+    void initClient(const lsp::Head &head, const QString &complie);
+
+    void shutdownClient(const lsp::Head &head);
+
+    lsp::Client *get(const lsp::Head &head);
+
+private:
+    QHash<lsp::Head, QPair<lsp::Client*, QThread*>> clients;
+    QProcess *lspServerProc{nullptr};
+};
+
+#endif // LSPCLIENTKEEPER_H

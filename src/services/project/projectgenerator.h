@@ -70,8 +70,18 @@ public:
      * \param projectPath 工程路径
      * \return 过程执行结果
      */
-    virtual bool configure(const ProjectInfo &projectPath) {
-        Q_UNUSED(projectPath)
+    virtual bool configure(const ProjectInfo &projectInfo) {
+
+        if (!projectInfo.workspaceFolder().isEmpty()) {
+            dpf::Event event;
+            event.setTopic(T_COLLABORATORS);
+            event.setData(D_OPEN_REPOS);
+            event.setProperty(P_WORKSPACEFOLDER, projectInfo.workspaceFolder());
+            dpf::EventCallProxy::instance().pubEvent(event);
+        }
+
+        Generator::started(); // emit starded
+
         return false;
     }
 

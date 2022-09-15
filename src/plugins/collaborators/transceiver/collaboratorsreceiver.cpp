@@ -37,7 +37,7 @@ dpf::EventHandler::Type CollaboratorsReceiver::type()
 
 QStringList CollaboratorsReceiver::topics()
 {
-    return {T_PROJECT}; //绑定menu 事件
+    return {T_COLLABORATORS};
 }
 
 void CollaboratorsReceiver::eventProcess(const dpf::Event &event)
@@ -45,14 +45,8 @@ void CollaboratorsReceiver::eventProcess(const dpf::Event &event)
     if (!topics().contains(event.topic()))
         abort();
 
-    if (T_PROJECT == event.topic()) {
-        eventProject(event);
-    }
-}
-
-void CollaboratorsReceiver::eventProject(const dpf::Event &event)
-{
-    if (D_OPENPROJECT == event.data()) {
+    if (D_OPEN_REPOS == event.data()) {
         CVSkeeper::instance()->openRepos(event.property(P_WORKSPACEFOLDER).toString());
     }
 }
+

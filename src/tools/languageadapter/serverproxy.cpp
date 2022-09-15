@@ -51,11 +51,16 @@ void ServerProxy::fromRequest(const Json::Value &request, Json::Value &response)
         QJsonParseError err;
         orginJsonObject = QJsonDocument::fromJson(orginList[1].toLatin1(), &err).object();
         if (err.error != QJsonParseError::NoError) {
-            qCritical() << err.errorString();
+            std::cerr << err.errorString().toStdString() << std::endl;
         }
     }
     Route::Head head{workspace, language};
+    std::cout << "-> head"
+              << "(" << workspace.toStdString() << ","
+              << language.toStdString()<< ")"
+              << std::endl;
     if (orginJsonObject.value("method").toString() == "initialize") {
+        std::cout << "-> create backend:" << Setting::getInfo(language) << std::endl;
         auto backend = new Backend(Setting::getInfo(language));
         Route::instance()->saveBackend(head, backend);
     }
@@ -65,7 +70,7 @@ void ServerProxy::fromRequest(const Json::Value &request, Json::Value &response)
         int id = orginJsonObject.value("id").toInt();
         auto requestData = orginList.join("\r\n\r\n").toLatin1();
         backend->writeAndWait(requestData);
-        qInfo() << "-> to backend request\n" << requestData;
+        std::cout << "-> to backend request\n" << qPrintable(requestData) << std::endl;
 
         // recv backend and wait
         QVector<QJsonObject> retJsonObjs;
@@ -75,7 +80,7 @@ void ServerProxy::fromRequest(const Json::Value &request, Json::Value &response)
 
         //send data to frontend;
         response["data"] = Json::Value(Private::readBuffer.toStdString());
-        qInfo() << "<-- front request result\n" << Private::readBuffer;
+        std::cout << "<-- front request result\n" << qPrintable(Private::readBuffer) << std::endl;
         Private::readBuffer.clear();
     } // can find backend main
 }
@@ -91,7 +96,7 @@ void ServerProxy::fromNotify(const Json::Value &request)
         QJsonParseError err;
         orginJsonObject = QJsonDocument::fromJson(orginList[1].toLatin1(), &err).object();
         if (err.error != QJsonParseError::NoError) {
-            qCritical() << err.errorString();
+            std::cerr << err.errorString().toStdString() << std::endl;
         }
     }
     Route::Head head{workspace, language};
@@ -101,19 +106,19 @@ void ServerProxy::fromNotify(const Json::Value &request)
         // send to backend
         auto requestData = orginList.join("\r\n\r\n").toLatin1();
         backend->writeAndWait(requestData);
-        qInfo() << "-> to backend notify\n" << requestData;
+        std::cout << "-> to backend notify\n" << qPrintable(requestData) << std::endl;
 
         // recv wait from backend
-        if (jsonObjContainsMethod(orginJsonObject, "textDocument/didOpen")
-                || jsonObjContainsMethod(orginJsonObject, "textDocument/didChange")) {
-            QVector<QJsonObject> retJsonObjs;
-            while (!jsonObjsContainsMethod(retJsonObjs, "textDocument/publishDiagnostics")) {
-                if (!backend->readAndWait(retJsonObjs, Private::readBuffer)) {
-                    if (Private::readBuffer.contains("\"method\":\"textDocument/publishDiagnostics\""))
-                        return;
-                }
-            }
-        }
+        //        if (jsonObjContainsMethod(orginJsonObject, "textDocument/didOpen")
+        //                || jsonObjContainsMethod(orginJsonObject, "textDocument/didChange")) {
+        //            QVector<QJsonObject> retJsonObjs;
+        //            while (!jsonObjsContainsMethod(retJsonObjs, "textDocument/publishDiagnostics")) {
+        //                if (!backend->readAndWait(retJsonObjs, Private::readBuffer)) {
+        //                    if (Private::readBuffer.contains("\"method\":\"textDocument/publishDiagnostics\""))
+        //                        return;
+        //                }
+        //            }
+        //        }
 
         if (jsonObjContainsMethod(orginJsonObject, "exit")) {
             Route::instance()->removeBackend(head);

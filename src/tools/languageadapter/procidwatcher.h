@@ -18,7 +18,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "sendevents.h"
-#include "common/common.h"
-#include "services/window/windowservice.h"
-#include <framework/framework.h>
+#ifndef PROCIDWATCHER_H
+#define PROCIDWATCHER_H
+
+#include <QTimer>
+
+class ProcIdWatcher : QTimer
+{
+public:
+    ProcIdWatcher(unsigned int parentPid);
+private:
+    unsigned int parentPid;
+};
+
+#endif // PROCIDWATCHER_H

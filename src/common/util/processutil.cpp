@@ -171,3 +171,20 @@ bool ProcessUtil::recoverFromTrash(const QString &filePath)
 #endif
     return false;
 }
+
+bool ProcessUtil::portOverhead(unsigned int port)
+{
+    bool ret = true;
+#ifdef linux
+    auto outCallback = [&ret](const QByteArray &array) {
+        qInfo() << qPrintable(array);
+        if (array.isEmpty()) {
+            ret = false;
+        }
+    };
+    ProcessUtil::execute("/bin/bash", {"-c", "ss -ntlp|grep " + QString::number(port)}, outCallback);
+#else
+#endif
+    return ret;
+}
+

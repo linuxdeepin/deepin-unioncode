@@ -32,6 +32,7 @@ const QString T_WORKSPACE {"Workspace"};
 const QString T_RECENT{"Recent"};
 const QString T_PROCESSMESSAGE{"ProcessMessage"};
 const QString T_FIND {"Find"};
+const QString T_COLLABORATORS {"Collaborators"};
 
 const QString D_ACTION_SWITCH {"Action.Switch"};
 
@@ -66,6 +67,7 @@ const QString D_BUILD_COMMAND {"Build.Command"};
 const QString D_MENU_BUILD {"Menu.Build"};
 const QString D_MENU_REBUILD {"Menu.ReBuild"};
 const QString D_MENU_CLEAN {"Menu.Clean"};
+const QString D_OPEN_REPOS {"OpenRepos"};
 
 const QString D_SEARCH {"Search"};
 const QString D_REPLACE {"Replace"};

@@ -110,7 +110,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QVariant languageVar = event.property(P_LANGUAGE);
         QVariant filePathVar = event.property(P_FILEPATH);
         if (workspaceVar.isValid() && languageVar.isValid() && filePathVar.isValid()) {
-            Head head { workspaceVar.toString(), languageVar.toString() };
+            lsp::Head head { workspaceVar.toString(), languageVar.toString() };
             return DpfEventMiddleware::instance()->toOpenFile(head, filePathVar.toString());
         }
 
@@ -158,7 +158,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         if (wpFolderVar.isValid() && languageVar.isValid()
                 && filePathVar.isValid() && fileLineVar.isValid()) {
             return DpfEventMiddleware::instance()->toJumpFileLine(
-                        Head(wpFolderVar.toString(), languageVar.toString()),
+                        lsp::Head(wpFolderVar.toString(), languageVar.toString()),
                         filePathVar.toString(),
                         fileLineVar.toInt());
         } else if (filePathVar.isValid() && fileLineVar.isValid()) {

@@ -36,14 +36,6 @@
 #include <QLabel>
 #include <QTreeView>
 
-#define LANGUAGE_ADAPTER_NAME  "languageadapter"
-#define LANGUAGE_ADAPTER_PATH CustomPaths::global(CustomPaths::Tools) \
-    + QDir::separator() + LANGUAGE_ADAPTER_NAME
-
-namespace {
-QProcess *process{nullptr};
-}
-
 using namespace dpfservice;
 void ProjectCore::initialize()
 {
@@ -59,18 +51,6 @@ void ProjectCore::initialize()
 
 bool ProjectCore::start()
 {
-    if (!::process) {
-        ::process = new QProcess;
-        ::process->setProgram(LANGUAGE_ADAPTER_PATH);
-        ::process->setReadChannelMode(QProcess::SeparateChannels);
-        QObject::connect(::process, &QProcess::readyRead, [=](){
-            qInfo() << ::process->readAll();
-        });
-        ::process->start();
-        if (process->state() != QProcess::ProcessState::Running)
-            qInfo() << ::process->errorString() << LANGUAGE_ADAPTER_PATH;
-    }
-
     qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
@@ -116,12 +96,6 @@ bool ProjectCore::start()
 
 dpf::Plugin::ShutdownFlag ProjectCore::stop()
 {
-    if (::process) {
-        ::process->kill();
-        ::process->waitForFinished();
-        delete ::process;
-        process = nullptr;
-    }
     qInfo() << __FUNCTION__;
     return Sync;
 }

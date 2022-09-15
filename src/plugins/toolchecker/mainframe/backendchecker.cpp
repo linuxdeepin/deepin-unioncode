@@ -94,9 +94,9 @@ void BackendChecker::checkLanguageBackend(const QString &languageID)
             processDialog->setArguments({"zxvf", info.getPackageSaveName(), "-C", languageID});
             processDialog->exec();
         }
-        if (!existShellRemain(languageID)) {
-            createShellRemain(languageID);
-        }
+        // if (!existShellRemain(languageID)) {
+        createShellRemain(languageID);
+        // }
     }
 }
 

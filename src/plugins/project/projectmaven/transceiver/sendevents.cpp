@@ -22,17 +22,3 @@
 #include "common/common.h"
 #include "services/window/windowservice.h"
 #include <framework/framework.h>
-
-void SendEvents::menuOpenProject(const QString &filePath, const QString &kitName, const QString &language)
-{
-    // 发送打开工程消息
-    dpf::Event menuOpenFile;
-    menuOpenFile.setTopic(T_PROJECT);
-    menuOpenFile.setData(D_OPENPROJECT);
-    menuOpenFile.setProperty(P_KITNAME, kitName);
-    menuOpenFile.setProperty(P_LANGUAGE, language);
-    menuOpenFile.setProperty(P_FILEPATH, filePath);
-    QFileInfo fileInfo(filePath);
-    menuOpenFile.setProperty(P_WORKSPACEFOLDER, fileInfo.dir().path());
-    dpf::EventCallProxy::instance().pubEvent(menuOpenFile);
-}

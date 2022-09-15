@@ -153,7 +153,8 @@ bool GradleGenerator::configure(const dpfservice::ProjectInfo &info)
         windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
     }
 
-    Generator::started(); // emit starded
+    dpfservice::ProjectGenerator::configure(info);
+
     return true;
 }
 

@@ -34,8 +34,6 @@ public:
     static QStringList topics();
 
     virtual void eventProcess(const dpf::Event& event) override;
-
-    virtual void eventProject(const dpf::Event& event);
 };
 
 #endif // COLLABORATORSRECEIVER_H

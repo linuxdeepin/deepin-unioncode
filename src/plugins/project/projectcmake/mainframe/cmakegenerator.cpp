@@ -126,7 +126,6 @@ QWidget *CmakeGenerator::configureWidget(const QString &language,
 
 bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
 {
-
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
@@ -144,7 +143,7 @@ bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
         builderService->interface.builderCommand(commandInfo);
     }
 
-    Generator::started(); // emit starded
+    dpfservice::ProjectGenerator::configure(info);
 
     return true;
 }
