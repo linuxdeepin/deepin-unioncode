@@ -101,10 +101,16 @@ void CodePortingManager::slotSelectedChanged(const QString &filePath, const QStr
 {
     Q_UNUSED(endLine)
 
-    EventSender::jumpTo(filePath, startLine + kLineNumberAdaptation);
+    int startLineInEditor = startLine + kLineNumberAdaptation;
+    int endLineInEditor = endLine + kLineNumberAdaptation;
 
-    // TODO(mozart): Display suggestion in editor.
-    qInfo() << suggestion;
+    EventSender::jumpTo(filePath, startLineInEditor);
+
+    EventSender::setAnnotation(filePath, startLineInEditor, suggestion);
+    QColor backgroundColor(Qt::red);
+    for (int lineNumber = startLineInEditor; lineNumber <= endLineInEditor; ++lineNumber) {
+        EventSender::setLineBackground(filePath, backgroundColor, lineNumber);
+    }
 }
 
 void CodePortingManager::slotAppendOutput(const QString &content, OutputPane::OutputFormat format, OutputPane::AppendMode mode)
