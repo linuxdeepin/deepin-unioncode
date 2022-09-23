@@ -39,7 +39,7 @@ class TextEditKeeper final
 public:
 
     template<class Edit>
-    static bool impl(const QString &language, QString *err = nullptr) {
+    static bool impl(const QString &language = Edit::implLanguage(), QString *err = nullptr) {
         bool result = true;
         result &= instance()->editFactory.regClass<Edit>(language, err);
         return result;

@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-toolchecker)
 
 set(CXX_CPP
+    mainframe/pip3dialog.cpp
     mainframe/dpkgdebchecker.cpp
     mainframe/processdialog.cpp
     mainframe/wgetdialog.cpp
@@ -12,6 +13,7 @@ set(CXX_CPP
     )
 
 set(CXX_H
+    mainframe/pip3dialog.h
     mainframe/dpkgdebchecker.h
     mainframe/processdialog.h
     mainframe/wgetdialog.h

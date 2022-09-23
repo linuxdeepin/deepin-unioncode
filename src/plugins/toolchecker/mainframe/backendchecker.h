@@ -66,6 +66,14 @@ public:
     void setCheckNumProgram(const QString &value);
     void setCheckNumMode(const QString &value);
 };
+Q_DECLARE_METATYPE(RequestInfo)
+
+struct Pip3GitInstall
+{
+    QString packageName;
+    QString programMain;
+};
+Q_DECLARE_METATYPE(Pip3GitInstall)
 
 class BackendChecker : public QWidget
 {
@@ -80,7 +88,7 @@ public:
     bool checkCachePackage(const QString &languageID);
 private:
     QString adapterPath;
-    QHash<QString, RequestInfo> requestInfos;
+    QHash<QString, QVariant> requestInfos;
 };
 
 #endif // BACKENDCHECKER_H

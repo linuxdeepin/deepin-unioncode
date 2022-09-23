@@ -84,7 +84,7 @@ signals:
     void requestResult(const lsp::Highlights &highlights);
     void requestResult(const lsp::DefinitionProvider &definitionProvider);
     void requestResult(const QList<lsp::Data> &tokensResult);
-    void requestResult(const newlsp::Workspace::WorkspaceEdit &changes);
+    void requestResult(const newlsp::WorkspaceEdit &changes);
     void requestResult(const lsp::References &refs);
 
 private:

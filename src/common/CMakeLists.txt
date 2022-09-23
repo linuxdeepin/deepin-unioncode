@@ -14,6 +14,9 @@ set(CXX_H
     lsp/newprotocol.h
     lsp/protocol.h
     lsp/client.h
+    lsp/new/basicjsonstructures.h
+    lsp/new/lifecyclemessage.h
+    lsp/new/documentsynchronization.h
     util/processutil.h
     util/customicons.h
     util/custompaths.h
@@ -50,6 +53,9 @@ set(CXX_CPP
     lsp/newprotocol.cpp
     lsp/protocol.cpp
     lsp/client.cpp
+    lsp/new/basicjsonstructures.cpp
+    lsp/new/lifecyclemessage.cpp
+    lsp/new/documentsynchronization.cpp
     util/processutil.cpp
     util/customicons.cpp
     util/custompaths.cpp

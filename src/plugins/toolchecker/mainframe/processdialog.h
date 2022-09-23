@@ -40,9 +40,9 @@ public:
     QString workDirectory() const;
 
 protected:
-    virtual void doShowRequestError(const QByteArray &array);
-    virtual void doShowRequestOutput(const QByteArray &array);
-    virtual void doRequestFinished(int exitCode, QProcess::ExitStatus status);
+    virtual void doShowStdErr(const QByteArray &array);
+    virtual void doShowStdOut(const QByteArray &array);
+    virtual void doFinished(int exitCode, QProcess::ExitStatus status);
     virtual void doShowProgress(int current, int count);
     virtual void showEvent(QShowEvent *event) override;
 

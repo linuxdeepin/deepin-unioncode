@@ -26,6 +26,7 @@
 #include <QRegularExpression>
 #include <QMetaEnum>
 #include <QDir>
+#include <QStandardPaths>
 
 #include <iostream>
 
@@ -39,9 +40,25 @@ struct BackendPrivate
 Backend::Backend(const SettingInfo &info)
     : d (new BackendPrivate)
 {
+    std::cout << __FUNCTION__ << std::endl;
     d->saveInfo = info;
     if (d->saveInfo.mode == "process") {
         QProcess *process = new QProcess(this);
+        if (d->saveInfo.language == "Python") {
+            auto procEnv = process->processEnvironment();
+            QString userRuntimeBinPath = QDir::homePath() + QDir::separator() + ".local"
+                    + QDir::separator() + "bin";
+            QString userPythonPkgPath = QDir::homePath() + QDir::separator() + ".local"
+                    + QDir::separator() + "lib"
+                    + QDir::separator() + "python3.7"
+                    + QDir::separator() + "site-packages";
+            procEnv.insert("PYTHONPATH=%0", userPythonPkgPath);
+            QString PATH_EnvValue = procEnv.value("PATH");
+            procEnv.remove("PATH");
+            procEnv.insert("PATH", userRuntimeBinPath + ":" + PATH_EnvValue);
+            process->setProcessEnvironment(procEnv);
+            qInfo() << procEnv.value("PATH");
+        }
         QObject::connect(process, &QProcess::errorOccurred,
                          [=](QProcess::ProcessError error)
         {
@@ -56,8 +73,8 @@ Backend::Backend(const SettingInfo &info)
         });
         QObject::connect(process, &QProcess::aboutToClose,
                          this, &Backend::aboutToClose, Qt::UniqueConnection);
-        process->setProgram(info.program);
-        process->setArguments(info.arguments);
+        process->setProgram("bash");
+        process->setArguments({"-c", info.program + " " + info.arguments.join(" ")});
         process->setWorkingDirectory(info.workDir);
         process->setReadChannel(QProcess::StandardOutput);
         process->setReadChannelMode(QProcess::SeparateChannels);
@@ -96,22 +113,30 @@ void Backend::writeAndWait(const QByteArray &data)
 bool Backend::readAndWait(QVector<QJsonObject> &jsonObjs, QByteArray &source)
 {
     int waitCount = 0;
-    qInfo() << "waitForReadyRead";
-    while(d->backendIns->waitForReadyRead(100)) {
+    //    qInfo() << "waitForReadyRead";
+    while(!d->backendIns->waitForReadyRead(100)) {
         if ( 3 == waitCount ++) {
             qCritical() << "wait timeOut";
         }
         return false;
     }
 
-    QRegularExpression regExp("^Content-Length:\\s+(\\d+)\\r\\n\\r\\n");
+    QString contentLengthKey{"ContentLength"};
+    QString contentTypeKey{"ContentType"};
+    QString charsetKey{"charset"};
+    QRegularExpression headRegExp("^Content-Length:\\s?(?<" + contentLengthKey + ">[0-9]+)\\r\\n" +
+                                 "(Content-Type:\\s?(?<" + contentTypeKey + ">\\S+);" +
+                                 "\\s?charset=(?<" + charsetKey + ">\\S+)\\r\\n)?\\r\\n");
+
     QByteArray head, jsonSrc;
     while (d->backendIns->bytesAvailable()) {
         head += d->backendIns->read(1);
-        auto matchs = regExp.match(head);
+        auto matchs = headRegExp.match(head);
         if (matchs.hasMatch()) {
-            int jsonObjSize = matchs.captured(1).toInt();
-            while (jsonSrc.size() != jsonObjSize) {
+            int contentLength = matchs.captured(contentLengthKey).toInt();
+            QString contentType = matchs.captured(contentTypeKey); Q_UNUSED(contentType);
+            QString charset = matchs.captured(charsetKey); Q_UNUSED(charset);
+            while (jsonSrc.size() != contentLength) {
                 QByteArray readChar = d->backendIns->read(1);
                 if (readChar.isEmpty()) {
                     qInfo() << "readChar wait";

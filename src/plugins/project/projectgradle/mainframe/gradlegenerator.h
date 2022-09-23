@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef CMAKEGENERATOR_H
-#define CMAKEGENERATOR_H
+#ifndef GRADLEGENERATOR_H
+#define GRADLEGENERATOR_H
 
 #include "gradleasynparse.h"
 #include "services/project/projectservice.h"
@@ -51,4 +51,4 @@ private slots:
     void doGradleTaskActionTriggered();
 };
 
-#endif // CMAKEGENERATOR_H
+#endif // GRADLEGENERATOR_H

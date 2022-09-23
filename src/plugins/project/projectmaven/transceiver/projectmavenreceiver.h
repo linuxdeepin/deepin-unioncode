@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef PROJECTRECEIVER_H
-#define PROJECTRECEIVER_H
+#ifndef PROJECTMAVENRECEIVER_H
+#define PROJECTMAVENRECEIVER_H
 
 #include "services/project/projectinfo.h"
 #include "services/builder/builderglobals.h"
@@ -59,4 +59,4 @@ signals:
     void buildExecuteEnd(const BuildCommandInfo &commandInfo, int status = 0);
 };
 
-#endif // PROJECTRECEIVER_H
+#endif // PROJECTMAVENRECEIVER_H

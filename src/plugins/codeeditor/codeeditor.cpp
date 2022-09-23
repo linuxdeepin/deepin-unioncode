@@ -29,9 +29,10 @@
 #include "refactorwidget/refactorwidget.h"
 #include "textedittabwidget/texteditkeeper.h"
 #include "textedittabwidget/textedittabwidget.h"
-#include "textedittabwidget/language/texteditcpp.h"
-#include "textedittabwidget/language/texteditcmake.h"
-#include "textedittabwidget/language/texteditjava.h"
+#include "textedittabwidget/language/cpp/texteditcpp.h"
+#include "textedittabwidget/language/cmake/texteditcmake.h"
+#include "textedittabwidget/language/java/texteditjava.h"
+#include "textedittabwidget/language/python/texteditpython.h"
 
 #include "services/window/windowservice.h"
 
@@ -47,9 +48,10 @@ void CodeEditor::initialize()
 {
     qInfo() << __FUNCTION__;
     TextEditKeeper::impl<TextEdit>("");
-    TextEditKeeper::impl<TextEditCpp>(TextEditCpp::implLanguage());
-    TextEditKeeper::impl<TextEditCmake>(TextEditCmake::implLanguage());
-    TextEditKeeper::impl<TextEditJava>(TextEditJava::implLanguage());
+    TextEditKeeper::impl<TextEditPython>();
+    TextEditKeeper::impl<TextEditCpp>();
+    TextEditKeeper::impl<TextEditCmake>();
+    TextEditKeeper::impl<TextEditJava>();
 }
 
 bool CodeEditor::start()

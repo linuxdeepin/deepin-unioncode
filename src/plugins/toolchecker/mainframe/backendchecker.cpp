@@ -19,12 +19,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "backendchecker.h"
+#include "pip3dialog.h"
 #include "wgetdialog.h"
 
 #include "common/common.h"
 
 #include <QDirIterator>
 #include <QMimeDatabase>
+#include <QStandardPaths>
+
+#define PYLS_PACKAGENAME "python-language-server[all]"
+#define PYLS_PROGRAM_MAIN "pyls"
 
 #define JDTLS_PACKAGE_URL "https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.11.0-202205051421.tar.gz"
 #define JDTLS_PACKAGE_NAME "jdt-language-server.tar.gz"
@@ -42,15 +47,20 @@
 BackendChecker::BackendChecker(QWidget *parent)
     : QWidget(parent)
 {
-    RequestInfo info;
-    info.setPackageUrl(QUrl(JDTLS_PACKAGE_URL));
-    info.setPackageSaveName(JDTLS_PACKAGE_NAME);
-    info.setCheckFileUrl(QUrl(JDTLS_CHECKFILE_URL));
-    info.setCheckFileSaveName(JDTLS_CHECKFILE_NAME);
-    info.setCheckNumProgram(JDTLS_CHECKPROGRAM_NAME);
-    info.setCheckNumMode(JDTLS_CHECKPROGRAM_MODE);
+    RequestInfo jdtlsInfo;
+    jdtlsInfo.setPackageUrl(QUrl(JDTLS_PACKAGE_URL));
+    jdtlsInfo.setPackageSaveName(JDTLS_PACKAGE_NAME);
+    jdtlsInfo.setCheckFileUrl(QUrl(JDTLS_CHECKFILE_URL));
+    jdtlsInfo.setCheckFileSaveName(JDTLS_CHECKFILE_NAME);
+    jdtlsInfo.setCheckNumProgram(JDTLS_CHECKPROGRAM_NAME);
+    jdtlsInfo.setCheckNumMode(JDTLS_CHECKPROGRAM_MODE);
 
-    requestInfos["Java"] = info;
+    Pip3GitInstall pylspInfo;
+    pylspInfo.packageName = PYLS_PACKAGENAME;
+    pylspInfo.programMain = PYLS_PROGRAM_MAIN;
+
+    requestInfos["Java"] = QVariant::fromValue<RequestInfo>(jdtlsInfo);
+    requestInfos["Python"] = QVariant::fromValue<Pip3GitInstall>(pylspInfo);
 }
 
 BackendChecker &BackendChecker::instance()
@@ -76,27 +86,39 @@ void BackendChecker::checkLanguageBackend(const QString &languageID)
     }
 
     if (requestInfos.keys().contains(languageID)) {
-        auto info = requestInfos.value(languageID);
-        if (!existRunMain(languageID)) { // install
-            if (!checkCachePackage(languageID)) { // Sha256 check
-                QStringList args = { info.getPackageUrl().toEncoded(),
-                                     "-O",
-                                     info.getPackageSaveName() };
-                auto dialog =  new WGetDialog;
-                dialog->setWorkDirectory(adapterPath);
-                dialog->setWgetArguments(args);
-                dialog->exec();
-            }
+        QVariant infoVar = requestInfos.value(languageID);
+        if (infoVar.canConvert<RequestInfo>()) {
+            auto info = qvariant_cast<RequestInfo>(infoVar);
+            if (!existRunMain(languageID)) { // install
+                if (!checkCachePackage(languageID)) { // Sha256 check
+                    QStringList args = { info.getPackageUrl().toEncoded(),
+                                         "-O",
+                                         info.getPackageSaveName() };
+                    auto dialog =  new WGetDialog;
+                    dialog->setWorkDirectory(adapterPath);
+                    dialog->setWgetArguments(args);
+                    dialog->exec();
+                }
 
-            auto processDialog = new ProcessDialog();
-            processDialog->setWorkDirectory(adapterPath);
-            processDialog->setProgram("tar");
-            processDialog->setArguments({"zxvf", info.getPackageSaveName(), "-C", languageID});
-            processDialog->exec();
+                auto processDialog = new ProcessDialog();
+                processDialog->setWorkDirectory(adapterPath);
+                processDialog->setProgram("tar");
+                processDialog->setArguments({"zxvf", info.getPackageSaveName(), "-C", languageID});
+                processDialog->exec();
+            }
+            // if (!existShellRemain(languageID)) {
+            createShellRemain(languageID);
+            // }
+        } else if (infoVar.canConvert<Pip3GitInstall>()) {
+            auto info = qvariant_cast<Pip3GitInstall>(infoVar);
+            QString userLocalBinPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+                    + QDir::separator() + ".local" + QDir::separator() + "bin";
+            if (!QFileInfo(userLocalBinPath + QDir::separator() + PYLS_PROGRAM_MAIN).exists()) {
+                auto pip3Dialog = new Pip3Dialog();
+                pip3Dialog->install("python-language-server[all]");
+                pip3Dialog->exec();
+            }
         }
-        // if (!existShellRemain(languageID)) {
-        createShellRemain(languageID);
-        // }
     }
 }
 
@@ -160,53 +182,58 @@ bool BackendChecker::existRunMain(const QString &languageID)
 
 bool BackendChecker::checkCachePackage(const QString &languageID)
 {
-    auto info = requestInfos.value(languageID);
+    QVariant infoVar = requestInfos.value(languageID);
 
-    QDir adapterDir(adapterPath);
-    if (!adapterDir.exists(info.getPackageSaveName()))
+    if (infoVar.canConvert<RequestInfo>()) {
+        RequestInfo info = qvariant_cast<RequestInfo>(infoVar);
+
+        QDir adapterDir(adapterPath);
+        if (!adapterDir.exists(info.getPackageSaveName()))
+            return false;
+
+        if (adapterDir.exists(info.getCheckFileSaveName())) {
+            adapterDir.remove(info.getCheckFileSaveName());
+        }
+
+        // current cache package path
+        QString localPackageName = info.getPackageSaveName();
+
+        // download sha256
+        QStringList args = { info.getCheckFileUrl().toEncoded(),
+                             "-O",
+                             info.getCheckFileSaveName() };
+
+        QProcess wgetCheckFileProcess;
+        wgetCheckFileProcess.setWorkingDirectory(adapterPath);
+        wgetCheckFileProcess.setProgram("wget");
+        wgetCheckFileProcess.setArguments({ info.getCheckFileUrl().toEncoded(),
+                                            "-O",
+                                            info.getCheckFileSaveName()});
+        wgetCheckFileProcess.start();
+        wgetCheckFileProcess.waitForFinished();
+
+        QProcess checkProcess;
+        checkProcess.setWorkingDirectory(adapterPath);
+        checkProcess.setProgram(info.getCheckNumProgram());
+        checkProcess.setArguments({"-a", info.getCheckNumMode(), info.getPackageSaveName()});
+        checkProcess.start();
+        checkProcess.waitForFinished();
+
+        QString output = checkProcess.readAll();
+        QStringList result = output.split(" ");
+        if (result.size() >= 2) {
+            output = result.first();
+        }
+
+        QFile checkFile(adapterDir.filePath(info.getCheckFileSaveName()));
+        if (checkFile.open(QFile::OpenModeFlag::ReadOnly)) {
+            QString readOut = checkFile.readAll();
+            if (readOut == output)
+                return true;
+        }
+
         return false;
-
-    if (adapterDir.exists(info.getCheckFileSaveName())) {
-        adapterDir.remove(info.getCheckFileSaveName());
     }
-
-    // current cache package path
-    QString localPackageName = info.getPackageSaveName();
-
-    // download sha256
-    QStringList args = { info.getCheckFileUrl().toEncoded(),
-                         "-O",
-                         info.getCheckFileSaveName() };
-
-    QProcess wgetCheckFileProcess;
-    wgetCheckFileProcess.setWorkingDirectory(adapterPath);
-    wgetCheckFileProcess.setProgram("wget");
-    wgetCheckFileProcess.setArguments({ info.getCheckFileUrl().toEncoded(),
-                                        "-O",
-                                        info.getCheckFileSaveName()});
-    wgetCheckFileProcess.start();
-    wgetCheckFileProcess.waitForFinished();
-
-    QProcess checkProcess;
-    checkProcess.setWorkingDirectory(adapterPath);
-    checkProcess.setProgram(info.getCheckNumProgram());
-    checkProcess.setArguments({"-a", info.getCheckNumMode(), info.getPackageSaveName()});
-    checkProcess.start();
-    checkProcess.waitForFinished();
-
-    QString output = checkProcess.readAll();
-    QStringList result = output.split(" ");
-    if (result.size() >= 2) {
-        output = result.first();
-    }
-
-    QFile checkFile(adapterDir.filePath(info.getCheckFileSaveName()));
-    if (checkFile.open(QFile::OpenModeFlag::ReadOnly)) {
-        QString readOut = checkFile.readAll();
-        if (readOut == output)
-            return true;
-    }
-
     return false;
 }
 

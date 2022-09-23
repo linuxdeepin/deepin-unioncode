@@ -90,7 +90,7 @@ Client::Client(unsigned int port, const QString &host)
     qRegisterMetaType<lsp::Data>("lsp::Data");
     qRegisterMetaType<lsp::References>("lsp::References");
     qRegisterMetaType<lsp::Position>("lsp::Position");
-    qRegisterMetaType<newlsp::Workspace::WorkspaceEdit>("newlsp::Workspace::WorkspaceEdit");
+    qRegisterMetaType<newlsp::WorkspaceEdit>("newlsp::WorkspaceEdit");
     qRegisterMetaType<newlsp::Position>("newlsp::Position");
     qRegisterMetaType<newlsp::Range>("newlsp::Range");
 }
@@ -159,25 +159,44 @@ void ClientPrivate::callLanguageNotify(const QString &notify)
 
 void ClientPrivate::responseProcess(const QByteArray &result)
 {
-    QByteArray temp = result;
-    QByteArray dataHead{"Content-Length:"};
-    QByteArray dataHeadEnd{"\r\n\r\n"};
-    while (!temp.isEmpty()) {
-        int headEndIndex = temp.indexOf(dataHeadEnd) + dataHeadEnd.length();
-        int headBeginIndex = temp.indexOf(dataHead);
-        QByteArray head = temp.mid(headBeginIndex, headEndIndex);
-        temp = temp.remove(0, headEndIndex);
-        int jsonCount = head.replace(dataHead, "").replace(dataHeadEnd, "").toInt();
-        QByteArray jsonData = temp.mid(0, jsonCount);
-        temp = temp.remove(0, jsonCount);
-        QJsonParseError err;
-        QJsonObject jsonObj = QJsonDocument::fromJson(jsonData, &err).object();
-        if (err.error != QJsonParseError::NoError){
-            qInfo() << "covert json error" << err.errorString() << jsonData << temp;
+    QString contentLengthKey{"ContentLength"};
+    QString contentTypeKey{"ContentType"};
+    QString charsetKey{"charset"};
+    QRegularExpression headRegExp("^Content-Length:\\s?(?<" + contentLengthKey + ">[0-9]+)\\r\\n" +
+                                 "(Content-Type:\\s?(?<" + contentTypeKey + ">\\S+);" +
+                                 "\\s?charset=(?<" + charsetKey + ">\\S+)\\r\\n)?\\r\\n");
+    QByteArray head, body;
+    for (int idx = 0; idx < result.size(); idx++) {
+        auto matchs = headRegExp.match(head);
+        if (!matchs.hasMatch()) {
+            head += result[idx];
         } else {
-            q->processJson(jsonObj);
+            int contentLength = matchs.captured(contentLengthKey).toInt();
+            QString contentType = matchs.captured(contentTypeKey);
+            QString charset = matchs.captured(charsetKey);
+
+            if (contentLength > body.size()) {
+                body += result[idx];
+            }
+
+            if (contentLength == body.size()) {
+                QJsonParseError err;
+                QJsonObject jsonObj = QJsonDocument::fromJson(body, &err).object();
+                if (err.error != QJsonParseError::NoError) {
+                    qInfo() << "covert json error"
+                            << err.errorString();
+                } else {
+                    q->processJson(jsonObj);
+                    return;
+                }
+            }
         }
     }
+    qCritical() << "response error from" << "\n"
+                << "head: " << head << "\n"
+                << "body: " << body << "\n"
+                << "body size: " << body.size();
+    abort();
 }
 
 void Client::initRequest(const QString &compile)
@@ -422,7 +441,7 @@ bool Client::renameResult(const QJsonObject &jsonObj)
         d->requestSave.remove(calledID);
         QJsonObject resultObj = jsonObj.value(K_RESULT).toObject();
         QJsonObject changesObj = resultObj.value("changes").toObject();
-        newlsp::Workspace::WorkspaceEdit changesResult;
+        newlsp::WorkspaceEdit changesResult;
         if (!changesObj.isEmpty()) {
             // std::optional<> changes;
             std::map<newlsp::DocumentUri, std::vector<newlsp::TextEdit>> changes;
@@ -435,9 +454,9 @@ bool Client::renameResult(const QJsonObject &jsonObj)
                     auto startObj = rangeObj.value(K_START).toObject();
                     auto endObj = rangeObj.value(K_END).toObject();
                     std::string newText = addionObj.value(K_NewText).toString().toStdString();
-                    newlsp::Position startPos = {startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()};
-                    newlsp::Position endPos = {endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()};
-                    newlsp::Range range = {startPos, endPos} ;
+                    newlsp::Position startPos{startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()};
+                    newlsp::Position endPos{endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()};
+                    newlsp::Range range{startPos, endPos};
                     textEdits.push_back(newlsp::TextEdit{range, newText});
                 }
                 changes[fileKey.toStdString()] = textEdits;
@@ -480,10 +499,10 @@ bool Client::renameResult(const QJsonObject &jsonObj)
 
         QJsonObject changeAnnotationsObj = resultObj.value("changeAnnotations").toObject();
         if (!changeAnnotationsObj.isEmpty()) {
-            std::map<std::string, newlsp::Workspace::ChangeAnnotation> changeAnnotations;
+            std::map<std::string, newlsp::ChangeAnnotation> changeAnnotations;
             for (auto idKey: changeAnnotationsObj.keys()) {
                 QJsonObject changeAnnotationObj = changeAnnotationsObj[idKey].toObject();
-                newlsp::Workspace::ChangeAnnotation changeAnnotation;
+                newlsp::ChangeAnnotation changeAnnotation;
                 std::string label = changeAnnotationObj.value("label").toString().toStdString();
                 changeAnnotation.label = label;
                 if (changeAnnotationObj.contains("needsConfirmation")) {

@@ -51,7 +51,7 @@ QStringList WGetDialog::wgetArguments() const
     return process.arguments();
 }
 
-void WGetDialog::doShowRequestError(const QByteArray &array)
+void WGetDialog::doShowStdErr(const QByteArray &array)
 {
     static QString cacheData;
     static QString headTitle;
@@ -81,12 +81,12 @@ void WGetDialog::doShowRequestError(const QByteArray &array)
     }
 }
 
-void WGetDialog::doShowRequestOutput(const QByteArray &array)
+void WGetDialog::doShowStdOut(const QByteArray &array)
 {
     textBrowser->append(array);
 }
 
-void WGetDialog::doRequestFinished(int exitCode, QProcess::ExitStatus status)
+void WGetDialog::doFinished(int exitCode, QProcess::ExitStatus status)
 {
     this->close();
     qInfo() << exitCode << status;

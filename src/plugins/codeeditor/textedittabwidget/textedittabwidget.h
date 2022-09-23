@@ -67,7 +67,7 @@ private slots:
     void fileModifyed(const QString &file);
     void fileDeleted(const QString &file);
     void fileMoved(const QString &file);
-    void doRenameReplace(const newlsp::Workspace::WorkspaceEdit &renameResult);
+    void doRenameReplace(const newlsp::WorkspaceEdit &renameResult);
     TextEdit *switchFileAndToOpen(const lsp::Head &head, const QString &filePath);
     TextEdit *switchFileAndToOpen(const QString &filePath);
     void saveEditFile(const QString &file);

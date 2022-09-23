@@ -19,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef PROJECTCMAKE_H
-#define PROJECTCMAKE_H
+#ifndef PROJECTGRADLE_H
+#define PROJECTGRADLE_H
 
 #include <framework/framework.h>
 
@@ -34,4 +34,4 @@ public:
     virtual dpf::Plugin::ShutdownFlag stop() override;
 };
 
-#endif // PROJECTCMAKE_H
+#endif // PROJECTGRADLE_H

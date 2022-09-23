@@ -37,6 +37,7 @@
 namespace lsp {
 const QString C_CPP{"C/C++"};
 const QString JAVA{"Java"};
+const QString PYTHON{"Python"};
 const QString K_ID {"id"};
 const QString K_JSON_RPC {"jsonrpc"};
 const QString K_METHOD {"method"};
@@ -301,10 +302,9 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
 
         retInitRequest = initRequest;
 
-    } else if (language == JAVA) {
+    } else if (language == JAVA || language == PYTHON) {
 
-        using namespace newlsp::Lifecycle;
-        using namespace newlsp::Lifecycle::Initialize;
+        using namespace newlsp;
 
         std::string workspaceFolderUriStr = QUrl::fromLocalFile(workspaceFolder).toString().toStdString();
         std::string workspaceNameStr = QFileInfo(workspaceFolder).fileName().toStdString();
@@ -330,13 +330,13 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
         {
             /* workspace */
             {
-                params.capabilities.workspace = Workspace{};
+                params.capabilities.workspace = newlsp::Workspace{};
                 params.capabilities.workspace->applyEdit = true;
                 /* WorkspaceEditClientCapabilities */
-                params.capabilities.workspace->workspaceEdit = Initialize::WorkspaceEditClientCapabilities{};
+                params.capabilities.workspace->workspaceEdit = newlsp::WorkspaceEditClientCapabilities{};
                 params.capabilities.workspace->workspaceEdit->documentChanges = true;
-                params.capabilities.workspace->workspaceEdit->resourceOperations = BasicEnum::ResourceOperationKind::toStdVector();
-                params.capabilities.workspace->workspaceEdit->failureHandling = BasicEnum::FailureHandlingKind::get()->TextOnlyTransactional;
+                params.capabilities.workspace->workspaceEdit->resourceOperations = newlsp::Enum::ResourceOperationKind::toStdVector();
+                params.capabilities.workspace->workspaceEdit->failureHandling = newlsp::Enum::FailureHandlingKind::get()->TextOnlyTransactional;
                 params.capabilities.workspace->workspaceEdit->normalizesLineEndings = true;
                 params.capabilities.workspace->workspaceEdit->changeAnnotationSupport = ChangeAnotationSupport{};
                 params.capabilities.workspace->workspaceEdit->changeAnnotationSupport->groupsOnLabel = true;
@@ -355,9 +355,9 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 params.capabilities.workspace->symbol = WorkspaceSymbolClientCapabilities{};
                 params.capabilities.workspace->symbol->dynamicRegistration = true;
                 params.capabilities.workspace->symbol->symbolKind = SymbolKind{};
-                params.capabilities.workspace->symbol->symbolKind->valueSet = BasicEnum::SymbolKind::toStdVector();
+                params.capabilities.workspace->symbol->symbolKind->valueSet = newlsp::Enum::SymbolKind::toStdVector();
                 params.capabilities.workspace->symbol->tagSupport = WorkspaceSymbolClientCapabilities::TagSupport{};
-                params.capabilities.workspace->symbol->tagSupport->valueSet = BasicEnum::SymbolTag::toStdVector();
+                params.capabilities.workspace->symbol->tagSupport->valueSet = newlsp::Enum::SymbolTag::toStdVector();
                 // no setting from vscode
                 // params.capabilities.workspace->symbol->resolveSupport = {};
 
@@ -423,13 +423,13 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 params.capabilities.textDocument->completion->completionItem = CompletionClientCapabilities::CompletionItem{};
                 params.capabilities.textDocument->completion->completionItem->snippetSupport = true;
                 params.capabilities.textDocument->completion->completionItem->commitCharactersSupport = true;
-                params.capabilities.textDocument->completion->completionItem->documentationFormat = BasicEnum::MarkupKind::toStdVector();
+                params.capabilities.textDocument->completion->completionItem->documentationFormat = newlsp::Enum::MarkupKind::toStdVector();
                 params.capabilities.textDocument->completion->completionItem->deprecatedSupport = true;
                 params.capabilities.textDocument->completion->completionItem->preselectSupport = true;
                 params.capabilities.textDocument->completion->completionItem->tagSupport
                         = CompletionClientCapabilities::CompletionItem::TagSupport{};
                 params.capabilities.textDocument->completion->completionItem->tagSupport->valueSet
-                        = BasicEnum::CompletionItemTag::toStdVector();
+                        = newlsp::Enum::CompletionItemTag::toStdVector();
                 params.capabilities.textDocument->completion->completionItem->insertReplaceSupport = true;
                 params.capabilities.textDocument->completion->completionItem->resolveSupport = ResolveSupport{};
                 params.capabilities.textDocument->completion->completionItem->resolveSupport->properties = {
@@ -440,18 +440,18 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 params.capabilities.textDocument->completion->completionItem->insertTextModeSupport
                         = CompletionClientCapabilities::CompletionItem::InsertTextModeSupport{};
                 params.capabilities.textDocument->completion->completionItem->insertTextModeSupport->valueSet
-                        = BasicEnum::InsertTextMode::toStdVector();
+                        = newlsp::Enum::InsertTextMode::toStdVector();
                 params.capabilities.textDocument->completion->completionItem->labelDetailsSupport = true;
 
                 /* insertTextMode: 2 */
                 params.capabilities.textDocument->completion->insertTextMode
-                        = BasicEnum::InsertTextMode::get()->adjustIndentation; // from vscode
+                        = newlsp::Enum::InsertTextMode::get()->adjustIndentation; // from vscode
 
                 /* completionItemKind */
                 params.capabilities.textDocument->completion->completionItemKind
                         = CompletionClientCapabilities::CompletionItemKind{};
                 params.capabilities.textDocument->completion->completionItemKind->valueSet
-                        = BasicEnum::CompletionItemKind::toStdVector();
+                        = newlsp::Enum::CompletionItemKind::toStdVector();
 
                 /* itemDefaults */ // no setting from vscode
                 // params.capabilities.textDocument->completion->itemDefaults = {std::nullopt};
@@ -462,13 +462,13 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 /* HoverClientCapabilities */
                 params.capabilities.textDocument->hover = HoverClientCapabilities{};
                 params.capabilities.textDocument->hover->dynamicRegistration = true;
-                params.capabilities.textDocument->hover->contentFormat = BasicEnum::MarkupKind::toStdVector();
+                params.capabilities.textDocument->hover->contentFormat = newlsp::Enum::MarkupKind::toStdVector();
 
                 /* SignatureHelpClientCapabilities */
                 params.capabilities.textDocument->signatureHelp = SignatureHelpClientCapabilities{};
                 params.capabilities.textDocument->signatureHelp->dynamicRegistration = true;
                 params.capabilities.textDocument->signatureHelp->signatureInformation = SignatureInformation{};
-                params.capabilities.textDocument->signatureHelp->signatureInformation->documentationFormat = BasicEnum::MarkupKind::toStdVector();
+                params.capabilities.textDocument->signatureHelp->signatureInformation->documentationFormat = newlsp::Enum::MarkupKind::toStdVector();
                 params.capabilities.textDocument->signatureHelp->signatureInformation->parameterInformation = ParameterInformation{};
                 params.capabilities.textDocument->signatureHelp->signatureInformation->parameterInformation->labelOffsetSupport = true;
                 params.capabilities.textDocument->signatureHelp->signatureInformation->activeParameterSupport = true;
@@ -506,10 +506,10 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 params.capabilities.textDocument->documentSymbol = DocumentSymbolClientCapabilities{};
                 params.capabilities.textDocument->documentSymbol->dynamicRegistration = true;
                 params.capabilities.textDocument->documentSymbol->symbolKind = SymbolKind{};
-                params.capabilities.textDocument->documentSymbol->symbolKind->valueSet = BasicEnum::SymbolKind::toStdVector();
+                params.capabilities.textDocument->documentSymbol->symbolKind->valueSet = newlsp::Enum::SymbolKind::toStdVector();
                 params.capabilities.textDocument->documentSymbol->hierarchicalDocumentSymbolSupport = true;
                 params.capabilities.textDocument->documentSymbol->tagSupport = DocumentSymbolClientCapabilities::TagSupport{};
-                params.capabilities.textDocument->documentSymbol->tagSupport->valueSet = BasicEnum::SymbolTag::toStdVector();
+                params.capabilities.textDocument->documentSymbol->tagSupport->valueSet = newlsp::Enum::SymbolTag::toStdVector();
                 params.capabilities.textDocument->documentSymbol->labelSupport = true;
 
                 /* CodeActionClientCapabilities */ //func
@@ -519,11 +519,11 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 params.capabilities.textDocument->codeAction->disabledSupport = true;
                 params.capabilities.textDocument->codeAction->dataSupport = true;
                 params.capabilities.textDocument->codeAction->resolveSupport = ResolveSupport{};
-                params.capabilities.textDocument->codeAction->resolveSupport->properties = {BasicEnum::Properties::get()->edit};
+                params.capabilities.textDocument->codeAction->resolveSupport->properties = {newlsp::Enum::Properties::get()->edit};
                 params.capabilities.textDocument->codeAction->codeActionLiteralSupport = CodeActionLiteralSupport{};
                 params.capabilities.textDocument->codeAction->codeActionLiteralSupport->codeActionKind = CodeActionKind{};
                 params.capabilities.textDocument->codeAction->codeActionLiteralSupport->codeActionKind.valueSet
-                        = BasicEnum::CodeActionKind::toStdVector();
+                        = newlsp::Enum::CodeActionKind::toStdVector();
                 params.capabilities.textDocument->codeAction->honorsChangeAnnotations = false;
 
                 /* CodeLensClientCapabilities */
@@ -556,7 +556,7 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 params.capabilities.textDocument->rename->dynamicRegistration = true;
                 params.capabilities.textDocument->rename->prepareSupport = true;
                 params.capabilities.textDocument->rename->prepareSupportDefaultBehavior
-                        = BasicEnum::PrepareSupportDefaultBehavior::get()->Identifier;
+                        = newlsp::Enum::PrepareSupportDefaultBehavior::get()->Identifier;
                 params.capabilities.textDocument->rename->honorsChangeAnnotations = true;
 
                 /* PublishDiagnosticsClientCapabilities */
@@ -564,7 +564,7 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 params.capabilities.textDocument->publishDiagnostics->relatedInformation = true;
                 params.capabilities.textDocument->publishDiagnostics->tagSupport
                         = PublishDiagnosticsClientCapabilities::TagSupport{};
-                params.capabilities.textDocument->publishDiagnostics->tagSupport->valueSet = BasicEnum::DiagnosticTag::toStdVector();
+                params.capabilities.textDocument->publishDiagnostics->tagSupport->valueSet = newlsp::Enum::DiagnosticTag::toStdVector();
                 params.capabilities.textDocument->publishDiagnostics->versionSupport = false;
                 params.capabilities.textDocument->publishDiagnostics->codeDescriptionSupport = true;
                 params.capabilities.textDocument->publishDiagnostics->dataSupport = true;
@@ -576,7 +576,7 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 params.capabilities.textDocument->foldingRange->lineFoldingOnly = true;
                 // no setting from vscode
                 // params.capabilities.textDocument->foldingRange->foldingRangeKind = FoldingRangeKind{};
-                // params.capabilities.textDocument->foldingRange->foldingRangeKind->valueSet = {BasicEnum::FoldingRangeKind::toStdVector()};
+                // params.capabilities.textDocument->foldingRange->foldingRangeKind->valueSet = {newlsp::Enum::FoldingRangeKind::toStdVector()};
                 // params.capabilities.textDocument->foldingRange->foldingRange = FoldingRange{};
                 // params.capabilities.textDocument->foldingRange->foldingRange->collapsedText = true;
 
@@ -595,9 +595,9 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 /* SemanticTokensClientCapabilities */
                 params.capabilities.textDocument->semanticTokens = SemanticTokensClientCapabilities{};
                 params.capabilities.textDocument->semanticTokens->dynamicRegistration = true;
-                params.capabilities.textDocument->semanticTokens->tokenTypes = BasicEnum::SemanticTokenTypes::toStdVector();
-                params.capabilities.textDocument->semanticTokens->tokenModifiers = BasicEnum::SemanticTokenModifiers::toStdVector();
-                params.capabilities.textDocument->semanticTokens->formats = BasicEnum::TokenFormat::toStdVector();
+                params.capabilities.textDocument->semanticTokens->tokenTypes = newlsp::Enum::SemanticTokenTypes::toStdVector();
+                params.capabilities.textDocument->semanticTokens->tokenModifiers = newlsp::Enum::SemanticTokenModifiers::toStdVector();
+                params.capabilities.textDocument->semanticTokens->formats = newlsp::Enum::TokenFormat::toStdVector();
                 params.capabilities.textDocument->semanticTokens->requests = SemanticTokensClientCapabilities::Requests{};
                 params.capabilities.textDocument->semanticTokens->requests.full = SemanticTokensClientCapabilities::Requests::Full{};
                 params.capabilities.textDocument->semanticTokens->requests.full->delta = true;
@@ -628,7 +628,7 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 // params.capabilities.textDocument->inlayHint->dynamicRegistration = true;
                 // params.capabilities.textDocument->inlayHint->resolveSupport = ResolveSupport{};
                 // params.capabilities.textDocument->inlayHint->resolveSupport->properties
-                //         = {BasicEnum::Properties::get()->label_location};
+                //         = {newlsp::Enum::Properties::get()->label_location};
 
                 /* DiagnosticClientCapabilities */ // no setting from vscode
                 // DiagnosticClientCapabilities diagnosticClientCapabilities{};
@@ -674,7 +674,7 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
 
         /* trace */
         {
-            params.trace = BasicEnum::TraceValue::get()->Verbose;
+            params.trace = newlsp::Enum::TraceValue::get()->Verbose;
         }
 
         /* workspaceFolders */
@@ -690,7 +690,7 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
         std::string initRequestStr;
         initRequestStr = JsonConvert::addValue(initRequestStr, {"method", JsonConvert::formatValue(std::string("initialize"))});
         initRequestStr = JsonConvert::addValue(initRequestStr, {K_PARAMS.toStdString(), params.toStdString()});
-        initRequestStr = JsonConvert::formatScope(initRequestStr);
+        initRequestStr = JsonConvert::addScope(initRequestStr);
 
         QJsonParseError err;
         auto jsonDoc = QJsonDocument::fromJson(QByteArray::fromStdString(initRequestStr), &err);

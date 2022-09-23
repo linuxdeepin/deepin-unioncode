@@ -30,5 +30,12 @@
     "xml" : {
         "suffix" : ["xml"],
         "mimeType" : ["application/xml"]
+    }, 
+    "python" : {
+        "suffix" : ["py"],
+        "mimeType" : ["text/x-python"],
+        "tokenWords" : {
+            "1" : "and as assert break class continue def del elif else except exec finally for from global if import in is lambda None not or pass print raise return try while with yield"
+        }
     }
 }

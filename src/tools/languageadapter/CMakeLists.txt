@@ -4,6 +4,8 @@ include(${CMAKE_SOURCE_DIR}/3rdparty/archive-jsonrpccpp.cmake)
 
 project(languageadapter)
 
+add_definitions(-DQT_NO_KEYWORDS)
+
 set(CMAKE_VERBOSE_MAKEFILE ON)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("debug type open sanitize check")

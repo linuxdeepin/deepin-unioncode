@@ -28,11 +28,6 @@
 #include <QJsonObject>
 #include <QRegularExpression>
 
-
-namespace {
-static bool checkVersionOk = false;
-}
-
 StyleLspCpp::StyleLspCpp(TextEdit *parent)
  : StyleLsp (parent)
 {

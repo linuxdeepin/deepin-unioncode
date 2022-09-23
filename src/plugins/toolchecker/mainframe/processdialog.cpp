@@ -38,16 +38,16 @@ ProcessDialog::ProcessDialog(QWidget *parent, Qt::WindowFlags f)
 
     setAttribute(Qt::WA_DeleteOnClose);
     QObject::connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                     this, &ProcessDialog::doRequestFinished);
+                     this, &ProcessDialog::doFinished);
     QObject::connect(&process, &QProcess::readyReadStandardOutput,
                      this, [&](){
         auto data = process.readAllStandardOutput();
-        this->doShowRequestError(data);
+        this->doShowStdOut(data);
     });
     QObject::connect(&process, &QProcess::readyReadStandardError,
                      this, [&](){
         auto data = process.readAllStandardError();
-        this->doShowRequestError(data);
+        this->doShowStdErr(data);
     });
 }
 
@@ -81,17 +81,17 @@ QString ProcessDialog::workDirectory() const
     return process.workingDirectory();
 }
 
-void ProcessDialog::doShowRequestError(const QByteArray &array)
+void ProcessDialog::doShowStdErr(const QByteArray &array)
 {
     textBrowser->append(array);
 }
 
-void ProcessDialog::doShowRequestOutput(const QByteArray &array)
+void ProcessDialog::doShowStdOut(const QByteArray &array)
 {
     textBrowser->append(array);
 }
 
-void ProcessDialog::doRequestFinished(int exitCode, QProcess::ExitStatus status)
+void ProcessDialog::doFinished(int exitCode, QProcess::ExitStatus status)
 {
     this->close();
     qInfo() << exitCode << status;

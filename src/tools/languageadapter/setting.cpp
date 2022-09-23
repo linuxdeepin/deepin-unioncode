@@ -79,8 +79,9 @@ QString configCache{
     "    }, \n"
     "    \"Python\" : { \n"
     "           \"mode\": \"process\", \n"
-    "           \"program\" : \"\", \n"
-    "           \"arguments\" : [] \n"
+    "           \"program\" : \"pyls\", \n"
+    "           \"arguments\" : [\"-v\"], \n"
+    "           \"workdir\": \"\" \n"
     "    } \n"
     "} \n"
 };
@@ -132,7 +133,7 @@ SettingInfo Setting::getInfo(const QString &language)
         QString defProgram = defObj.value("program").toString();
         std::cout << "Failed, can't find lauch backend from program: "
                   << program.toLatin1().data()
-                  << ", load default backend: " << defProgram.toLatin1().data()
+                  << ", load default backend: " << replaceEnvValue(defProgram).toLatin1().data()
                   << std::endl;
 
         QString defMode = defObj.value("mode").toString();

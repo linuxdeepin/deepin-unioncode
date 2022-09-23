@@ -37,7 +37,7 @@ public:
     bool readAndWait(QVector<QJsonObject> &jsonObjs, QByteArray &source);
     SettingInfo info() const;
     bool canRead();
-signals:
+Q_SIGNALS:
     void aboutToClose();
 };
 

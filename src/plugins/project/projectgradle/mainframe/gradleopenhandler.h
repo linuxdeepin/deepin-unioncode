@@ -18,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef PROJECTCMAKEOPEN_H
-#define PROJECTCMAKEOPEN_H
+#ifndef PROJECTGRADLEOPEN_H
+#define PROJECTGRADLEOPEN_H
 
 #include <QObject>
 #include <QAction>
@@ -37,4 +37,4 @@ public slots:
                        const QString &filePath);
 };
 
-#endif // PROJECTCMAKEOPEN_H
+#endif // PROJECTGRADLEOPEN_H

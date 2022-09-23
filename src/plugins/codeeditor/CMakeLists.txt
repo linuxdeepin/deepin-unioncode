@@ -29,15 +29,18 @@ set(CXX_CPP
     textedittabwidget/style/stylesci.cpp
     textedittabwidget/style/stylelsp.cpp
     textedittabwidget/style/stylejsonfile.cpp
-    textedittabwidget/language/texteditjava.cpp
-    textedittabwidget/language/stylelspjava.cpp
-    textedittabwidget/language/stylescijava.cpp
-    textedittabwidget/language/texteditcpp.cpp
-    textedittabwidget/language/stylelspcpp.cpp
-    textedittabwidget/language/stylescicpp.cpp
-    textedittabwidget/language/texteditcmake.cpp
-    textedittabwidget/language/stylelspcmake.cpp
-    textedittabwidget/language/stylescicmake.cpp
+    textedittabwidget/language/java/texteditjava.cpp
+    textedittabwidget/language/java/stylelspjava.cpp
+    textedittabwidget/language/java/stylescijava.cpp
+    textedittabwidget/language/cpp/texteditcpp.cpp
+    textedittabwidget/language/cpp/stylelspcpp.cpp
+    textedittabwidget/language/cpp/stylescicpp.cpp
+    textedittabwidget/language/cmake/texteditcmake.cpp
+    textedittabwidget/language/cmake/stylelspcmake.cpp
+    textedittabwidget/language/cmake/stylescicmake.cpp
+    textedittabwidget/language/python/texteditpython.cpp
+    textedittabwidget/language/python/stylelsppython.cpp
+    textedittabwidget/language/python/stylescipython.cpp
     codeeditor.cpp
     codeeditor.json
     )
@@ -63,15 +66,18 @@ set(CXX_H
     textedittabwidget/style/stylesci.h
     textedittabwidget/style/stylelsp.h
     textedittabwidget/style/stylejsonfile.h
-    textedittabwidget/language/texteditjava.h
-    textedittabwidget/language/texteditcmake.h
-    textedittabwidget/language/stylelspjava.h
-    textedittabwidget/language/stylescijava.h
-    textedittabwidget/language/stylelspcmake.h
-    textedittabwidget/language/stylescicmake.h
-    textedittabwidget/language/texteditcpp.h
-    textedittabwidget/language/stylelspcpp.h
-    textedittabwidget/language/stylescicpp.h
+    textedittabwidget/language/java/texteditjava.h
+    textedittabwidget/language/java/stylelspjava.h
+    textedittabwidget/language/java/stylescijava.h
+    textedittabwidget/language/cpp/texteditcpp.h
+    textedittabwidget/language/cpp/stylelspcpp.h
+    textedittabwidget/language/cpp/stylescicpp.h
+    textedittabwidget/language/cmake/texteditcmake.h
+    textedittabwidget/language/cmake/stylelspcmake.h
+    textedittabwidget/language/cmake/stylescicmake.h
+    textedittabwidget/language/python/texteditpython.h
+    textedittabwidget/language/python/stylelsppython.h
+    textedittabwidget/language/python/stylescipython.h
     codeeditor.h
     )
 

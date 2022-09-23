@@ -34,9 +34,9 @@ public:
     QStringList wgetArguments() const;
 
 protected:
-    virtual void doShowRequestError(const QByteArray &array) override;
-    virtual void doShowRequestOutput(const QByteArray &array) override;
-    virtual void doRequestFinished(int exitCode, QProcess::ExitStatus status) override;
+    virtual void doShowStdErr(const QByteArray &array) override;
+    virtual void doShowStdOut(const QByteArray &array) override;
+    virtual void doFinished(int exitCode, QProcess::ExitStatus status) override;
     virtual void showEvent(QShowEvent *event) override;
 };
 

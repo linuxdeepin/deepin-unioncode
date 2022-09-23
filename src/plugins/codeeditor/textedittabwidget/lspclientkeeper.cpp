@@ -23,6 +23,8 @@
 #include <QDir>
 #include <QCoreApplication>
 
+#define AUTO_LANUCH_LSP_SERVER
+
 #define LANGUAGE_ADAPTER_NAME  "languageadapter"
 #define LANGUAGE_ADAPTER_PATH CustomPaths::global(CustomPaths::Tools) \
     + QDir::separator() + LANGUAGE_ADAPTER_NAME
@@ -31,6 +33,7 @@ static unsigned int defPort = 3307;
 
 LSPClientKeeper::LSPClientKeeper()
 {
+#ifdef AUTO_LANUCH_LSP_SERVER
     while (ProcessUtil::portOverhead(defPort)) {
         defPort ++;
     }
@@ -56,6 +59,7 @@ LSPClientKeeper::LSPClientKeeper()
     qInfo() << lspServerProc << lspServerProc->state();
     if (lspServerProc->state() != QProcess::ProcessState::Running)
         qInfo() << lspServerProc->errorString() << LANGUAGE_ADAPTER_PATH;
+#endif
 }
 
 LSPClientKeeper::~LSPClientKeeper()
