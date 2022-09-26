@@ -100,10 +100,6 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 
         return DpfEventMiddleware::instance()->toRunClean();
 
-    } else if (D_MARGIN_DEBUG_POINT_REMOVE == event.data()) {
-
-        return DpfEventMiddleware::instance()->toDebugPointClean();
-
     } else if (D_OPENFILE == event.data()) {
 
         QVariant workspaceVar = event.property(P_WORKSPACEFOLDER);

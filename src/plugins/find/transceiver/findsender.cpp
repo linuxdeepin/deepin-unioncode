@@ -36,7 +36,7 @@ FindSender::~FindSender()
 void FindSender::sendSearchCommand(const QString &searchText, int operateType)
 {
     dpf::Event event;
-    event.setTopic(T_FIND);
+    event.setTopic(T_CODEEDITOR);
     event.setData(D_SEARCH);
     event.setProperty(P_SRCTEXT, searchText);
     event.setProperty(P_OPRATETYPE, operateType);
@@ -46,7 +46,7 @@ void FindSender::sendSearchCommand(const QString &searchText, int operateType)
 void FindSender::sendReplaceCommand(const QString &searchText, const QString &replaceText, int operateType)
 {
     dpf::Event event;
-    event.setTopic(T_FIND);
+    event.setTopic(T_CODEEDITOR);
     event.setData(D_REPLACE);
     event.setProperty(P_SRCTEXT, searchText);
     event.setProperty(P_DESTTEXT, replaceText);
@@ -57,7 +57,7 @@ void FindSender::sendReplaceCommand(const QString &searchText, const QString &re
 void FindSender::sendDoubleClickFileInfo(const QString &workspace, const QString &language, const QString &filePath, int line)
 {
     dpf::Event event;
-    event.setTopic(T_FIND);
+    event.setTopic(T_CODEEDITOR);
     event.setData(D_OPENFILE);
     event.setProperty(P_WORKSPACEFOLDER, workspace);
     event.setProperty(P_LANGUAGE, language);
