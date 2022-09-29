@@ -25,6 +25,7 @@
 #include "framework/framework_global.h"
 
 #include <QString>
+#include <QVector>
 #include <QVariant>
 #include <QSharedData>
 
@@ -64,6 +65,66 @@ QT_BEGIN_NAMESPACE
 Q_CORE_EXPORT QDebug operator <<(QDebug, const DPF_NAMESPACE::Event &);
 #endif //QT_NO_DEBUG_STREAM
 QT_END_NAMESPACE
+
+struct EventInterface : std::function<void(const QVector<QVariant> &)>
+{
+    QString name;
+    QVector<QString> pKeys;
+    EventInterface() = delete;
+
+    EventInterface(const QString &name, const QVector<QString> &keys, const std::function<void(const QVector<QVariant>&)> &func)
+        : std::function<void (const QVector<QVariant> &)> (func) ,  name(name), pKeys(keys) {}
+
+    void operator()(const QVector<QVariant> &as) const
+    {
+        return std::function<void(const QVector<QVariant> &)>::operator()(as);
+    }
+};
+
+/**
+ * @brief The OPI_OBJECT macro
+ *  Declare and define topic scope
+ *
+ * @brief The OPI_INTERFACE macro
+ *  Declare and define call event interface
+ *
+ * @details
+ * Usage:
+ * Call mode:
+ *     The interface implemented by the functor will be encapsulated for the time sending interface,
+ *     for send event package:
+ *         Event {
+ *             topic : "collaborators"
+ *             data : "openRepos"
+ *             property { "workspace": "/usr/home/test" }
+ *         };
+ * Usage:
+ *
+ * First: The receiver of eventHandler needs to be implemented in the plugin,
+ *        abstract interface file in eventhandler.h/.cpp
+ *
+ * Second: Decl from send event interface to any file. (If you are cross plug-in event call,
+ *         I recommend you define it in the header file that can be referenced by multiple plug-ins.)
+ *         @code
+ *         OPI_OBJECT(collaborators,
+ *                    OPI_INTERFACE(openRepos, "workspace")
+ *                    )
+ *         @endcode
+ *
+ * Third: call event:
+ *        @code
+ *        collaborators.openRepos("/usr/home/test");
+ *        @endcode
+ *
+ */
+#define OPI_ASKEEP(pKeys, pVals) if (pKeys.size() != pVals.size()) { qCritical() << "Key value pair length mismatch"; abort(); }
+#define OPI_OBJECT(t, logics) inline const struct { const QString topic{#t} ; logics }t;
+#define OPI_INTERFACE(d, ...) const EventInterface d { #d, {__VA_ARGS__} , [=](const QVector<QVariant> &args) -> void {\
+    OPI_ASKEEP(d.pKeys, args);\
+    dpf::Event event(topic); event.setData(#d);\
+    for ( int idx = 0; idx < d.pKeys.size(); idx ++) { event.setProperty(d.pKeys[idx], args[idx]); }\
+    dpf::EventCallProxy::instance().pubEvent(event);\
+    }};
 
 DPF_END_NAMESPACE
 
