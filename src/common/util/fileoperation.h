@@ -31,6 +31,7 @@ public:
     static bool doRemove(const QString &filePath);
     static bool doNewDocument(const QString &parentPath, const QString &docName);
     static bool doNewFolder(const QString &parentPath, const QString &folderName);
+    static bool deleteDir(const QString &path);
 };
 
 #endif // FILEOPERATION_H

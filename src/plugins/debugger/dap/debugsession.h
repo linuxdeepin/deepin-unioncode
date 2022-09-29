@@ -121,6 +121,13 @@ public:
     dap::RawDebugSession *getRawSession() const;
 
     dap::array<dap::Thread> fetchThreads(IRawStoppedDetails *stoppedDetails);
+
+    bool launchJavaDap(const QString &workDir,
+                       const QString &mainClass,
+                       const QString &projectName,
+                       const QStringList &classPaths,
+                       const QString &javaExec);
+    void closeSession();
 signals:
     void sigRegisterHandlers();
 

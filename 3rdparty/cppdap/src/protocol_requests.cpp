@@ -108,7 +108,8 @@ DAP_IMPLEMENT_STRUCT_TYPEINFO(
     DAP_FIELD(supportsProgressReporting, "supportsProgressReporting"),
     DAP_FIELD(supportsRunInTerminalRequest, "supportsRunInTerminalRequest"),
     DAP_FIELD(supportsVariablePaging, "supportsVariablePaging"),
-    DAP_FIELD(supportsVariableType, "supportsVariableType"));
+    DAP_FIELD(supportsVariableType, "supportsVariableType"),
+    DAP_FIELD(supportsArgsCanBeInterpretedByShell, "supportsArgsCanBeInterpretedByShell"));
 
 DAP_IMPLEMENT_STRUCT_TYPEINFO(LaunchRequest,
                               "launch",
@@ -127,7 +128,21 @@ DAP_IMPLEMENT_STRUCT_TYPEINFO(LaunchRequest,
                               DAP_FIELD(externalConsole, "externalConsole"),
                               DAP_FIELD(MIMode, "MIMode"),
                               DAP_FIELD(__configurationTarget, "__configurationTarget"),
-                              DAP_FIELD(__sessionId, "__sessionId"),
+                              DAP_FIELD(__sessionId, "__sessionId")
+                              );
+
+DAP_IMPLEMENT_STRUCT_TYPEINFO(LaunchJavaRequest,
+                              "launch",
+                              DAP_FIELD(env, "env"),
+                              DAP_FIELD(vmArgs, "vmArgs"),
+                              DAP_FIELD(console, "console"),
+                              DAP_FIELD(internalConsoleOptions, "internalConsoleOptions"),
+                              DAP_FIELD(mainClass, "mainClass"),
+                              DAP_FIELD(projectName, "projectName"),
+                              DAP_FIELD(modulePaths, "modulePaths"),
+                              DAP_FIELD(classPaths, "classPaths"),
+                              DAP_FIELD(javaExec, "javaExec"),
+                              DAP_FIELD(shortenCommandLine, "shortenCommandLine")
                               );
 
 DAP_IMPLEMENT_STRUCT_TYPEINFO(LoadedSourcesRequest, "loadedSources");

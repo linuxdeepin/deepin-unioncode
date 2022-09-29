@@ -82,6 +82,8 @@ const Capabilities &DebugSession::capabilities() const
 
 bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &iniRequest)
 {
+    shutdown();
+
     if (!raw) {
         // if there was already a connection make sure to remove old listeners
         // TODO(mozart):crashed when re-start debug.
@@ -145,6 +147,37 @@ bool DebugSession::launch(const QString &targetPath, bool noDebug)
     request.externalConsole = false;
     request.MIMode = "gdb";
     request.__sessionId = QUuid::createUuid().toString().toStdString();
+    auto ret = raw->launch(request);
+    return ret.valid();
+}
+
+bool DebugSession::launchJavaDap(const QString &workDir,
+                                 const QString &mainClass,
+                                 const QString &projectName,
+                                 const QStringList &classPaths,
+                                 const QString &javaExec)
+{
+    if (!raw)
+        return false;
+
+    dap::LaunchJavaRequest request;
+    request.name = "Java Debug";
+    request.type = "java";
+    request.request = "launch";
+    request.cwd = workDir.toStdString();
+    request.console = "integratedTerminal";
+    request.internalConsoleOptions = "neverOpen";
+    request.mainClass = mainClass.toStdString();
+    request.projectName = projectName.toStdString();
+    dap::array<dap::string> dapClassPaths;
+    foreach (auto classpath, classPaths) {
+        dapClassPaths.push_back(classpath.toStdString());
+    }
+    request.classPaths = dapClassPaths;
+    request.javaExec = javaExec.toStdString();
+    request.shortenCommandLine = "none";
+    request.__sessionId = QUuid::createUuid().toString().toStdString();
+
     auto ret = raw->launch(request);
     return ret.valid();
 }
@@ -832,7 +865,8 @@ bool DebugSession::getLocals(dap::integer frameId, IVariables *out)
     }
     auto scopeRes = raw->scopes(scopeReq).get().response;
     for (auto scope : scopeRes.scopes) {
-        if (scope.presentationHint.value("") == kLocals) {
+        if (scope.presentationHint.value("") == kLocals
+                || scope.name == "Local") {
             return getVariables(scope.variablesReference, out);
         }
     }
@@ -874,6 +908,11 @@ void DebugSession::onBreakpointHit(const StoppedEvent &event)
 
 void DebugSession::onStep(const StoppedEvent &event)
 {
+}
+
+void DebugSession::closeSession()
+{
+    shutdown();
 }
 
 }   // endnamespace

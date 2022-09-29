@@ -93,6 +93,12 @@ Promise<LaunchRequest> RawDebugSession::launch(const LaunchRequest &request)
     return response;
 }
 
+Promise<LaunchJavaRequest> RawDebugSession::launch(const LaunchJavaRequest &request)
+{
+    auto response = send(request);
+    return response;
+}
+
 Promise<AttachRequest> RawDebugSession::attach(const AttachRequest &request)
 {
     auto response = send(request);

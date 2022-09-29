@@ -22,7 +22,10 @@
 #include "framework.h"
 #include "common/common.h"
 
-void EventSender::jumpTo(dap::string filepath, int numberline)
+void EventSender::jumpTo(dap::string filepath,
+                         int numberline,
+                         std::string workspace/* = ""*/,
+                         std::string language/* = ""*/)
 {
     if (!filepath.c_str())
         return;
@@ -30,6 +33,10 @@ void EventSender::jumpTo(dap::string filepath, int numberline)
     dpf::Event event;
     event.setTopic(T_CODEEDITOR);
     event.setData(D_JUMP_TO_LINE);
+    if (!workspace.empty())
+        event.setProperty(P_WORKSPACEFOLDER, QString(workspace.c_str()));
+    if (!language.empty())
+        event.setProperty(P_LANGUAGE, QString(language.c_str()));
     event.setProperty(P_FILEPATH, QString(filepath.c_str()));
     event.setProperty(P_FILELINE, numberline);
     dpf::EventCallProxy::instance().pubEvent(event);

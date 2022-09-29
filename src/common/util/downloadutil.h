@@ -1,10 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,35 +18,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DEBUGENGINE_H
-#define DEBUGENGINE_H
+#ifndef DOWNLOADUTIL_H
+#define DOWNLOADUTIL_H
 
-
-#include <QSharedPointer>
 #include <QObject>
+#include <memory>
+#include <QFile>
 
-class DapSession;
-class JavaDebugger;
-class DebugEngine : public QObject
+class DownloadUtilPrivate;
+class DownloadUtil : public QObject
 {
     Q_OBJECT
 public:
-    explicit DebugEngine(QObject *parent = nullptr);
+    explicit DownloadUtil(const QString &srcUrl,
+                          const QString &dstPath,
+                          const QString &fileName,
+                          QObject *parent = nullptr);
+    virtual ~DownloadUtil();
 
     bool start();
-    void stop();
-    bool exit();
+    void cancel();
 
 signals:
+    void sigProgress(qint64 bytesRead, qint64 totalBytes);
+    void sigFinished();
+    void sigFailed();
 
-public slots:
 private:
-    bool initialize();
+    void startRequest(const QUrl &url);
+    std::unique_ptr<QFile> openFileForWrite(const QString& fileName);
 
-    bool isRunning = false;
+private:
+    DownloadUtilPrivate *const d;
 
-    QSharedPointer<DapSession> dapSession;
-    QSharedPointer<JavaDebugger> javaDebugger;
+
 };
 
-#endif   // DEBUGENGINE_H
+#endif // DOWNLOADUTIL_H
+

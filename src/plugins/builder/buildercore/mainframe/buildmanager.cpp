@@ -81,6 +81,7 @@ BuildManager::BuildManager(QObject *parent)
     qRegisterMetaType<BuildCommandInfo>("BuildCommandInfo");
     QObject::connect(this, &BuildManager::sigBuildState, this, &BuildManager::slotBuildState);
     QObject::connect(this, &BuildManager::sigOutputNotify, this, &BuildManager::slotOutputNotify);
+    QObject::connect(this, &BuildManager::sigResetBuildUI, this, &BuildManager::slotResetBuildUI);
 }
 
 BuildManager::~BuildManager()
@@ -149,7 +150,7 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
     if (builderService) {
         auto generator = builderService->create<BuilderGenerator>(d->activedKitName);
         if (generator) {
-            resetBuildUI();
+            emit sigResetBuildUI();
             generator->appendOutputParser(d->outputParser);
             QList<BuildCommandInfo> list;
             foreach (auto menuType, menuTypelist) {
@@ -182,7 +183,7 @@ ProblemOutputPane *BuildManager::getProblemOutputPane() const
     return d->problemOutputPane;
 }
 
-void BuildManager::resetBuildUI()
+void BuildManager::slotResetBuildUI()
 {
     d->compileOutputPane->clearContents();
     d->problemOutputPane->clearContents();
@@ -219,7 +220,7 @@ void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
     if (builderService) {
         auto generator = builderService->create<BuilderGenerator>(commandInfo.kitName);
         if (generator) {
-            resetBuildUI();
+            emit sigResetBuildUI();
             generator->appendOutputParser(d->outputParser);
             QString retMsg;
             bool ret = generator->checkCommandValidity(commandInfo, retMsg);

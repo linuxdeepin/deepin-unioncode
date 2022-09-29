@@ -1110,6 +1110,8 @@ struct InitializeRequest : public Request
     optional<boolean> supportsVariablePaging;
     // Client supports the optional type attribute for variables.
     optional<boolean> supportsVariableType;
+
+    optional<boolean> supportsArgsCanBeInterpretedByShell;
 };
 
 DAP_DECLARE_STRUCT_TYPEINFO(InitializeRequest);
@@ -1217,6 +1219,22 @@ struct LaunchRequest : public Request
 };
 
 DAP_DECLARE_STRUCT_TYPEINFO(LaunchRequest);
+
+struct LaunchJavaRequest : public LaunchRequest
+{
+    optional<object> env;
+    optional<string> vmArgs;
+    optional<string> console;
+    optional<string> internalConsoleOptions;
+    optional<string> mainClass;
+    optional<string> projectName;
+    optional<array<string>> modulePaths;
+    optional<array<string>> classPaths;
+    optional<string> javaExec;
+    optional<string> shortenCommandLine;
+};
+
+DAP_DECLARE_STRUCT_TYPEINFO(LaunchJavaRequest);
 
 // The event indicates that some source has been added, changed, or removed from
 // the set of all loaded sources.

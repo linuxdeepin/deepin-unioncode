@@ -34,6 +34,10 @@
 #include "event/eventreceiver.h"
 #include "common/common.h"
 #include "services/builder/builderservice.h"
+#include "services/option/optionmanager.h"
+#include "language/javaparser.h"
+#include "common/util/downloadutil.h"
+#include "common/util/fileoperation.h"
 
 #include <QDateTime>
 #include <QTextBlock>
@@ -41,6 +45,9 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QComboBox>
 #include <QLabel>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QFileInfo>
 
 /**
  * @brief Debugger::Debugger
@@ -67,6 +74,27 @@ Debugger::Debugger(QObject *parent)
     rtCfgProvider.reset(new RunTimeCfgProvider(this));
 
     connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &Debugger::handleFrameEvent);
+
+    QDBusConnection sessionBus = QDBusConnection::sessionBus();
+    sessionBus.disconnect(QString(""),
+                          "/path",
+                          "com.deepin.unioncode.interface",
+                          "send_java_dapport",
+                          this, SLOT(slotReceiveJavaDAPPort(int)));
+    sessionBus.connect(QString(""),
+                       "/path",
+                       "com.deepin.unioncode.interface",
+                       "send_java_dapport",
+                       this, SLOT(slotReceiveJavaDAPPort(int)));
+
+    connect(this, &Debugger::sigJavaLSPPluginReady, this, &Debugger::slotJavaLSPPluginReady);
+    connect(this, &Debugger::sigJavaDAPPluginReady, this, &Debugger::slotJavaDAPPluginReady);
+    connect(this, &Debugger::sigJavaDAPPort, this, &Debugger::slotHandleJavaDAPPort);
+
+    timer = new QTimer();
+    connect(timer, &QTimer::timeout, [this]() {
+        emit sigJavaDAPPort(0);
+    });
 
     initializeView();
 }
@@ -100,7 +128,8 @@ QTreeView *Debugger::getBreakpointPane() const
 void Debugger::startDebug()
 {
     // build project everytime before debug.
-    if (activeProjectKitName != "cmake") //temporary, TODO for java python
+    if (!isCMakeProject(activeProjectKitName)
+            && !isJavaProject(activeProjectKitName)) //temporary, TODO for python
         return;
 
     updateRunState(kPreparing);
@@ -131,14 +160,20 @@ void Debugger::continueDebug()
 void Debugger::abortDebug()
 {
     if (runState == kRunning || runState == kStopped) {
-        session->terminate();
+        if (isJavaProject(activeProjectKitName))
+            stopJavaDAP();
+        else if(isCMakeProject(activeProjectKitName))
+            session->terminate();
     }
 }
 
 void Debugger::restartDebug()
 {
     if (runState == kStopped || runState == kRunning) {
-        session->restart();
+        if (isJavaProject(activeProjectKitName))
+            restartJavaDAP();
+        else if(isCMakeProject(activeProjectKitName))
+            session->restart();
     }
 }
 
@@ -448,7 +483,7 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
         }
     } else if (event.topic() == T_PROJECT) {
         if (event.data() == D_ACTIVED || event.data() == D_CRETED) {
-            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
+            projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
             activeProjectKitName = projectInfo.kitName();
             updateRunState(kNoRun);
         } else if (event.data() == D_DELETED){
@@ -487,7 +522,8 @@ void Debugger::handleFrames(const StackFrames &stackFrames)
         return;
     }
 
-    EventSender::jumpTo(curFrame.file.toStdString(), curFrame.line);
+    EventSender::jumpTo(curFrame.file.toStdString(),
+                        curFrame.line);
 
     // update local variables.
     IVariables locals;
@@ -568,7 +604,10 @@ void Debugger::slotFrameSelected(const QModelIndex &index)
 {
     Q_UNUSED(index);
     auto curFrame = stackModel.currentFrame();
-    EventSender::jumpTo(curFrame.file.toStdString(), curFrame.line);
+    EventSender::jumpTo(curFrame.file.toStdString(),
+                        curFrame.line,
+                        projectInfo.workspaceFolder().toStdString(),
+                        projectInfo.language().toStdString());
 
     // update local variables.
     IVariables locals;
@@ -580,7 +619,10 @@ void Debugger::slotBreakpointSelected(const QModelIndex &index)
 {
     Q_UNUSED(index);
     auto curBP = breakpointModel.currentBreakpoint();
-    EventSender::jumpTo(curBP.filePath.toStdString(), curBP.lineNumber);
+    EventSender::jumpTo(curBP.filePath.toStdString(),
+                        curBP.lineNumber,
+                        projectInfo.workspaceFolder().toStdString(),
+                        projectInfo.language().toStdString());
 }
 
 void Debugger::initializeView()
@@ -657,15 +699,39 @@ void Debugger::updateRunState(Debugger::RunState state)
     }
 }
 
+bool Debugger::isCMakeProject(const QString &kitName)
+{
+    return ("cmake" == kitName);
+}
+
+bool Debugger::isMavenProject(const QString &kitName)
+{
+    return ("maven" == kitName);
+}
+
+bool Debugger::isGradleProject(const QString &kitName)
+{
+    return ("gradle" == kitName);
+}
+
+bool Debugger::isJavaProject(const QString &kitName)
+{
+    return isMavenProject(kitName) || isGradleProject(kitName);
+}
+
 bool Debugger::checkTargetIsReady()
 {
     targetPath.clear();
 
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (projectService && projectService->getActiveTarget) {
-        auto target = projectService->getActiveTarget(kActiveExecTarget);
-        targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
+    if (isCMakeProject(activeProjectKitName)) {
+        auto &ctx = dpfInstance.serviceContext();
+        ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+        if (projectService && projectService->getActiveTarget) {
+            auto target = projectService->getActiveTarget(kActiveExecTarget);
+            targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
+        }
+    } else {
+        targetPath = projectInfo.workspaceFolder();
     }
 
     return QFile::exists(targetPath);
@@ -676,7 +742,8 @@ void Debugger::requestBuild()
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
-    if (builderService && projectService && projectService->getActiveTarget) {
+    if (isCMakeProject(activeProjectKitName) && builderService && projectService
+            && projectService->getActiveTarget) {
         auto target = projectService->getActiveTarget(TargetType::kBuildTarget);
         if (!target.buildCommand.isEmpty()) {
             QStringList args = target.buildArguments << target.buildTarget;
@@ -690,6 +757,28 @@ void Debugger::requestBuild()
             builderService->interface.builderCommand(commandInfo);
         }
     }
+
+    if (isMavenProject(activeProjectKitName) && builderService) {
+        BuildCommandInfo commandInfo;
+        commandInfo.kitName = activeProjectKitName;
+        commandInfo.program = OptionManager::getInstance()->getMavenToolPath();
+        commandInfo.arguments = QStringList("compile");
+        commandInfo.workingDir = projectInfo.workspaceFolder();
+
+        currentBuildUuid = commandInfo.uuid;
+        builderService->interface.builderCommand(commandInfo);
+    }
+
+    if (isGradleProject(activeProjectKitName) && builderService) {
+        BuildCommandInfo commandInfo;
+        commandInfo.kitName = activeProjectKitName;
+        commandInfo.program = OptionManager::getInstance()->getGradleToolPath();
+        commandInfo.arguments = QStringList("build");
+        commandInfo.workingDir = projectInfo.workspaceFolder();
+
+        currentBuildUuid = commandInfo.uuid;
+        builderService->interface.builderCommand(commandInfo);
+    }
 }
 
 void Debugger::start()
@@ -699,23 +788,266 @@ void Debugger::start()
         return;
     }
 
-    printOutput(tr("Debugging starts"));
+    updateRunState(kStart);
 
     // Setup debug environment.
-    auto iniRequet = rtCfgProvider->initalizeRequest();
-    int port = rtCfgProvider->port();
-    if (!port) {
-        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Could not find server port!"));
+    printOutput(tr("Debugging starts"));
+
+    if (isCMakeProject(activeProjectKitName)) {
+        int port = rtCfgProvider->port();
+        launchSession(port);
+    }
+    else if (isJavaProject(activeProjectKitName)) {
+        if (!javaDapPluginFileReady) {
+            QString dapSupportFilePath = support_file::DapSupportConfig::globalPath();
+            bool ret = support_file::DapSupportConfig::readFromSupportFile(dapSupportFilePath, javaDapPluginConfig);
+            if (!ret) {
+                printOutput("\nRead dapconfig.support failed, please check the file and retry.\n", ErrorMessageFormat);
+                QMetaObject::invokeMethod(this, "message",
+                                          Q_ARG(QString, "Read dapconfig support file failed, please check dapconfig.support file and retry!"));
+                updateRunState(kPreparing);
+                return;
+            }
+
+            javaDapPluginFileReady = true;
+        }
+        checkJavaLSPPlugin();
+    }
+}
+
+void Debugger::slotJavaLSPPluginReady(bool succeed)
+{
+    if (!succeed) {
+        printOutput("\nJava lsp plugin is not ready, please retry.\n", ErrorMessageFormat);
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Java lsp dependent plugins is not ready, please check and retry."));
+        updateRunState(kPreparing);
         return;
     }
 
+    checkJavaDAPPlugin();
+}
+
+void Debugger::slotJavaDAPPluginReady(bool succeed)
+{
+    if (!succeed) {
+        printOutput("\nJava dap plugin is not ready, please retry.\n", ErrorMessageFormat);
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Java dap dependent plugins is not ready, please check and retry."));
+        updateRunState(kPreparing);
+        return;
+    }
+
+    printOutput("\nSearching java dap port, please waiting...\n");
+    waitHandleJavaDAPPort = true;
+    if (timer)
+        timer->start(10000); //10s timeout
+
+    QDBusMessage msg = QDBusMessage::createSignal("/path",
+                                                  "com.deepin.unioncode.interface",
+                                                  "launch_java_dap");
+    msg << projectInfo.workspaceFolder()
+        << javaparser::getMainClassNameInDir(projectInfo.workspaceFolder()).second
+        << javaDapPluginConfig.configHomePath
+        << javaDapPluginConfig.jrePath
+        << javaDapPluginConfig.jreExecute
+        << javaDapPluginConfig.launchPackageFile
+        << javaDapPluginConfig.launchConfigPath
+        << javaDapPluginConfig.dapPackageFile;
+    QDBusConnection::sessionBus().send(msg);
+}
+
+void Debugger::slotReceiveJavaDAPPort(int port)
+{
+    if (waitHandleJavaDAPPort)
+        emit sigJavaDAPPort(port);
+}
+
+void Debugger::slotHandleJavaDAPPort(int port)
+{
+    waitHandleJavaDAPPort = false;
+    timer->stop();
+    launchSession(port);
+}
+
+void Debugger::restartJavaDAP()
+{
+    stopJavaDAP();
+    start();
+}
+
+void Debugger::stopJavaDAP()
+{    
+    updateRunState(kNoRun);
+    session->closeSession();
+}
+
+void Debugger::checkJavaLSPPlugin()
+{
+    QString configFolder = QDir::homePath() + javaDapPluginConfig.configHomePath;
+    bool bLaunchJarPath = QFileInfo(configFolder + javaDapPluginConfig.launchPackageFile).isFile();
+    bool bJrePath = QFileInfo(configFolder + javaDapPluginConfig.jreExecute).isFile();
+    if (!bLaunchJarPath || !bJrePath) {
+        FileOperation::deleteDir(configFolder + javaDapPluginConfig.launchPackageName);
+
+        auto decompress = [&](const QString workDir, const QString srcTarget, const QString folder) {
+            if (!QFileInfo(workDir).isDir()
+                    || !QFileInfo(srcTarget).isFile()
+                    || folder.isEmpty()) {
+                emit sigJavaLSPPluginReady(false);
+                return;
+            }
+
+            QProcess process;
+            connect(&process, &QProcess::readyReadStandardError, [&]() {
+                printOutput("\nDecompress " + srcTarget + " error: " + process.readAllStandardError(), ErrorMessageFormat);
+            });
+            connect(&process, static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),
+                    [&](int exitcode, QProcess::ExitStatus exitStatus) {
+                if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
+                    emit sigJavaLSPPluginReady(true);
+                } else {
+                    QFile::remove(srcTarget);
+                    emit sigJavaLSPPluginReady(false);
+                }
+            });
+            process.setWorkingDirectory(workDir);
+            process.start("unzip", QStringList{srcTarget, "-d", folder});
+            process.waitForFinished();
+        };
+
+        QString redhatLspFilePath = configFolder + javaDapPluginConfig.launchPackageName + ".zip";
+        if (QFileInfo(redhatLspFilePath).isFile()) {
+            decompress(configFolder, redhatLspFilePath, javaDapPluginConfig.launchPackageName);
+        } else {
+            DownloadUtil *downloadUtil = new DownloadUtil(javaDapPluginConfig.launchPackageUrl,
+                                                          configFolder,
+                                                          javaDapPluginConfig.launchPackageName + ".zip");
+            connect(downloadUtil, &DownloadUtil::sigProgress, [=](qint64 bytesRead, qint64 totalBytes){
+                Q_UNUSED(totalBytes)
+                QString progress = QString("received: %1 MB")
+                        .arg(bytesRead/1024.00/1024.00);
+                printOutput(progress);
+            });
+            connect(downloadUtil, &DownloadUtil::sigFinished, [=](){
+                printOutput("Download java lsp plugin finished.");
+                decompress(configFolder, redhatLspFilePath, javaDapPluginConfig.launchPackageName);
+            });
+
+            connect(downloadUtil, &DownloadUtil::sigFailed, [=](){
+                printOutput("Download java lsp plugin failed, please retry!", ErrorMessageFormat);
+                emit sigJavaLSPPluginReady(false);
+            });
+
+            printOutput("Downloading java lsp plugin, please waiting...");
+            bool ret = downloadUtil->start();
+            if (!ret) {
+                printOutput("Download java lsp plugin failed, please retry!", ErrorMessageFormat);
+                emit sigJavaLSPPluginReady(false);
+            }
+        }
+    } else {
+        emit sigJavaLSPPluginReady(true);
+    }
+}
+
+void Debugger::checkJavaDAPPlugin()
+{
+    QString configFolder = QDir::homePath() + javaDapPluginConfig.configHomePath;
+    bool bDapJarPath = QFileInfo(configFolder + javaDapPluginConfig.dapPackageFile).isFile();
+    if (!bDapJarPath) {
+        FileOperation::deleteDir(configFolder + javaDapPluginConfig.dapPackageName);
+
+        auto decompress = [this](const QString workDir, const QString srcTarget, const QString folder) {
+            if (!QFileInfo(workDir).isDir()
+                    || !QFileInfo(srcTarget).isFile()
+                    || folder.isEmpty()) {
+                emit sigJavaLSPPluginReady(false);
+                return;
+            }
+
+            QProcess process;
+            connect(&process, &QProcess::readyReadStandardError, [&]() {
+                printOutput("\nDecompress " + srcTarget + " error: " + process.readAllStandardError(), ErrorMessageFormat);
+            });
+            connect(&process, static_cast<void (QProcess::*)(int,QProcess::ExitStatus)>(&QProcess::finished),
+                    [&](int exitcode, QProcess::ExitStatus exitStatus) {
+                if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
+                    emit sigJavaDAPPluginReady(true);
+                } else {
+                    QFile::remove(srcTarget);
+                    emit sigJavaDAPPluginReady(false);
+                }
+            });
+            process.setWorkingDirectory(workDir);
+            process.start("unzip", QStringList{srcTarget, "-d", folder});
+            process.waitForFinished();
+        };
+
+        QString vsdapFilePath = configFolder + javaDapPluginConfig.dapPackageName + ".zip";
+        if (QFileInfo(vsdapFilePath).isFile()) {
+            decompress(configFolder, vsdapFilePath, javaDapPluginConfig.dapPackageName);
+        } else {
+            DownloadUtil *downloadUtil = new DownloadUtil(javaDapPluginConfig.dapPackageUrl,
+                                                          configFolder,
+                                                          javaDapPluginConfig.dapPackageName + ".zip");
+            connect(downloadUtil, &DownloadUtil::sigProgress, [=](qint64 bytesRead, qint64 totalBytes){
+                Q_UNUSED(totalBytes)
+                QString progress = QString("received: %1 MB")
+                        .arg(bytesRead/1024.00/1024.00);
+                printOutput(progress);
+            });
+
+            connect(downloadUtil, &DownloadUtil::sigFinished, [=](){
+                printOutput("Download java dap plugin finished.");
+                decompress(configFolder, vsdapFilePath, "vscjava");
+            });
+
+            connect(downloadUtil, &DownloadUtil::sigFailed, [=](){
+                printOutput("Download java dap plugin failed, please retry!", ErrorMessageFormat);
+                emit sigJavaDAPPluginReady(false);
+            });
+
+            printOutput("Downloading java dap plugin, please waiting...");
+            bool ret = downloadUtil->start();
+            if (!ret) {
+                printOutput("Download java dap plugin failed, please retry!", ErrorMessageFormat);
+                emit sigJavaDAPPluginReady(false);
+            }
+        }
+    } else {
+        emit sigJavaDAPPluginReady(true);
+    }
+}
+
+void Debugger::launchSession(int port)
+{
+    if (!port) {
+        printOutput("Java dap port is not ready, please retry.", ErrorMessageFormat);
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Could not find server port!"));
+        updateRunState(kPreparing);
+        return;
+    }
+
+    QString launchTip = QString("Launch java dap session with port %1 ...")
+            .arg(port);
+    printOutput(launchTip);
+
+    auto iniRequet = rtCfgProvider->initalizeRequest();
     bool bSuccess = session->initialize(rtCfgProvider->ip(),
                                         port,
                                         iniRequet);
 
     // Launch debuggee.
     if (bSuccess) {
-        bSuccess &= session->launch(targetPath);
+        if (isCMakeProject(activeProjectKitName))
+            bSuccess &= session->launch(targetPath);
+        else if (isJavaProject(activeProjectKitName))
+            bSuccess &= session->launchJavaDap(projectInfo.workspaceFolder(),
+                                               javaparser::getMainClassNameInDir(projectInfo.workspaceFolder()).first,
+                                               QFileInfo(projectInfo.workspaceFolder()).fileName(),
+                                               QStringList{javaparser::getClassesPath(projectInfo.workspaceFolder(), activeProjectKitName == "maven")},
+                                               OptionManager::getInstance()->getJdkToolPath());
+        else
+            bSuccess &= false;
     }
     if (!bSuccess) {
         qCritical() << "startDebug failed!";

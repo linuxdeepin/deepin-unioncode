@@ -28,7 +28,8 @@ set(CXX_CPP
     breakpoint.cpp
     interface/breakpointmodel.cpp
     interface/messagebox.cpp
-    interface/menumanager.cpp
+    interface/menumanager.cpp    
+    language/javaparser.cpp
     )
 
 set(CXX_H
@@ -58,7 +59,8 @@ set(CXX_H
     breakpoint.h
     interface/breakpointmodel.h
     interface/messagebox.h
-    interface/menumanager.h
+    interface/menumanager.h    
+    language/javaparser.h
     )
 
 add_library(${PROJECT_NAME}

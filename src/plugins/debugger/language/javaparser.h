@@ -1,10 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,41 +18,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "debugengine.h"
+#ifndef JAVAPARSER_H
+#define JAVAPARSER_H
 
-#include "dapsession.h"
+#include <QObject>
 
-#include "debugger/java/javadebugger.h"
+namespace javaparser {
 
-#include <QDBusConnection>
+struct BreakPointPosInfo {
+    QString className;
+    int filePos;
+};
 
-DebugEngine::DebugEngine(QObject *parent)
-    : QObject(parent)
-{
-    dapSession.reset(new DapSession());
-    javaDebugger.reset(new JavaDebugger());
-}
+bool getBreakPointPosInfo(BreakPointPosInfo &bpPosInfo, QString filePath, int pos);
 
-bool DebugEngine::start()
-{
-    return dapSession->start();
-}
+QString getSourcePath(QString projectRootPath);
 
-void DebugEngine::stop()
-{
-    dapSession->stop();
-}
+QString getClassesPath(QString projectRootPath, bool maven);
 
-bool DebugEngine::exit()
-{
-    // TODO(mozart)
-    return true;
-}
+QPair<QString, QString> getMainClassNameInDir(QString sourcePath);
 
-bool DebugEngine::initialize()
-{
-    // TODO(mozart)
-    return true;
-}
+} //namespace javaparser
 
-
+#endif   // JAVAPARSER_H

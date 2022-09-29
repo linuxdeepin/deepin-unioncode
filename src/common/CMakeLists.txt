@@ -3,6 +3,7 @@ project(unioncode-common)
 include(${CMAKE_SOURCE_DIR}/3rdparty/archive-jsonrpccpp.cmake)
 
 configure_file(util/config.h.in config.h)
+find_package(Qt5Network)
 
 set(CXX_H
     common.h
@@ -30,10 +31,12 @@ set(CXX_H
     util/shortcututil.h
     util/fileoperation.h
     util/qtcassert.h
+    util/downloadutil.h
     supportfile/editorstyle.h
     supportfile/language.h
     supportfile/windowstyle.h
     supportfile/builder.h
+    supportfile/dapconfig.h
     dialog/contextdialog.h
     widget/configurewidget.h
     widget/collapsewidget.h
@@ -69,10 +72,12 @@ set(CXX_CPP
     util/eventdefinitions.cpp
     util/shortcututil.cpp
     util/fileoperation.cpp
+    util/downloadutil.cpp
     supportfile/language.cpp
     supportfile/editorstyle.cpp
     supportfile/windowstyle.cpp
     supportfile/builder.cpp
+    supportfile/dapconfig.cpp
     dialog/contextdialog.cpp
     widget/configurewidget.cpp
     widget/collapsewidget.cpp
@@ -99,6 +104,7 @@ add_library(
 target_link_libraries(
     ${PROJECT_NAME}
     archive-jsonrpcclient
+    Qt5::Network
     )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${LIBRARY_INSTALL_PREFIX})

@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,27 +18,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef EVENTSENDER_H
-#define EVENTSENDER_H
+#ifndef DAPCONFIG_H
+#define DAPCONFIG_H
 
-#include <QObject>
-#include <dap/protocol.h>
+#include <QString>
 
-class EventSender : public QObject
-{
-    Q_OBJECT
-public:
-    static void jumpTo(dap::string filepath,
-                       int numberline,
-                       std::string workspace = "",
-                       std::string language = "");
-    static void clearEditorPointer();
-    static void notifyDebugStarted();
-signals:
+namespace support_file {
 
-public slots:
-private:
-    EventSender() = delete;
+struct JavaDapPluginConfig {
+    QString launchPackageUrl;
+    QString dapPackageUrl;
+    QString configHomePath;
+    QString launchPackageName;
+    QString dapPackageName;
+    QString launchPackageFile;
+    QString launchConfigPath;
+    QString dapPackageFile;
+    QString jrePath;
+    QString jreExecute;
 };
 
-#endif   // EVENTSENDER_H
+class DapSupportConfig final
+{
+public:
+    static QString globalPath();
+    static QString userPath();
+    static bool readFromSupportFile(const QString &filePath, JavaDapPluginConfig &javaconfig);
+
+private:
+    explicit DapSupportConfig();
+};
+
+}
+#endif // DAPCONFIG_H

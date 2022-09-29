@@ -128,7 +128,7 @@ void DebugManager::handleRunStateChanged(Debugger::RunState state)
 {
     menuManager->handleRunStateChanged(state);
 
-    if(state == Debugger::kRunning) {
+    if(state == Debugger::kStart || state == Debugger::kRunning) {
         emit debugStarted();
     }
 }

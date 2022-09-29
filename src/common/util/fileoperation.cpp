@@ -69,3 +69,26 @@ bool FileOperation::doNewFolder(const QString &parentPath, const QString &folder
     else
         return QDir(parentPath).mkdir(folderName);
 }
+
+bool FileOperation::deleteDir(const QString &path)
+{
+    if (path.isEmpty()){
+        return true;
+    }
+
+    QDir dir(path);
+    if(!dir.exists()){
+        return true;
+    }
+
+    dir.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
+    QFileInfoList fileList = dir.entryInfoList();
+    foreach (auto file, fileList) {
+        if (file.isFile())
+            file.dir().remove(file.fileName());
+        else
+            deleteDir(file.absoluteFilePath());
+    }
+
+    return dir.rmdir(dir.absolutePath());
+}

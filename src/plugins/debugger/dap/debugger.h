@@ -28,6 +28,7 @@
 #include "interface/breakpointmodel.h"
 
 #include "services/project/projectservice.h"
+#include "common/supportfile/dapconfig.h"
 
 #include <QSharedPointer>
 #include <QTreeView>
@@ -57,6 +58,7 @@ public:
     {
         kNoRun,
         kPreparing, // e.g. build preparation
+        kStart,
         kRunning,
         kStopped,
     };
@@ -85,6 +87,9 @@ public:
 
 signals:
     void runStateChanged(RunState state);
+    void sigJavaLSPPluginReady(bool succeed);
+    void sigJavaDAPPluginReady(bool succeed);
+    void sigJavaDAPPort(int port);
 
 public slots:
     void registerDapHandlers();
@@ -98,6 +103,11 @@ public slots:
     bool showStoppedBySignalMessageBox(QString meaning, QString name);
     void message(QString msg);
     void currentThreadChanged(const QString &text);
+
+    void slotJavaLSPPluginReady(bool succeed);
+    void slotJavaDAPPluginReady(bool succeed);
+    void slotReceiveJavaDAPPort(int port);
+    void slotHandleJavaDAPPort(int port);
 
 private:
     void initializeView();
@@ -113,6 +123,17 @@ private:
     bool checkTargetIsReady();
     void requestBuild();
     void start();
+
+    bool isCMakeProject(const QString &kitName);
+    bool isMavenProject(const QString &kitName);
+    bool isGradleProject(const QString &kitName);
+    bool isJavaProject(const QString &kitName);
+
+    void launchSession(int port);
+    void restartJavaDAP();
+    void stopJavaDAP();
+    void checkJavaLSPPlugin();
+    void checkJavaDAPPlugin();
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
     QSharedPointer<DEBUG::DebugSession> session;
@@ -142,9 +163,13 @@ private:
     RunState runState = kNoRun;
 
     QString activeProjectKitName;
+    dpfservice::ProjectInfo projectInfo;
 
     QString currentBuildUuid;
-
+    QTimer *timer = nullptr;
+    std::atomic_bool waitHandleJavaDAPPort = false;
+    support_file::JavaDapPluginConfig javaDapPluginConfig;
+    std::atomic_bool javaDapPluginFileReady = false;
 };
 
 #endif   // DEBUGGER_H

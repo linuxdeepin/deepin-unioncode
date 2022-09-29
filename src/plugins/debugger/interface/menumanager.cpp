@@ -128,6 +128,18 @@ void MenuManager::handleRunStateChanged(Debugger::RunState state)
         stepIn->setEnabled(false);
         stepOut->setEnabled(false);
         break;
+
+    case Debugger::kStart:
+        startDebugging->setEnabled(false);
+        interrupt->setEnabled(false);
+        continueDebugging->setEnabled(false);
+        abortDebugging->setEnabled(false);
+        restartDebugging->setEnabled(false);
+        stepOver->setEnabled(false);
+        stepIn->setEnabled(false);
+        stepOut->setEnabled(false);
+        break;
+
     case Debugger::kRunning:
         startDebugging->setEnabled(false);
 #if 0 // not used yet.

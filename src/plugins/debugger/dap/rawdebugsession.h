@@ -57,6 +57,8 @@ public:
     bool disconnect(const DisconnectRequest &request);
 
     Promise<LaunchRequest> launch(const LaunchRequest &request);
+    Promise<LaunchJavaRequest> launch(const LaunchJavaRequest &request);
+
     Promise<AttachRequest> attach(const AttachRequest &request);
 
     bool terminate(bool restart);
