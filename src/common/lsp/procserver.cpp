@@ -18,13 +18,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef NEWPROTOCOL_H
-#define NEWPROTOCOL_H
+#include "procserver.h"
 
-#include "new/documentsynchronization.h"
-#include "new/lifecyclemessage.h"
-#include "new/basicjsonstructures.h"
+namespace newlsp
+{
 
-namespace newlsp{
-};
-#endif // NEWPROTOCOL_H
+ProcServer::ProcServer()
+{
+
+}
+
+} // newlsp

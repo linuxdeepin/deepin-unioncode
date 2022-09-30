@@ -35,6 +35,18 @@
 #include <QFileInfo>
 
 namespace lsp {
+
+uint qHash(const Head &key, uint seed)
+{
+    return qHash(key.workspace + key.language, seed);
+}
+
+bool operator ==(const Head &t1, const Head &t2)
+{
+    return t1.workspace == t2.workspace
+            && t2.language == t2.language;
+}
+
 const QString C_CPP{"C/C++"};
 const QString JAVA{"Java"};
 const QString PYTHON{"Python"};

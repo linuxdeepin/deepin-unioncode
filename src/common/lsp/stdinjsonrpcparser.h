@@ -18,13 +18,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef NEWPROTOCOL_H
-#define NEWPROTOCOL_H
+#ifndef STDINJSONRPCPARSER_H
+#define STDINJSONRPCPARSER_H
 
-#include "new/documentsynchronization.h"
-#include "new/lifecyclemessage.h"
-#include "new/basicjsonstructures.h"
+#include <QThread>
 
-namespace newlsp{
+class StdinReadLoopPrivate;
+class StdinReadLoop : public QThread
+{
+    Q_OBJECT
+    StdinReadLoopPrivate *const d;
+public:
+    StdinReadLoop();
+    virtual ~StdinReadLoop();
+    virtual void run();
+Q_SIGNALS:
+    void readedLine(const QString &);
 };
-#endif // NEWPROTOCOL_H
+
+class StdinJsonRpcParserPrivate;
+class StdinJsonRpcParser : public StdinReadLoop
+{
+    Q_OBJECT   
+    StdinJsonRpcParserPrivate *const d;
+public:
+    StdinJsonRpcParser();
+    virtual ~StdinJsonRpcParser();
+
+private Q_SLOTS:
+    void clearHistory();
+    void doParseReadedLine(const QString &line);
+
+Q_SIGNALS:
+    void readedJsonObj(const QJsonObject &);
+};
+
+#endif // STDINREADLOOP_H

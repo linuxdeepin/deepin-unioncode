@@ -52,11 +52,12 @@ class ClientPrivate : public jsonrpc::TcpSocketClient
     int semanticTokenResultId;
     QHash<QString, int> fileVersion;
     lsp::SemanticTokensProvider secTokensProvider;
-    Head head;
-    ClientPrivate(Client *q, const std::string &ipToConnect, const unsigned int &port)
+    lsp::Head head;
+    ClientPrivate() = delete;
+    ClientPrivate(Client *const q, const std::string &ipToConnect, const unsigned int &port)
         : jsonrpc::TcpSocketClient(ipToConnect, port)
         , q (q)
-        , requestIndex (0)
+        , requestIndex (20)
         , requestSave ({})
         , semanticTokenResultId (0)
         , fileVersion ({})
@@ -95,7 +96,7 @@ Client::Client(unsigned int port, const QString &host)
     qRegisterMetaType<newlsp::Range>("newlsp::Range");
 }
 
-void Client::setHead(const Head &head)
+void Client::setHead(const lsp::Head &head)
 {
     d->head = head;
 }
@@ -901,38 +902,6 @@ QStringList Client::cvtStringList(const QJsonArray &array)
     }
     return ret;
 }
-
-Head::Head(){}
-
-Head::Head(const QString &workspace, const QString &language)
-    : workspace(workspace)
-    , language(language)
-{
-}
-
-Head::Head(const Head &head)
-    : workspace(head.workspace)
-    , language(head.language)
-{
-}
-
-bool Head::isValid() const
-{
-    return !workspace.isEmpty()
-            && !language.isEmpty();
-}
-
-uint qHash(const Head &key, uint seed)
-{
-    return qHash(key.workspace + key.language, seed);
-}
-
-bool operator ==(const Head &t1, const Head &t2)
-{
-    return t1.workspace == t2.workspace
-            && t2.language == t2.language;
-}
-
 } // namespace lsp
 
 

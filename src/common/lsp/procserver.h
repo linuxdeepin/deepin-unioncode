@@ -18,13 +18,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef NEWPROTOCOL_H
-#define NEWPROTOCOL_H
+#ifndef PROCSERVER_H
+#define PROCSERVER_H
 
-#include "new/documentsynchronization.h"
-#include "new/lifecyclemessage.h"
-#include "new/basicjsonstructures.h"
+#include <QProcess>
 
-namespace newlsp{
+#include "protocol.h"
+#include "newprotocol.h"
+
+//Adapter Server Protocol
+namespace asp
+{
+
+/**
+ * @brief The SessionProjectParams struct
+ */
+struct SessionProjectParams : lsp::Head
+{
+
 };
-#endif // NEWPROTOCOL_H
+
+};
+
+namespace newlsp {
+
+class ProcServer : public QProcess
+{
+public:
+    ProcServer();
+    void setParentPid(unsigned int pid);
+    void switchProject();
+};
+
+}
+
+#endif // PROCSERVER_H

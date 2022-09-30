@@ -29,17 +29,6 @@
 
 namespace lsp {
 
-struct Head
-{
-    QString workspace;
-    QString language;
-
-    Head();
-    Head(const QString &workspace, const QString &language);
-    Head(const Head &head);
-    bool isValid() const;
-};
-
 class ClientPrivate;
 class Client : public QObject
 {
@@ -112,10 +101,6 @@ private:
 private slots:
     QStringList cvtStringList(const QJsonArray &array);
 };
-
-uint qHash(const Head &key, uint seed = 0);
-bool operator == (const Head &t1, const Head &t2);
-
 } // namespace lsp
 
 #endif // CLIENT_H

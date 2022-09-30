@@ -34,6 +34,31 @@
 #include <variant>
 
 namespace lsp {
+struct Head
+{
+    QString workspace;
+    QString language;
+
+    Head(){}
+    Head(const QString &workspace, const QString &language)
+        : workspace(workspace)
+        , language(language)
+    {
+    }
+    Head(const Head &head)
+        : workspace(head.workspace)
+        , language(head.language)
+    {
+    }
+    bool isValid() const
+    {
+        return !workspace.isEmpty()
+                && !language.isEmpty();
+    }
+};
+
+uint qHash(const Head &key, uint seed = 0);
+bool operator == (const Head &t1, const Head &t2);
 
 extern const QString K_ID;
 extern const QString K_JSON_RPC;

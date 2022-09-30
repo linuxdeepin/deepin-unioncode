@@ -14,6 +14,9 @@ set(CXX_H
     lsp/newprotocol.h
     lsp/protocol.h
     lsp/client.h
+    lsp/procserver.h
+    lsp/stdinjsonrpcparser.h
+    lsp/stdinjsonrpcparser.cpp
     lsp/new/basicjsonstructures.h
     lsp/new/lifecyclemessage.h
     lsp/new/documentsynchronization.h
@@ -53,6 +56,7 @@ set(CXX_CPP
     lsp/newprotocol.cpp
     lsp/protocol.cpp
     lsp/client.cpp
+    lsp/procserver.cpp
     lsp/new/basicjsonstructures.cpp
     lsp/new/lifecyclemessage.cpp
     lsp/new/documentsynchronization.cpp
