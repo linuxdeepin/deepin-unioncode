@@ -20,7 +20,15 @@ Build-Depends:
  libjsoncpp-dev,
  libargtable2-dev,
  libhiredis-dev,
- catch
+ catch,
+ libzstd-dev,
+ libjson-c-dev,
+ libelf-dev,
+ libcapstone-dev,
+ libunwind-dev, 
+ libelfin-dev,
+ libdbus-1-dev,
+ libxi-dev
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 
@@ -28,15 +36,15 @@ Package: unioncode
 Architecture: any
 Depends:
  ${shlibs:Depends},
- ${misc:Depends},
- cmake,
- make,
- gdb,
- g++,
- gcc,
- git
+ ${misc:Depends}
+Recommends: cmake,
+            make,
+            gdb,
+            g++,
+            gcc,
+            git
 Description: IDE 'Union Code'
- Lightweight 'IDE' program developed by deepin company.
+ Lightweight cross-platform integrated development environment
 
 Package: libunioncode-dev
 Architecture: any

@@ -1,0 +1,32 @@
+{
+    "mode": 1,
+    "shared_buffer_size": 4000,
+    "max_syscall_parameter_size": 1,
+    "dump_dir": "~/.local/share/emd/",
+    "stacks": {
+        "current_thread_only": false,
+        "max_size": 32
+    },
+    "modules": [
+            "/usr/lib/x86_64-linux-gnu/libqt*so*",
+            "/usr/lib/x86_64-linux-gnu/libc-2.24.so"
+    ],
+    "variables": [
+        {
+            "name": "g_map",
+            "is_pointer":false,
+            "max_size": 1
+        },
+        {
+            "name": "g_int",
+            "is_pointer":true,
+            "max_size": 1
+        }
+    ],
+    "compress_level": 3,
+    "log_debug": false,
+    "log_to_stdout": false,
+    "log_to_file": true,
+    "log_file_max_size": 20000,
+    "log_flush_threshold": 0
+}

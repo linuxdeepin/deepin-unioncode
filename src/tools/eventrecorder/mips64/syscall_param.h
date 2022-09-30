@@ -1,0 +1,362 @@
+/*
+ * Copyright (c) 1991, 1992 Paul Kranenburg <pk@cs.few.eur.nl>
+ * Copyright (c) 1993 Branko Lankester <branko@hacktic.nl>
+ * Copyright (c) 1993 Ulrich Pegelow <pegelow@moorea.uni-muenster.de>
+ * Copyright (c) 1995, 1996 Michael Elizabeth Chastain <mec@duracef.shout.net>
+ * Copyright (c) 1993, 1994, 1995, 1996 Rick Sladkey <jrs@world.std.com>
+ * Copyright (C) 1998-2001 Wichert Akkerman <wakkerma@deephackmode.org>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+// flag bit 7 is set 0, as const char*;
+// flag bit 7 is set 1, as void*, size indicate in next-arg;
+unsigned char syscall_param_flags[] = {
+0x82, 3, //read=0
+0x82, 3, //write=1
+1, 3, //open=2
+0, 1, //close=3
+1, 2, //stat=4
+0, 2, //fstat=5
+1, 2, //lstat=6
+0, 3, //poll=7
+0, 3, //lseek=8
+0, 6, //mmap=9
+0, 3, //mprotect=10
+0, 2, //munmap=11
+0, 1, //brk=12
+0, 4, //rt_sigaction=13
+0, 4, //rt_sigprocmask=14
+0, 3, //ioctl=15
+0x82, 4, //pread64=16
+0x82, 4, //pwrite64=17
+0, 3, //readv=18
+0, 3, //writev=19
+1, 2, //access=20
+0, 1, //pipe=21
+0, 5, //select=22
+0, 0, //sched_yield=23
+0, 5, //mremap=24
+0, 3, //msync=25
+0, 3, //mincore=26
+0, 3, //madvise=27
+0, 3, //shmget=28
+0, 3, //shmat=29
+0, 3, //shmctl=30
+0, 1, //dup=31
+0, 2, //dup2=32
+0, 0, //pause=33
+0, 2, //nanosleep=34
+0, 2, //getitimer=35
+0, 3, //setitimer=36
+0, 1, //alarm=37
+0, 0, //getpid=38
+0, 4, //sendfile=39
+0, 3, //socket=40
+0, 3, //connect=41
+0, 3, //accept=42
+0x82, 6, //sendto=43
+0x82, 6, //recvfrom=44
+0, 3, //sendmsg=45
+0, 3, //recvmsg=46
+0, 2, //shutdown=47
+0, 3, //bind=48
+0, 2, //listen=49
+0, 3, //getsockname=50
+0, 3, //getpeername=51
+0, 4, //socketpair=52
+0, 5, //setsockopt=53
+0, 5, //getsockopt=54
+0, 5, //clone=55
+0, 0, //fork=56
+1, 3, //execve=57
+0, 1, //exit=58
+0, 4, //wait4=59
+0, 2, //kill=60
+0, 1, //uname=61
+0, 3, //semget=62
+0, 3, //semop=63
+0, 4, //semctl=64
+0, 1, //shmdt=65
+0, 2, //msgget=66
+0, 4, //msgsnd=67
+0, 5, //msgrcv=68
+0, 3, //msgctl=69
+0, 3, //fcntl=70
+0, 2, //flock=71
+0, 1, //fsync=72
+0, 1, //fdatasync=73
+1, 2, //truncate=74
+0, 2, //ftruncate=75
+0, 3, //getdents=76
+0, 2, //getcwd=77
+1, 1, //chdir=78
+0, 1, //fchdir=79
+3, 2, //rename=80
+1, 2, //mkdir=81
+1, 1, //rmdir=82
+1, 2, //creat=83
+3, 2, //link=84
+1, 1, //unlink=85
+3, 2, //symlink=86
+1, 3, //readlink=87
+1, 2, //chmod=88
+0, 2, //fchmod=89
+1, 3, //chown=90
+0, 3, //fchown=91
+1, 3, //lchown=92
+0, 1, //umask=93
+0, 2, //gettimeofday=94
+0, 2, //getrlimit=95
+0, 2, //getrusage=96
+0, 1, //sysinfo=97
+0, 1, //times=98
+0, 4, //ptrace=99
+0, 0, //getuid=100
+0, 3, //syslog=101
+0, 0, //getgid=102
+0, 1, //setuid=103
+0, 1, //setgid=104
+0, 0, //geteuid=105
+0, 0, //getegid=106
+0, 2, //setpgid=107
+0, 0, //getppid=108
+0, 0, //getpgrp=109
+0, 0, //setsid=110
+0, 2, //setreuid=111
+0, 2, //setregid=112
+0, 2, //getgroups=113
+0, 2, //setgroups=114
+0, 3, //setresuid=115
+0, 3, //getresuid=116
+0, 3, //setresgid=117
+0, 3, //getresgid=118
+0, 1, //getpgid=119
+0, 1, //setfsuid=120
+0, 1, //setfsgid=121
+0, 1, //getsid=122
+0, 2, //capget=123
+0, 2, //capset=124
+0, 2, //rt_sigpending=125
+0, 4, //rt_sigtimedwait=126
+0, 3, //rt_sigqueueinfo=127
+0, 2, //rt_sigsuspend=128
+0, 2, //sigaltstack=129
+1, 2, //utime=130
+1, 3, //mknod=131
+0, 1, //personality=132
+0, 2, //ustat=133
+1, 2, //statfs=134
+0, 2, //fstatfs=135
+0, 3, //sysfs=136
+0, 2, //getpriority=137
+0, 3, //setpriority=138
+0, 2, //sched_setparam=139
+0, 2, //sched_getparam=140
+0, 3, //sched_setscheduler=141
+0, 1, //sched_getscheduler=142
+0, 1, //sched_get_priority_max=143
+0, 1, //sched_get_priority_min=144
+0, 2, //sched_rr_get_interval=145
+0, 2, //mlock=146
+0, 2, //munlock=147
+0, 1, //mlockall=148
+0, 0, //munlockall=149
+0, 0, //vhangup=150
+3, 2, //pivot_root=151
+0, 1, //_sysctl=152
+0, 5, //prctl=153
+0, 1, //adjtimex=154
+0, 2, //setrlimit=155
+1, 1, //chroot=156
+0, 0, //sync=157
+1, 1, //acct=158
+0, 2, //settimeofday=159
+7, 5, //mount=160
+1, 2, //umount2=161
+1, 2, //swapon=162
+1, 1, //swapoff=163
+0, 4, //reboot=164
+1, 2, //sethostname=165
+1, 2, //setdomainname=166
+1, 2, //create_module=167
+4, 3, //init_module=168
+1, 2, //delete_module=169
+0, 1, //get_kernel_syms=170
+1, 5, //query_module=171
+2, 4, //quotactl=172
+0, 3, //nfsservctl=173
+0, 5, //getpmsg=174
+0, 5, //putpmsg=175
+0, 5, //afs_syscall=176
+0, 0, //reserved177
+0, 0, //gettid=178
+0, 3, //readahead=179
+3, 5, //setxattr=180
+3, 5, //lsetxattr=181
+2, 5, //fsetxattr=182
+3, 4, //getxattr=183
+3, 4, //lgetxattr=184
+2, 4, //fgetxattr=185
+1, 3, //listxattr=186
+1, 3, //llistxattr=187
+0, 3, //flistxattr=188
+3, 2, //removexattr=189
+3, 2, //lremovexattr=190
+2, 2, //fremovexattr=191
+0, 2, //tkill=192
+0, 1, //time=193
+0, 6, //futex=194
+0, 3, //sched_setaffinity=195
+0, 3, //sched_getaffinity=196
+0, 0, //cacheflush=197
+0, 0, //cachectl=198
+0, 0, //sysmips=199
+0, 2, //io_setup=200
+0, 1, //io_destroy=201
+0, 5, //io_getevents=202
+0, 3, //io_submit=203
+0, 3, //io_cancel=204
+0, 0, //exit_group=205
+0, 3, //lookup_dcookie=206
+0, 1, //epoll_create=207
+0, 0, //epoll_ctl=208
+0, 0, //epoll_wait=209
+0, 5, //remap_file_pages=210
+0, 0, //rt_sigreturn=211
+0, 1, //set_tid_address=212
+0, 0, //restart_syscall=213
+0, 4, //semtimedop=214
+0, 4, //fadvise64=215
+0, 3, //timer_create=216
+0, 4, //timer_settime=217
+0, 2, //timer_gettime=218
+0, 1, //timer_getoverrun=219
+0, 1, //timer_delete=220
+0, 2, //clock_settime=221
+0, 2, //clock_gettime=222
+0, 2, //clock_getres=223
+0, 4, //clock_nanosleep=224
+0, 3, //tgkill=225
+1, 2, //utimes=226
+0, 6, //mbind=227
+0, 5, //get_mempolicy=228
+0, 3, //set_mempolicy=229
+1, 4, //mq_open=230
+1, 1, //mq_unlink=231
+2, 5, //mq_timedsend=232
+0, 5, //mq_timedreceive=233
+0, 2, //mq_notify=234
+0, 3, //mq_getsetattr=235
+0, 0, //vserver=236
+0, 5, //waitid=237
+0, 0, //reserved238
+3, 5, //add_key=239
+7, 4, //request_key=240
+0, 5, //keyctl=241
+0, 0, //set_thread_area=242
+0, 0, //inotify_init=243
+2, 3, //inotify_add_watch=244
+0, 2, //inotify_rm_watch=245
+0, 4, //migrate_pages=246
+2, 4, //openat=247
+2, 3, //mkdirat=248
+2, 4, //mknodat=249
+2, 5, //fchownat=250
+2, 3, //futimesat=251
+2, 4, //newfstatat=252
+2, 3, //unlinkat=253
+10, 4, //renameat=254
+10, 5, //linkat=255
+5, 3, //symlinkat=256
+2, 4, //readlinkat=257
+2, 4, //fchmodat=258
+2, 4, //faccessat=259
+0, 6, //pselect6=260
+0, 5, //ppoll=261
+0, 1, //unshare=262
+0, 6, //splice=263
+0, 4, //sync_file_range=264
+0, 4, //tee=265
+0, 4, //vmsplice=266
+0, 6, //move_pages=267
+0, 2, //set_robust_list=268
+0, 3, //get_robust_list=269
+0, 0, //kexec_load=270
+0, 3, //getcpu=271
+0, 6, //epoll_pwait=272
+0, 3, //ioprio_set=273
+0, 2, //ioprio_get=274
+2, 4, //utimensat=275
+0, 3, //signalfd=276
+0, 0, //timerfd=277
+0, 1, //eventfd=278
+0, 4, //fallocate=279
+0, 2, //timerfd_create=280
+0, 2, //timerfd_gettime=281
+0, 4, //timerfd_settime=282
+0, 4, //signalfd4=283
+0, 2, //eventfd2=284
+0, 1, //epoll_create1=285
+0, 3, //dup3=286
+0, 2, //pipe2=287
+0, 1, //inotify_init1=288
+0, 4, //preadv=289
+0, 4, //pwritev=290
+0, 4, //rt_tgsigqueueinfo=291
+0, 5, //perf_event_open=292
+0, 4, //accept4=293
+0, 5, //recvmmsg=294
+0, 2, //fanotify_init=295
+16, 5, //fanotify_mark=296
+0, 4, //prlimit64=297
+2, 5, //name_to_handle_at=298
+0, 3, //open_by_handle_at=299
+0, 2, //clock_adjtime=300
+0, 1, //syncfs=301
+0, 4, //sendmmsg=302
+0, 2, //setns=303
+0, 6, //process_vm_readv=304
+0, 6, //process_vm_writev=305
+0, 5, //kcmp=306
+2, 3, //finit_module=307
+0, 0, //getdents64=308
+0, 3, //sched_setattr=309
+0, 4, //sched_getattr=310
+10, 5, //renameat2=311
+0, 3, //seccomp=312
+0, 3, //getrandom=313
+1, 2, //memfd_create=314
+0, 3, //bpf=315
+2, 5, //execveat=316
+0, 1, //userfaultfd=317
+0, 2, //membarrier=318
+0, 3, //mlock2=319
+0, 6, //copy_file_range=320
+0, 6, //preadv2=321
+0, 6, //pwritev2=322
+0, 4, //pkey_mprotect=323
+0, 2, //pkey_alloc=324
+0, 1, //pkey_free=325
+};
