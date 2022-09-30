@@ -34,23 +34,6 @@ void SendEvents::recentOpenFile(const QString &filePath)
     navEditShow();
 }
 
-void SendEvents::recentOpenProject(const QString &filePath,
-                                   const QString &kitName,
-                                   const QString &language,
-                                   const QString &workspace)
-{
-    qInfo() << __FUNCTION__;
-    dpf::Event recentOpenFile;
-    recentOpenFile.setTopic(T_PROJECT);
-    recentOpenFile.setData(D_OPENPROJECT);
-    recentOpenFile.setProperty(P_FILEPATH, filePath);
-    recentOpenFile.setProperty(P_KITNAME, kitName);
-    recentOpenFile.setProperty(P_LANGUAGE, language);
-    recentOpenFile.setProperty(P_WORKSPACEFOLDER, workspace);
-    dpf::EventCallProxy::instance().pubEvent(recentOpenFile);
-    navEditShow();
-}
-
 void SendEvents::navEditShow()
 {
     qInfo() << __FUNCTION__;

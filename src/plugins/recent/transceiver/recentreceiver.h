@@ -27,10 +27,10 @@ public:
     static RecentProxy* instance();
 
 signals:
-    void addProject(const QString &filePath,
-                    const QString &kitName,
-                    const QString &language,
-                    const QString &workspace);
+    void saveOpenedProject(const QString &filePath,
+                           const QString &kitName,
+                           const QString &language,
+                           const QString &workspace);
     void addDocument(const QString &filePath);
 };
 

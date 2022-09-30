@@ -45,7 +45,7 @@ bool Recent::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
-        QObject::connect(RecentProxy::instance(), &RecentProxy::addProject,
+        QObject::connect(RecentProxy::instance(), &RecentProxy::saveOpenedProject,
                          RecentDisplay::instance(), &RecentDisplay::addProject);
         QObject::connect(RecentProxy::instance(), &RecentProxy::addDocument,
                          RecentDisplay::instance(), &RecentDisplay::addDocument);

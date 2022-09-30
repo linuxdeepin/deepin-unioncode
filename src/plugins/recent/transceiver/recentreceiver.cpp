@@ -15,28 +15,21 @@ dpf::EventHandler::Type RecentReceiver::type()
 
 QStringList RecentReceiver::topics()
 {
-    return {
-        T_PROJECT
-    };//绑定PROJECT事件
+    return { recent.topic };
 }
 
 void RecentReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!topics().contains(event.topic())) {
-        qCritical() << event;
-        abort();
-    }
-    if (event.topic() == T_PROJECT) {
-        /*if (event.data() == D_OPENDOCUMENT) {
-            return RecentProxy::instance()->addDocument(event.property(P_FILEPATH).toString());
-        } else */
-        if (event.data() == D_OPENPROJECT) {
-            return RecentProxy::instance()->addProject(
-                        event.property(P_FILEPATH).toString(),
-                        event.property(P_KITNAME).toString(),
-                        event.property(P_LANGUAGE).toString(),
-                        event.property(P_WORKSPACEFOLDER).toString());
-        }
+    if (event.data() == recent.saveOpenedProject.name) {
+        QString filePathKey = recent.saveOpenedProject.pKeys[0];
+        QString kitNameKey = recent.saveOpenedProject.pKeys[1];
+        QString languageKey = recent.saveOpenedProject.pKeys[2];
+        QString workspaceFolderKey = recent.saveOpenedProject.pKeys[3];
+        return RecentProxy::instance()->saveOpenedProject(
+                    event.property(filePathKey).toString(),
+                    event.property(kitNameKey).toString(),
+                    event.property(languageKey).toString(),
+                    event.property(workspaceFolderKey).toString());
     }
 }
 

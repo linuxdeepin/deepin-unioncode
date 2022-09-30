@@ -220,7 +220,8 @@ RecentDisplay::RecentDisplay(QWidget *parent)
         QString kitName = index.data(ProjectKitName).toString();
         QString language = index.data(ProjectLanguage).toString();
         QString workspace = index.data(ProjectWorkspace).toString();
-        SendEvents::recentOpenProject(filePath, kitName, language, workspace);
+        // "filePath", "kitName", "language", "workspace"
+        project.openProject({filePath, kitName, language, workspace});
         RecentDisplay::addProject(filePath, kitName, language, workspace);
     });
 

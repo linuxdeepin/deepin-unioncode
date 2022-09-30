@@ -72,6 +72,12 @@ public:
      */
     virtual bool configure(const ProjectInfo &projectInfo) {
 
+        //  "filePath", "kitName", "language", "workspace"
+        recent.saveOpenedProject({projectInfo.projectFilePath(),
+                                  projectInfo.kitName(),
+                                  projectInfo.language(),
+                                  projectInfo.workspaceFolder()});
+
         if (!projectInfo.workspaceFolder().isEmpty()) {
             dpf::Event event;
             event.setTopic(T_COLLABORATORS);

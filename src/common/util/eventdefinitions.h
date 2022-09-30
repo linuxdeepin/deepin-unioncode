@@ -23,7 +23,17 @@
 
 #endif // EVENTDEFINITIONS_H
 
+#include "framework.h"
+
 #include <QString>
+
+OPI_OBJECT(recent,
+           OPI_INTERFACE(saveOpenedProject, "filePath", "kitName", "language", "workspace")
+           )
+
+OPI_OBJECT(project,
+           OPI_INTERFACE(openProject,  "filePath", "kitName", "language", "workspace")
+           )
 
 extern const QString T_NAV;
 extern const QString T_MENU;

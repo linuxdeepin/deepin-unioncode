@@ -37,11 +37,23 @@ dpf::EventHandler::Type ProjectPythonReceiver::type()
 
 QStringList ProjectPythonReceiver::topics()
 {
-    return { T_BUILDER, T_PROJECT };
+    return { T_BUILDER, T_PROJECT , project.topic};
 }
 
 void ProjectPythonReceiver::eventProcess(const dpf::Event &event)
 {
+    if (event.data() == project.openProject.name) {
+        QString filePathKey = project.openProject.pKeys[0];
+        QString kitNameKey = project.openProject.pKeys[1];
+        QString languageKey = project.openProject.pKeys[2];
+        QString workspaceKey = project.openProject.pKeys[3];
+        Q_UNUSED(workspaceKey);
+        PythonOpenHandler::instance()->doProjectOpen(
+                    event.property(kitNameKey).toString(),
+                    event.property(languageKey).toString(),
+                    event.property(filePathKey).toString());
+    }
+
     if (event.data() == D_OPENPROJECT) {
         PythonOpenHandler::instance()->doProjectOpen(
                     event.property(P_KITNAME).toString(),

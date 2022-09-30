@@ -39,28 +39,22 @@ dpf::EventHandler::Type ProjectMavenReceiver::type()
 
 QStringList ProjectMavenReceiver::topics()
 {
-    return { T_BUILDER, T_PROJECT };
+    return { T_PROJECT, project.topic};
 }
 
 void ProjectMavenReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!topics().contains(event.topic())) {
-        qCritical() << event;
-        abort();
+    if (event.data() == project.openProject.name) {
+        QString filePathKey = project.openProject.pKeys[0];
+        QString kitNameKey = project.openProject.pKeys[1];
+        QString languageKey = project.openProject.pKeys[2];
+        QString workspaceKey = project.openProject.pKeys[3];
+        CmakeOpenHandler::instance()->doProjectOpen(
+                    event.property(kitNameKey).toString(),
+                    event.property(languageKey).toString(),
+                    event.property(filePathKey).toString());
     }
 
-    if (event.topic() == T_PROJECT) {
-        projectEvent(event);
-    }
-}
-
-void ProjectMavenReceiver::builderEvent(const dpf::Event &event)
-{
-    Q_UNUSED(event)
-}
-
-void ProjectMavenReceiver::projectEvent(const dpf::Event &event)
-{
     if (event.data() == D_OPENPROJECT) {
         CmakeOpenHandler::instance()->doProjectOpen(
                     event.property(P_KITNAME).toString(),

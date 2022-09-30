@@ -30,10 +30,6 @@ class SendEvents final
 public:
     static void navEditShow();
     static void recentOpenFile(const QString &filePath);
-    static void recentOpenProject(const QString &filePath,
-                                  const QString &kitName,
-                                  const QString &language,
-                                  const QString &workspace);
 };
 
 #endif // SENDEVENTS_H

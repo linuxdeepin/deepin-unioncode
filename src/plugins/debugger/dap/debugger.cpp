@@ -30,10 +30,9 @@
 #include "interface/stackframemodel.h"
 #include "interface/stackframeview.h"
 #include "interface/messagebox.h"
-#include "common/util/eventdefinitions.h"
 #include "event/eventsender.h"
 #include "event/eventreceiver.h"
-#include "common/dialog/contextdialog.h"
+#include "common/common.h"
 #include "services/builder/builderservice.h"
 
 #include <QDateTime>

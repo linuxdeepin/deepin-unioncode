@@ -39,10 +39,6 @@ public:
     static QStringList topics();
 
     virtual void eventProcess(const dpf::Event& event) override;
-
-    virtual void builderEvent(const dpf::Event& event);
-
-    virtual void projectEvent(const dpf::Event& event);
 };
 
 class ProjectMavenProxy : public QObject
