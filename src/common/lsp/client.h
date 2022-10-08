@@ -41,6 +41,126 @@ public:
     lsp::SemanticTokensProvider initSecTokensProvider();
     static bool exists(const QString &progrma);
 
+    // textDocument/semanticTokens/full/delta
+    void delta(const newlsp::SemanticTokensDeltaParams &params){}
+    // textDocument/semanticTokens/full
+    void full(const newlsp::SemanticTokensParams &params){}
+    // textDocument/semanticTokens/range
+    void range(const newlsp::SemanticTokensRangeParams &params){}
+
+    // Notifications send to server
+    // textDocument/didOpen
+    void didOpen(const newlsp::DidOpenTextDocumentParams &params){}
+    // textDocument/didChange
+    void didChange(const newlsp::DidChangeTextDocumentParams &params){}
+    // textDocument/willSave
+    void willSave(const newlsp::WillSaveTextDocumentParams &params){}
+    // textDocument/willSaveWaitUntil
+    void willSaveWaitUntil(const newlsp::WillSaveTextDocumentParams &params){}
+    // textDocument/didSave
+    void didSave(const newlsp::DidSaveTextDocumentParams &params){}
+    // textDocument/didClose
+    void didClose(const newlsp::DidCloseTextDocumentParams &params){}
+
+    // Requests
+    // textDocument/declaration
+    void declaration(const newlsp::DeclarationParams &params){}
+    // textDocument/definition
+    void definition(const newlsp::DefinitionParams &params){}
+    // textDocument/typeDefinition
+    void typeDefinition(const newlsp::TypeDefinitionParams &params){}
+    // textDocument/implementation
+    void implementation(const newlsp::ImplementationParams &params){}
+    // textDocument/references
+    void references(const newlsp::ReferenceParams &params){}
+    // textDocument/prepareCallHierarchy
+    void prepareCallHierarchy(const newlsp::CallHierarchyPrepareParams &params){}
+    // textDocument/prepareTypeHierarchy
+    void prepareTypeHierarchy(const newlsp::TypeHierarchyPrepareParams &params){}
+    // textDocument/documentHighlight
+    void documentHighlight(const newlsp::DocumentHighlightParams &params){}
+    // textDocument/documentLink
+    void documentLink(const newlsp::DocumentLinkParams &params){}
+    // textDocument/hover
+    void hover(const newlsp::HoverParams &params){}
+    // textDocument/codeLens
+    void codeLens(const newlsp::CodeLensParams &params){}
+    // textDocument/foldingRange
+    void foldingRange(const newlsp::FoldingRangeParams &params){}
+    // textDocument/selectionRange
+    void selectionRange(const newlsp::SelectionRangeParams &params){}
+    // textDocument/documentSymbol
+    void documentSymbol(const newlsp::DocumentSymbolParams &params){}
+    // textDocument/inlayHint
+    void inlayHint(const newlsp::InlayHintParams &params){}
+    // textDocument/inlineValue
+    void inlineValue(const newlsp::InlineValueParams &params){}
+    // textDocument/moniker
+    void moniker(const newlsp::MonikerParams &params){}
+    // textDocument/completion
+    void completion(const newlsp::CompletionParams &params){}
+    // textDocument/diagnostic
+    void diagnostic(const newlsp::DocumentDiagnosticParams &params){}
+    // textDocument/signatureHelp
+    void signatureHelp(const newlsp::SignatureHelpParams &params){}
+    // textDocument/codeAction
+    void codeAction(const newlsp::CodeActionParams &params){}
+    // textDocument/documentColor
+    void documentColor(const newlsp::DocumentColorParams &params){}
+    // textDocument/colorPresentation
+    void colorPresentation(const newlsp::ColorPresentationParams &params){}
+    // textDocument/formatting
+    void formatting(const newlsp::DocumentFormattingParams &params){}
+    // textDocument/rangeFormatting
+    void rangeFormatting(const newlsp::DocumentRangeFormattingParams &params){}
+    // textDocument/onTypeFormatting
+    void onTypeFormatting(const newlsp::DocumentOnTypeFormattingParams &params){}
+    // textDocument/rename
+    void rename(const newlsp::RenameParams &params){}
+    // textDocument/prepareRename
+    void prepareRename(const newlsp::PrepareRenameParams &params){}
+    // textDocument/linkedEditingRange
+    void linkedEditingRange(const newlsp::LinkedEditingRangeParams &params){}
+    // textDocument/publishDiagnostics
+    void publishDiagnostics(const newlsp::PublishDiagnosticsParams &params);
+
+    // codeAction/resolve
+    void resolve(const newlsp::CodeAction &codeAction){}
+    // completionItem/resolve
+    void resolve(const newlsp::CompletionItem &params){}
+    // inlayHint/resolve
+    void resolve(){}
+    // codeLens/resolve
+    void resolve(const newlsp::CodeLens &codeLens){}
+
+    // typeHierarchy/supertypes
+    void supertypes(const newlsp::TypeHierarchySupertypesParams &params){}
+    // typeHierarchy/subtypes
+    void subtypes(const newlsp::TypeHierarchySubtypesParams &params){}
+
+    // callHierarchy/incomingCalls
+    void incomingCalls(const newlsp::CallHierarchyIncomingCallsParams &params){}
+    // callHierarchy/outgoingCalls
+    void outgoingCalls(const newlsp::CallHierarchyOutgoingCallsParams &params){}
+
+    // workspace/codelens/refresh
+    void refresh(){}
+
+    // workspace/semanticTokens/refresh
+    void workspace_semanticTokens_refresh(){}
+
+    // workspace/inlayHint/refresh
+    void workspace_inlayHint_refresh(){}
+
+    // workspace/inlineValue/refresh
+    void workspace_inlineValue_refresh(){}
+
+    // workspace/diagnostic/refresh
+    void workspace_diagnostic_refresh(){}
+
+    // workspace/diagnostic
+    void diagnostic(const newlsp::WorkspaceDiagnosticParams &params){}
+
 public slots:
     void setHead(const lsp::Head &head);
     void initRequest(const QString &compile); // yes

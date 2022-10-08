@@ -23,16 +23,14 @@
 
 #include "basicjsonstructures.h"
 
-namespace newlsp
-{
-
-struct DidOpenTextDocumentParams : JsonConvert
+namespace newlsp {
+struct DidOpenTextDocumentParams
 {
     TextDocumentItem textDocument;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DidOpenTextDocumentParams &val);
 
-struct TextDocumentContentChangeEvent : JsonConvert
+struct TextDocumentContentChangeEvent
 {
     std::optional<Range> range;
     std::optional<unsigned int> rangeLength;
@@ -45,79 +43,86 @@ struct TextDocumentContentChangeEvent : JsonConvert
             rangeLength = other.rangeLength;
         text = other.text;
     }
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const TextDocumentContentChangeEvent &val);
 
-struct DidChangeTextDocumentParams : JsonConvert
+struct DidChangeTextDocumentParams
 {
     VersionedTextDocumentIdentifier textDocument;
     std::vector<TextDocumentContentChangeEvent> contentChanges;
     std::string formatValue(const std::vector<TextDocumentContentChangeEvent> &val) const;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const std::vector<TextDocumentContentChangeEvent> &val);
 
-enum_def(TextDocumentSaveReason, int)
-{
-    enum_exp Manual = 1;
-    enum_exp AfterDelay = 2;
-    enum_exp FocusOut = 3;
-};
-
-struct WillSaveTextDocumentParams : JsonConvert
+struct WillSaveTextDocumentParams
 {
     TextDocumentIdentifier textDocument;
-    TextDocumentSaveReason::type_value reason;
-    std::string toStdString() const;
+    newlsp::Enum::TextDocumentSaveReason::type_value reason;
 };
 
-struct SaveOptions : JsonConvert
+struct SaveOptions
 {
     std::optional<bool> includeText;
-    std::string toStdString() const;
 };
 
-struct TextDocumentRegistrationOptions : JsonConvert
+struct TextDocumentRegistrationOptions
 {
     DocumentSelector documentSelector;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const TextDocumentRegistrationOptions &val);
 
 struct TextDocumentSaveRegistrationOptions : TextDocumentRegistrationOptions
 {
     std::optional<bool> includeText;
-    std::string toStdString() const;
 };
 
-struct DidSaveTextDocumentParams : JsonConvert
+struct DidSaveTextDocumentParams
 {
     TextDocumentIdentifier textDocument;
     std::optional<std::string> text;
-    std::string toStdString() const;
 };
 
-struct DidCloseTextDocumentParams : JsonConvert
+struct DidCloseTextDocumentParams
 {
     TextDocumentIdentifier textDocument;
-    std::string toStdString() const;
 };
 
-enum_def(TextDocumentSyncKind, int)
-{
-    enum_exp None = 0;
-    enum_exp Full = 1;
-    enum_exp Incremental = 2;
-};
-
-struct TextDocumentSyncOptions : JsonConvert
+struct TextDocumentSyncOptions
 {
     std::optional<bool> openClose;
-    std::optional<TextDocumentSyncKind::type_value> change;
+    std::optional<newlsp::Enum::TextDocumentSyncKind::type_value> change;
     std::optional<bool> willSave;
     std::optional<bool> willSaveWaitUntil;
     std::optional<std::any> save; // boolean | SaveOptions
-    std::string toStdString() const;
 };
 
-}
+struct ExecutionSummary
+{
+    unsigned int executionOrder;
+    bool success;
+};
+
+struct NotebookCell
+{
+    Enum::NotebookCellKind::type_value kind;
+    DocumentUri document;
+    std::any metadata;
+    ExecutionSummary executionSummary;
+};
+
+struct NotebookDocument
+{
+    URI uri;
+    std::string notebookType;
+    int version;
+    std::any metadata; //export type LSPObject = { [key: string]: LSPAny };
+    std::vector<NotebookCell> cells;
+};
+
+/* *
+ * Many structural encapsulation of notebook are omitted here,
+ * which is not used temporarily
+ * */
+} // newlsp
 
 #endif // DOCUMENTSYNCHRONIZATION_H

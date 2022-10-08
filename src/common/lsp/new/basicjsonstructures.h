@@ -40,23 +40,93 @@ static bool any_contrast(const std::any &any)
     return false;
 }
 
-struct JsonConvert
+std::string toJsonValueStr(unsigned int value);
+std::string toJsonValueStr(int value);
+std::string toJsonValueStr(bool value);
+std::string toJsonValueStr(float value);
+std::string toJsonValueStr(double value);
+std::string toJsonValueStr(const std::string &value);
+std::string toJsonValueStr(const std::vector<int> &vecInt);
+std::string toJsonValueStr(const std::vector<std::string> &vecString);
+
+namespace json
 {
-    static std::string addScope(const std::string &src);
-    static std::string delScope(const std::string &obj);
-    static std::string formatKey(const std::string &key);
-    static std::string formatValue(unsigned int value);
-    static std::string formatValue(int value);
-    static std::string formatValue(bool value);
-    static std::string formatValue(const std::string &value);
-    static std::string formatValue(const std::vector<int> &vecInt);
-    static std::string formatValue(const std::vector<std::string> &vecString);
+std::string addScope(const std::string &src);
+std::string delScope(const std::string &obj);
+std::string mergeObjs(const std::vector<std::string> &objs);
+std::string formatKey(const std::string &key);
 
-    static std::string addValue(const std::string &src,
-                                const std::pair<std::string, std::any> &elem);
+template<class T>
+struct KV
+{
+    std::string key;
+    T value;
+    typedef std::string type_first;
+    typedef T type_second;
+    KV() = delete;
+    KV(const std::string &key, const T &value)
+        : key(key), value(value){}
+};
 
-    static std::string addValue(const std::string &src,
-                                std::initializer_list<std::pair<std::string, std::any>> &elems);
+template <class T>
+std::string addValue(const std::string &src, const KV<T> &kv)
+{
+    std::string temp;
+    if (kv.key.empty())
+        return temp;
+
+    temp = formatKey(kv.key) + ":"  + toJsonValueStr(kv.value);
+
+    if (!src.empty())
+        return src + "," + temp;
+    else
+        return temp;
+}
+
+template <class T>
+std::string addValue(const std::string &src, const KV<std::optional<T>> &kv)
+{
+    std::string ret;
+    if (kv.value) {
+        ret = addValue(src, json::KV{kv.key, kv.value.value()});
+    }
+    return ret;
+}
+
+template <class T>
+std::string addValue(const std::string &src, const KV<std::vector<T>> &kv)
+{
+    std::string temp;
+    if (kv.key.empty())
+        return temp;
+
+    if (kv.value.size() < 0)
+        return temp;
+
+    temp += "[";
+    for (int i = 0; i < kv.value.size(); i++) {
+        temp += toJsonValueStr(kv.value[i]);
+        if (i < kv.value.size() - 1)
+            temp += ",";
+    }
+    temp += "]";
+    temp = formatKey(kv.key) + ":" + temp;
+    if (!src.empty())
+        return src + "," + temp;
+    else
+        return temp;
+}
+
+template <class T>
+std::string addValue(const std::string &src, const KV<std::optional<std::vector<T>>> &kv)
+{
+    std::string ret;
+    if (kv.value) {
+        ret = addValue(src, json::KV{kv.key, kv.value.value()});
+    }
+    return ret;
+}
+
 };
 
 namespace Enum {
@@ -270,83 +340,161 @@ enum_def(DiagnosticSeverity, int)
     enum_exp Hint = 4;
 };
 
+enum_def(CompletionTriggerKind, int) {
+    enum_exp Invoked = 1;
+    enum_exp TriggerCharacter = 2;
+    enum_exp TriggerForIncompleteCompletions = 3;
+};
+
+enum_def(InsertTextFormat, int) {
+    enum_exp PlainText = 1;
+    enum_exp Snippet = 2;
+};
+
+enum_def(InlayHintKind, int)
+{
+    enum_exp Type = 1;
+    enum_exp Parameter = 2;
+};
+
+enum_def(MonikerKind, std::string){
+    enum_exp Import = "import";
+    enum_exp Export = "export"; // source export, conflict with native grammar
+    enum_exp Local = "local";
+};
+
+enum_def(UniquenessLevel, std::string) {
+    enum_exp document = "document";
+    enum_exp project = "project";
+    enum_exp group = "group";
+    enum_exp scheme = "scheme";
+    enum_exp global = "global";
+};
+
+enum_def(SignatureHelpTriggerKind, int)
+{
+    enum_exp Invoked = 1;
+    enum_exp TriggerCharacter = 2;
+    enum_exp ContentChange = 3;
+};
+
+enum_def(TextDocumentSaveReason, int)
+{
+    enum_exp Manual = 1;
+    enum_exp AfterDelay = 2;
+    enum_exp FocusOut = 3;
+};
+
+enum_def(TextDocumentSyncKind, int)
+{
+    enum_exp None = 0;
+    enum_exp Full = 1;
+    enum_exp Incremental = 2;
+};
+
+enum_def(NotebookCellKind, int)
+{
+    enum_exp Markup = 1;
+    enum_exp Code = 2;
+};
+
+enum_def(DocumentHighlightKind, int){
+    enum_exp Text = 1;
+    enum_exp Read = 2;
+    enum_exp Write = 3;
+};
+
+enum_def(CodeActionTriggerKind, int)
+{
+    enum_exp Invoked = 1;
+    enum_exp Automatic = 2;
+};
+
 } // BasicEnum
 
 typedef std::string DocumentUri;
 typedef std::string URI ;
-typedef std::any ProgressToken; // integer | string;
 
-struct Position : JsonConvert
+struct ProgressToken : std::any
+{
+    ProgressToken(int val) : std::any(val){}
+    ProgressToken(const std::string &val) : std::any(val){}
+};
+std::string toJsonValueStr(const ProgressToken &val);
+
+struct Position
 {
     int line;
     int character;
     Position() = default;
     Position(int line, int character)
         : line(line), character(character){}
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const Position &val);
 
-struct Range : JsonConvert
+struct Range
 {
     Position start;
     Position end;
     Range() = default;
     Range(const Position &start, const Position &end)
         : start(start), end(end){}
-    std::string toStdString() const;
 };
 
-struct TextDocumentItem : JsonConvert
+std::string toJsonValueStr(const Range &val);
+
+struct TextDocumentItem
 {
     DocumentUri uri;
     std::string languageId;
     int version;
     std::string text;
-    std::string toStdString() const;
 };
 
-struct TextDocumentIdentifier : JsonConvert
+struct TextDocumentIdentifier
 {
     DocumentUri uri;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const TextDocumentIdentifier &val);
 
 struct VersionedTextDocumentIdentifier : TextDocumentIdentifier
 {
     int version;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const VersionedTextDocumentIdentifier &val);
 
 struct OptionalVersionedTextDocumentIdentifier : TextDocumentIdentifier
 {
     std::optional<int> version;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const OptionalVersionedTextDocumentIdentifier &val);
 
 struct TextDocumentPositionParams
 {
     TextDocumentIdentifier textDocument;
     Position position;
 };
+std::string toJsonValueStr(const TextDocumentPositionParams &val);
 
-struct DocumentFilter : JsonConvert
+struct DocumentFilter
 {
     std::optional<std::string> language;
     std::optional<std::string> scheme;
     std::optional<std::string> pattern;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DocumentFilter &val);
 
-struct DocumentSelector : JsonConvert, std::vector<DocumentFilter>
+struct DocumentSelector: std::vector<DocumentFilter>
 {
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DocumentSelector &val);
 
 struct TextEdit
 {
     Range range;
     std::string newText;
 };
+std::string toJsonValueStr(const TextEdit &val);
 
 struct ChangeAnnotation
 {
@@ -354,6 +502,7 @@ struct ChangeAnnotation
     std::optional<bool> needsConfirmation;
     std::optional<std::string> description;
 };
+std::string toJsonValueStr(const ChangeAnnotation &val);
 
 typedef std::string ChangeAnnotationIdentifier;
 
@@ -361,18 +510,21 @@ struct AnnotatedTextEdit : TextEdit
 {
     ChangeAnnotationIdentifier annotationId;
 };
+std::string toJsonValueStr(const AnnotatedTextEdit &val);
 
 struct TextDocumentEdit
 {
     OptionalVersionedTextDocumentIdentifier textDocument;
     std::vector<AnnotatedTextEdit> edits;
 };
+std::string toJsonValueStr(const TextDocumentEdit &val);
 
 struct Location
 {
     DocumentUri uri;
     Range range;
 };
+std::string toJsonValueStr(const Location &val);
 
 struct LocationLink
 {
@@ -386,12 +538,14 @@ struct CodeDescription
 {
     URI href;
 };
+std::string toJsonValueStr(const CodeDescription &val);
 
 struct DiagnosticRelatedInformation
 {
     Location location;
     std::string message;
 };
+std::string toJsonValueStr(const DiagnosticRelatedInformation &val);
 
 struct Diagnostic
 {
@@ -403,15 +557,17 @@ struct Diagnostic
     std::optional<std::string> message;
     std::optional<std::vector<Enum::DiagnosticTag::type_value>> tags;
     std::optional<std::vector<DiagnosticRelatedInformation>> relatedInformation;
-    std::optional<std::any> data; // unknown;
+    std::optional<std::string> data; // unknown;
 };
+std::string toJsonValueStr(const Diagnostic &val);
 
 struct Command
 {
     std::string title;
     std::string command;
-    std::optional<std::vector<std::any>> arguments;
+    std::optional<std::vector<std::string>> arguments;
 };
+std::string toJsonValueStr(const Command &val);
 
 struct MarkupContent
 {
@@ -424,6 +580,7 @@ struct CreateFileOptions
     std::optional<bool> overwrite;
     std::optional<bool> ignoreIfExists;
 };
+std::string toJsonValueStr(const CreateFileOptions &val);
 
 struct CreateFile
 {
@@ -432,12 +589,14 @@ struct CreateFile
     std::optional<CreateFileOptions> options;
     std::optional<ChangeAnnotationIdentifier> annotationId;
 };
+std::string toJsonValueStr(const CreateFile &val);
 
 struct RenameFileOptions
 {
     std::optional<bool> overwrite;
     std::optional<bool> ignoreIfExists;
 };
+std::string toJsonValueStr(const RenameFileOptions &val);
 
 struct RenameFile
 {
@@ -447,12 +606,14 @@ struct RenameFile
     std::optional<RenameFileOptions> options;
     std::optional<ChangeAnnotationIdentifier> annotationId;
 };
+std::string toJsonValueStr(const RenameFile &val);
 
 struct DeleteFileOptions
 {
     std::optional<bool> recursive;
     std::optional<bool> ignoreIfNotExists;
 };
+std::string toJsonValueStr(const DeleteFileOptions &val);
 
 struct DeleteFile
 {
@@ -461,15 +622,28 @@ struct DeleteFile
     std::optional<DeleteFileOptions> options;
     std::optional<ChangeAnnotationIdentifier> annotationId;
 };
+std::string toJsonValueStr(const DeleteFile &val);;
 
 struct WorkspaceEdit
 {
     // { [uri: DocumentUri]: TextEdit[]; };
-    std::optional<std::map<DocumentUri, std::vector<TextEdit>>> changes;
+    struct Changes : std::map<DocumentUri, std::vector<TextEdit>> {};
+    struct ChangeAnnotations : std::map<std::string, ChangeAnnotation> {};
+    struct DocumentChanges : std::any {
+        DocumentChanges(const std::vector<TextDocumentEdit> &val) : std::any(val){}
+        DocumentChanges(const std::vector<CreateFile> &val) : std::any(val){}
+        DocumentChanges(const std::vector<RenameFile> &val) : std::any(val){}
+        DocumentChanges(const std::vector<DeleteFile> &val) : std::any(val){}
+    };
+    std::optional<Changes> changes;
     // ( TextDocumentEdit[] | (TextDocumentEdit | CreateFile | RenameFile | DeleteFile)[]);
-    std::optional<std::any> documentChanges;
-    std::optional<std::map<std::string, ChangeAnnotation>> changeAnnotations;
+    std::optional<DocumentChanges> documentChanges;
+    std::optional<ChangeAnnotations> changeAnnotations;
 };
+std::string toJsonValueStr(const WorkspaceEdit::Changes &val);
+std::string toJsonValueStr(const WorkspaceEdit::DocumentChanges &val);
+std::string toJsonValueStr(const WorkspaceEdit::ChangeAnnotations &val);
+std::string toJsonValueStr(const WorkspaceEdit &val);
 
 struct WorkDoneProgressBegin
 {
@@ -494,21 +668,23 @@ struct WorkDoneProgressEnd
     std::optional<std::string> message;
 };
 
-struct WorkDoneProgressParams : JsonConvert
+struct WorkDoneProgressParams
 {
     std::optional<ProgressToken> workDoneToken;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const WorkDoneProgressParams &params);
 
 struct WorkDoneProgressOptions
 {
     std::optional<bool> workDoneProgress;
 };
+std::string toJsonValueStr(const WorkDoneProgressOptions &params);
 
 struct PartialResultParams
 {
     std::optional<ProgressToken> partialResultToken;
 };
+std::string toJsonValueStr(const PartialResultParams &params);
 
 } // lsp
 

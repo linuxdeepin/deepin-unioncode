@@ -21,23 +21,20 @@
 #include "documentsynchronization.h"
 
 namespace newlsp {
-
-std::string DidOpenTextDocumentParams::toStdString() const
+std::string toJsonValueStr(const DidOpenTextDocumentParams &val)
 {
-    std::string res;
-    addValue(res, {"textDocument", textDocument.toStdString()});
-    return addScope(res);
+
 }
 
-std::string DidChangeTextDocumentParams::toStdString() const
+std::string toJsonValueStr(const DidChangeTextDocumentParams &val)
 {
     std::string ret;
-    ret = addValue(ret, {"textDocument", textDocument});
-    ret = addValue(ret, {"contentChanges", formatValue(contentChanges)});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"textDocument", val.textDocument});
+    ret = json::addValue(ret, json::KV{"contentChanges", val.contentChanges});
+    return json::addScope(ret);
 }
 
-std::string DidChangeTextDocumentParams::formatValue(const std::vector<TextDocumentContentChangeEvent> &val) const
+std::string toJsonValueStr(const std::vector<TextDocumentContentChangeEvent> &val)
 {
     std::string ret;
     if (val.size() < 0)
@@ -45,7 +42,7 @@ std::string DidChangeTextDocumentParams::formatValue(const std::vector<TextDocum
 
     ret += "[";
     for (int i = 0; i < val.size(); i++) {
-        ret += val[i].toStdString();
+        ret += toJsonValueStr(val[i]);
         if (i < val.size() - 1)
             ret += ",";
     }
@@ -53,82 +50,82 @@ std::string DidChangeTextDocumentParams::formatValue(const std::vector<TextDocum
     return ret;
 }
 
-std::string TextDocumentContentChangeEvent::toStdString() const
+std::string toJsonValueStr(const TextDocumentContentChangeEvent &val)
 {
     std::string ret;
-    if (range)
-        ret = addValue(ret, {"range", range->toStdString()});
-    if (rangeLength)
-        ret = addValue(ret, {"rangeLength", rangeLength});
-    ret = addValue(ret , {"text", text});
-    return addScope(ret);
+    if (val.range)
+        ret = json::addValue(ret, json::KV{"range", val.range});
+    if (val.rangeLength)
+        ret = json::addValue(ret, json::KV{"rangeLength", val.rangeLength});
+    ret = json::addValue(ret , json::KV{"text", val.text});
+    return json::addScope(ret);
 }
 
-std::string WillSaveTextDocumentParams::toStdString() const
+std::string toJsonValueStr(const WillSaveTextDocumentParams &val)
 {
     std::string ret;
-    ret = addValue(ret, {"textDocument", textDocument.toStdString()});
-    ret = addValue(ret, {"reason", reason});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"textDocument", val.textDocument});
+    ret = json::addValue(ret, json::KV{"reason", val.reason});
+    return json::addScope(ret);
 }
 
-std::string SaveOptions::toStdString() const
+std::string toJsonValueStr(const SaveOptions &val)
 {
     std::string ret;
-    if (includeText)
-        ret = addValue(ret, {"includeText", includeText});
-    return addScope(ret);
+    if (val.includeText)
+        ret = json::addValue(ret, json::KV{"includeText", val.includeText});
+    return json::addScope(ret);
 }
 
-std::string TextDocumentRegistrationOptions::toStdString() const
+std::string toJsonValueStr(const TextDocumentRegistrationOptions &val)
 {
     std::string ret;
-    ret = addValue(ret, {"documentSelector", documentSelector.toStdString()});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"documentSelector", val.documentSelector});
+    return json::addScope(ret);
 }
 
-std::string TextDocumentSaveRegistrationOptions::toStdString() const
+std::string toJsonValueStr(const TextDocumentSaveRegistrationOptions &val)
 {
-    std::string ret = delScope(TextDocumentRegistrationOptions::toStdString());
-    if (includeText)
-        ret = addValue(ret, {"includeText", includeText});
-    return addScope(ret);
+    //= json::delScope(TextDocumentRegistrationOptions::toJsonValueStr());
+    std::string ret;
+    if (val.includeText)
+        ret = json::addValue(ret, json::KV{"includeText", val.includeText});
+    return json::addScope(ret);
 }
 
-std::string DidSaveTextDocumentParams::toStdString() const
+std::string toJsonValueStr(const DidSaveTextDocumentParams &val)
 {
     std::string ret;
-    ret = addValue(ret, {"textDocument", textDocument.toStdString()});
-    if (text)
-        ret = addValue(ret, {"text", text});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"textDocument", val.textDocument});
+    if (val.text)
+        ret = json::addValue(ret, json::KV{"text", val.text});
+    return json::addScope(ret);
 }
 
-std::string DidCloseTextDocumentParams::toStdString() const
+std::string toJsonValueStr(const DidCloseTextDocumentParams &val)
 {
     std::string ret;
-    ret = addValue(ret, {"textDocument", textDocument});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"textDocument", val.textDocument});
+    return json::addScope(ret);
 }
 
-std::string TextDocumentSyncOptions::toStdString() const
+std::string toJsonValueStr(const TextDocumentSyncOptions &val)
 {
     std::string ret;
-    if (openClose)
-        ret = addValue(ret, {"openColse", openClose});
-    if (change)
-        ret = addValue(ret, {"change", change});
-    if (willSave)
-        ret = addValue(ret, {"willSave", willSave});
-    if (willSaveWaitUntil)
-        ret = addValue(ret, {"willSaveWaitUntil", willSaveWaitUntil});
-    if (save) {
-        if (any_contrast<SaveOptions>(save))
-            ret = addValue(ret, {"save", std::any_cast<SaveOptions>(save).toStdString()});
-        if (any_contrast<bool>(save))
-            ret = addValue(ret, {"save", save});
+    if (val.openClose)
+        ret = json::addValue(ret, json::KV{"openColse", val.openClose});
+    if (val.change)
+        ret = json::addValue(ret, json::KV{"change", val.change});
+    if (val.willSave)
+        ret = json::addValue(ret, json::KV{"willSave", val.willSave});
+    if (val.willSaveWaitUntil)
+        ret = json::addValue(ret, json::KV{"willSaveWaitUntil", val.willSaveWaitUntil});
+    if (val.save) {
+        if (any_contrast<SaveOptions>(val.save))
+            ret = json::addValue(ret, json::KV{"save", std::any_cast<SaveOptions>(val.save)});
+        if (any_contrast<bool>(val.save))
+            ret = json::addValue(ret, json::KV{"save", std::any_cast<bool>(val.save)});
     }
-    return addScope(ret);
+    return json::addScope(ret);
 }
-
 } // namespace newlsp

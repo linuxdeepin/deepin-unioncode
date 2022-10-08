@@ -212,7 +212,7 @@ void Client::initRequest(const QString &compile)
 
 void Client::openRequest(const QString &filePath)
 {
-    QString data = setHeader(didOpen(filePath)).toLatin1();
+    QString data = setHeader(lsp::didOpen(filePath)).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDOPEN;
     qInfo() << qPrintable(data);
     d->callLanguageNotify(data);
@@ -220,7 +220,7 @@ void Client::openRequest(const QString &filePath)
 
 void Client::closeRequest(const QString &filePath)
 {
-    QString data = setHeader(didClose(filePath)).toLatin1();
+    QString data = setHeader(lsp::didClose(filePath)).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCLOSE;
     qInfo() << qPrintable(data);
     d->callLanguageNotify(data);
@@ -228,7 +228,7 @@ void Client::closeRequest(const QString &filePath)
 
 void Client::changeRequest(const QString &filePath, const QByteArray &text)
 {
-    QString data = setHeader(didChange(filePath, text, d->fileVersion[filePath]));
+    QString data = setHeader(lsp::didChange(filePath, text, d->fileVersion[filePath]));
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DIDCHANGE;
     qInfo() << qPrintable(data);
     d->callLanguageNotify(data);
@@ -248,7 +248,7 @@ void Client::renameRequest(const QString &filePath, const Position &pos, const Q
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_RENAME);
-    QString data = setHeader(rename(filePath, pos, newName), d->requestIndex).toLatin1();
+    QString data = setHeader(lsp::rename(filePath, pos, newName), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_RENAME;
     qInfo() << qPrintable(data);
     d->callLanguageRequest(data);
@@ -258,7 +258,7 @@ void Client::definitionRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DEFINITION);
-    QString data = setHeader(definition(filePath, pos), d->requestIndex).toLatin1();
+    QString data = setHeader(lsp::definition(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DEFINITION;
     qInfo() << qPrintable(data);
     d->callLanguageRequest(data);
@@ -268,7 +268,7 @@ void Client::completionRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_COMPLETION);
-    QString data = setHeader(completion(filePath, pos), d->requestIndex).toLatin1();
+    QString data = setHeader(lsp::completion(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_COMPLETION;
     qInfo() << qPrintable(data);
     d->callLanguageRequest(data);
@@ -278,7 +278,7 @@ void Client::signatureHelpRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_SIGNATUREHELP);
-    QString data = setHeader(signatureHelp(filePath, pos), d->requestIndex).toLatin1();
+    QString data = setHeader(lsp::signatureHelp(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_SIGNATUREHELP;
     d->callLanguageRequest(data);
 }
@@ -287,7 +287,7 @@ void Client::referencesRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_REFERENCES);
-    QString data = setHeader(references(filePath, pos), d->requestIndex).toLatin1();
+    QString data = setHeader(lsp::references(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_REFERENCES;
     d->callLanguageRequest(data);
 }
@@ -296,7 +296,7 @@ void Client::docHighlightRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT);
-    QString data = setHeader(documentHighlight(filePath, pos), d->requestIndex).toLatin1();
+    QString data = setHeader(lsp::documentHighlight(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT;
     qInfo() << qPrintable(data);
     d->callLanguageRequest(data);
@@ -316,7 +316,7 @@ void Client::docHoverRequest(const QString &filePath, const Position &pos)
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_TEXTDOCUMENT_HOVER);
-    QString data = setHeader(hover(filePath, pos), d->requestIndex).toLatin1();
+    QString data = setHeader(lsp::hover(filePath, pos), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_TEXTDOCUMENT_HOVER;
     qInfo() << qPrintable(data);
     d->callLanguageRequest(data);
@@ -326,7 +326,7 @@ void Client::shutdownRequest()
 {
     d->requestIndex ++;
     d->requestSave.insert(d->requestIndex, V_SHUTDOWN);
-    QString data = setHeader(shutdown(), d->requestIndex).toLatin1();
+    QString data = setHeader(lsp::shutdown(), d->requestIndex).toLatin1();
     qInfo() << "--> server : " << V_SHUTDOWN;
     qInfo() << qPrintable(data);
     d->callLanguageRequest(data);
@@ -445,7 +445,7 @@ bool Client::renameResult(const QJsonObject &jsonObj)
         newlsp::WorkspaceEdit changesResult;
         if (!changesObj.isEmpty()) {
             // std::optional<> changes;
-            std::map<newlsp::DocumentUri, std::vector<newlsp::TextEdit>> changes;
+            newlsp::WorkspaceEdit::Changes changes;
             for (auto fileKey : changesObj.keys()) {
                 auto addionTextEditArray = changesObj[fileKey].toArray();
                 std::vector<newlsp::TextEdit> textEdits;
@@ -500,7 +500,7 @@ bool Client::renameResult(const QJsonObject &jsonObj)
 
         QJsonObject changeAnnotationsObj = resultObj.value("changeAnnotations").toObject();
         if (!changeAnnotationsObj.isEmpty()) {
-            std::map<std::string, newlsp::ChangeAnnotation> changeAnnotations;
+            newlsp::WorkspaceEdit::ChangeAnnotations changeAnnotations;
             for (auto idKey: changeAnnotationsObj.keys()) {
                 QJsonObject changeAnnotationObj = changeAnnotationsObj[idKey].toObject();
                 newlsp::ChangeAnnotation changeAnnotation;

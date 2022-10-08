@@ -479,9 +479,10 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 /* SignatureHelpClientCapabilities */
                 params.capabilities.textDocument->signatureHelp = SignatureHelpClientCapabilities{};
                 params.capabilities.textDocument->signatureHelp->dynamicRegistration = true;
-                params.capabilities.textDocument->signatureHelp->signatureInformation = SignatureInformation{};
+                params.capabilities.textDocument->signatureHelp->signatureInformation = SignatureHelpClientCapabilities::SignatureInformation{};
                 params.capabilities.textDocument->signatureHelp->signatureInformation->documentationFormat = newlsp::Enum::MarkupKind::toStdVector();
-                params.capabilities.textDocument->signatureHelp->signatureInformation->parameterInformation = ParameterInformation{};
+                params.capabilities.textDocument->signatureHelp->signatureInformation->parameterInformation
+                        = SignatureHelpClientCapabilities::SignatureInformation::ParameterInformation{};
                 params.capabilities.textDocument->signatureHelp->signatureInformation->parameterInformation->labelOffsetSupport = true;
                 params.capabilities.textDocument->signatureHelp->signatureInformation->activeParameterSupport = true;
                 params.capabilities.textDocument->signatureHelp->contextSupport = true;
@@ -700,9 +701,9 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
         }
 
         std::string initRequestStr;
-        initRequestStr = JsonConvert::addValue(initRequestStr, {"method", JsonConvert::formatValue(std::string("initialize"))});
-        initRequestStr = JsonConvert::addValue(initRequestStr, {K_PARAMS.toStdString(), params.toStdString()});
-        initRequestStr = JsonConvert::addScope(initRequestStr);
+        initRequestStr = json::addValue(initRequestStr, json::KV{ "method", std::string("initialize") });
+        initRequestStr = json::addValue(initRequestStr, json::KV{ K_PARAMS.toStdString(), params });
+        initRequestStr = json::addScope(initRequestStr);
 
         QJsonParseError err;
         auto jsonDoc = QJsonDocument::fromJson(QByteArray::fromStdString(initRequestStr), &err);

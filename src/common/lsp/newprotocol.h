@@ -24,7 +24,6 @@
 #include "new/documentsynchronization.h"
 #include "new/lifecyclemessage.h"
 #include "new/basicjsonstructures.h"
+#include "new/languagefeatures.h"
 
-namespace newlsp{
-};
 #endif // NEWPROTOCOL_H

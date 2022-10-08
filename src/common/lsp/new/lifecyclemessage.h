@@ -25,158 +25,130 @@
 
 namespace newlsp {
 
-struct ResolveSupport: JsonConvert
+struct ResolveSupport
 {
     std::vector<Enum::Properties::type_value> properties{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const ResolveSupport &val);
 
-struct CodeActionKind: JsonConvert
+struct CodeActionKind
 {
     std::vector<Enum::CodeActionKind::type_value> valueSet{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const CodeActionKind &val);
 
-struct CodeActionLiteralSupport: JsonConvert
+struct CodeActionLiteralSupport
 {
     CodeActionKind codeActionKind{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const CodeActionLiteralSupport &val);
 
-struct ParameterInformation: JsonConvert
-{
-    std::optional<bool> labelOffsetSupport{};
-    std::string toStdString() const;
-};
-
-struct SignatureInformation: JsonConvert
-{
-    std::optional<std::vector<Enum::MarkupKind::type_value>> documentationFormat{};
-    std::optional<ParameterInformation> parameterInformation{};
-    std::optional<bool> activeParameterSupport{};
-    std::string toStdString() const;
-};
-
-struct ChangeAnotationSupport: JsonConvert
+struct ChangeAnotationSupport
 {
     std::optional<bool> groupsOnLabel{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const ChangeAnotationSupport &val);
 
-struct SymbolKind: JsonConvert
+struct SymbolKind
 {
     std::vector<Enum::SymbolKind::type_value> valueSet{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const SymbolKind &val);
 
-struct FoldingRangeKind: JsonConvert
-{
-    std::optional<std::vector<Enum::FoldingRangeKind::type_value>> valueSet{};
-    std::string toStdString() const;
-};
-
-struct FoldingRange: JsonConvert
-{
-    std::optional<bool> collapsedText{};
-    std::string toStdString() const;
-};
-
-struct WorkspaceEditClientCapabilities: JsonConvert
+struct WorkspaceEditClientCapabilities
 {
     std::optional<bool> documentChanges{};
     std::optional<std::vector<Enum::ResourceOperationKind::type_value>> resourceOperations{};
     std::optional<Enum::FailureHandlingKind::type_value> failureHandling{};
     std::optional<bool> normalizesLineEndings{};
     std::optional<ChangeAnotationSupport> changeAnnotationSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const WorkspaceEditClientCapabilities &val);
 
-struct DidChangeConfigurationClientCapabilities: JsonConvert
+struct DidChangeConfigurationClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DidChangeConfigurationClientCapabilities &val);
 
-struct DidChangeWatchedFilesClientCapabilities: JsonConvert
+struct DidChangeWatchedFilesClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> relativePatternSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DidChangeWatchedFilesClientCapabilities &val);
 
-struct ExecuteCommandClientCapabilities: JsonConvert
+struct ExecuteCommandClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const ExecuteCommandClientCapabilities &val);
 
-struct WorkspaceSymbolClientCapabilities: JsonConvert
+struct WorkspaceSymbolClientCapabilities
 {
-    struct TagSupport : JsonConvert
+    struct TagSupport
     {
         std::vector<Enum::SymbolTag::type_value> valueSet{};
-        std::string toStdString() const;
     };
     std::optional<bool> dynamicRegistration{};
     std::optional<SymbolKind> symbolKind{};
     std::optional<TagSupport> tagSupport{};
     std::optional<std::vector<std::string>> resolveSupport{};
-    std::string toStdString() const;
-};
 
-struct SemanticTokensWorkspaceClientCapabilities: JsonConvert
+};
+std::string toJsonValueStr(const WorkspaceSymbolClientCapabilities &val);
+
+struct SemanticTokensWorkspaceClientCapabilities
 {
     std::optional<bool> refreshSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const SemanticTokensWorkspaceClientCapabilities &val);
 
-struct CodeLensWorkspaceClientCapabilities: JsonConvert
+struct CodeLensWorkspaceClientCapabilities
 {
     std::optional<bool> refreshSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const CodeLensWorkspaceClientCapabilities &val);
 
-struct InlineValueWorkspaceClientCapabilities: JsonConvert
+struct InlineValueWorkspaceClientCapabilities
 {
     std::optional<bool> refreshSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const InlineValueWorkspaceClientCapabilities &val);
 
-struct InlayHintWorkspaceClientCapabilities: JsonConvert
+struct InlayHintWorkspaceClientCapabilities
 {
     std::optional<bool> refreshSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const InlayHintWorkspaceClientCapabilities &val);
 
-struct DiagnosticWorkspaceClientCapabilities: JsonConvert
+struct DiagnosticWorkspaceClientCapabilities
 {
     std::optional<bool> refreshSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DiagnosticWorkspaceClientCapabilities &val);
 
-struct TextDocumentSyncClientCapabilities: JsonConvert
+struct TextDocumentSyncClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> willSave{};
     std::optional<bool> willSaveWaitUntil{};
     std::optional<bool> didSave{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const TextDocumentSyncClientCapabilities &val);
 
-struct CompletionClientCapabilities: JsonConvert
+struct CompletionClientCapabilities
 {
-    struct CompletionItem: JsonConvert
+    struct CompletionItem
     {
-        struct TagSupport: JsonConvert
+        struct TagSupport
         {
             std::vector<Enum::CompletionItemTag::type_value> valueSet{};
-            std::string toStdString() const;
         };
 
-        struct InsertTextModeSupport: JsonConvert
+        struct InsertTextModeSupport
         {
             std::vector<Enum::InsertTextMode::type_value> valueSet{};
-            std::string toStdString() const;
         };
 
         std::optional<bool> snippetSupport{};
@@ -190,20 +162,18 @@ struct CompletionClientCapabilities: JsonConvert
         std::optional<InsertTextModeSupport> insertTextModeSupport{};
         std::optional<bool> labelDetailsSupport{};
         CompletionItem() = default;
-        std::string toStdString() const;
+
     };
 
-    struct CompletionItemKind: JsonConvert
+    struct CompletionItemKind
     {
         std::optional<std::vector<Enum::CompletionItemKind::type_value>> valueSet{};
         CompletionItemKind() = default;
-        std::string toStdString() const;
     };
 
-    struct CompletionList: JsonConvert
+    struct CompletionList
     {
         std::optional<std::vector<std::string>> itemDefaults{};
-        std::string toStdString() const;
     };
 
     std::optional<bool> dynamicRegistration{};
@@ -213,80 +183,97 @@ struct CompletionClientCapabilities: JsonConvert
     std::optional<Enum::InsertTextMode::type_value> insertTextMode{};
     std::optional<CompletionList> itemDefaults{};
     CompletionClientCapabilities() = default;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const CompletionClientCapabilities &val);
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionItem &val);
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionItem::TagSupport &val);
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionItem::InsertTextModeSupport &val);
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionList &val);
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionItemKind &val);
 
-struct HoverClientCapabilities: JsonConvert
+struct HoverClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<std::vector<Enum::MarkupKind::type_value>> contentFormat{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const HoverClientCapabilities &val);
 
-struct SignatureHelpClientCapabilities: JsonConvert
+struct SignatureHelpClientCapabilities
 {
+    struct SignatureInformation
+    {
+        struct ParameterInformation
+        {
+            std::optional<bool> labelOffsetSupport{};
+        };
+        std::optional<std::vector<Enum::MarkupKind::type_value>> documentationFormat{};
+        std::optional<ParameterInformation> parameterInformation{};
+        std::optional<bool> activeParameterSupport{};
+    };
     std::optional<bool> dynamicRegistration{};
     std::optional<SignatureInformation> signatureInformation{};
     std::optional<bool> contextSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const SignatureHelpClientCapabilities::SignatureInformation::ParameterInformation &val);
+std::string toJsonValueStr(const SignatureHelpClientCapabilities::SignatureInformation &val);
+std::string toJsonValueStr(const SignatureHelpClientCapabilities &val);
 
-struct DeclarationClientCapabilities: JsonConvert
+struct DeclarationClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> linkSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DeclarationClientCapabilities &val);
 
-struct DefinitionClientCapabilities: JsonConvert
+struct DefinitionClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> linkSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DefinitionClientCapabilities &val);
 
-struct TypeDefinitionClientCapabilities: JsonConvert
+struct TypeDefinitionClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> linkSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const TypeDefinitionClientCapabilities &val);
 
-struct ImplementationClientCapabilities: JsonConvert
+struct ImplementationClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> linkSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const ImplementationClientCapabilities &val);
 
-struct ReferenceClientCapabilities: JsonConvert
+struct ReferenceClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const ReferenceClientCapabilities &val);
 
-struct DocumentHighlightClientCapabilities: JsonConvert
+struct DocumentHighlightClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DocumentHighlightClientCapabilities &val);
 
-struct DocumentSymbolClientCapabilities : JsonConvert
+struct DocumentSymbolClientCapabilities
 {
-    struct TagSupport : JsonConvert
+    struct TagSupport
     {
         std::vector<Enum::SymbolKind::type_value> valueSet{};
-        std::string toStdString() const;
     };
     std::optional<bool> dynamicRegistration{};
     std::optional<SymbolKind> symbolKind{};
     std::optional<bool> hierarchicalDocumentSymbolSupport{};
     std::optional<TagSupport> tagSupport{};
     std::optional<bool> labelSupport{};
-    std::string toStdString() const;
-};
 
-struct CodeActionClientCapabilities : JsonConvert
+};
+std::string toJsonValueStr(const DocumentSymbolClientCapabilities &val);
+
+struct CodeActionClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<CodeActionLiteralSupport> codeActionLiteralSupport{};
@@ -295,111 +282,119 @@ struct CodeActionClientCapabilities : JsonConvert
     std::optional<bool> dataSupport{};
     std::optional<ResolveSupport> resolveSupport{};
     std::optional<bool> honorsChangeAnnotations{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const CodeActionClientCapabilities &val);
 
-struct CodeLensClientCapabilities : JsonConvert
+struct CodeLensClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const CodeLensClientCapabilities &val);
 
-struct DocumentLinkClientCapabilities : JsonConvert
+struct DocumentLinkClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> tooltipSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DocumentLinkClientCapabilities &val);
 
-struct DocumentColorClientCapabilities : JsonConvert
+struct DocumentColorClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DocumentColorClientCapabilities &val);
 
-struct DocumentFormattingClientCapabilities : JsonConvert
+struct DocumentFormattingClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DocumentFormattingClientCapabilities &val);
 
-struct DocumentRangeFormattingClientCapabilities : JsonConvert
+struct DocumentRangeFormattingClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DocumentRangeFormattingClientCapabilities &val);
 
-struct DocumentOnTypeFormattingClientCapabilities : JsonConvert
+struct DocumentOnTypeFormattingClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DocumentOnTypeFormattingClientCapabilities &val);
 
-struct RenameClientCapabilities : JsonConvert
+struct RenameClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> prepareSupport{};
     std::optional<Enum::PrepareSupportDefaultBehavior::type_value> prepareSupportDefaultBehavior{};
     std::optional<bool> honorsChangeAnnotations{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const RenameClientCapabilities &val);
 
-struct PublishDiagnosticsClientCapabilities : JsonConvert
+struct PublishDiagnosticsClientCapabilities
 {
-    struct TagSupport : JsonConvert
+    struct TagSupport
     {
         std::vector<Enum::DiagnosticTag::type_value> valueSet{};
-        std::string toStdString() const;
     };
     std::optional<bool> relatedInformation{};
     std::optional<TagSupport> tagSupport{};
     std::optional<bool> versionSupport{};
     std::optional<bool> codeDescriptionSupport{};
     std::optional<bool> dataSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const PublishDiagnosticsClientCapabilities &val);
 
-struct FoldingRangeClientCapabilities : JsonConvert
+struct FoldingRangeClientCapabilities
 {
+    struct FoldingRangeKind
+    {
+        std::optional<std::vector<Enum::FoldingRangeKind::type_value>> valueSet{};
+    };
+
+    struct FoldingRange
+    {
+        std::optional<bool> collapsedText{};
+    };
     std::optional<bool> dynamicRegistration{};
     std::optional<unsigned int> rangeLimit{};
     std::optional<bool> lineFoldingOnly{};
     std::optional<FoldingRangeKind> foldingRangeKind{};
     std::optional<FoldingRange> foldingRange;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const FoldingRangeClientCapabilities::FoldingRange &val);
+std::string toJsonValueStr(const FoldingRangeClientCapabilities::FoldingRangeKind &val);
+std::string toJsonValueStr(const FoldingRangeClientCapabilities &val);
 
-struct SelectionRangeClientCapabilities : JsonConvert
+struct SelectionRangeClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const SelectionRangeClientCapabilities &val);
 
-struct LinkedEditingRangeClientCapabilities : JsonConvert
+struct LinkedEditingRangeClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const LinkedEditingRangeClientCapabilities &val);
 
-struct CallHierarchyClientCapabilities : JsonConvert
+struct CallHierarchyClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const CallHierarchyClientCapabilities &val);
 
-struct SemanticTokensClientCapabilities : JsonConvert
+struct SemanticTokensClientCapabilities
 {
-    struct Requests : JsonConvert
+    struct Requests
     {
-        struct Full : JsonConvert
+        struct Full
         {
             std::optional<bool> delta;
-            std::string toStdString() const;
         };
 
         std::optional<std::any> range{}; // boolean | {};
         std::optional<Full> full{}; // full?: boolean | { delta?: boolean; }
-        std::string toStdString() const;
     };
 
     Requests requests;
@@ -411,42 +406,42 @@ struct SemanticTokensClientCapabilities : JsonConvert
     std::optional<bool> multilineTokenSupport{};
     std::optional<bool> serverCancelSupport{};
     std::optional<bool> augmentsSyntaxTokens{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const SemanticTokensClientCapabilities &val);
 
-struct MonikerClientCapabilities : JsonConvert
+struct MonikerClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const MonikerClientCapabilities &val);
 
-struct TypeHierarchyClientCapabilities: JsonConvert
+struct TypeHierarchyClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const TypeHierarchyClientCapabilities &val);
 
-struct InlineValueClientCapabilities: JsonConvert
+struct InlineValueClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const InlineValueClientCapabilities &val);
 
-struct InlayHintClientCapabilities: JsonConvert
+struct InlayHintClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<ResolveSupport> resolveSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const InlayHintClientCapabilities &val);
 
-struct DiagnosticClientCapabilities: JsonConvert
+struct DiagnosticClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> relatedDocumentSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const DiagnosticClientCapabilities &val);
 
-struct TextDocumentClientCapabilities: JsonConvert
+struct TextDocumentClientCapabilities
 {
     std::optional<TextDocumentSyncClientCapabilities> synchronization{};
     std::optional<CompletionClientCapabilities> completion{};
@@ -478,10 +473,10 @@ struct TextDocumentClientCapabilities: JsonConvert
     std::optional<InlineValueClientCapabilities> inlineValue{};
     std::optional<InlayHintClientCapabilities> inlayHint{};
     std::optional<DiagnosticClientCapabilities> diagnostic{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const TextDocumentClientCapabilities &val);
 
-struct FileOperations: JsonConvert
+struct FileOperations
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> didCreate{};
@@ -490,10 +485,10 @@ struct FileOperations: JsonConvert
     std::optional<bool> willRename{};
     std::optional<bool> didDelete{};
     std::optional<bool> willDelete{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const FileOperations &val);
 
-struct Workspace: JsonConvert
+struct Workspace
 {
     std::optional<bool> applyEdit{};
     std::optional<WorkspaceEditClientCapabilities> workspaceEdit{};
@@ -509,103 +504,104 @@ struct Workspace: JsonConvert
     std::optional<InlineValueWorkspaceClientCapabilities> inlineValue{};
     std::optional<InlayHintWorkspaceClientCapabilities> inlayHint{};
     std::optional<DiagnosticWorkspaceClientCapabilities> diagnostics{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const Workspace &val);
 
-struct NotebookDocumentSyncClientCapabilities: JsonConvert
+struct NotebookDocumentSyncClientCapabilities
 {
     std::optional<bool> dynamicRegistration{};
     std::optional<bool> executionSummarySupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const NotebookDocumentSyncClientCapabilities &val);
 
-struct NotebookDocumentClientCapabilities: JsonConvert
+struct NotebookDocumentClientCapabilities
 {
     NotebookDocumentSyncClientCapabilities synchronization{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const NotebookDocumentClientCapabilities &val);
 
-struct MessageActionItem: JsonConvert
+struct MessageActionItem
 {
     std::optional<bool> additionalPropertiesSupport{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const MessageActionItem &val);
 
-struct ShowMessageRequestClientCapabilities: JsonConvert
+struct ShowMessageRequestClientCapabilities
 {
     std::optional<MessageActionItem> messageActionItem{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const ShowMessageRequestClientCapabilities &val);
 
-struct ShowDocumentClientCapabilities: JsonConvert
+struct ShowDocumentClientCapabilities
 {
     bool support{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const ShowDocumentClientCapabilities &val);
 
-struct Window: JsonConvert
+struct Window
 {
     std::optional<bool> workDoneProgress{};
     std::optional<ShowMessageRequestClientCapabilities> showMessage{};
     std::optional<ShowDocumentClientCapabilities> showDocument{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const Window &val);
 
-struct StaleRequestSupport: JsonConvert
+struct StaleRequestSupport
 {
     bool cancel{};
     std::vector<std::string> retryOnContentModified{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const StaleRequestSupport &val);
 
-struct RegularExpressionsClientCapabilities: JsonConvert
+struct RegularExpressionsClientCapabilities
 {
     std::string engine{};
     std::optional<std::string> version{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const RegularExpressionsClientCapabilities &val);
 
-struct MarkdownClientCapabilities: JsonConvert
+struct MarkdownClientCapabilities
 {
     std::string parser{};
     std::optional<std::string> version{};
     std::optional<std::vector<std::string>> allowedTags{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const MarkdownClientCapabilities &val);
 
-struct General: JsonConvert
+struct General
 {
     std::optional<StaleRequestSupport> staleRequestSupport{};
     std::optional<RegularExpressionsClientCapabilities> regularExpressions{};
     std::optional<MarkdownClientCapabilities> markdown{};
     std::optional<std::vector<Enum::PositionEncodingKind::type_value>> positionEncodings{};
     std::optional<std::any> experimental{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const General &val);
 
-struct WorkspaceFolder: JsonConvert
+struct WorkspaceFolder
 {
     DocumentUri uri{};
     std::string name{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const WorkspaceFolder &val);
+std::string toJsonValueStr(const std::vector<WorkspaceFolder> &val);
 
-struct ClientInfo: JsonConvert
+struct ClientInfo
 {
     std::string name{};
     std::optional<std::string> version{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const ClientInfo &val);
 
-struct ClientCapabilities: JsonConvert
+struct ClientCapabilities
 {
     std::optional<Workspace> workspace{};
     std::optional<TextDocumentClientCapabilities> textDocument{};
     std::optional<NotebookDocumentClientCapabilities> notebookDocument{};
     std::optional<Window> window{};
     std::optional<General> general{};
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const ClientCapabilities &val);
 
 struct InitializeParams : WorkDoneProgressParams
 {
@@ -620,13 +616,14 @@ struct InitializeParams : WorkDoneProgressParams
     std::optional<Enum::TraceValue::type_value> trace{};
     std::optional<std::vector<WorkspaceFolder>> workspaceFolders{};
     std::string formatValue(const std::vector<WorkspaceFolder> &workspaceFolders) const;
-    std::string toStdString() const;
 };
+std::string toJsonValueStr(const InitializeParams &val);
 
-struct InitializedParams : JsonConvert
+struct InitializedParams
 {
-    std::string toStdString() const;
+
 };
+std::string toJsonValueStr(const InitializedParams &val);
 
 } // namespace newlsp
 

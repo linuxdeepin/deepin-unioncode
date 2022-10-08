@@ -21,909 +21,876 @@
 #include "lifecyclemessage.h"
 
 namespace newlsp {
-
-std::string ResolveSupport::toStdString() const
+using namespace json;
+std::string toJsonValueStr(const ResolveSupport &val)
 {
     std::string ret;
-    ret = addValue(ret, {"properties", formatValue(properties)});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"properties", val.properties});
+    return json::addScope(ret);
 }
 
-std::string CompletionClientCapabilities::CompletionItem::InsertTextModeSupport::toStdString() const
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionList &val)
 {
     std::string ret;
-    ret = addValue(ret, {"valueSet", formatValue(valueSet)});
-    return addScope(ret);
+    if (val.itemDefaults)
+        ret = json::addValue(ret, json::KV{"itemDefaults", val.itemDefaults});
+    return json::addScope(ret);
 }
 
-std::string CompletionClientCapabilities::CompletionList::toStdString() const
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionItemKind &val)
 {
     std::string ret;
-    if (itemDefaults)
-        ret = addValue(ret, {"itemDefaults", formatValue(itemDefaults.value())});
-    return addScope(ret);
+    if (val.valueSet)
+        ret = json::addValue(ret, json::KV{"valueSet", val.valueSet});
+    return json::addScope(ret);
 }
 
-std::string CompletionClientCapabilities::CompletionItemKind::toStdString() const
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionItem::TagSupport &val)
 {
     std::string ret;
-    if (valueSet)
-        ret = addValue(ret, {"valueSet", formatValue(valueSet.value())});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"valueSet", val.valueSet});
+    return json::addScope(ret);
 }
 
-std::string CompletionClientCapabilities::CompletionItem::TagSupport::toStdString() const
-{
-    return addScope(addValue({}, {"valueSet", formatValue(valueSet)}));
-}
-
-std::string CompletionClientCapabilities::CompletionItem::toStdString() const
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionItem &val)
 {
     std::string ret;
-    if (snippetSupport)
-        ret = addValue(ret, {
-                           "snippetSupport",
-                           formatValue(snippetSupport.value())
-                       });
+    if (val.snippetSupport)
+        ret = json::addValue(ret, json::KV{"snippetSupport", val.snippetSupport});
 
+    if (val.commitCharactersSupport)
+        ret = json::addValue(ret, json::KV{"commitCharactersSupport", val.commitCharactersSupport});
 
-    if (commitCharactersSupport)
-        ret = addValue(ret, {
-                           "commitCharactersSupport",
-                           formatValue(commitCharactersSupport.value())
-                       });
+    if (val.documentationFormat)
+        ret = json::addValue(ret, json::KV{"documentationFormat", val.documentationFormat});
 
-    if (documentationFormat)
-        ret = addValue(ret, {
-                           "documentationFormat",
-                           formatValue(documentationFormat.value())
-                       });
+    if (val.deprecatedSupport)
+        ret = json::addValue(ret, json::KV{"deprecatedSupport", val.deprecatedSupport});
 
-    if (deprecatedSupport)
-        ret = addValue(ret, {
-                           "deprecatedSupport",
-                           formatValue(deprecatedSupport.value())
-                       });
+    if (val.preselectSupport)
+        ret = json::addValue(ret, json::KV{"preselectSupport", val.preselectSupport});
 
-    if (preselectSupport)
-        ret = addValue(ret, {
-                           "preselectSupport",
-                           formatValue(preselectSupport.value())
-                       });
+    if (val.tagSupport)
+        ret = json::addValue(ret, json::KV{"tagSupport", val.tagSupport});
 
-    if (tagSupport)
-        ret = addValue(ret, {"tagSupport", tagSupport.value().toStdString()});
+    if (val.insertReplaceSupport)
+        ret = json::addValue(ret, json::KV{"insertReplaceSupport", val.insertReplaceSupport});
 
-    if (insertReplaceSupport)
-        ret = addValue(ret, {
-                           "insertReplaceSupport",
-                           formatValue(insertReplaceSupport.value())
-                       });
+    if (val.resolveSupport)
+        ret = json::addValue(ret, json::KV{"resolveSupport", val.resolveSupport});
 
-    if (resolveSupport)
-        ret = addValue(ret, {
-                           "resolveSupport",
-                           resolveSupport.value().toStdString()
-                       });
+    if (val.insertTextModeSupport)
+        ret = json::addValue(ret, json::KV{"insertTextModeSupport", val.insertTextModeSupport});
 
-    if (insertTextModeSupport)
-        ret = addValue(ret, {
-                           "insertTextModeSupport",
-                           insertTextModeSupport.value().toStdString()
-                       });
+    if (val.labelDetailsSupport)
+        ret = json::addValue(ret, json::KV{"labelDetailsSupport", val.labelDetailsSupport});
 
-    if (labelDetailsSupport)
-        ret = addValue(ret, {
-                           "labelDetailsSupport",
-                           formatValue(labelDetailsSupport.value())
-                       });
-
-    return addScope(ret);
+    return json::addScope(ret);
 }
 
-std::string CodeActionLiteralSupport::toStdString() const
+std::string toJsonValueStr(const CodeActionLiteralSupport &val)
 {
     std::string ret;
-    ret = addValue(ret, {"codeActionKind", codeActionKind.toStdString()});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"codeActionKind", val.codeActionKind});
+    return json::addScope(ret);
 }
 
-std::string ParameterInformation::toStdString() const
+std::string toJsonValueStr(const SignatureHelpClientCapabilities::SignatureInformation::ParameterInformation &val)
 {
     std::string ret;
-    if (labelOffsetSupport)
-        ret = addValue(ret, {
-                           "labelOffsetSupport",
-                           formatValue(labelOffsetSupport.value())
-                       });
-    return addScope(ret);
+    if (val.labelOffsetSupport)
+        ret = json::addValue(ret, json::KV{"labelOffsetSupport", val.labelOffsetSupport});
+    return json::addScope(ret);
 }
 
-std::string SignatureInformation::toStdString() const
+std::string toJsonValueStr(const SignatureHelpClientCapabilities::SignatureInformation &val)
 {
     std::string ret;
+    if (val.documentationFormat)
+        ret = json::addValue(ret, json::KV{"documentationFormat", val.documentationFormat});
 
-    if (documentationFormat)
-        ret = addValue(ret, {
-                           "documentationFormat",
-                           formatValue(documentationFormat.value())
-                       });
+    if (val.parameterInformation)
+        ret = json::addValue(ret, json::KV{"parameterInformation", val.parameterInformation});
 
-    if (parameterInformation)
-        ret = addValue(ret, {
-                           "parameterInformation",
-                           parameterInformation.value().toStdString()
-                       });
+    if (val.activeParameterSupport)
+        ret = json::addValue(ret, json::KV{"activeParameterSupport", val.activeParameterSupport});
 
-    if (activeParameterSupport)
-        ret = addValue(ret, {"activeParameterSupport",
-                             formatValue(activeParameterSupport.value())});
-
-    return addScope(ret);
+    return json::addScope(ret);
 }
 
-std::string CodeActionKind::toStdString() const
+std::string toJsonValueStr(const CodeActionKind &val)
 {
     std::string ret;
-    ret = addValue(ret, {"valueSet", formatValue(valueSet)});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"valueSet", val.valueSet});
+    return json::addScope(ret);
 }
 
-std::string ChangeAnotationSupport::toStdString() const
+std::string toJsonValueStr(const ChangeAnotationSupport &val)
 {
     std::string ret;
-    if (groupsOnLabel)
-        ret = addValue(ret, {"groupsOnLabel", formatValue(groupsOnLabel.value())});
-    return addScope(ret);
+    if (val.groupsOnLabel)
+        ret = json::addValue(ret, json::KV{"groupsOnLabel", val.groupsOnLabel});
+    return json::addScope(ret);
 }
 
-std::string SymbolKind::toStdString() const
-{
-    return addScope(addValue({}, {"valueSet", formatValue(valueSet)}));
-}
-
-std::string FoldingRangeKind::toStdString() const
+std::string toJsonValueStr(const SymbolKind &val)
 {
     std::string ret;
-    if (valueSet)
-        ret = addValue(ret, {"valueSet", formatValue(valueSet.value())});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"valueSet", val.valueSet});
+    return json::addScope(ret);
 }
 
-std::string FoldingRange::toStdString() const
+std::string toJsonValueStr(const WorkspaceEditClientCapabilities &val)
 {
     std::string ret;
-    if (collapsedText)
-        ret = addValue(ret, {"collapsedText", formatValue(collapsedText.value())});
-    return addScope(ret);
+    if (val.documentChanges)
+        ret = json::addValue(ret, json::KV{"documentChanges", val.documentChanges});
+    if (val.resourceOperations)
+        ret = json::addValue(ret, json::KV{"resourceOperations", val.resourceOperations});
+    if (val.failureHandling)
+        ret = json::addValue(ret, json::KV{"failureHandling", val.failureHandling});
+    if (val.normalizesLineEndings)
+        ret = json::addValue(ret, json::KV{"normalizesLineEndings", val.normalizesLineEndings});
+    if (val.changeAnnotationSupport)
+        ret = json::addValue(ret, json::KV{"changeAnnotationSupport", val.changeAnnotationSupport});
+    return json::addScope(ret);
 }
 
-std::string WorkspaceEditClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DidChangeConfigurationClientCapabilities &val)
 {
     std::string ret;
-    if (documentChanges)
-        ret = addValue(ret, {"documentChanges", formatValue(documentChanges.value())});
-    if (resourceOperations)
-        ret = addValue(ret, {"resourceOperations", formatValue(resourceOperations.value())});
-    if (failureHandling)
-        ret = addValue(ret, {"failureHandling", formatValue(failureHandling.value())});
-    if (normalizesLineEndings)
-        ret = addValue(ret, {"normalizesLineEndings", formatValue(normalizesLineEndings.value())});
-    if (changeAnnotationSupport)
-        ret = addValue(ret, {"changeAnnotationSupport", changeAnnotationSupport.value().toStdString()});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string DidChangeConfigurationClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DidChangeWatchedFilesClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.relativePatternSupport)
+        ret = json::addValue(ret, json::KV{"relativePatternSupport", val.relativePatternSupport});
+    return json::addScope(ret);
 }
 
-std::string DidChangeWatchedFilesClientCapabilities::toStdString() const
+std::string toJsonValueStr(const ExecuteCommandClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (relativePatternSupport)
-        ret = addValue(ret, {"relativePatternSupport", formatValue(relativePatternSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string ExecuteCommandClientCapabilities::toStdString() const
+std::string toJsonValueStr(const WorkspaceSymbolClientCapabilities::TagSupport &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"valueSet", val.valueSet});
+    return json::addScope(ret);
 }
 
-std::string WorkspaceSymbolClientCapabilities::TagSupport::toStdString() const
+std::string toJsonValueStr(const WorkspaceSymbolClientCapabilities &val){
+    std::string ret;
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.symbolKind)
+        ret = json::addValue(ret, json::KV{"symbolKind", val.symbolKind});
+    if (val.tagSupport)
+        ret = json::addValue(ret, json::KV{"tagSupport", val.tagSupport});
+    if (val.resolveSupport)
+        ret = json::addValue(ret, json::KV{"resolveSupport", val.resolveSupport});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const SemanticTokensWorkspaceClientCapabilities &val)
 {
     std::string ret;
-    ret = addValue(ret, {"valueSet", formatValue(valueSet)});
-    return addScope(ret);
+    if (val.refreshSupport)
+        ret = json::addValue(ret, json::KV{"refreshSupport", val.refreshSupport});
+    return json::addScope(ret);
 }
 
-std::string WorkspaceSymbolClientCapabilities::toStdString() const{
-    std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (symbolKind)
-        ret = addValue(ret, {"symbolKind", symbolKind.value().toStdString()});
-    if (tagSupport)
-        ret = addValue(ret, {"tagSupport", tagSupport.value().toStdString()});
-    if (resolveSupport)
-        ret = addValue(ret, {"resolveSupport", resolveSupport.value()});
-    return addScope(ret);
-}
-
-std::string SemanticTokensWorkspaceClientCapabilities::toStdString() const
+std::string toJsonValueStr(const CodeLensWorkspaceClientCapabilities &val)
 {
     std::string ret;
-    if (refreshSupport.value())
-        ret = addValue(ret, {"refreshSupport", formatValue(refreshSupport.value())});
-    return addScope(ret);
+    if (val.refreshSupport)
+        ret = json::addValue(ret, json::KV{"refreshSupport", val.refreshSupport});
+    return json::addScope(ret);
 }
 
-std::string CodeLensWorkspaceClientCapabilities::toStdString() const
+std::string toJsonValueStr(const InlineValueWorkspaceClientCapabilities &val)
 {
     std::string ret;
-    if (refreshSupport)
-        ret = addValue(ret, {"refreshSupport", formatValue(refreshSupport.value())});
-    return addScope(ret);
+    if (val.refreshSupport)
+        ret = json::addValue(ret, json::KV{"refreshSupport", val.refreshSupport});
+    return json::addScope(ret);
 }
 
-std::string InlineValueWorkspaceClientCapabilities::toStdString() const
+std::string toJsonValueStr(const InlayHintWorkspaceClientCapabilities &val)
 {
     std::string ret;
-    if (refreshSupport)
-        ret = addValue(ret, {"refreshSupport", formatValue(refreshSupport.value())});
-    return addScope(ret);
+    if (val.refreshSupport)
+        ret = json::addValue(ret, json::KV{"refreshSupport", val.refreshSupport});
+    return json::addScope(ret);
 }
 
-std::string InlayHintWorkspaceClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DiagnosticWorkspaceClientCapabilities &val)
 {
     std::string ret;
-    if (refreshSupport)
-        ret = addValue(ret, {"refreshSupport", formatValue(refreshSupport.value())});
-    return addScope(ret);
+    if (val.refreshSupport)
+        ret = json::addValue(ret, json::KV{"refreshSupport", val.refreshSupport});
+    return json::addScope(ret);
 }
 
-std::string DiagnosticWorkspaceClientCapabilities::toStdString() const
+std::string toJsonValueStr(const TextDocumentSyncClientCapabilities &val)
 {
     std::string ret;
-    if (refreshSupport)
-        ret = addValue(ret, {"refreshSupport", formatValue(refreshSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.willSave)
+        ret = json::addValue(ret, json::KV{"willSave", val.willSave});
+    if (val.willSaveWaitUntil)
+        ret = json::addValue(ret, json::KV{"willSaveWaitUntil", val.willSaveWaitUntil});
+    if (val.didSave)
+        ret = json::addValue(ret, json::KV{"didSave", val.didSave});
+    return json::addScope(ret);
 }
 
-std::string TextDocumentSyncClientCapabilities::toStdString() const
+std::string toJsonValueStr(const CompletionClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (willSave)
-        ret = addValue(ret, {"willSave", formatValue(willSave.value())});
-    if (willSaveWaitUntil)
-        ret = addValue(ret, {"willSaveWaitUntil", formatValue(willSaveWaitUntil.value())});
-    if (didSave)
-        ret = addValue(ret, {"didSave", formatValue(didSave.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.completionItem)
+        ret = json::addValue(ret, json::KV{"completionItem", val.completionItem});
+    if (val.completionItemKind)
+        ret = json::addValue(ret, json::KV{"completionItemKind", val.completionItemKind});
+    if (val.contextSupport)
+        ret = json::addValue(ret, json::KV{"contextSupport", val.contextSupport});
+    if (val.insertTextMode)
+        ret = json::addValue(ret, json::KV{"insertTextMode", val.insertTextMode});
+    if (val.itemDefaults)
+        ret = json::addValue(ret, json::KV{"itemDefaults", val.itemDefaults});
+    return json::addScope(ret);
 }
 
-std::string CompletionClientCapabilities::toStdString() const
+std::string toJsonValueStr(const HoverClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (completionItem)
-        ret = addValue(ret, {"completionItem", completionItem.value().toStdString()});
-    if (completionItemKind)
-        ret = addValue(ret, {"completionItemKind", completionItemKind.value().toStdString()});
-    if (contextSupport)
-        ret = addValue(ret, {"contextSupport", formatValue(contextSupport.value())});
-    if (insertTextMode)
-        ret = addValue(ret, {"insertTextMode", formatValue(insertTextMode.value())});
-    if (itemDefaults)
-        ret = addValue(ret, {"itemDefaults", itemDefaults.value().toStdString()});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.contentFormat)
+        ret = json::addValue(ret, json::KV{"contentFormat", val.contentFormat});
+    return json::addScope(ret);
 }
 
-std::string HoverClientCapabilities::toStdString() const
+std::string toJsonValueStr(const SignatureHelpClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (contentFormat)
-        ret = addValue(ret, {"contentFormat", formatValue(contentFormat.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.signatureInformation)
+        ret = json::addValue(ret, json::KV{"signatureInformation", val.signatureInformation});
+    if (val.contextSupport)
+        ret = json::addValue(ret, json::KV{"contextSupport", val.contextSupport});
+    return json::addScope(ret);
 }
 
-std::string SignatureHelpClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DeclarationClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (signatureInformation)
-        ret = addValue(ret, {"signatureInformation", signatureInformation.value().toStdString()});
-    if (contextSupport)
-        ret = addValue(ret, {"contextSupport", formatValue(contextSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.linkSupport)
+        ret = json::addValue(ret, json::KV{"linkSupport", val.linkSupport});
+    return json::addScope(ret);
 }
 
-std::string DeclarationClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DefinitionClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (linkSupport)
-        ret = addValue(ret, {"linkSupport", formatValue(linkSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.linkSupport)
+        ret = json::addValue(ret, json::KV{"linkSupport", val.linkSupport});
+    return json::addScope(ret);
 }
 
-std::string DefinitionClientCapabilities::toStdString() const
+std::string toJsonValueStr(const TypeDefinitionClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (linkSupport)
-        ret = addValue(ret, {"linkSupport", formatValue(linkSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.linkSupport)
+        ret = json::addValue(ret, json::KV{"linkSupport", val.linkSupport});
+    return json::addScope(ret);
 }
 
-std::string TypeDefinitionClientCapabilities::toStdString() const
+std::string toJsonValueStr(const ImplementationClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (linkSupport)
-        ret = addValue(ret, {"linkSupport", formatValue(linkSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.linkSupport)
+        ret = json::addValue(ret, json::KV{"linkSupport", val.linkSupport});
+    return json::addScope(ret);
 }
 
-std::string ImplementationClientCapabilities::toStdString() const
+std::string toJsonValueStr(const ReferenceClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (linkSupport)
-        ret = addValue(ret, {"linkSupport", formatValue(linkSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string ReferenceClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DocumentHighlightClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string DocumentHighlightClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DocumentSymbolClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.symbolKind)
+        ret = json::addValue(ret, json::KV{"symbolKind", val.symbolKind});
+    if (val.hierarchicalDocumentSymbolSupport)
+        ret = json::addValue(ret, json::KV{"hierarchicalDocumentSymbolSupport",
+                                           val.hierarchicalDocumentSymbolSupport});
+    if (val.tagSupport)
+        ret = json::addValue(ret, json::KV{"tagSupport", val.tagSupport});
+    if (val.labelSupport)
+        ret = json::addValue(ret, json::KV{"labelSupport", val.labelSupport});
+    return json::addScope(ret);
 }
 
-std::string DocumentSymbolClientCapabilities::toStdString() const
+std::string toJsonValueStr(const CodeActionClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (symbolKind)
-        ret = addValue(ret, {"symbolKind", symbolKind.value().toStdString()});
-    if (hierarchicalDocumentSymbolSupport)
-        ret = addValue(ret, {"hierarchicalDocumentSymbolSupport",
-                             formatValue(hierarchicalDocumentSymbolSupport.value())});
-    if (tagSupport)
-        ret = addValue(ret, {"tagSupport", tagSupport.value().toStdString()});
-    if (labelSupport)
-        ret = addValue(ret, {"labelSupport", formatValue(labelSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.codeActionLiteralSupport)
+        ret = json::addValue(ret, json::KV{"codeActionLiteralSupport", val.codeActionLiteralSupport});
+    if (val.isPreferredSupport)
+        ret = json::addValue(ret, json::KV{"isPreferredSupport", val.isPreferredSupport});
+    if (val.disabledSupport)
+        ret = json::addValue(ret, json::KV{"disabledSupport", val.disabledSupport});
+    if (val.dataSupport)
+        ret = json::addValue(ret, json::KV{"dataSupport", val.dataSupport});
+    if (val.resolveSupport)
+        ret = json::addValue(ret, json::KV{"resolveSupport", val.resolveSupport});
+    if (val.honorsChangeAnnotations)
+        ret = json::addValue(ret, json::KV{"honorsChangeAnnotations", val.honorsChangeAnnotations});
+    return json::addScope(ret);
 }
 
-std::string CodeActionClientCapabilities::toStdString() const
+std::string toJsonValueStr(const CodeLensClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (codeActionLiteralSupport)
-        ret = addValue(ret, {"codeActionLiteralSupport", codeActionLiteralSupport.value().toStdString()});
-    if (isPreferredSupport)
-        ret = addValue(ret, {"isPreferredSupport", formatValue(isPreferredSupport.value())});
-    if (disabledSupport)
-        ret = addValue(ret, {"disabledSupport", formatValue(disabledSupport.value())});
-    if (dataSupport)
-        ret = addValue(ret, {"dataSupport", formatValue(dataSupport.value())});
-    if (resolveSupport)
-        ret = addValue(ret, {"resolveSupport", resolveSupport.value().toStdString()});
-    if (honorsChangeAnnotations)
-        ret = addValue(ret, {"honorsChangeAnnotations", formatValue(honorsChangeAnnotations.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string CodeLensClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DocumentLinkClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.tooltipSupport)
+        ret = json::addValue(ret, json::KV{"tooltipSupport", val.tooltipSupport});
+    return json::addScope(ret);
 }
 
-std::string DocumentLinkClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DocumentColorClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (tooltipSupport)
-        ret = addValue(ret, {"tooltipSupport", formatValue(tooltipSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string DocumentColorClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DocumentFormattingClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string DocumentFormattingClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DocumentRangeFormattingClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string DocumentRangeFormattingClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DocumentOnTypeFormattingClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string DocumentOnTypeFormattingClientCapabilities::toStdString() const
+std::string toJsonValueStr(const RenameClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.prepareSupport)
+        ret = json::addValue(ret, json::KV{"prepareSupport", val.prepareSupport});
+    if (val.prepareSupportDefaultBehavior)
+        ret = json::addValue(ret, json::KV{"prepareSupportDefaultBehavior", val.prepareSupportDefaultBehavior});
+    if (val.honorsChangeAnnotations)
+        ret = json::addValue(ret, json::KV{"honorsChangeAnnotations", val.honorsChangeAnnotations});
+    return json::addScope(ret);
 }
 
-std::string RenameClientCapabilities::toStdString() const
+std::string toJsonValueStr(const PublishDiagnosticsClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (prepareSupport)
-        ret = addValue(ret, {"prepareSupport", formatValue(prepareSupport.value())});
-    if (prepareSupportDefaultBehavior)
-        ret = addValue(ret, {"prepareSupportDefaultBehavior", formatValue(prepareSupportDefaultBehavior.value())});
-    if (honorsChangeAnnotations)
-        ret = addValue(ret, {"honorsChangeAnnotations", formatValue(honorsChangeAnnotations.value())});
-    return addScope(ret);
+    if (val.relatedInformation)
+        ret = json::addValue(ret, json::KV{"relatedInformation", val.relatedInformation});
+    if (val.tagSupport)
+        ret = json::addValue(ret, json::KV{"tagSupport", val.tagSupport});
+    if (val.versionSupport)
+        ret = json::addValue(ret, json::KV{"versionSupport", val.versionSupport});
+    if (val.codeDescriptionSupport)
+        ret = json::addValue(ret, json::KV{"codeDescriptionSupport", val.codeDescriptionSupport});
+    if (val.dataSupport)
+        ret = json::addValue(ret, json::KV{"dataSupport", val.dataSupport});
+    return json::addScope(ret);
 }
 
-std::string PublishDiagnosticsClientCapabilities::toStdString() const
+std::string toJsonValueStr(const FoldingRangeClientCapabilities::FoldingRangeKind &val)
 {
     std::string ret;
-    if (relatedInformation)
-        ret = addValue(ret, {"relatedInformation", formatValue(relatedInformation.value())});
-    if (tagSupport)
-        ret = addValue(ret, {"tagSupport", tagSupport.value().toStdString()});
-    if (versionSupport)
-        ret = addValue(ret, {"versionSupport", formatValue(versionSupport.value())});
-    if (codeDescriptionSupport)
-        ret = addValue(ret, {"codeDescriptionSupport", formatValue(codeDescriptionSupport.value())});
-    if (dataSupport)
-        ret = addValue(ret, {"dataSupport", formatValue(dataSupport.value())});
-    return addScope(ret);
+    if (val.valueSet)
+        ret = json::addValue(ret, json::KV{"valueSet", val.valueSet});
+    return json::addScope(ret);
 }
 
-std::string FoldingRangeClientCapabilities::toStdString() const
+std::string toJsonValueStr(const FoldingRangeClientCapabilities::FoldingRange &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (rangeLimit)
-        ret = addValue(ret, {"rangeLimit", formatValue(rangeLimit.value())});
-    if (lineFoldingOnly)
-        ret = addValue(ret, {"lineFoldingOnly", formatValue(lineFoldingOnly.value())});
-    if (foldingRangeKind)
-        ret = addValue(ret, {"foldingRangeKind", foldingRangeKind.value().toStdString()});
-    if (foldingRange)
-        ret = addValue(ret, {"foldingRange", foldingRange.value().toStdString()});
-    return addScope(ret);
+    if (val.collapsedText)
+        ret = json::addValue(ret, json::KV{"collapsedText", val.collapsedText});
+    return json::addScope(ret);
 }
 
-std::string SelectionRangeClientCapabilities::toStdString() const
+std::string toJsonValueStr(const FoldingRangeClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.rangeLimit)
+        ret = json::addValue(ret, json::KV{"rangeLimit", val.rangeLimit});
+    if (val.lineFoldingOnly)
+        ret = json::addValue(ret, json::KV{"lineFoldingOnly", val.lineFoldingOnly});
+    if (val.foldingRangeKind)
+        ret = json::addValue(ret, json::KV{"foldingRangeKind", val.foldingRangeKind});
+    if (val.foldingRange)
+        ret = json::addValue(ret, json::KV{"foldingRange", val.foldingRange});
+    return json::addScope(ret);
 }
 
-std::string LinkedEditingRangeClientCapabilities::toStdString() const
+std::string toJsonValueStr(const SelectionRangeClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string CallHierarchyClientCapabilities::toStdString() const
+std::string toJsonValueStr(const LinkedEditingRangeClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string SemanticTokensClientCapabilities::Requests::Full::toStdString() const
+std::string toJsonValueStr(const CallHierarchyClientCapabilities &val)
 {
     std::string ret;
-    if (delta) {
-        ret = addValue(ret, {"delta", formatValue(delta.value())});
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const SemanticTokensClientCapabilities::Requests::Full &val)
+{
+    std::string ret;
+    if (val.delta) {
+        ret = json::addValue(ret, json::KV{"delta", val.delta});
     }
-    return addScope(ret);
+    return json::addScope(ret);
 }
 
-std::string SemanticTokensClientCapabilities::Requests::toStdString() const
+std::string toJsonValueStr(const SemanticTokensClientCapabilities::Requests &val)
 {
     std::string ret;
-    if (range) {
-        if (any_contrast<bool>(range.value())) {
-            ret = addValue(ret, {"range", formatValue(std::any_cast<bool>(range.value()))});
+    if (val.range) {
+        if (any_contrast<bool>(val.range)) {
+            ret = json::addValue(ret, json::KV{"range", std::any_cast<bool>(val.range)});
+        } else {
+            ret = json::addValue(ret, json::KV{"range", std::string("{}")});
         }
     }
-    if (full) {
-        ret = addValue(ret, {"full", full.value().toStdString()});
+    if (val.full) {
+        ret = json::addValue(ret, json::KV{"full", val.full});
     }
-    return addScope(ret);
+    return json::addScope(ret);
 }
 
-std::string SemanticTokensClientCapabilities::toStdString() const
+std::string toJsonValueStr(const SemanticTokensClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    ret = addValue(ret, {"requests", requests.toStdString()});
-    ret = addValue(ret, {"tokenTypes", formatValue(tokenTypes)});
-    ret = addValue(ret, {"tokenModifiers", formatValue(tokenModifiers)});
-    ret = addValue(ret, {"formats", formatValue(formats)});
-    if (overlappingTokenSupport)
-        ret = addValue(ret, {"overlappingTokenSupport", formatValue(overlappingTokenSupport.value())});
-    if (multilineTokenSupport)
-        ret = addValue(ret, {"multilineTokenSupport", formatValue(multilineTokenSupport.value())});
-    if (serverCancelSupport)
-        ret = addValue(ret, {"serverCancelSupport", formatValue(multilineTokenSupport.value())});
-    if (augmentsSyntaxTokens)
-        ret = addValue(ret, {"augmentsSyntaxTokens", formatValue(multilineTokenSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    ret = json::addValue(ret, json::KV{"requests", val.requests});
+    ret = json::addValue(ret, json::KV{"tokenTypes", val.tokenTypes});
+    ret = json::addValue(ret, json::KV{"tokenModifiers", val.tokenModifiers});
+    ret = json::addValue(ret, json::KV{"formats", val.formats});
+    if (val.overlappingTokenSupport)
+        ret = json::addValue(ret, json::KV{"overlappingTokenSupport", val.overlappingTokenSupport});
+    if (val.multilineTokenSupport)
+        ret = json::addValue(ret, json::KV{"multilineTokenSupport", val.multilineTokenSupport});
+    if (val.serverCancelSupport)
+        ret = json::addValue(ret, json::KV{"serverCancelSupport", val.multilineTokenSupport});
+    if (val.augmentsSyntaxTokens)
+        ret = json::addValue(ret, json::KV{"augmentsSyntaxTokens", val.multilineTokenSupport});
+    return json::addScope(ret);
 }
 
 
 
-std::string MonikerClientCapabilities::toStdString() const
+std::string toJsonValueStr(const MonikerClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string TypeHierarchyClientCapabilities::toStdString() const
+std::string toJsonValueStr(const TypeHierarchyClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string InlineValueClientCapabilities::toStdString() const
+std::string toJsonValueStr(const InlineValueClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    return json::addScope(ret);
 }
 
-std::string InlayHintClientCapabilities::toStdString() const
+std::string toJsonValueStr(const InlayHintClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (resolveSupport)
-        ret = addValue(ret, {"resolveSupport", resolveSupport.value().toStdString()});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.resolveSupport)
+        ret = json::addValue(ret, json::KV{"resolveSupport", val.resolveSupport});
+    return json::addScope(ret);
 }
 
-std::string DiagnosticClientCapabilities::toStdString() const
+std::string toJsonValueStr(const DiagnosticClientCapabilities &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (relatedDocumentSupport)
-        ret = addValue(ret, {"relatedDocumentSupport", formatValue(relatedDocumentSupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.relatedDocumentSupport)
+        ret = json::addValue(ret, json::KV{"relatedDocumentSupport", val.relatedDocumentSupport});
+    return json::addScope(ret);
 }
 
-std::string TextDocumentClientCapabilities::toStdString() const {
+std::string toJsonValueStr(const TextDocumentClientCapabilities &val) {
     std::string ret;
-    if (synchronization)
-        ret = addValue(ret, {"synchronization", synchronization.value().toStdString()});
-    if (completion)
-        ret = addValue(ret, {"completion", completion.value().toStdString()});
-    if (hover)
-        ret = addValue(ret, {"hover", hover.value().toStdString()});
-    if (signatureHelp)
-        ret = addValue(ret, {"signatureHelp", signatureHelp.value().toStdString()});
-    if (declaration)
-        ret = addValue(ret, {"declaration", declaration.value().toStdString()});
-    if (definition)
-        ret = addValue(ret, {"definition", definition.value().toStdString()});
-    if (typeDefinition)
-        ret = addValue(ret, {"typeDefinition", typeDefinition.value().toStdString()});
-    if (implementation)
-        ret = addValue(ret, {"implementation", implementation.value().toStdString()});
-    if (references)
-        ret = addValue(ret, {"references", references.value().toStdString()});
-    if (documentHighlight)
-        ret = addValue(ret, {"documentHighlight", documentHighlight.value().toStdString()});
-    if (documentSymbol)
-        ret = addValue(ret, {"documentSymbol", documentSymbol.value().toStdString()});
-    if (codeAction)
-        ret = addValue(ret, {"codeAction", codeAction.value().toStdString()});
-    if (codeLens)
-        ret = addValue(ret, {"codeLens", codeLens.value().toStdString()});
-    if (documentLink)
-        ret = addValue(ret, {"documentLink", documentLink.value().toStdString()});
-    if (colorProvider)
-        ret = addValue(ret, {"colorProvider", colorProvider.value().toStdString()});
-    if (formatting)
-        ret = addValue(ret, {"formatting", formatting.value().toStdString()});
-    if (rangeFormatting)
-        ret = addValue(ret, {"rangeFormatting", formatting.value().toStdString()});
-    if (onTypeFormatting)
-        ret = addValue(ret, {"onTypeFormatting", onTypeFormatting.value().toStdString()});
-    if (rename)
-        ret = addValue(ret, {"rename", rename.value().toStdString()});
-    if (publishDiagnostics)
-        ret = addValue(ret, {"publishDiagnostics", publishDiagnostics.value().toStdString()});
-    if (foldingRange)
-        ret = addValue(ret, {"foldingRange", foldingRange.value().toStdString()});
-    if (selectionRange)
-        ret = addValue(ret, {"selectionRange", selectionRange.value().toStdString()});
-    if (linkedEditingRange)
-        ret = addValue(ret, {"linkedEditingRange", linkedEditingRange.value().toStdString()});
-    if (callHierarchy)
-        ret = addValue(ret, {"callHierarchy", callHierarchy.value().toStdString()});
-    if (semanticTokens)
-        ret = addValue(ret, {"semanticTokens", semanticTokens.value().toStdString()});
-    if (moniker)
-        ret = addValue(ret, {"moniker", moniker.value().toStdString()});
-    if (typeHierarchy)
-        ret = addValue(ret, {"typeHierarchy", typeHierarchy.value().toStdString()});
-    if (inlineValue)
-        ret = addValue(ret, {"inlineValue", inlineValue.value().toStdString()});
-    if (inlayHint)
-        ret = addValue(ret, {"inlayHint", inlayHint.value().toStdString()});
-    if (diagnostic)
-        ret = addValue(ret, {"diagnostic", diagnostic.value().toStdString()});
-    return addScope(ret);
+    if (val.synchronization)
+        ret = json::addValue(ret, json::KV{"synchronization", val.synchronization});
+    if (val.completion)
+        ret = json::addValue(ret, json::KV{"completion", val.completion});
+    if (val.hover)
+        ret = json::addValue(ret, json::KV{"hover", val.hover});
+    if (val.signatureHelp)
+        ret = json::addValue(ret, json::KV{"signatureHelp", val.signatureHelp});
+    if (val.declaration)
+        ret = json::addValue(ret, json::KV{"declaration", val.declaration});
+    if (val.definition)
+        ret = json::addValue(ret, json::KV{"definition", val.definition});
+    if (val.typeDefinition)
+        ret = json::addValue(ret, json::KV{"typeDefinition", val.typeDefinition});
+    if (val.implementation)
+        ret = json::addValue(ret, json::KV{"implementation", val.implementation});
+    if (val.references)
+        ret = json::addValue(ret, json::KV{"references", val.references});
+    if (val.documentHighlight)
+        ret = json::addValue(ret, json::KV{"documentHighlight", val.documentHighlight});
+    if (val.documentSymbol)
+        ret = json::addValue(ret, json::KV{"documentSymbol", val.documentSymbol});
+    if (val.codeAction)
+        ret = json::addValue(ret, json::KV{"codeAction", val.codeAction});
+    if (val.codeLens)
+        ret = json::addValue(ret, json::KV{"codeLens", val.codeLens});
+    if (val.documentLink)
+        ret = json::addValue(ret, json::KV{"documentLink", val.documentLink});
+    if (val.colorProvider)
+        ret = json::addValue(ret, json::KV{"colorProvider", val.colorProvider});
+    if (val.formatting)
+        ret = json::addValue(ret, json::KV{"formatting", val.formatting});
+    if (val.rangeFormatting)
+        ret = json::addValue(ret, json::KV{"rangeFormatting", val.formatting});
+    if (val.onTypeFormatting)
+        ret = json::addValue(ret, json::KV{"onTypeFormatting", val.onTypeFormatting});
+    if (val.rename)
+        ret = json::addValue(ret, json::KV{"rename", val.rename});
+    if (val.publishDiagnostics)
+        ret = json::addValue(ret, json::KV{"publishDiagnostics", val.publishDiagnostics});
+    if (val.foldingRange)
+        ret = json::addValue(ret, json::KV{"foldingRange", val.foldingRange});
+    if (val.selectionRange)
+        ret = json::addValue(ret, json::KV{"selectionRange", val.selectionRange});
+    if (val.linkedEditingRange)
+        ret = json::addValue(ret, json::KV{"linkedEditingRange", val.linkedEditingRange});
+    if (val.callHierarchy)
+        ret = json::addValue(ret, json::KV{"callHierarchy", val.callHierarchy});
+    if (val.semanticTokens)
+        ret = json::addValue(ret, json::KV{"semanticTokens", val.semanticTokens});
+    if (val.moniker)
+        ret = json::addValue(ret, json::KV{"moniker", val.moniker});
+    if (val.typeHierarchy)
+        ret = json::addValue(ret, json::KV{"typeHierarchy", val.typeHierarchy});
+    if (val.inlineValue)
+        ret = json::addValue(ret, json::KV{"inlineValue", val.inlineValue});
+    if (val.inlayHint)
+        ret = json::addValue(ret, json::KV{"inlayHint", val.inlayHint});
+    if (val.diagnostic)
+        ret = json::addValue(ret, json::KV{"diagnostic", val.diagnostic});
+    return json::addScope(ret);
 }
 
-std::string FileOperations::toStdString() const
+std::string toJsonValueStr(const FileOperations &val)
 {
     std::string ret;
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (didCreate)
-        ret = addValue(ret, {"didCreate", formatValue(didCreate.value())});
-    if (willCreate)
-        ret = addValue(ret, {"willCreate", formatValue(willCreate.value())});
-    if (didRename)
-        ret = addValue(ret, {"didRename", formatValue(didRename.value())});
-    if (willRename)
-        ret = addValue(ret, {"willRename", formatValue(willRename.value())});
-    if (didDelete)
-        ret = addValue(ret, {"didDelete", formatValue(didDelete.value())});
-    if (willDelete)
-        ret = addValue(ret, {"willDelete", formatValue(willDelete.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.didCreate)
+        ret = json::addValue(ret, json::KV{"didCreate", val.didCreate});
+    if (val.willCreate)
+        ret = json::addValue(ret, json::KV{"willCreate", val.willCreate});
+    if (val.didRename)
+        ret = json::addValue(ret, json::KV{"didRename", val.didRename});
+    if (val.willRename)
+        ret = json::addValue(ret, json::KV{"willRename", val.willRename});
+    if (val.didDelete)
+        ret = json::addValue(ret, json::KV{"didDelete", val.didDelete});
+    if (val.willDelete)
+        ret = json::addValue(ret, json::KV{"willDelete", val.willDelete});
+    return json::addScope(ret);
 }
 
-std::string Workspace::toStdString() const
+std::string toJsonValueStr(const Workspace &val)
 {
     std::string ret;
-    if (applyEdit)
-        ret = addValue(ret, {"applyEdit", formatValue(applyEdit.value())});
-    if (workspaceEdit)
-        ret = addValue(ret, {"workspaceEdit", workspaceEdit.value().toStdString()});
-    if (didChangeConfiguration)
-        ret = addValue(ret, {"didChangeConfiguration", didChangeConfiguration.value().toStdString()});
-    if (didChangeWatchedFiles)
-        ret = addValue(ret, {"didChangeWatchedFiles", didChangeWatchedFiles->toStdString()});
-    if (symbol)
-        ret = addValue(ret, {"symbol", symbol.value().toStdString()});
-    if (executeCommand)
-        ret = addValue(ret, {"executeCommand", executeCommand.value().toStdString()});
-    if (workspaceFolders)
-        ret = addValue(ret, {"workspaceFolders", formatValue(workspaceFolders.value())});
-    if (configuration)
-        ret = addValue(ret, {"configuration", formatValue(configuration.value())});
-    if (semanticTokens)
-        ret = addValue(ret, {"semanticTokens", semanticTokens.value().toStdString()});
-    if (codeLens)
-        ret = addValue(ret, {"codeLens", codeLens.value().toStdString()});
-    if (fileOperations)
-        ret = addValue(ret, {"fileOperations", fileOperations.value().toStdString()});
-    if (inlineValue)
-        ret = addValue(ret, {"inlineValue", inlineValue.value().toStdString()});
-    if (inlayHint)
-        ret = addValue(ret, {"inlayHint", inlayHint.value().toStdString()});
-    if (diagnostics)
-        ret = addValue(ret, {"diagnostics", diagnostics.value().toStdString()});
-    return addScope(ret);
+    if (val.applyEdit)
+        ret = json::addValue(ret, json::KV{"applyEdit", val.applyEdit});
+    if (val.workspaceEdit)
+        ret = json::addValue(ret, json::KV{"workspaceEdit", val.workspaceEdit});
+    if (val.didChangeConfiguration)
+        ret = json::addValue(ret, json::KV{"didChangeConfiguration", val.didChangeConfiguration});
+    if (val.didChangeWatchedFiles)
+        ret = json::addValue(ret, json::KV{"didChangeWatchedFiles", val.didChangeWatchedFiles});
+    if (val.symbol)
+        ret = json::addValue(ret, json::KV{"symbol", val.symbol});
+    if (val.executeCommand)
+        ret = json::addValue(ret, json::KV{"executeCommand", val.executeCommand});
+    if (val.workspaceFolders)
+        ret = json::addValue(ret, json::KV{"workspaceFolders", val.workspaceFolders});
+    if (val.configuration)
+        ret = json::addValue(ret, json::KV{"configuration", val.configuration});
+    if (val.semanticTokens)
+        ret = json::addValue(ret, json::KV{"semanticTokens", val.semanticTokens});
+    if (val.codeLens)
+        ret = json::addValue(ret, json::KV{"codeLens", val.codeLens});
+    if (val.fileOperations)
+        ret = json::addValue(ret, json::KV{"fileOperations", val.fileOperations});
+    if (val.inlineValue)
+        ret = json::addValue(ret, json::KV{"inlineValue", val.inlineValue});
+    if (val.inlayHint)
+        ret = json::addValue(ret, json::KV{"inlayHint", val.inlayHint});
+    if (val.diagnostics)
+        ret = json::addValue(ret, json::KV{"diagnostics", val.diagnostics});
+    return json::addScope(ret);
 }
 
-std::string ClientInfo::toStdString() const
+std::string toJsonValueStr(const ClientInfo &val)
 {
     std::string result{};
-    result = addValue(result, {"name", formatValue(name)});
-    if (version)
-        result = addValue(result, {"version", formatValue(version.value())});
-    return addScope(result);
+    result = json::addValue(result, json::KV{"name", val.name});
+    if (val.version)
+        result = json::addValue(result, json::KV{"version", val.version});
+    return json::addScope(result);
 }
 
-std::string NotebookDocumentSyncClientCapabilities::toStdString() const
+std::string toJsonValueStr(const NotebookDocumentSyncClientCapabilities &val)
 {
     std::string ret = "";
-    if (dynamicRegistration)
-        ret = addValue(ret, {"dynamicRegistration", formatValue(dynamicRegistration.value())});
-    if (executionSummarySupport)
-        ret = addValue(ret, {"executionSummarySupport", formatValue(executionSummarySupport.value())});
-    return addScope(ret);
+    if (val.dynamicRegistration)
+        ret = json::addValue(ret, json::KV{"dynamicRegistration", val.dynamicRegistration});
+    if (val.executionSummarySupport)
+        ret = json::addValue(ret, json::KV{"executionSummarySupport", val.executionSummarySupport});
+    return json::addScope(ret);
 }
 
-std::string NotebookDocumentClientCapabilities::toStdString() const
+std::string toJsonValueStr(const NotebookDocumentClientCapabilities &val)
 {
     std::string ret;
-    ret = addValue({}, {"synchronization", synchronization.toStdString()});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"synchronization", val.synchronization});
+    return json::addScope(ret);
 }
 
-std::string MessageActionItem::toStdString() const
+std::string toJsonValueStr(const MessageActionItem &val)
 {
     std::string ret;
-    if (additionalPropertiesSupport)
-        ret = addValue(ret, {"additionalPropertiesSupport", formatValue(additionalPropertiesSupport.value())});
-    return addScope(ret);
+    if (val.additionalPropertiesSupport)
+        ret = json::addValue(ret, json::KV{"additionalPropertiesSupport", val.additionalPropertiesSupport});
+    return json::addScope(ret);
 }
 
-std::string ShowMessageRequestClientCapabilities::toStdString() const
+std::string toJsonValueStr(const ShowMessageRequestClientCapabilities &val)
 {
     std::string ret;
-    if (messageActionItem)
-        ret = addValue(ret, {"messageActionItem", messageActionItem.value().toStdString()});
-    return addScope(ret);
+    if (val.messageActionItem)
+        ret = json::addValue(ret, json::KV{"messageActionItem", val.messageActionItem});
+    return json::addScope(ret);
 }
 
-std::string ShowDocumentClientCapabilities::toStdString() const {
+std::string toJsonValueStr(const ShowDocumentClientCapabilities &val) {
     std::string ret;
-    ret = addValue(ret, {"support", formatValue(support)});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"support", val.support});
+    return json::addScope(ret);
 }
 
-std::string Window::toStdString() const
+std::string toJsonValueStr(const Window &val)
 {
     std::string ret;
-    if (workDoneProgress)
-        ret = addValue(ret, {"workDoneProgress",formatValue(workDoneProgress.value())});
-    if (showMessage)
-        ret = addValue(ret, {"showMessage", showMessage.value().toStdString()});
-    if (showDocument)
-        ret = addValue(ret, {"showDocument", showDocument.value().toStdString()});
-    return addScope(ret);
+    if (val.workDoneProgress)
+        ret = json::addValue(ret, json::KV{"workDoneProgress", val.workDoneProgress});
+    if (val.showMessage)
+        ret = json::addValue(ret, json::KV{"showMessage", val.showMessage});
+    if (val.showDocument)
+        ret = json::addValue(ret, json::KV{"showDocument", val.showDocument});
+    return json::addScope(ret);
 }
 
-std::string StaleRequestSupport::toStdString() const
+std::string toJsonValueStr(const StaleRequestSupport &val)
 {
     std::string ret;
-    ret = addValue(ret, {"cancel", formatValue(cancel)});
-    ret = addValue(ret,{"retryOnContentModified", formatValue(retryOnContentModified)});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"cancel", val.cancel});
+    ret = json::addValue(ret,json::KV{"retryOnContentModified", val.retryOnContentModified});
+    return json::addScope(ret);
 }
 
-std::string RegularExpressionsClientCapabilities::toStdString() const
+std::string toJsonValueStr(const RegularExpressionsClientCapabilities &val)
 {
     std::string ret;
-    ret = addValue(ret, {"engine", formatValue(engine)});
-    if (version)
-        ret = addValue(ret, {"version", formatValue(version.value())});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"engine", val.engine});
+    if (val.version)
+        ret = json::addValue(ret, json::KV{"version", val.version});
+    return json::addScope(ret);
 }
 
-std::string MarkdownClientCapabilities::toStdString() const
+std::string toJsonValueStr(const MarkdownClientCapabilities &val)
 {
     std::string ret;
-    ret = addValue(ret, {"parser", formatValue(parser)});
-    if (version)
-        ret = addValue(ret, {"version", formatValue(version.value())});
-    if (allowedTags)
-        ret = addValue(ret, {"allowedTags", formatValue(allowedTags.value())});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"parser", val.parser});
+    if (val.version)
+        ret = json::addValue(ret, json::KV{"version", val.version});
+    if (val.allowedTags)
+        ret = json::addValue(ret, json::KV{"allowedTags", val.allowedTags});
+    return json::addScope(ret);
 }
 
-std::string General::toStdString() const
+std::string toJsonValueStr(const General &val)
 {
     std::string ret;
-    if (staleRequestSupport)
-        ret = addValue(ret, {"staleRequestSupport", staleRequestSupport.value().toStdString()});
-    if (regularExpressions)
-        ret = addValue(ret, {"regularExpressions", regularExpressions.value().toStdString()});
-    if (markdown)
-        ret = addValue(ret, {"markdown", markdown.value().toStdString()});
-    if (positionEncodings)
-        ret = addValue(ret, {"positionEncodings", formatValue(positionEncodings.value())});
-    if (experimental)
-        ret = addValue(ret, {"experimental", formatValue(std::string{"{}"})});
-    return addScope(ret);
+    if (val.staleRequestSupport)
+        ret = json::addValue(ret, json::KV{"staleRequestSupport", val.staleRequestSupport});
+    if (val.regularExpressions)
+        ret = json::addValue(ret, json::KV{"regularExpressions", val.regularExpressions});
+    if (val.markdown)
+        ret = json::addValue(ret, json::KV{"markdown", val.markdown});
+    if (val.positionEncodings)
+        ret = json::addValue(ret, json::KV{"positionEncodings", val.positionEncodings});
+    if (val.experimental)
+        ret = json::addValue(ret, json::KV{"experimental", std::string("{}")});
+    return json::addScope(ret);
 }
 
-std::string ClientCapabilities::toStdString() const
+std::string toJsonValueStr(const ClientCapabilities &val)
 {
     std::string ret;
-    if (workspace)
-        ret = addValue(ret, {"workspace", workspace.value().toStdString()});
-    if (textDocument)
-        ret = addValue(ret, {"textDocument", textDocument.value().toStdString()});
-    if (notebookDocument)
-        ret = addValue(ret, {"notebookDocument", notebookDocument.value().toStdString()});
-    if (window)
-        ret = addValue(ret, {"window", window.value().toStdString()});
-    if (general)
-        ret = addValue(ret, {"general", general.value().toStdString()});
-    return addScope(ret);
+    if (val.workspace)
+        ret = json::addValue(ret, json::KV{"workspace", val.workspace});
+    if (val.textDocument)
+        ret = json::addValue(ret, json::KV{"textDocument", val.textDocument});
+    if (val.notebookDocument)
+        ret = json::addValue(ret, json::KV{"notebookDocument", val.notebookDocument});
+    if (val.window)
+        ret = json::addValue(ret, json::KV{"window", val.window});
+    if (val.general)
+        ret = json::addValue(ret, json::KV{"general", val.general});
+    return json::addScope(ret);
 }
 
-std::string WorkspaceFolder::toStdString() const
+std::string toJsonValueStr(const WorkspaceFolder &val)
 {
     std::string ret;
-    ret = addValue(ret, {"uri", formatValue(uri)});
-    ret = addValue(ret, {"name", formatValue(name)});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"uri", val.uri});
+    ret = json::addValue(ret, json::KV{"name", val.name});
+    return json::addScope(ret);
 }
 
-std::string DocumentSymbolClientCapabilities::TagSupport::toStdString() const
+std::string toJsonValueStr(const DocumentSymbolClientCapabilities::TagSupport &val)
 {
     std::string ret;
-    ret = addValue(ret, {"valueSet", formatValue(valueSet)});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"valueSet", val.valueSet});
+    return json::addScope(ret);
 }
 
-std::string PublishDiagnosticsClientCapabilities::TagSupport::toStdString() const
+std::string toJsonValueStr(const PublishDiagnosticsClientCapabilities::TagSupport &val)
 {
     std::string ret;
-    ret = addValue(ret, {"valueSet", formatValue(valueSet)});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"valueSet", val.valueSet});
+    return json::addScope(ret);
 }
 
-std::string InitializeParams::formatValue(const std::vector<WorkspaceFolder> &workspaceFolders) const
+std::string toJsonValueStr(const CompletionClientCapabilities::CompletionItem::InsertTextModeSupport &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"valueSet", val.valueSet});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const std::vector<WorkspaceFolder> &val)
 {
     std::string ret;
     ret += "[";
-    for (int i = 0; i < workspaceFolders.size(); i++) {
-        ret += workspaceFolders[i].toStdString();
-        if (i < workspaceFolders.size() -1) {
+    for (int i = 0; i < val.size(); i++) {
+        ret += toJsonValueStr(val[i]);
+        if (i < val.size() -1) {
             ret += ",";
         }
     }
@@ -931,42 +898,41 @@ std::string InitializeParams::formatValue(const std::vector<WorkspaceFolder> &wo
     return ret;
 }
 
-std::string InitializeParams::toStdString() const
+std::string toJsonValueStr(const InitializeParams &val)
 {
     std::string ret;
 
-    if (WorkDoneProgressParams::workDoneToken)
-        ret += WorkDoneProgressParams::toStdString();
+    if (val.workDoneToken)
+        ret += json::addValue(ret, json::KV{"workDoneToken", val.workDoneToken});
+    if (val.language)
+        ret = json::addValue(ret, json::KV{"language", val.language});
+    if (val.processId)
+        ret = json::addValue(ret, json::KV{"processId", val.processId});
+    if (val.clientInfo)
+        ret = json::addValue(ret, json::KV{"clientInfo", val.clientInfo});
+    if (val.locale)
+        ret = json::addValue(ret, json::KV{"locale", val.locale});
+    if (val.rootPath)
+        ret = json::addValue(ret, json::KV{"rootPath", val.rootPath});
+    if (val.rootUri)
+        ret = json::addValue(ret, json::KV{"rootUri", val.rootUri});
+    if (val.initializationOptions)
+        ret = json::addValue(ret, json::KV{"initializationOptions", std::string("{}")});
 
-    if (language)
-        ret = addValue(ret, {"language", JsonConvert::formatValue(language.value())});
-    if (processId)
-        ret = addValue(ret, {"processId", processId.value()});
-    if (clientInfo)
-        ret = addValue(ret, {"clientInfo", clientInfo.value().toStdString()});
-    if (locale)
-        ret = addValue(ret, {"locale", JsonConvert::formatValue(locale.value())});
-    if (rootPath)
-        ret = addValue(ret, {"rootPath", JsonConvert::formatValue(rootPath.value())});
-    if (rootUri)
-        ret = addValue(ret, {"rootUri", JsonConvert::formatValue(rootUri.value())});
-    if (initializationOptions)
-        ret = addValue(ret, {"initializationOptions", "{}"});
+    ret = json::addValue(ret, json::KV{"capabilities", val.capabilities});
 
-    ret = addValue(ret, {"capabilities", capabilities.toStdString()});
+    if (val.trace)
+        ret = json::addValue(ret, json::KV{"trace", val.trace});
+    if (val.workspaceFolders)
+        ret = json::addValue(ret, json::KV{"workspaceFolders", val.workspaceFolders});
 
-    if (trace)
-        ret = addValue(ret, {"trace", JsonConvert::formatValue(trace.value())});
-    if (workspaceFolders)
-        ret = addValue(ret, {"workspaceFolders", formatValue(workspaceFolders.value())});
-
-    return addScope(ret);
+    return json::addScope(ret);
 }
 
-std::string InitializedParams::toStdString() const
+std::string toJsonValueStr(const InitializedParams &val)
 {
     std::string result;
-    return addScope(result);
+    return json::addScope(result);
 }
 
 } // newlsp

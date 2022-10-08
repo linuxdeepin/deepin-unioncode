@@ -20,6 +20,7 @@ set(CXX_H
     lsp/new/basicjsonstructures.h
     lsp/new/lifecyclemessage.h
     lsp/new/documentsynchronization.h
+    lsp/new/languagefeatures.h
     util/processutil.h
     util/customicons.h
     util/custompaths.h
@@ -60,6 +61,7 @@ set(CXX_CPP
     lsp/new/basicjsonstructures.cpp
     lsp/new/lifecyclemessage.cpp
     lsp/new/documentsynchronization.cpp
+    lsp/new/languagefeatures.cpp
     util/processutil.cpp
     util/customicons.cpp
     util/custompaths.cpp

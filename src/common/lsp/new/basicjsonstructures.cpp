@@ -22,32 +22,17 @@
 
 namespace newlsp{
 
-std::string JsonConvert::addScope(const std::string &src)
-{
-    return "{" + src + "}";
-}
-
-std::string JsonConvert::delScope(const std::string &obj)
-{
-    return obj.substr(1, obj.size() - 1);
-}
-
-std::string JsonConvert::formatKey(const std::string &key)
-{
-    return "\"" + key + "\"";
-}
-
-std::string JsonConvert::formatValue(unsigned int value)
+std::string toJsonValueStr(unsigned int value)
 {
     return std::to_string(value);
 }
 
-std::string JsonConvert::formatValue(int value)
+std::string toJsonValueStr(int value)
 {
     return std::to_string(value);
 }
 
-std::string JsonConvert::formatValue(bool value)
+std::string toJsonValueStr(bool value)
 {
     if (true == value)
         return "true";
@@ -56,12 +41,22 @@ std::string JsonConvert::formatValue(bool value)
     return "false";
 }
 
-std::string JsonConvert::formatValue(const std::string &value)
+std::string toJsonValueStr(float value)
+{
+    return std::to_string(value);
+}
+
+std::string toJsonValueStr(double value)
+{
+    return  std::to_string(value);
+}
+
+std::string toJsonValueStr(const std::string &value)
 {
     return "\"" + value + "\"";
 }
 
-std::string JsonConvert::formatValue(const std::vector<int> &vecInt)
+std::string toJsonValueStr(const std::vector<int> &vecInt)
 {
     std::string ret;
     if (vecInt.size() < 0)
@@ -69,7 +64,7 @@ std::string JsonConvert::formatValue(const std::vector<int> &vecInt)
 
     ret += "[";
     for (int i = 0; i < vecInt.size(); i++) {
-        ret += formatValue(vecInt[i]);
+        ret += toJsonValueStr(vecInt[i]);
         if (i < vecInt.size() - 1)
             ret += ",";
     }
@@ -78,7 +73,7 @@ std::string JsonConvert::formatValue(const std::vector<int> &vecInt)
     return ret;
 }
 
-std::string JsonConvert::formatValue(const std::vector<std::string> &vecString)
+std::string toJsonValueStr(const std::vector<std::string> &vecString)
 {
     std::string ret;
     if (vecString.size() < 0)
@@ -86,7 +81,7 @@ std::string JsonConvert::formatValue(const std::vector<std::string> &vecString)
 
     ret += "[";
     for (int i = 0; i < vecString.size(); i++) {
-        ret += formatValue(vecString[i]);
+        ret += toJsonValueStr(vecString[i]);
         if (i < vecString.size() - 1)
             ret += ",";
     }
@@ -95,128 +90,326 @@ std::string JsonConvert::formatValue(const std::vector<std::string> &vecString)
     return ret;
 }
 
-std::string JsonConvert::addValue(const std::string &src,
-                                  const std::pair<std::string, std::any> &elem)
+
+std::string json::addScope(const std::string &src)
 {
-    std::string temp;
-    if (elem.first.empty() || !elem.second.has_value())
-        return temp;
-
-    temp = formatKey(elem.first) + ":" ;
-    if (any_contrast<std::string>(elem.second)) {
-        temp += std::any_cast<std::string>(elem.second);
-    } else if (any_contrast<int>(elem.second)) {
-        temp += std::to_string(std::any_cast<int>(elem.second));
-    } else if (any_contrast<unsigned int>(elem.second)) {
-        temp += std::to_string(std::any_cast<unsigned int>(elem.second));
-    } else if (any_contrast<bool>(elem.second)) {
-        temp += std::to_string(std::any_cast<bool>(elem.second));
-    }
-
-    if (!src.empty())
-        return src + "," + temp;
-    else
-        return temp;
+    return "{" + src + "}";
 }
 
-std::string JsonConvert::addValue(const std::string &src,
-                                  std::initializer_list<std::pair<std::string, std::any>> &elems)
+std::string json::delScope(const std::string &obj)
 {
-    auto ret = src;
-    for (auto elem : elems) {
-        ret = addValue(ret, elem);
-    }
-    return ret;
+    return obj.substr(1, obj.size() - 1);
 }
 
-std::string WorkDoneProgressParams::toStdString() const
+std::string json::formatKey(const std::string &key)
+{
+    return "\"" + key + "\"";
+}
+
+std::string toJsonValueStr(const ProgressToken &val)
+{
+    if (any_contrast<int>(val))
+        return toJsonValueStr(std::any_cast<int>(val));
+    else if (any_contrast<std::string>(val))
+        return toJsonValueStr(std::any_cast<std::string>(val));
+    return "{}";
+}
+
+std::string toJsonValueStr(const TextDocumentItem &val)
 {
     std::string ret;
-    if (workDoneToken) {
-        if (any_contrast<bool>(workDoneToken.value()))
-            ret = addValue(ret, {"workDoneToken", formatValue(std::any_cast<bool>(workDoneToken.value()))});
-        else if (any_contrast<std::string>(workDoneToken.value()))
-            ret = addValue(ret, {"workDoneToken", formatValue(std::any_cast<std::string>(workDoneToken.value()))});
-    }
-    return ret;
+    ret = json::addValue(ret, json::KV{"uri", val.uri});
+    ret = json::addValue(ret, json::KV{"languageId", val.languageId});
+    ret = json::addValue(ret, json::KV{"version", val.version});
+    ret = json::addValue(ret, json::KV{"text", val.text});
+    return json::addScope(ret);
 }
 
-std::string TextDocumentItem::toStdString() const
+std::string toJsonValueStr(const VersionedTextDocumentIdentifier &val)
+{
+    std::string ret = json::delScope(toJsonValueStr(TextDocumentIdentifier(val)));
+    ret = json::addValue(ret, json::KV{"version", val.version});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const TextDocumentIdentifier &val)
 {
     std::string ret;
-    ret = addValue(ret, {"uri", uri});
-    ret = addValue(ret, {"languageId", languageId});
-    ret = addValue(ret, {"version", version});
-    ret = addValue(ret, {"text", text});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"uri", val.uri});
+    return json::addScope(ret);
 }
 
-std::string VersionedTextDocumentIdentifier::toStdString() const
+std::string toJsonValueStr(const OptionalVersionedTextDocumentIdentifier &val)
 {
-    std::string ret = delScope(TextDocumentIdentifier::toStdString());
-    ret = addValue(ret, {"version", version});
-    return addScope(ret);
+    std::string ret = json::delScope(toJsonValueStr(TextDocumentIdentifier(val)));
+    ret = json::addValue(ret, json::KV{"version", val.version});
+    return json::addScope(ret);
 }
 
-std::string TextDocumentIdentifier::toStdString() const
+std::string toJsonValueStr(const Range &val)
 {
     std::string ret;
-    ret = addValue(ret, {"uri", uri});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"start", val.start});
+    ret = json::addValue(ret, json::KV{"end", val.end});
+    return json::addScope(ret);
 }
 
-std::string OptionalVersionedTextDocumentIdentifier::toStdString() const
-{
-    std::string ret = delScope(TextDocumentIdentifier::toStdString());
-    if (version)
-        ret = addValue(ret, {"version", version});
-    return addScope(ret);
-}
-
-std::string Range::toStdString() const
+std::string toJsonValueStr(const Position &val)
 {
     std::string ret;
-    ret = addValue(ret, {"start", start});
-    ret = addValue(ret, {"end", end});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"line", val.character});
+    ret = json::addValue(ret, json::KV{"character", val.character});
+    return json::addScope(ret);
 }
 
-std::string Position::toStdString() const
+std::string toJsonValueStr(const DocumentFilter &val)
 {
     std::string ret;
-    ret = addValue(ret, {"line", character});
-    ret = addValue(ret, {"character", character});
-    return addScope(ret);
+    ret = json::addValue(ret, json::KV{"language", val.language});
+    ret = json::addValue(ret, json::KV{"scheme", val.scheme});
+    ret = json::addValue(ret, json::KV{"pattern", val.pattern});
+    return json::addScope(ret);
 }
 
-std::string DocumentFilter::toStdString() const
+std::string toJsonValueStr(const DocumentSelector &val)
 {
     std::string ret;
-    if (!language && !scheme && pattern)
-        return ret;
-    if (language)
-        ret = addValue(ret, {"language", language});
-    if (scheme)
-        ret = addValue(ret, {"scheme", scheme});
-    if (scheme)
-        ret = addValue(ret, {"pattern", pattern});
-    return addScope(ret);
-}
-
-std::string DocumentSelector::toStdString() const
-{
-    std::string ret;
-    int size = std::vector<DocumentFilter>::size();
+    int size = val.size();
     if (size < 0)
         return ret;
 
     ret += "[";
     for (int i = 0; i < size; i++) {
-        ret += operator[](i).toStdString();
+        ret += toJsonValueStr(val[i]);
         if (i < size - 1)
             ret += ",";
     }
     ret += "]";
+    return ret;
+}
+
+std::string toJsonValueStr(const WorkDoneProgressOptions &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"workDoneProgress", val.workDoneProgress});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const WorkDoneProgressParams &params)
+{
+    std::string ret;
+    if (params.workDoneToken) {
+        if (any_contrast<bool>(params.workDoneToken)) {
+            bool tv = std::any_cast<bool>(params.workDoneToken);
+            ret = json::addValue(ret, json::KV{"workDoneToken", tv});
+        } else if (any_contrast<std::string>(params.workDoneToken)) {
+            std::string tv = std::any_cast<std::string>(params.workDoneToken);
+            ret = json::addValue(ret, json::KV{"workDoneToken", tv});
+        }
+    }
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const TextDocumentPositionParams &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"textDocument", val.textDocument});
+    ret = json::addValue(ret, json::KV{"position", val.position});
+    return json::addScope(ret);
+}
+
+std::string json::mergeObjs(const std::vector<std::string> &objs)
+{
+    std::string ret = json::delScope(*objs.begin());
+    auto itera = objs.begin() ++ ;
+    while (itera != objs.end()) {
+        ret += "," + json::delScope(*itera);
+    }
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const PartialResultParams &params)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"partialResultToken", params.partialResultToken});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const Command &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"title", val.title});
+    ret = json::addValue(ret, json::KV{"command", val.command});
+    ret = json::addValue(ret, json::KV{"arguments", val.arguments});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const Diagnostic &val)
+{
+    std::string ret;
+    if (any_contrast<int>(val.code))
+        ret = json::addValue(ret, json::KV{"title", std::any_cast<int>(val.code)});
+    else if (any_contrast<std::string>(val.code))
+        ret = json::addValue(ret, json::KV{"title", std::any_cast<std::string>(val.code)});
+    ret = json::addValue(ret, json::KV{"data", val.data});
+    ret = json::addValue(ret, json::KV{"tags", val.tags});
+    ret = json::addValue(ret, json::KV{"range", val.range});
+    ret = json::addValue(ret, json::KV{"source", val.source});
+    ret = json::addValue(ret, json::KV{"message", val.message});
+    ret = json::addValue(ret, json::KV{"severity", val.severity});
+    ret = json::addValue(ret, json::KV{"codeDescription", val.codeDescription});
+    ret = json::addValue(ret, json::KV{"relatedInformation", val.relatedInformation});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const CodeDescription &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"href", val.href});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const DiagnosticRelatedInformation &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"message", val.message});
+    ret = json::addValue(ret, json::KV{"location", val.location});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const Location &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"uri", val.uri});
+    ret = json::addValue(ret, json::KV{"range", val.range});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const WorkspaceEdit &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"changes", val.changes});
+    ret = json::addValue(ret, json::KV{"documentChanges", val.documentChanges});
+    ret = json::addValue(ret, json::KV{"changeAnnotations", val.changeAnnotations});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const WorkspaceEdit::Changes &val)
+{
+    std::string ret;
+    for (auto &&one : val) {
+        ret = json::addValue(ret, json::KV{one.first, one.second});
+    }
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const WorkspaceEdit::ChangeAnnotations &val)
+{
+    std::string ret;
+    for (auto &&one : val) {
+        ret = json::addValue(ret, json::KV{one.first, one.second});
+    }
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const ChangeAnnotation &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"label", val.label});
+    ret = json::addValue(ret, json::KV{"description", val.description});
+    ret = json::addValue(ret, json::KV{"needsConfirmation", val.needsConfirmation});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const DeleteFile &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"kind", val.kind});
+    ret = json::addValue(ret, json::KV{"uri", val.uri});
+    ret = json::addValue(ret, json::KV{"options", val.options});
+    ret = json::addValue(ret, json::KV{"annotationId", val.annotationId});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const DeleteFileOptions &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"recursive", val.recursive});
+    ret = json::addValue(ret, json::KV{"ignoreIfNotExists", val.ignoreIfNotExists});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const RenameFile &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"kind", val.kind});
+    ret = json::addValue(ret, json::KV{"oldUri", val.oldUri});
+    ret = json::addValue(ret, json::KV{"newUri", val.newUri});
+    ret = json::addValue(ret, json::KV{"options", val.options});
+    ret = json::addValue(ret, json::KV{"annotationId", val.annotationId});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const RenameFileOptions &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"overwrite", val.overwrite});
+    ret = json::addValue(ret, json::KV{"ignoreIfExists", val.ignoreIfExists});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const CreateFile &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"kind", val.kind});
+    ret = json::addValue(ret, json::KV{"uri", val.uri});
+    ret = json::addValue(ret, json::KV{"options", val.options});
+    ret = json::addValue(ret, json::KV{"annotationId", val.annotationId});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const CreateFileOptions &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"overwrite", val.overwrite});
+    ret = json::addValue(ret, json::KV{"ignoreIfExists", val.ignoreIfExists});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const TextDocumentEdit &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"textDocument", val.textDocument});
+    ret = json::addValue(ret, json::KV{"edits", val.edits});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const AnnotatedTextEdit &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"annotationId", val.annotationId});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const TextEdit &val)
+{
+    std::string ret;
+    ret = json::addValue(ret, json::KV{"range", val.range});
+    ret = json::addValue(ret, json::KV{"newText", val.newText});
+    return json::addScope(ret);
+}
+
+std::string toJsonValueStr(const WorkspaceEdit::DocumentChanges &val)
+{
+    std::string ret;
+    if (any_contrast<std::vector<TextDocumentEdit>>(val))
+        ret = toJsonValueStr(std::any_cast<std::vector<TextDocumentEdit>>(val));
+    else if (any_contrast<std::vector<CreateFile>>(val))
+        ret = toJsonValueStr(std::any_cast<CreateFile>(val));
+    else if (any_contrast<std::vector<RenameFile>>(val))
+        ret = toJsonValueStr(std::any_cast<RenameFile>(val));
+    else if (any_contrast<std::vector<DeleteFile>>(val))
+        ret = toJsonValueStr(std::any_cast<std::vector<DeleteFile>>(val));
     return ret;
 }
 
