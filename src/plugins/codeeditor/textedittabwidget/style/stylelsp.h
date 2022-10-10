@@ -96,7 +96,7 @@ public:
     virtual void setTokenFull(const QList<lsp::Data> &tokens);
     virtual void cleanTokenFull();
 
-    virtual void setHover(const lsp::Hover &hover);
+    virtual void setHover(const newlsp::Hover &hover);
     virtual void cleanHover();
 
     virtual void setDefinition(const lsp::DefinitionProvider &provider);

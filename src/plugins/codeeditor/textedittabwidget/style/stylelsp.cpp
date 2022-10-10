@@ -322,7 +322,7 @@ void StyleLsp::initLspConnection()
     QObject::connect(getClient(), QOverload<const QList<lsp::Data>&>::of(&lsp::Client::requestResult),
                      this, &StyleLsp::setTokenFull);
 
-    QObject::connect(getClient(), QOverload<const lsp::Hover&>::of(&lsp::Client::requestResult),
+    QObject::connect(getClient(), QOverload<const newlsp::Hover&>::of(&lsp::Client::requestResult),
                      this, &StyleLsp::setHover);
 
     QObject::connect(getClient(), QOverload<const lsp::CompletionProvider&>::of(&lsp::Client::requestResult),
@@ -820,15 +820,43 @@ void StyleLsp::cleanTokenFull()
     Q_UNUSED(d->edit);
 }
 
-void StyleLsp::setHover(const lsp::Hover &hover)
+void StyleLsp::setHover(const newlsp::Hover &hover)
 {
     if (!edit() || edit()->isLeave())
         return;
 
     d->edit->callTipSetBack(STYLE_DEFAULT);
-    if (!hover.contents.value.isEmpty()) {
-        d->edit->callTipShow(d->hoverCache.getSciPosition(), hover.contents.value.toUtf8().toStdString().c_str());
-    };
+
+    std::string showText;
+    if (newlsp::any_contrast<std::vector<newlsp::MarkedString>>(hover.contents)) {
+        auto markupStrings = std::any_cast<std::vector<newlsp::MarkedString>>(hover.contents);
+        for (auto one : markupStrings) {
+            if (!showText.empty()) showText += "\n";
+
+            if (!one.value.empty()) // markedString value append
+                showText += one.value;
+            else if (!std::string(one).empty()) // markedString self is String append
+                showText += one;
+        };
+    } else if (newlsp::any_contrast<newlsp::MarkupContent>(hover.contents)){
+        auto markupContent = std::any_cast<newlsp::MarkupContent>(hover.contents);
+        showText = markupContent.value;
+    } else if (newlsp::any_contrast<newlsp::MarkedString>(hover.contents)){
+        auto markedString = std::any_cast<newlsp::MarkedString>(hover.contents);
+        if (!std::string(markedString).empty()) {
+            showText = std::string(markedString);
+        } else {
+            showText = markedString.value;
+        }
+    }
+
+    if (hover.range) {
+        // noting to do
+    }
+
+    if (!showText.empty())
+        d->edit->callTipShow(d->hoverCache.getSciPosition(), showText.c_str());
+
     d->hoverCache.clean();
 }
 

@@ -514,9 +514,15 @@ std::string toJsonValueStr(const AnnotatedTextEdit &val);
 
 struct TextDocumentEdit
 {
+    struct Edits : std::vector<AnnotatedTextEdit>, std::vector<TextEdit> {
+        Edits() = default;
+        Edits(const std::vector<AnnotatedTextEdit> &val) : std::vector<AnnotatedTextEdit>(val){}
+        Edits(const std::vector<TextEdit> &val) : std::vector<TextEdit>(val){}
+    };
     OptionalVersionedTextDocumentIdentifier textDocument;
-    std::vector<AnnotatedTextEdit> edits;
+    Edits edits;
 };
+std::string toJsonValueStr(const TextDocumentEdit::Edits &val);
 std::string toJsonValueStr(const TextDocumentEdit &val);
 
 struct Location
@@ -584,7 +590,7 @@ std::string toJsonValueStr(const CreateFileOptions &val);
 
 struct CreateFile
 {
-    std::string kind{"create"};
+    const std::string kind{"create"};
     DocumentUri uri;
     std::optional<CreateFileOptions> options;
     std::optional<ChangeAnnotationIdentifier> annotationId;
@@ -600,7 +606,7 @@ std::string toJsonValueStr(const RenameFileOptions &val);
 
 struct RenameFile
 {
-    std::string kind{"rename"};
+    const std::string kind{"rename"};
     DocumentUri oldUri;
     DocumentUri newUri;
     std::optional<RenameFileOptions> options;
@@ -617,7 +623,7 @@ std::string toJsonValueStr(const DeleteFileOptions &val);
 
 struct DeleteFile
 {
-    std::string kind{"delete"};
+    const std::string kind{"delete"};
     DocumentUri uri;
     std::optional<DeleteFileOptions> options;
     std::optional<ChangeAnnotationIdentifier> annotationId;
@@ -630,6 +636,7 @@ struct WorkspaceEdit
     struct Changes : std::map<DocumentUri, std::vector<TextEdit>> {};
     struct ChangeAnnotations : std::map<std::string, ChangeAnnotation> {};
     struct DocumentChanges : std::any {
+        DocumentChanges() = default;
         DocumentChanges(const std::vector<TextDocumentEdit> &val) : std::any(val){}
         DocumentChanges(const std::vector<CreateFile> &val) : std::any(val){}
         DocumentChanges(const std::vector<RenameFile> &val) : std::any(val){}
@@ -647,7 +654,7 @@ std::string toJsonValueStr(const WorkspaceEdit &val);
 
 struct WorkDoneProgressBegin
 {
-    std::string kind {"begin"};
+    const std::string kind {"begin"};
     std::string title;
     std::optional<bool> boolean;
     std::optional<std::string> message;
@@ -656,7 +663,7 @@ struct WorkDoneProgressBegin
 
 struct WorkDoneProgressReport
 {
-    std::string kind {"report"};
+    const std::string kind {"report"};
     std::optional<bool> cancellable;
     std::optional<std::string> message;
     std::optional<unsigned int> percentage;
@@ -664,7 +671,7 @@ struct WorkDoneProgressReport
 
 struct WorkDoneProgressEnd
 {
-    std::string kind {"end"};
+    const std::string kind {"end"};
     std::optional<std::string> message;
 };
 

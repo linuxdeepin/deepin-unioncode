@@ -190,6 +190,7 @@ void TextEditTabWidget::openFile(const lsp::Head &head, const QString &filePath)
     lsp::Client *client = LSPClientKeeper::instance()->get(head);
     if (!client) {
         LSPClientKeeper::instance()->initClient(head, {});
+        client = LSPClientKeeper::instance()->get(head);
     }
 
     // 全局rename操作
@@ -571,15 +572,23 @@ void TextEditTabWidget::doRenameReplace(const newlsp::WorkspaceEdit &renameResul
         }
     }
     if (renameResult.documentChanges) {
-        std::any documentChangesAny = renameResult.documentChanges.value();
-        if (newlsp::any_contrast<std::vector<newlsp::TextDocumentEdit>>(documentChangesAny)) {
-            auto documentChanges = std::any_cast<std::vector<newlsp::TextDocumentEdit>>(documentChangesAny);
+        if (newlsp::any_contrast<std::vector<newlsp::TextDocumentEdit>>(renameResult.documentChanges.value())) {
+            std::vector<newlsp::TextDocumentEdit> documentChanges
+                    = std::any_cast<std::vector<newlsp::TextDocumentEdit>>(renameResult.documentChanges.value());
             for (auto documentChange : documentChanges) {
                 QString filePath = QUrl(QString::fromStdString(documentChange.textDocument.uri)).toLocalFile();
-                std::vector<newlsp::AnnotatedTextEdit> edits = documentChange.edits;
-                for (auto edit : edits) {
-                    QString newText = QString::fromStdString(edit.newText);
-                    replaceRange(filePath, edit.range, newText);
+                if (!std::vector<newlsp::TextEdit>(documentChange.edits).empty()) {
+                    auto edits = std::vector<newlsp::TextEdit>(documentChange.edits);
+                    for (auto edit : edits) {
+                        QString newText = QString::fromStdString(edit.newText);
+                        replaceRange(filePath, edit.range, newText);
+                    }
+                } else if (!std::vector<newlsp::AnnotatedTextEdit>(documentChange.edits).empty()) {
+                    auto edits = std::vector<newlsp::AnnotatedTextEdit>(documentChange.edits);
+                    for (auto edit : edits) {
+                        QString newText = QString::fromStdString(edit.newText);
+                        replaceRange(filePath, edit.range, newText);
+                    }
                 }
             }
         }

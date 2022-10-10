@@ -83,7 +83,6 @@ Client::Client(unsigned int port, const QString &host)
     qRegisterMetaType<lsp::Locations>("lsp::Locations");
     qRegisterMetaType<lsp::CompletionProvider>("lsp::CompletionProvider");
     qRegisterMetaType<lsp::SignatureHelps>("lsp::SignatureHelps");
-    qRegisterMetaType<lsp::Hover>("lsp::Hover");
     qRegisterMetaType<lsp::Highlights>("lsp::Highlights");
     qRegisterMetaType<QList<lsp::Data>>("QList<lsp::Data>");
     qRegisterMetaType<lsp::DefinitionProvider>("lsp::DefinitionProvider");
@@ -91,6 +90,7 @@ Client::Client(unsigned int port, const QString &host)
     qRegisterMetaType<lsp::Data>("lsp::Data");
     qRegisterMetaType<lsp::References>("lsp::References");
     qRegisterMetaType<lsp::Position>("lsp::Position");
+    qRegisterMetaType<newlsp::Hover>("newlsp::Hover");
     qRegisterMetaType<newlsp::WorkspaceEdit>("newlsp::WorkspaceEdit");
     qRegisterMetaType<newlsp::Position>("newlsp::Position");
     qRegisterMetaType<newlsp::Range>("newlsp::Range");
@@ -164,8 +164,8 @@ void ClientPrivate::responseProcess(const QByteArray &result)
     QString contentTypeKey{"ContentType"};
     QString charsetKey{"charset"};
     QRegularExpression headRegExp("^Content-Length:\\s?(?<" + contentLengthKey + ">[0-9]+)\\r\\n" +
-                                 "(Content-Type:\\s?(?<" + contentTypeKey + ">\\S+);" +
-                                 "\\s?charset=(?<" + charsetKey + ">\\S+)\\r\\n)?\\r\\n");
+                                  "(Content-Type:\\s?(?<" + contentTypeKey + ">\\S+);" +
+                                  "\\s?charset=(?<" + charsetKey + ">\\S+)\\r\\n)?\\r\\n");
     QByteArray head, body;
     for (int idx = 0; idx < result.size(); idx++) {
         auto matchs = headRegExp.match(head);
@@ -436,13 +436,14 @@ bool Client::renameResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
     if (d->requestSave.values().contains(V_TEXTDOCUMENT_RENAME)
-            && d->requestSave.key(V_TEXTDOCUMENT_RENAME) == calledID) {
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_RENAME) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_RENAME
                 << jsonObj;
         d->requestSave.remove(calledID);
         QJsonObject resultObj = jsonObj.value(K_RESULT).toObject();
+
         QJsonObject changesObj = resultObj.value("changes").toObject();
-        newlsp::WorkspaceEdit changesResult;
+        newlsp::WorkspaceEdit workspaceEdit;
         if (!changesObj.isEmpty()) {
             // std::optional<> changes;
             newlsp::WorkspaceEdit::Changes changes;
@@ -462,40 +463,122 @@ bool Client::renameResult(const QJsonObject &jsonObj)
                 }
                 changes[fileKey.toStdString()] = textEdits;
             }
-            changesResult.changes = changes;
+            workspaceEdit.changes = changes;
         }
 
         QJsonArray documentChangesArray = resultObj.value("documentChanges").toArray();
         if (!documentChangesArray.isEmpty()) {
-            std::vector<newlsp::TextDocumentEdit> documentChanges;
-            for (auto val : documentChangesArray) {
-                std::vector<newlsp::AnnotatedTextEdit> edits;
-                QJsonArray editsArray = val.toObject().value("edits").toArray();
-                for (auto val : editsArray) {
-                    newlsp::AnnotatedTextEdit annotatedTextEdit;
-                    std::string newText = val.toObject().value(K_NewText).toString().toStdString();
-                    QJsonObject rangeObj = val.toObject().value(K_RANGE).toObject();
-                    QJsonObject startObj = rangeObj.value(K_START).toObject();
-                    QJsonObject endObj = rangeObj.value(K_END).toObject();
-                    newlsp::Position start = {startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()};
-                    newlsp::Position end = {endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()};
-                    newlsp::Range range{start, end};
-                    annotatedTextEdit.annotationId = {};
-                    annotatedTextEdit.range = range;
-                    annotatedTextEdit.newText = newText;
-                    edits.push_back(annotatedTextEdit);
-                }
-                QJsonObject textDoumentObj = val.toObject().value("textDocument").toObject();
-                newlsp::OptionalVersionedTextDocumentIdentifier textDocument;
-                textDocument.version = textDoumentObj.value(K_VERSION).toInt();
-                textDocument.uri = textDoumentObj.value(K_URI).toString().toStdString();
+            newlsp::WorkspaceEdit::DocumentChanges documentChanges;
+            std::vector<newlsp::TextDocumentEdit> textDocumentEdits;
+            std::vector<newlsp::CreateFile> createFiles;
+            std::vector<newlsp::RenameFile> renameFiles;
+            std::vector<newlsp::DeleteFile> deleteFiles;
+            for (auto one : documentChangesArray) {
+                QJsonObject oneObj = one.toObject();
+                if (oneObj.contains("edits") && oneObj.contains("textDocument")) { // std::vector<newlsp::TextDocumentEdit>
+                    newlsp::TextDocumentEdit textDocumentEdit;
 
-                newlsp::TextDocumentEdit documentChangesElem;
-                documentChangesElem.edits = edits;
-                documentChangesElem.textDocument = textDocument;
-                documentChanges.push_back(documentChangesElem);
+                    newlsp::OptionalVersionedTextDocumentIdentifier ovtdi;
+                    QJsonObject textDocumentOneObj = oneObj.value("textDocument").toObject();
+                    ovtdi.version = textDocumentOneObj.value(K_VERSION).toInt();
+                    ovtdi.uri = textDocumentOneObj.value(K_URI).toString().toStdString();
+                    textDocumentEdit.textDocument.version = ovtdi.version;
+                    textDocumentEdit.textDocument.uri = ovtdi.uri;
+
+                    std::vector<newlsp::AnnotatedTextEdit> annotatedTextEdits;
+                    std::vector<newlsp::TextEdit> textEdits;
+                    QJsonArray editsArray = oneObj.value("edits").toArray();
+                    for (auto editsOne : editsArray) {
+                        QJsonObject editsOneObj = editsOne.toObject();
+                        QJsonObject editsOneRangeObj = editsOneObj.value("range").toObject();
+                        QJsonObject editsOneRangeStartObj = editsOneRangeObj.value(K_START).toObject();
+                        QJsonObject editsOneRangeEndObj = editsOneRangeObj.value(K_END).toObject();
+                        std::string editsOneNewText = editsOneObj.value("newText").toString().toStdString();
+                        newlsp::Range editsOneRange{
+                            newlsp::Position{editsOneRangeStartObj.value(K_LINE).toInt(), editsOneRangeStartObj.value(K_CHARACTER).toInt()},
+                            newlsp::Position{editsOneRangeEndObj.value(K_LINE).toInt(), editsOneRangeEndObj.value(K_CHARACTER).toInt()}
+                        };
+                        if (editsOneObj.contains("annotationId")) { // edits: (TextEdit | AnnotatedTextEdit)[];
+                            newlsp::ChangeAnnotationIdentifier changeAnnIdf = editsOneObj.value("annotationId").toString().toStdString();
+                            newlsp::AnnotatedTextEdit annotatedTextEdit{};
+                            annotatedTextEdit.range = editsOneRange;
+                            annotatedTextEdit.newText = editsOneNewText;
+                            annotatedTextEdit.annotationId = changeAnnIdf;
+                            annotatedTextEdits.push_back(annotatedTextEdit);
+                        } else {
+                            newlsp::TextEdit textEdit;
+                            textEdit.range = editsOneRange;
+                            textEdit.newText = editsOneNewText;
+                            textEdits.push_back(textEdit);
+                        }
+                    }
+                    if (!annotatedTextEdits.empty()) {
+                        textDocumentEdit.edits = annotatedTextEdits;
+                    } else if (!textEdits.empty()){
+                        textDocumentEdit.edits = textEdits;
+                    }
+                    textDocumentEdits.push_back(textDocumentEdit);
+                } else {
+                    QString oneObjKind = oneObj.value("kind").toString();
+                    if ("create" == oneObjKind) {
+                        newlsp::CreateFile createFile;
+                        createFile.uri = oneObj.value("uri").toString().toStdString();
+                        QJsonObject oneObjOptions = oneObj.value("options").toObject();
+                        if (!oneObjOptions.empty()) {
+                            newlsp::CreateFileOptions options;
+                            options.overwrite = oneObjOptions.value("overwrite").toBool();
+                            options.ignoreIfExists = oneObjOptions.value("ignoreIfExists").toBool();
+                            createFile.options = options;
+                        }
+                        QJsonValue annotationIdJV = oneObj.value("annotationId");
+                        if (!annotationIdJV.isNull()) {
+                            createFile.annotationId = annotationIdJV.toString().toStdString();
+                        }
+                        createFiles.push_back(createFile);
+                    } else if ("delete" == oneObjKind) {
+                        newlsp::DeleteFile deleteFile;
+                        deleteFile.uri = oneObj.value("uri").toString().toStdString();
+                        QJsonObject oneObjOptions = oneObj.value("options").toObject();
+                        if (!oneObjOptions.empty()) {
+                            newlsp::DeleteFileOptions options;
+                            options.recursive = oneObjOptions.value("recursive").toBool();
+                            options.ignoreIfNotExists = oneObjOptions.value("ignoreIfNotExists").toBool();
+                            deleteFile.options = options;
+                        }
+                        QJsonValue annotationIdJV = oneObj.value("annotationId");
+                        if (!annotationIdJV.isNull()) {
+                            deleteFile.annotationId = annotationIdJV.toString().toStdString();
+                        }
+                        deleteFiles.push_back(deleteFile);
+                    } else if ("rename" == oneObjKind) {
+                        newlsp::RenameFile renameFile;
+                        renameFile.oldUri = oneObj.value("oldUri").toString().toStdString();
+                        renameFile.newUri = oneObj.value("newUri").toString().toStdString();
+                        QJsonObject oneObjOptions = oneObj.value("options").toObject();
+                        if (!oneObjOptions.empty()) {
+                            newlsp::RenameFileOptions options;
+                            options.overwrite = oneObjOptions.value("overwrite").toBool();
+                            options.ignoreIfExists = oneObjOptions.value("ignoreIfExists").toBool();
+                            renameFile.options = options;
+                        }
+                        QJsonValue annotationIdJV = oneObj.value("annotationId");
+                        if (!annotationIdJV.isNull()) {
+                            renameFile.annotationId = annotationIdJV.toString().toStdString();
+                        }
+                        renameFiles.push_back(renameFile);
+                    }
+                }
+                // set workspaceEdit.documentChanges
+                if (!textDocumentEdits.empty()) {
+                    workspaceEdit.documentChanges = textDocumentEdits;
+                } else if (!createFiles.empty()) {
+                    workspaceEdit.documentChanges = createFiles;
+                } else if (!renameFiles.empty()) {
+                    workspaceEdit.documentChanges = renameFiles;
+                } else if (!deleteFiles.empty()) {
+                    workspaceEdit.documentChanges = deleteFiles;
+                }
             }
-            changesResult.documentChanges = documentChanges;
         }
 
         QJsonObject changeAnnotationsObj = resultObj.value("changeAnnotations").toObject();
@@ -514,9 +597,9 @@ bool Client::renameResult(const QJsonObject &jsonObj)
                 }
                 changeAnnotations[idKey.toStdString()] = changeAnnotation;
             }
-            changesResult.changeAnnotations = changeAnnotations;
+            workspaceEdit.changeAnnotations = changeAnnotations;
         }
-        emit requestResult(changesResult);
+        emit requestResult(workspaceEdit);
         return true;
     }
     return false;
@@ -629,22 +712,53 @@ bool Client::hoverResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
     if(d->requestSave.keys().contains(calledID)
-            && d->requestSave.key(V_TEXTDOCUMENT_HOVER) == calledID) {
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_HOVER) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_HOVER << jsonObj;
         d->requestSave.remove(calledID);
         QJsonObject resultObj = jsonObj.value("result").toObject();
-        QJsonObject contentsObj = resultObj.value("contents").toObject();
-        QJsonObject rangeObj = resultObj.value("range").toObject();
-        QJsonObject startObj = rangeObj.value(K_START).toObject();
-        QJsonObject endObj = rangeObj.value(K_END).toObject();
-        Hover hover {
-            Contents { contentsObj.value("kind").toString(), contentsObj.value("value").toString() },
-            Range {
-                Position { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt() },
-                Position { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt() }
+        newlsp::Hover hover;
+        QJsonValue contentsJV = resultObj.value("contents");
+        if (contentsJV.isArray()) { // to MarkedString[]
+            QJsonArray contentsJA = contentsJV.toArray();
+            std::vector<newlsp::MarkedString> markedStringVec{};
+            for (auto one : contentsJA) {
+                if (one.isObject()) {
+                    QJsonObject oneObj = one.toObject();
+                    markedStringVec.push_back(newlsp::MarkedString{
+                                                  oneObj.value("language").toString().toStdString(),
+                                                  oneObj.value("value").toString().toStdString()
+                                              });
+                } else if (one.isString()){
+                    markedStringVec.push_back(newlsp::MarkedString{one.toString().toStdString()});
+                }
             }
-        };
-
+            hover.contents = markedStringVec;
+        } else { // MarkedString or MarkupContent
+            QJsonObject contentsObj = contentsJV.toObject();
+            QJsonValue contents_kind_JV = contentsObj.value("kind");
+            QJsonValue contents_value_JV = contentsObj.value("value");
+            QJsonValue contents_language_JV = contentsObj.value("language");
+            if (!contents_kind_JV.isNull() && !contents_value_JV.isNull()) { // MarkupContent
+                hover.contents = newlsp::MarkupContent {
+                        contents_kind_JV.toString().toStdString(),
+                        contents_value_JV.toString().toStdString() };
+            } else if (!contents_language_JV.isNull() && !contents_value_JV.isNull()) { // MarkupString
+                hover.contents = newlsp::MarkedString {
+                        contents_language_JV.toString().toStdString(),
+                        contents_value_JV.toString().toStdString() };
+            } else {
+                hover.contents = newlsp::MarkedString { contentsJV.toString().toStdString() };
+            }
+        }
+        QJsonValue rangeJV = resultObj.value("range");
+        if (!rangeJV.isNull()) {
+            QJsonObject rangeObj = rangeJV.toObject();
+            QJsonObject startObj = rangeObj.value(K_START).toObject();
+            QJsonObject endObj = rangeObj.value(K_END).toObject();
+            hover.range = newlsp::Range{
+                    newlsp::Position { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt() },
+                    newlsp::Position { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt() } };
+        }
         emit requestResult(hover);
         return true;
     }

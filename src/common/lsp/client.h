@@ -189,12 +189,12 @@ signals:
     void requestResult(const lsp::Locations &locations);
     void requestResult(const lsp::CompletionProvider &completionProvider);
     void requestResult(const lsp::SignatureHelps &signatureHelps);
-    void requestResult(const lsp::Hover &hover);
     void requestResult(const lsp::Highlights &highlights);
     void requestResult(const lsp::DefinitionProvider &definitionProvider);
     void requestResult(const QList<lsp::Data> &tokensResult);
-    void requestResult(const newlsp::WorkspaceEdit &changes);
     void requestResult(const lsp::References &refs);
+    void requestResult(const newlsp::WorkspaceEdit &changes);
+    void requestResult(const newlsp::Hover &hover);
 
 private:
     bool calledError(const QJsonObject &jsonObj);

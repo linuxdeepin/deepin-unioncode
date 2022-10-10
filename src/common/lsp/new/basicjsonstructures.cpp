@@ -413,4 +413,40 @@ std::string toJsonValueStr(const WorkspaceEdit::DocumentChanges &val)
     return ret;
 }
 
+std::string toJsonValueStr(const TextDocumentEdit::Edits &val)
+{
+    std::string ret;
+    if (!std::vector<AnnotatedTextEdit>(val).empty()) {
+        auto textEdit = std::vector<AnnotatedTextEdit>(val);
+        int size = textEdit.size();
+        if (size < 0)
+            return ret;
+
+        ret += "[";
+        for (int i = 0; i < size; i++) {
+            ret += toJsonValueStr(textEdit[i]);
+            if (i < size - 1)
+                ret += ",";
+        }
+        ret += "]";
+        return ret;
+    }
+    else if (!std::vector<TextEdit>(val).empty()) {
+        auto textEdit = std::vector<TextEdit>(val);
+        int size = textEdit.size();
+        if (size < 0)
+            return ret;
+
+        ret += "[";
+        for (int i = 0; i < size; i++) {
+            ret += toJsonValueStr(textEdit[i]);
+            if (i < size - 1)
+                ret += ",";
+        }
+        ret += "]";
+        return ret;
+    }
+    return json::addScope(ret);
+}
+
 } // namespace newlsp
