@@ -94,6 +94,7 @@ Client::Client(unsigned int port, const QString &host)
     qRegisterMetaType<newlsp::WorkspaceEdit>("newlsp::WorkspaceEdit");
     qRegisterMetaType<newlsp::Position>("newlsp::Position");
     qRegisterMetaType<newlsp::Range>("newlsp::Range");
+    qRegisterMetaType<newlsp::PublishDiagnosticsParams>("newlsp::PublishDiagnosticsParams");
 }
 
 void Client::setHead(const lsp::Head &head)
@@ -160,6 +161,7 @@ void ClientPrivate::callLanguageNotify(const QString &notify)
 
 void ClientPrivate::responseProcess(const QByteArray &result)
 {
+    QByteArray temp = result;
     QString contentLengthKey{"ContentLength"};
     QString contentTypeKey{"ContentType"};
     QString charsetKey{"charset"};
@@ -167,10 +169,10 @@ void ClientPrivate::responseProcess(const QByteArray &result)
                                   "(Content-Type:\\s?(?<" + contentTypeKey + ">\\S+);" +
                                   "\\s?charset=(?<" + charsetKey + ">\\S+)\\r\\n)?\\r\\n");
     QByteArray head, body;
-    for (int idx = 0; idx < result.size(); idx++) {
+    for (int idx = 0; idx < temp.size(); idx++) {
         auto matchs = headRegExp.match(head);
         if (!matchs.hasMatch()) {
-            head += result[idx];
+            head += temp[idx];
         } else {
             int contentLength = matchs.captured(contentLengthKey).toInt();
             QString contentType = matchs.captured(contentTypeKey);
@@ -188,7 +190,11 @@ void ClientPrivate::responseProcess(const QByteArray &result)
                             << err.errorString();
                 } else {
                     q->processJson(jsonObj);
-                    return;
+                    temp = temp.remove(0, idx + 1);
+                    if (!temp.isEmpty())
+                        return responseProcess(temp);
+                    else
+                        return;
                 }
             }
         }
@@ -362,8 +368,8 @@ bool Client::calledError(const QJsonObject &jsonObj)
 bool Client::initResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if (d->requestSave.values().contains(V_INITIALIZE)
-            && d->requestSave.key(V_INITIALIZE) == calledID) {
+    if (d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_INITIALIZE) {
         qInfo() << "client <-- : " << V_INITIALIZE;
         qInfo() << jsonObj;
         d->requestSave.remove(calledID);
@@ -399,8 +405,8 @@ bool Client::initResult(const QJsonObject &jsonObj)
 bool Client::openResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if (d->requestSave.values().contains(V_TEXTDOCUMENT_DIDOPEN)
-            && d->requestSave.key(V_TEXTDOCUMENT_DIDOPEN) == calledID) {
+    if (d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_DIDOPEN) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_DIDOPEN;
         d->requestSave.remove(calledID);
         return true;
@@ -411,8 +417,8 @@ bool Client::openResult(const QJsonObject &jsonObj)
 bool Client::changeResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if (d->requestSave.values().contains(V_TEXTDOCUMENT_DIDCHANGE)
-            && d->requestSave.key(V_TEXTDOCUMENT_DIDCHANGE) == calledID) {
+    if (d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_DIDCHANGE) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_DOCUMENTSYMBOL;
         d->requestSave.remove(calledID);
         return true;
@@ -423,8 +429,8 @@ bool Client::changeResult(const QJsonObject &jsonObj)
 bool Client::symbolResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if (d->requestSave.values().contains(V_TEXTDOCUMENT_DOCUMENTSYMBOL)
-            && d->requestSave.key(V_TEXTDOCUMENT_DOCUMENTSYMBOL) == calledID) {
+    if (d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_DOCUMENTSYMBOL) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_DOCUMENTSYMBOL;
         d->requestSave.remove(calledID);
         return true;
@@ -435,7 +441,7 @@ bool Client::symbolResult(const QJsonObject &jsonObj)
 bool Client::renameResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if (d->requestSave.values().contains(V_TEXTDOCUMENT_RENAME)
+    if (d->requestSave.keys().contains(calledID)
             && d->requestSave.value(calledID) == V_TEXTDOCUMENT_RENAME) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_RENAME
                 << jsonObj;
@@ -599,7 +605,7 @@ bool Client::renameResult(const QJsonObject &jsonObj)
             }
             workspaceEdit.changeAnnotations = changeAnnotations;
         }
-        emit requestResult(workspaceEdit);
+        emit renameRes(workspaceEdit);
         return true;
     }
     return false;
@@ -609,27 +615,84 @@ bool Client::definitionResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
     if (d->requestSave.values().contains(V_TEXTDOCUMENT_DEFINITION)
-            && d->requestSave.key(V_TEXTDOCUMENT_DEFINITION) == calledID) {
-        qInfo() << "client <-- : "
-                << V_TEXTDOCUMENT_DEFINITION
-                << jsonObj;
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_DEFINITION) {
+        qInfo() << "client <-- : " << V_TEXTDOCUMENT_DEFINITION << jsonObj;
         d->requestSave.remove(calledID);
-        QJsonArray definitionProviderArray = jsonObj.value(K_RESULT).toArray();
-        qInfo() << "definitionProviderArray"
-                << definitionProviderArray;
-        DefinitionProvider definitionProvider;
-        foreach(auto val , definitionProviderArray){
-            auto valObj = val.toObject();
-            auto rangeObj = valObj.value(K_RANGE).toObject();
-            auto startObj = rangeObj.value(K_START).toObject();
-            auto endObj = rangeObj.value(K_END).toObject();
-            definitionProvider <<  Location { Range {
-                                   Position{startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()},
-                                   Position{endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()}},
-                                   QUrl{valObj.value(K_URI).toString()}};
+
+        QJsonValue resultJV = jsonObj.value(K_RESULT);
+        if (resultJV.isArray()) {
+            QJsonArray resultArray = resultJV.toArray();
+            if (resultArray.count() <= 0){
+                return false;
+            }
+            std::vector<newlsp::Location> locations;
+            std::vector<newlsp::LocationLink> locationLinks;
+            for (auto one : resultArray) {
+                QJsonObject oneObj = one.toObject();
+                if (oneObj.contains("range") && oneObj.contains("uri")) {
+                    QJsonObject rangeObj = oneObj.value("range").toObject();
+                    QJsonObject startObj = rangeObj.value("start").toObject();
+                    QJsonObject endObj = rangeObj.value("end").toObject();
+                    std::string uri = oneObj.value("uri").toString().toStdString();
+                    newlsp::Range range{
+                        {startObj.value("line").toInt(), startObj.value("character").toInt()},
+                        {endObj.value("line").toInt(), endObj.value("character").toInt()}
+                    };
+                    locations.push_back({uri, range});
+                } else if (oneObj.contains("originSelectionRange")
+                           && oneObj.contains("targetUri")
+                           && oneObj.contains("targetRange")
+                           && oneObj.contains("targetSelectionRange")) {
+                    std::string targetUri = oneObj.value("targetUri").toString().toStdString();
+                    QJsonObject rangeObj, startObj, endObj;
+                    // originSelectionRange
+                    rangeObj = oneObj.value("originSelectionRange").toObject();
+                    startObj = rangeObj.value("start").toObject();
+                    endObj = endObj.value("end").toObject();
+                    newlsp::Range originSelectionRange {
+                        {startObj.value("line").toInt(), startObj.value("character").toInt()},
+                        {endObj.value("line").toInt(), endObj.value("character").toInt()}
+                    };
+                    // targetRange
+                    rangeObj = oneObj.value("targetRange").toObject();
+                    startObj = rangeObj.value("start").toObject();
+                    endObj = endObj.value("end").toObject();
+                    newlsp::Range targetRange {
+                        {startObj.value("line").toInt(), startObj.value("character").toInt()},
+                        {endObj.value("line").toInt(), endObj.value("character").toInt()}
+                    };
+                    // targetSelectionRange
+                    rangeObj = oneObj.value("targetSelectionRange").toObject();
+                    startObj = rangeObj.value("start").toObject();
+                    endObj = endObj.value("end").toObject();
+                    newlsp::Range targetSelectionRange {
+                        {startObj.value("line").toInt(), startObj.value("character").toInt()},
+                        {endObj.value("line").toInt(), endObj.value("character").toInt()}
+                    };
+                    locationLinks.push_back({originSelectionRange, targetUri, targetRange, targetSelectionRange});
+                }
+            }
+
+            if (!locationLinks.empty()) {
+                emit definitionRes(locationLinks); return true;
+            } else if (!locations.empty()) {
+                emit definitionRes(locations); return true;
+            }
+        } else if (resultJV.isObject()){
+            QJsonObject locationObj = resultJV.toObject();
+            if (locationObj.contains("range") && locationObj.contains("uri")) {
+                QJsonObject rangeObj = locationObj.value("range").toObject();
+                QJsonObject startObj = rangeObj.value("start").toObject();
+                QJsonObject endObj = rangeObj.value("end").toObject();
+                std::string uri = locationObj.value("uri").toString().toStdString();
+                newlsp::Range range{
+                    {startObj.value("line").toInt(), startObj.value("character").toInt()},
+                    {endObj.value("line").toInt(), endObj.value("character").toInt()}
+                };
+                emit definitionRes(newlsp::Location{uri, range});
+                return true;
+            }
         }
-        emit requestResult(definitionProvider);
-        return true;
     }
     return false;
 }
@@ -638,7 +701,7 @@ bool Client::completionResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
     if(d->requestSave.values().contains(V_TEXTDOCUMENT_COMPLETION)
-            && d->requestSave.key(V_TEXTDOCUMENT_COMPLETION) == calledID) {
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_COMPLETION) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_COMPLETION /*<< jsonObj*/;
         d->requestSave.remove(calledID);
         QJsonObject resultObj = jsonObj.value(K_RESULT).toObject();
@@ -699,8 +762,8 @@ bool Client::completionResult(const QJsonObject &jsonObj)
 bool Client::signatureHelpResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if(d->requestSave.values().contains(V_TEXTDOCUMENT_SIGNATUREHELP)
-            && d->requestSave.key(V_TEXTDOCUMENT_SIGNATUREHELP) == calledID) {
+    if(d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_SIGNATUREHELP) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_SIGNATUREHELP;
         d->requestSave.remove(calledID);
         return true;
@@ -759,7 +822,7 @@ bool Client::hoverResult(const QJsonObject &jsonObj)
                     newlsp::Position { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt() },
                     newlsp::Position { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt() } };
         }
-        emit requestResult(hover);
+        emit hoverRes(hover);
         return true;
     }
     return false;
@@ -768,8 +831,8 @@ bool Client::hoverResult(const QJsonObject &jsonObj)
 bool Client::referencesResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if(d->requestSave.values().contains(V_TEXTDOCUMENT_REFERENCES)
-            && d->requestSave.key(V_TEXTDOCUMENT_REFERENCES) == calledID) {
+    if(d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_REFERENCES) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_REFERENCES;
         References refs;
         auto resultArray = jsonObj.value(K_RESULT).toArray();
@@ -795,8 +858,8 @@ bool Client::referencesResult(const QJsonObject &jsonObj)
 bool Client::docHighlightResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if(d->requestSave.values().contains(V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT)
-            && d->requestSave.key(V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT) == calledID) {
+    if(d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT
                 << jsonObj;
         d->requestSave.remove(calledID);
@@ -808,8 +871,8 @@ bool Client::docHighlightResult(const QJsonObject &jsonObj)
 bool Client::docSemanticTokensFullResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if(d->requestSave.values().contains(V_TEXTDOCUMENT_SEMANTICTOKENS + "/full")
-            && d->requestSave.key(V_TEXTDOCUMENT_SEMANTICTOKENS + "/full") == calledID) {
+    if(d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_SEMANTICTOKENS + "/full") {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_SEMANTICTOKENS + "full"
                 << jsonObj;
         d->requestSave.remove(calledID);
@@ -839,8 +902,8 @@ bool Client::docSemanticTokensFullResult(const QJsonObject &jsonObj)
 bool Client::closeResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if(d->requestSave.values().contains(V_TEXTDOCUMENT_DIDCLOSE)
-            && d->requestSave.key(V_TEXTDOCUMENT_DIDCLOSE) == calledID) {
+    if(d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_TEXTDOCUMENT_DIDCLOSE) {
         qInfo() << "client <-- : " << V_TEXTDOCUMENT_DIDCLOSE;
         d->requestSave.remove(calledID);
         return true;
@@ -851,8 +914,8 @@ bool Client::closeResult(const QJsonObject &jsonObj)
 bool Client::exitResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if(d->requestSave.values().contains(V_EXIT)
-            && d->requestSave.key(V_EXIT) == calledID) {
+    if(d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_EXIT) {
         qInfo() << "client <-- : " << V_EXIT
                 << jsonObj;
         d->requestSave.remove(calledID);
@@ -864,8 +927,8 @@ bool Client::exitResult(const QJsonObject &jsonObj)
 bool Client::shutdownResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
-    if(d->requestSave.values().contains(V_SHUTDOWN)
-            && d->requestSave.key(V_SHUTDOWN) == calledID) {
+    if(d->requestSave.keys().contains(calledID)
+            && d->requestSave.value(calledID) == V_SHUTDOWN) {
         qInfo() << "client <-- : " << V_SHUTDOWN
                 << jsonObj;
         d->requestSave.remove(calledID);
@@ -874,71 +937,114 @@ bool Client::shutdownResult(const QJsonObject &jsonObj)
     return false;
 }
 
-bool Client::diagnostics(const QJsonObject &jsonObj)
+bool Client::diagnosticsCalled(const QJsonObject &jsonObj)
 {
-    DiagnosticsParams diagnosticsParams;
     if (!jsonObj.keys().contains(K_METHOD)
             || jsonObj.value(K_METHOD).toString() != V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS)
         return false;
     qInfo() << "client <-- : " << V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS;
+
+    newlsp::PublishDiagnosticsParams publishDiagnosticsParams;
 
     QJsonObject paramsObj = jsonObj.value(K_PARAMS).toObject();
     QJsonArray array = paramsObj.value(K_DIAGNOSTICS).toArray();
 
     for (auto val : array) {
         QJsonObject diagnosticObj = val.toObject();
-        QString codeStr = diagnosticObj.value(K_CODE).toString();
-        QString messageStr = diagnosticObj.value(K_MESSAGE).toString();
         QJsonObject rangeObj = diagnosticObj.value(K_RANGE).toObject();
         QJsonObject startObj = rangeObj.value(K_START).toObject();
         QJsonObject endObj = rangeObj.value(K_END).toObject();
-        QVector<DiagnosticRelatedInformation>  reletedInformation;
+        std::vector<newlsp::DiagnosticRelatedInformation> reletedInformation;
         for (auto reInfo : diagnosticObj.value(K_RELATEDINFOMATION).toArray()) {
             auto reInfoObj = reInfo.toObject();
             QJsonObject reInfoLocationObj = reInfoObj.value(K_LOCATION).toObject();
             QJsonObject reInfoLocationRangeObj = reInfoLocationObj.value(K_RANGE).toObject();
             QJsonObject reInfoLocationStartObj = reInfoLocationRangeObj.value(K_START).toObject();
             QJsonObject reInfoLocationEndObj = reInfoLocationRangeObj.value(K_END).toObject();
-            QUrl reInfoLocationUrl = reInfoLocationObj.value(K_URI).toString();
-
-            DiagnosticRelatedInformation infomationOne;
-            infomationOne.location = {
-                Location {
-                    Range { Position { reInfoLocationRangeObj.value(K_LINE).toInt(),
-                                       reInfoLocationRangeObj.value(K_CHARACTER).toInt()},
-                            Position { reInfoLocationEndObj.value(K_LINE).toInt(),
-                                       reInfoLocationEndObj.value(K_CHARACTER).toInt()}},
-                    QUrl {reInfoLocationUrl}
+            std::string reInfoLocationUrl = reInfoLocationObj.value(K_URI).toString().toStdString();
+            std::string reInfoMessage = reInfoObj.value(K_MESSAGE).toString().toStdString();
+            newlsp::DiagnosticRelatedInformation infomationOne
+            {
+                newlsp::Location {
+                    newlsp::DocumentUri { reInfoLocationUrl },
+                    newlsp::Range {
+                        { reInfoLocationRangeObj.value(K_LINE).toInt(), reInfoLocationRangeObj.value(K_CHARACTER).toInt()},
+                        { reInfoLocationEndObj.value(K_LINE).toInt(), reInfoLocationEndObj.value(K_CHARACTER).toInt()}
+                    }
+                },
+                std::string{
+                    reInfoMessage
                 }
             };
-            infomationOne.message = reInfoObj.value(K_MESSAGE).toString();
-
-            reletedInformation << infomationOne;
+            reletedInformation.push_back(infomationOne);
         }
 
-        Diagnostic diagnostic;
-        diagnostic.code = codeStr;
-        diagnostic.message = messageStr;
+        newlsp::Diagnostic diagnostic;
         diagnostic.range = {
             { startObj.value(K_LINE).toInt(), startObj.value(K_CHARACTER).toInt()},
             { endObj.value(K_LINE).toInt(), endObj.value(K_CHARACTER).toInt()}
         };
-        diagnostic.relatedInfomation = reletedInformation;
-        diagnostic.severity = Diagnostic::Severity(diagnosticObj.value(K_SEVERITY).toInt());
-        diagnostic.source = diagnosticObj.value("source").toString();
 
-        diagnosticsParams.diagnostics << diagnostic;
+        QJsonValue severityJV = diagnosticObj.value(K_SEVERITY);
+        if (!severityJV.isNull()) {
+            diagnostic.severity = Diagnostic::Severity(severityJV.toInt());
+        }
+
+        QJsonValue codeJV = diagnosticObj.value(K_CODE);
+        if (!codeJV.isNull()) {
+            if (codeJV.isString()) {
+                diagnostic.code = codeJV.toString().toStdString();
+            } else {
+                diagnostic.code = int(codeJV.toInt());
+            }
+        }
+
+        QJsonValue codeDescriptionJV = diagnosticObj.value("codeDescription");
+        if (!codeDescriptionJV.isNull()) {
+            QJsonObject cdObj = codeDescriptionJV.toObject();
+            diagnostic.codeDescription = {cdObj.value("href").toString().toStdString()};
+        }
+
+        QJsonValue sourceJV =  diagnosticObj.value("source");
+        if (!sourceJV.isNull()) {
+            diagnostic.source = sourceJV.toString().toStdString();
+        }
+
+        QJsonValue messageJV = diagnosticObj.value(K_MESSAGE);
+        if (!messageJV.isNull()) {
+            diagnostic.message = messageJV.toString().toStdString();
+        }
+
+        QJsonValue tagsJV = diagnosticObj.value("tags");
+        if (!tagsJV.isNull()) {
+            decltype (diagnostic.tags) tags;
+            if (tagsJV.isArray()) {
+                QJsonArray tagsArray = tagsJV.toArray();
+                for (auto one : tagsArray) { tags.value().push_back(one.toInt()); }
+            }
+            diagnostic.tags = tags;
+        }
+
+        if (!reletedInformation.empty()) {
+            diagnostic.relatedInformation = reletedInformation;
+        }
+
+        QJsonValue dataJV = diagnosticObj.value("data");
+        if (!dataJV.isNull()) {
+            //nothing to do
+        }
+        publishDiagnosticsParams.diagnostics.push_back(diagnostic);
     }
 
-    diagnosticsParams.version = paramsObj.value(K_VERSION).toInt();
-    diagnosticsParams.uri = paramsObj.value(K_URI).toString();
-    emit notification(diagnosticsParams);
+    publishDiagnosticsParams.version = paramsObj.value(K_VERSION).toInt();
+    publishDiagnosticsParams.uri = paramsObj.value(K_URI).toString().toStdString();
+    emit publishDiagnostics(publishDiagnosticsParams);
     return true;
 }
 
 bool Client::serverCalled(const QJsonObject &jsonObj)
 {
-    if (diagnostics(jsonObj))
+    if (diagnosticsCalled(jsonObj))
         return true;
 
     return false;

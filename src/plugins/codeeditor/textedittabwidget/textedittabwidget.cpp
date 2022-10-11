@@ -194,7 +194,7 @@ void TextEditTabWidget::openFile(const lsp::Head &head, const QString &filePath)
     }
 
     // 全局rename操作
-    QObject::connect(client, QOverload<const newlsp::WorkspaceEdit&>::of(&lsp::Client::requestResult),
+    QObject::connect(client, QOverload<const newlsp::WorkspaceEdit&>::of(&lsp::Client::renameRes),
                      this, &TextEditTabWidget::doRenameReplace, Qt::UniqueConnection);
 
     // 使用取出适用的编辑器

@@ -90,7 +90,7 @@ public:
     virtual void setIndicStyle();
     virtual void setMargin();
 
-    virtual void setDiagnostics(const lsp::DiagnosticsParams &params);
+    virtual void setDiagnostics(const newlsp::PublishDiagnosticsParams &data);
     virtual void cleanDiagnostics();
 
     virtual void setTokenFull(const QList<lsp::Data> &tokens);
@@ -99,10 +99,14 @@ public:
     virtual void setHover(const newlsp::Hover &hover);
     virtual void cleanHover();
 
-    virtual void setDefinition(const lsp::DefinitionProvider &provider);
+    virtual void setDefinition(const newlsp::Location &data);
+    virtual void setDefinition(const std::vector<newlsp::Location> &data);
+    virtual void setDefinition(const std::vector<newlsp::LocationLink> &data);
     virtual void cleanDefinition(const Scintilla::Position &pos);
 
 private slots:
+    void setDefinitionSelectedStyle(const Scintilla::Position start,
+                                    const Scintilla::Position end);
     void setCompletion(const QByteArray &text,
                        const Scintilla::Position enterLenght,
                        const lsp::CompletionProvider &provider);

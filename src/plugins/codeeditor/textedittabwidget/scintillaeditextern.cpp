@@ -150,9 +150,7 @@ void ScintillaEditExtern::jumpToLine(int line)
     int displayLines = linesOnScreen();
     if (displayLines > 0) {
         int offsetLines = displayLines / 2;
-        if (lineOffSet > offsetLines) {
-            setFirstVisibleLine(lineOffSet - offsetLines);
-        }
+        setFirstVisibleLine(qMax(0, lineOffSet - offsetLines));
     }
 }
 

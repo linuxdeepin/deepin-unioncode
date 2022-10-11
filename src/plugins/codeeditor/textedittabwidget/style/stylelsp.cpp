@@ -45,41 +45,20 @@
 
 class SciRangeCache
 {
-    Scintilla::Position start = -1;
-    Scintilla::Position end = -1;
+    std::optional<Scintilla::Position> start;
+    std::optional<Scintilla::Position> end;
 public:
     SciRangeCache(Scintilla::Position start, Scintilla::Position end)
         :start(start), end(end){}
     SciRangeCache(){}
-    void clean()
-    {
-        start = -1;
-        end = -1;
-    }
-    bool isEmpty()
-    {
-        return start != -1 && end != -1;
-    }
-    Scintilla::Position getStart() const
-    {
-        return start;
-    }
-    void setStart(const Scintilla::Position &value)
-    {
-        start = value;
-    }
-    Scintilla::Position getEnd() const
-    {
-        return end;
-    }
-    void setEnd(const Scintilla::Position &value)
-    {
-        end = value;
-    }
-    bool operator == (const SciRangeCache &other)
-    {
-        return start == other.start
-                && end == other.end;
+    void clean() { start.reset(); end.reset(); }
+    bool isEmpty() { return start && end;}
+    Scintilla::Position getStart() const {return start.value();}
+    void setStart(const Scintilla::Position &value) {start = value;}
+    Scintilla::Position getEnd() const {return end.value();}
+    void setEnd(const Scintilla::Position &value) {end = value;}
+    bool operator == (const SciRangeCache &other){
+        return start == other.start && end == other.end;
     }
 };
 
@@ -90,81 +69,54 @@ public:
     SciPositionCache(){}
     SciPositionCache(const Scintilla::Position &pos)
         : sciPosition(pos){}
-    void clean()
-    {
-        sciPosition = -1;
-    }
-    bool isEmpty()
-    {
-        return sciPosition == -1;
-    }
-    Scintilla::Position getSciPosition() const
-    {
-        return sciPosition;
-    }
-    void setSciPosition(const Scintilla::Position &value)
-    {
-        sciPosition = value;
-    }
+    void clean() {sciPosition = -1;}
+    bool isEmpty() { return sciPosition == -1;}
+    Scintilla::Position getSciPosition() const { return sciPosition;}
+    void setSciPosition(const Scintilla::Position &value) { sciPosition = value;}
 };
 
 class DefinitionCache : public SciPositionCache
 {
-    lsp::DefinitionProvider provider{};
+    std::optional<std::vector<newlsp::Location>> locations{};
+    std::optional<std::vector<newlsp::LocationLink>> locationLinks{};
+    std::optional<newlsp::Location>  location{};
     SciRangeCache textRange{};
     int cursor = 0; //Invalid
 public:
-    void clean()
-    {
-        provider.clear();
+    void clean() {
+        cleanFromLsp();
         cursor = 0;
         SciPositionCache::clean();
         textRange.clean();
     }
-    bool isEmpty()
-    {
-        return provider.isEmpty()
-                && cursor == 0
-                && SciPositionCache::isEmpty()
+    void cleanFromLsp() {
+        if (locations) location.reset();
+        if (location) location.reset();
+        if (locationLinks) locationLinks.reset();
+    }
+
+    bool isEmpty() {
+        return locations && location && locationLinks
+                && cursor == 0 && SciPositionCache::isEmpty()
                 && textRange.isEmpty();
     }
-    lsp::DefinitionProvider getProvider() const
-    {
-        return provider;
-    }
-    void setProvider(const lsp::DefinitionProvider &value)
-    {
-        provider = value;
-    }
-    int getCursor() const
-    {
-        return cursor;
-    }
-    void setCursor(int value)
-    {
-        cursor = value;
-    }
-    SciRangeCache getTextRange() const
-    {
-        return textRange;
-    }
-    void setTextRange(const SciRangeCache &value)
-    {
-        textRange = value;
-    }
+    std::vector<newlsp::Location> getLocations() const {return locations.value();}
+    newlsp::Location getLocation() const {return location.value();}
+    std::vector<newlsp::LocationLink> getLocationLinks() const {return locationLinks.value();}
+    void set(const std::vector<newlsp::Location> &value) {locations = value;}
+    void set(const newlsp::Location &value) {location = value;}
+    void set(const std::vector<newlsp::LocationLink> &value) {locationLinks = value;}
+    int getCursor() const {return cursor;}
+    void setCursor(int value) {cursor = value;}
+    SciRangeCache getTextRange() const {return textRange;}
+    void setTextRange(const SciRangeCache &value) {textRange = value;}
 };
 
 class HoverCache : public SciPositionCache
 {
 public:
-    void clean()
-    {
-        SciPositionCache::clean();
-    }
-    bool isEmpty()
-    {
-        return SciPositionCache::isEmpty();
-    }
+    void clean() { SciPositionCache::clean(); }
+    bool isEmpty() { return SciPositionCache::isEmpty(); }
 };
 
 class RenameCache
@@ -172,32 +124,12 @@ class RenameCache
     SciPositionCache start;
     SciPositionCache end;
 public:
-    void clean()
-    {
-        start.clean();
-        end.clean();
-    }
-    bool isEmpty()
-    {
-        return start.isEmpty()
-                && end.isEmpty();
-    }
-    SciPositionCache getStart() const
-    {
-        return start;
-    }
-    void setStart(const SciPositionCache &value)
-    {
-        start = value;
-    }
-    SciPositionCache getEnd() const
-    {
-        return end;
-    }
-    void setEnd(const SciPositionCache &value)
-    {
-        end = value;
-    }
+    void clean() { start.clean(); end.clean(); }
+    bool isEmpty() { return start.isEmpty() && end.isEmpty(); }
+    SciPositionCache getStart() const { return start; }
+    void setStart(const SciPositionCache &value) {start = value;}
+    SciPositionCache getEnd() const {return end;}
+    void setEnd(const SciPositionCache &value) {end = value;}
 };
 
 class CompletionCache
@@ -316,13 +248,13 @@ void StyleLsp::initLspConnection()
                      RefactorWidget::instance(), &RefactorWidget::displayReference, Qt::UniqueConnection);
 
     //bind signals to file diagnostics
-    QObject::connect(getClient(), QOverload<const lsp::DiagnosticsParams &>::of(&lsp::Client::notification),
-                     this, &StyleLsp::setDiagnostics);
+    QObject::connect(getClient(), QOverload<const newlsp::PublishDiagnosticsParams &>::of(&lsp::Client::publishDiagnostics),
+                     this, [=](const newlsp::PublishDiagnosticsParams &data) {this->setDiagnostics(data);});
 
     QObject::connect(getClient(), QOverload<const QList<lsp::Data>&>::of(&lsp::Client::requestResult),
                      this, &StyleLsp::setTokenFull);
 
-    QObject::connect(getClient(), QOverload<const newlsp::Hover&>::of(&lsp::Client::requestResult),
+    QObject::connect(getClient(), QOverload<const newlsp::Hover&>::of(&lsp::Client::hoverRes),
                      this, &StyleLsp::setHover);
 
     QObject::connect(getClient(), QOverload<const lsp::CompletionProvider&>::of(&lsp::Client::requestResult),
@@ -330,8 +262,13 @@ void StyleLsp::initLspConnection()
         d->completionCache.provider = provider;
     });
 
-    QObject::connect(getClient(), QOverload<const lsp::DefinitionProvider&>::of(&lsp::Client::requestResult),
-                     this, &StyleLsp::setDefinition);
+    /* to use QOverload cast virtual slot can't working */
+    QObject::connect(getClient(), QOverload<const newlsp::Location&>::of(&lsp::Client::definitionRes),
+                     [=](const newlsp::Location& data){ this->setDefinition(data); });
+    QObject::connect(getClient(), QOverload<const std::vector<newlsp::Location>&>::of(&lsp::Client::definitionRes),
+                     [=](const std::vector<newlsp::Location> &data){ this->setDefinition(data); });
+    QObject::connect(getClient(), QOverload<const std::vector<newlsp::LocationLink>&>::of(&lsp::Client::definitionRes),
+                     [=](const std::vector<newlsp::LocationLink>& data){ this->setDefinition(data); });
 
     if (getClient()) {
         qApp->metaObject()->invokeMethod(getClient(), "openRequest", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
@@ -491,7 +428,8 @@ void StyleLsp::sciDefinitionHover(Scintilla::Position position)
     if  (d->edit != d->edit) {
         d->definitionCache.setSciPosition(position);
         d->definitionCache.setTextRange(currTextRange);
-        d->definitionCache.setProvider({}); // 清空Provider
+        // 清空结果
+        d->definitionCache.cleanFromLsp();
         d->edit->setCursor(-1); // 恢复鼠标状态
         d->definitionCache.setCursor(d->edit->cursor());
     } else { // 编辑器相等
@@ -501,7 +439,7 @@ void StyleLsp::sciDefinitionHover(Scintilla::Position position)
         } else {
             d->definitionCache.setTextRange(currTextRange);
             d->definitionCache.setSciPosition(position);
-            d->definitionCache.setProvider({}); // 清空Provider
+            d->definitionCache.cleanFromLsp();
         }
     }
     auto lspPostion = getLspPosition(d->edit->docPointer(), d->definitionCache.getSciPosition());
@@ -538,11 +476,23 @@ void StyleLsp::sciIndicClicked(Scintilla::Position position)
 
     std::bitset<32> flags(d->edit->indicatorAllOnFor(position));
     if (flags[INDIC_COMPOSITIONTHICK]) {
-        if (d->definitionCache.getProvider().count() > 0) {
-            auto providerAtOne = d->definitionCache.getProvider().first();
+        if (d->definitionCache.getLocations().size() > 0) {
+            auto one = d->definitionCache.getLocations().front();
             TextEditTabWidget::instance()->jumpToLine(d->edit->projectHead(),
-                                                      providerAtOne.fileUrl.toLocalFile(),
-                                                      providerAtOne.range.end.line);
+                                                      QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                      one.range.end.line);
+            cleanDefinition(position);
+        } else if (d->definitionCache.getLocationLinks().size() > 0) {
+            auto one = d->definitionCache.getLocationLinks().front();
+            TextEditTabWidget::instance()->jumpToLine(d->edit->projectHead(),
+                                                      QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
+                                                      one.targetRange.end.line);
+            cleanDefinition(position);
+        } else {
+            auto one = d->definitionCache.getLocation();
+            TextEditTabWidget::instance()->jumpToLine(d->edit->projectHead(),
+                                                      QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                      one.range.end.line);
             cleanDefinition(position);
         }
     }
@@ -713,17 +663,17 @@ void StyleLsp::setMargin()
     d->edit->markerSetAlpha(MarkerNumber::HintLineBackground, 0x22);
 }
 
-void StyleLsp::setDiagnostics(const lsp::DiagnosticsParams &params)
+void StyleLsp::setDiagnostics(const newlsp::PublishDiagnosticsParams &data)
 {
     if (!edit())
         return;
 
-    if (params.uri.toLocalFile() != edit()->file())
+    if (QUrl(QString::fromStdString(data.uri)).toLocalFile() != edit()->file())
         return;
 
     this->cleanDiagnostics();
-    for (auto val : params.diagnostics) {
-        if (val.severity == lsp::Diagnostic::Severity::Error) { // error
+    for (auto val : data.diagnostics) {
+        if (newlsp::Enum::DiagnosticSeverity::get()->Error == val.severity.value()) { // error
             newlsp::Position start{val.range.start.line, val.range.start.character};
             newlsp::Position end{val.range.end.line, val.range.start.character};
             Sci_Position startPos = getSciPosition(d->edit->docPointer(), start);
@@ -731,8 +681,8 @@ void StyleLsp::setDiagnostics(const lsp::DiagnosticsParams &params)
             d->edit->setIndicatorCurrent(INDIC_SQUIGGLE);
             d->edit->indicSetFore(INDIC_SQUIGGLE, StyleColor::color(StyleColor::Table::get()->Red));
             d->edit->indicatorFillRange(startPos, endPos - startPos);
-
-            d->edit->eOLAnnotationSetText(val.range.start.line,"Error: " + val.message.toLatin1());
+            std::string message = "Error: " + val.message.value();
+            d->edit->eOLAnnotationSetText(val.range.start.line, message.c_str());
             d->edit->eOLAnnotationSetStyleOffset(EOLAnnotation::RedTextFore);
             d->edit->eOLAnnotationSetStyle(val.range.start.line, EOLAnnotation::RedTextFore - d->edit->eOLAnnotationStyleOffset());
             d->edit->styleSetFore(EOLAnnotation::RedTextFore, StyleColor::color(StyleColor::Table::get()->Red));
@@ -865,23 +815,43 @@ void StyleLsp::cleanHover()
     d->edit->callTipCancel();
 }
 
-void StyleLsp::setDefinition(const lsp::DefinitionProvider &provider)
+void StyleLsp::setDefinition(const newlsp::Location &data)
 {
     if (!edit() || edit()->isLeave())
         return;
 
-    d->definitionCache.setProvider(provider);
+    d->definitionCache.set(data);
     auto sciStartPos = d->edit->wordStartPosition(d->definitionCache.getSciPosition(), true);
     auto sciEndPos = d->edit->wordEndPosition(d->definitionCache.getSciPosition(), true);
 
-    if (provider.count() >= 1) {
-        d->edit->setIndicatorCurrent(INDIC_COMPOSITIONTHICK);
-        d->edit->indicSetFore(INDIC_COMPOSITIONTHICK, d->edit->styleFore(0));
-        d->edit->indicatorFillRange(sciStartPos, sciEndPos - sciStartPos);
-        if (d->edit->cursor() != 8) {
-            d->definitionCache.setCursor(d->edit->cursor());
-            d->edit->setCursor(8); // hand from Scintilla platfrom.h
-        }
+    setDefinitionSelectedStyle(sciStartPos, sciEndPos);
+}
+
+void StyleLsp::setDefinition(const std::vector<newlsp::Location> &data)
+{
+    if (!edit() || edit()->isLeave())
+        return;
+
+    d->definitionCache.set(data);
+    auto sciStartPos = d->edit->wordStartPosition(d->definitionCache.getSciPosition(), true);
+    auto sciEndPos = d->edit->wordEndPosition(d->definitionCache.getSciPosition(), true);
+
+    if (data.size() >= 1) {
+        setDefinitionSelectedStyle(sciStartPos, sciEndPos);
+    }
+}
+
+void StyleLsp::setDefinition(const std::vector<newlsp::LocationLink> &data)
+{
+    if (!edit() || edit()->isLeave())
+        return;
+
+    d->definitionCache.set(data);
+    auto sciStartPos = d->edit->wordStartPosition(d->definitionCache.getSciPosition(), true);
+    auto sciEndPos = d->edit->wordEndPosition(d->definitionCache.getSciPosition(), true);
+
+    if (data.size() >= 1) {
+        setDefinitionSelectedStyle(sciStartPos, sciEndPos);
     }
 }
 
@@ -894,6 +864,17 @@ void StyleLsp::cleanDefinition(const Scintilla::Position &pos)
         d->edit->setCursor(d->definitionCache.getCursor());
         // d->edit->indicatorClearRange(hotSpotStart, hotSpotEnd);
         d->edit->indicatorClearRange(0, d->edit->length());
+    }
+}
+
+void StyleLsp::setDefinitionSelectedStyle(const Scintilla::Position start, const Scintilla::Position end)
+{
+    d->edit->setIndicatorCurrent(INDIC_COMPOSITIONTHICK);
+    d->edit->indicSetFore(INDIC_COMPOSITIONTHICK, d->edit->styleFore(0));
+    d->edit->indicatorFillRange(start, end - start);
+    if (d->edit->cursor() != 8) {
+        d->definitionCache.setCursor(d->edit->cursor());
+        d->edit->setCursor(8); // hand from Scintilla platfrom.h
     }
 }
 

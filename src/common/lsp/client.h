@@ -99,7 +99,7 @@ public:
     void moniker(const newlsp::MonikerParams &params){}
     // textDocument/completion
     void completion(const newlsp::CompletionParams &params){}
-    // textDocument/diagnostic
+    // textDocument/diagnostic is request
     void diagnostic(const newlsp::DocumentDiagnosticParams &params){}
     // textDocument/signatureHelp
     void signatureHelp(const newlsp::SignatureHelpParams &params){}
@@ -121,8 +121,6 @@ public:
     void prepareRename(const newlsp::PrepareRenameParams &params){}
     // textDocument/linkedEditingRange
     void linkedEditingRange(const newlsp::LinkedEditingRangeParams &params){}
-    // textDocument/publishDiagnostics
-    void publishDiagnostics(const newlsp::PublishDiagnosticsParams &params);
 
     // codeAction/resolve
     void resolve(const newlsp::CodeAction &codeAction){}
@@ -183,20 +181,25 @@ public slots:
 signals:
     void request();
     void notification(const QString &jsonStr);
-    void notification(const lsp::DiagnosticsParams &diagnostics);
     void requestResult(const lsp::SemanticTokensProvider &tokensProvider);
     void requestResult(const lsp::Symbols &symbols);
     void requestResult(const lsp::Locations &locations);
     void requestResult(const lsp::CompletionProvider &completionProvider);
     void requestResult(const lsp::SignatureHelps &signatureHelps);
     void requestResult(const lsp::Highlights &highlights);
-    void requestResult(const lsp::DefinitionProvider &definitionProvider);
     void requestResult(const QList<lsp::Data> &tokensResult);
     void requestResult(const lsp::References &refs);
-    void requestResult(const newlsp::WorkspaceEdit &changes);
-    void requestResult(const newlsp::Hover &hover);
+    void renameRes(const newlsp::WorkspaceEdit &changes);
+    void hoverRes(const newlsp::Hover &hover);
+    void definitionRes(const newlsp::Location &location);
+    void definitionRes(const std::vector<newlsp::Location> &locations);
+    void definitionRes(const std::vector<newlsp::LocationLink> &locations);
+
+    /* server request */
+    void publishDiagnostics(const newlsp::PublishDiagnosticsParams &diagnostics); // textDocument/publishDiagnostics
 
 private:
+    /* server response parse */
     bool calledError(const QJsonObject &jsonObj);
     bool calledResult(const QJsonObject &jsonObj); //found result key from json && not found method
     bool initResult(const QJsonObject &jsonObj); // client call server rpc return
@@ -215,8 +218,9 @@ private:
     bool shutdownResult(const QJsonObject &jsonObj);
     bool exitResult(const QJsonObject &jsonObj);
 
+    /* server called method */
     bool serverCalled(const QJsonObject &jsonObj); // not found result key from json && found key method
-    bool diagnostics(const QJsonObject &jsonObj);
+    bool diagnosticsCalled(const QJsonObject &jsonObj);
 
 private slots:
     QStringList cvtStringList(const QJsonArray &array);
