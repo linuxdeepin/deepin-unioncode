@@ -35,7 +35,6 @@
 #include "common/common.h"
 #include "services/builder/builderservice.h"
 #include "services/option/optionmanager.h"
-#include "language/javaparser.h"
 #include "common/util/downloadutil.h"
 #include "common/util/fileoperation.h"
 
@@ -80,12 +79,12 @@ Debugger::Debugger(QObject *parent)
                           "/path",
                           "com.deepin.unioncode.interface",
                           "send_java_dapport",
-                          this, SLOT(slotReceiveJavaDAPPort(int)));
+                          this, SLOT(slotReceiveJavaDAPPort(int, QString, QString, QStringList)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "send_java_dapport",
-                       this, SLOT(slotReceiveJavaDAPPort(int)));
+                       this, SLOT(slotReceiveJavaDAPPort(int, QString, QString, QStringList)));
 
     connect(this, &Debugger::sigJavaLSPPluginReady, this, &Debugger::slotJavaLSPPluginReady);
     connect(this, &Debugger::sigJavaDAPPluginReady, this, &Debugger::slotJavaDAPPluginReady);
@@ -93,7 +92,7 @@ Debugger::Debugger(QObject *parent)
 
     timer = new QTimer();
     connect(timer, &QTimer::timeout, [this]() {
-        emit sigJavaDAPPort(0);
+        emit sigJavaDAPPort(0, "", "", QStringList{});
     });
 
     initializeView();
@@ -845,7 +844,6 @@ void Debugger::slotJavaDAPPluginReady(bool succeed)
                                                   "com.deepin.unioncode.interface",
                                                   "launch_java_dap");
     msg << projectInfo.workspaceFolder()
-        << javaparser::getMainClassNameInDir(projectInfo.workspaceFolder()).second
         << javaDapPluginConfig.configHomePath
         << javaDapPluginConfig.jrePath
         << javaDapPluginConfig.jreExecute
@@ -855,17 +853,17 @@ void Debugger::slotJavaDAPPluginReady(bool succeed)
     QDBusConnection::sessionBus().send(msg);
 }
 
-void Debugger::slotReceiveJavaDAPPort(int port)
+void Debugger::slotReceiveJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths)
 {
     if (waitHandleJavaDAPPort)
-        emit sigJavaDAPPort(port);
+        emit sigJavaDAPPort(port, mainClass, projectName, classPaths);
 }
 
-void Debugger::slotHandleJavaDAPPort(int port)
+void Debugger::slotHandleJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths)
 {
     waitHandleJavaDAPPort = false;
     timer->stop();
-    launchSession(port);
+    launchSession(port, mainClass, projectName, classPaths);
 }
 
 void Debugger::restartJavaDAP()
@@ -875,7 +873,7 @@ void Debugger::restartJavaDAP()
 }
 
 void Debugger::stopJavaDAP()
-{    
+{
     updateRunState(kNoRun);
     session->closeSession();
 }
@@ -1018,7 +1016,8 @@ void Debugger::checkJavaDAPPlugin()
     }
 }
 
-void Debugger::launchSession(int port)
+void Debugger::launchSession(const int port, const QString &mainClass/* = ""*/,
+                             const QString &projectName/* = ""*/, const QStringList &classPaths/* = QStringList{}*/)
 {
     if (!port) {
         printOutput("Java dap port is not ready, please retry.", ErrorMessageFormat);
@@ -1042,10 +1041,10 @@ void Debugger::launchSession(int port)
             bSuccess &= session->launch(targetPath);
         else if (isJavaProject(activeProjectKitName))
             bSuccess &= session->launchJavaDap(projectInfo.workspaceFolder(),
-                                               javaparser::getMainClassNameInDir(projectInfo.workspaceFolder()).first,
-                                               QFileInfo(projectInfo.workspaceFolder()).fileName(),
-                                               QStringList{javaparser::getClassesPath(projectInfo.workspaceFolder(), activeProjectKitName == "maven")},
-                                               OptionManager::getInstance()->getJdkToolPath());
+                                               mainClass,
+                                               projectName,
+                                               classPaths,
+                                               QDir::homePath() + javaDapPluginConfig.configHomePath + javaDapPluginConfig.jreExecute);
         else
             bSuccess &= false;
     }

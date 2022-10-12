@@ -89,7 +89,7 @@ signals:
     void runStateChanged(RunState state);
     void sigJavaLSPPluginReady(bool succeed);
     void sigJavaDAPPluginReady(bool succeed);
-    void sigJavaDAPPort(int port);
+    void sigJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
 
 public slots:
     void registerDapHandlers();
@@ -106,8 +106,8 @@ public slots:
 
     void slotJavaLSPPluginReady(bool succeed);
     void slotJavaDAPPluginReady(bool succeed);
-    void slotReceiveJavaDAPPort(int port);
-    void slotHandleJavaDAPPort(int port);
+    void slotReceiveJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
+    void slotHandleJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
 
 private:
     void initializeView();
@@ -129,7 +129,8 @@ private:
     bool isGradleProject(const QString &kitName);
     bool isJavaProject(const QString &kitName);
 
-    void launchSession(int port);
+    void launchSession(const int port, const QString &mainClass = "",
+                       const QString &projectName = "", const QStringList &classPaths = QStringList{});
     void restartJavaDAP();
     void stopJavaDAP();
     void checkJavaLSPPlugin();

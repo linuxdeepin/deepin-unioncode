@@ -3,7 +3,7 @@
  *
  * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer:
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,15 @@ public:
     QString getLSPInitParam(const int requestId,
                             const int pid,
                             const QString &workspace,
-                            const QString &triggerFile,
                             const QString &jdkHome,
                             const QString &debugJar);
     QString getLSPInitilizedParam(const int requestId);
     QString getLaunchJavaDAPParam(const int requestId);
+    QString getResolveMainClassParam(const int requestId,
+                                     const QString &workspace);
+    QString getResolveClassPathParam(const int requestId,
+                                     const QString &mainClass,
+                                     const QString &projectName);
 
 signals:
 

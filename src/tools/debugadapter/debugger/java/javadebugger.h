@@ -3,7 +3,7 @@
  *
  * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer:
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,27 +33,37 @@ public:
     virtual ~JavaDebugger() override;
 
 signals:
-    void sigSendDAPPort(int port);
+    void sigResolveClassPath(const QString &mainClass,
+                             const QString &projectName);
+    void sigCheckInfo();
+    void sigSendToClient(int port,
+                         const QString &mainClass,
+                         const QString &projectName,
+                         const QStringList &classPaths);
 
 public slots:
-    void slotReceivePojectInfo(QString workspace,
-                               QString triggerFile,
-                               QString configHomePath,
-                               QString jrePath,
-                               QString jreExecute,
-                               QString launchPackageFile,
-                               QString launchConfigPath,
-                               QString dapPackageFile);
+    void slotReceivePojectInfo(const QString &workspace,
+                               const QString &configHomePath,
+                               const QString &jrePath,
+                               const QString &jreExecute,
+                               const QString &launchPackageFile,
+                               const QString &launchConfigPath,
+                               const QString &dapPackageFile);
+    void slotResolveClassPath(const QString &mainClass,
+                              const QString &projectName);
+    void slotCheckInfo();
 
 private:
     void registerLaunchDAPConnect();
 
-    void initialize(QString configHomePath,
-                    QString jreExecute,
-                    QString launchPackageFile,
-                    QString launchConfigPath);
-    void executeCommand(QString command);
-    void parseDAPPort(const QString &content);
+    void initialize(const QString &configHomePath,
+                    const QString &jreExecute,
+                    const QString &launchPackageFile,
+                    const QString &launchConfigPath);
+    void executeCommand(const QString &command);
+    void parseResult(const QString &content);
+    bool parseMainClass(const QString &content, QString &mainClass, QString &projectName);
+    bool parseClassPath(const QString &content, QStringList &classPaths);
 
     JavaDebuggerPrivate *const d;
 };

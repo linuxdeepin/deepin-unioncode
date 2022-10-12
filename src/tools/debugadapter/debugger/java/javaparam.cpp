@@ -3,7 +3,7 @@
  *
  * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer:
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,12 +69,10 @@ QString JavaParam::getInitBackendParam(const QString &port,
 QString JavaParam::getLSPInitParam(const int requestId,
                                    const int pid,
                                    const QString &workspace,
-                                   const QString &triggerFile,
                                    const QString &jdkHome,
                                    const QString &debugJar)
 {
     QString workspaceUrl = QUrl::fromLocalFile(workspace).toEncoded();
-    QString triggerFileUrl = QUrl::fromLocalFile(triggerFile).toEncoded();
     QString param = R"({
                     "jsonrpc": "2.0",
                     "id": )" + QString::number(requestId) + R"(,
@@ -201,10 +199,7 @@ QString JavaParam::getLSPInitParam(const int requestId,
                                 "actionableRuntimeNotificationSupport": true,
                                 "shouldLanguageServerExitOnShutdown": true,
                                 "onCompletionItemSelectedCommand": "editor.action.triggerParameterHints"
-                            },
-                            "triggerFiles": [
-                                ")" + triggerFileUrl + R"("
-                            ]
+                            }
                         },
                         "trace": "verbose",
                         "workspaceFolders": [{
@@ -244,3 +239,37 @@ QString JavaParam::getLaunchJavaDAPParam(const int requestId)
     return param;
 }
 
+
+QString JavaParam::getResolveMainClassParam(const int requestId,
+                                            const QString &workspace)
+{
+    QString workspaceUrl = QUrl::fromLocalFile(workspace).toEncoded();
+    QString param = R"({
+                    "jsonrpc": "2.0",
+                    "id": )" + QString::number(requestId) + R"(,
+                    "method": "workspace/executeCommand",
+                    "params": {
+                        "command": "vscode.java.resolveMainClass",
+                        "arguments": [")" + workspaceUrl + R"("]
+                    }
+                })";
+
+    return param;
+}
+
+QString JavaParam::getResolveClassPathParam(const int requestId,
+                                            const QString &mainClass,
+                                            const QString &projectName)
+{
+    QString param = R"({
+                    "jsonrpc": "2.0",
+                    "id": )" + QString::number(requestId) + R"(,
+                    "method": "workspace/executeCommand",
+                    "params": {
+                        "command": "vscode.java.resolveClasspath",
+                        "arguments": [")" + mainClass + R"(", ")" + projectName + R"("]
+                    }
+                })";
+
+    return param;
+}
