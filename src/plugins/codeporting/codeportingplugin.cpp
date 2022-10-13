@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<huangyub@uniontech.com>
+ *             hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +47,7 @@ bool CodePortingPlugin::start()
 
     // Add code porting item in tool menu.
     QAction *action = new QAction(tr("&Code Porting"));
-    ActionManager::getInstance()->registerAction(action, "Tool.CodePorting", action->text());
+    ActionManager::getInstance()->registerAction(action, "Tool.CodePorting", action->text(),QKeySequence(), "code_porting.png");
     connect(action, &QAction::triggered, CodePortingManager::instance(), &CodePortingManager::slotShowConfigWidget);
 
     AbstractAction *actionImpl = new AbstractAction(action);

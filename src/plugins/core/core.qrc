@@ -1,5 +1,42 @@
 <RCC>
     <qresource prefix="/core">
         <file>images/unioncode@128.png</file>
+        <file>images/edit-find-replace.png</file>
+        <file>images/edit-find.png</file>
+        <file>images/emblem-package.svg</file>
+        <file>images/format-justify-left.svg</file>
+        <file>images/help-about.svg</file>
+        <file>images/image-has-versions-open.png</file>
+        <file>images/option.svg</file>
+        <file>images/system-search.png</file>
+        <file>images/tools-report-bug.png</file>
+        <file>images/abort_debug.png</file>
+        <file>images/continue.png</file>
+        <file>images/interrupt.png</file>
+        <file>images/restart_debug.png</file>
+        <file>images/step_in.png</file>
+        <file>images/step_out.png</file>
+        <file>images/step_over.png</file>
+        <file>images/test.png</file>
+        <file>images/save_all.png</file>
+        <file>images/runtime_analysis.png</file>
+        <file>images/recent_folder.png</file>
+        <file>images/recent_doc.png</file>
+        <file>images/rebuild.png</file>
+        <file>images/quit.png</file>
+        <file>images/print.png</file>
+        <file>images/plugins.png</file>
+        <file>images/open_repository.png</file>
+        <file>images/open_doc.png</file>
+        <file>images/new_folder.png</file>
+        <file>images/new_doc.png</file>
+        <file>images/code_porting.png</file>
+        <file>images/close_doc.png</file>
+        <file>images/clean.png</file>
+        <file>images/checkout.png</file>
+        <file>images/builder-symbolic.svg</file>
+        <file>images/build.png</file>
+        <file>images/about.png</file>
+        <file>images/debug-start.png</file>
     </qresource>
 </RCC>

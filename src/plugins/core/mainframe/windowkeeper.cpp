@@ -5,6 +5,7 @@
  *
  * Maintainer: huangyu<huangyub@uniontech.com>
  *             zhouyi<zhouyi1@uniontech.com>
+ *             hongjinchuan<hongjinchuan@uniontech.com>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -61,28 +62,32 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     QMenu* fileMenu = new QMenu();
     QAction* actionQuit = new QAction(MWMFA_QUIT);
     ActionManager::getInstance()->registerAction(actionQuit, "File.Quit",
-                                                 MWMFA_QUIT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Q));
+                                                 MWMFA_QUIT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Q),
+                                                 "quit.png");
     QAction::connect(actionQuit, &QAction::triggered, [](){
         qApp->closeAllWindows();
     });
 
     QAction* actionNewDocument = new QAction(MWMFA_DOCUMENT_NEW);
     ActionManager::getInstance()->registerAction(actionNewDocument, "File.New.Document",
-                                                 MWMFA_DOCUMENT_NEW, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_N));
+                                                 MWMFA_DOCUMENT_NEW, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_N),
+                                                 "new_doc.png");
     QAction::connect(actionNewDocument, &QAction::triggered, [=](){
         qInfo() << "nothing to do";
     });
 
     QAction* actionNewFolder = new QAction(MWMFA_FOLDER_NEW);
     ActionManager::getInstance()->registerAction(actionNewFolder, "File.New.Folder",
-                                                 MWMFA_FOLDER_NEW, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_N));
+                                                 MWMFA_FOLDER_NEW, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_N),
+                                                 "new_folder.png");
     QAction::connect(actionNewFolder, &QAction::triggered, [=](){
         qInfo() << "nothing to do";
     });
 
     QAction* actionOpenDocument = new QAction(MWMFA_OPEN_DOCUMENT);
     ActionManager::getInstance()->registerAction(actionOpenDocument, "File.Open.Document",
-                                                 MWMFA_OPEN_DOCUMENT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O));
+                                                 MWMFA_OPEN_DOCUMENT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O),
+                                                 "open_doc.png");
     QAction::connect(actionOpenDocument, &QAction::triggered, [=](){
         QString file = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE);
         if (file.isEmpty())
@@ -91,13 +96,16 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     });
 
     QMenu* menuOpenProject = new QMenu(MWMFA_OPEN_PROJECT);
+    menuOpenProject->setIcon(QIcon(":/core/images/open_doc.png"));
 
     auto openRecentDocuments = new QAction(MWMFA_OPEN_RECENT_DOCUMENTS);
     ActionManager::getInstance()->registerAction(openRecentDocuments, "File.Open.Recent.Documents",
-                                                 MWMFA_OPEN_RECENT_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_D));
+                                                 MWMFA_OPEN_RECENT_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_D),
+                                                 "recent_doc.png");
     auto openRecentFolders = new QAction(MWMFA_OPEN_RECENT_FOLDER);
     ActionManager::getInstance()->registerAction(openRecentFolders, "File.Open.Recent.Folders",
-                                                 MWMFA_OPEN_RECENT_FOLDER, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_F));
+                                                 MWMFA_OPEN_RECENT_FOLDER, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_F),
+                                                 "recent_folder.png");
 
     fileMenu->addAction(actionNewDocument);
     fileMenu->addAction(actionNewFolder);
@@ -148,19 +156,26 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     QAction* actionPlugins = new QAction("Plugins");
 
     ActionManager::getInstance()->registerAction(actionSearch, "Tools.Search",
-                                                 "Search", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S));
+                                                 "Search", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S),
+                                                 "system-search.png");
     ActionManager::getInstance()->registerAction(actionPackageTools, "Tools.Package.Tools",
-                                                 "Package Tools", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_P));
+                                                 "Package Tools", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_P),
+                                                 "emblem-package.svg");
     ActionManager::getInstance()->registerAction(actionVersionTools, "Tools.Version.Tools",
-                                                 "Version Tools", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_V));
+                                                 "Version Tools", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_V),
+                                                 "image-has-versions-open.png");
     ActionManager::getInstance()->registerAction(actionCodeFormatting, "Tools.Code.Formatting",
-                                                 "Code Formatting", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C));
+                                                 "Code Formatting", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
+                                                 "format-justify-left.svg");
     ActionManager::getInstance()->registerAction(actionRuntimeAnalysis, "Tools.Runtime.Analysis",
-                                                 "Runtime Analysis", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R));
+                                                 "Runtime Analysis", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
+                                                 "runtime_analysis.png");
     ActionManager::getInstance()->registerAction(actionTest, "Tools.Test",
-                                                 "Test", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_T));
+                                                 "Test", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_T),
+                                                 "test.png");
     ActionManager::getInstance()->registerAction(actionPlugins, "Tools.Plugins",
-                                                 "Plugins", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_G));
+                                                 "Plugins", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_G),
+                                                 "plugins.png");
 
     toolsMenu->addAction(actionSearch);
     toolsMenu->addAction(actionPackageTools);
@@ -187,12 +202,14 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
 
     QAction* actionReportBug = new QAction("Report Bug");
     ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
-                                                 "Report Bug", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R));
+                                                 "Report Bug", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
+                                                 "tools-report-bug.png");
     helpMenu->addAction(actionReportBug);
 
     QAction* actionAboutUnionCode = new QAction("About \"Union Code\"");
     ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
-                                                 "About", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A));
+                                                 "About", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A),
+                                                 "help-about.svg");
     helpMenu->addAction(actionAboutUnionCode);
 
     QAction::connect(actionAboutUnionCode, &QAction::triggered, this, &WindowKeeper::showAboutDlg);

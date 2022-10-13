@@ -4,6 +4,7 @@
  * Author:     zhouyi<zhouyi1@uniontech.com>
  *
  * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ *             hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +34,10 @@ class ActionManager : public QObject
 public:
     static ActionManager *getInstance();
 
-    Command *registerAction(QAction *action, const QString id,
-                            const QString description = nullptr,
-                            const QKeySequence defaultShortcut = QKeySequence());
+    Command *registerAction(QAction *action, const QString &id,
+                            const QString &description = nullptr,
+                            const QKeySequence defaultShortcut = QKeySequence(),
+                            const QString &iconFileName = nullptr);
     void unregisterAction(QString id);
 
     Command *command(QString id);

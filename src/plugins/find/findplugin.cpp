@@ -4,6 +4,7 @@
  * Author:     zhouyi<zhouyi1@uniontech.com>
  *
  * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ *             hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,10 +55,13 @@ bool FindPlugin::start()
     QAction* findAction = new QAction();
     QAction* advancedFindAction = new QAction();
 
+
     ActionManager::getInstance()->registerAction(findAction, "Edit.Find",
-                                                 tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
+                                                 tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F),
+                                                 "edit-find-replace.png");
     ActionManager::getInstance()->registerAction(advancedFindAction, "Edit.Advanced.Find",
-                                                 tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT |Qt::Key_F));
+                                                 tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT |Qt::Key_F),
+                                                 "edit-find.png");
 
     editMenu->addAction(findAction);
     editMenu->addAction(advancedFindAction);

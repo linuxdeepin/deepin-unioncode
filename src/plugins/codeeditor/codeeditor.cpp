@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             huangyu<huangyub@uniontech.com>
+ *             hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,12 +104,14 @@ bool CodeEditor::start()
 
         auto saveAllDocuments = new QAction(SAVE_ALL_DOCUMENTS);
         ActionManager::getInstance()->registerAction(saveAllDocuments, "File.Save.All.Documents",
-                                                     SAVE_ALL_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S));
+                                                     SAVE_ALL_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S),
+                                                     "save_all.png");
         windowService->addAction(MWM_FILE, new AbstractAction(saveAllDocuments));
 
         auto closeAllDocuments = new QAction(CLOSE_ALL_DOCUMENTS);
         ActionManager::getInstance()->registerAction(closeAllDocuments, "File.Close.All.Documents",
-                                                     CLOSE_ALL_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_W));
+                                                     CLOSE_ALL_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_W),
+                                                     "close_doc.png");
         windowService->addAction(MWM_FILE, new AbstractAction(closeAllDocuments));
 
         auto sep = new QAction();
@@ -117,7 +120,8 @@ bool CodeEditor::start()
 
         auto print = new QAction(PRINT);
         ActionManager::getInstance()->registerAction(print, "File.Print",
-                                                     PRINT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_P));
+                                                     PRINT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_P),
+                                                     "print.png");
         windowService->addAction(MWM_FILE, new AbstractAction(print));
 
         saveAllDocuments->setEnabled(false);

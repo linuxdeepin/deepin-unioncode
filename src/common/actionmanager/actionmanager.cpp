@@ -4,6 +4,7 @@
  * Author:     zhouyi<zhouyi1@uniontech.com>
  *
  * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ *             hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,13 +178,20 @@ ActionManager *ActionManager::getInstance()
 
     Usage: ActionManager::getInstance->registerAction(...);
 */
-Command *ActionManager::registerAction(QAction *action, const QString id,
-                                       const QString description/* = nullptr*/,
-                                       const QKeySequence defaultShortcut/* = QKeySequence()*/)
+Command *ActionManager::registerAction(QAction *action, const QString &id,
+                                       const QString &description/* = nullptr*/,
+                                       const QKeySequence defaultShortcut/* = QKeySequence()*/,
+                                       const QString &iconFileName/* = nullptr*/)
 {
     if(!action || id.isEmpty())
         return nullptr;
 
+    if(iconFileName == nullptr)
+        return nullptr;
+
+    const QIcon icon = QIcon(":/core/images/" + iconFileName);
+    action->setIcon(icon);
+    
     connect(action, &QAction::destroyed, [=] {
         unregisterAction(id);
     });

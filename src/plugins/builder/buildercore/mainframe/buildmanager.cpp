@@ -98,20 +98,20 @@ void BuildManager::addMenu()
     if (!windowService)
         return;
 
-    auto actionInit = [&](QAction *action, QString actionID, QKeySequence key){
-        ActionManager::getInstance()->registerAction(action, actionID, action->text(), key);
+    auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
+        ActionManager::getInstance()->registerAction(action, actionID, action->text(), key, iconFileName);
         AbstractAction *actionImpl = new AbstractAction(action);
         windowService->addAction(dpfservice::MWM_BUILD, actionImpl);
     };
 
     d->buildAction.reset(new QAction("Build"));
-    actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B));
+    actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B), "build.png");
 
     d->rebuildAction.reset(new QAction("Rebuild"));
-    actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B));
+    actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B), "rebuild.png");
 
     d->cleanAction.reset(new QAction("Clean"));
-    actionInit(d->cleanAction.get(), "Build.Clean", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_C));
+    actionInit(d->cleanAction.get(), "Build.Clean", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C), "clean.png");
 
     QObject::connect(d->buildAction.get(), &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);

@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             huangyu<huangyub@uniontech.com>
+ *             hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +78,8 @@ bool OptionCore::start()
                                                      "Options",
                                                      QKeySequence(Qt::Modifier::CTRL |
                                                                   Qt::Modifier::SHIFT |
-                                                                  Qt::Key::Key_H));
+                                                                  Qt::Key::Key_H),
+                                                     "option.svg");
         windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptions));
         QObject::connect(actionOptions, &QAction::triggered,
                          optionDialog, &QDialog::show);
