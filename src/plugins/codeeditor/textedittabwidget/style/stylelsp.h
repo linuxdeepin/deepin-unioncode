@@ -74,8 +74,7 @@ public:
     StyleLsp(TextEdit *parent);
     TextEdit *edit();
     virtual ~StyleLsp();
-    virtual void setClient(lsp::Client *client);
-    virtual lsp::Client *getClient() const;
+
     virtual void initLspConnection(); //setting main
 
     virtual IndicStyleExt symbolIndic(lsp::SemanticTokenType::type_value token,

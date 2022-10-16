@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "textedit.h"
-#include "lspclientkeeper.h"
+#include "style/lspclientkeeper.h"
 #include "Document.h"
 #include "SciLexer.h"
 #include "common/common.h"
@@ -106,11 +106,6 @@ void TextEdit::setFile(const QString &filePath)
         getStyleSci()->setMargin();
         getStyleSci()->setKeyWords();
     }
-}
-
-void TextEdit::setFile(const QString &filePath, const lsp::Head &projectHead)
-{
-    setFile(filePath);
 
     QString currFileLanguage = fileLanguage(filePath);
     if (supportLanguage() != currFileLanguage) {
@@ -121,9 +116,8 @@ void TextEdit::setFile(const QString &filePath, const lsp::Head &projectHead)
     }
 
     if (getStyleLsp()) {
-        lsp::Client* proClient = LSPClientKeeper::instance()->get(projectHead);
-        getStyleLsp()->setClient(proClient); //设置
-        getStyleLsp()->initLspConnection(); // 初始化所有lsp client设置
+        // 初始化所有lsp client设置
+        getStyleLsp()->initLspConnection();
     }
 }
 

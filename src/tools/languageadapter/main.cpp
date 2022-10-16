@@ -1,10 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     huangyu<huangyub@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<luzhen@uniontech.com>
+ * Maintainer: huangyu<huangyub@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,125 +18,174 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "procidwatcher.h"
-#include "serverproxy.h"
-#include "setting.h"
-#include "log.h"
+#include "envseacher.h"
+#include "jsonrpccallproxy.h"
 
-#include <QApplication>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
+#include <QCoreApplication>
+#include <QDebug>
+#include <QJsonObject>
 #include <QDir>
-#include <QDialog>
-#include <QMessageBox>
-#include <QTimer>
 
 #include <iostream>
 
-namespace OptionNames {
-const QString port {"port"};
-const QString session {"session"};
-const QString language {"language"};
-const QString generate {"generate"};
-const QString parentPid {"parentPid"};
-};
+// setting from clangd trismit
+QProcess *createCxxServ(const newlsp::ProjectKey &key)
+{
+    lspServOut << __FUNCTION__ << qApp->thread() << QThread::currentThread();
+    if (key.language != newlsp::Cxx)
+        return nullptr;
 
-namespace OptionValNames {
-const QString mode {"mode"};
-const QString path {"path"};
-};
+    auto proc = new QProcess();
+#ifdef __linux__
+    QString compileDB_Path = QString::fromStdString(key.workspace) + QDir::separator() + ".unioncode";
+    QStringList compileDB_CMD_As;
+    compileDB_CMD_As << "-S" << QString::fromStdString(key.workspace);
+    compileDB_CMD_As << "-B" << compileDB_Path;
+    compileDB_CMD_As << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
+    QProcess::execute("/usr/bin/cmake", compileDB_CMD_As);
 
-namespace OptionValues {
-const QString single {"single"};
-const QString many {"many"};
-const QString cxx = {"cxx"};
-const QString java = {"java"};
-const QString python = {"python"};
-};
+    QStringList procAs;
+    procAs << "/usr/bin/unioncode-clangd";
+    procAs << "--log=verbose";
+    procAs << QString("--compile-commands-dir=%0").arg(compileDB_Path);
 
-namespace DefaultValues {
-const QString port {"3307"};
-const QString parentPid {"0"};
+    proc->setProgram("/usr/bin/bash");
+    proc->setArguments({"-c", procAs.join(" ")});
+#endif
+    proc->setProcessChannelMode(QProcess::ForwardedOutputChannel);
+    QObject::connect(proc, &QProcess::readyReadStandardError,
+                     proc, [=]() {
+        std::cerr << proc->readAllStandardError().toStdString() << std::endl;
+    });
+    proc->start();
+
+    JsonRpcCallProxy::ins().setSelect(key);
+    return proc;
 }
 
-// 默认为
-const QList<QCommandLineOption> options
+// setting from jdtls trismit
+QProcess *createJavaServ(const newlsp::ProjectKey &key)
 {
-    {
-        OptionNames::port, "Server open port, default 3307.\n", "number", DefaultValues::port
-    }, {
-        OptionNames::session, "[" + OptionValues::single + "]" + " Use this program just as you would with Clangd.\n" +
-                "[" + OptionValues::many + "]" + " Start multiple backend at the same time.\n",
-                OptionValNames::mode,
-                OptionValues::many
-    }, {
-        OptionNames::language , "with session mode " + OptionValues::single + " to used,\n" +
-                "   [" + OptionValues::cxx + "]" +" lauch C++ language lsp server.\n" +
-                "   [" + OptionValues::java + "]" +" lauch Java language lsp server.\n" +
-                "   [" + OptionValues::python + "]" + " lauch Python language lsp server.\n"
-    }, {
-        OptionNames::generate, "generate config file to path.\n", OptionValNames::path
-    } , {
-        OptionNames::parentPid, "Server use timer to watch parent process id, if process id no exist, well quit this program.\n", DefaultValues::parentPid
+    lspServOut << __FUNCTION__ << qApp->thread() << QThread::currentThread();
+    if (key.language != newlsp::Java)
+        return nullptr;
+
+    auto proc = new QProcess();
+#ifdef __linux__
+    QString dataDir = QString::fromStdString(key.workspace) + QDir::separator()
+            + ".unioncode" + QDir::separator()
+            + QString::fromStdString(key.language);
+    QString programAs = "/usr/bin/java "
+                        "-Declipse.application=org.eclipse.jdt.ls.core.id1 "
+                        "-Dosgi.bundles.defaultStartLevel=4 "
+                        "-Declipse.product=org.eclipse.jdt.ls.core.product "
+                        "-Dlog.level=ALL "
+                        "-noverify "
+                        "-Xmx1G "
+                        "--add-modules=ALL-SYSTEM "
+                        "--add-opens java.base/java.util=ALL-UNNAMED "
+                        "--add-opens java.base/java.lang=ALL-UNNAMED "
+                        "-jar ${HOME}/.config/languageadapter/Java/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar "
+                        "-configuration ${HOME}/.config/languageadapter/Java/config_linux "
+            + QString("-data %0").arg(dataDir);
+    proc->setProgram("/usr/bin/bash");
+    proc->setArguments({"-c", programAs});
+    proc->start();
+#endif
+    proc->setProcessChannelMode(QProcess::ForwardedErrorChannel);
+    QObject::connect(proc, &QProcess::readyReadStandardOutput,
+                     proc, [=](){
+        std::cout << proc->readAllStandardOutput().toStdString() << std::endl;
+    });
+    proc->start();
+
+    JsonRpcCallProxy::ins().setSelect(key);
+    return proc;
+}
+
+// setting from pyls trismit
+QProcess *createPythonServ(const newlsp::ProjectKey &key)
+{
+    lspServOut << __FUNCTION__ << qApp->thread() << QThread::currentThread();
+    if (key.language != newlsp::Python)
+        return nullptr;
+
+    auto proc = new QProcess();
+#ifdef __linux__
+    proc->setProgram("/usr/bin/bash");
+    proc->setArguments({"-c","pyls -v"});
+    auto procEnv = proc->processEnvironment();
+    QVariantHash envs = EnvSeacher::python3();
+    if (envs.keys().contains(K_UserEnv)) {
+        QVariant userEnvVar = envs[K_UserEnv];
+        if (userEnvVar.canConvert<UserEnv>()) {
+            UserEnv userEnv = qvariant_cast<UserEnv>(userEnvVar);
+            if (userEnv.binsPath) {
+                QString PATH_EnvValue = procEnv.value("PATH");
+                QString userRuntimeBinPath = userEnv.binsPath.value();
+                procEnv.remove("PATH");
+                procEnv.insert("PATH", userRuntimeBinPath + ":" + PATH_EnvValue);
+            }
+            if (userEnv.pkgsPath) {
+                QString userPythonPkgPath = userEnv.pkgsPath.value();
+                procEnv.insert("PYTHONPATH", userPythonPkgPath);
+            }
+        }
     }
-};
+    proc->setProcessEnvironment(procEnv);
+#endif
+    proc->setProcessChannelMode(QProcess::ForwardedOutputChannel);
+    QObject::connect(proc, &QProcess::readyReadStandardError,
+                     proc, [=]() {
+        std::cerr << proc->readAllStandardError().toStdString() << std::endl;
+    });
+    proc->start();
 
-int main(int argc, char *argv[])
+    JsonRpcCallProxy::ins().setSelect(key);
+    return proc;
+}
+
+void selectLspServer(const QJsonObject &params)
 {
-    QApplication a(argc, argv);
+    QString language = params.value(QString::fromStdString(newlsp::language)).toString();
+    QString workspace = params.value(QString::fromStdString(newlsp::workspace)).toString();
+    newlsp::ProjectKey projectKey {language.toStdString(), workspace.toStdString()};
+    JsonRpcCallProxy::ins().setSelect(projectKey);
+    QProcess *proc = JsonRpcCallProxy::ins().value(projectKey);
 
-    Log log;
-    QCommandLineParser parser;
-
-    parser.addOptions(options);
-    parser.addHelpOption();
-    parser.process(a);
-
-    auto list = parser.optionNames();
-    if (list.size() != 1 && list.contains(OptionNames::generate)) {
-        std::cerr << "Failed, Command generate cannot be mixed with other parameters"
-                  << std::endl;
-        return -1;
-    } else {
-        auto genPath = parser.value(OptionNames::generate);
-        if (!genPath.isEmpty()) {
-            return Setting::genConfigFile(genPath);
+    if (!proc) {
+        proc = JsonRpcCallProxy::ins().createLspServ(projectKey);
+        if (proc) {
+            JsonRpcCallProxy::ins().save(projectKey, proc);
+            lspServOut << "selected ProjectKey{language:" << projectKey.language
+                       <<  ", workspace:" << projectKey.workspace
+                        << "}";
         }
     }
 
-    qInfo() << Setting::getInfo("C/C++");
-    qInfo() << Setting::getInfo("Java");
+    if (!proc)
+        lspServOut << "selected error ProjectKey{language:" << projectKey.language
+                   << ",workspace:" << projectKey.workspace
+                   << "}";
+}
 
-    quint16 port = DefaultValues::port.toUShort();
-    if (list.contains(OptionNames::port)) {
-        port = parser.value(OptionNames::port).toUShort();
-    }
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
 
-    if (list.contains(OptionNames::parentPid)) {
-        std::cout << parser.value(OptionNames::parentPid).toStdString() << std::endl;
-        uint ppid = parser.value(OptionNames::parentPid).toUInt();
-        std::cout << "watch parent process pid: " << ppid;
-        static ProcIdWatcher Watcher(ppid);
-    }
+    JsonRpcCallProxy::ins().bindCreateProc(newlsp::Cxx, createCxxServ);
+    JsonRpcCallProxy::ins().bindCreateProc(newlsp::Java, createJavaServ);
+    JsonRpcCallProxy::ins().bindCreateProc(newlsp::Python, createPythonServ);
+    JsonRpcCallProxy::ins().bindFilter("selectLspServer", selectLspServer);
 
-    std::cout << "init server use port: " << port << std::endl;
-    jsonrpc::TcpSocketServer server("127.0.0.1", port);
-    ServerProxy proxy(server);
-    if (proxy.StartListening()) {
-        std::cout << "Server started successfully" << std::endl;
-        QObject::connect(qApp, &QCoreApplication::aboutToQuit, [&proxy](){
-            proxy.StopListening();
-        });
-    } else {
-        QMessageBox messBox;
-        messBox.setText(QString("There may be port occupation from %0, "
-                                "please check whether the "
-                                "languageadapter has been started").arg(port));
-        messBox.exec();
-        proxy.StopListening();
-        std::cout << "Server started Error" << std::endl;
-        exit(-1);
-    }
+    newlsp::ServerApplication lspServ(a);
+    QObject::connect(&lspServ, &newlsp::ServerApplication::jsonrpcMethod,
+                     &JsonRpcCallProxy::ins(), &JsonRpcCallProxy::methodFilter);
+
+    QObject::connect(&lspServ, &newlsp::ServerApplication::jsonrpcNotification,
+                     &JsonRpcCallProxy::ins(), &JsonRpcCallProxy::notificationFilter);
+    lspServ.start();
+    lspServOut << "created ServerApplication";
 
     return a.exec();
 }

@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-include(${CMAKE_SOURCE_DIR}/3rdparty/archive-jsonrpccpp.cmake)
-
 project(languageadapter)
 
-add_definitions(-DQT_NO_KEYWORDS)
+#add_definitions(-DQT_NO_KEYWORDS)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -12,33 +10,21 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
     set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
     set(CMAKE_L_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
-#    set(CMAKE_CXX_FLAGS "-fsanitize=thread")
-#    set(CMAKE_C_FLAGS "-fsanitize=thread")
-#    set(CMAKE_L_FLAGS "-fsanitize=thread")
+    #    set(CMAKE_CXX_FLAGS "-fsanitize=thread")
+    #    set(CMAKE_C_FLAGS "-fsanitize=thread")
+    #    set(CMAKE_L_FLAGS "-fsanitize=thread")
 endif()
 
 find_package(Qt5 CONFIG REQUIRED Core Gui Widgets Network Concurrent)
 
 set(HEADERS
-    procidwatcher.h
-    logutils.h
-    log.h
-    backend.h
-    protocol.h
-    settinginfo.h
-    setting.h
-    route.h
-    serverproxy.h
+    envseacher.h
+    jsonrpccallproxy.h
     )
 
 set(SOURCES
-    procidwatcher.cpp
-    logutils.cpp
-    log.cpp
-    backend.cpp
-    setting.cpp
-    route.cpp
-    serverproxy.cpp
+    envseacher.cpp
+    jsonrpccallproxy.cpp
     )
 
 add_executable(${PROJECT_NAME} main.cpp
@@ -46,8 +32,7 @@ add_executable(${PROJECT_NAME} main.cpp
     ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
-    archive-jsonrpccpp-server
-    archive-jsonrpccpp-common
+    unioncode-common
     )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "${LIBRARY_INSTALL_PREFIX}/tools")

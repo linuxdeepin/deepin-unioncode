@@ -37,12 +37,21 @@ public:
 
     virtual QString supportLanguage(){return "";} // 当前编辑器支持的语言类型
     static QString fileLanguage(const QString &path); // 获取注册文件中语言支持
-
     virtual void setFile(const QString &filePath);
-    virtual void setFile(const QString &filePath, const lsp::Head &projectHead);
-
-    QString file() const;
-    lsp::Head projectHead();
+    virtual QString file() const;
+    virtual void setProjectKey(const newlsp::ProjectKey &key);
+    virtual newlsp::ProjectKey projectKey() const;
+    /**
+     * @brief language get value from projectKey
+     * extension: shuold used to mimetype, not from outside setting
+     * @return if unset return default ""
+     */
+    virtual QString language() const;
+    /**
+     * @brief workspace get value from projectKey
+     * @return if unset return default ""
+     */
+    virtual QString workspace() const; // from projectKey,
 
     void debugPointAllDelete();
     void jumpToLine(int line);

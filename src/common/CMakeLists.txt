@@ -12,16 +12,23 @@ set(CXX_H
     inotify/private/inotify_linux.h
     inotify/private/inotify_p.h
     inotify/inotify.h
-    lsp/newprotocol.h
-    lsp/protocol.h
-    lsp/client.h
-    lsp/procserver.h
-    lsp/stdinjsonrpcparser.h
-    lsp/stdinjsonrpcparser.cpp
-    lsp/new/basicjsonstructures.h
-    lsp/new/lifecyclemessage.h
-    lsp/new/documentsynchronization.h
-    lsp/new/languagefeatures.h
+    lsp/client/private/client_p.h
+    lsp/client/client.h
+    lsp/client/stdoutjsonrpcparser.h
+    lsp/server/servercmdparse.h
+    lsp/server/serverapplication.h
+    lsp/server/stdinreadloop.h
+    lsp/server/stdinjsonrpcparser.h
+    lsp/server/route.h
+    lsp/protocol/newprotocol.h
+    lsp/protocol/protocol.h
+    lsp/protocol/new/jsonrpcparser.h
+    lsp/protocol/new/basicjsonstructures.h
+    lsp/protocol/new/lifecyclemessage.h
+    lsp/protocol/new/documentsynchronization.h
+    lsp/protocol/new/languagefeatures.h
+    lsp/protocol/new/extendedproject.h
+    lsp/lsp.h
     util/processutil.h
     util/customicons.h
     util/custompaths.h
@@ -57,14 +64,21 @@ set(CXX_H
 
 set(CXX_CPP
     inotify/inotify.cpp
-    lsp/newprotocol.cpp
-    lsp/protocol.cpp
-    lsp/client.cpp
-    lsp/procserver.cpp
-    lsp/new/basicjsonstructures.cpp
-    lsp/new/lifecyclemessage.cpp
-    lsp/new/documentsynchronization.cpp
-    lsp/new/languagefeatures.cpp
+    lsp/protocol/newprotocol.cpp
+    lsp/protocol/protocol.cpp
+    lsp/client/client.cpp
+    lsp/client/stdoutjsonrpcparser.cpp
+    lsp/server/servercmdparse.cpp
+    lsp/server/serverapplication.cpp
+    lsp/server/stdinreadloop.cpp
+    lsp/server/stdinjsonrpcparser.cpp
+    lsp/server/route.cpp
+    lsp/protocol/new/jsonrpcparser.cpp
+    lsp/protocol/new/basicjsonstructures.cpp
+    lsp/protocol/new/lifecyclemessage.cpp
+    lsp/protocol/new/documentsynchronization.cpp
+    lsp/protocol/new/languagefeatures.cpp
+    lsp/protocol/new/extendedproject.cpp
     util/processutil.cpp
     util/customicons.cpp
     util/custompaths.cpp

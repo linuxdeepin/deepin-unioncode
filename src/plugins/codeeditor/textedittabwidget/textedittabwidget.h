@@ -39,9 +39,9 @@ public:
 
 public slots:
     void openFile(const QString &filePath);
-    void openFile(const lsp::Head &head, const QString &filePath);
+    void openFile(const newlsp::ProjectKey &key, const QString &filePath);
     void closeFile(const QString &filePath);
-    void jumpToLine(const lsp::Head &head, const QString &filePath, int line);
+    void jumpToLine(const newlsp::ProjectKey &key, const QString &filePath, int line);
     void jumpToLine(const QString &filePath, int line);
     void jumpToRange(const QString &filePath, const newlsp::Range &range);
     void runningToLine(const QString &filePath, int line);
@@ -68,7 +68,7 @@ private slots:
     void fileDeleted(const QString &file);
     void fileMoved(const QString &file);
     void doRenameReplace(const newlsp::WorkspaceEdit &renameResult);
-    TextEdit *switchFileAndToOpen(const lsp::Head &head, const QString &filePath);
+    TextEdit *switchFileAndToOpen(const newlsp::ProjectKey &key, const QString &filePath);
     TextEdit *switchFileAndToOpen(const QString &filePath);
     void saveEditFile(const QString &file);
 

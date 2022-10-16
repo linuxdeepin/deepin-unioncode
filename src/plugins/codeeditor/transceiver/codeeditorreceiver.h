@@ -49,13 +49,13 @@ public:
 
 signals:
     void toOpenFile(const QString &filePath);
-    void toOpenFile(const lsp::Head &head, const QString &filePath);
+    void toOpenFile(const newlsp::ProjectKey &key, const QString &filePath);
     void toRunFileLine(const QString &filePath, int line);
     void toRunClean();
     void toDebugPointClean();
     void toSearchText(const QString &srcText, int operateType);
     void toReplaceText(const QString &srcText, const QString &destText, int operateType);
-    void toJumpFileLine(const lsp::Head &head, const QString &filePath, int line);
+    void toJumpFileLine(const newlsp::ProjectKey &head, const QString &filePath, int line);
     void toSetLineBackground(const QString &filePath, int line, const QColor &color);
     void toDelLineBackground(const QString &filePath, int line);
     void toCleanLineBackground(const QString &filePath);

@@ -106,8 +106,10 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QVariant languageVar = event.property(P_LANGUAGE);
         QVariant filePathVar = event.property(P_FILEPATH);
         if (workspaceVar.isValid() && languageVar.isValid() && filePathVar.isValid()) {
-            lsp::Head head { workspaceVar.toString(), languageVar.toString() };
-            return DpfEventMiddleware::instance()->toOpenFile(head, filePathVar.toString());
+            newlsp::ProjectKey proKey;
+            proKey.language = languageVar.toString().toStdString();
+            proKey.workspace = workspaceVar.toString().toStdString();
+            return DpfEventMiddleware::instance()->toOpenFile(proKey, filePathVar.toString());
         }
 
     } else if (D_OPENDOCUMENT == event.data()) {
@@ -153,8 +155,11 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QVariant fileLineVar = event.property(P_FILELINE);
         if (wpFolderVar.isValid() && languageVar.isValid()
                 && filePathVar.isValid() && fileLineVar.isValid()) {
+            newlsp::ProjectKey key;
+            key.language = wpFolderVar.toString().toStdString();
+            key.workspace = languageVar.toString().toStdString();
             return DpfEventMiddleware::instance()->toJumpFileLine(
-                        lsp::Head(wpFolderVar.toString(), languageVar.toString()),
+                        key,
                         filePathVar.toString(),
                         fileLineVar.toInt());
         } else if (filePathVar.isValid() && fileLineVar.isValid()) {

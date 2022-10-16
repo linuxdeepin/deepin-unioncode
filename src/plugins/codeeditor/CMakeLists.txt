@@ -18,13 +18,13 @@ set(CXX_CPP
     refactorwidget/codelensdelegate.cpp
     refactorwidget/refactorwidget.cpp
     renamepopup/renamepopup.cpp
-    textedittabwidget/lspclientkeeper.cpp
     textedittabwidget/scintillaeditextern.cpp
     textedittabwidget/textedittabwidget.cpp
     textedittabwidget/textedittabbar.cpp
     textedittabwidget/textedittitlebar.cpp
     textedittabwidget/texteditkeeper.cpp
     textedittabwidget/textedit.cpp
+    textedittabwidget/style/lspclientkeeper.cpp
     textedittabwidget/style/stylecolor.cpp
     textedittabwidget/style/stylesci.cpp
     textedittabwidget/style/stylelsp.cpp
@@ -55,7 +55,6 @@ set(CXX_H
     refactorwidget/codelensdelegate.h
     refactorwidget/refactorwidget.h
     renamepopup/renamepopup.h
-    textedittabwidget/lspclientkeeper.h
     textedittabwidget/scintillaeditextern.h
     textedittabwidget/textedittabwidget.h
     textedittabwidget/textedittitlebar.h
@@ -66,6 +65,7 @@ set(CXX_H
     textedittabwidget/style/stylesci.h
     textedittabwidget/style/stylelsp.h
     textedittabwidget/style/stylejsonfile.h
+    textedittabwidget/style/lspclientkeeper.h
     textedittabwidget/language/java/texteditjava.h
     textedittabwidget/language/java/stylelspjava.h
     textedittabwidget/language/java/stylescijava.h

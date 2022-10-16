@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "lspclientkeeper.h"
+#include "style/lspclientkeeper.h"
 #include "textedittabwidget.h"
 #include "textedittitlebar.h"
 #include "textedittabbar.h"
@@ -62,8 +62,8 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     setDefaultFileEdit();
 
     QObject::connect(DpfEventMiddleware::instance(),
-                     QOverload<const lsp::Head &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
-                     this, QOverload<const lsp::Head &, const QString &>::of(&TextEditTabWidget::openFile));
+                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
+                     this, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
 
     QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toRunFileLine,
                      this, &TextEditTabWidget::runningToLine);
@@ -75,8 +75,8 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
                      this, &TextEditTabWidget::debugPointClean);
 
     QObject::connect(DpfEventMiddleware::instance(),
-                     QOverload<const lsp::Head &, const QString &, int>::of(&DpfEventMiddleware::toJumpFileLine),
-                     this, QOverload<const lsp::Head &, const QString &, int>::of(&TextEditTabWidget::jumpToLine));
+                     QOverload<const newlsp::ProjectKey &, const QString &, int>::of(&DpfEventMiddleware::toJumpFileLine),
+                     this, QOverload<const newlsp::ProjectKey &, const QString &, int>::of(&TextEditTabWidget::jumpToLine));
 
     QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toSetLineBackground,
                      this, &TextEditTabWidget::setLineBackground);
@@ -173,7 +173,7 @@ void TextEditTabWidget::openFile(const QString &filePath)
     showFileEdit(filePath);
 }
 
-void TextEditTabWidget::openFile(const lsp::Head &head, const QString &filePath)
+void TextEditTabWidget::openFile(const newlsp::ProjectKey &key, const QString &filePath)
 {
     QFileInfo info(filePath);
     if (!info.exists() || !d->tab)
@@ -187,14 +187,13 @@ void TextEditTabWidget::openFile(const lsp::Head &head, const QString &filePath)
 
     d->tab->setFile(filePath);
 
-    lsp::Client *client = LSPClientKeeper::instance()->get(head);
+    newlsp::Client *client = LSPClientKeeper::instance()->get(key);
     if (!client) {
-        LSPClientKeeper::instance()->initClient(head, {});
-        client = LSPClientKeeper::instance()->get(head);
+        client = LSPClientKeeper::instance()->get(key);
     }
 
     // 全局rename操作
-    QObject::connect(client, QOverload<const newlsp::WorkspaceEdit&>::of(&lsp::Client::renameRes),
+    QObject::connect(client, QOverload<const newlsp::WorkspaceEdit&>::of(&newlsp::Client::renameRes),
                      this, &TextEditTabWidget::doRenameReplace, Qt::UniqueConnection);
 
     // 使用取出适用的编辑器
@@ -210,10 +209,12 @@ void TextEditTabWidget::openFile(const lsp::Head &head, const QString &filePath)
                      this, &TextEditTabWidget::saveEditFile,
                      Qt::UniqueConnection);
 
-    if (edit)
-        edit->setFile(info.filePath(), head);
-    else {
+    if (edit){
+        edit->setProjectKey(key);
+        edit->setFile(info.filePath());
+    } else {
         edit = new TextEdit();
+        edit->setProjectKey(key);
         edit->setFile(info.filePath());
     }
     d->textEdits[filePath] = edit;
@@ -243,7 +244,7 @@ void TextEditTabWidget::closeFile(const QString &filePath)
         emit d->tab->tabCloseRequested(index);
 }
 
-void TextEditTabWidget::jumpToLine(const lsp::Head &head, const QString &filePath, int line)
+void TextEditTabWidget::jumpToLine(const newlsp::ProjectKey &head, const QString &filePath, int line)
 {
     auto edit = switchFileAndToOpen(head, filePath);
 
@@ -595,7 +596,7 @@ void TextEditTabWidget::doRenameReplace(const newlsp::WorkspaceEdit &renameResul
     }
 }
 
-TextEdit* TextEditTabWidget::switchFileAndToOpen(const lsp::Head &head, const QString &filePath)
+TextEdit* TextEditTabWidget::switchFileAndToOpen(const newlsp::ProjectKey &head, const QString &filePath)
 {
     auto edit = d->textEdits.value(filePath);
     if (edit) {

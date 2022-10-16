@@ -24,6 +24,7 @@
 #include "stylecolor.h"
 #include "textedittabwidget/textedit.h"
 #include "textedittabwidget/textedittabwidget.h"
+#include "textedittabwidget/style/lspclientkeeper.h"
 #include "refactorwidget/refactorwidget.h"
 #include "renamepopup/renamepopup.h"
 
@@ -163,8 +164,8 @@ class StyleLspPrivate
     TextEdit *edit{nullptr};
     TextChangeCache textChangedCache;
     QList<lsp::Data> tokensCache;
-    lsp::Client *lspClient;
     friend class StyleLsp;
+    newlsp::Client *getClient() const;
 };
 
 // from ascii code
@@ -228,51 +229,41 @@ StyleLsp::~StyleLsp()
 
 }
 
-void StyleLsp::setClient(lsp::Client *client)
-{
-    d->lspClient = client;
-}
-
-lsp::Client *StyleLsp::getClient() const
-{
-    return d->lspClient;
-}
-
 void StyleLsp::initLspConnection()
 {
     if (!d->edit) {
         return;
     }
 
-    QObject::connect(getClient(), QOverload<const lsp::References&>::of(&lsp::Client::requestResult),
+    QObject::connect(d->getClient(), QOverload<const lsp::References&>::of(&newlsp::Client::requestResult),
                      RefactorWidget::instance(), &RefactorWidget::displayReference, Qt::UniqueConnection);
 
     //bind signals to file diagnostics
-    QObject::connect(getClient(), QOverload<const newlsp::PublishDiagnosticsParams &>::of(&lsp::Client::publishDiagnostics),
+    QObject::connect(d->getClient(), QOverload<const newlsp::PublishDiagnosticsParams &>::of(&newlsp::Client::publishDiagnostics),
                      this, [=](const newlsp::PublishDiagnosticsParams &data) {this->setDiagnostics(data);});
 
-    QObject::connect(getClient(), QOverload<const QList<lsp::Data>&>::of(&lsp::Client::requestResult),
+    QObject::connect(d->getClient(), QOverload<const QList<lsp::Data>&>::of(&newlsp::Client::requestResult),
                      this, &StyleLsp::setTokenFull);
 
-    QObject::connect(getClient(), QOverload<const newlsp::Hover&>::of(&lsp::Client::hoverRes),
+    QObject::connect(d->getClient(), QOverload<const newlsp::Hover&>::of(&newlsp::Client::hoverRes),
                      this, &StyleLsp::setHover);
 
-    QObject::connect(getClient(), QOverload<const lsp::CompletionProvider&>::of(&lsp::Client::requestResult),
+    QObject::connect(d->getClient(), QOverload<const lsp::CompletionProvider&>::of(&newlsp::Client::requestResult),
                      this, [=](const lsp::CompletionProvider& provider){
         d->completionCache.provider = provider;
     });
 
     /* to use QOverload cast virtual slot can't working */
-    QObject::connect(getClient(), QOverload<const newlsp::Location&>::of(&lsp::Client::definitionRes),
+    QObject::connect(d->getClient(), QOverload<const newlsp::Location&>::of(&newlsp::Client::definitionRes),
                      [=](const newlsp::Location& data){ this->setDefinition(data); });
-    QObject::connect(getClient(), QOverload<const std::vector<newlsp::Location>&>::of(&lsp::Client::definitionRes),
+    QObject::connect(d->getClient(), QOverload<const std::vector<newlsp::Location>&>::of(&newlsp::Client::definitionRes),
                      [=](const std::vector<newlsp::Location> &data){ this->setDefinition(data); });
-    QObject::connect(getClient(), QOverload<const std::vector<newlsp::LocationLink>&>::of(&lsp::Client::definitionRes),
+    QObject::connect(d->getClient(), QOverload<const std::vector<newlsp::LocationLink>&>::of(&newlsp::Client::definitionRes),
                      [=](const std::vector<newlsp::LocationLink>& data){ this->setDefinition(data); });
 
-    if (getClient()) {
-        qApp->metaObject()->invokeMethod(getClient(), "openRequest", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
-        qApp->metaObject()->invokeMethod(getClient(), "docSemanticTokensFull", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
+    if (d->getClient()) {
+        qApp->metaObject()->invokeMethod(d->getClient(), "openRequest", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
+        qApp->metaObject()->invokeMethod(d->getClient(), "docSemanticTokensFull", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
     }
 }
 
@@ -285,7 +276,7 @@ void StyleLsp::sciTextInsertedTotal(Scintilla::Position position,
                                     Scintilla::Position length, Scintilla::Position linesAdded,
                                     const QByteArray &text, Scintilla::Position line)
 {
-    if (!d->edit || !getClient())
+    if (!d->edit || !d->getClient())
         return;
 
     if (d->textChangedTimer.isActive()) {
@@ -317,7 +308,7 @@ void StyleLsp::sciTextDeletedTotal(Scintilla::Position position,
                                    Scintilla::Position length, Scintilla::Position linesAdded,
                                    const QByteArray &text, Scintilla::Position line)
 {
-    if (!d->edit || !getClient())
+    if (!d->edit || !d->getClient())
         return;
 
     if (d->textChangedTimer.isActive()) {
@@ -375,14 +366,14 @@ void StyleLsp::sciTextChangedTotal()
     d->edit->indicatorClearRange(0, d->edit->length()); // clean all indicator range style
     cleanDiagnostics();
 
-    if (getClient()) {
-        qApp->metaObject()->invokeMethod(getClient(), "changeRequest",
+    if (d->getClient()) {
+        qApp->metaObject()->invokeMethod(d->getClient(), "changeRequest",
                                          Q_ARG(const QString &, d->edit->file()),
                                          Q_ARG(const QByteArray &, d->edit->textRange(0, d->edit->length())));
-        qApp->metaObject()->invokeMethod(getClient(), "completionRequest",
+        qApp->metaObject()->invokeMethod(d->getClient(), "completionRequest",
                                          Q_ARG(const QString &, d->edit->file()),
                                          Q_ARG(const lsp::Position &, getLspPosition(d->edit->docPointer(), d->textChangedCache.positionCache)));
-        qApp->metaObject()->invokeMethod(getClient(), "docSemanticTokensFull",
+        qApp->metaObject()->invokeMethod(d->getClient(), "docSemanticTokensFull",
                                          Q_ARG(const QString &, d->edit->file()));
     }
 };
@@ -397,8 +388,8 @@ void StyleLsp::sciHovered(Scintilla::Position position)
 
     d->hoverCache.setSciPosition(position);
 
-    if(getClient()) {
-        qApp->metaObject()->invokeMethod(getClient(), "docHoverRequest",
+    if(d->getClient()) {
+        qApp->metaObject()->invokeMethod(d->getClient(), "docHoverRequest",
                                          Q_ARG(const QString &, d->edit->file()),
                                          Q_ARG(const lsp::Position &, getLspPosition(d->edit->docPointer(), d->hoverCache.getSciPosition())));
     }
@@ -443,8 +434,8 @@ void StyleLsp::sciDefinitionHover(Scintilla::Position position)
         }
     }
     auto lspPostion = getLspPosition(d->edit->docPointer(), d->definitionCache.getSciPosition());
-    if (getClient()){
-        qApp->metaObject()->invokeMethod(getClient(), "definitionRequest",
+    if (d->getClient()){
+        qApp->metaObject()->invokeMethod(d->getClient(), "definitionRequest",
                                          Q_ARG(const QString &, d->edit->file()),
                                          Q_ARG(const lsp::Position &, lspPostion));
     }
@@ -478,19 +469,19 @@ void StyleLsp::sciIndicClicked(Scintilla::Position position)
     if (flags[INDIC_COMPOSITIONTHICK]) {
         if (d->definitionCache.getLocations().size() > 0) {
             auto one = d->definitionCache.getLocations().front();
-            TextEditTabWidget::instance()->jumpToLine(d->edit->projectHead(),
+            TextEditTabWidget::instance()->jumpToLine(d->edit->projectKey(),
                                                       QUrl(QString::fromStdString(one.uri)).toLocalFile(),
                                                       one.range.end.line);
             cleanDefinition(position);
         } else if (d->definitionCache.getLocationLinks().size() > 0) {
             auto one = d->definitionCache.getLocationLinks().front();
-            TextEditTabWidget::instance()->jumpToLine(d->edit->projectHead(),
+            TextEditTabWidget::instance()->jumpToLine(d->edit->projectKey(),
                                                       QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
                                                       one.targetRange.end.line);
             cleanDefinition(position);
         } else {
             auto one = d->definitionCache.getLocation();
-            TextEditTabWidget::instance()->jumpToLine(d->edit->projectHead(),
+            TextEditTabWidget::instance()->jumpToLine(d->edit->projectKey(),
                                                       QUrl(QString::fromStdString(one.uri)).toLocalFile(),
                                                       one.range.end.line);
             cleanDefinition(position);
@@ -528,9 +519,9 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
 
     QAction *findSymbol = contextMenu.addAction(QAction::tr("Find Usages"));
     QObject::connect(findSymbol, &QAction::triggered, [&](){
-        if (getClient()) {
+        if (d->getClient()) {
             auto lspPos = getLspPosition(d->edit->docPointer(), d->edit->selectionStart());
-            qApp->metaObject()->invokeMethod(getClient(), "referencesRequest",
+            qApp->metaObject()->invokeMethod(d->getClient(), "referencesRequest",
                                              Q_ARG(const QString &, d->edit->file()),
                                              Q_ARG(const lsp::Position &, lspPos));
         }
@@ -547,8 +538,8 @@ void StyleLsp::sciReplaced(const QString &file, Scintilla::Position start, Scint
     Q_UNUSED(text)
     Q_UNUSED(start);
     Q_UNUSED(end);
-    if (getClient()) {
-        qApp->metaObject()->invokeMethod(getClient(), "changeRequest",
+    if (d->getClient()) {
+        qApp->metaObject()->invokeMethod(d->getClient(), "changeRequest",
                                          Q_ARG(const QString &, file),
                                          Q_ARG(const QByteArray &, d->edit->textRange(0, d->edit->length())));
     }
@@ -558,8 +549,8 @@ void StyleLsp::renameRequest(const QString &newText)
 {
     auto sciPostion = d->renameCache.getStart().getSciPosition();
     if (d->edit) {
-        if (getClient()) {
-            qApp->metaObject()->invokeMethod(getClient(), "renameRequest",
+        if (d->getClient()) {
+            qApp->metaObject()->invokeMethod(d->getClient(), "renameRequest",
                                              Q_ARG(const QString &, d->edit->file()),
                                              Q_ARG(const lsp::Position &, getLspPosition(d->edit->docPointer(), sciPostion)),
                                              Q_ARG(const QString &, newText));
@@ -578,7 +569,7 @@ StyleLsp::IndicStyleExt StyleLsp::symbolIndic(lsp::SemanticTokenType::type_value
 
 lsp::SemanticTokenType::type_value StyleLsp::tokenToDefine(int token)
 {
-    auto client = getClient();
+    auto client = d->getClient();
     if (!client)
         return {};
     auto initSecTokensProvider = client->initSecTokensProvider();
@@ -904,4 +895,12 @@ void StyleLsp::setCompletion(const QByteArray &text,
         return;
 
     d->edit->autoCShow(enterLenght, inserts.toUtf8());
+}
+
+newlsp::Client *StyleLspPrivate::getClient() const
+{
+    if (edit) {
+        return LSPClientKeeper::instance()->get(edit->projectKey());
+    }
+    return nullptr;
 }
