@@ -4,7 +4,7 @@
  * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,34 +18,46 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef REVERSEDEBUGPLUGIN_H
-#define REVERSEDEBUGPLUGIN_H
+*/
+#ifndef MINIDUMPRUNCONTROL_H
+#define MINIDUMPRUNCONTROL_H
 
-#include <framework/framework.h>
-
-namespace dpfservice {
-class WindowService;
-}
+#include <QObject>
+#include <QProcess>
 
 namespace ReverseDebugger {
 namespace Internal {
-class ReverseDebuggerMgr;
-}
-}
 
-class ReverseDebugPlugin : public dpf::Plugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "reversedebug.json")
-public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
-
-private:
-    dpfservice::WindowService *windowService = nullptr;
-    ReverseDebugger::Internal::ReverseDebuggerMgr *reverseDebug = nullptr;
+enum StopResult {
+    StoppedSynchronously, // Stopped.
+    AsynchronousStop     // Stop sequence has been started
 };
 
-#endif   // REVERSEDEBUGPLUGIN_H
+class MinidumpRunControl : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit MinidumpRunControl(QObject *obj);
+    ~MinidumpRunControl();
+
+    void start();
+    StopResult stop();
+    bool isRunning() const;
+    QString displayName() const;
+
+private:
+    void appendMessage(const QString &msg);
+
+    QProcess *process = nullptr;
+    QString execFile;
+
+private slots:
+     void onStraceExit(int, QProcess::ExitStatus);
+
+};
+
+} // namespace Internal
+} // namespace ReverseDebugger
+
+#endif // MINIDUMPRUNCONTROL_H

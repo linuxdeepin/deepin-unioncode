@@ -24,10 +24,12 @@
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "common/actionmanager/actionmanager.h"
+#include "reversedebuggermgr.h"
 
 #include <QMenu>
 
 using namespace dpfservice;
+using namespace ReverseDebugger::Internal;
 
 void ReverseDebugPlugin::initialize()
 {
@@ -41,6 +43,18 @@ bool ReverseDebugPlugin::start()
         qCritical() << "Failed, can't found window service";
         abort();
     }
+
+    auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
+        ActionManager::getInstance()->registerAction(action, actionID, action->text(), key, iconFileName);
+        AbstractAction *actionImpl = new AbstractAction(action);
+        windowService->addAction(dpfservice::MWM_TOOLS, actionImpl);
+    };
+
+    auto recoredAction = new QAction(tr("Recored"));
+    actionInit(recoredAction, "Tool.Recored", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_R), "");
+
+    reverseDebug = new ReverseDebuggerMgr(this);
+    connect(recoredAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::recored);
 
     return true;
 }

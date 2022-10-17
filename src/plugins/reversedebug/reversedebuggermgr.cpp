@@ -4,7 +4,7 @@
  * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<huangyub@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,34 +18,33 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef REVERSEDEBUGPLUGIN_H
-#define REVERSEDEBUGPLUGIN_H
+*/
+#include "reversedebuggermgr.h"
+#include "minidumpruncontrol.h"
 
-#include <framework/framework.h>
+#include <QtConcurrent>
 
-namespace dpfservice {
-class WindowService;
-}
+#define AsynInvoke(Fun)          \
+    QtConcurrent::run([this]() { \
+        Fun;                     \
+    });
 
 namespace ReverseDebugger {
 namespace Internal {
-class ReverseDebuggerMgr;
-}
-}
 
-class ReverseDebugPlugin : public dpf::Plugin
+ReverseDebuggerMgr::ReverseDebuggerMgr(QObject *parent)
+    : QObject(parent)
+    , runCtrl(new MinidumpRunControl(this))
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "reversedebug.json")
-public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
 
-private:
-    dpfservice::WindowService *windowService = nullptr;
-    ReverseDebugger::Internal::ReverseDebuggerMgr *reverseDebug = nullptr;
-};
+}
 
-#endif   // REVERSEDEBUGPLUGIN_H
+void ReverseDebuggerMgr::recored()
+{
+    if (runCtrl) {
+        runCtrl->start();
+    }
+}
+
+} // namespace Internal
+} // namespace ReverseDebugger
