@@ -37,6 +37,9 @@ public:
     virtual ~TextEditTabWidget();
     static TextEditTabWidget *instance();
 
+protected:
+    virtual void keyPressEvent(QKeyEvent *event) override;
+
 public slots:
     void openFile(const QString &filePath);
     void openFile(const newlsp::ProjectKey &key, const QString &filePath);

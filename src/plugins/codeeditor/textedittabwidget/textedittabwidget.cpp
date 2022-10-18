@@ -4,6 +4,7 @@
  * Author:     huangyu<huangyub@uniontech.com>
  *
  * Maintainer: huangyu<huangyub@uniontech.com>
+ *             hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +30,7 @@
 
 #include <QGridLayout>
 #include <QFileInfo>
+#include <QKeyEvent>
 
 static TextEditTabWidget *ins{nullptr};
 
@@ -642,4 +644,22 @@ void TextEditTabWidget::saveEditFile(const QString &file)
     if (edit) {
         edit->saveText();
     }
+}
+
+void TextEditTabWidget::keyPressEvent(QKeyEvent *event)
+{
+    if (event->modifiers() == Qt::AltModifier) {
+        int idx = d->tab->currentIndex();
+        int count = d->tab->count();
+        if (count > 0 && idx > -1) {
+            if (event->key() == Qt::Key_Left) {
+                d->tab->setCurrentIndex((idx - 1 + count) % count);
+                setFocus();
+            } else if (event->key() == Qt::Key_Right) {
+                d->tab->setCurrentIndex((idx + 1) % count);
+                setFocus();
+            }
+        }
+    }
+    return QWidget::keyPressEvent(event);
 }
