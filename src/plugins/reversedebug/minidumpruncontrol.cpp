@@ -91,23 +91,21 @@ MinidumpRunControl::MinidumpRunControl(QObject *parent)
 
     connect(process, SIGNAL(finished(int, QProcess::ExitStatus)),
             this, SLOT(onStraceExit(int, QProcess::ExitStatus)));
-
-    execFile = ReverseDebugger::Constants::ST_PATH;
-    // TODO(mozart):replay params with dialog config.
-    g_emd_params = "--sys=desc, --x11=2, --stack-size=32 --heap-size=0 --param-size=256 -1";
-    if (g_emd_params.size() > 0) {
-        execFile += ' ' + g_emd_params + ' ';
-    }
-    execFile += "";   // target debuggee
 }
 
 MinidumpRunControl::~MinidumpRunControl()
 {
 }
 
-void MinidumpRunControl::start()
+void MinidumpRunControl::start(const QString &params)
 {
     qDebug() << __FUNCTION__ << ", object:" << this;
+
+    execFile = ReverseDebugger::Constants::ST_PATH;
+    if (!params.isEmpty()) {
+        execFile += ' ' + params + ' ';
+    }
+    execFile += "";   // target debuggee
 
     appendMessage(tr("[Start] %1").arg(execFile) + QLatin1Char('\n'));
 
@@ -129,7 +127,6 @@ StopResult MinidumpRunControl::stop()
         QByteArray data = process->readAll();
         QString outstr = QString::fromLocal8Bit(data.data());
         appendMessage(outstr + QLatin1Char('\n'));
-        process = nullptr;
     }
 
     g_emd_running = false;

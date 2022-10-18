@@ -38,9 +38,13 @@ public:
 
 signals:
 
-public slots:
+private slots:
+    void recordMinidump();
 
 private:
+    QVariant configValue(const QByteArray &name);
+    void setConfigValue(const QByteArray &name, const QVariant &value);
+
     MinidumpRunControl *runCtrl = nullptr;
 };
 

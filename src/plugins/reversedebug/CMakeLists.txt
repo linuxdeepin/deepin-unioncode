@@ -8,6 +8,7 @@ set(CXX_CPP
     eventsender.cpp
     minidumpruncontrol.cpp
     reversedebuggermgr.cpp
+    eventfilterdialog.cpp
     )
 
 set(CXX_H
@@ -17,6 +18,7 @@ set(CXX_H
     event_man.h
     minidumpruncontrol.h
     reversedebuggermgr.h
+    eventfilterdialog.h
     )
 
 add_library(${PROJECT_NAME}
