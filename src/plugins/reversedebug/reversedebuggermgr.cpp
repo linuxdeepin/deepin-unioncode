@@ -20,10 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "reversedebuggermgr.h"
+#include "reversedebuggerconstants.h"
 #include "minidumpruncontrol.h"
 #include "eventfilterdialog.h"
+#include "event_man.h"
+#include "taskwindow.h"
+#include "taskmodel.h"
+#include "taskfiltermodel.h"
+#include "timelinewidget.h"
+#include "loadcoredialog.h"
 
 #include <QtConcurrent>
+#include <QVBoxLayout>
+#include <QSpacerItem>
+#include <QMessageBox>
 
 #define AsynInvoke(Fun)          \
     QtConcurrent::run([this]() { \
@@ -31,6 +41,7 @@
     });
 
 extern bool g_emd_running;
+void* g_timeline = nullptr;
 
 // default flags count.
 #define X11_FLAGS_COUNT        20
@@ -41,14 +52,141 @@ extern bool g_emd_running;
 namespace ReverseDebugger {
 namespace Internal {
 
+static TaskWindow* g_taskWindow = nullptr;
+
 ReverseDebuggerMgr::ReverseDebuggerMgr(QObject *parent)
     : QObject(parent), runCtrl(new MinidumpRunControl(this))
 {
+    initialize();
+}
+
+void ReverseDebuggerMgr::initialize()
+{
+    if (!g_taskWindow) {
+        g_taskWindow = new TaskWindow;
+
+        g_taskWindow->addCategory(Constants::EVENT_CATEGORY_SYSCALL, tr("syscall"), true);
+        g_taskWindow->addCategory(Constants::EVENT_CATEGORY_SIGNAL, tr("signal"), true);
+        g_taskWindow->addCategory(Constants::EVENT_CATEGORY_X11, tr("x11"), true);
+        g_taskWindow->addCategory(Constants::EVENT_CATEGORY_DBUS, tr("dbus"), true);
+        connect(g_taskWindow, SIGNAL(coredumpChanged(int)),
+                this, SLOT(runCoredump(int)));
+        connect(g_taskWindow, SIGNAL(tasksCleared()),
+                this, SLOT(unloadMinidump()));
+    }
 }
 
 void ReverseDebuggerMgr::recored()
 {
     recordMinidump();
+}
+
+void ReverseDebuggerMgr::replay()
+{
+    QString defaultTraceDir = QDir::homePath() + QDir::separator() + ".local/share/emd/latest-trace";
+
+    LoadCoreDialog dlg;
+    CoredumpRunParameters parameters = dlg.displayDlg(defaultTraceDir);
+
+    replayMinidump(parameters.executable, parameters.pid);
+}
+
+QWidget *ReverseDebuggerMgr::getWidget() const
+{
+    QWidget *widget = new QWidget();
+
+    // verhicle
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->setMargin(0);
+    vLayout->setSpacing(0);
+    widget->setLayout(vLayout);
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    for (auto it : g_taskWindow->toolBarWidgets()) {
+        hLayout->addWidget(it);
+    }
+
+    QSpacerItem *spaceItem = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    hLayout->addSpacerItem(spaceItem);
+    vLayout->addLayout(hLayout);
+    vLayout->addWidget(g_taskWindow->outputWidget());
+
+    return widget;
+}
+
+QString ReverseDebuggerMgr::generateFilePath(const QString &fileName, const QString &traceDir, int pid)
+{
+    QString ret = traceDir + (traceDir.back() == '/' ? "" : "/");
+    ret += fileName;
+    ret += QString::number(pid);
+
+    return ret;
+}
+
+void ReverseDebuggerMgr::replayMinidump(const QString &traceDir, int pid)
+{
+    if (g_timeline) {
+        g_taskWindow->updateTimeline(nullptr, 0);
+        destroy_timeline(g_timeline);
+        g_timeline = nullptr;
+    }
+
+    // core file.
+    QString corefile = generateFilePath(CONTEXT_FILE_NAME, traceDir, pid);
+    if (corefile.isEmpty()) {
+        outputMessage("Context file is empty!");
+        return;
+    }
+
+    // map file.
+    QString mapFile = generateFilePath(MAP_FILE_NAME, traceDir, pid);
+    int frameCount = create_timeline(mapFile.toLocal8Bit(),
+            corefile.toLocal8Bit(), &g_timeline);
+    if (frameCount < 1) {
+        QMessageBox msgBox;
+        msgBox.setText(tr("Not found valid event in context file!"));
+        msgBox.exec();
+        return;
+    }
+
+    const EventEntry* entry = get_event_pointer(g_timeline);
+    if (entry) {
+        // Add task.
+        const char* cats[] = {
+            ReverseDebugger::Constants::EVENT_CATEGORY_SYSCALL,
+            ReverseDebugger::Constants::EVENT_CATEGORY_SIGNAL,
+            ReverseDebugger::Constants::EVENT_CATEGORY_DBUS,
+            ReverseDebugger::Constants::EVENT_CATEGORY_X11,
+        };
+
+        for (int i = 0; i < frameCount; ++i) {
+
+            /* ON MIPS, there's these three value:
+             22:#define __NR_Linux			4000
+            406:#define __NR_Linux			5000
+            749:#define __NR_Linux			6000
+            */
+            ReverseDebugger::Internal::Task task(
+                      QString::asprintf("%d:%s", i, get_event_name(entry->type)),
+                      cats[entry->type/1000 - __NR_Linux/1000],
+                      entry);
+            g_taskWindow->addTask(task);
+            ++entry;
+        }
+    }
+    g_taskWindow->updateTimeline(g_timeline, frameCount);
+
+    // do something.
+    // check if trace-dir/crash.txt exist? Auto load crash event if true.
+    --entry;
+    if (entry->type >= DUMP_REASON_signal && entry->type < DUMP_REASON_dbus) {
+        g_taskWindow->goTo(frameCount - 1);
+    }
+}
+
+void ReverseDebuggerMgr::outputMessage(const QString &msg)
+{
+    // TODO(mozart):display the message to outputpane.
+    qDebug() << msg;
 }
 
 static void NumberList2QString(uchar *in, int size, QString &str)

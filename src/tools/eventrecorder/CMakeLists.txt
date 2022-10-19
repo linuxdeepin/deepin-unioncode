@@ -267,5 +267,7 @@ target_link_libraries(eventman
   json-c
   zstd
 )
+
 install(TARGETS ${PROJECT_NAME} DESTINATION "${LIBRARY_INSTALL_PREFIX}/tools")
+install(TARGETS eventman DESTINATION "${LIBRARY_INSTALL_PREFIX}")
 

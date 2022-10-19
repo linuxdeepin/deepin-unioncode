@@ -9,6 +9,11 @@ set(CXX_CPP
     minidumpruncontrol.cpp
     reversedebuggermgr.cpp
     eventfilterdialog.cpp
+    taskmodel.cpp
+    taskfiltermodel.cpp
+    timelinewidget.cpp
+    taskwindow.cpp
+    loadcoredialog.cpp
     )
 
 set(CXX_H
@@ -19,6 +24,11 @@ set(CXX_H
     minidumpruncontrol.h
     reversedebuggermgr.h
     eventfilterdialog.h
+    taskmodel.h
+    taskfiltermodel.h
+    timelinewidget.h
+    taskwindow.h
+    loadcoredialog.h
     )
 
 add_library(${PROJECT_NAME}
@@ -32,6 +42,7 @@ target_link_libraries(${PROJECT_NAME}
     unioncode-service
     unioncode-base
     unioncode-common
+    eventman
     ${QtUseModules}
     ${PkgUserModules}
     )

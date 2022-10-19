@@ -50,11 +50,22 @@ bool ReverseDebugPlugin::start()
         windowService->addAction(dpfservice::MWM_TOOLS, actionImpl);
     };
 
+    auto reverseDbgAction = new QAction(tr("reverse debug"));
+    QMenu *menu = new QMenu();
+    reverseDbgAction->setMenu(menu);
+    actionInit(reverseDbgAction, "Tool.Reverse", {}, "");
+
     auto recoredAction = new QAction(tr("Recored"));
-    actionInit(recoredAction, "Tool.Recored", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_R), "");
+    auto replayAction = new QAction(tr("Replay"));
+
+    menu->addAction(recoredAction);
+    menu->addAction(replayAction);
 
     reverseDebug = new ReverseDebuggerMgr(this);
     connect(recoredAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::recored);
+    connect(replayAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::replay);
+
+    windowService->addContextWidget("Reverse Debug", new AbstractWidget(reverseDebug->getWidget()));
 
     return true;
 }

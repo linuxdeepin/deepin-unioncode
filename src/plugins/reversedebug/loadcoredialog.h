@@ -19,44 +19,47 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef REVERSEDEBUGGERMGR_H
-#define REVERSEDEBUGGERMGR_H
+#ifndef LOADCOREDIALOG_H
+#define LOADCOREDIALOG_H
 
-#include <QObject>
+#include <QDialog>
 
 namespace ReverseDebugger {
 namespace Internal {
 
-class MinidumpRunControl;
-class ReverseDebuggerMgr : public QObject
+class StartCoredumpDialogPrivate;
+class CoredumpRunParameters
+{
+public:
+    int pid = 0;
+
+    // trace directory.
+    QString executable;
+};
+
+class LoadCoreDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ReverseDebuggerMgr(QObject *parent = nullptr);
+    explicit LoadCoreDialog(QWidget *parent = nullptr);
+    ~LoadCoreDialog();
 
-    void initialize();
-
-    void recored();
-    void replay();
-
-    QWidget *getWidget() const;
+    CoredumpRunParameters displayDlg(const QString &traceDir);
 
 signals:
 
-private slots:
-    void recordMinidump();
+public slots:
 
 private:
-    QVariant configValue(const QByteArray &name);
-    void setConfigValue(const QByteArray &name, const QVariant &value);
-    QString generateFilePath(const QString &fileName, const QString &traceDir, int pid);
-    void replayMinidump(const QString &traceDir, int pid);
-    void outputMessage(const QString &msg);
+    void setupUi();
+    void updatePid();
+    void historyIndexChanged(int);
+    void showFileDialog();
 
-    MinidumpRunControl *runCtrl = nullptr;
+    StartCoredumpDialogPrivate *const d;
 };
 
-} // namespace Internal
-} // namespace ReverseDebugger
+}   // namespace ReverseDebugger
+}   // namespace Internal
 
-#endif // REVERSEDEBUGGERMGR_H
+#endif   // LOADCOREDIALOG_H
