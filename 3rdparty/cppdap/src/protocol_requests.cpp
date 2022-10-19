@@ -25,6 +25,20 @@ DAP_IMPLEMENT_STRUCT_TYPEINFO(AttachRequest,
                               "attach",
                               DAP_FIELD(restart, "__restart"));
 
+DAP_IMPLEMENT_STRUCT_TYPEINFO(AttachPythonRequest,
+                              "attach",
+                              DAP_FIELD(name, "name"),
+                              DAP_FIELD(type, "type"),
+                              DAP_FIELD(request, "request"),
+                              DAP_FIELD(__sessionId, "__sessionId"),
+                              DAP_FIELD(connect, "connect"),
+                              DAP_FIELD(justMyCode, "justMyCode"),
+                              DAP_FIELD(logToFile, "logToFile"),
+                              DAP_FIELD(__configurationTarget, "__configurationTarget"),
+                              DAP_FIELD(showReturnValue, "showReturnValue"),
+                              DAP_FIELD(debugOptions, "debugOptions"),
+                              DAP_FIELD(workspaceFolder, "workspaceFolder"));
+
 DAP_IMPLEMENT_STRUCT_TYPEINFO(BreakpointLocationsRequest,
                               "breakpointLocations",
                               DAP_FIELD(column, "column"),

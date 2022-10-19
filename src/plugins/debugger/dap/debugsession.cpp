@@ -188,6 +188,38 @@ bool DebugSession::attach(dap::AttachRequest &config)
     return true;
 }
 
+bool DebugSession::attachPythonDap(int port,
+                                 const QString &workspace)
+{
+    if (!raw)
+        return false;
+
+    dap::AttachPythonRequest request;
+    request.name = "Python Debug";
+    request.type = "python";
+    request.request = "attach";
+    dap::object obj;
+    obj["port"] = dap::number(port);
+    request.connect = obj;
+    request.justMyCode = true;
+    request.logToFile = true;
+    request.__configurationTarget = 6;
+
+    dap::array<dap::string> op;
+    op.push_back("RedirectOutput");
+    op.push_back("UnixClient");
+    op.push_back("ShowReturnValue");
+    request.debugOptions = op;
+    request.showReturnValue = true;
+
+    request.workspaceFolder = workspace.toStdString();
+    request.__sessionId = QUuid::createUuid().toString().toStdString();
+
+    auto ret = raw->attach(request);
+    return ret.valid();
+}
+
+
 void DebugSession::restart()
 {
     if (!raw)
@@ -559,7 +591,8 @@ void DebugSession::sendBreakpoints(const QString &sourcePath, dap::array<IBreakp
 
         auto data = std::map<dap::string, dap::Breakpoint>();
         for (size_t i = 0; i < breakpointsToSend.size(); ++i) {
-            data.insert(std::pair<dap::string, dap::Breakpoint>(breakpointsToSend[i].getId(), response.get().response.breakpoints[i]));
+            if (response.get().response.breakpoints.size() > i)
+                data.insert(std::pair<dap::string, dap::Breakpoint>(breakpointsToSend[i].getId(), response.get().response.breakpoints[i]));
         }
 
         model->setBreakpointSessionData(id, capabilities(), data);

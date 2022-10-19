@@ -105,6 +105,12 @@ Promise<AttachRequest> RawDebugSession::attach(const AttachRequest &request)
     return response;
 }
 
+Promise<AttachPythonRequest> RawDebugSession::attach(const AttachPythonRequest &request)
+{
+    auto response = send(request);
+    return response;
+}
+
 bool RawDebugSession::terminate(bool restart)
 {
     Q_UNUSED(restart)

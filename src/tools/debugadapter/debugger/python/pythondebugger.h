@@ -1,10 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,37 +18,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DEBUGENGINE_H
-#define DEBUGENGINE_H
+#ifndef PYTHONDEBUGGER_H
+#define PYTHONDEBUGGER_H
 
 
-#include <QSharedPointer>
 #include <QObject>
 
-class DapSession;
-class JavaDebugger;
-class PythonDebugger;
-class DebugEngine : public QObject
+class PythonDebuggerPrivate;
+class PythonDebugger : public QObject
 {
     Q_OBJECT
 public:
-    explicit DebugEngine(QObject *parent = nullptr);
-
-    bool start();
-    void stop();
-    bool exit();
+    explicit PythonDebugger(QObject *parent = nullptr);
+    virtual ~PythonDebugger() override;
 
 signals:
+    void sigSendToClient(int port);
 
 public slots:
+    void slotReceiveClientInfo(const QString &pythonExecute,
+                               const QString &fileName);
+
 private:
-    bool initialize();
+    void registerLaunchDAPConnect();
+    void initialize(const QString &pythonExecute,
+                    const QString &fileName);
 
-    bool isRunning = false;
-
-    QSharedPointer<DapSession> dapSession;
-    QSharedPointer<JavaDebugger> javaDebugger;
-    QSharedPointer<PythonDebugger> pythonDebugger;
+    PythonDebuggerPrivate *const d;
 };
 
-#endif   // DEBUGENGINE_H
+#endif // PYTHONDEBUGGER_H

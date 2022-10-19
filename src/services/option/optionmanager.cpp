@@ -87,7 +87,7 @@ QString OptionManager::getGradleToolPath()
 QString OptionManager::getPythonToolPath()
 {
     QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_PYTHON).toMap();
-    return map.value("Python").toMap().value("version").toMap().value("path").toString();
+    return map.value("Interpreter").toMap().value("version").toMap().value("path").toString();
 }
 
 QString OptionManager::getCMakeToolPath()

@@ -24,6 +24,7 @@
 #include "dapsession.h"
 
 #include "debugger/java/javadebugger.h"
+#include "debugger/python/pythondebugger.h"
 
 #include <QDBusConnection>
 
@@ -32,6 +33,7 @@ DebugEngine::DebugEngine(QObject *parent)
 {
     dapSession.reset(new DapSession());
     javaDebugger.reset(new JavaDebugger());
+    pythonDebugger.reset(new PythonDebugger());
 }
 
 bool DebugEngine::start()

@@ -127,6 +127,8 @@ public:
                        const QString &projectName,
                        const QStringList &classPaths,
                        const QString &javaExec);
+    bool attachPythonDap(int port,
+                         const QString &workspace);
     void closeSession();
 signals:
     void sigRegisterHandlers();

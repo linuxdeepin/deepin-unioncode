@@ -86,13 +86,30 @@ Debugger::Debugger(QObject *parent)
                        "send_java_dapport",
                        this, SLOT(slotReceiveJavaDAPPort(int, QString, QString, QStringList)));
 
+    sessionBus.disconnect(QString(""),
+                          "/path",
+                          "com.deepin.unioncode.interface",
+                          "send_python_dapport",
+                          this, SLOT(slotReceivePythonDAPPort(int)));
+    sessionBus.connect(QString(""),
+                       "/path",
+                       "com.deepin.unioncode.interface",
+                       "send_python_dapport",
+                       this, SLOT(slotReceivePythonDAPPort(int)));
+
     connect(this, &Debugger::sigJavaLSPPluginReady, this, &Debugger::slotJavaLSPPluginReady);
     connect(this, &Debugger::sigJavaDAPPluginReady, this, &Debugger::slotJavaDAPPluginReady);
     connect(this, &Debugger::sigJavaDAPPort, this, &Debugger::slotHandleJavaDAPPort);
 
+    connect(this, &Debugger::sigStartDebugPython, this, &Debugger::slotStartDebugPython);
+    connect(this, &Debugger::sigPythonDAPPort, this, &Debugger::slotHandlePythonDAPPort);
+
     timer = new QTimer();
     connect(timer, &QTimer::timeout, [this]() {
-        emit sigJavaDAPPort(0, "", "", QStringList{});
+        if (isJavaProject(activeProjectKitName))
+            emit sigJavaDAPPort(0, "", "", QStringList{});
+        else if (isPythonProject(activeProjectKitName))
+            emit sigPythonDAPPort(0);
     });
 
     initializeView();
@@ -127,12 +144,15 @@ QTreeView *Debugger::getBreakpointPane() const
 void Debugger::startDebug()
 {
     // build project everytime before debug.
-    if (!isCMakeProject(activeProjectKitName)
-            && !isJavaProject(activeProjectKitName)) //temporary, TODO for python
-        return;
+    if (isCMakeProject(activeProjectKitName)
+            || isJavaProject(activeProjectKitName)) {
+        updateRunState(kPreparing);
+        requestBuild();
+    } else if (isPythonProject(activeProjectKitName)) {
+        updateRunState(kPreparing);
+        emit sigStartDebugPython();
+    }
 
-    updateRunState(kPreparing);
-    requestBuild();
     // start debug when received build success event in handleFrameEvent().
 }
 
@@ -159,20 +179,26 @@ void Debugger::continueDebug()
 void Debugger::abortDebug()
 {
     if (runState == kRunning || runState == kStopped) {
-        if (isJavaProject(activeProjectKitName))
-            stopJavaDAP();
-        else if(isCMakeProject(activeProjectKitName))
+        if (isCMakeProject(activeProjectKitName))
             session->terminate();
+        else if (isJavaProject(activeProjectKitName)
+                || isPythonProject(activeProjectKitName))
+            stopDAP();
     }
 }
 
 void Debugger::restartDebug()
 {
     if (runState == kStopped || runState == kRunning) {
-        if (isJavaProject(activeProjectKitName))
-            restartJavaDAP();
-        else if(isCMakeProject(activeProjectKitName))
+        if (isCMakeProject(activeProjectKitName)) {
             session->restart();
+        } else if (isJavaProject(activeProjectKitName)) {
+            stopDAP();
+            start();
+        } else if (isPythonProject(activeProjectKitName)) {
+            stopDAP();
+            emit sigStartDebugPython();
+        }
     }
 }
 
@@ -485,9 +511,11 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
             projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
             activeProjectKitName = projectInfo.kitName();
             updateRunState(kNoRun);
-        } else if (event.data() == D_DELETED){
+        } else if (event.data() == D_DELETED) {
             activeProjectKitName.clear();
             updateRunState(kNoRun);
+        } else if (event.data() == D_OPENDOCUMENT) {
+            currentOpenedFileName = event.property(P_FILEPATH).toString();
         }
     }
 }
@@ -718,6 +746,11 @@ bool Debugger::isJavaProject(const QString &kitName)
     return isMavenProject(kitName) || isGradleProject(kitName);
 }
 
+bool Debugger::isPythonProject(const QString &kitName)
+{
+    return ("directory" == kitName);
+}
+
 bool Debugger::checkTargetIsReady()
 {
     targetPath.clear();
@@ -866,13 +899,7 @@ void Debugger::slotHandleJavaDAPPort(int port, const QString &mainClass, const Q
     launchSession(port, mainClass, projectName, classPaths);
 }
 
-void Debugger::restartJavaDAP()
-{
-    stopJavaDAP();
-    start();
-}
-
-void Debugger::stopJavaDAP()
+void Debugger::stopDAP()
 {
     updateRunState(kNoRun);
     session->closeSession();
@@ -1016,17 +1043,63 @@ void Debugger::checkJavaDAPPlugin()
     }
 }
 
+void Debugger::slotStartDebugPython()
+{
+    updateRunState(kStart);
+    printOutput(tr("Debugging starts"));
+
+    QString pythonTool = OptionManager::getInstance()->getPythonToolPath();
+    if (!pythonTool.contains("python3")) {
+        printOutput(tr("\nThe python3 is needed, please check and retry.\n"), ErrorMessageFormat);
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "The python3 is needed, please check and retry!"));
+        updateRunState(kPreparing);
+        return;
+    }
+
+    if (currentOpenedFileName.isEmpty()) {
+        printOutput(tr("\nThere is no opened python file, please open.\n"), ErrorMessageFormat);
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "There is no opened python file, please open!"));
+        updateRunState(kPreparing);
+        return;
+    }
+
+    waitHandlePythonDAPPort = true;
+    if (timer)
+        timer->start(10000); //10s timeout
+
+    QDBusMessage msg = QDBusMessage::createSignal("/path",
+                                                  "com.deepin.unioncode.interface",
+                                                  "launch_python_dap");
+    msg << OptionManager::getInstance()->getPythonToolPath()
+        << currentOpenedFileName;
+
+    QDBusConnection::sessionBus().send(msg);
+}
+
+void Debugger::slotReceivePythonDAPPort(int port)
+{
+    if (waitHandlePythonDAPPort)
+        emit sigPythonDAPPort(port);
+}
+
+void Debugger::slotHandlePythonDAPPort(int port)
+{
+    waitHandlePythonDAPPort = false;
+    timer->stop();
+    launchSession(port);
+}
+
 void Debugger::launchSession(const int port, const QString &mainClass/* = ""*/,
                              const QString &projectName/* = ""*/, const QStringList &classPaths/* = QStringList{}*/)
 {
     if (!port) {
-        printOutput("Java dap port is not ready, please retry.", ErrorMessageFormat);
+        printOutput(tr("\nThe dap port is not ready, please retry.\n"), ErrorMessageFormat);
         QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Could not find server port!"));
         updateRunState(kPreparing);
         return;
     }
 
-    QString launchTip = QString("Launch java dap session with port %1 ...")
+    QString launchTip = QString("Launch dap session with port %1 ...")
             .arg(port);
     printOutput(launchTip);
 
@@ -1045,6 +1118,8 @@ void Debugger::launchSession(const int port, const QString &mainClass/* = ""*/,
                                                projectName,
                                                classPaths,
                                                QDir::homePath() + javaDapPluginConfig.configHomePath + javaDapPluginConfig.jreExecute);
+        else if (isPythonProject(activeProjectKitName))
+            bSuccess &= session->attachPythonDap(port, projectInfo.workspaceFolder());
         else
             bSuccess &= false;
     }

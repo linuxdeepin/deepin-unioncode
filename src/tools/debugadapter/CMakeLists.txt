@@ -17,6 +17,7 @@ set(${PROJECT_NAME}_HEADERS
     debugger/gdbmi/gdbdebugger.h
     debugger/java/javadebugger.h
     debugger/java/javaparam.h
+    debugger/python/pythondebugger.h
    )
 
 set(${PROJECT_NAME}_SOURCES
@@ -31,6 +32,7 @@ set(${PROJECT_NAME}_SOURCES
     debugger/gdbmi/gdbdebugger.cpp
     debugger/java/javadebugger.cpp
     debugger/java/javaparam.cpp
+    debugger/python/pythondebugger.cpp
     )
 
 link_libraries(

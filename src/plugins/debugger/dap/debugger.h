@@ -90,6 +90,8 @@ signals:
     void sigJavaLSPPluginReady(bool succeed);
     void sigJavaDAPPluginReady(bool succeed);
     void sigJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
+    void sigPythonDAPPort(int port);
+    void sigStartDebugPython();
 
 public slots:
     void registerDapHandlers();
@@ -109,6 +111,10 @@ public slots:
     void slotReceiveJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
     void slotHandleJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
 
+    void slotReceivePythonDAPPort(int port);
+    void slotHandlePythonDAPPort(int port);
+
+    void slotStartDebugPython();
 private:
     void initializeView();
     void handleFrames(const StackFrames &stackFrames);
@@ -128,11 +134,11 @@ private:
     bool isMavenProject(const QString &kitName);
     bool isGradleProject(const QString &kitName);
     bool isJavaProject(const QString &kitName);
+    bool isPythonProject(const QString &kitName);
 
     void launchSession(const int port, const QString &mainClass = "",
                        const QString &projectName = "", const QStringList &classPaths = QStringList{});
-    void restartJavaDAP();
-    void stopJavaDAP();
+    void stopDAP();
     void checkJavaLSPPlugin();
     void checkJavaDAPPlugin();
 
@@ -165,12 +171,15 @@ private:
 
     QString activeProjectKitName;
     dpfservice::ProjectInfo projectInfo;
+    QString currentOpenedFileName;
 
     QString currentBuildUuid;
     QTimer *timer = nullptr;
     std::atomic_bool waitHandleJavaDAPPort = false;
     support_file::JavaDapPluginConfig javaDapPluginConfig;
     std::atomic_bool javaDapPluginFileReady = false;
+
+    std::atomic_bool waitHandlePythonDAPPort = false;
 };
 
 #endif   // DEBUGGER_H

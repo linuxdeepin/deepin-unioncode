@@ -19,10 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "javadebugger.h"
-
-#include "serverinfo.h"
 #include "javaparam.h"
-#include "common/util/processutil.h"
 
 #include <QProcess>
 #include <QDebug>
@@ -142,8 +139,8 @@ void JavaDebugger::initialize(const QString &configHomePath,
     QString javaPath = d->configPath + jreExecute;
     QString launcherPath = d->configPath + launchPackageFile;
     QString configLinuxPath = d->configPath + launchConfigPath;
-    QString heapDumpPath = d->configPath + "data/heapdump/headdump.java";
-    QString dataPath = d->configPath + "data/jdt_ws";
+    QString heapDumpPath = d->configPath + "data/javalog/heapdump/headdump.java";
+    QString dataPath = d->configPath + "data/javalog/jdt_ws";
 
     QString param = d->javaparam.getInitBackendParam(validPort,
                                                      javaPath,

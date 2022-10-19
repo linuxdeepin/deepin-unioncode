@@ -64,6 +64,30 @@ struct AttachRequest : public Request
 
 DAP_DECLARE_STRUCT_TYPEINFO(AttachRequest);
 
+struct AttachPythonRequest : public AttachRequest
+{
+    using Response = AttachResponse;
+    // Optional data from the previous, restarted session.
+    // The data is sent as the 'restart' attribute of the 'terminated' event.
+    // The client should leave the data intact.
+    optional<variant<array<any>, boolean, integer, null, number, object, string>>
+            restart;
+
+    optional<string> name;
+    optional<string> type;
+    optional<string> request;
+    optional<string> __sessionId;
+    optional<object> connect;
+    optional<boolean> justMyCode;
+    optional<boolean> logToFile;
+    optional<integer> __configurationTarget;
+    optional<boolean> showReturnValue;
+    optional<array<string>> debugOptions;
+    optional<string> workspaceFolder;
+};
+
+DAP_DECLARE_STRUCT_TYPEINFO(AttachPythonRequest);
+
 // Names of checksum algorithms that may be supported by a debug adapter.
 //
 // Must be one of the following enumeration values:
