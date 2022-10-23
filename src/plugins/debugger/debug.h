@@ -627,7 +627,7 @@ struct IDebugSession : public ITreeElement
 
     virtual bool initialize(const char *ip, int port, dap::InitializeRequest &iniRequest) = 0;
 
-    virtual bool launch(const QString &targetPath, bool noDebug = false) = 0;
+    virtual bool launch(dap::LaunchRequest &config) = 0;
     virtual bool attach(dap::AttachRequest &config) = 0;
 
     virtual void restart() = 0;

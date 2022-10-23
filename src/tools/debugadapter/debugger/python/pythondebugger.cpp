@@ -39,28 +39,33 @@ PythonDebugger::PythonDebugger(QObject *parent)
 {
     registerLaunchDAPConnect();
 
-    connect(this, &PythonDebugger::sigSendToClient, [](int port) {
+    connect(this, &PythonDebugger::sigSendToClient, [](const QString &uuid, int port) {
         QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                       "com.deepin.unioncode.interface",
-                                                      "send_python_dapport");
-        msg << port;
+                                                      "dapport");
+        msg << uuid
+            << port
+            << QString()
+            << QString()
+            << QStringList();
         QDBusConnection::sessionBus().send(msg);
     });
 
     connect(&d->process, &QProcess::readyReadStandardOutput, [this]() {
         QByteArray data = d->process.readAllStandardOutput();
-        qInfo() << "message:" << qPrintable(data);
+        //qInfo() << "message:" << qPrintable(data);
     });
 
     connect(&d->process, &QProcess::readyReadStandardError, [this]() {
         QByteArray data = d->process.readAllStandardError();
-        qInfo() << "error:" << qPrintable(data);
+        //qInfo() << "error:" << qPrintable(data);
     });
 }
 
 PythonDebugger::~PythonDebugger()
 {
-
+    if (d)
+        delete d;
 }
 
 void PythonDebugger::registerLaunchDAPConnect()
@@ -70,12 +75,12 @@ void PythonDebugger::registerLaunchDAPConnect()
                           "/path",
                           "com.deepin.unioncode.interface",
                           "launch_python_dap",
-                          this, SLOT(slotReceiveClientInfo(QString, QString)));
+                          this, SLOT(slotReceiveClientInfo(QString, QString, QString)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "launch_python_dap",
-                       this, SLOT(slotReceiveClientInfo(QString, QString)));
+                       this, SLOT(slotReceiveClientInfo(QString, QString, QString)));
 }
 
 void PythonDebugger::initialize(const QString &pythonExecute,
@@ -114,13 +119,13 @@ void PythonDebugger::initialize(const QString &pythonExecute,
     d->process.waitForStarted();
 }
 
-void PythonDebugger::slotReceiveClientInfo(const QString &pythonExecute,
+void PythonDebugger::slotReceiveClientInfo(const QString &uuid, const QString &pythonExecute,
                                            const QString &fileName)
 {
     d->port = 0;
     d->process.close();
     initialize(pythonExecute, fileName);
-    emit sigSendToClient(d->port);
+    emit sigSendToClient(uuid, d->port);
 }
 
 

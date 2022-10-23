@@ -23,10 +23,7 @@ namespace dap {
 
 DAP_IMPLEMENT_STRUCT_TYPEINFO(AttachRequest,
                               "attach",
-                              DAP_FIELD(restart, "__restart"));
-
-DAP_IMPLEMENT_STRUCT_TYPEINFO(AttachPythonRequest,
-                              "attach",
+                              DAP_FIELD(restart, "__restart"),
                               DAP_FIELD(name, "name"),
                               DAP_FIELD(type, "type"),
                               DAP_FIELD(request, "request"),
@@ -142,11 +139,9 @@ DAP_IMPLEMENT_STRUCT_TYPEINFO(LaunchRequest,
                               DAP_FIELD(externalConsole, "externalConsole"),
                               DAP_FIELD(MIMode, "MIMode"),
                               DAP_FIELD(__configurationTarget, "__configurationTarget"),
-                              DAP_FIELD(__sessionId, "__sessionId")
-                              );
+                              DAP_FIELD(__sessionId, "__sessionId"),
 
-DAP_IMPLEMENT_STRUCT_TYPEINFO(LaunchJavaRequest,
-                              "launch",
+                              // java extra
                               DAP_FIELD(env, "env"),
                               DAP_FIELD(vmArgs, "vmArgs"),
                               DAP_FIELD(console, "console"),

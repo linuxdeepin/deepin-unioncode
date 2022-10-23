@@ -46,6 +46,7 @@ class JavaDebuggerPrivate {
     QString mainClass;
     QString projectName;
     QStringList classPaths;
+    QString uuid;
 
     int requestId = 1;
     bool initialized = false;
@@ -59,11 +60,13 @@ JavaDebugger::JavaDebugger(QObject *parent)
     connect(this, &JavaDebugger::sigResolveClassPath, this, &JavaDebugger::slotResolveClassPath);
     connect(this, &JavaDebugger::sigCheckInfo, this, &JavaDebugger::slotCheckInfo);
 
-    connect(this, &JavaDebugger::sigSendToClient, [](int port, QString mainClass, QString projectName, QStringList classPaths) {
+    connect(this, &JavaDebugger::sigSendToClient, [](const QString &uuid, int port, const QString &mainClass,
+            const QString &projectName, const QStringList &classPaths) {
         QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                       "com.deepin.unioncode.interface",
-                                                      "send_java_dapport");
-        msg << port
+                                                      "dapport");
+        msg << uuid
+            << port
             << mainClass
             << projectName
             << classPaths;
@@ -85,7 +88,8 @@ JavaDebugger::JavaDebugger(QObject *parent)
 
 JavaDebugger::~JavaDebugger()
 {
-
+    if (d)
+        delete d;
 }
 
 void JavaDebugger::registerLaunchDAPConnect()
@@ -95,13 +99,13 @@ void JavaDebugger::registerLaunchDAPConnect()
                           "/path",
                           "com.deepin.unioncode.interface",
                           "launch_java_dap",
-                          this, SLOT(slotReceivePojectInfo(QString, QString, QString,
+                          this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString,
                                                            QString, QString, QString, QString)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "launch_java_dap",
-                       this, SLOT(slotReceivePojectInfo(QString, QString, QString,
+                       this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString,
                                                         QString, QString, QString, QString)));
 }
 
@@ -157,7 +161,8 @@ void JavaDebugger::initialize(const QString &configHomePath,
     d->initialized = true;
 }
 
-void JavaDebugger::slotReceivePojectInfo(const QString &workspace,
+void JavaDebugger::slotReceivePojectInfo(const QString &uuid,
+                                         const QString &workspace,
                                          const QString &configHomePath,
                                          const QString &jrePath,
                                          const QString &jreExecute,
@@ -170,6 +175,7 @@ void JavaDebugger::slotReceivePojectInfo(const QString &workspace,
     d->projectName.clear();
     d->classPaths.clear();
     d->requestId = 1;
+    d->uuid = uuid;
 
     initialize(configHomePath, jreExecute, launchPackageFile, launchConfigPath);
 
@@ -320,6 +326,6 @@ void JavaDebugger::slotCheckInfo()
             && !d->mainClass.isEmpty()
             && !d->projectName.isEmpty()
             && !d->classPaths.isEmpty())
-        emit sigSendToClient(d->port, d->mainClass, d->projectName, d->classPaths);
+        emit sigSendToClient(d->uuid, d->port, d->mainClass, d->projectName, d->classPaths);
 }
 

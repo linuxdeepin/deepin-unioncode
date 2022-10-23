@@ -60,18 +60,6 @@ struct AttachRequest : public Request
     // The client should leave the data intact.
     optional<variant<array<any>, boolean, integer, null, number, object, string>>
             restart;
-};
-
-DAP_DECLARE_STRUCT_TYPEINFO(AttachRequest);
-
-struct AttachPythonRequest : public AttachRequest
-{
-    using Response = AttachResponse;
-    // Optional data from the previous, restarted session.
-    // The data is sent as the 'restart' attribute of the 'terminated' event.
-    // The client should leave the data intact.
-    optional<variant<array<any>, boolean, integer, null, number, object, string>>
-            restart;
 
     optional<string> name;
     optional<string> type;
@@ -86,7 +74,7 @@ struct AttachPythonRequest : public AttachRequest
     optional<string> workspaceFolder;
 };
 
-DAP_DECLARE_STRUCT_TYPEINFO(AttachPythonRequest);
+DAP_DECLARE_STRUCT_TYPEINFO(AttachRequest);
 
 // Names of checksum algorithms that may be supported by a debug adapter.
 //
@@ -1240,12 +1228,8 @@ struct LaunchRequest : public Request
     optional<string> MIMode;
     optional<integer> __configurationTarget;
     optional<string> __sessionId;
-};
 
-DAP_DECLARE_STRUCT_TYPEINFO(LaunchRequest);
-
-struct LaunchJavaRequest : public LaunchRequest
-{
+    // java extra
     optional<object> env;
     optional<string> vmArgs;
     optional<string> console;
@@ -1258,7 +1242,8 @@ struct LaunchJavaRequest : public LaunchRequest
     optional<string> shortenCommandLine;
 };
 
-DAP_DECLARE_STRUCT_TYPEINFO(LaunchJavaRequest);
+DAP_DECLARE_STRUCT_TYPEINFO(LaunchRequest);
+
 
 // The event indicates that some source has been added, changed, or removed from
 // the set of all loaded sources.

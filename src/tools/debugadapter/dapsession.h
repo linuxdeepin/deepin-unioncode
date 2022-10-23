@@ -41,12 +41,17 @@ public:
     bool start();
     void stop();
 
+signals:
+    void sigSendToClient(const QString &uuid, int port);
+
 public slots:
     void initialize(std::shared_ptr<dap::ReaderWriter>);
+    void slotReceiveClientInfo(const QString &uuid);
 
 private:
     void initializeDebugMgr();
     void registerHanlder();
+    void registerDBusConnect();
 
     void handleOutputTextEvent(const QStringList &textList);
     void handleStreamConsole(const QString &text);

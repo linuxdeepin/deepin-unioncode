@@ -131,94 +131,23 @@ bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &
     return initialized;
 }
 
-bool DebugSession::launch(const QString &targetPath, bool noDebug)
-{
-    Q_UNUSED(noDebug)
-    if (!raw)
-        return false;
-
-    LaunchRequest request;
-    request.name = "(gdb) Launch";
-    request.type = "cppdbg";
-    request.request = "launch";
-    request.program = targetPath.toStdString();
-    request.stopAtEntry = false;
-//    request.cwd = "your project config directory.";
-    request.externalConsole = false;
-    request.MIMode = "gdb";
-    request.__sessionId = QUuid::createUuid().toString().toStdString();
-    auto ret = raw->launch(request);
-    return ret.valid();
-}
-
-bool DebugSession::launchJavaDap(const QString &workDir,
-                                 const QString &mainClass,
-                                 const QString &projectName,
-                                 const QStringList &classPaths,
-                                 const QString &javaExec)
+bool DebugSession::launch(dap::LaunchRequest &config)
 {
     if (!raw)
         return false;
 
-    dap::LaunchJavaRequest request;
-    request.name = "Java Debug";
-    request.type = "java";
-    request.request = "launch";
-    request.cwd = workDir.toStdString();
-    request.console = "integratedTerminal";
-    request.internalConsoleOptions = "neverOpen";
-    request.mainClass = mainClass.toStdString();
-    request.projectName = projectName.toStdString();
-    dap::array<dap::string> dapClassPaths;
-    foreach (auto classpath, classPaths) {
-        dapClassPaths.push_back(classpath.toStdString());
-    }
-    request.classPaths = dapClassPaths;
-    request.javaExec = javaExec.toStdString();
-    request.shortenCommandLine = "none";
-    request.__sessionId = QUuid::createUuid().toString().toStdString();
-
-    auto ret = raw->launch(request);
+    auto ret = raw->launch(config);
     return ret.valid();
 }
 
 bool DebugSession::attach(dap::AttachRequest &config)
 {
-    Q_UNUSED(config)
-    return true;
-}
-
-bool DebugSession::attachPythonDap(int port,
-                                 const QString &workspace)
-{
     if (!raw)
         return false;
 
-    dap::AttachPythonRequest request;
-    request.name = "Python Debug";
-    request.type = "python";
-    request.request = "attach";
-    dap::object obj;
-    obj["port"] = dap::number(port);
-    request.connect = obj;
-    request.justMyCode = true;
-    request.logToFile = true;
-    request.__configurationTarget = 6;
-
-    dap::array<dap::string> op;
-    op.push_back("RedirectOutput");
-    op.push_back("UnixClient");
-    op.push_back("ShowReturnValue");
-    request.debugOptions = op;
-    request.showReturnValue = true;
-
-    request.workspaceFolder = workspace.toStdString();
-    request.__sessionId = QUuid::createUuid().toString().toStdString();
-
-    auto ret = raw->attach(request);
+    auto ret = raw->attach(config);
     return ret.valid();
 }
-
 
 void DebugSession::restart()
 {

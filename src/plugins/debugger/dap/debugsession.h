@@ -51,9 +51,8 @@ public:
 
     const dap::Capabilities &capabilities() const override;
 
-    bool initialize(const char *ip, int port, dap::InitializeRequest &iniRequest) override;
-
-    bool launch(const QString &targetPath, bool noDebug = false) override;
+    bool initialize(const char *ip, int port, dap::InitializeRequest &iniRequest) override;   
+    bool launch(dap::LaunchRequest &config) override;
     bool attach(dap::AttachRequest &config) override;
 
     void restart() override;

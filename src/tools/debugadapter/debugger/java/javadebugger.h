@@ -36,13 +36,15 @@ signals:
     void sigResolveClassPath(const QString &mainClass,
                              const QString &projectName);
     void sigCheckInfo();
-    void sigSendToClient(int port,
+    void sigSendToClient(const QString &uuid,
+                         int port,
                          const QString &mainClass,
                          const QString &projectName,
                          const QStringList &classPaths);
 
 public slots:
-    void slotReceivePojectInfo(const QString &workspace,
+    void slotReceivePojectInfo(const QString &uuid,
+                               const QString &workspace,
                                const QString &configHomePath,
                                const QString &jrePath,
                                const QString &jreExecute,

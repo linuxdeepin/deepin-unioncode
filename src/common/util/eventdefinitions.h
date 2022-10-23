@@ -35,6 +35,11 @@ OPI_OBJECT(project,
            OPI_INTERFACE(openProject,  "filePath", "kitName", "language", "workspace")
            )
 
+OPI_OBJECT(debugger,
+           OPI_INTERFACE(prepareDebugProgress, "message")
+           OPI_INTERFACE(prepareDebugDone, "succeed", "message")
+           )
+
 extern const QString T_NAV;
 extern const QString T_MENU;
 extern const QString T_FILEBROWSER;

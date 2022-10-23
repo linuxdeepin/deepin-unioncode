@@ -1,6 +1,9 @@
 
 project(unioncode-service)
 
+set(CPPDAP_DIR ${CMAKE_SOURCE_DIR}/3rdparty/cppdap)
+include_directories(${CPPDAP_DIR}/include)
+
 set(CXX_H
     toolchecker/toolcheckerservice.h
     window/windowelement.h
@@ -36,6 +39,8 @@ set(CXX_H
     builder/fileutils.cpp
     builder/ioutputparser.h
     builder/ioutputparser.cpp
+    language/languagegenerator.h
+    language/languageservice.h
     )
 
 add_library(
@@ -49,6 +54,13 @@ add_library(
 link_libraries(
     ${PROJECT_NAME}
     unioncode-base
+    cppdap
+    ${QtUseModules}
+    ${PkgUserModules}
+    )
+
+target_link_libraries(${PROJECT_NAME}
+    cppdap
     ${QtUseModules}
     ${PkgUserModules}
     )

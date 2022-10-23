@@ -36,6 +36,7 @@
 #include "textedittabwidget/language/python/texteditpython.h"
 
 #include "services/window/windowservice.h"
+#include "services/language/languageservice.h"
 
 #include <QAction>
 
@@ -53,6 +54,13 @@ void CodeEditor::initialize()
     TextEditKeeper::impl<TextEditCpp>();
     TextEditKeeper::impl<TextEditCmake>();
     TextEditKeeper::impl<TextEditJava>();
+
+    QString errStr;
+    auto &ctx = dpfInstance.serviceContext();
+    if (!ctx.load(dpfservice::LanguageService::name(), &errStr)) {
+        qCritical() << errStr;
+        abort();
+    }
 }
 
 bool CodeEditor::start()

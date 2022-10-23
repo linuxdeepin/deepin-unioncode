@@ -18,34 +18,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef PYTHONDEBUGGER_H
-#define PYTHONDEBUGGER_H
+#ifndef PYTHONDEBUG_H
+#define PYTHONDEBUG_H
 
-
+#include "dap/protocol.h"
 #include <QObject>
 
-class PythonDebuggerPrivate;
-class PythonDebugger : public QObject
+class PythonDebugPrivate;
+class PythonDebug : public QObject
 {
     Q_OBJECT
 public:
-    explicit PythonDebugger(QObject *parent = nullptr);
-    virtual ~PythonDebugger() override;
+    explicit PythonDebug(QObject *parent = nullptr);
+    ~PythonDebug();
+
+    bool prepareDebug(const QString &fileName, QString &retMsg);
+    bool requestDAPPort(const QString &uuid, const QString &fileName, QString &retMsg);
+    bool isLaunchNotAttach();
+    dap::AttachRequest attachDAP(int port, const QString &workspace);
+    bool isRestartDAPManually();
+    bool isStopDAPManually();
 
 signals:
-    void sigSendToClient(const QString &uuid, int port);
 
-public slots:
-    void slotReceiveClientInfo(const QString &uuid,
-                               const QString &pythonExecute,
-                               const QString &fileName);
+private slots:
 
 private:
-    void registerLaunchDAPConnect();
-    void initialize(const QString &pythonExecute,
-                    const QString &fileName);
-
-    PythonDebuggerPrivate *const d;
+    PythonDebugPrivate *const d;
 };
 
-#endif // PYTHONDEBUGGER_H
+#endif // PYTHONDEBUG_H

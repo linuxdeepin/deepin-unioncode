@@ -36,6 +36,7 @@
 #include <QtDBus/QDBusConnection>
 #include <QList>
 #include <QMetaObject>
+#include <QDBusMessage>
 
 // keep the initialization in order.
 static ConditionLock configured;
@@ -58,6 +59,8 @@ class DapSessionPrivate
     bool isGDbProcessTerminated = false;
     bool isThreadRequestReceived = false;
     bool isInferiorStopped = false;
+
+    QString uuid;
 };
 
 DapSession::DapSession(QObject *parent)
@@ -65,16 +68,47 @@ DapSession::DapSession(QObject *parent)
     , d (new DapSessionPrivate())
 {
     qRegisterMetaType<std::shared_ptr<dap::ReaderWriter>>("std::shared_ptr<dap::ReaderWriter>");
+    registerDBusConnect();
 
-    QDBusConnection sessionBus = QDBusConnection::sessionBus();
-    if (sessionBus.registerService("com.deepin.unioncode.service")) {
-        sessionBus.registerObject("/", &d->serverInfo, QDBusConnection::ExportAllContents);
-    }
+    initializeDebugMgr();
 }
 
 DapSession::~DapSession()
 {
 
+}
+
+void DapSession::registerDBusConnect()
+{
+    QDBusConnection sessionBus = QDBusConnection::sessionBus();
+    sessionBus.disconnect(QString(""),
+                          "/path",
+                          "com.deepin.unioncode.interface",
+                          "get_cxx_dapport",
+                          this, SLOT(slotReceiveClientInfo(QString)));
+    sessionBus.connect(QString(""),
+                       "/path",
+                       "com.deepin.unioncode.interface",
+                       "get_cxx_dapport",
+                       this, SLOT(slotReceiveClientInfo(QString)));
+
+
+    connect(this, &DapSession::sigSendToClient, [](const QString &uuid, int port) {
+        QDBusMessage msg = QDBusMessage::createSignal("/path",
+                                                      "com.deepin.unioncode.interface",
+                                                      "dapport");
+        msg << uuid
+            << port
+            << QString()
+            << QString()
+            << QStringList();
+        QDBusConnection::sessionBus().send(msg);
+    });
+}
+
+void DapSession::slotReceiveClientInfo(const QString &uuid)
+{
+    emit sigSendToClient(uuid, d->serverInfo.port());
 }
 
 bool DapSession::start()
@@ -126,10 +160,9 @@ void DapSession::stop()
 
 void DapSession::initialize(std::shared_ptr<dap::ReaderWriter> socket)
 {
+    d->session.release();
     d->session = dap::Session::create();
     d->session->bind(socket);
-
-    initializeDebugMgr();
 
     registerHanlder();
 
@@ -139,7 +172,8 @@ void DapSession::initialize(std::shared_ptr<dap::ReaderWriter> socket)
 void DapSession::initializeDebugMgr()
 {
     // instance a debug manager object
-    d->debugger = DebugManager::instance();
+    if (!d->debugger)
+        d->debugger = DebugManager::instance();
 
     Qt::ConnectionType SequentialExecution = Qt::BlockingQueuedConnection;
 

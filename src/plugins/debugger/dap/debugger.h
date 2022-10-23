@@ -45,6 +45,7 @@ namespace dap {
 class Session;
 }
 
+class DebuggerPrivate;
 class Debugger;
 class AppOutputPane;
 class StackFrameView;
@@ -87,11 +88,6 @@ public:
 
 signals:
     void runStateChanged(RunState state);
-    void sigJavaLSPPluginReady(bool succeed);
-    void sigJavaDAPPluginReady(bool succeed);
-    void sigJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
-    void sigPythonDAPPort(int port);
-    void sigStartDebugPython();
 
 public slots:
     void registerDapHandlers();
@@ -106,15 +102,7 @@ public slots:
     void message(QString msg);
     void currentThreadChanged(const QString &text);
 
-    void slotJavaLSPPluginReady(bool succeed);
-    void slotJavaDAPPluginReady(bool succeed);
-    void slotReceiveJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
-    void slotHandleJavaDAPPort(int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
-
-    void slotReceivePythonDAPPort(int port);
-    void slotHandlePythonDAPPort(int port);
-
-    void slotStartDebugPython();
+    void slotReceivedDAPPort(const QString &uuid, int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
 private:
     void initializeView();
     void handleFrames(const StackFrames &stackFrames);
@@ -126,21 +114,14 @@ private:
     bool getLocals(dap::integer frameId, IVariables *out);
     void exitDebug();
     void updateRunState(Debugger::RunState state);
-    bool checkTargetIsReady();
-    void requestBuild();
+    QString requestBuild();
     void start();
-
-    bool isCMakeProject(const QString &kitName);
-    bool isMavenProject(const QString &kitName);
-    bool isGradleProject(const QString &kitName);
-    bool isJavaProject(const QString &kitName);
-    bool isPythonProject(const QString &kitName);
-
+    void prepareDebug();
+    void prepareDAPPort();
+    void stopWaitingDAPPort();
+    void stopDAP();
     void launchSession(const int port, const QString &mainClass = "",
                        const QString &projectName = "", const QStringList &classPaths = QStringList{});
-    void stopDAP();
-    void checkJavaLSPPlugin();
-    void checkJavaDAPPlugin();
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
     QSharedPointer<DEBUG::DebugSession> session;
@@ -164,22 +145,9 @@ private:
     BreakpointModel breakpointModel;
 
     QPointer<QWidget> alertBox;
-
-    QString targetPath;
-
     RunState runState = kNoRun;
 
-    QString activeProjectKitName;
-    dpfservice::ProjectInfo projectInfo;
-    QString currentOpenedFileName;
-
-    QString currentBuildUuid;
-    QTimer *timer = nullptr;
-    std::atomic_bool waitHandleJavaDAPPort = false;
-    support_file::JavaDapPluginConfig javaDapPluginConfig;
-    std::atomic_bool javaDapPluginFileReady = false;
-
-    std::atomic_bool waitHandlePythonDAPPort = false;
+    DebuggerPrivate *const d;
 };
 
 #endif   // DEBUGGER_H

@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     luzhen<luzhen@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: luzhen<luzhen@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,28 +18,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "eventreceiver.h"
-#include "common/common.h"
-#include "debuggersignals.h"
-#include "debuggerglobals.h"
+#ifndef CMAKEBUILD_H
+#define CMAKEBUILD_H
 
-DebugEventReceiver::DebugEventReceiver(QObject *parent)
-    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<DebugEventReceiver>()
-{
-}
+#include "dap/protocol.h"
+#include <QObject>
 
-dpf::EventHandler::Type DebugEventReceiver::type()
+class CMakeBuildPrivate;
+class CMakeBuild : public QObject
 {
-    return dpf::EventHandler::Type::Async;
-}
+    Q_OBJECT
+public:
+    explicit CMakeBuild(QObject *parent = nullptr);
+    ~CMakeBuild();
 
-QStringList DebugEventReceiver::topics()
-{
-    return { T_CODEEDITOR, T_BUILDER, T_PROJECT, debugger.topic};
-}
+    static QString build(const QString& kitName, const QString& projectPath);
+    static QString getTargetPath();
 
-void DebugEventReceiver::eventProcess(const dpf::Event &event)
-{
-    qInfo() << event;
-    emit debuggerSignals->receivedEvent(event);
-}
+signals:
+
+private slots:
+
+private:
+
+private:
+    CMakeBuildPrivate *const d;
+};
+
+#endif //CMAKEBUILD_H
+
