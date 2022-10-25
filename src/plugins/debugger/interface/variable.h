@@ -35,6 +35,7 @@ struct IVariable
 {
     dap::string name;
     dap::Variable var;
+    dap::integer depth = 0;
     IVariables children;
 };
 

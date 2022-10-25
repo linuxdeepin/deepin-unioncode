@@ -142,7 +142,7 @@ private:
     dap::Source getRawSource(QUrl &uri);
     void cancelAllRequests();
 
-    bool getVariables(dap::integer variablesRef, IVariables *out);
+    bool getVariables(dap::integer variablesRef, IVariables *out, dap::integer depth = 0);
 
     QSharedPointer<dap::RawDebugSession> raw;
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;

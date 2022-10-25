@@ -419,9 +419,10 @@ class Impl : public dap::Session {
           return typeinfo->deserialize(d, data);
         })) {
       handlers.error("Failed to deserialize event '%s' body", event.c_str());
-      typeinfo->destruct(data);
-      delete[] data;
-      return {};
+      // "body" field in TerminatedEvent is an optional field.
+      //typeinfo->destruct(data);
+      //delete[] data;
+      //return {};
     }
 
     return [=] {

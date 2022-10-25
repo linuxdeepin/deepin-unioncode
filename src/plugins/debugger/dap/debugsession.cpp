@@ -787,8 +787,11 @@ void DebugSession::shutdown()
 // GetVariables fetches the fully traversed set of Variables from the debugger
 // for the given reference identifier.
 // Returns true on success, false on error.
-bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out)
+bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out, dap::integer depth/* = 0*/)
 {
+    if (depth > 5)
+        return false;
+
     dap::VariablesRequest request;
     request.variablesReference = variablesRef;
     if (!raw->variables(request).valid()) {
@@ -804,12 +807,13 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out)
         IVariable v;
         v.name = var.name;
         v.var = var;
+        v.depth = depth + 1;
+        out->push_back(v);
         if (var.variablesReference > 0) {
-            if (!getVariables(var.variablesReference, &v.children)) {
+            if (!getVariables(var.variablesReference, &v.children, v.depth)) {
                 return false;
             }
         }
-        out->push_back(v);
     }
     return true;
 }
