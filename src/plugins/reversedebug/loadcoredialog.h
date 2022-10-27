@@ -34,7 +34,7 @@ public:
     int pid = 0;
 
     // trace directory.
-    QString executable;
+    QString tracedir;
 };
 
 class LoadCoreDialog : public QDialog

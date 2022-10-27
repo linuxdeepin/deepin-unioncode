@@ -61,7 +61,7 @@ CoredumpRunParameters LoadCoreDialog::displayDlg(const QString &traceDir)
 
     CoredumpRunParameters ret;
     ret.pid = d->pidInput->currentText().toInt();
-    ret.executable = d->traceDir->text();
+    ret.tracedir = d->traceDir->text();
 
     return ret;
 }

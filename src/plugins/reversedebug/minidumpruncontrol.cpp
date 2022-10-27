@@ -97,15 +97,20 @@ MinidumpRunControl::~MinidumpRunControl()
 {
 }
 
-void MinidumpRunControl::start(const QString &params)
+void MinidumpRunControl::start(const QString &params, const QString &target)
 {
     qDebug() << __FUNCTION__ << ", object:" << this;
+
+    if (target.isEmpty() || !QFile::exists(target)) {
+        QMessageBox::warning(nullptr, tr("Reverse debug"), tr("Target: %1 not found, recored failed!").arg(target));
+        return;
+    }
 
     execFile = ReverseDebugger::Constants::ST_PATH;
     if (!params.isEmpty()) {
         execFile += ' ' + params + ' ';
     }
-    execFile += "";   // target debuggee
+    execFile += target;   // target debuggee
 
     appendMessage(tr("[Start] %1").arg(execFile) + QLatin1Char('\n'));
 

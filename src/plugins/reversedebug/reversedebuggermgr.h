@@ -45,6 +45,8 @@ signals:
 
 private slots:
     void recordMinidump();
+    void runCoredump(int index);
+    void unloadMinidump();
 
 private:
     QVariant configValue(const QByteArray &name);
@@ -52,6 +54,9 @@ private:
     QString generateFilePath(const QString &fileName, const QString &traceDir, int pid);
     void replayMinidump(const QString &traceDir, int pid);
     void outputMessage(const QString &msg);
+    void exist();
+    QString targetPath() const;
+    void enterReplayEnvironment();
 
     MinidumpRunControl *runCtrl = nullptr;
 };

@@ -29,6 +29,10 @@
 #include "taskfiltermodel.h"
 #include "timelinewidget.h"
 #include "loadcoredialog.h"
+#include "services/debugger/debuggerservice.h"
+#include "common/actionmanager/actionmanager.h"
+#include "services/project/projectservice.h"
+#include "services/window/windowservice.h"
 
 #include <QtConcurrent>
 #include <QVBoxLayout>
@@ -48,6 +52,8 @@ void* g_timeline = nullptr;
 #define SIGNAL_FLAGS_COUNT     20
 #define SYSCALL_FLAGS_COUNT    8
 #define DBUS_FLAGS_COUNT       5
+
+using namespace dpfservice;
 
 namespace ReverseDebugger {
 namespace Internal {
@@ -83,12 +89,14 @@ void ReverseDebuggerMgr::recored()
 
 void ReverseDebuggerMgr::replay()
 {
+    enterReplayEnvironment();
+
     QString defaultTraceDir = QDir::homePath() + QDir::separator() + ".local/share/emd/latest-trace";
 
     LoadCoreDialog dlg;
     CoredumpRunParameters parameters = dlg.displayDlg(defaultTraceDir);
 
-    replayMinidump(parameters.executable, parameters.pid);
+    replayMinidump(parameters.tracedir, parameters.pid);
 }
 
 QWidget *ReverseDebuggerMgr::getWidget() const
@@ -187,6 +195,36 @@ void ReverseDebuggerMgr::outputMessage(const QString &msg)
 {
     // TODO(mozart):display the message to outputpane.
     qDebug() << msg;
+}
+
+void ReverseDebuggerMgr::exist()
+{
+    auto command = ActionManager::getInstance()->command("Debug.Abort.Debugging");
+    QAction *action = nullptr;
+    if (command && (action = command->action()) && action->isEnabled()) {
+        action->trigger();
+    }
+}
+
+QString ReverseDebuggerMgr::targetPath() const
+{
+    QString targetPath;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService && projectService->getActiveTarget) {
+        Target target = projectService->getActiveTarget(kActiveExecTarget);
+        targetPath = target.outputPath + QDir::separator() + target.path +  QDir::separator() + target.buildTarget;
+    }
+    return targetPath;
+}
+
+void ReverseDebuggerMgr::enterReplayEnvironment()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    auto windowService = ctx.service<WindowService>(WindowService::name());
+    if (windowService && windowService->switchWidgetContext) {
+        emit windowService->switchWidgetContext(tr("Reverse Debug"));
+    }
 }
 
 static void NumberList2QString(uchar *in, int size, QString &str)
@@ -320,8 +358,33 @@ void ReverseDebuggerMgr::recordMinidump()
     }
 
     if (runCtrl) {
-        runCtrl->start(emdParams);
+        runCtrl->start(emdParams, targetPath());
     }
+}
+
+void ReverseDebuggerMgr::runCoredump(int index)
+{
+    qDebug() << Q_FUNC_INFO << ", " << index;
+
+    // produce coredump.
+    if (0 == generate_coredump(g_timeline, index, "/tmp/emd.core", 0)) {
+        // run coredump.
+        // gdb target core.
+        auto &ctx = dpfInstance.serviceContext();
+        auto service = ctx.service<DebuggerService>(DebuggerService::name());
+        if (service) {
+            if (service->runCoredump) {
+                service->runCoredump("target", "core", "cmake");
+            }
+        }
+    } else {
+        qDebug() << "Failed to create coredump file:" << index;
+    }
+}
+
+void ReverseDebuggerMgr::unloadMinidump()
+{
+
 }
 
 QVariant ReverseDebuggerMgr::configValue(const QByteArray &name)

@@ -50,7 +50,7 @@ bool ReverseDebugPlugin::start()
         windowService->addAction(dpfservice::MWM_TOOLS, actionImpl);
     };
 
-    auto reverseDbgAction = new QAction(tr("reverse debug"));
+    auto reverseDbgAction = new QAction(tr("Reverse debug"));
     QMenu *menu = new QMenu();
     reverseDbgAction->setMenu(menu);
     actionInit(reverseDbgAction, "Tool.Reverse", {}, "");
@@ -65,7 +65,7 @@ bool ReverseDebugPlugin::start()
     connect(recoredAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::recored);
     connect(replayAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::replay);
 
-    windowService->addContextWidget("Reverse Debug", new AbstractWidget(reverseDebug->getWidget()));
+    windowService->addContextWidget(tr("Reverse Debug"), new AbstractWidget(reverseDebug->getWidget()));
 
     return true;
 }

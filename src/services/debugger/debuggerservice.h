@@ -28,6 +28,9 @@ namespace dpfservice {
 class DebuggerService final : public dpf::PluginService,
         dpf::AutoServiceRegister<DebuggerService>
 {
+    Q_OBJECT
+    Q_DISABLE_COPY(DebuggerService)
+
 public:
     explicit DebuggerService(QObject *parent = nullptr)
         : dpf::PluginService (parent)
@@ -39,6 +42,14 @@ public:
     {
         return "org.deepin.service.DebuggerService";
     }
+
+    /**
+     * @brief runCoredump launch debugger and debug coredump file.
+     * @param target debugee file path.
+     * @param core coredump file path.
+     * @param kit current project kit.
+     */
+    DPF_INTERFACE(bool, runCoredump, const QString &target, const QString &core, const QString &kit);
 };
 
 } // namespace dpfservice

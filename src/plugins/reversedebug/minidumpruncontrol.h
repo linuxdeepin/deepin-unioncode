@@ -41,7 +41,7 @@ public:
     explicit MinidumpRunControl(QObject *obj);
     ~MinidumpRunControl();
 
-    void start(const QString &params);
+    void start(const QString &params, const QString &target);
     StopResult stop();
     bool isRunning() const;
     QString displayName() const;
