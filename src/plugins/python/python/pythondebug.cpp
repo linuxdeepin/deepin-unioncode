@@ -25,6 +25,7 @@
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QUuid>
+#include <QProcess>
 
 class PythonDebugPrivate
 {
@@ -53,11 +54,22 @@ bool PythonDebug::prepareDebug(const QString &fileName, QString &retMsg)
 
     QString pythonTool = OptionManager::getInstance()->getPythonToolPath();
     if (!pythonTool.contains("python3")) {
-        retMsg = tr("The python3 is needed, please check and retry.");
+        retMsg = tr("The python3 is needed, please select it in options dialog or install it.");
         return false;
     }
 
-    return true;
+    QProcess process;
+    QStringList options;
+    options << "-c" << "pip3 show -- debugpy";
+    process.start("/bin/bash", options);
+    if (process.waitForReadyRead()) {
+        QString output = process.readAllStandardOutput();
+        if (output.contains("debugpy"))
+            return true;
+    }
+
+    retMsg = tr("The debugpy is needed, please use command \"pip3 install debugpy\" install and retry.");
+    return false;
 }
 
 
