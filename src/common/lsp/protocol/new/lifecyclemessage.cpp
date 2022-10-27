@@ -538,8 +538,8 @@ std::string toJsonValueStr(const SemanticTokensClientCapabilities::Requests &val
 {
     std::string ret;
     if (val.range) {
-        if (any_contrast<bool>(val.range)) {
-            ret = json::addValue(ret, json::KV{"range", std::any_cast<bool>(val.range)});
+        if (any_contrast<bool>(val.range.value())) {
+            ret = json::addValue(ret, json::KV{"range", std::any_cast<bool>(val.range.value())});
         } else {
             ret = json::addValue(ret, json::KV{"range", std::string("{}")});
         }

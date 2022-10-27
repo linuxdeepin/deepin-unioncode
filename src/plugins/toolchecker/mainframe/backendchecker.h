@@ -83,8 +83,6 @@ public:
     static BackendChecker &instance();
     void checkLanguageBackend(const QString &languageID);
     bool existRunMain(const QString &languageID);
-    bool existShellRemain(const QString &languageID);
-    bool createShellRemain(const QString &languageID);
     bool checkCachePackage(const QString &languageID);
 private:
     QString adapterPath;

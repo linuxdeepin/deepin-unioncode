@@ -90,7 +90,6 @@ QProcess *createJavaServ(const newlsp::ProjectKey &key)
             + QString("-data %0").arg(dataDir);
     proc->setProgram("/usr/bin/bash");
     proc->setArguments({"-c", programAs});
-    proc->start();
 #endif
     proc->setProcessChannelMode(QProcess::ForwardedErrorChannel);
     QObject::connect(proc, &QProcess::readyReadStandardOutput,
@@ -98,7 +97,7 @@ QProcess *createJavaServ(const newlsp::ProjectKey &key)
         std::cout << proc->readAllStandardOutput().toStdString() << std::endl;
     });
     proc->start();
-
+    QObject::connect(qApp, &QCoreApplication::destroyed, [&](){ proc->kill(); });
     JsonRpcCallProxy::ins().setSelect(key);
     return proc;
 }

@@ -41,9 +41,6 @@
 #define JDTLS_PROGRAM_MAIN "jdtls"
 #define JDTLS_PROGRAM_MAIN_MIME "text/x-python3"
 
-#define JDTLS_PROGRAM_REMAIN "jdtls_run.sh"
-#define JDTLS_PROGRAM_REMAIN_MIME "application/x-shellscript"
-
 BackendChecker::BackendChecker(QWidget *parent)
     : QWidget(parent)
 {
@@ -76,6 +73,13 @@ void BackendChecker::checkLanguageBackend(const QString &languageID)
     if (!dir.cd("languageadapter")) { dir.mkdir("languageadapter"); }
     adapterPath = dir.path();
 
+    // reconfig new lsp server
+    if (QFile::exists(dir.path() + QDir::separator() + "languageAdapter.conf")) {
+        dir.removeRecursively();
+        dir.cdUp();
+        if (!dir.cd("languageadapter")) { dir.mkdir("languageadapter"); }
+    }
+
     auto itera = requestInfos.begin();
     while (itera != requestInfos.end()) {
         if (!dir.cd(itera.key())) {
@@ -106,9 +110,6 @@ void BackendChecker::checkLanguageBackend(const QString &languageID)
                 processDialog->setArguments({"zxvf", info.getPackageSaveName(), "-C", languageID});
                 processDialog->exec();
             }
-            // if (!existShellRemain(languageID)) {
-            createShellRemain(languageID);
-            // }
         } else if (infoVar.canConvert<Pip3GitInstall>()) {
             auto info = qvariant_cast<Pip3GitInstall>(infoVar);
             QString userLocalBinPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
@@ -120,45 +121,6 @@ void BackendChecker::checkLanguageBackend(const QString &languageID)
             }
         }
     }
-}
-
-bool BackendChecker::existShellRemain(const QString &languageID)
-{
-    if (languageID == "Java") {
-        QDir dir(adapterPath + QDir::separator() + languageID);
-        dir.setFilter(QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Files | QDir::Dirs);
-        QDirIterator itera(dir, QDirIterator::Subdirectories);
-        QMimeDatabase mimeDB;
-        while (itera.hasNext()) {
-            itera.next();
-            QString mimeName = mimeDB.mimeTypeForFile(itera.fileInfo()).name();
-            if (JDTLS_PROGRAM_REMAIN_MIME == mimeName
-                    && JDTLS_PROGRAM_REMAIN == itera.fileName()) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-bool BackendChecker::createShellRemain(const QString &languageID)
-{
-    if (languageID == "Java") {
-        QString jdtlsRemainPath = CustomPaths::global(CustomPaths::Scripts)
-                + QDir::separator() +JDTLS_PROGRAM_REMAIN;
-        QString languageChildPath = adapterPath + QDir::separator() + languageID;
-        if (!QFileInfo(jdtlsRemainPath).exists()) {
-            ContextDialog::ok(QDialog::tr("Failed, global Java env lsp "
-                                          "remain shell file not exists"));
-            qCritical() << "jdtlsRemainPath need jdtls_run.sh file from script path";
-            abort();
-        }
-        ProcessUtil::execute("cp", {jdtlsRemainPath, languageChildPath}, [](auto data){
-            qInfo() << data;
-        });
-        return true;
-    }
-    return false;
 }
 
 bool BackendChecker::existRunMain(const QString &languageID)

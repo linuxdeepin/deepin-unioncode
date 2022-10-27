@@ -904,10 +904,6 @@ bool ClientPrivate::calledResult(const QJsonObject &jsonObj)
             || !jsonObj.contains(K_RESULT))
         return false;
 
-    //    qInfo() << "client <-- : " << lsp::V_INITIALIZE;
-    //    qInfo() << jsonObj;
-
-
     bool any = false;
     any |= initResult(jsonObj);
     any |= openResult(jsonObj);
@@ -932,9 +928,15 @@ bool ClientPrivate::calledResult(const QJsonObject &jsonObj)
 void ClientPrivate::doReadStdoutLine()
 {
     while (q->canReadLine()) {
+        //        auto lineData = q->readLine();
+        //        qInfo() << "lineData:\n" << lineData;
+        //        doReadedLine(lineData);
         doReadedLine(q->readLine());
     }
     if (q->bytesAvailable()) {
+        //        auto allData = q->readAll();
+        //        qInfo() << "allData:\n" << allData;
+        //        doReadedLine(allData);
         doReadedLine(q->readAll());
     }
 }

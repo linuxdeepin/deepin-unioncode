@@ -599,7 +599,7 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                 params.capabilities.textDocument->semanticTokens->requests = SemanticTokensClientCapabilities::Requests{};
                 params.capabilities.textDocument->semanticTokens->requests.full = SemanticTokensClientCapabilities::Requests::Full{};
                 params.capabilities.textDocument->semanticTokens->requests.full->delta = true;
-                params.capabilities.textDocument->semanticTokens->requests.range = {std::any(true)};
+                params.capabilities.textDocument->semanticTokens->requests.range = std::optional<std::any>(true);
                 params.capabilities.textDocument->semanticTokens->multilineTokenSupport = false; // from vscode
                 params.capabilities.textDocument->semanticTokens->overlappingTokenSupport = false; // from vscode
                 // no setting from vscode
