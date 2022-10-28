@@ -29,6 +29,11 @@ using namespace dpfservice;
 void CxxPlugin::initialize()
 {
     qInfo() << __FUNCTION__;
+}
+
+bool CxxPlugin::start()
+{
+    qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *languageService = ctx.service<LanguageService>(LanguageService::name());
     if (languageService) {
@@ -43,11 +48,6 @@ void CxxPlugin::initialize()
             }
         }
     }
-}
-
-bool CxxPlugin::start()
-{
-    qInfo() << __FUNCTION__;
     return true;
 }
 

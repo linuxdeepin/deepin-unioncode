@@ -27,6 +27,11 @@ using namespace dpfservice;
 void PythonPlugin::initialize()
 {
     qInfo() << __FUNCTION__;
+}
+
+bool PythonPlugin::start()
+{
+    qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *languageService = ctx.service<LanguageService>(LanguageService::name());
     if (languageService) {
@@ -41,11 +46,6 @@ void PythonPlugin::initialize()
             }
         }
     }
-}
-
-bool PythonPlugin::start()
-{
-    qInfo() << __FUNCTION__;
     return true;
 }
 

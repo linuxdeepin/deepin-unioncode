@@ -29,6 +29,12 @@ using namespace dpfservice;
 
 void BuilderGradle::initialize()
 {
+    qInfo() << __FUNCTION__;
+}
+
+bool BuilderGradle::start()
+{
+    qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
@@ -38,14 +44,11 @@ void BuilderGradle::initialize()
             builderService->create<GradleGenerator>(GradleGenerator::toolKitName(), &errorString);
         }
     }
-}
-
-bool BuilderGradle::start()
-{
     return true;
 }
 
 dpf::Plugin::ShutdownFlag BuilderGradle::stop()
 {
+    qInfo() << __FUNCTION__;
     return Sync;
 }

@@ -31,6 +31,11 @@ using namespace dpfservice;
 void JavaPlugin::initialize()
 {
     qInfo() << __FUNCTION__;
+}
+
+bool JavaPlugin::start()
+{
+    qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *languageService = ctx.service<LanguageService>(LanguageService::name());
     if (languageService) {
@@ -55,11 +60,6 @@ void JavaPlugin::initialize()
             }
         }
     }
-}
-
-bool JavaPlugin::start()
-{
-    qInfo() << __FUNCTION__;
     return true;
 }
 
