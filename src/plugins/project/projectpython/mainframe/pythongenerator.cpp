@@ -60,7 +60,7 @@ PythonGenerator::~PythonGenerator()
         delete d;
 }
 
-QWidget *PythonGenerator::configureWidget(const QString &language,
+QDialog *PythonGenerator::configureWidget(const QString &language,
                                           const QString &projectPath)
 {
     using namespace dpfservice;

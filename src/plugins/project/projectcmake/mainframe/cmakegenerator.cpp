@@ -94,7 +94,7 @@ CmakeGenerator::~CmakeGenerator()
         delete d;
 }
 
-QWidget *CmakeGenerator::configureWidget(const QString &language,
+QDialog *CmakeGenerator::configureWidget(const QString &language,
                                          const QString &projectPath)
 {
     using namespace dpfservice;

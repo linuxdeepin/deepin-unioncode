@@ -36,7 +36,7 @@ public:
     explicit MavenGenerator();
     virtual ~MavenGenerator();
     static QString toolKitName() { return "maven"; }
-    virtual QWidget* configureWidget(const QString &language,
+    virtual QDialog* configureWidget(const QString &language,
                                      const QString &projectPath) override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;

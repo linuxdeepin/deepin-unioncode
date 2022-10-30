@@ -107,14 +107,7 @@ void CMakeOpenHandler::doProjectOpen(const QString &name, const QString &languag
 
     auto configWidget = generator->configureWidget(language, filePath);
     if (configWidget) {
-        configWidget->setWindowFlags(configWidget->windowFlags() | Qt::Tool | Qt::Dialog);
-        configWidget->setAttribute(Qt::WA_DeleteOnClose, true);
-        configWidget->setWindowModality(Qt::ApplicationModal);
-        configWidget->setAttribute(Qt::WA_ShowModal, true);
-        QDesktopWidget *desktop = QApplication::desktop();
-        configWidget->move((desktop->width() - configWidget->width()) / 2,
-                           (desktop->height() - configWidget->height()) / 2);
-        configWidget->show();
+        configWidget->exec();
     }
 }
 

@@ -57,7 +57,7 @@ MavenGenerator::~MavenGenerator()
         delete d;
 }
 
-QWidget *MavenGenerator::configureWidget(const QString &language,
+QDialog *MavenGenerator::configureWidget(const QString &language,
                                          const QString &projectPath)
 {
     using namespace dpfservice;

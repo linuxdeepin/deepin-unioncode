@@ -41,8 +41,8 @@ class ConfigPropertyWidgetPrivate
 
 ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
                                            const QString &projectPath,
-                                           QWidget *parent)
-    : QWidget (parent)
+                                           QDialog *parent)
+    : QDialog (parent)
     , d(new ConfigPropertyWidgetPrivate())
 {
     setWindowTitle(tr("Config"));

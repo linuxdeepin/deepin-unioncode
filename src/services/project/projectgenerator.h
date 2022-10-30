@@ -56,7 +56,7 @@ public:
      * \param projectPath 工程路径
      * \return 返回工程配置界面
      */
-    virtual QWidget* configureWidget(const QString &language, const QString &projectPath) {
+    virtual QDialog* configureWidget(const QString &language, const QString &projectPath) {
         Q_UNUSED(language)
         Q_UNUSED(projectPath)
         return nullptr;

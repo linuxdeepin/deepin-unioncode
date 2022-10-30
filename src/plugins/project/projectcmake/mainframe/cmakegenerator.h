@@ -36,7 +36,7 @@ public:
     explicit CmakeGenerator();
     virtual ~CmakeGenerator();
     static QString toolKitName() { return "cmake"; }
-    virtual QWidget* configureWidget(const QString &language,
+    virtual QDialog* configureWidget(const QString &language,
                                      const QString &projectPath) override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;

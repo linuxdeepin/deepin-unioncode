@@ -26,13 +26,13 @@
 #include <QDialog>
 
 class ConfigPropertyWidgetPrivate;
-class ConfigPropertyWidget : public QWidget
+class ConfigPropertyWidget : public QDialog
 {
     Q_OBJECT
 public:
     explicit ConfigPropertyWidget(const QString &language,
                                   const QString &projectPath,
-                                  QWidget *parent = nullptr);
+                                  QDialog *parent = nullptr);
     virtual ~ConfigPropertyWidget();
 
 signals:

@@ -107,7 +107,7 @@ GradleGenerator::~GradleGenerator()
         delete d;
 }
 
-QWidget *GradleGenerator::configureWidget(const QString &language,
+QDialog *GradleGenerator::configureWidget(const QString &language,
                                           const QString &projectPath)
 {
     using namespace dpfservice;
