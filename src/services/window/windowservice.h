@@ -176,6 +176,28 @@ public:
      */
     DPF_INTERFACE(void, showFindToolBar);
 
+
+    /*!
+     * \brief addToolBarActionItem
+     */
+    DPF_INTERFACE(bool, addToolBarActionItem, const QString &id, QAction *action);
+
+    /*!
+     * \brief addToolBarWidgetItem
+     */
+    DPF_INTERFACE(bool, addToolBarWidgetItem, const QString &id, AbstractWidget *widget);
+
+    /*!
+     * \brief removeToolBarItem
+     */
+    DPF_INTERFACE(void, removeToolBarItem, const QString &id);
+
+    /*!
+     * \brief setToolBarItemDisable
+     */
+    DPF_INTERFACE(void, setToolBarItemDisable, const QString &id, bool disable);
+
+
 signals:
 
     /*!

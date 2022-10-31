@@ -47,6 +47,7 @@ void MenuManager::initialize(WindowService *windowService)
     connect(startDebugging.get(), &QAction::triggered, debugManager, &DebugManager::run);
     AbstractAction *actionImpl = new AbstractAction(startDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
+    windowService->addToolBarActionItem("Start Debugging", startDebugging.get());
 
 #if 0 // not used yet.
     detachDebugger.reset(new QAction("Detach Debugger"));

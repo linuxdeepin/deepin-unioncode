@@ -27,6 +27,7 @@
 #include "base/abstractmenubar.h"
 #include "base/abstractmainwindow.h"
 #include "base/abstractcentral.h"
+#include "base/abstractwidget.h"
 
 #include <framework/framework.h>
 
@@ -51,6 +52,10 @@ public:
     explicit WindowKeeper(QObject *parent = nullptr);
     virtual ~WindowKeeper();
     QStringList navActionTexts() const;
+    bool addToolBarActionItem(const QString &id, QAction *action);
+    bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget);
+    void removeToolBarItem(const QString &id);
+    void setToolBarItemDisable(const QString &id, bool disable);
 
 public slots:
     void addActionNavigation(AbstractAction *action);

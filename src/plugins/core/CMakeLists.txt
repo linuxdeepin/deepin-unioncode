@@ -8,6 +8,7 @@ set(CXX_CPP
     mainframe/windowstatusbar.cpp
     mainframe/progressbar.cpp
     mainframe/aboutdialog.cpp
+    mainframe/toolbarmanager.cpp
     transceiver/sendevents.cpp
     transceiver/corereceiver.cpp
     core.cpp
@@ -20,6 +21,7 @@ set(CXX_H
     mainframe/windowstatusbar.h
     mainframe/progressbar.h
     mainframe/aboutdialog.h
+    mainframe/toolbarmanager.h
     transceiver/sendevents.h
     transceiver/corereceiver.h
     core.h
