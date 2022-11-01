@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-include(${CMAKE_SOURCE_DIR}/3rdparty/archive-jsonrpccpp.cmake)
+include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 
 project(plugin-performance)
 
@@ -42,7 +42,7 @@ target_link_libraries(${PROJECT_NAME}
     unioncode-framework
     unioncode-base
     unioncode-service
-    archive-jsonrpcclient
+    unioncode-jsonrpcclient
     ${QtUseModules}
     ${PkgUserModules}
     )

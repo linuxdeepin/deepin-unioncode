@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-codeeditor)
 
-include(${CMAKE_SOURCE_DIR}/3rdparty/scintilla515.cmake)
-include(${CMAKE_SOURCE_DIR}/3rdparty/lexilla514.cmake)
+include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-scintilla515.cmake)
+include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-lexilla514.cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR true)
 
 add_definitions(-DLIBRARY_INSTALL_PREFIX="${LIBRARY_INSTALL_PREFIX}")

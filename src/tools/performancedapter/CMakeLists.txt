@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-include(${CMAKE_SOURCE_DIR}/3rdparty/archive-jsonrpccpp.cmake)
+include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 
 project(performanceadapter)
 
@@ -33,8 +33,8 @@ add_executable(${PROJECT_NAME} main.cpp
     ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
-    archive-jsonrpccpp-server
-    archive-jsonrpccpp-common
+    unioncode-jsonrpccpp-server
+    unioncode-jsonrpccpp-common
     )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "${LIBRARY_INSTALL_PREFIX}/tools")

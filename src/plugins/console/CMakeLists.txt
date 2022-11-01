@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-console)
 
-include(${CMAKE_SOURCE_DIR}/3rdparty/qtermwidget-0.14.1.cmake)
+include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-qtermwidget-0.14.1.cmake)
 
 set(CMAKE_INCLUDE_CURRENT_DIR true)
 

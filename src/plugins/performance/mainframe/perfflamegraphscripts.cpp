@@ -124,7 +124,6 @@ FlameGraphGenTask::FlameGraphGenTask(QObject *parent)
     d->stackCollapse = new StackCollapse(d->perfScriptOutFile, d->stackCollapseOutFile);
     d->flameGraph = new FlameGraph(d->stackCollapseOutFile, d->flameGraphOutFile);
 
-
     // perf recode exit
     QObject::connect(d->perfRecord, &QProcess::errorOccurred,
                      this, [=](QProcess::ProcessError pError)
@@ -134,6 +133,7 @@ FlameGraphGenTask::FlameGraphGenTask(QObject *parent)
                 && errorOut.contains("[ perf record: Woken up")
                 && errorOut.contains("times to write data ]\n[ perf record: Captured and wrote")
                 && errorOut.contains("samples) ]\n")) {
+            qInfo() << "start perfScript with crashed perfRecord";
             d->perfScript->start();
         } else {
             emit error(d->perfScript->program()
@@ -142,59 +142,116 @@ FlameGraphGenTask::FlameGraphGenTask(QObject *parent)
         }
     });
 
+    QObject::connect(d->perfRecord, &QProcess::readAllStandardOutput,
+                     this, [=](){
+        qCritical() << "perfRecord output: \n"
+                    << d->perfRecord->readAllStandardOutput();
+    });
     QObject::connect(d->perfRecord, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [=](int exitCode, QProcess::ExitStatus status)
     {
-        Q_UNUSED(status)
+        qInfo() << "perfRecord exit:" << exitCode << status;
         if (exitCode == 0 && d->perfScript) {
+            qInfo() << "start perfScript";
             d->perfScript->start();
         } else {
+            qCritical() << "exit not's 0, this unknow error from perfRecord"
+                        << d->perfScript->errorString();
             emit error(d->perfScript->program()
                        + " " + d->perfScript->arguments().join(" ")
                        + ": " + d->perfScript->errorString());
         }
     });
 
+    QObject::connect(d->perfScript, &QProcess::readAllStandardOutput,
+                     this, [=](){
+        qCritical() << "perfScript output: \n"
+                    << d->perfScript->readAllStandardOutput();
+    });
+    QObject::connect(d->perfScript, &QProcess::readyReadStandardError,
+                     this, [=]()
+    {
+        qCritical() << "perfScript error output: \n"
+                    << d->perfScript->readAllStandardError();
+    });
     // perf script exit
     QObject::connect(d->perfScript, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [=](int exitCode, QProcess::ExitStatus status)
     {
-        Q_UNUSED(status)
+        qInfo() << "perfScript exit:" << exitCode << status;
         if (exitCode == 0 && d->stackCollapse) {
+            qInfo() << "start stackCollapse script";
             d->stackCollapse->start();
         } else {
+            qCritical() << "exit not's 0, this unknow error from perfScript"
+                        << d->perfScript->errorString();
             emit error(d->perfScript->program()
                        + " " + d->perfScript->arguments().join(" ")
                        + ": " + d->perfScript->errorString());
         }
     });
 
+    QObject::connect(d->stackCollapse, &QProcess::readAllStandardOutput,
+                     this, [=](){
+        qCritical() << "stackCollapse output: \n"
+                    << d->stackCollapse->readAllStandardOutput()
+                    << d->stackCollapse->workingDirectory()
+                    << d->stackCollapse->program()
+                    << d->stackCollapse->arguments();
+    });
+    QObject::connect(d->stackCollapse, &QProcess::readyReadStandardError,
+                     this, [=]()
+    {
+        qCritical() << "stackCollapse error output: \n"
+                    << d->stackCollapse->readAllStandardError()
+                    << d->stackCollapse->workingDirectory()
+                    << d->stackCollapse->program()
+                    << d->stackCollapse->arguments();
+    });
     // stackCollapse exit
-    QObject::connect(d->stackCollapse,  QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+    QObject::connect(d->stackCollapse, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [=](int exitCode, QProcess::ExitStatus status)
     {
-        Q_UNUSED(status)
+        qInfo() << "stackCollapse exit:" << exitCode << status;
         if (exitCode == 0 && d->flameGraph) {
+            qCritical() << "start flameGraph script";
             d->flameGraph->start();
         } else {
+            qCritical() << "exit not's 0, this unknow error from stackCollapse"
+                        << d->flameGraph->errorString();
             emit error(d->stackCollapse->program()
                        + " " + d->stackCollapse->arguments().join(" ")
                        + ": " + d->stackCollapse->errorString());
         }
     });
 
+    QObject::connect(d->flameGraph, &QProcess::readAllStandardOutput,
+                     this, [=](){
+        qCritical() << "flameGraph output: \n"
+                    << d->flameGraph->readAllStandardOutput();
+    });
+    QObject::connect(d->flameGraph, &QProcess::readyReadStandardError,
+                     this, [=]()
+    {
+        qCritical() << "flameGraph error output: \n"
+                    << d->flameGraph->readAllStandardError();
+    });
     // flameGraph exit
-    QObject::connect(d->flameGraph,  QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+    QObject::connect(d->flameGraph, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [=](int exitCode, QProcess::ExitStatus status)
     {
         Q_UNUSED(status)
+        qInfo() << "stackCollapse exit:" << exitCode << status;
         if (exitCode == 0) {
             if (d->showWebBrowserFlag) {
+                qCritical() << "show with gnome-www-browser";
                 QString defaultWebCmd = "gnome-www-browser";
                 QProcess::startDetached(defaultWebCmd, {d->flameGraphOutFile});
                 emit this->showed(d->flameGraphOutFile);
             }
         } else {
+            qCritical() << "exit not's 0, this unknow error from flameGraph"
+                        << d->flameGraph->errorString();
             emit error(d->flameGraph->program()
                        + " " + d->flameGraph->arguments().join(" ")
                        + ": " + d->flameGraph->errorString());

@@ -1,6 +1,6 @@
 project(unioncode-common)
 
-include(${CMAKE_SOURCE_DIR}/3rdparty/archive-jsonrpccpp.cmake)
+include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 
 configure_file(util/config.h.in config.h)
 find_package(Qt5Network)
@@ -117,7 +117,7 @@ add_library(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    archive-jsonrpcclient
+    unioncode-jsonrpcclient
     Qt5::Network
     )
 
