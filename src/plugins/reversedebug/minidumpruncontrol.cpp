@@ -32,7 +32,7 @@
 using namespace std;
 
 // global variable used extern.
-bool g_emd_running = false;
+bool kEmdRunning = false;
 bool g_emd_buffer_syscall = false;
 QString g_emd_params;
 
@@ -81,7 +81,7 @@ MinidumpRunControl::MinidumpRunControl(QObject *parent)
     : QObject(parent),
       process(new QProcess(this))
 {
-    if (g_emd_running) {
+    if (kEmdRunning) {
         qDebug() << "emd is running now!";
         return;
     }
@@ -121,7 +121,7 @@ void MinidumpRunControl::start(const QString &params, const QString &target)
         return;
     }
 
-    g_emd_running = true;
+    kEmdRunning = true;
 }
 
 StopResult MinidumpRunControl::stop()
@@ -134,7 +134,7 @@ StopResult MinidumpRunControl::stop()
         appendMessage(outstr + QLatin1Char('\n'));
     }
 
-    g_emd_running = false;
+    kEmdRunning = false;
 
     appendMessage(tr("[Stop] %1").arg(execFile) + QLatin1Char('\n'));
 
@@ -143,7 +143,7 @@ StopResult MinidumpRunControl::stop()
 
 bool MinidumpRunControl::isRunning() const
 {
-    return g_emd_running;
+    return kEmdRunning;
 }
 
 QString MinidumpRunControl::displayName() const

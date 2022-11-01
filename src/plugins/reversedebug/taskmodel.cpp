@@ -24,7 +24,7 @@
 #include <QIcon>
 #include <QFontMetrics>
 
-extern void *g_timeline;
+extern void *kTimeline;
 
 namespace ReverseDebugger {
 namespace Internal {
@@ -142,7 +142,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
             i = task.description.left(i).toInt(&ok, 10);
             if (ok) {
                 char buf[EVENT_EXTRA_INFO_SIZE];
-                if (get_event_extra_info(g_timeline,
+                if (get_event_extra_info(kTimeline,
                                          i, buf, sizeof(buf))
                     > 0) {
                     info = QLatin1String(buf);

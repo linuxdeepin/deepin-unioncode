@@ -24,6 +24,7 @@
 
 #include <QObject>
 
+class QSettings;
 namespace ReverseDebugger {
 namespace Internal {
 
@@ -52,13 +53,14 @@ private:
     QVariant configValue(const QByteArray &name);
     void setConfigValue(const QByteArray &name, const QVariant &value);
     QString generateFilePath(const QString &fileName, const QString &traceDir, int pid);
-    void replayMinidump(const QString &traceDir, int pid);
+    bool replayMinidump(const QString &traceDir, int pid);
     void outputMessage(const QString &msg);
     void exist();
     QString targetPath() const;
     void enterReplayEnvironment();
 
     MinidumpRunControl *runCtrl = nullptr;
+    QSettings *settings = nullptr;
 };
 
 } // namespace Internal

@@ -57,11 +57,12 @@ CoredumpRunParameters LoadCoreDialog::displayDlg(const QString &traceDir)
 {
     d->traceDir->setText(traceDir);
 
-    exec();
-
     CoredumpRunParameters ret;
-    ret.pid = d->pidInput->currentText().toInt();
-    ret.tracedir = d->traceDir->text();
+    auto code = exec();
+    if (code == QDialog::Accepted) {
+        ret.pid = d->pidInput->currentText().toInt();
+        ret.tracedir = d->traceDir->text();
+    }
 
     return ret;
 }

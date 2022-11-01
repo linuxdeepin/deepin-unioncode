@@ -30,7 +30,7 @@ class Progress:
         self.status = 0
         self.progress = 0
         self.phase = 0
-        self.info = 'has not start'
+        self.info = 'preparing...'
         self.base = 0
         self.max = 100
     

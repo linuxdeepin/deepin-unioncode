@@ -44,8 +44,9 @@
         Fun;                     \
     });
 
-extern bool g_emd_running;
-void* g_timeline = nullptr;
+extern bool kEmdRunning;
+void* kTimeline = nullptr;
+static const char *kCoredump = "/tmp/emd.core";
 
 // default flags count.
 #define X11_FLAGS_COUNT        20
@@ -80,6 +81,21 @@ void ReverseDebuggerMgr::initialize()
         connect(g_taskWindow, SIGNAL(tasksCleared()),
                 this, SLOT(unloadMinidump()));
     }
+
+    if (!settings) {
+        QString iniPath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("reversedbg.ini");
+        bool setDefaultVaule = false;
+        if (!QFile::exists(iniPath)) {
+            setDefaultVaule = true;
+        }
+        settings = new QSettings(iniPath, QSettings::IniFormat, this);
+        if (setDefaultVaule) {
+            setConfigValue("StackSize", 32);
+            setConfigValue("HeapSize", 0);
+            setConfigValue("ParamSize", 256);
+            setConfigValue("CurrentThread", true);
+        }
+    }
 }
 
 void ReverseDebuggerMgr::recored()
@@ -89,14 +105,17 @@ void ReverseDebuggerMgr::recored()
 
 void ReverseDebuggerMgr::replay()
 {
-    enterReplayEnvironment();
-
     QString defaultTraceDir = QDir::homePath() + QDir::separator() + ".local/share/emd/latest-trace";
 
     LoadCoreDialog dlg;
     CoredumpRunParameters parameters = dlg.displayDlg(defaultTraceDir);
+    if (parameters.tracedir.isEmpty() || parameters.pid == 0)
+        return;
 
-    replayMinidump(parameters.tracedir, parameters.pid);
+    bool replaySuccess = replayMinidump(parameters.tracedir, parameters.pid);
+    if (replaySuccess) {
+        enterReplayEnvironment();
+    }
 }
 
 QWidget *ReverseDebuggerMgr::getWidget() const
@@ -130,33 +149,33 @@ QString ReverseDebuggerMgr::generateFilePath(const QString &fileName, const QStr
     return ret;
 }
 
-void ReverseDebuggerMgr::replayMinidump(const QString &traceDir, int pid)
+bool ReverseDebuggerMgr::replayMinidump(const QString &traceDir, int pid)
 {
-    if (g_timeline) {
+    if (kTimeline) {
         g_taskWindow->updateTimeline(nullptr, 0);
-        destroy_timeline(g_timeline);
-        g_timeline = nullptr;
+        destroy_timeline(kTimeline);
+        kTimeline = nullptr;
     }
 
     // core file.
     QString corefile = generateFilePath(CONTEXT_FILE_NAME, traceDir, pid);
     if (corefile.isEmpty()) {
         outputMessage("Context file is empty!");
-        return;
+        return false;
     }
 
     // map file.
     QString mapFile = generateFilePath(MAP_FILE_NAME, traceDir, pid);
     int frameCount = create_timeline(mapFile.toLocal8Bit(),
-            corefile.toLocal8Bit(), &g_timeline);
+            corefile.toLocal8Bit(), &kTimeline);
     if (frameCount < 1) {
         QMessageBox msgBox;
         msgBox.setText(tr("Not found valid event in context file!"));
         msgBox.exec();
-        return;
+        return false;
     }
 
-    const EventEntry* entry = get_event_pointer(g_timeline);
+    const EventEntry* entry = get_event_pointer(kTimeline);
     if (entry) {
         // Add task.
         const char* cats[] = {
@@ -181,7 +200,7 @@ void ReverseDebuggerMgr::replayMinidump(const QString &traceDir, int pid)
             ++entry;
         }
     }
-    g_taskWindow->updateTimeline(g_timeline, frameCount);
+    g_taskWindow->updateTimeline(kTimeline, frameCount);
 
     // do something.
     // check if trace-dir/crash.txt exist? Auto load crash event if true.
@@ -189,6 +208,7 @@ void ReverseDebuggerMgr::replayMinidump(const QString &traceDir, int pid)
     if (entry->type >= DUMP_REASON_signal && entry->type < DUMP_REASON_dbus) {
         g_taskWindow->goTo(frameCount - 1);
     }
+    return true;
 }
 
 void ReverseDebuggerMgr::outputMessage(const QString &msg)
@@ -255,7 +275,7 @@ static void ParseNumberList(QString &str, unsigned char *out, size_t size)
 
 void ReverseDebuggerMgr::recordMinidump()
 {
-    if (g_emd_running) {
+    if (kEmdRunning) {
         qDebug() << "emd is running";
         return;
     }
@@ -367,14 +387,14 @@ void ReverseDebuggerMgr::runCoredump(int index)
     qDebug() << Q_FUNC_INFO << ", " << index;
 
     // produce coredump.
-    if (0 == generate_coredump(g_timeline, index, "/tmp/emd.core", 0)) {
+    if (0 == generate_coredump(kTimeline, index, kCoredump, 0)) {
         // run coredump.
         // gdb target core.
         auto &ctx = dpfInstance.serviceContext();
         auto service = ctx.service<DebuggerService>(DebuggerService::name());
         if (service) {
             if (service->runCoredump) {
-                service->runCoredump("target", "core", "cmake");
+                service->runCoredump(targetPath(), kCoredump, "cmake");
             }
         }
     } else {
@@ -395,15 +415,12 @@ QVariant ReverseDebuggerMgr::configValue(const QByteArray &name)
                                      { "ParamSize", "256" },
                                      { "CurrentThread", "true" }};
 
-    return values[name];
+    return settings->value(QString::fromLatin1("DebugMode/" + name));
 }
 
 void ReverseDebuggerMgr::setConfigValue(const QByteArray &name, const QVariant &value)
 {
-    Q_UNUSED(name)
-    Q_UNUSED(value)
-
-    // TODO(mozart):persistent should be done.
+    settings->setValue(QString::fromLatin1("DebugMode/" + name), value);
 }
 
 }   // namespace Internal
