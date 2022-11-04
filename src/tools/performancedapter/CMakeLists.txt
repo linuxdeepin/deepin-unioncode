@@ -5,7 +5,11 @@ include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 project(performanceadapter)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+if ((NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "sw_64")
+        AND (NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "loongarch64")
+        AND (NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64")
+        AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
     message("debug type open sanitize check")
     set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
     set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
