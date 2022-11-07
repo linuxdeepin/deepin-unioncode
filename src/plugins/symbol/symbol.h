@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2020 ~ 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     huanyu<huanyub@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             huangyu<huangyub@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,20 +18,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef SENDEVENTS_H
-#define SENDEVENTS_H
+ */
+#ifndef SYMBOL_H
+#define SYMBOL_H
 
-#include <QString>
-#include "services/project/projectservice.h"
+#include <framework/framework.h>
 
-class SendEvents final
+class Symbol: public dpf::Plugin
 {
-    SendEvents() = delete;
-    SendEvents(const SendEvents &) = delete;
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "symbol.json")
 public:
-    static void doubleCliekedJumpToLine(const QString &workspace, const QString &language,
-                                        const QString &filePath, int line);
+    virtual void initialize() override;
+    virtual bool start() override;
+    virtual dpf::Plugin::ShutdownFlag stop() override;
 };
 
-#endif // SENDEVENTS_H
+#endif // SYMBOL_H

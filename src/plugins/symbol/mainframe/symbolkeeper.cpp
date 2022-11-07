@@ -18,17 +18,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef SENDEVENTS_H
-#define SENDEVENTS_H
+#include "symbolkeeper.h"
 
-#include <QString>
+#include <QStandardItem>
 
-class SendEvents final
+namespace {
+SymbolTreeView *tree{nullptr};
+SymbolParser *parser{nullptr};
+}
+
+SymbolKeeper::SymbolKeeper()
 {
-    SendEvents() = delete;
-    SendEvents(const SendEvents &) = delete;
-public:
 
-};
+}
 
-#endif // SENDEVENTS_H
+SymbolKeeper *SymbolKeeper::instance()
+{
+    static SymbolKeeper ins;
+    return &ins;
+}
+
+SymbolTreeView *SymbolKeeper::treeView()
+{
+    if (!tree)
+        tree = new SymbolTreeView();
+    return tree;
+}
+
+void SymbolKeeper::doParse(const SymbolParseArgs &args)
+{
+    if (parser) {
+        parser->kill();
+        parser->waitForFinished();
+    }
+    parser = new SymbolParser();
+    parser->setArgs(args);
+    parser->SymbolParser::start();
+}
+

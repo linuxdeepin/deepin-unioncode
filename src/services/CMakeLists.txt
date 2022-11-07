@@ -11,9 +11,6 @@ set(CXX_H
     debugger/debuggerservice.h
     container/containerservice.h
     project/projectactioninfo.h
-    project/symbolinfo.h
-    project/symbolgenerator.h
-    project/symbolviewinterface.h
     project/projectviewinterface.h
     project/projectinfo.h
     project/projectgenerator.h
@@ -41,6 +38,7 @@ set(CXX_H
     builder/ioutputparser.cpp
     language/languagegenerator.h
     language/languageservice.h
+    symbol/symbolservice.h
     )
 
 add_library(

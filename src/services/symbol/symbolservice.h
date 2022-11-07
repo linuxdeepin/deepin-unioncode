@@ -18,24 +18,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef SYMBOLCPPGENERATOR_H
-#define SYMBOLCPPGENERATOR_H
+#ifndef SYMBOLSERVICE_H
+#define SYMBOLSERVICE_H
 
-#include "services/project/projectservice.h"
-#include "symbolcppasynparser.h"
+#include <framework/framework.h>
 
-class SymbolCppGeneratorPrivate;
-class SymbolCppGenerator : public dpfservice::SymbolGenerator
+#include <QTabWidget>
+
+namespace dpfservice {
+
+class SymbolService final : public dpf::PluginService,
+        dpf::AutoServiceRegister<SymbolService>
 {
     Q_OBJECT
-    SymbolCppGeneratorPrivate *const d;
+    Q_DISABLE_COPY(SymbolService)
 public:
-    SymbolCppGenerator();
-    virtual ~SymbolCppGenerator();
-    virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
-    virtual void removeRootItem(QStandardItem *root) override;
-private:
-    QSet<QString> scanfWorkspaceFiles(const QString &workspaceFolder);
+    static QString name()
+    {
+        return "org.deepin.service.SymbolService";
+    }
+
+    explicit SymbolService(QObject *parent = nullptr)
+        : dpf::PluginService (parent)
+    {
+
+    }
 };
 
-#endif // SYMBOLCPPGENERATOR_H
+/* MainWindow codeediter workspace title,
+ * use in window service swtich workspace
+ */
+inline const QString MWCWT_SYMBOL {QTabWidget::tr("Symbol")};
+
+} //namespace dpfservice
+
+#endif // SYMBOLSERVICE_H

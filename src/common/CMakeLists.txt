@@ -39,6 +39,7 @@ set(CXX_H
     util/fileoperation.h
     util/qtcassert.h
     util/downloadutil.h
+    util/environment.h
     supportfile/editorstyle.h
     supportfile/language.h
     supportfile/windowstyle.h
@@ -87,6 +88,7 @@ set(CXX_CPP
     util/shortcututil.cpp
     util/fileoperation.cpp
     util/downloadutil.cpp
+    util/environment.cpp
     supportfile/language.cpp
     supportfile/editorstyle.cpp
     supportfile/windowstyle.cpp

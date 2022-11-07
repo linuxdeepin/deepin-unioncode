@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2020 ~ 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huanyu<huanyub@uniontech.com>
+ * Author:     huangyu<huangyub@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             huangyu<huangyub@uniontech.com>
+ * Maintainer: huangyu<huangyub@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +17,27 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef PROJECTCORE_H
-#define PROJECTCORE_H
+*/
+#ifndef SYMBOLTREEVIEW_H
+#define SYMBOLTREEVIEW_H
 
-#include <framework/framework.h>
+#include "services/project/projectservice.h"
 
-class SymbolCore : public dpf::Plugin
+#include <QTreeView>
+
+class QStandardItem;
+class SymbolTreeViewPrivate;
+class SymbolTreeView : public QTreeView
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "symbolcore.json")
+    SymbolTreeViewPrivate *const d;
 public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
+    explicit SymbolTreeView(QWidget *parent = nullptr);
+    virtual ~SymbolTreeView();
+    void setRootPath(const QString &filePath);
+
+private slots:
+    void doDoubleClieked(const QModelIndex &index);
 };
 
-#endif // PROJECTCORE_H
+#endif // SYMBOLTREEVIEW_H

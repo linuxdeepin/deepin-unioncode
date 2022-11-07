@@ -18,23 +18,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef SYMBOLKEEPER_H
-#define SYMBOLKEEPER_H
+#ifndef PROJECTRECEIVER_H
+#define PROJECTRECEIVER_H
 
-#include "symboltreeview.h"
+#include "services/project/projectservice.h"
 
-#include <QObject>
+#include <framework/framework.h>
 
-class QAction;
 class QStandardItem;
-class SymbolKeeper final : public QObject
+class SymbolReceiver : public dpf::EventHandler,
+        dpf::AutoEventHandlerRegister<SymbolReceiver>
 {
     Q_OBJECT
-    Q_DISABLE_COPY(SymbolKeeper)
+    friend class dpf::AutoEventHandlerRegister<SymbolReceiver>;
 public:
-    SymbolKeeper();
-    static SymbolKeeper *instance();
-    SymbolTreeView *treeView();
+    explicit SymbolReceiver(QObject * parent = nullptr);
+
+    static Type type();
+
+    static QStringList topics();
+
+    virtual void eventProcess(const dpf::Event& event) override;
 };
 
-#endif // SYMBOLKEEPER_H
+class ProjectProxy : public QObject
+{
+    Q_OBJECT
+    ProjectProxy(){}
+    ProjectProxy(const ProjectProxy&) = delete;
+
+public:
+    static ProjectProxy* instance() {
+        static ProjectProxy ins;
+        return &ins;
+    }
+
+signals:
+    void toSetSymbolRootItem(const dpfservice::ProjectInfo &info);
+};
+
+#endif // PROJECTRECEIVER_H

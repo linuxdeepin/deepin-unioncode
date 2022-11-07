@@ -62,6 +62,8 @@ void SendEvents::projectActived(const dpfservice::ProjectInfo &info)
     event.setData(D_ACTIVED);
     event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
     dpf::EventCallProxy::instance().pubEvent(event);
+
+    project.activedProject({QVariant::fromValue(info)});
 }
 
 void SendEvents::projectCreated(const dpfservice::ProjectInfo &info)
@@ -71,6 +73,8 @@ void SendEvents::projectCreated(const dpfservice::ProjectInfo &info)
     event.setData(D_CRETED);
     event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
     dpf::EventCallProxy::instance().pubEvent(event);
+
+    project.createdProject({QVariant::fromValue(info)});
 }
 
 void SendEvents::projectDeleted(const dpfservice::ProjectInfo &info)
@@ -80,6 +84,8 @@ void SendEvents::projectDeleted(const dpfservice::ProjectInfo &info)
     event.setData(D_DELETED);
     event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
     dpf::EventCallProxy::instance().pubEvent(event);
+
+    project.deletedProject({QVariant::fromValue(info)});
 }
 
 void SendEvents::collaboratorsOpenRepos(const QString &workspace)

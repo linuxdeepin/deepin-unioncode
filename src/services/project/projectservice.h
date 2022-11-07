@@ -25,9 +25,6 @@
 #include "projectgenerator.h"
 #include "projectinfo.h"
 #include "projectviewinterface.h"
-#include "symbolgenerator.h"
-#include "symbolinfo.h"
-#include "symbolviewinterface.h"
 
 #include <QTabWidget>
 
@@ -70,16 +67,12 @@ enum TargetType {
 class ProjectService final : public dpf::PluginService,
         dpf::AutoServiceRegister<ProjectService>,
         dpf::QtClassFactory<ProjectGenerator>,
-        dpf::QtClassManager<ProjectGenerator>,
-        dpf::QtClassFactory<SymbolGenerator>,
-        dpf::QtClassManager<SymbolGenerator>
+        dpf::QtClassManager<ProjectGenerator>
 {
     Q_OBJECT
     Q_DISABLE_COPY(ProjectService)
     typedef dpf::QtClassManager<ProjectGenerator> GeneratorProManager;
     typedef dpf::QtClassFactory<ProjectGenerator> GeneratorProFactory;
-    typedef dpf::QtClassManager<SymbolGenerator> GeneratorSymManager;
-    typedef dpf::QtClassFactory<SymbolGenerator> GeneratorSymFactory;
 public:
     static QString name()
     {
@@ -101,10 +94,8 @@ public:
     {
         if (std::is_same<ProjectGenerator, T>())
             return GeneratorProFactory::createKeys();
-        else if (std::is_same<SymbolGenerator, T>())
-            return GeneratorProFactory::createKeys();
         else {
-            qCritical() << "must SymbolGenerator or ProjectGenerator, "
+            qCritical() << "must ProjectGenerator, "
                         << "not support " << typeid (T).name();
             abort();
         }
@@ -120,10 +111,8 @@ public:
     {
         if (std::is_base_of<ProjectGenerator, T>())
             return GeneratorProFactory::regClass<T>(name, errorString);
-        else if (std::is_base_of<SymbolGenerator, T>())
-            return GeneratorSymFactory::regClass<T>(name, errorString);
         else {
-            qCritical() << "must base class SymbolGenerator or ProjectGenerator, "
+            qCritical() << "must base class ProjectGenerator, "
                         << "not support " << typeid (T).name();
             abort();
         }
@@ -146,16 +135,8 @@ public:
                     GeneratorProManager::append(name, dynamic_cast<ProjectGenerator*>(generator));
             }
             return dynamic_cast<T*>(generator);
-        } else if (std::is_base_of<SymbolGenerator, T>()) {
-            Generator *generator = GeneratorSymManager::value(name);
-            if (!generator) {
-                generator = GeneratorSymFactory::create(name, errorString);
-                if (generator)
-                    GeneratorSymManager::append(name, dynamic_cast<SymbolGenerator*>(generator));
-            }
-            return dynamic_cast<T*>(generator);
         } else {
-            qCritical() << "must base class SymbolGenerator or ProjectGenerator, "
+            qCritical() << "must base class or ProjectGenerator, "
                         << "not support "<< typeid (T).name();
             abort();
         }
@@ -180,11 +161,6 @@ public:
     ProjectViewInterface projectView;
 
     /*!
-     * \brief symbolView 符号视图接口对象
-     */
-    SymbolViewInterface symbolView;
-
-    /*!
      * \brief getActiveTarget
      * \param TargetType
      * \return Target
@@ -202,7 +178,6 @@ Q_SIGNALS:
  * use in window service swtich workspace
  */
 inline const QString MWCWT_PROJECTS {QTabWidget::tr("Projects")};
-inline const QString MWCWT_SYMBOL {QTabWidget::tr("Symbol")};
 
 } //namespace dpfservice
 

@@ -1,10 +1,9 @@
 /*
- * Copyright (C) 2020 ~ 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huanyu<huanyub@uniontech.com>
+ * Author:     huangyu<huangyub@uniontech.com>
  *
- * Maintainer: zhengyouge<zhengyouge@uniontech.com>
- *             huangyu<huangyub@uniontech.com>
+ * Maintainer: huangyu<huangyub@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +17,29 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#ifndef PROJECTCORE_H
-#define PROJECTCORE_H
+*/
+#ifndef SYMBOLKEEPER_H
+#define SYMBOLKEEPER_H
 
-#include <framework/framework.h>
+#include "symboltreeview.h"
+#include "symbolparser.h"
 
-class SymbolCpp : public dpf::Plugin
+#include <QObject>
+
+class SymbolKeeper final : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "symbolcpp.json")
+    Q_DISABLE_COPY(SymbolKeeper)
 public:
-    virtual void initialize() override;
-    virtual bool start() override;
-    virtual dpf::Plugin::ShutdownFlag stop() override;
+    SymbolKeeper();
+    static SymbolKeeper *instance();
+    SymbolTreeView *treeView();
+
+public slots:
+    void doParse(const SymbolParseArgs &args);
+
+private:
+    SymbolParser *parser{nullptr};
 };
 
-#endif // PROJECTCORE_H
+#endif // SYMBOLKEEPER_H

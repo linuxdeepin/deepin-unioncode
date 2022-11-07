@@ -22,12 +22,10 @@ endif()
 find_package(Qt5 CONFIG REQUIRED Core Gui Widgets Network Concurrent)
 
 set(HEADERS
-    envseacher.h
     jsonrpccallproxy.h
     )
 
 set(SOURCES
-    envseacher.cpp
     jsonrpccallproxy.cpp
     )
 

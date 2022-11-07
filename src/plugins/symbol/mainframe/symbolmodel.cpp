@@ -18,34 +18,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "symbolcppreceiver.h"
-#include "common/common.h"
+#include "symbolmodel.h"
 
-SymbolCppReceiver::SymbolCppReceiver(QObject *parent)
-    : dpf::EventHandler (parent)
-    , dpf::AutoEventHandlerRegister<SymbolCppReceiver> ()
+SymbolModel::SymbolModel(QObject *parent)
+    : QFileSystemModel (parent)
 {
 
 }
 
-dpf::EventHandler::Type SymbolCppReceiver::type()
+int SymbolModel::columnCount(const QModelIndex &parent) const
 {
-    return dpf::EventHandler::Type::Sync;
+    Q_UNUSED(parent)
+    return 1;
 }
-
-QStringList SymbolCppReceiver::topics()
-{
-    return {
-        T_MENU//绑定menu 事件
-    };
-}
-
-void SymbolCppReceiver::eventProcess(const dpf::Event &event)
-{
-    if (!topics().contains(event.topic())) {
-        qCritical() << event;
-        abort();
-    }
-}
-
-

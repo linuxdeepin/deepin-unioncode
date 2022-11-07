@@ -18,40 +18,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef SYMBOLGENERATOR_H
-#define SYMBOLGENERATOR_H
+#ifndef SYMBOLMODEL_H
+#define SYMBOLMODEL_H
 
-#include "projectinfo.h"
-#include "common/common.h"
+#include <QFileSystemModel>
 
-namespace dpfservice {
-
-/*!
- * \brief The SymbolGenerator class 符号生成器类
- */
-class SymbolGenerator : public Generator
+class SymbolModel : public QFileSystemModel
 {
     Q_OBJECT
 public:
+    explicit SymbolModel(QObject *parent = nullptr);
 
-    SymbolGenerator(){}
-
-    /*!
-     * \brief createRootItem 创建文件树路径，子类需要重载实现
-     *  执行该函数应当首先确定前置条件的满足，比如已经执行了生成器的过程。
-     * \param projectPath 工程文件路径
-     * \return
-     */
-    virtual QStandardItem *createRootItem(const ProjectInfo &info) {
-        Q_UNUSED(info);
-        return nullptr;
-    }
-
-    virtual void removeRootItem(QStandardItem *root) {
-        Q_UNUSED(root);
-    }
+protected:
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 };
 
-
-} // namespace dpfservice
-#endif // SYMBOLGENERATOR_H
+#endif // SYMBOLMODEL_H

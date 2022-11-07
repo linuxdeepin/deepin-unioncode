@@ -1,0 +1,148 @@
+/*
+ * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ *
+ * Author:     huangyu<huangyub@uniontech.com>
+ *
+ * Maintainer: huangyu<huangyub@uniontech.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+#include "symbolparser.h"
+#include "common/common.h"
+
+namespace {
+const QString unionparser{"unionparser"};
+}
+SymbolParser::SymbolParser(QObject *parent)
+    : QProcess (parent)
+{
+    auto procEnv = Environment::get(Environment::User, Environment::Python, 3);
+    setProcessEnvironment(procEnv);
+}
+
+void SymbolParser::setArgs(const SymbolParseArgs &args)
+{
+    this->processArgs = args;
+}
+
+SymbolParseArgs SymbolParser::args() const
+{
+    return this->processArgs;
+}
+
+void SymbolParser::setStorage(const QString &storage)
+{
+    processArgs.storage = storage;
+}
+
+QString SymbolParser::getStorage() const
+{
+    return processArgs.storage;
+}
+
+void SymbolParser::setWorkspace(const QString &workspace)
+{
+    processArgs.workspace = workspace;
+}
+
+QString SymbolParser::getWorkspace() const
+{
+    return processArgs.workspace;
+}
+
+void SymbolParser::setLanguage(const QString &language)
+{
+    processArgs.language = language;
+}
+
+QString SymbolParser::getLanguage() const
+{
+    return processArgs.language;
+}
+
+void SymbolParser::start()
+{
+    QObject::connect(this, &QProcess::errorOccurred,
+                     this, &SymbolParser::errorOccurred);
+
+    setProcessChannelMode(QProcess::ProcessChannelMode::ForwardedChannels);
+
+//    QObject::connect(this, &QProcess::readyReadStandardOutput,
+//                     this, &SymbolParser::readOut);
+
+//    QObject::connect(this, &QProcess::readyReadStandardError,
+//                     this, &SymbolParser::readErr);
+
+    QObject::connect(this, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                     this, &SymbolParser::finished);
+
+    setProgram("unionparser");
+    setArguments(QStringList{
+                     "-w", processArgs.workspace,
+                     "-l", processArgs.language,
+                     "-s", processArgs.storage
+                 });
+    QProcess::start();
+}
+
+SymbolParseArgs::SymbolParseArgs()
+{
+
+}
+
+SymbolParseArgs::SymbolParseArgs(const QString &workspace,
+                                 const QString &language,
+                                 const QString &storage)
+    : workspace(workspace)
+    , language(language)
+    , storage(storage)
+{
+
+}
+
+SymbolParseArgs::SymbolParseArgs(const SymbolParseArgs &as)
+    : workspace(as.workspace)
+    , language(as.language)
+    , storage(as.storage)
+{
+
+}
+
+SymbolParseArgs &SymbolParseArgs::operator=(const SymbolParseArgs &as)
+{
+    workspace = as.workspace;
+    language = as.language;
+    storage = as.storage;
+    return *this;
+}
+
+void SymbolParser::errorOccurred(QProcess::ProcessError err)
+{
+    qCritical() << exitCode() << exitStatus() << err;
+}
+
+void SymbolParser::readOut()
+{
+    qCritical() << readAllStandardOutput();
+}
+
+void SymbolParser::readErr()
+{
+    qCritical() << readAllStandardError();
+}
+
+void SymbolParser::finished(int exitCode, QProcess::ExitStatus status)
+{
+    qCritical() << exitCode << status;
+}

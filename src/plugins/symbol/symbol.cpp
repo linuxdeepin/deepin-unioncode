@@ -19,8 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "symbolcore.h"
-#include "transceiver/sendevents.h"
+#include "symbol.h"
 #include "mainframe/symbolkeeper.h"
 #include "mainframe/symboltreeview.h"
 #include "common/common.h"
@@ -29,7 +28,7 @@
 #include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
-#include "services/project/projectservice.h"
+#include "services/symbol/symbolservice.h"
 
 #include <QProcess>
 #include <QAction>
@@ -37,12 +36,12 @@
 #include <QTreeView>
 
 using namespace dpfservice;
-void SymbolCore::initialize()
+void Symbol::initialize()
 {
 
 }
 
-bool SymbolCore::start()
+bool Symbol::start()
 {
     qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
@@ -53,20 +52,10 @@ bool SymbolCore::start()
             windowService->addWidgetWorkspace(MWCWT_SYMBOL, view);
         }
     }
-
-    using namespace std::placeholders;
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (projectService) {
-        SymbolTreeView *treeView = SymbolKeeper::instance()->treeView();
-        if (!projectService->symbolView.addRootItem) {
-            projectService->symbolView.addRootItem
-                    = std::bind(&SymbolTreeView::appendRoot, treeView, _1);
-        }
-    }
     return true;
 }
 
-dpf::Plugin::ShutdownFlag SymbolCore::stop()
+dpf::Plugin::ShutdownFlag Symbol::stop()
 {
     return Sync;
 }

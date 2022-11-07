@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "envseacher.h"
+#include "common/common.h"
 #include "jsonrpccallproxy.h"
 
 #include <QCoreApplication>
@@ -113,25 +113,10 @@ QProcess *createPythonServ(const newlsp::ProjectKey &key)
 #ifdef __linux__
     proc->setProgram("/usr/bin/bash");
     proc->setArguments({"-c","pyls -v"});
-    auto procEnv = proc->processEnvironment();
-    QVariantHash envs = EnvSeacher::python3();
-    if (envs.keys().contains(K_UserEnv)) {
-        QVariant userEnvVar = envs[K_UserEnv];
-        if (userEnvVar.canConvert<UserEnv>()) {
-            UserEnv userEnv = qvariant_cast<UserEnv>(userEnvVar);
-            if (userEnv.binsPath) {
-                QString PATH_EnvValue = procEnv.value("PATH");
-                QString userRuntimeBinPath = userEnv.binsPath.value();
-                procEnv.remove("PATH");
-                procEnv.insert("PATH", userRuntimeBinPath + ":" + PATH_EnvValue);
-            }
-            if (userEnv.pkgsPath) {
-                QString userPythonPkgPath = userEnv.pkgsPath.value();
-                procEnv.insert("PYTHONPATH", userPythonPkgPath);
-            }
-        }
-    }
-    proc->setProcessEnvironment(procEnv);
+    Environment::Version pyVer;
+    pyVer.major = 3;
+    auto python3Env = Environment::get(Environment::Category::User, Environment::Python, pyVer);
+    proc->setProcessEnvironment(python3Env);
 #endif
     proc->setProcessChannelMode(QProcess::ForwardedOutputChannel);
     QObject::connect(proc, &QProcess::readyReadStandardError,
@@ -158,7 +143,7 @@ void selectLspServer(const QJsonObject &params)
             JsonRpcCallProxy::ins().save(projectKey, proc);
             lspServOut << "selected ProjectKey{language:" << projectKey.language
                        <<  ", workspace:" << projectKey.workspace
-                        << "}";
+                       << "}";
         }
     }
 

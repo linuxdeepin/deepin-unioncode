@@ -33,11 +33,19 @@ OPI_OBJECT(recent,
 
 OPI_OBJECT(project,
            OPI_INTERFACE(openProject,  "filePath", "kitName", "language", "workspace")
+           OPI_INTERFACE(activedProject, "projectInfo")
+           OPI_INTERFACE(deletedProject, "projectInfo")
+           OPI_INTERFACE(createdProject, "projectInfo")
            )
 
 OPI_OBJECT(debugger,
            OPI_INTERFACE(prepareDebugProgress, "message")
            OPI_INTERFACE(prepareDebugDone, "succeed", "message")
+           )
+
+OPI_OBJECT(symbol,
+           OPI_INTERFACE(parse, "workspace", "language", "storage")
+           OPI_INTERFACE(parseDone, "workspace", "language", "storage")
            )
 
 extern const QString T_NAV;
