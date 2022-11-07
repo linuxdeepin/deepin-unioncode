@@ -404,7 +404,13 @@ void ReverseDebuggerMgr::runCoredump(int index)
 
 void ReverseDebuggerMgr::unloadMinidump()
 {
+    qDebug() << __FUNCTION__ << " timeline=" << kTimeline;
 
+    if (kTimeline) {
+        g_taskWindow->updateTimeline(nullptr, 0);
+        destroy_timeline(kTimeline);
+        kTimeline = nullptr;
+    }
 }
 
 QVariant ReverseDebuggerMgr::configValue(const QByteArray &name)

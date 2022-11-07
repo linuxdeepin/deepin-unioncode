@@ -154,12 +154,13 @@ QToolBar::separator {
 }
  
 /* === QToolButton === */
-QToolButton {
+/* QToolButton {
     border: 1px solid #333333;
     margin: 1px;
     min-width: 65px;
     min-height: 20px;
-}
+} 
+don't use this style because size changed.*/
  
 QToolButton:hover {
     background-color: #333333;

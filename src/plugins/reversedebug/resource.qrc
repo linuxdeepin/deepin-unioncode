@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/resource">
+        <file>images/filter_normal.svg</file>
+    </qresource>
+</RCC>

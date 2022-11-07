@@ -291,6 +291,7 @@ TaskWindow::TaskWindow()
     connect(d->sortCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(sortEvent(int)));
 
     d->commandLine = new QLineEdit();
+    d->commandLine->setPlaceholderText("[sys sig x11] begin[,end]");
     connect(d->commandLine, SIGNAL(returnPressed()), this, SLOT(execCommand()));
 
     d->zoomIn = new QPushButton(tr("zoom in"));
@@ -308,7 +309,7 @@ TaskWindow::TaskWindow()
 
     d->eventLabel = new QLabel(STR_CURRENT_EVENT + QLatin1String("...]"));
     d->categoriesButton = new QToolButton;
-    d->categoriesButton->setIcon(QIcon());
+    d->categoriesButton->setIcon(QIcon(":/resource/images/filter_normal.svg"));
     d->categoriesButton->setToolTip(tr("Filter by categories"));
     d->categoriesButton->setProperty("noArrow", true);
     d->categoriesButton->setAutoRaise(true);
