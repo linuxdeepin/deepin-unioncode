@@ -11,6 +11,7 @@ add_definitions(-DLIBRARY_INSTALL_PREFIX="${LIBRARY_INSTALL_PREFIX}")
 set(CXX_CPP
     mainframe/autohidedockwidget.cpp
     mainframe/naveditmainwindow.cpp
+    mainframe/toolbarmanager.cpp
     transceiver/sendevents.cpp
     transceiver/codeeditorreceiver.cpp
     refactorwidget/codelentype.cpp
@@ -24,6 +25,7 @@ set(CXX_CPP
     textedittabwidget/textedittitlebar.cpp
     textedittabwidget/texteditkeeper.cpp
     textedittabwidget/textedit.cpp
+    textedittabwidget/texteditsplitter.cpp
     textedittabwidget/style/lspclientkeeper.cpp
     textedittabwidget/style/stylecolor.cpp
     textedittabwidget/style/stylesci.cpp
@@ -48,6 +50,7 @@ set(CXX_CPP
 set(CXX_H
     mainframe/autohidedockwidget.h
     mainframe/naveditmainwindow.h
+    mainframe/toolbarmanager.h
     transceiver/sendevents.h
     transceiver/codeeditorreceiver.h
     refactorwidget/codelentype.h
@@ -61,6 +64,7 @@ set(CXX_H
     textedittabwidget/textedittabbar.h
     textedittabwidget/texteditkeeper.h
     textedittabwidget/textedit.h
+    textedittabwidget/texteditsplitter.h
     textedittabwidget/style/stylecolor.h
     textedittabwidget/style/stylesci.h
     textedittabwidget/style/stylelsp.h

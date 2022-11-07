@@ -38,5 +38,12 @@
         <file>images/build.png</file>
         <file>images/about.png</file>
         <file>images/debug-start.png</file>
+        <file>images/closeButton.png</file>
+        <file>images/horizontalSplit.png</file>
+        <file>images/debug-step-out.png</file>
+        <file>images/debug-step-over.png</file>
+        <file>images/run-build-file.png</file>
+        <file>images/unioncode@200.png</file>
+        <file>images/debug-step-into.png</file>
     </qresource>
 </RCC>

@@ -23,23 +23,34 @@
 
 #include <QTabBar>
 
-class TextEditTabBar : public QTabBar
+class TextEditTabBarPrivate;
+class TextEditTabBar : public QWidget
 {
     Q_OBJECT
+    friend class TextEditTabBarPrivate;
+    TextEditTabBarPrivate *const d;
 public:
     explicit TextEditTabBar(QWidget *parent = nullptr);
+    virtual ~TextEditTabBar();
     int fileIndex(const QString &file);
     QString indexFile(int index);
     void setFile(const QString &file);
     void switchFile(const QString &file);
     void removeTab(const QString &file);
+    int count() const;
+    int currentIndex() const;
+    void setCurrentIndex(int idx);
 
 signals:
     void fileClosed(const QString &file);
     void fileSwitched(const QString &file);
     void saveFile(const QString &file);
+    void horizontalSplit(QString file);
+    void verticalSplit();
+    void close();
 
 public slots:
+    void tabCloseRequested(int idx);
     void doFileChanged(const QString &file);
     void doFileSaved(const QString &file);
 };

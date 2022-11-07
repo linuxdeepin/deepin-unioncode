@@ -60,8 +60,10 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     d->gridLayout->addWidget(d->tab);
     d->gridLayout->addWidget(&d->defaultEdit);
     this->setLayout(d->gridLayout);
+    //d->defaultEdit.setCursor();
 
     setDefaultFileEdit();
+    setFocusPolicy(Qt::ClickFocus);
 
     QObject::connect(DpfEventMiddleware::instance(),
                      QOverload<const newlsp::ProjectKey &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
@@ -104,6 +106,18 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     QObject::connect(d->tab, &TextEditTabBar::fileClosed,
                      this, &TextEditTabWidget::removeFileStatusBar, Qt::QueuedConnection);
 
+    QObject::connect(d->tab, &TextEditTabBar::close, this, [this](){
+        emit signalEditClose();
+    });
+
+    QObject::connect(d->tab, &TextEditTabBar::horizontalSplit, this, [=](QString file){
+        //d->defaultEdit
+        emit signalEditSplit(Qt::Horizontal, file);
+    });
+
+//    QObject::connect(d->tab, &TextEditTabBar::verticalSplit, this, [=](){
+//        emit signalEditSplit(Qt::Vertical);
+//    });
 
     QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf,
                      this, &TextEditTabWidget::fileDeleted, Qt::QueuedConnection);
@@ -111,7 +125,10 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
                      this, &TextEditTabWidget::fileMoved, Qt::QueuedConnection);
     QObject::connect(Inotify::globalInstance(), &Inotify::modified,
                      this, &TextEditTabWidget::fileModifyed, Qt::QueuedConnection);
-
+    QObject::connect(this, &TextEditTabWidget::signalFocusOutChange,
+                     this, &TextEditTabWidget::selectOutChanged);
+    QObject::connect(this, &TextEditTabWidget::signalFocusInChange,
+                     this, &TextEditTabWidget::selectInChanged);
 }
 
 TextEditTabWidget::~TextEditTabWidget()
@@ -140,9 +157,8 @@ TextEditTabWidget *TextEditTabWidget::instance()
 void TextEditTabWidget::openFile(const QString &filePath)
 {
     QFileInfo info(filePath);
-    if (!info.exists() || !d->tab)
+    if (!info.exists() || !d->tab )
         return;
-
     // can't add widget to much
     if (d->textEdits.keys().contains(info.filePath())) {
         d->tab->switchFile(filePath);
@@ -153,6 +169,18 @@ void TextEditTabWidget::openFile(const QString &filePath)
 
 
     TextEdit *edit = new TextEdit;
+
+    QObject::connect(edit, &TextEdit::signalFocusInChanged,
+                     this, [=](){
+        std::cerr << "TextEdit::focusInEvent" << std::endl;
+        emit signalFocusInChange();
+    });
+
+    QObject::connect(edit, &TextEdit::signalFocusOutChanged,
+                     this, [=](){
+        std::cerr << "TextEdit::focusOutEvent" << std::endl;
+        emit signalFocusOutChange();
+    });
 
     QObject::connect(edit, &TextEdit::fileChanged, d->tab,
                      &TextEditTabBar::doFileChanged, Qt::UniqueConnection);
@@ -178,9 +206,8 @@ void TextEditTabWidget::openFile(const QString &filePath)
 void TextEditTabWidget::openFile(const newlsp::ProjectKey &key, const QString &filePath)
 {
     QFileInfo info(filePath);
-    if (!info.exists() || !d->tab)
+    if (!info.exists() || !d->tab )
         return;
-
     // can't add widget to much
     if (d->textEdits.keys().contains(info.filePath())) {
         d->tab->switchFile(filePath);
@@ -219,6 +246,21 @@ void TextEditTabWidget::openFile(const newlsp::ProjectKey &key, const QString &f
         edit->setProjectKey(key);
         edit->setFile(info.filePath());
     }
+
+    QObject::connect(edit, &TextEdit::signalFocusInChanged,
+                     this, [this](){
+        std::cerr << "TextEdit::focusInEvent" << std::endl;
+
+        emit signalFocusInChange();
+    });;
+
+    QObject::connect(edit, &TextEdit::signalFocusOutChanged,
+                     this, [=](){
+        std::cerr << "TextEdit::focusOutEvent" << std::endl;
+        emit signalFocusOutChange();
+    });
+
+
     d->textEdits[filePath] = edit;
 
     // 添加监听
@@ -646,6 +688,16 @@ void TextEditTabWidget::saveEditFile(const QString &file)
     }
 }
 
+void TextEditTabWidget::selectOutChanged()
+{
+    this->setStyleSheet("background-color:black;");
+}
+
+void TextEditTabWidget::selectInChanged()
+{
+    this->setStyleSheet("background-color:grey;");
+}
+
 void TextEditTabWidget::keyPressEvent(QKeyEvent *event)
 {
     if (event->modifiers() == Qt::AltModifier) {
@@ -662,4 +714,16 @@ void TextEditTabWidget::keyPressEvent(QKeyEvent *event)
         }
     }
     return QWidget::keyPressEvent(event);
+}
+
+void TextEditTabWidget::focusInEvent(QFocusEvent *event)
+{
+    std::cerr << "TextEditTabWidget::focusInEvent" << std::endl;
+    emit signalFocusInChange();
+}
+
+void TextEditTabWidget::focusOutEvent(QFocusEvent *event)
+{
+    std::cerr << "TextEditTabWidget::focusOutEvent" << std::endl;
+    emit signalFocusOutChange();
 }

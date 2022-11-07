@@ -30,6 +30,8 @@ class AbstractWidget;
 class AbstractConsole;
 class QDockWidget;
 class AutoHideDockWidget;
+class ToolBarManager;
+
 class NavEditMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -41,6 +43,7 @@ class NavEditMainWindow : public QMainWindow
     QWidget *qWidgetWatch{nullptr};
     QTabWidget *qTabWidgetContext{nullptr};
     QTabWidget *qTabWidgetWorkspace{nullptr};
+    ToolBarManager *mainToolBar{nullptr};
 public:
     static NavEditMainWindow *instance();
     explicit NavEditMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
@@ -55,6 +58,10 @@ public:
     bool switchWidgetContext(const QString &title);
     void addFindToolBar(AbstractWidget *findToolbar);
     void showFindToolBar();
+    bool addToolBarActionItem(const QString &id, QAction *action);
+    bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget);
+    void removeToolBarItem(const QString &id);
+    void setToolBarItemDisable(const QString &id, bool disable);
 };
 
 #endif // NAVEDITMAINWINDOW_H

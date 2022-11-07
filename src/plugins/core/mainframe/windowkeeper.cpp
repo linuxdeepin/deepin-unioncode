@@ -26,7 +26,6 @@
 #include "services/project/projectservice.h"
 #include "common/common.h"
 #include "aboutdialog.h"
-#include "toolbarmanager.h"
 
 #include <QAction>
 #include <QMenu>
@@ -49,7 +48,6 @@ class WindowKeeperPrivate
     QMainWindow *window{nullptr};
     QActionGroup *navActionGroup{nullptr};
     QToolBar *toolbar{nullptr};
-    ToolBarManager *mainToolBar{nullptr};
 
     friend class WindowKeeper;
 };
@@ -319,9 +317,6 @@ void WindowKeeper::layoutWindow(QMainWindow *window)
     window->setMinimumSize(QSize(MW_MIN_WIDTH,MW_MIN_HEIGHT));
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->setMenuBar(menuBar);
-
-    d->mainToolBar = new ToolBarManager("toolbar");
-    window->addToolBar(Qt::TopToolBarArea, d->mainToolBar->getToolBar());
 }
 
 WindowKeeper *WindowKeeper::instace()
@@ -376,22 +371,6 @@ WindowKeeper::WindowKeeper(QObject *parent)
 
     if (!windowService->removeActions) {
         windowService->removeActions = std::bind(&WindowKeeper::removeActions, this, _1);
-    }
-
-    if (!windowService->addToolBarActionItem) {
-        windowService->addToolBarActionItem = std::bind(&WindowKeeper::addToolBarActionItem, this, _1, _2);
-    }
-
-    if (!windowService->addToolBarWidgetItem) {
-        windowService->addToolBarWidgetItem = std::bind(&WindowKeeper::addToolBarWidgetItem, this, _1, _2);
-    }
-
-    if (!windowService->removeToolBarItem) {
-        windowService->removeToolBarItem = std::bind(&WindowKeeper::removeToolBarItem, this, _1);
-    }
-
-    if (!windowService->setToolBarItemDisable) {
-        windowService->setToolBarItemDisable = std::bind(&WindowKeeper::setToolBarItemDisable, this, _1, _2);
     }
 }
 
@@ -585,33 +564,4 @@ void WindowKeeper::showAboutDlg()
 {
     AboutDialog dlg;
     dlg.exec();
-}
-
-
-bool WindowKeeper::addToolBarActionItem(const QString &id, QAction *action)
-{
-    if (!d->mainToolBar)
-        return false;
-
-    return d->mainToolBar->addActionItem(id, action);
-}
-
-bool WindowKeeper::addToolBarWidgetItem(const QString &id, AbstractWidget *widget)
-{
-    if (!d->mainToolBar)
-        return false;
-
-    return d->mainToolBar->addWidgetItem(id, static_cast<QWidget*>(widget->qWidget()));
-}
-
-void WindowKeeper::removeToolBarItem(const QString &id)
-{
-    if (d->mainToolBar)
-        d->mainToolBar->removeItem(id);
-}
-
-void WindowKeeper::setToolBarItemDisable(const QString &id, bool disable)
-{
-    if (d->mainToolBar)
-        d->mainToolBar->disableItem(id, disable);
 }

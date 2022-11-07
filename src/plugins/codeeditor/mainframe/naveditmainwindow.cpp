@@ -25,12 +25,14 @@
 #include "base/abstractconsole.h"
 #include "services/window/windowservice.h"
 #include "common/common.h"
+#include "toolbarmanager.h"
 
 #include <QDebug>
 #include <QDockWidget>
 #include <QEvent>
 #include <QWidget>
 
+using namespace dpfservice;
 static NavEditMainWindow *ins{nullptr};
 int findIndex(QTabWidget* tabWidget, const QString &text)
 {
@@ -52,12 +54,35 @@ NavEditMainWindow *NavEditMainWindow::instance()
 NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow (parent, flags)
 {
+
+    qInfo() << __FUNCTION__;
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    using namespace std::placeholders;
+    if (!windowService->addToolBarActionItem) {
+        windowService->addToolBarActionItem = std::bind(&NavEditMainWindow::addToolBarActionItem, this, _1, _2);
+    }
+
+    if (!windowService->addToolBarWidgetItem) {
+        windowService->addToolBarWidgetItem = std::bind(&NavEditMainWindow::addToolBarWidgetItem, this, _1, _2);
+    }
+
+    if (!windowService->removeToolBarItem) {
+        windowService->removeToolBarItem = std::bind(&NavEditMainWindow::removeToolBarItem, this, _1);
+    }
+
+    if (!windowService->setToolBarItemDisable) {
+        windowService->setToolBarItemDisable = std::bind(&NavEditMainWindow::setToolBarItemDisable, this, _1, _2);
+    }
+
     qDockWidgetContext = new AutoHideDockWidget(QDockWidget::tr("Context"), this);
     qDockWidgetContext->setFeatures(QDockWidget::DockWidgetMovable);
     qTabWidgetContext = new QTabWidget(qDockWidgetContext);
     qTabWidgetContext->setMinimumHeight(100);
     qDockWidgetContext->setWidget(qTabWidgetContext);
     addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qDockWidgetContext);
+    mainToolBar = new ToolBarManager("toolbar");
+    addToolBar(Qt::ToolBarArea::TopToolBarArea, mainToolBar->getToolBar());
 }
 
 NavEditMainWindow::~NavEditMainWindow()
@@ -192,4 +217,32 @@ void NavEditMainWindow::showFindToolBar()
      if (qDockWidgetFindToolBar) {
          qDockWidgetFindToolBar->show();
      }
+}
+
+bool NavEditMainWindow::addToolBarActionItem(const QString &id, QAction *action)
+{
+    if (!mainToolBar)
+        return false;
+
+    return mainToolBar->addActionItem(id, action);
+}
+
+bool NavEditMainWindow::addToolBarWidgetItem(const QString &id, AbstractWidget *widget)
+{
+    if (!mainToolBar)
+        return false;
+
+    return mainToolBar->addWidgetItem(id, static_cast<QWidget*>(widget->qWidget()));
+}
+
+void NavEditMainWindow::removeToolBarItem(const QString &id)
+{
+    if (mainToolBar)
+        mainToolBar->removeItem(id);
+}
+
+void NavEditMainWindow::setToolBarItemDisable(const QString &id, bool disable)
+{
+    if (mainToolBar)
+        mainToolBar->disableItem(id, disable);
 }

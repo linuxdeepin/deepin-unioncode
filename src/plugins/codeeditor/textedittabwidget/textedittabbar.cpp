@@ -23,21 +23,75 @@
 #include <QFileInfo>
 #include <QDebug>
 #include <QMessageBox>
+#include <QVBoxLayout>
+#include <QToolButton>
+
+class TextEditTabBarPrivate
+{
+    friend class TextEditTabBar;
+    QTabBar *tab = new QTabBar();
+    QHBoxLayout * hBoxLayout = new QHBoxLayout();
+    QToolButton *pbtHorizontal = new QToolButton;
+//    QPushButton *pbtVertical = new QPushButton("vertical");
+    QToolButton *pbtClose = new QToolButton;
+};
 
 TextEditTabBar::TextEditTabBar(QWidget *parent)
-    : QTabBar (parent)
+    : QWidget (parent)
+    , d(new TextEditTabBarPrivate)
 {
-    setTabsClosable(true);
-    setExpanding(false);
+    d->hBoxLayout->setSpacing(5);
+    d->hBoxLayout->setMargin(0);
+    d->tab->setFixedHeight(24);
 
-    QObject::connect(this, &QTabBar::currentChanged, this, [=](int index){
+    d->pbtHorizontal->setIcon(QIcon(":/core/images/horizontalSplit.png"));
+    d->pbtHorizontal->setStyleSheet("background-color:transparent");
+//    d->pbtVertical->setMaximumSize(40,40);
+    d->pbtClose->setMaximumSize(24,24);
+    d->pbtClose->setIcon(QIcon(":/core/images/closeButton.png"));
+    d->pbtClose->setStyleSheet("background-color:transparent");
+    d->hBoxLayout->addWidget(d->tab, 0, Qt::AlignLeft | Qt::AlignTop);
+    d->hBoxLayout->addWidget(d->pbtHorizontal, 0, Qt::AlignRight | Qt::AlignTop);
+    d->hBoxLayout->addWidget(d->pbtClose);
+//    d->hBoxLayout->addWidget(d->pbtVertical);
+    d->tab->setTabsClosable(true);
+    d->tab->setExpanding(false);
+
+    this->setLayout(d->hBoxLayout);
+
+    QObject::connect(d->tab, &QTabBar::currentChanged, this, [=](int index){
         emit this->fileSwitched(indexFile(index));
     });
 
-    QObject::connect(this, &QTabBar::tabCloseRequested,
+    QObject::connect(d->tab, &QTabBar::tabCloseRequested,
                      this, [=](int index) {
         this->removeTab(this->indexFile(index));
     });
+
+    QObject::connect(d->pbtHorizontal, &QToolButton::clicked,
+                     this, [=]() {
+        int index = d->tab->currentIndex();
+        QString file = indexFile(index);
+        emit horizontalSplit(file);
+    });
+
+//    QObject::connect(d->pbtVertical, &QPushButton::clicked,
+//                     this, [=]() {
+//        emit verticalSplit();
+//    });
+
+    QObject::connect(d->pbtClose, &QToolButton::clicked,
+                     this, [=]() {
+        emit close();
+    });
+
+}
+
+TextEditTabBar::~TextEditTabBar()
+{
+    if (d) {
+        delete d;
+    }
 }
 
 void TextEditTabBar::setFile(const QString &file)
@@ -48,20 +102,20 @@ void TextEditTabBar::setFile(const QString &file)
 
     int index = fileIndex(file);
     if (index != -1) {
-        setCurrentIndex(index);
+        d->tab->setCurrentIndex(index);
         return;
     }
 
     QFileInfo info(file);
-    int addIndex = addTab(info.fileName());
-    setTabToolTip(addIndex, file);
+    int addIndex = d->tab->addTab(info.fileName());
+    d->tab->setTabToolTip(addIndex, file);
 }
 
 void TextEditTabBar::switchFile(const QString &file)
 {
     int index = fileIndex(file);
     if (index != -1) {
-        setCurrentIndex(index);
+        d->tab->setCurrentIndex(index);
         SendEvents::sendCurrentEditFileStatus(file, true);
     }
 }
@@ -69,8 +123,8 @@ void TextEditTabBar::switchFile(const QString &file)
 int TextEditTabBar::fileIndex(const QString &file)
 {
     int index = -1;
-    for (int i = 0; i < this->count(); i++) {
-        if (tabToolTip(i) == file)
+    for (int i = 0; i < d->tab->count(); i++) {
+        if (d->tab->tabToolTip(i) == file)
             index = i;
     }
     return index;
@@ -78,7 +132,7 @@ int TextEditTabBar::fileIndex(const QString &file)
 
 QString TextEditTabBar::indexFile(int index)
 {
-    return tabToolTip(index);
+    return d->tab->tabToolTip(index);
 }
 
 void TextEditTabBar::doFileChanged(const QString &file)
@@ -88,12 +142,12 @@ void TextEditTabBar::doFileChanged(const QString &file)
         return;
 
     QString changedFileName = "*" + QFileInfo(file).fileName();
-    if (tabText(index) == changedFileName) {
+    if (d->tab->tabText(index) == changedFileName) {
         return;
     }
 
-    setTabText(index , "*" + tabText(index));
-    qInfo() << tabText(index);
+    d->tab->setTabText(index , "*" + d->tab->tabText(index));
+    qInfo() << d->tab->tabText(index);
 }
 
 void TextEditTabBar::doFileSaved(const QString &file)
@@ -102,20 +156,20 @@ void TextEditTabBar::doFileSaved(const QString &file)
     if (index == -1)
         return;
 
-    QString text = tabText(index);
+    QString text = d->tab->tabText(index);
     if (QFileInfo(file).fileName() == text){
         return;
     }
 
     text = text.remove(0, 1);
-    setTabText(index, text);
+    d->tab->setTabText(index, text);
 }
 
 void TextEditTabBar::removeTab(const QString &file)
 {
     int index = fileIndex(file);
     if (index != -1){
-        QString text = tabText(index);
+        QString text = d->tab->tabText(index);
         QFileInfo info(file);
         if (info.exists() && text.length() > 0 && text.at(0) == "*") {
             int ret = QMessageBox::question(this, QMessageBox::tr("Save Changes"),
@@ -130,6 +184,26 @@ void TextEditTabBar::removeTab(const QString &file)
         }
         emit fileClosed(indexFile(index));
         SendEvents::sendCurrentEditFileStatus(file, false);
-        QTabBar::removeTab(index);
+        d->tab->removeTab(index);
     }
+}
+
+int TextEditTabBar::count() const
+{
+    return d->tab->count();
+}
+
+int TextEditTabBar::currentIndex() const
+{
+    return d->tab->currentIndex();
+}
+
+void TextEditTabBar::setCurrentIndex(int idx)
+{
+    return d->tab->setCurrentIndex(idx);
+}
+
+void TextEditTabBar::tabCloseRequested(int idx)
+{
+    return d->tab->tabCloseRequested(idx);
 }

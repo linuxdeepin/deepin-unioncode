@@ -56,6 +56,7 @@ TextEdit::TextEdit(QWidget *parent)
     : ScintillaEditExtern (parent)
     , d (new TextEditPrivate)
 {
+//    setFocusPolicy(Qt::ClickFocus);
     QObject::connect(this, &ScintillaEditExtern::textInserted, this,
                      [=](Scintilla::Position position,
                      Scintilla::Position length, Scintilla::Position linesAdded,
@@ -119,6 +120,18 @@ void TextEdit::setFile(const QString &filePath)
         // 初始化所有lsp client设置
         getStyleLsp()->initLspConnection();
     }
+}
+
+void TextEdit::focusInEvent(QFocusEvent *event)
+{
+    emit signalFocusInChanged();
+    return ScintillaEditExtern::focusInEvent(event);
+}
+
+void TextEdit::focusOutEvent(QFocusEvent *event)
+{
+    emit signalFocusOutChanged();
+    return ScintillaEditExtern::focusOutEvent(event);
 }
 
 void TextEdit::find(const QString &srcText, int operateType)

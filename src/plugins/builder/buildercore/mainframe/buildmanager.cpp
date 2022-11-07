@@ -105,7 +105,7 @@ void BuildManager::addMenu()
     };
 
     d->buildAction.reset(new QAction("Build"));
-    actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B), "build.png");
+    actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B), "run-build-file.png");
     windowService->addToolBarActionItem("toolbar.Build", d->buildAction.get());
 
     d->rebuildAction.reset(new QAction("Rebuild"));

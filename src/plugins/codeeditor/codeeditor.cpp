@@ -34,11 +34,13 @@
 #include "textedittabwidget/language/cmake/texteditcmake.h"
 #include "textedittabwidget/language/java/texteditjava.h"
 #include "textedittabwidget/language/python/texteditpython.h"
+#include "textedittabwidget/texteditsplitter.h"
 
 #include "services/window/windowservice.h"
 #include "services/language/languageservice.h"
 
 #include <QAction>
+#include <QSplitter>
 
 using namespace dpfservice;
 
@@ -71,8 +73,8 @@ bool CodeEditor::start()
 
     if (windowService) {
         NavEditMainWindow *navEditWindow = NavEditMainWindow::instance();
-        TextEditTabWidget *editTabWidget = TextEditTabWidget::instance();
-        navEditWindow->setWidgetEdit(new AbstractCentral(editTabWidget));
+        TextEditSplitter *editManager = TextEditSplitter::instance();
+        navEditWindow->setWidgetEdit(new AbstractCentral(editManager));
         windowService->addCentralNavigation(MWNA_EDIT, new AbstractCentral(navEditWindow));
 
         using namespace std::placeholders;
