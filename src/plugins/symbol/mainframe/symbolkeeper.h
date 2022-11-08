@@ -38,8 +38,8 @@ public:
 public slots:
     void doParse(const SymbolParseArgs &args);
 
-private:
-    SymbolParser *parser{nullptr};
+private slots:
+    void jumpToLine(const QString &filePath, const QString &fileLine);
 };
 
 #endif // SYMBOLKEEPER_H

@@ -28,8 +28,15 @@ SymbolParser::SymbolParser(QObject *parent)
     : QProcess (parent)
 {
     auto procEnv = Environment::get(Environment::User, Environment::Python, 3);
+    for (auto val : procEnv.keys()) {
+        qInfo()<< val << procEnv.value(val);
+    }
     setProcessEnvironment(procEnv);
-}
+    auto env = processEnvironment().systemEnvironment();
+    for (auto val : env.keys()) {
+        qInfo() << val << env.value(val);
+    }
+ }
 
 void SymbolParser::setArgs(const SymbolParseArgs &args)
 {
@@ -73,26 +80,17 @@ QString SymbolParser::getLanguage() const
 
 void SymbolParser::start()
 {
+    setProcessChannelMode(QProcess::ForwardedChannels);
+    setProgram("unionparser");
+    QStringList args;
+    args << "-w" << processArgs.workspace;
+    args << "-l" << processArgs.language;
+    args << "-s" << processArgs.storage;
+    setArguments(args);
     QObject::connect(this, &QProcess::errorOccurred,
                      this, &SymbolParser::errorOccurred);
-
-    setProcessChannelMode(QProcess::ProcessChannelMode::ForwardedChannels);
-
-//    QObject::connect(this, &QProcess::readyReadStandardOutput,
-//                     this, &SymbolParser::readOut);
-
-//    QObject::connect(this, &QProcess::readyReadStandardError,
-//                     this, &SymbolParser::readErr);
-
     QObject::connect(this, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, &SymbolParser::finished);
-
-    setProgram("unionparser");
-    setArguments(QStringList{
-                     "-w", processArgs.workspace,
-                     "-l", processArgs.language,
-                     "-s", processArgs.storage
-                 });
     QProcess::start();
 }
 
@@ -132,17 +130,11 @@ void SymbolParser::errorOccurred(QProcess::ProcessError err)
     qCritical() << exitCode() << exitStatus() << err;
 }
 
-void SymbolParser::readOut()
-{
-    qCritical() << readAllStandardOutput();
-}
-
-void SymbolParser::readErr()
-{
-    qCritical() << readAllStandardError();
-}
-
 void SymbolParser::finished(int exitCode, QProcess::ExitStatus status)
 {
     qCritical() << exitCode << status;
+    if (exitCode == 0)
+        parseDone(true);
+    else
+        parseDone(false);
 }

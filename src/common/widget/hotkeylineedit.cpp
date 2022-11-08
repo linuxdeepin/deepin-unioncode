@@ -21,8 +21,6 @@
 
 #include "hotkeylineedit.h"
 
-;
-#pragma pack(push, 1)
 class HotkeyLineEditPrivate
 {
     HotkeyLineEditPrivate();
@@ -38,7 +36,6 @@ HotkeyLineEditPrivate::HotkeyLineEditPrivate()
 {
 
 }
-#pragma pack(pop)
 
 HotkeyLineEdit::HotkeyLineEdit(QWidget *parent)
     : QLineEdit(parent)

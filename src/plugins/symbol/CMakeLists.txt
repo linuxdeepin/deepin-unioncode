@@ -14,6 +14,7 @@ set(CXX_CPP
     )
 
 set(CXX_H
+    mainframe/definitions.h
     mainframe/symboldelegate.h
     mainframe/symbolmodel.h
     mainframe/symboltreeview.h

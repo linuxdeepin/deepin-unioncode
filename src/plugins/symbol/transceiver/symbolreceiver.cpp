@@ -27,6 +27,8 @@
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 
+typedef FileOperation FO;
+
 SymbolReceiver::SymbolReceiver(QObject *parent)
     : dpf::EventHandler (parent)
     , dpf::AutoEventHandlerRegister<SymbolReceiver> ()
@@ -46,25 +48,16 @@ QStringList SymbolReceiver::topics()
 
 void SymbolReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.data() == project.openProject.name) {
-        QString filePathKey = project.openProject.pKeys[0];
-        QString kitNameKey = project.openProject.pKeys[1];
-        QString languageKey = project.openProject.pKeys[2];
-        QString workspaceKey = project.openProject.pKeys[3];
-        QString workspace = event.property(workspaceKey).toString();
-        QString language = event.property(languageKey).toString();
-        QString storage = workspace + QDir::separator() + ".unioncode";
-        SymbolKeeper::instance()->doParse({workspace, language, storage});
-    } else if (event.data() == project.activedProject.name) {
+    if (event.data() == project.activedProject.name) {
         QString projectInfoKey = project.activedProject.pKeys[0];
         dpfservice::ProjectInfo info = qvariant_cast<dpfservice::ProjectInfo>
                 (event.property(projectInfoKey));
         QString workspace = info.workspaceFolder();
         QString language = info.language();
-        QString storage = workspace + QDir::separator() + ".unioncode";
+        QString storage = FO::checkCreateDir(FO::checkCreateDir(workspace, ".unioncode"), "symbol");
         SymbolKeeper::instance()->doParse({workspace, language, storage});
         SymbolKeeper::instance()->treeView()->setRootPath(storage);
-    }else if (event.data() == symbol.parse.name) { // "workspace", "language", "storage"
+    } else if (event.data() == symbol.parse.name) { // "workspace", "language", "storage"
         QString workspaceKey = symbol.parseDone.pKeys[0]; // workspace
         QString languageKey = symbol.parseDone.pKeys[1]; // language
         QString storageKey = symbol.parseDone.pKeys[2]; // storage

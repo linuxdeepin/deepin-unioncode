@@ -214,7 +214,7 @@ void MainDialog::generate(const PojectGenParam &param)
             }
         }
     } else if (param.type == File) {
-        codeeditor.openDocument({result.language, result.filePath});
+        editor.openDocument({result.language, result.filePath});
         close();
     }
 }

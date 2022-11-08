@@ -20,11 +20,14 @@
 */
 #include "symbolkeeper.h"
 
+#include "common/common.h"
+
 #include <QStandardItem>
 
 namespace {
-SymbolTreeView *tree{nullptr};
-SymbolParser *parser{nullptr};
+static SymbolTreeView *tree{nullptr};
+static SymbolParser *parser{nullptr};
+static SymbolParseArgs parserArgs;
 }
 
 SymbolKeeper::SymbolKeeper()
@@ -40,19 +43,44 @@ SymbolKeeper *SymbolKeeper::instance()
 
 SymbolTreeView *SymbolKeeper::treeView()
 {
-    if (!tree)
+    if (!tree) {
         tree = new SymbolTreeView();
+        QObject::connect(tree, &SymbolTreeView::jumpToLine,
+                         this, &SymbolKeeper::jumpToLine);
+    }
     return tree;
 }
 
 void SymbolKeeper::doParse(const SymbolParseArgs &args)
 {
+    parserArgs = args;
     if (parser) {
-        parser->kill();
-        parser->waitForFinished();
+
     }
     parser = new SymbolParser();
     parser->setArgs(args);
     parser->SymbolParser::start();
+    QObject::connect(parser, &SymbolParser::parseDone,
+                     parser, [=](bool result)
+    {
+        if (!result) {
+            SymbolParseArgs args = parser->args();
+            ContextDialog::ok(QDialog::tr(
+                                  "Error parsing project symbol\n"
+                                  "workspace: %0\n"
+                                  "language: %1\n"
+                                  "storage: %2\n")
+                              .arg(args.workspace)
+                              .arg(args.language)
+                              .arg(args.storage));
+        }
+        this->treeView()->expandAll();
+        parser->kill();
+        parser->deleteLater();
+    });
 }
 
+void SymbolKeeper::jumpToLine(const QString &filePath, const QString &fileLine)
+{
+    editor.jumpToLine({parserArgs.workspace, parserArgs.language, filePath, fileLine});
+}

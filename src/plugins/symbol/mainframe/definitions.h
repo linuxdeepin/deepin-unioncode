@@ -18,21 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef FILEOPERATION_H
-#define FILEOPERATION_H
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
 
 #include <QString>
+#include <QAction>
 
-class FileOperation final
-{
-public:
-    static bool doMoveMoveToTrash(const QString &filePath);
-    static bool doRecoverFromTrash(const QString &filePath);
-    static bool doRemove(const QString &filePath);
-    static bool doNewDocument(const QString &parentPath, const QString &docName);
-    static bool doNewFolder(const QString &parentPath, const QString &folderName);
-    static bool deleteDir(const QString &path);
-    static QString checkCreateDir(const QString &src, const QString &dirName);
-};
-
-#endif // FILEOPERATION_H
+namespace SymbolPri{
+static QString recordFileName {".record"};
+static QString definitionsFileName {".definitions"};
+static QString declaredFileName {".declared"};
+static QString declaredAcStr {QAction::tr("jump to declared")};
+static QString recordAcStr {QAction::tr("jump to record")};
+static QString definitionsAcStr {QAction::tr("jump to deninitions")};
+}
+#endif // DEFINITIONS_H

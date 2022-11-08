@@ -864,10 +864,12 @@ bool ClientPrivate::diagnosticsCalled(const QJsonObject &jsonObj)
 
         QJsonValue tagsJV = diagnosticObj.value("tags");
         if (!tagsJV.isNull()) {
-            decltype (diagnostic.tags) tags;
+            std::vector<Enum::DiagnosticTag::type_value> tags;
             if (tagsJV.isArray()) {
                 QJsonArray tagsArray = tagsJV.toArray();
-                for (auto one : tagsArray) { tags.value().push_back(one.toInt()); }
+                for (auto one : tagsArray) {
+                    tags.push_back(one.toInt());
+                }
             }
             diagnostic.tags = tags;
         }

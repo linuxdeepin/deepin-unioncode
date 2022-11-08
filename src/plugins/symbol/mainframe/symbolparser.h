@@ -55,12 +55,10 @@ public:
     void start();
 
 signals:
-    void parseDone();
+    void parseDone(bool result);
 
 private slots:
     void errorOccurred(QProcess::ProcessError err);
-    void readOut();
-    void readErr();
     void finished(int exitCode, QProcess::ExitStatus status);
 
 private:

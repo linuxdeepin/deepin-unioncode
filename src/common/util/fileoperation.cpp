@@ -92,3 +92,15 @@ bool FileOperation::deleteDir(const QString &path)
 
     return dir.rmdir(dir.absolutePath());
 }
+
+QString FileOperation::checkCreateDir(const QString &src, const QString &dirName)
+{
+    QDir dir(src);
+    if (dir.exists()) {
+        if (!dir.exists(dirName)) {
+            dir.mkdir(dirName);
+        }
+        dir.cd(dirName);
+    }
+    return dir.path();
+}

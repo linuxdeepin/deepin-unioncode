@@ -36,14 +36,11 @@ dpf::EventHandler::Type CodeEditorReceiver::type()
 
 QStringList CodeEditorReceiver::topics()
 {
-    return {T_CODEEDITOR, codeeditor.topic}; //绑定menu 事件
+    return {T_CODEEDITOR, editor.topic}; //绑定menu 事件
 }
 
 void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!topics().contains(event.topic()))
-        abort();
-
     if (D_SET_ANNOTATION == event.data()) {
         QVariant filePathVar = event.property(P_FILEPATH);
         QVariant fileLineVar = event.property(P_FILELINE);//.toInt(),
@@ -101,7 +98,6 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         return DpfEventMiddleware::instance()->toRunClean();
 
     } else if (D_OPENFILE == event.data()) {
-
         QVariant workspaceVar = event.property(P_WORKSPACEFOLDER);
         QVariant languageVar = event.property(P_LANGUAGE);
         QVariant filePathVar = event.property(P_FILEPATH);
@@ -111,7 +107,19 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
             proKey.workspace = workspaceVar.toString().toStdString();
             return DpfEventMiddleware::instance()->toOpenFile(proKey, filePathVar.toString());
         }
-
+    } else if (editor.openFile.name == event.data()) {
+        QString workspacePKey = editor.openFile.pKeys[0];
+        QString languagePKey = editor.openFile.pKeys[1];
+        QString filePathPKey = editor.openFile.pKeys[2];
+        QString workspace = event.property(workspacePKey).toString();
+        QString language = event.property(languagePKey).toString();
+        QString filePath = event.property(filePath).toString();
+        if (!workspace.isEmpty() && !language.isEmpty() && !language.isEmpty()) {
+            newlsp::ProjectKey proKey;
+            proKey.language = language.toStdString();
+            proKey.workspace = workspace.toStdString();
+            return DpfEventMiddleware::instance()->toOpenFile(proKey, filePath);
+        }
     } else if (D_OPENDOCUMENT == event.data()) {
 
         QVariant filePathVar = event.property(P_FILELINE);
@@ -148,7 +156,6 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         }
 
     } else if (D_JUMP_TO_LINE == event.data()) {
-
         QVariant wpFolderVar = event.property(P_WORKSPACEFOLDER);
         QVariant languageVar = event.property(P_LANGUAGE);
         QVariant filePathVar = event.property(P_FILEPATH);
@@ -167,13 +174,30 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
                         filePathVar.toString(),
                         fileLineVar.toInt());
         }
-
-    } else if (event.data() == codeeditor.openDocument.name) {
-        QString language = event.property(codeeditor.openDocument.pKeys[0]).toString();
-        QString filePath = event.property(codeeditor.openDocument.pKeys[1]).toString();
+    } else if (event.data() == editor.openDocument.name) {
+        QString language = event.property(editor.openDocument.pKeys[0]).toString();
+        QString filePath = event.property(editor.openDocument.pKeys[1]).toString();
         newlsp::ProjectKey proKey;
         proKey.language = language.toStdString();
         return DpfEventMiddleware::instance()->toOpenFile(proKey, filePath);
+    } else if (editor.jumpToLine.name == event.data()) {
+        QString workspacePKey = editor.jumpToLine.pKeys[0];
+        QString languagePKey = editor.jumpToLine.pKeys[1];
+        QString filePathPKey = editor.jumpToLine.pKeys[2];
+        QString fileLinePKey = editor.jumpToLine.pKeys[3];
+        QString workspace = event.property(workspacePKey).toString();
+        QString language = event.property(languagePKey).toString();
+        QString filePath = event.property(filePathPKey).toString();
+        QString fileLine = event.property(fileLinePKey).toString();
+        if (!workspace.isEmpty() && !language.isEmpty()
+                && !filePath.isEmpty() && !fileLine.isEmpty()) {
+            newlsp::ProjectKey key;
+            key.language = language.toStdString();
+            key.workspace = workspace.toStdString();
+            return DpfEventMiddleware::instance()->toJumpFileLine(key, filePath, fileLine.toInt());
+        } else if (!filePath.isEmpty() && !fileLine.isEmpty()) {
+            return DpfEventMiddleware::instance()->toRunFileLine(filePath, fileLine.toInt());
+        }
     }
 }
 

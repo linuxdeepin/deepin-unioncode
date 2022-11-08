@@ -30,7 +30,9 @@ public:
     explicit SymbolModel(QObject *parent = nullptr);
 
 protected:
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual bool hasChildren(const QModelIndex &parent = QModelIndex()) const override;
 };
 
 #endif // SYMBOLMODEL_H

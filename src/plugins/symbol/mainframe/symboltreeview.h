@@ -36,8 +36,12 @@ public:
     virtual ~SymbolTreeView();
     void setRootPath(const QString &filePath);
 
+signals:
+    void jumpToLine(const QString &filePath, const QString &line);
+
 private slots:
     void doDoubleClieked(const QModelIndex &index);
+    void doContextMenu(const QPoint &point);
 };
 
 #endif // SYMBOLTREEVIEW_H

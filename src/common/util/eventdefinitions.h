@@ -43,13 +43,15 @@ OPI_OBJECT(debugger,
            OPI_INTERFACE(prepareDebugDone, "succeed", "message")
            )
 
+OPI_OBJECT(editor,
+           OPI_INTERFACE(openFile, "workspace", "language", "filePath")
+           OPI_INTERFACE(jumpToLine, "workspace", "language", "filePath", "line")
+           OPI_INTERFACE(openDocument, "language", "filePath")
+           )
+
 OPI_OBJECT(symbol,
            OPI_INTERFACE(parse, "workspace", "language", "storage")
            OPI_INTERFACE(parseDone, "workspace", "language", "storage")
-           )
-
-OPI_OBJECT(codeeditor,
-           OPI_INTERFACE(openDocument, "language", "filePath")
            )
 
 extern const QString T_NAV;
