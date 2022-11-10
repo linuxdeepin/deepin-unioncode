@@ -40,6 +40,7 @@ public slots:
 
 private slots:
     void jumpToLine(const QString &filePath, const QString &fileLine);
+    void doParseDone(bool result);
 };
 
 #endif // SYMBOLKEEPER_H

@@ -55,32 +55,40 @@ void SymbolKeeper::doParse(const SymbolParseArgs &args)
 {
     parserArgs = args;
     if (parser) {
-
+        QObject::disconnect(parser, &SymbolParser::parseDone,
+                            this, &SymbolKeeper::doParseDone);
+        parser->kill();
+        parser->waitForFinished();
+        delete parser;
+        parser = nullptr;
     }
     parser = new SymbolParser();
     parser->setArgs(args);
     parser->SymbolParser::start();
     QObject::connect(parser, &SymbolParser::parseDone,
-                     parser, [=](bool result)
-    {
-        if (!result) {
-            SymbolParseArgs args = parser->args();
-            ContextDialog::ok(QDialog::tr(
-                                  "Error parsing project symbol\n"
-                                  "workspace: %0\n"
-                                  "language: %1\n"
-                                  "storage: %2\n")
-                              .arg(args.workspace)
-                              .arg(args.language)
-                              .arg(args.storage));
-        }
-        this->treeView()->expandAll();
-        parser->kill();
-        parser->deleteLater();
-    });
+                     this, &SymbolKeeper::doParseDone);
 }
 
 void SymbolKeeper::jumpToLine(const QString &filePath, const QString &fileLine)
 {
     editor.jumpToLine({parserArgs.workspace, parserArgs.language, filePath, fileLine});
+}
+
+void SymbolKeeper::doParseDone(bool result)
+{
+    if (!result) {
+        SymbolParseArgs args = parser->args();
+        ContextDialog::ok(QDialog::tr(
+                              "Error parsing project symbol\n"
+                              "workspace: %0\n"
+                              "language: %1\n"
+                              "storage: %2\n")
+                          .arg(args.workspace)
+                          .arg(args.language)
+                          .arg(args.storage));
+    }
+    this->treeView()->expandAll();
+    parser->kill();
+    delete parser;
+    parser = nullptr;
 }
