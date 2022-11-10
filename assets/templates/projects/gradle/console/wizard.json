@@ -1,0 +1,31 @@
+{
+    "type": "project",
+    "kit": "gradle",
+    "language": "java",
+    "trDisplayName": "Gradle Console Application",
+    "trDescription": "An application with gradle console",
+    "configures": [{
+            "key": "ProjectName",
+            "displayName": "Project Name",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": false
+        },
+        {
+            "key": "Location",
+            "displayName": "Location",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": true
+        }
+    ],
+    "generator": {
+        "rootFolder": "%{ProjectName}",
+        "destPath": "%{Location}",
+        "operations": [{
+                "sourceFile": "settings.gradle",
+                "replaceKeys": ["%{ProjectName}"]
+            }
+        ]
+    }
+}

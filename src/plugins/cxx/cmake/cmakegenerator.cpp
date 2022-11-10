@@ -95,3 +95,6 @@ QString CMakeGenerator::build(const QString& projectPath)
     return CMakeBuild::build(toolKitName(), projectPath);
 }
 
+QString CMakeGenerator::getProjectFile(const QString& projectPath) {
+    return projectPath + QDir::separator() + "CMakeList.txt";
+}

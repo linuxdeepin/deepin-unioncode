@@ -55,6 +55,8 @@ public:
 
     QString build(const QString& projectPath) override;
 
+    QString getProjectFile(const QString& projectPath) override;
+
 signals:
 
 private slots:

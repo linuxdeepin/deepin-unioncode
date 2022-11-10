@@ -49,6 +49,7 @@ public:
                                  const QString &projectName,
                                  const QStringList &classPaths) override;
     QString build(const QString& projectPath) override;
+    QString getProjectFile(const QString& projectPath) override;
 
 signals:
 

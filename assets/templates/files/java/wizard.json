@@ -1,0 +1,26 @@
+{
+    "type": "file",
+    "language": "java",
+    "trDisplayName": "Java File",
+    "trDescription": "a java file",
+    "configures": [{
+            "key": "fileName",
+            "displayName": "File Name",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": false
+        },
+        {
+            "key": "Location",
+            "displayName": "Location",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": true
+        }
+    ],
+    "generator": {
+        "templateFile": "template.java",
+        "destPath": "%{Location}",
+        "newfileName": "%{fileName}"
+    }
+}

@@ -99,6 +99,10 @@ public:
         Q_UNUSED(projectPath)
         return QString();
     }
+
+    virtual QString getProjectFile(const QString& projectPath) {
+        return projectPath;
+    }
 };
 
 } // namespace dpfservice

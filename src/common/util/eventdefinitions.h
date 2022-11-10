@@ -48,6 +48,10 @@ OPI_OBJECT(symbol,
            OPI_INTERFACE(parseDone, "workspace", "language", "storage")
            )
 
+OPI_OBJECT(codeeditor,
+           OPI_INTERFACE(openDocument, "language", "filePath")
+           )
+
 extern const QString T_NAV;
 extern const QString T_MENU;
 extern const QString T_FILEBROWSER;

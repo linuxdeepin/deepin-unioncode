@@ -99,3 +99,7 @@ QString MavenGenerator::build(const QString& projectPath)
 {
     return MavenBuild::build(toolKitName(), projectPath);
 }
+
+QString MavenGenerator::getProjectFile(const QString& projectPath) {
+    return projectPath + QDir::separator() + "pom.xml";
+}

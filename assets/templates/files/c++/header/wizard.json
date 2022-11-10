@@ -1,0 +1,26 @@
+{
+    "type": "file",
+    "language": "cxx",
+    "trDisplayName": "C++ Header File",
+    "trDescription": "a c++ header file",
+    "configures": [{
+            "key": "fileName",
+            "displayName": "File Name",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": false
+        },
+        {
+            "key": "Location",
+            "displayName": "Location",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": true
+        }
+    ],
+    "generator": {
+        "templateFile": "template.h",
+        "destPath": "%{Location}",
+        "newfileName": "%{fileName}"
+    }
+}

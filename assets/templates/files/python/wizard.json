@@ -1,0 +1,26 @@
+{
+    "type": "file",
+    "language": "python",
+    "trDisplayName": "Python File",
+    "trDescription": "a python file",
+    "configures": [{
+            "key": "fileName",
+            "displayName": "File Name",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": false
+        },
+        {
+            "key": "Location",
+            "displayName": "Location",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": true
+        }
+    ],
+    "generator": {
+        "templateFile": "template.py",
+        "destPath": "%{Location}",
+        "newfileName": "%{fileName}"
+    }
+}

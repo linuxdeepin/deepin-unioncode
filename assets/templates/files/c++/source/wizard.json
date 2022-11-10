@@ -1,0 +1,26 @@
+{
+    "type": "file",
+    "language": "cxx",
+    "trDisplayName": "C++ Source File",
+    "trDescription": "a c++ source file",
+    "configures": [{
+            "key": "fileName",
+            "displayName": "File Name",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": false
+        },
+        {
+            "key": "Location",
+            "displayName": "Location",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": true
+        }
+    ],
+    "generator": {
+        "templateFile": "template.cpp",
+        "destPath": "%{Location}",
+        "newfileName": "%{fileName}"
+    }
+}

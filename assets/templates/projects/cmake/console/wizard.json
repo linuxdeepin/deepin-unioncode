@@ -1,0 +1,35 @@
+{
+    "type": "project",
+    "kit": "cmake",
+    "language": "cxx",
+    "trDisplayName": "CMake Console Application",
+    "trDescription": "An application with cmake console",
+    "configures": [{
+            "key": "ProjectName",
+            "displayName": "Project Name",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": false
+        },
+        {
+            "key": "Location",
+            "displayName": "Location",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": true
+        }
+    ],
+    "generator": {
+        "rootFolder": "%{ProjectName}",
+        "destPath": "%{Location}",
+        "operations": [{
+                "sourceFile": "CMakeLists.txt",
+                "replaceKeys": ["%{ProjectName}"]
+            },
+            {
+                "sourceFile": "main.cpp",
+                "replaceKeys": []
+            }
+        ]
+    }
+}

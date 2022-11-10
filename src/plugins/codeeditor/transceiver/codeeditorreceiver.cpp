@@ -36,7 +36,7 @@ dpf::EventHandler::Type CodeEditorReceiver::type()
 
 QStringList CodeEditorReceiver::topics()
 {
-    return {T_CODEEDITOR}; //绑定menu 事件
+    return {T_CODEEDITOR, codeeditor.topic}; //绑定menu 事件
 }
 
 void CodeEditorReceiver::eventProcess(const dpf::Event &event)
@@ -168,6 +168,12 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
                         fileLineVar.toInt());
         }
 
+    } else if (event.data() == codeeditor.openDocument.name) {
+        QString language = event.property(codeeditor.openDocument.pKeys[0]).toString();
+        QString filePath = event.property(codeeditor.openDocument.pKeys[1]).toString();
+        newlsp::ProjectKey proKey;
+        proKey.language = language.toStdString();
+        return DpfEventMiddleware::instance()->toOpenFile(proKey, filePath);
     }
 }
 
