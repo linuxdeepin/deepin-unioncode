@@ -44,8 +44,9 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     compileDB_CMD_As << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
     QProcess::execute("/usr/bin/cmake", compileDB_CMD_As);
 
+    QString runtimePath = CustomPaths::lspRuntimePath(QString::fromStdString(key.language));
     QStringList procAs;
-    procAs << "/usr/bin/unioncode-clangd";
+    procAs << runtimePath + QDir::separator() + "clangd";
     procAs << "--log=verbose";
     procAs << QString("--compile-commands-dir=%0").arg(compileDB_Path);
 
@@ -72,6 +73,7 @@ QProcess *createJavaServ(const newlsp::ProjectKey &key)
 
     auto proc = new QProcess();
 #ifdef __linux__
+    QString runtimePath = CustomPaths::lspRuntimePath(QString::fromStdString(key.language));
     QString dataDir = QString::fromStdString(key.workspace) + QDir::separator()
             + ".unioncode" + QDir::separator()
             + QString::fromStdString(key.language);
@@ -85,8 +87,8 @@ QProcess *createJavaServ(const newlsp::ProjectKey &key)
                         "--add-modules=ALL-SYSTEM "
                         "--add-opens java.base/java.util=ALL-UNNAMED "
                         "--add-opens java.base/java.lang=ALL-UNNAMED "
-                        "-jar ${HOME}/.config/languageadapter/Java/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar "
-                        "-configuration ${HOME}/.config/languageadapter/Java/config_linux "
+                        "-jar " + runtimePath + QDir::separator() + "plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar "
+                        "-configuration " + runtimePath + QDir::separator() + "/config_linux "
             + QString("-data %0").arg(dataDir);
     proc->setProgram("/usr/bin/bash");
     proc->setArguments({"-c", programAs});

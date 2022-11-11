@@ -104,3 +104,21 @@ QString FileOperation::checkCreateDir(const QString &src, const QString &dirName
     }
     return dir.path();
 }
+
+QString FileOperation::readAll(const QString &filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QFile::ReadOnly)) {
+        qCritical() << file.errorString();
+        return "";
+    }
+
+    QString ret = file.readAll();
+    file.close();
+    return ret;
+}
+
+bool FileOperation::exists(const QString &filePath)
+{
+    return QFileInfo(filePath).exists();
+}

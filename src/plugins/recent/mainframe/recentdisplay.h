@@ -25,6 +25,10 @@ public slots:
                     const QString &kitName,
                     const QString &language,
                     const QString &workspace);
+
+private slots:
+    void doDoubleClickedProject(const QModelIndex &index);
+    void doDoubleCliekedDocument(const QModelIndex &index);
 };
 
 #endif // RECENTDISPLAY_H

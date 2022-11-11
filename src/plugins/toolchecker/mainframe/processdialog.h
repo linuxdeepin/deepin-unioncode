@@ -32,19 +32,20 @@ class ProcessDialog : public QDialog
     Q_OBJECT
 public:
     explicit ProcessDialog(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    virtual ~ProcessDialog();
     void setProgram(const QString & program);
     QString program() const;
     void setArguments(const QStringList &args);
     QStringList arguments();
     void setWorkDirectory(const QString &workDir);
     QString workDirectory() const;
+    virtual int exec() override;
 
 protected:
     virtual void doShowStdErr(const QByteArray &array);
     virtual void doShowStdOut(const QByteArray &array);
     virtual void doFinished(int exitCode, QProcess::ExitStatus status);
     virtual void doShowProgress(int current, int count);
-    virtual void showEvent(QShowEvent *event) override;
 
 protected:
     QProcess process;

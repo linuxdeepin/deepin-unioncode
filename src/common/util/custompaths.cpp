@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "custompaths.h"
+#include "fileoperation.h"
 #include "config.h"
 
 #include <QDir>
@@ -38,6 +39,7 @@
  * 所以内部将通过程序运行时分别两种组态以达到不同的组合运行效果
  */
 
+using FO = FileOperation;
 class PathMode
 {
     PathMode() = delete;
@@ -47,8 +49,10 @@ public:
     static QString builded(CustomPaths::Flags flags);
     static bool isRunAppBuilded();
     static bool isInstalled(CustomPaths::Flags flags, const QString &path);
+    static QString userHome();
     static QString usreCachePath();
     static QString userConfigurePath();
+    static QString userDataPath();
 };
 
 QString formatString(QString str)
@@ -97,6 +101,11 @@ bool PathMode::isInstalled(CustomPaths::Flags flags, const QString &path)
     }
 }
 
+QString PathMode::userHome()
+{
+    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+}
+
 QString PathMode::builded(CustomPaths::Flags flags)
 {
     switch (flags) {
@@ -123,12 +132,17 @@ QString PathMode::builded(CustomPaths::Flags flags)
 
 QString PathMode::usreCachePath()
 {
-    return QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
+    return FO::checkCreateDir(FO::checkCreateDir(userHome(), ".cache"), "unioncode");
 }
 
 QString PathMode::userConfigurePath()
 {
-    return QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    return FO::checkCreateDir(FO::checkCreateDir(userHome(), ".config"), "unioncode");
+}
+
+QString PathMode::userDataPath()
+{
+    return FO::checkCreateDir(FO::checkCreateDir(userHome(), ".data"), "unioncode");
 }
 
 QString CustomPaths::endSeparator(const QString &path)
@@ -147,11 +161,24 @@ QString CustomPaths::projectGeneratePath(const QString &path)
     return result;
 }
 
-void CustomPaths::checkDir(const QString &path)
+QString CustomPaths::lspRuntimePath(const QString &language)
+{
+    QString lspRuntimePath = FO::checkCreateDir(CustomPaths::user(CustomPaths::Tools), "lsp");
+    if (language.isEmpty()) {
+        return lspRuntimePath;
+    } else {
+        QString languageTemp = language;
+        languageTemp = languageTemp.replace(QDir::separator(), "_");
+        return FO::checkCreateDir(lspRuntimePath, languageTemp);
+    }
+}
+
+bool CustomPaths::checkDir(const QString &path)
 {
     if (!QDir(path).exists()) {
-        QDir().mkpath(path);
+        return QDir().mkpath(path);
     }
+    return false;
 }
 
 QString CustomPaths::user(CustomPaths::Flags flage)
@@ -160,17 +187,17 @@ QString CustomPaths::user(CustomPaths::Flags flage)
     case Applition:
         return qApp->applicationDirPath();
     case Plugins:
-        return PathMode::usreCachePath() + QDir::separator() + "plugins";
+        return FileOperation::checkCreateDir(PathMode::usreCachePath(), "plugins");
     case Tools:
-        return PathMode::usreCachePath() + QDir::separator() + "tools";
+        return FileOperation::checkCreateDir(PathMode::usreCachePath(), "tools");
     case Extensions:
-        return PathMode::usreCachePath() + QDir::separator() + "extensions";
+        return FileOperation::checkCreateDir(PathMode::usreCachePath(), "extensions");
     case Configures:
-        return PathMode::userConfigurePath() + QDir::separator() + "configures";
+        return FileOperation::checkCreateDir(PathMode::userConfigurePath(), "configures");
     case Scripts:
-        return PathMode::userConfigurePath() + QDir::separator() + "Scripts";
+        return FileOperation::checkCreateDir(PathMode::userConfigurePath(), "Scripts");
     case Templates:
-        return PathMode::userConfigurePath() + QDir::separator() + "templates";
+        return FileOperation::checkCreateDir(PathMode::userConfigurePath(), "templates");
     default:
         return "";
     }

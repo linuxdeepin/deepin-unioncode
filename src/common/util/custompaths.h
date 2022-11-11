@@ -46,7 +46,8 @@ public:
     static bool installed();
     static QString endSeparator(const QString &path);
     static QString projectGeneratePath(const QString &path);
-    static void checkDir(const QString &path);
+    static QString lspRuntimePath(const QString &language);
+    static bool checkDir(const QString &path);
 };
 
 #endif // GLOBALCONFIGURE_H

@@ -215,21 +215,13 @@ RecentDisplay::RecentDisplay(QWidget *parent)
     d->hLayout->addStretch();
     setLayout(d->hLayout);
 
-    QObject::connect(d->proView, &QListView::doubleClicked, this, [=](const QModelIndex &index){
-        QString filePath = index.data(Qt::DisplayRole).toString();
-        QString kitName = index.data(ProjectKitName).toString();
-        QString language = index.data(ProjectLanguage).toString();
-        QString workspace = index.data(ProjectWorkspace).toString();
-        // "filePath", "kitName", "language", "workspace"
-        project.openProject({filePath, kitName, language, workspace});
-        RecentDisplay::addProject(filePath, kitName, language, workspace);
-    });
+    QObject::connect(d->proView, &QListView::doubleClicked,
+                     this, &RecentDisplay::doDoubleClickedProject,
+                     Qt::UniqueConnection);
 
-    QObject::connect(d->docView, &QListView::doubleClicked, this, [=](const QModelIndex &index){
-        QString filePath = index.data(Qt::DisplayRole).toString();
-        SendEvents::recentOpenFile(filePath);
-        RecentDisplay::addDocument(filePath);
-    });
+    QObject::connect(d->docView, &QListView::doubleClicked,
+                     this, &RecentDisplay::doDoubleCliekedDocument,
+                     Qt::UniqueConnection);
 }
 
 RecentDisplay::~RecentDisplay()
@@ -258,3 +250,22 @@ void RecentDisplay::addProject(const QString &filePath,
 {
     d->proView->add(filePath, kitName, language, workspace);
 }
+
+void RecentDisplay::doDoubleClickedProject(const QModelIndex &index)
+{
+    QString filePath = index.data(Qt::DisplayRole).toString();
+    QString kitName = index.data(ProjectKitName).toString();
+    QString language = index.data(ProjectLanguage).toString();
+    QString workspace = index.data(ProjectWorkspace).toString();
+    // "filePath", "kitName", "language", "workspace"
+    project.openProject({filePath, kitName, language, workspace});
+    RecentDisplay::addProject(filePath, kitName, language, workspace);
+}
+
+void RecentDisplay::doDoubleCliekedDocument(const QModelIndex &index)
+{
+    QString filePath = index.data(Qt::DisplayRole).toString();
+    SendEvents::recentOpenFile(filePath);
+    RecentDisplay::addDocument(filePath);
+}
+

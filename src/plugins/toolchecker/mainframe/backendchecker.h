@@ -29,64 +29,21 @@
 #include <QTextBrowser>
 #include <QCryptographicHash>
 
-class RequestInfo
-{
-    QUrl packageUrl;
-    QString packageSaveName;
-    QUrl checkFileUrl;
-    QString checkFileSaveName;
-    QString checkNumProgram;
-    QString checkNumMode;
-public:
-    RequestInfo() = default;
-    RequestInfo(const QUrl &packageUrl,
-                const QString &packageSaveName,
-                const QUrl &checkFileUrl,
-                const QString &checkFileSaveName,
-                const QString &checkNumProgram,
-                const QString &checkNumMode)
-        : packageUrl(packageUrl),
-          packageSaveName(packageSaveName),
-          checkFileUrl(checkFileUrl),
-          checkFileSaveName(checkFileSaveName),
-          checkNumProgram(checkNumProgram),
-          checkNumMode(checkNumMode){}
-
-    QUrl getPackageUrl() const;
-    QString getPackageSaveName() const;
-    QUrl getCheckFileUrl() const;
-    QString getCheckFileSaveName() const;
-    QString getCheckNumProgram() const;
-    QString getCheckNumMode() const;
-
-    void setPackageUrl(const QUrl &value);
-    void setPackageSaveName(const QString &value);
-    void setCheckFileUrl(const QUrl &value);
-    void setCheckFileSaveName(const QString &value);
-    void setCheckNumProgram(const QString &value);
-    void setCheckNumMode(const QString &value);
-};
-Q_DECLARE_METATYPE(RequestInfo)
-
-struct Pip3GitInstall
-{
-    QString packageName;
-    QString programMain;
-};
-Q_DECLARE_METATYPE(Pip3GitInstall)
-
 class BackendChecker : public QWidget
 {
     Q_OBJECT
 public:
     explicit BackendChecker(QWidget *parent = nullptr);
     static BackendChecker &instance();
-    void checkLanguageBackend(const QString &languageID);
-    bool existRunMain(const QString &languageID);
-    bool checkCachePackage(const QString &languageID);
+    void checkLanguageBackend(const QString &language);
+    bool checkShasum(const QString &filePath, const QString &src_code, const QString &mode);
+    QString getRemoteFile(const QUrl &url);
+    bool saveRemoteFile(const QUrl &url, const QString &saveFilePath);
+    QString localPlatform();
 private:
-    QString adapterPath;
-    QHash<QString, QVariant> requestInfos;
+    void doCheckClangd(const QString &language);
+    void doCheckJdtls(const QString &language);
+    void doCheckPyls(const QString &language);
 };
 
 #endif // BACKENDCHECKER_H

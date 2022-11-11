@@ -78,10 +78,109 @@ Client::~Client()
     }
 }
 
-bool Client::exists(const QString &progrma)
-{
-    return ProcessUtil::exists(progrma);
-}
+void Client::delta(const SemanticTokensDeltaParams &params){}
+
+void Client::full(const SemanticTokensParams &params){}
+
+void Client::range(const SemanticTokensRangeParams &params){}
+
+void Client::didOpen(const DidOpenTextDocumentParams &params){}
+
+void Client::didChange(const DidChangeTextDocumentParams &params){}
+
+void Client::willSave(const WillSaveTextDocumentParams &params){}
+
+void Client::willSaveWaitUntil(const WillSaveTextDocumentParams &params){}
+
+void Client::didSave(const DidSaveTextDocumentParams &params){}
+
+void Client::didClose(const DidCloseTextDocumentParams &params){}
+
+void Client::declaration(const DeclarationParams &params){}
+
+void Client::definition(const DefinitionParams &params){}
+
+void Client::typeDefinition(const TypeDefinitionParams &params){}
+
+void Client::implementation(const ImplementationParams &params){}
+
+void Client::references(const ReferenceParams &params){}
+
+void Client::prepareCallHierarchy(const CallHierarchyPrepareParams &params){}
+
+void Client::prepareTypeHierarchy(const TypeHierarchyPrepareParams &params){}
+
+void Client::documentHighlight(const DocumentHighlightParams &params){}
+
+void Client::documentLink(const DocumentLinkParams &params){}
+
+void Client::hover(const HoverParams &params){}
+
+void Client::codeLens(const CodeLensParams &params){}
+
+void Client::foldingRange(const FoldingRangeParams &params){}
+
+void Client::selectionRange(const SelectionRangeParams &params){}
+
+void Client::documentSymbol(const DocumentSymbolParams &params){}
+
+void Client::inlayHint(const InlayHintParams &params){}
+
+void Client::inlineValue(const InlineValueParams &params){}
+
+void Client::moniker(const MonikerParams &params){}
+
+void Client::completion(const CompletionParams &params){}
+
+void Client::diagnostic(const DocumentDiagnosticParams &params){}
+
+void Client::signatureHelp(const SignatureHelpParams &params){}
+
+void Client::codeAction(const CodeActionParams &params){}
+
+void Client::documentColor(const DocumentColorParams &params){}
+
+void Client::colorPresentation(const ColorPresentationParams &params){}
+
+void Client::formatting(const DocumentFormattingParams &params){}
+
+void Client::rangeFormatting(const DocumentRangeFormattingParams &params){}
+
+void Client::onTypeFormatting(const DocumentOnTypeFormattingParams &params){}
+
+void Client::rename(const RenameParams &params){}
+
+void Client::prepareRename(const PrepareRenameParams &params){}
+
+void Client::linkedEditingRange(const LinkedEditingRangeParams &params){}
+
+void Client::resolve(const CodeAction &codeAction){}
+
+void Client::resolve(const CompletionItem &params){}
+
+void Client::resolve(){}
+
+void Client::resolve(const CodeLens &codeLens){}
+
+void Client::supertypes(const TypeHierarchySupertypesParams &params){}
+
+void Client::subtypes(const TypeHierarchySubtypesParams &params){}
+
+void Client::incomingCalls(const CallHierarchyIncomingCallsParams &params){}
+
+void Client::outgoingCalls(const CallHierarchyOutgoingCallsParams &params){}
+
+void Client::refresh(){}
+
+void Client::workspace_semanticTokens_refresh(){}
+
+void Client::workspace_inlayHint_refresh(){}
+
+void Client::workspace_inlineValue_refresh(){}
+
+void Client::workspace_diagnostic_refresh(){}
+
+void Client::diagnostic(const WorkspaceDiagnosticParams &params){}
 
 void Client::selectLspServer(const newlsp::ProjectKey &key)
 {

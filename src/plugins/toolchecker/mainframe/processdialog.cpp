@@ -30,13 +30,11 @@ ProcessDialog::ProcessDialog(QWidget *parent, Qt::WindowFlags f)
 {
     setWindowTitle(__FUNCTION__);
     setMinimumSize(600, 400);
-    setAttribute(Qt::WA_DeleteOnClose);
 
     vLayout->addWidget(textBrowser);
     vLayout->addWidget(progressBar);
     setLayout(vLayout);
 
-    setAttribute(Qt::WA_DeleteOnClose);
     QObject::connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, &ProcessDialog::doFinished);
     QObject::connect(&process, &QProcess::readyReadStandardOutput,
@@ -49,6 +47,11 @@ ProcessDialog::ProcessDialog(QWidget *parent, Qt::WindowFlags f)
         auto data = process.readAllStandardError();
         this->doShowStdErr(data);
     });
+}
+
+ProcessDialog::~ProcessDialog()
+{
+    process.kill();
 }
 
 void ProcessDialog::setProgram(const QString &program)
@@ -81,6 +84,12 @@ QString ProcessDialog::workDirectory() const
     return process.workingDirectory();
 }
 
+int ProcessDialog::exec()
+{
+    process.start();
+    return QDialog::exec();
+}
+
 void ProcessDialog::doShowStdErr(const QByteArray &array)
 {
     textBrowser->append(array);
@@ -101,10 +110,4 @@ void ProcessDialog::doShowProgress(int current, int count)
 {
     progressBar->setRange(0, count);
     progressBar->setValue(current);
-}
-
-void ProcessDialog::showEvent(QShowEvent *event)
-{
-    process.start();
-    return QDialog::showEvent(event);
 }

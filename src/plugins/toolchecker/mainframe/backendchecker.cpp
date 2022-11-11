@@ -26,38 +26,193 @@
 
 #include <QDirIterator>
 #include <QMimeDatabase>
-#include <QStandardPaths>
+#include <QDebug>
 
-#define PYLS_PACKAGENAME "python-language-server[all]"
-#define PYLS_PROGRAM_MAIN "pyls"
+using FO = FileOperation;
 
-#define JDTLS_PACKAGE_URL "https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.11.0-202205051421.tar.gz"
-#define JDTLS_PACKAGE_NAME "jdt-language-server.tar.gz"
-#define JDTLS_CHECKFILE_URL "https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.11.0-202205051421.tar.gz.sha256"
-#define JDTLS_CHECKFILE_NAME "jdt-language-server.tar.gz.sha256"
-#define JDTLS_CHECKPROGRAM_NAME "shasum"
-#define JDTLS_CHECKPROGRAM_MODE "256"
+namespace  {
+bool checkClangdFlag = false;
+bool checkJdtlsFlag = false;
+bool checkPylsFlag = false;
+}
 
-#define JDTLS_PROGRAM_MAIN "jdtls"
-#define JDTLS_PROGRAM_MAIN_MIME "text/x-python3"
+QString BackendChecker::localPlatform()
+{
+    // get location platform
+    QString platform = "";
+    bool platfromQueRes = ProcessUtil::execute("arch", {}, [&](const QByteArray &data){
+        platform = QString(data).replace("\n","");
+    });
+    if (!platfromQueRes)
+        qCritical() << "usr command arch failed, please check tool program arch";
+    else if (platform.isEmpty())
+        qCritical() << "query local platform failed, not support \"arch\" command?";
+    return platform;
+}
+
+void BackendChecker::doCheckClangd(const QString &language)
+{
+    if (checkClangdFlag)
+        return;
+
+    if (!checkClangdFlag)
+        checkClangdFlag = true;
+
+    QString user = "FunningC0217";
+    QString origin = "clangd-archive";
+    QString branch = "dev";
+    QString rawPrefix = "https://raw.githubusercontent.com";
+    QString platformSupportFileName = "platform.support";
+    QString clangdSha256FileName = "clangd.sha256";
+    QString clangdFileName = "clangd";
+
+    QUrl remotePlatformSupportUrl(rawPrefix + "/" + user + "/" + origin + "/"
+                                  + branch + "/" + platformSupportFileName);
+    QString currentPlatform = localPlatform();
+    // get is support platform
+    QStringList platformSupports;
+    for (auto one : getRemoteFile(remotePlatformSupportUrl).split("\n")) {
+        if (!one.isEmpty()) {
+            platformSupports.append(one);
+        }
+    }
+    if (!platformSupports.contains(currentPlatform)) {
+        qCritical() << "get remote platform support error"
+                    << ", remote:" << platformSupports
+                    << ", local:" << currentPlatform;
+        return;
+    }
+
+    QUrl remoteClangdShasum256Url(rawPrefix + "/" + user + "/" + origin + "/" + branch
+                                  + "/" + currentPlatform + "/" + clangdSha256FileName);
+    // local lsp shasum256 file
+    QString localClangdShasum256Path = CustomPaths::lspRuntimePath(language) + QDir::separator() + clangdSha256FileName;
+    if (!FO::exists(localClangdShasum256Path)) { // not local shasum256 file
+        // save remote shasum256
+        saveRemoteFile(remoteClangdShasum256Url, localClangdShasum256Path);
+    } else { // exist shasum256 file
+        QString remoteClangdShasum256Data = getRemoteFile(remoteClangdShasum256Url);
+        if (!remoteClangdShasum256Data.isEmpty()) {
+            if (FO::readAll(localClangdShasum256Path) != remoteClangdShasum256Data) {
+                // save remote shasum256
+                saveRemoteFile(remoteClangdShasum256Url, localClangdShasum256Path);
+            }
+        }
+    }
+
+    // local lsp cxx backend program
+    QString localClangdPath = CustomPaths::lspRuntimePath(language) + QDir::separator() + clangdFileName;
+    bool localClangdKeep = true;
+    if (FO::exists(localClangdPath)) {
+        if (FO::exists(localClangdShasum256Path)) {
+            localClangdKeep = checkShasum(localClangdPath, FO::readAll(localClangdShasum256Path), "256");
+        } else { // not exists clangd program
+            localClangdKeep = false;
+        }
+    } else {
+        localClangdKeep = false;
+    }
+
+    if (!localClangdKeep) {
+        FO::doRemove(localClangdPath);
+        QString downloadPrefix = "https://github.com";
+        QUrl remoteClangdUrl(downloadPrefix + "/" + user + "/" + origin
+                             + "/raw/dev/" + currentPlatform + "/" + clangdFileName);
+        QStringList args = { remoteClangdUrl.toEncoded(), "-O", clangdFileName };
+        WGetDialog dialog;
+        dialog.setWorkDirectory(CustomPaths::lspRuntimePath(language));
+        dialog.setWgetArguments(args);
+        dialog.exec();
+        QFile::Permissions permission = QFile::Permission::ReadUser
+                | QFile::Permission::WriteUser
+                | QFile::Permission::ExeUser;
+        QFile(localClangdPath).setPermissions(permission);
+    }
+}
+
+void BackendChecker::doCheckJdtls(const QString &language)
+{
+    if (checkJdtlsFlag)
+        return;
+
+    if (!checkJdtlsFlag)
+        checkJdtlsFlag = true;
+
+    QUrl remoteJdtlsUrl("https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.11.0-202205051421.tar.gz");
+    QString localJdtlsPath = CustomPaths::lspRuntimePath(language) + QDir::separator() + "jdt-language-server.tar.gz";
+    QUrl remoteJdtlsShasum256Url("https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.11.0-202205051421.tar.gz.sha256");
+    QString localJdtlsShasum256Path = CustomPaths::lspRuntimePath(language) + QDir::separator() + "jdt-language-server.tar.gz.sha256";
+
+    // local lsp shasum256 file
+    if (!FO::exists(localJdtlsShasum256Path)) { // not local shasum256 file
+        // save remote shasum256
+        saveRemoteFile(remoteJdtlsShasum256Url, localJdtlsShasum256Path);
+    } else { // exist shasum256 file
+        QString remoteClangdShasum256Data = getRemoteFile(remoteJdtlsShasum256Url);
+        if (!remoteClangdShasum256Data.isEmpty()) {
+            if (FO::readAll(localJdtlsShasum256Path) != remoteClangdShasum256Data) {
+                // save remote shasum256
+                saveRemoteFile(remoteJdtlsShasum256Url, localJdtlsShasum256Path);
+            }
+        }
+    }
+
+    // local lsp cxx backend program
+    bool localKeep = true;
+    if (FO::exists(localJdtlsPath)) {
+        if (FO::exists(localJdtlsShasum256Path)) {
+            localKeep = checkShasum(localJdtlsPath, FO::readAll(localJdtlsShasum256Path), "256");
+        } else { // not exists clangd program
+            localKeep = false;
+        }
+    } else {
+        localKeep = false;
+    }
+
+    if (!localKeep) {
+        FO::doRemove(localJdtlsPath);
+
+        QStringList args = { remoteJdtlsUrl.toEncoded(), "-O", localJdtlsPath };
+        WGetDialog dialog;
+        dialog.setWorkDirectory(CustomPaths::lspRuntimePath(language));
+        dialog.setWgetArguments(args);
+        dialog.exec();
+
+        ProcessDialog processDialog;
+        processDialog.setWorkDirectory(CustomPaths::lspRuntimePath(language));
+        processDialog.setProgram("tar");
+        processDialog.setArguments({"zxvf", localJdtlsPath, "-C", "."});
+        processDialog.exec();
+    }
+}
+
+void BackendChecker::doCheckPyls(const QString &language)
+{
+    Q_UNUSED(language)
+
+    if (checkPylsFlag)
+        return;
+
+    if (!checkPylsFlag)
+        checkPylsFlag = true;
+
+    // virtualenv not support, use user env
+    QString pip3PackageName {"python-language-server[all]"};
+    QString executeProgram {"pyls"};
+
+    QString userLocalBinPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
+            + QDir::separator() + ".local" + QDir::separator() + "bin";
+    if (!QFileInfo(userLocalBinPath + QDir::separator() + executeProgram).exists()) {
+        Pip3Dialog pip3Dialog;
+        pip3Dialog.install("python-language-server[all]");
+        pip3Dialog.exec();
+    }
+}
 
 BackendChecker::BackendChecker(QWidget *parent)
     : QWidget(parent)
 {
-    RequestInfo jdtlsInfo;
-    jdtlsInfo.setPackageUrl(QUrl(JDTLS_PACKAGE_URL));
-    jdtlsInfo.setPackageSaveName(JDTLS_PACKAGE_NAME);
-    jdtlsInfo.setCheckFileUrl(QUrl(JDTLS_CHECKFILE_URL));
-    jdtlsInfo.setCheckFileSaveName(JDTLS_CHECKFILE_NAME);
-    jdtlsInfo.setCheckNumProgram(JDTLS_CHECKPROGRAM_NAME);
-    jdtlsInfo.setCheckNumMode(JDTLS_CHECKPROGRAM_MODE);
 
-    Pip3GitInstall pylspInfo;
-    pylspInfo.packageName = PYLS_PACKAGENAME;
-    pylspInfo.programMain = PYLS_PROGRAM_MAIN;
-
-    requestInfos["Java"] = QVariant::fromValue<RequestInfo>(jdtlsInfo);
-    requestInfos["Python"] = QVariant::fromValue<Pip3GitInstall>(pylspInfo);
 }
 
 BackendChecker &BackendChecker::instance()
@@ -66,195 +221,67 @@ BackendChecker &BackendChecker::instance()
     return ins;
 }
 
-void BackendChecker::checkLanguageBackend(const QString &languageID)
+void BackendChecker::checkLanguageBackend(const QString &language)
 {
-    QDir dir = QDir::home();
-    if (!dir.cd(".config")) { dir.mkdir(".config"); }
-    if (!dir.cd("languageadapter")) { dir.mkdir("languageadapter"); }
-    adapterPath = dir.path();
-
-    // reconfig new lsp server
-    if (QFile::exists(dir.path() + QDir::separator() + "languageAdapter.conf")) {
-        dir.removeRecursively();
-        dir.cdUp();
-        if (!dir.cd("languageadapter")) { dir.mkdir("languageadapter"); }
-    }
-
-    auto itera = requestInfos.begin();
-    while (itera != requestInfos.end()) {
-        if (!dir.cd(itera.key())) {
-            dir.mkdir(itera.key());
-        }
-        dir.cdUp();
-        itera ++;
-    }
-
-    if (requestInfos.keys().contains(languageID)) {
-        QVariant infoVar = requestInfos.value(languageID);
-        if (infoVar.canConvert<RequestInfo>()) {
-            auto info = qvariant_cast<RequestInfo>(infoVar);
-            if (!existRunMain(languageID)) { // install
-                if (!checkCachePackage(languageID)) { // Sha256 check
-                    QStringList args = { info.getPackageUrl().toEncoded(),
-                                         "-O",
-                                         info.getPackageSaveName() };
-                    auto dialog =  new WGetDialog;
-                    dialog->setWorkDirectory(adapterPath);
-                    dialog->setWgetArguments(args);
-                    dialog->exec();
-                }
-
-                auto processDialog = new ProcessDialog();
-                processDialog->setWorkDirectory(adapterPath);
-                processDialog->setProgram("tar");
-                processDialog->setArguments({"zxvf", info.getPackageSaveName(), "-C", languageID});
-                processDialog->exec();
-            }
-        } else if (infoVar.canConvert<Pip3GitInstall>()) {
-            auto info = qvariant_cast<Pip3GitInstall>(infoVar);
-            QString userLocalBinPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)
-                    + QDir::separator() + ".local" + QDir::separator() + "bin";
-            if (!QFileInfo(userLocalBinPath + QDir::separator() + PYLS_PROGRAM_MAIN).exists()) {
-                auto pip3Dialog = new Pip3Dialog();
-                pip3Dialog->install("python-language-server[all]");
-                pip3Dialog->exec();
-            }
-        }
+    if (language == "C/C++") {
+        doCheckClangd(language);
+    } else if (language == "Java") {
+        doCheckJdtls(language);
+    } else if (language == "Python") {
+        doCheckPyls(language);
+    } else {
     }
 }
 
-bool BackendChecker::existRunMain(const QString &languageID)
+bool BackendChecker::checkShasum(const QString &filePath, const QString &src_code, const QString &mode)
 {
-    if (languageID == "Java") {
-        QDir dir(adapterPath + QDir::separator() + languageID);
-        dir.setFilter(QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::Files | QDir::Dirs);
-        QDirIterator itera(dir, QDirIterator::Subdirectories);
-        QMimeDatabase mimeDB;
-        while (itera.hasNext()) {
-            itera.next();
-            QString mimeName = mimeDB.mimeTypeForFile(itera.fileInfo()).name();
-            if (JDTLS_PROGRAM_MAIN_MIME == mimeName
-                    && JDTLS_PROGRAM_MAIN == itera.fileName()) {
-                return true;
-            }
-        }
+    QProcess checkProcess;
+    checkProcess.setProgram("shasum");
+    checkProcess.setArguments({"-a", mode, filePath});
+    checkProcess.start();
+    checkProcess.waitForFinished();
+
+    QString output = checkProcess.readAll();
+    QStringList result = output.split(" ");
+    if (result.size() >= 2) {
+        output = result.first();
     }
-    return false;
+    return src_code == output;
 }
 
-bool BackendChecker::checkCachePackage(const QString &languageID)
+QString BackendChecker::getRemoteFile(const QUrl &url)
 {
-    QVariant infoVar = requestInfos.value(languageID);
+    QString ret;
+    while (ret.isEmpty()) {
+        QProcess curlProc;
+        curlProc.setProgram("curl");
+        curlProc.setArguments({url.toEncoded()});
+        curlProc.start();
+        qInfo() << curlProc.program() << curlProc.arguments();
+        curlProc.waitForFinished(1500);
 
-    if (infoVar.canConvert<RequestInfo>()) {
-        RequestInfo info = qvariant_cast<RequestInfo>(infoVar);
+        if (curlProc.exitCode() == 0)
+            ret = curlProc.readAll();
+    }
 
-        QDir adapterDir(adapterPath);
-        if (!adapterDir.exists(info.getPackageSaveName()))
-            return false;
+    if (ret.endsWith("\n"))
+        ret.remove(ret.size() - 1, 1);
+    return ret;
+}
 
-        if (adapterDir.exists(info.getCheckFileSaveName())) {
-            adapterDir.remove(info.getCheckFileSaveName());
-        }
-
-        // current cache package path
-        QString localPackageName = info.getPackageSaveName();
-
-        // download sha256
-        QStringList args = { info.getCheckFileUrl().toEncoded(),
-                             "-O",
-                             info.getCheckFileSaveName() };
-
-        QProcess wgetCheckFileProcess;
-        wgetCheckFileProcess.setWorkingDirectory(adapterPath);
-        wgetCheckFileProcess.setProgram("wget");
-        wgetCheckFileProcess.setArguments({ info.getCheckFileUrl().toEncoded(),
-                                            "-O",
-                                            info.getCheckFileSaveName()});
-        wgetCheckFileProcess.start();
-        wgetCheckFileProcess.waitForFinished();
-
-        QProcess checkProcess;
-        checkProcess.setWorkingDirectory(adapterPath);
-        checkProcess.setProgram(info.getCheckNumProgram());
-        checkProcess.setArguments({"-a", info.getCheckNumMode(), info.getPackageSaveName()});
-        checkProcess.start();
-        checkProcess.waitForFinished();
-
-        QString output = checkProcess.readAll();
-        QStringList result = output.split(" ");
-        if (result.size() >= 2) {
-            output = result.first();
-        }
-
-        QFile checkFile(adapterDir.filePath(info.getCheckFileSaveName()));
-        if (checkFile.open(QFile::OpenModeFlag::ReadOnly)) {
-            QString readOut = checkFile.readAll();
-            if (readOut == output)
-                return true;
-        }
-
+bool BackendChecker::saveRemoteFile(const QUrl &url, const QString &saveFilePath)
+{
+    QString data = getRemoteFile(url);
+    if (data.isEmpty()) {
         return false;
     }
-    return false;
+
+    QFile file(saveFilePath);
+    if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
+        return false;
+    }
+    file.write(data.toLatin1());
+    file.close();
+    return true;
 }
 
-QString RequestInfo::getPackageSaveName() const
-{
-    return packageSaveName;
-}
-
-QUrl RequestInfo::getCheckFileUrl() const
-{
-    return checkFileUrl;
-}
-
-QString RequestInfo::getCheckFileSaveName() const
-{
-    return checkFileSaveName;
-}
-
-QString RequestInfo::getCheckNumProgram() const
-{
-    return checkNumProgram;
-}
-
-QString RequestInfo::getCheckNumMode() const
-{
-    return checkNumMode;
-}
-
-void RequestInfo::setPackageUrl(const QUrl &value)
-{
-    packageUrl = value;
-}
-
-void RequestInfo::setPackageSaveName(const QString &value)
-{
-    packageSaveName = value;
-}
-
-void RequestInfo::setCheckFileUrl(const QUrl &value)
-{
-    checkFileUrl = value;
-}
-
-void RequestInfo::setCheckFileSaveName(const QString &value)
-{
-    checkFileSaveName = value;
-}
-
-void RequestInfo::setCheckNumProgram(const QString &value)
-{
-    checkNumProgram = value;
-}
-
-void RequestInfo::setCheckNumMode(const QString &value)
-{
-    checkNumMode = value;
-}
-
-QUrl RequestInfo::getPackageUrl() const
-{
-    return packageUrl;
-}
