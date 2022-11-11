@@ -1,6 +1,6 @@
 {
     "type": "file",
-    "language": "python",
+    "language": "Python",
     "trDisplayName": "Python File",
     "trDescription": "a python file",
     "configures": [{

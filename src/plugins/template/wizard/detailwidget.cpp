@@ -143,8 +143,7 @@ bool DetailWidget::getGenParams(PojectGenParam &param)
         param.settingParamMap.insert("%{" + key + "}", comboBox->currentText().trimmed());
     }
 
-    param.templatePath = CustomPaths::user(CustomPaths::Flags::Configures)
-            + QDir::separator() + QString("templates")
+    param.templatePath = CustomPaths::global(CustomPaths::Templates)
             + QDir::separator() + d->templatePath;
     param.generator = d->wizardInfo.generator;
     if (d->wizardInfo.type == "project") {

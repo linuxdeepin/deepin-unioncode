@@ -73,3 +73,9 @@
 #else
 #error "cmake unseting definition PLUGIN_BUILD_RPEFIX"
 #endif
+
+#ifndef ASSETS_SOURCE_RPEFIX
+#define ASSETS_SOURCE_RPEFIX "${CMAKE_SOURCE_DIR}/assets"
+#else
+#error "cmake unseting definition ASSETS_SOURCE_RPEFIX"
+#endif

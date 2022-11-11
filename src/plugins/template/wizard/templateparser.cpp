@@ -43,8 +43,7 @@ TemplateParser::~TemplateParser()
 
 bool TemplateParser::readTemplateConfig(TemplateVector &templateVec)
 {
-    QString configPath = CustomPaths::user(CustomPaths::Flags::Configures)
-            + QDir::separator() + QString("templates")
+    QString configPath = CustomPaths::global(CustomPaths::Templates)
             + QDir::separator() + QString("templates.json");
 
     QFile file(configPath);
@@ -97,8 +96,7 @@ bool TemplateParser::readTemplateConfig(TemplateVector &templateVec)
 
 bool TemplateParser::readWizardConfig(const QString &projectPath, WizardInfo &wizardInfo)
 {
-    QString configPath = CustomPaths::user(CustomPaths::Flags::Configures)
-            + QDir::separator() + QString("templates")
+    QString configPath = CustomPaths::global(CustomPaths::Templates)
             + QDir::separator() + projectPath
             + QDir::separator() + QString("wizard.json");
 

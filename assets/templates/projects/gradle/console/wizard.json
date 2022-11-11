@@ -1,7 +1,7 @@
 {
     "type": "project",
     "kit": "gradle",
-    "language": "java",
+    "language": "Java",
     "trDisplayName": "Gradle Console Application",
     "trDescription": "An application with gradle console",
     "configures": [{

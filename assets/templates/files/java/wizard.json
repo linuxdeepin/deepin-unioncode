@@ -1,6 +1,6 @@
 {
     "type": "file",
-    "language": "java",
+    "language": "Java",
     "trDisplayName": "Java File",
     "trDescription": "a java file",
     "configures": [{

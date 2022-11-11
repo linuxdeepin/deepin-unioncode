@@ -1,7 +1,7 @@
 {
     "type": "project",
     "kit": "cmake",
-    "language": "cxx",
+    "language": "C/C++",
     "trDisplayName": "CMake Console Application",
     "trDescription": "An application with cmake console",
     "configures": [{

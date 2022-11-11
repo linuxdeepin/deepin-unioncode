@@ -1,6 +1,6 @@
 {
     "type": "file",
-    "language": "cxx",
+    "language": "C/C++",
     "trDisplayName": "C++ Header File",
     "trDescription": "a c++ header file",
     "configures": [{

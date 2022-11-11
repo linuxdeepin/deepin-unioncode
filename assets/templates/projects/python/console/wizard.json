@@ -1,7 +1,7 @@
 {
     "type": "project",
     "kit": "directory",
-    "language": "python",
+    "language": "Python",
     "trDisplayName": "Python Console Application",
     "trDescription": "An application with python console",
     "configures": [{

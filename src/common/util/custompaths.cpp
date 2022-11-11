@@ -81,7 +81,7 @@ QString PathMode::installed(CustomPaths::Flags flags)
     case CustomPaths::Translations:
         return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "translations";
     case CustomPaths::Templates:
-        return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "template";
+        return formatString(SOURCES_INSTALL_RPEFIX) + QDir::separator() + "templates";
     default:
         return "";
     }
@@ -114,6 +114,8 @@ QString PathMode::builded(CustomPaths::Flags flags)
         return formatString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "configures";
     case CustomPaths::Scripts:
         return formatString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "scripts";
+    case CustomPaths::Templates:
+        return formatString(ASSETS_SOURCE_RPEFIX) + QDir::separator() + "templates";
     default:
         return "";
     }
@@ -167,6 +169,8 @@ QString CustomPaths::user(CustomPaths::Flags flage)
         return PathMode::userConfigurePath() + QDir::separator() + "configures";
     case Scripts:
         return PathMode::userConfigurePath() + QDir::separator() + "Scripts";
+    case Templates:
+        return PathMode::userConfigurePath() + QDir::separator() + "templates";
     default:
         return "";
     }

@@ -1,6 +1,6 @@
 {
     "type": "file",
-    "language": "cxx",
+    "language": "C/C++",
     "trDisplayName": "C++ Source File",
     "trDescription": "a c++ source file",
     "configures": [{
