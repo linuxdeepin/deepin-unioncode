@@ -32,6 +32,11 @@
 #include <QHeaderView>
 #include <QStandardItemModel>
 #include <QContextMenuEvent>
+#include <QPushButton>
+
+const QString DELETE_MESSAGE_TEXT {QTreeView::tr("The delete operation will be removed from"
+                                                 "the disk and will not be recoverable "
+                                                 "after this operation.\nDelete anyway?")};
 
 using namespace dpfservice;
 
@@ -228,6 +233,31 @@ QMenu *ProjectTreeView::childMenu(const QStandardItem *root, const QStandardItem
     if (projectService->supportGeneratorName<ProjectGenerator>().contains(toolKitName)) {
         menu = projectService->createGenerator<ProjectGenerator>(toolKitName)->createItemMenu(child);
     }
+    if (!menu)
+        menu = new QMenu();
+
+
+    QAction *newDocAction = new QAction(tr("New Document"));
+    menu->addAction(newDocAction);
+    QObject::connect(newDocAction, &QAction::triggered, this, [=](){
+        actionNewDocument(child);
+    });
+
+    bool isDir = false;
+    QModelIndex index = d->itemModel->indexFromItem(child);
+    QFileInfo info(index.data(Qt::ToolTipRole).toString());
+    if (info.isDir()) {
+        isDir = true;
+    }
+
+    QAction *deleteDocAction = new QAction(tr("Delete Document"));
+    menu->addAction(deleteDocAction);
+    QObject::connect(deleteDocAction, &QAction::triggered, this, [=](){
+        actionDeleteDocument(child);
+    });
+    if (isDir) {
+        deleteDocAction->setEnabled(false);
+    }
     return menu;
 }
 
@@ -289,6 +319,102 @@ void ProjectTreeView::doActiveProject(QStandardItem *root)
         return;
     d->delegate->setActiveProject(d->itemModel->indexFromItem(root));
     SendEvents::projectActived(ProjectInfo::get(root));
+}
+
+
+void ProjectTreeView::actionNewDocument(const QStandardItem *item)
+{
+    QDialog *dlg = new QDialog;
+    QLineEdit *edit = new QLineEdit;
+
+    edit->setAlignment(Qt::AlignLeft);
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->setWindowTitle(tr("New Document"));
+    dlg->resize(400, 100);
+
+    QVBoxLayout *vLayout = new QVBoxLayout(dlg);
+    QPushButton *pbtOk = new QPushButton(tr("ok"));
+    pbtOk->setFixedSize(40, 20);
+    vLayout->addWidget(edit);
+    vLayout->addWidget(pbtOk, 0, Qt::AlignCenter);
+
+    QObject::connect(pbtOk, &QPushButton::clicked, dlg, [=](){
+        creatNewDocument(item, edit->text());
+        dlg->close();
+    });
+
+    dlg->exec();
+}
+
+void ProjectTreeView::actionDeleteDocument(const QStandardItem *item)
+{
+    QModelIndex index = d->itemModel->indexFromItem(item);
+    QFileInfo info(index.data(Qt::ToolTipRole).toString());
+    if (!info.isFile())
+        return;
+
+    bool doDelete = false;
+    auto okCallBack = [&](bool checked) {
+        Q_UNUSED(checked);
+        doDelete = true;
+    };
+
+    QString mess = DELETE_MESSAGE_TEXT + "\n" + info.filePath();
+    ContextDialog::okCancel(mess,
+                            DELETE_MESSAGE_TEXT,
+                            QMessageBox::Warning,
+                            okCallBack,
+                            nullptr);
+
+    if (!doDelete)
+        return;
+    QFile(info.filePath()).remove();
+}
+
+void ProjectTreeView::creatNewDocument(const QStandardItem *item, const QString &fileName)
+{
+    QModelIndex index = d->itemModel->indexFromItem(item);
+    QFileInfo info(index.data(Qt::ToolTipRole).toString());
+    QString workspaceFolder, language;
+    QModelIndex rootIndex = ProjectGenerator::root(index);
+    if (rootIndex.isValid()) {
+        auto rootInfo = ProjectInfo::get(rootIndex);
+        workspaceFolder = rootInfo.workspaceFolder();
+        language = rootInfo.language();
+    }
+
+    QString filePath;
+    if (info.isDir()) {
+        filePath = info.filePath() + QDir::separator() + fileName;
+    } else if (info.isFile()) {
+        filePath = info.path() + QDir::separator() + fileName;
+    }
+
+    if (QFile::exists(filePath)) {
+        bool doOverWrite = false;
+        auto okCallBack = [&](bool checked) {
+            Q_UNUSED(checked);
+            doOverWrite = true;
+        };
+
+        QString mess = "A file with name " + fileName + " already exists. Would you like to overwrite it?";
+        ContextDialog::okCancel(mess,
+                                DELETE_MESSAGE_TEXT,
+                                QMessageBox::Warning,
+                                okCallBack,
+                                nullptr);
+        if (doOverWrite) {
+             QFile::remove(filePath);
+        } else {
+            return;
+        }
+    }
+
+    QFile file(filePath);
+    if (file.open(QFile::OpenModeFlag::NewOnly)) {
+        file.close();
+    }
+    SendEvents::doubleCliekedOpenFile(workspaceFolder, language, filePath);
 }
 
 void ProjectTreeView::doShowProjectInfo(QStandardItem *root)

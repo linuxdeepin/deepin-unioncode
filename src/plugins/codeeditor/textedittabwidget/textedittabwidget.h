@@ -42,7 +42,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual void focusOutEvent(QFocusEvent *event) override;
-//    void paintEvent(QPaintEvent *event = nullptr) override;
+    void paintEvent(QPaintEvent *event = nullptr) override;
 
 signals:
     void signalEditClose();
@@ -84,8 +84,6 @@ private slots:
     TextEdit *switchFileAndToOpen(const newlsp::ProjectKey &key, const QString &filePath);
     TextEdit *switchFileAndToOpen(const QString &filePath);
     void saveEditFile(const QString &file);
-    void selectInChanged();
-    void selectOutChanged();
 
 private:
     void handleDeletedFile(const QString &file);

@@ -19,8 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "transceiver/codeeditorreceiver.h"
 #include "texteditsplitter.h"
+#include "transceiver/codeeditorreceiver.h"
 
 #include <QBoxLayout>
 #include <QDebug>
@@ -31,11 +31,10 @@ TextEditSplitter::TextEditSplitter(QWidget *parent)
     :QWidget(parent)
     , vLayout(new QVBoxLayout)
     , mainSplitter(new QSplitter)
-    , tabWidgets(new QList<TextEditTabWidget *>)
 {
     tabWidget = new TextEditTabWidget(mainSplitter);
     mainSplitter->addWidget(tabWidget);
-    tabWidgets->append(tabWidget);
+    tabWidgets.append(tabWidget);
     newSplitters.append(mainSplitter);
     ++count;
 
@@ -73,7 +72,7 @@ void TextEditSplitter::editSplit(Qt::Orientation orientation, const QString &fil
     textEditTabWidget->setParent(newSplitter);
 
     TextEditTabWidget *newTextEdit = new TextEditTabWidget(newSplitter);
-    tabWidgets->append(newTextEdit);
+    tabWidgets.append(newTextEdit);
     ++count;
     newTextEdit->openFile(file);
     newTextEdit->setFocus();
@@ -100,10 +99,10 @@ void TextEditSplitter::editSplit(Qt::Orientation orientation, const QString &fil
 
 void TextEditSplitter::doSelectedTextEditWidget()
 {
-    for (int i = 0; i < tabWidgets->size(); i++) {
+    for (int i = 0; i < tabWidgets.size(); i++) {
         disconnect(DpfEventMiddleware::instance(),
                    QOverload<const newlsp::ProjectKey &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
-                   tabWidgets->at(i), QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
+                   tabWidgets.at(i), QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
     }
 
     auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
@@ -120,7 +119,7 @@ void TextEditSplitter::closeSplit()
     }
     auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
 
-    tabWidgets->removeOne(textEditTabWidget);
+    tabWidgets.removeOne(textEditTabWidget);
     --count;
     textEditTabWidget->~TextEditTabWidget();
 }

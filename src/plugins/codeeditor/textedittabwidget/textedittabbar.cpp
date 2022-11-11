@@ -41,8 +41,7 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     , d(new TextEditTabBarPrivate)
 {
     d->hBoxLayout->setSpacing(5);
-    d->hBoxLayout->setMargin(0);
-    d->tab->setFixedHeight(24);
+    d->hBoxLayout->setMargin(4);
 
     d->pbtHorizontal->setIcon(QIcon(":/core/images/horizontalSplit.png"));
     d->pbtHorizontal->setStyleSheet("background-color:transparent");

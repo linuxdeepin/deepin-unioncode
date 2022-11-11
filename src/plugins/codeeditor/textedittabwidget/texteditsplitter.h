@@ -27,7 +27,6 @@
 #include <QObject>
 #include <QGridLayout>
 #include <QSplitter>
-#include <QVector>
 #include <QList>
 
 class TextEditSplitter : public QWidget
@@ -47,7 +46,7 @@ private:
     QVBoxLayout *vLayout = nullptr;
     QSplitter *mainSplitter = nullptr;
     TextEditTabWidget *tabWidget = nullptr;
-    QList<TextEditTabWidget *> *tabWidgets = nullptr;
+    QList<TextEditTabWidget *> tabWidgets;
     QList<QSplitter *> newSplitters;
     int count = 0;
 };

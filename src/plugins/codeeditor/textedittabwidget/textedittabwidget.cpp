@@ -43,6 +43,9 @@ class TextEditTabWidgetPrivate
     QHash<QString, TextEditTitleBar*> titleBars;
     TextEdit defaultEdit;
     QString runningFilePathCache;
+    bool selFlag = false;
+    QColor selColor{};
+    QColor defColor{};
 };
 
 TextEditTabWidget::TextEditTabWidget(QWidget *parent)
@@ -51,7 +54,7 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
 {
     d->gridLayout = new QGridLayout(this);
     d->gridLayout->setSpacing(0);
-    d->gridLayout->setMargin(0);
+    d->gridLayout->setMargin(4);
 
     if (!d->tab) {
         d->tab = new TextEditTabBar(this);
@@ -125,10 +128,6 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
                      this, &TextEditTabWidget::fileMoved, Qt::QueuedConnection);
     QObject::connect(Inotify::globalInstance(), &Inotify::modified,
                      this, &TextEditTabWidget::fileModifyed, Qt::QueuedConnection);
-    QObject::connect(this, &TextEditTabWidget::signalFocusOutChange,
-                     this, &TextEditTabWidget::selectOutChanged);
-    QObject::connect(this, &TextEditTabWidget::signalFocusInChange,
-                     this, &TextEditTabWidget::selectInChanged);
 }
 
 TextEditTabWidget::~TextEditTabWidget()
@@ -173,13 +172,17 @@ void TextEditTabWidget::openFile(const QString &filePath)
     QObject::connect(edit, &TextEdit::signalFocusInChanged,
                      this, [=](){
         std::cerr << "TextEdit::focusInEvent" << std::endl;
+        d->selFlag = true;
         emit signalFocusInChange();
+        update();
     });
 
     QObject::connect(edit, &TextEdit::signalFocusOutChanged,
                      this, [=](){
         std::cerr << "TextEdit::focusOutEvent" << std::endl;
+        d->selFlag = false;
         emit signalFocusOutChange();
+        update();
     });
 
     QObject::connect(edit, &TextEdit::fileChanged, d->tab,
@@ -248,16 +251,19 @@ void TextEditTabWidget::openFile(const newlsp::ProjectKey &key, const QString &f
     }
 
     QObject::connect(edit, &TextEdit::signalFocusInChanged,
-                     this, [this](){
+                     this, [=](){
         std::cerr << "TextEdit::focusInEvent" << std::endl;
-
+        d->selFlag = true;
         emit signalFocusInChange();
-    });;
+        update();
+    });
 
     QObject::connect(edit, &TextEdit::signalFocusOutChanged,
                      this, [=](){
         std::cerr << "TextEdit::focusOutEvent" << std::endl;
+        d->selFlag = false;
         emit signalFocusOutChange();
+        update();
     });
 
 
@@ -688,16 +694,6 @@ void TextEditTabWidget::saveEditFile(const QString &file)
     }
 }
 
-void TextEditTabWidget::selectOutChanged()
-{
-    this->setStyleSheet("background-color:black;");
-}
-
-void TextEditTabWidget::selectInChanged()
-{
-    this->setStyleSheet("background-color:grey;");
-}
-
 void TextEditTabWidget::keyPressEvent(QKeyEvent *event)
 {
     if (event->modifiers() == Qt::AltModifier) {
@@ -718,12 +714,41 @@ void TextEditTabWidget::keyPressEvent(QKeyEvent *event)
 
 void TextEditTabWidget::focusInEvent(QFocusEvent *event)
 {
-    std::cerr << "TextEditTabWidget::focusInEvent" << std::endl;
+    d->selFlag = true;
+    qInfo() << "TextEditTabWidget::focusInEvent" << this;
     emit signalFocusInChange();
+    update();
 }
 
 void TextEditTabWidget::focusOutEvent(QFocusEvent *event)
 {
-    std::cerr << "TextEditTabWidget::focusOutEvent" << std::endl;
+    d->selFlag = false;
+    qInfo() << "TextEditTabWidget::focusOutEvent" << this;
     emit signalFocusOutChange();
+    update();
+}
+
+void TextEditTabWidget::paintEvent(QPaintEvent *event)
+{
+    if (d->selFlag) {
+        QPainter painter(this);
+        painter.save();
+        painter.setPen(d->selColor);
+        painter.drawRect(this->rect());
+        painter.restore();
+        qInfo() << "setting custom color" << this;
+    } else {
+        if (!d->defColor.isValid()) {
+            d->defColor = palette().background().color();
+            d->selColor = QColor(d->defColor.red() + 20, d->defColor.green() + 20, d->defColor.blue() + 20, d->defColor.alpha());
+            qInfo() << "cache default color" << this;
+        } else {
+            qInfo() << "recovery default color" << this;
+            QPainter painter(this);
+            painter.save();
+            painter.setPen(d->defColor);
+            painter.drawRect(this->rect());
+            painter.restore();
+        }
+    }
 }

@@ -54,6 +54,9 @@ private slots:
     void doCloseProject(QStandardItem *root);
     void doShowProjectInfo(QStandardItem *root);
     void doActiveProject(QStandardItem *root);
+    void actionNewDocument(const QStandardItem *item);
+    void actionDeleteDocument(const QStandardItem *item);
+    void creatNewDocument(const QStandardItem *item, const QString &fileName);
 };
 
 #endif // PROJECTTREEVIEW_H
