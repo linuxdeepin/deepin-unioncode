@@ -159,9 +159,9 @@ void BuildPropertyWidget::setupOverviewUI()
             }
         }
 
-        ConfigUtil::instance()->checkConfigInfo(d->configureComboBox->currentText(), d->outputDirEdit->text());
         ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
         param->defaultType = ConfigUtil::instance()->getTypeFromName(d->configureComboBox->currentText());
+        ConfigUtil::instance()->checkConfigInfo(d->configureComboBox->currentText(), d->outputDirEdit->text());
     });
 
     QHBoxLayout *hLayout = new QHBoxLayout(this);

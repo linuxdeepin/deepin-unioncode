@@ -54,7 +54,6 @@ ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
     d->configureProjWidget = new ConfigureWidget(d->stackedWidget);
     d->configureProjPane = new ConfigureProjPane(language, projectPath, d->configureProjWidget);
     QObject::connect(d->configureProjPane, &ConfigureProjPane::configureDone, [this](const dpfservice::ProjectInfo &info){
-        emit configureDone(info);
         closeWidget();
     });
     d->configureProjWidget->addWidget(d->configureProjPane);

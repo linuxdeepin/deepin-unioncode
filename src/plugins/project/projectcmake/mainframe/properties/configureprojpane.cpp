@@ -70,9 +70,6 @@ class ConfigureProjPanePrivate
     QButtonGroup *group{nullptr};
 
     ConfigureParam *cfgItem{nullptr};
-
-    QString projectPath;
-    QString language;
 };
 
 ConfigureProjPane::ConfigureProjPane(const QString &language,
@@ -81,12 +78,18 @@ ConfigureProjPane::ConfigureProjPane(const QString &language,
     : QWidget(parent)
     , d(new ConfigureProjPanePrivate)
 {
-    d->projectPath = projectPath;
-    d->language = language;
     d->cfgItem = ConfigUtil::instance()->getConfigureParamPointer();
+    ConfigUtil::instance()->clearConfigureParam();
+    d->cfgItem->language = language;
+    d->cfgItem->projectPath = projectPath;
 
     setupUI();
     updateUI();
+
+    connect(ConfigUtil::instance(), QOverload<const dpfservice::ProjectInfo &>::of(&ConfigUtil::configureDone),
+            [this](const dpfservice::ProjectInfo &info) {
+        emit configureDone(info);
+    });
 }
 
 ConfigureProjPane::~ConfigureProjPane()
@@ -140,7 +143,7 @@ void ConfigureProjPane::setupUI()
 
     auto btnConfigure = new QPushButton(tr("Configure"));
     btnConfigure->connect(btnConfigure, &QPushButton::clicked,
-                          this, &ConfigureProjPane::slotConfigureDone);
+                          this, &ConfigureProjPane::slotConfigure);
 
     QHBoxLayout *hLayoutBottom = new QHBoxLayout();
     hLayoutBottom->addStretch(10);
@@ -175,10 +178,10 @@ void ConfigureProjPane::updateUI()
 
     d->kitComboBox->addItem(kDefaultKitName);
 
-    if (d->projectPath.isEmpty())
+    if (d->cfgItem->projectPath.isEmpty())
         return;
 
-    QDir folder = QFileInfo(d->projectPath).dir();
+    QDir folder = QFileInfo(d->cfgItem->projectPath).dir();
     QString folderName = folder.dirName();
     folder.cdUp();
     QString upDirectory = folder.path();
@@ -191,7 +194,7 @@ void ConfigureProjPane::updateUI()
     d->lineEditRelease->setText(folerPath(ConfigUtil::instance()->getNameFromType(Release)));
 }
 
-void ConfigureProjPane::slotConfigureDone()
+void ConfigureProjPane::slotConfigure()
 {
     QList<ConfigType> initType = {Debug, Release};
     foreach (auto type, initType) {
@@ -220,45 +223,6 @@ void ConfigureProjPane::slotConfigureDone()
 
     d->cfgItem->defaultType = ConfigUtil::instance()->getTypeFromName(d->group->checkedButton()->text());
     d->cfgItem->kit = d->kitComboBox->currentText();
-    d->cfgItem->language = d->language;
-    d->cfgItem->projectPath = d->projectPath;
 
-    configProject(d->cfgItem);
-}
-
-void ConfigureProjPane::configProject(const ConfigureParam *param)
-{
-    dpfservice::ProjectInfo info;
-    QString sourceFolder = QFileInfo(d->projectPath).path();
-    info.setLanguage(d->language);
-    info.setSourceFolder(sourceFolder);
-    info.setKitName(CmakeGenerator::toolKitName());
-    //    info.setBuildFolder(outputPath);
-    info.setWorkspaceFolder(sourceFolder);
-    info.setProjectFilePath(d->projectPath);
-
-    for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
-        if (param->defaultType == iter->type) {
-
-            info.setBuildType(ConfigUtil::instance()->getNameFromType(param->defaultType));
-            info.setBuildFolder(iter->directory);
-            info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
-
-            QStringList arguments;
-            arguments << "-S";
-            arguments << info.sourceFolder();
-            arguments << "-B";
-            arguments << info.buildFolder();
-            arguments << "-G";
-            arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
-            arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
-            arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
-            arguments << info.buildCustomArgs();
-            info.setBuildCustomArgs(arguments);
-
-            break;
-        }
-    }
-
-    emit configureDone(info);
+    ConfigUtil::instance()->configProject(d->cfgItem);
 }

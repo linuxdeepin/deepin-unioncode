@@ -44,7 +44,7 @@ signals:
     void configureDone(const dpfservice::ProjectInfo &info);
 
 public slots:
-    void slotConfigureDone();
+    void slotConfigure();
 
 private:
     void setupUI();

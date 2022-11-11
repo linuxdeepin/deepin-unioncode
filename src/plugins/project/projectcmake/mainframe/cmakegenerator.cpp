@@ -118,11 +118,6 @@ QDialog *CmakeGenerator::configureWidget(const QString &language,
 
     // show build type config pane.
     ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, projectPath);
-    QObject::connect(configPropertyWidget, &ConfigPropertyWidget::configureDone,
-                     [this](const dpfservice::ProjectInfo &info) {
-        configure(info);
-    });
-
     QObject::connect(config::ConfigUtil::instance(), &config::ConfigUtil::configureDone,
                      [this](const dpfservice::ProjectInfo &info) {
         configure(info);

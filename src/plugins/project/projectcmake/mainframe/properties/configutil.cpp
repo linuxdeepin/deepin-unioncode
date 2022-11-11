@@ -67,6 +67,15 @@ ConfigureParam *ConfigUtil::getConfigureParamPointer()
     return &d->configureParam;
 }
 
+void ConfigUtil::clearConfigureParam()
+{
+    d->configureParam.kit.clear();
+    d->configureParam.language.clear();
+    d->configureParam.defaultType = Unknown;
+    d->configureParam.projectPath.clear();
+    d->configureParam.buildConfigures.clear();
+}
+
 QString ConfigUtil::getConfigFilePath(const QString &projectPath, int configType)
 {
     QString newFolder = QFileInfo(projectPath).dir().path() + QDir::separator() + ".unioncode";
@@ -99,32 +108,36 @@ ConfigType ConfigUtil::getTypeFromName(QString name)
     return type;
 }
 
-void ConfigUtil::configProject(const QString &projectPath, const QString &language, const BuildConfigure &configure)
+void ConfigUtil::configProject(const ConfigureParam *param)
 {
-    dpfservice::ProjectInfo info;
-    QString sourceFolder = QFileInfo(projectPath).path();
-    info.setLanguage(language);
-    info.setSourceFolder(sourceFolder);
-    info.setKitName(CmakeGenerator::toolKitName());
-    info.setWorkspaceFolder(sourceFolder);
-    info.setProjectFilePath(projectPath);
-    info.setBuildType(ConfigUtil::instance()->getNameFromType(configure.type));
-    info.setBuildFolder(configure.directory);
-    info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
+    for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
+        if (d->configureParam.defaultType == iter->type) {
+            dpfservice::ProjectInfo info;
+            QString sourceFolder = QFileInfo(param->projectPath).path();
+            info.setLanguage(param->language);
+            info.setSourceFolder(sourceFolder);
+            info.setKitName(CmakeGenerator::toolKitName());
+            info.setWorkspaceFolder(sourceFolder);
+            info.setProjectFilePath(param->projectPath);
+            info.setBuildType(ConfigUtil::instance()->getNameFromType(iter->type));
+            info.setBuildFolder(iter->directory);
+            info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
 
-    QStringList arguments;
-    arguments << "-S";
-    arguments << info.sourceFolder();
-    arguments << "-B";
-    arguments << info.buildFolder();
-    arguments << "-G";
-    arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
-    arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
-    arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
-    arguments << info.buildCustomArgs();
-    info.setBuildCustomArgs(arguments);
+            QStringList arguments;
+            arguments << "-S";
+            arguments << info.sourceFolder();
+            arguments << "-B";
+            arguments << info.buildFolder();
+            arguments << "-G";
+            arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
+            arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
+            arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
+            arguments << info.buildCustomArgs();
+            info.setBuildCustomArgs(arguments);
 
-    emit configureDone(info);
+            emit configureDone(info);
+        }
+    }
 }
 
 void ConfigUtil::checkConfigInfo(const QString &buildType, const QString &directory)
@@ -138,7 +151,7 @@ void ConfigUtil::checkConfigInfo(const QString &buildType, const QString &direct
             QString cfgFile = iter->directory + QDir::separator() +
                     TargetsManager::instance()->getCMakeConfigFile();
             if (!QFileInfo(cfgFile).isFile()) {
-                configProject(d->configureParam.projectPath, d->configureParam.language, *iter);
+                configProject(&d->configureParam);
             }
         }
     }

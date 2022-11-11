@@ -93,14 +93,14 @@ public:
     QString getConfigFilePath(const QString &projectPath, int configType);
 
     ConfigureParam *getConfigureParamPointer();
+    void clearConfigureParam();
 
     QString getNameFromType(ConfigType type);
     ConfigType getTypeFromName(QString name);
 
     void checkConfigInfo(const QString &buildType, const QString &directory);
 
-    void configProject(const QString &projectPath, const QString &language,
-                       const BuildConfigure &configure);
+    void configProject(const ConfigureParam *param);
 signals:
     void configureDone(const dpfservice::ProjectInfo &info);
 
