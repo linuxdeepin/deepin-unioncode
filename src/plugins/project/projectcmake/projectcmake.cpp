@@ -54,7 +54,7 @@ bool ProjectCMake::start()
 
     if (projectService && !projectService->getActiveTarget) {
         using namespace std::placeholders;
-        projectService->getActiveTarget = std::bind(&TargetsManager::getTarget, TargetsManager::instance(), _1);
+        projectService->getActiveTarget = std::bind(&TargetsManager::getActivedTargetByTargetType, TargetsManager::instance(), _1);
     }
 
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());

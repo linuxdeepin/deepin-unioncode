@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,9 @@
 #ifndef CONFIGUREPROJPANE_H
 #define CONFIGUREPROJPANE_H
 
+
+#include "configutil.h"
+
 #include "services/project/projectinfo.h"
 
 #include <QWidget>
@@ -30,62 +34,23 @@ class ConfigureProjPanePrivate;
 class ConfigureProjPane : public QWidget
 {
     Q_OBJECT
-
 public:
-    enum BuildType {
-        Debug,
-        Relase,
-        RelWithDebInfo,
-        MinSizeRel
-    };
-
-    struct BuildTypeItem
-    {
-        bool checked = false;
-        QString folder;
-    };
-
-    struct ConfigureParam
-    {
-        QString kitName;
-        BuildTypeItem debug;
-        BuildTypeItem release;
-        BuildTypeItem relWithDebInfo;
-        BuildTypeItem minSizeRel;
-        bool checked = true;
-    };
-
-public:
-    explicit ConfigureProjPane(const QString &language,
+    ConfigureProjPane(const QString &language,
                                const QString &projectPath,
                                QWidget *parent = nullptr);
     ~ConfigureProjPane();
-
-    void setProjectPath(const QString &language, const QString &projectPath);
-
-    BuildType getDefaultBuildType() const;
-    QString getDefaultOutputPath() const;
 
 signals:
     void configureDone(const dpfservice::ProjectInfo &info);
 
 public slots:
     void slotConfigureDone();
-    void slotBrowseBtnClicked();
-    void slotParameterChanged();
 
 private:
-    void setupUi(QWidget *widget);
-    void setAllChecked(bool checked);
-    void useDefaultValue();
-    void refreshUi();
-    void refreshParameters();
-    void updateKitInfo();
-    QString configFilePath();
-    void getSelectedItem(QString &type, QString &path);
-
-    bool restore();
-    bool save();
+    void setupUI();
+    void resetUI();
+    void updateUI();
+    void configProject(const config::ConfigureParam *param);
 
     ConfigureProjPanePrivate *const d;
 };

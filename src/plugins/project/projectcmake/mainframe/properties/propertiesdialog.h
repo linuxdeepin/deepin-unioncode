@@ -34,6 +34,7 @@ class QLabel;
 class QSpacerItem;
 class QStringListModel;
 class QStackedWidget;
+class PageWidget;
 
 class PropertiesDialog : public QDialog
 {
@@ -41,7 +42,7 @@ class PropertiesDialog : public QDialog
 public:
     explicit PropertiesDialog(QWidget *parent = nullptr);
 
-    bool insertPropertyPanel(const QString &itemName, QWidget *panel);
+    bool insertPropertyPanel(const QString &itemName, PageWidget *panel);
     void showPropertyPanel(const QString &itemName, const QString &tabName);
 signals:
 
@@ -49,6 +50,7 @@ public slots:
     void slotLeftBarClicked(const QModelIndex &index);
     void saveSingleConfig();
     void saveAllConfig();
+    void slotFilterText(const QString &text);
 
 private:
     void setupUi(QDialog *Dialog);
@@ -58,9 +60,11 @@ private:
     QListView *leftSideBar = nullptr;
     QLabel *headTitle = nullptr;
 
-    QMap<QString, QWidget *> widgts;
+    QMap<QString, PageWidget *> widgts;
     QStringListModel *leftBarModel = nullptr;
     QStackedWidget *stackWidget = nullptr;
+
+    QStringList leftBarValues;
 };
 
 #endif // PROPERTIESDIALOG_H

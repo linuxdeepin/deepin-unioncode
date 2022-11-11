@@ -4,6 +4,7 @@
  * Author:     huangyu<huangyub@uniontech.com>
  *
  * Maintainer: huangyu<huangyub@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,8 @@
 #include "environmentwidget.h"
 #include "common/common.h"
 #include "runconfigpane.h"
+#include "configutil.h"
+#include "targetsmanager.h"
 
 #include <QListWidget>
 #include <QSplitter>
@@ -32,36 +35,23 @@
 #include <QStyleFactory>
 #include <QStackedWidget>
 
-static RunPropertyWidget *ins{nullptr};
+using namespace config;
 
 class RunPropertyWidgetPrivate
 {
     friend class RunPropertyWidget;
-    ConfigureWidget *runCfgWidget{nullptr};
-    QStackedWidget *stackedWidget{nullptr};
+
+    QComboBox *exeComboBox{nullptr};
+    RunConfigPane *runConfigPane{nullptr};
+
+    QVector<RunParam> paramsShadow;
 };
 
 RunPropertyWidget::RunPropertyWidget(QWidget *parent)
-    : QSplitter (parent)
+    : PageWidget(parent)
     , d(new RunPropertyWidgetPrivate())
 {
-    // Initialize stackedWidget.
-    d->stackedWidget = new QStackedWidget(this);
-
-    // Initialize run config widget.
-    d->runCfgWidget = new ConfigureWidget(d->stackedWidget);
-    d->runCfgWidget->addWidget(new RunConfigPane(d->runCfgWidget));
-    d->runCfgWidget->addWidget(new EnvironmentWidget(d->runCfgWidget));
-
-
-    d->stackedWidget->addWidget(d->runCfgWidget);
-
-
-    addWidget(d->stackedWidget);
-
-    setStretchFactor(0, 1);
-    setStretchFactor(1, 2);
-    setChildrenCollapsible(false);
+    setupUi();
 }
 
 RunPropertyWidget::~RunPropertyWidget()
@@ -70,3 +60,68 @@ RunPropertyWidget::~RunPropertyWidget()
         delete d;
 }
 
+void RunPropertyWidget::setupUi()
+{
+    ConfigureWidget *runCfgWidget = new ConfigureWidget(this);
+
+    QWidget *titleWidget = new QWidget(runCfgWidget);
+    QHBoxLayout *runCfgLayout = new QHBoxLayout(titleWidget);
+    QLabel *runCfgLabel = new QLabel(tr("Run configuration:"));
+    d->exeComboBox = new QComboBox();
+    d->exeComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    QObject::connect(d->exeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index){
+        if (index >= 0 && index < d->paramsShadow.count()) {
+            d->runConfigPane->bindValues(&d->paramsShadow[index]);
+        }
+    });
+    runCfgLayout->addWidget(runCfgLabel, 0, Qt::AlignLeft);
+    runCfgLayout->addWidget(d->exeComboBox, 0, Qt::AlignLeft);
+    runCfgLayout->addStretch(10);
+    runCfgLayout->setMargin(0);
+
+    d->runConfigPane = new RunConfigPane(this);
+    runCfgWidget->addWidget(titleWidget);
+    runCfgWidget->addWidget(d->runConfigPane);
+
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
+    vLayout->addWidget(runCfgWidget);
+}
+
+void RunPropertyWidget::updateData()
+{
+    d->exeComboBox->clear();
+
+    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
+        if (param->defaultType == iter->type) {
+            d->paramsShadow = iter->runConfigure.params;
+            auto iterExe = d->paramsShadow.begin();
+            int index = 0;
+            for (; iterExe != d->paramsShadow.end(); ++iterExe, index++) {
+                d->exeComboBox->insertItem(index, iterExe->targetName);
+                if (iter->runConfigure.defaultTargetName == iterExe->targetName) {
+                    d->exeComboBox->setCurrentIndex(index);
+                    d->runConfigPane->bindValues(iterExe);
+                }
+            }
+            break;
+        }
+    }
+}
+
+void RunPropertyWidget::readConfig()
+{
+    updateData();
+}
+
+void RunPropertyWidget::saveConfig()
+{
+    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    auto iter = param->buildConfigures.begin();
+    for (; iter != param->buildConfigures.end(); ++iter) {
+        if (param->defaultType == iter->type) {
+            iter->runConfigure.params = d->paramsShadow;
+            iter->runConfigure.defaultTargetName = d->exeComboBox->currentText();
+        }
+    }
+}

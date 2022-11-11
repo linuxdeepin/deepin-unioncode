@@ -42,12 +42,18 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     setupUi(this);
 }
 
-bool PropertiesDialog::insertPropertyPanel(const QString &itemName, QWidget *panel)
+bool PropertiesDialog::insertPropertyPanel(const QString &itemName, PageWidget *panel)
 {
     widgts.insert(itemName, panel);
     leftBarModel->setStringList(leftBarModel->stringList() << itemName);
     int index = stackWidget->count();
     stackWidget->insertWidget(index, panel);
+    leftBarValues.push_back(itemName);
+
+    if (index >= 0 && !leftBarValues.isEmpty()) {
+        stackWidget->setCurrentIndex(0);
+        headTitle->setText(leftBarValues.at(0));
+    }
 
     return true;
 }
@@ -82,6 +88,27 @@ void PropertiesDialog::slotLeftBarClicked(const QModelIndex &index)
 
     // Update head title.
     headTitle->setText(itemName);
+    widget->readConfig();
+}
+
+void PropertiesDialog::slotFilterText(const QString &text)
+{
+    QString filterText = text.trimmed();
+    if (filterText.isEmpty()) {
+        leftBarModel->setStringList(leftBarValues);
+        return;
+    }
+
+    QStringList tempList;
+    foreach (auto str, leftBarValues) {
+        QString upperStr = str.toUpper();
+        QString uppprText = text.toUpper();
+        if (upperStr.contains(uppprText)) {
+            tempList.push_back(str);
+        }
+    }
+
+    leftBarModel->setStringList(tempList);
 }
 
 void PropertiesDialog::setupUi(QDialog *Dialog)
@@ -98,7 +125,9 @@ void PropertiesDialog::setupUi(QDialog *Dialog)
     auto leftLayout = new QVBoxLayout(Dialog);
     leftLayout->setSpacing(6);
     filterEdit = new QLineEdit(Dialog);
-
+    filterEdit->setPlaceholderText(tr("Filter"));
+    connect(filterEdit, SIGNAL(textChanged(const QString &)),
+            this, SLOT(slotFilterText(const QString &)));
     leftLayout->addWidget(filterEdit);
 
     leftSideBar = new QListView(Dialog);
@@ -166,7 +195,7 @@ void PropertiesDialog::saveAllConfig()
 void PropertiesDialog::saveSingleConfig()
 {
     int index = stackWidget->currentIndex();
-    if (index > 0 && index < stackWidget->count())
+    if (index >= 0 && index < stackWidget->count())
     {
         PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
         if (widget) {

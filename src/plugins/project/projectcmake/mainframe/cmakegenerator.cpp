@@ -23,12 +23,14 @@
 #include "cmakeitemkeeper.h"
 #include "transceiver/sendevents.h"
 #include "transceiver/projectcmakereceiver.h"
-#include "services/window/windowservice.h"
 #include "properties/propertiesdialog.h"
 #include "properties/buildpropertywidget.h"
 #include "properties/runpropertywidget.h"
 #include "properties/configpropertywidget.h"
+#include "properties/configutil.h"
+
 #include "services/builder/builderservice.h"
+#include "services/window/windowservice.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
@@ -117,6 +119,11 @@ QDialog *CmakeGenerator::configureWidget(const QString &language,
     // show build type config pane.
     ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, projectPath);
     QObject::connect(configPropertyWidget, &ConfigPropertyWidget::configureDone,
+                     [this](const dpfservice::ProjectInfo &info) {
+        configure(info);
+    });
+
+    QObject::connect(config::ConfigUtil::instance(), &config::ConfigUtil::configureDone,
                      [this](const dpfservice::ProjectInfo &info) {
         configure(info);
     });
@@ -364,12 +371,9 @@ void CmakeGenerator::actionProperties()
 {
     PropertiesDialog dlg;
 
-    ConfigPropertyWidget *configWidget = new ConfigPropertyWidget(d->configureProjectInfo.language(),
-                                                                  d->configureProjectInfo.projectFilePath());
     BuildPropertyWidget *buildWidget = new BuildPropertyWidget();
     RunPropertyWidget *runWidget = new RunPropertyWidget();
 
-    dlg.insertPropertyPanel("Config", configWidget);
     dlg.insertPropertyPanel("Build", buildWidget);
     dlg.insertPropertyPanel("Run", runWidget);
 

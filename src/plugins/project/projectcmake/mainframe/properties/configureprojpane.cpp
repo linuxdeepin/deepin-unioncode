@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "configureprojpane.h"
-#include "kitmanager.h"
 
 #include "mainframe/cmakeasynparse.h"
 #include "mainframe/cmakegenerator.h"
@@ -44,35 +44,35 @@
 #include <QTimer>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QComboBox>
 
 // TODO(mozart):should get from kitmanager.
 static const char *kDefaultKitName = "Desktop";
 static const char *kConfigFileName = "configure.support";
 
+using namespace config;
+
 class ConfigureProjPanePrivate
 {
     friend class ConfigureProjPane;
-    QRadioButton *cbRWithDInfo = nullptr;
-    QPushButton *btnDebug = nullptr;
-    QLineEdit *lineEditRWithDInfo = nullptr;
-    QRadioButton *cbDebug = nullptr;
-    QPushButton *btnRelease = nullptr;
-    QLineEdit *lineEditRelease = nullptr;
-    QRadioButton *cbMiniSize = nullptr;
-    QRadioButton *cbRelease = nullptr;
-    QLineEdit *lineEditDebug = nullptr;
-    QLineEdit *lineEditMiniSize = nullptr;
-    QPushButton *btnMinimumSize = nullptr;
-    QCheckBox *cbDesktop = nullptr;
-    QPushButton *btnRWithDInfo = nullptr;
-    QPushButton *btnConfigure = nullptr;
 
-    QButtonGroup *group = nullptr;
+    QComboBox *kitComboBox{nullptr};
+
+    QRadioButton *radioDebug{nullptr};
+    QRadioButton *radioRelease{nullptr};
+
+    QLineEdit *lineEditDebug{nullptr};
+    QLineEdit *lineEditRelease{nullptr};
+
+    QPushButton *btnRWithDInfo{nullptr};
+    QPushButton *btnConfigure{nullptr};
+
+    QButtonGroup *group{nullptr};
+
+    ConfigureParam *cfgItem{nullptr};
 
     QString projectPath;
     QString language;
-    // TODO(mozart):just recored one config item now.
-    QVector<ConfigureProjPane::ConfigureParam> cfgItems;
 };
 
 ConfigureProjPane::ConfigureProjPane(const QString &language,
@@ -81,8 +81,12 @@ ConfigureProjPane::ConfigureProjPane(const QString &language,
     : QWidget(parent)
     , d(new ConfigureProjPanePrivate)
 {
-    setupUi(this);
-    setProjectPath(language, projectPath);
+    d->projectPath = projectPath;
+    d->language = language;
+    d->cfgItem = ConfigUtil::instance()->getConfigureParamPointer();
+
+    setupUI();
+    updateUI();
 }
 
 ConfigureProjPane::~ConfigureProjPane()
@@ -91,239 +95,86 @@ ConfigureProjPane::~ConfigureProjPane()
         delete d;
 }
 
-void ConfigureProjPane::setProjectPath(const QString &language, const QString &projectPath)
+void ConfigureProjPane::setupUI()
 {
-    d->projectPath = projectPath;
-    d->language = language;
-
-    // restore ui parameters from local config file.
-    bool successful = restore();
-    useDefaultValue();
-    refreshUi();
-    if (!successful) {
-
-    } else {
-        // no need show config pane again.
-        updateKitInfo();
-
-        QTimer::singleShot(0, this, [this] {
-            //emit configureDone();
-        });
-    }
-}
-
-ConfigureProjPane::BuildType ConfigureProjPane::getDefaultBuildType() const
-{
-    // TODO(Mozart)
-    return {};
-}
-
-QString ConfigureProjPane::getDefaultOutputPath() const
-{
-    QFileInfo f(d->projectPath);
-    QDir dir = f.dir();
-    dir.cdUp();
-    QString defaultOutputPath = dir.path() + "/build-Default";
-    for (auto &item : d->cfgItems) {
-        if (item.kitName == kDefaultKitName) {
-            if (item.checked) {
-                if (item.debug.checked) {
-                    defaultOutputPath = item.debug.folder;
-                } else if (item.release.checked) {
-                    defaultOutputPath = item.release.folder;
-                } else if (item.relWithDebInfo.checked) {
-                    defaultOutputPath = item.relWithDebInfo.folder;
-                } else if (item.minSizeRel.checked) {
-                    defaultOutputPath = item.minSizeRel.folder;
-                }
+    auto btnSignalConnect = [this](QPushButton *btn, QLineEdit *lineEdit){
+        connect(btn, &QPushButton::clicked, [=](){
+            QString outputDirectory = QFileDialog::getExistingDirectory(this, "Output directory");
+            if (!outputDirectory.isEmpty()) {
+                lineEdit->setText(outputDirectory);
             }
-        }
-    }
-    return defaultOutputPath;
-}
-
-void ConfigureProjPane::slotConfigureDone()
-{
-    updateKitInfo();
-    save();
-
-    dpfservice::ProjectInfo info;
-    QString sourceFolder = QFileInfo(d->projectPath).path();
-    info.setLanguage(d->language);
-    info.setSourceFolder(sourceFolder);
-    info.setKitName(CmakeGenerator::toolKitName());
-    //    info.setBuildFolder(outputPath);
-    info.setWorkspaceFolder(sourceFolder);
-    info.setProjectFilePath(d->projectPath);
-
-    QString type, path;
-    getSelectedItem(type, path);
-    info.setBuildType(type);
-    info.setBuildFolder(path);
-    info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
-
-    QStringList arguments;
-    arguments << "-S";
-    arguments << info.sourceFolder();
-    arguments << "-B";
-    arguments << info.buildFolder();
-    arguments << "-G";
-    arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
-    arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
-    arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
-    arguments << info.buildCustomArgs();
-    info.setBuildCustomArgs(arguments);
-
-    emit configureDone(info);
-}
-
-void ConfigureProjPane::slotBrowseBtnClicked()
-{
-    auto sender = QObject::sender();
-    QString objName = sender->objectName();
-
-    QString outputDirectory = QFileDialog::getExistingDirectory(this, "Output directory");
-    if (!outputDirectory.isEmpty()) {
-        QLineEdit *lineEdit = nullptr;
-        if (objName == "btnDebug") {
-            lineEdit = d->lineEditDebug;
-        } else if (objName == "btnRelease") {
-            lineEdit = d->lineEditRelease;
-        } else if (objName == "btnRWithDInfo") {
-            lineEdit = d->lineEditRWithDInfo;
-        } else if (objName == "btnMinimumSize") {
-            lineEdit = d->lineEditMiniSize;
-        }
-        lineEdit->setText(outputDirectory.toUtf8());
-    }
-}
-
-void ConfigureProjPane::slotParameterChanged()
-{
-    refreshParameters();
-}
-
-void ConfigureProjPane::setupUi(QWidget *widget)
-{
-    // content layout.
-    auto btnSignalConnect = [this](QPushButton *btn) {
-        connect(btn, &QPushButton::clicked, this, &ConfigureProjPane::slotBrowseBtnClicked);
+        });
     };
 
-    auto btnDebug = new QPushButton(widget);
-    btnDebug->setText(tr("Browse..."));
-    btnDebug->setObjectName(QStringLiteral("btnDebug"));
-    btnSignalConnect(btnDebug);
+    QLabel *kitLabel = new QLabel(tr("Select kit: "));
+    kitLabel->setFixedWidth(100);
+    d->kitComboBox = new QComboBox();
+    d->kitComboBox->addItem(kDefaultKitName);
+    d->kitComboBox->setCurrentIndex(0);
+    QHBoxLayout *hLayoutKit = new QHBoxLayout();
+    hLayoutKit->addWidget(kitLabel, 0, Qt::AlignLeft);
+    hLayoutKit->addWidget(d->kitComboBox, 0, Qt::AlignLeft);
+    hLayoutKit->addStretch(10);
 
-    auto btnRelease = new QPushButton(widget);
-    btnRelease->setText(tr("Browse..."));
-    btnRelease->setObjectName(QStringLiteral("btnRelease"));
-    btnSignalConnect(btnRelease);
+    d->radioDebug = new QRadioButton(tr("Debug"));
+    d->radioDebug->setFixedWidth(100);
+    auto btnDebug = new QPushButton(tr("Browse..."));
+    d->lineEditDebug = new QLineEdit();
+    d->lineEditDebug->setMinimumWidth(400);
+    btnSignalConnect(btnDebug, d->lineEditDebug);
+    QHBoxLayout *hLayoutDebug = new QHBoxLayout();
+    hLayoutDebug->addWidget(d->radioDebug);
+    hLayoutDebug->addWidget(d->lineEditDebug);
+    hLayoutDebug->addWidget(btnDebug);
 
-    d->lineEditDebug = new QLineEdit(widget);
+    d->radioRelease = new QRadioButton(tr("Release"));
+    d->radioRelease->setFixedWidth(100);
+    auto btnRelease = new QPushButton(tr("Browse..."));
+    d->lineEditRelease = new QLineEdit();
+    d->lineEditDebug->setMinimumWidth(400);
+    btnSignalConnect(btnRelease, d->lineEditRelease);
+    QHBoxLayout *hLayoutRelease = new QHBoxLayout();
+    hLayoutRelease->addWidget(d->radioRelease);
+    hLayoutRelease->addWidget(d->lineEditRelease);
+    hLayoutRelease->addWidget(btnRelease);
 
-    auto btnRWithDInfo = new QPushButton(widget);
-    btnRWithDInfo->setText(tr("Browse..."));
-    btnRWithDInfo->setObjectName(QStringLiteral("btnRWithDInfo"));
-    btnSignalConnect(btnRWithDInfo);
+    auto btnConfigure = new QPushButton(tr("Configure"));
+    btnConfigure->connect(btnConfigure, &QPushButton::clicked,
+                          this, &ConfigureProjPane::slotConfigureDone);
 
-    d->cbDebug = new QRadioButton(widget);
-    d->cbDebug->setText(tr("Debug"));
+    QHBoxLayout *hLayoutBottom = new QHBoxLayout();
+    hLayoutBottom->addStretch(10);
+    hLayoutBottom->addWidget(btnConfigure, 0, Qt::AlignRight);
 
-    d->cbRelease = new QRadioButton(widget);
-    d->cbRelease->setText(tr("Release"));
-
-    d->cbRWithDInfo = new QRadioButton(widget);
-    d->cbRWithDInfo->setText(tr("Release with Debug Info"));
-
-    d->cbMiniSize = new QRadioButton(widget);
-    d->cbMiniSize->setText(tr("Minimum Size Release"));
-
-    d->lineEditRelease = new QLineEdit(widget);
-
-    d->cbDesktop = new QCheckBox(widget);
-    d->cbDesktop->setText(kDefaultKitName);
-    d->cbDesktop->setChecked(true);
-    d->cbDesktop->setEnabled(false);
-    connect(d->cbDesktop, &QCheckBox::stateChanged, [this](int state) {
-
-    });
-
-    d->lineEditMiniSize = new QLineEdit(widget);
-
-    auto btnMinimumSize = new QPushButton(widget);
-    btnMinimumSize->setText(tr("Browse..."));
-    btnMinimumSize->setObjectName(QStringLiteral("btnMinimumSize"));
-    btnSignalConnect(btnMinimumSize);
-
-    d->lineEditRWithDInfo = new QLineEdit(widget);
-
-    // add configure btn.
-
-    auto btnConfigure = new QPushButton(widget);
-    btnConfigure->setText(tr("Configure"));
-    btnConfigure->setMinimumHeight(40);
-    btnConfigure->connect(btnConfigure, &QPushButton::clicked, this, &ConfigureProjPane::slotConfigureDone);
-
-    d->lineEditDebug->setMinimumWidth(300);
-    d->lineEditRelease->setMinimumWidth(300);
-    d->lineEditMiniSize->setMinimumWidth(300);
-    d->lineEditRWithDInfo->setMinimumWidth(300);
-
-    // add to layout.
-    auto gridLayout = new QGridLayout();
-    gridLayout->setSpacing(5);
-    gridLayout->addWidget(d->cbDesktop, 0, 0, 1, 1);
-    gridLayout->addWidget(d->cbDebug, 1, 0, 1, 1);
-    gridLayout->addWidget(d->cbRelease, 2, 0, 1, 1);
-    gridLayout->addWidget(d->cbRWithDInfo, 3, 0, 1, 1);
-    gridLayout->addWidget(d->cbMiniSize, 4, 0, 1, 1);
-    gridLayout->addWidget(d->lineEditDebug, 1, 1, 1, 1);
-    gridLayout->addWidget(d->lineEditRelease, 2, 1, 1, 1);
-    gridLayout->addWidget(d->lineEditRWithDInfo, 3, 1, 1, 1);
-    gridLayout->addWidget(d->lineEditMiniSize, 4, 1, 1, 1);
-    gridLayout->addWidget(btnDebug, 1, 2, 1, 1);
-    gridLayout->addWidget(btnRelease, 2, 2, 1, 1);
-    gridLayout->addWidget(btnRWithDInfo, 3, 2, 1, 1);
-    gridLayout->addWidget(btnMinimumSize, 4, 2, 1, 1);
-    gridLayout->addWidget(btnConfigure, 5, 2, 1, 1);
-
-
-    // center layout.
-    auto horizontalLayout = new QHBoxLayout(widget);
-    horizontalLayout->addLayout(gridLayout);
-
-    // leave space at right.
-    auto horizontalSpacer = new QSpacerItem(10, 0, QSizePolicy::Preferred, QSizePolicy::Preferred);
-    horizontalLayout->addItem(horizontalSpacer);
-
-    connect(d->lineEditDebug, &QLineEdit::textChanged, this, &ConfigureProjPane::slotParameterChanged);
-    connect(d->lineEditRelease, &QLineEdit::textChanged, this, &ConfigureProjPane::slotParameterChanged);
-    connect(d->lineEditMiniSize, &QLineEdit::textChanged, this, &ConfigureProjPane::slotParameterChanged);
-    connect(d->lineEditRelease, &QLineEdit::textChanged, this, &ConfigureProjPane::slotParameterChanged);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addLayout(hLayoutKit);
+    vLayout->addSpacing(10);
+    vLayout->addLayout(hLayoutDebug);
+    vLayout->addLayout(hLayoutRelease);
+    vLayout->addSpacing(10);
+    vLayout->addLayout(hLayoutBottom);
+    setLayout(vLayout);
 
     d->group = new QButtonGroup();
-    d->group->addButton(d->cbDebug, 0);
-    d->group->addButton(d->cbRelease, 1);
-    d->group->addButton(d->cbRWithDInfo, 2);
-    d->group->addButton(d->cbMiniSize, 3);
-    d->cbDebug->setChecked(true);
-
-    connect(d->cbDesktop, &QCheckBox::stateChanged, this, &ConfigureProjPane::slotParameterChanged);
-    connect(d->group, QOverload<int>::of(&QButtonGroup::buttonClicked), this, &ConfigureProjPane::slotParameterChanged);
+    d->group->addButton(d->radioDebug, 0);
+    d->group->addButton(d->radioRelease, 1);
+    d->radioDebug->setChecked(true);
 }
 
-void ConfigureProjPane::setAllChecked(bool checked)
+void ConfigureProjPane::resetUI()
 {
-    d->cbDebug->setChecked(checked);
-    d->cbRelease->setChecked(checked);
-    d->cbRWithDInfo->setChecked(checked);
-    d->cbMiniSize->setChecked(checked);
-    d->cbDesktop->setChecked(checked);
+    d->kitComboBox->clear();
+    d->radioDebug->setChecked(true);
+    d->lineEditDebug->clear();
+    d->lineEditRelease->clear();
 }
 
-void ConfigureProjPane::useDefaultValue()
+void ConfigureProjPane::updateUI()
 {
+    resetUI();
+
+    d->kitComboBox->addItem(kDefaultKitName);
+
     if (d->projectPath.isEmpty())
         return;
 
@@ -336,195 +187,78 @@ void ConfigureProjPane::useDefaultValue()
         return (upDirectory + QDir::separator() + "build" + "-" + folderName + "-" + kDefaultKitName + "-" + buildType);
     };
 
-    d->cfgItems.clear();
-
-    ConfigureParam item;
-    item.kitName = kDefaultKitName;
-
-    item.debug.folder = folerPath("Debug");
-    item.release.folder = folerPath("Release");
-    item.relWithDebInfo.folder = folerPath("Release With DebugInfo");
-    item.minSizeRel.folder = folerPath("Minimum Size Release");
-
-    d->cfgItems.push_back(item);
+    d->lineEditDebug->setText(folerPath(ConfigUtil::instance()->getNameFromType(Debug)));
+    d->lineEditRelease->setText(folerPath(ConfigUtil::instance()->getNameFromType(Release)));
 }
 
-void ConfigureProjPane::refreshUi()
+void ConfigureProjPane::slotConfigureDone()
 {
-    for (auto item : d->cfgItems) {
-        if (item.kitName == kDefaultKitName) {
-            d->cbDesktop->setChecked(item.checked);
+    QList<ConfigType> initType = {Debug, Release};
+    foreach (auto type, initType) {
+        BuildConfigure buildConfigure;
+        buildConfigure.type = type;
+        // init output directory
+        if (Debug == type) {
+            buildConfigure.directory = d->lineEditDebug->text().trimmed();
+        } else if (Release == type) {
+            buildConfigure.directory = d->lineEditRelease->text().trimmed();
+        }
+        // init build steps
+        for (int i = 0; i < StepCount; i++) {
+            StepItem item;
+            item.type = static_cast<StepType>(i);
+            buildConfigure.steps.push_back(item);
+        }
+        // init environment
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        foreach (auto key, env.keys()) {
+            buildConfigure.env.environments.insert(key, env.value(key));
+        }
 
-            d->cbDebug->setChecked(item.debug.checked);
-            d->lineEditDebug->setText(item.debug.folder);
+        d->cfgItem->buildConfigures.push_back(buildConfigure);
+    }
 
-            d->cbRelease->setChecked(item.release.checked);
-            d->lineEditRelease->setText(item.release.folder);
+    d->cfgItem->defaultType = ConfigUtil::instance()->getTypeFromName(d->group->checkedButton()->text());
+    d->cfgItem->kit = d->kitComboBox->currentText();
+    d->cfgItem->language = d->language;
+    d->cfgItem->projectPath = d->projectPath;
 
-            d->cbMiniSize->setChecked(item.minSizeRel.checked);
-            d->lineEditMiniSize->setText(item.minSizeRel.folder);
+    configProject(d->cfgItem);
+}
 
-            d->cbRWithDInfo->setChecked(item.relWithDebInfo.checked);
-            d->lineEditRWithDInfo->setText(item.relWithDebInfo.folder);
+void ConfigureProjPane::configProject(const ConfigureParam *param)
+{
+    dpfservice::ProjectInfo info;
+    QString sourceFolder = QFileInfo(d->projectPath).path();
+    info.setLanguage(d->language);
+    info.setSourceFolder(sourceFolder);
+    info.setKitName(CmakeGenerator::toolKitName());
+    //    info.setBuildFolder(outputPath);
+    info.setWorkspaceFolder(sourceFolder);
+    info.setProjectFilePath(d->projectPath);
+
+    for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
+        if (param->defaultType == iter->type) {
+
+            info.setBuildType(ConfigUtil::instance()->getNameFromType(param->defaultType));
+            info.setBuildFolder(iter->directory);
+            info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
+
+            QStringList arguments;
+            arguments << "-S";
+            arguments << info.sourceFolder();
+            arguments << "-B";
+            arguments << info.buildFolder();
+            arguments << "-G";
+            arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
+            arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
+            arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
+            arguments << info.buildCustomArgs();
+            info.setBuildCustomArgs(arguments);
+
+            break;
         }
     }
-}
 
-void ConfigureProjPane::refreshParameters()
-{
-    for (auto &item : d->cfgItems) {
-        if (item.kitName == kDefaultKitName) {   // TODO(mozart):just save one kit now.
-            item.checked = d->cbDesktop->isChecked();
-            item.debug.checked = d->cbDebug->isChecked();
-            item.debug.folder = d->lineEditDebug->text();
-            item.release.checked = d->cbRelease->isChecked();
-            item.release.folder = d->lineEditRelease->text();
-            item.minSizeRel.checked = d->cbMiniSize->isChecked();
-            item.minSizeRel.folder = d->lineEditMiniSize->text();
-            item.relWithDebInfo.checked = d->cbRWithDInfo->isChecked();
-            item.relWithDebInfo.folder = d->lineEditRWithDInfo->text();
-        }
-    }
-}
-
-void ConfigureProjPane::getSelectedItem(QString &type, QString &path)
-{
-    if(d->cbDebug->isChecked()) {
-        type = "Debug";
-        path = d->lineEditDebug->text();
-    } else if(d->cbRelease->isChecked()) {
-        type = "Release";
-        path = d->lineEditRelease->text();
-    } else if(d->cbRWithDInfo->isChecked()) {
-        type = "RelWithDebInfo";
-        path = d->lineEditRWithDInfo->text();
-    } else if(d->cbMiniSize->isChecked()) {
-        type = "MinSizeRel";
-        path = d->lineEditMiniSize->text();
-    }
-}
-
-void ConfigureProjPane::updateKitInfo()
-{
-    Kit kit;
-    QString outputPath = getDefaultOutputPath();
-    kit.setDefaultOutput(outputPath);
-    KitManager::instance()->setSelectedKit(kit);
-}
-
-QString ConfigureProjPane::configFilePath()
-{
-    QString cfgFilePath;
-
-    QString newFolder = QFileInfo(d->projectPath).dir().path() + QDir::separator() + ".unioncode";
-    QDir dir(newFolder);
-    if (!dir.exists()) {
-        dir.mkdir(newFolder);
-    }
-    cfgFilePath = newFolder + QDir::separator() + kConfigFileName;
-
-    return cfgFilePath;
-}
-
-bool ConfigureProjPane::restore()
-{
-    QString cfgFilePath = configFilePath();
-
-    QFile file(cfgFilePath);
-    if (!file.open(QIODevice::ReadOnly))
-        return false;
-
-    QByteArray data = file.readAll();
-    file.close();
-
-    QJsonParseError parseError;
-    QJsonDocument doc = QJsonDocument::fromJson(data, &parseError);
-    if (QJsonParseError::NoError != parseError.error) {
-        return false;
-    }
-
-    if (!doc.isObject())
-        return false;
-
-    QJsonObject rootObject = doc.object();
-    d->cfgItems.clear();
-    for (auto key : rootObject.keys()) {
-        if (!rootObject.value(key).isArray() || !rootObject.keys().contains("Configure"))
-            continue;
-
-        if (rootObject.keys().contains("Configure")) {
-            QJsonArray valueArray = rootObject.value("Configure").toArray();
-
-            for (QJsonValue value : valueArray) {
-                ConfigureParam param;
-                QJsonObject obj = value.toObject();
-
-                param.kitName = obj.value("KitName").toString();
-                param.checked = obj.value("KitChecked").toBool();
-
-                QJsonObject debugObj = obj.value("Debug").toObject();
-                param.debug.checked = debugObj.value("checked").toBool();
-                param.debug.folder = debugObj.value("folder").toString();
-
-                QJsonObject releaseObj = obj.value("Release").toObject();
-                param.release.checked = releaseObj.value("checked").toBool();
-                param.release.folder = releaseObj.value("folder").toString();
-
-                QJsonObject relWithDebObj = obj.value("RelWithDebInfo").toObject();
-                param.relWithDebInfo.checked = relWithDebObj.value("checked").toBool();
-                param.relWithDebInfo.folder = relWithDebObj.value("folder").toString();
-
-                QJsonObject minSizeRelObj = obj.value("MinSizeRel").toObject();
-                param.minSizeRel.checked = minSizeRelObj.value("checked").toBool();
-                param.minSizeRel.folder = minSizeRelObj.value("folder").toString();
-
-                d->cfgItems.append(param);
-            }
-        }
-    }
-    return true;
-}
-
-bool ConfigureProjPane::save()
-{
-    QString cfgFilePath = configFilePath();
-
-    auto setParam = [](QJsonObject *obj, const QString &key, const BuildTypeItem &param) {
-        QJsonObject value;
-        value.insert("checked", param.checked);
-        value.insert("folder", param.folder);
-        obj->insert(key, value);
-    };
-
-    refreshParameters();
-
-    QJsonArray paramsArray;
-    QVector<ConfigureParam>::const_iterator iter = d->cfgItems.begin();
-    for (; iter != d->cfgItems.end(); ++iter) {
-        const ConfigureParam &param = *iter;
-        QJsonObject valueObj;
-        valueObj.insert("KitName", param.kitName);
-        valueObj.insert("KitChecked", param.checked);
-
-        setParam(&valueObj, "Debug", param.debug);
-        setParam(&valueObj, "Release", param.release);
-        setParam(&valueObj, "RelWithDebInfo", param.relWithDebInfo);
-        setParam(&valueObj, "MinSizeRel", param.minSizeRel);
-        paramsArray.append(valueObj);
-    }
-
-    QJsonObject rootObject;
-    rootObject.insert("Configure", paramsArray);
-    QJsonDocument doc;
-    doc.setObject(rootObject);
-    QString jsonStr(doc.toJson(QJsonDocument::Indented));
-
-    QFile file(cfgFilePath);
-    if (!file.open(QIODevice::WriteOnly))
-        return false;
-
-    file.write(jsonStr.toUtf8());
-    file.close();
-
-    return true;
+    emit configureDone(info);
 }

@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,39 +33,45 @@ class TargetsManager : public QObject
 public:
     static TargetsManager *instance();
 
-    void intialize(const QString &buildDirectory);
+    void initialize(const QString &buildDirectory);
 
-    dpfservice::Target getTarget(dpfservice::TargetType type);
-    dpfservice::Target getSelectedTargetInList();
-    dpfservice::Target getActiveBuildTarget();
-    const dpfservice::Target &getActiveCleanTarget() const;
-    const QStringList &getTargetNamesList() const;
+    const QStringList getTargetNamesList() const;
+    const QStringList getExeTargetNamesList() const;
 
-    const dpfservice::Targets &getTargets() const;
+    dpfservice::Target getActivedTargetByTargetType(const dpfservice::TargetType type);
+    dpfservice::Target getTargetByName(const QString &targetName);
 
-    void updateActiveBuildTarget(const QString &target);
-    void updateActiveCleanTarget(const QString &target);
+    const dpfservice::Targets getAllTargets() const;
 
-    void save();
+    void updateActivedBuildTarget(const QString &targetName);
+    void updateActivedCleanTarget(const QString &targetName);
+
+    QString getCMakeConfigFile();
 
 signals:
+    void initialized();
 
 public slots:
 
 private:
     explicit TargetsManager(QObject *parent = nullptr);
+    ~TargetsManager();
+
     bool isGloablTarget(dpfservice::Target &target);
 
     ProjectParser parser;
-    QString activeCleanTargetName;
 
     dpfservice::Target buildTargetSelected;
     dpfservice::Target cleanTargetSelected;
     dpfservice::Target rebuildTargetSelected;
 
-    dpfservice::Targets exeTargets;
+    dpfservice::Target exeTargetSelected;
 
-    QStringList buildTargetList;
+    dpfservice::Targets exeTargets;
+    dpfservice::Targets targets;
+
+    QStringList buildTargetNameList;
+    QStringList exeTargetNameList;
 };
 
 #endif // TARGETSMANAGER_H

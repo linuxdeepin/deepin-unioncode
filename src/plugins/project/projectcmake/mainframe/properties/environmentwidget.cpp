@@ -4,6 +4,7 @@
  * Author:     huangyu<huangyub@uniontech.com>
  *
  * Maintainer: huangyu<huangyub@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,96 +21,106 @@
 */
 #include "environmentwidget.h"
 
-#include "projectparser.h"
-
 #include <QVBoxLayout>
 #include <QCheckBox>
-#include <QProcessEnvironment>
 #include <QHeaderView>
+#include <QTableView>
 
+class EnvironmentModelPrivate
+{
+    friend class EnvironmentModel;
+    QMap<QString, QString> envs;
+};
 
-const QString ENABLE_ALL_ENV = EnvironmentWidget::tr("Enable All Environment");
+EnvironmentModel::EnvironmentModel(QObject *parent)
+    : QAbstractTableModel(parent)
+    , d (new EnvironmentModelPrivate())
+{
 
-class EnvironmentModel;
+}
+
+EnvironmentModel::~EnvironmentModel()
+{
+    if (d)
+        delete d;
+}
+
+int EnvironmentModel::rowCount(const QModelIndex &) const
+{
+    return d->envs.keys().size();
+}
+
+int EnvironmentModel::columnCount(const QModelIndex &) const
+{
+    return kColumnCount;
+}
+
+QVariant EnvironmentModel::data(const QModelIndex &index, int role) const
+{
+    if (role == Qt::DisplayRole || role == Qt::EditRole) {
+        auto var = d->envs.keys()[index.row()];
+        switch (index.column()) {
+        case kVaribale:
+            return var;
+        case kValue:
+            return d->envs.value(var);
+        default:
+            break;
+        }
+    }
+    return {};
+}
+
+QVariant EnvironmentModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+        switch (section) {
+        case kVaribale:
+            return "Variable";
+        case kValue:
+            return "Value";
+        default:
+            break;
+        }
+    }
+    return {};
+}
+
+void EnvironmentModel::append(const QString &key, const QString &value)
+{
+    beginInsertRows({}, d->envs.keys().count(), d->envs.keys().count());
+    d->envs.insert(key, value);
+    endInsertRows();
+}
+
+void EnvironmentModel::update(const QMap<QString, QString> &data)
+{
+    beginResetModel();
+    d->envs.clear();
+    d->envs = data;
+    endResetModel();
+}
+
+const QMap<QString, QString> EnvironmentModel::getEnvironment() const
+{
+    return d->envs;
+}
+
 class EnvironmentWidgetPrivate
 {
     friend class EnvironmentWidget;
-    QVBoxLayout *vLayout = nullptr;
-    QTableView *tableView = nullptr;
-    QCheckBox *checkBox = nullptr;
-    EnvironmentModel *model = nullptr;
+
+    QVBoxLayout *vLayout{nullptr};
+    QTableView *tableView{nullptr};
+    QCheckBox *checkBox{nullptr};
+    EnvironmentModel *model{nullptr};
+
+    config::EnvironmentItem *envShadow{nullptr};
 };
 
-class EnvironmentModel : public QAbstractTableModel
-{
-public:
-    enum ColumnType
-    {
-        kVaribale,
-        kValue,
-        kColumnCount
-    };
-
-    explicit EnvironmentModel(QObject *parent = nullptr)
-        : QAbstractTableModel(parent)
-        , envs(QProcessEnvironment::systemEnvironment())
-    {
-    }
-
-    int rowCount(const QModelIndex &) const override
-    {
-        return envs.keys().size();
-    }
-
-    int columnCount(const QModelIndex &) const override
-    {
-        return kColumnCount;
-    }
-
-    QVariant data(const QModelIndex &index, int role) const override
-    {
-        if (role == Qt::DisplayRole || role == Qt::EditRole) {
-            auto var = envs.keys()[index.row()];
-            switch (index.column()) {
-            case kVaribale:
-                return var;
-            case kValue:
-                return envs.value(var);
-            default:
-                ; // do nothing
-            }
-        }
-        return {};
-    }
-
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const override
-    {
-        if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-            switch (section) {
-            case kVaribale:
-                return "Variable";
-            case kValue:
-                return "Value";
-            default:
-                ; // do nothing.
-            }
-        }
-        return {};
-    }
-
-    void append(const QString &key, const QString &value)
-    {
-        beginInsertRows({}, envs.keys().count(), envs.keys().count());
-        envs.insert(key, value);
-        endInsertRows();
-    }
-
-private:
-    QProcessEnvironment envs;
-};
 
 EnvironmentWidget::EnvironmentWidget(QWidget *parent)
-    : QWidget (parent)
+    : QWidget(parent)
     , d(new EnvironmentWidgetPrivate)
 {
     setAutoFillBackground(true);
@@ -134,7 +145,12 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
 
     if (!d->checkBox)
         d->checkBox = new QCheckBox();
-    d->checkBox->setText(ENABLE_ALL_ENV);
+
+    connect(d->checkBox, &QCheckBox::clicked, [this](){
+        d->envShadow->enable = d->checkBox->isChecked();
+    });
+
+    d->checkBox->setText(tr("Enable All Environment"));
     d->checkBox->setChecked(true);
     d->vLayout->setSpacing(0);
     d->vLayout->setMargin(0);
@@ -147,3 +163,24 @@ EnvironmentWidget::~EnvironmentWidget()
     if(d)
         delete d;
 }
+
+void EnvironmentWidget::getValues(config::EnvironmentItem &env)
+{
+    env.enable = d->checkBox->isChecked();
+    env.environments = d->model->getEnvironment();
+}
+
+void EnvironmentWidget::setValues(const config::EnvironmentItem &env)
+{
+    d->checkBox->setChecked(env.enable);
+    d->model->update(env.environments);
+}
+
+void EnvironmentWidget::bindValues(config::EnvironmentItem *env)
+{
+    d->envShadow = env;
+    d->checkBox->setChecked(env->enable);
+    d->model->update(env->environments);
+}
+
+

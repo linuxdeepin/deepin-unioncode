@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "stepspane.h"
-#include "targetsmanager.h"
+
+#include "services/project/projectservice.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -30,183 +32,186 @@
 #include <QLineEdit>
 #include <QLabel>
 
-
 const QString ENABLE_ALL_ENV = StepsPane::tr("Enable All BuildSteps");
 static const char *kBuildTitle = "Build:";
 static const char *kBuildCommand = "cmake --build . --target ";
 
-class BuildStepsModel;
-class BuildStepsPanePrivate
+class StepsModelPrivate
 {
-    friend class StepsPane;
-    QVBoxLayout *vLayout = nullptr;
-    QTableView *tableView = nullptr;
-    QLineEdit *toolArguments = nullptr;
-    BuildStepsModel *model = nullptr;
-    QLabel *buildLabel = nullptr;
-    StepsPane::StepType stepType;
+    friend class StepsModel;
+
+    QMap<QString, bool> targets;
 };
 
-class BuildStepsModel : public QAbstractTableModel
+StepsModel::StepsModel(QObject *parent)
+    : QAbstractTableModel(parent)
+    , d (new StepsModelPrivate())
 {
-public:
-    enum ColumnType
-    {
-        kCheckBox,
-        kTarget,
-        kPath,
-        kColumnCount
-    };
 
-    explicit BuildStepsModel(QObject *parent = nullptr)
-        : QAbstractTableModel(parent)
-    {
-    }
+}
 
-    void setStepType(StepsPane::StepType _stepType)
-    {
-        stepType = _stepType;
-    }
+StepsModel::~StepsModel()
+{
 
-    int rowCount(const QModelIndex &) const override
-    {
-        return TargetsManager::instance()->getTargetNamesList().size();
-    }
+}
 
-    int columnCount(const QModelIndex &) const override
-    {
-        return kColumnCount;
-    }
+int StepsModel::rowCount(const QModelIndex &) const
+{
+    return d->targets.keys().size();
+}
 
-    QVariant data(const QModelIndex &index, int role) const override
-    {
-        const QString &target = TargetsManager::instance()->getTargetNamesList()[index.row()];
-        if (role == Qt::DisplayRole || role == Qt::EditRole) {
-            switch (index.column()) {
-            case kTarget:
-                return target;
-            case kPath:
-                return "";
-            default:
-                ; // do nothing
+int StepsModel::columnCount(const QModelIndex &) const
+{
+    return kColumnCount;
+}
+
+QVariant StepsModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid())
+        return QVariant();
+
+    if (index.row() >= d->targets.size())
+        return QVariant();
+
+    const QString &target = d->targets.keys().at(index.row());
+    if (role == Qt::DisplayRole || role == Qt::EditRole) {
+        switch (index.column()) {
+        case kTarget:
+            return target;
+        case kPath:
+            return "";
+        default:
+            break;
+        }
+    } else if (role == Qt::CheckStateRole) {
+        int CHECK_BOX_COLUMN = 0;
+        if (index.column() == CHECK_BOX_COLUMN) {
+            if (d->targets.value(target)) {
+                return Qt::Checked;
+            } else {
+                return Qt::Unchecked;
             }
-        } else if (role == Qt::CheckStateRole) {
-            int CHECK_BOX_COLUMN = 0;
-            if (index.column() == CHECK_BOX_COLUMN) {
-                if (target == getActiveTarget()) {
-                    return Qt::Checked;
-                } else {
-                    return Qt::Unchecked;
+        }
+    } else if (role == Qt::TextAlignmentRole) {
+         return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+    }
+    return QVariant();
+}
+
+QVariant StepsModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    switch (role)
+    {
+        case Qt::TextAlignmentRole:
+            return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+        case Qt::DisplayRole:
+        {
+            if (orientation == Qt::Horizontal) {
+                switch (section) {
+                case kTarget:
+                    return "Target";
+                case kPath:
+                    return "Path";
+                default:
+                    break;
                 }
             }
-        } else if (role == Qt::TextAlignmentRole) {
-             return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
         }
-        return {};
     }
+    return QVariant();
+}
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const override
+Qt::ItemFlags StepsModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return QAbstractItemModel::flags(index);
+
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    int CHECK_BOX_COLUMN = 0;
+    if (index.column() == CHECK_BOX_COLUMN)
+        flags |= Qt::ItemIsUserCheckable;
+
+    return flags;
+}
+
+bool StepsModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!index.isValid())
+        return false;
+
+    if (index.row() >= d->targets.size())
+        return false;
+
+    int nColumn = index.column();
+    const QString &target = d->targets.keys().at(index.row());
+    switch (role)
     {
-        switch (role)
-        {
-            case Qt::TextAlignmentRole:
-                return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
-            case Qt::DisplayRole:
-            {
-                if (orientation == Qt::Horizontal) {
-                    switch (section) {
-                    case kTarget:
-                        return "Target";
-                    case kPath:
-                        return "Path";
-                    default:
-                        ; // do nothing.
+    case Qt::DisplayRole:
+    {
+        return QAbstractTableModel::setData(index, value, role);
+    }
+    case Qt::CheckStateRole:
+    {
+        int CHECK_BOX_COLUMN = 0;
+        if (nColumn == CHECK_BOX_COLUMN) {
+            beginResetModel();
+
+            bool bChecked = (value.toInt() == Qt::Checked);
+            d->targets[target] = bChecked;
+
+            if (bChecked) {
+                foreach (auto key, d->targets.keys()) {
+                    if(key != target) {
+                        d->targets[key] = !bChecked;
                     }
                 }
             }
+
+            emit dataChanged(index, index);
+
+            endResetModel();
+            return true;
         }
-        return QVariant();
+        break;
     }
-
-    Qt::ItemFlags flags(const QModelIndex &index) const override
-    {
-        if (!index.isValid())
-            return QAbstractItemModel::flags(index);
-
-        Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-        int CHECK_BOX_COLUMN = 0;
-        if (index.column() == CHECK_BOX_COLUMN)
-            flags |= Qt::ItemIsUserCheckable;
-
-        return flags;
-    }
-
-    bool setData(const QModelIndex &index, const QVariant &value, int role) override
-    {
-        if (!index.isValid())
-            return false;
-
-        int nColumn = index.column();
-        const QString &target = TargetsManager::instance()->getTargetNamesList().at(index.row());
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        {
-            return QAbstractTableModel::setData(index, value, role);
-        }
-        case Qt::CheckStateRole:
-        {
-            int CHECK_BOX_COLUMN = 0;
-            if (nColumn == CHECK_BOX_COLUMN) {
-                beginResetModel();
-
-                bool bChecked = (value.toInt() == Qt::Checked);
-                updateActiveTarget(bChecked, target);
-                emit dataChanged(index, index);
-
-                endResetModel();
-                return true;
-            }
-            break;
-        }
-        default:
-            return false;
-        }
+    default:
         return false;
     }
+    return false;
+}
 
-private:
-    QString getActiveTarget() const
-    {
-        if (StepsPane::kBuild == stepType) {
-            return TargetsManager::instance()->getSelectedTargetInList().buildTarget;
-        }
-        return TargetsManager::instance()->getActiveCleanTarget().buildTarget;
-    }
+void StepsModel::setData(const QMap<QString, bool> &data)
+{
+    beginResetModel();
+    d->targets = data;
+    endResetModel();
+}
 
-    void updateActiveTarget(bool bChecked, const QString &target)
-    {
-        QString activeTarget;
-        if (bChecked) {
-            activeTarget = target;
-        }
-
-        if (StepsPane::kBuild == stepType) {
-            TargetsManager::instance()->updateActiveBuildTarget(target);
-        } else {
-            TargetsManager::instance()->updateActiveCleanTarget(target);
+QString StepsModel::getSelectedTarget()
+{
+    QString selectedTarget;
+    foreach (auto key, d->targets.keys()) {
+        if(d->targets.value(key)) {
+            selectedTarget = key;
         }
     }
 
-    StepsPane::StepType stepType = StepsPane::kBuild;
+    return selectedTarget;
+}
+
+class StepsPanePrivate
+{
+    friend class StepsPane;
+
+    QLineEdit *toolArguments{nullptr};
+    QLabel *buildLabel{nullptr};
+    StepsModel *model{nullptr};
 };
 
-StepsPane::StepsPane(StepType stepType, QWidget *parent)
-    : QWidget (parent)
-    , d(new BuildStepsPanePrivate)
+StepsPane::StepsPane(QWidget *parent)
+    : QWidget(parent)
+    , d(new StepsPanePrivate)
 {
-    d->stepType = stepType;
-
     setupUi();
 
     updateSummaryText();
@@ -219,62 +224,40 @@ StepsPane::~StepsPane()
     }
 }
 
-QString StepsPane::getActiveTarget() const
-{
-    if (StepsPane::kBuild == d->stepType) {
-        return TargetsManager::instance()->getSelectedTargetInList().name;
-    }
-    return TargetsManager::instance()->getActiveCleanTarget().name;
-}
-
 void StepsPane::setupUi()
 {
     setAutoFillBackground(true);
 
-    if (!d->vLayout)
-        d->vLayout = new QVBoxLayout(this);
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
 
-    if (!d->buildLabel) {
-        d->buildLabel = new QLabel(this);
-        d->buildLabel->setText(QString("Build:").append(kBuildCommand));
-    }
+    d->buildLabel = new QLabel(this);
+    d->buildLabel->setText(QString("Build:").append(kBuildCommand));
 
-    if (!d->tableView) {
-        d->tableView = new QTableView();
+    QTableView *tableView = new QTableView();
+    tableView->setShowGrid(false);
+    QHeaderView* headerView = tableView->horizontalHeader();
+    headerView->setSectionResizeMode(QHeaderView::ResizeToContents);
+    headerView->setSelectionMode(QAbstractItemView::SingleSelection);
 
-        // Initialize view
-        d->tableView->setShowGrid(false);
-        QHeaderView* headerView = d->tableView->horizontalHeader();
-        headerView->setSectionResizeMode(QHeaderView::ResizeToContents);
-        headerView->setSelectionMode(QAbstractItemView::SingleSelection);
-    }
+    d->model = new StepsModel();
+    tableView->setModel(d->model);
 
-    if (!d->model) {
-        d->model = new BuildStepsModel();
-        d->model->setStepType(d->stepType);
-    }
+    QHBoxLayout *hLayout = new QHBoxLayout(this);
+    d->toolArguments = new QLineEdit(this);
+    d->toolArguments->setPlaceholderText(tr("Input your arguments."));
+    QLabel *label = new QLabel(tr("Tool arguments:"), this);
+    hLayout->addWidget(label);
+    hLayout->addWidget(d->toolArguments);
 
-    d->tableView->setModel(d->model);
-
-    QHBoxLayout *hLay = new QHBoxLayout(this);
-    if (!d->toolArguments) {
-        d->toolArguments = new QLineEdit(this);
-        d->toolArguments->setPlaceholderText(tr("Input your arguments."));
-        QLabel *label = new QLabel(this);
-        label->setText(tr("Tool arguments:"));
-
-        hLay->addWidget(label);
-        hLay->addWidget(d->toolArguments);
-    }
-
-    this->setLayout(d->vLayout);
-    d->vLayout->setMargin(0);
-    d->vLayout->addWidget(d->buildLabel);
-    d->vLayout->addLayout(hLay);
-    d->vLayout->addWidget(d->tableView);
+    vLayout->setMargin(0);
+    vLayout->addWidget(d->buildLabel);
+    vLayout->addLayout(hLayout);
+    vLayout->addWidget(tableView);
 
     connect(d->toolArguments, &QLineEdit::textEdited, this, &StepsPane::toolArgumentsEdited);
-    connect(d->model, &BuildStepsModel::dataChanged, this, &StepsPane::dataChanged);
+    connect(d->model, &StepsModel::dataChanged, this, &StepsPane::dataChanged);
+
+    setLayout(vLayout);
 }
 
 void StepsPane::toolArgumentsEdited()
@@ -291,10 +274,9 @@ QString StepsPane::getCombinedBuildText()
 {
     QString head = kBuildTitle;
     QString defaultCommand = kBuildCommand;
-    QString target = getActiveTarget();
     QString arguments = d->toolArguments->text();
 
-    QString buildText = head + defaultCommand + target + (arguments.isEmpty() ? "" : " --" + arguments);
+    QString buildText = head + defaultCommand + d->model->getSelectedTarget() + (arguments.isEmpty() ? "" : " -- " + arguments);
     return buildText;
 }
 
@@ -303,3 +285,21 @@ void StepsPane::updateSummaryText()
     d->buildLabel->setText(getCombinedBuildText());
 }
 
+void StepsPane::setValues(const config::StepItem &item)
+{
+    d->toolArguments->setText(item.arguments);
+
+    QMap<QString, bool> data;
+    foreach (auto targetName, item.targetList) {
+        data.insert(targetName, targetName == item.targetName ? true : false);
+    }
+
+    d->model->setData(data);
+    updateSummaryText();
+}
+
+void StepsPane::getValues(config::StepItem &item)
+{
+    item.arguments = d->toolArguments->text();
+    item.targetName = d->model->getSelectedTarget();
+}

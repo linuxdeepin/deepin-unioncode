@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +21,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "runconfigpane.h"
+#include "environmentwidget.h"
+
 #include "services/project/projectservice.h"
 
 #include <QVBoxLayout>
@@ -29,95 +32,93 @@
 #include <QFileDialog>
 #include <QComboBox>
 #include <QFormLayout>
+#include <QTextBrowser>
 
 using namespace dpfservice;
-RunConfigPane::RunConfigPane(QWidget *parent) : QWidget(parent)
+
+class RunConfigPanePrivate
+{
+    friend class RunConfigPane;
+
+    QLineEdit *cmdArgsLineEdit{nullptr};
+    QLineEdit *workingDirLineEdit{nullptr};
+    QLineEdit *excutableLabel{nullptr};
+
+    EnvironmentWidget *environmentWidget{nullptr};
+    QString currentTargetName;
+    config::RunParam *runParam{nullptr};
+};
+
+RunConfigPane::RunConfigPane(QWidget *parent)
+    : QWidget(parent)
+    , d (new RunConfigPanePrivate())
 {
     setupUi();
-
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projService = ctx.service<ProjectService>(ProjectService::name());
-    if (projService) {
-        connect(projService, &ProjectService::projectConfigureDone, [this](){
-            updateUi();
-        });
-    }
 }
 
-void RunConfigPane::showFileDialog()
+RunConfigPane::~RunConfigPane()
 {
-    QString outputDirectory = QFileDialog::getExistingDirectory(this, tr("Working directory:"));
-    if (!outputDirectory.isEmpty()) {
-        workingDirLineEdit->setText(outputDirectory.toUtf8());
-    }
+
 }
 
 void RunConfigPane::setupUi()
 {
-    if (!vLayout) {
-        vLayout = new QVBoxLayout(this);
-    }
-
-    // Head titile.
-    QLabel *runLabel = new QLabel(this);
-    runLabel->setText(tr("Run"));
-    QFont ft;
-    ft.setBold(true);
-    ft.setPointSize(16);
-    runLabel->setFont(ft);
-
-    // run config ui.
-    QHBoxLayout *runCfgLayout = new QHBoxLayout(this);
-    QLabel *runCfgLabel = new QLabel(this);
-    runCfgLabel->setText(tr("Run config:"));
-    QComboBox *projList = new QComboBox(this);
-    projList->addItem("project1");
-    projList->addItem("project2");
-    runCfgLayout->addWidget(runCfgLabel);
-    runCfgLayout->addWidget(projList);
-    projList->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
 
     QFrame *mainFrame = new QFrame(this);
     mainFrame->setObjectName("mainframe");
     QFormLayout *formLayout = new QFormLayout(mainFrame);
 
     // excutable label ui.
-    QLabel *excutableLabel = new QLabel(mainFrame);
-    excutableLabel->setText(tr("Here is the executable path"));
-    formLayout->addRow(tr("Excutable:"), excutableLabel);
+    d->excutableLabel = new QLineEdit(mainFrame);
+    d->excutableLabel->setText(tr("Here is the executable path"));
+    d->excutableLabel->setReadOnly(true);
+    formLayout->addRow(tr("Excutable path:"), d->excutableLabel);
 
     // command line ui.
-    QLineEdit *cmdArgsLineEdit = new QLineEdit(mainFrame);
-    formLayout->addRow(tr("Command line arguments:"), cmdArgsLineEdit);
+    d->cmdArgsLineEdit = new QLineEdit(mainFrame);
+    connect(d->cmdArgsLineEdit, &QLineEdit::textChanged, [this](){
+        if (d->runParam)
+            d->runParam->arguments = d->cmdArgsLineEdit->text().trimmed();
+    });
+    formLayout->addRow(tr("Command line arguments:"), d->cmdArgsLineEdit);
 
     // working directory ui.
     QHBoxLayout *browLayout = new QHBoxLayout(mainFrame);
-    auto button = new QPushButton(mainFrame);
-    button->setText(tr("Browse..."));
-    workingDirLineEdit = new QLineEdit(mainFrame);
-    browLayout->addWidget(workingDirLineEdit);
-    browLayout->addWidget(button);
+    auto browseBtn = new QPushButton(mainFrame);
+    browseBtn->setText(tr("Browse..."));
+    d->workingDirLineEdit = new QLineEdit(mainFrame);
+    d->workingDirLineEdit->setReadOnly(true);
+    connect(d->workingDirLineEdit, &QLineEdit::textChanged, [this](){
+        if (d->runParam)
+            d->runParam->workDirectory = d->workingDirLineEdit->text().trimmed();
+    });
+    browLayout->addWidget(d->workingDirLineEdit);
+    browLayout->addWidget(browseBtn);
     formLayout->addRow(tr("Working directory:"), browLayout);
-    connect(button, SIGNAL(clicked()), this, SLOT(showFileDialog()));
+    connect(browseBtn, &QPushButton::clicked, [this](){
+        QString outputDirectory = QFileDialog::getExistingDirectory(this, tr("Working directory"), d->workingDirLineEdit->text());
+        if (!outputDirectory.isEmpty()) {
+            d->workingDirLineEdit->setText(outputDirectory.toUtf8());
+        }
+    });
 
-    // insert to layout.
     mainFrame->setLayout(formLayout);
 
-    vLayout->addWidget(runLabel);
-    vLayout->addLayout(runCfgLayout);
+    d->environmentWidget = new EnvironmentWidget(this);
     vLayout->addWidget(mainFrame);
+    vLayout->addWidget(d->environmentWidget);
 
     vLayout->setMargin(0);
 }
 
-void RunConfigPane::updateUi()
+void RunConfigPane::bindValues(config::RunParam *runParam)
 {
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projService = ctx.service<ProjectService>(ProjectService::name());
-    if (projService) {
-//        if (projService->getDefaultOutputPath) {
-//            QString workingDir = projService->getDefaultOutputPath();
-//            workingDirLineEdit->setText(workingDir);
-//        }
-    }
+    d->runParam = runParam;
+    d->environmentWidget->bindValues(&runParam->env);
+    d->cmdArgsLineEdit->setText(runParam->arguments);
+    d->workingDirLineEdit->setText(runParam->workDirectory);
+    d->currentTargetName = runParam->targetName;
+    d->excutableLabel->setText(runParam->targetPath);
 }
+

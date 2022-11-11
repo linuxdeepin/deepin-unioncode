@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +22,6 @@
 */
 #include "targetsmanager.h"
 #include "services/project/projectservice.h"
-#include "kitmanager.h"
 
 static const char *kProjectFile = ".cproject";
 
@@ -35,6 +35,7 @@ static const char *kGlobalRebuild = ": rebuild_cache";
 static const char *kGlobalClean = ": clean";
 
 using namespace dpfservice;
+
 TargetsManager::TargetsManager(QObject *parent) : QObject(parent)
 {
     auto &ctx = dpfInstance.serviceContext();
@@ -42,9 +43,19 @@ TargetsManager::TargetsManager(QObject *parent) : QObject(parent)
 
     if (projectService) {
         connect(projectService, &ProjectService::projectConfigureDone, [this](const QString &buildDirectory){
-            intialize(buildDirectory);
+            initialize(buildDirectory);
         });
     }
+}
+
+TargetsManager::~TargetsManager()
+{
+
+}
+
+QString TargetsManager::getCMakeConfigFile()
+{
+    return kProjectFile;
 }
 
 bool TargetsManager::isGloablTarget(Target &target)
@@ -58,28 +69,35 @@ TargetsManager *TargetsManager::instance()
     return &instance;
 }
 
-void TargetsManager::intialize(const QString &buildDirectory)
+void TargetsManager::initialize(const QString &buildDirectory)
 {
-    // TODO(Mozart):cproject path should get from workspace.
-    QString outputPath = buildDirectory;
-    if (outputPath.isEmpty())
-        outputPath= KitManager::instance()->getDefaultOutputPath();
-
-    if (outputPath.isEmpty()) {
+    if (buildDirectory.isEmpty()) {
         qCritical() << "build directory not set!";
         return;
     }
 
-    QString cprojectPath = outputPath + "/" + kProjectFile;
-    parser.parse(cprojectPath);
     exeTargets.clear();
+    targets.clear();
+    buildTargetNameList.clear();
+    exeTargetNameList.clear();
 
-    auto targets = parser.getTargets();
+    QString cprojectPath = buildDirectory + QDir::separator() + kProjectFile;
+    if (!QFileInfo(cprojectPath).isFile()) {
+        qCritical() << cprojectPath + " is not existed!";
+        return;
+    }
+
+    parser.parse(cprojectPath);
+    targets = parser.getTargets();
+
+    QStringList targetNameList;
+    QStringList tempExeTargetNameList;
     for (auto target : targets) {
         target.outputPath = buildDirectory;
         auto targetName = target.name;
         if (targetName.contains("[exe]") && !targetName.contains("/fast")) {
             exeTargets.push_back(target);
+            tempExeTargetNameList.push_back(target.buildTarget);
         } else if (isGloablTarget(target)) {
             if (target.name == kGlobalBuild) {
                 buildTargetSelected = target;
@@ -91,15 +109,43 @@ void TargetsManager::intialize(const QString &buildDirectory)
         }
 
         if (!target.buildTarget.isEmpty()) {
-            buildTargetList.append(target.buildTarget);
+            targetNameList.append(target.buildTarget);
         }
     }
 
-    // remove the repeat items.
-    buildTargetList = buildTargetList.toSet().toList();
+    buildTargetNameList = targetNameList.toSet().toList();
+    exeTargetNameList = tempExeTargetNameList.toSet().toList();
+
+    if (exeTargets.size() > 0) {
+        exeTargetSelected = exeTargets.front();
+    }
+
+    emit initialized();
 }
 
-Target TargetsManager::getTarget(TargetType type)
+const QStringList TargetsManager::getTargetNamesList() const
+{
+    return buildTargetNameList;
+}
+
+const QStringList TargetsManager::getExeTargetNamesList() const
+{
+    return exeTargetNameList;
+}
+
+Target TargetsManager::getTargetByName(const QString &targetName)
+{
+    Target result;
+    for (auto iter = targets.begin(); iter != targets.end(); ++iter) {
+        if (targetName == iter->buildTarget) {
+            result = *iter;
+        }
+    }
+
+    return result;
+}
+
+Target TargetsManager::getActivedTargetByTargetType(const TargetType type)
 {
     Target result;
     switch (type) {
@@ -113,68 +159,42 @@ Target TargetsManager::getTarget(TargetType type)
         result = cleanTargetSelected;
         break;
     case kActiveExecTarget:
-        result = getActiveBuildTarget();
-        break;
-    default:
-        // do nothing.
+        result = exeTargetSelected;
         break;
     }
     return result;
 }
 
-Target TargetsManager::getSelectedTargetInList()
+const Targets TargetsManager::getAllTargets() const
 {
-    return buildTargetSelected;
+    return targets;
 }
 
-Target TargetsManager::getActiveBuildTarget()
+void TargetsManager::updateActivedBuildTarget(const QString &targetName)
 {
-    Target retTarget;
-    // TODO(Mozart):re-write here when ui support target choose.
-    if (exeTargets.size() > 0)
-        retTarget = exeTargets.front();
-
-    return retTarget;
-}
-
-const Target &TargetsManager::getActiveCleanTarget() const
-{
-    return cleanTargetSelected;
-}
-
-const QStringList &TargetsManager::getTargetNamesList() const
-{
-    return buildTargetList;
-}
-
-const Targets &TargetsManager::getTargets() const
-{
-    return parser.getTargets();
-}
-
-void TargetsManager::updateActiveBuildTarget(const QString &target)
-{
-    for (auto t : getTargets()) {
-        if (t.buildTarget == target) {
-            buildTargetSelected = t;
-            break;
+    foreach (auto name, buildTargetNameList) {
+        if (name == targetName) {           
+            for (auto iter = targets.begin(); iter != targets.end(); ++iter) {
+                if (name == iter->name) {
+                    buildTargetSelected = *iter;
+                    return;
+                }
+            }
         }
     }
 }
 
-void TargetsManager::updateActiveCleanTarget(const QString &target)
+void TargetsManager::updateActivedCleanTarget(const QString &targetName)
 {
-    for (auto t : getTargets()) {
-        // TODO(Mozart)
-        if (t.buildTarget == target) {
-            cleanTargetSelected = t;
-            break;
+    foreach (auto name, buildTargetNameList) {
+        if (name == targetName) {
+            for (auto iter = targets.begin(); iter != targets.end(); ++iter) {
+                if (name == iter->name) {
+                    cleanTargetSelected = *iter;
+                    return;
+                }
+            }
         }
     }
-}
-
-void TargetsManager::save()
-{
-
 }
 

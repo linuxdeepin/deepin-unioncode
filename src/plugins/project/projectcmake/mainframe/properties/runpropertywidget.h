@@ -4,6 +4,7 @@
  * Author:     huangyu<huangyub@uniontech.com>
  *
  * Maintainer: huangyu<huangyub@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,18 +22,23 @@
 #ifndef RUNPROPERTYWIDGET_H
 #define RUNPROPERTYWIDGET_H
 
-#include <QWidget>
-#include <QSplitter>
+#include "common/widget/pagewidget.h"
 
 class RunPropertyWidgetPrivate;
-class RunPropertyWidget : public QSplitter
+class RunPropertyWidget : public PageWidget
 {
     Q_OBJECT
 public:
     explicit RunPropertyWidget(QWidget *parent = nullptr);
-    virtual ~RunPropertyWidget();
+    virtual ~RunPropertyWidget() override;
+
+    void saveConfig() override;
+    void readConfig() override;
 
 private:
+    void setupUi();
+    void updateData();
+
     RunPropertyWidgetPrivate *const d;
 };
 

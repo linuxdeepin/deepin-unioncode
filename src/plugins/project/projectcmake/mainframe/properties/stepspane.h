@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,28 +20,54 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef BUILDSTEPSPANE_H
-#define BUILDSTEPSPANE_H
+#ifndef STEPSPANE_H
+#define STEPSPANE_H
+
+#include "configutil.h"
 
 #include <QWidget>
+#include <QAbstractTableModel>
 
-class BuildStepsPanePrivate;
+class StepsModelPrivate;
+class StepsModel : public QAbstractTableModel
+{
+public:
+    enum ColumnType
+    {
+        kCheckBox,
+        kTarget,
+        kPath,
+        kColumnCount
+    };
+
+    explicit StepsModel(QObject *parent = nullptr);
+    ~StepsModel() override;
+
+    int rowCount(const QModelIndex &) const override;
+    int columnCount(const QModelIndex &) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+
+    void setData(const QMap<QString, bool> &data);    
+    QString getSelectedTarget();
+
+private:
+    StepsModelPrivate *const d;
+};
+
+class StepsPanePrivate;
 class StepsPane : public QWidget
 {
     Q_OBJECT
 
 public:
-    enum StepType
-    {
-        kBuild,
-        kClean
-    };
+    explicit StepsPane( QWidget *parent = nullptr);
+    ~StepsPane();
 
-    explicit StepsPane(StepType stepType = kBuild, QWidget *parent = nullptr);
-    virtual ~StepsPane();
-
-protected:
-    QString getActiveTarget() const;
+    void setValues(const config::StepItem &item);
+    void getValues(config::StepItem &item);
 
 private:
     void setupUi();
@@ -50,7 +77,8 @@ private:
     void toolArgumentsEdited();
     void dataChanged();
 
-    BuildStepsPanePrivate *const d;
+    StepsPanePrivate *const d;
 };
 
-#endif // BUILDSTEPSPANE_H
+
+#endif // STEPSPANE_H

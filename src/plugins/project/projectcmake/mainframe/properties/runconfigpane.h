@@ -5,6 +5,7 @@
  *
  * Maintainer: zhengyouge<zhengyouge@uniontech.com>
  *             luzhen<luzhen@uniontech.com>
+ *             zhouyi<zhouyi1@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,27 +23,28 @@
 #ifndef RUNCONFIGPANE_H
 #define RUNCONFIGPANE_H
 
+#include "configutil.h"
+
 #include <QWidget>
 
-class QVBoxLayout;
-class QLineEdit;
+class RunConfigPanePrivate;
 class RunConfigPane : public QWidget
 {
     Q_OBJECT
 public:
     explicit RunConfigPane(QWidget *parent = nullptr);
+    ~RunConfigPane();
+
+    void bindValues(config::RunParam *runParam);
 
 signals:
 
 public slots:
-    void showFileDialog();
 
 private:
     void setupUi();
-    void updateUi();
 
-    QVBoxLayout *vLayout = nullptr;
-    QLineEdit *workingDirLineEdit = nullptr;
+    RunConfigPanePrivate *const d;
 };
 
 #endif // RUNCONFIGPANE_H
