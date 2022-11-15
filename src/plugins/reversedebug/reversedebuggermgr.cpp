@@ -39,6 +39,8 @@
 #include <QSpacerItem>
 #include <QMessageBox>
 
+#include <linux/limits.h>
+
 #define AsynInvoke(Fun)          \
     QtConcurrent::run([this]() { \
         Fun;                     \
@@ -149,6 +151,18 @@ QString ReverseDebuggerMgr::generateFilePath(const QString &fileName, const QStr
     return ret;
 }
 
+static void getProgramFile(QString& linkname)
+{
+    FILE* pf = fopen(linkname.toLocal8Bit().data(), "rb");
+    if (pf) {
+        char exename[PATH_MAX] = {0};
+        fscanf(pf, "%s", exename);
+        fclose(pf);
+        linkname = QString::fromLocal8Bit(exename);
+        qDebug() << "get_program_file :" << linkname;
+    }
+}
+
 bool ReverseDebuggerMgr::replayMinidump(const QString &traceDir, int pid)
 {
     if (kTimeline) {
@@ -202,6 +216,11 @@ bool ReverseDebuggerMgr::replayMinidump(const QString &traceDir, int pid)
     }
     g_taskWindow->updateTimeline(kTimeline, frameCount);
 
+
+    QString localExecutableFile = generateFilePath(EXEC_FILE_NAME, traceDir, pid);
+    getProgramFile(localExecutableFile);
+    targetPath = localExecutableFile;
+
     // do something.
     // check if trace-dir/crash.txt exist? Auto load crash event if true.
     --entry;
@@ -226,7 +245,12 @@ void ReverseDebuggerMgr::exist()
     }
 }
 
-QString ReverseDebuggerMgr::targetPath() const
+const QString &ReverseDebuggerMgr::dumpTargetPath() const
+{
+    return targetPath;
+}
+
+QString ReverseDebuggerMgr::projectTargetPath() const
 {
     QString targetPath;
     auto &ctx = dpfInstance.serviceContext();
@@ -378,7 +402,7 @@ void ReverseDebuggerMgr::recordMinidump()
     }
 
     if (runCtrl) {
-        runCtrl->start(emdParams, targetPath());
+        runCtrl->start(emdParams, projectTargetPath());
     }
 }
 
@@ -394,7 +418,7 @@ void ReverseDebuggerMgr::runCoredump(int index)
         auto service = ctx.service<DebuggerService>(DebuggerService::name());
         if (service) {
             if (service->runCoredump) {
-                service->runCoredump(targetPath(), kCoredump, "cmake");
+                service->runCoredump(dumpTargetPath(), kCoredump, "cmake");
             }
         }
     } else {

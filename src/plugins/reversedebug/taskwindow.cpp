@@ -236,6 +236,8 @@ public:
     QPushButton* zoomIn = nullptr;
     QPushButton* zoomOut = nullptr;
     QPushButton* zoomFit = nullptr;
+    QPushButton* backward = nullptr;
+    QPushButton* forward = nullptr;
     QMenu *categoriesMenu = nullptr;
     QList<QAction *> actions;
     int currentEvent = -1;
@@ -244,88 +246,7 @@ public:
 TaskWindow::TaskWindow()
     : d(new TaskWindowPrivate)
 {
-//    d->m_defaultHandler = 0;
-
-    d->taskModel = new Internal::TaskModel(this);
-    d->filter = new Internal::TaskFilterModel(d->taskModel);
-    d->listview = new Internal::TaskView;
-
-    d->listview->setModel(d->filter);
-    d->listview->setFrameStyle(QFrame::NoFrame);
-    d->listview->setWindowTitle(tr("Events list"));
-    d->listview->setSelectionMode(QAbstractItemView::SingleSelection);
-    Internal::TaskDelegate *tld = new Internal::TaskDelegate(this);
-    d->listview->setItemDelegate(tld);
-    // TODO: d->m_listview->setWindowIcon(Icons::WINDOW.icon());
-    d->listview->setContextMenuPolicy(Qt::DefaultContextMenu);
-    d->listview->setAttribute(Qt::WA_MacShowFocusRect, false);
-
-//    d->m_taskWindowContext = new Internal::TaskWindowContext(d->m_listview);
-
-//    Core::ICore::addContextObject(d->m_taskWindowContext);
-
-    connect(d->listview->selectionModel(), &QItemSelectionModel::currentChanged,
-            tld, &TaskDelegate::currentChanged);
-
-    connect(d->listview->selectionModel(), &QItemSelectionModel::currentChanged,
-            this, &TaskWindow::currentChanged);
-    connect(d->listview, &QAbstractItemView::activated,
-            this, &TaskWindow::triggerDefaultHandler);
-    connect(d->listview, &QAbstractItemView::clicked,
-            this, &TaskWindow::clickItem);
-
-    d->contextMenu = new QMenu(d->listview);
-
-    d->widget = new TaskWidget();
-    d->listview->setParent(d->widget);
-    d->timeline = new TimelineWidget(d->widget);
-    d->timeline->setMinimumHeight(TIMELINE_WIDGET_HEIGHT);
-    d->widget->setup(d->timeline, d->listview);
-    d->taskModel->setTimelinePtr(d->timeline); // mozart added.
-
-    d->sortCombo = new QComboBox();
-    d->sortCombo->addItem(tr("sort by index"));
-    d->sortCombo->addItem(tr("sort by duration"));
-    d->sortCombo->addItem(tr("sort by result"));
-    d->sortCombo->addItem(tr("sort by number of threads"));
-    connect(d->sortCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(sortEvent(int)));
-
-    d->commandLine = new QLineEdit();
-    d->commandLine->setPlaceholderText("[sys sig x11] begin[,end]");
-    connect(d->commandLine, SIGNAL(returnPressed()), this, SLOT(execCommand()));
-
-    d->zoomIn = new QPushButton(tr("zoom in"));
-    connect(d->zoomIn, &QAbstractButton::clicked, d->timeline, &TimelineWidget::zoomIn);
-
-    d->zoomOut = new QPushButton(tr("zoom out"));
-    connect(d->zoomOut, &QAbstractButton::clicked, d->timeline, &TimelineWidget::zoomOut);
-
-    d->zoomFit = new QPushButton(tr("zoom fit"));
-    connect(d->zoomFit, &QAbstractButton::clicked, d->timeline, &TimelineWidget::zoomFit);
-
-    d->zoomIn->setFlat(true);
-    d->zoomOut->setFlat(true);
-    d->zoomFit->setFlat(true);
-
-    d->eventLabel = new QLabel(STR_CURRENT_EVENT + QLatin1String("...]"));
-    d->categoriesButton = new QToolButton;
-    d->categoriesButton->setIcon(QIcon(":/resource/images/filter_normal.svg"));
-    d->categoriesButton->setToolTip(tr("Filter by categories"));
-    d->categoriesButton->setProperty("noArrow", true);
-    d->categoriesButton->setAutoRaise(true);
-    d->categoriesButton->setPopupMode(QToolButton::InstantPopup);
-
-    d->categoriesMenu = new QMenu(d->categoriesButton);
-    connect(d->categoriesMenu, &QMenu::aboutToShow, this, &TaskWindow::updateCategoriesMenu);
-
-    d->categoriesButton->setMenu(d->categoriesMenu);
-
-    connect(d->filter, &TaskFilterModel::rowsRemoved,
-            [this]() { emit setBadgeNumber(d->filter->rowCount()); });
-    connect(d->filter, &TaskFilterModel::rowsInserted,
-            [this]() { emit setBadgeNumber(d->filter->rowCount()); });
-    connect(d->filter, &TaskFilterModel::modelReset,
-            [this]() { emit setBadgeNumber(d->filter->rowCount()); });
+    setupUi();
 }
 
 TaskWindow::~TaskWindow()
@@ -356,6 +277,8 @@ QList<QWidget *> TaskWindow::toolBarWidgets() const
         << d->zoomIn
         << d->zoomOut
         << d->zoomFit
+        << d->backward
+        << d->forward
         << d->sortCombo
         << d->commandLine
         << d->eventLabel;
@@ -553,6 +476,102 @@ void TaskWindow::execCommand(void)
 void TaskWindow::sortEvent(int index)
 {
     d->filter->setSortType(index);
+}
+
+void TaskWindow::setupUi()
+{
+    d->taskModel = new Internal::TaskModel(this);
+    d->filter = new Internal::TaskFilterModel(d->taskModel);
+    d->listview = new Internal::TaskView;
+
+    d->listview->setModel(d->filter);
+    d->listview->setFrameStyle(QFrame::NoFrame);
+    d->listview->setWindowTitle(tr("Events list"));
+    d->listview->setSelectionMode(QAbstractItemView::SingleSelection);
+    Internal::TaskDelegate *tld = new Internal::TaskDelegate(this);
+    d->listview->setItemDelegate(tld);
+    d->listview->setContextMenuPolicy(Qt::DefaultContextMenu);
+    d->listview->setAttribute(Qt::WA_MacShowFocusRect, false);
+
+    connect(d->listview->selectionModel(), &QItemSelectionModel::currentChanged,
+            tld, &TaskDelegate::currentChanged);
+
+    connect(d->listview->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &TaskWindow::currentChanged);
+    connect(d->listview, &QAbstractItemView::activated,
+            this, &TaskWindow::triggerDefaultHandler);
+    connect(d->listview, &QAbstractItemView::clicked,
+            this, &TaskWindow::clickItem);
+
+    d->contextMenu = new QMenu(d->listview);
+
+    d->widget = new TaskWidget();
+    d->listview->setParent(d->widget);
+    d->timeline = new TimelineWidget(d->widget);
+    d->timeline->setMinimumHeight(TIMELINE_WIDGET_HEIGHT);
+    d->widget->setup(d->timeline, d->listview);
+    d->taskModel->setTimelinePtr(d->timeline); // mozart added.
+
+    d->sortCombo = new QComboBox();
+    d->sortCombo->addItem(tr("sort by index"));
+    d->sortCombo->addItem(tr("sort by duration"));
+    d->sortCombo->addItem(tr("sort by result"));
+    d->sortCombo->addItem(tr("sort by number of threads"));
+    connect(d->sortCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(sortEvent(int)));
+
+    d->commandLine = new QLineEdit();
+    d->commandLine->setPlaceholderText("[sys sig x11] begin[,end]");
+    connect(d->commandLine, SIGNAL(returnPressed()), this, SLOT(execCommand()));
+
+    d->zoomIn = new QPushButton(tr("zoom in"));
+    connect(d->zoomIn, &QAbstractButton::clicked, d->timeline, &TimelineWidget::zoomIn);
+
+    d->zoomOut = new QPushButton(tr("zoom out"));
+    connect(d->zoomOut, &QAbstractButton::clicked, d->timeline, &TimelineWidget::zoomOut);
+
+    d->zoomFit = new QPushButton(tr("zoom fit"));
+    connect(d->zoomFit, &QAbstractButton::clicked, d->timeline, &TimelineWidget::zoomFit);
+
+    d->zoomIn->setFlat(true);
+    d->zoomOut->setFlat(true);
+    d->zoomFit->setFlat(true);
+
+    d->backward = new QPushButton();
+    auto backIcon = QIcon(":/resource/images/backward_press@2x");
+    d->backward->setIcon(backIcon);
+    d->backward->setFlat(true);
+    d->backward->setToolTip(tr("Previous Item"));
+    d->backward->setFixedSize(backIcon.actualSize(backIcon.availableSizes().first()));
+
+    connect(d->backward, &QAbstractButton::clicked, this, &TaskWindow::goToNext);
+
+    d->forward = new QPushButton();
+    auto forwardIcon = QIcon(":/resource/images/forward_press@2x");
+    d->forward->setIcon(forwardIcon);
+    d->forward->setFlat(true);
+    d->forward->setToolTip(tr("Next Item"));
+    d->forward->setFixedSize(backIcon.actualSize(backIcon.availableSizes().first()));
+    connect(d->forward, &QAbstractButton::clicked, this, &TaskWindow::goToPrev);
+
+    d->eventLabel = new QLabel(STR_CURRENT_EVENT + QLatin1String("...]"));
+    d->categoriesButton = new QToolButton;
+    d->categoriesButton->setIcon(QIcon(":/resource/images/filter_normal"));
+    d->categoriesButton->setToolTip(tr("Filter by categories"));
+    d->categoriesButton->setProperty("noArrow", true);
+    d->categoriesButton->setAutoRaise(true);
+    d->categoriesButton->setPopupMode(QToolButton::InstantPopup);
+
+    d->categoriesMenu = new QMenu(d->categoriesButton);
+    connect(d->categoriesMenu, &QMenu::aboutToShow, this, &TaskWindow::updateCategoriesMenu);
+
+    d->categoriesButton->setMenu(d->categoriesMenu);
+
+    connect(d->filter, &TaskFilterModel::rowsRemoved,
+            [this]() { emit setBadgeNumber(d->filter->rowCount()); });
+    connect(d->filter, &TaskFilterModel::rowsInserted,
+            [this]() { emit setBadgeNumber(d->filter->rowCount()); });
+    connect(d->filter, &TaskFilterModel::modelReset,
+            [this]() { emit setBadgeNumber(d->filter->rowCount()); });
 }
 
 void TaskWindow::showTask(unsigned int id)

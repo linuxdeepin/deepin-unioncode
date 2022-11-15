@@ -87,6 +87,7 @@ public slots:
     void navigateStateChanged() { emit navigateStateUpdate(); }
 
 private:
+    void setupUi();
     void showTask(unsigned int id);
     void openTask(unsigned int id);
     void clearTasks(const QString &categoryId);

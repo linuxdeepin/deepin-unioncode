@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/resource">
         <file>images/filter_normal.svg</file>
+        <file>images/backward_press@2x.png</file>
+        <file>images/forward_press@2x.png</file>
     </qresource>
 </RCC>

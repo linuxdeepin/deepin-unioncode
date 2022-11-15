@@ -35,8 +35,6 @@ const char MENU_ID[] = "ReverseDebugger.Menu";
 const char RUN_MODE_MINIDUMP[] = "ReverseDebugger.Minidump";
 const char RUN_MODE_RECORD[] = "ReverseDebugger.RunUnderRR";
 const char RUN_MODE_REPLAY[] = "ReverseDebugger.AttachToRR";
-const char RR_PATH[] = "/opt/rdb/bin/rdb";
-const char ST_PATH[] = "/opt/emd/bin/emd";
 
 const char EVENT_CATEGORY_SYSCALL[] = "Event.Category.Syscall";
 const char EVENT_CATEGORY_SIGNAL[] = "Event.Category.Signal";

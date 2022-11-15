@@ -21,10 +21,12 @@
 */
 #include "minidumpruncontrol.h"
 #include "reversedebuggerconstants.h"
+#include "common/util/custompaths.h"
 
 #include <QDebug>
 #include <QFile>
 #include <QMessageBox>
+#include <QDir>
 
 #include <string>
 #include <unistd.h>
@@ -106,7 +108,7 @@ void MinidumpRunControl::start(const QString &params, const QString &target)
         return;
     }
 
-    execFile = ReverseDebugger::Constants::ST_PATH;
+    execFile = CustomPaths::global(CustomPaths::Tools) + QDir::separator() + "emd";
     if (!params.isEmpty()) {
         execFile += ' ' + params + ' ';
     }
@@ -116,7 +118,6 @@ void MinidumpRunControl::start(const QString &params, const QString &target)
 
     process->start(execFile);
     if (!process->waitForStarted(1000)) {
-        process = nullptr;
         qDebug() << "Failed to run emd";
         return;
     }

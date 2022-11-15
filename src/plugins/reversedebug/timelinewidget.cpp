@@ -23,6 +23,7 @@
 #include "timelinewidget.h"
 #include "event_man.h"
 #include "reversedebuggerconstants.h"
+#include "taskwindow.h"
 
 #include <QPainter>
 #include <QMenu>
@@ -260,9 +261,10 @@ void TimelineWidget::mouseDoubleClickEvent(QMouseEvent *event)
                 continue;
             }
 
-            if (fabs(entry->time - time) < 0.05) {
+            // select the index range in 5.
+            if (fabs(entry->time - time) < 5) {
                 qDebug() << "double click event :" << i;
-//                d->window->goTo(i); // mozart
+                d->window->goTo(i);
                 break;
             }
         }

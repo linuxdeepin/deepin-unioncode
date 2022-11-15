@@ -56,11 +56,13 @@ private:
     bool replayMinidump(const QString &traceDir, int pid);
     void outputMessage(const QString &msg);
     void exist();
-    QString targetPath() const;
+    const QString &dumpTargetPath() const;
+    QString projectTargetPath() const;
     void enterReplayEnvironment();
 
     MinidumpRunControl *runCtrl = nullptr;
     QSettings *settings = nullptr;
+    QString targetPath;
 };
 
 } // namespace Internal
