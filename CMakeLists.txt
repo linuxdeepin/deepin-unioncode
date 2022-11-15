@@ -7,6 +7,14 @@ function(print_directory arg)
     message(STATUS "print_directory native: ${ARGV0}\n" ${outVar})
 endfunction()
 
+set(VERSION $ENV{VERSION})
+if (NOT VERSION)
+    set(VERSION "0.0.1")
+    message(WARNING "build version")
+endif()
+
+message(STATUS "build version ${VERSION}")
+
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 if ((NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "sw_64")

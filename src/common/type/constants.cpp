@@ -18,16 +18,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#include "constants.h"
+#include "config.h"
 
-#include <QString>
-/**
-*
-* Write global contants here.
-*/
+QString version()
+{
+    return VERSION;
+}
 
-int default_max_char_count();
-QString version();
-
-#endif // CONSTANTS_H
+int default_max_char_count()
+{
+    return 10000000;
+}

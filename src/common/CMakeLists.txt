@@ -106,6 +106,7 @@ set(CXX_CPP
     widget/hotkeylineedit.cpp
     widget/outputpane.cpp
     toolchain/toolchain.cpp
+    type/constants.cpp
     actionmanager/actionmanager.cpp
     actionmanager/command.cpp
     )

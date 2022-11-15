@@ -38,7 +38,7 @@ public:
     }
 
     QTextCursor cursor;
-    int maxCharCount = K_DEFAULT_MAX_CHAR_COUNT;
+    int maxCharCount = default_max_char_count();
     bool enforceNewline = false;
     bool scrollToBottom = true;
 };

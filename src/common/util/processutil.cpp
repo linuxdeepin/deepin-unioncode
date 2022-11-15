@@ -188,3 +188,17 @@ bool ProcessUtil::portOverhead(unsigned int port)
     return ret;
 }
 
+QString ProcessUtil::localPlatform()
+{
+    // get location platform
+    QString platform = "";
+    bool platfromQueRes = ProcessUtil::execute("arch", {}, [&](const QByteArray &data){
+        platform = QString(data).replace("\n","");
+    });
+    if (!platfromQueRes)
+        qCritical() << "usr command arch failed, please check tool program arch";
+    else if (platform.isEmpty())
+        qCritical() << "query local platform failed, not support \"arch\" command?";
+    return platform;
+}
+

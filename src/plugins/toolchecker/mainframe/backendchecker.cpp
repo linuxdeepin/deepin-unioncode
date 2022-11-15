@@ -36,20 +36,6 @@ bool checkJdtlsFlag = false;
 bool checkPylsFlag = false;
 }
 
-QString BackendChecker::localPlatform()
-{
-    // get location platform
-    QString platform = "";
-    bool platfromQueRes = ProcessUtil::execute("arch", {}, [&](const QByteArray &data){
-        platform = QString(data).replace("\n","");
-    });
-    if (!platfromQueRes)
-        qCritical() << "usr command arch failed, please check tool program arch";
-    else if (platform.isEmpty())
-        qCritical() << "query local platform failed, not support \"arch\" command?";
-    return platform;
-}
-
 void BackendChecker::doCheckClangd(const QString &language)
 {
     if (checkClangdFlag)
@@ -68,7 +54,7 @@ void BackendChecker::doCheckClangd(const QString &language)
 
     QUrl remotePlatformSupportUrl(rawPrefix + "/" + user + "/" + origin + "/"
                                   + branch + "/" + platformSupportFileName);
-    QString currentPlatform = localPlatform();
+    QString currentPlatform = ProcessUtil::localPlatform();
     // get is support platform
     QStringList platformSupports;
     for (auto one : getRemoteFile(remotePlatformSupportUrl).split("\n")) {

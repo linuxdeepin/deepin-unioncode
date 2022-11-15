@@ -48,14 +48,14 @@ void AboutDialog::setupUi()
     logoLabel->setPixmap(QPixmap(ICON_LOGO_128PX));
 
     QString buildDateInfo = tr("<br/>Built on %1 %2 in %3<br/>")
-            .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ARCH);
+            .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ProcessUtil::localPlatform());
 
     const QString description = tr(
         "<h3>Union Code %1</h3>"
         "%2<br/>"
         "Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.<br/>"
         "<br/>")
-        .arg(VERSION,
+        .arg(version(),
              buildDateInfo,
              QString::number(QDateTime::currentDateTime().date().year()));
 

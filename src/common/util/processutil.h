@@ -50,5 +50,6 @@ public:
     static bool moveToTrash(const QString &filePath);
     static bool recoverFromTrash(const QString &filePath);
     static bool portOverhead(unsigned int port);
+    static QString localPlatform();
 };
 #endif // PROCESSCALLER_H

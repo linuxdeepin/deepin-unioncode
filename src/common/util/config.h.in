@@ -79,3 +79,9 @@
 #else
 #error "cmake unseting definition ASSETS_SOURCE_RPEFIX"
 #endif
+
+#ifndef VERSION
+#define VERSION "${VERSION}"
+#else
+#error "cmake unseting definition VERSION"
+#endif
