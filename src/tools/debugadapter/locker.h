@@ -60,11 +60,6 @@ class ConditionLockEx {
       std::unique_lock<std::mutex> lock(mutex);
       if (cv.wait_for(lock, std::chrono::seconds(seconds)) == std::cv_status::timeout) {
           qCritical() << "!!!Time Out!!!";
-#ifndef QT_NO_DEBUG
-          QMessageBox box;
-          box.setText("Time Out!");
-          box.exec();
-#endif
       }
   }
 
