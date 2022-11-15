@@ -25,6 +25,7 @@
 #include "common/util/downloadutil.h"
 #include "common/util/fileoperation.h"
 #include "common/util/eventdefinitions.h"
+#include "common/util/processutil.h"
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -98,12 +99,24 @@ bool JavaDebug::requestDAPPort(const QString &uuid, const QString &projectPath, 
 
 bool JavaDebug::checkConfigFile(QString &retMsg)
 {
+    QString arch = ProcessUtil::localPlatform();
+    if ("x86_64" == arch) {
+        arch = "linux-x64";
+    } else if ("aarch64" == arch) {
+        arch = "linux-arm64";
+    } else {
+        retMsg = tr("The computer arch is not supported, can not start debugging.");
+        return false;
+    }
+
     QString dapSupportFilePath = support_file::DapSupportConfig::globalPath();
     bool ret = support_file::DapSupportConfig::readFromSupportFile(dapSupportFilePath, d->javaDapPluginConfig);
     if (!ret) {
         retMsg = tr("Read dapconfig.support failed, please check the file and retry.");
         return false;
     }
+
+    d->javaDapPluginConfig.launchPackageUrl += arch;
 
     return true;
 }

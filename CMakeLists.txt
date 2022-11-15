@@ -10,7 +10,6 @@ endfunction()
 set(VERSION $ENV{VERSION})
 if (NOT VERSION)
     set(VERSION "0.0.1")
-    message(WARNING "build version")
 endif()
 
 message(STATUS "build version ${VERSION}")
