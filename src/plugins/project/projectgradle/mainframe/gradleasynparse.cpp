@@ -56,6 +56,8 @@ GradleAsynParse::GradleAsynParse()
 
 GradleAsynParse::~GradleAsynParse()
 {
+    removeRows();
+
     if (d) {
         if (d->thread) {
             if (d->thread->isRunning())

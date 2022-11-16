@@ -34,7 +34,6 @@ class MavenAsynParsePrivate;
 class MavenAsynParse : public Inotify
 {
     Q_OBJECT
-    friend class MavenGenerator;
     MavenAsynParsePrivate *const d;
 public:
     MavenAsynParse();

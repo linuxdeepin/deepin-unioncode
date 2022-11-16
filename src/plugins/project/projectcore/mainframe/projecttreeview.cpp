@@ -121,6 +121,7 @@ void ProjectTreeView::removeRootItem(QStandardItem *root)
 
     ProjectInfo info = ProjectInfo::get(ProjectGenerator::root(root));
 
+    // 从Model中移除
     this->takeRootItem(root);
 
     // 从生成器中删除
@@ -274,12 +275,12 @@ QMenu *ProjectTreeView::rootMenu(QStandardItem *root)
     if (!menu)
         menu = new QMenu();
 
-    QAction* activeProjectAction = new QAction(QAction::tr("Project Active"));
-    QAction* closeAction = new QAction(QAction::tr("Project Close"));
-    QAction* propertyAction = new QAction(QAction::tr("Project Info"));
-    QObject::connect(activeProjectAction, &QAction::triggered, [=](){doActiveProject(root);});
-    QObject::connect(closeAction, &QAction::triggered, [=](){doCloseProject(root);});
-    QObject::connect(propertyAction, &QAction::triggered, [=](){doShowProjectInfo(root);});
+    QAction* activeProjectAction = new QAction(QAction::tr("Project Active"), menu);
+    QAction* closeAction = new QAction(QAction::tr("Project Close"), menu);
+    QAction* propertyAction = new QAction(QAction::tr("Project Info"), menu);
+    QObject::connect(activeProjectAction, &QAction::triggered, activeProjectAction, [=](){doActiveProject(root);});
+    QObject::connect(closeAction, &QAction::triggered, closeAction, [=](){doCloseProject(root);});
+    QObject::connect(propertyAction, &QAction::triggered, propertyAction, [=](){doShowProjectInfo(root);});
     menu->insertAction(nullptr, activeProjectAction);
     menu->insertAction(nullptr, closeAction);
     menu->insertAction(nullptr, propertyAction);

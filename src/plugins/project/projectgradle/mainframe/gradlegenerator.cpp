@@ -161,7 +161,6 @@ bool GradleGenerator::configure(const dpfservice::ProjectInfo &info)
 QStandardItem *GradleGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
-
     QStandardItem * rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new GradleAsynParse();
@@ -170,7 +169,6 @@ QStandardItem *GradleGenerator::createRootItem(const dpfservice::ProjectInfo &in
                      this, &GradleGenerator::doProjectChildsModified,
                      Qt::ConnectionType::UniqueConnection);
     d->projectParses[rootItem]->parseProject(info);
-
     return rootItem;
 }
 
@@ -178,12 +176,17 @@ void GradleGenerator::removeRootItem(QStandardItem *root)
 {
     if (!root)
         return;
+    auto parser = d->projectParses[root];
 
-    auto parse = d->projectParses[root];
-    if (parse)
-        parse->removeRows();
-    delete root;
+    while (root->hasChildren()) {
+        root->takeRow(0);
+    }
     d->projectParses.remove(root);
+
+    delete root;
+
+    if (parser)
+        delete parser;
 }
 
 QMenu *GradleGenerator::createItemMenu(const QStandardItem *item)

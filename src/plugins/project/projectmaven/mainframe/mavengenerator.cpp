@@ -116,15 +116,14 @@ bool MavenGenerator::configure(const dpfservice::ProjectInfo &info)
 QStandardItem *MavenGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
-    QStandardItem * rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
+    QStandardItem *rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new MavenAsynParse();
     QObject::connect(d->projectParses[rootItem],
                      &MavenAsynParse::itemsModified,
                      this, &MavenGenerator::doProjectChildsModified,
-                     Qt::ConnectionType::DirectConnection);
+                     Qt::DirectConnection);
     d->projectParses[rootItem]->parseProject(info);
-
     return rootItem;
 }
 
@@ -132,11 +131,17 @@ void MavenGenerator::removeRootItem(QStandardItem *root)
 {
     if (!root)
         return;
-    auto parse = d->projectParses[root];
-    if (parse)
-        parse->removeRows();
-    delete root;
+    auto parser = d->projectParses[root];
+
+    while (root->hasChildren()) {
+        root->takeRow(0);
+    }
     d->projectParses.remove(root);
+
+    delete root;
+
+    if (parser)
+        delete parser;
 }
 
 QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
@@ -171,7 +176,7 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
     // add menu generat call back
     QObject::connect(parse, &MavenAsynParse::parsedActions,
                      this, &MavenGenerator::doAddMavenMeue,
-                     Qt::UniqueConnection);
+                     Qt::QueuedConnection);
     // execute logic
     parse->parseActions(info);
 
@@ -180,10 +185,12 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
 
 void MavenGenerator::doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem *> > &info)
 {
-    auto rootItem = d->projectParses.key(qobject_cast<MavenAsynParse*>(sender()));
+    QStandardItem *rootItem = d->projectParses.key(qobject_cast<MavenAsynParse*>(sender()));
     if (rootItem) {
         while (rootItem->hasChildren()) {
-            rootItem->takeRow(0);
+            for(auto val : rootItem->takeRow(0)) {
+                delete val;
+            }
         }
         rootItem->appendRows(info.result);
     }

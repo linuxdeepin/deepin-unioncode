@@ -60,6 +60,8 @@ MavenAsynParse::MavenAsynParse()
 
 MavenAsynParse::~MavenAsynParse()
 {
+    removeRows();
+
     if (d) {
         if (d->thread) {
             if (d->thread->isRunning())
@@ -70,8 +72,6 @@ MavenAsynParse::~MavenAsynParse()
         }
         delete d;
     }
-
-    removeRows();
 }
 
 void MavenAsynParse::loadPoms(const dpfservice::ProjectInfo &info)
@@ -343,7 +343,6 @@ void MavenAsynParse::removeRows()
     d->rootPath.clear();
     for (int i = 0; i < d->rows.size(); i++) {
         removeSelfSubWatch(d->rows[i]);
-        delete d->rows[i];
     }
     d->rows.clear();
     emit itemsModified({d->rows, true});

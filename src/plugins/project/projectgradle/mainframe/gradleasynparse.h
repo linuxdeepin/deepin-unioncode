@@ -34,7 +34,6 @@ class GradleAsynParsePrivate;
 class GradleAsynParse : public Inotify
 {
     Q_OBJECT
-    friend class GradleGenerator;
     GradleAsynParsePrivate *const d;
 public:
     template<class T>
