@@ -38,12 +38,12 @@ signals:
     void sigCheckInfo();
     void sigSendToClient(const QString &uuid,
                          int port,
-                         const QString &mainClass,
-                         const QString &projectName,
-                         const QStringList &classPaths);
+                         const QString &kit,
+                         QMap<QString, QVariant> &param);
 
 public slots:
     void slotReceivePojectInfo(const QString &uuid,
+                               const QString &kit,
                                const QString &workspace,
                                const QString &configHomePath,
                                const QString &jrePath,

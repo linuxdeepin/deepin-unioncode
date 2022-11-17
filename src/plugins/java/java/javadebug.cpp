@@ -74,12 +74,15 @@ bool JavaDebug::prepareDebug(const QString &projectPath, QString &retMsg)
     return true;
 }
 
-bool JavaDebug::requestDAPPort(const QString &uuid, const QString &projectPath, QString &retMsg)
+bool JavaDebug::requestDAPPort(const QString &uuid, const QString &kit,
+                               const QString &projectPath,
+                               QString &retMsg)
 {
     QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                   "com.deepin.unioncode.interface",
                                                   "launch_java_dap");
     msg << uuid
+        << kit
         << projectPath
         << d->javaDapPluginConfig.configHomePath
         << d->javaDapPluginConfig.jrePath

@@ -46,17 +46,16 @@ bool PythonGenerator::isTargetReady()
     return true;
 }
 
-bool PythonGenerator::prepareDebug(const QString &projectPath, const QString &fileName, QString &retMsg)
+bool PythonGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg)
 {
-    Q_UNUSED(projectPath)
-    Q_UNUSED(fileName)
-    return d->pythonDebug->prepareDebug(fileName, retMsg);
+    QString currentFile = param.value("currentFile").toString();
+    return d->pythonDebug->prepareDebug(currentFile, retMsg);
 }
 
-bool PythonGenerator::requestDAPPort(const QString &uuid, const QString &projectPath, const QString &fileName, QString &retMsg)
+bool PythonGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg)
 {
-    Q_UNUSED(projectPath)
-    return d->pythonDebug->requestDAPPort(uuid, fileName, retMsg);
+    QString fileName = param.value("currentFile").toString();
+    return d->pythonDebug->requestDAPPort(uuid, toolKitName(), fileName, retMsg);
 }
 
 bool PythonGenerator::isLaunchNotAttach()
@@ -64,8 +63,9 @@ bool PythonGenerator::isLaunchNotAttach()
     return d->pythonDebug->isLaunchNotAttach();
 }
 
-dap::AttachRequest PythonGenerator::attachDAP(int port, const QString &workspace)
+dap::AttachRequest PythonGenerator::attachDAP(int port, const QMap<QString, QVariant> &param)
 {
+    QString workspace = param.value("workspace").toString();
     return d->pythonDebug->attachDAP(port, workspace);
 }
 
@@ -77,4 +77,16 @@ bool PythonGenerator::isRestartDAPManually()
 bool PythonGenerator::isStopDAPManually()
 {
     return d->pythonDebug->isStopDAPManually();
+}
+
+QMap<QString, QVariant> PythonGenerator::getDebugArguments(const dpfservice::ProjectInfo &projectInfo,
+                                                           const QString &currentFile)
+{
+    Q_UNUSED(currentFile)
+
+    QMap<QString, QVariant> param;
+    param.insert("workspace", projectInfo.workspaceFolder());
+    param.insert("currentFile", currentFile);
+
+    return param;
 }

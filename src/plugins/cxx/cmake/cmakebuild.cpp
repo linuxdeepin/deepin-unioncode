@@ -46,6 +46,7 @@ CMakeBuild::~CMakeBuild()
 
 QString CMakeBuild::build(const QString& kitName, const QString& projectPath)
 {
+    Q_UNUSED(projectPath)
     QString buildUuid;
     auto &ctx = dpfInstance.serviceContext();
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());

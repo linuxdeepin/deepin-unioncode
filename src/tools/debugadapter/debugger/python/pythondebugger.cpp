@@ -30,6 +30,7 @@
 class PythonDebuggerPrivate {
     friend class PythonDebugger;
     QProcess process;
+    QString kit;
     int port = 0;
 };
 
@@ -39,15 +40,14 @@ PythonDebugger::PythonDebugger(QObject *parent)
 {
     registerLaunchDAPConnect();
 
-    connect(this, &PythonDebugger::sigSendToClient, [](const QString &uuid, int port) {
+    connect(this, &PythonDebugger::sigSendToClient, [](const QString &uuid, int port, const QString &kit) {
         QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                       "com.deepin.unioncode.interface",
                                                       "dapport");
         msg << uuid
             << port
-            << QString()
-            << QString()
-            << QStringList();
+            << kit
+            << QMap<QString, QVariant>();
         QDBusConnection::sessionBus().send(msg);
     });
 
@@ -75,12 +75,12 @@ void PythonDebugger::registerLaunchDAPConnect()
                           "/path",
                           "com.deepin.unioncode.interface",
                           "launch_python_dap",
-                          this, SLOT(slotReceiveClientInfo(QString, QString, QString)));
+                          this, SLOT(slotReceiveClientInfo(QString, QString, QString, QString)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "launch_python_dap",
-                       this, SLOT(slotReceiveClientInfo(QString, QString, QString)));
+                       this, SLOT(slotReceiveClientInfo(QString, QString, QString, QString)));
 }
 
 void PythonDebugger::initialize(const QString &pythonExecute,
@@ -119,13 +119,15 @@ void PythonDebugger::initialize(const QString &pythonExecute,
     d->process.waitForStarted();
 }
 
-void PythonDebugger::slotReceiveClientInfo(const QString &uuid, const QString &pythonExecute,
+void PythonDebugger::slotReceiveClientInfo(const QString &uuid, const QString &kit,
+                                           const QString &pythonExecute,
                                            const QString &fileName)
 {
     d->port = 0;
+    d->kit = kit;
     d->process.close();
     initialize(pythonExecute, fileName);
-    emit sigSendToClient(uuid, d->port);
+    emit sigSendToClient(uuid, d->port, d->kit);
 }
 
 

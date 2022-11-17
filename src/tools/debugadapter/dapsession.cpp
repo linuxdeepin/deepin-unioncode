@@ -85,30 +85,34 @@ void DapSession::registerDBusConnect()
                           "/path",
                           "com.deepin.unioncode.interface",
                           "get_cxx_dapport",
-                          this, SLOT(slotReceiveClientInfo(QString)));
+                          this, SLOT(slotReceiveClientInfo(QString, QString, QString, QStringList)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "get_cxx_dapport",
-                       this, SLOT(slotReceiveClientInfo(QString)));
+                       this, SLOT(slotReceiveClientInfo(QString, QString, QString, QStringList)));
 
 
-    connect(this, &DapSession::sigSendToClient, [](const QString &uuid, int port) {
+    connect(this, &DapSession::sigSendToClient, [](const QString &uuid, int port, const QString &kit,
+            const QMap<QString, QVariant> &param) {
         QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                       "com.deepin.unioncode.interface",
                                                       "dapport");
         msg << uuid
             << port
-            << QString()
-            << QString()
-            << QStringList();
+            << kit
+            << param;
         QDBusConnection::sessionBus().send(msg);
     });
 }
 
-void DapSession::slotReceiveClientInfo(const QString &uuid)
+void DapSession::slotReceiveClientInfo(const QString &uuid, const QString &kit, const QString &targetPath, const QStringList &arguments)
 {
-    emit sigSendToClient(uuid, d->serverInfo.port());
+    QMap<QString, QVariant> param;
+    param.insert("targetPath", targetPath);
+    param.insert("arguments", arguments);
+
+    emit sigSendToClient(uuid, d->serverInfo.port(), kit, param);
 }
 
 bool DapSession::start()

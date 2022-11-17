@@ -98,12 +98,12 @@ Debugger::Debugger(QObject *parent)
                           "/path",
                           "com.deepin.unioncode.interface",
                           "dapport",
-                          this, SLOT(slotReceivedDAPPort(QString, int, QString, QString, QStringList)));
+                          this, SLOT(slotReceivedDAPPort(QString, int, QString, QMap<QString, QVariant>)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "dapport",
-                       this, SLOT(slotReceivedDAPPort(QString, int, QString, QString, QStringList)));
+                       this, SLOT(slotReceivedDAPPort(QString, int, QString, QMap<QString, QVariant>)));
 
     initializeView();
 }
@@ -337,13 +337,14 @@ void Debugger::registerDapHandlers()
             || event.reason == "step"
                 || event.reason == "breakpoint-hit"
                 || event.reason == "function-finished"
-                || event.reason == "end-stepping-range") {
+                || event.reason == "end-stepping-range"
+                || event.reason == "signal-received") {
             if (event.threadId) {
                 threadId = event.threadId.value(0);
                 switchCurrentThread(static_cast<int>(threadId));
             }
             updateRunState(Debugger::RunState::kStopped);
-        } else if (event.reason == "exception" || event.reason == "signal-received") {
+        } else if (event.reason == "exception") {
             QString name;
             if (event.description) {
                 name = event.description.value().c_str();
@@ -536,7 +537,15 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
             QMetaObject::invokeMethod(this, "message", Q_ARG(QString, errorMsg));
             updateRunState(kPreparing);
         } else {
-            prepareDAPPort();
+            auto &ctx = dpfInstance.serviceContext();
+            LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
+            if (service) {
+                auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
+                if (generator) {
+                    QMap<QString, QVariant> param = generator->getDebugArguments(d->projectInfo, d->currentOpenedFileName);
+                    prepareDAPPort(param, d->activeProjectKitName);
+                }
+            }
         }
     } else if (event.data() == debugger.prepareDebugProgress.name) {
         printOutput(event.property(debugger.prepareDebugProgress.pKeys[0]).toString());
@@ -795,28 +804,29 @@ void Debugger::prepareDebug()
         if (generator) {
             updateRunState(kStart);
             QString retMsg;
-            bool ret = generator->prepareDebug(d->projectInfo.workspaceFolder(), d->currentOpenedFileName, retMsg);
+            QMap<QString, QVariant> param = generator->getDebugArguments(d->projectInfo, d->currentOpenedFileName);
+            bool ret = generator->prepareDebug(param, retMsg);
             if (!ret) {
                 QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
                 updateRunState(kPreparing);
             } else if (!generator->isAnsyPrepareDebug()) {
-                prepareDAPPort();
+                prepareDAPPort(param, d->activeProjectKitName);
             }
         }
     }
 }
 
-void Debugger::prepareDAPPort()
+bool Debugger::prepareDAPPort(const QMap<QString, QVariant> &param, const QString &kitName)
 {
     if (d->isWaitingPort) {
         QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Is getting the dap port, please waiting for a moment"));
-        return;
+        return false;
     }
 
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
     if (service) {
-        auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
+        auto generator = service->create<LanguageGenerator>(kitName);
         if (generator) {
             d->isWaitingPort = true;
             printOutput(tr("Searching dap port, please waiting..."));
@@ -843,13 +853,15 @@ void Debugger::prepareDAPPort()
 
             QString retMsg;
             d->requestDAPPortUuid = QUuid::createUuid().toString();
-            if (!generator->requestDAPPort(d->requestDAPPortUuid, d->projectInfo.workspaceFolder(), d->currentOpenedFileName, retMsg)) {
+            if (!generator->requestDAPPort(d->requestDAPPortUuid, param, retMsg)) {
                 QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
                 stopWaitingDAPPort();
-                return;
+                return false;
             }
         }
     }
+
+    return true;
 }
 
 void Debugger::stopDAP()
@@ -858,13 +870,13 @@ void Debugger::stopDAP()
     session->closeSession();
 }
 
-void Debugger::slotReceivedDAPPort(const QString &uuid, int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths)
+void Debugger::slotReceivedDAPPort(const QString &uuid, int port, const QString &kitName, const QMap<QString, QVariant> &param)
 {
     if (d->isWaitingPort) {
         stopWaitingDAPPort();
 
         if (d->requestDAPPortUuid == uuid)
-            launchSession(port, mainClass, projectName, classPaths);
+            launchSession(port, param, kitName);
     }
 }
 
@@ -876,8 +888,7 @@ void Debugger::stopWaitingDAPPort()
     updateRunState(kPreparing);
 }
 
-void Debugger::launchSession(const int port, const QString &mainClass/* = ""*/,
-                             const QString &projectName/* = ""*/, const QStringList &classPaths/* = QStringList{}*/)
+void Debugger::launchSession(int port, const QMap<QString, QVariant> &param, const QString &kitName)
 {
     if (!port) {
         printOutput(tr("\nThe dap port is not ready, please retry.\n"), ErrorMessageFormat);
@@ -900,17 +911,13 @@ void Debugger::launchSession(const int port, const QString &mainClass/* = ""*/,
         auto &ctx = dpfInstance.serviceContext();
         LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
         if (service) {
-            auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
+            auto generator = service->create<LanguageGenerator>(kitName);
             if (generator) {
                 if (generator->isLaunchNotAttach()) {
-                    dap::LaunchRequest request = generator->launchDAP(port,
-                                                                      d->projectInfo.workspaceFolder(),
-                                                                      mainClass,
-                                                                      projectName,
-                                                                      classPaths);
+                    dap::LaunchRequest request = generator->launchDAP(param);
                     bSuccess &= session->launch(request);
                 } else {
-                    dap::AttachRequest request = generator->attachDAP(port, d->projectInfo.workspaceFolder());
+                    dap::AttachRequest request = generator->attachDAP(port, param);
                     bSuccess &= session->attach(request);
                 }
             }
@@ -938,4 +945,31 @@ void Debugger::currentThreadChanged(const QString &text)
         QString threadNumber = l.last().split(" ").first();
         switchCurrentThread(threadNumber.toInt());
     });
+}
+
+bool Debugger::runCoredump(const QString &target, const QString &core, const QString &kit)
+{
+    updateRunState(kStart);
+    updateRunState(kNoRun);
+    printOutput(tr("Start debugging coredump file: ") + core + " with " + target);
+
+    if (target.isEmpty() || !QFileInfo(target).isFile()) {
+        QString tipMsg = tr("The coredump target file is error: ") + target;
+        printOutput(tipMsg);
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, tipMsg));
+        return false;
+    }
+
+    if (core.isEmpty() || !QFileInfo(core).isFile()) {
+        QString tipMsg = tr("The coredump file is error: ") + core;
+        printOutput(tipMsg);
+        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, tipMsg));
+        return false;
+    }
+
+    QMap<QString, QVariant> param;
+    param.insert("targetPath", target);
+    param.insert("arguments", QStringList{core});
+
+    return prepareDAPPort(param, kit);
 }

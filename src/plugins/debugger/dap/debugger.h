@@ -85,6 +85,7 @@ public:
     void stepOut();
 
     RunState getRunState() const;
+    bool runCoredump(const QString &target, const QString &core, const QString &kit);
 
 signals:
     void runStateChanged(RunState state);
@@ -102,7 +103,7 @@ public slots:
     void message(QString msg);
     void currentThreadChanged(const QString &text);
 
-    void slotReceivedDAPPort(const QString &uuid, int port, const QString &mainClass, const QString &projectName, const QStringList &classPaths);
+    void slotReceivedDAPPort(const QString &uuid, int port, const QString &kitName, const QMap<QString, QVariant> &param);
 private:
     void initializeView();
     void handleFrames(const StackFrames &stackFrames);
@@ -117,11 +118,10 @@ private:
     QString requestBuild();
     void start();
     void prepareDebug();
-    void prepareDAPPort();
+    bool prepareDAPPort(const QMap<QString, QVariant> &param, const QString &kitName);
     void stopWaitingDAPPort();
     void stopDAP();
-    void launchSession(const int port, const QString &mainClass = "",
-                       const QString &projectName = "", const QStringList &classPaths = QStringList{});
+    void launchSession(int port, const QMap<QString, QVariant> &param, const QString &kitName);
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
     QSharedPointer<DEBUG::DebugSession> session;

@@ -151,6 +151,8 @@ QVariantMap parseKeyVal(const QString& str, QString::const_iterator& it, QChar t
 //        qInfo() << "Value => " << k;
         m.insertMulti(k,v);
         //m.insert(k, v); //insertMulti??
+        if (it >= str.cend())
+            break;
         if (*it == terminator) {
             break;
         }

@@ -33,7 +33,9 @@ public:
     ~PythonDebug();
 
     bool prepareDebug(const QString &fileName, QString &retMsg);
-    bool requestDAPPort(const QString &uuid, const QString &fileName, QString &retMsg);
+    bool requestDAPPort(const QString &uuid, const QString &kit,
+                        const QString &fileName,
+                        QString &retMsg);
     bool isLaunchNotAttach();
     dap::AttachRequest attachDAP(int port, const QString &workspace);
     bool isRestartDAPManually();

@@ -44,17 +44,18 @@ CMakeDebug::~CMakeDebug()
         delete d;
 }
 
-bool CMakeDebug::prepareDebug()
-{
-    return true;
-}
-
-bool CMakeDebug::requestDAPPort(const QString &uuid, QString &retMsg)
+bool CMakeDebug::requestDAPPort(const QString &uuid, const QString &kit,
+                                const QString &targetPath, const QStringList &arguments,
+                                QString &retMsg)
 {
     QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                   "com.deepin.unioncode.interface",
                                                   "get_cxx_dapport");
-    msg << uuid;
+
+    msg << uuid
+        << kit
+        << targetPath
+        << arguments;
     bool ret = QDBusConnection::sessionBus().send(msg);
     if (!ret) {
         retMsg = tr("Request cxx dap port failed, please retry.");
@@ -69,7 +70,7 @@ bool CMakeDebug::isLaunchNotAttach()
     return false;
 }
 
-dap::LaunchRequest CMakeDebug::launchDAP(const QString &targetPath)
+dap::LaunchRequest CMakeDebug::launchDAP(const QString &targetPath, const QStringList &argments)
 {
     dap::LaunchRequest request;
     request.name = "(gdb) Launch";
@@ -77,7 +78,11 @@ dap::LaunchRequest CMakeDebug::launchDAP(const QString &targetPath)
     request.request = "launch";
     request.program = targetPath.toStdString();
     request.stopAtEntry = false;
-//    request.cwd = "your project config directory.";
+    dap::array<dap::string> arrayArg;
+    foreach (QString arg, argments) {
+        arrayArg.push_back(arg.toStdString());
+    }
+    request.args = arrayArg;
     request.externalConsole = false;
     request.MIMode = "gdb";
     request.__sessionId = QUuid::createUuid().toString().toStdString();

@@ -42,11 +42,11 @@ public:
     void stop();
 
 signals:
-    void sigSendToClient(const QString &uuid, int port);
+    void sigSendToClient(const QString &uuid, int port, const QString &kit, const QMap<QString, QVariant> &param);
 
 public slots:
     void initialize(std::shared_ptr<dap::ReaderWriter>);
-    void slotReceiveClientInfo(const QString &uuid);
+    void slotReceiveClientInfo(const QString &uuid, const QString &kit, const QString &targetPath, const QStringList &arguments);
 
 private:
     void initializeDebugMgr();

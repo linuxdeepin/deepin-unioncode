@@ -23,6 +23,7 @@
 
 #include "common/common.h"
 #include "dap/protocol.h"
+#include "services/project/projectinfo.h"
 
 namespace dpfservice {
 class LanguageGenerator : public Generator
@@ -44,46 +45,18 @@ public:
         return false;
     }
 
-    virtual bool prepareDebug(const QString &projectPath,
-                              const QString &fileName,
-                              QString &retMsg) {
-        Q_UNUSED(projectPath)
-        Q_UNUSED(fileName)
-        Q_UNUSED(retMsg)
-        return true;
-    }
+    virtual bool prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg) = 0;
+    virtual bool requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg) = 0;
+    virtual bool isLaunchNotAttach() = 0;
 
-    virtual bool requestDAPPort(const QString &uuid,
-                              const QString &projectPath,
-                              const QString &fileName,
-                              QString &retMsg) {
-        Q_UNUSED(uuid)
-        Q_UNUSED(projectPath)
-        Q_UNUSED(fileName)
-        Q_UNUSED(retMsg)
-        return true;
-    }
-
-    virtual bool isLaunchNotAttach() {
-        return true;
-    }
-
-    virtual dap::LaunchRequest launchDAP(int port,
-                                         const QString &workspace,
-                                         const QString &mainClass,
-                                         const QString &projectName,
-                                         const QStringList &classPaths) {
-        Q_UNUSED(port)
-        Q_UNUSED(workspace)
-        Q_UNUSED(mainClass)
-        Q_UNUSED(projectName)
-        Q_UNUSED(classPaths)
+    virtual dap::LaunchRequest launchDAP(const QMap<QString, QVariant> &param) {
+        Q_UNUSED(param)
         return dap::LaunchRequest();
     }
 
-    virtual dap::AttachRequest attachDAP(int port, const QString &workspace) {
+    virtual dap::AttachRequest attachDAP(int port, const QMap<QString, QVariant> &param) {
         Q_UNUSED(port)
-        Q_UNUSED(workspace)
+        Q_UNUSED(param)
         return dap::AttachRequest();
     }
 
@@ -102,6 +75,13 @@ public:
 
     virtual QString getProjectFile(const QString& projectPath) {
         return projectPath;
+    }
+
+    virtual QMap<QString, QVariant> getDebugArguments(const dpfservice::ProjectInfo &projectInfo,
+                                                      const QString &currentFile) {
+        Q_UNUSED(projectInfo)
+        Q_UNUSED(currentFile)
+        return QMap<QString, QVariant>();
     }
 };
 

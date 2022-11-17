@@ -32,10 +32,11 @@ public:
     explicit CMakeDebug(QObject *parent = nullptr);
     ~CMakeDebug();
 
-    bool prepareDebug();
-    bool requestDAPPort(const QString &uuid, QString &retMsg);
+    bool requestDAPPort(const QString &uuid, const QString &kit,
+                        const QString &targetPath, const QStringList &arguments,
+                        QString &retMsg);
     bool isLaunchNotAttach();
-    dap::LaunchRequest launchDAP(const QString &targetPath);
+    dap::LaunchRequest launchDAP(const QString &targetPath, const QStringList &argments);
 
 signals:
 

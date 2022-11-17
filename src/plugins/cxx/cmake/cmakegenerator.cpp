@@ -45,19 +45,19 @@ CMakeGenerator::~CMakeGenerator()
         delete d;
 }
 
-bool CMakeGenerator::prepareDebug(const QString &projectPath, const QString &fileName, QString &retMsg)
+bool CMakeGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg)
 {
-    Q_UNUSED(projectPath)
-    Q_UNUSED(fileName)
+    Q_UNUSED(param)
     Q_UNUSED(retMsg)
-    return d->cmakeDebug->prepareDebug();
+    return true;
 }
 
-bool CMakeGenerator::requestDAPPort(const QString &uuid, const QString &projectPath, const QString &fileName, QString &retMsg)
+bool CMakeGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg)
 {
-    Q_UNUSED(projectPath)
-    Q_UNUSED(fileName)
-    return d->cmakeDebug->requestDAPPort(uuid, retMsg);
+    QString targetPath = param.value("targetPath").toString();
+    QStringList arguments = param.value("arguments").toStringList();
+
+    return d->cmakeDebug->requestDAPPort(uuid, toolKitName(), targetPath, arguments, retMsg);
 }
 
 bool CMakeGenerator::isNeedBuild()
@@ -74,20 +74,17 @@ bool CMakeGenerator::isTargetReady()
     return QFile::exists(targetPath);
 }
 
-dap::LaunchRequest CMakeGenerator::launchDAP(int port,
-                                             const QString &workspace,
-                                             const QString &mainClass,
-                                             const QString &projectName,
-                                             const QStringList &classPaths)
+bool CMakeGenerator::isLaunchNotAttach()
 {
-    Q_UNUSED(port)
-    Q_UNUSED(workspace)
-    Q_UNUSED(mainClass)
-    Q_UNUSED(projectName)
-    Q_UNUSED(classPaths)
+    return true;
+}
 
-    QString targetPath = CMakeBuild::getTargetPath();
-    return d->cmakeDebug->launchDAP(targetPath);
+dap::LaunchRequest CMakeGenerator::launchDAP(const QMap<QString, QVariant> &param)
+{
+    QString targetPath = param.value("targetPath").toString();
+    QStringList arguments = param.value("arguments").toStringList();
+
+    return d->cmakeDebug->launchDAP(targetPath, arguments);
 }
 
 QString CMakeGenerator::build(const QString& projectPath)
@@ -95,6 +92,20 @@ QString CMakeGenerator::build(const QString& projectPath)
     return CMakeBuild::build(toolKitName(), projectPath);
 }
 
-QString CMakeGenerator::getProjectFile(const QString& projectPath) {
+QString CMakeGenerator::getProjectFile(const QString& projectPath)
+{
     return projectPath + QDir::separator() + "CMakeList.txt";
+}
+
+QMap<QString, QVariant> CMakeGenerator::getDebugArguments(const dpfservice::ProjectInfo &projectInfo,
+                                                          const QString &currentFile)
+{
+    Q_UNUSED(currentFile)
+
+    QMap<QString, QVariant> param;
+    param.insert("workspace", projectInfo.workspaceFolder());
+    param.insert("projectPath", projectInfo.sourceFolder());
+    param.insert("targetPath", CMakeBuild::getTargetPath());
+
+    return param;
 }

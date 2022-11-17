@@ -4,7 +4,7 @@
  * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: luzhen<luzhen@uniontech.com>
- *
+ *             zhouyi<zhouyi1@uniontech.com>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -21,8 +21,10 @@
 #include "debugmanager.h"
 #include "dap/debugger.h"
 #include "debuggerglobals.h"
-#include "common/util/custompaths.h"
 #include "interface/menumanager.h"
+
+#include "services/debugger/debuggerservice.h"
+#include "common/util/custompaths.h"
 
 using namespace DEBUG_NAMESPACE;
 DebugManager::DebugManager(QObject *parent)
@@ -34,14 +36,19 @@ DebugManager::DebugManager(QObject *parent)
     QProcess::execute("killall -9 debugadapter");
 }
 
-bool DebugManager::initialize(dpfservice::WindowService *service)
+bool DebugManager::initialize(dpfservice::WindowService *windowService,
+                              dpfservice::DebuggerService *debuggerService)
 {
     debugger = new Debugger(this);
 
     menuManager.reset(new MenuManager());
-    menuManager->initialize(service);
+    menuManager->initialize(windowService);
 
     connect(debugger, &Debugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
+    using namespace std::placeholders;
+    if (!debuggerService->runCoredump) {
+        debuggerService->runCoredump = std::bind(&DebugManager::runCoredump, this, _1, _2, _3);
+    }
 
     return true;
 }
@@ -145,4 +152,10 @@ void DebugManager::launchBackend()
     backend.setProgram(backendPath);
     backend.start();
     backend.waitForStarted();
+}
+
+bool DebugManager::runCoredump(const QString &target, const QString &core, const QString &kit)
+{
+    launchBackend();
+    return QtConcurrent::run(debugger, &Debugger::runCoredump, target, core, kit);
 }

@@ -35,17 +35,14 @@ public:
     static QString toolKitName() { return "directory"; }
 
     bool isTargetReady() override;
-    bool prepareDebug(const QString &projectPath,
-                      const QString &fileName,
-                      QString &retMsg) override;
-    bool requestDAPPort(const QString &uuid,
-                        const QString &projectPath,
-                        const QString &fileName,
-                        QString &retMsg) override;
+    bool prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg) override;
+    bool requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg) override;
     bool isLaunchNotAttach() override;
-    dap::AttachRequest attachDAP(int port, const QString &workspace) override;
+    dap::AttachRequest attachDAP(int port, const QMap<QString, QVariant> &param) override;
     bool isRestartDAPManually() override;
     bool isStopDAPManually() override;
+    QMap<QString, QVariant> getDebugArguments(const dpfservice::ProjectInfo &projectInfo,
+                                              const QString &currentFile) override;
 
 signals:
 

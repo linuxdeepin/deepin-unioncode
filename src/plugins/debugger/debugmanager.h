@@ -4,7 +4,7 @@
  * Author:     luzhen<luzhen@uniontech.com>
  *
  * Maintainer: luzhen<luzhen@uniontech.com>
- *
+ *             zhouyi<zhouyi1@uniontech.com>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -37,13 +37,15 @@ class StackFrameView;
 class MenuManager;
 namespace dpfservice {
     class WindowService;
+    class DebuggerService;
 }
 class DebugManager : public QObject
 {
     Q_OBJECT
 public:
     explicit DebugManager(QObject *parent = nullptr);
-    bool initialize(dpfservice::WindowService *service);
+    bool initialize(dpfservice::WindowService *windowService,
+                    dpfservice::DebuggerService *debuggerService);
     AppOutputPane *getOutputPane() const;
     QWidget *getStackPane() const;
     QTreeView *getLocalsPane() const;
@@ -72,6 +74,7 @@ public slots:
 
 private:
     void launchBackend();
+    bool runCoredump(const QString &target, const QString &core, const QString &kit);
 
     Debugger *debugger = nullptr;
     QProcess backend;

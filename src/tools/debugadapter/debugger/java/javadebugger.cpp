@@ -47,6 +47,8 @@ class JavaDebuggerPrivate {
     QString projectName;
     QStringList classPaths;
     QString uuid;
+    QString workspace;
+    QString kit;
 
     int requestId = 1;
     bool initialized = false;
@@ -60,29 +62,28 @@ JavaDebugger::JavaDebugger(QObject *parent)
     connect(this, &JavaDebugger::sigResolveClassPath, this, &JavaDebugger::slotResolveClassPath);
     connect(this, &JavaDebugger::sigCheckInfo, this, &JavaDebugger::slotCheckInfo);
 
-    connect(this, &JavaDebugger::sigSendToClient, [](const QString &uuid, int port, const QString &mainClass,
-            const QString &projectName, const QStringList &classPaths) {
+    connect(this, &JavaDebugger::sigSendToClient, [](const QString &uuid, int port, const QString &kit,
+            const QMap<QString, QVariant> &param) {
         QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                       "com.deepin.unioncode.interface",
                                                       "dapport");
         msg << uuid
             << port
-            << mainClass
-            << projectName
-            << classPaths;
+            << kit
+            << param;
         QDBusConnection::sessionBus().send(msg);
     });
 
     connect(&d->process, &QProcess::readyReadStandardOutput, [this]() {
         QByteArray data = d->process.readAllStandardOutput();
 
-       // qInfo() << "message:" << qPrintable(data);
+        qInfo() << "message:" << qPrintable(data);
         parseResult(data);
     });
 
     connect(&d->process, &QProcess::readyReadStandardError, [this]() {
         QByteArray data = d->process.readAllStandardError();
-        //qInfo() << "error:" << qPrintable(data);
+        qInfo() << "error:" << qPrintable(data);
     });
 }
 
@@ -100,13 +101,13 @@ void JavaDebugger::registerLaunchDAPConnect()
                           "com.deepin.unioncode.interface",
                           "launch_java_dap",
                           this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString,
-                                                           QString, QString, QString, QString)));
+                                                           QString, QString, QString, QString, QString)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "launch_java_dap",
                        this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString,
-                                                        QString, QString, QString, QString)));
+                                                        QString, QString, QString, QString, QString)));
 }
 
 void JavaDebugger::initialize(const QString &configHomePath,
@@ -162,6 +163,7 @@ void JavaDebugger::initialize(const QString &configHomePath,
 }
 
 void JavaDebugger::slotReceivePojectInfo(const QString &uuid,
+                                         const QString &kit,
                                          const QString &workspace,
                                          const QString &configHomePath,
                                          const QString &jrePath,
@@ -176,6 +178,8 @@ void JavaDebugger::slotReceivePojectInfo(const QString &uuid,
     d->classPaths.clear();
     d->requestId = 1;
     d->uuid = uuid;
+    d->workspace = workspace;
+    d->kit = kit;
 
     initialize(configHomePath, jreExecute, launchPackageFile, launchConfigPath);
 
@@ -202,7 +206,7 @@ void JavaDebugger::executeCommand(const QString &command)
 {
     int length = command.length();
     QString writeStr = QString("Content-Length:%1\r\n\r\n%2").arg(length).arg(command);
-    //qInfo() << writeStr;
+    qInfo() << writeStr;
     d->process.write(writeStr.toUtf8());
     d->process.waitForBytesWritten();
 }
@@ -325,7 +329,13 @@ void JavaDebugger::slotCheckInfo()
     if (d->port > 0
             && !d->mainClass.isEmpty()
             && !d->projectName.isEmpty()
-            && !d->classPaths.isEmpty())
-        emit sigSendToClient(d->uuid, d->port, d->mainClass, d->projectName, d->classPaths);
+            && !d->classPaths.isEmpty()) {
+        QMap<QString, QVariant> param;
+        param.insert("workspace", d->workspace);
+        param.insert("mainClass", d->mainClass);
+        param.insert("projectName", d->projectName);
+        param.insert("classPaths", d->classPaths);
+        emit sigSendToClient(d->uuid, d->port, d->kit, param);
+    }
 }
 

@@ -35,9 +35,9 @@ public:
     bool isAnsyPrepareDebug();
     bool prepareDebug(const QString &projectPath,
                       QString &retMsg);
-    bool requestDAPPort(const QString &uuid,
-                      const QString &projectPath,
-                      QString &retMsg);
+    bool requestDAPPort(const QString &uuid, const QString &kit,
+                        const QString &projectPath,
+                        QString &retMsg);
     bool isLaunchNotAttach();
     dap::LaunchRequest launchDAP(const QString &workspace,
                                  const QString &mainClass,

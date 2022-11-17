@@ -37,25 +37,16 @@ public:
     bool isNeedBuild() override;
     bool isTargetReady() override;
     bool isAnsyPrepareDebug() override;
-    bool prepareDebug(const QString &projectPath,
-                      const QString &fileName,
-                      QString &retMsg) override;
-    bool requestDAPPort(const QString &uuid,
-                      const QString &projectPath,
-                      const QString &fileName,
-                      QString &retMsg) override;
+    bool prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg) override;
+    bool requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg) override;
     bool isLaunchNotAttach() override;
-    dap::LaunchRequest launchDAP(int port,
-                                 const QString &workspace,
-                                 const QString &mainClass,
-                                 const QString &projectName,
-                                 const QStringList &classPaths) override;
+    dap::LaunchRequest launchDAP(const QMap<QString, QVariant> &param) override;
+    QString build(const QString& projectPath) override;
+    QString getProjectFile(const QString& projectPath) override;
     bool isRestartDAPManually() override;
     bool isStopDAPManually() override;
-
-    QString build(const QString& projectPath) override;
-
-    QString getProjectFile(const QString& projectPath) override;
+    QMap<QString, QVariant> getDebugArguments(const dpfservice::ProjectInfo &projectInfo,
+                                              const QString &currentFile) override;
 
 signals:
 

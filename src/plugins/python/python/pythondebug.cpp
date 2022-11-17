@@ -73,12 +73,15 @@ bool PythonDebug::prepareDebug(const QString &fileName, QString &retMsg)
 }
 
 
-bool PythonDebug::requestDAPPort(const QString &uuid, const QString &fileName, QString &retMsg)
+bool PythonDebug::requestDAPPort(const QString &uuid, const QString &kit,
+                                 const QString &fileName,
+                                 QString &retMsg)
 {
     QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                   "com.deepin.unioncode.interface",
                                                   "launch_python_dap");
     msg << uuid
+        << kit
         << OptionManager::getInstance()->getPythonToolPath()
         << fileName;
 

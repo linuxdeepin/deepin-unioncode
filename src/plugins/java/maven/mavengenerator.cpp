@@ -58,16 +58,16 @@ bool MavenGenerator::isAnsyPrepareDebug()
     return d->javaDebug->isAnsyPrepareDebug();
 }
 
-bool MavenGenerator::prepareDebug(const QString &projectPath, const QString &fileName, QString &retMsg)
+bool MavenGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg)
 {
-    Q_UNUSED(fileName)
+    QString projectPath = param.value("projectPath").toString();
     return d->javaDebug->prepareDebug(projectPath, retMsg);
 }
 
-bool MavenGenerator::requestDAPPort(const QString &uuid, const QString &projectPath, const QString &fileName, QString &retMsg)
+bool MavenGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg)
 {
-    Q_UNUSED(fileName)
-    return d->javaDebug->requestDAPPort(uuid, projectPath, retMsg);
+    QString projectPath = param.value("projectPath").toString();
+    return d->javaDebug->requestDAPPort(uuid, toolKitName(), projectPath, retMsg);
 }
 
 bool MavenGenerator::isLaunchNotAttach()
@@ -75,13 +75,13 @@ bool MavenGenerator::isLaunchNotAttach()
     return d->javaDebug->isLaunchNotAttach();
 }
 
-dap::LaunchRequest MavenGenerator::launchDAP(int port,
-                                             const QString &workspace,
-                                             const QString &mainClass,
-                                             const QString &projectName,
-                                             const QStringList &classPaths)
+dap::LaunchRequest MavenGenerator::launchDAP(const QMap<QString, QVariant> &param)
 {
-    Q_UNUSED(port)
+    QString workspace = param.value("workspace").toString();
+    QString mainClass = param.value("mainClass").toString();
+    QString projectName = param.value("projectName").toString();
+    QStringList classPaths = param.value("classPaths").toStringList();
+
     return d->javaDebug->launchDAP(workspace, mainClass, projectName, classPaths);
 }
 
@@ -100,6 +100,18 @@ QString MavenGenerator::build(const QString& projectPath)
     return MavenBuild::build(toolKitName(), projectPath);
 }
 
-QString MavenGenerator::getProjectFile(const QString& projectPath) {
+QString MavenGenerator::getProjectFile(const QString& projectPath)
+{
     return projectPath + QDir::separator() + "pom.xml";
+}
+
+QMap<QString, QVariant> MavenGenerator::getDebugArguments(const dpfservice::ProjectInfo &projectInfo,
+                                                          const QString &currentFile)
+{
+    Q_UNUSED(currentFile)
+
+    QMap<QString, QVariant> param;
+    param.insert("projectPath", projectInfo.sourceFolder());
+
+    return param;
 }

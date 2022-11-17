@@ -58,16 +58,16 @@ bool GradleGenerator::isAnsyPrepareDebug()
     return d->javaDebug->isAnsyPrepareDebug();
 }
 
-bool GradleGenerator::prepareDebug(const QString &projectPath, const QString &fileName, QString &retMsg)
+bool GradleGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg)
 {
-    Q_UNUSED(fileName)
+    QString projectPath = param.value("projectPath").toString();
     return d->javaDebug->prepareDebug(projectPath, retMsg);
 }
 
-bool GradleGenerator::requestDAPPort(const QString &uuid, const QString &projectPath, const QString &fileName, QString &retMsg)
+bool GradleGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg)
 {
-    Q_UNUSED(fileName)
-    return d->javaDebug->requestDAPPort(uuid, projectPath, retMsg);
+    QString projectPath = param.value("projectPath").toString();
+    return d->javaDebug->requestDAPPort(uuid, toolKitName(),projectPath, retMsg);
 }
 
 bool GradleGenerator::isLaunchNotAttach()
@@ -75,13 +75,12 @@ bool GradleGenerator::isLaunchNotAttach()
     return d->javaDebug->isLaunchNotAttach();
 }
 
-dap::LaunchRequest GradleGenerator::launchDAP(int port,
-                                              const QString &workspace,
-                                              const QString &mainClass,
-                                              const QString &projectName,
-                                              const QStringList &classPaths)
+dap::LaunchRequest GradleGenerator::launchDAP(const QMap<QString, QVariant> &param)
 {
-    Q_UNUSED(port)
+    QString workspace = param.value("workspace").toString();
+    QString mainClass = param.value("mainClass").toString();
+    QString projectName = param.value("projectName").toString();
+    QStringList classPaths = param.value("classPaths").toStringList();
     return d->javaDebug->launchDAP(workspace, mainClass, projectName, classPaths);
 }
 
@@ -98,4 +97,15 @@ bool GradleGenerator::isStopDAPManually()
 QString GradleGenerator::build(const QString& projectPath)
 {
     return GradleBuild::build(toolKitName(), projectPath);
+}
+
+QMap<QString, QVariant> GradleGenerator::getDebugArguments(const dpfservice::ProjectInfo &projectInfo,
+                                                           const QString &currentFile)
+{
+    Q_UNUSED(currentFile)
+
+    QMap<QString, QVariant> param;
+    param.insert("projectPath", projectInfo.sourceFolder());
+
+    return param;
 }

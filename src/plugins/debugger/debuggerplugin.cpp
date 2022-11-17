@@ -20,14 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "debuggerplugin.h"
+#include "debuggerglobals.h"
+#include "debugmanager.h"
+
+#include "services/window/windowservice.h"
+#include "services/debugger/debuggerservice.h"
+
 #include "base/abstractnav.h"
 #include "base/abstractaction.h"
 #include "base/abstractmenu.h"
 #include "base/abstractmainwindow.h"
 #include "base/abstractwidget.h"
-#include "services/window/windowservice.h"
-#include "debuggerglobals.h"
-#include "debugmanager.h"
 
 #include <QMenu>
 
@@ -35,7 +38,12 @@ using namespace dpfservice;
 
 void DebuggerPlugin::initialize()
 {
-
+    QString errStr;
+    auto &ctx = dpfInstance.serviceContext();
+    if (!ctx.load(dpfservice::DebuggerService::name(), &errStr)) {
+        qCritical() << errStr;
+        abort();
+    }
 }
 
 bool DebuggerPlugin::start()
@@ -47,7 +55,13 @@ bool DebuggerPlugin::start()
         abort();
     }
 
-    debugManager->initialize(windowService);
+    DebuggerService *debuggerService = ctx.service<DebuggerService>(DebuggerService::name());
+    if (!debuggerService) {
+        qCritical() << "Failed, can't found debugger service";
+        abort();
+    }
+
+    debugManager->initialize(windowService, debuggerService);
 
     // instert output pane to window.
     emit windowService->addContextWidget("&Application Output", new AbstractWidget(debugManager->getOutputPane()));
