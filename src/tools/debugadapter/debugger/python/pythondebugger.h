@@ -39,12 +39,14 @@ public slots:
     void slotReceiveClientInfo(const QString &uuid,
                                const QString &kit,
                                const QString &pythonExecute,
-                               const QString &fileName);
+                               const QString &fileName,
+                               const QString &projectCachePath);
 
 private:
     void registerLaunchDAPConnect();
     void initialize(const QString &pythonExecute,
-                    const QString &fileName);
+                    const QString &fileName,
+                    const QString &projectCachePath);
 
     PythonDebuggerPrivate *const d;
 };

@@ -181,6 +181,11 @@ bool CustomPaths::checkDir(const QString &path)
     return false;
 }
 
+QString CustomPaths::projectCachePath(const QString &projectPath)
+{
+    return FO::checkCreateDir(projectPath, ".unioncode");
+}
+
 QString CustomPaths::user(CustomPaths::Flags flage)
 {
     switch (flage) {

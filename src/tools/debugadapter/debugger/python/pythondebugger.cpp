@@ -75,16 +75,17 @@ void PythonDebugger::registerLaunchDAPConnect()
                           "/path",
                           "com.deepin.unioncode.interface",
                           "launch_python_dap",
-                          this, SLOT(slotReceiveClientInfo(QString, QString, QString, QString)));
+                          this, SLOT(slotReceiveClientInfo(QString, QString, QString, QString, QString)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "launch_python_dap",
-                       this, SLOT(slotReceiveClientInfo(QString, QString, QString, QString)));
+                       this, SLOT(slotReceiveClientInfo(QString, QString, QString, QString, QString)));
 }
 
 void PythonDebugger::initialize(const QString &pythonExecute,
-                                const QString &fileName)
+                                const QString &fileName,
+                                const QString &projectCachePath)
 {
     int startPort = 7000;
     auto checkPortFree = [](int port) {
@@ -108,7 +109,7 @@ void PythonDebugger::initialize(const QString &pythonExecute,
     d->port = startPort;
     QString validPort = QString::number(d->port);
     QString pid = QString::number(QApplication::applicationPid());
-    QString logFolder = QDir::homePath() + "/.config/unioncode/data/pythonlog";
+    QString logFolder = projectCachePath + "/dap/pylog";
     QString param = pythonExecute + " -m debugpy --listen " + validPort +
             " --wait-for-client --log-to " + logFolder + " " + fileName + " --pid " + pid;
     qInfo() << param;
@@ -121,12 +122,13 @@ void PythonDebugger::initialize(const QString &pythonExecute,
 
 void PythonDebugger::slotReceiveClientInfo(const QString &uuid, const QString &kit,
                                            const QString &pythonExecute,
-                                           const QString &fileName)
+                                           const QString &fileName,
+                                           const QString &projectCachePath)
 {
     d->port = 0;
     d->kit = kit;
     d->process.close();
-    initialize(pythonExecute, fileName);
+    initialize(pythonExecute, fileName, projectCachePath);
     emit sigSendToClient(uuid, d->port, d->kit);
 }
 

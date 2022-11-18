@@ -38,7 +38,7 @@ dpf::EventHandler::Type CoreReceiver::type()
 
 QStringList CoreReceiver::topics()
 {
-    return QStringList() << T_NAV;
+    return {T_NAV, navigation.topic};
 }
 
 void CoreReceiver::eventProcess(const dpf::Event &event)
@@ -48,13 +48,14 @@ void CoreReceiver::eventProcess(const dpf::Event &event)
         abort();
     }
 
-    if (event.topic() == T_NAV)
-        navEvent(event);
-}
-
-void CoreReceiver::navEvent(const dpf::Event &event)
-{
-    if (event.data().toString() == D_ACTION_SWITCH) {
-        WindowKeeper::instace()->switchWidgetNavigation(event.property(P_ACTION_TEXT).toString());
+    if (event.topic() == T_NAV) {
+        if (event.data() == D_ACTION_SWITCH) {
+            WindowKeeper::instace()->switchWidgetNavigation(
+                        event.property(P_ACTION_TEXT).toString());
+        }
+    } else if(event.data() == navigation.doSwitch.name) {
+        QString actionTextKey = navigation.doSwitch.pKeys[0];
+        QString actionText = event.property(actionTextKey).toString();
+        WindowKeeper::instace()->switchWidgetNavigation(actionText);
     }
 }

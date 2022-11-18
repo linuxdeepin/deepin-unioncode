@@ -48,6 +48,7 @@ public:
     static QString projectGeneratePath(const QString &path);
     static QString lspRuntimePath(const QString &language);
     static bool checkDir(const QString &path);
+    static QString projectCachePath(const QString &projectPath);
 };
 
 #endif // GLOBALCONFIGURE_H

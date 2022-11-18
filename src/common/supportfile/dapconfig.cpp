@@ -69,7 +69,6 @@ bool DapSupportConfig::readFromSupportFile(const QString &filePath, JavaDapPlugi
 
     javaconfig.launchPackageUrl = valueObject.value("launch_package_url").toString();
     javaconfig.dapPackageUrl = valueObject.value("dap_package_url").toString();
-    javaconfig.configHomePath = valueObject.value("config_home_path").toString();
     javaconfig.launchPackageName = valueObject.value("launch_package_name").toString();
     javaconfig.dapPackageName = valueObject.value("dap_package_name").toString();
     javaconfig.launchPackageFile = javaconfig.launchPackageName + valueObject.value("launch_package_file").toString();
@@ -80,7 +79,6 @@ bool DapSupportConfig::readFromSupportFile(const QString &filePath, JavaDapPlugi
 
     if (javaconfig.launchPackageUrl.isEmpty()
             || javaconfig.dapPackageUrl.isEmpty()
-            || javaconfig.configHomePath.isEmpty()
             || javaconfig.launchPackageName.isEmpty()
             || javaconfig.dapPackageName.isEmpty()
             || javaconfig.launchPackageFile.isEmpty()

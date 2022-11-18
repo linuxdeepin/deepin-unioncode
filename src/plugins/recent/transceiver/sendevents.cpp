@@ -31,7 +31,6 @@ void SendEvents::recentOpenFile(const QString &filePath)
     recentOpenFile.setData(D_OPENDOCUMENT);
     recentOpenFile.setProperty(P_FILEPATH, filePath);
     dpf::EventCallProxy::instance().pubEvent(recentOpenFile);
-    navEditShow();
 }
 
 void SendEvents::navEditShow()

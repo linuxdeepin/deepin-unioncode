@@ -54,6 +54,10 @@ OPI_OBJECT(symbol,
            OPI_INTERFACE(parseDone, "workspace", "language", "storage")
            )
 
+OPI_OBJECT(navigation,
+           OPI_INTERFACE(doSwitch, "actionText")
+           )
+
 extern const QString T_NAV;
 extern const QString T_MENU;
 extern const QString T_FILEBROWSER;

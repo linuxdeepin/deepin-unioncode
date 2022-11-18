@@ -34,6 +34,7 @@ public:
 
     bool prepareDebug(const QString &fileName, QString &retMsg);
     bool requestDAPPort(const QString &uuid, const QString &kit,
+                        const QString &projectPath,
                         const QString &fileName,
                         QString &retMsg);
     bool isLaunchNotAttach();

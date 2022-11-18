@@ -49,18 +49,18 @@ const QString K_TOOLCHAIN_DEBUGGER{"toolchain_debugger"};
 
 bool toolchains::generatGlobalFile()
 {
-    using namespace toolchains;
-    // 获取已安装的工具链扫描脚本
-    auto script = CustomPaths::global(CustomPaths::Scripts) + QDir::separator() + K_SCIRPTNAME;
-    // 执行扫描脚本，隐式规则 "$HOME/.config/unioncode/configures/toolchains.support"
-    ProcessUtil::execute(script, {}, [=](const QByteArray &out){
+    auto script = CustomPaths::global(CustomPaths::Scripts) + QDir::separator() + toolchains::K_SCIRPTNAME;
+    if (!QFileInfo(script).isFile())
+        return false;
+
+    QString result = CustomPaths::user(CustomPaths::Configures) + QDir::separator() + toolchains::K_TOOLCHAINFILE;
+    ProcessUtil::execute(script, {result}, [=](const QByteArray &out){
         qInfo() << out;
     });
-    // 返回脚本标定路径
-    QString result = CustomPaths::user(CustomPaths::Configures) + QDir::separator() + K_TOOLCHAINFILE;
+
     if (QFile(result).exists())
         return true;
-    else
-        return false;
+
+    return false;
 }
 

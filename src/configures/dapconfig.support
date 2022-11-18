@@ -2,7 +2,6 @@
     "java_config_path" : {
         "launch_package_url" : "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/java/1.12.2022100704/vspackage?targetPlatform=",
         "dap_package_url" : "https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-debug/0.44.2022100903/vspackage",
-        "config_home_path" : "/.config/unioncode/",
         "launch_package_name" : "redhatjava",
         "dap_package_name" : "vscjava",
         "launch_package_file" : "/extension/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar",

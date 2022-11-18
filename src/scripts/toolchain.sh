@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #
-#  Copyright (C) 2020 ~ 2021 Uniontech Software Technology Co., Ltd.
+#  Copyright (C) 2020 ~ 2022 Uniontech Software Technology Co., Ltd.
 #
 #    Author:     xiaozaihu<xiaozaihu@uniontech.com>
 # 
 #    Maintainer: xiaozaihu<xiaozaihu@uniontech.com>
-#                
+#                zhouyi<zhouyi1@uniontech.com>
 #
 #  This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -23,14 +23,7 @@
 # 
 #  Init The Native Runtime Environments For UnionCode IDE
 #
-export UNIONCODE_VERSION="1.1.6"
-export UNIONCODE_SCRIPTS="/usr/lib/x86_64-linux-gnu/unioncode/scripts"
-export UNIONCODE_CONFIG="$HOME/.config/unioncode"
-export TOOLCHAINS="$HOME/.config/unioncode/configures/toolchains_cxx.support"
-
-if [ ! -d "$UNIONCODE_CONFIG" ] ; then
-	mkdir -pv "$UNIONCODE_CONFIG"
-fi
+export TOOLCHAINS=$1
 
 echo "[" > $TOOLCHAINS
 

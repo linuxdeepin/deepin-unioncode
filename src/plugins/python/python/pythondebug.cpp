@@ -21,6 +21,7 @@
 #include "pythondebug.h"
 
 #include "services/option/optionmanager.h"
+#include "common/util/custompaths.h"
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -74,16 +75,19 @@ bool PythonDebug::prepareDebug(const QString &fileName, QString &retMsg)
 
 
 bool PythonDebug::requestDAPPort(const QString &uuid, const QString &kit,
+                                 const QString &projectPath,
                                  const QString &fileName,
                                  QString &retMsg)
 {
     QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                   "com.deepin.unioncode.interface",
                                                   "launch_python_dap");
+    QString projectCachePath = CustomPaths::projectCachePath(projectPath);
     msg << uuid
         << kit
         << OptionManager::getInstance()->getPythonToolPath()
-        << fileName;
+        << fileName
+        << projectCachePath;
 
     bool ret = QDBusConnection::sessionBus().send(msg);
     if (!ret) {

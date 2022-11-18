@@ -50,7 +50,8 @@ public slots:
                                const QString &jreExecute,
                                const QString &launchPackageFile,
                                const QString &launchConfigPath,
-                               const QString &dapPackageFile);
+                               const QString &dapPackageFile,
+                               const QString &projectCachePath);
     void slotResolveClassPath(const QString &mainClass,
                               const QString &projectName);
     void slotCheckInfo();
@@ -61,7 +62,8 @@ private:
     void initialize(const QString &configHomePath,
                     const QString &jreExecute,
                     const QString &launchPackageFile,
-                    const QString &launchConfigPath);
+                    const QString &launchConfigPath,
+                    const QString &projectCachePath);
     void executeCommand(const QString &command);
     void parseResult(const QString &content);
     bool parseMainClass(const QString &content, QString &mainClass, QString &projectName);

@@ -20,6 +20,7 @@
 */
 #include "projectreceiver.h"
 #include "common/common.h"
+#include "services/window/windowelement.h"
 
 static QStringList subTopics
 {
@@ -40,14 +41,13 @@ dpf::EventHandler::Type ProjectReceiver::type()
 
 QStringList ProjectReceiver::topics()
 {
-    return subTopics; //绑定menu 事件
+    return {project.topic}; //绑定menu 事件
 }
 
 void ProjectReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!subTopics.contains(event.topic())) {
-        qCritical() << event;
-        abort();
+    if (event.data() == project.openProject.name) {
+        navigation.doSwitch({dpfservice::MWNA_EDIT});
     }
 }
 

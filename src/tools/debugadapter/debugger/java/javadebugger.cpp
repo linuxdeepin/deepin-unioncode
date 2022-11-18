@@ -100,25 +100,26 @@ void JavaDebugger::registerLaunchDAPConnect()
                           "/path",
                           "com.deepin.unioncode.interface",
                           "launch_java_dap",
-                          this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString,
+                          this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString, QString
                                                            QString, QString, QString, QString, QString)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "launch_java_dap",
-                       this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString,
+                       this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString, QString
                                                         QString, QString, QString, QString, QString)));
 }
 
 void JavaDebugger::initialize(const QString &configHomePath,
                               const QString &jreExecute,
                               const QString &launchPackageFile,
-                              const QString &launchConfigPath)
+                              const QString &launchConfigPath,
+                              const QString &projectCachePath)
 {
     if (d->initialized)
         return;
 
-    d->configPath = QDir::homePath() + configHomePath;
+    d->configPath = configHomePath;
     int startPort = 6000;
 
     auto checkPortFree = [](int port) {
@@ -144,8 +145,8 @@ void JavaDebugger::initialize(const QString &configHomePath,
     QString javaPath = d->configPath + jreExecute;
     QString launcherPath = d->configPath + launchPackageFile;
     QString configLinuxPath = d->configPath + launchConfigPath;
-    QString heapDumpPath = d->configPath + "data/javalog/heapdump/headdump.java";
-    QString dataPath = d->configPath + "data/javalog/jdt_ws";
+    QString heapDumpPath = projectCachePath + "/dap/javalog/heapdump/headdump.java";
+    QString dataPath = projectCachePath + "/dap/javalog/jdt_ws";
 
     QString param = d->javaparam.getInitBackendParam(validPort,
                                                      javaPath,
@@ -170,7 +171,8 @@ void JavaDebugger::slotReceivePojectInfo(const QString &uuid,
                                          const QString &jreExecute,
                                          const QString &launchPackageFile,
                                          const QString &launchConfigPath,
-                                         const QString &dapPackageFile)
+                                         const QString &dapPackageFile,
+                                         const QString &projectCachePath)
 {
     d->port = 0;
     d->mainClass.clear();
@@ -181,7 +183,7 @@ void JavaDebugger::slotReceivePojectInfo(const QString &uuid,
     d->workspace = workspace;
     d->kit = kit;
 
-    initialize(configHomePath, jreExecute, launchPackageFile, launchConfigPath);
+    initialize(configHomePath, jreExecute, launchPackageFile, launchConfigPath, projectCachePath);
 
     int pid = static_cast<int>(QApplication::applicationPid());
 

@@ -26,6 +26,7 @@
 #include "common/util/fileoperation.h"
 #include "common/util/eventdefinitions.h"
 #include "common/util/processutil.h"
+#include "common/util/custompaths.h"
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -81,6 +82,7 @@ bool JavaDebug::requestDAPPort(const QString &uuid, const QString &kit,
     QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                   "com.deepin.unioncode.interface",
                                                   "launch_java_dap");
+    QString projectCachePath = CustomPaths::projectCachePath(projectPath);
     msg << uuid
         << kit
         << projectPath
@@ -89,7 +91,8 @@ bool JavaDebug::requestDAPPort(const QString &uuid, const QString &kit,
         << d->javaDapPluginConfig.jreExecute
         << d->javaDapPluginConfig.launchPackageFile
         << d->javaDapPluginConfig.launchConfigPath
-        << d->javaDapPluginConfig.dapPackageFile;
+        << d->javaDapPluginConfig.dapPackageFile
+        << projectCachePath;
 
     bool ret = QDBusConnection::sessionBus().send(msg);
     if (!ret) {
@@ -119,6 +122,7 @@ bool JavaDebug::checkConfigFile(QString &retMsg)
         return false;
     }
 
+    d->javaDapPluginConfig.configHomePath = CustomPaths::user(CustomPaths::Configures) + QDir::separator();
     d->javaDapPluginConfig.launchPackageUrl += arch;
 
     return true;
@@ -126,7 +130,7 @@ bool JavaDebug::checkConfigFile(QString &retMsg)
 
 void JavaDebug::checkJavaLSPPlugin()
 {
-    QString configFolder = QDir::homePath() + d->javaDapPluginConfig.configHomePath;
+    QString configFolder = d->javaDapPluginConfig.configHomePath;
     bool bLaunchJarPath = QFileInfo(configFolder + d->javaDapPluginConfig.launchPackageFile).isFile();
     bool bJrePath = QFileInfo(configFolder + d->javaDapPluginConfig.jreExecute).isFile();
     if (!bLaunchJarPath || !bJrePath) {
@@ -193,7 +197,7 @@ void JavaDebug::checkJavaLSPPlugin()
 
 void JavaDebug::checkJavaDAPPlugin()
 {
-    QString configFolder = QDir::homePath() + d->javaDapPluginConfig.configHomePath;
+    QString configFolder = d->javaDapPluginConfig.configHomePath;
     bool bDapJarPath = QFileInfo(configFolder + d->javaDapPluginConfig.dapPackageFile).isFile();
     if (!bDapJarPath) {
         FileOperation::deleteDir(configFolder + d->javaDapPluginConfig.dapPackageName);
@@ -308,7 +312,7 @@ dap::LaunchRequest JavaDebug::launchDAP(const QString &workspace,
         dapClassPaths.push_back(classpath.toStdString());
     }
     request.classPaths = dapClassPaths;
-    QString javaExec = QDir::homePath() + d->javaDapPluginConfig.configHomePath + d->javaDapPluginConfig.jreExecute;
+    QString javaExec = d->javaDapPluginConfig.configHomePath + d->javaDapPluginConfig.jreExecute;
     request.javaExec = javaExec.toStdString();
     request.shortenCommandLine = "none";
     request.__sessionId = QUuid::createUuid().toString().toStdString();
