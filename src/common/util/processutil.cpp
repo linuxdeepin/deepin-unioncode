@@ -38,13 +38,25 @@ bool ProcessUtil::execute(const QString &program,
                           const QString &workdir,
                           ProcessUtil::ReadCallBack func)
 {
+    return execute(program, arguments, workdir, QProcess().processEnvironment(), func);
+}
+
+bool ProcessUtil::execute(const QString &program,
+                          const QStringList &arguments,
+                          const QString &workdir,
+                          const QProcessEnvironment &env,
+                          ProcessUtil::ReadCallBack func)
+{
     bool ret = true;
     QProcess process;
     process.setWorkingDirectory(workdir);
     process.setProgram(program);
     process.setArguments(arguments);
+    process.setProcessEnvironment(env);
     process.connect(&process, QOverload<int, QProcess::ExitStatus >::of(&QProcess::finished),
                     [&](int exitCode, QProcess::ExitStatus exitStatus){
+        if (exitCode != 0)
+            ret = false;
         qInfo() << program << arguments.join(" ")
                 << "exitCode: " << exitCode
                 << "exitStatus: " << exitStatus;

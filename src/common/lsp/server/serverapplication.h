@@ -49,24 +49,59 @@ public:
         }
     };
 
-    struct Stderr : LogFormat {
+    struct LogValue
+    {
+        template<class T>
+        T operator << (const T &t){
+            return t;
+        }
+
+        std::string operator << (const QString &qStr){
+            return qStr.toStdString();
+        }
+
+        std::string operator << (const std::list<QString> &listqStr)
+        {
+            std::string ret = "";
+            for (auto qStr: listqStr) {
+                if (ret.empty())
+                    ret += "(";
+                else
+                    ret += "," + qStr.toStdString();
+            }
+            ret += ")";
+            return ret;
+        }
+
+        std::string operator << (const QList<QString> &qListStr)
+        {
+            return operator<<(qListStr.toStdList());
+        }
+
+        std::string operator << (const QStringList &qStrList)
+        {
+            return operator<<(qStrList.toStdList());
+        }
+    };
+
+    struct Stderr : LogFormat, LogValue{
         Stderr(const Stderr &) = delete;
         Stderr(const std::vector<std::string> &perfixs = {}) : LogFormat(perfixs)
         { std::cerr << perfixsString(); }
         ~Stderr() {std::cerr << std::endl;}
         template<class T> Stderr& operator << (const T &t) {
-             std::cerr << t << " ";
+            std::cerr << LogValue::operator<<(t) << " ";
             return *this;
         }
     };
 
-    struct Stdout : LogFormat {
+    struct Stdout : LogFormat, LogValue{
         Stdout(const Stderr &) = delete;
         Stdout(const std::vector<std::string> &perfixs = {}) : LogFormat(perfixs)
         { std::cout << perfixsString(); }
         ~Stdout() {std::cout << std::endl;}
         template<class T> Stdout& operator << (const T &t) {
-            std::cout << t << " ";
+            std::cout << LogValue::operator<<(t) << " ";
             return *this;
         }
     };

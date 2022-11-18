@@ -6,7 +6,6 @@ add_subdirectory(filebrowser)
 add_subdirectory(collaborators)
 add_subdirectory(console)
 add_subdirectory(builder)
-add_subdirectory(toolchecker)
 #remove it until system lock issue resolved.
 #add_subdirectory(container)
 add_subdirectory(project)

@@ -1082,9 +1082,13 @@ ClientPrivate::ClientPrivate(Client * const q)
     QObject::connect(q, &QProcess::readyReadStandardError,
                      this, [=]()
     {
+#ifdef QT_DEBUG
         std::cout /*<< "lspServerProc error out:\n"*/
                 << QString(q->readAllStandardError()).toStdString()
                 << std::endl;
+#else
+        qCritical() << q->readAllStandardError();
+#endif
     });
 
     QObject::connect(q, &QProcess::readyReadStandardOutput,

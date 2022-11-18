@@ -27,7 +27,8 @@ const QString unionparser{"unionparser"};
 SymbolParser::SymbolParser(QObject *parent)
     : QProcess (parent)
 {
-    auto procEnv = Environment::get(Environment::User, Environment::Python, 3);
+    setProgram("/usr/bin/bash");
+    auto procEnv = env::lang::get(env::lang::User, env::lang::Python, 3);
     for (auto val : procEnv.keys()) {
         qInfo()<< val << procEnv.value(val);
     }
@@ -36,6 +37,14 @@ SymbolParser::SymbolParser(QObject *parent)
     for (auto val : env.keys()) {
         qInfo() << val << env.value(val);
     }
+    QObject::connect(this, &QProcess::errorOccurred,
+                     this, &SymbolParser::errorOccurred);
+    QObject::connect(this, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                     this, &SymbolParser::finished);
+    QObject::connect(this, &QProcess::readyReadStandardError,
+                     this, &SymbolParser::redirectErr);
+    QObject::connect(this, &QProcess::readyReadStandardOutput,
+                     this, &SymbolParser::redirectOut);
  }
 
 void SymbolParser::setArgs(const SymbolParseArgs &args)
@@ -80,17 +89,14 @@ QString SymbolParser::getLanguage() const
 
 void SymbolParser::start()
 {
+#ifdef QT_DEBUG
     setProcessChannelMode(QProcess::ForwardedChannels);
-    setProgram("unionparser");
-    QStringList args;
-    args << "-w" << processArgs.workspace;
-    args << "-l" << processArgs.language;
-    args << "-s" << processArgs.storage;
-    setArguments(args);
-    QObject::connect(this, &QProcess::errorOccurred,
-                     this, &SymbolParser::errorOccurred);
-    QObject::connect(this, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                     this, &SymbolParser::finished);
+#endif
+    QString programLine = "unionparser";
+    programLine += " -w " + processArgs.workspace;
+    programLine += " -l " + processArgs.language;
+    programLine += " -s " + processArgs.storage;
+    setArguments({"-c", programLine});
     QProcess::start();
 }
 
@@ -137,4 +143,14 @@ void SymbolParser::finished(int exitCode, QProcess::ExitStatus status)
         parseDone(true);
     else
         parseDone(false);
+}
+
+void SymbolParser::redirectOut()
+{
+    qDebug() << QProcess::readAllStandardOutput();
+}
+
+void SymbolParser::redirectErr()
+{
+    qCritical() << QProcess::readAllStandardError();
 }

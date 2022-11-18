@@ -4,7 +4,6 @@ set(CPPDAP_DIR ${CMAKE_SOURCE_DIR}/3rdparty/cppdap)
 include_directories(${CPPDAP_DIR}/include)
 
 set(CXX_H
-    toolchecker/toolcheckerservice.h
     window/windowelement.h
     window/windowservice.h
     debugger/debuggerservice.h

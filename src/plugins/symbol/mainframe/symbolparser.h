@@ -60,6 +60,8 @@ signals:
 private slots:
     void errorOccurred(QProcess::ProcessError err);
     void finished(int exitCode, QProcess::ExitStatus status);
+    void redirectOut();
+    void redirectErr();
 
 private:
     SymbolParseArgs processArgs;

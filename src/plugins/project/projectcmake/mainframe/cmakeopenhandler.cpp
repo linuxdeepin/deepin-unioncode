@@ -25,7 +25,7 @@
 #include "properties/targetsmanager.h"
 
 #include "services/window/windowservice.h"
-#include "services/toolchecker/toolcheckerservice.h"
+#include "services/project/projectservice.h"
 
 #include "base/abstractaction.h"
 #include "base/abstractwidget.h"
@@ -97,12 +97,8 @@ void CMakeOpenHandler::doProjectOpen(const QString &name, const QString &languag
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    ToolCheckerSevice *toolCheckerService = ctx.service<ToolCheckerSevice>(ToolCheckerSevice::name());
-    if (!projectService || !windowService || !toolCheckerService)
+    if (!projectService || !windowService)
         return;
-
-    if (toolCheckerService->checkLanguageBackend)
-        toolCheckerService->checkLanguageBackend(language);
 
     auto generator = projectService->createGenerator<CmakeGenerator>(name);
     if (!generator)

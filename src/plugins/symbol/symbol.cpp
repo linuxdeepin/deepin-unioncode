@@ -44,6 +44,18 @@ void Symbol::initialize()
 bool Symbol::start()
 {
     qInfo() << __FUNCTION__;
+    QString unionparser = "unionparser";
+    auto procEnv = env::lang::get(env::lang::User, env::lang::Python, {3});
+    if (!ProcessUtil::execute("/usr/bin/bash", {"-c", unionparser + " --help"}, QDir::homePath(),
+                                  procEnv, [=](const QByteArray &data){qInfo() << data;})) {
+        if (env::pkg::native::installed()) {
+            QString parserNativePkgPath = env::pkg::native::path(env::pkg::Category::get()->unionparser);
+            Pip3Dialog dialog;
+            dialog.install(parserNativePkgPath);
+            dialog.exec();
+        }
+    }
+
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {

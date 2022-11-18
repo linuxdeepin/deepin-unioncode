@@ -47,6 +47,9 @@ set(CXX_H
     supportfile/dapconfig.h
     dialog/contextdialog.h
     dialog/propertiesdialog.h
+    dialog/pip3dialog.h
+    dialog/processdialog.h
+    dialog/wgetdialog.h
     widget/configurewidget.h
     widget/collapsewidget.h
     widget/detailsbutton.h
@@ -97,6 +100,9 @@ set(CXX_CPP
     supportfile/dapconfig.cpp
     dialog/contextdialog.cpp
     dialog/propertiesdialog.cpp
+    dialog/pip3dialog.cpp
+    dialog/processdialog.cpp
+    dialog/wgetdialog.cpp
     widget/configurewidget.cpp
     widget/collapsewidget.cpp
     widget/detailsbutton.cpp

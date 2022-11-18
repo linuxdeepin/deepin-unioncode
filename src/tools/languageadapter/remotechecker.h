@@ -18,18 +18,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef DPKGDEBCHECKER_H
-#define DPKGDEBCHECKER_H
+#ifndef BACKENDCHECKER_H
+#define BACKENDCHECKER_H
 
-#include <QString>
+#include "framework/framework.h"
 
-class DpkgDebChecker
+#include <QWidget>
+#include <QUrl>
+#include <QProcess>
+#include <QProgressBar>
+#include <QDir>
+#include <QTextBrowser>
+#include <QCryptographicHash>
+
+class RemoteChecker
 {
 public:
-    DpkgDebChecker();
-    static DpkgDebChecker &instance();
-    bool repoHasPkg(const QString &packageName, const QString laterVersion = "");
-    bool toInstall(const QString &packageName, const QString laterVersion = "");
+    explicit RemoteChecker();
+    static RemoteChecker &instance();
+    void checkLanguageBackend(const QString &language);
+    bool checkShasum(const QString &filePath, const QString &src_code, const QString &mode);
+    QString getRemoteFile(const QUrl &url);
+    bool saveRemoteFile(const QUrl &url, const QString &saveFilePath);
+private:
+    void doCheckClangd(const QString &language);
+    void doCheckJdtls(const QString &language);
+    void doCheckPyls(const QString &language);
 };
 
-#endif // DPKGDEBCHECKER_H
+#endif // BACKENDCHECKER_H

@@ -18,10 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "backendchecker.h"
-#include "pip3dialog.h"
-#include "wgetdialog.h"
-
+#include "remotechecker.h"
 #include "common/common.h"
 
 #include <QDirIterator>
@@ -36,7 +33,7 @@ bool checkJdtlsFlag = false;
 bool checkPylsFlag = false;
 }
 
-void BackendChecker::doCheckClangd(const QString &language)
+void RemoteChecker::doCheckClangd(const QString &language)
 {
     if (checkClangdFlag)
         return;
@@ -63,9 +60,9 @@ void BackendChecker::doCheckClangd(const QString &language)
         }
     }
     if (!platformSupports.contains(currentPlatform)) {
-        qCritical() << "get remote platform support error"
-                    << ", remote:" << platformSupports
-                    << ", local:" << currentPlatform;
+        lspServErr << "get remote platform support error"
+                   << ", remote:" << platformSupports
+                   << ", local:" << currentPlatform;
         return;
     }
 
@@ -116,7 +113,7 @@ void BackendChecker::doCheckClangd(const QString &language)
     }
 }
 
-void BackendChecker::doCheckJdtls(const QString &language)
+void RemoteChecker::doCheckJdtls(const QString &language)
 {
     if (checkJdtlsFlag)
         return;
@@ -172,7 +169,7 @@ void BackendChecker::doCheckJdtls(const QString &language)
     }
 }
 
-void BackendChecker::doCheckPyls(const QString &language)
+void RemoteChecker::doCheckPyls(const QString &language)
 {
     Q_UNUSED(language)
 
@@ -195,19 +192,18 @@ void BackendChecker::doCheckPyls(const QString &language)
     }
 }
 
-BackendChecker::BackendChecker(QWidget *parent)
-    : QWidget(parent)
+RemoteChecker::RemoteChecker()
 {
 
 }
 
-BackendChecker &BackendChecker::instance()
+RemoteChecker &RemoteChecker::instance()
 {
-    static BackendChecker ins;
+    static RemoteChecker ins;
     return ins;
 }
 
-void BackendChecker::checkLanguageBackend(const QString &language)
+void RemoteChecker::checkLanguageBackend(const QString &language)
 {
     if (language == "C/C++") {
         doCheckClangd(language);
@@ -219,7 +215,7 @@ void BackendChecker::checkLanguageBackend(const QString &language)
     }
 }
 
-bool BackendChecker::checkShasum(const QString &filePath, const QString &src_code, const QString &mode)
+bool RemoteChecker::checkShasum(const QString &filePath, const QString &src_code, const QString &mode)
 {
     QProcess checkProcess;
     checkProcess.setProgram("shasum");
@@ -235,7 +231,7 @@ bool BackendChecker::checkShasum(const QString &filePath, const QString &src_cod
     return src_code == output;
 }
 
-QString BackendChecker::getRemoteFile(const QUrl &url)
+QString RemoteChecker::getRemoteFile(const QUrl &url)
 {
     QString ret;
     while (ret.isEmpty()) {
@@ -243,7 +239,10 @@ QString BackendChecker::getRemoteFile(const QUrl &url)
         curlProc.setProgram("curl");
         curlProc.setArguments({url.toEncoded()});
         curlProc.start();
-        qInfo() << curlProc.program() << curlProc.arguments();
+        lspServOut << curlProc.program().toStdString();
+        for (auto args : curlProc.arguments()) {
+            lspServOut << "," << args.toStdString();
+        }
         curlProc.waitForFinished(1500);
 
         if (curlProc.exitCode() == 0)
@@ -255,7 +254,7 @@ QString BackendChecker::getRemoteFile(const QUrl &url)
     return ret;
 }
 
-bool BackendChecker::saveRemoteFile(const QUrl &url, const QString &saveFilePath)
+bool RemoteChecker::saveRemoteFile(const QUrl &url, const QString &saveFilePath)
 {
     QString data = getRemoteFile(url);
     if (data.isEmpty()) {

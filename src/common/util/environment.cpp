@@ -18,20 +18,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "config.h"
 #include "environment.h"
 #include "processutil.h"
 
 #include <QRegularExpression>
 #include <QDir>
 #include <QDebug>
+#include <QDirIterator>
 
 #include <iostream>
-namespace Environment {
+namespace environment {
 
 const QString RK_Major{"Major"};
 const QString RK_Minor{"Minor"};
 const QString RK_Revision{"Revision"};
 const QString RK_Build{"Build"};
+
+namespace language {
 
 Version completion(Category category, Kit kit, const Version &version)
 {
@@ -155,4 +159,45 @@ Version &Version::operator =(const Version &version)
     return *this;
 }
 
+} // language
+
+/*!
+ * @brief package::native::path
+ *  get local install offline packge path
+ * @param category use package name to search
+ * @return if Category is empty return install top path, else return package name path
+ */
+QString package::native::path(const Category::type_value &category)
+{
+    QString envPath = QString(LIBRARY_INSTALL_PREFIX)
+            + QDir::separator() + "tools"
+            + QDir::separator() + "env";
+    QDirIterator dirItera(envPath, QDir::Files|QDir::NoDotAndDotDot);
+    if (category.isEmpty()) {
+        return envPath;
+    } else {
+        while (dirItera.hasNext()) {
+            dirItera.next();
+            QFileInfo info = dirItera.fileInfo();
+            if (category == info.fileName() || info.fileName().contains(category)) {
+                return info.filePath();
+            }
+        }
+    }
+    return envPath;
 }
+
+/*!
+ * \brief environment::package::native::installed
+ *  Determine whether the current offline package is installed
+ * \return if install return true, else return false
+ */
+bool environment::package::native::installed()
+{
+    QDir dir(path());
+    if (dir.exists())
+        return true;
+    return false;
+}
+
+} // environment

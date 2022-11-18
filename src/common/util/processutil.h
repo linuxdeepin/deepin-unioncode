@@ -43,6 +43,12 @@ public:
                         const QString &workdir,
                         ReadCallBack func = nullptr);
 
+    static bool execute(const QString &program,
+                        const QStringList &arguments,
+                        const QString &workdir,
+                        const QProcessEnvironment &env,
+                        ReadCallBack func = nullptr);
+
     static bool exists(const QString &name);
     static QString version(const QString &name);
 

@@ -22,6 +22,9 @@
 #define COMMON_H
 
 #include "dialog/contextdialog.h"
+#include "dialog/wgetdialog.h"
+#include "dialog/pip3dialog.h"
+#include "dialog/processdialog.h"
 #include "inotify/inotify.h"
 #include "lsp/lsp.h"
 #include "type/constants.h"

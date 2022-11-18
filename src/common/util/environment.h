@@ -21,21 +21,14 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
+#include <common/type/menuext.h>
 #include <QProcessEnvironment>
 
-namespace Environment
-{
+namespace environment {
+namespace language {
 
-enum Category
-{
-    User,
-    System,
-};
-
-enum Kit
-{
-    Python
-};
+enum Category{User,System};
+enum Kit{Python};
 
 struct Version final
 {
@@ -60,6 +53,22 @@ struct Program final
 Version completion(Category category, Kit kit, const Version &version);
 Program search(Category category, Kit kit, const Version& version);
 QProcessEnvironment get(Category category, Kit kit, const Version& version);
+}namespace lang = language;
 
+namespace package {
+enum_def(Category, QString)
+{
+    enum_exp clangd = "clangd";
+    enum_exp jdtls = "jdt-language-server";
+    enum_exp unionparser = "unionparser";
 };
+namespace native {
+QString path(const Category::type_value &category = "");
+bool installed();
+} // native
+} namespace pkg = package;
+
+}namespace env = environment;
+
+
 #endif // ENVIRONMENT_H

@@ -736,14 +736,14 @@ void TextEditTabWidget::paintEvent(QPaintEvent *event)
         painter.setPen(d->selColor);
         painter.drawRect(this->rect());
         painter.restore();
-        qInfo() << "setting custom color" << this;
+        // qInfo() << "setting custom color" << this;
     } else {
         if (!d->defColor.isValid()) {
             d->defColor = palette().background().color();
             d->selColor = QColor(d->defColor.red() + 20, d->defColor.green() + 20, d->defColor.blue() + 20, d->defColor.alpha());
-            qInfo() << "cache default color" << this;
+            // qInfo() << "cache default color" << this;
         } else {
-            qInfo() << "recovery default color" << this;
+            // qInfo() << "recovery default color" << this;
             QPainter painter(this);
             painter.save();
             painter.setPen(d->defColor);
