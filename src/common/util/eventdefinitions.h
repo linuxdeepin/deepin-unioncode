@@ -4,6 +4,7 @@
  * Author:     huangyu<huangyub@uniontech.com>
  *
  * Maintainer: huangyu<huangyub@uniontech.com>
+ *             hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@
 
 #endif // EVENTDEFINITIONS_H
 
+#include "common/lsp/protocol/newprotocol.h"
 #include "framework.h"
 
 #include <QString>
@@ -57,6 +59,24 @@ OPI_OBJECT(symbol,
 OPI_OBJECT(navigation,
            OPI_INTERFACE(doSwitch, "actionText")
            )
+
+OPI_OBJECT(actionanalyse,
+           OPI_INTERFACE(analyse, "workspace", "language", "storage")
+           OPI_INTERFACE(analyseDone, "workspace", "language", "storage", "analysedData") // custom struct from analyseDone
+           )
+
+struct AnalysedData
+{
+    struct TokenMap
+    {
+        newlsp::Enum::SemanticTokenTypes::type_value semanticTokenType;
+        newlsp::Enum::SemanticTokenModifiers::type_value semanticTokenModifier;
+        std::vector<float> result;
+    };
+    std::vector<std::string> rules;
+    std::vector<TokenMap> tokenMaps;
+};
+Q_DECLARE_METATYPE(AnalysedData);
 
 extern const QString T_NAV;
 extern const QString T_MENU;

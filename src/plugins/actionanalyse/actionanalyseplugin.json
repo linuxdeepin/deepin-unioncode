@@ -1,5 +1,5 @@
 {
-    "Name" : "plugin-symbol",
+    "Name" : "plugin-actionanalyse",
     "Version" : "4.8.2",
     "CompatVersion" : "4.8.0",
     "Vendor" : "The Uniontech Software Technology Co., Ltd.",
@@ -17,9 +17,9 @@
             will be met: https://www.gnu.org/licenses/gpl-3.0.html."
     ],
     "Category" : "",
-    "Description" : "The core plugin for the unioncode.",
+    "Description" : "The actionanalyse plugin for the unioncode.",
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [
-        {"Name" : "plugin-codeeditor"}
+        {"Name" : "plugin-symbol"}
     ]
 }
