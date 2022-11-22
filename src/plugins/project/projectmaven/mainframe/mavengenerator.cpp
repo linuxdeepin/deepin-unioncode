@@ -21,10 +21,15 @@
 #include "mavengenerator.h"
 #include "mavenasynparse.h"
 #include "mavenitemkeeper.h"
+
+#include "properties/configpropertywidget.h"
+
 #include "transceiver/sendevents.h"
 #include "transceiver/projectmavenreceiver.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
+
+#include "common/dialog/propertiesdialog.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
@@ -180,6 +185,12 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
     // execute logic
     parse->parseActions(info);
 
+    QAction *action = new QAction("Properties");
+    menu->addAction(action);
+    QObject::connect(action, &QAction::triggered, [=](){
+        actionProperties(info);
+    });
+
     return menu;
 }
 
@@ -227,4 +238,12 @@ void MavenGenerator::doActionTriggered()
             builderService->interface.builderCommand(commandInfo);
         }
     }
+}
+
+void MavenGenerator::actionProperties(const dpfservice::ProjectInfo &info)
+{
+    PropertiesDialog dlg;
+    ConfigPropertyWidget *property = new ConfigPropertyWidget(info);
+    dlg.insertPropertyPanel("Config", property);
+    dlg.exec();
 }

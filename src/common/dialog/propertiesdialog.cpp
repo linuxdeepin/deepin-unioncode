@@ -74,8 +74,6 @@ void PropertiesDialog::showPropertyPanel(const QString &itemName, const QString 
         headTitle->setText(itemName);
     }
 
-    readConfig();
-
     this->exec();
 }
 

@@ -1,10 +1,10 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     zhouyi<zhouyi1@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
- *             zhouyi<zhouyi1@uniontech.com>
+ * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ *
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,49 +19,49 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef BUILDPROPERTYWIDGET_H
-#define BUILDPROPERTYWIDGET_H
+#ifndef CONFIGPROPERTYWIDGET_H
+#define CONFIGPROPERTYWIDGET_H
 
-#include "configutil.h"
+#include "mainframe/properties/configutil.h"
 
-#include "common/widget/pagewidget.h"
-#include "common/widget/configurewidget.h"
+#include "services/project/projectinfo.h"
 
+class PageWidget;
 class DetailPropertyWidgetPrivate;
-class DetailPropertyWidget : public ConfigureWidget
+class DetailPropertyWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit DetailPropertyWidget(QWidget *parent = nullptr);
     ~DetailPropertyWidget();
 
-    void setValues(const config::BuildConfigure &configure);
-    void getValues(config::BuildConfigure &configure);
+    void setValues(const config::ConfigureParam *param);
+    void getValues(config::ConfigureParam *param);
 
 private:
+    void setupUI();
+    void initData();
+
     DetailPropertyWidgetPrivate *const d;
 };
 
-class BuildPropertyWidgetPrivate;
-class BuildPropertyWidget : public PageWidget
+class ConfigPropertyWidgetPrivate;
+class ConfigPropertyWidget : public PageWidget
 {
     Q_OBJECT
 public:
-    explicit BuildPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QWidget *parent = nullptr);
-    virtual ~BuildPropertyWidget() override;
+    explicit ConfigPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QWidget *parent = nullptr);
+    virtual ~ConfigPropertyWidget() override;
 
-    void readConfig() override;
     void saveConfig() override;
 
 public slots:
-    void updateDetail();
 
 private:
-    void setupOverviewUI();
+    void setupUI();
     void initData(const dpfservice::ProjectInfo &projectInfo);
-    void initRunConfig(const QString &workDirectory, config::RunConfigure &runConfigure);
 
-    BuildPropertyWidgetPrivate *const d;
+    ConfigPropertyWidgetPrivate *const d;
 };
 
-#endif // BUILDPROPERTYWIDGET_H
+#endif // CONFIGPROPERTYWIDGET_H

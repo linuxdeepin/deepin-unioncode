@@ -43,15 +43,53 @@ enum StepType {
 };
 
 struct StepItem {
-    StepType type;
+    StepType type = Build;
     QString targetName;
     QStringList targetList;
     QString arguments;
+
+    friend QDataStream &operator<<(QDataStream &stream, const StepItem &data)
+    {
+        stream << data.type;
+        stream << data.targetName;
+        stream << data.targetList;
+        stream << data.arguments;
+
+        return stream;
+    }
+
+    friend QDataStream &operator>>(QDataStream &stream, StepItem &data)
+    {
+        int type = 0;
+        stream >> type;
+        data.type = static_cast<StepType>(type);
+        stream >> data.targetName;
+        stream >> data.targetList;
+        stream >> data.arguments;
+
+        return stream;
+    }
 };
 
 struct EnvironmentItem {
     bool enable;
     QMap<QString, QString> environments;
+
+    friend QDataStream &operator<<(QDataStream &stream, const EnvironmentItem &data)
+    {
+        stream << data.enable;
+        stream << data.environments;
+
+        return stream;
+    }
+
+    friend QDataStream &operator>>(QDataStream &stream, EnvironmentItem &data)
+    {
+        stream >> data.enable;
+        stream >> data.environments;
+
+        return stream;
+    }
 };
 
 struct RunParam {
@@ -60,27 +98,125 @@ struct RunParam {
     QString arguments;
     QString workDirectory;
     EnvironmentItem env;
+
+    friend QDataStream &operator<<(QDataStream &stream, const RunParam &data)
+    {
+        stream << data.targetName;
+        stream << data.targetPath;
+        stream << data.arguments;
+        stream << data.workDirectory;
+        stream << data.env;
+
+        return stream;
+    }
+
+    friend QDataStream &operator>>(QDataStream &stream, RunParam &data)
+    {
+        stream >> data.targetName;
+        stream >> data.targetPath;
+        stream >> data.arguments;
+        stream >> data.workDirectory;
+        stream >> data.env;
+
+        return stream;
+    }
 };
 
 struct RunConfigure {
     QString defaultTargetName;
     QVector<RunParam> params;
+
+    friend QDataStream &operator<<(QDataStream &stream, const RunConfigure &data)
+    {
+        stream << data.defaultTargetName;
+        stream << data.params;
+
+        return stream;
+    }
+
+    friend QDataStream &operator>>(QDataStream &stream, RunConfigure &data)
+    {
+        stream >> data.defaultTargetName;
+        stream >> data.params;
+
+        return stream;
+    }
 };
 
 struct BuildConfigure {
-    ConfigType type;
+    ConfigType type = Unknown;
     QString directory;
     QVector<StepItem> steps;
     EnvironmentItem env;
     RunConfigure runConfigure;
+
+    friend QDataStream &operator<<(QDataStream &stream, const BuildConfigure &data)
+    {
+        stream << data.type;
+        stream << data.directory;
+        stream << data.steps;
+        stream << data.env;
+        stream << data.runConfigure;
+
+        return stream;
+    }
+
+    friend QDataStream &operator>>(QDataStream &stream, BuildConfigure &data)
+    {
+        int type = 0;
+        stream >> type;
+        data.type = static_cast<ConfigType>(type);
+        stream >> data.directory;
+        stream >> data.steps;
+        stream >> data.env;
+        stream >> data.runConfigure;
+
+        return stream;
+    }
 };
 
 struct ConfigureParam {
     QString kit;
     QString language;
     QString projectPath;
-    ConfigType defaultType;
+    ConfigType defaultType = Unknown;
+    ConfigType tempSelType = Unknown;
     QVector<BuildConfigure> buildConfigures;
+
+    friend QDataStream &operator<<(QDataStream &stream, const ConfigureParam &data)
+    {
+        stream << data.kit;
+        stream << data.language;
+        stream << data.projectPath;
+        int type = data.defaultType;
+        stream << type;
+        stream << data.buildConfigures;
+
+        return stream;
+    }
+
+    friend QDataStream &operator>>(QDataStream &stream, ConfigureParam &data)
+    {
+        stream >> data.kit;
+        stream >> data.language;
+        stream >> data.projectPath;
+        int type = 0;
+        stream >> type;
+        data.defaultType = static_cast<ConfigType>(type);
+        stream >> data.buildConfigures;
+
+        return stream;
+    }
+
+    void clear()
+    {
+        kit.clear();
+        language.clear();
+        projectPath.clear();
+        defaultType = Unknown;
+        tempSelType = Unknown;
+        buildConfigures.clear();
+    }
 };
 
 class ConfigUtilPrivate;
@@ -90,17 +226,23 @@ class ConfigUtil final: public QObject
 public:
     static ConfigUtil *instance();
 
-    QString getConfigFilePath(const QString &projectPath, int configType);
+    ConfigUtil(const ConfigUtil &) = delete;
+    ConfigUtil &operator=(const ConfigUtil &) = delete;
+
+    QString getConfigPath(const QString &projectPath);
 
     ConfigureParam *getConfigureParamPointer();
-    void clearConfigureParam();
 
     QString getNameFromType(ConfigType type);
     ConfigType getTypeFromName(QString name);
 
+    bool getProjectInfo(const ConfigureParam *param, dpfservice::ProjectInfo &info);
+    bool isNeedConfig(const QString &projectPath, ConfigureParam &param);
     void checkConfigInfo(const QString &buildType, const QString &directory);
-
     void configProject(const ConfigureParam *param);
+
+    void readConfig(const QString &filePath, ConfigureParam &param);
+    void saveConfig(const QString &filePath, const ConfigureParam &param);
 signals:
     void configureDone(const dpfservice::ProjectInfo &info);
 

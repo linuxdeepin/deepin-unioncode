@@ -21,18 +21,21 @@
 #include "cmakeopenhandler.h"
 #include "cmakegenerator.h"
 #include "transceiver/sendevents.h"
+#include "properties/configutil.h"
+#include "properties/targetsmanager.h"
 
 #include "services/window/windowservice.h"
-#include "services/project/projectservice.h"
 #include "services/toolchecker/toolcheckerservice.h"
 
 #include "base/abstractaction.h"
+#include "base/abstractwidget.h"
 
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QComboBox>
 
 namespace {
 CMakeOpenHandler *ins {nullptr};
@@ -105,13 +108,22 @@ void CMakeOpenHandler::doProjectOpen(const QString &name, const QString &languag
     if (!generator)
         return;
 
-    auto configWidget = generator->configureWidget(language, filePath);
-    if (configWidget) {
-        configWidget->exec();
+    config::ConfigureParam *param = config::ConfigUtil::instance()->getConfigureParamPointer();
+    if (config::ConfigUtil::instance()->isNeedConfig(QFileInfo(filePath).path(), *param)) {
+        auto configWidget = generator->configureWidget(language, filePath);
+        if (configWidget) {
+            configWidget->exec();
+        }
+    } else {
+        ProjectInfo info;
+        if (config::ConfigUtil::instance()->getProjectInfo(param, info)) {
+            generator->configure(info);
+            TargetsManager::instance()->initialize(info.buildFolder());
+        }
     }
 }
 
-void CMakeOpenHandler::doActiveProject(const QString &buildDirectory)
+void CMakeOpenHandler::doActiveProject(const dpfservice::ProjectInfo &projectInfo)
 {
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
@@ -119,5 +131,64 @@ void CMakeOpenHandler::doActiveProject(const QString &buildDirectory)
     if (!projectService)
         return;
 
-    emit projectService->projectConfigureDone(buildDirectory);
+    emit projectService->projectConfigureDone(projectInfo.buildFolder());
+    if (projectInfo.kitName() == CmakeGenerator::toolKitName()) {
+        adjustToolBar(true);
+    }
+}
+
+void CMakeOpenHandler::doDeleteProject(const dpfservice::ProjectInfo &projectInfo)
+{
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService)
+        return;
+
+    if (projectInfo.kitName() == CmakeGenerator::toolKitName()) {
+        adjustToolBar(false);
+    }
+}
+
+void CMakeOpenHandler::adjustToolBar(bool bAdd)
+{
+    const QString buildTypeKey = "CMake.BuildType";
+    const QString runKey = "CMake.Run";
+    auto &ctx = dpfInstance.serviceContext();
+    using namespace dpfservice;
+    auto windowService = ctx.service<WindowService>(WindowService::name());
+    if (!windowService)
+        return;
+
+    if (bAdd) {
+        QComboBox *comboBox = new QComboBox();
+        comboBox->setEditable(false);
+        comboBox->insertItem(0, "Debug");
+        comboBox->insertItem(1, "Release");
+
+        config::ConfigureParam *param = config::ConfigUtil::instance()->getConfigureParamPointer();
+        if (config::ConfigType::Debug == param->defaultType) {
+            comboBox->setCurrentIndex(0);
+        } else if (config::ConfigType::Release == param->defaultType) {
+            comboBox->setCurrentIndex(1);
+        } else {
+            comboBox->setCurrentIndex(-1);
+        }
+
+        connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int){
+            qInfo() << comboBox->currentText();
+        });
+
+        AbstractWidget *widget = new AbstractWidget(comboBox);
+        windowService->addToolBarWidgetItem(buildTypeKey, widget);
+
+        QAction *actionRun = new QAction(tr("Run"));
+        ActionManager::getInstance()->registerAction(actionRun, "Build.Run", tr("Run"),
+                                                     QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+                                                     "run-build-file.png");
+        windowService->addToolBarActionItem(runKey, actionRun);
+    } else {
+        windowService->removeToolBarItem(buildTypeKey);
+        windowService->removeToolBarItem(runKey);
+    }
 }

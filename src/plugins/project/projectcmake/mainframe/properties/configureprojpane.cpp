@@ -79,7 +79,7 @@ ConfigureProjPane::ConfigureProjPane(const QString &language,
     , d(new ConfigureProjPanePrivate)
 {
     d->cfgItem = ConfigUtil::instance()->getConfigureParamPointer();
-    ConfigUtil::instance()->clearConfigureParam();
+    d->cfgItem->clear();
     d->cfgItem->language = language;
     d->cfgItem->projectPath = projectPath;
 
@@ -88,6 +88,8 @@ ConfigureProjPane::ConfigureProjPane(const QString &language,
 
     connect(ConfigUtil::instance(), QOverload<const dpfservice::ProjectInfo &>::of(&ConfigUtil::configureDone),
             [this](const dpfservice::ProjectInfo &info) {
+        QString propertyPath = ConfigUtil::instance()->getConfigPath(QFileInfo(d->cfgItem->projectPath).path());
+        config::ConfigUtil::instance()->saveConfig(propertyPath, *d->cfgItem);
         emit configureDone(info);
     });
 }

@@ -9,6 +9,8 @@ set(CXX_CPP
     mainframe/mavenitemkeeper.cpp
     mainframe/mavenopenhandler.cpp
     mainframe/mavengenerator.cpp
+    mainframe/properties/configpropertywidget.cpp
+    mainframe/properties/configutil.cpp
     transceiver/projectmavenreceiver.cpp
     transceiver/sendevents.cpp
     projectmaven.cpp
@@ -20,6 +22,8 @@ set(CXX_H
     mainframe/mavenitemkeeper.h
     mainframe/mavenopenhandler.h
     mainframe/mavengenerator.h
+    mainframe/properties/configpropertywidget.h
+    mainframe/properties/configutil.h
     transceiver/projectmavenreceiver.h
     transceiver/sendevents.h
     projectmaven.h

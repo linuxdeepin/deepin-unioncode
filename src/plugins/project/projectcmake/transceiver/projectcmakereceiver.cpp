@@ -86,12 +86,15 @@ void ProjectCmakeReceiver::projectEvent(const dpf::Event &event)
     if (event.topic() == T_PROJECT) {
         if (event.data() == D_ACTIVED) {
             dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-            CMakeOpenHandler::instance()->doActiveProject(projectInfo.buildFolder());
+            CMakeOpenHandler::instance()->doActiveProject(projectInfo);
         } else if (event.data() == D_OPENPROJECT) {
             CMakeOpenHandler::instance()->doProjectOpen(
                         event.property(P_KITNAME).toString(),
                         event.property(P_LANGUAGE).toString(),
                         event.property(P_FILEPATH).toString());
+        } else if (event.data() == D_DELETED) {
+            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
+            CMakeOpenHandler::instance()->doDeleteProject(projectInfo);
         }
     }
 }

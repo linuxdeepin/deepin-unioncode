@@ -51,7 +51,7 @@ private slots:
     void setRootItemToView(QStandardItem *root);
     void doBuildCmdExecuteEnd(const BuildCommandInfo &info, int status);
     void doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files);
-    void actionProperties();
+    void actionProperties(const dpfservice::ProjectInfo &info);
     void recursionRemoveItem(QStandardItem *item);
 
 private:

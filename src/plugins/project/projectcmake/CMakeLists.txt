@@ -15,7 +15,6 @@ set(CXX_CPP
     mainframe/properties/targetsmanager.cpp
     mainframe/properties/runconfigpane.cpp
     mainframe/properties/configureprojpane.cpp
-    mainframe/properties/propertiesdialog.cpp
     mainframe/properties/buildpropertywidget.cpp
     mainframe/properties/runpropertywidget.cpp
     mainframe/properties/configpropertywidget.cpp
@@ -37,7 +36,6 @@ set(CXX_H
     mainframe/properties/targetsmanager.h
     mainframe/properties/runconfigpane.h
     mainframe/properties/configureprojpane.h
-    mainframe/properties/propertiesdialog.h
     mainframe/properties/buildpropertywidget.h
     mainframe/properties/runpropertywidget.h
     mainframe/properties/configpropertywidget.h

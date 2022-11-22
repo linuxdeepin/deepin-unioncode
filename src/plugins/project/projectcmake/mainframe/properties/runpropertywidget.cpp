@@ -93,7 +93,7 @@ void RunPropertyWidget::updateData()
 
     ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
     for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
-        if (param->defaultType == iter->type) {
+        if (param->tempSelType == iter->type) {
             d->paramsShadow = iter->runConfigure.params;
             auto iterExe = d->paramsShadow.begin();
             int index = 0;
@@ -124,4 +124,7 @@ void RunPropertyWidget::saveConfig()
             iter->runConfigure.defaultTargetName = d->exeComboBox->currentText();
         }
     }
+
+    QString filePath = ConfigUtil::instance()->getConfigPath(QFileInfo(param->projectPath).path());
+    ConfigUtil::instance()->saveConfig(filePath, *param);
 }

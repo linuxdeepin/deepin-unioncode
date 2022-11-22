@@ -21,6 +21,8 @@
 #ifndef PROJECTCMAKEOPEN_H
 #define PROJECTCMAKEOPEN_H
 
+#include "services/project/projectservice.h"
+
 #include <QObject>
 #include <QAction>
 
@@ -36,7 +38,11 @@ public slots:
     void doProjectOpen(const QString &name,
                        const QString &language,
                        const QString &filePath);
-    void doActiveProject(const QString &buildDirectory);
+    void doActiveProject(const dpfservice::ProjectInfo &projectInfo);
+    void doDeleteProject(const dpfservice::ProjectInfo &projectInfo);
+
+private:
+    void adjustToolBar(bool bAdd);
 };
 
 #endif // PROJECTCMAKEOPEN_H

@@ -46,6 +46,7 @@ set(CXX_H
     supportfile/builder.h
     supportfile/dapconfig.h
     dialog/contextdialog.h
+    dialog/propertiesdialog.h
     widget/configurewidget.h
     widget/collapsewidget.h
     widget/detailsbutton.h
@@ -95,6 +96,7 @@ set(CXX_CPP
     supportfile/builder.cpp
     supportfile/dapconfig.cpp
     dialog/contextdialog.cpp
+    dialog/propertiesdialog.cpp
     widget/configurewidget.cpp
     widget/collapsewidget.cpp
     widget/detailsbutton.cpp

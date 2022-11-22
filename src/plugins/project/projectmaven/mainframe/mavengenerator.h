@@ -46,6 +46,7 @@ private slots:
     void doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem*>> &info);
     void doAddMavenMeue(const dpfservice::ParseInfo<dpfservice::ProjectActionInfos> &info);
     void doActionTriggered();
+    void actionProperties(const dpfservice::ProjectInfo &info);
 };
 
 #endif // MAVENGENERATOR_H

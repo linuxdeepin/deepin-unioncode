@@ -21,6 +21,8 @@
 #include "pythongenerator.h"
 #include "pythonasynparse.h"
 #include "pythonitemkeeper.h"
+#include "mainframe/properties/configpropertywidget.h"
+#include "common/dialog/propertiesdialog.h"
 #include "transceiver/sendevents.h"
 #include "transceiver/projectpythonreceiver.h"
 #include "services/window/windowservice.h"
@@ -144,7 +146,18 @@ QMenu *PythonGenerator::createItemMenu(const QStandardItem *item)
     if (item->parent())
         return nullptr;
 
-    return nullptr;
+    QMenu *menu = new QMenu();
+    dpfservice::ProjectInfo info = dpfservice::ProjectInfo::get(item);
+    if (info.isEmpty())
+        return nullptr;
+
+    QAction *action = new QAction("Properties");
+    menu->addAction(action);
+    QObject::connect(action, &QAction::triggered, [=](){
+        actionProperties(info);
+    });
+
+    return menu;
 }
 
 void PythonGenerator::doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem *> > &info)
@@ -165,4 +178,12 @@ void PythonGenerator::doPythonCleanMenu()
             d->gradleMenu->removeAction(action);
         }
     }
+}
+
+void PythonGenerator::actionProperties(const dpfservice::ProjectInfo &info)
+{
+    PropertiesDialog dlg;
+    ConfigPropertyWidget *property = new ConfigPropertyWidget(info);
+    dlg.insertPropertyPanel("Config", property);
+    dlg.exec();
 }

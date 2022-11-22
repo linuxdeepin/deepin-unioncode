@@ -53,7 +53,9 @@ ConfigUtil::ConfigUtil(QObject *parent)
 
 ConfigUtil::~ConfigUtil()
 {
-
+    if (d) {
+        delete d;
+    }
 }
 
 ConfigUtil *ConfigUtil::instance()
@@ -65,32 +67,6 @@ ConfigUtil *ConfigUtil::instance()
 ConfigureParam *ConfigUtil::getConfigureParamPointer()
 {
     return &d->configureParam;
-}
-
-void ConfigUtil::clearConfigureParam()
-{
-    d->configureParam.kit.clear();
-    d->configureParam.language.clear();
-    d->configureParam.defaultType = Unknown;
-    d->configureParam.projectPath.clear();
-    d->configureParam.buildConfigures.clear();
-}
-
-QString ConfigUtil::getConfigFilePath(const QString &projectPath, int configType)
-{
-    QString newFolder = QFileInfo(projectPath).dir().path() + QDir::separator() + ".unioncode";
-    QDir dir(newFolder);
-    if (!dir.exists()) {
-        dir.mkdir(newFolder);
-    }
-
-    QString configFilePath;
-    if (dir.exists()) {
-        QString fileName;
-
-    }
-
-    return configFilePath;
 }
 
 QString ConfigUtil::getNameFromType(ConfigType type)
@@ -108,11 +84,22 @@ ConfigType ConfigUtil::getTypeFromName(QString name)
     return type;
 }
 
-void ConfigUtil::configProject(const ConfigureParam *param)
+bool ConfigUtil::isNeedConfig(const QString &projectPath, ConfigureParam &param)
+{
+    QString propertyFile = getConfigPath(projectPath);
+    if (QFileInfo(propertyFile).exists() || QFileInfo(propertyFile).isFile()) {
+        readConfig(propertyFile, param);
+        if (!param.buildConfigures.isEmpty()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ConfigUtil::getProjectInfo(const ConfigureParam *param, dpfservice::ProjectInfo &info)
 {
     for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
         if (d->configureParam.defaultType == iter->type) {
-            dpfservice::ProjectInfo info;
             QString sourceFolder = QFileInfo(param->projectPath).path();
             info.setLanguage(param->language);
             info.setSourceFolder(sourceFolder);
@@ -135,8 +122,18 @@ void ConfigUtil::configProject(const ConfigureParam *param)
             arguments << info.buildCustomArgs();
             info.setBuildCustomArgs(arguments);
 
-            emit configureDone(info);
+            return true;
         }
+    }
+
+    return false;
+}
+
+void ConfigUtil::configProject(const ConfigureParam *param)
+{
+    dpfservice::ProjectInfo info;
+    if (getProjectInfo(param, info)) {
+        emit configureDone(info);
     }
 }
 
@@ -154,6 +151,33 @@ void ConfigUtil::checkConfigInfo(const QString &buildType, const QString &direct
                 configProject(&d->configureParam);
             }
         }
+    }
+}
+
+QString ConfigUtil::getConfigPath(const QString &projectPath)
+{
+    return CustomPaths::projectCachePath(projectPath) + QDir::separator() + "project.properties";
+}
+
+void ConfigUtil::readConfig(const QString &filePath, ConfigureParam &param)
+{
+    param.clear();
+
+    QFile file(filePath);
+    if (file.open(QIODevice::ReadOnly)) {
+        QDataStream stream(&file);
+        stream >> param;
+        file.close();
+    }
+}
+
+void ConfigUtil::saveConfig(const QString &filePath, const ConfigureParam &param)
+{
+    QFile file(filePath);
+    if (file.open(QIODevice::ReadWrite)) {
+        QDataStream stream(&file);
+        stream << param;
+        file.close();
     }
 }
 

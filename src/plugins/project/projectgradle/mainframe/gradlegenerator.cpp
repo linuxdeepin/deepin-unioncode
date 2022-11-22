@@ -21,6 +21,9 @@
 #include "gradlegenerator.h"
 #include "gradleasynparse.h"
 #include "gradleitemkeeper.h"
+#include "mainframe/properties/configpropertywidget.h"
+
+#include "common/dialog/propertiesdialog.h"
 #include "transceiver/sendevents.h"
 #include "transceiver/projectgradlereceiver.h"
 #include "services/window/windowservice.h"
@@ -210,6 +213,12 @@ QMenu *GradleGenerator::createItemMenu(const QStandardItem *item)
     }
     menu->addMenu(d->gradleMenu);
 
+    QAction *action = new QAction("Properties");
+    menu->addAction(action);
+    QObject::connect(action, &QAction::triggered, [=](){
+        actionProperties(info);
+    });
+
     return menu;
 }
 
@@ -329,4 +338,12 @@ void GradleGenerator::doGradleTaskActionTriggered()
             builderService->interface.builderCommand(commandInfo);
         }
     }
+}
+
+void GradleGenerator::actionProperties(const dpfservice::ProjectInfo &info)
+{
+    PropertiesDialog dlg;
+    ConfigPropertyWidget *property = new ConfigPropertyWidget(info);
+    dlg.insertPropertyPanel("Config", property);
+    dlg.exec();
 }

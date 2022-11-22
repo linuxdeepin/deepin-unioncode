@@ -49,6 +49,7 @@ private slots:
     void doGradleCleanMenu();
     void doGradleSplitTasksOutput(const QByteArray &array);
     void doGradleTaskActionTriggered();
+    void actionProperties(const dpfservice::ProjectInfo &info);
 };
 
 #endif // GRADLEGENERATOR_H

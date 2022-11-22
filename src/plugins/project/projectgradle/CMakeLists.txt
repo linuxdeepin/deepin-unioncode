@@ -9,6 +9,8 @@ set(CXX_CPP
     mainframe/gradleitemkeeper.cpp
     mainframe/gradleopenhandler.cpp
     mainframe/gradlegenerator.cpp
+    mainframe/properties/configpropertywidget.cpp
+    mainframe/properties/configutil.cpp
     transceiver/projectgradlereceiver.cpp
     transceiver/sendevents.cpp
     projectgradle.cpp
@@ -20,6 +22,8 @@ set(CXX_H
     mainframe/gradleitemkeeper.h
     mainframe/gradleopenhandler.h
     mainframe/gradlegenerator.h
+    mainframe/properties/configpropertywidget.h
+    mainframe/properties/configutil.h
     transceiver/projectgradlereceiver.h
     transceiver/sendevents.h
     projectgradle.h

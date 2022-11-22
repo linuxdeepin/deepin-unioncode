@@ -103,5 +103,5 @@ bool ToolChainData::readToolChainData(QString &retMsg)
         retMsg = ret ? "read tool chain successful!" : "read tool chain failed!";
     }
 
-    return true;
+    return ret;
 }

@@ -106,12 +106,12 @@ class BuildPropertyWidgetPrivate
                                                       {StepType::Build, dpfservice::TargetType::kBuildTarget}};
 };
 
-BuildPropertyWidget::BuildPropertyWidget(QWidget *parent)
+BuildPropertyWidget::BuildPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QWidget *parent)
     : PageWidget(parent)
     , d(new BuildPropertyWidgetPrivate())
 {
     setupOverviewUI();
-    initData();
+    initData(projectInfo);
 
     QObject::connect(TargetsManager::instance(), &TargetsManager::initialized,
                      this, &BuildPropertyWidget::updateDetail);
@@ -160,7 +160,7 @@ void BuildPropertyWidget::setupOverviewUI()
         }
 
         ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
-        param->defaultType = ConfigUtil::instance()->getTypeFromName(d->configureComboBox->currentText());
+        param->tempSelType = ConfigUtil::instance()->getTypeFromName(d->configureComboBox->currentText());
         ConfigUtil::instance()->checkConfigInfo(d->configureComboBox->currentText(), d->outputDirEdit->text());
     });
 
@@ -202,11 +202,12 @@ void BuildPropertyWidget::setupOverviewUI()
     buildCfgWidget->addWidget(d->stackWidget);
 }
 
-void BuildPropertyWidget::initData()
+void BuildPropertyWidget::initData(const dpfservice::ProjectInfo &projectInfo)
 {
     d->configureComboBox->clear();
 
     ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(projectInfo.workspaceFolder()), *param);
 
     auto iter = param->buildConfigures.begin();
     int index = 0;

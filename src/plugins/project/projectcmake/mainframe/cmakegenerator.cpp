@@ -23,7 +23,6 @@
 #include "cmakeitemkeeper.h"
 #include "transceiver/sendevents.h"
 #include "transceiver/projectcmakereceiver.h"
-#include "properties/propertiesdialog.h"
 #include "properties/buildpropertywidget.h"
 #include "properties/runpropertywidget.h"
 #include "properties/configpropertywidget.h"
@@ -31,6 +30,7 @@
 
 #include "services/builder/builderservice.h"
 #include "services/window/windowservice.h"
+#include "common/dialog/propertiesdialog.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
@@ -229,7 +229,10 @@ QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
 
     QAction *action = new QAction("Properties");
     menu->addAction(action);
-    QObject::connect(action, &QAction::triggered, this, &CmakeGenerator::actionProperties, Qt::UniqueConnection);
+    dpfservice::ProjectInfo info = dpfservice::ProjectInfo::get(item);
+    QObject::connect(action, &QAction::triggered, [=](){
+        actionProperties(info);
+    });
 
     return menu;
 }
@@ -362,11 +365,11 @@ void CmakeGenerator::doCmakeFileNodeChanged(QStandardItem *root, const QPair<QSt
     configure(proInfo);
 }
 
-void CmakeGenerator::actionProperties()
+void CmakeGenerator::actionProperties(const dpfservice::ProjectInfo &info)
 {
     PropertiesDialog dlg;
 
-    BuildPropertyWidget *buildWidget = new BuildPropertyWidget();
+    BuildPropertyWidget *buildWidget = new BuildPropertyWidget(info);
     RunPropertyWidget *runWidget = new RunPropertyWidget();
 
     dlg.insertPropertyPanel("Build", buildWidget);
