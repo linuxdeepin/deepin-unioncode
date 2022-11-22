@@ -27,7 +27,7 @@ const QString wordcount{"wordcount"};
 WordCountAnalyse::WordCountAnalyse(QObject *parent)
     : QProcess (parent)
 {
-    auto procEnv = Environment::get(Environment::User, Environment::Python, 3);
+    auto procEnv = env::lang::get(env::lang::User, env::lang::Python, 3);
     for (auto val : procEnv.keys()) {
         qInfo()<< val << procEnv.value(val);
     }
