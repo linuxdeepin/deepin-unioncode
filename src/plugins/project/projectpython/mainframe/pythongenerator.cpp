@@ -20,11 +20,8 @@
 */
 #include "pythongenerator.h"
 #include "pythonasynparse.h"
-#include "pythonitemkeeper.h"
 #include "mainframe/properties/configpropertywidget.h"
 #include "common/dialog/propertiesdialog.h"
-#include "transceiver/sendevents.h"
-#include "transceiver/projectpythonreceiver.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
 #include "services/option/optionmanager.h"
@@ -62,32 +59,21 @@ PythonGenerator::~PythonGenerator()
         delete d;
 }
 
+QStringList PythonGenerator::supportLanguages()
+{
+    return {dpfservice::MWMFA_PYTHON};
+}
+
 QDialog *PythonGenerator::configureWidget(const QString &language,
                                           const QString &projectPath)
 {
     using namespace dpfservice;
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (!projectService)
-        return nullptr;
 
-    auto proInfos = projectService->projectView.getAllProjectInfo();
-    for (auto &val : proInfos) {
-        if (val.language() == language && projectPath == val.projectFilePath()) {
-            ContextDialog::ok(QDialog::tr("Cannot open repeatedly!\n"
-                                          "language : %0\n"
-                                          "projectPath : %1")
-                              .arg(language, projectPath));
-            return nullptr;
-        }
-    }
 
     ProjectInfo info;
     info.setLanguage(language);
-    info.setSourceFolder(projectPath);
     info.setKitName(PythonGenerator::toolKitName());
     info.setWorkspaceFolder(projectPath);
-    info.setProjectFilePath(projectPath);
 
     configure(info);
 
@@ -117,7 +103,7 @@ QStandardItem *PythonGenerator::createRootItem(const dpfservice::ProjectInfo &in
 {
     using namespace dpfservice;
 
-    QStandardItem * rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
+    QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new PythonAsynParse();
     QObject::connect(d->projectParses[rootItem],

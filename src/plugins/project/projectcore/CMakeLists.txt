@@ -8,7 +8,7 @@ set(CXX_CPP
     mainframe/projectinfodialog.cpp
     mainframe/projecttreeview.cpp
     mainframe/projectkeeper.cpp
-    transceiver/projectreceiver.cpp
+    transceiver/projectcorereceiver.cpp
     transceiver/sendevents.cpp
     projectcore.cpp
     projectcore.json
@@ -20,7 +20,7 @@ set(CXX_H
     mainframe/projectinfodialog.h
     mainframe/projecttreeview.h
     mainframe/projectkeeper.h
-    transceiver/projectreceiver.h
+    transceiver/projectcorereceiver.h
     transceiver/sendevents.h    
     projectcore.h
     )

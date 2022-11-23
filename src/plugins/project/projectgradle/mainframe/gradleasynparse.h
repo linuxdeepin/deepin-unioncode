@@ -50,7 +50,6 @@ signals:
     void parsedError(const ParseInfo<QString> &info);
 
 public slots:
-    void loadPoms(const dpfservice::ProjectInfo &info);
     void parseProject(const dpfservice::ProjectInfo &info);
 
 private slots:

@@ -28,18 +28,9 @@ class FileBrowserReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegist
     friend class dpf::AutoEventHandlerRegister<FileBrowserReceiver>;
 public:
     explicit FileBrowserReceiver(QObject * parent = nullptr);
-
-    static Type type()
-    {
-        return dpf::EventHandler::Type::Sync;
-    }
-
+    static Type type();
     static QStringList topics();
-
     void eventProcess(const dpf::Event &event) override;
-
-private:
-    void projectEvent(const dpf::Event &event);
 };
 
 #endif // FILEBROWSERRECEIVER_H

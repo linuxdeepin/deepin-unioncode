@@ -178,7 +178,7 @@ struct BuildConfigure {
 struct ConfigureParam {
     QString kit;
     QString language;
-    QString projectPath;
+    QString workspace;
     ConfigType defaultType = Unknown;
     ConfigType tempSelType = Unknown;
     QVector<BuildConfigure> buildConfigures;
@@ -187,7 +187,7 @@ struct ConfigureParam {
     {
         stream << data.kit;
         stream << data.language;
-        stream << data.projectPath;
+        stream << data.workspace;
         int type = data.defaultType;
         stream << type;
         stream << data.buildConfigures;
@@ -199,7 +199,7 @@ struct ConfigureParam {
     {
         stream >> data.kit;
         stream >> data.language;
-        stream >> data.projectPath;
+        stream >> data.workspace;
         int type = 0;
         stream >> type;
         data.defaultType = static_cast<ConfigType>(type);
@@ -212,7 +212,7 @@ struct ConfigureParam {
     {
         kit.clear();
         language.clear();
-        projectPath.clear();
+        workspace.clear();
         defaultType = Unknown;
         tempSelType = Unknown;
         buildConfigures.clear();
@@ -229,7 +229,7 @@ public:
     ConfigUtil(const ConfigUtil &) = delete;
     ConfigUtil &operator=(const ConfigUtil &) = delete;
 
-    QString getConfigPath(const QString &projectPath);
+    QString getConfigPath(const QString &workspace);
 
     ConfigureParam *getConfigureParamPointer();
 
@@ -237,7 +237,7 @@ public:
     ConfigType getTypeFromName(QString name);
 
     bool getProjectInfo(const ConfigureParam *param, dpfservice::ProjectInfo &info);
-    bool isNeedConfig(const QString &projectPath, ConfigureParam &param);
+    bool isNeedConfig(const QString &workspace, ConfigureParam &param);
     void checkConfigInfo(const QString &buildType, const QString &directory);
     void configProject(const ConfigureParam *param);
 

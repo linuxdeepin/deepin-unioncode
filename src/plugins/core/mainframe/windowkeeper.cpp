@@ -20,7 +20,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "windowkeeper.h"
-#include "transceiver/sendevents.h"
 #include "windowstatusbar.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
@@ -94,7 +93,7 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
         QString file = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE);
         if (file.isEmpty())
             return;
-        SendEvents::menuOpenFile(file);
+        // 重新实现 openDocment逻辑，需建立统一的lsp 全局入口
     });
 
     QMenu* menuOpenProject = new QMenu(MWMFA_OPEN_PROJECT);

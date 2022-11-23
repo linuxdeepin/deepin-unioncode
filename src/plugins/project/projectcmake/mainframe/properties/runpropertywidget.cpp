@@ -125,6 +125,6 @@ void RunPropertyWidget::saveConfig()
         }
     }
 
-    QString filePath = ConfigUtil::instance()->getConfigPath(QFileInfo(param->projectPath).path());
+    QString filePath = ConfigUtil::instance()->getConfigPath(QFileInfo(param->workspace).path());
     ConfigUtil::instance()->saveConfig(filePath, *param);
 }

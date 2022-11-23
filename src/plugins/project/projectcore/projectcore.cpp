@@ -65,6 +65,9 @@ bool ProjectCore::start()
         //windowService->addCentralNavigation(MWNA_RUNTIME, new AbstractCentral(RuntimeManager::instance()->getRuntimeWidget()));
     }
 
+    QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
+                     this, &ProjectCore::pluginsStartedMain);
+
 
     using namespace std::placeholders;
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
@@ -98,4 +101,24 @@ dpf::Plugin::ShutdownFlag ProjectCore::stop()
 {
     qInfo() << __FUNCTION__;
     return Sync;
+}
+
+void ProjectCore::pluginsStartedMain()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    if (projectService && windowService) {
+        QStringList kitNames = projectService->supportGeneratorName<ProjectGenerator>();
+        for (auto kitName : kitNames) {
+            auto generator = projectService->createGenerator<ProjectGenerator>(kitName);
+            if (generator) {
+                for(auto lang : generator->supportLanguages()) {
+                    auto action = generator->openProjectAction(lang, kitName);
+                    if (action)
+                        windowService->addOpenProjectAction(lang, new AbstractAction(action));
+                }
+            }
+        }
+    }
 }

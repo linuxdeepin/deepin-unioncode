@@ -6,26 +6,18 @@ find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
     mainframe/mavenasynparse.cpp
-    mainframe/mavenitemkeeper.cpp
-    mainframe/mavenopenhandler.cpp
     mainframe/mavengenerator.cpp
     mainframe/properties/configpropertywidget.cpp
     mainframe/properties/configutil.cpp
-    transceiver/projectmavenreceiver.cpp
-    transceiver/sendevents.cpp
     projectmaven.cpp
     projectmaven.json
     )
 
 set(CXX_H
     mainframe/mavenasynparse.h
-    mainframe/mavenitemkeeper.h
-    mainframe/mavenopenhandler.h
     mainframe/mavengenerator.h
     mainframe/properties/configpropertywidget.h
     mainframe/properties/configutil.h
-    transceiver/projectmavenreceiver.h
-    transceiver/sendevents.h
     projectmaven.h
     )
 

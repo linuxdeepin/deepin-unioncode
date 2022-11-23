@@ -6,26 +6,18 @@ find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
     mainframe/pythonasynparse.cpp
-    mainframe/pythonitemkeeper.cpp
-    mainframe/pythonopenhandler.cpp
     mainframe/pythongenerator.cpp
     mainframe/properties/configpropertywidget.cpp
     mainframe/properties/configutil.cpp
-    transceiver/projectpythonreceiver.cpp
-    transceiver/sendevents.cpp
     projectpython.cpp
     projectpython.json
     )
 
 set(CXX_H
     mainframe/pythonasynparse.h
-    mainframe/pythonitemkeeper.h
-    mainframe/pythonopenhandler.h
     mainframe/pythongenerator.h
     mainframe/properties/configpropertywidget.h
     mainframe/properties/configutil.h
-    transceiver/projectpythonreceiver.h
-    transceiver/sendevents.h
     projectpython.h
     )
 

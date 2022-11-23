@@ -12,6 +12,7 @@ set(CXX_H
     project/projectviewinterface.h
     project/projectinfo.h
     project/projectgenerator.h
+    project/projectgenerator.cpp
     project/projectservice.h
     find/enums.h
     find/findservice.h

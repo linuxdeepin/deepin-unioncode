@@ -20,12 +20,8 @@
 */
 #include "mavengenerator.h"
 #include "mavenasynparse.h"
-#include "mavenitemkeeper.h"
 
 #include "properties/configpropertywidget.h"
-
-#include "transceiver/sendevents.h"
-#include "transceiver/projectmavenreceiver.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
 
@@ -62,37 +58,26 @@ MavenGenerator::~MavenGenerator()
         delete d;
 }
 
+QStringList MavenGenerator::supportLanguages()
+{
+    return {dpfservice::MWMFA_JAVA};
+}
+
+QStringList MavenGenerator::supportFileNames()
+{
+    return {"pom.xml"};
+}
+
 QDialog *MavenGenerator::configureWidget(const QString &language,
-                                         const QString &projectPath)
+                                         const QString &workspace)
 {
     using namespace dpfservice;
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (!projectService)
-        return nullptr;
-
-    auto proInfos = projectService->projectView.getAllProjectInfo();
-    for (auto &val : proInfos) {
-        if (val.language() == language && projectPath == val.projectFilePath()) {
-            ContextDialog::ok(QDialog::tr("Cannot open repeatedly!\n"
-                                          "language : %0\n"
-                                          "projectPath : %1")
-                              .arg(language, projectPath));
-            return nullptr;
-        }
-    }
-
-    QString projectFilePath = projectPath;
 
     // get config result.
-
-    ProjectInfo info;
-    QString sourceFolder = QFileInfo(projectPath).path();
+    ProjectInfo info;;
     info.setLanguage(language);
-    info.setSourceFolder(sourceFolder);
     info.setKitName(MavenGenerator::toolKitName());
-    info.setWorkspaceFolder(sourceFolder);
-    info.setProjectFilePath(projectFilePath);
+    info.setWorkspaceFolder(workspace);
 
     configure(info);
 
@@ -101,6 +86,8 @@ QDialog *MavenGenerator::configureWidget(const QString &language,
 
 bool MavenGenerator::configure(const dpfservice::ProjectInfo &info)
 {
+    dpfservice::ProjectGenerator::configure(info);
+
     auto root = createRootItem(info);
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
@@ -113,15 +100,13 @@ bool MavenGenerator::configure(const dpfservice::ProjectInfo &info)
         windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
     }
 
-    dpfservice::ProjectGenerator::configure(info);
-
     return true;
 }
 
 QStandardItem *MavenGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
-    QStandardItem *rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
+    QStandardItem *rootItem = ProjectGenerator::createRootItem(info);
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new MavenAsynParse();
     QObject::connect(d->projectParses[rootItem],
@@ -212,7 +197,7 @@ void MavenGenerator::doAddMavenMeue(const dpfservice::ParseInfo<dpfservice::Proj
     if (d->mavenMenu) {
         for (auto actionInfo : info.result) {
             QAction *action = new QAction(actionInfo.displyText, d->mavenMenu);
-            dpfservice::ProjectActionInfo::set(action, actionInfo);
+            dpfservice::ProjectMenuActionInfo::set(action, actionInfo);
             d->mavenMenu->addAction(action);
             QObject::connect(action, &QAction::triggered,
                              this, &MavenGenerator::doActionTriggered,
@@ -225,7 +210,7 @@ void MavenGenerator::doActionTriggered()
 {
     QAction *action = qobject_cast<QAction*>(sender());
     if (action) {
-        auto value = dpfservice::ProjectActionInfo::get(action);
+        auto value = dpfservice::ProjectMenuActionInfo::get(action);
 
         auto &ctx = dpfInstance.serviceContext();
         auto builderService = ctx.service<dpfservice::BuilderService>(dpfservice::BuilderService::name());

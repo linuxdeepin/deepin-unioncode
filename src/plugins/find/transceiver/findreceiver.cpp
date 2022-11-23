@@ -35,31 +35,34 @@ dpf::EventHandler::Type FindReceiver::type()
 
 QStringList FindReceiver::topics()
 {
-    return QStringList() << T_PROJECT;
+    return { project.topic };
 }
 
 void FindReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.topic() == T_PROJECT) {
-        if (event.data() == D_ACTIVED || event.data() == D_CRETED) {
-            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-            QString filePath = projectInfo.workspaceFolder();
-            QString language = projectInfo.language();
-            emit FindEventTransmit::getInstance()->sendProjectPath(filePath, language);
-        } else if (event.data() == D_DELETED){
-            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-            QString filePath = projectInfo.workspaceFolder();
-            emit FindEventTransmit::getInstance()->sendRemovedProject(filePath);
-        } else if (event.data() == D_OPENDOCUMENT) {
-            QString filePath = event.property(P_FILEPATH).toString();
-            bool actived = event.property(P_OPRATETYPE).toBool();
-            emit FindEventTransmit::getInstance()->sendCurrentEditFile(filePath, actived);
-        }
+    if (event.data() == project.activedProject.name) {
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(
+                    event.property(project.activedProject.pKeys[0]));
+        QString workspace = projectInfo.workspaceFolder();
+        QString language = projectInfo.language();
+        emit FindEventTransmit::instance()->sendProjectPath(workspace, language);
+    } else if(event.data() == project.openProject.name) {
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(
+                    event.property(project.openProject.pKeys[0]));
+        QString workspace = projectInfo.workspaceFolder();
+        QString language = projectInfo.language();
+        emit FindEventTransmit::instance()->sendProjectPath(workspace, language);
+    } else if (event.data() == project.deletedProject.name){
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(
+                    event.property(project.deletedProject.pKeys[0]));
+        QString workspace = projectInfo.workspaceFolder();
+        emit FindEventTransmit::instance()->sendRemovedProject(workspace);
+    }  else if (event.data() == editor.selectedFile.name) {
+        QString filePath = event.property(editor.selectedFile.pKeys[0]).toString();
+        bool actived = event.property(editor.selectedFile.pKeys[1]).toBool();
+        emit FindEventTransmit::instance()->sendCurrentEditFile(filePath, actived);
     }
 }
-
-
-static FindEventTransmit *instance = nullptr;
 
 FindEventTransmit::FindEventTransmit(QObject *parent)
     : QObject(parent)
@@ -68,14 +71,11 @@ FindEventTransmit::FindEventTransmit(QObject *parent)
 
 FindEventTransmit::~FindEventTransmit()
 {
-    if (instance)
-        delete instance;
+
 }
 
-FindEventTransmit* FindEventTransmit::getInstance()
+FindEventTransmit* FindEventTransmit::instance()
 {
-    if (!instance) {
-        instance = new FindEventTransmit();
-    }
-    return instance;
+    static FindEventTransmit instance;
+    return &instance;
 }

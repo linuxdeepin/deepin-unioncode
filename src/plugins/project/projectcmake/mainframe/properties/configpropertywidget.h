@@ -32,7 +32,7 @@ class ConfigPropertyWidget : public QDialog
     Q_OBJECT
 public:
     explicit ConfigPropertyWidget(const QString &language,
-                                  const QString &projectPath,
+                                  const QString &workspace,
                                   QDialog *parent = nullptr);
     virtual ~ConfigPropertyWidget();
 

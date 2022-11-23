@@ -36,6 +36,7 @@ public:
     explicit PythonGenerator();
     virtual ~PythonGenerator();
     static QString toolKitName() { return "directory"; }
+    virtual QStringList supportLanguages() override;
     virtual QDialog* configureWidget(const QString &language,
                                      const QString &projectPath) override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;

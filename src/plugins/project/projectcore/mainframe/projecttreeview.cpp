@@ -427,9 +427,7 @@ void ProjectTreeView::doShowProjectInfo(QStandardItem *root)
     QString propertyText = "Language: " + ProjectInfo::get(root).language() + "\n"
             + "KitName: " + ProjectInfo::get(root).kitName() + "\n"
             + "BuildFolder: " + ProjectInfo::get(root).buildFolder() + "\n"
-            + "SourceFolder: " + ProjectInfo::get(root).sourceFolder() + "\n"
             + "WorkspaceFolder: " + ProjectInfo::get(root).workspaceFolder() + "\n"
-            + "ProjectFilePath: " + ProjectInfo::get(root).projectFilePath() + "\n"
             + "BuildType: " + ProjectInfo::get(root).buildType() + "\n"
             + "BuildCustomArgs: " + "\n    " + ProjectInfo::get(root).buildCustomArgs().join("\n    ");
     dialog.setPropertyText(propertyText);

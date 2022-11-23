@@ -13,7 +13,7 @@ struct ParseInfo
     bool isNormal = true;
 };
 
-struct ProjectActionInfo
+struct ProjectMenuActionInfo
 {
     QString displyText;
     QString tooltip;
@@ -31,25 +31,25 @@ struct ProjectActionInfo
         return false;
     }
 
-    static void set(QAction *action, const ProjectActionInfo &info) {
+    static void set(QAction *action, const ProjectMenuActionInfo &info) {
         action->setProperty("ProjectActionInfo",
-                            QVariant::fromValue<ProjectActionInfo>(info));
+                            QVariant::fromValue<ProjectMenuActionInfo>(info));
     }
 
-    static ProjectActionInfo get(QAction *action) {
+    static ProjectMenuActionInfo get(QAction *action) {
         if (!action) return {};
         QVariant variant = action->property("ProjectActionInfo");
-        if (variant.canConvert<ProjectActionInfo>()) {
-            return qvariant_cast<ProjectActionInfo>(variant);
+        if (variant.canConvert<ProjectMenuActionInfo>()) {
+            return qvariant_cast<ProjectMenuActionInfo>(variant);
         }
         return {};
     }
 };
 
-typedef QList<ProjectActionInfo> ProjectActionInfos;
+typedef QList<ProjectMenuActionInfo> ProjectActionInfos;
 
 } // namespace dpfservice
 
-Q_DECLARE_METATYPE(dpfservice::ProjectActionInfo);
+Q_DECLARE_METATYPE(dpfservice::ProjectMenuActionInfo);
 
 #endif // PROJECTACTIONINFO_H

@@ -38,14 +38,7 @@ using namespace dpfservice;
 
 TargetsManager::TargetsManager(QObject *parent) : QObject(parent)
 {
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
 
-    if (projectService) {
-        connect(projectService, &ProjectService::projectConfigureDone, [this](const QString &buildDirectory){
-            initialize(buildDirectory);
-        });
-    }
 }
 
 TargetsManager::~TargetsManager()

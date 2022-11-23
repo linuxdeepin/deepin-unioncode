@@ -36,7 +36,7 @@ dpf::EventHandler::Type CodeEditorReceiver::type()
 
 QStringList CodeEditorReceiver::topics()
 {
-    return {T_CODEEDITOR, editor.topic}; //绑定menu 事件
+    return {T_CODEEDITOR, editor.topic, actionanalyse.topic};
 }
 
 void CodeEditorReceiver::eventProcess(const dpf::Event &event)
@@ -120,19 +120,6 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
             proKey.workspace = workspace.toStdString();
             return DpfEventMiddleware::instance()->toOpenFile(proKey, filePath);
         }
-    } else if (D_OPENDOCUMENT == event.data()) {
-
-        QVariant filePathVar = event.property(P_FILELINE);
-        if (filePathVar.isValid()) {
-            return DpfEventMiddleware::instance()->toOpenFile(
-                        filePathVar.toString());
-        }
-
-    } else if (D_OPENPROJECT == event.data()) {
-
-        qInfo() << event;
-        return;
-
     } else if (D_SEARCH == event.data()) {
 
         QVariant srcTextVar = event.property(P_SRCTEXT);
@@ -197,6 +184,14 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
             return DpfEventMiddleware::instance()->toJumpFileLine(key, filePath, fileLine.toInt());
         } else if (!filePath.isEmpty() && !fileLine.isEmpty()) {
             return DpfEventMiddleware::instance()->toRunFileLine(filePath, fileLine.toInt());
+        }
+    } else if (event.data() == actionanalyse.analyseDone.name) {
+        QString workspace = event.property(actionanalyse.analyseDone.pKeys[0]).toString();
+        QString language = event.property(actionanalyse.analyseDone.pKeys[1]).toString();
+        QString storage = event.property(actionanalyse.analyseDone.pKeys[2]).toString();
+        QVariant analyseDataVar = event.property(actionanalyse.analyseDone.pKeys[0]);
+        if (analyseDataVar.canConvert<AnalysedData>()) {
+           // to do Huang Yu, do lsp token and data token
         }
     }
 }

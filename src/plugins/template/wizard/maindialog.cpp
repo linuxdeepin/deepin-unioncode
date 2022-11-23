@@ -206,7 +206,7 @@ void MainDialog::generate(const PojectGenParam &param)
             auto generator = service->create<LanguageGenerator>(result.kit);
             if (generator) {
                 QString projectFile = generator->getProjectFile(result.projectPath);
-                project.openProject({projectFile, result.kit, result.language, result.projectPath});
+                project.openProject({result.kit, result.language, result.projectPath});
 
                 close();
             } else {

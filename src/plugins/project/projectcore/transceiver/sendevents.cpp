@@ -57,34 +57,16 @@ void SendEvents::doubleCliekedOpenFile(const QString &workspace, const QString &
 
 void SendEvents::projectActived(const dpfservice::ProjectInfo &info)
 {
-    dpf::Event event;
-    event.setTopic(T_PROJECT);
-    event.setData(D_ACTIVED);
-    event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
-    dpf::EventCallProxy::instance().pubEvent(event);
-
     project.activedProject({QVariant::fromValue(info)});
 }
 
 void SendEvents::projectCreated(const dpfservice::ProjectInfo &info)
 {
-    dpf::Event event;
-    event.setTopic(T_PROJECT);
-    event.setData(D_CRETED);
-    event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
-    dpf::EventCallProxy::instance().pubEvent(event);
-
     project.createdProject({QVariant::fromValue(info)});
 }
 
 void SendEvents::projectDeleted(const dpfservice::ProjectInfo &info)
 {
-    dpf::Event event;
-    event.setTopic(T_PROJECT);
-    event.setData(D_DELETED);
-    event.setProperty(P_PROJECT_INFO, QVariant::fromValue(info));
-    dpf::EventCallProxy::instance().pubEvent(event);
-
     project.deletedProject({QVariant::fromValue(info)});
 }
 

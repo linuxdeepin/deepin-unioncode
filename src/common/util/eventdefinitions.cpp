@@ -20,13 +20,11 @@
 */
 #include "eventdefinitions.h"
 
-const QString T_NAV {"Nav"};
 const QString T_MENU {"Menu"};
 const QString T_FILEBROWSER {"FileBrowser"};
 const QString T_CODEEDITOR {"CodeEditor"};
 const QString T_DEBUGGER {"Debugger"};
 const QString T_BUILDER {"Builder"};
-const QString T_PROJECT {"Project"};
 const QString T_SYMBOL {"Symbol"};
 const QString T_WORKSPACE {"Workspace"};
 const QString T_RECENT{"Recent"};
@@ -46,17 +44,12 @@ const QString D_BUILD_STATE {"Build.State"};
 const QString D_MARGIN_DEBUG_POINT_ADD {"Margin.Debug.Point.Add"};
 const QString D_MARGIN_DEBUG_POINT_REMOVE {"Margin.Debug.Point.Remove"};
 const QString D_MARGIN_DEBUG_POINT_CLEAN {"Margin.Debug.Point.Clean"};
-const QString D_OPENDOCUMENT {"OpenDocument"};
-const QString D_OPENPROJECT {"OpenProject"};
 const QString D_ITEM_MENU_BUILD {"Item.Menu.Build"};
 const QString D_ITEM_DOUBLECLICKED {"Item.DoubleClicked"};
 const QString D_BUILD_TARGET {"Build.Target"};
 const QString D_SHOW {"Show"};
 const QString D_HIDE {"Hide"};
 const QString D_ADDTEXT {"AddText"};
-const QString D_CRETED {"Created"};
-const QString D_DELETED {"Deleted"};
-const QString D_ACTIVED {"Actived"};
 const QString D_JUMP_TO_LINE {"JumpToLine"};
 const QString D_SET_ANNOTATION {"SetAnnotation"};
 const QString D_CLEAN_ANNOTATION {"CleanAnnotation"};
@@ -101,4 +94,3 @@ const QString P_DESTTEXT {"DestText"};
 
 const QString P_BUILDPROGRAM {"BuildProgram"};
 const QString P_BUILDWORKINGDIR {"BuildWorkingdir"};
-

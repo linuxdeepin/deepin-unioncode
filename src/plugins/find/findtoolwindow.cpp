@@ -64,21 +64,21 @@ FindToolWindow::FindToolWindow(QWidget *parent)
 {
     setupUi();
 
-    connect(FindEventTransmit::getInstance(), QOverload<const QString &, const QString &>::of(&FindEventTransmit::sendProjectPath),
+    connect(FindEventTransmit::instance(), QOverload<const QString &, const QString &>::of(&FindEventTransmit::sendProjectPath),
             [=](const QString &projectPath, const QString &language){
         d->currentProjectPath = projectPath;
         d->projectInfoMap.insert(projectPath, language);
         d->allProjectsPathList.insert(projectPath);
     });
 
-    connect(FindEventTransmit::getInstance(), QOverload<const QString &>::of(&FindEventTransmit::sendRemovedProject),
+    connect(FindEventTransmit::instance(), QOverload<const QString &>::of(&FindEventTransmit::sendRemovedProject),
             [=](const QString &projectPath){
         d->currentProjectPath = "";
         d->allProjectsPathList.remove(projectPath);
         d->projectInfoMap.remove(projectPath);
     });
 
-    connect(FindEventTransmit::getInstance(), QOverload<const QString &, bool>::of(&FindEventTransmit::sendCurrentEditFile),
+    connect(FindEventTransmit::instance(), QOverload<const QString &, bool>::of(&FindEventTransmit::sendCurrentEditFile),
             [=](const QString &filePath, bool actived){
         if (actived)
             d->currentFilePath = filePath;

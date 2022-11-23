@@ -7,7 +7,6 @@ set(CXX_CPP
     mainframe/displayitemdelegate.cpp
     mainframe/recentdisplay.cpp
     transceiver/recentreceiver.cpp
-    transceiver/sendevents.cpp
     recent.cpp
     recent.json
     )
@@ -17,7 +16,6 @@ set(CXX_H
     mainframe/displayitemdelegate.h
     mainframe/recentdisplay.h
     transceiver/recentreceiver.h
-    transceiver/sendevents.h
     recent.h
     )
 

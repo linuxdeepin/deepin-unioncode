@@ -7,7 +7,6 @@ find_package(Qt5 COMPONENTS Xml REQUIRED)
 set(CXX_CPP
     mainframe/cmakeasynparse.cpp
     mainframe/cmakeitemkeeper.cpp
-    mainframe/cmakeopenhandler.cpp
     mainframe/cmakegenerator.cpp
     mainframe/properties/environmentwidget.cpp
     mainframe/properties/projectparser.cpp
@@ -20,7 +19,6 @@ set(CXX_CPP
     mainframe/properties/configpropertywidget.cpp
     mainframe/properties/configutil.cpp
     transceiver/projectcmakereceiver.cpp
-    transceiver/sendevents.cpp
     projectcmake.cpp
     projectcmake.json
     )
@@ -28,7 +26,6 @@ set(CXX_CPP
 set(CXX_H
     mainframe/cmakeasynparse.h
     mainframe/cmakeitemkeeper.h
-    mainframe/cmakeopenhandler.h
     mainframe/cmakegenerator.h
     mainframe/properties/environmentwidget.h
     mainframe/properties/projectparser.h
@@ -41,7 +38,6 @@ set(CXX_H
     mainframe/properties/configpropertywidget.h
     mainframe/properties/configutil.h
     transceiver/projectcmakereceiver.h
-    transceiver/sendevents.h
     projectcmake.h
     )
 

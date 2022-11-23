@@ -1,7 +1,6 @@
 #include "recentdisplay.h"
 
 #include "displayrecentview.h"
-#include "transceiver/sendevents.h"
 
 #include <QList>
 #include <QDir>
@@ -33,7 +32,7 @@ public:
         QJsonObject obj = doc.object();
         QJsonArray array = obj.value(title()).toArray();
         QList<QStandardItem*> result;
-        QStringList paths =projectsPaths(projects);
+        QStringList paths = cachedWorkspaces(projects);
         for (auto val : array) {
             auto elemObj = val.toObject();
             QString language, workspace, kitName;
@@ -59,17 +58,16 @@ public:
         model->appendColumn(itemsFromFile());
     }
 
-    virtual void add(const QString &file,
-                     const QString &kitName,
+    virtual void add(const QString &kitName,
                      const QString &language,
                      const QString &workspace)
     {
         model->clear(); //删除数据
-        auto paths = projectsPaths(projects);
-        if (paths.contains(file)) {
-            removeProjectElem(projects, file);
+        auto paths = cachedWorkspaces(projects);
+        if (paths.contains(workspace)) {
+            removeProjectElem(projects, workspace);
         }
-        projects.insert(0, projectElem(file, kitName, language, workspace)); //置顶
+        projects.insert(0, projectElem(kitName, language, workspace)); //置顶
         saveToFile(projects); //保存序列
         load(); //重新加载文件
     }
@@ -100,8 +98,7 @@ public:
         return file;
     }
 
-    virtual QJsonObject projectElem(const QString &file,
-                                    const QString &kitName,
+    virtual QJsonObject projectElem(const QString &kitName,
                                     const QString &language,
                                     const QString &workspace)
     {
@@ -110,11 +107,11 @@ public:
         propertyVal.insert("KitName", kitName);
         propertyVal.insert("Language", language);
         propertyVal.insert("Workspace", workspace);
-        elem.insert(file, QJsonValue{propertyVal});
+        elem.insert(workspace, QJsonValue{propertyVal});
         return elem;
     }
 
-    virtual QStringList projectsPaths(const QJsonArray &array)
+    virtual QStringList cachedWorkspaces(const QJsonArray &array)
     {
         QStringList list;
         for (auto val : array){
@@ -243,12 +240,11 @@ void RecentDisplay::addDocument(const QString &filePath)
     d->docView->add(filePath);
 }
 
-void RecentDisplay::addProject(const QString &filePath,
-                               const QString &kitName,
+void RecentDisplay::addProject(const QString &kitName,
                                const QString &language,
                                const QString &workspace)
 {
-    d->proView->add(filePath, kitName, language, workspace);
+    d->proView->add(kitName, language, workspace);
 }
 
 void RecentDisplay::doDoubleClickedProject(const QModelIndex &index)
@@ -257,15 +253,14 @@ void RecentDisplay::doDoubleClickedProject(const QModelIndex &index)
     QString kitName = index.data(ProjectKitName).toString();
     QString language = index.data(ProjectLanguage).toString();
     QString workspace = index.data(ProjectWorkspace).toString();
-    // "filePath", "kitName", "language", "workspace"
-    project.openProject({filePath, kitName, language, workspace});
-    RecentDisplay::addProject(filePath, kitName, language, workspace);
+    // "kitName", "language", "workspace"
+    project.openProject({kitName, language, workspace});
+    RecentDisplay::addProject(kitName, language, workspace);
 }
 
 void RecentDisplay::doDoubleCliekedDocument(const QModelIndex &index)
 {
     QString filePath = index.data(Qt::DisplayRole).toString();
-    SendEvents::recentOpenFile(filePath);
     RecentDisplay::addDocument(filePath);
 }
 

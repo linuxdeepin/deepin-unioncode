@@ -20,10 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "projectcmake.h"
-#include "mainframe/cmakeopenhandler.h"
 #include "mainframe/cmakegenerator.h"
 #include "mainframe/properties/targetsmanager.h"
-#include "transceiver/sendevents.h"
 
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -55,14 +53,6 @@ bool ProjectCMake::start()
     if (projectService && !projectService->getActiveTarget) {
         using namespace std::placeholders;
         projectService->getActiveTarget = std::bind(&TargetsManager::getActivedTargetByTargetType, TargetsManager::instance(), _1);
-    }
-
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (windowService) {
-        if (windowService->addOpenProjectAction) {
-            auto action = new AbstractAction(CMakeOpenHandler::instance()->openAction());
-            windowService->addOpenProjectAction(MWMFA_CXX, action);
-        }
     }
 
     return true;

@@ -25,8 +25,6 @@
 
 #include "common/common.h"
 
-static QStringList subTopics{ T_PROJECT };
-
 FileBrowserReceiver::FileBrowserReceiver(QObject *parent)
     : dpf::EventHandler (parent)
     , dpf::AutoEventHandlerRegister<FileBrowserReceiver> ()
@@ -34,41 +32,27 @@ FileBrowserReceiver::FileBrowserReceiver(QObject *parent)
 
 }
 
+dpf::EventHandler::Type FileBrowserReceiver::type()
+{
+    return dpf::EventHandler::Type::Sync;
+}
+
 QStringList FileBrowserReceiver::topics()
 {
-    return subTopics; //绑定menu 事件
+    return {project.topic}; //绑定menu 事件
 }
 
 void FileBrowserReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!subTopics.contains(event.topic())) {
-        qCritical() << event;
-        abort();
-    }
-    if (event.topic() == T_PROJECT) {
-        projectEvent(event);
-    }
-}
-
-void FileBrowserReceiver::projectEvent(const dpf::Event &event)
-{
-    if (event.data() == D_ACTIVED) {
-        auto projectInfoVar = event.property(P_PROJECT_INFO);
-        if (projectInfoVar.canConvert<dpfservice::ProjectInfo>()) {
-            auto proInfo = qvariant_cast<dpfservice::ProjectInfo>(projectInfoVar);
-            TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
-        }
-    }
-
-    if (event.data() == D_DELETED) {
+    if (event.data() == project.activedProject.name) {
+        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+        dpfservice::ProjectInfo proInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+        TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
+    } else if (event.data() == project.deletedProject.name) {
         TreeViewKeeper::instance()->treeView()->setProjectInfo({});
-    }
-
-    if (event.data() == D_CRETED) {
-        auto projectInfoVar = event.property(P_PROJECT_INFO);
-        if (projectInfoVar.canConvert<dpfservice::ProjectInfo>()) {
-            auto proInfo = qvariant_cast<dpfservice::ProjectInfo>(projectInfoVar);
-            TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
-        }
+    } else if (event.data() == project.createdProject.name) {
+        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+        dpfservice::ProjectInfo proInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+        TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
     }
 }

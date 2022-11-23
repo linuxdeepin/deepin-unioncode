@@ -30,7 +30,6 @@ class SendEvents final
 public:
     static void marginDebugPointAdd(const QString filePath, quint64 fileLine);
     static void marginDebugPointRemove(const QString filePath, quint64 fileLine);
-    static void sendCurrentEditFileStatus(const QString &filePath, bool actived);
 };
 
 #endif // SENDEVENTS_H

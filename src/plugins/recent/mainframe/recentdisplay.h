@@ -21,8 +21,7 @@ public:
 
 public slots:
     void addDocument(const QString &filePath);
-    void addProject(const QString &filePath,
-                    const QString &kitName,
+    void addProject(const QString &kitName,
                     const QString &language,
                     const QString &workspace);
 

@@ -19,7 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "pythonasynparse.h"
-#include "pythonitemkeeper.h"
 #include "services/project/projectgenerator.h"
 
 #include "common/common.h"
@@ -68,27 +67,9 @@ PythonAsynParse::~PythonAsynParse()
     }
 }
 
-void PythonAsynParse::loadPoms(const dpfservice::ProjectInfo &info)
-{
-    QFile docFile(info.projectFilePath());
-
-    if (!docFile.exists()) {
-        parsedError({"Failed, maven pro not exists!: " + docFile.fileName(), false});
-    }
-
-    if (!docFile.open(QFile::OpenModeFlag::ReadOnly)) {;
-        parsedError({docFile.errorString(), false});
-    }
-
-    if (!d->xmlDoc.setContent(&docFile)) {
-        docFile.close();
-    }
-    docFile.close();
-}
-
 void PythonAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
-    createRows(info.sourceFolder());
+    createRows(info.workspaceFolder());
     emit itemsModified({d->rows, true});
 }
 

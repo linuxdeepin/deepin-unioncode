@@ -21,7 +21,6 @@
 #include "cmakegenerator.h"
 #include "cmakeasynparse.h"
 #include "cmakeitemkeeper.h"
-#include "transceiver/sendevents.h"
 #include "transceiver/projectcmakereceiver.h"
 #include "properties/buildpropertywidget.h"
 #include "properties/runpropertywidget.h"
@@ -96,28 +95,23 @@ CmakeGenerator::~CmakeGenerator()
         delete d;
 }
 
-QDialog *CmakeGenerator::configureWidget(const QString &language,
-                                         const QString &projectPath)
+QStringList CmakeGenerator::supportLanguages()
 {
-    using namespace dpfservice;
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (!projectService)
-        return nullptr;
+    return {dpfservice::MWMFA_CXX};
+}
 
-    auto proInfos = projectService->projectView.getAllProjectInfo();
-    for (auto &val : proInfos) {
-        if (val.language() == language && projectPath == val.projectFilePath()) {
-            ContextDialog::ok(QDialog::tr("Cannot open repeatedly!\n"
-                                          "language : %0\n"
-                                          "projectPath : %1")
-                              .arg(language, projectPath));
-            return nullptr;
-        }
-    }
+QStringList CmakeGenerator::supportFileNames()
+{
+    return {"cmakelists.txt", "CMakeLists.txt"};
+}
+
+QDialog *CmakeGenerator::configureWidget(const QString &language,
+                                         const QString &workspace)
+{
+    ProjectGenerator::configureWidget(language, workspace);
 
     // show build type config pane.
-    ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, projectPath);
+    ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, workspace);
     QObject::connect(config::ConfigUtil::instance(), &config::ConfigUtil::configureDone,
                      [this](const dpfservice::ProjectInfo &info) {
         configure(info);
@@ -153,7 +147,8 @@ bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
 QStandardItem *CmakeGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
-    QStandardItem * rootItem = new QStandardItem();
+    QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
+
     d->asynItemThreadPolls[rootItem] = new QThreadPool;
 
     auto parse = new CmakeAsynParse;

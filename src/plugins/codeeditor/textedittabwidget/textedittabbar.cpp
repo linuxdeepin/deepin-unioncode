@@ -20,6 +20,7 @@
 */
 #include "textedittabbar.h"
 #include "transceiver/sendevents.h"
+#include "common/common.h"
 #include <QFileInfo>
 #include <QDebug>
 #include <QMessageBox>
@@ -115,7 +116,7 @@ void TextEditTabBar::switchFile(const QString &file)
     int index = fileIndex(file);
     if (index != -1) {
         d->tab->setCurrentIndex(index);
-        SendEvents::sendCurrentEditFileStatus(file, true);
+        editor.selectedFile({file, true});
     }
 }
 
@@ -182,7 +183,7 @@ void TextEditTabBar::removeTab(const QString &file)
             }
         }
         emit fileClosed(indexFile(index));
-        SendEvents::sendCurrentEditFileStatus(file, false);
+        editor.selectedFile({file, false});
         d->tab->removeTab(index);
     }
 }

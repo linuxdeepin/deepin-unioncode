@@ -36,8 +36,9 @@ public:
 class FindEventTransmit : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(FindEventTransmit)
 public:
-    static FindEventTransmit* getInstance();
+    static FindEventTransmit* instance();
 
 signals:
     void sendProjectPath(const QString &projectPath, const QString &language);
@@ -46,7 +47,7 @@ signals:
 
 private:
     explicit FindEventTransmit(QObject *parent = nullptr);
-    ~FindEventTransmit();
+    virtual ~FindEventTransmit();
 };
 
 

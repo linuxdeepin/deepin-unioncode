@@ -6,26 +6,18 @@ find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
     mainframe/gradleasynparse.cpp
-    mainframe/gradleitemkeeper.cpp
-    mainframe/gradleopenhandler.cpp
     mainframe/gradlegenerator.cpp
     mainframe/properties/configpropertywidget.cpp
     mainframe/properties/configutil.cpp
-    transceiver/projectgradlereceiver.cpp
-    transceiver/sendevents.cpp
     projectgradle.cpp
     projectgradle.json
     )
 
 set(CXX_H
     mainframe/gradleasynparse.h
-    mainframe/gradleitemkeeper.h
-    mainframe/gradleopenhandler.h
     mainframe/gradlegenerator.h
     mainframe/properties/configpropertywidget.h
     mainframe/properties/configutil.h
-    transceiver/projectgradlereceiver.h
-    transceiver/sendevents.h
     projectgradle.h
     )
 

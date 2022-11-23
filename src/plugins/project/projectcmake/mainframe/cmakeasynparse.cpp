@@ -128,21 +128,27 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         qInfo() << e.text();
         if(!e.isNull()) {
             if (e.tagName() == CDT_XML_KEY::get()->name) {
-                QFileInfo rootCMakeInfo(tempInfo.projectFilePath());
 
-                rootItem->setText(e.text());
+                rootItem->setText(QFileInfo(tempInfo.workspaceFolder()).fileName());
                 rootItem->setIcon(::cmakeFolderIcon());
-                rootItem->setToolTip(rootCMakeInfo.dir().path());
+                rootItem->setToolTip(tempInfo.workspaceFolder());
 
                 // 添加子集cmake文件
-                auto rootCMakeItem = new QStandardItem();
-                rootCMakeItem->setText(rootCMakeInfo.fileName());
-                rootCMakeItem->setIcon(CustomIcons::icon(rootCMakeInfo));
-                rootCMakeItem->setToolTip(rootCMakeInfo.filePath());
-                rootItem->appendRow(rootCMakeItem);
-
-                // 添加监听节点顶层工程路径
-                CmakeItemKeeper::instance()->addCmakeRootFile(rootItem, rootCMakeInfo.filePath());
+                QDir rootDir(tempInfo.workspaceFolder());
+                QString cmakeItemName = "";
+                if (rootDir.exists("CMakeLists.txt"))
+                    cmakeItemName = "CMakeLists.txt";
+                if (rootDir.exists("cmakelists.txt"))
+                    cmakeItemName = "cmakelists.txt";
+                if (!cmakeItemName.isEmpty()) {
+                    auto rootCMakeItem = new QStandardItem();
+                    rootCMakeItem->setText(cmakeItemName);
+                    rootCMakeItem->setIcon(CustomIcons::icon(rootDir.filePath(cmakeItemName)));
+                    rootCMakeItem->setToolTip(rootDir.filePath(cmakeItemName));
+                    rootItem->appendRow(rootCMakeItem);
+                    // 添加监听节点顶层工程路径
+                    CmakeItemKeeper::instance()->addCmakeRootFile(rootItem, rootDir.filePath(cmakeItemName));
+                }
             }
             if (e.tagName() == CDT_XML_KEY::get()->linkedResources) {
                 QDomNode linkedResChildNode = e.firstChild();

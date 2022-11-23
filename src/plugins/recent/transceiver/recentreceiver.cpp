@@ -21,12 +21,10 @@ QStringList RecentReceiver::topics()
 void RecentReceiver::eventProcess(const dpf::Event &event)
 {
     if (event.data() == recent.saveOpenedProject.name) {
-        QString filePathKey = recent.saveOpenedProject.pKeys[0];
-        QString kitNameKey = recent.saveOpenedProject.pKeys[1];
-        QString languageKey = recent.saveOpenedProject.pKeys[2];
-        QString workspaceFolderKey = recent.saveOpenedProject.pKeys[3];
+        QString kitNameKey = recent.saveOpenedProject.pKeys[0];
+        QString languageKey = recent.saveOpenedProject.pKeys[1];
+        QString workspaceFolderKey = recent.saveOpenedProject.pKeys[2];
         return RecentProxy::instance()->saveOpenedProject(
-                    event.property(filePathKey).toString(),
                     event.property(kitNameKey).toString(),
                     event.property(languageKey).toString(),
                     event.property(workspaceFolderKey).toString());

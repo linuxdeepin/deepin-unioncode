@@ -19,8 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "projectcmakereceiver.h"
-#include "mainframe/cmakeopenhandler.h"
 #include "mainframe/cmakegenerator.h"
+#include "mainframe/properties/targetsmanager.h"
+
 #include "services/project/projectinfo.h"
 #include "services/project/projectservice.h"
 #include "services/project/projectgenerator.h"
@@ -41,7 +42,7 @@ dpf::EventHandler::Type ProjectCmakeReceiver::type()
 
 QStringList ProjectCmakeReceiver::topics()
 {
-    return { T_BUILDER, T_PROJECT, project.topic};
+    return { T_BUILDER };
 }
 
 void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
@@ -50,19 +51,10 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
         builderEvent(event);
     }
 
-    if (event.topic() == T_PROJECT) {
-        projectEvent(event);
-    }
-
-    if (event.data() == project.openProject.name) {
-        QString filePathKey = project.openProject.pKeys[0];
-        QString kitNameKey = project.openProject.pKeys[1];
-        QString languageKey = project.openProject.pKeys[2];
-        QString workspaceKey = project.openProject.pKeys[3];
-        CMakeOpenHandler::instance()->doProjectOpen(
-                    event.property(kitNameKey).toString(),
-                    event.property(languageKey).toString(),
-                    event.property(filePathKey).toString());
+    if (event.data() == project.activedProject.name) {
+        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+        TargetsManager::instance()->initialize(projectInfo.buildFolder());
     }
 }
 
@@ -77,24 +69,6 @@ void ProjectCmakeReceiver::builderEvent(const dpf::Event &event)
             } else {
                 ContextDialog::ok(QDialog::tr("Failed open project, whith build step."));
             }
-        }
-    }
-}
-
-void ProjectCmakeReceiver::projectEvent(const dpf::Event &event)
-{
-    if (event.topic() == T_PROJECT) {
-        if (event.data() == D_ACTIVED) {
-            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-            CMakeOpenHandler::instance()->doActiveProject(projectInfo);
-        } else if (event.data() == D_OPENPROJECT) {
-            CMakeOpenHandler::instance()->doProjectOpen(
-                        event.property(P_KITNAME).toString(),
-                        event.property(P_LANGUAGE).toString(),
-                        event.property(P_FILEPATH).toString());
-        } else if (event.data() == D_DELETED) {
-            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-            CMakeOpenHandler::instance()->doDeleteProject(projectInfo);
         }
     }
 }

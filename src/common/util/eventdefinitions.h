@@ -30,11 +30,11 @@
 #include <QString>
 
 OPI_OBJECT(recent,
-           OPI_INTERFACE(saveOpenedProject, "filePath", "kitName", "language", "workspace")
+           OPI_INTERFACE(saveOpenedProject, "kitName", "language", "workspace")
            )
 
 OPI_OBJECT(project,
-           OPI_INTERFACE(openProject,  "filePath", "kitName", "language", "workspace")
+           OPI_INTERFACE(openProject, "kitName", "language", "workspace")
            OPI_INTERFACE(activedProject, "projectInfo")
            OPI_INTERFACE(deletedProject, "projectInfo")
            OPI_INTERFACE(createdProject, "projectInfo")
@@ -49,6 +49,7 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(openFile, "workspace", "language", "filePath")
            OPI_INTERFACE(jumpToLine, "workspace", "language", "filePath", "line")
            OPI_INTERFACE(openDocument, "language", "filePath")
+           OPI_INTERFACE(selectedFile, "filePath", "status")
            )
 
 OPI_OBJECT(symbol,
@@ -62,7 +63,8 @@ OPI_OBJECT(navigation,
 
 OPI_OBJECT(actionanalyse,
            OPI_INTERFACE(analyse, "workspace", "language", "storage")
-           OPI_INTERFACE(analyseDone, "workspace", "language", "storage", "analysedData") // custom struct from analyseDone
+           // analysedData value custom struct from AnalysedData
+           OPI_INTERFACE(analyseDone, "workspace", "language", "storage", "analysedData")
            )
 
 struct AnalysedData
@@ -78,7 +80,6 @@ struct AnalysedData
 };
 Q_DECLARE_METATYPE(AnalysedData);
 
-extern const QString T_NAV;
 extern const QString T_MENU;
 extern const QString T_FILEBROWSER;
 extern const QString T_CODEEDITOR;
@@ -86,13 +87,10 @@ extern const QString T_DEBUGGER;
 extern const QString T_BUILDER;
 extern const QString T_WORKSPACE;
 extern const QString T_RECENT;
-extern const QString T_PROJECT;
 extern const QString T_SYMBOL;
 extern const QString T_PROCESSMESSAGE;
 extern const QString T_FIND;
 extern const QString T_COLLABORATORS;
-
-extern const QString D_ACTION_SWITCH;
 
 extern const QString D_WORKSPACE_GENERATE_BEGIN;
 extern const QString D_WORKSPACE_GENERATE_END;
@@ -101,16 +99,11 @@ extern const QString D_DEBUG_EXECUTION_END;
 extern const QString D_DEBUG_EXECUTION_JUMP;
 extern const QString D_JUMP_CURSOR_CLEAN;
 extern const QString D_BUILD_STATE;
-extern const QString D_OPENDOCUMENT;
-extern const QString D_OPENPROJECT;
 extern const QString D_ITEM_MENU_BUILD;
 extern const QString D_BUILD_TARGET;
 extern const QString D_SHOW;
 extern const QString D_HIDE;
 extern const QString D_ADDTEXT;
-extern const QString D_CRETED;
-extern const QString D_DELETED;
-extern const QString D_ACTIVED;
 extern const QString D_JUMP_TO_LINE;
 extern const QString D_SET_ANNOTATION;
 extern const QString D_CLEAN_ANNOTATION;

@@ -38,22 +38,12 @@ dpf::EventHandler::Type CoreReceiver::type()
 
 QStringList CoreReceiver::topics()
 {
-    return {T_NAV, navigation.topic};
+    return {navigation.topic};
 }
 
 void CoreReceiver::eventProcess(const dpf::Event &event)
 {
-    if (!CoreReceiver::topics().contains(event.topic())) {
-        qCritical() << "Fatal error, unsubscribed message received";
-        abort();
-    }
-
-    if (event.topic() == T_NAV) {
-        if (event.data() == D_ACTION_SWITCH) {
-            WindowKeeper::instace()->switchWidgetNavigation(
-                        event.property(P_ACTION_TEXT).toString());
-        }
-    } else if(event.data() == navigation.doSwitch.name) {
+    if(event.data() == navigation.doSwitch.name) {
         QString actionTextKey = navigation.doSwitch.pKeys[0];
         QString actionText = event.property(actionTextKey).toString();
         WindowKeeper::instace()->switchWidgetNavigation(actionText);

@@ -105,7 +105,7 @@ QMap<QString, QVariant> GradleGenerator::getDebugArguments(const dpfservice::Pro
     Q_UNUSED(currentFile)
 
     QMap<QString, QVariant> param;
-    param.insert("projectPath", projectInfo.sourceFolder());
+    param.insert("workspace", projectInfo.workspaceFolder());
 
     return param;
 }

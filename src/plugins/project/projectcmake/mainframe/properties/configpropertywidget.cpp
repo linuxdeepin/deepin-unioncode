@@ -41,7 +41,7 @@ class ConfigPropertyWidgetPrivate
 };
 
 ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
-                                           const QString &projectPath,
+                                           const QString &workspace,
                                            QDialog *parent)
     : QDialog (parent)
     , d(new ConfigPropertyWidgetPrivate())
@@ -52,7 +52,7 @@ ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
 
     // Initialize configure project widget.
     d->configureProjWidget = new ConfigureWidget(d->stackedWidget);
-    d->configureProjPane = new ConfigureProjPane(language, projectPath, d->configureProjWidget);
+    d->configureProjPane = new ConfigureProjPane(language, workspace, d->configureProjWidget);
     QObject::connect(d->configureProjPane, &ConfigureProjPane::configureDone, [this](const dpfservice::ProjectInfo &info){
         closeWidget();
     });

@@ -9,7 +9,6 @@ set(CXX_CPP
     mainframe/progressbar.cpp
     mainframe/aboutdialog.cpp
     mainframe/toolbarmanager.cpp
-    transceiver/sendevents.cpp
     transceiver/corereceiver.cpp
     core.cpp
     core.json
@@ -22,7 +21,6 @@ set(CXX_H
     mainframe/progressbar.h
     mainframe/aboutdialog.h
     mainframe/toolbarmanager.h
-    transceiver/sendevents.h
     transceiver/corereceiver.h
     core.h
     )

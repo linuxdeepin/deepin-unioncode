@@ -111,7 +111,7 @@ QMap<QString, QVariant> MavenGenerator::getDebugArguments(const dpfservice::Proj
     Q_UNUSED(currentFile)
 
     QMap<QString, QVariant> param;
-    param.insert("projectPath", projectInfo.sourceFolder());
+    param.insert("workspace", projectInfo.workspaceFolder());
 
     return param;
 }

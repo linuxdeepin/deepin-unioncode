@@ -36,8 +36,8 @@ class ConfigureProjPane : public QWidget
     Q_OBJECT
 public:
     ConfigureProjPane(const QString &language,
-                               const QString &projectPath,
-                               QWidget *parent = nullptr);
+                      const QString &workspace,
+                      QWidget *parent = nullptr);
     ~ConfigureProjPane();
 
 signals:

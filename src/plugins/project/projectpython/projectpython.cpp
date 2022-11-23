@@ -20,9 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "projectpython.h"
-#include "mainframe/pythonopenhandler.h"
 #include "mainframe/pythongenerator.h"
-#include "transceiver/sendevents.h"
 
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -49,14 +47,6 @@ bool ProjectPython::start()
     if (projectService) {
         QString errorString;
         projectService->implGenerator<PythonGenerator>(PythonGenerator::toolKitName(), &errorString);
-    }
-
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (windowService) {
-        if (windowService->addOpenProjectAction) {
-            auto action = new AbstractAction(PythonOpenHandler::instance()->openAction());
-            windowService->addOpenProjectAction(MWMFA_PYTHON, action);
-        }
     }
 
     return true;

@@ -19,7 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "mavenasynparse.h"
-#include "mavenitemkeeper.h"
 #include "services/project/projectgenerator.h"
 #include "services/option/optionmanager.h"
 
@@ -76,7 +75,7 @@ MavenAsynParse::~MavenAsynParse()
 
 void MavenAsynParse::loadPoms(const dpfservice::ProjectInfo &info)
 {
-    QFile docFile(info.projectFilePath());
+    QFile docFile(info.workspaceFolder() + QDir::separator() + "pom.xml");
 
     if (!docFile.exists()) {
         parsedError({"Failed, maven pro not exists!: " + docFile.fileName(), false});
@@ -95,7 +94,7 @@ void MavenAsynParse::loadPoms(const dpfservice::ProjectInfo &info)
 void MavenAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
-    createRows(info.sourceFolder());
+    createRows(info.workspaceFolder());
     emit itemsModified({d->rows, true});
 }
 
@@ -107,7 +106,7 @@ void MavenAsynParse::parseActions(const dpfservice::ProjectInfo &info)
         return;
     }
 
-    QFileInfo xmlFileInfo(proInfo.projectFilePath());
+    QFileInfo xmlFileInfo(info.workspaceFolder() + QDir::separator() + "pom.xml");
     if (!xmlFileInfo.exists())
         return;
 
@@ -170,7 +169,7 @@ void MavenAsynParse::parseActions(const dpfservice::ProjectInfo &info)
                             while (!pluginChild.isNull()) {
                                 auto pluginElem = pluginChild.toElement();
                                 if ("artifactId" == pluginElem.tagName()) {
-                                    ProjectActionInfo actionInfo;
+                                    ProjectMenuActionInfo actionInfo;
                                     actionInfo.buildProgram = OptionManager::getInstance()->getMavenToolPath();
                                     actionInfo.workingDirectory = xmlFileInfo.filePath();
                                     QString buildArg = pluginElem.text()

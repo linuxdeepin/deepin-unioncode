@@ -344,8 +344,8 @@ void Debugger::registerDapHandlers()
 
         // ui focus on the active frame.
         if (event.reason == "function breakpoint"
-            || event.reason == "breakpoint"
-            || event.reason == "step"
+                || event.reason == "breakpoint"
+                || event.reason == "step"
                 || event.reason == "breakpoint-hit"
                 || event.reason == "function-finished"
                 || event.reason == "end-stepping-range"
@@ -438,7 +438,7 @@ void Debugger::registerDapHandlers()
 
         QString output = event.output.c_str();
         if (output.contains("received signal")
-            || output.contains("Program")) {
+                || output.contains("Program")) {
             format = OutputFormat::StdErrFormat;
         }
         printOutput(output, format);
@@ -532,20 +532,6 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
                     start();
             }
         }
-    } else if (event.topic() == T_PROJECT) {
-        if (event.data() == D_ACTIVED || event.data() == D_CRETED) {
-            d->projectInfo = qvariant_cast<ProjectInfo>(event.property(P_PROJECT_INFO));
-            d->activeProjectKitName = d->projectInfo.kitName();
-            updateRunState(kNoRun);
-        } else if (event.data() == D_DELETED) {
-            d->activeProjectKitName.clear();
-            updateRunState(kNoRun);
-        } else if (event.data() == D_OPENDOCUMENT) {
-            if (event.property(P_OPRATETYPE).toBool())
-                d->currentOpenedFileName = event.property(P_FILEPATH).toString();
-            else
-                d->currentOpenedFileName.clear();
-        }
     }
 
     if (event.data() == debugger.prepareDebugDone.name) {
@@ -568,6 +554,22 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
         }
     } else if (event.data() == debugger.prepareDebugProgress.name) {
         printOutput(event.property(debugger.prepareDebugProgress.pKeys[0]).toString());
+    } else if (event.data() == project.activedProject.name) {
+        d->projectInfo = qvariant_cast<ProjectInfo>(event.property(project.activedProject.pKeys[0]));
+        d->activeProjectKitName = d->projectInfo.kitName();
+        updateRunState(kNoRun);
+    } else if (event.data() == project.createdProject.name) {
+        d->projectInfo = qvariant_cast<ProjectInfo>(event.property(project.createdProject.pKeys[0]));
+        d->activeProjectKitName = d->projectInfo.kitName();
+        updateRunState(kNoRun);
+    } else if (event.data() == project.deletedProject.name) {
+        d->activeProjectKitName.clear();
+        updateRunState(kNoRun);
+    } else if (event.data() == editor.selectedFile.name) {
+        if (event.property(editor.selectedFile.pKeys[1]).toBool())
+            d->currentOpenedFileName = event.property(editor.selectedFile.pKeys[0]).toString();
+        else
+            d->currentOpenedFileName.clear();
     }
 }
 
@@ -683,7 +685,7 @@ bool Debugger::showStoppedBySignalMessageBox(QString meaning, QString name)
                            "signal from the operating system.<p>"
                            "<table><tr><td>Signal name : </td><td>%1</td></tr>"
                            "<tr><td>Signal meaning : </td><td>%2</td></tr></table>")
-                                .arg(name, meaning);
+            .arg(name, meaning);
 
     alertBox = Internal::information(tr("Signal Received"), msg);
     return true;

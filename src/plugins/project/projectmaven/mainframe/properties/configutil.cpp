@@ -61,10 +61,8 @@ bool ConfigUtil::getProjectInfo(const ConfigureParam *param, dpfservice::Project
 {
     QString sourceFolder = QFileInfo(param->projectPath).path();
     info.setLanguage(param->language);
-    info.setSourceFolder(sourceFolder);
     info.setKitName(MavenGenerator::toolKitName());
     info.setWorkspaceFolder(sourceFolder);
-    info.setProjectFilePath(param->projectPath);
     info.setBuildProgram(OptionManager::getInstance()->getMavenToolPath());
 
     return true;

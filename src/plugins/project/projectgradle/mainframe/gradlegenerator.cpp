@@ -20,12 +20,9 @@
 */
 #include "gradlegenerator.h"
 #include "gradleasynparse.h"
-#include "gradleitemkeeper.h"
 #include "mainframe/properties/configpropertywidget.h"
 
 #include "common/dialog/propertiesdialog.h"
-#include "transceiver/sendevents.h"
-#include "transceiver/projectgradlereceiver.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
 #include "services/option/optionmanager.h"
@@ -110,32 +107,25 @@ GradleGenerator::~GradleGenerator()
         delete d;
 }
 
+QStringList GradleGenerator::supportLanguages()
+{
+    return {dpfservice::MWMFA_JAVA};
+}
+
+QStringList GradleGenerator::supportFileNames()
+{
+    return {"gradlew"};
+}
+
 QDialog *GradleGenerator::configureWidget(const QString &language,
                                           const QString &projectPath)
 {
     using namespace dpfservice;
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (!projectService)
-        return nullptr;
-
-    auto proInfos = projectService->projectView.getAllProjectInfo();
-    for (auto &val : proInfos) {
-        if (val.language() == language && projectPath == val.projectFilePath()) {
-            ContextDialog::ok(QDialog::tr("Cannot open repeatedly!\n"
-                                          "language : %0\n"
-                                          "projectPath : %1")
-                              .arg(language, projectPath));
-            return nullptr;
-        }
-    }
 
     ProjectInfo info;
     info.setLanguage(language);
-    info.setSourceFolder(projectPath);
     info.setKitName(GradleGenerator::toolKitName());
     info.setWorkspaceFolder(projectPath);
-    info.setProjectFilePath(projectPath);
 
     configure(info);
 
@@ -164,7 +154,7 @@ bool GradleGenerator::configure(const dpfservice::ProjectInfo &info)
 QStandardItem *GradleGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
-    QStandardItem * rootItem = new QStandardItem(QFileInfo(info.sourceFolder()).fileName());
+    QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new GradleAsynParse();
     QObject::connect(d->projectParses[rootItem],
@@ -199,17 +189,16 @@ QMenu *GradleGenerator::createItemMenu(const QStandardItem *item)
 
     using namespace dpfservice;
     ProjectInfo info = ProjectInfo::get(item);
-    if (!QFileInfo(info.sourceFolder()).exists())
+    if (!QFileInfo(info.workspaceFolder()).exists())
         return nullptr;
 
-    QString sourceFolder = info.sourceFolder();
-    QString program = sourceFolder + QDir::separator()
+    QString program = info.workspaceFolder() + QDir::separator()
             + GradleShellKey::get()->ScriptName;
     QStringList args = {GradleShellKey::get()->ScriptArg_Task};
     QMenu *menu = new QMenu();
     if (!d->gradleMenu) {
         d->gradleMenu = new QMenu("Gradle");
-        doGradleGeneratMenu(program, args, sourceFolder); // asyn
+        doGradleGeneratMenu(program, args, info.workspaceFolder()); // asyn
     }
     menu->addMenu(d->gradleMenu);
 

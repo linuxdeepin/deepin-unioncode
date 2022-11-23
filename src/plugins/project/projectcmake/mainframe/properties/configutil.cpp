@@ -84,9 +84,9 @@ ConfigType ConfigUtil::getTypeFromName(QString name)
     return type;
 }
 
-bool ConfigUtil::isNeedConfig(const QString &projectPath, ConfigureParam &param)
+bool ConfigUtil::isNeedConfig(const QString &workspace, ConfigureParam &param)
 {
-    QString propertyFile = getConfigPath(projectPath);
+    QString propertyFile = getConfigPath(workspace);
     if (QFileInfo(propertyFile).exists() || QFileInfo(propertyFile).isFile()) {
         readConfig(propertyFile, param);
         if (!param.buildConfigures.isEmpty()) {
@@ -99,20 +99,17 @@ bool ConfigUtil::isNeedConfig(const QString &projectPath, ConfigureParam &param)
 bool ConfigUtil::getProjectInfo(const ConfigureParam *param, dpfservice::ProjectInfo &info)
 {
     for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
-        if (d->configureParam.defaultType == iter->type) {
-            QString sourceFolder = QFileInfo(param->projectPath).path();
+        if (d->configureParam.tempSelType == iter->type) {
             info.setLanguage(param->language);
-            info.setSourceFolder(sourceFolder);
             info.setKitName(CmakeGenerator::toolKitName());
-            info.setWorkspaceFolder(sourceFolder);
-            info.setProjectFilePath(param->projectPath);
+            info.setWorkspaceFolder(param->workspace);
             info.setBuildType(ConfigUtil::instance()->getNameFromType(iter->type));
             info.setBuildFolder(iter->directory);
             info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
 
             QStringList arguments;
             arguments << "-S";
-            arguments << info.sourceFolder();
+            arguments << info.workspaceFolder();
             arguments << "-B";
             arguments << info.buildFolder();
             arguments << "-G";

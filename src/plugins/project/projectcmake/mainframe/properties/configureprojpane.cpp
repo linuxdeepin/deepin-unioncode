@@ -73,7 +73,7 @@ class ConfigureProjPanePrivate
 };
 
 ConfigureProjPane::ConfigureProjPane(const QString &language,
-                                     const QString &projectPath,
+                                     const QString &workspace,
                                      QWidget *parent)
     : QWidget(parent)
     , d(new ConfigureProjPanePrivate)
@@ -81,14 +81,14 @@ ConfigureProjPane::ConfigureProjPane(const QString &language,
     d->cfgItem = ConfigUtil::instance()->getConfigureParamPointer();
     d->cfgItem->clear();
     d->cfgItem->language = language;
-    d->cfgItem->projectPath = projectPath;
+    d->cfgItem->workspace = workspace;
 
     setupUI();
     updateUI();
 
     connect(ConfigUtil::instance(), QOverload<const dpfservice::ProjectInfo &>::of(&ConfigUtil::configureDone),
             [this](const dpfservice::ProjectInfo &info) {
-        QString propertyPath = ConfigUtil::instance()->getConfigPath(QFileInfo(d->cfgItem->projectPath).path());
+        QString propertyPath = ConfigUtil::instance()->getConfigPath(d->cfgItem->workspace);
         config::ConfigUtil::instance()->saveConfig(propertyPath, *d->cfgItem);
         emit configureDone(info);
     });
@@ -180,15 +180,14 @@ void ConfigureProjPane::updateUI()
 
     d->kitComboBox->addItem(kDefaultKitName);
 
-    if (d->cfgItem->projectPath.isEmpty())
+    if (d->cfgItem->workspace.isEmpty())
         return;
 
-    QDir folder = QFileInfo(d->cfgItem->projectPath).dir();
+    QDir folder(d->cfgItem->workspace);
     QString folderName = folder.dirName();
-    folder.cdUp();
     QString upDirectory = folder.path();
 
-    auto folerPath = [&](QString buildType) -> QString {
+    auto folerPath = [=](QString buildType) -> QString {
         return (upDirectory + QDir::separator() + "build" + "-" + folderName + "-" + kDefaultKitName + "-" + buildType);
     };
 
@@ -224,6 +223,7 @@ void ConfigureProjPane::slotConfigure()
     }
 
     d->cfgItem->defaultType = ConfigUtil::instance()->getTypeFromName(d->group->checkedButton()->text());
+    d->cfgItem->tempSelType = d->cfgItem->defaultType;
     d->cfgItem->kit = d->kitComboBox->currentText();
 
     ConfigUtil::instance()->configProject(d->cfgItem);

@@ -20,9 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "projectmaven.h"
-#include "mainframe/mavenopenhandler.h"
 #include "mainframe/mavengenerator.h"
-#include "transceiver/sendevents.h"
 
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -49,14 +47,6 @@ bool ProjectMaven::start()
     if (projectService) {
         QString errorString;
         projectService->implGenerator<MavenGenerator>(MavenGenerator::toolKitName(), &errorString);
-    }
-
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (windowService) {
-        if (windowService->addOpenProjectAction) {
-            auto action = new AbstractAction(CmakeOpenHandler::instance()->openAction());
-            windowService->addOpenProjectAction(MWMFA_JAVA, action);
-        }
     }
 
     return true;

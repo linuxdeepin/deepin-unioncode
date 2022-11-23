@@ -50,9 +50,7 @@ public:
     inline void setLanguage(const QString &language) {data["Language"] = language;}
     inline void setKitName(const QString &kitName) {data["KitName"] = kitName;}
     inline void setBuildFolder(const QString &buildPath) {data["BuildFolder"] = buildPath;}
-    inline void setSourceFolder(const QString &sourcePath) {data["SourceFolder"] = sourcePath;}
     inline void setWorkspaceFolder(const QString &workspaceFolder) {data["WorkspaceFolder"] = workspaceFolder;}
-    inline void setProjectFilePath(const QString &projectFilePath) {data["ProjectFilePath"] = projectFilePath;}
     inline void setBuildType(const QString &buildType) {data["BuildType"] = buildType;}
     inline void setBuildProgram(const QString &program) {data["BuildProgram"] = program;}
     inline void setBuildCustomArgs(const QStringList &args) {data["BuildCustomArgs"] = args;}
@@ -61,9 +59,7 @@ public:
     inline QString language() const {return data["Language"].toString();}
     inline QString kitName() const {return data["KitName"].toString();}
     inline QString buildFolder() const {return data["BuildFolder"].toString();}
-    inline QString sourceFolder() const {return data["SourceFolder"].toString();}
     inline QString workspaceFolder() const {return data["WorkspaceFolder"].toString();}
-    inline QString projectFilePath() const {return data["ProjectFilePath"].toString();}
     inline QString buildType() const {return data["BuildType"].toString();}
     inline QString buildProgram() const {return data["BuildProgram"].toString();}
     inline QStringList buildCustomArgs() const {return data["BuildCustomArgs"].toStringList();}

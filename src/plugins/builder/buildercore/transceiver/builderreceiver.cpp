@@ -36,19 +36,23 @@ dpf::EventHandler::Type BuilderReceiver::type()
 
 QStringList BuilderReceiver::topics()
 {
-    return QStringList() << T_PROJECT << T_DEBUGGER;
+    return {project.topic, T_DEBUGGER};
 }
 
 void BuilderReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.topic() == T_PROJECT) {
-        if (event.data() == D_ACTIVED || event.data() == D_CRETED) {
-            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-            BuildManager::instance()->setActivedProjectInfo(projectInfo.kitName(), projectInfo.workspaceFolder());
-        } else if (event.data() == D_DELETED){
-            dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(event.property(P_PROJECT_INFO));
-            BuildManager::instance()->clearActivedProjectInfo();
-        }
+    if (event.data() == project.activedProject.name) {
+        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+        BuildManager::instance()->setActivedProjectInfo(projectInfo.kitName(), projectInfo.workspaceFolder());
+    } else if (event.data() == project.createdProject.name) {
+        QVariant proInfoVar = event.property(project.createdProject.pKeys[0]);
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+        BuildManager::instance()->setActivedProjectInfo(projectInfo.kitName(), projectInfo.workspaceFolder());
+    } else if (event.data() == project.deletedProject.name) {
+        QVariant proInfoVar = event.property(project.deletedProject.pKeys[0]);
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+        BuildManager::instance()->clearActivedProjectInfo();
     }
 }
 
