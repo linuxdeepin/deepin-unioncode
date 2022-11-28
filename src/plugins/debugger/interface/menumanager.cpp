@@ -166,6 +166,17 @@ void MenuManager::handleRunStateChanged(Debugger::RunState state)
         stepIn->setEnabled(true);
         stepOut->setEnabled(true);
         break;
+    case Debugger::kCustomRunning:
+        startDebugging->setEnabled(false);
+        interrupt->setEnabled(false);
+        continueDebugging->setEnabled(false);
+        abortDebugging->setEnabled(true);
+        restartDebugging->setEnabled(false);
+        stepOver->setEnabled(false);
+        stepIn->setEnabled(false);
+        stepOut->setEnabled(false);
+        break;
+
     default:
         // do nothing.
         break;

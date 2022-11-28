@@ -94,8 +94,9 @@ void DebugManager::initProcess()
 
 void DebugManager::initDebugger(const QString &program, const QStringList &arguments)
 {
-    if (d->process)
-        d->process->kill();
+    if (d->process) {
+        d->process->terminate();
+    }
 
     d->arguments = arguments;
 

@@ -86,6 +86,7 @@ signals:
     void asyncRunning(const QString& processName, const QString& theadId);
     void libraryLoaded(const dap::ModuleEvent &moduleEvent);
     void libraryUnloaded(const dap::ModuleEvent &moduleEvent);
+    void terminated();
 
     void gdbProcessStarted();
     void gdbProcessTerminated();

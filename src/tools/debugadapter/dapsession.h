@@ -60,6 +60,7 @@ private:
     void handleLibraryLoaded(const dap::ModuleEvent &moduleEvent);
     void handleLibraryUnloaded(const dap::ModuleEvent &moduleEvent);
     void handleThreadExited(const int threadId, const QString &groupId);
+    void handleTerminateEvent();
 
     dap::SetBreakpointsResponse handleBreakpointReq(const dap::SetBreakpointsRequest &request);
     dap::InitializeResponse handleInitializeReq(const dap::InitializeRequest &request);

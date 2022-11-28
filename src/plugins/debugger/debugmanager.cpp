@@ -50,6 +50,8 @@ bool DebugManager::initialize(dpfservice::WindowService *windowService,
         debuggerService->runCoredump = std::bind(&DebugManager::runCoredump, this, _1, _2, _3);
     }
 
+    launchBackend();
+
     return true;
 }
 

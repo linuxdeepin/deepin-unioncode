@@ -168,6 +168,16 @@ class dap::Socket::Shared : public dap::ReaderWriter {
     return false;
   }
 
+  bool isConnected() {
+      RLock l(mutex);
+      if (InvalidSocket == s)
+          return false;
+      struct tcp_info info;
+      socklen_t len = sizeof(info);
+      getsockopt(s, IPPROTO_TCP, TCP_INFO, &info, &len);
+      return info.tcpi_state == TCP_ESTABLISHED;
+  }
+
   void close() {
     {
       RLock l(mutex);
@@ -204,6 +214,9 @@ class dap::Socket::Shared : public dap::ReaderWriter {
     if (s == InvalidSocket) {
       return 0;
     }
+
+    if (!isConnected())
+        return 0;
     auto len =
         recv(s, reinterpret_cast<char*>(buffer), static_cast<int>(bytes), 0);
     return (len < 0) ? 0 : len;
@@ -215,8 +228,12 @@ class dap::Socket::Shared : public dap::ReaderWriter {
       return false;
     }
     if (bytes == 0) {
-      return true;
+      return false;
     }
+
+    if (!isConnected())
+        return false;
+
     return ::send(s, reinterpret_cast<const char*>(buffer),
                   static_cast<int>(bytes), 0) > 0;
   }

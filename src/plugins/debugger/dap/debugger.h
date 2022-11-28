@@ -62,6 +62,7 @@ public:
         kStart,
         kRunning,
         kStopped,
+        kCustomRunning
     };
 
     explicit Debugger(QObject *parent = nullptr);
@@ -118,7 +119,7 @@ private:
     QString requestBuild();
     void start();
     void prepareDebug();
-    bool prepareDAPPort(const QMap<QString, QVariant> &param, const QString &kitName);
+    bool prepareDAPPort(const QMap<QString, QVariant> &param, const QString &kitName, bool customDap);
     void stopWaitingDAPPort();
     void stopDAP();
     void launchSession(int port, const QMap<QString, QVariant> &param, const QString &kitName);

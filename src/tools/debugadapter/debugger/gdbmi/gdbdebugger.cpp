@@ -49,6 +49,7 @@ GDBDebugger::GDBDebugger(QObject *parent)
     connect(this, &GDBDebugger::libraryUnloaded, DebugManager::instance(), &DebugManager::libraryUnloaded);
     connect(this, &GDBDebugger::fireLocker, DebugManager::instance(), &DebugManager::fireLocker);
     connect(this, &GDBDebugger::updateExceptResponse, DebugManager::instance(), &DebugManager::updateExceptResponse);
+    connect(this, &GDBDebugger::terminated, DebugManager::instance(), &DebugManager::terminated);
 }
 
 GDBDebugger::~GDBDebugger()
@@ -73,7 +74,7 @@ bool GDBDebugger::isInferiorRunning()
 
 QString GDBDebugger::quit()
 {
-    return ("-dap-exit");
+    return ("-gdb-exit");
 }
 
 QString GDBDebugger::kill()

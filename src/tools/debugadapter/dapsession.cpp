@@ -58,7 +58,7 @@ class DapSessionPrivate
     bool isSupportsTerminateDebuggee = true;
     bool isGDbProcessTerminated = false;
     bool isThreadRequestReceived = false;
-    bool isInferiorStopped = false;
+    bool isInferiorStopped = true;
 
     QString uuid;
 };
@@ -212,6 +212,10 @@ void DapSession::initializeDebugMgr()
         handleStreamConsole(text);
     });
 
+    connect(d->debugger, &DebugManager::terminated, DapProxy::instance(), [this]() mutable {
+        handleTerminateEvent();
+    });
+
     connect(DapProxy::instance(), &DapProxy::sigQuit, d->debugger, &DebugManager::quit, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigKill, d->debugger, &DebugManager::kill, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigStart, d->debugger, &DebugManager::execute, SequentialExecution);
@@ -300,8 +304,6 @@ void DapSession::registerHanlder()
     // execute debugger and debuggee after configurate done response
     d->session->registerSentHandler([&](const dap::ResponseOrError<dap::ConfigurationDoneResponse> &response) {
         Q_UNUSED(response)
-        emit DapProxy::instance()->sigLaunchLocal();
-
         connect(d->debugger, &DebugManager::asyncRunning, DapProxy::instance(),
                 [this](const QString& processName, const QString& theadId) mutable {
             // TODO(Any):multi-thread condition should be done.
@@ -317,6 +319,8 @@ void DapSession::registerHanlder()
 
             configured.fire();
         }, Qt::UniqueConnection);
+
+        emit DapProxy::instance()->sigLaunchLocal();
     });
 
     // The Launch request is made when the client instructs the debugger adapter
@@ -329,7 +333,14 @@ void DapSession::registerHanlder()
         d->isDebuggeIsStartWithLaunchRequest = true;
 
         if (request.name.has_value() && request.program.has_value() ) {
-            d->debugger->initDebugger(request.name.value().c_str(), QStringList{request.program.value().c_str()});
+            QStringList arguments;
+            arguments.push_back(request.program.value().c_str());
+            if (request.args.has_value()) {
+                foreach(auto arg, request.args.value()) {
+                    arguments.push_back(arg.c_str());
+                }
+            }
+            d->debugger->initDebugger(request.name.value().c_str(), arguments);
         }
         emit DapProxy::instance()->sigStart();
         auto message = QString{"gdb process started with pid: %1\n"}.arg(d->debugger->getProcessId());
@@ -382,8 +393,6 @@ void DapSession::registerHanlder()
         // send quit command to debugger
         emit DapProxy::instance()->sigQuit();
 
-        dap::TerminatedEvent terminatedEvent;
-        d->session->send(terminatedEvent);
         Log("--> Server sent terminate response to client\n")
         return response;
     });
@@ -461,7 +470,7 @@ void DapSession::registerHanlder()
     //
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_Threads
     d->session->registerHandler([&](const dap::ThreadsRequest &request) {
-        configured.wait();
+        //configured.wait(); //TODO
         Q_UNUSED(request)
         d->isThreadRequestReceived = true;
         dap::ThreadsResponse response;
@@ -699,4 +708,10 @@ InitializeResponse DapSession::handleInitializeReq(const InitializeRequest &requ
 
     Log("--> Server sent initialize response to client\n")
     return response;
+}
+
+void DapSession::handleTerminateEvent()
+{
+    dap::TerminatedEvent terminatedEvent;
+    d->session->send(terminatedEvent);
 }

@@ -72,6 +72,8 @@ class DebuggerPrivate
     QSharedPointer<QTimer> timer = nullptr;
     QSharedPointer<QThread> timerThread = nullptr;
     std::atomic_bool isWaitingPort = false;
+    std::atomic_bool isCustomDap = false;
+    QString userKitName;
 };
 
 Debugger::Debugger(QObject *parent)
@@ -173,11 +175,12 @@ void Debugger::continueDebug()
 
 void Debugger::abortDebug()
 {
-    if (runState == kRunning || runState == kStopped) {
+    if (runState == kRunning || runState == kStopped || runState == kCustomRunning) {
         auto &ctx = dpfInstance.serviceContext();
         LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
         if (service) {
-            auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
+            QString kitName = (runState == kCustomRunning) ? d->userKitName : d->activeProjectKitName;
+            auto generator = service->create<LanguageGenerator>(kitName);
             if (generator) {
                 if (generator->isStopDAPManually()) {
                     stopDAP();
@@ -301,12 +304,20 @@ void Debugger::registerDapHandlers()
         Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "InitializedEvent";
-        session.get()->getRawSession()->setReadyForBreakpoints(true);
-        debugService->sendAllBreakpoints(session.get());
-        session.get()->getRawSession()->configurationDone().wait();
-        session->fetchThreads(nullptr);
 
-        updateRunState(Debugger::RunState::kRunning);
+        if (d->isCustomDap) {
+            auto threads = session->fetchThreads(nullptr);
+            updateThreadList(-1, threads);
+            updateRunState(Debugger::RunState::kCustomRunning);
+        } else {
+            session.get()->getRawSession()->setReadyForBreakpoints(true);
+            debugService->sendAllBreakpoints(session.get());
+
+            session.get()->getRawSession()->configurationDone().wait();
+
+            session->fetchThreads(nullptr);
+            updateRunState(Debugger::RunState::kRunning);
+        }
     });
 
     // The event indicates that the execution of the debuggee has stopped due to some condition.
@@ -543,7 +554,7 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
                 auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
                 if (generator) {
                     QMap<QString, QVariant> param = generator->getDebugArguments(d->projectInfo, d->currentOpenedFileName);
-                    prepareDAPPort(param, d->activeProjectKitName);
+                    prepareDAPPort(param, d->activeProjectKitName, true);
                 }
             }
         }
@@ -602,6 +613,11 @@ void Debugger::updateThreadList(int curr, const dap::array<dap::Thread> &threads
     }
     if (currIdx != -1)
         threadSelector->setCurrentIndex(currIdx);
+    else if (!threads.empty()) {
+        threadSelector->setCurrentIndex(0);
+        int threadId = static_cast<int>(threads.at(0).id);
+        switchCurrentThread(threadId);
+    }
 }
 
 void Debugger::switchCurrentThread(int threadId)
@@ -746,6 +762,7 @@ void Debugger::updateRunState(Debugger::RunState state)
             exitDebug();
             break;
         case kRunning:
+        case kCustomRunning:
             QMetaObject::invokeMethod(localsView, "show");
             break;
         case kStopped:
@@ -810,13 +827,13 @@ void Debugger::prepareDebug()
                 QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
                 updateRunState(kPreparing);
             } else if (!generator->isAnsyPrepareDebug()) {
-                prepareDAPPort(param, d->activeProjectKitName);
+                prepareDAPPort(param, d->activeProjectKitName, true);
             }
         }
     }
 }
 
-bool Debugger::prepareDAPPort(const QMap<QString, QVariant> &param, const QString &kitName)
+bool Debugger::prepareDAPPort(const QMap<QString, QVariant> &param, const QString &kitName, bool customDap)
 {
     if (d->isWaitingPort) {
         QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Is getting the dap port, please waiting for a moment"));
@@ -851,6 +868,7 @@ bool Debugger::prepareDAPPort(const QMap<QString, QVariant> &param, const QStrin
             });
             d->timerThread->start();
 
+            d->isCustomDap = customDap;
             QString retMsg;
             d->requestDAPPortUuid = QUuid::createUuid().toString();
             if (!generator->requestDAPPort(d->requestDAPPortUuid, param, retMsg)) {
@@ -970,6 +988,7 @@ bool Debugger::runCoredump(const QString &target, const QString &core, const QSt
     QMap<QString, QVariant> param;
     param.insert("targetPath", target);
     param.insert("arguments", QStringList{core});
+    d->userKitName = kit;
 
-    return prepareDAPPort(param, kit);
+    return prepareDAPPort(param, d->userKitName, false);
 }
