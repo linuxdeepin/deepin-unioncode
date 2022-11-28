@@ -41,6 +41,7 @@
 #include <QLineEdit>
 #include <QVBoxLayout>
 #include <QCoreApplication>
+#include <QByteArray>
 
 #include <bitset>
 
@@ -197,6 +198,8 @@ StyleLsp::StyleLsp(TextEdit *parent)
     setIndicStyle();
     setMargin();
 
+    QObject::connect(d->edit, &ScintillaEditExtern::charAdded, this, &StyleLsp::SciCharAdded);
+    QObject::connect(d->edit, &ScintillaEditExtern::linesAdded, this, &StyleLsp::sciLinesAdded);
     QObject::connect(d->edit, &ScintillaEditExtern::textInserted, this, &StyleLsp::sciTextInsertedTotal);
     QObject::connect(d->edit, &ScintillaEditExtern::textDeleted, this, &StyleLsp::sciTextDeletedTotal);
     QObject::connect(d->edit, &ScintillaEditExtern::hovered, this, &StyleLsp::sciHovered);
@@ -353,6 +356,29 @@ void StyleLsp::sciTextDeletedTotal(Scintilla::Position position,
     QObject::connect(&d->textChangedTimer, &QTimer::timeout,
                      this, &StyleLsp::sciTextChangedTotal,
                      Qt::UniqueConnection);
+}
+
+void StyleLsp::sciLinesAdded(Scintilla::Position position)
+{
+    Q_UNUSED(position)
+    //notiong to do
+}
+
+void StyleLsp::SciCharAdded(int ch)
+{
+    if (ch == '\n') {
+        auto currLine = d->edit->lineFromPosition(d->edit->currentPos());
+        if (currLine > 0){
+            auto upLineIndentation = d->edit->lineIndentation(currLine - 1);
+            int count = 0;
+            std::string indent;
+            while (count < upLineIndentation) {
+                indent += " ";
+                count ++;
+            }
+            d->edit->addText(indent.size(), indent.c_str());
+        }
+    }
 }
 
 void StyleLsp::sciTextChangedTotal()

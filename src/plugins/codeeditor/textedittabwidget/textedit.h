@@ -41,17 +41,6 @@ public:
     virtual StyleLsp *getStyleLsp() const {return nullptr;}
     virtual StyleSci *getStyleSci() const {return nullptr;}
     virtual StyleJsonFile *getStyleFile() const {return nullptr;}
-
-signals:
-    void fileChanged(const QString &file);
-    void fileClosed(const QString &file);
-    void fileSaved(const QString &file);
-    void signalFocusInChanged();
-    void signalFocusOutChanged();
-
-private:
-    void find(const QString &srcText, int operateType);
-    void replace(const QString &srcText, const QString &destText, int operateType);
 };
 
 #endif // TEXTEDIT_H

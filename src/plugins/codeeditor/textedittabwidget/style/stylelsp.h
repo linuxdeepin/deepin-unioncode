@@ -118,11 +118,11 @@ private slots:
                              Scintilla::Position length, Scintilla::Position linesAdded,
                              const QByteArray &text, Scintilla::Position line);
 
+    void sciLinesAdded(Scintilla::Position position);
+    void SciCharAdded(int ch);
     void sciTextChangedTotal();
-
     void sciHovered(Scintilla::Position position);
     void sciHoverCleaned(Scintilla::Position position);
-
     void sciDefinitionHover(Scintilla::Position position);
     void sciDefinitionHoverCleaned(Scintilla::Position position);
     void sciIndicClicked(Scintilla::Position position);

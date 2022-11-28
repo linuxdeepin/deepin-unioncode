@@ -74,6 +74,8 @@ public:
     void saveAsText();
     bool isSaveText();
     void cleanIsSaveText();
+    void find(const QString &srcText, int operateType);
+    void replace(const QString &srcText, const QString &destText, int operateType);
 
 signals:
     void hovered(Scintilla::Position position);
@@ -94,6 +96,11 @@ signals:
     void replaceed(const QString &file, Scintilla::Position start,
                    Scintilla::Position end, const QString &text);
     void selectionMenu(QContextMenuEvent *event);
+    void fileChanged(const QString &file);
+    void fileClosed(const QString &file);
+    void fileSaved(const QString &file);
+    void signalFocusInChanged();
+    void signalFocusOutChanged();
 
 private slots:
     void sciModified(Scintilla::ModificationFlags type, Scintilla::Position position,

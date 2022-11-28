@@ -21,6 +21,8 @@
 #include "scintillaeditextern.h"
 #include "style/stylecolor.h"
 #include "transceiver/sendevents.h"
+#include "transceiver/codeeditorreceiver.h"
+#include "services/find/findservice.h"
 
 #include "common/common.h"
 #include "framework/framework.h"
@@ -52,6 +54,8 @@ ScintillaEditExtern::ScintillaEditExtern(QWidget *parent)
     : ScintillaEdit (parent)
     , d(new ScintillaEditExternPrivate)
 {
+    setTabWidth(4);
+    setIndentationGuides(SC_IV_LOOKBOTH);
     styleSetBack(STYLE_DEFAULT, StyleColor::color(QColor(22,22,22)));
     for (int i = 0; i < KEYWORDSET_MAX; i ++) {
         styleSetFore(i, StyleColor::color(QColor(0xdd, 0xdd, 0xdd)));
@@ -98,6 +102,9 @@ void ScintillaEditExtern::setFile(const QString &filePath)
     QObject::connect(this, &ScintillaEditExtern::dwellEnd, this, &ScintillaEditExtern::sciDwellEnd, Qt::UniqueConnection);
     QObject::connect(this, &ScintillaEditExtern::notify, this, &ScintillaEditExtern::sciNotify, Qt::UniqueConnection);
     QObject::connect(this, &ScintillaEditExtern::updateUi, this, &ScintillaEditExtern::sciUpdateUi, Qt::UniqueConnection);
+
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toSearchText, this, &ScintillaEditExtern::find);
+    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toReplaceText, this, &ScintillaEditExtern::replace);
 
     QObject::connect(&d->hoverTimer, &QTimer::timeout, &d->hoverTimer, [=](){
         emit this->hovered(d->hoverPos);
@@ -443,4 +450,57 @@ void ScintillaEditExtern::leaveEvent(QEvent *event)
 {
     d->isLeave = true;
     ScintillaEdit::leaveEvent(event);
+}
+
+void ScintillaEditExtern::find(const QString &srcText, int operateType)
+{
+    using namespace dpfservice;
+    switch (operateType) {
+    case FindType::Previous:
+    {
+        searchAnchor();
+        searchPrev(SCFIND_NONE, srcText.toLatin1().data());
+        break;
+    }
+    case FindType::Next:
+    {
+        findNext(srcText);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void ScintillaEditExtern::replace(const QString &srcText, const QString &destText, int operateType)
+{
+    using namespace dpfservice;
+    switch (operateType) {
+    case RepalceType::Repalce:
+    {
+        QByteArray byteArray = getSelText();
+        if (0 == QString(byteArray).compare(srcText, Qt::CaseInsensitive)) {
+            replaceSel(destText.toLatin1().data());
+        }
+
+        break;
+    }
+    case RepalceType::FindAndReplace:
+    {
+        QByteArray byteArray = getSelText();
+        if (0 == QString(byteArray).compare(srcText, Qt::CaseInsensitive)) {
+            replaceSel(destText.toLatin1().data());
+            searchAnchor();
+            searchNext(SCFIND_NONE, srcText.toLatin1().data());
+        }
+        break;
+    }
+    case RepalceType::RepalceAll:
+    {
+        replaceAll(srcText, destText);
+        break;
+    }
+    default:
+        break;
+    }
 }
