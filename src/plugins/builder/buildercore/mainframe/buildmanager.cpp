@@ -104,14 +104,14 @@ void BuildManager::addMenu()
         windowService->addAction(dpfservice::MWM_BUILD, actionImpl);
     };
 
-    d->buildAction.reset(new QAction("Build"));
+    d->buildAction.reset(new QAction(MWMBA_BUILD));
     actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B), "run-build-file.png");
     windowService->addToolBarActionItem("toolbar.Build", d->buildAction.get());
 
-    d->rebuildAction.reset(new QAction("Rebuild"));
+    d->rebuildAction.reset(new QAction(MWMBA_REBUILD));
     actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B), "rebuild.png");
 
-    d->cleanAction.reset(new QAction("Clean"));
+    d->cleanAction.reset(new QAction(MWMBA_CLEAN));
     actionInit(d->cleanAction.get(), "Build.Clean", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C), "clean.png");
 
     QObject::connect(d->buildAction.get(), &QAction::triggered,

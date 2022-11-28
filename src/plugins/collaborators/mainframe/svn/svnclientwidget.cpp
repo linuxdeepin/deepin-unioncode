@@ -54,13 +54,13 @@ SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
 
     const auto clone = menu->addAction(QAction::tr("Checkout repository"));
     ActionManager::getInstance()->registerAction(clone, "SVN.Checkout.Repository",
-                                                 "Checkout repository", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
+                                                 tr("Checkout repository"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
                                                  "checkout.png");
     connect(clone, &QAction::triggered, this, &SvnClientWidget::showCheckoutDialog);
 
     const auto open = menu->addAction(QAction::tr("Open repository"));
     ActionManager::getInstance()->registerAction(open, "SVN.Open.Repository",
-                                                 "Open repository", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
+                                                 tr("Open repository"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
                                                  "open_repository.png");
     connect(open, &QAction::triggered, this, &SvnClientWidget::showOpenLocalRepos);
 

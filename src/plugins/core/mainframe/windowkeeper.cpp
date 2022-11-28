@@ -38,6 +38,7 @@
 #include <QActionGroup>
 #include <QDesktopServices>
 #include <QComboBox>
+#include <QTranslator>
 
 static WindowKeeper *ins{nullptr};
 using namespace dpfservice;
@@ -148,35 +149,42 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     auto toolsMenu = new QMenu(MWM_TOOLS);
     menuBar->addMenu(toolsMenu);
 
-    QAction* actionSearch = new QAction("Search");
-    QAction* actionPackageTools = new QAction("Package Tools");
-    QAction* actionVersionTools = new QAction("Version Tools");
-    QAction* actionCodeFormatting = new QAction("Code Formatting");
-    QAction* actionRuntimeAnalysis = new QAction("Runtime Analysis");
-    QAction* actionTest = new QAction("Test");
-    QAction* actionPlugins = new QAction("Plugins");
+    QAction* actionSearch = new QAction(MWMTA_SEARCH);
+    QAction* actionPackageTools = new QAction(MWMTA_PACKAGE_TOOLS);
+    QAction* actionVersionTools = new QAction(MWMTA_VERSION_TOOLS);
+    QAction* actionCodeFormatting = new QAction(MWMTA_CODE_FORMATTING);
+    QAction* actionRuntimeAnalysis = new QAction(MWMTA_RUNTIME_ANALYSIS);
+    QAction* actionTest = new QAction(MWMTA_TEST);
+    QAction* actionPlugins = new QAction(MWMTA_PLUGINS);
+    QMenu* languageMenu = new QMenu(MWMTM_SWITCH_LANGUAGE);
+    QAction* actionEnglish = new QAction(MWMTA_ENGLISH);
+    QAction* actionChinese = new QAction(MWMTA_CHINESE);
+    languageMenu->addAction(actionEnglish);
+    languageMenu->addAction(actionChinese);
 
     ActionManager::getInstance()->registerAction(actionSearch, "Tools.Search",
-                                                 "Search", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S),
+                                                 MWMTA_SEARCH, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S),
                                                  "system-search.png");
     ActionManager::getInstance()->registerAction(actionPackageTools, "Tools.Package.Tools",
-                                                 "Package Tools", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_P),
+                                                 MWMTA_PACKAGE_TOOLS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_P),
                                                  "emblem-package.svg");
     ActionManager::getInstance()->registerAction(actionVersionTools, "Tools.Version.Tools",
-                                                 "Version Tools", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_V),
+                                                 MWMTA_VERSION_TOOLS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_V),
                                                  "image-has-versions-open.png");
     ActionManager::getInstance()->registerAction(actionCodeFormatting, "Tools.Code.Formatting",
-                                                 "Code Formatting", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
+                                                 MWMTA_CODE_FORMATTING, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
                                                  "format-justify-left.svg");
     ActionManager::getInstance()->registerAction(actionRuntimeAnalysis, "Tools.Runtime.Analysis",
-                                                 "Runtime Analysis", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
+                                                 MWMTA_RUNTIME_ANALYSIS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
                                                  "runtime_analysis.png");
     ActionManager::getInstance()->registerAction(actionTest, "Tools.Test",
-                                                 "Test", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_T),
+                                                 MWMTA_TEST, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_T),
                                                  "test.png");
     ActionManager::getInstance()->registerAction(actionPlugins, "Tools.Plugins",
-                                                 "Plugins", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_G),
+                                                 MWMTA_PLUGINS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_G),
                                                  "plugins.png");
+    ActionManager::getInstance()->registerAction(actionEnglish, "Tools.English", MWMTA_ENGLISH);
+    ActionManager::getInstance()->registerAction(actionChinese, "Tools.Chinese", MWMTA_PLUGINS);
 
     toolsMenu->addAction(actionSearch);
     toolsMenu->addAction(actionPackageTools);
@@ -185,6 +193,7 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     toolsMenu->addAction(actionRuntimeAnalysis);
     toolsMenu->addAction(actionTest);
     toolsMenu->addAction(actionPlugins);
+    toolsMenu->addMenu(languageMenu);
 
     actionSearch->setEnabled(false);
     actionPackageTools->setEnabled(false);
@@ -193,6 +202,8 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     actionRuntimeAnalysis->setEnabled(false);
     actionTest->setEnabled(false);
     actionPlugins->setEnabled(false);
+    actionEnglish->setEnabled(false);
+    actionChinese->setEnabled(false);
 }
 
 void WindowKeeper::createHelpActions(QMenuBar *menuBar)
@@ -201,15 +212,15 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
     auto helpMenu = new QMenu(MWM_HELP);
     menuBar->addMenu(helpMenu);
 
-    QAction* actionReportBug = new QAction("Report Bug");
+    QAction* actionReportBug = new QAction(MWM_REPORT_BUG);
     ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
-                                                 "Report Bug", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
+                                                 MWM_REPORT_BUG, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
                                                  "tools-report-bug.png");
     helpMenu->addAction(actionReportBug);
 
-    QAction* actionAboutUnionCode = new QAction("About \"Deepin Union Code\"");
+    QAction* actionAboutUnionCode = new QAction(MWM_ABOUT);
     ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
-                                                 "About", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A),
+                                                 MWM_ABOUT, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A),
                                                  "help-about.svg");
     helpMenu->addAction(actionAboutUnionCode);
 

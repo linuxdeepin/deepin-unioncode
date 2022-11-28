@@ -40,9 +40,9 @@ void MenuManager::initialize(WindowService *windowService)
     if (!windowService)
         return;
 
-    startDebugging.reset(new QAction("Start Debugging"));
+    startDebugging.reset(new QAction(MWMDA_START_DEBUG));
     ActionManager::getInstance()->registerAction(startDebugging.get(), "Debug.Start.Debugging",
-                                                 "Start Debugging", QKeySequence(Qt::Key::Key_F5),
+                                                 MWMDA_START_DEBUG, QKeySequence(Qt::Key::Key_F5),
                                                  "debug-start.png");
     connect(startDebugging.get(), &QAction::triggered, debugManager, &DebugManager::run);
     AbstractAction *actionImpl = new AbstractAction(startDebugging.get());
@@ -56,9 +56,9 @@ void MenuManager::initialize(WindowService *windowService)
     windowService->addAction(QString::fromStdString(MENU_DEBUG), actionImpl);
 #endif
 
-    interrupt.reset(new QAction("Interrupt"));
+    interrupt.reset(new QAction(MWMDA_INTERRUPT));
     ActionManager::getInstance()->registerAction(interrupt.get(), "Debug.Interrupt",
-                                                 "Interrupt", QKeySequence(Qt::Key::Key_F5),
+                                                 MWMDA_INTERRUPT, QKeySequence(Qt::Key::Key_F5),
                                                  "interrupt.png");
     interrupt->setEnabled(false);
     connect(interrupt.get(), &QAction::triggered, debugManager, &DebugManager::interruptDebug);
@@ -66,54 +66,54 @@ void MenuManager::initialize(WindowService *windowService)
     interrupt->setEnabled(false);
     windowService->addAction(MWM_DEBUG, actionImpl);
 
-    continueDebugging.reset(new QAction("Continue"));
+    continueDebugging.reset(new QAction(MWMDA_CONTINUE));
     ActionManager::getInstance()->registerAction(continueDebugging.get(), "Debug.Continue",
-                                                 "Continue", QKeySequence(Qt::Key::Key_F5),
+                                                 MWMDA_CONTINUE, QKeySequence(Qt::Key::Key_F5),
                                                  "continue.png");
     continueDebugging->setEnabled(false);
     connect(continueDebugging.get(), &QAction::triggered, debugManager, &DebugManager::continueDebug);
     actionImpl = new AbstractAction(continueDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
-    abortDebugging.reset(new QAction("Abort Debugging"));
+    abortDebugging.reset(new QAction(MWMDA_ABORT_DEBUGGING));
     ActionManager::getInstance()->registerAction(abortDebugging.get(), "Debug.Abort.Debugging",
-                                                 "Abort Debugging", QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
+                                                 MWMDA_ABORT_DEBUGGING, QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
                                                  "abort_debug.png");
     abortDebugging->setEnabled(false);
     connect(abortDebugging.get(), &QAction::triggered, debugManager, &DebugManager::abortDebug);
     actionImpl = new AbstractAction(abortDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
-    restartDebugging.reset(new QAction("Restart Debugging"));
+    restartDebugging.reset(new QAction(MWMDA_RESTART_DEBUGGING));
     ActionManager::getInstance()->registerAction(restartDebugging.get(), "Debug.Restart.Debugging",
-                                                 "Restart Debugging", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+                                                 MWMDA_RESTART_DEBUGGING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
                                                  "restart_debug.png");
     restartDebugging->setEnabled(false);
     connect(restartDebugging.get(), &QAction::triggered, debugManager, &DebugManager::restartDebug);
     actionImpl = new AbstractAction(restartDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
-    stepOver.reset(new QAction("Step Over"));
+    stepOver.reset(new QAction(MWMDA_STEP_OVER));
     ActionManager::getInstance()->registerAction(stepOver.get(), "Debug.Step.Over",
-                                                 "Step Over", QKeySequence(Qt::Key::Key_F10),
+                                                 MWMDA_STEP_OVER, QKeySequence(Qt::Key::Key_F10),
                                                  "step_over.png");
     stepOver->setEnabled(false);
     connect(stepOver.get(), &QAction::triggered, debugManager, &DebugManager::stepOver);
     actionImpl = new AbstractAction(stepOver.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
-    stepIn.reset(new QAction("Step In"));
+    stepIn.reset(new QAction(MWMDA_STEP_IN));
     ActionManager::getInstance()->registerAction(stepIn.get(), "Debug.Step.In",
-                                                 "Step In", QKeySequence(Qt::Key::Key_F11),
+                                                 MWMDA_STEP_IN, QKeySequence(Qt::Key::Key_F11),
                                                  "step_in.png");
     stepIn->setEnabled(false);
     connect(stepIn.get(), &QAction::triggered, debugManager, &DebugManager::stepIn);
     actionImpl = new AbstractAction(stepIn.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
 
-    stepOut.reset(new QAction("Step Out"));
+    stepOut.reset(new QAction(MWMDA_STEP_OUT));
     ActionManager::getInstance()->registerAction(stepOut.get(), "Debug.Step.Out",
-                                                 "Step Out", QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F11),
+                                                 MWMDA_STEP_OUT, QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F11),
                                                  "step_out.png");
     stepOut->setEnabled(false);
     connect(stepOut.get(), &QAction::triggered, debugManager, &DebugManager::stepOut);

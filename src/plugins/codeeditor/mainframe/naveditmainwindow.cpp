@@ -81,7 +81,7 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     qTabWidgetContext->setMinimumHeight(100);
     qDockWidgetContext->setWidget(qTabWidgetContext);
     addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qDockWidgetContext);
-    mainToolBar = new ToolBarManager("toolbar");
+    mainToolBar = new ToolBarManager(tr("toolbar"));
     addToolBar(Qt::ToolBarArea::TopToolBarArea, mainToolBar->getToolBar());
 }
 
@@ -204,7 +204,7 @@ void NavEditMainWindow::addFindToolBar(AbstractWidget *findToolbar)
         return;
 
     if (!qDockWidgetFindToolBar) {
-        qDockWidgetFindToolBar = new AutoHideDockWidget("Find ToolBar");
+        qDockWidgetFindToolBar = new AutoHideDockWidget(QDockWidget::tr("Find ToolBar"), this);
         addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, qDockWidgetFindToolBar);
         QWidget *widget = static_cast<QWidget*>(findToolbar->qWidget());
         qDockWidgetFindToolBar->setWidget(widget);

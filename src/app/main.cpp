@@ -80,6 +80,11 @@ int main(int argc, char *argv[])
 
     QApplication::setStyle(QStyleFactory::create("Fusion"));
     dpfInstance.initialize();
+    QTranslator translator;
+
+    auto result = CustomPaths::endSeparator(CustomPaths::global(CustomPaths::Translations));
+    translator.load(result + "zh_CN.qm");  // TODO(hongjinchuan):dynamic switch
+    a.installTranslator(&translator);
 
     if (!pluginsLoad()) {
         qCritical() << "Failed, Load plugins!";

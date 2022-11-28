@@ -73,7 +73,7 @@ void TemplateManager::addMenu()
         windowService->addAction(dpfservice::MWM_FILE, actionImpl);
     };
 
-    d->newAction.reset(new QAction("New File or Project..."));
+    d->newAction.reset(new QAction(MWMFA_NEW_FILE_OR_PROJECT));
     actionInit(d->newAction.get(),
                "Fiel.New.FileOrProject",
                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_O), "new_doc.png");

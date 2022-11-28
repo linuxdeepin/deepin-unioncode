@@ -48,8 +48,8 @@ bool BuilderCore::start()
         abort();
     }
 
-    windowService->addContextWidget("Co&mpile Output", new AbstractWidget(BuildManager::instance()->getCompileOutputPane()));
-    windowService->addContextWidget("&Issues", new AbstractWidget(BuildManager::instance()->getProblemOutputPane()));
+    windowService->addContextWidget(tr("Co&mpile Output"), new AbstractWidget(BuildManager::instance()->getCompileOutputPane()));
+    windowService->addContextWidget(tr("&Issues"), new AbstractWidget(BuildManager::instance()->getProblemOutputPane()));
 
     using namespace std::placeholders;
     builderService->interface.builderCommand = std::bind(&BuildManager::handleCommand, BuildManager::instance(), _1);

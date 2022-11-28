@@ -295,13 +295,13 @@ void ShortcutSettingWidget::setupUi()
     QHBoxLayout *hLayoutOperate = new QHBoxLayout();
     widgetOperate->setLayout(hLayoutOperate);
     QPushButton *btnResetAll = new QPushButton();
-    btnResetAll->setText("Reset All");
+    btnResetAll->setText(tr("Reset All"));
     btnResetAll->setFixedWidth(BTN_WIDTH);
     QPushButton *btnImport = new QPushButton();
-    btnImport->setText("Import");
+    btnImport->setText(tr("Import"));
     btnImport->setFixedWidth(BTN_WIDTH);
     QPushButton *btnExport = new QPushButton();
-    btnExport->setText("Export");
+    btnExport->setText(tr("Export"));
     btnExport->setFixedWidth(BTN_WIDTH);
     hLayoutOperate->addWidget(btnResetAll);
     hLayoutOperate->addStretch();
@@ -312,11 +312,11 @@ void ShortcutSettingWidget::setupUi()
     vLayout->addWidget(widgetShortcut);
     QHBoxLayout *hLayoutShortcut = new QHBoxLayout();
     widgetShortcut->setLayout(hLayoutShortcut);
-    QLabel *labelTip = new QLabel("Shortcut:");
+    QLabel *labelTip = new QLabel(tr("Shortcut:"));
     d->editShortCut = new HotkeyLineEdit();
-    d->btnRecord = new QPushButton("Record");
+    d->btnRecord = new QPushButton(tr("Record"));
     d->btnRecord->setFixedWidth(BTN_WIDTH);
-    QPushButton *btnReset = new QPushButton("Reset");
+    QPushButton *btnReset = new QPushButton(tr("Reset"));
     btnReset->setFixedWidth(BTN_WIDTH);
     hLayoutShortcut->addWidget(labelTip);
     hLayoutShortcut->addWidget(d->editShortCut);
@@ -365,9 +365,9 @@ bool ShortcutSettingWidget::shortcutIsRepeat(const int row, const QString &text)
 void ShortcutSettingWidget::checkShortcutValidity(const int row, const QString &shortcut)
 {
     if (d->model->keySequenceIsInvalid(QKeySequence(shortcut))) {
-        d->tipLabel->setText("Invalid shortcut!");
+        d->tipLabel->setText(tr("Invalid shortcut!"));
     } else if (shortcutIsRepeat(row, shortcut)){
-        d->tipLabel->setText("shortcut Repeated!");
+        d->tipLabel->setText(tr("shortcut Repeated!"));
     } else {
         d->tipLabel->setText("");
     }
@@ -438,10 +438,10 @@ void ShortcutSettingWidget::onBtnRecordClicked()
 {
     bool bRet = d->editShortCut->isHotkeyMode();
     if (bRet) {
-        d->btnRecord->setText("Record");
+        d->btnRecord->setText(tr("Record"));
         d->editShortCut->setHotkeyMode(false);
     } else {
-        d->btnRecord->setText("Stop Recording");
+        d->btnRecord->setText(tr("Stop Recording"));
         d->editShortCut->setHotkeyMode(true);
     }
 }

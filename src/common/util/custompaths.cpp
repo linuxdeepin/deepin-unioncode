@@ -125,6 +125,8 @@ QString PathMode::builded(CustomPaths::Flags flags)
         return formatString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "scripts";
     case CustomPaths::Templates:
         return formatString(ASSETS_SOURCE_RPEFIX) + QDir::separator() + "templates";
+    case CustomPaths::Translations:
+        return formatString(ASSETS_SOURCE_RPEFIX) + QDir::separator() + "translations";
     default:
         return "";
     }

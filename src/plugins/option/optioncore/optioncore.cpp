@@ -72,10 +72,10 @@ bool OptionCore::start()
     }
 
     if (windowService && windowService->addAction) {
-        QAction* actionOptions = new QAction(QAction::tr("Options"));
+        auto actionOptions = new QAction(MWMTA_OPTIONS);
         ActionManager::getInstance()->registerAction(actionOptions,
                                                      "Tools.Options",
-                                                     "Options",
+                                                     MWMTA_OPTIONS,
                                                      QKeySequence(Qt::Modifier::CTRL |
                                                                   Qt::Modifier::SHIFT |
                                                                   Qt::Key::Key_H),
