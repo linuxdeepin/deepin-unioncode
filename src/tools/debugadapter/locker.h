@@ -46,6 +46,11 @@ class ConditionLock {
       cv.notify_all();
   }
 
+  void reset()
+  {
+       fired = false;
+  }
+
  private:
   std::mutex mutex;
   std::condition_variable cv;

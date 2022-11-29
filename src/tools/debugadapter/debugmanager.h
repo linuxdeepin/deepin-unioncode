@@ -90,9 +90,9 @@ signals:
     void libraryUnloaded(const dap::ModuleEvent &moduleEvent);
     void terminated();
 
-    void gdbProcessStarted();
-    void gdbProcessTerminated();
     void assemblerData(const QStringList &data);
+    void dbgProcessStarted();
+    void dbgProcessFinished();
 
 public slots:
     void updateExceptResponse(const int token, const QVariant& payload);

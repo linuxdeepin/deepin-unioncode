@@ -89,8 +89,10 @@ void DebugManager::initProcess()
         d->resposeExpected.clear();
     });
 
+    connect(d->process.data(), &QProcess::started,
+            this, &DebugManager::dbgProcessStarted);
     connect(d->process.data(), QOverload<int>::of(&QProcess::finished),
-            this, &DebugManager::gdbProcessTerminated);
+                this, &DebugManager::dbgProcessFinished);
 }
 
 void DebugManager::initDebugger(const QString &program, const QStringList &arguments)

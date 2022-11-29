@@ -61,6 +61,8 @@ class DapSessionPrivate
     bool isInferiorStopped = true;
 
     QString uuid;
+
+    ConditionLock startedLock;
 };
 
 DapSession::DapSession(QObject *parent)
@@ -220,6 +222,13 @@ void DapSession::initializeDebugMgr()
         handleAssembleData(data);
     });
 
+    connect(d->debugger, &DebugManager::dbgProcessStarted, [this]() {
+        d->startedLock.fire();
+    });
+
+    connect(d->debugger, &DebugManager::dbgProcessFinished, [this]() {
+        d->startedLock.reset();
+    });
 
     connect(DapProxy::instance(), &DapProxy::sigQuit, d->debugger, &DebugManager::quit, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigKill, d->debugger, &DebugManager::kill, SequentialExecution);
@@ -237,6 +246,7 @@ void DapSession::initializeDebugMgr()
     connect(DapProxy::instance(), &DapProxy::sigVariables, d->debugger, &DebugManager::stackListVariables, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigSource, d->debugger, &DebugManager::listSourceFiles, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigBreakRemoveAll, d->debugger, &DebugManager::breakRemoveAll, SequentialExecution);
+
 }
 
 void DapSession::registerHanlder()
@@ -477,6 +487,8 @@ void DapSession::registerHanlder()
     d->session->registerHandler([&](const dap::ThreadsRequest &request) {
         //configured.wait(); //TODO
         Q_UNUSED(request)
+        // wait for debug process started.
+        d->startedLock.wait();
         d->isThreadRequestReceived = true;
         dap::ThreadsResponse response;
         Log("<-- Server recevied Thread request from client\n")

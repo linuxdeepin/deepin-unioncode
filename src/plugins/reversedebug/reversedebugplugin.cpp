@@ -55,7 +55,7 @@ bool ReverseDebugPlugin::start()
     reverseDbgAction->setMenu(menu);
     actionInit(reverseDbgAction, "Tool.Reverse", {}, "");
 
-    auto recoredAction = new QAction(tr("Recored"));
+    auto recoredAction = new QAction(tr("Record"));
     auto replayAction = new QAction(tr("Replay"));
 
     menu->addAction(recoredAction);
