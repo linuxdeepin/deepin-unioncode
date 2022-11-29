@@ -554,7 +554,7 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
                 auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
                 if (generator) {
                     QMap<QString, QVariant> param = generator->getDebugArguments(d->projectInfo, d->currentOpenedFileName);
-                    prepareDAPPort(param, d->activeProjectKitName, true);
+                    prepareDAPPort(param, d->activeProjectKitName, false);
                 }
             }
         }
@@ -827,7 +827,7 @@ void Debugger::prepareDebug()
                 QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
                 updateRunState(kPreparing);
             } else if (!generator->isAnsyPrepareDebug()) {
-                prepareDAPPort(param, d->activeProjectKitName, true);
+                prepareDAPPort(param, d->activeProjectKitName, false);
             }
         }
     }
@@ -990,5 +990,5 @@ bool Debugger::runCoredump(const QString &target, const QString &core, const QSt
     param.insert("arguments", QStringList{core});
     d->userKitName = kit;
 
-    return prepareDAPPort(param, d->userKitName, false);
+    return prepareDAPPort(param, d->userKitName, true);
 }
