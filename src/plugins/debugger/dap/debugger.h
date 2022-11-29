@@ -123,6 +123,8 @@ private:
     void stopWaitingDAPPort();
     void stopDAP();
     void launchSession(int port, const QMap<QString, QVariant> &param, const QString &kitName);
+    void disassemble(const QString &address);
+    void handleAssemble(const QString &content);
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
     QSharedPointer<DEBUG::DebugSession> session;

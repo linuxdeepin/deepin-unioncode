@@ -216,6 +216,11 @@ void DapSession::initializeDebugMgr()
         handleTerminateEvent();
     });
 
+    QObject::connect(d->debugger, &DebugManager::assemblerData, [&](const QStringList &data) mutable {
+        handleAssembleData(data);
+    });
+
+
     connect(DapProxy::instance(), &DapProxy::sigQuit, d->debugger, &DebugManager::quit, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigKill, d->debugger, &DebugManager::kill, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigStart, d->debugger, &DebugManager::execute, SequentialExecution);
@@ -576,6 +581,15 @@ void DapSession::registerHanlder()
         }
         return dap::DisconnectResponse {};
     });
+
+    d->session->registerHandler([&](const dap::DisassembleRequest &request) {
+        Q_UNUSED(request)
+        Log("<-- Server received disassemble request from client\n")
+        if (!request.memoryReference.empty())
+                d->debugger->disassemble(request.memoryReference.c_str());
+        Log("--> Server sent disassemble response to client\n")
+        return dap::DisassembleResponse();
+    });
 }
 
 void DapSession::handleAsyncStopped(const dap::StoppedEvent &stoppedEvent)
@@ -705,6 +719,7 @@ InitializeResponse DapSession::handleInitializeReq(const InitializeRequest &requ
     response.supportsTerminateRequest = true;
     response.supportTerminateDebuggee = true;
     response.supportsCompletionsRequest = true;
+    response.supportsDisassembleRequest = true;
 
     Log("--> Server sent initialize response to client\n")
     return response;
@@ -714,4 +729,16 @@ void DapSession::handleTerminateEvent()
 {
     dap::TerminatedEvent terminatedEvent;
     d->session->send(terminatedEvent);
+}
+
+void DapSession::handleAssembleData(const QStringList &data)
+{
+    dap::OutputEvent outputEvent;
+    outputEvent.category = "assembler";
+    QString output;
+    foreach (auto line, data) {
+        output += line;
+    }
+    outputEvent.output = output.toStdString();
+    d->session->send(outputEvent);
 }

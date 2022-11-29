@@ -150,7 +150,8 @@ struct Record{
         log,
         target,
         promt,
-        program
+        program,
+        disassemble
     };
 
     RecordType type;

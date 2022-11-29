@@ -69,6 +69,8 @@ public:
 
     virtual bool isInferiorRunning() = 0;
 
+    virtual QString disassemble(const QString &address) = 0;
+
 signals:
 
 public slots:

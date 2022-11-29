@@ -64,7 +64,8 @@ void DebugManager::initProcess()
     d->process.reset(new QProcess());
 
     connect(d->process.data(), &QProcess::readyReadStandardOutput, [this]() {
-        for (const auto& c: QString{d->process->readAllStandardOutput()})
+        QString output = d->process->readAllStandardOutput();
+        for (const auto& c: output)
             switch (c.toLatin1()) {
             case '\r':
             case '\n':
@@ -284,4 +285,7 @@ dap::array<dap::Variable> DebugManager::allVariableList()
     return d->debugger->allVariableList();
 }
 
-
+void DebugManager::disassemble(const QString &address)
+{
+    command(d->debugger->disassemble(address));
+}

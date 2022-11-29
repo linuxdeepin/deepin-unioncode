@@ -53,6 +53,11 @@ const auto GDB_MI_FINISHED = QRegularExpression(R"(^\(gdb\)\s*$)",
 
 const QString CLOSE_CHARS{"}]\""};
 
+const auto DISASSEMBLE_DATA_REG = QRegularExpression(R"(~\".+0x.+<\+.+>:.+\")",
+                                                QRegularExpression::MultilineOption |
+                                                QRegularExpression::NoPatternOption);
+const auto DISASSEMBLE_END_REG = QRegularExpression(R"(~\"End of assembler dump.)",
+                                                QRegularExpression::NoPatternOption);
 
 QString escapedText(const QString& s)
 {
@@ -315,7 +320,17 @@ gdbmi::Library gdbmi::Library::parseMap(const QVariantMap& data) {
 gdbmi::Record gdbmi::Record::parseRecord(const QString& outputText)
 {
     QRegularExpressionMatch regMatch;
-    if ((regMatch = GDB_MI_NOTIFY.match(outputText)).hasMatch()) {
+    if ((regMatch = DISASSEMBLE_DATA_REG.match(outputText)).hasMatch()) {
+        return Record(RecordType::disassemble,
+                      "data",
+                      outputText,
+                      -1);
+    } else if ((regMatch = DISASSEMBLE_END_REG.match(outputText)).hasMatch()) {
+        return Record(RecordType::disassemble,
+                      "end",
+                      QVariant(),
+                      -1);
+    } else if ((regMatch = GDB_MI_NOTIFY.match(outputText)).hasMatch()) {
         return Record(RecordType::notify,
                       regMatch.captured(2),
                       parseElements(regMatch.captured(3)),

@@ -129,6 +129,7 @@ public:
     bool attachPythonDap(int port,
                          const QString &workspace);
     void closeSession();
+    void disassemble(const dap::string &address);
 signals:
     void sigRegisterHandlers();
 

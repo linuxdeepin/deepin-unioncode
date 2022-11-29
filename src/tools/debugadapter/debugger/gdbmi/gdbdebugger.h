@@ -76,6 +76,8 @@ public:
 
     bool isInferiorRunning() override;
 
+    QString disassemble(const QString &address) override;
+
 signals:
     void streamDebugInternal(const QStringList& textList);
     void streamConsole(const QString& text);
@@ -106,6 +108,8 @@ signals:
     void terminated();
     void result(int token, const QString& reason, const QVariant& results);
 
+    void assemblerData(const QStringList &data);
+
 public slots:
 
 private:
@@ -114,6 +118,7 @@ private:
     void sendStoppedNotify(const gdbmi::AsyncContext &ctx);
     void sendLibraryLoadedNotify(const gdbmi::Library &library);
     void sendLibraryUnloadedNotify(const gdbmi::Library &library);
+    void parseDisassembleData(const gdbmi::Record &record);
 
     GDBDebuggerPrivate *const d;
 };

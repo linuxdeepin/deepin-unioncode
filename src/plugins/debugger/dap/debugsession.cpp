@@ -881,4 +881,11 @@ void DebugSession::closeSession()
     shutdown();
 }
 
+void DebugSession::disassemble(const dap::string &address)
+{
+    DisassembleRequest request;
+    request.memoryReference = address;
+    raw->disassemble(request);
+}
+
 }   // endnamespace

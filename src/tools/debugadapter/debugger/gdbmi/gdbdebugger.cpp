@@ -34,6 +34,7 @@ class GDBDebuggerPrivate {
     QList<gdbmi::Variable> variableList;
     std::atomic_bool inferiorRunning{false};
     std::atomic_bool firstPromt{true};
+    QStringList assemblers;
 };
 
 GDBDebugger::GDBDebugger(QObject *parent)
@@ -50,6 +51,7 @@ GDBDebugger::GDBDebugger(QObject *parent)
     connect(this, &GDBDebugger::fireLocker, DebugManager::instance(), &DebugManager::fireLocker);
     connect(this, &GDBDebugger::updateExceptResponse, DebugManager::instance(), &DebugManager::updateExceptResponse);
     connect(this, &GDBDebugger::terminated, DebugManager::instance(), &DebugManager::terminated);
+    connect(this, &GDBDebugger::assemblerData, DebugManager::instance(), &DebugManager::assemblerData);
 }
 
 GDBDebugger::~GDBDebugger()
@@ -279,6 +281,11 @@ void GDBDebugger::handleOutputRecord(const QString &outputRecord)
         emit streamConsole(record.payload.toString());
         break;
     }
+    case gdbmi::Record::RecordType::disassemble:
+    {
+        parseDisassembleData(record);
+        break;
+    }
     default:
         break;
     }
@@ -488,5 +495,20 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
     }
 
     emit result(record.token, record.message, record.payload);
+}
+
+QString GDBDebugger::disassemble(const QString &address)
+{
+    return QString{"disassemble /m %1"}.arg(address);
+}
+
+void GDBDebugger::parseDisassembleData(const gdbmi::Record &record)
+{
+    if (record.message == "data") {
+        d->assemblers.push_back(gdbmi::escapedText(record.payload.toString()));
+    } else if (record.message == "end") {
+        emit assemblerData(d->assemblers);
+        d->assemblers.clear();
+    }
 }
 

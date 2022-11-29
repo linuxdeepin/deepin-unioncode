@@ -78,6 +78,8 @@ public:
     dap::array<dap::Thread> allThreadList();
     dap::array<dap::Variable> allVariableList();
 
+    void disassemble(const QString &address);
+
 signals:
     void streamConsole(const QString& text);
     void streamDebugInternal(const QStringList &textList);
@@ -90,6 +92,7 @@ signals:
 
     void gdbProcessStarted();
     void gdbProcessTerminated();
+    void assemblerData(const QStringList &data);
 
 public slots:
     void updateExceptResponse(const int token, const QVariant& payload);

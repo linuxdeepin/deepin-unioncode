@@ -416,6 +416,14 @@ void Debugger::registerDapHandlers()
                 << "OutputEvent\n"
                 << "content : " << event.output.c_str();
 
+        if (event.category) {
+            if (event.category.value() == "assembler") {
+                QString output = event.output.c_str();
+                handleAssemble(output);
+                return;
+            }
+        }
+
         OutputFormat format = NormalMessageFormat;
         if (event.category) {
             dap::string category = event.category.value();
@@ -592,8 +600,14 @@ void Debugger::handleFrames(const StackFrames &stackFrames)
         return;
     }
 
-    EventSender::jumpTo(curFrame.file.toStdString(),
-                        curFrame.line);
+    if (QFileInfo(curFrame.file).exists()) {
+        EventSender::jumpTo(curFrame.file.toStdString(),
+                            curFrame.line);
+    } else {
+        if (curFrame.address.isEmpty()) {
+            disassemble(curFrame.address);
+        }
+    }
 
     // update local variables.
     IVariables locals;
@@ -677,12 +691,19 @@ bool Debugger::showStoppedBySignalMessageBox(QString meaning, QString name)
 
 void Debugger::slotFrameSelected(const QModelIndex &index)
 {
-    Q_UNUSED(index);
+    Q_UNUSED(index)
     auto curFrame = stackModel.currentFrame();
-    EventSender::jumpTo(curFrame.file.toStdString(),
-                        curFrame.line,
-                        d->projectInfo.workspaceFolder().toStdString(),
-                        d->projectInfo.language().toStdString());
+
+    if (QFileInfo(curFrame.file).exists()) {
+        EventSender::jumpTo(curFrame.file.toStdString(),
+                            curFrame.line,
+                            d->projectInfo.workspaceFolder().toStdString(),
+                            d->projectInfo.language().toStdString());
+    } else {
+        if (!curFrame.address.isEmpty()) {
+            disassemble(curFrame.address);
+        }
+    }
 
     // update local variables.
     IVariables locals;
@@ -991,4 +1012,29 @@ bool Debugger::runCoredump(const QString &target, const QString &core, const QSt
     d->userKitName = kit;
 
     return prepareDAPPort(param, d->userKitName, true);
+}
+
+void Debugger::disassemble(const QString &address)
+{
+    if (runState == kCustomRunning) {
+        session->disassemble(address.toStdString());
+    }
+}
+
+void Debugger::handleAssemble(const QString &content)
+{
+    if (content.isEmpty())
+        return;
+
+    QString assemblerPath = CustomPaths::user(CustomPaths::Flags::Configures) +
+            QDir::separator() + QString("Disassembler");
+
+    QFile file(assemblerPath);
+    if (file.open(QIODevice::WriteOnly)) {
+        QTextStream stream(&file);
+        stream << content;
+        file.close();
+
+        EventSender::jumpTo(assemblerPath.toStdString(), 0);
+    }
 }
