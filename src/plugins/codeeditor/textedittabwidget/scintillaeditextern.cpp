@@ -48,6 +48,8 @@ class ScintillaEditExternPrivate
     newlsp::ProjectKey proKey;
     Scintilla::Position editInsertPostion = -1;
     int editInsertCount = 0;
+    QHash<int, QList<AnnotationInfo>> lineAnnotations;
+    QHash<QString, decltype (lineAnnotations)> moduleAnnotations;
 };
 
 ScintillaEditExtern::ScintillaEditExtern(QWidget *parent)
@@ -103,8 +105,8 @@ void ScintillaEditExtern::setFile(const QString &filePath)
     QObject::connect(this, &ScintillaEditExtern::notify, this, &ScintillaEditExtern::sciNotify, Qt::UniqueConnection);
     QObject::connect(this, &ScintillaEditExtern::updateUi, this, &ScintillaEditExtern::sciUpdateUi, Qt::UniqueConnection);
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toSearchText, this, &ScintillaEditExtern::find);
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toReplaceText, this, &ScintillaEditExtern::replace);
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSearchText, this, &ScintillaEditExtern::find);
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toReplaceText, this, &ScintillaEditExtern::replace);
 
     QObject::connect(&d->hoverTimer, &QTimer::timeout, &d->hoverTimer, [=](){
         emit this->hovered(d->hoverPos);
@@ -297,18 +299,56 @@ void ScintillaEditExtern::cleanLineBackground()
     markerDeleteAll(StyleSci::CustomLineBackground);
 }
 
-void ScintillaEditExtern::setAnnotation(int line, const QString &text, int role)
+void ScintillaEditExtern::setAnnotation(int line, const QString &title, const AnnotationInfo &info)
 {
-    int lineOffSet = line - 1;
-    if (StyleSci::Note >= role && role >= StyleSci::Fatal) {
-        annotationSetText(lineOffSet, text.toStdString().c_str());
-        annotationSetStyle(lineOffSet, role - annotationStyleOffset());
+    int lineOffset = line - 1;
+    if (title.isEmpty()) {
+        if (d->lineAnnotations.keys().contains(lineOffset)) {
+            auto anns = d->lineAnnotations.value(lineOffset);
+            if (anns.contains(info)) {
+                return;
+            } else {
+                anns.insert(0, info);
+                d->lineAnnotations[lineOffset] = anns;
+            }
+        } else {
+            d->lineAnnotations[lineOffset] = {info};
+        }
+    } else {
+        if (d->moduleAnnotations.keys().contains(title)) {
+            auto lineAnns = d->moduleAnnotations.value(title);
+            if(lineAnns.keys().contains(lineOffset)) {
+                auto anns = lineAnns.value(lineOffset);
+                if (anns.contains(info))
+                    return;
+                else {
+                    anns.insert(0, info);
+                    lineAnns[lineOffset] = anns;
+                    d->moduleAnnotations[title] = lineAnns;
+                }
+            } else {
+                lineAnns[lineOffset] = {info};
+                d->moduleAnnotations[title] = lineAnns;
+            }
+        } else {
+            decltype (d->lineAnnotations) lineAnns;
+            lineAnns[lineOffset] = {info};
+            d->moduleAnnotations[title] = lineAnns;
+        }
     }
+
+    sciUpdateAnnotation();
 }
 
-void ScintillaEditExtern::cleanAnnotation()
+void ScintillaEditExtern::cleanAnnotation(const QString &title)
 {
-    annotationClearAll();
+    if (title.isEmpty()) {
+        d->lineAnnotations.clear();
+    } else {
+        d->moduleAnnotations.remove(title);
+    }
+
+    sciUpdateAnnotation();
 }
 
 void ScintillaEditExtern::sciModified(Scintilla::ModificationFlags type, Scintilla::Position position,
@@ -385,6 +425,87 @@ void ScintillaEditExtern::sciDwellEnd(int x, int y)
         }
         emit hoverCleaned(d->hoverPos);
         d->hoverPos = -1; // clean cache postion
+    }
+}
+
+void ScintillaEditExtern::sciUpdateAnnotation()
+{
+    annotationClearAll();
+
+    auto getAnnotationStyles = [=](int roleCode, const QString &srcText) -> QString
+    {
+        QString styles;
+        int styleCode = roleCode - annotationStyleOffset();
+        styles.resize(srcText.size(), styleCode);
+        return styles;
+    };
+
+    auto doSetAnnotation = [=] (const QHash<int, QList<AnnotationInfo>> &lineAnns, const QString &title = "")
+    {
+        QString annHead = "";
+        if (!title.isEmpty()) {
+            annHead += "  ";
+        }
+
+        auto lines = lineAnns.keys();
+        for (auto line : lines) {
+            auto anns = lineAnns.value(line);
+            QHash<QString, QStringList> roleAnns;
+            for (int i = 0; i < AnnotationInfo::Role::count(); i++) {
+                QString currRoleDisplay = AnnotationInfo::Role::get()->value(i).display;
+                auto itera = anns.begin();
+                while (itera != anns.end()) {
+                    if (itera->role.display == currRoleDisplay) {
+                        QStringList annLines;
+                        if (roleAnns.keys().contains(itera->role.display)) {
+                            annLines = roleAnns.value(itera->role.display);
+                        }
+                        annLines.push_front(annHead + "  " + itera->text);
+                        roleAnns[itera->role.display] = annLines;
+                    }
+                    itera ++;
+                }
+            }
+            auto roleAnnsItera = roleAnns.begin();
+            while (roleAnnsItera != roleAnns.end()) {
+                AnnotationInfo::Role::type_value roleElem;
+                for (auto idx = 0; idx < AnnotationInfo::Role::count(); idx ++) {
+                    auto roleVal = AnnotationInfo::Role::value(idx);
+                    if (roleVal.display == roleAnnsItera.key()) {
+                        roleElem = roleVal;
+                        break;
+                    }
+                }
+
+                QString lineAnnsText = annHead + roleAnnsItera.key() + ":\n" + roleAnnsItera.value().join("\n");
+                if (!title.isEmpty()) {
+                    lineAnnsText = title + ":\n" + lineAnnsText;
+                }
+                QString lineAnnsTextStyles = getAnnotationStyles(roleElem.code, lineAnnsText);
+
+                QString srcAnnsText = annotationText(line);
+                QString srcAnnsTextStyles = annotationStyles(line);
+                if (!srcAnnsText.isEmpty()) {
+                    srcAnnsText += "\n";
+                    srcAnnsTextStyles.resize(srcAnnsText.size(), srcAnnsTextStyles[srcAnnsText.size() -1]);
+                }
+                QString dstLineAnnsText = srcAnnsText + lineAnnsText;
+                QString dstLineAnnsTextStyles = srcAnnsTextStyles + lineAnnsTextStyles;
+                annotationSetText(line, dstLineAnnsText.toStdString().c_str());
+                annotationSetStyles(line, dstLineAnnsTextStyles.toStdString().c_str());
+                roleAnnsItera ++;
+            }
+        }
+    };
+
+    // global
+    doSetAnnotation(d->lineAnnotations);
+
+    // moduel
+    auto itera = d->moduleAnnotations.begin();
+    while (itera != d->moduleAnnotations.end()) {
+        doSetAnnotation(d->moduleAnnotations.value(itera.key()), itera.key());
+        itera ++;
     }
 }
 

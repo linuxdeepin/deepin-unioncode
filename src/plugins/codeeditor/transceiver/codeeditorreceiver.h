@@ -38,14 +38,14 @@ public:
 };
 
 
-class DpfEventMiddleware : public QObject
+class EditorCallProxy : public QObject
 {
     Q_OBJECT
-    DpfEventMiddleware(){}
-    DpfEventMiddleware(const DpfEventMiddleware&) = delete;
+    EditorCallProxy(){}
+    EditorCallProxy(const EditorCallProxy&) = delete;
 
 public:
-    static DpfEventMiddleware* instance();
+    static EditorCallProxy* instance();
 
 signals:
     void toOpenFile(const QString &filePath);
@@ -59,9 +59,9 @@ signals:
     void toSetLineBackground(const QString &filePath, int line, const QColor &color);
     void toDelLineBackground(const QString &filePath, int line);
     void toCleanLineBackground(const QString &filePath);
-    /* Note = 767 Warning = 766 Error = 765 Fatal = 764*/
-    void toSetAnnotation(const QString &filePath, int line, const QString &text, int role = 767);
-    void toCleanAnnotation(const QString &filePath);
+    void toSetAnnotation(const QString &filePath, int line, const QString &title, const AnnotationInfo &info);
+    void toCleanAnnotation(const QString &filePath, const QString &title);
+    void toSetAnalysedData(const AnalysedData &data);
 };
 
 #endif // CODEEDITORRECEIVER_H

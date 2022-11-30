@@ -68,36 +68,36 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     setDefaultFileEdit();
     setFocusPolicy(Qt::ClickFocus);
 
-    QObject::connect(DpfEventMiddleware::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
+    QObject::connect(EditorCallProxy::instance(),
+                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
                      this, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toRunFileLine,
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRunFileLine,
                      this, &TextEditTabWidget::runningToLine);
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toRunClean,
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRunClean,
                      this, &TextEditTabWidget::runningEnd);
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toDebugPointClean,
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toDebugPointClean,
                      this, &TextEditTabWidget::debugPointClean);
 
-    QObject::connect(DpfEventMiddleware::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &, int>::of(&DpfEventMiddleware::toJumpFileLine),
+    QObject::connect(EditorCallProxy::instance(),
+                     QOverload<const newlsp::ProjectKey &, const QString &, int>::of(&EditorCallProxy::toJumpFileLine),
                      this, QOverload<const newlsp::ProjectKey &, const QString &, int>::of(&TextEditTabWidget::jumpToLine));
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toSetLineBackground,
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSetLineBackground,
                      this, &TextEditTabWidget::setLineBackground);
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toDelLineBackground,
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toDelLineBackground,
                      this, &TextEditTabWidget::delLineBackground);
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toCleanLineBackground,
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toCleanLineBackground,
                      this, &TextEditTabWidget::cleanLineBackground);
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toSetAnnotation,
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSetAnnotation,
                      this, &TextEditTabWidget::setAnnotation);
 
-    QObject::connect(DpfEventMiddleware::instance(), &DpfEventMiddleware::toCleanAnnotation,
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toCleanAnnotation,
                      this, &TextEditTabWidget::cleanAnnotation);
 
     QObject::connect(d->tab, &TextEditTabBar::fileSwitched,
@@ -435,7 +435,8 @@ void TextEditTabWidget::cleanLineBackground(const QString &filePath)
     edit->cleanLineBackground();
 }
 
-void TextEditTabWidget::setAnnotation(const QString &filePath, int line, const QString &text, int role)
+void TextEditTabWidget::setAnnotation(const QString &filePath, int line,
+                                      const QString &title, const AnnotationInfo &info)
 {
     if (!d->gridLayout)
         return;
@@ -445,10 +446,10 @@ void TextEditTabWidget::setAnnotation(const QString &filePath, int line, const Q
     if (!edit)
         return;
 
-    edit->setAnnotation(line, text, role);
+    edit->setAnnotation(line, title, info);
 }
 
-void TextEditTabWidget::cleanAnnotation(const QString &filePath)
+void TextEditTabWidget::cleanAnnotation(const QString &filePath, const QString &title)
 {
     if (!d->gridLayout)
         return;
@@ -458,7 +459,7 @@ void TextEditTabWidget::cleanAnnotation(const QString &filePath)
     if (!edit)
         return;
 
-    edit->cleanAnnotation();
+    edit->cleanAnnotation(title);
 }
 
 void TextEditTabWidget::setDefaultFileEdit()

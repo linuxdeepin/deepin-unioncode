@@ -135,23 +135,23 @@ void StyleSci::setStyle()
         d->edit->styleSetUnderline(styleOffset() + 1, true);
     }
 
-    d->edit->annotationSetStyleOffset(AnnotationStyle::Fatal);
+    d->edit->annotationSetStyleOffset(AnnotationInfo::Role::get()->Fatal.code);
     d->edit->annotationSetVisible(ANNOTATION_BOXED);
 
-    d->edit->styleSetBack(AnnotationStyle::Note, StyleColor::color(StyleColor::Table::get()->Blue));
-    d->edit->styleSetItalic(AnnotationStyle::Note, true);
+    d->edit->styleSetBack(AnnotationInfo::Role::get()->Note.code, StyleColor::color(StyleColor::Table::get()->Blue));
+    d->edit->styleSetItalic(AnnotationInfo::Role::get()->Note.code, true);
 
-    d->edit->styleSetFore(AnnotationStyle::Warning , StyleColor::color(StyleColor::Table::get()->Yellow));
-    d->edit->styleSetBack(AnnotationStyle::Warning, StyleColor::color(StyleColor::Table::get()->Blue));
-    d->edit->styleSetItalic(AnnotationStyle::Warning, true);
+    d->edit->styleSetFore(AnnotationInfo::Role::get()->Warning.code, StyleColor::color(StyleColor::Table::get()->Yellow));
+    d->edit->styleSetBack(AnnotationInfo::Role::get()->Warning.code, StyleColor::color(StyleColor::Table::get()->Blue));
+    d->edit->styleSetItalic(AnnotationInfo::Role::get()->Warning.code, true);
 
-    d->edit->styleSetFore(AnnotationStyle::Error , StyleColor::color(StyleColor::Table::get()->Red));
-    d->edit->styleSetBack(AnnotationStyle::Error, StyleColor::color(StyleColor::Table::get()->Blue));
-    d->edit->styleSetItalic(AnnotationStyle::Error, true);
+    d->edit->styleSetFore(AnnotationInfo::Role::get()->Error.code, StyleColor::color(StyleColor::Table::get()->Red));
+    d->edit->styleSetBack(AnnotationInfo::Role::get()->Error.code, StyleColor::color(StyleColor::Table::get()->Blue));
+    d->edit->styleSetItalic(AnnotationInfo::Role::get()->Error.code, true);
 
-    d->edit->styleSetFore(AnnotationStyle::Fatal , StyleColor::color(StyleColor::Table::get()->Red));
-    d->edit->styleSetBack(AnnotationStyle::Fatal, StyleColor::color(StyleColor::Table::get()->Blue));
-    d->edit->styleSetItalic(AnnotationStyle::Fatal, true);
+    d->edit->styleSetFore(AnnotationInfo::Role::get()->Fatal.code , StyleColor::color(StyleColor::Table::get()->Red));
+    d->edit->styleSetBack(AnnotationInfo::Role::get()->Fatal.code, StyleColor::color(StyleColor::Table::get()->Blue));
+    d->edit->styleSetItalic(AnnotationInfo::Role::get()->Fatal.code, true);
 
     return;
 }

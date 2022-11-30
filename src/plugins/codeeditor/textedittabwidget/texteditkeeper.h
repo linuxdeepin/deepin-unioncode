@@ -28,7 +28,7 @@
 class TextEditKeeper final
 {
     dpf::QtClassFactory<TextEdit> editFactory;
-
+    AnalysedData data;
     TextEditKeeper(){}
 
     inline static TextEditKeeper *instance(){
@@ -49,6 +49,16 @@ public:
     {
         return instance()->editFactory.create(language, err);
     }
+
+    static void setAnalysedData(const AnalysedData &data)
+    {
+        instance()->data = data;
+    }
+
+   AnalysedData analysedData()
+   {
+       return data;
+   }
 };
 
 #endif // TEXTEDITKEEPER_H

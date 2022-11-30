@@ -105,8 +105,8 @@ void CodePortingManager::slotSelectedChanged(const QString &filePath, const QStr
     int endLineInEditor = endLine + kLineNumberAdaptation;
 
     EventSender::jumpTo(filePath, startLineInEditor);
-
-    EventSender::setAnnotation(filePath, startLineInEditor, suggestion);
+    AnnotationInfo annInfo{AnnotationInfo::Role::get()->Note, suggestion};
+    editor.setAnnotation({filePath, startLineInEditor, "CodePorting", QVariant::fromValue(annInfo)});
     QColor backgroundColor(Qt::red);
     for (int lineNumber = startLineInEditor; lineNumber <= endLineInEditor; ++lineNumber) {
         EventSender::setLineBackground(filePath, backgroundColor, lineNumber);

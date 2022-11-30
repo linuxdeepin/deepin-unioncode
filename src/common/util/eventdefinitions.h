@@ -50,6 +50,9 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(jumpToLine, "workspace", "language", "filePath", "line")
            OPI_INTERFACE(openDocument, "language", "filePath")
            OPI_INTERFACE(selectedFile, "filePath", "status")
+           // annInfo from AnnotationInfo
+           OPI_INTERFACE(setAnnotation, "filePath", "line", "title", "annInfo")
+           OPI_INTERFACE(cleanAnnotation, "filePath", "title")
            )
 
 OPI_OBJECT(symbol,
@@ -66,6 +69,39 @@ OPI_OBJECT(actionanalyse,
            // analysedData value custom struct from AnalysedData
            OPI_INTERFACE(analyseDone, "workspace", "language", "storage", "analysedData")
            )
+
+struct AnnotationInfo
+{
+    struct RoleElem
+    {
+        QString display;
+        int code;
+        bool operator == (const RoleElem &elem)
+        {
+            return display == elem.display
+                    && code == elem.code;
+        }
+    };
+    enum_def(Role, RoleElem)
+    {
+        enum_exp Note = {"Note", 767};
+        enum_exp Warning = {"Warning", 766};
+        enum_exp Error = {"Error", 765};
+        enum_exp Fatal = {"Fatal", 764};
+    };
+    Role::type_value role;
+    QString text;
+    AnnotationInfo(Role::type_value role, const QString &text)
+        : role(role), text(text){}
+    AnnotationInfo() :role(Role::get()->Note), text(""){}
+    AnnotationInfo(const AnnotationInfo &info)
+        : role(info.role), text(info.text){}
+    bool operator == (const AnnotationInfo &info){
+        return role == info.role
+                && text == info.text;
+    }
+};
+Q_DECLARE_METATYPE(AnnotationInfo);
 
 struct AnalysedData
 {
@@ -105,8 +141,6 @@ extern const QString D_SHOW;
 extern const QString D_HIDE;
 extern const QString D_ADDTEXT;
 extern const QString D_JUMP_TO_LINE;
-extern const QString D_SET_ANNOTATION;
-extern const QString D_CLEAN_ANNOTATION;
 extern const QString D_SET_LINE_BACKGROUND;
 extern const QString D_DEL_LINE_BACKGROUND;
 extern const QString D_CLEAN_LINE_BACKGROUND;

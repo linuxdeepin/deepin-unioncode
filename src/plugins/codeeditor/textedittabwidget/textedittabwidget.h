@@ -64,9 +64,8 @@ public slots:
     void setLineBackground(const QString &filePath, int line, const QColor &color);
     void delLineBackground(const QString &filePath, int line);
     void cleanLineBackground(const QString &filePath);
-    /* Note = 767 Warning = 766 Error = 765 Fatal = 764*/
-    void setAnnotation(const QString &filePath, int line, const QString &text, int role = 767);
-    void cleanAnnotation(const QString &filePath);
+    void setAnnotation(const QString &filePath, int line, const QString &title, const AnnotationInfo &info);
+    void cleanAnnotation(const QString &filePath, const QString &title);
 
 private slots:
     void setDefaultFileEdit();

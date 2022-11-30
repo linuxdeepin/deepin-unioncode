@@ -51,8 +51,6 @@ const QString D_SHOW {"Show"};
 const QString D_HIDE {"Hide"};
 const QString D_ADDTEXT {"AddText"};
 const QString D_JUMP_TO_LINE {"JumpToLine"};
-const QString D_SET_ANNOTATION {"SetAnnotation"};
-const QString D_CLEAN_ANNOTATION {"CleanAnnotation"};
 const QString D_SET_LINE_BACKGROUND {"SetLineBackground"};
 const QString D_DEL_LINE_BACKGROUND {"DelLineBackground"};
 const QString D_CLEAN_LINE_BACKGROUND {"CleanLineBackground"};

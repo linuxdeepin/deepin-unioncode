@@ -36,32 +36,6 @@ void EventSender::jumpTo(const QString &filePath, int lineNum)
     dpf::EventCallProxy::instance().pubEvent(event);
 }
 
-void EventSender::setAnnotation(const QString &filePath, int lineNum, const QString &text)
-{
-    if (filePath.isEmpty() || lineNum < 0 || text.isEmpty())
-        return;
-
-    dpf::Event event;
-    event.setTopic(T_CODEEDITOR);
-    event.setData(D_SET_ANNOTATION);
-    event.setProperty(P_FILEPATH, filePath);
-    event.setProperty(P_FILELINE, lineNum);
-    event.setProperty(P_TEXT, text);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
-void EventSender::cleanAnnotation(const QString &filePath)
-{
-    if (filePath.isEmpty())
-        return;
-
-    dpf::Event event;
-    event.setTopic(T_CODEEDITOR);
-    event.setData(D_CLEAN_ANNOTATION);
-    event.setProperty(P_FILEPATH, filePath);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
 void EventSender::setLineBackground(const QString &filePath, QColor &color, int lineNum)
 {
     if (filePath.isEmpty() || lineNum < 0)

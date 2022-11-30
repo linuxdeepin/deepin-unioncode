@@ -67,9 +67,8 @@ public:
     void setLineBackground(int line, const QColor &color);
     void delLineBackground(int line);
     void cleanLineBackground();
-    /* Note = 767 Warning = 766 Error = 765 Fatal = 764*/
-    void setAnnotation(int line, const QString &text, int role = 767);
-    void cleanAnnotation();
+    void setAnnotation(int line, const QString &title, const AnnotationInfo &info);
+    void cleanAnnotation(const QString &title);
     void updateFile();
     void saveAsText();
     bool isSaveText();
@@ -111,6 +110,7 @@ private slots:
     void sciUpdateUi(Scintilla::Update update);
     void sciDwellStart(int x, int y);
     void sciDwellEnd(int x, int y);
+    void sciUpdateAnnotation();
 
 protected:
     virtual void keyReleaseEvent(QKeyEvent *event) override;

@@ -50,14 +50,6 @@ public:
         Extern = 4
     };
 
-    enum AnnotationStyle
-    {
-        Note = 767,
-        Warning = 766,
-        Error = 765,
-        Fatal = 764
-    };
-
     StyleSci(TextEdit *parent);
     virtual ~StyleSci();
 

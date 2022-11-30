@@ -30,8 +30,6 @@ class EventSender : public QObject
 public:
      static void jumpTo(const QString &filePath, int lineNum);
 
-     static void setAnnotation(const QString &filePath, int lineNum, const QString &text);
-     static void cleanAnnotation(const QString &filePath);
      static void setLineBackground(const QString &filePath, QColor &color, int lineNum);
      static void cleanLineBackground(const QString &filePath, int lineNum);
      static void cleanLineBackground(const QString &filePath);

@@ -41,35 +41,13 @@ QStringList CodeEditorReceiver::topics()
 
 void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 {
-    if (D_SET_ANNOTATION == event.data()) {
-        QVariant filePathVar = event.property(P_FILEPATH);
-        QVariant fileLineVar = event.property(P_FILELINE);//.toInt(),
-        QVariant textVar = event.property(P_TEXT);
-        if (filePathVar.isValid() && fileLineVar.isValid() && textVar.isValid()) {
-            int role = 0; // set default Note;
-            /* Note = 767 Warning = 766 Error = 765 Fatal = 764*/
-            role = event.property(P_ANNOTATION_ROLE).toInt();
-            if (0 <= role && role <= 3) {
-                role = 767 - role;
-                DpfEventMiddleware::instance()->toSetAnnotation(
-                            filePathVar.toString(),
-                            fileLineVar.toInt(),
-                            textVar.toString(),
-                            role);
-            }
-        }
-    } else if (D_CLEAN_ANNOTATION == event.data()) {
-        QVariant filePathVar =  event.property(P_FILEPATH);
-        if (filePathVar.isValid()) {
-            DpfEventMiddleware::instance()->toCleanAnnotation(filePathVar.toString());
-        }
-    } else if (D_SET_LINE_BACKGROUND == event.data()) {
+    if (D_SET_LINE_BACKGROUND == event.data()) {
 
         QVariant colorVar = event.property(P_COLOR);
         QVariant filePathVar = event.property(P_FILEPATH);
         QVariant fileLineVar = event.property(P_FILELINE);
         if (colorVar.isValid() && filePathVar.isValid() && fileLineVar.isValid()) {
-            DpfEventMiddleware::instance()->toSetLineBackground(
+            EditorCallProxy::instance()->toSetLineBackground(
                         filePathVar.toString(),
                         fileLineVar.toInt(),
                         qvariant_cast<QColor>(colorVar));
@@ -80,7 +58,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QVariant filePathVar = event.property(P_FILEPATH);
         QVariant fileLineVar = event.property(P_FILELINE);
         if (filePathVar.isValid() && fileLineVar.isValid()) {
-            DpfEventMiddleware::instance()->toDelLineBackground(
+            EditorCallProxy::instance()->toDelLineBackground(
                         filePathVar.toString(),
                         fileLineVar.toInt());
         }
@@ -89,13 +67,13 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
 
         QVariant filePathVar = event.property(P_FILEPATH);
         if (filePathVar.isValid()) {
-            DpfEventMiddleware::instance()->toCleanLineBackground(
+            EditorCallProxy::instance()->toCleanLineBackground(
                         filePathVar.toString());
         }
 
     } else if (D_JUMP_CURSOR_CLEAN == event.data()) {
 
-        return DpfEventMiddleware::instance()->toRunClean();
+        return EditorCallProxy::instance()->toRunClean();
 
     } else if (D_OPENFILE == event.data()) {
         QVariant workspaceVar = event.property(P_WORKSPACEFOLDER);
@@ -105,7 +83,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
             newlsp::ProjectKey proKey;
             proKey.language = languageVar.toString().toStdString();
             proKey.workspace = workspaceVar.toString().toStdString();
-            return DpfEventMiddleware::instance()->toOpenFile(proKey, filePathVar.toString());
+            return EditorCallProxy::instance()->toOpenFile(proKey, filePathVar.toString());
         }
     } else if (editor.openFile.name == event.data()) {
         QString workspacePKey = editor.openFile.pKeys[0];
@@ -118,14 +96,14 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
             newlsp::ProjectKey proKey;
             proKey.language = language.toStdString();
             proKey.workspace = workspace.toStdString();
-            return DpfEventMiddleware::instance()->toOpenFile(proKey, filePath);
+            return EditorCallProxy::instance()->toOpenFile(proKey, filePath);
         }
     } else if (D_SEARCH == event.data()) {
 
         QVariant srcTextVar = event.property(P_SRCTEXT);
         QVariant opeateTypeVar = event.property(P_OPRATETYPE);
         if (srcTextVar.isValid() && opeateTypeVar.isValid()) {
-            return DpfEventMiddleware::instance()->toSearchText(
+            return EditorCallProxy::instance()->toSearchText(
                         srcTextVar.toString(),
                         opeateTypeVar.toInt());
         }
@@ -136,7 +114,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QVariant destTextVar = event.property(P_DESTTEXT);
         QVariant opeateTypeVar = event.property(P_OPRATETYPE);
         if (srcTextVar.isValid() && destTextVar.isValid() && opeateTypeVar.isValid()) {
-            return DpfEventMiddleware::instance()->toReplaceText(
+            return EditorCallProxy::instance()->toReplaceText(
                         srcTextVar.toString(),
                         destTextVar.toString(),
                         opeateTypeVar.toInt());
@@ -152,12 +130,12 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
             newlsp::ProjectKey key;
             key.language = wpFolderVar.toString().toStdString();
             key.workspace = languageVar.toString().toStdString();
-            return DpfEventMiddleware::instance()->toJumpFileLine(
+            return EditorCallProxy::instance()->toJumpFileLine(
                         key,
                         filePathVar.toString(),
                         fileLineVar.toInt());
         } else if (filePathVar.isValid() && fileLineVar.isValid()) {
-            return DpfEventMiddleware::instance()->toRunFileLine(
+            return EditorCallProxy::instance()->toRunFileLine(
                         filePathVar.toString(),
                         fileLineVar.toInt());
         }
@@ -166,7 +144,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QString filePath = event.property(editor.openDocument.pKeys[1]).toString();
         newlsp::ProjectKey proKey;
         proKey.language = language.toStdString();
-        return DpfEventMiddleware::instance()->toOpenFile(proKey, filePath);
+        return EditorCallProxy::instance()->toOpenFile(proKey, filePath);
     } else if (editor.jumpToLine.name == event.data()) {
         QString workspacePKey = editor.jumpToLine.pKeys[0];
         QString languagePKey = editor.jumpToLine.pKeys[1];
@@ -181,9 +159,9 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
             newlsp::ProjectKey key;
             key.language = language.toStdString();
             key.workspace = workspace.toStdString();
-            return DpfEventMiddleware::instance()->toJumpFileLine(key, filePath, fileLine.toInt());
+            return EditorCallProxy::instance()->toJumpFileLine(key, filePath, fileLine.toInt());
         } else if (!filePath.isEmpty() && !fileLine.isEmpty()) {
-            return DpfEventMiddleware::instance()->toRunFileLine(filePath, fileLine.toInt());
+            return EditorCallProxy::instance()->toRunFileLine(filePath, fileLine.toInt());
         }
     } else if (event.data() == actionanalyse.analyseDone.name) {
         QString workspace = event.property(actionanalyse.analyseDone.pKeys[0]).toString();
@@ -191,13 +169,24 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QString storage = event.property(actionanalyse.analyseDone.pKeys[2]).toString();
         QVariant analyseDataVar = event.property(actionanalyse.analyseDone.pKeys[0]);
         if (analyseDataVar.canConvert<AnalysedData>()) {
-           // to do Huang Yu, do lsp token and data token
+            auto analyseData = qvariant_cast<AnalysedData>(analyseDataVar);
+            EditorCallProxy::instance()->toSetAnalysedData(analyseData);
         }
+    } else if (event.data() == editor.setAnnotation.name) {
+        QString filePath = event.property(editor.setAnnotation.pKeys[0]).toString();
+        int line = event.property(editor.setAnnotation.pKeys[1]).toInt();
+        QString title = event.property(editor.setAnnotation.pKeys[2]).toString();
+        AnnotationInfo annInfo = qvariant_cast<AnnotationInfo>(event.property(editor.setAnnotation.pKeys[3]));
+        EditorCallProxy::instance()->toSetAnnotation(filePath, line, title, annInfo);
+    } else if (event.data() == editor.cleanAnnotation.name) {
+        QString filePath = event.property(editor.cleanAnnotation.pKeys[0]).toString();
+        QString title = event.property(editor.cleanAnnotation.pKeys[1]).toString();
+        EditorCallProxy::instance()->toCleanAnnotation(filePath, title);
     }
 }
 
-DpfEventMiddleware *DpfEventMiddleware::instance()
+EditorCallProxy *EditorCallProxy::instance()
 {
-    static DpfEventMiddleware ins;
+    static EditorCallProxy ins;
     return &ins;
 }

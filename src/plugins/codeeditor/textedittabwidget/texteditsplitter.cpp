@@ -38,8 +38,8 @@ TextEditSplitter::TextEditSplitter(QWidget *parent)
     newSplitters.append(mainSplitter);
     ++count;
 
-    QObject::connect(DpfEventMiddleware::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
+    QObject::connect(EditorCallProxy::instance(),
+                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
                      tabWidget, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
     QObject::connect(tabWidget, &TextEditTabWidget::signalEditSplit, this, &TextEditSplitter::editSplit);
 
@@ -82,13 +82,13 @@ void TextEditSplitter::editSplit(Qt::Orientation orientation, const QString &fil
     splitter->replaceWidget(0, newSplitter);
 
     // cancel all open file sig-slot from texteditwidget
-    disconnect(DpfEventMiddleware::instance(),
-               QOverload<const newlsp::ProjectKey &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
+    disconnect(EditorCallProxy::instance(),
+               QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
                textEditTabWidget, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
 
     // connect new texteditwidget openfile slot
-    QObject::connect(DpfEventMiddleware::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
+    QObject::connect(EditorCallProxy::instance(),
+                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
                      newTextEdit, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
 
     // connect selected texteditwidget sig-slot bind, from texteditwidget focus
@@ -100,15 +100,15 @@ void TextEditSplitter::editSplit(Qt::Orientation orientation, const QString &fil
 void TextEditSplitter::doSelectedTextEditWidget()
 {
     for (int i = 0; i < tabWidgets.size(); i++) {
-        disconnect(DpfEventMiddleware::instance(),
-                   QOverload<const newlsp::ProjectKey &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
+        disconnect(EditorCallProxy::instance(),
+                   QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
                    tabWidgets.at(i), QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
     }
 
     auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
 
-    QObject::connect(DpfEventMiddleware::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&DpfEventMiddleware::toOpenFile),
+    QObject::connect(EditorCallProxy::instance(),
+                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
                      textEditTabWidget, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
 }
 
