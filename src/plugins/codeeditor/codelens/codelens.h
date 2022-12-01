@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     zhouyi<zhouyi1@uniontech.com>
+ * Author:     huangyu<huangyub@uniontech.com>
  *
- * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ * Maintainer: huangyu<huangyub@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef FINDSERVICE_H
-#define FINDSERVICE_H
+#ifndef REFACTORWIDGET_H
+#define REFACTORWIDGET_H
 
-#include "enums.h"
+#include "common/common.h"
+#include <QWidget>
 
-#endif
+class CodeLensPrivate;
+class CodeLens : public QWidget
+{
+    Q_OBJECT
+    CodeLensPrivate * const d;
+public:
+    static CodeLens *instance();
+    explicit CodeLens(QWidget *parent = nullptr);
+    virtual ~CodeLens();
+    void displayReference(const lsp::References &data);
+
+signals:
+    void doubleClicked(const QString &filePath, const lsp::Range range);
+};
+
+#endif // REFACTORWIDGET_H

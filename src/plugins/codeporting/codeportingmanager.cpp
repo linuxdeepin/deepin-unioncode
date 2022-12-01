@@ -25,7 +25,6 @@
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include "reportpane.h"
-#include "eventsender.h"
 
 #include <QtConcurrent>
 
@@ -103,13 +102,12 @@ void CodePortingManager::slotSelectedChanged(const QString &filePath, const QStr
 
     int startLineInEditor = startLine + kLineNumberAdaptation;
     int endLineInEditor = endLine + kLineNumberAdaptation;
-
-    EventSender::jumpTo(filePath, startLineInEditor);
+    editor.jumpToLine(filePath, startLineInEditor);
     AnnotationInfo annInfo{AnnotationInfo::Role::get()->Note, suggestion};
-    editor.setAnnotation({filePath, startLineInEditor, "CodePorting", QVariant::fromValue(annInfo)});
+    editor.setAnnotation(filePath, startLineInEditor, QString("CodePorting"), annInfo);
     QColor backgroundColor(Qt::red);
     for (int lineNumber = startLineInEditor; lineNumber <= endLineInEditor; ++lineNumber) {
-        EventSender::setLineBackground(filePath, backgroundColor, lineNumber);
+        editor.setLineBackground(filePath, lineNumber, backgroundColor);
     }
 }
 

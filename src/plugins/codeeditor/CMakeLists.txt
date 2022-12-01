@@ -12,18 +12,17 @@ set(CXX_CPP
     mainframe/autohidedockwidget.cpp
     mainframe/naveditmainwindow.cpp
     mainframe/toolbarmanager.cpp
-    transceiver/sendevents.cpp
+    mainframe/texteditkeeper.cpp
     transceiver/codeeditorreceiver.cpp
-    refactorwidget/codelentype.cpp
-    refactorwidget/codelens.cpp
-    refactorwidget/codelensdelegate.cpp
-    refactorwidget/refactorwidget.cpp
+    codelens/codelenstype.cpp
+    codelens/codelenstree.cpp
+    codelens/codelensdelegate.cpp
+    codelens/codelens.cpp
     renamepopup/renamepopup.cpp
     textedittabwidget/scintillaeditextern.cpp
     textedittabwidget/textedittabwidget.cpp
     textedittabwidget/textedittabbar.cpp
     textedittabwidget/textedittitlebar.cpp
-    textedittabwidget/texteditkeeper.cpp
     textedittabwidget/textedit.cpp
     textedittabwidget/texteditsplitter.cpp
     textedittabwidget/style/lspclientkeeper.cpp
@@ -51,18 +50,17 @@ set(CXX_H
     mainframe/autohidedockwidget.h
     mainframe/naveditmainwindow.h
     mainframe/toolbarmanager.h
-    transceiver/sendevents.h
+    mainframe/texteditkeeper.h
     transceiver/codeeditorreceiver.h
-    refactorwidget/codelentype.h
-    refactorwidget/codelens.h
-    refactorwidget/codelensdelegate.h
-    refactorwidget/refactorwidget.h
+    codelens/codelenstype.h
+    codelens/codelenstree.h
+    codelens/codelensdelegate.h
+    codelens/codelens.h
     renamepopup/renamepopup.h
     textedittabwidget/scintillaeditextern.h
     textedittabwidget/textedittabwidget.h
     textedittabwidget/textedittitlebar.h
     textedittabwidget/textedittabbar.h
-    textedittabwidget/texteditkeeper.h
     textedittabwidget/textedit.h
     textedittabwidget/texteditsplitter.h
     textedittabwidget/style/stylecolor.h

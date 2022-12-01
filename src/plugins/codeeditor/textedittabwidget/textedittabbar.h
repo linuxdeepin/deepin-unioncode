@@ -32,22 +32,22 @@ class TextEditTabBar : public QWidget
 public:
     explicit TextEditTabBar(QWidget *parent = nullptr);
     virtual ~TextEditTabBar();
-    int fileIndex(const QString &file);
-    QString indexFile(int index);
+    int fileIndex(const QString &file) const;
+    QString indexFile(int index) const;
     void setFile(const QString &file);
     void switchFile(const QString &file);
     void removeTab(const QString &file);
     int count() const;
     int currentIndex() const;
+    QString currentFile() const;
     void setCurrentIndex(int idx);
 
 signals:
     void fileClosed(const QString &file);
     void fileSwitched(const QString &file);
     void saveFile(const QString &file);
-    void horizontalSplit(QString file);
-    void verticalSplit();
-    void close();
+    void splitClicked(Qt::Orientation ori);
+    void closeClicked();
 
 public slots:
     void tabCloseRequested(int idx);

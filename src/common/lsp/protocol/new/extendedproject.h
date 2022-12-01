@@ -41,11 +41,9 @@ struct ProjectKey
 {
     std::string language;
     std::string workspace;
-    ProjectKey(){}
-    ProjectKey(const std::string &language, const std::string &workspace)
-        : language(language), workspace(workspace){}
-    ProjectKey(const ProjectKey &other)
-        : language(other.language), workspace(other.workspace){}
+    ProjectKey();
+    ProjectKey(const std::string &language, const std::string &workspace);
+    ProjectKey(const ProjectKey &other);
     bool isValid() const { return !workspace.empty() && !language.empty();}
     bool operator == (const ProjectKey &other) {
         return language == other.language

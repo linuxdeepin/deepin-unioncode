@@ -30,7 +30,6 @@
 #include "interface/stackframemodel.h"
 #include "interface/stackframeview.h"
 #include "interface/messagebox.h"
-#include "event/eventsender.h"
 #include "event/eventreceiver.h"
 #include "common/common.h"
 #include "services/builder/builderservice.h"
@@ -169,7 +168,7 @@ void Debugger::continueDebug()
 {
     if (runState == kStopped) {
         session->continueDbg(threadId);
-        EventSender::clearEditorPointer();
+        editor.cleanRunning();
     }
 }
 
@@ -513,16 +512,7 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
 
     QString topic = event.topic();
     QString data = event.data().toString();
-    if (topic == T_CODEEDITOR) {
-        // breakpoint process.
-        QString filePath = event.property(P_FILEPATH).toString();
-        int lineNumber = event.property(P_FILELINE).toInt();
-        if (data == D_MARGIN_DEBUG_POINT_ADD) {
-            addBreakpoint(filePath, lineNumber);
-        } else if (data == D_MARGIN_DEBUG_POINT_REMOVE) {
-            removeBreakpoint(filePath, lineNumber);
-        }
-    } else if (topic == T_BUILDER) {
+    if (topic == T_BUILDER) {
         if (data == D_BUILD_STATE) {
             int state = event.property(P_STATE).toInt();
             BuildCommandInfo commandInfo = qvariant_cast<BuildCommandInfo>(event.property(P_ORIGINCMD));
@@ -565,11 +555,27 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
     } else if (event.data() == project.deletedProject.name) {
         d->activeProjectKitName.clear();
         updateRunState(kNoRun);
-    } else if (event.data() == editor.selectedFile.name) {
-        if (event.property(editor.selectedFile.pKeys[1]).toBool())
-            d->currentOpenedFileName = event.property(editor.selectedFile.pKeys[0]).toString();
-        else
+    } else if (event.data() == editor.switchedFile.name) {
+        QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
+        if (d->currentOpenedFileName != filePath) {
+            d->currentOpenedFileName = filePath;
+        }
+    } else if (event.data() == editor.openedFile.name) {
+        QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
+        d->currentOpenedFileName = filePath;
+    } else if (event.data() == editor.closedFile.name) {
+        QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
+        if (d->currentOpenedFileName == filePath) {
             d->currentOpenedFileName.clear();
+        }
+    } else if (event.data() == editor.addadDebugPoint.name) {
+        QString filePath = event.property(editor.addadDebugPoint.pKeys[0]).toString();
+        int line = event.property(editor.addadDebugPoint.pKeys[1]).toInt();
+        addBreakpoint(filePath, line);
+    } else if (event.data() == editor.removedDebugPoint.name) {
+        QString filePath = event.property(editor.addadDebugPoint.pKeys[0]).toString();
+        int line = event.property(editor.addadDebugPoint.pKeys[1]).toInt();
+        removeBreakpoint(filePath, line);
     }
 }
 
@@ -603,8 +609,7 @@ void Debugger::handleFrames(const StackFrames &stackFrames)
     }
 
     if (QFileInfo(curFrame.file).exists()) {
-        EventSender::jumpTo(curFrame.file.toStdString(),
-                            curFrame.line);
+        editor.runningToLine(curFrame.file, curFrame.line);
     } else {
         if (curFrame.address.isEmpty()) {
             disassemble(curFrame.address);
@@ -697,10 +702,7 @@ void Debugger::slotFrameSelected(const QModelIndex &index)
     auto curFrame = stackModel.currentFrame();
 
     if (QFileInfo(curFrame.file).exists()) {
-        EventSender::jumpTo(curFrame.file.toStdString(),
-                            curFrame.line,
-                            d->projectInfo.workspaceFolder().toStdString(),
-                            d->projectInfo.language().toStdString());
+        editor.jumpToLine(curFrame.file, curFrame.line);
     } else {
         if (!curFrame.address.isEmpty()) {
             disassemble(curFrame.address);
@@ -717,10 +719,7 @@ void Debugger::slotBreakpointSelected(const QModelIndex &index)
 {
     Q_UNUSED(index);
     auto curBP = breakpointModel.currentBreakpoint();
-    EventSender::jumpTo(curBP.filePath.toStdString(),
-                        curBP.lineNumber,
-                        d->projectInfo.workspaceFolder().toStdString(),
-                        d->projectInfo.language().toStdString());
+    editor.jumpToLine(curBP.filePath, curBP.lineNumber);
 }
 
 void Debugger::initializeView()
@@ -765,7 +764,7 @@ void Debugger::initializeView()
 void Debugger::exitDebug()
 {
     // Change UI.
-    EventSender::clearEditorPointer();
+    editor.cleanRunning({});
     QMetaObject::invokeMethod(localsView, "hide");
 
     localsModel.clear();
@@ -1036,7 +1035,6 @@ void Debugger::handleAssemble(const QString &content)
         QTextStream stream(&file);
         stream << content;
         file.close();
-
-        EventSender::jumpTo(assemblerPath.toStdString(), 0);
+        editor.jumpToLine(assemblerPath, 0);
     }
 }

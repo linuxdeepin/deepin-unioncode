@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "codelensdelegate.h"
-#include "codelentype.h"
+#include "codelenstype.h"
 
 #include <QApplication>
 
@@ -42,15 +42,15 @@ void CodeLensDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         lsp::Range range;
         QString codeText;
         QColor heightColor;
-        QVariant rangeVar = index.data(CodeLenItemRole::Range);
+        QVariant rangeVar = index.data(CodeLensItemRole::Range);
         if (rangeVar.canConvert<lsp::Range>()) {
             range = rangeVar.value<lsp::Range>();
         }
-        QVariant codeTextVar = index.data(CodeLenItemRole::CodeText);
+        QVariant codeTextVar = index.data(CodeLensItemRole::CodeText);
         if (codeTextVar.canConvert<QString>()) {
             codeText = codeTextVar.value<QString>();
         }
-        QVariant colorVar = index.data(CodeLenItemRole::HeightColor);
+        QVariant colorVar = index.data(CodeLensItemRole::HeightColor);
         if (colorVar.canConvert<QColor>()) {
             heightColor = colorVar.value<QColor>();
         }

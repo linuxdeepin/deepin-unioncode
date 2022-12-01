@@ -254,7 +254,7 @@ void RecentDisplay::doDoubleClickedProject(const QModelIndex &index)
     QString language = index.data(ProjectLanguage).toString();
     QString workspace = index.data(ProjectWorkspace).toString();
     // "kitName", "language", "workspace"
-    project.openProject({kitName, language, workspace});
+    project.openProject(kitName, language, workspace);
     RecentDisplay::addProject(kitName, language, workspace);
 }
 

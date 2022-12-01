@@ -112,15 +112,3 @@ void TextEdit::setFile(const QString &filePath)
         getStyleLsp()->initLspConnection();
     }
 }
-
-void TextEdit::focusInEvent(QFocusEvent *event)
-{
-    emit signalFocusInChanged();
-    return ScintillaEditExtern::focusInEvent(event);
-}
-
-void TextEdit::focusOutEvent(QFocusEvent *event)
-{
-    emit signalFocusOutChanged();
-    return ScintillaEditExtern::focusOutEvent(event);
-}

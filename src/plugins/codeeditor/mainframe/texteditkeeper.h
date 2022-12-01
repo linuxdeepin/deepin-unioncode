@@ -21,7 +21,8 @@
 #ifndef TEXTEDITKEEPER_H
 #define TEXTEDITKEEPER_H
 
-#include "textedit.h"
+#include "textedittabwidget/textedit.h"
+#include "services/project/projectinfo.h"
 #include <framework/service/qtclassfactory.h>
 #include <framework/service/qtclassmanager.h>
 
@@ -29,6 +30,7 @@ class TextEditKeeper final
 {
     dpf::QtClassFactory<TextEdit> editFactory;
     AnalysedData data;
+    dpfservice::ProjectInfo proInfo;
     TextEditKeeper(){}
 
     inline static TextEditKeeper *instance(){
@@ -55,10 +57,27 @@ public:
         instance()->data = data;
     }
 
-   AnalysedData analysedData()
-   {
-       return data;
-   }
+    static AnalysedData analysedData()
+    {
+        return instance()->data;
+    }
+
+    static dpfservice::ProjectInfo projectInfo()
+    {
+        return instance()->proInfo;
+    }
+
+    static void saveProjectInfo(const dpfservice::ProjectInfo &info)
+    {
+        instance()->proInfo = info;
+    }
+
+    static void removeProjectInfo(const dpfservice::ProjectInfo &info)
+    {
+        if (instance()->proInfo.workspaceFolder() == info.workspaceFolder()) {
+            instance()->proInfo = dpfservice::ProjectInfo();
+        }
+    }
 };
 
 #endif // TEXTEDITKEEPER_H

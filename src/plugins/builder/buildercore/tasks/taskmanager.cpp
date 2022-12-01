@@ -21,6 +21,7 @@
 */
 #include "taskmanager.h"
 #include "transceiver/buildersender.h"
+#include "common/common.h"
 
 TaskManager *TaskManager::instance()
 {
@@ -81,6 +82,6 @@ void TaskManager::triggerDefaultHandler(const QModelIndex &index)
         return;
 
     if (task.file.exists()) {
-        BuilderSender::jumpTo(task.file.toString(), task.movedLine);
+        editor.jumpToLine(task.file.toString(), task.movedLine);
     }
 }

@@ -21,17 +21,17 @@
 #ifndef CODELENS_H
 #define CODELENS_H
 
-#include "codelentype.h"
+#include "codelenstype.h"
 
 #include "common/common.h"
 
 #include <QTreeView>
 
-class CodeLens : public QTreeView
+class CodeLensTree : public QTreeView
 {
     Q_OBJECT
 public:
-    explicit CodeLens(QWidget *parent = nullptr);
+    explicit CodeLensTree(QWidget *parent = nullptr);
     void setData(const lsp::References &refs);
 
 signals:

@@ -25,26 +25,24 @@
 #include <QBoxLayout>
 #include <QDebug>
 
-static TextEditSplitter *ins{nullptr};
-
 TextEditSplitter::TextEditSplitter(QWidget *parent)
-    :QWidget(parent)
+    : QWidget (parent)
     , vLayout(new QVBoxLayout)
     , mainSplitter(new QSplitter)
 {
     tabWidget = new TextEditTabWidget(mainSplitter);
     mainSplitter->addWidget(tabWidget);
     tabWidgets.append(tabWidget);
-    newSplitters.append(mainSplitter);
-    ++count;
+    splitters.append(mainSplitter);
 
-    QObject::connect(EditorCallProxy::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
-                     tabWidget, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
-    QObject::connect(tabWidget, &TextEditTabWidget::signalEditSplit, this, &TextEditSplitter::editSplit);
-
-    QObject::connect(tabWidget, &TextEditTabWidget::signalEditClose, this, &TextEditSplitter::closeSplit);
-    QObject::connect(tabWidget, &TextEditTabWidget::signalFocusInChange, this, &TextEditSplitter::doSelectedTextEditWidget);
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                     tabWidget, &TextEditTabWidget::openFileWithKey);
+    QObject::connect(tabWidget, &TextEditTabWidget::splitClicked,
+                     this, &TextEditSplitter::doSplit);
+    QObject::connect(tabWidget, &TextEditTabWidget::closed,
+                     this, &TextEditSplitter::doClose);
+    QObject::connect(tabWidget, &TextEditTabWidget::selected,
+                     this, &TextEditSplitter::doSelected);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->addStretch(20);
@@ -60,75 +58,76 @@ TextEditSplitter::~TextEditSplitter()
 
 }
 
-void TextEditSplitter::editSplit(Qt::Orientation orientation, const QString &file)
+void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::ProjectKey &key, const QString &file)
 {
-    auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
-    auto splitter = qobject_cast<QSplitter *>(textEditTabWidget->parent());
-
+    auto oldEditWidget = qobject_cast<TextEditTabWidget*>(sender());
+    auto splitter = qobject_cast<QSplitter *>(oldEditWidget->parent());
     QSplitter *newSplitter = new QSplitter(splitter);
-    newSplitters.append(newSplitter);
+    splitters.append(newSplitter);
     newSplitter->setOrientation(orientation);
     newSplitter->setHandleWidth(0);
-    textEditTabWidget->setParent(newSplitter);
+    oldEditWidget->setParent(newSplitter);
 
-    TextEditTabWidget *newTextEdit = new TextEditTabWidget(newSplitter);
-    tabWidgets.append(newTextEdit);
-    ++count;
-    newTextEdit->openFile(file);
-    newTextEdit->setFocus();
-    newTextEdit->activateWindow();
-    newSplitter->insertWidget(0, textEditTabWidget);
-    newSplitter->insertWidget(1, newTextEdit);
+    TextEditTabWidget *newEditWidget = new TextEditTabWidget(newSplitter);
+    tabWidgets.append(newEditWidget);
+    newEditWidget->openFileWithKey(key, file);
+    newEditWidget->setFocus();
+    newEditWidget->activateWindow();
+    newSplitter->insertWidget(0, oldEditWidget);
+    newSplitter->insertWidget(1, newEditWidget);
     splitter->replaceWidget(0, newSplitter);
 
     // cancel all open file sig-slot from texteditwidget
-    disconnect(EditorCallProxy::instance(),
-               QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
-               textEditTabWidget, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
+    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                        oldEditWidget, &TextEditTabWidget::openFileWithKey);
 
     // connect new texteditwidget openfile slot
-    QObject::connect(EditorCallProxy::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
-                     newTextEdit, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                     newEditWidget, &TextEditTabWidget::openFileWithKey);
 
     // connect selected texteditwidget sig-slot bind, from texteditwidget focus
-    QObject::connect(newTextEdit, &TextEditTabWidget::signalEditSplit, this, &TextEditSplitter::editSplit);
-    QObject::connect(newTextEdit, &TextEditTabWidget::signalFocusInChange, this, &TextEditSplitter::doSelectedTextEditWidget);
-    QObject::connect(newTextEdit, &TextEditTabWidget::signalEditClose, this, &TextEditSplitter::closeSplit);
+    QObject::connect(newEditWidget, &TextEditTabWidget::splitClicked,
+                     this, &TextEditSplitter::doSplit);
+
+    QObject::connect(newEditWidget, &TextEditTabWidget::selected,
+                     this, &TextEditSplitter::doSelected);
+
+    QObject::connect(newEditWidget, &TextEditTabWidget::closed,
+                     this, &TextEditSplitter::doClose);
 }
 
-void TextEditSplitter::doSelectedTextEditWidget()
+void TextEditSplitter::doSelected(bool state)
 {
-    for (int i = 0; i < tabWidgets.size(); i++) {
-        disconnect(EditorCallProxy::instance(),
-                   QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
-                   tabWidgets.at(i), QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
-    }
-
     auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
-
-    QObject::connect(EditorCallProxy::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
-                     textEditTabWidget, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
-}
-
-void TextEditSplitter::closeSplit()
-{
-    if (count == 1) {
+    if (!textEditTabWidget)
         return;
-    }
-    auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
 
-    tabWidgets.removeOne(textEditTabWidget);
-    --count;
-    textEditTabWidget->~TextEditTabWidget();
+    if (state) {
+        QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                         textEditTabWidget, &TextEditTabWidget::openFileWithKey);
+    } else {
+        QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                            textEditTabWidget, &TextEditTabWidget::openFileWithKey);
+    }
 }
 
 TextEditSplitter *TextEditSplitter::instance()
 {
-    if (!ins)
-        ins = new TextEditSplitter;
-    return ins;
+    static TextEditSplitter ins;
+    return &ins;
+}
+
+void TextEditSplitter::doClose()
+{
+    auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
+    delete textEditTabWidget;
+    int idx = tabWidgets.indexOf(textEditTabWidget);
+    if (0 <= idx) {
+        delete tabWidgets.at(idx);
+        tabWidgets.removeAt(idx);
+        delete splitters.at(idx);
+        splitters.removeAt(idx);
+    }
 }
 
 

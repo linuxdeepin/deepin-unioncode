@@ -149,9 +149,9 @@ QDialog *dpfservice::ProjectGenerator::configureWidget(const QString &language, 
 bool dpfservice::ProjectGenerator::configure(const dpfservice::ProjectInfo &projectInfo) {
 
     //  "filePath", "kitName", "language", "workspace"
-    recent.saveOpenedProject({projectInfo.kitName(),
-                              projectInfo.language(),
-                              projectInfo.workspaceFolder()});
+    recent.saveOpenedProject(projectInfo.kitName(),
+                             projectInfo.language(),
+                             projectInfo.workspaceFolder());
 
     if (!projectInfo.workspaceFolder().isEmpty()) {
         dpf::Event event;

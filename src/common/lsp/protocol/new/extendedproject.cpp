@@ -22,6 +22,7 @@
 
 #include "common/lsp/protocol/new/basicjsonstructures.h"
 
+#include <QMetaType>
 #include <QHash>
 
 namespace newlsp
@@ -67,6 +68,23 @@ QJsonObject toQJsonObject(const ProjectKey &val)
     ret["language"] = QString::fromStdString(val.language);
     ret["workspace"] = QString::fromStdString(val.workspace);
     return ret;
+}
+
+ProjectKey::ProjectKey()
+{
+    qRegisterMetaType<newlsp::ProjectKey>("newlsp::ProjectKey");
+}
+
+ProjectKey::ProjectKey(const std::string &language, const std::string &workspace)
+    : language(language), workspace(workspace)
+{
+    qRegisterMetaType<newlsp::ProjectKey>("newlsp::ProjectKey");
+}
+
+ProjectKey::ProjectKey(const ProjectKey &other)
+    : language(other.language), workspace(other.workspace)
+{
+    qRegisterMetaType<newlsp::ProjectKey>("newlsp::ProjectKey");
 }
 
 }

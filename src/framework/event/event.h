@@ -70,14 +70,108 @@ struct EventInterface : std::function<void(const QVector<QVariant> &)>
 {
     QString name;
     QVector<QString> pKeys;
+    typedef QVariant Arg;
+    typedef const QVariant cArg;
+    typedef QVector<QVariant> Args;
     EventInterface() = delete;
 
-    EventInterface(const QString &name, const QVector<QString> &keys, const std::function<void(const QVector<QVariant>&)> &func)
-        : std::function<void (const QVector<QVariant> &)> (func) ,  name(name), pKeys(keys) {}
+    EventInterface(const QString &name, const QVector<QString> &keys,
+                   const std::function<void(const QVector<QVariant>&)> &func)
+        : std::function<void (const QVector<QVariant> &)> (func), name(name), pKeys(keys) {}
 
-    void operator()(const QVector<QVariant> &as) const
-    {
+    void operator()(const Args &as) const {
         return std::function<void(const QVector<QVariant> &)>::operator()(as);
+    }
+
+    void operator()() const { operator()(Args{}); }
+
+    template<class T0>
+    void operator()(const T0 &v0) const { operator()(Args{ Arg::fromValue<T0>(v0) }); }
+
+    template<class T0, class T1>
+    void operator()(const T0 &v0, const T1 &v1) const {
+        operator()(Args{ Arg::fromValue<T0>(v0), Arg::fromValue<T1>(v1) });
+    }
+
+    template<class T0, class T1, class T2>
+    void operator()(const T0 &v0, const T1 &v1, const T2 &v2) const {
+        operator()(Args{
+            Arg::fromValue<T0>(v0), Arg::fromValue<T1>(v1),
+                    Arg::fromValue<T2>(v2)
+        });
+    }
+
+    template<class T0, class T1, class T2, class T3>
+    void operator()(const T0 &v0, const T1 &v1, const T2 &v2, const T3 &v3) const {
+        operator()(Args{
+            Arg::fromValue<T0>(v0), Arg::fromValue<T1>(v1),
+                    Arg::fromValue<T2>(v2), Arg::fromValue<T3>(v3)
+        });
+    }
+
+    template<class T0, class T1, class T2, class T3, class T4>
+    void operator()(const T0 &v0, const T1 &v1, const T2 &v2, const T3 &v3, const T4 &v4) const {
+        operator()(Args{
+            Arg::fromValue<T0>(v0), Arg::fromValue<T1>(v1),
+                    Arg::fromValue<T2>(v2), Arg::fromValue<T3>(v3),
+                    Arg::fromValue<T4>(v4)
+        });
+    }
+
+    template<class T0, class T1, class T2, class T3, class T4, class T5>
+    void operator()(const T0 &v0, const T1 &v1, const T2 &v2, const T3 &v3, const T4 &v4,
+                    const T5 &v5) const {
+        operator()(Args{
+            Arg::fromValue<T0>(v0), Arg::fromValue<T1>(v1),
+                    Arg::fromValue<T2>(v2), Arg::fromValue<T3>(v3),
+                    Arg::fromValue<T4>(v4), Arg::fromValue<T5>(v5)
+        });
+    }
+
+    template<class T0, class T1, class T2, class T3, class T4, class T5, class T6>
+    void operator()(const T0 &v0, const T1 &v1, const T2 &v2, const T3 &v3, const T4 &v4,
+                    const T5 &v5, const T6 &v6) const {
+        operator()(Args{
+            Arg::fromValue<T0>(v0), Arg::fromValue<T1>(v1),
+                    Arg::fromValue<T2>(v2), Arg::fromValue<T3>(v3),
+                    Arg::fromValue<T4>(v4), Arg::fromValue<T5>(v5),
+                    Arg::fromValue<T6>(v6)
+        });
+    }
+
+    template<class T0, class T1, class T2, class T3, class T4, class T5, class T6, class T7>
+    void operator()(const T0 &v0, const T1 &v1, const T2 &v2, const T3 &v3, const T4 &v4,
+                    const T5 &v5, const T6 &v6, const T7 &v7) const {
+        operator()(Args{
+            Arg::fromValue<T0>(v0), Arg::fromValue<T1>(v1),
+                    Arg::fromValue<T2>(v2), Arg::fromValue<T3>(v3),
+                    Arg::fromValue<T4>(v4), Arg::fromValue<T5>(v5),
+                    Arg::fromValue<T6>(v6), Arg::fromValue<T7>(v7)
+        });
+    }
+
+    template<class T0, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8>
+    void operator()(const T0 &v0, const T1 &v1, const T2 &v2, const T3 &v3, const T4 &v4,
+                    const T5 &v5, const T6 &v6, const T7 &v7, const T8 &v8) const{
+        operator()(Args{
+            Arg::fromValue<T0>(v0), Arg::fromValue<T1>(v1),
+                    Arg::fromValue<T2>(v2), Arg::fromValue<T3>(v3),
+                    Arg::fromValue<T4>(v4), Arg::fromValue<T5>(v5),
+                    Arg::fromValue<T6>(v6), Arg::fromValue<T7>(v7),
+                    Arg::fromValue<T8>(v8),
+        });
+    }
+
+    template<class T0, class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9>
+    void operator()(const T0 &v0, const T1 &v1, const T2 &v2, const T3 &v3, const T4 &v4,
+                    const T5 &v5, const T6 &v6, const T7 &v7, const T8 &v8, const T9 &v9) const {
+        operator()(Args{
+            Arg::fromValue<T0>(v0), Arg::fromValue<T1>(v1),
+                    Arg::fromValue<T2>(v2), Arg::fromValue<T3>(v3),
+                    Arg::fromValue<T4>(v4), Arg::fromValue<T5>(v5),
+                    Arg::fromValue<T6>(v6), Arg::fromValue<T7>(v7),
+                    Arg::fromValue<T8>(v8), Arg::fromValue<T9>(v9)
+        });
     }
 };
 

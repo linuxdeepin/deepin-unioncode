@@ -119,7 +119,7 @@ QString Language::id(const QString &filePath)
 
         QMimeDatabase mimeDB;
         for (auto mime : mimeArray) {
-            if (mimeDB.mimeTypeForFile(filePath).name() == mime.toString()) {
+            if (mimeDB.mimeTypeForFile(info).name() == mime.toString()) {
                 return id;
             }
         }

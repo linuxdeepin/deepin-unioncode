@@ -186,6 +186,7 @@ void ConfigureProjPane::updateUI()
         return;
 
     QDir folder(d->cfgItem->workspace);
+    folder.cdUp();
     QString folderName = folder.dirName();
     QString upDirectory = folder.path();
 

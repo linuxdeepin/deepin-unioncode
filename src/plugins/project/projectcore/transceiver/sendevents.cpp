@@ -22,52 +22,19 @@
 #include "framework/framework.h"
 #include "common/common.h"
 
-void SendEvents::generateStart(const QString &buildSystem, const QString &projectPath, const QString &targetPath)
-{
-    dpf::Event event;
-    event.setTopic(T_WORKSPACE);
-    event.setData(D_WORKSPACE_GENERATE_BEGIN);
-    event.setProperty(P_BUILDSYSTEM, buildSystem);
-    event.setProperty(P_PROJECTPATH, projectPath);
-    event.setProperty(P_TARGETPATH, targetPath);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
-void SendEvents::gengrateEnd(const QString &buildSystem, const QString &projectPath, const QString &targetPath)
-{
-    dpf::Event event;
-    event.setTopic(T_WORKSPACE);
-    event.setData(D_WORKSPACE_GENERATE_END);
-    event.setProperty(P_BUILDSYSTEM, buildSystem);
-    event.setProperty(P_PROJECTPATH, projectPath);
-    event.setProperty(P_TARGETPATH, targetPath);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
-void SendEvents::doubleCliekedOpenFile(const QString &workspace, const QString &language, const QString &filePath)
-{
-    dpf::Event event;
-    event.setTopic(T_CODEEDITOR);
-    event.setData(D_OPENFILE);
-    event.setProperty(P_FILEPATH, filePath);
-    event.setProperty(P_WORKSPACEFOLDER, workspace);
-    event.setProperty(P_LANGUAGE, language);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
 void SendEvents::projectActived(const dpfservice::ProjectInfo &info)
 {
-    project.activedProject({QVariant::fromValue(info)});
+    project.activedProject(info);
 }
 
 void SendEvents::projectCreated(const dpfservice::ProjectInfo &info)
 {
-    project.createdProject({QVariant::fromValue(info)});
+    project.createdProject(info);
 }
 
 void SendEvents::projectDeleted(const dpfservice::ProjectInfo &info)
 {
-    project.deletedProject({QVariant::fromValue(info)});
+    project.deletedProject(info);
 }
 
 void SendEvents::collaboratorsOpenRepos(const QString &workspace)

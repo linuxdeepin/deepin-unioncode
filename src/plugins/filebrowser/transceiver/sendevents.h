@@ -29,9 +29,6 @@ class SendEvents final
     SendEvents() = delete;
     SendEvents(const SendEvents &) = delete;
 public:
-    static void treeViewDoublueClicked(const QString &filePath,
-                                       const dpfservice::ProjectInfo &proInfo);
-
     static void buildProject(const QString &buildSystem,
                              const QString &buildDir,
                              const QString &buildFilePath,

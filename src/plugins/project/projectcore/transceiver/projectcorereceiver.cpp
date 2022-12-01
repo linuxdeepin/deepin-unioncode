@@ -44,7 +44,7 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
 {
     using namespace dpfservice;
     if (event.data() == project.openProject.name) {
-        navigation.doSwitch({dpfservice::MWNA_EDIT});
+        navigation.doSwitch(dpfservice::MWNA_EDIT);
 
         auto &ctx = dpfInstance.serviceContext();
         ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());

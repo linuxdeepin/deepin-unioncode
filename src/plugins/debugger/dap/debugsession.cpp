@@ -25,7 +25,6 @@
 #include "debugservice.h"
 #include "debuggersignals.h"
 #include "debuggerglobals.h"
-#include "event/eventsender.h"
 #include "debugmodel.h"
 #include "stackframe.h"
 #include "interface/variable.h"

@@ -266,7 +266,7 @@ void JavaDebug::checkJavaDAPPlugin()
 void JavaDebug::readyLSPPlugin(bool succeed, const QString &errorMsg)
 {
     if (!succeed) {
-        debugger.prepareDebugDone({false, errorMsg});
+        debugger.prepareDebugDone(false, errorMsg);
         return;
     }
 
@@ -276,16 +276,16 @@ void JavaDebug::readyLSPPlugin(bool succeed, const QString &errorMsg)
 void JavaDebug::readyDAPPlugin(bool succeed, const QString &errorMsg)
 {
     if (!succeed) {
-        debugger.prepareDebugDone({false, errorMsg});
+        debugger.prepareDebugDone(false, errorMsg);
         return;
     }
 
-    debugger.prepareDebugDone({true, errorMsg});
+    debugger.prepareDebugDone(true, errorMsg);
 }
 
 void JavaDebug::outProgressMsg(const QString &msg)
 {
-    debugger.prepareDebugProgress({msg});
+    debugger.prepareDebugProgress(msg);
 }
 
 bool JavaDebug::isLaunchNotAttach()

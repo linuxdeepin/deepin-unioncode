@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "codelens.h"
+#include "codelenstree.h"
 #include "framework.h"
 #include "codelensdelegate.h"
 #include "textedittabwidget/style/stylecolor.h"
@@ -42,7 +42,7 @@ QByteArray readLine(const QString &filePath, int line)
     return array;
 }
 
-CodeLens::CodeLens(QWidget *parent)
+CodeLensTree::CodeLensTree(QWidget *parent)
     : QTreeView (parent)
 {
     setModel(new QStandardItemModel);
@@ -54,7 +54,7 @@ CodeLens::CodeLens(QWidget *parent)
         if (!index.parent().isValid()) { //root return
             return;
         }
-        QVariant rangeVar = index.data(CodeLenItemRole::Range);
+        QVariant rangeVar = index.data(CodeLensItemRole::Range);
         lsp::Range range;
         if (rangeVar.canConvert<lsp::Range>()){
             range = rangeVar.value<lsp::Range>();
@@ -64,7 +64,7 @@ CodeLens::CodeLens(QWidget *parent)
             parentIndex = index.parent();
         }
         QString filePath = parentIndex.data(Qt::DisplayRole).toString();
-        emit CodeLens::doubleClicked(filePath, range);
+        emit CodeLensTree::doubleClicked(filePath, range);
     });
 }
 
@@ -73,9 +73,9 @@ QString codeDataFormat(int line, const QString &codeText)
     return QString::number(line) + " " + codeText;
 }
 
-void CodeLens::setData(const lsp::References &refs)
+void CodeLensTree::setData(const lsp::References &refs)
 {
-    auto model = qobject_cast<QStandardItemModel*>(CodeLens::model());
+    auto model = qobject_cast<QStandardItemModel*>(CodeLensTree::model());
     model->clear();
     QHash<QString, QStandardItem*> cache{};
     for(auto ref : refs) {
@@ -95,9 +95,9 @@ void CodeLens::setData(const lsp::References &refs)
             QString displayText = codeDataFormat(range.start.line, codeText);
             QColor hColor = StyleColor::Table::get()->Yellow;
             QStandardItem *codeChild = new QStandardItem(displayText);
-            codeChild->setData(QVariant::fromValue<lsp::Range>(range), CodeLenItemRole::Range);
-            codeChild->setData(QVariant::fromValue<QString>(codeText), CodeLenItemRole::CodeText);
-            codeChild->setData(QVariant::fromValue<QColor>(hColor), CodeLenItemRole::HeightColor);
+            codeChild->setData(QVariant::fromValue<lsp::Range>(range), CodeLensItemRole::Range);
+            codeChild->setData(QVariant::fromValue<QString>(codeText), CodeLensItemRole::CodeText);
+            codeChild->setData(QVariant::fromValue<QColor>(hColor), CodeLensItemRole::HeightColor);
             codeChild->setTextAlignment(Qt::AlignVCenter);
             fileItem->appendRow(codeChild);
         }

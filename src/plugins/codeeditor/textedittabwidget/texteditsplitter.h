@@ -37,18 +37,20 @@ public:
 
     explicit TextEditSplitter(QWidget *parent = nullptr);
     QSplitter *getSplitter() const;
-    void editSplit(Qt::Orientation orientation, const QString &file);
-    void closeSplit();
-    void doSelectedTextEditWidget();
+
+public slots:
+    void doSplit(Qt::Orientation orientation, const newlsp::ProjectKey &key, const QString &file);
+    void doClose();
+    void doSelected(bool state);
     static TextEditSplitter *instance();
+
 private:
     virtual ~TextEditSplitter() override;
     QVBoxLayout *vLayout = nullptr;
     QSplitter *mainSplitter = nullptr;
     TextEditTabWidget *tabWidget = nullptr;
     QList<TextEditTabWidget *> tabWidgets;
-    QList<QSplitter *> newSplitters;
-    int count = 0;
+    QList<QSplitter *> splitters;
 };
 
 #endif // TEXTEDITSPLITTER_H

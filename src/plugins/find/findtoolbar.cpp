@@ -19,8 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "findtoolbar.h"
-#include "transceiver/findsender.h"
-#include "services/find/findservice.h"
+#include "common/common.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -30,7 +29,6 @@
 
 #define LABEL_WIDTH           (80)
 #define OPERATOR_WIDGET_WIDTH (400)
-using namespace dpfservice;
 
 class FindToolBarPrivate
 {
@@ -120,7 +118,7 @@ void FindToolBar::findPrevious()
     QString text = d->findLineEdit->text();
     if (text.isEmpty())
         return;
-    FindSender::sendSearchCommand(text, FindType::Previous);
+    editor.searchText(text, FindType::Previous);
 }
 
 void FindToolBar::findNext()
@@ -128,7 +126,7 @@ void FindToolBar::findNext()
     QString text = d->findLineEdit->text();
     if (text.isEmpty())
         return;
-    FindSender::sendSearchCommand(text, FindType::Next);
+    editor.searchText(text, FindType::Next);
 }
 
 void FindToolBar::advancedSearch()
@@ -142,7 +140,7 @@ void FindToolBar::replace()
     if (srcText.isEmpty())
         return;
     QString destText = d->replaceLineEdit->text();
-    FindSender::sendReplaceCommand(srcText, destText, RepalceType::Repalce);
+    editor.replaceText(srcText, destText, RepalceType::Repalce);
 }
 
 void FindToolBar::replaceSearch()
@@ -151,7 +149,7 @@ void FindToolBar::replaceSearch()
     if (srcText.isEmpty())
         return;
     QString destText = d->replaceLineEdit->text();
-    FindSender::sendReplaceCommand(srcText, destText, RepalceType::FindAndReplace);
+    editor.replaceText(srcText, destText, RepalceType::FindAndReplace);
 }
 
 void FindToolBar::replaceAll()
@@ -160,6 +158,6 @@ void FindToolBar::replaceAll()
     if (srcText.isEmpty())
         return;
     QString destText = d->replaceLineEdit->text();
-    FindSender::sendReplaceCommand(srcText, destText, RepalceType::RepalceAll);
+    editor.replaceText(srcText, destText, RepalceType::RepalceAll);
 }
 

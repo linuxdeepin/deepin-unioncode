@@ -19,7 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "textedittabbar.h"
-#include "transceiver/sendevents.h"
 #include "common/common.h"
 #include <QFileInfo>
 #include <QDebug>
@@ -33,7 +32,6 @@ class TextEditTabBarPrivate
     QTabBar *tab = new QTabBar();
     QHBoxLayout * hBoxLayout = new QHBoxLayout();
     QToolButton *pbtHorizontal = new QToolButton;
-//    QPushButton *pbtVertical = new QPushButton("vertical");
     QToolButton *pbtClose = new QToolButton;
 };
 
@@ -46,21 +44,21 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
 
     d->pbtHorizontal->setIcon(QIcon(":/core/images/horizontalSplit.png"));
     d->pbtHorizontal->setStyleSheet("background-color:transparent");
-//    d->pbtVertical->setMaximumSize(40,40);
     d->pbtClose->setMaximumSize(24,24);
     d->pbtClose->setIcon(QIcon(":/core/images/closeButton.png"));
     d->pbtClose->setStyleSheet("background-color:transparent");
     d->hBoxLayout->addWidget(d->tab, 0, Qt::AlignLeft | Qt::AlignTop);
     d->hBoxLayout->addWidget(d->pbtHorizontal, 0, Qt::AlignRight | Qt::AlignTop);
     d->hBoxLayout->addWidget(d->pbtClose);
-//    d->hBoxLayout->addWidget(d->pbtVertical);
     d->tab->setTabsClosable(true);
     d->tab->setExpanding(false);
 
     this->setLayout(d->hBoxLayout);
 
-    QObject::connect(d->tab, &QTabBar::currentChanged, this, [=](int index){
-        emit this->fileSwitched(indexFile(index));
+    QObject::connect(d->tab, &QTabBar::currentChanged,
+                     this, [=](int index){
+        QString filePath = indexFile(index);
+        emit this->fileSwitched(filePath);
     });
 
     QObject::connect(d->tab, &QTabBar::tabCloseRequested,
@@ -70,26 +68,26 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
 
     QObject::connect(d->pbtHorizontal, &QToolButton::clicked,
                      this, [=]() {
-        int index = d->tab->currentIndex();
-        QString file = indexFile(index);
-        emit horizontalSplit(file);
+        emit splitClicked(Qt::Horizontal);
     });
-
-//    QObject::connect(d->pbtVertical, &QPushButton::clicked,
-//                     this, [=]() {
-//        emit verticalSplit();
-//    });
 
     QObject::connect(d->pbtClose, &QToolButton::clicked,
                      this, [=]() {
-        emit close();
+        emit closeClicked();
     });
-
 }
 
 TextEditTabBar::~TextEditTabBar()
 {
     if (d) {
+        if (d->tab)
+            delete d->tab;
+        if (d->pbtClose)
+            delete d->pbtClose;
+        if (d->pbtHorizontal)
+            delete d->pbtHorizontal;
+        if (d->hBoxLayout)
+            delete d->hBoxLayout;
         delete d;
     }
 }
@@ -109,6 +107,8 @@ void TextEditTabBar::setFile(const QString &file)
     QFileInfo info(file);
     int addIndex = d->tab->addTab(info.fileName());
     d->tab->setTabToolTip(addIndex, file);
+
+    editor.openedFile(file); // plugin interface
 }
 
 void TextEditTabBar::switchFile(const QString &file)
@@ -116,11 +116,11 @@ void TextEditTabBar::switchFile(const QString &file)
     int index = fileIndex(file);
     if (index != -1) {
         d->tab->setCurrentIndex(index);
-        editor.selectedFile({file, true});
+        editor.switchedFile(file);
     }
 }
 
-int TextEditTabBar::fileIndex(const QString &file)
+int TextEditTabBar::fileIndex(const QString &file) const
 {
     int index = -1;
     for (int i = 0; i < d->tab->count(); i++) {
@@ -130,7 +130,7 @@ int TextEditTabBar::fileIndex(const QString &file)
     return index;
 }
 
-QString TextEditTabBar::indexFile(int index)
+QString TextEditTabBar::indexFile(int index) const
 {
     return d->tab->tabToolTip(index);
 }
@@ -182,8 +182,8 @@ void TextEditTabBar::removeTab(const QString &file)
                 emit saveFile(file);
             }
         }
-        emit fileClosed(indexFile(index));
-        editor.selectedFile({file, false});
+        emit fileClosed(file);
+        editor.closedFile(file);
         d->tab->removeTab(index);
     }
 }
@@ -196,6 +196,11 @@ int TextEditTabBar::count() const
 int TextEditTabBar::currentIndex() const
 {
     return d->tab->currentIndex();
+}
+
+QString TextEditTabBar::currentFile() const
+{
+    return indexFile(currentIndex());
 }
 
 void TextEditTabBar::setCurrentIndex(int idx)

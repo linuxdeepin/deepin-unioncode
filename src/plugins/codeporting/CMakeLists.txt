@@ -9,7 +9,6 @@ set(CXX_CPP
     configwidget.cpp
     codeporting.cpp
     reportpane.cpp
-    eventsender.cpp
     )
 
 set(CXX_H
@@ -18,7 +17,6 @@ set(CXX_H
     configwidget.h
     codeporting.h
     reportpane.h
-    eventsender.h
     )
 
 add_library(${PROJECT_NAME}

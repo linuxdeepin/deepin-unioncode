@@ -21,20 +21,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "codeeditor.h"
-#include "mainframe/naveditmainwindow.h"
-#include "base/abstractmenu.h"
-#include "base/abstractaction.h"
-#include "base/abstractcentral.h"
-#include "base/abstractwidget.h"
-
-#include "refactorwidget/refactorwidget.h"
-#include "textedittabwidget/texteditkeeper.h"
+#include "codelens/codelens.h"
 #include "textedittabwidget/textedittabwidget.h"
 #include "textedittabwidget/language/cpp/texteditcpp.h"
 #include "textedittabwidget/language/cmake/texteditcmake.h"
 #include "textedittabwidget/language/java/texteditjava.h"
 #include "textedittabwidget/language/python/texteditpython.h"
 #include "textedittabwidget/texteditsplitter.h"
+#include "mainframe/naveditmainwindow.h"
+#include "mainframe/texteditkeeper.h"
+#include "transceiver/codeeditorreceiver.h"
+
+#include "base/abstractmenu.h"
+#include "base/abstractaction.h"
+#include "base/abstractcentral.h"
+#include "base/abstractwidget.h"
 
 #include "services/window/windowservice.h"
 #include "services/language/languageservice.h"
@@ -90,7 +91,8 @@ bool CodeEditor::start()
             windowService->addContextWidget = std::bind(&NavEditMainWindow::addWidgetContext, navEditWindow, _1, _2);
         }
 
-        navEditWindow->addWidgetContext(QTabWidget::tr("Code Lens"), new AbstractWidget(RefactorWidget::instance()));
+        navEditWindow->addWidgetContext(QTabWidget::tr("Code Lens"),
+                                        new AbstractWidget(CodeLens::instance()));
 
         if (!windowService->setWidgetWatch) {
             windowService->setWidgetWatch = std::bind(&NavEditMainWindow::setWidgetWatch, navEditWindow, _1);

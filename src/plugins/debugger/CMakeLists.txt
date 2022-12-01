@@ -11,7 +11,6 @@ set(CXX_CPP
     debuggerrunparameters.cpp
     dap/debugger.cpp
     dap/debugsession.cpp
-    event/eventsender.cpp
     event/eventreceiver.cpp
     debugmanager.cpp
     dap/rawdebugsession.cpp
@@ -38,7 +37,6 @@ set(CXX_H
     dap/debugsession.h
     debuggerglobals.h
     debuggersignals.h
-    event/eventsender.h
     event/eventreceiver.h
     debugmanager.h
     dap/rawdebugsession.h

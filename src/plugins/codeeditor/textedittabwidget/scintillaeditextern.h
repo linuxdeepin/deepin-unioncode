@@ -98,8 +98,6 @@ signals:
     void fileChanged(const QString &file);
     void fileClosed(const QString &file);
     void fileSaved(const QString &file);
-    void signalFocusInChanged();
-    void signalFocusOutChanged();
 
 private slots:
     void sciModified(Scintilla::ModificationFlags type, Scintilla::Position position,

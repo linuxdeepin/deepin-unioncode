@@ -22,7 +22,6 @@
 
 const QString T_MENU {"Menu"};
 const QString T_FILEBROWSER {"FileBrowser"};
-const QString T_CODEEDITOR {"CodeEditor"};
 const QString T_DEBUGGER {"Debugger"};
 const QString T_BUILDER {"Builder"};
 const QString T_SYMBOL {"Symbol"};
@@ -34,26 +33,14 @@ const QString T_COLLABORATORS {"Collaborators"};
 
 const QString D_ACTION_SWITCH {"Action.Switch"};
 
-const QString D_WORKSPACE_GENERATE_BEGIN {"Workspace.Generate.Begin"};
-const QString D_WORKSPACE_GENERATE_END {"Workspace.Generate.End"};
-const QString D_DEBUG_EXECUTION_START {"Debug.Execution.Start"};
-const QString D_DEBUG_EXECUTION_END {"Debug.Execution.End"};
-const QString D_DEBUG_EXECUTION_JUMP {"Debug.Execution.Jump"};
 const QString D_JUMP_CURSOR_CLEAN {"Editor.Jump.Cursor.Clean"};
 const QString D_BUILD_STATE {"Build.State"};
-const QString D_MARGIN_DEBUG_POINT_ADD {"Margin.Debug.Point.Add"};
-const QString D_MARGIN_DEBUG_POINT_REMOVE {"Margin.Debug.Point.Remove"};
-const QString D_MARGIN_DEBUG_POINT_CLEAN {"Margin.Debug.Point.Clean"};
 const QString D_ITEM_MENU_BUILD {"Item.Menu.Build"};
 const QString D_ITEM_DOUBLECLICKED {"Item.DoubleClicked"};
 const QString D_BUILD_TARGET {"Build.Target"};
 const QString D_SHOW {"Show"};
 const QString D_HIDE {"Hide"};
 const QString D_ADDTEXT {"AddText"};
-const QString D_JUMP_TO_LINE {"JumpToLine"};
-const QString D_SET_LINE_BACKGROUND {"SetLineBackground"};
-const QString D_DEL_LINE_BACKGROUND {"DelLineBackground"};
-const QString D_CLEAN_LINE_BACKGROUND {"CleanLineBackground"};
 const QString D_BUILD_COMMAND {"Build.Command"};
 const QString D_MENU_BUILD {"Menu.Build"};
 const QString D_MENU_REBUILD {"Menu.ReBuild"};

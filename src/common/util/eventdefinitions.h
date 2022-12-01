@@ -34,7 +34,9 @@ OPI_OBJECT(recent,
            )
 
 OPI_OBJECT(project,
+           // in
            OPI_INTERFACE(openProject, "kitName", "language", "workspace")
+           // out
            OPI_INTERFACE(activedProject, "projectInfo")
            OPI_INTERFACE(deletedProject, "projectInfo")
            OPI_INTERFACE(createdProject, "projectInfo")
@@ -43,16 +45,34 @@ OPI_OBJECT(project,
 OPI_OBJECT(debugger,
            OPI_INTERFACE(prepareDebugProgress, "message")
            OPI_INTERFACE(prepareDebugDone, "succeed", "message")
+           OPI_INTERFACE(executeStart)
            )
 
 OPI_OBJECT(editor,
-           OPI_INTERFACE(openFile, "workspace", "language", "filePath")
-           OPI_INTERFACE(jumpToLine, "workspace", "language", "filePath", "line")
+           // in
+           OPI_INTERFACE(openFile, "filePath")
+           OPI_INTERFACE(jumpToLine, "filePath", "line")
+           OPI_INTERFACE(openFileWithKey, "workspace", "language", "filePath")
+           OPI_INTERFACE(jumpToLineWithKey, "workspace", "language", "filePath", "line")
            OPI_INTERFACE(openDocument, "language", "filePath")
-           OPI_INTERFACE(selectedFile, "filePath", "status")
-           // annInfo from AnnotationInfo
+           // (AnnotationInfo)annInfo
            OPI_INTERFACE(setAnnotation, "filePath", "line", "title", "annInfo")
            OPI_INTERFACE(cleanAnnotation, "filePath", "title")
+           OPI_INTERFACE(runningToLine, "filePath", "line")
+           OPI_INTERFACE(cleanRunning)
+           OPI_INTERFACE(setLineBackground, "filePath", "line", "color")
+           OPI_INTERFACE(delLineBackground, "filePath", "line")
+           OPI_INTERFACE(cleanLineBackground, "filePath")
+           // out
+           OPI_INTERFACE(openedFile, "filePath")
+           OPI_INTERFACE(closedFile, "filePath")
+           OPI_INTERFACE(switchedFile, "filePath")
+           OPI_INTERFACE(addadDebugPoint, "filePath", "line")
+           OPI_INTERFACE(removedDebugPoint, "filePath", "line")
+           // (FindType)findType
+           OPI_INTERFACE(searchText, "text", "findType")
+           // (FindType)repalceType
+           OPI_INTERFACE(replaceText, "text", "target", "repalceType")
            )
 
 OPI_OBJECT(symbol,
@@ -96,7 +116,7 @@ struct AnnotationInfo
     AnnotationInfo() :role(Role::get()->Note), text(""){}
     AnnotationInfo(const AnnotationInfo &info)
         : role(info.role), text(info.text){}
-    bool operator == (const AnnotationInfo &info){
+    bool operator == (const AnnotationInfo &info) {
         return role == info.role
                 && text == info.text;
     }
@@ -116,9 +136,21 @@ struct AnalysedData
 };
 Q_DECLARE_METATYPE(AnalysedData);
 
+enum FindType{
+    Previous = 0,
+    Next
+};
+Q_DECLARE_METATYPE(FindType);
+
+enum RepalceType{
+    Repalce = 0,
+    FindAndReplace,
+    RepalceAll
+};
+Q_DECLARE_METATYPE(RepalceType);
+
 extern const QString T_MENU;
 extern const QString T_FILEBROWSER;
-extern const QString T_CODEEDITOR;
 extern const QString T_DEBUGGER;
 extern const QString T_BUILDER;
 extern const QString T_WORKSPACE;
@@ -128,31 +160,17 @@ extern const QString T_PROCESSMESSAGE;
 extern const QString T_FIND;
 extern const QString T_COLLABORATORS;
 
-extern const QString D_WORKSPACE_GENERATE_BEGIN;
-extern const QString D_WORKSPACE_GENERATE_END;
-extern const QString D_DEBUG_EXECUTION_START;
-extern const QString D_DEBUG_EXECUTION_END;
-extern const QString D_DEBUG_EXECUTION_JUMP;
-extern const QString D_JUMP_CURSOR_CLEAN;
 extern const QString D_BUILD_STATE;
 extern const QString D_ITEM_MENU_BUILD;
 extern const QString D_BUILD_TARGET;
 extern const QString D_SHOW;
 extern const QString D_HIDE;
 extern const QString D_ADDTEXT;
-extern const QString D_JUMP_TO_LINE;
-extern const QString D_SET_LINE_BACKGROUND;
-extern const QString D_DEL_LINE_BACKGROUND;
-extern const QString D_CLEAN_LINE_BACKGROUND;
 extern const QString D_BUILD_COMMAND;
 extern const QString D_MENU_BUILD;
 extern const QString D_MENU_REBUILD;
 extern const QString D_MENU_CLEAN;
 extern const QString D_OPEN_REPOS;
-
-extern const QString D_MARGIN_DEBUG_POINT_ADD;
-extern const QString D_MARGIN_DEBUG_POINT_REMOVE;
-extern const QString D_MARGIN_DEBUG_POINT_CLEAN;
 
 extern const QString D_SEARCH;
 extern const QString D_REPLACE;

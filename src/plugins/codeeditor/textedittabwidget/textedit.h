@@ -36,8 +36,6 @@ public:
     explicit TextEdit(QWidget * parent = nullptr);
     virtual ~TextEdit();
     virtual void setFile(const QString &filePath) override;
-    virtual void focusInEvent(QFocusEvent *event) override;
-    virtual void focusOutEvent(QFocusEvent *event) override;
     virtual StyleLsp *getStyleLsp() const {return nullptr;}
     virtual StyleSci *getStyleSci() const {return nullptr;}
     virtual StyleJsonFile *getStyleFile() const {return nullptr;}

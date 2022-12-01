@@ -112,6 +112,6 @@ void AnalyseKeeper::doAnalyseDone(bool result)
     delete wordcounter;
     wordcounter = nullptr;
 
-    actionanalyse.analyseDone({analyseArgs.workspace, analyseArgs.language,
-                               analyseArgs.storage, QVariant::fromValue(analyseData)});
+    actionanalyse.analyseDone(analyseArgs.workspace, analyseArgs.language,
+                              analyseArgs.storage, analyseData);
 }

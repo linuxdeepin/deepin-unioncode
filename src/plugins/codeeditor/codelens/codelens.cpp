@@ -18,42 +18,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "refactorwidget.h"
 #include "codelens.h"
+#include "codelenstree.h"
 #include <QGridLayout>
 
-class RefactorWidgetPrivate
+class CodeLensPrivate
 {
-    friend class RefactorWidget;
-    CodeLens *lens {nullptr};
+    friend class CodeLens;
+    CodeLensTree *lens {nullptr};
     QGridLayout *gLayout {nullptr};
 };
 
-RefactorWidget *RefactorWidget::instance()
+CodeLens *CodeLens::instance()
 {
-    static RefactorWidget *ins = new RefactorWidget;
-    return ins;
+    static CodeLens ins;
+    return &ins;
 }
 
-RefactorWidget::RefactorWidget(QWidget *parent)
+CodeLens::CodeLens(QWidget *parent)
     : QWidget(parent)
-    , d (new RefactorWidgetPrivate())
+    , d (new CodeLensPrivate())
 {
-    d->lens = new CodeLens();
+    d->lens = new CodeLensTree();
     d->gLayout = new QGridLayout();
     d->gLayout->addWidget(d->lens);
     setLayout(d->gLayout);
-    QObject::connect(d->lens, &CodeLens::doubleClicked, this, &RefactorWidget::doubleClicked);
+    QObject::connect(d->lens, &CodeLensTree::doubleClicked, this, &CodeLens::doubleClicked);
 }
 
-RefactorWidget::~RefactorWidget()
+CodeLens::~CodeLens()
 {
     if (d) {
         delete d;
     }
 }
 
-void RefactorWidget::displayReference(const lsp::References &data)
+void CodeLens::displayReference(const lsp::References &data)
 {
     d->lens->setData(data);
 }

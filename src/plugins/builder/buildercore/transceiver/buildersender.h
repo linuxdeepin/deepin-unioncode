@@ -29,7 +29,6 @@ class BuilderSender final : QObject
 {
     Q_OBJECT
 public:
-    static void jumpTo(const QString &filePath, int lineNum);
     static void notifyBuildState(BuildState state, const BuildCommandInfo &commandInfo);
 
 private:

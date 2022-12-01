@@ -85,7 +85,7 @@ void TreeView::selOpen()
 
     for (auto path : countPaths) {
         if (QFileInfo(path).isFile())
-            SendEvents::treeViewDoublueClicked(path, d->proInfo);
+            editor.openFile(path);
     }
 }
 
@@ -228,7 +228,7 @@ void TreeView::doDoubleClicked(const QModelIndex &index)
 {
     QString filePath = d->model->filePath(index);
     if (QFileInfo(filePath).isFile())
-        SendEvents::treeViewDoublueClicked(filePath, d->proInfo);
+        editor.openFile(filePath);
 }
 
 void TreeView::contextMenuEvent(QContextMenuEvent *event)

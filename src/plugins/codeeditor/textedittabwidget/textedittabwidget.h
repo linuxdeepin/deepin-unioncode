@@ -45,19 +45,19 @@ protected:
     void paintEvent(QPaintEvent *event = nullptr) override;
 
 signals:
-    void signalEditClose();
-    void signalEditSplit(Qt::Orientation, QString file);
-    void signalFocusInChange();
-    void signalFocusOutChange();
+    void closed();
+    void splitClicked(Qt::Orientation, const newlsp::ProjectKey &, const QString &);
+    void selected(bool state);
 
 public slots:
     void openFile(const QString &filePath);
-    void openFile(const newlsp::ProjectKey &key, const QString &filePath);
     void closeFile(const QString &filePath);
-    void jumpToLine(const newlsp::ProjectKey &key, const QString &filePath, int line);
     void jumpToLine(const QString &filePath, int line);
     void jumpToRange(const QString &filePath, const newlsp::Range &range);
     void runningToLine(const QString &filePath, int line);
+    void openFileWithKey(const newlsp::ProjectKey &key, const QString &filePath);
+    void jumpToLineWithKey(const newlsp::ProjectKey &key, const QString &filePath, int line);
+    void runningToLineWithKey(const newlsp::ProjectKey &key, const QString &filePath, int line);
     void runningEnd();
     void debugPointClean();
     void replaceRange(const QString &filePath, const newlsp::Range &range,const QString &text);
@@ -66,6 +66,7 @@ public slots:
     void cleanLineBackground(const QString &filePath);
     void setAnnotation(const QString &filePath, int line, const QString &title, const AnnotationInfo &info);
     void cleanAnnotation(const QString &filePath, const QString &title);
+    void selectSelf(bool state);
 
 private slots:
     void setDefaultFileEdit();

@@ -24,10 +24,10 @@
 #include "textedittitlebar.h"
 #include "textedittabbar.h"
 #include "textedit.h"
-#include "texteditkeeper.h"
+#include "mainframe/texteditkeeper.h"
 #include "transceiver/codeeditorreceiver.h"
+#include "codelens/codelens.h"
 #include "common/common.h"
-
 #include <QGridLayout>
 #include <QFileInfo>
 #include <QKeyEvent>
@@ -37,10 +37,10 @@ static TextEditTabWidget *ins{nullptr};
 class TextEditTabWidgetPrivate
 {
     friend class TextEditTabWidget;
-    TextEditTabBar *tab = nullptr;
-    QGridLayout *gridLayout = nullptr;
-    QHash<QString, TextEdit*> textEdits;
-    QHash<QString, TextEditTitleBar*> titleBars;
+    TextEditTabBar *tab {nullptr};
+    QGridLayout *gridLayout {nullptr};
+    QHash<QString, TextEdit*> textEdits{};
+    QHash<QString, TextEditTitleBar*> titleBars{};
     TextEdit defaultEdit;
     QString runningFilePathCache;
     bool selFlag = false;
@@ -56,24 +56,19 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     d->gridLayout->setSpacing(0);
     d->gridLayout->setMargin(4);
 
-    if (!d->tab) {
-        d->tab = new TextEditTabBar(this);
-    }
-
+    d->tab = new TextEditTabBar(this);
     d->gridLayout->addWidget(d->tab);
     d->gridLayout->addWidget(&d->defaultEdit);
     this->setLayout(d->gridLayout);
-    //d->defaultEdit.setCursor();
 
     setDefaultFileEdit();
     setFocusPolicy(Qt::ClickFocus);
 
-    QObject::connect(EditorCallProxy::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &>::of(&EditorCallProxy::toOpenFile),
-                     this, QOverload<const newlsp::ProjectKey &, const QString &>::of(&TextEditTabWidget::openFile));
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                     this, &TextEditTabWidget::openFileWithKey);
 
-    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRunFileLine,
-                     this, &TextEditTabWidget::runningToLine);
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRunFileLineWithKey,
+                     this, &TextEditTabWidget::runningToLineWithKey);
 
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRunClean,
                      this, &TextEditTabWidget::runningEnd);
@@ -81,9 +76,8 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toDebugPointClean,
                      this, &TextEditTabWidget::debugPointClean);
 
-    QObject::connect(EditorCallProxy::instance(),
-                     QOverload<const newlsp::ProjectKey &, const QString &, int>::of(&EditorCallProxy::toJumpFileLine),
-                     this, QOverload<const newlsp::ProjectKey &, const QString &, int>::of(&TextEditTabWidget::jumpToLine));
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
+                     this, &TextEditTabWidget::jumpToLineWithKey);
 
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSetLineBackground,
                      this, &TextEditTabWidget::setLineBackground);
@@ -109,18 +103,14 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     QObject::connect(d->tab, &TextEditTabBar::fileClosed,
                      this, &TextEditTabWidget::removeFileStatusBar, Qt::QueuedConnection);
 
-    QObject::connect(d->tab, &TextEditTabBar::close, this, [this](){
-        emit signalEditClose();
-    });
+    QObject::connect(d->tab, &TextEditTabBar::closeClicked, this, &TextEditTabWidget::close);
+    QObject::connect(d->tab, &TextEditTabBar::closeClicked, this, &TextEditTabWidget::closed);
 
-    QObject::connect(d->tab, &TextEditTabBar::horizontalSplit, this, [=](QString file){
-        //d->defaultEdit
-        emit signalEditSplit(Qt::Horizontal, file);
+    QObject::connect(d->tab, &TextEditTabBar::splitClicked, this, [=](Qt::Orientation ori) {
+        QString currSelFile = d->tab->currentFile();
+        newlsp::ProjectKey key = d->textEdits[currSelFile]->projectKey();
+        emit splitClicked(ori, key, currSelFile);
     });
-
-//    QObject::connect(d->tab, &TextEditTabBar::verticalSplit, this, [=](){
-//        emit signalEditSplit(Qt::Vertical);
-//    });
 
     QObject::connect(Inotify::globalInstance(), &Inotify::deletedSelf,
                      this, &TextEditTabWidget::fileDeleted, Qt::QueuedConnection);
@@ -137,11 +127,19 @@ TextEditTabWidget::~TextEditTabWidget()
             delete d->tab;
             d->tab = nullptr;
         }
-        auto itera = d->textEdits.begin();
-        while (itera != d->textEdits.end()){
-            delete itera.value(); // free instance
-            itera = d->textEdits.erase(itera);
+
+        auto editsItera = d->textEdits.begin();
+        while (editsItera != d->textEdits.end()) {
+            delete editsItera.value(); // free instance
+            editsItera = d->textEdits.erase(editsItera);
         }
+
+        auto titleItera = d->titleBars.begin();
+        while (titleItera != d->titleBars.end()) {
+            delete titleItera.value();
+            titleItera = d->titleBars.erase(titleItera);
+        }
+
         delete d; // free private
     }
 }
@@ -169,21 +167,8 @@ void TextEditTabWidget::openFile(const QString &filePath)
 
     TextEdit *edit = new TextEdit;
 
-    QObject::connect(edit, &TextEdit::signalFocusInChanged,
-                     this, [=](){
-        std::cerr << "TextEdit::focusInEvent" << std::endl;
-        d->selFlag = true;
-        emit signalFocusInChange();
-        update();
-    });
-
-    QObject::connect(edit, &TextEdit::signalFocusOutChanged,
-                     this, [=](){
-        std::cerr << "TextEdit::focusOutEvent" << std::endl;
-        d->selFlag = false;
-        emit signalFocusOutChange();
-        update();
-    });
+    QObject::connect(edit, &TextEdit::focusChanged,
+                     this, &TextEditTabWidget::selectSelf);
 
     QObject::connect(edit, &TextEdit::fileChanged, d->tab,
                      &TextEditTabBar::doFileChanged, Qt::UniqueConnection);
@@ -206,7 +191,7 @@ void TextEditTabWidget::openFile(const QString &filePath)
     showFileEdit(filePath);
 }
 
-void TextEditTabWidget::openFile(const newlsp::ProjectKey &key, const QString &filePath)
+void TextEditTabWidget::openFileWithKey(const newlsp::ProjectKey &key, const QString &filePath)
 {
     QFileInfo info(filePath);
     if (!info.exists() || !d->tab )
@@ -250,25 +235,10 @@ void TextEditTabWidget::openFile(const newlsp::ProjectKey &key, const QString &f
         edit->setFile(info.filePath());
     }
 
-    QObject::connect(edit, &TextEdit::signalFocusInChanged,
-                     this, [=](){
-        std::cerr << "TextEdit::focusInEvent" << std::endl;
-        d->selFlag = true;
-        emit signalFocusInChange();
-        update();
-    });
-
-    QObject::connect(edit, &TextEdit::signalFocusOutChanged,
-                     this, [=](){
-        std::cerr << "TextEdit::focusOutEvent" << std::endl;
-        d->selFlag = false;
-        emit signalFocusOutChange();
-        update();
-    });
-
+    QObject::connect(edit, &TextEdit::focusChanged,
+                     this, &TextEditTabWidget::selectSelf);
 
     d->textEdits[filePath] = edit;
-
     // 添加监听
     Inotify::globalInstance()->addPath(info.filePath());
     // set display textedit
@@ -294,9 +264,9 @@ void TextEditTabWidget::closeFile(const QString &filePath)
         emit d->tab->tabCloseRequested(index);
 }
 
-void TextEditTabWidget::jumpToLine(const newlsp::ProjectKey &head, const QString &filePath, int line)
+void TextEditTabWidget::jumpToLineWithKey(const newlsp::ProjectKey &key, const QString &filePath, int line)
 {
-    auto edit = switchFileAndToOpen(head, filePath);
+    auto edit = switchFileAndToOpen(key, filePath);
 
     if (edit) {
         edit->jumpToLine(line);
@@ -323,6 +293,16 @@ void TextEditTabWidget::jumpToRange(const QString &filePath, const newlsp::Range
             auto end = styleLsp->getSciPosition(edit->docPointer(), range.end);
             edit->jumpToRange(start, end);
         }
+    }
+}
+
+void TextEditTabWidget::runningToLineWithKey(const newlsp::ProjectKey &key, const QString &filePath, int line)
+{
+    auto edit = switchFileAndToOpen(key, filePath);
+
+    if (edit) {
+        edit->jumpToLine(line);
+        edit->runningToLine(line);
     }
 }
 
@@ -460,6 +440,13 @@ void TextEditTabWidget::cleanAnnotation(const QString &filePath, const QString &
         return;
 
     edit->cleanAnnotation(title);
+}
+
+void TextEditTabWidget::selectSelf(bool state)
+{
+    d->selFlag = state;
+    emit selected(state);
+    update();
 }
 
 void TextEditTabWidget::setDefaultFileEdit()
@@ -647,14 +634,14 @@ void TextEditTabWidget::doRenameReplace(const newlsp::WorkspaceEdit &renameResul
     }
 }
 
-TextEdit* TextEditTabWidget::switchFileAndToOpen(const newlsp::ProjectKey &head, const QString &filePath)
+TextEdit* TextEditTabWidget::switchFileAndToOpen(const newlsp::ProjectKey &key, const QString &filePath)
 {
     auto edit = d->textEdits.value(filePath);
     if (edit) {
         d->tab->switchFile(filePath);
         showFileEdit(filePath);
     } else {
-        openFile(head, filePath);
+        openFileWithKey(key, filePath);
         for (auto textEdit : d->textEdits.values()) {
             textEdit->runningEnd();
             if (textEdit->file() == filePath) {
@@ -715,18 +702,14 @@ void TextEditTabWidget::keyPressEvent(QKeyEvent *event)
 
 void TextEditTabWidget::focusInEvent(QFocusEvent *event)
 {
-    d->selFlag = true;
-    qInfo() << "TextEditTabWidget::focusInEvent" << this;
-    emit signalFocusInChange();
-    update();
+    QWidget::focusInEvent(event);
+    this->selectSelf(true);
 }
 
 void TextEditTabWidget::focusOutEvent(QFocusEvent *event)
 {
-    d->selFlag = false;
-    qInfo() << "TextEditTabWidget::focusOutEvent" << this;
-    emit signalFocusOutChange();
-    update();
+    QWidget::focusOutEvent(event);
+    this->selectSelf(false);
 }
 
 void TextEditTabWidget::paintEvent(QPaintEvent *event)
@@ -737,14 +720,11 @@ void TextEditTabWidget::paintEvent(QPaintEvent *event)
         painter.setPen(d->selColor);
         painter.drawRect(this->rect());
         painter.restore();
-        // qInfo() << "setting custom color" << this;
     } else {
         if (!d->defColor.isValid()) {
             d->defColor = palette().background().color();
             d->selColor = QColor(d->defColor.red() + 20, d->defColor.green() + 20, d->defColor.blue() + 20, d->defColor.alpha());
-            // qInfo() << "cache default color" << this;
         } else {
-            // qInfo() << "recovery default color" << this;
             QPainter painter(this);
             painter.save();
             painter.setPen(d->defColor);

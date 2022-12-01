@@ -71,7 +71,7 @@ void SymbolKeeper::doParse(const SymbolParseArgs &args)
 
 void SymbolKeeper::jumpToLine(const QString &filePath, const QString &fileLine)
 {
-    editor.jumpToLine({parserArgs.workspace, parserArgs.language, filePath, fileLine});
+    editor.jumpToLine(filePath, fileLine.toInt());
 }
 
 void SymbolKeeper::doParseDone(bool result)

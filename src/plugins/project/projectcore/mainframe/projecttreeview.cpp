@@ -311,11 +311,7 @@ void ProjectTreeView::doDoubleClieked(const QModelIndex &index)
             workspaceFolder = info.workspaceFolder();
             language = info.language();
         }
-        if (!workspaceFolder.isEmpty() && !language.isEmpty()) {
-            SendEvents::doubleCliekedOpenFile(workspaceFolder, language, info.filePath());
-        } else {
-            ContextDialog::ok(QDialog::tr("Can't find workspace from file :%0").arg(info.filePath()));
-        }
+        editor.openFileWithKey(workspaceFolder, language, info.filePath());
     }
 }
 
@@ -389,11 +385,11 @@ void ProjectTreeView::creatNewDocument(const QStandardItem *item, const QString 
 {
     QModelIndex index = d->itemModel->indexFromItem(item);
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
-    QString workspaceFolder, language;
+    QString workspace, language;
     QModelIndex rootIndex = ProjectGenerator::root(index);
     if (rootIndex.isValid()) {
         auto rootInfo = ProjectInfo::get(rootIndex);
-        workspaceFolder = rootInfo.workspaceFolder();
+        workspace = rootInfo.workspaceFolder();
         language = rootInfo.language();
     }
 
@@ -428,7 +424,7 @@ void ProjectTreeView::creatNewDocument(const QStandardItem *item, const QString 
     if (file.open(QFile::OpenModeFlag::NewOnly)) {
         file.close();
     }
-    SendEvents::doubleCliekedOpenFile(workspaceFolder, language, filePath);
+    editor.openFileWithKey(workspace, language, filePath);
 }
 
 void ProjectTreeView::doShowProjectInfo(QStandardItem *root)

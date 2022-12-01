@@ -33,19 +33,6 @@ BuilderSender::~BuilderSender()
 
 }
 
-void BuilderSender::jumpTo(const QString &filePath, int lineNum)
-{
-    if (filePath.isEmpty() || lineNum < 0)
-        return;
-
-    dpf::Event event;
-    event.setTopic(T_CODEEDITOR);
-    event.setData(D_JUMP_TO_LINE);
-    event.setProperty(P_FILEPATH, filePath);
-    event.setProperty(P_FILELINE, lineNum);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
 void BuilderSender::notifyBuildState(BuildState state, const BuildCommandInfo &commandInfo)
 {
     dpf::Event event;

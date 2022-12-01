@@ -20,9 +20,7 @@
 */
 #include "scintillaeditextern.h"
 #include "style/stylecolor.h"
-#include "transceiver/sendevents.h"
 #include "transceiver/codeeditorreceiver.h"
-#include "services/find/findservice.h"
 
 #include "common/common.h"
 #include "framework/framework.h"
@@ -533,22 +531,24 @@ void ScintillaEditExtern::sciMarginClicked(Scintilla::Position position, Scintil
         std::bitset<32> flags(markerGet(line));
         if (!flags[StyleSci::Debug]) {
             markerAdd(line, StyleSci::Debug);
-            SendEvents::marginDebugPointAdd(file(), line + 1); //line begin 1 from debug point setting
+            editor.addadDebugPoint(file(), qint64(line + 1)); //line begin 1 from debug point setting
         } else {
             markerDelete(line, StyleSci::Debug);
-            SendEvents::marginDebugPointRemove(file(), line + 1); //line begin 1 from debug point setting
+            editor.removedDebugPoint(file(), qint64(line + 1)); //line begin 1 from debug point setting
         }
     }
 }
 
 void ScintillaEditExtern::focusInEvent(QFocusEvent *event)
 {
+    focusChanged(true);
     return ScintillaEdit::focusInEvent(event);
 }
 
 void ScintillaEditExtern::focusOutEvent(QFocusEvent *event)
 {
-    callTipCancel(); //cancel hover;
+    focusChanged(false);
+    callTipCancel();
     return ScintillaEdit::focusOutEvent(event);
 }
 
@@ -575,7 +575,6 @@ void ScintillaEditExtern::leaveEvent(QEvent *event)
 
 void ScintillaEditExtern::find(const QString &srcText, int operateType)
 {
-    using namespace dpfservice;
     switch (operateType) {
     case FindType::Previous:
     {
@@ -595,7 +594,6 @@ void ScintillaEditExtern::find(const QString &srcText, int operateType)
 
 void ScintillaEditExtern::replace(const QString &srcText, const QString &destText, int operateType)
 {
-    using namespace dpfservice;
     switch (operateType) {
     case RepalceType::Repalce:
     {

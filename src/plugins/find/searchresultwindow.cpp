@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "searchresultwindow.h"
-#include "transceiver/findsender.h"
+#include "common/common.h"
 
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -59,7 +59,7 @@ SearchResultTreeView::SearchResultTreeView(QWidget *parent)
 
         foreach (QString key, d->projectInfoMap.keys()) {
             if (filePath.contains(key, Qt::CaseInsensitive)) {
-                FindSender::sendDoubleClickFileInfo(key, d->projectInfoMap.value(key), filePath, lineNumber);
+                editor.jumpToLineWithKey(key, d->projectInfoMap.value(key), filePath, lineNumber);
                 break;
             }
         }

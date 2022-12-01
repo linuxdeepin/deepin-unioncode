@@ -35,7 +35,7 @@ dpf::EventHandler::Type FindReceiver::type()
 
 QStringList FindReceiver::topics()
 {
-    return { project.topic, editor.topic};
+    return { project.topic, editor.topic };
 }
 
 void FindReceiver::eventProcess(const dpf::Event &event)
@@ -57,10 +57,9 @@ void FindReceiver::eventProcess(const dpf::Event &event)
                     event.property(project.deletedProject.pKeys[0]));
         QString workspace = projectInfo.workspaceFolder();
         emit FindEventTransmit::instance()->sendRemovedProject(workspace);
-    }  else if (event.data() == editor.selectedFile.name) {
-        QString filePath = event.property(editor.selectedFile.pKeys[0]).toString();
-        bool actived = event.property(editor.selectedFile.pKeys[1]).toBool();
-        emit FindEventTransmit::instance()->sendCurrentEditFile(filePath, actived);
+    }  else if (event.data() == editor.switchedFile.name) {
+        QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
+        emit FindEventTransmit::instance()->sendCurrentEditFile(filePath, true);
     }
 }
 

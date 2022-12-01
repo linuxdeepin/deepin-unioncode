@@ -5,7 +5,6 @@ project(plugin-reversedebug)
 set(CXX_CPP
     reversedebug.json
     reversedebugplugin.cpp
-    eventsender.cpp
     minidumpruncontrol.cpp
     reversedebuggermgr.cpp
     eventfilterdialog.cpp
@@ -18,7 +17,6 @@ set(CXX_CPP
 
 set(CXX_H
     reversedebugplugin.h
-    eventsender.h
     reversedebuggerconstants.h
     event_man.h
     minidumpruncontrol.h

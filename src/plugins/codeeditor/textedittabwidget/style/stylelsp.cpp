@@ -25,7 +25,7 @@
 #include "textedittabwidget/textedit.h"
 #include "textedittabwidget/textedittabwidget.h"
 #include "textedittabwidget/style/lspclientkeeper.h"
-#include "refactorwidget/refactorwidget.h"
+#include "codelens/codelens.h"
 #include "renamepopup/renamepopup.h"
 
 #include "common/common.h"
@@ -211,7 +211,7 @@ StyleLsp::StyleLsp(TextEdit *parent)
     QObject::connect(d->edit, &ScintillaEditExtern::selectionMenu, this, &StyleLsp::sciSelectionMenu);
     QObject::connect(d->edit, &ScintillaEditExtern::replaceed, this, &StyleLsp::sciReplaced);
     QObject::connect(&d->renamePopup, &RenamePopup::editingFinished, this, &StyleLsp::renameRequest, Qt::UniqueConnection);
-    QObject::connect(RefactorWidget::instance(), &RefactorWidget::doubleClicked,
+    QObject::connect(CodeLens::instance(), &CodeLens::doubleClicked,
                      this, [=](const QString &filePath, const lsp::Range &range){
         newlsp::Range newRange;
         newRange.start.line = range.start.line;
@@ -239,7 +239,7 @@ void StyleLsp::initLspConnection()
     }
 
     QObject::connect(d->getClient(), QOverload<const lsp::References&>::of(&newlsp::Client::requestResult),
-                     RefactorWidget::instance(), &RefactorWidget::displayReference, Qt::UniqueConnection);
+                     CodeLens::instance(), &CodeLens::displayReference, Qt::UniqueConnection);
 
     //bind signals to file diagnostics
     QObject::connect(d->getClient(), QOverload<const newlsp::PublishDiagnosticsParams &>::of(&newlsp::Client::publishDiagnostics),
@@ -495,21 +495,21 @@ void StyleLsp::sciIndicClicked(Scintilla::Position position)
     if (flags[INDIC_COMPOSITIONTHICK]) {
         if (d->definitionCache.getLocations().size() > 0) {
             auto one = d->definitionCache.getLocations().front();
-            TextEditTabWidget::instance()->jumpToLine(d->edit->projectKey(),
-                                                      QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                      one.range.end.line);
+            TextEditTabWidget::instance()->jumpToLineWithKey(d->edit->projectKey(),
+                                                             QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                             one.range.end.line);
             cleanDefinition(position);
         } else if (d->definitionCache.getLocationLinks().size() > 0) {
             auto one = d->definitionCache.getLocationLinks().front();
-            TextEditTabWidget::instance()->jumpToLine(d->edit->projectKey(),
-                                                      QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
-                                                      one.targetRange.end.line);
+            TextEditTabWidget::instance()->jumpToLineWithKey(d->edit->projectKey(),
+                                                             QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
+                                                             one.targetRange.end.line);
             cleanDefinition(position);
         } else {
             auto one = d->definitionCache.getLocation();
-            TextEditTabWidget::instance()->jumpToLine(d->edit->projectKey(),
-                                                      QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                      one.range.end.line);
+            TextEditTabWidget::instance()->jumpToLineWithKey(d->edit->projectKey(),
+                                                             QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                             one.range.end.line);
             cleanDefinition(position);
         }
     }

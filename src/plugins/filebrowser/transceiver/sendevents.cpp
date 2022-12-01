@@ -22,16 +22,6 @@
 #include "framework.h"
 #include "common/common.h"
 
-void SendEvents::treeViewDoublueClicked(const QString &filePath, const dpfservice::ProjectInfo &proInfo)
-{
-    dpf::Event event;
-    event.setTopic(T_CODEEDITOR);
-    event.setData(D_OPENFILE);
-    event.setProperty(P_PROJECT_INFO, QVariant::fromValue(proInfo));
-    event.setProperty(P_FILEPATH, filePath);
-    dpf::EventCallProxy::instance().pubEvent(event);
-}
-
 void SendEvents::buildProject(const QString &buildSystem,
                               const QString &buildDir,
                               const QString &buildFilePath,
