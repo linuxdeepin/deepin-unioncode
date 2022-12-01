@@ -95,4 +95,16 @@ void ConfigUtil::saveConfig(const QString &filePath, const ConfigureParam &param
     }
 }
 
+void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param)
+{
+    if (!param)
+        return;
+
+    info.setLanguage(param->language);
+    info.setKitName(PythonGenerator::toolKitName());
+    info.setWorkspaceFolder(param->projectPath);
+    info.setBuildFolder(param->projectPath);
+    info.setBuildProgram(param->pythonVersion.path);
+}
+
 } //namespace config

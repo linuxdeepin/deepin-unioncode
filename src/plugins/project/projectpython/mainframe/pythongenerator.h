@@ -48,7 +48,7 @@ private slots:
     void doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem*>> &info);
     void doPythonCleanMenu();
     void doPythonSplitTasksOutput(const QByteArray &array);
-    void actionProperties(const dpfservice::ProjectInfo &info);
+    void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
 };
 
 #endif // PYTHONGENERATOR_H

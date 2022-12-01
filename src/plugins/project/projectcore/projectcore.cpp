@@ -93,6 +93,10 @@ bool ProjectCore::start()
             projectService->projectView.getAllProjectInfo
                     = std::bind(&ProjectTreeView::getAllProjectInfo, treeView);
         }
+        if (!projectService->projectView.getProjectInfo) {
+            projectService->projectView.getProjectInfo
+                    = std::bind(&ProjectTreeView::getProjectInfo, treeView, _1, _2);
+        }
     }
     return true;
 }

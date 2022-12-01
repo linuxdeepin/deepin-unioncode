@@ -41,9 +41,14 @@ MavenGenerator::~MavenGenerator()
         delete d;
 }
 
-void MavenGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType)
+BuildCommandInfo MavenGenerator::getMenuCommand(const BuildMenuType buildMenuType, const dpfservice::ProjectInfo &projectInfo)
 {
-    info.program = OptionManager::getInstance()->getMavenToolPath();
+    BuildCommandInfo info;
+    info.kitName = projectInfo.kitName();
+    info.workingDir = projectInfo.workspaceFolder();
+    info.program = projectInfo.buildProgram();
+    if (info.program.isEmpty())
+        info.program = OptionManager::getInstance()->getMavenToolPath();
     switch (buildMenuType) {
     case Build:
         info.arguments.append("compile");
@@ -52,6 +57,8 @@ void MavenGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType 
         info.arguments.append("clean");
         break;
     }
+
+    return info;
 }
 
 void MavenGenerator::appendOutputParser(std::unique_ptr<IOutputParser> &outputParser)

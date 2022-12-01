@@ -96,8 +96,9 @@ bool ConfigUtil::isNeedConfig(const QString &workspace, ConfigureParam &param)
     return true;
 }
 
-bool ConfigUtil::getProjectInfo(const ConfigureParam *param, dpfservice::ProjectInfo &info)
+dpfservice::ProjectInfo ConfigUtil::createProjectInfo(const ConfigureParam *param)
 {
+    dpfservice::ProjectInfo info;
     for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
         if (d->configureParam.tempSelType == iter->type) {
             info.setLanguage(param->language);
@@ -107,29 +108,40 @@ bool ConfigUtil::getProjectInfo(const ConfigureParam *param, dpfservice::Project
             info.setBuildFolder(iter->directory);
             info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
 
-            QStringList arguments;
-            arguments << "-S";
-            arguments << info.workspaceFolder();
-            arguments << "-B";
-            arguments << info.buildFolder();
-            arguments << "-G";
-            arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
-            arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
-            arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
-            arguments << info.buildCustomArgs();
-            info.setBuildCustomArgs(arguments);
+            QStringList configArguments;
+            configArguments << "-S";
+            configArguments << info.workspaceFolder();
+            configArguments << "-B";
+            configArguments << info.buildFolder();
+            configArguments << "-G";
+            configArguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
+            configArguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
+            configArguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
+            info.setConfigCustomArgs(configArguments);
 
-            return true;
+            QStringList buildArguments;
+            buildArguments << "--build";
+            buildArguments << ".";
+            buildArguments << "--target";
+            buildArguments << "all";
+            info.setBuildCustomArgs(buildArguments);
+
+            QStringList cleanArguments;
+            cleanArguments << "--build";
+            cleanArguments << ".";
+            cleanArguments << "--target";
+            cleanArguments << "clean";
+            info.setCleanCustomArgs(buildArguments);
         }
     }
 
-    return false;
+    return info;
 }
 
 void ConfigUtil::configProject(const ConfigureParam *param)
 {
-    dpfservice::ProjectInfo info;
-    if (getProjectInfo(param, info)) {
+    dpfservice::ProjectInfo info = createProjectInfo(param);
+    if (info.isVaild()) {
         emit configureDone(info);
     }
 }
@@ -175,6 +187,67 @@ void ConfigUtil::saveConfig(const QString &filePath, const ConfigureParam &param
         QDataStream stream(&file);
         stream << param;
         file.close();
+    }
+}
+
+void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param)
+{
+    if (!param)
+        return;
+
+    for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
+        if (d->configureParam.defaultType == iter->type) {
+            info.setLanguage(param->language);
+            info.setKitName(CmakeGenerator::toolKitName());
+            info.setWorkspaceFolder(param->workspace);
+            info.setBuildType(ConfigUtil::instance()->getNameFromType(iter->type));
+            info.setBuildFolder(iter->directory);
+            info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
+
+            QStringList arguments;
+            arguments << "-S";
+            arguments << info.workspaceFolder();
+            arguments << "-B";
+            arguments << info.buildFolder();
+            arguments << "-G";
+            arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
+            arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
+            arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
+            info.setConfigCustomArgs(arguments);
+
+            for (auto iterStep = iter->steps.begin(); iterStep != iter->steps.end(); ++iterStep) {
+                QStringList arguments;
+                arguments << "--build";
+                arguments << ".";
+                if (!iterStep->targetName.isEmpty()) {
+                    arguments << "--target";
+                    arguments << iterStep->targetName;
+                }
+                if (!iterStep->arguments.isEmpty()) {
+                    arguments << "--";
+                    arguments << iterStep->arguments;
+                }
+                if (iterStep->type == StepType::Build) {
+                    info.setBuildCustomArgs(arguments);
+                } else if (iterStep->type == StepType::Clean) {
+                    info.setCleanCustomArgs(arguments);
+                }
+            }
+
+            info.setRunProgram(OptionManager::getInstance()->getCMakeToolPath());
+            auto iterRun = iter->runConfigure.params.begin();
+            for (; iterRun != iter->runConfigure.params.end(); ++iterRun) {
+                if (iterRun->targetName == iter->runConfigure.defaultTargetName) {
+                    QStringList arguments;
+                    arguments << iterRun->arguments;
+                    arguments << iterRun->targetPath;
+                    info.setRunCustomArgs(arguments);
+                    break;
+                }
+            }
+
+            break;
+        }
     }
 }
 

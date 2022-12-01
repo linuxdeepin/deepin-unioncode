@@ -110,6 +110,8 @@ public:
 
     void readConfig(const QString &filePath, ConfigureParam &param);
     void saveConfig(const QString &filePath, const ConfigureParam &param);
+
+    void updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param);
 signals:
 
 private:

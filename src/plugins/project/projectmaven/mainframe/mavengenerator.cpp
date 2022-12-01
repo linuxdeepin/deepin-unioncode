@@ -173,7 +173,7 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
     QAction *action = new QAction("Properties");
     menu->addAction(action);
     QObject::connect(action, &QAction::triggered, [=](){
-        actionProperties(info);
+        actionProperties(info, itemTemp);
     });
 
     return menu;
@@ -225,10 +225,10 @@ void MavenGenerator::doActionTriggered()
     }
 }
 
-void MavenGenerator::actionProperties(const dpfservice::ProjectInfo &info)
+void MavenGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item)
 {
     PropertiesDialog dlg;
-    ConfigPropertyWidget *property = new ConfigPropertyWidget(info);
+    ConfigPropertyWidget *property = new ConfigPropertyWidget(info, item);
     dlg.insertPropertyPanel("Config", property);
     dlg.exec();
 }

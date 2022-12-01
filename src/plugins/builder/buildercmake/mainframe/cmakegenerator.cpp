@@ -48,29 +48,24 @@ CMakeGenerator::~CMakeGenerator()
         delete d;
 }
 
-void CMakeGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType)
+BuildCommandInfo CMakeGenerator::getMenuCommand(const BuildMenuType buildMenuType, const ProjectInfo &projectInfo)
 {
-    info.program = OptionManager::getInstance()->getCMakeToolPath();
-    TargetType type = kBuildTarget;
-    switch (buildMenuType) {
-    case Build:
-        type = kBuildTarget;
-        break;
-    case Clean:
-        type = kCleanTarget;
-        break;
+    BuildCommandInfo info;
+    if (buildMenuType == Build) {
+        info.arguments = projectInfo.buildCustomArgs();
+    } else if (buildMenuType == Clean) {
+        info.arguments = projectInfo.cleanCustomArgs();
     }
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (projectService && projectService->getActiveTarget) {
-        auto target = projectService->getActiveTarget(type);
-        if (!target.buildCommand.isEmpty()) {
-            QStringList args = target.buildArguments << target.buildTarget;
-            info.program = target.buildCommand;
-            info.arguments = args;
-            info.workingDir = target.outputPath;
-        }
+
+    info.program = projectInfo.buildProgram();
+    if (info.program.isEmpty()) {
+        info.program = OptionManager::getInstance()->getCMakeToolPath();
     }
+
+    info.workingDir = projectInfo.buildFolder();
+    info.kitName = projectInfo.kitName();
+
+    return info;
 }
 
 void CMakeGenerator::appendOutputParser(std::unique_ptr<IOutputParser>& outputParser)

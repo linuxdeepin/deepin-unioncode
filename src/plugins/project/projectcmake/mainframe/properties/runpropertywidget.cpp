@@ -45,12 +45,16 @@ class RunPropertyWidgetPrivate
     RunConfigPane *runConfigPane{nullptr};
 
     QVector<RunParam> paramsShadow;
+    QStandardItem *item{nullptr};
+    dpfservice::ProjectInfo projectInfo;
 };
 
-RunPropertyWidget::RunPropertyWidget(QWidget *parent)
+RunPropertyWidget::RunPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, QWidget *parent)
     : PageWidget(parent)
     , d(new RunPropertyWidgetPrivate())
 {
+    d->projectInfo = projectInfo;
+    d->item = item;
     setupUi();
 }
 
@@ -125,6 +129,9 @@ void RunPropertyWidget::saveConfig()
         }
     }
 
-    QString filePath = ConfigUtil::instance()->getConfigPath(QFileInfo(param->workspace).path());
+    QString filePath = ConfigUtil::instance()->getConfigPath(param->workspace);
     ConfigUtil::instance()->saveConfig(filePath, *param);
+
+    ConfigUtil::instance()->updateProjectInfo(d->projectInfo, param);
+    dpfservice::ProjectInfo::set(d->item, d->projectInfo);
 }

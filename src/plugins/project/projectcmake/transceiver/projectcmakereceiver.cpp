@@ -42,7 +42,7 @@ dpf::EventHandler::Type ProjectCmakeReceiver::type()
 
 QStringList ProjectCmakeReceiver::topics()
 {
-    return { T_BUILDER };
+    return { T_BUILDER, project.topic};
 }
 
 void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)

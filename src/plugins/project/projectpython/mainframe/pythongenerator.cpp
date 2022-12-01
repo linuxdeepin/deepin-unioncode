@@ -137,10 +137,14 @@ QMenu *PythonGenerator::createItemMenu(const QStandardItem *item)
     if (info.isEmpty())
         return nullptr;
 
+    QStandardItem *itemTemp = const_cast<QStandardItem *>(item);
+    if (!itemTemp)
+        return nullptr;
+
     QAction *action = new QAction("Properties");
     menu->addAction(action);
     QObject::connect(action, &QAction::triggered, [=](){
-        actionProperties(info);
+        actionProperties(info, itemTemp);
     });
 
     return menu;
@@ -166,10 +170,10 @@ void PythonGenerator::doPythonCleanMenu()
     }
 }
 
-void PythonGenerator::actionProperties(const dpfservice::ProjectInfo &info)
+void PythonGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item)
 {
     PropertiesDialog dlg;
-    ConfigPropertyWidget *property = new ConfigPropertyWidget(info);
+    ConfigPropertyWidget *property = new ConfigPropertyWidget(info, item);
     dlg.insertPropertyPanel("Config", property);
     dlg.exec();
 }

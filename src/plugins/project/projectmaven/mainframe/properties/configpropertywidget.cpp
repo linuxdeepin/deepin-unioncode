@@ -157,12 +157,17 @@ class ConfigPropertyWidgetPrivate
     friend class ConfigPropertyWidget;
 
     DetailPropertyWidget *detail{nullptr};
+    QStandardItem *item{nullptr};
+    dpfservice::ProjectInfo projectInfo;
 };
 
-ConfigPropertyWidget::ConfigPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QWidget *parent)
+ConfigPropertyWidget::ConfigPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, QWidget *parent)
     : PageWidget(parent)
     , d(new ConfigPropertyWidgetPrivate())
 {
+    d->item = item;
+    d->projectInfo = projectInfo;
+
     setupUI();
     initData(projectInfo);
 }
@@ -200,4 +205,7 @@ void ConfigPropertyWidget::saveConfig()
 
     QString filePath = ConfigUtil::instance()->getConfigPath(param->projectPath);
     ConfigUtil::instance()->saveConfig(filePath, *param);
+
+    ConfigUtil::instance()->updateProjectInfo(d->projectInfo, param);
+    dpfservice::ProjectInfo::set(d->item, d->projectInfo);
 }

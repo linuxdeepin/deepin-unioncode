@@ -40,6 +40,7 @@ public:
     void expandedProjectDepth(const QStandardItem *root, int depth);
     void expandedProjectAll(const QStandardItem *root);
     QList<dpfservice::ProjectInfo> getAllProjectInfo();
+    dpfservice::ProjectInfo getProjectInfo(const QString &kitName, const QString &workspace);
 Q_SIGNALS:
     void indexMenuRequest(const QModelIndex &index, QContextMenuEvent *event);
     void itemMenuRequest(QStandardItem *item, QContextMenuEvent *event);

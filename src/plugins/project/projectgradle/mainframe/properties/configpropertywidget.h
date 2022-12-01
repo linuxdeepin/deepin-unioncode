@@ -50,7 +50,7 @@ class ConfigPropertyWidget : public PageWidget
 {
     Q_OBJECT
 public:
-    explicit ConfigPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QWidget *parent = nullptr);
+    explicit ConfigPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, QWidget *parent = nullptr);
     virtual ~ConfigPropertyWidget() override;
 
     void saveConfig() override;

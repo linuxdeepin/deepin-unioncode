@@ -101,6 +101,7 @@ class BuildPropertyWidgetPrivate
     QLineEdit *outputDirEdit{nullptr};
 
     QStackedWidget* stackWidget{nullptr};
+    dpfservice::ProjectInfo projectInfo;
 
     QMap<StepType, dpfservice::TargetType> typeMap = {{StepType::Build, dpfservice::TargetType::kBuildTarget},
                                                       {StepType::Build, dpfservice::TargetType::kBuildTarget}};
@@ -110,6 +111,7 @@ BuildPropertyWidget::BuildPropertyWidget(const dpfservice::ProjectInfo &projectI
     : PageWidget(parent)
     , d(new BuildPropertyWidgetPrivate())
 {
+    d->projectInfo = projectInfo;
     setupOverviewUI();
     initData(projectInfo);
 

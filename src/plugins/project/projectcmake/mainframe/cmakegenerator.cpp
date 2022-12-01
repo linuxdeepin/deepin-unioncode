@@ -132,7 +132,7 @@ bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
         BuildCommandInfo commandInfo;
         commandInfo.kitName = info.kitName();
         commandInfo.program = info.buildProgram();
-        commandInfo.arguments = info.buildCustomArgs();
+        commandInfo.arguments = info.configCustomArgs();
         commandInfo.workingDir = info.workspaceFolder();
 
         ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
@@ -226,7 +226,7 @@ QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
     menu->addAction(action);
     dpfservice::ProjectInfo info = dpfservice::ProjectInfo::get(item);
     QObject::connect(action, &QAction::triggered, [=](){
-        actionProperties(info);
+        actionProperties(info, root);
     });
 
     return menu;
@@ -360,12 +360,12 @@ void CmakeGenerator::doCmakeFileNodeChanged(QStandardItem *root, const QPair<QSt
     configure(proInfo);
 }
 
-void CmakeGenerator::actionProperties(const dpfservice::ProjectInfo &info)
+void CmakeGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item)
 {
     PropertiesDialog dlg;
 
     BuildPropertyWidget *buildWidget = new BuildPropertyWidget(info);
-    RunPropertyWidget *runWidget = new RunPropertyWidget();
+    RunPropertyWidget *runWidget = new RunPropertyWidget(info, item);
 
     dlg.insertPropertyPanel("Build", buildWidget);
     dlg.insertPropertyPanel("Run", runWidget);

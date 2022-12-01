@@ -215,6 +215,19 @@ QList<dpfservice::ProjectInfo> ProjectTreeView::getAllProjectInfo()
     return result;
 }
 
+ProjectInfo ProjectTreeView::getProjectInfo(const QString &kitName, const QString &workspace)
+{
+    ProjectInfo projectInfo;
+    for (int row = 0; row < d->itemModel->rowCount(); row++) {
+        ProjectInfo info = ProjectInfo::get(d->itemModel->index(row, 0));
+        if (kitName == info.kitName() && workspace == info.workspaceFolder()) {
+            projectInfo = info;
+            break;
+        }
+    }
+    return projectInfo;
+}
+
 void ProjectTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
     QTreeView::contextMenuEvent(event);
@@ -429,7 +442,10 @@ void ProjectTreeView::doShowProjectInfo(QStandardItem *root)
             + "BuildFolder: " + ProjectInfo::get(root).buildFolder() + "\n"
             + "WorkspaceFolder: " + ProjectInfo::get(root).workspaceFolder() + "\n"
             + "BuildType: " + ProjectInfo::get(root).buildType() + "\n"
-            + "BuildCustomArgs: " + "\n    " + ProjectInfo::get(root).buildCustomArgs().join("\n    ");
+            + "BuildProgram: " + "\n    " + ProjectInfo::get(root).buildProgram() + "\n"
+            + "ConfigCustomArgs: " + "\n    " + ProjectInfo::get(root).configCustomArgs().join(" ") + "\n"
+            + "BuildCustomArgs: " + "\n    " + ProjectInfo::get(root).buildCustomArgs().join(" ") + "\n"
+            + "CleanCustomArgs: " + "\n    " + ProjectInfo::get(root).cleanCustomArgs().join(" ");
     dialog.setPropertyText(propertyText);
     dialog.exec();
 }

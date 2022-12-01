@@ -43,9 +43,14 @@ GradleGenerator::~GradleGenerator()
         delete d;
 }
 
-void GradleGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType)
+BuildCommandInfo GradleGenerator::getMenuCommand(const BuildMenuType buildMenuType, const dpfservice::ProjectInfo &projectInfo)
 {
-    info.program = OptionManager::getInstance()->getGradleToolPath();
+    BuildCommandInfo info;
+    info.kitName = projectInfo.kitName();
+    info.workingDir = projectInfo.workspaceFolder();
+    info.program = projectInfo.buildProgram();
+    if (info.program.isEmpty())
+        info.program = OptionManager::getInstance()->getGradleToolPath();
     switch (buildMenuType) {
     case Build:
         info.arguments.append("build");
@@ -54,6 +59,8 @@ void GradleGenerator::getMenuCommand(BuildCommandInfo &info, const BuildMenuType
         info.arguments.append("clean");
         break;
     }
+
+    return info;
 }
 
 void GradleGenerator::appendOutputParser(std::unique_ptr<IOutputParser> &outputParser)

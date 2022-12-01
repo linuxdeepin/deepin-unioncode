@@ -24,6 +24,7 @@
 #include "builderglobals.h"
 #include "common/common.h"
 #include "services/builder/ioutputparser.h"
+#include "services/project/projectinfo.h"
 
 #include <QWidget>
 #include <QMenu>
@@ -36,9 +37,10 @@ public:
     BuilderGenerator(){}
     virtual ~BuilderGenerator(){}
 
-    virtual void getMenuCommand(BuildCommandInfo &info, const BuildMenuType buildMenuType) {
-        Q_UNUSED(info)
+    virtual BuildCommandInfo getMenuCommand(const BuildMenuType buildMenuType, const dpfservice::ProjectInfo &projectInfo) {
         Q_UNUSED(buildMenuType)
+        Q_UNUSED(projectInfo)
+        return BuildCommandInfo();
     }
 
     virtual void appendOutputParser(std::unique_ptr<IOutputParser>& outputParser) {

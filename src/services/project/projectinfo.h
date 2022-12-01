@@ -53,8 +53,13 @@ public:
     inline void setWorkspaceFolder(const QString &workspaceFolder) {data["WorkspaceFolder"] = workspaceFolder;}
     inline void setBuildType(const QString &buildType) {data["BuildType"] = buildType;}
     inline void setBuildProgram(const QString &program) {data["BuildProgram"] = program;}
-    inline void setBuildCustomArgs(const QStringList &args) {data["BuildCustomArgs"] = args;}
+    inline void setConfigCustomArgs(const QStringList &args) {data["ConfigCustomArgs"] = args;}
     inline void setSourceFiles(const QSet<QString> &files) {data["SourceFiles"] = QVariant::fromValue(files);}
+
+    inline void setBuildCustomArgs(const QStringList &args) {data["BuildCustomArgs"] = args;}
+    inline void setCleanCustomArgs(const QStringList &args) {data["CleanCustomArgs"] = args;}
+    inline void setRunProgram(const QString &program) {data["RunProgram"] = program;}
+    inline void setRunCustomArgs(const QStringList &args) {data["RunCustomArgs"] = args;}
 
     inline QString language() const {return data["Language"].toString();}
     inline QString kitName() const {return data["KitName"].toString();}
@@ -62,8 +67,13 @@ public:
     inline QString workspaceFolder() const {return data["WorkspaceFolder"].toString();}
     inline QString buildType() const {return data["BuildType"].toString();}
     inline QString buildProgram() const {return data["BuildProgram"].toString();}
-    inline QStringList buildCustomArgs() const {return data["BuildCustomArgs"].toStringList();}
+    inline QStringList configCustomArgs() const {return data["ConfigCustomArgs"].toStringList();}
     inline QSet<QString> sourceFiles() const {return qvariant_cast<QSet<QString>>(data["SourceFiles"]);}
+
+    inline QStringList buildCustomArgs() const {return data["BuildCustomArgs"].toStringList();}
+    inline QStringList cleanCustomArgs() const {return data["CleanCustomArgs"].toStringList();}
+    inline QString runProgram() {return data["RunProgram"].toString();}
+    inline QStringList runCustomArgs() {return data["RunCustomArgs"].toStringList();}
 
     inline static void set(QStandardItem *root, const ProjectInfo &info)
     {
@@ -92,6 +102,22 @@ public:
             info.setProperty(key, value);
             set(any, info);
         }
+    }
+
+    bool isVaild()
+    {
+        if (kitName().isEmpty() || workspaceFolder().isEmpty() || language().isEmpty())
+            return false;
+        return true;
+    }
+
+    bool isSame(const ProjectInfo &other)
+    {
+        if (other.kitName() == kitName()
+                && other.workspaceFolder() == workspaceFolder()
+                && other.language() == language())
+            return true;
+        return false;
     }
 
 private:

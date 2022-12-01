@@ -90,7 +90,9 @@ ConfigureProjPane::ConfigureProjPane(const QString &language,
             [this](const dpfservice::ProjectInfo &info) {
         QString propertyPath = ConfigUtil::instance()->getConfigPath(d->cfgItem->workspace);
         config::ConfigUtil::instance()->saveConfig(propertyPath, *d->cfgItem);
-        emit configureDone(info);
+        dpfservice::ProjectInfo projectInfo = info;
+        config::ConfigUtil::instance()->updateProjectInfo(projectInfo, d->cfgItem);
+        emit configureDone(projectInfo);
     });
 }
 

@@ -65,6 +65,12 @@ public:
      * \brief getAllProjectInfo 获取所有工程信息
      */
     DPF_INTERFACE(QList<dpfservice::ProjectInfo>, getAllProjectInfo, void);
+
+    /*!
+     * \brief getProjectInfo get projectInfo with condition
+     * \param kitName workspace
+     */
+    DPF_INTERFACE(dpfservice::ProjectInfo, getProjectInfo, const QString &kitName, const QString &workspace);
 };
 
 #endif // PROJECTVIEWINTERFACE_H

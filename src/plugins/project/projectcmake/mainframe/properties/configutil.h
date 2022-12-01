@@ -190,6 +190,8 @@ struct ConfigureParam {
         stream << data.workspace;
         int type = data.defaultType;
         stream << type;
+        type = data.tempSelType;
+        stream << type;
         stream << data.buildConfigures;
 
         return stream;
@@ -203,6 +205,8 @@ struct ConfigureParam {
         int type = 0;
         stream >> type;
         data.defaultType = static_cast<ConfigType>(type);
+        stream >> type;
+        data.tempSelType = static_cast<ConfigType>(type);
         stream >> data.buildConfigures;
 
         return stream;
@@ -236,13 +240,14 @@ public:
     QString getNameFromType(ConfigType type);
     ConfigType getTypeFromName(QString name);
 
-    bool getProjectInfo(const ConfigureParam *param, dpfservice::ProjectInfo &info);
+    dpfservice::ProjectInfo createProjectInfo(const ConfigureParam *param);
     bool isNeedConfig(const QString &workspace, ConfigureParam &param);
     void checkConfigInfo(const QString &buildType, const QString &directory);
     void configProject(const ConfigureParam *param);
 
     void readConfig(const QString &filePath, ConfigureParam &param);
     void saveConfig(const QString &filePath, const ConfigureParam &param);
+    void updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param);
 signals:
     void configureDone(const dpfservice::ProjectInfo &info);
 

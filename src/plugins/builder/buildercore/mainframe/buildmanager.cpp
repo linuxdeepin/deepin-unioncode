@@ -32,6 +32,7 @@
 #include "services/project/projectinfo.h"
 #include "services/builder/buildergenerator.h"
 #include "services/option/optionmanager.h"
+#include "services/project/projectservice.h"
 
 #include "base/abstractaction.h"
 
@@ -147,6 +148,14 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
     }
 
     auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (!projectService || !projectService->projectView.getProjectInfo)
+        return;
+
+    ProjectInfo projectInfo = projectService->projectView.getProjectInfo(d->activedKitName, d->activedWorkingDir);
+    if (!projectInfo.isVaild())
+        return;
+
     auto builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
         auto generator = builderService->create<BuilderGenerator>(d->activedKitName);
@@ -155,11 +164,7 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
             generator->appendOutputParser(d->outputParser);
             QList<BuildCommandInfo> list;
             foreach (auto menuType, menuTypelist) {
-                BuildCommandInfo info;
-                info.kitName = d->activedKitName;
-                info.workingDir = d->activedWorkingDir;
-                generator->getMenuCommand(info, menuType);
-
+                BuildCommandInfo info = generator->getMenuCommand(menuType, projectInfo);
                 QString retMsg;
                 bool ret = generator->checkCommandValidity(info, retMsg);
                 if (!ret) {

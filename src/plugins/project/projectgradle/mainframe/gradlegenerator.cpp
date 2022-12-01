@@ -202,10 +202,14 @@ QMenu *GradleGenerator::createItemMenu(const QStandardItem *item)
     }
     menu->addMenu(d->gradleMenu);
 
+    QStandardItem *itemTemp = const_cast<QStandardItem *>(item);
+    if (!itemTemp)
+        return d->gradleMenu;
+
     QAction *action = new QAction("Properties");
     menu->addAction(action);
     QObject::connect(action, &QAction::triggered, [=](){
-        actionProperties(info);
+        actionProperties(info, itemTemp);
     });
 
     return menu;
@@ -329,10 +333,10 @@ void GradleGenerator::doGradleTaskActionTriggered()
     }
 }
 
-void GradleGenerator::actionProperties(const dpfservice::ProjectInfo &info)
+void GradleGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item)
 {
     PropertiesDialog dlg;
-    ConfigPropertyWidget *property = new ConfigPropertyWidget(info);
+    ConfigPropertyWidget *property = new ConfigPropertyWidget(info, item);
     dlg.insertPropertyPanel("Config", property);
     dlg.exec();
 }
