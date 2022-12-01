@@ -35,7 +35,7 @@ dpf::EventHandler::Type FindReceiver::type()
 
 QStringList FindReceiver::topics()
 {
-    return { project.topic };
+    return { project.topic, editor.topic};
 }
 
 void FindReceiver::eventProcess(const dpf::Event &event)
