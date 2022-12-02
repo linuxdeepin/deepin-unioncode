@@ -76,8 +76,8 @@ void SymbolKeeper::jumpToLine(const QString &filePath, const QString &fileLine)
 
 void SymbolKeeper::doParseDone(bool result)
 {
+    SymbolParseArgs args = parser->args();
     if (!result) {
-        SymbolParseArgs args = parser->args();
         ContextDialog::ok(QDialog::tr(
                               "Error parsing project symbol\n"
                               "workspace: %0\n"
@@ -86,6 +86,8 @@ void SymbolKeeper::doParseDone(bool result)
                           .arg(args.workspace)
                           .arg(args.language)
                           .arg(args.storage));
+    } else {
+       actionanalyse.analyse(args.workspace, args.language, args.storage);
     }
     this->treeView()->expandAll();
     parser->kill();

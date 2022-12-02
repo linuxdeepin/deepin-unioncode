@@ -22,6 +22,7 @@
 #include "Scintilla.h"
 #include "stylesci.h"
 #include "stylecolor.h"
+#include "mainframe/texteditkeeper.h"
 #include "textedittabwidget/textedit.h"
 #include "textedittabwidget/textedittabwidget.h"
 #include "textedittabwidget/style/lspclientkeeper.h"
@@ -762,6 +763,11 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
 #endif
             if (!sourceText.isEmpty() && wordLength == val.length) {
                 QString tokenValue = tokenToDefine(val.tokenType);
+                QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue);
+                if (!tokenAnnLine.isEmpty())
+                    editor.setAnnotation(d->edit->file(), val.start.line,
+                                         QString("User Action Analysed"),
+                                         tokenAnnLine);
 #ifdef QT_DEBUG
                 qInfo() << "tokenValue:" << tokenValue;
 #endif

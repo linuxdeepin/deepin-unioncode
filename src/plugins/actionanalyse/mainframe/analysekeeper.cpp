@@ -64,7 +64,7 @@ void AnalyseKeeper::doAnalyseDone(bool result)
     if (!result) {
         ActionAnalyseArgs args = wordcounter->args();
         ContextDialog::ok(QDialog::tr(
-                              "Error parsing project symbol\n"
+                              "Error Do User Action Anlyse\n"
                               "workspace: %0\n"
                               "language: %1\n"
                               "storage: %2\n")

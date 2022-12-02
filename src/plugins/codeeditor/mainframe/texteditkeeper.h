@@ -57,6 +57,24 @@ public:
         instance()->data = data;
     }
 
+    static QString getTokenTypeAnnLine(const QString &tokenType)
+    {
+        QString result;
+        auto data = instance()->data;
+        auto rules = data.rules;
+        for(auto tokenMap: data.tokenMaps) {
+            if (tokenType.toStdString() != tokenMap.semanticTokenType
+                    || tokenMap.result.empty())
+                continue;
+            for (int idx = 0; idx < rules.size(); idx++) {
+                result += QString::fromStdString(data.rules[idx]);
+                if (!result.isEmpty()) result += ": ";
+                result += QString::number(tokenMap.result[idx]*100) + "%";
+            }
+        }
+        return result;
+    }
+
     static AnalysedData analysedData()
     {
         return instance()->data;

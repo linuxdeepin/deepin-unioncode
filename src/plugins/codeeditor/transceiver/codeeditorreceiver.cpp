@@ -110,7 +110,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QString language = event.property(actionanalyse.analyseDone.pKeys[1]).toString();
         QString storage = event.property(actionanalyse.analyseDone.pKeys[2]).toString();
         AnalysedData analyseData = qvariant_cast<AnalysedData>(event.property(actionanalyse.analyseDone.pKeys[3]));
-        EditorCallProxy::instance()->toSetAnalysedData(analyseData);
+        TextEditKeeper::setAnalysedData(analyseData);
     } else if (event.data() == editor.setAnnotation.name) {
         QString filePath = event.property(editor.setAnnotation.pKeys[0]).toString();
         int line = event.property(editor.setAnnotation.pKeys[1]).toInt();

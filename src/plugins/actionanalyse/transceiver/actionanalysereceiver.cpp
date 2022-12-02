@@ -52,7 +52,6 @@ void ActionAnalyseReceiver::eventProcess(const dpf::Event &event)
         QString storage = event.property(storageKey).toString();
         QVariant var = event.property(dataKey);
         AnalysedData analyData = var.value<AnalysedData>();
-        std::cerr << analyData.tokenMaps[0].result[0];
         AnalyseKeeper::instance()->doAnalyse({workspace, language, storage});
     } else if (event.data() == symbol.parseDone.name) {
         QString workspaceKey = symbol.parseDone.pKeys[2]; // analyse.workspace == parse.storage
