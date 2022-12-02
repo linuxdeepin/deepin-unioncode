@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 cd ../../
-if [ ! -d "/translations/" ];then
-  mkdir /translations
+#if [ ! -d "/translations/" ];then
+#  mkdir /translations
 lupdate  src/ -ts -no-obsolete assets/translations/*.ts
 
 desk_ts_list=(`ls assets/translations/desktop/*.ts`)

@@ -13,6 +13,7 @@ set(CXX_CPP
     mainframe/optionsdialog.cpp
     mainframe/optiondefaultkeeper.cpp
     mainframe/generaloptionwidget.cpp
+    mainframe/profilesettingwidget.cpp
     optioncore.cpp
     optioncore.json
     )
@@ -26,6 +27,7 @@ set(CXX_H
     mainframe/optionsdialog.h
     mainframe/optiondefaultkeeper.h
     mainframe/generaloptionwidget.h
+    mainframe/profilesettingwidget.h
     optioncore.h
     )
 

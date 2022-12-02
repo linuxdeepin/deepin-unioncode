@@ -71,7 +71,7 @@ bool OptionCore::start()
         }
     }
 
-    if (windowService && windowService->addAction) {
+    if (windowService && windowService->addAction && windowService->addToolBarActionItem) {
         auto actionOptions = new QAction(MWMTA_OPTIONS);
         ActionManager::getInstance()->registerAction(actionOptions,
                                                      "Tools.Options",
@@ -81,6 +81,7 @@ bool OptionCore::start()
                                                                   Qt::Key::Key_H),
                                                      "option.svg");
         windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptions));
+        windowService->addToolBarActionItem("Options", actionOptions);
         QObject::connect(actionOptions, &QAction::triggered,
                          optionDialog, &QDialog::show);
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="zh_CN">
+<TS version="2.1">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -146,37 +146,37 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="255"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="260"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="259"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="264"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="267"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="272"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="270"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="275"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="274"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="279"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="301"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="306"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -185,12 +185,12 @@
 <context>
     <name>BuildPropertyWidget</name>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/buildpropertywidget.cpp" line="169"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/buildpropertywidget.cpp" line="171"/>
         <source>Output direcotry:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/buildpropertywidget.cpp" line="174"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/buildpropertywidget.cpp" line="176"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -219,22 +219,13 @@
 <context>
     <name>CMakeGenerator</name>
     <message>
-        <location filename="../../src/plugins/builder/buildercmake/mainframe/cmakegenerator.cpp" line="90"/>
+        <location filename="../../src/plugins/builder/buildercmake/mainframe/cmakegenerator.cpp" line="85"/>
         <source>The build command of %1 project is null! please install it in console with &quot;sudo apt install cmake&quot;, and then restart the tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercmake/mainframe/cmakegenerator.cpp" line="97"/>
+        <location filename="../../src/plugins/builder/buildercmake/mainframe/cmakegenerator.cpp" line="92"/>
         <source>The path of &quot;%1&quot; is not exist! please check and reopen the project.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CMakeOpenHandler</name>
-    <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakeopenhandler.cpp" line="181"/>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakeopenhandler.cpp" line="182"/>
-        <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -249,17 +240,17 @@
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="47"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="48"/>
         <source>Save All Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="48"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="49"/>
         <source>Close All Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="49"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="50"/>
         <source>Print</source>
         <translation type="unfinished"></translation>
     </message>
@@ -380,28 +371,28 @@
 <context>
     <name>ConfigureProjPane</name>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="114"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="116"/>
         <source>Select kit: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="124"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="126"/>
         <source>Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="126"/>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="137"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="128"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="139"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="135"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="137"/>
         <source>Release</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="146"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="148"/>
         <source>Configure</source>
         <translation type="unfinished"></translation>
     </message>
@@ -409,80 +400,80 @@
 <context>
     <name>Debugger</name>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="362"/>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="390"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="372"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="400"/>
         <source>
 The debugee has Terminated.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="380"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="390"/>
         <source>The debugee has Exited.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="649"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="686"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="651"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="688"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="652"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="689"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="658"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="695"/>
         <source>Signal Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="706"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="744"/>
         <source>Threads:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="832"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="871"/>
         <source>Searching dap port, please waiting...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="844"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="883"/>
         <source>Getting dap port timeout, please retry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="894"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="934"/>
         <source>
 The dap port is not ready, please retry.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="899"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="939"/>
         <source>Debugging starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="954"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="994"/>
         <source>Start debugging coredump file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="957"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="997"/>
         <source>The coredump target file is error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="964"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="1004"/>
         <source>The coredump file is error: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -565,9 +556,9 @@ The dap port is not ready, please retry.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="74"/>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="81"/>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="93"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="75"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="82"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="94"/>
         <source>&amp;Search Results</source>
         <translation type="unfinished"></translation>
     </message>
@@ -627,25 +618,30 @@ The dap port is not ready, please retry.
 <context>
     <name>GeneralOptionWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/generaloptionwidget.cpp" line="42"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/generaloptionwidget.cpp" line="43"/>
         <source>Environment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/generaloptionwidget.cpp" line="43"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/generaloptionwidget.cpp" line="44"/>
         <source>Commands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/generaloptionwidget.cpp" line="45"/>
+        <source>Interface</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>GradleGenerator</name>
     <message>
-        <location filename="../../src/plugins/builder/buildergradle/mainframe/gradlegenerator.cpp" line="71"/>
+        <location filename="../../src/plugins/builder/buildergradle/mainframe/gradlegenerator.cpp" line="78"/>
         <source>The build command of %1 project is null! please install it in console with &quot;sudo apt install gradle&quot;, and then restart the tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildergradle/mainframe/gradlegenerator.cpp" line="78"/>
+        <location filename="../../src/plugins/builder/buildergradle/mainframe/gradlegenerator.cpp" line="85"/>
         <source>The path of &quot;%1&quot; is not exist! please check and reopen the project.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -851,12 +847,12 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="198"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="213"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="212"/>
         <source>Tip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="213"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="212"/>
         <source>Can not find kit.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -864,12 +860,12 @@ repos path: %0</source>
 <context>
     <name>MavenGenerator</name>
     <message>
-        <location filename="../../src/plugins/builder/buildermaven/mainframe/mavengenerator.cpp" line="68"/>
+        <location filename="../../src/plugins/builder/buildermaven/mainframe/mavengenerator.cpp" line="75"/>
         <source>The build command of %1 project is null! please install it in console with &quot;sudo apt install maven&quot;, and then restart the tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildermaven/mainframe/mavengenerator.cpp" line="75"/>
+        <location filename="../../src/plugins/builder/buildermaven/mainframe/mavengenerator.cpp" line="82"/>
         <source>The path of &quot;%1&quot; is not exist! please check and reopen the project.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -935,6 +931,24 @@ repos path: %0</source>
     </message>
 </context>
 <context>
+    <name>ProfileSettingWidget</name>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="90"/>
+        <source>Restart Required--deep-in unioncode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="91"/>
+        <source>The language change will take effect after restart.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="122"/>
+        <source>language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ProjectParser</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/projectparser.cpp" line="57"/>
@@ -966,18 +980,18 @@ repos path: %0</source>
 <context>
     <name>ProjectTreeView</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="241"/>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="333"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="254"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="342"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="254"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="267"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="337"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="346"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1044,12 +1058,12 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="513"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="539"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="520"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="546"/>
         <source>Find Usages</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1108,11 +1122,6 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="57"/>
-        <source>Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="62"/>
         <source>Pid</source>
         <translation type="unfinished"></translation>
@@ -1123,17 +1132,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="278"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="291"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="279"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="292"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="280"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="293"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1293,6 +1302,11 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/services/window/windowelement.h" line="57"/>
+        <source>Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/services/window/windowelement.h" line="59"/>
         <source>English</source>
         <translation type="unfinished"></translation>
@@ -1390,17 +1404,7 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="111"/>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/gradlegenerator.cpp" line="125"/>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/mavengenerator.cpp" line="77"/>
-        <location filename="../../src/plugins/project/projectpython/mainframe/pythongenerator.cpp" line="77"/>
-        <source>Cannot open repeatedly!
-language : %0
-projectPath : %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/project/projectcmake/transceiver/projectcmakereceiver.cpp" line="78"/>
+        <location filename="../../src/plugins/project/projectcmake/transceiver/projectcmakereceiver.cpp" line="70"/>
         <source>Failed open project, whith build step.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1410,8 +1414,16 @@ projectPath : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="304"/>
-        <source>Can&apos;t find workspace from file :%0</source>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="87"/>
+        <source>Cannot open repeatedly!
+language : %0
+projectPath : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="101"/>
+        <source>Cannot open the project!
+not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1428,17 +1440,17 @@ projectPath : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="126"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="129"/>
         <source>Workspace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="152"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="155"/>
         <source>Watcher</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="207"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="210"/>
         <source>Find ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1448,6 +1460,11 @@ projectPath : %1</source>
     <message>
         <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="83"/>
         <source>select checkout repos path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="61"/>
+        <source>Open %0 Project Directory</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1484,12 +1501,12 @@ projectPath : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="59"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="57"/>
         <source>Find:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="84"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="82"/>
         <source>Repalce:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1551,7 +1568,7 @@ projectPath : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/buildpropertywidget.cpp" line="138"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/buildpropertywidget.cpp" line="140"/>
         <source>Build configuration:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1608,7 +1625,7 @@ projectPath : %1</source>
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="511"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="537"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1656,22 +1673,22 @@ projectPath : %1</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="174"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="175"/>
         <source>Save Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="175"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="176"/>
         <source>The file has unsaved changes, will save?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="597"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="585"/>
         <source>File Has Been Removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="598"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="586"/>
         <source>The file has been removed, Do you want to save it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1816,33 +1833,33 @@ projectPath : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="71"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="69"/>
         <source>Find Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="72"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="70"/>
         <source>Find Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="73"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="71"/>
         <source>Advanced...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="96"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="94"/>
         <location filename="../../src/plugins/find/searchresultwindow.cpp" line="141"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="97"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="95"/>
         <source>Replace &amp;&amp; Find</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="98"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="96"/>
         <source>Repalce All</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1871,7 +1888,7 @@ projectPath : %1</source>
 <context>
     <name>QTabWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="93"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="94"/>
         <source>Code Lens</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1910,7 +1927,7 @@ projectPath : %1</source>
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="312"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="311"/>
         <source>Navigation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2027,7 +2044,7 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="58"/>
-        <source>Recored</source>
+        <source>Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2329,7 +2346,7 @@ Delete anyway?</source>
 <context>
     <name>RunPropertyWidget</name>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runpropertywidget.cpp" line="69"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runpropertywidget.cpp" line="73"/>
         <source>Run configuration:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2543,7 +2560,7 @@ Delete anyway?</source>
 <context>
     <name>StyleLsp</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="712"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="738"/>
         <source>There is a fatal error between the current d-&gt;editor component and the backend of the syntax server, which may affect the syntax highlighting. 
 Please contact the maintainer for troubleshooting to solve the problem!</source>
         <translation type="unfinished"></translation>

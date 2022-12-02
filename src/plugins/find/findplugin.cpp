@@ -65,6 +65,7 @@ bool FindPlugin::start()
 
     editMenu->addAction(findAction);
     editMenu->addAction(advancedFindAction);
+    windowService->addToolBarActionItem("Find/Replace", findAction);
 
     connect(findAction, &QAction::triggered, [=] {
         emit windowService->showFindToolBar();

@@ -21,6 +21,7 @@
 #include "generaloptionwidget.h"
 #include "environmentwidget.h"
 #include "shortcutsettingwidget.h"
+#include "profilesettingwidget.h"
 
 #include <QHBoxLayout>
 #include <QTabWidget>
@@ -41,6 +42,7 @@ GeneralOptionWidget::GeneralOptionWidget(QWidget *parent)
 
     d->tabWidget->addTab(new EnvironmentWidget(), tr("Environment"));
     d->tabWidget->addTab(new ShortcutSettingWidget(), tr("Commands"));
+    d->tabWidget->addTab(new ProfileSettingWidget(), tr("Interface"));
     setLayout(layout);
 }
 

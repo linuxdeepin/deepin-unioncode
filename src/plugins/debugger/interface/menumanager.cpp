@@ -65,6 +65,7 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = new AbstractAction(interrupt.get());
     interrupt->setEnabled(false);
     windowService->addAction(MWM_DEBUG, actionImpl);
+    windowService->addToolBarActionItem("Interrupt", interrupt.get());
 
     continueDebugging.reset(new QAction(MWMDA_CONTINUE));
     ActionManager::getInstance()->registerAction(continueDebugging.get(), "Debug.Continue",
@@ -101,6 +102,7 @@ void MenuManager::initialize(WindowService *windowService)
     connect(stepOver.get(), &QAction::triggered, debugManager, &DebugManager::stepOver);
     actionImpl = new AbstractAction(stepOver.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
+    windowService->addToolBarActionItem("Step.Over", stepOver.get());
 
     stepIn.reset(new QAction(MWMDA_STEP_IN));
     ActionManager::getInstance()->registerAction(stepIn.get(), "Debug.Step.In",
@@ -110,6 +112,7 @@ void MenuManager::initialize(WindowService *windowService)
     connect(stepIn.get(), &QAction::triggered, debugManager, &DebugManager::stepIn);
     actionImpl = new AbstractAction(stepIn.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
+    windowService->addToolBarActionItem("Step.In", stepIn.get());
 
     stepOut.reset(new QAction(MWMDA_STEP_OUT));
     ActionManager::getInstance()->registerAction(stepOut.get(), "Debug.Step.Out",
@@ -119,6 +122,7 @@ void MenuManager::initialize(WindowService *windowService)
     connect(stepOut.get(), &QAction::triggered, debugManager, &DebugManager::stepOut);
     actionImpl = new AbstractAction(stepOut.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
+    windowService->addToolBarActionItem("Step.Out", stepOut.get());
 }
 
 void MenuManager::handleRunStateChanged(Debugger::RunState state)

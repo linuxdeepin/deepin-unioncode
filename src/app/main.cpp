@@ -83,8 +83,14 @@ int main(int argc, char *argv[])
     QTranslator translator;
 
     auto result = CustomPaths::endSeparator(CustomPaths::global(CustomPaths::Translations));
-    translator.load(result + "zh_CN.qm");  // TODO(hongjinchuan):dynamic switch
-    a.installTranslator(&translator);
+    QFile file(CustomPaths::user(CustomPaths::Flags::Configures)
+                                     + QDir::separator() + QString("chooselanguage.support"));
+    if (file.exists() && file.open(QIODevice::ReadOnly)) {
+        QTextStream txtInput(&file);
+        QString language = txtInput.readLine();
+        translator.load(result + language);
+        a.installTranslator(&translator);
+    }
 
     if (!pluginsLoad()) {
         qCritical() << "Failed, Load plugins!";
