@@ -69,62 +69,13 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
         qApp->closeAllWindows();
     });
 
-    QAction* actionNewDocument = new QAction(MWMFA_DOCUMENT_NEW);
-    ActionManager::getInstance()->registerAction(actionNewDocument, "File.New.Document",
-                                                 MWMFA_DOCUMENT_NEW, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_N),
-                                                 "new_doc.png");
-    QAction::connect(actionNewDocument, &QAction::triggered, [=](){
-        qInfo() << "nothing to do";
-    });
-
-    QAction* actionNewFolder = new QAction(MWMFA_FOLDER_NEW);
-    ActionManager::getInstance()->registerAction(actionNewFolder, "File.New.Folder",
-                                                 MWMFA_FOLDER_NEW, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_N),
-                                                 "new_folder.png");
-    QAction::connect(actionNewFolder, &QAction::triggered, [=](){
-        qInfo() << "nothing to do";
-    });
-
-    QAction* actionOpenDocument = new QAction(MWMFA_OPEN_DOCUMENT);
-    ActionManager::getInstance()->registerAction(actionOpenDocument, "File.Open.Document",
-                                                 MWMFA_OPEN_DOCUMENT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O),
-                                                 "open_doc.png");
-    QAction::connect(actionOpenDocument, &QAction::triggered, [=](){
-        QString file = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE);
-        if (file.isEmpty())
-            return;
-        // 重新实现 openDocment逻辑，需建立统一的lsp 全局入口
-    });
-
     QMenu* menuOpenProject = new QMenu(MWMFA_OPEN_PROJECT);
     menuOpenProject->setIcon(QIcon(":/core/images/open_doc.png"));
 
-    auto openRecentDocuments = new QAction(MWMFA_OPEN_RECENT_DOCUMENTS);
-    ActionManager::getInstance()->registerAction(openRecentDocuments, "File.Open.Recent.Documents",
-                                                 MWMFA_OPEN_RECENT_DOCUMENTS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_D),
-                                                 "recent_doc.png");
-    auto openRecentFolders = new QAction(MWMFA_OPEN_RECENT_FOLDER);
-    ActionManager::getInstance()->registerAction(openRecentFolders, "File.Open.Recent.Folders",
-                                                 MWMFA_OPEN_RECENT_FOLDER, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_F),
-                                                 "recent_folder.png");
-
-    fileMenu->addAction(actionNewDocument);
-    fileMenu->addAction(actionNewFolder);
-    fileMenu->addSeparator();
     fileMenu->addMenu(menuOpenProject);
-    fileMenu->addAction(actionOpenDocument);
-    fileMenu->addAction(openRecentDocuments);
-    fileMenu->addAction(openRecentFolders);
-    fileMenu->addSeparator();
     fileMenu->addAction(actionQuit);
     QAction* fileAction = menuBar->addMenu(fileMenu);
     fileAction->setText(MWM_FILE);
-
-    actionNewDocument->setDisabled(true);
-    actionNewFolder->setDisabled(true);
-    actionOpenDocument->setDisabled(true);
-    openRecentDocuments->setDisabled(true);
-    openRecentFolders->setDisabled(true);
 }
 
 void WindowKeeper::createBuildActions(QMenuBar *menuBar)
@@ -148,59 +99,16 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     auto toolsMenu = new QMenu(MWM_TOOLS);
     menuBar->addMenu(toolsMenu);
 
-    QAction* actionSearch = new QAction(MWMTA_SEARCH);
-    QAction* actionPackageTools = new QAction(MWMTA_PACKAGE_TOOLS);
-    QAction* actionVersionTools = new QAction(MWMTA_VERSION_TOOLS);
-    QAction* actionCodeFormatting = new QAction(MWMTA_CODE_FORMATTING);
-    QAction* actionRuntimeAnalysis = new QAction(MWMTA_RUNTIME_ANALYSIS);
-    QAction* actionTest = new QAction(MWMTA_TEST);
-    QAction* actionPlugins = new QAction(MWMTA_PLUGINS);
     QMenu* languageMenu = new QMenu(MWMTM_SWITCH_LANGUAGE);
     QAction* actionEnglish = new QAction(MWMTA_ENGLISH);
     QAction* actionChinese = new QAction(MWMTA_CHINESE);
     languageMenu->addAction(actionEnglish);
     languageMenu->addAction(actionChinese);
-
-    ActionManager::getInstance()->registerAction(actionSearch, "Tools.Search",
-                                                 MWMTA_SEARCH, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_S),
-                                                 "system-search.png");
-    ActionManager::getInstance()->registerAction(actionPackageTools, "Tools.Package.Tools",
-                                                 MWMTA_PACKAGE_TOOLS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_P),
-                                                 "emblem-package.svg");
-    ActionManager::getInstance()->registerAction(actionVersionTools, "Tools.Version.Tools",
-                                                 MWMTA_VERSION_TOOLS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_V),
-                                                 "image-has-versions-open.png");
-    ActionManager::getInstance()->registerAction(actionCodeFormatting, "Tools.Code.Formatting",
-                                                 MWMTA_CODE_FORMATTING, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
-                                                 "format-justify-left.svg");
-    ActionManager::getInstance()->registerAction(actionRuntimeAnalysis, "Tools.Runtime.Analysis",
-                                                 MWMTA_RUNTIME_ANALYSIS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
-                                                 "runtime_analysis.png");
-    ActionManager::getInstance()->registerAction(actionTest, "Tools.Test",
-                                                 MWMTA_TEST, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_T),
-                                                 "test.png");
-    ActionManager::getInstance()->registerAction(actionPlugins, "Tools.Plugins",
-                                                 MWMTA_PLUGINS, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_G),
-                                                 "plugins.png");
     ActionManager::getInstance()->registerAction(actionEnglish, "Tools.English", MWMTA_ENGLISH);
     ActionManager::getInstance()->registerAction(actionChinese, "Tools.Chinese", MWMTA_PLUGINS);
 
-    toolsMenu->addAction(actionSearch);
-    toolsMenu->addAction(actionPackageTools);
-    toolsMenu->addAction(actionVersionTools);
-    toolsMenu->addAction(actionCodeFormatting);
-    toolsMenu->addAction(actionRuntimeAnalysis);
-    toolsMenu->addAction(actionTest);
-    toolsMenu->addAction(actionPlugins);
     toolsMenu->addMenu(languageMenu);
 
-    actionSearch->setEnabled(false);
-    actionPackageTools->setEnabled(false);
-    actionVersionTools->setEnabled(false);
-    actionCodeFormatting->setEnabled(false);
-    actionRuntimeAnalysis->setEnabled(false);
-    actionTest->setEnabled(false);
-    actionPlugins->setEnabled(false);
     actionEnglish->setEnabled(false);
     actionChinese->setEnabled(false);
 }

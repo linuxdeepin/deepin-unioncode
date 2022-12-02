@@ -81,12 +81,10 @@ const Capabilities &DebugSession::capabilities() const
 
 bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &iniRequest)
 {
-    shutdown();
-
     if (!raw) {
         // if there was already a connection make sure to remove old listeners
         // TODO(mozart):crashed when re-start debug.
-//        shutdown();
+        shutdown();
         rtCfgProvider.reset(new RunTimeCfgProvider(/*this*/));
 
         constexpr int kMaxAttempts = 10;
