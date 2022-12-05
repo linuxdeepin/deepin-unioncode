@@ -34,6 +34,12 @@ public:
 
     void clearContents();
     void addTask(const Task &task, int linkedOutputLines, int skipLines);
+
+protected:
+    void contextMenuEvent(QContextMenuEvent * event) override;
+
+private:
+    QList<QAction*> actionFactory();
 };
 
 #endif // PROBLEMOUTPUTPANE_H

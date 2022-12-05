@@ -23,6 +23,7 @@
 #include "common/common.h"
 
 #include <QScrollBar>
+#include <QMenu>
 #include <QDebug>
 
 /**
@@ -158,4 +159,54 @@ void OutputPane::appendText(const QString &text, OutputFormat format, AppendMode
     }
 
     appendCustomText(text, mode, textFormat);
+}
+
+void OutputPane::contextMenuEvent(QContextMenuEvent * event)
+{
+    static QMenu *menu = nullptr;
+    if (nullptr == menu) {
+        menu = new QMenu(this);
+        menu->setParent(this);
+        menu->addActions(actionFactory());
+    }
+
+    menu->move(event->globalX(), event->globalY());
+    menu->show();
+}
+
+QList<QAction*> OutputPane::actionFactory()
+{
+    QList<QAction*> list;
+
+    {
+        auto action = new QAction(this);
+        action->setText(tr("Copy"));
+        connect(action, &QAction::triggered, [this](){
+            if (!document()->toPlainText().isEmpty())
+                copy();
+        });
+        list.append(action);
+    }
+
+    {
+        auto action = new QAction(this);
+        action->setText(tr("Clear"));
+        connect(action, &QAction::triggered, [this](){
+            if (!document()->toPlainText().isEmpty())
+                clear();
+        });
+        list.append(action);
+    }
+
+    {
+        auto action = new QAction(this);
+        action->setText(tr("Select All"));
+        connect(action, &QAction::triggered, [this](){
+            if (!document()->toPlainText().isEmpty())
+                selectAll();
+        });
+        list.append(action);
+    }
+
+    return list;
 }

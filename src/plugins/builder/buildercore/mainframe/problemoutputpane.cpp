@@ -26,6 +26,7 @@
 #include "common/common.h"
 
 #include <QVBoxLayout>
+#include <QMenu>
 
 ProblemOutputPane::ProblemOutputPane(QWidget *parent)
     : QWidget(parent)
@@ -48,6 +49,32 @@ void ProblemOutputPane::clearContents()
 void ProblemOutputPane::addTask(const Task &task, int linkedOutputLines, int skipLines)
 {
     TaskManager::instance()->slotAddTask(task, linkedOutputLines, skipLines);
+}
+
+
+void ProblemOutputPane::contextMenuEvent(QContextMenuEvent * event)
+{
+    static QMenu *menu = nullptr;
+    if (nullptr == menu) {
+        menu = new QMenu(this);
+        menu->setParent(this);
+        menu->addActions(actionFactory());
+    }
+
+    menu->move(event->globalX(), event->globalY());
+    menu->show();
+}
+
+QList<QAction*> ProblemOutputPane::actionFactory()
+{
+    QList<QAction*> list;
+    auto action = new QAction(this);
+    action->setText(tr("Clear"));
+    connect(action, &QAction::triggered, [this](){
+        clearContents();
+    });
+    list.append(action);
+    return list;
 }
 
 

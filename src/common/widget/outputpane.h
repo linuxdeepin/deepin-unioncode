@@ -48,6 +48,9 @@ public:
     void clearContents();
     void appendText(const QString &text, OutputFormat format, AppendMode mode = Normal);
 
+protected:
+    void contextMenuEvent(QContextMenuEvent * event) override;
+
 private:
     QString normalizeNewlines(const QString &text);
 
@@ -55,6 +58,7 @@ private:
     bool isScrollbarAtBottom() const;
     QString doNewlineEnforcement(const QString &out);
     void scrollToBottom();
+    QList<QAction*> actionFactory();
 
     OutputPanePrivate *d = nullptr;
 };

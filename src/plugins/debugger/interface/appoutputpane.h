@@ -40,12 +40,15 @@ public:
     QString doNewlineEnforcement(const QString &out);
     void scrollToBottom();
 
+protected:
+    void contextMenuEvent(QContextMenuEvent * event) override;
+
 public slots:
     void appendText(const QString &text, OutputFormat format);
 
 private:
     void appendText(const QString &text, const QTextCharFormat &format = QTextCharFormat());
-
+    QList<QAction*> actionFactory();
     OutputWindowPrivate *d = nullptr;
 };
 
