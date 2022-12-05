@@ -26,6 +26,7 @@
 #include "properties/runpropertywidget.h"
 #include "properties/configpropertywidget.h"
 #include "properties/configutil.h"
+#include "properties/targetsmanager.h"
 
 #include "services/builder/builderservice.h"
 #include "services/window/windowservice.h"
@@ -109,6 +110,16 @@ QDialog *CmakeGenerator::configureWidget(const QString &language,
                                          const QString &workspace)
 {
     ProjectGenerator::configureWidget(language, workspace);
+
+    config::ConfigureParam *param = config::ConfigUtil::instance()->getConfigureParamPointer();
+    if (!config::ConfigUtil::instance()->isNeedConfig(workspace, *param)) {
+        dpfservice::ProjectInfo info;
+        if (config::ConfigUtil::instance()->updateProjectInfo(info, param)) {
+            configure(info);
+            TargetsManager::instance()->initialize(info.buildFolder());
+            return nullptr;
+        }
+    }
 
     // show build type config pane.
     ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, workspace);

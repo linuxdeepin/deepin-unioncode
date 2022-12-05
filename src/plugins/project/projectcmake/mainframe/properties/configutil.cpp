@@ -190,10 +190,10 @@ void ConfigUtil::saveConfig(const QString &filePath, const ConfigureParam &param
     }
 }
 
-void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param)
+bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param)
 {
     if (!param)
-        return;
+        return false;
 
     for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
         if (d->configureParam.defaultType == iter->type) {
@@ -246,9 +246,11 @@ void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                 }
             }
 
-            break;
+            return true;
         }
     }
+
+    return false;
 }
 
 } //namespace config

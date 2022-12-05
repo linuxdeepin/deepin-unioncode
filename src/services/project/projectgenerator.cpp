@@ -121,8 +121,7 @@ void dpfservice::ProjectGenerator::doProjectOpen(const QString &language, const 
 
     auto widget = generator->configureWidget(language, workspace);
     if (widget) {
-        widget->setWindowFlag(Qt::Dialog);
-        widget->show();
+        widget->exec();
     }
 }
 
