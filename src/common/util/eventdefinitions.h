@@ -111,6 +111,8 @@ struct AnnotationInfo
     };
     Role::type_value role;
     QString text;
+    AnnotationInfo(const QString &text)
+        : text(text) { role = Role::get()->Note;}
     AnnotationInfo(Role::type_value role, const QString &text)
         : role(role), text(text){}
     AnnotationInfo() :role(Role::get()->Note), text(""){}

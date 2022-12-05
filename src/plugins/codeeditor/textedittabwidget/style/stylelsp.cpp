@@ -764,10 +764,11 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
             if (!sourceText.isEmpty() && wordLength == val.length) {
                 QString tokenValue = tokenToDefine(val.tokenType);
                 QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue);
-                if (!tokenAnnLine.isEmpty())
+                if (!tokenAnnLine.isEmpty()) {
                     editor.setAnnotation(d->edit->file(), val.start.line,
                                          QString("User Action Analysed"),
-                                         tokenAnnLine);
+                                         AnnotationInfo{tokenAnnLine});
+                }
 #ifdef QT_DEBUG
                 qInfo() << "tokenValue:" << tokenValue;
 #endif

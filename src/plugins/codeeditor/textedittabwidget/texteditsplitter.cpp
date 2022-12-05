@@ -61,6 +61,8 @@ TextEditSplitter::~TextEditSplitter()
 void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::ProjectKey &key, const QString &file)
 {
     auto oldEditWidget = qobject_cast<TextEditTabWidget*>(sender());
+    if (!oldEditWidget)
+        return;
     auto splitter = qobject_cast<QSplitter *>(oldEditWidget->parent());
     QSplitter *newSplitter = new QSplitter(splitter);
     splitters.append(newSplitter);
@@ -70,7 +72,9 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
 
     TextEditTabWidget *newEditWidget = new TextEditTabWidget(newSplitter);
     tabWidgets.append(newEditWidget);
-    newEditWidget->openFileWithKey(key, file);
+    if (key.isValid()) {
+        newEditWidget->openFileWithKey(key, file);
+    }
     newEditWidget->setFocus();
     newEditWidget->activateWindow();
     newSplitter->insertWidget(0, oldEditWidget);
@@ -108,6 +112,18 @@ void TextEditSplitter::doSelected(bool state)
     } else {
         QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                             textEditTabWidget, &TextEditTabWidget::openFileWithKey);
+        bool isConnect = false;
+        for (int i = 0; i < tabWidgets.size(); i++) {
+            isConnect = connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                                     tabWidgets.at(i), &TextEditTabWidget::openFileWithKey);
+            if (isConnect) {
+                break;
+            }
+        }
+        if (!isConnect) {
+            QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                                textEditTabWidget, &TextEditTabWidget::openFileWithKey);
+        }
     }
 }
 
@@ -119,14 +135,16 @@ TextEditSplitter *TextEditSplitter::instance()
 
 void TextEditSplitter::doClose()
 {
+    if(tabWidgets.size() <= 1) {
+        return;
+    }
     auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
-    delete textEditTabWidget;
     int idx = tabWidgets.indexOf(textEditTabWidget);
-    if (0 <= idx) {
+    if (0 < idx) {
         delete tabWidgets.at(idx);
         tabWidgets.removeAt(idx);
-        delete splitters.at(idx);
-        splitters.removeAt(idx);
+//        delete splitters.at(idx);
+//        splitters.removeAt(idx);
     }
 }
 

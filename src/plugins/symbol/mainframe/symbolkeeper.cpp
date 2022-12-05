@@ -87,7 +87,7 @@ void SymbolKeeper::doParseDone(bool result)
                           .arg(args.language)
                           .arg(args.storage));
     } else {
-       actionanalyse.analyse(args.workspace, args.language, args.storage);
+       symbol.parseDone(args.workspace, args.language, args.storage);
     }
     this->treeView()->expandAll();
     parser->kill();

@@ -67,6 +67,7 @@ public:
                     || tokenMap.result.empty())
                 continue;
             for (int idx = 0; idx < rules.size(); idx++) {
+                if (!result.isEmpty()) result += " ";
                 result += QString::fromStdString(data.rules[idx]);
                 if (!result.isEmpty()) result += ": ";
                 result += QString::number(tokenMap.result[idx]*100) + "%";

@@ -108,7 +108,10 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
 
     QObject::connect(d->tab, &TextEditTabBar::splitClicked, this, [=](Qt::Orientation ori) {
         QString currSelFile = d->tab->currentFile();
-        newlsp::ProjectKey key = d->textEdits[currSelFile]->projectKey();
+        newlsp::ProjectKey key = {};
+        if(d->textEdits[currSelFile] && !currSelFile.isEmpty()) {
+            key = d->textEdits[currSelFile]->projectKey();
+        }
         emit splitClicked(ori, key, currSelFile);
     });
 
