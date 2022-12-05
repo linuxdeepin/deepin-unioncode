@@ -250,15 +250,28 @@ void ScintillaEditExtern::replaceRange(Scintilla::Position start,
 
 QPair<long int, long int> ScintillaEditExtern::findText(long int start, long int end, const QString &text)
 {
-    return ScintillaEdit::findText(STYLE_DEFAULT, text.toLatin1().data(), start, end);
+    return ScintillaEdit::findText(SCFIND_NONE, text.toLatin1().data(), start, end);
 }
 
-void ScintillaEditExtern::findNext(const QString &srcText)
+void ScintillaEditExtern::findText(const QString &srcText, bool reverse)
 {
     long int currentPos = ScintillaEditExtern::currentPos();
-    QPair<int, int> position = ScintillaEditExtern::findText(currentPos, length(), srcText.toLatin1().data());
-    if (position.first > -1 && position.first != position.second) {
+    long int maxPos = length();
+    long int startPos = reverse ? (currentPos - srcText.length()) : currentPos;
+    long int endPos = reverse ? 0 : maxPos;
+    QPair<int, int> position = ScintillaEditExtern::findText(startPos, endPos, srcText.toLatin1().data());
+    if (position.first >= 0) {
         ScintillaEditExtern::jumpToRange(position.first, position.second);
+    } else {
+        if (reverse) {
+            if (position.second == 0) {
+                ScintillaEditExtern::jumpToRange(maxPos, maxPos);
+            }
+        } else {
+            if (position.second == maxPos) {
+                ScintillaEditExtern::jumpToRange(0, 0);
+            }
+        }
     }
 }
 
@@ -579,12 +592,13 @@ void ScintillaEditExtern::find(const QString &srcText, int operateType)
     case FindType::Previous:
     {
         searchAnchor();
-        searchPrev(SCFIND_NONE, srcText.toLatin1().data());
+        findText(srcText, true);
         break;
     }
     case FindType::Next:
     {
-        findNext(srcText);
+        searchAnchor();
+        findText(srcText, false);
         break;
     }
     default:
@@ -609,8 +623,9 @@ void ScintillaEditExtern::replace(const QString &srcText, const QString &destTex
         QByteArray byteArray = getSelText();
         if (0 == QString(byteArray).compare(srcText, Qt::CaseInsensitive)) {
             replaceSel(destText.toLatin1().data());
+
             searchAnchor();
-            searchNext(SCFIND_NONE, srcText.toLatin1().data());
+            findText(srcText, false);
         }
         break;
     }

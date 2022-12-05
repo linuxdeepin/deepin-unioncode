@@ -385,3 +385,7 @@ QTextEdit{
 QPlainTextEdit{
     background: #111111;
 }
+
+QCheckBox::indicator::unchecked {
+    border: 1px solid gray;
+}
