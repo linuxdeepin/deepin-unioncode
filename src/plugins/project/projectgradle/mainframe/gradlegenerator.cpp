@@ -90,6 +90,7 @@ private:
 GradleGenerator::GradleGenerator()
     : d(new GradleGeneratorPrivate())
 {
+    qRegisterMetaType<QList<QStandardItem*>>("QList<QStandardItem*>");
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
@@ -157,11 +158,10 @@ QStandardItem *GradleGenerator::createRootItem(const dpfservice::ProjectInfo &in
     QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new GradleAsynParse();
-    QObject::connect(d->projectParses[rootItem],
-                     &GradleAsynParse::itemsModified,
-                     this, &GradleGenerator::doProjectChildsModified,
-                     Qt::ConnectionType::UniqueConnection);
-    d->projectParses[rootItem]->parseProject(info);
+    QObject::connect(d->projectParses[rootItem], &GradleAsynParse::itemsModified,
+                     this, &GradleGenerator::doProjectChildsModified);
+    QMetaObject::invokeMethod(d->projectParses[rootItem], "parseProject",
+                              Q_ARG(const dpfservice::ProjectInfo &, info));
     return rootItem;
 }
 
@@ -215,14 +215,14 @@ QMenu *GradleGenerator::createItemMenu(const QStandardItem *item)
     return menu;
 }
 
-void GradleGenerator::doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem *> > &info)
+void GradleGenerator::doProjectChildsModified(const QList<QStandardItem *> &items)
 {
     auto rootItem = d->projectParses.key(qobject_cast<GradleAsynParse*>(sender()));
     if (rootItem) {
         while (rootItem->hasChildren()) {
             rootItem->takeRow(0);
         }
-        rootItem->appendRows(info.result);
+        rootItem->appendRows(items);
     }
 }
 

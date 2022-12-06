@@ -22,7 +22,7 @@
 #include "projectcore.h"
 #include "transceiver/sendevents.h"
 #include "mainframe/projectkeeper.h"
-#include "mainframe/projecttreeview.h"
+#include "mainframe/projecttree.h"
 #include "common/common.h"
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -72,30 +72,30 @@ bool ProjectCore::start()
     using namespace std::placeholders;
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {
-        ProjectTreeView *treeView = ProjectKeeper::instance()->treeView();
+        ProjectTree *treeView = ProjectKeeper::instance()->treeView();
         if (!projectService->projectView.addRootItem) {
             projectService->projectView.addRootItem
-                    = std::bind(&ProjectTreeView::appendRootItem, treeView, _1);
+                    = std::bind(&ProjectTree::appendRootItem, treeView, _1);
         }
         if (!projectService->projectView.removeRootItem) {
             projectService->projectView.removeRootItem
-                    = std::bind(&ProjectTreeView::removeRootItem, treeView, _1);
+                    = std::bind(&ProjectTree::removeRootItem, treeView, _1);
         }
         if (!projectService->projectView.expandedDepth) {
             projectService->projectView.expandedDepth
-                    = std::bind(&ProjectTreeView::expandedProjectDepth, treeView, _1, _2);
+                    = std::bind(&ProjectTree::expandedProjectDepth, treeView, _1, _2);
         }
         if (!projectService->projectView.expandedAll) {
             projectService->projectView.expandedAll
-                    = std::bind(&ProjectTreeView::expandedProjectAll, treeView, _1);
+                    = std::bind(&ProjectTree::expandedProjectAll, treeView, _1);
         }
         if (!projectService->projectView.getAllProjectInfo) {
             projectService->projectView.getAllProjectInfo
-                    = std::bind(&ProjectTreeView::getAllProjectInfo, treeView);
+                    = std::bind(&ProjectTree::getAllProjectInfo, treeView);
         }
         if (!projectService->projectView.getProjectInfo) {
             projectService->projectView.getProjectInfo
-                    = std::bind(&ProjectTreeView::getProjectInfo, treeView, _1, _2);
+                    = std::bind(&ProjectTree::getProjectInfo, treeView, _1, _2);
         }
     }
     return true;
@@ -122,6 +122,9 @@ void ProjectCore::pluginsStartedMain()
                     if (action)
                         windowService->addOpenProjectAction(lang, new AbstractAction(action));
                 }
+                QObject::connect(generator, &ProjectGenerator::itemChanged,
+                                 ProjectKeeper::instance()->treeView(),
+                                 &ProjectTree::itemModified, Qt::UniqueConnection);
             }
         }
     }

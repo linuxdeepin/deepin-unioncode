@@ -3,10 +3,11 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-projectcore)
 
 set(CXX_CPP
+    mainframe/projectmodel.cpp
     mainframe/projectdelegate.cpp
     mainframe/projectselectionmodel.cpp
     mainframe/projectinfodialog.cpp
-    mainframe/projecttreeview.cpp
+    mainframe/projecttree.cpp
     mainframe/projectkeeper.cpp
     transceiver/projectcorereceiver.cpp
     transceiver/sendevents.cpp
@@ -15,13 +16,14 @@ set(CXX_CPP
     )
 
 set(CXX_H
+    mainframe/projectmodel.h
     mainframe/projectdelegate.h
     mainframe/projectselectionmodel.h
     mainframe/projectinfodialog.h
-    mainframe/projecttreeview.h
+    mainframe/projecttree.h
     mainframe/projectkeeper.h
     transceiver/projectcorereceiver.h
-    transceiver/sendevents.h    
+    transceiver/sendevents.h
     projectcore.h
     )
 

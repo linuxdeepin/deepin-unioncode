@@ -27,12 +27,16 @@ class CodeLensPrivate
     friend class CodeLens;
     CodeLensTree *lens {nullptr};
     QGridLayout *gLayout {nullptr};
+    static CodeLens *ins;
 };
+CodeLens * CodeLensPrivate::ins {nullptr};
 
 CodeLens *CodeLens::instance()
 {
-    static CodeLens ins;
-    return &ins;
+    if (!CodeLensPrivate::ins) {
+        CodeLensPrivate::ins= new CodeLens;
+    }
+    return CodeLensPrivate::ins;
 }
 
 CodeLens::CodeLens(QWidget *parent)

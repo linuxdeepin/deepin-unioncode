@@ -6,13 +6,6 @@
 
 namespace dpfservice {
 
-template<class T>
-struct ParseInfo
-{
-    T result;
-    bool isNormal = true;
-};
-
 struct ProjectMenuActionInfo
 {
     QString displyText;

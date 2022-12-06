@@ -18,10 +18,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "projecttreeview.h"
+#include "projecttree.h"
 #include "projectinfodialog.h"
 #include "projectselectionmodel.h"
 #include "projectdelegate.h"
+#include "projectmodel.h"
 #include "transceiver/sendevents.h"
 
 #include "services/project/projectservice.h"
@@ -30,7 +31,6 @@
 
 #include <QDebug>
 #include <QHeaderView>
-#include <QStandardItemModel>
 #include <QContextMenuEvent>
 #include <QPushButton>
 
@@ -40,10 +40,10 @@ const QString DELETE_MESSAGE_TEXT {QTreeView::tr("The delete operation will be r
 
 using namespace dpfservice;
 
-class ProjectTreeViewPrivate
+class ProjectTreePrivate
 {
-    friend class ProjectTreeView;
-    QStandardItemModel *itemModel {nullptr};
+    friend class ProjectTree;
+    ProjectModel *itemModel {nullptr};
     ProjectSelectionModel *sectionModel {nullptr};
     ProjectDelegate *delegate {nullptr};
     int itemDepth(const QStandardItem *item)
@@ -58,9 +58,9 @@ class ProjectTreeViewPrivate
     }
 };
 
-ProjectTreeView::ProjectTreeView(QWidget *parent)
+ProjectTree::ProjectTree(QWidget *parent)
     : QTreeView (parent)
-    , d(new ProjectTreeViewPrivate)
+    , d(new ProjectTreePrivate)
 {
     setEditTriggers(QTreeView::NoEditTriggers);	          //节点不能编辑
     setSelectionBehavior(QTreeView::SelectRows);		  //一次选中整行
@@ -68,17 +68,17 @@ ProjectTreeView::ProjectTreeView(QWidget *parent)
     setFocusPolicy(Qt::NoFocus);                          //去掉鼠标移到节点上时的虚线框
     this->header()->hide();
 
-    d->itemModel = new QStandardItemModel(this);
+    d->itemModel = new ProjectModel(this);
     setModel(d->itemModel);
 
     // 右键菜单创建
-    QObject::connect(this, &ProjectTreeView::itemMenuRequest,
-                     this, &ProjectTreeView::doItemMenuRequest);
+    QObject::connect(this, &ProjectTree::itemMenuRequest,
+                     this, &ProjectTree::doItemMenuRequest);
 
 
     // 双击操作
-    QObject::connect(this, &ProjectTreeView::doubleClicked,
-                     this, &ProjectTreeView::doDoubleClieked);
+    QObject::connect(this, &ProjectTree::doubleClicked,
+                     this, &ProjectTree::doDoubleClieked);
 
     d->sectionModel = new ProjectSelectionModel(d->itemModel);
     setSelectionModel(d->sectionModel);
@@ -87,14 +87,14 @@ ProjectTreeView::ProjectTreeView(QWidget *parent)
     setItemDelegate(d->delegate);
 }
 
-ProjectTreeView::~ProjectTreeView()
+ProjectTree::~ProjectTree()
 {
     if (d) {
         delete d;
     }
 }
 
-void ProjectTreeView::appendRootItem(QStandardItem *root)
+void ProjectTree::appendRootItem(QStandardItem *root)
 {
     if (!root)
         return;
@@ -115,7 +115,7 @@ void ProjectTreeView::appendRootItem(QStandardItem *root)
     doActiveProject(root);
 }
 
-void ProjectTreeView::removeRootItem(QStandardItem *root)
+void ProjectTree::removeRootItem(QStandardItem *root)
 {
     this->viewport()->setUpdatesEnabled(false);
 
@@ -148,15 +148,14 @@ void ProjectTreeView::removeRootItem(QStandardItem *root)
     this->viewport()->setUpdatesEnabled(true);
 }
 
-void ProjectTreeView::takeRootItem(QStandardItem *root)
+void ProjectTree::takeRootItem(QStandardItem *root)
 {
     // 从展示的模型中删除
-    QStandardItemModel *model = static_cast<QStandardItemModel*>(QTreeView::model());
-    QModelIndex index = model->indexFromItem(root);
-    model->takeRow(index.row());
+    QModelIndex index = d->itemModel->indexFromItem(root);
+    d->itemModel->takeRow(index.row());
 }
 
-void ProjectTreeView::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event)
+void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event)
 {
     auto rootItem = ProjectGenerator::root(item);
     QMenu *menu = nullptr;
@@ -174,7 +173,7 @@ void ProjectTreeView::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *
     }
 }
 
-void ProjectTreeView::expandedProjectDepth(const QStandardItem *root, int depth)
+void ProjectTree::expandedProjectDepth(const QStandardItem *root, int depth)
 {
     if (!root)
         return;
@@ -191,7 +190,7 @@ void ProjectTreeView::expandedProjectDepth(const QStandardItem *root, int depth)
     }
 }
 
-void ProjectTreeView::expandedProjectAll(const QStandardItem *root)
+void ProjectTree::expandedProjectAll(const QStandardItem *root)
 {
     if (!root)
         return;
@@ -205,7 +204,7 @@ void ProjectTreeView::expandedProjectAll(const QStandardItem *root)
     }
 }
 
-QList<dpfservice::ProjectInfo> ProjectTreeView::getAllProjectInfo()
+QList<dpfservice::ProjectInfo> ProjectTree::getAllProjectInfo()
 {
     using namespace dpfservice;
     QList<ProjectInfo> result;
@@ -215,7 +214,7 @@ QList<dpfservice::ProjectInfo> ProjectTreeView::getAllProjectInfo()
     return result;
 }
 
-ProjectInfo ProjectTreeView::getProjectInfo(const QString &kitName, const QString &workspace)
+ProjectInfo ProjectTree::getProjectInfo(const QString &kitName, const QString &workspace)
 {
     ProjectInfo projectInfo;
     for (int row = 0; row < d->itemModel->rowCount(); row++) {
@@ -228,7 +227,7 @@ ProjectInfo ProjectTreeView::getProjectInfo(const QString &kitName, const QStrin
     return projectInfo;
 }
 
-void ProjectTreeView::contextMenuEvent(QContextMenuEvent *event)
+void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
 {
     QTreeView::contextMenuEvent(event);
     QModelIndex index = indexAt(event->pos());
@@ -237,7 +236,7 @@ void ProjectTreeView::contextMenuEvent(QContextMenuEvent *event)
     itemMenuRequest(d->itemModel->itemFromIndex(index), event);
 }
 
-QMenu *ProjectTreeView::childMenu(const QStandardItem *root, const QStandardItem *child)
+QMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *child)
 {
     QMenu *menu = nullptr;
     QString toolKitName = ProjectInfo::get(root).kitName();
@@ -275,7 +274,7 @@ QMenu *ProjectTreeView::childMenu(const QStandardItem *root, const QStandardItem
     return menu;
 }
 
-QMenu *ProjectTreeView::rootMenu(QStandardItem *root)
+QMenu *ProjectTree::rootMenu(QStandardItem *root)
 {
     QMenu * menu = nullptr;
     QString toolKitName = ProjectInfo::get(root).kitName();
@@ -300,7 +299,17 @@ QMenu *ProjectTreeView::rootMenu(QStandardItem *root)
     return menu;
 }
 
-void ProjectTreeView::doDoubleClieked(const QModelIndex &index)
+void ProjectTree::itemModified(QStandardItem *item, const QList<QStandardItem *> &childs)
+{
+    setUpdatesEnabled(false);
+    auto parentIndex = d->itemModel->indexFromItem(item);
+    int childCount = d->itemModel->rowCount(parentIndex);
+    d->itemModel->removeRows(0, childCount, parentIndex);
+    item->appendRows(childs);
+    setUpdatesEnabled(true);
+}
+
+void ProjectTree::doDoubleClieked(const QModelIndex &index)
 {
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
     if (info.exists() && info.isFile()) {
@@ -315,7 +324,7 @@ void ProjectTreeView::doDoubleClieked(const QModelIndex &index)
     }
 }
 
-void ProjectTreeView::doCloseProject(QStandardItem *root)
+void ProjectTree::doCloseProject(QStandardItem *root)
 {
     if (!root && root != ProjectGenerator::root(root))
         return;
@@ -323,7 +332,7 @@ void ProjectTreeView::doCloseProject(QStandardItem *root)
     this->removeRootItem(root);
 }
 
-void ProjectTreeView::doActiveProject(QStandardItem *root)
+void ProjectTree::doActiveProject(QStandardItem *root)
 {
     if (!root && root != ProjectGenerator::root(root))
         return;
@@ -332,7 +341,7 @@ void ProjectTreeView::doActiveProject(QStandardItem *root)
 }
 
 
-void ProjectTreeView::actionNewDocument(const QStandardItem *item)
+void ProjectTree::actionNewDocument(const QStandardItem *item)
 {
     QDialog *dlg = new QDialog;
     QLineEdit *edit = new QLineEdit;
@@ -356,7 +365,7 @@ void ProjectTreeView::actionNewDocument(const QStandardItem *item)
     dlg->exec();
 }
 
-void ProjectTreeView::actionDeleteDocument(const QStandardItem *item)
+void ProjectTree::actionDeleteDocument(const QStandardItem *item)
 {
     QModelIndex index = d->itemModel->indexFromItem(item);
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
@@ -381,7 +390,7 @@ void ProjectTreeView::actionDeleteDocument(const QStandardItem *item)
     QFile(info.filePath()).remove();
 }
 
-void ProjectTreeView::creatNewDocument(const QStandardItem *item, const QString &fileName)
+void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fileName)
 {
     QModelIndex index = d->itemModel->indexFromItem(item);
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
@@ -414,7 +423,7 @@ void ProjectTreeView::creatNewDocument(const QStandardItem *item, const QString 
                                 okCallBack,
                                 nullptr);
         if (doOverWrite) {
-             QFile::remove(filePath);
+            QFile::remove(filePath);
         } else {
             return;
         }
@@ -427,7 +436,7 @@ void ProjectTreeView::creatNewDocument(const QStandardItem *item, const QString 
     editor.openFileWithKey(workspace, language, filePath);
 }
 
-void ProjectTreeView::doShowProjectInfo(QStandardItem *root)
+void ProjectTree::doShowProjectInfo(QStandardItem *root)
 {
     if (!root && root != ProjectGenerator::root(root))
         return;

@@ -39,18 +39,11 @@ class PythonAsynParsePrivate
 PythonAsynParse::PythonAsynParse()
     : d(new PythonAsynParsePrivate)
 {
+    QObject::connect(this, &QFileSystemWatcher::directoryChanged,
+                     this, &PythonAsynParse::doDirectoryChanged);
     d->thread = new QThread();
     this->moveToThread(d->thread);
-
-    QObject::connect(this, &Inotify::modified,
-                     this, &PythonAsynParse::doDirWatchModify,
-                     Qt::DirectConnection);
-    QObject::connect(this, &Inotify::createdSub,
-                     this, &PythonAsynParse::doWatchCreatedSub,
-                     Qt::DirectConnection);
-    QObject::connect(this, &Inotify::deletedSub,
-                     this, &PythonAsynParse::doWatchDeletedSub,
-                     Qt::DirectConnection);
+    d->thread->start();
 }
 
 PythonAsynParse::~PythonAsynParse()
@@ -60,7 +53,7 @@ PythonAsynParse::~PythonAsynParse()
             if (d->thread->isRunning())
                 d->thread->quit();
             while (d->thread->isFinished());
-            delete d->thread;
+            d->thread->deleteLater();
             d->thread = nullptr;
         }
         delete d;
@@ -70,84 +63,19 @@ PythonAsynParse::~PythonAsynParse()
 void PythonAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
     createRows(info.workspaceFolder());
-    emit itemsModified({d->rows, true});
+    emit itemsModified(d->rows);
 }
 
-void PythonAsynParse::doDirWatchModify(const QString &path)
-{
-    Q_UNUSED(path)
-}
-
-void PythonAsynParse::doWatchCreatedSub(const QString &path)
+void PythonAsynParse::doDirectoryChanged(const QString &path)
 {
     if (!path.startsWith(d->rootPath))
         return;
 
-    QString pathTemp = path;
-    if (pathTemp.startsWith(d->rootPath))
-        pathTemp = pathTemp.remove(0, d->rootPath.size());
+    d->rows.clear();
 
-    QStringList createds = createdFileNames(path);
-    for (auto &created : createds) {
-        QStandardItem *item = findItem(pathTemp);
-        QString createdFilePath = path + QDir::separator() + created;
-        QStandardItem *createItem = new QStandardItem(created);
-        createItem->setIcon(CustomIcons::icon(createdFilePath));
-        createItem->setToolTip(createdFilePath);
+    createRows(d->rootPath);
 
-        // add watcher
-        if (QFileInfo(createdFilePath).isDir())
-            Inotify::addPath(createdFilePath);
-
-        if (item) {
-            int insertRow = findRowWithDisplay(rows(item), created);
-            if (insertRow >= 0) {
-                item->insertRow(insertRow, createItem);
-            } else {
-                item->appendRow(createItem);
-            }
-        } else {
-            int insertRow = findRowWithDisplay(d->rows, created);
-            if (insertRow >= 0) {
-                d->rows.insert(insertRow, createItem);
-            } else {
-                d->rows.append(createItem);
-            }
-        }
-    }
-
-    emit itemsModified({d->rows, true});
-}
-
-void PythonAsynParse::doWatchDeletedSub(const QString &path)
-{
-    if (!path.startsWith(d->rootPath))
-        return;
-
-    QString pathTemp = path;
-    if (pathTemp.startsWith(d->rootPath))
-        pathTemp = pathTemp.remove(0, d->rootPath.size());
-
-    QStringList deleteds = deletedFileNames(path);
-    for (QString deleted : deleteds) {
-        QStandardItem *currPathItem = findItem(pathTemp);
-        if (currPathItem) {
-            for (int i = 0; i < currPathItem->rowCount(); i++) {
-                QStandardItem *child = currPathItem->child(i);
-                if (itemDisplayName(child) == deleted) {
-                    currPathItem->removeRow(i);
-                }
-            }
-        } else {
-            for (int i = 0; i < d->rows.size(); i++) {
-                if (itemDisplayName(d->rows[i]) == deleted) {
-                    d->rows.removeAt(i);
-                }
-            }
-        }
-    }
-
-    emit itemsModified({d->rows, true});
+    emit itemsModified(d->rows);
 }
 
 QString PythonAsynParse::itemDisplayName(const QStandardItem *item) const
@@ -157,12 +85,6 @@ QString PythonAsynParse::itemDisplayName(const QStandardItem *item) const
     return item->data(Qt::DisplayRole).toString();
 }
 
-bool PythonAsynParse::isSame(QStandardItem *t1, QStandardItem *t2, Qt::ItemDataRole role) const
-{
-    if (!t1 || !t2)
-        return false;
-    return t1->data(role) == t2->data(role);
-}
 void PythonAsynParse::createRows(const QString &path)
 {
     QString rootPath = path;
@@ -173,7 +95,7 @@ void PythonAsynParse::createRows(const QString &path)
 
     // 缓存当前工程目录
     d->rootPath = rootPath;
-    Inotify::addPath(d->rootPath);
+    QFileSystemWatcher::addPath(d->rootPath);
 
     {// 避免变量冲突 迭代文件夹
         QDir dir;
@@ -183,7 +105,7 @@ void PythonAsynParse::createRows(const QString &path)
         QDirIterator dirItera(dir, QDirIterator::Subdirectories);
         while (dirItera.hasNext()) {
             QString childPath = dirItera.next().remove(0, rootPath.size());
-            Inotify::addPath(dirItera.filePath());
+            QFileSystemWatcher::addPath(dirItera.filePath());
             QStandardItem *item = findItem(childPath);
             QIcon icon = CustomIcons::icon(dirItera.fileInfo());
             auto newItem = new QStandardItem(icon, dirItera.fileName());
@@ -216,38 +138,6 @@ void PythonAsynParse::createRows(const QString &path)
     }
 }
 
-void PythonAsynParse::removeRows()
-{
-    d->rootPath.clear();
-    for (int i = 0; i < d->rows.size(); i++) {
-        removeSelfSubWatch(d->rows[i]);
-    }
-    d->rows.clear();
-    emit itemsModified({d->rows, true});
-}
-
-void PythonAsynParse::removeSelfSubWatch(QStandardItem *item)
-{
-    if (!item)
-        return;
-
-    Inotify::removePath(item->toolTip());
-
-    for (int i = 0; i < item->rowCount(); i++) {
-        QStandardItem *child = item->child(i);
-        if (!child)
-            continue;
-
-        if (QFileInfo(child->toolTip()).isDir()) {
-            Inotify::removePath(child->toolTip());
-        }
-
-        if (child->hasChildren())
-            removeSelfSubWatch(child);
-        item->removeRow(i);
-    }
-}
-
 QList<QStandardItem *> PythonAsynParse::rows(const QStandardItem *item) const
 {
     QList<QStandardItem *> result;
@@ -255,41 +145,6 @@ QList<QStandardItem *> PythonAsynParse::rows(const QStandardItem *item) const
         result << item->child(i);
     }
     return result;
-}
-
-int PythonAsynParse::findRowWithDisplay(QList<QStandardItem *> rowList, const QString &fileName)
-{
-    if (fileName.isEmpty() || rowList.size() <= 0)
-        return -1;
-
-    QString currPath = rowList.first()->toolTip();
-    QFileInfo currInfo(currPath);
-    if (currInfo.isDir()) {
-        int removeCount = currInfo.fileName().size();
-        currInfo = currPath.remove(currPath.size() - removeCount, removeCount);
-    }
-    QFileInfo infoFile(currPath + fileName);
-
-    for (int i = 0; i < rowList.size(); i++) {
-        QString name = itemDisplayName(rowList[i]);
-        QStandardItem *child = rowList[i];
-        if (name.isEmpty())
-            continue;
-
-        if (infoFile.isDir() && itemIsDir(child) == infoFile.isDir()) {
-            if (*name.begin() >= *fileName.begin()) {
-                return i;
-            }
-        } else if (infoFile.isFile() && itemIsFile(child) == infoFile.isFile()) {
-            if (*name.begin() < *fileName.begin()) {
-                return i;
-            }
-        } else if (infoFile.isDir() && itemIsFile(child)) {
-            return i;
-        }
-    }
-
-    return -1;
 }
 
 QStandardItem *PythonAsynParse::findItem(const QString &path,
@@ -332,74 +187,7 @@ QStandardItem *PythonAsynParse::findItem(const QString &path,
     return parent;
 }
 
-bool PythonAsynParse::itemIsDir(const QStandardItem *item) const
-{
-    return QFileInfo(item->toolTip()).isDir();
-}
-
-bool PythonAsynParse::itemIsFile(const QStandardItem *item) const
-{
-    return QFileInfo(item->toolTip()).isFile();
-}
-
 int PythonAsynParse::separatorSize() const
 {
     return QString(QDir::separator()).size();
-}
-
-QStringList PythonAsynParse::pathChildFileNames(const QString &path) const
-{
-    QStringList result;
-    QDir dir;
-    dir.setPath(path);
-    dir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-    dir.setSorting(QDir::Name);
-    QDirIterator dirItera(dir, QDirIterator::NoIteratorFlags);
-    while (dirItera.hasNext()) {
-        dirItera.next();
-        result << dirItera.fileName();
-    }
-    return result;
-}
-
-QStringList PythonAsynParse::createdFileNames(const QString &path) const
-{
-    QString pathTemp = path;
-    if (pathTemp.startsWith(d->rootPath))
-        pathTemp = pathTemp.remove(0, d->rootPath.size());
-
-    auto item = findItem(pathTemp);
-    QSet<QString> childDisplays;
-    QSet<QString> currentDisplays = pathChildFileNames(path).toSet();
-    if (!item) {
-        childDisplays = displayNames(d->rows).toSet();
-    } else {
-        childDisplays = displayNames(rows(item)).toSet();
-    }
-    return (currentDisplays- childDisplays).toList();
-}
-
-QStringList PythonAsynParse::displayNames(const QList<QStandardItem *> items) const
-{
-    QStringList names;
-    for (int i = 0; i < items.size(); i++) {
-        names << items[i]->data(Qt::DisplayRole).toString();
-    }
-    return names;
-}
-
-QStringList PythonAsynParse::deletedFileNames(const QString &path) const
-{
-    QString pathTemp = path;
-    if (pathTemp.startsWith(d->rootPath))
-        pathTemp = pathTemp.remove(0, d->rootPath.size());
-
-    auto item = findItem(pathTemp);
-    QSet<QString> childDisplays;
-    if (!item) {
-        childDisplays = displayNames(d->rows).toSet();
-    } else {
-        childDisplays = displayNames(rows(item)).toSet();
-    }
-    return (childDisplays - pathChildFileNames(path).toSet()).toList();
 }

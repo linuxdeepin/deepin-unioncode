@@ -45,8 +45,8 @@ public:
     virtual void removeRootItem(QStandardItem* root) override;
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
 private slots:
-    void doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem*>> &info);
-    void doAddMavenMeue(const dpfservice::ParseInfo<dpfservice::ProjectActionInfos> &info);
+    void itemModified(const QList<QStandardItem*> &item);
+    void doAddMavenMeue(const dpfservice::ProjectActionInfos &infos);
     void doActionTriggered();
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
 };

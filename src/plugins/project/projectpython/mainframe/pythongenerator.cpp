@@ -119,12 +119,17 @@ void PythonGenerator::removeRootItem(QStandardItem *root)
 {
     if (!root)
         return;
+    auto parser = d->projectParses[root];
 
-    auto parse = d->projectParses[root];
-    if (parse)
-        parse->removeRows();
-    delete root;
+    while (root->hasChildren()) {
+        root->takeRow(0);
+    }
     d->projectParses.remove(root);
+
+    delete root;
+
+    if (parser)
+        delete parser;
 }
 
 QMenu *PythonGenerator::createItemMenu(const QStandardItem *item)
@@ -150,14 +155,14 @@ QMenu *PythonGenerator::createItemMenu(const QStandardItem *item)
     return menu;
 }
 
-void PythonGenerator::doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem *> > &info)
+void PythonGenerator::doProjectChildsModified(const QList<QStandardItem *> &info)
 {
     auto rootItem = d->projectParses.key(qobject_cast<PythonAsynParse*>(sender()));
     if (rootItem) {
         while (rootItem->hasChildren()) {
             rootItem->takeRow(0);
         }
-        rootItem->appendRows(info.result);
+        rootItem->appendRows(info);
     }
 }
 

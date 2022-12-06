@@ -18,24 +18,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef PROJECTKEEPER_H
-#define PROJECTKEEPER_H
+#ifndef PROJECTMODEL_H
+#define PROJECTMODEL_H
 
-#include "services/project/projectservice.h"
-
-#include <QObject>
-
-class QAction;
-class ProjectTree;
-class QStandardItem;
-class ProjectKeeper final : public QObject
+#include <QStandardItem>
+class ProjectModel : public QStandardItemModel
 {
     Q_OBJECT
-    Q_DISABLE_COPY(ProjectKeeper)
 public:
-    ProjectKeeper();
-    static ProjectKeeper *instance();
-    ProjectTree *treeView();
+    explicit ProjectModel(QObject *parent = nullptr);
 };
 
-#endif // PROJECTKEEPER_H
+#endif // PROJECTMODEL_H

@@ -31,7 +31,7 @@
 class QStandardItem;
 class QAction;
 class PythonAsynParsePrivate;
-class PythonAsynParse : public Inotify
+class PythonAsynParse : public QFileSystemWatcher
 {
     Q_OBJECT
     friend class PythonGenerator;
@@ -47,7 +47,7 @@ public:
     virtual ~PythonAsynParse();
 
 signals:
-    void itemsModified(const dpfservice::ParseInfo<QList<QStandardItem*>> &info);
+    void itemsModified(const QList<QStandardItem*> &info);
     void parsedError(const ParseInfo<QString> &info);
 
 public slots:
@@ -57,24 +57,14 @@ public slots:
 private slots:
     void doDirWatchModify(const QString &path);
     void doWatchCreatedSub(const QString &path);
-    void doWatchDeletedSub(const QString &path);
+    void doDirectoryChanged(const QString &path);
 
 private:
-    bool isSame(QStandardItem *t1, QStandardItem *t2, Qt::ItemDataRole role = Qt::DisplayRole) const;
     void createRows(const QString &path);
-    void removeRows();
-    void removeSelfSubWatch(QStandardItem *item);
-    QList<QStandardItem *> rows(const QStandardItem *item) const;
-    int findRowWithDisplay(QList<QStandardItem*> rowList, const QString &fileName);
     QString itemDisplayName(const QStandardItem *item) const;
     QStandardItem *findItem(const QString &path, QStandardItem *parent = nullptr) const;
+    QList<QStandardItem *> rows(const QStandardItem *item) const;
     int separatorSize() const;
-    bool itemIsDir(const QStandardItem *item) const;
-    bool itemIsFile(const QStandardItem *item) const;
-    QStringList pathChildFileNames(const QString &path) const;
-    QStringList displayNames(const QList<QStandardItem *> items) const;
-    QStringList createdFileNames(const QString &path) const;
-    QStringList deletedFileNames(const QString &path) const;
 };
 
 #endif // PYTHONASYNPARSE_H

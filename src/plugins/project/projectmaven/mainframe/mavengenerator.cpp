@@ -109,11 +109,10 @@ QStandardItem *MavenGenerator::createRootItem(const dpfservice::ProjectInfo &inf
     QStandardItem *rootItem = ProjectGenerator::createRootItem(info);
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new MavenAsynParse();
-    QObject::connect(d->projectParses[rootItem],
-                     &MavenAsynParse::itemsModified,
-                     this, &MavenGenerator::doProjectChildsModified,
-                     Qt::DirectConnection);
-    d->projectParses[rootItem]->parseProject(info);
+    QObject::connect(d->projectParses[rootItem], &MavenAsynParse::itemsModified,
+                     this, &MavenGenerator::itemModified);
+    QMetaObject::invokeMethod(d->projectParses[rootItem], "parseProject",
+                              Q_ARG(const dpfservice::ProjectInfo &, info));
     return rootItem;
 }
 
@@ -179,23 +178,19 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
     return menu;
 }
 
-void MavenGenerator::doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem *> > &info)
+void MavenGenerator::itemModified(const QList<QStandardItem *> &items)
 {
-    QStandardItem *rootItem = d->projectParses.key(qobject_cast<MavenAsynParse*>(sender()));
-    if (rootItem) {
-        while (rootItem->hasChildren()) {
-            for(auto val : rootItem->takeRow(0)) {
-                delete val;
-            }
-        }
-        rootItem->appendRows(info.result);
+    MavenAsynParse *parse = qobject_cast<MavenAsynParse*>(sender());
+    if (parse) {
+        auto root = d->projectParses.key(parse);
+        emit itemChanged(root, items);
     }
 }
 
-void MavenGenerator::doAddMavenMeue(const dpfservice::ParseInfo<dpfservice::ProjectActionInfos> &info)
+void MavenGenerator::doAddMavenMeue(const dpfservice::ProjectActionInfos &infos)
 {
     if (d->mavenMenu) {
-        for (auto actionInfo : info.result) {
+        for (auto actionInfo : infos) {
             QAction *action = new QAction(actionInfo.displyText, d->mavenMenu);
             dpfservice::ProjectMenuActionInfo::set(action, actionInfo);
             d->mavenMenu->addAction(action);

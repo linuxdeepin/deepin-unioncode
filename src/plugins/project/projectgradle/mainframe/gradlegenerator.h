@@ -46,7 +46,7 @@ public:
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
 
 private slots:
-    void doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem*>> &info);
+    void doProjectChildsModified(const QList<QStandardItem*> &items);
     void doGradleGeneratMenu(const QString &program, const QStringList &args, const QString &workdir);
     void doGradleCleanMenu();
     void doGradleSplitTasksOutput(const QByteArray &array);

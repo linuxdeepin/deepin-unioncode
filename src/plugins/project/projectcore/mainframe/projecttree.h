@@ -18,22 +18,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef PROJECTTREEVIEW_H
-#define PROJECTTREEVIEW_H
+#ifndef PROJECTTREE_H
+#define PROJECTTREE_H
 
 #include "services/project/projectservice.h"
 
 #include <QTreeView>
 
 class QStandardItem;
-class ProjectTreeViewPrivate;
-class ProjectTreeView : public QTreeView
+class ProjectTreePrivate;
+class ProjectTree : public QTreeView
 {
     Q_OBJECT
-    ProjectTreeViewPrivate *const d;
+    ProjectTreePrivate *const d;
 public:
-    explicit ProjectTreeView(QWidget *parent = nullptr);
-    virtual ~ProjectTreeView();
+    explicit ProjectTree(QWidget *parent = nullptr);
+    virtual ~ProjectTree();
+    void appendProjectInfo(const dpfservice::ProjectInfo &info);
     void appendRootItem(QStandardItem *root);
     void removeRootItem(QStandardItem *root);
     void takeRootItem(QStandardItem *root);
@@ -49,6 +50,8 @@ protected:
 private:
     QMenu *childMenu(const QStandardItem *root, const QStandardItem *child);
     QMenu *rootMenu(QStandardItem *root);
+public slots:
+    void itemModified(QStandardItem *item, const QList<QStandardItem *> &childs);
 private slots:
     void doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event);
     void doDoubleClieked(const QModelIndex &index);
@@ -60,4 +63,4 @@ private slots:
     void creatNewDocument(const QStandardItem *item, const QString &fileName);
 };
 
-#endif // PROJECTTREEVIEW_H
+#endif // PROJECTTREE_H

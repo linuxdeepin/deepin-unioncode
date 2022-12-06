@@ -19,13 +19,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "projectkeeper.h"
-#include "projecttreeview.h"
+#include "projecttree.h"
 #include "common/common.h"
 
 #include <QStandardItem>
 
 namespace {
-ProjectTreeView *tree{nullptr};
+ProjectTree *tree{nullptr};
 }
 
 ProjectKeeper::ProjectKeeper()
@@ -39,10 +39,10 @@ ProjectKeeper *ProjectKeeper::instance()
     return &ins;
 }
 
-ProjectTreeView *ProjectKeeper::treeView()
+ProjectTree *ProjectKeeper::treeView()
 {
     if (!tree)
-        tree = new ProjectTreeView();
+        tree = new ProjectTree();
     return tree;
 }
 

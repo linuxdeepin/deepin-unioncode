@@ -50,13 +50,8 @@ public:
     virtual QMenu* createItemMenu(const QStandardItem *item);
     static QStandardItem *root(QStandardItem *child);
     static const QModelIndex root(const QModelIndex &child);
-
-protected:
-    template<class T> struct ParseInfo
-    {
-        T result;
-        bool isNormal = true;
-    };
+signals:
+    void itemChanged(QStandardItem *item, const QList<QStandardItem*> &newChilds);
 };
 } // namespace dpfservice
 

@@ -45,7 +45,7 @@ public:
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
 
 private slots:
-    void doProjectChildsModified(const dpfservice::ParseInfo<QList<QStandardItem*>> &info);
+    void doProjectChildsModified(const QList<QStandardItem*> &info);
     void doPythonCleanMenu();
     void doPythonSplitTasksOutput(const QByteArray &array);
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
