@@ -299,7 +299,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
     });
 
     process.start(info.program, info.arguments);
-    process.waitForFinished();
+    process.waitForFinished(-1);
 
     outputLog(retMsg, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::Stderr);
 

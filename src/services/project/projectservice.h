@@ -58,6 +58,7 @@ struct Target {
 using Targets = QVector<Target>;
 
 enum TargetType {
+    kUnknown,
     kBuildTarget,
     kRebuildTarget,
     kCleanTarget,

@@ -81,10 +81,11 @@ const Capabilities &DebugSession::capabilities() const
 
 bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &iniRequest)
 {
+    shutdown();
+
     if (!raw) {
         // if there was already a connection make sure to remove old listeners
         // TODO(mozart):crashed when re-start debug.
-        shutdown();
         rtCfgProvider.reset(new RunTimeCfgProvider(/*this*/));
 
         constexpr int kMaxAttempts = 10;
@@ -93,11 +94,11 @@ bool DebugSession::initialize(const char *ip, int port, dap::InitializeRequest &
         for (int attempt = 0; attempt < kMaxAttempts; attempt++) {
             auto connection = net::connect(ip, port);
             if (!connection) {
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
             }
-
             // Socket opened. Create the debugger session and bind.
+            session.reset();
             session = dap::Session::create();
             session->bind(connection);
 

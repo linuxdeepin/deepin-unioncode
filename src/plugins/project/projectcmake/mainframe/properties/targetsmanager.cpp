@@ -154,6 +154,8 @@ Target TargetsManager::getActivedTargetByTargetType(const TargetType type)
     case kActiveExecTarget:
         result = exeTargetSelected;
         break;
+    default:
+        break;
     }
     return result;
 }

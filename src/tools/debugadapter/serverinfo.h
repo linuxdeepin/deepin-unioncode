@@ -41,7 +41,7 @@ public slots:
     void setHost(QString &_host);
 
 private:
-    int iPort = kPort;
+    int iPort = 0;
     QString host;
 };
 

@@ -219,14 +219,19 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                 QStringList arguments;
                 arguments << "--build";
                 arguments << ".";
-                if (!iterStep->targetName.isEmpty()) {
-                    arguments << "--target";
-                    arguments << iterStep->targetName;
+                arguments << "--target";
+
+                if (iterStep->type == StepType::Build) {
+                    arguments << (iterStep->targetName.isEmpty() ? "all" : iterStep->targetName);
+                } else if (iterStep->type == StepType::Clean) {
+                    arguments << (iterStep->targetName.isEmpty() ? "clean" : iterStep->targetName);
                 }
+
                 if (!iterStep->arguments.isEmpty()) {
                     arguments << "--";
                     arguments << iterStep->arguments;
                 }
+
                 if (iterStep->type == StepType::Build) {
                     info.setBuildCustomArgs(arguments);
                 } else if (iterStep->type == StepType::Clean) {

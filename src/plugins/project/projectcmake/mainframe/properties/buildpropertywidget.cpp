@@ -217,7 +217,13 @@ void BuildPropertyWidget::initData(const dpfservice::ProjectInfo &projectInfo)
         for (auto iterStep = iter->steps.begin(); iterStep != iter->steps.end(); ++iterStep) {
             if (iterStep->targetList.isEmpty()) {
                 iterStep->targetList = TargetsManager::instance()->getTargetNamesList();
-                dpfservice::Target target = TargetsManager::instance()->getActivedTargetByTargetType(d->typeMap.value(iterStep->type));
+                dpfservice::TargetType targetType = dpfservice::TargetType::kUnknown;
+                if (iterStep->type == Build) {
+                    targetType = dpfservice::TargetType::kBuildTarget;
+                } else if (iterStep->type == Clean) {
+                    targetType = dpfservice::TargetType::kCleanTarget;
+                }
+                dpfservice::Target target = TargetsManager::instance()->getActivedTargetByTargetType(targetType);
                 iterStep->targetName = target.buildTarget;
             }
         }

@@ -47,7 +47,7 @@ class DapSessionPrivate
 {
     friend class DapSession;
 
-    std::unique_ptr<dap::Session> session;
+    std::shared_ptr<dap::Session> session;
     std::unique_ptr<dap::net::Server> server;
 
     DebugManager *debugger{nullptr};
@@ -166,11 +166,10 @@ void DapSession::stop()
 
 void DapSession::initialize(std::shared_ptr<dap::ReaderWriter> socket)
 {
-    d->session.release();
+    d->session.reset();
     d->session = dap::Session::create();
-    d->session->bind(socket);
-
     registerHanlder();
+    d->session->bind(socket);
 
     Log("DapSession initialized.\n")
 }
