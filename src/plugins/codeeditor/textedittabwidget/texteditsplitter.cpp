@@ -32,8 +32,9 @@ TextEditSplitter::TextEditSplitter(QWidget *parent)
 {
     tabWidget = new TextEditTabWidget(mainSplitter);
     mainSplitter->addWidget(tabWidget);
-    tabWidgets.append(tabWidget);
+    tabWidgets.insert(tabWidget, true);
     splitters.append(mainSplitter);
+    tabWidget->setCloseButtonVisible(false);
 
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                      tabWidget, &TextEditTabWidget::openFileWithKey);
@@ -71,7 +72,8 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
     oldEditWidget->setParent(newSplitter);
 
     TextEditTabWidget *newEditWidget = new TextEditTabWidget(newSplitter);
-    tabWidgets.append(newEditWidget);
+    tabWidgets.insert(newEditWidget, true);
+    tabWidgets[oldEditWidget] = false;
     if (key.isValid()) {
         newEditWidget->openFileWithKey(key, file);
     }
@@ -80,6 +82,9 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
     newSplitter->insertWidget(0, oldEditWidget);
     newSplitter->insertWidget(1, newEditWidget);
     splitter->replaceWidget(0, newSplitter);
+    for (int i = 0; i < tabWidgets.size(); i++) {
+        tabWidgets.key(i)->setCloseButtonVisible(true);
+    }
 
     // cancel all open file sig-slot from texteditwidget
     QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
@@ -106,23 +111,32 @@ void TextEditSplitter::doSelected(bool state)
     if (!textEditTabWidget)
         return;
 
-    if (state) {
-        QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
-                         textEditTabWidget, &TextEditTabWidget::openFileWithKey);
-    } else {
-        QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
-                            textEditTabWidget, &TextEditTabWidget::openFileWithKey);
-        bool isConnect = false;
-        for (int i = 0; i < tabWidgets.size(); i++) {
-            isConnect = connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
-                                     tabWidgets.at(i), &TextEditTabWidget::openFileWithKey);
-            if (isConnect) {
-                break;
-            }
+    auto findIsConnEdit = [=]() -> TextEditTabWidget*
+    {
+        for(auto it = tabWidgets.begin(); it != tabWidgets.end(); ++it) {
+            if (it.value() == true)
+                return it.key();
         }
-        if (!isConnect) {
+        return nullptr;
+    };
+
+    if (tabWidgets.values().contains(true)) {
+        if (state) {
+            while (tabWidgets.values().contains(true)) {
+                auto edit = findIsConnEdit();
+                if (edit) {
+                    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                                        edit, &TextEditTabWidget::openFileWithKey);
+                    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
+                                        edit, &TextEditTabWidget::jumpToLineWithKey);
+                    tabWidgets[edit] = false;
+                }
+            }
             QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
-                                textEditTabWidget, &TextEditTabWidget::openFileWithKey);
+                             textEditTabWidget, &TextEditTabWidget::openFileWithKey);
+            QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
+                             textEditTabWidget, &TextEditTabWidget::jumpToLineWithKey);
+            tabWidgets[textEditTabWidget] = state;
         }
     }
 }
@@ -135,18 +149,26 @@ TextEditSplitter *TextEditSplitter::instance()
 
 void TextEditSplitter::doClose()
 {
-    if(tabWidgets.size() <= 1) {
+    if (tabWidgets.size() <= 1) {
         return;
     }
     auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
-    int idx = tabWidgets.indexOf(textEditTabWidget);
-    if (0 < idx) {
-        delete tabWidgets.at(idx);
-        tabWidgets.removeAt(idx);
-//        delete splitters.at(idx);
-//        splitters.removeAt(idx);
+    if (tabWidgets[textEditTabWidget]) {
+        auto it = tabWidgets.begin();
+        if (it.key() == textEditTabWidget)
+            ++it;
+        it.value() = true;
+        QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
+                         it.key(), &TextEditTabWidget::openFileWithKey);
+        QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
+                         it.key(), &TextEditTabWidget::jumpToLineWithKey);
+    }
+    tabWidgets.remove(textEditTabWidget);
+    delete textEditTabWidget;
+
+    if (tabWidgets.size() == 1) {
+        auto it = tabWidgets.begin();
+        it.key()->setCloseButtonVisible(false);
     }
 }
-
-
 

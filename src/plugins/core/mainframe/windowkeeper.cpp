@@ -112,19 +112,6 @@ void WindowKeeper::createToolsActions(QMenuBar *menuBar)
     qInfo() << __FUNCTION__;
     auto toolsMenu = new QMenu(MWM_TOOLS);
     menuBar->addMenu(toolsMenu);
-
-    QMenu* languageMenu = new QMenu(MWMTM_SWITCH_LANGUAGE);
-    QAction* actionEnglish = new QAction(MWMTA_ENGLISH);
-    QAction* actionChinese = new QAction(MWMTA_CHINESE);
-    languageMenu->addAction(actionEnglish);
-    languageMenu->addAction(actionChinese);
-    ActionManager::getInstance()->registerAction(actionEnglish, "Tools.English", MWMTA_ENGLISH);
-    ActionManager::getInstance()->registerAction(actionChinese, "Tools.Chinese", MWMTA_PLUGINS);
-
-    toolsMenu->addMenu(languageMenu);
-
-    actionEnglish->setEnabled(false);
-    actionChinese->setEnabled(false);
 }
 
 void WindowKeeper::createHelpActions(QMenuBar *menuBar)

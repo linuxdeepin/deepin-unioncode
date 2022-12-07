@@ -37,6 +37,7 @@ public:
     explicit TextEditTabWidget(TextEditTabWidget &text);
     virtual ~TextEditTabWidget();
     static TextEditTabWidget *instance();
+    void setCloseButtonVisible(bool flag);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;

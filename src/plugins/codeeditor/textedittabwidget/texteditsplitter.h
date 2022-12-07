@@ -49,7 +49,7 @@ private:
     QVBoxLayout *vLayout = nullptr;
     QSplitter *mainSplitter = nullptr;
     TextEditTabWidget *tabWidget = nullptr;
-    QList<TextEditTabWidget *> tabWidgets;
+    QHash<TextEditTabWidget *, bool> tabWidgets;
     QList<QSplitter *> splitters;
 };
 

@@ -27,6 +27,7 @@
 #include "textedittabwidget/textedittabwidget.h"
 #include "textedittabwidget/style/lspclientkeeper.h"
 #include "codelens/codelens.h"
+#include "transceiver/codeeditorreceiver.h"
 #include "renamepopup/renamepopup.h"
 
 #include "common/common.h"
@@ -219,7 +220,8 @@ StyleLsp::StyleLsp(TextEdit *parent)
         newRange.start.character = range.start.character;
         newRange.end.line = range.end.line;
         newRange.end.character = range.end.character;
-        TextEditTabWidget::instance()->jumpToRange(filePath, newRange);
+        EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(), filePath, range.start.line);
+        //        TextEditTabWidget::instance()->jumpToRange(filePath, newRange);
     });
 }
 
@@ -496,21 +498,21 @@ void StyleLsp::sciIndicClicked(Scintilla::Position position)
     if (flags[INDIC_COMPOSITIONTHICK]) {
         if (d->definitionCache.getLocations().size() > 0) {
             auto one = d->definitionCache.getLocations().front();
-            TextEditTabWidget::instance()->jumpToLineWithKey(d->edit->projectKey(),
-                                                             QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                             one.range.end.line);
+            EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(),
+                                                               QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                               one.range.end.line);
             cleanDefinition(position);
         } else if (d->definitionCache.getLocationLinks().size() > 0) {
             auto one = d->definitionCache.getLocationLinks().front();
-            TextEditTabWidget::instance()->jumpToLineWithKey(d->edit->projectKey(),
-                                                             QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
-                                                             one.targetRange.end.line);
+            EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(),
+                                                               QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
+                                                               one.targetRange.end.line);
             cleanDefinition(position);
         } else {
             auto one = d->definitionCache.getLocation();
-            TextEditTabWidget::instance()->jumpToLineWithKey(d->edit->projectKey(),
-                                                             QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                             one.range.end.line);
+            EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(),
+                                                               QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                               one.range.end.line);
             cleanDefinition(position);
         }
     }

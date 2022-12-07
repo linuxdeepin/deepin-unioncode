@@ -103,7 +103,6 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     QObject::connect(d->tab, &TextEditTabBar::fileClosed,
                      this, &TextEditTabWidget::removeFileStatusBar, Qt::QueuedConnection);
 
-    QObject::connect(d->tab, &TextEditTabBar::closeClicked, this, &TextEditTabWidget::close);
     QObject::connect(d->tab, &TextEditTabBar::closeClicked, this, &TextEditTabWidget::closed);
 
     QObject::connect(d->tab, &TextEditTabBar::splitClicked, this, [=](Qt::Orientation ori) {
@@ -581,6 +580,11 @@ void TextEditTabWidget::detectFile(const QString &file)
         Inotify::globalInstance()->removePath(file);
         handleDeletedFile(file);
     }
+}
+
+void TextEditTabWidget::setCloseButtonVisible(bool flag)
+{
+    d->tab->setCloseButtonVisible(flag);
 }
 
 void TextEditTabWidget::handleDeletedFile(const QString &file)

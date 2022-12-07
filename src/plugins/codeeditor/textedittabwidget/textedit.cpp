@@ -80,6 +80,7 @@ TextEdit::TextEdit(QWidget *parent)
 
     QObject::connect(this, &ScintillaEditExtern::saved, this,
                      &TextEdit::fileSaved, Qt::UniqueConnection);
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 TextEdit::~TextEdit()

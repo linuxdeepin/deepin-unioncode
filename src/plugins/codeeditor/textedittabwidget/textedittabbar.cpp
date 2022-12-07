@@ -29,16 +29,20 @@
 class TextEditTabBarPrivate
 {
     friend class TextEditTabBar;
-    QTabBar *tab = new QTabBar();
-    QHBoxLayout * hBoxLayout = new QHBoxLayout();
-    QToolButton *pbtHorizontal = new QToolButton;
-    QToolButton *pbtClose = new QToolButton;
+    QTabBar *tab = nullptr;
+    QHBoxLayout * hBoxLayout = nullptr;
+    QToolButton *pbtHorizontal = nullptr;
+    QToolButton *pbtClose = nullptr;
 };
 
 TextEditTabBar::TextEditTabBar(QWidget *parent)
     : QWidget (parent)
     , d(new TextEditTabBarPrivate)
 {
+    d->tab = new QTabBar(this);
+    d->hBoxLayout = new QHBoxLayout();
+    d->pbtHorizontal = new QToolButton();
+    d->pbtClose = new QToolButton(this);
     d->hBoxLayout->setSpacing(5);
     d->hBoxLayout->setMargin(4);
 
@@ -49,7 +53,7 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     d->pbtClose->setStyleSheet("background-color:transparent");
     d->hBoxLayout->addWidget(d->tab, 0, Qt::AlignLeft | Qt::AlignTop);
     d->hBoxLayout->addWidget(d->pbtHorizontal, 0, Qt::AlignRight | Qt::AlignTop);
-    d->hBoxLayout->addWidget(d->pbtClose);
+    d->hBoxLayout->addWidget(d->pbtClose, Qt::AlignTop);
     d->tab->setTabsClosable(true);
     d->tab->setExpanding(false);
 
@@ -206,6 +210,11 @@ QString TextEditTabBar::currentFile() const
 void TextEditTabBar::setCurrentIndex(int idx)
 {
     return d->tab->setCurrentIndex(idx);
+}
+
+void TextEditTabBar::setCloseButtonVisible(bool flag)
+{
+    d->pbtClose->setVisible(flag);
 }
 
 void TextEditTabBar::tabCloseRequested(int idx)
