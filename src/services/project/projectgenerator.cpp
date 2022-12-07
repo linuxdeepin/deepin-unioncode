@@ -84,10 +84,6 @@ bool dpfservice::ProjectGenerator::canOpenProject(const QString &language, const
     auto proInfos = projectService->projectView.getAllProjectInfo();
     for (auto &val : proInfos) {
         if (val.language() == language && workspace == val.workspaceFolder()) {
-            ContextDialog::ok(QDialog::tr("Cannot open repeatedly!\n"
-                                          "language : %0\n"
-                                          "projectPath : %1")
-                              .arg(language, workspace));
             return false;
         }
     }
