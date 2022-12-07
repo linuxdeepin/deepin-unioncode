@@ -78,16 +78,9 @@ CheckoutDialog::CheckoutDialog(QWidget *parent, Qt::WindowFlags f)
     setLayout(gLayout);
 
     QObject::connect(pbtSelLocal, &QPushButton::clicked, [=](){
-        QFileDialog dialog(this);
-        dialog.setDirectory(QDir::homePath());
-        dialog.setWindowTitle(QFileDialog::tr("select checkout repos path"));
-        dialog.setOption(QFileDialog::Option::ShowDirsOnly);
-        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
-        dialog.setFileMode(QFileDialog::FileMode::DirectoryOnly);
-        dialog.exec();
-        auto list = dialog.selectedUrls();
-        if (!list.isEmpty()) {
-            editLocal->setText(list.first().toLocalFile());
+        QString directory = QFileDialog::getExistingDirectory(this);
+        if (!directory.isEmpty()) {
+            editLocal->setText(directory);
         }
     });
 

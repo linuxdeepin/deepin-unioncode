@@ -110,7 +110,7 @@ void SvnClientWidget::showOpenLocalRepos()
     dialog.exec();
     auto urls = dialog.selectedUrls();
     if (!urls.isEmpty()) {
-       addRepoTab(urls.first().toLocalFile());
+        addRepoTab(urls.first().toLocalFile());
     }
 }
 

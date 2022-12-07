@@ -27,12 +27,16 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include <QGroupBox>
+#include <QDebug>
 
 void ContextDialog::okCancel(QString text, QString title,
                              QMessageBox::Icon icon,
                              std::function<void (bool)> okCallBack,
                              std::function<void (bool)> cancelCallBack)
 {
+    if (text.isEmpty())
+        return;
+
     QMessageBox messageBox;
     messageBox.setWindowTitle(title);
     messageBox.setText(text);
@@ -51,6 +55,9 @@ void ContextDialog::ok(QString text, QString title,
                        QMessageBox::Icon icon,
                        std::function<void (bool)> okCallBack)
 {
+    if (text.isEmpty())
+        return;
+
     QMessageBox messageBox;
     messageBox.setWindowTitle(title);
     messageBox.setText(text);
@@ -62,7 +69,6 @@ void ContextDialog::ok(QString text, QString title,
     messageBox.exec();
 }
 
-#include <QDebug>
 void ContextDialog::singleChoice(QSet<SingleChoiceBox::Info> infos,
                                  QString windowTitle, QString choiceTitle,
                                  std::function<void (const SingleChoiceBox::Info&)> okCallBack,
