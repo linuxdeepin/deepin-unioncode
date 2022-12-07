@@ -99,20 +99,19 @@ class SrcMigrateTask(MigrateTask):
         no_make_file = []
         self.progress.info = 'checking makefiles in dirs'
         have_makefile = self.file_classifier.check_source_path_makefile(src_path)
-        if have_makefile:
+        if not have_makefile:
             no_make_file.append(src_path)
         return no_make_file
             
     def start_scan(self):
         src_path = self.inputs['src']
-        self.progress.start_phase(0, 99, ScanPhase.DebDepend, '') # TODO(mozart)
+        self.progress.start_phase(0, 99, ScanPhase.StartPhase, '') # TODO(mozart)
         self.no_makefile_list = self.check_makefile(src_path)
         if len(self.no_makefile_list):
-            return self.no_makefile_list
-        else:
-            self.scan_src()
-            self.generate_report(self.id)       
-        return []
+            LOGGER.warning('no makefile in [%s]' % self.no_makefile_list)
+        self.scan_src()
+        self.generate_report(self.id)       
+        return self.no_makefile_list
 
     def scan_src(self):
         self.report_suffix = os.path.split(self.src_path.rstrip('/'))[1]
@@ -124,13 +123,15 @@ class SrcMigrateTask(MigrateTask):
                 LOGGER.info('no [%s] in path [%s] ' % (file_type, self.src_path))
                 continue
             matcher_type = file_matcher[file_type]
+            
             matcher = matcher_factory.get_matcher(matcher_type)
             if matcher:
                 self.progress.set_info("%s matcher" % file_type)
                 results = matcher.match()
                 self.scan_results.extend(results)
             else:
-                LOGGER.error("there isn't matcher for [%s]" % file_type)
+                # not supported type pass directly.
+                pass
         return self.scan_results
     
     def need_migrate(self):

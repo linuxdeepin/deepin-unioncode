@@ -43,7 +43,7 @@ def config_tool(input_dict):
     user_home = os.path.expanduser('~')
 
     # report and source path, create it if not exists.
-    ToolConfig.work_dir = os.path.join(user_home, 'UnionCode_Porting')
+    ToolConfig.work_dir = os.path.join(ToolConfig.build_dir, 'UnionCode_Porting')
     ToolConfig.dirs.update(
         {"source_dir": os.path.join(ToolConfig.work_dir, 'sources'),
         "log_dir":os.path.join(ToolConfig.work_dir, 'logs'),
@@ -100,10 +100,7 @@ def start_scan_src(input_dict):
     t = threading.Thread(target=get_progress, args=(scan_api,))
     t.start()
     scan_api.import_rules()
-    no_make_file = scan_api.start_scan()
-    if len(no_make_file):
-        LOGGER.warning('no makefile in [%s]' % no_make_file)
-    # scan_api.scan_src()
+    scan_api.start_scan()
     scan_api.progress.progress = 100
     t.join()
 

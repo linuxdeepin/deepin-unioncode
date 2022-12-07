@@ -120,7 +120,7 @@ bool CodePorting::start(const QString &projectSrcPath, const QString &srcCPU, co
     args.append(destCPU);
     process.setArguments(args);
     process.start();
-    process.waitForFinished();
+    process.waitForFinished(-1);
 
     return true;
 }

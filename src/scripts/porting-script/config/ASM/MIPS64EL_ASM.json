@@ -1,0 +1,35 @@
+{
+    "instructions": {
+        "ADC": {
+            "suggestion": {
+                "arm64": "todo",
+                "sw_64": "todo"
+            }
+        },
+        "ADCS": {
+            "suggestion": {
+                "arm64": "todo",
+                "sw_64": "todo"
+            }
+        },
+        "ADD": {
+            "suggestion": {
+                "arm64": "todo",
+                "sw_64": "todo"
+            }
+        },
+        "ADDS": {
+            "suggestion": {
+                "arm64": "todo",
+                "sw_64": "todo"
+            }
+        },
+        "ADR": {
+            "suggestion": {
+                "arm64": "todo",
+                "sw_64": "todo"
+            }
+        },
+        "_comment": "expand here"
+    }
+}

@@ -64,17 +64,25 @@ class FileClassify:
 
     def make_and_compiledb_main(self, path):
         # Clang's Compilation Database generator for make-based build systems
-        json_content = self.make_and_compiledb(ToolConfig.build_dir)
-        if json_content:
-            LOGGER.info('compiledb is successful, json file is [%s]' % ToolConfig.build_dir)
-            self.classify_file_type(json_content)
-            self.classify_header_file()
-            self.scan_make_file(path, TRUE)
+        check_cmd = 'which compiledb'
+        res = subprocess.Popen(check_cmd, stdout = subprocess.PIPE, shell = True)
+        compiledb = res.stdout.read().decode("utf8", "ignore")
+        if compiledb:
+            json_content = self.make_and_compiledb(ToolConfig.build_dir)
+            if json_content:
+                LOGGER.info('compiledb is successful, json file is [%s]' % ToolConfig.build_dir)
+                self.classify_file_type(json_content)
+                self.classify_header_file()
+            else:
+                LOGGER.info(
+                    "compiledb is failed, scan files manually in this path:[%s]" % path)
+                self.scan_make_file(path)
+                # self.classify_header_file()
         else:
             LOGGER.info(
-                "compile_commands.json is None, scan files manually in this path:[%s]" % path)
+                "compiledb no installed! scan files manually in this path:[%s]" % path)
             self.scan_make_file(path)
-            self.classify_header_file()
+            # self.classify_header_file()
 
     def make_and_compiledb(self, path):
         compiledbJson = path + '/compile_commands.json'
@@ -104,7 +112,7 @@ class FileClassify:
         if extension[1] in POSTFIX_TYPES['cppfiles']:
             self.file_type_dict['cppfiles'].append(full_path)
 
-    def scan_make_file(self, src_path, json_content = False):
+    def scan_make_file(self, src_path):
         LOGGER.info('full path scan file: [%s]' % src_path)
         make_re = re.compile('make\\.\\w+', re.I)
 
@@ -120,11 +128,11 @@ class FileClassify:
                         make_re.match(filename) or ext.lower() in value or filename.lower() in MAKEFILE):
                         self.file_type_dict[key].append(absolute_path)
                         break
-                    if key == "cheaders": 
-                        #In order to ensure that the header file scanning is as accurate as possible, 
-                        #the header files to be used are deduced from the c/cpp files
-                        continue
-                    elif (ext.lower() in value) and (json_content == False):
+                    # if key == "cheaders": 
+                    #     #In order to ensure that the header file scanning is as accurate as possible, 
+                    #     #the header files to be used are deduced from the c/cpp files
+                    #     #follow-up comment: deduced will cost lot of time, so get header directly.
+                    elif (ext.lower() in value):
                         self.file_type_dict[key].append(absolute_path)
                         break
 
@@ -176,7 +184,7 @@ class FileClassify:
                     headpathlist.append(match.group(0))
         return headpathlist
 
-    def find_head_file_path(self, file_type_list, out = '', level = 1):
+    def find_head_file_path(self, file_type_list, out = '', level = 0):
         '''return header absolute path list according to cpp.'''
         if out == '':
             # LOGGER.info("start find head file path.")
@@ -192,6 +200,5 @@ class FileClassify:
             if level > 0:
                 level -= 1
                 self.find_head_file_path(headlist, out, level)
-                
         return list(set(self.headlist))
 
