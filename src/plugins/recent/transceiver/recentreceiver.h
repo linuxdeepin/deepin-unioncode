@@ -30,7 +30,7 @@ signals:
     void saveOpenedProject(const QString &kitName,
                            const QString &language,
                            const QString &workspace);
-    void addDocument(const QString &filePath);
+    void saveOpenedFile(const QString &filePath);
 };
 
 #endif // RECENTRECEIVER_H

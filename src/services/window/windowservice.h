@@ -140,24 +140,6 @@ public:
     DPF_INTERFACE(void, setWidgetWatch, AbstractWidget *widget);
 
     /*!
-     * \brief switchWidgetNavigation 切换导航栏组件
-     * \param name 导航栏组件名称（来自 Action Navigation）
-     */
-    DPF_INTERFACE(void, switchWidgetNavigation, const QString &name);
-
-    /*!
-     * \brief switchContextWidget 切换上下文组件
-     * \param name 上下文组件名称
-     */
-    DPF_INTERFACE(void, switchWidgetContext, const QString &name);
-
-    /*!
-     * \brief switchWidgetLeftTree 切换左侧树图
-     * \param name 树图名称
-     */
-    DPF_INTERFACE(void, switchWidgetWorkspace, const QString &name);
-
-    /*!
      * \brief addOpenProjectAction 添加打開工程的Action
      * \param name 语言分类名称 MWMFA_CXX|MWMFA_Java|MWMFA_Python
      * \param action 實例對象

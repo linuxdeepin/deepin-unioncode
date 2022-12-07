@@ -92,12 +92,9 @@ bool MavenGenerator::configure(const dpfservice::ProjectInfo &info)
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (projectService && windowService && root) {
+    if (projectService && root) {
         projectService->projectView.addRootItem(root);
         projectService->projectView.expandedDepth(root, 1);
-        windowService->switchWidgetNavigation(MWNA_EDIT);
-        windowService->switchWidgetWorkspace(MWCWT_PROJECTS);
     }
 
     return true;

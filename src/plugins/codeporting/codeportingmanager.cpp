@@ -162,10 +162,5 @@ CodePortingManager::~CodePortingManager()
 void CodePortingManager::resetUI()
 {
     outputPane->clearContents();
-
-    auto &ctx = dpfInstance.serviceContext();
-    auto windowService = ctx.service<WindowService>(WindowService::name());
-    if (windowService) {
-        windowService->switchWidgetContext("Code Porting");
-    }
+    editor.switchContext(tr("Code Porting"));
 }

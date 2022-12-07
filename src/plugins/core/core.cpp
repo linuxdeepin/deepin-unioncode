@@ -57,10 +57,6 @@ bool Core::start()
 
     if (windowService) {
         using namespace std::placeholders;
-        if (!windowService->switchWidgetNavigation) {
-            windowService->switchWidgetNavigation = std::bind(&WindowKeeper::switchWidgetNavigation,
-                                                              WindowKeeper::instace(), _1);
-        }
 
         if (!windowService->insertAction) {
             windowService->insertAction = std::bind(&WindowKeeper::insertAction,

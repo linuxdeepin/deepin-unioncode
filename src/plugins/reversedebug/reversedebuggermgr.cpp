@@ -43,7 +43,7 @@
 
 #define AsynInvoke(Fun)          \
     QtConcurrent::run([this]() { \
-        Fun;                     \
+    Fun;                     \
     });
 
 extern bool kEmdRunning;
@@ -181,7 +181,7 @@ bool ReverseDebuggerMgr::replayMinidump(const QString &traceDir, int pid)
     // map file.
     QString mapFile = generateFilePath(MAP_FILE_NAME, traceDir, pid);
     int frameCount = create_timeline(mapFile.toLocal8Bit(),
-            corefile.toLocal8Bit(), &kTimeline);
+                                     corefile.toLocal8Bit(), &kTimeline);
     if (frameCount < 1) {
         QMessageBox msgBox;
         msgBox.setText(tr("Not found valid event in context file!"));
@@ -207,9 +207,9 @@ bool ReverseDebuggerMgr::replayMinidump(const QString &traceDir, int pid)
             749:#define __NR_Linux			6000
             */
             ReverseDebugger::Internal::Task task(
-                      QString::asprintf("%d:%s", i, get_event_name(entry->type)),
-                      cats[entry->type/1000 - __NR_Linux/1000],
-                      entry);
+                        QString::asprintf("%d:%s", i, get_event_name(entry->type)),
+                        cats[entry->type/1000 - __NR_Linux/1000],
+                    entry);
             g_taskWindow->addTask(task);
             ++entry;
         }
@@ -264,11 +264,7 @@ QString ReverseDebuggerMgr::projectTargetPath() const
 
 void ReverseDebuggerMgr::enterReplayEnvironment()
 {
-    auto &ctx = dpfInstance.serviceContext();
-    auto windowService = ctx.service<WindowService>(WindowService::name());
-    if (windowService && windowService->switchWidgetContext) {
-        emit windowService->switchWidgetContext(tr("Reverse Debug"));
-    }
+    emit editor.switchContext(tr("Reverse Debug"));
 }
 
 static void NumberList2QString(uchar *in, int size, QString &str)

@@ -53,7 +53,6 @@ const QString D_OPENFILE {"OpenFile"};
 
 const QString P_ACTION_TEXT {"ActionText"};
 const QString P_FILELINE {"FileLine"};
-const QString P_FILEPATH {"FilePath"};
 const QString P_PROJECTPATH {"ProjectPath"};
 const QString P_TARGETPATH {"TargetPath"};
 const QString P_WORKSPACEFOLDER {"WorkspaceFolder"};

@@ -24,6 +24,7 @@
 #include "base/abstractcentral.h"
 #include "base/abstractconsole.h"
 #include "services/window/windowservice.h"
+#include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
 #include "toolbarmanager.h"
 
@@ -74,6 +75,12 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     if (!windowService->setToolBarItemDisable) {
         windowService->setToolBarItemDisable = std::bind(&NavEditMainWindow::setToolBarItemDisable, this, _1, _2);
     }
+
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSwitchContext,
+                     this, &NavEditMainWindow::switchWidgetContext);
+
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSwitchWorkspace,
+                     this, &NavEditMainWindow::switchWidgetWorkspace);
 
     qDockWidgetContext = new AutoHideDockWidget(QDockWidget::tr("Context"), this);
     qDockWidgetContext->setFeatures(QDockWidget::DockWidgetMovable);

@@ -24,6 +24,7 @@
 
 #include "services/project/projectinfo.h"
 #include "services/project/projectservice.h"
+#include "services/window/windowelement.h"
 #include "services/project/projectgenerator.h"
 #include "services/builder/builderglobals.h"
 #include "common/common.h"
@@ -48,6 +49,7 @@ QStringList ProjectCmakeReceiver::topics()
 void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
 {
     if (event.topic() == T_BUILDER) {
+        navigation.doSwitch(dpfservice::MWNA_EDIT);
         builderEvent(event);
     }
 
@@ -67,7 +69,7 @@ void ProjectCmakeReceiver::builderEvent(const dpf::Event &event)
             if (0 == endStatus) {
                 emit ProjectCmakeProxy::instance()->buildExecuteEnd(commandInfo);
             } else {
-                ContextDialog::ok(QDialog::tr("Failed open project, whith build step."));
+                ContextDialog::ok(QDialog::tr("Failed open project, with build step."));
             }
         }
     }

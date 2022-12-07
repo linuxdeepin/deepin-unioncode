@@ -37,7 +37,7 @@ public:
             auto elemObj = val.toObject();
             QString language, workspace, kitName;
             QString file = projectFile(elemObj, &kitName, &language, &workspace);
-            if (file.isEmpty())
+            if (file.isEmpty() || !QFileInfo(file).exists())
                 continue;
             auto rowItem = new QStandardItem (icon(file), file);
             rowItem->setData(kitName, RecentDisplay::ProjectKitName);
@@ -64,6 +64,11 @@ public:
     {
         model->clear(); //删除数据
         auto paths = cachedWorkspaces(projects);
+        for (auto path : paths) {
+            if (!QFileInfo(path).exists()) {
+                removeProjectElem(projects, path);
+            }
+        }
         if (paths.contains(workspace)) {
             removeProjectElem(projects, workspace);
         }
@@ -262,5 +267,6 @@ void RecentDisplay::doDoubleCliekedDocument(const QModelIndex &index)
 {
     QString filePath = index.data(Qt::DisplayRole).toString();
     RecentDisplay::addDocument(filePath);
+    editor.openFile(filePath);
 }
 

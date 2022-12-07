@@ -194,11 +194,7 @@ void BuildManager::slotResetBuildUI()
     d->compileOutputPane->clearContents();
     d->problemOutputPane->clearContents();
 
-    auto &ctx = dpfInstance.serviceContext();
-    auto windowService = ctx.service<WindowService>(WindowService::name());
-    if (windowService) {
-        windowService->switchWidgetContext("Co&mpile Output");
-    }
+    editor.switchContext(tr("Co&mpile Output"));
 }
 
 void BuildManager::setActivedProjectInfo(const QString &kitName, const QString &workingDir)

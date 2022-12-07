@@ -46,6 +46,7 @@ struct Language
 
     static QStringList ids();
     static QString id(const QString &filePath);
+    static QString idAlias(const QString &id);
     static QMap<int, QString> tokenWords(const QString &id);
     static QSet<QString> suffixs(const QString &id);
     static QSet<QString> bases(const QString &id);

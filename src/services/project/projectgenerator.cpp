@@ -151,6 +151,9 @@ bool dpfservice::ProjectGenerator::configure(const dpfservice::ProjectInfo &proj
     recent.saveOpenedProject(projectInfo.kitName(),
                              projectInfo.language(),
                              projectInfo.workspaceFolder());
+    navigation.doSwitch(MWNA_EDIT);
+
+    editor.switchWorkspace(MWCWT_PROJECTS);
 
     if (!projectInfo.workspaceFolder().isEmpty()) {
         dpf::Event event;

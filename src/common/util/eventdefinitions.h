@@ -31,6 +31,7 @@
 
 OPI_OBJECT(recent,
            OPI_INTERFACE(saveOpenedProject, "kitName", "language", "workspace")
+           OPI_INTERFACE(saveOpenedFile, "filePath")
            )
 
 OPI_OBJECT(project,
@@ -54,7 +55,6 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(jumpToLine, "filePath", "line")
            OPI_INTERFACE(openFileWithKey, "workspace", "language", "filePath")
            OPI_INTERFACE(jumpToLineWithKey, "workspace", "language", "filePath", "line")
-           OPI_INTERFACE(openDocument, "language", "filePath")
            // (AnnotationInfo)annInfo
            OPI_INTERFACE(setAnnotation, "filePath", "line", "title", "annInfo")
            OPI_INTERFACE(cleanAnnotation, "filePath", "title")
@@ -73,6 +73,8 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(searchText, "text", "findType")
            // (FindType)repalceType
            OPI_INTERFACE(replaceText, "text", "target", "repalceType")
+           OPI_INTERFACE(switchContext, "name")
+           OPI_INTERFACE(switchWorkspace, "name")
            )
 
 OPI_OBJECT(symbol,
@@ -180,7 +182,6 @@ extern const QString D_OPENFILE;
 
 extern const QString P_ACTION_TEXT;    // value QString
 extern const QString P_FILELINE;       // value int
-extern const QString P_FILEPATH;       // value QString
 extern const QString P_PROJECTPATH;    // value QString
 extern const QString P_TARGETPATH;     // value QString
 extern const QString P_WORKSPACEFOLDER;// value QString

@@ -128,6 +128,17 @@ QString Language::id(const QString &filePath)
     return "";
 }
 
+QString Language::idAlias(const QString &id)
+{
+    if (id == "cpp")
+        return "C/C++";
+    else if (id == "java")
+        return "Java";
+    else if (id == "python")
+        return "Python";
+    return "";
+}
+
 QMap<int, QString> Language::tokenWords(const QString &id)
 {
     QMap<int, QString> result;

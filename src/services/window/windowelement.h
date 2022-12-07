@@ -26,6 +26,7 @@ inline const QString MWMFA_DOCUMENT_NEW { QAction::tr("New Document") };
 inline const QString MWMFA_FOLDER_NEW { QAction::tr("New Folder") };
 inline const QString MWMFA_OPEN_PROJECT { QAction::tr("Open Project") };
 inline const QString MWMFA_OPEN_DOCUMENT { QAction::tr("Open Document") };
+inline const QString MWMFA_OPEN_FILE { QAction::tr("Open File") };
 inline const QString MWMFA_OPEN_RECENT_DOCUMENTS { QAction::tr("Open Recent Documents") };
 inline const QString MWMFA_OPEN_RECENT_FOLDER { QAction::tr("Open Recent Folders") };
 inline const QString MWMFA_NEW_FILE_OR_PROJECT { QAction::tr("New File or Project") };

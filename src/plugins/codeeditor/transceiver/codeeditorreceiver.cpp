@@ -22,6 +22,7 @@
 
 #include "common/common.h"
 #include "services/project/projectservice.h"
+#include "services/window/windowelement.h"
 
 #include "mainframe/texteditkeeper.h"
 
@@ -55,29 +56,27 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         TextEditKeeper::saveProjectInfo(qvariant_cast<dpfservice::ProjectInfo>(proInfoVar));
     }else if (event.data() == editor.cleanRunning.name) {
         return EditorCallProxy::instance()->toRunClean();
-    } else if (D_OPENFILE == event.data()) {
-        QVariant workspaceVar = event.property(P_WORKSPACEFOLDER);
-        QVariant languageVar = event.property(P_LANGUAGE);
-        QVariant filePathVar = event.property(P_FILEPATH);
-        if (workspaceVar.isValid() && languageVar.isValid() && filePathVar.isValid()) {
-            newlsp::ProjectKey proKey;
-            proKey.language = languageVar.toString().toStdString();
-            proKey.workspace = workspaceVar.toString().toStdString();
-            return EditorCallProxy::instance()->toOpenFileWithKey(proKey, filePathVar.toString());
-        }
-    } else if (editor.openFile.name == event.data()) {
-        QString workspacePKey = editor.openFile.pKeys[0];
-        QString languagePKey = editor.openFile.pKeys[1];
-        QString filePathPKey = editor.openFile.pKeys[2];
-        QString workspace = event.property(workspacePKey).toString();
-        QString language = event.property(languagePKey).toString();
-        QString filePath = event.property(filePath).toString();
-        if (!workspace.isEmpty() && !language.isEmpty() && !language.isEmpty()) {
-            newlsp::ProjectKey proKey;
-            proKey.language = language.toStdString();
-            proKey.workspace = workspace.toStdString();
-            return EditorCallProxy::instance()->toOpenFileWithKey(proKey, filePath);
-        }
+    } else if (event.data() == editor.openFile.name) {
+        navigation.doSwitch(dpfservice::MWNA_EDIT);
+        using namespace support_file;
+        QString filePath = event.property(editor.openFile.pKeys[0]).toString();
+        QString language = Language::idAlias(Language::id(filePath));
+        QString workspace = QDir::homePath();
+        editor.openFileWithKey(workspace, language, filePath);
+    } else if (event.data() == editor.openFileWithKey.name) {
+        navigation.doSwitch(dpfservice::MWNA_EDIT);
+        using namespace support_file;
+        QString workspace = event.property(editor.openFileWithKey.pKeys[0]).toString();
+        QString language = event.property(editor.openFileWithKey.pKeys[1]).toString();
+        QString filePath = event.property(editor.openFileWithKey.pKeys[2]).toString();
+        if (workspace.isEmpty())
+            workspace = QDir::homePath();
+        if (language.isEmpty())
+            language = Language::idAlias(Language::id(filePath));
+        newlsp::ProjectKey proKey;
+        proKey.language = language.toStdString();
+        proKey.workspace = workspace.toStdString();
+        EditorCallProxy::instance()->toOpenFileWithKey(proKey, filePath);
     } else if (event.data() == editor.searchText.name) {
         QString srcText = event.property(editor.searchText.pKeys[0]).toString();
         int findType = event.property(editor.searchText.pKeys[1]).toInt();
@@ -87,19 +86,14 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QString targetText = event.property(editor.replaceText.pKeys[1]).toString();
         int replaceType = event.property(editor.replaceText.pKeys[2]).toInt();
         return EditorCallProxy::instance()->toReplaceText(srcText, targetText, replaceType);
-    }  else if (event.data() == editor.openDocument.name) {
-        QString language = event.property(editor.openDocument.pKeys[0]).toString();
-        QString filePath = event.property(editor.openDocument.pKeys[1]).toString();
-        newlsp::ProjectKey proKey{};
-        proKey.language = language.toStdString();
-        return EditorCallProxy::instance()->toOpenFileWithKey(proKey, filePath);
-    }  else if (event.data() == editor.jumpToLine.name) {
+    } else if (event.data() == editor.jumpToLine.name) {
         QString workspace = TextEditKeeper::projectInfo().workspaceFolder();
         if (workspace.isEmpty()) {
             workspace = QDir::homePath();
         }
         QString filePath = event.property(editor.jumpToLine.pKeys[0]).toString();
-        QString language = support_file::Language::id(filePath);
+        using namespace support_file;
+        QString language = Language::idAlias(Language::id(filePath));
         newlsp::ProjectKey proKey;
         proKey.language = language.toStdString();
         proKey.workspace = workspace.toStdString();
@@ -142,7 +136,8 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QString language = proInfo.language();
         QString filePath = event.property(editor.runningToLine.pKeys[0]).toString();
         if (language.isEmpty()) {
-            language = support_file::Language::id(filePath);
+            using namespace support_file;
+            QString language = Language::idAlias(Language::id(filePath));
         }
         newlsp::ProjectKey proKey;
         proKey.language = language.toStdString();
@@ -158,14 +153,12 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QString filePath = event.property(editor.jumpToLineWithKey.pKeys[2]).toString();
         int line = event.property(editor.jumpToLineWithKey.pKeys[3]).toInt();
         EditorCallProxy::instance()->toJumpFileLineWithKey(proKey, filePath, line);
-    } else if (event.data() == editor.openFileWithKey.name) {
-        QString workspace = event.property(editor.openFileWithKey.pKeys[0]).toString();
-        QString language = event.property(editor.openFileWithKey.pKeys[1]).toString();
-        newlsp::ProjectKey proKey;
-        proKey.language = language.toStdString();
-        proKey.workspace = workspace.toStdString();
-        QString filePath = event.property(editor.openFileWithKey.pKeys[2]).toString();
-        EditorCallProxy::instance()->toOpenFileWithKey(proKey, filePath);
+    } else if (event.data() == editor.switchContext.name) {
+        QString titleName = event.property(editor.switchContext.pKeys[0]).toString();
+        EditorCallProxy::instance()->toSwitchContext(titleName);
+    } else if (event.data() == editor.switchWorkspace.name) {
+        QString titleName = event.property(editor.switchWorkspace.pKeys[0]).toString();
+        EditorCallProxy::instance()->toSwitchWorkspace(titleName);
     }
 }
 

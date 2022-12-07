@@ -69,9 +69,23 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
         qApp->closeAllWindows();
     });
 
+    QAction* actionOpenFile = new QAction(MWMFA_OPEN_FILE);
+    ActionManager::getInstance()->registerAction(actionOpenFile, "File.Open.File",
+                                                 MWMFA_OPEN_FILE, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O),
+                                                 "open_doc.png");
+
+    QAction::connect(actionOpenFile, &QAction::triggered, [=](){
+        QString filePath = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE);
+        if (filePath.isEmpty() && !QFileInfo(filePath).exists())
+            return;
+        recent.saveOpenedFile(filePath);
+        editor.openFile(filePath);
+    });
+
     QMenu* menuOpenProject = new QMenu(MWMFA_OPEN_PROJECT);
     menuOpenProject->setIcon(QIcon(":/core/images/open_doc.png"));
 
+    fileMenu->addAction(actionOpenFile);
     fileMenu->addMenu(menuOpenProject);
     fileMenu->addAction(actionQuit);
     QAction* fileAction = menuBar->addMenu(fileMenu);

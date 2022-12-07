@@ -47,7 +47,7 @@ bool Recent::start()
     if (windowService) {
         QObject::connect(RecentProxy::instance(), &RecentProxy::saveOpenedProject,
                          RecentDisplay::instance(), &RecentDisplay::addProject);
-        QObject::connect(RecentProxy::instance(), &RecentProxy::addDocument,
+        QObject::connect(RecentProxy::instance(), &RecentProxy::saveOpenedFile,
                          RecentDisplay::instance(), &RecentDisplay::addDocument);
         auto recentWidgetImpl = new AbstractCentral(RecentDisplay::instance());
         if (windowService->addCentralNavigation) {

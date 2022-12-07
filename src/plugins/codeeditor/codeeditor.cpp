@@ -98,14 +98,6 @@ bool CodeEditor::start()
             windowService->setWidgetWatch = std::bind(&NavEditMainWindow::setWidgetWatch, navEditWindow, _1);
         }
 
-        if (!windowService->switchWidgetContext) {
-            windowService->switchWidgetContext = std::bind(&NavEditMainWindow::switchWidgetContext, navEditWindow, _1);
-        }
-
-        if (!windowService->switchWidgetWorkspace) {
-            windowService->switchWidgetWorkspace = std::bind(&NavEditMainWindow::switchWidgetWorkspace, navEditWindow, _1);
-        }
-
         if (!windowService->addFindToolBar) {
             windowService->addFindToolBar = std::bind(&NavEditMainWindow::addFindToolBar, navEditWindow, _1);
         }

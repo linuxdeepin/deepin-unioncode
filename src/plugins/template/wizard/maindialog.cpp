@@ -213,7 +213,7 @@ void MainDialog::generate(const PojectGenParam &param)
             }
         }
     } else if (param.type == File) {
-        editor.openDocument({result.language, result.filePath});
+        editor.openFile(result.filePath);
         close();
     }
 }

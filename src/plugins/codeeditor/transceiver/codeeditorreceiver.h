@@ -34,7 +34,6 @@ public:
     virtual void eventProcess(const dpf::Event& event) override;
 };
 
-
 class EditorCallProxy : public QObject
 {
     Q_OBJECT
@@ -59,6 +58,8 @@ signals:
     void toSetAnnotation(const QString &filePath, int line, const QString &title, const AnnotationInfo &info);
     void toCleanAnnotation(const QString &filePath, const QString &title);
     void toSetAnalysedData(const AnalysedData &data);
+    void toSwitchContext(const QString &name);
+    void toSwitchWorkspace(const QString &name);
 };
 
 #endif // CODEEDITORRECEIVER_H

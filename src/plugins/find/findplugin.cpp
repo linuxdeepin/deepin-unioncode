@@ -72,7 +72,7 @@ bool FindPlugin::start()
     });
 
     connect(advancedFindAction, &QAction::triggered, [=] {
-        emit windowService->switchWidgetContext(tr("&Search Results"));
+        editor.switchContext(tr("&Search Results"));
     });
 
     AbstractMenu * menuImpl = new AbstractMenu(editMenu);
@@ -91,7 +91,7 @@ bool FindPlugin::start()
 
 void FindPlugin::sendSwitchSearchResult()
 {
-    emit windowService->switchWidgetContext(tr("&Search Results"));
+    emit editor.switchContext(tr("&Search Results"));
 }
 
 dpf::Plugin::ShutdownFlag FindPlugin::stop()
