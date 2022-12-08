@@ -34,6 +34,7 @@
 #include <QDockWidget>
 #include <QToolButton>
 #include <QLineEdit>
+#include <QRegExpValidator>
 
 class MainWindowPrivate
 {
@@ -77,6 +78,10 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     //    d->fromProgramAction = new QAction(d->fromProgram, d->attachAction);
     //    d->fromProgramMenu = new QMenu();
     d->editPid = new QLineEdit();
+    d->editPid->setPlaceholderText("PID");
+    QRegularExpression regx("[0-9]+$");
+    QValidator *validator = new QRegularExpressionValidator(regx, d->editPid);
+    d->editPid->setValidator(validator);
     d->ctrlButton = new QToolButton;
     d->perfRecordDock = new QDockWidget;
     d->perfRecordDisplay = new PerfRecordDisplay;

@@ -103,19 +103,17 @@ void SvnClientWidget::showCheckoutDialog()
 
 void SvnClientWidget::showOpenLocalRepos()
 {
-    QFileDialog dialog;
-    dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    dialog.setFileMode(QFileDialog::DirectoryOnly);
-    dialog.setWindowTitle(QDialog::tr("select local reops"));
-    dialog.exec();
-    auto urls = dialog.selectedUrls();
-    if (!urls.isEmpty()) {
-        addRepoTab(urls.first().toLocalFile());
+    QUrl url = QFileDialog::getExistingDirectoryUrl(nullptr, tr("select local reops"));
+    if (!url.isEmpty()) {
+       addRepoTab(url.toLocalFile());
     }
 }
 
 void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &local, const QString &user, const QString &passwd)
 {
+    if (svnProgram().isEmpty()) {
+        return;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setArguments({"checkout", remote, local, "--username", user, "--password", passwd});

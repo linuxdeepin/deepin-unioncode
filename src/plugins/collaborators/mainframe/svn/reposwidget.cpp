@@ -131,6 +131,9 @@ void ReposWidget::setReposPath(const QString &path)
 
 void ReposWidget::loadRevisionFiles()
 {
+    if (svnProgram().isEmpty()) {
+        return;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setWorkingDirectory(d->reposPath);
@@ -157,6 +160,9 @@ void ReposWidget::loadRevisionFiles()
 
 void ReposWidget::reloadRevisionFiles()
 {
+    if (svnProgram().isEmpty()) {
+        return;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setWorkingDirectory(d->reposPath);
@@ -202,6 +208,9 @@ void ReposWidget::reloadRevisionFiles()
 
 void ReposWidget::loadHistory()
 {
+    if (svnProgram().isEmpty()) {
+        return;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setWorkingDirectory(d->reposPath);
@@ -278,6 +287,9 @@ void ReposWidget::loadHistory()
 
 void ReposWidget::reloadHistory()
 {
+    if (svnProgram().isEmpty()) {
+        return;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setWorkingDirectory(d->reposPath);
@@ -451,6 +463,9 @@ void ReposWidget::doLoggin()
 
 void ReposWidget::doUpdateRepos()
 {
+    if (svnProgram().isEmpty()) {
+        return;
+    }
     QProcess processUpdate;
     processUpdate.setWorkingDirectory(d->reposPath);
     processUpdate.setProgram(svnProgram());
@@ -471,6 +486,9 @@ void ReposWidget::doRefresh()
 
 void ReposWidget::doAmendsCommit()
 {
+    if (svnProgram().isEmpty()) {
+        return;
+    }
     QProcess processCommit;
     processCommit.setWorkingDirectory(d->reposPath);
     processCommit.setProgram(svnProgram());
@@ -486,6 +504,9 @@ void ReposWidget::doAmendsCommit()
 
 void ReposWidget::doAmendsRevertAll()
 {
+    if (svnProgram().isEmpty()) {
+        return;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setWorkingDirectory(d->reposPath);
@@ -502,6 +523,9 @@ void ReposWidget::doAmendsRevertAll()
 
 void ReposWidget::doDiffFileAtRevision()
 {
+    if (svnProgram().isEmpty()) {
+        return;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setWorkingDirectory(d->reposPath);
@@ -525,6 +549,9 @@ void ReposWidget::doDiffFileAtRevision()
 
 bool ReposWidget::testUserLoggin(const QString &reposPath, const QString &name, const QString &passwd)
 {
+    if (svnProgram().isEmpty()) {
+        return false;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setArguments({"list", reposPath, "--username", name, "--password", passwd});
@@ -612,6 +639,9 @@ QWidget *ReposWidget::initControlBar()
 
 bool ReposWidget::add(const QString &display)
 {
+    if (svnProgram().isEmpty()) {
+        return false;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setWorkingDirectory(d->reposPath);
@@ -628,6 +658,9 @@ bool ReposWidget::add(const QString &display)
 
 bool ReposWidget::revert(const QString &display)
 {
+    if (svnProgram().isEmpty()) {
+        return false;
+    }
     QProcess process;
     process.setProgram(svnProgram());
     process.setWorkingDirectory(d->reposPath);

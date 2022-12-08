@@ -29,6 +29,8 @@
 #include <QFile>
 #include <QPoint>
 #include <QRegularExpression>
+#include <QScrollBar>
+
 #include <bitset>
 
 class ScintillaEditExternPrivate
@@ -62,6 +64,7 @@ ScintillaEditExtern::ScintillaEditExtern(QWidget *parent)
         styleSetBack(i,  StyleColor::color(QColor(22,22,22)));
     }
     setCaretFore(StyleColor::color(QColor(255,255,255)));
+    horizontalScrollBar()->setVisible(false);
 }
 
 ScintillaEditExtern::~ScintillaEditExtern()
@@ -115,6 +118,7 @@ void ScintillaEditExtern::setFile(const QString &filePath)
         emit this->definitionHover(d->hoverPos);
         d->definitionHoverTimer.stop();
     }, Qt::UniqueConnection);
+    horizontalScrollBar()->setVisible(true);
 }
 
 void ScintillaEditExtern::updateFile()
