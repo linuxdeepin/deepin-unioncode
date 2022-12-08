@@ -63,7 +63,7 @@ private:
                     const QString &jreExecute,
                     const QString &launchPackageFile,
                     const QString &launchConfigPath,
-                    const QString &projectCachePath);
+                    const QString &workspace);
     void executeCommand(const QString &command);
     void parseResult(const QString &content);
     bool parseMainClass(const QString &content, QString &mainClass, QString &projectName);

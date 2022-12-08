@@ -44,7 +44,7 @@ QString DapSupportConfig::userPath()
     return result + QString("dapconfig.support");
 }
 
-bool DapSupportConfig::readFromSupportFile(const QString &filePath, JavaDapPluginConfig &javaconfig)
+bool DapSupportConfig::readFromSupportFile(const QString &filePath, const QString &arch, JavaDapPluginConfig &javaconfig)
 {
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
@@ -62,13 +62,17 @@ bool DapSupportConfig::readFromSupportFile(const QString &filePath, JavaDapPlugi
         return false;
 
     QJsonObject rootObject = doc.object();
-    if (!rootObject.contains("java_config_path"))
+    if (!rootObject.contains(arch))
         return false;
 
-    QJsonObject valueObject = rootObject.value("java_config_path").toObject();
+    QJsonObject archObject = rootObject.value(arch).toObject();
+    if (archObject.isEmpty())
+        return false;
 
-    javaconfig.launchPackageUrl = valueObject.value("launch_package_url").toString();
-    javaconfig.dapPackageUrl = valueObject.value("dap_package_url").toString();
+    QJsonObject valueObject = archObject.value("java_config_path").toObject();
+    if (valueObject.isEmpty())
+        return false;
+
     javaconfig.launchPackageName = valueObject.value("launch_package_name").toString();
     javaconfig.dapPackageName = valueObject.value("dap_package_name").toString();
     javaconfig.launchPackageFile = javaconfig.launchPackageName + valueObject.value("launch_package_file").toString();
@@ -76,17 +80,6 @@ bool DapSupportConfig::readFromSupportFile(const QString &filePath, JavaDapPlugi
     javaconfig.dapPackageFile = javaconfig.dapPackageName + valueObject.value("dap_package_file").toString();
     javaconfig.jrePath = javaconfig.launchPackageName + valueObject.value("jre_path").toString();
     javaconfig.jreExecute = javaconfig.jrePath + valueObject.value("jre_execute").toString();
-
-    if (javaconfig.launchPackageUrl.isEmpty()
-            || javaconfig.dapPackageUrl.isEmpty()
-            || javaconfig.launchPackageName.isEmpty()
-            || javaconfig.dapPackageName.isEmpty()
-            || javaconfig.launchPackageFile.isEmpty()
-            || javaconfig.launchConfigPath.isEmpty()
-            || javaconfig.dapPackageFile.isEmpty()
-            || javaconfig.jrePath.isEmpty()
-            || javaconfig.jreExecute.isEmpty())
-        return false;
 
     return true;
 }

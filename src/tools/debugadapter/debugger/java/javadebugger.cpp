@@ -31,13 +31,13 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QDateTime>
 
 class JavaDebuggerPrivate {
     friend class JavaDebugger;
     QProcess process;
     QString tempBuffer;
     JavaParam javaparam;
-    QString configPath;
     int dapRequestId = 0;
     int mainClassRequestId = 0;
     int classPathRequestId = 0;
@@ -100,13 +100,13 @@ void JavaDebugger::registerLaunchDAPConnect()
                           "/path",
                           "com.deepin.unioncode.interface",
                           "launch_java_dap",
-                          this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString, QString
+                          this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString, QString,
                                                            QString, QString, QString, QString, QString)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "launch_java_dap",
-                       this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString, QString
+                       this, SLOT(slotReceivePojectInfo(QString, QString, QString, QString, QString,
                                                         QString, QString, QString, QString, QString)));
 }
 
@@ -114,12 +114,11 @@ void JavaDebugger::initialize(const QString &configHomePath,
                               const QString &jreExecute,
                               const QString &launchPackageFile,
                               const QString &launchConfigPath,
-                              const QString &projectCachePath)
+                              const QString &workspace)
 {
     if (d->initialized)
         return;
 
-    d->configPath = configHomePath;
     int startPort = 6000;
 
     auto checkPortFree = [](int port) {
@@ -142,11 +141,14 @@ void JavaDebugger::initialize(const QString &configHomePath,
 
     QString validPort = QString::number(startPort);
 
-    QString javaPath = d->configPath + jreExecute;
-    QString launcherPath = d->configPath + launchPackageFile;
-    QString configLinuxPath = d->configPath + launchConfigPath;
-    QString heapDumpPath = projectCachePath + "/dap/javalog/heapdump/headdump.java";
-    QString dataPath = projectCachePath + "/dap/javalog/jdt_ws";
+    QString javaPath = configHomePath + jreExecute;
+    QString launcherPath = configHomePath + launchPackageFile;
+    QString configLinuxPath = configHomePath + launchConfigPath;
+
+    QString logFolder = configHomePath + "/dap/javalog/" + QFileInfo(workspace).fileName() +
+            "_" + QDateTime::currentDateTime().toString("yyyyMMddHHmmss");
+    QString heapDumpPath = logFolder + "/heapdump/headdump.java";
+    QString dataPath = logFolder + "/jdt_ws";
 
     QString param = d->javaparam.getInitBackendParam(validPort,
                                                      javaPath,
@@ -183,13 +185,14 @@ void JavaDebugger::slotReceivePojectInfo(const QString &uuid,
     d->workspace = workspace;
     d->kit = kit;
 
-    initialize(configHomePath, jreExecute, launchPackageFile, launchConfigPath, projectCachePath);
+    Q_UNUSED(projectCachePath)
+    initialize(configHomePath, jreExecute, launchPackageFile, launchConfigPath, workspace);
 
     int pid = static_cast<int>(QApplication::applicationPid());
 
     QStringList commandQueue;
-    const QString jdkHome = d->configPath + jrePath;
-    const QString debugJar = d->configPath + dapPackageFile;
+    const QString jdkHome = configHomePath + jrePath;
+    const QString debugJar = configHomePath + dapPackageFile;
     commandQueue << d->javaparam.getLSPInitParam(d->requestId++, pid, workspace, jdkHome, debugJar);
     commandQueue << d->javaparam.getLSPInitilizedParam(d->requestId++);
 

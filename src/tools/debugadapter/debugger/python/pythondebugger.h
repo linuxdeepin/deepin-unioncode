@@ -33,13 +33,14 @@ public:
     virtual ~PythonDebugger() override;
 
 signals:
-    void sigSendToClient(const QString &uuid, int port, const QString &kit);
+    void sigSendToClient(const QString &uuid, int port, const QString &kit, const QString &projectPath);
 
 public slots:
     void slotReceiveClientInfo(const QString &uuid,
                                const QString &kit,
                                const QString &pythonExecute,
                                const QString &fileName,
+                               const QString &projectPath,
                                const QString &projectCachePath);
 
 private:

@@ -87,6 +87,7 @@ bool PythonDebug::requestDAPPort(const QString &uuid, const QString &kit,
         << kit
         << OptionManager::getInstance()->getPythonToolPath()
         << fileName
+        << projectPath
         << projectCachePath;
 
     bool ret = QDBusConnection::sessionBus().send(msg);

@@ -106,24 +106,20 @@ bool JavaDebug::requestDAPPort(const QString &uuid, const QString &kit,
 bool JavaDebug::checkConfigFile(QString &retMsg)
 {
     QString arch = ProcessUtil::localPlatform();
-    if ("x86_64" == arch) {
-        arch = "linux-x64";
-    } else if ("aarch64" == arch) {
-        arch = "linux-arm64";
-    } else {
-        retMsg = tr("The computer arch is not supported, can not start debugging.");
-        return false;
-    }
-
     QString dapSupportFilePath = support_file::DapSupportConfig::globalPath();
-    bool ret = support_file::DapSupportConfig::readFromSupportFile(dapSupportFilePath, d->javaDapPluginConfig);
+    bool ret = support_file::DapSupportConfig::readFromSupportFile(dapSupportFilePath, arch, d->javaDapPluginConfig);
     if (!ret) {
         retMsg = tr("Read dapconfig.support failed, please check the file and retry.");
         return false;
     }
 
+    if (d->javaDapPluginConfig.launchPackageName.isEmpty()
+            || d->javaDapPluginConfig.dapPackageName.isEmpty()) {
+        retMsg = tr("The computer arch is not supported, can not start debugging.");
+        return false;
+    }
+
     d->javaDapPluginConfig.configHomePath = CustomPaths::user(CustomPaths::Configures) + QDir::separator();
-    d->javaDapPluginConfig.launchPackageUrl += arch;
 
     return true;
 }
@@ -131,6 +127,8 @@ bool JavaDebug::checkConfigFile(QString &retMsg)
 void JavaDebug::checkJavaLSPPlugin()
 {
     QString configFolder = d->javaDapPluginConfig.configHomePath;
+    qInfo() << configFolder + d->javaDapPluginConfig.launchPackageFile;
+    qInfo() << configFolder + d->javaDapPluginConfig.jreExecute;
     bool bLaunchJarPath = QFileInfo(configFolder + d->javaDapPluginConfig.launchPackageFile).isFile();
     bool bJrePath = QFileInfo(configFolder + d->javaDapPluginConfig.jreExecute).isFile();
     if (!bLaunchJarPath || !bJrePath) {
@@ -140,7 +138,7 @@ void JavaDebug::checkJavaLSPPlugin()
             if (!QFileInfo(workDir).isDir()
                     || !QFileInfo(srcTarget).isFile()
                     || folder.isEmpty()) {
-                readyLSPPlugin(false, tr("The zip file is null."));
+                readyLSPPlugin(false, tr("The lsp package file is null."));
                 return;
             }
 
@@ -163,32 +161,11 @@ void JavaDebug::checkJavaLSPPlugin()
             process.waitForFinished();
         };
 
-        QString redhatLspFilePath = configFolder + d->javaDapPluginConfig.launchPackageName + ".zip";
+        QString redhatLspFilePath = configFolder + d->javaDapPluginConfig.launchPackageName + ".vsix";
         if (QFileInfo(redhatLspFilePath).isFile()) {
             decompress(configFolder, redhatLspFilePath, d->javaDapPluginConfig.launchPackageName);
         } else {
-            DownloadUtil *downloadUtil = new DownloadUtil(d->javaDapPluginConfig.launchPackageUrl,
-                                                          configFolder,
-                                                          d->javaDapPluginConfig.launchPackageName + ".zip");
-            connect(downloadUtil, &DownloadUtil::sigProgress, [=](qint64 bytesRead, qint64 totalBytes){
-                QString progress = QString(tr("LSP package received: %1 MB, total: %2 MB, percent: %%3"))
-                        .arg(bytesRead/1024.00/1024.00).arg(totalBytes/1024.00/1024.00).arg(bytesRead*100.00/totalBytes);
-                outProgressMsg(progress);
-            });
-            connect(downloadUtil, &DownloadUtil::sigFinished, [=](){
-                outProgressMsg(tr("Download java lsp plugin finished."));
-                decompress(configFolder, redhatLspFilePath, d->javaDapPluginConfig.launchPackageName);
-            });
-
-            connect(downloadUtil, &DownloadUtil::sigFailed, [=](){
-                readyLSPPlugin(false, tr("Download java lsp plugin failed, please retry!"));
-            });
-
-            outProgressMsg(tr("Downloading java lsp plugin, please waiting..."));
-            bool ret = downloadUtil->start();
-            if (!ret) {
-                readyLSPPlugin(false, tr("Download java lsp plugin failed, please retry!"));
-            }
+            readyLSPPlugin(false, tr("The lsp package is not exist."));
         }
     } else {
         readyLSPPlugin(true);
@@ -206,7 +183,7 @@ void JavaDebug::checkJavaDAPPlugin()
             if (!QFileInfo(workDir).isDir()
                     || !QFileInfo(srcTarget).isFile()
                     || folder.isEmpty()) {
-                readyDAPPlugin(false, tr("The zip file is null."));
+                readyDAPPlugin(false, tr("The dap package file is null."));
                 return;
             }
 
@@ -229,33 +206,11 @@ void JavaDebug::checkJavaDAPPlugin()
             process.waitForFinished();
         };
 
-        QString vsdapFilePath = configFolder + d->javaDapPluginConfig.dapPackageName + ".zip";
+        QString vsdapFilePath = configFolder + d->javaDapPluginConfig.dapPackageName + ".vsix";
         if (QFileInfo(vsdapFilePath).isFile()) {
             decompress(configFolder, vsdapFilePath, d->javaDapPluginConfig.dapPackageName);
         } else {
-            DownloadUtil *downloadUtil = new DownloadUtil(d->javaDapPluginConfig.dapPackageUrl,
-                                                          configFolder,
-                                                          d->javaDapPluginConfig.dapPackageName + ".zip");
-            connect(downloadUtil, &DownloadUtil::sigProgress, [=](qint64 bytesRead, qint64 totalBytes){
-                QString progress = QString(tr("DAP package received: %1 MB, total: %2 MB, percent: %%3"))
-                        .arg(bytesRead/1024.00/1024.00).arg(totalBytes/1024.00/1024.00).arg(bytesRead*100.00/totalBytes);
-                outProgressMsg(progress);
-            });
-
-            connect(downloadUtil, &DownloadUtil::sigFinished, [=](){
-                outProgressMsg(tr("Download java dap plugin finished."));
-                decompress(configFolder, vsdapFilePath, "vscjava");
-            });
-
-            connect(downloadUtil, &DownloadUtil::sigFailed, [=](){
-                readyDAPPlugin(false, tr("Download java dap plugin failed, please retry!"));
-            });
-
-            outProgressMsg(tr("Downloading java dap plugin, please waiting..."));
-            bool ret = downloadUtil->start();
-            if (!ret) {
-                readyDAPPlugin(false, tr("Download java dap plugin failed, please retry!"));
-            }
+            readyDAPPlugin(false, tr("The dap package is not exist."));
         }
     } else {
         readyDAPPlugin(true);
