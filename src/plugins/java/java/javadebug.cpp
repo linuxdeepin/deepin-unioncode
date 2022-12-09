@@ -27,6 +27,7 @@
 #include "common/util/eventdefinitions.h"
 #include "common/util/processutil.h"
 #include "common/util/custompaths.h"
+#include "common/util/environment.h"
 
 #include <QDBusMessage>
 #include <QDBusConnection>
@@ -40,6 +41,7 @@ class JavaDebugPrivate
     friend class JavaDebug;
 
     support_file::JavaDapPluginConfig javaDapPluginConfig;
+    QString dapPackagePath;
 };
 
 JavaDebug::JavaDebug(QObject *parent)
@@ -120,6 +122,16 @@ bool JavaDebug::checkConfigFile(QString &retMsg)
     }
 
     d->javaDapPluginConfig.configHomePath = CustomPaths::user(CustomPaths::Configures) + QDir::separator();
+    d->dapPackagePath = env::pkg::native::path() + QDir::separator();
+
+    auto copyPackage = [&](const QString &fileName) {
+        if (!QFileInfo(d->javaDapPluginConfig.configHomePath + fileName).isFile()) {
+            QFile::copy(d->dapPackagePath + fileName, d->javaDapPluginConfig.configHomePath + fileName);
+        }
+    };
+
+    copyPackage(d->javaDapPluginConfig.launchPackageName + ".vsix");
+    copyPackage(d->javaDapPluginConfig.dapPackageName + ".vsix");
 
     return true;
 }
@@ -127,8 +139,6 @@ bool JavaDebug::checkConfigFile(QString &retMsg)
 void JavaDebug::checkJavaLSPPlugin()
 {
     QString configFolder = d->javaDapPluginConfig.configHomePath;
-    qInfo() << configFolder + d->javaDapPluginConfig.launchPackageFile;
-    qInfo() << configFolder + d->javaDapPluginConfig.jreExecute;
     bool bLaunchJarPath = QFileInfo(configFolder + d->javaDapPluginConfig.launchPackageFile).isFile();
     bool bJrePath = QFileInfo(configFolder + d->javaDapPluginConfig.jreExecute).isFile();
     if (!bLaunchJarPath || !bJrePath) {
