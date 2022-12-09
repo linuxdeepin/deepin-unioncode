@@ -261,11 +261,11 @@ void StyleLsp::initLspConnection()
 
     /* to use QOverload cast virtual slot can't working */
     QObject::connect(d->getClient(), QOverload<const newlsp::Location&>::of(&newlsp::Client::definitionRes),
-                     [=](const newlsp::Location& data){ this->setDefinition(data); });
+                     this, QOverload<const newlsp::Location&>::of(&StyleLsp::setDefinition));
     QObject::connect(d->getClient(), QOverload<const std::vector<newlsp::Location>&>::of(&newlsp::Client::definitionRes),
-                     [=](const std::vector<newlsp::Location> &data){ this->setDefinition(data); });
+                     this, QOverload<const std::vector<newlsp::Location> &>::of(&StyleLsp::setDefinition));
     QObject::connect(d->getClient(), QOverload<const std::vector<newlsp::LocationLink>&>::of(&newlsp::Client::definitionRes),
-                     [=](const std::vector<newlsp::LocationLink>& data){ this->setDefinition(data); });
+                     this, QOverload<const std::vector<newlsp::LocationLink>&>::of(&StyleLsp::setDefinition));
 
     if (d->getClient()) {
         qApp->metaObject()->invokeMethod(d->getClient(), "openRequest", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
