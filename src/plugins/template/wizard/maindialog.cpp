@@ -205,15 +205,14 @@ void MainDialog::generate(const PojectGenParam &param)
         if (service) {
             auto generator = service->create<LanguageGenerator>(result.kit);
             if (generator) {
-                QString projectFile = generator->getProjectFile(result.projectPath);
-                project.openProject(result.kit, result.language, result.projectPath);
                 close();
+                project.openProject(result.kit, result.language, result.projectPath);
             } else {
                 QMessageBox::critical(this, tr("Tip"), tr("Can not find kit."));
             }
         }
     } else if (param.type == File) {
-        editor.openFile(result.filePath);
         close();
+        editor.openFile(result.filePath);
     }
 }
