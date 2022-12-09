@@ -32,6 +32,7 @@ class TextEditTabBarPrivate
     QTabBar *tab = nullptr;
     QHBoxLayout * hBoxLayout = nullptr;
     QToolButton *pbtHorizontal = nullptr;
+    QToolButton *pbtVertical = nullptr;
     QToolButton *pbtClose = nullptr;
 };
 
@@ -42,17 +43,21 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     d->tab = new QTabBar(this);
     d->hBoxLayout = new QHBoxLayout();
     d->pbtHorizontal = new QToolButton();
+    d->pbtVertical = new QToolButton();
     d->pbtClose = new QToolButton(this);
     d->hBoxLayout->setSpacing(5);
     d->hBoxLayout->setMargin(4);
 
     d->pbtHorizontal->setIcon(QIcon(":/core/images/horizontalSplit.png"));
     d->pbtHorizontal->setStyleSheet("background-color:transparent");
+    d->pbtVertical->setIcon(QIcon(":/core/images/verticalSplit.png"));
+    d->pbtVertical->setStyleSheet("background-color:transparent");
     d->pbtClose->setMaximumSize(24,24);
     d->pbtClose->setIcon(QIcon(":/core/images/closeButton.png"));
     d->pbtClose->setStyleSheet("background-color:transparent");
     d->hBoxLayout->addWidget(d->tab, 0, Qt::AlignLeft | Qt::AlignTop);
     d->hBoxLayout->addWidget(d->pbtHorizontal, 0, Qt::AlignRight | Qt::AlignTop);
+    d->hBoxLayout->addWidget(d->pbtVertical, Qt::AlignTop);
     d->hBoxLayout->addWidget(d->pbtClose, Qt::AlignTop);
     d->tab->setTabsClosable(true);
     d->tab->setExpanding(false);
@@ -75,6 +80,11 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
         emit splitClicked(Qt::Horizontal);
     });
 
+    QObject::connect(d->pbtVertical, &QToolButton::clicked,
+                     this, [=]() {
+        emit splitClicked(Qt::Vertical);
+    });
+
     QObject::connect(d->pbtClose, &QToolButton::clicked,
                      this, [=]() {
         emit closeClicked();
@@ -90,6 +100,8 @@ TextEditTabBar::~TextEditTabBar()
             delete d->pbtClose;
         if (d->pbtHorizontal)
             delete d->pbtHorizontal;
+        if (d->pbtVertical)
+            delete d->pbtVertical;
         if (d->hBoxLayout)
             delete d->hBoxLayout;
         delete d;
@@ -215,6 +227,12 @@ void TextEditTabBar::setCurrentIndex(int idx)
 void TextEditTabBar::setCloseButtonVisible(bool flag)
 {
     d->pbtClose->setVisible(flag);
+}
+
+void TextEditTabBar::setSplitButtonVisible(bool flag)
+{
+    d->pbtHorizontal->setVisible(flag);
+    d->pbtVertical->setVisible(flag);
 }
 
 void TextEditTabBar::tabCloseRequested(int idx)

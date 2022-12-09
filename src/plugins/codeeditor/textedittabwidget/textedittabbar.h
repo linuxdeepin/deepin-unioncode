@@ -42,6 +42,7 @@ public:
     QString currentFile() const;
     void setCurrentIndex(int idx);
     void setCloseButtonVisible(bool flag);
+    void setSplitButtonVisible(bool flag);
 
 signals:
     void fileClosed(const QString &file);

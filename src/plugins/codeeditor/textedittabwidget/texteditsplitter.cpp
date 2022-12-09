@@ -31,6 +31,7 @@ TextEditSplitter::TextEditSplitter(QWidget *parent)
     , mainSplitter(new QSplitter)
 {
     tabWidget = new TextEditTabWidget(mainSplitter);
+    mainSplitter->setOpaqueResize(false);
     mainSplitter->addWidget(tabWidget);
     tabWidgets.insert(tabWidget, true);
     splitters.append(mainSplitter);
@@ -69,22 +70,25 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
     splitters.append(newSplitter);
     newSplitter->setOrientation(orientation);
     newSplitter->setHandleWidth(0);
+    newSplitter->setOpaqueResize(true);
     oldEditWidget->setParent(newSplitter);
+    oldEditWidget->setCloseButtonVisible(true);
 
     TextEditTabWidget *newEditWidget = new TextEditTabWidget(newSplitter);
     tabWidgets.insert(newEditWidget, true);
     tabWidgets[oldEditWidget] = false;
+    if (tabWidgets.size() >= 4) {
+        for (auto it = tabWidgets.begin(); it != tabWidgets.end(); ++it) {
+            it.key()->setSplitButtonVisible(false);
+        }
+    }
     if (key.isValid()) {
         newEditWidget->openFileWithKey(key, file);
     }
-    newEditWidget->setFocus();
-    newEditWidget->activateWindow();
-    newSplitter->insertWidget(0, oldEditWidget);
-    newSplitter->insertWidget(1, newEditWidget);
-    splitter->replaceWidget(0, newSplitter);
-    for (int i = 0; i < tabWidgets.size(); i++) {
-        tabWidgets.key(i)->setCloseButtonVisible(true);
-    }
+
+    newSplitter->addWidget(oldEditWidget);
+    newSplitter->addWidget(newEditWidget);
+    splitter->addWidget(newSplitter);
 
     // cancel all open file sig-slot from texteditwidget
     QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
@@ -148,10 +152,7 @@ TextEditSplitter *TextEditSplitter::instance()
 }
 
 void TextEditSplitter::doClose()
-{
-    if (tabWidgets.size() <= 1) {
-        return;
-    }
+{ 
     auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
     if (tabWidgets[textEditTabWidget]) {
         auto it = tabWidgets.begin();
@@ -164,7 +165,15 @@ void TextEditSplitter::doClose()
                          it.key(), &TextEditTabWidget::jumpToLineWithKey);
     }
     tabWidgets.remove(textEditTabWidget);
+    if (tabWidgets.size() < 4) {
+        for (auto it = tabWidgets.begin(); it != tabWidgets.end(); ++it) {
+            it.key()->setSplitButtonVisible(true);
+        }
+    }
+    auto splitter = qobject_cast<QSplitter *>(textEditTabWidget->parent());
     delete textEditTabWidget;
+    if (splitter->count() == 0)
+        delete splitter;
 
     if (tabWidgets.size() == 1) {
         auto it = tabWidgets.begin();

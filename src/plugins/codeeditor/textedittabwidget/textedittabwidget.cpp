@@ -587,6 +587,11 @@ void TextEditTabWidget::setCloseButtonVisible(bool flag)
     d->tab->setCloseButtonVisible(flag);
 }
 
+void TextEditTabWidget::setSplitButtonVisible(bool flag)
+{
+    d->tab->setSplitButtonVisible(flag);
+}
+
 void TextEditTabWidget::handleDeletedFile(const QString &file)
 {
     int ret = QMessageBox::question(this, QMessageBox::tr("File Has Been Removed"),

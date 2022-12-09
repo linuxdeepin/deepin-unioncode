@@ -38,6 +38,7 @@ public:
     virtual ~TextEditTabWidget();
     static TextEditTabWidget *instance();
     void setCloseButtonVisible(bool flag);
+    void setSplitButtonVisible(bool flag);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *event) override;

@@ -45,5 +45,6 @@
         <file>images/run-build-file.png</file>
         <file>images/unioncode@200.png</file>
         <file>images/debug-step-into.png</file>
+        <file>images/verticalSplit.png</file>
     </qresource>
 </RCC>
