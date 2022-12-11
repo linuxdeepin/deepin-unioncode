@@ -17,37 +17,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+#ifndef OPTIONSNINJA_H
+#define OPTIONSNINJA_H
 
-#ifndef OPTIONMANAGER_H
-#define OPTIONMANAGER_H
+#include <framework/framework.h>
 
-#include "optiondatastruct.h"
-#include <QObject>
-
-class OptionManagerPrivate;
-class OptionManager : public QObject
+class OptionNinja : public dpf::Plugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "optionninja.json")
 public:
-    static OptionManager *getInstance();
-
-    void updateData();
-
-    QString getMavenToolPath();
-    QString getJdkToolPath();
-    QString getGradleToolPath();
-    QString getPythonToolPath();
-    QString getCMakeToolPath();
-    QString getNinjaToolPath();
-
-signals:
-
-private:
-    explicit OptionManager(QObject *parent = nullptr);
-    virtual ~OptionManager() override;
-
-    OptionManagerPrivate *const d;
+    virtual void initialize() override;
+    virtual bool start() override;
+    virtual dpf::Plugin::ShutdownFlag stop() override;
 };
 
-#endif // OPTIONMANAGER_H
+#endif // OPTIONSNINJA_H

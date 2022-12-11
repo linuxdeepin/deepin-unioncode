@@ -34,6 +34,15 @@
                     "leafNode": true
                 }
             ]
+        },
+        {
+            "type": "Ninja",
+            "templates": [{
+                    "name": "console",
+                    "path": "projects/ninja/console",
+                    "leafNode": true
+                }
+            ]
         }
     ],
     "Files": [{

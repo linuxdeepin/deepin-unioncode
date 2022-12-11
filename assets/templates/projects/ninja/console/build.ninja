@@ -1,0 +1,36 @@
+ninja_required_version = 1.5
+
+cflags = -Wall -Werror -g
+cc = g++
+target = %{ProjectName}
+
+rule COMPILE
+  command = $cc -c $cflags -MD -MF $out.d $in -o $out
+  description= Comiple $in to $out
+  depfile = $out.d
+  deps=gcc
+  
+build main.o: COMPILE main.cpp
+
+rule LINK
+   command= $cc $defines  $includes $cflags $in -o $out
+   description= Link $in to $out
+
+rule CLEAN
+  command = /usr/bin/ninja -t clean
+  description = Cleaning all built files...
+
+rule HELP
+  command = /usr/bin/ninja -t targets
+  description = All primary targets available:
+
+
+build $target: LINK main.o
+
+build all: phony $target
+
+build clean: CLEAN
+
+build help: HELP
+
+default all

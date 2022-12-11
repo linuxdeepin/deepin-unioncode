@@ -23,6 +23,7 @@
 
 #include "services/language/languageservice.h"
 #include "cmake/cmakegenerator.h"
+#include "ninja/ninjagenerator.h"
 
 using namespace dpfservice;
 
@@ -43,6 +44,16 @@ bool CxxPlugin::start()
             qCritical() << errorString;
         } else {
             ret = languageService->create<CMakeGenerator>(CMakeGenerator::toolKitName(), &errorString);
+            if (!ret) {
+                qCritical() << errorString;
+            }
+        }
+
+        ret = languageService->regClass<NinjaGenerator>(NinjaGenerator::toolKitName(), &errorString);
+        if (!ret) {
+            qCritical() << errorString;
+        } else {
+            ret = languageService->create<NinjaGenerator>(NinjaGenerator::toolKitName(), &errorString);
             if (!ret) {
                 qCritical() << errorString;
             }

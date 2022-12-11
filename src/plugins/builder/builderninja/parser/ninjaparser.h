@@ -18,36 +18,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef NINJAPARSER_H
+#define NINJAPARSER_H
 
-#ifndef OPTIONMANAGER_H
-#define OPTIONMANAGER_H
+#include "services/builder/ioutputparser.h"
 
-#include "optiondatastruct.h"
-#include <QObject>
-
-class OptionManagerPrivate;
-class OptionManager : public QObject
+class NinjaParser : public IOutputParser
 {
     Q_OBJECT
+
 public:
-    static OptionManager *getInstance();
+    explicit NinjaParser();
 
-    void updateData();
-
-    QString getMavenToolPath();
-    QString getJdkToolPath();
-    QString getGradleToolPath();
-    QString getPythonToolPath();
-    QString getCMakeToolPath();
-    QString getNinjaToolPath();
-
-signals:
+    void stdOutput(const QString &line, OutputPane::OutputFormat format) override;
+    void stdError(const QString &line) override;
+    void taskAdded(const Task &task, int linkedLines, int skippedLines) override;
 
 private:
-    explicit OptionManager(QObject *parent = nullptr);
-    virtual ~OptionManager() override;
 
-    OptionManagerPrivate *const d;
 };
 
-#endif // OPTIONMANAGER_H
+#endif // NINJAPARSER_H

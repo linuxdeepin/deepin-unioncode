@@ -1,0 +1,31 @@
+{
+    "type": "project",
+    "kit": "ninja",
+    "language": "C/C++",
+    "trDisplayName": "Ninja Console Application",
+    "trDescription": "An application with ninja console",
+    "configures": [{
+            "key": "ProjectName",
+            "displayName": "Project Name",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": false
+        },
+        {
+            "key": "Location",
+            "displayName": "Location",
+            "type": "lineEdit",
+            "defaultValues": [],
+            "browse": true
+        }
+    ],
+    "generator": {
+        "rootFolder": "%{ProjectName}",
+        "destPath": "%{Location}",
+        "operations": [{
+                "sourceFile": "build.ninja",
+                "replaceKeys": ["%{ProjectName}"]
+            }
+        ]
+    }
+}

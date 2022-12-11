@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2020 ~ 2022 Uniontech Software Technology Co., Ltd.
  *
- * Author:     zhouyi<zhouyi1@uniontech.com>
+ * Author:     huanyu<huanyub@uniontech.com>
  *
- * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             huangyu<huangyub@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,18 +18,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#ifndef OPTIONDATASTRUCT_H
-#define OPTIONDATASTRUCT_H
+ */
+#ifndef PROJECTNINJA_H
+#define PROJECTNINJA_H
 
-#include "toolchaindata.h"
+#include <framework/framework.h>
 
-namespace option {
-static const QString CATEGORY_CMAKE{"CMake"};
-static const QString CATEGORY_MAVEN{"Maven"};
-static const QString CATEGORY_GRADLE{"Gradle"};
-static const QString CATEGORY_JAVA{"Java"};
-static const QString CATEGORY_PYTHON{"Python"};
-static const QString CATEGORY_NINJA{"Ninja"};
-}
-#endif // OPTIONDATASTRUCT_H
+class ProjectNinja : public dpf::Plugin
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "projectninja.json")
+public:
+    virtual void initialize() override;
+    virtual bool start() override;
+    virtual dpf::Plugin::ShutdownFlag stop() override;
+};
+
+#endif // PROJECTNINJA_H

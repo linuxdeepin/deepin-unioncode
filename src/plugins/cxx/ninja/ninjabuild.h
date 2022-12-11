@@ -18,36 +18,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef NINJABUILD_H
+#define NINJABUILD_H
 
-#ifndef OPTIONMANAGER_H
-#define OPTIONMANAGER_H
-
-#include "optiondatastruct.h"
+#include "dap/protocol.h"
 #include <QObject>
 
-class OptionManagerPrivate;
-class OptionManager : public QObject
+class NinjaBuildPrivate;
+class NinjaBuild : public QObject
 {
     Q_OBJECT
 public:
-    static OptionManager *getInstance();
+    explicit NinjaBuild(QObject *parent = nullptr);
+    ~NinjaBuild();
 
-    void updateData();
-
-    QString getMavenToolPath();
-    QString getJdkToolPath();
-    QString getGradleToolPath();
-    QString getPythonToolPath();
-    QString getCMakeToolPath();
-    QString getNinjaToolPath();
+    static QString build(const QString& kitName, const QString& projectPath);
 
 signals:
 
-private:
-    explicit OptionManager(QObject *parent = nullptr);
-    virtual ~OptionManager() override;
+private slots:
 
-    OptionManagerPrivate *const d;
+private:
+    NinjaBuildPrivate *const d;
 };
 
-#endif // OPTIONMANAGER_H
+#endif //NINJABUILD_H
+

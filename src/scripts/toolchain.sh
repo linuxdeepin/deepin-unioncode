@@ -121,21 +121,46 @@ probe_debuggers()
 	echo "]}" >> $TOOLCHAINS
 }
 
-# probe cmake and ninja
-BUILD_SYSTEMS="cmake ninja"
+# probe cmake
 probe_build_systems()
 {
+	CMAKE_VERSIONS=($(find $search_path -name 'cmake'))
 	echo "{\"C/C++ build systems\": [" >> $TOOLCHAINS
-	for buildsystem in ${BUILD_SYSTEMS[@]}; do
+	count=${#CMAKE_VERSIONS[@]}
+	for ((i=0;i<$count;i++)) do
+		version=${CMAKE_VERSIONS[i]}
 		echo "{" >> $TOOLCHAINS
-		path=$(find $search_path -name $buildsystem)
-		echo "\"name\":\"$buildsystem\"," >> $TOOLCHAINS
+		name=$(basename $version)
+		path=$version
+		echo "\"name\":\"$name\"," >> $TOOLCHAINS
 		echo "\"path\":\"$path\"" >> $TOOLCHAINS
-		if [ $buildsystem = ninja ]; then
-			echo "}" >> $TOOLCHAINS
-		else
-			echo "}," >>  $TOOLCHAINS
-		fi
+		echo "}" >>  $TOOLCHAINS
+		last=$[$count-1]
+		if [ $i -ne $last ]; then
+			echo "," >>  $TOOLCHAINS
+		fi		
+	done
+	echo "]}" >> $TOOLCHAINS
+}
+
+# probe ninja
+probe_ninja()
+{
+	NINJA_VERSIONS=($(find $search_path -name 'ninja'))
+	echo "{\"Ninja\": [" >> $TOOLCHAINS
+	count=${#NINJA_VERSIONS[@]}
+	for ((i=0;i<$count;i++)) do
+		version=${NINJA_VERSIONS[i]}
+		echo "{" >> $TOOLCHAINS
+		name=$(basename $version)
+		path=$version
+		echo "\"name\":\"$name\"," >> $TOOLCHAINS
+		echo "\"path\":\"$path\"" >> $TOOLCHAINS
+		echo "}" >>  $TOOLCHAINS
+		last=$[$count-1]
+		if [ $i -ne $last ]; then
+			echo "," >>  $TOOLCHAINS
+		fi		
 	done
 	echo "]}" >> $TOOLCHAINS
 }
@@ -269,6 +294,8 @@ echo "," >> $TOOLCHAINS
 probe_gradle
 echo "," >> $TOOLCHAINS
 probe_python
+echo "," >> $TOOLCHAINS
+probe_ninja
 
 echo "]" >> $TOOLCHAINS
 

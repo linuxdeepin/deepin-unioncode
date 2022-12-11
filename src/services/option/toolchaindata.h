@@ -34,6 +34,7 @@ static const QString kJDK{"JDK"};
 static const QString kMaven{"Maven"};
 static const QString kGradle{"Gradle"};
 static const QString kPython{"Python"};
+static const QString kNinja{"Ninja"};
 
 static const QString kNameItem{"name"};
 static const QString kPathItem{"path"};

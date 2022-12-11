@@ -18,36 +18,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef NINJAOPTIONWIDGET_H
+#define NINJAOPTIONWIDGET_H
 
-#ifndef OPTIONMANAGER_H
-#define OPTIONMANAGER_H
+#include "common/common.h"
 
-#include "optiondatastruct.h"
-#include <QObject>
-
-class OptionManagerPrivate;
-class OptionManager : public QObject
+class NinjaOptionWidgetPrivate;
+class NinjaOptionWidget : public PageWidget
 {
     Q_OBJECT
 public:
-    static OptionManager *getInstance();
+    explicit NinjaOptionWidget(QWidget *parent = nullptr);
+    ~NinjaOptionWidget() override;
 
-    void updateData();
-
-    QString getMavenToolPath();
-    QString getJdkToolPath();
-    QString getGradleToolPath();
-    QString getPythonToolPath();
-    QString getCMakeToolPath();
-    QString getNinjaToolPath();
+    void saveConfig() override;
+    void readConfig() override;
 
 signals:
 
+public slots:
 private:
-    explicit OptionManager(QObject *parent = nullptr);
-    virtual ~OptionManager() override;
-
-    OptionManagerPrivate *const d;
+    NinjaOptionWidgetPrivate *const d;
 };
 
-#endif // OPTIONMANAGER_H
+#endif // NINJAOPTIONWIDGET_H

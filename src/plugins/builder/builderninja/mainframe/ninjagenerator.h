@@ -18,36 +18,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef NINJAGENERATOR_H
+#define NINJAGENERATOR_H
 
-#ifndef OPTIONMANAGER_H
-#define OPTIONMANAGER_H
+#include "services/builder/buildergenerator.h"
 
-#include "optiondatastruct.h"
-#include <QObject>
-
-class OptionManagerPrivate;
-class OptionManager : public QObject
+class NinjaGeneratorPrivate;
+class NinjaGenerator : public dpfservice::BuilderGenerator
 {
     Q_OBJECT
 public:
-    static OptionManager *getInstance();
+    explicit NinjaGenerator();
+    virtual ~NinjaGenerator() override;
 
-    void updateData();
+    static QString toolKitName() { return "ninja"; }
 
-    QString getMavenToolPath();
-    QString getJdkToolPath();
-    QString getGradleToolPath();
-    QString getPythonToolPath();
-    QString getCMakeToolPath();
-    QString getNinjaToolPath();
+    BuildCommandInfo getMenuCommand(const BuildMenuType buildMenuType, const dpfservice::ProjectInfo &projectInfo) override;
+    void appendOutputParser(std::unique_ptr<IOutputParser> &outputParser) override;
+    bool checkCommandValidity(const BuildCommandInfo &info, QString &retMsg) override;
 
 signals:
 
+private slots:
 private:
-    explicit OptionManager(QObject *parent = nullptr);
-    virtual ~OptionManager() override;
-
-    OptionManagerPrivate *const d;
+    NinjaGeneratorPrivate *const d;
 };
 
-#endif // OPTIONMANAGER_H
+#endif // NINJAGENERATOR_H

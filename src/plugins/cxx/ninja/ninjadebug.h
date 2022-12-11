@@ -18,36 +18,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef NINJADEBUG_H
+#define NINJADEBUG_H
 
-#ifndef OPTIONMANAGER_H
-#define OPTIONMANAGER_H
-
-#include "optiondatastruct.h"
+#include "dap/protocol.h"
 #include <QObject>
 
-class OptionManagerPrivate;
-class OptionManager : public QObject
+class NinjaDebugPrivate;
+class NinjaDebug : public QObject
 {
     Q_OBJECT
 public:
-    static OptionManager *getInstance();
+    explicit NinjaDebug(QObject *parent = nullptr);
+    ~NinjaDebug();
 
-    void updateData();
-
-    QString getMavenToolPath();
-    QString getJdkToolPath();
-    QString getGradleToolPath();
-    QString getPythonToolPath();
-    QString getCMakeToolPath();
-    QString getNinjaToolPath();
+    bool requestDAPPort(const QString &uuid, const QString &kit,
+                        const QString &targetPath, const QStringList &arguments,
+                        QString &retMsg);
+    bool isLaunchNotAttach();
+    dap::LaunchRequest launchDAP(const QString &targetPath, const QStringList &argments);
 
 signals:
 
-private:
-    explicit OptionManager(QObject *parent = nullptr);
-    virtual ~OptionManager() override;
+private slots:
 
-    OptionManagerPrivate *const d;
+private:
+    NinjaDebugPrivate *const d;
 };
 
-#endif // OPTIONMANAGER_H
+#endif // NINJADEBUG_H

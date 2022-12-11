@@ -17,37 +17,38 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
+#include "optionninja.h"
+#include "mainframe/optionninjagenerator.h"
 
-#ifndef OPTIONMANAGER_H
-#define OPTIONMANAGER_H
+#include "base/abstractmenu.h"
+#include "base/abstractmainwindow.h"
+#include "base/abstractwidget.h"
 
-#include "optiondatastruct.h"
-#include <QObject>
+#include "services/option/optionservice.h"
 
-class OptionManagerPrivate;
-class OptionManager : public QObject
+#include "framework/listener/listener.h"
+
+using namespace dpfservice;
+
+void OptionNinja::initialize()
 {
-    Q_OBJECT
-public:
-    static OptionManager *getInstance();
+    DPF_USE_NAMESPACE
+}
 
-    void updateData();
+bool OptionNinja::start()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    OptionService *optionService = ctx.service<OptionService>(OptionService::name());
+    if (!optionService) {
+        qCritical() << "Failed, not found OptionNinja service!";
+        abort();
+    }
+    optionService->implGenerator<OptionNinjaGenerator>(OptionNinjaGenerator::kitName());
+    return true;
+}
 
-    QString getMavenToolPath();
-    QString getJdkToolPath();
-    QString getGradleToolPath();
-    QString getPythonToolPath();
-    QString getCMakeToolPath();
-    QString getNinjaToolPath();
-
-signals:
-
-private:
-    explicit OptionManager(QObject *parent = nullptr);
-    virtual ~OptionManager() override;
-
-    OptionManagerPrivate *const d;
-};
-
-#endif // OPTIONMANAGER_H
+dpf::Plugin::ShutdownFlag OptionNinja::stop()
+{
+    return Sync;
+}

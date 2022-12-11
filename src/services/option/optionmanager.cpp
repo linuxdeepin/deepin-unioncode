@@ -96,3 +96,9 @@ QString OptionManager::getCMakeToolPath()
     return map.value("Kits").toMap().value("cmake").toMap().value("path").toString();
 }
 
+QString OptionManager::getNinjaToolPath()
+{
+    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_NINJA).toMap();
+    return map.value("Ninja").toMap().value("version").toMap().value("path").toString();
+}
+

@@ -6,6 +6,9 @@ set(CXX_CPP
     cmake/cmakegenerator.cpp
     cmake/cmakebuild.cpp
     cmake/cmakedebug.cpp
+    ninja/ninjagenerator.cpp
+    ninja/ninjabuild.cpp
+    ninja/ninjadebug.cpp
     cxxplugin.cpp
     cxxplugin.json
     )
@@ -14,6 +17,9 @@ set(CXX_H
     cmake/cmakegenerator.h
     cmake/cmakebuild.h
     cmake/cmakedebug.h
+    ninja/ninjagenerator.h
+    ninja/ninjabuild.h
+    ninja/ninjadebug.h
     cxxplugin.h
     )
 
