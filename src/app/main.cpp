@@ -90,9 +90,6 @@ int main(int argc, char *argv[])
         QString language = txtInput.readLine();
         translator.load(result + language);
         a.installTranslator(&translator);
-    } else {
-        translator.load(result + "zh_CN.qm");
-        a.installTranslator(&translator);
     }
 
     if (!pluginsLoad()) {

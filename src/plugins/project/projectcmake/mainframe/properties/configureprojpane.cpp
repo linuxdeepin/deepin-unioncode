@@ -123,7 +123,7 @@ void ConfigureProjPane::setupUI()
     hLayoutKit->addWidget(d->kitComboBox, 0, Qt::AlignLeft);
     hLayoutKit->addStretch(10);
 
-    d->radioDebug = new QRadioButton(tr("Debug"));
+    d->radioDebug = new QRadioButton("Debug");
     d->radioDebug->setFixedWidth(100);
     auto btnDebug = new QPushButton(tr("Browse..."));
     d->lineEditDebug = new QLineEdit();
@@ -134,7 +134,7 @@ void ConfigureProjPane::setupUI()
     hLayoutDebug->addWidget(d->lineEditDebug);
     hLayoutDebug->addWidget(btnDebug);
 
-    d->radioRelease = new QRadioButton(tr("Release"));
+    d->radioRelease = new QRadioButton("Release");
     d->radioRelease->setFixedWidth(100);
     auto btnRelease = new QPushButton(tr("Browse..."));
     d->lineEditRelease = new QLineEdit();

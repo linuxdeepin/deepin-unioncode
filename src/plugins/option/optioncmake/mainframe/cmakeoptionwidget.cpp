@@ -42,7 +42,7 @@ CMakeOptionWidget::CMakeOptionWidget(QWidget *parent)
     d->tabWidget = new QTabWidget();
     layout->addWidget(d->tabWidget);
 
-    d->tabWidget->addTab(new KitsManagerWidget(), tr("Kits"));
+    d->tabWidget->addTab(new KitsManagerWidget(), "Kits");
     QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
         readConfig();
     });

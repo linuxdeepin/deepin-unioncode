@@ -42,7 +42,7 @@ PythonOptionWidget::PythonOptionWidget(QWidget *parent)
     d->tabWidget = new QTabWidget();
     layout->addWidget(d->tabWidget);
 
-    d->tabWidget->addTab(new InterpreterWidget(), tr("Interpreter"));
+    d->tabWidget->addTab(new InterpreterWidget(), "Interpreter");
     QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
         readConfig();
     });
