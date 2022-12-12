@@ -31,8 +31,8 @@ TextEditSplitter::TextEditSplitter(QWidget *parent)
     , mainSplitter(new QSplitter)
 {
     tabWidget = new TextEditTabWidget(mainSplitter);
-    mainSplitter->setOpaqueResize(false);
     mainSplitter->addWidget(tabWidget);
+    mainSplitter->setHandleWidth(0);
     tabWidgets.insert(tabWidget, true);
     splitters.append(mainSplitter);
     tabWidget->setCloseButtonVisible(false);
@@ -71,6 +71,7 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
     newSplitter->setOrientation(orientation);
     newSplitter->setHandleWidth(0);
     newSplitter->setOpaqueResize(true);
+    int index = splitter->indexOf(oldEditWidget);
     oldEditWidget->setParent(newSplitter);
     oldEditWidget->setCloseButtonVisible(true);
 
@@ -86,9 +87,7 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
         newEditWidget->openFileWithKey(key, file);
     }
 
-    newSplitter->addWidget(oldEditWidget);
-    newSplitter->addWidget(newEditWidget);
-    splitter->addWidget(newSplitter);
+    splitter->insertWidget(index, newSplitter);
 
     // cancel all open file sig-slot from texteditwidget
     QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
