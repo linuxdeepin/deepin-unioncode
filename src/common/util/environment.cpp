@@ -176,11 +176,20 @@ QString package::native::path(const Category::type_value &category)
     if (category.isEmpty()) {
         return envPath;
     } else {
-        while (dirItera.hasNext()) {
-            dirItera.next();
-            QFileInfo info = dirItera.fileInfo();
-            if (category == info.fileName() || info.fileName().contains(category)) {
+        QDirIterator sameItera(envPath, QDir::Files|QDir::NoDotAndDotDot);
+        while (sameItera.hasNext()) {
+            sameItera.next();
+            QFileInfo info = sameItera.fileInfo();
+            if (category == info.fileName()) {
                 return info.filePath();
+            }
+        }
+        QDirIterator containsItera(envPath, QDir::Files|QDir::NoDotAndDotDot);
+        while (containsItera.hasNext()) {
+            containsItera.next();
+            QFileInfo info = containsItera.fileInfo();
+            if (info.fileName().contains(category)) {
+                return info.fileName();
             }
         }
     }
