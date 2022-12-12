@@ -115,7 +115,7 @@ QStringList GradleGenerator::supportLanguages()
 
 QStringList GradleGenerator::supportFileNames()
 {
-    return {"gradlew"};
+    return {"build.gradle", "settings.gradle"};
 }
 
 QDialog *GradleGenerator::configureWidget(const QString &language,

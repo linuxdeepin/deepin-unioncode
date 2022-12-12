@@ -23,6 +23,15 @@ dependencies {
     
 }
 
+// deepin union code compile classes output path. 
+sourceSets {
+    main {
+        java {
+            output.classesDir = file("./bin/main")
+        }
+    }
+}
+
 // Define the main class for the application
 mainClassName = 'App'
 

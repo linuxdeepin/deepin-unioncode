@@ -49,7 +49,7 @@
 #include <QFileInfo>
 
 #define PER_WAIT_MSEC (1000)
-#define MAX_WAIT_TIMES (20)
+#define MAX_WAIT_TIMES (10)
 
 /**
  * @brief Debugger::Debugger
@@ -765,7 +765,7 @@ void Debugger::exitDebug()
 {
     // Change UI.
     editor.cleanRunning({});
-    QMetaObject::invokeMethod(localsView, "hide");
+    localsView->hide();
 
     localsModel.clear();
     stackModel.removeAll();
@@ -868,7 +868,7 @@ bool Debugger::prepareDAPPort(const QMap<QString, QVariant> &param, const QStrin
         auto generator = service->create<LanguageGenerator>(kitName);
         if (generator) {
             d->isWaitingPort = true;
-            printOutput(tr("Searching dap port, please waiting..."));
+            printOutput(tr("Searching dap port, please waiting...(a maximum of 10 seconds) "));
 
             d->timer.reset(new QTimer());
             d->timerThread.reset(new QThread());
@@ -884,8 +884,8 @@ bool Debugger::prepareDAPPort(const QMap<QString, QVariant> &param, const QStrin
                     printOutput(tip);
                     QMetaObject::invokeMethod(this, "message", Q_ARG(QString, tip));
                 } else {
-                    QString tip = QString("Waitting for %1 second...").arg(times);
-                    printOutput(tip);
+                    QString tip = QString("...").arg(times);
+                    printOutput(tip, StdOutFormatSameLine);
                 }
             });
             d->timerThread->start();

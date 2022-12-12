@@ -24,7 +24,7 @@
         "destPath": "%{Location}",
         "operations": [{
                 "sourceFile": "pom.xml",
-                "replaceKeys": []
+                "replaceKeys": ["%{ProjectName}"]
             }
         ]
     }
