@@ -55,10 +55,11 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     d->pbtClose->setMaximumSize(24,24);
     d->pbtClose->setIcon(QIcon(":/core/images/closeButton.png"));
     d->pbtClose->setStyleSheet("background-color:transparent");
-    d->hBoxLayout->addWidget(d->tab, 0, Qt::AlignLeft | Qt::AlignTop);
-    d->hBoxLayout->addWidget(d->pbtHorizontal, 0, Qt::AlignRight | Qt::AlignTop);
-    d->hBoxLayout->addWidget(d->pbtVertical, Qt::AlignTop);
-    d->hBoxLayout->addWidget(d->pbtClose, Qt::AlignTop);
+    d->hBoxLayout->addWidget(d->tab);
+    d->hBoxLayout->addStretch(10);
+    d->hBoxLayout->addWidget(d->pbtHorizontal);
+    d->hBoxLayout->addWidget(d->pbtVertical);
+    d->hBoxLayout->addWidget(d->pbtClose);
     d->tab->setTabsClosable(true);
     d->tab->setExpanding(false);
 

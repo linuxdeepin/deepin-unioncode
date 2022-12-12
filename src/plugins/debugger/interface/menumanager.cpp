@@ -65,7 +65,6 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = new AbstractAction(interrupt.get());
     interrupt->setEnabled(false);
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addToolBarActionItem("Interrupt", interrupt.get());
 
     continueDebugging.reset(new QAction(MWMDA_CONTINUE));
     ActionManager::getInstance()->registerAction(continueDebugging.get(), "Debug.Continue",
@@ -84,6 +83,7 @@ void MenuManager::initialize(WindowService *windowService)
     connect(abortDebugging.get(), &QAction::triggered, debugManager, &DebugManager::abortDebug);
     actionImpl = new AbstractAction(abortDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
+    windowService->addToolBarActionItem("abort_debug", abortDebugging.get());
 
     restartDebugging.reset(new QAction(MWMDA_RESTART_DEBUGGING));
     ActionManager::getInstance()->registerAction(restartDebugging.get(), "Debug.Restart.Debugging",

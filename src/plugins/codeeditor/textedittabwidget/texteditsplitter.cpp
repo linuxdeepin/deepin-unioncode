@@ -94,6 +94,12 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
     QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                         oldEditWidget, &TextEditTabWidget::openFileWithKey);
 
+    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
+                        oldEditWidget, &TextEditTabWidget::jumpToLineWithKey);
+
+    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toRunFileLineWithKey,
+                        oldEditWidget, &TextEditTabWidget::runningToLineWithKey);
+
     // connect new texteditwidget openfile slot
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                      newEditWidget, &TextEditTabWidget::openFileWithKey);
@@ -133,6 +139,8 @@ void TextEditSplitter::doSelected(bool state)
                                         edit, &TextEditTabWidget::openFileWithKey);
                     QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
                                         edit, &TextEditTabWidget::jumpToLineWithKey);
+                    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toRunFileLineWithKey,
+                                        edit, &TextEditTabWidget::runningToLineWithKey);
                     tabWidgets[edit] = false;
                 }
             }
@@ -140,6 +148,8 @@ void TextEditSplitter::doSelected(bool state)
                              textEditTabWidget, &TextEditTabWidget::openFileWithKey);
             QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
                              textEditTabWidget, &TextEditTabWidget::jumpToLineWithKey);
+            QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRunFileLineWithKey,
+                                textEditTabWidget, &TextEditTabWidget::runningToLineWithKey);
             tabWidgets[textEditTabWidget] = state;
         }
     }

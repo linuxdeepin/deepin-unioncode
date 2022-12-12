@@ -26,6 +26,21 @@
         <source>Additional output omitted</source>
         <translation>省略附加输出</translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/debugger/interface/appoutputpane.cpp" line="173"/>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/interface/appoutputpane.cpp" line="183"/>
+        <source>Clear</source>
+        <translation>清扫</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/interface/appoutputpane.cpp" line="193"/>
+        <source>Select All</source>
+        <translation>选择全部</translation>
+    </message>
 </context>
 <context>
     <name>BreakpointItem</name>
@@ -146,42 +161,47 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="260"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="197"/>
+        <source>Co&amp;mpile Output</source>
+        <translation>编译输出</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="256"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation>错误：执行命令错误！原因未知。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="264"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="260"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始在工作区%3中执行%1 %2命令。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="272"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="268"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程%1正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="275"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="271"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程%1退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="279"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="275"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程 %1崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="306"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="302"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -304,6 +324,14 @@
 </source>
         <translation>进程 %1 崩溃。
 </translation>
+    </message>
+</context>
+<context>
+    <name>CodePortingManager</name>
+    <message>
+        <location filename="../../src/plugins/codeporting/codeportingmanager.cpp" line="165"/>
+        <source>Code Porting</source>
+        <translation>代码迁移</translation>
     </message>
 </context>
 <context>
@@ -499,6 +527,7 @@ dap端口未就绪，请重试。
     <name>DebuggerPlugin</name>
     <message>
         <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="67"/>
+        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="86"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出</translation>
     </message>
@@ -518,6 +547,7 @@ dap端口未就绪，请重试。
     <message>
         <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="83"/>
         <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="83"/>
+        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="83"/>
         <source>Input main class</source>
         <translation>输入 main class</translation>
     </message>
@@ -700,82 +730,54 @@ dap端口未就绪，请重试。
 <context>
     <name>JavaDebug</name>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="66"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="68"/>
         <source>The project is not exist, please check the files and retry.</source>
         <translation>项目不存在，请检查文件并重试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="99"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="101"/>
         <source>Request java dap port failed, please retry.</source>
         <translation>请求java dap端口失败，请重试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="114"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="120"/>
         <source>The computer arch is not supported, can not start debugging.</source>
         <translation>不支持计算机架构，无法启动调试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="121"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="151"/>
+        <source>The lsp package file is null.</source>
+        <translation>lsp包文件为空。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="178"/>
+        <source>The lsp package is not exist.</source>
+        <translation>lsp包不存在。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="196"/>
+        <source>The dap package file is null.</source>
+        <translation>dap包文件为空。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="223"/>
+        <source>The dap package is not exist.</source>
+        <translation>dap包不存在。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="114"/>
         <source>Read dapconfig.support failed, please check the file and retry.</source>
         <translation>读取dap 配置失败，请检查文件并重试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="143"/>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="209"/>
-        <source>The zip file is null.</source>
-        <translation>zip文件为空。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="158"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="166"/>
         <source>Decompress lsp package process exited unnormally.</source>
         <translation>解压缩lsp包进程异常退出。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="174"/>
-        <source>LSP package received: %1 MB, total: %2 MB, percent: %%3</source>
-        <translation>收到的LSP包：%1 MB，总计：%2 MB，百分比：%%3</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="179"/>
-        <source>Download java lsp plugin finished.</source>
-        <translation>下载Java lsp插件结束。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="184"/>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="190"/>
-        <source>Download java lsp plugin failed, please retry!</source>
-        <translation>下载java lsp插件失败，请重试！</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="187"/>
-        <source>Downloading java lsp plugin, please waiting...</source>
-        <translation>正在下载javalsp插件，请稍候...</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="224"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="211"/>
         <source>Decompress dap package process exited unnormally.</source>
         <translation>解压缩dap包进程异常退出。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="240"/>
-        <source>DAP package received: %1 MB, total: %2 MB, percent: %%3</source>
-        <translation>收到的DAP包：%1 MB，总计：%2 MB，百分比：%%3</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="246"/>
-        <source>Download java dap plugin finished.</source>
-        <translation>下载javadap插件完成。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="251"/>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="257"/>
-        <source>Download java dap plugin failed, please retry!</source>
-        <translation>下载java dap插件失败，请重试！</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="254"/>
-        <source>Downloading java dap plugin, please waiting...</source>
-        <translation>正在下载javadap插件，请稍候...</translation>
     </message>
 </context>
 <context>
@@ -865,12 +867,12 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="198"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="212"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="211"/>
         <source>Tip</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="212"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="211"/>
         <source>Can not find kit.</source>
         <translation>找不到配套工具</translation>
     </message>
@@ -899,9 +901,38 @@ repos path: %0</source>
 <context>
     <name>NavEditMainWindow</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="84"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="91"/>
         <source>toolbar</source>
         <translation>工具栏</translation>
+    </message>
+</context>
+<context>
+    <name>NinjaDebug</name>
+    <message>
+        <location filename="../../src/plugins/cxx/ninja/ninjadebug.cpp" line="61"/>
+        <source>Request cxx dap port failed, please retry.</source>
+        <translation>请求cxx dap端口失败，请重新尝试。</translation>
+    </message>
+</context>
+<context>
+    <name>NinjaGenerator</name>
+    <message>
+        <location filename="../../src/plugins/builder/builderninja/mainframe/ninjagenerator.cpp" line="78"/>
+        <source>The build command of %1 project is null! please install it in console with &quot;sudo apt install ninja&quot;, and then restart the tool.</source>
+        <translation>%1项目的生成命令为空！请使用“sudo apt install ninja”将其安装在控制台中，然后重新启动该工具。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/builderninja/mainframe/ninjagenerator.cpp" line="85"/>
+        <source>The path of &quot;%1&quot; is not exist! please check and reopen the project.</source>
+        <translation>“%1”的路径不存在！请检查并重新打开项目。</translation>
+    </message>
+</context>
+<context>
+    <name>NinjaOptionWidget</name>
+    <message>
+        <location filename="../../src/plugins/option/optionninja/mainframe/ninjaoptionwidget.cpp" line="45"/>
+        <source>Ninja</source>
+        <translation>Ninja</translation>
     </message>
 </context>
 <context>
@@ -935,9 +966,24 @@ repos path: %0</source>
 <context>
     <name>OutputPane</name>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="132"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="133"/>
         <source>Additional output omitted</source>
         <translation>省略附加输出</translation>
+    </message>
+    <message>
+        <location filename="../../src/common/widget/outputpane.cpp" line="183"/>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <location filename="../../src/common/widget/outputpane.cpp" line="193"/>
+        <source>Clear</source>
+        <translation>清扫</translation>
+    </message>
+    <message>
+        <location filename="../../src/common/widget/outputpane.cpp" line="203"/>
+        <source>Select All</source>
+        <translation>选择全部</translation>
     </message>
 </context>
 <context>
@@ -946,6 +992,14 @@ repos path: %0</source>
         <location filename="../../src/plugins/performance/performance.cpp" line="58"/>
         <source>Performance</source>
         <translation>性能</translation>
+    </message>
+</context>
+<context>
+    <name>ProblemOutputPane</name>
+    <message>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/problemoutputpane.cpp" line="72"/>
+        <source>Clear</source>
+        <translation>清除</translation>
     </message>
 </context>
 <context>
@@ -961,7 +1015,7 @@ repos path: %0</source>
         <translation>语言更改将在重新启动后生效。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="122"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="123"/>
         <source>language:</source>
         <translation>语言：</translation>
     </message>
@@ -998,20 +1052,20 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>ProjectTreeView</name>
+    <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="254"/>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="342"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="253"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="351"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="267"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="266"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="346"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="355"/>
         <source>ok</source>
         <translation>ok</translation>
     </message>
@@ -1062,7 +1116,7 @@ repos path: %0</source>
         <translation>需要debugpy，请使用命令pip3 install debugpy安装并重试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="94"/>
+        <location filename="../../src/plugins/python/python/pythondebug.cpp" line="95"/>
         <source>Request python dap port failed, please retry.</source>
         <translation>请求python dap端口失败，请重试。</translation>
     </message>
@@ -1078,12 +1132,12 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="539"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="542"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="546"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="549"/>
         <source>Find Usages</source>
         <translation>查找用法</translation>
     </message>
@@ -1142,32 +1196,32 @@ repos path: %0</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="57"/>
+        <location filename="../../src/services/window/windowelement.h" line="58"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="62"/>
+        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="63"/>
         <source>Pid</source>
         <translation>进程标识</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="63"/>
+        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="64"/>
         <source>Program</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="291"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="290"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="292"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="291"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="293"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="292"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
@@ -1218,131 +1272,136 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="29"/>
+        <source>Open File</source>
+        <translation>打开文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/services/window/windowelement.h" line="30"/>
         <source>Open Recent Documents</source>
         <translation>打开最近的文件</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="30"/>
+        <location filename="../../src/services/window/windowelement.h" line="31"/>
         <source>Open Recent Folders</source>
         <translation>打开最近的文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="31"/>
-        <source>New File or Project...</source>
-        <translation>新建文件或工程...</translation>
+        <location filename="../../src/services/window/windowelement.h" line="32"/>
+        <source>New File or Project</source>
+        <translation>新建文件或工程</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="32"/>
+        <location filename="../../src/services/window/windowelement.h" line="33"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="35"/>
+        <location filename="../../src/services/window/windowelement.h" line="36"/>
         <source>Build</source>
         <translation>编译</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="36"/>
+        <location filename="../../src/services/window/windowelement.h" line="37"/>
         <source>Rebuild</source>
         <translation>重新编译</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="37"/>
+        <location filename="../../src/services/window/windowelement.h" line="38"/>
         <source>Clean</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="40"/>
+        <location filename="../../src/services/window/windowelement.h" line="41"/>
         <source>Start Debugging</source>
         <translation>开始调试</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="41"/>
+        <location filename="../../src/services/window/windowelement.h" line="42"/>
         <source>Interrupt</source>
         <translation>中断</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="42"/>
+        <location filename="../../src/services/window/windowelement.h" line="43"/>
         <source>Continue</source>
         <translation>继续</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="43"/>
+        <location filename="../../src/services/window/windowelement.h" line="44"/>
         <source>Abort Debugging</source>
         <translation>停止调试</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="44"/>
+        <location filename="../../src/services/window/windowelement.h" line="45"/>
         <source>Restart Debugging</source>
         <translation>重启调试器</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="45"/>
+        <location filename="../../src/services/window/windowelement.h" line="46"/>
         <source>Step Over</source>
         <translation>单步跳过</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="46"/>
+        <location filename="../../src/services/window/windowelement.h" line="47"/>
         <source>Step In</source>
         <translation>单步进入</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="47"/>
+        <location filename="../../src/services/window/windowelement.h" line="48"/>
         <source>Step Out</source>
         <translation>单步跳出</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="50"/>
+        <location filename="../../src/services/window/windowelement.h" line="51"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="51"/>
+        <location filename="../../src/services/window/windowelement.h" line="52"/>
         <source>Package Tools</source>
         <translation>软件包工具</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="52"/>
+        <location filename="../../src/services/window/windowelement.h" line="53"/>
         <source>Version Tools</source>
         <translation>版本工具</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="53"/>
+        <location filename="../../src/services/window/windowelement.h" line="54"/>
         <source>Code Formatting</source>
         <translation>代码格式化</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="54"/>
+        <location filename="../../src/services/window/windowelement.h" line="55"/>
         <source>Runtime Analysis</source>
         <translation>运行时分析</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="55"/>
+        <location filename="../../src/services/window/windowelement.h" line="56"/>
         <source>Test</source>
         <translation>测试</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="56"/>
+        <location filename="../../src/services/window/windowelement.h" line="57"/>
         <source>Plugins</source>
         <translation>插件</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="59"/>
+        <location filename="../../src/services/window/windowelement.h" line="60"/>
         <source>English</source>
         <translation>英文</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="60"/>
+        <location filename="../../src/services/window/windowelement.h" line="61"/>
         <source>Chinese</source>
         <translation>中文</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="64"/>
+        <location filename="../../src/services/window/windowelement.h" line="65"/>
         <source>Report Bug</source>
         <translation>报告Bug</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="65"/>
+        <location filename="../../src/services/window/windowelement.h" line="66"/>
         <source>About</source>
         <translation>关于UnionCode</translation>
     </message>
@@ -1395,7 +1454,6 @@ Delete anyway?</source>
         <translation>忽略警告</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/actionanalyse/mainframe/analysekeeper.cpp" line="66"/>
         <location filename="../../src/plugins/symbol/mainframe/symbolkeeper.cpp" line="81"/>
         <source>Error parsing project symbol
 workspace: %0
@@ -1423,30 +1481,11 @@ storage: %2
         <translation>打开路径失败，当前远程仓库不是svn子目录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="109"/>
-        <source>select local reops</source>
-        <translation>选择本地reops</translation>
-    </message>
-    <message>
-        <location filename="../../src/services/project/projectgenerator.cpp" line="87"/>
-        <source>Cannot open repeatedly!
-language : %0
-projectPath : %1</source>
-        <translation>无法重复打开！
-语言：%0
-工程路径：%1</translation>
-    </message>
-    <message>
-        <location filename="../../src/services/project/projectgenerator.cpp" line="101"/>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="97"/>
         <source>Cannot open the project!
 not exists support files: %0</source>
         <translation>无法打开项目！
 不存在支持文件：%0</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/project/projectcmake/transceiver/projectcmakereceiver.cpp" line="70"/>
-        <source>Failed open project, whith build step.</source>
-        <translation>打开工程失败，包含编译步骤。</translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/projectcore/mainframe/projectinfodialog.cpp" line="28"/>
@@ -1454,41 +1493,54 @@ not exists support files: %0</source>
         <translation>工程信息</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="67"/>
+        <location filename="../../src/services/window/windowelement.h" line="68"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/actionanalyse/mainframe/analysekeeper.cpp" line="66"/>
+        <source>Error Do User Action Anlyse
+workspace: %0
+language: %1
+storage: %2
+</source>
+        <translation>用户行为分析错误
+工作区：%0
+语言：%1
+存储路径：%2
+</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectcmake/transceiver/projectcmakereceiver.cpp" line="72"/>
+        <source>Failed open project, with build step.</source>
+        <translation>打开工程失败。</translation>
     </message>
 </context>
 <context>
     <name>QDockWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="78"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="85"/>
         <source>Context</source>
         <translation>文本</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="129"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="136"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="155"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="162"/>
         <source>Watcher</source>
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="210"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="217"/>
         <source>Find ToolBar</source>
         <translation>查找</translation>
     </message>
 </context>
 <context>
     <name>QFileDialog</name>
-    <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="83"/>
-        <source>select checkout repos path</source>
-        <translation>选择远程仓库的路径</translation>
-    </message>
     <message>
         <location filename="../../src/services/project/projectgenerator.cpp" line="61"/>
         <source>Open %0 Project Directory</source>
@@ -1571,6 +1623,7 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/option/optionjava/mainframe/jdkwidget.cpp" line="79"/>
         <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="64"/>
         <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="64"/>
+        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="64"/>
         <source>JDK version：</source>
         <translation>JDK版本：</translation>
     </message>
@@ -1601,12 +1654,14 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="72"/>
+        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="72"/>
         <source>Gradle Version: </source>
         <translation>Gradle版本： </translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="80"/>
         <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="80"/>
+        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="80"/>
         <source>Main Class：</source>
         <translation>Main Class:</translation>
     </message>
@@ -1619,6 +1674,11 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/project/projectpython/mainframe/properties/configpropertywidget.cpp" line="62"/>
         <source>Python interpreter: </source>
         <translation>Python解释器： </translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optionninja/mainframe/ninjawidget.cpp" line="71"/>
+        <source>Ninja path：</source>
+        <translation>Ninja路径：</translation>
     </message>
 </context>
 <context>
@@ -1652,12 +1712,12 @@ not exists support files: %0</source>
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="537"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="540"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="59"/>
+        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="60"/>
         <source>Attach</source>
         <translation>依赖</translation>
     </message>
@@ -1667,27 +1727,27 @@ not exists support files: %0</source>
         <translation>文件(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="34"/>
+        <location filename="../../src/services/window/windowelement.h" line="35"/>
         <source>&amp;Build</source>
         <translation>编译(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="39"/>
+        <location filename="../../src/services/window/windowelement.h" line="40"/>
         <source>&amp;Debug</source>
         <translation>调试(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="49"/>
+        <location filename="../../src/services/window/windowelement.h" line="50"/>
         <source>&amp;Tools</source>
         <translation>工具(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="58"/>
+        <location filename="../../src/services/window/windowelement.h" line="59"/>
         <source>Switch language</source>
         <translation>切换语言</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="63"/>
+        <location filename="../../src/services/window/windowelement.h" line="64"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
@@ -1700,22 +1760,22 @@ not exists support files: %0</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="175"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="192"/>
         <source>Save Changes</source>
         <translation>保存更改</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="176"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="193"/>
         <source>The file has unsaved changes, will save?</source>
         <translation>该文件有未保存的更改，是否保存？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="585"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="597"/>
         <source>File Has Been Removed</source>
         <translation>文件已被移除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="586"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="598"/>
         <source>The file has been removed, Do you want to save it?</source>
         <translation>该文件已被移除，你想保存它吗？</translation>
     </message>
@@ -1736,12 +1796,12 @@ not exists support files: %0</source>
         <translation>将永久替换，是否继续？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="92"/>
+        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="97"/>
         <source>attach processId can&apos;t empty!</source>
         <translation>附加进程ID不能为空！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="102"/>
+        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="107"/>
         <source>attach processId no exites!</source>
         <translation>附加进程ID不存在！</translation>
     </message>
@@ -1827,14 +1887,14 @@ not exists support files: %0</source>
 <context>
     <name>QPushButton</name>
     <message>
-        <location filename="../../src/common/dialog/contextdialog.cpp" line="76"/>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="82"/>
         <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="63"/>
         <location filename="../../src/plugins/collaborators/mainframe/svn/loggindialog.cpp" line="30"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/common/dialog/contextdialog.cpp" line="77"/>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="83"/>
         <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittitlebar.cpp" line="66"/>
         <source>Cancel</source>
         <translation>取消</translation>
@@ -1920,7 +1980,7 @@ not exists support files: %0</source>
         <translation>代码信息指示器</translation>
     </message>
     <message>
-        <location filename="../../src/services/project/projectservice.h" line="180"/>
+        <location filename="../../src/services/project/projectservice.h" line="181"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
@@ -1930,7 +1990,7 @@ not exists support files: %0</source>
         <translation>符号</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="68"/>
+        <location filename="../../src/services/window/windowelement.h" line="69"/>
         <source>&amp;Console</source>
         <translation>&amp;控制台</translation>
     </message>
@@ -1954,17 +2014,17 @@ not exists support files: %0</source>
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="311"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="220"/>
         <source>Navigation</source>
         <translation>导航栏</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="60"/>
+        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="61"/>
         <source>Start</source>
         <translation>开始</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="61"/>
+        <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="62"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
@@ -1972,22 +2032,22 @@ not exists support files: %0</source>
 <context>
     <name>QToolButton</name>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="553"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="580"/>
         <source>update local from remote repos</source>
         <translation>从远程仓库更新本地代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="560"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="587"/>
         <source>refresh current local to display</source>
         <translation>刷新并展示</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="568"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="595"/>
         <source>show repos operation</source>
         <translation>展示远程仓库操作</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="575"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="602"/>
         <source>show repos history</source>
         <translation>展示远程仓库历史</translation>
     </message>
@@ -1996,7 +2056,7 @@ not exists support files: %0</source>
     <name>QTreeView</name>
     <message>
         <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="35"/>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttreeview.cpp" line="37"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="37"/>
         <source>The delete operation will be removed fromthe disk and will not be recoverable after this operation.
 Delete anyway?</source>
         <translation>删除操作将从磁盘中删除，此操作后将无法恢复。
@@ -2252,7 +2312,7 @@ Delete anyway?</source>
         <translation>在文件上下文中找不到有效事件！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/reversedebuggermgr.cpp" line="270"/>
+        <location filename="../../src/plugins/reversedebug/reversedebuggermgr.cpp" line="267"/>
         <source>Reverse Debug</source>
         <translation>反向调试</translation>
     </message>
@@ -2588,7 +2648,7 @@ Delete anyway?</source>
 <context>
     <name>StyleLsp</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="738"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="741"/>
         <source>There is a fatal error between the current d-&gt;editor component and the backend of the syntax server, which may affect the syntax highlighting. 
 Please contact the maintainer for troubleshooting to solve the problem!</source>
         <translation>当前的编辑器组件和语法服务器后端之间存在致命错误，这可能会影响语法高亮显示。
@@ -2606,6 +2666,11 @@ Please contact the maintainer for troubleshooting to solve the problem!</source>
         <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="63"/>
         <source>Open repository</source>
         <translation>打开仓库</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="106"/>
+        <source>select local reops</source>
+        <translation>选择本地reops</translation>
     </message>
 </context>
 <context>
