@@ -318,7 +318,7 @@
     <name>CodePortingManager</name>
     <message>
         <location filename="../../src/plugins/codeporting/codeportingmanager.cpp" line="165"/>
-        <source>Code Porting</source>
+        <source>C&amp;ode Porting</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -326,12 +326,12 @@
     <name>CodePortingPlugin</name>
     <message>
         <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="49"/>
-        <source>&amp;Code Porting</source>
+        <source>Code Porting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="57"/>
-        <source>Code Porting</source>
+        <source>C&amp;ode Porting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -568,7 +568,7 @@ The dap port is not ready, please retry.
     <name>EnvironmentWidget</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="31"/>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/environmentwidget.cpp" line="153"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/environmentwidget.cpp" line="154"/>
         <source>Enable All Environment</source>
         <translation type="unfinished"></translation>
     </message>
@@ -589,7 +589,7 @@ The dap port is not ready, please retry.
         <location filename="../../src/plugins/find/findplugin.cpp" line="75"/>
         <location filename="../../src/plugins/find/findplugin.cpp" line="82"/>
         <location filename="../../src/plugins/find/findplugin.cpp" line="94"/>
-        <source>&amp;Search Results</source>
+        <source>Advanced &amp;Search</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -972,7 +972,7 @@ repos path: %0</source>
     <name>Performance</name>
     <message>
         <location filename="../../src/plugins/performance/performance.cpp" line="58"/>
-        <source>Performance</source>
+        <source>&amp;Performance</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1946,11 +1946,6 @@ storage: %2
 <context>
     <name>QTabWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="94"/>
-        <source>Code Lens</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/services/project/projectservice.h" line="181"/>
         <source>Projects</source>
         <translation type="unfinished"></translation>
@@ -1963,6 +1958,11 @@ storage: %2
     <message>
         <location filename="../../src/services/window/windowelement.h" line="69"/>
         <source>&amp;Console</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="94"/>
+        <source>Code &amp;Lens</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1985,7 +1985,7 @@ storage: %2
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="220"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="222"/>
         <source>Navigation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2112,7 +2112,7 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="68"/>
-        <source>Reverse Debug</source>
+        <source>R&amp;everse Debug</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2283,7 +2283,7 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/reversedebuggermgr.cpp" line="267"/>
-        <source>Reverse Debug</source>
+        <source>R&amp;everse Debug</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2412,64 +2412,64 @@ Delete anyway?</source>
 <context>
     <name>ShortcutSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="298"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="299"/>
         <source>Reset All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="301"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="302"/>
         <source>Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="304"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="305"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="315"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="316"/>
         <source>Shortcut:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="317"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="441"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="318"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="442"/>
         <source>Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="319"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="320"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="368"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="369"/>
         <source>Invalid shortcut!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="370"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="371"/>
         <source>shortcut Repeated!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="423"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="424"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="423"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="431"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="424"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="432"/>
         <source>Json File(*.json)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="431"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="432"/>
         <source>Save File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="444"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="445"/>
         <source>Stop Recording</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2605,12 +2605,12 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/stepspane.cpp" line="247"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/stepspane.cpp" line="248"/>
         <source>Input your arguments.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/stepspane.cpp" line="248"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/stepspane.cpp" line="249"/>
         <source>Tool arguments:</source>
         <translation type="unfinished"></translation>
     </message>

@@ -11,5 +11,7 @@
         <file>dracula.css</file>
         <file>dark-one.css</file>
         <file>waterblue.css</file>
+        <file>light.css</file>
+        <file>dark.css</file>
     </qresource>
 </RCC>

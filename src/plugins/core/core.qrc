@@ -46,5 +46,30 @@
         <file>images/unioncode@200.png</file>
         <file>images/debug-step-into.png</file>
         <file>images/verticalSplit.png</file>
+        <file>images/edit.png</file>
+        <file>images/recent.png</file>
+        <file>images/git.png</file>
+        <file>images/subversion.png</file>
+        <file>images/debugger_continue.png</file>
+        <file>images/debugger_interrupt.png</file>
+        <file>images/debugger_start.png</file>
+        <file>images/debugger_stepinto.png</file>
+        <file>images/debugger_stepout.png</file>
+        <file>images/debugger_stepover.png</file>
+        <file>images/debugger_stop.png</file>
+        <file>images/splitbutton_vertical.png</file>
+        <file>images/splitbutton_horizontal.png</file>
+        <file>images/builder_buiild.png</file>
+        <file>images/find.png</file>
+        <file>images/horizontalSplit1.png</file>
+        <file>images/setting.png</file>
+        <file>images/close_button_selected.png</file>
+        <file>images/close_button_hover.png</file>
+        <file>images/code_port.png</file>
+        <file>images/new_project.png</file>
+        <file>images/open_file.png</file>
+        <file>images/open_project.png</file>
+        <file>images/reverse.png</file>
+        <file>images/down_arrow.png</file>
     </qresource>
 </RCC>

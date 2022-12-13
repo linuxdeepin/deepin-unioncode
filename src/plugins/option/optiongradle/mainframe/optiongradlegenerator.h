@@ -28,7 +28,7 @@ class OptionGradleGenerator : public dpfservice::OptionGenerator
 {
 public:
     OptionGradleGenerator();
-    inline static QString kitName() {return "gradle";}
+    inline static QString kitName() {return "Gradle";}
     virtual QWidget *optionWidget() override;
 
 private:

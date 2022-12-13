@@ -40,7 +40,7 @@ ToolBarManager::ToolBarManager(const QString &name, QObject *parent)
     , d(new ToolBarManagerPrivate())
 {
     d->toolbar = new QToolBar(name);
-    d->toolbar->setMaximumHeight(24);
+    d->toolbar->setIconSize(QSize(25, 25));
 }
 
 ToolBarManager::~ToolBarManager()

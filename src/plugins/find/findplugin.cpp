@@ -58,7 +58,7 @@ bool FindPlugin::start()
 
     ActionManager::getInstance()->registerAction(findAction, "Edit.Find",
                                                  tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F),
-                                                 "edit-find-replace.png");
+                                                 "find.png");
     ActionManager::getInstance()->registerAction(advancedFindAction, "Edit.Advanced.Find",
                                                  tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT |Qt::Key_F),
                                                  "edit-find.png");
@@ -72,14 +72,14 @@ bool FindPlugin::start()
     });
 
     connect(advancedFindAction, &QAction::triggered, [=] {
-        editor.switchContext(tr("&Search Results"));
+        editor.switchContext(tr("Advanced &Search"));
     });
 
     AbstractMenu * menuImpl = new AbstractMenu(editMenu);
     windowService->addMenu(menuImpl);
 
     AbstractWidget *widgetImpl = new AbstractWidget(new FindToolWindow());
-    emit windowService->addContextWidget(tr("&Search Results"), widgetImpl);
+    emit windowService->addContextWidget(tr("Advanced &Search"), widgetImpl);
 
     FindToolBar * findToolBar = new FindToolBar();
     AbstractWidget *abstractFindToolBar = new AbstractWidget(findToolBar);
@@ -91,7 +91,7 @@ bool FindPlugin::start()
 
 void FindPlugin::sendSwitchSearchResult()
 {
-    emit editor.switchContext(tr("&Search Results"));
+    emit editor.switchContext(tr("Advanced &Search"));
 }
 
 dpf::Plugin::ShutdownFlag FindPlugin::stop()

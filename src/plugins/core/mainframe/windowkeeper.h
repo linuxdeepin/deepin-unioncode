@@ -58,7 +58,7 @@ public:
     void setToolBarItemDisable(const QString &id, bool disable);
 
 public slots:
-    void addActionNavigation(AbstractAction *action);
+    void addActionNavigation(const QString &id, AbstractAction *action);
     void addCentralNavigation(const QString &navName, AbstractCentral *central);
     void addMenu(AbstractMenu *menu);
     void insertAction(const QString &menuName, const QString &beforActionName,

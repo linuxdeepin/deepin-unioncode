@@ -284,6 +284,7 @@ void ShortcutSettingWidget::setupUi()
     d->tableView = new QTableView();
     d->tableView->setShowGrid(false);
     d->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    d->tableView->verticalHeader()->hide();
     d->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     d->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     d->model = new ShortcutTableModel();

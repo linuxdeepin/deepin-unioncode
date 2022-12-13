@@ -65,7 +65,7 @@ bool ReverseDebugPlugin::start()
     connect(recoredAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::recored);
     connect(replayAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::replay);
 
-    windowService->addContextWidget(tr("Reverse Debug"), new AbstractWidget(reverseDebug->getWidget()));
+    windowService->addContextWidget(tr("R&everse Debug"), new AbstractWidget(reverseDebug->getWidget()));
 
     return true;
 }

@@ -27,7 +27,7 @@ class OptionGeneralGenerator : public dpfservice::OptionGenerator
 {
 public:
     OptionGeneralGenerator();
-    inline static QString kitName() {return "general";}
+    inline static QString kitName() {return "General";}
     virtual QWidget *optionWidget() override;
 };
 

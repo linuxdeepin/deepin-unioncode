@@ -163,7 +163,7 @@
     <message>
         <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="197"/>
         <source>Co&amp;mpile Output</source>
-        <translation>编译输出</translation>
+        <translation>编译输出(&amp;M)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="256"/>
@@ -226,12 +226,12 @@
     <message>
         <location filename="../../src/plugins/builder/buildercore/buildercore.cpp" line="51"/>
         <source>Co&amp;mpile Output</source>
-        <translation>编译输出</translation>
+        <translation>编译输出(&amp;M)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/builder/buildercore/buildercore.cpp" line="52"/>
         <source>&amp;Issues</source>
-        <translation>问题</translation>
+        <translation>问题列表( &amp;I)</translation>
     </message>
 </context>
 <context>
@@ -330,26 +330,26 @@
     <name>CodePortingManager</name>
     <message>
         <location filename="../../src/plugins/codeporting/codeportingmanager.cpp" line="165"/>
-        <source>Code Porting</source>
-        <translation>代码迁移</translation>
+        <source>C&amp;ode Porting</source>
+        <translation>代码迁移(&amp;O)</translation>
     </message>
 </context>
 <context>
     <name>CodePortingPlugin</name>
     <message>
         <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="49"/>
-        <source>&amp;Code Porting</source>
-        <translation>&amp;代码迁移</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="57"/>
         <source>Code Porting</source>
         <translation>代码迁移</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="57"/>
+        <source>C&amp;ode Porting</source>
+        <translation>代码迁移(&amp;O)</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="60"/>
         <source>Porting &amp;Report</source>
-        <translation>迁移&amp;报告</translation>
+        <translation>迁移报告(&amp;R)</translation>
     </message>
 </context>
 <context>
@@ -529,17 +529,17 @@ dap端口未就绪，请重试。
         <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="67"/>
         <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="86"/>
         <source>&amp;Application Output</source>
-        <translation>应用程序输出</translation>
+        <translation>应用程序输出(&amp;A)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="68"/>
         <source>Stac&amp;kFrame</source>
-        <translation>栈帧结构</translation>
+        <translation>堆栈列表(&amp;K)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="70"/>
         <source>Break&amp;points</source>
-        <translation>断点</translation>
+        <translation>断点列表(&amp;P)</translation>
     </message>
 </context>
 <context>
@@ -585,7 +585,7 @@ dap端口未就绪，请重试。
     <name>EnvironmentWidget</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="31"/>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/environmentwidget.cpp" line="153"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/environmentwidget.cpp" line="154"/>
         <source>Enable All Environment</source>
         <translation>启用所有环境</translation>
     </message>
@@ -606,8 +606,8 @@ dap端口未就绪，请重试。
         <location filename="../../src/plugins/find/findplugin.cpp" line="75"/>
         <location filename="../../src/plugins/find/findplugin.cpp" line="82"/>
         <location filename="../../src/plugins/find/findplugin.cpp" line="94"/>
-        <source>&amp;Search Results</source>
-        <translation>&amp;搜索结果</translation>
+        <source>Advanced &amp;Search</source>
+        <translation>高级查找( &amp;S)</translation>
     </message>
 </context>
 <context>
@@ -990,8 +990,8 @@ repos path: %0</source>
     <name>Performance</name>
     <message>
         <location filename="../../src/plugins/performance/performance.cpp" line="58"/>
-        <source>Performance</source>
-        <translation>性能</translation>
+        <source>&amp;Performance</source>
+        <translation>性能分析(&amp;P)</translation>
     </message>
 </context>
 <context>
@@ -1975,11 +1975,6 @@ storage: %2
 <context>
     <name>QTabWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="94"/>
-        <source>Code Lens</source>
-        <translation>代码信息指示器</translation>
-    </message>
-    <message>
         <location filename="../../src/services/project/projectservice.h" line="181"/>
         <source>Projects</source>
         <translation>工程</translation>
@@ -1992,7 +1987,12 @@ storage: %2
     <message>
         <location filename="../../src/services/window/windowelement.h" line="69"/>
         <source>&amp;Console</source>
-        <translation>&amp;控制台</translation>
+        <translation>控制台(&amp;C)</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="94"/>
+        <source>Code &amp;Lens</source>
+        <translation>代码信息指示器(&amp;L)</translation>
     </message>
 </context>
 <context>
@@ -2014,7 +2014,7 @@ storage: %2
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="220"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="222"/>
         <source>Navigation</source>
         <translation>导航栏</translation>
     </message>
@@ -2142,8 +2142,8 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="68"/>
-        <source>Reverse Debug</source>
-        <translation>反向调试</translation>
+        <source>R&amp;everse Debug</source>
+        <translation>反向调试(&amp;E)</translation>
     </message>
 </context>
 <context>
@@ -2313,8 +2313,8 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/reversedebuggermgr.cpp" line="267"/>
-        <source>Reverse Debug</source>
-        <translation>反向调试</translation>
+        <source>R&amp;everse Debug</source>
+        <translation>反向调试(&amp;E)</translation>
     </message>
 </context>
 <context>
@@ -2442,64 +2442,64 @@ Delete anyway?</source>
 <context>
     <name>ShortcutSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="298"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="299"/>
         <source>Reset All</source>
         <translation>重置所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="301"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="302"/>
         <source>Import</source>
         <translation>导入</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="304"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="305"/>
         <source>Export</source>
         <translation>输出</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="315"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="316"/>
         <source>Shortcut:</source>
         <translation>快捷方式：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="317"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="441"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="318"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="442"/>
         <source>Record</source>
         <translation>记录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="319"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="320"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="368"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="369"/>
         <source>Invalid shortcut!</source>
         <translation>无效的快捷方式！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="370"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="371"/>
         <source>shortcut Repeated!</source>
         <translation>快捷方式重复！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="423"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="424"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="423"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="431"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="424"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="432"/>
         <source>Json File(*.json)</source>
         <translation>Json 文件(*.json)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="431"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="432"/>
         <source>Save File</source>
         <translation>保存文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="444"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="445"/>
         <source>Stop Recording</source>
         <translation>停止记录</translation>
     </message>
@@ -2635,12 +2635,12 @@ Delete anyway?</source>
         <translation>启用所有生成步骤</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/stepspane.cpp" line="247"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/stepspane.cpp" line="248"/>
         <source>Input your arguments.</source>
         <translation>请输入参数。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/stepspane.cpp" line="248"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/stepspane.cpp" line="249"/>
         <source>Tool arguments:</source>
         <translation>工具参数：</translation>
     </message>

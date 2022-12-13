@@ -29,7 +29,7 @@ class OptionCmakeGenerator : public dpfservice::OptionGenerator
 {
 public:
     OptionCmakeGenerator();
-    inline static QString kitName() {return "cmake";}
+    inline static QString kitName() {return "CMake";}
     virtual QWidget *optionWidget() override;
 
 private:

@@ -79,7 +79,7 @@ bool OptionCore::start()
                                                      QKeySequence(Qt::Modifier::CTRL |
                                                                   Qt::Modifier::SHIFT |
                                                                   Qt::Key::Key_H),
-                                                     "option.svg");
+                                                     "setting.png");
         windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptions));
         windowService->addToolBarActionItem("Options", actionOptions);
         QObject::connect(actionOptions, &QAction::triggered,

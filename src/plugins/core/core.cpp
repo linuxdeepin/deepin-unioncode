@@ -70,7 +70,7 @@ bool Core::start()
     }
 
     WindowKeeper::instace();
-    WindowTheme::setTheme(":/dark-one.css");
+    WindowTheme::setTheme(":/dark.css");
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
         ActionManager::getInstance()->readUserSetting();

@@ -27,7 +27,7 @@ class OptionLspGenerator : public dpfservice::OptionGenerator
 {
 public:
     OptionLspGenerator();
-    inline static QString kitName() {return "lsp";}
+    inline static QString kitName() {return "Lsp";}
     virtual QWidget *optionWidget() override;
 };
 

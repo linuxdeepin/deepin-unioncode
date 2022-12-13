@@ -46,15 +46,15 @@ bool CodePortingPlugin::start()
     }
 
     // Add code porting item in tool menu.
-    QAction *action = new QAction(tr("&Code Porting"));
-    ActionManager::getInstance()->registerAction(action, "Tool.CodePorting", action->text(),QKeySequence(), "code_porting.png");
+    QAction *action = new QAction(tr("Code Porting"));
+    ActionManager::getInstance()->registerAction(action, "Tool.CodePorting", action->text(),QKeySequence(), "code_port.png");
     connect(action, &QAction::triggered, CodePortingManager::instance(), &CodePortingManager::slotShowConfigWidget);
 
     AbstractAction *actionImpl = new AbstractAction(action);
     windowService->addAction(MWM_TOOLS, actionImpl);
 
     // Add output pane
-    windowService->addContextWidget(tr("Code Porting"), new AbstractWidget(CodePortingManager::instance()->getOutputPane()));
+    windowService->addContextWidget(tr("C&ode Porting"), new AbstractWidget(CodePortingManager::instance()->getOutputPane()));
 
     // Add report pane
     windowService->addContextWidget(tr("Porting &Report"), new AbstractWidget(CodePortingManager::instance()->getReportPane()));

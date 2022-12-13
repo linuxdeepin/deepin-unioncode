@@ -72,7 +72,7 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     QAction* actionOpenFile = new QAction(MWMFA_OPEN_FILE);
     ActionManager::getInstance()->registerAction(actionOpenFile, "File.Open.File",
                                                  MWMFA_OPEN_FILE, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O),
-                                                 "open_doc.png");
+                                                 "open_file.png");
 
     QAction::connect(actionOpenFile, &QAction::triggered, [=](){
         QString filePath = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE);
@@ -83,7 +83,7 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     });
 
     QMenu* menuOpenProject = new QMenu(MWMFA_OPEN_PROJECT);
-    menuOpenProject->setIcon(QIcon(":/core/images/open_doc.png"));
+    menuOpenProject->setIcon(QIcon(":/core/images/open_project.png"));
 
     fileMenu->addAction(actionOpenFile);
     fileMenu->addMenu(menuOpenProject);
@@ -151,13 +151,15 @@ void WindowKeeper::createNavRecent(QToolBar *toolbar)
     if (!toolbar)
         return;
 
-    QAction* navRecent = new QAction(MWNA_RECENT, toolbar);
+    QAction* navRecent = new QAction(QIcon(":/core/images/recent.png"), MWNA_RECENT, toolbar);
     navRecent->setCheckable(true);
     d->navActionGroup->addAction(navRecent);
     QAction::connect(navRecent, &QAction::triggered, [=](){
         WindowKeeper::switchWidgetNavigation(MWNA_RECENT);
     });
+
     toolbar->addAction(navRecent);
+    toolbar->widgetForAction(navRecent)->setObjectName("Recent");
 }
 
 void WindowKeeper::createNavEdit(QToolBar *toolbar)
@@ -166,15 +168,15 @@ void WindowKeeper::createNavEdit(QToolBar *toolbar)
     if (!toolbar)
         return;
 
-    QAction* navEdit = new QAction(toolbar);
+    QAction* navEdit = new QAction(QIcon(":/core/images/edit.png"), MWNA_EDIT, toolbar);
     navEdit->setCheckable(true);
     d->navActionGroup->addAction(navEdit);
-    navEdit->setText(MWNA_EDIT);
     QAction::connect(navEdit, &QAction::triggered, [=](){
         WindowKeeper::switchWidgetNavigation(MWNA_EDIT);
     });
 
     toolbar->addAction(navEdit);
+    toolbar->widgetForAction(navEdit)->setObjectName("Edit");
 }
 
 void WindowKeeper::createNavDebug(QToolBar *toolbar)
@@ -218,10 +220,15 @@ void WindowKeeper::layoutWindow(QMainWindow *window)
         d->navActionGroup = new QActionGroup(window);
 
     d->toolbar = new QToolBar(QToolBar::tr("Navigation"));
+    d->toolbar->setMovable(false);
+    d->toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+    QWidget *titleWiget = new QWidget();
+    titleWiget->setFixedSize(65, 29);
+    d->toolbar->addWidget(titleWiget);
+
     createNavRecent(d->toolbar);
     createNavEdit(d->toolbar);
-    //createNavDebug(d->toolbar);
-    //createNavRuntime(d->toolbar);
 
     QMenuBar* menuBar = new QMenuBar();
     createFileActions(menuBar);
@@ -281,7 +288,7 @@ WindowKeeper::WindowKeeper(QObject *parent)
     }
 
     if (!windowService->addActionNavigation) {
-        windowService->addActionNavigation = std::bind(&WindowKeeper::addActionNavigation, this, _1);
+        windowService->addActionNavigation = std::bind(&WindowKeeper::addActionNavigation, this, _1, _2);
     }
 
     if (!windowService->addAction) {
@@ -305,7 +312,7 @@ QStringList WindowKeeper::navActionTexts() const
     return d->centrals.keys();
 }
 
-void WindowKeeper::addActionNavigation(AbstractAction *action)
+void WindowKeeper::addActionNavigation(const QString &id, AbstractAction *action)
 {
     if (!action || !action->qAction() || !d->toolbar || !d->navActionGroup)
         return;
@@ -314,6 +321,7 @@ void WindowKeeper::addActionNavigation(AbstractAction *action)
     qAction->setCheckable(true);
     d->navActionGroup->addAction(qAction);
     d->toolbar->addAction(qAction);
+    d->toolbar->widgetForAction(qAction)->setObjectName(id);
     QObject::connect(qAction, &QAction::triggered,[=](){
         switchWidgetNavigation(qAction->text());
     });

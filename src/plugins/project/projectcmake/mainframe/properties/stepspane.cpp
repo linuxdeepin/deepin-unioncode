@@ -238,6 +238,7 @@ void StepsPane::setupUi()
     QHeaderView* headerView = tableView->horizontalHeader();
     headerView->setSectionResizeMode(QHeaderView::ResizeToContents);
     headerView->setSelectionMode(QAbstractItemView::SingleSelection);
+    tableView->verticalHeader()->hide();
 
     d->model = new StepsModel();
     tableView->setModel(d->model);

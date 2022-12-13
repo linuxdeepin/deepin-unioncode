@@ -28,7 +28,7 @@ class OptionMavenGenerator : public dpfservice::OptionGenerator
 {
 public:
     OptionMavenGenerator();
-    inline static QString kitName() {return "maven";}
+    inline static QString kitName() {return "Maven";}
     virtual QWidget *optionWidget() override;
 
 private:

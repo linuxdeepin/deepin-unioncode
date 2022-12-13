@@ -162,5 +162,5 @@ CodePortingManager::~CodePortingManager()
 void CodePortingManager::resetUI()
 {
     outputPane->clearContents();
-    editor.switchContext(tr("Code Porting"));
+    editor.switchContext(tr("C&ode Porting"));
 }

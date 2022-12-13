@@ -27,7 +27,7 @@ class OptionJavaGenerator : public dpfservice::OptionGenerator
 {
 public:
     OptionJavaGenerator();
-    inline static QString kitName() {return "java";}
+    inline static QString kitName() {return "Java";}
     virtual QWidget *optionWidget() override;
 };
 

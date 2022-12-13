@@ -38,8 +38,8 @@ bool Collaborators::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
         if (windowService->addActionNavigation) {
-            windowService->addActionNavigation(new AbstractAction(new QAction(QAction::tr("Git"))));
-            windowService->addActionNavigation(new AbstractAction(new QAction(QAction::tr("Svn"))));
+            windowService->addActionNavigation("Git", new AbstractAction(new QAction(QIcon(":/core/images/git.png"), QAction::tr("Git"))));
+            windowService->addActionNavigation("Svn", new AbstractAction(new QAction(QIcon(":/core/images/subversion.png"), QAction::tr("Svn"))));
         }
         if (windowService->addCentralNavigation) {
             windowService->addCentralNavigation(QAction::tr("Git"),

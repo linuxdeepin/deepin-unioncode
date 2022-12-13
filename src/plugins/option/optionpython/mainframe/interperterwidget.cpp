@@ -170,6 +170,7 @@ void InterpreterWidget::setupUi()
     QTableView *tableView = new QTableView();
     tableView->setShowGrid(false);
     tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    tableView->verticalHeader()->hide();
     tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     d->model = new InterpreterModel();
