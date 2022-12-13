@@ -765,12 +765,6 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
 #endif
             if (!sourceText.isEmpty() && wordLength == val.length) {
                 QString tokenValue = tokenToDefine(val.tokenType);
-                QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue);
-                if (!tokenAnnLine.isEmpty()) {
-                    editor.setAnnotation(d->edit->file(), val.start.line,
-                                         QString("User Action Analysed"),
-                                         AnnotationInfo{tokenAnnLine});
-                }
 #ifdef QT_DEBUG
                 qInfo() << "tokenValue:" << tokenValue;
 #endif
@@ -785,6 +779,13 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
                         d->edit->setIndicatorValue(indics.fore[i]);
                         d->edit->indicatorFillRange(sciStartPos, wordLength);
                     }
+                }
+
+                QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue, sourceText);
+                if (!tokenAnnLine.isEmpty()) {
+                    editor.setAnnotation(d->edit->file(), cacheLine,
+                                         QString("User Action Analysed"),
+                                         AnnotationInfo{tokenAnnLine});
                 }
             }
         }

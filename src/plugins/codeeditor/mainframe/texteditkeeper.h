@@ -57,7 +57,7 @@ public:
         instance()->data = data;
     }
 
-    static QString getTokenTypeAnnLine(const QString &tokenType)
+    static QString getTokenTypeAnnLine(const QString &tokenType, const QString &displayText)
     {
         QString result;
         auto data = instance()->data;
@@ -72,6 +72,14 @@ public:
                 if (!result.isEmpty()) result += ": ";
                 result += QString::number(tokenMap.result[idx]*100) + "%";
             }
+        }
+        if (!result.isEmpty()) {
+            QString textInfo;
+            if (!displayText.isEmpty()) {
+                textInfo += "\"" + displayText + "\"";
+            }
+            if (!textInfo.isEmpty())
+                result = tokenType + " " + textInfo + " " + result;
         }
         return result;
     }
