@@ -140,6 +140,8 @@ void TextEditSplitter::doSelected(bool state)
                                         edit, &TextEditTabWidget::jumpToLineWithKey);
                     QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toRunFileLineWithKey,
                                         edit, &TextEditTabWidget::runningToLineWithKey);
+                    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toSetModifiedAutoReload,
+                                        edit, &TextEditTabWidget::setModifiedAutoReload);
                     tabWidgets[edit] = false;
                 }
             }
@@ -148,7 +150,9 @@ void TextEditSplitter::doSelected(bool state)
             QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
                              textEditTabWidget, &TextEditTabWidget::jumpToLineWithKey);
             QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRunFileLineWithKey,
-                                textEditTabWidget, &TextEditTabWidget::runningToLineWithKey);
+                             textEditTabWidget, &TextEditTabWidget::runningToLineWithKey);
+            QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSetModifiedAutoReload,
+                             textEditTabWidget, &TextEditTabWidget::setModifiedAutoReload);
             tabWidgets[textEditTabWidget] = state;
         }
     }

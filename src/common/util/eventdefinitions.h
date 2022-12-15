@@ -63,6 +63,7 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(setLineBackground, "filePath", "line", "color")
            OPI_INTERFACE(delLineBackground, "filePath", "line")
            OPI_INTERFACE(cleanLineBackground, "filePath")
+           OPI_INTERFACE(setModifiedAutoReload, "filePath", "flag")
            // out
            OPI_INTERFACE(openedFile, "filePath")
            OPI_INTERFACE(closedFile, "filePath")

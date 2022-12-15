@@ -69,6 +69,7 @@ public slots:
     void setAnnotation(const QString &filePath, int line, const QString &title, const AnnotationInfo &info);
     void cleanAnnotation(const QString &filePath, const QString &title);
     void selectSelf(bool state);
+    void setModifiedAutoReload(const QString &filePath, bool flag);
 
 private slots:
     void setDefaultFileEdit();
@@ -79,6 +80,7 @@ private slots:
     void removeFileStatusBar(const QString &file);
     void removeFileEdit(const QString &file);
     void removeFileTab(const QString &file);
+    void removeModifiedAutoReloadFlag(const QString &file);
     void fileModifyed(const QString &file);
     void fileDeleted(const QString &file);
     void fileMoved(const QString &file);

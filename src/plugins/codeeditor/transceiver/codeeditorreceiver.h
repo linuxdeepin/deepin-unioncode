@@ -60,6 +60,7 @@ signals:
     void toSetAnalysedData(const AnalysedData &data);
     void toSwitchContext(const QString &name);
     void toSwitchWorkspace(const QString &name);
+    void toSetModifiedAutoReload(const QString filePath, bool flag);
 };
 
 #endif // CODEEDITORRECEIVER_H

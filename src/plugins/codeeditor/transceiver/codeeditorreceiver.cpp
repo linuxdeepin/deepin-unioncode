@@ -159,6 +159,10 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
     } else if (event.data() == editor.switchWorkspace.name) {
         QString titleName = event.property(editor.switchWorkspace.pKeys[0]).toString();
         EditorCallProxy::instance()->toSwitchWorkspace(titleName);
+    } else if (event.data() == editor.setModifiedAutoReload.name) {
+        QString filePath = event.property(editor.setModifiedAutoReload.pKeys[0]).toString();
+        bool flag = event.property(editor.setModifiedAutoReload.pKeys[1]).toBool();
+        EditorCallProxy::instance()->toSetModifiedAutoReload(filePath, flag);
     }
 }
 

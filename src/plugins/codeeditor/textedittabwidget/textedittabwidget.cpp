@@ -41,6 +41,7 @@ class TextEditTabWidgetPrivate
     QGridLayout *gridLayout {nullptr};
     QHash<QString, TextEdit*> textEdits{};
     QHash<QString, TextEditTitleBar*> titleBars{};
+    QHash<QString, bool> textEditAutoReloadFlags;
     TextEdit defaultEdit;
     QString runningFilePathCache;
     bool selFlag = false;
@@ -190,6 +191,9 @@ void TextEditTabWidget::openFile(const QString &filePath)
         d->defaultEdit.hide();
 
     d->tab->switchFile(filePath);
+
+    d->textEditAutoReloadFlags[filePath] = false;
+
     showFileEdit(filePath);
 }
 
@@ -250,6 +254,8 @@ void TextEditTabWidget::openFileWithKey(const newlsp::ProjectKey &key, const QSt
         d->defaultEdit.hide();
 
     d->tab->switchFile(filePath);
+
+    d->textEditAutoReloadFlags[filePath] = false;
 
     showFileEdit(filePath);
 }
@@ -451,6 +457,11 @@ void TextEditTabWidget::selectSelf(bool state)
     update();
 }
 
+void TextEditTabWidget::setModifiedAutoReload(const QString &filePath, bool flag)
+{
+    d->textEditAutoReloadFlags[filePath] = flag;
+}
+
 void TextEditTabWidget::setDefaultFileEdit()
 {
     if (!d || !d->gridLayout)
@@ -512,6 +523,9 @@ void TextEditTabWidget::showFileStatusBar(const QString &file)
 
 void TextEditTabWidget::removeFileStatusBar(const QString &file)
 {
+    if (d->textEditAutoReloadFlags.contains(file))
+        d->textEditAutoReloadFlags.remove(file);
+
     auto statusBar = d->titleBars.value(file);
     if (!statusBar)
         return;
@@ -553,7 +567,11 @@ void TextEditTabWidget::fileModifyed(const QString &file)
         }
 
         d->gridLayout->addWidget(d->titleBars[file], 1, 0);
-        d->titleBars[file]->show();
+        if (d->textEditAutoReloadFlags.contains(file) && d->textEditAutoReloadFlags[file]) {
+            d->titleBars[file]->reloadfile();
+        } else {
+            d->titleBars[file]->show();
+        }
     }
 
     // 100 ms 内多次出发变动将忽略
