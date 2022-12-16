@@ -85,12 +85,22 @@ int main(int argc, char *argv[])
     auto result = CustomPaths::endSeparator(CustomPaths::global(CustomPaths::Translations));
     QFile file(CustomPaths::user(CustomPaths::Flags::Configures)
                                      + QDir::separator() + QString("chooselanguage.support"));
-    if (file.exists() && file.open(QIODevice::ReadOnly)) {
+
+    if (!file.exists()) {
+       if (file.open(QFile::ReadWrite)) {
+           QLocale locale;
+           QString fileName = locale.name() + ".qm";
+           file.write(fileName.toUtf8());
+           file.close();
+       }
+    }
+    if (file.open(QFile::ReadOnly)) {
         QTextStream txtInput(&file);
         QString language = txtInput.readLine();
+        file.close();
         translator.load(result + language);
-        a.installTranslator(&translator);
     }
+    a.installTranslator(&translator);
 
     if (!pluginsLoad()) {
         qCritical() << "Failed, Load plugins!";
