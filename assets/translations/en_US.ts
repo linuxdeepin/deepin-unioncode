@@ -250,14 +250,6 @@
     </message>
 </context>
 <context>
-    <name>CMakeOptionWidget</name>
-    <message>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/cmakeoptionwidget.cpp" line="45"/>
-        <source>Kits</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>CodeEditor</name>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="48"/>
@@ -404,19 +396,9 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="126"/>
-        <source>Debug</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="128"/>
         <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="139"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="137"/>
-        <source>Release</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -470,7 +452,7 @@ The debugee has Terminated.
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="871"/>
-        <source>Searching dap port, please waiting...</source>
+        <source>Searching dap port, please waiting...(a maximum of 10 seconds) </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1102,14 +1084,6 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>PythonOptionWidget</name>
-    <message>
-        <location filename="../../src/plugins/option/optionpython/mainframe/pythonoptionwidget.cpp" line="45"/>
-        <source>Interpreter</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QAction</name>
     <message>
         <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="542"/>
@@ -1383,6 +1357,11 @@ repos path: %0</source>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="66"/>
         <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/actionanalyse/actionanalyseplugin.cpp" line="48"/>
+        <source>User Action Analyse</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1741,12 +1720,12 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="597"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="625"/>
         <source>File Has Been Removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="598"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="626"/>
         <source>The file has been removed, Do you want to save it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2069,6 +2048,11 @@ Delete anyway?</source>
     <message>
         <location filename="../../src/plugins/filebrowser/filebrowser.cpp" line="42"/>
         <source>File Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/mainframe/texteditkeeper.cpp" line="71"/>
+        <source>User Action Analyse</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

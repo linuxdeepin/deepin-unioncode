@@ -29,6 +29,9 @@
 class TextEditKeeper final
 {
     dpf::QtClassFactory<TextEdit> editFactory;
+    QString analysedLanguage;
+    QString analysedWorkspace;
+    QString analysedStorage;
     AnalysedData data;
     dpfservice::ProjectInfo proInfo;
     TextEditKeeper(){}
@@ -47,64 +50,27 @@ public:
         return result;
     }
 
-    static TextEdit *create(const QString &language, QString *err = nullptr)
-    {
-        return instance()->editFactory.create(language, err);
-    }
+    static TextEdit *create(const QString &language, QString *err = nullptr);
 
-    static void setAnalysedData(const AnalysedData &data)
-    {
-        instance()->data = data;
-    }
+    static void setAnalysedLanguage(const QString &lang);
+    static QString getAnalysedLanguage();
 
-    static QString getTokenTypeAnnLine(const QString &tokenType, const QString &displayText)
-    {
-        QString result;
-        auto data = instance()->data;
-        auto rules = data.rules;
-        for(auto tokenMap: data.tokenMaps) {
-            if (tokenType.toStdString() != tokenMap.semanticTokenType
-                    || tokenMap.result.empty())
-                continue;
-            for (int idx = 0; idx < rules.size(); idx++) {
-                if (!result.isEmpty()) result += " ";
-                result += QString::fromStdString(data.rules[idx]);
-                if (!result.isEmpty()) result += ": ";
-                result += QString::number(tokenMap.result[idx]*100) + "%";
-            }
-        }
-        if (!result.isEmpty()) {
-            QString textInfo;
-            if (!displayText.isEmpty()) {
-                textInfo += "\"" + displayText + "\"";
-            }
-            if (!textInfo.isEmpty())
-                result = tokenType + " " + textInfo + " " + result;
-        }
-        return result;
-    }
+    static void setAnalysedWorkspace(const QString &workspace);
+    static QString getAnalysedWorkspace();
 
-    static AnalysedData analysedData()
-    {
-        return instance()->data;
-    }
+    static void setAnalysedStorage(const QString &storage);
+    static QString getAnalysedStorage();
 
-    static dpfservice::ProjectInfo projectInfo()
-    {
-        return instance()->proInfo;
-    }
+    static void setAnalysedData(const AnalysedData &data);
+    static AnalysedData analysedData();
+    static void cleanAnalysedData();
 
-    static void saveProjectInfo(const dpfservice::ProjectInfo &info)
-    {
-        instance()->proInfo = info;
-    }
+    static QString userActionAnalyseTitle();
+    static QString getTokenTypeAnnLine(const QString &tokenType, const QString &displayText);
 
-    static void removeProjectInfo(const dpfservice::ProjectInfo &info)
-    {
-        if (instance()->proInfo.workspaceFolder() == info.workspaceFolder()) {
-            instance()->proInfo = dpfservice::ProjectInfo();
-        }
-    }
+    static dpfservice::ProjectInfo projectInfo();
+    static void saveProjectInfo(const dpfservice::ProjectInfo &info);
+    static void removeProjectInfo(const dpfservice::ProjectInfo &info);
 };
 
 #endif // TEXTEDITKEEPER_H

@@ -256,14 +256,6 @@
     </message>
 </context>
 <context>
-    <name>CMakeOptionWidget</name>
-    <message>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/cmakeoptionwidget.cpp" line="45"/>
-        <source>Kits</source>
-        <translation>配置工具</translation>
-    </message>
-</context>
-<context>
     <name>CodeEditor</name>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="48"/>
@@ -416,20 +408,10 @@
         <translation>选择配置工具： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="126"/>
-        <source>Debug</source>
-        <translation>调试</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="128"/>
         <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="139"/>
         <source>Browse...</source>
         <translation>浏览...</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="137"/>
-        <source>Release</source>
-        <translation>发布</translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="148"/>
@@ -485,8 +467,8 @@ The debugee has Terminated.
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="871"/>
-        <source>Searching dap port, please waiting...</source>
-        <translation>正在搜索DAP端口，请等待...</translation>
+        <source>Searching dap port, please waiting...(a maximum of 10 seconds) </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="883"/>
@@ -1122,14 +1104,6 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>PythonOptionWidget</name>
-    <message>
-        <location filename="../../src/plugins/option/optionpython/mainframe/pythonoptionwidget.cpp" line="45"/>
-        <source>Interpreter</source>
-        <translation>翻译</translation>
-    </message>
-</context>
-<context>
     <name>QAction</name>
     <message>
         <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="542"/>
@@ -1404,6 +1378,11 @@ repos path: %0</source>
         <location filename="../../src/services/window/windowelement.h" line="66"/>
         <source>About</source>
         <translation>关于UnionCode</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/actionanalyse/actionanalyseplugin.cpp" line="48"/>
+        <source>User Action Analyse</source>
+        <translation>用户行为分析</translation>
     </message>
 </context>
 <context>
@@ -1770,12 +1749,12 @@ storage: %2
         <translation>该文件有未保存的更改，是否保存？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="597"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="625"/>
         <source>File Has Been Removed</source>
         <translation>文件已被移除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="598"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="626"/>
         <source>The file has been removed, Do you want to save it?</source>
         <translation>该文件已被移除，你想保存它吗？</translation>
     </message>
@@ -2100,6 +2079,11 @@ Delete anyway?</source>
         <location filename="../../src/plugins/filebrowser/filebrowser.cpp" line="42"/>
         <source>File Browser</source>
         <translation>文件浏览器</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/mainframe/texteditkeeper.cpp" line="71"/>
+        <source>User Action Analyse</source>
+        <translation></translation>
     </message>
 </context>
 <context>

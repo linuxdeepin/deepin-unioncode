@@ -68,6 +68,7 @@ public slots:
     void cleanLineBackground(const QString &filePath);
     void setAnnotation(const QString &filePath, int line, const QString &title, const AnnotationInfo &info);
     void cleanAnnotation(const QString &filePath, const QString &title);
+    void cleanAllAnnotation(const QString &title);
     void selectSelf(bool state);
     void setModifiedAutoReload(const QString &filePath, bool flag);
 

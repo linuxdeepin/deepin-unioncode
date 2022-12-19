@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-actionanalyse)
 
 set(CXX_CPP
+    mainframe/configure.cpp
     mainframe/analysekeeper.cpp
     mainframe/wordcountanalyse.cpp
     transceiver/actionanalysereceiver.cpp
@@ -11,6 +12,7 @@ set(CXX_CPP
     )
 
 set(CXX_H
+    mainframe/configure.h
     mainframe/analysekeeper.h
     mainframe/wordcountanalyse.h
     transceiver/actionanalysereceiver.h
@@ -27,6 +29,8 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     framework
     common
+    base
+    services
     ${QtUseModules}
     ${PkgUserModules}
     )

@@ -95,6 +95,9 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toCleanAnnotation,
                      this, &TextEditTabWidget::cleanAnnotation);
 
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toCleanAllAnnotation,
+                     this, &TextEditTabWidget::cleanAllAnnotation);
+
     QObject::connect(d->tab, &TextEditTabBar::fileSwitched,
                      this, &TextEditTabWidget::showFileEdit);
 
@@ -448,6 +451,13 @@ void TextEditTabWidget::cleanAnnotation(const QString &filePath, const QString &
         return;
 
     edit->cleanAnnotation(title);
+}
+
+void TextEditTabWidget::cleanAllAnnotation(const QString &title)
+{
+    for (auto filePath : d->textEdits.keys()) {
+        cleanAnnotation(filePath, title);
+    }
 }
 
 void TextEditTabWidget::selectSelf(bool state)

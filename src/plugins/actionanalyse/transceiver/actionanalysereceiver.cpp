@@ -20,6 +20,7 @@
 */
 #include "actionanalysereceiver.h"
 #include "mainframe/analysekeeper.h"
+#include "mainframe/configure.h"
 
 #include "common/common.h"
 
@@ -42,23 +43,25 @@ QStringList ActionAnalyseReceiver::topics()
 
 void ActionAnalyseReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.data() == actionanalyse.analyse.name) { // "workspace", "language", "storage"
-        QString workspaceKey = actionanalyse.analyseDone.pKeys[0]; // workspace
-        QString languageKey = actionanalyse.analyseDone.pKeys[1]; // language
-        QString storageKey = actionanalyse.analyseDone.pKeys[2]; // storage
-        QString dataKey = actionanalyse.analyseDone.pKeys[3];
-        QString workspace = event.property(workspaceKey).toString();
-        QString language = event.property(languageKey).toString();
-        QString storage = event.property(storageKey).toString();
-        QVariant var = event.property(dataKey);
-        AnalysedData analyData = var.value<AnalysedData>();
-        AnalyseKeeper::instance()->doAnalyse({workspace, language, storage});
-    } else if (event.data() == symbol.parseDone.name) {
-        QString workspaceKey = symbol.parseDone.pKeys[2]; // analyse.workspace == parse.storage
-        QString languageKey = symbol.parseDone.pKeys[1]; // language
-        QString workspace = event.property(workspaceKey).toString();
-        QString language = event.property(languageKey).toString();
-        QString storage = workspace;
-        AnalyseKeeper::instance()->doAnalyse({workspace, language, storage});
+    if (Configure::enabled()) {
+        if (event.data() == actionanalyse.analyse.name) { // "workspace", "language", "storage"
+            QString workspaceKey = actionanalyse.analyseDone.pKeys[0]; // workspace
+            QString languageKey = actionanalyse.analyseDone.pKeys[1]; // language
+            QString storageKey = actionanalyse.analyseDone.pKeys[2]; // storage
+            QString dataKey = actionanalyse.analyseDone.pKeys[3];
+            QString workspace = event.property(workspaceKey).toString();
+            QString language = event.property(languageKey).toString();
+            QString storage = event.property(storageKey).toString();
+            QVariant var = event.property(dataKey);
+            AnalysedData analyData = var.value<AnalysedData>();
+            AnalyseKeeper::instance()->doAnalyse({workspace, language, storage});
+        } else if (event.data() == symbol.parseDone.name) {
+            QString workspaceKey = symbol.parseDone.pKeys[2]; // analyse.workspace == parse.storage
+            QString languageKey = symbol.parseDone.pKeys[1]; // language
+            QString workspace = event.property(workspaceKey).toString();
+            QString language = event.property(languageKey).toString();
+            QString storage = workspace;
+            AnalyseKeeper::instance()->doAnalyse({workspace, language, storage});
+        }
     }
 }

@@ -792,7 +792,7 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
                 QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue, sourceText);
                 if (!tokenAnnLine.isEmpty()) {
                     editor.setAnnotation(d->edit->file(), cacheLine,
-                                         QString("User Action Analysed"),
+                                         QString(TextEditKeeper::userActionAnalyseTitle()),
                                          AnnotationInfo{tokenAnnLine});
                 }
             }

@@ -19,8 +19,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "actionanalyseplugin.h"
+#include "mainframe/configure.h"
 #include "mainframe/analysekeeper.h"
+
 #include "common/common.h"
+#include "base/abstractaction.h"
+#include "services/window/windowservice.h"
+#include "services/window/windowelement.h"
 
 #include <QProcess>
 #include <QAction>
@@ -35,6 +40,18 @@ void ActionAnalyse::initialize()
 bool ActionAnalyse::start()
 {
     qInfo() << __FUNCTION__;
+    using namespace dpfservice;
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+
+    if (windowService) {
+        auto action = new QAction(QAction::tr("User Action Analyse"));
+        action->setCheckable(true);
+        action->setChecked(Configure::enabled());
+        QObject::connect(action, &QAction::toggled, Configure::setEnabled);
+        windowService->addAction(MWM_TOOLS, new AbstractAction(action));
+    }
+
     return true;
 }
 

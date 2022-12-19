@@ -88,9 +88,12 @@ OPI_OBJECT(navigation,
            )
 
 OPI_OBJECT(actionanalyse,
+           // in
            OPI_INTERFACE(analyse, "workspace", "language", "storage")
            // analysedData value custom struct from AnalysedData
            OPI_INTERFACE(analyseDone, "workspace", "language", "storage", "analysedData")
+           // out
+           OPI_INTERFACE(enabled, "flag")
            )
 
 struct AnnotationInfo

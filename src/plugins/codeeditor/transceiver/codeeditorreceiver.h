@@ -57,7 +57,7 @@ signals:
     void toCleanLineBackground(const QString &filePath);
     void toSetAnnotation(const QString &filePath, int line, const QString &title, const AnnotationInfo &info);
     void toCleanAnnotation(const QString &filePath, const QString &title);
-    void toSetAnalysedData(const AnalysedData &data);
+    void toCleanAllAnnotation(const QString &title);
     void toSwitchContext(const QString &name);
     void toSwitchWorkspace(const QString &name);
     void toSetModifiedAutoReload(const QString filePath, bool flag);
