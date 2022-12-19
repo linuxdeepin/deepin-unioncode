@@ -540,6 +540,7 @@ void TextEditTabWidget::removeFileEdit(const QString &file)
     if (!edit)
         return;
 
+    edit->fileClosed(file);
     edit->deleteLater();
     d->textEdits.remove(file);
 

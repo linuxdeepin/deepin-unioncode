@@ -212,6 +212,7 @@ StyleLsp::StyleLsp(TextEdit *parent)
     QObject::connect(d->edit, &ScintillaEditExtern::indicReleased, this, &StyleLsp::sciIndicReleased);
     QObject::connect(d->edit, &ScintillaEditExtern::selectionMenu, this, &StyleLsp::sciSelectionMenu);
     QObject::connect(d->edit, &ScintillaEditExtern::replaceed, this, &StyleLsp::sciReplaced);
+    QObject::connect(d->edit, &ScintillaEditExtern::fileClosed, this, &StyleLsp::sciClosed);
     QObject::connect(&d->renamePopup, &RenamePopup::editingFinished, this, &StyleLsp::renameRequest, Qt::UniqueConnection);
     QObject::connect(CodeLens::instance(), &CodeLens::doubleClicked,
                      this, [=](const QString &filePath, const lsp::Range &range){
@@ -571,6 +572,13 @@ void StyleLsp::sciReplaced(const QString &file, Scintilla::Position start, Scint
         qApp->metaObject()->invokeMethod(d->getClient(), "changeRequest",
                                          Q_ARG(const QString &, file),
                                          Q_ARG(const QByteArray &, d->edit->textRange(0, d->edit->length())));
+    }
+}
+
+void StyleLsp::sciClosed(const QString &file)
+{
+    if (d->getClient()) {
+        qApp->metaObject()->invokeMethod(d->getClient(), "closeRequest", Q_ARG(const QString &, file));
     }
 }
 

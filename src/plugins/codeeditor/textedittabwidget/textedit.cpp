@@ -85,7 +85,7 @@ TextEdit::TextEdit(QWidget *parent)
 
 TextEdit::~TextEdit()
 {
-    emit fileClosed(file());
+    // emit fileClosed(file());
 }
 
 void TextEdit::setFile(const QString &filePath)

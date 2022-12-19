@@ -130,6 +130,7 @@ private slots:
     void sciSelectionMenu(QContextMenuEvent *event);
     void sciReplaced(const QString &file, Scintilla::Position start,
                      Scintilla::Position end, const QString &text);
+    void sciClosed(const QString &file);
     void renameRequest(const QString &newText);
 };
 
