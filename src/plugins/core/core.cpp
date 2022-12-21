@@ -74,6 +74,7 @@ bool Core::start()
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
         ActionManager::getInstance()->readUserSetting();
+        navigation.doSwitch(MWNA_RECENT);
     });
 
     return true;
