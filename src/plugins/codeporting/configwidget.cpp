@@ -65,8 +65,6 @@ class ConfigWidgetPrivate
     QComboBox *combSrc = nullptr;
     QLabel *lbTarget = nullptr;
     QComboBox *combTarget = nullptr;
-    QLabel *lbReserve = nullptr;
-    QComboBox *combReserve = nullptr;
     QSpacerItem *verticalSpacer = nullptr;
     QHBoxLayout *horizontalLayout = nullptr;
     QSpacerItem *horizontalSpacer = nullptr;
@@ -98,7 +96,6 @@ void ConfigWidget::configDone()
     d->cfgParam.project = d->combProject->currentText();
     d->cfgParam.srcCPU = d->combSrc->currentText();
     d->cfgParam.targetCPU = d->combTarget->currentText();
-    d->cfgParam.reserve = d->combReserve->currentText();
 
     // empty parameter check.
     if (d->cfgParam.project.isEmpty()
@@ -186,15 +183,6 @@ void ConfigWidget::setupUi(QWidget *Widget)
 
     d->gridLayout->addWidget(d->combTarget, 2, 1, 1, 1);
 
-    d->lbReserve = new QLabel(Widget);
-    d->lbReserve->setText(tr("Reserve:"));
-
-    d->gridLayout->addWidget(d->lbReserve, 3, 0, 1, 1);
-
-    d->combReserve = new QComboBox(Widget);
-
-    d->gridLayout->addWidget(d->combReserve, 3, 1, 1, 1);
-
     d->verticalLayout->addLayout(d->gridLayout);
 
     d->lbWarning = new QLabel(Widget);
@@ -233,14 +221,12 @@ void ConfigWidget::resetUi()
     d->combProject->setCurrentIndex(emptyIndex);
     d->combSrc->setCurrentIndex(emptyIndex);
     d->combTarget->setCurrentIndex(emptyIndex);
-    d->combReserve->setCurrentIndex(emptyIndex);
 }
 
 void ConfigWidget::refreshDetail()
 {
     d->combSrc->setCurrentText(d->cfgParam.srcCPU);
     d->combTarget->setCurrentText(d->cfgParam.targetCPU);
-//    d->combReserve->setCurrentText(d->cfgParam.reserve);
 }
 
 bool ConfigWidget::saveCfg()
