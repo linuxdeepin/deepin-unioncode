@@ -40,6 +40,7 @@ public:
 
     lsp::SemanticTokensProvider initSecTokensProvider();
 
+public slots:
     // textDocument/semanticTokens/full/delta
     void delta(const newlsp::SemanticTokensDeltaParams &params);
     // textDocument/semanticTokens/full
@@ -158,7 +159,6 @@ public:
     // workspace/diagnostic
     void diagnostic(const newlsp::WorkspaceDiagnosticParams &params);
 
-public slots:
     void selectLspServer(const newlsp::ProjectKey &key);
     void initRequest(const QString &compile); // yes
     void shutdownRequest();

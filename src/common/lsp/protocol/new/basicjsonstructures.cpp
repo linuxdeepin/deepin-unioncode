@@ -113,7 +113,10 @@ std::string json::addScope(const std::string &src)
 
 std::string json::delScope(const std::string &obj)
 {
-    return obj.substr(1, obj.size() - 1);
+    std::string ret = obj;
+    ret.erase(0, 1);
+    ret.erase(ret.size() - 1, ret.size());
+    return ret;
 }
 
 std::string json::formatKey(const std::string &key)
@@ -235,10 +238,13 @@ std::string toJsonValueStr(const TextDocumentPositionParams &val)
 
 std::string json::mergeObjs(const std::vector<std::string> &objs)
 {
-    std::string ret = json::delScope(*objs.begin());
-    auto itera = objs.begin() ++ ;
+    std::string ret;
+    auto itera = objs.begin();
     while (itera != objs.end()) {
-        ret += "," + json::delScope(*itera);
+        if (!ret.empty())
+            ret += ",";
+        ret += json::delScope(*itera);
+        itera ++;
     }
     return json::addScope(ret);
 }

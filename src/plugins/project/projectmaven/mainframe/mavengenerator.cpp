@@ -139,7 +139,9 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
     if (!d->mavenMenu) {
         d->mavenMenu = new QMenu("Maven", menu);
         QObject::connect(d->mavenMenu, &QMenu::destroyed,
-                         [=](){ d->mavenMenu = nullptr; });
+                         [=](){
+            d->mavenMenu = nullptr;
+        });
     }
 
     menu->addMenu(d->mavenMenu);
@@ -162,7 +164,7 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
     // add menu generat call back
     QObject::connect(parse, &MavenAsynParse::parsedActions,
                      this, &MavenGenerator::doAddMavenMeue,
-                     Qt::QueuedConnection);
+                     Qt::UniqueConnection);
     // execute logic
     parse->parseActions(info);
 

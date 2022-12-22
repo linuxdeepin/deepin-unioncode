@@ -81,6 +81,7 @@ extern const QString V_TEXTDOCUMENT_REFERENCES;
 extern const QString V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT;
 extern const QString V_TEXTDOCUMENT_SEMANTICTOKENS;
 extern const QString V_TEXTDOCUMENT_SEMANTICTOKENS_FULL;
+inline static QString V_TEXTDOCUMENT_DOCUMENTCOLOR{"textDocument/documentColor"};
 extern const QString K_WORKSPACEFOLDERS;
 
 extern const QString K_CONTENTCHANGES;

@@ -69,6 +69,7 @@ Client::Client()
     qRegisterMetaType<newlsp::Position>("newlsp::Position");
     qRegisterMetaType<newlsp::Range>("newlsp::Range");
     qRegisterMetaType<newlsp::PublishDiagnosticsParams>("newlsp::PublishDiagnosticsParams");
+    qRegisterMetaType<newlsp::DocumentColorParams>("newlsp::DocumentColorParams");
 }
 
 Client::~Client()
@@ -138,7 +139,14 @@ void Client::signatureHelp(const SignatureHelpParams &params){}
 
 void Client::codeAction(const CodeActionParams &params){}
 
-void Client::documentColor(const DocumentColorParams &params){}
+void Client::documentColor(const DocumentColorParams &params)
+{
+    d->callMethod("textDocument/documentColor",
+                  QJsonDocument::fromJson(
+                      QByteArray::fromStdString(toJsonValueStr(params))
+                      ).object()
+                  );
+}
 
 void Client::colorPresentation(const ColorPresentationParams &params){}
 
