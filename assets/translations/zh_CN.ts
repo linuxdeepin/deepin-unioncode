@@ -392,7 +392,7 @@
     <message>
         <location filename="../../src/plugins/codeporting/configwidget.cpp" line="217"/>
         <source>Porting</source>
-        <translation>正在迁移</translation>
+        <translation>迁移</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeporting/configwidget.cpp" line="223"/>

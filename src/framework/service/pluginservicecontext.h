@@ -84,7 +84,7 @@ bool AutoServiceRegister<T>::trigger()
     QString errStr;
     if (!dpf::PluginServiceContext::instance().regClass<T>(T::name(), &errStr)) {
         qCritical() << errStr;
-        abort();
+        return false;
     }
     return true;
 }

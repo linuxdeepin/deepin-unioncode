@@ -44,6 +44,8 @@ static const char *kArm = "arm64";
 static const char *kMips = "mips64el";
 static const char *kSW_64 = "sw_64";
 
+static const char *kSupportKit [] = {"cmake"};
+
 using namespace dpfservice;
 
 struct ConfigParameter
@@ -314,7 +316,14 @@ void ConfigWidget::refreshUi()
             for (auto projInfo : allInfo) {
                 QString path = projInfo.workspaceFolder();
                 QString dirName = path.split("/").back();
-                d->combProject->addItem(dirName);
+                QString kitName = projInfo.kitName();
+                int supportkitCount = sizeof(kSupportKit)/sizeof(kSupportKit[0]);
+                for (int i = 0; i < supportkitCount; ++i) {
+                    if (kSupportKit[i] == projInfo.kitName()) {
+                        d->combProject->addItem(dirName);
+                        break;
+                    }
+                }
             }
         }
     }
