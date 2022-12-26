@@ -88,13 +88,17 @@ bool ProcessUtil::exists(const QString &name)
         QList<QByteArray> rmSearch = array.split(' ');
         foreach (QByteArray rmProcess, rmSearch) {
             QFileInfo info(rmProcess);
-            if (info.fileName() == name && info.isExecutable()) {
-                if (!ret)
+            if (info.exists() && info.fileName() == name && info.isExecutable()) {
+                if (!ret) {
                     ret = true;
+                    break;
+                }
+            } else {
+                ret = false;
             }
         }
     };
-    ret = ProcessUtil::execute("whereis", {name}, outCallback);
+    ProcessUtil::execute("whereis", {name}, outCallback);
 #else
 #endif
     return ret;

@@ -189,7 +189,7 @@ QString package::native::path(const Category::type_value &category)
             containsItera.next();
             QFileInfo info = containsItera.fileInfo();
             if (info.fileName().contains(category)) {
-                return info.fileName();
+                return info.filePath();
             }
         }
     }
