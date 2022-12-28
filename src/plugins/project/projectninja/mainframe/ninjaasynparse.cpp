@@ -53,7 +53,7 @@ NinjaAsynParse::~NinjaAsynParse()
         if (d->thread) {
             if (d->thread->isRunning())
                 d->thread->quit();
-            while (d->thread->isFinished());
+            d->thread->wait();
             d->thread->deleteLater();
             d->thread = nullptr;
         }
