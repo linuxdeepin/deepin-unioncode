@@ -26,7 +26,6 @@
 #include "common/common.h"
 
 #include <QVBoxLayout>
-#include <QMenu>
 
 ProblemOutputPane::ProblemOutputPane(QWidget *parent)
     : QWidget(parent)
@@ -54,7 +53,6 @@ void ProblemOutputPane::addTask(const Task &task, int linkedOutputLines, int ski
 
 void ProblemOutputPane::contextMenuEvent(QContextMenuEvent * event)
 {
-    static QMenu *menu = nullptr;
     if (nullptr == menu) {
         menu = new QMenu(this);
         menu->setParent(this);

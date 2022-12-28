@@ -51,6 +51,7 @@ public slots:
 private:
     void setupUi(QDialog *Dialog);
     void readConfig();
+    void findOption(const QString &filter);
 
 protected:
     virtual void showEvent(QShowEvent *e) override;

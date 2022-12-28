@@ -24,6 +24,7 @@
 #include "services/builder/task.h"
 
 #include <QWidget>
+#include <QMenu>
 
 class ProblemOutputPane : public QWidget
 {
@@ -40,6 +41,7 @@ protected:
 
 private:
     QList<QAction*> actionFactory();
+    QMenu *menu = nullptr;
 };
 
 #endif // PROBLEMOUTPUTPANE_H

@@ -38,6 +38,7 @@ public:
     }
 
     QTextCursor cursor;
+    QMenu *menu = nullptr;
     int maxCharCount = default_max_char_count();
     bool enforceNewline = false;
     bool scrollToBottom = true;
@@ -153,15 +154,14 @@ void AppOutputPane::appendText(const QString &text, OutputFormat format)
 
 void AppOutputPane::contextMenuEvent(QContextMenuEvent * event)
 {
-    static QMenu *menu = nullptr;
-    if (nullptr == menu) {
-        menu = new QMenu(this);
-        menu->setParent(this);
-        menu->addActions(actionFactory());
+    if (nullptr == d->menu) {
+        d->menu = new QMenu(this);
+        d->menu->setParent(this);
+        d->menu->addActions(actionFactory());
     }
 
-    menu->move(event->globalX(), event->globalY());
-    menu->show();
+    d->menu->move(event->globalX(), event->globalY());
+    d->menu->show();
 }
 
 QList<QAction*> AppOutputPane::actionFactory()

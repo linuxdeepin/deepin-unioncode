@@ -93,6 +93,7 @@ public:
     QScrollBar *scroll = nullptr;
     TaskWindow *window = nullptr;
 
+    QMenu *menu = nullptr;
     QAction *zoomIn = nullptr;
     QAction *zoomOut = nullptr;
     QAction *zoomFit = nullptr;
@@ -273,11 +274,14 @@ void TimelineWidget::mouseDoubleClickEvent(QMouseEvent *event)
 
 void TimelineWidget::contextMenuEvent(QContextMenuEvent* event)
 {
-    QMenu menu(this);
-    menu.addAction(d->zoomIn);
-    menu.addAction(d->zoomOut);
-    menu.addAction(d->zoomFit);
-    menu.exec(event->globalPos());
+    if (nullptr == d->menu) {
+        d->menu = new QMenu;
+        d->menu->setParent(this);
+        d->menu->addAction(d->zoomIn);
+        d->menu->addAction(d->zoomOut);
+        d->menu->addAction(d->zoomFit);
+    }
+    d->menu->exec(event->globalPos());
 }
 
 void TimelineWidget::zoomIn()

@@ -168,10 +168,13 @@ void ScintillaEditExtern::jumpToLine(int line)
 {
     int lineOffSet = line - 1;
     int displayLines = linesOnScreen();
+    setFocus(true);
+    gotoPos(lineEndPosition(lineOffSet));
     if (displayLines > 0) {
         int offsetLines = displayLines / 2;
         setFirstVisibleLine(qMax(0, lineOffSet - offsetLines));
     }
+    cancel();
 }
 
 void ScintillaEditExtern::jumpToRange(Scintilla::Position start, Scintilla::Position end)

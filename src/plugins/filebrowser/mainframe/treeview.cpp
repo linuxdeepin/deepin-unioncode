@@ -234,14 +234,12 @@ void TreeView::doDoubleClicked(const QModelIndex &index)
 void TreeView::contextMenuEvent(QContextMenuEvent *event)
 {
     QModelIndex index = QTreeView::indexAt(event->pos());
-    QMenu *menu = nullptr;
     if (index.isValid()) {
-        menu = createContextMenu(selectedIndexes());
+        d->menu = createContextMenu(selectedIndexes());
     } else {
-        menu = createEmptyMenu();
+        d->menu = createEmptyMenu();
     }
-    menu->exec(viewport()->mapToGlobal(event->pos()));
-    delete menu;
+    d->menu->exec(viewport()->mapToGlobal(event->pos()));
 }
 
 QMenu *TreeView::createContextMenu(const QModelIndexList &indexs)

@@ -20,8 +20,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 #include "optionsdialog.h"
 #include "common/widget/pagewidget.h"
+#include "services/option/optionservice.h"
 
 #include <QtDebug>
 #include <QtWidgets/QHBoxLayout>
@@ -36,6 +38,8 @@
 #include <QtWidgets/QStackedWidget>
 #include <QStringListModel>
 
+
+using namespace dpfservice;
 OptionsDialog::OptionsDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -78,8 +82,10 @@ void OptionsDialog::setupUi(QDialog *Dialog)
     auto leftLayout = new QVBoxLayout(Dialog);
     leftLayout->setSpacing(6);
     filterEdit = new QLineEdit(Dialog);
+    filterEdit->setPlaceholderText(tr("Filter"));
 
     leftLayout->addWidget(filterEdit);
+    QObject::connect(filterEdit, &QLineEdit::textChanged, this, &OptionsDialog::findOption);
 
     leftSideBar = new QListView(Dialog);
     leftBarModel = new QStringListModel(leftSideBar);
@@ -167,6 +173,25 @@ void OptionsDialog::readConfig()
         PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
         if (widget) {
             widget->readConfig();
+        }
+    }
+}
+
+void OptionsDialog::findOption(const QString &filter)
+{
+    auto &ctx = dpfInstance.serviceContext();
+    OptionService *optionService = ctx.service<OptionService>(OptionService::name());
+
+    auto list = optionService->supportGeneratorName<OptionGenerator>();
+    int count = list.count();
+    QStringList options = leftBarModel->stringList();
+    for (int i = 0; i < count; i++) {
+        if (list[i].contains(filter, Qt::CaseInsensitive) && !leftBarModel->stringList().contains(list[i])) {
+            options.insert(i, list[i]);
+            leftBarModel->setStringList(options);
+        } else if (!list[i].contains(filter, Qt::CaseInsensitive)) {
+            options.removeOne(list[i]);
+            leftBarModel->setStringList(options);
         }
     }
 }
