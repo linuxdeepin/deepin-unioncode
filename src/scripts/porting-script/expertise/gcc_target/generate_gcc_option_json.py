@@ -102,6 +102,8 @@ def generate_sw_64(fo):
 def architecture():
     f = os.popen("arch") 
     arch = f.read().strip()
+    if arch == "aarch64":
+        arch = "arm64"
     return arch
 
 def dictionary_path():

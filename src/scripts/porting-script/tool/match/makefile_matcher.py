@@ -68,9 +68,14 @@ class MakefileMatcher(Matcher):
                 if result[0] not in self.make_lib:
                     self.make_lib.append(result[0])
             if result[0] in self.diffs.keys():
-                self.scan_results.append(
-                    MatchResult(file_path, result[1], ' ' + result[0], self.diffs[result[0]]['suggestion'][self.dest_cpu], 'makefiles')
-                )
+                try:
+                    self.scan_results.append(
+                        MatchResult(file_path, result[1], ' ' + result[0], self.diffs[result[0]]['suggestion'][self.dest_cpu], 'makefiles')
+                    )
+                except:
+                    LOGGER.warn("%s suggestion not supported." % self.dest_cpu)
+                    pass
+
 
     def finally_save_result(self):
         for item in self.make_lib:

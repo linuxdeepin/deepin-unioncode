@@ -54,6 +54,7 @@ def get_library_pattern():
     return '(?<=[\\s=])-l(?:(?:(?:[a-zA-Z0-9-_./+]+)[a-zA-Z0-9]*)|(?:\\w{1}))(?=\\s|$|;)'
 
 all_asm_dict = {'x86_64': 'X86_64_ASM.json', 'arm64': 'ARM64_ASM.json', 'mips64el':'MIPS64EL_ASM.json', 'sw_64': 'SW_64_ASM.json'}
+gcc_dict = {'x86_64': 'x86_64_GCC_OPTION.json', 'arm64': 'arm64_GCC_OPTION.json', 'mips64el':'mips64_GCC_OPTION.json', 'sw_64': 'sw_64_GCC_OPTION.json'}
 
 def get_asm_dict(cpu_arch):
     json_path = os.path.join(ToolConfig.config_dir, 'ASM', all_asm_dict[cpu_arch])
@@ -75,7 +76,7 @@ def get_c_rules(cpu_arch):
     return pattern, c_dict
 
 def get_gcc_options(cpu_arch):
-    json_path = os.path.join(ToolConfig.config_dir, 'GCC_8_3', 'x86_64_GCC_OPTION.json')
+    json_path = os.path.join(ToolConfig.config_dir, 'GCC_8_3', gcc_dict[cpu_arch])
     gcc_options = ReadJsonToDict.dict_from_path(json_path)
     keys = []
     for key, value in gcc_options.items():
