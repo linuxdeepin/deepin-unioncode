@@ -69,7 +69,7 @@ void ProjectCmakeReceiver::builderEvent(const dpf::Event &event)
             if (0 == endStatus) {
                 emit ProjectCmakeProxy::instance()->buildExecuteEnd(commandInfo);
             } else {
-                ContextDialog::ok(QDialog::tr("Failed open project, with build step."));
+                // ContextDialog::ok(QDialog::tr("Failed open project, with build step."));
             }
         }
     }
