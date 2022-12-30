@@ -111,8 +111,17 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
     } else if (event.data() == actionanalyse.enabled.name) {
         bool enabled = event.property(actionanalyse.enabled.pKeys[0]).toBool();
         if (enabled) {
-            actionanalyse.analyse(TextEditKeeper::getAnalysedWorkspace(), TextEditKeeper::getAnalysedLanguage(),
-                                  TextEditKeeper::getAnalysedWorkspace());
+            QString workspace = TextEditKeeper::getAnalysedWorkspace();
+            QString language = TextEditKeeper::getAnalysedLanguage();
+            QString storage = TextEditKeeper::getAnalysedStorage();;
+            if (workspace.isEmpty() || language.isEmpty() || storage.isEmpty()) {
+                dpfservice::ProjectInfo projectInfo = TextEditKeeper::projectInfo();
+                workspace = FileOperation::checkCreateDir(FileOperation::checkCreateDir(projectInfo.workspaceFolder(), ".unioncode"), "symbol");
+                language = projectInfo.language();
+                storage = workspace;
+            }
+            if (!workspace.isEmpty() && !language.isEmpty() && !storage.isEmpty())
+                actionanalyse.analyse(workspace, language, storage);
             return;
         } else {
             TextEditKeeper::cleanAnalysedData();
