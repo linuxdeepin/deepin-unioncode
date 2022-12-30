@@ -1,0 +1,35 @@
+{
+    "instructions": {
+        "ADC": {
+            "suggestion": {
+                "arm64": "todo",
+                "mips64el": "todo"
+            }
+        },
+        "ADCS": {
+            "suggestion": {
+                "arm64": "todo",
+                "mips64el": "todo"
+            }
+        },
+        "ADD": {
+            "suggestion": {
+                "arm64": "todo",
+                "mips64el": "todo"
+            }
+        },
+        "ADDS": {
+            "suggestion": {
+                "arm64": "todo",
+                "mips64el": "todo"
+            }
+        },
+        "ADR": {
+            "suggestion": {
+                "arm64": "todo",
+                "mips64el": "todo"
+            }
+        },
+        "_comment": "expand here"
+    }
+}

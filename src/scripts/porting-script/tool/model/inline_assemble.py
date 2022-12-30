@@ -27,7 +27,8 @@ ASSEMBLES_DICT = {
                       {"arm64": 'Check these assembles to see if it need to port.',
                        "mips64el": 'Check these assembles to see if it need to port.',
                        "x86_64": 'Check these assembles to see if it need to port.',
-                       "sw_64": 'Check these assembles to see if it need to port.'}
+                       "sw_64": 'Check these assembles to see if it need to port.', 
+                       "loongarch64": 'Check these assembles to see if it need to port.'}
                       }
 }
 INLINE_ASSEMBLES = {'asm': {'description': '',

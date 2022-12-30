@@ -53,8 +53,8 @@ def get_inline_assembler_pattern(cpu_arch):
 def get_library_pattern():
     return '(?<=[\\s=])-l(?:(?:(?:[a-zA-Z0-9-_./+]+)[a-zA-Z0-9]*)|(?:\\w{1}))(?=\\s|$|;)'
 
-all_asm_dict = {'x86_64': 'X86_64_ASM.json', 'arm64': 'ARM64_ASM.json', 'mips64el':'MIPS64EL_ASM.json', 'sw_64': 'SW_64_ASM.json'}
-gcc_dict = {'x86_64': 'x86_64_GCC_OPTION.json', 'arm64': 'arm64_GCC_OPTION.json', 'mips64el':'mips64_GCC_OPTION.json', 'sw_64': 'sw_64_GCC_OPTION.json'}
+all_asm_dict = {'x86_64': 'X86_64_ASM.json', 'arm64': 'ARM64_ASM.json', 'mips64el':'MIPS64EL_ASM.json', 'sw_64': 'SW_64_ASM.json', 'loongarch64': 'LOONGARCH64_ASM.json'}
+gcc_dict = {'x86_64': 'x86_64_GCC_OPTION.json', 'arm64': 'arm64_GCC_OPTION.json', 'mips64el':'mips64_GCC_OPTION.json', 'sw_64': 'sw_64_GCC_OPTION.json', 'loongarch64': 'loongarch64_GCC_OPTION.json'}
 
 def get_asm_dict(cpu_arch):
     json_path = os.path.join(ToolConfig.config_dir, 'ASM', all_asm_dict[cpu_arch])

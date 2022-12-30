@@ -61,3 +61,9 @@ MACROS_SW_64 = [
     '__alpha__', '__alpha_ev__', '__alpha', 
     '_M_ALPHA'
 ]
+
+MACROS_LOONGARCH64 = [
+    '__loongarch__', '__loongarch64', '_LOONGARCH_ARCH', 
+    '_LOONGARCH_SIM', '__loongarch_arch', '__loongarch_tune',
+    '_LOONGARCH_TUNE'
+]

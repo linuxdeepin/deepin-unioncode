@@ -108,7 +108,8 @@ class SrcMigrateTask(MigrateTask):
         self.progress.start_phase(0, 99, ScanPhase.StartPhase, '') # TODO(mozart)
         self.no_makefile_list = self.check_makefile(src_path)
         if len(self.no_makefile_list):
-            LOGGER.warning('no makefile in [%s]' % self.no_makefile_list)
+            # LOGGER.warning('no makefile in [%s]' % self.no_makefile_list)
+            pass
         self.scan_src()
         self.generate_report(self.id)       
         return self.no_makefile_list

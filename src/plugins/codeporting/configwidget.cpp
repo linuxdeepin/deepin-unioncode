@@ -43,6 +43,7 @@ static const char *kX86_64 = "x86_64";
 static const char *kArm = "arm64";
 static const char *kMips = "mips64el";
 static const char *kSW_64 = "sw_64";
+static const char *kLoongarch64 = "loongarch64";
 
 static const char *kSupportKit [] = {"cmake"};
 
@@ -135,11 +136,13 @@ void ConfigWidget::initializeUi()
     d->combSrc->addItem(kArm);
     d->combSrc->addItem(kMips);
     d->combSrc->addItem(kSW_64);
+    d->combSrc->addItem(kLoongarch64);
 
     d->combTarget->addItem(kX86_64);
     d->combTarget->addItem(kArm);
     d->combTarget->addItem(kMips);
     d->combTarget->addItem(kSW_64);
+    d->combTarget->addItem(kLoongarch64);
 }
 
 void ConfigWidget::setDefaultValue()

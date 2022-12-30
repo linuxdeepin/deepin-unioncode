@@ -4,3192 +4,3648 @@
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADCS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADDS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADRLpseudo-instruction": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADRP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "AND": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ANDS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ASR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ASRV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "AT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "B.cond": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "B": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BFI": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BFM": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BFXIL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BIC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BICS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BLR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BRK": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CBNZ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CBZ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CCMN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CCMP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CINC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CINV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CLREX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CLS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CLZ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CNEG": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CRC32B": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CRC32H": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CRC32W": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CRC32X": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CRC32CB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CRC32CH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CRC32CW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CRC32CX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CSEL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CSET": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CSETM": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CSINC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CSINV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CSNEG": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "DC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "DCPS1": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "DCPS2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "DCPS3": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "DMB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "DRPS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "DSB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "EON": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "EOR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ERET": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "EXTR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "HINT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "HLT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "HVC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "IC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ISB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LSL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LSLV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LSR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LSRV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MNEG": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MOV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MOVK": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MOVLpseudo-instruction": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MOVN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MOVZ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MRS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MSR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MSUB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MUL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MVN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "NEG": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "NEGS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "NGC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "NGCS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "NOP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ORN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ORR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "RBIT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "RET": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "REV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "REV16": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "REV32": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ROR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "RORV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SBC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SBCS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SBFIZ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SBFM": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SBFX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SDIV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SEV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SEVL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMADDL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMNEGL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMSUBL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMULH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMULL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SUB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SUBS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SVC": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SXTB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SXTH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SXTW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SYS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SYSL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "TBNZ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "TBZ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "TLBI": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "TST": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UBFIZ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UBFM": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UBFX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UDIV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMADDL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMNEGL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMSUBL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMULH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMULL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UXTB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UXTH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "WFE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "WFI": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "YIELD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDAR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDARB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDARH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDAXP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDAXR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDAXRB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDAXRH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDNP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDPSW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDRpseudo-instruction": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDRB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDRH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDRSB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDRSH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDRSW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDTR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDTRB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDTRH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDTRSB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDTRSH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDTRSW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDUR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDURB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDURH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDURSB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDURSH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDURSW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDXP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDXR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDXRB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LDXRH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "PRFM": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "PRFUM": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STLR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STLRB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STLRH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STLXP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STLXR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STLXRB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STLXRH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STNP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STRB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STRH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STTR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STTRB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STTRH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STUR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STURB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STURH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STXP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STXR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STXRB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "STXRH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FABS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCCMP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCCMPE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCMP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCMPE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCSEL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTAS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTAU": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTMS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTMU": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTNS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTNU": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTPS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTPU": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTZS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTZU": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FDIV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMAX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMAXNM": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMIN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMINNM": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMOV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMSUB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMUL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FNEG": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FNMADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FNMSUB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FNMUL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRINTA": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRINTI": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRINTM": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRINTN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRINTP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRINTX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRINTZ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FSQRT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FSUB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SCVTF": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UCVTF": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ABS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADDP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMEQ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMGE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMGT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMHI": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMHS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMLE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMLT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CMTST": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "DUP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FABD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FACGE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FACGT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FADDP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCMEQ": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCMGE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCMGT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCMLE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCMLT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTXN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMAXNMP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMAXP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMINNMP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMINP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMLA": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMLS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMULX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRECPE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRECPS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRECPX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRSQRTE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FRSQRTS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SHL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SLI": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQABS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQDMLAL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQDMLSL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQDMULH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQDMULL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQNEG": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQRDMULH": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQRSHL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQRSHRN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQRSHRUN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQSHL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQSHLU": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQSHRN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQSHRUN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQSUB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQXTN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQXTUN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SRI": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SRSHL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SRSHR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SRSRA": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SSHL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SSHR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SSRA": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SUQADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQRSHL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQRSHRN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQSHL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQSHRN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQSUB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQXTN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "URSHL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "URSHR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "URSRA": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USHL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USHR": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USQADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USRA": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADDHN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADDHN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ADDV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BIF": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BIT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "BSL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "CNT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "EXT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FCVTXN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMAXNMV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMAXV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMINNMV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "FMINV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "INS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LD1": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LD1R": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LD2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LD2R": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LD3": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LD3R": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LD4": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "LD4R": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MLA": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MLS": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MOVI": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "MVNI": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "NOT": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "PMUL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "PMULL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "PMULL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "RADDHN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "RADDHN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "REV64": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "RSHRN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "RSHRN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "RSUBHN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "RSUBHN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SABA": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SABAL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SABAL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SABD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SABDL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SABDL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SADALP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SADDL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SADDL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SADDLP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SADDLV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SADDW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SADDW2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SHADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SHLL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SHLL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SHRN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SHRN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SHSUB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMAX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMAXP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMAXV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMIN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMINP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMINV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMLAL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMLAL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMLSL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMLSL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMOV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SMULL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQDMLAL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQDMLSL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQDMULL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQRSHRN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQRSHRUN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQSHRN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQSHRUN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQXTN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SQXTUN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SRHADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SSHLL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SSHLL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SSUBL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SSUBL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SSUBW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SSUBW2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ST1": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ST2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ST3": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ST4": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SUBHN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SUBHN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SXTL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "SXTL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "TBL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "TBX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "TRN1": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "TRN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UABA": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UABAL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UABAL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UABD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UABDL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UABDL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UADALP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UADDL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UADDL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UADDLP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UADDLV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UADDW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UADDW2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UHADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UHSUB": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMAX": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMAXP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMAXV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMIN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMINP": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMINV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMLAL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMLAL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMLSL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMLSL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMOV": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UMULL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQRSHRN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQSHRN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UQXTN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "URECPE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "URHADD": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "URSQRTE": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USHLL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USHLL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USUBL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USUBL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USUBW": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "USUBW2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UXTL": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UXTL2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UZP1": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "UZP2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "XTN": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "XTN2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ZIP1": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         },
         "ZIP2": {
             "suggestion": {
                 "arm64": "todo",
                 "mips64el": "todo",
-                "sw_64": "todo"
+                "sw_64": "todo",
+                "loongarch64": "todo"
             }
         }
     }

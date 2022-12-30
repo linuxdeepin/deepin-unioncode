@@ -3,7 +3,8 @@
         "suggestion": {
             "arm64": "Please check the -m128bit-long-double option on arm64 platform",
             "mips64el": "Please check the -m128bit-long-double option on mips64el platform",
-            "sw_64": "Please check the -m128bit-long-double option on sw_64 platform"
+            "sw_64": "Please check the -m128bit-long-double option on sw_64 platform",
+            "loongarch64": "Please check the -m128bit-long-double option on loongarch64 platform"
         },
         "range": []
     },
@@ -11,7 +12,8 @@
         "suggestion": {
             "arm64": "Please check the -m16 option on arm64 platform",
             "mips64el": "Please check the -m16 option on mips64el platform",
-            "sw_64": "Please check the -m16 option on sw_64 platform"
+            "sw_64": "Please check the -m16 option on sw_64 platform",
+            "loongarch64": "Please check the -m16 option on loongarch64 platform"
         },
         "range": []
     },
@@ -19,7 +21,8 @@
         "suggestion": {
             "arm64": "Please check the -m32 option on arm64 platform",
             "mips64el": "Please check the -m32 option on mips64el platform",
-            "sw_64": "Please check the -m32 option on sw_64 platform"
+            "sw_64": "Please check the -m32 option on sw_64 platform",
+            "loongarch64": "Please check the -m32 option on loongarch64 platform"
         },
         "range": []
     },
@@ -27,7 +30,8 @@
         "suggestion": {
             "arm64": "Please check the -m3dnow option on arm64 platform",
             "mips64el": "Please check the -m3dnow option on mips64el platform",
-            "sw_64": "Please check the -m3dnow option on sw_64 platform"
+            "sw_64": "Please check the -m3dnow option on sw_64 platform",
+            "loongarch64": "Please check the -m3dnow option on loongarch64 platform"
         },
         "range": []
     },
@@ -35,7 +39,8 @@
         "suggestion": {
             "arm64": "Please check the -m3dnowa option on arm64 platform",
             "mips64el": "Please check the -m3dnowa option on mips64el platform",
-            "sw_64": "Please check the -m3dnowa option on sw_64 platform"
+            "sw_64": "Please check the -m3dnowa option on sw_64 platform",
+            "loongarch64": "Please check the -m3dnowa option on loongarch64 platform"
         },
         "range": []
     },
@@ -43,7 +48,8 @@
         "suggestion": {
             "arm64": "Please check the -m64 option on arm64 platform",
             "mips64el": "Please check the -m64 option on mips64el platform",
-            "sw_64": "Please check the -m64 option on sw_64 platform"
+            "sw_64": "Please check the -m64 option on sw_64 platform",
+            "loongarch64": "Please check the -m64 option on loongarch64 platform"
         },
         "range": []
     },
@@ -51,7 +57,8 @@
         "suggestion": {
             "arm64": "Please check the -m80387 option on arm64 platform",
             "mips64el": "Please check the -m80387 option on mips64el platform",
-            "sw_64": "Please check the -m80387 option on sw_64 platform"
+            "sw_64": "Please check the -m80387 option on sw_64 platform",
+            "loongarch64": "Please check the -m80387 option on loongarch64 platform"
         },
         "range": []
     },
@@ -59,7 +66,8 @@
         "suggestion": {
             "arm64": "Please check the -m8bit-idiv option on arm64 platform",
             "mips64el": "Please check the -m8bit-idiv option on mips64el platform",
-            "sw_64": "Please check the -m8bit-idiv option on sw_64 platform"
+            "sw_64": "Please check the -m8bit-idiv option on sw_64 platform",
+            "loongarch64": "Please check the -m8bit-idiv option on loongarch64 platform"
         },
         "range": []
     },
@@ -67,7 +75,8 @@
         "suggestion": {
             "arm64": "Please check the -m96bit-long-double option on arm64 platform",
             "mips64el": "Please check the -m96bit-long-double option on mips64el platform",
-            "sw_64": "Please check the -m96bit-long-double option on sw_64 platform"
+            "sw_64": "Please check the -m96bit-long-double option on sw_64 platform",
+            "loongarch64": "Please check the -m96bit-long-double option on loongarch64 platform"
         },
         "range": []
     },
@@ -75,7 +84,8 @@
         "suggestion": {
             "arm64": "Please check the -mabi= option on arm64 platform",
             "mips64el": "Please check the -mabi= option on mips64el platform",
-            "sw_64": "Please check the -mabi= option on sw_64 platform"
+            "sw_64": "Please check the -mabi= option on sw_64 platform",
+            "loongarch64": "Please check the -mabi= option on loongarch64 platform"
         },
         "range": []
     },
@@ -83,7 +93,8 @@
         "suggestion": {
             "arm64": "Please check the -mabm option on arm64 platform",
             "mips64el": "Please check the -mabm option on mips64el platform",
-            "sw_64": "Please check the -mabm option on sw_64 platform"
+            "sw_64": "Please check the -mabm option on sw_64 platform",
+            "loongarch64": "Please check the -mabm option on loongarch64 platform"
         },
         "range": []
     },
@@ -91,7 +102,8 @@
         "suggestion": {
             "arm64": "Please check the -maccumulate-outgoing-args option on arm64 platform",
             "mips64el": "Please check the -maccumulate-outgoing-args option on mips64el platform",
-            "sw_64": "Please check the -maccumulate-outgoing-args option on sw_64 platform"
+            "sw_64": "Please check the -maccumulate-outgoing-args option on sw_64 platform",
+            "loongarch64": "Please check the -maccumulate-outgoing-args option on loongarch64 platform"
         },
         "range": []
     },
@@ -99,7 +111,8 @@
         "suggestion": {
             "arm64": "Please check the -maddress-mode= option on arm64 platform",
             "mips64el": "Please check the -maddress-mode= option on mips64el platform",
-            "sw_64": "Please check the -maddress-mode= option on sw_64 platform"
+            "sw_64": "Please check the -maddress-mode= option on sw_64 platform",
+            "loongarch64": "Please check the -maddress-mode= option on loongarch64 platform"
         },
         "range": []
     },
@@ -107,7 +120,8 @@
         "suggestion": {
             "arm64": "Please check the -madx option on arm64 platform",
             "mips64el": "Please check the -madx option on mips64el platform",
-            "sw_64": "Please check the -madx option on sw_64 platform"
+            "sw_64": "Please check the -madx option on sw_64 platform",
+            "loongarch64": "Please check the -madx option on loongarch64 platform"
         },
         "range": []
     },
@@ -115,7 +129,8 @@
         "suggestion": {
             "arm64": "Please check the -maes option on arm64 platform",
             "mips64el": "Please check the -maes option on mips64el platform",
-            "sw_64": "Please check the -maes option on sw_64 platform"
+            "sw_64": "Please check the -maes option on sw_64 platform",
+            "loongarch64": "Please check the -maes option on loongarch64 platform"
         },
         "range": []
     },
@@ -123,7 +138,8 @@
         "suggestion": {
             "arm64": "Please check the -malign-data= option on arm64 platform",
             "mips64el": "Please check the -malign-data= option on mips64el platform",
-            "sw_64": "Please check the -malign-data= option on sw_64 platform"
+            "sw_64": "Please check the -malign-data= option on sw_64 platform",
+            "loongarch64": "Please check the -malign-data= option on loongarch64 platform"
         },
         "range": []
     },
@@ -131,7 +147,8 @@
         "suggestion": {
             "arm64": "Please check the -malign-double option on arm64 platform",
             "mips64el": "Please check the -malign-double option on mips64el platform",
-            "sw_64": "Please check the -malign-double option on sw_64 platform"
+            "sw_64": "Please check the -malign-double option on sw_64 platform",
+            "loongarch64": "Please check the -malign-double option on loongarch64 platform"
         },
         "range": []
     },
@@ -139,7 +156,8 @@
         "suggestion": {
             "arm64": "Please check the -malign-functions= option on arm64 platform",
             "mips64el": "Please check the -malign-functions= option on mips64el platform",
-            "sw_64": "Please check the -malign-functions= option on sw_64 platform"
+            "sw_64": "Please check the -malign-functions= option on sw_64 platform",
+            "loongarch64": "Please check the -malign-functions= option on loongarch64 platform"
         },
         "range": []
     },
@@ -147,7 +165,8 @@
         "suggestion": {
             "arm64": "Please check the -malign-jumps= option on arm64 platform",
             "mips64el": "Please check the -malign-jumps= option on mips64el platform",
-            "sw_64": "Please check the -malign-jumps= option on sw_64 platform"
+            "sw_64": "Please check the -malign-jumps= option on sw_64 platform",
+            "loongarch64": "Please check the -malign-jumps= option on loongarch64 platform"
         },
         "range": []
     },
@@ -155,7 +174,8 @@
         "suggestion": {
             "arm64": "Please check the -malign-loops= option on arm64 platform",
             "mips64el": "Please check the -malign-loops= option on mips64el platform",
-            "sw_64": "Please check the -malign-loops= option on sw_64 platform"
+            "sw_64": "Please check the -malign-loops= option on sw_64 platform",
+            "loongarch64": "Please check the -malign-loops= option on loongarch64 platform"
         },
         "range": []
     },
@@ -163,7 +183,8 @@
         "suggestion": {
             "arm64": "Please check the -malign-stringops option on arm64 platform",
             "mips64el": "Please check the -malign-stringops option on mips64el platform",
-            "sw_64": "Please check the -malign-stringops option on sw_64 platform"
+            "sw_64": "Please check the -malign-stringops option on sw_64 platform",
+            "loongarch64": "Please check the -malign-stringops option on loongarch64 platform"
         },
         "range": []
     },
@@ -171,7 +192,8 @@
         "suggestion": {
             "arm64": "Please check the -mandroid option on arm64 platform",
             "mips64el": "Please check the -mandroid option on mips64el platform",
-            "sw_64": "Please check the -mandroid option on sw_64 platform"
+            "sw_64": "Please check the -mandroid option on sw_64 platform",
+            "loongarch64": "Please check the -mandroid option on loongarch64 platform"
         },
         "range": []
     },
@@ -179,7 +201,8 @@
         "suggestion": {
             "arm64": "Please check the -march= option on arm64 platform",
             "mips64el": "Please check the -march= option on mips64el platform",
-            "sw_64": "Please check the -march= option on sw_64 platform"
+            "sw_64": "Please check the -march= option on sw_64 platform",
+            "loongarch64": "Please check the -march= option on loongarch64 platform"
         },
         "range": []
     },
@@ -187,7 +210,8 @@
         "suggestion": {
             "arm64": "Please check the -masm= option on arm64 platform",
             "mips64el": "Please check the -masm= option on mips64el platform",
-            "sw_64": "Please check the -masm= option on sw_64 platform"
+            "sw_64": "Please check the -masm= option on sw_64 platform",
+            "loongarch64": "Please check the -masm= option on loongarch64 platform"
         },
         "range": []
     },
@@ -195,7 +219,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx option on arm64 platform",
             "mips64el": "Please check the -mavx option on mips64el platform",
-            "sw_64": "Please check the -mavx option on sw_64 platform"
+            "sw_64": "Please check the -mavx option on sw_64 platform",
+            "loongarch64": "Please check the -mavx option on loongarch64 platform"
         },
         "range": []
     },
@@ -203,7 +228,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx2 option on arm64 platform",
             "mips64el": "Please check the -mavx2 option on mips64el platform",
-            "sw_64": "Please check the -mavx2 option on sw_64 platform"
+            "sw_64": "Please check the -mavx2 option on sw_64 platform",
+            "loongarch64": "Please check the -mavx2 option on loongarch64 platform"
         },
         "range": []
     },
@@ -211,7 +237,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx256-split-unaligned-load option on arm64 platform",
             "mips64el": "Please check the -mavx256-split-unaligned-load option on mips64el platform",
-            "sw_64": "Please check the -mavx256-split-unaligned-load option on sw_64 platform"
+            "sw_64": "Please check the -mavx256-split-unaligned-load option on sw_64 platform",
+            "loongarch64": "Please check the -mavx256-split-unaligned-load option on loongarch64 platform"
         },
         "range": []
     },
@@ -219,7 +246,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx256-split-unaligned-store option on arm64 platform",
             "mips64el": "Please check the -mavx256-split-unaligned-store option on mips64el platform",
-            "sw_64": "Please check the -mavx256-split-unaligned-store option on sw_64 platform"
+            "sw_64": "Please check the -mavx256-split-unaligned-store option on sw_64 platform",
+            "loongarch64": "Please check the -mavx256-split-unaligned-store option on loongarch64 platform"
         },
         "range": []
     },
@@ -227,7 +255,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx5124fmaps option on arm64 platform",
             "mips64el": "Please check the -mavx5124fmaps option on mips64el platform",
-            "sw_64": "Please check the -mavx5124fmaps option on sw_64 platform"
+            "sw_64": "Please check the -mavx5124fmaps option on sw_64 platform",
+            "loongarch64": "Please check the -mavx5124fmaps option on loongarch64 platform"
         },
         "range": []
     },
@@ -235,7 +264,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx5124vnniw option on arm64 platform",
             "mips64el": "Please check the -mavx5124vnniw option on mips64el platform",
-            "sw_64": "Please check the -mavx5124vnniw option on sw_64 platform"
+            "sw_64": "Please check the -mavx5124vnniw option on sw_64 platform",
+            "loongarch64": "Please check the -mavx5124vnniw option on loongarch64 platform"
         },
         "range": []
     },
@@ -243,7 +273,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512bitalg option on arm64 platform",
             "mips64el": "Please check the -mavx512bitalg option on mips64el platform",
-            "sw_64": "Please check the -mavx512bitalg option on sw_64 platform"
+            "sw_64": "Please check the -mavx512bitalg option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512bitalg option on loongarch64 platform"
         },
         "range": []
     },
@@ -251,7 +282,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512bw option on arm64 platform",
             "mips64el": "Please check the -mavx512bw option on mips64el platform",
-            "sw_64": "Please check the -mavx512bw option on sw_64 platform"
+            "sw_64": "Please check the -mavx512bw option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512bw option on loongarch64 platform"
         },
         "range": []
     },
@@ -259,7 +291,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512cd option on arm64 platform",
             "mips64el": "Please check the -mavx512cd option on mips64el platform",
-            "sw_64": "Please check the -mavx512cd option on sw_64 platform"
+            "sw_64": "Please check the -mavx512cd option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512cd option on loongarch64 platform"
         },
         "range": []
     },
@@ -267,7 +300,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512dq option on arm64 platform",
             "mips64el": "Please check the -mavx512dq option on mips64el platform",
-            "sw_64": "Please check the -mavx512dq option on sw_64 platform"
+            "sw_64": "Please check the -mavx512dq option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512dq option on loongarch64 platform"
         },
         "range": []
     },
@@ -275,7 +309,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512er option on arm64 platform",
             "mips64el": "Please check the -mavx512er option on mips64el platform",
-            "sw_64": "Please check the -mavx512er option on sw_64 platform"
+            "sw_64": "Please check the -mavx512er option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512er option on loongarch64 platform"
         },
         "range": []
     },
@@ -283,7 +318,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512f option on arm64 platform",
             "mips64el": "Please check the -mavx512f option on mips64el platform",
-            "sw_64": "Please check the -mavx512f option on sw_64 platform"
+            "sw_64": "Please check the -mavx512f option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512f option on loongarch64 platform"
         },
         "range": []
     },
@@ -291,7 +327,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512ifma option on arm64 platform",
             "mips64el": "Please check the -mavx512ifma option on mips64el platform",
-            "sw_64": "Please check the -mavx512ifma option on sw_64 platform"
+            "sw_64": "Please check the -mavx512ifma option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512ifma option on loongarch64 platform"
         },
         "range": []
     },
@@ -299,7 +336,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512pf option on arm64 platform",
             "mips64el": "Please check the -mavx512pf option on mips64el platform",
-            "sw_64": "Please check the -mavx512pf option on sw_64 platform"
+            "sw_64": "Please check the -mavx512pf option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512pf option on loongarch64 platform"
         },
         "range": []
     },
@@ -307,7 +345,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512vbmi option on arm64 platform",
             "mips64el": "Please check the -mavx512vbmi option on mips64el platform",
-            "sw_64": "Please check the -mavx512vbmi option on sw_64 platform"
+            "sw_64": "Please check the -mavx512vbmi option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512vbmi option on loongarch64 platform"
         },
         "range": []
     },
@@ -315,7 +354,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512vbmi2 option on arm64 platform",
             "mips64el": "Please check the -mavx512vbmi2 option on mips64el platform",
-            "sw_64": "Please check the -mavx512vbmi2 option on sw_64 platform"
+            "sw_64": "Please check the -mavx512vbmi2 option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512vbmi2 option on loongarch64 platform"
         },
         "range": []
     },
@@ -323,7 +363,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512vl option on arm64 platform",
             "mips64el": "Please check the -mavx512vl option on mips64el platform",
-            "sw_64": "Please check the -mavx512vl option on sw_64 platform"
+            "sw_64": "Please check the -mavx512vl option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512vl option on loongarch64 platform"
         },
         "range": []
     },
@@ -331,7 +372,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512vnni option on arm64 platform",
             "mips64el": "Please check the -mavx512vnni option on mips64el platform",
-            "sw_64": "Please check the -mavx512vnni option on sw_64 platform"
+            "sw_64": "Please check the -mavx512vnni option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512vnni option on loongarch64 platform"
         },
         "range": []
     },
@@ -339,7 +381,8 @@
         "suggestion": {
             "arm64": "Please check the -mavx512vpopcntdq option on arm64 platform",
             "mips64el": "Please check the -mavx512vpopcntdq option on mips64el platform",
-            "sw_64": "Please check the -mavx512vpopcntdq option on sw_64 platform"
+            "sw_64": "Please check the -mavx512vpopcntdq option on sw_64 platform",
+            "loongarch64": "Please check the -mavx512vpopcntdq option on loongarch64 platform"
         },
         "range": []
     },
@@ -347,7 +390,8 @@
         "suggestion": {
             "arm64": "Please check the -mbionic option on arm64 platform",
             "mips64el": "Please check the -mbionic option on mips64el platform",
-            "sw_64": "Please check the -mbionic option on sw_64 platform"
+            "sw_64": "Please check the -mbionic option on sw_64 platform",
+            "loongarch64": "Please check the -mbionic option on loongarch64 platform"
         },
         "range": []
     },
@@ -355,7 +399,8 @@
         "suggestion": {
             "arm64": "Please check the -mbmi option on arm64 platform",
             "mips64el": "Please check the -mbmi option on mips64el platform",
-            "sw_64": "Please check the -mbmi option on sw_64 platform"
+            "sw_64": "Please check the -mbmi option on sw_64 platform",
+            "loongarch64": "Please check the -mbmi option on loongarch64 platform"
         },
         "range": []
     },
@@ -363,7 +408,8 @@
         "suggestion": {
             "arm64": "Please check the -mbmi2 option on arm64 platform",
             "mips64el": "Please check the -mbmi2 option on mips64el platform",
-            "sw_64": "Please check the -mbmi2 option on sw_64 platform"
+            "sw_64": "Please check the -mbmi2 option on sw_64 platform",
+            "loongarch64": "Please check the -mbmi2 option on loongarch64 platform"
         },
         "range": []
     },
@@ -371,7 +417,8 @@
         "suggestion": {
             "arm64": "Please check the -mbranch-cost=<0,5> option on arm64 platform",
             "mips64el": "Please check the -mbranch-cost=<0,5> option on mips64el platform",
-            "sw_64": "Please check the -mbranch-cost=<0,5> option on sw_64 platform"
+            "sw_64": "Please check the -mbranch-cost=<0,5> option on sw_64 platform",
+            "loongarch64": "Please check the -mbranch-cost=<0,5> option on loongarch64 platform"
         },
         "range": []
     },
@@ -379,7 +426,8 @@
         "suggestion": {
             "arm64": "Please check the -mcall-ms2sysv-xlogues option on arm64 platform",
             "mips64el": "Please check the -mcall-ms2sysv-xlogues option on mips64el platform",
-            "sw_64": "Please check the -mcall-ms2sysv-xlogues option on sw_64 platform"
+            "sw_64": "Please check the -mcall-ms2sysv-xlogues option on sw_64 platform",
+            "loongarch64": "Please check the -mcall-ms2sysv-xlogues option on loongarch64 platform"
         },
         "range": []
     },
@@ -387,7 +435,8 @@
         "suggestion": {
             "arm64": "Please check the -mcld option on arm64 platform",
             "mips64el": "Please check the -mcld option on mips64el platform",
-            "sw_64": "Please check the -mcld option on sw_64 platform"
+            "sw_64": "Please check the -mcld option on sw_64 platform",
+            "loongarch64": "Please check the -mcld option on loongarch64 platform"
         },
         "range": []
     },
@@ -395,7 +444,8 @@
         "suggestion": {
             "arm64": "Please check the -mclflushopt option on arm64 platform",
             "mips64el": "Please check the -mclflushopt option on mips64el platform",
-            "sw_64": "Please check the -mclflushopt option on sw_64 platform"
+            "sw_64": "Please check the -mclflushopt option on sw_64 platform",
+            "loongarch64": "Please check the -mclflushopt option on loongarch64 platform"
         },
         "range": []
     },
@@ -403,7 +453,8 @@
         "suggestion": {
             "arm64": "Please check the -mclwb option on arm64 platform",
             "mips64el": "Please check the -mclwb option on mips64el platform",
-            "sw_64": "Please check the -mclwb option on sw_64 platform"
+            "sw_64": "Please check the -mclwb option on sw_64 platform",
+            "loongarch64": "Please check the -mclwb option on loongarch64 platform"
         },
         "range": []
     },
@@ -411,7 +462,8 @@
         "suggestion": {
             "arm64": "Please check the -mclzero option on arm64 platform",
             "mips64el": "Please check the -mclzero option on mips64el platform",
-            "sw_64": "Please check the -mclzero option on sw_64 platform"
+            "sw_64": "Please check the -mclzero option on sw_64 platform",
+            "loongarch64": "Please check the -mclzero option on loongarch64 platform"
         },
         "range": []
     },
@@ -419,7 +471,8 @@
         "suggestion": {
             "arm64": "Please check the -mcmodel= option on arm64 platform",
             "mips64el": "Please check the -mcmodel= option on mips64el platform",
-            "sw_64": "Please check the -mcmodel= option on sw_64 platform"
+            "sw_64": "Please check the -mcmodel= option on sw_64 platform",
+            "loongarch64": "Please check the -mcmodel= option on loongarch64 platform"
         },
         "range": []
     },
@@ -427,7 +480,8 @@
         "suggestion": {
             "arm64": "Please check the -mcrc32 option on arm64 platform",
             "mips64el": "Please check the -mcrc32 option on mips64el platform",
-            "sw_64": "Please check the -mcrc32 option on sw_64 platform"
+            "sw_64": "Please check the -mcrc32 option on sw_64 platform",
+            "loongarch64": "Please check the -mcrc32 option on loongarch64 platform"
         },
         "range": []
     },
@@ -435,7 +489,8 @@
         "suggestion": {
             "arm64": "Please check the -mcx16 option on arm64 platform",
             "mips64el": "Please check the -mcx16 option on mips64el platform",
-            "sw_64": "Please check the -mcx16 option on sw_64 platform"
+            "sw_64": "Please check the -mcx16 option on sw_64 platform",
+            "loongarch64": "Please check the -mcx16 option on loongarch64 platform"
         },
         "range": []
     },
@@ -443,7 +498,8 @@
         "suggestion": {
             "arm64": "Please check the -mdispatch-scheduler option on arm64 platform",
             "mips64el": "Please check the -mdispatch-scheduler option on mips64el platform",
-            "sw_64": "Please check the -mdispatch-scheduler option on sw_64 platform"
+            "sw_64": "Please check the -mdispatch-scheduler option on sw_64 platform",
+            "loongarch64": "Please check the -mdispatch-scheduler option on loongarch64 platform"
         },
         "range": []
     },
@@ -451,7 +507,8 @@
         "suggestion": {
             "arm64": "Please check the -mf16c option on arm64 platform",
             "mips64el": "Please check the -mf16c option on mips64el platform",
-            "sw_64": "Please check the -mf16c option on sw_64 platform"
+            "sw_64": "Please check the -mf16c option on sw_64 platform",
+            "loongarch64": "Please check the -mf16c option on loongarch64 platform"
         },
         "range": []
     },
@@ -459,7 +516,8 @@
         "suggestion": {
             "arm64": "Please check the -mfancy-math-387 option on arm64 platform",
             "mips64el": "Please check the -mfancy-math-387 option on mips64el platform",
-            "sw_64": "Please check the -mfancy-math-387 option on sw_64 platform"
+            "sw_64": "Please check the -mfancy-math-387 option on sw_64 platform",
+            "loongarch64": "Please check the -mfancy-math-387 option on loongarch64 platform"
         },
         "range": []
     },
@@ -467,7 +525,8 @@
         "suggestion": {
             "arm64": "Please check the -mfentry option on arm64 platform",
             "mips64el": "Please check the -mfentry option on mips64el platform",
-            "sw_64": "Please check the -mfentry option on sw_64 platform"
+            "sw_64": "Please check the -mfentry option on sw_64 platform",
+            "loongarch64": "Please check the -mfentry option on loongarch64 platform"
         },
         "range": []
     },
@@ -475,7 +534,8 @@
         "suggestion": {
             "arm64": "Please check the -mfma option on arm64 platform",
             "mips64el": "Please check the -mfma option on mips64el platform",
-            "sw_64": "Please check the -mfma option on sw_64 platform"
+            "sw_64": "Please check the -mfma option on sw_64 platform",
+            "loongarch64": "Please check the -mfma option on loongarch64 platform"
         },
         "range": []
     },
@@ -483,7 +543,8 @@
         "suggestion": {
             "arm64": "Please check the -mfma4 option on arm64 platform",
             "mips64el": "Please check the -mfma4 option on mips64el platform",
-            "sw_64": "Please check the -mfma4 option on sw_64 platform"
+            "sw_64": "Please check the -mfma4 option on sw_64 platform",
+            "loongarch64": "Please check the -mfma4 option on loongarch64 platform"
         },
         "range": []
     },
@@ -491,7 +552,8 @@
         "suggestion": {
             "arm64": "Please check the -mforce-drap option on arm64 platform",
             "mips64el": "Please check the -mforce-drap option on mips64el platform",
-            "sw_64": "Please check the -mforce-drap option on sw_64 platform"
+            "sw_64": "Please check the -mforce-drap option on sw_64 platform",
+            "loongarch64": "Please check the -mforce-drap option on loongarch64 platform"
         },
         "range": []
     },
@@ -499,7 +561,8 @@
         "suggestion": {
             "arm64": "Please check the -mforce-indirect-call option on arm64 platform",
             "mips64el": "Please check the -mforce-indirect-call option on mips64el platform",
-            "sw_64": "Please check the -mforce-indirect-call option on sw_64 platform"
+            "sw_64": "Please check the -mforce-indirect-call option on sw_64 platform",
+            "loongarch64": "Please check the -mforce-indirect-call option on loongarch64 platform"
         },
         "range": []
     },
@@ -507,7 +570,8 @@
         "suggestion": {
             "arm64": "Please check the -mfp-ret-in-387 option on arm64 platform",
             "mips64el": "Please check the -mfp-ret-in-387 option on mips64el platform",
-            "sw_64": "Please check the -mfp-ret-in-387 option on sw_64 platform"
+            "sw_64": "Please check the -mfp-ret-in-387 option on sw_64 platform",
+            "loongarch64": "Please check the -mfp-ret-in-387 option on loongarch64 platform"
         },
         "range": []
     },
@@ -515,7 +579,8 @@
         "suggestion": {
             "arm64": "Please check the -mfpmath= option on arm64 platform",
             "mips64el": "Please check the -mfpmath= option on mips64el platform",
-            "sw_64": "Please check the -mfpmath= option on sw_64 platform"
+            "sw_64": "Please check the -mfpmath= option on sw_64 platform",
+            "loongarch64": "Please check the -mfpmath= option on loongarch64 platform"
         },
         "range": []
     },
@@ -523,7 +588,8 @@
         "suggestion": {
             "arm64": "Please check the -mfsgsbase option on arm64 platform",
             "mips64el": "Please check the -mfsgsbase option on mips64el platform",
-            "sw_64": "Please check the -mfsgsbase option on sw_64 platform"
+            "sw_64": "Please check the -mfsgsbase option on sw_64 platform",
+            "loongarch64": "Please check the -mfsgsbase option on loongarch64 platform"
         },
         "range": []
     },
@@ -531,7 +597,8 @@
         "suggestion": {
             "arm64": "Please check the -mfunction-return= option on arm64 platform",
             "mips64el": "Please check the -mfunction-return= option on mips64el platform",
-            "sw_64": "Please check the -mfunction-return= option on sw_64 platform"
+            "sw_64": "Please check the -mfunction-return= option on sw_64 platform",
+            "loongarch64": "Please check the -mfunction-return= option on loongarch64 platform"
         },
         "range": []
     },
@@ -539,7 +606,8 @@
         "suggestion": {
             "arm64": "Please check the -mfxsr option on arm64 platform",
             "mips64el": "Please check the -mfxsr option on mips64el platform",
-            "sw_64": "Please check the -mfxsr option on sw_64 platform"
+            "sw_64": "Please check the -mfxsr option on sw_64 platform",
+            "loongarch64": "Please check the -mfxsr option on loongarch64 platform"
         },
         "range": []
     },
@@ -547,7 +615,8 @@
         "suggestion": {
             "arm64": "Please check the -mgeneral-regs-only option on arm64 platform",
             "mips64el": "Please check the -mgeneral-regs-only option on mips64el platform",
-            "sw_64": "Please check the -mgeneral-regs-only option on sw_64 platform"
+            "sw_64": "Please check the -mgeneral-regs-only option on sw_64 platform",
+            "loongarch64": "Please check the -mgeneral-regs-only option on loongarch64 platform"
         },
         "range": []
     },
@@ -555,7 +624,8 @@
         "suggestion": {
             "arm64": "Please check the -mgfni option on arm64 platform",
             "mips64el": "Please check the -mgfni option on mips64el platform",
-            "sw_64": "Please check the -mgfni option on sw_64 platform"
+            "sw_64": "Please check the -mgfni option on sw_64 platform",
+            "loongarch64": "Please check the -mgfni option on loongarch64 platform"
         },
         "range": []
     },
@@ -563,7 +633,8 @@
         "suggestion": {
             "arm64": "Please check the -mglibc option on arm64 platform",
             "mips64el": "Please check the -mglibc option on mips64el platform",
-            "sw_64": "Please check the -mglibc option on sw_64 platform"
+            "sw_64": "Please check the -mglibc option on sw_64 platform",
+            "loongarch64": "Please check the -mglibc option on loongarch64 platform"
         },
         "range": []
     },
@@ -571,7 +642,8 @@
         "suggestion": {
             "arm64": "Please check the -mhard-float option on arm64 platform",
             "mips64el": "Please check the -mhard-float option on mips64el platform",
-            "sw_64": "Please check the -mhard-float option on sw_64 platform"
+            "sw_64": "Please check the -mhard-float option on sw_64 platform",
+            "loongarch64": "Please check the -mhard-float option on loongarch64 platform"
         },
         "range": []
     },
@@ -579,7 +651,8 @@
         "suggestion": {
             "arm64": "Please check the -mhle option on arm64 platform",
             "mips64el": "Please check the -mhle option on mips64el platform",
-            "sw_64": "Please check the -mhle option on sw_64 platform"
+            "sw_64": "Please check the -mhle option on sw_64 platform",
+            "loongarch64": "Please check the -mhle option on loongarch64 platform"
         },
         "range": []
     },
@@ -587,7 +660,8 @@
         "suggestion": {
             "arm64": "Please check the -miamcu option on arm64 platform",
             "mips64el": "Please check the -miamcu option on mips64el platform",
-            "sw_64": "Please check the -miamcu option on sw_64 platform"
+            "sw_64": "Please check the -miamcu option on sw_64 platform",
+            "loongarch64": "Please check the -miamcu option on loongarch64 platform"
         },
         "range": []
     },
@@ -595,7 +669,8 @@
         "suggestion": {
             "arm64": "Please check the -mieee-fp option on arm64 platform",
             "mips64el": "Please check the -mieee-fp option on mips64el platform",
-            "sw_64": "Please check the -mieee-fp option on sw_64 platform"
+            "sw_64": "Please check the -mieee-fp option on sw_64 platform",
+            "loongarch64": "Please check the -mieee-fp option on loongarch64 platform"
         },
         "range": []
     },
@@ -603,7 +678,8 @@
         "suggestion": {
             "arm64": "Please check the -mincoming-stack-boundary= option on arm64 platform",
             "mips64el": "Please check the -mincoming-stack-boundary= option on mips64el platform",
-            "sw_64": "Please check the -mincoming-stack-boundary= option on sw_64 platform"
+            "sw_64": "Please check the -mincoming-stack-boundary= option on sw_64 platform",
+            "loongarch64": "Please check the -mincoming-stack-boundary= option on loongarch64 platform"
         },
         "range": []
     },
@@ -611,7 +687,8 @@
         "suggestion": {
             "arm64": "Please check the -mindirect-branch-register option on arm64 platform",
             "mips64el": "Please check the -mindirect-branch-register option on mips64el platform",
-            "sw_64": "Please check the -mindirect-branch-register option on sw_64 platform"
+            "sw_64": "Please check the -mindirect-branch-register option on sw_64 platform",
+            "loongarch64": "Please check the -mindirect-branch-register option on loongarch64 platform"
         },
         "range": []
     },
@@ -619,7 +696,8 @@
         "suggestion": {
             "arm64": "Please check the -mindirect-branch= option on arm64 platform",
             "mips64el": "Please check the -mindirect-branch= option on mips64el platform",
-            "sw_64": "Please check the -mindirect-branch= option on sw_64 platform"
+            "sw_64": "Please check the -mindirect-branch= option on sw_64 platform",
+            "loongarch64": "Please check the -mindirect-branch= option on loongarch64 platform"
         },
         "range": []
     },
@@ -627,7 +705,8 @@
         "suggestion": {
             "arm64": "Please check the -minline-all-stringops option on arm64 platform",
             "mips64el": "Please check the -minline-all-stringops option on mips64el platform",
-            "sw_64": "Please check the -minline-all-stringops option on sw_64 platform"
+            "sw_64": "Please check the -minline-all-stringops option on sw_64 platform",
+            "loongarch64": "Please check the -minline-all-stringops option on loongarch64 platform"
         },
         "range": []
     },
@@ -635,7 +714,8 @@
         "suggestion": {
             "arm64": "Please check the -minline-stringops-dynamically option on arm64 platform",
             "mips64el": "Please check the -minline-stringops-dynamically option on mips64el platform",
-            "sw_64": "Please check the -minline-stringops-dynamically option on sw_64 platform"
+            "sw_64": "Please check the -minline-stringops-dynamically option on sw_64 platform",
+            "loongarch64": "Please check the -minline-stringops-dynamically option on loongarch64 platform"
         },
         "range": []
     },
@@ -643,7 +723,8 @@
         "suggestion": {
             "arm64": "Please check the -mlarge-data-threshold=<number> option on arm64 platform",
             "mips64el": "Please check the -mlarge-data-threshold=<number> option on mips64el platform",
-            "sw_64": "Please check the -mlarge-data-threshold=<number> option on sw_64 platform"
+            "sw_64": "Please check the -mlarge-data-threshold=<number> option on sw_64 platform",
+            "loongarch64": "Please check the -mlarge-data-threshold=<number> option on loongarch64 platform"
         },
         "range": []
     },
@@ -651,7 +732,8 @@
         "suggestion": {
             "arm64": "Please check the -mlong-double-128 option on arm64 platform",
             "mips64el": "Please check the -mlong-double-128 option on mips64el platform",
-            "sw_64": "Please check the -mlong-double-128 option on sw_64 platform"
+            "sw_64": "Please check the -mlong-double-128 option on sw_64 platform",
+            "loongarch64": "Please check the -mlong-double-128 option on loongarch64 platform"
         },
         "range": []
     },
@@ -659,7 +741,8 @@
         "suggestion": {
             "arm64": "Please check the -mlong-double-64 option on arm64 platform",
             "mips64el": "Please check the -mlong-double-64 option on mips64el platform",
-            "sw_64": "Please check the -mlong-double-64 option on sw_64 platform"
+            "sw_64": "Please check the -mlong-double-64 option on sw_64 platform",
+            "loongarch64": "Please check the -mlong-double-64 option on loongarch64 platform"
         },
         "range": []
     },
@@ -667,7 +750,8 @@
         "suggestion": {
             "arm64": "Please check the -mlong-double-80 option on arm64 platform",
             "mips64el": "Please check the -mlong-double-80 option on mips64el platform",
-            "sw_64": "Please check the -mlong-double-80 option on sw_64 platform"
+            "sw_64": "Please check the -mlong-double-80 option on sw_64 platform",
+            "loongarch64": "Please check the -mlong-double-80 option on loongarch64 platform"
         },
         "range": []
     },
@@ -675,7 +759,8 @@
         "suggestion": {
             "arm64": "Please check the -mlwp option on arm64 platform",
             "mips64el": "Please check the -mlwp option on mips64el platform",
-            "sw_64": "Please check the -mlwp option on sw_64 platform"
+            "sw_64": "Please check the -mlwp option on sw_64 platform",
+            "loongarch64": "Please check the -mlwp option on loongarch64 platform"
         },
         "range": []
     },
@@ -683,7 +768,8 @@
         "suggestion": {
             "arm64": "Please check the -mlzcnt option on arm64 platform",
             "mips64el": "Please check the -mlzcnt option on mips64el platform",
-            "sw_64": "Please check the -mlzcnt option on sw_64 platform"
+            "sw_64": "Please check the -mlzcnt option on sw_64 platform",
+            "loongarch64": "Please check the -mlzcnt option on loongarch64 platform"
         },
         "range": []
     },
@@ -691,7 +777,8 @@
         "suggestion": {
             "arm64": "Please check the -mmemcpy-strategy= option on arm64 platform",
             "mips64el": "Please check the -mmemcpy-strategy= option on mips64el platform",
-            "sw_64": "Please check the -mmemcpy-strategy= option on sw_64 platform"
+            "sw_64": "Please check the -mmemcpy-strategy= option on sw_64 platform",
+            "loongarch64": "Please check the -mmemcpy-strategy= option on loongarch64 platform"
         },
         "range": []
     },
@@ -699,7 +786,8 @@
         "suggestion": {
             "arm64": "Please check the -mmemset-strategy= option on arm64 platform",
             "mips64el": "Please check the -mmemset-strategy= option on mips64el platform",
-            "sw_64": "Please check the -mmemset-strategy= option on sw_64 platform"
+            "sw_64": "Please check the -mmemset-strategy= option on sw_64 platform",
+            "loongarch64": "Please check the -mmemset-strategy= option on loongarch64 platform"
         },
         "range": []
     },
@@ -707,7 +795,8 @@
         "suggestion": {
             "arm64": "Please check the -mmitigate-rop option on arm64 platform",
             "mips64el": "Please check the -mmitigate-rop option on mips64el platform",
-            "sw_64": "Please check the -mmitigate-rop option on sw_64 platform"
+            "sw_64": "Please check the -mmitigate-rop option on sw_64 platform",
+            "loongarch64": "Please check the -mmitigate-rop option on loongarch64 platform"
         },
         "range": []
     },
@@ -715,7 +804,8 @@
         "suggestion": {
             "arm64": "Please check the -mmmx option on arm64 platform",
             "mips64el": "Please check the -mmmx option on mips64el platform",
-            "sw_64": "Please check the -mmmx option on sw_64 platform"
+            "sw_64": "Please check the -mmmx option on sw_64 platform",
+            "loongarch64": "Please check the -mmmx option on loongarch64 platform"
         },
         "range": []
     },
@@ -723,7 +813,8 @@
         "suggestion": {
             "arm64": "Please check the -mmovbe option on arm64 platform",
             "mips64el": "Please check the -mmovbe option on mips64el platform",
-            "sw_64": "Please check the -mmovbe option on sw_64 platform"
+            "sw_64": "Please check the -mmovbe option on sw_64 platform",
+            "loongarch64": "Please check the -mmovbe option on loongarch64 platform"
         },
         "range": []
     },
@@ -731,7 +822,8 @@
         "suggestion": {
             "arm64": "Please check the -mmovdir64b option on arm64 platform",
             "mips64el": "Please check the -mmovdir64b option on mips64el platform",
-            "sw_64": "Please check the -mmovdir64b option on sw_64 platform"
+            "sw_64": "Please check the -mmovdir64b option on sw_64 platform",
+            "loongarch64": "Please check the -mmovdir64b option on loongarch64 platform"
         },
         "range": []
     },
@@ -739,7 +831,8 @@
         "suggestion": {
             "arm64": "Please check the -mmovdiri option on arm64 platform",
             "mips64el": "Please check the -mmovdiri option on mips64el platform",
-            "sw_64": "Please check the -mmovdiri option on sw_64 platform"
+            "sw_64": "Please check the -mmovdiri option on sw_64 platform",
+            "loongarch64": "Please check the -mmovdiri option on loongarch64 platform"
         },
         "range": []
     },
@@ -747,7 +840,8 @@
         "suggestion": {
             "arm64": "Please check the -mmpx option on arm64 platform",
             "mips64el": "Please check the -mmpx option on mips64el platform",
-            "sw_64": "Please check the -mmpx option on sw_64 platform"
+            "sw_64": "Please check the -mmpx option on sw_64 platform",
+            "loongarch64": "Please check the -mmpx option on loongarch64 platform"
         },
         "range": []
     },
@@ -755,7 +849,8 @@
         "suggestion": {
             "arm64": "Please check the -mms-bitfields option on arm64 platform",
             "mips64el": "Please check the -mms-bitfields option on mips64el platform",
-            "sw_64": "Please check the -mms-bitfields option on sw_64 platform"
+            "sw_64": "Please check the -mms-bitfields option on sw_64 platform",
+            "loongarch64": "Please check the -mms-bitfields option on loongarch64 platform"
         },
         "range": []
     },
@@ -763,7 +858,8 @@
         "suggestion": {
             "arm64": "Please check the -mmusl option on arm64 platform",
             "mips64el": "Please check the -mmusl option on mips64el platform",
-            "sw_64": "Please check the -mmusl option on sw_64 platform"
+            "sw_64": "Please check the -mmusl option on sw_64 platform",
+            "loongarch64": "Please check the -mmusl option on loongarch64 platform"
         },
         "range": []
     },
@@ -771,7 +867,8 @@
         "suggestion": {
             "arm64": "Please check the -mmwaitx option on arm64 platform",
             "mips64el": "Please check the -mmwaitx option on mips64el platform",
-            "sw_64": "Please check the -mmwaitx option on sw_64 platform"
+            "sw_64": "Please check the -mmwaitx option on sw_64 platform",
+            "loongarch64": "Please check the -mmwaitx option on loongarch64 platform"
         },
         "range": []
     },
@@ -779,7 +876,8 @@
         "suggestion": {
             "arm64": "Please check the -mno-default option on arm64 platform",
             "mips64el": "Please check the -mno-default option on mips64el platform",
-            "sw_64": "Please check the -mno-default option on sw_64 platform"
+            "sw_64": "Please check the -mno-default option on sw_64 platform",
+            "loongarch64": "Please check the -mno-default option on loongarch64 platform"
         },
         "range": []
     },
@@ -787,7 +885,8 @@
         "suggestion": {
             "arm64": "Please check the -mno-sse4 option on arm64 platform",
             "mips64el": "Please check the -mno-sse4 option on mips64el platform",
-            "sw_64": "Please check the -mno-sse4 option on sw_64 platform"
+            "sw_64": "Please check the -mno-sse4 option on sw_64 platform",
+            "loongarch64": "Please check the -mno-sse4 option on loongarch64 platform"
         },
         "range": []
     },
@@ -795,7 +894,8 @@
         "suggestion": {
             "arm64": "Please check the -mnop-mcount option on arm64 platform",
             "mips64el": "Please check the -mnop-mcount option on mips64el platform",
-            "sw_64": "Please check the -mnop-mcount option on sw_64 platform"
+            "sw_64": "Please check the -mnop-mcount option on sw_64 platform",
+            "loongarch64": "Please check the -mnop-mcount option on loongarch64 platform"
         },
         "range": []
     },
@@ -803,7 +903,8 @@
         "suggestion": {
             "arm64": "Please check the -momit-leaf-frame-pointer option on arm64 platform",
             "mips64el": "Please check the -momit-leaf-frame-pointer option on mips64el platform",
-            "sw_64": "Please check the -momit-leaf-frame-pointer option on sw_64 platform"
+            "sw_64": "Please check the -momit-leaf-frame-pointer option on sw_64 platform",
+            "loongarch64": "Please check the -momit-leaf-frame-pointer option on loongarch64 platform"
         },
         "range": []
     },
@@ -811,7 +912,8 @@
         "suggestion": {
             "arm64": "Please check the -mpc32 option on arm64 platform",
             "mips64el": "Please check the -mpc32 option on mips64el platform",
-            "sw_64": "Please check the -mpc32 option on sw_64 platform"
+            "sw_64": "Please check the -mpc32 option on sw_64 platform",
+            "loongarch64": "Please check the -mpc32 option on loongarch64 platform"
         },
         "range": []
     },
@@ -819,7 +921,8 @@
         "suggestion": {
             "arm64": "Please check the -mpc64 option on arm64 platform",
             "mips64el": "Please check the -mpc64 option on mips64el platform",
-            "sw_64": "Please check the -mpc64 option on sw_64 platform"
+            "sw_64": "Please check the -mpc64 option on sw_64 platform",
+            "loongarch64": "Please check the -mpc64 option on loongarch64 platform"
         },
         "range": []
     },
@@ -827,7 +930,8 @@
         "suggestion": {
             "arm64": "Please check the -mpc80 option on arm64 platform",
             "mips64el": "Please check the -mpc80 option on mips64el platform",
-            "sw_64": "Please check the -mpc80 option on sw_64 platform"
+            "sw_64": "Please check the -mpc80 option on sw_64 platform",
+            "loongarch64": "Please check the -mpc80 option on loongarch64 platform"
         },
         "range": []
     },
@@ -835,7 +939,8 @@
         "suggestion": {
             "arm64": "Please check the -mpclmul option on arm64 platform",
             "mips64el": "Please check the -mpclmul option on mips64el platform",
-            "sw_64": "Please check the -mpclmul option on sw_64 platform"
+            "sw_64": "Please check the -mpclmul option on sw_64 platform",
+            "loongarch64": "Please check the -mpclmul option on loongarch64 platform"
         },
         "range": []
     },
@@ -843,7 +948,8 @@
         "suggestion": {
             "arm64": "Please check the -mpconfig option on arm64 platform",
             "mips64el": "Please check the -mpconfig option on mips64el platform",
-            "sw_64": "Please check the -mpconfig option on sw_64 platform"
+            "sw_64": "Please check the -mpconfig option on sw_64 platform",
+            "loongarch64": "Please check the -mpconfig option on loongarch64 platform"
         },
         "range": []
     },
@@ -851,7 +957,8 @@
         "suggestion": {
             "arm64": "Please check the -mpku option on arm64 platform",
             "mips64el": "Please check the -mpku option on mips64el platform",
-            "sw_64": "Please check the -mpku option on sw_64 platform"
+            "sw_64": "Please check the -mpku option on sw_64 platform",
+            "loongarch64": "Please check the -mpku option on loongarch64 platform"
         },
         "range": []
     },
@@ -859,7 +966,8 @@
         "suggestion": {
             "arm64": "Please check the -mpopcnt option on arm64 platform",
             "mips64el": "Please check the -mpopcnt option on mips64el platform",
-            "sw_64": "Please check the -mpopcnt option on sw_64 platform"
+            "sw_64": "Please check the -mpopcnt option on sw_64 platform",
+            "loongarch64": "Please check the -mpopcnt option on loongarch64 platform"
         },
         "range": []
     },
@@ -867,7 +975,8 @@
         "suggestion": {
             "arm64": "Please check the -mprefer-avx128 option on arm64 platform",
             "mips64el": "Please check the -mprefer-avx128 option on mips64el platform",
-            "sw_64": "Please check the -mprefer-avx128 option on sw_64 platform"
+            "sw_64": "Please check the -mprefer-avx128 option on sw_64 platform",
+            "loongarch64": "Please check the -mprefer-avx128 option on loongarch64 platform"
         },
         "range": []
     },
@@ -875,7 +984,8 @@
         "suggestion": {
             "arm64": "Please check the -mprefer-vector-width= option on arm64 platform",
             "mips64el": "Please check the -mprefer-vector-width= option on mips64el platform",
-            "sw_64": "Please check the -mprefer-vector-width= option on sw_64 platform"
+            "sw_64": "Please check the -mprefer-vector-width= option on sw_64 platform",
+            "loongarch64": "Please check the -mprefer-vector-width= option on loongarch64 platform"
         },
         "range": []
     },
@@ -883,7 +993,8 @@
         "suggestion": {
             "arm64": "Please check the -mpreferred-stack-boundary= option on arm64 platform",
             "mips64el": "Please check the -mpreferred-stack-boundary= option on mips64el platform",
-            "sw_64": "Please check the -mpreferred-stack-boundary= option on sw_64 platform"
+            "sw_64": "Please check the -mpreferred-stack-boundary= option on sw_64 platform",
+            "loongarch64": "Please check the -mpreferred-stack-boundary= option on loongarch64 platform"
         },
         "range": []
     },
@@ -891,7 +1002,8 @@
         "suggestion": {
             "arm64": "Please check the -mprefetchwt1 option on arm64 platform",
             "mips64el": "Please check the -mprefetchwt1 option on mips64el platform",
-            "sw_64": "Please check the -mprefetchwt1 option on sw_64 platform"
+            "sw_64": "Please check the -mprefetchwt1 option on sw_64 platform",
+            "loongarch64": "Please check the -mprefetchwt1 option on loongarch64 platform"
         },
         "range": []
     },
@@ -899,7 +1011,8 @@
         "suggestion": {
             "arm64": "Please check the -mprfchw option on arm64 platform",
             "mips64el": "Please check the -mprfchw option on mips64el platform",
-            "sw_64": "Please check the -mprfchw option on sw_64 platform"
+            "sw_64": "Please check the -mprfchw option on sw_64 platform",
+            "loongarch64": "Please check the -mprfchw option on loongarch64 platform"
         },
         "range": []
     },
@@ -907,7 +1020,8 @@
         "suggestion": {
             "arm64": "Please check the -mpush-args option on arm64 platform",
             "mips64el": "Please check the -mpush-args option on mips64el platform",
-            "sw_64": "Please check the -mpush-args option on sw_64 platform"
+            "sw_64": "Please check the -mpush-args option on sw_64 platform",
+            "loongarch64": "Please check the -mpush-args option on loongarch64 platform"
         },
         "range": []
     },
@@ -915,7 +1029,8 @@
         "suggestion": {
             "arm64": "Please check the -mrdpid option on arm64 platform",
             "mips64el": "Please check the -mrdpid option on mips64el platform",
-            "sw_64": "Please check the -mrdpid option on sw_64 platform"
+            "sw_64": "Please check the -mrdpid option on sw_64 platform",
+            "loongarch64": "Please check the -mrdpid option on loongarch64 platform"
         },
         "range": []
     },
@@ -923,7 +1038,8 @@
         "suggestion": {
             "arm64": "Please check the -mrdrnd option on arm64 platform",
             "mips64el": "Please check the -mrdrnd option on mips64el platform",
-            "sw_64": "Please check the -mrdrnd option on sw_64 platform"
+            "sw_64": "Please check the -mrdrnd option on sw_64 platform",
+            "loongarch64": "Please check the -mrdrnd option on loongarch64 platform"
         },
         "range": []
     },
@@ -931,7 +1047,8 @@
         "suggestion": {
             "arm64": "Please check the -mrdseed option on arm64 platform",
             "mips64el": "Please check the -mrdseed option on mips64el platform",
-            "sw_64": "Please check the -mrdseed option on sw_64 platform"
+            "sw_64": "Please check the -mrdseed option on sw_64 platform",
+            "loongarch64": "Please check the -mrdseed option on loongarch64 platform"
         },
         "range": []
     },
@@ -939,7 +1056,8 @@
         "suggestion": {
             "arm64": "Please check the -mrecip option on arm64 platform",
             "mips64el": "Please check the -mrecip option on mips64el platform",
-            "sw_64": "Please check the -mrecip option on sw_64 platform"
+            "sw_64": "Please check the -mrecip option on sw_64 platform",
+            "loongarch64": "Please check the -mrecip option on loongarch64 platform"
         },
         "range": []
     },
@@ -947,7 +1065,8 @@
         "suggestion": {
             "arm64": "Please check the -mrecip= option on arm64 platform",
             "mips64el": "Please check the -mrecip= option on mips64el platform",
-            "sw_64": "Please check the -mrecip= option on sw_64 platform"
+            "sw_64": "Please check the -mrecip= option on sw_64 platform",
+            "loongarch64": "Please check the -mrecip= option on loongarch64 platform"
         },
         "range": []
     },
@@ -955,7 +1074,8 @@
         "suggestion": {
             "arm64": "Please check the -mrecord-mcount option on arm64 platform",
             "mips64el": "Please check the -mrecord-mcount option on mips64el platform",
-            "sw_64": "Please check the -mrecord-mcount option on sw_64 platform"
+            "sw_64": "Please check the -mrecord-mcount option on sw_64 platform",
+            "loongarch64": "Please check the -mrecord-mcount option on loongarch64 platform"
         },
         "range": []
     },
@@ -963,7 +1083,8 @@
         "suggestion": {
             "arm64": "Please check the -mred-zone option on arm64 platform",
             "mips64el": "Please check the -mred-zone option on mips64el platform",
-            "sw_64": "Please check the -mred-zone option on sw_64 platform"
+            "sw_64": "Please check the -mred-zone option on sw_64 platform",
+            "loongarch64": "Please check the -mred-zone option on loongarch64 platform"
         },
         "range": []
     },
@@ -971,7 +1092,8 @@
         "suggestion": {
             "arm64": "Please check the -mregparm= option on arm64 platform",
             "mips64el": "Please check the -mregparm= option on mips64el platform",
-            "sw_64": "Please check the -mregparm= option on sw_64 platform"
+            "sw_64": "Please check the -mregparm= option on sw_64 platform",
+            "loongarch64": "Please check the -mregparm= option on loongarch64 platform"
         },
         "range": []
     },
@@ -979,7 +1101,8 @@
         "suggestion": {
             "arm64": "Please check the -mrtd option on arm64 platform",
             "mips64el": "Please check the -mrtd option on mips64el platform",
-            "sw_64": "Please check the -mrtd option on sw_64 platform"
+            "sw_64": "Please check the -mrtd option on sw_64 platform",
+            "loongarch64": "Please check the -mrtd option on loongarch64 platform"
         },
         "range": []
     },
@@ -987,7 +1110,8 @@
         "suggestion": {
             "arm64": "Please check the -mrtm option on arm64 platform",
             "mips64el": "Please check the -mrtm option on mips64el platform",
-            "sw_64": "Please check the -mrtm option on sw_64 platform"
+            "sw_64": "Please check the -mrtm option on sw_64 platform",
+            "loongarch64": "Please check the -mrtm option on loongarch64 platform"
         },
         "range": []
     },
@@ -995,7 +1119,8 @@
         "suggestion": {
             "arm64": "Please check the -msahf option on arm64 platform",
             "mips64el": "Please check the -msahf option on mips64el platform",
-            "sw_64": "Please check the -msahf option on sw_64 platform"
+            "sw_64": "Please check the -msahf option on sw_64 platform",
+            "loongarch64": "Please check the -msahf option on loongarch64 platform"
         },
         "range": []
     },
@@ -1003,7 +1128,8 @@
         "suggestion": {
             "arm64": "Please check the -msgx option on arm64 platform",
             "mips64el": "Please check the -msgx option on mips64el platform",
-            "sw_64": "Please check the -msgx option on sw_64 platform"
+            "sw_64": "Please check the -msgx option on sw_64 platform",
+            "loongarch64": "Please check the -msgx option on loongarch64 platform"
         },
         "range": []
     },
@@ -1011,7 +1137,8 @@
         "suggestion": {
             "arm64": "Please check the -msha option on arm64 platform",
             "mips64el": "Please check the -msha option on mips64el platform",
-            "sw_64": "Please check the -msha option on sw_64 platform"
+            "sw_64": "Please check the -msha option on sw_64 platform",
+            "loongarch64": "Please check the -msha option on loongarch64 platform"
         },
         "range": []
     },
@@ -1019,7 +1146,8 @@
         "suggestion": {
             "arm64": "Please check the -mshstk option on arm64 platform",
             "mips64el": "Please check the -mshstk option on mips64el platform",
-            "sw_64": "Please check the -mshstk option on sw_64 platform"
+            "sw_64": "Please check the -mshstk option on sw_64 platform",
+            "loongarch64": "Please check the -mshstk option on loongarch64 platform"
         },
         "range": []
     },
@@ -1027,7 +1155,8 @@
         "suggestion": {
             "arm64": "Please check the -mskip-rax-setup option on arm64 platform",
             "mips64el": "Please check the -mskip-rax-setup option on mips64el platform",
-            "sw_64": "Please check the -mskip-rax-setup option on sw_64 platform"
+            "sw_64": "Please check the -mskip-rax-setup option on sw_64 platform",
+            "loongarch64": "Please check the -mskip-rax-setup option on loongarch64 platform"
         },
         "range": []
     },
@@ -1035,7 +1164,8 @@
         "suggestion": {
             "arm64": "Please check the -msoft-float option on arm64 platform",
             "mips64el": "Please check the -msoft-float option on mips64el platform",
-            "sw_64": "Please check the -msoft-float option on sw_64 platform"
+            "sw_64": "Please check the -msoft-float option on sw_64 platform",
+            "loongarch64": "Please check the -msoft-float option on loongarch64 platform"
         },
         "range": []
     },
@@ -1043,7 +1173,8 @@
         "suggestion": {
             "arm64": "Please check the -msse option on arm64 platform",
             "mips64el": "Please check the -msse option on mips64el platform",
-            "sw_64": "Please check the -msse option on sw_64 platform"
+            "sw_64": "Please check the -msse option on sw_64 platform",
+            "loongarch64": "Please check the -msse option on loongarch64 platform"
         },
         "range": []
     },
@@ -1051,7 +1182,8 @@
         "suggestion": {
             "arm64": "Please check the -msse2 option on arm64 platform",
             "mips64el": "Please check the -msse2 option on mips64el platform",
-            "sw_64": "Please check the -msse2 option on sw_64 platform"
+            "sw_64": "Please check the -msse2 option on sw_64 platform",
+            "loongarch64": "Please check the -msse2 option on loongarch64 platform"
         },
         "range": []
     },
@@ -1059,7 +1191,8 @@
         "suggestion": {
             "arm64": "Please check the -msse2avx option on arm64 platform",
             "mips64el": "Please check the -msse2avx option on mips64el platform",
-            "sw_64": "Please check the -msse2avx option on sw_64 platform"
+            "sw_64": "Please check the -msse2avx option on sw_64 platform",
+            "loongarch64": "Please check the -msse2avx option on loongarch64 platform"
         },
         "range": []
     },
@@ -1067,7 +1200,8 @@
         "suggestion": {
             "arm64": "Please check the -msse3 option on arm64 platform",
             "mips64el": "Please check the -msse3 option on mips64el platform",
-            "sw_64": "Please check the -msse3 option on sw_64 platform"
+            "sw_64": "Please check the -msse3 option on sw_64 platform",
+            "loongarch64": "Please check the -msse3 option on loongarch64 platform"
         },
         "range": []
     },
@@ -1075,7 +1209,8 @@
         "suggestion": {
             "arm64": "Please check the -msse4 option on arm64 platform",
             "mips64el": "Please check the -msse4 option on mips64el platform",
-            "sw_64": "Please check the -msse4 option on sw_64 platform"
+            "sw_64": "Please check the -msse4 option on sw_64 platform",
+            "loongarch64": "Please check the -msse4 option on loongarch64 platform"
         },
         "range": []
     },
@@ -1083,7 +1218,8 @@
         "suggestion": {
             "arm64": "Please check the -msse4.1 option on arm64 platform",
             "mips64el": "Please check the -msse4.1 option on mips64el platform",
-            "sw_64": "Please check the -msse4.1 option on sw_64 platform"
+            "sw_64": "Please check the -msse4.1 option on sw_64 platform",
+            "loongarch64": "Please check the -msse4.1 option on loongarch64 platform"
         },
         "range": []
     },
@@ -1091,7 +1227,8 @@
         "suggestion": {
             "arm64": "Please check the -msse4.2 option on arm64 platform",
             "mips64el": "Please check the -msse4.2 option on mips64el platform",
-            "sw_64": "Please check the -msse4.2 option on sw_64 platform"
+            "sw_64": "Please check the -msse4.2 option on sw_64 platform",
+            "loongarch64": "Please check the -msse4.2 option on loongarch64 platform"
         },
         "range": []
     },
@@ -1099,7 +1236,8 @@
         "suggestion": {
             "arm64": "Please check the -msse4a option on arm64 platform",
             "mips64el": "Please check the -msse4a option on mips64el platform",
-            "sw_64": "Please check the -msse4a option on sw_64 platform"
+            "sw_64": "Please check the -msse4a option on sw_64 platform",
+            "loongarch64": "Please check the -msse4a option on loongarch64 platform"
         },
         "range": []
     },
@@ -1107,7 +1245,8 @@
         "suggestion": {
             "arm64": "Please check the -msseregparm option on arm64 platform",
             "mips64el": "Please check the -msseregparm option on mips64el platform",
-            "sw_64": "Please check the -msseregparm option on sw_64 platform"
+            "sw_64": "Please check the -msseregparm option on sw_64 platform",
+            "loongarch64": "Please check the -msseregparm option on loongarch64 platform"
         },
         "range": []
     },
@@ -1115,7 +1254,8 @@
         "suggestion": {
             "arm64": "Please check the -mssse3 option on arm64 platform",
             "mips64el": "Please check the -mssse3 option on mips64el platform",
-            "sw_64": "Please check the -mssse3 option on sw_64 platform"
+            "sw_64": "Please check the -mssse3 option on sw_64 platform",
+            "loongarch64": "Please check the -mssse3 option on loongarch64 platform"
         },
         "range": []
     },
@@ -1123,7 +1263,8 @@
         "suggestion": {
             "arm64": "Please check the -mstack-arg-probe option on arm64 platform",
             "mips64el": "Please check the -mstack-arg-probe option on mips64el platform",
-            "sw_64": "Please check the -mstack-arg-probe option on sw_64 platform"
+            "sw_64": "Please check the -mstack-arg-probe option on sw_64 platform",
+            "loongarch64": "Please check the -mstack-arg-probe option on loongarch64 platform"
         },
         "range": []
     },
@@ -1131,7 +1272,8 @@
         "suggestion": {
             "arm64": "Please check the -mstack-protector-guard-offset= option on arm64 platform",
             "mips64el": "Please check the -mstack-protector-guard-offset= option on mips64el platform",
-            "sw_64": "Please check the -mstack-protector-guard-offset= option on sw_64 platform"
+            "sw_64": "Please check the -mstack-protector-guard-offset= option on sw_64 platform",
+            "loongarch64": "Please check the -mstack-protector-guard-offset= option on loongarch64 platform"
         },
         "range": []
     },
@@ -1139,7 +1281,8 @@
         "suggestion": {
             "arm64": "Please check the -mstack-protector-guard-reg= option on arm64 platform",
             "mips64el": "Please check the -mstack-protector-guard-reg= option on mips64el platform",
-            "sw_64": "Please check the -mstack-protector-guard-reg= option on sw_64 platform"
+            "sw_64": "Please check the -mstack-protector-guard-reg= option on sw_64 platform",
+            "loongarch64": "Please check the -mstack-protector-guard-reg= option on loongarch64 platform"
         },
         "range": []
     },
@@ -1147,7 +1290,8 @@
         "suggestion": {
             "arm64": "Please check the -mstack-protector-guard-symbol= option on arm64 platform",
             "mips64el": "Please check the -mstack-protector-guard-symbol= option on mips64el platform",
-            "sw_64": "Please check the -mstack-protector-guard-symbol= option on sw_64 platform"
+            "sw_64": "Please check the -mstack-protector-guard-symbol= option on sw_64 platform",
+            "loongarch64": "Please check the -mstack-protector-guard-symbol= option on loongarch64 platform"
         },
         "range": []
     },
@@ -1155,7 +1299,8 @@
         "suggestion": {
             "arm64": "Please check the -mstack-protector-guard= option on arm64 platform",
             "mips64el": "Please check the -mstack-protector-guard= option on mips64el platform",
-            "sw_64": "Please check the -mstack-protector-guard= option on sw_64 platform"
+            "sw_64": "Please check the -mstack-protector-guard= option on sw_64 platform",
+            "loongarch64": "Please check the -mstack-protector-guard= option on loongarch64 platform"
         },
         "range": []
     },
@@ -1163,7 +1308,8 @@
         "suggestion": {
             "arm64": "Please check the -mstackrealign option on arm64 platform",
             "mips64el": "Please check the -mstackrealign option on mips64el platform",
-            "sw_64": "Please check the -mstackrealign option on sw_64 platform"
+            "sw_64": "Please check the -mstackrealign option on sw_64 platform",
+            "loongarch64": "Please check the -mstackrealign option on loongarch64 platform"
         },
         "range": []
     },
@@ -1171,7 +1317,8 @@
         "suggestion": {
             "arm64": "Please check the -mstringop-strategy= option on arm64 platform",
             "mips64el": "Please check the -mstringop-strategy= option on mips64el platform",
-            "sw_64": "Please check the -mstringop-strategy= option on sw_64 platform"
+            "sw_64": "Please check the -mstringop-strategy= option on sw_64 platform",
+            "loongarch64": "Please check the -mstringop-strategy= option on loongarch64 platform"
         },
         "range": []
     },
@@ -1179,7 +1326,8 @@
         "suggestion": {
             "arm64": "Please check the -mstv option on arm64 platform",
             "mips64el": "Please check the -mstv option on mips64el platform",
-            "sw_64": "Please check the -mstv option on sw_64 platform"
+            "sw_64": "Please check the -mstv option on sw_64 platform",
+            "loongarch64": "Please check the -mstv option on loongarch64 platform"
         },
         "range": []
     },
@@ -1187,7 +1335,8 @@
         "suggestion": {
             "arm64": "Please check the -mtbm option on arm64 platform",
             "mips64el": "Please check the -mtbm option on mips64el platform",
-            "sw_64": "Please check the -mtbm option on sw_64 platform"
+            "sw_64": "Please check the -mtbm option on sw_64 platform",
+            "loongarch64": "Please check the -mtbm option on loongarch64 platform"
         },
         "range": []
     },
@@ -1195,7 +1344,8 @@
         "suggestion": {
             "arm64": "Please check the -mtls-dialect= option on arm64 platform",
             "mips64el": "Please check the -mtls-dialect= option on mips64el platform",
-            "sw_64": "Please check the -mtls-dialect= option on sw_64 platform"
+            "sw_64": "Please check the -mtls-dialect= option on sw_64 platform",
+            "loongarch64": "Please check the -mtls-dialect= option on loongarch64 platform"
         },
         "range": []
     },
@@ -1203,7 +1353,8 @@
         "suggestion": {
             "arm64": "Please check the -mtls-direct-seg-refs option on arm64 platform",
             "mips64el": "Please check the -mtls-direct-seg-refs option on mips64el platform",
-            "sw_64": "Please check the -mtls-direct-seg-refs option on sw_64 platform"
+            "sw_64": "Please check the -mtls-direct-seg-refs option on sw_64 platform",
+            "loongarch64": "Please check the -mtls-direct-seg-refs option on loongarch64 platform"
         },
         "range": []
     },
@@ -1211,7 +1362,8 @@
         "suggestion": {
             "arm64": "Please check the -mtune-ctrl= option on arm64 platform",
             "mips64el": "Please check the -mtune-ctrl= option on mips64el platform",
-            "sw_64": "Please check the -mtune-ctrl= option on sw_64 platform"
+            "sw_64": "Please check the -mtune-ctrl= option on sw_64 platform",
+            "loongarch64": "Please check the -mtune-ctrl= option on loongarch64 platform"
         },
         "range": []
     },
@@ -1219,7 +1371,8 @@
         "suggestion": {
             "arm64": "Please check the -mtune= option on arm64 platform",
             "mips64el": "Please check the -mtune= option on mips64el platform",
-            "sw_64": "Please check the -mtune= option on sw_64 platform"
+            "sw_64": "Please check the -mtune= option on sw_64 platform",
+            "loongarch64": "Please check the -mtune= option on loongarch64 platform"
         },
         "range": []
     },
@@ -1227,7 +1380,8 @@
         "suggestion": {
             "arm64": "Please check the -muclibc option on arm64 platform",
             "mips64el": "Please check the -muclibc option on mips64el platform",
-            "sw_64": "Please check the -muclibc option on sw_64 platform"
+            "sw_64": "Please check the -muclibc option on sw_64 platform",
+            "loongarch64": "Please check the -muclibc option on loongarch64 platform"
         },
         "range": []
     },
@@ -1235,7 +1389,8 @@
         "suggestion": {
             "arm64": "Please check the -mvaes option on arm64 platform",
             "mips64el": "Please check the -mvaes option on mips64el platform",
-            "sw_64": "Please check the -mvaes option on sw_64 platform"
+            "sw_64": "Please check the -mvaes option on sw_64 platform",
+            "loongarch64": "Please check the -mvaes option on loongarch64 platform"
         },
         "range": []
     },
@@ -1243,7 +1398,8 @@
         "suggestion": {
             "arm64": "Please check the -mveclibabi= option on arm64 platform",
             "mips64el": "Please check the -mveclibabi= option on mips64el platform",
-            "sw_64": "Please check the -mveclibabi= option on sw_64 platform"
+            "sw_64": "Please check the -mveclibabi= option on sw_64 platform",
+            "loongarch64": "Please check the -mveclibabi= option on loongarch64 platform"
         },
         "range": []
     },
@@ -1251,7 +1407,8 @@
         "suggestion": {
             "arm64": "Please check the -mvect8-ret-in-mem option on arm64 platform",
             "mips64el": "Please check the -mvect8-ret-in-mem option on mips64el platform",
-            "sw_64": "Please check the -mvect8-ret-in-mem option on sw_64 platform"
+            "sw_64": "Please check the -mvect8-ret-in-mem option on sw_64 platform",
+            "loongarch64": "Please check the -mvect8-ret-in-mem option on loongarch64 platform"
         },
         "range": []
     },
@@ -1259,7 +1416,8 @@
         "suggestion": {
             "arm64": "Please check the -mvpclmulqdq option on arm64 platform",
             "mips64el": "Please check the -mvpclmulqdq option on mips64el platform",
-            "sw_64": "Please check the -mvpclmulqdq option on sw_64 platform"
+            "sw_64": "Please check the -mvpclmulqdq option on sw_64 platform",
+            "loongarch64": "Please check the -mvpclmulqdq option on loongarch64 platform"
         },
         "range": []
     },
@@ -1267,7 +1425,8 @@
         "suggestion": {
             "arm64": "Please check the -mvzeroupper option on arm64 platform",
             "mips64el": "Please check the -mvzeroupper option on mips64el platform",
-            "sw_64": "Please check the -mvzeroupper option on sw_64 platform"
+            "sw_64": "Please check the -mvzeroupper option on sw_64 platform",
+            "loongarch64": "Please check the -mvzeroupper option on loongarch64 platform"
         },
         "range": []
     },
@@ -1275,7 +1434,8 @@
         "suggestion": {
             "arm64": "Please check the -mwbnoinvd option on arm64 platform",
             "mips64el": "Please check the -mwbnoinvd option on mips64el platform",
-            "sw_64": "Please check the -mwbnoinvd option on sw_64 platform"
+            "sw_64": "Please check the -mwbnoinvd option on sw_64 platform",
+            "loongarch64": "Please check the -mwbnoinvd option on loongarch64 platform"
         },
         "range": []
     },
@@ -1283,7 +1443,8 @@
         "suggestion": {
             "arm64": "Please check the -mx32 option on arm64 platform",
             "mips64el": "Please check the -mx32 option on mips64el platform",
-            "sw_64": "Please check the -mx32 option on sw_64 platform"
+            "sw_64": "Please check the -mx32 option on sw_64 platform",
+            "loongarch64": "Please check the -mx32 option on loongarch64 platform"
         },
         "range": []
     },
@@ -1291,7 +1452,8 @@
         "suggestion": {
             "arm64": "Please check the -mxop option on arm64 platform",
             "mips64el": "Please check the -mxop option on mips64el platform",
-            "sw_64": "Please check the -mxop option on sw_64 platform"
+            "sw_64": "Please check the -mxop option on sw_64 platform",
+            "loongarch64": "Please check the -mxop option on loongarch64 platform"
         },
         "range": []
     },
@@ -1299,7 +1461,8 @@
         "suggestion": {
             "arm64": "Please check the -mxsave option on arm64 platform",
             "mips64el": "Please check the -mxsave option on mips64el platform",
-            "sw_64": "Please check the -mxsave option on sw_64 platform"
+            "sw_64": "Please check the -mxsave option on sw_64 platform",
+            "loongarch64": "Please check the -mxsave option on loongarch64 platform"
         },
         "range": []
     },
@@ -1307,7 +1470,8 @@
         "suggestion": {
             "arm64": "Please check the -mxsavec option on arm64 platform",
             "mips64el": "Please check the -mxsavec option on mips64el platform",
-            "sw_64": "Please check the -mxsavec option on sw_64 platform"
+            "sw_64": "Please check the -mxsavec option on sw_64 platform",
+            "loongarch64": "Please check the -mxsavec option on loongarch64 platform"
         },
         "range": []
     },
@@ -1315,7 +1479,8 @@
         "suggestion": {
             "arm64": "Please check the -mxsaveopt option on arm64 platform",
             "mips64el": "Please check the -mxsaveopt option on mips64el platform",
-            "sw_64": "Please check the -mxsaveopt option on sw_64 platform"
+            "sw_64": "Please check the -mxsaveopt option on sw_64 platform",
+            "loongarch64": "Please check the -mxsaveopt option on loongarch64 platform"
         },
         "range": []
     },
@@ -1323,7 +1488,8 @@
         "suggestion": {
             "arm64": "Please check the -mxsaves option on arm64 platform",
             "mips64el": "Please check the -mxsaves option on mips64el platform",
-            "sw_64": "Please check the -mxsaves option on sw_64 platform"
+            "sw_64": "Please check the -mxsaves option on sw_64 platform",
+            "loongarch64": "Please check the -mxsaves option on loongarch64 platform"
         },
         "range": []
     }

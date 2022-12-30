@@ -21,17 +21,12 @@
 #
 #!/bin/bash
 arch=`arch`
+
+declare -A optionNums
 set optionNum=0
 
-if [ "$arch" = "x86_64" ];then
-    optionNum=168
-elif [ "$arch" = "aarch64" ];then
-    optionNum=24
-elif [ "$arch" = "mips64" ];then
-    optionNum=106
-elif [ "$arch" = "sw_64" ];then
-    optionNum=100
-fi
+optionNums=(["x86_64"]=199 ["aarch64"]=24 ["mips64"]=106 ["sw_64"]=62 ["loongarch64"]=53)
+optionNum=${optionNums[$arch]}
 
 echo $optionNum
 

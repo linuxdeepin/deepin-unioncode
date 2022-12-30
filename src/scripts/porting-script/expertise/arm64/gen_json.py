@@ -25,11 +25,11 @@ import json
 dicts = {}
 instructions = {}
 per_inst = {}
-suggestion = {"suggestion": {"arm64": "todo", "mips64el": "todo", "sw_64": "todo"}}
+suggestion = {"suggestion": {"arm64": "todo", "mips64el": "todo", "sw_64": "todo", "loongarch64": "todo"}}
 
 def save_dict_to_json():
     json_data = json.dumps(instructions)
-    with open("ARM64_ASM.json", "w") as (files_desc):
+    with open("../../config/ASM/ARM64_ASM.json", "w") as (files_desc):
         files_desc.write(json_data)
 
 def gen_arm_asm_inst_from_official():
