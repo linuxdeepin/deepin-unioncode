@@ -36,6 +36,7 @@ public:
                         const QString &targetPath, const QStringList &arguments,
                         QString &retMsg);
     bool isLaunchNotAttach();
+    bool prepareDebug(QString &retMsg);
     dap::LaunchRequest launchDAP(const QString &targetPath, const QStringList &argments);
 
 signals:

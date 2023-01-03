@@ -40,6 +40,7 @@ public:
     QString getPythonToolPath();
     QString getCMakeToolPath();
     QString getNinjaToolPath();
+    QString getCxxDebuggerToolPath();
 
 signals:
 

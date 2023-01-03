@@ -48,8 +48,7 @@ CMakeGenerator::~CMakeGenerator()
 bool CMakeGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg)
 {
     Q_UNUSED(param)
-    Q_UNUSED(retMsg)
-    return true;
+    return d->cmakeDebug->prepareDebug(retMsg);
 }
 
 bool CMakeGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg)

@@ -60,6 +60,12 @@ BuildCommandInfo GradleGenerator::getMenuCommand(const BuildMenuType buildMenuTy
         break;
     }
 
+    QString gradlewPath = info.workingDir + QDir::separator() + "gradlew";
+    if (QFileInfo(gradlewPath).isFile()) {
+        QFileDevice::Permissions p = QFile(gradlewPath).permissions();
+        QFile(gradlewPath).setPermissions(p | QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+    }
+
     return info;
 }
 

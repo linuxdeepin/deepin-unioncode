@@ -72,11 +72,11 @@ void GradleWidget::setupUi()
 
     QLabel *label = new QLabel(QLabel::tr("Gradle distribution："));
     d->useWrapper = new QRadioButton("use Gradle wrapper");
-    d->useWrapper->setChecked(true);
 
     QHBoxLayout *localLayout = new QHBoxLayout();
     d->useLocal = new QRadioButton("use Local installation, directory：");
     d->useLocal->setFixedWidth(300);
+    d->useLocal->setChecked(true);
     d->localDetail = new QComboBox();
     localLayout->addWidget(d->useLocal);
     localLayout->addWidget(d->localDetail);
@@ -86,8 +86,8 @@ void GradleWidget::setupUi()
     });
 
     vLayout->addWidget(label);
-    vLayout->addWidget(d->useWrapper);
     vLayout->addLayout(localLayout);
+    vLayout->addWidget(d->useWrapper);
     vLayout->addStretch();
 }
 

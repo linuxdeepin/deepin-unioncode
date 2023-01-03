@@ -44,6 +44,18 @@ CMakeDebug::~CMakeDebug()
         delete d;
 }
 
+bool CMakeDebug::prepareDebug(QString &retMsg)
+{
+    QString debuggerTool = OptionManager::getInstance()->getCxxDebuggerToolPath();
+    if (!debuggerTool.contains("gdb")) {
+        retMsg = tr("The gdb is required, please install it in console with \"sudo apt install gdb\", "
+                    "and then restart the tool, reselect the CMake Debugger in Options Dialog...");
+        return false;
+    }
+
+    return true;
+}
+
 bool CMakeDebug::requestDAPPort(const QString &uuid, const QString &kit,
                                 const QString &targetPath, const QStringList &arguments,
                                 QString &retMsg)

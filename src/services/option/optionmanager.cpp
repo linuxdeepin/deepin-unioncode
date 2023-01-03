@@ -102,3 +102,9 @@ QString OptionManager::getNinjaToolPath()
     return map.value("Ninja").toMap().value("version").toMap().value("path").toString();
 }
 
+QString OptionManager::getCxxDebuggerToolPath()
+{
+    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_CMAKE).toMap();
+    return map.value("Kits").toMap().value("debugger").toMap().value("path").toString();
+}
+
