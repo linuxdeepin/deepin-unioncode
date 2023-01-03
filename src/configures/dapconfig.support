@@ -1,61 +1,61 @@
 {
-	"x86_64": {
-		"java_config_path": {
-			"launch_package_name": "redhat.java-1.14.2022120803@linux-x64",
-			"dap_package_name": "vscjava.vscode-java-debug-0.47.2022112823",
-			"launch_package_file": "/extension/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar",
-			"launch_config_path": "/extension/server/config_linux",
-			"dap_package_file": "/extension/server/com.microsoft.java.debug.plugin-0.43.0.jar",
-			"jre_path": "/extension/jre/17.0.5-linux-x86_64",
-			"jre_execute": "/bin/java"
-		}
-	},
+    "x86_64": {
+    "java_config_path": {
+            "launch_package_name": "redhat.java-1.14.2022120803@linux-x64",
+            "dap_package_name": "vscjava.vscode-java-debug-0.47.2022112823",
+            "launch_package_file": "/extension/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar",
+            "launch_config_path": "/extension/server/config_linux",
+            "dap_package_file": "/extension/server/com.microsoft.java.debug.plugin-0.43.0.jar",
+            "jre_path": "/extension/jre/17.0.5-linux-x86_64",
+            "jre_execute": "/bin/java"
+        }
+    },
 
-	"aarch64": {
-		"java_config_path": {
-			"launch_package_name": "redhat.java-1.14.2022120803@linux-arm64",
-			"dap_package_name": "vscjava.vscode-java-debug-0.47.2022112823",
-			"launch_package_file": "/extension/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar",
-			"launch_config_path": "/extension/server/config_linux",
-			"dap_package_file": "/extension/server/com.microsoft.java.debug.plugin-0.43.0.jar",
-			"jre_path": "/extension/jre/17.0.5-linux-aarch64",
-			"jre_execute": "/bin/java"
-		}
-	},
+    "aarch64": {
+        "java_config_path": {
+            "launch_package_name": "redhat.java-1.14.2022120803@linux-arm64",
+            "dap_package_name": "vscjava.vscode-java-debug-0.47.2022112823",
+            "launch_package_file": "/extension/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar",
+            "launch_config_path": "/extension/server/config_linux",
+            "dap_package_file": "/extension/server/com.microsoft.java.debug.plugin-0.43.0.jar",
+            "jre_path": "/extension/jre/17.0.5-linux-aarch64",
+            "jre_execute": "/bin/java"
+        }
+    },
 
-	"mips64": {
-		"java_config_path": {
-			"launch_package_name": "redhat.java-1.14.2022120803@linux-arm64",
-			"dap_package_name": "vscjava.vscode-java-debug-0.47.2022112823",
-			"launch_package_file": "/extension/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar",
-			"launch_config_path": "/extension/server/config_linux",
-			"dap_package_file": "/extension/server/com.microsoft.java.debug.plugin-0.43.0.jar",
-			"jre_path": "/extension/jre/17.0.5-linux-aarch64",
-			"jre_execute": "/bin/java"
-		}
-	},
+    "mips64": {
+        "java_config_path": {
+            "launch_package_name": "",
+            "dap_package_name": "",
+            "launch_package_file": "",
+            "launch_config_path": "",
+            "dap_package_file": "",
+            "jre_path": "",
+            "jre_execute": ""
+        }
+    },
 
-	"loongarch64": {
-		"java_config_path": {
-			"launch_package_name": "",
-			"dap_package_name": "",
-			"launch_package_file": "",
-			"launch_config_path": "",
-			"dap_package_file": "",
-			"jre_path": "",
-			"jre_execute": ""
-		}
-	},
+    "loongarch64": {
+        "java_config_path": {
+            "launch_package_name": "",
+            "dap_package_name": "",
+            "launch_package_file": "",
+            "launch_config_path": "",
+            "dap_package_file": "",
+            "jre_path": "",
+            "jre_execute": ""
+        }
+    },
 
-	"sw_64": {
-		"java_config_path": {
-			"launch_package_name": "",
-			"dap_package_name": "",
-			"launch_package_file": "",
-			"launch_config_path": "",
-			"dap_package_file": "",
-			"jre_path": "",
-			"jre_execute": ""
-		}
-	}
+    "sw_64": {
+        "java_config_path": {
+            "launch_package_name": "",
+            "dap_package_name": "",
+            "launch_package_file": "",
+            "launch_config_path": "",
+            "dap_package_file": "",
+            "jre_path": "",
+            "jre_execute": ""
+        }
+    }
 }
