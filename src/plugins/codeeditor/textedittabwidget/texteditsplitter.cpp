@@ -25,6 +25,10 @@
 #include <QBoxLayout>
 #include <QDebug>
 
+namespace Private {
+static TextEditSplitter *splitter = nullptr;
+}
+
 TextEditSplitter::TextEditSplitter(QWidget *parent)
     : QWidget (parent)
     , vLayout(new QVBoxLayout)
@@ -160,12 +164,13 @@ void TextEditSplitter::doSelected(bool state)
 
 TextEditSplitter *TextEditSplitter::instance()
 {
-    static TextEditSplitter ins;
-    return &ins;
+    if (!Private::splitter)
+        Private::splitter = new TextEditSplitter;
+    return Private::splitter;
 }
 
 void TextEditSplitter::doClose()
-{ 
+{
     auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
     if (tabWidgets[textEditTabWidget]) {
         auto it = tabWidgets.begin();

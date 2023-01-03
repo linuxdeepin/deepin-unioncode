@@ -55,7 +55,6 @@ NavEditMainWindow *NavEditMainWindow::instance()
 NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow (parent, flags)
 {
-
     qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
