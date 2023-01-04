@@ -76,7 +76,7 @@ bool NinjaGenerator::checkCommandValidity(const BuildCommandInfo &info, QString 
 {
     if (info.program.trimmed().isEmpty()) {
         retMsg = tr("The build command of %1 project is null! "\
-                    "please install it in console with \"sudo apt install ninja\", and then restart the tool.")
+                    "please install it in console with \"sudo apt install ninja-build\", and then restart the tool.")
                 .arg(info.kitName.toUpper());
         return false;
     }
