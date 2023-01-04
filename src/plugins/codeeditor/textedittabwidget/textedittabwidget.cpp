@@ -61,6 +61,7 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     d->gridLayout->addWidget(d->tab);
     d->gridLayout->addWidget(&d->defaultEdit);
     this->setLayout(d->gridLayout);
+    this->setAcceptDrops(true);
 
     setDefaultFileEdit();
     setFocusPolicy(Qt::ClickFocus);
@@ -771,6 +772,27 @@ void TextEditTabWidget::paintEvent(QPaintEvent *event)
             painter.setPen(d->defColor);
             painter.drawRect(this->rect());
             painter.restore();
+        }
+    }
+}
+
+void TextEditTabWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    } else {
+        event->ignore();
+    }
+}
+
+void TextEditTabWidget::dropEvent(QDropEvent *event)
+{
+    const QMimeData* mimeData = event->mimeData();
+    if(mimeData->hasUrls()) {
+        QList<QUrl>urlList = mimeData->urls();
+        QString fileName = urlList.at(0).toLocalFile();
+        if(!fileName.isEmpty()) {
+            editor.openFile(fileName);
         }
     }
 }

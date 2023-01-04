@@ -39,6 +39,10 @@ public:
     virtual StyleLsp *getStyleLsp() const {return nullptr;}
     virtual StyleSci *getStyleSci() const {return nullptr;}
     virtual StyleJsonFile *getStyleFile() const {return nullptr;}
+
+protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 };
 
 #endif // TEXTEDIT_H

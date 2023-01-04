@@ -31,6 +31,7 @@ class ProjectTree : public QTreeView
 {
     Q_OBJECT
     ProjectTreePrivate *const d;
+
 public:
     explicit ProjectTree(QWidget *parent = nullptr);
     virtual ~ProjectTree();
@@ -42,16 +43,24 @@ public:
     void expandedProjectAll(const QStandardItem *root);
     QList<dpfservice::ProjectInfo> getAllProjectInfo();
     dpfservice::ProjectInfo getProjectInfo(const QString &kitName, const QString &workspace);
+
 Q_SIGNALS:
     void indexMenuRequest(const QModelIndex &index, QContextMenuEvent *event);
     void itemMenuRequest(QStandardItem *item, QContextMenuEvent *event);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
 private:
     QMenu *childMenu(const QStandardItem *root, const QStandardItem *child);
     QMenu *rootMenu(QStandardItem *root);
+    void performDrag();
+
 public slots:
     void itemModified(QStandardItem *item, const QList<QStandardItem *> &childs);
+
 private slots:
     void doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event);
     void doDoubleClieked(const QModelIndex &index);

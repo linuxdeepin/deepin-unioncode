@@ -33,6 +33,9 @@
 #include <QHeaderView>
 #include <QContextMenuEvent>
 #include <QPushButton>
+#include <QDrag>
+#include <QApplication>
+#include <QUrl>
 
 const QString DELETE_MESSAGE_TEXT {QTreeView::tr("The delete operation will be removed from"
                                                  "the disk and will not be recoverable "
@@ -46,6 +49,7 @@ class ProjectTreePrivate
     ProjectModel *itemModel {nullptr};
     ProjectSelectionModel *sectionModel {nullptr};
     ProjectDelegate *delegate {nullptr};
+    QPoint startPos;
     int itemDepth(const QStandardItem *item)
     {
         int depth = 0;
@@ -85,6 +89,7 @@ ProjectTree::ProjectTree(QWidget *parent)
 
     d->delegate = new ProjectDelegate(this);
     setItemDelegate(d->delegate);
+    this->setDragEnabled(true);
 }
 
 ProjectTree::~ProjectTree()
@@ -236,6 +241,23 @@ void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
     itemMenuRequest(d->itemModel->itemFromIndex(index), event);
 }
 
+void ProjectTree::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+        d->startPos = event->pos();
+    QTreeView::mousePressEvent(event);
+}
+
+void ProjectTree::mouseMoveEvent(QMouseEvent *event)
+{
+    if (event->buttons() & Qt::LeftButton) {
+        int distance = (event->pos() - d->startPos).manhattanLength();
+        if (distance >= QApplication::startDragDistance())
+            performDrag();
+    }
+    QTreeView::mouseMoveEvent(event);
+}
+
 QMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *child)
 {
     QMenu *menu = nullptr;
@@ -297,6 +319,23 @@ QMenu *ProjectTree::rootMenu(QStandardItem *root)
     menu->insertAction(nullptr, closeAction);
     menu->insertAction(nullptr, propertyAction);
     return menu;
+}
+
+void ProjectTree::performDrag()
+{
+    QModelIndex index = currentIndex();
+    QStandardItem *item = d->itemModel->itemFromIndex(index);
+    if (item) {
+        QMimeData *mimeData = new QMimeData;
+        QList<QUrl> urls;
+        QString filePath = "file:" + index.data(Qt::ToolTipRole).toString();
+        urls.append(QUrl(filePath));
+        mimeData->setUrls(urls);
+
+        QDrag *drag = new QDrag(this);
+        drag->setMimeData(mimeData);
+        drag->exec();
+    }
 }
 
 void ProjectTree::itemModified(QStandardItem *item, const QList<QStandardItem *> &childs)
