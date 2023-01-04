@@ -99,6 +99,40 @@ ProjectTree::~ProjectTree()
     }
 }
 
+void ProjectTree::activeProjectInfo(const ProjectInfo &info)
+{
+    int rowCount = d->itemModel->rowCount();
+    for (int currRow = 0; currRow < rowCount; currRow ++) {
+        auto currItem = d->itemModel->item(currRow, 0);
+        if (currItem) {
+            auto currInfo = ProjectInfo::get(ProjectGenerator::root(currItem));
+            if (currInfo.language() == info.language()
+                    && currInfo.workspaceFolder() == info.workspaceFolder()
+                    && currInfo.kitName() == info.kitName()) {
+                doActiveProject(currItem);
+            }
+        }
+    }
+}
+
+void ProjectTree::activeProjectInfo(const QString &kitName,
+                                    const QString &language,
+                                    const QString &workspace)
+{
+    int rowCount = d->itemModel->rowCount();
+    for (int currRow = 0; currRow < rowCount; currRow ++) {
+        auto currItem = d->itemModel->item(currRow, 0);
+        if (currItem) {
+            auto currInfo = ProjectInfo::get(ProjectGenerator::root(currItem));
+            if (currInfo.language() == language
+                    && currInfo.workspaceFolder() == workspace
+                    && currInfo.kitName() == kitName) {
+                doActiveProject(currItem);
+            }
+        }
+    }
+}
+
 void ProjectTree::appendRootItem(QStandardItem *root)
 {
     if (!root)

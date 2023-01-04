@@ -47,7 +47,8 @@ QStringList dpfservice::ProjectGenerator::supportFileNames()
     return {};
 }
 
-QAction *dpfservice::ProjectGenerator::openProjectAction(const QString &language, const QString &actionText)
+QAction *dpfservice::ProjectGenerator::openProjectAction(const QString &language,
+                                                         const QString &actionText)
 {
     auto result = new QAction(actionText);
     QObject::connect(result, &QAction::triggered, [=](){
@@ -63,7 +64,7 @@ QAction *dpfservice::ProjectGenerator::openProjectAction(const QString &language
 
         if(!workspace.isEmpty()) {
             setting.setValue(language + "-" + actionText, workspace); // save open history
-            if (canOpenProject(language, workspace))
+            if (canOpenProject(actionText, language, workspace))
                 doProjectOpen(language, actionText, workspace);
         }
     });
@@ -73,20 +74,17 @@ QAction *dpfservice::ProjectGenerator::openProjectAction(const QString &language
 /*!
  * \brief dpfservice::ProjectGenerator::projectIsOpened
  *  check project is opened, default can't reopen opened project
+ * \param kitName project kitName
  * \param language project language
  * \param projectPath to open project path
  * \return is opened return true, else return false;
  */
-bool dpfservice::ProjectGenerator::canOpenProject(const QString &language, const QString &workspace)
+bool dpfservice::ProjectGenerator::canOpenProject(const QString &kitName,
+                                                  const QString &language,
+                                                  const QString &workspace)
 {
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    auto proInfos = projectService->projectView.getAllProjectInfo();
-    for (auto &val : proInfos) {
-        if (val.language() == language && workspace == val.workspaceFolder()) {
-            return false;
-        }
-    }
+    if (isOpenedProject(kitName, language, workspace))
+        return false;
 
     QStringList fileNames = supportFileNames();
     if (!fileNames.isEmpty()) {
@@ -102,7 +100,26 @@ bool dpfservice::ProjectGenerator::canOpenProject(const QString &language, const
     return true;
 }
 
-void dpfservice::ProjectGenerator::doProjectOpen(const QString &language, const QString &actionText, const QString &workspace)
+bool dpfservice::ProjectGenerator::isOpenedProject(const QString &kitName,
+                                                   const QString &language,
+                                                   const QString &workspace)
+{
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    auto proInfos = projectService->projectView.getAllProjectInfo();
+    for (auto info : proInfos) {
+        if (info.kitName() == kitName
+                && info.language() == language
+                && info.workspaceFolder() == workspace) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void dpfservice::ProjectGenerator::doProjectOpen(const QString &language,
+                                                 const QString &actionText,
+                                                 const QString &workspace)
 {
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();

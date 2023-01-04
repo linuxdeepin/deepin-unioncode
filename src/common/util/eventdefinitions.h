@@ -37,6 +37,7 @@ OPI_OBJECT(recent,
 OPI_OBJECT(project,
            // in
            OPI_INTERFACE(openProject, "kitName", "language", "workspace")
+           OPI_INTERFACE(activeProject, "kitName", "language", "workspace")
            // out
            OPI_INTERFACE(activedProject, "projectInfo")
            OPI_INTERFACE(deletedProject, "projectInfo")

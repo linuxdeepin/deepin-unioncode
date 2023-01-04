@@ -36,6 +36,9 @@ public:
     explicit ProjectTree(QWidget *parent = nullptr);
     virtual ~ProjectTree();
     void appendProjectInfo(const dpfservice::ProjectInfo &info);
+    void activeProjectInfo(const dpfservice::ProjectInfo &info);
+    void activeProjectInfo(const QString &kitName, const QString &language,
+                           const QString &workspace);
     void appendRootItem(QStandardItem *root);
     void removeRootItem(QStandardItem *root);
     void takeRootItem(QStandardItem *root);

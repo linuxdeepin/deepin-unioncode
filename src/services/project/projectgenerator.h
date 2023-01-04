@@ -41,8 +41,12 @@ public:
     virtual QStringList supportLanguages();
     virtual QStringList supportFileNames();
     virtual QAction* openProjectAction(const QString &language, const QString &actionText);
-    virtual bool canOpenProject(const QString &language, const QString &workspace);
-    virtual void doProjectOpen(const QString &language, const QString &actionText, const QString &workspace);
+    virtual bool canOpenProject(const QString &kitName, const QString &language,
+                                const QString &workspace);
+    virtual bool isOpenedProject(const QString &kitName, const QString &language,
+                                 const QString &workspace);
+    virtual void doProjectOpen(const QString &language, const QString &actionText,
+                               const QString &workspace);
     virtual QDialog* configureWidget(const QString &language, const QString &workspace);
     virtual bool configure(const ProjectInfo &projectInfo);
     virtual QStandardItem *createRootItem(const ProjectInfo &info);

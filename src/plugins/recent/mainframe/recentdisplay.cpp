@@ -23,7 +23,7 @@ public:
 
     virtual QString title() override
     {
-        return "Projects";
+        return tr("Projects");
     }
 
     virtual QList<QStandardItem*> itemsFromFile() override
@@ -170,7 +170,7 @@ public:
 
     virtual QString title() override
     {
-        return "Documents";
+        return tr("Documents");
     }
 };
 
