@@ -111,6 +111,7 @@ void SvnClientWidget::showOpenLocalRepos()
 
 void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &local, const QString &user, const QString &passwd)
 {
+    auto dialog = qobject_cast<CheckoutDialog*>(sender());
     if (svnProgram().isEmpty()) {
         return;
     }
@@ -119,7 +120,14 @@ void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &loca
     process.setArguments({"checkout", remote, local, "--username", user, "--password", passwd});
     process.start();
     process.waitForStarted();
+    StatusWidget *status = new StatusWidget(StatusWidget::Simple, dialog);
+    status->setRunningColor(QColor(Qt::gray));
+    status->move(200, 130);
+    status->show();
+    status->start();
     process.waitForFinished();
+    status->stop();
+    delete status;
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
         ContextDialog::ok(process.readAllStandardError());
         return;
