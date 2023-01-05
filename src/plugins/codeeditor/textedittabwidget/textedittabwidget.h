@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
  *
  * Author:     huangyu<huangyub@uniontech.com>
@@ -52,6 +52,8 @@ signals:
     void closed();
     void splitClicked(Qt::Orientation, const newlsp::ProjectKey &, const QString &);
     void selected(bool state);
+    void closeWidget();
+    void sigOpenFile();
 
 public slots:
     void openFile(const QString &filePath);

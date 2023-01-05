@@ -49,12 +49,8 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     d->hBoxLayout->setMargin(4);
 
     d->pbtHorizontal->setIcon(QIcon(":/core/images/splitbutton_horizontal.png"));
-    d->pbtHorizontal->setStyleSheet("background-color:transparent");
     d->pbtVertical->setIcon(QIcon(":/core/images/splitbutton_vertical.png"));
-    d->pbtVertical->setStyleSheet("background-color:transparent");
-    d->pbtClose->setMaximumSize(24,24);
     d->pbtClose->setIcon(QIcon(":/core/images/close_button_selected.png"));
-    d->pbtClose->setStyleSheet("background-color:transparent");
     d->hBoxLayout->addWidget(d->tab);
     d->hBoxLayout->addStretch(10);
     d->hBoxLayout->addWidget(d->pbtHorizontal);

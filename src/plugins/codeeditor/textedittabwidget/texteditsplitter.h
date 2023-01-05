@@ -42,6 +42,7 @@ public slots:
     void doSplit(Qt::Orientation orientation, const newlsp::ProjectKey &key, const QString &file);
     void doClose();
     void doSelected(bool state);
+    void doShowSplit();
     static TextEditSplitter *instance();
 
 private:

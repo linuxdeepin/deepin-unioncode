@@ -199,6 +199,7 @@ void TextEditTabWidget::openFile(const QString &filePath)
     d->textEditAutoReloadFlags[filePath] = false;
 
     showFileEdit(filePath);
+    emit sigOpenFile();
 }
 
 void TextEditTabWidget::openFileWithKey(const newlsp::ProjectKey &key, const QString &filePath)
@@ -262,6 +263,7 @@ void TextEditTabWidget::openFileWithKey(const newlsp::ProjectKey &key, const QSt
     d->textEditAutoReloadFlags[filePath] = false;
 
     showFileEdit(filePath);
+    emit sigOpenFile();
 }
 
 void TextEditTabWidget::closeFile(const QString &filePath)
@@ -555,8 +557,11 @@ void TextEditTabWidget::removeFileEdit(const QString &file)
     edit->deleteLater();
     d->textEdits.remove(file);
 
-    if (d->textEdits.size() == 0)
+    if (d->textEdits.size() == 0) {
         setDefaultFileEdit();
+        emit closeWidget();
+    }
+
 }
 
 void TextEditTabWidget::removeFileTab(const QString &file)
