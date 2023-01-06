@@ -143,7 +143,7 @@ QMenu *PythonGenerator::createItemMenu(const QStandardItem *item)
     if (!itemTemp)
         return nullptr;
 
-    QAction *action = new QAction("Properties");
+    QAction *action = new QAction(tr("Properties"));
     menu->addAction(action);
     QObject::connect(action, &QAction::triggered, [=](){
         actionProperties(info, itemTemp);

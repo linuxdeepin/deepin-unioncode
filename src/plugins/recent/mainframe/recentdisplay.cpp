@@ -192,7 +192,7 @@ RecentDisplay::RecentDisplay(QWidget *parent)
 {
     d->docView = new DisplayDocView();
     d->docView->setMinimumWidth(400);
-    d->docLabel = new QLabel(d->docView->title());
+    d->docLabel = new QLabel(tr("Documents"));
     d->vLayoutDoc = new QVBoxLayout();
     d->vLayoutDoc->setMargin(40);
     d->vLayoutDoc->addWidget(d->docLabel);
@@ -202,7 +202,7 @@ RecentDisplay::RecentDisplay(QWidget *parent)
 
     d->proView = new DisplayProView();
     d->proView->setMinimumWidth(400);
-    d->dirLabel = new QLabel(d->proView->title());
+    d->dirLabel = new QLabel(tr("Projects"));
     d->vLayoutDir = new QVBoxLayout();
     d->vLayoutDir->setMargin(40);
     d->vLayoutDir->addWidget(d->dirLabel);

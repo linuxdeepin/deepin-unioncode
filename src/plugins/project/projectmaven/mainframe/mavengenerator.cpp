@@ -168,7 +168,7 @@ QMenu *MavenGenerator::createItemMenu(const QStandardItem *item)
     // execute logic
     parse->parseActions(info);
 
-    QAction *action = new QAction("Properties");
+    QAction *action = new QAction(tr("Properties"));
     menu->addAction(action);
     QObject::connect(action, &QAction::triggered, [=](){
         actionProperties(info, itemTemp);

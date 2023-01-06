@@ -205,7 +205,7 @@ QMenu *GradleGenerator::createItemMenu(const QStandardItem *item)
     if (!itemTemp)
         return d->gradleMenu;
 
-    QAction *action = new QAction("Properties");
+    QAction *action = new QAction(tr("Properties"));
     menu->addAction(action);
     QObject::connect(action, &QAction::triggered, [=](){
         actionProperties(info, itemTemp);

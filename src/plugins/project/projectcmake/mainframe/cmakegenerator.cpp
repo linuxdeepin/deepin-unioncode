@@ -233,7 +233,7 @@ QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
         menu = new QMenu();
     }
 
-    QAction *action = new QAction("Properties");
+    QAction *action = new QAction(tr("Properties"));
     menu->addAction(action);
     dpfservice::ProjectInfo info = dpfservice::ProjectInfo::get(item);
     QObject::connect(action, &QAction::triggered, [=](){
@@ -374,8 +374,8 @@ void CmakeGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStan
     BuildPropertyWidget *buildWidget = new BuildPropertyWidget(info);
     RunPropertyWidget *runWidget = new RunPropertyWidget(info, item);
 
-    dlg.insertPropertyPanel("Build", buildWidget);
-    dlg.insertPropertyPanel("Run", runWidget);
+    dlg.insertPropertyPanel(tr("Build"), buildWidget);
+    dlg.insertPropertyPanel(tr("Run"), runWidget);
 
     dlg.exec();
 }
