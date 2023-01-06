@@ -192,6 +192,7 @@ signals:
     void definitionRes(const newlsp::Location &location);
     void definitionRes(const std::vector<newlsp::Location> &locations);
     void definitionRes(const std::vector<newlsp::LocationLink> &locations);
+    void rangeFormattingRes(const std::vector<TextEdit> &edits);
 
     /* server request */
     void publishDiagnostics(const newlsp::PublishDiagnosticsParams &diagnostics); // textDocument/publishDiagnostics

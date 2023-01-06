@@ -103,6 +103,8 @@ public:
     virtual void setDefinition(const std::vector<newlsp::LocationLink> &data);
     virtual void cleanDefinition(const Scintilla::Position &pos);
 
+    virtual void rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits);
+
 private slots:
     void setDefinitionSelectedStyle(const Scintilla::Position start,
                                     const Scintilla::Position end);

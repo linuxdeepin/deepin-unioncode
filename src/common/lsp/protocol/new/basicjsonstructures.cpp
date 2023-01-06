@@ -175,7 +175,7 @@ std::string toJsonValueStr(const Range &val)
 std::string toJsonValueStr(const Position &val)
 {
     std::string ret;
-    ret = json::addValue(ret, json::KV{"line", val.character});
+    ret = json::addValue(ret, json::KV{"line", val.line});
     ret = json::addValue(ret, json::KV{"character", val.character});
     return json::addScope(ret);
 }

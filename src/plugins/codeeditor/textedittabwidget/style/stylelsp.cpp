@@ -260,6 +260,9 @@ void StyleLsp::initLspConnection()
         d->completionCache.provider = provider;
     });
 
+    QObject::connect(d->getClient(), &newlsp::Client::rangeFormattingRes,
+                     this, &StyleLsp::rangeFormattingReplace);
+
     /* to use QOverload cast virtual slot can't working */
     QObject::connect(d->getClient(), QOverload<const newlsp::Location&>::of(&newlsp::Client::definitionRes),
                      this, QOverload<const newlsp::Location&>::of(&StyleLsp::setDefinition));
@@ -547,13 +550,31 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
     });
     contextMenu.addMenu(&refactor);
 
-    QAction *findSymbol = contextMenu.addAction(QAction::tr("Find Usages"));
-    QObject::connect(findSymbol, &QAction::triggered, [&](){
+    QAction *findUsageAction = contextMenu.addAction(QAction::tr("Find Usages"));
+    QObject::connect(findUsageAction, &QAction::triggered, [&](){
         if (d->getClient()) {
             auto lspPos = getLspPosition(d->edit->docPointer(), d->edit->selectionStart());
             qApp->metaObject()->invokeMethod(d->getClient(), "referencesRequest",
                                              Q_ARG(const QString &, d->edit->file()),
                                              Q_ARG(const lsp::Position &, lspPos));
+        }
+    });
+
+    QAction *rangeFormattingAction = contextMenu.addAction(QAction::tr("Range Formatting"));
+    QObject::connect(rangeFormattingAction, &QAction::triggered, [&](){
+        if (d->getClient()) {
+            auto selStart = getLspPosition(d->edit->docPointer(), d->edit->selectionStart());
+            auto selEnd = getLspPosition(d->edit->docPointer(), d->edit->selectionEnd());
+            newlsp::Position newSelStart = {selStart.line, selStart.character};
+            newlsp::Position newSelEnd = {selEnd.line, selEnd.character};
+            newlsp::DocumentRangeFormattingParams params;
+            params.textDocument.uri = QUrl::fromLocalFile(d->edit->file())
+                    .toString().toStdString();
+            params.range = newlsp::Range{newSelStart, newSelEnd};
+            params.options.tabSize = 4;
+            params.options.insertSpaces = true;
+            qApp->metaObject()->invokeMethod(d->getClient(), "rangeFormatting",
+                                             Q_ARG(const newlsp::DocumentRangeFormattingParams &, params));
         }
     });
 
@@ -899,6 +920,19 @@ void StyleLsp::cleanDefinition(const Scintilla::Position &pos)
         d->edit->setCursor(d->definitionCache.getCursor());
         // d->edit->indicatorClearRange(hotSpotStart, hotSpotEnd);
         d->edit->indicatorClearRange(0, d->edit->length());
+    }
+}
+
+void StyleLsp::rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits)
+{
+    if (edits.size() <= 0)
+        return;
+
+    for (auto itera = edits.rbegin(); itera != edits.rend(); itera++) {
+        auto sciPosStart = getSciPosition(d->edit->docPointer(), itera->range.start);
+        auto sciPosEnd = getSciPosition(d->edit->docPointer(), itera->range.end);
+        auto newText = QString::fromStdString(itera->newText);
+        d->edit->replaceRange(sciPosStart, sciPosEnd, newText);
     }
 }
 

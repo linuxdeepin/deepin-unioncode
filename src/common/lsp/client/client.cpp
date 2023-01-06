@@ -148,11 +148,27 @@ void Client::documentColor(const DocumentColorParams &params)
                   );
 }
 
-void Client::colorPresentation(const ColorPresentationParams &params){}
+void Client::colorPresentation(const ColorPresentationParams &params)
+{
 
-void Client::formatting(const DocumentFormattingParams &params){}
+}
 
-void Client::rangeFormatting(const DocumentRangeFormattingParams &params){}
+void Client::formatting(const DocumentFormattingParams &params)
+{
+    d->callMethod(lsp::V_TEXTDOCUMENT_FORMATTING,
+                  QJsonDocument::fromJson(
+                      QByteArray::fromStdString(toJsonValueStr(params)))
+                  .object());
+}
+
+void Client::rangeFormatting(const DocumentRangeFormattingParams &params)
+{
+    qInfo() << QString::fromStdString(toJsonValueStr(params));
+    d->callMethod(lsp::V_TEXTDOCUMENT_RANGEFORMATTING,
+                  QJsonDocument::fromJson(
+                      QByteArray::fromStdString(toJsonValueStr(params)))
+                  .object());
+}
 
 void Client::onTypeFormatting(const DocumentOnTypeFormattingParams &params){}
 
@@ -557,6 +573,42 @@ bool ClientPrivate::renameResult(const QJsonObject &jsonObj)
         }
         emit q->renameRes(workspaceEdit);
         return true;
+    }
+    return false;
+}
+
+bool ClientPrivate::rangeFormattingResult(const QJsonObject &jsonObj)
+{
+    auto calledID = jsonObj.value(K_ID).toInt();
+    if (requestSave.keys().contains(calledID)
+            && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_RANGEFORMATTING) {
+        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_RANGEFORMATTING
+                << jsonObj;
+        requestSave.remove(calledID);
+
+        QJsonValue resultJV = jsonObj.value(K_RESULT);
+        if (resultJV.isArray()) {
+            QJsonArray resultArray = resultJV.toArray();
+            if (resultArray.count() <= 0) {
+                return false;
+            }
+            std::vector<TextEdit> edits;
+            for (auto one : resultArray) {
+                QJsonObject oneObj = one.toObject();
+                TextEdit edit;
+                edit.newText = oneObj.value(lsp::K_NewText).toString().toStdString();
+                QJsonObject rangeObj = oneObj.value(lsp::K_RANGE).toObject();
+                QJsonObject startObj = rangeObj.value(lsp::K_START).toObject();
+                QJsonObject endObj = rangeObj.value(lsp::K_END).toObject();
+                edit.range.start = {startObj.value(lsp::K_LINE).toInt(),
+                                    startObj.value(lsp::K_CHARACTER).toInt()};
+                edit.range.end = {endObj.value(lsp::K_LINE).toInt(),
+                                  endObj.value(lsp::K_CHARACTER).toInt()};
+                edits.push_back(edit);
+            }
+            emit q->rangeFormattingRes(edits);
+        }
+        qInfo() << resultJV;
     }
     return false;
 }
@@ -1028,6 +1080,7 @@ bool ClientPrivate::calledResult(const QJsonObject &jsonObj)
     any |= closeResult(jsonObj);
     any |= shutdownResult(jsonObj);
     any |= exitResult(jsonObj);
+    any |= rangeFormattingResult(jsonObj);
 
     requestSave.remove(calledID);
 

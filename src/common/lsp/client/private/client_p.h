@@ -56,6 +56,7 @@ class ClientPrivate : public newlsp::StdoutJsonRpcParser
     bool renameResult(const QJsonObject &jsonObj); // client call server rpc return
     bool definitionResult(const QJsonObject &jsonObj); // client call server rpc return above uri
     bool completionResult(const QJsonObject &jsonObj); // client call server rpc return
+    bool rangeFormattingResult(const QJsonObject &jsonObj); // client call server rpc return
     bool signatureHelpResult(const QJsonObject &jsonObj); // client call server rpc return
     bool hoverResult(const QJsonObject &jsonObj); // client call server rpc return
     bool referencesResult(const QJsonObject &jsonObj); // client call server rpc return
