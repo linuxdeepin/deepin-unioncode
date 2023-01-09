@@ -1184,14 +1184,19 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="543"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="546"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="550"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="553"/>
         <source>Find Usages</source>
         <translation>查找用法</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="563"/>
+        <source>Range Formatting</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/collaborators/collaborators.cpp" line="41"/>
@@ -1764,7 +1769,7 @@ storage: %2
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="541"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="544"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
@@ -1832,18 +1837,18 @@ storage: %2
         <translation>该文件已被移除，你想保存它吗？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="267"/>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="273"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="274"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="280"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="267"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="274"/>
         <source>Repalce text is empty, will continue?</source>
         <translation>替换文本为空，是否继续？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="273"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="280"/>
         <source>Will replace permanent, continue?</source>
         <translation>将永久替换，是否继续？</translation>
     </message>
@@ -1995,7 +2000,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="95"/>
         <source>Replace &amp;&amp; Find</source>
-        <translation>查找并替换</translation>
+        <translation>替换并查找</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="96"/>
@@ -2013,15 +2018,15 @@ storage: %2
         <translation>搜索并替换</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="151"/>
-        <source>Clean</source>
-        <translation>清除</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="84"/>
         <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="93"/>
         <source>Browse</source>
         <translation>浏览</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="151"/>
+        <source>Clean &amp;&amp; Return</source>
+        <translation>清除并返回</translation>
     </message>
 </context>
 <context>
@@ -2713,7 +2718,7 @@ Delete anyway?</source>
 <context>
     <name>StyleLsp</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="749"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="770"/>
         <source>There is a fatal error between the current d-&gt;editor component and the backend of the syntax server, which may affect the syntax highlighting. 
 Please contact the maintainer for troubleshooting to solve the problem!</source>
         <translation>当前的编辑器组件和语法服务器后端之间存在致命错误，这可能会影响语法高亮显示。

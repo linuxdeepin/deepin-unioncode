@@ -148,10 +148,9 @@ void SearchResultWindow::setupUi()
     replaceLayout->addStretch();
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    QPushButton *cleanBtn = new QPushButton(QPushButton::tr("Clean"));
+    QPushButton *cleanBtn = new QPushButton(QPushButton::tr("Clean && Return"));
     cleanBtn->setFixedHeight(30);
     d->resultLabel = new QLabel();
-    d->resultLabel->setFixedWidth(300);
     hLayout->addWidget(d->replaceWidget, 0, Qt::AlignLeft);
     hLayout->addWidget(cleanBtn, 0, Qt::AlignLeft);
     hLayout->addWidget(d->resultLabel, 0, Qt::AlignLeft);
@@ -223,19 +222,27 @@ void SearchResultWindow::startSearch(const QString &cmd, const QString &filePath
             FindItemList findItemList;
             int resultCount = 0;
             foreach (QString line, outputList) {
-                QStringList contentList = line.split(":");
-                if (contentList.count() == 2) {
+                //search in folder: "filepath:lineNumber:text"
+                const auto IN_FOLDER_REG = QRegularExpression(R"((.+):([0-9]+):(.+))", QRegularExpression::NoPatternOption);
+
+                //search in file: "lineNumber:text"
+                const auto IN_FILE_REG = QRegularExpression(R"(([0-9]+):(.+))", QRegularExpression::NoPatternOption);
+
+                QRegularExpressionMatch regMatch;
+                if ((regMatch = IN_FOLDER_REG.match(line)).hasMatch()) {
+                    qInfo() << regMatch;
                     FindItem findItem;
-                    findItem.filePathName = filePath;
-                    findItem.lineNumber = contentList[0].toInt();
-                    findItem.context = contentList[1];
+                    findItem.filePathName = regMatch.captured(1).trimmed().toStdString().c_str();
+                    findItem.lineNumber = regMatch.captured(2).trimmed().toInt();
+                    findItem.context = regMatch.captured(3).trimmed().toStdString().c_str();
                     findItemList.append(findItem);
                     resultCount++;
-                } else if (contentList.count() == 3) {
+                } else if ((regMatch = IN_FILE_REG.match(line)).hasMatch()) {
+                    qInfo() << regMatch;
                     FindItem findItem;
-                    findItem.filePathName = contentList[0];
-                    findItem.lineNumber = contentList[1].toInt();
-                    findItem.context = contentList[2];
+                    findItem.filePathName = filePath;
+                    findItem.lineNumber = regMatch.captured(1).trimmed().toInt();
+                    findItem.context = regMatch.captured(2).trimmed().toStdString().c_str();
                     findItemList.append(findItem);
                     resultCount++;
                 }

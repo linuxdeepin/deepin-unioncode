@@ -1164,13 +1164,18 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="543"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="546"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="550"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="553"/>
         <source>Find Usages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="563"/>
+        <source>Range Formatting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1735,7 +1740,7 @@ storage: %2
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="541"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="544"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1803,18 +1808,18 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="267"/>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="273"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="274"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="280"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="267"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="274"/>
         <source>Repalce text is empty, will continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="273"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="280"/>
         <source>Will replace permanent, continue?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1984,14 +1989,14 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="151"/>
-        <source>Clean</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="84"/>
         <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="93"/>
         <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="151"/>
+        <source>Clean &amp;&amp; Return</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2683,7 +2688,7 @@ Delete anyway?</source>
 <context>
     <name>StyleLsp</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="749"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="770"/>
         <source>There is a fatal error between the current d-&gt;editor component and the backend of the syntax server, which may affect the syntax highlighting. 
 Please contact the maintainer for troubleshooting to solve the problem!</source>
         <translation type="unfinished"></translation>

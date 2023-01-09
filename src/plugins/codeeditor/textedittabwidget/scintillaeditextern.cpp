@@ -272,13 +272,21 @@ void ScintillaEditExtern::findText(const QString &srcText, bool reverse)
     } else {
         if (reverse) {
             if (position.second == 0) {
-                ScintillaEditExtern::jumpToRange(maxPos, maxPos);
+                findText(srcText, maxPos, 0);
             }
         } else {
             if (position.second == maxPos) {
-                ScintillaEditExtern::jumpToRange(0, 0);
+                findText(srcText, 0, maxPos);
             }
         }
+    }
+}
+
+void ScintillaEditExtern::findText(const QString &srcText, long int startPos, long int endPos)
+{
+    QPair<int, int> position = ScintillaEditExtern::findText(startPos, endPos, srcText.toLatin1().data());
+    if (position.first >= 0) {
+        ScintillaEditExtern::jumpToRange(position.first, position.second);
     }
 }
 
@@ -630,10 +638,10 @@ void ScintillaEditExtern::replace(const QString &srcText, const QString &destTex
         QByteArray byteArray = getSelText();
         if (0 == QString(byteArray).compare(srcText, Qt::CaseInsensitive)) {
             replaceSel(destText.toLatin1().data());
-
-            searchAnchor();
-            findText(srcText, false);
         }
+
+        searchAnchor();
+        findText(srcText, false);
         break;
     }
     case RepalceType::RepalceAll:
