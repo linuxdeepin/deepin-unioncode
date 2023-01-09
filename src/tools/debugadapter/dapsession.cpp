@@ -658,8 +658,7 @@ void DapSession::handleStreamConsole(const QString &text)
     outputEvent.category = "stdout";
     outputEvent.output = output.toStdString();
     d->session->send(outputEvent);
-    qInfo() << "Console" << output;
-    Log("--> Server sent output event to client\n")
+    // do not output log here, may cause block.
 }
 
 void DapSession::handleOutputTextEvent(const QStringList &textList)

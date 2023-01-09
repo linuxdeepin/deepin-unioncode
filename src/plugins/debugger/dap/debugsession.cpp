@@ -792,13 +792,10 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out, dap:
 
     dap::VariablesRequest request;
     request.variablesReference = variablesRef;
-    if (!raw->variables(request).valid()) {
+    auto response = raw->variables(request);
+    if (!response.valid()) {
         return false;
     }
-
-    auto response = raw->variables(request);
-    if (!response.valid())
-        return false;
 
     array<Variable> &&variables = response.get().response.variables;
     for (auto var : variables) {

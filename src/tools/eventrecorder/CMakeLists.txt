@@ -269,5 +269,5 @@ target_link_libraries(eventman
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "${LIBRARY_INSTALL_PREFIX}/tools")
-install(TARGETS eventman DESTINATION "${LIBRARY_INSTALL_PREFIX}")
+install(TARGETS eventman inprocdump x11preload dbuspreload vdsopreload DESTINATION "${LIBRARY_INSTALL_PREFIX}")
 
