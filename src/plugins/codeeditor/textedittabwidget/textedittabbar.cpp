@@ -65,6 +65,7 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
                      this, [=](int index){
         QString filePath = indexFile(index);
         emit this->fileSwitched(filePath);
+        editor.switchedFile(filePath);
     });
 
     QObject::connect(d->tab, &QTabBar::tabCloseRequested,
@@ -117,11 +118,12 @@ void TextEditTabBar::setFile(const QString &file)
         return;
     }
 
+    editor.openedFile(file); // plugin interface
+
+    // should emit index changed, to use addTab method with tab is empty
     QFileInfo info(file);
     int addIndex = d->tab->addTab(info.fileName());
     d->tab->setTabToolTip(addIndex, file);
-
-    editor.openedFile(file); // plugin interface
 }
 
 void TextEditTabBar::switchFile(const QString &file)
@@ -129,7 +131,6 @@ void TextEditTabBar::switchFile(const QString &file)
     int index = fileIndex(file);
     if (index != -1) {
         d->tab->setCurrentIndex(index);
-        editor.switchedFile(file);
     }
 }
 

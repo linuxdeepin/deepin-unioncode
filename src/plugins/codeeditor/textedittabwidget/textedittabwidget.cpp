@@ -100,7 +100,7 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
                      this, &TextEditTabWidget::cleanAllAnnotation);
 
     QObject::connect(d->tab, &TextEditTabBar::fileSwitched,
-                     this, &TextEditTabWidget::showFileEdit);
+                     this, &TextEditTabWidget::showFileEdit, Qt::QueuedConnection);
 
     QObject::connect(d->tab, &TextEditTabBar::fileClosed,
                      this, &TextEditTabWidget::removeFileEdit, Qt::QueuedConnection);
