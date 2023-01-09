@@ -1196,7 +1196,7 @@ repos path: %0</source>
     <message>
         <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="563"/>
         <source>Range Formatting</source>
-        <translation type="unfinished"></translation>
+        <translation>选中范围格式化</translation>
     </message>
     <message>
         <location filename="../../src/plugins/collaborators/collaborators.cpp" line="41"/>

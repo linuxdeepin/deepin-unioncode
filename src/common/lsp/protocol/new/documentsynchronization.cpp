@@ -23,7 +23,7 @@
 namespace newlsp {
 std::string toJsonValueStr(const DidOpenTextDocumentParams &val)
 {
-
+    return {};
 }
 
 std::string toJsonValueStr(const DidChangeTextDocumentParams &val)
