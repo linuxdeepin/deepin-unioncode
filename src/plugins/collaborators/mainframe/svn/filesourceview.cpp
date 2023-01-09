@@ -21,6 +21,7 @@
 #include "filesourceview.h"
 #include "filesourcedelegate.h"
 
+#include <QHeaderView>
 #include <QFileSystemModel>
 #include <QGridLayout>
 
@@ -39,6 +40,7 @@ FileSourceView::FileSourceView(QWidget *parent)
     d->delegate = new FileSourceDelegate;
     d->model->setFilter(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files | QDir::Hidden);
     setModel(d->model);
+    header()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
     setItemDelegate(d->delegate);
 }
 

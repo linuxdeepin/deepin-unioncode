@@ -162,6 +162,7 @@ QHeaderView:section
    padding: 5px 15px;
    border-bottom-width: 1px;
    border-bottom-style: solid;
+   border-right: 0.5px solid gray;
 }
 
 QTabWidget::pane

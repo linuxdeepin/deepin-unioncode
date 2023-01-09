@@ -33,7 +33,6 @@ LogginDialog::LogginDialog(QWidget *parent, Qt::WindowFlags f)
     QHBoxLayout *hLayoutPbt = new QHBoxLayout();
     QVBoxLayout *vLayoutMain = new QVBoxLayout();
 
-    setFixedWidth(300);
     QFont font1;
     font1.setBold(true);
     font1.setWeight(QFont::Bold);
