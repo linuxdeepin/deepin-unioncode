@@ -53,6 +53,8 @@ public:
      */
     virtual QString workspace() const; // from projectKey,
 
+    void addDebugPoint(int line);
+    void removeDebugPoint(int line);
     void debugPointAllDelete();
     void jumpToLine(int line);
     void jumpToRange(Scintilla::Position start, Scintilla::Position end);

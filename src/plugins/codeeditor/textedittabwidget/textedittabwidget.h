@@ -65,6 +65,8 @@ public slots:
     void jumpToLineWithKey(const newlsp::ProjectKey &key, const QString &filePath, int line);
     void runningToLineWithKey(const newlsp::ProjectKey &key, const QString &filePath, int line);
     void runningEnd();
+    void addDebugPoint(const QString &filePath, int line);
+    void removeDebugPoint(const QString &filePath, int line);
     void debugPointClean();
     void replaceRange(const QString &filePath, const newlsp::Range &range,const QString &text);
     void setLineBackground(const QString &filePath, int line, const QColor &color);

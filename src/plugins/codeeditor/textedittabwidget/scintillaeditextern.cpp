@@ -149,6 +149,16 @@ QString ScintillaEditExtern::workspace() const
     return QString::fromStdString(d->proKey.workspace);
 }
 
+void ScintillaEditExtern::addDebugPoint(int line)
+{
+    markerAdd(line, StyleSci::Debug);
+}
+
+void ScintillaEditExtern::removeDebugPoint(int line)
+{
+    markerDelete(line, StyleSci::Debug);
+}
+
 newlsp::ProjectKey ScintillaEditExtern::projectKey() const
 {
     return d->proKey;

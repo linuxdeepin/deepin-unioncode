@@ -65,6 +65,8 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(delLineBackground, "filePath", "line")
            OPI_INTERFACE(cleanLineBackground, "filePath")
            OPI_INTERFACE(setModifiedAutoReload, "filePath", "flag")
+           OPI_INTERFACE(addDebugPoint, "filePath", "line")
+           OPI_INTERFACE(removeDebugPoint, "filePath", "line")
            // out
            OPI_INTERFACE(openedFile, "filePath")
            OPI_INTERFACE(closedFile, "filePath")

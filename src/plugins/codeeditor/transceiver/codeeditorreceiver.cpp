@@ -185,6 +185,14 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QString filePath = event.property(editor.setModifiedAutoReload.pKeys[0]).toString();
         bool flag = event.property(editor.setModifiedAutoReload.pKeys[1]).toBool();
         EditorCallProxy::instance()->toSetModifiedAutoReload(filePath, flag);
+    } else if (event.data() == editor.addDebugPoint.name) {
+        QString filePath = event.property(editor.addDebugPoint.pKeys[0]).toString();
+        int line = event.property(editor.addDebugPoint.pKeys[0]).toInt();
+        EditorCallProxy::instance()->toAddDebugPoint(filePath, line);
+    } else if (event.data() == editor.removeDebugPoint.name) {
+        QString filePath = event.property(editor.removeDebugPoint.pKeys[0]).toString();
+        int line = event.property(editor.removeDebugPoint.pKeys[1]).toInt();
+        EditorCallProxy::instance()->toRemoveDebugPoint(filePath, line);
     }
 }
 

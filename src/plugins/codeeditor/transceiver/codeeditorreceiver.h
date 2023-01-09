@@ -61,6 +61,8 @@ signals:
     void toSwitchContext(const QString &name);
     void toSwitchWorkspace(const QString &name);
     void toSetModifiedAutoReload(const QString filePath, bool flag);
+    void toAddDebugPoint(const QString &filePath, int line);
+    void toRemoveDebugPoint(const QString &filePath, int line);
 };
 
 #endif // CODEEDITORRECEIVER_H

@@ -337,6 +337,24 @@ void TextEditTabWidget::runningEnd()
     }
 }
 
+void TextEditTabWidget::addDebugPoint(const QString &filePath, int line)
+{
+    for (auto edit : d->textEdits) {
+        if (filePath == edit->file()) {
+            edit->addDebugPoint(line);
+        }
+    }
+}
+
+void TextEditTabWidget::removeDebugPoint(const QString &filePath, int line)
+{
+    for (auto edit : d->textEdits) {
+        if (filePath == edit->file()) {
+            edit->removeDebugPoint(line);
+        }
+    }
+}
+
 void TextEditTabWidget::debugPointClean()
 {
     for (auto edit : d->textEdits) {
