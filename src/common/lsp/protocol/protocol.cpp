@@ -708,7 +708,7 @@ QJsonObject didOpen(const QString &filePath)
     QJsonObject textDocument{
         { K_URI, QUrl::fromLocalFile(filePath).toString() },
         { K_LANGUAGEID, "cpp" },
-        { K_VERSION, 0 },
+        { K_VERSION, 1 },
         { K_TEXT, text }
     };
 

@@ -36,7 +36,8 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     if (key.language != newlsp::Cxx)
         return nullptr;
 
-    QString compileDB_Path = QString::fromStdString(key.workspace) + QDir::separator() + ".unioncode";
+    QString projectCacheDir = ".unioncode";
+    QString compileDB_Path = QString::fromStdString(key.workspace) + QDir::separator() + projectCacheDir;
     QStringList compileDB_CMD_As;
     compileDB_CMD_As << "-S" << QString::fromStdString(key.workspace);
     compileDB_CMD_As << "-B" << compileDB_Path;
@@ -54,6 +55,8 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     }
     procAs << "--log=verbose";
     procAs << QString("--compile-commands-dir=%0").arg(compileDB_Path);
+    procAs << "--clang-tidy";
+    procAs << "-j=$(nproc)";
 
     auto proc = new QProcess();
     proc->setProgram("/usr/bin/bash");

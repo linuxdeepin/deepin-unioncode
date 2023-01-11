@@ -87,7 +87,8 @@ newlsp::Client *LSPClientKeeper::get(const newlsp::ProjectKey &key)
     }
 
     if (!projectKeys.contains(key)) {
-        qApp->metaObject()->invokeMethod(client, "initRequest", Q_ARG(const QString &, {}));
+        QString complieDB_Path = QString::fromStdString(key.workspace) + QDir::separator() + ".unioncode";
+        qApp->metaObject()->invokeMethod(client, "initRequest", Q_ARG(const QString &, complieDB_Path));
         projectKeys.append(key);
     }
 
