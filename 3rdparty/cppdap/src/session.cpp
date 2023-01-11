@@ -415,14 +415,20 @@ class Impl : public dap::Session {
     auto data = new uint8_t[typeinfo->size()];
     typeinfo->construct(data);
 
-    if (!d->field("body", [&](dap::Deserializer* d) {
-          return typeinfo->deserialize(d, data);
-        })) {
-      handlers.error("Failed to deserialize event '%s' body", event.c_str());
-      // "body" field in TerminatedEvent is an optional field.
-      //typeinfo->destruct(data);
-      //delete[] data;
-      //return {};
+    // "body" is an optional field for some events, such as "Terminated Event".
+    bool body_ok = true;
+    d->field("body", [&](dap::Deserializer* d) {
+        if (!typeinfo->deserialize(d, data)) {
+            body_ok = false;
+        }
+        return true;
+    });
+
+    if (!body_ok) {
+        handlers.error("Failed to deserialize event '%s' body", event.c_str());
+        typeinfo->destruct(data);
+        delete[] data;
+        return {};
     }
 
     return [=] {
