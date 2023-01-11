@@ -118,12 +118,12 @@ void TextEditTabBar::setFile(const QString &file)
         return;
     }
 
-    editor.openedFile(file); // plugin interface
-
     // should emit index changed, to use addTab method with tab is empty
     QFileInfo info(file);
     int addIndex = d->tab->addTab(info.fileName());
     d->tab->setTabToolTip(addIndex, file);
+
+    editor.openedFile(file); // plugin interface
 }
 
 void TextEditTabBar::switchFile(const QString &file)

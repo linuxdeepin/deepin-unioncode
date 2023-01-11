@@ -80,8 +80,9 @@ FindToolWindow::FindToolWindow(QWidget *parent)
 
     connect(FindEventTransmit::instance(), QOverload<const QString &, bool>::of(&FindEventTransmit::sendCurrentEditFile),
             [=](const QString &filePath, bool actived){
-        if (actived)
+        if (actived) {
             d->currentFilePath = filePath;
+        }
         else
             d->currentFilePath = "";
     });
