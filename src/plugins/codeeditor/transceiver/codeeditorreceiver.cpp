@@ -187,11 +187,11 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         EditorCallProxy::instance()->toSetModifiedAutoReload(filePath, flag);
     } else if (event.data() == editor.addDebugPoint.name) {
         QString filePath = event.property(editor.addDebugPoint.pKeys[0]).toString();
-        int line = event.property(editor.addDebugPoint.pKeys[0]).toInt();
+        int line = event.property(editor.addDebugPoint.pKeys[1]).toInt() - 1;
         EditorCallProxy::instance()->toAddDebugPoint(filePath, line);
     } else if (event.data() == editor.removeDebugPoint.name) {
         QString filePath = event.property(editor.removeDebugPoint.pKeys[0]).toString();
-        int line = event.property(editor.removeDebugPoint.pKeys[1]).toInt();
+        int line = event.property(editor.removeDebugPoint.pKeys[1]).toInt() - 1;
         EditorCallProxy::instance()->toRemoveDebugPoint(filePath, line);
     }
 }

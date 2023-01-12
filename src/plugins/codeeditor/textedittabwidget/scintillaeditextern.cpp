@@ -570,9 +570,11 @@ void ScintillaEditExtern::sciMarginClicked(Scintilla::Position position, Scintil
         if (!flags[StyleSci::Debug]) {
             markerAdd(line, StyleSci::Debug);
             editor.addadDebugPoint(file(), qint64(line + 1)); //line begin 1 from debug point setting
+            editor.addDebugPoint(file(), qint64(line + 1));
         } else {
             markerDelete(line, StyleSci::Debug);
             editor.removedDebugPoint(file(), qint64(line + 1)); //line begin 1 from debug point setting
+            editor.removeDebugPoint(file(), qint64(line + 1));
         }
     }
 }

@@ -151,6 +151,7 @@ private:
     RunState runState = kNoRun;
 
     DebuggerPrivate *const d;
+    QMultiMap<QString, int> bps;
 };
 
 #endif   // DEBUGGER_H

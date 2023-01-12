@@ -30,6 +30,7 @@
 #include "interface/stackframemodel.h"
 #include "interface/stackframeview.h"
 #include "interface/messagebox.h"
+#include "interface/breakpointmodel.h"
 #include "event/eventreceiver.h"
 #include "common/common.h"
 #include "services/builder/builderservice.h"
@@ -563,6 +564,12 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
     } else if (event.data() == editor.openedFile.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         d->currentOpenedFileName = filePath;
+        if (bps.count(filePath)) {
+            QList<int> lines = bps.values(filePath);
+            for (int line: lines) {
+                editor.addDebugPoint(filePath, line);
+            }
+        }
     } else if (event.data() == editor.closedFile.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         if (d->currentOpenedFileName == filePath) {
@@ -571,10 +578,12 @@ void Debugger::handleFrameEvent(const dpf::Event &event)
     } else if (event.data() == editor.addadDebugPoint.name) {
         QString filePath = event.property(editor.addadDebugPoint.pKeys[0]).toString();
         int line = event.property(editor.addadDebugPoint.pKeys[1]).toInt();
+        bps.insert(filePath, line);
         addBreakpoint(filePath, line);
     } else if (event.data() == editor.removedDebugPoint.name) {
-        QString filePath = event.property(editor.addadDebugPoint.pKeys[0]).toString();
-        int line = event.property(editor.addadDebugPoint.pKeys[1]).toInt();
+        QString filePath = event.property(editor.removeDebugPoint.pKeys[0]).toString();
+        int line = event.property(editor.removeDebugPoint.pKeys[1]).toInt();
+        bps.remove(filePath, line);
         removeBreakpoint(filePath, line);
     }
 }

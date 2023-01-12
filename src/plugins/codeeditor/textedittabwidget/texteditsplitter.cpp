@@ -54,6 +54,10 @@ TextEditSplitter::TextEditSplitter(QWidget *parent)
                      this, &TextEditSplitter::doClose);
     QObject::connect(tabWidget, &TextEditTabWidget::sigOpenFile,
                      this, &TextEditSplitter::doShowSplit);
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toAddDebugPoint,
+                     tabWidget, &TextEditTabWidget::addDebugPoint);
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRemoveDebugPoint,
+                     tabWidget, &TextEditTabWidget::removeDebugPoint);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->addStretch(20);
@@ -109,12 +113,6 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
     QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toRunFileLineWithKey,
                         oldEditWidget, &TextEditTabWidget::runningToLineWithKey);
 
-    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toAddDebugPoint,
-                        oldEditWidget, &TextEditTabWidget::addDebugPoint);
-
-    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toRemoveDebugPoint,
-                        oldEditWidget, &TextEditTabWidget::removeDebugPoint);
-
     // connect new texteditwidget openfile slot
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                      newEditWidget, &TextEditTabWidget::openFileWithKey);
@@ -132,6 +130,10 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
                      this, &TextEditSplitter::doClose);
     QObject::connect(newEditWidget, &TextEditTabWidget::sigOpenFile,
                      this, &TextEditSplitter::doShowSplit);
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toAddDebugPoint,
+                     newEditWidget, &TextEditTabWidget::addDebugPoint);
+    QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRemoveDebugPoint,
+                     newEditWidget, &TextEditTabWidget::removeDebugPoint);
 }
 
 void TextEditSplitter::doSelected(bool state)
@@ -154,10 +156,6 @@ void TextEditSplitter::doSelected(bool state)
             while (tabWidgets.values().contains(true)) {
                 auto edit = findIsConnEdit();
                 if (edit) {
-                    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toAddDebugPoint,
-                                        edit, &TextEditTabWidget::addDebugPoint);
-                    QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toRemoveDebugPoint,
-                                        edit, &TextEditTabWidget::removeDebugPoint);
                     QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                                         edit, &TextEditTabWidget::openFileWithKey);
                     QObject::disconnect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
@@ -170,9 +168,9 @@ void TextEditSplitter::doSelected(bool state)
                 }
             }
             QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toAddDebugPoint,
-                                textEditTabWidget, &TextEditTabWidget::addDebugPoint);
+                             textEditTabWidget, &TextEditTabWidget::addDebugPoint);
             QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRemoveDebugPoint,
-                                textEditTabWidget, &TextEditTabWidget::removeDebugPoint);
+                             textEditTabWidget, &TextEditTabWidget::removeDebugPoint);
             QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                              textEditTabWidget, &TextEditTabWidget::openFileWithKey);
             QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
@@ -216,9 +214,9 @@ void TextEditSplitter::doClose()
             ++it;
         it.value() = true;
         QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toAddDebugPoint,
-                            textEditTabWidget, &TextEditTabWidget::addDebugPoint);
+                         textEditTabWidget, &TextEditTabWidget::addDebugPoint);
         QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toRemoveDebugPoint,
-                            textEditTabWidget, &TextEditTabWidget::removeDebugPoint);
+                         textEditTabWidget, &TextEditTabWidget::removeDebugPoint);
         QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                          it.key(), &TextEditTabWidget::openFileWithKey);
         QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toJumpFileLineWithKey,
