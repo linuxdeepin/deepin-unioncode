@@ -28,9 +28,13 @@
 #include <QDebug>
 #include <QtXml>
 
+static QString kSupportArgs[] = {"clean", "compiler:compile", "compiler:testCompile",
+                                     "package", "install", "validate", "dependency:tree",
+                                     "dependency:analyze", "site:site", "compile", "verify"};
+
 class MavenAsynParsePrivate
 {
-    friend  class MavenAsynParse;
+    friend class MavenAsynParse;
     QDomDocument xmlDoc;
     QThread *thread {nullptr};
     QString rootPath;
@@ -87,6 +91,7 @@ void MavenAsynParse::parseProject(const dpfservice::ProjectInfo &info)
     emit itemsModified(d->rows);
 }
 
+// TODO(mozart):get from tool or config.
 void MavenAsynParse::parseActions(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
@@ -95,93 +100,22 @@ void MavenAsynParse::parseActions(const dpfservice::ProjectInfo &info)
         return;
     }
 
-    QFileInfo xmlFileInfo(info.workspaceFolder() + QDir::separator() + "pom.xml");
-    if (!xmlFileInfo.exists())
-        return;
+    ProjectActionInfos actionInfos;
+    auto addAction = [&](QString &arg){
+        ProjectMenuActionInfo actionInfo;
+        actionInfo.buildProgram = OptionManager::getInstance()->getMavenToolPath();
+        actionInfo.workingDirectory = info.workspaceFolder() + QDir::separator() + "pom.xml";
+        actionInfo.buildArguments.append(arg);
+        actionInfo.displyText = arg;
+        actionInfo.tooltip = arg;
+        actionInfos.append(actionInfo);
+    };
 
-    d->xmlDoc = QDomDocument(xmlFileInfo.fileName());
-    QFile xmlFile(xmlFileInfo.filePath());
-    if (!xmlFile.open(QIODevice::ReadOnly)) {
-        qCritical() << "Failed, Can't open xml file: "
-                    << xmlFileInfo.filePath();
-        return;
-    }
-    if (!d->xmlDoc.setContent(&xmlFile)) {
-        qCritical() << "Failed, Can't load to XmlDoc class: "
-                    << xmlFileInfo.filePath();
-        return;
+    for (auto arg : kSupportArgs) {
+        addAction(arg);
     }
 
-    QDomNode n = d->xmlDoc.firstChild();
-    while (!n.isNull()) {
-        QDomElement e = n.toElement();
-        if (!e.isNull() && e.tagName() == "project") {
-            n = n.firstChild();
-        }
-
-        if (e.tagName() == "dependencies") {
-            QDomNode depNode = e.firstChild();
-            while (!depNode.isNull()) {
-                QDomElement depElem = depNode.toElement();
-                if (depElem.tagName() == "dependency") {
-                    auto depcyNode = depElem.firstChild();
-                    while (!depcyNode.isNull()) {
-                        auto depcyElem = depcyNode.toElement();
-                        qInfo() << "dependencies.dependency."
-                                   + depcyElem.tagName()
-                                   + ":" + depcyElem.text();
-                        depcyNode = depcyNode.nextSibling();
-                    }
-                }
-                depNode = depNode.nextSibling();
-            }
-        }
-
-        if (e.tagName() == "build")
-        {
-            QDomNode findNode = e.firstChild();
-            while (!findNode.isNull()) {
-                qInfo() << findNode.toElement().tagName();
-                auto findElem = findNode.toElement();
-                if (findElem.tagName() != "plugins") {
-                    if (findElem.hasChildNodes()) {
-                        findNode = findElem.firstChild();
-                        continue;
-                    }
-                } else {
-                    ProjectActionInfos actionInfos;
-                    QDomNode pluginsChild = findElem.firstChild();
-                    while (!pluginsChild.isNull()) {
-                        auto pluginsElem = pluginsChild.toElement();
-                        QDomNode pluginChild = pluginsElem.firstChild();
-                        if (pluginsElem.tagName() == "plugin") {
-                            while (!pluginChild.isNull()) {
-                                auto pluginElem = pluginChild.toElement();
-                                if ("artifactId" == pluginElem.tagName()) {
-                                    ProjectMenuActionInfo actionInfo;
-                                    actionInfo.buildProgram = OptionManager::getInstance()->getMavenToolPath();
-                                    actionInfo.workingDirectory = xmlFileInfo.filePath();
-                                    QString buildArg = pluginElem.text()
-                                            .replace("maven-", "")
-                                            .replace("-plugin", "");
-                                    actionInfo.buildArguments.append(buildArg);
-                                    actionInfo.displyText = buildArg;
-                                    actionInfo.tooltip = pluginElem.text();
-                                    actionInfos.append(actionInfo);
-                                }
-                                pluginChild = pluginChild.nextSibling();
-                            }
-                        } // pluginsElem.tagName() == "plugin"
-                        pluginsChild = pluginsChild.nextSibling();
-                    }
-                    if (!actionInfos.isEmpty())
-                        emit parsedActions(actionInfos);
-                } // buildElem.tagName() == "pluginManagement"
-                findNode = findNode.nextSibling();
-            }
-        }// e.tagName() == "build"
-        n = n.nextSibling();
-    }
+    emit parsedActions(actionInfos);
 }
 
 void MavenAsynParse::doDirectoryChanged(const QString &path)
