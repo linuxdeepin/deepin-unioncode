@@ -49,6 +49,7 @@ GDBDebugger::GDBDebugger(QObject *parent)
     connect(this, &GDBDebugger::libraryLoaded, DebugManager::instance(), &DebugManager::libraryLoaded);
     connect(this, &GDBDebugger::libraryUnloaded, DebugManager::instance(), &DebugManager::libraryUnloaded);
     connect(this, &GDBDebugger::fireLocker, DebugManager::instance(), &DebugManager::fireLocker);
+    connect(this, &GDBDebugger::fireStackLocker, DebugManager::instance(), &DebugManager::fireStackLocker);
     connect(this, &GDBDebugger::updateExceptResponse, DebugManager::instance(), &DebugManager::updateExceptResponse);
     connect(this, &GDBDebugger::terminated, DebugManager::instance(), &DebugManager::terminated);
     connect(this, &GDBDebugger::assemblerData, DebugManager::instance(), &DebugManager::assemblerData);
@@ -474,7 +475,7 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
                     d->stackFrames = stackFrames;
                     emit updateStackFrame(stackFrames);
                 }
-                emit fireLocker();
+                emit fireStackLocker();
             } else if(key == "bkpt") {
                 // -break-insert location
                 auto data = record.payload.toMap();

@@ -87,6 +87,7 @@ signals:
     void libraryLoaded(const dap::ModuleEvent &moduleEvent);
     void libraryUnloaded(const dap::ModuleEvent &moduleEvent);
     void fireLocker();
+    void fireStackLocker();
     void updateExceptResponse(const int token, const QVariant& payload);
 
     void breakpointModified(const gdbmi::Breakpoint& bp);

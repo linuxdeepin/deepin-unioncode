@@ -34,6 +34,7 @@ class DebugManagerPrivate {
     QSharedPointer<QProcess> process{nullptr};
     QString tempBuffer;
     ConditionLockEx locker;
+    ConditionLockEx stacklocker;
     QHash<int, DebugManager::ResponseEntry> resposeExpected;
     QStringList arguments;
     int tokenCounter = 0;
@@ -121,6 +122,11 @@ void DebugManager::waitLocker()
 void DebugManager::fireLocker()
 {
     d->locker.fire();
+}
+
+void DebugManager::fireStackLocker()
+{
+    d->stacklocker.fire();
 }
 
 bool DebugManager::isExecuting() const
@@ -222,7 +228,7 @@ void DebugManager::breakRemove(int bpid)
 void DebugManager::stackListFrames()
 {
     if (command(d->debugger->stackListFrames()))
-        waitLocker();
+        d->stacklocker.wait();
 }
 
 void DebugManager::stackListVariables()

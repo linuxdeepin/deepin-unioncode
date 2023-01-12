@@ -97,6 +97,7 @@ signals:
 public slots:
     void updateExceptResponse(const int token, const QVariant& payload);
     void fireLocker();
+    void fireStackLocker();
 
 private:
     explicit DebugManager(QObject *parent = nullptr);
