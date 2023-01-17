@@ -601,10 +601,10 @@ void TextEditTabWidget::fileModifyed(const QString &file)
             });
         }
 
-        d->gridLayout->addWidget(d->titleBars[file], 1, 0);
         if (d->textEditAutoReloadFlags.contains(file) && d->textEditAutoReloadFlags[file]) {
             d->titleBars[file]->reloadfile();
         } else {
+            d->gridLayout->addWidget(d->titleBars[file], 1, 0);
             d->titleBars[file]->show();
         }
     }

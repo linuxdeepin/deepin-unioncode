@@ -1044,6 +1044,9 @@ void Debugger::handleAssemble(const QString &content)
         QTextStream stream(&file);
         stream << content;
         file.close();
+        // avoid load manually.
+        editor.setModifiedAutoReload(assemblerPath, true);
+
         editor.jumpToLine(assemblerPath, 0);
     }
 }
