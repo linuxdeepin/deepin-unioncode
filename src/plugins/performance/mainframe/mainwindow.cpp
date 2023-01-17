@@ -41,12 +41,6 @@ class MainWindowPrivate
     friend class MainWindow;
     JsonTabWidget *jsonTabWidget{nullptr};
     QToolBar *toolbar{nullptr};
-    //    QAction *attachAction{nullptr};
-    //    QMenu *attachMenu{nullptr};
-    //    QAction *fromPidAction{nullptr};
-    //    QMenu *fromPidMenu{nullptr};
-    //    QAction *fromProgramAction{nullptr};
-    //    QMenu *fromProgramMenu{nullptr};
     QLineEdit *editPid{nullptr};
     QToolButton *ctrlButton{nullptr};
     QDockWidget *perfRecordDock{nullptr};
@@ -71,12 +65,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     , d (new MainWindowPrivate)
 {
     d->toolbar = new QToolBar;
-    //    d->attachAction = new QAction(d->attach);
-    //    d->attachMenu = new QMenu();
-    //    d->fromPidAction = new QAction(d->fromPid, d->attachAction);
-    //    d->fromPidMenu = new QMenu();
-    //    d->fromProgramAction = new QAction(d->fromProgram, d->attachAction);
-    //    d->fromProgramMenu = new QMenu();
     d->editPid = new QLineEdit();
     d->editPid->setPlaceholderText("PID");
     QRegularExpression regx("[0-9]+$");
@@ -116,21 +104,16 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         }
     });
 
-    //    d->attachAction->setMenu(d->attachMenu);
-    //    d->attachMenu->addAction(d->fromPidAction);
-    //    d->attachMenu->addAction(d->fromProgramAction);
-    //    d->toolbar->addAction(d->attachAction);
     d->toolbar->addSeparator();
     d->toolbar->addWidget(d->editPid);
     d->toolbar->addWidget(d->ctrlButton);
     addToolBar(d->toolbar);
 
     d->perfRecordDock->setWidget(d->perfRecordDisplay);
-    addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, d->perfRecordDock);
+    // TODO(Any): disabled until Use hotpot(https://github.com/KDAB/hotspot) to refactor
+    // addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, d->perfRecordDock);
 
     setCentralWidget(d->jsonTabWidget);
-
-    //    start(getpid());
 }
 
 MainWindow::~MainWindow()
