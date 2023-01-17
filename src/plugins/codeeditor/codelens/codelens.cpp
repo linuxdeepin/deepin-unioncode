@@ -59,5 +59,6 @@ CodeLens::~CodeLens()
 
 void CodeLens::displayReference(const lsp::References &data)
 {
+    editor.switchContext(tr("Code &Lens"));
     d->lens->setData(data);
 }
