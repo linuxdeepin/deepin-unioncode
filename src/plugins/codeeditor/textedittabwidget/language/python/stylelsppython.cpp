@@ -41,6 +41,8 @@ StyleLsp::IndicStyleExt StyleLspPython::symbolIndic(lsp::SemanticTokenType::type
     if (jsonFile->setTheme(StyleJsonFile::Theme::get()->Dark)) {
         QJsonObject tempObj;
         int tempFore = 0;
+        tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Self).toObject();
+        tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         if (lsp::SemanticTokenType::get()->Namespace == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Namespace).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));

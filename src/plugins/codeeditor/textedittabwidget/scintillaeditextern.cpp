@@ -58,10 +58,10 @@ ScintillaEditExtern::ScintillaEditExtern(QWidget *parent)
 {
     setTabWidth(4);
     setIndentationGuides(SC_IV_LOOKBOTH);
-    styleSetBack(STYLE_DEFAULT, StyleColor::color(QColor(22,22,22)));
+    styleSetBack(STYLE_DEFAULT, StyleColor::color(QColor(43,43,43)));
     for (int i = 0; i < KEYWORDSET_MAX; i ++) {
         styleSetFore(i, StyleColor::color(QColor(0xdd, 0xdd, 0xdd)));
-        styleSetBack(i,  StyleColor::color(QColor(22,22,22)));
+        styleSetBack(i,  StyleColor::color(QColor(43,43,43)));
     }
     setCaretFore(StyleColor::color(QColor(255,255,255)));
     horizontalScrollBar()->setVisible(false);

@@ -99,7 +99,7 @@ StyleLsp::IndicStyleExt StyleLspCpp::symbolIndic(lsp::SemanticTokenType::type_va
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
         if (lsp::SemanticTokenType::get()->Method == token){
-            tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->FunctionDeclaration).toObject();
+            tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Method).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
         if (lsp::SemanticTokenType::get()->Macro == token){

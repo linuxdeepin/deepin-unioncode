@@ -88,6 +88,8 @@ public:
         enum_exp ErrorContext = "Error Context";
         enum_exp Warning = "Warning";
         enum_exp WarningContext = "Warning Context";
+        enum_exp Method = "Method";
+        enum_exp Parameter = "Parameter";
     };
 
     enum_def(Key_2, QString)
