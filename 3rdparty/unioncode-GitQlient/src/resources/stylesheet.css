@@ -17,6 +17,7 @@ a
 QWidget
 {
    outline: 0;
+   background: 404142;
 }
 
 CheckBox::indicator, QRadioButton::indicator
