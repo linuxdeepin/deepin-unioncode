@@ -82,6 +82,8 @@ bool OptionCore::start()
                                                      "setting.png");
         windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptions));
         windowService->addToolBarActionItem("Options", actionOptions);
+        windowService->addToolBarSeparator();
+
         QObject::connect(actionOptions, &QAction::triggered,
                          optionDialog, &QDialog::show);
     }

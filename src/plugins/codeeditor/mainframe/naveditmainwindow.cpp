@@ -67,6 +67,10 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
         windowService->addToolBarWidgetItem = std::bind(&NavEditMainWindow::addToolBarWidgetItem, this, _1, _2);
     }
 
+    if (!windowService->addToolBarSeparator) {
+        windowService->addToolBarSeparator = std::bind(&NavEditMainWindow::addToolBarSeparator, this);
+    }
+
     if (!windowService->removeToolBarItem) {
         windowService->removeToolBarItem = std::bind(&NavEditMainWindow::removeToolBarItem, this, _1);
     }
@@ -242,6 +246,13 @@ bool NavEditMainWindow::addToolBarWidgetItem(const QString &id, AbstractWidget *
         return false;
 
     return mainToolBar->addWidgetItem(id, static_cast<QWidget*>(widget->qWidget()));
+}
+
+void NavEditMainWindow::addToolBarSeparator()
+{
+    if (!mainToolBar)
+        return;
+    mainToolBar->addSeparator();
 }
 
 void NavEditMainWindow::removeToolBarItem(const QString &id)

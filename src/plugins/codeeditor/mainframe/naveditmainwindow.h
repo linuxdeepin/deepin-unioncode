@@ -60,6 +60,7 @@ public:
     void showFindToolBar();
     bool addToolBarActionItem(const QString &id, QAction *action);
     bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget);
+    void addToolBarSeparator();
     void removeToolBarItem(const QString &id);
     void setToolBarItemDisable(const QString &id, bool disable);
 };

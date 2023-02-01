@@ -126,6 +126,7 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = new AbstractAction(stepOut.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
     windowService->addToolBarActionItem("Step.Out", stepOut.get());
+    windowService->addToolBarSeparator();
 }
 
 void MenuManager::handleRunStateChanged(Debugger::RunState state)

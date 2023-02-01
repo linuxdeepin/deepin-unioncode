@@ -166,7 +166,11 @@ QToolBar:handle {
 
 QToolBar::separator {
     width: 1px;
-    background-color: #222222;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    background-color: #696969;
 }
 
 /* === QToolButton === */

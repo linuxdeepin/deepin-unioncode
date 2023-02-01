@@ -35,6 +35,7 @@ public:
 
     bool addActionItem(const QString &id, QAction *action);
     bool addWidgetItem(const QString &id, QWidget *widget);
+    void addSeparator();
     void removeItem(const QString &id);
     void disableItem(const QString &id, bool visible);
     QToolBar *getToolBar() const;

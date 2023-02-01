@@ -170,6 +170,11 @@ public:
     DPF_INTERFACE(bool, addToolBarWidgetItem, const QString &id, AbstractWidget *widget);
 
     /*!
+     * \brief addToolBarSeparator
+     */
+    DPF_INTERFACE(void, addToolBarSeparator);
+
+    /*!
      * \brief removeToolBarItem
      */
     DPF_INTERFACE(void, removeToolBarItem, const QString &id);

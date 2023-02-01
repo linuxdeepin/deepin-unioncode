@@ -116,6 +116,11 @@ bool ToolBarManager::addWidgetItem(const QString &id, QWidget *widget)
     return true;
 }
 
+void ToolBarManager::addSeparator()
+{
+    d->toolbar->addSeparator();
+}
+
 void ToolBarManager::removeItem(const QString &id)
 {
     for (auto iter = d->itemVector.begin(); iter != d->itemVector.end(); ++iter) {
