@@ -46,7 +46,7 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     d->pbtVertical = new QToolButton();
     d->pbtClose = new QToolButton(this);
     d->hBoxLayout->setSpacing(5);
-    d->hBoxLayout->setMargin(4);
+    d->hBoxLayout->setMargin(0);
 
     d->pbtHorizontal->setIcon(QIcon(":/core/images/splitbutton_horizontal.png"));
     d->pbtVertical->setIcon(QIcon(":/core/images/splitbutton_vertical.png"));
@@ -57,7 +57,6 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     d->hBoxLayout->addWidget(d->pbtVertical);
     d->hBoxLayout->addWidget(d->pbtClose);
     d->tab->setTabsClosable(true);
-    d->tab->setExpanding(false);
 
     this->setLayout(d->hBoxLayout);
 

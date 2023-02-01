@@ -55,7 +55,7 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
 {
     d->gridLayout = new QGridLayout(this);
     d->gridLayout->setSpacing(0);
-    d->gridLayout->setMargin(4);
+    d->gridLayout->setMargin(0);
 
     d->tab = new TextEditTabBar(this);
     d->gridLayout->addWidget(d->tab);
