@@ -239,14 +239,15 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                 }
             }
 
-            info.setRunProgram(OptionManager::getInstance()->getCMakeToolPath());
             auto iterRun = iter->runConfigure.params.begin();
             for (; iterRun != iter->runConfigure.params.end(); ++iterRun) {
                 if (iterRun->targetName == iter->runConfigure.defaultTargetName) {
+                    info.setRunProgram(iterRun->targetPath);
                     QStringList arguments;
-                    arguments << iterRun->arguments;
-                    arguments << iterRun->targetPath;
+                    if (!iterRun->arguments.isEmpty())
+                        arguments << iterRun->arguments;
                     info.setRunCustomArgs(arguments);
+                    info.setRunWorkspaceDir(iterRun->workDirectory);
                     break;
                 }
             }

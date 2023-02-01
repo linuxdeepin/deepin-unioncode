@@ -28,6 +28,7 @@ set(CXX_CPP
     interface/breakpointmodel.cpp
     interface/messagebox.cpp
     interface/menumanager.cpp
+    runner/runner.cpp
     )
 
 set(CXX_H
@@ -57,12 +58,14 @@ set(CXX_H
     interface/breakpointmodel.h
     interface/messagebox.h
     interface/menumanager.h
+    runner/runner.h
     )
 
 add_library(${PROJECT_NAME}
     SHARED
     ${CXX_H}
     ${CXX_CPP}
+    resource.qrc
     )
 
 target_link_libraries(${PROJECT_NAME}

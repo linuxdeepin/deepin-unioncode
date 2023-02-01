@@ -217,7 +217,6 @@ void ProjectTree::expandedProjectDepth(const QStandardItem *root, int depth)
     if (!root)
         return;
 
-    qInfo() << root->data(Qt::DisplayRole);
     if (d->itemDepth(root) < depth) { //满足深度
         expand(d->itemModel->indexFromItem(root));
         for(int i = 0; i < root->rowCount(); i++) {
@@ -262,6 +261,17 @@ ProjectInfo ProjectTree::getProjectInfo(const QString &kitName, const QString &w
             projectInfo = info;
             break;
         }
+    }
+    return projectInfo;
+}
+
+ProjectInfo ProjectTree::getActiveProjectInfo() const
+{
+    ProjectInfo projectInfo;
+    QModelIndexList indexes = selectionModel()->selectedIndexes();
+    if (indexes.size() > 0) {
+        QModelIndex selectedIndex = indexes.at(0);
+        projectInfo = ProjectInfo::get(selectedIndex);
     }
     return projectInfo;
 }

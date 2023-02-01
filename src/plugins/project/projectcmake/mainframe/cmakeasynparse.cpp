@@ -469,12 +469,8 @@ void CmakeAsynParse::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash
                         findNewItem = newChild;
                     }
                     // 当前子节点移动到找到的节点下
-                    qInfo() << item->rowCount();
                     findNewItem->appendRow(item->takeRow(row));
-                    -- row;
-                    qInfo() << item->rowCount();
-                    qInfo() << findNewItem->data(Qt::DisplayRole).toString();
-                    qInfo() << findNewItem->parent()->data(Qt::DisplayRole).toString();
+                    --row;
                 }
             }
         }

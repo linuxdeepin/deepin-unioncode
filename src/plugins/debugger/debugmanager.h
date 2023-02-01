@@ -27,6 +27,7 @@
 #include "interface/variable.h"
 #include "interface/breakpointmodel.h"
 #include "dap/debugger.h"
+#include "runner/runner.h"
 
 #include <QTreeView>
 #include <QSharedPointer>
@@ -77,6 +78,7 @@ private:
     bool runCoredump(const QString &target, const QString &core, const QString &kit);
 
     Debugger *debugger = nullptr;
+    Runner *runner = nullptr;
     QProcess backend;
 
     QSharedPointer<MenuManager> menuManager;

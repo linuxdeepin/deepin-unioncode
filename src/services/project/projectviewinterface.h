@@ -71,6 +71,11 @@ public:
      * \param kitName workspace
      */
     DPF_INTERFACE(dpfservice::ProjectInfo, getProjectInfo, const QString &kitName, const QString &workspace);
+
+    /**
+     * @brief getActiveProjectInfo
+     */
+    DPF_INTERFACE(dpfservice::ProjectInfo, getActiveProjectInfo);
 };
 
 #endif // PROJECTVIEWINTERFACE_H

@@ -34,9 +34,6 @@ SymbolParser::SymbolParser(QObject *parent)
     }
     setProcessEnvironment(procEnv);
     auto env = processEnvironment().systemEnvironment();
-    for (auto val : env.keys()) {
-        qInfo() << val << env.value(val);
-    }
     QObject::connect(this, &QProcess::errorOccurred,
                      this, &SymbolParser::errorOccurred);
     QObject::connect(this, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
@@ -147,10 +144,10 @@ void SymbolParser::finished(int exitCode, QProcess::ExitStatus status)
 
 void SymbolParser::redirectOut()
 {
-    qDebug() << QProcess::readAllStandardOutput();
+//    qDebug() << QProcess::readAllStandardOutput();
 }
 
 void SymbolParser::redirectErr()
 {
-    qCritical() << QProcess::readAllStandardError();
+//    qCritical() << QProcess::readAllStandardError();
 }

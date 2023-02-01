@@ -46,6 +46,7 @@ public:
     void expandedProjectAll(const QStandardItem *root);
     QList<dpfservice::ProjectInfo> getAllProjectInfo();
     dpfservice::ProjectInfo getProjectInfo(const QString &kitName, const QString &workspace);
+    dpfservice::ProjectInfo getActiveProjectInfo() const;
 
 Q_SIGNALS:
     void indexMenuRequest(const QModelIndex &index, QContextMenuEvent *event);

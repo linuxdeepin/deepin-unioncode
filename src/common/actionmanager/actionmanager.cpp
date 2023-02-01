@@ -190,7 +190,8 @@ Command *ActionManager::registerAction(QAction *action, const QString &id,
         return nullptr;
 
     const QIcon icon = QIcon(":/core/images/" + iconFileName);
-    action->setIcon(icon);
+    if (!icon.isNull())
+        action->setIcon(icon);
     
     connect(action, &QAction::destroyed, [=] {
         unregisterAction(id);

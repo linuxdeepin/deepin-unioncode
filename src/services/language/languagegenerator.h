@@ -26,6 +26,13 @@
 #include "services/project/projectinfo.h"
 
 namespace dpfservice {
+
+struct RunCommandInfo {
+    QString program;
+    QStringList arguments;
+    QString workingDir;
+};
+
 class LanguageGenerator : public Generator
 {
     Q_OBJECT
@@ -82,6 +89,13 @@ public:
         Q_UNUSED(projectInfo)
         Q_UNUSED(currentFile)
         return QMap<QString, QVariant>();
+    }
+
+    virtual RunCommandInfo getRunArguments(const dpfservice::ProjectInfo &projectInfo,
+                                                      const QString &currentFile) {
+        Q_UNUSED(projectInfo)
+        Q_UNUSED(currentFile)
+        return {};
     }
 };
 

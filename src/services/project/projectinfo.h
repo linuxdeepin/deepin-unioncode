@@ -60,6 +60,7 @@ public:
     inline void setCleanCustomArgs(const QStringList &args) {data["CleanCustomArgs"] = args;}
     inline void setRunProgram(const QString &program) {data["RunProgram"] = program;}
     inline void setRunCustomArgs(const QStringList &args) {data["RunCustomArgs"] = args;}
+    inline void setRunWorkspaceDir(const QString &workspaceDir) {data["RunWorkspaceDir"] = workspaceDir;}
 
     inline QString language() const {return data["Language"].toString();}
     inline QString kitName() const {return data["KitName"].toString();}
@@ -72,8 +73,9 @@ public:
 
     inline QStringList buildCustomArgs() const {return data["BuildCustomArgs"].toStringList();}
     inline QStringList cleanCustomArgs() const {return data["CleanCustomArgs"].toStringList();}
-    inline QString runProgram() {return data["RunProgram"].toString();}
-    inline QStringList runCustomArgs() {return data["RunCustomArgs"].toStringList();}
+    inline QString runProgram() const {return data["RunProgram"].toString();}
+    inline QStringList runCustomArgs() const {return data["RunCustomArgs"].toStringList();}
+    inline QString runWorkspaceDir() const {return data["RunWorkspaceDir"].toString();}
 
     inline static void set(QStandardItem *root, const ProjectInfo &info)
     {

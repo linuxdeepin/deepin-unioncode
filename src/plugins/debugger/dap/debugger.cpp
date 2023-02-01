@@ -93,7 +93,7 @@ Debugger::Debugger(QObject *parent)
     connect(session.get(), &DebugSession::sigRegisterHandlers, this, &Debugger::registerDapHandlers);
     rtCfgProvider.reset(new RunTimeCfgProvider(this));
 
-    connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &Debugger::handleFrameEvent);
+    connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &Debugger::handleEvents);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
     sessionBus.disconnect(QString(""),
@@ -506,11 +506,8 @@ void Debugger::registerDapHandlers()
     });
 }
 
-void Debugger::handleFrameEvent(const dpf::Event &event)
+void Debugger::handleEvents(const dpf::Event &event)
 {
-    if (!DebugEventReceiver::topics().contains(event.topic()))
-        return;
-
     QString topic = event.topic();
     QString data = event.data().toString();
     if (topic == T_BUILDER) {

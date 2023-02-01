@@ -22,6 +22,8 @@
 
 #include "cmakebuild.h"
 #include "cmakedebug.h"
+#include "services/project/projectservice.h"
+#include <framework/framework.h>
 
 #include <QFile>
 
@@ -106,4 +108,22 @@ QMap<QString, QVariant> CMakeGenerator::getDebugArguments(const dpfservice::Proj
     param.insert("targetPath", CMakeBuild::getTargetPath());
 
     return param;
+}
+
+RunCommandInfo CMakeGenerator::getRunArguments(const ProjectInfo &projectInfo, const QString &currentFile)
+{
+    Q_UNUSED(currentFile)
+
+    QString targetPath;
+    ProjectService *projectService = dpfGetService(ProjectService);
+    if (projectService && projectService->getActiveTarget) {
+        auto target = projectService->getActiveTarget(kActiveExecTarget);
+        targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
+    }
+
+    RunCommandInfo info;
+    info.program = targetPath;
+    info.arguments = projectInfo.runCustomArgs();
+    info.workingDir = projectInfo.workspaceFolder();
+    return info;
 }

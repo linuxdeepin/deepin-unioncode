@@ -93,7 +93,7 @@ signals:
 
 public slots:
     void registerDapHandlers();
-    void handleFrameEvent(const dpf::Event &event);
+    void handleEvents(const dpf::Event &event);
     void printOutput(const QString &content, OutputFormat format = NormalMessageFormat);
     /**
      * interface triggered.

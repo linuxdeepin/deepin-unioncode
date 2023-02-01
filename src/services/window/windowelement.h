@@ -39,6 +39,7 @@ inline const QString MWMBA_CLEAN { QAction::tr("Clean") };
 
 inline const QString MWM_DEBUG { QMenu::tr("&Debug") };
 inline const QString MWMDA_START_DEBUG { QAction::tr("Start Debugging") };
+inline const QString MWMDA_RUNNING { QAction::tr("Running") };
 inline const QString MWMDA_INTERRUPT { QAction::tr("Interrupt") };
 inline const QString MWMDA_CONTINUE { QAction::tr("Continue") };
 inline const QString MWMDA_ABORT_DEBUGGING { QAction::tr("Abort Debugging") };

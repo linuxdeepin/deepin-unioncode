@@ -62,5 +62,7 @@ private:
 DPF_END_NAMESPACE
 
 #define dpfInstance ::dpf::Framework::instance()
+#define dpfContext dpfInstance.serviceContext()
+#define dpfGetService(T) dpfInstance.serviceContext().service<T>(T::name())
 
 #endif // FRAMEWORK_H

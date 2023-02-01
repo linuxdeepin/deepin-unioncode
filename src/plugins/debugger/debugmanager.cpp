@@ -40,6 +40,9 @@ bool DebugManager::initialize(dpfservice::WindowService *windowService,
                               dpfservice::DebuggerService *debuggerService)
 {
     debugger = new Debugger(this);
+    runner = new Runner(this);
+
+    connect(runner, &Runner::sigOutputMsg, debugger, &Debugger::printOutput);
 
     menuManager.reset(new MenuManager());
     menuManager->initialize(windowService);
