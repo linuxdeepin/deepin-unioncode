@@ -1,7 +1,7 @@
 {
     "Dark": {
         "Self": {
-            "Background": "000000",
+            "Background": "2B2B2B",
             "Foreground": "bbbbbb",
             "Cursor" : "ffffff",
             "FontSize" : 16
