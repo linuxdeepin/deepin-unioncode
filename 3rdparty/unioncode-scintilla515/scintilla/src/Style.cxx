@@ -65,8 +65,8 @@ int DefaultFontSize() noexcept {
 
 Style::Style(const char *fontName_) noexcept :
 	FontSpecification(fontName_, DefaultFontSize() * FontSizeMultiplier),
-	fore(0,0,0),
-	back(0xff, 0xff, 0xff),
+    fore(0xa9, 0xa9, 0xa9),
+    back(0x5a, 0x5a, 0x5a),
 	eolFilled(false),
 	underline(false),
 	caseForce(CaseForce::mixed),
