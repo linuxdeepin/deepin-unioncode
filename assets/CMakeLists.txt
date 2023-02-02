@@ -7,7 +7,7 @@ file(GLOB TS_FILES "translations/*.ts")
 foreach(TS_FILE IN LISTS TS_FILES)
     message(STATUS "process ts file: ${TS_FILE}")
     execute_process(COMMAND lupdate "${CMAKE_SOURCE_DIR}/src/" -ts -no-obsolete
-        "${CMAKE_SOURCE_DIR}/assets/translations/${TS_FILE}"
+        "${TS_FILE}"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         OUTPUT_VARIABLE OUTPUT
         ERROR_VARIABLE ERROR
