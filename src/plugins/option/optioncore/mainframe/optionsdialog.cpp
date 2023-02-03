@@ -88,6 +88,7 @@ void OptionsDialog::setupUi(QDialog *Dialog)
     QObject::connect(filterEdit, &QLineEdit::textChanged, this, &OptionsDialog::findOption);
 
     leftSideBar = new QListView(Dialog);
+    leftSideBar->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftBarModel = new QStringListModel(leftSideBar);
     leftSideBar->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
     QObject::connect(leftSideBar, &QListView::clicked, this, [=](const QModelIndex &index){

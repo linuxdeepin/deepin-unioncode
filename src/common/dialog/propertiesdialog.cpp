@@ -129,6 +129,7 @@ void PropertiesDialog::setupUi(QDialog *Dialog)
     leftLayout->addWidget(filterEdit);
 
     leftSideBar = new QListView(Dialog);
+    leftSideBar->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftBarModel = new QStringListModel(leftSideBar);
     leftSideBar->setModel(leftBarModel);
     connect(leftSideBar, SIGNAL(clicked(const QModelIndex &)),
