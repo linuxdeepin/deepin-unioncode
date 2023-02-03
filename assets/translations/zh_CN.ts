@@ -1830,12 +1830,12 @@ storage: %2
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="189"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="188"/>
         <source>Save Changes</source>
         <translation>保存更改</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="190"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="189"/>
         <source>The file has unsaved changes, will save?</source>
         <translation>该文件有未保存的更改，是否保存？</translation>
     </message>
