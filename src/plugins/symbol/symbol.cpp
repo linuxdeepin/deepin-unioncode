@@ -46,18 +46,14 @@ bool Symbol::start()
     qInfo() << __FUNCTION__;
     QString unionparser = "unionparser";
     if (!ProcessUtil::exists(unionparser)) {
-        auto procEnv = env::lang::get(env::lang::User, env::lang::Python, {3});
-        if (!ProcessUtil::execute("/usr/bin/bash", {"-c", unionparser + " --help"}, QDir::homePath(),
-                                  procEnv, [=](const QByteArray &data){qInfo() << qPrintable(data);})) {
-            if (env::pkg::native::installed()) {
-                QString parserNativePkgPath = env::pkg::native::path(env::pkg::Category::get()->unionparser);
-                if (parserNativePkgPath != env::pkg::native::path()) {
-                    ProcessUtil::execute("pip3", {"install", parserNativePkgPath}, [=](const QByteArray &data){
-                        qInfo() << qPrintable(data);
-                    });
-                } else {
-                    qCritical() << "Failed, Not found unionparser env package to install!!!";
-                }
+        if (env::pkg::native::installed()) {
+            QString parserNativePkgPath = env::pkg::native::path(env::pkg::Category::get()->unionparser);
+            if (QFileInfo(parserNativePkgPath).isFile()) {
+                ProcessUtil::execute("pip3", {"install", parserNativePkgPath}, [=](const QByteArray &data){
+                    qInfo() << qPrintable(data);
+                });
+            } else {
+                qCritical() << "Failed, Not found unionparser env package to install!!!";
             }
         }
     }

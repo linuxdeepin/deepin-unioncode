@@ -87,7 +87,7 @@ bool ProcessUtil::exists(const QString &name)
     auto outCallback = [&ret, &name](const QByteArray &array) {
         QList<QByteArray> rmSearch = array.split(' ');
         foreach (QByteArray rmProcess, rmSearch) {
-            QFileInfo info(rmProcess);
+            QFileInfo info(rmProcess.trimmed());
             if (info.exists() && info.fileName() == name && info.isExecutable()) {
                 if (!ret) {
                     ret = true;

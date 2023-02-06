@@ -770,22 +770,22 @@ The dap port is not ready, please retry.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="151"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="153"/>
         <source>The lsp package file is null.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="178"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="180"/>
         <source>The lsp package is not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="196"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="198"/>
         <source>The dap package file is null.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="223"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="225"/>
         <source>The dap package is not exist.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -795,12 +795,12 @@ The dap port is not ready, please retry.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="166"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="168"/>
         <source>Decompress lsp package process exited unnormally.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="211"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="213"/>
         <source>Decompress dap package process exited unnormally.</source>
         <translation type="unfinished"></translation>
     </message>

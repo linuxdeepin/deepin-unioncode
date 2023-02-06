@@ -787,22 +787,22 @@ dap端口未就绪，请重试。
         <translation>不支持计算机架构，无法启动调试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="151"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="153"/>
         <source>The lsp package file is null.</source>
         <translation>lsp包文件为空。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="178"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="180"/>
         <source>The lsp package is not exist.</source>
         <translation>lsp包不存在。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="196"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="198"/>
         <source>The dap package file is null.</source>
         <translation>dap包文件为空。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="223"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="225"/>
         <source>The dap package is not exist.</source>
         <translation>dap包不存在。</translation>
     </message>
@@ -812,12 +812,12 @@ dap端口未就绪，请重试。
         <translation>读取dap 配置失败，请检查文件并重试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="166"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="168"/>
         <source>Decompress lsp package process exited unnormally.</source>
         <translation>解压缩lsp包进程异常退出。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="211"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="213"/>
         <source>Decompress dap package process exited unnormally.</source>
         <translation>解压缩dap包进程异常退出。</translation>
     </message>
