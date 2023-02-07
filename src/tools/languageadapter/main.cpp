@@ -44,15 +44,21 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     compileDB_CMD_As << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
     QProcess::execute("/usr/bin/cmake", compileDB_CMD_As);
 
-    QString clangdFileName = "clangd";
     QStringList procAs;
-    if (!env::pkg::native::installed()) {
-        RemoteChecker::instance().checkLanguageBackend(QString::fromStdString(key.language));
-        QString runtimePath = CustomPaths::lspRuntimePath(QString::fromStdString(key.language));
-        procAs << runtimePath + QDir::separator() + clangdFileName;
+    QString clangd = "clangd-13";
+    if (ProcessUtil::exists(clangd)) {
+        procAs << clangd;
     } else {
-        procAs << env::pkg::native::path(clangdFileName);
+        QString clangdFileName = "clangd";
+        if (!env::pkg::native::installed()) {
+            RemoteChecker::instance().checkLanguageBackend(QString::fromStdString(key.language));
+            QString runtimePath = CustomPaths::lspRuntimePath(QString::fromStdString(key.language));
+            procAs << runtimePath + QDir::separator() + clangdFileName;
+        } else {
+            procAs << env::pkg::native::path(clangdFileName);
+        }
     }
+
     procAs << "--log=verbose";
     procAs << QString("--compile-commands-dir=%0").arg(compileDB_Path);
     procAs << "--clang-tidy";
