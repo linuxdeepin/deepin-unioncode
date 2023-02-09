@@ -787,22 +787,22 @@ dap端口未就绪，请重试。
         <translation>不支持计算机架构，无法启动调试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="153"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="151"/>
         <source>The lsp package file is null.</source>
         <translation>lsp包文件为空。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="180"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="178"/>
         <source>The lsp package is not exist.</source>
         <translation>lsp包不存在。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="198"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="196"/>
         <source>The dap package file is null.</source>
         <translation>dap包文件为空。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="225"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="223"/>
         <source>The dap package is not exist.</source>
         <translation>dap包不存在。</translation>
     </message>
@@ -812,12 +812,12 @@ dap端口未就绪，请重试。
         <translation>读取dap 配置失败，请检查文件并重试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="168"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="166"/>
         <source>Decompress lsp package process exited unnormally.</source>
         <translation>解压缩lsp包进程异常退出。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="213"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="211"/>
         <source>Decompress dap package process exited unnormally.</source>
         <translation>解压缩dap包进程异常退出。</translation>
     </message>
@@ -1003,22 +1003,22 @@ repos path: %0</source>
         <translation>过滤器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="106"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="107"/>
         <source>Head Title</source>
         <translation>标题</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="119"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="120"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="122"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="123"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="127"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="128"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
@@ -1143,17 +1143,17 @@ repos path: %0</source>
         <translation>过滤器</translation>
     </message>
     <message>
-        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="155"/>
+        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="156"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="158"/>
+        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="159"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="163"/>
+        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="164"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>

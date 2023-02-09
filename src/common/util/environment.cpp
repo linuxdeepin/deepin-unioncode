@@ -91,7 +91,11 @@ Program search(Category category, Kit kit, const Version &version)
                 if (executeVersion.major) {
                     program + QString::number(executeVersion.major.value());
                 }
-                ret.binsPath = QDir::homePath() + QDir::separator() + ".local" + QDir::separator() + "bin";
+                QString unionparser = QDir::homePath() + QDir::separator() + ".local" + QDir::separator() + "bin" + "/unionparser";
+                if (!QFile::exists(unionparser)) {
+                    unionparser = "/usr/local/bin/unionparser";
+                }
+                ret.binsPath = QFileInfo(unionparser).dir().path();
                 ret.pkgsPath = QDir::homePath() + QDir::separator()
                         + ".local" + QDir::separator()
                         + "lib" + QDir::separator()
