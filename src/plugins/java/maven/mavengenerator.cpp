@@ -19,9 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "mavengenerator.h"
-
 #include "java/javadebug.h"
 #include "maven/mavenbuild.h"
+#include "javautil.h"
 
 #include <QRegExp>
 
@@ -118,64 +118,17 @@ QMap<QString, QVariant> MavenGenerator::getDebugArguments(const dpfservice::Proj
     return param;
 }
 
-QString getMainClass(const QDir &dir)
-{
-    QFileInfoList entries = dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
-    //Create a QRegExp object with the given regular expression
-    QRegExp regExp("public\\s+static\\s+void\\s+main\\s*\\(\\s*");
-
-    //Loop through files
-    foreach (QFileInfo entry, entries) {
-        if (entry.isDir()) {
-            //If the entry is a folder, call the browseRecursively function again
-            QDir dir(entry.filePath());
-            QString mainClass = getMainClass(dir);
-            if (!mainClass.isEmpty())
-                return mainClass;
-        } else {
-            //If the file is not a folder, then check if it has the .class extension
-            if (entry.suffix().toLower() == "class") {
-                qInfo() << entry.fileName();
-
-                QProcess process;
-                auto temp = entry.filePath();
-                process.start("javap " + entry.filePath());
-                if(!process.waitForFinished()) {
-                    qDebug() << "process is error!";
-                    break;
-                }
-                QString output = process.readAllStandardOutput();
-                //Check if the given regular expression matches the file content
-                if (regExp.indexIn(output) >= 0) {
-                    return entry.filePath();
-                }
-            }
-        }
-    }
-    return {};
-}
-
 RunCommandInfo MavenGenerator::getRunArguments(const ProjectInfo &projectInfo, const QString &currentFile)
 {
     Q_UNUSED(currentFile)
 
     RunCommandInfo runCommandInfo;
+    QString packageDirName = "classes";
 
-    QString mainClassPath = getMainClass(projectInfo.workspaceFolder());
-    if (!mainClassPath.isEmpty()) {
-        QString classes = "classes";
-        QString targetPath = mainClassPath.left(mainClassPath.indexOf(classes));
-        QString classesPath = targetPath + classes;
-
-        int index = mainClassPath.indexOf(classes);
-        QString subStrings = mainClassPath.mid(index + classes.size() + 1);
-        subStrings.remove(".class");
-        subStrings.replace("/", ".");
-
-        runCommandInfo.program = "java";
-        runCommandInfo.arguments << subStrings;
-        runCommandInfo.workingDir = classesPath;
-    }
+    QString mainClassPath = JavaUtil::getMainClassPath(projectInfo.workspaceFolder());
+    runCommandInfo.program = "java";
+    runCommandInfo.arguments << JavaUtil::getMainClass(mainClassPath, packageDirName);
+    runCommandInfo.workingDir = JavaUtil::getPackageDir(mainClassPath, packageDirName);
 
     return runCommandInfo;
 }

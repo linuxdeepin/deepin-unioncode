@@ -46,6 +46,8 @@ public:
     bool isStopDAPManually() override;
     QMap<QString, QVariant> getDebugArguments(const dpfservice::ProjectInfo &projectInfo,
                                               const QString &currentFile) override;
+    dpfservice::RunCommandInfo getRunArguments(const dpfservice::ProjectInfo &projectInfo,
+                                                         const QString &currentFile) override;
 
 signals:
 

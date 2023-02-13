@@ -22,6 +22,7 @@
 
 #include "java/javadebug.h"
 #include "gradle/gradlebuild.h"
+#include "javautil.h"
 
 using namespace dpfservice;
 
@@ -109,3 +110,19 @@ QMap<QString, QVariant> GradleGenerator::getDebugArguments(const dpfservice::Pro
 
     return param;
 }
+
+dpfservice::RunCommandInfo GradleGenerator::getRunArguments(const dpfservice::ProjectInfo &projectInfo, const QString &currentFile)
+{
+    Q_UNUSED(currentFile)
+
+    RunCommandInfo runCommandInfo;
+    QString packageDirName = "main";
+
+    QString mainClassPath = JavaUtil::getMainClassPath(projectInfo.workspaceFolder());
+    runCommandInfo.program = "java";
+    runCommandInfo.arguments << JavaUtil::getMainClass(mainClassPath, packageDirName);
+    runCommandInfo.workingDir = JavaUtil::getPackageDir(mainClassPath, packageDirName);
+
+    return runCommandInfo;
+}
+

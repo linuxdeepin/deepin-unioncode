@@ -10,6 +10,7 @@ set(CXX_CPP
     java/javadebug.cpp
     javaplugin.cpp
     javaplugin.json
+    javautil.cpp
     )
 
 set(CXX_H
@@ -19,6 +20,7 @@ set(CXX_H
     gradle/gradlebuild.h
     java/javadebug.h
     javaplugin.h
+    javautil.h
     )
 
 set(QT_THEME)
