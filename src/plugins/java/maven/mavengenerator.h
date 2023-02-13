@@ -47,7 +47,8 @@ public:
     bool isStopDAPManually() override;
     QMap<QString, QVariant> getDebugArguments(const dpfservice::ProjectInfo &projectInfo,
                                               const QString &currentFile) override;
-
+    virtual dpfservice::RunCommandInfo getRunArguments(const dpfservice::ProjectInfo &projectInfo,
+                                                      const QString &currentFile);
 signals:
 
 private slots:

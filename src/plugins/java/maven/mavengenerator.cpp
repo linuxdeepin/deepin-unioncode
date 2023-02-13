@@ -23,6 +23,8 @@
 #include "java/javadebug.h"
 #include "maven/mavenbuild.h"
 
+#include <QRegExp>
+
 using namespace dpfservice;
 
 class MavenGeneratorPrivate
@@ -95,12 +97,12 @@ bool MavenGenerator::isStopDAPManually()
     return d->javaDebug->isStopDAPManually();
 }
 
-QString MavenGenerator::build(const QString& projectPath)
+QString MavenGenerator::build(const QString &projectPath)
 {
     return MavenBuild::build(toolKitName(), projectPath);
 }
 
-QString MavenGenerator::getProjectFile(const QString& projectPath)
+QString MavenGenerator::getProjectFile(const QString &projectPath)
 {
     return projectPath + QDir::separator() + "pom.xml";
 }
@@ -114,4 +116,66 @@ QMap<QString, QVariant> MavenGenerator::getDebugArguments(const dpfservice::Proj
     param.insert("workspace", projectInfo.workspaceFolder());
 
     return param;
+}
+
+QString getMainClass(const QDir &dir)
+{
+    QFileInfoList entries = dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+    //Create a QRegExp object with the given regular expression
+    QRegExp regExp("public\\s+static\\s+void\\s+main\\s*\\(\\s*");
+
+    //Loop through files
+    foreach (QFileInfo entry, entries) {
+        if (entry.isDir()) {
+            //If the entry is a folder, call the browseRecursively function again
+            QDir dir(entry.filePath());
+            QString mainClass = getMainClass(dir);
+            if (!mainClass.isEmpty())
+                return mainClass;
+        } else {
+            //If the file is not a folder, then check if it has the .class extension
+            if (entry.suffix().toLower() == "class") {
+                qInfo() << entry.fileName();
+
+                QProcess process;
+                auto temp = entry.filePath();
+                process.start("javap " + entry.filePath());
+                if(!process.waitForFinished()) {
+                    qDebug() << "process is error!";
+                    break;
+                }
+                QString output = process.readAllStandardOutput();
+                //Check if the given regular expression matches the file content
+                if (regExp.indexIn(output) >= 0) {
+                    return entry.filePath();
+                }
+            }
+        }
+    }
+    return {};
+}
+
+RunCommandInfo MavenGenerator::getRunArguments(const ProjectInfo &projectInfo, const QString &currentFile)
+{
+    Q_UNUSED(currentFile)
+
+    RunCommandInfo runCommandInfo;
+
+    QString mainClassPath = getMainClass(projectInfo.workspaceFolder());
+    if (!mainClassPath.isEmpty()) {
+        QString classes = "classes";
+        QString targetPath = mainClassPath.left(mainClassPath.indexOf(classes));
+        QString classesPath = targetPath + classes;
+
+        int index = mainClassPath.indexOf(classes);
+        QString subStrings = mainClassPath.mid(index + classes.size() + 1);
+        subStrings.remove(".class");
+        subStrings.replace("/", ".");
+
+        runCommandInfo.program = "java";
+        runCommandInfo.arguments << subStrings;
+        runCommandInfo.workingDir = classesPath;
+    }
+
+    return runCommandInfo;
 }
