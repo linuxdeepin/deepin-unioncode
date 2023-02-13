@@ -36,8 +36,10 @@
 #include <QApplication>
 #include <QActionGroup>
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QComboBox>
 #include <QTranslator>
+#include <QScreen>
 
 static WindowKeeper *ins{nullptr};
 using namespace dpfservice;
@@ -273,6 +275,15 @@ WindowKeeper::WindowKeeper(QObject *parent)
         });
         layoutWindow(d->window);
         d->window->show();
+        int currentScreenIndex = qApp->desktop()->screenNumber(d->window);
+        QList<QScreen *> screenList = QGuiApplication::screens();
+
+        if (currentScreenIndex < screenList.count()) {
+            QRect screenRect = screenList[currentScreenIndex]->geometry();
+            int screenWidth = screenRect.width();
+            int screenHeight = screenRect.height();
+            d->window->move((screenWidth - d->window->width()) / 2, (screenHeight - d->window->height()) / 2);
+        }
     }
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
