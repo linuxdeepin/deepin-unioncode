@@ -1192,19 +1192,14 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="546"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="550"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="553"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="557"/>
         <source>Find Usages</source>
         <translation>查找用法</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="563"/>
-        <source>Range Formatting</source>
-        <translation>选中范围格式化</translation>
     </message>
     <message>
         <location filename="../../src/plugins/collaborators/collaborators.cpp" line="41"/>
@@ -1556,7 +1551,7 @@ storage: %2
         <translation>打开路径失败，当前远程仓库不是svn子目录</translation>
     </message>
     <message>
-        <location filename="../../src/services/project/projectgenerator.cpp" line="95"/>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="98"/>
         <source>Cannot open the project!
 not exists support files: %0</source>
         <translation>无法打开项目！
@@ -1612,7 +1607,7 @@ storage: %2
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/services/project/projectgenerator.cpp" line="62"/>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="65"/>
         <source>Open %0 Project Directory</source>
         <translation>打开%0项目目录</translation>
     </message>
@@ -1782,7 +1777,7 @@ storage: %2
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="544"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="548"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
@@ -2084,7 +2079,7 @@ storage: %2
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="222"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="226"/>
         <source>Navigation</source>
         <translation>导航栏</translation>
     </message>
@@ -2786,7 +2781,12 @@ Delete anyway?</source>
 <context>
     <name>StyleLsp</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="770"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="229"/>
+        <source>Range Formatting</source>
+        <translation>选中范围格式化</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="774"/>
         <source>There is a fatal error between the current d-&gt;editor component and the backend of the syntax server, which may affect the syntax highlighting. 
 Please contact the maintainer for troubleshooting to solve the problem!</source>
         <translation>当前的编辑器组件和语法服务器后端之间存在致命错误，这可能会影响语法高亮显示。

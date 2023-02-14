@@ -56,6 +56,9 @@ QAction *dpfservice::ProjectGenerator::openProjectAction(const QString &language
                 + QDir::separator() + QString("project_record.support");
         QSettings setting(iniPath, QSettings::IniFormat);
         QString lastPath = setting.value(language + "-" + actionText).toString();
+        if (lastPath.isEmpty()) {
+            lastPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        }
 
         QFileDialog fileDialog;
         QString workspace = fileDialog.getExistingDirectory(

@@ -40,6 +40,7 @@
 #include <QComboBox>
 #include <QTranslator>
 #include <QScreen>
+#include <QStandardPaths>
 
 static WindowKeeper *ins{nullptr};
 using namespace dpfservice;
@@ -77,7 +78,8 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
                                                  "open_file.png");
 
     QAction::connect(actionOpenFile, &QAction::triggered, [=](){
-        QString filePath = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE);
+        QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+        QString filePath = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE, dir);
         if (filePath.isEmpty() && !QFileInfo(filePath).exists())
             return;
         recent.saveOpenedFile(filePath);

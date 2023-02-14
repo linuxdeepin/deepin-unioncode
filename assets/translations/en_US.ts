@@ -1172,18 +1172,13 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="546"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="550"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="553"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="557"/>
         <source>Find Usages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="563"/>
-        <source>Range Formatting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1537,7 +1532,7 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/project/projectgenerator.cpp" line="95"/>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="98"/>
         <source>Cannot open the project!
 not exists support files: %0</source>
         <translation type="unfinished"></translation>
@@ -1583,7 +1578,7 @@ storage: %2
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../../src/services/project/projectgenerator.cpp" line="62"/>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="65"/>
         <source>Open %0 Project Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1753,7 +1748,7 @@ storage: %2
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="544"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="548"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2055,7 +2050,7 @@ storage: %2
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="222"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="226"/>
         <source>Navigation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2750,7 +2745,12 @@ Delete anyway?</source>
 <context>
     <name>StyleLsp</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="770"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="229"/>
+        <source>Range Formatting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="774"/>
         <source>There is a fatal error between the current d-&gt;editor component and the backend of the syntax server, which may affect the syntax highlighting. 
 Please contact the maintainer for troubleshooting to solve the problem!</source>
         <translation type="unfinished"></translation>

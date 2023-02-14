@@ -167,6 +167,7 @@ class StyleLspPrivate
     TextEdit *edit{nullptr};
     TextChangeCache textChangedCache;
     QList<lsp::Data> tokensCache;
+    QAction *rangeFormattingAction{nullptr};
     friend class StyleLsp;
     newlsp::Client *getClient() const;
 };
@@ -224,6 +225,9 @@ StyleLsp::StyleLsp(TextEdit *parent)
         EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(), filePath, range.start.line);
         //        TextEditTabWidget::instance()->jumpToRange(filePath, newRange);
     });
+
+    d->rangeFormattingAction = new QAction(tr("Range Formatting"));
+    d->rangeFormattingAction->setShortcut(QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_I));
 }
 
 TextEdit *StyleLsp::edit()
@@ -560,8 +564,8 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
         }
     });
 
-    QAction *rangeFormattingAction = contextMenu.addAction(QAction::tr("Range Formatting"));
-    QObject::connect(rangeFormattingAction, &QAction::triggered, [&](){
+    contextMenu.addAction(d->rangeFormattingAction);
+    QObject::connect(d->rangeFormattingAction, &QAction::triggered, [&](){
         if (d->getClient()) {
             auto selStart = getLspPosition(d->edit->docPointer(), d->edit->selectionStart());
             auto selEnd = getLspPosition(d->edit->docPointer(), d->edit->selectionEnd());
