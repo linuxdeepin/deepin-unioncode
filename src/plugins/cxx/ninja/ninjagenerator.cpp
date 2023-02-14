@@ -22,6 +22,8 @@
 
 #include "ninjabuild.h"
 #include "ninjadebug.h"
+#include "services/project/projectservice.h"
+#include "services/option/optionmanager.h"
 
 #include <QFile>
 
@@ -83,7 +85,7 @@ dap::LaunchRequest NinjaGenerator::launchDAP(const QMap<QString, QVariant> &para
     return d->ninjaDebug->launchDAP(targetPath, arguments);
 }
 
-QString NinjaGenerator::build(const QString& projectPath)
+QString NinjaGenerator::build(const QString &projectPath)
 {
     return NinjaBuild::build(toolKitName(), projectPath);
 }
@@ -96,8 +98,22 @@ QMap<QString, QVariant> NinjaGenerator::getDebugArguments(const dpfservice::Proj
     QMap<QString, QVariant> param;
     QString workspace = projectInfo.workspaceFolder();
     param.insert("workspace", workspace);
-    QString targetPath = workspace + QDir::separator()  + QFileInfo(workspace).fileName();
+    QString targetPath = workspace + QDir::separator() + QFileInfo(workspace).fileName();
     param.insert("targetPath", targetPath);
 
     return param;
+}
+
+RunCommandInfo NinjaGenerator::getRunArguments(const ProjectInfo &projectInfo, const QString &currentFile)
+{
+    Q_UNUSED(currentFile)
+
+    RunCommandInfo runCommandInfo;
+    QString workspace = projectInfo.workspaceFolder();
+    QString targetPath = workspace + QDir::separator() + QFileInfo(workspace).fileName();
+    runCommandInfo.program = targetPath;
+    runCommandInfo.arguments = projectInfo.runCustomArgs();
+    runCommandInfo.workingDir = workspace;
+
+    return runCommandInfo;
 }
