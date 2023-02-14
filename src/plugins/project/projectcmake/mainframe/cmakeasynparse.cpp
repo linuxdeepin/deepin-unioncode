@@ -416,9 +416,6 @@ void CmakeAsynParse::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash
     QStandardItem * addRows = new QStandardItem("Temp");
     for (int row = 0; row < item->rowCount(); ++row) {
         QStandardItem *childItem = item->child(row);
-        qInfo() << item->toolTip()
-                << item->data(Qt::DisplayRole).toString()
-                << item->rowCount();
         QString displayName = childItem->data(Qt::DisplayRole).toString();
         // build lib icon setting
         if (displayName.contains(CDT_TARGETS_TYPE::get()->Lib)) {

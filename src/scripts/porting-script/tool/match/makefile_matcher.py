@@ -99,8 +99,10 @@ class MakefileMatcher(Matcher):
         match = re.finditer(self.pattern, contens, mode)
         for item in match:
             start_line, end_line = self.get_line_number(contens, item)
-            key = item.group().split()[0]
-            result.append([key, (start_line, end_line)])
+            split_list = item.group().split()
+            if split_list:
+                key = split_list[0]
+                result.append([key, (start_line, end_line)])
         return result
 
     def dump_result(self):
