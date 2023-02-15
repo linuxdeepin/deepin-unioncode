@@ -107,5 +107,8 @@ int main(int argc, char *argv[])
         abort();
     }
 
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     return a.exec();
 }
