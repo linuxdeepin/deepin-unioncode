@@ -105,6 +105,7 @@ public slots:
     void currentThreadChanged(const QString &text);
 
     void slotReceivedDAPPort(const QString &uuid, int port, const QString &kitName, const QMap<QString, QVariant> &param);
+    void slotOutputMsg(const QString &title, const QString &msg);
 private:
     void initializeView();
     void handleFrames(const StackFrames &stackFrames);
@@ -119,8 +120,8 @@ private:
     QString requestBuild();
     void start();
     void prepareDebug();
-    bool prepareDAPPort(const QMap<QString, QVariant> &param, const QString &kitName, bool customDap);
-    void stopWaitingDAPPort();
+    bool requestDebugPort(const QMap<QString, QVariant> &param, const QString &kitName, bool customDap);
+    void stopWaitingDebugPort();
     void stopDAP();
     void launchSession(int port, const QMap<QString, QVariant> &param, const QString &kitName);
     void disassemble(const QString &address);

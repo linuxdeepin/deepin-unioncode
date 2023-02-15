@@ -69,9 +69,6 @@ class DebuggerPrivate
     QString currentOpenedFileName;
     QString currentBuildUuid;
     QString requestDAPPortUuid;
-    QSharedPointer<QTimer> timer = nullptr;
-    QSharedPointer<QThread> timerThread = nullptr;
-    std::atomic_bool isWaitingPort = false;
     std::atomic_bool isCustomDap = false;
     QString userKitName;
 };
@@ -96,16 +93,17 @@ Debugger::Debugger(QObject *parent)
     connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &Debugger::handleEvents);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
-    sessionBus.disconnect(QString(""),
-                          "/path",
-                          "com.deepin.unioncode.interface",
-                          "dapport",
-                          this, SLOT(slotReceivedDAPPort(QString, int, QString, QMap<QString, QVariant>)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
                        "dapport",
                        this, SLOT(slotReceivedDAPPort(QString, int, QString, QMap<QString, QVariant>)));
+
+    sessionBus.connect(QString(""),
+                       "/path",
+                       "com.deepin.unioncode.interface",
+                       "output",
+                       this, SLOT(slotOutputMsg(const QString&, const QString&)));
 
     initializeView();
 }
@@ -536,7 +534,7 @@ void Debugger::handleEvents(const dpf::Event &event)
                 auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
                 if (generator) {
                     QMap<QString, QVariant> param = generator->getDebugArguments(d->projectInfo, d->currentOpenedFileName);
-                    prepareDAPPort(param, d->activeProjectKitName, false);
+                    requestDebugPort(param, d->activeProjectKitName, false);
                 }
             }
         }
@@ -837,7 +835,8 @@ void Debugger::start()
 
 void Debugger::prepareDebug()
 {
-    if (getRunState() == kStart) {
+    auto runState = getRunState();
+    if (runState == kRunning) {
         QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Is preparing dependence, please waiting for a moment"));
         return;
     }
@@ -855,15 +854,15 @@ void Debugger::prepareDebug()
                 QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
                 updateRunState(kPreparing);
             } else if (!generator->isAnsyPrepareDebug()) {
-                prepareDAPPort(param, d->activeProjectKitName, false);
+                requestDebugPort(param, d->activeProjectKitName, false);
             }
         }
     }
 }
 
-bool Debugger::prepareDAPPort(const QMap<QString, QVariant> &param, const QString &kitName, bool customDap)
+bool Debugger::requestDebugPort(const QMap<QString, QVariant> &param, const QString &kitName, bool customDap)
 {
-    if (d->isWaitingPort) {
+    if (runState == kRunning) {
         QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Is getting the dap port, please waiting for a moment"));
         return false;
     }
@@ -873,35 +872,12 @@ bool Debugger::prepareDAPPort(const QMap<QString, QVariant> &param, const QStrin
     if (service) {
         auto generator = service->create<LanguageGenerator>(kitName);
         if (generator) {
-            d->isWaitingPort = true;
-            printOutput(tr("Searching dap port, please waiting...(a maximum of 10 seconds) "));
-
-            d->timer.reset(new QTimer());
-            d->timerThread.reset(new QThread());
-            d->timer->start(PER_WAIT_MSEC);
-            d->timer->moveToThread(d->timerThread.get());
-            static int times = MAX_WAIT_TIMES;
-            connect(d->timer.get(), &QTimer::timeout, [this]() {
-                times--;
-                if (times < 0) {
-                    times = MAX_WAIT_TIMES;
-                    stopWaitingDAPPort();
-                    QString tip = tr("Getting dap port timeout, please retry.");
-                    printOutput(tip);
-                    QMetaObject::invokeMethod(this, "message", Q_ARG(QString, tip));
-                } else {
-                    QString tip = QString("...").arg(times);
-                    printOutput(tip, StdOutFormatSameLine);
-                }
-            });
-            d->timerThread->start();
-
             d->isCustomDap = customDap;
             QString retMsg;
             d->requestDAPPortUuid = QUuid::createUuid().toString();
             if (!generator->requestDAPPort(d->requestDAPPortUuid, param, retMsg)) {
                 QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
-                stopWaitingDAPPort();
+                stopWaitingDebugPort();
                 return false;
             }
         }
@@ -918,19 +894,25 @@ void Debugger::stopDAP()
 
 void Debugger::slotReceivedDAPPort(const QString &uuid, int port, const QString &kitName, const QMap<QString, QVariant> &param)
 {
-    if (d->isWaitingPort) {
-        stopWaitingDAPPort();
-
-        if (d->requestDAPPortUuid == uuid)
-            launchSession(port, param, kitName);
-    }
+    if (d->requestDAPPortUuid == uuid)
+        launchSession(port, param, kitName);
 }
 
-void Debugger::stopWaitingDAPPort()
+void Debugger::slotOutputMsg(const QString &title, const QString &msg)
 {
-    d->timer->stop();
-    d->timerThread->quit();
-    d->isWaitingPort = false;
+    OutputFormat format = NormalMessageFormat;
+    if (title == "stdErr") {
+        format = StdErrFormat;
+    } else if (title == "stdOut") {
+        format = StdOutFormat;
+    } else if (title == "normal") {
+        format = NormalMessageFormat;
+    }
+    printOutput(msg, format);
+}
+
+void Debugger::stopWaitingDebugPort()
+{
     updateRunState(kPreparing);
 }
 
@@ -1018,7 +1000,7 @@ bool Debugger::runCoredump(const QString &target, const QString &core, const QSt
     param.insert("arguments", QStringList{core});
     d->userKitName = kit;
 
-    return prepareDAPPort(param, d->userKitName, true);
+    return requestDebugPort(param, d->userKitName, true);
 }
 
 void Debugger::disassemble(const QString &address)

@@ -68,6 +68,7 @@ private:
     void parseResult(const QString &content);
     bool parseMainClass(const QString &content, QString &mainClass, QString &projectName);
     bool parseClassPath(const QString &content, QStringList &classPaths);
+    void outputMsg(const QString &title, const QString &msg);
 
     JavaDebuggerPrivate *const d;
 };

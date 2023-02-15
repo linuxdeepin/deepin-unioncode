@@ -78,13 +78,17 @@ JavaDebugger::JavaDebugger(QObject *parent)
         QByteArray data = d->process.readAllStandardOutput();
 
         qInfo() << "message:" << qPrintable(data);
+        outputMsg("stdOut", data);
         parseResult(data);
     });
 
     connect(&d->process, &QProcess::readyReadStandardError, [this]() {
         QByteArray data = d->process.readAllStandardError();
         qInfo() << "error:" << qPrintable(data);
+        outputMsg("stdErr", data);
     });
+
+
 }
 
 JavaDebugger::~JavaDebugger()
@@ -159,6 +163,7 @@ void JavaDebugger::initialize(const QString &configHomePath,
     qInfo() << validPort;
     QStringList options;
     options << "-c" << param;
+    outputMsg("normal", options.join(";"));
     d->process.start("/bin/bash", options);
     d->process.waitForStarted();
 
@@ -212,6 +217,7 @@ void JavaDebugger::executeCommand(const QString &command)
     int length = command.length();
     QString writeStr = QString("Content-Length:%1\r\n\r\n%2").arg(length).arg(command);
     qInfo() << writeStr;
+    outputMsg("normal", writeStr.toUtf8());
     d->process.write(writeStr.toUtf8());
     d->process.waitForBytesWritten();
 }
@@ -327,6 +333,18 @@ bool JavaDebugger::parseClassPath(const QString &content, QStringList &classPath
         return true;
 
     return false;
+}
+
+void JavaDebugger::outputMsg(const QString &title, const QString &msg)
+{
+
+    auto dbusMsg = QDBusMessage::createSignal("/path",
+                                            "com.deepin.unioncode.interface",
+                                            "output");
+
+    dbusMsg << title;
+    dbusMsg << (msg + "\n");
+    QDBusConnection::sessionBus().send(dbusMsg);
 }
 
 void JavaDebugger::slotCheckInfo()
