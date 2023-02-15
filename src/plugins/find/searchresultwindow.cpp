@@ -53,7 +53,7 @@ SearchResultTreeView::SearchResultTreeView(QWidget *parent)
         if (!index.parent().isValid())
             return;
         QModelIndex parentIndex = index.parent();
-        QString filePath = parentIndex.data(Qt::UserRole+1).toString();
+        QString filePath = parentIndex.data(Qt::UserRole+1).toString().trimmed();
         int lineNumber = index.data(Qt::UserRole+1).toInt();
         qInfo() << filePath << lineNumber;
 

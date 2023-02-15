@@ -461,8 +461,8 @@
 <context>
     <name>Debugger</name>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="373"/>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="401"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="371"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="399"/>
         <source>
 The debugee has Terminated.
 </source>
@@ -471,51 +471,41 @@ The debugee has Terminated.
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="391"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="389"/>
         <source>The debugee has Exited.
 </source>
         <translation>调试已退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="692"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="690"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation>名字</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="694"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="692"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation>含义</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="695"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="693"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;p&gt;下位机停止，因为它收到了来自操作系统的信号。&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;信号名： &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;信号含义： &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="701"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="699"/>
         <source>Signal Received</source>
         <translation>信号已接收</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="750"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="748"/>
         <source>Threads:</source>
         <translation>线程：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="877"/>
-        <source>Searching dap port, please waiting...(a maximum of 10 seconds) </source>
-        <translation>正在搜索dap端口，请稍候。。。（最长10秒）</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="889"/>
-        <source>Getting dap port timeout, please retry.</source>
-        <translation>获取DAP端口超时，请重试。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="940"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="922"/>
         <source>
 The dap port is not ready, please retry.
 </source>
@@ -524,22 +514,22 @@ dap端口未就绪，请重试。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="945"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="927"/>
         <source>Debugging starts</source>
         <translation>调试开始</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="1000"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="982"/>
         <source>Start debugging coredump file: </source>
         <translation>开始调试coredump文件： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="1003"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="985"/>
         <source>The coredump target file is error: </source>
         <translation>coredump目标文件错误： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="1010"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="992"/>
         <source>The coredump file is error: </source>
         <translation>coredump文件错误： </translation>
     </message>
@@ -849,23 +839,16 @@ dap端口未就绪，请重试。
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="134"/>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="140"/>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="146"/>
-        <source>Manage...</source>
-        <translation>管理...</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="137"/>
         <source>CMake generator:</source>
         <translation>CMake生成器：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="143"/>
+        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="137"/>
         <source>Debugger:</source>
         <translation>调试器：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="152"/>
+        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="143"/>
         <source>Name:</source>
         <translation>名字：</translation>
     </message>

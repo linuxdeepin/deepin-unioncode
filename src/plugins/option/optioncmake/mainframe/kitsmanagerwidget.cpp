@@ -130,20 +130,11 @@ void KitsManagerWidget::setupUi()
 
     d->cbDebugger = new QComboBox(scrollAreaWidget);
 
-    auto btnCompilerManage = new QPushButton(scrollAreaWidget);
-    btnCompilerManage->setText(tr("Manage..."));
-
     auto labelGenerator = new QLabel(scrollAreaWidget);
     labelGenerator->setText(tr("CMake generator:"));
 
-    auto btnDebuggerManage = new QPushButton(scrollAreaWidget);
-    btnDebuggerManage->setText(tr("Manage..."));
-
     auto labelDebugger = new QLabel(scrollAreaWidget);
     labelDebugger->setText(tr("Debugger:"));
-
-    auto btnCMakeManage = new QPushButton(scrollAreaWidget);
-    btnCMakeManage->setText(tr("Manage..."));
 
     d->labelGeneratorExpression = new QLabel(scrollAreaWidget);
     d->labelGeneratorExpression->setText(QString());
@@ -164,11 +155,8 @@ void KitsManagerWidget::setupUi()
     detailGridLayout->addWidget(d->cbCComplier, 2, 2, 1, 1);
     detailGridLayout->addWidget(labelCompiler, 2, 0, 2, 1);
     detailGridLayout->addWidget(d->cbDebugger, 4, 2, 1, 1);
-    detailGridLayout->addWidget(btnCompilerManage, 2, 3, 2, 1);
     detailGridLayout->addWidget(labelGenerator, 6, 0, 1, 1);
-    detailGridLayout->addWidget(btnDebuggerManage, 4, 3, 1, 1);
     detailGridLayout->addWidget(labelDebugger, 4, 0, 1, 1);
-    detailGridLayout->addWidget(btnCMakeManage, 5, 3, 1, 1);
     detailGridLayout->addWidget(d->labelGeneratorExpression, 6, 2, 1, 1);
     detailGridLayout->addWidget(Name, 1, 0, 1, 1);
     detailGridLayout->addWidget(labelCCompiler, 2, 1, 1, 1);

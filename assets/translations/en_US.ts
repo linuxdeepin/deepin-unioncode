@@ -449,80 +449,70 @@
 <context>
     <name>Debugger</name>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="373"/>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="401"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="371"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="399"/>
         <source>
 The debugee has Terminated.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="391"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="389"/>
         <source>The debugee has Exited.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="692"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="690"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="694"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="692"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="695"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="693"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="701"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="699"/>
         <source>Signal Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="750"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="748"/>
         <source>Threads:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="877"/>
-        <source>Searching dap port, please waiting...(a maximum of 10 seconds) </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="889"/>
-        <source>Getting dap port timeout, please retry.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="940"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="922"/>
         <source>
 The dap port is not ready, please retry.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="945"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="927"/>
         <source>Debugging starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="1000"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="982"/>
         <source>Start debugging coredump file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="1003"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="985"/>
         <source>The coredump target file is error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="1010"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="992"/>
         <source>The coredump file is error: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -832,23 +822,16 @@ The dap port is not ready, please retry.
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="134"/>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="140"/>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="146"/>
-        <source>Manage...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="137"/>
         <source>CMake generator:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="143"/>
+        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="137"/>
         <source>Debugger:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="152"/>
+        <location filename="../../src/plugins/option/optioncmake/mainframe/kitsmanagerwidget.cpp" line="143"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
