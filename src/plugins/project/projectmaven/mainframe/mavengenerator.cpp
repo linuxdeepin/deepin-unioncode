@@ -26,10 +26,12 @@
 #include "services/builder/builderservice.h"
 
 #include "common/dialog/propertiesdialog.h"
+#include "mainframe/properties/configutil.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
 
+using namespace config;
 class MavenGeneratorPrivate
 {
     friend class MavenGenerator;
@@ -78,6 +80,11 @@ QDialog *MavenGenerator::configureWidget(const QString &language,
     info.setLanguage(language);
     info.setKitName(MavenGenerator::toolKitName());
     info.setWorkspaceFolder(workspace);
+
+    // refresh config.
+    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(info.workspaceFolder()), *param);
+    info.setDetailInformation(param->detailInfo);
 
     configure(info);
 

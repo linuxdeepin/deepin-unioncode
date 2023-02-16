@@ -64,6 +64,7 @@ struct ConfigureParam {
     ItemInfo jdkVersion;
     ItemInfo mavenVersion;
     QString mainClass;
+    bool detailInfo = true;
 
     friend QDataStream &operator<<(QDataStream &stream, const ConfigureParam &data)
     {
@@ -73,6 +74,7 @@ struct ConfigureParam {
         stream << data.jdkVersion;
         stream << data.mavenVersion;
         stream << data.mainClass;
+        stream << data.detailInfo;
 
         return stream;
     }
@@ -85,6 +87,7 @@ struct ConfigureParam {
         stream >> data.jdkVersion;
         stream >> data.mavenVersion;
         stream >> data.mainClass;
+        stream >> data.detailInfo;
 
         return stream;
     }
@@ -97,6 +100,7 @@ struct ConfigureParam {
         jdkVersion.clear();
         mavenVersion.clear();
         mainClass.clear();
+        detailInfo = true;
     }
 };
 

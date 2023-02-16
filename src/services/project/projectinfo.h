@@ -55,6 +55,7 @@ public:
     inline void setBuildProgram(const QString &program) {data["BuildProgram"] = program;}
     inline void setConfigCustomArgs(const QStringList &args) {data["ConfigCustomArgs"] = args;}
     inline void setSourceFiles(const QSet<QString> &files) {data["SourceFiles"] = QVariant::fromValue(files);}
+    inline void setDetailInformation(bool isDetail) {data["DetailInformation"] = isDetail;}
 
     inline void setBuildCustomArgs(const QStringList &args) {data["BuildCustomArgs"] = args;}
     inline void setCleanCustomArgs(const QStringList &args) {data["CleanCustomArgs"] = args;}
@@ -70,6 +71,7 @@ public:
     inline QString buildProgram() const {return data["BuildProgram"].toString();}
     inline QStringList configCustomArgs() const {return data["ConfigCustomArgs"].toStringList();}
     inline QSet<QString> sourceFiles() const {return qvariant_cast<QSet<QString>>(data["SourceFiles"]);}
+    inline bool detailInformation() const {return data["DetailInformation"].toBool();}
 
     inline QStringList buildCustomArgs() const {return data["BuildCustomArgs"].toStringList();}
     inline QStringList cleanCustomArgs() const {return data["CleanCustomArgs"].toStringList();}

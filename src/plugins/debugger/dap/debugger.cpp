@@ -875,6 +875,7 @@ bool Debugger::requestDebugPort(const QMap<QString, QVariant> &param, const QStr
             d->isCustomDap = customDap;
             QString retMsg;
             d->requestDAPPortUuid = QUuid::createUuid().toString();
+            printOutput(tr("Requesting debug port..."));
             if (!generator->requestDAPPort(d->requestDAPPortUuid, param, retMsg)) {
                 QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
                 stopWaitingDebugPort();
@@ -900,7 +901,7 @@ void Debugger::slotReceivedDAPPort(const QString &uuid, int port, const QString 
 
 void Debugger::slotOutputMsg(const QString &title, const QString &msg)
 {
-    OutputFormat format = NormalMessageFormat;
+    OutputFormat format = DebugFormat;
     if (title == "stdErr") {
         format = StdErrFormat;
     } else if (title == "stdOut") {
@@ -908,7 +909,10 @@ void Debugger::slotOutputMsg(const QString &title, const QString &msg)
     } else if (title == "normal") {
         format = NormalMessageFormat;
     }
-    printOutput(msg, format);
+    bool isDetail = dpfGetService(ProjectService)->projectView.getActiveProjectInfo().detailInformation();
+    if (isDetail || title == "stdErr") {
+        printOutput(msg, format);
+    }
 }
 
 void Debugger::stopWaitingDebugPort()

@@ -29,6 +29,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QCheckBox>
 
 using namespace config;
 
@@ -38,6 +39,7 @@ class DetailPropertyWidgetPrivate
     QComboBox *jdkVersionComboBox{nullptr};
     QComboBox *mvnVersionComboBox{nullptr};
     QLineEdit *mainClass{nullptr};
+    QCheckBox *detailBox{nullptr};
     QSharedPointer<ToolChainData> toolChainData;
 };
 
@@ -61,7 +63,7 @@ void DetailPropertyWidget::setupUI()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    QLabel *label = new QLabel(QLabel::tr("JDK version："));
+    QLabel *label = new QLabel(QLabel::tr("JDK version:"));
     label->setFixedWidth(120);
     d->jdkVersionComboBox = new QComboBox();
     hLayout->addWidget(label);
@@ -77,7 +79,7 @@ void DetailPropertyWidget::setupUI()
     vLayout->addLayout(hLayout);
 
     hLayout = new QHBoxLayout();
-    label = new QLabel(QLabel::tr("Main Class："));
+    label = new QLabel(QLabel::tr("Main Class:"));
     label->setFixedWidth(120);
     d->mainClass = new QLineEdit();
     d->mainClass->setPlaceholderText(tr("Input main class"));
@@ -85,6 +87,15 @@ void DetailPropertyWidget::setupUI()
     hLayout->addWidget(d->mainClass);
     vLayout->addLayout(hLayout);
     vLayout->addStretch(10);
+
+    hLayout = new QHBoxLayout();
+    label = new QLabel(QLabel::tr("Detail output:"));
+    label->setFixedWidth(120);
+    d->detailBox = new QCheckBox();
+    hLayout->addWidget(label);
+    hLayout->addWidget(d->detailBox);
+    hLayout->setAlignment(Qt::AlignLeft);
+    vLayout->addLayout(hLayout);
 }
 
 void DetailPropertyWidget::initData()
@@ -130,6 +141,7 @@ void DetailPropertyWidget::setValues(const config::ConfigureParam *param)
     initComboBox(d->jdkVersionComboBox, param->jdkVersion);
     initComboBox(d->mvnVersionComboBox, param->mavenVersion);
     d->mainClass->setText(param->mainClass);
+    d->detailBox->setChecked(param->detailInfo);
 }
 
 void DetailPropertyWidget::getValues(config::ConfigureParam *param)
@@ -150,6 +162,7 @@ void DetailPropertyWidget::getValues(config::ConfigureParam *param)
     getValue(d->jdkVersionComboBox, param->jdkVersion);
     getValue(d->mvnVersionComboBox, param->mavenVersion);
     param->mainClass = d->mainClass->text();
+    param->detailInfo = d->detailBox->isChecked();
 }
 
 class ConfigPropertyWidgetPrivate
