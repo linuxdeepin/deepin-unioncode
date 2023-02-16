@@ -44,6 +44,7 @@ class NavEditMainWindow : public QMainWindow
     QTabWidget *qTabWidgetContext{nullptr};
     QTabWidget *qTabWidgetWorkspace{nullptr};
     ToolBarManager *mainToolBar{nullptr};
+    QList<QString> contextList;
 public:
     static NavEditMainWindow *instance();
     explicit NavEditMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
@@ -53,7 +54,7 @@ public:
     void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget);
     void setWidgetEdit(AbstractCentral *editWidget);
     void setWidgetWatch(AbstractWidget *watchWidget);
-    void addWidgetContext(const QString &title, AbstractWidget *contextWidget);
+    void addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group = nullptr);
     bool switchWidgetWorkspace(const QString &title);
     bool switchWidgetContext(const QString &title);
     void addFindToolBar(AbstractWidget *findToolbar);

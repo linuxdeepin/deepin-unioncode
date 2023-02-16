@@ -180,13 +180,38 @@ void NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
     }
 }
 
-void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *contextWidget)
+void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group)
 {
     QWidget *qWidget = static_cast<QWidget*>(contextWidget->qWidget());
     if (!qWidget || !qTabWidgetContext) {
         return;
     }
-    qTabWidgetContext->addTab(qWidget, title);
+
+    if (group.isEmpty()) {
+        qTabWidgetContext->insertTab(1, qWidget, title);
+        return;
+    }
+
+    int index = 0;
+    if (!contextList.count(group)) {
+        for (int i = 0; i < contextList.size(); i++) {
+            const QString &temp = contextList.at(i);
+            if (QString::compare(group, temp) < 0) {
+                break;
+            } else {
+                index++;
+            }
+        }
+    } else {
+        index = contextList.indexOf(group, 0);
+        for (; index < contextList.size(); index++) {
+            if (contextList.at(index) != group) {
+                break;
+            }
+        }
+    }
+    contextList.insert(index, group);
+    qTabWidgetContext->insertTab(index + 1, qWidget, title);
 }
 
 bool NavEditMainWindow::switchWidgetWorkspace(const QString &title)

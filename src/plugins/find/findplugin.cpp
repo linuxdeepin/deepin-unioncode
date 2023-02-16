@@ -80,7 +80,7 @@ bool FindPlugin::start()
     windowService->addMenu(menuImpl);
 
     AbstractWidget *widgetImpl = new AbstractWidget(new FindToolWindow());
-    emit windowService->addContextWidget(tr("Advanced &Search"), widgetImpl);
+    emit windowService->addContextWidget(tr("Advanced &Search"), widgetImpl, "Advsearch");
 
     FindToolBar * findToolBar = new FindToolBar();
     AbstractWidget *abstractFindToolBar = new AbstractWidget(findToolBar);

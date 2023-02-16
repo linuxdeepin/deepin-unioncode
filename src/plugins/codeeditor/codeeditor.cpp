@@ -88,7 +88,7 @@ bool CodeEditor::start()
         }
 
         if (!windowService->addContextWidget) {
-            windowService->addContextWidget = std::bind(&NavEditMainWindow::addWidgetContext, navEditWindow, _1, _2);
+            windowService->addContextWidget = std::bind(&NavEditMainWindow::addWidgetContext, navEditWindow, _1, _2, _3);
         }
 
         navEditWindow->addWidgetContext(QTabWidget::tr("Code &Lens"),
