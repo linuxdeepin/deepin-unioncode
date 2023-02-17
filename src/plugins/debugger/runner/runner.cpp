@@ -57,7 +57,7 @@ Runner::Runner(QObject *parent)
                                                  );
     connect(d->runAction.get(), &QAction::triggered, this, &Runner::run);
     WindowService *service = dpfGetService(WindowService);
-    service->addToolBarActionItem(tr("Running"), d->runAction.get());
+    service->addToolBarActionItem(tr("Running"), d->runAction.get(), "Debug");
 }
 
 void Runner::run()

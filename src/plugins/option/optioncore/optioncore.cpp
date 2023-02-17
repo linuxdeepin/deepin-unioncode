@@ -81,8 +81,8 @@ bool OptionCore::start()
                                                                   Qt::Key::Key_H),
                                                      "setting.png");
         windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptions));
-        windowService->addToolBarActionItem("Options", actionOptions);
-        windowService->addToolBarSeparator();
+        windowService->addToolBarActionItem("Options", actionOptions, "Options");
+        windowService->addToolBarSeparator("Options");
 
         QObject::connect(actionOptions, &QAction::triggered,
                          optionDialog, &QDialog::show);

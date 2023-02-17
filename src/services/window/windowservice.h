@@ -162,17 +162,17 @@ public:
     /*!
      * \brief addToolBarActionItem
      */
-    DPF_INTERFACE(bool, addToolBarActionItem, const QString &id, QAction *action);
+    DPF_INTERFACE(bool, addToolBarActionItem, const QString &id, QAction *action, const QString &group);
 
     /*!
      * \brief addToolBarWidgetItem
      */
-    DPF_INTERFACE(bool, addToolBarWidgetItem, const QString &id, AbstractWidget *widget);
+    DPF_INTERFACE(bool, addToolBarWidgetItem, const QString &id, AbstractWidget *widget, const QString &group);
 
     /*!
      * \brief addToolBarSeparator
      */
-    DPF_INTERFACE(void, addToolBarSeparator);
+    DPF_INTERFACE(void, addToolBarSeparator, const QString &group);
 
     /*!
      * \brief removeToolBarItem

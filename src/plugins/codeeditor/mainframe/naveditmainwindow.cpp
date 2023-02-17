@@ -60,15 +60,15 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     using namespace std::placeholders;
     if (!windowService->addToolBarActionItem) {
-        windowService->addToolBarActionItem = std::bind(&NavEditMainWindow::addToolBarActionItem, this, _1, _2);
+        windowService->addToolBarActionItem = std::bind(&NavEditMainWindow::addToolBarActionItem, this, _1, _2, _3);
     }
 
     if (!windowService->addToolBarWidgetItem) {
-        windowService->addToolBarWidgetItem = std::bind(&NavEditMainWindow::addToolBarWidgetItem, this, _1, _2);
+        windowService->addToolBarWidgetItem = std::bind(&NavEditMainWindow::addToolBarWidgetItem, this, _1, _2, _3);
     }
 
     if (!windowService->addToolBarSeparator) {
-        windowService->addToolBarSeparator = std::bind(&NavEditMainWindow::addToolBarSeparator, this);
+        windowService->addToolBarSeparator = std::bind(&NavEditMainWindow::addToolBarSeparator, this, _1);
     }
 
     if (!windowService->removeToolBarItem) {
@@ -257,27 +257,27 @@ void NavEditMainWindow::showFindToolBar()
      }
 }
 
-bool NavEditMainWindow::addToolBarActionItem(const QString &id, QAction *action)
+bool NavEditMainWindow::addToolBarActionItem(const QString &id, QAction *action, const QString &group)
 {
     if (!mainToolBar)
         return false;
 
-    return mainToolBar->addActionItem(id, action);
+    return mainToolBar->addActionItem(id, action, group);
 }
 
-bool NavEditMainWindow::addToolBarWidgetItem(const QString &id, AbstractWidget *widget)
+bool NavEditMainWindow::addToolBarWidgetItem(const QString &id, AbstractWidget *widget, const QString &group)
 {
     if (!mainToolBar)
         return false;
 
-    return mainToolBar->addWidgetItem(id, static_cast<QWidget*>(widget->qWidget()));
+    return mainToolBar->addWidgetItem(id, static_cast<QWidget*>(widget->qWidget()), group);
 }
 
-void NavEditMainWindow::addToolBarSeparator()
+void NavEditMainWindow::addToolBarSeparator(const QString &group)
 {
     if (!mainToolBar)
         return;
-    mainToolBar->addSeparator();
+    mainToolBar->addSeparator(group);
 }
 
 void NavEditMainWindow::removeToolBarItem(const QString &id)

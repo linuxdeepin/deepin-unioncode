@@ -29,9 +29,11 @@ class ToolBarManagerPrivate
     struct Item {
         QString id;
         QAction *action;
+        QString group;
     };
 
-    QVector<Item> itemVector;
+    QList<Item> itemVector;
+    QList<QString> actionList;
     QToolBar *toolbar = nullptr;
 };
 
@@ -55,37 +57,28 @@ QToolBar *ToolBarManager::getToolBar() const
     return d->toolbar;
 }
 
-bool ToolBarManager::addActionItem(const QString &id, QAction *action)
+bool ToolBarManager::addActionItem(const QString &id, QAction *action, const QString &group)
 {
-    if (!action || id.isEmpty() || !d->toolbar)
+    if (!action || id.isEmpty() || !d->toolbar || hasOverrideActionItem(id, action, group))
         return false;
 
-    bool exist = false;
+    int index = sortActionGroup(group);
 
-    for (int i = 0; i < d->itemVector.size(); i++) {
-        if (d->itemVector.at(i).id == id) {
-            d->toolbar->removeAction(d->itemVector.at(i).action);
-            if (i - 1 >= 0) {
-                QAction *before = d->itemVector.at(i - 1).action;
-                d->toolbar->insertAction(before, action);
-            } else {
-                d->toolbar->addAction(action);
-            }
-            d->itemVector.replace(i, {id, action});
-            exist = true;
-            break;
-        }
+    if (index > 0) {
+        index -= 1;
     }
 
-    if (!exist) {
-        d->toolbar->addAction(action);
-        d->itemVector.push_back({id,action});
+    QAction *before = nullptr;
+    if (d->itemVector.size() > index) {
+        before = d->itemVector.at(index).action;
     }
+    d->toolbar->insertAction(before,action);
+    d->itemVector.insert(index, {id, action, group});
 
     return true;
 }
 
-bool ToolBarManager::addWidgetItem(const QString &id, QWidget *widget)
+bool ToolBarManager::addWidgetItem(const QString &id, QWidget *widget, const QString &group)
 {
     if (!widget || id.isEmpty() || !d->toolbar)
         return false;
@@ -102,7 +95,7 @@ bool ToolBarManager::addWidgetItem(const QString &id, QWidget *widget)
             } else {
                 a = d->toolbar->addWidget(widget);
             }
-            d->itemVector.replace(i, {id, a});
+            d->itemVector.replace(i, {id, a, group});
             exist = true;
             break;
         }
@@ -110,15 +103,41 @@ bool ToolBarManager::addWidgetItem(const QString &id, QWidget *widget)
 
     if (!exist) {
         a = d->toolbar->addWidget(widget);
-        d->itemVector.push_back({id,a});
+        d->itemVector.push_back({id, a, group});
     }
 
     return true;
 }
 
-void ToolBarManager::addSeparator()
+bool ToolBarManager::hasOverrideActionItem(const QString &id, QAction *action, const QString &group)
 {
-    d->toolbar->addSeparator();
+    for (int i = 0; i < d->itemVector.size(); i++) {
+        if (d->itemVector.at(i).id == id) {
+            d->toolbar->removeAction(d->itemVector.at(i).action);
+            if (i - 1 >= 0) {
+                QAction *before = d->itemVector.at(i - 1).action;
+                d->toolbar->insertAction(before, action);
+            } else {
+                d->toolbar->addAction(action);
+            }
+            d->itemVector.replace(i, {id, action, group});
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void ToolBarManager::addSeparator(const QString &group)
+{
+    int index = sortActionGroup(group);
+    if (index >= d->itemVector.size()) {
+        d->toolbar->addSeparator();
+    } else {
+        QAction *before = d->itemVector.at(index - 1).action;
+        d->toolbar->insertSeparator(before);
+    }
+    d->itemVector.insert(index, {group, nullptr, group});
 }
 
 void ToolBarManager::removeItem(const QString &id)
@@ -140,5 +159,29 @@ void ToolBarManager::disableItem(const QString &id, bool disable)
             return;
         }
     }
+}
+
+int ToolBarManager::sortActionGroup(const QString &group)
+{
+    int index = 0;
+    if (!d->actionList.count(group)) {
+        for (int i = 0; i < d->actionList.size(); i++) {
+            const QString &temp = d->actionList.at(i);
+            if (QString::compare(group, temp) < 0) {
+                break;
+            } else {
+                index++;
+            }
+        }
+    } else {
+        index = d->actionList.indexOf(group, 0);
+        for (; index < d->actionList.size(); index++) {
+            if (d->actionList.at(index) != group) {
+                break;
+            }
+        }
+    }
+    d->actionList.insert(index, group);
+    return index;
 }
 

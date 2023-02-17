@@ -47,8 +47,8 @@ void MenuManager::initialize(WindowService *windowService)
     connect(startDebugging.get(), &QAction::triggered, debugManager, &DebugManager::run);
     AbstractAction *actionImpl = new AbstractAction(startDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addToolBarActionItem("Start Debugging", startDebugging.get());
-    windowService->addToolBarActionItem("Debugger.Start", startDebugging.get());
+    windowService->addToolBarActionItem("Start Debugging", startDebugging.get(), "Debug");
+    windowService->addToolBarActionItem("Debugger.Start", startDebugging.get(), "Debug");
 
 #if 0 // not used yet.
     detachDebugger.reset(new QAction("Detach Debugger"));
@@ -75,7 +75,7 @@ void MenuManager::initialize(WindowService *windowService)
     connect(continueDebugging.get(), &QAction::triggered, debugManager, &DebugManager::continueDebug);
     actionImpl = new AbstractAction(continueDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addToolBarActionItem("Debugger.Continue", continueDebugging.get());
+    windowService->addToolBarActionItem("Debugger.Continue", continueDebugging.get(), "Debug");
 
     abortDebugging.reset(new QAction(MWMDA_ABORT_DEBUGGING));
     ActionManager::getInstance()->registerAction(abortDebugging.get(), "Debug.Abort.Debugging",
@@ -85,8 +85,8 @@ void MenuManager::initialize(WindowService *windowService)
     connect(abortDebugging.get(), &QAction::triggered, debugManager, &DebugManager::abortDebug);
     actionImpl = new AbstractAction(abortDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addToolBarActionItem("abort_debug", abortDebugging.get());
-    windowService->addToolBarActionItem("Debugger.Stop", abortDebugging.get());
+    windowService->addToolBarActionItem("abort_debug", abortDebugging.get(), "Debug");
+    windowService->addToolBarActionItem("Debugger.Stop", abortDebugging.get(), "Debug");
 
     restartDebugging.reset(new QAction(MWMDA_RESTART_DEBUGGING));
     ActionManager::getInstance()->registerAction(restartDebugging.get(), "Debug.Restart.Debugging",
@@ -105,7 +105,7 @@ void MenuManager::initialize(WindowService *windowService)
     connect(stepOver.get(), &QAction::triggered, debugManager, &DebugManager::stepOver);
     actionImpl = new AbstractAction(stepOver.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addToolBarActionItem("Step.Over", stepOver.get());
+    windowService->addToolBarActionItem("Step.Over", stepOver.get(), "Debug");
 
     stepIn.reset(new QAction(MWMDA_STEP_IN));
     ActionManager::getInstance()->registerAction(stepIn.get(), "Debug.Step.In",
@@ -115,7 +115,7 @@ void MenuManager::initialize(WindowService *windowService)
     connect(stepIn.get(), &QAction::triggered, debugManager, &DebugManager::stepIn);
     actionImpl = new AbstractAction(stepIn.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addToolBarActionItem("Step.In", stepIn.get());
+    windowService->addToolBarActionItem("Step.In", stepIn.get(), "Debug");
 
     stepOut.reset(new QAction(MWMDA_STEP_OUT));
     ActionManager::getInstance()->registerAction(stepOut.get(), "Debug.Step.Out",
@@ -125,8 +125,8 @@ void MenuManager::initialize(WindowService *windowService)
     connect(stepOut.get(), &QAction::triggered, debugManager, &DebugManager::stepOut);
     actionImpl = new AbstractAction(stepOut.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addToolBarActionItem("Step.Out", stepOut.get());
-    windowService->addToolBarSeparator();
+    windowService->addToolBarActionItem("Step.Out", stepOut.get(), "Debug");
+    windowService->addToolBarSeparator("Debug");
 }
 
 void MenuManager::handleRunStateChanged(Debugger::RunState state)

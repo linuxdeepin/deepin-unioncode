@@ -33,11 +33,13 @@ public:
     explicit ToolBarManager(const QString &name, QObject *parent = nullptr);
     virtual ~ToolBarManager() override;
 
-    bool addActionItem(const QString &id, QAction *action);
-    bool addWidgetItem(const QString &id, QWidget *widget);
-    void addSeparator();
+    bool addActionItem(const QString &id, QAction *action, const QString &group);
+    bool addWidgetItem(const QString &id, QWidget *widget, const QString &group);
+    bool hasOverrideActionItem(const QString &id, QAction *action, const QString &group);
+    void addSeparator(const QString &group);
     void removeItem(const QString &id);
     void disableItem(const QString &id, bool visible);
+    int sortActionGroup(const QString &group);
     QToolBar *getToolBar() const;
 
 private:

@@ -1582,7 +1582,7 @@ storage: %2
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="220"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="245"/>
         <source>Find ToolBar</source>
         <translation>查找</translation>
     </message>

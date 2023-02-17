@@ -59,9 +59,9 @@ public:
     bool switchWidgetContext(const QString &title);
     void addFindToolBar(AbstractWidget *findToolbar);
     void showFindToolBar();
-    bool addToolBarActionItem(const QString &id, QAction *action);
-    bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget);
-    void addToolBarSeparator();
+    bool addToolBarActionItem(const QString &id, QAction *action, const QString &group);
+    bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget, const QString &group);
+    void addToolBarSeparator(const QString &group);
     void removeToolBarItem(const QString &id);
     void setToolBarItemDisable(const QString &id, bool disable);
 };
