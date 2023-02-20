@@ -116,6 +116,12 @@ void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &loca
         return;
     }
     QProcess process;
+    QEventLoop eventLoop;
+    connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+            [&]() {
+        eventLoop.exit();
+    });
+
     process.setProgram(svnProgram());
     process.setArguments({"checkout", remote, local, "--username", user, "--password", passwd});
     process.start();
@@ -125,7 +131,7 @@ void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &loca
     status->move(200, 130);
     status->show();
     status->start();
-    process.waitForFinished();
+    eventLoop.exec();
     status->stop();
     delete status;
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
