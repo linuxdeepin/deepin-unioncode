@@ -268,10 +268,9 @@ ProjectInfo ProjectTree::getProjectInfo(const QString &kitName, const QString &w
 ProjectInfo ProjectTree::getActiveProjectInfo() const
 {
     ProjectInfo projectInfo;
-    QModelIndexList indexes = selectionModel()->selectedIndexes();
-    if (indexes.size() > 0) {
-        QModelIndex selectedIndex = indexes.at(0);
-        projectInfo = ProjectInfo::get(selectedIndex);
+    auto activeProject = d->delegate->getActiveProject();
+    if(activeProject.isValid()) {
+        projectInfo = ProjectInfo::get(activeProject);
     }
     return projectInfo;
 }

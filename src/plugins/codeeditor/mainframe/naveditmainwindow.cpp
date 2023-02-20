@@ -253,7 +253,11 @@ void NavEditMainWindow::addFindToolBar(AbstractWidget *findToolbar)
 void NavEditMainWindow::showFindToolBar()
 {
      if (qDockWidgetFindToolBar) {
-         qDockWidgetFindToolBar->show();
+         if (qDockWidgetFindToolBar->isVisible()) {
+             qDockWidgetFindToolBar->hide();
+         } else {
+             qDockWidgetFindToolBar->show();
+         }
      }
 }
 

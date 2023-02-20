@@ -26,11 +26,13 @@
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
 #include "services/option/optionmanager.h"
+#include "mainframe/properties/configutil.h"
 
 #include <QtConcurrent>
 #include <QtXml>
 #include <QFileIconProvider>
 
+using namespace config;
 enum_def(GradleShellKey, QString)
 {
     enum_exp ScriptName = "gradlew";
@@ -127,6 +129,11 @@ QDialog *GradleGenerator::configureWidget(const QString &language,
     info.setLanguage(language);
     info.setKitName(GradleGenerator::toolKitName());
     info.setWorkspaceFolder(projectPath);
+
+    // refresh config.
+    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(info.workspaceFolder()), *param);
+    info.setDetailInformation(param->detailInfo);
 
     configure(info);
 

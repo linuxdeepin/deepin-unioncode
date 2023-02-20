@@ -40,6 +40,11 @@ void ProjectDelegate::setActiveProject(const QModelIndex &root)
     d->index = root;
 }
 
+const QModelIndex &ProjectDelegate::getActiveProject() const
+{
+    return d->index;
+}
+
 void ProjectDelegate::paint(QPainter *painter,
                             const QStyleOptionViewItem &option,
                             const QModelIndex &index) const

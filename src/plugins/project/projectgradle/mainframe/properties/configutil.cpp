@@ -64,6 +64,7 @@ bool ConfigUtil::getProjectInfo(const ConfigureParam *param, dpfservice::Project
     info.setKitName(GradleGenerator::toolKitName());
     info.setWorkspaceFolder(sourceFolder);
     info.setBuildProgram(OptionManager::getInstance()->getGradleToolPath());
+    info.setDetailInformation(param->detailInfo);
 
     return true;
 }
@@ -106,6 +107,7 @@ void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
     info.setWorkspaceFolder(param->projectPath);
     info.setBuildFolder(param->projectPath);
     info.setBuildProgram(param->gradleVersion.path);
+    info.setDetailInformation(param->detailInfo);
 }
 
 } //namespace config

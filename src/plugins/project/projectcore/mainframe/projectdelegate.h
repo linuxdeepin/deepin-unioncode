@@ -31,6 +31,7 @@ class ProjectDelegate : public QStyledItemDelegate
 public:
     explicit ProjectDelegate(QObject *parent = nullptr);
     void setActiveProject(const QModelIndex &root);
+    const QModelIndex &getActiveProject() const;
 
 protected:
     void paint(QPainter *painter,

@@ -23,6 +23,7 @@
 #include "java/javadebug.h"
 #include "gradle/gradlebuild.h"
 #include "javautil.h"
+#include "services/project/projectservice.h"
 
 using namespace dpfservice;
 
@@ -80,8 +81,18 @@ dap::LaunchRequest GradleGenerator::launchDAP(const QMap<QString, QVariant> &par
 {
     QString workspace = param.value("workspace").toString();
     QString mainClass = param.value("mainClass").toString();
+    ProjectService *projectService = dpfGetService(ProjectService);
+    ProjectInfo projectInfo = projectService->projectView.getActiveProjectInfo();
+    QString mainClassPath = JavaUtil::getMainClassPath(projectInfo.workspaceFolder());
+    QString packageDirName = "main";
+    if (mainClass.isEmpty()) {
+        mainClass = JavaUtil::getMainClass(mainClassPath, packageDirName);
+    }
     QString projectName = param.value("projectName").toString();
     QStringList classPaths = param.value("classPaths").toStringList();
+    if (classPaths.isEmpty()) {
+        classPaths << JavaUtil::getPackageDir(mainClassPath, packageDirName);
+    }
     return d->javaDebug->launchDAP(workspace, mainClass, projectName, classPaths);
 }
 

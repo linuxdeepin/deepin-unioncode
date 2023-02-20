@@ -350,9 +350,9 @@ void JavaDebugger::outputMsg(const QString &title, const QString &msg)
 void JavaDebugger::slotCheckInfo()
 {
     if (d->port > 0
-            && !d->mainClass.isEmpty()
+           /* && !d->mainClass.isEmpty()
             && !d->projectName.isEmpty()
-            && !d->classPaths.isEmpty()) {
+            && !d->classPaths.isEmpty()*/) {
         QMap<QString, QVariant> param;
         param.insert("workspace", d->workspace);
         param.insert("mainClass", d->mainClass);

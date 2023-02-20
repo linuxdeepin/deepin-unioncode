@@ -29,6 +29,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QCheckBox>
 
 using namespace config;
 
@@ -39,6 +40,7 @@ class DetailPropertyWidgetPrivate
     QComboBox *gradleVersionComboBox{nullptr};
     QLineEdit *mainClass{nullptr};
     QSharedPointer<ToolChainData> toolChainData;
+    QCheckBox *detailBox{nullptr};
 };
 
 DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
@@ -85,6 +87,15 @@ void DetailPropertyWidget::setupUI()
     hLayout->addWidget(d->mainClass);
     vLayout->addLayout(hLayout);
     vLayout->addStretch(10);
+
+    hLayout = new QHBoxLayout();
+    label = new QLabel(QLabel::tr("Detail output:"));
+    label->setFixedWidth(120);
+    d->detailBox = new QCheckBox();
+    hLayout->addWidget(label);
+    hLayout->addWidget(d->detailBox);
+    hLayout->setAlignment(Qt::AlignLeft);
+    vLayout->addLayout(hLayout);
 }
 
 void DetailPropertyWidget::initData()
@@ -130,6 +141,7 @@ void DetailPropertyWidget::setValues(const config::ConfigureParam *param)
     initComboBox(d->jdkVersionComboBox, param->jdkVersion);
     initComboBox(d->gradleVersionComboBox, param->gradleVersion);
     d->mainClass->setText(param->mainClass);
+    d->detailBox->setChecked(param->detailInfo);
 }
 
 void DetailPropertyWidget::getValues(config::ConfigureParam *param)
@@ -150,6 +162,7 @@ void DetailPropertyWidget::getValues(config::ConfigureParam *param)
     getValue(d->jdkVersionComboBox, param->jdkVersion);
     getValue(d->gradleVersionComboBox, param->gradleVersion);
     param->mainClass = d->mainClass->text();
+    param->detailInfo = d->detailBox->isChecked();
 }
 
 class ConfigPropertyWidgetPrivate
