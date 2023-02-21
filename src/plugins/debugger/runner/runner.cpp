@@ -51,10 +51,9 @@ Runner::Runner(QObject *parent)
     connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &Runner::handleEvents);
 
     d->runAction.reset(new QAction(MWMDA_RUNNING));
-    d->runAction.get()->setIcon(QIcon(":/resource/images/run.png"));
     ActionManager::getInstance()->registerAction(d->runAction.get(), "Debug.Running",
-                                                 MWMDA_RUNNING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5)
-                                                 );
+                                                 MWMDA_RUNNING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5),
+                                                 ":/resource/images/run.png");
     connect(d->runAction.get(), &QAction::triggered, this, &Runner::run);
     WindowService *service = dpfGetService(WindowService);
     service->addToolBarActionItem(tr("Running"), d->runAction.get(), "Debug");

@@ -35,6 +35,7 @@ add_library(${PROJECT_NAME}
     SHARED
     ${CXX_H}
     ${CXX_CPP}
+    builder.qrc
     )
 
 target_link_libraries(${PROJECT_NAME}

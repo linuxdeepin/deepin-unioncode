@@ -106,15 +106,18 @@ void BuildManager::addMenu()
     };
 
     d->buildAction.reset(new QAction(MWMBA_BUILD));
-    actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B), "builder_buiild.png");
+    actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+               ":/buildercore/images/builder_buiild.png");
     windowService->addToolBarActionItem("toolbar.Build", d->buildAction.get(), "Build");
     windowService->addToolBarSeparator("Build");
 
     d->rebuildAction.reset(new QAction(MWMBA_REBUILD));
-    actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B), "rebuild.png");
+    actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B),
+               ":/buildercore/images/rebuild.png");
 
     d->cleanAction.reset(new QAction(MWMBA_CLEAN));
-    actionInit(d->cleanAction.get(), "Build.Clean", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C), "clean.png");
+    actionInit(d->cleanAction.get(), "Build.Clean", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
+               ":/buildercore/images/clean.png");
 
     QObject::connect(d->buildAction.get(), &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);

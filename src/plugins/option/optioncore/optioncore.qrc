@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/optioncore">
+        <file>images/setting.png</file>
+    </qresource>
+</RCC>

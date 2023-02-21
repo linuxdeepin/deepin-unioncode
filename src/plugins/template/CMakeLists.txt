@@ -25,6 +25,7 @@ add_library(${PROJECT_NAME}
     SHARED
     ${CXX_CPP}
     ${CXX_H}
+    template.qrc
     )
 
 target_link_libraries(${PROJECT_NAME}

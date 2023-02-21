@@ -26,6 +26,7 @@ add_library(${PROJECT_NAME}
     ${CXX_CPP}
     ${CXX_H}
     ${QT_THEME}
+    find.qrc
     )
 
 target_link_libraries(${PROJECT_NAME}

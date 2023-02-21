@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/codeeditor">
+        <file>images/format-justify-left.png</file>
+        <file>images/formatting.png</file>
+    </qresource>
+    <qresource prefix="/"/>
+</RCC>

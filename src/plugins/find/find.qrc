@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/find">
+        <file>images/find.png</file>
+        <file>images/edit-find.png</file>
+    </qresource>
+</RCC>

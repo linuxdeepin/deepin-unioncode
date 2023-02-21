@@ -23,6 +23,7 @@ add_library(${PROJECT_NAME}
     SHARED
     ${CXX_H}
     ${CXX_CPP}
+    codeporting.qrc
     )
 
 target_link_libraries(${PROJECT_NAME}

@@ -186,10 +186,7 @@ Command *ActionManager::registerAction(QAction *action, const QString &id,
     if(!action || id.isEmpty())
         return nullptr;
 
-    if(iconFileName == nullptr)
-        return nullptr;
-
-    const QIcon icon = QIcon(":/core/images/" + iconFileName);
+    const QIcon icon = QIcon(iconFileName);
     if (!icon.isNull())
         action->setIcon(icon);
     

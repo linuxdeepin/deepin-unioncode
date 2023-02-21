@@ -79,7 +79,7 @@ bool OptionCore::start()
                                                      QKeySequence(Qt::Modifier::CTRL |
                                                                   Qt::Modifier::SHIFT |
                                                                   Qt::Key::Key_H),
-                                                     "setting.png");
+                                                     ":/optioncore/images/setting.png");
         windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptions));
         windowService->addToolBarActionItem("Options", actionOptions, "Options");
         windowService->addToolBarSeparator("Options");

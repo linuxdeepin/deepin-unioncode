@@ -29,9 +29,11 @@
 #include "codelens/codelens.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "renamepopup/renamepopup.h"
+#include "base/abstractaction.h"
 
 #include "common/common.h"
 #include "framework/service/qtclassmanager.h"
+#include "services/window/windowservice.h"
 
 #include "Document.h"
 
@@ -44,8 +46,11 @@
 #include <QVBoxLayout>
 #include <QCoreApplication>
 #include <QByteArray>
+#include <QShortcut>
 
 #include <bitset>
+
+using namespace dpfservice;
 
 class SciRangeCache
 {
@@ -167,11 +172,14 @@ class StyleLspPrivate
     TextEdit *edit{nullptr};
     TextChangeCache textChangedCache;
     QList<lsp::Data> tokensCache;
-    QAction *rangeFormattingAction{nullptr};
+    static QAction *rangeFormattingAction;
+    static QString formattingFile;
     friend class StyleLsp;
     newlsp::Client *getClient() const;
 };
 
+QAction *StyleLspPrivate::rangeFormattingAction = nullptr;
+QString StyleLspPrivate::formattingFile = "";
 // from ascii code
 inline bool StyleLsp::isCharSymbol(const char ch) {
     return (ch >= 0x21 && ch < 0x2F + 1) || (ch >= 0x3A && ch < 0x40 + 1)
@@ -196,6 +204,10 @@ StyleLsp::StyleLsp(TextEdit *parent)
     : QObject (parent)
     , d (new StyleLspPrivate())
 {
+    auto &ctx = dpfInstance.serviceContext();
+    auto windowService = ctx.service<WindowService>(WindowService::name());
+    if (!windowService)
+        return;
     d->edit = parent;
 
     setIndicStyle();
@@ -223,11 +235,16 @@ StyleLsp::StyleLsp(TextEdit *parent)
         newRange.end.line = range.end.line;
         newRange.end.character = range.end.character;
         EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(), filePath, range.start.line);
-        //        TextEditTabWidget::instance()->jumpToRange(filePath, newRange);
     });
 
-    d->rangeFormattingAction = new QAction(tr("Range Formatting"));
-    d->rangeFormattingAction->setShortcut(QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_I));
+    if (!d->rangeFormattingAction) {
+        d->rangeFormattingAction = new QAction(tr("Range Formatting"));
+        ActionManager::getInstance()->registerAction(d->rangeFormattingAction, "Tool.Range.Formatting",
+                                                     tr("Range Formatting"), QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_I),
+                                                     ":/codeeditor/images/formatting.png");
+        AbstractAction *actionImpl = new AbstractAction(d->rangeFormattingAction);
+        windowService->addAction(MWM_TOOLS, actionImpl);
+    }
 }
 
 TextEdit *StyleLsp::edit()
@@ -577,6 +594,7 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
             params.range = newlsp::Range{newSelStart, newSelEnd};
             params.options.tabSize = 4;
             params.options.insertSpaces = true;
+            d->formattingFile = d->edit->file();
             qApp->metaObject()->invokeMethod(d->getClient(), "rangeFormatting",
                                              Q_ARG(const newlsp::DocumentRangeFormattingParams &, params));
         }
@@ -588,7 +606,7 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
 
 void StyleLsp::sciReplaced(const QString &file, Scintilla::Position start, Scintilla::Position end, const QString &text)
 {
-    if (!d->edit)
+    if (!d->edit || file != d->formattingFile)
         return;
     Q_UNUSED(text)
     Q_UNUSED(start);
@@ -936,7 +954,10 @@ void StyleLsp::rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits
         auto sciPosStart = getSciPosition(d->edit->docPointer(), itera->range.start);
         auto sciPosEnd = getSciPosition(d->edit->docPointer(), itera->range.end);
         auto newText = QString::fromStdString(itera->newText);
-        d->edit->replaceRange(sciPosStart, sciPosEnd, newText);
+        QString curFile = d->edit->file();
+        QString curFormatting = d->formattingFile;
+        if (d->edit->file() == d->formattingFile)
+            d->edit->replaceRange(sciPosStart, sciPosEnd, newText);
     }
 }
 

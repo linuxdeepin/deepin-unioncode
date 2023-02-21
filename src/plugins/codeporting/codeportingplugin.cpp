@@ -47,7 +47,8 @@ bool CodePortingPlugin::start()
 
     // Add code porting item in tool menu.
     QAction *action = new QAction(tr("Code Porting"));
-    ActionManager::getInstance()->registerAction(action, "Tool.CodePorting", action->text(),QKeySequence(), "code_port.png");
+    ActionManager::getInstance()->registerAction(action, "Tool.CodePorting", action->text(),QKeySequence(),
+                                                 ":/codeporting/images/code_port.png");
     connect(action, &QAction::triggered, CodePortingManager::instance(), &CodePortingManager::slotShowConfigWidget);
 
     AbstractAction *actionImpl = new AbstractAction(action);

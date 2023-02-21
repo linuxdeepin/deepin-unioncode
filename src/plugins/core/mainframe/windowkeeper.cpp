@@ -67,7 +67,7 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     QAction* actionQuit = new QAction(MWMFA_QUIT);
     ActionManager::getInstance()->registerAction(actionQuit, "File.Quit",
                                                  MWMFA_QUIT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Q),
-                                                 "quit.png");
+                                                 ":/core/images/quit.png");
     QAction::connect(actionQuit, &QAction::triggered, [](){
         qApp->closeAllWindows();
     });
@@ -75,7 +75,7 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     QAction* actionOpenFile = new QAction(MWMFA_OPEN_FILE);
     ActionManager::getInstance()->registerAction(actionOpenFile, "File.Open.File",
                                                  MWMFA_OPEN_FILE, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O),
-                                                 "open_file.png");
+                                                 ":/core/images/open_file.png");
 
     QAction::connect(actionOpenFile, &QAction::triggered, [=](){
         QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
@@ -127,13 +127,13 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
     QAction* actionReportBug = new QAction(MWM_REPORT_BUG);
     ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
                                                  MWM_REPORT_BUG, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
-                                                 "tools-report-bug.png");
+                                                 ":/core/images/tools-report-bug.png");
     helpMenu->addAction(actionReportBug);
 
     QAction* actionAboutUnionCode = new QAction(MWM_ABOUT);
     ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
                                                  MWM_ABOUT, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A),
-                                                 "help-about.svg");
+                                                 ":/core/images/help-about.svg");
     helpMenu->addAction(actionAboutUnionCode);
 
     QAction::connect(actionAboutUnionCode, &QAction::triggered, this, &WindowKeeper::showAboutDlg);

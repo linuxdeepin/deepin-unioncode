@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/template">
+        <file>images/new_project.png</file>
+    </qresource>
+</RCC>

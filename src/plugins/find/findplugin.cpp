@@ -58,10 +58,10 @@ bool FindPlugin::start()
 
     ActionManager::getInstance()->registerAction(findAction, "Edit.Find",
                                                  tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F),
-                                                 "find.png");
+                                                 ":/find/images/find.png");
     ActionManager::getInstance()->registerAction(advancedFindAction, "Edit.Advanced.Find",
                                                  tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F),
-                                                 "edit-find.png");
+                                                 ":/find/images/edit-find.png");
 
     editMenu->addAction(findAction);
     editMenu->addAction(advancedFindAction);

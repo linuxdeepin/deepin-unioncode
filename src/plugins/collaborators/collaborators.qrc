@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/collaborators">
+        <file>images/checkout.png</file>
+        <file>images/open_repository.png</file>
+    </qresource>
+</RCC>
