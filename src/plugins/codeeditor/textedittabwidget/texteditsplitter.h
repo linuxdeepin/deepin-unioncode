@@ -28,6 +28,7 @@
 #include <QGridLayout>
 #include <QSplitter>
 #include <QList>
+#include <QPair>
 
 class TextEditSplitter : public QWidget
 {
@@ -47,11 +48,12 @@ public slots:
 
 private:
     virtual ~TextEditSplitter() override;
+    void updateSplitter(QSplitter *splitter, TextEditTabWidget *textEditTabWidget);
     QVBoxLayout *vLayout = nullptr;
     QSplitter *mainSplitter = nullptr;
     TextEditTabWidget *tabWidget = nullptr;
     QHash<TextEditTabWidget *, bool> tabWidgets;
-    QList<QSplitter *> splitters;
+    QHash<QSplitter *, QPair<TextEditTabWidget *, TextEditTabWidget*>> splitters;
 };
 
 #endif // TEXTEDITSPLITTER_H
