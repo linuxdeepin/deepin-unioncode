@@ -74,9 +74,30 @@ bool ProcessUtil::execute(const QString &program,
 
     if (func) {
         QByteArray array = process.readAll();
-        func(array);
+        func(array.trimmed());
     }
 
+    return ret;
+}
+
+QString ProcessUtil::execute(const QStringList &commands, bool cascade)
+{
+    auto executeCascade = [&](QString command, QString arg)->QString{
+        QString ret;
+        execute("bash", QStringList() << "-c" << (command + " " + arg), [&](const QByteArray &output){
+            ret = output;
+        });
+        return ret;
+    };
+
+    QString ret;
+    foreach (QString command, commands) {
+        if (cascade) {
+            ret = executeCascade(command, ret);
+        } else{
+            executeCascade(command, {});
+        }
+    }
     return ret;
 }
 

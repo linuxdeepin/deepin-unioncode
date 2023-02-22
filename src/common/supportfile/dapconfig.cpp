@@ -20,6 +20,7 @@
 */
 #include "dapconfig.h"
 #include "util/custompaths.h"
+#include "util/processutil.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -44,7 +45,7 @@ QString DapSupportConfig::userPath()
     return result + QString("dapconfig.support");
 }
 
-bool DapSupportConfig::readFromSupportFile(const QString &filePath, const QString &arch, JavaDapPluginConfig &javaconfig)
+bool DapSupportConfig::readFromSupportFile(const QString &filePath, const QString &arch, JavaDapPluginConfig &javaconfig, const QString &configHome)
 {
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
@@ -74,13 +75,29 @@ bool DapSupportConfig::readFromSupportFile(const QString &filePath, const QStrin
         return false;
 
     javaconfig.launchPackageName = valueObject.value("launch_package_name").toString();
+    javaconfig.launchPackagePath = configHome + javaconfig.launchPackageName;
     javaconfig.dapPackageName = valueObject.value("dap_package_name").toString();
-    javaconfig.launchPackageFile = javaconfig.launchPackageName + valueObject.value("launch_package_file").toString();
-    javaconfig.launchConfigPath = javaconfig.launchPackageName + valueObject.value("launch_config_path").toString();
-    javaconfig.dapPackageFile = javaconfig.dapPackageName + valueObject.value("dap_package_file").toString();
-    javaconfig.jrePath = javaconfig.launchPackageName + valueObject.value("jre_path").toString();
-    javaconfig.jreExecute = javaconfig.jrePath + valueObject.value("jre_execute").toString();
-
+    javaconfig.launchPackageFile = javaconfig.launchPackagePath + valueObject.value("launch_package_file").toString();
+    javaconfig.launchConfigPath = javaconfig.launchPackagePath + valueObject.value("launch_config_path").toString();
+    javaconfig.dapPackageFile = configHome + javaconfig.dapPackageName + "/" + valueObject.value("dap_package_file").toString();
+    QString jrePath = valueObject.value("jre_path").toString();
+    if (jrePath.isEmpty()) {
+        QString ret = ProcessUtil::execute({"which java"}, true);
+        auto getLink = [](QString &file)->QString{
+            QString ret = ProcessUtil::execute({QString("ls -lrt %1").arg(file)}, true);
+            if (!ret.isEmpty()) {
+                ret = ret.split(" -> ").back();
+            }
+            return ret;
+        };
+        QString etc = getLink(ret);
+        QString link = getLink(etc);
+        javaconfig.jreExecute = link;
+        javaconfig.jrePath = link.split("bin/java").front();
+    } else {
+        javaconfig.jrePath = javaconfig.launchPackagePath + jrePath;
+        javaconfig.jreExecute = javaconfig.jrePath + valueObject.value("jre_execute").toString();
+    }
     return true;
 }
 

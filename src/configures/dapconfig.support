@@ -37,12 +37,12 @@
 
     "loongarch64": {
         "java_config_path": {
-                "launch_package_name": "redhat.java-1.15.2023013103",
+                "launch_package_name": "redhat.java-1.1.0",
                 "dap_package_name": "vscjava.vscode-java-debug-0.47.2022112823",
-                "launch_package_file": "/extension/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar",
-                "launch_config_path": "/extension/server/config_linux",
+                "launch_package_file": "/server/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar",
+                "launch_config_path": "/server/config_linux",
                 "dap_package_file": "/extension/server/com.microsoft.java.debug.plugin-0.43.0.jar",
-                "jre_path": "/extension/jre/17.0.5-linux-loongarch64",
+                "jre_path": "",
                 "jre_execute": "/bin/java"
         }
     },

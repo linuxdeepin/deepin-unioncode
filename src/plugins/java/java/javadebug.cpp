@@ -109,7 +109,9 @@ bool JavaDebug::checkConfigFile(QString &retMsg)
 {
     QString arch = ProcessUtil::localPlatform();
     QString dapSupportFilePath = support_file::DapSupportConfig::globalPath();
-    bool ret = support_file::DapSupportConfig::readFromSupportFile(dapSupportFilePath, arch, d->javaDapPluginConfig);
+
+    d->javaDapPluginConfig.configHomePath = CustomPaths::user(CustomPaths::Configures) + QDir::separator();
+    bool ret = support_file::DapSupportConfig::readFromSupportFile(dapSupportFilePath, arch, d->javaDapPluginConfig, d->javaDapPluginConfig.configHomePath);
     if (!ret) {
         retMsg = tr("Read dapconfig.support failed, please check the file and retry.");
         return false;
@@ -121,7 +123,6 @@ bool JavaDebug::checkConfigFile(QString &retMsg)
         return false;
     }
 
-    d->javaDapPluginConfig.configHomePath = CustomPaths::user(CustomPaths::Configures) + QDir::separator();
     d->dapPackagePath = env::pkg::native::path() + QDir::separator();
 
     auto copyPackage = [&](const QString &fileName) {
@@ -139,10 +140,10 @@ bool JavaDebug::checkConfigFile(QString &retMsg)
 void JavaDebug::checkJavaLSPPlugin()
 {
     QString configFolder = d->javaDapPluginConfig.configHomePath;
-    bool bLaunchJarPath = QFileInfo(configFolder + d->javaDapPluginConfig.launchPackageFile).isFile();
-    bool bJrePath = QFileInfo(configFolder + d->javaDapPluginConfig.jreExecute).isFile();
+    bool bLaunchJarPath = QFileInfo(d->javaDapPluginConfig.launchPackageFile).isFile();
+    bool bJrePath = QFileInfo(d->javaDapPluginConfig.jreExecute).isFile();
     if (!bLaunchJarPath || !bJrePath) {
-        FileOperation::deleteDir(configFolder + d->javaDapPluginConfig.launchPackageName);
+        FileOperation::deleteDir(d->javaDapPluginConfig.launchPackagePath);
 
         auto decompress = [&](const QString workDir, const QString srcTarget, const QString folder) {
             if (!QFileInfo(workDir).isDir()
@@ -171,7 +172,7 @@ void JavaDebug::checkJavaLSPPlugin()
             process.waitForFinished();
         };
 
-        QString redhatLspFilePath = configFolder + d->javaDapPluginConfig.launchPackageName + ".vsix";
+        QString redhatLspFilePath = d->javaDapPluginConfig.launchPackagePath + ".vsix";
         if (QFileInfo(redhatLspFilePath).isFile()) {
             decompress(configFolder, redhatLspFilePath, d->javaDapPluginConfig.launchPackageName);
         } else {
@@ -185,7 +186,7 @@ void JavaDebug::checkJavaLSPPlugin()
 void JavaDebug::checkJavaDAPPlugin()
 {
     QString configFolder = d->javaDapPluginConfig.configHomePath;
-    bool bDapJarPath = QFileInfo(configFolder + d->javaDapPluginConfig.dapPackageFile).isFile();
+    bool bDapJarPath = QFileInfo(d->javaDapPluginConfig.dapPackageFile).isFile();
     if (!bDapJarPath) {
         FileOperation::deleteDir(configFolder + d->javaDapPluginConfig.dapPackageName);
 
@@ -226,7 +227,6 @@ void JavaDebug::checkJavaDAPPlugin()
         readyDAPPlugin(true);
     }
 }
-
 
 void JavaDebug::readyLSPPlugin(bool succeed, const QString &errorMsg)
 {
@@ -277,7 +277,7 @@ dap::LaunchRequest JavaDebug::launchDAP(const QString &workspace,
         dapClassPaths.push_back(classpath.toStdString());
     }
     request.classPaths = dapClassPaths;
-    QString javaExec = d->javaDapPluginConfig.configHomePath + d->javaDapPluginConfig.jreExecute;
+    QString javaExec = d->javaDapPluginConfig.jreExecute;
     request.javaExec = javaExec.toStdString();
     request.shortenCommandLine = "none";
     request.__sessionId = QUuid::createUuid().toString().toStdString();

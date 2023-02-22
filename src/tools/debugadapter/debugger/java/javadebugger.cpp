@@ -144,21 +144,16 @@ void JavaDebugger::initialize(const QString &configHomePath,
     }
 
     QString validPort = QString::number(startPort);
-
-    QString javaPath = configHomePath + jreExecute;
-    QString launcherPath = configHomePath + launchPackageFile;
-    QString configLinuxPath = configHomePath + launchConfigPath;
-
     QString logFolder = configHomePath + "/dap/javalog/" + QFileInfo(workspace).fileName() +
             "_" + QDateTime::currentDateTime().toString("yyyyMMddHHmmss");
     QString heapDumpPath = logFolder + "/heapdump/headdump.java";
     QString dataPath = logFolder + "/jdt_ws";
 
     QString param = d->javaparam.getInitBackendParam(validPort,
-                                                     javaPath,
-                                                     launcherPath,
+                                                     jreExecute,
+                                                     launchPackageFile,
                                                      heapDumpPath,
-                                                     configLinuxPath,
+                                                     launchConfigPath,
                                                      dataPath);
     qInfo() << validPort;
     QStringList options;
@@ -196,9 +191,7 @@ void JavaDebugger::slotReceivePojectInfo(const QString &uuid,
     int pid = static_cast<int>(QApplication::applicationPid());
 
     QStringList commandQueue;
-    const QString jdkHome = configHomePath + jrePath;
-    const QString debugJar = configHomePath + dapPackageFile;
-    commandQueue << d->javaparam.getLSPInitParam(d->requestId++, pid, workspace, jdkHome, debugJar);
+    commandQueue << d->javaparam.getLSPInitParam(d->requestId++, pid, workspace, jrePath, dapPackageFile);
     commandQueue << d->javaparam.getLSPInitilizedParam(d->requestId++);
 
     d->dapRequestId = d->requestId++;

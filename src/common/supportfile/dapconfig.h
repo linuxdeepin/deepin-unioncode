@@ -28,6 +28,7 @@ namespace support_file {
 struct JavaDapPluginConfig {
     QString configHomePath;
     QString launchPackageName;
+    QString launchPackagePath;
     QString dapPackageName;
     QString launchPackageFile;
     QString launchConfigPath;
@@ -41,7 +42,7 @@ class DapSupportConfig final
 public:
     static QString globalPath();
     static QString userPath();
-    static bool readFromSupportFile(const QString &filePath, const QString &arch, JavaDapPluginConfig &javaconfig);
+    static bool readFromSupportFile(const QString &dapSupportPath, const QString &arch, JavaDapPluginConfig &javaconfig, const QString &configDir);
 
 private:
     explicit DapSupportConfig();

@@ -49,6 +49,8 @@ public:
                         const QProcessEnvironment &env,
                         ReadCallBack func = nullptr);
 
+    static QString execute(const QStringList &commands, bool cascade);
+
     static bool exists(const QString &name);
     static QString version(const QString &name);
 
