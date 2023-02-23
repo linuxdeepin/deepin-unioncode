@@ -92,6 +92,15 @@ void CreateRepoDlg::accept()
    auto path = ui->lePath->text().trimmed();
    auto repoName = ui->leRepoName->text().trimmed();
 
+   if (path.isEmpty() || repoName.isEmpty())
+   {
+      const auto msg = QString(tr("You need to provider a repository name and a clone directory."));
+
+      QMessageBox::critical(this, tr("No Repo name provided"), msg);
+
+      QLog_Error("UI", msg);
+   }
+
    if (!path.isEmpty() && !repoName.isEmpty())
    {
       repoName.replace(" ", "\\ ");
@@ -124,6 +133,7 @@ void CreateRepoDlg::accept()
             QMessageBox::critical(this, tr("Nor URL provided"), msg);
 
             QLog_Error("UI", msg);
+            return;
          }
       }
       else if (mType == CreateRepoDlgType::INIT)

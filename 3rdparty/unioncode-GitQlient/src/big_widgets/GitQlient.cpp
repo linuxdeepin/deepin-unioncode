@@ -173,7 +173,7 @@ void GitQlient::openRepoWithPath(const QString &path)
 
 void GitQlient::cloneRepo()
 {
-   CreateRepoDlg cloneDlg(CreateRepoDlgType::CLONE, mGit);
+   CreateRepoDlg cloneDlg(CreateRepoDlgType::CLONE, mGit, this);
    connect(&cloneDlg, &CreateRepoDlg::signalOpenWhenFinish, this, [this](const QString &path) { mPathToOpen = path; });
 
    if (cloneDlg.exec() == QDialog::Accepted)
@@ -186,7 +186,7 @@ void GitQlient::cloneRepo()
 
 void GitQlient::initRepo()
 {
-   CreateRepoDlg cloneDlg(CreateRepoDlgType::INIT, mGit);
+   CreateRepoDlg cloneDlg(CreateRepoDlgType::INIT, mGit, this);
    connect(&cloneDlg, &CreateRepoDlg::signalOpenWhenFinish, this, &GitQlient::openRepoWithPath);
    cloneDlg.exec();
 }
