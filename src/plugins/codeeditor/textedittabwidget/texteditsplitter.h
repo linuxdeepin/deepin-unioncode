@@ -48,7 +48,7 @@ public slots:
 
 private:
     virtual ~TextEditSplitter() override;
-    void updateSplitter(QSplitter *splitter, TextEditTabWidget *textEditTabWidget);
+    void updateClose(QSplitter *splitter, TextEditTabWidget *textEditTabWidget);
     QVBoxLayout *vLayout = nullptr;
     QSplitter *mainSplitter = nullptr;
     TextEditTabWidget *tabWidget = nullptr;

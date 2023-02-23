@@ -73,7 +73,7 @@ TextEditSplitter::~TextEditSplitter()
 
 }
 
-void TextEditSplitter::updateSplitter(QSplitter *splitter, TextEditTabWidget *textEditTabWidget)
+void TextEditSplitter::updateClose(QSplitter *splitter, TextEditTabWidget *textEditTabWidget)
 {
     QSplitter *parentSplitter;
     if (splitter != mainSplitter) {
@@ -81,36 +81,58 @@ void TextEditSplitter::updateSplitter(QSplitter *splitter, TextEditTabWidget *te
     } else {
         parentSplitter = mainSplitter;
     }
-    if (splitters[splitter].first == textEditTabWidget) {
-        if (splitters[splitter].second != nullptr) {
-            splitters[splitter].second->setParent(parentSplitter);
-        } else {
-            for (auto it = splitters.begin(); it != splitters.end(); it++) {
-                if (it.key() != mainSplitter)
-                    it.key()->setParent(mainSplitter);
+
+    if (splitters[splitter].first && splitters[splitter].second) {
+        if (splitter == mainSplitter) {
+            int index = splitter->indexOf(textEditTabWidget);
+            if (index) {
+                splitters[splitter].second = nullptr;
+            } else {
+                splitters[splitter].first = nullptr;
             }
+            tabWidgets.remove(textEditTabWidget);
+            delete textEditTabWidget;
+        } else {
+            int parentIndex = parentSplitter->indexOf(splitter);
+            TextEditTabWidget *textEdit;
+            if (splitters[splitter].first == textEditTabWidget) {
+                textEdit = splitters[splitter].second;
+            } else {
+                textEdit = splitters[splitter].first;
+            }
+            if (parentIndex) {
+                splitters[parentSplitter].second = textEdit;
+            } else {
+                splitters[parentSplitter].first = textEdit;
+            }
+            textEdit->setParent(parentSplitter);
+            parentSplitter->insertWidget(parentIndex, textEdit);
+            tabWidgets.remove(textEditTabWidget);
+            delete textEditTabWidget;
+            splitters.remove(splitter);
+            delete splitter;
         }
     } else {
-        if (splitters[splitter].first != nullptr) {
-            splitters[splitter].first->setParent(parentSplitter);
-        } else {
-            for (auto it = splitters.begin(); it != splitters.end(); it++) {
-                if (it.key() != mainSplitter)
-                    it.key()->setParent(mainSplitter);
+        tabWidgets.remove(textEditTabWidget);
+        delete textEditTabWidget;
+        for (auto it = splitters.begin(); it != splitters.end(); ++it) {
+            if (!it->first && !it->second) {
+                splitter->setOrientation(it.key()->orientation());
+                it->first->setParent(splitter);
+                it->second->setParent(splitter);
+                splitter->insertWidget(0, it->first);
+                splitter->insertWidget(1, it->second);
+                splitters[splitter] = {it->first, it->second};
+                splitters.remove(it.key());
+                delete it.key();
+                break;
             }
         }
     }
-    splitters.remove(splitter);
-    tabWidgets.remove(textEditTabWidget);
-    delete textEditTabWidget;
 
     for (auto it = tabWidgets.begin(); it != tabWidgets.end(); ++it) {
         it.key()->setSplitButtonVisible(true);
     }
-    if (splitter != mainSplitter) {
-        delete splitter;
-    }
-
     if (tabWidgets.size() == 1) {
         auto it = tabWidgets.begin();
         it.key()->setCloseButtonVisible(false);
@@ -128,7 +150,6 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
         newSplitter = mainSplitter;
     } else {
         newSplitter = new QSplitter(splitter);
-//        splitters.append(newSplitter);
     }
     newSplitter->setOrientation(orientation);
     newSplitter->setHandleWidth(0);
@@ -147,7 +168,7 @@ void TextEditSplitter::doSplit(Qt::Orientation orientation, const newlsp::Projec
     splitters[newSplitter] = {oldEditWidget, newEditWidget};
     tabWidgets.insert(newEditWidget, true);
     tabWidgets[oldEditWidget] = false;
-    if (tabWidgets.size() >= 3) {
+    if (tabWidgets.size() >= 4) {
         for (auto it = tabWidgets.begin(); it != tabWidgets.end(); ++it) {
             it.key()->setSplitButtonVisible(false);
         }
@@ -282,6 +303,6 @@ void TextEditSplitter::doClose()
                          it.key(), &TextEditTabWidget::setModifiedAutoReload);
     }
 
-    updateSplitter(splitter, textEditTabWidget);
+    updateClose(splitter, textEditTabWidget);
 }
 
