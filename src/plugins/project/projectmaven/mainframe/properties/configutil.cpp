@@ -26,6 +26,12 @@
 
 namespace config {
 
+const QString kJrePath = "jrePath";
+const QString kJreExecute = "jreExecute";
+const QString kLaunchConfigPath = "launchConfigPath";
+const QString kLaunchPackageFile = "launchPackageFile";
+const QString kDapPackageFile = "dapPackageFile";
+
 class ConfigUtilPrivate
 {
     friend class ConfigUtil;
@@ -65,6 +71,11 @@ bool ConfigUtil::getProjectInfo(const ConfigureParam *param, dpfservice::Project
     info.setWorkspaceFolder(sourceFolder);
     info.setBuildProgram(OptionManager::getInstance()->getMavenToolPath());
     info.setDetailInformation(param->detailInfo);
+    info.setProperty(kJrePath, param->jreExecute);
+    info.setProperty(kJreExecute, param->launchConfigPath);
+    info.setProperty(kLaunchConfigPath, param->launchConfigPath);
+    info.setProperty(kLaunchPackageFile, param->launchPackageFile);
+    info.setProperty(kDapPackageFile, param->dapPackageFile);
 
     return true;
 }
@@ -96,17 +107,22 @@ void ConfigUtil::saveConfig(const QString &filePath, const ConfigureParam &param
     }
 }
 
-void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param)
+void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *cfgParams)
 {
-    if (!param)
+    if (!cfgParams)
         return;
 
-    info.setLanguage(param->language);
+    info.setLanguage(cfgParams->language);
     info.setKitName(MavenGenerator::toolKitName());
-    info.setWorkspaceFolder(param->projectPath);
-    info.setBuildFolder(param->projectPath);
-    info.setBuildProgram(param->mavenVersion.path);
-    info.setDetailInformation(param->detailInfo);
+    info.setWorkspaceFolder(cfgParams->projectPath);
+    info.setBuildFolder(cfgParams->projectPath);
+    info.setBuildProgram(cfgParams->mavenVersion.path);
+    info.setDetailInformation(cfgParams->detailInfo);
+    info.setProperty(kJrePath, cfgParams->jrePath);
+    info.setProperty(kJreExecute, cfgParams->jreExecute);
+    info.setProperty(kLaunchConfigPath, cfgParams->launchConfigPath);
+    info.setProperty(kLaunchPackageFile, cfgParams->launchPackageFile);
+    info.setProperty(kDapPackageFile, cfgParams->dapPackageFile);
 }
 
 } //namespace config

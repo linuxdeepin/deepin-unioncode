@@ -26,10 +26,6 @@
 namespace support_file {
 
 struct JavaDapPluginConfig {
-    QString configHomePath;
-    QString launchPackageName;
-    QString launchPackagePath;
-    QString dapPackageName;
     QString launchPackageFile;
     QString launchConfigPath;
     QString dapPackageFile;

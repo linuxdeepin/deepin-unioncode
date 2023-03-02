@@ -74,12 +74,9 @@ bool DapSupportConfig::readFromSupportFile(const QString &filePath, const QStrin
     if (valueObject.isEmpty())
         return false;
 
-    javaconfig.launchPackageName = valueObject.value("launch_package_name").toString();
-    javaconfig.launchPackagePath = configHome + javaconfig.launchPackageName;
-    javaconfig.dapPackageName = valueObject.value("dap_package_name").toString();
-    javaconfig.launchPackageFile = javaconfig.launchPackagePath + valueObject.value("launch_package_file").toString();
-    javaconfig.launchConfigPath = javaconfig.launchPackagePath + valueObject.value("launch_config_path").toString();
-    javaconfig.dapPackageFile = configHome + javaconfig.dapPackageName + "/" + valueObject.value("dap_package_file").toString();
+    javaconfig.launchPackageFile = configHome + valueObject.value("launch_package_file").toString();
+    javaconfig.launchConfigPath = configHome + valueObject.value("launch_config_path").toString();
+    javaconfig.dapPackageFile = configHome + valueObject.value("dap_package_file").toString();
     QString jrePath = valueObject.value("jre_path").toString();
     if (jrePath.isEmpty()) {
         QString ret = ProcessUtil::execute({"which java"}, true);
@@ -95,8 +92,8 @@ bool DapSupportConfig::readFromSupportFile(const QString &filePath, const QStrin
         javaconfig.jreExecute = link;
         javaconfig.jrePath = link.split("bin/java").front();
     } else {
-        javaconfig.jrePath = javaconfig.launchPackagePath + jrePath;
-        javaconfig.jreExecute = javaconfig.jrePath + valueObject.value("jre_execute").toString();
+        javaconfig.jrePath = configHome + jrePath;
+        javaconfig.jreExecute = configHome + valueObject.value("jre_execute").toString();
     }
     return true;
 }

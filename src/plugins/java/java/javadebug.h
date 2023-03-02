@@ -53,10 +53,6 @@ private slots:
 
 private:
     bool checkConfigFile(QString &retMsg);
-    void checkJavaLSPPlugin();
-    void checkJavaDAPPlugin();
-    void readyLSPPlugin(bool succeed, const QString &errorMsg = "");
-    void readyDAPPlugin(bool succeed, const QString &errorMsg = "");
     void outProgressMsg(const QString &msg);
 
 private:

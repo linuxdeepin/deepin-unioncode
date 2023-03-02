@@ -38,6 +38,9 @@ public:
     void setValues(const config::ConfigureParam *param);
     void getValues(config::ConfigureParam *param);
 
+public slots:
+    void browserFileDialog();
+
 private:
     void setupUI();
     void initData();

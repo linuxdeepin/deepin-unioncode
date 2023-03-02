@@ -22,8 +22,6 @@
 #ifndef EVENTDEFINITIONS_H
 #define EVENTDEFINITIONS_H
 
-#endif // EVENTDEFINITIONS_H
-
 #include "common/lsp/protocol/newprotocol.h"
 #include "framework.h"
 
@@ -214,3 +212,5 @@ extern const QString P_DESTTEXT;
 
 extern const QString P_BUILDPROGRAM;
 extern const QString P_BUILDWORKINGDIR;
+
+#endif // EVENTDEFINITIONS_H

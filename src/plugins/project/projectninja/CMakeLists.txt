@@ -7,8 +7,6 @@ find_package(Qt5 COMPONENTS Xml REQUIRED)
 set(CXX_CPP
     mainframe/ninjaasynparse.cpp
     mainframe/ninjagenerator.cpp
-    mainframe/properties/configpropertywidget.cpp
-    mainframe/properties/configutil.cpp
     projectninja.cpp
     projectninja.json
     )
@@ -16,8 +14,6 @@ set(CXX_CPP
 set(CXX_H
     mainframe/ninjaasynparse.h
     mainframe/ninjagenerator.h
-    mainframe/properties/configpropertywidget.h
-    mainframe/properties/configutil.h
     projectninja.h
     )
 

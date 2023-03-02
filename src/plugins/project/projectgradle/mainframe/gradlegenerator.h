@@ -34,7 +34,7 @@ class GradleGenerator : public dpfservice::ProjectGenerator
     GradleGeneratorPrivate *const d;
 public:
     explicit GradleGenerator();
-    virtual ~GradleGenerator();
+    ~GradleGenerator() override;
     static QString toolKitName() { return "gradle"; }
     virtual QStringList supportLanguages() override;
     virtual QStringList supportFileNames() override;
@@ -52,6 +52,9 @@ private slots:
     void doGradleSplitTasksOutput(const QByteArray &array);
     void doGradleTaskActionTriggered();
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
+
+private:
+    void restoreRuntimeCfg(dpfservice::ProjectInfo &info);
 };
 
 #endif // GRADLEGENERATOR_H

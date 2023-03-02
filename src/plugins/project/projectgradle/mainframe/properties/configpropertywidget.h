@@ -23,7 +23,6 @@
 #define CONFIGPROPERTYWIDGET_H
 
 #include "mainframe/properties/configutil.h"
-
 #include "services/project/projectinfo.h"
 
 class PageWidget;
@@ -37,6 +36,9 @@ public:
 
     void setValues(const config::ConfigureParam *param);
     void getValues(config::ConfigureParam *param);
+
+public slots:
+    void browserFileDialog();
 
 private:
     void setupUI();
@@ -54,8 +56,6 @@ public:
     virtual ~ConfigPropertyWidget() override;
 
     void saveConfig() override;
-
-public slots:
 
 private:
     void setupUI();

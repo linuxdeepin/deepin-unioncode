@@ -27,11 +27,16 @@
 
 #include "common/dialog/propertiesdialog.h"
 #include "mainframe/properties/configutil.h"
+#include "common/util/custompaths.h"
+#include "common/util/environment.h"
+#include "common/supportfile/dapconfig.h"
+#include "services/project/projectservice.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
 
 using namespace config;
+using namespace dpfservice;
 class MavenGeneratorPrivate
 {
     friend class MavenGenerator;
@@ -73,20 +78,15 @@ QStringList MavenGenerator::supportFileNames()
 QDialog *MavenGenerator::configureWidget(const QString &language,
                                          const QString &workspace)
 {
-    using namespace dpfservice;
-
     // get config result.
-    ProjectInfo info;;
-    info.setLanguage(language);
-    info.setKitName(MavenGenerator::toolKitName());
-    info.setWorkspaceFolder(workspace);
+    ProjectInfo projectInfo;
+    projectInfo.setLanguage(language);
+    projectInfo.setKitName(MavenGenerator::toolKitName());
+    projectInfo.setWorkspaceFolder(workspace);
 
     // refresh config.
-    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
-    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(info.workspaceFolder()), *param);
-    info.setDetailInformation(param->detailInfo);
-
-    configure(info);
+    restoreRuntimeCfg(projectInfo);
+    configure(projectInfo);
 
     return nullptr;
 }
@@ -232,4 +232,40 @@ void MavenGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStan
     ConfigPropertyWidget *property = new ConfigPropertyWidget(info, item);
     dlg.insertPropertyPanel("Config", property);
     dlg.exec();
+}
+
+void MavenGenerator::restoreRuntimeCfg(dpfservice::ProjectInfo &projectInfo)
+{
+    // get project config.
+    ConfigureParam *cfgParams = ConfigUtil::instance()->getConfigureParamPointer();
+    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(projectInfo.workspaceFolder()), *cfgParams);
+
+    // get global config.
+    QString arch = ProcessUtil::localPlatform();
+    QString dapSupportFilePath = support_file::DapSupportConfig::globalPath();
+    QString configHomePath = env::pkg::native::path();// CustomPaths::user(CustomPaths::Configures) + QDir::separator();
+    support_file::JavaDapPluginConfig javaDapPluginConfig;
+    bool ret = support_file::DapSupportConfig::readFromSupportFile(dapSupportFilePath, arch, javaDapPluginConfig, configHomePath);
+    if (!ret) {
+        qDebug("Read dapconfig.support failed, please check the file and retry.");
+        return;
+    }
+
+    // use global config when project config is null.
+    auto setPropertyParams = [&](QString &projectProperty, const QString &key, const QString &globalPropery){
+        if (projectProperty.isEmpty()) {
+            // use global propery.
+            projectInfo.setProperty(key, globalPropery);
+            projectProperty = globalPropery;
+        } else {
+            // use project propery.
+            projectInfo.setProperty(key, projectProperty);
+        }
+    };
+    setPropertyParams(cfgParams->jrePath, kJrePath, javaDapPluginConfig.jrePath);
+    setPropertyParams(cfgParams->jreExecute, kJreExecute, javaDapPluginConfig.jreExecute);
+    setPropertyParams(cfgParams->launchConfigPath, kLaunchConfigPath, javaDapPluginConfig.launchConfigPath);
+    setPropertyParams(cfgParams->launchPackageFile, kLaunchPackageFile, javaDapPluginConfig.launchPackageFile);
+    setPropertyParams(cfgParams->dapPackageFile, kDapPackageFile, javaDapPluginConfig.dapPackageFile);
+    projectInfo.setDetailInformation(cfgParams->detailInfo);
 }

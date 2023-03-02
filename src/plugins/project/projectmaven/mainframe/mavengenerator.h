@@ -28,6 +28,9 @@
 #include <QDomDocument>
 
 class MavenGeneratorPrivate;
+namespace config {
+class ConfigureParam;
+}
 class MavenGenerator : public dpfservice::ProjectGenerator
 {
     Q_OBJECT
@@ -49,6 +52,9 @@ private slots:
     void doAddMavenMeue(const dpfservice::ProjectActionInfos &infos);
     void doActionTriggered();
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
+
+private:
+    void restoreRuntimeCfg(dpfservice::ProjectInfo &info);
 };
 
 #endif // MAVENGENERATOR_H

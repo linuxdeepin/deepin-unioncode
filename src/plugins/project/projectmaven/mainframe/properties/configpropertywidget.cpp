@@ -30,8 +30,15 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QPushButton>
+#include <QFileDialog>
 
-using namespace config;
+static const QString kJrePath = QObject::tr("jre path");
+static const QString kJreExecute = QObject::tr("jre execute");
+static const QString kLaunchConfigPath = QObject::tr("launch config");
+static const QString kLaunchPackageFile = QObject::tr("launch package");
+static const QString kDapPackageFile = QObject::tr("dap package");
+static const int kHeadlineWidth = 120;
 
 class DetailPropertyWidgetPrivate
 {
@@ -40,6 +47,11 @@ class DetailPropertyWidgetPrivate
     QComboBox *mvnVersionComboBox{nullptr};
     QLineEdit *mainClass{nullptr};
     QCheckBox *detailBox{nullptr};
+    QLineEdit *jreEdit{nullptr};
+    QLineEdit *jreExecuteEdit{nullptr};
+    QLineEdit *launchCfgPathEdit{nullptr};
+    QLineEdit *lanuchCfgFileEdit{nullptr};
+    QLineEdit *dapPackageFileEdit{nullptr};
     QSharedPointer<ToolChainData> toolChainData;
 };
 
@@ -64,7 +76,7 @@ void DetailPropertyWidget::setupUI()
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     QLabel *label = new QLabel(QLabel::tr("JDK version:"));
-    label->setFixedWidth(120);
+    label->setFixedWidth(kHeadlineWidth);
     d->jdkVersionComboBox = new QComboBox();
     hLayout->addWidget(label);
     hLayout->addWidget(d->jdkVersionComboBox);
@@ -72,7 +84,7 @@ void DetailPropertyWidget::setupUI()
 
     hLayout = new QHBoxLayout();
     label = new QLabel(QLabel::tr("Maven Version: "));
-    label->setFixedWidth(120);
+    label->setFixedWidth(kHeadlineWidth);
     d->mvnVersionComboBox = new QComboBox();
     hLayout->addWidget(label);
     hLayout->addWidget(d->mvnVersionComboBox);
@@ -80,7 +92,7 @@ void DetailPropertyWidget::setupUI()
 
     hLayout = new QHBoxLayout();
     label = new QLabel(QLabel::tr("Main Class:"));
-    label->setFixedWidth(120);
+    label->setFixedWidth(kHeadlineWidth);
     d->mainClass = new QLineEdit();
     d->mainClass->setPlaceholderText(tr("Input main class"));
     hLayout->addWidget(label);
@@ -90,12 +102,42 @@ void DetailPropertyWidget::setupUI()
 
     hLayout = new QHBoxLayout();
     label = new QLabel(QLabel::tr("Detail output:"));
-    label->setFixedWidth(120);
+    label->setFixedWidth(kHeadlineWidth);
     d->detailBox = new QCheckBox();
     hLayout->addWidget(label);
     hLayout->addWidget(d->detailBox);
     hLayout->setAlignment(Qt::AlignLeft);
     vLayout->addLayout(hLayout);
+
+    // Dap plugins config.
+    auto addGroupWidgets = [this](QVBoxLayout *vLayout, const QString &headLine, QWidget *widget){
+
+        QHBoxLayout *hLayout = new QHBoxLayout();
+        QLabel *label = new QLabel(headLine + ":");
+        label->setFixedWidth(kHeadlineWidth);
+
+        QPushButton *btnBrowser = new QPushButton(this);
+        btnBrowser->setText(tr("Browse..."));
+        btnBrowser->setObjectName(headLine);
+        hLayout->addWidget(label);
+        hLayout->addWidget(widget);
+        hLayout->addWidget(btnBrowser);
+        vLayout->addLayout(hLayout);
+
+        connect(btnBrowser, &QPushButton::clicked, this, &DetailPropertyWidget::browserFileDialog);
+    };
+
+    d->jreEdit = new QLineEdit(this);
+    d->jreExecuteEdit = new QLineEdit(this);
+    d->launchCfgPathEdit = new QLineEdit(this);
+    d->lanuchCfgFileEdit = new QLineEdit(this);
+    d->dapPackageFileEdit = new QLineEdit(this);
+
+    addGroupWidgets(vLayout, kJrePath, d->jreEdit);
+    addGroupWidgets(vLayout, kJreExecute, d->jreExecuteEdit);
+    addGroupWidgets(vLayout, kLaunchConfigPath, d->launchCfgPathEdit);
+    addGroupWidgets(vLayout, kLaunchPackageFile, d->lanuchCfgFileEdit);
+    addGroupWidgets(vLayout, kDapPackageFile,d->dapPackageFileEdit);
 }
 
 void DetailPropertyWidget::initData()
@@ -142,6 +184,11 @@ void DetailPropertyWidget::setValues(const config::ConfigureParam *param)
     initComboBox(d->mvnVersionComboBox, param->mavenVersion);
     d->mainClass->setText(param->mainClass);
     d->detailBox->setChecked(param->detailInfo);
+    d->jreEdit->setText(param->jrePath);
+    d->jreExecuteEdit->setText(param->jreExecute);
+    d->launchCfgPathEdit->setText(param->launchConfigPath);
+    d->lanuchCfgFileEdit->setText(param->launchPackageFile);
+    d->dapPackageFileEdit->setText(param->dapPackageFile);
 }
 
 void DetailPropertyWidget::getValues(config::ConfigureParam *param)
@@ -149,7 +196,7 @@ void DetailPropertyWidget::getValues(config::ConfigureParam *param)
     if (!param)
         return;
 
-    auto getValue = [](QComboBox *comboBox, ItemInfo &itemInfo){
+    auto getValue = [](QComboBox *comboBox, config::ItemInfo &itemInfo){
         itemInfo.clear();
         int index = comboBox->currentIndex();
         if (index > -1) {
@@ -163,6 +210,44 @@ void DetailPropertyWidget::getValues(config::ConfigureParam *param)
     getValue(d->mvnVersionComboBox, param->mavenVersion);
     param->mainClass = d->mainClass->text();
     param->detailInfo = d->detailBox->isChecked();
+    param->jrePath = d->jreEdit->text();
+    param->jreExecute = d->jreExecuteEdit->text();
+    param->launchConfigPath = d->launchCfgPathEdit->text();
+    param->launchPackageFile = d->lanuchCfgFileEdit->text();
+    param->dapPackageFile = d->dapPackageFileEdit->text();
+}
+
+void DetailPropertyWidget::browserFileDialog()
+{
+    QObject *senderObj = qobject_cast<QObject *>(sender());
+    QString senderName = senderObj->objectName();
+
+    auto showDirDialog = [this](QLineEdit *widget){
+        QString result = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                                                           widget->text(),
+                                                           QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        if (!result.isEmpty()) {
+            widget->setText(result);
+        }
+    };
+
+    auto showFileDialog = [this](QLineEdit *widget){
+        QString result = QFileDialog::getOpenFileName(this, tr("Select File"), widget->text());
+        if (!result.isEmpty())
+            widget->setText(result);
+    };
+
+    if (senderName == kJrePath) {
+        showDirDialog(d->jreEdit);
+    } else if (senderName == kJreExecute) {
+        showFileDialog(d->jreExecuteEdit);
+    } else if (senderName == kLaunchConfigPath) {
+        showDirDialog(d->launchCfgPathEdit);
+    } else if (senderName == kLaunchPackageFile) {
+        showFileDialog(d->lanuchCfgFileEdit);
+    } else if (senderName == kDapPackageFile) {
+        showFileDialog(d->dapPackageFileEdit);
+    }
 }
 
 class ConfigPropertyWidgetPrivate
@@ -203,22 +288,28 @@ void ConfigPropertyWidget::setupUI()
 
 void ConfigPropertyWidget::initData(const dpfservice::ProjectInfo &projectInfo)
 {
-    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
-    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(projectInfo.workspaceFolder()), *param);
-    d->detail->setValues(param);
+    config::ConfigureParam *param = config::ConfigUtil::instance()->getConfigureParamPointer();
     param->kit = projectInfo.kitName();
     param->language = projectInfo.language();
     param->projectPath = projectInfo.workspaceFolder();
+    param->detailInfo = projectInfo.detailInformation();
+    param->jrePath = projectInfo.property(config::kJrePath).toString();
+    param->jreExecute = projectInfo.property(config::kJreExecute).toString();
+    param->launchConfigPath = projectInfo.property(config::kLaunchConfigPath).toString();
+    param->launchPackageFile = projectInfo.property(config::kLaunchPackageFile).toString();
+    param->dapPackageFile = projectInfo.property(config::kDapPackageFile).toString();
+
+    d->detail->setValues(param);
 }
 
 void ConfigPropertyWidget::saveConfig()
 {
-    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    config::ConfigureParam *param = config::ConfigUtil::instance()->getConfigureParamPointer();
     d->detail->getValues(param);
 
-    QString filePath = ConfigUtil::instance()->getConfigPath(param->projectPath);
-    ConfigUtil::instance()->saveConfig(filePath, *param);
+    QString filePath = config::ConfigUtil::instance()->getConfigPath(param->projectPath);
+    config::ConfigUtil::instance()->saveConfig(filePath, *param);
 
-    ConfigUtil::instance()->updateProjectInfo(d->projectInfo, param);
+    config::ConfigUtil::instance()->updateProjectInfo(d->projectInfo, param);
     dpfservice::ProjectInfo::set(d->item, d->projectInfo);
 }

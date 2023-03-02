@@ -30,6 +30,12 @@
 
 namespace config {
 
+extern const QString kJrePath;
+extern const QString kJreExecute;
+extern const QString kLaunchConfigPath;
+extern const QString kLaunchPackageFile;
+extern const QString kDapPackageFile;
+
 struct ItemInfo {
     QString name;
     QString path;
@@ -64,6 +70,11 @@ struct ConfigureParam {
     ItemInfo jdkVersion;
     ItemInfo gradleVersion;
     QString mainClass;
+    QString jrePath;
+    QString jreExecute;
+    QString launchConfigPath;
+    QString launchPackageFile;
+    QString dapPackageFile;
     bool detailInfo = true;
 
     friend QDataStream &operator<<(QDataStream &stream, const ConfigureParam &data)
@@ -74,6 +85,11 @@ struct ConfigureParam {
         stream << data.jdkVersion;
         stream << data.gradleVersion;
         stream << data.mainClass;
+        stream << data.jrePath;
+        stream << data.jreExecute;
+        stream << data.launchConfigPath;
+        stream << data.launchPackageFile;
+        stream << data.dapPackageFile;
         stream << data.detailInfo;
 
         return stream;
@@ -87,6 +103,11 @@ struct ConfigureParam {
         stream >> data.jdkVersion;
         stream >> data.gradleVersion;
         stream >> data.mainClass;
+        stream >> data.jrePath;
+        stream >> data.jreExecute;
+        stream >> data.launchConfigPath;
+        stream >> data.launchPackageFile;
+        stream >> data.dapPackageFile;
         stream >> data.detailInfo;
 
         return stream;
@@ -100,6 +121,11 @@ struct ConfigureParam {
         jdkVersion.clear();
         gradleVersion.clear();
         mainClass.clear();
+        jrePath.clear();
+        jreExecute.clear();
+        launchConfigPath.clear();
+        launchPackageFile.clear();
+        dapPackageFile.clear();
         detailInfo = true;
     }
 };
