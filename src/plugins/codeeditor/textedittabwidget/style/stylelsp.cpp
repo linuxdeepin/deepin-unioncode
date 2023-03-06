@@ -808,36 +808,37 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
 #endif
         auto sciStartPos = StyleLsp::getSciPosition(d->edit->docPointer(), {cacheLine, val.start.character});
         auto sciEndPos = d->edit->wordEndPosition(sciStartPos, true);
-        if (sciStartPos != 0 && sciEndPos != d->edit->length()) {
-            QString sourceText = d->edit->textRange(sciStartPos, sciEndPos);
-            int wordLength = sciEndPos - sciStartPos;
+        auto wordStartPos = d->edit->wordStartPosition(sciStartPos, true);
+        if (sciStartPos == 0 || sciEndPos == d->edit->length() || wordStartPos != sciStartPos)
+            continue;
+        QString sourceText = d->edit->textRange(sciStartPos, sciEndPos);
+        int wordLength = sciEndPos - sciStartPos;
 #ifdef QT_DEBUG
-            qInfo() << "text:" << sourceText;
+        qInfo() << "text:" << sourceText;
 #endif
-            if (!sourceText.isEmpty() && wordLength == val.length) {
-                QString tokenValue = tokenToDefine(val.tokenType);
+        if (!sourceText.isEmpty() && wordLength == val.length) {
+            QString tokenValue = tokenToDefine(val.tokenType);
 #ifdef QT_DEBUG
-                qInfo() << "tokenValue:" << tokenValue;
+            qInfo() << "tokenValue:" << tokenValue;
 #endif
-                auto indics = symbolIndic(tokenValue, val.tokenModifiers);
-                for (int i = 0; i < INDIC_MAX; i++) {
-                    if (indics.fore.keys().contains(i)) {
+            auto indics = symbolIndic(tokenValue, val.tokenModifiers);
+            for (int i = 0; i < INDIC_MAX; i++) {
+                if (indics.fore.keys().contains(i)) {
 #ifdef QT_DEBUG
-                        qInfo() << "fillRangeColor:" << hex << indics.fore[i];
+                    qInfo() << "fillRangeColor:" << hex << indics.fore[i];
 #endif
-                        d->edit->setIndicatorCurrent(i);
-                        d->edit->indicSetFlags(i, SC_INDICFLAG_VALUEFORE);
-                        d->edit->setIndicatorValue(indics.fore[i]);
-                        d->edit->indicatorFillRange(sciStartPos, wordLength);
-                    }
+                    d->edit->setIndicatorCurrent(i);
+                    d->edit->indicSetFlags(i, SC_INDICFLAG_VALUEFORE);
+                    d->edit->setIndicatorValue(indics.fore[i]);
+                    d->edit->indicatorFillRange(sciStartPos, wordLength);
                 }
+            }
 
-                QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue, sourceText);
-                if (!tokenAnnLine.isEmpty()) {
-                    editor.setAnnotation(d->edit->file(), cacheLine,
-                                         QString(TextEditKeeper::userActionAnalyseTitle()),
-                                         AnnotationInfo{tokenAnnLine});
-                }
+            QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue, sourceText);
+            if (!tokenAnnLine.isEmpty()) {
+                editor.setAnnotation(d->edit->file(), cacheLine,
+                                     QString(TextEditKeeper::userActionAnalyseTitle()),
+                                     AnnotationInfo{tokenAnnLine});
             }
         }
     }

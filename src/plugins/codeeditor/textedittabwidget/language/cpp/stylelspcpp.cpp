@@ -74,27 +74,27 @@ StyleLsp::IndicStyleExt StyleLspCpp::symbolIndic(lsp::SemanticTokenType::type_va
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Variable).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Parameter == token){
-            tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Text).toObject();
+        if (lsp::SemanticTokenType::get()->Parameter == token) {
+            tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Parameter).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Variable == token){
+        if (lsp::SemanticTokenType::get()->Variable == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Variable).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Property == token){
+        if (lsp::SemanticTokenType::get()->Property == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Property).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->EnumMember == token){
+        if (lsp::SemanticTokenType::get()->EnumMember == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Enumeration).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Event == token){
+        if (lsp::SemanticTokenType::get()->Event == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Text).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Function == token){
+        if (lsp::SemanticTokenType::get()->Function == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Function).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
@@ -102,19 +102,19 @@ StyleLsp::IndicStyleExt StyleLspCpp::symbolIndic(lsp::SemanticTokenType::type_va
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Method).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Macro == token){
+        if (lsp::SemanticTokenType::get()->Macro == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Macro).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Keyword == token){
+        if (lsp::SemanticTokenType::get()->Keyword == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Keyword).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Modifier == token){
+        if (lsp::SemanticTokenType::get()->Modifier == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Text).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Comment == token){
+        if (lsp::SemanticTokenType::get()->Comment == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Comment).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
@@ -122,15 +122,15 @@ StyleLsp::IndicStyleExt StyleLspCpp::symbolIndic(lsp::SemanticTokenType::type_va
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->String).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Number == token){
+        if (lsp::SemanticTokenType::get()->Number == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Number).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Regexp == token){
+        if (lsp::SemanticTokenType::get()->Regexp == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->String).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }
-        if (lsp::SemanticTokenType::get()->Operator == token){
+        if (lsp::SemanticTokenType::get()->Operator == token) {
             tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Operators).toObject();
             tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         }

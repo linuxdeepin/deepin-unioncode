@@ -22,7 +22,7 @@
             "FontSize": 16
         },
         "Method": {
-            "Foreground": "eee8aa",
+            "Foreground": "f0e68c",
             "Background": "000000",
             "FontSize": 16
         },
@@ -37,7 +37,12 @@
             "FontSize": 16   
         },
         "Property": {
-            "Foreground": "aaaaaa",
+            "Foreground": "eee8aa",
+            "Background": "000000",
+            "FontSize": 16   
+        },
+        "Parameter": {
+            "Foreground": "eee8aa",
             "Background": "000000",
             "FontSize": 16   
         },
