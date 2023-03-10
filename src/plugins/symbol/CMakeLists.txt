@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-symbol)
 
+find_package(Clang REQUIRED)
+include_directories(${CLANG_INCLUDE_DIRS})
+
 set(CXX_CPP
     mainframe/symboldelegate.cpp
     mainframe/symbolmodel.cpp
@@ -9,6 +12,8 @@ set(CXX_CPP
     mainframe/symbolkeeper.cpp
     mainframe/symbolparser.cpp
     transceiver/symbolreceiver.cpp
+    clangparser/clangcursor.cpp
+    clangparser/clangparser.cpp
     symbol.cpp
     symbol.json
     )
@@ -21,6 +26,8 @@ set(CXX_H
     mainframe/symbolkeeper.h
     mainframe/symbolparser.h
     transceiver/symbolreceiver.h
+    clangparser/clangcursor.h
+    clangparser/clangparser.h
     symbol.h
     )
 
@@ -38,6 +45,7 @@ target_link_libraries(${PROJECT_NAME}
     common
     ${QtUseModules}
     ${PkgUserModules}
+    libclang
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})

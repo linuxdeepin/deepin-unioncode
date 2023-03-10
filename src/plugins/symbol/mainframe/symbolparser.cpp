@@ -20,6 +20,7 @@
 */
 #include "symbolparser.h"
 #include "common/common.h"
+#include "clangparser/clangparser.h"
 
 namespace {
 const QString unionparser{"unionparser"};
@@ -86,15 +87,17 @@ QString SymbolParser::getLanguage() const
 
 void SymbolParser::start()
 {
-#ifdef QT_DEBUG
-    setProcessChannelMode(QProcess::ForwardedChannels);
-#endif
+#ifdef __mips__
+    // switch to libclang.
+    ClangParser::parse(processArgs.workspace, processArgs.storage, processArgs.language);
+#else
     QString programLine = "unionparser";
     programLine += " -w " + processArgs.workspace;
     programLine += " -l " + processArgs.language;
     programLine += " -s " + processArgs.storage;
     setArguments({"-c", programLine});
     QProcess::start();
+#endif
 }
 
 SymbolParseArgs::SymbolParseArgs()

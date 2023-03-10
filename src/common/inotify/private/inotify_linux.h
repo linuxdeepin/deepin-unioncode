@@ -51,7 +51,7 @@ public:
         pfdCache = {inotifyFD, POLLIN, 0};
     }
 
-    virtual ~InotifyLinux()
+    ~InotifyLinux() override
     {
         qInfo() << __FUNCTION__;
         for(auto wd : watchPaths.keys()) {
@@ -90,6 +90,7 @@ public:
         if (wd < 0)
             return;
 
+        inotify_rm_watch(inotifyFD, wd);
         watchPaths.remove(wd);
     }
 

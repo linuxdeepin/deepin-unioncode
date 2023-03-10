@@ -43,21 +43,6 @@ void Symbol::initialize()
 
 bool Symbol::start()
 {
-    qInfo() << __FUNCTION__;
-    QString unionparser = "unionparser";
-    if (!ProcessUtil::exists(unionparser)) {
-        if (env::pkg::native::installed()) {
-            QString parserNativePkgPath = env::pkg::native::path(env::pkg::Category::get()->unionparser);
-            if (QFileInfo(parserNativePkgPath).isFile()) {
-                ProcessUtil::execute("pip3", {"install", parserNativePkgPath}, [=](const QByteArray &data){
-                    qInfo() << qPrintable(data);
-                });
-            } else {
-                qCritical() << "Failed, Not found unionparser env package to install!!!";
-            }
-        }
-    }
-
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
