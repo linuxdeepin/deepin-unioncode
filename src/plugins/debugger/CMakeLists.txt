@@ -17,7 +17,6 @@ set(CXX_CPP
     runtimecfgprovider.cpp
     dap/debugservice.cpp
     dap/debugmodel.cpp
-    interface/appoutputpane.cpp
     interface/stackframemodel.cpp
     stackframe.cpp
     interface/localtreeitem.cpp
@@ -46,7 +45,6 @@ set(CXX_H
     debug.h
     dap/debugservice.h
     dap/debugmodel.h
-    interface/appoutputpane.h
     interface/stackframemodel.h
     stackframe.h
     interface/localtreeitem.h

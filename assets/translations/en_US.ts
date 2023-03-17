@@ -161,42 +161,42 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="198"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="201"/>
         <source>Co&amp;mpile Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="257"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="260"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="261"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="264"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="269"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="272"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="272"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="275"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="276"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="279"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="303"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="306"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -275,18 +275,23 @@
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="48"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="49"/>
         <source>Save All Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="49"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="50"/>
         <source>Close All Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="50"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="51"/>
         <source>Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="122"/>
+        <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -353,12 +358,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="57"/>
+        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="58"/>
         <source>C&amp;ode Porting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="60"/>
+        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="61"/>
         <source>Porting &amp;Report</source>
         <translation type="unfinished"></translation>
     </message>
@@ -490,29 +495,34 @@ The debugee has Terminated.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="922"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="878"/>
+        <source>Requesting debug port...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="926"/>
         <source>
 The dap port is not ready, please retry.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="927"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="931"/>
         <source>Debugging starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="982"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="986"/>
         <source>Start debugging coredump file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="985"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="989"/>
         <source>The coredump target file is error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="992"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="996"/>
         <source>The coredump file is error: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -520,18 +530,17 @@ The dap port is not ready, please retry.
 <context>
     <name>DebuggerPlugin</name>
     <message>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="67"/>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="85"/>
+        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="84"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="68"/>
+        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="67"/>
         <source>Stac&amp;kFrame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="70"/>
+        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="69"/>
         <source>Break&amp;points</source>
         <translation type="unfinished"></translation>
     </message>
@@ -539,10 +548,27 @@ The dap port is not ready, please retry.
 <context>
     <name>DetailPropertyWidget</name>
     <message>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="83"/>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="83"/>
-        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="83"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="97"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="97"/>
         <source>Input main class</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="120"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="120"/>
+        <source>Browse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="226"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="226"/>
+        <source>Open Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="235"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="235"/>
+        <source>Select File</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -703,7 +729,7 @@ The dap port is not ready, please retry.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/gradlegenerator.cpp" line="208"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/gradlegenerator.cpp" line="216"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
@@ -745,53 +771,13 @@ The dap port is not ready, please retry.
 <context>
     <name>JavaDebug</name>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="68"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="69"/>
         <source>The project is not exist, please check the files and retry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="101"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="103"/>
         <source>Request java dap port failed, please retry.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="120"/>
-        <source>The computer arch is not supported, can not start debugging.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="151"/>
-        <source>The lsp package file is null.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="178"/>
-        <source>The lsp package is not exist.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="196"/>
-        <source>The dap package file is null.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="223"/>
-        <source>The dap package is not exist.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="114"/>
-        <source>Read dapconfig.support failed, please check the file and retry.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="166"/>
-        <source>Decompress lsp package process exited unnormally.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="211"/>
-        <source>Decompress dap package process exited unnormally.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -897,7 +883,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/mavengenerator.cpp" line="171"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/mavengenerator.cpp" line="178"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
@@ -996,17 +982,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="183"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="192"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="193"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="202"/>
         <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="203"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="212"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1077,18 +1063,18 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="319"/>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="434"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="318"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="433"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="332"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="331"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="438"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="437"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1155,12 +1141,12 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="550"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="567"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="557"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="574"/>
         <source>Find Usages</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1229,17 +1215,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="356"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="355"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="357"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="356"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="358"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="357"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1424,18 +1410,33 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="66"/>
+        <location filename="../../src/services/window/windowelement.h" line="67"/>
         <source>Report Bug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="67"/>
+        <location filename="../../src/services/window/windowelement.h" line="68"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/actionanalyse/actionanalyseplugin.cpp" line="48"/>
+        <location filename="../../src/services/window/windowelement.h" line="74"/>
+        <source>Valgrind Memcheck</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/services/window/windowelement.h" line="75"/>
+        <source>Valgrind Helgrind</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/services/window/windowelement.h" line="63"/>
         <source>User Action Analyse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/valgrind.cpp" line="26"/>
+        <source>valgrind memcheck</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1521,7 +1522,7 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="69"/>
+        <location filename="../../src/services/window/windowelement.h" line="70"/>
         <source>Open Document</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1553,8 +1554,13 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="245"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="282"/>
         <source>Find ToolBar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="307"/>
+        <source>Valgrind</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1640,9 +1646,7 @@ storage: %2
     </message>
     <message>
         <location filename="../../src/plugins/option/optionjava/mainframe/jdkwidget.cpp" line="79"/>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="64"/>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="64"/>
-        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="64"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="78"/>
         <source>JDK version：</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1672,21 +1676,34 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="72"/>
-        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="72"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="86"/>
         <source>Gradle Version: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="80"/>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="80"/>
-        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="80"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="94"/>
         <source>Main Class：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="72"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="104"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="104"/>
+        <source>Detail output:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="78"/>
+        <source>JDK version:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="86"/>
         <source>Maven Version: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="94"/>
+        <source>Main Class:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1731,7 +1748,7 @@ storage: %2
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="548"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="565"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1771,8 +1788,13 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="65"/>
+        <location filename="../../src/services/window/windowelement.h" line="66"/>
         <source>&amp;Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/services/window/windowelement.h" line="73"/>
+        <source>&amp;Analyze</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1902,6 +1924,48 @@ storage: %2
         <source>Detail</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="36"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="36"/>
+        <source>jre path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="37"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="37"/>
+        <source>jre execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="38"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="38"/>
+        <source>launch config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="39"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="39"/>
+        <source>launch package</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="40"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="40"/>
+        <source>dap package</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="13"/>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="14"/>
+        <source>Issue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="13"/>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="14"/>
+        <source>Location</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QPushButton</name>
@@ -2004,12 +2068,12 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="70"/>
+        <location filename="../../src/services/window/windowelement.h" line="71"/>
         <source>&amp;Console</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="94"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="95"/>
         <source>Code &amp;Lens</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2033,7 +2097,7 @@ storage: %2
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="226"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="234"/>
         <source>Navigation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2473,47 +2537,47 @@ Delete anyway?</source>
 <context>
     <name>Runner</name>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="60"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="59"/>
         <source>Running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="118"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="117"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="135"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="134"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="139"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="138"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="147"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="146"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="150"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="149"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="154"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="153"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="180"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="179"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -2728,12 +2792,13 @@ Delete anyway?</source>
 <context>
     <name>StyleLsp</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="229"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="241"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="243"/>
         <source>Range Formatting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="774"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="792"/>
         <source>There is a fatal error between the current d-&gt;editor component and the backend of the syntax server, which may affect the syntax highlighting. 
 Please contact the maintainer for troubleshooting to solve the problem!</source>
         <translation type="unfinished"></translation>
@@ -2779,6 +2844,62 @@ Please contact the maintainer for troubleshooting to solve the problem!</source>
         <location filename="../../src/plugins/option/optioncmake/mainframe/persistentsettings.cpp" line="351"/>
         <location filename="../../src/plugins/option/optioncore/mainframe/persistentsettings.cpp" line="351"/>
         <source>File Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Valgrind</name>
+    <message>
+        <location filename="../../src/plugins/valgrind/valgrind.cpp" line="32"/>
+        <source>&amp;Valgrind</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ValgrindBar</name>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="43"/>
+        <source>memcheck</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="44"/>
+        <source>helgrind</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ValgrindRunner</name>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.cpp" line="56"/>
+        <source>&amp;Valgrind</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>XmlStreamReader</name>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/xmlstreamreader.cpp" line="215"/>
+        <source>Function:
+	</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/xmlstreamreader.cpp" line="215"/>
+        <source>Instruction Pointer:
+	</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/xmlstreamreader.cpp" line="216"/>
+        <source>Object:
+	</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/xmlstreamreader.cpp" line="218"/>
+        <source>Location:
+	</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

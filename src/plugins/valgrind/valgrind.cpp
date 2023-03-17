@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 ~ 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2020 ~ 2023 Uniontech Software Technology Co., Ltd.
  *
  * Author:     hongjinchuan<hongjinchuan@uniontech.com>
  *
@@ -18,45 +18,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "actionanalyseplugin.h"
-#include "mainframe/configure.h"
-#include "mainframe/analysekeeper.h"
+#include "valgrind.h"
+#include "mainframe/valgrindrunner.h"
+#include "mainframe/valgrindbar.h"
 
 #include "common/common.h"
-#include "base/abstractaction.h"
+#include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "services/window/windowelement.h"
 
-#include <QProcess>
 #include <QAction>
-#include <QLabel>
-#include <QTreeView>
 
-void ActionAnalyse::initialize()
+void Valgrind::initialize()
 {
-
+    qInfo() << __FUNCTION__;
 }
 
-bool ActionAnalyse::start()
+bool Valgrind::start()
 {
     qInfo() << __FUNCTION__;
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    auto windowService = ctx.service<WindowService>(WindowService::name());
 
     if (windowService) {
-        auto action = new QAction(MWMTA_USR_ACTION_ANALYZE);
-        ActionManager::getInstance()->registerAction(action, "Analyze.UsrActionAnalyze", action->text(), QKeySequence());
-        action->setCheckable(true);
-        action->setChecked(Configure::enabled());
-        QObject::connect(action, &QAction::toggled, Configure::setEnabled);
-        windowService->addAction(MWM_TOOLS, new AbstractAction(action));
+        ValgrindBar *valgrindBar = new ValgrindBar();
+        windowService->addContextWidget(tr("&Valgrind"), new AbstractWidget(valgrindBar), "Valgrind");
     }
+
+    ValgrindRunner::instance()->initialize();
 
     return true;
 }
 
-dpf::Plugin::ShutdownFlag ActionAnalyse::stop()
+dpf::Plugin::ShutdownFlag Valgrind::stop()
 {
     return Sync;
 }

@@ -31,10 +31,15 @@ class OutputPane : public QPlainTextEdit
 public:
 
     enum OutputFormat {
-        Stdout,
-        Stderr,
         NormalMessage,
-        ErrorMessage
+        ErrorMessage,
+        LogMessage,
+        Debug,
+        StdOut,
+        StdErr,
+        StdOutFormatSameLine,
+        StdErrFormatSameLine,
+        NumberOfFormats   // Keep this entry last.
     };
 
     enum AppendMode {
@@ -46,7 +51,8 @@ public:
     ~OutputPane() override;
 
     void clearContents();
-    void appendText(const QString &text, OutputFormat format, AppendMode mode = Normal);
+    void appendText(const QString &text, OutputPane::OutputFormat format, AppendMode mode = Normal);
+    static OutputPane* instance();
 
 protected:
     void contextMenuEvent(QContextMenuEvent * event) override;

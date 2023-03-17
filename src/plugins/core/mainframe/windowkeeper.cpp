@@ -96,6 +96,14 @@ void WindowKeeper::createFileActions(QMenuBar *menuBar)
     fileAction->setText(MWM_FILE);
 }
 
+void WindowKeeper::createAnalyzeActions(QMenuBar *menuBar)
+{
+    qInfo() << __FUNCTION__;
+    QMenu* analyzeMenu = new QMenu();
+    QAction* buildAction = menuBar->addMenu(analyzeMenu);
+    buildAction->setText(MWM_ANALYZE);
+}
+
 void WindowKeeper::createBuildActions(QMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
@@ -238,6 +246,7 @@ void WindowKeeper::layoutWindow(QMainWindow *window)
     createFileActions(menuBar);
     createBuildActions(menuBar);
     createDebugActions(menuBar);
+    createAnalyzeActions(menuBar);
     createToolsActions(menuBar);
     createHelpActions(menuBar);
 

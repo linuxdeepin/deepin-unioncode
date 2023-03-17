@@ -214,6 +214,32 @@ void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *c
     qTabWidgetContext->insertTab(index + 1, qWidget, title);
 }
 
+void NavEditMainWindow::addWidgetTools(const QString &title, AbstractWidget *toolWidget)
+{
+    if (!qDockWidgetTools) {
+        qTabWidgetTools = new QTabWidget();
+        qTabWidgetTools->setTabPosition(QTabWidget::West);
+        qDockWidgetTools = new AutoHideDockWidget(this);
+        qDockWidgetTools->setFeatures(QDockWidget::DockWidgetMovable);
+        qDockWidgetTools->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+        addDockWidget(Qt::TopDockWidgetArea, qDockWidgetTools);
+        qDockWidgetTools->setWidget(qTabWidgetTools);
+        qDockWidgetTools->hide();
+    }
+
+    if (qTabWidgetTools) {
+        auto qToolWidget = (QWidget*)toolWidget->qWidget();
+        qTabWidgetWorkspace->addTab(qToolWidget, title);
+    }
+}
+
+void NavEditMainWindow::showWidgetTools()
+{
+    if (qDockWidgetTools && qTabWidgetTools) {
+        qDockWidgetTools->show();
+    }
+}
+
 bool NavEditMainWindow::switchWidgetWorkspace(const QString &title)
 {
     for (int i = 0; i < qTabWidgetWorkspace->count(); i++) {
@@ -230,6 +256,17 @@ bool NavEditMainWindow::switchWidgetContext(const QString &title)
     for (int i = 0; i < qTabWidgetContext->count(); i++){
         if (qTabWidgetContext->tabText(i) == title) {
             qTabWidgetContext->setCurrentIndex(i);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool NavEditMainWindow::switchWidgetTools(const QString &title)
+{
+    for (int i = 0; i < qTabWidgetTools->count(); i++) {
+        if (qTabWidgetTools->tabText(i) == title) {
+            qTabWidgetTools->setCurrentIndex(i);
             return true;
         }
     }
@@ -259,6 +296,31 @@ void NavEditMainWindow::showFindToolBar()
              qDockWidgetFindToolBar->show();
          }
      }
+}
+
+void NavEditMainWindow::addValgrindBar(AbstractWidget *valgrindbar)
+{
+    if (!valgrindbar)
+        return;
+
+    if (!qDockWidgetValgrindBar) {
+        qDockWidgetValgrindBar = new AutoHideDockWidget(QDockWidget::tr("Valgrind"), this);
+        addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, qDockWidgetValgrindBar);
+        QWidget *widget = static_cast<QWidget*>(valgrindbar->qWidget());
+        qDockWidgetValgrindBar->setWidget(widget);
+        qDockWidgetValgrindBar->hide();
+    }
+}
+
+void NavEditMainWindow::showValgrindBar()
+{
+    if (qDockWidgetValgrindBar) {
+        if (qDockWidgetValgrindBar->isVisible()) {
+            qDockWidgetValgrindBar->hide();
+        } else {
+            qDockWidgetValgrindBar->show();
+        }
+    }
 }
 
 bool NavEditMainWindow::addToolBarActionItem(const QString &id, QAction *action, const QString &group)

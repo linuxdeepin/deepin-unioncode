@@ -1,4 +1,5 @@
 add_subdirectory(core)
+add_subdirectory(valgrind)
 add_subdirectory(recent)
 add_subdirectory(debugger)
 add_subdirectory(codeeditor)

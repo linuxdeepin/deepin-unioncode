@@ -45,7 +45,7 @@ CodePorting::CodePorting(QObject *parent)
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
             auto mode = parseFormat(line);
-            emit outputInformation(line, OutputPane::OutputFormat::Stdout, mode);
+            emit outputInformation(line, OutputPane::OutputFormat::StdOut, mode);
         }
     });
 
@@ -55,7 +55,7 @@ CodePorting::CodePorting(QObject *parent)
             QString line = QString::fromUtf8(process.readLine());
             QRegularExpression reg("\\s\\[INFO\\]\\s");
             bool isInfo = reg.match(line).hasMatch();
-            OutputPane::OutputFormat format = isInfo ? OutputPane::Stdout : OutputPane::Stderr;
+            OutputPane::OutputFormat format = isInfo ? OutputPane::StdOut : OutputPane::StdErr;
             auto mode = parseFormat(line);
             emit outputInformation(line, format, mode);
 
@@ -64,9 +64,9 @@ CodePorting::CodePorting(QObject *parent)
             if (!reportPath.isEmpty()) {
                 bool bSuccessful = parseReportFromFile(reportPath);
                 if (bSuccessful) {
-                    emit outputInformation(tr("Parse report successful.\n"), OutputPane::Stdout, mode);
+                    emit outputInformation(tr("Parse report successful.\n"), OutputPane::StdOut, mode);
                 } else {
-                    emit outputInformation(tr("Parse report Failed.\n"), OutputPane::Stderr, mode);
+                    emit outputInformation(tr("Parse report Failed.\n"), OutputPane::StdErr, mode);
                 }
             }
         }

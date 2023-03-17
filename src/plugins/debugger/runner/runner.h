@@ -26,6 +26,7 @@
 #include "event/event.h"
 #include "services/language/languagegenerator.h"
 #include "debuggerglobals.h"
+#include "common/widget/outputpane.h"
 
 #include <QObject>
 #include <QAction>
@@ -39,7 +40,7 @@ public:
 
 
 signals:
-    void sigOutputMsg(const QString &content, OutputFormat format = NormalMessageFormat);
+    void sigOutputMsg(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
 
 public slots:
     void run();
@@ -48,7 +49,7 @@ public slots:
 private:
     void running();
     bool execCommand(const dpfservice::RunCommandInfo &info);
-    void outputMsg(const QString &content, OutputFormat format = NormalMessageFormat);
+    void outputMsg(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
 
 private:
    RunnerPrivate *const d;

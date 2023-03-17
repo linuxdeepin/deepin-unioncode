@@ -82,6 +82,7 @@ private :
     void createDebugActions(QMenuBar *menuBar);
     void createBuildActions(QMenuBar *menuBar);
     void createFileActions(QMenuBar *menuBar);
+    void createAnalyzeActions(QMenuBar *menuBar);
     void setNavActionChecked(const QString &actionName, bool checked);
 };
 

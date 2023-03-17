@@ -142,11 +142,11 @@ void OutputPane::appendText(const QString &text, OutputFormat format, AppendMode
 {
     QTextCharFormat textFormat;
     switch (format) {
-    case OutputFormat::Stdout:
+    case OutputFormat::StdOut:
         textFormat.setForeground(kTextColorNormal);
         textFormat.setFontWeight(QFont::Normal);
         break;
-    case OutputFormat::Stderr:
+    case OutputFormat::StdErr:
         textFormat.setForeground(kErrorMessageTextColor);
         textFormat.setFontWeight(QFont::Normal);
         break;
@@ -157,9 +157,18 @@ void OutputPane::appendText(const QString &text, OutputFormat format, AppendMode
         textFormat.setForeground(kErrorMessageTextColor);
         textFormat.setFontWeight(QFont::Bold);
         break;
+    default:
+        textFormat.setForeground(kTextColorNormal);
+        textFormat.setFontWeight(QFont::Normal);
     }
 
     appendCustomText(text, mode, textFormat);
+}
+
+OutputPane *OutputPane::instance()
+{
+    static OutputPane ins;
+    return &ins;
 }
 
 void OutputPane::contextMenuEvent(QContextMenuEvent * event)

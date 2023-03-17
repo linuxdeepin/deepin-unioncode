@@ -47,7 +47,7 @@ public:
     explicit DebugManager(QObject *parent = nullptr);
     bool initialize(dpfservice::WindowService *windowService,
                     dpfservice::DebuggerService *debuggerService);
-    AppOutputPane *getOutputPane() const;
+    OutputPane *getOutputPane() const;
     QWidget *getStackPane() const;
     QTreeView *getLocalsPane() const;
     QTreeView *getBreakpointPane() const;

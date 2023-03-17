@@ -77,7 +77,7 @@ Debugger::Debugger(QObject *parent)
     : QObject(parent)
     , d(new DebuggerPrivate())
 {
-    qRegisterMetaType<OutputFormat>("OutputFormat");
+    qRegisterMetaType<OutputPane::OutputFormat>("OutputPane::OutputFormat");
     qRegisterMetaType<StackFrameData>("StackFrameData");
     qRegisterMetaType<StackFrames>("StackFrames");
 
@@ -114,7 +114,7 @@ Debugger::~Debugger()
     // all widgets in tabWidget will be deleted automatically.
 }
 
-AppOutputPane *Debugger::getOutputPane() const
+OutputPane *Debugger::getOutputPane() const
 {
     return outputPane;
 }
@@ -368,7 +368,7 @@ void Debugger::registerDapHandlers()
             QMetaObject::invokeMethod(this, "showStoppedBySignalMessageBox",
                                       Q_ARG(QString, meaning), Q_ARG(QString, name));
 
-            printOutput(tr("\nThe debugee has Terminated.\n"), NormalMessageFormat);
+            printOutput(tr("\nThe debugee has Terminated.\n"), OutputPane::OutputFormat::NormalMessage);
 
             updateRunState(kNoRun);
         }
@@ -386,7 +386,7 @@ void Debugger::registerDapHandlers()
         Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "ExitedEvent";
-        printOutput(tr("The debugee has Exited.\n"), NormalMessageFormat);
+        printOutput(tr("The debugee has Exited.\n"), OutputPane::OutputFormat::NormalMessage);
         updateRunState(kNoRun);
     });
 
@@ -396,7 +396,7 @@ void Debugger::registerDapHandlers()
         Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "TerminatedEvent";
-        printOutput(tr("\nThe debugee has Terminated.\n"), NormalMessageFormat);
+        printOutput(tr("\nThe debugee has Terminated.\n"), OutputPane::OutputFormat::NormalMessage);
         updateRunState(kNoRun);
     });
 
@@ -422,22 +422,22 @@ void Debugger::registerDapHandlers()
             }
         }
 
-        OutputFormat format = NormalMessageFormat;
+        OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage;
         if (event.category) {
             dap::string category = event.category.value();
             if (category == "stdout") {
-                format = OutputFormat::StdOutFormat;
+                format = OutputPane::OutputFormat::StdOut;
             } else if (category == "stderr") {
-                format = OutputFormat::StdErrFormat;
+                format = OutputPane::OutputFormat::StdErr;
             } else {
-                format = OutputFormat::LogMessageFormat;
+                format = OutputPane::OutputFormat::LogMessage;
             }
         }
 
         QString output = event.output.c_str();
         if (output.contains("received signal")
                 || output.contains("Program")) {
-            format = OutputFormat::StdErrFormat;
+            format = OutputPane::OutputFormat::StdErr;
         }
         printOutput(output, format);
     });
@@ -583,10 +583,10 @@ void Debugger::handleEvents(const dpf::Event &event)
     }
 }
 
-void Debugger::printOutput(const QString &content, OutputFormat format)
+void Debugger::printOutput(const QString &content, OutputPane::OutputFormat format)
 {
     QString outputContent = content;
-    if (format == NormalMessageFormat) {
+    if (format == OutputPane::OutputFormat::NormalMessage) {
         QTextDocument *doc = outputPane->document();
         QTextBlock tb = doc->lastBlock();
         QString lastLineText = tb.text();
@@ -598,8 +598,8 @@ void Debugger::printOutput(const QString &content, OutputFormat format)
         QString time = curDatetime.toString("hh:mm:ss");
         outputContent = prefix + time + ":" + content + "\n";
     }
-    QMetaObject::invokeMethod(outputPane, "appendText",
-                              Q_ARG(QString, outputContent), Q_ARG(OutputFormat, format));
+    OutputPane::AppendMode mode = OutputPane::AppendMode::Normal;
+    outputPane->appendText(outputContent, format, mode);
 }
 
 void Debugger::handleFrames(const StackFrames &stackFrames)
@@ -729,7 +729,7 @@ void Debugger::slotBreakpointSelected(const QModelIndex &index)
 void Debugger::initializeView()
 {
     // initialize output pane.
-    outputPane = new AppOutputPane();
+    outputPane = OutputPane::instance();
 
     // initialize stack monitor pane.
     stackPane = new QWidget;
@@ -901,13 +901,13 @@ void Debugger::slotReceivedDAPPort(const QString &uuid, int port, const QString 
 
 void Debugger::slotOutputMsg(const QString &title, const QString &msg)
 {
-    OutputFormat format = DebugFormat;
+    OutputPane::OutputFormat format = OutputPane::OutputFormat::Debug;
     if (title == "stdErr") {
-        format = StdErrFormat;
+        format = OutputPane::OutputFormat::StdErr;
     } else if (title == "stdOut") {
-        format = StdOutFormat;
+        format = OutputPane::OutputFormat::StdOut;
     } else if (title == "normal") {
-        format = NormalMessageFormat;
+        format = OutputPane::OutputFormat::NormalMessage;
     }
     bool isDetail = dpfGetService(ProjectService)->projectView.getActiveProjectInfo().detailInformation();
     if (isDetail || title == "stdErr") {
@@ -923,7 +923,7 @@ void Debugger::stopWaitingDebugPort()
 void Debugger::launchSession(int port, const QMap<QString, QVariant> &param, const QString &kitName)
 {
     if (!port) {
-        printOutput(tr("\nThe dap port is not ready, please retry.\n"), ErrorMessageFormat);
+        printOutput(tr("\nThe dap port is not ready, please retry.\n"), OutputPane::OutputFormat::ErrorMessage);
         QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Could not find server port!"));
         return;
     }

@@ -64,7 +64,6 @@ bool DebuggerPlugin::start()
     debugManager->initialize(windowService, debuggerService);
 
     // instert output pane to window.
-    emit windowService->addContextWidget(tr("&Application Output"), new AbstractWidget(debugManager->getOutputPane()), "Application");
     emit windowService->addContextWidget(tr("Stac&kFrame"), new AbstractWidget(debugManager->getStackPane()), "Application");
     emit windowService->setWidgetWatch(new AbstractWidget(debugManager->getLocalsPane()));
     emit windowService->addContextWidget(tr("Break&points"), new AbstractWidget(debugManager->getBreakpointPane()), "Application");

@@ -44,7 +44,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent * event) override;
 
 public slots:
-    void appendText(const QString &text, OutputFormat format);
+    void appendText(const QString &text, OutputPane::OutputFormat format);
 
 private:
     void appendText(const QString &text, const QTextCharFormat &format = QTextCharFormat());

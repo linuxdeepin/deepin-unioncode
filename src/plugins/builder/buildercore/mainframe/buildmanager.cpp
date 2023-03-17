@@ -172,7 +172,7 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
                 QString retMsg;
                 bool ret = generator->checkCommandValidity(info, retMsg);
                 if (!ret) {
-                    outputLog(retMsg, OutputPane::OutputFormat::Stderr);
+                    outputLog(retMsg, OutputPane::OutputFormat::StdErr);
                     continue;
                 }
 
@@ -231,7 +231,7 @@ void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
             QString retMsg;
             bool ret = generator->checkCommandValidity(commandInfo, retMsg);
             if (!ret) {
-                outputLog(retMsg, OutputPane::OutputFormat::Stderr);
+                outputLog(retMsg, OutputPane::OutputFormat::StdErr);
                 return;
             }
             execCommands({commandInfo});
@@ -285,7 +285,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
         process.setReadChannel(QProcess::StandardOutput);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputLog(line, OutputPane::OutputFormat::Stdout);
+            outputLog(line, OutputPane::OutputFormat::StdOut);
         }
     });
 
@@ -293,7 +293,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
         process.setReadChannel(QProcess::StandardError);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputLog(line, OutputPane::OutputFormat::Stderr);
+            outputLog(line, OutputPane::OutputFormat::StdErr);
             outputError(line);
         }
     });
@@ -301,7 +301,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
     process.start(info.program, info.arguments);
     process.waitForFinished(-1);
 
-    outputLog(retMsg, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::Stderr);
+    outputLog(retMsg, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::StdErr);
 
     QString endMsg = tr("Execute command finished.\n");
     outputLog(endMsg, OutputPane::OutputFormat::NormalMessage);
@@ -348,7 +348,7 @@ void BuildManager::addOutput(const QString &content, const OutputPane::OutputFor
     QString newContent = content;
     if (OutputPane::OutputFormat::NormalMessage == format
             || OutputPane::OutputFormat::ErrorMessage == format
-            || OutputPane::OutputFormat::Stdout == format) {
+            || OutputPane::OutputFormat::StdOut == format) {
 
         QDateTime curDatetime = QDateTime::currentDateTime();
         QString time = curDatetime.toString("hh:mm:ss");

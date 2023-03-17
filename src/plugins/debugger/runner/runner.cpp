@@ -110,7 +110,7 @@ void Runner::handleEvents(const dpf::Event &event)
 void Runner::running()
 {
     if(d->isRunning) {
-        outputMsg("The program is running, please try again later!", OutputFormat::ErrorMessageFormat);
+        outputMsg("The program is running, please try again later!", OutputPane::OutputFormat::ErrorMessage);
         return;
     }
 
@@ -137,7 +137,7 @@ bool Runner::execCommand(const RunCommandInfo &info)
 
     QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
             .arg(info.program, info.arguments.join(" "), info.workingDir);
-    outputMsg(startMsg, OutputFormat::NormalMessageFormat);
+    outputMsg(startMsg, OutputPane::OutputFormat::NormalMessage);
 
     connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             [&](int exitcode, QProcess::ExitStatus exitStatus) {
@@ -159,7 +159,7 @@ bool Runner::execCommand(const RunCommandInfo &info)
         process.setReadChannel(QProcess::StandardOutput);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputMsg(line, OutputFormat::StdOutFormat);
+            outputMsg(line, OutputPane::OutputFormat::StdOut);
         }
     });
 
@@ -167,22 +167,22 @@ bool Runner::execCommand(const RunCommandInfo &info)
         process.setReadChannel(QProcess::StandardError);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputMsg(line, OutputFormat::StdErrFormat);
+            outputMsg(line, OutputPane::OutputFormat::StdErr);
         }
     });
 
     process.start(info.program, info.arguments);
     process.waitForFinished(-1);
 
-    outputMsg(retMsg, ret ? OutputFormat::NormalMessageFormat : OutputFormat::StdErrFormat);
+    outputMsg(retMsg, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::StdErr);
 
     QString endMsg = tr("Execute command finished.\n");
-    outputMsg(endMsg, OutputFormat::NormalMessageFormat);
+    outputMsg(endMsg, OutputPane::OutputFormat::NormalMessage);
 
     return ret;
 }
 
-void Runner::outputMsg(const QString &content, OutputFormat format)
+void Runner::outputMsg(const QString &content, OutputPane::OutputFormat format)
 {
     emit sigOutputMsg(content, format);
 }

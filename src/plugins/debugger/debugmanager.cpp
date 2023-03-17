@@ -58,7 +58,7 @@ bool DebugManager::initialize(dpfservice::WindowService *windowService,
     return true;
 }
 
-AppOutputPane *DebugManager::getOutputPane() const
+OutputPane *DebugManager::getOutputPane() const
 {
     return debugger->getOutputPane();
 }

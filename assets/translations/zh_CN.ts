@@ -161,47 +161,47 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="198"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="201"/>
         <source>Co&amp;mpile Output</source>
         <translation>编译输出(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="257"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="260"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation>错误：执行命令错误！原因未知。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="261"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="264"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始在工作区%3中执行%1 %2命令。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="269"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="272"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程%1正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="272"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="275"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程%1退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="276"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="279"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程 %1崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="303"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="306"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -281,19 +281,24 @@
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="48"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="49"/>
         <source>Save All Documents</source>
         <translation>保存所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="49"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="50"/>
         <source>Close All Documents</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="50"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="51"/>
         <source>Print</source>
         <translation>打印</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="122"/>
+        <source>&amp;Application Output</source>
+        <translation type="unfinished">应用程序输出(&amp;A)</translation>
     </message>
 </context>
 <context>
@@ -365,12 +370,12 @@
         <translation>代码迁移</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="57"/>
+        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="58"/>
         <source>C&amp;ode Porting</source>
         <translation>代码迁移(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="60"/>
+        <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="61"/>
         <source>Porting &amp;Report</source>
         <translation>迁移报告(&amp;R)</translation>
     </message>
@@ -505,7 +510,12 @@ The debugee has Terminated.
         <translation>线程：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="922"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="878"/>
+        <source>Requesting debug port...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="926"/>
         <source>
 The dap port is not ready, please retry.
 </source>
@@ -514,22 +524,22 @@ dap端口未就绪，请重试。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="927"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="931"/>
         <source>Debugging starts</source>
         <translation>调试开始</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="982"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="986"/>
         <source>Start debugging coredump file: </source>
         <translation>开始调试coredump文件： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="985"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="989"/>
         <source>The coredump target file is error: </source>
         <translation>coredump目标文件错误： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="992"/>
+        <location filename="../../src/plugins/debugger/dap/debugger.cpp" line="996"/>
         <source>The coredump file is error: </source>
         <translation>coredump文件错误： </translation>
     </message>
@@ -537,18 +547,17 @@ dap端口未就绪，请重试。
 <context>
     <name>DebuggerPlugin</name>
     <message>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="67"/>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="85"/>
+        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="84"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="68"/>
+        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="67"/>
         <source>Stac&amp;kFrame</source>
         <translation>堆栈列表(&amp;K)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="70"/>
+        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="69"/>
         <source>Break&amp;points</source>
         <translation>断点列表(&amp;P)</translation>
     </message>
@@ -556,11 +565,28 @@ dap端口未就绪，请重试。
 <context>
     <name>DetailPropertyWidget</name>
     <message>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="83"/>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="83"/>
-        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="83"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="97"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="97"/>
         <source>Input main class</source>
         <translation>输入 main class</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="120"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="120"/>
+        <source>Browse...</source>
+        <translation type="unfinished">浏览...</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="226"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="226"/>
+        <source>Open Directory</source>
+        <translation type="unfinished">打开目录</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="235"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="235"/>
+        <source>Select File</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -720,7 +746,7 @@ dap端口未就绪，请重试。
         <translation>%1的路径不存在！请检查并重新打开项目。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/gradlegenerator.cpp" line="208"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/gradlegenerator.cpp" line="216"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
@@ -762,54 +788,14 @@ dap端口未就绪，请重试。
 <context>
     <name>JavaDebug</name>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="68"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="69"/>
         <source>The project is not exist, please check the files and retry.</source>
         <translation>项目不存在，请检查文件并重试。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="101"/>
+        <location filename="../../src/plugins/java/java/javadebug.cpp" line="103"/>
         <source>Request java dap port failed, please retry.</source>
         <translation>请求java dap端口失败，请重试。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="120"/>
-        <source>The computer arch is not supported, can not start debugging.</source>
-        <translation>不支持计算机架构，无法启动调试。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="151"/>
-        <source>The lsp package file is null.</source>
-        <translation>lsp包文件为空。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="178"/>
-        <source>The lsp package is not exist.</source>
-        <translation>lsp包不存在。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="196"/>
-        <source>The dap package file is null.</source>
-        <translation>dap包文件为空。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="223"/>
-        <source>The dap package is not exist.</source>
-        <translation>dap包不存在。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="114"/>
-        <source>Read dapconfig.support failed, please check the file and retry.</source>
-        <translation>读取dap 配置失败，请检查文件并重试。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="166"/>
-        <source>Decompress lsp package process exited unnormally.</source>
-        <translation>解压缩lsp包进程异常退出。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/java/java/javadebug.cpp" line="211"/>
-        <source>Decompress dap package process exited unnormally.</source>
-        <translation>解压缩dap包进程异常退出。</translation>
     </message>
 </context>
 <context>
@@ -915,7 +901,7 @@ repos path: %0</source>
         <translation>%1的路径不存在！请检查并重新打开项目。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/mavengenerator.cpp" line="171"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/mavengenerator.cpp" line="178"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
@@ -1014,17 +1000,17 @@ repos path: %0</source>
         <translation>省略附加输出</translation>
     </message>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="183"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="192"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="193"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="202"/>
         <source>Clear</source>
         <translation>清扫</translation>
     </message>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="203"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="212"/>
         <source>Select All</source>
         <translation>选择全部</translation>
     </message>
@@ -1097,18 +1083,18 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="319"/>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="434"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="318"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="433"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="332"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="331"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="438"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="437"/>
         <source>ok</source>
         <translation>ok</translation>
     </message>
@@ -1175,12 +1161,12 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="550"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="567"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="557"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="574"/>
         <source>Find Usages</source>
         <translation>查找用法</translation>
     </message>
@@ -1254,17 +1240,17 @@ repos path: %0</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="356"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="355"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="357"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="356"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="358"/>
+        <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="357"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
@@ -1444,19 +1430,34 @@ repos path: %0</source>
         <translation>中文</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="66"/>
+        <location filename="../../src/services/window/windowelement.h" line="67"/>
         <source>Report Bug</source>
         <translation>报告Bug</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="67"/>
+        <location filename="../../src/services/window/windowelement.h" line="68"/>
         <source>About</source>
         <translation>关于UnionCode</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/actionanalyse/actionanalyseplugin.cpp" line="48"/>
+        <location filename="../../src/services/window/windowelement.h" line="74"/>
+        <source>Valgrind Memcheck</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/services/window/windowelement.h" line="75"/>
+        <source>Valgrind Helgrind</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/services/window/windowelement.h" line="63"/>
         <source>User Action Analyse</source>
         <translation>用户行为分析</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/valgrind.cpp" line="26"/>
+        <source>valgrind memcheck</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1546,7 +1547,7 @@ not exists support files: %0</source>
         <translation>工程信息</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="69"/>
+        <location filename="../../src/services/window/windowelement.h" line="70"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
@@ -1582,9 +1583,14 @@ storage: %2
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="245"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="282"/>
         <source>Find ToolBar</source>
         <translation>查找</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="307"/>
+        <source>Valgrind</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1669,9 +1675,7 @@ storage: %2
     </message>
     <message>
         <location filename="../../src/plugins/option/optionjava/mainframe/jdkwidget.cpp" line="79"/>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="64"/>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="64"/>
-        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="64"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="78"/>
         <source>JDK version：</source>
         <translation>JDK版本：</translation>
     </message>
@@ -1701,22 +1705,35 @@ storage: %2
         <translation>编译配置：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="72"/>
-        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="72"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="86"/>
         <source>Gradle Version: </source>
         <translation>Gradle版本： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="80"/>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="80"/>
-        <location filename="../../src/plugins/project/projectninja/mainframe/properties/configpropertywidget.cpp" line="80"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="94"/>
         <source>Main Class：</source>
         <translation>Main Class:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="72"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="104"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="104"/>
+        <source>Detail output:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="78"/>
+        <source>JDK version:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="86"/>
         <source>Maven Version: </source>
         <translation>Maven版本： </translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="94"/>
+        <source>Main Class:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/projectpython/mainframe/properties/configpropertywidget.cpp" line="62"/>
@@ -1760,7 +1777,7 @@ storage: %2
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="548"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="565"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
@@ -1795,9 +1812,14 @@ storage: %2
         <translation>切换语言</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="65"/>
+        <location filename="../../src/services/window/windowelement.h" line="66"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
+    </message>
+    <message>
+        <location filename="../../src/services/window/windowelement.h" line="73"/>
+        <source>&amp;Analyze</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findplugin.cpp" line="54"/>
@@ -1931,6 +1953,48 @@ storage: %2
         <source>Detail</source>
         <translation>细节</translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="36"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="36"/>
+        <source>jre path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="37"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="37"/>
+        <source>jre execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="38"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="38"/>
+        <source>launch config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="39"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="39"/>
+        <source>launch package</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="40"/>
+        <location filename="../../src/plugins/project/projectmaven/mainframe/properties/configpropertywidget.cpp" line="40"/>
+        <source>dap package</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="13"/>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="14"/>
+        <source>Issue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="13"/>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="14"/>
+        <source>Location</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QPushButton</name>
@@ -2033,12 +2097,12 @@ storage: %2
         <translation>符号</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="70"/>
+        <location filename="../../src/services/window/windowelement.h" line="71"/>
         <source>&amp;Console</source>
         <translation>控制台(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="94"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="95"/>
         <source>Code &amp;Lens</source>
         <translation>代码信息指示器(&amp;L)</translation>
     </message>
@@ -2062,7 +2126,7 @@ storage: %2
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="226"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="234"/>
         <source>Navigation</source>
         <translation>导航栏</translation>
     </message>
@@ -2503,52 +2567,52 @@ Delete anyway?</source>
 <context>
     <name>Runner</name>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="60"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="59"/>
         <source>Running</source>
         <translation>运行</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="118"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="117"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="135"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="134"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation>错误：执行命令错误！原因未知。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="139"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="138"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始在工作区%3中执行%1 %2命令。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="147"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="146"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程%1正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="150"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="149"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程%1退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="154"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="153"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程 %1崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="180"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="179"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -2764,12 +2828,13 @@ Delete anyway?</source>
 <context>
     <name>StyleLsp</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="229"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="241"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="243"/>
         <source>Range Formatting</source>
         <translation>选中范围格式化</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="774"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="792"/>
         <source>There is a fatal error between the current d-&gt;editor component and the backend of the syntax server, which may affect the syntax highlighting. 
 Please contact the maintainer for troubleshooting to solve the problem!</source>
         <translation>当前的编辑器组件和语法服务器后端之间存在致命错误，这可能会影响语法高亮显示。
@@ -2817,6 +2882,62 @@ Please contact the maintainer for troubleshooting to solve the problem!</source>
         <location filename="../../src/plugins/option/optioncore/mainframe/persistentsettings.cpp" line="351"/>
         <source>File Error</source>
         <translation>文件错误</translation>
+    </message>
+</context>
+<context>
+    <name>Valgrind</name>
+    <message>
+        <location filename="../../src/plugins/valgrind/valgrind.cpp" line="32"/>
+        <source>&amp;Valgrind</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ValgrindBar</name>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="43"/>
+        <source>memcheck</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="44"/>
+        <source>helgrind</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ValgrindRunner</name>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.cpp" line="56"/>
+        <source>&amp;Valgrind</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>XmlStreamReader</name>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/xmlstreamreader.cpp" line="215"/>
+        <source>Function:
+	</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/xmlstreamreader.cpp" line="215"/>
+        <source>Instruction Pointer:
+	</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/xmlstreamreader.cpp" line="216"/>
+        <source>Object:
+	</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/xmlstreamreader.cpp" line="218"/>
+        <source>Location:
+	</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -129,18 +129,18 @@ void AppOutputPane::appendText(const QString &text, OutputFormat format)
 {
     QTextCharFormat textFormat;
     switch (format) {
-    case OutputFormat::StdOutFormat:
+    case OutputFormat::StdOut:
         textFormat.setForeground(kTextColorNormal);
         textFormat.setFontWeight(QFont::Normal);
         break;
-    case OutputFormat::StdErrFormat:
+    case OutputFormat::StdErr:
         textFormat.setForeground(kErrorMessageTextColor);
         textFormat.setFontWeight(QFont::Normal);
         break;
-    case OutputFormat::NormalMessageFormat:
+    case OutputFormat::NormalMessage:
         textFormat.setForeground(kMessageOutput);
         break;
-    case OutputFormat::ErrorMessageFormat:
+    case OutputFormat::ErrorMessage:
         textFormat.setForeground(kErrorMessageTextColor);
         textFormat.setFontWeight(QFont::Bold);
         break;

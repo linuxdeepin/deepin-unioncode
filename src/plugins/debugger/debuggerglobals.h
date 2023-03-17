@@ -38,18 +38,6 @@
 #define DBG_TEST 1
 #define DEBUG_NAMESPACE DEBUG
 
-enum OutputFormat {
-    NormalMessageFormat,
-    ErrorMessageFormat,
-    LogMessageFormat,
-    DebugFormat,
-    StdOutFormat,
-    StdErrFormat,
-    StdOutFormatSameLine,
-    StdErrFormatSameLine,
-    NumberOfFormats   // Keep this entry last.
-};
-
 /**
  * @brief Output text color.
  */

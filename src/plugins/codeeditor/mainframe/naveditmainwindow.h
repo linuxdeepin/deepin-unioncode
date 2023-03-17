@@ -39,10 +39,13 @@ class NavEditMainWindow : public QMainWindow
     AutoHideDockWidget *qDockWidgetContext{nullptr};
     AutoHideDockWidget *qDockWidgetWatch{nullptr};
     AutoHideDockWidget *qDockWidgetFindToolBar{nullptr};
+    AutoHideDockWidget *qDockWidgetValgrindBar{nullptr};
+    AutoHideDockWidget *qDockWidgetTools{nullptr};
     QWidget *qWidgetEdit{nullptr};
     QWidget *qWidgetWatch{nullptr};
     QTabWidget *qTabWidgetContext{nullptr};
     QTabWidget *qTabWidgetWorkspace{nullptr};
+    QTabWidget *qTabWidgetTools{nullptr};
     ToolBarManager *mainToolBar{nullptr};
     QList<QString> contextList;
 public:
@@ -55,10 +58,15 @@ public:
     void setWidgetEdit(AbstractCentral *editWidget);
     void setWidgetWatch(AbstractWidget *watchWidget);
     void addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group = nullptr);
+    void addWidgetTools(const QString &title, AbstractWidget *toolWidget);
+    void showWidgetTools();
     bool switchWidgetWorkspace(const QString &title);
     bool switchWidgetContext(const QString &title);
+    bool switchWidgetTools(const QString &title);
     void addFindToolBar(AbstractWidget *findToolbar);
     void showFindToolBar();
+    void addValgrindBar(AbstractWidget *valgrindbar);
+    void showValgrindBar();
     bool addToolBarActionItem(const QString &id, QAction *action, const QString &group);
     bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget, const QString &group);
     void addToolBarSeparator(const QString &group);

@@ -39,6 +39,7 @@
 
 #include "services/window/windowservice.h"
 #include "services/language/languageservice.h"
+#include "common/widget/outputpane.h"
 
 #include <QAction>
 #include <QSplitter>
@@ -109,6 +110,8 @@ bool CodeEditor::start()
         auto sep = new QAction();
         sep->setSeparator(true);
         windowService->addAction(MWM_FILE, new AbstractAction(sep));
+
+        windowService->addContextWidget(tr("&Application Output"), new AbstractWidget(OutputPane::instance()), "Application");
     }
 
     return true;

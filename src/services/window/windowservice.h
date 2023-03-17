@@ -158,7 +158,6 @@ public:
      */
     DPF_INTERFACE(void, showFindToolBar);
 
-
     /*!
      * \brief addToolBarActionItem
      */

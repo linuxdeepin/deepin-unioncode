@@ -29,6 +29,7 @@
 
 #include "services/project/projectservice.h"
 #include "common/supportfile/dapconfig.h"
+#include "common/widget/outputpane.h"
 
 #include <QSharedPointer>
 #include <QTreeView>
@@ -47,7 +48,7 @@ class Session;
 
 class DebuggerPrivate;
 class Debugger;
-class AppOutputPane;
+class OutputPane;
 class StackFrameView;
 class RunTimeCfgProvider;
 class QComboBox;
@@ -68,7 +69,7 @@ public:
     explicit Debugger(QObject *parent = nullptr);
     ~Debugger();
 
-    AppOutputPane *getOutputPane() const;
+    OutputPane *getOutputPane() const;
     QWidget *getStackPane() const;
     QTreeView *getLocalsPane() const;
     QTreeView *getBreakpointPane() const;
@@ -94,7 +95,7 @@ signals:
 public slots:
     void registerDapHandlers();
     void handleEvents(const dpf::Event &event);
-    void printOutput(const QString &content, OutputFormat format = NormalMessageFormat);
+    void printOutput(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
     /**
      * interface triggered.
      */
@@ -135,7 +136,7 @@ private:
     /**
      * @brief interface objects.
      */
-    AppOutputPane *outputPane = nullptr;
+    OutputPane *outputPane = nullptr;
 
     QWidget *stackPane = nullptr;
     StackFrameView *stackView = nullptr;
