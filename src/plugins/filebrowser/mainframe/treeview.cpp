@@ -259,7 +259,7 @@ QMenu *TreeView::createContextMenu(const QModelIndexList &indexs)
         openAction->setEnabled(false);
     }
 
-    if (selOne && hasDir) {
+    if (selOne || hasDir) {
         QAction *newFolderAction = new QAction(QAction::tr("New Folder"));
         QAction *newDocumentAction = new QAction(QAction::tr("New Document"));
 

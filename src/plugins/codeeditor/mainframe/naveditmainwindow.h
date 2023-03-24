@@ -22,6 +22,7 @@
 #define NAVEDITMAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMutex>
 
 class QGridLayout;
 class QTabWidget;
@@ -48,16 +49,16 @@ class NavEditMainWindow : public QMainWindow
     QTabWidget *qTabWidgetTools{nullptr};
     ToolBarManager *mainToolBar{nullptr};
     QList<QString> contextList;
+    QMutex mutex;
 public:
     static NavEditMainWindow *instance();
     explicit NavEditMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
     virtual ~NavEditMainWindow();
     QStringList contextWidgetTitles() const;
-    void setConsole(AbstractConsole *console);
     void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget);
     void setWidgetEdit(AbstractCentral *editWidget);
     void setWidgetWatch(AbstractWidget *watchWidget);
-    void addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group = nullptr);
+    void addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group);
     void addWidgetTools(const QString &title, AbstractWidget *toolWidget);
     void showWidgetTools();
     bool switchWidgetWorkspace(const QString &title);
@@ -69,7 +70,6 @@ public:
     void showValgrindBar();
     bool addToolBarActionItem(const QString &id, QAction *action, const QString &group);
     bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget, const QString &group);
-    void addToolBarSeparator(const QString &group);
     void removeToolBarItem(const QString &id);
     void setToolBarItemDisable(const QString &id, bool disable);
 };

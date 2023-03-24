@@ -65,11 +65,10 @@ bool FindPlugin::start()
 
     editMenu->addAction(findAction);
     editMenu->addAction(advancedFindAction);
-    windowService->addToolBarActionItem("Find/Replace", findAction, "Find");
-    windowService->addToolBarSeparator("Find");
+    windowService->addToolBarActionItem("Find/Replace", findAction, "Search.End");
 
     connect(findAction, &QAction::triggered, [=] {
-        emit windowService->showFindToolBar();
+        windowService->showFindToolBar();
     });
 
     connect(advancedFindAction, &QAction::triggered, [=] {
@@ -80,11 +79,11 @@ bool FindPlugin::start()
     windowService->addMenu(menuImpl);
 
     AbstractWidget *widgetImpl = new AbstractWidget(new FindToolWindow());
-    emit windowService->addContextWidget(tr("Advanced &Search"), widgetImpl, "Advsearch");
+    windowService->addContextWidget(tr("Advanced &Search"), widgetImpl, "Advsearch");
 
     FindToolBar * findToolBar = new FindToolBar();
     AbstractWidget *abstractFindToolBar = new AbstractWidget(findToolBar);
-    emit windowService->addFindToolBar(abstractFindToolBar);
+    windowService->addFindToolBar(abstractFindToolBar);
     connect(findToolBar, &FindToolBar::advanced, this, &FindPlugin::sendSwitchSearchResult);
 
     return true;
@@ -92,7 +91,7 @@ bool FindPlugin::start()
 
 void FindPlugin::sendSwitchSearchResult()
 {
-    emit editor.switchContext(tr("Advanced &Search"));
+    editor.switchContext(tr("Advanced &Search"));
 }
 
 dpf::Plugin::ShutdownFlag FindPlugin::stop()

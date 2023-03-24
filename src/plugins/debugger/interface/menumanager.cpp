@@ -125,8 +125,7 @@ void MenuManager::initialize(WindowService *windowService)
     connect(stepOut.get(), &QAction::triggered, debugManager, &DebugManager::stepOut);
     actionImpl = new AbstractAction(stepOut.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addToolBarActionItem("Step.Out", stepOut.get(), "Debug");
-    windowService->addToolBarSeparator("Debug");
+    windowService->addToolBarActionItem("Step.Out", stepOut.get(), "Debug.End");
 }
 
 void MenuManager::handleRunStateChanged(Debugger::RunState state)

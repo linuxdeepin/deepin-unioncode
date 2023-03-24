@@ -21,8 +21,6 @@
 */
 #include "toolbarmanager.h"
 
-#include <QVector>
-
 class ToolBarManagerPrivate
 {
     friend class ToolBarManager;
@@ -32,8 +30,8 @@ class ToolBarManagerPrivate
         QString group;
     };
 
+    QMap<QString, QAction *> groupIndex;
     QList<Item> itemVector;
-    QList<QString> actionList;
     QToolBar *toolbar = nullptr;
 };
 
@@ -61,19 +59,38 @@ bool ToolBarManager::addActionItem(const QString &id, QAction *action, const QSt
 {
     if (!action || id.isEmpty() || !d->toolbar || hasOverrideActionItem(id, action, group))
         return false;
+    QStringList groupIndex = group.split(".");
+    QString groupName = groupIndex.at(0);
 
-    int index = sortActionGroup(group);
-
-    if (index > 0) {
-        index -= 1;
+    if(!d->groupIndex.contains(groupName)) {
+        d->groupIndex.insert(groupName, nullptr);
     }
 
+    auto currentIterator = d->groupIndex.find(groupName);
+    auto nextIterator = currentIterator + 1;
     QAction *before = nullptr;
-    if (d->itemVector.size() > index) {
-        before = d->itemVector.at(index).action;
+    for (; nextIterator != d->groupIndex.end(); ++nextIterator) {
+        if (nextIterator.value() != nullptr) {
+            QString temp = nextIterator.key();
+            before = nextIterator.value();
+            break;
+        }
     }
-    d->toolbar->insertAction(before,action);
-    d->itemVector.insert(index, {id, action, group});
+
+    d->toolbar->insertAction(before, action);
+
+    if (currentIterator.value() == nullptr)
+        d->groupIndex[groupName] = action;
+    if (groupIndex.size() > 1) {
+        if (groupIndex.at(1) == "Start") {
+            if (currentIterator.value() != nullptr && currentIterator.value() != action)
+                before = currentIterator.value();
+            d->toolbar->insertAction(before, action);
+            currentIterator.value() = action;
+        } else if (groupIndex.at(1) == "End") {
+            d->toolbar->insertSeparator(before);
+        }
+    }
 
     return true;
 }
@@ -128,18 +145,6 @@ bool ToolBarManager::hasOverrideActionItem(const QString &id, QAction *action, c
     return false;
 }
 
-void ToolBarManager::addSeparator(const QString &group)
-{
-    int index = sortActionGroup(group);
-    if (index >= d->itemVector.size()) {
-        d->toolbar->addSeparator();
-    } else {
-        QAction *before = d->itemVector.at(index - 1).action;
-        d->toolbar->insertSeparator(before);
-    }
-    d->itemVector.insert(index, {group, nullptr, group});
-}
-
 void ToolBarManager::removeItem(const QString &id)
 {
     for (auto iter = d->itemVector.begin(); iter != d->itemVector.end(); ++iter) {
@@ -160,28 +165,3 @@ void ToolBarManager::disableItem(const QString &id, bool disable)
         }
     }
 }
-
-int ToolBarManager::sortActionGroup(const QString &group)
-{
-    int index = 0;
-    if (!d->actionList.count(group)) {
-        for (int i = 0; i < d->actionList.size(); i++) {
-            const QString &temp = d->actionList.at(i);
-            if (QString::compare(group, temp) < 0) {
-                break;
-            } else {
-                index++;
-            }
-        }
-    } else {
-        index = d->actionList.indexOf(group, 0);
-        for (; index < d->actionList.size(); index++) {
-            if (d->actionList.at(index) != group) {
-                break;
-            }
-        }
-    }
-    d->actionList.insert(index, group);
-    return index;
-}
-

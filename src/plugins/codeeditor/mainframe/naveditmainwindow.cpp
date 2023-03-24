@@ -67,10 +67,6 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
         windowService->addToolBarWidgetItem = std::bind(&NavEditMainWindow::addToolBarWidgetItem, this, _1, _2, _3);
     }
 
-    if (!windowService->addToolBarSeparator) {
-        windowService->addToolBarSeparator = std::bind(&NavEditMainWindow::addToolBarSeparator, this, _1);
-    }
-
     if (!windowService->removeToolBarItem) {
         windowService->removeToolBarItem = std::bind(&NavEditMainWindow::removeToolBarItem, this, _1);
     }
@@ -108,23 +104,6 @@ QStringList NavEditMainWindow::contextWidgetTitles() const
         result<< qTabWidgetContext->tabText(index);
     }
     return result;
-}
-
-void NavEditMainWindow::setConsole(AbstractConsole *console)
-{
-    QWidget *qConsoleWidget = static_cast<QWidget*>(console->qWidget());
-    if (!qConsoleWidget || !qTabWidgetContext) {
-        return;
-    }
-
-    int consoleIndex = findIndex(qTabWidgetContext, dpfservice::CONSOLE_TAB_TEXT);
-    if (consoleIndex >= 0) {
-        qTabWidgetContext->removeTab(consoleIndex);
-        qTabWidgetContext->insertTab(consoleIndex, qConsoleWidget, dpfservice::CONSOLE_TAB_TEXT);
-        return;
-    }
-    qConsoleWidget->setParent(qTabWidgetContext);
-    qTabWidgetContext->insertTab(0, qConsoleWidget, dpfservice::CONSOLE_TAB_TEXT);
 }
 
 void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget)
@@ -182,18 +161,14 @@ void NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
 
 void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group)
 {
+    QMutexLocker locker(&mutex);
     QWidget *qWidget = static_cast<QWidget*>(contextWidget->qWidget());
-    if (!qWidget || !qTabWidgetContext) {
-        return;
-    }
-
-    if (group.isEmpty()) {
-        qTabWidgetContext->insertTab(1, qWidget, title);
+    if (!qWidget || !qTabWidgetContext || group.isEmpty()) {
         return;
     }
 
     int index = 0;
-    if (!contextList.count(group)) {
+    if (!contextList.contains(group)) {
         for (int i = 0; i < contextList.size(); i++) {
             const QString &temp = contextList.at(i);
             if (QString::compare(group, temp) < 0) {
@@ -211,7 +186,7 @@ void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *c
         }
     }
     contextList.insert(index, group);
-    qTabWidgetContext->insertTab(index + 1, qWidget, title);
+    qTabWidgetContext->insertTab(index, qWidget, title);
 }
 
 void NavEditMainWindow::addWidgetTools(const QString &title, AbstractWidget *toolWidget)
@@ -289,13 +264,13 @@ void NavEditMainWindow::addFindToolBar(AbstractWidget *findToolbar)
 
 void NavEditMainWindow::showFindToolBar()
 {
-     if (qDockWidgetFindToolBar) {
-         if (qDockWidgetFindToolBar->isVisible()) {
-             qDockWidgetFindToolBar->hide();
-         } else {
-             qDockWidgetFindToolBar->show();
-         }
-     }
+    if (qDockWidgetFindToolBar) {
+        if (qDockWidgetFindToolBar->isVisible()) {
+            qDockWidgetFindToolBar->hide();
+        } else {
+            qDockWidgetFindToolBar->show();
+        }
+    }
 }
 
 void NavEditMainWindow::addValgrindBar(AbstractWidget *valgrindbar)
@@ -325,6 +300,7 @@ void NavEditMainWindow::showValgrindBar()
 
 bool NavEditMainWindow::addToolBarActionItem(const QString &id, QAction *action, const QString &group)
 {
+    QMutexLocker locker(&mutex);
     if (!mainToolBar)
         return false;
 
@@ -333,17 +309,11 @@ bool NavEditMainWindow::addToolBarActionItem(const QString &id, QAction *action,
 
 bool NavEditMainWindow::addToolBarWidgetItem(const QString &id, AbstractWidget *widget, const QString &group)
 {
+    QMutexLocker locker(&mutex);
     if (!mainToolBar)
         return false;
 
     return mainToolBar->addWidgetItem(id, static_cast<QWidget*>(widget->qWidget()), group);
-}
-
-void NavEditMainWindow::addToolBarSeparator(const QString &group)
-{
-    if (!mainToolBar)
-        return;
-    mainToolBar->addSeparator(group);
 }
 
 void NavEditMainWindow::removeToolBarItem(const QString &id)

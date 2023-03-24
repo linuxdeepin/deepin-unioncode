@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "console.h"
-#include "base/abstractconsole.h"
+#include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "consolewidget.h"
 
@@ -40,8 +40,8 @@ bool Console::start()
 
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (windowService && windowService->setWidgetConsole) {
-        windowService->setWidgetConsole(new AbstractConsole(ConsoleWidget::instance()));
+    if (windowService) {
+        windowService->addContextWidget(QString(tr("&Console")), new AbstractWidget(ConsoleWidget::instance()), "A");
     }
     return true;
 }

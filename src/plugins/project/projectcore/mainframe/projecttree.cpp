@@ -506,8 +506,6 @@ void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fil
                                 nullptr);
         if (doOverWrite) {
             QFile::remove(filePath);
-        } else {
-            return;
         }
     }
 
