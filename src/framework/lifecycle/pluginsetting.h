@@ -32,6 +32,8 @@ DPF_BEGIN_NAMESPACE
 
 const char ORGANIZATION[] = "deepin";
 const char ENABLED[] = "enabled";
+const char DISABLED_PLUGINS[] = "Plugins/Disabled";
+const char ENABLED_PLUGINS[] = "Plugins/Enabled";
 
 class PluginSetting final : public QSettings
 {

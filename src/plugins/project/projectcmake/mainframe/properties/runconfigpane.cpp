@@ -73,7 +73,7 @@ void RunConfigPane::setupUi()
     d->excutableLabel = new QLineEdit(mainFrame);
     d->excutableLabel->setText(tr("Here is the executable path"));
     d->excutableLabel->setReadOnly(true);
-    formLayout->addRow(tr("Excutable path:"), d->excutableLabel);
+    formLayout->addRow(tr("Executable path:"), d->excutableLabel);
 
     // command line ui.
     d->cmdArgsLineEdit = new QLineEdit(mainFrame);

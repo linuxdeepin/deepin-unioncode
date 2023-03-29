@@ -76,6 +76,8 @@ public:
     QSharedPointer<Plugin> plugin;
     QSharedPointer<QPluginLoader> loader;
     QSharedPointer<PluginContext> context;
+    bool enabledBySettings = true;
+    bool disabledBySettings = false;
 
     explicit PluginMetaObjectPrivate(PluginMetaObject * q)
         : q(q)

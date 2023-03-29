@@ -143,6 +143,21 @@ void PluginManager::stopPlugins()
     d->stopPlugins();
 }
 
+void PluginManager::setSettings(PluginSetting *settings)
+{
+    d->setSettings(settings);
+}
+
+void PluginManager::writeSettings()
+{
+    d->writeSettings();
+}
+
+QHash<QString, QQueue<PluginMetaObjectPointer> > PluginManager::pluginCollections()
+{
+    return d->pluginCategories;
+}
+
 /** @brief pluginIID 获取插件标识IID
  * @return QString 返回设置的IID，默认为空
  */

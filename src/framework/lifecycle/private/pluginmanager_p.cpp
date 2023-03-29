@@ -24,7 +24,9 @@
 #include "pluginmanager_p.h"
 #include "lifecycle/private/pluginmetaobject_p.h"
 #include "lifecycle/plugin.h"
+#include "lifecycle/pluginsetting.h"
 
+#include "common/util/custompaths.h"
 #include "log/frameworklog.h"
 
 DPF_BEGIN_NAMESPACE
@@ -63,6 +65,7 @@ QStringList PluginManagerPrivate::pluginPaths() const
 void PluginManagerPrivate::setPluginPaths(const QStringList &pluginPaths)
 {
     pluginLoadPaths = pluginPaths;
+    readSettings();
 }
 
 QStringList PluginManagerPrivate::servicePaths() const
@@ -77,7 +80,7 @@ void PluginManagerPrivate::setServicePaths(const QStringList &servicePaths)
 
 void PluginManagerPrivate::setPluginEnable(const PluginMetaObject &meta, bool enabled)
 {
-    return setting.setPluginEnable(meta,enabled);
+    return setting->setPluginEnable(meta,enabled);
 }
 
 /*!
@@ -124,6 +127,9 @@ PluginMetaObjectPointer PluginManagerPrivate::pluginMetaObj(const QString &name,
 bool PluginManagerPrivate::loadPlugin(PluginMetaObjectPointer &pluginMetaObj)
 {
     dpfCheckTimeBegin();
+    // don't load disabled plugins
+    if (!pluginMetaObj->isEnabledBySettings())
+        return true;
 
     QMutexLocker lock(&GlobalPrivate::mutex);
 
@@ -324,7 +330,18 @@ bool PluginManagerPrivate::readPlugins()
     dpfDebug() << readQueue;
 
     dpfCheckTimeEnd();
-    return readQueue.isEmpty() ? false : true;
+    if (!readQueue.isEmpty()) {
+        foreach (PluginMetaObjectPointer pluginPointer, readQueue) {
+            if (disabledPlugins.contains(pluginPointer->name())) {
+                pluginPointer->setEnabledBySettings(false);
+            } else if (enabledPlugins.contains(pluginPointer->name())) {
+                pluginPointer->setEnabledBySettings(true);
+            }
+            pluginCategories[pluginPointer->category()].append(pluginPointer);
+        }
+        return true;
+    }
+    return false;
 }
 
 /*!
@@ -437,6 +454,11 @@ void PluginManagerPrivate::readJsonToMeta(const PluginMetaObjectPointer &metaObj
     metaObject->d->state = PluginMetaObject::Readed;
 
     dpfCheckTimeEnd();
+}
+
+QHash<QString, QQueue<PluginMetaObjectPointer> > PluginManagerPrivate::categories()
+{
+    return pluginCategories;
 }
 
 /*!
@@ -586,6 +608,39 @@ void PluginManagerPrivate::stopPlugins()
     emit Listener::instance().d->pluginsStoped();
 
     dpfCheckTimeEnd();
+}
+
+void PluginManagerPrivate::setSettings(PluginSetting *s)
+{
+    if (setting)
+        delete setting;
+    setting = s;
+}
+
+void PluginManagerPrivate::readSettings()
+{
+    if (setting) {
+        disabledPlugins = setting->value(QLatin1String(DISABLED_PLUGINS)).toStringList();
+        enabledPlugins = setting->value(QLatin1String(ENABLED_PLUGINS)).toStringList();
+    }
+}
+
+void PluginManagerPrivate::writeSettings()
+{
+    if (!setting)
+        return;
+    QStringList tempEnabledPlugins;
+    QStringList tempDisabledPlugins;
+    for (PluginMetaObjectPointer temp: readQueue) {
+        if (temp->isEnabledBySettings()) {
+            tempEnabledPlugins.append(temp->name());
+        } else {
+            tempDisabledPlugins.append(temp->name());
+        }
+    }
+
+    setting->setValue(QLatin1String(ENABLED_PLUGINS), tempEnabledPlugins);
+    setting->setValue(QLatin1String(DISABLED_PLUGINS), tempDisabledPlugins);
 }
 
 DPF_END_NAMESPACE

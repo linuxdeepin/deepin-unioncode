@@ -21,6 +21,7 @@
 #include "common/common.h"
 
 #include <framework/framework.h>
+#include <framework/lifecycle/pluginsetting.h>
 #include <QApplication>
 #include <QStyleFactory>
 
@@ -37,6 +38,9 @@ static bool pluginsLoad()
 
     // set plugin iid from qt style
     lifeCycle.setPluginIID(FM_PLUGIN_INTERFACE);
+
+    dpf::PluginSetting *setting = new dpf::PluginSetting;
+    lifeCycle.setSettings(setting);
 
     QString pluginsPath = CustomPaths::global(CustomPaths::Plugins);
     qInfo() << QString("run application in %0").arg(pluginsPath);

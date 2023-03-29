@@ -51,6 +51,7 @@ set(PUBLIC_H
     lifecycle/pluginmanager.h
     lifecycle/lifecycle.h
     lifecycle/plugindepend.h
+    lifecycle/pluginview.h
     abus/appbus.h
     listener/private/listener_p.h
     listener/listener.h
@@ -70,6 +71,7 @@ set(PUBLIC_CPP
     lifecycle/plugin.cpp
     lifecycle/pluginmanager.cpp
     lifecycle/lifecycle.cpp
+    lifecycle/pluginview.cpp
     service/pluginservicecontext.cpp
     abus/appbus.cpp
     listener/listener.cpp

@@ -19,12 +19,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "aboutdialog.h"
+#include "plugindialog.h"
+
 #include "windowkeeper.h"
 #include "windowstatusbar.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include "common/common.h"
-#include "aboutdialog.h"
 
 #include <QAction>
 #include <QMenu>
@@ -132,22 +134,27 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
     auto helpMenu = new QMenu(MWM_HELP);
     menuBar->addMenu(helpMenu);
 
-    QAction* actionReportBug = new QAction(MWM_REPORT_BUG);
+    QAction *actionReportBug = new QAction(MWM_REPORT_BUG);
     ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
                                                  MWM_REPORT_BUG, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
                                                  ":/core/images/tools-report-bug.png");
     helpMenu->addAction(actionReportBug);
 
-    QAction* actionAboutUnionCode = new QAction(MWM_ABOUT);
+    QAction *actionAboutUnionCode = new QAction(MWM_ABOUT);
     ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
                                                  MWM_ABOUT, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A),
                                                  ":/core/images/help-about.svg");
     helpMenu->addAction(actionAboutUnionCode);
 
+    QAction *actionAboutPlugin = new QAction(MWM_ABOUT_PLUGINS);
+    ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.AboutPlugins", MWM_ABOUT, QKeySequence());
+    helpMenu->addAction(actionAboutPlugin);
+
     QAction::connect(actionAboutUnionCode, &QAction::triggered, this, &WindowKeeper::showAboutDlg);
     QAction::connect(actionReportBug, &QAction::triggered, [=](){
         QDesktopServices::openUrl(QUrl("https://pms.uniontech.com/project-bug-1039.html"));
     });
+    QAction::connect(actionAboutPlugin, &QAction::triggered, this, &WindowKeeper::showAboutPlugins);
 }
 
 void WindowKeeper::createStatusBar(QMainWindow *window)
@@ -513,4 +520,10 @@ void WindowKeeper::showAboutDlg()
 {
     AboutDialog dlg;
     dlg.exec();
+}
+
+void WindowKeeper::showAboutPlugins()
+{
+    PluginDialog dialog;
+    dialog.exec();
 }

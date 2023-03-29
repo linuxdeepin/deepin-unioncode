@@ -64,6 +64,9 @@ public:
     void initPlugins();
     void startPlugins();
     void stopPlugins();
+    void setSettings(PluginSetting *settings);
+    void writeSettings();
+    QHash<QString, QQueue<PluginMetaObjectPointer>> pluginCollections();
 
     PluginMetaObjectPointer pluginMetaObj(const QString &pluginName,
                                              const QString version = "") const;
@@ -72,6 +75,9 @@ public:
     bool initPlugin(PluginMetaObjectPointer &pointer);
     bool startPlugin(PluginMetaObjectPointer &pointer);
     void stopPlugin(PluginMetaObjectPointer &pointer);
+
+signals:
+    void pluginsChanged();
 };
 
 DPF_END_NAMESPACE

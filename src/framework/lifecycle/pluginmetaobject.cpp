@@ -146,6 +146,26 @@ QString PluginMetaObject::errorString()
     return d->error;
 }
 
+bool PluginMetaObject::isEnabledBySettings()
+{
+    return d->enabledBySettings;
+}
+
+bool PluginMetaObject::isDisabledBySettings()
+{
+    return d->disabledBySettings;
+}
+
+void PluginMetaObject::setEnabledBySettings(bool value)
+{
+    d->enabledBySettings = value;
+}
+
+PluginMetaObject::State PluginMetaObject::state() const
+{
+    return d->state;
+}
+
 /**
  * @brief 默认构造函数
  */

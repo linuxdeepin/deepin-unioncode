@@ -20,7 +20,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "lifecycle.h"
-#include "pluginmanager.h"
 #include "pluginmetaobject.h"
 
 DPF_BEGIN_NAMESPACE
@@ -35,6 +34,11 @@ Q_GLOBAL_STATIC(PluginManager,pluginManager);
  * @param QString 可以传入任意标识IID的字符
  * @return void
  */
+PluginManager *LifeCycle::getPluginManagerInstance()
+{
+    return pluginManager;
+}
+
 void LifeCycle::setPluginIID(const QString &pluginIID)
 {
     return pluginManager->setPluginIID(pluginIID);
@@ -143,6 +147,11 @@ bool LifeCycle::loadPlugins()
 void LifeCycle::shutdownPlugins()
 {
     pluginManager->stopPlugins();
+}
+
+void LifeCycle::setSettings(PluginSetting *settings)
+{
+    pluginManager->setSettings(settings);
 }
 
 bool LifeCycle::loadPlugin(PluginMetaObjectPointer &pointer)

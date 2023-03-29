@@ -115,6 +115,12 @@ public:
     QList<PluginDepend> depends() const;
     State pluginState() const;
     QSharedPointer<Plugin> plugin();
+    bool isEnabledBySettings();
+    bool isDisabledBySettings();
+    void setEnabledBySettings(bool value);
+
+    //state
+    State state() const;
     QString errorString();
 };
 

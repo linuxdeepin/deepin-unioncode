@@ -68,9 +68,10 @@ public slots:
     void addOpenProjectAction(const QString &name, AbstractAction *action);
     void initUserWidget();
     void switchWidgetNavigation(const QString &navName);
-    void showAboutDlg();
 
 private :
+    void showAboutDlg();
+    void showAboutPlugins();
     void layoutWindow(QMainWindow *window);
     void createNavRuntime(QToolBar *toolbar);
     void createNavDebug(QToolBar *toolbar);

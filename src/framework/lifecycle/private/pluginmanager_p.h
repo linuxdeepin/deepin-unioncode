@@ -49,10 +49,13 @@ class PluginManagerPrivate : public QSharedData
     QString pluginLoadIID;
     QStringList pluginLoadPaths;
     QStringList serviceLoadPaths;
+    QStringList disabledPlugins;
+    QStringList enabledPlugins;
+    QHash<QString, QQueue<PluginMetaObjectPointer>> pluginCategories;
     QList<PluginMetaObjectPointer> plugins;
     QQueue<PluginMetaObjectPointer> readQueue;
     QQueue<PluginMetaObjectPointer> loadQueue;
-    PluginSetting setting;
+    PluginSetting *setting = nullptr;
 public:
     typedef QQueue<PluginMetaObjectPointer> PluginMetaQueue;
     explicit PluginManagerPrivate(PluginManager *qq);
@@ -74,10 +77,14 @@ public:
     void initPlugins();
     void startPlugins();
     void stopPlugins();
+    void setSettings(PluginSetting *s);
+    void readSettings();
+    void writeSettings();
     static void scanfAllPlugin(PluginMetaQueue &destQueue,
                                const QStringList& pluginPaths,
                                const QString &pluginIID);
     static void readJsonToMeta(const PluginMetaObjectPointer &metaObject);
+    QHash<QString, QQueue<PluginMetaObjectPointer>> categories();
     static PluginMetaQueue dependsSort(const PluginMetaQueue &srcQueue);
 };
 

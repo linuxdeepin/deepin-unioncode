@@ -280,9 +280,12 @@ TextEditSplitter *TextEditSplitter::instance()
 
 void TextEditSplitter::doClose()
 {
-    if (tabWidgets.size() == 1)
-        return;
     auto textEditTabWidget = qobject_cast<TextEditTabWidget*>(sender());
+    if (tabWidgets.size() == 1) {
+        textEditTabWidget->setCloseButtonVisible(false);
+        textEditTabWidget->setSplitButtonVisible(false);
+        return;
+    }
     auto splitter = qobject_cast<QSplitter *>(textEditTabWidget->parent());
     if (tabWidgets[textEditTabWidget]) {
         auto it = tabWidgets.begin();

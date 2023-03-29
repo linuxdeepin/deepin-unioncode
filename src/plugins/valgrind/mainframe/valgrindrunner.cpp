@@ -22,7 +22,6 @@
 #include "valgrindbar.h"
 
 #include "common/common.h"
-#include "common/widget/outputpane.h"
 #include "base/abstractaction.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
@@ -78,13 +77,15 @@ void ValgrindRunner::initialize()
         QtConcurrent::run([=]() {
             ValgrindRunner::instance()->runValgrind("memcheck");
         });
-     });
+    });
 
     QObject::connect(d->helgrindAction.get(), &QAction::triggered, [=]() {
         QtConcurrent::run([=]() {
             ValgrindRunner::instance()->runValgrind("helgrind");
         });
     });
+
+    connect(this, &ValgrindRunner::sigOutputMsg, this, &ValgrindRunner::printOutput);
 
     setActionsStatus(d->activedProjectKitName);
 }
@@ -104,7 +105,7 @@ void ValgrindRunner::runValgrind(const QString &type)
         editor.switchContext(tr("&Application Output"));
         while (procValgrind.canReadLine()) {
             QString line = QString::fromUtf8(procValgrind.readLine());
-            OutputPane::instance()->appendText(line, OutputPane::OutputFormat::StdErr);
+            outputMsg(line, OutputPane::OutputFormat::StdErr);
         }
     });
 
@@ -113,7 +114,7 @@ void ValgrindRunner::runValgrind(const QString &type)
         editor.switchContext(tr("&Application Output"));
         while (procValgrind.canReadLine()) {
             QString line = QString::fromUtf8(procValgrind.readLine());
-            OutputPane::instance()->appendText(line, OutputPane::OutputFormat::StdOut);
+            outputMsg(line, OutputPane::OutputFormat::StdOut);
         }
     });
 
@@ -204,4 +205,15 @@ void ValgrindRunner::runBuilding()
             d->workingDir = args.workingDir;
         }
     }
+}
+
+void ValgrindRunner::outputMsg(const QString &content, OutputPane::OutputFormat format)
+{
+    emit sigOutputMsg(content, format);
+}
+
+void ValgrindRunner::printOutput(const QString &content, OutputPane::OutputFormat format)
+{
+    OutputPane::AppendMode mode = OutputPane::AppendMode::Normal;
+    OutputPane::instance()->appendText(content, format, mode);
 }

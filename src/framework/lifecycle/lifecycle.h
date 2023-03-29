@@ -22,6 +22,7 @@
 #ifndef LIFECYCLE_H
 #define LIFECYCLE_H
 
+#include "pluginmanager.h"
 #include "framework/lifecycle/pluginmetaobject.h"
 #include "framework/lifecycle/plugin.h"
 #include "framework/framework_global.h"
@@ -35,6 +36,7 @@ class LifeCycle final : public QObject
 {
     Q_OBJECT
 public:
+    static PluginManager* getPluginManagerInstance();
     static void setPluginIID(const QString &pluginIID);
     static QString pluginIID();
     static QStringList pluginPaths();
@@ -46,6 +48,7 @@ public:
     static bool readPlugins();
     static bool loadPlugins();
     static void shutdownPlugins();
+    static void setSettings(PluginSetting *settings);
 
     static bool loadPlugin(PluginMetaObjectPointer &pointer);
     static void shutdownPlugin(PluginMetaObjectPointer &pointer);
