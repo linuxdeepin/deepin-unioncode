@@ -50,7 +50,7 @@ bool NinjaDebug::requestDAPPort(const QString &uuid, const QString &kit,
 {
     QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                   "com.deepin.unioncode.interface",
-                                                  "get_cxx_dapport");
+                                                  "getDebugPort");
 
     msg << uuid
         << kit

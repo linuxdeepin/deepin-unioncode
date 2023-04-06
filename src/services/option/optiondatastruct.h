@@ -29,6 +29,7 @@ static const QString CATEGORY_MAVEN{"Maven"};
 static const QString CATEGORY_GRADLE{"Gradle"};
 static const QString CATEGORY_JAVA{"Java"};
 static const QString CATEGORY_PYTHON{"Python"};
+static const QString CATEGORY_JS{"JS"};
 static const QString CATEGORY_NINJA{"Ninja"};
 }
 #endif // OPTIONDATASTRUCT_H

@@ -41,6 +41,7 @@ public:
     QString getCMakeToolPath();
     QString getNinjaToolPath();
     QString getCxxDebuggerToolPath();
+    QString getJSToolPath();
 
 signals:
 

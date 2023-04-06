@@ -18,6 +18,7 @@ set(${PROJECT_NAME}_HEADERS
     debugger/java/javadebugger.h
     debugger/java/javaparam.h
     debugger/python/pythondebugger.h
+    debugger/javascript/jsdebugger.h
    )
 
 set(${PROJECT_NAME}_SOURCES
@@ -33,6 +34,7 @@ set(${PROJECT_NAME}_SOURCES
     debugger/java/javadebugger.cpp
     debugger/java/javaparam.cpp
     debugger/python/pythondebugger.cpp
+    debugger/javascript/jsdebugger.cpp
     )
 
 link_libraries(

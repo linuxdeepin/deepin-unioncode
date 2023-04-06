@@ -24,6 +24,7 @@
 
 #include "debugger/debugger.h"
 #include "debugger/gdbmi/gdbdebugger.h"
+#include "debugger/javascript/jsdebugger.h"
 
 #include <QProcess>
 
@@ -106,6 +107,8 @@ void DebugManager::initDebugger(const QString &program, const QStringList &argum
 
     if (program.contains("gdb")) {
         d->debugger.reset(new GDBDebugger());
+    } else if (program.contains("jsdbg")) {
+        d->debugger.reset(new JSDebugger());
     }
 }
 

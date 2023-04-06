@@ -86,12 +86,12 @@ void DapSession::registerDBusConnect()
     sessionBus.disconnect(QString(""),
                           "/path",
                           "com.deepin.unioncode.interface",
-                          "get_cxx_dapport",
+                          "getDebugPort",
                           this, SLOT(slotReceiveClientInfo(QString, QString, QString, QStringList)));
     sessionBus.connect(QString(""),
                        "/path",
                        "com.deepin.unioncode.interface",
-                       "get_cxx_dapport",
+                       "getDebugPort",
                        this, SLOT(slotReceiveClientInfo(QString, QString, QString, QStringList)));
 
 

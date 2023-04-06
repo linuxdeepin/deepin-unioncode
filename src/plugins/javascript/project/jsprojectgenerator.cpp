@@ -1,9 +1,10 @@
 ﻿/*
- * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2023 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +19,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "pythongenerator.h"
-#include "pythonasynparse.h"
-#include "mainframe/properties/configpropertywidget.h"
+
+#include "jsprojectgenerator.h"
+#include "jsasynparse.h"
+#include "properties/configpropertywidget.h"
 #include "common/dialog/propertiesdialog.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
@@ -30,28 +32,27 @@
 #include <QtXml>
 #include <QFileIconProvider>
 
-class PythonGeneratorPrivate
+using namespace dpfservice;
+class JSProjectGeneratorPrivate
 {
-    friend class PythonGenerator;
+    friend class JSProjectGenerator;
     QStandardItem* configureRootItem {nullptr};
-    QMenu *pythonMenu {nullptr};
+    QMenu *jsMenu {nullptr};
     QProcess *menuGenProcess {nullptr};
-    QHash<QStandardItem*, PythonAsynParse*> projectParses {};
+    QHash<QStandardItem*, JSAsynParse*> projectParses {};
 };
 
-PythonGenerator::PythonGenerator()
-    : d(new PythonGeneratorPrivate())
+JSProjectGenerator::JSProjectGenerator()
+    : d(new JSProjectGeneratorPrivate())
 {
-    using namespace dpfservice;
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    ProjectService *projectService = dpfGetService(ProjectService);
     if (!projectService) {
         qCritical() << "Failed, not found service : projectService";
         abort();
     }
 }
 
-PythonGenerator::~PythonGenerator()
+JSProjectGenerator::~JSProjectGenerator()
 {
     qInfo() << __FUNCTION__;
 
@@ -59,20 +60,17 @@ PythonGenerator::~PythonGenerator()
         delete d;
 }
 
-QStringList PythonGenerator::supportLanguages()
+QStringList JSProjectGenerator::supportLanguages()
 {
-    return {dpfservice::MWMFA_PYTHON};
+    return {"JS"};
 }
 
-QDialog *PythonGenerator::configureWidget(const QString &language,
+QDialog *JSProjectGenerator::configureWidget(const QString &language,
                                           const QString &projectPath)
 {
-    using namespace dpfservice;
-
-
     ProjectInfo info;
     info.setLanguage(language);
-    info.setKitName(PythonGenerator::toolKitName());
+    info.setKitName(JSProjectGenerator::toolKitName());
     info.setWorkspaceFolder(projectPath);
 
     configure(info);
@@ -80,12 +78,11 @@ QDialog *PythonGenerator::configureWidget(const QString &language,
     return nullptr;
 }
 
-bool PythonGenerator::configure(const dpfservice::ProjectInfo &info)
+bool JSProjectGenerator::configure(const ProjectInfo &info)
 {
-    dpfservice::ProjectGenerator::configure(info);
+    ProjectGenerator::configure(info);
 
     auto root = createRootItem(info);
-    using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService && root) {
@@ -96,23 +93,21 @@ bool PythonGenerator::configure(const dpfservice::ProjectInfo &info)
     return true;
 }
 
-QStandardItem *PythonGenerator::createRootItem(const dpfservice::ProjectInfo &info)
+QStandardItem *JSProjectGenerator::createRootItem(const ProjectInfo &info)
 {
-    using namespace dpfservice;
-
     QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
-    dpfservice::ProjectInfo::set(rootItem, info);
-    d->projectParses[rootItem] = new PythonAsynParse();
+    ProjectInfo::set(rootItem, info);
+    d->projectParses[rootItem] = new JSAsynParse();
     QObject::connect(d->projectParses[rootItem],
-                     &PythonAsynParse::itemsModified,
-                     this, &PythonGenerator::doProjectChildsModified,
+                     &JSAsynParse::itemsModified,
+                     this, &JSProjectGenerator::doProjectChildsModified,
                      Qt::ConnectionType::UniqueConnection);
     d->projectParses[rootItem]->parseProject(info);
 
     return rootItem;
 }
 
-void PythonGenerator::removeRootItem(QStandardItem *root)
+void JSProjectGenerator::removeRootItem(QStandardItem *root)
 {
     if (!root)
         return;
@@ -129,13 +124,13 @@ void PythonGenerator::removeRootItem(QStandardItem *root)
         delete parser;
 }
 
-QMenu *PythonGenerator::createItemMenu(const QStandardItem *item)
+QMenu *JSProjectGenerator::createItemMenu(const QStandardItem *item)
 {
     if (item->parent())
         return nullptr;
 
     QMenu *menu = new QMenu();
-    dpfservice::ProjectInfo info = dpfservice::ProjectInfo::get(item);
+    ProjectInfo info = ProjectInfo::get(item);
     if (info.isEmpty())
         return nullptr;
 
@@ -152,9 +147,9 @@ QMenu *PythonGenerator::createItemMenu(const QStandardItem *item)
     return menu;
 }
 
-void PythonGenerator::doProjectChildsModified(const QList<QStandardItem *> &info)
+void JSProjectGenerator::doProjectChildsModified(const QList<QStandardItem *> &info)
 {
-    auto rootItem = d->projectParses.key(qobject_cast<PythonAsynParse*>(sender()));
+    auto rootItem = d->projectParses.key(qobject_cast<JSAsynParse*>(sender()));
     if (rootItem) {
         while (rootItem->hasChildren()) {
             rootItem->takeRow(0);
@@ -163,16 +158,16 @@ void PythonGenerator::doProjectChildsModified(const QList<QStandardItem *> &info
     }
 }
 
-void PythonGenerator::doPythonCleanMenu()
+void JSProjectGenerator::doJSCleanMenu()
 {
-    if (d->pythonMenu) {
-        for (auto &action : d->pythonMenu->actions()) {
-            d->pythonMenu->removeAction(action);
+    if (d->jsMenu) {
+        for (auto &action : d->jsMenu->actions()) {
+            d->jsMenu->removeAction(action);
         }
     }
 }
 
-void PythonGenerator::actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item)
+void JSProjectGenerator::actionProperties(const ProjectInfo &info, QStandardItem *item)
 {
     PropertiesDialog dlg;
     ConfigPropertyWidget *property = new ConfigPropertyWidget(info, item);

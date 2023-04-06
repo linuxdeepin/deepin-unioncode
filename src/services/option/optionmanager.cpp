@@ -108,3 +108,9 @@ QString OptionManager::getCxxDebuggerToolPath()
     return map.value("Kits").toMap().value("debugger").toMap().value("path").toString();
 }
 
+QString OptionManager::getJSToolPath()
+{
+    QMap<QString, QVariant> map = d->dataMap.value(option::CATEGORY_JS).toMap();
+    return map.value("Interpreter").toMap().value("version").toMap().value("path").toString();
+}
+

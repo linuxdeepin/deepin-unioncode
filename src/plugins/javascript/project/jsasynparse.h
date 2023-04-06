@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2023 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +19,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef PYTHONASYNPARSE_H
-#define PYTHONASYNPARSE_H
+
+#ifndef JSAsynParse_H
+#define JSAsynParse_H
 
 #include "services/project/projectinfo.h"
 
@@ -30,12 +32,12 @@
 
 class QStandardItem;
 class QAction;
-class PythonAsynParsePrivate;
-class PythonAsynParse : public QFileSystemWatcher
+class JSAsynParsePrivate;
+class JSAsynParse : public QFileSystemWatcher
 {
     Q_OBJECT
-    friend class PythonGenerator;
-    PythonAsynParsePrivate *const d;
+    friend class JSProjectGenerator;
+    JSAsynParsePrivate *const d;
 public:
     template<class T>
     struct ParseInfo{
@@ -43,8 +45,8 @@ public:
         bool isNormal = true;
     };
 
-    PythonAsynParse();
-    virtual ~PythonAsynParse();
+    JSAsynParse();
+    virtual ~JSAsynParse();
 
 signals:
     void itemsModified(const QList<QStandardItem*> &info);
@@ -62,6 +64,8 @@ private:
     QStandardItem *findItem(const QString &path, QStandardItem *parent = nullptr) const;
     QList<QStandardItem *> rows(const QStandardItem *item) const;
     int separatorSize() const;
+    void iteratorDirectory(const QString &rootPath);
+    void iteratorFiles(const QString &rootPath);
 };
 
-#endif // PYTHONASYNPARSE_H
+#endif // JSAsynParse_H
