@@ -26,8 +26,9 @@
 #include "interface/localtreemodel.h"
 #include "interface/variable.h"
 #include "interface/breakpointmodel.h"
-#include "dap/debugger.h"
+#include "dap/dapdebugger.h"
 #include "runner/runner.h"
+#include "base/abstractdebugger.h"
 
 #include <QTreeView>
 #include <QSharedPointer>
@@ -47,10 +48,10 @@ public:
     explicit DebugManager(QObject *parent = nullptr);
     bool initialize(dpfservice::WindowService *windowService,
                     dpfservice::DebuggerService *debuggerService);
-    OutputPane *getOutputPane() const;
     QWidget *getStackPane() const;
-    QTreeView *getLocalsPane() const;
-    QTreeView *getBreakpointPane() const;
+    QWidget *getLocalsPane() const;
+    QWidget *getBreakpointPane() const;
+    void registerDebugger(const QString &kit, AbstractDebugger *debugger);
 
 signals:
     void debugStarted();
@@ -71,15 +72,17 @@ public slots:
     void stepIn();
     void stepOut();
 
-    void handleRunStateChanged(Debugger::RunState state);
+    void handleRunStateChanged(AbstractDebugger::RunState state);
+    void handleEvents(const dpf::Event &event);
 
 private:
-    void launchBackend();
     bool runCoredump(const QString &target, const QString &core, const QString &kit);
 
-    Debugger *debugger = nullptr;
+    QMap<QString, AbstractDebugger *> debuggers;
+    AbstractDebugger *currentDebugger = nullptr;
     Runner *runner = nullptr;
     QProcess backend;
+    QString activeProjectKitName;
 
     QSharedPointer<MenuManager> menuManager;
 };

@@ -11,6 +11,7 @@ set(CXX_H
     abstractwidget.h
     abstractoutputpane.h
     abstractconsole.h
+    abstractdebugger.h
     )
 
 set(CXX_CPP
@@ -24,6 +25,7 @@ set(CXX_CPP
     abstractwidget.cpp
     abstractoutputpane.cpp
     abstractconsole.cpp
+    abstractdebugger.cpp
     )
 
 add_library(

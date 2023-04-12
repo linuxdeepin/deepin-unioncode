@@ -22,7 +22,7 @@
 #ifndef MENUMANAGER_H
 #define MENUMANAGER_H
 
-#include <dap/debugger.h>
+#include <dap/dapdebugger.h>
 
 #include <QObject>
 #include <QAction>
@@ -39,7 +39,7 @@ public:
 
     void initialize(dpfservice::WindowService *service);
 
-    void handleRunStateChanged(Debugger::RunState state);
+    void handleRunStateChanged(AbstractDebugger::RunState state);
 
 signals:
 

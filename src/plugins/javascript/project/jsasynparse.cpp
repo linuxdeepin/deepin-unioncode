@@ -62,9 +62,18 @@ JSAsynParse::~JSAsynParse()
     }
 }
 
-void JSAsynParse::parseProject(const dpfservice::ProjectInfo &info)
+void JSAsynParse::parseProject(dpfservice::ProjectInfo &info)
 {
     createRows(info.workspaceFolder());
+    QSet<QString> jsFiles;
+    for (auto row : d->rows) {
+        QString fileName = row->text();
+        if (fileName.endsWith(".js", Qt::CaseInsensitive)) {
+            jsFiles.insert(info.workspaceFolder() + "/" + fileName);
+        }
+        qInfo() << fileName;
+    }
+    info.setSourceFiles(jsFiles);
     emit itemsModified(d->rows);
 }
 

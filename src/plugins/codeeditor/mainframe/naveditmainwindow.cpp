@@ -123,22 +123,27 @@ void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget 
     }
 
     if (qTabWidgetWorkspace) {
-        auto qTreeWidget = (QWidget*)treeWidget->qWidget();
+        auto qTreeWidget = static_cast<QWidget*>(treeWidget->qWidget());
         qTabWidgetWorkspace->addTab(qTreeWidget, title);
     }
 }
 
-void NavEditMainWindow::setWidgetEdit(AbstractCentral *editWidget)
+QWidget *NavEditMainWindow::setWidgetEdit(AbstractCentral *editWidget)
 {
-    if (centralWidget()) {
-        delete qWidgetEdit;
-        qWidgetEdit = nullptr;
+    QWidget *oldWidget = qWidgetEdit;
+    qWidgetEdit = static_cast<QWidget*>(editWidget->qWidget());
+    // avoid be deleted when setCentralWidget.
+    if (oldWidget) {
+        oldWidget->setParent(nullptr);
     }
-    qWidgetEdit = (QWidget*)editWidget->qWidget();
     setCentralWidget(qWidgetEdit);
+    if (oldWidget) {
+        oldWidget->setParent(this);
+    }
+    return oldWidget;
 }
 
-void NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
+QWidget *NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
 {
     if (!qDockWidgetWatch) {
         qDockWidgetWatch = new AutoHideDockWidget(QDockWidget::tr("Watcher"), this);
@@ -146,17 +151,20 @@ void NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
         qDockWidgetWatch->hide();
         addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, qDockWidgetWatch);
     }
-    if (qDockWidgetWatch) {
-        if (qWidgetWatch) {
-            delete qWidgetWatch;
-            qWidgetWatch = nullptr;
-        }
-        qWidgetWatch = static_cast<QWidget*>(watchWidget->qWidget());
-        qWidgetWatch->setParent(qDockWidgetWatch);
-        qDockWidgetWatch->setWidget(qWidgetWatch);
-        qDockWidgetWatch->hide();
-        qWidgetWatch->hide();
+    QWidget *oldWidget = qWidgetWatch;
+    qWidgetWatch = static_cast<QWidget*>(watchWidget->qWidget());
+    qWidgetWatch->setParent(qDockWidgetWatch);
+    // avoid be deleted when setWidget.
+    if (oldWidget) {
+        oldWidget->setParent(nullptr);
     }
+    qDockWidgetWatch->setWidget(qWidgetWatch);
+    if (oldWidget) {
+        oldWidget->setParent(qDockWidgetWatch);
+    }
+    qDockWidgetWatch->hide();
+    qWidgetWatch->hide();
+    return oldWidget;
 }
 
 void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group)
@@ -203,7 +211,7 @@ void NavEditMainWindow::addWidgetTools(const QString &title, AbstractWidget *too
     }
 
     if (qTabWidgetTools) {
-        auto qToolWidget = (QWidget*)toolWidget->qWidget();
+        auto qToolWidget = static_cast<QWidget*>(toolWidget->qWidget());
         qTabWidgetWorkspace->addTab(qToolWidget, title);
     }
 }

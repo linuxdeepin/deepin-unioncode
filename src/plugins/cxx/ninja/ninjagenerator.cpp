@@ -47,6 +47,11 @@ NinjaGenerator::~NinjaGenerator()
         delete d;
 }
 
+QString NinjaGenerator::debugger()
+{
+    return "dap";
+}
+
 bool NinjaGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg)
 {
     Q_UNUSED(param)

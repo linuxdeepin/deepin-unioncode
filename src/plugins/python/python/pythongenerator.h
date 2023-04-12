@@ -33,6 +33,7 @@ public:
     virtual ~PythonGenerator() override;
 
     static QString toolKitName() { return "directory"; }
+    QString debugger() override;
 
     bool isTargetReady() override;
     bool prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg) override;

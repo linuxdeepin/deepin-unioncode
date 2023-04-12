@@ -31,6 +31,7 @@
 #include "services/window/windowservice.h"
 
 #include <QMenu>
+#include <QTextBlock>
 
 using namespace dpfservice;
 
@@ -184,6 +185,26 @@ bool Runner::execCommand(const RunCommandInfo &info)
 
 void Runner::outputMsg(const QString &content, OutputPane::OutputFormat format)
 {
-    emit sigOutputMsg(content, format);
+    QMetaObject::invokeMethod(this, "synOutputMsg", Q_ARG(QString, content), Q_ARG(OutputPane::OutputFormat, format));
+}
+
+void Runner::synOutputMsg(const QString &content, OutputPane::OutputFormat format)
+{
+    auto outputPane = OutputPane::instance();
+    QString outputContent = content;
+    if (format == OutputPane::OutputFormat::NormalMessage) {
+        QTextDocument *doc = outputPane->document();
+        QTextBlock tb = doc->lastBlock();
+        QString lastLineText = tb.text();
+        QString prefix = "\n";
+        if (lastLineText.isEmpty()) {
+            prefix = "";
+        }
+        QDateTime curDatetime = QDateTime::currentDateTime();
+        QString time = curDatetime.toString("hh:mm:ss");
+        outputContent = prefix + time + ":" + content + "\n";
+    }
+    OutputPane::AppendMode mode = OutputPane::AppendMode::Normal;
+    outputPane->appendText(outputContent, format, mode);
 }
 

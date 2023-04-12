@@ -39,7 +39,12 @@ class JSDebuggerPrivate
 JSDebugger::JSDebugger(QObject *parent)
     : Debugger(parent), d(new JSDebuggerPrivate())
 {
-     connect(this, &JSDebugger::asyncStopped, DebugManager::instance(), &DebugManager::asyncStopped);
+    connect(this, &JSDebugger::asyncStopped, DebugManager::instance(), &DebugManager::asyncStopped);
+}
+
+JSDebugger::~JSDebugger()
+{
+
 }
 
 QString JSDebugger::program()

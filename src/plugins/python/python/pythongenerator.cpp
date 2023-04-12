@@ -41,6 +41,11 @@ PythonGenerator::~PythonGenerator()
         delete d;
 }
 
+QString PythonGenerator::debugger()
+{
+    return "dap";
+}
+
 bool PythonGenerator::isTargetReady()
 {
     return true;

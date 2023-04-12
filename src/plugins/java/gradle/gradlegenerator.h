@@ -34,6 +34,7 @@ public:
 
     static QString toolKitName() { return "gradle"; }
 
+    QString debugger() override;
     bool isNeedBuild() override;
     bool isTargetReady() override;
     bool isAnsyPrepareDebug() override;

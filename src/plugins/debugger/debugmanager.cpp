@@ -19,148 +19,178 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "debugmanager.h"
-#include "dap/debugger.h"
+#include "dap/dapdebugger.h"
+#include "debuggersignals.h"
 #include "debuggerglobals.h"
 #include "interface/menumanager.h"
 
 #include "services/debugger/debuggerservice.h"
+#include "services/language/languageservice.h"
 #include "common/util/custompaths.h"
+#include "services/project/projectinfo.h"
 
 using namespace DEBUG_NAMESPACE;
+using namespace dpfservice;
 DebugManager::DebugManager(QObject *parent)
     : QObject(parent)
 {
-    // TODO(mozart):backend not support re-connect yet,
-    // so kill it when client launched.
-    // those code will be removed when backend got modified.
-    QProcess::execute("killall -9 debugadapter");
+    connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &DebugManager::handleEvents);
 }
 
 bool DebugManager::initialize(dpfservice::WindowService *windowService,
                               dpfservice::DebuggerService *debuggerService)
 {
-    debugger = new Debugger(this);
+    currentDebugger = new DAPDebugger(this);
+    debuggers.insert("dap", currentDebugger);
     runner = new Runner(this);
-
-    connect(runner, &Runner::sigOutputMsg, debugger, &Debugger::printOutput);
 
     menuManager.reset(new MenuManager());
     menuManager->initialize(windowService);
 
-    connect(debugger, &Debugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
+    connect(currentDebugger, &AbstractDebugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
+
+    // bind debug services
     using namespace std::placeholders;
     if (!debuggerService->runCoredump) {
         debuggerService->runCoredump = std::bind(&DebugManager::runCoredump, this, _1, _2, _3);
     }
 
-    launchBackend();
+    if (!debuggerService->registerDebugger) {
+        debuggerService->registerDebugger = std::bind(&DebugManager::registerDebugger, this, _1, _2);
+    }
 
     return true;
 }
 
-OutputPane *DebugManager::getOutputPane() const
-{
-    return debugger->getOutputPane();
-}
-
 QWidget *DebugManager::getStackPane() const
 {
-    return debugger->getStackPane();
+    return currentDebugger->getStackPane();
 }
 
-QTreeView *DebugManager::getLocalsPane() const
+QWidget *DebugManager::getLocalsPane() const
 {
-    return debugger->getLocalsPane();
+    return currentDebugger->getLocalsPane();
 }
 
-QTreeView *DebugManager::getBreakpointPane() const
+QWidget *DebugManager::getBreakpointPane() const
 {
-    return debugger->getBreakpointPane();
+    return currentDebugger->getBreakpointPane();
+}
+
+void DebugManager::registerDebugger(const QString &kit, AbstractDebugger *debugger)
+{
+    auto iterator = debuggers.find(kit);
+    if (iterator == debuggers.end()) {
+        debuggers.insert(kit, debugger);
+    }
 }
 
 void DebugManager::run()
 {
-    Debugger::RunState state = debugger->getRunState();
+    AbstractDebugger::RunState state = currentDebugger->getRunState();
     switch (state) {
-    case Debugger::RunState::kNoRun:
-    case Debugger::RunState::kPreparing:
-        launchBackend();
-        AsynInvoke(debugger->startDebug())
+    case AbstractDebugger::RunState::kNoRun:
+    case AbstractDebugger::RunState::kPreparing:
+    {
+        LanguageService *service = dpfGetService(LanguageService);
+        if (service) {
+            auto generator = service->create<LanguageGenerator>(activeProjectKitName);
+            if (generator) {
+                QString debugger = generator->debugger();
+                if (debuggers.contains(debugger) && currentDebugger != debuggers[debugger]) {
+                    disconnect(currentDebugger, &AbstractDebugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
+                    currentDebugger = debuggers[debugger];
+                    connect(currentDebugger, &AbstractDebugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
+                }
+            }
+        }
+        AsynInvoke(currentDebugger->startDebug());
         break;
-    case Debugger::RunState::kRunning:
+    }
+    case AbstractDebugger::RunState::kRunning:
         // TODO(mozart):stop debug
         break;
-    case Debugger::RunState::kStopped:
+    case AbstractDebugger::RunState::kStopped:
         continueDebug();
         break;
+    default:
+        ;// do nothing.
     }
 }
 
 void DebugManager::detachDebug()
 {
-    AsynInvoke(debugger->detachDebug());
+    AsynInvoke(currentDebugger->detachDebug());
 }
 
 void DebugManager::interruptDebug()
 {
-    AsynInvoke(debugger->interruptDebug());
+    AsynInvoke(currentDebugger->interruptDebug());
 }
 
 void DebugManager::continueDebug()
 {
-    AsynInvoke(debugger->continueDebug());
+    AsynInvoke(currentDebugger->continueDebug());
 }
 
 void DebugManager::abortDebug()
 {
-    AsynInvoke(debugger->abortDebug());
+    AsynInvoke(currentDebugger->abortDebug());
 }
 
 void DebugManager::restartDebug()
 {
-    AsynInvoke(debugger->restartDebug());
+    AsynInvoke(currentDebugger->restartDebug());
 }
 
 void DebugManager::stepOver()
 {
-    AsynInvoke(debugger->stepOver());
+    AsynInvoke(currentDebugger->stepOver());
 }
 
 void DebugManager::stepIn()
 {
-    AsynInvoke(debugger->stepIn());
+    AsynInvoke(currentDebugger->stepIn());
 }
 
 void DebugManager::stepOut()
 {
-    AsynInvoke(debugger->stepOut());
+    AsynInvoke(currentDebugger->stepOut());
 }
 
-void DebugManager::handleRunStateChanged(Debugger::RunState state)
+void DebugManager::handleRunStateChanged(AbstractDebugger::RunState state)
 {
     menuManager->handleRunStateChanged(state);
 
-    if(state == Debugger::kStart || state == Debugger::kRunning) {
+    if(state == AbstractDebugger::kStart || state == AbstractDebugger::kRunning) {
         emit debugStarted();
     }
 }
 
-void DebugManager::launchBackend()
+void DebugManager::handleEvents(const dpf::Event &event)
 {
-    // launch backend by client.
-    if (backend.isOpen())
-        return;
-
-    QString toolPath = CustomPaths::global(CustomPaths::Tools);
-    QString backendPath = toolPath + QDir::separator() + "debugadapter";
-
-    backend.setProgram(backendPath);
-    backend.start();
-    backend.waitForStarted();
+    QString topic = event.topic();
+    QString data = event.data().toString();
+    if (event.data() == debugger.prepareDebugProgress.name) {
+        // TODO(logan)
+    } else if (event.data() == project.activedProject.name) {
+        auto projectInfo = qvariant_cast<ProjectInfo>(event.property(project.activedProject.pKeys[0]));
+        activeProjectKitName = projectInfo.kitName();
+    } else if (event.data() == project.createdProject.name) {
+        auto projectInfo = qvariant_cast<ProjectInfo>(event.property(project.createdProject.pKeys[0]));
+        activeProjectKitName = projectInfo.kitName();
+    } else if (event.data() == project.deletedProject.name) {
+        activeProjectKitName.clear();
+    } else if (event.data() == editor.switchedFile.name) {
+        // TODO(logan)
+    } else if (event.data() == editor.openedFile.name) {
+        // TODO(logan)
+    } else if (event.data() == editor.closedFile.name) {
+        // TODO(logan)
+    }
 }
 
 bool DebugManager::runCoredump(const QString &target, const QString &core, const QString &kit)
 {
-    launchBackend();
-    return QtConcurrent::run(debugger, &Debugger::runCoredump, target, core, kit);
+    return QtConcurrent::run(currentDebugger, &AbstractDebugger::runCoredump, target, core, kit);
 }

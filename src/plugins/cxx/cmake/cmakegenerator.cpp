@@ -47,6 +47,11 @@ CMakeGenerator::~CMakeGenerator()
         delete d;
 }
 
+QString CMakeGenerator::debugger()
+{
+    return "dap";
+}
+
 bool CMakeGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg)
 {
     Q_UNUSED(param)

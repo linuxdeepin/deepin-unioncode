@@ -167,8 +167,8 @@ void OutputPane::appendText(const QString &text, OutputFormat format, AppendMode
 
 OutputPane *OutputPane::instance()
 {
-    static OutputPane ins;
-    return &ins;
+    static OutputPane *ins = new OutputPane();
+    return ins;
 }
 
 void OutputPane::contextMenuEvent(QContextMenuEvent * event)

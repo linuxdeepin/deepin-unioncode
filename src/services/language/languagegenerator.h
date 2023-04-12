@@ -52,6 +52,7 @@ public:
         return false;
     }
 
+    virtual QString debugger() = 0;
     virtual bool prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg) = 0;
     virtual bool requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg) = 0;
     virtual bool isLaunchNotAttach() = 0;

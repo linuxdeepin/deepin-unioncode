@@ -45,6 +45,11 @@ GradleGenerator::~GradleGenerator()
         delete d;
 }
 
+QString GradleGenerator::debugger()
+{
+    return "dap";
+}
+
 bool GradleGenerator::isNeedBuild()
 {
     return true;

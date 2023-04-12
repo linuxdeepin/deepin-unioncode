@@ -19,37 +19,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "abstractdebugger.h"
 
-#ifndef RUNNER_H
-#define RUNNER_H
-
-#include "event/event.h"
-#include "services/language/languagegenerator.h"
-#include "debuggerglobals.h"
-#include "common/widget/outputpane.h"
-
-#include <QObject>
-#include <QAction>
-
-class RunnerPrivate;
-class Runner : public QObject
+AbstractDebugger::AbstractDebugger(QObject *parent) : QObject(parent)
 {
-    Q_OBJECT
-public:
-    explicit Runner(QObject *parent = nullptr);
 
-public slots:
-    void run();
-    void handleEvents(const dpf::Event &event);
-    void synOutputMsg(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
-
-private:
-    void running();
-    bool execCommand(const dpfservice::RunCommandInfo &info);
-    void outputMsg(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
-
-private:
-   RunnerPrivate *const d;
-};
-
-#endif // RUNNER_H
+}

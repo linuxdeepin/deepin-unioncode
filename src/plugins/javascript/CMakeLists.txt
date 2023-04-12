@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-javascript)
 
-find_package(Qt5 COMPONENTS Xml REQUIRED)
+find_package(Qt5 COMPONENTS Xml Script ScriptTools REQUIRED)
 
 set(javascript_CPP
     javascriptplugin.cpp
@@ -12,6 +12,7 @@ set(javascript_CPP
     project/jsprojectgenerator.cpp
     project/properties/configpropertywidget.cpp
     project/properties/configutil.cpp
+    debugger/jsdebugger.cpp
     )
 
 set(javascript_H
@@ -21,6 +22,7 @@ set(javascript_H
     project/jsprojectgenerator.h
     project/properties/configpropertywidget.h
     project/properties/configutil.h
+    debugger/jsdebugger.h
     )
 
 set(QT_THEME)
@@ -38,6 +40,8 @@ target_link_libraries(${PROJECT_NAME}
     services
     common
     Qt5::Xml
+    Qt5::Script
+    Qt5::ScriptTools
     ${QtUseModules}
     ${PkgUserModules}
     )

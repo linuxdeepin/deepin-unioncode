@@ -128,12 +128,12 @@ void MenuManager::initialize(WindowService *windowService)
     windowService->addToolBarActionItem("Step.Out", stepOut.get(), "Debug.End");
 }
 
-void MenuManager::handleRunStateChanged(Debugger::RunState state)
+void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
 {
     switch (state) {
-    case Debugger::kNoRun:
-    case Debugger::kPreparing:
-    case Debugger::kStart:
+    case AbstractDebugger::kNoRun:
+    case AbstractDebugger::kPreparing:
+    case AbstractDebugger::kStart:
         startDebugging->setEnabled(true);
 #if 0 // not used yet.
         detachDebugger->setEnabled(true);
@@ -147,7 +147,7 @@ void MenuManager::handleRunStateChanged(Debugger::RunState state)
         stepOut->setEnabled(false);
         break;
 
-    case Debugger::kRunning:
+    case AbstractDebugger::kRunning:
         startDebugging->setEnabled(false);
 #if 0 // not used yet.
         detachDebugger->setEnabled(false);
@@ -160,7 +160,7 @@ void MenuManager::handleRunStateChanged(Debugger::RunState state)
         stepIn->setEnabled(false);
         stepOut->setEnabled(false);
         break;
-    case Debugger::kStopped:
+    case AbstractDebugger::kStopped:
         startDebugging->setEnabled(false);
 #if 0 // not used yet.
         detachDebugger->setEnabled(false);
@@ -173,7 +173,7 @@ void MenuManager::handleRunStateChanged(Debugger::RunState state)
         stepIn->setEnabled(true);
         stepOut->setEnabled(true);
         break;
-    case Debugger::kCustomRunning:
+    case AbstractDebugger::kCustomRunning:
         startDebugging->setEnabled(false);
         interrupt->setEnabled(false);
         continueDebugging->setEnabled(false);

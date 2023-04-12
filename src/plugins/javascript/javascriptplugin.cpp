@@ -26,6 +26,19 @@
 
 #include "services/language/languageservice.h"
 #include "services/project/projectservice.h"
+#include "services/window/windowservice.h"
+#include "services/debugger/debuggerservice.h"
+#include "base/abstractwidget.h"
+#include "base/abstractcentral.h"
+#include "debugger/jsdebugger.h"
+
+#include <QtWidgets/QAction>
+#include <QtScript>
+#ifndef QT_NO_SCRIPTTOOLS
+#include <QtScriptTools>
+#endif
+#include <QMainWindow>
+#include <QApplication>
 
 using namespace dpfservice;
 
@@ -37,10 +50,8 @@ void JavascriptPlugin::initialize()
 bool JavascriptPlugin::start()
 {
     qInfo() << __FUNCTION__;
-    auto &ctx = dpfInstance.serviceContext();
-
     // language register.
-    LanguageService *languageService = ctx.service<LanguageService>(LanguageService::name());
+    LanguageService *languageService = dpfGetService(LanguageService);
     if (languageService) {
         QString errorString;
         bool ret = languageService->regClass<JSGenerator>(JSGenerator::toolKitName(), &errorString);
@@ -55,11 +66,19 @@ bool JavascriptPlugin::start()
     }
 
     // project register.
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    ProjectService *projectService = dpfGetService(ProjectService);
     if (projectService) {
         QString errorString;
         projectService->implGenerator<JSProjectGenerator>(JSProjectGenerator::toolKitName(), &errorString);
     }
+
+    // debugger register.
+    auto jsDebugger = new JSDebugger();
+    auto debuggerService = dpfGetService(DebuggerService);
+    if (debuggerService && debuggerService->registerDebugger) {
+        debuggerService->registerDebugger("local", jsDebugger);
+    }
+
     return true;
 }
 

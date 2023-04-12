@@ -33,6 +33,7 @@ public:
     virtual ~MavenGenerator() override;
 
     static QString toolKitName() { return "maven"; }
+    QString debugger() override;
 
     bool isNeedBuild() override;
     bool isTargetReady() override;

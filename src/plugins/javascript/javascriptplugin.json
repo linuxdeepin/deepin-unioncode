@@ -19,5 +19,5 @@
     "Category" : "",
     "Description" : "The javascript plugin for the unioncode.",
     "UrlLink" : "https://www.uniontech.com",
-    "Depends" : [{"Name" : "plugin-codeeditor"}]
+    "Depends" : [{"Name" : "plugin-debugger"}]
 }

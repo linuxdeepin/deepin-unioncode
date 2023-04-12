@@ -22,6 +22,7 @@
 #define DEBUGGERSERVICE_H
 
 #include <framework/framework.h>
+#include "base/abstractdebugger.h"
 
 namespace dpfservice {
 
@@ -50,6 +51,13 @@ public:
      * @param kit current project kit.
      */
     DPF_INTERFACE(bool, runCoredump, const QString &target, const QString &core, const QString &kit);
+
+    /**
+     * @brief DPF_INTERFACE
+     * @param kit
+     * @param debugger
+     */
+    DPF_INTERFACE(void, registerDebugger, const QString &kit, AbstractDebugger *debugger);
 };
 
 } // namespace dpfservice

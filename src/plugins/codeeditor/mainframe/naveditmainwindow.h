@@ -56,8 +56,10 @@ public:
     virtual ~NavEditMainWindow();
     QStringList contextWidgetTitles() const;
     void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget);
-    void setWidgetEdit(AbstractCentral *editWidget);
-    void setWidgetWatch(AbstractWidget *watchWidget);
+    // return old edit widget
+    QWidget *setWidgetEdit(AbstractCentral *editWidget);
+    // return old watch widget
+    QWidget *setWidgetWatch(AbstractWidget *watchWidget);
     void addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group);
     void addWidgetTools(const QString &title, AbstractWidget *toolWidget);
     void showWidgetTools();

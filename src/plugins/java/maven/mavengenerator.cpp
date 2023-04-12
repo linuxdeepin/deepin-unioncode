@@ -45,6 +45,11 @@ MavenGenerator::~MavenGenerator()
         delete d;
 }
 
+QString MavenGenerator::debugger()
+{
+    return "dap";
+}
+
 bool MavenGenerator::isNeedBuild()
 {
     return true;

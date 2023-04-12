@@ -47,6 +47,11 @@ JSGenerator::~JSGenerator()
         delete d;
 }
 
+QString JSGenerator::debugger()
+{
+    return "local";
+}
+
 bool JSGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg)
 {
     Q_UNUSED(param)

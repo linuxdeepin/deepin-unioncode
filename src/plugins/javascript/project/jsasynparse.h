@@ -53,7 +53,7 @@ signals:
     void parsedError(const ParseInfo<QString> &info);
 
 public slots:
-    void parseProject(const dpfservice::ProjectInfo &info);
+    void parseProject(dpfservice::ProjectInfo &info);
 
 private slots:
     void doDirectoryChanged(const QString &path);

@@ -26,6 +26,7 @@
 #include "interface/stackframemodel.h"
 #include "interface/localtreemodel.h"
 #include "interface/breakpointmodel.h"
+#include "base/abstractdebugger.h"
 
 #include "services/project/projectservice.h"
 #include "common/supportfile/dapconfig.h"
@@ -47,67 +48,57 @@ class Session;
 }
 
 class DebuggerPrivate;
-class Debugger;
+class DAPDebugger;
 class OutputPane;
 class StackFrameView;
 class RunTimeCfgProvider;
 class QComboBox;
-class Debugger : public QObject
+class DAPDebugger : public AbstractDebugger
 {
     Q_OBJECT
 public:
-    enum RunState
-    {
-        kNoRun,
-        kPreparing, // e.g. build preparation
-        kStart,
-        kRunning,
-        kStopped,
-        kCustomRunning
-    };
+    explicit DAPDebugger(QObject *parent = nullptr);
+    ~DAPDebugger() override;
 
-    explicit Debugger(QObject *parent = nullptr);
-    ~Debugger();
+    QWidget *getOutputPane() const override;
+    QWidget *getStackPane() const override;
+    QWidget *getLocalsPane() const override;
+    QWidget *getBreakpointPane() const override;
 
-    OutputPane *getOutputPane() const;
-    QWidget *getStackPane() const;
-    QTreeView *getLocalsPane() const;
-    QTreeView *getBreakpointPane() const;
+    void startDebug() override;
+    void detachDebug() override;
 
-    void startDebug();
-    void detachDebug();
+    void interruptDebug() override;
+    void continueDebug() override;
+    void abortDebug() override;
+    void restartDebug() override;
 
-    void interruptDebug();
-    void continueDebug();
-    void abortDebug();
-    void restartDebug();
+    void stepOver() override;
+    void stepIn() override;
+    void stepOut() override;
 
-    void stepOver();
-    void stepIn();
-    void stepOut();
-
-    RunState getRunState() const;
-    bool runCoredump(const QString &target, const QString &core, const QString &kit);
-
-signals:
-    void runStateChanged(RunState state);
+    RunState getRunState() const override;
+    bool runCoredump(const QString &target, const QString &core, const QString &kit) override;
 
 public slots:
     void registerDapHandlers();
     void handleEvents(const dpf::Event &event);
     void printOutput(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
+    void synPrintOutput(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
     /**
      * interface triggered.
      */
     void slotFrameSelected(const QModelIndex &index);
     void slotBreakpointSelected(const QModelIndex &index);
     bool showStoppedBySignalMessageBox(QString meaning, QString name);
-    void message(QString msg);
     void currentThreadChanged(const QString &text);
 
     void slotReceivedDAPPort(const QString &uuid, int port, const QString &kitName, const QMap<QString, QVariant> &param);
     void slotOutputMsg(const QString &title, const QString &msg);
+
 private:
+    void launchBackend();
+    void killBackend();
     void initializeView();
     void handleFrames(const StackFrames &stackFrames);
     void updateThreadList(int curr, const dap::array<dap::Thread> &threads);
@@ -117,7 +108,7 @@ private:
     void removeBreakpoint(const QString &filepath, int lineNumber);
     bool getLocals(dap::integer frameId, IVariables *out);
     void exitDebug();
-    void updateRunState(Debugger::RunState state);
+    void updateRunState(DAPDebugger::RunState state);
     QString requestBuild();
     void start();
     void prepareDebug();
@@ -128,32 +119,7 @@ private:
     void disassemble(const QString &address);
     void handleAssemble(const QString &content);
 
-    QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
-    QSharedPointer<DEBUG::DebugSession> session;
-
-    dap::integer threadId = 0;
-
-    /**
-     * @brief interface objects.
-     */
-    OutputPane *outputPane = nullptr;
-
-    QWidget *stackPane = nullptr;
-    StackFrameView *stackView = nullptr;
-    StackFrameModel stackModel;
-    QComboBox *threadSelector = nullptr;
-
-    QTreeView *localsView = nullptr;
-    LocalTreeModel localsModel;
-
-    StackFrameView *breakpointView = nullptr;
-    BreakpointModel breakpointModel;
-
-    QPointer<QWidget> alertBox;
-    RunState runState = kNoRun;
-
     DebuggerPrivate *const d;
-    QMultiMap<QString, int> bps;
 };
 
 #endif   // DEBUGGER_H

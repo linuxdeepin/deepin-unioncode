@@ -96,13 +96,16 @@ bool JSProjectGenerator::configure(const ProjectInfo &info)
 QStandardItem *JSProjectGenerator::createRootItem(const ProjectInfo &info)
 {
     QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
-    ProjectInfo::set(rootItem, info);
+
     d->projectParses[rootItem] = new JSAsynParse();
     QObject::connect(d->projectParses[rootItem],
                      &JSAsynParse::itemsModified,
                      this, &JSProjectGenerator::doProjectChildsModified,
                      Qt::ConnectionType::UniqueConnection);
-    d->projectParses[rootItem]->parseProject(info);
+
+    ProjectInfo tempInfo = info;
+    d->projectParses[rootItem]->parseProject(tempInfo);
+    ProjectInfo::set(rootItem, tempInfo);
 
     return rootItem;
 }

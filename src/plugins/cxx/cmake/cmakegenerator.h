@@ -34,6 +34,7 @@ public:
 
     static QString toolKitName() { return "cmake"; }
 
+    QString debugger() override;
     bool prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg) override;
     bool requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg) override;
     bool isNeedBuild() override;

@@ -9,7 +9,7 @@ set(CXX_CPP
     debugger.json
     debuggerplugin.cpp
     debuggerrunparameters.cpp
-    dap/debugger.cpp
+    dap/dapdebugger.cpp
     dap/debugsession.cpp
     event/eventreceiver.cpp
     debugmanager.cpp
@@ -33,7 +33,7 @@ set(CXX_CPP
 set(CXX_H
     debuggerplugin.h
     debuggerrunparameters.h
-    dap/debugger.h
+    dap/dapdebugger.h
     dap/debugsession.h
     debuggerglobals.h
     debuggersignals.h

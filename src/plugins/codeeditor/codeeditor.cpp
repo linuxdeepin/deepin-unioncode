@@ -88,6 +88,10 @@ bool CodeEditor::start()
             windowService->addContextWidget = std::bind(&NavEditMainWindow::addWidgetContext, navEditWindow, _1, _2, _3);
         }
 
+        if (!windowService->setWidgetEdit) {
+            windowService->setWidgetEdit = std::bind(&NavEditMainWindow::setWidgetEdit, navEditWindow, _1);
+        }
+
         windowService->addContextWidget(QTabWidget::tr("Code &Lens"), new AbstractWidget(CodeLens::instance()), "Lens");
 
         if (!windowService->setWidgetWatch) {

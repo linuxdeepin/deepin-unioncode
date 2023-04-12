@@ -106,6 +106,12 @@ public:
      */
     DPF_INTERFACE(void, setWidgetConsole, AbstractConsole *console);
 
+    /**
+     * @brief DPF_INTERFACE
+     * @param widget
+     */
+    DPF_INTERFACE(QWidget*, setWidgetEdit, AbstractCentral *widget);
+
     /*!
      * \brief addContextWidget 添加交互组件
      * \param contextTab Tab名称
@@ -137,7 +143,7 @@ public:
      * \brief setWidgetWatch 添加监视器组件
      * \param widget 抽象接口
      */
-    DPF_INTERFACE(void, setWidgetWatch, AbstractWidget *widget);
+    DPF_INTERFACE(QWidget*, setWidgetWatch, AbstractWidget *widget);
 
     /*!
      * \brief addOpenProjectAction 添加打開工程的Action
