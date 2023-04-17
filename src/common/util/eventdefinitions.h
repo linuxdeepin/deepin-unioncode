@@ -81,7 +81,7 @@ OPI_OBJECT(editor,
 
 OPI_OBJECT(symbol,
            OPI_INTERFACE(parse, "workspace", "language", "storage")
-           OPI_INTERFACE(parseDone, "workspace", "language", "storage")
+           OPI_INTERFACE(parseDone, "workspace", "language", "storage", "success")
            )
 
 OPI_OBJECT(navigation,

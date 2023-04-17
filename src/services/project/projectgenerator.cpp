@@ -61,6 +61,7 @@ QAction *dpfservice::ProjectGenerator::openProjectAction(const QString &language
         }
 
         QFileDialog fileDialog;
+        fileDialog.setModal(true);
         QString workspace = fileDialog.getExistingDirectory(
                     nullptr, QFileDialog::tr("Open %0 Project Directory").arg(language),
                     lastPath, QFileDialog::DontResolveSymlinks);

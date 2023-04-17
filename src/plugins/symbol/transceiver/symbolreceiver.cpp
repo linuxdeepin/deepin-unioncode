@@ -58,13 +58,13 @@ void SymbolReceiver::eventProcess(const dpf::Event &event)
         SymbolKeeper::instance()->doParse({workspace, language, storage});
         SymbolKeeper::instance()->treeView()->setRootPath(storage);
     } else if (event.data() == symbol.parse.name) { // "workspace", "language", "storage"
-        QString workspaceKey = symbol.parseDone.pKeys[0]; // workspace
-        QString languageKey = symbol.parseDone.pKeys[1]; // language
-        QString storageKey = symbol.parseDone.pKeys[2]; // storage
-        QString workspace = event.property(workspaceKey).toString();
-        QString language = event.property(languageKey).toString();
-        QString storage = event.property(storageKey).toString();
-        SymbolKeeper::instance()->doParse({workspace, language, storage});
-        SymbolKeeper::instance()->treeView()->setRootPath(storage);
+        bool bSuccess = event.property("success").toBool();
+        if(bSuccess) {
+            QString workspace = event.property("workspace").toString();
+            QString language = event.property("language").toString();
+            QString storage = event.property("storage").toString();
+            SymbolKeeper::instance()->doParse({workspace, language, storage});
+            SymbolKeeper::instance()->treeView()->setRootPath(storage);
+        }
     }
 }

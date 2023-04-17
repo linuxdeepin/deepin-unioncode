@@ -56,12 +56,13 @@ void ActionAnalyseReceiver::eventProcess(const dpf::Event &event)
             AnalysedData analyData = var.value<AnalysedData>();
             AnalyseKeeper::instance()->doAnalyse({workspace, language, storage});
         } else if (event.data() == symbol.parseDone.name) {
-            QString workspaceKey = symbol.parseDone.pKeys[2]; // analyse.workspace == parse.storage
-            QString languageKey = symbol.parseDone.pKeys[1]; // language
-            QString workspace = event.property(workspaceKey).toString();
-            QString language = event.property(languageKey).toString();
-            QString storage = workspace;
-            AnalyseKeeper::instance()->doAnalyse({workspace, language, storage});
+            bool bSuccess = event.property("success").toBool();
+            if(bSuccess) {
+                QString workspace = event.property("workspace").toString();
+                QString language = event.property("language").toString();
+                const QString &storage = workspace;
+                AnalyseKeeper::instance()->doAnalyse({workspace, language, storage});
+            }
         }
     }
 }

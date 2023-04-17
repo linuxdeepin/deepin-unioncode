@@ -167,7 +167,7 @@ QWidget *NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
     return oldWidget;
 }
 
-void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group)
+void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group)
 {
     QMutexLocker locker(&mutex);
     QWidget *qWidget = static_cast<QWidget*>(contextWidget->qWidget());
@@ -195,6 +195,16 @@ void NavEditMainWindow::addWidgetContext(const QString &title, AbstractWidget *c
     }
     contextList.insert(index, group);
     qTabWidgetContext->insertTab(index, qWidget, title);
+}
+
+void NavEditMainWindow::removeContextWidget(AbstractWidget *contextWidget)
+{
+    QWidget *qWidget = static_cast<QWidget*>(contextWidget->qWidget());
+    if (!qWidget || !qTabWidgetContext)
+        return;
+
+    int index = qTabWidgetContext->indexOf(qWidget);
+    qTabWidgetContext->removeTab(index);
 }
 
 void NavEditMainWindow::addWidgetTools(const QString &title, AbstractWidget *toolWidget)

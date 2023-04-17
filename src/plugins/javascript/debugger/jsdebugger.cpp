@@ -31,34 +31,42 @@
 #include <QDebug>
 #include <QAction>
 
+#define SAFE_DELETE(p) \
+if (p) {               \
+    delete p;          \
+    p = nullptr;       \
+}
+
 using namespace dpfservice;
 JSDebugger::JSDebugger(QObject *parent)
     : AbstractDebugger(parent)
 {
-    connect(&debugger, &QScriptEngineDebugger::evaluationResumed, this, &JSDebugger::slotEvaluationResumed);
-    connect(&debugger, &QScriptEngineDebugger::evaluationSuspended, this, &JSDebugger::slotEvaluationSuspended);
-
-    debugger.setAutoShowStandardWindow(false);
 }
+
+JSDebugger::~JSDebugger()
+{
+
+}
+
 
 QWidget *JSDebugger::getOutputPane() const
 {
-    return getWidget(QScriptEngineDebugger::DebugOutputWidget);
+    return debuggerWidget(QScriptEngineDebugger::DebugOutputWidget);
 }
 
 QWidget *JSDebugger::getStackPane() const
 {
-    return getWidget(QScriptEngineDebugger::StackWidget);
+    return debuggerWidget(QScriptEngineDebugger::StackWidget);
 }
 
 QWidget *JSDebugger::getLocalsPane() const
 {
-    return getWidget(QScriptEngineDebugger::LocalsWidget);
+    return debuggerWidget(QScriptEngineDebugger::LocalsWidget);
 }
 
 QWidget *JSDebugger::getBreakpointPane() const
 {
-    return getWidget(QScriptEngineDebugger::BreakpointsWidget);
+    return debuggerWidget(QScriptEngineDebugger::BreakpointsWidget);
 }
 
 void JSDebugger::startDebug()
@@ -69,7 +77,6 @@ void JSDebugger::startDebug()
 
 void JSDebugger::detachDebug()
 {
-    debugger.detach();
 }
 
 void JSDebugger::interruptDebug()
@@ -133,20 +140,20 @@ void JSDebugger::slotEvaluationSuspended()
 
 void JSDebugger::slotEvaluationResumed()
 {
-
 }
 
 void JSDebugger::runCommand(QScriptEngineDebugger::DebuggerAction command)
 {
-    debugger.action(command)->trigger();
+    emit execCommand(command);
 }
 
-QWidget *JSDebugger::getWidget(QScriptEngineDebugger::DebuggerWidget widget) const
+QWidget *JSDebugger::debuggerWidget(QScriptEngineDebugger::DebuggerWidget widget) const
 {
-    return debugger.widget(widget);
+//    return debugger.widget(widget);
+    return {};
 }
 
-QScriptValue JSDebugger::evaluateFile(const QString &filePath)
+QScriptValue JSDebugger::evaluateFile(QScriptEngine &engine, const QString &filePath)
 {
     QFile file(filePath);
     file.open(QIODevice::ReadOnly);
@@ -162,35 +169,74 @@ QScriptValue JSDebugger::evaluateFile(const QString &filePath)
     return engine.evaluate(byteArray, filePath);
 }
 
-void JSDebugger::setupDebugEnv()
+void JSDebugger::addPagesToContext(const QScriptEngineDebugger &debugger)
 {
-    debugger.attachTo(&engine);
-
+    codeEditor = new AbstractCentral(debugger.widget(QScriptEngineDebugger::CodeWidget));
+    stackPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::StackWidget));
+    breakpointsPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::BreakpointsWidget));
+    scriptPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::ScriptsWidget));
+    consolePane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::ConsoleWidget));
+    errorPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::ErrorLogWidget));
+    localsPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::LocalsWidget));
     auto windowService = dpfGetService(WindowService);
-    oldWidgetEdit = windowService->setWidgetEdit(new AbstractCentral(debugger.widget(QScriptEngineDebugger::CodeWidget)));
-
+    oldWidgetEdit = windowService->setWidgetEdit(codeEditor);
     // instert output pane to window.
-    windowService->addContextWidget(tr("Stac&kFrame"), new AbstractWidget(getStackPane()), "Application");
-    oldWidgetWatch = windowService->setWidgetWatch(new AbstractWidget(getLocalsPane()));
-    getLocalsPane()->show();
-    windowService->addContextWidget(tr("Break&points"), new AbstractWidget(getBreakpointPane()), "Application");
-    windowService->addContextWidget(tr("ScriptWidget"), new AbstractWidget(debugger.widget(QScriptEngineDebugger::ScriptsWidget)), "Application");
-    windowService->addContextWidget(tr("ConsoleWidget"), new AbstractWidget(debugger.widget(QScriptEngineDebugger::ConsoleWidget)), "Application");
-    windowService->addContextWidget(tr("ErrorLogWidget"), new AbstractWidget(debugger.widget(QScriptEngineDebugger::ErrorLogWidget)), "Application");
+    windowService->addContextWidget(tr("Stac&kFrame"), stackPane, "Application");
+    oldWidgetWatch = windowService->setWidgetWatch(localsPane);
+    debugger.widget(QScriptEngineDebugger::LocalsWidget)->show();
+    windowService->addContextWidget(tr("Break&points"), breakpointsPane, "Application");
+    windowService->addContextWidget(tr("ScriptWidget"), scriptPane, "Application");
+    windowService->addContextWidget(tr("ConsoleWidget"), consolePane, "Application");
+    windowService->addContextWidget(tr("ErrorLogWidget"), errorPane, "Application");
+}
 
-    auto prjService = dpfGetService(ProjectService);
-    auto sourceFiles = prjService->projectView.getActiveProjectInfo().sourceFiles();
+void JSDebugger::removePagesFromContext()
+{
+    auto windowService = dpfGetService(WindowService);
+    auto removePage = [windowService](AbstractWidget *page){
+        Q_ASSERT(page != nullptr);
+        windowService->removeContextWidget(page);
+    };
 
-    runState = kStopped;
-
-    interruptDebug();
-    for (auto sourceFile : sourceFiles) {
-        evaluateFile(sourceFile);
-    }
-
-    runState = kNoRun;
-    emit runStateChanged(kNoRun);
+    removePage(stackPane);
+    removePage(breakpointsPane);
+    removePage(scriptPane);
+    removePage(consolePane);
+    removePage(errorPane);
 
     windowService->setWidgetEdit(new AbstractCentral(oldWidgetEdit));
     windowService->setWidgetWatch(new AbstractWidget(oldWidgetWatch));
+}
+
+void JSDebugger::setupDebugEnv()
+{
+    // intialize debugger.
+    QScriptEngineDebugger debugger;
+    connect(this, &JSDebugger::execCommand, [&](QScriptEngineDebugger::DebuggerAction debuggerAction){
+        debugger.action(debuggerAction)->trigger();
+    });
+    debugger.setAutoShowStandardWindow(false);
+    connect(&debugger, &QScriptEngineDebugger::evaluationResumed, this, &JSDebugger::slotEvaluationResumed);
+    connect(&debugger, &QScriptEngineDebugger::evaluationSuspended, this, &JSDebugger::slotEvaluationSuspended);
+
+    QScriptEngine engine;
+    debugger.attachTo(&engine);
+
+    addPagesToContext(debugger);
+
+    // evaluate js files.
+    auto prjService = dpfGetService(ProjectService);
+    auto sourceFiles = prjService->projectView.getActiveProjectInfo().sourceFiles();
+
+    interruptDebug();
+    for (auto sourceFile : sourceFiles) {
+        auto value = evaluateFile(engine, sourceFile);
+        qInfo() << value.toString();
+    }
+    removePagesFromContext();
+
+    disconnect(this, &JSDebugger::execCommand, nullptr, nullptr);
+
+    runState = kNoRun;
+    emit runStateChanged(kNoRun);
 }

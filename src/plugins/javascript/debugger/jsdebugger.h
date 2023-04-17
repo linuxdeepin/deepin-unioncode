@@ -28,12 +28,14 @@
 #include <QtScript/QScriptEngine>
 #include <QScriptEngineDebugger>
 
+class AbstractWidget;
+class AbstractCentral;
 class JSDebugger : public AbstractDebugger
 {
     Q_OBJECT
 public:
     explicit JSDebugger(QObject *parent = nullptr);
-    ~JSDebugger() override{}
+    ~JSDebugger() override;
 
     QWidget *getOutputPane() const override;
     QWidget *getStackPane() const override;
@@ -56,6 +58,7 @@ public:
     bool runCoredump(const QString &target, const QString &core, const QString &kit) override;
 
 signals:
+    void execCommand(QScriptEngineDebugger::DebuggerAction debuggerAction);
 
 public slots:
     void slotEvaluationSuspended();
@@ -64,16 +67,23 @@ public slots:
 
 private:
     void runCommand(QScriptEngineDebugger::DebuggerAction command);
-    QWidget *getWidget(QScriptEngineDebugger::DebuggerWidget widget) const;
-    QScriptValue evaluateFile(const QString &filePath);
-
-    QScriptEngine engine;
-    QScriptEngineDebugger debugger;
+    QWidget *debuggerWidget(QScriptEngineDebugger::DebuggerWidget widget) const;
+    QScriptValue evaluateFile(QScriptEngine &engine, const QString &filePath);
+    void addPagesToContext(const QScriptEngineDebugger &debugger);
+    void removePagesFromContext();
 
     RunState runState = kNoRun;
 
     QWidget *oldWidgetEdit = nullptr;
     QWidget *oldWidgetWatch = nullptr;
+
+    AbstractWidget *stackPane = nullptr;
+    AbstractWidget *breakpointsPane = nullptr;
+    AbstractWidget *scriptPane = nullptr;
+    AbstractWidget *consolePane = nullptr;
+    AbstractWidget *errorPane = nullptr;
+    AbstractWidget *localsPane = nullptr;
+    AbstractCentral *codeEditor = nullptr;
 };
 
 #endif // JSDebugger_H

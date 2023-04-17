@@ -85,7 +85,11 @@ bool CodeEditor::start()
         }
 
         if (!windowService->addContextWidget) {
-            windowService->addContextWidget = std::bind(&NavEditMainWindow::addWidgetContext, navEditWindow, _1, _2, _3);
+            windowService->addContextWidget = std::bind(&NavEditMainWindow::addContextWidget, navEditWindow, _1, _2, _3);
+        }
+
+        if (!windowService->removeContextWidget) {
+            windowService->removeContextWidget = std::bind(&NavEditMainWindow::removeContextWidget, navEditWindow, _1);
         }
 
         if (!windowService->setWidgetEdit) {

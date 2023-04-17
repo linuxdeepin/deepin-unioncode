@@ -21,7 +21,6 @@
 */
 
 #include "jsgenerator.h"
-
 #include "services/project/projectservice.h"
 #include <framework/framework.h>
 
@@ -55,6 +54,7 @@ QString JSGenerator::debugger()
 bool JSGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg)
 {
     Q_UNUSED(param)
+    Q_UNUSED(retMsg)
     return true;
 }
 
@@ -152,10 +152,5 @@ RunCommandInfo JSGenerator::getRunArguments(const ProjectInfo &projectInfo, cons
         auto target = projectService->getActiveTarget(kActiveExecTarget);
         targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
     }
-
-    RunCommandInfo info;
-    info.program = targetPath;
-    info.arguments = projectInfo.runCustomArgs();
-    info.workingDir = projectInfo.workspaceFolder();
-    return info;
+    return {targetPath, projectInfo.runCustomArgs(), projectInfo.workspaceFolder()};
 }

@@ -21,6 +21,7 @@
 #include "symbolkeeper.h"
 
 #include "common/common.h"
+#include "services/builder/builderservice.h"
 
 #include <QStandardItem>
 
@@ -77,18 +78,7 @@ void SymbolKeeper::jumpToLine(const QString &filePath, const QString &fileLine)
 void SymbolKeeper::doParseDone(bool result)
 {
     SymbolParseArgs args = parser->args();
-    if (!result) {
-        ContextDialog::ok(QDialog::tr(
-                              "Error parsing project symbol\n"
-                              "workspace: %0\n"
-                              "language: %1\n"
-                              "storage: %2\n")
-                          .arg(args.workspace)
-                          .arg(args.language)
-                          .arg(args.storage));
-    } else {
-       symbol.parseDone(args.workspace, args.language, args.storage);
-    }
+    symbol.parseDone(args.workspace, args.language, args.storage, result);
     this->treeView()->expandAll();
     parser->kill();
     delete parser;

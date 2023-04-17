@@ -60,7 +60,9 @@ public:
     QWidget *setWidgetEdit(AbstractCentral *editWidget);
     // return old watch widget
     QWidget *setWidgetWatch(AbstractWidget *watchWidget);
-    void addWidgetContext(const QString &title, AbstractWidget *contextWidget, const QString &group);
+    void addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group);
+    // the page widget itself is not deleted.
+    void removeContextWidget(AbstractWidget *contextWidget);
     void addWidgetTools(const QString &title, AbstractWidget *toolWidget);
     void showWidgetTools();
     bool switchWidgetWorkspace(const QString &title);
