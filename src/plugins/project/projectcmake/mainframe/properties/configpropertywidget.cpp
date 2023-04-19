@@ -25,7 +25,6 @@
 
 #include <QListWidget>
 #include <QSplitter>
-#include <QComboBox>
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QPushButton>

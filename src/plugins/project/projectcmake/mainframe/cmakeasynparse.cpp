@@ -193,6 +193,11 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         n = n.nextSibling();
     }
 
+    // TODO(logan):parse more attributes.
+#if 0
+    parseCBP(tempInfo.buildFolder(), tempInfo);
+#endif
+
     // 设置顶层节点当前构建系统信息，该过程不可少
     tempInfo.setSourceFiles(allFiles);
     ProjectInfo::set(rootItem, tempInfo);
@@ -272,6 +277,33 @@ QList<CmakeAsynParse::TargetBuild> CmakeAsynParse::parseActions(const QStandardI
 
     parseActionsEnd({buildMenuList, true});
     return buildMenuList;
+}
+
+void CmakeAsynParse::parseCBP(const QString &buildDir, dpfservice::ProjectInfo &prjInfo)
+{
+    QDomDocument doc = LoadCBPXmlDoc(buildDir);
+    QDomNodeList targets = doc.elementsByTagName("Target");
+    QMap<QString, QVariant> targetInfos;
+    for (int i = 0; i < targets.count(); i++)
+    {
+        QDomElement target = targets.at(i).toElement();
+        QString name = target.attribute("title");
+        qInfo() << "Target:" << name;
+
+        QDomNodeList optionList = target.elementsByTagName("Option");
+
+        for (int i = 0; i < optionList.size(); i++) {
+            QDomElement element = optionList.at(i).toElement();
+
+            if (element.hasAttribute("output")) {
+                QString output = element.attribute("output");
+                targetInfos.insert(name, output);
+            }
+        }
+    }
+    // TODO(logan):write these info to projectmanager.
+    Q_UNUSED(targetInfos)
+    Q_UNUSED(prjInfo)
 }
 
 QDomDocument CmakeAsynParse::cdt4LoadProjectXmlDoc(const QString &buildFolder)
@@ -483,9 +515,32 @@ void CmakeAsynParse::cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash
 
 QDomDocument CmakeAsynParse::cdt4LoadMenuXmlDoc(const QString &buildFolder)
 {
+    return loadXmlDoc(buildFolder, CDT_PROJECT_KIT::get()->CPROJECT_FILE);
+}
+
+QDomDocument CmakeAsynParse::LoadCBPXmlDoc(const QString &buildFolder)
+{
+    QString cbpFilePath;
+    QDir dir(buildFolder);
+
+    QStringList filters;
+    filters << "*.cbp";
+
+    QFileInfoList fileInfoList = dir.entryInfoList(filters, QDir::Files);
+    if (fileInfoList.size() == 0) {
+        qInfo() << ".cbp file not found!";
+        return {};
+    }
+    cbpFilePath = fileInfoList.first().fileName();
+
+    return loadXmlDoc(buildFolder, cbpFilePath);
+}
+
+QDomDocument CmakeAsynParse::loadXmlDoc(const QString &buildFolder, const QString &args)
+{
     QDomDocument xmlDoc;
     QString cdtMenuFile = buildFolder + QDir::separator()
-            + CDT_PROJECT_KIT::get()->CPROJECT_FILE;
+            + args;
     QFile docFile(cdtMenuFile);
 
     if (!docFile.exists()) {

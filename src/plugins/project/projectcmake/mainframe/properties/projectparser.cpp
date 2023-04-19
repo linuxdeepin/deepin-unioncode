@@ -170,7 +170,7 @@ void ProjectParser::parseTargetElement(const QDomElement &element)
 
     Target target;
     target.name = getAttr(element, TARGET_NAME);
-    target.path = getAttr(element, TARGET_PATH);
+    target.srcPath = getAttr(element, TARGET_PATH);
     target.targetID = getAttr(element, TARGET_TARGETID);
 
     target.buildCommand = getChildText(element, TARGET_BUILDCOMMAND);

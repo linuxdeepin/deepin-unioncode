@@ -93,7 +93,7 @@ public:
     {
         if (std::is_base_of<OptionGenerator, T>())
             return GeneratorOptFactory::regClass<T>(name, errorString);
-            abort();
+        return false;
     }
 
     /*!

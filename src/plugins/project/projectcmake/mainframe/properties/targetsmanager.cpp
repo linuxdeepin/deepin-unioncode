@@ -53,7 +53,7 @@ QString TargetsManager::getCMakeConfigFile()
 
 bool TargetsManager::isGloablTarget(Target &target)
 {
-    return target.path.isEmpty();
+    return target.srcPath.isEmpty();
 }
 
 TargetsManager *TargetsManager::instance()

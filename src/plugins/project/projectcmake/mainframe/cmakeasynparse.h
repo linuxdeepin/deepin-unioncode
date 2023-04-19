@@ -15,8 +15,10 @@ namespace {
 enum_def(CDT_PROJECT_KIT, QString)
 {
     enum_exp CDT4_GENERATOR = "Eclipse CDT4 - Unix Makefiles";
+    enum_exp CBP_GENERATOR = "CodeBlocks - Unix Makefiles";
     enum_exp PROJECT_FILE = ".project";
     enum_exp CPROJECT_FILE = ".cproject";
+    enum_exp CBP_FILE = ".cbp";
 };
 
 enum_def(CDT_CPROJECT_KEY, QString)
@@ -75,6 +77,7 @@ public slots:
     QList<TargetBuild> parseActions(const QStandardItem *item);
 
 private:
+    void parseCBP(const QString &buildDir, dpfservice::ProjectInfo &prjInfo);
     QStandardItem *cdt4FindParentItem(QStandardItem *rootItem, QString &name);
     QStandardItem *cdt4FindItem(QStandardItem *rootItem, QString &name);
     QHash<QString, QString> cdt4Subporjects(QStandardItem *rootItem);
@@ -83,6 +86,8 @@ private:
     void cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash<QString, QString> &subprojectsMap);
     QDomDocument cdt4LoadProjectXmlDoc(const QString &buildFolder);
     QDomDocument cdt4LoadMenuXmlDoc(const QString &buildFolder);
+    QDomDocument LoadCBPXmlDoc(const QString &buildFolder);
+    QDomDocument loadXmlDoc(const QString &buildFolder, const QString &args);
 };
 
 #endif // CMAKEASYNPARSE_H

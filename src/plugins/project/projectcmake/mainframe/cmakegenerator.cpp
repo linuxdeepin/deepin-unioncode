@@ -148,6 +148,17 @@ bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
 
         ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
         builderService->interface.builderCommand(commandInfo);
+
+        // TODO(logan): change CDT4_GENERATOR to CBP_GENERATOR
+#if 0
+        BuildCommandInfo cbpCommandInfo;
+        cbpCommandInfo.kitName = info.kitName();
+        cbpCommandInfo.program = info.buildProgram();
+        commandInfo.arguments[5] = CDT_PROJECT_KIT::get()->CBP_GENERATOR;
+        cbpCommandInfo.arguments << commandInfo.arguments;
+        cbpCommandInfo.workingDir = info.workspaceFolder();
+        builderService->interface.builderCommand(commandInfo);
+#endif
     }
 
     dpfservice::ProjectGenerator::configure(info);

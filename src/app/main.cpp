@@ -78,13 +78,9 @@ static bool pluginsLoad()
     return true;
 }
 
-int main(int argc, char *argv[])
+void installTranslator(QApplication &a)
 {
-    QApplication a(argc, argv);
-
-    QApplication::setStyle(QStyleFactory::create("Fusion"));
-    dpfInstance.initialize();
-    QTranslator translator;
+    QTranslator *translator = new QTranslator();
 
     auto result = CustomPaths::endSeparator(CustomPaths::global(CustomPaths::Translations));
     QFile file(CustomPaths::user(CustomPaths::Flags::Configures)
@@ -102,17 +98,26 @@ int main(int argc, char *argv[])
         QTextStream txtInput(&file);
         QString language = txtInput.readLine();
         file.close();
-        translator.load(result + language);
+        translator->load(result + language);
     }
-    a.installTranslator(&translator);
+    a.installTranslator(translator);
+}
 
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+
+    QApplication::setStyle(QStyleFactory::create("Fusion"));
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
+    installTranslator(a);
+
+    dpfInstance.initialize();
     if (!pluginsLoad()) {
         qCritical() << "Failed, Load plugins!";
         abort();
     }
-
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     return a.exec();
 }

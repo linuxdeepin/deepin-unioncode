@@ -30,7 +30,6 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QFileDialog>
-#include <QComboBox>
 #include <QFormLayout>
 #include <QTextBrowser>
 

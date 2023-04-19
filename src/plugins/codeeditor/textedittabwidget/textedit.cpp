@@ -103,9 +103,6 @@ void TextEdit::setFile(const QString &filePath)
 
     QString currFileLanguage = fileLanguage(filePath);
     if (supportLanguage() != currFileLanguage) {
-        //        ContextDialog::ok(QDialog::tr("Failed, Open file language is %0, but edit support language is %1")
-        //                          .arg("\"" + currFileLanguage + "\"")
-        //                          .arg("\"" + supportLanguage() + "\""));
         return;
     }
 

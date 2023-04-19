@@ -32,7 +32,7 @@ namespace dpfservice {
 
 struct Target {
     QString name;
-    QString path;
+    QString srcPath;
     QString targetID;
 
     QString buildCommand;
@@ -49,7 +49,7 @@ struct Target {
     bool operator==(const Target &other) const
     {
         if (name == other.name
-                && path == other.path)
+                && srcPath == other.srcPath)
             return true;
 
         return false;

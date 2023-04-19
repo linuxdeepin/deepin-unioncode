@@ -22,6 +22,7 @@
 
 #include "jsgenerator.h"
 #include "services/project/projectservice.h"
+#include "common/widget/outputpane.h"
 #include <framework/framework.h>
 
 #include <QFile>
@@ -144,13 +145,9 @@ QMap<QString, QVariant> JSGenerator::getDebugArguments(const dpfservice::Project
 
 RunCommandInfo JSGenerator::getRunArguments(const ProjectInfo &projectInfo, const QString &currentFile)
 {
-    Q_UNUSED(currentFile)
-
-    QString targetPath;
-    ProjectService *projectService = dpfGetService(ProjectService);
-    if (projectService && projectService->getActiveTarget) {
-        auto target = projectService->getActiveTarget(kActiveExecTarget);
-        targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
+    Q_UNUSED(projectInfo)
+    if (!QFile::exists(currentFile)) {
+        OutputPane::instance()->appendText(tr("Please open a JS file in editor!"), OutputPane::ErrorMessage);
     }
-    return {targetPath, projectInfo.runCustomArgs(), projectInfo.workspaceFolder()};
+    return {"node", {currentFile}, ""};
 }

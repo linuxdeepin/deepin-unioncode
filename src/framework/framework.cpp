@@ -65,8 +65,7 @@ bool Framework::initialize()
         qDebug() << "Frame work has been initialized!";
         return true;
     }
-#ifdef NO_BACKTRACE
-#else
+#ifndef NO_BACKTRACE
     backtrace::initbacktrace();
 #endif
     FrameworkLog::initialize();

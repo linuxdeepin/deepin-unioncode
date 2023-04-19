@@ -28,7 +28,9 @@ Build-Depends:
  libunwind-dev, 
  libelfin-dev,
  libdbus-1-dev,
- libxi-dev
+ libxi-dev,
+ qtscript5-dev,
+ libqt5scripttools5
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 

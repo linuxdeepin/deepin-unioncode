@@ -64,6 +64,7 @@ TextEditSplitter::TextEditSplitter(QWidget *parent)
 
     vLayout->addLayout(hLayout);
     vLayout->addWidget(mainSplitter);
+    vLayout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(vLayout);
 
 }

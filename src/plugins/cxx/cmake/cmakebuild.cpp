@@ -78,7 +78,7 @@ QString CMakeBuild::getTargetPath()
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService && projectService->getActiveTarget) {
         auto target = projectService->getActiveTarget(kActiveExecTarget);
-        targetPath = target.outputPath + QDir::separator() + target.path + QDir::separator() + target.buildTarget;
+        targetPath = target.outputPath + QDir::separator() + target.srcPath + QDir::separator() + target.buildTarget;
     }
 
     return targetPath;

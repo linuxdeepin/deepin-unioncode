@@ -61,12 +61,13 @@ QAction *dpfservice::ProjectGenerator::openProjectAction(const QString &language
         }
 
         QFileDialog fileDialog;
-        fileDialog.setModal(true);
-        QString workspace = fileDialog.getExistingDirectory(
-                    nullptr, QFileDialog::tr("Open %0 Project Directory").arg(language),
-                    lastPath, QFileDialog::DontResolveSymlinks);
-
-        if(!workspace.isEmpty()) {
+        fileDialog.setFileMode(QFileDialog::Directory);
+        fileDialog.setOption(QFileDialog::DontResolveSymlinks);
+        fileDialog.setWindowTitle(QFileDialog::tr("Open %0 Project Directory").arg(language));
+        fileDialog.setDirectory(lastPath);
+        fileDialog.setWindowFlags(fileDialog.windowFlags() | Qt::WindowStaysOnTopHint);
+        if (fileDialog.exec() == QDialog::Accepted) {
+            QString workspace = fileDialog.selectedUrls().first().path();
             setting.setValue(language + "-" + actionText, workspace); // save open history
             if (canOpenProject(actionText, language, workspace))
                 doProjectOpen(language, actionText, workspace);
@@ -151,6 +152,8 @@ void dpfservice::ProjectGenerator::doProjectOpen(const QString &language,
  */
 QDialog *dpfservice::ProjectGenerator::configureWidget(const QString &language, const QString &workspace)
 {
+    Q_UNUSED(language)
+    Q_UNUSED(workspace)
     return nullptr;
 }
 
