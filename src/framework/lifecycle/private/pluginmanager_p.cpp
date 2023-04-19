@@ -336,6 +336,8 @@ bool PluginManagerPrivate::readPlugins()
                 pluginPointer->setEnabledBySettings(false);
             } else if (enabledPlugins.contains(pluginPointer->name())) {
                 pluginPointer->setEnabledBySettings(true);
+            } else {
+                setting->setValue(QLatin1String(ENABLED_PLUGINS), pluginPointer->name());
             }
             pluginCategories[pluginPointer->category()].append(pluginPointer);
         }

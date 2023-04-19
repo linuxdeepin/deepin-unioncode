@@ -61,6 +61,7 @@ inline const QString MWMTM_SWITCH_LANGUAGE { QMenu::tr("Switch language") };
 inline const QString MWMTA_ENGLISH { QAction::tr("English") };
 inline const QString MWMTA_CHINESE { QAction::tr("Chinese") };
 inline const QString MWMTA_USR_ACTION_ANALYZE { QAction::tr("User Action Analyse")};
+inline const QString MWMTA_BINARY_TOOLS { QAction::tr("Binary Tools")};
 
 
 inline const QString MWM_HELP { QMenu::tr("&Help") };
