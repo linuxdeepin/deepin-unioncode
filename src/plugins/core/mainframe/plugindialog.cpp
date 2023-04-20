@@ -39,7 +39,7 @@ PluginDialog::PluginDialog(QWidget *parent)
     : QDialog(parent),
       view(new dpf::PluginView(this))
 {
-    resize(650, 400);
+    resize(650, 450);
     setWindowTitle(tr("Installed Plugins"));
 
     auto vLayout = new QVBoxLayout(this);

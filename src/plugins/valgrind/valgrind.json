@@ -20,7 +20,6 @@
     "Description" : "The codedetection plugin for the unioncode.",
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [
-        {"Name" : "plugin-codeeditor"}
         {"Name" : "plugin-core"}
     ]
 }

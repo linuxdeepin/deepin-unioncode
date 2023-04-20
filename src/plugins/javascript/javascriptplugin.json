@@ -16,7 +16,7 @@
             Please review the following information to ensure the GNU General Public License requirements \
             will be met: https://www.gnu.org/licenses/gpl-3.0.html."
     ],
-    "Category" : "",
+    "Category" : "Languages",
     "Description" : "The javascript plugin for the unioncode.",
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [{"Name" : "plugin-debugger"}]

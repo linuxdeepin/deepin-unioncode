@@ -178,6 +178,7 @@ void ValgrindRunner::saveCurrentProjectInfo(const ProjectInfo &projectInfo)
 void ValgrindRunner::removeProjectInfo()
 {
     d->activedProjectKitName.clear();
+    setActionsStatus("");
 }
 
 void ValgrindRunner::saveCurrentFilePath(const QString &filePath)
