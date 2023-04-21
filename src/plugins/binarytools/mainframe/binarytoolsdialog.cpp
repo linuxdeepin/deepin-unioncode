@@ -38,8 +38,8 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     : QDialog(parent)
     , d (new BinaryToolsDialogPrivate)
 {
-    setFixedWidth(630);
-    setWindowTitle(tr("Compatibility Tools"));
+    resize(630, 500);
+    setWindowTitle(tr("Binary Tools"));
 
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     vLayout->setContentsMargins(20, 20, 20, 20);

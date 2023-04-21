@@ -127,7 +127,7 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout = new QGridLayout(this);
     gridLayout->setContentsMargins(2, 2, 2, 2);
 
-    label_1 = new QLabel(tr("Name"), this);
+    label_1 = new QLabel(tr("Name:"), this);
     label_1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_1->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     name = new QLabel(this);
@@ -135,7 +135,7 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(label_1, 0, 0, 1, 1);
     gridLayout->addWidget(name, 0, 1, 1, 1);
 
-    label_2 = new QLabel(tr("Version"), this);
+    label_2 = new QLabel(tr("Version:"), this);
     label_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_2->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     version = new QLabel(this);
@@ -143,7 +143,7 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(label_2, 1, 0, 1, 1);
     gridLayout->addWidget(version, 1, 1, 1, 1);
 
-    label_3 = new QLabel(tr("Compatibility version"), this);
+    label_3 = new QLabel(tr("Compatibility version:"), this);
     label_3->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_3->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     compatVersion = new QLabel(this);
@@ -151,7 +151,7 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(label_3, 2, 0, 1, 1);
     gridLayout->addWidget(compatVersion, 2, 1, 1, 1);
 
-    label_4 = new QLabel(tr("Vendor"), this);
+    label_4 = new QLabel(tr("Vendor:"), this);
     label_4->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_4->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     vendor = new QLabel(this);
@@ -159,7 +159,7 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(label_4, 3, 0, 1, 1);
     gridLayout->addWidget(vendor, 3, 1, 1, 1);
 
-    label_5 = new QLabel(tr("Copyright"), this);
+    label_5 = new QLabel(tr("Copyright:"), this);
     label_5->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_5->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     copyright = new QLabel(this);
@@ -167,7 +167,7 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(label_5, 4, 0, 1, 1);
     gridLayout->addWidget(copyright, 4, 1, 1, 1);
 
-    label_6 = new QLabel(tr("URL"), this);
+    label_6 = new QLabel(tr("URL:"), this);
     label_6->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_6->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     urlLink = new QLabel(this);
@@ -176,7 +176,7 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(urlLink, 5, 1, 1, 1);
 
     vboxLayout_1 = new QVBoxLayout();
-    label_7 = new QLabel(tr("Description"), this);
+    label_7 = new QLabel(tr("Description:"), this);
     label_7->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_7->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     vboxLayout_1->addWidget(label_7);
@@ -188,7 +188,7 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(description, 6, 1, 1, 1);
 
     vboxLayout_2 = new QVBoxLayout();
-    label_8 = new QLabel(tr("License"), this);
+    label_8 = new QLabel(tr("License:"), this);
     label_8->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_8->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     vboxLayout_2->addWidget(label_8);
@@ -200,7 +200,7 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(license, 7, 1, 1, 1);
 
     vboxLayout_3 = new QVBoxLayout();
-    label_9 = new QLabel(tr("Dependencies"), this);
+    label_9 = new QLabel(tr("Dependencies:"), this);
     label_9->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_9->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     vboxLayout_3->addWidget(label_9);

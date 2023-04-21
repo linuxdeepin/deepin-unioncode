@@ -78,7 +78,7 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     d->gridLayout->setContentsMargins(10, 10, 10, 10);
 
     auto configLabel = new QLabel(this);
-    configLabel->setText(tr("Compatibility configuration:"));
+    configLabel->setText(tr("Binary configuration:"));
     auto spacer1 = new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum);
     auto spacer2 = new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
