@@ -21,5 +21,6 @@
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [
         {"Name" : "plugin-core"}
+        {"Name" : "plugin-codeeditor"}
     ]
 }

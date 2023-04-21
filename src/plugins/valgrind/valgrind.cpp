@@ -53,5 +53,6 @@ bool Valgrind::start()
 
 dpf::Plugin::ShutdownFlag Valgrind::stop()
 {
+    qInfo() << __FUNCTION__;
     return Sync;
 }
