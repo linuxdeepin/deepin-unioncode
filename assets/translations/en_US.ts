@@ -2344,16 +2344,6 @@ storage: %2
         <source>Location</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.h" line="29"/>
-        <source>helgrind</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.h" line="30"/>
-        <source>memcheck</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QPushButton</name>

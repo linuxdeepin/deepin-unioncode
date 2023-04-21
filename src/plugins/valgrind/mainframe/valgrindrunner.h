@@ -26,8 +26,8 @@
 
 #include <QObject>
 
-const QString HELGRIND = QObject::tr("helgrind");
-const QString MEMCHECK = QObject::tr("memcheck");
+const QString HELGRIND = "helgrind";
+const QString MEMCHECK = "memcheck";
 
 class ValgrindRunnerPrivate;
 class ValgrindRunner : public QObject

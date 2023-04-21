@@ -2379,16 +2379,6 @@ storage: %2
         <source>Location</source>
         <translation>位置</translation>
     </message>
-    <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.h" line="29"/>
-        <source>helgrind</source>
-        <translation>死锁检测</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.h" line="30"/>
-        <source>memcheck</source>
-        <translation>内存检测</translation>
-    </message>
 </context>
 <context>
     <name>QPushButton</name>
