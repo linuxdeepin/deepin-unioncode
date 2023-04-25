@@ -136,7 +136,7 @@ void StyleSciCpp::setStyle()
     return;
 }
 
-int StyleSciCpp::styleOffset() const
+int StyleSciCpp::sectionEnd() const
 {
     return SCE_C_ESCAPESEQUENCE; //default style key end;
 }

@@ -42,6 +42,9 @@ set(CXX_CPP
     textedittabwidget/language/python/texteditpython.cpp
     textedittabwidget/language/python/stylelsppython.cpp
     textedittabwidget/language/python/stylescipython.cpp
+    textedittabwidget/language/js/texteditjs.cpp
+    textedittabwidget/language/js/stylelspjs.cpp
+    textedittabwidget/language/js/stylescijs.cpp
     codeeditor.cpp
     codeeditor.json
     )
@@ -80,6 +83,9 @@ set(CXX_H
     textedittabwidget/language/python/texteditpython.h
     textedittabwidget/language/python/stylelsppython.h
     textedittabwidget/language/python/stylescipython.h
+    textedittabwidget/language/js/texteditjs.h
+    textedittabwidget/language/js/stylelspjs.h
+    textedittabwidget/language/js/stylescijs.h
     codeeditor.h
     )
 

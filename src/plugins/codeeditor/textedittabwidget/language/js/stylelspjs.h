@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2023 Uniontech Software Technology Co., Ltd.
  *
- * Author:     huangyu<huangyub@uniontech.com>
+ * Author:     luzhen<luzhen@uniontech.com>
  *
- * Maintainer: huangyu<huangyub@uniontech.com>
+ * Maintainer: zhengyouge<zhengyouge@uniontech.com>
+ *             luzhen<luzhen@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +19,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef STYLESCICMAKE_H
-#define STYLESCICMAKE_H
 
-#include "textedittabwidget/style/stylesci.h"
+#ifndef STYLELSPJS_H
+#define STYLELSPJS_H
 
-class StyleSciCmake : public StyleSci
+#include "textedittabwidget/style/stylelsp.h"
+
+class TextEdit;
+class StyleLspJS : public StyleLsp
 {
 public:
-    StyleSciCmake(TextEdit *parent);
-    virtual QMap<int, QString> keyWords() const override;
-    virtual void setStyle() override;
-    virtual void setLexer() override;
-    virtual int sectionEnd() const override;
+    StyleLspJS(TextEdit *parent);
+    virtual IndicStyleExt symbolIndic(lsp::SemanticTokenType::type_value token,
+                                      QList<lsp::SemanticTokenModifier::type_index> modifier) override;
 };
 
-#endif // STYLESCICMAKE_H
+#endif // STYLELSPJS_H

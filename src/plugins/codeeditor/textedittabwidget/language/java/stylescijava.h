@@ -30,7 +30,7 @@ public:
     virtual QMap<int, QString> keyWords() const override;
     virtual void setStyle() override;
     virtual void setLexer() override;
-    virtual int styleOffset() const override;
+    virtual int sectionEnd() const override;
 };
 
 #endif // STYLESCIJAVA_H

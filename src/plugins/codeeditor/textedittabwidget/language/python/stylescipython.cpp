@@ -83,7 +83,6 @@ void StyleSciPython::setStyle()
         tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         edit()->styleSetFore(SCE_P_OPERATOR, tempFore); // 符号
     }
-    return;
 }
 
 void StyleSciPython::setLexer()
@@ -91,7 +90,7 @@ void StyleSciPython::setLexer()
     StyleSci::setLexer();
 }
 
-int StyleSciPython::styleOffset() const
+int StyleSciPython::sectionEnd() const
 {
     return SCE_P_FTRIPLEDOUBLE;
 }

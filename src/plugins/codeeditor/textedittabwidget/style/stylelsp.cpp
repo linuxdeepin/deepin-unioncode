@@ -789,11 +789,7 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
         return;
 
     if (d->edit->supportLanguage() != d->edit->lexerLanguage()){
-        ContextDialog::ok(StyleLsp::tr("There is a fatal error between the current"
-                                       " d->editor component and the backend of the syntax server, "
-                                       "which may affect the syntax highlighting. \n"
-                                       "Please contact the maintainer for troubleshooting "
-                                       "to solve the problem!"));
+        // not process other language tokens.
         return;
     }
     int cacheLine = 0;

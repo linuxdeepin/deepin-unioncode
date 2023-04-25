@@ -128,7 +128,7 @@ void StyleSciJava::setLexer()
     StyleSci::setLexer();
 }
 
-int StyleSciJava::styleOffset() const
+int StyleSciJava::sectionEnd() const
 {
     return SCE_JAVA_ESCAPESEQUENCE;
 }

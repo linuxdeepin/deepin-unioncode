@@ -82,6 +82,7 @@ extern LexerModule lmGui4Cli;
 extern LexerModule lmHaskell;
 extern LexerModule lmHollywood;
 extern LexerModule lmHTML;
+extern LexerModule lmJS;
 extern LexerModule lmIHex;
 extern LexerModule lmIndent;
 extern LexerModule lmInno;
@@ -231,6 +232,7 @@ void AddEachLexer() {
 		&lmHaskell,
 		&lmHollywood,
 		&lmHTML,
+        &lmJS,
 		&lmIHex,
 		&lmIndent,
 		&lmInno,

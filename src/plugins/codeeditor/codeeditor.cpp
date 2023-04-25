@@ -27,6 +27,7 @@
 #include "textedittabwidget/language/cmake/texteditcmake.h"
 #include "textedittabwidget/language/java/texteditjava.h"
 #include "textedittabwidget/language/python/texteditpython.h"
+#include "textedittabwidget/language/js/texteditjs.h"
 #include "textedittabwidget/texteditsplitter.h"
 #include "mainframe/naveditmainwindow.h"
 #include "mainframe/texteditkeeper.h"
@@ -58,6 +59,7 @@ void CodeEditor::initialize()
     TextEditKeeper::impl<TextEditCpp>();
     TextEditKeeper::impl<TextEditCmake>();
     TextEditKeeper::impl<TextEditJava>();
+    TextEditKeeper::impl<TextEditJS>();
 
     QString errStr;
     auto &ctx = dpfInstance.serviceContext();

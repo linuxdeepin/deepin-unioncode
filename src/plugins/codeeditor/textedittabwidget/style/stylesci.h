@@ -60,7 +60,8 @@ public:
     virtual void setLexer();
 
     virtual QMap<int, QString> keyWords() const;
-    virtual int styleOffset() const;
+    virtual int sectionEnd() const;
+    virtual int sectionStart() const;
 };
 
 

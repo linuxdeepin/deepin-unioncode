@@ -126,13 +126,13 @@ void StyleSci::setStyle()
         qInfo() << "Editor self setting Style cursor: " << hex << self_cursor;
         // auto self_fontSize = selfObj.value(key_2.FontSize).toInt();
         // d->edit->styleSetSize(STYLE_DEFAULT, self_fontSize);
-        for(int i = 0; i <= styleOffset(); i++) {
-            if (i == 0)
-                d->edit->styleSetFore(0, self_foreground);
+        for(int i = sectionStart(); i <= sectionEnd(); i++) {
+            if (i == sectionStart())
+                d->edit->styleSetFore(sectionStart(), self_foreground);
             d->edit->styleSetBack(i, self_background);
         }
-        d->edit->styleHotSpot(styleOffset() + 1);
-        d->edit->styleSetUnderline(styleOffset() + 1, true);
+        d->edit->styleHotSpot(sectionEnd() + 1);
+        d->edit->styleSetUnderline(sectionEnd() + 1, true);
     }
 
     d->edit->annotationSetStyleOffset(AnnotationInfo::Role::get()->Fatal.code);
@@ -228,7 +228,12 @@ QMap<int, QString> StyleSci::keyWords() const
     return result;
 }
 
-int StyleSci::styleOffset() const
+int StyleSci::sectionEnd() const
+{
+    return 0;
+}
+
+int StyleSci::sectionStart() const
 {
     return 0;
 }

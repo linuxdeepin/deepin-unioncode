@@ -58,7 +58,7 @@ void StyleSciCmake::setLexer()
     StyleSci::setLexer();
 }
 
-int StyleSciCmake::styleOffset() const
+int StyleSciCmake::sectionEnd() const
 {
     return SCE_CMAKE_NUMBER;
 }

@@ -29,7 +29,7 @@ public:
     StyleSciCpp(TextEdit *parent);
     virtual QMap<int, QString> keyWords() const override;
     virtual void setStyle() override;
-    virtual int styleOffset() const override;
+    virtual int sectionEnd() const override;
 };
 
 #endif // STYLESCICPP_H
