@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "common/common.h"
+#include "commandparser.h"
 
 #include <framework/framework.h>
 #include <framework/lifecycle/pluginsetting.h>
@@ -104,6 +105,7 @@ void installTranslator(QApplication &a)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    CommandParser::instance().process();
 
     QApplication::setStyle(QStyleFactory::create("Fusion"));
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -117,5 +119,10 @@ int main(int argc, char *argv[])
         abort();
     }
 
+    if (CommandParser::instance().isSet("b") || CommandParser::instance().isSet("k")
+            || CommandParser::instance().isSet("a")) {
+        CommandParser::instance().buildProject();
+        return 0;
+    }
     return a.exec();
 }

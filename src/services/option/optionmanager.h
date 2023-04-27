@@ -42,7 +42,7 @@ public:
     QString getNinjaToolPath();
     QString getCxxDebuggerToolPath();
     QString getJSToolPath();
-
+    QString getToolPath(const QString &kit);
 signals:
 
 private:

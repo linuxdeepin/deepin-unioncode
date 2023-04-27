@@ -123,7 +123,11 @@ RunCommandInfo CMakeGenerator::getRunArguments(const ProjectInfo &projectInfo, c
     ProjectService *projectService = dpfGetService(ProjectService);
     if (projectService && projectService->getActiveTarget) {
         auto target = projectService->getActiveTarget(kActiveExecTarget);
-        targetPath = target.outputPath + QDir::separator() + target.srcPath + QDir::separator() + target.buildTarget;
+
+        targetPath = target.outputPath;
+        if (!target.srcPath.isEmpty())
+            targetPath += QDir::separator() + target.srcPath;
+         targetPath += QDir::separator() + target.buildTarget;
     }
 
     RunCommandInfo info;

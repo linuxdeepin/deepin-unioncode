@@ -36,6 +36,8 @@
 
 #include "base/abstractaction.h"
 
+#include <QCoreApplication>
+
 using namespace dpfservice;
 
 class BuildManagerPrivate
@@ -329,6 +331,11 @@ void BuildManager::outputNotify(const BuildState &state, const BuildCommandInfo 
 
 void BuildManager::slotOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format)
 {
+    if (format == OutputPane::OutputFormat::StdOut || OutputPane::OutputFormat::NormalMessage) {
+        std::cout << content.toStdString() << std::endl;
+    } else if (format == OutputPane::OutputFormat::StdErr) {
+        std::cerr << content.toStdString() << std::endl;
+    }
     d->outputParser->stdOutput(content, format);
 }
 

@@ -78,6 +78,7 @@ BinaryToolsDialog::~BinaryToolsDialog()
 
 void BinaryToolsDialog::printOutput(const QString &content, OutputPane::OutputFormat format)
 {
+    editor.switchContext(tr("&Application Output"));
     auto outputPane = OutputPane::instance();
     QString outputContent = content;
     if (format == OutputPane::OutputFormat::NormalMessage) {
@@ -90,8 +91,9 @@ void BinaryToolsDialog::printOutput(const QString &content, OutputPane::OutputFo
         }
         QDateTime curDatetime = QDateTime::currentDateTime();
         QString time = curDatetime.toString("hh:mm:ss");
-        outputContent = prefix + time + ":" + content + "\n";
+        outputContent = prefix + time + ":" + content;
     }
+    outputContent += "\n";
     OutputPane::AppendMode mode = OutputPane::AppendMode::Normal;
     outputPane->appendText(outputContent, format, mode);
 }
@@ -121,7 +123,6 @@ void BinaryToolsDialog::useClicked()
 
     connect(&proc, &QProcess::readyReadStandardError, [&]() {
         proc.setReadChannel(QProcess::StandardError);
-        editor.switchContext(tr("&Application Output"));
         while (proc.canReadLine()) {
             QString line = QString::fromUtf8(proc.readLine());
             qInfo() << line;
@@ -131,7 +132,6 @@ void BinaryToolsDialog::useClicked()
 
     connect(&proc, &QProcess::readyReadStandardOutput, [&]() {
         proc.setReadChannel(QProcess::StandardOutput);
-        editor.switchContext(tr("&Application Output"));
         while (proc.canReadLine()) {
             QString line = QString::fromUtf8(proc.readLine());
             qInfo() << line;

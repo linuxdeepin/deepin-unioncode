@@ -207,7 +207,6 @@ void InterpreterWidget::findPackages(const QString &cmd)
             [&](int exitcode, QProcess::ExitStatus exitStatus) {
         if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
             QString output = QString(process.readAllStandardOutput());
-            qInfo() << output;
 
             QVector<QPair<QString, QString>> dataVector;
             QStringList list = output.split("\n");

@@ -114,3 +114,17 @@ QString OptionManager::getJSToolPath()
     return map.value("Interpreter").toMap().value("version").toMap().value("path").toString();
 }
 
+QString OptionManager::getToolPath(const QString &kit)
+{
+    if (kit == option::CATEGORY_CMAKE) {
+        return getCMakeToolPath();
+    } else if (kit == option::CATEGORY_NINJA) {
+        return getNinjaToolPath();
+    } else if (kit == option::CATEGORY_MAVEN) {
+        return getMavenToolPath();
+    } else if (kit == option::CATEGORY_GRADLE) {
+        return getGradleToolPath();
+    }
+    return "";
+}
+

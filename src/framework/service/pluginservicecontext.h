@@ -80,7 +80,6 @@ bool AutoServiceRegister<T>::isRegistered = AutoServiceRegister<T>::trigger();
 template <typename T>
 bool AutoServiceRegister<T>::trigger()
 {
-    qInfo() << "Register Service: " << __PRETTY_FUNCTION__;
     QString errStr;
     if (!dpf::PluginServiceContext::instance().regClass<T>(T::name(), &errStr)) {
         qCritical() << errStr;

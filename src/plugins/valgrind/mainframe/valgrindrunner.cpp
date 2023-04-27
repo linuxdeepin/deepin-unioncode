@@ -29,6 +29,7 @@
 
 #include <QProcess>
 #include <QDebug>
+#include <QTextBlock>
 
 typedef FileOperation FO;
 using namespace dpfservice;
@@ -85,13 +86,13 @@ void ValgrindRunner::initialize()
         });
     });
 
-    connect(this, &ValgrindRunner::sigOutputMsg, this, &ValgrindRunner::printOutput);
-
     setActionsStatus(d->activedProjectKitName);
 }
 
 void ValgrindRunner::runValgrind(const QString &type)
 {
+    if(!checkValgrindToolPath())
+        return;
     runBuilding();
     setValgrindArgs(type);
     QProcess procValgrind;
@@ -102,7 +103,6 @@ void ValgrindRunner::runValgrind(const QString &type)
 
     connect(&procValgrind, &QProcess::readyReadStandardError, [&]() {
         procValgrind.setReadChannel(QProcess::StandardError);
-        editor.switchContext(tr("&Application Output"));
         while (procValgrind.canReadLine()) {
             QString line = QString::fromUtf8(procValgrind.readLine());
             outputMsg(line, OutputPane::OutputFormat::StdErr);
@@ -111,7 +111,6 @@ void ValgrindRunner::runValgrind(const QString &type)
 
     connect(&procValgrind, &QProcess::readyReadStandardOutput, [&]() {
         procValgrind.setReadChannel(QProcess::StandardError);
-        editor.switchContext(tr("&Application Output"));
         while (procValgrind.canReadLine()) {
             QString line = QString::fromUtf8(procValgrind.readLine());
             outputMsg(line, OutputPane::OutputFormat::StdOut);
@@ -202,19 +201,45 @@ void ValgrindRunner::runBuilding()
                 generator->build(d->projectInfo.workspaceFolder());
             }
             RunCommandInfo args = generator->getRunArguments(d->projectInfo, d->currentFilePath);
-            d->targetPath = args.program;
-            d->workingDir = args.workingDir;
+            d->targetPath = args.program.trimmed();
+            d->workingDir = args.workingDir.trimmed();
         }
     }
 }
 
 void ValgrindRunner::outputMsg(const QString &content, OutputPane::OutputFormat format)
 {
-    emit sigOutputMsg(content, format);
+    QMetaObject::invokeMethod(this, "printOutput", Q_ARG(QString, content), Q_ARG(OutputPane::OutputFormat, format));
+}
+
+bool ValgrindRunner::checkValgrindToolPath()
+{
+    if (!QFile("/usr/bin/valgrind").exists()) {
+        QString retMsg = tr("please install valgrind tool in console with \"sudo apt install valgrind\".");
+        outputMsg(retMsg, OutputPane::OutputFormat::StdErr);
+        return false;
+    }
+    return true;
 }
 
 void ValgrindRunner::printOutput(const QString &content, OutputPane::OutputFormat format)
 {
+    editor.switchContext(tr("&Application Output"));
+    auto outputPane = OutputPane::instance();
+    QString outputContent = content;
+    if (format == OutputPane::OutputFormat::NormalMessage) {
+        QTextDocument *doc = outputPane->document();
+        QTextBlock tb = doc->lastBlock();
+        QString lastLineText = tb.text();
+        QString prefix = "\n";
+        if (lastLineText.isEmpty()) {
+            prefix = "";
+        }
+        QDateTime curDatetime = QDateTime::currentDateTime();
+        QString time = curDatetime.toString("hh:mm:ss");
+        outputContent = prefix + time + ":" + content;
+    }
+    outputContent += "\n";
     OutputPane::AppendMode mode = OutputPane::AppendMode::Normal;
-    OutputPane::instance()->appendText(content, format, mode);
+    outputPane->appendText(outputContent, format, mode);
 }

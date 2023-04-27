@@ -48,7 +48,6 @@ public:
 signals:
     void valgrindFinished(const QString &xmlFilePath, const QString &type);
     void clearValgrindBar(const QString &type);
-    void sigOutputMsg(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
 
 private slots:
     void printOutput(const QString &content, OutputPane::OutputFormat format);
@@ -60,6 +59,7 @@ private:
     void setActionsStatus(const QString &kitName);
     void runBuilding();
     void outputMsg(const QString &content, OutputPane::OutputFormat format);
+    bool checkValgrindToolPath();
 
     ValgrindRunnerPrivate *const d;
 };
