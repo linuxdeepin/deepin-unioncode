@@ -14,7 +14,6 @@ set(lifecycle ${CMAKE_CURRENT_SOURCE_DIR}/lifecycle)
 set(listener ${CMAKE_CURRENT_SOURCE_DIR}/listener)
 set(service ${CMAKE_CURRENT_SOURCE_DIR}/service)
 set(event ${CMAKE_CURRENT_SOURCE_DIR}/event)
-set(abus ${CMAKE_CURRENT_SOURCE_DIR}/abus)
 set(log ${CMAKE_CURRENT_SOURCE_DIR}/log)
 set(listener ${CMAKE_CURRENT_SOURCE_DIR}/listener)
 
@@ -25,13 +24,11 @@ set(LOBAL_H
 set(PRIVATE_H
     lifecycle/private/pluginmanager_p.h
     lifecycle/private/pluginmetaobject_p.h
-    abus/private/appbus_p.h
     event/private/event_p.h
     )
 
 set(PRIVATE_CPP
     lifecycle/private/pluginmanager_p.cpp
-    abus/private/appbus_p.cpp
     )
 
 set(PUBLIC_H
@@ -52,7 +49,6 @@ set(PUBLIC_H
     lifecycle/lifecycle.h
     lifecycle/plugindepend.h
     lifecycle/pluginview.h
-    abus/appbus.h
     listener/private/listener_p.h
     listener/listener.h
     backtrace/backtrace.h
@@ -73,7 +69,6 @@ set(PUBLIC_CPP
     lifecycle/lifecycle.cpp
     lifecycle/pluginview.cpp
     service/pluginservicecontext.cpp
-    abus/appbus.cpp
     listener/listener.cpp
     backtrace/backtrace.cpp
     framework.cpp

@@ -25,7 +25,6 @@
 #include "framework/lifecycle/lifecycle.h"
 #include "framework/listener/listener.h"
 #include "framework/event/eventcallproxy.h"
-#include "framework/abus/appbus.h"
 #include "framework/service/pluginservicecontext.h"
 
 #include <QObject>
@@ -49,8 +48,6 @@ public:
     const LifeCycle &lifeCycle() const;
     PluginServiceContext &serviceContext() const;
     EventCallProxy &eventProxy() const;
-    AppBus &appBus() const;
-
 private:
     Framework();
 

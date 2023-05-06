@@ -29,8 +29,6 @@
 #define LANGUAGE_ADAPTER_PATH CustomPaths::global(CustomPaths::Tools) \
     + QDir::separator() + LANGUAGE_ADAPTER_NAME
 
-static unsigned int defPort = 3307;
-
 LSPClientKeeper::LSPClientKeeper()
 {
 #ifdef AUTO_LANUCH_LSP_SERVER

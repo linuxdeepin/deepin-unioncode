@@ -48,7 +48,6 @@
 
 // TODO(mozart):should get from kitmanager.
 static const char *kDefaultKitName = "Desktop";
-static const char *kConfigFileName = "configure.support";
 
 using namespace config;
 

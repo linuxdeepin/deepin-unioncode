@@ -25,19 +25,18 @@
 #include <QApplication>
 #include <QStyleFactory>
 
-/// @brief PLUGIN_INTERFACE 默认插件iid
-static const char *const FM_PLUGIN_INTERFACE = "org.deepin.plugin.unioncode";
-static const char *const PLUGIN_CORE = "plugin-core";
-static const char *const LIB_CORE = "libplugin-core.so";
+static const char *const IID = "org.deepin.plugin.unioncode";
+static const char *const CORE_PLUGIN = "plugin-core";
+static const char *const CORE_NAME = "libplugin-core.so";
 
-static bool pluginsLoad()
+static bool loadPlugins()
 {
     dpfCheckTimeBegin();
 
     auto &&lifeCycle = dpfInstance.lifeCycle();
 
     // set plugin iid from qt style
-    lifeCycle.setPluginIID(FM_PLUGIN_INTERFACE);
+    lifeCycle.setPluginIID(IID);
 
     dpf::PluginSetting *setting = new dpf::PluginSetting;
     lifeCycle.setSettings(setting);
@@ -55,9 +54,8 @@ static bool pluginsLoad()
         return false;
     }
 
-    // 手动初始化Core插件
-    auto corePlugin = lifeCycle.pluginMetaObj(PLUGIN_CORE);
-    if (corePlugin.isNull() || !corePlugin->fileName().contains(LIB_CORE)) {
+    auto corePlugin = lifeCycle.pluginMetaObj(CORE_PLUGIN);
+    if (corePlugin.isNull() || !corePlugin->fileName().contains(CORE_NAME)) {
         qCritical() << "Failed, not found core plugin!";
         return false;
     }
@@ -114,7 +112,7 @@ int main(int argc, char *argv[])
     installTranslator(a);
 
     dpfInstance.initialize();
-    if (!pluginsLoad()) {
+    if (!loadPlugins()) {
         qCritical() << "Failed, Load plugins!";
         abort();
     }
