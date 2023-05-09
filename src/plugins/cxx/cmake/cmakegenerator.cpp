@@ -73,11 +73,7 @@ bool CMakeGenerator::isNeedBuild()
 
 bool CMakeGenerator::isTargetReady()
 {
-    QString targetPath = CMakeBuild::getTargetPath();
-    if (targetPath.isEmpty())
-        return false;
-
-    return QFile::exists(targetPath);
+    return true;
 }
 
 bool CMakeGenerator::isLaunchNotAttach()
@@ -109,8 +105,8 @@ QMap<QString, QVariant> CMakeGenerator::getDebugArguments(const dpfservice::Proj
     Q_UNUSED(currentFile)
 
     QMap<QString, QVariant> param;
-    param.insert("workspace", projectInfo.workspaceFolder());
-    param.insert("targetPath", CMakeBuild::getTargetPath());
+    param.insert("workspace", projectInfo.runWorkspaceDir());
+    param.insert("targetPath", projectInfo.runProgram());
 
     return param;
 }
@@ -119,20 +115,9 @@ RunCommandInfo CMakeGenerator::getRunArguments(const ProjectInfo &projectInfo, c
 {
     Q_UNUSED(currentFile)
 
-    QString targetPath;
-    ProjectService *projectService = dpfGetService(ProjectService);
-    if (projectService && projectService->getActiveTarget) {
-        auto target = projectService->getActiveTarget(kActiveExecTarget);
-
-        targetPath = target.outputPath;
-        if (!target.srcPath.isEmpty())
-            targetPath += QDir::separator() + target.srcPath;
-         targetPath += QDir::separator() + target.buildTarget;
-    }
-
-    RunCommandInfo info;
-    info.program = targetPath;
-    info.arguments = projectInfo.runCustomArgs();
-    info.workingDir = projectInfo.workspaceFolder();
-    return info;
+    RunCommandInfo runCommaindInfo;
+    runCommaindInfo.program = projectInfo.runProgram();
+    runCommaindInfo.arguments = projectInfo.runCustomArgs();
+    runCommaindInfo.workingDir = projectInfo.runWorkspaceDir();
+    return runCommaindInfo;
 }

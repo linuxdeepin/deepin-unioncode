@@ -27,7 +27,6 @@
 #include "properties/configpropertywidget.h"
 #include "properties/configutil.h"
 #include "properties/targetsmanager.h"
-
 #include "services/builder/builderservice.h"
 #include "services/window/windowservice.h"
 #include "common/dialog/propertiesdialog.h"
@@ -40,13 +39,13 @@ class CmakeGeneratorPrivate
 {
     friend class CmakeGenerator;
 
-    enum CreateItemMode{
+    enum CreateItemMode {
         NewCreateProject,
         RebuildProject,
     };
 
-    QHash<QStandardItem*, QThreadPool*> asynItemThreadPolls;
-    QList<QStandardItem*> reloadCmakeFileItems;
+    QHash<QStandardItem *, QThreadPool *> asynItemThreadPolls;
+    QList<QStandardItem *> reloadCmakeFileItems;
     dpfservice::ProjectInfo configureProjectInfo;
 };
 
@@ -98,12 +97,12 @@ CmakeGenerator::~CmakeGenerator()
 
 QStringList CmakeGenerator::supportLanguages()
 {
-    return {dpfservice::MWMFA_CXX};
+    return { dpfservice::MWMFA_CXX };
 }
 
 QStringList CmakeGenerator::supportFileNames()
 {
-    return {"cmakelists.txt", "CMakeLists.txt"};
+    return { "cmakelists.txt", "CMakeLists.txt" };
 }
 
 QDialog *CmakeGenerator::configureWidget(const QString &language,
@@ -116,7 +115,6 @@ QDialog *CmakeGenerator::configureWidget(const QString &language,
         dpfservice::ProjectInfo info;
         if (config::ConfigUtil::instance()->updateProjectInfo(info, param)) {
             configure(info);
-            TargetsManager::instance()->initialize(info.buildFolder());
             return nullptr;
         }
     }
@@ -125,43 +123,32 @@ QDialog *CmakeGenerator::configureWidget(const QString &language,
     ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, workspace);
     QObject::connect(config::ConfigUtil::instance(), &config::ConfigUtil::configureDone,
                      [this](const dpfservice::ProjectInfo &info) {
-        configure(info);
-    });
+                         configure(info);
+                     });
 
     return configPropertyWidget;
 }
 
-bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
+bool CmakeGenerator::configure(const dpfservice::ProjectInfo &projInfo)
 {
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
         // cache project info, asyn end to use
-        d->configureProjectInfo = info;
+        d->configureProjectInfo = projInfo;
 
         BuildCommandInfo commandInfo;
-        commandInfo.kitName = info.kitName();
-        commandInfo.program = info.buildProgram();
-        commandInfo.arguments = info.configCustomArgs();
-        commandInfo.workingDir = info.workspaceFolder();
+        commandInfo.kitName = projInfo.kitName();
+        commandInfo.program = projInfo.buildProgram();
+        commandInfo.arguments = projInfo.configCustomArgs();
+        commandInfo.workingDir = projInfo.workspaceFolder();
 
         ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
         builderService->interface.builderCommand(commandInfo);
-
-        // TODO(logan): change CDT4_GENERATOR to CBP_GENERATOR
-#if 0
-        BuildCommandInfo cbpCommandInfo;
-        cbpCommandInfo.kitName = info.kitName();
-        cbpCommandInfo.program = info.buildProgram();
-        commandInfo.arguments[5] = CDT_PROJECT_KIT::get()->CBP_GENERATOR;
-        cbpCommandInfo.arguments << commandInfo.arguments;
-        cbpCommandInfo.workingDir = info.workspaceFolder();
-        builderService->interface.builderCommand(commandInfo);
-#endif
     }
 
-    dpfservice::ProjectGenerator::configure(info);
+    dpfservice::ProjectGenerator::configure(projInfo);
 
     return true;
 }
@@ -169,7 +156,8 @@ bool CmakeGenerator::configure(const dpfservice::ProjectInfo &info)
 QStandardItem *CmakeGenerator::createRootItem(const dpfservice::ProjectInfo &info)
 {
     using namespace dpfservice;
-    QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
+
+    QStandardItem *rootItem = ProjectGenerator::createRootItem(info);
 
     d->asynItemThreadPolls[rootItem] = new QThreadPool;
 
@@ -177,11 +165,11 @@ QStandardItem *CmakeGenerator::createRootItem(const dpfservice::ProjectInfo &inf
 
     // asyn free parse, that .project file parse
     QObject::connect(parse, &CmakeAsynParse::parseProjectEnd,
-                     [=](CmakeAsynParse::ParseInfo<QStandardItem*> info){
-        d->asynItemThreadPolls.remove(info.result);
-        delete parse;
-        createRootItemAsynEnd(info.result);
-    });
+                     [=](CmakeAsynParse::ParseInfo<QStandardItem *> info) {
+                         d->asynItemThreadPolls.remove(info.result);
+                         delete parse;
+                         createRootItemAsynEnd(info.result);
+                     });
 
     // asyn execute logic,  that .project file parse
     QtConcurrent::run(d->asynItemThreadPolls[rootItem],
@@ -247,7 +235,7 @@ QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
     QAction *action = new QAction(tr("Properties"));
     menu->addAction(action);
     dpfservice::ProjectInfo info = dpfservice::ProjectInfo::get(item);
-    QObject::connect(action, &QAction::triggered, [=](){
+    QObject::connect(action, &QAction::triggered, [=]() {
         actionProperties(info, root);
     });
 
@@ -257,7 +245,7 @@ QMenu *CmakeGenerator::createItemMenu(const QStandardItem *item)
 void CmakeGenerator::actionTriggered()
 {
     using namespace dpfservice;
-    QAction *action = qobject_cast<QAction*>(sender());
+    QAction *action = qobject_cast<QAction *>(sender());
     if (action) {
         QString program = action->property(CDT_CPROJECT_KEY::get()->buildCommand.toLatin1()).toString();
         QStringList args = action->property(CDT_CPROJECT_KEY::get()->buildArguments.toLatin1()).toString().split(" ");
@@ -330,8 +318,7 @@ void CmakeGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, int stat
     mutex.lock();
     QStandardItem *reloadItem = nullptr;
     for (auto val : d->reloadCmakeFileItems) {
-        if(info.program == d->configureProjectInfo.buildProgram()
-                && info.arguments == d->configureProjectInfo.buildCustomArgs()) {
+        if (info.workingDir == d->configureProjectInfo.workspaceFolder()) {
             reloadItem = val;
             break;
         }
@@ -339,7 +326,7 @@ void CmakeGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, int stat
     mutex.unlock();
 
     if (reloadItem) {
-        d->reloadCmakeFileItems.removeOne(reloadItem); //clean cache
+        d->reloadCmakeFileItems.removeOne(reloadItem);   //clean cache
         if (status == 0) {
             projectService->projectView.removeRootItem(reloadItem);
             createRootItem(d->configureProjectInfo);
@@ -352,9 +339,6 @@ void CmakeGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, int stat
     } else {
         createRootItem(d->configureProjectInfo);
     }
-
-    //d->configureProjectInfo = {};
-
     emit projectService->projectConfigureDone(QString());
 }
 
@@ -396,7 +380,7 @@ void CmakeGenerator::recursionRemoveItem(QStandardItem *item)
     if (!item)
         return;
 
-    for (int row = 0; row < item->rowCount(); row ++) {
+    for (int row = 0; row < item->rowCount(); row++) {
         auto child = item->takeChild(row);
         if (!child->hasChildren()) {
             delete child;

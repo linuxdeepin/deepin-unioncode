@@ -34,7 +34,7 @@ class CmakeGenerator : public dpfservice::ProjectGenerator
     CmakeGeneratorPrivate *const d;
 public:
     explicit CmakeGenerator();
-    virtual ~CmakeGenerator();
+    ~CmakeGenerator() override;
     static QString toolKitName() { return "cmake"; }
     virtual QStringList supportLanguages() override;
     virtual QStringList supportFileNames() override;
@@ -57,14 +57,6 @@ private slots:
     void recursionRemoveItem(QStandardItem *item);
 
 private:
-    // cmake CDT4 options
-    QStandardItem *cdt4FindItem(QStandardItem *rootItem, QString &name);
-    QStandardItem *cdt4FindParentItem(QStandardItem *rootItem, QString &name);
-    QHash<QString, QString> cdt4Subporjects(QStandardItem *rootItem);
-    void cdt4TargetsDisplayOptimize(QStandardItem *item, const QHash<QString, QString> &subprojectsMap);
-    void cdt4SubprojectsDisplayOptimize(QStandardItem *item);
-    QDomDocument cdt4LoadMenuXmlDoc(const QString &buildFolder);
-
     QMutex mutex;
 };
 

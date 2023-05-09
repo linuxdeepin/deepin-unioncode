@@ -563,7 +563,7 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
             if (service) {
                 auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
                 if (generator) {
-                    QMap<QString, QVariant> param = generator->getDebugArguments(d->projectInfo, d->currentOpenedFileName);
+                    QMap<QString, QVariant> param = generator->getDebugArguments(getActiveProjectInfo(), d->currentOpenedFileName);
                     requestDebugPort(param, d->activeProjectKitName, false);
                 }
             }
@@ -571,12 +571,12 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
     } else if (event.data() == debugger.prepareDebugProgress.name) {
         printOutput(event.property(debugger.prepareDebugProgress.pKeys[0]).toString());
     } else if (event.data() == project.activedProject.name) {
-        d->projectInfo = qvariant_cast<ProjectInfo>(event.property(project.activedProject.pKeys[0]));
-        d->activeProjectKitName = d->projectInfo.kitName();
+        getActiveProjectInfo() = qvariant_cast<ProjectInfo>(event.property(project.activedProject.pKeys[0]));
+        d->activeProjectKitName = getActiveProjectInfo().kitName();
         updateRunState(kNoRun);
     } else if (event.data() == project.createdProject.name) {
-        d->projectInfo = qvariant_cast<ProjectInfo>(event.property(project.createdProject.pKeys[0]));
-        d->activeProjectKitName = d->projectInfo.kitName();
+        getActiveProjectInfo() = qvariant_cast<ProjectInfo>(event.property(project.createdProject.pKeys[0]));
+        d->activeProjectKitName = getActiveProjectInfo().kitName();
         updateRunState(kNoRun);
     } else if (event.data() == project.deletedProject.name) {
         d->activeProjectKitName.clear();
@@ -844,7 +844,7 @@ QString DAPDebugger::requestBuild()
     if (service) {
         auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
         if (generator) {
-            buildUuid = generator->build(d->projectInfo.workspaceFolder());
+            buildUuid = generator->build(getActiveProjectInfo().workspaceFolder());
         }
     }
 
@@ -882,7 +882,7 @@ void DAPDebugger::prepareDebug()
         if (generator) {
             updateRunState(kStart);
             QString retMsg;
-            QMap<QString, QVariant> param = generator->getDebugArguments(d->projectInfo, d->currentOpenedFileName);
+            QMap<QString, QVariant> param = generator->getDebugArguments(getActiveProjectInfo(), d->currentOpenedFileName);
             bool ret = generator->prepareDebug(param, retMsg);
             if (!ret) {
                 QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
@@ -943,7 +943,7 @@ void DAPDebugger::slotOutputMsg(const QString &title, const QString &msg)
     } else if (title == "normal") {
         format = OutputPane::OutputFormat::NormalMessage;
     }
-    bool isDetail = dpfGetService(ProjectService)->projectView.getActiveProjectInfo().detailInformation();
+    bool isDetail = dpfGetService(ProjectService)->getActiveProjectInfo().detailInformation();
     if (isDetail || title == "stdErr") {
         printOutput(msg, format);
     }
@@ -1085,4 +1085,9 @@ void DAPDebugger::handleAssemble(const QString &content)
 
         editor.jumpToLine(assemblerPath, 0);
     }
+}
+
+ProjectInfo DAPDebugger::getActiveProjectInfo() const
+{
+    return dpfGetService(ProjectService)->getActiveProjectInfo();
 }

@@ -83,7 +83,7 @@ bool JavaDebug::requestDAPPort(const QString &uuid, const QString &kit,
                                                   "launch_java_dap");
 
 
-    auto activeProjectInfo = dpfGetService(ProjectService)->projectView.getActiveProjectInfo();
+    auto activeProjectInfo = dpfGetService(ProjectService)->getActiveProjectInfo();
 
 
     QString projectCachePath = CustomPaths::projectCachePath(projectPath);

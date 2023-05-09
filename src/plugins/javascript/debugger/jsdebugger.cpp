@@ -226,7 +226,7 @@ void JSDebugger::setupDebugEnv()
 
     // evaluate js files.
     auto prjService = dpfGetService(ProjectService);
-    auto sourceFiles = prjService->projectView.getActiveProjectInfo().sourceFiles();
+    auto sourceFiles = prjService->getActiveProjectInfo().sourceFiles();
 
     interruptDebug();
     for (auto sourceFile : sourceFiles) {

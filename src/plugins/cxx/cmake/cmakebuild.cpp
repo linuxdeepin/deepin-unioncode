@@ -57,11 +57,12 @@ QString CMakeBuild::build(const QString& kitName, const QString& projectPath)
         auto target = projectService->getActiveTarget(TargetType::kBuildTarget);
         if (!target.buildCommand.isEmpty()) {
             QStringList args = target.buildArguments << target.buildTarget;
+            args.removeAll("");
             BuildCommandInfo commandInfo;
             commandInfo.kitName = kitName;
             commandInfo.program = target.buildCommand;
             commandInfo.arguments = args;
-            commandInfo.workingDir = target.outputPath;
+            commandInfo.workingDir = target.workingDir;
 
             buildUuid = commandInfo.uuid;
             builderService->interface.builderCommand(commandInfo);
@@ -71,17 +72,5 @@ QString CMakeBuild::build(const QString& kitName, const QString& projectPath)
     return buildUuid;
 }
 
-QString CMakeBuild::getTargetPath()
-{
-    QString targetPath;
-    auto &ctx = dpfInstance.serviceContext();
-    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (projectService && projectService->getActiveTarget) {
-        auto target = projectService->getActiveTarget(kActiveExecTarget);
-        targetPath = target.outputPath + QDir::separator() + target.srcPath + QDir::separator() + target.buildTarget;
-    }
-
-    return targetPath;
-}
 
 

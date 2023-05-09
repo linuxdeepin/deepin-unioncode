@@ -70,8 +70,8 @@ void CodePortingManager::slotPortingStart(const QString &project, const QString 
     QString buildDir;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (projectService && projectService->projectView.getAllProjectInfo) {
-        auto allInfo = projectService->projectView.getAllProjectInfo();
+    if (projectService && projectService->getAllProjectInfo) {
+        auto allInfo = projectService->getAllProjectInfo();
         if (allInfo.isEmpty()) {
             return;
         } else {

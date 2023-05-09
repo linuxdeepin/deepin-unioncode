@@ -257,7 +257,7 @@ QString ReverseDebuggerMgr::projectTargetPath() const
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService && projectService->getActiveTarget) {
         Target target = projectService->getActiveTarget(kActiveExecTarget);
-        targetPath = target.outputPath + QDir::separator() + target.srcPath +  QDir::separator() + target.buildTarget;
+        targetPath = target.output;
     }
     return targetPath;
 }

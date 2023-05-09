@@ -5,7 +5,6 @@ project(plugin-optioncore)
 find_package(Qt5 COMPONENTS Xml REQUIRED)
 
 set(CXX_CPP
-    mainframe/projectparser.cpp
     mainframe/environmentwidget.cpp
     mainframe/optiongeneralgenerator.cpp
     mainframe/shortcutsettingwidget.cpp
@@ -19,7 +18,6 @@ set(CXX_CPP
     )
 
 set(CXX_H
-    mainframe/projectparser.h
     mainframe/environmentwidget.h
     mainframe/optiongeneralgenerator.h
     mainframe/shortcutsettingwidget.h

@@ -154,10 +154,10 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
 
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (!projectService || !projectService->projectView.getProjectInfo)
+    if (!projectService || !projectService->getProjectInfo)
         return;
 
-    ProjectInfo projectInfo = projectService->projectView.getProjectInfo(d->activedKitName, d->activedWorkingDir);
+    ProjectInfo projectInfo = projectService->getProjectInfo(d->activedKitName, d->activedWorkingDir);
     if (!projectInfo.isVaild())
         return;
 

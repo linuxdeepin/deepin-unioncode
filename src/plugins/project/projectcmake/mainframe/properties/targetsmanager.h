@@ -23,17 +23,20 @@
 #ifndef TARGETSMANAGER_H
 #define TARGETSMANAGER_H
 
-#include "projectparser.h"
+#include "services/project/projectservice.h"
 
 #include <QObject>
 
+class CMakeCbpParser;
 class TargetsManager : public QObject
 {
     Q_OBJECT
 public:
     static TargetsManager *instance();
 
-    void initialize(const QString &buildDirectory);
+    CMakeCbpParser *cbpParser() const;
+
+    void readTargets(const QString &buildDirectory, const QString &workspaceDirectory);
 
     const QStringList getTargetNamesList() const;
     const QStringList getExeTargetNamesList() const;
@@ -45,6 +48,7 @@ public:
 
     void updateActivedBuildTarget(const QString &targetName);
     void updateActivedCleanTarget(const QString &targetName);
+    void updateActiveExceTarget(const QString &targetName);
 
     QString getCMakeConfigFile();
 
@@ -58,13 +62,11 @@ private:
     ~TargetsManager();
 
     bool isGloablTarget(dpfservice::Target &target);
-
-    ProjectParser parser;
+    QString cbpFilePath(const QString &buildFolder);
 
     dpfservice::Target buildTargetSelected;
     dpfservice::Target cleanTargetSelected;
     dpfservice::Target rebuildTargetSelected;
-
     dpfservice::Target exeTargetSelected;
 
     dpfservice::Targets exeTargets;
@@ -72,6 +74,8 @@ private:
 
     QStringList buildTargetNameList;
     QStringList exeTargetNameList;
+
+    CMakeCbpParser *parser = nullptr;
 };
 
 #endif // TARGETSMANAGER_H

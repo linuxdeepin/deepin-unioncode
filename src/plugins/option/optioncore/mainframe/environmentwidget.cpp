@@ -20,8 +20,6 @@
 */
 #include "environmentwidget.h"
 
-#include "projectparser.h"
-
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QProcessEnvironment>

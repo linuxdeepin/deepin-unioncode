@@ -118,6 +118,7 @@ private:
     void launchSession(int port, const QMap<QString, QVariant> &param, const QString &kitName);
     void disassemble(const QString &address);
     void handleAssemble(const QString &content);
+    dpfservice::ProjectInfo getActiveProjectInfo() const;
 
     DebuggerPrivate *const d;
 };

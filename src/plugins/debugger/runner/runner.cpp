@@ -39,7 +39,6 @@ class RunnerPrivate
 {
     friend class Runner;
     QString currentBuildUuid;
-    ProjectInfo activeProjectInfo;
     QString currentOpenedFilePath;
     QSharedPointer<QAction> runAction;
     bool isRunning = false;
@@ -64,10 +63,10 @@ void Runner::run()
 {
     LanguageService *service = dpfGetService(LanguageService);
     if (service) {
-        auto generator = service->create<LanguageGenerator>(d->activeProjectInfo.kitName());
+        auto generator = service->create<LanguageGenerator>(getActiveProjectInfo().kitName());
         if (generator) {
             if (generator->isNeedBuild()) {
-                d->currentBuildUuid = generator->build(d->activeProjectInfo.workspaceFolder());
+                d->currentBuildUuid = generator->build(getActiveProjectInfo().workspaceFolder());
             } else {
                 running();
             }
@@ -90,8 +89,6 @@ void Runner::handleEvents(const dpf::Event &event)
                 }
             }
         }
-    } else if (event.data() == project.activedProject.name) {
-        d->activeProjectInfo = qvariant_cast<ProjectInfo>(event.property(project.activedProject.pKeys[0]));
     } else if (event.data() == editor.switchedFile.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         if (d->currentOpenedFilePath != filePath) {
@@ -119,9 +116,10 @@ void Runner::running()
 
     LanguageService *service = dpfGetService(LanguageService);
     if (service) {
-        auto generator = service->create<LanguageGenerator>(d->activeProjectInfo.kitName());
+        auto generator = service->create<LanguageGenerator>(getActiveProjectInfo().kitName());
         if (generator) {
-            RunCommandInfo args = generator->getRunArguments(d->activeProjectInfo, d->currentOpenedFilePath);
+            dpfservice::ProjectInfo activeProjInfo = dpfGetService(ProjectService)->getActiveProjectInfo();
+            RunCommandInfo args = generator->getRunArguments(activeProjInfo, d->currentOpenedFilePath);
             QtConcurrent::run([=](){
                execCommand(args);
             });
@@ -186,6 +184,11 @@ bool Runner::execCommand(const RunCommandInfo &info)
 void Runner::outputMsg(const QString &content, OutputPane::OutputFormat format)
 {
     QMetaObject::invokeMethod(this, "synOutputMsg", Q_ARG(QString, content), Q_ARG(OutputPane::OutputFormat, format));
+}
+
+ProjectInfo Runner::getActiveProjectInfo() const
+{
+    return dpfGetService(ProjectService)->getActiveProjectInfo();
 }
 
 void Runner::synOutputMsg(const QString &content, OutputPane::OutputFormat format)

@@ -87,7 +87,7 @@ dap::LaunchRequest GradleGenerator::launchDAP(const QMap<QString, QVariant> &par
     QString workspace = param.value("workspace").toString();
     QString mainClass = param.value("mainClass").toString();
     ProjectService *projectService = dpfGetService(ProjectService);
-    ProjectInfo projectInfo = projectService->projectView.getActiveProjectInfo();
+    ProjectInfo projectInfo = projectService->getActiveProjectInfo();
     QString mainClassPath = JavaUtil::getMainClassPath(projectInfo.workspaceFolder());
     QString packageDirName = "main";
     if (mainClass.isEmpty()) {

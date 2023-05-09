@@ -111,7 +111,7 @@ bool dpfservice::ProjectGenerator::isOpenedProject(const QString &kitName,
 {
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    auto proInfos = projectService->projectView.getAllProjectInfo();
+    auto proInfos = projectService->getAllProjectInfo();
     for (auto info : proInfos) {
         if (info.kitName() == kitName
                 && info.language() == language

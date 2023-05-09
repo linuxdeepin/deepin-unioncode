@@ -47,6 +47,7 @@ private:
     void running();
     bool execCommand(const dpfservice::RunCommandInfo &info);
     void outputMsg(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
+    dpfservice::ProjectInfo getActiveProjectInfo() const;
 
 private:
    RunnerPrivate *const d;

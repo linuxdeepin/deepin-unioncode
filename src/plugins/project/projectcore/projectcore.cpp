@@ -89,16 +89,16 @@ bool ProjectCore::start()
             projectService->projectView.expandedAll
                     = std::bind(&ProjectTree::expandedProjectAll, treeView, _1);
         }
-        if (!projectService->projectView.getAllProjectInfo) {
-            projectService->projectView.getAllProjectInfo
+        if (!projectService->getAllProjectInfo) {
+            projectService->getAllProjectInfo
                     = std::bind(&ProjectTree::getAllProjectInfo, treeView);
         }
-        if (!projectService->projectView.getProjectInfo) {
-            projectService->projectView.getProjectInfo
+        if (!projectService->getProjectInfo) {
+            projectService->getProjectInfo
                     = std::bind(&ProjectTree::getProjectInfo, treeView, _1, _2);
         }
-        if (!projectService->projectView.getActiveProjectInfo) {
-            projectService->projectView.getActiveProjectInfo
+        if (!projectService->getActiveProjectInfo) {
+            projectService->getActiveProjectInfo
                     = std::bind(&ProjectTree::getActiveProjectInfo, treeView);
         }
     }

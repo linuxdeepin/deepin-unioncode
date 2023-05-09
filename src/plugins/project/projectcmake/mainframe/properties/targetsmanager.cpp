@@ -22,28 +22,34 @@
 */
 #include "targetsmanager.h"
 #include "services/project/projectservice.h"
+#include "mainframe/cbp/cbpparser.h"
 
-static const char *kProjectFile = ".cproject";
+//static const char *kProjectFile = ".cproject";
+static const char *kProjectFile = ".cbp";
 
 // target name build all.
-static const char *kGlobalBuild = ": all";
+static const char *kGlobalBuild = "all";
 
 // target name rebuild all.
-static const char *kGlobalRebuild = ": rebuild_cache";
+static const char *kGlobalRebuild = "rebuild_cache";
 
 // target name rebuild all.
-static const char *kGlobalClean = ": clean";
+static const char *kGlobalClean = "clean";
 
 using namespace dpfservice;
 
 TargetsManager::TargetsManager(QObject *parent) : QObject(parent)
+  , parser(new CMakeCbpParser())
 {
 
 }
 
 TargetsManager::~TargetsManager()
 {
-
+    if (parser) {
+        delete parser;
+        parser = nullptr;
+    }
 }
 
 QString TargetsManager::getCMakeConfigFile()
@@ -56,13 +62,34 @@ bool TargetsManager::isGloablTarget(Target &target)
     return target.srcPath.isEmpty();
 }
 
+QString TargetsManager::cbpFilePath(const QString &buildFolder)
+{
+    QString cbpFilePath;
+    QDir dir(buildFolder);
+
+    QStringList filters;
+    filters << "*.cbp";
+
+    QFileInfoList fileInfoList = dir.entryInfoList(filters, QDir::Files);
+    if (fileInfoList.size() == 0) {
+        qInfo() << ".cbp file not found!";
+        return {};
+    }
+    return fileInfoList.first().filePath();
+}
+
 TargetsManager *TargetsManager::instance()
 {
     static TargetsManager instance;
     return &instance;
 }
 
-void TargetsManager::initialize(const QString &buildDirectory)
+CMakeCbpParser *TargetsManager::cbpParser() const
+{
+    return parser;
+}
+
+void TargetsManager::readTargets(const QString &buildDirectory, const QString &workspaceDirectory)
 {
     if (buildDirectory.isEmpty()) {
         qCritical() << "build directory not set!";
@@ -74,24 +101,45 @@ void TargetsManager::initialize(const QString &buildDirectory)
     buildTargetNameList.clear();
     exeTargetNameList.clear();
 
-    QString cprojectPath = buildDirectory + QDir::separator() + kProjectFile;
-    if (!QFileInfo(cprojectPath).isFile()) {
-        qCritical() << cprojectPath + " is not existed!";
-        return;
+    QString cbp = cbpFilePath(buildDirectory);
+    if (parser) {
+        delete parser;
+        parser = new CMakeCbpParser();
     }
-
-    parser.parse(cprojectPath);
-    targets = parser.getTargets();
+    parser->parseCbpFile(cbp, workspaceDirectory);
 
     QStringList targetNameList;
     QStringList tempExeTargetNameList;
-    for (auto target : targets) {
-        target.outputPath = buildDirectory;
-        auto targetName = target.name;
-        if (targetName.contains("[exe]") && !targetName.contains("/fast")) {
+
+    QList<CMakeBuildTarget> cbpTargets = parser->getBuildTargets();
+    for (auto cbpTarget : cbpTargets) {
+
+        QStringList commandItems = cbpTarget.makeCommand.split(" ");
+        QStringList argsFiltered;
+        for (auto &arg : commandItems) {
+            if (!arg.isEmpty()) {
+                argsFiltered << arg.replace("\"", "");
+            }
+        }
+
+        Target target;
+        target.name = cbpTarget.title;
+        target.buildCommand = argsFiltered.first();
+        argsFiltered.pop_front();
+        target.buildArguments = argsFiltered;
+        target.output = cbpTarget.output;
+        target.buildTarget = cbpTarget.title;
+        target.workingDir = cbpTarget.workingDirectory;
+        targets.push_back(target);
+
+        if (cbpTarget.type == CBPTargetType::kExecutable) {
             exeTargets.push_back(target);
             tempExeTargetNameList.push_back(target.buildTarget);
-        } else if (isGloablTarget(target)) {
+
+            if (cbpTarget.title == cbpParser()->getProjectName()) {
+                exeTargetSelected = target;
+            }
+        } else if (cbpTarget.type == CBPTargetType::kUtility) {
             if (target.name == kGlobalBuild) {
                 buildTargetSelected = target;
             } else if (target.name == kGlobalClean) {
@@ -100,16 +148,13 @@ void TargetsManager::initialize(const QString &buildDirectory)
                 rebuildTargetSelected = target;
             }
         }
-
-        if (!target.buildTarget.isEmpty()) {
-            targetNameList.append(target.buildTarget);
-        }
+        targetNameList.append(target.buildTarget);
     }
 
     buildTargetNameList = targetNameList.toSet().toList();
     exeTargetNameList = tempExeTargetNameList.toSet().toList();
 
-    if (exeTargets.size() > 0) {
+    if (exeTargetSelected.name.isEmpty() && exeTargets.size() > 0) {
         exeTargetSelected = exeTargets.front();
     }
 
@@ -130,7 +175,7 @@ Target TargetsManager::getTargetByName(const QString &targetName)
 {
     Target result;
     for (auto iter = targets.begin(); iter != targets.end(); ++iter) {
-        if (targetName == iter->buildTarget) {
+        if (targetName == iter->name) {
             result = *iter;
         }
     }
@@ -167,29 +212,16 @@ const Targets TargetsManager::getAllTargets() const
 
 void TargetsManager::updateActivedBuildTarget(const QString &targetName)
 {
-    foreach (auto name, buildTargetNameList) {
-        if (name == targetName) {           
-            for (auto iter = targets.begin(); iter != targets.end(); ++iter) {
-                if (name == iter->name) {
-                    buildTargetSelected = *iter;
-                    return;
-                }
-            }
-        }
-    }
+    buildTargetSelected = getTargetByName(targetName);
 }
 
 void TargetsManager::updateActivedCleanTarget(const QString &targetName)
 {
-    foreach (auto name, buildTargetNameList) {
-        if (name == targetName) {
-            for (auto iter = targets.begin(); iter != targets.end(); ++iter) {
-                if (name == iter->name) {
-                    cleanTargetSelected = *iter;
-                    return;
-                }
-            }
-        }
-    }
+    cleanTargetSelected = getTargetByName(targetName);
+}
+
+void TargetsManager::updateActiveExceTarget(const QString &targetName)
+{
+    exeTargetSelected = getTargetByName(targetName);
 }
 

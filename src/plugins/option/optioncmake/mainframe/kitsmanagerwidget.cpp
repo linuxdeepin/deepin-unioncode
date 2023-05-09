@@ -206,7 +206,7 @@ void KitsManagerWidget::updateUi()
     updateComplier(d->cbCMake, cmake);
 
     // Update Generator.
-    d->labelGeneratorExpression->setText("Eclipse CDT4 - Unix Makefiles");
+    d->labelGeneratorExpression->setText("CodeBlocks - Unix Makefiles");
 }
 
 bool KitsManagerWidget::getControlValue(QMap<QString, QVariant> &map)

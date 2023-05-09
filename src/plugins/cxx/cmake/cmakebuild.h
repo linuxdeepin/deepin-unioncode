@@ -33,7 +33,6 @@ public:
     ~CMakeBuild();
 
     static QString build(const QString& kitName, const QString& projectPath);
-    static QString getTargetPath();
 
 signals:
 

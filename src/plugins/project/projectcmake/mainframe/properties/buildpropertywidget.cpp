@@ -284,7 +284,7 @@ void BuildPropertyWidget::initRunConfig(const QString &workDirectory, RunConfigu
             }
             param.targetName = targetName;
             dpfservice::Target target = TargetsManager::instance()->getTargetByName(targetName);
-            param.targetPath = workDirectory + QDir::separator() + target.outputPath + targetName;
+            param.targetPath = target.output;
 
             runConfigure.params.push_back(param);
         }

@@ -59,23 +59,6 @@ public:
      * \param aitem root节点
      */
     DPF_INTERFACE(void, expandedAll, QStandardItem *aitem);
-
-
-    /*!
-     * \brief getAllProjectInfo 获取所有工程信息
-     */
-    DPF_INTERFACE(QList<dpfservice::ProjectInfo>, getAllProjectInfo, void);
-
-    /*!
-     * \brief getProjectInfo get projectInfo with condition
-     * \param kitName workspace
-     */
-    DPF_INTERFACE(dpfservice::ProjectInfo, getProjectInfo, const QString &kitName, const QString &workspace);
-
-    /**
-     * @brief getActiveProjectInfo
-     */
-    DPF_INTERFACE(dpfservice::ProjectInfo, getActiveProjectInfo);
 };
 
 #endif // PROJECTVIEWINTERFACE_H

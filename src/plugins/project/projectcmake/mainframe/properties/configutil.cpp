@@ -44,11 +44,10 @@ class ConfigUtilPrivate
 };
 
 ConfigUtil::ConfigUtil(QObject *parent)
-    : QObject(parent)
-    , d(new ConfigUtilPrivate())
+    : QObject(parent), d(new ConfigUtilPrivate())
 {
-    d->configTypeStringMap = {{Debug, "Debug"},
-                        {Release, "Release"}};
+    d->configTypeStringMap = { { Debug, "Debug" },
+                               { Release, "Release" } };
 }
 
 ConfigUtil::~ConfigUtil()
@@ -114,7 +113,7 @@ dpfservice::ProjectInfo ConfigUtil::createProjectInfo(const ConfigureParam *para
             configArguments << "-B";
             configArguments << info.buildFolder();
             configArguments << "-G";
-            configArguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
+            configArguments << CDT_PROJECT_KIT::get()->CBP_GENERATOR;
             configArguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
             configArguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
             info.setConfigCustomArgs(configArguments);
@@ -154,8 +153,7 @@ void ConfigUtil::checkConfigInfo(const QString &buildType, const QString &direct
         if (type == iter->type) {
             if (!directory.isEmpty())
                 iter->directory = directory;
-            QString cfgFile = iter->directory + QDir::separator() +
-                    TargetsManager::instance()->getCMakeConfigFile();
+            QString cfgFile = iter->directory + QDir::separator() + TargetsManager::instance()->getCMakeConfigFile();
             if (!QFileInfo(cfgFile).isFile()) {
                 configProject(&d->configureParam);
             }
@@ -210,7 +208,7 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
             arguments << "-B";
             arguments << info.buildFolder();
             arguments << "-G";
-            arguments << CDT_PROJECT_KIT::get()->CDT4_GENERATOR;
+            arguments << CDT_PROJECT_KIT::get()->CBP_GENERATOR;
             arguments << "-DCMAKE_BUILD_TYPE=" + info.buildType();
             arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
             info.setConfigCustomArgs(arguments);
@@ -222,9 +220,19 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                 arguments << "--target";
 
                 if (iterStep->type == StepType::Build) {
-                    arguments << (iterStep->targetName.isEmpty() ? "all" : iterStep->targetName);
+                    QString buildTarget = iterStep->targetName;
+                    if (buildTarget.isEmpty()) {
+                        buildTarget = "all";
+                    }
+                    TargetsManager::instance()->updateActivedBuildTarget(buildTarget);
+                    arguments << buildTarget;
                 } else if (iterStep->type == StepType::Clean) {
-                    arguments << (iterStep->targetName.isEmpty() ? "clean" : iterStep->targetName);
+                    QString cleanTarget = iterStep->targetName;
+                    if (cleanTarget.isEmpty()) {
+                        cleanTarget = "clean";
+                    }
+                    TargetsManager::instance()->updateActivedCleanTarget(cleanTarget);
+                    arguments << cleanTarget;
                 }
 
                 if (!iterStep->arguments.isEmpty()) {
@@ -238,7 +246,7 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                     info.setCleanCustomArgs(arguments);
                 }
             }
-
+            // update run config according to ui parameters.
             auto iterRun = iter->runConfigure.params.begin();
             for (; iterRun != iter->runConfigure.params.end(); ++iterRun) {
                 if (iterRun->targetName == iter->runConfigure.defaultTargetName) {
@@ -248,15 +256,15 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                         arguments << iterRun->arguments;
                     info.setRunCustomArgs(arguments);
                     info.setRunWorkspaceDir(iterRun->workDirectory);
+
+                    TargetsManager::instance()->updateActiveExceTarget(iterRun->targetName);
                     break;
                 }
             }
-
             return true;
         }
     }
-
     return false;
 }
 
-} //namespace config
+}   //namespace config

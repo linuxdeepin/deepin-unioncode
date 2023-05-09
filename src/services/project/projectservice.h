@@ -38,10 +38,9 @@ struct Target {
     QString buildCommand;
     QStringList buildArguments;
     QString buildTarget;
-    bool stopOnError = false;
-    bool useDefaultCommand = false;
 
-    QString outputPath;
+    QString workingDir;
+    QString output;
 
     // TODO(mozart):tempory
     bool enableEnv;
@@ -155,6 +154,22 @@ public:
     QList<T*> values() const {
         return QtClassManager<T>::values();
     }
+
+    /*!
+     * \brief getAllProjectInfo
+     */
+    DPF_INTERFACE(QList<dpfservice::ProjectInfo>, getAllProjectInfo, void);
+
+    /*!
+     * \brief getProjectInfo
+     * \param kitName workspace
+     */
+    DPF_INTERFACE(dpfservice::ProjectInfo, getProjectInfo, const QString &kitName, const QString &workspace);
+
+    /**
+     * @brief getActiveProjectInfo
+     */
+    DPF_INTERFACE(dpfservice::ProjectInfo, getActiveProjectInfo);
 
     /*!
      * \brief projectView 工程视图接口对象

@@ -49,7 +49,7 @@ void CmakeItemKeeper::addCmakeRootFile(QStandardItem *root, const QString rootPa
 
 void CmakeItemKeeper::addCmakeSubFiles(QStandardItem *root, const QStringList subPaths)
 {
-    d->itemCmakeFileNodes[root].second = subPaths;
+    d->itemCmakeFileNodes[root].second += subPaths;
     for (auto &val : subPaths) {
         Inotify::addPath(val);
         Inotify::removeIgnorePath(val);

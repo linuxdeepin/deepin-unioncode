@@ -9,7 +9,6 @@ set(CXX_CPP
     mainframe/cmakeitemkeeper.cpp
     mainframe/cmakegenerator.cpp
     mainframe/properties/environmentwidget.cpp
-    mainframe/properties/projectparser.cpp
     mainframe/properties/stepspane.cpp
     mainframe/properties/targetsmanager.cpp
     mainframe/properties/runconfigpane.cpp
@@ -18,6 +17,7 @@ set(CXX_CPP
     mainframe/properties/runpropertywidget.cpp
     mainframe/properties/configpropertywidget.cpp
     mainframe/properties/configutil.cpp
+    mainframe/cbp/cbpparser.cpp
     transceiver/projectcmakereceiver.cpp
     projectcmake.cpp
     projectcmake.json
@@ -28,7 +28,6 @@ set(CXX_H
     mainframe/cmakeitemkeeper.h
     mainframe/cmakegenerator.h
     mainframe/properties/environmentwidget.h
-    mainframe/properties/projectparser.h
     mainframe/properties/stepspane.h
     mainframe/properties/targetsmanager.h
     mainframe/properties/runconfigpane.h
@@ -37,6 +36,7 @@ set(CXX_H
     mainframe/properties/runpropertywidget.h
     mainframe/properties/configpropertywidget.h
     mainframe/properties/configutil.h
+    mainframe/cbp/cbpparser.h
     transceiver/projectcmakereceiver.h
     projectcmake.h
     )
