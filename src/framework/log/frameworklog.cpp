@@ -21,6 +21,7 @@
  */
 #include "frameworklog.h"
 #include "logutils.h"
+#include "common/util/commandparser.h"
 
 #include <QDir>
 #include <QFile>

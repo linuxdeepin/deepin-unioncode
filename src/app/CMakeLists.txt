@@ -1,6 +1,6 @@
 project(deepin-unioncode)
 
-add_executable(${PROJECT_NAME} main.cpp commandparser.cpp commandparser.h)
+add_executable(${PROJECT_NAME} main.cpp commandexecuter.cpp commandexecuter.h)
 
 target_link_libraries(
     ${PROJECT_NAME}

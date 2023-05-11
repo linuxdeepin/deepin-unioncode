@@ -20,9 +20,6 @@
 */
 #include "commandparser.h"
 
-#include "services/builder/builderservice.h"
-#include "services/option/optionmanager.h"
-
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
@@ -58,32 +55,14 @@ void CommandParser::process(const QStringList &arguments)
     commandParser->process(arguments);
 }
 
-void CommandParser::buildProject()
+void CommandParser::setModel(CommandParser::CommandModel model)
 {
-    QString projectPath = value("b");
-    QString kit = value("k");
-    QStringList args = value("a").trimmed().split("", QString::SkipEmptyParts);
-    if (projectPath.isEmpty()) {
-        std::cout << std::string("Please input project directory!") << std::endl;
-        return;
-    }
-    if (!QDir::isAbsolutePath(projectPath)) {
-        QString path = QDir::currentPath();
-        projectPath = path + QDir::separator() + projectPath;
-    }
-    std::cout << projectPath.toStdString() << std::endl;
-    if (!QDir(projectPath).exists()) {
-        std::cout << std::string("Please input correct working directory!") << std::endl;
-        return;
-    }
-    auto &ctx = dpfInstance.serviceContext();
-    dpfservice::BuilderService *builderService = ctx.service<dpfservice::BuilderService>(dpfservice::BuilderService::name());
-    BuildCommandInfo buildInfo;
-    buildInfo.workingDir = projectPath;
-    buildInfo.arguments = args;
-    buildInfo.program = OptionManager::getInstance()->getToolPath(kit);
-    buildInfo.kitName = kit.toLower();
-    builderService->interface.builderCommand(buildInfo);
+    commandModel = model;
+}
+
+CommandParser::CommandModel CommandParser::getModel()
+{
+    return commandModel;
 }
 
 void CommandParser::initialize()

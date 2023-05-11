@@ -38,6 +38,7 @@
 #include "util/shortcututil.h"
 #include "util/fileoperation.h"
 #include "util/environment.h"
+#include "util/commandparser.h"
 #include "supportfile/builder.h"
 #include "supportfile/editorstyle.h"
 #include "supportfile/windowstyle.h"

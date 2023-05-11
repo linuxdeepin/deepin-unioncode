@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="zh_CN">
+<TS version="2.0" language="zh_CN">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -189,36 +189,35 @@
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="109"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="111"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation>错误：执行命令错误！原因未知。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="113"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="115"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程&quot;%1&quot; 正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="115"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="117"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程&quot;%1&quot;退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="118"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="120"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程&quot;%1&quot;崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="124"/>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="134"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="81"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
@@ -356,47 +355,47 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="200"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="202"/>
         <source>Co&amp;mpile Output</source>
         <translation>编译输出(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="259"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="261"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation>错误：执行命令错误！原因未知。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="263"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="265"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始在工作区%3中执行%1 %2命令。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="271"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="273"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程%1正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="274"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="276"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程%1退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="278"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="280"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程 %1崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="305"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="307"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -458,17 +457,17 @@
 <context>
     <name>CmakeGenerator</name>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="236"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="247"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="377"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="388"/>
         <source>Build</source>
         <translation>编译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="378"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="389"/>
         <source>Run</source>
         <translation>运行</translation>
     </message>
@@ -476,22 +475,22 @@
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="49"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="50"/>
         <source>Save All Documents</source>
         <translation>保存所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="50"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="51"/>
         <source>Close All Documents</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="51"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="52"/>
         <source>Print</source>
         <translation>打印</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="117"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="119"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
@@ -578,7 +577,7 @@
 <context>
     <name>ConfigPropertyWidget</name>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configpropertywidget.cpp" line="49"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configpropertywidget.cpp" line="48"/>
         <source>Config</source>
         <translation>配置</translation>
     </message>
@@ -629,18 +628,18 @@
 <context>
     <name>ConfigureProjPane</name>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="116"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="115"/>
         <source>Select kit: </source>
         <translation>选择配置工具： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="128"/>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="139"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="127"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="138"/>
         <source>Browse...</source>
         <translation>浏览...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="148"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/configureprojpane.cpp" line="147"/>
         <source>Configure</source>
         <translation>配置</translation>
     </message>
@@ -1080,9 +1079,14 @@ dap端口未就绪，请重试。
 <context>
     <name>JSGenerator</name>
     <message>
-        <location filename="../../src/plugins/javascript/jsgenerator.cpp" line="77"/>
+        <location filename="../../src/plugins/javascript/jsgenerator.cpp" line="78"/>
         <source>Request debug dap port failed, please retry.</source>
         <translation>请求调试端口失败，请重试.</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/javascript/jsgenerator.cpp" line="150"/>
+        <source>Please open a JS file in editor!</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1914,7 +1918,7 @@ storage: %2
         <translation>打开路径失败，当前远程仓库不是svn子目录</translation>
     </message>
     <message>
-        <location filename="../../src/services/project/projectgenerator.cpp" line="99"/>
+        <location filename="../../src/services/project/projectgenerator.cpp" line="100"/>
         <source>Cannot open the project!
 not exists support files: %0</source>
         <translation>无法打开项目！
@@ -2048,32 +2052,6 @@ storage: %2
         <translation>替换：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optiongradle/mainframe/gradlewidget.cpp" line="73"/>
-        <source>Gradle distribution：</source>
-        <translation>Gradle </translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optionjava/mainframe/jdkwidget.cpp" line="79"/>
-        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="78"/>
-        <source>JDK version：</source>
-        <translation>JDK版本：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="73"/>
-        <source>Maven path：</source>
-        <translation>Maven 路径：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="81"/>
-        <source>User Setting：</source>
-        <translation>用户设置：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="90"/>
-        <source>Local Setting：</source>
-        <translation>本地设置：</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/option/optionpython/mainframe/interperterwidget.cpp" line="161"/>
         <source>Python Interperter:</source>
         <translation>Python解释器：</translation>
@@ -2090,8 +2068,8 @@ storage: %2
     </message>
     <message>
         <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="94"/>
-        <source>Main Class：</source>
-        <translation>Main Class:</translation>
+        <source>Main Classï¼</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="104"/>
@@ -2120,14 +2098,40 @@ storage: %2
         <translation>Python解释器： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optionninja/mainframe/ninjawidget.cpp" line="71"/>
-        <source>Ninja path：</source>
-        <translation>Ninja路径：</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/javascript/project/properties/configpropertywidget.cpp" line="63"/>
         <source>JS interpreter: </source>
         <translation>JS解释器： </translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optiongradle/mainframe/gradlewidget.cpp" line="73"/>
+        <source>Gradle distributionï¼</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optionjava/mainframe/jdkwidget.cpp" line="79"/>
+        <location filename="../../src/plugins/project/projectgradle/mainframe/properties/configpropertywidget.cpp" line="78"/>
+        <source>JDK versionï¼</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="73"/>
+        <source>Maven pathï¼</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="81"/>
+        <source>User Settingï¼</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optionmaven/mainframe/mavenwidget.cpp" line="90"/>
+        <source>Local Settingï¼</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optionninja/mainframe/ninjawidget.cpp" line="71"/>
+        <source>Ninja pathï¼</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2486,7 +2490,7 @@ storage: %2
         <translation>控制台(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="99"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="101"/>
         <source>Code &amp;Lens</source>
         <translation>代码信息指示器(&amp;L)</translation>
     </message>
@@ -2741,18 +2745,18 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="103"/>
-        <source>trace directory：</source>
-        <translation>跟踪目录:</translation>
+        <source>trace directoryï¼</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="104"/>
-        <source>process ID：</source>
-        <translation>进程ID：</translation>
+        <source>process IDï¼</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="106"/>
-        <source>recent：</source>
-        <translation>最近：</translation>
+        <source>recentï¼</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="161"/>
@@ -2910,32 +2914,32 @@ Delete anyway?</source>
 <context>
     <name>RunConfigPane</name>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="74"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="73"/>
         <source>Here is the executable path</source>
         <translation>以下是可执行路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="76"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="75"/>
         <source>Executable path:</source>
         <translation>可执行文件路径：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="84"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="83"/>
         <source>Command line arguments:</source>
         <translation>命令行参数：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="89"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="88"/>
         <source>Browse...</source>
         <translation>浏览...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="98"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="97"/>
         <source>Working directory:</source>
         <translation>工作目录：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="100"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/runconfigpane.cpp" line="99"/>
         <source>Working directory</source>
         <translation>工作目录</translation>
     </message>
@@ -3217,13 +3221,6 @@ Delete anyway?</source>
         <source>Range Formatting</source>
         <translation>选中范围格式化</translation>
     </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="792"/>
-        <source>There is a fatal error between the current d-&gt;editor component and the backend of the syntax server, which may affect the syntax highlighting. 
-Please contact the maintainer for troubleshooting to solve the problem!</source>
-        <translation>当前的编辑器组件和语法服务器后端之间存在致命错误，这可能会影响语法高亮显示。
-请联系维修人员进行故障排除以解决问题！</translation>
-    </message>
 </context>
 <context>
     <name>SvnClientWidget</name>
@@ -3297,8 +3294,12 @@ Please contact the maintainer for troubleshooting to solve the problem!</source>
 <context>
     <name>ValgrindRunner</name>
     <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.cpp" line="105"/>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.cpp" line="114"/>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.cpp" line="218"/>
+        <source>please install valgrind tool in console with &quot;sudo apt install valgrind&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.cpp" line="227"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>

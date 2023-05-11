@@ -18,44 +18,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef COMMANDPARSER_H
-#define COMMANDPARSER_H
+#ifndef COMMANDEXECUTER_H
+#define COMMANDEXECUTER_H
 
 #include <QObject>
 
-QT_BEGIN_NAMESPACE
-class QCommandLineParser;
-class QCoreApplication;
-class QCommandLineOption;
-QT_END_NAMESPACE
-
-class CommandParser : public QObject
+class CommandExecuter : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(CommandParser)
 
 public:
-    static CommandParser &instance();
-
-    bool isSet(const QString &name) const;
-    QString value(const QString &name) const;
-    void process();
-    void process(const QStringList &arguments);
+    static CommandExecuter &instance();
     void buildProject();
 
 private:
-    void initialize();
-    void initOptions();
-    void addOption(const QCommandLineOption &option);
+    explicit CommandExecuter(QObject *parent = nullptr);
 
-    QStringList positionalArguments() const;
-    QStringList unknownOptionNames() const;
-
-private:
-    explicit CommandParser(QObject *parent = nullptr);
-
-private:
-    QCommandLineParser *commandParser = nullptr;
 };
 
-#endif   // COMMANDPARSER_H
+#endif   // COMMANDEXECUTER_H

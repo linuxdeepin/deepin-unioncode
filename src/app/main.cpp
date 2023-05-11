@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "common/common.h"
-#include "commandparser.h"
+#include "commandexecuter.h"
 
 #include <framework/framework.h>
 #include <framework/lifecycle/pluginsetting.h>
@@ -29,7 +29,6 @@
 static const char *const IID = "org.deepin.plugin.unioncode";
 static const char *const CORE_PLUGIN = "plugin-core";
 static const char *const CORE_NAME = "libplugin-core.so";
-
 static bool loadPlugins()
 {
     dpfCheckTimeBegin();
@@ -102,15 +101,31 @@ void installTranslator(QApplication &a)
     a.installTranslator(translator);
 }
 
+void voidMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    Q_UNUSED(type);
+    Q_UNUSED(context);
+    Q_UNUSED(msg);
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QApplication::setStyle(QStyleFactory::create("Fusion"));
+
     CommandParser::instance().process();
 
-    QApplication::setStyle(QStyleFactory::create("Fusion"));
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-
+    if (CommandParser::instance().isSet("b") || CommandParser::instance().isSet("k")
+            || CommandParser::instance().isSet("a")) {
+        CommandParser::instance().setModel(CommandParser::CommandLine);
+        qInstallMessageHandler(voidMessageOutput);
+        if (!loadPlugins()) {
+            qCritical() << "Failed, Load plugins!";
+            abort();
+        }
+        CommandExecuter::instance().buildProject();
+        return 0;
+    }
     installTranslator(a);
 
     dpfInstance.initialize();
@@ -119,10 +134,7 @@ int main(int argc, char *argv[])
         abort();
     }
 
-    if (CommandParser::instance().isSet("b") || CommandParser::instance().isSet("k")
-            || CommandParser::instance().isSet("a")) {
-        CommandParser::instance().buildProject();
-        return 0;
-    }
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     return a.exec();
 }

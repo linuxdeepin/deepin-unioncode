@@ -292,7 +292,10 @@ WindowKeeper::WindowKeeper(QObject *parent)
             d->window->takeCentralWidget();
         });
         layoutWindow(d->window);
-        d->window->show();
+
+        //CommandLine Model will not show main window
+        if (CommandParser::instance().getModel() != CommandParser::CommandLine)
+            d->window->show();
         int currentScreenIndex = qApp->desktop()->screenNumber(d->window);
         QList<QScreen *> screenList = QGuiApplication::screens();
 
