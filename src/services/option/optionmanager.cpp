@@ -124,6 +124,10 @@ QString OptionManager::getToolPath(const QString &kit)
         return getMavenToolPath();
     } else if (kit == option::CATEGORY_GRADLE) {
         return getGradleToolPath();
+    } else if (kit == option::CATEGORY_JS) {
+        return getJSToolPath();
+    } else if (kit == option::CATEGORY_PYTHON) {
+        return getPythonToolPath();
     }
     return "";
 }

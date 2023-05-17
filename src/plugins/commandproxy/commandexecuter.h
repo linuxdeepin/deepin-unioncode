@@ -21,18 +21,19 @@
 #ifndef COMMANDEXECUTER_H
 #define COMMANDEXECUTER_H
 
+#include <framework/framework.h>
 #include <QObject>
 
-class CommandExecuter : public QObject
+class CommandExecuter: QObject
 {
     Q_OBJECT
-
 public:
     static CommandExecuter &instance();
     void buildProject();
 
 private:
     explicit CommandExecuter(QObject *parent = nullptr);
+    QStringList exeFileName(QDir dir);
 
 };
 

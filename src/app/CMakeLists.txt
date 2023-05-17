@@ -1,12 +1,11 @@
 project(deepin-unioncode)
 
-add_executable(${PROJECT_NAME} main.cpp commandexecuter.cpp commandexecuter.h)
+add_executable(${PROJECT_NAME} main.cpp)
 
 target_link_libraries(
     ${PROJECT_NAME}
     framework
     common
-    services
     ${QtUseModules}
     ${PkgUseModule}
     )

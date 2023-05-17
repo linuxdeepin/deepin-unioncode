@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "commandparser.h"
+#include "util/custompaths.h"
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
@@ -65,6 +66,13 @@ CommandParser::CommandModel CommandParser::getModel()
     return commandModel;
 }
 
+bool CommandParser::isBuildModel()
+{
+    if (isSet("b") || isSet("k") || isSet("a") || isSet("d") || isSet("t"))
+        return true;
+    return false;
+}
+
 void CommandParser::initialize()
 {
     commandParser->setApplicationDescription(QString("%1 helper").arg(QCoreApplication::applicationName()));
@@ -78,26 +86,34 @@ void CommandParser::initOptions()
     QCommandLineOption buildOption(QStringList()
                                    << "b"
                                    << "build",
-                                   "build with deepin-unioncode(won't work with empty directory)",
-                                   "directory");
+                                   "Build with deepin-unioncode(won't work with empty directory).",
+                                   "source directory");
+    QCommandLineOption destOption(QStringList()
+                                  << "d"
+                                  << "destination",
+                                  "Build destination directory to store compiled executable files.",
+                                  "destination directory");
     QCommandLineOption kitOption(QStringList()
                                  << "k"
                                  << "kit {CMake,Gradle,Maven,Ninja}",
-                                 "select build kit to build project.Support cmake,gradle,maven,ninja.It is CMake by default.",
+                                 "Select build kit to build project.Support cmake,gradle,maven,ninja.It is CMake by default.",
                                  "name", "CMake");
     QCommandLineOption argsOption(QStringList()
-                                 << "a"
-                                 << "arguments",
-                                 "input argument to use kit to build project",
-                                 "argument list");
-    QCommandLineOption newWindowOption(QStringList()
-                                       << "n"
-                                       << "new-window",
-                                       "show new window");
+                                  << "a"
+                                  << "arguments",
+                                  "Input argument to use kit to build project(eg. -a \"--build . --target all\").",
+                                  "argument list");
+    QCommandLineOption addTagOption(QStringList()
+                                    << "t"
+                                    << "tag",
+                                    "Add tag to binary file.Input a file path which contain the tag content."
+                                    "It is deepin-unioncode.elf by default",
+                                    "file path");
     addOption(buildOption);
+    addOption(destOption);
     addOption(kitOption);
     addOption(argsOption);
-    addOption(newWindowOption);
+    addOption(addTagOption);
 }
 
 void CommandParser::addOption(const QCommandLineOption &option)

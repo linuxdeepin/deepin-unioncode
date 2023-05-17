@@ -50,7 +50,7 @@ public:
     void setActivedProjectInfo(const QString &kitName, const QString &workingDir);
     void clearActivedProjectInfo();
 
-    void handleCommand(const BuildCommandInfo &info);
+    void handleCommand(const QList<BuildCommandInfo> &info, bool isSynchronous);
 
 signals:
     void sigOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format);
@@ -80,7 +80,7 @@ private:
     void outputError(const QString &content);
     void outputNotify(const BuildState &state, const BuildCommandInfo &commandInfo);
 
-    bool execCommands(const QList<BuildCommandInfo> &commandList);
+    bool execCommands(const QList<BuildCommandInfo> &commandList, bool isSynchronous);
     bool execCommand(const BuildCommandInfo &info);
 
     void execBuildStep(QList<BuildMenuType> menuTypelist);

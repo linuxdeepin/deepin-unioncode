@@ -46,8 +46,10 @@ public:
     QString value(const QString &name) const;
     void process();
     void process(const QStringList &arguments);
+    void processCommand();
     void setModel(CommandModel model);
     CommandModel getModel();
+    bool isBuildModel();
 
 private:
     void initialize();

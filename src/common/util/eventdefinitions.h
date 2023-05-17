@@ -97,6 +97,10 @@ OPI_OBJECT(actionanalyse,
            OPI_INTERFACE(enabled, "flag")
            )
 
+OPI_OBJECT(commandLine,
+           OPI_INTERFACE(build)
+           )
+
 struct AnnotationInfo
 {
     struct RoleElem

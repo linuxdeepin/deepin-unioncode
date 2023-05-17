@@ -19,7 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "common/common.h"
-#include "commandexecuter.h"
 
 #include <framework/framework.h>
 #include <framework/lifecycle/pluginsetting.h>
@@ -115,15 +114,14 @@ int main(int argc, char *argv[])
 
     CommandParser::instance().process();
 
-    if (CommandParser::instance().isSet("b") || CommandParser::instance().isSet("k")
-            || CommandParser::instance().isSet("a")) {
+    if (CommandParser::instance().isBuildModel()) {
         CommandParser::instance().setModel(CommandParser::CommandLine);
         qInstallMessageHandler(voidMessageOutput);
         if (!loadPlugins()) {
             qCritical() << "Failed, Load plugins!";
             abort();
         }
-        CommandExecuter::instance().buildProject();
+        commandLine.build();
         return 0;
     }
     installTranslator(a);

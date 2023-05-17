@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2023 Uniontech Software Technology Co., Ltd.
  *
- * Author:     zhouyi<zhouyi1@uniontech.com>
+ * Author:     hongjinchuan<hongjinchuan@uniontech.com>
  *
- * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ * Maintainer: hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef BUILDERINTERFACE_H
-#define BUILDERINTERFACE_H
+#ifndef COMMANDPROXY_H
+#define COMMANDPROXY_H
 
-#include "builderglobals.h"
 #include <framework/framework.h>
+#include <QObject>
 
-class BuilderInterface
+class CommandProxy: public dpf::Plugin
 {
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "commandproxy.json")
 public:
-    /*!
-     * \brief builderCommand
-     * \param commandInfo
-     */
-    DPF_INTERFACE(void, builderCommand, const QList<BuildCommandInfo> &commandInfo, bool isSynchronous);
+    virtual void initialize() override;
+    virtual bool start() override;
+    virtual dpf::Plugin::ShutdownFlag stop() override;
 };
 
-#endif // BUILDERINTERFACE_H
+#endif // COMMANDPROXY_H

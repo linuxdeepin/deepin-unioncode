@@ -145,7 +145,7 @@ bool CmakeGenerator::configure(const dpfservice::ProjectInfo &projInfo)
         commandInfo.workingDir = projInfo.workspaceFolder();
 
         ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
-        builderService->interface.builderCommand(commandInfo);
+        builderService->interface.builderCommand({commandInfo}, false);
     }
 
     dpfservice::ProjectGenerator::configure(projInfo);
@@ -269,7 +269,7 @@ void CmakeGenerator::actionTriggered()
             commandInfo.program = program;
             commandInfo.arguments = args;
             commandInfo.workingDir = workDir;
-            builderService->interface.builderCommand(commandInfo);
+            builderService->interface.builderCommand({commandInfo}, false);
         }
     }
 }

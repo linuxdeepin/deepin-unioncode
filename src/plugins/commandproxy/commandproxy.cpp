@@ -1,9 +1,9 @@
 /*
- * Copyright (C) 2022 Uniontech Software Technology Co., Ltd.
+ * Copyright (C) 2023 Uniontech Software Technology Co., Ltd.
  *
- * Author:     zhouyi<zhouyi1@uniontech.com>
+ * Author:     hongjinchuan<hongjinchuan@uniontech.com>
  *
- * Maintainer: zhouyi<zhouyi1@uniontech.com>
+ * Maintainer: hongjinchuan<hongjinchuan@uniontech.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,20 +18,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef BUILDERINTERFACE_H
-#define BUILDERINTERFACE_H
+#include "commandproxy.h"
 
-#include "builderglobals.h"
-#include <framework/framework.h>
-
-class BuilderInterface
+void CommandProxy::initialize()
 {
-public:
-    /*!
-     * \brief builderCommand
-     * \param commandInfo
-     */
-    DPF_INTERFACE(void, builderCommand, const QList<BuildCommandInfo> &commandInfo, bool isSynchronous);
-};
+    qInfo() << __FUNCTION__;
+}
 
-#endif // BUILDERINTERFACE_H
+bool CommandProxy::start()
+{
+    qInfo() << __FUNCTION__;
+    return true;
+}
+
+dpf::Plugin::ShutdownFlag CommandProxy::stop()
+{
+    qInfo() << __FUNCTION__;
+    return Sync;
+}

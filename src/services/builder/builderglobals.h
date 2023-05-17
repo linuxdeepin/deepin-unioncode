@@ -51,6 +51,7 @@ struct BuildCommandInfo {
     QStringList arguments;
     QString workingDir;
     QString uuid;
+    QString elfPath;
 
     BuildCommandInfo() {
         uuid = QUuid::createUuid().toString();

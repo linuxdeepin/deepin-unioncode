@@ -21,6 +21,7 @@
 
 #include "buildmanager.h"
 #include "common/widget/outputpane.h"
+#include "common/util/commandparser.h"
 #include "problemoutputpane.h"
 #include "commonparser.h"
 #include "transceiver/buildersender.h"
@@ -176,10 +177,9 @@ void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
                     outputLog(retMsg, OutputPane::OutputFormat::StdErr);
                     continue;
                 }
-
                 list.append(info);
             }
-            execCommands(list);
+            execCommands(list, false);
         }
     }
 }
@@ -214,7 +214,7 @@ void BuildManager::clearActivedProjectInfo()
     d->activedWorkingDir.clear();
 }
 
-void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
+void BuildManager::handleCommand(const QList<BuildCommandInfo> &commandInfo, bool isSynchronous)
 {
     if(!canStartBuild()) {
         QMetaObject::invokeMethod(this, "message",
@@ -225,30 +225,39 @@ void BuildManager::handleCommand(const BuildCommandInfo &commandInfo)
     auto &ctx = dpfInstance.serviceContext();
     auto builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
-        auto generator = builderService->create<BuilderGenerator>(commandInfo.kitName);
+        auto generator = builderService->create<BuilderGenerator>(commandInfo.at(0).kitName);
         if (generator) {
             emit sigResetBuildUI();
             generator->appendOutputParser(d->outputParser);
             QString retMsg;
-            bool ret = generator->checkCommandValidity(commandInfo, retMsg);
+            bool ret = generator->checkCommandValidity(commandInfo.at(0), retMsg);
             if (!ret) {
                 outputLog(retMsg, OutputPane::OutputFormat::StdErr);
                 return;
             }
-            execCommands({commandInfo});
         }
+        execCommands(commandInfo, isSynchronous);
     }
 }
 
-bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList)
+bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList, bool isSynchronous)
 {
-    if (!commandList.isEmpty()) {
-        QtConcurrent::run([=](){
-            QMutexLocker locker(&releaseMutex);
+    //Synchronous execution is required in commandLine build model
+    if (isSynchronous) {
+        if (!commandList.isEmpty()) {
             for (auto command : commandList) {
                 execCommand(command);
             }
-        });
+        }
+    } else {
+        if (!commandList.isEmpty()) {
+            QtConcurrent::run([=](){
+                QMutexLocker locker(&releaseMutex);
+                for (auto command : commandList) {
+                    execCommand(command);
+                }
+            });
+        }
     }
 
     return true;
@@ -274,11 +283,11 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
         } else if (exitStatus == QProcess::NormalExit) {
             ret = false;
             retMsg = tr("The process \"%1\" exited with code %2.\n")
-                           .arg(process.program(), QString::number(exitcode));
+                    .arg(process.program(), QString::number(exitcode));
         } else {
             ret = false;
             retMsg = tr("The process \"%1\" crashed.\n")
-                           .arg(process.program());
+                    .arg(process.program());
         }
     });
 
