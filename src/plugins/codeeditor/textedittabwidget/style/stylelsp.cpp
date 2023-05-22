@@ -109,7 +109,12 @@ public:
                 && cursor == 0 && SciPositionCache::isEmpty()
                 && textRange.isEmpty();
     }
-    std::vector<newlsp::Location> getLocations() const {return locations.value();}
+    std::vector<newlsp::Location> getLocations() const
+    {
+        if (locations.has_value())
+            return locations.value();
+        return {};
+    }
     newlsp::Location getLocation() const {return location.value();}
     std::vector<newlsp::LocationLink> getLocationLinks() const {return locationLinks.value();}
     void set(const std::vector<newlsp::Location> &value) {locations = value;}
@@ -788,10 +793,6 @@ void StyleLsp::setTokenFull(const QList<lsp::Data> &tokens)
     if (!d->edit->lexer())
         return;
 
-    if (d->edit->supportLanguage() != d->edit->lexerLanguage()){
-        // not process other language tokens.
-        return;
-    }
     int cacheLine = 0;
     for (auto val : tokens) {
         cacheLine += val.start.line;

@@ -47,9 +47,7 @@ Version completion(Category category, Kit kit, const Version &version)
             if (version.major) {
                 program += QString::number(version.major.value());
             }
-            qInfo() << program;
             ProcessUtil::execute(program, {"-V"}, [&](const QByteArray &data){
-                qInfo() << data;
                 QRegularExpression regExp {"Python\\s(?<" + RK_Major +">[0-9])"
                             + "\\.(?<"+ RK_Minor +">[0-9])"
                             + "\\.(?<"+ RK_Revision +">[0-9])"
@@ -112,7 +110,6 @@ Program search(Category category, Kit kit, const Version &version)
 
 QProcessEnvironment get(Category category, Kit kit, const Version &version)
 {
-    qInfo() << __FUNCTION__;
     QProcess process;
     auto procEnv = process.processEnvironment();
     if (category == Category::User) {

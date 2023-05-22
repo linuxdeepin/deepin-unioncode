@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "jsonrpccallproxy.h"
+#include <QDebug>
 
 JsonRpcCallProxy::JsonRpcCallProxy(QObject *parent)
     : Route(parent)

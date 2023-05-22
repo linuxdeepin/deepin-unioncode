@@ -79,65 +79,65 @@ Client::~Client()
     }
 }
 
-void Client::delta(const SemanticTokensDeltaParams &params){}
+void Client::delta(const SemanticTokensDeltaParams &params){Q_UNUSED(params);}
 
-void Client::full(const SemanticTokensParams &params){}
+void Client::full(const SemanticTokensParams &params){Q_UNUSED(params);}
 
-void Client::range(const SemanticTokensRangeParams &params){}
+void Client::range(const SemanticTokensRangeParams &params){Q_UNUSED(params);}
 
-void Client::didOpen(const DidOpenTextDocumentParams &params){}
+void Client::didOpen(const DidOpenTextDocumentParams &params){Q_UNUSED(params);}
 
-void Client::didChange(const DidChangeTextDocumentParams &params){}
+void Client::didChange(const DidChangeTextDocumentParams &params){Q_UNUSED(params);}
 
-void Client::willSave(const WillSaveTextDocumentParams &params){}
+void Client::willSave(const WillSaveTextDocumentParams &params){Q_UNUSED(params);}
 
-void Client::willSaveWaitUntil(const WillSaveTextDocumentParams &params){}
+void Client::willSaveWaitUntil(const WillSaveTextDocumentParams &params){Q_UNUSED(params);}
 
-void Client::didSave(const DidSaveTextDocumentParams &params){}
+void Client::didSave(const DidSaveTextDocumentParams &params){Q_UNUSED(params);}
 
-void Client::didClose(const DidCloseTextDocumentParams &params){}
+void Client::didClose(const DidCloseTextDocumentParams &params){Q_UNUSED(params);}
 
-void Client::declaration(const DeclarationParams &params){}
+void Client::declaration(const DeclarationParams &params){Q_UNUSED(params);}
 
-void Client::definition(const DefinitionParams &params){}
+void Client::definition(const DefinitionParams &params){Q_UNUSED(params);}
 
-void Client::typeDefinition(const TypeDefinitionParams &params){}
+void Client::typeDefinition(const TypeDefinitionParams &params){Q_UNUSED(params);}
 
-void Client::implementation(const ImplementationParams &params){}
+void Client::implementation(const ImplementationParams &params){Q_UNUSED(params);}
 
-void Client::references(const ReferenceParams &params){}
+void Client::references(const ReferenceParams &params){Q_UNUSED(params);}
 
-void Client::prepareCallHierarchy(const CallHierarchyPrepareParams &params){}
+void Client::prepareCallHierarchy(const CallHierarchyPrepareParams &params){Q_UNUSED(params);}
 
-void Client::prepareTypeHierarchy(const TypeHierarchyPrepareParams &params){}
+void Client::prepareTypeHierarchy(const TypeHierarchyPrepareParams &params){Q_UNUSED(params);}
 
-void Client::documentHighlight(const DocumentHighlightParams &params){}
+void Client::documentHighlight(const DocumentHighlightParams &params){Q_UNUSED(params);}
 
-void Client::documentLink(const DocumentLinkParams &params){}
+void Client::documentLink(const DocumentLinkParams &params){Q_UNUSED(params);}
 
-void Client::hover(const HoverParams &params){}
+void Client::hover(const HoverParams &params){Q_UNUSED(params);}
 
-void Client::codeLens(const CodeLensParams &params){}
+void Client::codeLens(const CodeLensParams &params){Q_UNUSED(params);}
 
-void Client::foldingRange(const FoldingRangeParams &params){}
+void Client::foldingRange(const FoldingRangeParams &params){Q_UNUSED(params);}
 
-void Client::selectionRange(const SelectionRangeParams &params){}
+void Client::selectionRange(const SelectionRangeParams &params){Q_UNUSED(params);}
 
-void Client::documentSymbol(const DocumentSymbolParams &params){}
+void Client::documentSymbol(const DocumentSymbolParams &params){Q_UNUSED(params);}
 
-void Client::inlayHint(const InlayHintParams &params){}
+void Client::inlayHint(const InlayHintParams &params){Q_UNUSED(params);}
 
-void Client::inlineValue(const InlineValueParams &params){}
+void Client::inlineValue(const InlineValueParams &params){Q_UNUSED(params);}
 
-void Client::moniker(const MonikerParams &params){}
+void Client::moniker(const MonikerParams &params){Q_UNUSED(params);}
 
-void Client::completion(const CompletionParams &params){}
+void Client::completion(const CompletionParams &params){Q_UNUSED(params);}
 
-void Client::diagnostic(const DocumentDiagnosticParams &params){}
+void Client::diagnostic(const DocumentDiagnosticParams &params){Q_UNUSED(params);}
 
-void Client::signatureHelp(const SignatureHelpParams &params){}
+void Client::signatureHelp(const SignatureHelpParams &params){Q_UNUSED(params);}
 
-void Client::codeAction(const CodeActionParams &params){}
+void Client::codeAction(const CodeActionParams &params){Q_UNUSED(params);}
 
 void Client::documentColor(const DocumentColorParams &params)
 {
@@ -150,7 +150,7 @@ void Client::documentColor(const DocumentColorParams &params)
 
 void Client::colorPresentation(const ColorPresentationParams &params)
 {
-
+    Q_UNUSED(params);
 }
 
 void Client::formatting(const DocumentFormattingParams &params)
@@ -170,29 +170,29 @@ void Client::rangeFormatting(const DocumentRangeFormattingParams &params)
                   .object());
 }
 
-void Client::onTypeFormatting(const DocumentOnTypeFormattingParams &params){}
+void Client::onTypeFormatting(const DocumentOnTypeFormattingParams &params){Q_UNUSED(params);}
 
-void Client::rename(const RenameParams &params){}
+void Client::rename(const RenameParams &params){Q_UNUSED(params);}
 
-void Client::prepareRename(const PrepareRenameParams &params){}
+void Client::prepareRename(const PrepareRenameParams &params){Q_UNUSED(params);}
 
-void Client::linkedEditingRange(const LinkedEditingRangeParams &params){}
+void Client::linkedEditingRange(const LinkedEditingRangeParams &params){Q_UNUSED(params);}
 
-void Client::resolve(const CodeAction &codeAction){}
+void Client::resolve(const CodeAction &codeAction){Q_UNUSED(codeAction);}
 
-void Client::resolve(const CompletionItem &params){}
+void Client::resolve(const CompletionItem &params){Q_UNUSED(params);}
 
 void Client::resolve(){}
 
-void Client::resolve(const CodeLens &codeLens){}
+void Client::resolve(const CodeLens &codeLens){Q_UNUSED(codeLens);}
 
-void Client::supertypes(const TypeHierarchySupertypesParams &params){}
+void Client::supertypes(const TypeHierarchySupertypesParams &params){Q_UNUSED(params);}
 
-void Client::subtypes(const TypeHierarchySubtypesParams &params){}
+void Client::subtypes(const TypeHierarchySubtypesParams &params){Q_UNUSED(params);}
 
-void Client::incomingCalls(const CallHierarchyIncomingCallsParams &params){}
+void Client::incomingCalls(const CallHierarchyIncomingCallsParams &params){Q_UNUSED(params);}
 
-void Client::outgoingCalls(const CallHierarchyOutgoingCallsParams &params){}
+void Client::outgoingCalls(const CallHierarchyOutgoingCallsParams &params){Q_UNUSED(params);}
 
 void Client::refresh(){}
 
@@ -204,13 +204,15 @@ void Client::workspace_inlineValue_refresh(){}
 
 void Client::workspace_diagnostic_refresh(){}
 
-void Client::diagnostic(const WorkspaceDiagnosticParams &params){}
+void Client::diagnostic(const WorkspaceDiagnosticParams &params){Q_UNUSED(params);}
 
 void Client::selectLspServer(const newlsp::ProjectKey &key)
 {
+    if (d->proKey == key)
+        return;
+
     d->proKey = key;
     QJsonObject params = newlsp::toQJsonObject(key);
-    qInfo() << "--> server : " << __FUNCTION__ << "\n" << params;
     d->writeLspData(newlsp::notificationData(__FUNCTION__, params).toUtf8());
 }
 
@@ -293,7 +295,6 @@ void Client::exitRequest()
 
 void ClientPrivate::callMethod(const QString &method, const QJsonObject &params)
 {
-    qInfo() << "--> server call method: " << method << "\n" << params;
     requestIndex ++;
     requestSave.insert(requestIndex, method);
     writeLspData(newlsp::methodData(requestIndex, method, params).toUtf8());
@@ -301,13 +302,12 @@ void ClientPrivate::callMethod(const QString &method, const QJsonObject &params)
 
 void ClientPrivate::callNotification(const QString &method, const QJsonObject &params)
 {
-    qInfo() << "--> server call notification: " << method << "\n" << params;
     writeLspData(newlsp::notificationData(method, params).toUtf8());
 }
 
 void ClientPrivate::writeLspData(const QByteArray &jsonObj)
 {
-    qInfo() << jsonObj;
+    qInfo() << "\nclient---------->server:\n{\n" << jsonObj << "\n}";
     q->write(jsonObj);
     q->waitForBytesWritten();
 }
@@ -325,7 +325,6 @@ bool ClientPrivate::calledError(const QJsonObject &jsonObj)
             errStr += QString("from: %0").arg(requestMethod);
         }
         requestSave.remove(calledID);
-        qInfo() << errStr;
         return true;
     }
     return false;
@@ -336,8 +335,6 @@ bool ClientPrivate::initResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_INITIALIZE) {
-        qInfo() << "client <-- : " << lsp::V_INITIALIZE;
-        qInfo() << jsonObj;
         requestSave.remove(calledID);
 
         QJsonObject semanticTokensProviderObj = jsonObj.value("result").toObject()
@@ -373,7 +370,6 @@ bool ClientPrivate::openResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_DIDOPEN) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_DIDOPEN;
         requestSave.remove(calledID);
         return true;
     }
@@ -385,7 +381,6 @@ bool ClientPrivate::changeResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_DIDCHANGE) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_DOCUMENTSYMBOL;
         requestSave.remove(calledID);
         return true;
     }
@@ -397,7 +392,6 @@ bool ClientPrivate::symbolResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_DOCUMENTSYMBOL) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_DOCUMENTSYMBOL;
         requestSave.remove(calledID);
         return true;
     }
@@ -409,8 +403,6 @@ bool ClientPrivate::renameResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_RENAME) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_RENAME
-                << jsonObj;
         requestSave.remove(calledID);
         QJsonObject resultObj = jsonObj.value(K_RESULT).toObject();
 
@@ -582,8 +574,6 @@ bool ClientPrivate::rangeFormattingResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_RANGEFORMATTING) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_RANGEFORMATTING
-                << jsonObj;
         requestSave.remove(calledID);
 
         QJsonValue resultJV = jsonObj.value(K_RESULT);
@@ -608,7 +598,6 @@ bool ClientPrivate::rangeFormattingResult(const QJsonObject &jsonObj)
             }
             emit q->rangeFormattingRes(edits);
         }
-        qInfo() << resultJV;
     }
     return false;
 }
@@ -618,7 +607,6 @@ bool ClientPrivate::definitionResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.values().contains(lsp::V_TEXTDOCUMENT_DEFINITION)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_DEFINITION) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_DEFINITION << jsonObj;
         requestSave.remove(calledID);
 
         QJsonValue resultJV = jsonObj.value(K_RESULT);
@@ -706,7 +694,6 @@ bool ClientPrivate::completionResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(requestSave.values().contains(lsp::V_TEXTDOCUMENT_COMPLETION)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_COMPLETION) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_COMPLETION /*<< jsonObj*/;
         requestSave.remove(calledID);
         QJsonObject resultObj = jsonObj.value(K_RESULT).toObject();
         QJsonArray itemsArray = resultObj.value("items").toArray();
@@ -768,7 +755,6 @@ bool ClientPrivate::signatureHelpResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_SIGNATUREHELP) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_SIGNATUREHELP;
         requestSave.remove(calledID);
         return true;
     }
@@ -780,7 +766,6 @@ bool ClientPrivate::hoverResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_HOVER) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_HOVER << jsonObj;
         requestSave.remove(calledID);
         QJsonObject resultObj = jsonObj.value("result").toObject();
         newlsp::Hover hover;
@@ -837,7 +822,6 @@ bool ClientPrivate::referencesResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_REFERENCES) {
-        qInfo() << "client <-- : " <<lsp:: V_TEXTDOCUMENT_REFERENCES;
         lsp::References refs;
         auto resultArray = jsonObj.value(K_RESULT).toArray();
         for (auto item : resultArray) {
@@ -866,8 +850,6 @@ bool ClientPrivate::docHighlightResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT
-                << jsonObj;
         requestSave.remove(calledID);
         return true;
     }
@@ -879,8 +861,6 @@ bool ClientPrivate::docSemanticTokensFullResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_SEMANTICTOKENS + "/full") {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_SEMANTICTOKENS + "full"
-                << jsonObj;
         requestSave.remove(calledID);
 
         QJsonObject result = jsonObj.value(K_RESULT).toObject();
@@ -910,7 +890,6 @@ bool ClientPrivate::closeResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_TEXTDOCUMENT_DIDCLOSE) {
-        qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_DIDCLOSE;
         requestSave.remove(calledID);
         return true;
     }
@@ -922,8 +901,6 @@ bool ClientPrivate::exitResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_EXIT) {
-        qInfo() << "client <-- : " << lsp::V_EXIT
-                << jsonObj;
         requestSave.remove(calledID);
         return true;
     }
@@ -935,8 +912,6 @@ bool ClientPrivate::shutdownResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if(requestSave.keys().contains(calledID)
             && requestSave.value(calledID) == lsp::V_SHUTDOWN) {
-        qInfo() << "client <-- : " << lsp::V_SHUTDOWN
-                << jsonObj;
         requestSave.remove(calledID);
         return true;
     }
@@ -948,7 +923,6 @@ bool ClientPrivate::diagnosticsCalled(const QJsonObject &jsonObj)
     if (!jsonObj.keys().contains(K_METHOD)
             || jsonObj.value(K_METHOD).toString() != lsp::V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS)
         return false;
-    qInfo() << "client <-- : " << lsp::V_TEXTDOCUMENT_PUBLISHDIAGNOSTICS;
 
     newlsp::PublishDiagnosticsParams publishDiagnosticsParams;
 
@@ -1090,29 +1064,30 @@ bool ClientPrivate::calledResult(const QJsonObject &jsonObj)
 void ClientPrivate::doReadStdoutLine()
 {
     while (q->canReadLine()) {
-        //        auto lineData = q->readLine();
-        //        qInfo() << "lineData:\n" << lineData;
-        //        doReadedLine(lineData);
         doReadedLine(q->readLine());
     }
     if (q->bytesAvailable()) {
-        //        auto allData = q->readAll();
-        //        qInfo() << "allData:\n" << allData;
-        //        doReadedLine(allData);
         doReadedLine(q->readAll());
     }
 }
 
 void ClientPrivate::identifyJsonObject(const QJsonObject &jsonObj)
 {
-    if (calledError(jsonObj))
+    if (calledError(jsonObj)) {
+        qWarning() << "\nclient <- server:\n{\n" << jsonObj << "\n}";
         return;
+    }
 
-    if (calledResult(jsonObj))
-        return;
 
-    if (serverCalled(jsonObj))
+    if (calledResult(jsonObj)) {
+        qInfo() << "\nclient <- server:\n{\n" << jsonObj << "\n}";
         return;
+    }
+
+    if (serverCalled(jsonObj)) {
+        qInfo() << "\nclient <- server:\n{\n" << jsonObj << "\n}";
+        return;
+    }
 }
 
 lsp::SemanticTokensProvider Client::initSecTokensProvider()
@@ -1137,19 +1112,13 @@ ClientPrivate::ClientPrivate(Client * const q)
     QObject::connect(q, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [&](int exitCode, QProcess::ExitStatus status)
     {
-        qCritical() << "lspServerProc finished:\n" << exitCode << status;
+        qCritical() << "\nclient <- server\n{\n" << "lspServerProc finished:\n" << exitCode << status << "\n}";
     });
 
     QObject::connect(q, &QProcess::readyReadStandardError,
                      this, [=]()
     {
-#ifdef QT_DEBUG
-        std::cout /*<< "lspServerProc error out:\n"*/
-                << QString(q->readAllStandardError()).toStdString()
-                << std::endl;
-#else
-        qCritical() << q->readAllStandardError();
-#endif
+        qCritical() << "\nclient <- server\n{\n" <<q->readAllStandardError() << "\n}";
     });
 
     QObject::connect(q, &QProcess::readyReadStandardOutput,

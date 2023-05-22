@@ -133,7 +133,7 @@ Q_SIGNALS:
 
 #define localDataTimeStr newlsp::ServerApplication::localDateTime().toStdString()
 #define lspServApp newlsp::ServerApplication::ins()
-#define lspServErr lspServApp->err({localDataTimeStr, __FILE__, std::to_string(__LINE__), "Error"})
-#define lspServOut lspServApp->err({localDataTimeStr, __FILE__, std::to_string(__LINE__), "Output"})
+#define lspServErr lspServApp->err({localDataTimeStr, __FILE__, std::to_string(__LINE__), "Server Error"})
+#define lspServOut lspServApp->out({localDataTimeStr, __FILE__, std::to_string(__LINE__), "Server output"})
 
 #endif // SERVERAPPLICATION_H

@@ -161,6 +161,29 @@ QProcess *createPythonServ(const newlsp::ProjectKey &key)
     return proc;
 }
 
+// setting from pyls trismit
+QProcess *createJSServ(const newlsp::ProjectKey &key)
+{
+    lspServOut << "create js language server," << qApp->thread() << QThread::currentThread();
+    if (key.language != newlsp::JS)
+        return nullptr;
+
+    auto proc = new QProcess();
+    proc->setProgram("/usr/bin/bash");
+    proc->setArguments({"-c","typescript-language-server --stdio"});
+    proc->setProcessChannelMode(QProcess::ForwardedOutputChannel);
+    QObject::connect(proc, &QProcess::readyReadStandardError,
+                     proc, [=]() {
+        std::cerr << proc->readAllStandardError().toStdString() << std::endl;
+    });
+    proc->start();
+
+    JsonRpcCallProxy::ins().setSelect(key);
+
+    return proc;
+}
+
+
 void selectLspServer(const QJsonObject &params)
 {
     QString language = params.value(QString::fromStdString(newlsp::language)).toString();
@@ -192,6 +215,7 @@ int main(int argc, char *argv[])
     JsonRpcCallProxy::ins().bindCreateProc(newlsp::Cxx, createCxxServ);
     JsonRpcCallProxy::ins().bindCreateProc(newlsp::Java, createJavaServ);
     JsonRpcCallProxy::ins().bindCreateProc(newlsp::Python, createPythonServ);
+    JsonRpcCallProxy::ins().bindCreateProc(newlsp::JS, createJSServ);
     JsonRpcCallProxy::ins().bindFilter("selectLspServer", selectLspServer);
 
     newlsp::ServerApplication lspServ(a);

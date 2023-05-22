@@ -108,7 +108,6 @@ bool AutoEventHandlerRegister<T>::isRegistered = AutoEventHandlerRegister<T>::tr
 template <typename T>
 bool AutoEventHandlerRegister<T>::trigger()
 {
-    qInfo() << "Register: " << __PRETTY_FUNCTION__;
     EventCallProxy::registerHandler(T::type(), T::topics(), [] { return QSharedPointer<T>(new T()); });
     return true;
 }

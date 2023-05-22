@@ -276,7 +276,6 @@ WindowKeeper::WindowKeeper(QObject *parent)
     : QObject (parent)
     , d (new WindowKeeperPrivate)
 {
-    qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
@@ -420,7 +419,6 @@ void WindowKeeper::insertAction(const QString &menuName,
 
 void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
 {
-    qInfo() << __FUNCTION__;
     QAction *inputAction = static_cast<QAction*>(action->qAction());
     if (!action || !inputAction)
         return;
@@ -454,7 +452,6 @@ void WindowKeeper::removeActions(const QString &menuName)
 
 void WindowKeeper::addOpenProjectAction(const QString &name, AbstractAction *action)
 {
-    qInfo() << __FUNCTION__;
     if (!action || !action->qAction())
         return;
 
@@ -513,7 +510,6 @@ void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)
 
     for (auto action : d->navActionGroup->actions()) {
         if (action->text() == actionName){
-            qInfo() << action->text();
             action->setChecked(checked);
         }
     }

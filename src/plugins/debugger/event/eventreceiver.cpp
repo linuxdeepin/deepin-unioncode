@@ -40,6 +40,5 @@ QStringList DebugEventReceiver::topics()
 
 void DebugEventReceiver::eventProcess(const dpf::Event &event)
 {
-    qInfo() << event;
     emit debuggerSignals->receivedEvent(event);
 }

@@ -77,7 +77,7 @@ void EventCallProxy::registerHandler(EventHandler::Type type, const QStringList 
             info.future = QtConcurrent::run(info.handler.data(), &EventHandler::eventProcess, event);
         };
     }
-    qInfo() << "Register Handler, type " << static_cast<int>(type) << ", topics" << topics;
+    qDebug() << "Register Handler, type " << static_cast<int>(type) << ", topics" << topics;
     infoList.append(HandlerInfo{nullptr, invoke, topics, QFuture<void>()});
 }
 

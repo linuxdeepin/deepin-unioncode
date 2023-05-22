@@ -39,6 +39,7 @@ namespace lsp {
 const QString C_CPP{"C/C++"};
 const QString JAVA{"Java"};
 const QString PYTHON{"Python"};
+const QString JS{"JS"};
 const QString K_ID {"id"};
 const QString K_JSON_RPC {"jsonrpc"};
 const QString K_METHOD {"method"};
@@ -299,7 +300,7 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
 
         return params;
 
-    } else if (language == JAVA || language == PYTHON) {
+    } else if (language == JAVA || language == PYTHON || language == JS) {
 
         using namespace newlsp;
 
@@ -875,11 +876,13 @@ QJsonObject documentSemanticTokensFull(const QString &filePath)
 
 QJsonObject documentSemanticTokensRange(const QString &filePath)
 {
+    Q_UNUSED(filePath)
     return {};
 }
 
 QJsonObject documentSemanticTokensDelta(const QString &filePath)
 {
+    Q_UNUSED(filePath)
     return {};
 }
 

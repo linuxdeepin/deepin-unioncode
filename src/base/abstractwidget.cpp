@@ -38,12 +38,10 @@ AbstractWidget::AbstractWidget(void *qWidget)
         abort();
     }
 
-    qInfo() << "AbstractWidget construct from: " << (QWidget*)(qWidget);
     d->qWidget = (QWidget*)qWidget;
     QObject::connect(d->qWidget, &QWidget::destroyed,
                      d->qWidget, [this](QObject *obj){
         if (obj == d->qWidget) {
-            qInfo() << "AbstractWidget QWidget::destroyed" << obj;
             delete this;
         }
     }, Qt::DirectConnection);

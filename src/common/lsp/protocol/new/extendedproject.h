@@ -30,6 +30,7 @@ namespace newlsp
 inline const std::string Cxx{"C/C++"};
 inline const std::string Java{"Java"};
 inline const std::string Python{"Python"};
+inline const std::string JS{"JS"};
 
 inline const std::string language{"language"};
 inline const std::string workspace{"workspace"};

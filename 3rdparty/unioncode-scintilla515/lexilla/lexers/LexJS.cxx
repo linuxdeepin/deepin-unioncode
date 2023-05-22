@@ -975,7 +975,7 @@ public:
     explicit LexerJS(bool isXml_, bool isPHPScript_) :
 		DefaultLexer(
 			isXml_ ? "xml" : (isPHPScript_ ? "phpscript" : "hypertext"),
-			isXml_ ? SCLEX_XML : (isPHPScript_ ? SCLEX_PHPSCRIPT : SCLEX_HTML),
+            isXml_ ? SCLEX_XML : (isPHPScript_ ? SCLEX_PHPSCRIPT : SCLEX_JS),
 			isXml_ ?  lexicalClassesXML : lexicalClassesHTML,
 			isXml_ ?  std::size(lexicalClassesXML) : std::size(lexicalClassesHTML)),
 		isXml(isXml_),

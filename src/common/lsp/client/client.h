@@ -24,7 +24,6 @@
 #include "common/lsp/protocol/protocol.h"
 #include "common/lsp/protocol/newprotocol.h"
 
-#include <QTcpSocket>
 #include <QThread>
 
 namespace newlsp {

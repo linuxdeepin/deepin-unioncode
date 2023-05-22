@@ -125,6 +125,7 @@ enum_def(SemanticTokenType, QString)
     enum_exp Number = "number";
     enum_exp Regexp = "regexp";
     enum_exp Operator = "operator";
+    enum_exp Member = "member";
 };
 
 enum_def(SemanticTokenModifier, QString)

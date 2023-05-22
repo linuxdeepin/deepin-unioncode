@@ -90,6 +90,7 @@ public:
         enum_exp WarningContext = "Warning Context";
         enum_exp Method = "Method";
         enum_exp Parameter = "Parameter";
+        enum_exp Member = "Member";
     };
 
     enum_def(Key_2, QString)

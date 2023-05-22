@@ -232,6 +232,11 @@
                 "Color": "ff0000",
                 "Style": 1
             }
+        },
+        "Member": {
+            "Foreground": "fff8dc",
+            "Background": "000000",
+            "FontSize": 16
         }
     }
 }
