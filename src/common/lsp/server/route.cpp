@@ -49,18 +49,20 @@ void Route::save(const ProjectKey &key, QProcess *const value)
 {
     if (!savedProcs.value(key)) {
         QObject::connect(value, QOverload<int>::of(&QProcess::finished),
-                         this, &Route::delProc, Qt::DirectConnection);
+                         this, &Route::deleteProc, Qt::DirectConnection);
         savedProcs.insert(key, value);
     }
 }
 
-void Route::delProc(int exitCode)
+void Route::deleteProc(int exitCode)
 {
     Q_UNUSED(exitCode)
     QProcess *proc = qobject_cast<QProcess*>(sender());
     if (proc) {
         ProjectKey key = Route::key(proc);
         savedProcs.remove(key);
+        proc->kill();
+        proc->deleteLater();
     }
 }
 

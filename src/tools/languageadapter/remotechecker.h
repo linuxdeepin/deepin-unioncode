@@ -40,10 +40,17 @@ public:
     bool checkShasum(const QString &filePath, const QString &src_code, const QString &mode);
     QString getRemoteFile(const QUrl &url);
     bool saveRemoteFile(const QUrl &url, const QString &saveFilePath);
+    void checkJSServer(const QString &checkPath);
+
 private:
     void doCheckClangd(const QString &language);
     void doCheckJdtls(const QString &language);
     void doCheckPyls(const QString &language);
+
+    bool checkClangdFlag = false;
+    bool checkJdtlsFlag = false;
+    bool checkPylsFlag = false;
+    bool checkJSServerFlag = false;
 };
 
 #endif // BACKENDCHECKER_H

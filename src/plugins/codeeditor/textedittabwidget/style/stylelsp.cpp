@@ -205,6 +205,11 @@ lsp::Position StyleLsp::getLspPosition(sptr_t doc, sptr_t sciPosition)
     return lsp::Position{line, (int)(sciPosition - lineChStartPos)};
 }
 
+int editLineNumber(int originLineNumber)
+{
+    return originLineNumber + 1;
+}
+
 StyleLsp::StyleLsp(TextEdit *parent)
     : QObject (parent)
     , d (new StyleLspPrivate())
@@ -239,7 +244,7 @@ StyleLsp::StyleLsp(TextEdit *parent)
         newRange.start.character = range.start.character;
         newRange.end.line = range.end.line;
         newRange.end.character = range.end.character;
-        EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(), filePath, range.start.line);
+        EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(), filePath, editLineNumber(range.start.line));
     });
 
     if (!d->rangeFormattingAction) {
@@ -474,24 +479,15 @@ void StyleLsp::sciDefinitionHover(Scintilla::Position position)
     auto currTextRange = SciRangeCache{d->edit->wordStartPosition(position, true), d->edit->wordEndPosition(position, true)};
     auto isSameTextRange = afterTextRange == currTextRange;
 
-    // 编辑器不相等, 直接刷新数据
-    if  (d->edit != d->edit) {
-        d->definitionCache.setSciPosition(position);
+    if (isSameTextRange) { // 相同的关键字不再触发Definition的绘制
+        d->definitionCache.setSciPosition(position); // 更新坐标点
+        return;
+    } else {
         d->definitionCache.setTextRange(currTextRange);
-        // 清空结果
+        d->definitionCache.setSciPosition(position);
         d->definitionCache.cleanFromLsp();
-        d->edit->setCursor(-1); // 恢复鼠标状态
-        d->definitionCache.setCursor(d->edit->cursor());
-    } else { // 编辑器相等
-        if (isSameTextRange) { // 相同的关键字不再触发Definition的绘制
-            d->definitionCache.setSciPosition(position); // 更新坐标点
-            return;
-        } else {
-            d->definitionCache.setTextRange(currTextRange);
-            d->definitionCache.setSciPosition(position);
-            d->definitionCache.cleanFromLsp();
-        }
     }
+
     auto lspPostion = getLspPosition(d->edit->docPointer(), d->definitionCache.getSciPosition());
     if (d->getClient()){
         qApp->metaObject()->invokeMethod(d->getClient(), "definitionRequest",
@@ -530,19 +526,19 @@ void StyleLsp::sciIndicClicked(Scintilla::Position position)
             auto one = d->definitionCache.getLocations().front();
             EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(),
                                                                QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                               one.range.end.line);
+                                                               editLineNumber(one.range.end.line));
             cleanDefinition(position);
         } else if (d->definitionCache.getLocationLinks().size() > 0) {
             auto one = d->definitionCache.getLocationLinks().front();
             EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(),
                                                                QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
-                                                               one.targetRange.end.line);
+                                                               editLineNumber(one.targetRange.end.line));
             cleanDefinition(position);
         } else {
             auto one = d->definitionCache.getLocation();
             EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(),
                                                                QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                               one.range.end.line);
+                                                               editLineNumber(one.range.end.line));
             cleanDefinition(position);
         }
     }

@@ -27,21 +27,14 @@
 
 using FO = FileOperation;
 
-namespace  {
-bool checkClangdFlag = false;
-bool checkJdtlsFlag = false;
-bool checkPylsFlag = false;
-}
-
 void RemoteChecker::doCheckClangd(const QString &language)
 {
     if (checkClangdFlag)
         return;
 
-    if (!checkClangdFlag)
-        checkClangdFlag = true;
+    checkClangdFlag = true;
 
-    QString user = "FunningC0217";
+    QString user = "deepin";
     QString origin = "clangd-archive";
     QString branch = "dev";
     QString rawPrefix = "https://raw.githubusercontent.com";
@@ -103,7 +96,7 @@ void RemoteChecker::doCheckClangd(const QString &language)
                              + "/raw/dev/" + currentPlatform + "/" + clangdFileName);
         QStringList args = { remoteClangdUrl.toEncoded(), "-O", clangdFileName };
         WGetDialog dialog;
-        dialog.setWorkDirectory(CustomPaths::lspRuntimePath(language));
+        dialog.setWorkingDirectory(CustomPaths::lspRuntimePath(language));
         dialog.setWgetArguments(args);
         dialog.exec();
         QFile::Permissions permission = QFile::Permission::ReadUser
@@ -118,8 +111,7 @@ void RemoteChecker::doCheckJdtls(const QString &language)
     if (checkJdtlsFlag)
         return;
 
-    if (!checkJdtlsFlag)
-        checkJdtlsFlag = true;
+    checkJdtlsFlag = true;
 
     QUrl remoteJdtlsUrl("https://download.eclipse.org/jdtls/snapshots/jdt-language-server-1.11.0-202205051421.tar.gz");
     QString localJdtlsPath = CustomPaths::lspRuntimePath(language) + QDir::separator() + "jdt-language-server.tar.gz";
@@ -157,12 +149,12 @@ void RemoteChecker::doCheckJdtls(const QString &language)
 
         QStringList args = { remoteJdtlsUrl.toEncoded(), "-O", localJdtlsPath };
         WGetDialog dialog;
-        dialog.setWorkDirectory(CustomPaths::lspRuntimePath(language));
+        dialog.setWorkingDirectory(CustomPaths::lspRuntimePath(language));
         dialog.setWgetArguments(args);
         dialog.exec();
 
         ProcessDialog processDialog;
-        processDialog.setWorkDirectory(CustomPaths::lspRuntimePath(language));
+        processDialog.setWorkingDirectory(CustomPaths::lspRuntimePath(language));
         processDialog.setProgram("tar");
         processDialog.setArguments({"zxvf", localJdtlsPath, "-C", "."});
         processDialog.exec();
@@ -176,8 +168,7 @@ void RemoteChecker::doCheckPyls(const QString &language)
     if (checkPylsFlag)
         return;
 
-    if (!checkPylsFlag)
-        checkPylsFlag = true;
+    checkPylsFlag = true;
 
     // virtualenv not support, use user env
     QString pip3PackageName {"python-language-server[all]"};
@@ -190,6 +181,38 @@ void RemoteChecker::doCheckPyls(const QString &language)
         pip3Dialog.install("python-language-server[all]");
         pip3Dialog.exec();
     }
+}
+
+void RemoteChecker::checkJSServer(const QString &checkPath)
+{
+    if (checkJSServerFlag)
+        return;
+
+    checkJSServerFlag = true;
+
+    QString workingDirectory = checkPath;
+    QString nodePath = workingDirectory + "/node_modules/node/bin/node";
+    if (QFileInfo::exists(nodePath))
+        return;
+
+    QProcess process;
+    process.setWorkingDirectory(workingDirectory);
+
+    auto runCommand = [&](const QString &program, const QStringList &args)
+    {
+        process.start(program, args);
+        process.waitForFinished();
+        QString error = process.readAllStandardError();
+        if (!error.isEmpty())
+            qCritical() << QString("run %1 error:").arg(program) <<  error;
+    };
+
+    runCommand("npm", {"install", "n"});
+    runCommand("npm", {"install", "typescript", "typescript-language-server"});
+
+    process.setWorkingDirectory(workingDirectory + "/node_modules/.bin");
+    process.setEnvironment({QString("N_PREFIX=%1/node_modules/node").arg(workingDirectory)});
+    runCommand("./n", {"stable"});
 }
 
 RemoteChecker::RemoteChecker()
@@ -211,7 +234,6 @@ void RemoteChecker::checkLanguageBackend(const QString &language)
         doCheckJdtls(language);
     } else if (language == "Python") {
         doCheckPyls(language);
-    } else {
     }
 }
 

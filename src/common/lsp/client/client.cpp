@@ -307,7 +307,7 @@ void ClientPrivate::callNotification(const QString &method, const QJsonObject &p
 
 void ClientPrivate::writeLspData(const QByteArray &jsonObj)
 {
-    qInfo() << "\nclient---------->server:\n{\n" << jsonObj << "\n}";
+    qInfo() << "\nclient->server:\n{\n" << jsonObj << "\n}";
     q->write(jsonObj);
     q->waitForBytesWritten();
 }

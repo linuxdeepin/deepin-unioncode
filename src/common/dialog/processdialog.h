@@ -37,8 +37,9 @@ public:
     QString program() const;
     void setArguments(const QStringList &args);
     QStringList arguments();
-    void setWorkDirectory(const QString &workDir);
+    void setWorkingDirectory(const QString &workDir);
     QString workDirectory() const;
+    void setEnvironment(const QStringList &env);
     virtual int exec() override;
 
 protected:

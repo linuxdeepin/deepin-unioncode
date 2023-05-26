@@ -188,9 +188,9 @@ QString CustomPaths::projectCachePath(const QString &projectPath)
     return FO::checkCreateDir(projectPath, ".unioncode");
 }
 
-QString CustomPaths::user(CustomPaths::Flags flage)
+QString CustomPaths::user(CustomPaths::Flags flag)
 {
-    switch (flage) {
+    switch (flag) {
     case Applition:
         return qApp->applicationDirPath();
     case Plugins:

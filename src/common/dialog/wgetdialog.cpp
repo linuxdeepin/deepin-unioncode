@@ -30,7 +30,7 @@ WGetDialog::WGetDialog(QWidget *parent, Qt::WindowFlags f)
     process.setProgram("wget");
 }
 
-void WGetDialog::setWorkDirectory(const QString &workDir)
+void WGetDialog::setWorkingDirectory(const QString &workDir)
 {
     process.setWorkingDirectory(workDir);
 }

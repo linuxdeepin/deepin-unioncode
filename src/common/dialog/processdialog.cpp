@@ -74,7 +74,7 @@ QStringList ProcessDialog::arguments()
     return process.arguments();
 }
 
-void ProcessDialog::setWorkDirectory(const QString &workDir)
+void ProcessDialog::setWorkingDirectory(const QString &workDir)
 {
     process.setWorkingDirectory(workDir);
 }
@@ -82,6 +82,11 @@ void ProcessDialog::setWorkDirectory(const QString &workDir)
 QString ProcessDialog::workDirectory() const
 {
     return process.workingDirectory();
+}
+
+void ProcessDialog::setEnvironment(const QStringList &env)
+{
+    process.setEnvironment(env);
 }
 
 int ProcessDialog::exec()

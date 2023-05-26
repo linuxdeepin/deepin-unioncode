@@ -64,10 +64,6 @@ void CodeLensDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         int lineNumCurrWidth = option.fontMetrics.width(lineNumCurr);
         int lineNumOffset = lineNumMaxWidth - lineNumCurrWidth;
         int textHeight = option.fontMetrics.height();
-        int textHeadOffset = 0;
-        if (option.rect.height() > textHeight) {
-            textHeadOffset = (option.rect.height() - textHeight) / 2;
-        }
         QRect lineNumDrawRect = option.rect.adjusted(lineNumOffset, textHeight, 0, 0);
         painter->setPen(option.widget->palette().text().color());
         painter->drawText(lineNumDrawRect, lineNumCurr);

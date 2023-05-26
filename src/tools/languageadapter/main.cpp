@@ -67,13 +67,7 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     auto proc = new QProcess();
     proc->setProgram("/usr/bin/bash");
     proc->setArguments({"-c", procAs.join(" ")});
-    proc->setProcessChannelMode(QProcess::ForwardedOutputChannel);
-    QObject::connect(proc, &QProcess::readyReadStandardError, proc, [=]() {
-        std::cerr << proc->readAllStandardError().toStdString() << std::endl;
-    });
-    proc->start();
 
-    JsonRpcCallProxy::ins().setSelect(key);
     return proc;
 }
 
@@ -116,13 +110,7 @@ QProcess *createJavaServ(const newlsp::ProjectKey &key)
             + QString("-data %0").arg(dataDir);
     proc->setProgram("/usr/bin/bash");
     proc->setArguments({"-c", lanuchLine});
-    proc->setProcessChannelMode(QProcess::ForwardedErrorChannel);
-    QObject::connect(proc, &QProcess::readyReadStandardOutput, proc, [=](){
-        std::cout << proc->readAllStandardOutput().toStdString() << std::endl;
-    });
-    proc->start();
-    QObject::connect(qApp, &QCoreApplication::destroyed, [&](){ proc->kill(); });
-    JsonRpcCallProxy::ins().setSelect(key);
+
     return proc;
 }
 
@@ -132,10 +120,6 @@ QProcess *createPythonServ(const newlsp::ProjectKey &key)
     lspServOut << __FUNCTION__ << qApp->thread() << QThread::currentThread();
     if (key.language != newlsp::Python)
         return nullptr;
-
-    //    if (!env::pkg::native::installed()) {
-    //    RemoteChecker::instance().checkLanguageBackend(QString::fromStdString(key.language));
-    //    }
 
     QString jdtlsNativePkgPath = env::pkg::native::path(env::package::Category::get()->jdtls);
     ProcessUtil::execute("pip3", {"install", "python-language-server[all]"}, [=](const QByteArray &data){
@@ -149,14 +133,6 @@ QProcess *createPythonServ(const newlsp::ProjectKey &key)
     pyVer.major = 3;
     auto python3Env = env::lang::get(env::lang::Category::User, env::lang::Python, pyVer);
     proc->setProcessEnvironment(python3Env);
-    proc->setProcessChannelMode(QProcess::ForwardedOutputChannel);
-    QObject::connect(proc, &QProcess::readyReadStandardError,
-                     proc, [=]() {
-        std::cerr << proc->readAllStandardError().toStdString() << std::endl;
-    });
-    proc->start();
-
-    JsonRpcCallProxy::ins().setSelect(key);
 
     return proc;
 }
@@ -168,17 +144,18 @@ QProcess *createJSServ(const newlsp::ProjectKey &key)
     if (key.language != newlsp::JS)
         return nullptr;
 
-    auto proc = new QProcess();
-    proc->setProgram("/usr/bin/bash");
-    proc->setArguments({"-c","typescript-language-server --stdio"});
-    proc->setProcessChannelMode(QProcess::ForwardedOutputChannel);
-    QObject::connect(proc, &QProcess::readyReadStandardError,
-                     proc, [=]() {
-        std::cerr << proc->readAllStandardError().toStdString() << std::endl;
-    });
-    proc->start();
+    QString jsServerInstallPath = CustomPaths::lspRuntimePath(QString::fromStdString(key.language));
+    RemoteChecker::instance().checkJSServer(jsServerInstallPath);
 
-    JsonRpcCallProxy::ins().setSelect(key);
+    QString nodePath = jsServerInstallPath + "/node_modules/node/bin/node";
+    QString serverPath = jsServerInstallPath + "/node_modules/.bin/typescript-language-server";
+    if (!QFileInfo::exists(nodePath) || !QFileInfo::exists(serverPath)) {
+        return nullptr;
+    }
+
+    auto proc = new QProcess();
+    proc->setProgram(nodePath);
+    proc->setArguments({serverPath, "--stdio"});
 
     return proc;
 }
@@ -195,6 +172,11 @@ void selectLspServer(const QJsonObject &params)
     if (!proc) {
         proc = JsonRpcCallProxy::ins().createLspServ(projectKey);
         if (proc) {
+            proc->setProcessChannelMode(QProcess::ForwardedOutputChannel);
+            QObject::connect(proc, &QProcess::readyReadStandardError, proc, [=]() {
+                lspServErr << "run lspServ error:" << proc->readAllStandardError().toStdString();
+            });
+            proc->start();
             lspServOut << "save backend process";
             JsonRpcCallProxy::ins().save(projectKey, proc);
             lspServOut << "selected ProjectKey{language:" << projectKey.language
