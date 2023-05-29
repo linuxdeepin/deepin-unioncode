@@ -49,7 +49,6 @@ private slots:
     void doProjectChildsModified(const QList<QStandardItem*> &items);
     void doGradleGeneratMenu(const QString &program, const QStringList &args, const QString &workdir);
     void doGradleCleanMenu();
-    void doGradleSplitTasksOutput(const QByteArray &array);
     void doGradleTaskActionTriggered();
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
 

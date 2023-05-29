@@ -87,7 +87,6 @@ private slots:
     void removeFileStatusBar(const QString &file);
     void removeFileEdit(const QString &file);
     void removeFileTab(const QString &file);
-    void removeModifiedAutoReloadFlag(const QString &file);
     void fileModifyed(const QString &file);
     void fileDeleted(const QString &file);
     void fileMoved(const QString &file);

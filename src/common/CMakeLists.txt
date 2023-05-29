@@ -5,6 +5,8 @@ include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 configure_file(util/config.h.in config.h)
 find_package(Qt5Network)
 
+set(CMAKE_CXX_STANDARD 17)
+
 set(CXX_H
     common.h
     inotify/private/inotify_hook.h

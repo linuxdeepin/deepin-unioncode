@@ -22,7 +22,7 @@
 #ifndef JSONDISPLAYMODEL_H
 #define JSONDISPLAYMODEL_H
 
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 #include <QStandardItemModel>
 

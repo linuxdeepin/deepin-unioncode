@@ -8,7 +8,11 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
     file(GLOB TS_FILES "translations/*.ts")
     foreach(TS_FILE IN LISTS TS_FILES)
         message(STATUS "process ts file: ${TS_FILE}")
-        execute_process(COMMAND lupdate "${CMAKE_SOURCE_DIR}/src/" -ts -no-obsolete
+        find_program(LUPDATE_COMMAND NAMES lupdate lupdate-qt5 lupdate-qt4 lupdate-pro)
+        if (NOT LUPDATE_COMMAND)
+            message(FATAL_ERROR "lupdate command not found")
+        endif()
+        execute_process(COMMAND ${LUPDATE_COMMAND} "${CMAKE_SOURCE_DIR}/src/" -ts -no-obsolete
             "${TS_FILE}"
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             OUTPUT_VARIABLE OUTPUT

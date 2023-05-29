@@ -21,7 +21,7 @@
 #ifndef JSONTABWIDGET_H
 #define JSONTABWIDGET_H
 
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 #include <QTabWidget>
 

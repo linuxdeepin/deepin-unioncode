@@ -202,7 +202,7 @@ void HTMLDecoder::decodeLine(const Character* const characters, int count, LineP
         }
 
         //handle whitespace
-        if (std::iswspace(ch))
+        if (std::isspace(ch))
             spaceCount++;
         else
             spaceCount = 0;

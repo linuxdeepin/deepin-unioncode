@@ -23,6 +23,7 @@
 
 #include <common/type/menuext.h>
 #include <QProcessEnvironment>
+#include <optional>
 
 namespace environment {
 namespace language {

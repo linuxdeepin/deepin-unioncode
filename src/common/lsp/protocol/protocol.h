@@ -32,6 +32,7 @@
 
 #include <any>
 #include <variant>
+#include <optional>
 
 namespace lsp {
 

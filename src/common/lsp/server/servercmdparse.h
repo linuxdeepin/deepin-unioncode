@@ -23,6 +23,7 @@
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
+#include <optional>
 
 namespace newlsp {
 extern const QString port;

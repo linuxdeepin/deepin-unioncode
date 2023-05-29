@@ -49,7 +49,6 @@ public:
 private slots:
     void doProjectChildsModified(const QList<QStandardItem*> &info);
     void doJSCleanMenu();
-    void doJSSplitTasksOutput(const QByteArray &array);
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
 };
 

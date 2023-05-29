@@ -23,7 +23,7 @@
 
 #include <QProcess>
 
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 class ToolsPrivate;
 class Tools : public QObject

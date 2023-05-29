@@ -22,7 +22,7 @@
 #ifndef JSONDISPLAYVIEW_H
 #define JSONDISPLAYVIEW_H
 
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 #include <QTableView>
 

@@ -360,42 +360,42 @@
         <translation>编译输出(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="261"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="270"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation>错误：执行命令错误！原因未知。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="265"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="274"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始在工作区%3中执行%1 %2命令。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="273"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="282"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程%1正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="276"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="285"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程%1退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="280"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="289"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程 %1崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="307"/>
+        <location filename="../../src/plugins/builder/buildercore/mainframe/buildmanager.cpp" line="316"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -455,19 +455,27 @@
     </message>
 </context>
 <context>
+    <name>CmakeAsynParse</name>
+    <message>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakeasynparse.cpp" line="243"/>
+        <source>build</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CmakeGenerator</name>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="247"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="235"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="388"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="372"/>
         <source>Build</source>
         <translation>编译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="389"/>
+        <location filename="../../src/plugins/project/projectcmake/mainframe/cmakegenerator.cpp" line="373"/>
         <source>Run</source>
         <translation>运行</translation>
     </message>
@@ -900,7 +908,7 @@ dap端口未就绪，请重试。
 <context>
     <name>EnvironmentWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="31"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="29"/>
         <location filename="../../src/plugins/project/projectcmake/mainframe/properties/environmentwidget.cpp" line="154"/>
         <source>Enable All Environment</source>
         <translation>启用所有环境</translation>
@@ -1428,37 +1436,6 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>ProjectParser</name>
-    <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/projectparser.cpp" line="57"/>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/projectparser.cpp" line="57"/>
-        <source>SAX Bookmarks</source>
-        <translation>SAX书签</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/projectparser.cpp" line="58"/>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/projectparser.cpp" line="58"/>
-        <source>Cannot read file %1:
-%2.</source>
-        <translation>无法读取文件%1:
-%2.</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/projectparser.cpp" line="85"/>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/projectparser.cpp" line="85"/>
-        <source>DOM Bookmarks</source>
-        <translation>DOM书签</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/projectparser.cpp" line="86"/>
-        <location filename="../../src/plugins/project/projectcmake/mainframe/properties/projectparser.cpp" line="86"/>
-        <source>Parse error at line %1, column %2:
-%3</source>
-        <translation>第%1行第%2列的解析错误：
-%3</translation>
-    </message>
-</context>
-<context>
     <name>ProjectTree</name>
     <message>
         <location filename="../../src/plugins/project/projectcore/mainframe/projecttree.cpp" line="318"/>
@@ -1539,12 +1516,12 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="567"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="572"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="574"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="579"/>
         <source>Find Usages</source>
         <translation>查找用法</translation>
     </message>
@@ -2165,7 +2142,7 @@ storage: %2
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="565"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="570"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
@@ -2475,7 +2452,7 @@ storage: %2
 <context>
     <name>QTabWidget</name>
     <message>
-        <location filename="../../src/services/project/projectservice.h" line="181"/>
+        <location filename="../../src/services/project/projectservice.h" line="196"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
@@ -2955,52 +2932,52 @@ Delete anyway?</source>
 <context>
     <name>Runner</name>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="60"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="59"/>
         <source>Running</source>
         <translation>运行</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="118"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="115"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="135"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="133"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation>错误：执行命令错误！原因未知。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="139"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="137"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始在工作区%3中执行%1 %2命令。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="147"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="145"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程%1正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="150"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="148"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程%1退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="154"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="152"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程 %1崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="180"/>
+        <location filename="../../src/plugins/debugger/runner/runner.cpp" line="178"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -3216,8 +3193,8 @@ Delete anyway?</source>
 <context>
     <name>StyleLsp</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="241"/>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="243"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="246"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="248"/>
         <source>Range Formatting</source>
         <translation>选中范围格式化</translation>
     </message>
