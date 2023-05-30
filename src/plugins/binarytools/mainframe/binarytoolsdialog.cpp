@@ -38,7 +38,6 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     : QDialog(parent)
     , d (new BinaryToolsDialogPrivate)
 {
-    resize(630, 500);
     setWindowTitle(tr("Binary Tools"));
 
     QVBoxLayout *vLayout = new QVBoxLayout(this);
@@ -62,6 +61,11 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     vLayout->addLayout(buttonLayout);
 
     connect(pbtUse, &QPushButton::clicked, [=](){
+        QtConcurrent::run([=](){
+            useClicked();
+        });
+    });
+    connect(d->configView, &BinaryToolsConfigView::useCombinationCommand, [=](){
         QtConcurrent::run([=](){
             useClicked();
         });
@@ -139,34 +143,36 @@ void BinaryToolsDialog::useClicked()
         }
     });
 
-    QString program = d->configView->getProgram();
-    QStringList args = d->configView->getArguments();
-    QString workingDir = d->configView->getWorkingDir();
-    QMap<QString, QVariant> map = d->configView->getEnvironment();
+    QList<QString> programList = d->configView->getProgramList();
+    QList<QStringList> argsList = d->configView->getArgumentsList();
+    QList<QString> workingDirList = d->configView->getWorkingDirList();
+    QList<QMap<QString, QVariant>> envList = d->configView->getEnvironmentList();
 
-    proc.setProgram(program);
-    if (!args.at(0).isEmpty()) {
-        proc.setArguments(args);
-    } else {
-        proc.setArguments({});
-    }
-    proc.setWorkingDirectory(workingDir);
-    QProcessEnvironment env;
-    QMap<QString, QVariant>::iterator iterator = map.begin();
-    while (iterator != map.end()) {
-        env.insert(iterator.key(), iterator.value().toString());
-        ++iterator;
-    }
-    proc.setProcessEnvironment(env);
-    QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
-            .arg(program, args.join(" "), workingDir);
-    outputMsg(startMsg, OutputPane::OutputFormat::NormalMessage);
-    proc.start();
-    proc.waitForFinished(-1);
+    for (int i =0; i < programList.size(); i++) {
+        proc.setProgram(programList.at(i));
+        if (!argsList.at(i).at(0).isEmpty()) {
+            proc.setArguments(argsList.at(i));
+        } else {
+            proc.setArguments({});
+        }
+        proc.setWorkingDirectory(workingDirList.at(i));
+        QProcessEnvironment env;
+        auto iterator = envList.at(i).begin();
+        while (iterator != envList.at(i).end()) {
+            env.insert(iterator.key(), iterator.value().toString());
+            ++iterator;
+        }
+        proc.setProcessEnvironment(env);
+        QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
+                .arg(programList.at(i), argsList.at(i).join(" "), workingDirList.at(i));
+        outputMsg(startMsg, OutputPane::OutputFormat::NormalMessage);
+        proc.start();
+        proc.waitForFinished(-1);
 
-    outputMsg(retMsg, OutputPane::OutputFormat::NormalMessage);
-    QString endMsg = tr("Execute command finished.\n");
-    outputMsg(endMsg, OutputPane::OutputFormat::NormalMessage);
+        outputMsg(retMsg, OutputPane::OutputFormat::NormalMessage);
+        QString endMsg = tr("Execute command finished.\n");
+        outputMsg(endMsg, OutputPane::OutputFormat::NormalMessage);
+    }
     QDialog::reject();
 }
 

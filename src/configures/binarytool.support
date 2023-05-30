@@ -1,0 +1,6 @@
+[
+    {"name":"deepin-cicd-mem-stat"},
+    {"name":"deepin-proc-map-stat"},
+	{"name":"deepin-cpu-stat"},
+	{"name":"deepin-cais"}
+]

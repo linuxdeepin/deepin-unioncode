@@ -31,27 +31,31 @@ class BinaryToolsConfigView : public QWidget
 public:
     explicit BinaryToolsConfigView(QWidget *parent = nullptr);
     ~BinaryToolsConfigView();
-    void initializeUi();
 
     bool saveConfig();
     void readConfig();
 
-    QString getProgram();
-    QStringList getArguments();
-    QString getWorkingDir();
-    QMap<QString, QVariant> getEnvironment();
+    QList<QString> getProgramList();
+    QList<QStringList> getArgumentsList();
+    QList<QString> getWorkingDirList();
+    QList<QMap<QString, QVariant>> getEnvironmentList();
 
 signals:
     void comboChanged();
+    void useCombinationCommand();
 
 private:
     void updateView(const QString &command);
     void currentConfigChanged(const QString &text);
+    void initializeCombo();
+    void initializeCombinationDialog();
     void addCompatConfig();
     void deleteCompatConfig();
     void renameCompatConfig();
+    void combineCompatConfig();
     void setConfigWidget();
     void findWorkPath();
+    void appendCommand(const QString &name);
     QString uniqueName(const QString &name);
 
     BinaryToolsConfigViewPrivate *const d = nullptr;

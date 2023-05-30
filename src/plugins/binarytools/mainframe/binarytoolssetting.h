@@ -28,6 +28,7 @@ class BinaryToolsSetting
 {
 public:
     BinaryToolsSetting();
+    BinaryToolsSetting(const QString &fileName, QObject *parent = nullptr);
 
     void setValue(const QString &key, const QVariant &value);
     QVariant getValue(const QString &key, const QVariant &defaultValue);
@@ -38,7 +39,7 @@ public:
     void allValues();
 
 private:
-    QSettings settings;
+    QSettings *settings = nullptr;
 };
 
 #endif // BINARYTOOLSETTINGS_H
