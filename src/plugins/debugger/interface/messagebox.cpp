@@ -29,14 +29,6 @@ namespace Internal {
 
 namespace {
 
-QWidget *dialogParent()
-{
-    QWidget *active = QApplication::activeModalWidget();
-    if (!active)
-        active = QApplication::activeWindow();
-    return active;
-}
-
 QWidget *message(QMessageBox::Icon icon, const QString &title, const QString &desciption)
 {
     QMessageBox *messageBox = new QMessageBox(icon,

@@ -66,6 +66,7 @@ inline const QString MWMTA_BINARY_TOOLS { QAction::tr("Binary Tools")};
 
 inline const QString MWM_HELP { QMenu::tr("&Help") };
 inline const QString MWM_REPORT_BUG { QAction::tr("Report Bug") };
+inline const QString MWM_HELP_DOCUMENTS { QAction::tr("Help Documents") };
 inline const QString MWM_ABOUT { QAction::tr("About") };
 inline const QString MWM_ABOUT_PLUGINS { QAction::tr("About Plugins...")};
 

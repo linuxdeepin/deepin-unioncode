@@ -42,7 +42,7 @@ uint32_t crc32(uint32_t crc, unsigned char* buf, size_t len);
 size_t page_size();
 size_t ceil_page_size(size_t sz) ;
 
-bool has_effective_caps(uint64_t caps);
+bool has_effective_caps();
 bool running_under_rr();
 const char* tmp_dir();
 

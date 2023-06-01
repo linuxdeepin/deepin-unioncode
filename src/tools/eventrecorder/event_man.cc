@@ -722,16 +722,6 @@ static void ParseDSODebugInfo(const Options& options,
     }
 }
 
-static void ParseExceptionStream(DumpedProcess* process, TraceReader* reader)
-{
-    string blk; reader->ReadBlock(blk);
-    MemoryRange range(blk);
-
-    const MDRawExceptionStream* exp = range.GetData<MDRawExceptionStream>(0);
-    process->crashing_tid = exp->thread_id;
-    process->fatal_signal = (int) exp->exception_record.exception_code;
-}
-
 static void ParseModuleList(const Options& options, DumpedProcess* process,
                   TraceReader* reader)
 {

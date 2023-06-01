@@ -151,8 +151,8 @@ void TargetsManager::readTargets(const QString &buildDirectory, const QString &w
         targetNameList.append(target.buildTarget);
     }
 
-    buildTargetNameList = targetNameList.toSet().toList();
-    exeTargetNameList = tempExeTargetNameList.toSet().toList();
+    buildTargetNameList = targetNameList.toSet().values();
+    exeTargetNameList = tempExeTargetNameList.toSet().values();
 
     if (exeTargetSelected.name.isEmpty() && exeTargets.size() > 0) {
         exeTargetSelected = exeTargets.front();

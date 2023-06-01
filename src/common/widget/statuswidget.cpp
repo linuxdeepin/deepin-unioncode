@@ -182,7 +182,7 @@ void StatusWidget::paintError(QPainter &painter)
                              this->rect().center());
 
     gradient.setColorAt(0, Qt::red);
-    gradient.setColorAt(1, palette().background().color());
+    gradient.setColorAt(1, palette().window().color());
     gradient.setSpread(QGradient::ReflectSpread);
     painter.setPen(Qt::red);
     painter.setBrush(QBrush(gradient));
@@ -203,7 +203,7 @@ void StatusWidget::paintSimple(QPainter &painter)
     //    gradient.setColorAt(0, _color);
     //    gradient.setColorAt(1,palette().background().color());
     //    gradient.setSpread(QGradient::ReflectSpread);
-    painter.setPen(palette().background().color());
+    painter.setPen(palette().window().color());
     //    painter.setBrush(QBrush(gradient));
     painter.setBrush(QBrush(d->color));
     painter.setRenderHint(QPainter::Antialiasing, true);
@@ -224,10 +224,10 @@ void StatusWidget::paintRadar(QPainter &painter)
 
     QConicalGradient gradient(this->rect().center(),
                               (currPieIndex+1) * angle);
-    gradient.setColorAt(0, palette().background().color());
+    gradient.setColorAt(0, palette().window().color());
     gradient.setColorAt(1, d->color);
     gradient.setSpread(QGradient::ReflectSpread);
-    painter.setPen(palette().background().color());
+    painter.setPen(palette().window().color());
     painter.setBrush(QBrush(gradient));
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.drawEllipse(this->rect().center(),this->width()/2,this->height()/2);
@@ -246,12 +246,12 @@ void StatusWidget::paintRing(QPainter &painter)
 
 void StatusWidget::paintTwinkle(QPainter &painter)
 {
-    auto background = this->palette().background();
+    auto background = this->palette().window();
     painter.setPen(background.color());
 
     if(d->currElemIndex % 2 == 0)
     {
-        painter.setBrush(this->palette().background());
+        painter.setBrush(this->palette().window());
     }
     else
     {

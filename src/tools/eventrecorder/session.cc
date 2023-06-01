@@ -303,7 +303,6 @@ void set_syscall_filter(const char* filter, bool reset)
 
 static void link_exec_file(string& parent_dir, int pid)
 {
-    char cmd[1024];
     char exe_path[500];
     char linkname[500];
     snprintf(linkname, sizeof(linkname), "/proc/%d/exe", pid);
@@ -315,8 +314,6 @@ static void link_exec_file(string& parent_dir, int pid)
     }
     exe_path[len] = 0;
 
-    const char* pbasename = basename(exe_path);
-    assert(pbasename != nullptr);
     snprintf(linkname, sizeof(linkname), "%s%s%d",
             parent_dir.data(), EXEC_FILE_NAME, pid);
     FILE* pf = fopen(linkname, "wb");
@@ -1555,6 +1552,7 @@ void TraceProcess::init_shared_buffers(int size)
 
 void TraceProcess::post_exec_syscall(pid_t tid)
 {
+    (void)tid;
     if (m_cfg->mode != DRY_RUN) {
         m_can_dump = true;
         link_exec_file(m_cfg->dump_dir,  m_pid);
@@ -2227,39 +2225,6 @@ int TraceProcess::dump_clone(pid_t cur_tid, pid_t newtid) //only used in fast mo
     m_ctx_stream2.write(&heap_num, sizeof(heap_num));
 
     return 0;
-}
-
-static void sleep_time(double t/*second*/)
-{
-    struct timespec ts;
-    ts.tv_sec = (time_t)floor(t);
-    ts.tv_nsec = (long)((t - ts.tv_sec) * 1e9);
-    nanosleep(&ts, NULL);
-}
-
-static bool thread_is_running(int tid)
-{
-    char path[NAME_MAX];
-    snprintf(path, sizeof(path), "/proc/%d/status", tid);
-    /*
-       waitpid(): on success, returns the process ID of the child whose
-       state has changed; if WNOHANG was specified and one or more
-       child(ren) specified by pid exist, but have not yet changed state,
-       then 0 is returned.  On error, -1 is returned.
-
-       waitid(): returns 0 on success or if WNOHANG was specified and no
-       child(ren) specified by id has yet changed state; on error, -1 is
-       returned.
-    */
-    // so use waitpid(tid, &status, WNOHANG) can check a thread is running,
-    // but this call will intercept thread in trace stop early, so we only
-    // use the slow method: read `State` field of proc/pid/status file
-    //State: "R (running)",  "S  (sleeping)",  "D  (disk  sleep)",
-    //       "T (stopped)", "T (tracing stop)", "Z (zombie)", or "X (dead)".
-
-    MemoryMappedFile mapped_file(path, 0);
-    const char* pos = strstr((const char*)mapped_file.data(), "State:\t");
-    return (NULL == pos || pos[7] == 'R' );
 }
 
 int TraceProcess::dump_event(int reason, pid_t cur_tid, void* extra_data, int extra_data_size)

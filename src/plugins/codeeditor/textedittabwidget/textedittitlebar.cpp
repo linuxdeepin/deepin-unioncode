@@ -83,7 +83,7 @@ TextEditTitleBar *TextEditTitleBar::changedReload(const QString &filePath)
     }
 
     QPalette palette;
-    palette.setBrush(QPalette::ColorRole::Background, QBrush(self->d->background));
+    palette.setBrush(QPalette::ColorRole::Window, QBrush(self->d->background));
     self->setPalette(palette);
     return self;
 }

@@ -888,9 +888,10 @@ std::string toJsonValueStr(const std::vector<WorkspaceFolder> &val)
 {
     std::string ret;
     ret += "[";
-    for (int i = 0; i < val.size(); i++) {
+    int valSize = val.size();
+    for (int i = 0; i < valSize; i++) {
         ret += toJsonValueStr(val[i]);
-        if (i < val.size() -1) {
+        if (i < valSize -1) {
             ret += ",";
         }
     }

@@ -144,7 +144,7 @@ QList<BuildFileInfo> Builder::buildInfos(const QString &dirPath)
 
         QtConcurrent::blockingMap(infos, mappedFunc);
 
-        return result.toList();
+        return result.values();
     }
 
     return {};

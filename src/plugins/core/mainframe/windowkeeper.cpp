@@ -139,6 +139,12 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
                                                  MWM_REPORT_BUG, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
                                                  ":/core/images/tools-report-bug.png");
     helpMenu->addAction(actionReportBug);
+    QAction *actionHelpDoc = new QAction(MWM_HELP_DOCUMENTS);
+    ActionManager::getInstance()->registerAction(actionHelpDoc, "Help.Help.Documents",
+                                                 MWM_HELP_DOCUMENTS, QKeySequence());
+    helpMenu->addAction(actionHelpDoc);
+
+    helpMenu->addSeparator();
 
     QAction *actionAboutUnionCode = new QAction(MWM_ABOUT);
     ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
@@ -150,10 +156,13 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
     ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.AboutPlugins", MWM_ABOUT, QKeySequence());
     helpMenu->addAction(actionAboutPlugin);
 
-    QAction::connect(actionAboutUnionCode, &QAction::triggered, this, &WindowKeeper::showAboutDlg);
     QAction::connect(actionReportBug, &QAction::triggered, [=](){
         QDesktopServices::openUrl(QUrl("https://pms.uniontech.com/project-bug-1039.html"));
     });
+    QAction::connect(actionHelpDoc, &QAction::triggered, [=](){
+        QDesktopServices::openUrl(QUrl("https://developer.chinauos.com/#/"));
+    });
+    QAction::connect(actionAboutUnionCode, &QAction::triggered, this, &WindowKeeper::showAboutDlg);
     QAction::connect(actionAboutPlugin, &QAction::triggered, this, &WindowKeeper::showAboutPlugins);
 }
 

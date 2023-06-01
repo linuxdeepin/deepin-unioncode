@@ -41,11 +41,6 @@ public:
     std::unique_ptr<PersistentSettingsWriter> writer;
 };
 
-static QString settingsFileName()
-{
-    return CustomPaths::global(CustomPaths::Configures) + KIT_FILENAME;
-}
-
 static KitManagerPrivate *d = nullptr;
 
 KitManager::KitManager(QObject *parent)

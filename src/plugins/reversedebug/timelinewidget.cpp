@@ -222,10 +222,12 @@ void TimelineWidget::mousePressEvent(QMouseEvent* event)
 
 void TimelineWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+    Q_UNUSED(event);
 }
 
 void TimelineWidget::mouseMoveEvent(QMouseEvent* event)
 {
+    Q_UNUSED(event);
     // check if left button is pressed
     // d->currentX = event->x;
 }
@@ -494,7 +496,7 @@ void TimelineWidget::updateVisibleEvent(void)
 
 void TimelineWidget::setFilteredCategories(const QList<QString> &categoryIds)
 {
-    int mask = 0;
+    long mask = 0;
     QString ids[4] = {
         Constants::EVENT_CATEGORY_SYSCALL,
         Constants::EVENT_CATEGORY_SIGNAL,

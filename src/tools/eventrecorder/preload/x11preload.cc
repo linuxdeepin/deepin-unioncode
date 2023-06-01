@@ -69,52 +69,6 @@ inline long my_dump(int type, const char* msg, int len)
 // https://www.clearchain.com/blog/posts/xinput-1-xinput-2-conversion-guide
 // XQueryExtension(display, "XInputExtension", &extension, &event, &error)) {
 //
-static void print_deviceevent(XIDeviceEvent* event)
-{
-    double *val;
-    int i;
-
-    printf("    device: %d (%d)\n", event->deviceid, event->sourceid);
-    printf("    detail: %d\n", event->detail);
-    switch(event->evtype) {
-        case XI_KeyPress:
-        case XI_KeyRelease:
-            printf("    flags: %s\n", (event->flags & XIKeyRepeat) ?  "repeat" : "");
-            break;
-#if HAVE_XI21
-        case XI_ButtonPress:
-        case XI_ButtonRelease:
-        case XI_Motion:
-            printf("    flags: %s\n", (event->flags & XIPointerEmulated) ?  "emulated" : "");
-            break;
-#endif
-    }
-
-    printf("    root: %.2f/%.2f\n", event->root_x, event->root_y);
-    printf("    event: %.2f/%.2f\n", event->event_x, event->event_y);
-
-    printf("    buttons:");
-    for (i = 0; i < event->buttons.mask_len * 8; i++)
-        if (XIMaskIsSet(event->buttons.mask, i))
-            printf(" %d", i);
-    printf("\n");
-
-    printf("    modifiers: locked %#x latched %#x base %#x effective: %#x\n",
-            event->mods.locked, event->mods.latched,
-            event->mods.base, event->mods.effective);
-    printf("    group: locked %#x latched %#x base %#x effective: %#x\n",
-            event->group.locked, event->group.latched,
-            event->group.base, event->group.effective);
-    printf("    valuators:\n");
-
-    val = event->valuators.values;
-    for (i = 0; i < event->valuators.mask_len * 8; i++)
-        if (XIMaskIsSet(event->valuators.mask, i))
-            printf("        %i: %.2f\n", i, *val++);
-
-    printf("    windows: root 0x%lx event 0x%lx child 0x%lx\n",
-            event->root, event->event, event->child);
-}
 
 static XGenericEvent g_prev_ge;
 

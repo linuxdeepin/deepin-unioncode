@@ -32,6 +32,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QDialogButtonBox>
+#include <QDesktopServices>
 
 static bool isRestartRequired = false;
 
@@ -232,4 +233,8 @@ void DetailsView::update(dpf::PluginMetaObjectPointer plugin)
         dependsList << depend.toString();
     }
     dependencies->addItems(dependsList);
+
+    connect(urlLink, &QLabel::linkActivated, [=](){
+        QDesktopServices::openUrl(QUrl(plugin->urlLink()));
+    });
 }

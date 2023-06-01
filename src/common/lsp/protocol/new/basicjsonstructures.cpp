@@ -79,9 +79,10 @@ std::string toJsonValueStr(const std::vector<int> &vecInt)
         return ret;
 
     ret += "[";
-    for (int i = 0; i < vecInt.size(); i++) {
+    int vecSize = vecInt.size();
+    for (int i = 0; i < vecSize; i++) {
         ret += toJsonValueStr(vecInt[i]);
-        if (i < vecInt.size() - 1)
+        if (i < vecSize - 1)
             ret += ",";
     }
     ret += "]";
@@ -96,9 +97,10 @@ std::string toJsonValueStr(const std::vector<std::string> &vecString)
         return ret;
 
     ret += "[";
-    for (int i = 0; i < vecString.size(); i++) {
+    int vecSize = vecString.size();
+    for (int i = 0; i < vecSize; i++) {
         ret += toJsonValueStr(vecString[i]);
-        if (i < vecString.size() - 1)
+        if (i < vecSize - 1)
             ret += ",";
     }
     ret += "]";

@@ -118,8 +118,8 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
         painter->setBrush(opt.palette.highlight().color());
         backgroundColor = opt.palette.highlight().color();
     } else {
-        painter->setBrush(opt.palette.background().color());
-        backgroundColor = opt.palette.background().color();
+        painter->setBrush(opt.palette.window().color());
+        backgroundColor = opt.palette.window().color();
     }
     painter->setPen(Qt::NoPen);
     painter->drawRect(opt.rect);
@@ -146,7 +146,7 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
         QString bottom = index.data(TaskModel::Description).toString().split(QLatin1Char('\n')).first();
         painter->setClipRect(positions.textArea());
         painter->drawText(positions.textAreaLeft(), positions.getTop() + fm.ascent(), bottom);
-        if (fm.width(bottom) > positions.textAreaWidth()) {
+        if (fm.horizontalAdvance(bottom) > positions.textAreaWidth()) {
             // draw a gradient to mask the text
             int gradientStart = positions.textAreaRight() - ELLIPSIS_GRADIENT_WIDTH + 1;
             QLinearGradient lg(gradientStart, 0, gradientStart + ELLIPSIS_GRADIENT_WIDTH, 0);
@@ -199,7 +199,7 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
     const int pos = file.lastIndexOf(QLatin1Char('/'));
     if (pos != -1)
         file = file.mid(pos +1);
-    const int realFileWidth = fm.width(file);
+    const int realFileWidth = fm.horizontalAdvance(file);
     painter->setClipRect(positions.fileArea());
     painter->drawText(qMin(positions.fileAreaLeft(), positions.fileAreaRight() - realFileWidth),
                       positions.getTop() + fm.ascent(), file);
@@ -236,7 +236,7 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
     }
 
     painter->setClipRect(positions.lineArea());
-    const int realLineWidth = fm.width(lineText);
+    const int realLineWidth = fm.horizontalAdvance(lineText);
     painter->drawText(positions.lineAreaRight() - realLineWidth, positions.getTop() + fm.ascent(), lineText);
     painter->setClipRect(opt.rect);
 

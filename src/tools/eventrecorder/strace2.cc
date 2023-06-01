@@ -101,6 +101,7 @@ static void usage(const char* name)
 
 static void rolloutHandler(const char* filename, std::size_t size)
 {
+    (void)size;
     static unsigned int log_idx = 0;
 
 #ifdef _DEBUG
@@ -163,7 +164,7 @@ static void set_up_process(const ScopedFd& err_fd,
      set NO_NEW_PRIVS here in order to install the seccomp filter later. In,
      emulate any potentially privileged, operations, so we might as well set
      no_new_privs */
-    if (!has_effective_caps(1 << CAP_SYS_ADMIN)) {
+    if (!has_effective_caps()) {
         if (0 > prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
           spawned_child_fatal_error( err_fd,
               "prctl(NO_NEW_PRIVS) failed, SECCOMP_FILTER is not available: your "
@@ -571,22 +572,6 @@ static void parse_global_var(DumpConfig& cfg, const char* namelist)
         if (*pos != ',') break;
         p = pos + 1;
     }
-}
-
-static RunMode parse_mode(const char* mode)
-{
-    if (!strcmp(mode, "dry-run")) {
-        return DRY_RUN;
-    }else if (!strcmp(mode, "fast")) {
-        return FAST;
-    }else if (!strcmp(mode, "hard")) {
-        return NORMAL;
-    }
-    else {
-        LOG(WARNING) << "unknown mode:" << mode;
-    }
-
-    return NORMAL;
 }
 
 static void parse_signal_filter(DumpConfig& cfg, const char* filter)

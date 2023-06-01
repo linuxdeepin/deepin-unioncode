@@ -787,7 +787,7 @@ void TextEditTabWidget::paintEvent(QPaintEvent *event)
         painter.restore();
     } else {
         if (!d->defColor.isValid()) {
-            d->defColor = palette().background().color();
+            d->defColor = palette().window().color();
             d->selColor = QColor(d->defColor.red() + 20, d->defColor.green() + 20, d->defColor.blue() + 20, d->defColor.alpha());
         } else {
             QPainter painter(this);

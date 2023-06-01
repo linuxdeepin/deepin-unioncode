@@ -58,7 +58,7 @@ typedef int (LEXILLA_CALL *GetLexerCountFn)();
 typedef void (LEXILLA_CALL *GetLexerNameFn)(unsigned int Index, char *name, int buflength);
 typedef LexerFactoryFunction(LEXILLA_CALL *GetLexerFactoryFn)(unsigned int Index);
 typedef ILexer5*(LEXILLA_CALL *CreateLexerFn)(const char *name);
-DEPRECATE_DEFINITION typedef const char *(LEXILLA_CALL *LexerNameFromIDFn)(int identifier);
+typedef const char *(LEXILLA_CALL *LexerNameFromIDFn)(int identifier);
 typedef const char *(LEXILLA_CALL *GetLibraryPropertyNamesFn)();
 typedef void(LEXILLA_CALL *SetLibraryPropertyFn)(const char *key, const char *value);
 typedef const char *(LEXILLA_CALL *GetNameSpaceFn)();

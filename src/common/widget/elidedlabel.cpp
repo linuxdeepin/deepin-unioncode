@@ -47,7 +47,7 @@ void ElidedLabel::setText(const QString &text)
     d->sourceText = text;
     QString resultText;
     QFontMetrics font(this->font());
-    int font_size = font.width(text);
+    int font_size = font.horizontalAdvance(text);
     int resize_width = width();
     if(font_size > resize_width) {
         resultText = font.elidedText(d->sourceText, Qt::ElideRight, resize_width);

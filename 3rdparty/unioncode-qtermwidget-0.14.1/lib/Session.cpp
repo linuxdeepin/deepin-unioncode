@@ -452,7 +452,7 @@ void Session::activityStateSet(int state)
 {
     if (state==NOTIFYBELL) {
         QString s;
-        s.sprintf("Bell in session '%s'",_nameTitle.toUtf8().data());
+        s.asprintf("Bell in session '%s'",_nameTitle.toUtf8().data());
 
         emit bellRequest( s );
     } else if (state==NOTIFYACTIVITY) {
@@ -597,16 +597,16 @@ void Session::done(int exitStatus)
     if (!_wantedClose || exitStatus != 0) {
 
         if (_shellProcess->exitStatus() == QProcess::NormalExit) {
-            message.sprintf("Session '%s' exited with status %d.",
+            message.asprintf("Session '%s' exited with status %d.",
                           _nameTitle.toUtf8().data(), exitStatus);
         } else {
-            message.sprintf("Session '%s' crashed.",
+            message.asprintf("Session '%s' crashed.",
                           _nameTitle.toUtf8().data());
         }
     }
 
     if ( !_wantedClose && _shellProcess->exitStatus() != QProcess::NormalExit )
-        message.sprintf("Session '%s' exited unexpectedly.",
+        message.asprintf("Session '%s' exited unexpectedly.",
                         _nameTitle.toUtf8().data());
     else
         emit finished();

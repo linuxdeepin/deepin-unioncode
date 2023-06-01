@@ -381,19 +381,6 @@ static char hex2char(unsigned char hex)
     else return hex-0xa+'a';
 }
 
-static void hex2str(unsigned char* hex, int size, char* str)
-{
-    int i = 0;
-    for (;i<size;++i)
-    {
-        str[3*i] = hex2char(hex[i]>>4);
-        str[3*i+1] = hex2char(hex[i]&0xf);
-        str[3*i+2] = 0x20;
-    }
-
-    str[3*i] = 0;
-}
-
 static void hex2str2(unsigned char* hex, int size, char* str)
 {
     int i = 0;
@@ -697,6 +684,11 @@ int gdb_delete(int tid, uintptr_t addr, uint32_t old_value)
 int gdb_print(int pid, uintptr_t module_base, const char* filename,
         uintptr_t var_address, const char* type_name)
 {
+    (void)pid;
+    (void)module_base;
+    (void)filename;
+    (void)var_address;
+    (void)type_name;
     SymbolFile helper(module_base, filename, true);
     /*
      http://www.dwarfstd.org/doc/Debugging%20using%20DWARF-2012.pdf

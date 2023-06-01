@@ -256,7 +256,7 @@ bool FindToolWindow::getSearchParams(SearchParams *searchParams)
     int index = d->scopeComboBox->currentIndex();
     switch (index) {
     case 0:
-        searchPathList = d->allProjectsPathList.toList();
+        searchPathList = d->allProjectsPathList.values();
         break;
     case 1:
         searchPathList = QStringList{d->currentProjectPath};

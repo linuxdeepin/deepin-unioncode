@@ -789,8 +789,8 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
         painter->setBrush(opt.palette.highlight().color());
         backgroundColor = opt.palette.highlight().color();
     } else {
-        painter->setBrush(opt.palette.background().color());
-        backgroundColor = opt.palette.background().color();
+        painter->setBrush(opt.palette.window().color());
+        backgroundColor = opt.palette.window().color();
     }
     painter->setPen(Qt::NoPen);
     painter->drawRect(opt.rect);
@@ -817,7 +817,7 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
         QString bottom = index.data(TaskModel::Description).toString();
         painter->setClipRect(positions.textArea());
         painter->drawText(positions.textAreaLeft(), positions.top() + fm.ascent(), bottom);
-        if (fm.width(bottom) > positions.textAreaWidth()) {
+        if (fm.horizontalAdvance(bottom) > positions.textAreaWidth()) {
             // draw a gradient to mask the text
             int gradientStart = positions.textAreaRight() - ELLIPSIS_GRADIENT_WIDTH + 1;
             QLinearGradient lg(gradientStart, 0, gradientStart + ELLIPSIS_GRADIENT_WIDTH, 0);
@@ -869,7 +869,7 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
             cur_tm->tm_hour, cur_tm->tm_min, cur_tm->tm_sec,
             int(curtime - seconds*1000.0));
     }
-    int realWidth = fm.width(result);
+    int realWidth = fm.horizontalAdvance(result);
     painter->setClipRect(positions.timeArea());
     painter->drawText(qMin(positions.timeAreaLeft(), positions.timeAreaRight() - realWidth),
                       positions.top() + fm.ascent(), result);
@@ -877,7 +877,7 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
     // Paint duration
     double duration = index.data(TaskModel::Duration).toDouble();
     result = QString::asprintf("%.3f ms", duration);
-    realWidth = fm.width(result);
+    realWidth = fm.horizontalAdvance(result);
     painter->setClipRect(positions.durationArea());
     painter->drawText(qMin(positions.durationAreaLeft(), positions.durationAreaRight() - realWidth),
                       positions.top() + fm.ascent(), result);
@@ -890,7 +890,7 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
     else {
         result = QString::asprintf("%p", (void*)syscall);
     }
-    realWidth = fm.width(result);
+    realWidth = fm.horizontalAdvance(result);
     painter->setClipRect(positions.returnArea());
     painter->drawText(qMin(positions.returnAreaLeft(), positions.returnAreaRight() - realWidth),
                       positions.top() + fm.ascent(), result);
@@ -907,14 +907,14 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
     int tid = index.data(TaskModel::Tid).toInt();
     result = QString::number(tid);
     painter->setClipRect(positions.tidArea());
-    realWidth = fm.width(result);
+    realWidth = fm.horizontalAdvance(result);
     painter->drawText(positions.tidAreaRight() - realWidth, positions.top() + fm.ascent(), result);
 
     // Paint thread num
     int threads = index.data(TaskModel::ThreadNum).toInt();
     result = QString::number(threads);
     painter->setClipRect(positions.threadsArea());
-    realWidth = fm.width(result);
+    realWidth = fm.horizontalAdvance(result);
     painter->drawText(positions.threadsAreaRight() - realWidth, positions.top() + fm.ascent(), result);
 
     painter->setClipRect(opt.rect);

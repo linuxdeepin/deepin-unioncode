@@ -62,7 +62,7 @@ void DetailsButton::paintEvent(QPaintEvent *event)
 
     if (!d->hover) {
         p.setPen(Qt::NoPen);
-        p.setBrush(palette().background().color());
+        p.setBrush(palette().window().color());
         p.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 0, 0);
     } else {
         p.setPen(Qt::NoPen);

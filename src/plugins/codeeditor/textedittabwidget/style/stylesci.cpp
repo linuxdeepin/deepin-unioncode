@@ -96,7 +96,7 @@ void StyleSci::setKeyWords()
     for (auto key : codeKeyWordsMap.keys()) {
         auto codeKeyWords = codeKeyWordsMap[key].split(" ").toSet();
         auto fileKeyWords = tokens.value(key).split(" ").toSet();
-        auto mergeKeywords = (codeKeyWords + fileKeyWords).toList().join(" ").toLatin1();
+        auto mergeKeywords = (codeKeyWords + fileKeyWords).values().join(" ").toLatin1();
         d->edit->setKeyWords(key, mergeKeywords);
     }
 

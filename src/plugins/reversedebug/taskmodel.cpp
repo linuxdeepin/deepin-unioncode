@@ -221,7 +221,7 @@ void TaskModel::addTask(const Task &task)
     CategoryData &data = categories[task.category];
     CategoryData &global = categories[""];
 
-    QList<Task>::iterator it = qLowerBound(allTasks.begin(), allTasks.end(), task.taskId, sortById);
+    QList<Task>::iterator it = std::lower_bound(allTasks.begin(), allTasks.end(), task.taskId, sortById);
     int i = it - allTasks.begin();
     beginInsertRows(QModelIndex(), i, i);
     allTasks.insert(it, task);
@@ -294,7 +294,7 @@ int TaskModel::getSizeOfLineNumber(const QFont &font)
     if (sizeOfLineNumber == 0 || font != lineMeasurementFont) {
         QFontMetrics fm(font);
         lineMeasurementFont = font;
-        sizeOfLineNumber = fm.width(QLatin1String("88888"));
+        sizeOfLineNumber = fm.horizontalAdvance(QLatin1String("88888"));
     }
     return sizeOfLineNumber;
 }
@@ -306,7 +306,7 @@ int TaskModel::taskCount(const QString &categoryId)
 
 int TaskModel::rowForId(unsigned int id)
 {
-    QList<Task>::const_iterator it = qLowerBound(allTasks.constBegin(), allTasks.constEnd(), id, sortById);
+    QList<Task>::const_iterator it = std::lower_bound(allTasks.constBegin(), allTasks.constEnd(), id, sortById);
     if (it == allTasks.constEnd())
         return -1;
     return it - allTasks.constBegin();

@@ -41,9 +41,10 @@ std::string toJsonValueStr(const std::vector<TextDocumentContentChangeEvent> &va
         return ret;
 
     ret += "[";
-    for (int i = 0; i < val.size(); i++) {
+    int n = val.size();
+    for (int i = 0; i < n; i++) {
         ret += toJsonValueStr(val[i]);
-        if (i < val.size() - 1)
+        if (i < n - 1)
             ret += ",";
     }
     ret += "]";

@@ -38,7 +38,7 @@ public:
     void save(const ProjectKey &key, QProcess *const value);
 
 private Q_SLOTS:
-    void deleteProc(int exitCode);
+    void deleteProc(int exitCode, QProcess::ExitStatus exitstatus);
 
 private:
     Route(){}

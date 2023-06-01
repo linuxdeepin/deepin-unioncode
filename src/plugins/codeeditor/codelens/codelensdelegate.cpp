@@ -59,9 +59,9 @@ void CodeLensDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         //        initStyleOption(&styleOptionViewItem, index);
 
         QString lineNumCurr = QString::number(range.start.line + 1); //展示时line从1开始
-        int sepWidth = option.fontMetrics.width(" ");
-        int lineNumMaxWidth = option.fontMetrics.width(QString("99999"));
-        int lineNumCurrWidth = option.fontMetrics.width(lineNumCurr);
+        int sepWidth = option.fontMetrics.horizontalAdvance(" ");
+        int lineNumMaxWidth = option.fontMetrics.horizontalAdvance(QString("99999"));
+        int lineNumCurrWidth = option.fontMetrics.horizontalAdvance(lineNumCurr);
         int lineNumOffset = lineNumMaxWidth - lineNumCurrWidth;
         int textHeight = option.fontMetrics.height();
         QRect lineNumDrawRect = option.rect.adjusted(lineNumOffset, textHeight, 0, 0);
@@ -72,8 +72,8 @@ void CodeLensDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         int endCharacter = range.end.character;
         QString heightText = codeText.mid(startCharacter, endCharacter - startCharacter);
         QString frontText = codeText.mid(0, startCharacter);
-        int frontTextWidth = option.fontMetrics.width(frontText);
-        int heightTextWidth = option.fontMetrics.width(heightText);
+        int frontTextWidth = option.fontMetrics.horizontalAdvance(frontText);
+        int heightTextWidth = option.fontMetrics.horizontalAdvance(heightText);
         QRect heightTextRect = option.rect.adjusted(sepWidth + lineNumMaxWidth+ frontTextWidth, 0, 0, 0);
         heightTextRect.setSize(QSize(heightTextWidth, option.rect.height()));
         //        {, option.rect.y(), heightTextWidth, option.rect.height()};

@@ -44,7 +44,7 @@ ConsoleWidget::ConsoleWidget(QWidget *parent)
 {
     setMargin(0);
     setTerminalOpacity(0);
-    setForegroundRole(QPalette::ColorRole::Background);
+    setForegroundRole(QPalette::ColorRole::Window);
     setAutoFillBackground(true);
     if (availableColorSchemes().contains("Linux"))
         setColorScheme("Linux");

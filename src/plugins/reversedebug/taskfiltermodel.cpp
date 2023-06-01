@@ -81,7 +81,7 @@ QVariant TaskFilterModel::data(const QModelIndex &index, int role) const
 
 QModelIndex TaskFilterModel::mapFromSource(const QModelIndex &idx) const
 {
-    QList<int>::const_iterator it = qBinaryFind(rowMapping.constBegin(), rowMapping.constEnd(), idx.row());
+    QList<int>::const_iterator it = std::lower_bound(rowMapping.constBegin(), rowMapping.constEnd(), idx.row());
     if (it == rowMapping.constEnd())
         return QModelIndex();
     return index(it - rowMapping.constBegin(), 0);
@@ -107,7 +107,7 @@ void TaskFilterModel::handleNewRows(const QModelIndex &index, int first, int las
     if (last == sourceModel->rowCount() - 1)
         filteredFirst = rowMapping.count();
     else
-        filteredFirst = qLowerBound(rowMapping, first) - rowMapping.constBegin();
+        filteredFirst = std::lower_bound(rowMapping.constBegin(), rowMapping.constEnd(), first) - rowMapping.constBegin();
 
     const int filteredLast = filteredFirst + newItems - 1;
     beginInsertRows(QModelIndex(), filteredFirst, filteredLast);
@@ -127,8 +127,8 @@ void TaskFilterModel::handleNewRows(const QModelIndex &index, int first, int las
 
 static QPair<int, int> findFilteredRange(int first, int last, const QList<int> &list)
 {
-    QList<int>::const_iterator filteredFirst = qLowerBound(list, first);
-    QList<int>::const_iterator filteredLast = qUpperBound(filteredFirst, list.constEnd(), last);
+    QList<int>::const_iterator filteredFirst = std::lower_bound(list.constBegin(), list.constEnd(), first);
+    QList<int>::const_iterator filteredLast = std::upper_bound(filteredFirst, list.constEnd(), last);
     return qMakePair(filteredFirst - list.constBegin(), filteredLast - list.constBegin() - 1);
 }
 
@@ -227,13 +227,13 @@ void TaskFilterModel::updateMapping() const
     g_event_table = task.event;
     switch (sortType) {
     case 1:
-        qSort(rowMapping.begin(), rowMapping.end(), sort_duration);
+        std::sort(rowMapping.begin(), rowMapping.end(), sort_duration);
         break;
     case 2:
-        qSort(rowMapping.begin(), rowMapping.end(), sort_result);
+        std::sort(rowMapping.begin(), rowMapping.end(), sort_result);
         break;
     case 3:
-        qSort(rowMapping.begin(), rowMapping.end(), sort_threads_number);
+        std::sort(rowMapping.begin(), rowMapping.end(), sort_threads_number);
         break;
     default:
         break;

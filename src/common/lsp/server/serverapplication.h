@@ -75,12 +75,12 @@ public:
 
         std::string operator << (const QList<QString> &qListStr)
         {
-            return operator<<(qListStr.toStdList());
+            return operator<<(std::list<QString>(qListStr.begin(), qListStr.end()));
         }
 
         std::string operator << (const QStringList &qStrList)
         {
-            return operator<<(qStrList.toStdList());
+            return operator<<(std::list<QString>(qStrList.begin(), qStrList.end()));
         }
     };
 

@@ -241,7 +241,7 @@ void GDBDebugger::handleOutputStreamText(const QString &streamText)
             temp += streamText.split(":").last();
         }
 
-        if (temp.contains("=thread-group-added") && temp.contains("\(gdb\)")) {
+        if (temp.contains("=thread-group-added") && temp.contains("\\(gdb\\)")) {
             textList.append(temp);
             temp.clear();
         }

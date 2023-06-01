@@ -93,7 +93,7 @@ void DebugManager::initProcess()
 
     connect(d->process.data(), &QProcess::started,
             this, &DebugManager::dbgProcessStarted);
-    connect(d->process.data(), QOverload<int>::of(&QProcess::finished),
+    connect(d->process.data(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                 this, &DebugManager::dbgProcessFinished);
 }
 

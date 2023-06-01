@@ -72,7 +72,7 @@ QVariant InterpreterModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role != Qt::DisplayRole && role != Qt::TextColorRole)
+    if (role != Qt::DisplayRole && role != Qt::ForegroundRole)
         return QVariant();
 
     if (index.row() >= d->packageVector.count())

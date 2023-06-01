@@ -37,7 +37,7 @@
 
 using namespace std;
 
-bool has_effective_caps(uint64_t caps)
+bool has_effective_caps()
 {
 #if 0
   //TODO: SYS_capget not work!

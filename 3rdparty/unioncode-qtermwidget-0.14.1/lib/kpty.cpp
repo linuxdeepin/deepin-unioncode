@@ -281,8 +281,8 @@ bool KPty::open()
     // Linux device names, FIXME: Trouble on other systems?
     for (const char * s3 = "pqrstuvwxyzabcde"; *s3; s3++) {
         for (const char * s4 = "0123456789abcdef"; *s4; s4++) {
-            ptyName = QString().sprintf("/dev/pty%c%c", *s3, *s4).toUtf8();
-            d->ttyName = QString().sprintf("/dev/tty%c%c", *s3, *s4).toUtf8();
+            ptyName = QString().asprintf("/dev/pty%c%c", *s3, *s4).toUtf8();
+            d->ttyName = QString().asprintf("/dev/tty%c%c", *s3, *s4).toUtf8();
 
             d->masterFd = ::open(ptyName.data(), O_RDWR);
             if (d->masterFd >= 0) {

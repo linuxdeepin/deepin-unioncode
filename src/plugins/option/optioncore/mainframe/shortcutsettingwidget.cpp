@@ -102,7 +102,7 @@ QVariant ShortcutTableModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    if (role != Qt::DisplayRole && role != Qt::TextColorRole)
+    if (role != Qt::DisplayRole && role != Qt::ForegroundRole)
         return QVariant();
 
     if (index.row() >= d->shortcutItemMap.keys().size())
@@ -114,7 +114,7 @@ QVariant ShortcutTableModel::data(const QModelIndex &index, int role) const
     QString description = valueList.first();
     QString shortcut = valueList.last();
 
-    if(role == Qt::TextColorRole && index.column() == ColumnID::kShortcut) {
+    if(role == Qt::ForegroundRole && index.column() == ColumnID::kShortcut) {
         if(shortcutRepeat(shortcut) || keySequenceIsInvalid(QKeySequence(shortcut))) {
             return QColor(Qt::darkRed);
         }

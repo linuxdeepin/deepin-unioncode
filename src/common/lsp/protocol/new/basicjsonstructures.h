@@ -120,9 +120,10 @@ std::string addValue(const std::string &src, const KV<std::vector<T>> &kv)
         return temp;
 
     temp += "[";
-    for (int i = 0; i < kv.value.size(); i++) {
+    int n = kv.value.size();
+    for (int i = 0; i < n; i++) {
         temp += toJsonValueStr(kv.value[i]);
-        if (i < kv.value.size() - 1)
+        if (i < n - 1)
             temp += ",";
     }
     temp += "]";
