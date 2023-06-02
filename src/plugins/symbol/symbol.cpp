@@ -38,7 +38,15 @@
 using namespace dpfservice;
 void Symbol::initialize()
 {
+    QProcess process;
+    process.start("pip3 show esprima");
+    process.waitForFinished();
 
+    QString output = process.readAllStandardOutput();
+    if(output.isEmpty()) {
+        process.start("pip3 install esprima");
+        process.waitForFinished();
+    }
 }
 
 bool Symbol::start()

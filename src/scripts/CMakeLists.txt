@@ -15,3 +15,6 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/scripts/FlameGraph
 
 install(DIRECTORY action-analysis/
     DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/action-analysis")
+
+install(DIRECTORY symbol-parser/
+    DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/symbol-parser")

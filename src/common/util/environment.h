@@ -61,7 +61,6 @@ enum_def(Category, QString)
 {
     enum_exp clangd = "clangd";
     enum_exp jdtls = "jdt-language-server";
-    enum_exp unionparser = "unionparser";
 };
 namespace native {
 QString path(const Category::type_value &category = "");

@@ -64,7 +64,10 @@ private slots:
     void redirectErr();
 
 private:
+    QString getPython();
+
     SymbolParseArgs processArgs;
+    QString pythonCmd;
 };
 
 #endif // SYMBOLPARSER_H

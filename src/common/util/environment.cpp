@@ -89,11 +89,6 @@ Program search(Category category, Kit kit, const Version &version)
                 if (executeVersion.major) {
                     program + QString::number(executeVersion.major.value());
                 }
-                QString unionparser = QDir::homePath() + QDir::separator() + ".local" + QDir::separator() + "bin" + "/unionparser";
-                if (!QFile::exists(unionparser)) {
-                    unionparser = "/usr/local/bin/unionparser";
-                }
-                ret.binsPath = QFileInfo(unionparser).dir().path();
                 ret.pkgsPath = QDir::homePath() + QDir::separator()
                         + ".local" + QDir::separator()
                         + "lib" + QDir::separator()
@@ -173,7 +168,6 @@ QString package::native::path(const Category::type_value &category)
     QString envPath = QString(LIBRARY_INSTALL_PREFIX)
             + QDir::separator() + "tools"
             + QDir::separator() + "env";
-    QDirIterator dirItera(envPath, QDir::Files|QDir::NoDotAndDotDot);
     if (category.isEmpty()) {
         return envPath;
     } else {

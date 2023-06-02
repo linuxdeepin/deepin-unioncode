@@ -28,7 +28,7 @@ const QString unionparser{"unionparser"};
 SymbolParser::SymbolParser(QObject *parent)
     : QProcess (parent)
 {
-    setProgram("/usr/bin/bash");
+    setProgram(getPython());
     auto procEnv = env::lang::get(env::lang::User, env::lang::Python, 3);
     for (auto val : procEnv.keys()) {
         qInfo()<< val << procEnv.value(val);
@@ -91,11 +91,13 @@ void SymbolParser::start()
     // switch to libclang.
     ClangParser::parse(processArgs.workspace, processArgs.storage, processArgs.language);
 #else
-    QString programLine = "unionparser";
-    programLine += " -w " + processArgs.workspace;
-    programLine += " -l " + processArgs.language;
-    programLine += " -s " + processArgs.storage;
-    setArguments({"-c", programLine});
+    QString scriptPath = CustomPaths::global(CustomPaths::Scripts);
+    QStringList arguments;
+    arguments << (scriptPath + "/symbol-parser/main.py");
+    arguments << "-w" << processArgs.workspace;
+    arguments << "-l" << processArgs.language;
+    arguments << "-s" << processArgs.storage;
+    setArguments({arguments});
     QProcess::start();
 #endif
 }
@@ -147,10 +149,48 @@ void SymbolParser::finished(int exitCode, QProcess::ExitStatus status)
 
 void SymbolParser::redirectOut()
 {
-//    qDebug() << QProcess::readAllStandardOutput();
 }
 
 void SymbolParser::redirectErr()
 {
-//    qCritical() << QProcess::readAllStandardError();
+    qCritical() << "symbol parser error:" <<QProcess::readAllStandardError();
+}
+
+QList<QString> findAll(const QString &pattern, const QString &str, bool greedy)
+{
+    QRegExp rxlen(pattern);
+    rxlen.setMinimal(greedy);
+    int position = 0;
+    QList<QString> strList;
+    while (position >= 0) {
+        position = rxlen.indexIn(str, position);
+        if (position < 0)
+            break;
+        strList << rxlen.cap(1);
+        position += rxlen.matchedLength();
+    }
+    return strList;
+}
+
+QString SymbolParser::getPython()
+{
+    if (pythonCmd.isEmpty()) {
+        QDir dir("/usr/bin");
+        QStringList filter { "Python*.*" };
+        dir.setNameFilters(filter);
+        QStringList pythonList = dir.entryList();
+
+        QString pattern = "((\\d)|(\\d.\\d))($|\\s)";
+        QStringList versions = findAll(pattern, pythonList.join(" "), true);
+
+        double newVersion = 0;
+        for (auto version : versions) {
+            double v = version.toDouble();
+            if (v > newVersion) {
+                newVersion = v;
+            }
+        }
+        pythonCmd = "python" + QString::number(newVersion);
+    }
+    return pythonCmd;
 }
