@@ -20,7 +20,12 @@
 */
 #include "pythonplugin.h"
 #include "python/pythongenerator.h"
+#include "python/project/pythonprojectgenerator.h"
+#include "python/option/optionpythongenerator.h"
+
 #include "services/language/languageservice.h"
+#include "services/project/projectservice.h"
+#include "services/option/optionservice.h"
 
 using namespace dpfservice;
 
@@ -46,6 +51,20 @@ bool PythonPlugin::start()
             }
         }
     }
+
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService) {
+        QString errorString;
+        projectService->implGenerator<PythonProjectGenerator>(PythonProjectGenerator::toolKitName(), &errorString);
+    }
+
+    OptionService *optionService = ctx.service<OptionService>(OptionService::name());
+    if (!optionService) {
+        qCritical() << "Failed, not found OptionPython service!";
+        abort();
+    }
+    optionService->implGenerator<OptionPythonGenerator>(OptionPythonGenerator::kitName());
+
     return true;
 }
 

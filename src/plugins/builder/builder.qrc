@@ -1,2 +1,7 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/buildercore">
+        <file>images/builder_buiild.png</file>
+        <file>images/rebuild.png</file>
+        <file>images/clean.png</file>
+    </qresource>
+</RCC>
