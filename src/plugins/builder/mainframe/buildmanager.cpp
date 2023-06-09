@@ -48,6 +48,7 @@ class BuildManagerPrivate
     QSharedPointer<QAction> buildAction;
     QSharedPointer<QAction> rebuildAction;
     QSharedPointer<QAction> cleanAction;
+    QSharedPointer<QAction> cancelAction;
 
     CompileOutputPane *compileOutputPane = nullptr;
     ProblemOutputPane *problemOutputPane = nullptr;
@@ -56,6 +57,9 @@ class BuildManagerPrivate
     QString activedWorkingDir;
 
     std::unique_ptr<IOutputParser> outputParser = nullptr;
+
+    QProcess cmdProcess;
+    QFuture<void> buildThread;
 
     BuildState currentState = BuildState::kNoBuild;
 };
@@ -110,7 +114,7 @@ void BuildManager::addMenu()
 
     d->buildAction.reset(new QAction(MWMBA_BUILD));
     actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
-               ":/buildercore/images/builder_buiild.png");
+               ":/buildercore/images/build.png");
     windowService->addToolBarActionItem("toolbar.Build", d->buildAction.get(), "Build.End");
 
     d->rebuildAction.reset(new QAction(MWMBA_REBUILD));
@@ -119,7 +123,11 @@ void BuildManager::addMenu()
 
     d->cleanAction.reset(new QAction(MWMBA_CLEAN));
     actionInit(d->cleanAction.get(), "Build.Clean", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
-               ":/buildercore/images/clean.png");
+               ":/buildercore/images/clean.svg");
+
+    d->cancelAction.reset(new QAction(MWMBA_CANCEL));
+    actionInit(d->cancelAction.get(), "Build.Cancel", QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
+               ":/buildercore/images/cancel.svg");
 
     QObject::connect(d->buildAction.get(), &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);
@@ -127,6 +135,8 @@ void BuildManager::addMenu()
                      this, &BuildManager::rebuildProject, Qt::DirectConnection);
     QObject::connect(d->cleanAction.get(), &QAction::triggered,
                      this, &BuildManager::cleanProject, Qt::DirectConnection);
+    QObject::connect(d->cancelAction.get(), &QAction::triggered,
+                     this, &BuildManager::cancelBuild, Qt::DirectConnection);
 }
 
 void BuildManager::buildProject()
@@ -142,6 +152,16 @@ void BuildManager::rebuildProject()
 void BuildManager::cleanProject()
 {
     execBuildStep({Clean});
+}
+
+void BuildManager::cancelBuild()
+{
+    if (d->currentState == kBuilding) {
+        d->buildThread.cancel();
+        QObject::disconnect(&d->cmdProcess, static_cast<void (QProcess::*)\
+                            (int, QProcess::ExitStatus)>(&QProcess::finished), nullptr, nullptr);
+        d->cmdProcess.kill();
+    }
 }
 
 
@@ -251,7 +271,7 @@ bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList, bool
         }
     } else {
         if (!commandList.isEmpty()) {
-            QtConcurrent::run([=](){
+            d->buildThread = QtConcurrent::run([=](){
                 QMutexLocker locker(&releaseMutex);
                 for (auto command : commandList) {
                     execCommand(command);
@@ -267,51 +287,51 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
 {
     outBuildState(BuildState::kBuilding);
     bool ret = false;
-    QString retMsg = tr("Error: execute command error! The reason is unknown.\n");
-    QProcess process;
-    process.setWorkingDirectory(info.workingDir);
+    QString executeResult = tr("Execute command failed!\n");
+
+    d->cmdProcess.setWorkingDirectory(info.workingDir);
 
     QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
             .arg(info.program, info.arguments.join(" "), info.workingDir);
     outputLog(startMsg, OutputPane::OutputFormat::NormalMessage);
 
-    connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+    connect(&d->cmdProcess, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             [&](int exitcode, QProcess::ExitStatus exitStatus) {
         if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
             ret = true;
-            retMsg = tr("The process \"%1\" exited normally.\n").arg(process.program());
+            executeResult = tr("The process \"%1\" exited normally.\n").arg(d->cmdProcess.program());
         } else if (exitStatus == QProcess::NormalExit) {
             ret = false;
-            retMsg = tr("The process \"%1\" exited with code %2.\n")
-                    .arg(process.program(), QString::number(exitcode));
+            executeResult = tr("The process \"%1\" exited with code %2.\n")
+                    .arg(d->cmdProcess.program(), QString::number(exitcode));
         } else {
             ret = false;
-            retMsg = tr("The process \"%1\" crashed.\n")
-                    .arg(process.program());
+            executeResult = tr("The process \"%1\" crashed.\n")
+                    .arg(d->cmdProcess.program());
         }
     });
 
-    connect(&process, &QProcess::readyReadStandardOutput, [&]() {
-        process.setReadChannel(QProcess::StandardOutput);
-        while (process.canReadLine()) {
-            QString line = QString::fromUtf8(process.readLine());
+    connect(&d->cmdProcess, &QProcess::readyReadStandardOutput, [&]() {
+        d->cmdProcess.setReadChannel(QProcess::StandardOutput);
+        while (d->cmdProcess.canReadLine()) {
+            QString line = QString::fromUtf8(d->cmdProcess.readLine());
             outputLog(line, OutputPane::OutputFormat::StdOut);
         }
     });
 
-    connect(&process, &QProcess::readyReadStandardError, [&]() {
-        process.setReadChannel(QProcess::StandardError);
-        while (process.canReadLine()) {
-            QString line = QString::fromUtf8(process.readLine());
+    connect(&d->cmdProcess, &QProcess::readyReadStandardError, [&]() {
+        d->cmdProcess.setReadChannel(QProcess::StandardError);
+        while (d->cmdProcess.canReadLine()) {
+            QString line = QString::fromUtf8(d->cmdProcess.readLine());
             outputLog(line, OutputPane::OutputFormat::StdErr);
             outputError(line);
         }
     });
 
-    process.start(info.program, info.arguments);
-    process.waitForFinished(-1);
+    d->cmdProcess.start(info.program, info.arguments);
+    d->cmdProcess.waitForFinished(-1);
 
-    outputLog(retMsg, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::StdErr);
+    outputLog(executeResult, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::StdErr);
 
     QString endMsg = tr("Execute command finished.\n");
     outputLog(endMsg, OutputPane::OutputFormat::NormalMessage);
@@ -387,11 +407,13 @@ void BuildManager::slotBuildState(const BuildState &buildState)
         d->buildAction->setEnabled(true);
         d->rebuildAction->setEnabled(true);
         d->cleanAction->setEnabled(true);
+        d->cancelAction->setEnabled(false);
         break;
     case BuildState::kBuilding:
         d->buildAction->setEnabled(false);
         d->rebuildAction->setEnabled(false);
         d->cleanAction->setEnabled(false);
+        d->cancelAction->setEnabled(true);
         break;
     }
 }

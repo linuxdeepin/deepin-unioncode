@@ -66,6 +66,7 @@ public slots:
     void buildProject();
     void rebuildProject();
     void cleanProject();
+    void cancelBuild();
     void slotBuildState(const BuildState &buildstate);
     void slotOutputNotify(const BuildState &state, const BuildCommandInfo &commandInfo);
     void slotResetBuildUI();

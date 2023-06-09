@@ -73,7 +73,7 @@ QVariant StepsModel::data(const QModelIndex &index, int role) const
     if (index.row() >= d->targets.size())
         return QVariant();
 
-    const QString &target = d->targets.keys().at(index.row());
+    QString target = d->targets.keys().at(index.row());
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         switch (index.column()) {
         case kTarget:
@@ -143,7 +143,7 @@ bool StepsModel::setData(const QModelIndex &index, const QVariant &value, int ro
         return false;
 
     int nColumn = index.column();
-    const QString &target = d->targets.keys().at(index.row());
+    QString target = d->targets.keys().at(index.row());
     switch (role)
     {
     case Qt::DisplayRole:
