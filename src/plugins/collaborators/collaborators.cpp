@@ -42,9 +42,9 @@ bool Collaborators::start()
             windowService->addActionNavigation("Svn", new AbstractAction(new QAction(QIcon(":/core/images/subversion.png"), QAction::tr("Svn"))));
         }
         if (windowService->addCentralNavigation) {
-            windowService->addCentralNavigation(QAction::tr("Git"),
+            windowService->addCentralNavigation("Git",
                                                 new AbstractCentral(CVSkeeper::instance()->gitMainWidget()));
-            windowService->addCentralNavigation(QAction::tr("Svn"),
+            windowService->addCentralNavigation("Svn",
                                                 new AbstractCentral(CVSkeeper::instance()->svnMainWidget()));
         }
     }

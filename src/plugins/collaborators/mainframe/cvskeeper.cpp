@@ -40,8 +40,6 @@ void CVSkeeper::openRepos(const QString &repoPath)
 {
     if (svnReposWidget->isSvnDir(repoPath))
         svnReposWidget->addNewRepoTab(repoPath);
-    if (gitReposWidget->isGitDir(repoPath))
-        gitReposWidget->setRepositories({repoPath});
 }
 
 SvnClientWidget *CVSkeeper::svnMainWidget()

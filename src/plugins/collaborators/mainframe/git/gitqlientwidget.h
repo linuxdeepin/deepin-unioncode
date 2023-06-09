@@ -30,7 +30,13 @@ class GitQlientWidget : public GitQlient
     Q_OBJECT
 public:
     explicit GitQlientWidget(QWidget *parent = nullptr);
+
+protected:
+    void showEvent(QShowEvent *event) override;
+
+private:
     bool isGitDir(const QString &repoPath);
+    QString getRepositoryPath() const;
 };
 
 #endif // GITQLIENTWIDGET_H
