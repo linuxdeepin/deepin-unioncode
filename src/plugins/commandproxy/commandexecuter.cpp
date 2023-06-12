@@ -57,6 +57,10 @@ void CommandExecuter::buildProject()
         std::cout << std::string("Please input correct working directory!") << std::endl;
         return;
     }
+    if (!QDir::isAbsolutePath(destPath))
+        destPath = QDir::currentPath() + QDir::separator() + destPath;
+    if (!QDir::isAbsolutePath(elfPath))
+        elfPath = QDir::currentPath() + QDir::separator() + elfPath;
 
     QStringList arguments;
     arguments << "-S";

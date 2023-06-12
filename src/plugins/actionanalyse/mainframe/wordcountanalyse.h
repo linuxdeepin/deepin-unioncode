@@ -42,20 +42,18 @@ public:
 
     void setArgs(const ActionAnalyseArgs& args);
     ActionAnalyseArgs args() const;
-
-    void setStorage(const QString &storage);
     QString getStorage() const;
-
-    void setWorkspace(const QString &workspace);
     QString getWorkspace() const;
-
-    void setLanguage(const QString &language);
     QString getLanguage() const;
 
     void start();
 
 private:
     QString getPythonVersion();
+
+    void setStorage(const QString &storage);
+    void setWorkspace(const QString &workspace);
+    void setLanguage(const QString &language);
 
 signals:
     void analyseDone(bool result);

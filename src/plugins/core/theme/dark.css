@@ -380,24 +380,6 @@ QTableView::item:hover {
     color: white;
 }
 
-/* === QTreeView === */
-QTreeView::item {
-    background: #2B2B2B;
-}
-
-QTreeView::item:hover {
-    background: #4C5052;
-}
-
-QTreeView::item:selected {
-    background: #4C5052;
-    color: white;
-}
-
-QTreeView::branch:selected {
-    background: #4C5052;
-}
-
 /* === QTextEdit === */
 QTextEdit {
     background: #2B2B2B;
