@@ -87,6 +87,7 @@ private:
     void execBuildStep(QList<BuildMenuType> menuTypelist);
     void outBuildState(const BuildState &buildState);
     bool canStartBuild();
+    void disconnectSignals();
 
     QMutex releaseMutex;
 

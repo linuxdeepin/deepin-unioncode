@@ -45,9 +45,6 @@ public:
     virtual void removeRootItem(QStandardItem* root) override;
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
 
-signals:
-    void createRootItemAsynEnd(QStandardItem *root);
-
 private slots:
     void actionTriggered();
     void setRootItemToView(QStandardItem *root);
@@ -58,6 +55,7 @@ private slots:
 
 private:
     QMutex mutex;
+    QStandardItem *rootItem = nullptr;
 };
 
 #endif // CMAKEPROJECTGENERATOR_H

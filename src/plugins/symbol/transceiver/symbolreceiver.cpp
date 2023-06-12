@@ -55,7 +55,9 @@ void SymbolReceiver::eventProcess(const dpf::Event &event)
         QString workspace = info.workspaceFolder();
         QString language = info.language();
         QString storage = FO::checkCreateDir(FO::checkCreateDir(workspace, ".unioncode"), "symbol");
-        SymbolKeeper::instance()->doParse({workspace, language, storage});
+        if (!language.isEmpty() && !storage.isEmpty()) {
+            SymbolKeeper::instance()->doParse({workspace, language, storage});
+        }
         SymbolKeeper::instance()->treeView()->setRootPath(storage);
     } else if (event.data() == symbol.parse.name) { // "workspace", "language", "storage"
         bool bSuccess = event.property("success").toBool();

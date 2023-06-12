@@ -34,7 +34,7 @@ class ProjectTree : public QTreeView
 
 public:
     explicit ProjectTree(QWidget *parent = nullptr);
-    virtual ~ProjectTree();
+    ~ProjectTree() override;
     void appendProjectInfo(const dpfservice::ProjectInfo &info);
     void activeProjectInfo(const dpfservice::ProjectInfo &info);
     void activeProjectInfo(const QString &kitName, const QString &language,

@@ -30,6 +30,7 @@
 #include "services/builder/builderservice.h"
 #include "services/window/windowservice.h"
 #include "common/dialog/propertiesdialog.h"
+#include "common/util/eventdefinitions.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
@@ -52,9 +53,6 @@ class CmakeProjectGeneratorPrivate
 CmakeProjectGenerator::CmakeProjectGenerator()
     : d(new CmakeProjectGeneratorPrivate())
 {
-    QObject::connect(this, &CmakeProjectGenerator::createRootItemAsynEnd,
-                     this, &CmakeProjectGenerator::setRootItemToView);
-
     // when execute command end can create root Item
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::buildExecuteEnd,
@@ -146,6 +144,9 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
 
         ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
         builderService->interface.builderCommand({commandInfo}, false);
+        // display root item before everything is done.
+        rootItem = ProjectGenerator::createRootItem(projInfo);
+        setRootItemToView(rootItem);
     }
 
     dpfservice::ProjectGenerator::configure(projInfo);
@@ -157,18 +158,17 @@ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectIn
 {
     using namespace dpfservice;
 
-    QStandardItem *rootItem = ProjectGenerator::createRootItem(info);
-
     d->asynItemThreadPolls[rootItem] = new QThreadPool;
 
     auto parse = new CmakeAsynParse;
 
     // asyn free parse, that .project file parse
     QObject::connect(parse, &CmakeAsynParse::parseProjectEnd,
-                     [=](CmakeAsynParse::ParseInfo<QStandardItem *> info) {
-                         d->asynItemThreadPolls.remove(info.result);
+                     [=](CmakeAsynParse::ParseInfo<QStandardItem *> parseInfo) {
+                         d->asynItemThreadPolls.remove(parseInfo.result);
+                         // active after everything done.
+                         project.activeProject(info.kitName(), info.language(), info.workspaceFolder());
                          delete parse;
-                         createRootItemAsynEnd(info.result);
                      });
 
     // asyn execute logic,  that .project file parse

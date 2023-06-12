@@ -158,8 +158,7 @@ void BuildManager::cancelBuild()
 {
     if (d->currentState == kBuilding) {
         d->buildThread.cancel();
-        QObject::disconnect(&d->cmdProcess, static_cast<void (QProcess::*)\
-                            (int, QProcess::ExitStatus)>(&QProcess::finished), nullptr, nullptr);
+        disconnectSignals();
         d->cmdProcess.kill();
     }
 }
@@ -331,6 +330,7 @@ bool BuildManager::execCommand(const BuildCommandInfo &info)
     d->cmdProcess.start(info.program, info.arguments);
     d->cmdProcess.waitForFinished(-1);
 
+    disconnectSignals();
     outputLog(executeResult, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::StdErr);
 
     QString endMsg = tr("Execute command finished.\n");
@@ -421,4 +421,12 @@ void BuildManager::slotBuildState(const BuildState &buildState)
 bool BuildManager::canStartBuild()
 {
     return BuildState::kBuilding != d->currentState;
+}
+
+void BuildManager::disconnectSignals()
+{
+    disconnect(&d->cmdProcess, static_cast<void (QProcess::*)\
+                        (int, QProcess::ExitStatus)>(&QProcess::finished), nullptr, nullptr);
+    disconnect(&d->cmdProcess, &QProcess::readyReadStandardOutput, nullptr, nullptr);
+    disconnect(&d->cmdProcess, &QProcess::readyReadStandardError, nullptr, nullptr);
 }
