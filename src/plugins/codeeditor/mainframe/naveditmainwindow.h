@@ -63,8 +63,6 @@ public:
     void addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group);
     // the page widget itself is not deleted.
     void removeContextWidget(AbstractWidget *contextWidget);
-    void addWidgetTools(const QString &title, AbstractWidget *toolWidget);
-    void showWidgetTools();
     bool switchWidgetWorkspace(const QString &title);
     bool switchWidgetContext(const QString &title);
     bool switchWidgetTools(const QString &title);
@@ -76,6 +74,9 @@ public:
     bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget, const QString &group);
     void removeToolBarItem(const QString &id);
     void setToolBarItemDisable(const QString &id, bool disable);
+
+private:
+    void adjustWorkspaceItemOrder();
 };
 
 #endif // NAVEDITMAINWINDOW_H

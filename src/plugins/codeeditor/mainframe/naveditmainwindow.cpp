@@ -24,6 +24,8 @@
 #include "base/abstractcentral.h"
 #include "base/abstractconsole.h"
 #include "services/window/windowservice.h"
+#include "services/project/projectservice.h"
+#include "services/symbol/symbolservice.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
 #include "toolbarmanager.h"
@@ -32,6 +34,7 @@
 #include <QDockWidget>
 #include <QEvent>
 #include <QWidget>
+#include <QTabBar>
 
 using namespace dpfservice;
 static NavEditMainWindow *ins{nullptr};
@@ -126,6 +129,7 @@ void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget 
         auto qTreeWidget = static_cast<QWidget*>(treeWidget->qWidget());
         qTabWidgetWorkspace->addTab(qTreeWidget, title);
     }
+    adjustWorkspaceItemOrder();
 }
 
 QWidget *NavEditMainWindow::setWidgetEdit(AbstractCentral *editWidget)
@@ -205,32 +209,6 @@ void NavEditMainWindow::removeContextWidget(AbstractWidget *contextWidget)
 
     int index = qTabWidgetContext->indexOf(qWidget);
     qTabWidgetContext->removeTab(index);
-}
-
-void NavEditMainWindow::addWidgetTools(const QString &title, AbstractWidget *toolWidget)
-{
-    if (!qDockWidgetTools) {
-        qTabWidgetTools = new QTabWidget();
-        qTabWidgetTools->setTabPosition(QTabWidget::West);
-        qDockWidgetTools = new AutoHideDockWidget(this);
-        qDockWidgetTools->setFeatures(QDockWidget::DockWidgetMovable);
-        qDockWidgetTools->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
-        addDockWidget(Qt::TopDockWidgetArea, qDockWidgetTools);
-        qDockWidgetTools->setWidget(qTabWidgetTools);
-        qDockWidgetTools->hide();
-    }
-
-    if (qTabWidgetTools) {
-        auto qToolWidget = static_cast<QWidget*>(toolWidget->qWidget());
-        qTabWidgetWorkspace->addTab(qToolWidget, title);
-    }
-}
-
-void NavEditMainWindow::showWidgetTools()
-{
-    if (qDockWidgetTools && qTabWidgetTools) {
-        qDockWidgetTools->show();
-    }
 }
 
 bool NavEditMainWindow::switchWidgetWorkspace(const QString &title)
@@ -344,4 +322,15 @@ void NavEditMainWindow::setToolBarItemDisable(const QString &id, bool disable)
 {
     if (mainToolBar)
         mainToolBar->disableItem(id, disable);
+}
+
+void NavEditMainWindow::adjustWorkspaceItemOrder()
+{
+    auto tabBar = qTabWidgetWorkspace->tabBar();
+    for (int i = 0; i < tabBar->count(); i++) {
+        if(tabBar->tabText(i) == MWCWT_PROJECTS)
+            tabBar->moveTab(i, 0);
+        if (tabBar->tabText(i) == MWCWT_SYMBOL)
+            tabBar->moveTab(i, 1);
+    }
 }
