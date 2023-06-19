@@ -21,8 +21,6 @@
 #ifndef MAINDIALOG_H
 #define MAINDIALOG_H
 
-#include "templateparser.h"
-
 #include "projectgenerate.h"
 #include <QDialog>
 

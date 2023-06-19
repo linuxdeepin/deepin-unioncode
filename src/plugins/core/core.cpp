@@ -58,11 +58,6 @@ bool Core::start()
     if (windowService) {
         using namespace std::placeholders;
 
-        if (!windowService->insertAction) {
-            windowService->insertAction = std::bind(&WindowKeeper::insertAction,
-                                                    WindowKeeper::instace(), _1, _2, _3);
-        }
-
         if (!windowService->addOpenProjectAction) {
             windowService->addOpenProjectAction = std::bind(&WindowKeeper::addOpenProjectAction,
                                                             WindowKeeper::instace(), _1, _2);

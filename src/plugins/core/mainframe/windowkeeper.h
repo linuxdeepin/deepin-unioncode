@@ -52,10 +52,6 @@ public:
     explicit WindowKeeper(QObject *parent = nullptr);
     virtual ~WindowKeeper();
     QStringList navActionTexts() const;
-    bool addToolBarActionItem(const QString &id, QAction *action);
-    bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget);
-    void removeToolBarItem(const QString &id);
-    void setToolBarItemDisable(const QString &id, bool disable);
 
 public slots:
     void addActionNavigation(const QString &id, AbstractAction *action);
@@ -73,8 +69,6 @@ private :
     void showAboutDlg();
     void showAboutPlugins();
     void layoutWindow(QMainWindow *window);
-    void createNavRuntime(QToolBar *toolbar);
-    void createNavDebug(QToolBar *toolbar);
     void createNavEdit(QToolBar *toolbar);
     void createNavRecent(QToolBar *toolbar);
     void createStatusBar(QMainWindow *window);

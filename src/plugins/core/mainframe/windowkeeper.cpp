@@ -207,40 +207,6 @@ void WindowKeeper::createNavEdit(QToolBar *toolbar)
     toolbar->widgetForAction(navEdit)->setObjectName("Edit");
 }
 
-void WindowKeeper::createNavDebug(QToolBar *toolbar)
-{
-    qInfo() << __FUNCTION__;
-    if (!toolbar)
-        return;
-
-    QAction* navDebug = new QAction(toolbar);
-    navDebug->setCheckable(true);
-    d->navActionGroup->addAction(navDebug);
-    navDebug->setText(MWNA_DEBUG);
-    QAction::connect(navDebug, &QAction::triggered, [=](){
-        WindowKeeper::switchWidgetNavigation(MWNA_DEBUG);
-    });
-
-    toolbar->addAction(navDebug);
-}
-
-void WindowKeeper::createNavRuntime(QToolBar *toolbar)
-{
-    qInfo() << __FUNCTION__;
-    if (!toolbar)
-        return;
-
-    QAction *navRuntime = new QAction(toolbar);
-    navRuntime->setCheckable(true);
-    d->navActionGroup->addAction(navRuntime);
-    navRuntime->setText(MWNA_RUNTIME);
-    QAction::connect(navRuntime, &QAction::triggered, [=](){
-        WindowKeeper::switchWidgetNavigation(MWNA_RUNTIME);
-    });
-
-    toolbar->addAction(navRuntime);
-}
-
 void WindowKeeper::layoutWindow(QMainWindow *window)
 {
     qInfo() << __FUNCTION__;
@@ -518,7 +484,7 @@ void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)
         return;
 
     for (auto action : d->navActionGroup->actions()) {
-        if (action->text() == actionName){
+        if (action->text() == actionName) {
             action->setChecked(checked);
         }
     }
