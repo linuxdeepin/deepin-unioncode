@@ -21,7 +21,7 @@ AbstractMenu::AbstractMenu(void *qMenu)
         abort();
     }
 
-    d->menu = (QMenu*)(qMenu);
+    d->menu = static_cast<QMenu*>(qMenu);
     QMenu::connect(d->menu, &QMenu::destroyed,
                    d->menu, [this]() {
         delete this;

@@ -27,7 +27,7 @@ AbstractMainWindow::~AbstractMainWindow()
 
 void *AbstractMainWindow::qMainWindow()
 {
-    return (void*)(d->mainwindow);
+    return static_cast<void*>(d->mainwindow);
 }
 
 AbstractMainWindow::AbstractMainWindow(void *qMainWindow)
@@ -38,7 +38,7 @@ AbstractMainWindow::AbstractMainWindow(void *qMainWindow)
         abort();
     }
 
-    d->mainwindow = (QMainWindow*)qMainWindow;
+    d->mainwindow = static_cast<QMainWindow*>(qMainWindow);
     QMainWindow::connect(d->mainwindow, &QMainWindow::destroyed,
                          d->mainwindow ,[this]() {
         delete this;

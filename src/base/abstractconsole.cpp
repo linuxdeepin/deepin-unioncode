@@ -21,8 +21,7 @@ AbstractConsole::AbstractConsole(void *qWidget)
         abort();
     }
 
-    qInfo() << "AbstractConsole Construct from: " << (QWidget*)(qWidget);
-    d->qWidget = (QWidget*)qWidget;
+    d->qWidget = static_cast<QWidget*>(qWidget);
     d->qWidget->connect(d->qWidget, &QWidget::destroyed,
                         d->qWidget, [this](QObject *obj){
         if (obj == d->qWidget) {

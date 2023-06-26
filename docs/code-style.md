@@ -1,5 +1,3 @@
-# util-dfm 编码规范（试行）
-
 ## 基本原则
 
 - C++ 类设计的代码风格主要依据  [Qt Coding Style](https://wiki.qt.io/Qt_Coding_Style)

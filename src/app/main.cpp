@@ -89,6 +89,7 @@ void voidMessageOutput(QtMsgType type, const QMessageLogContext &context, const 
     Q_UNUSED(type);
     Q_UNUSED(context);
     Q_UNUSED(msg);
+    // not ouput qt log when in command mode.
 }
 
 int main(int argc, char *argv[])
@@ -98,6 +99,7 @@ int main(int argc, char *argv[])
 
     CommandParser::instance().process();
 
+    // TODO(Any): put to command processor
     if (CommandParser::instance().isBuildModel()) {
         CommandParser::instance().setModel(CommandParser::CommandLine);
         qInstallMessageHandler(voidMessageOutput);
@@ -108,8 +110,8 @@ int main(int argc, char *argv[])
         commandLine.build();
         return 0;
     }
-    installTranslator(a);
 
+    installTranslator(a);
     dpfInstance.initialize();
     if (!loadPlugins()) {
         qCritical() << "Failed, Load plugins!";
@@ -118,5 +120,6 @@ int main(int argc, char *argv[])
 
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     return a.exec();
 }

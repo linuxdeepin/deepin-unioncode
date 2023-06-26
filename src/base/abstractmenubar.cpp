@@ -35,7 +35,7 @@ AbstractMenuBar::AbstractMenuBar(void *qMenuBar)
         abort();
     }
 
-    d->menuBar = (QMenuBar*)qMenuBar;
+    d->menuBar = static_cast<QMenuBar*>(qMenuBar);
     QMenuBar::connect(d->menuBar, &QMenuBar::destroyed,
                       d->menuBar, [this]() {
         delete this;

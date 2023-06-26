@@ -9,7 +9,7 @@
 #include <QAction>
 #include <QDir>
 
-static ActionManager *m_instance = nullptr;
+static ActionManager *kActionManagerInstance = nullptr;
 
 class ActionManagerPrivate final
 {
@@ -141,10 +141,10 @@ ActionManager::~ActionManager()
 
 ActionManager *ActionManager::getInstance()
 {
-    if (!m_instance) {
-        m_instance = new ActionManager();
+    if (!kActionManagerInstance) {
+        kActionManagerInstance = new ActionManager();
     }
-    return m_instance;
+    return kActionManagerInstance;
 }
 
 /*!

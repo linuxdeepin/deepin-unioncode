@@ -21,7 +21,7 @@ AbstractCentral::AbstractCentral(void *qwidget)
         abort();
     }
 
-    d->widget = (QWidget*)qwidget;
+    d->widget = static_cast<QWidget*>(qwidget);
     QWidget::connect(d->widget, &QWidget::destroyed,
                      d->widget, [this](){
         delete this;

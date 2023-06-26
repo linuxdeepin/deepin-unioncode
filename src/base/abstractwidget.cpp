@@ -22,7 +22,7 @@ AbstractWidget::AbstractWidget(void *qWidget)
         abort();
     }
 
-    d->qWidget = (QWidget*)qWidget;
+    d->qWidget = static_cast<QWidget*>(qWidget);
     QObject::connect(d->qWidget, &QWidget::destroyed,
                      d->qWidget, [this](QObject *obj){
         if (obj == d->qWidget) {

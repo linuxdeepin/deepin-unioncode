@@ -158,7 +158,6 @@ void JSDebugger::addPagesToContext(const QScriptEngineDebugger &debugger)
     stackPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::StackWidget));
     breakpointsPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::BreakpointsWidget));
     scriptPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::ScriptsWidget));
-    consolePane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::ConsoleWidget));
     errorPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::ErrorLogWidget));
     localsPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::LocalsWidget));
     auto windowService = dpfGetService(WindowService);
@@ -169,7 +168,6 @@ void JSDebugger::addPagesToContext(const QScriptEngineDebugger &debugger)
     debugger.widget(QScriptEngineDebugger::LocalsWidget)->show();
     windowService->addContextWidget(tr("Break&points"), breakpointsPane, "Application");
     windowService->addContextWidget(tr("ScriptWidget"), scriptPane, "Application");
-    windowService->addContextWidget(tr("ConsoleWidget"), consolePane, "Application");
     windowService->addContextWidget(tr("ErrorLogWidget"), errorPane, "Application");
 }
 
@@ -184,7 +182,6 @@ void JSDebugger::removePagesFromContext()
     removePage(stackPane);
     removePage(breakpointsPane);
     removePage(scriptPane);
-    removePage(consolePane);
     removePage(errorPane);
 
     windowService->setWidgetEdit(new AbstractCentral(oldWidgetEdit));

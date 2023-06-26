@@ -21,7 +21,7 @@ AbstractAction::AbstractAction(void *qAction)
         abort();
     }
 
-    d->action = (QAction*)qAction;
+    d->action = static_cast<QAction*>(qAction);
     d->action->setObjectName("AbstractAction");
     QAction::connect(d->action, &QAction::destroyed,
                      d->action, [this]() {

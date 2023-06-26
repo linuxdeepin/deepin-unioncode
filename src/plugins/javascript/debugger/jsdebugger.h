@@ -63,7 +63,6 @@ private:
     AbstractWidget *stackPane = nullptr;
     AbstractWidget *breakpointsPane = nullptr;
     AbstractWidget *scriptPane = nullptr;
-    AbstractWidget *consolePane = nullptr;
     AbstractWidget *errorPane = nullptr;
     AbstractWidget *localsPane = nullptr;
     AbstractCentral *codeEditor = nullptr;
