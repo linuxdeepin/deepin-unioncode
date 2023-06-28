@@ -1,5 +1,7 @@
 #!/bin/bash
-
+# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 CONTAINER_ID=$1
 CID=${CONTAINER_ID:0:7}
 NIC="$(ip route | grep default | awk '{print $5}')"

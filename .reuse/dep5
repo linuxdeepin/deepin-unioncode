@@ -1,0 +1,130 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: dde-file-manager
+Upstream-Contact: UnionTech Software Technology Co., Ltd. <>
+Source: https://github.com/linuxdeepin/dde-file-manager
+
+# ci
+Files: .gitlab-ci.yml
+Copyright: None
+License: CC0-1.0
+
+# ignore files
+Files: .gitignore .clang-format .clog.toml .project.json
+Copyright: None
+License: CC0-1.0
+
+# debian
+Files: debian/*
+Copyright: None
+License: CC0-1.0
+
+# Project files
+Files: *.qrc .tx/* *CMakeLists.txt *.cmake *.cmake.in *.pc.in
+Copyright: None
+License: CC0-1.0
+
+# ignore files
+Files: src/*.json src/*.xml src/*.policy src/*.js src/*.ini src/*.qss src/*.css src/*.theme src/*/templates/* src/*.psd src/configures/*  src/tools/eventrecorder/include/*.gitignore src/tools/eventrecorder/Doxyfile src/tools/eventrecorder/preload/syscall*.cc src/tools/eventrecorder/preload/*.S rpm/*.spec *.sh
+Copyright: None
+License: CC0-1.0
+
+# README & DOCS
+Files: README.md README.zh_CN.md docs/* src/tools/eventrecorder/*.md
+Copyright: UnionTech Software Technology Co., Ltd.
+License: CC-BY-4.0
+
+# translations
+Files: translations/*.ts
+Copyright: UnionTech Software Technology Co., Ltd.
+License: GPL-3.0-or-later
+
+# assets
+Files: assets/* src/apps/*/assets/*
+Copyright: UnionTech Software Technology Co., Ltd.
+License: GPL-3.0-or-later
+
+# images
+Files: src/*.png src/*.svg src/*.jpg
+Copyright: UnionTech Software Technology Co., Ltd.
+License: GPL-3.0-or-later
+
+# desktop files
+Files: src/*.desktop
+Copyright: UnionTech Software Technology Co., Ltd.
+License: GPL-3.0-or-later
+
+# scripts
+Files:  src/scripts/*
+Copyright: UnionTech Software Technology Co., Ltd.
+License: GPL-3.0-or-later
+
+# plugin
+Files: src/plugin/*
+Copyright: UnionTech Software Technology Co., Ltd.
+License: GPL-3.0-or-later
+
+# commom
+Files: src/common/*
+Copyright: UnionTech Software Technology Co., Ltd.
+License: GPL-3.0-or-later
+
+# tool
+Files: src/tool/*
+Copyright: UnionTech Software Technology Co., Ltd.
+License: GPL-3.0-or-later
+
+# service
+Files: src/*.service
+Copyright: UnionTech Software Technology Co., Ltd.
+License: GPL-3.0-or-later
+
+# FlameGraph
+Files: 3rdparty/scripts/*
+Copyright: 2013 Brendan Gregg
+License: GPL-3.0-or-later
+
+# cppdap
+Files: 3rdparty/cppdap/*
+Copyright: 2019 Google LLC
+License: Apache-2.0
+
+# GitQlient
+Files: 3rdparty/unioncode-GitQlient/*
+Copyright: 2021  Francesc Martinez
+License: GPL-3.0-or-later
+
+# jsonrpc
+Files: 3rdparty/unioncode-jsonrpccpp/*
+Copyright: 2015 Alexandre Poirot
+License: GPL-3.0-or-later
+
+# qtermwidget
+Files: 3rdparty/unioncode-qtermwidget-0.14.1/*
+Copyright: 2000 by Stephan Kulow <coolo@kde.org>
+License: GPL-3.0-or-later
+
+# scintilla
+Files: 3rdparty/unioncode-scintilla515/*
+Copyright: Hadar Raz
+License: GPL-3.0-or-later
+
+# aarch64
+Files: src/tools/eventrecorder/aarch64/* src/tools/eventrecorder/mips64/* src/tools/eventrecorder/sw64/* src/tools/eventrecorder/x86_64/*
+Copyright: 1993 Branko Lankester <branko@hacktic.nl>
+License: BSD-Protection
+
+# eventrecorder
+Files: src/tools/eventrecorder/ScopedFd.h src/tools/eventrecorder/easylogging* src/tools/eventrecorder/linenoise*
+Copyright: 2012-2018 Zuhd Web Services
+License: MIT
+
+# eventrecorder
+Files: src/tools/eventrecorder/Wait*
+Copyright: 2002 Niels Provos <provos@citi.umich.edu>
+License: BSD-Protection
+
+# eventrecorder
+Files: src/tools/eventrecorder/include/dwarf/* src/tools/eventrecorder/include/elf/*
+Copyright: 2013 Austin T. Clements. All rights reserved.
+License: MIT
+

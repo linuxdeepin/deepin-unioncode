@@ -1,5 +1,7 @@
 #!/bin/sh
-
+# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 NIC=$1
 BRIDGE="runc0"
 PROXY="172.16.0.1/16"
