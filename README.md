@@ -72,6 +72,16 @@ Execute `deepin-unioncode`
 
 *After the installation of deepin-unicode, some features require the installation of dependency packages before they can be used normally. This version is the root of debian10, which is consistent with the professional version. If you encounter any dependencies, you can directly download them at [[Dependency Package Download Address]](https://community-packages.deepin.com/deepin/pool/main/l/llvm-toolchain-13/)Find the corresponding package for installation in.*
 
+## Supported Language Project
+
+| Language     | Project Type    |
+| ------------ | ----------------|
+| C/C++        | CMake           |
+| Java         | Grade           |
+| Java         | Maven           |
+| Python       | Local Direcotry |
+| JavaScript   | Local Directory |
+
 ## Getting help
 
  - [Official Forum](https://bbs.deepin.org/)
