@@ -73,6 +73,16 @@ $ sudo cmake --build build --target install
 
 *deepin-unioncode安装后，部分功能需要安装依赖包后才能正常使用。该版本为debian10的根，与专业版一致，遇到相关依赖可直接在[依赖包下载地址](https://community-packages.deepin.com/deepin/pool/main/l/llvm-toolchain-13/)中找到相应的包进行安装。*
 
+## 支持的语言工程
+
+| Language     | Project Type    |
+| ------------ | ----------------|
+| C/C++        | CMake           |
+| Java         | Grade           |
+| Java         | Maven           |
+| Python       | Local Direcotry |
+| JavaScript   | Local Directory |
+
 ## 帮助
 
 - [官方论坛](https://bbs.deepin.org/) 
