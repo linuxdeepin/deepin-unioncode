@@ -91,3 +91,7 @@ $ sudo cmake --build build --target install
 ## 开源许可证
 
 deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
+
+## 界面展示
+### 打开的工程
+![projectImg](docs/project.png)
