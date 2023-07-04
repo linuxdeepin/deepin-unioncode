@@ -105,20 +105,20 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 ## 界面展示
 - 语言支持
 
-  ![](./docs/rc/language support.png)
+  ![](./docs/rc/language-support.png)
 
 - 代码分析
 
-  ![](./docs/rc/code analysis.png)
+  ![](./docs/rc/code-analysis.png)
 
 - 插件管理
 
-  ![](./docs/rc/plugin manager.png)
+  ![](./docs/rc/plugin-manager.png)
 
 - 代码迁移
 
-  ![code porting](./docs/rc/code porting.png)
+  ![code porting](./docs/rc/code-porting.png)
 
 - 反向调试
 
-  ![reverse debug](./docs/rc/reverse debug.png)
+  ![reverse debug](./docs/rc/reverse-debug.png)
