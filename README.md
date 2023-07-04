@@ -44,7 +44,7 @@ _The **master** branch is current development branch, build dependencies may cha
 1. Make sure you have installed all dependencies.
 
 ``` shell
-$ git clone https://github.com/linuxdeepin/deepin-unioncode
+$ git clone https://github.com/linuxdeepin/deepin-unioncode.git
 $ cd unioncode
 $ sudo apt build-dep ./
 ```
@@ -102,7 +102,24 @@ We encourage you to report issues and contribute changes
 deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 
 
-## Interface
+## Preview
 
-### project opened
-![projectImg](./docs/project.png)
+- language support
+
+  ![](./docs/rc/language support.png)
+
+- code analysis
+
+  ![](./docs/rc/code analysis.png)
+
+- plugin manager
+
+  ![](./docs/rc/plugin manager.png)
+
+- code porting
+
+  ![code porting](./docs/rc/code porting.png)
+
+- reverse debug
+
+  ![reverse debug](./docs/rc/reverse debug.png)
