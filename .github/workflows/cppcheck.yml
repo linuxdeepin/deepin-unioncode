@@ -1,0 +1,26 @@
+name: cppcheck
+on:
+  pull_request_target:
+    paths-ignore:
+      - ".github/workflows/**"
+
+concurrency:
+  group: ${{ github.workflow }}-pull/${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  cppchceck:
+    name: cppcheck
+    runs-on: ubuntu-latest
+    steps:
+      - run: export
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: linuxdeepin/action-cppcheck@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          pull_request_id: ${{ github.event.pull_request.number }}
+          allow_approve: false

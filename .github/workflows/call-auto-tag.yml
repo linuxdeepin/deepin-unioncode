@@ -1,0 +1,16 @@
+name: auto tag
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, closed]
+    paths:
+      - "debian/changelog"
+
+concurrency:
+  group: ${{ github.workflow }}-pull/${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  auto_tag:
+    uses: linuxdeepin/.github/.github/workflows/auto-tag.yml@master
+    secrets: inherit
