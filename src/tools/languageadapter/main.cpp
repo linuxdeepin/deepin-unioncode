@@ -115,8 +115,10 @@ QProcess *createPythonServ(const newlsp::ProjectKey &key)
     proc->setArguments({"-c","pyls -v"});
     env::lang::Version pyVer;
     pyVer.major = 3;
-    auto python3Env = env::lang::get(env::lang::Category::User, env::lang::Python, pyVer);
-    proc->setProcessEnvironment(python3Env);
+    if (!ProcessUtil::exists("pyls")) {
+        auto python3Env = env::lang::get(env::lang::Category::User, env::lang::Python, pyVer);
+        proc->setProcessEnvironment(python3Env);
+    }
 
     return proc;
 }
