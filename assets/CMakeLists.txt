@@ -28,3 +28,10 @@ endif()
 
 file(GLOB QM_FILES "translations/*.qm")
 install(FILES ${QM_FILES} DESTINATION "${SOURCES_INSTALL_RPEFIX}/translations")
+
+# install tools
+set(TOOL_INSTALL_PATH "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/${CMAKE_PROJECT_NAME}/tools/env")
+message("tool install path: ${TOOL_INSTALL_PATH}")
+file(GLOB TOOL_FILES "${CMAKE_SOURCE_DIR}/assets/tools/*.tar.gz")
+message(STATUS "TOOL_FILES ${TOOL_FILES}")
+install(FILES ${TOOL_FILES} DESTINATION ${TOOL_INSTALL_PATH})
