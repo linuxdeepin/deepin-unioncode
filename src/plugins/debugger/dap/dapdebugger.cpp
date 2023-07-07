@@ -538,8 +538,7 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         bool succeed = event.property(debugger.prepareDebugDone.pKeys[0]).toBool();
         QString errorMsg = event.property(debugger.prepareDebugDone.pKeys[1]).toString();
         if (!succeed) {
-            printOutput(errorMsg);
-            QMetaObject::invokeMethod(this, "message", Q_ARG(QString, errorMsg));
+            printOutput(errorMsg, OutputPane::ErrorMessage);
             updateRunState(kPreparing);
         } else {
             auto &ctx = dpfInstance.serviceContext();
@@ -843,7 +842,7 @@ void DAPDebugger::start()
         auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
         if (generator) {
             if (!generator->isTargetReady()) {
-                QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Please build first.\n Build : Ctrl + B"));
+                printOutput(tr("Please build first.\n Build : Ctrl + B"), OutputPane::ErrorMessage);
                 return;
             }
             prepareDebug();
@@ -855,7 +854,7 @@ void DAPDebugger::prepareDebug()
 {
     auto runState = getRunState();
     if (runState == kRunning) {
-        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Is preparing dependence, please waiting for a moment"));
+        printOutput(tr("Is preparing dependence, please waiting for a moment"));
         return;
     }
 
@@ -869,7 +868,7 @@ void DAPDebugger::prepareDebug()
             QMap<QString, QVariant> param = generator->getDebugArguments(getActiveProjectInfo(), d->currentOpenedFileName);
             bool ret = generator->prepareDebug(param, retMsg);
             if (!ret) {
-                QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
+                printOutput(retMsg, OutputPane::ErrorMessage);
                 updateRunState(kPreparing);
             } else if (!generator->isAnsyPrepareDebug()) {
                 requestDebugPort(param, d->activeProjectKitName, false);
@@ -881,7 +880,7 @@ void DAPDebugger::prepareDebug()
 bool DAPDebugger::requestDebugPort(const QMap<QString, QVariant> &param, const QString &kitName, bool customDap)
 {
     if (d->runState == kRunning) {
-        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Is getting the dap port, please waiting for a moment"));
+        printOutput(tr("Is getting the dap port, please waiting for a moment"));
         return false;
     }
 
@@ -895,7 +894,7 @@ bool DAPDebugger::requestDebugPort(const QMap<QString, QVariant> &param, const Q
             d->requestDAPPortUuid = QUuid::createUuid().toString();
             printOutput(tr("Requesting debug port..."));
             if (!generator->requestDAPPort(d->requestDAPPortUuid, param, retMsg)) {
-                QMetaObject::invokeMethod(this, "message", Q_ARG(QString, retMsg));
+                printOutput(retMsg, OutputPane::ErrorMessage);
                 stopWaitingDebugPort();
                 return false;
             }
@@ -964,7 +963,6 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
 {
     if (!port) {
         printOutput(tr("\nThe dap port is not ready, please retry.\n"), OutputPane::OutputFormat::ErrorMessage);
-        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, "Could not find server port!"));
         return;
     }
 
@@ -1024,15 +1022,13 @@ bool DAPDebugger::runCoredump(const QString &target, const QString &core, const 
 
     if (target.isEmpty() || !QFileInfo(target).isFile()) {
         QString tipMsg = tr("The coredump target file is error: ") + target;
-        printOutput(tipMsg);
-        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, tipMsg));
+        printOutput(tipMsg, OutputPane::ErrorMessage);
         return false;
     }
 
     if (core.isEmpty() || !QFileInfo(core).isFile()) {
         QString tipMsg = tr("The coredump file is error: ") + core;
-        printOutput(tipMsg);
-        QMetaObject::invokeMethod(this, "message", Q_ARG(QString, tipMsg));
+        printOutput(tipMsg, OutputPane::ErrorMessage);
         return false;
     }
 
