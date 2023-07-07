@@ -45,14 +45,14 @@ _The **master** branch is current development branch, build dependencies may cha
 
 ``` shell
 $ git clone https://github.com/linuxdeepin/deepin-unioncode.git
-$ cd unioncode
+$ cd deepin-unioncode
 $ sudo apt build-dep ./
 ```
 
 2. Build:
 
 ```shell
-$ cmake -B build -DCMAKE_INSTALL_PREFIX=/usr
+$ cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 $ cmake --build build
 ```
 
