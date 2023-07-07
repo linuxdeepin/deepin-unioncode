@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -1045,27 +1045,22 @@ The dap port is not ready, please retry.
 <context>
     <name>JSDebugger</name>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="167"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="166"/>
         <source>Stac&amp;kFrame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="170"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="169"/>
         <source>Break&amp;points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="171"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="170"/>
         <source>ScriptWidget</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="172"/>
-        <source>ConsoleWidget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="173"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="171"/>
         <source>ErrorLogWidget</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2049,13 +2044,19 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="61"/>
+        <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="63"/>
+        <source>JDK version：</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="69"/>
         <source>Gradle Version: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="77"/>
-        <source>Main Classï¼</source>
+        <source>Main Class：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2090,34 +2091,28 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="57"/>
-        <source>Gradle distributionï¼</source>
+        <location filename="../../src/plugins/cxx/ninja/option/ninjawidget.cpp" line="55"/>
+        <source>Ninja path：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="61"/>
-        <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="63"/>
-        <source>JDK versionï¼</source>
+        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="57"/>
+        <source>Gradle distribution：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="57"/>
-        <source>Maven pathï¼</source>
+        <source>Maven path：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="65"/>
-        <source>User Settingï¼</source>
+        <source>User Setting：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="74"/>
-        <source>Local Settingï¼</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/ninja/option/ninjawidget.cpp" line="55"/>
-        <source>Ninja pathï¼</source>
+        <source>Local Setting：</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2735,17 +2730,17 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="86"/>
-        <source>trace directoryï¼</source>
+        <source>trace directory：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="87"/>
-        <source>process IDï¼</source>
+        <source>process ID：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="89"/>
-        <source>recentï¼</source>
+        <source>recent：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

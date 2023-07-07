@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN">
+<TS version="2.1" language="zh_CN">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -1068,27 +1068,22 @@ dap端口未就绪，请重试。
 <context>
     <name>JSDebugger</name>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="167"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="166"/>
         <source>Stac&amp;kFrame</source>
         <translation>堆栈列表(&amp;K)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="170"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="169"/>
         <source>Break&amp;points</source>
         <translation>断点列表(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="171"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="170"/>
         <source>ScriptWidget</source>
         <translation>脚本窗口</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="172"/>
-        <source>ConsoleWidget</source>
-        <translation>控制窗口</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="173"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="171"/>
         <source>ErrorLogWidget</source>
         <translation>错误日志窗口</translation>
     </message>
@@ -1974,7 +1969,7 @@ storage: %2
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="71"/>
         <source>Context</source>
         <translatorcomment>控制台</translatorcomment>
-        <translation>文本</translation>
+        <translation type="unfinished">交互区</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="105"/>
@@ -2083,14 +2078,20 @@ storage: %2
         <translation>编译配置：</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="61"/>
+        <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="63"/>
+        <source>JDK version：</source>
+        <translation>JDK版本：</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="69"/>
         <source>Gradle Version: </source>
         <translation>Gradle版本： </translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="77"/>
-        <source>Main Classï¼</source>
-        <translation>主类</translation>
+        <source>Main Class：</source>
+        <translation>主类：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="87"/>
@@ -2124,35 +2125,29 @@ storage: %2
         <translation>JS解释器： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="57"/>
-        <source>Gradle distributionï¼</source>
-        <translation>Gradle版本</translation>
+        <location filename="../../src/plugins/cxx/ninja/option/ninjawidget.cpp" line="55"/>
+        <source>Ninja path：</source>
+        <translation>Ninja路径：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="61"/>
-        <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="63"/>
-        <source>JDK versionï¼</source>
-        <translation>JDK版本</translation>
+        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="57"/>
+        <source>Gradle distribution：</source>
+        <translation>Gradle版本：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="57"/>
-        <source>Maven pathï¼</source>
-        <translation>Maven路径</translation>
+        <source>Maven path：</source>
+        <translation>Maven路径：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="65"/>
-        <source>User Settingï¼</source>
-        <translation>用户设置</translation>
+        <source>User Setting：</source>
+        <translation>用户设置：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="74"/>
-        <source>Local Settingï¼</source>
-        <translation>本地设置</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/ninja/option/ninjawidget.cpp" line="55"/>
-        <source>Ninja pathï¼</source>
-        <translation>Ninja路径</translation>
+        <source>Local Setting：</source>
+        <translation>本地设置：</translation>
     </message>
 </context>
 <context>
@@ -2770,18 +2765,18 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="86"/>
-        <source>trace directoryï¼</source>
-        <translation>跟踪目录</translation>
+        <source>trace directory：</source>
+        <translation>跟踪路径：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="87"/>
-        <source>process IDï¼</source>
-        <translation>进程ID</translation>
+        <source>process ID：</source>
+        <translation>进程ID：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="89"/>
-        <source>recentï¼</source>
-        <translation>最近</translation>
+        <source>recent：</source>
+        <translation>最近：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="144"/>
