@@ -46,14 +46,14 @@ _当前的开发分支为**master**，编译依赖可能会在没有更新本说
 
 ``` shell
 $ git clone https://github.com/linuxdeepin/deepin-unioncode.git
-$ cd unioncode
+$ cd deepin-unioncode
 $ sudo apt build-dep ./
 ```
 
 2. 构建:
 
 ```shell
-$ cmake -B build -DCMAKE_INSTALL_PREFIX=/usr
+$ cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 $ cmake --build build
 ```
 
