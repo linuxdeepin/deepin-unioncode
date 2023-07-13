@@ -181,7 +181,7 @@ void TreeView::selNewFolder()
     QModelIndexList indexs = selectedIndexes();
     bool hasErr = false;
     QString errString;
-    if (indexs.size() == 1) {
+    if (indexs.size() > 0) {
         QString filePath = d->model->filePath(indexs[0]);
         QFileInfo info(filePath);
         if (info.isDir()) {
