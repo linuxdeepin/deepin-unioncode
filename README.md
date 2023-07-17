@@ -8,34 +8,35 @@ Deepin Union Code is a lightweight integrated development environment independen
 
 _The **master** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
 
--  debhelper (>=9),
-  - dh-systemd,
-  - cmake,
-  -  qt5-qmake,
-  -  qtbase5-dev,
-  -  qttools5-dev,
-  -  qttools5-dev-tools,
-  -  lxqt-build-tools (>= 0.6.0~),
-  -  libssl-dev,
-  -  llvm (>=1:7~),
-  -  libclang-dev (>=1:7~),
-  -  libutf8proc-dev,
-  -  libcurl-dev,
-  -  libmicrohttpd-dev,
-  -  libjsoncpp-dev,
-  -  libargtable2-dev,
-  -  libhiredis-dev,
-  -  catch,
-  -  libzstd-dev,
-  -  libjson-c-dev,
-  -  libelf-dev,
-  -  libcapstone-dev,
-  -  libunwind-dev, 
-  -  libelfin-dev,
-  -  libdbus-1-dev,
-  -  libxi-dev,
-  -  qtscript5-dev,
-  -  libqt5scripttools5
+- dh-systemd
+
+- cmake
+- qt5-qmake
+- qtbase5-dev
+- qttools5-dev
+- qttools5-dev-tools
+- lxqt-build-tools (>= 0.6.0~)
+- libssl-dev
+- llvm (>=1:7~)
+- libclang-dev (>=1:7~)
+- libutf8proc-dev
+- libcurl-dev
+- libmicrohttpd-dev
+- libjsoncpp-dev
+- libargtable2-dev
+- libhiredis-dev
+- catch
+- libzstd-dev
+- libjson-c-dev
+- libelf-dev
+- libcapstone-dev
+- libunwind-dev,
+- libelfin-dev
+- libdbus-1-dev
+- libxi-dev
+- qtscript5-dev
+- libqt5scripttools5
+- clang
 
 ## Installation
 
