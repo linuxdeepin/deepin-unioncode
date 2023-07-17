@@ -80,23 +80,23 @@ probe_cxx_compilers()
 
 probe_debuggers()
 {
-	DEBUGGERS=$(find $search_path -name gdb \
-			-o -name lldb-[1-9]*
+	DEBUGGERS=$(find /usr/bin -name gdb \
+			-o -name lldb-[1-9]* -o -name lldb
 		)
 	echo "{\"C/C++ debuggers\": [" >> $TOOLCHAINS
-	for debugger in ${DEBUGGERS[@]} lldb; do
+	DEBUGGERS=($DEBUGGERS)
+	count=${#DEBUGGERS[@]}
+	for ((i=0;i<$count;i++)) do
+		debugger=${DEBUGGERS[i]}
 		echo "{" >> $TOOLCHAINS
 		name=$(basename $debugger)
-		if [ $debugger =  lldb ]; then
-			path=$(which lldb)
-			echo "\"name\":\"lldb\"," >> $TOOLCHAINS
-			echo "\"path\":\"$path\"" >> $TOOLCHAINS			
-			echo "}" >> $TOOLCHAINS
-		else
-			echo "\"name\":\"$name\"," >> $TOOLCHAINS
-			echo "\"path\":\"$debugger\"" >> $TOOLCHAINS			
-			echo "}," >>  $TOOLCHAINS
-		fi
+		echo "\"name\":\"$name\"," >> $TOOLCHAINS
+		echo "\"path\":\"$debugger\"" >> $TOOLCHAINS			
+		echo "}" >>  $TOOLCHAINS
+		last=$[$count-1]
+		if [ $i -ne $last ]; then
+			echo "," >>  $TOOLCHAINS
+		fi	
 	done
 	echo "]}" >> $TOOLCHAINS
 }
@@ -106,6 +106,7 @@ probe_build_systems()
 {
 	CMAKE_VERSIONS=($(find $search_path -name 'cmake'))
 	echo "{\"C/C++ build systems\": [" >> $TOOLCHAINS
+	CMAKE_VERSIONS=($CMAKE_VERSIONS)
 	count=${#CMAKE_VERSIONS[@]}
 	for ((i=0;i<$count;i++)) do
 		version=${CMAKE_VERSIONS[i]}
@@ -128,6 +129,7 @@ probe_ninja()
 {
 	NINJA_VERSIONS=($(find $search_path -name 'ninja'))
 	echo "{\"Ninja\": [" >> $TOOLCHAINS
+	NINJA_VERSIONS=($NINJA_VERSIONS)
 	count=${#NINJA_VERSIONS[@]}
 	for ((i=0;i<$count;i++)) do
 		version=${NINJA_VERSIONS[i]}
