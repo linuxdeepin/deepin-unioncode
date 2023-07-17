@@ -9,7 +9,6 @@ Deepin Union Code is a lightweight integrated development environment independen
 _The **master** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
 
 - dh-systemd
-
 - cmake
 - qt5-qmake
 - qtbase5-dev
@@ -30,14 +29,13 @@ _The **master** branch is current development branch, build dependencies may cha
 - libjson-c-dev
 - libelf-dev
 - libcapstone-dev
-- libunwind-dev,
+- libunwind-dev
 - libelfin-dev
 - libdbus-1-dev
 - libxi-dev
 - qtscript5-dev
 - libqt5scripttools5
 - clang
-
 ## Installation
 
 ### Build from source code
