@@ -8,34 +8,34 @@
 
 _当前的开发分支为**master**，编译依赖可能会在没有更新本说明的情况下发生变化，请参考`./debian/control`以获取构建依赖项列表_
 
-  -  dh-systemd
--  cmake
--  qt5-qmake
--  qtbase5-dev
--  qttools5-dev
--  qttools5-dev-tools
--  lxqt-build-tools (>= 0.6.0~)
--  libssl-dev
--  llvm (>=1:7~)
--  libclang-dev (>=1:7~)
--  libutf8proc-dev
--  libcurl-dev
--  libmicrohttpd-dev
--  libjsoncpp-dev
--  libargtable2-dev
--  libhiredis-dev
--  catch
--  libzstd-dev
--  libjson-c-dev
--  libelf-dev
--  libcapstone-dev
--  libunwind-dev,
--  libelfin-dev
--  libdbus-1-dev
--  libxi-dev
--  qtscript5-dev
--  libqt5scripttools5
--  clang
+- dh-systemd
+- cmake
+- qt5-qmake
+- qtbase5-dev
+- qttools5-dev
+- qttools5-dev-tools
+- lxqt-build-tools (>= 0.6.0~)
+- libssl-dev
+- llvm (>=1:7~)
+- libclang-dev (>=1:7~)
+- libutf8proc-dev
+- libcurl-dev
+- libmicrohttpd-dev
+- libjsoncpp-dev
+- libargtable2-dev
+- libhiredis-dev
+- catch
+- libzstd-dev
+- libjson-c-dev
+- libelf-dev
+- libcapstone-dev
+- libunwind-dev
+- libelfin-dev
+- libdbus-1-dev
+- libxi-dev
+- qtscript5-dev
+- libqt5scripttools5
+- clang
 
 ## 安装
 

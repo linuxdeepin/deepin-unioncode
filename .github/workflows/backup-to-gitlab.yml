@@ -8,10 +8,8 @@ concurrency:
 jobs:
   backup-to-gitlabwh:
     uses: linuxdeepin/.github/.github/workflows/backup-to-gitlabwh.yml@master
-    secrets:
-      BRIDGETOKEN: ${{ secrets.BRIDGETOKEN }}
+    secrets: inherit
 
   backup-to-gitee:
     uses: linuxdeepin/.github/.github/workflows/backup-to-gitee.yml@master
-    secrets:
-      GITEE_SYNC_TOKEN: ${{ secrets.GITEE_SYNC_TOKEN }}
+    secrets: inherit

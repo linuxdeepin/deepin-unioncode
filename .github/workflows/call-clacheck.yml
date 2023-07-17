@@ -12,5 +12,4 @@ concurrency:
 jobs:
   clacheck:
     uses: linuxdeepin/.github/.github/workflows/cla-check.yml@master
-    secrets:
-      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+    secrets: inherit
