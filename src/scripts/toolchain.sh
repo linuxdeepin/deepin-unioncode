@@ -80,23 +80,22 @@ probe_cxx_compilers()
 
 probe_debuggers()
 {
-	DEBUGGERS=$(find $search_path -name gdb \
-			-o -name lldb-[1-9]*
-		)
+	DEBUGGERS=($(find $search_path -name gdb \
+			-o -name lldb-[1-9]* -o -name lldb
+		))
 	echo "{\"C/C++ debuggers\": [" >> $TOOLCHAINS
-	for debugger in ${DEBUGGERS[@]} lldb; do
+	count=${#DEBUGGERS[@]}
+	for ((i=0;i<$count;i++)) do
+		debugger=${DEBUGGERS[i]}
 		echo "{" >> $TOOLCHAINS
 		name=$(basename $debugger)
-		if [ $debugger =  lldb ]; then
-			path=$(which lldb)
-			echo "\"name\":\"lldb\"," >> $TOOLCHAINS
-			echo "\"path\":\"$path\"" >> $TOOLCHAINS			
-			echo "}" >> $TOOLCHAINS
-		else
-			echo "\"name\":\"$name\"," >> $TOOLCHAINS
-			echo "\"path\":\"$debugger\"" >> $TOOLCHAINS			
-			echo "}," >>  $TOOLCHAINS
-		fi
+		echo "\"name\":\"$name\"," >> $TOOLCHAINS
+		echo "\"path\":\"$debugger\"" >> $TOOLCHAINS			
+		echo "}" >>  $TOOLCHAINS
+		last=$[$count-1]
+		if [ $i -ne $last ]; then
+			echo "," >>  $TOOLCHAINS
+		fi	
 	done
 	echo "]}" >> $TOOLCHAINS
 }
