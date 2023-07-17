@@ -11,6 +11,7 @@ _The **master** branch is current development branch, build dependencies may cha
 -  debhelper (>=9),
   - dh-systemd,
   - cmake,
+  - qt4-dev-tools,
   -  qt5-qmake,
   -  qtbase5-dev,
   -  qttools5-dev,
@@ -35,7 +36,9 @@ _The **master** branch is current development branch, build dependencies may cha
   -  libdbus-1-dev,
   -  libxi-dev,
   -  qtscript5-dev,
-  -  libqt5scripttools5
+  -  libqt5scripttools5,
+  -  clang,
+  -  gdb
 
 ## Installation
 

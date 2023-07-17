@@ -9,6 +9,7 @@ Build-Depends:
  qt5-qmake,
  qtbase5-dev,
  qttools5-dev,
+ qt4-dev-tools,
  qttools5-dev-tools,
  lxqt-build-tools (>= 0.6.0~),
  libssl-dev,
@@ -30,7 +31,9 @@ Build-Depends:
  libdbus-1-dev,
  libxi-dev,
  qtscript5-dev,
- libqt5scripttools5
+ libqt5scripttools5,
+ clang,
+ gdb
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 
