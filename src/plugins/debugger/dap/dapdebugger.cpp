@@ -680,6 +680,17 @@ void DAPDebugger::switchCurrentThread(int threadId)
                 sf.file = it.source.value().path ? it.source.value().path->c_str() : "";
             } else {
                 sf.file = "No file found.";
+                auto &ctx = dpfInstance.serviceContext();
+                ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+                if (!projectService || !projectService->getProjectInfo)
+                    return;
+
+                ProjectInfo projectInfo = projectService->getActiveProjectInfo();
+                if (!projectInfo.isVaild())
+                    return;
+
+                auto file = projectInfo.workspaceFolder() + "/src/main/java/com/example/App.java";
+                sf.file = file;
             }
 
             if (it.moduleId) {
@@ -973,8 +984,8 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
 
     auto iniRequet = d->rtCfgProvider->initalizeRequest();
     bool bSuccess = d->session->initialize(d->rtCfgProvider->ip(),
-                                        port,
-                                        iniRequet);
+                                           port,
+                                           iniRequet);
 
     // Launch debuggee.
     if (bSuccess) {
