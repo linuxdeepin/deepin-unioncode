@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
+
 import threading
 from tool.match.match_rules import get_asm_dict, get_c_rules, get_make_ruls
 from tool.migrate_task import MigrateTaskTactory
