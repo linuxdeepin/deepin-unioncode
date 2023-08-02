@@ -973,8 +973,8 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
 
     auto iniRequet = d->rtCfgProvider->initalizeRequest();
     bool bSuccess = d->session->initialize(d->rtCfgProvider->ip(),
-                                        port,
-                                        iniRequet);
+                                           port,
+                                           iniRequet);
 
     // Launch debuggee.
     if (bSuccess) {
