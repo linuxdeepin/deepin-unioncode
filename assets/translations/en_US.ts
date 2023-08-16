@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -179,62 +179,62 @@
 <context>
     <name>BinaryToolsDialog</name>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="24"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="26"/>
         <source>Binary Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="34"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="39"/>
         <source>Use Tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="35"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="40"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="36"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="41"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="98"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="99"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="102"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="103"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="104"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="105"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="107"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="108"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="68"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="69"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="149"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="150"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="156"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="157"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -682,61 +682,77 @@ The debugee has Terminated.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="709"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="708"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="711"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="710"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="712"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="711"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="718"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="717"/>
         <source>Signal Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="767"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="766"/>
         <source>Threads:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="896"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="845"/>
+        <source>Please build first.
+ Build : Ctrl + B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="857"/>
+        <source>Is preparing dependence, please waiting for a moment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="883"/>
+        <source>Is getting the dap port, please waiting for a moment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="895"/>
         <source>Requesting debug port...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="966"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="965"/>
         <source>
 The dap port is not ready, please retry.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="971"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="969"/>
         <source>Debugging starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1023"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1021"/>
         <source>Start debugging coredump file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1026"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1024"/>
         <source>The coredump target file is error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1033"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1030"/>
         <source>The coredump file is error: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -778,47 +794,47 @@ The dap port is not ready, please retry.
 <context>
     <name>DetailsView</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="114"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="116"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="122"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="124"/>
         <source>Version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="130"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="132"/>
         <source>Compatibility version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="138"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="140"/>
         <source>Vendor:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="146"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="148"/>
         <source>Copyright:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="154"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="156"/>
         <source>URL:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="163"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="165"/>
         <source>Description:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="175"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="177"/>
         <source>License:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="187"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="189"/>
         <source>Dependencies:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -849,19 +865,6 @@ The dap port is not ready, please retry.
     <message>
         <location filename="../../src/common/util/downloadutil.cpp" line="166"/>
         <source>Downloading %1...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>EnvironmentModel</name>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="98"/>
-        <source>Key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="100"/>
-        <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1017,6 +1020,19 @@ The dap port is not ready, please retry.
     </message>
 </context>
 <context>
+    <name>GradleWidget</name>
+    <message>
+        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="58"/>
+        <source>use Gradle wrapper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="61"/>
+        <source>use Local installation, directory：</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>HistoryDiffView</name>
     <message>
         <location filename="../../src/plugins/collaborators/mainframe/svn/historydiffwidget.cpp" line="13"/>
@@ -1045,27 +1061,22 @@ The dap port is not ready, please retry.
 <context>
     <name>JSDebugger</name>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="167"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="166"/>
         <source>Stac&amp;kFrame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="170"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="169"/>
         <source>Break&amp;points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="171"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="170"/>
         <source>ScriptWidget</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="172"/>
-        <source>ConsoleWidget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="173"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="171"/>
         <source>ErrorLogWidget</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1283,14 +1294,6 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>OptionGeneralGenerator</name>
-    <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optiongeneralgenerator.h" line="14"/>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>OptionsDialog</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="55"/>
@@ -1362,12 +1365,13 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="32"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="33"/>
         <source>Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="33"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="34"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="95"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1377,7 +1381,7 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="87"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="88"/>
         <source>Plugin Details of %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1397,26 +1401,6 @@ repos path: %0</source>
     <message>
         <location filename="../../src/framework/lifecycle/pluginview.cpp" line="92"/>
         <source>Load on Startup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="117"/>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="117"/>
-        <source>Load</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="117"/>
-        <source>Version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="117"/>
-        <source>Vendor</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2049,13 +2033,19 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="61"/>
+        <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="63"/>
+        <source>JDK version：</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="69"/>
         <source>Gradle Version: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="77"/>
-        <source>Main Classï¼</source>
+        <source>Main Class：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2090,34 +2080,28 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="57"/>
-        <source>Gradle distributionï¼</source>
+        <location filename="../../src/plugins/cxx/ninja/option/ninjawidget.cpp" line="55"/>
+        <source>Ninja path：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="61"/>
-        <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="63"/>
-        <source>JDK versionï¼</source>
+        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="57"/>
+        <source>Gradle distribution：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="57"/>
-        <source>Maven pathï¼</source>
+        <source>Maven path：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="65"/>
-        <source>User Settingï¼</source>
+        <source>User Setting：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="74"/>
-        <source>Local Settingï¼</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/ninja/option/ninjawidget.cpp" line="55"/>
-        <source>Ninja pathï¼</source>
+        <source>Local Setting：</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2374,18 +2358,83 @@ storage: %2
         <source>launch mavenConfig</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
+        <source>Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
+        <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
+        <source>Vendor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optiongeneralgenerator.h" line="15"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="29"/>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="52"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="30"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="38"/>
+        <source>Build Steps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="39"/>
+        <source>Clean Steps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="40"/>
+        <source>Runtime Env</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="98"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/environmentwidget.cpp" line="62"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="72"/>
+        <source>Variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="100"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/environmentwidget.cpp" line="64"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="74"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QPushButton</name>
     <message>
-        <location filename="../../src/common/dialog/contextdialog.cpp" line="66"/>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="69"/>
         <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="47"/>
         <location filename="../../src/plugins/collaborators/mainframe/svn/loggindialog.cpp" line="14"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/common/dialog/contextdialog.cpp" line="67"/>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="70"/>
         <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittitlebar.cpp" line="50"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
@@ -2665,53 +2714,63 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="262"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="255"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="256"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="264"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="266"/>
         <source>event list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="269"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="271"/>
         <source>syscall filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="283"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="285"/>
         <source>x11 events filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="301"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="303"/>
         <source>dbus filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="333"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="335"/>
         <source>Only record the thread where event occurred:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="334"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="336"/>
         <source>Record the size of heap memory (default is 0, in KB):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="335"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="337"/>
         <source>Record the size of stack memory (the default is 32, in KB):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="336"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="338"/>
         <source>Record system call parameter size (default is 256, unit Byte):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="337"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="339"/>
         <source>Record the specified global variable (format: [*]var1+size1[,[*]var2+size2,...]):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="338"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="340"/>
         <source>Start record after the specified function is executed (c++ mangle name):</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2734,22 +2793,32 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="86"/>
-        <source>trace directoryï¼</source>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="73"/>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="87"/>
-        <source>process IDï¼</source>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="74"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="88"/>
+        <source>trace directory：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="89"/>
-        <source>recentï¼</source>
+        <source>process ID：</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="144"/>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="91"/>
+        <source>recent：</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="146"/>
         <source>Open Directory</source>
         <translation type="unfinished"></translation>
     </message>

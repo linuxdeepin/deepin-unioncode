@@ -95,9 +95,9 @@ QVariant EnvironmentModel::headerData(int section, Qt::Orientation orientation, 
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch (section) {
         case Key:
-            return tr("Key");
+            return QObject::tr("Variable");
         case Value:
-            return tr("Value");
+            return QObject::tr("Value");
         default:
             break;
         }

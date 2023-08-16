@@ -69,9 +69,9 @@ public:
         if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
             switch (section) {
             case kVaribale:
-                return "Variable";
+                return QObject::tr("Variable");
             case kValue:
-                return "Value";
+                return QObject::tr("Value");
             default:
                 ; // do nothing.
             }
