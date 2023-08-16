@@ -7,6 +7,7 @@
 #include "common/util/eventdefinitions.h"
 
 #include <QPushButton>
+#include <QDialogButtonBox>
 #include <QProcess>
 #include <QBoxLayout>
 #include <QTextBlock>
@@ -15,6 +16,7 @@ class BinaryToolsDialogPrivate
 {
     friend class BinaryToolsDialog;
     BinaryToolsConfigView *configView = nullptr;
+    QDialogButtonBox *buttons = nullptr;
 };
 
 BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
@@ -29,32 +31,31 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
 
     d->configView = new BinaryToolsConfigView;
     vLayout->addWidget(d->configView);
+    vLayout->addStretch();
 
-    QHBoxLayout *buttonLayout = new QHBoxLayout(this);
-    QPushButton *pbtUse = new QPushButton(tr("Use Tool"), this);
-    QPushButton *pbtSave = new QPushButton(tr("Save"), this);
-    QPushButton *pbtCancel = new QPushButton(tr("Cancel"), this);
-    pbtUse->setDefault(true);
-    auto buttonSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    buttonLayout->addItem(buttonSpacer);
-    buttonLayout->addWidget(pbtUse);
-    buttonLayout->addWidget(pbtSave);
-    buttonLayout->addWidget(pbtCancel);
+    QHBoxLayout * buttonLayout = new QHBoxLayout();
+    d->buttons = new QDialogButtonBox(this);
+    d->buttons->setStandardButtons(QDialogButtonBox::Apply | QDialogButtonBox::Save | QDialogButtonBox::Cancel);
+    d->buttons->button(QDialogButtonBox::Apply)->setText(tr("Use Tool"));
+    d->buttons->button(QDialogButtonBox::Save)->setText(tr("Save"));
+    d->buttons->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+    d->buttons->button(QDialogButtonBox::Apply)->setDefault(true);
+    buttonLayout->addWidget(d->buttons);
     vLayout->addLayout(buttonLayout);
 
-    connect(pbtUse, &QPushButton::clicked, [=](){
-        QtConcurrent::run([=](){
-            useClicked();
-        });
-    });
     connect(d->configView, &BinaryToolsConfigView::useCombinationCommand, [=](){
         QtConcurrent::run([=](){
             useClicked();
         });
     });
-    connect(pbtSave, &QPushButton::clicked, this, &BinaryToolsDialog::saveClicked);
-    connect(pbtCancel, &QPushButton::clicked, this, &BinaryToolsDialog::reject);
+    connect(d->buttons->button(QDialogButtonBox::Apply), &QPushButton::clicked, [=](){
+        QtConcurrent::run([=](){
+            useClicked();
+        });
+    });
+    connect(d->buttons->button(QDialogButtonBox::Save), &QPushButton::clicked, this, &BinaryToolsDialog::saveClicked);
+    connect(d->buttons, &QDialogButtonBox::rejected, this, &BinaryToolsDialog::reject);
+    connect(d->buttons, &QDialogButtonBox::accepted, this, &BinaryToolsDialog::accept);
 }
 
 BinaryToolsDialog::~BinaryToolsDialog()

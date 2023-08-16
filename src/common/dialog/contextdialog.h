@@ -13,6 +13,7 @@
 #include <QSet>
 
 #include <functional>
+#include <QObject>
 
 class ContextDialog final
 {

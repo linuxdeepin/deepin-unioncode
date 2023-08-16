@@ -108,13 +108,12 @@ PluginView::PluginView(QWidget *parent)
     categoryWidegt->setIndentation(20);
     categoryWidegt->setUniformRowHeights(true);
     categoryWidegt->setSortingEnabled(true);
-    categoryWidegt->setColumnWidth(2, 40);
     categoryWidegt->header()->setDefaultSectionSize(120);
     categoryWidegt->header()->setMinimumSectionSize(40);
     categoryWidegt->header()->setSortIndicator(0, Qt::AscendingOrder);
     categoryWidegt->setSelectionMode(QAbstractItemView::SingleSelection);
     categoryWidegt->setSelectionBehavior(QAbstractItemView::SelectRows);
-    categoryWidegt->setHeaderLabels({ tr("Name"), tr("Load"), tr("Version"), tr("Vendor") });
+    categoryWidegt->setHeaderLabels({QObject::tr("Name"), QObject::tr("Load"), QObject::tr("Version"), QObject::tr("Vendor")});
 
     auto *gridLayout = new QGridLayout(this);
     gridLayout->setContentsMargins(2, 2, 2, 2);
