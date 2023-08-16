@@ -70,6 +70,8 @@ void LoadCoreDialog::setupUi()
     // ok & cancel button.
     d->buttonBox = new QDialogButtonBox(this);
     d->buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+    d->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    d->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     d->buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
 
     auto hLayout = new QHBoxLayout();

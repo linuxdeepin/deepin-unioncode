@@ -29,11 +29,11 @@ PluginDialog::PluginDialog(QWidget *parent)
     auto vLayout = new QVBoxLayout(this);
     vLayout->addWidget(view);
 
+    closeButton = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
     detailsButton = new QPushButton(tr("Details"), this);
-    closeButton = new QPushButton(tr("Close"), this);
+    closeButton->button(QDialogButtonBox::Close)->setText(tr("Close"));
     detailsButton->setEnabled(false);
     closeButton->setEnabled(true);
-    closeButton->setDefault(true);
 
     restratRequired = new QLabel(tr(" Restart required."), this);
     if (!isRestartRequired)
@@ -45,6 +45,7 @@ PluginDialog::PluginDialog(QWidget *parent)
     hLayout->addWidget(restratRequired);
     hLayout->addStretch(5);
     hLayout->addWidget(closeButton);
+
     vLayout->addLayout(hLayout);
 
     QObject::connect(view, &dpf::PluginView::currentPluginChanged,
@@ -55,7 +56,7 @@ PluginDialog::PluginDialog(QWidget *parent)
                      this, &PluginDialog::updateRestartRequired);
     QObject::connect(detailsButton, &QPushButton::clicked,
                      [this] { openDetails(); });
-    QObject::connect(closeButton, &QPushButton::clicked,
+    QObject::connect(closeButton->button(QDialogButtonBox::Close), &QPushButton::clicked,
                      [this] { closeDialog() ;});
 
     updateButtons();
@@ -91,6 +92,7 @@ void PluginDialog::openDetails()
     vLayout->addWidget(detailView);
     detailView->update(plugin);
     QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, &dialog);
+    buttons->button(QDialogButtonBox::Close)->setText(tr("Close"));
     vLayout->addWidget(buttons);
 
     connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);

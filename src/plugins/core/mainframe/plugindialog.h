@@ -15,7 +15,7 @@
 #include <QSpacerItem>
 
 class DetailsView;
-class QPushButton;
+class QDialogButtonBox;
 class QLabel;
 
 namespace dpf {
@@ -38,8 +38,8 @@ private:
     dpf::PluginView *view = nullptr;
     DetailsView *detailView = nullptr;
 
+    QDialogButtonBox *closeButton = nullptr;
     QPushButton *detailsButton = nullptr;
-    QPushButton *closeButton = nullptr;
     QLabel *restratRequired = nullptr;
 };
 

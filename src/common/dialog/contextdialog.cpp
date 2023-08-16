@@ -26,6 +26,8 @@ void ContextDialog::okCancel(QString text, QString title,
     messageBox.setText(text);
     messageBox.setIcon(icon);
     messageBox.setStandardButtons(QMessageBox::Ok|QMessageBox::Cancel);
+    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("OK"));
+    messageBox.button(QMessageBox::Cancel)->setText(QObject::tr("Cancel"));
     if (okCallBack)
         QObject::connect(messageBox.button(QMessageBox::Ok),
                          &QAbstractButton::clicked, okCallBack);
@@ -47,6 +49,7 @@ void ContextDialog::ok(QString text, QString title,
     messageBox.setText(text);
     messageBox.setIcon(icon);
     messageBox.setStandardButtons(QMessageBox::Ok);
+    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("OK"));
     if (okCallBack)
         QObject::connect(messageBox.button(QMessageBox::Ok),
                          &QAbstractButton::clicked, okCallBack);

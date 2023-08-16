@@ -9,9 +9,10 @@
 
 class OptionGeneralGenerator : public dpfservice::OptionGenerator
 {
+    Q_OBJECT
 public:
     OptionGeneralGenerator();
-    inline static QString kitName() {return tr("General");}
+    inline static QString kitName() {return QObject::tr("General");}
     virtual QWidget *optionWidget() override;
 };
 
