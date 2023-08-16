@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="zh_CN">
+<TS version="2.1" language="zh_CN">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -179,67 +179,67 @@
 <context>
     <name>BinaryToolsDialog</name>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="24"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="26"/>
         <source>Binary Tools</source>
         <translation>二进制工具</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="34"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="39"/>
         <source>Use Tool</source>
         <translation>使用工具</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="35"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="40"/>
         <source>Save</source>
         <translation>保存配置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="36"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="41"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="98"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="99"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation>错误：执行命令错误！原因未知。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="102"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="103"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程&quot;%1&quot; 正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="104"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="105"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程&quot;%1&quot;退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="107"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="108"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程&quot;%1&quot;崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="68"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="69"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="149"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="150"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始执行命令： &quot;%1&quot; &quot;%2&quot;，工作目录为&quot;%3&quot;。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="156"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="157"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -703,39 +703,56 @@ The debugee has Terminated.
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="709"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="708"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="711"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="710"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="712"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="711"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;p&gt;下位机停止，因为它收到了来自操作系统的信号。&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;信号名： &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;信号含义： &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="718"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="717"/>
         <source>Signal Received</source>
         <translation>信号已接收</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="767"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="766"/>
         <source>Threads:</source>
         <translation>线程：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="896"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="845"/>
+        <source>Please build first.
+ Build : Ctrl + B</source>
+        <translation>请先编译工程。
+编译：Ctrl + B</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="857"/>
+        <source>Is preparing dependence, please waiting for a moment</source>
+        <translation>正在加载依赖项，请等待</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="883"/>
+        <source>Is getting the dap port, please waiting for a moment</source>
+        <translation>正在获取dap端口，请等待</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="895"/>
         <source>Requesting debug port...</source>
         <translation>请求调试端口...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="966"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="965"/>
         <source>
 The dap port is not ready, please retry.
 </source>
@@ -744,22 +761,22 @@ dap端口未就绪，请重试。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="971"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="969"/>
         <source>Debugging starts</source>
         <translation>调试开始</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1023"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1021"/>
         <source>Start debugging coredump file: </source>
         <translation>开始调试coredump文件： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1026"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1024"/>
         <source>The coredump target file is error: </source>
         <translation>coredump目标文件错误： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1033"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1030"/>
         <source>The coredump file is error: </source>
         <translation>coredump文件错误： </translation>
     </message>
@@ -801,47 +818,47 @@ dap端口未就绪，请重试。
 <context>
     <name>DetailsView</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="114"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="116"/>
         <source>Name:</source>
         <translation>名称：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="122"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="124"/>
         <source>Version:</source>
         <translation>版本：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="130"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="132"/>
         <source>Compatibility version:</source>
         <translation>兼容版本：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="138"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="140"/>
         <source>Vendor:</source>
         <translation>供应商：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="146"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="148"/>
         <source>Copyright:</source>
         <translation>版权：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="154"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="156"/>
         <source>URL:</source>
         <translation>URL：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="163"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="165"/>
         <source>Description:</source>
         <translation>说明：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="175"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="177"/>
         <source>License:</source>
         <translation>许可：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="187"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="189"/>
         <source>Dependencies:</source>
         <translation>依赖关系：</translation>
     </message>
@@ -873,19 +890,6 @@ dap端口未就绪，请重试。
         <location filename="../../src/common/util/downloadutil.cpp" line="166"/>
         <source>Downloading %1...</source>
         <translation>正在下载%1...</translation>
-    </message>
-</context>
-<context>
-    <name>EnvironmentModel</name>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="98"/>
-        <source>Key</source>
-        <translation>Key</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="100"/>
-        <source>Value</source>
-        <translation>Value</translation>
     </message>
 </context>
 <context>
@@ -1040,6 +1044,19 @@ dap端口未就绪，请重试。
     </message>
 </context>
 <context>
+    <name>GradleWidget</name>
+    <message>
+        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="58"/>
+        <source>use Gradle wrapper</source>
+        <translation>使用Gradle解析器</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="61"/>
+        <source>use Local installation, directory：</source>
+        <translation>使用本地安装应用，路径：</translation>
+    </message>
+</context>
+<context>
     <name>HistoryDiffView</name>
     <message>
         <location filename="../../src/plugins/collaborators/mainframe/svn/historydiffwidget.cpp" line="13"/>
@@ -1068,27 +1085,22 @@ dap端口未就绪，请重试。
 <context>
     <name>JSDebugger</name>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="167"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="166"/>
         <source>Stac&amp;kFrame</source>
         <translation>堆栈列表(&amp;K)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="170"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="169"/>
         <source>Break&amp;points</source>
         <translation>断点列表(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="171"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="170"/>
         <source>ScriptWidget</source>
         <translation>脚本窗口</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="172"/>
-        <source>ConsoleWidget</source>
-        <translation>控制窗口</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="173"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="171"/>
         <source>ErrorLogWidget</source>
         <translation>错误日志窗口</translation>
     </message>
@@ -1165,7 +1177,7 @@ dap端口未就绪，请重试。
     <message>
         <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="125"/>
         <source>Name:</source>
-        <translation>名字：</translation>
+        <translation>名称：</translation>
     </message>
 </context>
 <context>
@@ -1307,14 +1319,6 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>OptionGeneralGenerator</name>
-    <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optiongeneralgenerator.h" line="14"/>
-        <source>General</source>
-        <translation>通用设置</translation>
-    </message>
-</context>
-<context>
     <name>OptionsDialog</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="55"/>
@@ -1334,7 +1338,7 @@ repos path: %0</source>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="101"/>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="104"/>
@@ -1386,14 +1390,15 @@ repos path: %0</source>
         <translation>已安装的插件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="32"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="33"/>
         <source>Details</source>
         <translation>详情</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="33"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="34"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="95"/>
         <source>Close</source>
-        <translation>关闭关闭</translation>
+        <translation>关闭</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="38"/>
@@ -1401,7 +1406,7 @@ repos path: %0</source>
         <translation> 需要重启。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="87"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="88"/>
         <source>Plugin Details of %1</source>
         <translation>%1的插件详情</translation>
     </message>
@@ -1422,26 +1427,6 @@ repos path: %0</source>
         <location filename="../../src/framework/lifecycle/pluginview.cpp" line="92"/>
         <source>Load on Startup</source>
         <translation>启动时载入</translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="117"/>
-        <source>Name</source>
-        <translation>名称</translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="117"/>
-        <source>Load</source>
-        <translation>加载状态</translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="117"/>
-        <source>Version</source>
-        <translation>版本</translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="117"/>
-        <source>Vendor</source>
-        <translation>销售商</translation>
     </message>
 </context>
 <context>
@@ -2083,14 +2068,20 @@ storage: %2
         <translation>编译配置：</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="61"/>
+        <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="63"/>
+        <source>JDK version：</source>
+        <translation>JDK版本：</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="69"/>
         <source>Gradle Version: </source>
         <translation>Gradle版本： </translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="77"/>
-        <source>Main Classï¼</source>
-        <translation>主类</translation>
+        <source>Main Class：</source>
+        <translation>主类：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="87"/>
@@ -2124,35 +2115,29 @@ storage: %2
         <translation>JS解释器： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="57"/>
-        <source>Gradle distributionï¼</source>
-        <translation>Gradle版本</translation>
+        <location filename="../../src/plugins/cxx/ninja/option/ninjawidget.cpp" line="55"/>
+        <source>Ninja path：</source>
+        <translation>Ninja路径：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="61"/>
-        <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="63"/>
-        <source>JDK versionï¼</source>
-        <translation>JDK版本</translation>
+        <location filename="../../src/plugins/java/gradle/option/gradlewidget.cpp" line="57"/>
+        <source>Gradle distribution：</source>
+        <translation>Gradle版本：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="57"/>
-        <source>Maven pathï¼</source>
-        <translation>Maven路径</translation>
+        <source>Maven path：</source>
+        <translation>Maven路径：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="65"/>
-        <source>User Settingï¼</source>
-        <translation>用户设置</translation>
+        <source>User Setting：</source>
+        <translation>用户设置：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="74"/>
-        <source>Local Settingï¼</source>
+        <source>Local Setting：</source>
         <translation>本地设置</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/ninja/option/ninjawidget.cpp" line="55"/>
-        <source>Ninja pathï¼</source>
-        <translation>Ninja路径</translation>
     </message>
 </context>
 <context>
@@ -2408,18 +2393,83 @@ storage: %2
         <source>launch mavenConfig</source>
         <translation>加载maven配置</translation>
     </message>
+    <message>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
+        <source>Load</source>
+        <translation>加载状态</translation>
+    </message>
+    <message>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
+        <source>Version</source>
+        <translation>版本</translation>
+    </message>
+    <message>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
+        <source>Vendor</source>
+        <translation>销售商</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optiongeneralgenerator.h" line="15"/>
+        <source>General</source>
+        <translation>通用设置</translation>
+    </message>
+    <message>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="29"/>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="52"/>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="30"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="38"/>
+        <source>Build Steps</source>
+        <translation>编译步骤</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="39"/>
+        <source>Clean Steps</source>
+        <translation>清扫步骤</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="40"/>
+        <source>Runtime Env</source>
+        <translation>运行时环境</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="98"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/environmentwidget.cpp" line="62"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="72"/>
+        <source>Variable</source>
+        <translation>变量名</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="100"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/environmentwidget.cpp" line="64"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="74"/>
+        <source>Value</source>
+        <translation>值</translation>
+    </message>
 </context>
 <context>
     <name>QPushButton</name>
     <message>
-        <location filename="../../src/common/dialog/contextdialog.cpp" line="66"/>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="69"/>
         <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="47"/>
         <location filename="../../src/plugins/collaborators/mainframe/svn/loggindialog.cpp" line="14"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/common/dialog/contextdialog.cpp" line="67"/>
+        <location filename="../../src/common/dialog/contextdialog.cpp" line="70"/>
         <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittitlebar.cpp" line="50"/>
         <source>Cancel</source>
         <translation>取消</translation>
@@ -2700,53 +2750,63 @@ Delete anyway?</source>
         <translation>事件过滤器.</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="262"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="255"/>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="256"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="264"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="266"/>
         <source>event list</source>
         <translation>事件列表</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="269"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="271"/>
         <source>syscall filter</source>
         <translation>系统调用过滤器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="283"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="285"/>
         <source>x11 events filter</source>
         <translation>x11事件过滤器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="301"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="303"/>
         <source>dbus filter</source>
         <translation>dbus过滤器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="333"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="335"/>
         <source>Only record the thread where event occurred:</source>
         <translation>仅记录事件发生的线程：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="334"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="336"/>
         <source>Record the size of heap memory (default is 0, in KB):</source>
         <translation>记录堆区的大小（默认值为0，以KB为单位）：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="335"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="337"/>
         <source>Record the size of stack memory (the default is 32, in KB):</source>
         <translation>记录栈区的大小（默认值为32，以KB为单位）：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="336"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="338"/>
         <source>Record system call parameter size (default is 256, unit Byte):</source>
         <translation>记录系统调用参数的大小（默认值为256，单位字节）：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="337"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="339"/>
         <source>Record the specified global variable (format: [*]var1+size1[,[*]var2+size2,...]):</source>
         <translation>记录指定的全局变量（格式：[*]var1+size1[，[*]var2+size2，…]）：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="338"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="340"/>
         <source>Start record after the specified function is executed (c++ mangle name):</source>
         <translation>执行指定函数后开始记录（c++mangle名称）：</translation>
     </message>
@@ -2769,22 +2829,32 @@ Delete anyway?</source>
         <translation>浏览...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="86"/>
-        <source>trace directoryï¼</source>
-        <translation>跟踪目录</translation>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="73"/>
+        <source>OK</source>
+        <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="87"/>
-        <source>process IDï¼</source>
-        <translation>进程ID</translation>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="74"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="88"/>
+        <source>trace directory：</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="89"/>
-        <source>recentï¼</source>
-        <translation>最近</translation>
+        <source>process ID：</source>
+        <translation>进程ID：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="144"/>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="91"/>
+        <source>recent：</source>
+        <translation>最近打开：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="146"/>
         <source>Open Directory</source>
         <translation>打开目录</translation>
     </message>

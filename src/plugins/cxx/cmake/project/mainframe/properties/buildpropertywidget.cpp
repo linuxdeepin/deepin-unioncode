@@ -35,9 +35,9 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     d->cleanStepsPane = new StepsPane(this);
     d->envWidget = new EnvironmentWidget(this);
 
-    CollapseWidget *buildStep = new CollapseWidget("Build Steps", d->buildStepsPane, this);
-    CollapseWidget *cleanStep = new CollapseWidget("Clean Steps", d->cleanStepsPane, this);
-    CollapseWidget *envStep = new CollapseWidget("Runtime Env", d->envWidget, this);
+    CollapseWidget *buildStep = new CollapseWidget(QObject::tr("Build Steps"), d->buildStepsPane, this);
+    CollapseWidget *cleanStep = new CollapseWidget(QObject::tr("Clean Steps"), d->cleanStepsPane, this);
+    CollapseWidget *envStep = new CollapseWidget(QObject::tr("Runtime Env"), d->envWidget, this);
 
     addCollapseWidget(buildStep);
     addCollapseWidget(cleanStep);

@@ -252,6 +252,8 @@ void EventFilterDialog::setupUi()
 
     d->buttonBox = new QDialogButtonBox(this);
     d->buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+    d->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+    d->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
     d->buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
     d->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 

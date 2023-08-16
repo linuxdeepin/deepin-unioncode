@@ -8,6 +8,11 @@ Files: .gitlab-ci.yml
 Copyright: None
 License: CC0-1.0
 
+# github
+Files: .github/*
+Copyright: None
+License: CC0-1.0
+
 # ignore files
 Files: .gitignore .clang-format .clog.toml .project.json
 Copyright: None
