@@ -15,7 +15,7 @@ public:
      * \brief builderCommand
      * \param commandInfo
      */
-    DPF_INTERFACE(void, builderCommand, const QList<BuildCommandInfo> &commandInfo, bool isSynchronous);
+    DPF_INTERFACE(bool, builderCommand, const QList<BuildCommandInfo> &commandInfo, bool isSynchronous);
 };
 
 #endif // BUILDERINTERFACE_H

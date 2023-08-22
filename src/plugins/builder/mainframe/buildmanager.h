@@ -33,7 +33,7 @@ public:
     void setActivedProjectInfo(const QString &kitName, const QString &workingDir);
     void clearActivedProjectInfo();
 
-    void handleCommand(const QList<BuildCommandInfo> &info, bool isSynchronous);
+    bool handleCommand(const QList<BuildCommandInfo> &info, bool isSynchronous);
 
 signals:
     void sigOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format);
