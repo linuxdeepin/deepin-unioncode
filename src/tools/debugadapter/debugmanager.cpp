@@ -67,6 +67,25 @@ void DebugManager::initProcess()
             }
             }
     });
+    connect(d->process.data(), &QProcess::readyReadStandardError, [this]() {
+        QString output = d->process->readAllStandardError();
+        for (const auto& c: output)
+            switch (c.toLatin1()) {
+            case '\r':
+            case '\n':
+            {
+                d->tempBuffer.append(c);
+                d->debugger->handleOutputRecord(d->tempBuffer);
+                d->tempBuffer.clear();
+                break;
+            }
+            default:
+            {
+                d->tempBuffer.append(c);
+                break;
+            }
+            }
+    });
 
     connect(d->process.data(), &QProcess::started, [this]() {
         d->tokenCounter = 0;
@@ -77,7 +96,7 @@ void DebugManager::initProcess()
     connect(d->process.data(), &QProcess::started,
             this, &DebugManager::dbgProcessStarted);
     connect(d->process.data(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                this, &DebugManager::dbgProcessFinished);
+            this, &DebugManager::dbgProcessFinished);
 }
 
 void DebugManager::initDebugger(const QString &program, const QStringList &arguments)
