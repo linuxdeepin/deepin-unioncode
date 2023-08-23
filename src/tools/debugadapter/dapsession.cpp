@@ -568,7 +568,7 @@ void DapSession::registerHanlder()
         Log("<-- Server received disconnnect request from client\n")
         if (d->isSupportsTerminateDebuggee) {
             if (d->isDebuggeIsStartWithLaunchRequest) {
-                emit DapProxy::instance()->sigQuit();
+                emit DapProxy::instance()->sigKill();
             } else if (d->isDebuggeIsStartWithAttachRequest) {
                 qInfo() << "no supports terminate with attach target\n";
             }

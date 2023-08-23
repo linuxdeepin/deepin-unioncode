@@ -256,6 +256,7 @@ void GDBDebugger::handleOutputRecord(const QString &outputRecord)
         break;
     }
     case gdbmi::Record::RecordType::console:
+        break;
     case gdbmi::Record::RecordType::target:
     {
         emit streamConsole(gdbmi::escapedText(record.message));
@@ -356,7 +357,7 @@ void GDBDebugger::parseNotifyData(gdbmi::Record &record)
         library.symbolsLoaded = data.value("symbols-loaded").toString();
         library.ranges.fromRange = ranges.value("fromRange").toString();
         library.ranges.toRange = ranges.value("toRange").toString();
-        sendLibraryUnloadedNotify(library);
+        sendLibraryUnloadedNotify(library, false);
     } else if (record.message == "library-unloaded") {
         // =library-unloaded,...
         auto data = record.payload.toMap();
@@ -364,7 +365,7 @@ void GDBDebugger::parseNotifyData(gdbmi::Record &record)
         library.id = data.value("id").toString();
         library.targetName = data.value("target-name").toString();
         library.hostName = data.value("host-name").toString();
-        sendLibraryUnloadedNotify(library);
+        sendLibraryUnloadedNotify(library, false);
     }
 }
 
@@ -391,8 +392,10 @@ void GDBDebugger::sendStoppedNotify(const gdbmi::AsyncContext &ctx)
     emit asyncStopped(stoppedEvent);
 }
 
-void GDBDebugger::sendLibraryLoadedNotify(const gdbmi::Library &library)
+void GDBDebugger::sendLibraryLoadedNotify(const gdbmi::Library &library, bool print)
 {
+    if (!print)
+        return;
     dap::ModuleEvent moduleEvent;
     moduleEvent.reason = "new";
     dap::Module module;
@@ -405,8 +408,10 @@ void GDBDebugger::sendLibraryLoadedNotify(const gdbmi::Library &library)
     emit libraryLoaded(moduleEvent);
 }
 
-void GDBDebugger::sendLibraryUnloadedNotify(const gdbmi::Library &library)
+void GDBDebugger::sendLibraryUnloadedNotify(const gdbmi::Library &library, bool print)
 {
+    if (!print)
+        return;
     dap::ModuleEvent moduleEvent;
     moduleEvent.reason = "remove";
     dap::Module module;
