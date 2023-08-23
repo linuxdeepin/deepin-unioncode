@@ -101,8 +101,8 @@ private:
     void parseNotifyData(gdbmi::Record &record);
     void parseResultData(gdbmi::Record &record);
     void sendStoppedNotify(const gdbmi::AsyncContext &ctx);
-    void sendLibraryLoadedNotify(const gdbmi::Library &library);
-    void sendLibraryUnloadedNotify(const gdbmi::Library &library);
+    void sendLibraryLoadedNotify(const gdbmi::Library &library, bool print);
+    void sendLibraryUnloadedNotify(const gdbmi::Library &library, bool print);
     void parseDisassembleData(const gdbmi::Record &record);
 
     GDBDebuggerPrivate *const d;
