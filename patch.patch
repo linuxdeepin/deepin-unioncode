@@ -1,0 +1,104 @@
+diff --git a/src/plugins/builder/mainframe/buildmanager.cpp b/src/plugins/builder/mainframe/buildmanager.cpp
+index 5a0660cd..15886bc5 100644
+--- a/src/plugins/builder/mainframe/buildmanager.cpp
++++ b/src/plugins/builder/mainframe/buildmanager.cpp
+@@ -216,12 +216,12 @@ void BuildManager::clearActivedProjectInfo()
+     d->activedWorkingDir.clear();
+ }
+ 
+-void BuildManager::handleCommand(const QList<BuildCommandInfo> &commandInfo, bool isSynchronous)
++bool BuildManager::handleCommand(const QList<BuildCommandInfo> &commandInfo, bool isSynchronous)
+ {
+     if(!canStartBuild()) {
+         QMetaObject::invokeMethod(this, "message",
+                                   Q_ARG(QString, "The builder is running, please try again later!"));
+-        return;
++        return false;
+     }
+ 
+     auto &ctx = dpfInstance.serviceContext();
+@@ -235,11 +235,12 @@ void BuildManager::handleCommand(const QList<BuildCommandInfo> &commandInfo, boo
+             bool ret = generator->checkCommandValidity(commandInfo.at(0), retMsg);
+             if (!ret) {
+                 outputLog(retMsg, OutputPane::OutputFormat::StdErr);
+-                return;
++                return false;
+             }
+         }
+         execCommands(commandInfo, isSynchronous);
+     }
++    return true;
+ }
+ 
+ bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList, bool isSynchronous)
+diff --git a/src/plugins/builder/mainframe/buildmanager.h b/src/plugins/builder/mainframe/buildmanager.h
+index 2e265f8b..1b8af182 100644
+--- a/src/plugins/builder/mainframe/buildmanager.h
++++ b/src/plugins/builder/mainframe/buildmanager.h
+@@ -33,7 +33,7 @@ public:
+     void setActivedProjectInfo(const QString &kitName, const QString &workingDir);
+     void clearActivedProjectInfo();
+ 
+-    void handleCommand(const QList<BuildCommandInfo> &info, bool isSynchronous);
++    bool handleCommand(const QList<BuildCommandInfo> &info, bool isSynchronous);
+ 
+ signals:
+     void sigOutputCompileInfo(const QString &content, const OutputPane::OutputFormat format);
+diff --git a/src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp b/src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp
+index 8aa6a3b4..37e579ac 100644
+--- a/src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp
++++ b/src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp
+@@ -117,8 +117,7 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
+     auto &ctx = dpfInstance.serviceContext();
+     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
+     if (builderService) {
+-        // cache project info, asyn end to use
+-        d->configureProjectInfo = projInfo;
++
+ 
+         BuildCommandInfo commandInfo;
+         commandInfo.kitName = projInfo.kitName();
+@@ -126,16 +125,22 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
+         commandInfo.arguments = projInfo.configCustomArgs();
+         commandInfo.workingDir = projInfo.workspaceFolder();
+ 
+-        ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
+-        builderService->interface.builderCommand({commandInfo}, false);
+-        // display root item before everything is done.
+-        rootItem = ProjectGenerator::createRootItem(projInfo);
+-        setRootItemToView(rootItem);
+-    }
++        bool isSuccess = builderService->interface.builderCommand({commandInfo}, false);
++        if (isSuccess) {
++            ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
++            // display root item before everything is done.
++            rootItem = ProjectGenerator::createRootItem(projInfo);
++            setRootItemToView(rootItem);
++
++            dpfservice::ProjectGenerator::configure(projInfo);
+ 
+-    dpfservice::ProjectGenerator::configure(projInfo);
++            // cache project info, asyn end to use
++            d->configureProjectInfo = projInfo;
+ 
+-    return true;
++            return true;
++        }
++    }
++    return false;
+ }
+ 
+ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectInfo &info)
+diff --git a/src/services/builder/builderinterface.h b/src/services/builder/builderinterface.h
+index 18b198ad..70927bb2 100644
+--- a/src/services/builder/builderinterface.h
++++ b/src/services/builder/builderinterface.h
+@@ -15,7 +15,7 @@ public:
+      * \brief builderCommand
+      * \param commandInfo
+      */
+-    DPF_INTERFACE(void, builderCommand, const QList<BuildCommandInfo> &commandInfo, bool isSynchronous);
++    DPF_INTERFACE(bool, builderCommand, const QList<BuildCommandInfo> &commandInfo, bool isSynchronous);
+ };
+ 
+ #endif // BUILDERINTERFACE_H

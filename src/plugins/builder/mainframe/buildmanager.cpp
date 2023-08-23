@@ -216,12 +216,12 @@ void BuildManager::clearActivedProjectInfo()
     d->activedWorkingDir.clear();
 }
 
-void BuildManager::handleCommand(const QList<BuildCommandInfo> &commandInfo, bool isSynchronous)
+bool BuildManager::handleCommand(const QList<BuildCommandInfo> &commandInfo, bool isSynchronous)
 {
     if(!canStartBuild()) {
         QMetaObject::invokeMethod(this, "message",
                                   Q_ARG(QString, "The builder is running, please try again later!"));
-        return;
+        return false;
     }
 
     auto &ctx = dpfInstance.serviceContext();
@@ -235,11 +235,12 @@ void BuildManager::handleCommand(const QList<BuildCommandInfo> &commandInfo, boo
             bool ret = generator->checkCommandValidity(commandInfo.at(0), retMsg);
             if (!ret) {
                 outputLog(retMsg, OutputPane::OutputFormat::StdErr);
-                return;
+                return false;
             }
         }
         execCommands(commandInfo, isSynchronous);
     }
+    return true;
 }
 
 bool BuildManager::execCommands(const QList<BuildCommandInfo> &commandList, bool isSynchronous)

@@ -117,8 +117,7 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
     auto &ctx = dpfInstance.serviceContext();
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
-        // cache project info, asyn end to use
-        d->configureProjectInfo = projInfo;
+
 
         BuildCommandInfo commandInfo;
         commandInfo.kitName = projInfo.kitName();
@@ -126,16 +125,22 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
         commandInfo.arguments = projInfo.configCustomArgs();
         commandInfo.workingDir = projInfo.workspaceFolder();
 
-        ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
-        builderService->interface.builderCommand({commandInfo}, false);
-        // display root item before everything is done.
-        rootItem = ProjectGenerator::createRootItem(projInfo);
-        setRootItemToView(rootItem);
+        bool isSuccess = builderService->interface.builderCommand({commandInfo}, false);
+        if (isSuccess) {
+            ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
+            // display root item before everything is done.
+            rootItem = ProjectGenerator::createRootItem(projInfo);
+            setRootItemToView(rootItem);
+
+            dpfservice::ProjectGenerator::configure(projInfo);
+
+            // cache project info, asyn end to use
+            d->configureProjectInfo = projInfo;
+
+            return true;
+        }
     }
-
-    dpfservice::ProjectGenerator::configure(projInfo);
-
-    return true;
+    return false;
 }
 
 QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectInfo &info)
