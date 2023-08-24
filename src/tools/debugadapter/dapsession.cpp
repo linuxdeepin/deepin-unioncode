@@ -388,7 +388,7 @@ void DapSession::registerHanlder()
         dap::TerminateResponse response;
         Log("<-- Server received terminate request from client\n")
         // send quit command to debugger
-        emit DapProxy::instance()->sigQuit();
+        DebugManager::instance()->terminate();
 
         Log("--> Server sent terminate response to client\n")
         return response;
