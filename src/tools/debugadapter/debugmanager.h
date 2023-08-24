@@ -33,6 +33,7 @@ public:
     void initDebugger(const QString &program, const QStringList &arguments);
 
     void quit();
+    void terminate();
     void kill();
     void execute();
     void launchLocal();

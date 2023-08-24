@@ -186,6 +186,12 @@ void DebugManager::quit()
     command(d->debugger->quit());
 }
 
+void DebugManager::terminate()
+{
+    d->process->terminate();
+    emit terminated();
+}
+
 void DebugManager::kill()
 {
     command(d->debugger->kill());
