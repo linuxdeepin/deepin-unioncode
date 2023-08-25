@@ -107,18 +107,16 @@ deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 
   ![](./docs/rc/language-support.png)
 
-- code analysis
-
-  ![](./docs/rc/code-analysis.png)
-
-- plugin manager
-
-  ![](./docs/rc/plugin-manager.png)
-
 - code porting
 
   ![code porting](./docs/rc/code-porting.png)
 
+- debug mode
+
+  ![](./docs/rc/debug-mode.png)
+  
 - reverse debug
 
   ![reverse debug](./docs/rc/reverse-debug.png)
+  
+- version management![](./docs/rc/version-management.png)

@@ -102,23 +102,23 @@ $ sudo cmake --build build --target install
 
 deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 
-## 界面展示
+## 界面预览
 - 语言支持
 
   ![](./docs/rc/language-support.png)
-
-- 代码分析
-
-  ![](./docs/rc/code-analysis.png)
-
-- 插件管理
-
-  ![](./docs/rc/plugin-manager.png)
 
 - 代码迁移
 
   ![code porting](./docs/rc/code-porting.png)
 
+- 调试模式
+
+  ![](./docs/rc/debug-mode.png)
+  
 - 反向调试
 
   ![reverse debug](./docs/rc/reverse-debug.png)
+  
+- 版本管理
+
+  ![](./docs/rc/version-management.png)
