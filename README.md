@@ -1,17 +1,20 @@
-### deepin-unioncode
+# deepin-unioncode
 
-Deepin Union Code is a lightweight integrated development environment independently developed by Deepin Technology, featured with multilingual and cross platform compatibility.
+[![	](https://img.shields.io/badge/lang-en-red.svg)](./README.en.md)
 
-### Dependencies
+深度集成开发环境是由深度公司自主研发，具有多语言、跨平台兼容特性的轻量级集成开发环境。
 
-### Build dependencies
+### 依赖
 
-_The **master** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
+### 构建依赖
+
+_当前的开发分支为**master**，编译依赖可能会在没有更新本说明的情况下发生变化，请参考`./debian/control`以获取构建依赖项列表_
 
 - dh-systemd
 - cmake
 - qt5-qmake
-- qtbase5-dev
+  - qtbase5-dev
+
 - qttools5-dev
 - qttools5-dev-tools
 - lxqt-build-tools (>= 0.6.0~)
@@ -36,11 +39,13 @@ _The **master** branch is current development branch, build dependencies may cha
 - qtscript5-dev
 - libqt5scripttools5
 - clang
-## Installation
 
-### Build from source code
+## 安装
 
-1. Make sure you have installed all dependencies.
+### 构建过程
+
+1. 确保已经安装所有依赖库。
+
 
 ``` shell
 $ git clone https://github.com/linuxdeepin/deepin-unioncode.git
@@ -48,30 +53,30 @@ $ cd deepin-unioncode
 $ sudo apt build-dep ./
 ```
 
-2. Build:
+2. 构建:
 
 ```shell
 $ cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 $ cmake --build build
 ```
 
-3. Install:
+3. 安装:
 
 ```shell
 $ sudo cmake --build build --target install
 ```
 
-The executable binary file could be found at `/usr/bin/deepin-unioncode`
+可执行程序为 `/usr/bin/deepin-unioncode`
 
-## Usage
+## 使用
 
-Execute `deepin-unioncode`
+执行 `deepin-unioncode`
 
-*Attention:*
+*注意：*
 
-*After the installation of deepin-unicode, some features require the installation of dependency packages before they can be used normally. This version is the root of debian10, which is consistent with the professional version. If you encounter any dependencies, you can directly download them at [[Dependency Package Download Address]](https://community-packages.deepin.com/deepin/pool/main/l/llvm-toolchain-13/)Find the corresponding package for installation in.*
+*deepin-unioncode安装后，部分功能需要安装依赖包后才能正常使用。该版本为debian10的根，与专业版一致，遇到相关依赖可直接在[依赖包下载地址](https://community-packages.deepin.com/deepin/pool/main/l/llvm-toolchain-13/)中找到相应的包进行安装。*
 
-## Supported Language Project
+## 支持的语言工程
 
 | Language     | Project Type    |
 | ------------ | ----------------|
@@ -81,42 +86,42 @@ Execute `deepin-unioncode`
 | Python       | Local Direcotry |
 | JavaScript   | Local Directory |
 
-## Getting help
+## 帮助
 
- - [Official Forum](https://bbs.deepin.org/)
- - [Developer Center](https://github.com/linuxdeepin/developer-center)
- - [Gitter](https://gitter.im/orgs/linuxdeepin/rooms)
- - [IRC Channel](https://webchat.freenode.net/?channels=deepin)
- - [Wiki](https://wiki.deepin.org/)
+- [官方论坛](https://bbs.deepin.org/) 
+- [开发者中心](https://github.com/linuxdeepin/developer-center) 
+- [Gitter](https://gitter.im/orgs/linuxdeepin/rooms)
+- [聊天室](https://webchat.freenode.net/?channels=deepin)
+- [Wiki](https://wiki.deepin.org/)
 
-## Getting involved
+## 贡献指南
 
-We encourage you to report issues and contribute changes
+我们鼓励您报告问题并做出更改
 
- - [Contribution guide for developers](https://github.com/linuxdeepin/developer-center/wiki/Contribution-Guidelines-for-Developers-en) (English)
- - [开发者代码贡献指南](https://github.com/linuxdeepin/developer-center/wiki/Contribution-Guidelines-for-Developers) (中文)
+- [Contribution guide for developers](https://github.com/linuxdeepin/developer-center/wiki/Contribution-Guidelines-for-Developers-en) (English)
+- [开发者代码贡献指南](https://github.com/linuxdeepin/developer-center/wiki/Contribution-Guidelines-for-Developers) (中文)
 
-## License
+## 开源许可证
 
-deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
+deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 
-
-## Preview
-
-- language support
+## 界面预览
+- 语言支持
 
   ![](./docs/rc/language-support.png)
 
-- code porting
+- 代码迁移
 
   ![code porting](./docs/rc/code-porting.png)
 
-- debug mode
+- 调试模式
 
   ![](./docs/rc/debug-mode.png)
   
-- reverse debug
+- 反向调试
 
   ![reverse debug](./docs/rc/reverse-debug.png)
   
-- version management![](./docs/rc/version-management.png)
+- 版本管理
+
+  ![](./docs/rc/version-management.png)
