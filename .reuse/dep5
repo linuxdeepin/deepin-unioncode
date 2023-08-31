@@ -34,7 +34,7 @@ Copyright: None
 License: CC0-1.0
 
 # README & DOCS
-Files: README.md README.zh_CN.md docs/* src/tools/eventrecorder/*.md
+Files: README*.md docs/* src/tools/eventrecorder/*.md
 Copyright: UnionTech Software Technology Co., Ltd.
 License: CC-BY-4.0
 
