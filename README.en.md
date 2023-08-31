@@ -68,9 +68,7 @@ The executable binary file could be found at `/usr/bin/deepin-unioncode`
 
 Execute `deepin-unioncode`
 
-*Attention:*
-
-*After the installation of deepin-unicode, some features require the installation of dependency packages before they can be used normally. This version is the root of debian10, which is consistent with the professional version. If you encounter any dependencies, you can directly download them at [[Dependency Package Download Address]](https://community-packages.deepin.com/deepin/pool/main/l/llvm-toolchain-13/)Find the corresponding package for installation in.*
+*Attention: After the installation of deepin-unicode, some features require the installation of dependency packages before they can be used normally.* 
 
 ## Supported Language Project
 
@@ -81,9 +79,18 @@ Execute `deepin-unioncode`
 | Python     | Project Direcotry |
 | JavaScript | Project Directory |
 
+## Developed applications
+
+| Application name    | Description                                         | Github Address                                     |
+| ------------------- | --------------------------------------------------- | -------------------------------------------------- |
+| deepin-draw         | A lightweight drawing tool for users to freely draw | https://github.com/linuxdeepin/deepin-draw         |
+| deepin-image-viewer | Image viewing tool                                  | https://github.com/linuxdeepin/deepin-image-viewer |
+| deepin-album        | A photo management tool                             | https://github.com/linuxdeepin/deepin-album        |
+
 ## Getting help
 
  - [Official Forum](https://bbs.deepin.org/)
+ - [User guide](https://wiki.deepin.org/zh/05_HOW-TO/02_%E5%BC%80%E5%8F%91%E7%9B%B8%E5%85%B3/deepin-unioncode)
  - [Developer Center](https://github.com/linuxdeepin/developer-center)
  - [Gitter](https://gitter.im/orgs/linuxdeepin/rooms)
  - [IRC Channel](https://webchat.freenode.net/?channels=deepin)
@@ -102,19 +109,19 @@ deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 
 ## 3rdparty support
 
-| 序号 | 使用三方库名称 | 版本号     | 引用方式（动态、静态、源码） | 三方库协议类型 |
-| ---- | -------------- | ---------- | ---------------------------- | -------------- |
-| 1    | cppdap         | NA         | 静态                         | Apache 2.0     |
-| 2    | googletest     | 1.11.0     | 静态                         | BSD3           |
-| 3    | nlohmann/json  | 3.10.4     | 静态                         | MIT            |
-| 4    | scintilla      | 5.15       | 源码                         | HPND           |
-| 5    | lexilla        | 5.14       | 源码                         | HPND           |
-| 6    | marl           | NA         | 静态                         | Apache 2.0     |
-| 7    | qtremwidget    | 0.14.1     | 源码                         | GPLV2+ BSD3    |
-| 8    | GitQlient      | tag/v1.4.3 | 源码                         | GPLV2.1+       |
-| 9    | libclang/      | > 1:7~     | 动态                         | Apache  2.0    |
-| 10   | llvm           | > 1:7~     | 动态                         | Apache  2.0    |
-| 11   | json-rpc-cpp   | 1.4.1      | 源码                         | MIT            |
+| Num  | Third-party Name | Version    | Reference method (dynamic, static, source code) | License     |
+| ---- | ---------------- | ---------- | ----------------------------------------------- | ----------- |
+| 1    | cppdap           | NA         | source code                                     | Apache 2.0  |
+| 2    | googletest       | 1.11.0     | static                                          | BSD3        |
+| 3    | nlohmann/json    | 3.10.4     | static                                          | MIT         |
+| 4    | scintilla        | 5.15       | source code                                     | HPND        |
+| 5    | lexilla          | 5.14       | source code                                     | HPND        |
+| 6    | marl             | NA         | static                                          | Apache 2.0  |
+| 7    | qtremwidget      | 0.14.1     | source code                                     | GPLV2+ BSD3 |
+| 8    | GitQlient        | tag/v1.4.3 | source code                                     | GPLV2.1+    |
+| 9    | libclang/        | > 1:7~     | dynamic                                         | Apache  2.0 |
+| 10   | llvm             | > 1:7~     | dynamic                                         | Apache  2.0 |
+| 11   | json-rpc-cpp     | 1.4.1      | source code                                     | MIT         |
 
 
 ## Preview
