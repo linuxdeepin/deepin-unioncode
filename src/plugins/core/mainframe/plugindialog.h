@@ -29,10 +29,12 @@ class PluginDialog : public QDialog
 public:
     explicit PluginDialog(QWidget *parent = nullptr);
 
+private slots:
+    void slotCurrentPluginActived();
+
 private:
     void updateRestartRequired();
     void updateButtons();
-    void openDetails();
     void closeDialog();
 
     dpf::PluginView *view = nullptr;
@@ -64,6 +66,7 @@ private:
     QLabel *compatVersion = nullptr;
     QLabel *vendor = nullptr;
     QLabel *copyright = nullptr;
+    QLabel *category = nullptr;
     QLabel *urlLink = nullptr;
     QTextEdit *description = nullptr;
     QTextEdit *license = nullptr;

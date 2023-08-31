@@ -364,37 +364,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="272"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="273"/>
         <source>Execute command failed!
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="276"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="277"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="284"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="285"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="287"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="288"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="291"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="292"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="319"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="320"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -463,17 +463,17 @@
 <context>
     <name>CmakeProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="219"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="224"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="356"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="361"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="357"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="362"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
@@ -794,47 +794,52 @@ The dap port is not ready, please retry.
 <context>
     <name>DetailsView</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="116"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="85"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="124"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="92"/>
         <source>Version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="132"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="99"/>
         <source>Compatibility version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="140"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="106"/>
         <source>Vendor:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="148"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="113"/>
         <source>Copyright:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="156"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="120"/>
+        <source>Category:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="127"/>
         <source>URL:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="165"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="146"/>
         <source>Description:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="177"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="135"/>
         <source>License:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="189"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="157"/>
         <source>Dependencies:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1126,32 +1131,27 @@ The dap port is not ready, please retry.
 <context>
     <name>KitsManagerWidget</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="100"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="82"/>
         <source>Desktop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="106"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="88"/>
         <source>CMake Tool:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="111"/>
-        <source>Compiler:</source>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="95"/>
+        <source>CMake generator:CodeBlocks - Unix Makefiles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="116"/>
-        <source>CMake generator:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="119"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="98"/>
         <source>Debugger:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="125"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="104"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1365,24 +1365,13 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="33"/>
-        <source>Details</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="34"/>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="95"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="38"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="37"/>
         <source> Restart required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="88"/>
-        <source>Plugin Details of %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1395,12 +1384,8 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/framework/lifecycle/pluginview.cpp" line="44"/>
-        <source>Load on startup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="92"/>
-        <source>Load on Startup</source>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="82"/>
+        <source>Load the plugin at startup</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2359,23 +2344,13 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="105"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
-        <source>Load</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
-        <source>Version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="116"/>
-        <source>Vendor</source>
+        <location filename="../../src/framework/lifecycle/pluginview.cpp" line="105"/>
+        <source>Load Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -27,8 +27,7 @@ public:
     PluginMetaObjectPointer currentPlugin() const;
 
 signals:
-    void currentPluginChanged();
-    void currentPluginActived(/*PluginMetaObjectPointer plugin*/);
+    void currentPluginActived();
     void pluginSettingChanged(PluginMetaObjectPointer plugin);
 
 private:
