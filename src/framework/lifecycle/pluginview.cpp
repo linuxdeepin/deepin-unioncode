@@ -16,7 +16,7 @@
 
 DPF_BEGIN_NAMESPACE
 
-enum Columns { Name, Load, Version, Vendor };
+enum Columns { Name, LoadStatus };
 
 class PluginItem : public QTreeWidgetItem
 {
@@ -37,21 +37,11 @@ public:
             }
             break;
 
-        case Load:
+        case LoadStatus:
             if (role == Qt::CheckStateRole)
                 return plugin->isEnabledBySettings() ? Qt::Checked : Qt::Unchecked;
             if (role == Qt::ToolTipRole)
-                return PluginView::tr("Load on startup");
-            break;
-
-        case Version:
-            if (role == Qt::DisplayRole)
-                return QString::fromLatin1("%1 (%2)").arg(plugin->version(), plugin->compatVersion());
-            break;
-
-        case Vendor:
-            if (role == Qt::DisplayRole)
-                return plugin->vendor();
+                return PluginView::tr("Load the plugin at startup");
             break;
         }
 
@@ -60,7 +50,7 @@ public:
 
     void setData(int column, int role, const QVariant &data) override
     {
-        if (column == Load && role == Qt::CheckStateRole)
+        if (column == LoadStatus && role == Qt::CheckStateRole)
             view->setPluginEnabled(plugin, data.toBool());
     }
 
@@ -87,9 +77,9 @@ public:
                 return name;
         }
 
-        if (column == Load) {
+        if (column == LoadStatus) {
             if (role == Qt::ToolTipRole)
-                return PluginView::tr("Load on Startup");
+                return PluginView::tr("Load the plugin at startup");
         }
 
         return QVariant();
@@ -108,29 +98,23 @@ PluginView::PluginView(QWidget *parent)
     categoryWidegt->setIndentation(20);
     categoryWidegt->setUniformRowHeights(true);
     categoryWidegt->setSortingEnabled(true);
-    categoryWidegt->header()->setDefaultSectionSize(120);
-    categoryWidegt->header()->setMinimumSectionSize(40);
     categoryWidegt->header()->setSortIndicator(0, Qt::AscendingOrder);
+    categoryWidegt->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     categoryWidegt->setSelectionMode(QAbstractItemView::SingleSelection);
     categoryWidegt->setSelectionBehavior(QAbstractItemView::SelectRows);
-    categoryWidegt->setHeaderLabels({QObject::tr("Name"), QObject::tr("Load"), QObject::tr("Version"), QObject::tr("Vendor")});
+    categoryWidegt->setHeaderLabels({QObject::tr("Name"), QObject::tr("Load Status")});
 
     auto *gridLayout = new QGridLayout(this);
     gridLayout->setContentsMargins(2, 2, 2, 2);
     gridLayout->addWidget(categoryWidegt);
 
-    QHeaderView *header = categoryWidegt->header();
-    header->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-    header->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-
     QObject::connect(LifeCycle::getPluginManagerInstance(), &PluginManager::pluginsChanged, this,
                      &PluginView::updatePluginsWidegt);
 
-    QObject::connect(categoryWidegt, &QTreeWidget::activated,
-                     [this](){ emit currentPluginActived(); });
-
-    QObject::connect(categoryWidegt->selectionModel(), &QItemSelectionModel::currentChanged,
-                     [this](){ emit currentPluginChanged(); });
+    QObject::connect(categoryWidegt, &QTreeWidget::clicked, [this](){
+        if (dynamic_cast<PluginItem *>(categoryWidegt->currentItem()))
+            emit currentPluginActived();
+    });
 
     updatePluginsWidegt();
 }
@@ -167,6 +151,8 @@ void PluginView::updatePluginsWidegt()
     }
 
     categoryWidegt->expandAll();
+
+    categoryWidegt->setCurrentItem(categoryWidegt->topLevelItem(0)->child(0));
 }
 
 void PluginView::setPluginEnabled(PluginMetaObjectPointer plugin, bool enable)

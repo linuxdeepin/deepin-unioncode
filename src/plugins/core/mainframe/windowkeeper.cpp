@@ -143,7 +143,7 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
         QDesktopServices::openUrl(QUrl("https://pms.uniontech.com/project-bug-1039.html"));
     });
     QAction::connect(actionHelpDoc, &QAction::triggered, [=](){
-        QDesktopServices::openUrl(QUrl("https://developer.chinauos.com/#/"));
+        QDesktopServices::openUrl(QUrl("https://wiki.deepin.org/zh/05_HOW-TO/02_%E5%BC%80%E5%8F%91%E7%9B%B8%E5%85%B3/deepin-unioncode"));
     });
     QAction::connect(actionAboutUnionCode, &QAction::triggered, this, &WindowKeeper::showAboutDlg);
     QAction::connect(actionAboutPlugin, &QAction::triggered, this, &WindowKeeper::showAboutPlugins);

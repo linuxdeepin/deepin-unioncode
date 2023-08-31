@@ -23,81 +23,51 @@ PluginDialog::PluginDialog(QWidget *parent)
     : QDialog(parent),
       view(new dpf::PluginView(this))
 {
-    resize(650, 450);
+    resize(1000, 600);
     setWindowTitle(tr("Installed Plugins"));
 
     auto vLayout = new QVBoxLayout(this);
-    vLayout->addWidget(view);
+    auto detailLayout = new QHBoxLayout;
+    detailLayout->addWidget(view);
 
     closeButton = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
-    detailsButton = new QPushButton(tr("Details"), this);
     closeButton->button(QDialogButtonBox::Close)->setText(tr("Close"));
-    detailsButton->setEnabled(false);
     closeButton->setEnabled(true);
 
     restratRequired = new QLabel(tr(" Restart required."), this);
     if (!isRestartRequired)
         restratRequired->setVisible(false);
 
-    auto hLayout = new QHBoxLayout;
-    hLayout->addWidget(detailsButton);
-    hLayout->addSpacing(10);
-    hLayout->addWidget(restratRequired);
-    hLayout->addStretch(5);
-    hLayout->addWidget(closeButton);
+    auto buttonLayout = new QHBoxLayout;
+    buttonLayout->addSpacing(10);
+    buttonLayout->addWidget(restratRequired);
+    buttonLayout->addStretch(5);
+    buttonLayout->addWidget(closeButton);
 
-    vLayout->addLayout(hLayout);
+    detailView = new DetailsView();
+    detailLayout->addWidget(detailView);
+    slotCurrentPluginActived();
 
-    QObject::connect(view, &dpf::PluginView::currentPluginChanged,
-                     this, &PluginDialog::updateButtons);
-    QObject::connect(view, &dpf::PluginView::currentPluginActived,
-                     this, &PluginDialog::openDetails);
+    vLayout->addLayout(detailLayout);
+    vLayout->addLayout(buttonLayout);
+
+    QObject::connect(view, &dpf::PluginView::currentPluginActived, this, &PluginDialog::slotCurrentPluginActived);
     QObject::connect(view, &dpf::PluginView::pluginSettingChanged,
                      this, &PluginDialog::updateRestartRequired);
-    QObject::connect(detailsButton, &QPushButton::clicked,
-                     [this] { openDetails(); });
     QObject::connect(closeButton->button(QDialogButtonBox::Close), &QPushButton::clicked,
                      [this] { closeDialog() ;});
+}
 
-    updateButtons();
+void PluginDialog::slotCurrentPluginActived()
+{
+    dpf::PluginMetaObjectPointer plugin = view->currentPlugin();
+    detailView->update(plugin);
 }
 
 void PluginDialog::updateRestartRequired()
 {
     isRestartRequired = true;
     restratRequired->setVisible(true);
-}
-
-void PluginDialog::updateButtons()
-{
-    dpf::PluginMetaObjectPointer selectedPlugin = view->currentPlugin();
-    if (selectedPlugin) {
-        detailsButton->setEnabled(true);
-    } else {
-        detailsButton->setEnabled(false);
-    }
-}
-
-void PluginDialog::openDetails()
-{
-    dpf::PluginMetaObjectPointer plugin = view->currentPlugin();
-    if (!plugin)
-        return;
-
-    QDialog dialog(this);
-    dialog.setWindowTitle(tr("Plugin Details of %1").arg(plugin->name()));
-    auto vLayout = new QVBoxLayout;
-    dialog.setLayout(vLayout);
-    auto detailView = new DetailsView(&dialog);
-    vLayout->addWidget(detailView);
-    detailView->update(plugin);
-    QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, &dialog);
-    buttons->button(QDialogButtonBox::Close)->setText(tr("Close"));
-    vLayout->addWidget(buttons);
-
-    connect(buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
-    connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
-    dialog.exec();
 }
 
 void PluginDialog::closeDialog()
@@ -109,12 +79,10 @@ void PluginDialog::closeDialog()
 DetailsView::DetailsView(QWidget *parent)
     : QWidget(parent)
 {
-    this->resize(850, 500);
     gridLayout = new QGridLayout(this);
     gridLayout->setContentsMargins(2, 2, 2, 2);
 
     label_1 = new QLabel(tr("Name:"), this);
-    label_1->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_1->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     name = new QLabel(this);
     name->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
@@ -122,7 +90,6 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(name, 0, 1, 1, 1);
 
     label_2 = new QLabel(tr("Version:"), this);
-    label_2->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_2->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     version = new QLabel(this);
     version->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
@@ -130,7 +97,6 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(version, 1, 1, 1, 1);
 
     label_3 = new QLabel(tr("Compatibility version:"), this);
-    label_3->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_3->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     compatVersion = new QLabel(this);
     compatVersion->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
@@ -138,7 +104,6 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(compatVersion, 2, 1, 1, 1);
 
     label_4 = new QLabel(tr("Vendor:"), this);
-    label_4->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_4->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     vendor = new QLabel(this);
     vendor->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
@@ -146,55 +111,57 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(vendor, 3, 1, 1, 1);
 
     label_5 = new QLabel(tr("Copyright:"), this);
-    label_5->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_5->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     copyright = new QLabel(this);
     copyright->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     gridLayout->addWidget(label_5, 4, 0, 1, 1);
     gridLayout->addWidget(copyright, 4, 1, 1, 1);
 
-    label_6 = new QLabel(tr("URL:"), this);
-    label_6->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+    label_6 = new QLabel(tr("Category:"), this);
     label_6->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    category = new QLabel(this);
+    category->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    gridLayout->addWidget(label_6, 5, 0, 1, 1);
+    gridLayout->addWidget(category, 5, 1, 1, 1);
+
+    label_7 = new QLabel(tr("URL:"), this);
+    label_7->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     urlLink = new QLabel(this);
     urlLink->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    gridLayout->addWidget(label_6, 5, 0, 1, 1);
-    gridLayout->addWidget(urlLink, 5, 1, 1, 1);
+    gridLayout->addWidget(label_7, 6, 0, 1, 1);
+    gridLayout->addWidget(urlLink, 6, 1, 1, 1);
 
     vboxLayout_1 = new QVBoxLayout();
-    label_7 = new QLabel(tr("Description:"), this);
-    label_7->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-    label_7->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    vboxLayout_1->addWidget(label_7);
-    spacerItem_1 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    vboxLayout_1->addItem(spacerItem_1);
-    description = new QTextEdit(this);
-    description->setReadOnly(true);
-    gridLayout->addLayout(vboxLayout_1, 6, 0, 1, 1);
-    gridLayout->addWidget(description, 6, 1, 1, 1);
-
-    vboxLayout_2 = new QVBoxLayout();
     label_8 = new QLabel(tr("License:"), this);
-    label_8->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     label_8->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    vboxLayout_2->addWidget(label_8);
-    spacerItem_2 = new QSpacerItem(17, 13, QSizePolicy::Minimum, QSizePolicy::Expanding);
-    vboxLayout_2->addItem(spacerItem_2);
+    vboxLayout_1->addWidget(label_8);
+    spacerItem_1 = new QSpacerItem(17, 13, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    vboxLayout_1->addItem(spacerItem_1);
     license = new QTextEdit(this);
     license->setReadOnly(true);
-    gridLayout->addLayout(vboxLayout_2, 7, 0, 1, 1);
+    gridLayout->addLayout(vboxLayout_1, 7, 0, 1, 1);
     gridLayout->addWidget(license, 7, 1, 1, 1);
 
-    vboxLayout_3 = new QVBoxLayout();
-    label_9 = new QLabel(tr("Dependencies:"), this);
-    label_9->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+    vboxLayout_2 = new QVBoxLayout();
+    label_9 = new QLabel(tr("Description:"), this);
     label_9->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    vboxLayout_3->addWidget(label_9);
+    vboxLayout_2->addWidget(label_9);
+    spacerItem_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    vboxLayout_2->addItem(spacerItem_2);
+    description = new QTextEdit(this);
+    description->setReadOnly(true);
+    gridLayout->addLayout(vboxLayout_2, 8, 0, 1, 1);
+    gridLayout->addWidget(description, 8, 1, 1, 1);
+
+    vboxLayout_3 = new QVBoxLayout();
+    label_10 = new QLabel(tr("Dependencies:"), this);
+    label_10->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    vboxLayout_3->addWidget(label_10);
     spacerItem_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     vboxLayout_3->addItem(spacerItem_3);
     dependencies = new QListWidget(this);
-    gridLayout->addLayout(vboxLayout_3, 8, 0, 1, 1);
-    gridLayout->addWidget(dependencies, 8, 1, 1, 1);
+    gridLayout->addLayout(vboxLayout_3, 9, 0, 1, 1);
+    gridLayout->addWidget(dependencies, 9, 1, 1, 1);
 }
 
 void DetailsView::update(dpf::PluginMetaObjectPointer plugin)
@@ -203,6 +170,7 @@ void DetailsView::update(dpf::PluginMetaObjectPointer plugin)
     version->setText(plugin->version());
     compatVersion->setText(plugin->compatVersion());
     vendor->setText(plugin->vendor());
+    category->setText(plugin->category());
     const QString link = QString::fromLatin1("<a href=\"%1\">%1</a>").arg(plugin->urlLink());
     urlLink->setText(link);
     copyright->setText(plugin->copyright());
@@ -214,6 +182,7 @@ void DetailsView::update(dpf::PluginMetaObjectPointer plugin)
     }
     license->setText(licenseText.trimmed());
     QStringList dependsList;
+    dependencies->clear();
     for (dpf::PluginDepend depend : plugin->depends()) {
         dependsList << depend.toString();
     }
