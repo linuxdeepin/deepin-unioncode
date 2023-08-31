@@ -70,6 +70,11 @@
         <translation>运行配置：</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="92"/>
+        <source>command combination:</source>
+        <translation>命令组合：</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="93"/>
         <source>Use Combination Command</source>
         <translation>使用组合命令</translation>
@@ -85,93 +90,93 @@
         <translation>请选择工作目录。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="288"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="289"/>
         <source>Add new command</source>
         <translation>添加新命令</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="289"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="290"/>
         <source>New command name:</source>
         <translation>命令名称：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="299"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="300"/>
         <source>Delete Configuration?</source>
         <translation>删除配置？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="300"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="301"/>
         <source>Do you really want to delete the command &lt;b&gt;%1&lt;/b&gt;?</source>
         <translation>确定要删除&lt;b&gt;%1&lt;/b&gt;吗？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="323"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="325"/>
         <source>Rename...</source>
         <translation>重命名...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="324"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="326"/>
         <source>New name for command &lt;b&gt;%1&lt;/b&gt;:</source>
         <translation>&lt;b&gt;%1&lt;/b&gt;的新名称：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="380"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="382"/>
         <source>Command:</source>
         <translation>命令：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="384"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="386"/>
         <source>Tool arguments:</source>
         <translation>工具参数：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="386"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="388"/>
         <source>Input your arguments.</source>
         <translation>请输入参数.</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="389"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="391"/>
         <source>Executable:</source>
         <translation>可执行文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="391"/>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="396"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="393"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="398"/>
         <source>Browse...</source>
         <translation>浏览...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="394"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="396"/>
         <source>Working directory:</source>
         <translation>工作目录：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="399"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="401"/>
         <source>Envrioment: Base environment for this command configuration.</source>
         <translation>当前命令的配置环境。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="400"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="402"/>
         <source>&amp;Append</source>
         <translation>添加（&amp;A）</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="401"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="403"/>
         <source>&amp;Delete</source>
         <translation>删除（&amp;D）</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="402"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="404"/>
         <source>&amp;Reset</source>
         <translation>重置（&amp;R）</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="430"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="432"/>
         <source>Select Executabel Path</source>
         <translation>选择执行路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="438"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="440"/>
         <source>Select Working Directory</source>
         <translation>选择工作目录</translation>
     </message>
@@ -625,12 +630,12 @@
     <message>
         <location filename="../../src/plugins/codeporting/configwidget.cpp" line="157"/>
         <source>Source CPU Architecture:</source>
-        <translation>源 CPU 体系结构：</translation>
+        <translation>源 CPU 架构：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeporting/configwidget.cpp" line="166"/>
         <source>Target CPU Architecture:</source>
-        <translation>目标CPU架构：</translation>
+        <translation>目标 CPU 架构：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeporting/configwidget.cpp" line="193"/>
@@ -1425,17 +1430,22 @@ repos path: %0</source>
 <context>
     <name>ProfileSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="73"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="75"/>
+        <source>Ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="77"/>
         <source>Restart Required--deep-in unioncode</source>
         <translation>重启请求</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="74"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="78"/>
         <source>The language change will take effect after restart.</source>
         <translation>语言更改将在重新启动后生效。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="106"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="110"/>
         <source>language:</source>
         <translation>语言：</translation>
     </message>
