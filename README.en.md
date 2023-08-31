@@ -1,10 +1,10 @@
-### deepin-unioncode
+# deepin-unioncode
+
+[![zh](https://img.shields.io/badge/lang-zh-red.svg)](./README.md)
 
 Deepin Union Code is a lightweight integrated development environment independently developed by Deepin Technology, featured with multilingual and cross platform compatibility.
 
-### Dependencies
-
-### Build dependencies
+## Build dependencies
 
 _The **master** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
 
@@ -36,9 +36,10 @@ _The **master** branch is current development branch, build dependencies may cha
 - qtscript5-dev
 - libqt5scripttools5
 - clang
-## Installation
 
-### Build from source code
+Installation
+
+## Build from source code
 
 1. Make sure you have installed all dependencies.
 
@@ -73,13 +74,12 @@ Execute `deepin-unioncode`
 
 ## Supported Language Project
 
-| Language     | Project Type    |
-| ------------ | ----------------|
-| C/C++        | CMake           |
-| Java         | Grade           |
-| Java         | Maven           |
-| Python       | Local Direcotry |
-| JavaScript   | Local Directory |
+| Language   | Project Type      |
+| ---------- | ----------------- |
+| C/C++      | CMake             |
+| Java       | Gradle、Maven     |
+| Python     | Project Direcotry |
+| JavaScript | Project Directory |
 
 ## Getting help
 
@@ -99,6 +99,22 @@ We encourage you to report issues and contribute changes
 ## License
 
 deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
+
+## 3rdparty support
+
+| 序号 | 使用三方库名称 | 版本号     | 引用方式（动态、静态、源码） | 三方库协议类型 |
+| ---- | -------------- | ---------- | ---------------------------- | -------------- |
+| 1    | cppdap         | NA         | 静态                         | Apache 2.0     |
+| 2    | googletest     | 1.11.0     | 静态                         | BSD3           |
+| 3    | nlohmann/json  | 3.10.4     | 静态                         | MIT            |
+| 4    | scintilla      | 5.15       | 源码                         | HPND           |
+| 5    | lexilla        | 5.14       | 源码                         | HPND           |
+| 6    | marl           | NA         | 静态                         | Apache 2.0     |
+| 7    | qtremwidget    | 0.14.1     | 源码                         | GPLV2+ BSD3    |
+| 8    | GitQlient      | tag/v1.4.3 | 源码                         | GPLV2.1+       |
+| 9    | libclang/      | > 1:7~     | 动态                         | Apache  2.0    |
+| 10   | llvm           | > 1:7~     | 动态                         | Apache  2.0    |
+| 11   | json-rpc-cpp   | 1.4.1      | 源码                         | MIT            |
 
 
 ## Preview
