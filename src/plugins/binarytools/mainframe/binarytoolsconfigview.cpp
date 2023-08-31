@@ -89,7 +89,7 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     setConfigWidget();
 
     d->combinationDialog = new QDialog(this);
-    d->commandCombination = new QLabel("command combination:", d->combinationDialog);
+    d->commandCombination = new QLabel(tr("command combination:"), d->combinationDialog);
     d->useCombinationButton = new QPushButton(tr("Use Combination Command"), d->combinationDialog);
     initializeCombinationDialog();
 
@@ -285,7 +285,8 @@ void BinaryToolsConfigView::addCompatConfig()
         return;
 
     bool ok;
-    QString name = QInputDialog::getText(this, tr("Add new command"),
+    QInputDialog inputDialog;
+    QString name = inputDialog.getText(this, tr("Add new command"),
                                          tr("New command name:"),
                                          QLineEdit::Normal, "", &ok);
     if (!ok)
@@ -320,7 +321,8 @@ void BinaryToolsConfigView::deleteCompatConfig()
 void BinaryToolsConfigView::renameCompatConfig()
 {
     bool ok;
-    QString name = QInputDialog::getText(this, tr("Rename..."),
+    QInputDialog inputDialog;
+    QString name = inputDialog.getText(this, tr("Rename..."),
                                          tr("New name for command <b>%1</b>:").
                                          arg(d->runComandCombo->currentText()),
                                          QLineEdit::Normal,

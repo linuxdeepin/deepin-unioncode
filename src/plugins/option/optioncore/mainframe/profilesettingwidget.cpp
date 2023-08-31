@@ -8,6 +8,7 @@
 #include <QBoxLayout>
 #include <QLabel>
 #include <QComboBox>
+#include <QPushButton>
 
 class ProfileSettingWidgetPrivate
 {
@@ -70,9 +71,12 @@ void ProfileSettingWidget::saveConfig()
         file.write(chooseFileName.toUtf8());
         file.close();
     }
-    QMessageBox::information(this, tr("Restart Required--deep-in unioncode"),
-                             tr("The language change will take effect after restart."),
-                             QMessageBox::Ok);
+    QMessageBox msgBox;
+    QPushButton *okButton = new QPushButton(tr("Ok"));
+    msgBox.addButton(okButton, QMessageBox::ButtonRole::NoRole);
+    msgBox.setWindowTitle(tr("Restart Required--deep-in unioncode"));
+    msgBox.setText(tr("The language change will take effect after restart."));
+    msgBox.exec();
 }
 
 void ProfileSettingWidget::readConfig()
