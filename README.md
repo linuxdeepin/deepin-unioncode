@@ -68,9 +68,7 @@ $ sudo cmake --build build --target install
 
 启动栏执行 `deepin-unioncode`
 
-*注意：*
-
-deepin-unioncode安装后，部分功能需要安装依赖包后才能正常使用。
+*注意：deepin-unioncode安装后，部分功能需要安装依赖包后才能正常使用。*
 
 ## 支持的语言工程
 
@@ -81,9 +79,18 @@ deepin-unioncode安装后，部分功能需要安装依赖包后才能正常使�
 | Python     | 工程目录      |
 | JavaScript | 工程目录      |
 
+## 开发应用列举
+
+| 应用名              | 描述         | 仓库地址                                           |
+| ------------------- | ------------ | -------------------------------------------------- |
+| deepin-draw         | 深度画板应用 | https://github.com/linuxdeepin/deepin-draw         |
+| deepin-image-viewer | 深度看图应用 | https://github.com/linuxdeepin/deepin-image-viewer |
+| deepin-album        | 深度相册应用 | https://github.com/linuxdeepin/deepin-album        |
+
 ## 帮助
 
 - [官方论坛](https://bbs.deepin.org/) 
+- [用户使用手册](https://wiki.deepin.org/zh/05_HOW-TO/02_%E5%BC%80%E5%8F%91%E7%9B%B8%E5%85%B3/deepin-unioncode)
 - [开发者中心](https://github.com/linuxdeepin/developer-center) 
 - [Gitter](https://gitter.im/orgs/linuxdeepin/rooms)
 - [聊天室](https://webchat.freenode.net/?channels=deepin)
@@ -102,19 +109,19 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 
 ## 三方库支持
 
-| 序号 | 使用三方库名称 | 版本号     | 引用方式（动态、静态、源码） | 三方库协议类型 |
-| ---- | -------------- | ---------- | ---------------------------- | -------------- |
-| 1    | cppdap         | NA         | 静态                         | Apache 2.0     |
-| 2    | googletest     | 1.11.0     | 静态                         | BSD3           |
-| 3    | nlohmann/json  | 3.10.4     | 静态                         | MIT            |
-| 4    | scintilla      | 5.15       | 源码                         | HPND           |
-| 5    | lexilla        | 5.14       | 源码                         | HPND           |
-| 6    | marl           | NA         | 静态                         | Apache 2.0     |
-| 7    | qtremwidget    | 0.14.1     | 源码                         | GPLV2+ BSD3    |
-| 8    | GitQlient      | tag/v1.4.3 | 源码                         | GPLV2.1+       |
-| 9    | libclang/      | > 1:7~     | 动态                         | Apache  2.0    |
-| 10   | llvm           | > 1:7~     | 动态                         | Apache  2.0    |
-| 11   | json-rpc-cpp   | 1.4.1      | 源码                         | MIT            |
+| 序号 | 三方库名称    | 版本号     | 引用方式（动态、静态、源码） | 三方库协议类型 |
+| ---- | ------------- | ---------- | ---------------------------- | -------------- |
+| 1    | cppdap        | NA         | 源码                         | Apache 2.0     |
+| 2    | googletest    | 1.11.0     | 静态                         | BSD3           |
+| 3    | nlohmann/json | 3.10.4     | 静态                         | MIT            |
+| 4    | scintilla     | 5.15       | 源码                         | HPND           |
+| 5    | lexilla       | 5.14       | 源码                         | HPND           |
+| 6    | marl          | NA         | 静态                         | Apache 2.0     |
+| 7    | qtremwidget   | 0.14.1     | 源码                         | GPLV2+ BSD3    |
+| 8    | GitQlient     | tag/v1.4.3 | 源码                         | GPLV2.1+       |
+| 9    | libclang/     | > 1:7~     | 动态                         | Apache  2.0    |
+| 10   | llvm          | > 1:7~     | 动态                         | Apache  2.0    |
+| 11   | json-rpc-cpp  | 1.4.1      | 源码                         | MIT            |
 
 ## 界面预览
 - 语言支持
