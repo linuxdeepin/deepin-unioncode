@@ -1,20 +1,18 @@
 # deepin-unioncode
 
-[![	](https://img.shields.io/badge/lang-en-red.svg)](./README.en.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](./README.en.md)
 
 深度集成开发环境是由深度公司自主研发，具有多语言、跨平台兼容特性的轻量级集成开发环境。
 
-### 依赖
-
-### 构建依赖
+## 构建依赖
 
 _当前的开发分支为**master**，编译依赖可能会在没有更新本说明的情况下发生变化，请参考`./debian/control`以获取构建依赖项列表_
 
 - dh-systemd
 - cmake
 - qt5-qmake
-  - qtbase5-dev
 
+- qtbase5-dev
 - qttools5-dev
 - qttools5-dev-tools
 - lxqt-build-tools (>= 0.6.0~)
@@ -42,8 +40,6 @@ _当前的开发分支为**master**，编译依赖可能会在没有更新本说
 
 ## 安装
 
-### 构建过程
-
 1. 确保已经安装所有依赖库。
 
 
@@ -70,21 +66,20 @@ $ sudo cmake --build build --target install
 
 ## 使用
 
-执行 `deepin-unioncode`
+启动栏执行 `deepin-unioncode`
 
 *注意：*
 
-*deepin-unioncode安装后，部分功能需要安装依赖包后才能正常使用。该版本为debian10的根，与专业版一致，遇到相关依赖可直接在[依赖包下载地址](https://community-packages.deepin.com/deepin/pool/main/l/llvm-toolchain-13/)中找到相应的包进行安装。*
+deepin-unioncode安装后，部分功能需要安装依赖包后才能正常使用。
 
 ## 支持的语言工程
 
-| Language     | Project Type    |
-| ------------ | ----------------|
-| C/C++        | CMake           |
-| Java         | Grade           |
-| Java         | Maven           |
-| Python       | Local Direcotry |
-| JavaScript   | Local Directory |
+| 语言       | 工程类型      |
+| ---------- | ------------- |
+| C/C++      | CMake         |
+| Java       | Gradle、Maven |
+| Python     | 工程目录      |
+| JavaScript | 工程目录      |
 
 ## 帮助
 
@@ -104,6 +99,22 @@ $ sudo cmake --build build --target install
 ## 开源许可证
 
 deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
+
+## 三方库支持
+
+| 序号 | 使用三方库名称 | 版本号     | 引用方式（动态、静态、源码） | 三方库协议类型 |
+| ---- | -------------- | ---------- | ---------------------------- | -------------- |
+| 1    | cppdap         | NA         | 静态                         | Apache 2.0     |
+| 2    | googletest     | 1.11.0     | 静态                         | BSD3           |
+| 3    | nlohmann/json  | 3.10.4     | 静态                         | MIT            |
+| 4    | scintilla      | 5.15       | 源码                         | HPND           |
+| 5    | lexilla        | 5.14       | 源码                         | HPND           |
+| 6    | marl           | NA         | 静态                         | Apache 2.0     |
+| 7    | qtremwidget    | 0.14.1     | 源码                         | GPLV2+ BSD3    |
+| 8    | GitQlient      | tag/v1.4.3 | 源码                         | GPLV2.1+       |
+| 9    | libclang/      | > 1:7~     | 动态                         | Apache  2.0    |
+| 10   | llvm           | > 1:7~     | 动态                         | Apache  2.0    |
+| 11   | json-rpc-cpp   | 1.4.1      | 源码                         | MIT            |
 
 ## 界面预览
 - 语言支持
