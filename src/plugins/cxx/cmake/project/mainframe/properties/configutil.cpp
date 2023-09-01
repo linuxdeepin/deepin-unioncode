@@ -138,7 +138,8 @@ void ConfigUtil::checkConfigInfo(const QString &buildType, const QString &direct
                 iter->directory = directory;
             QString cfgFile = iter->directory + QDir::separator() + TargetsManager::instance()->getCMakeConfigFile();
             if (!QFileInfo(cfgFile).isFile()) {
-                configProject(&d->configureParam);
+                // not config
+//                configProject(&d->configureParam);
             }
         }
     }
