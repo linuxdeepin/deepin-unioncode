@@ -25,8 +25,8 @@ void ContextDialog::okCancel(QString text, QString title,
     messageBox.setWindowTitle(title);
     messageBox.setText(text);
     messageBox.setIcon(icon);
-    messageBox.setStandardButtons(QMessageBox::Ok|QMessageBox::Cancel);
-    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("OK"));
+    messageBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("Ok"));
     messageBox.button(QMessageBox::Cancel)->setText(QObject::tr("Cancel"));
     if (okCallBack)
         QObject::connect(messageBox.button(QMessageBox::Ok),
@@ -49,10 +49,35 @@ void ContextDialog::ok(QString text, QString title,
     messageBox.setText(text);
     messageBox.setIcon(icon);
     messageBox.setStandardButtons(QMessageBox::Ok);
-    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("OK"));
+    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("Ok"));
     if (okCallBack)
         QObject::connect(messageBox.button(QMessageBox::Ok),
                          &QAbstractButton::clicked, okCallBack);
+    messageBox.exec();
+}
+
+void ContextDialog::question(QString text, QString title, QMessageBox::Icon icon, std::function<void (bool)> okCallBack, std::function<void (bool)> noCallBack, std::function<void (bool)> cancelCallBack)
+{
+    if (text.isEmpty())
+        return;
+
+    QMessageBox messageBox;
+    messageBox.setWindowTitle(title);
+    messageBox.setText(text);
+    messageBox.setIcon(icon);
+    messageBox.setStandardButtons(QMessageBox::Ok | QMessageBox::No | QMessageBox::Cancel);
+    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("Ok"));
+    messageBox.button(QMessageBox::No)->setText(QObject::tr("No"));
+    messageBox.button(QMessageBox::Cancel)->setText(QObject::tr("Cancel"));
+    if (okCallBack)
+        QObject::connect(messageBox.button(QMessageBox::Ok),
+                         &QAbstractButton::clicked, okCallBack);
+    if (noCallBack)
+        QObject::connect(messageBox.button(QMessageBox::No),
+                         &QAbstractButton::clicked, noCallBack);
+    if (cancelCallBack)
+        QObject::connect(messageBox.button(QMessageBox::Cancel),
+                         &QAbstractButton::clicked, cancelCallBack);
     messageBox.exec();
 }
 

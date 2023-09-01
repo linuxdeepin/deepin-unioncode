@@ -31,6 +31,13 @@ public:
                    QMessageBox::Icon icon = QMessageBox::Critical,
                    std::function<void(bool)> okCallBack = nullptr);
 
+    static void question(QString text,
+                         QString title = "Question",
+                         QMessageBox::Icon icon = QMessageBox::Question,
+                         std::function<void(bool)> okCallBack = nullptr,
+                         std::function<void(bool)> noCallBack = nullptr,
+                         std::function<void(bool)> cancelCallBack = nullptr);
+
     static void singleChoice(QSet<SingleChoiceBox::Info> infos,
                              QString windowTitle = "Infos Selection",
                              QString choiceTitle = "Single Choice",

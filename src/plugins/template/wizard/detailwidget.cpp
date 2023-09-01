@@ -70,7 +70,7 @@ DetailWidget::DetailWidget(const QString &templatePath, QWidget *parent)
                 lineEdit->setFixedSize(300, 30);
                 lineEdit->setReadOnly(true);
 
-                QPushButton *browse = new QPushButton("Browse...");
+                QPushButton *browse = new QPushButton(tr("Browse..."));
                 browse->setFixedSize(100, 30);
                 hLayout->addWidget(browse, 0, Qt::AlignRight);
                 hLayout->setStretchFactor(browse, 1);
