@@ -8,6 +8,7 @@
 
 #include "common/widget/collapsewidget.h"
 #include "common/util/custompaths.h"
+#include "common/dialog/contextdialog.h"
 
 #include <QComboBox>
 #include <QPushButton>
@@ -237,7 +238,7 @@ void BinaryToolsConfigView::currentConfigChanged(const QString &text)
 void BinaryToolsConfigView::initializeCombo()
 {
     QString fileName = CustomPaths::global(CustomPaths::Flags::Configures)
-                + QDir::separator() + QString("binarytool.support");
+            + QDir::separator() + QString("binarytool.support");
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly)) {
         QByteArray data = file.readAll();
@@ -285,10 +286,9 @@ void BinaryToolsConfigView::addCompatConfig()
         return;
 
     bool ok;
-    QInputDialog inputDialog;
-    QString name = inputDialog.getText(this, tr("Add new command"),
-                                         tr("New command name:"),
-                                         QLineEdit::Normal, "", &ok);
+    QString name = QInputDialog::getText(this, tr("Add new command"),
+                                       tr("New command name:"),
+                                       QLineEdit::Normal, "", &ok);
     if (!ok)
         return;
 
@@ -297,12 +297,24 @@ void BinaryToolsConfigView::addCompatConfig()
 
 void BinaryToolsConfigView::deleteCompatConfig()
 {
-    QMessageBox msgBox(QMessageBox::Question, tr("Delete Configuration?"),
-                       tr("Do you really want to delete the command <b>%1</b>?").arg(d->nameLabel->text()),
-                       QMessageBox::Yes|QMessageBox::No, this);
-    msgBox.setDefaultButton(QMessageBox::No);
-    msgBox.setEscapeButton(QMessageBox::No);
-    if (msgBox.exec() == QMessageBox::No)
+    bool doSave = false, doCancle = false;
+    auto ok = [&](bool checked) {
+        Q_UNUSED(checked);
+        doSave = true;
+    };
+    auto no = [&](bool checked) {
+        Q_UNUSED(checked);
+        doSave = false;
+    };
+    auto cancel = [&](bool checked) {
+        Q_UNUSED(checked);
+    };
+
+    ContextDialog::question(tr("Delete Configuration?"),
+                            tr("Do you really want to delete the command <b>%1</b>?").arg(d->nameLabel->text()),
+                            QMessageBox::Question,
+                            ok, no, cancel);
+    if (!doSave || doCancle)
         return;
 
     QStringList allCommand = qvariant_cast<QStringList>(d->settings->getValue(ALL_COMMAND));
@@ -321,12 +333,11 @@ void BinaryToolsConfigView::deleteCompatConfig()
 void BinaryToolsConfigView::renameCompatConfig()
 {
     bool ok;
-    QInputDialog inputDialog;
-    QString name = inputDialog.getText(this, tr("Rename..."),
-                                         tr("New name for command <b>%1</b>:").
-                                         arg(d->runComandCombo->currentText()),
-                                         QLineEdit::Normal,
-                                         d->runComandCombo->currentText(), &ok);
+    QString name = QInputDialog::getText(this, tr("Rename..."),
+                                        tr("New name for command <b>%1</b>:").
+                                        arg(d->runComandCombo->currentText()),
+                                        QLineEdit::Normal,
+                                        d->runComandCombo->currentText(), &ok);
     if (!ok)
         return;
 
