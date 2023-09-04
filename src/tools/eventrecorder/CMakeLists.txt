@@ -145,19 +145,22 @@ set_source_files_properties(${DBUS_PRELOAD_SOURCES}
 
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
-if( ${ARCHITECTURE} STREQUAL "x86_64" )
-    include_directories("/usr/lib/x86_64-linux-gnu/dbus-1.0/include/")
-elseif( ${ARCHITECTURE} STREQUAL "mips64" )
-    include_directories("/usr/lib/mips64el-linux-gnuabi64/dbus-1.0/include/"
-        "/usr/lib64/dbus-1.0/include/")
-elseif( ${ARCHITECTURE} STREQUAL "sw_64" )
-    include_directories("/usr/lib/sw_64-linux-gnu/dbus-1.0/include/")
-elseif( ${ARCHITECTURE} STREQUAL "aarch64" )
-    include_directories("/usr/lib/aarch64-linux-gnu/dbus-1.0/include/")
-else()
-endif()
-
-include_directories("/usr/include/dbus-1.0/")
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(DBUS REQUIRED dbus-1)
+include_directories(${DBUS_INCLUDE_DIRS})
+#if( ${ARCHITECTURE} STREQUAL "x86_64" )
+#    include_directories("/usr/lib/x86_64-linux-gnu/dbus-1.0/include/")
+#elseif( ${ARCHITECTURE} STREQUAL "mips64" )
+#    include_directories("/usr/lib/mips64el-linux-gnuabi64/dbus-1.0/include/"
+#        "/usr/lib64/dbus-1.0/include/")
+#elseif( ${ARCHITECTURE} STREQUAL "sw_64" )
+#    include_directories("/usr/lib/sw_64-linux-gnu/dbus-1.0/include/")
+#elseif( ${ARCHITECTURE} STREQUAL "aarch64" )
+#    include_directories("/usr/lib/aarch64-linux-gnu/dbus-1.0/include/")
+#else()
+#endif()
+#
+#include_directories("/usr/include/dbus-1.0/")
 # We need to know where our generated files are.
 # Uncomment this line will always build Makefile in directory same as CMakeLists.txt
 # include_directories("${CMAKE_CURRENT_BINARY_DIR}")
