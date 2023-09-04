@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <dlfcn.h>
 #include <memory.h>
-#include <sys/time.h>
+//#include <sys/time.h>
 #include <sys/syscall.h>
 
 /* build:
