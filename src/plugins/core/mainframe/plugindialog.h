@@ -72,16 +72,16 @@ private:
     QTextEdit *license = nullptr;
     QListWidget *dependencies = nullptr;
 
-    QLabel *label_1 = nullptr;
-    QLabel *label_2 = nullptr;
-    QLabel *label_3 = nullptr;
-    QLabel *label_4 = nullptr;
-    QLabel *label_5 = nullptr;
-    QLabel *label_6 = nullptr;
-    QLabel *label_7 = nullptr;
-    QLabel *label_8 = nullptr;
-    QLabel *label_9 = nullptr;
-    QLabel *label_10 = nullptr;
+    QLabel *nameLabel = nullptr;
+    QLabel *versionLabel = nullptr;
+    QLabel *compatVersionLabel = nullptr;
+    QLabel *vendorLabel = nullptr;
+    QLabel *copyrightLabel = nullptr;
+    QLabel *categoryLabel = nullptr;
+    QLabel *urlLabel = nullptr;
+    QLabel *licenseLabel = nullptr;
+    QLabel *descriptionLabel = nullptr;
+    QLabel *dependenciesLabel = nullptr;
 };
 
 #endif // PLUGINDIALOG_H
