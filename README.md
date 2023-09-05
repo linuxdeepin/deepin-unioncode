@@ -44,7 +44,8 @@ _当前的开发分支为**master**，编译依赖可能会在没有更新本说
 
 
 ``` shell
-$ git clone https://github.com/linuxdeepin/deepin-unioncode.git
+$ git clone https://github.com/linuxdeepin/deepin-unioncode.git 
+(gitee: $ git clone https://gitee.com/deepin-community/deepin-unioncode.git)
 $ cd deepin-unioncode
 $ sudo apt build-dep ./
 ```
@@ -81,11 +82,11 @@ $ sudo cmake --build build --target install
 
 ## 开发应用列举
 
-| 应用名              | 描述         | 仓库地址                                           |
-| ------------------- | ------------ | -------------------------------------------------- |
-| deepin-draw         | 深度画板应用 | https://github.com/linuxdeepin/deepin-draw         |
-| deepin-image-viewer | 深度看图应用 | https://github.com/linuxdeepin/deepin-image-viewer |
-| deepin-album        | 深度相册应用 | https://github.com/linuxdeepin/deepin-album        |
+| 应用名              | 描述         | 仓库地址                                                     |
+| ------------------- | ------------ | ------------------------------------------------------------ |
+| deepin-draw         | 深度画板应用 | https://github.com/linuxdeepin/deepin-draw<br />(https://gitee.com/deepin-community/deepin-draw.git) |
+| deepin-image-viewer | 深度看图应用 | https://github.com/linuxdeepin/deepin-image-viewer<br />(https://gitee.com/deepin-community/deepin-image-viewer.git) |
+| deepin-album        | 深度相册应用 | https://github.com/linuxdeepin/deepin-album<br />(https://gitee.com/deepin-community/deepin-album.git) |
 
 ## 帮助
 
@@ -117,8 +118,8 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 | 4    | scintilla     | 5.15       | 源码                         | HPND           |
 | 5    | lexilla       | 5.14       | 源码                         | HPND           |
 | 6    | marl          | NA         | 静态                         | Apache 2.0     |
-| 7    | qtremwidget   | 0.14.1     | 源码                         | GPLV2+ BSD3    |
-| 8    | GitQlient     | tag/v1.4.3 | 源码                         | GPLV2.1+       |
+| 7    | qtermwidget   | 0.14.1     | 源码                         | GPLV2+ BSD3    |
+| 8    | GitQlient     | tag/v1.4.3 | 源码                         | GPLV-2.1+      |
 | 9    | libclang/     | > 1:7~     | 动态                         | Apache  2.0    |
 | 10   | llvm          | > 1:7~     | 动态                         | Apache  2.0    |
 | 11   | json-rpc-cpp  | 1.4.1      | 源码                         | MIT            |
