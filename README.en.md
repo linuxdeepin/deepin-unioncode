@@ -119,7 +119,7 @@ deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 | 5    | lexilla          | 5.14       | source code                                     | HPND        |
 | 6    | marl             | NA         | static                                          | Apache 2.0  |
 | 7    | qtermwidget      | 0.14.1     | source code                                     | GPLV2+ BSD3 |
-| 8    | GitQlient        | tag/v1.4.3 | source code                                     | GPLV-2.1+   |
+| 8    | GitQlient        | tag/v1.4.3 | source code                                     | LGPL-2.1+   |
 | 9    | libclang/        | > 1:7~     | dynamic                                         | Apache  2.0 |
 | 10   | llvm             | > 1:7~     | dynamic                                         | Apache  2.0 |
 | 11   | json-rpc-cpp     | 1.4.1      | source code                                     | MIT         |
