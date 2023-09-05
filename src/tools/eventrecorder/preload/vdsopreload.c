@@ -22,11 +22,6 @@ int clock_gettime(clockid_t clk_id, struct timespec *tp)
     return syscall(SYS_clock_gettime, clk_id, tp);
 }
 
-int gettimeofday(struct timeval *tv, struct timezone *tz)
-{
-    return syscall(SYS_gettimeofday, tv, tz);
-}
-
 #if defined(__x86_64__)
 time_t time(time_t *tloc)
 {
