@@ -82,59 +82,59 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout = new QGridLayout(this);
     gridLayout->setContentsMargins(2, 2, 2, 2);
 
-    label_1 = new QLabel(tr("Name:"), this);
-    label_1->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    nameLabel = new QLabel(tr("Name:"), this);
+    nameLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     name = new QLabel(this);
     name->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    gridLayout->addWidget(label_1, 0, 0, 1, 1);
+    gridLayout->addWidget(nameLabel, 0, 0, 1, 1);
     gridLayout->addWidget(name, 0, 1, 1, 1);
 
-    label_2 = new QLabel(tr("Version:"), this);
-    label_2->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    versionLabel = new QLabel(tr("Version:"), this);
+    versionLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     version = new QLabel(this);
     version->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    gridLayout->addWidget(label_2, 1, 0, 1, 1);
+    gridLayout->addWidget(versionLabel, 1, 0, 1, 1);
     gridLayout->addWidget(version, 1, 1, 1, 1);
 
-    label_3 = new QLabel(tr("Compatibility version:"), this);
-    label_3->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    compatVersionLabel = new QLabel(tr("Compatibility version:"), this);
+    compatVersionLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     compatVersion = new QLabel(this);
     compatVersion->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    gridLayout->addWidget(label_3, 2, 0, 1, 1);
+    gridLayout->addWidget(compatVersionLabel, 2, 0, 1, 1);
     gridLayout->addWidget(compatVersion, 2, 1, 1, 1);
 
-    label_4 = new QLabel(tr("Vendor:"), this);
-    label_4->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    vendorLabel = new QLabel(tr("Vendor:"), this);
+    vendorLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     vendor = new QLabel(this);
     vendor->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    gridLayout->addWidget(label_4, 3, 0, 1, 1);
+    gridLayout->addWidget(vendorLabel, 3, 0, 1, 1);
     gridLayout->addWidget(vendor, 3, 1, 1, 1);
 
-    label_5 = new QLabel(tr("Copyright:"), this);
-    label_5->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    copyrightLabel = new QLabel(tr("Copyright:"), this);
+    copyrightLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     copyright = new QLabel(this);
     copyright->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    gridLayout->addWidget(label_5, 4, 0, 1, 1);
+    gridLayout->addWidget(copyrightLabel, 4, 0, 1, 1);
     gridLayout->addWidget(copyright, 4, 1, 1, 1);
 
-    label_6 = new QLabel(tr("Category:"), this);
-    label_6->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    categoryLabel = new QLabel(tr("Category:"), this);
+    categoryLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     category = new QLabel(this);
     category->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    gridLayout->addWidget(label_6, 5, 0, 1, 1);
+    gridLayout->addWidget(categoryLabel, 5, 0, 1, 1);
     gridLayout->addWidget(category, 5, 1, 1, 1);
 
-    label_7 = new QLabel(tr("URL:"), this);
-    label_7->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    urlLabel = new QLabel(tr("URL:"), this);
+    urlLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
     urlLink = new QLabel(this);
     urlLink->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    gridLayout->addWidget(label_7, 6, 0, 1, 1);
+    gridLayout->addWidget(urlLabel, 6, 0, 1, 1);
     gridLayout->addWidget(urlLink, 6, 1, 1, 1);
 
     vboxLayout_1 = new QVBoxLayout();
-    label_8 = new QLabel(tr("License:"), this);
-    label_8->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    vboxLayout_1->addWidget(label_8);
+    licenseLabel = new QLabel(tr("License:"), this);
+    licenseLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    vboxLayout_1->addWidget(licenseLabel);
     spacerItem_1 = new QSpacerItem(17, 13, QSizePolicy::Minimum, QSizePolicy::Expanding);
     vboxLayout_1->addItem(spacerItem_1);
     license = new QTextEdit(this);
@@ -143,9 +143,9 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(license, 7, 1, 1, 1);
 
     vboxLayout_2 = new QVBoxLayout();
-    label_9 = new QLabel(tr("Description:"), this);
-    label_9->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    vboxLayout_2->addWidget(label_9);
+    descriptionLabel = new QLabel(tr("Description:"), this);
+    descriptionLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    vboxLayout_2->addWidget(descriptionLabel);
     spacerItem_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     vboxLayout_2->addItem(spacerItem_2);
     description = new QTextEdit(this);
@@ -154,9 +154,9 @@ DetailsView::DetailsView(QWidget *parent)
     gridLayout->addWidget(description, 8, 1, 1, 1);
 
     vboxLayout_3 = new QVBoxLayout();
-    label_10 = new QLabel(tr("Dependencies:"), this);
-    label_10->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
-    vboxLayout_3->addWidget(label_10);
+    dependenciesLabel = new QLabel(tr("Dependencies:"), this);
+    dependenciesLabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse);
+    vboxLayout_3->addWidget(dependenciesLabel);
     spacerItem_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     vboxLayout_3->addItem(spacerItem_3);
     dependencies = new QListWidget(this);
