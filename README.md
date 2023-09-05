@@ -119,12 +119,13 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 | 5    | lexilla       | 5.14       | 源码                         | HPND           |
 | 6    | marl          | NA         | 静态                         | Apache 2.0     |
 | 7    | qtermwidget   | 0.14.1     | 源码                         | GPLV2+ BSD3    |
-| 8    | GitQlient     | tag/v1.4.3 | 源码                         | GPLV-2.1+      |
+| 8    | GitQlient     | tag/v1.4.3 | 源码                         | LGPL-2.1+      |
 | 9    | libclang/     | > 1:7~     | 动态                         | Apache  2.0    |
 | 10   | llvm          | > 1:7~     | 动态                         | Apache  2.0    |
 | 11   | json-rpc-cpp  | 1.4.1      | 源码                         | MIT            |
 
 ## 界面预览
+
 - 语言支持
 
   ![](./docs/rc/language-support.png)
@@ -136,11 +137,11 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 - 调试模式
 
   ![](./docs/rc/debug-mode.png)
-  
+
 - 反向调试
 
   ![reverse debug](./docs/rc/reverse-debug.png)
-  
+
 - 版本管理
 
   ![](./docs/rc/version-management.png)

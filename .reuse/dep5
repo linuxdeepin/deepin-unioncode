@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: dde-file-manager
+Upstream-Name: deepin-unioncode
 Upstream-Contact: UnionTech Software Technology Co., Ltd. <>
-Source: https://github.com/linuxdeepin/dde-file-manager
+Source: https://github.com/linuxdeepin/deepin-unioncode
 
 # ci
 Files: .gitlab-ci.yml
@@ -29,12 +29,12 @@ Copyright: None
 License: CC0-1.0
 
 # ignore files
-Files: src/*.json src/*.xml src/*.policy src/*.js src/*.ini src/*.qss src/*.css src/*.theme src/*/templates/* src/*.psd src/configures/*  src/tools/eventrecorder/include/*.gitignore src/tools/eventrecorder/Doxyfile src/tools/eventrecorder/preload/syscall*.cc src/tools/eventrecorder/preload/*.S rpm/*.spec *.sh
+Files: *.txt src/*.json src/*.xml src/*.policy src/*.js src/*.ini src/*.qss src/*.css src/*.theme src/*/templates/* src/*.psd src/configures/*  src/tools/eventrecorder/include/*.gitignore src/tools/eventrecorder/Doxyfile src/tools/eventrecorder/preload/syscall*.cc src/tools/eventrecorder/preload/*.S rpm/*.spec *.sh * *.cfg
 Copyright: None
 License: CC0-1.0
 
 # README & DOCS
-Files: README*.md docs/* src/tools/eventrecorder/*.md
+Files: README*.md docs/* *.md
 Copyright: UnionTech Software Technology Co., Ltd.
 License: CC-BY-4.0
 
@@ -89,29 +89,74 @@ Copyright: 2013 Brendan Gregg
 License: GPL-3.0-or-later
 
 # cppdap
-Files: 3rdparty/cppdap/*
+Files: 3rdparty/cppdap/src/* 
+       3rdparty/cppdap/include/*
+       3rdparty/cppdap/examples/*
+       3rdparty/cppdap/fuzz/*
+       3rdparty/cppdap/kokoro/*
+       3rdparty/cppdap/CONTRIBUTING
 Copyright: 2019 Google LLC
 License: Apache-2.0
 
+# googletest
+Files: 3rdparty/cppdap/third_party/googletest/*
+Copyright: 2019 Google LLC
+License: BSD-3-Clause
+
+# nolhmann
+Files: 3rdparty/cppdap/third_party/json/*
+Copyright: 2019 Google LLC
+License: MIT
+
 # GitQlient
 Files: 3rdparty/unioncode-GitQlient/*
-Copyright: 2021  Francesc Martinez
-License: GPL-3.0-or-later
+Copyright:2011-2017 Peter Spiess-Knafl <dev@spiessknafl.at>
+          2021 Francesc Martinez <es.linkedin.com/in/cescmm/en>
+          2012 Peter Spiess-Knafl <dev@spiessknafl.at>
+          2016 Jean-Daniel Michaud <jean.daniel.michaud@gmail.com>
+          2016 Alexandre Poirot <alexandre.poirot@legrand.fr>
+          2017 Jacques Software <software@jacques.com.au>
+License: LGPL-2.1-or-later
 
 # jsonrpc
 Files: 3rdparty/unioncode-jsonrpccpp/*
 Copyright: 2015 Alexandre Poirot
-License: GPL-3.0-or-later
+License: MIT
 
 # qtermwidget
 Files: 3rdparty/unioncode-qtermwidget-0.14.1/*
-Copyright: 2000 by Stephan Kulow <coolo@kde.org>
-License: GPL-3.0-or-later
+Copyright: Author Adriaan de Groot <groot@kde.org>
+           2010, KDE e.V<kde-ev-board@kde.org>
+           2002-2007, Oswald Buddenhagen <ossi@kde.org>
+           2006-2008, Robert Knight <robertknight@gmail.com>
+           2002, Waldo Bastian <bastian@kde.org>
+           2008, e_k <e_k@users.sourceforge.net>
+License: GPL-2.0-or-later
+
+Files: 3rdparty/unioncode-qtermwidget-0.14.1/example/* 3rdparty/unioncode-qtermwidget-0.14.1/lib/*
+Copyright: Author Adriaan de Groot <groot@kde.org>
+           2010, KDE e.V<kde-ev-board@kde.org>
+           2002-2007, Oswald Buddenhagen <ossi@kde.org>
+           2006-2008, Robert Knight <robertknight@gmail.com>
+           2002, Waldo Bastian <bastian@kde.org>
+           2008, e_k <e_k@users.sourceforge.net>
+License: LGPL-2.0-or-later
+
+Files: 3rdparty/unioncode-qtermwidget-0.14.1/pyqt/cmake/* 3rdparty/unioncode-qtermwidget-0.14.1/cmake/* 
+Copyright: 2012, Luca Beltrame <lbeltrame@kde.org>
+           2012, Rolf Eike Beer <eike@sf-mail.de>
+           2007-2014, Simon Edwards <simon@simonzone.com>
+License: BSD-3-Clause
 
 # scintilla
-Files: 3rdparty/unioncode-scintilla515/*
-Copyright: Hadar Raz
-License: GPL-3.0-or-later
+Files: 3rdparty/unioncode-scintilla515/scintilla/*
+Copyright: 1998-2021 by Neil Hodgson <neilh@scintilla.org>
+License: HPND
+
+# lexilla
+Files: 3rdparty/unioncode-scintilla515/lexilla/*
+Copyright: 1998-2021 by Neil Hodgson <neilh@scintilla.org>
+License: HPND
 
 # aarch64
 Files: src/tools/eventrecorder/aarch64/* src/tools/eventrecorder/mips64/* src/tools/eventrecorder/sw64/* src/tools/eventrecorder/x86_64/*
