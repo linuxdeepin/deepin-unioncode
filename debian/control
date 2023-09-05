@@ -13,6 +13,7 @@ Build-Depends:
  lxqt-build-tools (>= 0.6.0~),
  libssl-dev,
  llvm (>=1:7~),
+ llvm-dev (>=1:7~),
  libclang-dev (>=1:7~),
  libutf8proc-dev,
  libcurl-dev,
@@ -31,7 +32,8 @@ Build-Depends:
  libxi-dev,
  qtscript5-dev,
  libqt5scripttools5,
- clang
+ clang,
+ doxygen
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 
