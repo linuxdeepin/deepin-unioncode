@@ -45,6 +45,7 @@ Installation
 
 ``` shell
 $ git clone https://github.com/linuxdeepin/deepin-unioncode.git
+(gitee: $ git clone https://gitee.com/deepin-community/deepin-unioncode.git)
 $ cd deepin-unioncode
 $ sudo apt build-dep ./
 ```
@@ -81,11 +82,11 @@ Execute `deepin-unioncode`
 
 ## Developed applications
 
-| Application name    | Description                                         | Github Address                                     |
-| ------------------- | --------------------------------------------------- | -------------------------------------------------- |
-| deepin-draw         | A lightweight drawing tool for users to freely draw | https://github.com/linuxdeepin/deepin-draw         |
-| deepin-image-viewer | Image viewing tool                                  | https://github.com/linuxdeepin/deepin-image-viewer |
-| deepin-album        | A photo management tool                             | https://github.com/linuxdeepin/deepin-album        |
+| Application name    | Description                                         | Github Address                                               |
+| ------------------- | --------------------------------------------------- | ------------------------------------------------------------ |
+| deepin-draw         | A lightweight drawing tool for users to freely draw | https://github.com/linuxdeepin/deepin-draw<br />(https://gitee.com/deepin-community/deepin-draw.git) |
+| deepin-image-viewer | Image viewing tool                                  | https://github.com/linuxdeepin/deepin-image-viewer<br />(https://gitee.com/deepin-community/deepin-image-viewer.git) |
+| deepin-album        | A photo management tool                             | https://github.com/linuxdeepin/deepin-album<br />(https://gitee.com/deepin-community/deepin-album.git) |
 
 ## Getting help
 
@@ -117,8 +118,8 @@ deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 | 4    | scintilla        | 5.15       | source code                                     | HPND        |
 | 5    | lexilla          | 5.14       | source code                                     | HPND        |
 | 6    | marl             | NA         | static                                          | Apache 2.0  |
-| 7    | qtremwidget      | 0.14.1     | source code                                     | GPLV2+ BSD3 |
-| 8    | GitQlient        | tag/v1.4.3 | source code                                     | GPLV2.1+    |
+| 7    | qtermwidget      | 0.14.1     | source code                                     | GPLV2+ BSD3 |
+| 8    | GitQlient        | tag/v1.4.3 | source code                                     | GPLV-2.1+   |
 | 9    | libclang/        | > 1:7~     | dynamic                                         | Apache  2.0 |
 | 10   | llvm             | > 1:7~     | dynamic                                         | Apache  2.0 |
 | 11   | json-rpc-cpp     | 1.4.1      | source code                                     | MIT         |
