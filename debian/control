@@ -16,7 +16,6 @@ Build-Depends:
  llvm-dev (>=1:7~),
  libclang-dev (>=1:7~),
  libutf8proc-dev,
- libcurl-dev,
  libmicrohttpd-dev,
  libjsoncpp-dev,
  libargtable2-dev,
