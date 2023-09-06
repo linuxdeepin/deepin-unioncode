@@ -10,6 +10,6 @@ override_dh_auto_configure:
 	dh_auto_configure -- \
 	  -DCMAKE_BUILD_TYPE=Release \
 	  -DCMAKE_INSTALL_PREFIX=/usr \
-      -DAPP_VERSION=$(DEB_VERSION_UPSTREAM) -DVERSION=$(DEB_VERSION_UPSTREAM) LIB_INSTALL_DIR=/usr/lib/$(DEB_HOST_MULTIARCH) DH_AUTO_ARGS = --parallel --buildsystem=cmake
+      -DAPP_VERSION=$(DEB_VERSION_UPSTREAM) -DVERSION=$(DEB_VERSION_UPSTREAM) LIB_INSTALL_DIR=/usr/lib/$(DEB_HOST_MULTIARCH)
 
 
