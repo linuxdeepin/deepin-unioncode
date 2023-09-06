@@ -8,34 +8,36 @@ Deepin Union Code is a lightweight integrated development environment independen
 
 _The **master** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
 
-- dh-systemd
-- cmake
-- qt5-qmake
-- qtbase5-dev
-- qttools5-dev
-- qttools5-dev-tools
-- lxqt-build-tools (>= 0.6.0~)
-- libssl-dev
-- llvm (>=1:7~)
-- libclang-dev (>=1:7~)
-- libutf8proc-dev
-- libcurl-dev
-- libmicrohttpd-dev
-- libjsoncpp-dev
-- libargtable2-dev
-- libhiredis-dev
-- catch
-- libzstd-dev
-- libjson-c-dev
-- libelf-dev
-- libcapstone-dev
-- libunwind-dev
-- libelfin-dev
-- libdbus-1-dev
-- libxi-dev
-- qtscript5-dev
-- libqt5scripttools5
-- clang
+-  debhelper (>=9),
+-  dh-systemd,
+-  cmake,
+-  qt5-qmake,
+-  qtbase5-dev,
+-  qttools5-dev,
+-  qttools5-dev-tools,
+-  lxqt-build-tools (>= 0.6.0~),
+-  libssl-dev,
+-  llvm (>=1:7~),
+-  llvm-dev (>=1:7~),
+-  libclang-dev (>=1:7~),
+-  libutf8proc-dev,
+-  libmicrohttpd-dev,
+-  libjsoncpp-dev,
+-  libargtable2-dev,
+-  libhiredis-dev,
+-  catch,
+-  libzstd-dev,
+-  libjson-c-dev,
+-  libelf-dev,
+-  libcapstone-dev,
+-  libunwind-dev, 
+-  libelfin-dev,
+-  libdbus-1-dev,
+-  libxi-dev,
+-  qtscript5-dev,
+-  libqt5scripttools5,
+-  clang,
+-  doxygen
 
 Installation
 
@@ -110,19 +112,19 @@ deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 
 ## 3rdparty support
 
-| Num  | Third-party Name | Version    | Reference method (dynamic, static, source code) | License     |
-| ---- | ---------------- | ---------- | ----------------------------------------------- | ----------- |
-| 1    | cppdap           | NA         | source code                                     | Apache 2.0  |
-| 2    | googletest       | 1.11.0     | static                                          | BSD3        |
-| 3    | nlohmann/json    | 3.10.4     | static                                          | MIT         |
-| 4    | scintilla        | 5.15       | source code                                     | HPND        |
-| 5    | lexilla          | 5.14       | source code                                     | HPND        |
-| 6    | marl             | NA         | static                                          | Apache 2.0  |
-| 7    | qtermwidget      | 0.14.1     | source code                                     | GPLV2+ BSD3 |
-| 8    | GitQlient        | tag/v1.4.3 | source code                                     | LGPL-2.1+   |
-| 9    | libclang/        | > 1:7~     | dynamic                                         | Apache  2.0 |
-| 10   | llvm             | > 1:7~     | dynamic                                         | Apache  2.0 |
-| 11   | json-rpc-cpp     | 1.4.1      | source code                                     | MIT         |
+| Third-party Name | Version    | Application location                    | License     |
+| ---------------- | ---------- | --------------------------------------- | ----------- |
+| cppdap           | NA         | C++ debug adapter protocol SDK          | Apache 2.0  |
+| googletest       | 1.11.0     | cppdap depends on google test           | BSD3        |
+| nlohmann/json    | 3.10.4     | cppdap depends on nlohmann json library | MIT         |
+| scintilla        | 5.15       | Smart Editor Interface Components       | HPND        |
+| lexilla          | 5.14       | Smart Editor Lexical Analysis Library   | HPND        |
+| marl             | NA         | C++11 Thread/Task Scheduling Library    | Apache 2.0  |
+| qtermwidget      | 0.14.1     | Terminal component library              | GPLV2+ BSD3 |
+| GitQlient        | tag/v1.4.3 | Git display client                      | LGPL-2.1+   |
+| libclang/        | > 1:7~     | Symbol tree module                      | Apache  2.0 |
+| llvm             | > 1:7~     | Compiler framework                      | Apache  2.0 |
+| json-rpc-cpp     | 1.4.1      | Communication middleware                | MIT         |
 
 
 ## Preview

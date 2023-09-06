@@ -8,35 +8,36 @@
 
 _当前的开发分支为**master**，编译依赖可能会在没有更新本说明的情况下发生变化，请参考`./debian/control`以获取构建依赖项列表_
 
-- dh-systemd
-- cmake
-- qt5-qmake
-
-- qtbase5-dev
-- qttools5-dev
-- qttools5-dev-tools
-- lxqt-build-tools (>= 0.6.0~)
-- libssl-dev
-- llvm (>=1:7~)
-- libclang-dev (>=1:7~)
-- libutf8proc-dev
-- libcurl-dev
-- libmicrohttpd-dev
-- libjsoncpp-dev
-- libargtable2-dev
-- libhiredis-dev
-- catch
-- libzstd-dev
-- libjson-c-dev
-- libelf-dev
-- libcapstone-dev
-- libunwind-dev
-- libelfin-dev
-- libdbus-1-dev
-- libxi-dev
-- qtscript5-dev
-- libqt5scripttools5
-- clang
+-  debhelper (>=9),
+-  dh-systemd,
+-  cmake,
+-  qt5-qmake,
+-  qtbase5-dev,
+-  qttools5-dev,
+-  qttools5-dev-tools,
+-  lxqt-build-tools (>= 0.6.0~),
+-  libssl-dev,
+-  llvm (>=1:7~),
+-  llvm-dev (>=1:7~),
+-  libclang-dev (>=1:7~),
+-  libutf8proc-dev,
+-  libmicrohttpd-dev,
+-  libjsoncpp-dev,
+-  libargtable2-dev,
+-  libhiredis-dev,
+-  catch,
+-  libzstd-dev,
+-  libjson-c-dev,
+-  libelf-dev,
+-  libcapstone-dev,
+-  libunwind-dev, 
+-  libelfin-dev,
+-  libdbus-1-dev,
+-  libxi-dev,
+-  qtscript5-dev,
+-  libqt5scripttools5,
+-  clang,
+-  doxygen
 
 ## 安装
 
@@ -110,19 +111,19 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 
 ## 三方库支持
 
-| 序号 | 三方库名称    | 版本号     | 引用方式（动态、静态、源码） | 三方库协议类型 |
-| ---- | ------------- | ---------- | ---------------------------- | -------------- |
-| 1    | cppdap        | NA         | 源码                         | Apache 2.0     |
-| 2    | googletest    | 1.11.0     | 静态                         | BSD3           |
-| 3    | nlohmann/json | 3.10.4     | 静态                         | MIT            |
-| 4    | scintilla     | 5.15       | 源码                         | HPND           |
-| 5    | lexilla       | 5.14       | 源码                         | HPND           |
-| 6    | marl          | NA         | 静态                         | Apache 2.0     |
-| 7    | qtermwidget   | 0.14.1     | 源码                         | GPLV2+ BSD3    |
-| 8    | GitQlient     | tag/v1.4.3 | 源码                         | LGPL-2.1+      |
-| 9    | libclang/     | > 1:7~     | 动态                         | Apache  2.0    |
-| 10   | llvm          | > 1:7~     | 动态                         | Apache  2.0    |
-| 11   | json-rpc-cpp  | 1.4.1      | 源码                         | MIT            |
+| 三方库名称    | 版本号     | 应用位置                     | 三方库协议类型 |
+| ------------- | ---------- | ---------------------------- | -------------- |
+| cppdap        | NA         | C++调试适配器协议 SDK        | Apache 2.0     |
+| googletest    | 1.11.0     | cppdap 依赖 google test      | BSD3           |
+| nlohmann/json | 3.10.4     | cppdap 依赖 nlohmann json 库 | MIT            |
+| scintilla     | 5.15       | 智能编辑器界面组件           | HPND           |
+| lexilla       | 5.14       | 智能编辑器词法分析库         | HPND           |
+| marl          | NA         | C++ 11线程/任务调度库        | Apache 2.0     |
+| qtermwidget   | 0.14.1     | 终端组件库                   | GPLV2+ BSD3    |
+| GitQlient     | tag/v1.4.3 | Git展示客户端                | LGPL-2.1+      |
+| libclang/     | > 1:7~     | 符号树模块                   | Apache  2.0    |
+| llvm          | > 1:7~     | 编译器框架                   | Apache  2.0    |
+| json-rpc-cpp  | 1.4.1      | 通信中间件                   | MIT            |
 
 ## 界面预览
 
