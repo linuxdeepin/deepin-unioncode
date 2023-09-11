@@ -10,9 +10,6 @@ install(
 install(DIRECTORY porting-script/
     DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/porting-script")
 
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/scripts/FlameGraph
-    DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/")
-
 install(DIRECTORY action-analysis/
     DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/action-analysis")
 
