@@ -8,9 +8,6 @@
 #include "inotify_hook.h"
 
 #include <QDebug>
-#include <QApplication>
-
-#ifdef __linux__
 
 #include <poll.h>
 #include <stdio.h>
@@ -48,28 +45,26 @@ public:
     InotifyLinux()
     {
         inotifyFD = inotify_init1(IN_NONBLOCK);
-        if (inotifyFD <= 0) {
-            qCritical()<< "Failed, create inotify fd";
-            abort();
+        if (inotifyFD == -1) {
+            qCritical() << "Failed, create inotify fd";
         }
         pfdCache = {inotifyFD, POLLIN, 0};
     }
 
     ~InotifyLinux() override
     {
-        qInfo() << __FUNCTION__;
-        for(auto wd : watchPaths.keys()) {
-            inotify_rm_watch(inotifyFD, wd);
-        }
-
         if (inotifyFD > 0) {
+            for(auto wd : watchPaths.keys()) {
+                inotify_rm_watch(inotifyFD, wd);
+            }
             close(inotifyFD);
         }
     }
 
     virtual void addPath(const QString &path) override
     {
-        if (inotifyFD == -1) return ;
+        if (inotifyFD == -1)
+            return;
 
         QWriteLocker lock(&rwLock);
         int watcherID = inotify_add_watch(inotifyFD, path.toLatin1(),
@@ -78,12 +73,11 @@ public:
                                           IN_DELETE| IN_DELETE_SELF);
 
         if (watcherID == -1) {
-            qInfo() << "Failed, Create watcher from called inotify_add_watch";
-            return ;
+            qCritical() << "Failed, Create watcher from called inotify_add_watch";
+            return;
         }
 
         watchPaths[watcherID] = path;
-        return ;
     }
 
     virtual void removePath(const QString &path) override
@@ -100,9 +94,8 @@ public:
 
     virtual void run() override
     {
-        if (inotifyFD <= 0) {
-            qCritical() << "Failed, Create poll instance from called poll()";
-            abort();
+        if (inotifyFD == -1) {
+            return;
         }
 
         while(!stopFlag) {
@@ -112,7 +105,7 @@ public:
                 if (errno == EINTR)
                     continue;
                 qCritical() << "Failed, Create poll instance from called poll()";
-                abort();
+                return;
             }
             if (poll_num > 0) {
                 if (pfdCache.revents & POLLIN) {
@@ -140,11 +133,6 @@ public:
                                     break;
                                 }
                             }
-                            /* Print type of filesystem object. */
-                            // if (event->mask & IN_ISDIR)
-                            // printf(" [directory]\n");
-                            // else
-                            // printf(" [file]\n");
                         }
                     } // for read event
                 }
@@ -152,6 +140,5 @@ public:
         }
     }
 };
-#endif
 
 #endif // INOTIFY_LINUX_H
