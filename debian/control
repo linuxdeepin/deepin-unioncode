@@ -4,7 +4,6 @@ Priority: optional
 Maintainer: Deepin Packages Builder <packages@linuxdeepin.com>
 Build-Depends:
  debhelper (>=9),
- dh-systemd,
  cmake,
  qt5-qmake,
  qtbase5-dev,
