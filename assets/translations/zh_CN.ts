@@ -4,19 +4,19 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="29"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="30"/>
         <source>About Deepin Union Code</source>
         <translation>关于Deepin Union Code</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="34"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="35"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation>创建于%1 %2, %3平台</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="37"/>
-        <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;</source>
-        <translation>&lt;h3&gt;Deepin Union Code%1&lt;/h3&gt;%2&lt;br/&gt;版权 2019-%3 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;</translation>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="38"/>
+        <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                we hope that the scheme will be useful,                but we do not guarantee that it will be of economic value or fit for a particular purpose.                For more information, see the GNU General Public License. &lt;br/&gt;               Thanks to all the &lt;a href=&quot;opensourcesoftware&quot;&gt;open source software&lt;/a&gt; used.&lt;br/&gt;</source>
+        <translation type="unfinished">&lt;h3&gt;Deepin Union Code%1&lt;/h3&gt;%2&lt;br/&gt;版权 2019-%3 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;            致谢所有用到的&lt;a href=&quot;opensourcesoftware&quot;&gt;开源软件&lt;/a&gt;。</translation>
     </message>
 </context>
 <context>
@@ -2487,7 +2487,7 @@ storage: %2
         <translation>全部还原</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="52"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="58"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>

@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QLatin1String>
 #include <QDateTime>
+#include <QDesktopServices>
 
 const QString ICON_LOGO_128PX = ":/core/images/unioncode@128.png";
 
@@ -37,7 +38,12 @@ void AboutDialog::setupUi()
     const QString description = tr(
         "<h3>Deepin Union Code %1</h3>"
         "%2<br/>"
-        "Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.<br/>"
+        "Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.<br/><br/>"
+        "This program is released under <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GPL-3.0-or-later</a>; \
+               we hope that the scheme will be useful, \
+               but we do not guarantee that it will be of economic value or fit for a particular purpose. \
+               For more information, see the GNU General Public License. <br/>\
+               Thanks to all the <a href=\"opensourcesoftware\">open source software</a> used."
         "<br/>")
         .arg(version(),
              buildDateInfo,
@@ -45,8 +51,8 @@ void AboutDialog::setupUi()
 
     QLabel *copyRightLabel = new QLabel(description);
     copyRightLabel->setWordWrap(true);
-    copyRightLabel->setOpenExternalLinks(true);
     copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    connect(copyRightLabel, &QLabel::linkActivated, this, &AboutDialog::handleLinkActivated);
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
     QPushButton *closeButton = new QPushButton(QPushButton::tr("Close"));
@@ -59,4 +65,14 @@ void AboutDialog::setupUi()
     layout->addWidget(logoLabel , 1, 0, 1, 1);
     layout->addWidget(copyRightLabel, 0, 4, 4, 5);
     layout->addLayout(layoutButtons, 4, 4, 1, 5);
+}
+
+void AboutDialog::handleLinkActivated(const QString& link)
+{
+    if (link == "opensourcesoftware") {
+        // TODO(any): Open the local dialog here
+        QDesktopServices::openUrl(QUrl("https://github.com/linuxdeepin/deepin-unioncode/blob/master/README.md#三方库支持"));
+    } else {
+        QDesktopServices::openUrl(QUrl(link));
+    }
 }
