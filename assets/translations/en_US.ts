@@ -4,18 +4,18 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="29"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="30"/>
         <source>About Deepin Union Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="34"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="35"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="37"/>
-        <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;</source>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="38"/>
+        <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                we hope that the scheme will be useful,                but we do not guarantee that it will be of economic value or fit for a particular purpose.                For more information, see the GNU General Public License. &lt;br/&gt;               Thanks to all the &lt;a href=&quot;opensourcesoftware&quot;&gt;open source software&lt;/a&gt; used.&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2452,7 +2452,7 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="52"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="58"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>

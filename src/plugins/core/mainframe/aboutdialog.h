@@ -19,6 +19,8 @@ signals:
 private:
     void setupUi();
 
+public slots:
+    void handleLinkActivated(const QString& link);
 };
 
 #endif // ABOUTDIALOG_H

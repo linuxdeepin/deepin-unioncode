@@ -10,6 +10,6 @@
 #ifndef JSONRPC_CPP_JSONPARSER_H_
 #define JSONRPC_CPP_JSONPARSER_H_
 
-#include <json/json.h>
+#include <jsoncpp/json/json.h>
 
 #endif // JSONRPC_CPP_JSONPARSER_H_
