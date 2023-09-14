@@ -18,6 +18,7 @@ signals:
 
 private:
     void setupUi();
+    bool bExpand = false;
 
 public slots:
     void handleLinkActivated(const QString& link);

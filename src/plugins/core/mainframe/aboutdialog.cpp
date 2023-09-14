@@ -60,18 +60,31 @@ void AboutDialog::setupUi()
     layoutButtons->addStretch();
     layoutButtons->addWidget(closeButton);
 
-    auto layout = new QGridLayout(this);
-    layout->setSizeConstraint(QLayout::SetFixedSize);
-    layout->addWidget(logoLabel , 1, 0, 1, 1);
-    layout->addWidget(copyRightLabel, 0, 4, 4, 5);
-    layout->addLayout(layoutButtons, 4, 4, 1, 5);
+    auto vLayout = new QVBoxLayout(this);
+    auto detailLayout = new QGridLayout(this);
+    detailLayout->setSizeConstraint(QLayout::SetFixedSize);
+    detailLayout->addWidget(logoLabel , 1, 0, 1, 1);
+    detailLayout->addWidget(copyRightLabel, 0, 4, 4, 5);
+    detailLayout->addLayout(layoutButtons, 4, 4, 1, 5);
+    vLayout->addLayout(detailLayout);
 }
 
 void AboutDialog::handleLinkActivated(const QString& link)
 {
-    if (link == "opensourcesoftware") {
-        // TODO(any): Open the local dialog here
-        QDesktopServices::openUrl(QUrl("/usr/share/doc/deepin-unioncode/copyright"));
+    if (link == "opensourcesoftware" && !bExpand) {
+        QFile file("/usr/share/doc/deepin-unioncode/copyright");
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextEdit* textEdit = new QTextEdit(this);
+            layout()->addWidget(textEdit);
+
+            QTextStream stream(&file);
+            QString fileContent = stream.readAll();
+            textEdit->setPlainText(fileContent);
+            setFixedHeight(height() * 2);
+            bExpand = true;
+        } else {
+            QMessageBox::critical(this, tr("Error"), tr("Failed to open the file."));
+        }
     } else {
         QDesktopServices::openUrl(QUrl(link));
     }
