@@ -71,7 +71,7 @@ void AboutDialog::handleLinkActivated(const QString& link)
 {
     if (link == "opensourcesoftware") {
         // TODO(any): Open the local dialog here
-        QDesktopServices::openUrl(QUrl("https://github.com/linuxdeepin/deepin-unioncode/blob/master/README.md#三方库支持"));
+        QDesktopServices::openUrl(QUrl("/usr/share/doc/deepin-unioncode/copyright"));
     } else {
         QDesktopServices::openUrl(QUrl(link));
     }
