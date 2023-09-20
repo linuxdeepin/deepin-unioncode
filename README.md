@@ -93,6 +93,7 @@ $ sudo cmake --build build --target install
 
 - [官方论坛](https://bbs.deepin.org/) 
 - [用户使用手册](https://wiki.deepin.org/zh/05_HOW-TO/02_%E5%BC%80%E5%8F%91%E7%9B%B8%E5%85%B3/deepin-unioncode)
+- [扩展指南](./docs/extended-guide.md)
 - [开发者中心](https://github.com/linuxdeepin/developer-center) 
 - [Gitter](https://gitter.im/orgs/linuxdeepin/rooms)
 - [聊天室](https://webchat.freenode.net/?channels=deepin)
