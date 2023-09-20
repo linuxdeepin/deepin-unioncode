@@ -94,6 +94,7 @@ Execute `deepin-unioncode`
 
  - [Official Forum](https://bbs.deepin.org/)
  - [User guide](https://wiki.deepin.org/zh/05_HOW-TO/02_%E5%BC%80%E5%8F%91%E7%9B%B8%E5%85%B3/deepin-unioncode)
+ - [Extended guide](./docs/extended-guide.md)
  - [Developer Center](https://github.com/linuxdeepin/developer-center)
  - [Gitter](https://gitter.im/orgs/linuxdeepin/rooms)
  - [IRC Channel](https://webchat.freenode.net/?channels=deepin)
