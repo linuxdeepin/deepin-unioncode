@@ -1,0 +1,16 @@
+{
+    "Name" : "plugin-demo",
+    "Version" : "4.8.2",
+    "CompatVersion" : "4.8.0",
+    "Vendor" : "Your company",
+    "Copyright" : "Copyright (C) XXXX ~ XXXX Your company Co., Ltd.",
+    "License" : [
+        "The license you used."
+    ],
+    "Category" : "Demos",
+    "Description" : "A plugin project demo for the unioncode.",
+    "UrlLink" : "https://www.Your company.com",
+    "Depends" : [
+        {"Name" : "plugin-codeeditor"}
+    ]
+}
