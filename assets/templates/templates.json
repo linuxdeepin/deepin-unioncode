@@ -5,6 +5,11 @@
                     "name": "console",
                     "path": "projects/cmake/console",
                     "leafNode": true
+                },
+                {
+                    "name": "plugin",
+                    "path": "projects/plugin",
+                    "leafNode": true
                 }
             ]
         },
@@ -12,7 +17,7 @@
             "type": "Maven",
             "templates": [{
                     "name": "console",
-                    "path": "projects//maven/console",
+                    "path": "projects/maven/console",
                     "leafNode": true
                 }
             ]
@@ -21,7 +26,7 @@
             "type": "Gradle",
             "templates": [{
                     "name": "console",
-                    "path": "projects//gradle/console",
+                    "path": "projects/gradle/console",
                     "leafNode": true
                 }
             ]
@@ -76,6 +81,5 @@
                 "leafNode": true
             }
         ]
-    }
-]
+    }]
 }

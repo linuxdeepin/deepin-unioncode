@@ -44,14 +44,13 @@ public:
 
     explicit Plugin();
     virtual ~Plugin() override;
+    // Initialization function, executed in an asynchronous thread
     virtual void initialize();
 
-    /**
-     * @brief start
-     * @return bool 如果返回true则表示当前插件start函数执行正常
-     * false则代表当前内部执行存在问题
-     */
+    // Start the function and execute it in the main thread. If
+    // there is an interface operation, please execute it within this function
     virtual bool start() = 0;
+    // stop function
     virtual ShutdownFlag stop();
 
 signals:
