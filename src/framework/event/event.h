@@ -195,7 +195,7 @@ struct EventInterface : std::function<void(const QVector<QVariant> &)>
  *
  */
 #define OPI_ASKEEP(pKeys, pVals) if (pKeys.size() != pVals.size()) { qCritical() << "Key value pair length mismatch"; abort(); }
-#define OPI_OBJECT(t, logics) inline const struct { const QString topic{#t} ; logics }t;
+#define OPI_OBJECT(t, logics) inline const struct { const char* topic{#t} ; logics }t;
 #define OPI_INTERFACE(d, ...) const dpf::EventInterface d { #d, {__VA_ARGS__} , [=](const QVector<QVariant> &args) -> void {\
     OPI_ASKEEP(d.pKeys, args);\
     dpf::Event event(topic); event.setData(#d);\
