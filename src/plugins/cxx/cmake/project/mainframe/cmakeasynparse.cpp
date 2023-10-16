@@ -311,7 +311,6 @@ QStandardItem *CmakeAsynParse::findItem(QStandardItem *rootItem, QString &name, 
     if (parentItem) {
         for (int row = 0; row < parentItem->rowCount(); row++) {
             QStandardItem *childItem = parentItem->child(row);
-            qInfo() << parentItem->data(Qt::DisplayRole) << childItem->data(Qt::DisplayRole);
             if (childItem->data(Qt::DisplayRole) == name) {
                 return childItem;
             }
