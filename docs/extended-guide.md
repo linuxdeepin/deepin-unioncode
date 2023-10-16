@@ -18,9 +18,15 @@
 
 ### 1、插件模板
 
-这里以 Valgrind 插件的接入作为示例进行说明。
+这里以 deepin-unioncode 自带的插件模板作为示例进行说明。
 
 技术栈：**C/C++、Qt（5.11.3）、dpf(插件框架)**
+
+- 创建
+
+  打开菜单**文件** > **新建文件或工程** > **Projects** > **plugin**，填入工程名和存放路径，完成模板的创建。存放路径建议设置为 deepin-unioncode 源码的 src/plugins 目录，并在该目录下的 cmake 文件中添加模板工程。完成上述步骤后，新建的插件模板就显示到 IDE 的工程视图中。
+
+  ![](./rc-guide/plugin-demo.png)
 
 - CMakeLists.txt 文件
 
@@ -42,52 +48,13 @@ install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH}
 
 一般而言，上面几个库都需要链接，最后一行是将该插件安装到指定位置，才能被 `IDE` 发现调用。
 
-接下来是源代码的编写：
+- 元数据文件
 
-- 头文件
-
-```c++
-class Valgrind: public dpf::Plugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "valgrind.json")
-public:
-    // 初始化函数，在异步线程中执行
-    virtual void initialize() override;
-    
-    // 启动函数，在主线程中执行。如果有界面操作，请在该函数内执行
-    virtual bool start() override;
-    
-    // 停止函数
-    virtual dpf::Plugin::ShutdownFlag stop() override;
-};
-```
-
-- 源文件
-
-```c++
-void Valgrind::initialize()
-{
-    // 异步初始化操作
-}
-
-bool Valgrind::start()
-{
-    // 启动插件，可在此函数中插入界面到IDE中 
-    return true;
-}
-
-dpf::Plugin::ShutdownFlag Valgrind::stop()
-{
-    return Sync;
-}
-```
-
-插件接入需要继承实现 dpf::Plugin 中的三个函数，还有一个条件是包含元数据，也就是上面的 varlgind.json，该文件需要包含到工程内，内容如下：
+还有一个条件是包含元数据，也就是上面的 demo.json，该文件需要包含到工程内，内容如下：
 
 ```json
 {
-    "Name" : "plugin-valgrind", // 插件名
+    "Name" : "plugin-demo", // 插件名
     "Version" : "4.8.2",  // 插件版本
     "CompatVersion" : "4.8.0", // 兼容版本
     "Vendor" : "XXX Co., Ltd.", // 提供商
@@ -95,8 +62,8 @@ dpf::Plugin::ShutdownFlag Valgrind::stop()
     "License" : [
         "XXX" // License声明
     ],
-    "Category" : "Code Analyzer",  // 分组策略
-    "Description" : "The codedetection plugin for the unioncode.",  // 描述
+    "Category" : "XXX",  // 分组策略
+    "Description" : "XXX.",  // 描述
     "UrlLink" : "XXX",  // 网页链接
     "Depends" : [
         {"Name" : "plugin-codeeditor"}  // 插件依赖，
@@ -106,11 +73,13 @@ dpf::Plugin::ShutdownFlag Valgrind::stop()
 
 完成上述操作后，进行编译安装，一个 `IDE` 插件的接入就已经完成。
 
-可以在菜单栏>"帮助">“关于插件...”查看是否被正确加载。
+可以在菜单栏**帮助** > **关于插件...** 查看是否被正确加载。
 
 ![](./rc-guide/plugin-manager.png)
 
+此时，可以在导航栏、菜单栏、底部窗口看到 Demo 控件：
 
+![](./rc-guide/demo-widget.png)
 
 ### 2、功能接口
 
@@ -125,7 +94,7 @@ services 是 IDE 提供的服务接口，该接口是通过动态绑定的形式
 | WindowService   | 窗口服务，用于嵌入插件界面到指定位置                         |
 | ProjectService  | 工程服务，可以获取工程相关的信息，比如工程目录、工程类型等   |
 | OptionService   | 选项服务，用于实现插件参数的统一配置，也就是 IDE 中的选项面板 |
-| LanguageService | 语言服务，调用该服务实现新语言的接入，如果有特殊的编译流程请结合BuilderService 和 DebuggerService 使用。注意，新语言的接入往往还需要添加对应的 LSP 和 DAP 后端。 |
+| LanguageService | 语言服务，调用该服务实现新语言的接入，如果有特殊的编译流程请结合 BuilderService 和 DebuggerService 使用。注意，新语言的接入往往还需要添加对应的 LSP 和 DAP 后端。 |
 
 以下针对每个服务进行说明：
 
@@ -221,9 +190,7 @@ services 是 IDE 提供的服务接口，该接口是通过动态绑定的形式
 | widget        | common/widget/*                      | 各类通用控件，比如折叠控件、输出面板等，插件可以基于这些控件进行自定义修改 |
 | util          | common/util/*                        | 工具类，比如获取安装路径、配置路径等；获取环境变量；下载工具等 |
 
-### 3、示例代码
 
-现阶段请参照 [src/plugins/valgrind](https://github.com/linuxdeepin/deepin-unioncode/tree/master/src/plugins/valgrind) 目录下的代码。后续会在模板中增加插件接入的模板。
 
 ## 三、模板工程添加规则
 
