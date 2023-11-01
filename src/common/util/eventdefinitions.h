@@ -60,6 +60,8 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(replaceText, "text", "target", "repalceType")
            OPI_INTERFACE(switchContext, "name")
            OPI_INTERFACE(switchWorkspace, "name")
+           OPI_INTERFACE(contextMenu, "menu")
+           OPI_INTERFACE(keyPressEvent, "event")
            )
 
 OPI_OBJECT(symbol,

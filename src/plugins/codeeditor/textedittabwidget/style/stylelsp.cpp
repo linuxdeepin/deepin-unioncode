@@ -585,6 +585,9 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
         }
     });
 
+    // notify other plugin to add action.
+    editor.contextMenu(QVariant::fromValue(&contextMenu));
+
     contextMenu.move(showPos);
     contextMenu.exec();
 }

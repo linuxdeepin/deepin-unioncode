@@ -106,6 +106,7 @@ void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget 
         qDockWidgetWorkspace->setFeatures(QDockWidget::DockWidgetMovable);
         qDockWidgetWorkspace->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
         addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, qDockWidgetWorkspace);
+        setCorner(Qt::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
         qDockWidgetWorkspace->setWidget(qTabWidgetWorkspace);
     }
 

@@ -20,17 +20,9 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-
 // TODO(mozart):get those variable from config pane.
-static const char *kApiKey = "f30ea902c3824ee88e221a32363c0823";
-static const char *kUrlGenerateOneLine = "https://tianqi.aminer.cn/api/v2/multilingual_code_generate";
-static const char *kUrlGenerateMultiLine = "https://tianqi.aminer.cn/api/v2/multilingual_code_generate_adapt";
-static const char *kUrlComment = "https://tianqi.aminer.cn/api/v2/multilingual_code_explain";
-static const char *kUrlTranslate = "https://tianqi.aminer.cn/api/v2/multilingual_code_translate";
-static const char *kUrlBugfix = "https://tianqi.aminer.cn/api/v2/multilingual_code_bugfix";
 static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
 static const char *kUrlNewSession = "https://codegeex.cn/prod/code/chatGlmTalk/insert";
-
 
 using namespace CodeGeeX;
 AskPage::AskPage(QWidget *parent) : QWidget(parent)

@@ -7,6 +7,7 @@
 
 #include "common/common.h"
 #include "services/window/windowservice.h"
+#include "copilot.h"
 
 #include "base/abstractwidget.h"
 #include "base/abstractaction.h"
@@ -30,10 +31,12 @@ bool CodeGeex::start()
         // Add widget to left bar
         if (windowService->addCentralNavigation) {
             auto askPage = new AskPage();
-            windowService->addActionNavigation(title, new AbstractAction(new QAction(QIcon(":/CodeGeex/images/navigation.png"), QAction::tr("CodeGeex"))));
-            windowService->addCentralNavigation(title, new AbstractCentral(askPage));
+            windowService->addWidgetWorkspace(title,  new AbstractWidget(askPage));
         }
     }
+
+    Copilot::instance();
+
     return true;
 }
 

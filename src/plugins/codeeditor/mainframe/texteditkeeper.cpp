@@ -6,7 +6,12 @@
 
 TextEdit *TextEditKeeper::create(const QString &language, QString *err)
 {
-    return instance()->editFactory.create(language, err);
+    TextEdit *textEdit = instance()->editFactory.create(language, err);
+    connect(textEdit, &TextEdit::focusChanged, [=](bool focused){
+        if (focused)
+            instance()->activeTextEdit = textEdit;
+    });
+    return textEdit;
 }
 
 void TextEditKeeper::setAnalysedLanguage(const QString &lang)
@@ -102,4 +107,9 @@ void TextEditKeeper::removeProjectInfo(const dpfservice::ProjectInfo &info)
     if (instance()->proInfo.workspaceFolder() == info.workspaceFolder()) {
         instance()->proInfo = dpfservice::ProjectInfo();
     }
+}
+
+TextEdit *TextEditKeeper::getActiveTextEdit()
+{
+    return instance()->activeTextEdit;
 }

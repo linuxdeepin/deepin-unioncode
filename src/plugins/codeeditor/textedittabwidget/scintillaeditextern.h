@@ -63,6 +63,15 @@ public:
     void find(const QString &srcText, int operateType);
     void replace(const QString &srcText, const QString &destText, int operateType);
 
+    // Mozart added.
+    QString getSelectedText();
+    QString getCursorLineText();
+    QString getCursorBeforeText();
+    QString getCursorAfterText();
+    void replaceSelectedRange(const QString &text);
+    void showTips(const QString &tips);
+    void insertText(const QString &text);
+
 signals:
     void hovered(Scintilla::Position position);
     void hoverCleaned(Scintilla::Position position);

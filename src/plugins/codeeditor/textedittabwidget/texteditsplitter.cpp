@@ -4,6 +4,7 @@
 
 #include "texteditsplitter.h"
 #include "transceiver/codeeditorreceiver.h"
+#include "mainframe/texteditkeeper.h"
 
 #include <QBoxLayout>
 #include <QDebug>
@@ -50,6 +51,69 @@ TextEditSplitter::TextEditSplitter(QWidget *parent)
     vLayout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(vLayout);
 
+}
+
+QString TextEditSplitter::getSelectedText()
+{
+    auto edit = TextEditKeeper::instance()->getActiveTextEdit();
+    if (!edit)
+        return "";
+
+    return edit->getSelectedText();
+}
+
+QString TextEditSplitter::getCursorBeforeText()
+{
+    auto edit = TextEditKeeper::instance()->getActiveTextEdit();
+    if (!edit)
+        return "";
+
+    return edit->getCursorBeforeText();
+}
+
+QString TextEditSplitter::getCursorAfterText()
+{
+    auto edit = TextEditKeeper::instance()->getActiveTextEdit();
+    if (!edit)
+        return "";
+
+    return edit->getCursorAfterText();
+}
+
+void TextEditSplitter::replaceSelectedText(const QString &text)
+{
+    auto edit = TextEditKeeper::instance()->getActiveTextEdit();
+    if (!edit)
+        return;
+
+    edit->replaceSelectedRange(text);
+}
+
+void TextEditSplitter::showTips(const QString &tips)
+{
+    auto edit = TextEditKeeper::instance()->getActiveTextEdit();
+    if (!edit)
+        return;
+
+    edit->showTips(tips);
+}
+
+void TextEditSplitter::insertText(const QString &text)
+{
+    auto edit = TextEditKeeper::instance()->getActiveTextEdit();
+    if (!edit)
+        return;
+
+    edit->insertText(text);
+}
+
+void TextEditSplitter::undo()
+{
+    auto edit = TextEditKeeper::instance()->getActiveTextEdit();
+    if (!edit)
+        return;
+
+    edit->undo();
 }
 
 TextEditSplitter::~TextEditSplitter()
