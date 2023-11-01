@@ -44,7 +44,6 @@ void AskApi::sendQueryRequest(const QString &codeToken)
             qCritical() << "Error:" << reply->errorString();
         } else {
             QString response = QString::fromUtf8(reply->readAll());
-            qInfo() << "Response:" << response;
             QJsonDocument document = QJsonDocument::fromJson(response.toUtf8());
             QJsonObject jsonObject = document.object();
             int code = jsonObject["code"].toInt();

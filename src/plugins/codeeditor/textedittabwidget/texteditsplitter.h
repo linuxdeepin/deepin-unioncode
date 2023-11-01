@@ -22,6 +22,14 @@ public:
     explicit TextEditSplitter(QWidget *parent = nullptr);
     QSplitter *getSplitter() const;
 
+    QString getSelectedText();
+    QString getCursorBeforeText();
+    QString getCursorAfterText();
+    void replaceSelectedText(const QString &text);
+    void showTips(const QString &tips);
+    void insertText(const QString &text);
+    void undo();
+
 public slots:
     void doSplit(Qt::Orientation orientation, const newlsp::ProjectKey &key, const QString &file);
     void doClose();

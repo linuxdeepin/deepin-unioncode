@@ -36,6 +36,7 @@ set(CXX_H
     language/languagegenerator.h
     language/languageservice.h
     symbol/symbolservice.h
+    editor/editorservice.h
     )
 
 add_library(

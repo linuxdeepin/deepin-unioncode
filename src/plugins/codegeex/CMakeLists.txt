@@ -6,8 +6,9 @@ set(CXX_CPP
     codegeex.cpp
     eventreceiver.cpp
     codegeex/askapi.cpp
-    codegeex/copilot.cpp
+    codegeex/copilotapi.cpp
     askpage/askpage.cpp
+    copilot.cpp
     codegeex.json
     )
 
@@ -15,7 +16,8 @@ set(CXX_H
     codegeex.h
     eventreceiver.h
     codegeex/askapi.h
-    codegeex/copilot.h
+    codegeex/copilotapi.h
+    copilot.h
     askpage/askpage.h
     )
 

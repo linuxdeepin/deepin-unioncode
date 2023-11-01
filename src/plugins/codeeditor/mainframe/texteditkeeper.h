@@ -10,22 +10,24 @@
 #include <framework/service/qtclassfactory.h>
 #include <framework/service/qtclassmanager.h>
 
-class TextEditKeeper final
+class TextEditKeeper : public QObject
 {
+    Q_OBJECT
+
     dpf::QtClassFactory<TextEdit> editFactory;
     QString analysedLanguage;
     QString analysedWorkspace;
     QString analysedStorage;
     AnalysedData data;
     dpfservice::ProjectInfo proInfo;
+    TextEdit *activeTextEdit = nullptr;
     TextEditKeeper(){}
 
+public:
     inline static TextEditKeeper *instance(){
         static TextEditKeeper ins;
         return &ins;
     }
-
-public:
 
     template<class Edit>
     static bool impl(const QString &language = Edit::implLanguage(), QString *err = nullptr) {
@@ -55,6 +57,8 @@ public:
     static dpfservice::ProjectInfo projectInfo();
     static void saveProjectInfo(const dpfservice::ProjectInfo &info);
     static void removeProjectInfo(const dpfservice::ProjectInfo &info);
+
+    static TextEdit *getActiveTextEdit();
 };
 
 #endif // TEXTEDITKEEPER_H

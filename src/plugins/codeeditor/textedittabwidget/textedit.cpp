@@ -8,6 +8,7 @@
 #include "SciLexer.h"
 #include "common/common.h"
 #include "framework/framework.h"
+#include "services/editor/editorservice.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -34,6 +35,7 @@ class TextEditPrivate
     StyleSci *styleSci {nullptr};
 };
 
+using namespace dpfservice;
 TextEdit::TextEdit(QWidget *parent)
     : ScintillaEditExtern (parent)
     , d (new TextEditPrivate)
@@ -48,6 +50,10 @@ TextEdit::TextEdit(QWidget *parent)
         Q_UNUSED(text)
         Q_UNUSED(line)
         emit this->fileChanged(this->file());
+        auto service = dpfGetService(EditorService);
+        if (service) {
+            emit service->fileChanged();
+        }
     }, Qt::UniqueConnection);
 
     QObject::connect(this, &ScintillaEditExtern::textDeleted, this,

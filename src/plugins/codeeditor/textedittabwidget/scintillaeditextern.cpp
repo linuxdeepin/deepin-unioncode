@@ -245,7 +245,8 @@ void ScintillaEditExtern::replaceRange(Scintilla::Position start,
     clearSelections();
     setSelectionStart(start);
     setSelectionEnd(end);
-    replaceSel(text.toLatin1());
+    auto stdString = text.toStdString();
+    replaceSel(stdString.c_str());
     emit replaceed(file(), start, end, text);
 }
 
@@ -531,7 +532,7 @@ void ScintillaEditExtern::sciUpdateAnnotation()
 
 void ScintillaEditExtern::keyReleaseEvent(QKeyEvent *event)
 {
-    return ScintillaEdit::keyReleaseEvent(event);
+    ScintillaEdit::keyReleaseEvent(event);
 }
 
 void ScintillaEditExtern::keyPressEvent(QKeyEvent *event)
@@ -541,7 +542,10 @@ void ScintillaEditExtern::keyPressEvent(QKeyEvent *event)
     if (isKeyCtrl && isKeyS) {
         saveText();
     }
-    return ScintillaEdit::keyPressEvent(event);
+
+    editor.keyPressEvent(event->key());
+
+    ScintillaEdit::keyPressEvent(event);
 }
 
 void ScintillaEditExtern::sciMarginClicked(Scintilla::Position position, Scintilla::KeyMod modifiers, int margin)
@@ -563,9 +567,54 @@ void ScintillaEditExtern::sciMarginClicked(Scintilla::Position position, Scintil
     }
 }
 
+QString ScintillaEditExtern::getSelectedText()
+{
+    return getSelText();
+}
+
+QString ScintillaEditExtern::getCursorLineText()
+{
+    int lineMaxCharacter = 100;
+    return getCurLine(lineMaxCharacter);
+}
+
+QString ScintillaEditExtern::getCursorBeforeText()
+{
+    int curPosition = static_cast<int>(currentPos());
+    return textRange(0, curPosition);
+}
+
+QString ScintillaEditExtern::getCursorAfterText()
+{
+    int curPosition = static_cast<int>(currentPos());
+    return textRange(curPosition, static_cast<int>(length()));
+}
+
+void ScintillaEditExtern::replaceSelectedRange(const QString &text)
+{
+    replaceRange(selectionStart(), selectionEnd(), text);
+}
+
+void ScintillaEditExtern::showTips(const QString &tips)
+{
+    sptr_t pos = currentPos();
+    auto stdString = tips.toStdString();
+    callTipShow(pos, stdString.c_str());
+}
+
+void ScintillaEditExtern::insertText(const QString &text)
+{
+    auto curPos = currentPos();
+    auto stdString = text.toStdString();
+    ScintillaEdit::insertText(curPos, stdString.c_str());
+    auto cursorNewPos = curPos + static_cast<sptr_t>(stdString.size());
+    gotoPos(cursorNewPos);
+}
+
 void ScintillaEditExtern::focusInEvent(QFocusEvent *event)
 {
     focusChanged(true);
+
     return ScintillaEdit::focusInEvent(event);
 }
 

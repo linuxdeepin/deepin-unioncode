@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2022 - 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "copilot.h"
+#include "copilotapi.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -12,13 +12,23 @@
 #include <QJsonDocument>
 
 #include <QString>
+#include <QHash>
+
 
 namespace CodeGeeX {
-Copilot::Copilot():manager(new QNetworkAccessManager(this))
+QHash<QString, CopilotApi::ResponseType> kResponseTypes{
+    {"multilingual_code_generate", CopilotApi::multilingual_code_generate},
+    {"multilingual_code_explain", CopilotApi::multilingual_code_explain},
+    {"multilingual_code_translate", CopilotApi::multilingual_code_translate},
+    {"multilingual_code_bugfix", CopilotApi::multilingual_code_bugfix}
+};
+CopilotApi::CopilotApi(QObject *parent)
+    : QObject (parent)
+    , manager(new QNetworkAccessManager(this))
 {
 }
 
-void Copilot::postGenerate(const QString &url, const QString &apiKey, const QString &prompt, const QString &suffix)
+void CopilotApi::postGenerate(const QString &url, const QString &apiKey, const QString &prompt, const QString &suffix)
 {
 
     QByteArray body = assembleGenerateBody(prompt, suffix, apiKey);
@@ -26,7 +36,7 @@ void Copilot::postGenerate(const QString &url, const QString &apiKey, const QStr
     processResponse(reply);
 }
 
-void Copilot::postComment(const QString &url,
+void CopilotApi::postComment(const QString &url,
                              const QString &apiKey,
                              const QString &prompt,
                              const QString &lang,
@@ -38,7 +48,7 @@ void Copilot::postComment(const QString &url,
     processResponse(reply);
 }
 
-void Copilot::postTranslate(const QString &url,
+void CopilotApi::postTranslate(const QString &url,
                                const QString &apiKey,
                                const QString &prompt,
                                const QString &src_lang,
@@ -50,7 +60,7 @@ void Copilot::postTranslate(const QString &url,
     processResponse(reply);
 }
 
-void Copilot::postFixBug(const QString &url,
+void CopilotApi::postFixBug(const QString &url,
                             const QString &apiKey,
                             const QString &prompt,
                             const QString &lang,
@@ -61,7 +71,7 @@ void Copilot::postFixBug(const QString &url,
     processResponse(reply);
 }
 
-QNetworkReply *Copilot::postMessage(const QString &url, const QByteArray &body)
+QNetworkReply *CopilotApi::postMessage(const QString &url, const QByteArray &body)
 {
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -69,7 +79,7 @@ QNetworkReply *Copilot::postMessage(const QString &url, const QByteArray &body)
     return manager->post(request, body);
 }
 
-QByteArray Copilot::assembleGenerateBody(const QString &prompt,
+QByteArray CopilotApi::assembleGenerateBody(const QString &prompt,
                                      const QString &suffix,
                                      const QString &apikey,
                                      int n,
@@ -77,10 +87,10 @@ QByteArray Copilot::assembleGenerateBody(const QString &prompt,
 {
     QJsonObject json;
     json.insert("prompt", prompt);
-    json.insert("isFimEnabled", true);
+    json.insert("isFimEnabled", false);
     json.insert("suffix", suffix);
     json.insert("n", n);
-    json.insert("lang", "JavaScript");
+    json.insert("lang", "c++");
     json.insert("apikey", apikey);
     json.insert("apisecret", apisecret);
 
@@ -88,7 +98,7 @@ QByteArray Copilot::assembleGenerateBody(const QString &prompt,
     return doc.toJson();
 }
 
-QByteArray Copilot::assembleCommentBody(const QString &prompt, const QString &lang, const QString &locale, const QString &apikey, const QString &apisecret)
+QByteArray CopilotApi::assembleCommentBody(const QString &prompt, const QString &lang, const QString &locale, const QString &apikey, const QString &apisecret)
 {
     QJsonObject json;
     json.insert("prompt", prompt);
@@ -101,7 +111,7 @@ QByteArray Copilot::assembleCommentBody(const QString &prompt, const QString &la
     return doc.toJson();
 }
 
-QByteArray Copilot::assembleTranslateBody(const QString &prompt, const QString &src_lang, const QString &dst_lang, const QString &apikey, const QString &apisecret)
+QByteArray CopilotApi::assembleTranslateBody(const QString &prompt, const QString &src_lang, const QString &dst_lang, const QString &apikey, const QString &apisecret)
 {
     QJsonObject json;
     json.insert("prompt", prompt);
@@ -114,7 +124,7 @@ QByteArray Copilot::assembleTranslateBody(const QString &prompt, const QString &
     return doc.toJson();
 }
 
-QByteArray Copilot::assembleBugfixBody(const QString &prompt,
+QByteArray CopilotApi::assembleBugfixBody(const QString &prompt,
                                           const QString &lang,
                                           const QString &apikey,
                                           const QString &apisecret)
@@ -129,7 +139,7 @@ QByteArray Copilot::assembleBugfixBody(const QString &prompt,
     return doc.toJson();
 }
 
-void Copilot::processResponse(QNetworkReply *reply)
+void CopilotApi::processResponse(QNetworkReply *reply)
 {
     connect(reply, &QNetworkReply::finished, [=]() {
         if (reply->error()) {
@@ -137,7 +147,20 @@ void Copilot::processResponse(QNetworkReply *reply)
         } else {
             QString replyMsg = QString::fromUtf8(reply->readAll());
             qInfo() << "Response:" << replyMsg;
-            emit response(replyMsg);
+
+            QJsonParseError error;
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(replyMsg.toUtf8(), &error);
+            if (error.error != QJsonParseError::NoError) {
+                qCritical() << "JSON parse error: " << error.errorString();
+                return;
+            }
+
+            QJsonObject jsonObject = jsonDocument.object();
+            QString app = jsonObject.value("result").toObject().value("app").toString();
+            QJsonArray codeArray = jsonObject.value("result").toObject().value("output").toObject().value("code").toArray();
+            QString code = codeArray.first().toString();
+
+            emit response(kResponseTypes.value(app), code);
         }
     });
 }

@@ -22,6 +22,7 @@
 
 #include "services/window/windowservice.h"
 #include "services/language/languageservice.h"
+#include "services/editor/editorservice.h"
 #include "common/widget/outputpane.h"
 
 #include <QAction>
@@ -57,13 +58,13 @@ bool CodeEditor::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
+    TextEditSplitter *editManager = TextEditSplitter::instance();
+    using namespace std::placeholders;
     if (windowService) {
         NavEditMainWindow *navEditWindow = NavEditMainWindow::instance();
-        TextEditSplitter *editManager = TextEditSplitter::instance();
         navEditWindow->setWidgetEdit(new AbstractCentral(editManager));
         windowService->addCentralNavigation(MWNA_EDIT, new AbstractCentral(navEditWindow));
 
-        using namespace std::placeholders;
         if (!windowService->addWidgetWorkspace) {
             windowService->addWidgetWorkspace = std::bind(&NavEditMainWindow::addWidgetWorkspace, navEditWindow, _1, _2);
         }
@@ -99,6 +100,35 @@ bool CodeEditor::start()
         windowService->addAction(MWM_FILE, new AbstractAction(sep));
 
         windowService->addContextWidget(tr("&Application Output"), new AbstractWidget(OutputPane::instance()), "Application");
+    }
+
+    QString errStr;
+    if (!ctx.load(dpfservice::EditorService::name(), &errStr)) {
+        qCritical() << errStr;
+    }
+    EditorService *editorService = dpfGetService(EditorService);
+    if (editorService) {
+        if (!editorService->getSelectedText) {
+            editorService->getSelectedText = std::bind(&TextEditSplitter::getSelectedText, editManager);
+        }
+        if (!editorService->getCursorBeforeText) {
+            editorService->getCursorBeforeText = std::bind(&TextEditSplitter::getCursorBeforeText, editManager);
+        }
+        if (!editorService->getCursorAfterText) {
+            editorService->getCursorAfterText = std::bind(&TextEditSplitter::getCursorAfterText, editManager);
+        }
+        if (!editorService->replaceSelectedText) {
+            editorService->replaceSelectedText = std::bind(&TextEditSplitter::replaceSelectedText, editManager, _1);
+        }
+        if (!editorService->showTips) {
+            editorService->showTips = std::bind(&TextEditSplitter::showTips, editManager, _1);
+        }
+        if (!editorService->insertText) {
+            editorService->insertText = std::bind(&TextEditSplitter::insertText, editManager, _1);
+        }
+        if (!editorService->undo) {
+            editorService->undo = std::bind(&TextEditSplitter::undo, editManager);
+        }
     }
 
     return true;

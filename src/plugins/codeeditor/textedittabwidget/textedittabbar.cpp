@@ -4,6 +4,8 @@
 
 #include "textedittabbar.h"
 #include "common/common.h"
+#include "services/editor/editorservice.h"
+
 #include <QFileInfo>
 #include <QDebug>
 #include <QMessageBox>
@@ -145,6 +147,7 @@ void TextEditTabBar::doFileChanged(const QString &file)
 
     d->tab->setTabText(index , "*" + d->tab->tabText(index));
     qInfo() << d->tab->tabText(index);
+
 }
 
 void TextEditTabBar::doFileSaved(const QString &file)

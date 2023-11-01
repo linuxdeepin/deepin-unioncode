@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2022 - 2023 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
-#ifndef COPILOT_H
-#define COPILOT_H
+#ifndef COPILOTAPI_H
+#define COPILOTAPI_H
 
 #include <QObject>
 
@@ -10,12 +10,12 @@ class QNetworkAccessManager;
 class QNetworkReply;
 
 namespace CodeGeeX {
-class Copilot : public QObject
+class CopilotApi : public QObject
 {
     Q_OBJECT
 
 public:
-    Copilot();
+    CopilotApi(QObject *parent = nullptr);
 
     void postGenerate(const QString &url, const QString &apiKey, const QString &prompt, const QString &suffix);
 
@@ -39,8 +39,16 @@ public:
                     const QString &lang,
                     const QString &apisecret = "");
 
+    enum ResponseType
+    {
+        multilingual_code_generate,
+        multilingual_code_explain,
+        multilingual_code_translate,
+        multilingual_code_bugfix
+    };
+
 signals:
-    void response(const QString &response);
+    void response(ResponseType responseType, const QString &response);
 
 private:
     QNetworkReply *postMessage(const QString &url, const QByteArray &body);
