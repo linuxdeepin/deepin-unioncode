@@ -19,10 +19,13 @@
 #include <QTimer>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QDebug>
 
 // TODO(mozart):get those variable from config pane.
 static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
 static const char *kUrlNewSession = "https://codegeex.cn/prod/code/chatGlmTalk/insert";
+static const char *kUrlQuerySession = "https://codegeex.cn/prod/code/chatGmlMsg/selectList";
+static const char *kUrlDeleteSession = "https://codegeex.cn/prod/code/chatGlmTalk/delete";
 
 using namespace CodeGeeX;
 AskPage::AskPage(QWidget *parent) : QWidget(parent)
@@ -63,6 +66,55 @@ AskPage::AskPage(QWidget *parent) : QWidget(parent)
         // scroll to bottom.
         outputpage->verticalScrollBar()->setValue(outputpage->verticalScrollBar()->maximum());
     });
+
+    connect(&askApi, &AskApi::getSessionListResult, [this](const QVector<AskApi::SessionRecord> &records){
+        // display these session information.
+        if (records.isEmpty())
+            return;
+
+        for (auto record : records) {
+            outputpage->appendPlainText(record.talkId);
+            outputpage->appendPlainText(record.prompt);
+            outputpage->appendPlainText(record.createdTime);
+            outputpage->appendPlainText("----------------------------------");
+        }
+
+        askApi.getChatRecordByTalkId(kUrlQuerySession, sessionId, records.first().talkId, 1, 10);
+    });
+
+    connect(&askApi, &AskApi::getChatRecordResult, [this](const QVector<AskApi::ChatRecord> &records){
+        // display these session information.
+        for (auto record : records) {
+            outputpage->appendPlainText("**********************************");
+            outputpage->appendPlainText(record.talkId);
+            outputpage->appendPlainText(record.prompt);
+            outputpage->appendPlainText(record.outputText);
+        }
+    });
+
+    connect(&askApi, &AskApi::sessionCreated, [this](const QString &talkId, bool success){
+        QString displayText;
+        if (success) {
+            displayText = QString(talkId + " created success.");
+        } else {
+            displayText = QString(talkId + " created failed.");
+        }
+        outputpage->setPlainText(displayText);
+    });
+
+    connect(&askApi, &AskApi::sessionDeleted, [this](const QStringList &talkIds, bool success){
+        QString displayText;
+        for (auto talkId : talkIds) {
+            displayText.append(talkId);
+            displayText.append("\n");
+        }
+        if (success) {
+            displayText.append(" success!");
+        } else {
+            displayText.append(" failed!");
+        }
+        outputpage->setPlainText(displayText);
+    });
 }
 
 
@@ -85,12 +137,14 @@ void AskPage::on_btnLogin_clicked()
 
 void AskPage::on_btnDelete_clicked()
 {
-
+    QStringList talkIds;
+    // TODO(Liu):get talks id.
+    askApi.deleteSessions(kUrlDeleteSession, sessionId, talkIds);
 }
 
 void AskPage::on_btnHistory_clicked()
 {
-
+    askApi.getSessionList(kUrlQuerySession, sessionId, 1, 10);
 }
 
 void AskPage::on_btnNewSession_clicked()
