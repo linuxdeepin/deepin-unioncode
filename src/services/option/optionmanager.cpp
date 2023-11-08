@@ -115,3 +115,12 @@ QString OptionManager::getToolPath(const QString &kit)
     return "";
 }
 
+QVariant OptionManager::getValue(const QString &category, const QStringList &properties)
+{
+    QVariant tmp = d->dataMap.value(category).toMap();
+    for (auto property : properties) {
+        tmp = tmp.toMap().value(property);
+    }
+    return tmp;
+}
+

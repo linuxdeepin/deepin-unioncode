@@ -7,6 +7,7 @@
 
 #include "optiondatastruct.h"
 #include <QObject>
+#include <QVariant>
 
 class OptionManagerPrivate;
 class OptionManager : public QObject
@@ -26,6 +27,7 @@ public:
     QString getCxxDebuggerToolPath();
     QString getJSToolPath();
     QString getToolPath(const QString &kit);
+    QVariant getValue(const QString &category, const QStringList &properties);
 signals:
 
 private:

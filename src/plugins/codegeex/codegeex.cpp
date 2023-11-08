@@ -4,9 +4,11 @@
 
 #include "codegeex.h"
 #include "askpage/askpage.h"
+#include "option/optioncodegeexgenerator.h"
 
 #include "common/common.h"
 #include "services/window/windowservice.h"
+#include "services/option/optionservice.h"
 #include "copilot.h"
 
 #include "base/abstractwidget.h"
@@ -24,7 +26,6 @@ void CodeGeex::initialize()
 bool CodeGeex::start()
 {
     auto windowService = dpfGetService(dpfservice::WindowService);
-
     if (windowService) {
         QString title = "CodeGeex";
 
@@ -33,6 +34,11 @@ bool CodeGeex::start()
             auto askPage = new AskPage();
             windowService->addWidgetWorkspace(title,  new AbstractWidget(askPage));
         }
+    }
+
+    auto optionService = dpfGetService(dpfservice::OptionService);
+    if (optionService) {
+        optionService->implGenerator<OptionCodeGeeXGenerator>(OptionCodeGeeXGenerator::kitName());
     }
 
     Copilot::instance();

@@ -8,6 +8,9 @@ set(CXX_CPP
     codegeex/askapi.cpp
     codegeex/copilotapi.cpp
     askpage/askpage.cpp
+    option/codegeexoptionwidget.cpp
+    option/detailwidget.cpp
+    option/optioncodegeexgenerator.cpp
     copilot.cpp
     codegeex.json
     )
@@ -19,6 +22,9 @@ set(CXX_H
     codegeex/copilotapi.h
     copilot.h
     askpage/askpage.h
+    option/codegeexoptionwidget.h
+    option/detailwidget.h
+    option/optioncodegeexgenerator.h
     )
 
 add_library(${PROJECT_NAME}

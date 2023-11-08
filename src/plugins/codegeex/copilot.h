@@ -41,6 +41,7 @@ public slots:
 private:
     explicit Copilot(QObject *parent = nullptr);
     QString selectedText() const;
+    QString apiKey() const;
 
     CodeGeeX::CopilotApi copilotApi;
     dpfservice::EditorService *editorService = nullptr;
