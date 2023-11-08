@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "copilot.h"
 #include "services/editor/editorservice.h"
+#include "services/option/optionmanager.h"
 
 #include <QMenu>
 #include <QDebug>
 #include <QTimer>
 
-static const char *kApiKey = "f30ea902c3824ee88e221a32363c0823";
 static const char *kUrlGenerateOneLine = "https://tianqi.aminer.cn/api/v2/multilingual_code_generate";
 static const char *kUrlGenerateMultiLine = "https://tianqi.aminer.cn/api/v2/multilingual_code_generate_adapt";
 static const char *kUrlComment = "https://tianqi.aminer.cn/api/v2/multilingual_code_explain";
@@ -64,6 +64,17 @@ QString Copilot::selectedText() const
     return editorService->getSelectedText();
 }
 
+QString Copilot::apiKey() const
+{
+    QStringList properties;
+    properties << "CodeGeeX" << "Detail" << "apiKey";
+    QVariant var = OptionManager::getInstance()->getValue("CodeGeeX", properties);
+    if (var.isValid()) {
+        return var.toString();
+    }
+    return {};
+}
+
 Copilot *Copilot::instance()
 {
     static Copilot ins;
@@ -91,7 +102,7 @@ QMenu *Copilot::getMenu()
 
 void Copilot::translateCode(const QString &code, const QString &dstLanguage)
 {
-    copilotApi.postTranslate(kUrlTranslate, kApiKey, code, "c++", dstLanguage);
+    copilotApi.postTranslate(kUrlTranslate, apiKey(), code, "c++", dstLanguage);
 }
 
 void Copilot::replaceSelectedText(const QString &text)
@@ -117,7 +128,7 @@ void Copilot::processKeyPressEvent(Qt::Key key)
 void Copilot::addComment()
 {
     copilotApi.postComment(kUrlComment,
-                           kApiKey,
+                           apiKey(),
                            selectedText(),
                            "cpp",
                            "zh-CN");
@@ -129,7 +140,7 @@ void Copilot::generateCode()
     QString suffix = editorService->getCursorAfterText();
 
     copilotApi.postGenerate(kUrlGenerateMultiLine,
-                            kApiKey,
+                            apiKey(),
                             prompt,
                             suffix);
 }
