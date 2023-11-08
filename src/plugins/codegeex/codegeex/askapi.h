@@ -33,8 +33,35 @@ public:
             const QString &url,
             const QString &token,
             const QString &prompt,
-            const QString &taskId
+            const QString &talkId
             );
+
+    struct SessionRecord
+    {
+        QString prompt;
+        QString talkId;
+        QString createdTime;
+    };
+    void getSessionList(const QString &url,
+                        const QString &token,
+                        int pageNumber = 1,
+                        int pageSize = 10);
+
+    struct ChatRecord
+    {
+        QString prompt;
+        QString outputText;
+        QString talkId;
+    };
+    void getChatRecordByTalkId(const QString &url,
+                               const QString &token,
+                               const QString &talkId,
+                               int pageNumber = 1,
+                               int pageSize = 10);
+
+    void deleteSessions(const QString &url,
+                        const QString &token,
+                        const QStringList &talkIds);
 
     enum LoginState
     {
@@ -45,11 +72,16 @@ public:
 signals:
     void loginState(LoginState loginState);
     void response(const QString &response, const QString &event);
+    void getSessionListResult(const QVector<SessionRecord> &records);
+    void getChatRecordResult(const QVector<ChatRecord> &record);
+    void sessionDeleted(const QStringList &talkId, bool isSuccessful);
+    void sessionCreated(const QString &talkId, bool isSuccessful);
 
 public slots:
 
 private:
     QNetworkReply *postMessage(const QString &url, const QString &token, const QByteArray &body);
+    QNetworkReply *getMessage(const QString &url, const QString &token);
     void processResponse(QNetworkReply *reply);
 
     QByteArray assembleSSEChatBody(const QString &prompt,
@@ -57,10 +89,13 @@ private:
                                    const QJsonArray &history);
 
     QByteArray assembleNewSessionBody(const QString &prompt,
-                                      const QString &taskId);
+                                      const QString &talkId);
 
+    QByteArray assembleDelSessionBody(const QStringList &talkIds);
 
     QByteArray jsonToByteArray(const QJsonObject &jsonObject);
+    QJsonObject toJsonOBject(QNetworkReply *reply);
+
 
     QNetworkAccessManager *manager = nullptr;
 };
