@@ -198,17 +198,18 @@ void AskApi::processResponse(QNetworkReply *reply)
             QStringList lines = replyMsg.split('\n');
             QByteArray data;
             QString event;
+            QString id;
             for (const auto& line : lines) {
                 if (line.startsWith("event:add")) {
                     event = "add";
                 } else if (line.startsWith("event:finish")) {
                     event = "finish";
                 } else if (line.startsWith("id:")) {
-                    continue;
+                    id = line.mid(3);
                 } else if (line.startsWith("data:")) {
                     data += line.mid(5) + '\n';
                 } else if (line == "") {
-                    emit response(data, event);
+                    emit response(id, data, event);
                     data.clear();
                 }
             }

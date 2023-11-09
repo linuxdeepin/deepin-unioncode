@@ -71,7 +71,7 @@ public:
 
 signals:
     void loginState(LoginState loginState);
-    void response(const QString &response, const QString &event);
+    void response(const QString &msgID, const QString &response, const QString &event);
     void getSessionListResult(const QVector<SessionRecord> &records);
     void getChatRecordResult(const QVector<ChatRecord> &record);
     void sessionDeleted(const QStringList &talkId, bool isSuccessful);

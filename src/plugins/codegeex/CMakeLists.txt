@@ -2,35 +2,17 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-codegeex)
 
-set(CXX_CPP
-    codegeex.cpp
-    eventreceiver.cpp
-    codegeex/askapi.cpp
-    codegeex/copilotapi.cpp
-    askpage/askpage.cpp
-    option/codegeexoptionwidget.cpp
-    option/detailwidget.cpp
-    option/optioncodegeexgenerator.cpp
-    copilot.cpp
-    codegeex.json
-    )
-
-set(CXX_H
-    codegeex.h
-    eventreceiver.h
-    codegeex/askapi.h
-    codegeex/copilotapi.h
-    copilot.h
-    askpage/askpage.h
-    option/codegeexoptionwidget.h
-    option/detailwidget.h
-    option/optioncodegeexgenerator.h
+FILE(GLOB CODEGEEX_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.json"
     )
 
 add_library(${PROJECT_NAME}
     SHARED
-    ${CXX_H}
-    ${CXX_CPP}
+    ${CODEGEEX_FILES}
     codegeex.qrc
     )
 
