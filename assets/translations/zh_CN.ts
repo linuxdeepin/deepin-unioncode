@@ -18,6 +18,16 @@
         <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                we hope that the scheme will be useful,                but we do not guarantee that it will be of economic value or fit for a particular purpose.                For more information, see the GNU General Public License. &lt;br/&gt;               Thanks to all the &lt;a href=&quot;opensourcesoftware&quot;&gt;open source software&lt;/a&gt; used.&lt;br/&gt;</source>
         <translation type="unfinished">&lt;h3&gt;Deepin Union Code%1&lt;/h3&gt;%2&lt;br/&gt;版权 2019-%3 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;            致谢所有用到的&lt;a href=&quot;opensourcesoftware&quot;&gt;开源软件&lt;/a&gt;。</translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="86"/>
+        <source>Error</source>
+        <translation type="unfinished">错误</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="86"/>
+        <source>Failed to open the file.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AppOutputPane</name>
@@ -40,6 +50,44 @@
         <location filename="../../src/plugins/debugger/interface/appoutputpane.cpp" line="177"/>
         <source>Select All</source>
         <translation>选择全部</translation>
+    </message>
+</context>
+<context>
+    <name>AskPage</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="229"/>
+        <source>AskPage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="230"/>
+        <source>login</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="231"/>
+        <source>delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="232"/>
+        <source>history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="233"/>
+        <source>new session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="234"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="235"/>
+        <source>Send</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -498,24 +546,32 @@
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="32"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="33"/>
         <source>Save All Documents</source>
         <translation>保存所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="33"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="34"/>
         <source>Close All Documents</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="34"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="35"/>
         <source>Print</source>
         <translation>打印</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="101"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="102"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
+    </message>
+</context>
+<context>
+    <name>CodeGeeXOptionWidget</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/codegeexoptionwidget.cpp" line="32"/>
+        <source>CodeGeeX</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -689,6 +745,19 @@
     </message>
 </context>
 <context>
+    <name>Copilot</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="89"/>
+        <source>add comment</source>
+        <translation>添加注释</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
+        <source>translate</source>
+        <translation>翻译</translation>
+    </message>
+</context>
+<context>
     <name>DAPDebugger</name>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="385"/>
@@ -815,6 +884,12 @@ dap端口未就绪，请重试。
         <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="79"/>
         <source>Choose path</source>
         <translation>选择路径</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="93"/>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="100"/>
+        <source>Detail</source>
+        <translation>细节</translation>
     </message>
 </context>
 <context>
@@ -1967,17 +2042,17 @@ storage: %2
         <translation>工作区</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="137"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="138"/>
         <source>Watcher</source>
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="237"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="238"/>
         <source>Find ToolBar</source>
         <translation>查找</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="262"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="263"/>
         <source>Valgrind</source>
         <translation>Valgrind</translation>
     </message>
@@ -2139,6 +2214,11 @@ storage: %2
         <source>Local Setting：</source>
         <translation>本地设置</translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="55"/>
+        <source>CodeGeeX Api Key:</source>
+        <translation>CodeGeeX Api 密钥:</translation>
+    </message>
 </context>
 <context>
     <name>QLineEdit</name>
@@ -2224,12 +2304,12 @@ storage: %2
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="172"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="175"/>
         <source>Save Changes</source>
         <translation>保存更改</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="173"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="176"/>
         <source>The file has unsaved changes, will save?</source>
         <translation>该文件有未保存的更改，是否保存？</translation>
     </message>
@@ -2562,7 +2642,7 @@ storage: %2
         <translation>控制台(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="83"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="84"/>
         <source>Code &amp;Lens</source>
         <translation>代码信息指示器(&amp;L)</translation>
     </message>

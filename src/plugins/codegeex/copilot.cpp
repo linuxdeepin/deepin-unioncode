@@ -87,14 +87,11 @@ QMenu *Copilot::getMenu()
     menu->setTitle("CodeGeeX");
 
     QAction *addComment = new QAction(tr("add comment"));
-    QAction *login = new QAction(tr("login"));
     QAction *translate = new QAction(tr("translate"));
     menu->addAction(addComment);
-    menu->addAction(login);
     menu->addAction(translate);
 
     connect(addComment, &QAction::triggered, this, &Copilot::addComment);
-    connect(login, &QAction::triggered, this, &Copilot::login);
     connect(translate, &QAction::triggered, this, &Copilot::translate);
 
     return menu;
