@@ -5,6 +5,8 @@
 #include "codegeex.h"
 #include "askpage/askpage.h"
 #include "option/optioncodegeexgenerator.h"
+#include "widgets/codegeexwidget.h"
+#include "codegeexmanager.h"
 
 #include "common/common.h"
 #include "services/window/windowservice.h"
@@ -31,8 +33,11 @@ bool CodeGeex::start()
 
         // Add widget to left bar
         if (windowService->addCentralNavigation) {
-            auto askPage = new AskPage();
-            windowService->addWidgetWorkspace(title,  new AbstractWidget(askPage));
+//            auto askPage = new AskPage();
+//            windowService->addWidgetWorkspace(title,  new AbstractWidget(askPage));
+
+            auto codeGeeXWidget = new CodeGeeXWidget();
+            windowService->addWidgetWorkspace(title,  new AbstractWidget(codeGeeXWidget));
         }
     }
 

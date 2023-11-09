@@ -50,7 +50,7 @@ AskPage::AskPage(QWidget *parent) : QWidget(parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(queryLoginState()));
     timer->start(1000);
 
-    connect(&askApi, &AskApi::response, [this](const QString &response, const QString &event){
+    connect(&askApi, &AskApi::response, [this](const QString &msgID, const QString &response, const QString &event){
         int responseSize = response.size();
         if (responseSize < totalResponseSize || responseSize == 0)
             return;
