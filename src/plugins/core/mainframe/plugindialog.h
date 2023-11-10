@@ -7,12 +7,17 @@
 
 #include "framework/lifecycle/pluginmetaobject.h"
 
-#include <QDialog>
-#include <QLabel>
+#include <DAbstractDialog>
+#include <DLabel>
+#include <DPushButton>
+#include <DDialogButtonBox>
+#include <DTextEdit>
+#include <DListWidget>
+
 #include <QGridLayout>
-#include <QListWidget>
-#include <QTextEdit>
 #include <QSpacerItem>
+
+DWIDGET_USE_NAMESPACE
 
 class DetailsView;
 class QDialogButtonBox;
@@ -22,7 +27,7 @@ namespace dpf {
 class PluginView;
 }
 
-class PluginDialog : public QDialog
+class PluginDialog : public DTK_WIDGET_NAMESPACE::DAbstractDialog
 {
     Q_OBJECT
 
@@ -40,12 +45,12 @@ private:
     dpf::PluginView *view = nullptr;
     DetailsView *detailView = nullptr;
 
-    QDialogButtonBox *closeButton = nullptr;
-    QPushButton *detailsButton = nullptr;
-    QLabel *restratRequired = nullptr;
+    DDialogButtonBox *closeButton = nullptr;
+    DPushButton *detailsButton = nullptr;
+    DLabel *restratRequired = nullptr;
 };
 
-class DetailsView : public QWidget
+class DetailsView : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:
@@ -61,27 +66,27 @@ private:
     QSpacerItem *spacerItem_1 = nullptr;
     QSpacerItem *spacerItem_2 = nullptr;
     QSpacerItem *spacerItem_3 = nullptr;
-    QLabel *name = nullptr;
-    QLabel *version = nullptr;
-    QLabel *compatVersion = nullptr;
-    QLabel *vendor = nullptr;
-    QLabel *copyright = nullptr;
-    QLabel *category = nullptr;
-    QLabel *urlLink = nullptr;
-    QTextEdit *description = nullptr;
-    QTextEdit *license = nullptr;
-    QListWidget *dependencies = nullptr;
+    DLabel *name = nullptr;
+    DLabel *version = nullptr;
+    DLabel *compatVersion = nullptr;
+    DLabel *vendor = nullptr;
+    DLabel *copyright = nullptr;
+    DLabel *category = nullptr;
+    DLabel *urlLink = nullptr;
+    DTextEdit *description = nullptr;
+    DTextEdit *license = nullptr;
+    DListWidget *dependencies = nullptr;
 
-    QLabel *nameLabel = nullptr;
-    QLabel *versionLabel = nullptr;
-    QLabel *compatVersionLabel = nullptr;
-    QLabel *vendorLabel = nullptr;
-    QLabel *copyrightLabel = nullptr;
-    QLabel *categoryLabel = nullptr;
-    QLabel *urlLabel = nullptr;
-    QLabel *licenseLabel = nullptr;
-    QLabel *descriptionLabel = nullptr;
-    QLabel *dependenciesLabel = nullptr;
+    DLabel *nameLabel = nullptr;
+    DLabel *versionLabel = nullptr;
+    DLabel *compatVersionLabel = nullptr;
+    DLabel *vendorLabel = nullptr;
+    DLabel *copyrightLabel = nullptr;
+    DLabel *categoryLabel = nullptr;
+    DLabel *urlLabel = nullptr;
+    DLabel *licenseLabel = nullptr;
+    DLabel *descriptionLabel = nullptr;
+    DLabel *dependenciesLabel = nullptr;
 };
 
 #endif // PLUGINDIALOG_H

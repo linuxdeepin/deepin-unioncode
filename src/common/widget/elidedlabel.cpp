@@ -13,7 +13,7 @@ class ElidedLabelPrivate
 };
 
 ElidedLabel::ElidedLabel(QWidget *parent)
-    : QLabel (parent)
+    : DLabel (parent)
     , d (new ElidedLabelPrivate)
 {
 
@@ -38,8 +38,8 @@ void ElidedLabel::setText(const QString &text)
     } else {
         resultText = d->sourceText;
     }
-    QLabel::setText(resultText);
-    QLabel::setToolTip(text);
+    DLabel::setText(resultText);
+    DLabel::setToolTip(text);
 }
 
 QString ElidedLabel::text()

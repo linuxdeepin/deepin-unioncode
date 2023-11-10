@@ -5,10 +5,10 @@
 #ifndef WINDOWSTATUSBAR_H
 #define WINDOWSTATUSBAR_H
 
-#include <QStatusBar>
+#include <DStatusBar>
 
 class WindowStatusBarPrivate;
-class WindowStatusBar : public QStatusBar
+class WindowStatusBar : public DTK_WIDGET_NAMESPACE::DStatusBar
 {
     Q_OBJECT
     WindowStatusBarPrivate *const d;
