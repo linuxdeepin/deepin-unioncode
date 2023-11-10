@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-core)
 
 set(CXX_CPP
-    mainframe/windowtheme.cpp
     mainframe/windowkeeper.cpp
     mainframe/windowstatusbar.cpp
     mainframe/progressbar.cpp
@@ -15,7 +14,6 @@ set(CXX_CPP
     )
 
 set(CXX_H
-    mainframe/windowtheme.h
     mainframe/windowkeeper.h
     mainframe/windowstatusbar.h
     mainframe/progressbar.h
@@ -42,6 +40,7 @@ target_link_libraries(${PROJECT_NAME}
     services
     ${QtUseModules}
     ${PkgUserModules}
+    ${DtkWidget_LIBRARIES}
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})

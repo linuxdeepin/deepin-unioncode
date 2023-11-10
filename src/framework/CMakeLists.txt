@@ -87,6 +87,7 @@ target_link_libraries(
     stdc++fs
     ${QtUseModules}
     ${PkgUseModules}
+    ${DtkWidget_LIBRARIES}
 )
 
 target_include_directories(${PROJECT_NAME}

@@ -5,13 +5,13 @@
 #ifndef ABOUTDIALOG_H
 #define ABOUTDIALOG_H
 
-#include <QDialog>
+#include <DAbstractDialog>
 
-class AboutDialog : public QDialog
+class AboutDialog : public DTK_WIDGET_NAMESPACE::DAbstractDialog
 {
     Q_OBJECT
 public:
-    explicit AboutDialog(QDialog *parent = nullptr);
+    explicit AboutDialog(QWidget *parent = nullptr);
     virtual ~AboutDialog();
 
 signals:

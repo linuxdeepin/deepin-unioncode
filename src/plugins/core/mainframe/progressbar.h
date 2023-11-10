@@ -5,10 +5,10 @@
 #ifndef PROGRESSBAR_H
 #define PROGRESSBAR_H
 
-#include <QWidget>
+#include <DWidget>
 
 class ProgressBarPrivate;
-class ProgressBar : public QWidget
+class ProgressBar : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
     ProgressBarPrivate *const d;

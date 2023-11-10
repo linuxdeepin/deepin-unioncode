@@ -4,17 +4,10 @@
 
 #include "core.h"
 #include "mainframe/windowkeeper.h"
-#include "mainframe/windowtheme.h"
 #include "services/window/windowservice.h"
 
 #include <framework/framework.h>
 #include "common/common.h"
-
-#include <QStatusBar>
-#include <QApplication>
-#include <QMainWindow>
-#include <QMenuBar>
-#include <QFileDialog>
 
 using namespace dpfservice;
 
@@ -48,7 +41,6 @@ bool Core::start()
     }
 
     WindowKeeper::instace();
-    WindowTheme::setTheme(":/dark.css");
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
         ActionManager::getInstance()->readUserSetting();

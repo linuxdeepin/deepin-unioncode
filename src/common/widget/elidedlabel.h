@@ -5,10 +5,10 @@
 #ifndef ELIDEDLABEL_H
 #define ELIDEDLABEL_H
 
-#include <QLabel>
+#include <DLabel>
 
 class ElidedLabelPrivate;
-class ElidedLabel : public QLabel
+class ElidedLabel : public DTK_WIDGET_NAMESPACE::DLabel
 {
     Q_OBJECT
     ElidedLabelPrivate *const d;

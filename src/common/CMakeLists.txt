@@ -134,6 +134,7 @@ target_link_libraries(
     ${PROJECT_NAME}
     unioncode-jsonrpcclient
     Qt5::Network
+    ${DtkWidget_LIBRARIES}
     )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${LIBRARY_INSTALL_PREFIX})

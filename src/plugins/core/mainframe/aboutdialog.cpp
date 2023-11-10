@@ -5,17 +5,23 @@
 #include "aboutdialog.h"
 #include "common/common.h"
 
+#include <DLabel>
+#include <DPushButton>
+#include <DTextEdit>
+#include <DMessageBox>
+#include <DTitlebar>
+
 #include <QGridLayout>
-#include <QLabel>
-#include <QPushButton>
 #include <QLatin1String>
 #include <QDateTime>
 #include <QDesktopServices>
 
+DWIDGET_USE_NAMESPACE
+
 const QString ICON_LOGO_128PX = ":/core/images/unioncode@128.png";
 
-AboutDialog::AboutDialog(QDialog *parent)
-    : QDialog(parent)
+AboutDialog::AboutDialog(QWidget *parent)
+    : DAbstractDialog(parent)
 {
     setupUi();
 }
@@ -27,9 +33,13 @@ AboutDialog::~AboutDialog()
 
 void AboutDialog::setupUi()
 {
-    setWindowTitle(tr("About Deepin Union Code"));
+    DTitlebar *titleBar = new DTitlebar();
+    titleBar = new DTitlebar();
+    titleBar->setMenuVisible(false);
+    titleBar->setTitle(QString(tr("About Deepin Union Code")));
 
-    QLabel *logoLabel = new QLabel;
+    DLabel *logoLabel = new DLabel(this);
+    logoLabel->setText("aaa");
     logoLabel->setPixmap(QPixmap(ICON_LOGO_128PX));
 
     QString buildDateInfo = tr("<br/>Built on %1 %2 in %3<br/>")
@@ -49,23 +59,27 @@ void AboutDialog::setupUi()
              buildDateInfo,
              QString::number(QDateTime::currentDateTime().date().year()));
 
-    QLabel *copyRightLabel = new QLabel(description);
+    DLabel *copyRightLabel = new DLabel(description);
     copyRightLabel->setWordWrap(true);
     copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    connect(copyRightLabel, &QLabel::linkActivated, this, &AboutDialog::handleLinkActivated);
+    connect(copyRightLabel, &DLabel::linkActivated, this, &AboutDialog::handleLinkActivated);
 
     QHBoxLayout *layoutButtons = new QHBoxLayout();
-    QPushButton *closeButton = new QPushButton(QPushButton::tr("Close"));
-    connect(closeButton , &QPushButton::clicked, this, &QDialog::reject);
+    DPushButton *closeButton = new DPushButton(DPushButton::tr("Close"));
+    connect(closeButton , &DPushButton::clicked, this, &DAbstractDialog::reject);
     layoutButtons->addStretch();
     layoutButtons->addWidget(closeButton);
 
     auto vLayout = new QVBoxLayout(this);
+    vLayout->setContentsMargins(0, 0, 0, 0);
+    vLayout->setSpacing(0);
+
     auto detailLayout = new QGridLayout(this);
     detailLayout->setSizeConstraint(QLayout::SetFixedSize);
     detailLayout->addWidget(logoLabel , 1, 0, 1, 1);
     detailLayout->addWidget(copyRightLabel, 0, 4, 4, 5);
     detailLayout->addLayout(layoutButtons, 4, 4, 1, 5);
+    vLayout->addWidget(titleBar);
     vLayout->addLayout(detailLayout);
 }
 
@@ -74,7 +88,7 @@ void AboutDialog::handleLinkActivated(const QString& link)
     if (link == "opensourcesoftware" && !bExpand) {
         QFile file("/usr/share/doc/deepin-unioncode/copyright");
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextEdit* textEdit = new QTextEdit(this);
+            DTextEdit* textEdit = new DTextEdit(this);
             layout()->addWidget(textEdit);
 
             QTextStream stream(&file);
@@ -83,7 +97,7 @@ void AboutDialog::handleLinkActivated(const QString& link)
             setFixedHeight(height() * 2);
             bExpand = true;
         } else {
-            QMessageBox::critical(this, tr("Error"), tr("Failed to open the file."));
+            DMessageBox::critical(this, tr("Error"), tr("Failed to open the file."));
         }
     } else {
         QDesktopServices::openUrl(QUrl(link));

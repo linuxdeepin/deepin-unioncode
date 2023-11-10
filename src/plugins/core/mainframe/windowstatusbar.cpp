@@ -6,6 +6,8 @@
 #include "progressbar.h"
 #include "common/common.h"
 
+DWIDGET_USE_NAMESPACE
+
 class WindowStatusBarPrivate
 {
     friend class WindowStatusBar;
@@ -14,7 +16,7 @@ class WindowStatusBarPrivate
 };
 
 WindowStatusBar::WindowStatusBar(QWidget *parent)
-    : QStatusBar(parent)
+    : DStatusBar(parent)
     , d(new WindowStatusBarPrivate())
 {
     d->progressBar = new ProgressBar;
