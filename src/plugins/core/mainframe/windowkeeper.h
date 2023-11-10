@@ -15,7 +15,15 @@
 
 #include <framework/framework.h>
 
+#include <DApplication>
+#include <DMainWindow>
+#include <DToolBar>
+#include <DMenuBar>
+
 #include <QObject>
+
+DWIDGET_USE_NAMESPACE
+DCORE_USE_NAMESPACE
 
 class QAction;
 class QMainWindow;
@@ -52,17 +60,19 @@ public slots:
 private :
     void showAboutDlg();
     void showAboutPlugins();
-    void layoutWindow(QMainWindow *window);
-    void createNavEdit(QToolBar *toolbar);
-    void createNavRecent(QToolBar *toolbar);
-    void createStatusBar(QMainWindow *window);
-    void createHelpActions(QMenuBar *menuBar);
-    void createToolsActions(QMenuBar *menuBar);
-    void createDebugActions(QMenuBar *menuBar);
-    void createBuildActions(QMenuBar *menuBar);
-    void createFileActions(QMenuBar *menuBar);
-    void createAnalyzeActions(QMenuBar *menuBar);
+    void layoutWindow(DMainWindow *window);
+    void createNavEdit(DToolBar *toolbar);
+    void createNavRecent(DToolBar *toolbar);
+    void createStatusBar(DMainWindow *window);
+    void createHelpActions(DMenuBar *menuBar);
+    void createToolsActions(DMenuBar *menuBar);
+    void createDebugActions(DMenuBar *menuBar);
+    void createBuildActions(DMenuBar *menuBar);
+    void createFileActions(DMenu *menu);
+    void createAnalyzeActions(DMenuBar *menuBar);
     void setNavActionChecked(const QString &actionName, bool checked);
+
+    void createMainMenu(DMenu *mainMenu);
 };
 
 #endif // WINDOWKEEPER_H

@@ -7,6 +7,8 @@
 #include <QPaintEvent>
 #include <QPainter>
 
+DWIDGET_USE_NAMESPACE
+
 class ProgressBarPrivate
 {
     friend class ProgressBar;
@@ -16,7 +18,7 @@ class ProgressBarPrivate
 };
 
 ProgressBar::ProgressBar(QWidget *parent)
-    : QWidget(parent)
+    : DWidget(parent)
     , d(new ProgressBarPrivate)
 {
     setObjectName("ProgressBar");

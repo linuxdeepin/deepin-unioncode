@@ -4,6 +4,7 @@
 
 #include "aboutdialog.h"
 #include "plugindialog.h"
+#include "mainwindow.h"
 
 #include "windowkeeper.h"
 #include "windowstatusbar.h"
@@ -11,16 +12,18 @@
 #include "services/project/projectservice.h"
 #include "common/common.h"
 
-#include <QAction>
-#include <QMenu>
-#include <QToolBar>
-#include <QMenuBar>
-#include <QStatusBar>
-#include <QMainWindow>
-#include <QFileDialog>
-#include <QApplication>
-#include <QActionGroup>
+#include <DWidget>
+#include <DToolBar>
+#include <DMenu>
+#include <DTitlebar>
+#include <DStatusBar>
+#include <DFileDialog>
+
+#include <QWidget>
 #include <QDesktopServices>
+#include <QVBoxLayout>
+#include <QAction>
+#include <QActionGroup>
 #include <QDesktopWidget>
 #include <QComboBox>
 #include <QTranslator>
@@ -32,10 +35,11 @@ using namespace dpfservice;
 class WindowKeeperPrivate
 {
     WindowKeeperPrivate();
-    QHash<QString, QWidget *> centrals{};
-    QMainWindow *window{nullptr};
+    QHash<QString, DWidget *> centrals{};
+    DMainWindow *window{nullptr};
     QActionGroup *navActionGroup{nullptr};
-    QToolBar *toolbar{nullptr};
+    DToolBar *toolbar{nullptr};
+    DMenu *mainMenu{nullptr};
 
     friend class WindowKeeper;
 };
@@ -45,76 +49,59 @@ WindowKeeperPrivate::WindowKeeperPrivate()
 
 }
 
-void WindowKeeper::createFileActions(QMenuBar *menuBar)
+void WindowKeeper::createFileActions(DMenu *menu)
 {
     qInfo() << __FUNCTION__;
-    QMenu* fileMenu = new QMenu();
-    QAction* actionQuit = new QAction(MWMFA_QUIT);
-    ActionManager::getInstance()->registerAction(actionQuit, "File.Quit",
-                                                 MWMFA_QUIT, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_Q),
-                                                 ":/core/images/quit.png");
-    QAction::connect(actionQuit, &QAction::triggered, [](){
-        qApp->closeAllWindows();
-    });
-
     QAction* actionOpenFile = new QAction(MWMFA_OPEN_FILE);
     ActionManager::getInstance()->registerAction(actionOpenFile, "File.Open.File",
-                                                 MWMFA_OPEN_FILE, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O),
-                                                 ":/core/images/open_file.png");
+                                                 MWMFA_OPEN_FILE, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O));
 
     QAction::connect(actionOpenFile, &QAction::triggered, [=](){
         QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        QString filePath = QFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE, dir);
+        QString filePath = DFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE, dir);
         if (filePath.isEmpty() && !QFileInfo(filePath).exists())
             return;
         recent.saveOpenedFile(filePath);
         editor.openFile(filePath);
     });
 
-    QMenu* menuOpenProject = new QMenu(MWMFA_OPEN_PROJECT);
-    menuOpenProject->setIcon(QIcon(":/core/images/open_project.png"));
-
-    fileMenu->addAction(actionOpenFile);
-    fileMenu->addMenu(menuOpenProject);
-    fileMenu->addAction(actionQuit);
-    QAction* fileAction = menuBar->addMenu(fileMenu);
-    fileAction->setText(MWM_FILE);
+    menu->addAction(actionOpenFile);
 }
 
-void WindowKeeper::createAnalyzeActions(QMenuBar *menuBar)
+void WindowKeeper::createAnalyzeActions(DMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
-    QMenu* analyzeMenu = new QMenu();
+    DMenu* analyzeMenu = new DMenu();
     QAction* buildAction = menuBar->addMenu(analyzeMenu);
     buildAction->setText(MWM_ANALYZE);
 }
 
-void WindowKeeper::createBuildActions(QMenuBar *menuBar)
+void WindowKeeper::createBuildActions(DMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
-    QMenu* buildMenu = new QMenu();
+    DMenu* buildMenu = new DMenu();
     QAction* buildAction = menuBar->addMenu(buildMenu);
     buildAction->setText(MWM_BUILD);
 }
 
-void WindowKeeper::createDebugActions(QMenuBar *menuBar)
+void WindowKeeper::createDebugActions(DMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
-    QAction* debugAction = menuBar->addMenu(new QMenu());
+    QAction* debugAction = menuBar->addMenu(new DMenu());
     debugAction->setText(MWM_DEBUG);
 }
 
-void WindowKeeper::createToolsActions(QMenuBar *menuBar)
+void WindowKeeper::createToolsActions(DMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
-    auto toolsMenu = new QMenu(MWM_TOOLS);
+    auto toolsMenu = new DMenu(MWM_TOOLS);
     menuBar->addMenu(toolsMenu);
 }
 
-void WindowKeeper::createHelpActions(QMenuBar *menuBar)
+void WindowKeeper::createHelpActions(DMenuBar *menuBar)
 {
     qInfo() << __FUNCTION__;
-    auto helpMenu = new QMenu(MWM_HELP);
+    auto helpMenu = new DMenu(MWM_HELP);
     menuBar->addMenu(helpMenu);
 
     QAction *actionReportBug = new QAction(MWM_REPORT_BUG);
@@ -149,14 +136,14 @@ void WindowKeeper::createHelpActions(QMenuBar *menuBar)
     QAction::connect(actionAboutPlugin, &QAction::triggered, this, &WindowKeeper::showAboutPlugins);
 }
 
-void WindowKeeper::createStatusBar(QMainWindow *window)
+void WindowKeeper::createStatusBar(DMainWindow *window)
 {
     qInfo() << __FUNCTION__;
-    QStatusBar* statusBar = new WindowStatusBar();
+    DStatusBar* statusBar = new WindowStatusBar();
     window->setStatusBar(statusBar);
 }
 
-void WindowKeeper::createNavRecent(QToolBar *toolbar)
+void WindowKeeper::createNavRecent(DToolBar *toolbar)
 {
     qInfo() << __FUNCTION__;
     if (!toolbar)
@@ -173,7 +160,7 @@ void WindowKeeper::createNavRecent(QToolBar *toolbar)
     toolbar->widgetForAction(navRecent)->setObjectName("Recent");
 }
 
-void WindowKeeper::createNavEdit(QToolBar *toolbar)
+void WindowKeeper::createNavEdit(DToolBar *toolbar)
 {
     qInfo() << __FUNCTION__;
     if (!toolbar)
@@ -190,14 +177,27 @@ void WindowKeeper::createNavEdit(QToolBar *toolbar)
     toolbar->widgetForAction(navEdit)->setObjectName("Edit");
 }
 
-void WindowKeeper::layoutWindow(QMainWindow *window)
+void WindowKeeper::createMainMenu(DMenu *menu)
+{
+    qInfo() << __FUNCTION__;
+
+    if (!menu)
+        return;
+
+    createFileActions(menu);
+
+    DMenu* menuOpenProject = new DMenu(MWMFA_OPEN_PROJECT);
+    menu->addMenu(menuOpenProject);
+}
+
+void WindowKeeper::layoutWindow(DMainWindow *window)
 {
     qInfo() << __FUNCTION__;
     if (!d->navActionGroup)
         d->navActionGroup = new QActionGroup(window);
 
-    d->toolbar = new QToolBar(QToolBar::tr("Navigation"));
-    d->toolbar->setMovable(false);
+    d->toolbar = new DToolBar(DToolBar::tr("Navigation"));
+    d->toolbar->setMovable(true);
     d->toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
     QWidget *titleWiget = new QWidget();
@@ -207,20 +207,21 @@ void WindowKeeper::layoutWindow(QMainWindow *window)
     createNavRecent(d->toolbar);
     createNavEdit(d->toolbar);
 
-    QMenuBar* menuBar = new QMenuBar();
-    createFileActions(menuBar);
-    createBuildActions(menuBar);
-    createDebugActions(menuBar);
-    createAnalyzeActions(menuBar);
-    createToolsActions(menuBar);
-    createHelpActions(menuBar);
+    createMainMenu(d->mainMenu);
 
     createStatusBar(window);
 
+    window->setWindowTitle("Deepin Union Code");
+    window->setWindowIcon(QIcon(":/core/images/unioncode@128.png"));
     window->addToolBar(Qt::LeftToolBarArea, d->toolbar);
     window->setMinimumSize(QSize(MW_MIN_WIDTH,MW_MIN_HEIGHT));
     window->setAttribute(Qt::WA_DeleteOnClose);
-    window->setMenuBar(menuBar);
+
+    window->titlebar()->setIcon(QIcon(":/core/images/unioncode@128.png"));
+    window->titlebar()->setTitle(QString(tr("Deepin Union Code")));
+    window->titlebar()->setContentsMargins(0, 0, 0, 0);
+
+    window->titlebar()->setMenu(d->mainMenu);
 }
 
 WindowKeeper *WindowKeeper::instace()
@@ -242,10 +243,13 @@ WindowKeeper::WindowKeeper(QObject *parent)
     }
 
     if (!d->window) {
-        d->window = new QMainWindow();
-        d->window->setWindowTitle("Deepin Union Code");
-        d->window->setWindowIcon(QIcon(":/core/images/unioncode@128.png"));
-        QObject::connect(d->window, &QMainWindow::destroyed, [&](){
+        d->window = new DMainWindow();
+
+        if (!d->mainMenu) {
+            d->mainMenu = new DMenu(d->window->titlebar());
+        }
+
+        QObject::connect(d->window, &DMainWindow::destroyed, [&](){
             d->window->takeCentralWidget();
         });
         layoutWindow(d->window);
@@ -334,7 +338,7 @@ void WindowKeeper::addMenu(AbstractMenu *menu)
 {
     qInfo() << __FUNCTION__;
 
-    QMenu *inputMenu = static_cast<QMenu*>(menu->qMenu());
+    DMenu *inputMenu = static_cast<DMenu*>(menu->qMenu());
     if (!d->window || !inputMenu)
         return;
 
@@ -381,7 +385,7 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
     if (!action || !inputAction)
         return;
 
-    for (QAction *qAction : d->window->menuBar()->actions()) {
+    for (QAction *qAction : d->mainMenu->actions()) {
         if (qAction->text() == menuName) {
             if (qAction->text() == MWM_FILE) {
                 auto endAction = *(qAction->menu()->actions().rbegin());
@@ -414,22 +418,19 @@ void WindowKeeper::addOpenProjectAction(const QString &name, AbstractAction *act
         return;
 
     QAction *inputAction = static_cast<QAction*>(action->qAction());
-    for (QAction *qAction : d->window->menuBar()->actions()) {
-        if (qAction->text() == MWM_FILE) {
-            for(QAction *childAction : qAction->menu()->actions()) {
-                if (childAction->text() == MWMFA_OPEN_PROJECT) {
-                    for (auto langAction : childAction->menu()->menuAction()->menu()->actions()) {
-                        if (name == langAction->text()) {
-                            langAction->menu()->addAction(inputAction);
-                            return;
-                        }
-                    }
-                    auto langMenu = new QMenu(name);
-                    childAction->menu()->addMenu(langMenu);
-                    langMenu->addAction(inputAction);
+
+    foreach (QAction *action, d->mainMenu->actions()) {
+        if (action->text() == MWMFA_OPEN_PROJECT) {
+            for (auto langAction : action->menu()->menuAction()->menu()->actions()) {
+                if (name == langAction->text()) {
+                    langAction->menu()->addAction(inputAction);
                     return;
                 }
             }
+            auto langMenu = new DMenu(name);
+            action->menu()->addMenu(langMenu);
+            langMenu->addAction(inputAction);
+            return;
         }
     }
 }
@@ -437,6 +438,9 @@ void WindowKeeper::addOpenProjectAction(const QString &name, AbstractAction *act
 void WindowKeeper::initUserWidget()
 {
     qApp->processEvents();
+    if (!d->toolbar)
+        return;
+
     if (d->toolbar->actions().size() > 0) {
         d->toolbar->actions().at(0)->trigger();
     }

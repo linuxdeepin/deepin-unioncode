@@ -88,6 +88,9 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wl,--as-need -fPIE")
 
+find_package(Dtk COMPONENTS Widget REQUIRED)
+include_directories(${PROJECT_NAME} PRIVATE ${DtkWidget_INCLUDE_DIRS})
+
 # Use Qt modules no WebEngineWidgets WebChannel
 set(QtFindModules Core Gui Widgets Concurrent Network DBus)
 foreach(QtModule ${QtFindModules})

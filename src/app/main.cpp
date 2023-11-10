@@ -6,8 +6,13 @@
 
 #include <framework/framework.h>
 #include <framework/lifecycle/pluginsetting.h>
+
+#include <DApplication>
+
 #include <QApplication>
 #include <QStyleFactory>
+
+DWIDGET_USE_NAMESPACE
 
 static const char *const IID = "org.deepin.plugin.unioncode";
 static const char *const CORE_PLUGIN = "plugin-core";
@@ -94,9 +99,12 @@ void voidMessageOutput(QtMsgType type, const QMessageLogContext &context, const 
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    QApplication::setStyle(QStyleFactory::create("Fusion"));
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
+    DApplication a(argc, argv);
+    a.setOrganizationName("deepin");
+    a.setQuitOnLastWindowClosed(false);
     CommandParser::instance().process();
 
     // TODO(Any): put to command processor
@@ -117,9 +125,6 @@ int main(int argc, char *argv[])
         qCritical() << "Failed, Load plugins!";
         abort();
     }
-
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     return a.exec();
 }
