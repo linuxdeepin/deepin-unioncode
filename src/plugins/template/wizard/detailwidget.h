@@ -7,12 +7,12 @@
 
 #include "projectgenerate.h"
 
-#include <QScrollArea>
+#include <DScrollArea>
 
 using namespace templateMgr;
 
 class DetailWidgetPrivate;
-class DetailWidget : public QScrollArea
+class DetailWidget : public DTK_WIDGET_NAMESPACE::DScrollArea
 {
     Q_OBJECT
 public:

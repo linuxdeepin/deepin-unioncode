@@ -53,13 +53,13 @@ void TemplateManager::addMenu()
     auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
         ActionManager::getInstance()->registerAction(action, actionID, action->text(), key, iconFileName);
         AbstractAction *actionImpl = new AbstractAction(action);
-        windowService->addAction(dpfservice::MWM_FILE, actionImpl);
+        windowService->addAction(dpfservice::MWMFA_NEW_FILE_OR_PROJECT, actionImpl);
     };
 
     d->newAction.reset(new QAction(MWMFA_NEW_FILE_OR_PROJECT));
     actionInit(d->newAction.get(),
                "Fiel.New.FileOrProject",
-               QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_O), ":/template/images/new_project.png");
+               QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_O), QString());
     QObject::connect(d->newAction.get(), &QAction::triggered,
                      this, &TemplateManager::newWizard, Qt::DirectConnection);
 }
