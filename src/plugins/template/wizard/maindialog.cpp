@@ -3,22 +3,26 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "maindialog.h"
-
 #include "detailwidget.h"
-
 #include "services/language/languageservice.h"
 
-#include <QLabel>
-#include <QTreeView>
-#include <QHBoxLayout>
-#include <QPushButton>
+#include <DLabel>
+#include <DWidget>
+#include <DTreeView>
+#include <DMessageBox>
+#include <DPushButton>
+#include <DTreeView>
+#include <DTitlebar>
+
+#include <QStackedWidget>
 #include <QStandardItemModel>
 #include <QListWidget>
-#include <QMessageBox>
 #include <QDebug>
+#include <QHBoxLayout>
 #include <QUuid>
 #include <QStackedWidget>
 
+DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
 class MainDialogPrivate
@@ -26,14 +30,13 @@ class MainDialogPrivate
     friend class MainDialog;
     QMap<QString, DetailWidget*> detailWidgetMap;
     QStackedWidget *detailStackedWidget = nullptr;
-    QWidget *blankWidget = nullptr;
+    DWidget *blankWidget = nullptr;
 };
 
-MainDialog::MainDialog(QDialog *parent)
-    : QDialog(parent)
+MainDialog::MainDialog(QWidget *parent)
+    : DAbstractDialog(parent)
     , d(new MainDialogPrivate())
 {
-    setWindowTitle(tr("New File or Project"));
     setMinimumSize(850, 550);
 
     TemplateVector templateVec;
@@ -50,13 +53,18 @@ MainDialog::~MainDialog()
 
 void MainDialog::setupUI(TemplateVector &templateVec)
 {
-    QLabel * title =  new QLabel(tr("Choose a template:"));
+    DTitlebar *titleBar = new DTitlebar();
+    titleBar = new DTitlebar();
+    titleBar->setMenuVisible(false);
+    titleBar->setTitle(QString(tr("New File or Project")));
+
+    DLabel *title =  new DLabel(tr("Choose a template:"));
 
     d->detailStackedWidget = new QStackedWidget();
     d->blankWidget = new DetailWidget(this);
     d->detailStackedWidget->addWidget(d->blankWidget);
 
-    QTreeView * treeView =  new QTreeView();
+    DTreeView * treeView =  new DTreeView();
     treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
     treeView->setSelectionMode(QAbstractItemView::SingleSelection);
     treeView->setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -92,7 +100,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
         treeView->setModel(standardModel);
     }
 
-    connect(treeView, &QTreeView::clicked, [=](){
+    connect(treeView, &DTreeView::clicked, [=](){
         QModelIndex index = treeView->selectionModel()->currentIndex();
         if (!index.isValid()){
             d->detailStackedWidget->setCurrentWidget(d->blankWidget);
@@ -134,7 +142,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     QVBoxLayout *vItemLayout = new QVBoxLayout();
     vItemLayout->addWidget(treeView);
 
-    QWidget *contentWidget = new QWidget();
+    DWidget *contentWidget = new DWidget();
     QHBoxLayout *hLayout = new QHBoxLayout();
     contentWidget->setLayout(hLayout);
     hLayout->addLayout(vItemLayout);
@@ -142,17 +150,17 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     hLayout->setStretchFactor(vItemLayout, 1);
     hLayout->setStretchFactor(d->detailStackedWidget, 2);
 
-    QWidget *bottomWidget = new QWidget();
+    DWidget *bottomWidget = new DWidget();
     QHBoxLayout * bottomLayout = new QHBoxLayout();
     bottomWidget->setLayout(bottomLayout);
 
-    QPushButton *create = new QPushButton(tr("Create"));
-    QPushButton *cancel = new QPushButton(tr("Cancel"));
+    DPushButton *create = new DPushButton(tr("Create"));
+    DPushButton *cancel = new DPushButton(tr("Cancel"));
     bottomLayout->addStretch(15);
     bottomLayout->addWidget(create, Qt::AlignRight);
     bottomLayout->addWidget(cancel, Qt::AlignRight);
 
-    connect(create, &QPushButton::clicked, [&](){
+    connect(create, &DPushButton::clicked, [&](){
         DetailWidget *detailWidget = dynamic_cast<DetailWidget*>(d->detailStackedWidget->currentWidget());
         if (detailWidget) {
             PojectGenParam param;
@@ -162,11 +170,15 @@ void MainDialog::setupUI(TemplateVector &templateVec)
         }
     });
 
-    connect(cancel, &QPushButton::clicked, [&](){
+    connect(cancel, &DPushButton::clicked, [&](){
         close();
     });
 
     QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->setContentsMargins(0, 0, 0, 0);
+    vLayout->setSpacing(0);
+
+    vLayout->addWidget(titleBar);
     vLayout->addWidget(title);
     vLayout->addWidget(contentWidget);
     vLayout->addWidget(bottomWidget);
@@ -179,7 +191,7 @@ void MainDialog::generate(const PojectGenParam &param)
     ProjectGenerate projectGen;
     PojectGenResult result;
     if (!projectGen.create(result, param)) {
-        QMessageBox::critical(this, tr("Tip"), result.message);
+        DMessageBox::critical(this, tr("Tip"), result.message);
         return;
     }
 
@@ -192,7 +204,7 @@ void MainDialog::generate(const PojectGenParam &param)
                 close();
                 project.openProject(result.kit, result.language, result.projectPath);
             } else {
-                QMessageBox::critical(this, tr("Tip"), tr("Can not find kit."));
+                DMessageBox::critical(this, tr("Tip"), tr("Can not find kit."));
             }
         }
     } else if (param.type == File) {

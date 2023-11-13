@@ -4,7 +4,6 @@
 
 #include "aboutdialog.h"
 #include "plugindialog.h"
-#include "mainwindow.h"
 
 #include "windowkeeper.h"
 #include "windowstatusbar.h"
@@ -66,43 +65,46 @@ void WindowKeeper::createFileActions(DMenu *menu)
     });
 
     menu->addAction(actionOpenFile);
+
+    DMenu* menuOpenProject = new DMenu(MWMFA_OPEN_PROJECT);
+    menu->addMenu(menuOpenProject);
 }
 
-void WindowKeeper::createAnalyzeActions(DMenuBar *menuBar)
+void WindowKeeper::createAnalyzeActions(DMenu *menu)
 {
     qInfo() << __FUNCTION__;
     DMenu* analyzeMenu = new DMenu();
-    QAction* buildAction = menuBar->addMenu(analyzeMenu);
+    QAction* buildAction = menu->addMenu(analyzeMenu);
     buildAction->setText(MWM_ANALYZE);
 }
 
-void WindowKeeper::createBuildActions(DMenuBar *menuBar)
+void WindowKeeper::createBuildActions(DMenu *menu)
 {
     qInfo() << __FUNCTION__;
     DMenu* buildMenu = new DMenu();
-    QAction* buildAction = menuBar->addMenu(buildMenu);
+    QAction* buildAction = menu->addMenu(buildMenu);
     buildAction->setText(MWM_BUILD);
 }
 
-void WindowKeeper::createDebugActions(DMenuBar *menuBar)
+void WindowKeeper::createDebugActions(DMenu *menu)
 {
     qInfo() << __FUNCTION__;
-    QAction* debugAction = menuBar->addMenu(new DMenu());
+    QAction* debugAction = menu->addMenu(new DMenu());
     debugAction->setText(MWM_DEBUG);
 }
 
-void WindowKeeper::createToolsActions(DMenuBar *menuBar)
+void WindowKeeper::createToolsActions(DMenu *menu)
 {
     qInfo() << __FUNCTION__;
     auto toolsMenu = new DMenu(MWM_TOOLS);
-    menuBar->addMenu(toolsMenu);
+    menu->addMenu(toolsMenu);
 }
 
-void WindowKeeper::createHelpActions(DMenuBar *menuBar)
+void WindowKeeper::createHelpActions(DMenu *menu)
 {
     qInfo() << __FUNCTION__;
     auto helpMenu = new DMenu(MWM_HELP);
-    menuBar->addMenu(helpMenu);
+    menu->addMenu(helpMenu);
 
     QAction *actionReportBug = new QAction(MWM_REPORT_BUG);
     ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
@@ -185,9 +187,17 @@ void WindowKeeper::createMainMenu(DMenu *menu)
         return;
 
     createFileActions(menu);
+    menu->addSeparator();
 
-    DMenu* menuOpenProject = new DMenu(MWMFA_OPEN_PROJECT);
-    menu->addMenu(menuOpenProject);
+    createBuildActions(menu);
+    createDebugActions(menu);
+    menu->addSeparator();
+
+    createAnalyzeActions(menu);
+    createToolsActions(menu);
+    menu->addSeparator();
+
+    createHelpActions(menu);
 }
 
 void WindowKeeper::layoutWindow(DMainWindow *window)
@@ -343,15 +353,15 @@ void WindowKeeper::addMenu(AbstractMenu *menu)
         return;
 
     //始终将Helper置末
-    for (QAction *action : d->window->menuBar()->actions()) {
-        if (action->text() == MWM_HELP) {
-            d->window->menuBar()->insertMenu(action, inputMenu);
+    for (QAction *action : d->mainMenu->actions()) {
+        if (action->text() == MWM_TOOLS) {
+            d->mainMenu->insertMenu(action, inputMenu);
             return; //提前返回
         }
     }
 
     //直接添加到最后
-    d->window->menuBar()->addMenu(inputMenu);
+    d->mainMenu->addMenu(inputMenu);
 }
 
 void WindowKeeper::insertAction(const QString &menuName,
@@ -384,6 +394,15 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
     QAction *inputAction = static_cast<QAction*>(action->qAction());
     if (!action || !inputAction)
         return;
+
+    if (inputAction->text() == MWMFA_NEW_FILE_OR_PROJECT) {
+        for (QAction *qAction : d->mainMenu->actions()) {
+            if (qAction->text() == MWM_BUILD) {
+                d->mainMenu->insertAction(qAction, inputAction);
+                return;
+            }
+        }
+    }
 
     for (QAction *qAction : d->mainMenu->actions()) {
         if (qAction->text() == menuName) {
