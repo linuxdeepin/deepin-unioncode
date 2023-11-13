@@ -64,12 +64,14 @@ private :
     void createNavEdit(DToolBar *toolbar);
     void createNavRecent(DToolBar *toolbar);
     void createStatusBar(DMainWindow *window);
-    void createHelpActions(DMenuBar *menuBar);
-    void createToolsActions(DMenuBar *menuBar);
-    void createDebugActions(DMenuBar *menuBar);
-    void createBuildActions(DMenuBar *menuBar);
+
+    void createHelpActions(DMenu *menu);
+    void createToolsActions(DMenu *menu);
+    void createDebugActions(DMenu *menu);
+    void createBuildActions(DMenu *menu);
     void createFileActions(DMenu *menu);
-    void createAnalyzeActions(DMenuBar *menuBar);
+    void createAnalyzeActions(DMenu *menu);
+
     void setNavActionChecked(const QString &actionName, bool checked);
 
     void createMainMenu(DMenu *mainMenu);

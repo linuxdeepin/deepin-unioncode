@@ -6,16 +6,16 @@
 #define MAINDIALOG_H
 
 #include "projectgenerate.h"
-#include <QDialog>
+#include <DAbstractDialog>
 
 using namespace templateMgr;
 
 class MainDialogPrivate;
-class MainDialog : public QDialog
+class MainDialog : public DTK_WIDGET_NAMESPACE::DAbstractDialog
 {
     Q_OBJECT
 public:
-    explicit MainDialog(QDialog *parent = nullptr);
+    explicit MainDialog(QWidget *parent = nullptr);
     ~MainDialog();
 
 signals:
