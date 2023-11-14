@@ -25,15 +25,22 @@ AskPageWidget::AskPageWidget(QWidget *parent)
 void AskPageWidget::setIntroPage()
 {
     cleanWidgets();
-    scrollArea->setWidget(new IntroPage(scrollArea));
     curState = Intro;
+    scrollArea->setWidget(new IntroPage(scrollArea));
+
+    Q_EMIT introPageShown();
+}
+
+bool AskPageWidget::isIntroPageState()
+{
+    return curState == Intro;
 }
 
 void AskPageWidget::onMessageUpdate(const MessageData &msgData)
 {
     if (curState == Intro) {
-        setSessionPage();
         curState = Session;
+        setSessionPage();
     }
 
     if (!msgComponents.contains(msgData.messageID())) {
@@ -97,10 +104,10 @@ void AskPageWidget::initInputWidget()
     sendBtn->setText(tr("Send"));
     editLayout->addWidget(sendBtn);
 
-    QLabel *inputTips = new QLabel(inputWidget);
-    inputTips->setText(tr("Ctrl + Enter for Newline | \" / \" for command"));
-    inputTips->setIndent(10);
-    layout->addWidget(inputTips);
+//    QLabel *inputTips = new QLabel(inputWidget);
+//    inputTips->setText(tr("Ctrl + Enter for Newline | \" / \" for command"));
+//    inputTips->setIndent(10);
+//    layout->addWidget(inputTips);
 }
 
 void AskPageWidget::initConnection()
@@ -125,5 +132,7 @@ void AskPageWidget::setSessionPage()
     QVBoxLayout *layout = new QVBoxLayout(messageContainer);
     messageContainer->setLayout(layout);
 
-    layout->addStretch(1);
+    layout->addStretch(0);
+
+    Q_EMIT sessionPageShown();
 }

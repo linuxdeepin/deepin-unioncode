@@ -36,11 +36,16 @@ public:
 
     void cleanFinalLine();
 
+    QString getContent();
+
+public Q_SLOTS:
+    void onInsertBtnClicked();
+    void onCopyBtnClicked();
+
 private:
     void initUI();
     void initTitleWidgets();
-
-//    void updateEditHeight(int rowCount);
+    void initConnection();
 
     QWidget *titleWidget { nullptr };
     QPushButton *copyButton { nullptr };

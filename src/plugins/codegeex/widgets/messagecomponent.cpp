@@ -29,7 +29,7 @@ void MessageComponent::updateMessage(const MessageData &msgData)
         messageData = msgData;
         return;
     } else if (currentUpdateState == Label && msgData.messageLines().last().startsWith("```")) {
-        if (curUpdateLabel->text() == "``" | curUpdateLabel->text() == "`") {
+        if (curUpdateLabel->text() == "``" || curUpdateLabel->text() == "`") {
             msgLayout->removeWidget(curUpdateLabel);
             delete curUpdateLabel;
             curUpdateLabel = nullptr;
@@ -98,19 +98,21 @@ void MessageComponent::initSenderInfo()
     senderHead = new QLabel(this);
     senderName = new QLabel(this);
 
-    QImage *headImg = new QImage(QSize(40, 40), QImage::Format_ARGB32);
     switch (messageData.messageType()) {
-    case MessageData::Ask:
-        headImg->fill(Qt::red);
+    case MessageData::Ask: {
         senderName->setText("You");
-        break;
-    case MessageData::Anwser:
-        headImg->fill(Qt::blue);
-        senderName->setText("CodeGeeX");
+        QPixmap head(":/demo/images/photo.svg");
+        senderHead->setPixmap(head.scaledToWidth(30));
         break;
     }
-    senderHead->setPixmap(QPixmap::fromImage(*headImg));
+    case MessageData::Anwser:
+        senderName->setText("CodeGeeX");
+        QPixmap log(":/demo/images/logo-codegeex.png");
+        senderHead->setPixmap(log.scaledToWidth(30));
+        break;
+    }
 
+    senderInfoLayout->setSpacing(5);
     senderInfoLayout->addWidget(senderHead);
     senderInfoLayout->addWidget(senderName);
     senderInfoLayout->addStretch(1);

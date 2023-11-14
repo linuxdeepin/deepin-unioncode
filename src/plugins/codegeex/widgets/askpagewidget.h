@@ -28,9 +28,12 @@ public:
 
     explicit AskPageWidget(QWidget *parent = nullptr);
     void setIntroPage();
+    bool isIntroPageState();
 
 Q_SIGNALS:
     void sendPromot(const QString &promot);
+    void introPageShown();
+    void sessionPageShown();
 
 public Q_SLOTS:
     void onMessageUpdate(const MessageData &msgData);

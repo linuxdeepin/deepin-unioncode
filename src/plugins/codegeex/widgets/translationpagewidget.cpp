@@ -4,17 +4,34 @@
 
 #include "translationpagewidget.h"
 #include "codeeditcomponent.h"
+#include "copilot.h"
+#include "codegeex/copilotapi.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QComboBox>
 #include <QPushButton>
 #include <QLabel>
+#include <QDebug>
 
 TranslationPageWidget::TranslationPageWidget(QWidget *parent)
     : QWidget (parent)
 {
     initUI();
+    initConnection();
+}
+
+void TranslationPageWidget::onTranslateBtnClicked()
+{
+    QString dstLang = langComboBox->currentText();
+    QString srcCode = inputEdit->getContent();
+    Copilot::instance()->translateCode(srcCode, dstLang);
+}
+
+void TranslationPageWidget::onRecevieTransCode(const QString &code)
+{
+    if (outputEdit)
+        outputEdit->updateCode(code);
 }
 
 void TranslationPageWidget::initUI()
@@ -22,10 +39,10 @@ void TranslationPageWidget::initUI()
     QVBoxLayout *layout = new QVBoxLayout;
     setLayout(layout);
 
-    CodeEditComponent *inputEdit = new CodeEditComponent(this);
+    inputEdit = new CodeEditComponent(this);
     inputEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     inputEdit->showButtons(CodeEditComponent::None);
-    inputEdit->setTitle("Input Code");
+    inputEdit->setTitle(tr("Input Code"));
     inputEdit->setFixedHeight(200);
     layout->addWidget(inputEdit);
 
@@ -39,23 +56,23 @@ void TranslationPageWidget::initUI()
 
     layout->addSpacing(20);
 
-    QComboBox *box = new QComboBox(this);
-    box->addItems({ "c++", "c", "python", "java", "javascript" });
-    comboBoxLayout->addWidget(box);
+    langComboBox = new QComboBox(this);
+    langComboBox->addItems(CodeGeeX::SupportLanguage);
+    comboBoxLayout->addWidget(langComboBox);
 
     midLayout->addLayout(comboBoxLayout);
 
     midLayout->addSpacing(100);
 
-    QPushButton *transButton = new QPushButton(this);
-    transButton->setText(tr("Translate"));
-    midLayout->addWidget(transButton);
+    transBtn = new QPushButton(this);
+    transBtn->setText(tr("Translate"));
+    midLayout->addWidget(transBtn);
 
     layout->addLayout(midLayout);
 
     layout->addSpacing(20);
 
-    CodeEditComponent *outputEdit = new CodeEditComponent(this);
+    outputEdit = new CodeEditComponent(this);
     outputEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     outputEdit->setTitle(tr("Output Code"));
     outputEdit->setFixedHeight(200);
@@ -64,4 +81,10 @@ void TranslationPageWidget::initUI()
     layout->addWidget(outputEdit);
 
     layout->addStretch(1);
+}
+
+void TranslationPageWidget::initConnection()
+{
+    connect(transBtn, &QPushButton::clicked, this, &TranslationPageWidget::onTranslateBtnClicked);
+    connect(Copilot::instance(), &Copilot::translatedResult, this, &TranslationPageWidget::onRecevieTransCode);
 }

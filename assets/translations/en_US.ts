@@ -91,6 +91,19 @@
     </message>
 </context>
 <context>
+    <name>AskPageWidget</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
+        <source>Enter a technical question here...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="104"/>
+        <source>Send</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BinaryToolsConfigView</name>
     <message>
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="70"/>
@@ -532,6 +545,19 @@
     </message>
 </context>
 <context>
+    <name>CodeEditComponent</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="143"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="147"/>
+        <source>Insert</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CodeEditor</name>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="33"/>
@@ -559,6 +585,39 @@
     <message>
         <location filename="../../src/plugins/codegeex/option/codegeexoptionwidget.cpp" line="32"/>
         <source>CodeGeeX</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CodeGeeXWidget</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="64"/>
+        <source>Login</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="97"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="100"/>
+        <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="103"/>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="117"/>
+        <source>Ask CodeGeeX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="118"/>
+        <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1145,6 +1204,54 @@ The dap port is not ready, please retry.
     <message>
         <location filename="../../src/plugins/python/python/option/interperterwidget.cpp" line="90"/>
         <source>Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>IntroPage</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="53"/>
+        <source>Welcome to CodeGeeX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="63"/>
+        <source>CodeGeeX provides code completion suggestions in editor, Press Tab to accept.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="64"/>
+        <source>Select code and right-click to add comments or translate code.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="65"/>
+        <source>Also, you can directly ask CodeGeeX any questions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="74"/>
+        <source>Try the following questions:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="77"/>
+        <source>How to iterate through a dictionary in Python?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="78"/>
+        <source>Write a quicksort function.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="79"/>
+        <source>What is FIFO?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="80"/>
+        <source>What is the best way to start learning JavaScript?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3383,6 +3490,29 @@ Delete anyway?</source>
     <message>
         <location filename="../../src/tools/performancedapter/tools.cpp" line="1053"/>
         <source>suggestion: please to install tool, the package-name &quot;%0&quot;. If you confirm that the current tool exists and still cannot be used normally, the current operation does not support</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TranslationPageWidget</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="45"/>
+        <source>Input Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="54"/>
+        <source>Translate Into:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="68"/>
+        <source>Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="77"/>
+        <source>Output Code</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

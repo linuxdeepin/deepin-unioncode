@@ -39,6 +39,11 @@ void IntroPage::initLogo()
     logoLayout->setAlignment(Qt::AlignCenter);
     qobject_cast<QVBoxLayout*>(layout())->addLayout(logoLayout);
 
+    QLabel *logo = new QLabel(this);
+    logo->setAlignment(Qt::AlignHCenter);
+    logo->setPixmap(QPixmap(":/demo/images/logo-codegeex.png").scaledToWidth(80));
+    logoLayout->addWidget(logo);
+
     QLabel *logoLabel = new QLabel(this);
     logoLabel->setAlignment(Qt::AlignHCenter);
     logoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -90,13 +95,12 @@ void IntroPage::appendSuggestButton(QVBoxLayout *layout, const QString &text)
     QPushButton *suggestButton = new QPushButton(this);
     suggestButton->setFixedHeight(50);
     QFont buttonFont = suggestButton->font();
-    buttonFont.setPointSize(14);
+    buttonFont.setPointSize(12);
     suggestButton->setFont(buttonFont);
     suggestButton->setText(text);
     layout->addWidget(suggestButton);
 
     connect(suggestButton, &QPushButton::clicked, [ = ] {
         CodeGeeXManager::instance()->sendMessage(suggestButton->text());
-        Q_EMIT this->sendQuestion(suggestButton->text());
     });
 }
