@@ -4,27 +4,27 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="30"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="39"/>
         <source>About Deepin Union Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="35"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="45"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="38"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="48"/>
         <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                we hope that the scheme will be useful,                but we do not guarantee that it will be of economic value or fit for a particular purpose.                For more information, see the GNU General Public License. &lt;br/&gt;               Thanks to all the &lt;a href=&quot;opensourcesoftware&quot;&gt;open source software&lt;/a&gt; used.&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="86"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="100"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="86"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="100"/>
         <source>Failed to open the file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -891,6 +891,22 @@ The dap port is not ready, please retry.
     </message>
 </context>
 <context>
+    <name>DPushButton</name>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="68"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DToolBar</name>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="210"/>
+        <source>Navigation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DebuggerPlugin</name>
     <message>
         <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="67"/>
@@ -911,12 +927,12 @@ The dap port is not ready, please retry.
 <context>
     <name>DetailWidget</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="73"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="76"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="79"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="82"/>
         <source>Choose path</source>
         <translation type="unfinished"></translation>
     </message>
@@ -938,52 +954,52 @@ The dap port is not ready, please retry.
 <context>
     <name>DetailsView</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="85"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="90"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="92"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="97"/>
         <source>Version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="99"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="104"/>
         <source>Compatibility version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="106"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="111"/>
         <source>Vendor:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="113"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="118"/>
         <source>Copyright:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="120"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="125"/>
         <source>Category:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="127"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="132"/>
         <source>URL:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="146"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="151"/>
         <source>Description:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="135"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="140"/>
         <source>License:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="157"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="162"/>
         <source>Dependencies:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -991,7 +1007,7 @@ The dap port is not ready, please retry.
 <context>
     <name>DisplayDocView</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="177"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="187"/>
         <source>Documents</source>
         <translation type="unfinished"></translation>
     </message>
@@ -999,7 +1015,7 @@ The dap port is not ready, please retry.
 <context>
     <name>DisplayProView</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="30"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="40"/>
         <source>Projects</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1360,38 +1376,38 @@ repos path: %0</source>
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="36"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="59"/>
         <source>New File or Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="53"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="61"/>
         <source>Choose a template:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="65"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="73"/>
         <source>Templates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="149"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="157"/>
         <source>Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="150"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="158"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="182"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="195"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="194"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="207"/>
         <source>Tip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="195"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="207"/>
         <source>Can not find kit.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1552,17 +1568,17 @@ repos path: %0</source>
 <context>
     <name>PluginDialog</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="27"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="29"/>
         <source>Installed Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="34"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="38"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="37"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="41"/>
         <source> Restart required.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2639,11 +2655,6 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="58"/>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="53"/>
         <source>Find Previous</source>
         <translation type="unfinished"></translation>
@@ -2738,11 +2749,6 @@ storage: %2
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="199"/>
-        <source>Navigation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="38"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
@@ -2828,12 +2834,32 @@ Delete anyway?</source>
 <context>
     <name>RecentDisplay</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="199"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="226"/>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="227"/>
+        <source>Open Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="228"/>
+        <source>New File or Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="238"/>
+        <source>Recent Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="245"/>
         <source>Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="209"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="258"/>
         <source>Projects</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3561,6 +3587,14 @@ Delete anyway?</source>
     <message>
         <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.cpp" line="211"/>
         <source>&amp;Application Output</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WindowKeeper</name>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="242"/>
+        <source>Deepin Union Code</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

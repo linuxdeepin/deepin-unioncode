@@ -7,6 +7,7 @@ set(CXX_CPP
     wizard/maindialog.cpp
     wizard/templateparser.cpp
     wizard/projectgenerate.cpp
+    transceiver/templatereceiver.cpp
     templatemanager.cpp
     templateplugin.cpp
     templateplugin.json
@@ -17,6 +18,7 @@ set(CXX_H
     wizard/maindialog.h
     wizard/templateparser.h
     wizard/projectgenerate.h
+    transceiver/templatereceiver.h
     templatemanager.h
     templateplugin.h
     )

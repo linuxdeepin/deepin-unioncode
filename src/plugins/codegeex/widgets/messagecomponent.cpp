@@ -28,7 +28,7 @@ void MessageComponent::updateMessage(const MessageData &msgData)
         currentUpdateState = Label;
         messageData = msgData;
         return;
-    } else if (currentUpdateState == Label && msgData.messageLines().last().startsWith("```")) {
+    } else if (curUpdateLabel && currentUpdateState == Label && msgData.messageLines().last().startsWith("```")) {
         if (curUpdateLabel->text() == "``" || curUpdateLabel->text() == "`") {
             msgLayout->removeWidget(curUpdateLabel);
             delete curUpdateLabel;

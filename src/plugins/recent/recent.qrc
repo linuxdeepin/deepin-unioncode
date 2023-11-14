@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/recent">
+        <file>images/recentLogo1.png</file>
+        <file>images/recentLogo2.png</file>
+    </qresource>
+</RCC>

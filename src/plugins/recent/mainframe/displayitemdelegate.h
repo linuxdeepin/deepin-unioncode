@@ -5,12 +5,14 @@
 #ifndef DISPLAYITEMDELEGATE_H
 #define DISPLAYITEMDELEGATE_H
 
-#include <QStyledItemDelegate>
+#include <DStyledItemDelegate>
 
-class DisplayItemDelegate : public QStyledItemDelegate
+DWIDGET_USE_NAMESPACE
+
+class DisplayItemDelegate : public DStyledItemDelegate
 {
 public:
-    explicit DisplayItemDelegate(QObject *parent = nullptr);
+    explicit DisplayItemDelegate(QAbstractItemView *parent = nullptr);
 
 protected:
     virtual void paint(QPainter *painter, const QStyleOptionViewItem &option,

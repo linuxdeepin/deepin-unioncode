@@ -6,6 +6,8 @@
 #include "common/common.h"
 #include "displayitemdelegate.h"
 
+#include <DStyledItemDelegate>
+
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -66,19 +68,16 @@ QList<QStandardItem *> DisplayRecentView::itemsFromFile()
 }
 
 DisplayRecentView::DisplayRecentView(QWidget *parent)
-    : QListView (parent)
+    : DListView (parent)
     , cache({})
     , model(new QStandardItemModel(this))
 {
-    QListView::viewport()->setAutoFillBackground(false);
-    QListView::setAttribute(Qt::WA_TranslucentBackground, true);
-    QListView::setBackgroundRole(QPalette::Base);
-    QListView::setModel(model);
-    QListView::setEditTriggers(QListView::NoEditTriggers);
-    QListView::setItemDelegate(new DisplayItemDelegate(this));
-    QListView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    QListView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    QListView::setSelectionMode(QAbstractItemView::NoSelection);
+    DListView::setModel(model);
+    DListView::setEditTriggers(DListView::NoEditTriggers);
+    DListView::setItemDelegate(new DisplayItemDelegate(this));
+    DListView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    DListView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    DListView::setSelectionMode(QAbstractItemView::NoSelection);
 }
 
 QString DisplayRecentView::cachePath()
