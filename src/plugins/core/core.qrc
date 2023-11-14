@@ -46,8 +46,6 @@
         <file>images/unioncode@200.png</file>
         <file>images/debug-step-into.png</file>
         <file>images/verticalSplit.png</file>
-        <file>images/edit.png</file>
-        <file>images/recent.png</file>
         <file>images/git.png</file>
         <file>images/subversion.png</file>
         <file>images/debugger_continue.png</file>
@@ -71,5 +69,16 @@
         <file>images/open_project.png</file>
         <file>images/reverse.png</file>
         <file>images/down_arrow.png</file>
+        <file>images/recent.svg</file>
+        <file>images/svn.svg</file>
+        <file>images/edit.svg</file>
+        <file>images/git.svg</file>        
+    </qresource>
+    <qresource prefix="/icons/deepin/">
+        <file>builtin/actions/recent_20px.svg</file>
+        <file>builtin/actions/svn_20px.svg</file>
+        <file>builtin/actions/edit_20px.svg</file>
+        <file>builtin/actions/git_20px.svg</file>
     </qresource>
 </RCC>
+

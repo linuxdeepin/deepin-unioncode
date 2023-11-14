@@ -17,8 +17,9 @@
 #include <DTitlebar>
 #include <DStatusBar>
 #include <DFileDialog>
+#include <DIconButton>
 
-#include <QWidget>
+#include <DWidget>
 #include <QDesktopServices>
 #include <QVBoxLayout>
 #include <QAction>
@@ -151,7 +152,7 @@ void WindowKeeper::createNavRecent(DToolBar *toolbar)
     if (!toolbar)
         return;
 
-    QAction* navRecent = new QAction(QIcon(":/core/images/recent.png"), MWNA_RECENT, toolbar);
+    QAction* navRecent = new QAction(QIcon::fromTheme("recent"), MWNA_RECENT, toolbar);
     navRecent->setCheckable(true);
     d->navActionGroup->addAction(navRecent);
     QAction::connect(navRecent, &QAction::triggered, [=](){
@@ -168,7 +169,7 @@ void WindowKeeper::createNavEdit(DToolBar *toolbar)
     if (!toolbar)
         return;
 
-    QAction* navEdit = new QAction(QIcon(":/core/images/edit.png"), MWNA_EDIT, toolbar);
+    QAction* navEdit = new QAction(QIcon::fromTheme("edit"), MWNA_EDIT, toolbar);
     navEdit->setCheckable(true);
     d->navActionGroup->addAction(navEdit);
     QAction::connect(navEdit, &QAction::triggered, [=](){
@@ -200,6 +201,7 @@ void WindowKeeper::createMainMenu(DMenu *menu)
     createHelpActions(menu);
 }
 
+#include <DFrame>
 void WindowKeeper::layoutWindow(DMainWindow *window)
 {
     qInfo() << __FUNCTION__;
@@ -208,9 +210,20 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
 
     d->toolbar = new DToolBar(DToolBar::tr("Navigation"));
     d->toolbar->setMovable(true);
-    d->toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    d->toolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    d->toolbar->setIconSize(QSize(20, 20));
+    DPalette palette = window->palette();
+    palette.setColor(DPalette::Button, palette.color(DPalette::Window));
+    d->toolbar->setPalette(palette);
 
-    QWidget *titleWiget = new QWidget();
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
+           this, [=](){
+       DPalette palette = d->toolbar->palette();
+       palette.setColor(DPalette::Button, palette.color(DPalette::Window));
+       d->toolbar->setPalette(palette);
+    });
+
+    DWidget *titleWiget = new DWidget();
     titleWiget->setFixedSize(65, 29);
     d->toolbar->addWidget(titleWiget);
 
@@ -219,7 +232,7 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
 
     createMainMenu(d->mainMenu);
 
-    createStatusBar(window);
+    //createStatusBar(window);
 
     window->setWindowTitle("Deepin Union Code");
     window->setWindowIcon(QIcon(":/core/images/unioncode@128.png"));
@@ -333,7 +346,7 @@ void WindowKeeper::addActionNavigation(const QString &id, AbstractAction *action
 void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral *central)
 {
     qInfo() << __FUNCTION__;
-    QWidget* inputWidget = static_cast<QWidget*>(central->qWidget());
+    DWidget* inputWidget = static_cast<DWidget*>(central->qWidget());
     if(!central || !inputWidget || navName.isEmpty())
         return;
 

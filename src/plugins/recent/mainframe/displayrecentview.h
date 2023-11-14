@@ -5,12 +5,12 @@
 #ifndef DISPLAYRECENTVIEW_H
 #define DISPLAYRECENTVIEW_H
 
-#include <QListView>
+#include <DListView>
 #include <QFileIconProvider>
 
 class QStandardItemModel;
 class QStandardItem;
-class DisplayRecentView : public QListView
+class DisplayRecentView : public DTK_WIDGET_NAMESPACE::DListView
 {
     Q_OBJECT
     QStringList cache;

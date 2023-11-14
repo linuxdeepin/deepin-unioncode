@@ -35,4 +35,9 @@ add_library(
     ${CXX_CPP}
     )
 
+target_link_libraries(
+    ${PROJECT_NAME}
+    ${DtkWidget_LIBRARIES}
+    )
+
 install(TARGETS ${PROJECT_NAME} DESTINATION ${LIBRARY_INSTALL_PREFIX})

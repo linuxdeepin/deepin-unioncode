@@ -4,13 +4,20 @@
 
 #include "displayitemdelegate.h"
 
+#include <DApplication>
+#include <DGuiApplicationHelper>
+#include <DStyle>
+#include <DStyleOptionViewItem>
+#include <DPaletteHelper>
+#include <DSizeMode>
+
 #include <QPainter>
 #include <QDebug>
 #include <QApplication>
 #include <QFileInfo>
 
-DisplayItemDelegate::DisplayItemDelegate(QObject *parent)
-    : QStyledItemDelegate (parent)
+DisplayItemDelegate::DisplayItemDelegate(QAbstractItemView *parent)
+    : DStyledItemDelegate (parent)
 {
 
 }
@@ -19,16 +26,20 @@ void DisplayItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
                                 const QModelIndex &index) const
 {
     if (index.isValid()) {
+        painter->save();
+
         int textTopAlign = Qt::AlignmentFlag::AlignTop;
         int textBottomAlign = Qt::AlignmentFlag::AlignBottom;
         QString filePath = index.data(Qt::DisplayRole).toString();
         QString fileName = QFileInfo(filePath).fileName();
-        QStyleOptionViewItem drawStyle(option);
-        initStyleOption(&drawStyle, index);
-        drawStyle.text = ""; //清空文本绘制
-        QStyle *pStyle = drawStyle.widget ? drawStyle.widget->style() : QApplication::style();
-        pStyle->drawControl(QStyle::CE_ItemViewItem, &drawStyle, painter, drawStyle.widget);
 
+        QStyleOptionViewItem drawStyle(option);
+        DStyledItemDelegate::initStyleOption(&drawStyle, index);
+        painter->setRenderHint(QPainter::Antialiasing);
+
+        drawStyle.text = ""; //清空文本绘制
+        QStyle *pStyle = drawStyle.widget ? drawStyle.widget->style() : DApplication::style();
+        pStyle->drawControl(DStyle::CE_ItemViewItem, &drawStyle, painter, drawStyle.widget);
 
         QRect iconRect = pStyle->itemPixmapRect(drawStyle.rect, drawStyle.displayAlignment,
                                                 drawStyle.icon.pixmap(drawStyle.rect.height()));
@@ -38,8 +49,6 @@ void DisplayItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
 
         QString eliedFileName = drawStyle.fontMetrics.elidedText(fileName, Qt::ElideRight, titleTextRect.width());
         pStyle->drawItemText(painter, titleTextRect, drawStyle.displayAlignment, drawStyle.palette, true, eliedFileName);
-
-        painter->save();
 
         //缩小字体
         QFont nativeFont(drawStyle.font);
@@ -56,7 +65,7 @@ void DisplayItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
         painter->drawText(nativeTextRect, textBottomAlign, eliedFilePath);
         painter->restore();
     } else {
-        return QStyledItemDelegate::paint(painter, option, index);
+        return DStyledItemDelegate::paint(painter, option, index);
     }
 }
 
@@ -71,5 +80,5 @@ QSize DisplayItemDelegate::sizeHint(const QStyleOptionViewItem &option,
             return {option.rect.width(), option.fontMetrics.height() * 2};
         }
     }
-    return QStyledItemDelegate::sizeHint(option, index);
+    return DStyledItemDelegate::sizeHint(option, index);
 }

@@ -84,6 +84,10 @@ OPI_OBJECT(commandLine,
            OPI_INTERFACE(build)
            )
 
+OPI_OBJECT(projectTemplate,
+           OPI_INTERFACE(newWizard)
+           )
+
 struct AnnotationInfo
 {
     struct RoleElem
