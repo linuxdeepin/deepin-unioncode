@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/demo">
         <file>images/navigation.png</file>
+        <file>images/logo-codegeex.png</file>
+        <file>images/photo.svg</file>
     </qresource>
 </RCC>

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "codeeditcomponent.h"
+#include "copilot.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -15,6 +16,7 @@ CodeEditComponent::CodeEditComponent(QWidget *parent)
     : QWidget (parent)
 {
     initUI();
+    initConnection();
 }
 
 void CodeEditComponent::showButtons(CodeEditComponent::ShowButtonsType type)
@@ -91,6 +93,31 @@ void CodeEditComponent::cleanFinalLine()
     updateCode(text);
 }
 
+QString CodeEditComponent::getContent()
+{
+    return codeEdit->toPlainText();
+}
+
+void CodeEditComponent::onInsertBtnClicked()
+{
+    if (!codeEdit)
+        return;
+
+    if (codeEdit->toPlainText().isEmpty())
+        return;
+
+    Copilot::instance()->insterText(codeEdit->toPlainText());
+}
+
+void CodeEditComponent::onCopyBtnClicked()
+{
+    if (!codeEdit)
+        return;
+
+    if (codeEdit->toPlainText().isEmpty())
+        return;
+}
+
 void CodeEditComponent::initUI()
 {
     QVBoxLayout *layout = new QVBoxLayout;
@@ -125,4 +152,10 @@ void CodeEditComponent::initTitleWidgets()
     title = new QLabel(titleWidget);
     title->setText("");
     layout->addWidget(title);
+}
+
+void CodeEditComponent::initConnection()
+{
+    connect(copyButton, &QPushButton::clicked, this, &CodeEditComponent::onCopyBtnClicked);
+    connect(insertButton, &QPushButton::clicked, this, &CodeEditComponent::onInsertBtnClicked);
 }

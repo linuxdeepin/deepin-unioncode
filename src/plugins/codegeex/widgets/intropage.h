@@ -17,9 +17,6 @@ class IntroPage : public QWidget
 public:
     explicit IntroPage(QWidget *parent = nullptr);
 
-Q_SIGNALS:
-    void sendQuestion(const QString &question);
-
 private:
     void initUI();
     void initLogo();

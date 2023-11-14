@@ -29,6 +29,8 @@ public:
     void sendMessage(const QString &prompt);
     void queryLoginState();
 
+    void cleanHistoryMessage();
+
 Q_SIGNALS:
     void loginSuccessed();
     void requestMessageUpdate(const MessageData &msg);

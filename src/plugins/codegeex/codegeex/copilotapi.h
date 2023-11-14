@@ -10,6 +10,25 @@ class QNetworkAccessManager;
 class QNetworkReply;
 
 namespace CodeGeeX {
+
+static QList<QString> SupportLanguage {
+    "python",
+    "go",
+    "java",
+    "javascript",
+    "c++",
+    "c#",
+    "php",
+    "typescript",
+    "ai",
+    "autocomplete",
+    "inline completion",
+    "code explanation",
+    "code generation",
+    "chat",
+    "chatglm"
+};
+
 class CopilotApi : public QObject
 {
     Q_OBJECT

@@ -146,6 +146,11 @@ void CodeGeeXManager::queryLoginState()
     queryTimer->start(1000);
 }
 
+void CodeGeeXManager::cleanHistoryMessage()
+{
+    curSessionMsg.clear();
+}
+
 QString CodeGeeXManager::configFilePath() const
 {
     return CustomPaths::user(CustomPaths::Configures) + "/codegeexcfg.json";

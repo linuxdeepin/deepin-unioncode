@@ -13,14 +13,25 @@ class QStackedWidget;
 class QPushButton;
 QT_END_NAMESPACE
 
+class AskPageWidget;
+class TranslationPageWidget;
 class CodeGeeXWidget : public QWidget
 {
     Q_OBJECT
+
+    enum CurrentPageState : uint8_t {
+        AskPage,
+        TrasnlatePage
+    };
+
 public:
     explicit CodeGeeXWidget(QWidget* parent = nullptr);
 
 public Q_SLOTS:
     void onLoginSuccessed();
+    void onDeleteBtnClicked();
+    void onHistoryBtnClicked();
+    void onCreateNewBtnClicked();
 
 private:
     void initUI();
@@ -31,9 +42,19 @@ private:
     void initStackWidget();
     void initAskWidgetConnection();
 
+    void resetHeaderBtns();
+
     QPushButton *loginBtn { nullptr };
     QTabBar *tabBar { nullptr };
     QStackedWidget *stackWidget { nullptr };
+    QPushButton *deleteBtn { nullptr };
+    QPushButton *historyBtn { nullptr };
+    QPushButton *createNewBtn { nullptr };
+
+    AskPageWidget *askPage { nullptr };
+    TranslationPageWidget *transPage { nullptr };
+
+    CurrentPageState currentState { AskPage };
 };
 
 #endif // CODEGEEXWIDGET_H

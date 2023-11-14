@@ -87,7 +87,20 @@
     <message>
         <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="235"/>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">发送</translation>
+    </message>
+</context>
+<context>
+    <name>AskPageWidget</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
+        <source>Enter a technical question here...</source>
+        <translation>在这里输入技术问题...</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="104"/>
+        <source>Send</source>
+        <translation>发送</translation>
     </message>
 </context>
 <context>
@@ -544,6 +557,19 @@
     </message>
 </context>
 <context>
+    <name>CodeEditComponent</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="143"/>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="147"/>
+        <source>Insert</source>
+        <translation>插入</translation>
+    </message>
+</context>
+<context>
     <name>CodeEditor</name>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="33"/>
@@ -572,6 +598,39 @@
         <location filename="../../src/plugins/codegeex/option/codegeexoptionwidget.cpp" line="32"/>
         <source>CodeGeeX</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CodeGeeXWidget</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="64"/>
+        <source>Login</source>
+        <translation>登录</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="97"/>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="100"/>
+        <source>History</source>
+        <translation>历史记录</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="103"/>
+        <source>New</source>
+        <translation>新对话</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="117"/>
+        <source>Ask CodeGeeX</source>
+        <translation>询问 CodeGeeX</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="118"/>
+        <source>Translation</source>
+        <translation>翻译代码</translation>
     </message>
 </context>
 <context>
@@ -1170,6 +1229,54 @@ dap端口未就绪，请重试。
         <location filename="../../src/plugins/python/python/option/interperterwidget.cpp" line="90"/>
         <source>Version</source>
         <translation>版本</translation>
+    </message>
+</context>
+<context>
+    <name>IntroPage</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="53"/>
+        <source>Welcome to CodeGeeX</source>
+        <translation>欢迎来到CodeGeeX</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="63"/>
+        <source>CodeGeeX provides code completion suggestions in editor, Press Tab to accept.</source>
+        <translation>CodeGeeX 在编辑器中提供代码补全建议，按 Tab 键即可接受。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="64"/>
+        <source>Select code and right-click to add comments or translate code.</source>
+        <translation>选择代码并右击以添加注释或翻译代码。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="65"/>
+        <source>Also, you can directly ask CodeGeeX any questions.</source>
+        <translation>此外，您还可以直接向 CodeGeeX 提出任何问题。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="74"/>
+        <source>Try the following questions:</source>
+        <translation>试试下面的问题：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="77"/>
+        <source>How to iterate through a dictionary in Python?</source>
+        <translation>如何在 Python 中遍历字典？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="78"/>
+        <source>Write a quicksort function.</source>
+        <translation>编写一个快速排序函数。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="79"/>
+        <source>What is FIFO?</source>
+        <translation>什么是FIFO？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="80"/>
+        <source>What is the best way to start learning JavaScript?</source>
+        <translation>开始学习 JavaScript 的最佳方法是什么？</translation>
     </message>
 </context>
 <context>
@@ -3426,6 +3533,29 @@ Delete anyway?</source>
         <location filename="../../src/tools/performancedapter/tools.cpp" line="1053"/>
         <source>suggestion: please to install tool, the package-name &quot;%0&quot;. If you confirm that the current tool exists and still cannot be used normally, the current operation does not support</source>
         <translation>建议：请安装工具，包名为“%0”。如果确认当前工具存在且仍无法正常使用，则当前操作不支持</translation>
+    </message>
+</context>
+<context>
+    <name>TranslationPageWidget</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="45"/>
+        <source>Input Code</source>
+        <translation>输入代码</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="54"/>
+        <source>Translate Into:</source>
+        <translation>翻译为：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="68"/>
+        <source>Translate</source>
+        <translation>翻译</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="77"/>
+        <source>Output Code</source>
+        <translation>输出代码</translation>
     </message>
 </context>
 <context>
