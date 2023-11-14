@@ -3,15 +3,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "recentdisplay.h"
-
 #include "displayrecentview.h"
+#include "services/window/windowservice.h"
+#include "plugins/template/wizard/maindialog.h"
 
+#include <DLabel>
+#include <DFrame>
+#include <DStyle>
+#include <DPushButton>
+#include <DFileDialog>
+
+#include <QImageReader>
 #include <QList>
 #include <QDir>
 #include <QStandardItemModel>
 #include <QListView>
 #include <QHBoxLayout>
 #include <QJsonDocument>
+
+DWIDGET_USE_NAMESPACE
 
 static RecentDisplay *ins{nullptr};
 
@@ -186,39 +196,93 @@ class RecentDisplayPrivate
     QVBoxLayout *vLayoutDir{nullptr};
     DisplayProView *proView{nullptr};
     DisplayDocView *docView{nullptr};
-    QLabel *dirLabel{nullptr};
-    QLabel *docLabel{nullptr};
+    DLabel *dirLabel{nullptr};
+    DLabel *docLabel{nullptr};
+
+    DPushButton *btnOpenFile{nullptr};
+    DPushButton *btnOpenProject{nullptr};
+    DPushButton *btnNewFileOrPro{nullptr};
 };
 
-RecentDisplay::RecentDisplay(QWidget *parent)
-    : QWidget (parent)
+RecentDisplay::RecentDisplay(DWidget *parent)
+    : DWidget (parent)
     , d(new RecentDisplayPrivate())
 {
+    DFrame *navFrame = new DFrame();
+    DFrame *docFrame = new DFrame();
+    DFrame *proFrame = new DFrame();
+
+    navFrame = new DFrame();
+    navFrame->setLineWidth(0);
+    navFrame->setContentsMargins(0, 0, 0, 0);
+    DStyle::setFrameRadius(navFrame, 0);
+    QVBoxLayout *vLayoutNav = new QVBoxLayout();
+    QLabel *recentLogo = new QLabel();
+    QImageReader maskIimageReader(":/recent/images/recentLogo1.png");
+    maskIimageReader.setScaledSize(QSize(200, 143));
+    QPixmap logo = QPixmap::fromImage(maskIimageReader.read());
+    logo.setDevicePixelRatio(recentLogo->devicePixelRatioF());
+    recentLogo->setPixmap(logo);
+    d->btnOpenFile = new DPushButton(tr("Open File"));
+    d->btnOpenProject = new DPushButton(tr("Open Project"));
+    d->btnNewFileOrPro = new DPushButton(tr("New File or Project"));
+    vLayoutNav->setContentsMargins(50, 200, 50, 200);
+    vLayoutNav->setSpacing(20);
+    vLayoutNav->setAlignment(Qt::AlignCenter);
+    vLayoutNav->addWidget(recentLogo);
+    vLayoutNav->addWidget(d->btnOpenFile);
+    vLayoutNav->addWidget(d->btnOpenProject);
+    vLayoutNav->addWidget(d->btnNewFileOrPro);
+    navFrame->setLayout(vLayoutNav);
+
+    DLabel *recentTitle = new DLabel(tr("Recent Open"));
+    recentTitle->setForegroundRole(QPalette::BrightText);
+    recentTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    DFontSizeManager::instance()->bind(recentTitle, DFontSizeManager::T4, QFont::Medium);
+
+    docFrame->setLineWidth(0);
     d->docView = new DisplayDocView();
-    d->docView->setMinimumWidth(400);
-    d->docLabel = new QLabel(tr("Documents"));
+    d->docLabel = new DLabel(tr("Documents"));
+    d->docLabel->setForegroundRole(QPalette::BrightText);
+    d->docLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    DFontSizeManager::instance()->bind(d->docLabel, DFontSizeManager::T4, QFont::Medium);
     d->vLayoutDoc = new QVBoxLayout();
-    d->vLayoutDoc->setMargin(40);
+    d->vLayoutDoc->setContentsMargins(10, 10, 10, 10);
     d->vLayoutDoc->addWidget(d->docLabel);
     d->vLayoutDoc->setSpacing(20);
     d->vLayoutDoc->addWidget(d->docView);
-    d->vLayoutDoc->setAlignment(d->proView, Qt::AlignRight);
+    docFrame->setLayout(d->vLayoutDoc);
 
+    proFrame->setLineWidth(0);
     d->proView = new DisplayProView();
-    d->proView->setMinimumWidth(400);
-    d->dirLabel = new QLabel(tr("Projects"));
+    d->dirLabel = new DLabel(tr("Projects"));
+    d->dirLabel->setForegroundRole(QPalette::BrightText);
+    d->dirLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    DFontSizeManager::instance()->bind(d->dirLabel, DFontSizeManager::T4, QFont::Medium);
     d->vLayoutDir = new QVBoxLayout();
-    d->vLayoutDir->setMargin(40);
+    d->vLayoutDir->setContentsMargins(10, 10, 10, 10);
     d->vLayoutDir->addWidget(d->dirLabel);
     d->vLayoutDir->setSpacing(20);
     d->vLayoutDir->addWidget(d->proView);
-    d->vLayoutDir->setAlignment(d->docView, Qt::AlignLeft);
+    proFrame->setLayout(d->vLayoutDir);
+
+    QHBoxLayout *proAndDocLayout = new QHBoxLayout();
+    proAndDocLayout->addWidget(proFrame);
+    proAndDocLayout->addSpacing(0);
+    proAndDocLayout->addWidget(docFrame);
+
+    QVBoxLayout *recentNavLayout = new QVBoxLayout();
+    recentNavLayout->setContentsMargins(20, 0, 25, 20);
+    recentNavLayout->addSpacing(15);
+    recentNavLayout->setAlignment(Qt::AlignTop);
+    recentNavLayout->addWidget(recentTitle);
+    recentNavLayout->addSpacing(15);
+    recentNavLayout->addLayout(proAndDocLayout);
 
     d->hLayout = new QHBoxLayout();
-    d->hLayout->addStretch();
-    d->hLayout->addLayout(d->vLayoutDir);
-    d->hLayout->addLayout(d->vLayoutDoc);
-    d->hLayout->addStretch();
+    d->hLayout->setContentsMargins(0, 0, 0, 0);
+    d->hLayout->addWidget(navFrame);
+    d->hLayout->addLayout(recentNavLayout);
     setLayout(d->hLayout);
 
     QObject::connect(d->proView, &QListView::doubleClicked,
@@ -227,6 +291,18 @@ RecentDisplay::RecentDisplay(QWidget *parent)
 
     QObject::connect(d->docView, &QListView::doubleClicked,
                      this, &RecentDisplay::doDoubleCliekedDocument,
+                     Qt::UniqueConnection);
+
+    QObject::connect(d->btnOpenFile, &DPushButton::clicked,
+                     this, &RecentDisplay::btnOpenFileClicked,
+                     Qt::UniqueConnection);
+
+    QObject::connect(d->btnOpenProject, &DPushButton::clicked,
+                     this, &RecentDisplay::btnOpenProjectClicked,
+                     Qt::UniqueConnection);
+
+    QObject::connect(d->btnNewFileOrPro, &DPushButton::clicked,
+                     this, &RecentDisplay::btnNewFileOrProClicked,
                      Qt::UniqueConnection);
 }
 
@@ -272,5 +348,30 @@ void RecentDisplay::doDoubleCliekedDocument(const QModelIndex &index)
     QString filePath = index.data(Qt::DisplayRole).toString();
     RecentDisplay::addDocument(filePath);
     editor.openFile(filePath);
+}
+
+void RecentDisplay::btnOpenFileClicked()
+{
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString filePath = DFileDialog::getOpenFileName(nullptr, dpfservice::DIALOG_OPEN_DOCUMENT_TITLE, dir);
+    if (filePath.isEmpty() && !QFileInfo(filePath).exists())
+        return;
+    recent.saveOpenedFile(filePath);
+    editor.openFile(filePath);
+}
+
+void RecentDisplay::btnOpenProjectClicked()
+{
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString filePath = DFileDialog::getOpenFileName(nullptr, dpfservice::DIALOG_OPEN_DOCUMENT_TITLE, dir);
+    if (filePath.isEmpty() && !QFileInfo(filePath).exists())
+        return;
+    recent.saveOpenedFile(filePath);
+    editor.openFile(filePath);
+}
+
+void RecentDisplay::btnNewFileOrProClicked()
+{
+    projectTemplate.newWizard();
 }
 

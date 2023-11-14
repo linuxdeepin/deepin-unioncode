@@ -90,14 +90,14 @@ bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVarian
     QMap<QString, QVariant> apiKey;
     apiKey.insert(kApiKey, config.apiKey);
 
-    map.insert(tr("Detail"), apiKey);
+    map.insert("Detail", apiKey);
 
     return true;
 }
 
 bool DetailWidget::mapToData(const QMap<QString, QVariant> &map, CodeGeeXConfig &config)
 {
-    QMap<QString, QVariant> detail = map.value(tr("Detail")).toMap();
+    QMap<QString, QVariant> detail = map.value("Detail").toMap();
     config.apiKey = detail.value(kApiKey).toString();
 
     return true;

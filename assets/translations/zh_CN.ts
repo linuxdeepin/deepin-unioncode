@@ -4,27 +4,27 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="30"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="39"/>
         <source>About Deepin Union Code</source>
         <translation>关于Deepin Union Code</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="35"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="45"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation>创建于%1 %2, %3平台</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="38"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="48"/>
         <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                we hope that the scheme will be useful,                but we do not guarantee that it will be of economic value or fit for a particular purpose.                For more information, see the GNU General Public License. &lt;br/&gt;               Thanks to all the &lt;a href=&quot;opensourcesoftware&quot;&gt;open source software&lt;/a&gt; used.&lt;br/&gt;</source>
         <translation type="unfinished">&lt;h3&gt;Deepin Union Code%1&lt;/h3&gt;%2&lt;br/&gt;版权 2019-%3 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;            致谢所有用到的&lt;a href=&quot;opensourcesoftware&quot;&gt;开源软件&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="86"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="100"/>
         <source>Error</source>
         <translation type="unfinished">错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="86"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="100"/>
         <source>Failed to open the file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -915,6 +915,22 @@ dap端口未就绪，请重试。
     </message>
 </context>
 <context>
+    <name>DPushButton</name>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="68"/>
+        <source>Close</source>
+        <translation>关闭</translation>
+    </message>
+</context>
+<context>
+    <name>DToolBar</name>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="210"/>
+        <source>Navigation</source>
+        <translation>导航栏</translation>
+    </message>
+</context>
+<context>
     <name>DebuggerPlugin</name>
     <message>
         <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="67"/>
@@ -935,12 +951,12 @@ dap端口未就绪，请重试。
 <context>
     <name>DetailWidget</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="73"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="76"/>
         <source>Browse...</source>
         <translation>浏览...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="79"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="82"/>
         <source>Choose path</source>
         <translation>选择路径</translation>
     </message>
@@ -962,52 +978,52 @@ dap端口未就绪，请重试。
 <context>
     <name>DetailsView</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="85"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="90"/>
         <source>Name:</source>
         <translation>名称：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="92"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="97"/>
         <source>Version:</source>
         <translation>版本：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="99"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="104"/>
         <source>Compatibility version:</source>
         <translation>兼容版本：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="106"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="111"/>
         <source>Vendor:</source>
         <translation>供应商：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="113"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="118"/>
         <source>Copyright:</source>
         <translation>版权：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="120"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="125"/>
         <source>Category:</source>
         <translation>插件类别：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="127"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="132"/>
         <source>URL:</source>
         <translation>URL：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="146"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="151"/>
         <source>Description:</source>
         <translation>说明：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="135"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="140"/>
         <source>License:</source>
         <translation>许可：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="157"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="162"/>
         <source>Dependencies:</source>
         <translation>依赖关系：</translation>
     </message>
@@ -1015,7 +1031,7 @@ dap端口未就绪，请重试。
 <context>
     <name>DisplayDocView</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="177"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="187"/>
         <source>Documents</source>
         <translation>文件</translation>
     </message>
@@ -1023,7 +1039,7 @@ dap端口未就绪，请重试。
 <context>
     <name>DisplayProView</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="30"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="40"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
@@ -1150,7 +1166,7 @@ dap端口未就绪，请重试。
     <message>
         <location filename="../../src/plugins/java/gradle/builder/mainframe/gradlebuildergenerator.cpp" line="75"/>
         <source>The path of &quot;%1&quot; is not exist! please check and reopen the project.</source>
-        <translation>&quot;%1&quot; 路径不存在！</translation>
+        <translation>&quot;%1&quot; 路径不存在！请检查并重新打开项目。</translation>
     </message>
 </context>
 <context>
@@ -1385,38 +1401,38 @@ repos path: %0</source>
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="36"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="59"/>
         <source>New File or Project</source>
         <translation>新建文件或工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="53"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="61"/>
         <source>Choose a template:</source>
         <translation>选择一个模板：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="65"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="73"/>
         <source>Templates</source>
         <translation>模板</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="149"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="157"/>
         <source>Create</source>
         <translation>创建</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="150"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="158"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="182"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="195"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="194"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="207"/>
         <source>Tip</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="195"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="207"/>
         <source>Can not find kit.</source>
         <translation>找不到配套工具。</translation>
     </message>
@@ -1577,17 +1593,17 @@ repos path: %0</source>
 <context>
     <name>PluginDialog</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="27"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="29"/>
         <source>Installed Plugins</source>
         <translation>已安装的插件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="34"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="38"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="37"/>
+        <location filename="../../src/plugins/core/mainframe/plugindialog.cpp" line="41"/>
         <source> Restart required.</source>
         <translation> 需要重启。</translation>
     </message>
@@ -2674,11 +2690,6 @@ storage: %2
         <translation>全部还原</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="58"/>
-        <source>Close</source>
-        <translation>关闭</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="53"/>
         <source>Find Previous</source>
         <translation>向前查找</translation>
@@ -2773,11 +2784,6 @@ storage: %2
 <context>
     <name>QToolBar</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="199"/>
-        <source>Navigation</source>
-        <translation>导航栏</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="38"/>
         <source>Start</source>
         <translation>开始</translation>
@@ -2864,12 +2870,32 @@ Delete anyway?</source>
 <context>
     <name>RecentDisplay</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="199"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="226"/>
+        <source>Open File</source>
+        <translation>打开文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="227"/>
+        <source>Open Project</source>
+        <translation>打开工程</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="228"/>
+        <source>New File or Project</source>
+        <translation>新建文件或工程</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="238"/>
+        <source>Recent Open</source>
+        <translation>最近打开</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="245"/>
         <source>Documents</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="209"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="258"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
@@ -3604,6 +3630,14 @@ Delete anyway?</source>
         <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.cpp" line="211"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
+    </message>
+</context>
+<context>
+    <name>WindowKeeper</name>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="242"/>
+        <source>Deepin Union Code</source>
+        <translation></translation>
     </message>
 </context>
 <context>

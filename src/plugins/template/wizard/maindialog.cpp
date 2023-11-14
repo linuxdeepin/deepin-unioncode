@@ -13,10 +13,9 @@
 #include <DPushButton>
 #include <DTreeView>
 #include <DTitlebar>
-
+#include <DListWidget>
 #include <QStackedWidget>
 #include <QStandardItemModel>
-#include <QListWidget>
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QUuid>

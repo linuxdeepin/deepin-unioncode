@@ -23,6 +23,7 @@ add_library(${PROJECT_NAME}
     SHARED
     ${CXX_CPP}
     ${CXX_H}
+    recent.qrc
     )
 
 target_link_libraries(${PROJECT_NAME}
@@ -31,6 +32,7 @@ target_link_libraries(${PROJECT_NAME}
     services
     ${QtUseModules}
     ${PkgUserModules}
+    ${DtkWidget_LIBRARIES}
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})

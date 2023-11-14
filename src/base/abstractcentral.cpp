@@ -4,13 +4,16 @@
 
 #include "abstractcentral.h"
 
+#include <DWidget>
+
 #include <QDebug>
-#include <QWidget>
+
+DWIDGET_USE_NAMESPACE
 
 class AbstractCentralPrivate
 {
     friend class AbstractCentral;
-    QWidget *widget;
+    DWidget *widget;
 };
 
 AbstractCentral::AbstractCentral(void *qwidget)
@@ -21,8 +24,8 @@ AbstractCentral::AbstractCentral(void *qwidget)
         abort();
     }
 
-    d->widget = static_cast<QWidget*>(qwidget);
-    QWidget::connect(d->widget, &QWidget::destroyed,
+    d->widget = static_cast<DWidget*>(qwidget);
+    DWidget::connect(d->widget, &DWidget::destroyed,
                      d->widget, [this](){
         delete this;
     }, Qt::UniqueConnection);

@@ -5,11 +5,11 @@
 #ifndef RECENTDISPLAY_H
 #define RECENTDISPLAY_H
 
-#include <QWidget>
+#include <DWidget>
 #include "common/common.h"
 
 class RecentDisplayPrivate;
-class RecentDisplay : public QWidget
+class RecentDisplay : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
     RecentDisplayPrivate *const d;
@@ -19,7 +19,7 @@ public:
         ProjectLanguage,
         ProjectWorkspace,
     };
-    explicit RecentDisplay(QWidget *parent = nullptr);
+    explicit RecentDisplay(DTK_WIDGET_NAMESPACE::DWidget *parent = nullptr);
     virtual ~RecentDisplay();
     static RecentDisplay *instance();
 
@@ -32,6 +32,10 @@ public slots:
 private slots:
     void doDoubleClickedProject(const QModelIndex &index);
     void doDoubleCliekedDocument(const QModelIndex &index);
+
+    void btnOpenFileClicked();
+    void btnOpenProjectClicked();
+    void btnNewFileOrProClicked();
 };
 
 #endif // RECENTDISPLAY_H
