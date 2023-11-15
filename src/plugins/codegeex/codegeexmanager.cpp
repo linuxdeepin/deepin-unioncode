@@ -143,6 +143,8 @@ void CodeGeeXManager::recevieLoginState(AskApi::LoginState loginState)
     } else if (loginState == AskApi::LoginState::kLoginSuccess) {
         Q_EMIT loginSuccessed();
         // switch to ask page.
+        queryTimer->stop();
+        queryTimer->deleteLater();
     }
 }
 
@@ -151,6 +153,7 @@ CodeGeeXManager::CodeGeeXManager(QObject *parent)
 {
     initConnections();
     loadConfig();
+    queryLoginState();
 }
 
 void CodeGeeXManager::initConnections()
@@ -164,8 +167,6 @@ void CodeGeeXManager::queryLoginState()
 {
     if (!queryTimer) {
         queryTimer = new QTimer(this);
-        queryTimer->setSingleShot(true);
-
         connect(queryTimer, &QTimer::timeout, this, [ = ] {
             if (!sessionId.isEmpty())
                 askApi.sendQueryRequest(sessionId);

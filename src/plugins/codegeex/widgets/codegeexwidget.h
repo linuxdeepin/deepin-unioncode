@@ -45,7 +45,6 @@ private:
 
     void resetHeaderBtns();
 
-    QPushButton *loginBtn { nullptr };
     QTabBar *tabBar { nullptr };
     QStackedWidget *stackWidget { nullptr };
     QPushButton *deleteBtn { nullptr };
