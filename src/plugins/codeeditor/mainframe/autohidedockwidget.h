@@ -5,9 +5,12 @@
 #ifndef AUTOHIDEDOCKWIDGET_H
 #define AUTOHIDEDOCKWIDGET_H
 
-#include <QDockWidget>
+#include <DDockWidget>
+#include <DWidget>
 
-class AutoHideDockWidget : public QDockWidget
+DWIDGET_USE_NAMESPACE
+
+class AutoHideDockWidget : public DDockWidget
 {
     Q_OBJECT
 public:
@@ -16,9 +19,9 @@ public:
     explicit AutoHideDockWidget(QWidget *parent = nullptr,
                                 Qt::WindowFlags flags = Qt::WindowFlags());
 
-    QWidget *widget() const;
+    DWidget *widget() const;
 
-    void setWidget(QWidget *widget);
+    void setWidget(DWidget *widget);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *e) override;

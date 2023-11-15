@@ -23,9 +23,6 @@ set(CXX_H
     core.h
     )
 
-set(QT_THEME
-    theme/theme.qrc)
-
 add_library(${PROJECT_NAME}
     SHARED
     ${CXX_CPP}

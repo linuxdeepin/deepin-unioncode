@@ -14,8 +14,8 @@
 // MW = MainWindow
 namespace dpfservice {
 
-inline const int MW_MIN_WIDTH { 1200 };
-inline const int MW_MIN_HEIGHT { 800 };
+inline const int MW_MIN_WIDTH { 1286 };
+inline const int MW_MIN_HEIGHT { 860 };
 
 inline const QString MWNA_RECENT { QAction::tr("Recent") };
 inline const QString MWNA_EDIT { QAction::tr("Edit") };

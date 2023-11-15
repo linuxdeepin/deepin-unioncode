@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / toolbar /continue</title>
+    <g id="ICON-/-toolbar-/continue" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="矩形" fill="#626E88" fill-rule="nonzero" x="2" y="2" width="3" height="12" rx="1.5"></rect>
+        <path d="M8.9503642,2.35227271 C7.8732078,1.5065532 7,2.23699425 7,3.97196944 L7,12.0283344 C7,13.7685877 7.87674829,14.4909709 8.9503642,13.6480311 L14.1934598,9.53146254 C15.2706162,8.68574304 15.2670757,7.31178102 14.1934598,6.4688413 L8.9503642,2.35227271 Z" id="play" fill="#626E88" fill-rule="nonzero"></path>
+    </g>
+</svg>

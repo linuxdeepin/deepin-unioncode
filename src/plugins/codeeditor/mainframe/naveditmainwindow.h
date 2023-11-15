@@ -5,8 +5,13 @@
 #ifndef NAVEDITMAINWINDOW_H
 #define NAVEDITMAINWINDOW_H
 
-#include <QMainWindow>
+#include <DMainWindow>
+#include <DWidget>
+#include <DTabWidget>
+
 #include <QMutex>
+
+DWIDGET_USE_NAMESPACE
 
 class QGridLayout;
 class QTabWidget;
@@ -17,7 +22,7 @@ class QDockWidget;
 class AutoHideDockWidget;
 class ToolBarManager;
 
-class NavEditMainWindow : public QMainWindow
+class NavEditMainWindow : public DMainWindow
 {
     Q_OBJECT
     AutoHideDockWidget *qDockWidgetWorkspace{nullptr};
@@ -26,11 +31,11 @@ class NavEditMainWindow : public QMainWindow
     AutoHideDockWidget *qDockWidgetFindToolBar{nullptr};
     AutoHideDockWidget *qDockWidgetValgrindBar{nullptr};
     AutoHideDockWidget *qDockWidgetTools{nullptr};
-    QWidget *qWidgetEdit{nullptr};
-    QWidget *qWidgetWatch{nullptr};
-    QTabWidget *qTabWidgetContext{nullptr};
-    QTabWidget *qTabWidgetWorkspace{nullptr};
-    QTabWidget *qTabWidgetTools{nullptr};
+    DWidget *qWidgetEdit{nullptr};
+    DWidget *qWidgetWatch{nullptr};
+    DTabWidget *qTabWidgetContext{nullptr};
+    DTabWidget *qTabWidgetWorkspace{nullptr};
+    DTabWidget *qTabWidgetTools{nullptr};
     ToolBarManager *mainToolBar{nullptr};
     QList<QString> contextList;
     QMutex mutex;
@@ -41,9 +46,9 @@ public:
     QStringList contextWidgetTitles() const;
     void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget);
     // return old edit widget
-    QWidget *setWidgetEdit(AbstractCentral *editWidget);
+    DWidget *setWidgetEdit(AbstractCentral *editWidget);
     // return old watch widget
-    QWidget *setWidgetWatch(AbstractWidget *watchWidget);
+    DWidget *setWidgetWatch(AbstractWidget *watchWidget);
     void addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group);
     // the page widget itself is not deleted.
     void removeContextWidget(AbstractWidget *contextWidget);
@@ -59,6 +64,7 @@ public:
     void removeToolBarItem(const QString &id);
     void setToolBarItemDisable(const QString &id, bool disable);
 
+    DWidget *getEditToolBar();
 private:
     void adjustWorkspaceItemOrder();
 };
