@@ -68,6 +68,7 @@ set(CXX_H
     toolchain/toolchain.h
     actionmanager/actionmanager.h
     actionmanager/command.h
+    unilog.h
     )
 
 set(CXX_CPP

@@ -6,6 +6,7 @@
 #include "private/client_p.h"
 #include "common/util/custompaths.h"
 #include "common/util/processutil.h"
+#include "common/unilog.h"
 
 #include <QMetaType>
 #include <QDebug>
@@ -291,7 +292,7 @@ void ClientPrivate::callNotification(const QString &method, const QJsonObject &p
 
 void ClientPrivate::writeLspData(const QByteArray &jsonObj)
 {
-    qInfo() << "\nclient->server:\n{\n" << jsonObj << "\n}";
+    uniDebug() << "\nclient->server:\n{\n" << jsonObj << "\n}";
     q->write(jsonObj);
     q->waitForBytesWritten();
 }
@@ -1058,18 +1059,18 @@ void ClientPrivate::doReadStdoutLine()
 void ClientPrivate::identifyJsonObject(const QJsonObject &jsonObj)
 {
     if (calledError(jsonObj)) {
-        qWarning() << "\nclient <- server:\n{\n" << jsonObj << "\n}";
+        uniCritical() << "\nclient <- server:\n{\n" << jsonObj << "\n}";
         return;
     }
 
 
     if (calledResult(jsonObj)) {
-        qInfo() << "\nclient <- server:\n{\n" << jsonObj << "\n}";
+        uniWarning() << "\nclient <- server:\n{\n" << jsonObj << "\n}";
         return;
     }
 
     if (serverCalled(jsonObj)) {
-        qInfo() << "\nclient <- server:\n{\n" << jsonObj << "\n}";
+        uniWarning() << "\nclient <- server:\n{\n" << jsonObj << "\n}";
         return;
     }
 }
@@ -1096,13 +1097,13 @@ ClientPrivate::ClientPrivate(Client * const q)
     QObject::connect(q, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
                      this, [&](int exitCode, QProcess::ExitStatus status)
     {
-        qCritical() << "\nclient <- server\n{\n" << "lspServerProc finished:\n" << exitCode << status << "\n}";
+        uniInfo() << "\nclient <- server\n{\n" << "lspServerProc finished:\n" << exitCode << status << "\n}";
     });
 
     QObject::connect(q, &QProcess::readyReadStandardError,
                      this, [=]()
     {
-        qCritical() << "\nclient <- server\n{\n" <<q->readAllStandardError() << "\n}";
+        uniCritical() << "\nclient <- server\n{\n" <<q->readAllStandardError() << "\n}";
     });
 
     QObject::connect(q, &QProcess::readyReadStandardOutput,

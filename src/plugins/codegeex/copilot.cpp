@@ -9,11 +9,11 @@
 #include <QDebug>
 #include <QTimer>
 
-static const char *kUrlGenerateOneLine = "https://tianqi.aminer.cn/api/v2/multilingual_code_generate";
+//static const char *kUrlGenerateOneLine = "https://tianqi.aminer.cn/api/v2/multilingual_code_generate";
 static const char *kUrlGenerateMultiLine = "https://tianqi.aminer.cn/api/v2/multilingual_code_generate_adapt";
 static const char *kUrlComment = "https://tianqi.aminer.cn/api/v2/multilingual_code_explain";
 static const char *kUrlTranslate = "https://tianqi.aminer.cn/api/v2/multilingual_code_translate";
-static const char *kUrlBugfix = "https://tianqi.aminer.cn/api/v2/multilingual_code_bugfix";
+//static const char *kUrlBugfix = "https://tianqi.aminer.cn/api/v2/multilingual_code_bugfix";
 
 using namespace CodeGeeX;
 using namespace dpfservice;

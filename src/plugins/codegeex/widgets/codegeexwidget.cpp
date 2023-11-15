@@ -19,16 +19,17 @@ CodeGeeXWidget::CodeGeeXWidget(QWidget *parent)
 {
     initUI();
     initConnection();
-    CodeGeeXManager::instance()->queryLoginState();
 }
 
 void CodeGeeXWidget::onLoginSuccessed()
 {
-    if (loginBtn) {
-        auto mainLayout = qobject_cast<QVBoxLayout*>(layout());
-        mainLayout->removeWidget(loginBtn);
-        delete loginBtn;
-        loginBtn = nullptr;
+    auto mainLayout = qobject_cast<QVBoxLayout*>(layout());
+    if (mainLayout) {
+        QLayoutItem* item = nullptr;
+        while ((item = mainLayout->takeAt(0)) != nullptr) {
+            delete item->widget();
+            delete item;
+        }
     }
 
     initAskWidget();
@@ -63,16 +64,46 @@ void CodeGeeXWidget::onCreateNewBtnClicked()
 void CodeGeeXWidget::initUI()
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    setLayout(mainLayout);
 
-    loginBtn = new QPushButton(this);
-    loginBtn->setText(tr("Login"));
+    auto initLoginUI = [this](){
+        auto verticalLayout = new QVBoxLayout(this);
+        verticalLayout->setAlignment(Qt::AlignCenter);
+        auto verticalSpacer_top = new QSpacerItem(20, 200, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalLayout->addItem(verticalSpacer_top);
+
+        auto label_icon = new QLabel();
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        label_icon->setSizePolicy(sizePolicy);
+        label_icon->setPixmap(QPixmap(":/resoures/images/logo-codegeex.png").scaledToWidth(80));
+        label_icon->setAlignment(Qt::AlignCenter);
+
+        verticalLayout->addWidget(label_icon, Qt::AlignCenter);
+
+        auto label_text = new QLabel();
+        label_text->setSizePolicy(sizePolicy);
+        label_text->setText(tr("Welcome to CodeGeeX\nA must-have all-round AI tool for developers"));
+        label_text->setAlignment(Qt::AlignCenter);
+
+        verticalLayout->addWidget(label_text, Qt::AlignCenter);
+
+        auto loginBtn = new QPushButton();
+        loginBtn->setSizePolicy(sizePolicy);
+        loginBtn->setText(tr("Go to login"));
+        connect(loginBtn, &QPushButton::clicked, this, [ = ]{
+            qInfo() << "on login clicked";
+            CodeGeeXManager::instance()->login();
+        });
+
+        verticalLayout->addWidget(loginBtn);
+
+        auto verticalSpacer_bottom = new QSpacerItem(20, 500, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalLayout->addItem(verticalSpacer_bottom);
+    };
+    initLoginUI();
 }
 
 void CodeGeeXWidget::initConnection()
 {
-    connect(loginBtn, &QPushButton::clicked, CodeGeeXManager::instance(), &CodeGeeXManager::login);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::loginSuccessed, this, &CodeGeeXWidget::onLoginSuccessed);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::createdNewSession, this, &CodeGeeXWidget::onNewSessionCreated);
 }

@@ -93,7 +93,6 @@ bool CxxPlugin::start()
 
 dpf::Plugin::ShutdownFlag CxxPlugin::stop()
 {
-    qInfo() << __FUNCTION__;
     return Sync;
 }
 
