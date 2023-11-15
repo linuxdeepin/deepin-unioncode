@@ -547,12 +547,12 @@
 <context>
     <name>CodeEditComponent</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="143"/>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="150"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="147"/>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="154"/>
         <source>Insert</source>
         <translation type="unfinished"></translation>
     </message>
@@ -591,33 +591,38 @@
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="64"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="70"/>
         <source>Login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="97"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="100"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="100"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="103"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="103"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="106"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="117"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="120"/>
         <source>Ask CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="118"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="121"/>
         <source>Translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="144"/>
+        <source>Creating a new session...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -934,12 +939,6 @@ The dap port is not ready, please retry.
     <message>
         <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="82"/>
         <source>Choose path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="93"/>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="100"/>
-        <source>Detail</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1376,38 +1375,38 @@ repos path: %0</source>
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="59"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="58"/>
         <source>New File or Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="61"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="60"/>
         <source>Choose a template:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="73"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="72"/>
         <source>Templates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="157"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="156"/>
         <source>Create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="158"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="157"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="194"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="207"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="193"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="206"/>
         <source>Tip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="207"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="206"/>
         <source>Can not find kit.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3593,7 +3592,7 @@ Delete anyway?</source>
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="242"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="243"/>
         <source>Deepin Union Code</source>
         <translation type="unfinished"></translation>
     </message>

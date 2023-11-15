@@ -29,13 +29,14 @@ public:
 
 public Q_SLOTS:
     void onLoginSuccessed();
+    void onNewSessionCreated();
     void onDeleteBtnClicked();
     void onHistoryBtnClicked();
     void onCreateNewBtnClicked();
 
 private:
     void initUI();
-    void initLoginConnection();
+    void initConnection();
 
     void initAskWidget();
     void initTabBar();

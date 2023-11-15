@@ -41,7 +41,7 @@ void IntroPage::initLogo()
 
     QLabel *logo = new QLabel(this);
     logo->setAlignment(Qt::AlignHCenter);
-    logo->setPixmap(QPixmap(":/demo/images/logo-codegeex.png").scaledToWidth(80));
+    logo->setPixmap(QPixmap(":/resoures/images/logo-codegeex.png").scaledToWidth(80));
     logoLayout->addWidget(logo);
 
     QLabel *logoLabel = new QLabel(this);

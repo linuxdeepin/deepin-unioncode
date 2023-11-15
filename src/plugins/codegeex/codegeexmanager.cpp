@@ -16,6 +16,7 @@
 
 static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
 static const char *kUrlNewSession = "https://codegeex.cn/prod/code/chatGlmTalk/insert";
+static const char *kUrlDeleteSession = "https://codegeex.cn/prod/code/chatGlmTalk/delete";
 
 using namespace CodeGeeX;
 
@@ -71,6 +72,23 @@ void CodeGeeXManager::loadConfig()
     }
 }
 
+void CodeGeeXManager::createNewSession()
+{
+    QString currentMSecsStr = QString::number(QDateTime::currentMSecsSinceEpoch());
+    QString sessionTitle("Session_" + currentMSecsStr);
+    QString taskId(uuid());
+    askApi.postNewSession(kUrlNewSession, sessionId, sessionTitle, taskId);
+}
+
+void CodeGeeXManager::deleteCurrentSession()
+{
+    if (currentTalkID.isEmpty())
+        return;
+
+    askApi.deleteSessions(kUrlDeleteSession, sessionId, { currentTalkID });
+    createNewSession();
+}
+
 void CodeGeeXManager::sendMessage(const QString &prompt)
 {
     QString askId = "User" + QString::number(QDateTime::currentMSecsSinceEpoch());
@@ -84,6 +102,16 @@ void CodeGeeXManager::sendMessage(const QString &prompt)
     }
     QString machineId = QSysInfo::machineUniqueId();
     askApi.postSSEChat(kUrlSSEChat, sessionId, prompt, machineId, history);
+}
+
+void CodeGeeXManager::onSessionCreated(const QString &talkId, bool isSuccessful)
+{
+    if (isSuccessful) {
+        currentTalkID = talkId;
+        Q_EMIT createdNewSession();
+    } else {
+        qWarning() << "Create session failed!";
+    }
 }
 
 void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, const QString &event)
@@ -129,6 +157,7 @@ void CodeGeeXManager::initConnections()
 {
     connect(&askApi, &AskApi::response, this, &CodeGeeXManager::onResponse);
     connect(&askApi, &AskApi::loginState, this, &CodeGeeXManager::recevieLoginState);
+    connect(&askApi, &AskApi::sessionCreated, this, &CodeGeeXManager::onSessionCreated);
 }
 
 void CodeGeeXManager::queryLoginState()
