@@ -559,12 +559,12 @@
 <context>
     <name>CodeEditComponent</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="143"/>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="150"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="147"/>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="154"/>
         <source>Insert</source>
         <translation>插入</translation>
     </message>
@@ -603,34 +603,39 @@
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="64"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="70"/>
         <source>Login</source>
         <translation>登录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="97"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="100"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="100"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="103"/>
         <source>History</source>
         <translation>历史记录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="103"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="106"/>
         <source>New</source>
         <translation>新对话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="117"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="120"/>
         <source>Ask CodeGeeX</source>
         <translation>询问 CodeGeeX</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="118"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="121"/>
         <source>Translation</source>
         <translation>翻译代码</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="144"/>
+        <source>Creating a new session...</source>
+        <translation>创建新的会话中...</translation>
     </message>
 </context>
 <context>
@@ -959,12 +964,6 @@ dap端口未就绪，请重试。
         <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="82"/>
         <source>Choose path</source>
         <translation>选择路径</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="93"/>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="100"/>
-        <source>Detail</source>
-        <translation>细节</translation>
     </message>
 </context>
 <context>
@@ -1401,38 +1400,38 @@ repos path: %0</source>
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="59"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="58"/>
         <source>New File or Project</source>
         <translation>新建文件或工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="61"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="60"/>
         <source>Choose a template:</source>
         <translation>选择一个模板：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="73"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="72"/>
         <source>Templates</source>
         <translation>模板</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="157"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="156"/>
         <source>Create</source>
         <translation>创建</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="158"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="157"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="194"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="207"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="193"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="206"/>
         <source>Tip</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="207"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="206"/>
         <source>Can not find kit.</source>
         <translation>找不到配套工具。</translation>
     </message>
@@ -3635,7 +3634,7 @@ Delete anyway?</source>
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="242"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="243"/>
         <source>Deepin Union Code</source>
         <translation></translation>
     </message>

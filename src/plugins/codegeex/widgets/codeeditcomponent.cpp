@@ -11,6 +11,9 @@
 #include <QPlainTextEdit>
 #include <QLabel>
 #include <QDebug>
+#include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
 
 CodeEditComponent::CodeEditComponent(QWidget *parent)
     : QWidget (parent)
@@ -116,6 +119,10 @@ void CodeEditComponent::onCopyBtnClicked()
 
     if (codeEdit->toPlainText().isEmpty())
         return;
+
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setMimeData(new QMimeData);
+    clipboard->setText(codeEdit->toPlainText());
 }
 
 void CodeEditComponent::initUI()

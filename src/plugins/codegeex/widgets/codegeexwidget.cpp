@@ -12,12 +12,13 @@
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QLabel>
 
 CodeGeeXWidget::CodeGeeXWidget(QWidget *parent)
     : QWidget(parent)
 {
     initUI();
-    initLoginConnection();
+    initConnection();
     CodeGeeXManager::instance()->queryLoginState();
 }
 
@@ -31,13 +32,20 @@ void CodeGeeXWidget::onLoginSuccessed()
     }
 
     initAskWidget();
+    CodeGeeXManager::instance()->createNewSession();
+}
+
+void CodeGeeXWidget::onNewSessionCreated()
+{
+    stackWidget->setCurrentIndex(1);
+
+    if (askPage)
+        askPage->setIntroPage();
 }
 
 void CodeGeeXWidget::onDeleteBtnClicked()
 {
-    if (askPage)
-        askPage->setIntroPage();
-
+    CodeGeeXManager::instance()->deleteCurrentSession();
     CodeGeeXManager::instance()->cleanHistoryMessage();
 }
 
@@ -48,10 +56,8 @@ void CodeGeeXWidget::onHistoryBtnClicked()
 
 void CodeGeeXWidget::onCreateNewBtnClicked()
 {
-    if (askPage)
-        askPage->setIntroPage();
-
     CodeGeeXManager::instance()->cleanHistoryMessage();
+    CodeGeeXManager::instance()->createNewSession();
 }
 
 void CodeGeeXWidget::initUI()
@@ -62,16 +68,13 @@ void CodeGeeXWidget::initUI()
 
     loginBtn = new QPushButton(this);
     loginBtn->setText(tr("Login"));
-
-    connect(loginBtn, &QPushButton::clicked, this, [ = ]{
-        qInfo() << "on login clicked";
-        CodeGeeXManager::instance()->login();
-    });
 }
 
-void CodeGeeXWidget::initLoginConnection()
+void CodeGeeXWidget::initConnection()
 {
+    connect(loginBtn, &QPushButton::clicked, CodeGeeXManager::instance(), &CodeGeeXManager::login);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::loginSuccessed, this, &CodeGeeXWidget::onLoginSuccessed);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::createdNewSession, this, &CodeGeeXWidget::onNewSessionCreated);
 }
 
 void CodeGeeXWidget::initAskWidget()
@@ -132,11 +135,19 @@ void CodeGeeXWidget::initStackWidget()
         resetHeaderBtns();
     });
 
-    stackWidget->insertWidget(0, askPage);
-    stackWidget->insertWidget(1, transPage);
-    stackWidget->setCurrentIndex(0);
+    QWidget *creatingSessionWidget = new QWidget(this);
+    QHBoxLayout *layout = new QHBoxLayout;
+    creatingSessionWidget->setLayout(layout);
 
-    askPage->setIntroPage();
+    QLabel *creatingLabel = new QLabel(creatingSessionWidget);
+    creatingLabel->setAlignment(Qt::AlignCenter);
+    creatingLabel->setText(tr("Creating a new session..."));
+    layout->addWidget(creatingLabel);
+
+    stackWidget->insertWidget(0, creatingSessionWidget);
+    stackWidget->insertWidget(1, askPage);
+    stackWidget->insertWidget(2, transPage);
+    stackWidget->setCurrentIndex(0);
 }
 
 void CodeGeeXWidget::initAskWidgetConnection()
@@ -149,7 +160,7 @@ void CodeGeeXWidget::initAskWidgetConnection()
             currentState = TrasnlatePage;
             resetHeaderBtns();
         }
-        stackWidget->setCurrentIndex(index);
+        stackWidget->setCurrentIndex(index + 1);
     });
     connect(deleteBtn, &QPushButton::clicked, this, &CodeGeeXWidget::onDeleteBtnClicked);
     connect(historyBtn, &QPushButton::clicked, this, &CodeGeeXWidget::onHistoryBtnClicked);

@@ -101,13 +101,13 @@ void MessageComponent::initSenderInfo()
     switch (messageData.messageType()) {
     case MessageData::Ask: {
         senderName->setText("You");
-        QPixmap head(":/demo/images/photo.svg");
+        QPixmap head(":/resoures/images/photo.svg");
         senderHead->setPixmap(head.scaledToWidth(30));
         break;
     }
     case MessageData::Anwser:
         senderName->setText("CodeGeeX");
-        QPixmap log(":/demo/images/logo-codegeex.png");
+        QPixmap log(":/resoures/images/logo-codegeex.png");
         senderHead->setPixmap(log.scaledToWidth(30));
         break;
     }

@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/demo">
+    <qresource prefix="/resoures">
         <file>images/navigation.png</file>
         <file>images/logo-codegeex.png</file>
         <file>images/photo.svg</file>

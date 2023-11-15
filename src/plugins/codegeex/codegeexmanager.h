@@ -26,6 +26,9 @@ public:
     void saveConfig(const QString &sessionId, const QString &userId);
     void loadConfig();
 
+    void createNewSession();
+    void deleteCurrentSession();
+
     void sendMessage(const QString &prompt);
     void queryLoginState();
 
@@ -33,9 +36,11 @@ public:
 
 Q_SIGNALS:
     void loginSuccessed();
+    void createdNewSession();
     void requestMessageUpdate(const MessageData &msg);
 
 public Q_SLOTS:
+    void onSessionCreated(const QString &talkId, bool isSuccessful);
     void onResponse(const QString &msgID, const QString &data, const QString &event);
     void recevieLoginState(CodeGeeX::AskApi::LoginState loginState);
 
@@ -48,8 +53,9 @@ private:
     QString uuid();
 
     CodeGeeX::AskApi askApi;
-    QString sessionId;
-    QString userId;
+    QString sessionId {};
+    QString userId {};
+    QString currentTalkID {};
 
     QMap<QString, MessageData> curSessionMsg {};
 
