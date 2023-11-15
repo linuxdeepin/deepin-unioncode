@@ -94,12 +94,7 @@
     <name>AskPageWidget</name>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
-        <source>Enter a technical question here...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="104"/>
-        <source>Send</source>
+        <source>Ask question here, press Enter to send...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -591,37 +586,43 @@
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="70"/>
-        <source>Login</source>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="84"/>
+        <source>Welcome to CodeGeeX
+A must-have all-round AI tool for developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="100"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="91"/>
+        <source>Go to login</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="131"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="103"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="134"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="106"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="137"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="120"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="151"/>
         <source>Ask CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="121"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="152"/>
         <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="144"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="175"/>
         <source>Creating a new session...</source>
         <translation type="unfinished"></translation>
     </message>
