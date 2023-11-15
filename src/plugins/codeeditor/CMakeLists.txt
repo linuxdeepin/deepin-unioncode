@@ -103,6 +103,7 @@ target_link_libraries(${PROJECT_NAME}
     services
     ${QtUseModules}
     ${PkgUserModules}
+    ${PkgUserModules}
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})

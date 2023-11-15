@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="19px" height="16px" viewBox="0 0 19 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / toolbar / skip</title>
+    <g id="ICON-/-toolbar-/-skip" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M11.3668419,3.13587882 L15.4022156,7.17125253 C15.7927399,7.56177682 15.7927399,8.1949418 15.4022156,8.58546609 L11.3666622,12.6210195 C11.090619,12.8970626 10.6430646,12.8970626 10.3670214,12.6210195 C10.3669681,12.6209661 10.3669147,12.6209127 10.3668613,12.6208593 C10.0907915,12.3446126 10.0908612,11.8968943 10.3670169,11.6207335 L14.1093224,7.87835931 L14.1093224,7.87835931 L10.3662389,4.13584106 C10.0900965,3.85974035 10.0900627,3.41205886 10.3661635,3.13591646 C10.3662294,3.1358505 10.3662954,3.13578456 10.3663613,3.13571863 C10.6427065,2.85955035 11.0905851,2.85962207 11.3668419,3.13587882 Z" id="路径" fill="#626E88" fill-rule="nonzero" transform="translate(12.9877, 7.8784) scale(1, -1) rotate(-45) translate(-12.9877, -7.8784)"></path>
+        <rect id="矩形" fill="#626E88" fill-rule="nonzero" x="5" y="13" width="6" height="2" rx="1"></rect>
+        <polyline id="路径-7" stroke="#626E88" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" points="2.05605698 8.87835931 8 2.96391923 13.6999741 8.87835931"></polyline>
+    </g>
+</svg>

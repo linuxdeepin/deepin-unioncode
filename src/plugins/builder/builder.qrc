@@ -4,5 +4,6 @@
         <file>images/rebuild.png</file>
         <file>images/clean.svg</file>
         <file>images/cancel.svg</file>
+        <file>images/build.svg</file>
     </qresource>
 </RCC>

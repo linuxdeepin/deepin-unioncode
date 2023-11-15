@@ -179,6 +179,8 @@ public:
      */
     DPF_INTERFACE(void, setToolBarItemDisable, const QString &id, bool disable);
 
+    DPF_INTERFACE(QWidget*, getEditToolBar);
+
 
 signals:
 

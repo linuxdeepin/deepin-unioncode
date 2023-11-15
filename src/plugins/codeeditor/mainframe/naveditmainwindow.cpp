@@ -14,6 +14,8 @@
 #include "common/common.h"
 #include "toolbarmanager.h"
 
+#include <DTitlebar>
+
 #include <QDebug>
 #include <QDockWidget>
 #include <QEvent>
@@ -22,7 +24,7 @@
 
 using namespace dpfservice;
 static NavEditMainWindow *ins{nullptr};
-int findIndex(QTabWidget* tabWidget, const QString &text)
+int findIndex(DTabWidget* tabWidget, const QString &text)
 {
     for (int index = 0; index < tabWidget->count(); index ++) {
         if (tabWidget->tabText(index) == text) {
@@ -40,7 +42,7 @@ NavEditMainWindow *NavEditMainWindow::instance()
 }
 
 NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
-    : QMainWindow (parent, flags)
+    : DMainWindow (parent)
 {
     qInfo() << __FUNCTION__;
     auto &ctx = dpfInstance.serviceContext();
@@ -62,20 +64,26 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
         windowService->setToolBarItemDisable = std::bind(&NavEditMainWindow::setToolBarItemDisable, this, _1, _2);
     }
 
+    if (!windowService->getEditToolBar) {
+        windowService->getEditToolBar = std::bind(&NavEditMainWindow::getEditToolBar, this);
+    }
+
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSwitchContext,
                      this, &NavEditMainWindow::switchWidgetContext);
 
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSwitchWorkspace,
                      this, &NavEditMainWindow::switchWidgetWorkspace);
 
-    qDockWidgetContext = new AutoHideDockWidget(QDockWidget::tr("Context"), this);
-    qDockWidgetContext->setFeatures(QDockWidget::DockWidgetMovable);
-    qTabWidgetContext = new QTabWidget(qDockWidgetContext);
+    qDockWidgetContext = new AutoHideDockWidget(DDockWidget::tr("Context"), this);
+    qDockWidgetContext->setFeatures(DDockWidget::DockWidgetMovable);
+    qTabWidgetContext = new DTabWidget(qDockWidgetContext);
     qTabWidgetContext->setMinimumHeight(100);
     qDockWidgetContext->setWidget(qTabWidgetContext);
     addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qDockWidgetContext);
     mainToolBar = new ToolBarManager(tr("toolbar"));
-    addToolBar(Qt::ToolBarArea::TopToolBarArea, mainToolBar->getToolBar());
+
+    titlebar()->setParent(nullptr);
+    titlebar()->hide();
 }
 
 NavEditMainWindow::~NavEditMainWindow()
@@ -96,14 +104,14 @@ QStringList NavEditMainWindow::contextWidgetTitles() const
 void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget)
 {
     if (!qDockWidgetWorkspace) {
-        qTabWidgetWorkspace = new QTabWidget();
+        qTabWidgetWorkspace = new DTabWidget();
         QFont font = qTabWidgetWorkspace->font();
         font.setItalic(true);
         qTabWidgetWorkspace->setFont(font);
         qTabWidgetWorkspace->setMinimumHeight(300);
-        qTabWidgetWorkspace->setTabPosition(QTabWidget::West);
-        qDockWidgetWorkspace = new AutoHideDockWidget(QDockWidget::tr("Workspace"), this);
-        qDockWidgetWorkspace->setFeatures(QDockWidget::DockWidgetMovable);
+        qTabWidgetWorkspace->setTabPosition(DTabWidget::West);
+        qDockWidgetWorkspace = new AutoHideDockWidget(DDockWidget::tr("Workspace"), this);
+        qDockWidgetWorkspace->setFeatures(DDockWidget::DockWidgetMovable);
         qDockWidgetWorkspace->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
         addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, qDockWidgetWorkspace);
         setCorner(Qt::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
@@ -111,16 +119,16 @@ void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget 
     }
 
     if (qTabWidgetWorkspace) {
-        auto qTreeWidget = static_cast<QWidget*>(treeWidget->qWidget());
+        auto qTreeWidget = static_cast<DWidget*>(treeWidget->qWidget());
         qTabWidgetWorkspace->addTab(qTreeWidget, title);
     }
     adjustWorkspaceItemOrder();
 }
 
-QWidget *NavEditMainWindow::setWidgetEdit(AbstractCentral *editWidget)
+DWidget *NavEditMainWindow::setWidgetEdit(AbstractCentral *editWidget)
 {
-    QWidget *oldWidget = qWidgetEdit;
-    qWidgetEdit = static_cast<QWidget*>(editWidget->qWidget());
+    DWidget *oldWidget = qWidgetEdit;
+    qWidgetEdit = static_cast<DWidget*>(editWidget->qWidget());
     // avoid be deleted when setCentralWidget.
     if (oldWidget) {
         oldWidget->setParent(nullptr);
@@ -132,16 +140,16 @@ QWidget *NavEditMainWindow::setWidgetEdit(AbstractCentral *editWidget)
     return oldWidget;
 }
 
-QWidget *NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
+DWidget *NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
 {
     if (!qDockWidgetWatch) {
-        qDockWidgetWatch = new AutoHideDockWidget(QDockWidget::tr("Watcher"), this);
-        qDockWidgetWatch->setFeatures(QDockWidget::AllDockWidgetFeatures);
+        qDockWidgetWatch = new AutoHideDockWidget(DDockWidget::tr("Watcher"), this);
+        qDockWidgetWatch->setFeatures(DDockWidget::AllDockWidgetFeatures);
         qDockWidgetWatch->hide();
         addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, qDockWidgetWatch);
     }
-    QWidget *oldWidget = qWidgetWatch;
-    qWidgetWatch = static_cast<QWidget*>(watchWidget->qWidget());
+    DWidget *oldWidget = qWidgetWatch;
+    qWidgetWatch = static_cast<DWidget*>(watchWidget->qWidget());
     qWidgetWatch->setParent(qDockWidgetWatch);
     // avoid be deleted when setWidget.
     if (oldWidget) {
@@ -159,7 +167,7 @@ QWidget *NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
 void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group)
 {
     QMutexLocker locker(&mutex);
-    QWidget *qWidget = static_cast<QWidget*>(contextWidget->qWidget());
+    DWidget *qWidget = static_cast<DWidget*>(contextWidget->qWidget());
     if (!qWidget || !qTabWidgetContext || group.isEmpty()) {
         return;
     }
@@ -188,7 +196,7 @@ void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *c
 
 void NavEditMainWindow::removeContextWidget(AbstractWidget *contextWidget)
 {
-    QWidget *qWidget = static_cast<QWidget*>(contextWidget->qWidget());
+    DWidget *qWidget = static_cast<DWidget*>(contextWidget->qWidget());
     if (!qWidget || !qTabWidgetContext)
         return;
 
@@ -235,9 +243,9 @@ void NavEditMainWindow::addFindToolBar(AbstractWidget *findToolbar)
         return;
 
     if (!qDockWidgetFindToolBar) {
-        qDockWidgetFindToolBar = new AutoHideDockWidget(QDockWidget::tr("Find ToolBar"), this);
+        qDockWidgetFindToolBar = new AutoHideDockWidget(DDockWidget::tr("Find ToolBar"), this);
         addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, qDockWidgetFindToolBar);
-        QWidget *widget = static_cast<QWidget*>(findToolbar->qWidget());
+        DWidget *widget = static_cast<DWidget*>(findToolbar->qWidget());
         qDockWidgetFindToolBar->setWidget(widget);
         qDockWidgetFindToolBar->hide();
     }
@@ -260,9 +268,9 @@ void NavEditMainWindow::addValgrindBar(AbstractWidget *valgrindbar)
         return;
 
     if (!qDockWidgetValgrindBar) {
-        qDockWidgetValgrindBar = new AutoHideDockWidget(QDockWidget::tr("Valgrind"), this);
+        qDockWidgetValgrindBar = new AutoHideDockWidget(DDockWidget::tr("Valgrind"), this);
         addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, qDockWidgetValgrindBar);
-        QWidget *widget = static_cast<QWidget*>(valgrindbar->qWidget());
+        DWidget *widget = static_cast<DWidget*>(valgrindbar->qWidget());
         qDockWidgetValgrindBar->setWidget(widget);
         qDockWidgetValgrindBar->hide();
     }
@@ -318,4 +326,10 @@ void NavEditMainWindow::adjustWorkspaceItemOrder()
         if (tabBar->tabText(i) == MWCWT_SYMBOL)
             tabBar->moveTab(i, 1);
     }
+}
+
+DWidget *NavEditMainWindow::getEditToolBar()
+{
+    DWidget *toolBar = static_cast<DWidget*>(mainToolBar->getToolBar());
+    return toolBar;
 }

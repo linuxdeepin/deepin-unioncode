@@ -4,6 +4,8 @@
 
 #include "toolbarmanager.h"
 
+#include <DPalette>
+
 class ToolBarManagerPrivate
 {
     friend class ToolBarManager;
@@ -15,15 +17,17 @@ class ToolBarManagerPrivate
 
     QMap<QString, QAction *> groupIndex;
     QList<Item> itemVector;
-    QToolBar *toolbar = nullptr;
+    DToolBar *toolbar = nullptr;
 };
 
 ToolBarManager::ToolBarManager(const QString &name, QObject *parent)
     : QObject(parent)
     , d(new ToolBarManagerPrivate())
 {
-    d->toolbar = new QToolBar(name);
-    d->toolbar->setIconSize(QSize(25, 25));
+    d->toolbar = new DToolBar(name);
+    d->toolbar->setIconSize(QSize(18, 18));
+    d->toolbar->setWindowFlag(Qt::SubWindow, true);
+    d->toolbar->setFixedHeight(50);
 }
 
 ToolBarManager::~ToolBarManager()
@@ -33,7 +37,7 @@ ToolBarManager::~ToolBarManager()
     }
 }
 
-QToolBar *ToolBarManager::getToolBar() const
+DToolBar *ToolBarManager::getToolBar() const
 {
     return d->toolbar;
 }
@@ -71,14 +75,14 @@ bool ToolBarManager::addActionItem(const QString &id, QAction *action, const QSt
             d->toolbar->insertAction(before, action);
             currentIterator.value() = action;
         } else if (groupIndex.at(1) == "End") {
-            d->toolbar->insertSeparator(before);
+//            d->toolbar->insertSeparator(before);
         }
     }
 
     return true;
 }
 
-bool ToolBarManager::addWidgetItem(const QString &id, QWidget *widget, const QString &group)
+bool ToolBarManager::addWidgetItem(const QString &id, DWidget *widget, const QString &group)
 {
     if (!widget || id.isEmpty() || !d->toolbar)
         return false;

@@ -40,6 +40,7 @@ class WindowKeeperPrivate
     QActionGroup *navActionGroup{nullptr};
     DToolBar *toolbar{nullptr};
     DMenu *mainMenu{nullptr};
+    DToolBar *editToolBar{nullptr};
 
     friend class WindowKeeper;
 };
@@ -69,14 +70,6 @@ void WindowKeeper::createFileActions(DMenu *menu)
 
     DMenu* menuOpenProject = new DMenu(MWMFA_OPEN_PROJECT);
     menu->addMenu(menuOpenProject);
-}
-
-void WindowKeeper::createAnalyzeActions(DMenu *menu)
-{
-    qInfo() << __FUNCTION__;
-    DMenu* analyzeMenu = new DMenu();
-    QAction* buildAction = menu->addMenu(analyzeMenu);
-    buildAction->setText(MWM_ANALYZE);
 }
 
 void WindowKeeper::createBuildActions(DMenu *menu)
@@ -188,16 +181,11 @@ void WindowKeeper::createMainMenu(DMenu *menu)
         return;
 
     createFileActions(menu);
-    menu->addSeparator();
-
     createBuildActions(menu);
     createDebugActions(menu);
     menu->addSeparator();
 
-    createAnalyzeActions(menu);
     createToolsActions(menu);
-    menu->addSeparator();
-
     createHelpActions(menu);
 }
 
@@ -208,22 +196,33 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
         d->navActionGroup = new QActionGroup(window);
 
     d->toolbar = new DToolBar(DToolBar::tr("Navigation"));
-    d->toolbar->setMovable(true);
+    d->toolbar->setMovable(false);
     d->toolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     d->toolbar->setIconSize(QSize(20, 20));
-    DPalette palette = window->palette();
-    palette.setColor(DPalette::Button, palette.color(DPalette::Window));
-    d->toolbar->setPalette(palette);
+
+    DPalette palette = d->toolbar->palette();
+    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::ColorType::LightType) {
+        palette.setColor(DPalette::Button, QColor("#FFFFFF"));
+        d->toolbar->setPalette(palette);
+    } else {
+        palette.setColor(DPalette::Button, QColor("#262626"));
+        d->toolbar->setPalette(palette);
+    }
 
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
            this, [=](){
-       DPalette palette = d->toolbar->palette();
-       palette.setColor(DPalette::Button, palette.color(DPalette::Window));
-       d->toolbar->setPalette(palette);
+        DPalette palette = d->toolbar->palette();
+        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::ColorType::LightType) {
+            palette.setColor(DPalette::Button, QColor("#FFFFFF"));
+            d->toolbar->setPalette(palette);
+        } else {
+            palette.setColor(DPalette::Button, QColor("#262626"));
+            d->toolbar->setPalette(palette);
+        }
     });
 
     DWidget *titleWiget = new DWidget();
-    titleWiget->setFixedSize(65, 29);
+    titleWiget->setFixedSize(58, 29);
     d->toolbar->addWidget(titleWiget);
 
     createNavRecent(d->toolbar);
@@ -259,10 +258,6 @@ WindowKeeper::WindowKeeper(QObject *parent)
 {
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-
-    if (windowService) {
-        windowService->name();
-    }
 
     if (!d->window) {
         d->window = new DMainWindow();
@@ -345,6 +340,13 @@ void WindowKeeper::addActionNavigation(const QString &id, AbstractAction *action
 void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral *central)
 {
     qInfo() << __FUNCTION__;
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+
+    if (navName == MWNA_EDIT) {
+        d->editToolBar = static_cast<DToolBar*>(windowService->getEditToolBar());
+    }
+
     DWidget* inputWidget = static_cast<DWidget*>(central->qWidget());
     if(!central || !inputWidget || navName.isEmpty())
         return;
@@ -407,10 +409,36 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
     if (!action || !inputAction)
         return;
 
-    if (inputAction->text() == MWMFA_NEW_FILE_OR_PROJECT) {
+    if (menuName == MWMFA_NEW_FILE_OR_PROJECT) {
         for (QAction *qAction : d->mainMenu->actions()) {
-            if (qAction->text() == MWM_BUILD) {
+            if (qAction->text() == MWM_BUILD) {                
                 d->mainMenu->insertAction(qAction, inputAction);
+                d->mainMenu->insertSeparator(qAction);
+                return;
+            }
+        }
+    }
+
+    if (menuName == MWM_ANALYZE) {
+        for (QAction *qAction : d->mainMenu->actions()) {
+            if (qAction->text() == MWM_TOOLS) {
+                for (QAction *toolAction : qAction->menu()->actions()) {
+                    if (toolAction->text() == MWMTA_BINARY_TOOLS) {
+                        qAction->menu()->insertAction(toolAction, inputAction);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    if (menuName == MWM_TOOLS && inputAction->text() == MWMTA_OPTIONS) {
+        for (QAction *qAction : d->mainMenu->actions()) {
+            if (qAction->text() == "Help") {
+                d->mainMenu->insertAction(qAction, inputAction);
+            }
+            if (qAction->text() == "About") {
+                d->mainMenu->removeAction(qAction);
                 return;
             }
         }
@@ -482,6 +510,28 @@ void WindowKeeper::switchWidgetNavigation(const QString &navName)
     auto beforWidget = d->window->takeCentralWidget();
     if (beforWidget)
         beforWidget->hide();
+
+    d->editToolBar->hide();
+    d->window->titlebar()->setTitle(QString(tr("Deepin Union Code")));
+
+    if (navName == MWNA_EDIT) {
+        DPalette palette = d->window->palette();
+        palette.setColor(DPalette::Button, palette.color(DPalette::Base));
+        d->editToolBar->setPalette(palette);
+
+        QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
+               this, [=](){
+           DPalette palette = d->window->palette();
+           palette.setColor(DPalette::Button, palette.color(DPalette::Base));
+           d->editToolBar->setPalette(palette);
+        });
+
+        QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout*>(d->window->titlebar()->layout());
+        titleBarLayout->insertWidget(1, d->editToolBar, Qt::AlignLeft);
+        d->window->titlebar()->setTitle(QString());
+        titleBarLayout->insertSpacing(1, 12);
+        d->editToolBar->show();
+    }
 
     setNavActionChecked(navName, true);
 

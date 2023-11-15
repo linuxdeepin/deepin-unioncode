@@ -41,7 +41,7 @@ bool FindPlugin::start()
 
     ActionManager::getInstance()->registerAction(findAction, "Edit.Find",
                                                  tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F),
-                                                 ":/find/images/find.png");
+                                                 ":/find/images/find.svg");
     ActionManager::getInstance()->registerAction(advancedFindAction, "Edit.Advanced.Find",
                                                  tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F),
                                                  ":/find/images/edit-find.png");

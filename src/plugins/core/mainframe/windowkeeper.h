@@ -70,7 +70,6 @@ private :
     void createDebugActions(DMenu *menu);
     void createBuildActions(DMenu *menu);
     void createFileActions(DMenu *menu);
-    void createAnalyzeActions(DMenu *menu);
 
     void setNavActionChecked(const QString &actionName, bool checked);
 

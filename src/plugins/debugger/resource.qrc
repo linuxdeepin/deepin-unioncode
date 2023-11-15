@@ -1,13 +1,13 @@
 <RCC>
     <qresource prefix="/resource">
-        <file>images/run.png</file>
-        <file>images/debugger_continue.png</file>
-        <file>images/debugger_interrupt.png</file>
-        <file>images/debugger_start.png</file>
-        <file>images/debugger_stepinto.png</file>
-        <file>images/debugger_stepout.png</file>
-        <file>images/debugger_stepover.png</file>
-        <file>images/debugger_stop.png</file>
-        <file>images/restart_debug.png</file>
+        <file>images/running.svg</file>
+        <file>images/debugger_continue.svg</file>
+        <file>images/debugger_interrupt.svg</file>
+        <file>images/debugger_start.svg</file>
+        <file>images/debugger_stepinto.svg</file>
+        <file>images/debugger_stepout.svg</file>
+        <file>images/debugger_stepover.svg</file>
+        <file>images/debugger_stop.svg</file>
+        <file>images/restart_debug.svg</file>
     </qresource>
 </RCC>

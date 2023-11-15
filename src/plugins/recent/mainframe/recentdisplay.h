@@ -36,6 +36,9 @@ private slots:
     void btnOpenFileClicked();
     void btnOpenProjectClicked();
     void btnNewFileOrProClicked();
+
+private:
+    bool isProAndDocNull();
 };
 
 #endif // RECENTDISPLAY_H

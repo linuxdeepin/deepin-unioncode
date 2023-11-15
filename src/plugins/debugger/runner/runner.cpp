@@ -35,7 +35,7 @@ Runner::Runner(QObject *parent)
     d->runAction.reset(new QAction(MWMDA_RUNNING));
     ActionManager::getInstance()->registerAction(d->runAction.get(), "Debug.Running",
                                                  MWMDA_RUNNING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5),
-                                                 ":/resource/images/run.png");
+                                                 ":/resource/images/running.svg");
     connect(d->runAction.get(), &QAction::triggered, this, &Runner::run);
     WindowService *service = dpfGetService(WindowService);
     service->addToolBarActionItem(tr("Running"), d->runAction.get(), "Debug.Start");

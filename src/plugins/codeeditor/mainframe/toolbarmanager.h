@@ -5,8 +5,12 @@
 #ifndef TOOLBARMANAGER_H
 #define TOOLBARMANAGER_H
 
+#include <DToolBar>
+#include <DWidget>
+
 #include <QObject>
-#include <QToolBar>
+
+DWIDGET_USE_NAMESPACE
 
 class ToolBarManagerPrivate;
 class ToolBarManager : public QObject
@@ -17,11 +21,11 @@ public:
     virtual ~ToolBarManager() override;
 
     bool addActionItem(const QString &id, QAction *action, const QString &group);
-    bool addWidgetItem(const QString &id, QWidget *widget, const QString &group);
+    bool addWidgetItem(const QString &id, DWidget *widget, const QString &group);
     bool hasOverrideActionItem(const QString &id, QAction *action, const QString &group);
     void removeItem(const QString &id);
     void disableItem(const QString &id, bool visible);
-    QToolBar *getToolBar() const;
+    DToolBar *getToolBar() const;
 
 private:
     ToolBarManagerPrivate *const d;
