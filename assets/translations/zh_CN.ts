@@ -21,12 +21,12 @@
     <message>
         <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="100"/>
         <source>Error</source>
-        <translation type="unfinished">错误</translation>
+        <translation>错误</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="100"/>
         <source>Failed to open the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>打开文件失败</translation>
     </message>
 </context>
 <context>
@@ -57,50 +57,45 @@
     <message>
         <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="229"/>
         <source>AskPage</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="230"/>
         <source>login</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="231"/>
         <source>delete</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="232"/>
         <source>history</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="233"/>
         <source>new session</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="234"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="235"/>
         <source>Send</source>
-        <translation type="unfinished">发送</translation>
+        <translation>发送</translation>
     </message>
 </context>
 <context>
     <name>AskPageWidget</name>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
-        <source>Enter a technical question here...</source>
-        <translation>在这里输入技术问题...</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="104"/>
-        <source>Send</source>
-        <translation>发送</translation>
+        <source>Ask question here, press Enter to send...</source>
+        <translation>在这里提问，按Enter键发送...</translation>
     </message>
 </context>
 <context>
@@ -597,43 +592,49 @@
     <message>
         <location filename="../../src/plugins/codegeex/option/codegeexoptionwidget.cpp" line="32"/>
         <source>CodeGeeX</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="70"/>
-        <source>Login</source>
-        <translation>登录</translation>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="84"/>
+        <source>Welcome to CodeGeeX
+A must-have all-round AI tool for developers</source>
+        <translation>欢迎使用CodeGeeX&lt;br /&gt;开发者必备的全能AI工具</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="100"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="91"/>
+        <source>Go to login</source>
+        <translation>前往登陆</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="131"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="103"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="134"/>
         <source>History</source>
         <translation>历史记录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="106"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="137"/>
         <source>New</source>
         <translation>新对话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="120"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="151"/>
         <source>Ask CodeGeeX</source>
         <translation>询问 CodeGeeX</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="121"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="152"/>
         <source>Translation</source>
         <translation>翻译代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="144"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="175"/>
         <source>Creating a new session...</source>
         <translation>创建新的会话中...</translation>
     </message>

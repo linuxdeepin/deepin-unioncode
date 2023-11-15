@@ -97,12 +97,8 @@ void AskPageWidget::initInputWidget()
 
     inputEdit = new QLineEdit(inputWidget);
     inputEdit->setFixedHeight(50);
-    inputEdit->setPlaceholderText(tr("Enter a technical question here..."));
+    inputEdit->setPlaceholderText(tr("Ask question here, press Enter to send..."));
     editLayout->addWidget(inputEdit);
-
-    sendBtn = new QPushButton(inputWidget);
-    sendBtn->setText(tr("Send"));
-    editLayout->addWidget(sendBtn);
 
 //    QLabel *inputTips = new QLabel(inputWidget);
 //    inputTips->setText(tr("Ctrl + Enter for Newline | \" / \" for command"));
@@ -113,7 +109,6 @@ void AskPageWidget::initInputWidget()
 void AskPageWidget::initConnection()
 {
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestMessageUpdate, this, &AskPageWidget::onMessageUpdate);
-    connect(sendBtn, &QPushButton::clicked, this, &AskPageWidget::onSendBtnClicked);
     connect(inputEdit, &QLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
 }
 

@@ -51,7 +51,6 @@ private:
     QScrollArea *scrollArea { nullptr };
     QWidget *inputWidget { nullptr };
     QWidget *messageContainer { nullptr };
-    QPushButton *sendBtn { nullptr };
     QLineEdit *inputEdit { nullptr };
 
     QMap<QString, MessageComponent*> msgComponents {};
