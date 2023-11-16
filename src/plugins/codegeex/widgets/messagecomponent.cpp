@@ -23,25 +23,8 @@ MessageComponent::MessageComponent(const MessageData &msgData, QWidget *parent)
 }
 void MessageComponent::updateMessage(const MessageData &msgData)
 {
-    if (currentUpdateState == CodeEdit && msgData.messageLines().last() == "```") {
-        curUpdateEdit->cleanFinalLine();
-        currentUpdateState = Label;
-        messageData = msgData;
+    if (!createCodeEdit(msgData))
         return;
-    } else if (curUpdateLabel && currentUpdateState == Label && msgData.messageLines().last().startsWith("```")) {
-        if (curUpdateLabel->text() == "``" || curUpdateLabel->text() == "`") {
-            msgLayout->removeWidget(curUpdateLabel);
-            delete curUpdateLabel;
-            curUpdateLabel = nullptr;
-        }
-        currentUpdateState = CodeEdit;
-        curUpdateEdit = new CodeEditComponent(this);
-        curUpdateEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
-        curUpdateEdit->setReadOnly(true);
-        curUpdateEdit->setUpdateHeight(true);
-        curUpdateEdit->showButtons(CodeEditComponent::CopyAndInsert);
-        msgLayout->addWidget(curUpdateEdit);
-    }
 
     switch (currentUpdateState) {
     case Label:
@@ -57,14 +40,8 @@ void MessageComponent::updateMessage(const MessageData &msgData)
         curUpdateLabel->setText(msgData.messageLines().last());
         break;
     case CodeEdit:
-        if (msgData.messageLines().at(msgData.messageLines().length() - 2) == "```") {
-            curUpdateEdit->cleanFinalLine();
-            currentUpdateState = Label;
-            updateMessage(msgData);
-            return;
-        }
         if (curUpdateEdit) {
-            int startIndex = msgData.messageLines().lastIndexOf(QRegularExpression("```([a-z]+|[A-Z]+)"));
+            int startIndex = msgData.messageLines().lastIndexOf(QRegularExpression("```([a-z]*|[A-Z]*)"));
             curUpdateEdit->updateCode(msgData.messageLines().mid(startIndex + 1));
         }
         break;
@@ -122,4 +99,51 @@ void MessageComponent::initMessageSection()
 {
     msgLayout = new QVBoxLayout;
     qobject_cast<QVBoxLayout*>(layout())->addLayout(msgLayout);
+}
+
+bool MessageComponent::createCodeEdit(const MessageData &newData)
+{
+    QStringList newLines = newData.messageLines();
+    QStringList oldLines = messageData.messageLines();
+    QStringList addedLines = newLines.mid(oldLines.count());
+
+    for (int i = 0; i < addedLines.count(); ++i) {
+        QString addedLine = addedLines.at(i);
+        if (addedLine.contains("`")) {
+            if (i != 0) {
+                MessageData addedMsgData = messageData;
+                addedMsgData.appendData(addedLines.mid(0, i));
+                updateMessage(addedMsgData);
+            }
+
+            QRegExp re("```([a-z]*|[A-Z]*)");
+            if (re.exactMatch(addedLine) && currentUpdateState == Label) {
+                // create new code edit component
+                messageData.appendData({ addedLine });
+                currentUpdateState = CodeEdit;
+                curUpdateEdit = new CodeEditComponent(this);
+                curUpdateEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+                curUpdateEdit->setReadOnly(true);
+                curUpdateEdit->setUpdateHeight(true);
+                curUpdateEdit->showButtons(CodeEditComponent::CopyAndInsert);
+                msgLayout->addWidget(curUpdateEdit);
+                return true;
+            } else if (addedLine == "```" && currentUpdateState == CodeEdit) {
+                // end the code edit component update
+                messageData.appendData({ addedLine });
+                currentUpdateState = Label;
+                curUpdateLabel = new DLabel(this);
+                curUpdateLabel->setWordWrap(true);
+                msgLayout->addWidget(curUpdateLabel);
+                if (i != (addedLines.count() - 1))
+                    updateMessage(newData);
+
+                return false;
+            }
+
+            return false;
+        }
+    }
+
+    return true;
 }

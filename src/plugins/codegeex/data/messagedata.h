@@ -25,6 +25,7 @@ public:
     explicit MessageData(const QString &id, Type type);
 
     void updateData(const QString &data);
+    void appendData(const QStringList &data);
 
     QString messageID() const;
     Type messageType() const;

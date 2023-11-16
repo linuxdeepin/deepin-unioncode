@@ -37,6 +37,7 @@ private:
     void initMessageSection();
 
     void createCurrentUpdateWidget();
+    bool createCodeEdit(const MessageData &newData);
 
     DLabel *senderHead { nullptr };
     DLabel *senderName { nullptr };

@@ -19,8 +19,7 @@ MessageData::MessageData(const QString &id, Type type)
 void MessageData::updateData(const QString &data)
 {
     QStringList lines = data.split("\n");
-    if (lines.last().isEmpty())
-        lines.removeLast();
+    lines.removeAll("");
 
     if (lines.length() < msgDataLines.length())
         return;
@@ -36,7 +35,13 @@ void MessageData::updateData(const QString &data)
 
     msgData = data;
     msgDataLines = lines;
-//    qInfo() << "update msg line" << msgDataLines;
+    //    qInfo() << "update msg line" << msgDataLines;
+}
+
+void MessageData::appendData(const QStringList &data)
+{
+    msgDataLines.append(data);
+    msgData.append(data.join("\n"));
 }
 
 QString MessageData::messageID() const
