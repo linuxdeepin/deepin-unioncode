@@ -3,5 +3,11 @@
         <file>images/navigation.png</file>
         <file>images/logo-codegeex.png</file>
         <file>images/photo.svg</file>
+        <file>images/chat_icon_del_hover.svg</file>
+        <file>images/chat_icon_history_hover.svg</file>
+        <file>images/chat_icon_new_hover.svg</file>
+        <file>images/insert.svg</file>
+        <file>images/copy.svg</file>
+        <file>images/insert-dark-filled.svg</file>
     </qresource>
 </RCC>
