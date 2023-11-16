@@ -33,10 +33,12 @@ Copilot::Copilot(QObject *parent)
             }
             break;
         case CopilotApi::multilingual_code_generate:
+            mutexResponse.lock();
             generateResponse = response;
             if (editorService->showTips && !response.isEmpty()) {
-                editorService->showTips(response);
+                editorService->showTips(generateResponse);
             }
+            mutexResponse.unlock();
             break;
         case CopilotApi::multilingual_code_translate:
             emit translatedResult(response);
@@ -47,9 +49,6 @@ Copilot::Copilot(QObject *parent)
     });
 
     timer.setSingleShot(true);
-    connect(editorService, &EditorService::fileChanged, [this](){
-        timer.start(500);
-    });
 
     connect(&timer, &QTimer::timeout, [this](){
         generateCode();
@@ -116,10 +115,17 @@ void Copilot::insterText(const QString &text)
 
 void Copilot::processKeyPressEvent(Qt::Key key)
 {
+    mutexResponse.lock();
     if (key == Qt::Key_Tab && !generateResponse.isEmpty()) {
         insterText(generateResponse);
         generateResponse = "";
     }
+    mutexResponse.unlock();
+
+    // start generate code.
+    QMetaObject::invokeMethod(this, [this](){
+        timer.start(200);
+    });
 }
 
 void Copilot::addComment()

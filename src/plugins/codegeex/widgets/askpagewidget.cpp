@@ -25,7 +25,6 @@ AskPageWidget::AskPageWidget(QWidget *parent)
     initConnection();
 
     processTimer->setInterval(200);
-    placeHolderText = tr("Ask question here, press Enter to send...");
 }
 
 void AskPageWidget::setIntroPage()
@@ -111,6 +110,7 @@ void AskPageWidget::initInputWidget()
 
     inputEdit = new DLineEdit(inputWidget);
     inputEdit->setFixedHeight(50);
+    placeHolderText = tr("Ask question here, press Enter to send...");
     inputEdit->setPlaceholderText(placeHolderText);
     editLayout->addWidget(inputEdit);
 }

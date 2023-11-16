@@ -8,6 +8,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QMutex>
 
 class QMenu;
 namespace dpfservice {
@@ -47,6 +48,7 @@ private:
     dpfservice::EditorService *editorService = nullptr;
     QString generateResponse;
     QTimer timer;
+    QMutex mutexResponse;
 };
 
 #endif // COPILOT_H
