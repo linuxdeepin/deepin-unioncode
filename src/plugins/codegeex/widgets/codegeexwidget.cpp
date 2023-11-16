@@ -6,6 +6,7 @@
 #include "askpagewidget.h"
 #include "translationpagewidget.h"
 #include "codegeexmanager.h"
+#include "copilot.h"
 
 #include <DLabel>
 #include <DStackedWidget>
@@ -61,6 +62,17 @@ void CodeGeeXWidget::onCreateNewBtnClicked()
     CodeGeeXManager::instance()->createNewSession();
 }
 
+void CodeGeeXWidget::toTranslateCode(const QString &code)
+{
+    currentState = TrasnlatePage;
+    resetHeaderBtns();
+
+    transPage->setInputEditText(code);
+    transPage->cleanOutputEdit();
+
+    stackWidget->setCurrentIndex(2);
+}
+
 void CodeGeeXWidget::initUI()
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -106,11 +118,13 @@ void CodeGeeXWidget::initConnection()
 {
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::loginSuccessed, this, &CodeGeeXWidget::onLoginSuccessed);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::createdNewSession, this, &CodeGeeXWidget::onNewSessionCreated);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestToTransCode, this, &CodeGeeXWidget::toTranslateCode);
 }
 
 void CodeGeeXWidget::initAskWidget()
 {
     tabBar = new DTabBar(this);
+    tabBar->setVisibleAddButton(false);
     tabBar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     tabBar->setContentsMargins(0, 0, 0, 0);
     stackWidget = new QStackedWidget(this);

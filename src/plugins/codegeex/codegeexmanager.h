@@ -38,12 +38,14 @@ Q_SIGNALS:
     void loginSuccessed();
     void createdNewSession();
     void requestMessageUpdate(const MessageData &msg);
+    void requestToTransCode(const QString &code);
     void chatFinished();
 
 public Q_SLOTS:
     void onSessionCreated(const QString &talkId, bool isSuccessful);
     void onResponse(const QString &msgID, const QString &data, const QString &event);
     void recevieLoginState(CodeGeeX::AskApi::LoginState loginState);
+    void recevieToTranslate(const QString &codeText);
 
 private:
     explicit CodeGeeXManager(QObject *parent = nullptr);
@@ -57,6 +59,7 @@ private:
     QString sessionId {};
     QString userId {};
     QString currentTalkID {};
+    bool isLogin { false };
 
     QMap<QString, MessageData> curSessionMsg {};
 

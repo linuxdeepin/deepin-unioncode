@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "codegeexmanager.h"
+#include "copilot.h"
 #include "common/util/custompaths.h"
 
 #include <QDebug>
@@ -141,11 +142,18 @@ void CodeGeeXManager::recevieLoginState(AskApi::LoginState loginState)
         qWarning() << "CodeGeeX login failed!";
         // switch to login ui.
     } else if (loginState == AskApi::LoginState::kLoginSuccess) {
+        isLogin = true;
         Q_EMIT loginSuccessed();
         // switch to ask page.
         queryTimer->stop();
         queryTimer->deleteLater();
     }
+}
+
+void CodeGeeXManager::recevieToTranslate(const QString &codeText)
+{
+    if (isLogin && !codeText.isEmpty())
+        Q_EMIT requestToTransCode(codeText);
 }
 
 CodeGeeXManager::CodeGeeXManager(QObject *parent)
@@ -161,6 +169,7 @@ void CodeGeeXManager::initConnections()
     connect(&askApi, &AskApi::response, this, &CodeGeeXManager::onResponse);
     connect(&askApi, &AskApi::loginState, this, &CodeGeeXManager::recevieLoginState);
     connect(&askApi, &AskApi::sessionCreated, this, &CodeGeeXManager::onSessionCreated);
+    connect(Copilot::instance(), &Copilot::translatingText, this, &CodeGeeXManager::recevieToTranslate);
 }
 
 void CodeGeeXManager::queryLoginState()
