@@ -23,6 +23,14 @@ MessageComponent::MessageComponent(const MessageData &msgData, QWidget *parent)
 }
 void MessageComponent::updateMessage(const MessageData &msgData)
 {
+    if (msgData.messageType() == MessageData::Ask) {
+        curUpdateLabel = new DLabel(this);
+        curUpdateLabel->setWordWrap(true);
+        msgLayout->addWidget(curUpdateLabel);
+        curUpdateLabel->setText(msgData.messageData());
+        return;
+    }
+
     if (!createCodeEdit(msgData))
         return;
 

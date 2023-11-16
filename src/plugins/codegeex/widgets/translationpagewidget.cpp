@@ -58,21 +58,18 @@ void TranslationPageWidget::initUI()
     inputEdit->setFixedHeight(200);
     layout->addWidget(inputEdit);
 
+    layout->addSpacing(20);
+
     QHBoxLayout *midLayout = new QHBoxLayout;
 
-    QVBoxLayout *comboBoxLayout = new QVBoxLayout;
     DLabel *comboBoxLabel = new DLabel(this);
     comboBoxLabel->setFixedHeight(20);
     comboBoxLabel->setText(tr("Translate Into:"));
-    comboBoxLayout->addWidget(comboBoxLabel);
-
-    layout->addSpacing(20);
+    midLayout->addWidget(comboBoxLabel);
 
     langComboBox = new DComboBox(this);
     langComboBox->addItems(CodeGeeX::SupportLanguage);
-    comboBoxLayout->addWidget(langComboBox);
-
-    midLayout->addLayout(comboBoxLayout);
+    midLayout->addWidget(langComboBox);
 
     midLayout->addSpacing(100);
 
@@ -82,14 +79,14 @@ void TranslationPageWidget::initUI()
 
     layout->addLayout(midLayout);
 
-    layout->addSpacing(20);
-
     outputEdit = new CodeEditComponent(this);
     outputEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     outputEdit->setTitle(tr("Output Code"));
-    outputEdit->setFixedHeight(200);
     outputEdit->showButtons(CodeEditComponent::InsertOnly);
     outputEdit->setReadOnly(true);
+    outputEdit->setUpdateHeight(true);
+    outputEdit->updateCode("");
+
     layout->addWidget(outputEdit);
 
     layout->addStretch(1);

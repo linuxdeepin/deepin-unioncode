@@ -70,7 +70,7 @@ void CodeGeeXWidget::toTranslateCode(const QString &code)
     transPage->setInputEditText(code);
     transPage->cleanOutputEdit();
 
-    stackWidget->setCurrentIndex(2);
+    tabBar->setCurrentIndex(1);
 }
 
 void CodeGeeXWidget::initUI()
@@ -142,13 +142,16 @@ void CodeGeeXWidget::initAskWidget()
     headerLayout->addStretch(1);
 
     deleteBtn = new DPushButton(this);
-    deleteBtn->setText(tr("Delete"));
+    deleteBtn->setFlat(true);
+    deleteBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_del_hover.svg")));
     headerLayout->addWidget(deleteBtn);
     historyBtn = new DPushButton(this);
-    historyBtn->setText(tr("History"));
+    historyBtn->setFlat(true);
+    historyBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_history_hover.svg")));
     headerLayout->addWidget(historyBtn);
     createNewBtn = new DPushButton(this);
-    createNewBtn->setText(tr("New"));
+    createNewBtn->setFlat(true);
+    createNewBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_new_hover.svg")));
     headerLayout->addWidget(createNewBtn);
 
     initTabBar();
