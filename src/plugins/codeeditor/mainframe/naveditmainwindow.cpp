@@ -105,9 +105,6 @@ void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget 
 {
     if (!qDockWidgetWorkspace) {
         qTabWidgetWorkspace = new DTabWidget();
-        QFont font = qTabWidgetWorkspace->font();
-        font.setItalic(true);
-        qTabWidgetWorkspace->setFont(font);
         qTabWidgetWorkspace->setMinimumHeight(300);
         qTabWidgetWorkspace->setTabPosition(DTabWidget::West);
         qDockWidgetWorkspace = new AutoHideDockWidget(DDockWidget::tr("Workspace"), this);

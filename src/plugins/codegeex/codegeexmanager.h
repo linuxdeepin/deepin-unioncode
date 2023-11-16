@@ -38,6 +38,7 @@ Q_SIGNALS:
     void loginSuccessed();
     void createdNewSession();
     void requestMessageUpdate(const MessageData &msg);
+    void chatFinished();
 
 public Q_SLOTS:
     void onSessionCreated(const QString &talkId, bool isSuccessful);

@@ -129,7 +129,7 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
     }
 
     if (event == "finish") {
-
+        emit chatFinished();
     } else if (event == "add"){
 
     }
