@@ -38,6 +38,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     void onMessageUpdate(const MessageData &msgData);
     void onSendBtnClicked();
+    void onChatFinished();
 
 private:
     void initUI();
@@ -47,11 +48,19 @@ private:
     void cleanWidgets();
     void setSessionPage();
 
+    void enterAnswerState();
+    void enterInputState();
+
+    void askQuestion(const QString &question);
+
     PageState curState;
     QScrollArea *scrollArea { nullptr };
     QWidget *inputWidget { nullptr };
     QWidget *messageContainer { nullptr };
     QLineEdit *inputEdit { nullptr };
+    QTimer *processTimer { nullptr };
+    int progressCalcNum = 0;
+    QString placeHolderText;
 
     QMap<QString, MessageComponent*> msgComponents {};
 };

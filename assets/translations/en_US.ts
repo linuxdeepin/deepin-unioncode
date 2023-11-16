@@ -93,8 +93,13 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="27"/>
         <source>Ask question here, press Enter to send...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="128"/>
+        <source>Answering</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2125,22 +2130,22 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="105"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="102"/>
         <source>Workspace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="138"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="135"/>
         <source>Watcher</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="238"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="235"/>
         <source>Find ToolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="263"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="260"/>
         <source>Valgrind</source>
         <translation type="unfinished"></translation>
     </message>

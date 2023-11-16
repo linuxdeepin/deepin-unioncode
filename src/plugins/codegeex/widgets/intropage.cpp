@@ -101,6 +101,6 @@ void IntroPage::appendSuggestButton(QVBoxLayout *layout, const QString &text)
     layout->addWidget(suggestButton);
 
     connect(suggestButton, &QPushButton::clicked, [ = ] {
-        CodeGeeXManager::instance()->sendMessage(suggestButton->text());
+        emit suggestionToSend(suggestButton->text());
     });
 }

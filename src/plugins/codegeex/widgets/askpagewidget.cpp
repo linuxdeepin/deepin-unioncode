@@ -14,19 +14,28 @@
 #include <QLabel>
 #include <QDebug>
 #include <QScrollBar>
+#include <QTimer>
 
 AskPageWidget::AskPageWidget(QWidget *parent)
     : QWidget (parent)
+    , processTimer(new QTimer(this))
 {
     initUI();
     initConnection();
+
+    processTimer->setInterval(200);
+    placeHolderText = tr("Ask question here, press Enter to send...");
 }
 
 void AskPageWidget::setIntroPage()
 {
     cleanWidgets();
     curState = Intro;
-    scrollArea->setWidget(new IntroPage(scrollArea));
+    IntroPage *introPage = new IntroPage(scrollArea);
+    connect(introPage, &IntroPage::suggestionToSend, [this](const QString &suggesstion){
+        askQuestion(suggesstion);
+    });
+    scrollArea->setWidget(introPage);
 
     Q_EMIT introPageShown();
 }
@@ -64,9 +73,13 @@ void AskPageWidget::onSendBtnClicked()
         if (prompt.isEmpty())
             return;
 
-        CodeGeeXManager::instance()->sendMessage(prompt);
-        inputEdit->clear();
+        askQuestion(prompt);
     }
+}
+
+void AskPageWidget::onChatFinished()
+{
+    enterInputState();
 }
 
 void AskPageWidget::initUI()
@@ -97,18 +110,24 @@ void AskPageWidget::initInputWidget()
 
     inputEdit = new QLineEdit(inputWidget);
     inputEdit->setFixedHeight(50);
-    inputEdit->setPlaceholderText(tr("Ask question here, press Enter to send..."));
+    inputEdit->setPlaceholderText(placeHolderText);
     editLayout->addWidget(inputEdit);
-
-//    QLabel *inputTips = new QLabel(inputWidget);
-//    inputTips->setText(tr("Ctrl + Enter for Newline | \" / \" for command"));
-//    inputTips->setIndent(10);
-//    layout->addWidget(inputTips);
 }
 
 void AskPageWidget::initConnection()
 {
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestMessageUpdate, this, &AskPageWidget::onMessageUpdate);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &AskPageWidget::onChatFinished);
+    connect(processTimer, &QTimer::timeout, [this](){
+        QString tips;
+        int maxDotNum = 4;
+        int dotNum = progressCalcNum++ % maxDotNum;
+        for (int i = 0; i < dotNum; i++) {
+            tips += "...";
+        }
+        QString holderText = tr("Answering") + tips;
+        inputEdit->setPlaceholderText(holderText);
+    });
     connect(inputEdit, &QLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
 }
 
@@ -130,4 +149,25 @@ void AskPageWidget::setSessionPage()
     layout->addStretch(0);
 
     Q_EMIT sessionPageShown();
+}
+
+void AskPageWidget::enterAnswerState()
+{
+    progressCalcNum = 0;
+    inputEdit->clear();
+    inputEdit->setEnabled(false);
+    processTimer->start();
+}
+
+void AskPageWidget::enterInputState()
+{
+    processTimer->stop();
+    inputEdit->setEnabled(true);
+    inputEdit->setPlaceholderText(placeHolderText);
+}
+
+void AskPageWidget::askQuestion(const QString &question)
+{
+    CodeGeeXManager::instance()->sendMessage(question);
+    enterAnswerState();
 }

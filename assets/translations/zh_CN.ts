@@ -93,9 +93,14 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="27"/>
         <source>Ask question here, press Enter to send...</source>
         <translation>在这里提问，按Enter键发送...</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="128"/>
+        <source>Answering</source>
+        <translation>回答中</translation>
     </message>
 </context>
 <context>
@@ -2160,22 +2165,22 @@ storage: %2
         <translation>文本</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="105"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="102"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="138"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="135"/>
         <source>Watcher</source>
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="238"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="235"/>
         <source>Find ToolBar</source>
         <translation>查找</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="263"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="260"/>
         <source>Valgrind</source>
         <translation>Valgrind</translation>
     </message>
