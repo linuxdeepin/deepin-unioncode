@@ -50,10 +50,6 @@ TextEdit::TextEdit(QWidget *parent)
         Q_UNUSED(text)
         Q_UNUSED(line)
         emit this->fileChanged(this->file());
-        auto service = dpfGetService(EditorService);
-        if (service) {
-            emit service->fileChanged();
-        }
     }, Qt::UniqueConnection);
 
     QObject::connect(this, &ScintillaEditExtern::textDeleted, this,

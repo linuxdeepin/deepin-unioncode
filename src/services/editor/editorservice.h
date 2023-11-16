@@ -35,10 +35,6 @@ public:
     DPF_INTERFACE(void, insertText, const QString &);
     DPF_INTERFACE(void, showTips, const QString &tips);
     DPF_INTERFACE(void, undo);
-
-
-signals:
-    void fileChanged();
 };
 
 } // namespace dpfservice
