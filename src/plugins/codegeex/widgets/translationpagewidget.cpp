@@ -9,13 +9,13 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QComboBox>
-#include <QPushButton>
-#include <QLabel>
+#include <DComboBox>
+#include <DPushButton>
+#include <DLabel>
 #include <QDebug>
 
 TranslationPageWidget::TranslationPageWidget(QWidget *parent)
-    : QWidget (parent)
+    : DWidget (parent)
 {
     initUI();
     initConnection();
@@ -49,14 +49,14 @@ void TranslationPageWidget::initUI()
     QHBoxLayout *midLayout = new QHBoxLayout;
 
     QVBoxLayout *comboBoxLayout = new QVBoxLayout;
-    QLabel *comboBoxLabel = new QLabel(this);
+    DLabel *comboBoxLabel = new DLabel(this);
     comboBoxLabel->setFixedHeight(20);
     comboBoxLabel->setText(tr("Translate Into:"));
     comboBoxLayout->addWidget(comboBoxLabel);
 
     layout->addSpacing(20);
 
-    langComboBox = new QComboBox(this);
+    langComboBox = new DComboBox(this);
     langComboBox->addItems(CodeGeeX::SupportLanguage);
     comboBoxLayout->addWidget(langComboBox);
 
@@ -64,7 +64,7 @@ void TranslationPageWidget::initUI()
 
     midLayout->addSpacing(100);
 
-    transBtn = new QPushButton(this);
+    transBtn = new DPushButton(this);
     transBtn->setText(tr("Translate"));
     midLayout->addWidget(transBtn);
 
@@ -85,6 +85,6 @@ void TranslationPageWidget::initUI()
 
 void TranslationPageWidget::initConnection()
 {
-    connect(transBtn, &QPushButton::clicked, this, &TranslationPageWidget::onTranslateBtnClicked);
+    connect(transBtn, &DPushButton::clicked, this, &TranslationPageWidget::onTranslateBtnClicked);
     connect(Copilot::instance(), &Copilot::translatedResult, this, &TranslationPageWidget::onRecevieTransCode);
 }

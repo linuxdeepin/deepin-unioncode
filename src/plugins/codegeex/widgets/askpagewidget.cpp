@@ -7,17 +7,18 @@
 #include "messagecomponent.h"
 #include "codegeexmanager.h"
 
-#include <QPushButton>
-#include <QScrollArea>
+#include <DLabel>
+#include <DLineEdit>
+#include <DPushButton>
+#include <DScrollArea>
+#include <DScrollBar>
+
 #include <QVBoxLayout>
-#include <QLineEdit>
-#include <QLabel>
 #include <QDebug>
-#include <QScrollBar>
 #include <QTimer>
 
 AskPageWidget::AskPageWidget(QWidget *parent)
-    : QWidget (parent)
+    : DWidget (parent)
     , processTimer(new QTimer(this))
 {
     initUI();
@@ -88,13 +89,13 @@ void AskPageWidget::initUI()
     QVBoxLayout *layout = new QVBoxLayout;
     setLayout(layout);
 
-    scrollArea = new QScrollArea(this);
+    scrollArea = new DScrollArea(this);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setWidgetResizable(true);
     scrollArea->setAlignment(Qt::AlignHCenter);
     layout->addWidget(scrollArea);
 
-    inputWidget = new QWidget(this);
+    inputWidget = new DWidget(this);
     layout->addWidget(inputWidget);
 
     initInputWidget();
@@ -108,7 +109,7 @@ void AskPageWidget::initInputWidget()
     QHBoxLayout *editLayout = new QHBoxLayout;
     layout->addLayout(editLayout);
 
-    inputEdit = new QLineEdit(inputWidget);
+    inputEdit = new DLineEdit(inputWidget);
     inputEdit->setFixedHeight(50);
     inputEdit->setPlaceholderText(placeHolderText);
     editLayout->addWidget(inputEdit);
@@ -128,7 +129,7 @@ void AskPageWidget::initConnection()
         QString holderText = tr("Answering") + tips;
         inputEdit->setPlaceholderText(holderText);
     });
-    connect(inputEdit, &QLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
+    connect(inputEdit, &DLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
 }
 
 void AskPageWidget::cleanWidgets()
@@ -140,7 +141,7 @@ void AskPageWidget::cleanWidgets()
 void AskPageWidget::setSessionPage()
 {
     cleanWidgets();
-    messageContainer = new QWidget(scrollArea);
+    messageContainer = new DWidget(scrollArea);
     scrollArea->setWidget(messageContainer);
 
     QVBoxLayout *layout = new QVBoxLayout(messageContainer);

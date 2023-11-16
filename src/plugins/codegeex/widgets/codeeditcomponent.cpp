@@ -5,6 +5,8 @@
 #include "codeeditcomponent.h"
 #include "copilot.h"
 
+#include <DApplication>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -16,7 +18,7 @@
 #include <QMimeData>
 
 CodeEditComponent::CodeEditComponent(QWidget *parent)
-    : QWidget (parent)
+    : DWidget (parent)
 {
     initUI();
     initConnection();
@@ -120,7 +122,7 @@ void CodeEditComponent::onCopyBtnClicked()
     if (codeEdit->toPlainText().isEmpty())
         return;
 
-    QClipboard *clipboard = QApplication::clipboard();
+    QClipboard *clipboard = DApplication::clipboard();
     clipboard->setMimeData(new QMimeData);
     clipboard->setText(codeEdit->toPlainText());
 }
@@ -130,12 +132,12 @@ void CodeEditComponent::initUI()
     QVBoxLayout *layout = new QVBoxLayout;
     setLayout(layout);
 
-    titleWidget = new QWidget(this);
+    titleWidget = new DWidget(this);
     layout->addWidget(titleWidget);
     initTitleWidgets();
     titleWidget->setVisible(false);
 
-    codeEdit = new QPlainTextEdit(this);
+    codeEdit = new DPlainTextEdit(this);
     codeEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
     layout->addWidget(codeEdit);
 }
@@ -146,23 +148,23 @@ void CodeEditComponent::initTitleWidgets()
     layout->setDirection(QHBoxLayout::RightToLeft);
     titleWidget->setLayout(layout);
 
-    copyButton = new QPushButton(titleWidget);
+    copyButton = new DPushButton(titleWidget);
     copyButton->setText(tr("Copy"));
     layout->addWidget(copyButton);
 
-    insertButton = new QPushButton(titleWidget);
+    insertButton = new DPushButton(titleWidget);
     insertButton->setText(tr("Insert"));
     layout->addWidget(insertButton);
 
     layout->addStretch(1);
 
-    title = new QLabel(titleWidget);
+    title = new DLabel(titleWidget);
     title->setText("");
     layout->addWidget(title);
 }
 
 void CodeEditComponent::initConnection()
 {
-    connect(copyButton, &QPushButton::clicked, this, &CodeEditComponent::onCopyBtnClicked);
-    connect(insertButton, &QPushButton::clicked, this, &CodeEditComponent::onInsertBtnClicked);
+    connect(copyButton, &DPushButton::clicked, this, &CodeEditComponent::onCopyBtnClicked);
+    connect(insertButton, &DPushButton::clicked, this, &CodeEditComponent::onInsertBtnClicked);
 }

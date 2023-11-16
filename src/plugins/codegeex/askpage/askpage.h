@@ -6,7 +6,11 @@
 
 #include "codegeex/askapi.h"
 
-#include <QWidget>
+#include <DWidget>
+#include <DLabel>
+#include <DLineEdit>
+
+DWIDGET_USE_NAMESPACE
 
 class QVBoxLayout;
 class QHBoxLayout;
@@ -15,7 +19,7 @@ class QLabel;
 class QPlainTextEdit;
 class QLineEdit;
 class QTimer;
-class AskPage : public QWidget
+class AskPage : public DWidget
 {
     Q_OBJECT
 public:
@@ -37,22 +41,22 @@ private slots:
     void queryLoginState();
 
 private:
-    void setupUi(QWidget *AskPage);
+    void setupUi(DWidget *AskPage);
     void saveConfig(const QString &sessionId, const QString &userId);
     void loadConfig();
     QString configFilePath() const;
 
     QVBoxLayout *verticalLayout = nullptr;
     QHBoxLayout *toolLayout = nullptr;
-    QPushButton *btnLogin = nullptr;
-    QPushButton *btnDelete = nullptr;
-    QPushButton *btnHistory = nullptr;
-    QPushButton *btnNewSession = nullptr;
-    QLabel *label = nullptr;
-    QPlainTextEdit *outputpage = nullptr;
+    DPushButton *btnLogin = nullptr;
+    DPushButton *btnDelete = nullptr;
+    DPushButton *btnHistory = nullptr;
+    DPushButton *btnNewSession = nullptr;
+    DLabel *label = nullptr;
+    DPlainTextEdit *outputpage = nullptr;
     QHBoxLayout *inputLayout = nullptr;
-    QLineEdit *lineEditInput = nullptr;
-    QPushButton *btnSend = nullptr;
+    DLineEdit *lineEditInput = nullptr;
+    DPushButton *btnSend = nullptr;
 
     CodeGeeX::AskApi askApi;
     QString sessionId;

@@ -5,7 +5,10 @@
 #ifndef TRANSLATIONPAGEWIDGET_H
 #define TRANSLATIONPAGEWIDGET_H
 
-#include <QWidget>
+#include <DWidget>
+#include <DComboBox>
+
+DWIDGET_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE
 class QPushButton;
@@ -13,7 +16,7 @@ class QComboBox;
 QT_END_NAMESPACE
 
 class CodeEditComponent;
-class TranslationPageWidget : public QWidget
+class TranslationPageWidget : public DWidget
 {
     Q_OBJECT
 public:
@@ -27,8 +30,8 @@ private:
     void initUI();
     void initConnection();
 
-    QPushButton *transBtn { nullptr };
-    QComboBox *langComboBox { nullptr };
+    DPushButton *transBtn { nullptr };
+    DComboBox *langComboBox { nullptr };
     CodeEditComponent *inputEdit { nullptr };
     CodeEditComponent *outputEdit { nullptr };
 };

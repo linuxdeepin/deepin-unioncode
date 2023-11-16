@@ -5,13 +5,15 @@
 #ifndef INTROPAGE_H
 #define INTROPAGE_H
 
-#include <QWidget>
+#include <DWidget>
+
+DWIDGET_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE
 class QVBoxLayout;
 QT_END_NAMESPACE
 
-class IntroPage : public QWidget
+class IntroPage : public DWidget
 {
     Q_OBJECT
 public:

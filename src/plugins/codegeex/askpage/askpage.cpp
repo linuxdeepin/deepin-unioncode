@@ -5,12 +5,12 @@
 #include "common/util/custompaths.h"
 
 #include <QtCore/QVariant>
-#include <QApplication>
+#include <DApplication>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
+#include <DLabel>
+#include <DLineEdit>
 #include <QPlainTextEdit>
-#include <QPushButton>
+#include <DPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QScrollBar>
@@ -28,7 +28,7 @@ static const char *kUrlQuerySession = "https://codegeex.cn/prod/code/chatGmlMsg/
 static const char *kUrlDeleteSession = "https://codegeex.cn/prod/code/chatGlmTalk/delete";
 
 using namespace CodeGeeX;
-AskPage::AskPage(QWidget *parent) : QWidget(parent)
+AskPage::AskPage(QWidget *parent) : DWidget(parent)
   , timer(new QTimer(this))
 {
     setupUi(this);
@@ -162,7 +162,7 @@ void AskPage::on_btnSend_clicked()
     askApi.postSSEChat(kUrlSSEChat, sessionId, prompt, machineId, history);
 }
 
-void AskPage::setupUi(QWidget *AskPage)
+void AskPage::setupUi(DWidget *AskPage)
 {
     if (AskPage->objectName().isEmpty())
         AskPage->setObjectName(QStringLiteral("AskPage"));
@@ -174,29 +174,29 @@ void AskPage::setupUi(QWidget *AskPage)
     toolLayout = new QHBoxLayout();
     toolLayout->setSpacing(6);
     toolLayout->setObjectName(QStringLiteral("toolLayout"));
-    btnLogin = new QPushButton(AskPage);
+    btnLogin = new DPushButton(AskPage);
     btnLogin->setObjectName(QStringLiteral("btnLogin"));
 
     toolLayout->addWidget(btnLogin);
 
-    btnDelete = new QPushButton(AskPage);
+    btnDelete = new DPushButton(AskPage);
     btnDelete->setObjectName(QStringLiteral("btnDelete"));
 
     toolLayout->addWidget(btnDelete);
 
-    btnHistory = new QPushButton(AskPage);
+    btnHistory = new DPushButton(AskPage);
     btnHistory->setObjectName(QStringLiteral("btnHistory"));
 
     toolLayout->addWidget(btnHistory);
 
-    btnNewSession = new QPushButton(AskPage);
+    btnNewSession = new DPushButton(AskPage);
     btnNewSession->setObjectName(QStringLiteral("btnNewSession"));
 
     toolLayout->addWidget(btnNewSession);
 
     verticalLayout->addLayout(toolLayout);
 
-    label = new QLabel(AskPage);
+    label = new DLabel(AskPage);
     label->setObjectName(QStringLiteral("label"));
 
     verticalLayout->addWidget(label);
@@ -209,30 +209,30 @@ void AskPage::setupUi(QWidget *AskPage)
     inputLayout = new QHBoxLayout();
     inputLayout->setSpacing(6);
     inputLayout->setObjectName(QStringLiteral("inputLayout"));
-    lineEditInput = new QLineEdit(AskPage);
+    lineEditInput = new DLineEdit(AskPage);
     lineEditInput->setObjectName(QStringLiteral("lineEditInput"));
 
-    QObject::connect(lineEditInput, &QLineEdit::returnPressed, [=]() {
+    QObject::connect(lineEditInput, &DLineEdit::returnPressed, [=]() {
         on_btnSend_clicked();
         lineEditInput->clear();
     });
 
     inputLayout->addWidget(lineEditInput);
 
-    btnSend = new QPushButton(AskPage);
+    btnSend = new DPushButton(AskPage);
     btnSend->setObjectName(QStringLiteral("btnSend"));
 
     inputLayout->addWidget(btnSend);
 
     verticalLayout->addLayout(inputLayout);
 
-    AskPage->setWindowTitle(QApplication::translate("AskPage", "AskPage", nullptr));
-    btnLogin->setText(QApplication::translate("AskPage", "login", nullptr));
-    btnDelete->setText(QApplication::translate("AskPage", "delete", nullptr));
-    btnHistory->setText(QApplication::translate("AskPage", "history", nullptr));
-    btnNewSession->setText(QApplication::translate("AskPage", "new session", nullptr));
-    label->setText(QApplication::translate("AskPage", "TextLabel", nullptr));
-    btnSend->setText(QApplication::translate("AskPage", "Send", nullptr));
+    AskPage->setWindowTitle(DApplication::translate("AskPage", "AskPage", nullptr));
+    btnLogin->setText(DApplication::translate("AskPage", "login", nullptr));
+    btnDelete->setText(DApplication::translate("AskPage", "delete", nullptr));
+    btnHistory->setText(DApplication::translate("AskPage", "history", nullptr));
+    btnNewSession->setText(DApplication::translate("AskPage", "new session", nullptr));
+    label->setText(DApplication::translate("AskPage", "TextLabel", nullptr));
+    btnSend->setText(DApplication::translate("AskPage", "Send", nullptr));
 
     QMetaObject::connectSlotsByName(AskPage);
 }
