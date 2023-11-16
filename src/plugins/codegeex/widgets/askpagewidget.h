@@ -7,8 +7,12 @@
 
 #include "data/messagedata.h"
 
+#include <DWidget>
+#include <DLineEdit>
+
 #include <QMap>
-#include <QWidget>
+
+DWIDGET_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE
 class QScrollArea;
@@ -17,7 +21,7 @@ class QLineEdit;
 QT_END_NAMESPACE
 
 class MessageComponent;
-class AskPageWidget : public QWidget
+class AskPageWidget : public DWidget
 {
     Q_OBJECT
 public:
@@ -54,10 +58,11 @@ private:
     void askQuestion(const QString &question);
 
     PageState curState;
-    QScrollArea *scrollArea { nullptr };
-    QWidget *inputWidget { nullptr };
-    QWidget *messageContainer { nullptr };
-    QLineEdit *inputEdit { nullptr };
+
+    DScrollArea *scrollArea { nullptr };
+    DWidget *inputWidget { nullptr };
+    DWidget *messageContainer { nullptr };
+    DLineEdit *inputEdit { nullptr };
     QTimer *processTimer { nullptr };
     int progressCalcNum = 0;
     QString placeHolderText;

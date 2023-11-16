@@ -5,7 +5,11 @@
 #ifndef CODEGEEXWIDGET_H
 #define CODEGEEXWIDGET_H
 
-#include <QWidget>
+#include <DWidget>
+#include <DTabBar>
+#include <DPushButton>
+
+DWIDGET_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE
 class QTabBar;
@@ -15,7 +19,7 @@ QT_END_NAMESPACE
 
 class AskPageWidget;
 class TranslationPageWidget;
-class CodeGeeXWidget : public QWidget
+class CodeGeeXWidget : public DWidget
 {
     Q_OBJECT
 
@@ -45,11 +49,11 @@ private:
 
     void resetHeaderBtns();
 
-    QTabBar *tabBar { nullptr };
-    QStackedWidget *stackWidget { nullptr };
-    QPushButton *deleteBtn { nullptr };
-    QPushButton *historyBtn { nullptr };
-    QPushButton *createNewBtn { nullptr };
+    DTabBar *tabBar { nullptr };
+    DStackedWidget *stackWidget { nullptr };
+    DPushButton *deleteBtn { nullptr };
+    DPushButton *historyBtn { nullptr };
+    DPushButton *createNewBtn { nullptr };
 
     AskPageWidget *askPage { nullptr };
     TranslationPageWidget *transPage { nullptr };

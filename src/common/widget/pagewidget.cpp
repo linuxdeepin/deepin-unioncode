@@ -5,7 +5,7 @@
 #include "pagewidget.h"
 
 PageWidget::PageWidget(QWidget *parent)
-    : QWidget(parent)
+    : DTK_WIDGET_NAMESPACE::DWidget(parent)
 {
 
 }

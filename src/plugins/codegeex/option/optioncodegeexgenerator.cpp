@@ -7,9 +7,10 @@
 
 #include "common/widget/pagewidget.h"
 
-#include <QWidget>
+#include <DWidget>
+#include <DTabWidget>
+
 #include <QHBoxLayout>
-#include <QTabWidget>
 
 OptionCodeGeeXGenerator::OptionCodeGeeXGenerator()
 {

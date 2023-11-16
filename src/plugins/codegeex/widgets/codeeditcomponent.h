@@ -5,8 +5,10 @@
 #ifndef CODEEDITCOMPONENT_H
 #define CODEEDITCOMPONENT_H
 
+#include <DWidget>
+#include <DLabel>
 
-#include <QWidget>
+DWIDGET_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE
 class QPushButton;
@@ -14,7 +16,7 @@ class QPlainTextEdit;
 class QLabel;
 QT_END_NAMESPACE
 
-class CodeEditComponent : public QWidget
+class CodeEditComponent : public DWidget
 {
     Q_OBJECT
 public:
@@ -47,11 +49,11 @@ private:
     void initTitleWidgets();
     void initConnection();
 
-    QWidget *titleWidget { nullptr };
-    QPushButton *copyButton { nullptr };
-    QPushButton *insertButton { nullptr };
-    QPlainTextEdit *codeEdit { nullptr };
-    QLabel *title { nullptr };
+    DWidget *titleWidget { nullptr };
+    DPushButton *copyButton { nullptr };
+    DPushButton *insertButton { nullptr };
+    DPlainTextEdit *codeEdit { nullptr };
+    DLabel *title { nullptr };
 
     bool heightUpdate { false };
 };

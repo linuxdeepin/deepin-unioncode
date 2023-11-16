@@ -5,9 +5,9 @@
 #ifndef PAGEWIDGET_H
 #define PAGEWIDGET_H
 
-#include <QWidget>
+#include <DWidget>
 
-class PageWidget : public QWidget
+class PageWidget : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:

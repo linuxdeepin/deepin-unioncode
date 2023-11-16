@@ -7,8 +7,12 @@
 
 #include "data/messagedata.h"
 
-#include <QWidget>
+#include <DWidget>
+#include <DLabel>
+
 #include <QVariant>
+
+DWIDGET_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE
 class QImage;
@@ -17,7 +21,7 @@ class QVBoxLayout;
 QT_END_NAMESPACE
 
 class CodeEditComponent;
-class MessageComponent : public QWidget
+class MessageComponent : public DWidget
 {
     enum UpdateState : uint8_t {
         Label,
@@ -34,15 +38,15 @@ private:
 
     void createCurrentUpdateWidget();
 
-    QLabel *senderHead { nullptr };
-    QLabel *senderName { nullptr };
-    QLabel *context { nullptr };
+    DLabel *senderHead { nullptr };
+    DLabel *senderName { nullptr };
+    DLabel *context { nullptr };
 
     QVBoxLayout *msgLayout { nullptr };
 
     UpdateState currentUpdateState = Label;
     CodeEditComponent *curUpdateEdit { nullptr };
-    QLabel *curUpdateLabel { nullptr };
+    DLabel *curUpdateLabel { nullptr };
 
     MessageData messageData;
 };

@@ -7,15 +7,15 @@
 #include "translationpagewidget.h"
 #include "codegeexmanager.h"
 
+#include <DLabel>
+#include <DStackedWidget>
+
 #include <QDebug>
-#include <QTabBar>
-#include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
-#include <QLabel>
 
 CodeGeeXWidget::CodeGeeXWidget(QWidget *parent)
-    : QWidget(parent)
+    : DWidget(parent)
 {
     initUI();
     initConnection();
@@ -71,7 +71,7 @@ void CodeGeeXWidget::initUI()
         auto verticalSpacer_top = new QSpacerItem(20, 200, QSizePolicy::Minimum, QSizePolicy::Expanding);
         verticalLayout->addItem(verticalSpacer_top);
 
-        auto label_icon = new QLabel();
+        auto label_icon = new DLabel();
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         label_icon->setSizePolicy(sizePolicy);
         label_icon->setPixmap(QPixmap(":/resoures/images/logo-codegeex.png").scaledToWidth(80));
@@ -79,17 +79,17 @@ void CodeGeeXWidget::initUI()
 
         verticalLayout->addWidget(label_icon, Qt::AlignCenter);
 
-        auto label_text = new QLabel();
+        auto label_text = new DLabel();
         label_text->setSizePolicy(sizePolicy);
         label_text->setText(tr("Welcome to CodeGeeX\nA must-have all-round AI tool for developers"));
         label_text->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(label_text, Qt::AlignCenter);
 
-        auto loginBtn = new QPushButton();
+        auto loginBtn = new DPushButton();
         loginBtn->setSizePolicy(sizePolicy);
         loginBtn->setText(tr("Go to login"));
-        connect(loginBtn, &QPushButton::clicked, this, [ = ]{
+        connect(loginBtn, &DPushButton::clicked, this, [ = ]{
             qInfo() << "on login clicked";
             CodeGeeXManager::instance()->login();
         });
@@ -110,7 +110,7 @@ void CodeGeeXWidget::initConnection()
 
 void CodeGeeXWidget::initAskWidget()
 {
-    tabBar = new QTabBar(this);
+    tabBar = new DTabBar(this);
     tabBar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     tabBar->setContentsMargins(0, 0, 0, 0);
     stackWidget = new QStackedWidget(this);
@@ -127,13 +127,13 @@ void CodeGeeXWidget::initAskWidget()
     headerLayout->addWidget(tabBar, 0);
     headerLayout->addStretch(1);
 
-    deleteBtn = new QPushButton(this);
+    deleteBtn = new DPushButton(this);
     deleteBtn->setText(tr("Delete"));
     headerLayout->addWidget(deleteBtn);
-    historyBtn = new QPushButton(this);
+    historyBtn = new DPushButton(this);
     historyBtn->setText(tr("History"));
     headerLayout->addWidget(historyBtn);
-    createNewBtn = new QPushButton(this);
+    createNewBtn = new DPushButton(this);
     createNewBtn->setText(tr("New"));
     headerLayout->addWidget(createNewBtn);
 
@@ -166,11 +166,11 @@ void CodeGeeXWidget::initStackWidget()
         resetHeaderBtns();
     });
 
-    QWidget *creatingSessionWidget = new QWidget(this);
+    DWidget *creatingSessionWidget = new DWidget(this);
     QHBoxLayout *layout = new QHBoxLayout;
     creatingSessionWidget->setLayout(layout);
 
-    QLabel *creatingLabel = new QLabel(creatingSessionWidget);
+    DLabel *creatingLabel = new DLabel(creatingSessionWidget);
     creatingLabel->setAlignment(Qt::AlignCenter);
     creatingLabel->setText(tr("Creating a new session..."));
     layout->addWidget(creatingLabel);
@@ -183,7 +183,7 @@ void CodeGeeXWidget::initStackWidget()
 
 void CodeGeeXWidget::initAskWidgetConnection()
 {
-    connect(tabBar, &QTabBar::currentChanged, this, [ = ](int index){
+    connect(tabBar, &DTabBar::currentChanged, this, [ = ](int index){
         if (index == 0) {
             currentState = AskPage;
             resetHeaderBtns();
@@ -193,9 +193,9 @@ void CodeGeeXWidget::initAskWidgetConnection()
         }
         stackWidget->setCurrentIndex(index + 1);
     });
-    connect(deleteBtn, &QPushButton::clicked, this, &CodeGeeXWidget::onDeleteBtnClicked);
-    connect(historyBtn, &QPushButton::clicked, this, &CodeGeeXWidget::onHistoryBtnClicked);
-    connect(createNewBtn, &QPushButton::clicked, this, &CodeGeeXWidget::onCreateNewBtnClicked);
+    connect(deleteBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onDeleteBtnClicked);
+    connect(historyBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onHistoryBtnClicked);
+    connect(createNewBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onCreateNewBtnClicked);
 }
 
 void CodeGeeXWidget::resetHeaderBtns()

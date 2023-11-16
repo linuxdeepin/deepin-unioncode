@@ -9,14 +9,14 @@
 #include <QHBoxLayout>
 #include <QImage>
 #include <QPixmap>
-#include <QLabel>
+#include <DLabel>
 #include <QPalette>
 #include <QFrame>
 #include <QDebug>
 #include <QRegularExpression>
 
 MessageComponent::MessageComponent(const MessageData &msgData, QWidget *parent)
-    : QWidget(parent),
+    : DWidget(parent),
       messageData(msgData)
 {
     initUI();
@@ -46,11 +46,11 @@ void MessageComponent::updateMessage(const MessageData &msgData)
     switch (currentUpdateState) {
     case Label:
         if (!curUpdateLabel) {
-            curUpdateLabel = new QLabel(this);
+            curUpdateLabel = new DLabel(this);
             curUpdateLabel->setWordWrap(true);
             msgLayout->addWidget(curUpdateLabel);
         } else if (msgData.messageLines().length() > messageData.messageLines().length()) {
-            curUpdateLabel = new QLabel(this);
+            curUpdateLabel = new DLabel(this);
             curUpdateLabel->setWordWrap(true);
             msgLayout->addWidget(curUpdateLabel);
         }
@@ -95,8 +95,8 @@ void MessageComponent::initSenderInfo()
     QHBoxLayout *senderInfoLayout = new QHBoxLayout;
     qobject_cast<QVBoxLayout*>(layout())->addLayout(senderInfoLayout);
 
-    senderHead = new QLabel(this);
-    senderName = new QLabel(this);
+    senderHead = new DLabel(this);
+    senderName = new DLabel(this);
 
     switch (messageData.messageType()) {
     case MessageData::Ask: {

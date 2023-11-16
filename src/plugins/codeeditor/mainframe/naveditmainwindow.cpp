@@ -15,12 +15,12 @@
 #include "toolbarmanager.h"
 
 #include <DTitlebar>
+#include <DTabBar>
 
 #include <QDebug>
 #include <QDockWidget>
 #include <QEvent>
 #include <QWidget>
-#include <QTabBar>
 
 using namespace dpfservice;
 static NavEditMainWindow *ins{nullptr};

@@ -103,7 +103,7 @@ target_link_libraries(${PROJECT_NAME}
     services
     ${QtUseModules}
     ${PkgUserModules}
-    ${PkgUserModules}
+    ${DtkWidget_LIBRARIES}
     )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})

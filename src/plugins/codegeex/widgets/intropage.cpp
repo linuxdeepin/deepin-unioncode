@@ -5,16 +5,17 @@
 #include "intropage.h"
 #include "codegeexmanager.h"
 
-#include <QPushButton>
+#include <DLabel>
+#include <DPushButton>
+#include <DScrollArea>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QScrollArea>
-#include <QLabel>
 #include <QFont>
 #include <QDebug>
 
 IntroPage::IntroPage(QWidget *parent)
-    : QWidget (parent)
+    : DWidget (parent)
 {
     initUI();
 }
@@ -39,12 +40,12 @@ void IntroPage::initLogo()
     logoLayout->setAlignment(Qt::AlignCenter);
     qobject_cast<QVBoxLayout*>(layout())->addLayout(logoLayout);
 
-    QLabel *logo = new QLabel(this);
+    DLabel *logo = new DLabel(this);
     logo->setAlignment(Qt::AlignHCenter);
     logo->setPixmap(QPixmap(":/resoures/images/logo-codegeex.png").scaledToWidth(80));
     logoLayout->addWidget(logo);
 
-    QLabel *logoLabel = new QLabel(this);
+    DLabel *logoLabel = new DLabel(this);
     logoLabel->setAlignment(Qt::AlignHCenter);
     logoLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     auto font = logoLabel->font();
@@ -70,7 +71,7 @@ void IntroPage::initSuggestContent()
     QVBoxLayout *suggestLayout = new QVBoxLayout;
     qobject_cast<QVBoxLayout*>(layout())->addLayout(suggestLayout);
 
-    QLabel *suggestLabel = new QLabel(this);
+    DLabel *suggestLabel = new DLabel(this);
     suggestLabel->setText(tr("Try the following questions:"));
     suggestLayout->addWidget(suggestLabel);
 
@@ -82,7 +83,7 @@ void IntroPage::initSuggestContent()
 
 void IntroPage::appendDescLabel(QVBoxLayout *layout, const QString &text)
 {
-    QLabel *descLabel = new QLabel(this);
+    DLabel *descLabel = new DLabel(this);
     descLabel->setAlignment(Qt::AlignHCenter);
     descLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     descLabel->setWordWrap(true);
@@ -92,7 +93,7 @@ void IntroPage::appendDescLabel(QVBoxLayout *layout, const QString &text)
 
 void IntroPage::appendSuggestButton(QVBoxLayout *layout, const QString &text)
 {
-    QPushButton *suggestButton = new QPushButton(this);
+    DPushButton *suggestButton = new DPushButton(this);
     suggestButton->setFixedHeight(50);
     QFont buttonFont = suggestButton->font();
     buttonFont.setPointSize(12);
@@ -100,7 +101,7 @@ void IntroPage::appendSuggestButton(QVBoxLayout *layout, const QString &text)
     suggestButton->setText(text);
     layout->addWidget(suggestButton);
 
-    connect(suggestButton, &QPushButton::clicked, [ = ] {
+    connect(suggestButton, &DPushButton::clicked, [ = ] {
         emit suggestionToSend(suggestButton->text());
     });
 }

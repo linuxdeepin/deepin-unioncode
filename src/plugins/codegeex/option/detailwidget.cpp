@@ -12,12 +12,14 @@
 #include <QFile>
 #include <QDir>
 #include <QRadioButton>
-#include <QLineEdit>
+#include <DLineEdit>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QLabel>
+#include <DLabel>
 #include <QHeaderView>
 #include <QDebug>
+
+DWIDGET_USE_NAMESPACE
 
 static const char *kApiKey = "apiKey";
 
@@ -28,7 +30,7 @@ class DetailWidgetPrivate
 {
     friend class DetailWidget;
 
-    QLineEdit *apiKeyWidget = nullptr;
+    DLineEdit *apiKeyWidget = nullptr;
 };
 
 DetailWidget::DetailWidget(QWidget *parent)
@@ -52,8 +54,8 @@ void DetailWidget::setupUi()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    QLabel *label = new QLabel(QLabel::tr("CodeGeeX Api Key:"));
-    d->apiKeyWidget = new QLineEdit();
+    DLabel *label = new DLabel(DLabel::tr("CodeGeeX Api Key:"));
+    d->apiKeyWidget = new DLineEdit();
     hLayout->addWidget(label);
     hLayout->addWidget(d->apiKeyWidget);
 

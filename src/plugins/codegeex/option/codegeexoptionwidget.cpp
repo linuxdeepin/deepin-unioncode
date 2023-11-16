@@ -9,15 +9,17 @@
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
 
-#include <QHBoxLayout>
-#include <QTabWidget>
+#include <DTabWidget>
 
+#include <QHBoxLayout>
+
+DWIDGET_USE_NAMESPACE
 
 static const char *kCATEGORY_CODEGEEX = "CodeGeeX";
 
 class CodeGeeXOptionWidgetPrivate
 {
-    QTabWidget* tabWidget = nullptr;
+    DTabWidget* tabWidget = nullptr;
     friend class CodeGeeXOptionWidget;
 };
 
@@ -26,11 +28,11 @@ CodeGeeXOptionWidget::CodeGeeXOptionWidget(QWidget *parent)
     , d(new CodeGeeXOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
-    d->tabWidget = new QTabWidget();
+    d->tabWidget = new DTabWidget();
     layout->addWidget(d->tabWidget);
 
     d->tabWidget->addTab(new DetailWidget(), tr("CodeGeeX"));
-    QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
+    QObject::connect(d->tabWidget, &DTabWidget::currentChanged, [this]() {
         readConfig();
     });
 
