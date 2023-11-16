@@ -21,6 +21,18 @@ TranslationPageWidget::TranslationPageWidget(QWidget *parent)
     initConnection();
 }
 
+void TranslationPageWidget::setInputEditText(const QString &text)
+{
+    if (inputEdit)
+        inputEdit->updateCode(text);
+}
+
+void TranslationPageWidget::cleanOutputEdit()
+{
+    if (outputEdit)
+        outputEdit->updateCode("");
+}
+
 void TranslationPageWidget::onTranslateBtnClicked()
 {
     QString dstLang = langComboBox->currentText();

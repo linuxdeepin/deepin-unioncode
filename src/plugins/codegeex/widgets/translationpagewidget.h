@@ -21,6 +21,8 @@ class TranslationPageWidget : public DWidget
     Q_OBJECT
 public:
     explicit TranslationPageWidget(QWidget *parent = nullptr);
+    void setInputEditText(const QString &text);
+    void cleanOutputEdit();
 
 public Q_SLOTS:
     void onTranslateBtnClicked();

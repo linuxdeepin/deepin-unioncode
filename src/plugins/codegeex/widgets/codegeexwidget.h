@@ -37,6 +37,7 @@ public Q_SLOTS:
     void onDeleteBtnClicked();
     void onHistoryBtnClicked();
     void onCreateNewBtnClicked();
+    void toTranslateCode(const QString &code);
 
 private:
     void initUI();
