@@ -38,6 +38,8 @@ public Q_SLOTS:
     void onHistoryBtnClicked();
     void onCreateNewBtnClicked();
     void toTranslateCode(const QString &code);
+    void onAnwserFinished();
+    void onAnwserStarted();
 
 private:
     void initUI();

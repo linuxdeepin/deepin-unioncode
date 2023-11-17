@@ -39,6 +39,7 @@ Q_SIGNALS:
     void createdNewSession();
     void requestMessageUpdate(const MessageData &msg);
     void requestToTransCode(const QString &code);
+    void chatStarted();
     void chatFinished();
 
 public Q_SLOTS:
