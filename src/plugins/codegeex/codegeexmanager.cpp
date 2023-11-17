@@ -92,7 +92,6 @@ void CodeGeeXManager::deleteCurrentSession()
 
 void CodeGeeXManager::sendMessage(const QString &prompt)
 {
-    qInfo() << "send prompt ======= " << prompt;
     QString askId = "User" + QString::number(QDateTime::currentMSecsSinceEpoch());
     MessageData msgData(askId, MessageData::Ask);
     msgData.updateData(prompt);

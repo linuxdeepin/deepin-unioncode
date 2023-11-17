@@ -143,15 +143,15 @@ void CodeGeeXWidget::initAskWidget()
 
     deleteBtn = new DPushButton(this);
     deleteBtn->setFlat(true);
-    deleteBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_del_hover.svg")));
+    deleteBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_del_hover.png")));
     headerLayout->addWidget(deleteBtn);
     historyBtn = new DPushButton(this);
     historyBtn->setFlat(true);
-    historyBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_history_hover.svg")));
+    historyBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_history_hover.png")));
     headerLayout->addWidget(historyBtn);
     createNewBtn = new DPushButton(this);
     createNewBtn->setFlat(true);
-    createNewBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_new_hover.svg")));
+    createNewBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_new_hover.png")));
     headerLayout->addWidget(createNewBtn);
 
     initTabBar();
