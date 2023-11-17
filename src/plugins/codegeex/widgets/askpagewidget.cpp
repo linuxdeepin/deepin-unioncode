@@ -60,10 +60,12 @@ void AskPageWidget::onMessageUpdate(const MessageData &msgData)
         msgComponents.value(msgData.messageID())->updateMessage(msgData);
     }
 
-    if (scrollArea->verticalScrollBar()->isVisible()) {
-        int maxValue = scrollArea->verticalScrollBar()->maximum();
-        scrollArea->verticalScrollBar()->setValue(maxValue);
-    }
+    QTimer::singleShot(100, [this](){
+        if (scrollArea->verticalScrollBar()->isVisible()) {
+            int maxValue = scrollArea->verticalScrollBar()->maximum();
+            scrollArea->verticalScrollBar()->setValue(maxValue);
+        }
+    });
 }
 
 void AskPageWidget::onSendBtnClicked()
