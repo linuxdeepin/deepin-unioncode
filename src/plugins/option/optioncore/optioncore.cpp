@@ -55,14 +55,6 @@ bool OptionCore::start()
 
     if (windowService && windowService->addAction && windowService->addToolBarActionItem) {
         auto actionOptions = new QAction(MWMTA_OPTIONS);
-        auto actionOptionsNoIcon = new QAction(MWMTA_OPTIONS);
-        ActionManager::getInstance()->registerAction(actionOptions,
-                                                     "Tools.Options",
-                                                     MWMTA_OPTIONS,
-                                                     QKeySequence(Qt::Modifier::CTRL |
-                                                                  Qt::Modifier::SHIFT |
-                                                                  Qt::Key::Key_H),
-                                                     ":/optioncore/images/setting.png");
         ActionManager::getInstance()->registerAction(actionOptions,
                                                      "Tools.Options",
                                                      MWMTA_OPTIONS,
@@ -70,12 +62,9 @@ bool OptionCore::start()
                                                                   Qt::Modifier::SHIFT |
                                                                   Qt::Key::Key_H),
                                                      QString());
-        windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptionsNoIcon));
-        windowService->addToolBarActionItem("Options", actionOptions, "Option.End");
+        windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptions));
 
         QObject::connect(actionOptions, &QAction::triggered,
-                         optionDialog, &QDialog::show);
-        QObject::connect(actionOptionsNoIcon, &QAction::triggered,
                          optionDialog, &QDialog::show);
     }
 
