@@ -26,6 +26,7 @@ void MessageComponent::updateMessage(const MessageData &msgData)
     if (msgData.messageType() == MessageData::Ask) {
         curUpdateLabel = new DLabel(this);
         curUpdateLabel->setWordWrap(true);
+        curUpdateLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
         msgLayout->addWidget(curUpdateLabel);
         curUpdateLabel->setText(msgData.messageData());
         return;
@@ -38,10 +39,12 @@ void MessageComponent::updateMessage(const MessageData &msgData)
     case Label:
         if (!curUpdateLabel) {
             curUpdateLabel = new DLabel(this);
+            curUpdateLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
             curUpdateLabel->setWordWrap(true);
             msgLayout->addWidget(curUpdateLabel);
         } else if (msgData.messageLines().length() > messageData.messageLines().length()) {
             curUpdateLabel = new DLabel(this);
+            curUpdateLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
             curUpdateLabel->setWordWrap(true);
             msgLayout->addWidget(curUpdateLabel);
         }
@@ -141,6 +144,7 @@ bool MessageComponent::createCodeEdit(const MessageData &newData)
                 messageData.appendData({ addedLine });
                 currentUpdateState = Label;
                 curUpdateLabel = new DLabel(this);
+                curUpdateLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
                 curUpdateLabel->setWordWrap(true);
                 msgLayout->addWidget(curUpdateLabel);
                 if (i != (addedLines.count() - 1))
