@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / sidebar / history</title>
+    <g id="ICON-/-sidebar-/-history" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M10,1.25 C14.8324916,1.25 18.75,5.16750844 18.75,10 C18.75,14.8324916 14.8324916,18.75 10,18.75 C5.16750844,18.75 1.25,14.8324916 1.25,10 C1.25,5.16750844 5.16750844,1.25 10,1.25 Z M9.375,4.375 C9.02982203,4.375 8.75,4.65482203 8.75,5 L8.75,10.625 C8.75,10.970178 9.02982203,11.25 9.375,11.25 L15,11.25 C15.345178,11.25 15.625,10.970178 15.625,10.625 C15.625,10.279822 15.345178,10 15,10 L10,10 L10,5 C10,4.65482203 9.72017797,4.375 9.375,4.375 Z" id="形状结合" fill="#626E88" fill-rule="nonzero"></path>
+    </g>
+</svg>

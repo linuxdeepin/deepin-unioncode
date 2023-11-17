@@ -46,7 +46,7 @@ public:
     QStringList navActionTexts() const;
 
 public slots:
-    void addNavigation(const QString &id);
+    void addActionNavigation(const QString &id, AbstractAction *action);
     void addCentralNavigation(const QString &navName, AbstractCentral *central);
     void addMenu(AbstractMenu *menu);
     void insertAction(const QString &menuName, const QString &beforActionName,
@@ -61,6 +61,8 @@ private :
     void showAboutDlg();
     void showAboutPlugins();
     void layoutWindow(DMainWindow *window);
+    void createNavEdit(DToolBar *toolbar);
+    void createNavRecent(DToolBar *toolbar);
     void createStatusBar(DMainWindow *window);
 
     void createHelpActions(DMenu *menu);
@@ -72,9 +74,6 @@ private :
     void setNavActionChecked(const QString &actionName, bool checked);
 
     void createMainMenu(DMenu *mainMenu);
-    void initLeftToolBar();
-    void showNavWidget(DWidget *widget);
-    void createNavIconBtn(const QString &navName);
 };
 
 #endif // WINDOWKEEPER_H
