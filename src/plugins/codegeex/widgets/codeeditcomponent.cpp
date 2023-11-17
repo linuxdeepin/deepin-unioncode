@@ -138,6 +138,7 @@ void CodeEditComponent::initUI()
     titleWidget->setVisible(false);
 
     codeEdit = new DPlainTextEdit(this);
+    codeEdit->setWordWrapMode(QTextOption::WrapMode::NoWrap);
     codeEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
     layout->addWidget(codeEdit);
 }
