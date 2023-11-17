@@ -20,9 +20,9 @@ bool Collaborators::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        if (windowService->addActionNavigation) {
-            windowService->addActionNavigation("Git", new AbstractAction(new QAction(QIcon::fromTheme("git"), QAction::tr("Git"))));
-            windowService->addActionNavigation("Svn", new AbstractAction(new QAction(QIcon::fromTheme("svn"), QAction::tr("Svn"))));
+        if (windowService->addNavigation) {
+            windowService->addNavigation("Git");
+            windowService->addNavigation("Svn");
         }
         if (windowService->addCentralNavigation) {
             windowService->addCentralNavigation("Git",

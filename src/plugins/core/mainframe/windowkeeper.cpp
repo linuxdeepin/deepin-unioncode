@@ -17,9 +17,10 @@
 #include <DTitlebar>
 #include <DStatusBar>
 #include <DFileDialog>
-#include <DIconButton>
 #include <DWidget>
 #include <DFrame>
+#include <DToolButton>
+
 #include <QDesktopServices>
 #include <QVBoxLayout>
 #include <QAction>
@@ -38,9 +39,13 @@ class WindowKeeperPrivate
     QHash<QString, DWidget *> centrals{};
     DMainWindow *window{nullptr};
     QActionGroup *navActionGroup{nullptr};
-    DToolBar *toolbar{nullptr};
     DMenu *mainMenu{nullptr};
     DToolBar *editToolBar{nullptr};
+
+    DFrame *leftToolBar{nullptr};
+    DWidget *topToolBar{nullptr};
+    QHash<QString, DToolButton*> leftToolBtns;
+    QList<DIconButton*> topToolBtnList;
 
     friend class WindowKeeper;
 };
@@ -139,38 +144,27 @@ void WindowKeeper::createStatusBar(DMainWindow *window)
     window->setStatusBar(statusBar);
 }
 
-void WindowKeeper::createNavRecent(DToolBar *toolbar)
+void WindowKeeper::createNavIconBtn(const QString &navName)
 {
     qInfo() << __FUNCTION__;
-    if (!toolbar)
-        return;
 
-    QAction* navRecent = new QAction(QIcon::fromTheme("recent"), MWNA_RECENT, toolbar);
-    navRecent->setCheckable(true);
-    d->navActionGroup->addAction(navRecent);
-    QAction::connect(navRecent, &QAction::triggered, [=](){
-        WindowKeeper::switchWidgetNavigation(MWNA_RECENT);
+    DToolButton *toolBtn = new DToolButton;
+    toolBtn->setCheckable(true);
+    toolBtn->setChecked(true);
+    toolBtn->setIcon(QIcon::fromTheme(navName.toLower()));
+
+    toolBtn->setMinimumSize(QSize(48, 48));
+    toolBtn->setIconSize(QSize(20, 20));
+
+    d->leftToolBtns.insert(navName, toolBtn);
+
+    connect(toolBtn, &DIconButton::clicked, [=](){
+        WindowKeeper::switchWidgetNavigation(navName);
     });
 
-    toolbar->addAction(navRecent);
-    toolbar->widgetForAction(navRecent)->setObjectName("Recent");
-}
-
-void WindowKeeper::createNavEdit(DToolBar *toolbar)
-{
-    qInfo() << __FUNCTION__;
-    if (!toolbar)
-        return;
-
-    QAction* navEdit = new QAction(QIcon::fromTheme("edit"), MWNA_EDIT, toolbar);
-    navEdit->setCheckable(true);
-    d->navActionGroup->addAction(navEdit);
-    QAction::connect(navEdit, &QAction::triggered, [=](){
-        WindowKeeper::switchWidgetNavigation(MWNA_EDIT);
-    });
-
-    toolbar->addAction(navEdit);
-    toolbar->widgetForAction(navEdit)->setObjectName("Edit");
+    QVBoxLayout *toolbarLayout = static_cast<QVBoxLayout*>(d->leftToolBar->layout());
+    toolbarLayout->addSpacing(5);
+    toolbarLayout->addWidget(toolBtn);
 }
 
 void WindowKeeper::createMainMenu(DMenu *menu)
@@ -189,44 +183,28 @@ void WindowKeeper::createMainMenu(DMenu *menu)
     createHelpActions(menu);
 }
 
+void WindowKeeper::initLeftToolBar()
+{
+    if (!d->leftToolBar)
+        return;
+
+    d->leftToolBar->setLineWidth(0);
+    d->leftToolBar->setFixedWidth(58);
+    DStyle::setFrameRadius(d->leftToolBar, 0);
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    d->leftToolBar->setLayout(layout);
+}
+
 void WindowKeeper::layoutWindow(DMainWindow *window)
 {
     qInfo() << __FUNCTION__;
     if (!d->navActionGroup)
         d->navActionGroup = new QActionGroup(window);
 
-    d->toolbar = new DToolBar(DToolBar::tr("Navigation"));
-    d->toolbar->setMovable(false);
-    d->toolbar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    d->toolbar->setIconSize(QSize(20, 20));
-
-    DPalette palette = d->toolbar->palette();
-    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::ColorType::LightType) {
-        palette.setColor(DPalette::Button, QColor("#FFFFFF"));
-        d->toolbar->setPalette(palette);
-    } else {
-        palette.setColor(DPalette::Button, QColor("#262626"));
-        d->toolbar->setPalette(palette);
-    }
-
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
-           this, [=](){
-        DPalette palette = d->toolbar->palette();
-        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::ColorType::LightType) {
-            palette.setColor(DPalette::Button, QColor("#FFFFFF"));
-            d->toolbar->setPalette(palette);
-        } else {
-            palette.setColor(DPalette::Button, QColor("#262626"));
-            d->toolbar->setPalette(palette);
-        }
-    });
-
-    DWidget *titleWiget = new DWidget();
-    titleWiget->setFixedSize(58, 29);
-    d->toolbar->addWidget(titleWiget);
-
-    createNavRecent(d->toolbar);
-    createNavEdit(d->toolbar);
+    createNavIconBtn(MWNA_RECENT);
+    createNavIconBtn(MWNA_EDIT);
 
     createMainMenu(d->mainMenu);
 
@@ -234,7 +212,6 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
 
     window->setWindowTitle("Deepin Union Code");
     window->setWindowIcon(QIcon(":/core/images/unioncode@128.png"));
-    window->addToolBar(Qt::LeftToolBarArea, d->toolbar);
     window->setMinimumSize(QSize(MW_MIN_WIDTH,MW_MIN_HEIGHT));
     window->setAttribute(Qt::WA_DeleteOnClose);
 
@@ -261,6 +238,11 @@ WindowKeeper::WindowKeeper(QObject *parent)
 
     if (!d->window) {
         d->window = new DMainWindow();
+
+        if (!d->leftToolBar) {
+            d->leftToolBar = new DFrame();
+            initLeftToolBar();
+        }
 
         if (!d->mainMenu) {
             d->mainMenu = new DMenu(d->window->titlebar());
@@ -297,8 +279,8 @@ WindowKeeper::WindowKeeper(QObject *parent)
         windowService->addCentralNavigation = std::bind(&WindowKeeper::addCentralNavigation, this, _1, _2);
     }
 
-    if (!windowService->addActionNavigation) {
-        windowService->addActionNavigation = std::bind(&WindowKeeper::addActionNavigation, this, _1, _2);
+    if (!windowService->addNavigation) {
+        windowService->addNavigation = std::bind(&WindowKeeper::addNavigation, this, _1);
     }
 
     if (!windowService->addAction) {
@@ -322,37 +304,31 @@ QStringList WindowKeeper::navActionTexts() const
     return d->centrals.keys();
 }
 
-void WindowKeeper::addActionNavigation(const QString &id, AbstractAction *action)
+void WindowKeeper::addNavigation(const QString &id)
 {
-    if (!action || !action->qAction() || !d->toolbar || !d->navActionGroup)
-        return;
-
-    auto qAction = (QAction*)action->qAction();
-    qAction->setCheckable(true);
-    d->navActionGroup->addAction(qAction);
-    d->toolbar->addAction(qAction);
-    d->toolbar->widgetForAction(qAction)->setObjectName(id);
-    QObject::connect(qAction, &QAction::triggered,[=](){
-        switchWidgetNavigation(qAction->text());
-    });
+    createNavIconBtn(id);
 }
 
 void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral *central)
 {
     qInfo() << __FUNCTION__;
-    auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-
-    if (navName == MWNA_EDIT) {
-        d->editToolBar = static_cast<DToolBar*>(windowService->getEditToolBar());
-    }
-
     DWidget* inputWidget = static_cast<DWidget*>(central->qWidget());
     if(!central || !inputWidget || navName.isEmpty())
         return;
 
     if (d->centrals.values().contains(inputWidget))
         return;
+
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+
+    if (navName == MWNA_EDIT) {
+        d->editToolBar = static_cast<DToolBar*>(windowService->getEditToolBar());
+        d->topToolBar = new DWidget();
+        QHBoxLayout *layout = new QHBoxLayout();
+        d->topToolBar->setLayout(layout);
+        d->topToolBar->setMinimumHeight(d->window->titlebar()->height());
+    }    
 
     inputWidget->setParent(d->window);
     d->centrals.insert(navName, inputWidget);
@@ -497,43 +473,20 @@ void WindowKeeper::addOpenProjectAction(const QString &name, AbstractAction *act
 void WindowKeeper::initUserWidget()
 {
     qApp->processEvents();
-    if (!d->toolbar)
+    if (!d->leftToolBar)
         return;
 
-    if (d->toolbar->actions().size() > 0) {
-        d->toolbar->actions().at(0)->trigger();
-    }
+//    if (d->toolbar->actions().size() > 0) {
+//        d->toolbar->actions().at(0)->trigger();
+//    }
 }
 
 void WindowKeeper::switchWidgetNavigation(const QString &navName)
 {
     auto beforWidget = d->window->takeCentralWidget();
-    if (beforWidget)
+    if (beforWidget) {
         beforWidget->hide();
-
-    d->editToolBar->hide();
-    d->window->titlebar()->setTitle(QString(tr("Deepin Union Code")));
-
-    if (navName == MWNA_EDIT) {
-        DPalette palette = d->window->palette();
-        palette.setColor(DPalette::Button, palette.color(DPalette::Base));
-        d->editToolBar->setPalette(palette);
-
-        QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
-               this, [=](){
-           DPalette palette = d->window->palette();
-           palette.setColor(DPalette::Button, palette.color(DPalette::Base));
-           d->editToolBar->setPalette(palette);
-        });
-
-        QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout*>(d->window->titlebar()->layout());
-        titleBarLayout->insertWidget(1, d->editToolBar, Qt::AlignLeft);
-        d->window->titlebar()->setTitle(QString());
-        titleBarLayout->insertSpacing(1, 12);
-        d->editToolBar->show();
     }
-
-    setNavActionChecked(navName, true);
 
     if (d->centrals.isEmpty() || !d->window)
         return;
@@ -542,7 +495,47 @@ void WindowKeeper::switchWidgetNavigation(const QString &navName)
     if (!widget)
         return;
 
-    d->window->setCentralWidget(widget);
+    for (auto btn : d->topToolBtnList) {
+        btn->hide();
+    }
+
+    d->window->titlebar()->setTitle(QString(tr("Deepin Union Code")));
+
+    if (navName == MWNA_EDIT) {
+        for (auto action : d->editToolBar->actions()) {
+            DIconButton *iconBtn = new DIconButton();
+            iconBtn->setIcon(action->icon());
+            iconBtn->setMinimumSize(QSize(36, 36));
+            iconBtn->setIconSize(QSize(20, 20));
+            d->topToolBtnList.append(iconBtn);
+
+            connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);
+
+            QHBoxLayout *topToolBarLayout = static_cast<QHBoxLayout*>(d->topToolBar->layout());
+            topToolBarLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+            topToolBarLayout->addWidget(iconBtn);
+        }
+        QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout*>(d->window->titlebar()->layout());
+        titleBarLayout->insertWidget(1, d->topToolBar, Qt::AlignLeft);
+        titleBarLayout->insertSpacing(titleBarLayout->indexOf(d->topToolBar), 20);
+        d->window->titlebar()->setTitle(QString());
+        d->topToolBar->show();
+    }
+    setNavActionChecked(navName, true);
+
+    showNavWidget(widget);
+}
+
+void WindowKeeper::showNavWidget(DWidget *widget)
+{
+    DWidget *navWidget = new DWidget();
+    QHBoxLayout *layout = new QHBoxLayout(navWidget);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(2);
+    layout->addWidget(d->leftToolBar);
+    layout->addWidget(widget);
+
+    d->window->setCentralWidget(navWidget);
     d->window->centralWidget()->show();
 }
 
@@ -551,9 +544,10 @@ void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)
     if (!d->navActionGroup)
         return;
 
-    for (auto action : d->navActionGroup->actions()) {
-        if (action->text() == actionName) {
-            action->setChecked(checked);
+    for (auto it = d->leftToolBtns.begin(); it != d->leftToolBtns.end(); it++) {
+        it.value()->setChecked(false);
+        if (it.key() == actionName) {
+            it.value()->setChecked(checked);
         }
     }
 }
