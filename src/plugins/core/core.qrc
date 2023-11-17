@@ -68,7 +68,11 @@
         <file>images/open_file.png</file>
         <file>images/open_project.png</file>
         <file>images/reverse.png</file>
-        <file>images/down_arrow.png</file>    
+        <file>images/down_arrow.png</file>
+        <file>images/recent.svg</file>
+        <file>images/svn.svg</file>
+        <file>images/edit.svg</file>
+        <file>images/git.svg</file>        
     </qresource>
     <qresource prefix="/icons/deepin/">
         <file>builtin/actions/recent_20px.svg</file>

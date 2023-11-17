@@ -63,6 +63,7 @@ bool ToolBarManager::addActionItem(const QString &id, QAction *action, const QSt
             break;
         }
     }
+
     d->toolbar->insertAction(before, action);
 
     if (currentIterator.value() == nullptr)
