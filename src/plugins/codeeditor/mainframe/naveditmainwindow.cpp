@@ -82,8 +82,7 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qDockWidgetContext);
     mainToolBar = new ToolBarManager(tr("toolbar"));
 
-    titlebar()->setParent(nullptr);
-    titlebar()->hide();
+    titlebar()->setFixedHeight(0);
 }
 
 NavEditMainWindow::~NavEditMainWindow()
