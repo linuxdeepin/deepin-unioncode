@@ -53,7 +53,7 @@ void AskPageWidget::onMessageUpdate(const MessageData &msgData)
     }
 
     if (!msgComponents.contains(msgData.messageID())) {
-        msgComponents.insert(msgData.messageID(), new MessageComponent(msgData));
+        msgComponents.insert(msgData.messageID(), new MessageComponent(msgData, messageContainer));
         qobject_cast<QVBoxLayout*>(messageContainer->layout())->insertWidget(msgComponents.count() - 1,msgComponents.value(msgData.messageID()));
         msgComponents.value(msgData.messageID())->updateMessage(msgData);
     } else {
@@ -105,14 +105,11 @@ void AskPageWidget::initInputWidget()
     QVBoxLayout *layout = new QVBoxLayout;
     inputWidget->setLayout(layout);
 
-    QHBoxLayout *editLayout = new QHBoxLayout;
-    layout->addLayout(editLayout);
-
     inputEdit = new DLineEdit(inputWidget);
     inputEdit->setFixedHeight(50);
     placeHolderText = tr("Ask question here, press Enter to send...");
     inputEdit->setPlaceholderText(placeHolderText);
-    editLayout->addWidget(inputEdit);
+    layout->addWidget(inputEdit);
 }
 
 void AskPageWidget::initConnection()
@@ -134,8 +131,10 @@ void AskPageWidget::initConnection()
 
 void AskPageWidget::cleanWidgets()
 {
-    if (auto currentWidget = scrollArea->takeWidget())
+    if (auto currentWidget = scrollArea->takeWidget()) {
         currentWidget->deleteLater();
+        msgComponents.clear();
+    }
 }
 
 void AskPageWidget::setSessionPage()
@@ -147,7 +146,7 @@ void AskPageWidget::setSessionPage()
     QVBoxLayout *layout = new QVBoxLayout(messageContainer);
     messageContainer->setLayout(layout);
 
-    layout->addStretch(0);
+    layout->addStretch(1);
 
     Q_EMIT sessionPageShown();
 }
