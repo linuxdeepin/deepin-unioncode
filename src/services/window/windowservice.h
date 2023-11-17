@@ -40,7 +40,7 @@ public:
      * \brief addActionNavigation 添加导航栏action
      * \param action 实例对象
      */
-    DPF_INTERFACE(void, addActionNavigation, const QString &id, AbstractAction *action);
+    DPF_INTERFACE(void, addNavigation, const QString &id);
 
     /*!
      * \brief addMenu 添加菜单项
