@@ -103,6 +103,8 @@ void CodeGeeXManager::sendMessage(const QString &prompt)
     }
     QString machineId = QSysInfo::machineUniqueId();
     askApi.postSSEChat(kUrlSSEChat, sessionId, prompt, machineId, history);
+
+    Q_EMIT chatStarted();
 }
 
 void CodeGeeXManager::onSessionCreated(const QString &talkId, bool isSuccessful)

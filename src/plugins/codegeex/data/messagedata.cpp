@@ -24,15 +24,6 @@ void MessageData::updateData(const QString &data)
     if (lines.length() < msgDataLines.length())
         return;
 
-//    QStringList newLines = lines.mid(msgDataLines.length());
-//    for (auto line : newLines) {
-//        if (line.startsWith("```")) {
-//            CodeData data;
-//            data.langueage = line.mid(3);
-//            codeDataList.append(data);
-//        }
-//    }
-
     msgData = data;
     msgDataLines = lines;
     //    qInfo() << "update msg line" << msgDataLines;

@@ -73,6 +73,22 @@ void CodeGeeXWidget::toTranslateCode(const QString &code)
     tabBar->setCurrentIndex(1);
 }
 
+void CodeGeeXWidget::onAnwserFinished()
+{
+    if (deleteBtn)
+        deleteBtn->setEnabled(true);
+    if (createNewBtn)
+        createNewBtn->setEnabled(true);
+}
+
+void CodeGeeXWidget::onAnwserStarted()
+{
+    if (deleteBtn)
+        deleteBtn->setEnabled(false);
+    if (createNewBtn)
+        createNewBtn->setEnabled(false);
+}
+
 void CodeGeeXWidget::initUI()
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -119,6 +135,8 @@ void CodeGeeXWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::loginSuccessed, this, &CodeGeeXWidget::onLoginSuccessed);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::createdNewSession, this, &CodeGeeXWidget::onNewSessionCreated);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestToTransCode, this, &CodeGeeXWidget::toTranslateCode);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &CodeGeeXWidget::onAnwserFinished);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatStarted, this, &CodeGeeXWidget::onAnwserStarted);
 }
 
 void CodeGeeXWidget::initAskWidget()
@@ -145,10 +163,10 @@ void CodeGeeXWidget::initAskWidget()
     deleteBtn->setFlat(true);
     deleteBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_del_hover.png")));
     headerLayout->addWidget(deleteBtn);
-    historyBtn = new DPushButton(this);
-    historyBtn->setFlat(true);
-    historyBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_history_hover.png")));
-    headerLayout->addWidget(historyBtn);
+//    historyBtn = new DPushButton(this);
+//    historyBtn->setFlat(true);
+//    historyBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_history_hover.png")));
+//    headerLayout->addWidget(historyBtn);
     createNewBtn = new DPushButton(this);
     createNewBtn->setFlat(true);
     createNewBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_new_hover.png")));
@@ -211,25 +229,25 @@ void CodeGeeXWidget::initAskWidgetConnection()
         stackWidget->setCurrentIndex(index + 1);
     });
     connect(deleteBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onDeleteBtnClicked);
-    connect(historyBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onHistoryBtnClicked);
+//    connect(historyBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onHistoryBtnClicked);
     connect(createNewBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onCreateNewBtnClicked);
 }
 
 void CodeGeeXWidget::resetHeaderBtns()
 {
-    if (!deleteBtn || !historyBtn || !createNewBtn || !askPage)
+    if (!deleteBtn || /*!historyBtn ||*/ !createNewBtn || !askPage)
         return;
 
     switch (currentState) {
     case AskPage:
         deleteBtn->setVisible(!askPage->isIntroPageState());
         createNewBtn->setVisible(!askPage->isIntroPageState());
-        historyBtn->setVisible(true);
+//        historyBtn->setVisible(true);
         break;
     case TrasnlatePage:
         deleteBtn->setVisible(false);
         createNewBtn->setVisible(false);
-        historyBtn->setVisible(false);
+//        historyBtn->setVisible(false);
         break;
     }
 }
