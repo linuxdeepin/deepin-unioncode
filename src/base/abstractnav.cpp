@@ -5,13 +5,15 @@
 #include "abstractnav.h"
 #include "abstractaction.h"
 
-#include <QToolBar>
+#include <DToolBar>
 #include <QDebug>
+
+DWIDGET_USE_NAMESPACE
 
 class AbstractNavPrivate
 {
     friend class AbstractNav;
-    QToolBar* qToolBar = nullptr;
+    DToolBar* qToolBar = nullptr;
     std::list<AbstractAction*> actions{};
 };
 
@@ -35,8 +37,8 @@ AbstractNav::AbstractNav(void *qToolBar)
         abort();
     }
 
-    d->qToolBar = static_cast<QToolBar*>(qToolBar);
-    QObject::connect(d->qToolBar, &QToolBar::destroyed,
+    d->qToolBar = static_cast<DToolBar*>(qToolBar);
+    QObject::connect(d->qToolBar, &DToolBar::destroyed,
                      d->qToolBar, [this](){
         delete this;
     }, Qt::UniqueConnection);

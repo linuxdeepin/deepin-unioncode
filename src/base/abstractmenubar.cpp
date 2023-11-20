@@ -6,13 +6,15 @@
 #include "abstractmenu.h"
 #include "abstractaction.h"
 
-#include <QMenuBar>
+#include <DMenuBar>
 #include <QDebug>
+
+DWIDGET_USE_NAMESPACE
 
 class AbstractMenuBarPrivate
 {
     friend class AbstractMenuBar;
-    QMenuBar *menuBar;
+    DMenuBar *menuBar;
 };
 
 AbstractMenuBar::~AbstractMenuBar()
@@ -35,8 +37,8 @@ AbstractMenuBar::AbstractMenuBar(void *qMenuBar)
         abort();
     }
 
-    d->menuBar = static_cast<QMenuBar*>(qMenuBar);
-    QMenuBar::connect(d->menuBar, &QMenuBar::destroyed,
+    d->menuBar = static_cast<DMenuBar*>(qMenuBar);
+    DMenuBar::connect(d->menuBar, &DMenuBar::destroyed,
                       d->menuBar, [this]() {
         delete this;
     }, Qt::UniqueConnection);

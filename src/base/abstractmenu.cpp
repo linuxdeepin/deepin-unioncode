@@ -4,13 +4,16 @@
 
 #include "abstractmenu.h"
 
-#include <QMenu>
+#include <DMenu>
+
 #include <QDebug>
+
+DWIDGET_USE_NAMESPACE
 
 class AbstractMenuPrivate
 {
     friend class AbstractMenu;
-    QMenu *menu;
+    DMenu *menu;
 };
 
 AbstractMenu::AbstractMenu(void *qMenu)
@@ -21,8 +24,8 @@ AbstractMenu::AbstractMenu(void *qMenu)
         abort();
     }
 
-    d->menu = static_cast<QMenu*>(qMenu);
-    QMenu::connect(d->menu, &QMenu::destroyed,
+    d->menu = static_cast<DMenu*>(qMenu);
+    DMenu::connect(d->menu, &DMenu::destroyed,
                    d->menu, [this]() {
         delete this;
     },Qt::UniqueConnection);

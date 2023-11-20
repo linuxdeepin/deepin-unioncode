@@ -4,13 +4,16 @@
 
 #include "abstractconsole.h"
 
-#include <QWidget>
+#include <DWidget>
+
 #include <QDebug>
+
+DWIDGET_USE_NAMESPACE
 
 class AbstractConsolePrivate
 {
     friend class AbstractConsole;
-    QWidget *qWidget = nullptr;
+    DWidget *qWidget = nullptr;
 };
 
 AbstractConsole::AbstractConsole(void *qWidget)
@@ -21,8 +24,8 @@ AbstractConsole::AbstractConsole(void *qWidget)
         abort();
     }
 
-    d->qWidget = static_cast<QWidget*>(qWidget);
-    d->qWidget->connect(d->qWidget, &QWidget::destroyed,
+    d->qWidget = static_cast<DWidget*>(qWidget);
+    d->qWidget->connect(d->qWidget, &DWidget::destroyed,
                         d->qWidget, [this](QObject *obj){
         if (obj == d->qWidget) {
             qInfo() << "AbstractConsole QWidget::destroyed" << obj;
