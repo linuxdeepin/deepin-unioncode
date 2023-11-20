@@ -24,6 +24,7 @@ MavenOptionWidget::MavenOptionWidget(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout();
     d->tabWidget = new QTabWidget();
+    d->tabWidget->tabBar()->setAutoHide(true);
     layout->addWidget(d->tabWidget);
 
     d->tabWidget->addTab(new MavenWidget(), tr("Maven"));

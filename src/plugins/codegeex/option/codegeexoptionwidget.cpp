@@ -29,6 +29,7 @@ CodeGeeXOptionWidget::CodeGeeXOptionWidget(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout();
     d->tabWidget = new DTabWidget();
+    d->tabWidget->tabBar()->setAutoHide(true);
     layout->addWidget(d->tabWidget);
 
     d->tabWidget->addTab(new DetailWidget(), tr("CodeGeeX"));

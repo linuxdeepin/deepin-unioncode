@@ -5,7 +5,7 @@
 #ifndef SHORTCUTSETTINGWIDGET_H
 #define SHORTCUTSETTINGWIDGET_H
 
-#include <QWidget>
+#include <DWidget>
 #include <QAbstractTableModel>
 #include <common/widget/pagewidget.h>
 

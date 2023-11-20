@@ -4,7 +4,9 @@
 
 #include "optioncore.h"
 #include "mainframe/optiondefaultkeeper.h"
-#include "mainframe/optiongeneralgenerator.h"
+#include "mainframe/optionenvironmentgenerator.h"
+#include "mainframe/optionprofilesettinggenerator.h"
+#include "mainframe/optionshortcutsettinggenerator.h"
 
 #include "common/common.h"
 #include "base/abstractwidget.h"
@@ -15,6 +17,8 @@
 #include "services/option/optionservice.h"
 
 #include "framework/listener/listener.h"
+
+static QStringList generalKits {};
 
 using namespace dpfservice;
 void OptionCore::initialize()
@@ -42,13 +46,19 @@ bool OptionCore::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     OptionService *optionService = ctx.service<OptionService>(OptionService::name());
+
     if (optionService) {
-        optionService->implGenerator<OptionGeneralGenerator>(OptionGeneralGenerator::kitName());
-        auto generator = optionService->createGenerator<OptionGeneralGenerator>(OptionGeneralGenerator::kitName());
-        if (generator) {
-            auto pageWidget = dynamic_cast<PageWidget*>(generator->optionWidget());
-            if (pageWidget) {
-                optionDialog->insertOptionPanel(OptionGeneralGenerator::kitName(), pageWidget);
+        generalKits << OptionEnvironmentGenerator::kitName() << OptionShortcutsettingGenerator::kitName() << OptionProfilesettingGenerator::kitName();
+        optionService->implGenerator<OptionEnvironmentGenerator>(generalKits[0]);
+        optionService->implGenerator<OptionShortcutsettingGenerator>(generalKits[1]);
+        optionService->implGenerator<OptionProfilesettingGenerator>(generalKits[2]);
+
+        for (auto name : generalKits) {
+            auto generator = optionService->createGenerator<OptionGenerator>(name);
+            if (generator) {
+                PageWidget *optionWidget = dynamic_cast<PageWidget *>(generator->optionWidget());
+                if (optionWidget)
+                    optionDialog->insertOptionPanel(name, optionWidget);
             }
         }
     }
@@ -73,7 +83,7 @@ bool OptionCore::start()
         if (optionDialog) {
             auto list = optionService->supportGeneratorName<OptionGenerator>();
             for (auto name : list) {
-                if (0 == name.compare(OptionGeneralGenerator::kitName()))
+                if (generalKits.contains(name))
                     continue;
                 auto generator = optionService->createGenerator<OptionGenerator>(name);
                 if (generator) {
