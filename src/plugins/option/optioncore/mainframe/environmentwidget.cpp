@@ -4,11 +4,13 @@
 
 #include "environmentwidget.h"
 
-#include <QVBoxLayout>
-#include <QCheckBox>
-#include <QProcessEnvironment>
-#include <QHeaderView>
+#include <DCheckBox>
+#include <DHeaderView>
 
+#include <QVBoxLayout>
+#include <QProcessEnvironment>
+
+DWIDGET_USE_NAMESPACE
 
 const QString ENABLE_ALL_ENV = EnvironmentWidget::tr("Enable All Environment");
 
@@ -17,8 +19,8 @@ class EnvironmentWidgetPrivate
 {
     friend class EnvironmentWidget;
     QVBoxLayout *vLayout = nullptr;
-    QTableView *tableView = nullptr;
-    QCheckBox *checkBox = nullptr;
+    DTableView *tableView = nullptr;
+    DCheckBox *checkBox = nullptr;
     EnvironmentModel *model = nullptr;
 };
 
@@ -90,7 +92,7 @@ private:
     QProcessEnvironment envs;
 };
 
-EnvironmentWidget::EnvironmentWidget(QWidget *parent)
+EnvironmentWidget::EnvironmentWidget(DWidget *parent)
     : PageWidget(parent)
     , d(new EnvironmentWidgetPrivate)
 {
@@ -101,11 +103,12 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     this->setLayout(d->vLayout);
 
     if (!d->tableView) {
-        d->tableView = new QTableView();
-
+        d->tableView = new DTableView();
         // Initialize view
         d->tableView->setShowGrid(false);
-        QHeaderView* headerView = d->tableView->horizontalHeader();
+        d->tableView->setAlternatingRowColors(true);
+        d->tableView->setFixedSize(QSize(685, 428));
+        DHeaderView *headerView = d->tableView->horizontalHeader();
         headerView->setSectionResizeMode(QHeaderView::ResizeToContents);
         d->tableView->verticalHeader()->hide();
     }
@@ -116,7 +119,7 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     d->tableView->setModel(d->model);
 
     if (!d->checkBox)
-        d->checkBox = new QCheckBox();
+        d->checkBox = new DCheckBox();
     d->checkBox->setText(ENABLE_ALL_ENV);
     d->checkBox->setChecked(true);
     d->vLayout->setSpacing(0);

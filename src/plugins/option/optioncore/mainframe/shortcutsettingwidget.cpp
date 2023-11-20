@@ -5,18 +5,19 @@
 #include "shortcutsettingwidget.h"
 #include "common/common.h"
 
-#include <QtWidgets/QTableView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QHeaderView>
-#include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QHBoxLayout>
+#include <DTableView>
+#include <DLabel>
+#include <DLineEdit>
+#include <DPushButton>
+#include <DHeaderView>
+#include <DFileDialog>
+
 #include <QDebug>
 #include <QDir>
-#include <QFileDialog>
 
 #define BTN_WIDTH (180)
+
+DWIDGET_USE_NAMESPACE
 
 class ShortcutTableModelPrivate
 {
@@ -227,11 +228,11 @@ class ShortcutTableModel;
 class ShortcutSettingWidgetPrivate
 {
     ShortcutSettingWidgetPrivate();
-    QTableView *tableView;
+    DTableView *tableView;
     HotkeyLineEdit *editShortCut;
     ShortcutTableModel *model;
-    QPushButton *btnRecord;
-    QLabel *tipLabel;
+    DPushButton *btnRecord;
+    DLabel *tipLabel;
 
     friend class ShortcutSettingWidget;
 };
@@ -270,21 +271,22 @@ void ShortcutSettingWidget::setupUi()
     d->tableView->verticalHeader()->hide();
     d->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     d->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    d->tableView->setFixedSize(QSize(685,428));
     d->model = new ShortcutTableModel();
     d->tableView->setModel(d->model);
     vLayout->addWidget(d->tableView);
 
-    QWidget *widgetOperate = new QWidget();
+    DWidget *widgetOperate = new DWidget();
     vLayout->addWidget(widgetOperate);
     QHBoxLayout *hLayoutOperate = new QHBoxLayout();
     widgetOperate->setLayout(hLayoutOperate);
-    QPushButton *btnResetAll = new QPushButton();
+    DPushButton *btnResetAll = new DPushButton();
     btnResetAll->setText(tr("Reset All"));
     btnResetAll->setFixedWidth(BTN_WIDTH);
-    QPushButton *btnImport = new QPushButton();
+    DPushButton *btnImport = new DPushButton();
     btnImport->setText(tr("Import"));
     btnImport->setFixedWidth(BTN_WIDTH);
-    QPushButton *btnExport = new QPushButton();
+    DPushButton *btnExport = new DPushButton();
     btnExport->setText(tr("Export"));
     btnExport->setFixedWidth(BTN_WIDTH);
     hLayoutOperate->addWidget(btnResetAll);
@@ -292,22 +294,22 @@ void ShortcutSettingWidget::setupUi()
     hLayoutOperate->addWidget(btnImport);
     hLayoutOperate->addWidget(btnExport);
 
-    QWidget *widgetShortcut = new QWidget();
+    DWidget *widgetShortcut = new DWidget();
     vLayout->addWidget(widgetShortcut);
     QHBoxLayout *hLayoutShortcut = new QHBoxLayout();
     widgetShortcut->setLayout(hLayoutShortcut);
-    QLabel *labelTip = new QLabel(tr("Shortcut:"));
+    DLabel *labelTip = new DLabel(tr("Shortcut:"));
     d->editShortCut = new HotkeyLineEdit();
-    d->btnRecord = new QPushButton(tr("Record"));
+    d->btnRecord = new DPushButton(tr("Record"));
     d->btnRecord->setFixedWidth(BTN_WIDTH);
-    QPushButton *btnReset = new QPushButton(tr("Reset"));
+    DPushButton *btnReset = new DPushButton(tr("Reset"));
     btnReset->setFixedWidth(BTN_WIDTH);
     hLayoutShortcut->addWidget(labelTip);
     hLayoutShortcut->addWidget(d->editShortCut);
     hLayoutShortcut->addWidget(d->btnRecord);
     hLayoutShortcut->addWidget(btnReset);
 
-    d->tipLabel = new QLabel();
+    d->tipLabel = new DLabel();
     d->tipLabel->setMargin(10);
     d->tipLabel->setStyleSheet("color:darkred;");
     vLayout->addWidget(d->tipLabel);

@@ -25,7 +25,7 @@ JavaOptionWidget::JavaOptionWidget(QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout();
     d->tabWidget = new QTabWidget();
     layout->addWidget(d->tabWidget);
-
+    d->tabWidget->tabBar()->setAutoHide(true);
     d->tabWidget->addTab(new JDKWidget(), tr("JDK"));
     QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
         readConfig();

@@ -5,18 +5,21 @@
 #include "profilesettingwidget.h"
 #include "common/common.h"
 
+#include <DLabel>
+#include <DComboBox>
+#include <DPushButton>
+
 #include <QBoxLayout>
-#include <QLabel>
-#include <QComboBox>
-#include <QPushButton>
+
+DWIDGET_USE_NAMESPACE
 
 class ProfileSettingWidgetPrivate
 {
     friend class ProfileSettingWidget;
     QVBoxLayout *vLayout = nullptr;
     QHBoxLayout *hlayout = nullptr;
-    QLabel *languageEdit = nullptr;
-    QComboBox *cbChooseLanguage = nullptr;
+    DLabel *languageEdit = nullptr;
+    DComboBox *cbChooseLanguage = nullptr;
     LanguagePaths languagePaths;
 };
 
@@ -71,8 +74,8 @@ void ProfileSettingWidget::saveConfig()
         file.write(chooseFileName.toUtf8());
         file.close();
     }
-    QMessageBox msgBox;
-    QPushButton *okButton = new QPushButton(tr("Ok"));
+    DMessageBox msgBox;
+    DPushButton *okButton = new DPushButton(tr("Ok"));
     msgBox.addButton(okButton, QMessageBox::ButtonRole::NoRole);
     msgBox.setWindowTitle(tr("Restart Required--deep-in unioncode"));
     msgBox.setText(tr("The language change will take effect after restart."));
@@ -107,11 +110,11 @@ void ProfileSettingWidget::setupUi()
         d->hlayout = new QHBoxLayout();
 
     if (!d->languageEdit) {
-        d->languageEdit = new QLabel(tr("language:"));
+        d->languageEdit = new DLabel(tr("language:"));
     }
 
     if (!d->cbChooseLanguage)
-        d->cbChooseLanguage = new QComboBox();
+        d->cbChooseLanguage = new DComboBox();
     d->cbChooseLanguage->setFixedWidth(200);
 
     QStringList nameList = d->languagePaths.keys();
