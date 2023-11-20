@@ -5,7 +5,7 @@
 #ifndef ENVIRONMENTWIDGET_H
 #define ENVIRONMENTWIDGET_H
 
-#include <QTableView>
+#include <DTableView>
 #include <common/widget/pagewidget.h>
 
 class EnvironmentWidgetPrivate;

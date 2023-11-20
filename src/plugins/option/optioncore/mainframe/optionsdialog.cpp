@@ -6,73 +6,77 @@
 #include "common/widget/pagewidget.h"
 #include "services/option/optionservice.h"
 
+#include <DTitlebar>
+#include <DFrame>
+
 #include <QtDebug>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListView>
-#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QScrollBar>
 #include <QStringListModel>
 
+static const int labelHeight = 30;
 
 using namespace dpfservice;
 OptionsDialog::OptionsDialog(QWidget *parent)
-    : QDialog(parent)
+    : DAbstractDialog(parent)
 {
     setupUi(this);
 }
 
 bool OptionsDialog::insertOptionPanel(const QString &itemName, PageWidget *panel)
 {
-    widgts.insert(itemName, panel);
+    widgets.insert(itemName, panel);
     leftBarModel->setStringList(leftBarModel->stringList() << itemName);
-    int index = stackWidget->count();
-    stackWidget->insertWidget(index, panel);
+
+    DLabel *headTitle = new DLabel(this);
+    headTitle->setFixedHeight(labelHeight);
+    headTitle->setText(itemName);
+
+    content->addWidget(headTitle);
+    panel->setContentsMargins(0, 0, 0, 30);
+    content->addWidget(panel);
 
     return true;
 }
 
 void OptionsDialog::slotLeftBarClicked(const QModelIndex &index)
 {
-    qInfo() << "The selected item is :" << index.data().toString();
     QString itemName = index.data().toString();
-    auto widget = widgts.value(itemName);
-    stackWidget->setCurrentWidget(widget);
 
-    // Update head title.
-    headTitle->setText(itemName);
-    widget->readConfig();
+    auto y = widgets[itemName]->y() - labelHeight;
+    scrollArea->verticalScrollBar()->setValue(y);
 }
 
-void OptionsDialog::setupUi(QDialog *Dialog)
+void OptionsDialog::setupUi(QWidget *widget)
 {
-    Dialog->resize(1000, 650);
-    setWindowTitle(tr("Global Options"));
+    DFrame *mainFrame = new DFrame(widget);
+    mainFrame->resize(910, 640);
+    //titlebar
+    DTitlebar *titlebar = new DTitlebar(mainFrame);
+    titlebar->setMenuVisible(false);
+    titlebar->setTitle(tr("Global Options"));
+
+    QVBoxLayout *title = new QVBoxLayout(mainFrame);
+    title->setContentsMargins(0, 0, 0, 0);
+    title->setSpacing(0);
 
     // Center layout.
-    auto mainLayout = new QHBoxLayout(Dialog);
+    auto mainLayout = new QHBoxLayout(mainFrame);
     mainLayout->setSpacing(6);
     mainLayout->setContentsMargins(11, 11, 11, 11);
 
     // Left layout.
-    auto leftLayout = new QVBoxLayout(Dialog);
+    auto leftLayout = new QVBoxLayout(mainFrame);
     leftLayout->setSpacing(6);
-    filterEdit = new QLineEdit(Dialog);
-    filterEdit->setPlaceholderText(tr("Filter"));
 
-    leftLayout->addWidget(filterEdit);
-    QObject::connect(filterEdit, &QLineEdit::textChanged, this, &OptionsDialog::findOption);
-
-    leftSideBar = new QListView(Dialog);
+    leftSideBar = new DListView(mainFrame);
     leftSideBar->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    leftSideBar->setBackgroundRole(QPalette::ColorRole::Light);
     leftBarModel = new QStringListModel(leftSideBar);
     leftSideBar->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
-    QObject::connect(leftSideBar, &QListView::clicked, this, [=](const QModelIndex &index){
+    QObject::connect(leftSideBar, &DListView::clicked, this, [=](const QModelIndex &index){
         activeOptName = index.data(Qt::DisplayRole).toString();
     });
     leftSideBar->setModel(leftBarModel);
@@ -82,31 +86,34 @@ void OptionsDialog::setupUi(QDialog *Dialog)
     leftLayout->addWidget(leftSideBar);
 
     // Right layout.
-    auto rightLayout = new QVBoxLayout(Dialog);
+    auto rightLayout = new QVBoxLayout(mainFrame);
     rightLayout->setSpacing(6);
-    headTitle = new QLabel(Dialog);
-    headTitle->setText(tr("Head Title"));
 
-    rightLayout->addWidget(headTitle);
+    //scollArea
+    scrollArea = new QScrollArea(mainFrame);
+    scrollWidget = new QWidget(mainFrame);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setWidget(scrollWidget);
+    content = new QVBoxLayout(scrollWidget);
+    rightLayout->addWidget(scrollArea);
 
-    stackWidget = new QStackedWidget(Dialog);
-    rightLayout->addWidget(stackWidget);
+    connect(scrollArea->verticalScrollBar(),&QScrollBar::valueChanged,this,&OptionsDialog::slotScrollChanged);
 
-    auto buttonLayout = new QHBoxLayout(Dialog);
+    auto buttonLayout = new QHBoxLayout(mainFrame);
     buttonLayout->setSpacing(6);
     auto horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     buttonLayout->addItem(horizontalSpacer);
 
-    auto okBtn = new QPushButton(tr("OK"), Dialog);
+    auto okBtn = new DPushButton(tr("OK"), mainFrame);
     connect(okBtn, SIGNAL(clicked()), this, SLOT(saveAllConfig()));
 
-    auto cancelBtn = new QPushButton(tr("Cancel"), Dialog);
-    connect(cancelBtn, &QPushButton::clicked, [this] {
+    auto cancelBtn = new DPushButton(tr("Cancel"), mainFrame);
+    connect(cancelBtn, &DPushButton::clicked, [this] {
         // TODO(Mozart)
         this->close();
     });
-    auto applyBtn = new QPushButton(tr("Apply"), Dialog);
+    auto applyBtn = new DPushButton(tr("Apply"), mainFrame);
     connect(applyBtn, SIGNAL(clicked()), this, SLOT(saveSingleConfig()));
 
     buttonLayout->addWidget(okBtn);
@@ -121,13 +128,17 @@ void OptionsDialog::setupUi(QDialog *Dialog)
 
     mainLayout->setStretch(0, 1);
     mainLayout->setStretch(1, 4);
+
+    title->addWidget(titlebar);
+    title->addLayout(mainLayout);
 }
 
 void OptionsDialog::saveAllConfig()
 {
-    for (int index = 0; index < stackWidget->count(); index++)
+    for (int index = 0; index < widgets.count(); index++)
     {
-        PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
+        auto key = widgets.keys().at(index);
+        PageWidget* widget = widgets.value(key);
         if (widget) {
             widget->saveConfig();
         }
@@ -136,12 +147,15 @@ void OptionsDialog::saveAllConfig()
     accept();
 }
 
+
+//TODO(zta): 之前是stackedWidget情况下，对单个页面修改后，点击apply进行单个页面的配置保存
+//      现在右侧变为scrollArea，需要判断是哪个页面进行了修改。
 void OptionsDialog::saveSingleConfig()
 {
-    int index = stackWidget->currentIndex();
-    if (index >= 0 && index < stackWidget->count())
+    for (int index = 0; index < widgets.count(); index++)
     {
-        PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
+        auto key = widgets.keys().at(index);
+        PageWidget* widget = widgets.value(key);
         if (widget) {
             widget->saveConfig();
         }
@@ -150,30 +164,12 @@ void OptionsDialog::saveSingleConfig()
 
 void OptionsDialog::readConfig()
 {
-    for (int index = 0; index < stackWidget->count(); index++)
+    for (int index = 0; index < widgets.count(); index++)
     {
-        PageWidget* widget = dynamic_cast<PageWidget*>(stackWidget->widget(index));
+        auto key = widgets.keys().at(index);
+        PageWidget* widget = widgets.value(key);
         if (widget) {
             widget->readConfig();
-        }
-    }
-}
-
-void OptionsDialog::findOption(const QString &filter)
-{
-    auto &ctx = dpfInstance.serviceContext();
-    OptionService *optionService = ctx.service<OptionService>(OptionService::name());
-
-    auto list = optionService->supportGeneratorName<OptionGenerator>();
-    int count = list.count();
-    QStringList options = leftBarModel->stringList();
-    for (int i = 0; i < count; i++) {
-        if (list[i].contains(filter, Qt::CaseInsensitive) && !leftBarModel->stringList().contains(list[i])) {
-            options.insert(i, list[i]);
-            leftBarModel->setStringList(options);
-        } else if (!list[i].contains(filter, Qt::CaseInsensitive)) {
-            options.removeOne(list[i]);
-            leftBarModel->setStringList(options);
         }
     }
 }
@@ -181,7 +177,6 @@ void OptionsDialog::findOption(const QString &filter)
 void OptionsDialog::showEvent(QShowEvent *e)
 {
     QDialog::showEvent(e);
-
     // Set leftbar item seleted.
     auto allOptName = leftBarModel->stringList();
     if (activeOptName.isEmpty() && allOptName.size() > 0){
@@ -191,13 +186,25 @@ void OptionsDialog::showEvent(QShowEvent *e)
     int index = allOptName.indexOf(activeOptName);
     if (index >= 0) {
         leftSideBar->selectionModel()->select(leftBarModel->index(index), QItemSelectionModel::Select);
-
-        // Update right panel.
-        auto widget = widgts.value(activeOptName);
-        stackWidget->setCurrentWidget(widget);
-
-        headTitle->setText(activeOptName);
     }
 
     readConfig();
+}
+
+void OptionsDialog::slotScrollChanged(int value)
+{
+    if (value == scrollArea->verticalScrollBar()->maximum())
+        return;
+
+    leftSideBar->clearSelection();
+
+    for (auto row = 0; row < leftBarModel->rowCount() - 1; row++) {
+        auto index = leftBarModel->index(row);
+        auto widget = widgets.value(index.data().toString());
+        if (widget && (value <= widget->y() - labelHeight)) {
+            leftSideBar->selectionModel()->select(index, QItemSelectionModel::Select);
+            activeOptName = index.data(Qt::DisplayRole).toString();
+            break;
+        }
+    }
 }
