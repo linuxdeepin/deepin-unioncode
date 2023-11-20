@@ -6,16 +6,19 @@
 #include "abstractmenubar.h"
 #include "abstractmainwindow.h"
 
+#include <DMainWindow>
+#include <DToolBar>
+#include <DMenuBar>
+
 #include <QDebug>
 #include <QObject>
-#include <QMainWindow>
-#include <QToolBar>
-#include <QMenuBar>
+
+DWIDGET_USE_NAMESPACE
 
 class AbstractMainWindowPrivate
 {
     friend class AbstractMainWindow;
-    QMainWindow* mainwindow = nullptr;
+    DMainWindow* mainwindow = nullptr;
 };
 
 AbstractMainWindow::~AbstractMainWindow()
@@ -38,8 +41,8 @@ AbstractMainWindow::AbstractMainWindow(void *qMainWindow)
         abort();
     }
 
-    d->mainwindow = static_cast<QMainWindow*>(qMainWindow);
-    QMainWindow::connect(d->mainwindow, &QMainWindow::destroyed,
+    d->mainwindow = static_cast<DMainWindow*>(qMainWindow);
+    DMainWindow::connect(d->mainwindow, &DMainWindow::destroyed,
                          d->mainwindow ,[this]() {
         delete this;
     }, Qt::UniqueConnection);

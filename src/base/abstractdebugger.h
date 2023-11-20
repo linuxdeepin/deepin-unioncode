@@ -5,7 +5,11 @@
 #ifndef ABSTRACTDEBUGGER_H
 #define ABSTRACTDEBUGGER_H
 
+#include <DWidget>
+
 #include <QObject>
+
+DWIDGET_USE_NAMESPACE
 
 class AbstractDebugger : public QObject
 {
@@ -25,10 +29,10 @@ public:
     };
     virtual ~AbstractDebugger(){}
 
-    virtual QWidget *getOutputPane() const = 0;
-    virtual QWidget *getStackPane() const = 0;
-    virtual QWidget *getLocalsPane() const = 0;
-    virtual QWidget *getBreakpointPane() const = 0;
+    virtual DWidget *getOutputPane() const = 0;
+    virtual DWidget *getStackPane() const = 0;
+    virtual DWidget *getLocalsPane() const = 0;
+    virtual DWidget *getBreakpointPane() const = 0;
 
     virtual void startDebug() = 0;
     virtual void detachDebug() = 0;

@@ -4,14 +4,17 @@
 
 #include "abstractwidget.h"
 
-#include <QWidget>
+#include <DWidget>
+
 #include <QDebug>
 #include <QApplication>
+
+DWIDGET_USE_NAMESPACE
 
 class AbstractWidgetPrivate
 {
     friend class AbstractWidget;
-    QWidget *qWidget;
+    DWidget *qWidget;
 };
 
 AbstractWidget::AbstractWidget(void *qWidget)
@@ -22,8 +25,8 @@ AbstractWidget::AbstractWidget(void *qWidget)
         abort();
     }
 
-    d->qWidget = static_cast<QWidget*>(qWidget);
-    QObject::connect(d->qWidget, &QWidget::destroyed,
+    d->qWidget = static_cast<DWidget*>(qWidget);
+    QObject::connect(d->qWidget, &DWidget::destroyed,
                      d->qWidget, [this](QObject *obj){
         if (obj == d->qWidget) {
             delete this;

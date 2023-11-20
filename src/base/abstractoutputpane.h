@@ -5,7 +5,11 @@
 #ifndef ABSTRUCTOUTPUTPANE_H
 #define ABSTRUCTOUTPUTPANE_H
 
+#include <DWidget>
+
 #include <QObject>
+
+DWIDGET_USE_NAMESPACE
 
 class AbstractOutputPane : public QObject
 {
@@ -14,7 +18,7 @@ public:
     explicit AbstractOutputPane(QObject *parent = nullptr);
     virtual ~AbstractOutputPane() override;
 
-    virtual QWidget *outputWidget(QWidget *parent) = 0;
+    virtual DWidget *outputWidget(QWidget *parent) = 0;
     virtual void clearContents() = 0;
 
     virtual void setFocus() = 0;
