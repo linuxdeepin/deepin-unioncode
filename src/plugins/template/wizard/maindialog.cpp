@@ -14,12 +14,13 @@
 #include <DTreeView>
 #include <DTitlebar>
 #include <DListWidget>
-#include <QStackedWidget>
+#include <DStackedWidget>
+#include <DStandardItem>
+
 #include <QStandardItemModel>
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QUuid>
-#include <QStackedWidget>
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
@@ -28,7 +29,7 @@ class MainDialogPrivate
 {
     friend class MainDialog;
     QMap<QString, DetailWidget*> detailWidgetMap;
-    QStackedWidget *detailStackedWidget = nullptr;
+    DStackedWidget *detailStackedWidget = nullptr;
     DWidget *blankWidget = nullptr;
 };
 
@@ -59,7 +60,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
 
     DLabel *title =  new DLabel(tr("Choose a template:"));
 
-    d->detailStackedWidget = new QStackedWidget();
+    d->detailStackedWidget = new DStackedWidget();
     d->blankWidget = new DetailWidget(this);
     d->detailStackedWidget->addWidget(d->blankWidget);
 
@@ -74,17 +75,17 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     QStandardItem * rootItem = standardModel->invisibleRootItem();
 
     for (auto iterTpl = templateVec.begin(); iterTpl != templateVec.end(); ++iterTpl) {
-        QStandardItem *tpl = new QStandardItem(iterTpl->category);
+        DStandardItem *tpl = new DStandardItem(iterTpl->category);
         rootItem->appendRow(tpl);
 
         QVector<TemplateCategory> tplVec = iterTpl->templateVec;
         for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
-            QStandardItem *typeItem = new QStandardItem(iterCate->type);
+            DStandardItem *typeItem = new DStandardItem(iterCate->type);
             tpl->appendRow(typeItem);
 
             auto iterDetail = iterCate->templateVec.begin();
             for (; iterDetail != iterCate->templateVec.end(); ++iterDetail) {
-                QStandardItem *detailItem = new QStandardItem(iterDetail->name);
+                DStandardItem *detailItem = new DStandardItem(iterDetail->name);
                 TemplateDetail detail;
                 detail.name = iterDetail->name;
                 detail.path = iterDetail->path;
