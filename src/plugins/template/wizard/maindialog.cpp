@@ -54,7 +54,6 @@ MainDialog::~MainDialog()
 void MainDialog::setupUI(TemplateVector &templateVec)
 {
     DTitlebar *titleBar = new DTitlebar();
-    titleBar = new DTitlebar();
     titleBar->setMenuVisible(false);
     titleBar->setTitle(QString(tr("New File or Project")));
 

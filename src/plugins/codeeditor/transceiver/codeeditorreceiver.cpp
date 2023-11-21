@@ -41,7 +41,6 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
     }else if (event.data() == editor.cleanRunning.name) {
         return EditorCallProxy::instance()->toRunClean();
     } else if (event.data() == editor.openFile.name) {
-        navigation.doSwitch(dpfservice::MWNA_EDIT);
         using namespace support_file;
         QString filePath = event.property(editor.openFile.pKeys[0]).toString();
         QString language = Language::idAlias(Language::id(filePath));

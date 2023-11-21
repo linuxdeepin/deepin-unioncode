@@ -34,7 +34,6 @@ AboutDialog::~AboutDialog()
 void AboutDialog::setupUi()
 {
     DTitlebar *titleBar = new DTitlebar();
-    titleBar = new DTitlebar();
     titleBar->setMenuVisible(false);
     titleBar->setTitle(QString(tr("About Deepin Union Code")));
 

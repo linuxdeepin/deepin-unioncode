@@ -14,13 +14,15 @@
 // MW = MainWindow
 namespace dpfservice {
 
-inline const int MW_MIN_WIDTH { 1286 };
+inline const int MW_MIN_WIDTH { 1280 };
 inline const int MW_MIN_HEIGHT { 860 };
 
-inline const QString MWNA_RECENT { QAction::tr("Recent") };
-inline const QString MWNA_EDIT { QAction::tr("Edit") };
-inline const QString MWNA_DEBUG { QAction::tr("Debug") };
-inline const QString MWNA_RUNTIME { QAction::tr("Runtime") };
+inline const QString MWNA_RECENT { QObject::tr("Recent") };
+inline const QString MWNA_EDIT { QObject::tr("Edit") };
+inline const QString MWNA_DEBUG { QObject::tr("Debug") };
+inline const QString MWNA_GIT { QObject::tr("Git") };
+inline const QString MWNA_SVN { QObject::tr("Svn") };
+inline const QString MWNA_RUNTIME { QObject::tr("Runtime") };
 
 inline const QString MWM_FILE { QMenu::tr("&File") };
 inline const QString MWMFA_CXX { "C/C++" };

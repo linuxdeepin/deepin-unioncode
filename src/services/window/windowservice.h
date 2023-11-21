@@ -40,7 +40,7 @@ public:
      * \brief addActionNavigation 添加导航栏action
      * \param action 实例对象
      */
-    DPF_INTERFACE(void, addActionNavigation, const QString &id, AbstractAction *action);
+    DPF_INTERFACE(void, addNavigation, const QString &navName, const QString &iconName);
 
     /*!
      * \brief addMenu 添加菜单项
@@ -179,7 +179,7 @@ public:
      */
     DPF_INTERFACE(void, setToolBarItemDisable, const QString &id, bool disable);
 
-    DPF_INTERFACE(QWidget*, getEditToolBar);
+    DPF_INTERFACE(void, setTopToolBarWidget, AbstractWidget *widget);
 
 
 signals:
