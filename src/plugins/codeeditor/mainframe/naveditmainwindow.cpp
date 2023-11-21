@@ -64,10 +64,6 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
         windowService->setToolBarItemDisable = std::bind(&NavEditMainWindow::setToolBarItemDisable, this, _1, _2);
     }
 
-    if (!windowService->getEditToolBar) {
-        windowService->getEditToolBar = std::bind(&NavEditMainWindow::getEditToolBar, this);
-    }
-
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSwitchContext,
                      this, &NavEditMainWindow::switchWidgetContext);
 
@@ -83,6 +79,10 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     mainToolBar = new ToolBarManager(tr("toolbar"));
 
     titlebar()->setFixedHeight(0);
+
+    topToolBarWidget = new DWidget();
+    QHBoxLayout *toolBarLayout = new QHBoxLayout(topToolBarWidget);
+    toolBarLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
 }
 
 NavEditMainWindow::~NavEditMainWindow()
@@ -286,6 +286,9 @@ void NavEditMainWindow::showValgrindBar()
 bool NavEditMainWindow::addToolBarActionItem(const QString &id, QAction *action, const QString &group)
 {
     QMutexLocker locker(&mutex);
+
+    setToolBarButton(action);
+
     if (!mainToolBar)
         return false;
 
@@ -298,7 +301,22 @@ bool NavEditMainWindow::addToolBarWidgetItem(const QString &id, AbstractWidget *
     if (!mainToolBar)
         return false;
 
-    return mainToolBar->addWidgetItem(id, static_cast<QWidget*>(widget->qWidget()), group);
+    return mainToolBar->addWidgetItem(id, static_cast<DWidget*>(widget->qWidget()), group);
+}
+
+void NavEditMainWindow::setToolBarButton(QAction *action)
+{
+    if (!action)
+        return;
+    DIconButton *iconBtn = new DIconButton();
+    iconBtn->setIcon(action->icon());
+    iconBtn->setMinimumSize(QSize(36, 36));
+    iconBtn->setIconSize(QSize(20, 20));
+    connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);
+
+    QHBoxLayout *toolBarLayout = static_cast<QHBoxLayout*>(topToolBarWidget->layout());
+    toolBarLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    toolBarLayout->addWidget(iconBtn);
 }
 
 void NavEditMainWindow::removeToolBarItem(const QString &id)
@@ -324,8 +342,7 @@ void NavEditMainWindow::adjustWorkspaceItemOrder()
     }
 }
 
-DWidget *NavEditMainWindow::getEditToolBar()
+DWidget *NavEditMainWindow::getTopToolBarWidget()
 {
-    DWidget *toolBar = static_cast<DWidget*>(mainToolBar->getToolBar());
-    return toolBar;
+    return topToolBarWidget;
 }

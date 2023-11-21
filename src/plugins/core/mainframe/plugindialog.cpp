@@ -24,7 +24,6 @@ PluginDialog::PluginDialog(QWidget *parent)
     resize(1000, 600);
 
     DTitlebar *titleBar = new DTitlebar();
-    titleBar = new DTitlebar();
     titleBar->setMenuVisible(false);
     titleBar->setTitle(QString(tr("Installed Plugins")));
 

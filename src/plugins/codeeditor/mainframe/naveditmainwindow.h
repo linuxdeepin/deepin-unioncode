@@ -39,6 +39,8 @@ class NavEditMainWindow : public DMainWindow
     ToolBarManager *mainToolBar{nullptr};
     QList<QString> contextList;
     QMutex mutex;
+
+    DWidget *topToolBarWidget{nullptr};
 public:
     static NavEditMainWindow *instance();
     explicit NavEditMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
@@ -60,11 +62,12 @@ public:
     void addValgrindBar(AbstractWidget *valgrindbar);
     void showValgrindBar();
     bool addToolBarActionItem(const QString &id, QAction *action, const QString &group);
+    void setToolBarButton(QAction *action);
     bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget, const QString &group);
     void removeToolBarItem(const QString &id);
     void setToolBarItemDisable(const QString &id, bool disable);
 
-    DWidget *getEditToolBar();
+    DWidget *getTopToolBarWidget();
 private:
     void adjustWorkspaceItemOrder();
 };
