@@ -7,16 +7,17 @@
 
 #include "services/project/projectservice.h"
 
-#include <QTreeView>
+#include <DTreeView>
 
-class QStandardItem;
+DWIDGET_USE_NAMESPACE
+class DStandardItem;
 class SymbolTreeViewPrivate;
-class SymbolTreeView : public QTreeView
+class SymbolTreeView : public DTreeView
 {
     Q_OBJECT
     SymbolTreeViewPrivate *const d;
 public:
-    explicit SymbolTreeView(QWidget *parent = nullptr);
+    explicit SymbolTreeView(DWidget *parent = nullptr);
     virtual ~SymbolTreeView();
     void setRootPath(const QString &filePath);
 

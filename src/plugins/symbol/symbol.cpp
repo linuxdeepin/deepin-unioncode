@@ -12,11 +12,11 @@
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "services/symbol/symbolservice.h"
+#include <DTreeView>
 
 #include <QProcess>
 #include <QAction>
 #include <QLabel>
-#include <QTreeView>
 
 using namespace dpfservice;
 void Symbol::initialize()

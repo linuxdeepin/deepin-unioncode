@@ -33,7 +33,7 @@ class MainDialogPrivate
     DWidget *blankWidget = nullptr;
 };
 
-MainDialog::MainDialog(QWidget *parent)
+MainDialog::MainDialog(DWidget *parent)
     : DAbstractDialog(parent)
     , d(new MainDialogPrivate())
 {

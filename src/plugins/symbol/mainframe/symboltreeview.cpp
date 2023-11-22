@@ -10,40 +10,45 @@
 
 #include "symboldelegate.h"
 
+#include <DMenu>
+#include <DTreeView>
+#include <DWidget>
+
 #include <QHeaderView>
 #include <QDirIterator>
 #include <QStandardItemModel>
 
+DWIDGET_USE_NAMESPACE
 class SymbolTreeViewPrivate
 {
     friend class SymbolTreeView;
     SymbolTreeView *const q;
     QModelIndex selIndex;
     QFileSystemModel *model {nullptr};
-    SymbolDelegate *delegate;
-    QMenu *getFileLineMenu(const QString &filePath);
+    SymbolDelegate *delegate = {nullptr};
+    DMenu *getFileLineMenu(const QString &filePath);
     SymbolTreeViewPrivate(SymbolTreeView *qq): q(qq){}
 };
 
-SymbolTreeView::SymbolTreeView(QWidget *parent)
-    : QTreeView(parent)
+SymbolTreeView::SymbolTreeView(DWidget *parent)
+    : DTreeView(parent)
     , d (new SymbolTreeViewPrivate(this))
 {
     d->model = new SymbolModel();
     d->delegate = new SymbolDelegate;
-    QTreeView::setModel(d->model);
-    QTreeView::setItemDelegate(d->delegate);
+    DTreeView::setModel(d->model);
+    DTreeView::setItemDelegate(d->delegate);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
-    setEditTriggers(QTreeView::NoEditTriggers);	          //节点不能编辑
-    setSelectionBehavior(QTreeView::SelectRows);		  //一次选中整行
-    setSelectionMode(QTreeView::SingleSelection);         //单选，配合上面的整行就是一次选单行
+    setEditTriggers(DTreeView::NoEditTriggers);	          //节点不能编辑
+    setSelectionBehavior(DTreeView::SelectRows);		  //一次选中整行
+    setSelectionMode(DTreeView::SingleSelection);         //单选，配合上面的整行就是一次选单行
     setFocusPolicy(Qt::NoFocus);                          //去掉鼠标移到节点上时的虚线框
     header()->setVisible(false);
-    QObject::connect(this, &QTreeView::doubleClicked,
+    QObject::connect(this, &DTreeView::doubleClicked,
                      this, &SymbolTreeView::doDoubleClieked,
                      Qt::UniqueConnection);
-    QObject::connect(this, &QTreeView::customContextMenuRequested,
+    QObject::connect(this, &DTreeView::customContextMenuRequested,
                      this, &SymbolTreeView::doContextMenu,
                      Qt::UniqueConnection);
 }
@@ -74,7 +79,7 @@ void SymbolTreeView::doContextMenu(const QPoint &point)
 
     setCurrentIndex(index);
 
-    QMenu *contextMenu{nullptr};
+    DMenu *contextMenu{nullptr};
     if (d->model->isDir(index)) {
         QString filePath = d->model->filePath(index);
         QDir currDir(filePath);
@@ -85,7 +90,7 @@ void SymbolTreeView::doContextMenu(const QPoint &point)
 
         if (files.contains(SymbolPri::definitionsFileName)
                 || files.contains(SymbolPri::declaredFileName)) {
-            contextMenu = new QMenu(this);
+            contextMenu = new DMenu(this);
         }
 
         if (files.contains(SymbolPri::definitionsFileName)) {
@@ -108,23 +113,23 @@ void SymbolTreeView::doContextMenu(const QPoint &point)
     }
 
     if (contextMenu) {
-        contextMenu->exec(QWidget::mapToGlobal(point));
+        contextMenu->exec(DWidget::mapToGlobal(point));
         delete contextMenu;
     }
 }
 
-QMenu *SymbolTreeViewPrivate::getFileLineMenu(const QString &filePath)
+DMenu *SymbolTreeViewPrivate::getFileLineMenu(const QString &filePath)
 {
     QFile file(filePath);
     if (!file.open(QFile::ReadOnly)) {
         qCritical() << file.errorString();
     }
-    QMenu *defMenu = nullptr;
+    DMenu *defMenu = nullptr;
     QStringList lines = QString(file.readAll()).split('\n');
     for (auto line : lines) {
         if (!line.isEmpty()) {
             if (!defMenu) {
-                defMenu = new QMenu();
+                defMenu = new DMenu();
             }
             QAction *action = new QAction(defMenu);
             QObject::connect(action, &QAction::triggered, [=](){

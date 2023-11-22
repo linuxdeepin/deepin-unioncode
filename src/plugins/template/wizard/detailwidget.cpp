@@ -13,6 +13,7 @@
 #include <DMessageBox>
 #include <DFileDialog>
 #include <DLineEdit>
+#include <DWidget>
 
 #include <QVBoxLayout>
 #include <QPainter>
@@ -29,14 +30,14 @@ class DetailWidgetPrivate
     WizardInfo wizardInfo;
 };
 
-DetailWidget::DetailWidget(QWidget *parent)
+DetailWidget::DetailWidget(DWidget *parent)
     : DScrollArea(parent)
     , d(new DetailWidgetPrivate())
 {
 
 }
 
-DetailWidget::DetailWidget(const QString &templatePath, QWidget *parent)
+DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     : DScrollArea(parent)
     , d(new DetailWidgetPrivate())
 {
