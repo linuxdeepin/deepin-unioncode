@@ -9,7 +9,7 @@
 
 #include <framework/framework.h>
 
-class QStandardItem;
+class DStandardItem;
 class SymbolReceiver : public dpf::EventHandler,
         dpf::AutoEventHandlerRegister<SymbolReceiver>
 {

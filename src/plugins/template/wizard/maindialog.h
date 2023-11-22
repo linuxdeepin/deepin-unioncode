@@ -7,7 +7,9 @@
 
 #include "projectgenerate.h"
 #include <DAbstractDialog>
+#include <DWidget>
 
+DWIDGET_USE_NAMESPACE
 using namespace templateMgr;
 
 class MainDialogPrivate;
@@ -15,7 +17,7 @@ class MainDialog : public DTK_WIDGET_NAMESPACE::DAbstractDialog
 {
     Q_OBJECT
 public:
-    explicit MainDialog(QWidget *parent = nullptr);
+    explicit MainDialog(DWidget *parent = nullptr);
     ~MainDialog();
 
 signals:

@@ -9,6 +9,7 @@
 
 #include <DScrollArea>
 
+DWIDGET_USE_NAMESPACE
 using namespace templateMgr;
 
 class DetailWidgetPrivate;
@@ -16,8 +17,8 @@ class DetailWidget : public DTK_WIDGET_NAMESPACE::DScrollArea
 {
     Q_OBJECT
 public:
-    explicit DetailWidget(QWidget *parent = nullptr);
-    DetailWidget(const QString &templatePath, QWidget *parent = nullptr);
+    explicit DetailWidget(DWidget *parent = nullptr);
+    DetailWidget(const QString &templatePath, DWidget *parent = nullptr);
     ~DetailWidget() override;
 
     bool getGenParams(PojectGenParam &param);

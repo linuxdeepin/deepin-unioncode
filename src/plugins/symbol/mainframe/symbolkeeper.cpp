@@ -7,7 +7,7 @@
 #include "common/common.h"
 #include "services/builder/builderservice.h"
 
-#include <QStandardItem>
+#include <DStandardItem>
 
 namespace {
 static SymbolTreeView *tree{nullptr};
