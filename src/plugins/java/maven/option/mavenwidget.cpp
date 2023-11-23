@@ -6,24 +6,25 @@
 #include "services/option/toolchaindata.h"
 #include "common/util/custompaths.h"
 
-#include <QRadioButton>
-#include <QComboBox>
+#include <DLabel>
+#include <DHeaderView>
+#include <DLineEdit>
+#include <DPushButton>
+#include <DComboBox>
+#include <DFileDialog>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QHeaderView>
-#include <QLineEdit>
-#include <QPushButton>
 #include <QDebug>
-#include <QFileDialog>
 
+DWIDGET_USE_NAMESPACE
 class MavenWidgetPrivate
 {
     friend class MavenWidget;
 
-    QComboBox *homePathComboBox = nullptr;
-    QLineEdit *userSettingEdit = nullptr;
-    QLineEdit *localSettingEdit = nullptr;
+    DComboBox *homePathComboBox = nullptr;
+    DLineEdit *userSettingEdit = nullptr;
+    DLineEdit *localSettingEdit = nullptr;
     QSharedPointer<ToolChainData> toolChainData;
 };
 
@@ -54,27 +55,27 @@ void MavenWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
 
-    QLabel *homePathLabel = new QLabel(QLabel::tr("Maven path："));
+    DLabel *homePathLabel = new DLabel(DLabel::tr("Maven path："));
     homePathLabel->setFixedWidth(120);
-    d->homePathComboBox = new QComboBox();
+    d->homePathComboBox = new DComboBox();
 
     QHBoxLayout *homePathLayout = new QHBoxLayout();
     homePathLayout->addWidget(homePathLabel);
     homePathLayout->addWidget(d->homePathComboBox);
 
-    QLabel *userSettingLabel = new QLabel(QLabel::tr("User Setting："));
+    DLabel *userSettingLabel = new DLabel(DLabel::tr("User Setting："));
     userSettingLabel->setFixedWidth(120);
-    d->userSettingEdit = new QLineEdit();
-    QPushButton *userSettingBtn = new QPushButton(QPushButton::tr("Browse"));
+    d->userSettingEdit = new DLineEdit();
+    DPushButton *userSettingBtn = new DPushButton(DPushButton::tr("Browse"));
     QHBoxLayout *userSettingLayout = new QHBoxLayout();
     userSettingLayout->addWidget(userSettingLabel);
     userSettingLayout->addWidget(d->userSettingEdit);
     userSettingLayout->addWidget(userSettingBtn);
 
-    QLabel *localSettingLabel = new QLabel(QLabel::tr("Local Setting："));
+    DLabel *localSettingLabel = new DLabel(DLabel::tr("Local Setting："));
     localSettingLabel->setFixedWidth(120);
-    d->localSettingEdit = new QLineEdit();
-    QPushButton *localSettingBtn = new QPushButton(QPushButton::tr("Browse"));
+    d->localSettingEdit = new DLineEdit();
+    DPushButton *localSettingBtn = new DPushButton(DPushButton::tr("Browse"));
     QHBoxLayout *localSettingLayout = new QHBoxLayout();
     localSettingLayout->addWidget(localSettingLabel);
     localSettingLayout->addWidget(d->localSettingEdit);
@@ -86,8 +87,8 @@ void MavenWidget::setupUi()
     vLayout->addStretch();
 
 
-    QObject::connect(userSettingBtn, &QPushButton::clicked, [this](){
-        QFileDialog fileDialog;
+    QObject::connect(userSettingBtn, &DPushButton::clicked, [this](){
+        DFileDialog fileDialog;
         QString filePath = fileDialog.getOpenFileName(nullptr, "Open Maven User Setting File", QString(), "*.xml");
         if(!filePath.isEmpty()) {
             d->userSettingEdit->setText(filePath);
@@ -95,9 +96,9 @@ void MavenWidget::setupUi()
     });
 
 
-    QObject::connect(localSettingBtn, &QPushButton::clicked, [this](){
-        QFileDialog fileDialog;
-        QString filePath = fileDialog.getExistingDirectory(nullptr, "Open Maven Local Setting Folder", QString(), QFileDialog::DontResolveSymlinks);
+    QObject::connect(localSettingBtn, &DPushButton::clicked, [this](){
+        DFileDialog fileDialog;
+        QString filePath = fileDialog.getExistingDirectory(nullptr, "Open Maven Local Setting Folder", QString(), DFileDialog::DontResolveSymlinks);
         if(!filePath.isEmpty()) {
             d->localSettingEdit->setText(filePath);
         }
