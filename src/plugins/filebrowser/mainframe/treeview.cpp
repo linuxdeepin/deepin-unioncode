@@ -6,40 +6,43 @@
 #include "transceiver/sendevents.h"
 
 #include "common/common.h"
+#include <DMenu>
+#include <DHeaderView>
 
-#include <QHeaderView>
-#include <QMenu>
 #include <QDebug>
 #include <QContextMenuEvent>
 #include <QFileSystemModel>
 #include <QStack>
 
+DWIDGET_USE_NAMESPACE
+
 const QString NEW_DOCUMENT_NAME = "NewDocument.txt";
 const QString NEW_FOLDER_NAME = "NewFolder";
-const QString DELETE_MESSAGE_TEXT {QTreeView::tr("The delete operation will be removed from"
+const QString DELETE_MESSAGE_TEXT {DTreeView::tr("The delete operation will be removed from"
                                                  "the disk and will not be recoverable "
                                                  "after this operation.\nDelete anyway?")};
 
-const QString DELETE_WINDOW_TEXT {QTreeView::tr("Delete Warning")};
+const QString DELETE_WINDOW_TEXT {DTreeView::tr("Delete Warning")};
 
 class TreeViewPrivate
 {
     friend class TreeView;
     QFileSystemModel *model {nullptr};
-    QMenu* menu {nullptr};
+    DMenu* menu {nullptr};
     QStack<QStringList> moveToTrashStack;
     dpfservice::ProjectInfo proInfo;
 };
 
 TreeView::TreeView(QWidget *parent)
-    : QTreeView (parent)
+    : DTreeView (parent)
     , d (new TreeViewPrivate)
 {
     d->model = new QFileSystemModel(this);
-    d->menu = new QMenu(this);
+    d->menu = new DMenu(this);
     setModel(d->model);
-    header()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
-    QObject::connect(this, &QTreeView::doubleClicked, this, &TreeView::doDoubleClicked);
+    header()->setSectionResizeMode(DHeaderView::ResizeMode::ResizeToContents);
+    setAlternatingRowColors(true);
+    QObject::connect(this, &DTreeView::doubleClicked, this, &TreeView::doDoubleClicked);
 }
 
 TreeView::~TreeView()
@@ -54,8 +57,8 @@ void TreeView::setProjectInfo(const dpfservice::ProjectInfo &proInfo)
     d->proInfo = proInfo;
     d->model->setRootPath(proInfo.workspaceFolder());
     auto index = d->model->index(proInfo.workspaceFolder());
-    QTreeView::expand(index);
-    QTreeView::setRootIndex(index);
+    DTreeView::expand(index);
+    DTreeView::setRootIndex(index);
     emit rootPathChanged(proInfo.workspaceFolder());
 }
 
@@ -99,7 +102,7 @@ void TreeView::selMoveToTrash()
     } else {
         QString errMess;
         for (auto errFilePath : errFilePaths) {
-            errMess = QTreeView::tr("Error, Can't move to trash: ") + "\n"
+            errMess = DTreeView::tr("Error, Can't move to trash: ") + "\n"
                     + errFilePath  + "\n";
         }
         ContextDialog::ok(errMess);
@@ -147,7 +150,7 @@ void TreeView::selRemove()
     if (hasError)  {
         QString errMess;
         for (auto errFilePath : errFilePaths) {
-            errMess = QTreeView::tr("Error, Can't move to trash: ") + "\n"
+            errMess = DTreeView::tr("Error, Can't move to trash: ") + "\n"
                     + errFilePath  + "\n";
         }
         ContextDialog::ok(errMess);
@@ -165,10 +168,10 @@ void TreeView::selNewDocument()
         if (info.isDir()) {
             hasErr = !FileOperation::doNewDocument(filePath, NEW_DOCUMENT_NAME);
             if (hasErr)
-                errString =  QTreeView::tr("Error: Can't create New Document");
+                errString =  DTreeView::tr("Error: Can't create New Document");
         } else {
             hasErr = true;
-            errString =  QTreeView::tr("Error: Create New Document, parent not's dir");
+            errString =  DTreeView::tr("Error: Create New Document, parent not's dir");
         }
     }
 
@@ -187,10 +190,10 @@ void TreeView::selNewFolder()
         if (info.isDir()) {
             hasErr = !FileOperation::doNewFolder(filePath, NEW_FOLDER_NAME);
             if (hasErr)
-                errString =  QTreeView::tr("Error: Can't create new folder");
+                errString =  DTreeView::tr("Error: Can't create new folder");
         } else {
             hasErr = true;
-            errString =  QTreeView::tr("Error: Create new folder, parent not's dir");
+            errString =  DTreeView::tr("Error: Create new folder, parent not's dir");
         }
     }
 
@@ -217,7 +220,7 @@ void TreeView::doDoubleClicked(const QModelIndex &index)
 
 void TreeView::contextMenuEvent(QContextMenuEvent *event)
 {
-    QModelIndex index = QTreeView::indexAt(event->pos());
+    QModelIndex index = DTreeView::indexAt(event->pos());
     if (index.isValid()) {
         d->menu = createContextMenu(selectedIndexes());
     } else {
@@ -226,9 +229,9 @@ void TreeView::contextMenuEvent(QContextMenuEvent *event)
     d->menu->exec(viewport()->mapToGlobal(event->pos()));
 }
 
-QMenu *TreeView::createContextMenu(const QModelIndexList &indexs)
+DMenu *TreeView::createContextMenu(const QModelIndexList &indexs)
 {
-    QMenu *menu = new QMenu();
+    DMenu *menu = new DMenu();
     bool hasDir = false;
     bool selOne = indexs.size() == 0;
     for (auto index: indexs)  {
@@ -265,9 +268,9 @@ QMenu *TreeView::createContextMenu(const QModelIndexList &indexs)
     return menu;
 }
 
-QMenu *TreeView::createEmptyMenu()
+DMenu *TreeView::createEmptyMenu()
 {
-    QMenu *menu = new QMenu();
+    DMenu *menu = new DMenu();
     QAction *recoverFromTrashAction = new QAction(QAction::tr("Recover From Trash"));
     QObject::connect(recoverFromTrashAction, &QAction::triggered,
                      this, &TreeView::recoverFromTrash);
