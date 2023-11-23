@@ -5,11 +5,13 @@
 #ifndef TREEVIEW_H
 #define TREEVIEW_H
 
-#include <QTreeView>
 #include "services/project/projectservice.h"
 
+#include <DTreeView>
+#include <DMenu>
+
 class TreeViewPrivate;
-class TreeView : public QTreeView
+class TreeView : public DTK_WIDGET_NAMESPACE::DTreeView
 {
     Q_OBJECT
     TreeViewPrivate *const d;
@@ -29,8 +31,8 @@ signals:
     void rootPathChanged(const QString &folder);
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-    virtual QMenu *createContextMenu(const QModelIndexList &indexs);
-    virtual QMenu *createEmptyMenu();
+    virtual DTK_WIDGET_NAMESPACE::DMenu *createContextMenu(const QModelIndexList &indexs);
+    virtual DTK_WIDGET_NAMESPACE::DMenu *createEmptyMenu();
 };
 
 #endif // TREEVIEW_H
