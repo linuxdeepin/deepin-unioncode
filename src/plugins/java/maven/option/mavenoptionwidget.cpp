@@ -9,9 +9,11 @@
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
 
-#include <QHBoxLayout>
-#include <QTabWidget>
+#include <DTabWidget>
 
+#include <QHBoxLayout>
+
+DWIDGET_USE_NAMESPACE
 class MavenOptionWidgetPrivate {
     QTabWidget* tabWidget = nullptr;
 
@@ -23,13 +25,15 @@ MavenOptionWidget::MavenOptionWidget(QWidget *parent)
     , d(new MavenOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
-    d->tabWidget = new QTabWidget();
+    d->tabWidget = new DTabWidget();
     d->tabWidget->tabBar()->setAutoHide(true);
     layout->addWidget(d->tabWidget);
+    //去除左/上边的边框
+    d->tabWidget->setDocumentMode(true);
 
     d->tabWidget->addTab(new MavenWidget(), tr("Maven"));
 
-    QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
+    QObject::connect(d->tabWidget, &DTabWidget::currentChanged, [this]() {
         readConfig();
     });
 

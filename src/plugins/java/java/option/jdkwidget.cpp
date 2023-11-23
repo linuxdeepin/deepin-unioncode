@@ -7,6 +7,11 @@
 #include "common/util/custompaths.h"
 #include "common/toolchain/toolchain.h"
 
+#include <DLabel>
+#include <DHeaderView>
+#include <DRadioButton>
+#include <DComboBox>
+
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QByteArray>
@@ -15,20 +20,17 @@
 #include <QDebug>
 #include <QDir>
 
-#include <QRadioButton>
-#include <QComboBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QHeaderView>
 #include <QDir>
 
+DWIDGET_USE_NAMESPACE
 
 class JDKWidgetPrivate
 {
     friend class JDKWidget;
 
-    QComboBox *jdkDetail = nullptr;
+    DComboBox *jdkDetail = nullptr;
     QSharedPointer<ToolChainData> toolChainData;
 };
 
@@ -60,9 +62,9 @@ void JDKWidget::setupUi()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    QLabel *label = new QLabel(QLabel::tr("JDK version："));
+    DLabel *label = new DLabel(DLabel::tr("JDK version："));
     label->setFixedWidth(120);
-    d->jdkDetail = new QComboBox();
+    d->jdkDetail = new DComboBox();
     hLayout->addWidget(label);
     hLayout->addWidget(d->jdkDetail);
 

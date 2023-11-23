@@ -9,11 +9,14 @@
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
 
+#include <DTabWidget>
+
 #include <QHBoxLayout>
-#include <QTabWidget>
+#include <QStylePainter>
+DWIDGET_USE_NAMESPACE
 
 class GradleOptionWidgetPrivate {
-    QTabWidget* tabWidget = nullptr;
+    DTabWidget* tabWidget = nullptr;
 
     friend class GradleOptionWidget;
 };
@@ -23,12 +26,15 @@ GradleOptionWidget::GradleOptionWidget(QWidget *parent)
     , d(new GradleOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
-    d->tabWidget = new QTabWidget();
+    d->tabWidget = new DTabWidget();
     d->tabWidget->tabBar()->setAutoHide(true);
     layout->addWidget(d->tabWidget);
 
     d->tabWidget->addTab(new GradleWidget(), tr("Gradle"));
-    QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
+    //去除左/上边的边框
+    d->tabWidget->setDocumentMode(true);
+
+    QObject::connect(d->tabWidget, &DTabWidget::currentChanged, [this]() {
         readConfig();
     });
 
