@@ -8,13 +8,16 @@
 #include "common/toolchain/toolchain.h"
 #include "common/widget/pagewidget.h"
 
-#include <QComboBox>
+#include <DComboBox>
+#include <DLabel>
+#include <DLineEdit>
+#include <DCheckBox>
+#include <DPushButton>
+#include <DFileDialog>
+
 #include <QVBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QPushButton>
-#include <QFileDialog>
+
+DWIDGET_USE_NAMESPACE
 
 static const QString kJrePath = QObject::tr("jre path");
 static const QString kJreExecute = QObject::tr("jre execute");
@@ -26,20 +29,20 @@ static const int kHeadlineWidth = 120;
 class MavenDetailPropertyWidgetPrivate
 {
     friend class MavenDetailPropertyWidget;
-    QComboBox *jdkVersionComboBox{nullptr};
-    QComboBox *mvnVersionComboBox{nullptr};
-    QLineEdit *mainClass{nullptr};
-    QCheckBox *detailBox{nullptr};
-    QLineEdit *jreEdit{nullptr};
-    QLineEdit *jreExecuteEdit{nullptr};
-    QLineEdit *launchCfgPathEdit{nullptr};
-    QLineEdit *lanuchCfgFileEdit{nullptr};
-    QLineEdit *dapPackageFileEdit{nullptr};
+    DComboBox *jdkVersionComboBox{nullptr};
+    DComboBox *mvnVersionComboBox{nullptr};
+    DLineEdit *mainClass{nullptr};
+    DCheckBox *detailBox{nullptr};
+    DLineEdit *jreEdit{nullptr};
+    DLineEdit *jreExecuteEdit{nullptr};
+    DLineEdit *launchCfgPathEdit{nullptr};
+    DLineEdit *lanuchCfgFileEdit{nullptr};
+    DLineEdit *dapPackageFileEdit{nullptr};
     QSharedPointer<ToolChainData> toolChainData;
 };
 
 MavenDetailPropertyWidget::MavenDetailPropertyWidget(QWidget *parent)
-    : QWidget(parent)
+    : DFrame(parent)
     , d(new MavenDetailPropertyWidgetPrivate())
 {
     setupUI();
@@ -58,25 +61,25 @@ void MavenDetailPropertyWidget::setupUI()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    QLabel *label = new QLabel(QLabel::tr("JDK version:"));
+    DLabel *label = new DLabel(DLabel::tr("JDK version:"));
     label->setFixedWidth(kHeadlineWidth);
-    d->jdkVersionComboBox = new QComboBox();
+    d->jdkVersionComboBox = new DComboBox();
     hLayout->addWidget(label);
     hLayout->addWidget(d->jdkVersionComboBox);
     vLayout->addLayout(hLayout);
 
     hLayout = new QHBoxLayout();
-    label = new QLabel(QLabel::tr("Maven Version: "));
+    label = new DLabel(DLabel::tr("Maven Version: "));
     label->setFixedWidth(kHeadlineWidth);
-    d->mvnVersionComboBox = new QComboBox();
+    d->mvnVersionComboBox = new DComboBox();
     hLayout->addWidget(label);
     hLayout->addWidget(d->mvnVersionComboBox);
     vLayout->addLayout(hLayout);
 
     hLayout = new QHBoxLayout();
-    label = new QLabel(QLabel::tr("Main Class:"));
+    label = new DLabel(DLabel::tr("Main Class:"));
     label->setFixedWidth(kHeadlineWidth);
-    d->mainClass = new QLineEdit();
+    d->mainClass = new DLineEdit();
     d->mainClass->setPlaceholderText(tr("Input main class"));
     hLayout->addWidget(label);
     hLayout->addWidget(d->mainClass);
@@ -84,9 +87,9 @@ void MavenDetailPropertyWidget::setupUI()
     vLayout->addStretch(10);
 
     hLayout = new QHBoxLayout();
-    label = new QLabel(QLabel::tr("Detail output:"));
+    label = new DLabel(DLabel::tr("Detail output:"));
     label->setFixedWidth(kHeadlineWidth);
-    d->detailBox = new QCheckBox();
+    d->detailBox = new DCheckBox();
     hLayout->addWidget(label);
     hLayout->addWidget(d->detailBox);
     hLayout->setAlignment(Qt::AlignLeft);
@@ -96,10 +99,10 @@ void MavenDetailPropertyWidget::setupUI()
     auto addGroupWidgets = [this](QVBoxLayout *vLayout, const QString &headLine, QWidget *widget){
 
         QHBoxLayout *hLayout = new QHBoxLayout();
-        QLabel *label = new QLabel(headLine + ":");
+        DLabel *label = new DLabel(headLine + ":");
         label->setFixedWidth(kHeadlineWidth);
 
-        QPushButton *btnBrowser = new QPushButton(this);
+        DPushButton *btnBrowser = new DPushButton(this);
         btnBrowser->setText(tr("Browse..."));
         btnBrowser->setObjectName(headLine);
         hLayout->addWidget(label);
@@ -107,14 +110,14 @@ void MavenDetailPropertyWidget::setupUI()
         hLayout->addWidget(btnBrowser);
         vLayout->addLayout(hLayout);
 
-        connect(btnBrowser, &QPushButton::clicked, this, &MavenDetailPropertyWidget::browserFileDialog);
+        connect(btnBrowser, &DPushButton::clicked, this, &MavenDetailPropertyWidget::browserFileDialog);
     };
 
-    d->jreEdit = new QLineEdit(this);
-    d->jreExecuteEdit = new QLineEdit(this);
-    d->launchCfgPathEdit = new QLineEdit(this);
-    d->lanuchCfgFileEdit = new QLineEdit(this);
-    d->dapPackageFileEdit = new QLineEdit(this);
+    d->jreEdit = new DLineEdit(this);
+    d->jreExecuteEdit = new DLineEdit(this);
+    d->launchCfgPathEdit = new DLineEdit(this);
+    d->lanuchCfgFileEdit = new DLineEdit(this);
+    d->dapPackageFileEdit = new DLineEdit(this);
 
     addGroupWidgets(vLayout, kJrePath, d->jreEdit);
     addGroupWidgets(vLayout, kJreExecute, d->jreExecuteEdit);
@@ -130,7 +133,7 @@ void MavenDetailPropertyWidget::initData()
     bool ret = d->toolChainData->readToolChainData(retMsg);
     if (ret) {
         const ToolChainData::ToolChains &data = d->toolChainData->getToolChanins();
-        auto initComboBox = [](QComboBox *comboBox, const ToolChainData::ToolChains &data, const QString &type) {
+        auto initComboBox = [](DComboBox *comboBox, const ToolChainData::ToolChains &data, const QString &type) {
             int index = 0;
             ToolChainData::Params params = data.value(type);
             for (auto param : params) {
@@ -151,7 +154,7 @@ void MavenDetailPropertyWidget::setValues(const mavenConfig::ConfigureParam *par
     if (!param)
         return;
 
-    auto initComboBox = [](QComboBox *comboBox, const mavenConfig::ItemInfo &itemInfo) {
+    auto initComboBox = [](DComboBox *comboBox, const mavenConfig::ItemInfo &itemInfo) {
         int count = comboBox->count();
         for (int i = 0; i < count; i++) {
             ToolChainData::ToolChainParam toolChainParam = qvariant_cast<ToolChainData::ToolChainParam>(comboBox->itemData(i, Qt::UserRole + 1));
@@ -179,7 +182,7 @@ void MavenDetailPropertyWidget::getValues(mavenConfig::ConfigureParam *param)
     if (!param)
         return;
 
-    auto getValue = [](QComboBox *comboBox, mavenConfig::ItemInfo &itemInfo){
+    auto getValue = [](DComboBox *comboBox, mavenConfig::ItemInfo &itemInfo){
         itemInfo.clear();
         int index = comboBox->currentIndex();
         if (index > -1) {
@@ -205,17 +208,17 @@ void MavenDetailPropertyWidget::browserFileDialog()
     QObject *senderObj = qobject_cast<QObject *>(sender());
     QString senderName = senderObj->objectName();
 
-    auto showDirDialog = [this](QLineEdit *widget){
-        QString result = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+    auto showDirDialog = [this](DLineEdit *widget){
+        QString result = DFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                            widget->text(),
-                                                           QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                           DFileDialog::ShowDirsOnly | DFileDialog::DontResolveSymlinks);
         if (!result.isEmpty()) {
             widget->setText(result);
         }
     };
 
-    auto showFileDialog = [this](QLineEdit *widget){
-        QString result = QFileDialog::getOpenFileName(this, tr("Select File"), widget->text());
+    auto showFileDialog = [this](DLineEdit *widget){
+        QString result = DFileDialog::getOpenFileName(this, tr("Select File"), widget->text());
         if (!result.isEmpty())
             widget->setText(result);
     };
