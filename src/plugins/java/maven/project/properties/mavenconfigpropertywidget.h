@@ -9,9 +9,11 @@
 
 #include "services/project/projectinfo.h"
 
+#include <DFrame>
+
 class PageWidget;
 class MavenDetailPropertyWidgetPrivate;
-class MavenDetailPropertyWidget : public QWidget
+class MavenDetailPropertyWidget : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 public:
