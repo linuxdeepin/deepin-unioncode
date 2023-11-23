@@ -8,7 +8,10 @@
 #include "qtermwidget.h" // 3drparty
 #include "ColorScheme.h"
 
+#include <DGuiApplicationHelper>
+
 #include <QDir>
+DGUI_USE_NAMESPACE
 
 class ConsoleWidgetPrivate;
 class ConsoleWidget : public QTermWidget
@@ -21,7 +24,7 @@ public:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
-
+    void updateColorScheme(DGuiApplicationHelper::ColorType themetype);
 private:
     ConsoleWidgetPrivate *const d;
 };
