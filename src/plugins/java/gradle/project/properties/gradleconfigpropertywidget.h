@@ -7,10 +7,11 @@
 
 #include "gradle/project/properties/gradleconfigutil.h"
 #include "services/project/projectinfo.h"
+#include <DFrame>
 
 class PageWidget;
 class GradleDetailPropertyWidgetPrivate;
-class GradleDetailPropertyWidget : public QWidget
+class GradleDetailPropertyWidget : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 public:
