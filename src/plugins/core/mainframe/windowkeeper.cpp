@@ -152,6 +152,7 @@ void WindowKeeper::createNavIconBtn(const QString &navName, const QString &iconN
     DToolButton *toolBtn = new DToolButton;
     toolBtn->setCheckable(true);
     toolBtn->setChecked(true);
+    toolBtn->setToolTip(navName);
 
     toolBtn->setIcon(QIcon::fromTheme(iconName));
 
