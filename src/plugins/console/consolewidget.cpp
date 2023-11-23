@@ -3,14 +3,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "consolewidget.h"
+
+#include <DMenu>
+
 #include <QDebug>
-#include <QMenu>
+
+DWIDGET_USE_NAMESPACE
+
 static ConsoleWidget *ins{nullptr};
 
 class ConsoleWidgetPrivate
 {
 public:
-    QMenu *menu = nullptr;
+    DMenu *menu = nullptr;
     QAction *consoleCopy = nullptr;
     QAction *consolePaste = nullptr;
 };
@@ -30,10 +35,13 @@ ConsoleWidget::ConsoleWidget(QWidget *parent)
     setTerminalOpacity(0);
     setForegroundRole(QPalette::ColorRole::Window);
     setAutoFillBackground(true);
-    if (availableColorSchemes().contains("Linux"))
-        setColorScheme("Linux");
+    setTerminalOpacity(1);
+
+    auto theme = DGuiApplicationHelper::instance()->themeType();
+    updateColorScheme(theme);
     if (availableKeyBindings().contains("linux"))
         setKeyBindings("linux");
+
     setScrollBarPosition(QTermWidget::ScrollBarRight);
     setTerminalSizeHint(false);
     setAutoClose(false);
@@ -44,6 +52,8 @@ ConsoleWidget::ConsoleWidget(QWidget *parent)
     d->consolePaste = new QAction(tr("paste"));
     QObject::connect(d->consoleCopy, &QAction::triggered, this, &QTermWidget::copyClipboard);
     QObject::connect(d->consolePaste, &QAction::triggered, this, &QTermWidget::pasteClipboard);
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
+                     this, &ConsoleWidget::updateColorScheme);
 }
 
 ConsoleWidget::~ConsoleWidget()
@@ -54,7 +64,7 @@ ConsoleWidget::~ConsoleWidget()
 void ConsoleWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     if (nullptr == d->menu) {
-        d->menu = new QMenu(this);
+        d->menu = new DMenu(this);
         d->menu->setParent(this);
         d->menu->addAction(d->consoleCopy);
         d->menu->addAction(d->consolePaste);
@@ -65,4 +75,13 @@ void ConsoleWidget::contextMenuEvent(QContextMenuEvent *event)
         d->consoleCopy->setEnabled(true);
     }
     d->menu->exec(event->globalPos());
+}
+
+void ConsoleWidget::updateColorScheme(DGuiApplicationHelper::ColorType themetype)
+{
+    if (themetype == DGuiApplicationHelper::DarkType
+        && availableColorSchemes().contains("Linux"))
+        this->setColorScheme("Linux");
+    else if (availableColorSchemes().contains("BlackOnWhite"))
+        this->setColorScheme("BlackOnWhite");
 }
