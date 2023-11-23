@@ -6,8 +6,6 @@
 
 #include "common/common.h"
 
-#include <QStandardItem>
-
 namespace {
 static WordCountAnalyse *wordcounter{nullptr};
 static ActionAnalyseArgs analyseArgs;

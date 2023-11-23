@@ -11,10 +11,7 @@
 #include "services/window/windowservice.h"
 #include "services/window/windowelement.h"
 
-#include <QProcess>
 #include <QAction>
-#include <QLabel>
-#include <QTreeView>
 
 void ActionAnalyse::initialize()
 {
