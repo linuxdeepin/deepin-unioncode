@@ -7,23 +7,26 @@
 #include "common/util/custompaths.h"
 #include "common/toolchain/toolchain.h"
 
-#include <QRadioButton>
-#include <QComboBox>
+#include <DLabel>
+#include <DHeaderView>
+#include <DRadioButton>
+#include <DComboBox>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QHeaderView>
 #include <QDir>
 #include <QDebug>
 #include <QJsonObject>
+
+DWIDGET_USE_NAMESPACE
 
 class GradleWidgetPrivate
 {
     friend class GradleWidget;
 
-    QRadioButton *useWrapper = nullptr;
-    QRadioButton *useLocal = nullptr;
-    QComboBox *localDetail = nullptr;
+    DRadioButton *useWrapper = nullptr;
+    DRadioButton *useLocal = nullptr;
+    DComboBox *localDetail = nullptr;
     QSharedPointer<ToolChainData> toolChainData;
 };
 
@@ -53,19 +56,18 @@ void GradleWidget::setupUi()
 {
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
-
-    QLabel *label = new QLabel(QLabel::tr("Gradle distribution："));
-    d->useWrapper = new QRadioButton(tr("use Gradle wrapper"));
+    DLabel *label = new DLabel(DLabel::tr("Gradle distribution："));
+    d->useWrapper = new DRadioButton(tr("use Gradle wrapper"));
 
     QHBoxLayout *localLayout = new QHBoxLayout();
-    d->useLocal = new QRadioButton(tr("use Local installation, directory："));
+    d->useLocal = new DRadioButton(tr("use Local installation, directory："));
     d->useLocal->setFixedWidth(300);
     d->useLocal->setChecked(true);
-    d->localDetail = new QComboBox();
+    d->localDetail = new DComboBox();
     localLayout->addWidget(d->useLocal);
     localLayout->addWidget(d->localDetail);
 
-    QObject::connect(d->useLocal, &QRadioButton::setChecked, [this](){
+    QObject::connect(d->useLocal, &DRadioButton::setChecked, [this](){
         d->localDetail->setEnabled(d->useLocal->isChecked());
     });
 

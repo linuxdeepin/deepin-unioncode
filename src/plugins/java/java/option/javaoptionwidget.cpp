@@ -9,9 +9,10 @@
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
 
-#include <QHBoxLayout>
-#include <QTabWidget>
+#include <DTabWidget>
 
+#include <QHBoxLayout>
+DWIDGET_USE_NAMESPACE
 class JavaOptionWidgetPrivate {
     QTabWidget* tabWidget = nullptr;
 
@@ -23,11 +24,14 @@ JavaOptionWidget::JavaOptionWidget(QWidget *parent)
     , d(new JavaOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
-    d->tabWidget = new QTabWidget();
+    d->tabWidget = new DTabWidget();
     layout->addWidget(d->tabWidget);
     d->tabWidget->tabBar()->setAutoHide(true);
+    //去除左/上边的边框
+    d->tabWidget->setDocumentMode(true);
+
     d->tabWidget->addTab(new JDKWidget(), tr("JDK"));
-    QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
+    QObject::connect(d->tabWidget, &DTabWidget::currentChanged, [this]() {
         readConfig();
     });
 
