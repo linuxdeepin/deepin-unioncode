@@ -30,7 +30,6 @@ void MenuManager::initialize(WindowService *windowService)
     AbstractAction *actionImpl = new AbstractAction(startDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
     windowService->addToolBarActionItem("Start Debugging", startDebugging.get(), "Debug");
-    windowService->addToolBarActionItem("Debugger.Start", startDebugging.get(), "Debug");
 
 #if 0 // not used yet.
     detachDebugger.reset(new QAction("Detach Debugger"));
@@ -68,7 +67,6 @@ void MenuManager::initialize(WindowService *windowService)
     actionImpl = new AbstractAction(abortDebugging.get());
     windowService->addAction(MWM_DEBUG, actionImpl);
     windowService->addToolBarActionItem("abort_debug", abortDebugging.get(), "Debug");
-    windowService->addToolBarActionItem("Debugger.Stop", abortDebugging.get(), "Debug");
 
     restartDebugging.reset(new QAction(MWMDA_RESTART_DEBUGGING));
     ActionManager::getInstance()->registerAction(restartDebugging.get(), "Debug.Restart.Debugging",

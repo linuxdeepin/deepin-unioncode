@@ -13,6 +13,7 @@
 #include <DStyle>
 #include <DPushButton>
 #include <DFileDialog>
+#include <DStandardItem>
 
 #include <QImageReader>
 #include <QList>
@@ -55,7 +56,7 @@ public:
             QString file = projectFile(elemObj, &kitName, &language, &workspace);
             if (file.isEmpty() || !QFileInfo(file).exists())
                 continue;
-            auto rowItem = new QStandardItem (icon(file), file);
+            auto rowItem = new DStandardItem (icon(file), file);
             rowItem->setData(kitName, RecentDisplay::ProjectKitName);
             rowItem->setData(language, RecentDisplay::ProjectLanguage);
             rowItem->setData(workspace, RecentDisplay::ProjectWorkspace);
