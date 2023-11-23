@@ -9,20 +9,23 @@
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 
-#include <QLabel>
-#include <QSplitter>
-#include <QWidget>
-#include <QTextEdit>
-#include <QTreeView>
+#include <DWidget>
+#include <DLabel>
+#include <DTreeView>
+#include <DTabWidget>
+#include <DTextEdit>
+#include <DSplitter>
+
 #include <QGridLayout>
-#include <QTabWidget>
+
+DWIDGET_USE_NAMESPACE
 
 using namespace dpfservice;
 
 namespace  {
 const int treeWidgtMinWidth = 70;
 const int treeWidgetMinHeight = 400;
-const QString FileBrowser_TEXT = QWidget::tr("File Browser");
+const QString FileBrowser_TEXT = DWidget::tr("File Browser");
 }
 
 void FileBrowser::initialize()
@@ -47,7 +50,7 @@ dpf::Plugin::ShutdownFlag FileBrowser::stop()
 
 AbstractWidget *FileBrowser::createTreeWidget()
 {
-    QWidget *treeWidget = new QWidget();
+    DWidget *treeWidget = new DWidget();
     treeWidget->setMinimumSize({treeWidgtMinWidth, treeWidgetMinHeight});
 
     QGridLayout* gridLayout = new QGridLayout();
@@ -57,9 +60,9 @@ AbstractWidget *FileBrowser::createTreeWidget()
     auto treeView = TreeViewKeeper::instance()->treeView();
     treeView->setMinimumSize({treeWidgtMinWidth, treeWidgetMinHeight});
 
-    auto folderLabel = new QLabel();
+    auto folderLabel = new DLabel();
     QObject::connect(treeView, &TreeView::rootPathChanged,
-                     folderLabel, &QLabel::setText,
+                     folderLabel, &DLabel::setText,
                      Qt::UniqueConnection);
 
     gridLayout->addWidget(folderLabel);
