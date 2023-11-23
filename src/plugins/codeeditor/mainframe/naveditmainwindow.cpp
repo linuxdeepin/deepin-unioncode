@@ -309,6 +309,7 @@ void NavEditMainWindow::setToolBarButton(QAction *action)
     if (!action)
         return;
     DIconButton *iconBtn = new DIconButton();
+    iconBtn->setToolTip(action->text());
     iconBtn->setIcon(action->icon());
     iconBtn->setMinimumSize(QSize(36, 36));
     iconBtn->setIconSize(QSize(20, 20));

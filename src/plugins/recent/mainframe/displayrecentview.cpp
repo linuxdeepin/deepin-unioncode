@@ -7,12 +7,14 @@
 #include "displayitemdelegate.h"
 
 #include <DStyledItemDelegate>
+#include <DStandardItem>
+
+#include <QToolTip>
 
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-#include <QStandardItem>
 #include <QStandardItemModel>
 
 #define INIT_DATA "{\n    \"Projects\":[],\n    \"Documents\":[]\n}\n"
@@ -57,7 +59,7 @@ QList<QStandardItem *> DisplayRecentView::itemsFromFile()
     QList<QStandardItem*> result;
     for (auto one : array) {
         QString filePath(one.toString());
-        auto rowItem = new QStandardItem (icon(filePath), filePath);
+        auto rowItem = new DStandardItem (icon(filePath), filePath);
         rowItem->setToolTip(filePath);
         if (!cache.contains(filePath)) {
             cache << filePath;
@@ -71,13 +73,46 @@ DisplayRecentView::DisplayRecentView(QWidget *parent)
     : DListView (parent)
     , cache({})
     , model(new QStandardItemModel(this))
+{    
+    setDragDropMode(QAbstractItemView::NoDragDrop);
+    setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionBehavior(QAbstractItemView::SelectRows);
+    setEditTriggers(QListView::NoEditTriggers);
+    setTextElideMode(Qt::ElideMiddle);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setAlternatingRowColors(false);
+    setSelectionRectVisible(true);
+    setMouseTracking(true);
+
+    setUniformItemSizes(true);
+    setResizeMode(Fixed);
+    setOrientation(QListView::TopToBottom, false);
+    setFrameStyle(QFrame::NoFrame);
+    setSpacing(0);
+    setContentsMargins(0, 0, 0, 0);
+
+    setModel(model);
+    setItemDelegate(new DisplayItemDelegate(this));
+}
+
+DisplayRecentView::~DisplayRecentView()
 {
-    DListView::setModel(model);
-    DListView::setEditTriggers(DListView::NoEditTriggers);
-    DListView::setItemDelegate(new DisplayItemDelegate(this));
-    DListView::setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    DListView::setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    DListView::setSelectionMode(QAbstractItemView::NoSelection);
+
+}
+
+void DisplayRecentView::focusOutEvent(QFocusEvent *e)
+{
+    DListView::clearSelection();
+
+    DListView::focusOutEvent(e);
+}
+
+void DisplayRecentView::mousePressEvent(QMouseEvent *e)
+{
+    if (e->button() != Qt::LeftButton)
+        return;
+    return DListView::mousePressEvent(e);
 }
 
 QString DisplayRecentView::cachePath()
@@ -100,13 +135,7 @@ void DisplayRecentView::add(const QString &data)
 QIcon DisplayRecentView::icon(const QString &data)
 {
     QFileInfo info(data);
-    if (info.isFile()) {
-        return iconProvider.icon(QFileIconProvider::File);
-    }
-    if (info.isDir()) {
-        return iconProvider.icon(QFileIconProvider::Folder);
-    }
-    return QIcon();
+    return iconProvider.icon(info);
 }
 
 void DisplayRecentView::load()
