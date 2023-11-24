@@ -40,7 +40,7 @@ QIcon libBuildIcon()
     static QIcon libBuildIcon;
     if (libBuildIcon.isNull()) {
         libBuildIcon = CustomIcons::icon(CustomIcons::Lib);
-        libBuildIcon.addFile(":/cmakeproject/images/build@2x.png");
+        libBuildIcon.addFile(":/cmakeproject/images/build@2x.svg");
     }
     return libBuildIcon;
 }
@@ -51,7 +51,7 @@ QIcon exeBuildIcon()
     if (exeBuildIcon.isNull()) {
         exeBuildIcon = CustomIcons::icon(CustomIcons::Exe);
         // TODO(any):use a different png.
-        exeBuildIcon.addFile(":/cmakeproject/images/build@2x.png");
+        exeBuildIcon.addFile(":/cmakeproject/images/build@2x.svg");
     }
     return exeBuildIcon;
 }
