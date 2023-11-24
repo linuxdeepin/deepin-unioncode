@@ -8,22 +8,24 @@
 #include "common/toolchain/toolchain.h"
 #include "common/widget/pagewidget.h"
 
-#include <QComboBox>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
+#include <DComboBox>
+#include <DLabel>
+#include <DLineEdit>
 
+#include <QVBoxLayout>
+
+DWIDGET_USE_NAMESPACE
 using namespace config;
 
 class DetailPropertyWidgetPrivate
 {
     friend class DetailPropertyWidget;
-    QComboBox *pyVersionComboBox{nullptr};
+    DComboBox *pyVersionComboBox{nullptr};
     QSharedPointer<ToolChainData> toolChainData;
 };
 
 DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
-    : QWidget(parent)
+    : DWidget(parent)
     , d(new DetailPropertyWidgetPrivate())
 {
     setupUI();
@@ -42,9 +44,9 @@ void DetailPropertyWidget::setupUI()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    QLabel *label = new QLabel(QLabel::tr("JS interpreter: "));
+    DLabel *label = new DLabel(DLabel::tr("JS interpreter: "));
     label->setFixedWidth(120);
-    d->pyVersionComboBox = new QComboBox();
+    d->pyVersionComboBox = new DComboBox();
     hLayout->addWidget(label);
     hLayout->addWidget(d->pyVersionComboBox);
     vLayout->addLayout(hLayout);
@@ -59,7 +61,7 @@ void DetailPropertyWidget::initData()
     bool ret = d->toolChainData->readToolChainData(retMsg);
     if (ret) {
         const ToolChainData::ToolChains &data = d->toolChainData->getToolChanins();
-        auto initComboBox = [](QComboBox *comboBox, const ToolChainData::ToolChains &data, const QString &type) {
+        auto initComboBox = [](DComboBox *comboBox, const ToolChainData::ToolChains &data, const QString &type) {
             int index = 0;
             ToolChainData::Params params = data.value(type);
             for (auto param : params) {
@@ -79,7 +81,7 @@ void DetailPropertyWidget::setValues(const config::ConfigureParam *param)
     if (!param)
         return;
 
-    auto initComboBox = [](QComboBox *comboBox, const config::ItemInfo &itemInfo) {
+    auto initComboBox = [](DComboBox *comboBox, const config::ItemInfo &itemInfo) {
         int count = comboBox->count();
         for (int i = 0; i < count; i++) {
             ToolChainData::ToolChainParam toolChainParam = qvariant_cast<ToolChainData::ToolChainParam>(comboBox->itemData(i, Qt::UserRole + 1));
@@ -99,7 +101,7 @@ void DetailPropertyWidget::getValues(config::ConfigureParam *param)
     if (!param)
         return;
 
-    auto getValue = [](QComboBox *comboBox, ItemInfo &itemInfo){
+    auto getValue = [](DComboBox *comboBox, ItemInfo &itemInfo){
         itemInfo.clear();
         int index = comboBox->currentIndex();
         if (index > -1) {

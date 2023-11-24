@@ -10,7 +10,8 @@
 
 class PageWidget;
 class DetailPropertyWidgetPrivate;
-class DetailPropertyWidget : public QWidget
+
+class DetailPropertyWidget : public DWidget
 {
     Q_OBJECT
 public:
