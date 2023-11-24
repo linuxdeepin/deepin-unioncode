@@ -4,17 +4,23 @@
 
 #include "processdialog.h"
 
+#include <DTitlebar>
+
 #include <QDebug>
 
-ProcessDialog::ProcessDialog(QWidget *parent, Qt::WindowFlags f)
-    : QDialog (parent, f)
-    , progressBar(new QProgressBar)
-    , textBrowser(new QTextBrowser)
+ProcessDialog::ProcessDialog(QWidget *parent)
+    : DAbstractDialog (parent)
+    , progressBar(new DProgressBar)
+    , textBrowser(new DTextBrowser)
     , vLayout(new QVBoxLayout)
 {
-    setWindowTitle(__FUNCTION__);
     setMinimumSize(600, 400);
 
+    DTitlebar *titleBar = new DTitlebar();
+    titleBar->setMenuVisible(false);
+    titleBar->setTitle(__FUNCTION__);
+
+    vLayout->addWidget(titleBar);
     vLayout->addWidget(textBrowser);
     vLayout->addWidget(progressBar);
     setLayout(vLayout);

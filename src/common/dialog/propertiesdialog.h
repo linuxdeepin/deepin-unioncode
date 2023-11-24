@@ -5,8 +5,17 @@
 #ifndef PROPERTIESDIALOG_H
 #define PROPERTIESDIALOG_H
 
+#include <DAbstractDialog>
+#include <DDialog>
+#include <DLineEdit>
+#include <DListView>
+#include <DLabel>
+#include <DStackedWidget>
+
 #include <QtWidgets/QDialog>
 #include <QMap>
+
+DWIDGET_USE_NAMESPACE
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -18,7 +27,7 @@ class QStringListModel;
 class QStackedWidget;
 class PageWidget;
 
-class PropertiesDialog : public QDialog
+class PropertiesDialog : public DAbstractDialog
 {
     Q_OBJECT
 public:
@@ -35,18 +44,17 @@ public slots:
     void slotFilterText(const QString &text);
 
 private:
-    void setupUi(QDialog *Dialog);
+    void setupUi(DAbstractDialog *Dialog);
     void readConfig();
     void savePropertiesToFile();
     void readPropertiesToFile();
 
-    QLineEdit *filterEdit = nullptr;
-    QListView *leftSideBar = nullptr;
-    QLabel *headTitle = nullptr;
+    DListView *leftSideBar = nullptr;
+    DLabel *headTitle = nullptr;
 
     QMap<QString, PageWidget *> widgts;
     QStringListModel *leftBarModel = nullptr;
-    QStackedWidget *stackWidget = nullptr;
+    DStackedWidget *stackWidget = nullptr;
 
     QStringList leftBarValues;
 };

@@ -4,14 +4,17 @@
 
 #include "singlechoicebox.h"
 
-#include <QRadioButton>
+#include <DRadioButton>
+
 #include <QVBoxLayout>
 #include <QSet>
+
+DWIDGET_USE_NAMESPACE
 
 class SingleChoiceBoxPrivate
 {
     friend class SingleChoiceBox;
-    QList<QRadioButton*> radioButtons{};
+    QList<DRadioButton*> radioButtons{};
     QGroupBox *groupBox = nullptr;
     QVBoxLayout *vLayoutMain = nullptr;
     QVBoxLayout *vLayoutCentral = nullptr;
@@ -19,7 +22,7 @@ class SingleChoiceBoxPrivate
 };
 
 SingleChoiceBox::SingleChoiceBox(QWidget *parent)
-    : QWidget (parent)
+    : DWidget (parent)
     , d(new SingleChoiceBoxPrivate)
 {
     d->groupBox = new QGroupBox();
@@ -44,8 +47,8 @@ void SingleChoiceBox::setInfos(QSet<SingleChoiceBox::Info> infos)
     }
 
     for (auto info : infos) {
-        auto radioButton = new QRadioButton();
-        QObject::connect(radioButton, &QRadioButton::toggled,
+        auto radioButton = new DRadioButton();
+        QObject::connect(radioButton, &DRadioButton::toggled,
                          this, &SingleChoiceBox::toggled,Qt::UniqueConnection);
         d->radioButtons << radioButton;
         radioButton->setIcon(info.icon);
@@ -62,7 +65,7 @@ void SingleChoiceBox::setChoiceTitle(const QString &title)
 
 void SingleChoiceBox::toggled(bool checked)
 {
-    auto toggledIns = qobject_cast<QRadioButton*>(sender());
+    auto toggledIns = qobject_cast<DRadioButton*>(sender());
     if (toggledIns && checked) {
         Info info { toggledIns->text(),
                     toggledIns->toolTip(),

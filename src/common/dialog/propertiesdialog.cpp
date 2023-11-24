@@ -5,22 +5,24 @@
 #include "propertiesdialog.h"
 #include "common/widget/pagewidget.h"
 
+#include <DPushButton>
+#include <DTitlebar>
+#include <DFrame>
+#include <DBackgroundGroup>
+#include <DSuggestButton>
+
 #include <QtDebug>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListView>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QStackedWidget>
 #include <QStringListModel>
 
 PropertiesDialog::PropertiesDialog(QWidget *parent)
-    : QDialog(parent)
+    : DAbstractDialog(parent)
 {
+    setModal(true);
     setupUi(this);
 }
 
@@ -34,7 +36,6 @@ bool PropertiesDialog::insertPropertyPanel(const QString &itemName, PageWidget *
 
     if (index >= 0 && !leftBarValues.isEmpty()) {
         stackWidget->setCurrentIndex(0);
-        headTitle->setText(leftBarValues.at(0));
     }
 
     return true;
@@ -52,8 +53,6 @@ void PropertiesDialog::showPropertyPanel(const QString &itemName, const QString 
         // Update right panel.
         auto widget = widgts.value(itemName);
         stackWidget->setCurrentWidget(widget);
-
-        headTitle->setText(itemName);
     }
 
     this->exec();
@@ -67,7 +66,6 @@ void PropertiesDialog::slotLeftBarClicked(const QModelIndex &index)
     stackWidget->setCurrentWidget(widget);
 
     // Update head title.
-    headTitle->setText(itemName);
     widget->readConfig();
 }
 
@@ -91,73 +89,95 @@ void PropertiesDialog::slotFilterText(const QString &text)
     leftBarModel->setStringList(tempList);
 }
 
-void PropertiesDialog::setupUi(QDialog *Dialog)
+void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
 {
-    Dialog->resize(1000, 650);
-    setWindowTitle(tr("Project Properties"));
+    auto vLayout = new QVBoxLayout(Dialog);
+    vLayout->setContentsMargins(0, 0, 0, 0);
+    vLayout->setSpacing(0);
 
-    // Center layout.
-    auto mainLayout = new QHBoxLayout(Dialog);
-    mainLayout->setSpacing(6);
-    mainLayout->setContentsMargins(11, 11, 11, 11);
+    DFrame *contentFrame = new DFrame();
+    contentFrame->setLineWidth(0);
+
+    auto contentlayout = new QHBoxLayout(contentFrame);
+    contentlayout->setContentsMargins(10, 0, 0, 0);
+
+    DTitlebar *titleBar = new DTitlebar(Dialog);
+    titleBar->setMinimumHeight(43);
+    titleBar->setMenuVisible(false);
+    titleBar->setTitle(tr("Project Properties"));
+    //main layout
+    vLayout->addWidget(titleBar);
+    vLayout->addWidget(contentFrame);
 
     // Left layout.
-    auto leftLayout = new QVBoxLayout(Dialog);
-    leftLayout->setSpacing(6);
-    filterEdit = new QLineEdit(Dialog);
-    filterEdit->setPlaceholderText(tr("Filter"));
-    connect(filterEdit, SIGNAL(textChanged(const QString &)),
-            this, SLOT(slotFilterText(const QString &)));
-    leftLayout->addWidget(filterEdit);
-
-    leftSideBar = new QListView(Dialog);
+    auto leftLayout = new QVBoxLayout();
+    leftLayout->setContentsMargins(0, 10, 10, 0);
+    leftLayout->setAlignment(Qt::AlignTop);
+    leftSideBar = new DListView(Dialog);
     leftSideBar->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftBarModel = new QStringListModel(leftSideBar);
     leftSideBar->setModel(leftBarModel);
+    leftSideBar->setMaximumWidth(144);
+
     connect(leftSideBar, SIGNAL(clicked(const QModelIndex &)),
             this, SLOT(slotLeftBarClicked(const QModelIndex &)));
+
+    connect(leftBarModel, &QStringListModel::modelReset, this, [=]{
+        leftSideBar->setCurrentIndex(leftBarModel->index(0));
+    });
 
     leftLayout->addWidget(leftSideBar);
 
     // Right layout.
-    auto rightLayout = new QVBoxLayout(Dialog);
-    rightLayout->setSpacing(6);
-    headTitle = new QLabel(Dialog);
+    auto rightLayout = new QVBoxLayout();
 
-    rightLayout->addWidget(headTitle);
-
-    stackWidget = new QStackedWidget(Dialog);
+    stackWidget = new DStackedWidget(Dialog);
     rightLayout->addWidget(stackWidget);
 
-    auto buttonLayout = new QHBoxLayout(Dialog);
-    buttonLayout->setSpacing(6);
-    auto horizontalSpacer = new QSpacerItem(40, 30, QSizePolicy::Expanding, QSizePolicy::Minimum);
+    QWidget *box = new QWidget();
+    QHBoxLayout *box_layout = new QHBoxLayout(box);
+    box_layout->setContentsMargins(0, 30, 0, 30);
 
-    buttonLayout->addItem(horizontalSpacer);
-
-    auto okBtn = new QPushButton(tr("OK"), Dialog);
-    connect(okBtn, SIGNAL(clicked()), this, SLOT(saveAllConfig()));
-
-    auto cancelBtn = new QPushButton(tr("Cancel"), Dialog);
-    connect(cancelBtn, &QPushButton::clicked, [this] {
+    auto cancelBtn = new DPushButton(tr("Cancel"), box);
+    connect(cancelBtn, &DPushButton::clicked, [this] {
         // TODO(Mozart)
         this->close();
     });
-    auto applyBtn = new QPushButton(tr("Apply"), Dialog);
+    auto applyBtn = new DSuggestButton(tr("Apply"), box);
     connect(applyBtn, SIGNAL(clicked()), this, SLOT(saveSingleConfig()));
+    cancelBtn->setMinimumWidth(173);
+    cancelBtn->setAutoDefault(false);
+    applyBtn->setMinimumWidth(173);
+    applyBtn->setAutoDefault(true);
+    box_layout->setAlignment(Qt::AlignCenter);
+    box_layout->addWidget(cancelBtn);
+    box_layout->addSpacing(20);
+    box_layout->addWidget(applyBtn);
+    box->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    buttonLayout->addWidget(okBtn);
-    buttonLayout->addWidget(cancelBtn);
-    buttonLayout->addWidget(applyBtn);
-
-    rightLayout->addLayout(buttonLayout);
+    rightLayout->addWidget(box);
 
     // Insert left & right layout to main layout.
-    mainLayout->addLayout(leftLayout);
-    mainLayout->addLayout(rightLayout);
 
-    mainLayout->setStretch(0, 1);
-    mainLayout->setStretch(1, 4);
+    QVBoxLayout *bgGpLayout = new QVBoxLayout;
+    bgGpLayout->setContentsMargins(0, 0, 0, 0);
+    DBackgroundGroup *bgGroup = new DBackgroundGroup(bgGpLayout);
+    bgGroup->setItemMargins(QMargins(0, 0, 0, 0));
+    bgGroup->setBackgroundRole(QPalette::Window);
+    bgGroup->setUseWidgetBackground(false);
+
+    QWidget *wrapperWidget = new QWidget(bgGroup);
+    QHBoxLayout *hLay = new QHBoxLayout(wrapperWidget);
+    bgGpLayout->addWidget(wrapperWidget);
+    hLay->addLayout(rightLayout);
+
+    DStyle::setFrameRadius(bgGroup, 0);
+    DStyle::setFrameRadius(contentFrame, 0);
+
+    contentlayout->addLayout(leftLayout);
+    contentlayout->addWidget(bgGroup);
+
+    Dialog->setFixedSize(QSize(828, 800));
 }
 
 void PropertiesDialog::saveAllConfig()

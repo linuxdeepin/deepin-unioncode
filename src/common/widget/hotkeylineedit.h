@@ -5,12 +5,13 @@
 #ifndef HOTKEYLINEEDIT_H
 #define HOTKEYLINEEDIT_H
 
-#include <QLineEdit>
+#include <DLineEdit>
+
 #include <QKeyEvent>
 #include <QFocusEvent>
 
 class HotkeyLineEditPrivate;
-class HotkeyLineEdit : public QLineEdit
+class HotkeyLineEdit : public DTK_WIDGET_NAMESPACE::DLineEdit
 {
     Q_OBJECT
 public:

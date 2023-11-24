@@ -25,7 +25,7 @@ class CollapseWidgetPrivate
     int minHeight = 0;
     int maxHeight = 0;
     int widgetSpace = 8;
-    QWidget *widget = nullptr;
+    DWidget *widget = nullptr;
     QRect titleLabelRect;
     QRect detailsButtonRect;
     QRect widgetRect;
@@ -33,7 +33,7 @@ class CollapseWidgetPrivate
 };
 
 CollapseWidget::CollapseWidget(QWidget *parent)
-    : QWidget (parent)
+    : DWidget (parent)
     , d (new CollapseWidgetPrivate)
 {
     setObjectName("CollapseWidget");
@@ -73,16 +73,16 @@ CollapseWidget::~CollapseWidget()
     }
 }
 
-QWidget *CollapseWidget::takeWidget()
+DWidget *CollapseWidget::takeWidget()
 {
-    QWidget *result = nullptr;
+    DWidget *result = nullptr;
     if (d->widget &&  this == d->widget->parent()) {
         d->widget->setParent(nullptr);
     }
     return result;
 }
 
-void CollapseWidget::setWidget(QWidget *widget)
+void CollapseWidget::setWidget(DWidget *widget)
 {
     if (d->widget) {
         delete d->widget;
@@ -101,7 +101,7 @@ void CollapseWidget::setWidget(QWidget *widget)
     }
 }
 
-QWidget *CollapseWidget::widget()
+DWidget *CollapseWidget::widget()
 {
     return d->widget;
 }
@@ -138,7 +138,7 @@ bool CollapseWidget::isChecked()
 
 void CollapseWidget::resizeEvent(QResizeEvent *event)
 {
-    QWidget::resizeEvent(event);
+    DWidget::resizeEvent(event);
 
     if (d->detailsButton) {
         d->detailsButtonRect = { QPoint(event->size().width() - d->detailsButton->width(), 0),
@@ -159,7 +159,7 @@ void CollapseWidget::resizeEvent(QResizeEvent *event)
 
 void CollapseWidget::paintEvent(QPaintEvent *event)
 {
-    QWidget::paintEvent(event);
+    DWidget::paintEvent(event);
     QPainter painter(this);
     QRect rect = CollapseWidget::rect();
     painter.drawLine(rect.topLeft() + QPoint{0, d->minHeight -1},

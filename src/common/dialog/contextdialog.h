@@ -7,13 +7,16 @@
 
 #include "common/widget/singlechoicebox.h"
 
+#include <DMessageBox>
+
 #include <QIcon>
 #include <QString>
-#include <QMessageBox>
 #include <QSet>
 
 #include <functional>
 #include <QObject>
+
+DWIDGET_USE_NAMESPACE
 
 class ContextDialog final
 {
@@ -22,18 +25,18 @@ class ContextDialog final
 public:
     static void okCancel(QString text,
                          QString title = "Warning",
-                         QMessageBox::Icon icon = QMessageBox::Warning,
+                         DMessageBox::Icon icon = DMessageBox::Warning,
                          std::function<void(bool)> okCallBack = nullptr,
                          std::function<void(bool)> cancelCallBack = nullptr);
 
     static void ok(QString text,
                    QString title = "Error",
-                   QMessageBox::Icon icon = QMessageBox::Critical,
+                   DMessageBox::Icon icon = DMessageBox::Critical,
                    std::function<void(bool)> okCallBack = nullptr);
 
     static void question(QString text,
                          QString title = "Question",
-                         QMessageBox::Icon icon = QMessageBox::Question,
+                         DMessageBox::Icon icon = DMessageBox::Question,
                          std::function<void(bool)> okCallBack = nullptr,
                          std::function<void(bool)> noCallBack = nullptr,
                          std::function<void(bool)> cancelCallBack = nullptr);

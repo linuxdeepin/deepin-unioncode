@@ -6,6 +6,8 @@
 #include <QPaintEvent>
 #include <QResizeEvent>
 
+DWIDGET_USE_NAMESPACE
+
 class StatusWidgetPrivate
 {
     friend class StatusWidget;
@@ -19,7 +21,7 @@ class StatusWidgetPrivate
 };
 
 StatusWidget::StatusWidget(QWidget *parent)
-    : QWidget (parent)
+    : DWidget (parent)
     , d (new StatusWidgetPrivate)
 {
 

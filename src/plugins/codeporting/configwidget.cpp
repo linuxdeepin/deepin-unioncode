@@ -6,13 +6,15 @@
 #include "services/project/projectservice.h"
 #include "common/util/custompaths.h"
 
+#include <DLabel>
+#include <DComboBox>
+#include <DPushButton>
+#include <DSuggestButton>
+
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -45,36 +47,34 @@ class ConfigWidgetPrivate
     friend ConfigWidget;
     QVBoxLayout *verticalLayout = nullptr;
     QGridLayout *gridLayout = nullptr;
-    QLabel *lbProject = nullptr;
-    QComboBox *combProject = nullptr;
-    QLabel *lbSrc = nullptr;
-    QComboBox *combSrc = nullptr;
-    QLabel *lbTarget = nullptr;
-    QComboBox *combTarget = nullptr;
+    DLabel *lbProject = nullptr;
+    DComboBox *combProject = nullptr;
+    DLabel *lbSrc = nullptr;
+    DComboBox *combSrc = nullptr;
+    DLabel *lbTarget = nullptr;
+    DComboBox *combTarget = nullptr;
     QSpacerItem *verticalSpacer = nullptr;
     QHBoxLayout *horizontalLayout = nullptr;
     QSpacerItem *horizontalSpacer = nullptr;
-    QPushButton *btnPoting = nullptr;
-    QPushButton *btnCancel = nullptr;
-    QLabel *lbWarning = nullptr;
+    DPushButton *btnPoting = nullptr;
+    DPushButton *btnCancel = nullptr;
+    DLabel *lbWarning = nullptr;
 
     ConfigParameter cfgParam;
 };
 
 ConfigWidget::ConfigWidget(QWidget *parent)
-    : QDialog(parent)
+    : DDialog(parent)
     , d(new ConfigWidgetPrivate)
 {
-    setupUi(this);
-
     initializeUi();
 
     if (!restore()) {
         setDefaultValue();
     }
 
-    connect(d->btnPoting, &QPushButton::clicked, this, &ConfigWidget::configDone);
-    connect(d->btnCancel, &QPushButton::clicked, this, &ConfigWidget::reject);
+    connect(d->btnPoting, &DPushButton::clicked, this, &ConfigWidget::configDone);
+    connect(d->btnCancel, &DPushButton::clicked, this, &ConfigWidget::reject);
 }
 
 void ConfigWidget::configDone()
@@ -110,11 +110,60 @@ void ConfigWidget::showEvent(QShowEvent *e)
 {
     refreshUi();
 
-    QDialog::showEvent(e);
+    DDialog::showEvent(e);
 }
 
 void ConfigWidget::initializeUi()
-{
+{    
+    setWindowTitle(tr("CodePorting config"));
+
+    d->verticalLayout = static_cast<QVBoxLayout*>(this->layout());
+    d->verticalLayout->setContentsMargins(10, 0, 10, 0);
+
+    d->gridLayout = new QGridLayout();
+    d->gridLayout->setSpacing(6);
+
+    d->lbProject = new DLabel(this);
+    d->lbProject->setText(tr("Project:"));
+    d->gridLayout->addWidget(d->lbProject, 0, 0, 1, 1);
+
+    d->combProject = new DComboBox(this);
+    d->gridLayout->addWidget(d->combProject, 0, 1, 1, 1);
+
+    d->lbSrc = new DLabel(this);
+    d->lbSrc->setText(tr("Source CPU Architecture:"));
+    d->gridLayout->addWidget(d->lbSrc, 1, 0, 1, 1);
+
+    d->combSrc = new DComboBox(this);
+    d->gridLayout->addWidget(d->combSrc, 1, 1, 1, 1);
+
+    d->lbTarget = new DLabel(this);
+    d->lbTarget->setText(tr("Target CPU Architecture:"));
+    d->gridLayout->addWidget(d->lbTarget, 2, 0, 1, 1);
+
+    d->combTarget = new DComboBox(this);
+    d->gridLayout->addWidget(d->combTarget, 2, 1, 1, 1);
+    d->verticalLayout->addLayout(d->gridLayout);
+
+    d->lbWarning = new DLabel(this);
+    QPalette pe;
+    pe.setColor(QPalette::Text, Qt::yellow);
+    d->lbWarning->setPalette(pe);
+    d->verticalLayout->addWidget(d->lbWarning);
+
+    d->horizontalLayout = new QHBoxLayout();
+    d->horizontalLayout->setContentsMargins(0, 0, 0, 10);
+    d->btnCancel = new DPushButton(this);
+    d->btnCancel->setText(tr("Cancel"));
+    d->horizontalLayout->addWidget(d->btnCancel);
+    d->verticalLayout->addLayout(d->horizontalLayout);
+
+    d->btnPoting = new DSuggestButton(this);
+    d->btnPoting->setText(tr("Porting"));
+    d->btnPoting->setDefault(true);
+    d->horizontalLayout->addSpacing(20);
+    d->horizontalLayout->addWidget(d->btnPoting);
+
     d->combSrc->addItem(kX86_64);
     d->combSrc->addItem(kArm);
     d->combSrc->addItem(kMips);
@@ -126,81 +175,14 @@ void ConfigWidget::initializeUi()
     d->combTarget->addItem(kMips);
     d->combTarget->addItem(kSW_64);
     d->combTarget->addItem(kLoongarch64);
+
+    setFixedSize(QSize(380, 254));
 }
 
 void ConfigWidget::setDefaultValue()
 {
     d->cfgParam.srcCPU = "x86_64";
     d->cfgParam.targetCPU = "arm64";
-}
-
-void ConfigWidget::setupUi(QWidget *Widget)
-{
-    Widget->setWindowTitle(tr("CodePorting config"));
-    Widget->resize(500, 200);
-    d->verticalLayout = new QVBoxLayout(Widget);
-    d->verticalLayout->setSpacing(6);
-    d->verticalLayout->setContentsMargins(11, 11, 11, 11);
-    d->verticalLayout->setContentsMargins(40, 20, 40, 20);
-    d->gridLayout = new QGridLayout();
-    d->gridLayout->setSpacing(6);
-    d->lbProject = new QLabel(Widget);
-    d->lbProject->setText(tr("Project:"));
-
-    d->gridLayout->addWidget(d->lbProject, 0, 0, 1, 1);
-
-    d->combProject = new QComboBox(Widget);
-
-    d->gridLayout->addWidget(d->combProject, 0, 1, 1, 1);
-
-    d->lbSrc = new QLabel(Widget);
-    d->lbSrc->setText(tr("Source CPU Architecture:"));
-
-    d->gridLayout->addWidget(d->lbSrc, 1, 0, 1, 1);
-
-    d->combSrc = new QComboBox(Widget);
-
-    d->gridLayout->addWidget(d->combSrc, 1, 1, 1, 1);
-
-    d->lbTarget = new QLabel(Widget);
-    d->lbTarget->setText(tr("Target CPU Architecture:"));
-
-    d->gridLayout->addWidget(d->lbTarget, 2, 0, 1, 1);
-
-    d->combTarget = new QComboBox(Widget);
-
-    d->gridLayout->addWidget(d->combTarget, 2, 1, 1, 1);
-
-    d->verticalLayout->addLayout(d->gridLayout);
-
-    d->lbWarning = new QLabel(Widget);
-    QPalette pe;
-    pe.setColor(QPalette::Text, Qt::yellow);
-    d->lbWarning->setPalette(pe);
-
-    d->verticalLayout->addWidget(d->lbWarning);
-
-    d->verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-    d->verticalLayout->addItem(d->verticalSpacer);
-
-    d->horizontalLayout = new QHBoxLayout();
-    d->horizontalSpacer = new QSpacerItem(40, 30, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-    d->horizontalLayout->addItem(d->horizontalSpacer);
-
-    d->btnPoting = new QPushButton(Widget);
-    d->btnPoting->setText(tr("Porting"));
-    d->btnPoting->setDefault(true);
-
-    d->horizontalLayout->addWidget(d->btnPoting);
-
-    d->btnCancel = new QPushButton(Widget);
-    d->btnCancel->setText(tr("Cancel"));
-
-    d->horizontalLayout->addWidget(d->btnCancel);
-
-    d->verticalLayout->addLayout(d->horizontalLayout);
 }
 
 void ConfigWidget::resetUi()

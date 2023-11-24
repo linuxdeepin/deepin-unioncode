@@ -5,13 +5,13 @@
 #ifndef STATUSWIDGET_H
 #define STATUSWIDGET_H
 
-#include <QWidget>
+#include <DWidget>
 #include <QTimer>
 #include <QPainter>
 #include <QDebug>
 #include <QtMath>
 class StatusWidgetPrivate;
-class StatusWidget : public QWidget
+class StatusWidget : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
     StatusWidgetPrivate *const d;

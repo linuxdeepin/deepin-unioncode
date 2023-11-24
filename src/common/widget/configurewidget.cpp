@@ -9,20 +9,22 @@
 #include <QLabel>
 #include <QDebug>
 
+DWIDGET_USE_NAMESPACE
+
 class ConfigureWidgetPrivate
 {
     friend class ConfigureWidget;
-    QWidget *centrelWidget = nullptr;
+    DWidget *centrelWidget = nullptr;
     QVBoxLayout *layout = nullptr;
 };
 
 ConfigureWidget::ConfigureWidget(QWidget *parent)
-    : QScrollArea(parent)
+    : DScrollArea(parent)
     , d(new ConfigureWidgetPrivate())
 {
     setAutoFillBackground(true);
     setWidgetResizable(true);
-    d->centrelWidget = new QWidget();
+    d->centrelWidget = new DWidget();
     d->centrelWidget->setObjectName("ConfigureCentrelWidget");
     d->centrelWidget->setAutoFillBackground(true);
     d->layout = new QVBoxLayout(d->centrelWidget);
@@ -52,7 +54,7 @@ void ConfigureWidget::addCollapseWidget(CollapseWidget *widget)
     qInfo() << widget->size();
 }
 
-void ConfigureWidget::addWidget(QWidget *widget)
+void ConfigureWidget::addWidget(DWidget *widget)
 {
     if (!widget)
         return;
@@ -63,5 +65,5 @@ void ConfigureWidget::addWidget(QWidget *widget)
 void ConfigureWidget::resizeEvent(QResizeEvent *event)
 {
     d->centrelWidget->resize(d->centrelWidget->width(), event->size().width());
-    QScrollArea::resizeEvent(event);
+    DScrollArea::resizeEvent(event);
 }

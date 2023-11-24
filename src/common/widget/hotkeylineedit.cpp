@@ -21,7 +21,7 @@ HotkeyLineEditPrivate::HotkeyLineEditPrivate()
 }
 
 HotkeyLineEdit::HotkeyLineEdit(QWidget *parent)
-    : QLineEdit(parent)
+    : DLineEdit(parent)
     , d(new HotkeyLineEditPrivate())
 {
     setAttribute(Qt::WA_InputMethodEnabled, false);
@@ -64,13 +64,13 @@ int HotkeyLineEdit::getKey()
 
 void HotkeyLineEdit::setText(QString text)
 {
-    QLineEdit::setText(text);
+    DLineEdit::setText(text);
 }
 
 void HotkeyLineEdit::keyPressEvent(QKeyEvent *e)
 {
     if (!d->hotkeyMode) {
-        QLineEdit::keyPressEvent(e);
+        DLineEdit::keyPressEvent(e);
         return;
     }
 

@@ -5,11 +5,14 @@
 #ifndef COLLAPSEWIDGET_H
 #define COLLAPSEWIDGET_H
 
+#include <DWidget>
+
 #include <QPaintEvent>
-#include <QWidget>
+
+DWIDGET_USE_NAMESPACE
 
 class CollapseWidgetPrivate;
-class CollapseWidget : public QWidget
+class CollapseWidget : public DWidget
 {
     CollapseWidgetPrivate *const d;
 public:
@@ -17,9 +20,9 @@ public:
     explicit CollapseWidget(const QString &title, QWidget *widget, QWidget *parent = nullptr);
     virtual ~CollapseWidget() override;
 
-    QWidget *takeWidget();
-    void setWidget(QWidget *widget);
-    QWidget* widget();
+    DWidget *takeWidget();
+    void setWidget(DWidget *widget);
+    DWidget* widget();
 
     void setTitle(const QString &title);
     QString title();

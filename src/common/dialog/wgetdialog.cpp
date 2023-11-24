@@ -7,8 +7,8 @@
 #include <QRegularExpression>
 #include <QDebug>
 
-WGetDialog::WGetDialog(QWidget *parent, Qt::WindowFlags f)
-    : ProcessDialog (parent, f)
+WGetDialog::WGetDialog(QWidget *parent)
+    : ProcessDialog (parent)
 {
     setWindowTitle("wget request download");
     process.setProgram("wget");
@@ -79,5 +79,5 @@ void WGetDialog::doFinished(int exitCode, QProcess::ExitStatus status)
 void WGetDialog::showEvent(QShowEvent *event)
 {
     process.start();
-    return QDialog::showEvent(event);
+    return DAbstractDialog::showEvent(event);
 }

@@ -6,8 +6,8 @@
 
 #include <QDebug>
 
-Pip3Dialog::Pip3Dialog(QWidget *parent, Qt::WindowFlags f)
-    : ProcessDialog (parent, f)
+Pip3Dialog::Pip3Dialog(QWidget *parent)
+    : ProcessDialog (parent)
 {
     setWindowTitle("pip3 execute");
     process.setProgram("pip3");
