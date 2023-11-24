@@ -6,17 +6,19 @@
 #include "binarytoolsconfigview.h"
 #include "common/util/eventdefinitions.h"
 
-#include <QPushButton>
-#include <QDialogButtonBox>
+#include <DPushButton>
+#include <DDialogButtonBox>
+
 #include <QProcess>
 #include <QBoxLayout>
 #include <QTextBlock>
 
+DWIDGET_USE_NAMESPACE
 class BinaryToolsDialogPrivate
 {
     friend class BinaryToolsDialog;
     BinaryToolsConfigView *configView = nullptr;
-    QDialogButtonBox *buttons = nullptr;
+    DDialogButtonBox *buttons = nullptr;
 };
 
 BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
@@ -34,12 +36,12 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     vLayout->addStretch();
 
     QHBoxLayout * buttonLayout = new QHBoxLayout();
-    d->buttons = new QDialogButtonBox(this);
-    d->buttons->setStandardButtons(QDialogButtonBox::Apply | QDialogButtonBox::Save | QDialogButtonBox::Cancel);
-    d->buttons->button(QDialogButtonBox::Apply)->setText(tr("Use Tool"));
-    d->buttons->button(QDialogButtonBox::Save)->setText(tr("Save"));
-    d->buttons->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
-    d->buttons->button(QDialogButtonBox::Apply)->setDefault(true);
+    d->buttons = new DDialogButtonBox(this);
+    d->buttons->setStandardButtons(DDialogButtonBox::Apply | DDialogButtonBox::Save | DDialogButtonBox::Cancel);
+    d->buttons->button(DDialogButtonBox::Apply)->setText(tr("Use Tool"));
+    d->buttons->button(DDialogButtonBox::Save)->setText(tr("Save"));
+    d->buttons->button(DDialogButtonBox::Cancel)->setText(tr("Cancel"));
+    d->buttons->button(DDialogButtonBox::Apply)->setDefault(true);
     buttonLayout->addWidget(d->buttons);
     vLayout->addLayout(buttonLayout);
 
@@ -48,14 +50,14 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
             useClicked();
         });
     });
-    connect(d->buttons->button(QDialogButtonBox::Apply), &QPushButton::clicked, [=](){
+    connect(d->buttons->button(DDialogButtonBox::Apply), &DPushButton::clicked, [=](){
         QtConcurrent::run([=](){
             useClicked();
         });
     });
-    connect(d->buttons->button(QDialogButtonBox::Save), &QPushButton::clicked, this, &BinaryToolsDialog::saveClicked);
-    connect(d->buttons, &QDialogButtonBox::rejected, this, &BinaryToolsDialog::reject);
-    connect(d->buttons, &QDialogButtonBox::accepted, this, &BinaryToolsDialog::accept);
+    connect(d->buttons->button(DDialogButtonBox::Save), &DPushButton::clicked, this, &BinaryToolsDialog::saveClicked);
+    connect(d->buttons, &DDialogButtonBox::rejected, this, &BinaryToolsDialog::reject);
+    connect(d->buttons, &DDialogButtonBox::accepted, this, &BinaryToolsDialog::accept);
 }
 
 BinaryToolsDialog::~BinaryToolsDialog()

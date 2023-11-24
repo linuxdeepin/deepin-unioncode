@@ -10,17 +10,19 @@
 #include "common/util/custompaths.h"
 #include "common/dialog/contextdialog.h"
 
-#include <QComboBox>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QFileDialog>
+#include <DWidget>
+#include <DComboBox>
+#include <DPushButton>
+#include <DLineEdit>
+#include <DFileDialog>
+#include <DLabel>
+#include <DScrollArea>
+
 #include <QFont>
 #include <QInputDialog>
 #include <qmessagebox.h>
 #include <QGridLayout>
-#include <QLabel>
 #include <QStandardPaths>
-#include <QScrollArea>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -29,26 +31,27 @@ static QString CURRENT_COMMAND = "Current command";
 static QString ALL_COMMAND = "All command";
 static QString ENVIRONMENT = "Environment";
 
+DWIDGET_USE_NAMESPACE
 class BinaryToolsConfigViewPrivate
 {
     friend class BinaryToolsConfigView;
 
     QGridLayout *gridLayout = nullptr;
-    QWidget *compatConfigWidget = nullptr;
-    QComboBox *runComandCombo = nullptr;
-    QLineEdit *toolArgsEdit = nullptr;
+    DWidget *compatConfigWidget = nullptr;
+    DComboBox *runComandCombo = nullptr;
+    DLineEdit *toolArgsEdit = nullptr;
     QDialog *combinationDialog = nullptr;
-    QLabel *commandCombination = nullptr;
-    QLabel *nameLabel = nullptr;
-    QLabel *commandLabel = nullptr;
-    QLineEdit *executableDirEdit = nullptr;
-    QLineEdit *workingDirEdit = nullptr;
+    DLabel *commandCombination = nullptr;
+    DLabel *nameLabel = nullptr;
+    DLabel *commandLabel = nullptr;
+    DLineEdit *executableDirEdit = nullptr;
+    DLineEdit *workingDirEdit = nullptr;
     EnvironmentView *envView = nullptr;
-    QPushButton *addButton = nullptr;
-    QPushButton *deleteButton = nullptr;
-    QPushButton *renameButton = nullptr;
-    QPushButton *combineButton = nullptr;
-    QPushButton *useCombinationButton = nullptr;
+    DPushButton *addButton = nullptr;
+    DPushButton *deleteButton = nullptr;
+    DPushButton *renameButton = nullptr;
+    DPushButton *combineButton = nullptr;
+    DPushButton *useCombinationButton = nullptr;
     BinaryToolsSetting *settings = nullptr;
     QList<QString> programList;
     QList<QStringList> argsList;
@@ -60,23 +63,23 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     : QWidget(parent)
     , d(new BinaryToolsConfigViewPrivate)
 {
-    d->compatConfigWidget = new QWidget(this);
-    d->nameLabel = new QLabel();
+    d->compatConfigWidget = new DWidget(this);
+    d->nameLabel = new DLabel();
 
-    d->runComandCombo = new QComboBox(this);
+    d->runComandCombo = new DComboBox(this);
     d->runComandCombo->setMinimumContentsLength(15);
-    d->runComandCombo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    d->runComandCombo->setSizeAdjustPolicy(DComboBox::AdjustToContents);
 
-    d->addButton = new QPushButton(tr("Add"), this);
-    d->deleteButton = new QPushButton(tr("Delete"), this);
-    d->renameButton = new QPushButton(tr("Rename"), this);
-    d->combineButton = new QPushButton(tr("Combine"), this);
+    d->addButton = new DPushButton(tr("Add"), this);
+    d->deleteButton = new DPushButton(tr("Delete"), this);
+    d->renameButton = new DPushButton(tr("Rename"), this);
+    d->combineButton = new DPushButton(tr("Combine"), this);
 
     d->gridLayout = new QGridLayout(this);
     d->gridLayout->setSpacing(6);
     d->gridLayout->setContentsMargins(10, 10, 10, 10);
 
-    auto configLabel = new QLabel(this);
+    auto configLabel = new DLabel(this);
     configLabel->setText(tr("Binary configuration:"));
 
     d->gridLayout->addWidget(configLabel, 0, 0, 1, 1);
@@ -90,8 +93,8 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     setConfigWidget();
 
     d->combinationDialog = new QDialog(this);
-    d->commandCombination = new QLabel(tr("command combination:"), d->combinationDialog);
-    d->useCombinationButton = new QPushButton(tr("Use Combination Command"), d->combinationDialog);
+    d->commandCombination = new DLabel(tr("command combination:"), d->combinationDialog);
+    d->useCombinationButton = new DPushButton(tr("Use Combination Command"), d->combinationDialog);
     initializeCombinationDialog();
 
     if (!d->settings) {
@@ -107,19 +110,19 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     }
     readConfig();
 
-    connect(d->runComandCombo, static_cast<void (QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
+    connect(d->runComandCombo, static_cast<void (DComboBox::*)(const QString &)>(&DComboBox::currentIndexChanged),
             this, &BinaryToolsConfigView::currentConfigChanged);
 
-    connect(d->addButton, &QPushButton::clicked,
+    connect(d->addButton, &DPushButton::clicked,
             this, &BinaryToolsConfigView::addCompatConfig);
 
-    connect(d->deleteButton, &QPushButton::clicked,
+    connect(d->deleteButton, &DPushButton::clicked,
             this, &BinaryToolsConfigView::deleteCompatConfig);
 
-    connect(d->renameButton, &QPushButton::clicked,
+    connect(d->renameButton, &DPushButton::clicked,
             this, &BinaryToolsConfigView::renameCompatConfig);
 
-    connect(d->combineButton, &QPushButton::clicked,
+    connect(d->combineButton, &DPushButton::clicked,
             this, &BinaryToolsConfigView::combineCompatConfig);
 }
 
@@ -274,7 +277,7 @@ void BinaryToolsConfigView::initializeCombinationDialog()
     gridLayout->setContentsMargins(30, 30, 30, 30);
     gridLayout->addWidget(d->commandCombination, 0, 0, 1, 2);
     gridLayout->addWidget(d->useCombinationButton, 1, 1, 1, 1);
-    QObject::connect(d->useCombinationButton, &QPushButton::clicked, [=](){
+    QObject::connect(d->useCombinationButton, &DPushButton::clicked, [=](){
         d->combinationDialog->close();
         emit useCombinationCommand();
     });
@@ -386,33 +389,33 @@ void BinaryToolsConfigView::setConfigWidget()
 {
     d->compatConfigWidget->setContentsMargins(0, 0, 0, 0);
     d->compatConfigWidget->setAutoFillBackground(true);
-    auto cmdLabel = new QLabel(d->compatConfigWidget);
+    auto cmdLabel = new DLabel(d->compatConfigWidget);
     QFont ft;
     ft.setBold(true);
     cmdLabel->setFont(ft);
     cmdLabel->setText(tr("Command:"));
-    d->commandLabel = new QLabel(d->compatConfigWidget);
+    d->commandLabel = new DLabel(d->compatConfigWidget);
 
-    auto argsLabel = new QLabel(d->compatConfigWidget);
+    auto argsLabel = new DLabel(d->compatConfigWidget);
     argsLabel->setText(tr("Tool arguments:"));
-    d->toolArgsEdit = new QLineEdit(d->compatConfigWidget);
+    d->toolArgsEdit = new DLineEdit(d->compatConfigWidget);
     d->toolArgsEdit->setPlaceholderText(tr("Input your arguments."));
 
-    auto exeLabel = new QLabel(d->compatConfigWidget);
+    auto exeLabel = new DLabel(d->compatConfigWidget);
     exeLabel->setText(tr("Executable:"));
-    d->executableDirEdit = new QLineEdit(d->compatConfigWidget);
-    auto browseButton1 = new QPushButton(tr("Browse..."), d->compatConfigWidget);
+    d->executableDirEdit = new DLineEdit(d->compatConfigWidget);
+    auto browseButton1 = new DPushButton(tr("Browse..."), d->compatConfigWidget);
 
-    auto workLabel = new QLabel(d->compatConfigWidget);
+    auto workLabel = new DLabel(d->compatConfigWidget);
     workLabel->setText(tr("Working directory:"));
-    d->workingDirEdit = new QLineEdit(d->compatConfigWidget);
-    auto browseButton2 = new QPushButton(tr("Browse..."), d->compatConfigWidget);
+    d->workingDirEdit = new DLineEdit(d->compatConfigWidget);
+    auto browseButton2 = new DPushButton(tr("Browse..."), d->compatConfigWidget);
 
-    auto envLabel = new QLabel(d->compatConfigWidget);
+    auto envLabel = new DLabel(d->compatConfigWidget);
     envLabel->setText(tr("Envrioment: Base environment for this command configuration."));
-    auto appendButton = new QPushButton(tr("&Append"), d->compatConfigWidget);
-    auto deleteButton = new QPushButton(tr("&Delete"), d->compatConfigWidget);
-    auto resetButton = new QPushButton(tr("&Reset"), d->compatConfigWidget);
+    auto appendButton = new DPushButton(tr("&Append"), d->compatConfigWidget);
+    auto deleteButton = new DPushButton(tr("&Delete"), d->compatConfigWidget);
+    auto resetButton = new DPushButton(tr("&Reset"), d->compatConfigWidget);
     deleteButton->setEnabled(false);
     d->envView = new EnvironmentView();
     d->envView->setFixedHeight(250);
@@ -438,31 +441,31 @@ void BinaryToolsConfigView::setConfigWidget()
     gridLayout->addWidget(d->envView, 5, 1, 5, 2);
     d->compatConfigWidget->setLayout(gridLayout);
 
-    connect(browseButton1, &QPushButton::clicked, [=]() {
+    connect(browseButton1, &DPushButton::clicked, [=]() {
         QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        QString filePath = QFileDialog::getOpenFileName(nullptr, tr("Select Executabel Path"), dir);
+        QString filePath = DFileDialog::getOpenFileName(nullptr, tr("Select Executabel Path"), dir);
         if (filePath.isEmpty() && !QFileInfo(filePath).exists())
             return;
         d->executableDirEdit->setText(filePath);
     });
 
-    connect(browseButton2, &QPushButton::clicked, [=]() {
+    connect(browseButton2, &DPushButton::clicked, [=]() {
         QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        QString filePath = QFileDialog::getExistingDirectory(nullptr, tr("Select Working Directory"), dir);
+        QString filePath = DFileDialog::getExistingDirectory(nullptr, tr("Select Working Directory"), dir);
         if (filePath.isEmpty() && !QFileInfo(filePath).exists())
             return;
         d->workingDirEdit->setText(filePath);
     });
 
-    connect(appendButton, &QPushButton::clicked, d->envView, &EnvironmentView::appendRow);
-    connect(deleteButton, &QPushButton::clicked, d->envView, &EnvironmentView::deleteRow);
-    connect(resetButton, &QPushButton::clicked, d->envView, &EnvironmentView::initModel);
+    connect(appendButton, &DPushButton::clicked, d->envView, &EnvironmentView::appendRow);
+    connect(deleteButton, &DPushButton::clicked, d->envView, &EnvironmentView::deleteRow);
+    connect(resetButton, &DPushButton::clicked, d->envView, &EnvironmentView::initModel);
 
-    connect(d->toolArgsEdit, &QLineEdit::textChanged, [=](){
+    connect(d->toolArgsEdit, &DLineEdit::textChanged, [=](){
         d->commandLabel->setText(d->executableDirEdit->text() + " " + d->toolArgsEdit->text());
     });
 
-    connect(d->executableDirEdit, &QLineEdit::textChanged, [=](){
+    connect(d->executableDirEdit, &DLineEdit::textChanged, [=](){
         d->commandLabel->setText(d->executableDirEdit->text() + " " + d->toolArgsEdit->text());
     });
 
