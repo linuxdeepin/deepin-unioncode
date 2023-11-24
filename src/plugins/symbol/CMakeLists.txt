@@ -6,7 +6,6 @@ find_package(Clang REQUIRED)
 include_directories(${CLANG_INCLUDE_DIRS})
 
 set(CXX_CPP
-    mainframe/symboldelegate.cpp
     mainframe/symbolmodel.cpp
     mainframe/symboltreeview.cpp
     mainframe/symbolkeeper.cpp
@@ -20,7 +19,6 @@ set(CXX_CPP
 
 set(CXX_H
     mainframe/definitions.h
-    mainframe/symboldelegate.h
     mainframe/symbolmodel.h
     mainframe/symboltreeview.h
     mainframe/symbolkeeper.h
