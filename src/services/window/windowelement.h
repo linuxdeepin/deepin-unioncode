@@ -23,6 +23,7 @@ inline const QString MWNA_DEBUG { QObject::tr("Debug") };
 inline const QString MWNA_GIT { QObject::tr("Git") };
 inline const QString MWNA_SVN { QObject::tr("Svn") };
 inline const QString MWNA_RUNTIME { QObject::tr("Runtime") };
+inline const QString MWNA_CODEGEEX { QObject::tr("CodeGeeX") };
 
 inline const QString MWM_FILE { QMenu::tr("&File") };
 inline const QString MWMFA_CXX { "C/C++" };

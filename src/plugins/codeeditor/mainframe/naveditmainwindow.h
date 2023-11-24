@@ -25,28 +25,17 @@ class ToolBarManager;
 class NavEditMainWindow : public DMainWindow
 {
     Q_OBJECT
-    AutoHideDockWidget *qDockWidgetWorkspace{nullptr};
-    AutoHideDockWidget *qDockWidgetContext{nullptr};
-    AutoHideDockWidget *qDockWidgetWatch{nullptr};
-    AutoHideDockWidget *qDockWidgetFindToolBar{nullptr};
-    AutoHideDockWidget *qDockWidgetValgrindBar{nullptr};
-    AutoHideDockWidget *qDockWidgetTools{nullptr};
-    DWidget *qWidgetEdit{nullptr};
-    DWidget *qWidgetWatch{nullptr};
-    DTabWidget *qTabWidgetContext{nullptr};
-    DTabWidget *qTabWidgetWorkspace{nullptr};
-    DTabWidget *qTabWidgetTools{nullptr};
-    ToolBarManager *mainToolBar{nullptr};
-    QList<QString> contextList;
-    QMutex mutex;
 
-    DWidget *topToolBarWidget{nullptr};
 public:
     static NavEditMainWindow *instance();
     explicit NavEditMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
     virtual ~NavEditMainWindow();
     QStringList contextWidgetTitles() const;
+
     void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget);
+    void addWorkspaceArea(const QString &title, AbstractWidget *widget);
+    void switchWorkspaceArea(const QString &title);
+
     // return old edit widget
     DWidget *setWidgetEdit(AbstractCentral *editWidget);
     // return old watch widget
@@ -68,8 +57,27 @@ public:
     void setToolBarItemDisable(const QString &id, bool disable);
 
     DWidget *getTopToolBarWidget();
+
 private:
     void adjustWorkspaceItemOrder();
+
+    AutoHideDockWidget *qDockWidgetWorkspace{nullptr};
+    AutoHideDockWidget *qDockWidgetContext{nullptr};
+    AutoHideDockWidget *qDockWidgetWatch{nullptr};
+    AutoHideDockWidget *qDockWidgetFindToolBar{nullptr};
+    AutoHideDockWidget *qDockWidgetValgrindBar{nullptr};
+    AutoHideDockWidget *qDockWidgetTools{nullptr};
+    DWidget *qWidgetEdit{nullptr};
+    DWidget *qWidgetWatch{nullptr};
+    DTabWidget *qTabWidgetContext{nullptr};
+    DTabWidget *qTabWidgetWorkspace{nullptr};
+    DTabWidget *qTabWidgetTools{nullptr};
+    ToolBarManager *mainToolBar{nullptr};
+    QMap<QString, DWidget*> workspaceWidgets;
+    QList<QString> contextList;
+    QMutex mutex;
+
+    DWidget *topToolBarWidget{nullptr};
 };
 
 #endif // NAVEDITMAINWINDOW_H

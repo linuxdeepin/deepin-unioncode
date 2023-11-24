@@ -48,6 +48,9 @@ public:
 public slots:
     void addNavigation(const QString &navName, const QString &iconName);
     void addCentralNavigation(const QString &navName, AbstractCentral *central);
+    AbstractCentral *getCentralNavigation(const QString &navName);
+    void switchWidgetNavigation(const QString &navName);
+
     void addMenu(AbstractMenu *menu);
     void insertAction(const QString &menuName, const QString &beforActionName,
                       AbstractAction *action);
@@ -55,7 +58,6 @@ public slots:
     void removeActions(const QString &menuName);
     void addOpenProjectAction(const QString &name, AbstractAction *action);
     void initUserWidget();
-    void switchWidgetNavigation(const QString &navName);
 
     void setTopToolBarWidget(AbstractWidget *widget);
 

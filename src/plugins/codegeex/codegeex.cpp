@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QIcon>
 
+using namespace dpfservice;
 void CodeGeex::initialize()
 {
 }
@@ -29,15 +30,13 @@ bool CodeGeex::start()
 {
     auto windowService = dpfGetService(dpfservice::WindowService);
     if (windowService) {
-        QString title = "CodeGeex";
-
         // Add widget to left bar
         if (windowService->addCentralNavigation) {
-//            auto askPage = new AskPage();
-//            windowService->addWidgetWorkspace(title,  new AbstractWidget(askPage));
+            auto editWidget = windowService->getCentralNavigation(MWNA_EDIT);
+            windowService->addNavigation(MWNA_CODEGEEX, "codegeex-navigation");
+            windowService->addCentralNavigation(MWNA_CODEGEEX, editWidget);
 
-            auto codeGeeXWidget = new CodeGeeXWidget();
-            windowService->addWidgetWorkspace(title,  new AbstractWidget(codeGeeXWidget));
+            windowService->addWorkspaceArea(MWNA_CODEGEEX, new AbstractWidget(new CodeGeeXWidget()));
         }
     }
 
