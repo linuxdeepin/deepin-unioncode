@@ -8,8 +8,6 @@
 
 #include "services/project/projectservice.h"
 
-#include "symboldelegate.h"
-
 #include <DMenu>
 #include <DTreeView>
 #include <DWidget>
@@ -25,7 +23,6 @@ class SymbolTreeViewPrivate
     SymbolTreeView *const q;
     QModelIndex selIndex;
     QFileSystemModel *model {nullptr};
-    SymbolDelegate *delegate = {nullptr};
     DMenu *getFileLineMenu(const QString &filePath);
     SymbolTreeViewPrivate(SymbolTreeView *qq): q(qq){}
 };
@@ -35,22 +32,22 @@ SymbolTreeView::SymbolTreeView(DWidget *parent)
     , d (new SymbolTreeViewPrivate(this))
 {
     d->model = new SymbolModel();
-    d->delegate = new SymbolDelegate;
     DTreeView::setModel(d->model);
-    DTreeView::setItemDelegate(d->delegate);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     setEditTriggers(DTreeView::NoEditTriggers);	          //节点不能编辑
     setSelectionBehavior(DTreeView::SelectRows);		  //一次选中整行
     setSelectionMode(DTreeView::SingleSelection);         //单选，配合上面的整行就是一次选单行
-    setFocusPolicy(Qt::NoFocus);                          //去掉鼠标移到节点上时的虚线框
     header()->setVisible(false);
+
     QObject::connect(this, &DTreeView::doubleClicked,
                      this, &SymbolTreeView::doDoubleClieked,
                      Qt::UniqueConnection);
     QObject::connect(this, &DTreeView::customContextMenuRequested,
                      this, &SymbolTreeView::doContextMenu,
                      Qt::UniqueConnection);
+
+
 }
 
 SymbolTreeView::~SymbolTreeView()
