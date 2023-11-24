@@ -4,12 +4,15 @@
 
 #include "environmentview.h"
 
+#include <DTableView>
+#include <DCheckBox>
+#include <DHeaderView>
+
 #include <QVBoxLayout>
-#include <QCheckBox>
 #include <QHeaderView>
-#include <QTableView>
 #include <QProcessEnvironment>
 
+DWIDGET_USE_NAMESPACE
 class EnvironmentModelPrivate
 {
     friend class EnvironmentModel;
@@ -141,7 +144,7 @@ class EnvironmentViewPrivate
     friend class EnvironmentView;
 
     QVBoxLayout *vLayout = nullptr;
-    QTableView *tableView = nullptr;
+    DTableView *tableView = nullptr;
     EnvironmentModel *model = nullptr;
 };
 
@@ -156,10 +159,10 @@ EnvironmentView::EnvironmentView(QWidget *parent)
     this->setLayout(d->vLayout);
 
     if (!d->tableView) {
-        d->tableView = new QTableView();
+        d->tableView = new DTableView();
         d->tableView->setShowGrid(false);
-        QHeaderView* headerView = d->tableView->horizontalHeader();
-        headerView->setSectionResizeMode(QHeaderView::ResizeToContents);
+        DHeaderView* headerView = d->tableView->horizontalHeader();
+        headerView->setSectionResizeMode(DHeaderView::ResizeToContents);
         d->tableView->verticalHeader()->hide();
         d->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
         d->tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
