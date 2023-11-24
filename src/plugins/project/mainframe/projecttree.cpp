@@ -13,6 +13,10 @@
 
 #include "common/common.h"
 
+#include <DTreeView>
+#include <DPushButton>
+#include <DLineEdit>
+
 #include <QDebug>
 #include <QHeaderView>
 #include <QContextMenuEvent>
@@ -21,10 +25,10 @@
 #include <QApplication>
 #include <QUrl>
 
-const QString DELETE_MESSAGE_TEXT {QTreeView::tr("The delete operation will be removed from"
+const QString DELETE_MESSAGE_TEXT {DTreeView::tr("The delete operation will be removed from"
                                                  "the disk and will not be recoverable "
                                                  "after this operation.\nDelete anyway?")};
-
+DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
 class ProjectTreePrivate
@@ -50,10 +54,9 @@ ProjectTree::ProjectTree(QWidget *parent)
     : QTreeView (parent)
     , d(new ProjectTreePrivate)
 {
-    setEditTriggers(QTreeView::NoEditTriggers);	          //节点不能编辑
-    setSelectionBehavior(QTreeView::SelectRows);		  //一次选中整行
-    setSelectionMode(QTreeView::SingleSelection);         //单选，配合上面的整行就是一次选单行
-    setFocusPolicy(Qt::NoFocus);                          //去掉鼠标移到节点上时的虚线框
+    setEditTriggers(DTreeView::NoEditTriggers);	          //节点不能编辑
+    setSelectionBehavior(DTreeView::SelectRows);		  //一次选中整行
+    setSelectionMode(DTreeView::SingleSelection);         //单选，配合上面的整行就是一次选单行
     this->header()->hide();
 
     d->itemModel = new ProjectModel(this);
@@ -72,7 +75,6 @@ ProjectTree::ProjectTree(QWidget *parent)
     setSelectionModel(d->sectionModel);
 
     d->delegate = new ProjectDelegate(this);
-    setItemDelegate(d->delegate);
     this->setDragEnabled(true);
 }
 
@@ -181,7 +183,7 @@ void ProjectTree::takeRootItem(QStandardItem *root)
 void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event)
 {
     auto rootItem = ProjectGenerator::root(item);
-    QMenu *menu = nullptr;
+    DMenu *menu = nullptr;
 
     if (rootItem == item) {
         menu = rootMenu(rootItem);
@@ -261,7 +263,7 @@ ProjectInfo ProjectTree::getActiveProjectInfo() const
 
 void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
 {
-    QTreeView::contextMenuEvent(event);
+    DTreeView::contextMenuEvent(event);
     QModelIndex index = indexAt(event->pos());
     selectionModel()->select(index, QItemSelectionModel::SelectCurrent);
     indexMenuRequest(index, event);
@@ -272,7 +274,7 @@ void ProjectTree::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
         d->startPos = event->pos();
-    QTreeView::mousePressEvent(event);
+    DTreeView::mousePressEvent(event);
 }
 
 void ProjectTree::mouseMoveEvent(QMouseEvent *event)
@@ -282,12 +284,12 @@ void ProjectTree::mouseMoveEvent(QMouseEvent *event)
         if (distance >= QApplication::startDragDistance())
             performDrag();
     }
-    QTreeView::mouseMoveEvent(event);
+    DTreeView::mouseMoveEvent(event);
 }
 
-QMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *child)
+DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *child)
 {
-    QMenu *menu = nullptr;
+    DMenu *menu = nullptr;
     QString toolKitName = ProjectInfo::get(root).kitName();
     // 获取支持右键菜单生成器
     auto &ctx = dpfInstance.serviceContext();
@@ -296,7 +298,7 @@ QMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *ch
         menu = projectService->createGenerator<ProjectGenerator>(toolKitName)->createItemMenu(child);
     }
     if (!menu)
-        menu = new QMenu();
+        menu = new DMenu();
 
 
     QAction *newDocAction = new QAction(tr("New Document"));
@@ -325,7 +327,7 @@ QMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *ch
 
 QMenu *ProjectTree::rootMenu(QStandardItem *root)
 {
-    QMenu * menu = nullptr;
+    DMenu * menu = nullptr;
     QString toolKitName = ProjectInfo::get(root).kitName();
     // 获取支持右键菜单生成器
     auto &ctx = dpfInstance.serviceContext();
@@ -334,7 +336,7 @@ QMenu *ProjectTree::rootMenu(QStandardItem *root)
         menu = projectService->createGenerator<ProjectGenerator>(toolKitName)->createItemMenu(root);
     }
     if (!menu)
-        menu = new QMenu();
+        menu = new DMenu();
 
     QAction* activeProjectAction = new QAction(QAction::tr("Project Active"), menu);
     QAction* closeAction = new QAction(QAction::tr("Project Close"), menu);
@@ -410,9 +412,9 @@ void ProjectTree::doActiveProject(QStandardItem *root)
 void ProjectTree::actionNewDocument(const QStandardItem *item)
 {
     QDialog *dlg = new QDialog;
-    QLineEdit *edit = new QLineEdit;
+    DLineEdit *edit = new DLineEdit;
 
-    edit->setAlignment(Qt::AlignLeft);
+    edit->lineEdit()->setAlignment(Qt::AlignLeft);
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->setWindowTitle(tr("New Document"));
     dlg->resize(400, 100);

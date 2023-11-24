@@ -7,11 +7,13 @@
 
 #include "services/project/projectservice.h"
 
-#include <QTreeView>
+#include <DTreeView>
+#include <DMenu>
 
+DWIDGET_USE_NAMESPACE
 class QStandardItem;
 class ProjectTreePrivate;
-class ProjectTree : public QTreeView
+class ProjectTree : public DTreeView
 {
     Q_OBJECT
     ProjectTreePrivate *const d;
@@ -42,8 +44,8 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
-    QMenu *childMenu(const QStandardItem *root, const QStandardItem *child);
-    QMenu *rootMenu(QStandardItem *root);
+    DMenu *childMenu(const QStandardItem *root, const QStandardItem *child);
+    DMenu *rootMenu(QStandardItem *root);
     void performDrag();
 
 public slots:
