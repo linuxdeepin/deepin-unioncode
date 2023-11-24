@@ -47,7 +47,6 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     this->setAcceptDrops(true);
 
     setDefaultFileEdit();
-    setFocusPolicy(Qt::ClickFocus);
 
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                      this, &TextEditTabWidget::openFileWithKey);
@@ -228,9 +227,6 @@ void TextEditTabWidget::openFileWithKey(const newlsp::ProjectKey &key, const QSt
         edit->setProjectKey(key);
         edit->setFile(info.filePath());
     }
-
-    QObject::connect(edit, &TextEdit::focusChanged,
-                     this, &TextEditTabWidget::selectSelf);
 
     d->textEdits[filePath] = edit;
     // 添加监听
