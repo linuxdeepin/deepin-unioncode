@@ -30,6 +30,7 @@
 #include <QTranslator>
 #include <QScreen>
 #include <QStandardPaths>
+#include <DDockWidget>
 
 static WindowKeeper *ins{nullptr};
 using namespace dpfservice;
@@ -303,6 +304,10 @@ WindowKeeper::WindowKeeper(QObject *parent)
     if (!windowService->setTopToolBarWidget) {
         windowService->setTopToolBarWidget = std::bind(&WindowKeeper::setTopToolBarWidget, this, _1);
     }
+
+    if (!windowService->getCentralNavigation) {
+        windowService->getCentralNavigation = std::bind(&WindowKeeper::getCentralNavigation, this, _1);
+    }
 }
 
 WindowKeeper::~WindowKeeper()
@@ -330,8 +335,11 @@ void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral 
     if(!central || !inputWidget || navName.isEmpty())
         return;
 
+    // use same widget is allowed
+#if 0
     if (d->centrals.values().contains(inputWidget))
         return;
+#endif
 
     if (navName == MWNA_EDIT) {
         QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout*>(d->window->titlebar()->layout());
@@ -343,6 +351,11 @@ void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral 
     inputWidget->hide();
     d->centralWidget->layout()->addWidget(inputWidget);
     d->centrals.insert(navName, inputWidget);
+}
+
+AbstractCentral *WindowKeeper::getCentralNavigation(const QString &navName)
+{
+    return new AbstractCentral(d->centrals.value(navName));
 }
 
 void WindowKeeper::addMenu(AbstractMenu *menu)
@@ -512,9 +525,21 @@ void WindowKeeper::switchWidgetNavigation(const QString &navName)
     d->topToolBar->hide();
     d->window->titlebar()->setTitle(QString(tr("Deepin Union Code")));
 
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    if (!windowService)
+        return;
+
     if (navName == MWNA_EDIT) {
         d->topToolBar->show();
         d->window->titlebar()->setTitle(QString());
+        if (windowService->switchWorkspaceArea) {
+            windowService->switchWorkspaceArea(DDockWidget::tr("Workspace"));
+        }
+    } else if (navName == MWNA_CODEGEEX) {
+        if (windowService->switchWorkspaceArea) {
+            windowService->switchWorkspaceArea(navName);
+        }
     }
 
     setNavActionChecked(navName, true);

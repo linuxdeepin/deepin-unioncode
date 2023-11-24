@@ -31,7 +31,11 @@ Build-Depends:
  qtscript5-dev,
  libqt5scripttools5,
  clang,
- doxygen
+ doxygen,
+ libdtkgui-dev,
+ libdtkwidget-dev,
+ libdtkcore-dev,
+ libdtkcore5-bin
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 

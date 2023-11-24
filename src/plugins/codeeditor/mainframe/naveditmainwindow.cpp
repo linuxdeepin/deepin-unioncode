@@ -83,6 +83,20 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     topToolBarWidget = new DWidget();
     QHBoxLayout *toolBarLayout = new QHBoxLayout(topToolBarWidget);
     toolBarLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+
+    // initialize space area.
+    qDockWidgetWorkspace = new AutoHideDockWidget(DDockWidget::tr("Workspace"), this);
+    qDockWidgetWorkspace->setFeatures(DDockWidget::DockWidgetMovable);
+    qDockWidgetWorkspace->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, qDockWidgetWorkspace);
+    setCorner(Qt::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
+
+    qTabWidgetWorkspace = new DTabWidget();
+    qTabWidgetWorkspace->setMinimumHeight(300);
+    qTabWidgetWorkspace->setTabPosition(DTabWidget::West);
+    workspaceWidgets.insert(DDockWidget::tr("Workspace"), qTabWidgetWorkspace);
+
+    qDockWidgetWorkspace->setWidget(qTabWidgetWorkspace);
 }
 
 NavEditMainWindow::~NavEditMainWindow()
@@ -102,23 +116,29 @@ QStringList NavEditMainWindow::contextWidgetTitles() const
 
 void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget)
 {
-    if (!qDockWidgetWorkspace) {
-        qTabWidgetWorkspace = new DTabWidget();
-        qTabWidgetWorkspace->setMinimumHeight(300);
-        qTabWidgetWorkspace->setTabPosition(DTabWidget::West);
-        qDockWidgetWorkspace = new AutoHideDockWidget(DDockWidget::tr("Workspace"), this);
-        qDockWidgetWorkspace->setFeatures(DDockWidget::DockWidgetMovable);
-        qDockWidgetWorkspace->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-        addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, qDockWidgetWorkspace);
-        setCorner(Qt::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
-        qDockWidgetWorkspace->setWidget(qTabWidgetWorkspace);
-    }
+    auto qTreeWidget = static_cast<DWidget*>(treeWidget->qWidget());
+    qTabWidgetWorkspace->addTab(qTreeWidget, title);
 
-    if (qTabWidgetWorkspace) {
-        auto qTreeWidget = static_cast<DWidget*>(treeWidget->qWidget());
-        qTabWidgetWorkspace->addTab(qTreeWidget, title);
-    }
     adjustWorkspaceItemOrder();
+}
+
+void NavEditMainWindow::addWorkspaceArea(const QString &title, AbstractWidget *widget)
+{
+    auto qWidget = static_cast<DWidget*>(widget->qWidget());
+    if (qWidget) {
+        qDockWidgetWorkspace->setWindowTitle(title);
+        qDockWidgetWorkspace->setWidget(qWidget);
+        workspaceWidgets.insert(title, qWidget);
+    }
+}
+
+void NavEditMainWindow::switchWorkspaceArea(const QString &title)
+{
+    auto widget = workspaceWidgets.value(title);
+    if (widget) {
+        qDockWidgetWorkspace->setWindowTitle(title);
+        qDockWidgetWorkspace->setWidget(widget);
+    }
 }
 
 DWidget *NavEditMainWindow::setWidgetEdit(AbstractCentral *editWidget)

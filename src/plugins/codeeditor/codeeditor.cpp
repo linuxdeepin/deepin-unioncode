@@ -96,6 +96,14 @@ bool CodeEditor::start()
             windowService->showFindToolBar = std::bind(&NavEditMainWindow::showFindToolBar, navEditWindow);
         }
 
+        if (!windowService->addWorkspaceArea) {
+            windowService->addWorkspaceArea = std::bind(&NavEditMainWindow::addWorkspaceArea, navEditWindow, _1, _2);
+        }
+
+        if (!windowService->switchWorkspaceArea) {
+            windowService->switchWorkspaceArea = std::bind(&NavEditMainWindow::switchWorkspaceArea, navEditWindow, _1);
+        }
+
         auto sep = new QAction();
         sep->setSeparator(true);
         windowService->addAction(MWM_FILE, new AbstractAction(sep));
