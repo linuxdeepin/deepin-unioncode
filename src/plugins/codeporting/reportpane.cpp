@@ -5,14 +5,18 @@
 #include "reportpane.h"
 #include "codeporting.h"
 
-#include <QTableWidget>
+#include <DTabWidget>
+#include <DTableWidget>
+
 #include <QHeaderView>
 #include <QDebug>
 #include <QHBoxLayout>
 
+DWIDGET_USE_NAMESPACE
+
 ReportPane::ReportPane(CodePorting *_codePorting, QWidget *parent) : QWidget(parent)
-  , srcTableWidget(new QTableWidget(this))
-  , libTableWidget(new QTableWidget(this))
+  , srcTableWidget(new DTableWidget(this))
+  , libTableWidget(new DTableWidget(this))
   , codePorting(_codePorting)
 {
     initTableWidget();
@@ -62,14 +66,14 @@ void ReportPane::initTableWidget()
     setTableWidgetStyle(srcTableWidget, codePorting->getSrcItemNames());
     setTableWidgetStyle(libTableWidget, codePorting->getLibItemNames());
 
-    connect(srcTableWidget, &QTableWidget::cellDoubleClicked, this, &ReportPane::srcCellSelected);
-    connect(libTableWidget, &QTableWidget::cellDoubleClicked, this, &ReportPane::libCellSelected);
+    connect(srcTableWidget, &DTableWidget::cellDoubleClicked, this, &ReportPane::srcCellSelected);
+    connect(libTableWidget, &DTableWidget::cellDoubleClicked, this, &ReportPane::libCellSelected);
 
-    QTabWidget *tabWidget = new QTabWidget(this);
+    DTabWidget *tabWidget = new DTabWidget(this);
     tabWidget->addTab(srcTableWidget, tr("Source files to migrate"));
 
     tabWidget->addTab(libTableWidget, tr("Architecture-dependent library files"));
-    tabWidget->setTabPosition(QTabWidget::South);
+    tabWidget->setTabPosition(DTabWidget::South);
 
     auto hLayout = new QHBoxLayout(this);
     hLayout->setContentsMargins(0, 0, 0, 9);
@@ -77,7 +81,7 @@ void ReportPane::initTableWidget()
     hLayout->addWidget(tabWidget);
 }
 
-void ReportPane::refreshTableView(QTableWidget *widget, const QList<QStringList> &report)
+void ReportPane::refreshTableView(DTableWidget *widget, const QList<QStringList> &report)
 {
     if (widget && report.size() > 0) {
         widget->clearContents();
@@ -99,7 +103,7 @@ void ReportPane::refreshTableView(QTableWidget *widget, const QList<QStringList>
     }
 }
 
-void ReportPane::setTableWidgetStyle(QTableWidget *tableWidget, const QStringList &colNames)
+void ReportPane::setTableWidgetStyle(DTableWidget *tableWidget, const QStringList &colNames)
 {
     tableWidget->setColumnCount(colNames.count());
     tableWidget->setHorizontalHeaderLabels(colNames);

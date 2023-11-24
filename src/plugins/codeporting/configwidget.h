@@ -5,10 +5,11 @@
 #ifndef CONFIGWIDGET_H
 #define CONFIGWIDGET_H
 
-#include <QDialog>
+#include <DDialog>
+#include <DWidget>
 
 class ConfigWidgetPrivate;
-class ConfigWidget : public QDialog
+class ConfigWidget : public DTK_WIDGET_NAMESPACE::DDialog
 {
     Q_OBJECT
 public:
@@ -25,7 +26,6 @@ private:
     void initializeUi();
     void setDefaultValue();
     void refreshUi();
-    void setupUi(QWidget *);
     void resetUi();
     void refreshDetail();
     bool saveCfg();

@@ -5,10 +5,10 @@
 #ifndef OUTPUTPANE_H
 #define OUTPUTPANE_H
 
-#include <QPlainTextEdit>
+#include <DPlainTextEdit>
 
 class OutputPanePrivate;
-class OutputPane : public QPlainTextEdit
+class OutputPane : public DTK_WIDGET_NAMESPACE::DPlainTextEdit
 {
     Q_OBJECT
 public:

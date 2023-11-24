@@ -5,8 +5,8 @@
 #include "outputpane.h"
 #include "common/common.h"
 
-#include <QScrollBar>
-#include <QMenu>
+#include <DScrollBar>
+#include <DMenu>
 #include <QDebug>
 
 /**
@@ -32,11 +32,11 @@ public:
     bool scrollToBottom = true;
     int maxCharCount = default_max_char_count();
     QTextCursor cursor;
-    QMenu *menu = nullptr;
+    DMenu *menu = nullptr;
 };
 
 OutputPane::OutputPane(QWidget *parent)
-    : QPlainTextEdit(parent)
+    : DPlainTextEdit(parent)
     , d(new OutputPanePrivate(document()))
 {
     setReadOnly(true);
@@ -157,7 +157,7 @@ OutputPane *OutputPane::instance()
 void OutputPane::contextMenuEvent(QContextMenuEvent * event)
 {
     if (nullptr == d->menu) {
-        d->menu = new QMenu(this);
+        d->menu = new DMenu(this);
         d->menu->setParent(this);
         d->menu->addActions(actionFactory());
     }

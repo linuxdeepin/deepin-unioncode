@@ -11,7 +11,7 @@ class WGetDialog : public ProcessDialog
 {
     Q_OBJECT
 public:
-    WGetDialog(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    WGetDialog(QWidget *parent = nullptr);
     void setWorkingDirectory(const QString &workDir);
     QString workDirectory() const;
     void setWgetArguments(const QStringList &list);

@@ -4,79 +4,81 @@
 
 #include "contextdialog.h"
 
+#include <DMessageBox>
+#include <DDialog>
+#include <DPushButton>
+
 #include <QAbstractButton>
-#include <QMessageBox>
 #include <QHBoxLayout>
 #include <QFile>
 #include <QCheckBox>
-#include <QPushButton>
 #include <QGroupBox>
 #include <QDebug>
 
 void ContextDialog::okCancel(QString text, QString title,
-                             QMessageBox::Icon icon,
+                             DMessageBox::Icon icon,
                              std::function<void (bool)> okCallBack,
                              std::function<void (bool)> cancelCallBack)
 {
     if (text.isEmpty())
         return;
 
-    QMessageBox messageBox;
+    DMessageBox messageBox;
     messageBox.setWindowTitle(title);
     messageBox.setText(text);
     messageBox.setIcon(icon);
-    messageBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("Ok"));
-    messageBox.button(QMessageBox::Cancel)->setText(QObject::tr("Cancel"));
+    messageBox.setStandardButtons(DMessageBox::Ok | DMessageBox::Cancel);
+    messageBox.button(DMessageBox::Ok)->setText(QObject::tr("Ok"));
+    messageBox.button(DMessageBox::Cancel)->setText(QObject::tr("Cancel"));
     if (okCallBack)
-        QObject::connect(messageBox.button(QMessageBox::Ok),
+        QObject::connect(messageBox.button(DMessageBox::Ok),
                          &QAbstractButton::clicked, okCallBack);
     if (cancelCallBack)
-        QObject::connect(messageBox.button(QMessageBox::Cancel),
+        QObject::connect(messageBox.button(DMessageBox::Cancel),
                          &QAbstractButton::clicked, cancelCallBack);
     messageBox.exec();
 }
 
 void ContextDialog::ok(QString text, QString title,
-                       QMessageBox::Icon icon,
+                       DMessageBox::Icon icon,
                        std::function<void (bool)> okCallBack)
 {
     if (text.isEmpty())
         return;
 
-    QMessageBox messageBox;
+    DMessageBox messageBox;
     messageBox.setWindowTitle(title);
     messageBox.setText(text);
     messageBox.setIcon(icon);
-    messageBox.setStandardButtons(QMessageBox::Ok);
-    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("Ok"));
+    messageBox.setStandardButtons(DMessageBox::Ok);
+    messageBox.button(DMessageBox::Ok)->setText(QObject::tr("Ok"));
     if (okCallBack)
-        QObject::connect(messageBox.button(QMessageBox::Ok),
+        QObject::connect(messageBox.button(DMessageBox::Ok),
                          &QAbstractButton::clicked, okCallBack);
     messageBox.exec();
 }
 
-void ContextDialog::question(QString text, QString title, QMessageBox::Icon icon, std::function<void (bool)> okCallBack, std::function<void (bool)> noCallBack, std::function<void (bool)> cancelCallBack)
+void ContextDialog::question(QString text, QString title, DMessageBox::Icon icon, std::function<void (bool)> okCallBack, std::function<void (bool)> noCallBack, std::function<void (bool)> cancelCallBack)
 {
     if (text.isEmpty())
         return;
 
-    QMessageBox messageBox;
+    DMessageBox messageBox;
     messageBox.setWindowTitle(title);
     messageBox.setText(text);
     messageBox.setIcon(icon);
-    messageBox.setStandardButtons(QMessageBox::Ok | QMessageBox::No | QMessageBox::Cancel);
-    messageBox.button(QMessageBox::Ok)->setText(QObject::tr("Ok"));
-    messageBox.button(QMessageBox::No)->setText(QObject::tr("No"));
-    messageBox.button(QMessageBox::Cancel)->setText(QObject::tr("Cancel"));
+    messageBox.setStandardButtons(DMessageBox::Ok | DMessageBox::No | DMessageBox::Cancel);
+    messageBox.button(DMessageBox::Ok)->setText(QObject::tr("Ok"));
+    messageBox.button(DMessageBox::No)->setText(QObject::tr("No"));
+    messageBox.button(DMessageBox::Cancel)->setText(QObject::tr("Cancel"));
     if (okCallBack)
-        QObject::connect(messageBox.button(QMessageBox::Ok),
+        QObject::connect(messageBox.button(DMessageBox::Ok),
                          &QAbstractButton::clicked, okCallBack);
     if (noCallBack)
-        QObject::connect(messageBox.button(QMessageBox::No),
+        QObject::connect(messageBox.button(DMessageBox::No),
                          &QAbstractButton::clicked, noCallBack);
     if (cancelCallBack)
-        QObject::connect(messageBox.button(QMessageBox::Cancel),
+        QObject::connect(messageBox.button(DMessageBox::Cancel),
                          &QAbstractButton::clicked, cancelCallBack);
     messageBox.exec();
 }
@@ -86,13 +88,13 @@ void ContextDialog::singleChoice(QSet<SingleChoiceBox::Info> infos,
                                  std::function<void (const SingleChoiceBox::Info&)> okCallBack,
                                  std::function<void (const SingleChoiceBox::Info&)> cancelCallBack)
 {
-    QDialog dialog;
+    DDialog dialog;
     dialog.setWindowTitle(windowTitle);
 
     QHBoxLayout *hLayoutButton = new QHBoxLayout;
     QVBoxLayout *vLayout = new QVBoxLayout;
-    QPushButton *okPbt = new QPushButton(QPushButton::tr("Ok"));
-    QPushButton *cancelPbt = new QPushButton(QPushButton::tr("Cancel"));
+    DPushButton *okPbt = new DPushButton(DPushButton::tr("Ok"));
+    DPushButton *cancelPbt = new DPushButton(DPushButton::tr("Cancel"));
 
     SingleChoiceBox::Info cacheInfo;
     SingleChoiceBox *box = new SingleChoiceBox;
@@ -110,14 +112,14 @@ void ContextDialog::singleChoice(QSet<SingleChoiceBox::Info> infos,
     hLayoutButton->addWidget(okPbt);
     hLayoutButton->addWidget(cancelPbt);
 
-    QObject::connect(okPbt, &QPushButton::clicked, [=, &cacheInfo, &dialog](){
+    QObject::connect(okPbt, &DPushButton::clicked, [=, &cacheInfo, &dialog](){
         if (okCallBack) {
             okCallBack(cacheInfo);
         }
         dialog.close();
     });
 
-    QObject::connect(cancelPbt, &QPushButton::clicked, [=, &cacheInfo, &dialog](){
+    QObject::connect(cancelPbt, &DPushButton::clicked, [=, &cacheInfo, &dialog](){
         if (cancelCallBack) {
             cancelCallBack(cacheInfo);
         }

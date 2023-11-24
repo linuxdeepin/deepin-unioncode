@@ -11,7 +11,7 @@ class Pip3Dialog : public ProcessDialog
 {
     Q_OBJECT
 public:
-    Pip3Dialog(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    Pip3Dialog(QWidget *parent = nullptr);
     void install(const QString &packageName);
     void uninstall(const QString &packageName);
 protected:

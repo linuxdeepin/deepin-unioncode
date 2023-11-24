@@ -5,11 +5,12 @@
 #ifndef REPORTPANE_H
 #define REPORTPANE_H
 
-#include <QWidget>
+#include <DWidget>
+#include <DTableWidget>
 
 class QTableWidget;
 class CodePorting;
-class ReportPane : public QWidget
+class ReportPane : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:
@@ -25,11 +26,11 @@ public slots:
 
 private:
     void initTableWidget();
-    void setTableWidgetStyle(QTableWidget *srcTableWidget, const QStringList &colNames);
-    void refreshTableView(QTableWidget *widget, const QList<QStringList> &report);
+    void setTableWidgetStyle(DTK_WIDGET_NAMESPACE::DTableWidget *srcTableWidget, const QStringList &colNames);
+    void refreshTableView(DTK_WIDGET_NAMESPACE::DTableWidget *widget, const QList<QStringList> &report);
 
-    QTableWidget *srcTableWidget {nullptr};
-    QTableWidget *libTableWidget {nullptr};
+    DTK_WIDGET_NAMESPACE::DTableWidget *srcTableWidget {nullptr};
+    DTK_WIDGET_NAMESPACE::DTableWidget *libTableWidget {nullptr};
     CodePorting *codePorting {nullptr};
 };
 

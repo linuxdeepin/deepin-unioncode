@@ -5,11 +5,13 @@
 #ifndef SINGLECHOICEBOX_H
 #define SINGLECHOICEBOX_H
 
+#include <DWidget>
+
 #include <QGroupBox>
 #include <QIcon>
 
 class SingleChoiceBoxPrivate;
-class SingleChoiceBox : public QWidget
+class SingleChoiceBox : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
     SingleChoiceBoxPrivate *const d;

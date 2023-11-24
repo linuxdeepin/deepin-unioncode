@@ -5,18 +5,21 @@
 #ifndef PROCESSDIALOG_H
 #define PROCESSDIALOG_H
 
-#include <QDialog>
+#include <DAbstractDialog>
+#include <DProgressBar>
+#include <DTextBrowser>
+
 #include <QProcess>
-#include <QProgressBar>
-#include <QTextBrowser>
 #include <QVBoxLayout>
 
-class ProcessDialog : public QDialog
+DWIDGET_USE_NAMESPACE
+
+class ProcessDialog : public DAbstractDialog
 {
     Q_OBJECT
 public:
-    explicit ProcessDialog(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
-    virtual ~ProcessDialog();
+    explicit ProcessDialog(QWidget *parent = nullptr);
+    virtual ~ProcessDialog() override;
     void setProgram(const QString & program);
     QString program() const;
     void setArguments(const QStringList &args);
@@ -34,8 +37,8 @@ protected:
 
 protected:
     QProcess process;
-    QProgressBar *progressBar{nullptr};
-    QTextBrowser *textBrowser{nullptr};
+    DProgressBar *progressBar{nullptr};
+    DTextBrowser *textBrowser{nullptr};
     QVBoxLayout *vLayout{nullptr};
 };
 
