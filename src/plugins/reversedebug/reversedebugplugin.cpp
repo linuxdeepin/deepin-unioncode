@@ -9,8 +9,9 @@
 #include "common/actionmanager/actionmanager.h"
 #include "reversedebuggermgr.h"
 
-#include <QMenu>
+#include <DMenu>
 
+DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 using namespace ReverseDebugger::Internal;
 
@@ -34,7 +35,7 @@ bool ReverseDebugPlugin::start()
     };
 
     auto reverseDbgAction = new QAction(tr("Reverse debug"));
-    QMenu *menu = new QMenu();
+    DMenu *menu = new DMenu();
     reverseDbgAction->setMenu(menu);
     actionInit(reverseDbgAction, "Tool.Reverse", {}, "");
 
