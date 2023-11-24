@@ -5,19 +5,20 @@
 #ifndef TIMELINEWIDGET_H
 #define TIMELINEWIDGET_H
 
+#include <DWidget>
+#include <DScrollBar>
+
 #include <QObject>
-#include <QWidget>
 #include <QObject>
 #include <QEvent>
 #include <QAction>
-#include <QScrollBar>
 
 namespace ReverseDebugger{
 namespace Internal {
 
 class TaskWindow;
 class TimelineWidgetPrivate;
-class TimelineWidget : public QWidget
+class TimelineWidget : public DTK_WIDGET_NAMESPACE::DWidget
 {
 public:
     TimelineWidget(QWidget *parent);

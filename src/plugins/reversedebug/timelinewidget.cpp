@@ -7,8 +7,9 @@
 #include "reversedebuggerconstants.h"
 #include "taskwindow.h"
 
+#include <DMenu>
+
 #include <QPainter>
-#include <QMenu>
 #include <QTime>
 #include <QDebug>
 #include <QMouseEvent>
@@ -21,6 +22,7 @@
 #define MIN_TIME_PER_SCALE  (1)
 #define SCROLL_BAR_HEIGHT   (10)
 
+DWIDGET_USE_NAMESPACE
 namespace ReverseDebugger {
 namespace Internal {
 
@@ -72,25 +74,25 @@ public:
     // bit 3:disable x11;
     int categoryIds = 0;
 
-    QScrollBar *scroll = nullptr;
+    DScrollBar *scroll = nullptr;
     TaskWindow *window = nullptr;
 
-    QMenu *menu = nullptr;
+    DMenu *menu = nullptr;
     QAction *zoomIn = nullptr;
     QAction *zoomOut = nullptr;
     QAction *zoomFit = nullptr;
 };
 
 TimelineWidget::TimelineWidget(QWidget *parent)
-    : QWidget(parent),
+    : DWidget(parent),
       d(new TimelineWidgetPrivate())
 {
 
-    d->scroll = new QScrollBar(Qt::Horizontal, this);
+    d->scroll = new DScrollBar(Qt::Horizontal, this);
     d->scroll->setRange(0, d->duration/d->timePerScale*SCALE_WIDTH);
     d->scroll->setSingleStep(SCALE_WIDTH);
     d->scroll->setMinimumHeight(SCROLL_BAR_HEIGHT);
-    connect(d->scroll, &QScrollBar::valueChanged, this, &TimelineWidget::valueChanged);
+    connect(d->scroll, &DScrollBar::valueChanged, this, &TimelineWidget::valueChanged);
 
     d->zoomIn = new QAction(tr("Zoom in"), this);
     connect(d->zoomIn, &QAction::triggered, this, &TimelineWidget::zoomIn);
@@ -259,7 +261,7 @@ void TimelineWidget::mouseDoubleClickEvent(QMouseEvent *event)
 void TimelineWidget::contextMenuEvent(QContextMenuEvent* event)
 {
     if (nullptr == d->menu) {
-        d->menu = new QMenu;
+        d->menu = new DMenu;
         d->menu->setParent(this);
         d->menu->addAction(d->zoomIn);
         d->menu->addAction(d->zoomOut);

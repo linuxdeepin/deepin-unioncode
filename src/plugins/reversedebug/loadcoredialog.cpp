@@ -5,30 +5,33 @@
 #include "loadcoredialog.h"
 #include "event_man.h"
 
-#include <QComboBox>
-#include <QDialogButtonBox>
-#include <QLineEdit>
-#include <QPushButton>
+#include <DComboBox>
+#include <DLineEdit>
+#include <DPushButton>
+#include <DFileDialog>
+
 #include <QFormLayout>
 #include <QDir>
-#include <QFileDialog>
 
+DWIDGET_USE_NAMESPACE
 namespace ReverseDebugger {
 namespace Internal {
 
 class StartCoredumpDialogPrivate
 {
 public:
-    QLineEdit *traceDir = nullptr;
-    QComboBox *pidInput = nullptr;
-    QComboBox *historyComboBox = nullptr;
-    QDialogButtonBox *buttonBox = nullptr;
+    DLineEdit *traceDir = nullptr;
+    DComboBox *pidInput = nullptr;
+    DComboBox *historyComboBox = nullptr;
 };
 
 LoadCoreDialog::LoadCoreDialog(QWidget *parent)
-    : QDialog(parent),
+    : DDialog(parent),
       d(new StartCoredumpDialogPrivate)
 {
+    setTitle(tr("Event Debugger Configure"));
+    setIcon(QIcon(":/core/images/unioncode@128.png"));
+
     setupUi();
 }
 
@@ -52,60 +55,51 @@ CoredumpRunParameters LoadCoreDialog::displayDlg(const QString &traceDir)
 
 void LoadCoreDialog::setupUi()
 {
-    setWindowTitle(tr("Event Debugger Configure"));
+    QFrame *mainFrame = new QFrame(this);
+    addContent(mainFrame);
+    auto centerLayout = new QVBoxLayout(mainFrame);
+    mainFrame->setLayout(centerLayout);
 
     // trace directory.
-    d->traceDir = new QLineEdit(this);
+    d->traceDir = new DLineEdit(this);
     d->traceDir->setPlaceholderText(tr("Trace directory."));
 
-    QPushButton *btnBrowser = new QPushButton(this);
+    DPushButton *btnBrowser = new DPushButton(this);
     btnBrowser->setText(tr("Browse..."));
 
     // pid
-    d->pidInput = new QComboBox(this);
+    d->pidInput = new DComboBox(mainFrame);
 
     // history
-    d->historyComboBox = new QComboBox(this);
+    d->historyComboBox = new DComboBox(mainFrame);
 
     // ok & cancel button.
-    d->buttonBox = new QDialogButtonBox(this);
-    d->buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-    d->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
-    d->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
-    d->buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
+    QStringList buttonTexts;
+    buttonTexts.append(tr("Cancel", "button"));
+    buttonTexts.append(tr("OK", "button"));
+    addButton(buttonTexts[0], false);
+    addButton(buttonTexts[1], false, DDialog::ButtonRecommend);
+    setDefaultButton(1);
 
-    auto hLayout = new QHBoxLayout();
+    auto hLayout = new QHBoxLayout(mainFrame);
     hLayout->addWidget(d->traceDir);
     hLayout->addWidget(btnBrowser);
 
-    auto splitLine = [this]() -> QFrame * {
-            auto splitLine = new QFrame(this);
-            splitLine->setFrameShape(QFrame::HLine);
-            splitLine->setFrameShadow(QFrame::Sunken);
-            return splitLine; };
-
-    auto formLayout = new QFormLayout();
+    auto formLayout = new QFormLayout(mainFrame);
     formLayout->addRow(tr("trace directory："), hLayout);
     formLayout->addRow(tr("process ID："), d->pidInput);
-    formLayout->addRow(splitLine());
     formLayout->addRow(tr("recent："), d->historyComboBox);
 
-    auto centerLayout = new QVBoxLayout(this);
     centerLayout->addLayout(formLayout);
     centerLayout->addStretch();
-    centerLayout->addWidget(splitLine());
-    centerLayout->addWidget(d->buttonBox);
 
-    connect(d->traceDir, &QLineEdit::textChanged,
+    connect(d->traceDir, &DLineEdit::textChanged,
             this, &LoadCoreDialog::updatePid);
 
-    connect(btnBrowser, &QPushButton::clicked, this, &LoadCoreDialog::showFileDialog);
+    connect(btnBrowser, &DPushButton::clicked, this, &LoadCoreDialog::showFileDialog);
 
-    connect(d->historyComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+    connect(d->historyComboBox, static_cast<void (DComboBox::*)(int)>(&DComboBox::currentIndexChanged),
             this, &LoadCoreDialog::historyIndexChanged);
-
-    connect(d->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-    connect(d->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     updatePid();
 }
@@ -115,7 +109,7 @@ void LoadCoreDialog::updatePid()
     QString traceDir = d->traceDir->text();
     QDir dir(traceDir);
     bool okEnabled = dir.exists();
-    d->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(okEnabled);
+    getButton(1)->setEnabled(okEnabled);
 
     // fill pid combo list here!
     if (okEnabled) {
@@ -143,14 +137,23 @@ void LoadCoreDialog::historyIndexChanged(int)
 
 void LoadCoreDialog::showFileDialog()
 {
-    QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+    QString dir = DFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                     d->traceDir->text(),
-                                                    QFileDialog::ShowDirsOnly
-                                                            | QFileDialog::DontResolveSymlinks);
+                                                    DFileDialog::ShowDirsOnly
+                                                            | DFileDialog::DontResolveSymlinks);
 
     if (!dir.isEmpty())
         d->traceDir->setText(dir);
 }
+
+void LoadCoreDialog::onButtonClicked(const int &index)
+{
+    if (index == 1)
+        DDialog::accept();
+    else
+        DDialog::reject();
+}
+
 
 }   // namespace ReverseDebugger
 }   // namespace Internal

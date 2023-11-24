@@ -7,22 +7,24 @@
 #include "taskfiltermodel.h"
 #include "timelinewidget.h"
 
+#include <DMenu>
+#include <DLabel>
+#include <DLineEdit>
+#include <DToolButton>
+#include <DScrollBar>
+#include <DPushButton>
+#include <DComboBox>
+
 #include <QDir>
 #include <QPainter>
 #include <QStyledItemDelegate>
-#include <QMenu>
-#include <QLabel>
-#include <QLineEdit>
-#include <QToolButton>
-#include <QScrollBar>
 #include <QVBoxLayout>
-#include <QPushButton>
-#include <QComboBox>
-#include <QListView>
+#include <DListView>
 #include <QTextLayout>
 #include <QTextLine>
 #include <QtDebug>
 
+DWIDGET_USE_NAMESPACE
 namespace {
 const int ELLIPSIS_GRADIENT_WIDTH = 16;
 }
@@ -30,7 +32,7 @@ const int ELLIPSIS_GRADIENT_WIDTH = 16;
 namespace ReverseDebugger {
 namespace Internal {
 
-class TaskView : public QListView
+class TaskView : public DListView
 {
 public:
     TaskView(QWidget *parent = nullptr);
@@ -40,12 +42,12 @@ public:
 private:
 };
 
-class TaskWidget : public QWidget
+class TaskWidget : public DWidget
 {
     // Q_OBJECT
 public:
     TaskWidget(QWidget* parent = nullptr)
-        : QWidget(parent)
+        : DWidget(parent)
     {
     }
     ~TaskWidget()
@@ -168,7 +170,7 @@ private:
 };
 
 TaskView::TaskView(QWidget *parent)
-    : QListView(parent)
+    : DListView(parent)
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -211,17 +213,17 @@ public:
     Internal::TaskView *listview = nullptr;
     Internal::TimelineWidget *timeline = nullptr;
     Internal::TaskWidget *widget = nullptr;
-    QMenu *contextMenu = nullptr;
-    QToolButton *categoriesButton = nullptr;
-    QLabel* eventLabel = nullptr;
-    QLineEdit* commandLine = nullptr;
-    QComboBox* sortCombo = nullptr;
-    QPushButton* zoomIn = nullptr;
-    QPushButton* zoomOut = nullptr;
-    QPushButton* zoomFit = nullptr;
-    QPushButton* backward = nullptr;
-    QPushButton* forward = nullptr;
-    QMenu *categoriesMenu = nullptr;
+    DMenu *contextMenu = nullptr;
+    DToolButton *categoriesButton = nullptr;
+    DLabel* eventLabel = nullptr;
+    DLineEdit* commandLine = nullptr;
+    DComboBox* sortCombo = nullptr;
+    DPushButton* zoomIn = nullptr;
+    DPushButton* zoomOut = nullptr;
+    DPushButton* zoomFit = nullptr;
+    DPushButton* backward = nullptr;
+    DPushButton* forward = nullptr;
+    DMenu *categoriesMenu = nullptr;
     QList<QAction *> actions;
     int currentEvent = -1;
 };
@@ -486,7 +488,7 @@ void TaskWindow::setupUi()
     connect(d->listview, &QAbstractItemView::clicked,
             this, &TaskWindow::clickItem);
 
-    d->contextMenu = new QMenu(d->listview);
+    d->contextMenu = new DMenu(d->listview);
 
     d->widget = new TaskWidget();
     d->listview->setParent(d->widget);
@@ -495,31 +497,31 @@ void TaskWindow::setupUi()
     d->widget->setup(d->timeline, d->listview);
     d->taskModel->setTimelinePtr(d->timeline); // mozart added.
 
-    d->sortCombo = new QComboBox();
+    d->sortCombo = new DComboBox();
     d->sortCombo->addItem(tr("sort by index"));
     d->sortCombo->addItem(tr("sort by duration"));
     d->sortCombo->addItem(tr("sort by result"));
     d->sortCombo->addItem(tr("sort by number of threads"));
     connect(d->sortCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(sortEvent(int)));
 
-    d->commandLine = new QLineEdit();
+    d->commandLine = new DLineEdit();
     d->commandLine->setPlaceholderText("[sys sig x11] begin[,end]");
     connect(d->commandLine, SIGNAL(returnPressed()), this, SLOT(execCommand()));
 
-    d->zoomIn = new QPushButton(tr("zoom in"));
+    d->zoomIn = new DPushButton(tr("zoom in"));
     connect(d->zoomIn, &QAbstractButton::clicked, d->timeline, &TimelineWidget::zoomIn);
 
-    d->zoomOut = new QPushButton(tr("zoom out"));
+    d->zoomOut = new DPushButton(tr("zoom out"));
     connect(d->zoomOut, &QAbstractButton::clicked, d->timeline, &TimelineWidget::zoomOut);
 
-    d->zoomFit = new QPushButton(tr("zoom fit"));
+    d->zoomFit = new DPushButton(tr("zoom fit"));
     connect(d->zoomFit, &QAbstractButton::clicked, d->timeline, &TimelineWidget::zoomFit);
 
     d->zoomIn->setFlat(true);
     d->zoomOut->setFlat(true);
     d->zoomFit->setFlat(true);
 
-    d->backward = new QPushButton();
+    d->backward = new DPushButton();
     auto backIcon = QIcon(":/resource/images/backward_press@2x");
     d->backward->setIcon(backIcon);
     d->backward->setFlat(true);
@@ -528,7 +530,7 @@ void TaskWindow::setupUi()
 
     connect(d->backward, &QAbstractButton::clicked, this, &TaskWindow::goToNext);
 
-    d->forward = new QPushButton();
+    d->forward = new DPushButton();
     auto forwardIcon = QIcon(":/resource/images/forward_press@2x");
     d->forward->setIcon(forwardIcon);
     d->forward->setFlat(true);
@@ -536,16 +538,16 @@ void TaskWindow::setupUi()
     d->forward->setFixedSize(backIcon.actualSize(backIcon.availableSizes().first()));
     connect(d->forward, &QAbstractButton::clicked, this, &TaskWindow::goToPrev);
 
-    d->eventLabel = new QLabel(STR_CURRENT_EVENT + QLatin1String("...]"));
-    d->categoriesButton = new QToolButton;
+    d->eventLabel = new DLabel(STR_CURRENT_EVENT + QLatin1String("...]"));
+    d->categoriesButton = new DToolButton;
     d->categoriesButton->setIcon(QIcon(":/resource/images/filter_normal"));
     d->categoriesButton->setToolTip(tr("Filter by categories"));
     d->categoriesButton->setProperty("noArrow", true);
     d->categoriesButton->setAutoRaise(true);
-    d->categoriesButton->setPopupMode(QToolButton::InstantPopup);
+    d->categoriesButton->setPopupMode(DToolButton::InstantPopup);
 
-    d->categoriesMenu = new QMenu(d->categoriesButton);
-    connect(d->categoriesMenu, &QMenu::aboutToShow, this, &TaskWindow::updateCategoriesMenu);
+    d->categoriesMenu = new DMenu(d->categoriesButton);
+    connect(d->categoriesMenu, &DMenu::aboutToShow, this, &TaskWindow::updateCategoriesMenu);
 
     d->categoriesButton->setMenu(d->categoriesMenu);
 

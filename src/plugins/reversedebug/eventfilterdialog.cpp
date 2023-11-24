@@ -4,16 +4,21 @@
 
 #include "eventfilterdialog.h"
 
-#include <QLineEdit>
-#include <QCheckBox>
-#include <QTreeWidget>
-#include <QDialogButtonBox>
-#include <QPushButton>
+#include <DLineEdit>
+#include <DCheckBox>
+#include <DTreeWidget>
+#include <DPushButton>
+#include <DSuggestButton>
+#include <DTitlebar>
+#include <DLabel>
+#include <DFrame>
+#include <DSizeMode>
+
 #include <QVBoxLayout>
 #include <QFormLayout>
-#include <QTreeWidget>
 #include <QDebug>
 
+DWIDGET_USE_NAMESPACE
 namespace ReverseDebugger {
 namespace Internal {
 
@@ -98,18 +103,21 @@ static const char *syscallKindTips[] = {
 #define SIGNAL_BASE 100
 #define X11_BASE 200
 #define DBUS_BASE 300
+#define DIALOGWIDTH 528
+#define DIALOGHEIGHT 661
 
 class EventFilterDialogPrivate
 {
 public:
-    QLineEdit *breakFunc = nullptr;
-    QLineEdit *globalVar = nullptr;
-    QLineEdit *maxHeapSize = nullptr;
-    QLineEdit *maxStackSize = nullptr;
-    QLineEdit *maxParamSize = nullptr;
-    QCheckBox *onlyCurrentThread = nullptr;
-    QTreeWidget *treeWidget = nullptr;
-    QDialogButtonBox *buttonBox = nullptr;
+    DLineEdit *breakFunc = nullptr;
+    DLineEdit *globalVar = nullptr;
+    DLineEdit *maxHeapSize = nullptr;
+    DLineEdit *maxStackSize = nullptr;
+    DLineEdit *maxParamSize = nullptr;
+    DCheckBox *onlyCurrentThread = nullptr;
+    DTreeWidget *treeWidget = nullptr;
+    DSuggestButton *applyButton = nullptr;
+    DPushButton *rejectButton = nullptr;
 
     uchar *syscallFlags = nullptr;
     uchar *dbusFlags = nullptr;
@@ -123,13 +131,15 @@ EventFilterDialog::EventFilterDialog(
         uchar *dbusFlags,
         uchar *x11Flags,
         uchar *signalFlags)
-    : QDialog(parent),
+    : DDialog(parent),
       d(new EventFilterDialogPrivate)
 {
     d->syscallFlags = syscallFlags;
     d->dbusFlags = dbusFlags;
     d->x11Flags = x11Flags;
     d->signalFlags = signalFlags;
+    setWindowTitle(tr("event filter."));
+    setIcon(QIcon(":/core/images/unioncode@128.png"));
 
     setupUi();
 }
@@ -141,8 +151,8 @@ ReverseDebugger::Internal::EventFilterDialog::~EventFilterDialog()
 
 int ReverseDebugger::Internal::EventFilterDialog::exec()
 {
-    connect(d->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
-    connect(d->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(d->rejectButton, &DPushButton::clicked, this, &QDialog::reject);
+    connect(d->applyButton, &DSuggestButton::clicked, this, &QDialog::accept);
     connect(d->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem *, int)),
             this, SLOT(itemClicked(QTreeWidgetItem *, int)));
 
@@ -247,28 +257,30 @@ void EventFilterDialog::itemClicked(QTreeWidgetItem *item, int column)
 
 void EventFilterDialog::setupUi()
 {
-    setWindowTitle(tr("event filter."));
+    resize(DIALOGWIDTH, DIALOGHEIGHT);
+
+    auto mainFrame = new QFrame(this);
+    auto verticalLayout = new QVBoxLayout(mainFrame);
+    this->addContent(mainFrame);
+    mainFrame->setLayout(verticalLayout);
+
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
-    d->buttonBox = new QDialogButtonBox(this);
-    d->buttonBox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
-    d->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
-    d->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
-    d->buttonBox->button(QDialogButtonBox::Ok)->setDefault(true);
-    d->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+    DLabel *treeHeader = new DLabel(mainFrame);
+    treeHeader->setText(tr("event list"));
 
-    d->treeWidget = new QTreeWidget(this);
+    auto *treeFrame = new DFrame(this);
+    d->treeWidget = new DTreeWidget(treeFrame);
     d->treeWidget->setColumnCount(1);
+    d->treeWidget->setHeaderHidden(true);
+    d->treeWidget->setFrameShape(DFrame::Shape::NoFrame);
 
-    if (QTreeWidgetItem *header = d->treeWidget->headerItem()) {
-        header->setText(0, tr("event list"));
-    } else {
-        d->treeWidget->setHeaderLabel(tr("event list"));
-    }
+    QVBoxLayout *treelayout = new QVBoxLayout(treeFrame);
+    treelayout->addWidget(d->treeWidget);
 
     // system call check list.
     QTreeWidgetItem *syscall = new QTreeWidgetItem(
-            (QTreeWidget *)0, QStringList(tr("syscall filter")));
+            (DTreeWidget *)0, QStringList(tr("syscall filter")));
     for (int i = 0; i < ARRAYSIZE(syscallNames); ++i) {
         QTreeWidgetItem *item = new QTreeWidgetItem(syscall,
                                                     QStringList(tr(syscallNames[i])));
@@ -282,7 +294,7 @@ void EventFilterDialog::setupUi()
 
     // x11 event check list.
     QTreeWidgetItem *x11events = new QTreeWidgetItem(
-            (QTreeWidget *)0, QStringList(tr("x11 events filter")));
+            (DTreeWidget *)0, QStringList(tr("x11 events filter")));
     for (int i = 0; i < ARRAYSIZE(x11Names); ++i) {
         if (nullptr == x11Names[i]) {
             d->x11Flags[i] = 0;
@@ -300,7 +312,7 @@ void EventFilterDialog::setupUi()
 
     // dbus message event list.
     QTreeWidgetItem *dbusmsg = new QTreeWidgetItem(
-            (QTreeWidget *)0, QStringList(tr("dbus filter")));
+            (DTreeWidget *)0, QStringList(tr("dbus filter")));
     for (int i = 0; i < ARRAYSIZE(dbusNames); ++i) {
         if (nullptr == dbusNames[i]) {
             d->dbusFlags[i] = 0;
@@ -319,29 +331,63 @@ void EventFilterDialog::setupUi()
     // insert three type of item to top level.
     d->treeWidget->insertTopLevelItems(0, { syscall, x11events, dbusmsg });
 
-    d->maxHeapSize = new QLineEdit(this);
-    d->maxStackSize = new QLineEdit(this);
-    d->maxParamSize = new QLineEdit(this);
-    d->onlyCurrentThread = new QCheckBox(this);
-    d->globalVar = new QLineEdit(this);
-    d->breakFunc = new QLineEdit(this);
+    d->maxHeapSize = new DLineEdit(mainFrame);
+    d->maxHeapSize->setPlaceholderText(tr("default is 0, in KB"));
+    d->maxStackSize = new DLineEdit(mainFrame);
+    d->maxStackSize->setPlaceholderText(tr("default is 256, unit Byte"));
+    d->maxParamSize = new DLineEdit(mainFrame);
+    d->maxParamSize->setPlaceholderText(tr("default is 256, unit Byte"));
+    d->onlyCurrentThread = new DCheckBox(mainFrame);
+    d->globalVar = new DLineEdit(mainFrame);
+    d->globalVar->setPlaceholderText(tr("format: [*]var1+size1[,[*]var2+size2,...]"));
+    d->breakFunc = new DLineEdit(mainFrame);
+    d->breakFunc->setPlaceholderText(tr("c++ mangle name"));
 
-    auto verticalLayout = new QVBoxLayout(this);
-    verticalLayout->addWidget(d->treeWidget);
-    verticalLayout->addStretch();
+    verticalLayout->addWidget(treeHeader);
+    verticalLayout->addWidget(treeFrame);
 
-    auto formLayout = new QFormLayout();
+    auto checkLayout = new QHBoxLayout(mainFrame);
+    checkLayout->addWidget(d->onlyCurrentThread);
+    checkLayout->addWidget(new DLabel(tr("Only record the thread where event occurred:")));
+    checkLayout->setAlignment(Qt::AlignLeft);
+    checkLayout->setContentsMargins(0, 10, 0, 0);
+
+    auto formLayout = new QFormLayout(mainFrame);
     formLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    formLayout->addRow(tr("Only record the thread where event occurred:"), d->onlyCurrentThread);
-    formLayout->addRow(tr("Record the size of heap memory (default is 0, in KB):"), d->maxHeapSize);
-    formLayout->addRow(tr("Record the size of stack memory (the default is 32, in KB):"), d->maxStackSize);
-    formLayout->addRow(tr("Record system call parameter size (default is 256, unit Byte):"), d->maxParamSize);
-    formLayout->addRow(tr("Record the specified global variable (format: [*]var1+size1[,[*]var2+size2,...]):"), d->globalVar);
-    formLayout->addRow(tr("Start record after the specified function is executed (c++ mangle name):"), d->breakFunc);
+    formLayout->addRow(tr("Record the size of heap memory :"), d->maxHeapSize);
+    formLayout->addRow(tr("Record the size of stack memory :"), d->maxStackSize);
+    formLayout->addRow(tr("Record system call parameter size :"), d->maxParamSize);
+    formLayout->addRow(tr("Record the specified global variable :"), d->globalVar);
+    formLayout->addRow(tr("Start record after the specified function is executed :"), d->breakFunc);
+    formLayout->setSpacing(10);
 
+    verticalLayout->addLayout(checkLayout);
     verticalLayout->addLayout(formLayout);
-    verticalLayout->addStretch();
-    verticalLayout->addWidget(d->buttonBox);
+
+    auto buttonLayout = new QHBoxLayout(mainFrame);
+    setupButton(buttonLayout);
+    verticalLayout->addLayout(buttonLayout);
+}
+
+void EventFilterDialog::setupButton(QHBoxLayout *buttonLayout)
+{
+    DPushButton *rejectButton = new DPushButton(tr("Cancel"));
+    DSuggestButton *applyButton = new DSuggestButton(tr("OK"));
+    rejectButton->setFixedWidth(173);
+    applyButton->setFixedWidth(173);
+
+    DVerticalLine *line = new DVerticalLine;
+    line->setObjectName("VLine");
+    line->setFixedHeight(DSizeModeHelper::element(20, 30));
+
+    buttonLayout->addWidget(rejectButton);
+    buttonLayout->addWidget(line);
+    buttonLayout->addWidget(applyButton);
+    buttonLayout->setAlignment(Qt::AlignHCenter);
+    buttonLayout->setContentsMargins(0, 10, 0, 0);
+
+    connect(rejectButton, &DPushButton::clicked, this, &DDialog::reject);
+    connect(applyButton, &DPushButton::clicked, this, &DDialog::accept);
 }
 
 }   // namespace Internal

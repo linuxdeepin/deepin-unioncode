@@ -5,7 +5,7 @@
 #ifndef LOADCOREDIALOG_H
 #define LOADCOREDIALOG_H
 
-#include <QDialog>
+#include <DDialog>
 
 namespace ReverseDebugger {
 namespace Internal {
@@ -20,7 +20,7 @@ public:
     QString tracedir;
 };
 
-class LoadCoreDialog : public QDialog
+class LoadCoreDialog : public DTK_WIDGET_NAMESPACE::DDialog
 {
     Q_OBJECT
 public:
@@ -31,7 +31,8 @@ public:
 
 signals:
 
-public slots:
+public Q_SLOTS:
+    void onButtonClicked(const int &index);
 
 private:
     void setupUi();

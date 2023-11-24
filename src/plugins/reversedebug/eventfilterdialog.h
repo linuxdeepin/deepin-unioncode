@@ -5,15 +5,16 @@
 #ifndef EVENTFILTERDIALOG_H
 #define EVENTFILTERDIALOG_H
 
-#include <QDialog>
+#include <DDialog>
 
+class QHBoxLayout;
 class QTreeWidgetItem;
 
 namespace ReverseDebugger {
 namespace Internal {
 
 class EventFilterDialogPrivate;
-class EventFilterDialog : public QDialog
+class EventFilterDialog : public DTK_WIDGET_NAMESPACE::DDialog
 {
     Q_OBJECT
 public:
@@ -41,12 +42,12 @@ public:
     void setOnlyCurrentThread(bool b);
 
 signals:
-
 private slots:
     void itemClicked(QTreeWidgetItem *item, int column);
 
 private:
     void setupUi();
+    void setupButton(QHBoxLayout *buttonLayout);
 
     EventFilterDialogPrivate *const d;
 };
