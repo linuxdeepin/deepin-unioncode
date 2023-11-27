@@ -7,10 +7,10 @@
 
 #include "configutil.h"
 
-#include <QWidget>
+#include <DWidget>
 
 class RunConfigPanePrivate;
-class RunConfigPane : public QWidget
+class RunConfigPane : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:

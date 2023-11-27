@@ -4,10 +4,14 @@
 
 #include "environmentwidget.h"
 
+#include <DFrame>
+#include <DCheckBox>
+#include <DTableView>
+
 #include <QVBoxLayout>
-#include <QCheckBox>
 #include <QHeaderView>
-#include <QTableView>
+
+DWIDGET_USE_NAMESPACE
 
 class EnvironmentModelPrivate
 {
@@ -94,8 +98,8 @@ class EnvironmentWidgetPrivate
     friend class EnvironmentWidget;
 
     QVBoxLayout *vLayout{nullptr};
-    QTableView *tableView{nullptr};
-    QCheckBox *checkBox{nullptr};
+    DTableView *tableView{nullptr};
+    DCheckBox *checkBox{nullptr};
     EnvironmentModel *model{nullptr};
 
     config::EnvironmentItem *envShadow{nullptr};
@@ -103,7 +107,7 @@ class EnvironmentWidgetPrivate
 
 
 EnvironmentWidget::EnvironmentWidget(QWidget *parent)
-    : QWidget(parent)
+    : DFrame(parent)
     , d(new EnvironmentWidgetPrivate)
 {
     setAutoFillBackground(true);
@@ -113,7 +117,9 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     this->setLayout(d->vLayout);
 
     if (!d->tableView) {
-        d->tableView = new QTableView();
+        d->tableView = new DTableView(this);
+        d->tableView->setAlternatingRowColors(true);
+        d->tableView->setFrameShape(QFrame::NoFrame);
 
         // Initialize view
         d->tableView->setShowGrid(false);
@@ -128,9 +134,9 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     d->tableView->setModel(d->model);
 
     if (!d->checkBox)
-        d->checkBox = new QCheckBox();
+        d->checkBox = new DCheckBox(this);
 
-    connect(d->checkBox, &QCheckBox::clicked, [this](){
+    connect(d->checkBox, &DCheckBox::clicked, [this](){
         d->envShadow->enable = d->checkBox->isChecked();
     });
 
@@ -138,8 +144,8 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     d->checkBox->setChecked(true);
     d->vLayout->setSpacing(0);
     d->vLayout->setMargin(0);
-    d->vLayout->addWidget(d->checkBox);
     d->vLayout->addWidget(d->tableView);
+    d->vLayout->addWidget(d->checkBox);
 }
 
 EnvironmentWidget::~EnvironmentWidget()

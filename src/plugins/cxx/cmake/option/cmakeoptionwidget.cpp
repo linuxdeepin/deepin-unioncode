@@ -10,10 +10,10 @@
 #include "services/option/optionmanager.h"
 
 #include <QHBoxLayout>
-#include <QTabWidget>
+#include <DTabWidget>
 
 class CMakeOptionWidgetPrivate {
-    QTabWidget* tabWidget = nullptr;
+    DTabWidget* tabWidget = nullptr;
 
     friend class CMakeOptionWidget;
 };
@@ -23,12 +23,14 @@ CMakeOptionWidget::CMakeOptionWidget(QWidget *parent)
     , d(new CMakeOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
-    d->tabWidget = new QTabWidget();
+    d->tabWidget = new DTabWidget();
     d->tabWidget->tabBar()->setAutoHide(true);
     layout->addWidget(d->tabWidget);
 
     d->tabWidget->addTab(new KitsManagerWidget(), "Kits");
-    QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
+    //去除tabwidget的边框
+    d->tabWidget->setDocumentMode(true);
+    QObject::connect(d->tabWidget, &DTabWidget::currentChanged, [this]() {
         readConfig();
     });
 

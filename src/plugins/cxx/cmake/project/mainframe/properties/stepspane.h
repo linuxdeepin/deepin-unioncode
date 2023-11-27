@@ -7,7 +7,7 @@
 
 #include "configutil.h"
 
-#include <QWidget>
+#include <DWidget>
 #include <QAbstractTableModel>
 
 class StepsModelPrivate;
@@ -40,7 +40,7 @@ private:
 };
 
 class StepsPanePrivate;
-class StepsPane : public QWidget
+class StepsPane : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 

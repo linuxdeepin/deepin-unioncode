@@ -6,18 +6,20 @@
 #include "common/common.h"
 #include "configureprojpane.h"
 
-#include <QListWidget>
-#include <QSplitter>
+#include <DStackedWidget>
+#include <DListWidget>
+#include <DSplitter>
+#include <DPushButton>
+#include <DFrame>
+
+#include <QStyleFactory>
 #include <QVBoxLayout>
 #include <QGroupBox>
-#include <QPushButton>
-#include <QStyleFactory>
-#include <QStackedWidget>
 
+DWIDGET_USE_NAMESPACE
 class ConfigPropertyWidgetPrivate
 {
     friend class ConfigPropertyWidget;
-    QStackedWidget *stackedWidget{nullptr};
     ConfigureWidget *configureProjWidget{nullptr};
     ConfigureProjPane *configureProjPane{nullptr};
 };
@@ -25,26 +27,38 @@ class ConfigPropertyWidgetPrivate
 ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
                                            const QString &workspace,
                                            QDialog *parent)
-    : QDialog (parent)
+    : DDialog (parent)
     , d(new ConfigPropertyWidgetPrivate())
 {
     setWindowTitle(tr("Config"));
-    // Initialize stackedWidget.
-    d->stackedWidget = new QStackedWidget(this);
+    setIcon(QIcon::fromTheme("unioncode"));
+
+    auto mainFrame = new DWidget(this);
+    addContent(mainFrame);
 
     // Initialize configure project widget.
-    d->configureProjWidget = new ConfigureWidget(d->stackedWidget);
+    d->configureProjWidget = new ConfigureWidget(mainFrame);
     d->configureProjPane = new ConfigureProjPane(language, workspace, d->configureProjWidget);
-    QObject::connect(d->configureProjPane, &ConfigureProjPane::configureDone, [this](const dpfservice::ProjectInfo &info){
+    QObject::connect(d->configureProjPane, &ConfigureProjPane::configureDone, [this](const dpfservice::ProjectInfo &info) {
         closeWidget();
     });
     d->configureProjWidget->addWidget(d->configureProjPane);
 
-    d->stackedWidget->addWidget(d->configureProjWidget);
+    QVBoxLayout *layout = new QVBoxLayout(mainFrame);
+    layout->addWidget(d->configureProjWidget);
+    mainFrame->setLayout(layout);
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->addWidget(d->stackedWidget);
-    setLayout(layout);
+    QStringList buttonTexts;
+    buttonTexts.append(tr("Cancel", "button"));
+    buttonTexts.append(tr("Configure", "button"));
+    addButton(buttonTexts[0], false);
+    addButton(buttonTexts[1], false, DDialog::ButtonRecommend);
+    setDefaultButton(1);
+
+    connect(getButton(1),&QAbstractButton::clicked,this,[=](){
+        d->configureProjPane->slotConfigure();
+    });
+
     close();
 }
 

@@ -8,14 +8,21 @@
 #include "stepspane.h"
 #include "targetsmanager.h"
 
-#include <QComboBox>
+#include <DTabWidget>
+#include <DPushButton>
+#include <DFileDialog>
+#include <DStackedWidget>
+#include <DComboBox>
+#include <DButtonBox>
+#include <DFrame>
+
 #include <QVBoxLayout>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QStackedWidget>
 
 #include "common/common.h"
 
+const int widthPerBtn = 80;
+
+DWIDGET_USE_NAMESPACE
 using namespace config;
 
 class DetailPropertyWidgetPrivate
@@ -30,20 +37,45 @@ class DetailPropertyWidgetPrivate
 DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     : ConfigureWidget(parent)
     , d(new DetailPropertyWidgetPrivate())
-{
+{   
+    setBackgroundRole(QPalette::Window);
+    setFrameShape(QFrame::Shape::NoFrame);
+
     d->buildStepsPane = new StepsPane(this);
     d->cleanStepsPane = new StepsPane(this);
     d->envWidget = new EnvironmentWidget(this);
 
-    CollapseWidget *buildStep = new CollapseWidget(QObject::tr("Build Steps"), d->buildStepsPane, this);
-    CollapseWidget *cleanStep = new CollapseWidget(QObject::tr("Clean Steps"), d->cleanStepsPane, this);
-    CollapseWidget *envStep = new CollapseWidget(QObject::tr("Runtime Env"), d->envWidget, this);
+    DStackedWidget *stackWidget = new DStackedWidget(this);
+    stackWidget->insertWidget(0, d->buildStepsPane);
+    stackWidget->insertWidget(1, d->cleanStepsPane);
+    stackWidget->insertWidget(2, d->envWidget);
 
-    addCollapseWidget(buildStep);
-    addCollapseWidget(cleanStep);
-    addCollapseWidget(envStep);
+    DButtonBoxButton *btnBuild = new DButtonBoxButton(QObject::tr("Build Steps"), this);
+    DButtonBoxButton *btnClean = new DButtonBoxButton(QObject::tr("Clean Steps"), this);
+    DButtonBoxButton *btnEnv = new DButtonBoxButton(QObject::tr("Runtime Env"), this);
 
-    buildStep->setChecked(false);
+    DButtonBox *btnbox = new DButtonBox(this);
+    QList<DButtonBoxButton *> list { btnBuild, btnClean, btnEnv };
+    btnbox->setButtonList(list, true);
+    btnbox->setFixedWidth(widthPerBtn * btnbox->buttonList().size());
+
+    auto frame = new DWidget(this);
+    auto layout = new QVBoxLayout(this);
+    layout->setAlignment(Qt::AlignHCenter);
+    layout->addWidget(btnbox);
+    frame->setLayout(layout);
+
+    connect(btnbox, &DButtonBox::buttonClicked, this, [=](QAbstractButton *button) {
+        if (button == btnBuild)
+            stackWidget->setCurrentIndex(0);
+        else if (button == btnClean)
+            stackWidget->setCurrentIndex(1);
+        else if (button == btnEnv)
+            stackWidget->setCurrentIndex(2);
+    });
+
+    addWidget(frame);
+    addWidget(stackWidget);
 }
 
 DetailPropertyWidget::~DetailPropertyWidget()
@@ -80,10 +112,10 @@ class BuildPropertyWidgetPrivate
 {
     friend class BuildPropertyWidget;
 
-    QComboBox *configureComboBox{nullptr};
-    QLineEdit *outputDirEdit{nullptr};
+    DComboBox *configureComboBox{nullptr};
+    DLineEdit *outputDirEdit{nullptr};
 
-    QStackedWidget* stackWidget{nullptr};
+    DStackedWidget* stackWidget{nullptr};
     dpfservice::ProjectInfo projectInfo;
 
     QMap<StepType, dpfservice::TargetType> typeMap = {{StepType::Build, dpfservice::TargetType::kBuildTarget},
@@ -111,23 +143,23 @@ BuildPropertyWidget::~BuildPropertyWidget()
 void BuildPropertyWidget::setupOverviewUI()
 {
     QVBoxLayout *vLayout = new QVBoxLayout();
-    ConfigureWidget *buildCfgWidget = new ConfigureWidget();
+    ConfigureWidget *buildCfgWidget = new ConfigureWidget(this);
+    buildCfgWidget->setFrameShape(QFrame::Shape::NoFrame);
     vLayout->addWidget(buildCfgWidget);
     setLayout(vLayout);
 
     QVBoxLayout *overviewLayout = new QVBoxLayout();
-    QWidget *overviewWidget = new QWidget();
+    DWidget *overviewWidget = new DWidget();
     overviewWidget->setLayout(overviewLayout);
 
     QHBoxLayout *configureLayout = new QHBoxLayout();
-    QLabel *configureLabel = new QLabel(QLabel::tr("Build configuration:"));
-    configureLabel->setFixedWidth(150);
-    d->configureComboBox = new QComboBox();
+    DLabel *configureLabel = new DLabel(DLabel::tr("Build configuration:"));
+    d->configureComboBox = new DComboBox(this);
     configureLayout->addWidget(configureLabel);
     configureLayout->addWidget(d->configureComboBox);
     configureLayout->setSpacing(10);
     configureLayout->addStretch();
-    QObject::connect(d->configureComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index){
+    QObject::connect(d->configureComboBox, QOverload<int>::of(&DComboBox::currentIndexChanged), [=](int index){
         QVariant var = d->configureComboBox->itemData(index, Qt::UserRole + 1);
         if (var.isValid()) {
             QString directory = var.value<QString>();
@@ -149,12 +181,11 @@ void BuildPropertyWidget::setupOverviewUI()
         ConfigUtil::instance()->checkConfigInfo(d->configureComboBox->currentText(), d->outputDirEdit->text());
     });
 
-    QHBoxLayout *hLayout = new QHBoxLayout(this);
-    QLabel *label = new QLabel(this);
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    DLabel *label = new DLabel(this);
     label->setText(tr("Output direcotry:"));
-    label->setFixedWidth(150);
-    d->outputDirEdit = new QLineEdit(this);
-    d->outputDirEdit->setReadOnly(true);
+    d->outputDirEdit = new DLineEdit(this);
+    d->outputDirEdit->lineEdit()->setReadOnly(true);
     auto button = new QPushButton(this);
     button->setText(tr("Browse..."));
     connect(button, &QPushButton::clicked, [this](){
@@ -183,7 +214,7 @@ void BuildPropertyWidget::setupOverviewUI()
     overviewLayout->addLayout(hLayout);
 
     buildCfgWidget->addWidget(overviewWidget);
-    d->stackWidget = new QStackedWidget();
+    d->stackWidget = new DStackedWidget(this);
     buildCfgWidget->addWidget(d->stackWidget);
 }
 

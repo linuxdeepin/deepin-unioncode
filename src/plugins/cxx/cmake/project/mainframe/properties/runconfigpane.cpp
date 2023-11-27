@@ -7,23 +7,26 @@
 
 #include "services/project/projectservice.h"
 
+#include <DFrame>
+
 #include <QVBoxLayout>
 #include <QLabel>
-#include <QLineEdit>
+#include <DLineEdit>
 #include <QPushButton>
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QTextBrowser>
 
+DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
 class RunConfigPanePrivate
 {
     friend class RunConfigPane;
 
-    QLineEdit *cmdArgsLineEdit{nullptr};
-    QLineEdit *workingDirLineEdit{nullptr};
-    QLineEdit *excutableLabel{nullptr};
+    DLineEdit *cmdArgsLineEdit{nullptr};
+    DLineEdit *workingDirLineEdit{nullptr};
+    DLineEdit *excutableLabel{nullptr};
 
     EnvironmentWidget *environmentWidget{nullptr};
     QString currentTargetName;
@@ -31,7 +34,7 @@ class RunConfigPanePrivate
 };
 
 RunConfigPane::RunConfigPane(QWidget *parent)
-    : QWidget(parent)
+    : DWidget(parent)
     , d (new RunConfigPanePrivate())
 {
     setupUi();
@@ -46,19 +49,21 @@ void RunConfigPane::setupUi()
 {
     QVBoxLayout *vLayout = new QVBoxLayout(this);
 
-    QFrame *mainFrame = new QFrame(this);
+    DFrame *mainFrame = new DFrame(this);
     mainFrame->setObjectName("mainframe");
+    mainFrame->setFrameShape(QFrame::Shape::NoFrame);
     QFormLayout *formLayout = new QFormLayout(mainFrame);
 
     // excutable label ui.
-    d->excutableLabel = new QLineEdit(mainFrame);
+    d->excutableLabel = new DLineEdit(mainFrame);
     d->excutableLabel->setText(tr("Here is the executable path"));
-    d->excutableLabel->setReadOnly(true);
+    d->excutableLabel->lineEdit()->setReadOnly(true);
     formLayout->addRow(tr("Executable path:"), d->excutableLabel);
+    formLayout->setSpacing(10);
 
     // command line ui.
-    d->cmdArgsLineEdit = new QLineEdit(mainFrame);
-    connect(d->cmdArgsLineEdit, &QLineEdit::textChanged, [this](){
+    d->cmdArgsLineEdit = new DLineEdit(mainFrame);
+    connect(d->cmdArgsLineEdit, &DLineEdit::textChanged, [this](){
         if (d->runParam)
             d->runParam->arguments = d->cmdArgsLineEdit->text().trimmed();
     });
@@ -68,9 +73,9 @@ void RunConfigPane::setupUi()
     QHBoxLayout *browLayout = new QHBoxLayout(mainFrame);
     auto browseBtn = new QPushButton(mainFrame);
     browseBtn->setText(tr("Browse..."));
-    d->workingDirLineEdit = new QLineEdit(mainFrame);
-    d->workingDirLineEdit->setReadOnly(true);
-    connect(d->workingDirLineEdit, &QLineEdit::textChanged, [this](){
+    d->workingDirLineEdit = new DLineEdit(mainFrame);
+    d->workingDirLineEdit->lineEdit()->setReadOnly(true);
+    connect(d->workingDirLineEdit, &DLineEdit::textChanged, [this](){
         if (d->runParam)
             d->runParam->workDirectory = d->workingDirLineEdit->text().trimmed();
     });
@@ -87,6 +92,7 @@ void RunConfigPane::setupUi()
     mainFrame->setLayout(formLayout);
 
     d->environmentWidget = new EnvironmentWidget(this);
+    d->environmentWidget->setFixedHeight(300);
     vLayout->addWidget(mainFrame);
     vLayout->addWidget(d->environmentWidget);
 

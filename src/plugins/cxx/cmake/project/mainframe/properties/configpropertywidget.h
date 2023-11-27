@@ -7,10 +7,10 @@
 
 #include "services/project/projectinfo.h"
 
-#include <QDialog>
+#include <DDialog>
 
 class ConfigPropertyWidgetPrivate;
-class ConfigPropertyWidget : public QDialog
+class ConfigPropertyWidget : public DTK_WIDGET_NAMESPACE::DDialog
 {
     Q_OBJECT
 public:

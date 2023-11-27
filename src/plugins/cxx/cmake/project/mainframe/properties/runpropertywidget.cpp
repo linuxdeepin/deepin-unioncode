@@ -9,14 +9,15 @@
 #include "configutil.h"
 #include "targetsmanager.h"
 
-#include <QListWidget>
-#include <QSplitter>
-#include <QComboBox>
+#include <DListWidget>
+#include <DSplitter>
+#include <DComboBox>
+#include <DGroupBox>
+#include <DPushButton>
+#include <DStackedWidget>
+
 #include <QVBoxLayout>
-#include <QGroupBox>
-#include <QPushButton>
 #include <QStyleFactory>
-#include <QStackedWidget>
 
 using namespace config;
 
@@ -24,7 +25,7 @@ class RunPropertyWidgetPrivate
 {
     friend class RunPropertyWidget;
 
-    QComboBox *exeComboBox{nullptr};
+    DComboBox *exeComboBox{nullptr};
     RunConfigPane *runConfigPane{nullptr};
 
     QVector<RunParam> paramsShadow;
@@ -32,7 +33,7 @@ class RunPropertyWidgetPrivate
     dpfservice::ProjectInfo projectInfo;
 };
 
-RunPropertyWidget::RunPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, QWidget *parent)
+RunPropertyWidget::RunPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, DWidget *parent)
     : PageWidget(parent)
     , d(new RunPropertyWidgetPrivate())
 {
@@ -50,13 +51,16 @@ RunPropertyWidget::~RunPropertyWidget()
 void RunPropertyWidget::setupUi()
 {
     ConfigureWidget *runCfgWidget = new ConfigureWidget(this);
+    runCfgWidget->setFrameShape(QFrame::Shape::NoFrame);
 
-    QWidget *titleWidget = new QWidget(runCfgWidget);
+    DWidget *titleWidget = new DWidget(runCfgWidget);
     QHBoxLayout *runCfgLayout = new QHBoxLayout(titleWidget);
-    QLabel *runCfgLabel = new QLabel(tr("Run configuration:"));
-    d->exeComboBox = new QComboBox();
+    DLabel *runCfgLabel = new DLabel(tr("Run configuration:"));
+    runCfgLabel->setContentsMargins(10, 0, 30, 0);
+
+    d->exeComboBox = new DComboBox();
     d->exeComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    QObject::connect(d->exeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index){
+    QObject::connect(d->exeComboBox, QOverload<int>::of(&DComboBox::currentIndexChanged), [=](int index){
         if (index >= 0 && index < d->paramsShadow.count()) {
             d->runConfigPane->bindValues(&d->paramsShadow[index]);
         }

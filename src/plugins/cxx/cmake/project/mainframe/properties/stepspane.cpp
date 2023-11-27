@@ -6,18 +6,19 @@
 
 #include "services/project/projectservice.h"
 
+#include <DHeaderView>
+#include <DTableView>
+#include <DLineEdit>
+#include <DLabel>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QCheckBox>
-#include <QHeaderView>
-#include <QTableView>
-#include <QLineEdit>
-#include <QLabel>
 
 const QString ENABLE_ALL_ENV = StepsPane::tr("Enable All BuildSteps");
 static const char *kBuildTitle = "Build:";
 static const char *kBuildCommand = "cmake --build . --target ";
 
+DWIDGET_USE_NAMESPACE
 class StepsModelPrivate
 {
     friend class StepsModel;
@@ -185,13 +186,13 @@ class StepsPanePrivate
 {
     friend class StepsPane;
 
-    QLineEdit *toolArguments{nullptr};
-    QLabel *buildLabel{nullptr};
+    DLineEdit *toolArguments{nullptr};
+    DLabel *buildLabel{nullptr};
     StepsModel *model{nullptr};
 };
 
 StepsPane::StepsPane(QWidget *parent)
-    : QWidget(parent)
+    : DWidget(parent)
     , d(new StepsPanePrivate)
 {
     setupUi();
@@ -210,34 +211,36 @@ void StepsPane::setupUi()
 {
     setAutoFillBackground(true);
 
-    QVBoxLayout *vLayout = new QVBoxLayout(this);
+    QVBoxLayout *vLayout = new QVBoxLayout();
 
-    d->buildLabel = new QLabel(this);
+    d->buildLabel = new DLabel(this);
     d->buildLabel->setText(QString("Build:").append(kBuildCommand));
 
-    QTableView *tableView = new QTableView();
+    DTableView *tableView = new DTableView(this);
     tableView->setShowGrid(false);
-    QHeaderView* headerView = tableView->horizontalHeader();
-    headerView->setSectionResizeMode(QHeaderView::ResizeToContents);
+    tableView->setAlternatingRowColors(true);
+    DHeaderView* headerView = tableView->horizontalHeader();
+    headerView->setStretchLastSection(true);
     headerView->setSelectionMode(QAbstractItemView::SingleSelection);
     tableView->verticalHeader()->hide();
 
     d->model = new StepsModel();
     tableView->setModel(d->model);
 
-    QHBoxLayout *hLayout = new QHBoxLayout(this);
-    d->toolArguments = new QLineEdit(this);
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    d->toolArguments = new DLineEdit(this);
     d->toolArguments->setPlaceholderText(tr("Input your arguments."));
-    QLabel *label = new QLabel(tr("Tool arguments:"), this);
+    DLabel *label = new DLabel(tr("Tool arguments:"), this);
     hLayout->addWidget(label);
     hLayout->addWidget(d->toolArguments);
 
-    vLayout->setMargin(0);
+    vLayout->setMargin(10);
+    vLayout->setSpacing(10);
     vLayout->addWidget(d->buildLabel);
     vLayout->addLayout(hLayout);
     vLayout->addWidget(tableView);
 
-    connect(d->toolArguments, &QLineEdit::textEdited, this, &StepsPane::toolArgumentsEdited);
+    connect(d->toolArguments, &DLineEdit::textEdited, this, &StepsPane::toolArgumentsEdited);
     connect(d->model, &StepsModel::dataChanged, this, &StepsPane::dataChanged);
 
     setLayout(vLayout);

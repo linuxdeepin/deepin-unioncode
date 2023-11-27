@@ -6,9 +6,9 @@
 #define ENVIRONMENTWIDGET_H
 
 #include "configutil.h"
+#include <DFrame>
 
 #include <QAbstractTableModel>
-#include <QWidget>
 
 class EnvironmentModelPrivate;
 class EnvironmentModel : public QAbstractTableModel
@@ -39,7 +39,7 @@ private:
 };
 
 class EnvironmentWidgetPrivate;
-class EnvironmentWidget : public QWidget
+class EnvironmentWidget : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 
