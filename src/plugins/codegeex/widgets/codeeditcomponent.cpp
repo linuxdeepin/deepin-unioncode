@@ -150,15 +150,13 @@ void CodeEditComponent::initTitleWidgets()
     titleWidget->setLayout(layout);
 
     copyButton = new DPushButton(titleWidget);
-//    copyButton->setText(tr("Copy"));
     copyButton->setFlat(true);
-    copyButton->setIcon(QIcon(QPixmap(":/resoures/images/copy.png")));
+    copyButton->setIcon(QIcon::fromTheme("codegeex_copy"));
     layout->addWidget(copyButton);
 
     insertButton = new DPushButton(titleWidget);
-//    insertButton->setText(tr("Insert"));
     insertButton->setFlat(true);
-    insertButton->setIcon(QIcon(QPixmap(":/resoures/images/insert.svg")));
+    insertButton->setIcon(QIcon::fromTheme("codegeex_insert"));
     layout->addWidget(insertButton);
 
     layout->addStretch(1);

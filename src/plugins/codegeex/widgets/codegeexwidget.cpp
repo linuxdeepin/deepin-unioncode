@@ -4,6 +4,7 @@
 
 #include "codegeexwidget.h"
 #include "askpagewidget.h"
+#include "historylistwidget.h"
 #include "translationpagewidget.h"
 #include "codegeexmanager.h"
 #include "copilot.h"
@@ -14,6 +15,7 @@
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QResizeEvent>
 
 CodeGeeXWidget::CodeGeeXWidget(QWidget *parent)
     : DWidget(parent)
@@ -34,6 +36,7 @@ void CodeGeeXWidget::onLoginSuccessed()
     }
 
     initAskWidget();
+    initHistoryWidget();
     CodeGeeXManager::instance()->createNewSession();
 }
 
@@ -53,7 +56,16 @@ void CodeGeeXWidget::onDeleteBtnClicked()
 
 void CodeGeeXWidget::onHistoryBtnClicked()
 {
+    CodeGeeXManager::instance()->fetchSessionRecords();
 
+    if (!historyWidget || !historyWidgetAnimation)
+        return;
+
+    historyWidgetAnimation->setStartValue(QRect(-this->rect().width(), 0, historyWidget->width(), historyWidget->height()));
+    historyWidgetAnimation->setEndValue(QRect(0, 0, historyWidget->width(), historyWidget->height()));
+    historyWidgetAnimation->start();
+
+    historyShowed = true;
 }
 
 void CodeGeeXWidget::onCreateNewBtnClicked()
@@ -77,6 +89,8 @@ void CodeGeeXWidget::onAnwserFinished()
 {
     if (deleteBtn)
         deleteBtn->setEnabled(true);
+    if (historyBtn)
+        historyBtn->setEnabled(true);
     if (createNewBtn)
         createNewBtn->setEnabled(true);
 }
@@ -85,8 +99,32 @@ void CodeGeeXWidget::onAnwserStarted()
 {
     if (deleteBtn)
         deleteBtn->setEnabled(false);
+    if (historyBtn)
+        historyBtn->setEnabled(false);
     if (createNewBtn)
         createNewBtn->setEnabled(false);
+}
+
+void CodeGeeXWidget::onCloseHistoryWidget()
+{
+    historyWidgetAnimation->setStartValue(QRect(0, 0, historyWidget->width(), historyWidget->height()));
+    historyWidgetAnimation->setEndValue(QRect(-this->rect().width(), 0, historyWidget->width(), historyWidget->height()));
+    historyWidgetAnimation->start();
+
+    historyShowed = false;
+}
+
+void CodeGeeXWidget::resizeEvent(QResizeEvent *event)
+{
+    if (historyWidget) {
+        if (historyShowed) {
+            historyWidget->setGeometry(0, 0, this->width(), this->height());
+        } else {
+            historyWidget->setGeometry(-this->width(), 0, this->width(), this->height());
+        }
+    }
+
+    DWidget::resizeEvent(event);
 }
 
 void CodeGeeXWidget::initUI()
@@ -102,7 +140,7 @@ void CodeGeeXWidget::initUI()
         auto label_icon = new DLabel();
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         label_icon->setSizePolicy(sizePolicy);
-        label_icon->setPixmap(QPixmap(":/resoures/images/logo-codegeex.png").scaledToWidth(80));
+        label_icon->setPixmap(QIcon::fromTheme("codegeex_logo").pixmap(QSize(80, 80)));
         label_icon->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(label_icon, Qt::AlignCenter);
@@ -143,6 +181,7 @@ void CodeGeeXWidget::initAskWidget()
 {
     tabBar = new DTabBar(this);
     tabBar->setVisibleAddButton(false);
+    tabBar->setUsesScrollButtons(false);
     tabBar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     tabBar->setContentsMargins(0, 0, 0, 0);
     stackWidget = new QStackedWidget(this);
@@ -161,15 +200,15 @@ void CodeGeeXWidget::initAskWidget()
 
     deleteBtn = new DPushButton(this);
     deleteBtn->setFlat(true);
-    deleteBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_del_hover.png")));
+    deleteBtn->setIcon(QIcon::fromTheme("codegeex_clear"));
     headerLayout->addWidget(deleteBtn);
-//    historyBtn = new DPushButton(this);
-//    historyBtn->setFlat(true);
-//    historyBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_history_hover.png")));
-//    headerLayout->addWidget(historyBtn);
+    historyBtn = new DPushButton(this);
+    historyBtn->setFlat(true);
+    historyBtn->setIcon(QIcon::fromTheme("codegeex_history"));
+    headerLayout->addWidget(historyBtn);
     createNewBtn = new DPushButton(this);
     createNewBtn->setFlat(true);
-    createNewBtn->setIcon(QIcon(QPixmap(":/resoures/images/chat_icon_new_hover.png")));
+    createNewBtn->setIcon(QIcon::fromTheme("codegeex_new"));
     headerLayout->addWidget(createNewBtn);
 
     initTabBar();
@@ -178,6 +217,19 @@ void CodeGeeXWidget::initAskWidget()
 
     currentState = AskPage;
     resetHeaderBtns();
+}
+
+void CodeGeeXWidget::initHistoryWidget()
+{
+    historyWidget = new HistoryListWidget(this);
+    historyWidget->setGeometry(-this->width(), 0, this->width(), this->height());
+    historyWidget->show();
+
+    historyWidgetAnimation =  new QPropertyAnimation(historyWidget, "geometry");
+    historyWidgetAnimation->setEasingCurve(QEasingCurve::InOutSine);
+    historyWidgetAnimation->setDuration(300);
+
+    initHistoryWidgetConnection();
 }
 
 void CodeGeeXWidget::initTabBar()
@@ -229,25 +281,30 @@ void CodeGeeXWidget::initAskWidgetConnection()
         stackWidget->setCurrentIndex(index + 1);
     });
     connect(deleteBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onDeleteBtnClicked);
-//    connect(historyBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onHistoryBtnClicked);
+    connect(historyBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onHistoryBtnClicked);
     connect(createNewBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onCreateNewBtnClicked);
+}
+
+void CodeGeeXWidget::initHistoryWidgetConnection()
+{
+    connect(historyWidget, &HistoryListWidget::requestCloseHistoryWidget, this, &CodeGeeXWidget::onCloseHistoryWidget);
 }
 
 void CodeGeeXWidget::resetHeaderBtns()
 {
-    if (!deleteBtn || /*!historyBtn ||*/ !createNewBtn || !askPage)
+    if (!deleteBtn || !historyBtn || !createNewBtn || !askPage)
         return;
 
     switch (currentState) {
     case AskPage:
         deleteBtn->setVisible(!askPage->isIntroPageState());
         createNewBtn->setVisible(!askPage->isIntroPageState());
-//        historyBtn->setVisible(true);
+        historyBtn->setVisible(true);
         break;
     case TrasnlatePage:
         deleteBtn->setVisible(false);
         createNewBtn->setVisible(false);
-//        historyBtn->setVisible(false);
+        historyBtn->setVisible(false);
         break;
     }
 }

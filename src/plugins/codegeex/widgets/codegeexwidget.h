@@ -9,17 +9,12 @@
 #include <DTabBar>
 #include <DPushButton>
 
-DWIDGET_USE_NAMESPACE
-
-QT_BEGIN_NAMESPACE
-class QTabBar;
-class QStackedWidget;
-class QPushButton;
-QT_END_NAMESPACE
+#include <QPropertyAnimation>
 
 class AskPageWidget;
+class HistoryListWidget;
 class TranslationPageWidget;
-class CodeGeeXWidget : public DWidget
+class CodeGeeXWidget : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 
@@ -40,28 +35,38 @@ public Q_SLOTS:
     void toTranslateCode(const QString &code);
     void onAnwserFinished();
     void onAnwserStarted();
+    void onCloseHistoryWidget();
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     void initUI();
     void initConnection();
 
     void initAskWidget();
+    void initHistoryWidget();
     void initTabBar();
     void initStackWidget();
     void initAskWidgetConnection();
+    void initHistoryWidgetConnection();
 
     void resetHeaderBtns();
 
-    DTabBar *tabBar { nullptr };
-    DStackedWidget *stackWidget { nullptr };
-    DPushButton *deleteBtn { nullptr };
-    DPushButton *historyBtn { nullptr };
-    DPushButton *createNewBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DTabBar *tabBar { nullptr };
+    DTK_WIDGET_NAMESPACE::DStackedWidget *stackWidget { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *deleteBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *historyBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *createNewBtn { nullptr };
+
+    QPropertyAnimation *historyWidgetAnimation { nullptr };
 
     AskPageWidget *askPage { nullptr };
+    HistoryListWidget *historyWidget { nullptr };
     TranslationPageWidget *transPage { nullptr };
 
     CurrentPageState currentState { AskPage };
+    bool historyShowed { false };
 };
 
 #endif // CODEGEEXWIDGET_H

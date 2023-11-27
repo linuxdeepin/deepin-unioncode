@@ -42,7 +42,7 @@ void IntroPage::initLogo()
 
     DLabel *logo = new DLabel(this);
     logo->setAlignment(Qt::AlignHCenter);
-    logo->setPixmap(QPixmap(":/resoures/images/logo-codegeex.png").scaledToWidth(80));
+    logo->setPixmap(QIcon::fromTheme("codegeex_logo").pixmap(80, 80));
     logoLayout->addWidget(logo);
 
     DLabel *logoLabel = new DLabel(this);
