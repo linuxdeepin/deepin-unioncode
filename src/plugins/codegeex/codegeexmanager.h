@@ -15,6 +15,12 @@ QT_BEGIN_NAMESPACE
 class QTimer;
 QT_END_NAMESPACE
 
+struct RecordData {
+    QString talkId;
+    QString promot;
+    QString date;
+};
+
 class CodeGeeXManager : public QObject
 {
     Q_OBJECT
@@ -28,11 +34,15 @@ public:
 
     void createNewSession();
     void deleteCurrentSession();
+    void deleteSession(const QString &talkId);
 
     void sendMessage(const QString &prompt);
     void queryLoginState();
 
     void cleanHistoryMessage();
+
+    void fetchSessionRecords();
+    QList<RecordData> sessionRecords() const;
 
 Q_SIGNALS:
     void loginSuccessed();
@@ -41,12 +51,15 @@ Q_SIGNALS:
     void requestToTransCode(const QString &code);
     void chatStarted();
     void chatFinished();
+    void sessionRecordsUpdated();
 
 public Q_SLOTS:
     void onSessionCreated(const QString &talkId, bool isSuccessful);
     void onResponse(const QString &msgID, const QString &data, const QString &event);
     void recevieLoginState(CodeGeeX::AskApi::LoginState loginState);
     void recevieToTranslate(const QString &codeText);
+    void recevieSessionRecords(const QVector<CodeGeeX::AskApi::SessionRecord> &records);
+    void recevieDeleteResult(const QStringList &talkIds, bool success);
 
 private:
     explicit CodeGeeXManager(QObject *parent = nullptr);
@@ -63,6 +76,7 @@ private:
     bool isLogin { false };
 
     QMap<QString, MessageData> curSessionMsg {};
+    QList<RecordData> sessionRecordList {};
 
     QTimer *queryTimer;
 };

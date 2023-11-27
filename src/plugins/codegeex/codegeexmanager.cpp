@@ -18,6 +18,7 @@
 static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
 static const char *kUrlNewSession = "https://codegeex.cn/prod/code/chatGlmTalk/insert";
 static const char *kUrlDeleteSession = "https://codegeex.cn/prod/code/chatGlmTalk/delete";
+static const char *kUrlQuerySession = "https://codegeex.cn/prod/code/chatGmlMsg/selectList";
 
 using namespace CodeGeeX;
 
@@ -90,6 +91,11 @@ void CodeGeeXManager::deleteCurrentSession()
     createNewSession();
 }
 
+void CodeGeeXManager::deleteSession(const QString &talkId)
+{
+    askApi.deleteSessions(kUrlDeleteSession, sessionId, { talkId });
+}
+
 void CodeGeeXManager::sendMessage(const QString &prompt)
 {
     QString askId = "User" + QString::number(QDateTime::currentMSecsSinceEpoch());
@@ -158,6 +164,39 @@ void CodeGeeXManager::recevieToTranslate(const QString &codeText)
         Q_EMIT requestToTransCode(codeText);
 }
 
+void CodeGeeXManager::recevieSessionRecords(const QVector<AskApi::SessionRecord> &records)
+{
+    sessionRecordList.clear();
+
+    for (auto record : records) {
+        RecordData data;
+        data.talkId = record.talkId;
+        data.promot = record.prompt;
+        data.date = record.createdTime;
+        sessionRecordList.append(data);
+    }
+
+    Q_EMIT sessionRecordsUpdated();
+}
+
+void CodeGeeXManager::recevieDeleteResult(const QStringList &talkIds, bool success)
+{
+    if (success) {
+        for (const QString &talkId : talkIds) {
+            int i = 0;
+            while (i < sessionRecordList.length()) {
+                if (sessionRecordList[i].talkId == talkId)
+                    sessionRecordList.removeAt(i);
+                else
+                    ++i;
+            }
+        }
+        Q_EMIT sessionRecordsUpdated();
+    } else {
+        qWarning() << "Delete history session failed!";
+    }
+}
+
 CodeGeeXManager::CodeGeeXManager(QObject *parent)
     : QObject(parent)
 {
@@ -171,6 +210,8 @@ void CodeGeeXManager::initConnections()
     connect(&askApi, &AskApi::response, this, &CodeGeeXManager::onResponse);
     connect(&askApi, &AskApi::loginState, this, &CodeGeeXManager::recevieLoginState);
     connect(&askApi, &AskApi::sessionCreated, this, &CodeGeeXManager::onSessionCreated);
+    connect(&askApi, &AskApi::getSessionListResult, this, &CodeGeeXManager::recevieSessionRecords);
+    connect(&askApi, &AskApi::sessionDeleted, this,  &CodeGeeXManager::recevieDeleteResult);
     connect(Copilot::instance(), &Copilot::translatingText, this, &CodeGeeXManager::recevieToTranslate);
 }
 
@@ -190,6 +231,16 @@ void CodeGeeXManager::queryLoginState()
 void CodeGeeXManager::cleanHistoryMessage()
 {
     curSessionMsg.clear();
+}
+
+void CodeGeeXManager::fetchSessionRecords()
+{
+    askApi.getSessionList(kUrlQuerySession, sessionId, 1, 50);
+}
+
+QList<RecordData> CodeGeeXManager::sessionRecords() const
+{
+    return sessionRecordList;
 }
 
 QString CodeGeeXManager::configFilePath() const

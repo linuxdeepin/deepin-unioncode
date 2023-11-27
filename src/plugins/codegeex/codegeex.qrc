@@ -1,18 +1,13 @@
 <RCC>
-    <qresource prefix="/resoures">
-        <file>images/navigation.png</file>
-        <file>images/logo-codegeex.png</file>
-        <file>images/photo.svg</file>
-        <file>images/chat_icon_del_hover.svg</file>
-        <file>images/chat_icon_history_hover.svg</file>
-        <file>images/chat_icon_new_hover.svg</file>
-        <file>images/insert.svg</file>
-        <file>images/chat_icon_del_hover.png</file>
-        <file>images/chat_icon_history_hover.png</file>
-        <file>images/chat_icon_new_hover.png</file>
-        <file>images/copy.png</file>
-    </qresource>
-    <qresource prefix="/icons/deepin/builtin">
-        <file>texts/codegeex-navigation_20px.svg</file>
+    <qresource prefix="/icons/deepin">
+        <file>builtin/actions/codegeex-navigation_20px.svg</file>
+        <file>builtin/texts/codegeex_clear_16px.svg</file>
+        <file>builtin/texts/codegeex_copy_16px.svg</file>
+        <file>builtin/texts/codegeex_history_16px.svg</file>
+        <file>builtin/texts/codegeex_insert_16px.svg</file>
+        <file>builtin/texts/codegeex_new_16px.svg</file>
+        <file>builtin/icons/codegeex_anwser_icon_24px.svg</file>
+        <file>builtin/icons/codegeex_logo_128px.png</file>
+        <file>builtin/icons/codegeex_user_30px.svg</file>
     </qresource>
 </RCC>
