@@ -28,7 +28,7 @@ ConfigureWidget::ConfigureWidget(QWidget *parent)
     d->centrelWidget->setObjectName("ConfigureCentrelWidget");
     d->centrelWidget->setAutoFillBackground(true);
     d->layout = new QVBoxLayout(d->centrelWidget);
-    d->layout->setContentsMargins(24, 24, 24, 24);
+    d->layout->setContentsMargins(10, 10, 10, 10);
     d->layout->setSpacing(24);
     d->centrelWidget->setLayout(d->layout);
     d->layout->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::Expanding));

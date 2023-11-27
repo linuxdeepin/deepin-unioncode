@@ -7,4 +7,7 @@
         <file>images/lib@2x.png</file>
         <file>images/lib.png</file>
     </qresource>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>icons/unioncode_16px.png</file>
+    </qresource>
 </RCC>

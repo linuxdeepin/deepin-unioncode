@@ -7,15 +7,18 @@
 #include "common/util/custompaths.h"
 #include "common/toolchain/toolchain.h"
 
-#include <QRadioButton>
-#include <QComboBox>
+#include <DRadioButton>
+#include <DComboBox>
+#include <DLabel>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QLabel>
 #include <QHeaderView>
 #include <QDir>
 #include <QDebug>
 #include <QJsonObject>
+
+DWIDGET_USE_NAMESPACE
 
 class NinjaWidgetPrivate
 {
@@ -52,7 +55,7 @@ void NinjaWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
 
-    QLabel *homePathLabel = new QLabel(QLabel::tr("Ninja path："));
+    DLabel *homePathLabel = new DLabel(DLabel::tr("Ninja path："));
     homePathLabel->setFixedWidth(120);
     d->homePathComboBox = new QComboBox();
 

@@ -10,10 +10,10 @@
 
 #include "services/project/projectinfo.h"
 
-#include <QWidget>
+#include <DWidget>
 
 class ConfigureProjPanePrivate;
-class ConfigureProjPane : public QWidget
+class ConfigureProjPane : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:

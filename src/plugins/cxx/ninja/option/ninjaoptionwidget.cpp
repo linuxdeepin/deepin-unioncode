@@ -10,10 +10,12 @@
 #include "services/option/optionmanager.h"
 
 #include <QHBoxLayout>
-#include <QTabWidget>
+#include <DTabWidget>
+
+DWIDGET_USE_NAMESPACE
 
 class NinjaOptionWidgetPrivate {
-    QTabWidget* tabWidget = nullptr;
+    DTabWidget* tabWidget = nullptr;
 
     friend class NinjaOptionWidget;
 };
@@ -23,12 +25,13 @@ NinjaOptionWidget::NinjaOptionWidget(QWidget *parent)
     , d(new NinjaOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
-    d->tabWidget = new QTabWidget();
+    d->tabWidget = new DTabWidget();
     d->tabWidget->tabBar()->setAutoHide(true);
     layout->addWidget(d->tabWidget);
 
     d->tabWidget->addTab(new NinjaWidget(), tr("Ninja"));
-    QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
+    d->tabWidget->setDocumentMode(true);
+    QObject::connect(d->tabWidget, &DTabWidget::currentChanged, [this]() {
         readConfig();
     });
 

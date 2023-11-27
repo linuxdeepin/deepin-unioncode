@@ -7,36 +7,40 @@
 #include "common/util/custompaths.h"
 #include "common/toolchain/toolchain.h"
 
+#include <DLabel>
+#include <DFrame>
+#include <DLineEdit>
+#include <DListView>
+#include <DPushButton>
+#include <DComboBox>
+#include <DWidget>
+#include <DTabWidget>
+#include <DIconButton>
+
 #include <QDebug>
 #include <QDir>
 #include <QtCore/QVariant>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListView>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QScrollArea>
-#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
-#include <QtWidgets/QWidget>
+#include <QtWidgets/QFormLayout>
 #include <QStringListModel>
 #include <QAbstractItemView>
-#include <QListWidget>
 #include <QJsonObject>
+
+DWIDGET_USE_NAMESPACE
 
 class KitsManagerWidgetPrivate
 {
     friend class KitsManagerWidget;
-    QListWidget *listWidget = nullptr;
-    QLineEdit *nameEidt = nullptr;
-    QComboBox *cbCXXComplier = nullptr;
-    QComboBox *cbCMake = nullptr;
-    QComboBox *cbCComplier = nullptr;
-    QComboBox *cbDebugger = nullptr;
-    QLabel *labelGeneratorExpression = nullptr;
+    DListView *listView = nullptr;
+    DLineEdit *nameEidt = nullptr;
+    DComboBox *cbCXXComplier = nullptr;
+    DComboBox *cbCMake = nullptr;
+    DComboBox *cbCComplier = nullptr;
+    DComboBox *cbDebugger = nullptr;
+    DComboBox *cbGenerator = nullptr;
+    DLabel *labelGeneratorExpression = nullptr;
+    QStringListModel *listModel = nullptr;
 
     QSharedPointer<ToolChainData> toolChainData;
 };
@@ -65,67 +69,94 @@ KitsManagerWidget::~KitsManagerWidget()
 
 void KitsManagerWidget::setupUi()
 {
-    auto centerLayout = new QGridLayout();
+    auto centerLayout = new QHBoxLayout(this);
     centerLayout->setSpacing(6);
-    centerLayout->setContentsMargins(0, 0, 11, 0);
 
-    // List tree.
-    d->listWidget = new QListWidget();
-    d->listWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    d->listWidget->addItem("Desktop");
+    // leftSide
+    auto listFrame = new DFrame(this);
+    auto listlayout = new QVBoxLayout(listFrame);
+    listFrame->setLayout(listlayout);
 
-    auto detailGridLayout = new QGridLayout();
+    d->listView = new DListView(this);
+    d->listView->setAlternatingRowColors(true);
+    d->listView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    DFrame* separator = new DFrame(this);
+    separator->setFrameShape(DFrame::HLine);
+    separator->setFrameShadow(DFrame::Plain);
+
+    DIconButton *iconBtnI = new DIconButton(DStyle::SP_IncreaseElement, this);
+    iconBtnI->setFixedSize(QSize(20,20));
+    iconBtnI->setFlat(true);
+    DIconButton *iconBtnD = new DIconButton(DStyle::SP_DecreaseElement, this);
+    iconBtnD->setFixedSize(QSize(20,20));
+    iconBtnD->setFlat(true);
+
+    listlayout->addWidget(d->listView);
+    listlayout->addWidget(separator);
+
+    auto btnlayout = new QHBoxLayout(this);
+    btnlayout->addWidget(iconBtnI);
+    btnlayout->addWidget(iconBtnD);
+    btnlayout->setAlignment(Qt::AlignLeft);
+
+    listlayout->addLayout(btnlayout);
+
+    d->listModel = new QStringListModel(this);
+    d->listView->setModel(d->listModel);
+    d->listModel->setStringList(QStringList() << tr("Desktop"));
+
+    //rightSide
+    auto detailGridLayout = new QGridLayout(this);
     detailGridLayout->setSpacing(6);
-    d->cbCXXComplier = new QComboBox();
+    d->cbCXXComplier = new DComboBox();
 
-    d->nameEidt = new QLineEdit();
+    d->nameEidt = new DLineEdit(this);
     d->nameEidt->setText(tr("Desktop"));
     d->nameEidt->setEnabled(false);
 
-    d->cbCMake = new QComboBox();
+    d->cbCMake = new DComboBox(this);
 
-    auto labelCMake = new QLabel();
+    auto labelCMake = new DLabel(this);
     labelCMake->setText(tr("CMake Tool:"));
 
-    d->cbCComplier = new QComboBox();
+    d->cbCComplier = new DComboBox(this);
 
-    d->cbDebugger = new QComboBox();
+    d->cbDebugger = new DComboBox(this);
 
-    auto labelGenerator = new QLabel();
-    labelGenerator->setText(tr("CMake generator:CodeBlocks - Unix Makefiles"));
+    auto labelGenerator = new DLabel(this);
+    labelGenerator->setText(tr("CMake generator:"));
+    d->cbGenerator = new DComboBox(this);
+    d->cbGenerator->insertItem(0, "CodeBlocks - Unix Makefiles");
+    d->cbGenerator->setEnabled(false);
 
-    auto labelDebugger = new QLabel();
+    auto labelDebugger = new DLabel(this);
     labelDebugger->setText(tr("Debugger:"));
 
-    d->labelGeneratorExpression = new QLabel();
+    d->labelGeneratorExpression = new DLabel(this);
     d->labelGeneratorExpression->setText(QString());
 
-    auto Name = new QLabel();
+    auto Name = new DLabel(this);
     Name->setText(tr("Name:"));
 
-    auto labelCCompiler = new QLabel();
-    labelCCompiler->setText("C Compiler:");
+    auto labelCCompiler = new DLabel(this);
+    labelCCompiler->setText(tr("C Compiler:"));
 
-    auto labelCXXCompiler = new QLabel();
-    labelCXXCompiler->setText("C++ Compiler:");
+    auto labelCXXCompiler = new DLabel(this);
+    labelCXXCompiler->setText(tr("C++ Compiler:"));
 
-    QFrame* separator = new QFrame();
-    separator->setFrameShape(QFrame::HLine);
-    separator->setFrameShadow(QFrame::Sunken);
+    auto formlayout = new QFormLayout(this);
+    formlayout->addRow(Name, d->nameEidt);
+    formlayout->addRow(labelCCompiler, d->cbCComplier);
+    formlayout->addRow(labelCXXCompiler, d->cbCXXComplier);
+    formlayout->addRow(labelDebugger, d->cbDebugger);
+    formlayout->addRow(labelCMake, d->cbCMake);
+    formlayout->addRow(labelGenerator, d->cbGenerator);
+    //formlayout->setContentsMargins(0, 0, 10, 0);
 
-    centerLayout->addWidget(d->listWidget, 0, 0, 25, 1);
-    centerLayout->addWidget(Name, 1, 1, 1, 1);
-    centerLayout->addWidget(d->nameEidt, 1, 2, 1, 1);
-    centerLayout->addWidget(separator, 3, 1, 1, 2);
-    centerLayout->addWidget(labelCCompiler, 5, 1, 1, 1);
-    centerLayout->addWidget(d->cbCComplier, 5, 2, 1, 1);
-    centerLayout->addWidget(labelCXXCompiler, 7, 1, 1, 1);
-    centerLayout->addWidget(d->cbCXXComplier, 7, 2, 1, 1);
-    centerLayout->addWidget(labelDebugger, 9, 1, 1, 1);
-    centerLayout->addWidget(d->cbDebugger, 9, 2, 1, 1);
-    centerLayout->addWidget(labelCMake, 11, 1, 1, 1);
-    centerLayout->addWidget(d->cbCMake, 11, 2, 1, 1);
-    centerLayout->addWidget(labelGenerator, 13, 1, 1, 2);
+    centerLayout->addWidget(listFrame);
+    centerLayout->addSpacing(10);
+    centerLayout->addLayout(formlayout);
 
     setLayout(centerLayout);
 }
@@ -135,7 +166,7 @@ void KitsManagerWidget::updateUi()
     const ToolChainData::ToolChains &data = d->toolChainData->getToolChanins();
 
     // Update compiler combox.
-    auto updateComplier = [](QComboBox *cb, ToolChainData::Params &params) {
+    auto updateComplier = [](DComboBox *cb, ToolChainData::Params &params) {
         int i = 0;
         for (auto p : params) {
             QString text = p.name + "(" + p.path + ")";
@@ -165,7 +196,7 @@ bool KitsManagerWidget::getControlValue(QMap<QString, QVariant> &map)
     KitConfig config;
     config.name = d->nameEidt->text();
 
-    auto comboBoxValue = [](QComboBox *cb) {
+    auto comboBoxValue = [](DComboBox *cb) {
         int index = cb->currentIndex();
         if (index > -1) {
             return qvariant_cast<ToolChainData::ToolChainParam>(cb->itemData(index, Qt::UserRole + 1));
@@ -190,7 +221,7 @@ void KitsManagerWidget::setControlValue(const QMap<QString, QVariant> &map)
     KitConfig config;
     mapToData(map, config);
 
-    auto updateComplier = [](QComboBox *cb, ToolChainData::ToolChainParam &params) {
+    auto updateComplier = [](DComboBox *cb, ToolChainData::ToolChainParam &params) {
         for (int i = 0; i < cb->count(); i++) {
             ToolChainData::ToolChainParam data = qvariant_cast<ToolChainData::ToolChainParam>(cb->itemData(i, Qt::UserRole + 1));
             if (data.name == params.name && data.path == params.path) {

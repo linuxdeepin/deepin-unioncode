@@ -9,44 +9,45 @@
 
 #include "services/option/optionmanager.h"
 
+#include <DCheckBox>
+#include <DLineEdit>
+#include <DPushButton>
+#include <DWidget>
+#include <DRadioButton>
+#include <DComboBox>
+#include <DFileDialog>
+
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QSpacerItem>
-#include <QFileDialog>
 #include <QUrl>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QTimer>
-#include <QRadioButton>
+#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
 #include <QButtonGroup>
-#include <QComboBox>
 
 // TODO(mozart):should get from kitmanager.
 static const char *kDefaultKitName = "Desktop";
 
+DWIDGET_USE_NAMESPACE
 using namespace config;
 
 class ConfigureProjPanePrivate
 {
     friend class ConfigureProjPane;
 
-    QComboBox *kitComboBox{nullptr};
+    DComboBox *kitComboBox{nullptr};
 
-    QRadioButton *radioDebug{nullptr};
-    QRadioButton *radioRelease{nullptr};
+    DRadioButton *radioDebug{nullptr};
+    DRadioButton *radioRelease{nullptr};
 
-    QLineEdit *lineEditDebug{nullptr};
-    QLineEdit *lineEditRelease{nullptr};
+    DLineEdit *lineEditDebug{nullptr};
+    DLineEdit *lineEditRelease{nullptr};
 
-    QPushButton *btnRWithDInfo{nullptr};
-    QPushButton *btnConfigure{nullptr};
+    DPushButton *btnRWithDInfo{nullptr};
 
     QButtonGroup *group{nullptr};
 
@@ -56,7 +57,7 @@ class ConfigureProjPanePrivate
 ConfigureProjPane::ConfigureProjPane(const QString &language,
                                      const QString &workspace,
                                      QWidget *parent)
-    : QWidget(parent)
+    : DWidget(parent)
     , d(new ConfigureProjPanePrivate)
 {
     d->cfgItem = ConfigUtil::instance()->getConfigureParamPointer();
@@ -85,18 +86,17 @@ ConfigureProjPane::~ConfigureProjPane()
 
 void ConfigureProjPane::setupUI()
 {
-    auto btnSignalConnect = [this](QPushButton *btn, QLineEdit *lineEdit){
-        connect(btn, &QPushButton::clicked, [=](){
-            QString outputDirectory = QFileDialog::getExistingDirectory(this, "Output directory");
+    auto btnSignalConnect = [this](DPushButton *btn, DLineEdit *lineEdit){
+        connect(btn, &DPushButton::clicked, [=](){
+            QString outputDirectory = DFileDialog::getExistingDirectory(this, "Output directory");
             if (!outputDirectory.isEmpty()) {
                 lineEdit->setText(outputDirectory);
             }
         });
     };
-
-    QLabel *kitLabel = new QLabel(tr("Select kit: "));
+    DLabel *kitLabel = new DLabel(tr("Select kit: "));
     kitLabel->setFixedWidth(100);
-    d->kitComboBox = new QComboBox();
+    d->kitComboBox = new DComboBox(this);
     d->kitComboBox->addItem(kDefaultKitName);
     d->kitComboBox->setCurrentIndex(0);
     QHBoxLayout *hLayoutKit = new QHBoxLayout();
@@ -104,46 +104,35 @@ void ConfigureProjPane::setupUI()
     hLayoutKit->addWidget(d->kitComboBox, 0, Qt::AlignLeft);
     hLayoutKit->addStretch(10);
 
-    d->radioDebug = new QRadioButton("Debug");
+    d->radioDebug = new DRadioButton("Debug");
     d->radioDebug->setFixedWidth(100);
-    auto btnDebug = new QPushButton(tr("Browse..."));
-    d->lineEditDebug = new QLineEdit();
-    d->lineEditDebug->setMinimumWidth(400);
+    auto btnDebug = new DPushButton(tr("Browse..."));
+    d->lineEditDebug = new DLineEdit(this);
+    d->lineEditDebug->setMinimumWidth(280);
     btnSignalConnect(btnDebug, d->lineEditDebug);
     QHBoxLayout *hLayoutDebug = new QHBoxLayout();
     hLayoutDebug->addWidget(d->radioDebug);
     hLayoutDebug->addWidget(d->lineEditDebug);
     hLayoutDebug->addWidget(btnDebug);
 
-    d->radioRelease = new QRadioButton("Release");
+    d->radioRelease = new DRadioButton("Release");
     d->radioRelease->setFixedWidth(100);
-    auto btnRelease = new QPushButton(tr("Browse..."));
-    d->lineEditRelease = new QLineEdit();
-    d->lineEditDebug->setMinimumWidth(400);
+    auto btnRelease = new DPushButton(tr("Browse..."));
+    d->lineEditRelease = new DLineEdit(this);
+    d->lineEditDebug->setMinimumWidth(280);
     btnSignalConnect(btnRelease, d->lineEditRelease);
     QHBoxLayout *hLayoutRelease = new QHBoxLayout();
     hLayoutRelease->addWidget(d->radioRelease);
     hLayoutRelease->addWidget(d->lineEditRelease);
     hLayoutRelease->addWidget(btnRelease);
 
-    auto btnConfigure = new QPushButton(tr("Configure"));
-    btnConfigure->connect(btnConfigure, &QPushButton::clicked,
-                          this, &ConfigureProjPane::slotConfigure);
-
-    QHBoxLayout *hLayoutBottom = new QHBoxLayout();
-    hLayoutBottom->addStretch(10);
-    hLayoutBottom->addWidget(btnConfigure, 0, Qt::AlignRight);
-
-    QVBoxLayout *vLayout = new QVBoxLayout();
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
     vLayout->addLayout(hLayoutKit);
-    vLayout->addSpacing(10);
     vLayout->addLayout(hLayoutDebug);
     vLayout->addLayout(hLayoutRelease);
-    vLayout->addSpacing(10);
-    vLayout->addLayout(hLayoutBottom);
     setLayout(vLayout);
 
-    d->group = new QButtonGroup();
+    d->group = new QButtonGroup(this);
     d->group->addButton(d->radioDebug, 0);
     d->group->addButton(d->radioRelease, 1);
     d->radioDebug->setChecked(true);
