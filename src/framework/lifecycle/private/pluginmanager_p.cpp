@@ -235,6 +235,9 @@ bool PluginManagerPrivate::startPlugin(PluginMetaObjectPointer &pluginMetaObj)
  */
 void PluginManagerPrivate::stopPlugin(PluginMetaObjectPointer &pluginMetaObj)
 {
+    if (!pluginMetaObj->d->plugin)
+        return;
+
     dpfCheckTimeBegin();
 
     //流程互斥

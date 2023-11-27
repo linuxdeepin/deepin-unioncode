@@ -103,6 +103,5 @@ bool OptionCore::start()
 
 dpf::Plugin::ShutdownFlag OptionCore::stop()
 {
-    delete OptionDefaultKeeper::getOptionDialog();
     return Sync;
 }
