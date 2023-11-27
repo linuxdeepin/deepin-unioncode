@@ -104,7 +104,6 @@ int main(int argc, char *argv[])
 
     DApplication a(argc, argv);
     a.setOrganizationName("deepin");
-    a.setQuitOnLastWindowClosed(false);
     CommandParser::instance().process();
 
     // TODO(Any): put to command processor
