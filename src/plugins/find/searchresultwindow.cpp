@@ -146,6 +146,7 @@ void SearchResultWindow::setupUi()
     hLayout->addWidget(d->resultLabel);
 
     d->treeView = new SearchResultTreeView();
+    d->treeView->setHeaderHidden(true);
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addLayout(hLayout);
     vLayout->addWidget(d->treeView);
