@@ -6,6 +6,7 @@
 #define OPTIONSDIALOG_H
 
 #include <DLabel>
+#include <DDialog>
 #include <DLineEdit>
 #include <DListView>
 #include <DTabWidget>
@@ -29,23 +30,24 @@ class OptionsDialog : public DAbstractDialog
 public:
     explicit OptionsDialog(QWidget *parent = nullptr);
     bool insertOptionPanel(const QString &itemName, PageWidget *panel);
+    bool insertLabel(const QString &itemName);
 
 public slots:
     void slotLeftBarClicked(const QModelIndex &index);
-    void saveSingleConfig();
     void saveAllConfig();
     void slotScrollChanged(int value);
 
 private:
-    void setupUi(QWidget *widget);
+    void setupUi();
     void readConfig();
 
 protected:
     virtual void showEvent(QShowEvent *e) override;
     DListView *leftSideBar = nullptr;
-    QString activeOptName {};
     QMap<QString, PageWidget *> widgets{};
-    QStringListModel *leftBarModel = nullptr;
+    QMap<QStandardItem *, DLabel *> itemList{};
+    QModelIndex currentIndex;
+    QStandardItemModel *leftBarModel = nullptr;
     QScrollArea *scrollArea = nullptr;
     QWidget *scrollWidget = nullptr;
     QVBoxLayout *content = nullptr;

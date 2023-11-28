@@ -11,6 +11,7 @@
 #include <DPushButton>
 #include <DHeaderView>
 #include <DFileDialog>
+#include <DFrame>
 
 #include <QDebug>
 #include <QDir>
@@ -265,6 +266,10 @@ void ShortcutSettingWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
 
+    auto tableFrame = new DFrame(this);
+    auto tableLayout = new QVBoxLayout(tableFrame);
+    tableFrame->setLayout(tableLayout);
+
     d->tableView = new QTableView();
     d->tableView->setShowGrid(false);
     d->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -274,7 +279,11 @@ void ShortcutSettingWidget::setupUi()
     d->tableView->setFixedSize(QSize(685,428));
     d->model = new ShortcutTableModel();
     d->tableView->setModel(d->model);
-    vLayout->addWidget(d->tableView);
+    d->tableView->setFrameShape(QFrame::NoFrame);
+
+    tableLayout->addWidget(d->tableView);
+
+    vLayout->addWidget(tableFrame);
 
     DWidget *widgetOperate = new DWidget();
     vLayout->addWidget(widgetOperate);
