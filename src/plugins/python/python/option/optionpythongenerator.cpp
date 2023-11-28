@@ -5,7 +5,7 @@
 #include "optionpythongenerator.h"
 #include "pythonoptionwidget.h"
 
-#include <QWidget>
+#include <DWidget>
 #include <QHBoxLayout>
 #include <QTabWidget>
 
@@ -22,7 +22,7 @@ OptionPythonGenerator::OptionPythonGenerator()
     d->widget = new PythonOptionWidget();
 }
 
-QWidget *OptionPythonGenerator::optionWidget()
+DWidget *OptionPythonGenerator::optionWidget()
 {
     return d->widget;
 }

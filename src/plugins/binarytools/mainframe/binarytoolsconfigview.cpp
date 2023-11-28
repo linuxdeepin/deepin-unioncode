@@ -64,9 +64,6 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     : QWidget(parent)
     , d(new BinaryToolsConfigViewPrivate)
 {
-
-    this->setWindowIcon(QIcon(":/core/images/unioncode@128.png"));
-
     d->compatConfigWidget = new DWidget(this);
     d->nameLabel = new DLabel();
 
@@ -92,7 +89,8 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     d->gridLayout->setContentsMargins(10, 10, 10, 10);
 
     auto configLabel = new DLabel(this);
-    configLabel->setText(tr(" Binary configuration:"));
+    configLabel->setText(tr("Binary configuration:"));
+    configLabel->setContentsMargins(5, 0, 0, 0);
 
     d->gridLayout->addWidget(configLabel, 0, 0, 1, 1);
     d->gridLayout->addWidget(d->runComandCombo, 0, 1, 1, 1);
@@ -399,7 +397,6 @@ void BinaryToolsConfigView::combineCompatConfig()
 
 void BinaryToolsConfigView::setConfigWidget()
 {
-    d->compatConfigWidget->setContentsMargins(0, 0, 0, 0);
     auto cmdLabel = new DLabel(d->compatConfigWidget);
     cmdLabel->setText(tr("Command:"));
     d->commandLabel = new DLabel(d->compatConfigWidget);

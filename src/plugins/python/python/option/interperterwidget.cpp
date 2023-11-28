@@ -7,17 +7,18 @@
 #include "common/util/custompaths.h"
 #include "common/toolchain/toolchain.h"
 
+#include <DComboBox>
+#include <DTableView>
+#include <DHeaderView>
+#include <DLabel>
+#include <DWidget>
+
 #include <QtConcurrent>
 #include <QDir>
-#include <QDebug>
-#include <QComboBox>
-#include <QTableView>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QHeaderView>
 
-///////////////////
+DWIDGET_USE_NAMESPACE
 class InterpreterModelPrivate
 {
     QVector<QPair<QString, QString>> packageVector;
@@ -100,12 +101,11 @@ void InterpreterModel::setCustomData(QVector<QPair<QString, QString>>& data)
     endResetModel();
 }
 
-//////////////////////////
 class InterperterWidgetPrivate
 {
     friend class InterpreterWidget;
 
-    QComboBox *interpreterComboBox = nullptr;
+    DComboBox *interpreterComboBox = nullptr;
     InterpreterModel *model = nullptr;
     QSharedPointer<ToolChainData> toolChainData;
 };
@@ -137,23 +137,23 @@ void InterpreterWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
 
-    QWidget *interpreterWidget = new QWidget();
+    DWidget *interpreterWidget = new DWidget();
     vLayout->addWidget(interpreterWidget);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     interpreterWidget->setLayout(hLayout);
-    QLabel *label = new QLabel(QLabel::tr("Python Interperter:"));
+    DLabel *label = new DLabel(DLabel::tr("Python Interperter:"));
     label->setFixedWidth(180);
-    d->interpreterComboBox = new QComboBox();
-    QObject::connect(d->interpreterComboBox, &QComboBox::currentTextChanged,
+    d->interpreterComboBox = new DComboBox();
+    QObject::connect(d->interpreterComboBox, &DComboBox::currentTextChanged,
                      this, &InterpreterWidget::setPackageData);
 
     hLayout->addWidget(label);
     hLayout->addWidget(d->interpreterComboBox);
 
-    QTableView *tableView = new QTableView();
+    DTableView *tableView = new DTableView();
     tableView->setShowGrid(false);
-    tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    tableView->horizontalHeader()->setSectionResizeMode(DHeaderView::Stretch);
     tableView->verticalHeader()->hide();
     tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);

@@ -8,7 +8,6 @@
 #include "common/common.h"
 
 #include <QAction>
-#include <QDebug>
 #include <QtXml>
 
 class PythonAsynParsePrivate

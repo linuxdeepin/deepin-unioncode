@@ -164,6 +164,7 @@ EnvironmentView::EnvironmentView(QWidget *parent)
         d->tableView->setShowGrid(false);
         DHeaderView* headerView = d->tableView->horizontalHeader();
         headerView->setSectionResizeMode(DHeaderView::ResizeToContents);
+        headerView->setDefaultAlignment(Qt::AlignLeft);
         d->tableView->verticalHeader()->hide();
         d->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
         d->tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
