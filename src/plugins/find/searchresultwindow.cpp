@@ -5,16 +5,19 @@
 #include "searchresultwindow.h"
 #include "common/common.h"
 
+#include <DPushButton>
+#include <DMessageBox>
+#include <DLabel>
+#include <DLineEdit>
+#include <DTreeView>
+#include <DIconButton>
+
 #include <QVBoxLayout>
-#include <QPushButton>
 #include <QStandardItemModel>
 #include <QProcess>
-#include <QMessageBox>
 #include <QDebug>
-#include <QCheckBox>
-#include <QLabel>
-#include <QLineEdit>
 #include <QtConcurrent>
+
 
 class SearchResultTreeViewPrivate
 {
@@ -25,13 +28,13 @@ class SearchResultTreeViewPrivate
 };
 
 SearchResultTreeView::SearchResultTreeView(QWidget *parent)
-    : QTreeView(parent)
+    : DTreeView(parent)
     , d(new SearchResultTreeViewPrivate())
 {
     QAbstractItemModel *itemModel = new QStandardItemModel();
     setModel(itemModel);
 
-    QObject::connect(this, &QTreeView::doubleClicked, [=](const QModelIndex &index){
+    QObject::connect(this, &DTreeView::doubleClicked, [=](const QModelIndex &index){
         if (!index.isValid())
             return;
         if (!index.parent().isValid())
@@ -98,8 +101,8 @@ class SearchResultWindowPrivate
     SearchResultWindowPrivate(){}
     SearchResultTreeView *treeView{nullptr};
     QWidget *replaceWidget{nullptr};
-    QLineEdit *replaceEdit{nullptr};
-    QLabel *resultLabel{nullptr};
+    DLineEdit *replaceEdit{nullptr};
+    DLabel *resultLabel{nullptr};
 
     SearchParams searchParams;
 
@@ -117,36 +120,38 @@ void SearchResultWindow::setupUi()
 {
     d->replaceWidget = new QWidget();
     QHBoxLayout *replaceLayout = new QHBoxLayout();
-    QLabel *replaceLabel = new QLabel(QLabel::tr("Replace with:"));
-    replaceLabel->setAlignment(Qt::AlignRight);
-    replaceLabel->setFixedWidth(120);
-    d->replaceEdit = new QLineEdit();
+
+    d->replaceEdit = new DLineEdit();
     d->replaceEdit->setFixedWidth(500);
-    QPushButton *replaceBtn = new QPushButton(QPushButton::tr("Replace"));
-    replaceBtn->setFixedHeight(30);
+    d->replaceEdit->setPlaceholderText("Replace");
+    DPushButton *replaceBtn = new DPushButton(DPushButton::tr("Replace"));
+    replaceBtn->setFixedSize(120,36);
     d->replaceWidget->setLayout(replaceLayout);
 
-    replaceLayout->addWidget(replaceLabel, 0, Qt::AlignRight);
     replaceLayout->addWidget(d->replaceEdit, 0, Qt::AlignLeft);
     replaceLayout->addWidget(replaceBtn, 0, Qt::AlignLeft);
-    replaceLayout->addStretch();
+    replaceLayout->setAlignment(Qt::AlignLeft);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    QPushButton *cleanBtn = new QPushButton(QPushButton::tr("Clean && Return"));
-    cleanBtn->setFixedHeight(30);
-    d->resultLabel = new QLabel();
-    hLayout->addWidget(d->replaceWidget, 0, Qt::AlignLeft);
-    hLayout->addWidget(cleanBtn, 0, Qt::AlignLeft);
-    hLayout->addWidget(d->resultLabel, 0, Qt::AlignLeft);
-    hLayout->addStretch(0);
+    DIconButton *cleanBtn = new DIconButton();//Clean && Return
+    cleanBtn->setIcon(QIcon::fromTheme("go-previous"));
+    QSize iconSize(12,12);
+    cleanBtn->setIconSize(iconSize);
+
+    cleanBtn->setFixedSize(36,36);
+    d->resultLabel = new DLabel();
+
+    hLayout->addWidget(cleanBtn);
+    hLayout->addWidget(d->replaceWidget);
+    hLayout->addWidget(d->resultLabel);
 
     d->treeView = new SearchResultTreeView();
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addLayout(hLayout);
     vLayout->addWidget(d->treeView);
 
-    connect(cleanBtn, &QPushButton::clicked, this, &SearchResultWindow::clean);
-    connect(replaceBtn, &QPushButton::clicked, this, &SearchResultWindow::replace);
+    connect(cleanBtn, &DIconButton::clicked, this, &SearchResultWindow::clean);
+    connect(replaceBtn, &DPushButton::clicked, this, &SearchResultWindow::replace);
 
     setLayout(vLayout);
 
@@ -214,7 +219,6 @@ void SearchResultWindow::startSearch(const QString &cmd, const QString &filePath
 
                 QRegularExpressionMatch regMatch;
                 if ((regMatch = IN_FOLDER_REG.match(line)).hasMatch()) {
-                    qInfo() << regMatch;
                     FindItem findItem;
                     findItem.filePathName = regMatch.captured(1).trimmed().toStdString().c_str();
                     findItem.lineNumber = regMatch.captured(2).trimmed().toInt();
@@ -222,7 +226,6 @@ void SearchResultWindow::startSearch(const QString &cmd, const QString &filePath
                     findItemList.append(findItem);
                     resultCount++;
                 } else if ((regMatch = IN_FILE_REG.match(line)).hasMatch()) {
-                    qInfo() << regMatch;
                     FindItem findItem;
                     findItem.filePathName = filePath;
                     findItem.lineNumber = regMatch.captured(1).trimmed().toInt();
@@ -255,14 +258,14 @@ void SearchResultWindow::replace()
     showMsg(true, "Replacing, please wait...");
     QString replaceText = d->replaceEdit->text();
     if (replaceText.isEmpty()) {
-        if (QMessageBox::Yes != QMessageBox::warning(this, QMessageBox::tr("Warning"), QMessageBox::tr("Repalce text is empty, will continue?"),
-                                                     QMessageBox::Yes, QMessageBox::No)) {
+        if (DMessageBox::Yes != DMessageBox::warning(this, DMessageBox::tr("Warning"), DMessageBox::tr("Repalce text is empty, will continue?"),
+                                                     DMessageBox::Yes, DMessageBox::No)) {
             return;
         }
     }
 
-    if (QMessageBox::Yes != QMessageBox::warning(this, QMessageBox::tr("Warning"), QMessageBox::tr("Will replace permanent, continue?"),
-                                                 QMessageBox::Yes, QMessageBox::No)) {
+    if (DMessageBox::Yes != DMessageBox::warning(this, DMessageBox::tr("Warning"), DMessageBox::tr("Will replace permanent, continue?"),
+                                                 DMessageBox::Yes, DMessageBox::No)) {
         return;
     }
 
@@ -307,7 +310,7 @@ void SearchResultWindow::searchAgain()
 void SearchResultWindow::showMsg(bool succeed, QString msg)
 {
     if (succeed) {
-        d->resultLabel->setStyleSheet("color:white;");
+        d->resultLabel->setStyleSheet("color:black;");
     } else {
         d->resultLabel->setStyleSheet("color:red;");
     }

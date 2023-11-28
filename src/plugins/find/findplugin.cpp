@@ -12,7 +12,7 @@
 #include "base/abstractmenu.h"
 #include "base/abstractwidget.h"
 
-#include <QMenu>
+#include <DMenu>
 #include <QAction>
 
 using namespace dpfservice;
@@ -34,17 +34,17 @@ bool FindPlugin::start()
         abort();
     }
 
-    QMenu* editMenu = new QMenu(QMenu::tr("&Edit"));
+    DMenu* editMenu = new DMenu(DMenu::tr("&Edit"));
     QAction* findAction = new QAction();
     QAction* advancedFindAction = new QAction();
 
 
     ActionManager::getInstance()->registerAction(findAction, "Edit.Find",
                                                  tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F),
-                                                 "search-find");
+                                                 "find");
     ActionManager::getInstance()->registerAction(advancedFindAction, "Edit.Advanced.Find",
                                                  tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F),
-                                                 "search-find");
+                                                 "find");
 
     editMenu->addAction(findAction);
     editMenu->addAction(advancedFindAction);

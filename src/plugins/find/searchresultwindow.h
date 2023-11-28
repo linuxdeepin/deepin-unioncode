@@ -6,8 +6,9 @@
 #define SEARCHRESULTWINDOW_H
 
 #include <QWidget>
-#include <QTreeView>
+#include <DTreeView>
 
+DWIDGET_USE_NAMESPACE
 typedef struct {
     QStringList filePathList;
     QString searchText;
@@ -27,7 +28,7 @@ typedef struct{
 using FindItemList = QList<FindItem>;
 
 class SearchResultTreeViewPrivate;
-class SearchResultTreeView : public QTreeView
+class SearchResultTreeView : public DTreeView
 {
     Q_OBJECT
 public:
