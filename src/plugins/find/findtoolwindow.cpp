@@ -6,39 +6,42 @@
 #include "searchresultwindow.h"
 #include "transceiver/findreceiver.h"
 
+#include <DLineEdit>
+#include <DLabel>
+#include <DComboBox>
+#include <DCheckBox>
+#include <DPushButton>
+#include <DStackedWidget>
+#include <DMessageBox>
+#include <DScrollArea>
+#include <DSuggestButton>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QLineEdit>
-#include <QLabel>
-#include <QComboBox>
-#include <QCheckBox>
-#include <QPushButton>
 #include <QDebug>
-#include <QStackedWidget>
 #include <QProcess>
-#include <QMessageBox>
-#include <QScrollArea>
 
-#define LABEL_WIDTH (150)
-
+#define LABEL_WIDTH (120)
+DWIDGET_USE_NAMESPACE
 class FindToolWindowPrivate
 {
     FindToolWindowPrivate(){}
-    QStackedWidget *stackedWidget{nullptr};
+    DStackedWidget *stackedWidget{nullptr};
     SearchResultWindow *searchResultWindow{nullptr};
     QSet<QString> allProjectsPathList{nullptr};
     QString currentProjectPath;
     QString currentFilePath;
     QMap<QString, QString> projectInfoMap;
 
-    QComboBox *scopeComboBox{nullptr};
-    QLineEdit *searchLineEdit{nullptr};
-    QCheckBox *senseCheckBox{nullptr};
-    QCheckBox *wholeWordsCheckBox{nullptr};
-    QCheckBox *regularCheckBox{nullptr};
-    QLineEdit *patternLineEdit{nullptr};
-    QLineEdit *expatternLineEdit{nullptr};
-
+    DComboBox *scopeComboBox{nullptr};
+    DLineEdit *searchLineEdit{nullptr};
+    DCheckBox *senseCheckBox{nullptr};
+    DCheckBox *wholeWordsCheckBox{nullptr};
+    DCheckBox *regularCheckBox{nullptr};
+    DLineEdit *patternLineEdit{nullptr};
+    DLineEdit *expatternLineEdit{nullptr};
+    DSuggestButton *senseCheckBtn{nullptr};
+    DPushButton *wholeWordsCheckBtn{nullptr};
     friend class FindToolWindow;
 };
 
@@ -47,7 +50,6 @@ FindToolWindow::FindToolWindow(QWidget *parent)
     , d(new FindToolWindowPrivate())
 {
     setupUi();
-
     connect(FindEventTransmit::instance(), QOverload<const QString &, const QString &>::of(&FindEventTransmit::sendProjectPath),
             [=](const QString &projectPath, const QString &language){
         d->currentProjectPath = projectPath;
@@ -74,10 +76,10 @@ FindToolWindow::FindToolWindow(QWidget *parent)
 
 void FindToolWindow::setupUi()
 {
-    d->stackedWidget = new QStackedWidget();
+    d->stackedWidget = new DStackedWidget();
     QVBoxLayout *vLayout = new QVBoxLayout();
 
-    QScrollArea *scrollArea = new QScrollArea();
+    DScrollArea *scrollArea = new DScrollArea();
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(d->stackedWidget);
     vLayout->addWidget(scrollArea);
@@ -90,7 +92,6 @@ void FindToolWindow::setupUi()
 
     d->stackedWidget->addWidget(searchParamWidget);
     d->stackedWidget->addWidget(searchResultWidget);
-
     d->stackedWidget->setCurrentIndex(0);
 
     setLayout(vLayout);
@@ -105,70 +106,90 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     widget->setFixedSize(725, 300);
     hLayout->addWidget(widget, 0, Qt::AlignLeft);
 
+    hLayout->addWidget(widget);
+
     QVBoxLayout *vLayout = new QVBoxLayout();
     widget->setLayout(vLayout);
 
     QHBoxLayout *scopeLayout = new QHBoxLayout();
-    QLabel *scopeLabel = new QLabel(QLabel::tr("Scope:"));
-    scopeLabel->setAlignment(Qt::AlignRight);
+    DLabel *scopeLabel = new DLabel(DLabel::tr("Scope:"));
     scopeLabel->setFixedWidth(LABEL_WIDTH);
-    d->scopeComboBox = new QComboBox();
+    d->scopeComboBox = new DComboBox();
     d->scopeComboBox->addItem(tr("All Projects"));
     d->scopeComboBox->addItem(tr("Current Project"));
     d->scopeComboBox->addItem(tr("Current File"));
+    d->scopeComboBox->setFixedWidth(369);
+    scopeLabel->setContentsMargins(72,0,0,0);
     scopeLayout->addWidget(scopeLabel);
     scopeLayout->addWidget(d->scopeComboBox);
+    scopeLayout->setAlignment(Qt::AlignLeft );
 
     QHBoxLayout *searchLayout = new QHBoxLayout();
-    QLabel *searchLabel = new QLabel(QLabel::tr("Search for:"));
-    searchLabel->setAlignment(Qt::AlignRight);
+    DLabel *searchLabel = new DLabel(DLabel::tr("Search for:"));
     searchLabel->setFixedWidth(LABEL_WIDTH);
-    d->searchLineEdit = new QLineEdit();
+    searchLabel->setContentsMargins(45,0,0,0);
+    d->searchLineEdit = new DLineEdit();
+    d->searchLineEdit->setFixedWidth(287);
+    d->searchLineEdit->setPlaceholderText(tr("thread"));
     searchLayout->addWidget(searchLabel);
     searchLayout->addWidget(d->searchLineEdit);
 
-    QHBoxLayout *ruleLayout = new QHBoxLayout();
-    d->senseCheckBox = new QCheckBox(QCheckBox::tr("Case sensitive"));
-    d->wholeWordsCheckBox = new QCheckBox(QCheckBox::tr("Whole words only"));
-    d->regularCheckBox = new QCheckBox(QCheckBox::tr("Use regular expressions"));
-    ruleLayout->addStretch();
-    ruleLayout->addWidget(d->senseCheckBox);
-    ruleLayout->addWidget(d->wholeWordsCheckBox);
-    ruleLayout->addWidget(d->regularCheckBox);
-    d->regularCheckBox->setVisible(false);
+    d->senseCheckBtn = new DSuggestButton(this);
+    d->senseCheckBtn->setText("Aa");
+    d->senseCheckBtn->setFixedSize(36,36);
+    d->wholeWordsCheckBtn = new DPushButton(this);
+    d->wholeWordsCheckBtn->setIcon(QIcon::fromTheme("find_matchComplete"));
+    d->wholeWordsCheckBtn->setFixedSize(36,36);
+
+    searchLayout->addWidget(d->senseCheckBtn);
+    searchLayout->addWidget(d->wholeWordsCheckBtn);
+    searchLayout->setAlignment(Qt::AlignLeft);
+    searchLayout->setContentsMargins(0,10,0,0);
 
     QHBoxLayout *patternLayout = new QHBoxLayout();
-    QLabel *patternLabel = new QLabel(QLabel::tr("File pattern:"));
-    patternLabel->setAlignment(Qt::AlignRight);
+    DLabel *patternLabel = new DLabel(DLabel::tr("File pattern:"));
     patternLabel->setFixedWidth(LABEL_WIDTH);
-    d->patternLineEdit = new QLineEdit();
+    patternLabel->setContentsMargins(35,0,0,0);
+    d->patternLineEdit = new DLineEdit();
+    d->patternLineEdit->setFixedWidth(369);
+    d->patternLineEdit->setPlaceholderText(tr("e.g.*.ts,src/**/include"));
     patternLayout->addWidget(patternLabel);
     patternLayout->addWidget(d->patternLineEdit);
+    patternLayout->setAlignment(Qt::AlignLeft);
+    patternLayout->setContentsMargins(0,10,0,0);
 
     QHBoxLayout *expatternLayout = new QHBoxLayout();
-    QLabel *expatternLabel = new QLabel(QLabel::tr("Exclusion pattern:"));
-    expatternLabel->setAlignment(Qt::AlignRight);
+    DLabel *expatternLabel = new DLabel(DLabel::tr("Exclusion pattern:"));
     expatternLabel->setFixedWidth(LABEL_WIDTH);
-    d->expatternLineEdit = new QLineEdit();
+    d->expatternLineEdit = new DLineEdit();
+    d->expatternLineEdit->setFixedWidth(369);
+    d->expatternLineEdit->setPlaceholderText(tr("e.g.*.ts,src/**/include"));
     expatternLayout->addWidget(expatternLabel);
     expatternLayout->addWidget(d->expatternLineEdit);
+    expatternLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    expatternLayout->setContentsMargins(0,10,0,0);
 
-    QPushButton *searchBtn = new QPushButton(QPushButton::tr("Search"));
-    QPushButton *replaceBtn = new QPushButton(QPushButton::tr("Search && Replace"));
     QHBoxLayout *btnLayout = new QHBoxLayout();
-    btnLayout->addStretch();
+    DPushButton *searchBtn = new DPushButton(DPushButton::tr("Search"));
+    searchBtn->setFixedSize(120,36);
+
+    DPushButton *replaceBtn = new DPushButton(DPushButton::tr("Search && Replace"));
+    replaceBtn->setFixedSize(155,36);
     btnLayout->addWidget(searchBtn);
     btnLayout->addWidget(replaceBtn);
+    btnLayout->setAlignment(Qt::AlignCenter | Qt::AlignTop);
+    btnLayout->setContentsMargins(0,5,0,0);
 
     connect(searchBtn, &QAbstractButton::clicked, this, &FindToolWindow::search);
     connect(replaceBtn, &QAbstractButton::clicked, this, &FindToolWindow::replace);
 
     vLayout->addLayout(scopeLayout);
     vLayout->addLayout(searchLayout);
-    vLayout->addLayout(ruleLayout);
     vLayout->addLayout(patternLayout);
     vLayout->addLayout(expatternLayout);
     vLayout->addLayout(btnLayout);
+
+
 }
 
 void FindToolWindow::addSearchResultWidget(QWidget *parentWidget)
@@ -194,7 +215,7 @@ bool FindToolWindow::checkSelectedScopeValid()
     case 0:
     {
         if (d->allProjectsPathList.isEmpty()) {
-            QMessageBox::warning(this, tr("Error"), tr("All projects path is empty, please import!"));
+            DMessageBox::warning(this, tr("Error"), tr("All projects path is empty, please import!"));
             return false;
         }
         break;
@@ -202,7 +223,7 @@ bool FindToolWindow::checkSelectedScopeValid()
     case 1:
     {
         if (d->currentProjectPath.isEmpty()) {
-            QMessageBox::warning(this, tr("Error"), tr("Current project path is empty, please import!"));
+            DMessageBox::warning(this, tr("Error"), tr("Current project path is empty, please import!"));
             return false;
         }
         break;
@@ -210,14 +231,14 @@ bool FindToolWindow::checkSelectedScopeValid()
     case 2:
     {
         if (d->currentFilePath.isEmpty()) {
-            QMessageBox::warning(this, tr("Error"), tr("Current file path is empty, please import!"));
+            DMessageBox::warning(this, tr("Error"), tr("Current file path is empty, please import!"));
             return false;
         }
         break;
     }
     default:
     {
-        QMessageBox::warning(this, tr("Error"), tr("Scope is not selected, please select!"));
+        DMessageBox::warning(this, tr("Error"), tr("Scope is not selected, please select!"));
         return false;
     }
     }
@@ -232,7 +253,7 @@ bool FindToolWindow::getSearchParams(SearchParams *searchParams)
 
     QString text = d->searchLineEdit->text();
     if (text.isEmpty()) {
-        QMessageBox::warning(this, tr("Error"), tr("Search for text is empty, please input!"));
+        DMessageBox::warning(this, tr("Error"), tr("Search for text is empty, please input!"));
         return false;
     }
 
@@ -254,8 +275,8 @@ bool FindToolWindow::getSearchParams(SearchParams *searchParams)
 
     searchParams->filePathList = searchPathList;
     searchParams->searchText = text;
-    searchParams->sensitiveFlag = d->senseCheckBox->isChecked();
-    searchParams->wholeWordsFlag = d->wholeWordsCheckBox->isChecked();
+    searchParams->sensitiveFlag = d->senseCheckBtn->isChecked();
+    searchParams->wholeWordsFlag  = d->wholeWordsCheckBtn->isChecked();
     searchParams->patternsList = d->patternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
     searchParams->exPatternsList = d->expatternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
     searchParams->projectInfoMap = d->projectInfoMap;
