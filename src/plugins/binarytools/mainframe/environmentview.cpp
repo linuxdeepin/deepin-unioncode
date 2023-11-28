@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "environmentview.h"
+#include "binarytoolsconfigview.h"
 
 #include <DTableView>
 #include <DCheckBox>

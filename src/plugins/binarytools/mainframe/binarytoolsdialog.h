@@ -7,10 +7,10 @@
 
 #include "common/widget/outputpane.h"
 
-#include <QDialog>
+#include <DDialog>
 
 class BinaryToolsDialogPrivate;
-class BinaryToolsDialog : public QDialog
+class BinaryToolsDialog : public DTK_WIDGET_NAMESPACE::DDialog
 {
     Q_OBJECT
 public:

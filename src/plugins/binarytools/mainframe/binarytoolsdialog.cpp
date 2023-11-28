@@ -9,9 +9,11 @@
 #include <DPushButton>
 #include <DDialogButtonBox>
 
+#include <QIcon>
 #include <QProcess>
 #include <QBoxLayout>
 #include <QTextBlock>
+#include <QFrame>
 
 DWIDGET_USE_NAMESPACE
 class BinaryToolsDialogPrivate
@@ -22,28 +24,40 @@ class BinaryToolsDialogPrivate
 };
 
 BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
-    : QDialog(parent)
+    : DDialog(parent)
     , d (new BinaryToolsDialogPrivate)
 {
     setWindowTitle(tr("Binary Tools"));
+    setIcon(QIcon(":/icons/deepin/builtin/common/icons/unioncode_16px.png"));
 
-    QVBoxLayout *vLayout = new QVBoxLayout(this);
-    vLayout->setContentsMargins(20, 20, 20, 20);
-    vLayout->setSpacing(6);
+    QFrame *mainFrame = new QFrame(this);
+    addContent(mainFrame);
 
+    QVBoxLayout *vLayout = new QVBoxLayout(mainFrame);
     d->configView = new BinaryToolsConfigView;
     vLayout->addWidget(d->configView);
     vLayout->addStretch();
 
-    QHBoxLayout * buttonLayout = new QHBoxLayout();
-    d->buttons = new DDialogButtonBox(this);
+    QHBoxLayout * buttonLayout = new QHBoxLayout(mainFrame);
+    d->buttons = new DDialogButtonBox(mainFrame);
     d->buttons->setStandardButtons(DDialogButtonBox::Apply | DDialogButtonBox::Save | DDialogButtonBox::Cancel);
-    d->buttons->button(DDialogButtonBox::Apply)->setText(tr("Use Tool"));
-    d->buttons->button(DDialogButtonBox::Save)->setText(tr("Save"));
     d->buttons->button(DDialogButtonBox::Cancel)->setText(tr("Cancel"));
+    d->buttons->button(DDialogButtonBox::Save)->setText(tr("Save Configuration"));
+    d->buttons->button(DDialogButtonBox::Apply)->setText(tr("Use Tool"));
     d->buttons->button(DDialogButtonBox::Apply)->setDefault(true);
-    buttonLayout->addWidget(d->buttons);
+
+    // 将按钮添加到水平布局中
+    buttonLayout->addWidget(d->buttons->button(DDialogButtonBox::Apply),Qt::AlignTop);
+    buttonLayout->addWidget(d->buttons->button(DDialogButtonBox::Save),Qt::AlignTop);
+    buttonLayout->addWidget(d->buttons->button(DDialogButtonBox::Cancel),Qt::AlignTop);
+
+    //消除掉按钮默认图片
+    d->buttons->button(DDialogButtonBox::Apply)->setIcon(QIcon());
+    d->buttons->button(DDialogButtonBox::Save)->setIcon(QIcon());
+    d->buttons->button(DDialogButtonBox::Cancel)->setIcon(QIcon());
     vLayout->addLayout(buttonLayout);
+
+
 
     connect(d->configView, &BinaryToolsConfigView::useCombinationCommand, [=](){
         QtConcurrent::run([=](){

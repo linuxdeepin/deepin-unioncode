@@ -18,7 +18,7 @@
 #include <DLabel>
 #include <DScrollArea>
 
-#include <QFont>
+#include <QIcon>
 #include <QInputDialog>
 #include <qmessagebox.h>
 #include <QGridLayout>
@@ -26,6 +26,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QHBoxLayout>
 
 static QString CURRENT_COMMAND = "Current command";
 static QString ALL_COMMAND = "All command";
@@ -63,6 +64,9 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     : QWidget(parent)
     , d(new BinaryToolsConfigViewPrivate)
 {
+
+    this->setWindowIcon(QIcon(":/core/images/unioncode@128.png"));
+
     d->compatConfigWidget = new DWidget(this);
     d->nameLabel = new DLabel();
 
@@ -70,17 +74,25 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     d->runComandCombo->setMinimumContentsLength(15);
     d->runComandCombo->setSizeAdjustPolicy(DComboBox::AdjustToContents);
 
-    d->addButton = new DPushButton(tr("Add"), this);
-    d->deleteButton = new DPushButton(tr("Delete"), this);
-    d->renameButton = new DPushButton(tr("Rename"), this);
-    d->combineButton = new DPushButton(tr("Combine"), this);
+    //Add
+    d->addButton = new DPushButton(this);
+    d->addButton->setIcon(QIcon::fromTheme("add"));
+    //Delete
+    d->deleteButton = new DPushButton(this);
+    d->deleteButton->setIcon(QIcon::fromTheme("delete"));
+    //Rename
+    d->renameButton = new DPushButton(this);
+    d->renameButton->setIcon(QIcon::fromTheme("rename"));
+    //Combine
+    d->combineButton = new DPushButton(this);
+    d->combineButton->setIcon(QIcon::fromTheme("combine"));
 
     d->gridLayout = new QGridLayout(this);
     d->gridLayout->setSpacing(6);
     d->gridLayout->setContentsMargins(10, 10, 10, 10);
 
     auto configLabel = new DLabel(this);
-    configLabel->setText(tr("Binary configuration:"));
+    configLabel->setText(tr(" Binary configuration:"));
 
     d->gridLayout->addWidget(configLabel, 0, 0, 1, 1);
     d->gridLayout->addWidget(d->runComandCombo, 0, 1, 1, 1);
@@ -388,11 +400,7 @@ void BinaryToolsConfigView::combineCompatConfig()
 void BinaryToolsConfigView::setConfigWidget()
 {
     d->compatConfigWidget->setContentsMargins(0, 0, 0, 0);
-    d->compatConfigWidget->setAutoFillBackground(true);
     auto cmdLabel = new DLabel(d->compatConfigWidget);
-    QFont ft;
-    ft.setBold(true);
-    cmdLabel->setFont(ft);
     cmdLabel->setText(tr("Command:"));
     d->commandLabel = new DLabel(d->compatConfigWidget);
 
@@ -404,19 +412,35 @@ void BinaryToolsConfigView::setConfigWidget()
     auto exeLabel = new DLabel(d->compatConfigWidget);
     exeLabel->setText(tr("Executable:"));
     d->executableDirEdit = new DLineEdit(d->compatConfigWidget);
-    auto browseButton1 = new DPushButton(tr("Browse..."), d->compatConfigWidget);
+    auto browseButton1 = new DPushButton(tr("..."), d->compatConfigWidget);
 
     auto workLabel = new DLabel(d->compatConfigWidget);
     workLabel->setText(tr("Working directory:"));
     d->workingDirEdit = new DLineEdit(d->compatConfigWidget);
-    auto browseButton2 = new DPushButton(tr("Browse..."), d->compatConfigWidget);
+    auto browseButton2 = new DPushButton(tr("..."), d->compatConfigWidget);
 
     auto envLabel = new DLabel(d->compatConfigWidget);
-    envLabel->setText(tr("Envrioment: Base environment for this command configuration."));
-    auto appendButton = new DPushButton(tr("&Append"), d->compatConfigWidget);
-    auto deleteButton = new DPushButton(tr("&Delete"), d->compatConfigWidget);
-    auto resetButton = new DPushButton(tr("&Reset"), d->compatConfigWidget);
+    envLabel->setText(tr("Configuration environment for the current command:"));
+
+    //append
+    auto appendButton = new DPushButton(d->compatConfigWidget);
+    appendButton->setIcon(QIcon::fromTheme("add"));
+    //Delete
+    auto deleteButton = new DPushButton(d->compatConfigWidget);
+    deleteButton->setIcon(QIcon::fromTheme("delete"));
     deleteButton->setEnabled(false);
+    //Reset
+    auto resetButton = new DPushButton(d->compatConfigWidget);
+    resetButton->setIcon(QIcon::fromTheme("reset"));
+
+    DWidget *ButtonWidget= new DWidget();
+    // 创建一个布局来容纳这三个按钮
+    QHBoxLayout *ButtonLayout = new QHBoxLayout(ButtonWidget);
+    // 将按钮添加到容器布局中
+    ButtonLayout->addWidget(appendButton);
+    ButtonLayout->addWidget(deleteButton);
+    ButtonLayout->addWidget(resetButton);
+
     d->envView = new EnvironmentView();
     d->envView->setFixedHeight(250);
 
@@ -435,10 +459,9 @@ void BinaryToolsConfigView::setConfigWidget()
     gridLayout->addWidget(d->workingDirEdit, 3, 1, 1, 1);
     gridLayout->addWidget(browseButton2, 3, 2, 1, 1);
     gridLayout->addWidget(envLabel, 4, 0, 1, 3);
-    gridLayout->addWidget(appendButton, 5, 0, 1, 1);
-    gridLayout->addWidget(deleteButton, 6, 0, 1, 1);
-    gridLayout->addWidget(resetButton, 7, 0, 1, 1);
-    gridLayout->addWidget(d->envView, 5, 1, 5, 2);
+    gridLayout->addWidget(ButtonWidget, 10, 0, 1, 1);
+
+    gridLayout->addWidget(d->envView, 5, 0, 5, 3);
     d->compatConfigWidget->setLayout(gridLayout);
 
     connect(browseButton1, &DPushButton::clicked, [=]() {
