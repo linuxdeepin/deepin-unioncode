@@ -14,6 +14,7 @@ set(CXX_CPP
     mainframe/optionenvironmentgenerator.cpp
     mainframe/optionprofilesettinggenerator.cpp
     mainframe/optionshortcutsettinggenerator.cpp
+    mainframe/navigationdelegate.cpp
     optioncore.cpp
     optioncore.json
     )
@@ -28,6 +29,7 @@ set(CXX_H
     mainframe/optionenvironmentgenerator.h
     mainframe/optionprofilesettinggenerator.h
     mainframe/optionshortcutsettinggenerator.h
+    mainframe/navigationdelegate.h
     optioncore.h
     )
 

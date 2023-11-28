@@ -53,6 +53,7 @@ bool OptionCore::start()
         optionService->implGenerator<OptionShortcutsettingGenerator>(generalKits[1]);
         optionService->implGenerator<OptionProfilesettingGenerator>(generalKits[2]);
 
+        optionDialog->insertLabel(tr("general"));
         for (auto name : generalKits) {
             auto generator = optionService->createGenerator<OptionGenerator>(name);
             if (generator) {
@@ -82,6 +83,7 @@ bool OptionCore::start()
     QObject::connect(&Listener::instance(), &Listener::pluginsStarted, [=](){
         if (optionDialog) {
             auto list = optionService->supportGeneratorName<OptionGenerator>();
+            optionDialog->insertLabel(tr("language"));
             for (auto name : list) {
                 if (generalKits.contains(name))
                     continue;

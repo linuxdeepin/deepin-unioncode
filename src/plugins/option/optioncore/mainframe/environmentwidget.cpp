@@ -6,6 +6,7 @@
 
 #include <DCheckBox>
 #include <DHeaderView>
+#include <DFrame>
 
 #include <QVBoxLayout>
 #include <QProcessEnvironment>
@@ -96,8 +97,6 @@ EnvironmentWidget::EnvironmentWidget(DWidget *parent)
     : PageWidget(parent)
     , d(new EnvironmentWidgetPrivate)
 {
-    setAutoFillBackground(true);
-
     if (!d->vLayout)
         d->vLayout = new QVBoxLayout();
     this->setLayout(d->vLayout);
@@ -107,8 +106,10 @@ EnvironmentWidget::EnvironmentWidget(DWidget *parent)
         // Initialize view
         d->tableView->setShowGrid(false);
         d->tableView->setAlternatingRowColors(true);
-        d->tableView->setFixedSize(QSize(685, 428));
+        d->tableView->setFrameShape(QFrame::NoFrame);
+
         DHeaderView *headerView = d->tableView->horizontalHeader();
+        headerView->setDefaultAlignment(Qt::AlignLeft);
         headerView->setSectionResizeMode(QHeaderView::ResizeToContents);
         d->tableView->verticalHeader()->hide();
     }
@@ -122,10 +123,17 @@ EnvironmentWidget::EnvironmentWidget(DWidget *parent)
         d->checkBox = new DCheckBox();
     d->checkBox->setText(ENABLE_ALL_ENV);
     d->checkBox->setChecked(true);
+
+    auto mainFrame = new DFrame(this);
+    mainFrame->setFixedHeight(428);
+    auto mainLayout = new QVBoxLayout(mainFrame);
+    mainFrame->setLayout(mainLayout);
+    mainLayout->addWidget(d->tableView);
+    mainLayout->addWidget(d->checkBox);
+
     d->vLayout->setSpacing(0);
     d->vLayout->setMargin(5);
-    d->vLayout->addWidget(d->tableView);
-    d->vLayout->addWidget(d->checkBox);
+    d->vLayout->addWidget(mainFrame);
 }
 
 EnvironmentWidget::~EnvironmentWidget()
