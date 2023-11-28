@@ -25,6 +25,7 @@ PythonOptionWidget::PythonOptionWidget(QWidget *parent)
     QHBoxLayout *layout = new QHBoxLayout();
     d->tabWidget = new DTabWidget();
     d->tabWidget->tabBar()->setAutoHide(true);
+    d->tabWidget->setDocumentMode(true);
     layout->addWidget(d->tabWidget);
 
     d->tabWidget->addTab(new InterpreterWidget(), "Interpreter");
