@@ -14,6 +14,8 @@
 #include "runner/runner.h"
 #include "base/abstractdebugger.h"
 
+#include <DFrame>
+
 #include <QTreeView>
 #include <QSharedPointer>
 #include <QObject>
@@ -32,9 +34,10 @@ public:
     explicit DebugManager(QObject *parent = nullptr);
     bool initialize(dpfservice::WindowService *windowService,
                     dpfservice::DebuggerService *debuggerService);
-    QWidget *getStackPane() const;
-    QWidget *getLocalsPane() const;
-    QWidget *getBreakpointPane() const;
+    DWidget *getStackPane() const;
+    DWidget *getLocalsPane() const;
+    DWidget *getBreakpointPane() const;
+    DWidget *getDebugMainPane() const;
     void registerDebugger(const QString &kit, AbstractDebugger *debugger);
 
 signals:

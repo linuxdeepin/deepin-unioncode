@@ -45,7 +45,7 @@ class WindowKeeperPrivate
     DWidget *centralWidget{nullptr};
     DFrame *leftToolBar{nullptr};
     QHash<QString, DToolButton*> leftToolBtns;
-    DWidget *topToolBar{nullptr};
+    QMap<QString, DWidget*> topToolBar;
 
     QString lastNavName;
 
@@ -168,6 +168,10 @@ void WindowKeeper::createNavIconBtn(const QString &navName, const QString &iconN
 
     QVBoxLayout *toolbarLayout = static_cast<QVBoxLayout*>(d->leftToolBar->layout());
     toolbarLayout->addSpacing(5);
+    if (navName == MWNA_DEBUG) {
+        toolbarLayout->insertWidget(4, toolBtn);
+        return;
+    }
     toolbarLayout->addWidget(toolBtn);
 }
 
@@ -301,8 +305,8 @@ WindowKeeper::WindowKeeper(QObject *parent)
         windowService->removeActions = std::bind(&WindowKeeper::removeActions, this, _1);
     }
 
-    if (!windowService->setTopToolBarWidget) {
-        windowService->setTopToolBarWidget = std::bind(&WindowKeeper::setTopToolBarWidget, this, _1);
+    if (!windowService->addTopToolBarWidget) {
+        windowService->addTopToolBarWidget = std::bind(&WindowKeeper::addTopToolBarWidget, this, _1, _2);
     }
 
     if (!windowService->getCentralNavigation) {
@@ -341,11 +345,10 @@ void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral 
         return;
 #endif
 
-    if (navName == MWNA_EDIT) {
+    if (navName == MWNA_EDIT || navName == MWNA_DEBUG) {
         QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout*>(d->window->titlebar()->layout());
-        titleBarLayout->insertWidget(1, d->topToolBar, Qt::AlignLeft);
-        titleBarLayout->insertSpacing(titleBarLayout->indexOf(d->topToolBar), 20);
-        d->topToolBar->setVisible(false);
+        titleBarLayout->insertWidget(1, d->topToolBar[navName], Qt::AlignLeft);
+        d->topToolBar[navName]->setVisible(false);
         d->window->titlebar()->setTitle(QString());
     }
     inputWidget->hide();
@@ -522,7 +525,10 @@ void WindowKeeper::switchWidgetNavigation(const QString &navName)
         d->centrals[d->lastNavName]->hide();
     d->centrals[navName]->show();
 
-    d->topToolBar->hide();
+    for (auto it = d->topToolBar.begin(); it != d->topToolBar.end(); ++it) {
+        it.value()->hide();
+    }
+
     d->window->titlebar()->setTitle(QString(tr("Deepin Union Code")));
 
     auto &ctx = dpfInstance.serviceContext();
@@ -531,10 +537,16 @@ void WindowKeeper::switchWidgetNavigation(const QString &navName)
         return;
 
     if (navName == MWNA_EDIT) {
-        d->topToolBar->show();
+        d->topToolBar[MWNA_EDIT]->show();
         d->window->titlebar()->setTitle(QString());
         if (windowService->switchWorkspaceArea) {
             windowService->switchWorkspaceArea(DDockWidget::tr("Workspace"));
+        }
+    } else if (navName == MWNA_DEBUG) {
+        d->topToolBar[MWNA_DEBUG]->show();
+        d->window->titlebar()->setTitle(QString());
+        if (windowService->switchWorkspaceArea) {
+            windowService->switchWorkspaceArea(navName);
         }
     } else if (navName == MWNA_CODEGEEX) {
         if (windowService->switchWorkspaceArea) {
@@ -576,9 +588,18 @@ void WindowKeeper::showAboutPlugins()
     dialog.exec();
 }
 
-void WindowKeeper::setTopToolBarWidget(AbstractWidget *widget)
+void WindowKeeper::addTopToolBarWidget(const QString &toolBarName, AbstractWidget *widget)
 {
-    if (!widget->qWidget())
+    if (!widget->qWidget() || toolBarName.isNull())
         return;
-    d->topToolBar = static_cast<DWidget*>(widget->qWidget());
+
+    QString navName;
+    if (toolBarName == "Edit ToolBar")
+        navName = MWNA_EDIT;
+    else if (toolBarName == "Debug ToolBar")
+        navName = MWNA_DEBUG;
+
+    if(!d->topToolBar.contains(navName)) {
+        d->topToolBar.insert(navName, static_cast<DWidget*>(widget->qWidget()));
+    }
 }

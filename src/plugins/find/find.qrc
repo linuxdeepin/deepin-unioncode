@@ -1,6 +1,5 @@
 <RCC>
-    <qresource prefix="/find">
-        <file>images/find.svg</file>
-        <file>images/edit-find.png</file>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>texts/find_16px.svg</file>
     </qresource>
 </RCC>

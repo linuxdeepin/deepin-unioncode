@@ -32,24 +32,29 @@ JSDebugger::~JSDebugger()
 }
 
 
-QWidget *JSDebugger::getOutputPane() const
+DWidget *JSDebugger::getOutputPane() const
 {
     return debuggerWidget(QScriptEngineDebugger::DebugOutputWidget);
 }
 
-QWidget *JSDebugger::getStackPane() const
+DWidget *JSDebugger::getStackPane() const
 {
     return debuggerWidget(QScriptEngineDebugger::StackWidget);
 }
 
-QWidget *JSDebugger::getLocalsPane() const
+DWidget *JSDebugger::getLocalsPane() const
 {
     return debuggerWidget(QScriptEngineDebugger::LocalsWidget);
 }
 
-QWidget *JSDebugger::getBreakpointPane() const
+DWidget *JSDebugger::getBreakpointPane() const
 {
     return debuggerWidget(QScriptEngineDebugger::BreakpointsWidget);
+}
+
+DWidget *JSDebugger::getDebugMainPane() const
+{
+    return {};
 }
 
 void JSDebugger::startDebug()

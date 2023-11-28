@@ -42,14 +42,20 @@ bool DebuggerPlugin::start()
     if (!debuggerService) {
         qCritical() << "Failed, can't found debugger service";
         abort();
-    }
+    }    
 
     debugManager->initialize(windowService, debuggerService);
 
     // instert output pane to window.
-    windowService->addContextWidget(tr("Stac&kFrame"), new AbstractWidget(debugManager->getStackPane()), "Application");
     windowService->setWidgetWatch(new AbstractWidget(debugManager->getLocalsPane()));
-    windowService->addContextWidget(tr("Break&points"), new AbstractWidget(debugManager->getBreakpointPane()), "Application");
+
+    if (windowService->addCentralNavigation) {
+        auto editWidget = windowService->getCentralNavigation(MWNA_EDIT);
+        windowService->addNavigation(MWNA_DEBUG, "debug");
+        windowService->addCentralNavigation(MWNA_DEBUG, editWidget);
+
+        windowService->addWorkspaceArea(MWNA_DEBUG, new AbstractWidget(debugManager->getDebugMainPane()));
+    }
 
     connect(debugManager, &DebugManager::debugStarted, this, &DebuggerPlugin::slotDebugStarted);
 
@@ -64,5 +70,6 @@ dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 
 void DebuggerPlugin::slotDebugStarted()
 {
+    navigation.doSwitch(MWNA_DEBUG);
     editor.switchContext(tr("&Application Output"));
 }

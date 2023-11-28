@@ -59,7 +59,7 @@ public slots:
     void addOpenProjectAction(const QString &name, AbstractAction *action);
     void initUserWidget();
 
-    void setTopToolBarWidget(AbstractWidget *widget);
+    void addTopToolBarWidget(const QString &toolBarName, AbstractWidget *widget);
 
 private :
     void showAboutDlg();

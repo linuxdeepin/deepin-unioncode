@@ -46,19 +46,24 @@ bool DebugManager::initialize(dpfservice::WindowService *windowService,
     return true;
 }
 
-QWidget *DebugManager::getStackPane() const
+DWidget *DebugManager::getStackPane() const
 {
     return currentDebugger->getStackPane();
 }
 
-QWidget *DebugManager::getLocalsPane() const
+DWidget *DebugManager::getLocalsPane() const
 {
     return currentDebugger->getLocalsPane();
 }
 
-QWidget *DebugManager::getBreakpointPane() const
+DWidget *DebugManager::getBreakpointPane() const
 {
     return currentDebugger->getBreakpointPane();
+}
+
+DWidget *DebugManager::getDebugMainPane() const
+{
+    return currentDebugger->getDebugMainPane();
 }
 
 void DebugManager::registerDebugger(const QString &kit, AbstractDebugger *debugger)

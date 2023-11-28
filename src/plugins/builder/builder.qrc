@@ -1,9 +1,5 @@
 <RCC>
-    <qresource prefix="/buildercore">
-        <file>images/build.png</file>
-        <file>images/rebuild.png</file>
-        <file>images/clean.svg</file>
-        <file>images/cancel.svg</file>
-        <file>images/build.svg</file>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>texts/build_16px.svg</file>
     </qresource>
 </RCC>

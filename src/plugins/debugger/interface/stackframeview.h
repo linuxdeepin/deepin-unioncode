@@ -5,9 +5,11 @@
 #ifndef BASETREEVIEW_H
 #define BASETREEVIEW_H
 
-#include <QTreeView>
+#include <DTreeView>
 
-class StackFrameView : public QTreeView
+#include <QHeaderView>
+
+class StackFrameView : public DTK_WIDGET_NAMESPACE::DTreeView
 {
     Q_OBJECT
 public:
@@ -18,6 +20,10 @@ private:
     QModelIndex eventIndex(QMouseEvent *ev);
     void rowActivated(const QModelIndex &index);
     void rowClicked(const QModelIndex &index);
+
+    void initHeaderView();
+
+    QHeaderView *headerView {nullptr};
 };
 
 

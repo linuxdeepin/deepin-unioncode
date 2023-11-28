@@ -21,12 +21,17 @@
 #include "services/option/optionmanager.h"
 #include "services/language/languageservice.h"
 
+#include <DLabel>
+#include <DFrame>
+#include <DComboBox>
+#include <DPushButton>
+#include <DIconButton>
+#include <DSimpleListView>
+
 #include <QDateTime>
 #include <QTextBlock>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
-#include <QComboBox>
-#include <QLabel>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QFileInfo>
@@ -63,16 +68,18 @@ class DebuggerPrivate
      */
     OutputPane *outputPane = nullptr;
 
-    QWidget *stackPane = nullptr;
+    DWidget *stackPane = nullptr;
     StackFrameView *stackView = nullptr;
     StackFrameModel stackModel;
-    QComboBox *threadSelector = nullptr;
+    DComboBox *threadSelector = nullptr;
 
-    QTreeView *localsView = nullptr;
+    DTreeView *localsView = nullptr;
     LocalTreeModel localsModel;
 
     StackFrameView *breakpointView = nullptr;
     BreakpointModel breakpointModel;
+
+    DFrame *debugMainPane = nullptr;
 
     QPointer<QWidget> alertBox;
     AbstractDebugger::RunState runState = AbstractDebugger::kNoRun;
@@ -128,24 +135,29 @@ DAPDebugger::~DAPDebugger()
     // all widgets in tabWidget will be deleted automatically.
 }
 
-QWidget *DAPDebugger::getOutputPane() const
+DWidget *DAPDebugger::getOutputPane() const
 {
     return d->outputPane;
 }
 
-QWidget *DAPDebugger::getStackPane() const
+DWidget *DAPDebugger::getStackPane() const
 {
     return d->stackPane;
 }
 
-QWidget *DAPDebugger::getLocalsPane() const
+DWidget *DAPDebugger::getLocalsPane() const
 {
     return d->localsView;
 }
 
-QWidget *DAPDebugger::getBreakpointPane() const
+DWidget *DAPDebugger::getBreakpointPane() const
 {
     return d->breakpointView;
+}
+
+DWidget *DAPDebugger::getDebugMainPane() const
+{
+    return d->debugMainPane;
 }
 
 void DAPDebugger::startDebug()
@@ -699,6 +711,30 @@ void DAPDebugger::switchCurrentThread(int threadId)
     }
 }
 
+QHBoxLayout *DAPDebugger::initFrameTitle(const QString &frameName)
+{
+    if (frameName.isNull())
+        return nullptr;
+
+    DPushButton *arrow = new DPushButton();
+    arrow->setFocusPolicy(Qt::NoFocus);
+    arrow->setIcon(QIcon::fromTheme("go-down"));
+    arrow->setFixedSize(QSize(18, 18));
+    arrow->setIconSize(QSize(8, 8));
+    arrow->setFlat(true);
+
+    DLabel *stackTitleText = new DLabel();
+    stackTitleText->setText(frameName);
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setContentsMargins(10, 0, 0, 0);
+    layout->setSpacing(0);
+    layout->addWidget(arrow);
+    layout->addWidget(stackTitleText);
+
+    return layout;
+}
+
 bool DAPDebugger::showStoppedBySignalMessageBox(QString meaning, QString name)
 {
     if (d->alertBox)
@@ -750,34 +786,51 @@ void DAPDebugger::initializeView()
     d->outputPane = OutputPane::instance();
 
     // initialize stack monitor pane.
-    d->stackPane = new QWidget;
+    d->stackPane = new DWidget;
+    d->stackPane->setMinimumWidth(300);
     QVBoxLayout *vLayout = new QVBoxLayout(d->stackPane);
+    vLayout->setContentsMargins(0, 6, 0, 0);
     d->stackPane->setLayout(vLayout);
 
     d->stackView = new StackFrameView();
     d->stackView->setModel(d->stackModel.model());
 
-    d->threadSelector = new QComboBox(d->stackPane);
-    d->threadSelector->setMinimumWidth(200);
-    connect(d->threadSelector, QOverload<const QString &>::of(&QComboBox::activated), this, &DAPDebugger::currentThreadChanged);
+    d->threadSelector = new DComboBox(d->stackPane);
+    d->threadSelector->setMinimumWidth(240);
+    connect(d->threadSelector, QOverload<const QString &>::of(&DComboBox::activated), this, &DAPDebugger::currentThreadChanged);
 
     QHBoxLayout *hLayout = new QHBoxLayout(d->stackPane);
     hLayout->setAlignment(Qt::AlignLeft);
-    QLabel *label = new QLabel(tr("Threads:"), d->stackPane);
+    hLayout->setContentsMargins(10, 0, 0, 0);
+    DLabel *label = new DLabel(tr("Threads:"), d->stackPane);
     hLayout->addWidget(label);
     hLayout->addWidget(d->threadSelector);
 
+    vLayout->addLayout(initFrameTitle("Stack List"));
     vLayout->addLayout(hLayout);
     vLayout->addWidget(d->stackView);
 
     // intialize breakpint pane.
     d->breakpointView = new StackFrameView();
+    d->breakpointView->setMinimumWidth(300);
     d->breakpointView->setModel(d->breakpointModel.model());
 
     d->localsView = new QTreeView();
     d->localsView->setModel(&d->localsModel);
     QStringList headers { "name", "value"/*, "reference" */};
     d->localsModel.setHeaders(headers);
+
+    d->debugMainPane = new DFrame();
+    d->debugMainPane->setLineWidth(0);
+    DStyle::setFrameRadius(d->debugMainPane, 0);
+    QVBoxLayout *mainLayout = new QVBoxLayout();
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->addWidget(d->stackPane);
+    mainLayout->addWidget(new DHorizontalLine());
+    mainLayout->addLayout(initFrameTitle("Breakpoint List"));
+    mainLayout->addWidget(new DHorizontalLine());
+    mainLayout->addWidget(d->breakpointView);
+    d->debugMainPane->setLayout(mainLayout);
 
     connect(d->stackView, &QTreeView::doubleClicked, this, &DAPDebugger::slotFrameSelected);
     connect(d->breakpointView, &QTreeView::doubleClicked, this, &DAPDebugger::slotBreakpointSelected);

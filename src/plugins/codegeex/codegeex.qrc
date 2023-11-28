@@ -12,7 +12,7 @@
         <file>images/chat_icon_new_hover.png</file>
         <file>images/copy.png</file>
     </qresource>
-      <qresource prefix="/icons/deepin/">
+    <qresource prefix="/icons/deepin/">
         <file>builtin/actions/codegeex-navigation_20px.svg</file>
     </qresource>
 </RCC>

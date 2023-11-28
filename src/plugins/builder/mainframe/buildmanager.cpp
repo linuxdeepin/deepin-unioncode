@@ -97,8 +97,8 @@ void BuildManager::addMenu()
 
     d->buildAction.reset(new QAction(MWMBA_BUILD));
     actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
-               ":/buildercore/images/build.svg");
-    windowService->addToolBarActionItem("toolbar.Build", d->buildAction.get(), "Build.End");
+               "build");
+    windowService->addToolBarActionItem("toolbar.Build", d->buildAction.get(), MWNA_EDIT);
 
     d->rebuildAction.reset(new QAction(MWMBA_REBUILD));
     actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B),
