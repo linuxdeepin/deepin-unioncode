@@ -4,7 +4,7 @@
         <file>light/icons/combine_16px.svg</file>
         <file>light/icons/delete_16px.svg</file>
         <file>light/icons/reset_16px.svg</file>
-        <file>common/icons/unioncode_16px.png</file>
         <file>light/icons/rename_16px.svg</file>
+        <file>common/icons/unioncode_16px.png</file>
     </qresource>
 </RCC>

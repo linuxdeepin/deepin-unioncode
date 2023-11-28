@@ -10,10 +10,10 @@
 #include "services/option/optionmanager.h"
 
 #include <QHBoxLayout>
-#include <QTabWidget>
+#include <DTabWidget>
 
 class PythonOptionWidgetPrivate {
-    QTabWidget* tabWidget = nullptr;
+    DTabWidget* tabWidget = nullptr;
 
     friend class PythonOptionWidget;
 };
@@ -23,12 +23,12 @@ PythonOptionWidget::PythonOptionWidget(QWidget *parent)
     , d(new PythonOptionWidgetPrivate())
 {
     QHBoxLayout *layout = new QHBoxLayout();
-    d->tabWidget = new QTabWidget();
+    d->tabWidget = new DTabWidget();
     d->tabWidget->tabBar()->setAutoHide(true);
     layout->addWidget(d->tabWidget);
 
     d->tabWidget->addTab(new InterpreterWidget(), "Interpreter");
-    QObject::connect(d->tabWidget, &QTabWidget::currentChanged, [this]() {
+    QObject::connect(d->tabWidget, &DTabWidget::currentChanged, [this]() {
         readConfig();
     });
 

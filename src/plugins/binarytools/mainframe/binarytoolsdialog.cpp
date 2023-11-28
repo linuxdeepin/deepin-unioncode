@@ -28,7 +28,7 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     , d (new BinaryToolsDialogPrivate)
 {
     setWindowTitle(tr("Binary Tools"));
-    setIcon(QIcon(":/icons/deepin/builtin/common/icons/unioncode_16px.png"));
+    setIcon(QIcon::fromTheme(":/icons/deepin/builtin/common/icons/unioncode_16px.png"));
 
     QFrame *mainFrame = new QFrame(this);
     addContent(mainFrame);

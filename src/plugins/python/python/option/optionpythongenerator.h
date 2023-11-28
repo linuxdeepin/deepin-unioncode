@@ -13,7 +13,7 @@ class OptionPythonGenerator : public dpfservice::OptionGenerator
 public:
     OptionPythonGenerator();
     inline static QString kitName() {return "Python";}
-    virtual QWidget *optionWidget() override;
+    virtual DWidget *optionWidget() override;
 
 private:
     OptionPythonGeneratorPrivate *const d;
