@@ -1,13 +1,14 @@
 <RCC>
-    <qresource prefix="/resource">
-        <file>images/running.svg</file>
-        <file>images/debugger_continue.svg</file>
-        <file>images/debugger_interrupt.svg</file>
-        <file>images/debugger_start.svg</file>
-        <file>images/debugger_stepinto.svg</file>
-        <file>images/debugger_stepout.svg</file>
-        <file>images/debugger_stepover.svg</file>
-        <file>images/debugger_stop.svg</file>
-        <file>images/restart_debug.svg</file>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>texts/debug_20px.svg</file>
+        <file>texts/debugger_continue_16px.svg</file>
+        <file>texts/debugger_start_16px.svg</file>
+        <file>texts/debugger_interrupt_16px.svg</file>
+        <file>texts/debugger_stepinto_16px.svg</file>
+        <file>texts/debugger_stepout_16px.svg</file>
+        <file>texts/debugger_stepover_16px.svg</file>
+        <file>texts/debugger_stop_16px.svg</file>
+        <file>texts/restart_debug_16px.svg</file>
+        <file>texts/run_16px.svg</file>
     </qresource>
 </RCC>

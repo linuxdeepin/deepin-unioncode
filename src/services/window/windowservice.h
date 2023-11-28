@@ -179,7 +179,7 @@ public:
      */
     DPF_INTERFACE(void, setToolBarItemDisable, const QString &id, bool disable);
 
-    DPF_INTERFACE(void, setTopToolBarWidget, AbstractWidget *widget);
+    DPF_INTERFACE(void, addTopToolBarWidget, const QString &toolBarName, AbstractWidget *widget);
 
     DPF_INTERFACE(AbstractCentral *, getCentralNavigation, const QString &navName);
 

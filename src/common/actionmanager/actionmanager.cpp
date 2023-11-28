@@ -168,7 +168,7 @@ Command *ActionManager::registerAction(QAction *action, const QString &id,
     if(!action || id.isEmpty())
         return nullptr;
 
-    const QIcon icon = QIcon(iconFileName);
+    const QIcon icon = QIcon::fromTheme(iconFileName);
     if (!icon.isNull())
         action->setIcon(icon);
     

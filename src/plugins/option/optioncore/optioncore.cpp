@@ -63,7 +63,7 @@ bool OptionCore::start()
         }
     }
 
-    if (windowService && windowService->addAction && windowService->addToolBarActionItem) {
+    if (windowService && windowService->addAction) {
         auto actionOptions = new QAction(MWMTA_OPTIONS);
         ActionManager::getInstance()->registerAction(actionOptions,
                                                      "Tools.Options",

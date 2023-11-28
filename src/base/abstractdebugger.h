@@ -34,6 +34,8 @@ public:
     virtual DWidget *getLocalsPane() const = 0;
     virtual DWidget *getBreakpointPane() const = 0;
 
+    virtual DWidget *getDebugMainPane() const = 0;
+
     virtual void startDebug() = 0;
     virtual void detachDebug() = 0;
 

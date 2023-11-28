@@ -20,10 +20,12 @@ public:
     explicit JSDebugger(QObject *parent = nullptr);
     ~JSDebugger() override;
 
-    QWidget *getOutputPane() const override;
-    QWidget *getStackPane() const override;
-    QWidget *getLocalsPane() const override;
-    QWidget *getBreakpointPane() const override;
+    DWidget *getOutputPane() const override;
+    DWidget *getStackPane() const override;
+    DWidget *getLocalsPane() const override;
+    DWidget *getBreakpointPane() const override;
+
+    DWidget *getDebugMainPane() const override;
 
     void startDebug() override;
     void detachDebug() override;

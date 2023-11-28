@@ -14,9 +14,16 @@
 #include <QMenu>
 #include <QMouseEvent>
 
+DWIDGET_USE_NAMESPACE
+
 StackFrameView::StackFrameView(QWidget *parent)
-    : QTreeView(parent)
+    : DTreeView(parent)
 {
+    initHeaderView();
+    setHeader(headerView);
+    setTextElideMode(Qt::TextElideMode::ElideLeft);
+    setFrameStyle(QFrame::NoFrame);
+
     connect(this, &QAbstractItemView::activated,
             this, &StackFrameView::rowActivated);
     connect(this, &QAbstractItemView::clicked,
@@ -35,4 +42,12 @@ void StackFrameView::rowActivated(const QModelIndex &index)
 void StackFrameView::rowClicked(const QModelIndex &index)
 {
     model()->setData(index, QVariant(), ItemClickedRole);
+}
+
+void StackFrameView::initHeaderView()
+{
+    headerView = new QHeaderView(Qt::Orientation::Horizontal);
+    headerView->setDefaultSectionSize(68);
+    headerView->setDefaultAlignment(Qt::AlignLeft);
+    headerView->setSectionResizeMode(QHeaderView::ResizeMode::Interactive);
 }

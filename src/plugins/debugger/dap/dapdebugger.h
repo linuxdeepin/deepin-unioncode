@@ -44,10 +44,11 @@ public:
     explicit DAPDebugger(QObject *parent = nullptr);
     ~DAPDebugger() override;
 
-    QWidget *getOutputPane() const override;
-    QWidget *getStackPane() const override;
-    QWidget *getLocalsPane() const override;
-    QWidget *getBreakpointPane() const override;
+    DWidget *getOutputPane() const override;
+    DWidget *getStackPane() const override;
+    DWidget *getLocalsPane() const override;
+    DWidget *getBreakpointPane() const override;
+    DWidget *getDebugMainPane() const override;
 
     void startDebug() override;
     void detachDebug() override;
@@ -87,6 +88,7 @@ private:
     void handleFrames(const StackFrames &stackFrames);
     void updateThreadList(int curr, const dap::array<dap::Thread> &threads);
     void switchCurrentThread(int curThreadID);
+    QHBoxLayout *initFrameTitle(const QString &frameName);
 
     void addBreakpoint(const QString &filepath, int lineNumber);
     void removeBreakpoint(const QString &filepath, int lineNumber);
