@@ -137,28 +137,33 @@ void InterpreterWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
 
-    DWidget *interpreterWidget = new DWidget();
-    vLayout->addWidget(interpreterWidget);
-
     QHBoxLayout *hLayout = new QHBoxLayout();
-    interpreterWidget->setLayout(hLayout);
     DLabel *label = new DLabel(DLabel::tr("Python Interperter:"));
     label->setFixedWidth(180);
     d->interpreterComboBox = new DComboBox();
     QObject::connect(d->interpreterComboBox, &DComboBox::currentTextChanged,
                      this, &InterpreterWidget::setPackageData);
 
+    d->interpreterComboBox->setFixedWidth(300);
     hLayout->addWidget(label);
     hLayout->addWidget(d->interpreterComboBox);
+    hLayout->setAlignment(d->interpreterComboBox, Qt::AlignRight);
 
     DTableView *tableView = new DTableView();
     tableView->setShowGrid(false);
     tableView->horizontalHeader()->setSectionResizeMode(DHeaderView::Stretch);
     tableView->verticalHeader()->hide();
+
+    DHeaderView *headerView = tableView->horizontalHeader();
+    headerView->setDefaultAlignment(Qt::AlignLeft);
+
     tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+
     d->model = new InterpreterModel();
     tableView->setModel(d->model);
+    tableView->setFixedHeight(180);
+    vLayout->addLayout(hLayout);
     vLayout->addWidget(tableView);
 }
 
