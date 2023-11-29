@@ -76,6 +76,8 @@ void TranslationPageWidget::initUI()
 
     layout->addLayout(midLayout);
 
+    layout->addSpacing(20);
+
     outputEdit = new CodeEditComponent(this);
     outputEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     outputEdit->setTitle(tr("Output Code"));

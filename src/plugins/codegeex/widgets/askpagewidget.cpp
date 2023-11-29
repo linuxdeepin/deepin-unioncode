@@ -12,6 +12,7 @@
 #include <DPushButton>
 #include <DScrollArea>
 #include <DScrollBar>
+#include <DHorizontalLine>
 
 #include <QVBoxLayout>
 #include <QDebug>
@@ -105,15 +106,21 @@ void AskPageWidget::onCreateNewBtnClicked()
 
 void AskPageWidget::initUI()
 {
-    setContentsMargins(0, 0, 0, 0);
     QVBoxLayout *layout = new QVBoxLayout;
+    layout->setMargin(0);
+    layout->setSpacing(0);
     setLayout(layout);
 
     scrollArea = new DScrollArea(this);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setContentsMargins(0, 0, 0, 0);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setWidgetResizable(true);
     scrollArea->setAlignment(Qt::AlignHCenter);
     layout->addWidget(scrollArea);
+
+    DHorizontalLine *line = new DHorizontalLine(this);
+    layout->addWidget(line);
 
     inputWidget = new DWidget(this);
     layout->addWidget(inputWidget);
@@ -188,6 +195,7 @@ void AskPageWidget::setSessionPage()
     scrollArea->setWidget(messageContainer);
 
     QVBoxLayout *layout = new QVBoxLayout(messageContainer);
+    layout->setSpacing(10);
     messageContainer->setLayout(layout);
 
     layout->addStretch(1);

@@ -31,6 +31,9 @@ public:
     explicit MessageComponent(const MessageData &msgData, QWidget *parent = nullptr);
     void updateMessage(const MessageData &msgData);
 
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
 private:
     void initUI();
     void initSenderInfo();
@@ -45,11 +48,12 @@ private:
 
     QVBoxLayout *msgLayout { nullptr };
 
-    UpdateState currentUpdateState = Label;
     CodeEditComponent *curUpdateEdit { nullptr };
     DLabel *curUpdateLabel { nullptr };
 
+    QColor baseBackgroundColor;
     MessageData messageData;
+    UpdateState currentUpdateState = Label;
 };
 
 #endif // MESSAGECOMPONENT_H

@@ -7,7 +7,7 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QImage>
+#include <QBitmap>
 #include <QPixmap>
 #include <DLabel>
 #include <QPalette>
@@ -19,6 +19,10 @@ MessageComponent::MessageComponent(const MessageData &msgData, QWidget *parent)
     : DWidget(parent),
       messageData(msgData)
 {
+    setWindowFlag(Qt::FramelessWindowHint);
+    setAutoFillBackground(true);
+    baseBackgroundColor = palette().color(QPalette::Window);
+
     initUI();
 }
 void MessageComponent::updateMessage(const MessageData &msgData)
@@ -60,19 +64,41 @@ void MessageComponent::updateMessage(const MessageData &msgData)
     messageData = msgData;
 }
 
+void MessageComponent::paintEvent(QPaintEvent *event)
+{
+    QStyleOption opt;
+    opt.initFrom(this);
+
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
+    QBitmap bmp(size());
+    bmp.fill();
+    QPainter painter(&bmp);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(Qt::black);
+    painter.setRenderHint(QPainter::HighQualityAntialiasing);
+    painter.drawRoundedRect(bmp.rect(), 8, 8);
+    setMask(bmp);
+
+    DWidget::paintEvent(event);
+}
+
 void MessageComponent::initUI()
 {
     QVBoxLayout *msgLayout = new QVBoxLayout;
     setLayout(msgLayout);
 
-//    if (messageData.messageType() == MessageData::Ask) {
-//        auto palatte = palette();
-//        auto windowColor = palatte.color(QPalette::Normal, QPalette::Window);
-//        windowColor.setRgb(windowColor.red() + 10, windowColor.green() + 10, windowColor.blue() + 10);
-//        palatte.setColor(QPalette::Window, Qt::white);
-//        setPalette(palatte);
-//        setAutoFillBackground(true);
-//    }
+    QColor bgColor;
+    if (messageData.messageType() == MessageData::Ask) {
+        bgColor.setRgba(qRgba(28, 128, 255, 20));
+    } else {
+        bgColor.setRgba(qRgba(200, 200, 200, 50));
+    }
+    auto palatte = palette();
+    palatte.setColor(QPalette::Window, bgColor);
+    setPalette(palatte);
 
     initSenderInfo();
     initMessageSection();

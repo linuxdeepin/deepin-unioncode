@@ -29,7 +29,7 @@ private:
     void initSuggestContent();
 
     void appendDescLabel(QVBoxLayout *layout, const QString &text);
-    void appendSuggestButton(QVBoxLayout *layout, const QString &text);
+    void appendSuggestButton(QVBoxLayout *layout, const QString &text, const QString &iconName = "");
 };
 
 #endif // INTROPAGE_H
