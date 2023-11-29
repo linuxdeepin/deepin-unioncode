@@ -10,6 +10,7 @@
 #include <DTableView>
 #include <DLineEdit>
 #include <DLabel>
+#include <DFrame>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -216,9 +217,13 @@ void StepsPane::setupUi()
     d->buildLabel = new DLabel(this);
     d->buildLabel->setText(QString("Build:").append(kBuildCommand));
 
-    DTableView *tableView = new DTableView(this);
+    auto tableFrame = new DFrame(this);
+    auto tableLayout = new QVBoxLayout(tableFrame);
+    tableFrame->setLayout(tableLayout);
+    DTableView *tableView = new DTableView(tableFrame);
     tableView->setShowGrid(false);
     tableView->setAlternatingRowColors(true);
+    tableView->setFrameShape(QFrame::NoFrame);
     DHeaderView* headerView = tableView->horizontalHeader();
     headerView->setStretchLastSection(true);
     headerView->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -226,6 +231,7 @@ void StepsPane::setupUi()
 
     d->model = new StepsModel();
     tableView->setModel(d->model);
+    tableLayout->addWidget(tableView);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     d->toolArguments = new DLineEdit(this);
@@ -238,7 +244,7 @@ void StepsPane::setupUi()
     vLayout->setSpacing(10);
     vLayout->addWidget(d->buildLabel);
     vLayout->addLayout(hLayout);
-    vLayout->addWidget(tableView);
+    vLayout->addWidget(tableFrame);
 
     connect(d->toolArguments, &DLineEdit::textEdited, this, &StepsPane::toolArgumentsEdited);
     connect(d->model, &StepsModel::dataChanged, this, &StepsPane::dataChanged);

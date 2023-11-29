@@ -37,15 +37,13 @@ ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
     addContent(mainFrame);
 
     // Initialize configure project widget.
-    d->configureProjWidget = new ConfigureWidget(mainFrame);
-    d->configureProjPane = new ConfigureProjPane(language, workspace, d->configureProjWidget);
+    d->configureProjPane = new ConfigureProjPane(language, workspace, mainFrame);
     QObject::connect(d->configureProjPane, &ConfigureProjPane::configureDone, [this](const dpfservice::ProjectInfo &info) {
         closeWidget();
     });
-    d->configureProjWidget->addWidget(d->configureProjPane);
 
     QVBoxLayout *layout = new QVBoxLayout(mainFrame);
-    layout->addWidget(d->configureProjWidget);
+    layout->addWidget(d->configureProjPane);
     mainFrame->setLayout(layout);
 
     QStringList buttonTexts;
