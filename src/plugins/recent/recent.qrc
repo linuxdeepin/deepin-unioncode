@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/recent">
-        <file>images/recentLogo1.png</file>
-        <file>images/recentLogo2.png</file>
+        <file>images/recentLogo.png</file>
     </qresource>
+        <qresource prefix="/icons/deepin/builtin">
+        </qresource>
 </RCC>

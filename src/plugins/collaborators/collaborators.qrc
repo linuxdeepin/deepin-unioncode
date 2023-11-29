@@ -1,6 +1,6 @@
 <RCC>
-    <qresource prefix="/collaborators">
-        <file>images/checkout.png</file>
-        <file>images/open_repository.png</file>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>texts/git-navigation_20px.svg</file>
+        <file>texts/svn-navigation_20px.svg</file>
     </qresource>
 </RCC>

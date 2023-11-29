@@ -51,7 +51,7 @@ bool DebuggerPlugin::start()
 
     if (windowService->addCentralNavigation) {
         auto editWidget = windowService->getCentralNavigation(MWNA_EDIT);
-        windowService->addNavigation(MWNA_DEBUG, "debug");
+        windowService->addNavigation(MWNA_DEBUG, "debug-navigation");
         windowService->addCentralNavigation(MWNA_DEBUG, editWidget);
 
         windowService->addWorkspaceArea(MWNA_DEBUG, new AbstractWidget(debugManager->getDebugMainPane()));
