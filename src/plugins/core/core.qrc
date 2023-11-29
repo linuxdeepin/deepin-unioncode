@@ -1,80 +1,11 @@
 <RCC>
     <qresource prefix="/core">
         <file>images/unioncode@128.png</file>
-        <file>images/edit-find-replace.png</file>
-        <file>images/edit-find.png</file>
-        <file>images/emblem-package.svg</file>
-        <file>images/format-justify-left.svg</file>
-        <file>images/help-about.svg</file>
-        <file>images/image-has-versions-open.png</file>
-        <file>images/option.svg</file>
-        <file>images/system-search.png</file>
-        <file>images/tools-report-bug.png</file>
-        <file>images/abort_debug.png</file>
-        <file>images/continue.png</file>
-        <file>images/interrupt.png</file>
-        <file>images/restart_debug.png</file>
-        <file>images/step_in.png</file>
-        <file>images/step_out.png</file>
-        <file>images/step_over.png</file>
-        <file>images/test.png</file>
-        <file>images/save_all.png</file>
-        <file>images/runtime_analysis.png</file>
-        <file>images/recent_folder.png</file>
-        <file>images/recent_doc.png</file>
-        <file>images/rebuild.png</file>
-        <file>images/quit.png</file>
-        <file>images/print.png</file>
-        <file>images/plugins.png</file>
-        <file>images/open_repository.png</file>
-        <file>images/open_doc.png</file>
-        <file>images/new_folder.png</file>
-        <file>images/new_doc.png</file>
-        <file>images/code_porting.png</file>
-        <file>images/close_doc.png</file>
-        <file>images/clean.png</file>
-        <file>images/checkout.png</file>
-        <file>images/builder-symbolic.svg</file>
-        <file>images/build.png</file>
-        <file>images/about.png</file>
-        <file>images/debug-start.png</file>
-        <file>images/closeButton.png</file>
-        <file>images/horizontalSplit.png</file>
-        <file>images/debug-step-out.png</file>
-        <file>images/debug-step-over.png</file>
-        <file>images/run-build-file.png</file>
-        <file>images/unioncode@200.png</file>
-        <file>images/debug-step-into.png</file>
-        <file>images/verticalSplit.png</file>
-        <file>images/git.png</file>
-        <file>images/subversion.png</file>
-        <file>images/debugger_continue.png</file>
-        <file>images/debugger_interrupt.png</file>
-        <file>images/debugger_start.png</file>
-        <file>images/debugger_stepinto.png</file>
-        <file>images/debugger_stepout.png</file>
-        <file>images/debugger_stepover.png</file>
-        <file>images/debugger_stop.png</file>
-        <file>images/splitbutton_vertical.png</file>
-        <file>images/splitbutton_horizontal.png</file>
-        <file>images/builder_buiild.png</file>
-        <file>images/find.png</file>
-        <file>images/horizontalSplit1.png</file>
-        <file>images/setting.png</file>
-        <file>images/close_button_selected.png</file>
-        <file>images/close_button_hover.png</file>
-        <file>images/code_port.png</file>
-        <file>images/new_project.png</file>
-        <file>images/open_file.png</file>
-        <file>images/open_project.png</file>
-        <file>images/reverse.png</file>
-        <file>images/down_arrow.png</file>    
+        <file>images/unioncode@200.png</file>  
     </qresource>
-    <qresource prefix="/icons/deepin/">
-        <file>builtin/actions/recent_20px.svg</file>
-        <file>builtin/actions/svn_20px.svg</file>
-        <file>builtin/actions/edit_20px.svg</file>
-        <file>builtin/actions/git_20px.svg</file>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>texts/recent-navigation_20px.svg</file>
+        <file>texts/edit-navigation_20px.svg</file>
     </qresource>
 </RCC>
 

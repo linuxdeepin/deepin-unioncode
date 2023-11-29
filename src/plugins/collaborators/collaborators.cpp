@@ -21,8 +21,8 @@ bool Collaborators::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
         if (windowService->addNavigation) {
-            windowService->addNavigation(MWNA_GIT, "git");
-            windowService->addNavigation(MWNA_SVN, "svn");
+            windowService->addNavigation(MWNA_GIT, "git-navigation");
+            windowService->addNavigation(MWNA_SVN, "svn-navigation");
         }
         if (windowService->addCentralNavigation) {
             windowService->addCentralNavigation(MWNA_GIT,

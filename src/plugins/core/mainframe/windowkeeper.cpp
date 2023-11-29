@@ -212,8 +212,8 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
     if (!d->navActionGroup)
         d->navActionGroup = new QActionGroup(window);
 
-    createNavIconBtn(MWNA_RECENT, "recent");
-    createNavIconBtn(MWNA_EDIT, "edit");
+    createNavIconBtn(MWNA_RECENT, "recent-navigation");
+    createNavIconBtn(MWNA_EDIT, "edit-navigation");
 
     createMainMenu(d->mainMenu);
 

@@ -224,7 +224,7 @@ RecentDisplay::RecentDisplay(DWidget *parent)
     DStyle::setFrameRadius(d->navFrame, 0);
     QVBoxLayout *vLayoutNav = new QVBoxLayout();
     QLabel *recentLogo = new QLabel();
-    QImageReader maskIimageReader(":/recent/images/recentLogo1.png");
+    QImageReader maskIimageReader(":/recent/images/recentLogo.png");
     maskIimageReader.setScaledSize(QSize(200, 143));
     QPixmap logo = QPixmap::fromImage(maskIimageReader.read());
     logo.setDevicePixelRatio(recentLogo->devicePixelRatioF());
