@@ -6,6 +6,7 @@
 #include "copilot.h"
 
 #include <DApplication>
+#include <DHorizontalLine>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -16,6 +17,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QMimeData>
+#include <QBitmap>
 
 CodeEditComponent::CodeEditComponent(QWidget *parent)
     : DWidget (parent)
@@ -127,17 +129,53 @@ void CodeEditComponent::onCopyBtnClicked()
     clipboard->setText(codeEdit->toPlainText());
 }
 
+void CodeEditComponent::paintEvent(QPaintEvent *event)
+{
+    auto pa = palette();
+    if (pa.color(QPalette::Window) != pa.color(QPalette::Base)) {
+        pa.setColor(QPalette::Window, pa.color(QPalette::Base));
+        setPalette(pa);
+    }
+
+    QStyleOption opt;
+    opt.initFrom(this);
+
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
+    QBitmap bmp(size());
+    bmp.fill();
+    QPainter painter(&bmp);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(Qt::black);
+    painter.setRenderHint(QPainter::HighQualityAntialiasing);
+    painter.drawRoundedRect(bmp.rect(), 8, 8);
+    setMask(bmp);
+
+    DWidget::paintEvent(event);
+}
+
 void CodeEditComponent::initUI()
 {
+    setAutoFillBackground(true);
+
     QVBoxLayout *layout = new QVBoxLayout;
+    layout->setSpacing(0);
+    layout->setMargin(0);
     setLayout(layout);
 
     titleWidget = new DWidget(this);
+    titleWidget->setFixedHeight(36);
     layout->addWidget(titleWidget);
     initTitleWidgets();
     titleWidget->setVisible(false);
 
+    DHorizontalLine *line = new DHorizontalLine(this);
+    layout->addWidget(line);
+
     codeEdit = new DPlainTextEdit(this);
+    codeEdit->setFrameShape(QFrame::NoFrame);
     codeEdit->setWordWrapMode(QTextOption::WrapMode::NoWrap);
     codeEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
     layout->addWidget(codeEdit);
@@ -146,6 +184,7 @@ void CodeEditComponent::initUI()
 void CodeEditComponent::initTitleWidgets()
 {
     QHBoxLayout *layout = new QHBoxLayout;
+    layout->setMargin(0);
     layout->setDirection(QHBoxLayout::RightToLeft);
     titleWidget->setLayout(layout);
 
@@ -164,6 +203,7 @@ void CodeEditComponent::initTitleWidgets()
     title = new DLabel(titleWidget);
     title->setText("");
     layout->addWidget(title);
+    layout->addSpacing(10);
 }
 
 void CodeEditComponent::initConnection()

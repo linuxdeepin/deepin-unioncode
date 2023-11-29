@@ -98,6 +98,7 @@ void CodeGeeXWidget::initUI()
 
     auto initLoginUI = [this](){
         auto verticalLayout = new QVBoxLayout(this);
+        verticalLayout->setMargin(0);
         verticalLayout->setAlignment(Qt::AlignCenter);
         auto verticalSpacer_top = new QSpacerItem(20, 200, QSizePolicy::Minimum, QSizePolicy::Expanding);
         verticalLayout->addItem(verticalSpacer_top);
@@ -158,6 +159,7 @@ void CodeGeeXWidget::initAskWidget()
 
     stackWidget = new QStackedWidget(this);
     stackWidget->setContentsMargins(0, 0, 0, 0);
+    stackWidget->setFrameShape(QFrame::NoFrame);
     stackWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     auto mainLayout = qobject_cast<QVBoxLayout*>(layout());
@@ -217,6 +219,7 @@ void CodeGeeXWidget::initAskWidgetConnection()
     connect(tabBar, &DTabBar::currentChanged, stackWidget, [ = ] (int index){
         stackWidget->setCurrentIndex(index + 1);
     });
+    connect(askPage, &AskPageWidget::requestShowHistoryPage, this, &CodeGeeXWidget::onShowHistoryWidget);
 }
 
 void CodeGeeXWidget::initHistoryWidgetConnection()
