@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icons/deepin/builtin">
-        <file>texts/find_16px.svg</file>
+        <file>texts/search-find_16px.svg</file>
     </qresource>
 </RCC>

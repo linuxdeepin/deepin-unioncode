@@ -401,12 +401,20 @@ DIconButton *NavEditMainWindow::addIconButton(QAction *action)
         return {};
 
     DIconButton *iconBtn = new DIconButton();
-    iconBtn->setToolTip(action->text());
+    iconBtn->setFocusPolicy(Qt::NoFocus);
+    iconBtn->setEnabled(action->isEnabled());
     iconBtn->setIcon(action->icon());
     iconBtn->setMinimumSize(QSize(36, 36));
     iconBtn->setIconSize(QSize(20, 20));
+
+    QString toolTipStr = action->text() + " " + action->shortcut().toString();
+    iconBtn->setToolTip(toolTipStr);
     iconBtn->setShortcut(action->shortcut());
-    connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);
+
+    connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);    
+    connect(action, &QAction::changed, iconBtn, [=]{
+        iconBtn->setEnabled(action->isEnabled());
+    });
 
     return iconBtn;
 }
