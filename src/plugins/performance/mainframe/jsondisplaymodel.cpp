@@ -4,9 +4,6 @@
 
 #include "jsondisplaymodel.h"
 
-#include <QDebug>
-#include <QTableView>
-
 namespace  {
 static std::string feild{"feild"};
 static std::string lines{"lines"};

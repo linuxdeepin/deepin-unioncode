@@ -5,10 +5,7 @@
 #include "jsontabwidget.h"
 #include "jsondisplayview.h"
 
-#include <QHeaderView>
-#include <QTableWidget>
 #include <QStandardItemModel>
-#include <QDebug>
 
 class JsonTabWidgetPrivate
 {

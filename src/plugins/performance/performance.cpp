@@ -11,7 +11,6 @@
 #include "services/window/windowservice.h"
 
 #include <QAction>
-#include <QLabel>
 
 #include <unistd.h>
 
