@@ -4,15 +4,16 @@
 
 #include "taskdelegate.h"
 
-#include <QListView>
 #include <QTextLayout>
 #include <QPainter>
 #include <QDir>
 
+DWIDGET_USE_NAMESPACE
+
 const int ELLIPSIS_GRADIENT_WIDTH = 16;
 
-TaskDelegate::TaskDelegate(QObject *parent) :
-    QStyledItemDelegate(parent)
+TaskDelegate::TaskDelegate(QAbstractItemView *parent) :
+    DStyledItemDelegate(parent)
 { }
 
 TaskDelegate::~TaskDelegate() = default;

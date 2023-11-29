@@ -19,7 +19,7 @@ class TaskManager : public QObject
 public:
     static TaskManager *instance();
 
-    QListView *getView() const;
+    DTK_WIDGET_NAMESPACE::DListView *getView() const;
 
     void clearTasks();
 

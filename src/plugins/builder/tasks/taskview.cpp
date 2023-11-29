@@ -5,9 +5,9 @@
 #include "taskview.h"
 #include "taskdelegate.h"
 
-#include <QScrollBar>
+#include <DScrollBar>
 
-TaskView::TaskView(QWidget *parent) : QListView(parent)
+TaskView::TaskView(QWidget *parent) : DListView(parent)
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);

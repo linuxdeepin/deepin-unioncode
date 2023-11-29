@@ -7,18 +7,19 @@
 
 #include "taskmodel.h"
 
+#include <DStyledItemDelegate>
+
 #include <QObject>
 #include <QFont>
-#include <QStyledItemDelegate>
 
-class TaskDelegate : public QStyledItemDelegate
+class TaskDelegate : public DTK_WIDGET_NAMESPACE::DStyledItemDelegate
 {
     Q_OBJECT
 
     friend class TaskView; // for using Positions::minimumSize()
 
 public:
-    explicit TaskDelegate(QObject * parent = nullptr);
+    explicit TaskDelegate(QAbstractItemView *parent);
     ~TaskDelegate() override;
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;

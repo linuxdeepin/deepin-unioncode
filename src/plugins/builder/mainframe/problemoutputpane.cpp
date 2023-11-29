@@ -12,7 +12,7 @@
 #include <QVBoxLayout>
 
 ProblemOutputPane::ProblemOutputPane(QWidget *parent)
-    : QWidget(parent)
+    : DWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(TaskManager::instance()->getView());
@@ -38,7 +38,7 @@ void ProblemOutputPane::addTask(const Task &task, int linkedOutputLines, int ski
 void ProblemOutputPane::contextMenuEvent(QContextMenuEvent * event)
 {
     if (nullptr == menu) {
-        menu = new QMenu(this);
+        menu = new DMenu(this);
         menu->setParent(this);
         menu->addActions(actionFactory());
     }
