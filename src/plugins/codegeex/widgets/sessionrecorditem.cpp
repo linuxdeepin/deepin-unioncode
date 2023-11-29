@@ -19,6 +19,9 @@ void SessionRecordItem::updateItem(const RecordData &data)
 {
     talkId = data.talkId;
 
+    if (deleteButton)
+        deleteButton->setEnabled(!talkId.isEmpty());
+
     if (promotLabel)
         promotLabel->setText(data.promot);
 
