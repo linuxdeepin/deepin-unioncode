@@ -17,6 +17,7 @@
 #include <DFrame>
 
 #include <QVBoxLayout>
+#include <QFormLayout>
 
 #include "common/common.h"
 
@@ -51,6 +52,8 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     stackWidget->insertWidget(2, d->envWidget);
 
     DButtonBoxButton *btnBuild = new DButtonBoxButton(QObject::tr("Build Steps"), this);
+    btnBuild->setCheckable(true);
+    btnBuild->setChecked(true);
     DButtonBoxButton *btnClean = new DButtonBoxButton(QObject::tr("Clean Steps"), this);
     DButtonBoxButton *btnEnv = new DButtonBoxButton(QObject::tr("Runtime Env"), this);
 
@@ -153,9 +156,7 @@ void BuildPropertyWidget::setupOverviewUI()
     overviewWidget->setLayout(overviewLayout);
 
     QHBoxLayout *configureLayout = new QHBoxLayout();
-    DLabel *configureLabel = new DLabel(DLabel::tr("Build configuration:"));
     d->configureComboBox = new DComboBox(this);
-    configureLayout->addWidget(configureLabel);
     configureLayout->addWidget(d->configureComboBox);
     configureLayout->setSpacing(10);
     configureLayout->addStretch();
@@ -182,8 +183,6 @@ void BuildPropertyWidget::setupOverviewUI()
     });
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    DLabel *label = new DLabel(this);
-    label->setText(tr("Output direcotry:"));
     d->outputDirEdit = new DLineEdit(this);
     d->outputDirEdit->lineEdit()->setReadOnly(true);
     auto button = new QPushButton(this);
@@ -202,17 +201,19 @@ void BuildPropertyWidget::setupOverviewUI()
         }
     });
 
-    hLayout->addWidget(label);
     hLayout->addWidget(d->outputDirEdit);
     hLayout->addWidget(button);
     hLayout->setSpacing(10);
 
     overviewLayout->setSpacing(0);
     overviewLayout->setMargin(0);
-    overviewLayout->addLayout(configureLayout);
     overviewLayout->setSpacing(5);
-    overviewLayout->addLayout(hLayout);
 
+    auto formlayout = new QFormLayout(this);
+    formlayout->addRow(DLabel::tr("Build configuration:"), configureLayout);
+    formlayout->addRow(tr("Output direcotry:"), hLayout);
+
+    overviewLayout->addLayout(formlayout);
     buildCfgWidget->addWidget(overviewWidget);
     d->stackWidget = new DStackedWidget(this);
     buildCfgWidget->addWidget(d->stackWidget);

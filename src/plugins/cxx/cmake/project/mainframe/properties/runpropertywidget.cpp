@@ -56,7 +56,7 @@ void RunPropertyWidget::setupUi()
     DWidget *titleWidget = new DWidget(runCfgWidget);
     QHBoxLayout *runCfgLayout = new QHBoxLayout(titleWidget);
     DLabel *runCfgLabel = new DLabel(tr("Run configuration:"));
-    runCfgLabel->setContentsMargins(10, 0, 30, 0);
+    runCfgLabel->setContentsMargins(10, 0, 0, 0);
 
     d->exeComboBox = new DComboBox();
     d->exeComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -66,6 +66,7 @@ void RunPropertyWidget::setupUi()
         }
     });
     runCfgLayout->addWidget(runCfgLabel, 0, Qt::AlignLeft);
+    runCfgLayout->addStretch(2);
     runCfgLayout->addWidget(d->exeComboBox, 0, Qt::AlignLeft);
     runCfgLayout->addStretch(10);
     runCfgLayout->setMargin(0);

@@ -29,9 +29,7 @@ ConfigureWidget::ConfigureWidget(QWidget *parent)
     d->centrelWidget->setAutoFillBackground(true);
     d->layout = new QVBoxLayout(d->centrelWidget);
     d->layout->setContentsMargins(10, 10, 10, 10);
-    d->layout->setSpacing(24);
     d->centrelWidget->setLayout(d->layout);
-    d->layout->addSpacerItem(new QSpacerItem(0,0,QSizePolicy::Expanding,QSizePolicy::Expanding));
     setWidget(d->centrelWidget);
 }
 
@@ -50,7 +48,7 @@ void ConfigureWidget::addCollapseWidget(CollapseWidget *widget)
         widget->setChecked(true);
     }
     widget->setFixedHeight(600);
-    d->layout->insertWidget(d->layout->count() - 1, widget);
+    d->layout->insertWidget(d->layout->count(), widget);
     qInfo() << widget->size();
 }
 
@@ -59,7 +57,7 @@ void ConfigureWidget::addWidget(DWidget *widget)
     if (!widget)
         return;
 
-    d->layout->insertWidget(d->layout->count() - 1, widget);
+    d->layout->insertWidget(d->layout->count(), widget);
 }
 
 void ConfigureWidget::resizeEvent(QResizeEvent *event)

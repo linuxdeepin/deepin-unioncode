@@ -92,7 +92,6 @@ void RunConfigPane::setupUi()
     mainFrame->setLayout(formLayout);
 
     d->environmentWidget = new EnvironmentWidget(this);
-    d->environmentWidget->setFixedHeight(300);
     vLayout->addWidget(mainFrame);
     vLayout->addWidget(d->environmentWidget);
 

@@ -125,6 +125,7 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
         d->tableView->setShowGrid(false);
         QHeaderView* headerView = d->tableView->horizontalHeader();
         headerView->setSectionResizeMode(QHeaderView::ResizeToContents);
+
         d->tableView->verticalHeader()->hide();
     }
 
