@@ -6,9 +6,9 @@
 #include "valgrindrunner.h"
 #include "xmlstreamreader.h"
 
-#include <QTableWidget>
-#include <QTreeWidget>
-#include <QHeaderView>
+#include <DTreeWidget>
+#include <DHeaderView>
+
 #include <QHBoxLayout>
 
 static QStringList memcheckItemNames {QObject::tr("Issue"), QObject::tr("Location")};
@@ -17,8 +17,8 @@ static QStringList helgrindItemNames {QObject::tr("Issue"), QObject::tr("Locatio
 class ValgrindBarPrivate
 {
     friend class ValgrindBar;
-    QTreeWidget *memcheckWidget {nullptr};
-    QTreeWidget *helgrindWidget {nullptr};
+    DTreeWidget *memcheckWidget {nullptr};
+    DTreeWidget *helgrindWidget {nullptr};
     QTabWidget *tabWidget {nullptr};
 };
 
@@ -27,8 +27,8 @@ ValgrindBar::ValgrindBar(QWidget *parent)
     , d(new ValgrindBarPrivate())
 {
     d->tabWidget = new QTabWidget(this);
-    d->memcheckWidget = new QTreeWidget(d->tabWidget);
-    d->helgrindWidget = new QTreeWidget(d->tabWidget);
+    d->memcheckWidget = new DTreeWidget(d->tabWidget);
+    d->helgrindWidget = new DTreeWidget(d->tabWidget);
 
     initValgrindbar();
 
@@ -36,7 +36,7 @@ ValgrindBar::ValgrindBar(QWidget *parent)
     QObject::connect(ValgrindRunner::instance(), &ValgrindRunner::clearValgrindBar, this, &ValgrindBar::clearDisplay);
 }
 
-void ValgrindBar::refreshDisplay(QTreeWidget *treeWidget)
+void ValgrindBar::refreshDisplay(DTreeWidget *treeWidget)
 {
     treeWidget->clear();
 }
@@ -64,16 +64,16 @@ void ValgrindBar::initValgrindbar()
     hLayout->addWidget(d->tabWidget);
 }
 
-void ValgrindBar::setWidgetStyle(QTreeWidget *treeWidget, const QStringList &itemNames)
+void ValgrindBar::setWidgetStyle(DTreeWidget *treeWidget, const QStringList &itemNames)
 {
-    treeWidget->header()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+    treeWidget->header()->setSectionResizeMode(DHeaderView::ResizeMode::ResizeToContents);
     treeWidget->setHeaderLabels(itemNames);
     treeWidget->setColumnCount(itemNames.size());
 }
 
 void ValgrindBar::showResult(const QString &xmlFileName, const QString &type)
 {
-    QTreeWidget *treeWidget = nullptr;
+    DTreeWidget *treeWidget = nullptr;
 
     if ("memcheck" == type) {
         treeWidget = d->memcheckWidget;

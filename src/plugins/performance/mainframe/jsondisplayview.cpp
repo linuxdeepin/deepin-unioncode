@@ -6,7 +6,6 @@
 #include "jsondisplayview.h"
 #include "jsondispalysfmodel.h"
 
-#include <QHeaderView>
 #include <QSortFilterProxyModel>
 class JsonDisplayViewPrivate
 {

@@ -10,23 +10,25 @@
 #include "jsontabwidget.h"
 #include "common/common.h"
 
+#include <DToolBar>
+#include <DMenu>
+#include <DDockWidget>
+#include <DToolButton>
+#include <DLineEdit>
+
 #include <QTime>
-#include <QMenu>
-#include <QMenuBar>
-#include <QToolBar>
-#include <QDockWidget>
-#include <QToolButton>
 #include <QLineEdit>
 #include <QRegExpValidator>
 
+DWIDGET_USE_NAMESPACE
 class MainWindowPrivate
 {
     friend class MainWindow;
     JsonTabWidget *jsonTabWidget{nullptr};
-    QToolBar *toolbar{nullptr};
+    DToolBar *toolbar{nullptr};
     QLineEdit *editPid{nullptr};
-    QToolButton *ctrlButton{nullptr};
-    QDockWidget *perfRecordDock{nullptr};
+    DToolButton *ctrlButton{nullptr};
+    DDockWidget *perfRecordDock{nullptr};
     PerfRecordDisplay *perfRecordDisplay{nullptr};
     FlameGraphGenTask *flameGraphGenTask{nullptr};
 
@@ -34,9 +36,9 @@ class MainWindowPrivate
     QThread *cliThread{nullptr};
     QProcess *server{nullptr};
     QTimer *timer{nullptr};
-    QString attach{QMenu::tr("Attach")};
-    QString strat{QToolBar::tr("Start")};
-    QString stop{QToolBar::tr("Stop")};
+    QString attach{DMenu::tr("Attach")};
+    QString strat{DToolBar::tr("Start")};
+    QString stop{DToolBar::tr("Stop")};
     QString fromPid{QAction::tr("Pid")};
     QString fromProgram{QAction::tr("Program")};
     std::string host{"127.0.0.1"};
@@ -47,21 +49,21 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow(parent, flags)
     , d (new MainWindowPrivate)
 {
-    d->toolbar = new QToolBar;
+    d->toolbar = new DToolBar;
     d->editPid = new QLineEdit();
     d->editPid->setPlaceholderText("PID");
     QRegularExpression regx("[0-9]+$");
     QValidator *validator = new QRegularExpressionValidator(regx, d->editPid);
     d->editPid->setValidator(validator);
-    d->ctrlButton = new QToolButton;
-    d->perfRecordDock = new QDockWidget;
+    d->ctrlButton = new DToolButton;
+    d->perfRecordDock = new DDockWidget;
     d->perfRecordDisplay = new PerfRecordDisplay;
     d->jsonTabWidget = new JsonTabWidget;
 
     d->ctrlButton->setChecked(true);
     d->ctrlButton->setCheckable(true);
     d->ctrlButton->setText(d->strat);
-    QObject::connect(d->ctrlButton, &QToolButton::toggled, [=](bool checked){
+    QObject::connect(d->ctrlButton, &DToolButton::toggled, [=](bool checked){
         if (checked) {
             QString pid = d->editPid->text();
             if (pid.isEmpty()) {

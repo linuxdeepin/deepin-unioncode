@@ -8,15 +8,15 @@
 #include "common/common.h"
 
 #include <QFile>
-#include <QTreeWidget>
+#include <DTreeWidget>
 #include <QHeaderView>
 #include <QLabel>
 
-XmlStreamReader::XmlStreamReader(QTreeWidget *tree)
+XmlStreamReader::XmlStreamReader(DTreeWidget *tree)
 {
     treeWidget = tree;
 
-    connect(treeWidget, &QTreeWidget::itemClicked, [=](QTreeWidgetItem *item, int column) {
+    connect(treeWidget, &DTreeWidget::itemClicked, [=](QTreeWidgetItem *item, int column) {
         QStringList toolTip = item->toolTip(column).split(":");
         if (toolTip.count() > 1) {
             QString filePath = toolTip.at(0);

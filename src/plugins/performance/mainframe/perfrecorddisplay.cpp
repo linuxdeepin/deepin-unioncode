@@ -4,13 +4,14 @@
 
 #include "perfrecorddisplay.h"
 
-#include <QCheckBox>
+#include <DCheckBox>
 #include <QVBoxLayout>
 
+DWIDGET_USE_NAMESPACE
 class PerfRecordDisplayPrivate
 {
     friend class PerfRecordDisplay;
-    QCheckBox *showWebBrowse{nullptr};
+    DCheckBox *showWebBrowse{nullptr};
     QVBoxLayout *vLayout{nullptr};
 };
 
@@ -18,13 +19,13 @@ PerfRecordDisplay::PerfRecordDisplay(QWidget *parent, Qt::WindowFlags f)
     : QWidget (parent, f)
     , d (new PerfRecordDisplayPrivate)
 {
-    d->showWebBrowse = new QCheckBox(QCheckBox::tr("use WebBrowser show flame-Graph"));
+    d->showWebBrowse = new DCheckBox(DCheckBox::tr("use WebBrowser show flame-Graph"));
 
     d->vLayout = new QVBoxLayout();
     d->vLayout->addWidget(d->showWebBrowse);
     setLayout(d->vLayout);
 
-    QObject::connect(d->showWebBrowse, &QCheckBox::toggled,
+    QObject::connect(d->showWebBrowse, &DCheckBox::toggled,
                      this, &PerfRecordDisplay::showWebBrowserGP);
     d->showWebBrowse->setChecked(false);
 }
