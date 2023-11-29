@@ -5,6 +5,7 @@
 #include "codeportingmanager.h"
 #include "configwidget.h"
 #include "common/widget/outputpane.h"
+#include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include "reportpane.h"
@@ -145,6 +146,21 @@ CodePortingManager::~CodePortingManager()
 
 void CodePortingManager::resetUI()
 {
+    auto &ctx = dpfInstance.serviceContext();
+    auto windowService = ctx.service<WindowService>(WindowService::name());
+
+    QString group = "Porting";
+
+    if (!windowService->hasContextWidget(tr("C&ode Porting"))) {
+        // Add output pane
+        windowService->addContextWidget(tr("C&ode Porting"), new AbstractWidget(CodePortingManager::instance()->getOutputPane()), group);
+    }
+
+    if (!windowService->hasContextWidget(tr("Porting &Report"))) {
+        // Add report pane
+        windowService->addContextWidget(tr("Porting &Report"), new AbstractWidget(CodePortingManager::instance()->getReportPane()), group);
+    }
+
     outputPane->clearContents();
     editor.switchContext(tr("C&ode Porting"));
 }

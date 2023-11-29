@@ -36,12 +36,6 @@ bool CodePortingPlugin::start()
     AbstractAction *actionImpl = new AbstractAction(action);
     windowService->addAction(MWM_TOOLS, actionImpl);
 
-    // Add output pane
-    windowService->addContextWidget(tr("C&ode Porting"), new AbstractWidget(CodePortingManager::instance()->getOutputPane()), "Porting");
-
-    // Add report pane
-    windowService->addContextWidget(tr("Porting &Report"), new AbstractWidget(CodePortingManager::instance()->getReportPane()), "Porting");
-
     return true;
 }
 

@@ -208,6 +208,17 @@ void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *c
     qTabWidgetContext->insertTab(index, qWidget, title);
 }
 
+bool NavEditMainWindow::hasContextWidget(const QString &title)
+{
+    QMutexLocker locker(&mutex);
+    int count = qTabWidgetContext->count();
+    for (int i = 0; i < count; ++i) {
+        if (qTabWidgetContext->tabText(i) == title)
+            return true;
+    }
+    return false;
+}
+
 void NavEditMainWindow::removeContextWidget(AbstractWidget *contextWidget)
 {
     DWidget *qWidget = static_cast<DWidget*>(contextWidget->qWidget());
