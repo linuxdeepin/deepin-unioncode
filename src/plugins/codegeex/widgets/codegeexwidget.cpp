@@ -140,7 +140,7 @@ void CodeGeeXWidget::initUI()
         auto label_icon = new DLabel();
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         label_icon->setSizePolicy(sizePolicy);
-        label_icon->setPixmap(QIcon::fromTheme("codegeex_logo").pixmap(QSize(80, 80)));
+        label_icon->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(QSize(80, 80)));
         label_icon->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(label_icon, Qt::AlignCenter);
