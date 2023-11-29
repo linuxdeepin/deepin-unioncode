@@ -29,13 +29,9 @@ public:
 public Q_SLOTS:
     void onLoginSuccessed();
     void onNewSessionCreated();
-    void onDeleteBtnClicked();
-    void onHistoryBtnClicked();
-    void onCreateNewBtnClicked();
     void toTranslateCode(const QString &code);
-    void onAnwserFinished();
-    void onAnwserStarted();
     void onCloseHistoryWidget();
+    void onShowHistoryWidget();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -51,13 +47,8 @@ private:
     void initAskWidgetConnection();
     void initHistoryWidgetConnection();
 
-    void resetHeaderBtns();
-
     DTK_WIDGET_NAMESPACE::DTabBar *tabBar { nullptr };
     DTK_WIDGET_NAMESPACE::DStackedWidget *stackWidget { nullptr };
-    DTK_WIDGET_NAMESPACE::DPushButton *deleteBtn { nullptr };
-    DTK_WIDGET_NAMESPACE::DPushButton *historyBtn { nullptr };
-    DTK_WIDGET_NAMESPACE::DPushButton *createNewBtn { nullptr };
 
     QPropertyAnimation *historyWidgetAnimation { nullptr };
 
@@ -65,7 +56,6 @@ private:
     HistoryListWidget *historyWidget { nullptr };
     TranslationPageWidget *transPage { nullptr };
 
-    CurrentPageState currentState { AskPage };
     bool historyShowed { false };
 };
 

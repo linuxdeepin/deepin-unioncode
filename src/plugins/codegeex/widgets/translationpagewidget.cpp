@@ -62,19 +62,16 @@ void TranslationPageWidget::initUI()
 
     QHBoxLayout *midLayout = new QHBoxLayout;
 
-    DLabel *comboBoxLabel = new DLabel(this);
-    comboBoxLabel->setFixedHeight(20);
-    comboBoxLabel->setText(tr("Translate Into:"));
-    midLayout->addWidget(comboBoxLabel);
-
     langComboBox = new DComboBox(this);
+    langComboBox->setFixedSize(192, 36);
     langComboBox->addItems(CodeGeeX::SupportLanguage);
     midLayout->addWidget(langComboBox);
 
-    midLayout->addSpacing(100);
+    midLayout->addStretch(1);
 
     transBtn = new DPushButton(this);
     transBtn->setText(tr("Translate"));
+    transBtn->setFixedSize(78, 36);
     midLayout->addWidget(transBtn);
 
     layout->addLayout(midLayout);

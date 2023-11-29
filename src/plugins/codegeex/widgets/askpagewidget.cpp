@@ -37,6 +37,8 @@ void AskPageWidget::setIntroPage()
     });
     scrollArea->setWidget(introPage);
 
+    resetBtns();
+
     Q_EMIT introPageShown();
 }
 
@@ -84,6 +86,23 @@ void AskPageWidget::onChatFinished()
     enterInputState();
 }
 
+void AskPageWidget::onDeleteBtnClicked()
+{
+    CodeGeeXManager::instance()->deleteCurrentSession();
+    CodeGeeXManager::instance()->cleanHistoryMessage();
+}
+
+void AskPageWidget::onHistoryBtnClicked()
+{
+    Q_EMIT requestShowHistoryPage();
+}
+
+void AskPageWidget::onCreateNewBtnClicked()
+{
+    CodeGeeXManager::instance()->cleanHistoryMessage();
+    CodeGeeXManager::instance()->createNewSession();
+}
+
 void AskPageWidget::initUI()
 {
     setContentsMargins(0, 0, 0, 0);
@@ -107,6 +126,25 @@ void AskPageWidget::initInputWidget()
     QVBoxLayout *layout = new QVBoxLayout;
     inputWidget->setLayout(layout);
 
+    QHBoxLayout *btnLayout = new QHBoxLayout;
+    layout->addLayout(btnLayout);
+
+    deleteBtn = new DPushButton(this);
+    deleteBtn->setFlat(true);
+    deleteBtn->setIcon(QIcon::fromTheme("codegeex_clear"));
+    btnLayout->addWidget(deleteBtn);
+
+    btnLayout->addStretch(1);
+
+    historyBtn = new DPushButton(this);
+    historyBtn->setFlat(true);
+    historyBtn->setIcon(QIcon::fromTheme("codegeex_history"));
+    btnLayout->addWidget(historyBtn);
+    createNewBtn = new DPushButton(this);
+    createNewBtn->setFlat(true);
+    createNewBtn->setIcon(QIcon::fromTheme("codegeex_new"));
+    btnLayout->addWidget(createNewBtn);
+
     inputEdit = new DLineEdit(inputWidget);
     inputEdit->setFixedHeight(50);
     placeHolderText = tr("Ask question here, press Enter to send...");
@@ -128,7 +166,11 @@ void AskPageWidget::initConnection()
         QString holderText = tr("Answering") + tips;
         inputEdit->setPlaceholderText(holderText);
     });
+
     connect(inputEdit, &DLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
+    connect(deleteBtn, &DPushButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
+    connect(historyBtn, &DPushButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
+    connect(createNewBtn, &DPushButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
 }
 
 void AskPageWidget::cleanWidgets()
@@ -150,6 +192,8 @@ void AskPageWidget::setSessionPage()
 
     layout->addStretch(1);
 
+    resetBtns();
+
     Q_EMIT sessionPageShown();
 }
 
@@ -158,6 +202,14 @@ void AskPageWidget::enterAnswerState()
     progressCalcNum = 0;
     inputEdit->clear();
     inputEdit->setEnabled(false);
+
+    if (deleteBtn)
+        deleteBtn->setEnabled(false);
+    if (historyBtn)
+        historyBtn->setEnabled(false);
+    if (createNewBtn)
+        createNewBtn->setEnabled(false);
+
     processTimer->start();
 }
 
@@ -166,10 +218,27 @@ void AskPageWidget::enterInputState()
     processTimer->stop();
     inputEdit->setEnabled(true);
     inputEdit->setPlaceholderText(placeHolderText);
+
+    if (deleteBtn)
+        deleteBtn->setEnabled(true);
+    if (historyBtn)
+        historyBtn->setEnabled(true);
+    if (createNewBtn)
+        createNewBtn->setEnabled(true);
 }
 
 void AskPageWidget::askQuestion(const QString &question)
 {
     CodeGeeXManager::instance()->sendMessage(question);
     enterAnswerState();
+}
+
+void AskPageWidget::resetBtns()
+{
+    if (!deleteBtn || !historyBtn || !createNewBtn)
+        return;
+
+    deleteBtn->setVisible(!isIntroPageState());
+    createNewBtn->setVisible(!isIntroPageState());
+    historyBtn->setVisible(true);
 }

@@ -48,13 +48,24 @@ void CodeGeeXWidget::onNewSessionCreated()
         askPage->setIntroPage();
 }
 
-void CodeGeeXWidget::onDeleteBtnClicked()
+void CodeGeeXWidget::toTranslateCode(const QString &code)
 {
-    CodeGeeXManager::instance()->deleteCurrentSession();
-    CodeGeeXManager::instance()->cleanHistoryMessage();
+    transPage->setInputEditText(code);
+    transPage->cleanOutputEdit();
+
+    tabBar->setCurrentIndex(1);
 }
 
-void CodeGeeXWidget::onHistoryBtnClicked()
+void CodeGeeXWidget::onCloseHistoryWidget()
+{
+    historyWidgetAnimation->setStartValue(QRect(0, 0, historyWidget->width(), historyWidget->height()));
+    historyWidgetAnimation->setEndValue(QRect(-this->rect().width(), 0, historyWidget->width(), historyWidget->height()));
+    historyWidgetAnimation->start();
+
+    historyShowed = false;
+}
+
+void CodeGeeXWidget::onShowHistoryWidget()
 {
     CodeGeeXManager::instance()->fetchSessionRecords();
 
@@ -66,52 +77,6 @@ void CodeGeeXWidget::onHistoryBtnClicked()
     historyWidgetAnimation->start();
 
     historyShowed = true;
-}
-
-void CodeGeeXWidget::onCreateNewBtnClicked()
-{
-    CodeGeeXManager::instance()->cleanHistoryMessage();
-    CodeGeeXManager::instance()->createNewSession();
-}
-
-void CodeGeeXWidget::toTranslateCode(const QString &code)
-{
-    currentState = TrasnlatePage;
-    resetHeaderBtns();
-
-    transPage->setInputEditText(code);
-    transPage->cleanOutputEdit();
-
-    tabBar->setCurrentIndex(1);
-}
-
-void CodeGeeXWidget::onAnwserFinished()
-{
-    if (deleteBtn)
-        deleteBtn->setEnabled(true);
-    if (historyBtn)
-        historyBtn->setEnabled(true);
-    if (createNewBtn)
-        createNewBtn->setEnabled(true);
-}
-
-void CodeGeeXWidget::onAnwserStarted()
-{
-    if (deleteBtn)
-        deleteBtn->setEnabled(false);
-    if (historyBtn)
-        historyBtn->setEnabled(false);
-    if (createNewBtn)
-        createNewBtn->setEnabled(false);
-}
-
-void CodeGeeXWidget::onCloseHistoryWidget()
-{
-    historyWidgetAnimation->setStartValue(QRect(0, 0, historyWidget->width(), historyWidget->height()));
-    historyWidgetAnimation->setEndValue(QRect(-this->rect().width(), 0, historyWidget->width(), historyWidget->height()));
-    historyWidgetAnimation->start();
-
-    historyShowed = false;
 }
 
 void CodeGeeXWidget::resizeEvent(QResizeEvent *event)
@@ -173,50 +138,38 @@ void CodeGeeXWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::loginSuccessed, this, &CodeGeeXWidget::onLoginSuccessed);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::createdNewSession, this, &CodeGeeXWidget::onNewSessionCreated);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestToTransCode, this, &CodeGeeXWidget::toTranslateCode);
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &CodeGeeXWidget::onAnwserFinished);
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatStarted, this, &CodeGeeXWidget::onAnwserStarted);
 }
 
 void CodeGeeXWidget::initAskWidget()
 {
+    QHBoxLayout *tabLayout = new QHBoxLayout;
+    tabLayout->setMargin(10);
+    tabLayout->addStretch(1);
+
     tabBar = new DTabBar(this);
     tabBar->setVisibleAddButton(false);
     tabBar->setUsesScrollButtons(false);
-    tabBar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    tabBar->setContentsMargins(0, 0, 0, 0);
+    tabBar->setFixedWidth(300);
+    tabBar->setExpanding(true);
+    tabBar->setContentsMargins(0, 10, 0, 0);
+    tabLayout->addWidget(tabBar, 0);
+
+    tabLayout->addStretch(1);
+
     stackWidget = new QStackedWidget(this);
     stackWidget->setContentsMargins(0, 0, 0, 0);
     stackWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     auto mainLayout = qobject_cast<QVBoxLayout*>(layout());
+    mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
-    QHBoxLayout *headerLayout = new QHBoxLayout;
-    mainLayout->addLayout(headerLayout, 0);
+    mainLayout->addLayout(tabLayout, 0);
     mainLayout->addWidget(stackWidget, 1);
-
-    headerLayout->addWidget(tabBar, 0);
-    headerLayout->addStretch(1);
-
-    deleteBtn = new DPushButton(this);
-    deleteBtn->setFlat(true);
-    deleteBtn->setIcon(QIcon::fromTheme("codegeex_clear"));
-    headerLayout->addWidget(deleteBtn);
-    historyBtn = new DPushButton(this);
-    historyBtn->setFlat(true);
-    historyBtn->setIcon(QIcon::fromTheme("codegeex_history"));
-    headerLayout->addWidget(historyBtn);
-    createNewBtn = new DPushButton(this);
-    createNewBtn->setFlat(true);
-    createNewBtn->setIcon(QIcon::fromTheme("codegeex_new"));
-    headerLayout->addWidget(createNewBtn);
 
     initTabBar();
     initStackWidget();
     initAskWidgetConnection();
-
-    currentState = AskPage;
-    resetHeaderBtns();
 }
 
 void CodeGeeXWidget::initHistoryWidget()
@@ -244,15 +197,6 @@ void CodeGeeXWidget::initStackWidget()
     askPage = new AskPageWidget(this);
     transPage = new TranslationPageWidget(this);
 
-    connect(askPage, &AskPageWidget::introPageShown, this, [ = ]{
-        currentState = AskPage;
-        resetHeaderBtns();
-    });
-    connect(askPage, &AskPageWidget::sessionPageShown, this, [ = ]{
-        currentState = AskPage;
-        resetHeaderBtns();
-    });
-
     DWidget *creatingSessionWidget = new DWidget(this);
     QHBoxLayout *layout = new QHBoxLayout;
     creatingSessionWidget->setLayout(layout);
@@ -270,41 +214,12 @@ void CodeGeeXWidget::initStackWidget()
 
 void CodeGeeXWidget::initAskWidgetConnection()
 {
-    connect(tabBar, &DTabBar::currentChanged, this, [ = ](int index){
-        if (index == 0) {
-            currentState = AskPage;
-            resetHeaderBtns();
-        } else if (index == 1) {
-            currentState = TrasnlatePage;
-            resetHeaderBtns();
-        }
+    connect(tabBar, &DTabBar::currentChanged, stackWidget, [ = ] (int index){
         stackWidget->setCurrentIndex(index + 1);
     });
-    connect(deleteBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onDeleteBtnClicked);
-    connect(historyBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onHistoryBtnClicked);
-    connect(createNewBtn, &DPushButton::clicked, this, &CodeGeeXWidget::onCreateNewBtnClicked);
 }
 
 void CodeGeeXWidget::initHistoryWidgetConnection()
 {
     connect(historyWidget, &HistoryListWidget::requestCloseHistoryWidget, this, &CodeGeeXWidget::onCloseHistoryWidget);
-}
-
-void CodeGeeXWidget::resetHeaderBtns()
-{
-    if (!deleteBtn || !historyBtn || !createNewBtn || !askPage)
-        return;
-
-    switch (currentState) {
-    case AskPage:
-        deleteBtn->setVisible(!askPage->isIntroPageState());
-        createNewBtn->setVisible(!askPage->isIntroPageState());
-        historyBtn->setVisible(true);
-        break;
-    case TrasnlatePage:
-        deleteBtn->setVisible(false);
-        createNewBtn->setVisible(false);
-        historyBtn->setVisible(false);
-        break;
-    }
 }
