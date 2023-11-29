@@ -7,7 +7,6 @@
         <file>builtin/texts/codegeex_insert_16px.svg</file>
         <file>builtin/texts/codegeex_new_16px.svg</file>
         <file>builtin/icons/codegeex_anwser_icon_24px.svg</file>
-        <file>builtin/icons/codegeex_logo_128px.png</file>
         <file>builtin/icons/codegeex_user_30px.svg</file>
     </qresource>
 </RCC>
