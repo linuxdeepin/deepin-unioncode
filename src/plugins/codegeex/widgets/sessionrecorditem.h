@@ -9,10 +9,9 @@
 
 #include <DWidget>
 #include <DLabel>
+#include <DToolButton>
 
-DWIDGET_USE_NAMESPACE
-
-class SessionRecordItem : public DWidget
+class SessionRecordItem : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:
@@ -28,11 +27,11 @@ private:
     void initUI();
     void initConnection();
 
-    DPushButton *deleteButton { nullptr };
-    DPushButton *recordButton { nullptr };
+    DTK_WIDGET_NAMESPACE::DToolButton *deleteButton { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *recordButton { nullptr };
 
-    DLabel *promotLabel { nullptr };
-    DLabel *dateLabel { nullptr };
+    DTK_WIDGET_NAMESPACE::DLabel *promotLabel { nullptr };
+    DTK_WIDGET_NAMESPACE::DLabel *dateLabel { nullptr };
 
     QString talkId {};
 };

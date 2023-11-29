@@ -12,8 +12,6 @@
 
 #include <QMap>
 
-DWIDGET_USE_NAMESPACE
-
 QT_BEGIN_NAMESPACE
 class QScrollArea;
 class QPushButton;
@@ -21,7 +19,7 @@ class QLineEdit;
 QT_END_NAMESPACE
 
 class MessageComponent;
-class AskPageWidget : public DWidget
+class AskPageWidget : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:
@@ -38,11 +36,15 @@ Q_SIGNALS:
     void sendPromot(const QString &promot);
     void introPageShown();
     void sessionPageShown();
+    void requestShowHistoryPage();
 
 public Q_SLOTS:
     void onMessageUpdate(const MessageData &msgData);
     void onSendBtnClicked();
     void onChatFinished();
+    void onDeleteBtnClicked();
+    void onHistoryBtnClicked();
+    void onCreateNewBtnClicked();
 
 private:
     void initUI();
@@ -56,18 +58,24 @@ private:
     void enterInputState();
 
     void askQuestion(const QString &question);
+    void resetBtns();
 
-    PageState curState;
+    DTK_WIDGET_NAMESPACE::DScrollArea *scrollArea { nullptr };
+    DTK_WIDGET_NAMESPACE::DWidget *inputWidget { nullptr };
+    DTK_WIDGET_NAMESPACE::DWidget *messageContainer { nullptr };
+    DTK_WIDGET_NAMESPACE::DLineEdit *inputEdit { nullptr };
 
-    DScrollArea *scrollArea { nullptr };
-    DWidget *inputWidget { nullptr };
-    DWidget *messageContainer { nullptr };
-    DLineEdit *inputEdit { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *deleteBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *historyBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *createNewBtn { nullptr };
+
     QTimer *processTimer { nullptr };
-    int progressCalcNum = 0;
-    QString placeHolderText;
 
     QMap<QString, MessageComponent*> msgComponents {};
+
+    QString placeHolderText {};
+    int progressCalcNum = 0;
+    PageState curState;
 };
 
 #endif // ASKPAGEWIDGET_H

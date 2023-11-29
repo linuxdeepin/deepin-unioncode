@@ -5,8 +5,11 @@
 #include "sessionrecorditem.h"
 
 #include <DPushButton>
+#include <DToolButton>
 
 #include <QHBoxLayout>
+
+DWIDGET_USE_NAMESPACE
 
 SessionRecordItem::SessionRecordItem(QWidget *parent)
     : DWidget (parent)
@@ -19,8 +22,8 @@ void SessionRecordItem::updateItem(const RecordData &data)
 {
     talkId = data.talkId;
 
-    if (deleteButton)
-        deleteButton->setEnabled(!talkId.isEmpty());
+//    if (deleteButton)
+//        deleteButton->setEnabled(!talkId.isEmpty());
 
     if (promotLabel)
         promotLabel->setText(data.promot);
@@ -42,28 +45,36 @@ void SessionRecordItem::onRecordClicked()
 void SessionRecordItem::initUI()
 {
     QHBoxLayout *layout = new QHBoxLayout;
+    layout->setMargin(0);
+    layout->setSpacing(0);
     setLayout(layout);
 
     recordButton = new DPushButton(this);
-    recordButton->setFixedHeight(80);
+    recordButton->setFixedHeight(64);
     layout->addWidget(recordButton);
 
-    QVBoxLayout *btnTextLayout = new QVBoxLayout;
-    btnTextLayout->setMargin(5);
-    btnTextLayout->setSpacing(20);
+    QHBoxLayout *btnLayout = new QHBoxLayout;
+    btnLayout->setMargin(10);
+    btnLayout->setSpacing(10);
+
+    recordButton->setLayout(btnLayout);
+
+    QVBoxLayout *textLayout = new QVBoxLayout;
+    textLayout->setMargin(0);
+    textLayout->setSpacing(5);
 
     promotLabel = new DLabel(recordButton);
-    btnTextLayout->addWidget(promotLabel);
+    textLayout->addWidget(promotLabel);
 
     dateLabel = new DLabel(recordButton);
-    btnTextLayout->addWidget(dateLabel);
+    textLayout->addWidget(dateLabel);
 
-    recordButton->setLayout(btnTextLayout);
+    btnLayout->addLayout(textLayout);
 
-    deleteButton = new DPushButton(this);
-    deleteButton->setFixedWidth(80);
-    deleteButton->setText(tr("Delete"));
-    layout->addWidget(deleteButton, 0);
+    deleteButton = new DToolButton(this);
+    deleteButton->setFixedSize(QSize(30, 30));
+    deleteButton->setIcon(QIcon::fromTheme("codegeex_clear"));
+    btnLayout->addWidget(deleteButton, 0);
 }
 
 void SessionRecordItem::initConnection()

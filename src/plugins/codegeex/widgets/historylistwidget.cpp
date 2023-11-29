@@ -54,9 +54,15 @@ void HistoryListWidget::onPageChanged(int index)
 void HistoryListWidget::initUI()
 {
     QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->setSpacing(10);
     setLayout(mainLayout);
 
     QHBoxLayout *headerLayout = new QHBoxLayout;
+
+    closeButton = new DPushButton(this);
+    closeButton->setText("<");
+    closeButton->setFixedSize(QSize(36, 36));
+    headerLayout->addWidget(closeButton);
 
     DLabel *title = new DLabel(this);
     title->setText(tr("History"));
@@ -67,11 +73,6 @@ void HistoryListWidget::initUI()
 
     headerLayout->addStretch(1);
 
-    closeButton = new DPushButton(this);
-    closeButton->setText("X");
-    closeButton->setFlat(true);
-    headerLayout->addWidget(closeButton);
-
     mainLayout->addLayout(headerLayout);
 
     DWidget *itemsContainer = new DWidget(this);
@@ -79,11 +80,12 @@ void HistoryListWidget::initUI()
 
     QVBoxLayout *containerLayout = new QVBoxLayout;
     containerLayout->setMargin(0);
+    containerLayout->setSpacing(10);
     itemsContainer->setLayout(containerLayout);
 
     for (int i = 0; i < kMaxItemCountInOnePage; ++i) {
         auto item = new SessionRecordItem(itemsContainer);
-        containerLayout->addWidget(item);
+        containerLayout->addWidget(item, 0);
         item->setVisible(false);
 
         itemsList.append(item);
