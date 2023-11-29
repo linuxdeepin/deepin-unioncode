@@ -11,6 +11,7 @@
     "Description" : "The find plugin for the unioncode.",
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [
-        {"Name" : "plugin-codeeditor"}
+        {"Name" : "plugin-codeeditor"},
+        {"Name" : "plugin-debugger"}
     ]
 }

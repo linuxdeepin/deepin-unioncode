@@ -98,7 +98,8 @@ void BuildManager::addMenu()
     d->buildAction.reset(new QAction(MWMBA_BUILD));
     actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
                "build");
-    windowService->addToolBarActionItem("toolbar.Build", d->buildAction.get(), MWNA_EDIT);
+
+    windowService->addTopToolBar("toolbar.Build", d->buildAction.get(), MWNA_EDIT, false);
 
     d->rebuildAction.reset(new QAction(MWMBA_REBUILD));
     actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B),

@@ -191,7 +191,7 @@ void WindowKeeper::createMainMenu(DMenu *menu)
     createHelpActions(menu);
 }
 
-void WindowKeeper::initLeftToolBar()
+void WindowKeeper::initLeftToolbar()
 {
     if (!d->leftToolBar)
         return;
@@ -204,6 +204,18 @@ void WindowKeeper::initLeftToolBar()
     layout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     d->leftToolBar->setLayout(layout);
     d->centralWidget->layout()->addWidget(d->leftToolBar);
+}
+
+void WindowKeeper::initTopToolbar()
+{
+    d->topToolBar.insert(MWNA_EDIT, new DWidget());
+    d->topToolBar.insert(MWNA_DEBUG, new DWidget());
+    QHBoxLayout *hLayout = new QHBoxLayout(d->topToolBar[MWNA_EDIT]);
+    hLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    hLayout->setContentsMargins(20, 0, 0, 0);
+    QHBoxLayout *hLayout1 = new QHBoxLayout(d->topToolBar[MWNA_DEBUG]);
+    hLayout1->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    hLayout1->setContentsMargins(20, 0, 0, 0);
 }
 
 void WindowKeeper::layoutWindow(DMainWindow *window)
@@ -255,8 +267,10 @@ WindowKeeper::WindowKeeper(QObject *parent)
 
         if (!d->leftToolBar) {
             d->leftToolBar = new DFrame();
-            initLeftToolBar();
+            initLeftToolbar();
         }
+
+        initTopToolbar();
 
         if (!d->mainMenu) {
             d->mainMenu = new DMenu(d->window->titlebar());
@@ -305,8 +319,8 @@ WindowKeeper::WindowKeeper(QObject *parent)
         windowService->removeActions = std::bind(&WindowKeeper::removeActions, this, _1);
     }
 
-    if (!windowService->addTopToolBarWidget) {
-        windowService->addTopToolBarWidget = std::bind(&WindowKeeper::addTopToolBarWidget, this, _1, _2);
+    if (!windowService->addTopToolBar) {
+        windowService->addTopToolBar = std::bind(&WindowKeeper::addTopToolBar, this, _1, _2, _3, _4);
     }
 
     if (!windowService->getCentralNavigation) {
@@ -588,18 +602,40 @@ void WindowKeeper::showAboutPlugins()
     dialog.exec();
 }
 
-void WindowKeeper::addTopToolBarWidget(const QString &toolBarName, AbstractWidget *widget)
+void WindowKeeper::addTopToolBar(const QString &name, QAction *action, const QString &group, bool isSeparat)
 {
-    if (!widget->qWidget() || toolBarName.isNull())
+    if (!action || name.isNull() || group.isNull())
         return;
 
-    QString navName;
-    if (toolBarName == "Edit ToolBar")
-        navName = MWNA_EDIT;
-    else if (toolBarName == "Debug ToolBar")
-        navName = MWNA_DEBUG;
+    QHBoxLayout *toolBarLayout = static_cast<QHBoxLayout*>(d->topToolBar[group]->layout());
+    toolBarLayout->addWidget(addIconButton(action));
 
-    if(!d->topToolBar.contains(navName)) {
-        d->topToolBar.insert(navName, static_cast<DWidget*>(widget->qWidget()));
-    }
+    if (isSeparat)
+        toolBarLayout->addSpacing(20);
+
+    return;
+}
+
+DIconButton *WindowKeeper::addIconButton(QAction *action)
+{
+    if (!action)
+        return {};
+
+    DIconButton *iconBtn = new DIconButton();
+    iconBtn->setFocusPolicy(Qt::NoFocus);
+    iconBtn->setEnabled(action->isEnabled());
+    iconBtn->setIcon(action->icon());
+    iconBtn->setMinimumSize(QSize(36, 36));
+    iconBtn->setIconSize(QSize(20, 20));
+
+    QString toolTipStr = action->text() + " " + action->shortcut().toString();
+    iconBtn->setToolTip(toolTipStr);
+    iconBtn->setShortcut(action->shortcut());
+
+    connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);
+    connect(action, &QAction::changed, iconBtn, [=]{
+        iconBtn->setEnabled(action->isEnabled());
+    });
+
+    return iconBtn;
 }

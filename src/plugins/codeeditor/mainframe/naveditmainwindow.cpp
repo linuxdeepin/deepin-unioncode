@@ -49,9 +49,6 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     using namespace std::placeholders;
-    if (!windowService->addToolBarActionItem) {
-        windowService->addToolBarActionItem = std::bind(&NavEditMainWindow::addToolBarActionItem, this, _1, _2, _3);
-    }
 
     if (!windowService->addToolBarWidgetItem) {
         windowService->addToolBarWidgetItem = std::bind(&NavEditMainWindow::addToolBarWidgetItem, this, _1, _2, _3);
@@ -70,8 +67,6 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSwitchWorkspace,
                      this, &NavEditMainWindow::switchWidgetWorkspace);
-
-    initToolbar();
 
     qDockWidgetContext = new AutoHideDockWidget(DDockWidget::tr("Context"), this);
     qDockWidgetContext->setFeatures(DDockWidget::DockWidgetMovable);
@@ -312,23 +307,6 @@ void NavEditMainWindow::showValgrindBar()
     }
 }
 
-bool NavEditMainWindow::addToolBarActionItem(const QString &id, QAction *action, const QString &group)
-{
-    QMutexLocker locker(&mutex);
-
-    if (!mainToolBar)
-        return false;
-
-    if (group == "Search") {
-        searchAction = action;
-        return true;
-    }
-
-    addTopToolBar(id, action, group);
-
-    return true;
-}
-
 bool NavEditMainWindow::addToolBarWidgetItem(const QString &id, AbstractWidget *widget, const QString &group)
 {
     QMutexLocker locker(&mutex);
@@ -359,62 +337,4 @@ void NavEditMainWindow::adjustWorkspaceItemOrder()
         if (tabBar->tabText(i) == MWCWT_SYMBOL)
             tabBar->moveTab(i, 1);
     }
-}
-
-void NavEditMainWindow::initToolbar()
-{
-    topToolBarWidget.insert(MWNA_EDIT, new DWidget());
-    topToolBarWidget.insert(MWNA_DEBUG, new DWidget());
-    QHBoxLayout *hLayout = new QHBoxLayout(topToolBarWidget[MWNA_EDIT]);
-    hLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-    hLayout->setContentsMargins(20, 0, 0, 0);
-    QHBoxLayout *hLayout1 = new QHBoxLayout(topToolBarWidget[MWNA_DEBUG]);
-    hLayout1->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-    hLayout1->setContentsMargins(20, 0, 0, 0);
-}
-
-DWidget *NavEditMainWindow::getTopToolBarWidget(const QString &navName)
-{
-    return topToolBarWidget[navName];
-}
-
-bool NavEditMainWindow::addTopToolBar(const QString &id, QAction *action, const QString &group)
-{
-    if (!action || id.isEmpty())
-        return false;
-
-    QHBoxLayout *toolBarLayout = static_cast<QHBoxLayout*>(topToolBarWidget[group]->layout());
-    toolBarLayout->addWidget(addIconButton(action));
-    if (id == "Restart.Debugging")
-        toolBarLayout->addSpacing(20);
-    if (id == "Step.Out" || id == "Running") {
-        toolBarLayout->addSpacing(20);
-        toolBarLayout->insertWidget(-1, addIconButton(searchAction));
-    }
-
-    return true;
-}
-
-DIconButton *NavEditMainWindow::addIconButton(QAction *action)
-{
-    if (!action)
-        return {};
-
-    DIconButton *iconBtn = new DIconButton();
-    iconBtn->setFocusPolicy(Qt::NoFocus);
-    iconBtn->setEnabled(action->isEnabled());
-    iconBtn->setIcon(action->icon());
-    iconBtn->setMinimumSize(QSize(36, 36));
-    iconBtn->setIconSize(QSize(20, 20));
-
-    QString toolTipStr = action->text() + " " + action->shortcut().toString();
-    iconBtn->setToolTip(toolTipStr);
-    iconBtn->setShortcut(action->shortcut());
-
-    connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);    
-    connect(action, &QAction::changed, iconBtn, [=]{
-        iconBtn->setEnabled(action->isEnabled());
-    });
-
-    return iconBtn;
 }

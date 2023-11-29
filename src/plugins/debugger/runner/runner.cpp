@@ -38,7 +38,7 @@ Runner::Runner(QObject *parent)
                                                  "run");
     connect(d->runAction.get(), &QAction::triggered, this, &Runner::run);
     WindowService *service = dpfGetService(WindowService);
-    service->addToolBarActionItem(tr("Running"), d->runAction.get(), MWNA_EDIT);
+    service->addTopToolBar(tr("Running"), d->runAction.get(), MWNA_EDIT, true);
 }
 
 void Runner::run()
