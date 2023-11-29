@@ -217,7 +217,7 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
 
     createMainMenu(d->mainMenu);
 
-    //createStatusBar(window);
+    createStatusBar(window);
 
     window->setWindowTitle("Deepin Union Code");
     window->setWindowIcon(QIcon(":/core/images/unioncode@128.png"));
