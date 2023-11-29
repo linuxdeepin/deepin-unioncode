@@ -12,7 +12,7 @@ TaskManager *TaskManager::instance()
     return &ins;
 }
 
-QListView *TaskManager::getView() const
+DListView *TaskManager::getView() const
 {
     return view;
 }
@@ -27,8 +27,7 @@ TaskManager::TaskManager(QObject *parent) : QObject(parent)
     view = new TaskView();
     model.reset(new TaskModel());
     view->setModel(model.get());
-    auto tld = new TaskDelegate;
-    view->setItemDelegate(tld);
+    auto tld = new TaskDelegate(view);
 
     view->setFrameStyle(QFrame::NoFrame);
     view->setSelectionMode(QAbstractItemView::SingleSelection);

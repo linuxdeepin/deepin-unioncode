@@ -7,10 +7,12 @@
 
 #include "services/builder/task.h"
 
-#include <QWidget>
-#include <QMenu>
+#include <DWidget>
+#include <DMenu>
 
-class ProblemOutputPane : public QWidget
+DWIDGET_USE_NAMESPACE
+
+class ProblemOutputPane : public DWidget
 {
     Q_OBJECT
 public:
@@ -25,7 +27,7 @@ protected:
 
 private:
     QList<QAction*> actionFactory();
-    QMenu *menu = nullptr;
+    DMenu *menu = nullptr;
 };
 
 #endif // PROBLEMOUTPUTPANE_H

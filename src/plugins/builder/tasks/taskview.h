@@ -5,9 +5,9 @@
 #ifndef TASKVIEW_H
 #define TASKVIEW_H
 
-#include <QListView>
+#include <DListView>
 
-class TaskView : public QListView
+class TaskView : public DTK_WIDGET_NAMESPACE::DListView
 {
     Q_OBJECT
 public:
