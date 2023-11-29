@@ -63,8 +63,6 @@ bool CodeEditor::start()
     if (windowService) {
         NavEditMainWindow *navEditWindow = NavEditMainWindow::instance();
         navEditWindow->setWidgetEdit(new AbstractCentral(editManager));
-        windowService->addTopToolBarWidget("Edit ToolBar", new AbstractWidget(navEditWindow->getTopToolBarWidget(MWNA_EDIT)));
-        windowService->addTopToolBarWidget("Debug ToolBar", new AbstractWidget(navEditWindow->getTopToolBarWidget(MWNA_DEBUG)));
 
         windowService->addCentralNavigation(MWNA_EDIT, new AbstractCentral(navEditWindow));
 

@@ -41,14 +41,16 @@ bool FindPlugin::start()
 
     ActionManager::getInstance()->registerAction(findAction, "Edit.Find",
                                                  tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F),
-                                                 "find");
+                                                 "search-find");
     ActionManager::getInstance()->registerAction(advancedFindAction, "Edit.Advanced.Find",
                                                  tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F),
-                                                 "find");
+                                                 "search-find");
 
     editMenu->addAction(findAction);
     editMenu->addAction(advancedFindAction);
-    windowService->addToolBarActionItem("Find/Replace", findAction, "Search");
+
+    windowService->addTopToolBar("Edit.Find", findAction, MWNA_EDIT, false);
+    windowService->addTopToolBar("Edit.Find", findAction, MWNA_DEBUG, false);
 
     connect(findAction, &QAction::triggered, [=] {
         windowService->showFindToolBar();

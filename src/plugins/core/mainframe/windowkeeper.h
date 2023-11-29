@@ -59,7 +59,7 @@ public slots:
     void addOpenProjectAction(const QString &name, AbstractAction *action);
     void initUserWidget();
 
-    void addTopToolBarWidget(const QString &toolBarName, AbstractWidget *widget);
+    void addTopToolBar(const QString &name, QAction *action, const QString &group, bool isSeparat);
 
 private :
     void showAboutDlg();
@@ -76,8 +76,10 @@ private :
     void setNavActionChecked(const QString &actionName, bool checked);
 
     void createMainMenu(DMenu *mainMenu);
-    void initLeftToolBar();
-    void createNavIconBtn(const QString &navName, const QString &iconName);
+    void initLeftToolbar();
+    void initTopToolbar();
+    void createNavIconBtn(const QString &navName, const QString &iconName);    
+    DIconButton *addIconButton(QAction *action);
 };
 
 #endif // WINDOWKEEPER_H
