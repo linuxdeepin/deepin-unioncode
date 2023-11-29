@@ -41,6 +41,7 @@ public:
     // return old watch widget
     DWidget *setWidgetWatch(AbstractWidget *watchWidget);
     void addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group);
+    bool hasContextWidget(const QString &title);
     // the page widget itself is not deleted.
     void removeContextWidget(AbstractWidget *contextWidget);
     bool switchWidgetWorkspace(const QString &title);

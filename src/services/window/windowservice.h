@@ -103,6 +103,8 @@ public:
      */
     DPF_INTERFACE(void, addContextWidget, const QString &contextTab, AbstractWidget *contextWidget, const QString &group);
 
+    DPF_INTERFACE(bool, hasContextWidget, const QString &title);
+
     /**
      * @brief DPF_INTERFACE
      * @param contextWidget
