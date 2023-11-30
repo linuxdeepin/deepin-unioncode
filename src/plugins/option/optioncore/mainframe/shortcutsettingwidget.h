@@ -6,32 +6,31 @@
 #define SHORTCUTSETTINGWIDGET_H
 
 #include <DWidget>
+#include <DFrame>
 #include <QAbstractTableModel>
 #include <common/widget/pagewidget.h>
 
 enum ColumnID
 {
-    kID,
+
     kDescriptions,
     kShortcut,
     _KCount
 };
 
-class ShortcutTableModelPrivate;
-class ShortcutTableModel : public QAbstractTableModel
+class ShortCutPrivate;
+class ShortCut : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 public:
-    explicit ShortcutTableModel(QObject *parent = nullptr);
-    virtual ~ShortcutTableModel();
+    explicit ShortCut(QWidget *parent = nullptr);
+    virtual ~ShortCut();
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role) const;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    int rowCount() const;
+    int columnCount() const;
 
+    void setupForm();
     void updateShortcut(QString id, QString shortcut);
-    void resetShortcut(QString id);
     void resetAllShortcut();
     void saveShortcut();
     void readShortcut();
@@ -43,7 +42,7 @@ public:
 signals:
 
 private:
-    ShortcutTableModelPrivate *d;
+    ShortCutPrivate *d;
 };
 
 class ShortcutSettingWidgetPrivate;
@@ -56,21 +55,15 @@ public:
     void saveConfig();
     void readConfig();
     void checkShortcutValidity(const int row, const QString &shortcut);
-    bool shortcutIsRepeat(const int row, const QString &text);
 
 signals:
 
 public slots:
-    void onTableViewClicked(const QModelIndex &);
-    void onShortcutEditTextChanged(const QString &);
     void onBtnResetAllClicked();
     void onBtnImportClicked();
     void onBtnExportClicked();
-    void onBtnResetClicked();
-    void onBtnRecordClicked();
 private:
     void setupUi();
-    void setSelectedShortcut();
     ShortcutSettingWidgetPrivate *const d;
 };
 
