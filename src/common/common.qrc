@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/icons/deepin/builtin">
-        <file>icons/template_unioncode_16px.png</file>
+        <file>icons/unioncode_16px.png</file>
     </qresource>
 </RCC>

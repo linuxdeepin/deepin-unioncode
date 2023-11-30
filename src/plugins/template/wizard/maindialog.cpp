@@ -16,11 +16,16 @@
 #include <DListWidget>
 #include <DStackedWidget>
 #include <DStandardItem>
+#include <DSuggestButton>
+#include <DButtonBox>
 
 #include <QStandardItemModel>
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QUuid>
+#include <QDebug>
+
+const int widthPerBtn = 93;
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
@@ -30,6 +35,7 @@ class MainDialogPrivate
     friend class MainDialog;
     QMap<QString, DetailWidget*> detailWidgetMap;
     DStackedWidget *detailStackedWidget = nullptr;
+    DStackedWidget *StackedWidget = nullptr;
     DWidget *blankWidget = nullptr;
 };
 
@@ -38,10 +44,8 @@ MainDialog::MainDialog(DWidget *parent)
     , d(new MainDialogPrivate())
 {
     setMinimumSize(850, 550);
-
     TemplateVector templateVec;
     TemplateParser::readTemplateConfig(templateVec);
-
     setupUI(templateVec);
 }
 
@@ -53,51 +57,129 @@ MainDialog::~MainDialog()
 
 void MainDialog::setupUI(TemplateVector &templateVec)
 {
+
     DTitlebar *titleBar = new DTitlebar();
-    titleBar->setMenuVisible(false);
-    titleBar->setTitle(QString(tr("New File or Project")));
+    titleBar->setMenuVisible(true);
+    titleBar->setIcon(QIcon::fromTheme("template_unioncode"));
 
-    DLabel *title =  new DLabel(tr("Choose a template:"));
+    DButtonBoxButton *newFileButton = new DButtonBoxButton(QObject::tr("New File"), this);
+    DButtonBoxButton *newProjectButton = new DButtonBoxButton(QObject::tr("New Project"), this);
+    DButtonBox *btnbox = new DButtonBox(this);
+    QList<DButtonBoxButton *> list { newFileButton, newProjectButton};
+    btnbox->setButtonList(list, true);
+    btnbox->setFixedWidth(widthPerBtn * btnbox->buttonList().size());
+    titleBar->addWidget(btnbox);
+    newFileButton->click();
 
-    d->detailStackedWidget = new DStackedWidget();
+    d->detailStackedWidget = new DStackedWidget(this);
+    d->StackedWidget = new DStackedWidget();
+
     d->blankWidget = new DetailWidget(this);
     d->detailStackedWidget->addWidget(d->blankWidget);
 
     DTreeView * treeView =  new DTreeView();
-    treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    treeView->setSelectionMode(QAbstractItemView::SingleSelection);
-    treeView->setSelectionBehavior(QAbstractItemView::SelectItems);
+    treeView->setHeaderHidden(true);
 
-    QStandardItemModel *standardModel = new QStandardItemModel();
-    standardModel->setHorizontalHeaderLabels(QStringList{tr("Templates")});
+    treeView->setEditTriggers(DTreeView::NoEditTriggers);
+    treeView->setSelectionMode(DTreeView::SingleSelection);
+    treeView->setSelectionBehavior(DTreeView::SelectRows);
+    treeView->setSelectionMode(DTreeView::SingleSelection);
 
-    QStandardItem * rootItem = standardModel->invisibleRootItem();
+    //deafult new file显示
+    QStandardItemModel *StandardModel = new QStandardItemModel();
+    QStandardItem * rootItem = StandardModel->invisibleRootItem();
 
-    for (auto iterTpl = templateVec.begin(); iterTpl != templateVec.end(); ++iterTpl) {
-        DStandardItem *tpl = new DStandardItem(iterTpl->category);
-        rootItem->appendRow(tpl);
+    auto iterTpl = templateVec.begin();
+    DStandardItem *tpl = new DStandardItem(iterTpl->category);
 
-        QVector<TemplateCategory> tplVec = iterTpl->templateVec;
-        for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
-            DStandardItem *typeItem = new DStandardItem(iterCate->type);
-            tpl->appendRow(typeItem);
+    QVector<TemplateCategory> tplVec = iterTpl->templateVec;
+    for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
+        DStandardItem *typeItem = new DStandardItem(iterCate->type);
+        rootItem->appendRow(typeItem);
+        auto iterDetail = iterCate->templateVec.begin();
+        for (; iterDetail != iterCate->templateVec.end(); ++iterDetail) {
+            DStandardItem *detailItem = new DStandardItem(iterDetail->name);
+            TemplateDetail detail;
+            detail.name = iterDetail->name;
+            detail.path = iterDetail->path;
+            detail.leafNode = iterDetail->leafNode;
+            detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
+            detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
+            typeItem->appendRow(detailItem);
 
-            auto iterDetail = iterCate->templateVec.begin();
-            for (; iterDetail != iterCate->templateVec.end(); ++iterDetail) {
-                DStandardItem *detailItem = new DStandardItem(iterDetail->name);
-                TemplateDetail detail;
-                detail.name = iterDetail->name;
-                detail.path = iterDetail->path;
-                detail.leafNode = iterDetail->leafNode;
-
-                detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
-                detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
-                typeItem->appendRow(detailItem);
-            }
+            QFont font;
+            font.setPointSize(12);
+            detailItem->setFont(font);
         }
-
-        treeView->setModel(standardModel);
     }
+    treeView->setModel(StandardModel);
+    treeView->expandAll();
+
+    connect(btnbox, &DButtonBox::buttonClicked, this, [=](QAbstractButton *button) {
+        if (button == newFileButton){
+            QStandardItemModel *StandardModel = new QStandardItemModel();
+            QStandardItem * rootItem = StandardModel->invisibleRootItem();
+
+            auto iterTpl = templateVec.begin();
+            DStandardItem *tpl = new DStandardItem(iterTpl->category);
+
+            QVector<TemplateCategory> tplVec = iterTpl->templateVec;
+            for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
+                DStandardItem *typeItem = new DStandardItem(iterCate->type);
+                rootItem->appendRow(typeItem);
+                auto iterDetail = iterCate->templateVec.begin();
+                for (; iterDetail != iterCate->templateVec.end(); ++iterDetail) {
+                    DStandardItem *detailItem = new DStandardItem(iterDetail->name);
+                    TemplateDetail detail;
+                    detail.name = iterDetail->name;
+                    detail.path = iterDetail->path;
+                    detail.leafNode = iterDetail->leafNode;
+
+                    detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
+                    detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
+                    typeItem->appendRow(detailItem);
+
+                    QFont font;
+                    font.setPointSize(12);
+                    detailItem->setFont(font);
+                }
+            }
+            treeView->setModel(StandardModel);
+            treeView->expandAll();
+        }
+        if (button == newProjectButton) {
+            QStandardItemModel *StandardModel = new QStandardItemModel();
+            QStandardItem * rootItem = StandardModel->invisibleRootItem();
+            auto iterTpl = templateVec.begin() +1 ;
+
+            DStandardItem *tpl = new DStandardItem(iterTpl->category);
+            QVector<TemplateCategory> tplVec = iterTpl->templateVec;
+            for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
+
+                DStandardItem *typeItem = new DStandardItem(iterCate->type);
+                rootItem->appendRow(typeItem);
+
+                auto iterDetail = iterCate->templateVec.begin();
+                for (; iterDetail != iterCate->templateVec.end(); ++iterDetail) {
+                    DStandardItem *detailItem = new DStandardItem(iterDetail->name);
+                    TemplateDetail detail;
+                    detail.name = iterDetail->name;
+                    detail.path = iterDetail->path;
+                    detail.leafNode = iterDetail->leafNode;
+
+                    detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
+                    detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
+                    typeItem->appendRow(detailItem);
+
+                    QFont font;
+                    font.setPointSize(12);
+                    detailItem->setFont(font);
+                }
+            }
+            treeView->setModel(StandardModel);
+            treeView->expandAll();
+        }
+    });
 
     connect(treeView, &DTreeView::clicked, [=](){
         QModelIndex index = treeView->selectionModel()->currentIndex();
@@ -132,56 +214,35 @@ void MainDialog::setupUI(TemplateVector &templateVec)
             }
         } else {
             DetailWidget * detailWidget = new DetailWidget(detail.path, this);
+
             d->detailWidgetMap.insert(uuid, detailWidget);
             d->detailStackedWidget->addWidget(detailWidget);
             d->detailStackedWidget->setCurrentWidget(detailWidget);
+
+            //关闭主窗口
+            connect(detailWidget, &DetailWidget::closeSignal, this, [this](){
+                close();
+            });
         }
     });
+
 
     QVBoxLayout *vItemLayout = new QVBoxLayout();
     vItemLayout->addWidget(treeView);
 
     DWidget *contentWidget = new DWidget();
     QHBoxLayout *hLayout = new QHBoxLayout();
-    contentWidget->setLayout(hLayout);
     hLayout->addLayout(vItemLayout);
     hLayout->addWidget(d->detailStackedWidget);
+
     hLayout->setStretchFactor(vItemLayout, 1);
     hLayout->setStretchFactor(d->detailStackedWidget, 2);
-
-    DWidget *bottomWidget = new DWidget();
-    QHBoxLayout * bottomLayout = new QHBoxLayout();
-    bottomWidget->setLayout(bottomLayout);
-
-    DPushButton *create = new DPushButton(tr("Create"));
-    DPushButton *cancel = new DPushButton(tr("Cancel"));
-    bottomLayout->addStretch(15);
-    bottomLayout->addWidget(create, Qt::AlignRight);
-    bottomLayout->addWidget(cancel, Qt::AlignRight);
-
-    connect(create, &DPushButton::clicked, [&](){
-        DetailWidget *detailWidget = dynamic_cast<DetailWidget*>(d->detailStackedWidget->currentWidget());
-        if (detailWidget) {
-            PojectGenParam param;
-            if (detailWidget->getGenParams(param)) {
-                generate(param);
-            }
-        }
-    });
-
-    connect(cancel, &DPushButton::clicked, [&](){
-        close();
-    });
+    contentWidget->setLayout(hLayout);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->setContentsMargins(0, 0, 0, 0);
-    vLayout->setSpacing(0);
 
     vLayout->addWidget(titleBar);
-    vLayout->addWidget(title);
     vLayout->addWidget(contentWidget);
-    vLayout->addWidget(bottomWidget);
-
     setLayout(vLayout);
 }
 

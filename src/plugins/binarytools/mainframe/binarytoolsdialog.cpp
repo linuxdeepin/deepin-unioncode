@@ -8,12 +8,13 @@
 
 #include <DPushButton>
 #include <DDialogButtonBox>
+#include <DFrame>
 
 #include <QIcon>
 #include <QProcess>
 #include <QBoxLayout>
 #include <QTextBlock>
-#include <QFrame>
+#include <DFrame>
 
 DWIDGET_USE_NAMESPACE
 class BinaryToolsDialogPrivate
@@ -28,9 +29,9 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     , d (new BinaryToolsDialogPrivate)
 {
     setWindowTitle(tr("Binary Tools"));
-    setIcon(QIcon::fromTheme(":/icons/deepin/builtin/common/icons/unioncode_16px.png"));
+    setIcon(QIcon::fromTheme("unioncode"));
 
-    QFrame *mainFrame = new QFrame(this);
+    DFrame *mainFrame = new DFrame(this);
     addContent(mainFrame);
 
     QVBoxLayout *vLayout = new QVBoxLayout(mainFrame);
@@ -56,8 +57,6 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     d->buttons->button(DDialogButtonBox::Save)->setIcon(QIcon());
     d->buttons->button(DDialogButtonBox::Cancel)->setIcon(QIcon());
     vLayout->addLayout(buttonLayout);
-
-
 
     connect(d->configView, &BinaryToolsConfigView::useCombinationCommand, [=](){
         QtConcurrent::run([=](){

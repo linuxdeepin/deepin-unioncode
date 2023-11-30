@@ -147,7 +147,7 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
 void CodeGeeXManager::recevieLoginState(AskApi::LoginState loginState)
 {
     if (loginState == AskApi::LoginState::kLoginFailed) {
-        qWarning() << "CodeGeeX login failed!";
+//        qWarning() << "CodeGeeX login failed!";
         // switch to login ui.
     } else if (loginState == AskApi::LoginState::kLoginSuccess) {
         isLogin = true;

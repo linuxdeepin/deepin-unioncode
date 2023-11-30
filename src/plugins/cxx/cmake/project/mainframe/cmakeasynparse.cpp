@@ -35,27 +35,6 @@ QIcon cmakeFolderIcon()
     return cmakeFolderIcon;
 }
 
-QIcon libBuildIcon()
-{
-    static QIcon libBuildIcon;
-    if (libBuildIcon.isNull()) {
-        libBuildIcon = CustomIcons::icon(CustomIcons::Lib);
-        libBuildIcon.addFile(":/cmakeproject/images/build@2x.svg");
-    }
-    return libBuildIcon;
-}
-
-QIcon exeBuildIcon()
-{
-    static QIcon exeBuildIcon;
-    if (exeBuildIcon.isNull()) {
-        exeBuildIcon = CustomIcons::icon(CustomIcons::Exe);
-        // TODO(any):use a different png.
-        exeBuildIcon.addFile(":/cmakeproject/images/build@2x.svg");
-    }
-    return exeBuildIcon;
-}
-
 }   // namespace
 
 const QString kProjectFile = "CMakeLists.txt";
@@ -177,10 +156,10 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         QString prefix = "";
         if (target.type == kExecutable) {
             prefix = CDT_TARGETS_TYPE::get()->Exe;
-            targetItem->setIcon(::exeBuildIcon());
+            targetItem->setIcon(QIcon::fromTheme("project_build"));
         } else if (target.type == kStaticLibrary || target.type == kDynamicLibrary) {
             prefix = CDT_TARGETS_TYPE::get()->Lib;
-            targetItem->setIcon(::libBuildIcon());
+            targetItem->setIcon(QIcon::fromTheme("project_build"));
         }
         QString title = prefix + target.title;
         targetItem->setText(title);

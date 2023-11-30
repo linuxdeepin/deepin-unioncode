@@ -129,6 +129,7 @@ add_library(
     SHARED
     ${CXX_H}
     ${CXX_CPP}
+    common.qrc
     )
 
 target_link_libraries(
