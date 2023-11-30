@@ -14,6 +14,9 @@ public:
     virtual QMap<int, QString> keyWords() const override;
     virtual void setStyle() override;
     virtual int sectionEnd() const override;
+
+protected:
+    virtual void setThemeColor(DGuiApplicationHelper::ColorType colorType) override;
 };
 
 #endif // STYLESCICPP_H

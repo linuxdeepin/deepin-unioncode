@@ -26,6 +26,7 @@ public:
     enum_def(Theme, QString)
     {
         enum_exp Dark = "Dark";
+        enum_exp Light = "Light";
     };
 
     enum_def(Key_1, QString)

@@ -153,8 +153,10 @@ void CodeGeeXManager::recevieLoginState(AskApi::LoginState loginState)
         isLogin = true;
         Q_EMIT loginSuccessed();
         // switch to ask page.
-        queryTimer->stop();
-        queryTimer->deleteLater();
+        if (queryTimer) {
+            queryTimer->stop();
+            queryTimer->deleteLater();
+        }
     }
 }
 

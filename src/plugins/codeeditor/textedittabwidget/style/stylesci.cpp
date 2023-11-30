@@ -87,15 +87,18 @@ void StyleSci::setKeyWords()
     return;
 }
 
-void StyleSci::setStyle()
+void StyleSci::setThemeColor(DGuiApplicationHelper::ColorType themeType)
 {
+    QString theme = StyleJsonFile::Theme::get()->Dark;
+    if (themeType == DGuiApplicationHelper::LightType) {
+        theme = StyleJsonFile::Theme::get()->Light;
+    }
+
     auto fileJson = d->edit->getStyleFile();
-
     auto themes = fileJson->themes();
-    if (!themes.isEmpty()) {
-
+    if (themes.contains(theme)) {
         d->edit->styleResetDefault(); //clean all
-        fileJson->setTheme(themes.first());
+        fileJson->setTheme(theme);
 
         auto selfObj = fileJson->value(StyleJsonFile::Key_1::get()->Self).toObject();
         auto self_foreground = selfObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16);
@@ -118,6 +121,15 @@ void StyleSci::setStyle()
         d->edit->styleHotSpot(sectionEnd() + 1);
         d->edit->styleSetUnderline(sectionEnd() + 1, true);
     }
+}
+
+void StyleSci::setStyle()
+{
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
+            this, &StyleSci::setThemeColor);
+
+    auto themeType = DGuiApplicationHelper::instance()->themeType();
+    setThemeColor(themeType);
 
     d->edit->annotationSetStyleOffset(AnnotationInfo::Role::get()->Fatal.code);
     d->edit->annotationSetVisible(ANNOTATION_BOXED);

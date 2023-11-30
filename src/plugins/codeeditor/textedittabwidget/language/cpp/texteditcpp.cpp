@@ -21,7 +21,6 @@ TextEditCpp::TextEditCpp(QWidget *parent)
 {
     d->styleFile = new StyleJsonFile(this);
     d->styleFile->setLanguage(this->supportLanguage());
-    d->styleFile->setTheme(StyleJsonFile::Theme::get()->Dark);
     d->styleSci = new StyleSciCpp(this);
     d->styleLsp = new StyleLspCpp(this);
 }

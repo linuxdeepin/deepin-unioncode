@@ -6,6 +6,7 @@
 #define STYLESCI_H
 
 #include "common/common.h"
+#include <DGuiApplicationHelper>
 
 #include <QObject>
 #include <QColor>
@@ -46,6 +47,9 @@ public:
     virtual QMap<int, QString> keyWords() const;
     virtual int sectionEnd() const;
     virtual int sectionStart() const;
+
+protected:
+    virtual void setThemeColor(DGuiApplicationHelper::ColorType colorType);
 };
 
 

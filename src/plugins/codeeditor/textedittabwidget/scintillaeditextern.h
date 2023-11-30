@@ -8,6 +8,8 @@
 #include "ScintillaEdit.h"
 #include "style/stylelsp.h"
 #include "style/stylesci.h"
+
+#include <DGuiApplicationHelper>
 #include <QString>
 
 class ScintillaEditExternPrivate;
@@ -19,6 +21,7 @@ public:
     explicit ScintillaEditExtern(QWidget *parent = nullptr);
     virtual ~ScintillaEditExtern();
 
+    void initThemeColor();
     virtual QString supportLanguage(){return "";} // 当前编辑器支持的语言类型
     static QString fileLanguage(const QString &path); // 获取注册文件中语言支持
     virtual void setFile(const QString &filePath);
@@ -105,6 +108,8 @@ private slots:
     void sciDwellStart(int x, int y);
     void sciDwellEnd(int x, int y);
     void sciUpdateAnnotation();
+
+    void setThemeColor(DGuiApplicationHelper::ColorType colorType);
 
 protected:
     virtual void keyReleaseEvent(QKeyEvent *event) override;

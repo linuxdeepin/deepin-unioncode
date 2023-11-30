@@ -42,12 +42,8 @@ ScintillaEditExtern::ScintillaEditExtern(QWidget *parent)
 {
     setTabWidth(4);
     setIndentationGuides(SC_IV_LOOKBOTH);
-    styleSetBack(STYLE_DEFAULT, StyleColor::color(QColor(43,43,43)));
-    for (int i = 0; i < KEYWORDSET_MAX; i ++) {
-        styleSetFore(i, StyleColor::color(QColor(0xdd, 0xdd, 0xdd)));
-        styleSetBack(i,  StyleColor::color(QColor(43,43,43)));
-    }
-    setCaretFore(StyleColor::color(QColor(255,255,255)));
+    initThemeColor();
+
     horizontalScrollBar()->setVisible(false);
 }
 
@@ -56,6 +52,27 @@ ScintillaEditExtern::~ScintillaEditExtern()
     if (d) {
         delete d;
     }
+}
+
+void ScintillaEditExtern::setThemeColor(DGuiApplicationHelper::ColorType colorType)
+{
+    QColor defaultColor(248, 248, 248);
+    QColor caretForeColor(0, 0, 0);
+    if (colorType == DGuiApplicationHelper::DarkType) {
+        defaultColor = QColor(43, 43, 43);
+        caretForeColor = QColor(255, 255, 255);
+    }
+
+    styleSetBack(STYLE_DEFAULT, StyleColor::color(defaultColor));
+    setCaretFore(StyleColor::color(caretForeColor));
+}
+
+void ScintillaEditExtern::initThemeColor()
+{
+    auto theme = DGuiApplicationHelper::instance()->themeType();
+    setThemeColor(theme);
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
+            this, &ScintillaEditExtern::setThemeColor);
 }
 
 QString ScintillaEditExtern::fileLanguage(const QString &path)
