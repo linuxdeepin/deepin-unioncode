@@ -5,7 +5,9 @@
 #ifndef DETAILWIDGET_H
 #define DETAILWIDGET_H
 
+
 #include "projectgenerate.h"
+#include "services/language/languageservice.h"
 
 #include <DScrollArea>
 
@@ -22,13 +24,15 @@ public:
     ~DetailWidget() override;
 
     bool getGenParams(PojectGenParam &param);
-
 signals:
+    void closeSignal();  // 声明自定义信号
 
 private slots:
 
 private:
     DetailWidgetPrivate *const d;
+    void generate(const PojectGenParam &param);
+
 };
 
 #endif // DETAILWIDGET_H

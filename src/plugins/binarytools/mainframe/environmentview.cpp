@@ -8,6 +8,8 @@
 #include <DTableView>
 #include <DCheckBox>
 #include <DHeaderView>
+#include <DFrame>
+#include <DPushButton>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -149,15 +151,21 @@ class EnvironmentViewPrivate
     EnvironmentModel *model = nullptr;
 };
 
-EnvironmentView::EnvironmentView(QWidget *parent)
-    : QWidget(parent)
+EnvironmentView::EnvironmentView(DWidget *parent)
+    : DWidget(parent)
     , d(new EnvironmentViewPrivate)
 {
     setAutoFillBackground(true);
 
     if (!d->vLayout)
         d->vLayout = new QVBoxLayout();
+
     this->setLayout(d->vLayout);
+
+    // leftSide
+    auto listFrame = new DFrame(this);
+    auto listlayout = new QVBoxLayout(listFrame);
+    listFrame->setLayout(listlayout);
 
     if (!d->tableView) {
         d->tableView = new DTableView();
@@ -174,10 +182,9 @@ EnvironmentView::EnvironmentView(QWidget *parent)
         d->model = new EnvironmentModel();
 
     d->tableView->setModel(d->model);
-
-    d->vLayout->setSpacing(0);
-    d->vLayout->setMargin(0);
-    d->vLayout->addWidget(d->tableView);
+    d->tableView->setFrameShape(DFrame::NoFrame);
+    listlayout->addWidget(d->tableView);
+    d->vLayout->addWidget(listFrame);
 
     connect(d->tableView->selectionModel(), &QItemSelectionModel::currentChanged, [=](const QModelIndex &current){
         if (current.isValid() || d->tableView->selectionModel()->hasSelection()) {

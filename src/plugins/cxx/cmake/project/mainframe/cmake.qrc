@@ -9,5 +9,6 @@
     </qresource>
     <qresource prefix="/icons/deepin/builtin">
         <file>icons/unioncode_16px.png</file>
+        <file>texts/project_build_16px.svg</file>
     </qresource>
 </RCC>

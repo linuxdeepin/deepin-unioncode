@@ -10,11 +10,11 @@
 #include <DFrame>
 #include <DBackgroundGroup>
 #include <DSuggestButton>
+#include <DTabWidget>
 
 #include <QtDebug>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
-#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QSpacerItem>
 #include <QStringListModel>
@@ -24,6 +24,7 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
 {
     setModal(true);
     setupUi(this);
+
 }
 
 bool PropertiesDialog::insertPropertyPanel(const QString &itemName, PageWidget *panel)
@@ -105,7 +106,7 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
     titleBar->setMinimumHeight(43);
     titleBar->setMenuVisible(false);
     titleBar->setTitle(tr("Project Properties"));
-    //main layout
+    titleBar->setIcon(QIcon::fromTheme("unioncode"));
     vLayout->addWidget(titleBar);
     vLayout->addWidget(contentFrame);
 
