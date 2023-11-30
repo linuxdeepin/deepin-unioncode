@@ -235,7 +235,7 @@ StyleLsp::StyleLsp(TextEdit *parent)
         d->rangeFormattingAction = new QAction(tr("Range Formatting"));
         ActionManager::getInstance()->registerAction(d->rangeFormattingAction, "Tool.Range.Formatting",
                                                      tr("Range Formatting"), QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_I),
-                                                     ":/codeeditor/images/formatting.png");
+                                                     "");
         AbstractAction *actionImpl = new AbstractAction(d->rangeFormattingAction);
         windowService->addAction(MWM_TOOLS, actionImpl);
     }
