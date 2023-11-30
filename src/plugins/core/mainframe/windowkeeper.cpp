@@ -110,7 +110,7 @@ void WindowKeeper::createHelpActions(DMenu *menu)
     QAction *actionReportBug = new QAction(MWM_REPORT_BUG);
     ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
                                                  MWM_REPORT_BUG, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
-                                                 ":/core/images/tools-report-bug.png");
+                                                 "");
     helpMenu->addAction(actionReportBug);
     QAction *actionHelpDoc = new QAction(MWM_HELP_DOCUMENTS);
     ActionManager::getInstance()->registerAction(actionHelpDoc, "Help.Help.Documents",
@@ -122,7 +122,7 @@ void WindowKeeper::createHelpActions(DMenu *menu)
     QAction *actionAboutUnionCode = new QAction(MWM_ABOUT);
     ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
                                                  MWM_ABOUT, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A),
-                                                 ":/core/images/help-about.svg");
+                                                 "");
     helpMenu->addAction(actionAboutUnionCode);
 
     QAction *actionAboutPlugin = new QAction(MWM_ABOUT_PLUGINS);
