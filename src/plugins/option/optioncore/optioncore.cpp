@@ -7,6 +7,7 @@
 #include "mainframe/optionenvironmentgenerator.h"
 #include "mainframe/optionprofilesettinggenerator.h"
 #include "mainframe/optionshortcutsettinggenerator.h"
+#include <mainframe/pluginwidget.h>
 
 #include "common/common.h"
 #include "base/abstractwidget.h"
@@ -53,7 +54,7 @@ bool OptionCore::start()
         optionService->implGenerator<OptionShortcutsettingGenerator>(generalKits[1]);
         optionService->implGenerator<OptionProfilesettingGenerator>(generalKits[2]);
 
-        optionDialog->insertLabel(tr("general"));
+        optionDialog->insertLabel(tr("General"));
         for (auto name : generalKits) {
             auto generator = optionService->createGenerator<OptionGenerator>(name);
             if (generator) {
@@ -83,7 +84,7 @@ bool OptionCore::start()
     QObject::connect(&Listener::instance(), &Listener::pluginsStarted, [=](){
         if (optionDialog) {
             auto list = optionService->supportGeneratorName<OptionGenerator>();
-            optionDialog->insertLabel(tr("language"));
+            optionDialog->insertLabel(tr("Language"));
             for (auto name : list) {
                 if (generalKits.contains(name))
                     continue;
@@ -97,6 +98,10 @@ bool OptionCore::start()
                     }
                 }
             }
+
+            PluginWidget *plugin = new PluginWidget;
+            optionDialog->insertLabel(tr("Installed Plugin"));
+            optionDialog->insertOptionPanel(tr("plugin") ,plugin);
         }
     });
 

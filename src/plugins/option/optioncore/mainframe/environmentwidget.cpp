@@ -93,7 +93,7 @@ private:
     QProcessEnvironment envs;
 };
 
-EnvironmentWidget::EnvironmentWidget(DWidget *parent)
+EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     : PageWidget(parent)
     , d(new EnvironmentWidgetPrivate)
 {

@@ -6,7 +6,9 @@
 #include "pluginview.h"
 #include "pluginmetaobject.h"
 
-#include <QTreeWidget>
+#include <DTreeWidget>
+#include <DFrame>
+
 #include <QAbstractItemModel>
 #include <QHeaderView>
 #include <QGridLayout>
@@ -14,6 +16,7 @@
 #include <QTreeWidgetItem>
 #include <QStandardItem>
 
+DWIDGET_USE_NAMESPACE
 DPF_BEGIN_NAMESPACE
 
 enum Columns { Name, LoadStatus };
@@ -94,19 +97,25 @@ public:
 PluginView::PluginView(QWidget *parent)
     : QWidget(parent)
 {
-    categoryWidegt = new QTreeWidget(this);
+    auto categoryframe = new DFrame(this);
+    auto categorylayout = new QVBoxLayout(categoryframe);
+    categoryframe->setLayout(categorylayout);
+
+    categoryWidegt = new DTreeWidget(categoryframe);
     categoryWidegt->setIndentation(20);
     categoryWidegt->setUniformRowHeights(true);
-    categoryWidegt->setSortingEnabled(true);
-    categoryWidegt->header()->setSortIndicator(0, Qt::AscendingOrder);
     categoryWidegt->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    categoryWidegt->setHeaderHidden(true);
     categoryWidegt->setSelectionMode(QAbstractItemView::SingleSelection);
     categoryWidegt->setSelectionBehavior(QAbstractItemView::SelectRows);
     categoryWidegt->setHeaderLabels({QObject::tr("Name"), QObject::tr("Load Status")});
+    categoryWidegt->setAlternatingRowColors(true);
+    categoryWidegt->setFrameShape(QFrame::NoFrame);
+    categorylayout->addWidget(categoryWidegt);
 
     auto *gridLayout = new QGridLayout(this);
     gridLayout->setContentsMargins(2, 2, 2, 2);
-    gridLayout->addWidget(categoryWidegt);
+    gridLayout->addWidget(categoryframe);
 
     QObject::connect(LifeCycle::getPluginManagerInstance(), &PluginManager::pluginsChanged, this,
                      &PluginView::updatePluginsWidegt);
