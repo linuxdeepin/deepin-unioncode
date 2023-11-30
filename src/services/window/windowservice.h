@@ -82,7 +82,7 @@ public:
      * \param title 设置
      * \param widget 设置的编辑器文件树实例对象
      */
-    DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget);
+    DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget, const QString &iconName);
 
     /*!
      * \brief setWidgetConsole 设置默认终端
@@ -101,7 +101,7 @@ public:
      * \param contextTab Tab名称
      * \param contextWidget 实例对象
      */
-    DPF_INTERFACE(void, addContextWidget, const QString &contextTab, AbstractWidget *contextWidget, const QString &group);
+    DPF_INTERFACE(void, addContextWidget, const QString &contextTab, AbstractWidget *contextWidget, const QString &group, bool isVisibal);
 
     DPF_INTERFACE(bool, hasContextWidget, const QString &title);
 

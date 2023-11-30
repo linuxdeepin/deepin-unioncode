@@ -5,6 +5,7 @@
 #include "console.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
+#include "common/util/eventdefinitions.h"
 #include "consolewidget.h"
 
 using namespace dpfservice;
@@ -24,7 +25,7 @@ bool Console::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        windowService->addContextWidget(QString(tr("&Console")), new AbstractWidget(ConsoleWidget::instance()), "A");
+        windowService->addContextWidget(QString(tr("&Console")), new AbstractWidget(ConsoleWidget::instance()), MWNA_EDIT, true);
     }
     return true;
 }

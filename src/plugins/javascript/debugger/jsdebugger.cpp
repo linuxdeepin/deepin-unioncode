@@ -168,12 +168,12 @@ void JSDebugger::addPagesToContext(const QScriptEngineDebugger &debugger)
     auto windowService = dpfGetService(WindowService);
     oldWidgetEdit = windowService->setWidgetEdit(codeEditor);
     // instert output pane to window.
-    windowService->addContextWidget(tr("Stac&kFrame"), stackPane, "Application");
+    windowService->addContextWidget(tr("Stac&kFrame"), stackPane, "Application", false);
     oldWidgetWatch = windowService->setWidgetWatch(localsPane);
     debugger.widget(QScriptEngineDebugger::LocalsWidget)->show();
-    windowService->addContextWidget(tr("Break&points"), breakpointsPane, "Application");
-    windowService->addContextWidget(tr("ScriptWidget"), scriptPane, "Application");
-    windowService->addContextWidget(tr("ErrorLogWidget"), errorPane, "Application");
+    windowService->addContextWidget(tr("Break&points"), breakpointsPane, "Application", false);
+    windowService->addContextWidget(tr("ScriptWidget"), scriptPane, "Application", false);
+    windowService->addContextWidget(tr("ErrorLogWidget"), errorPane, "Application", false);
 }
 
 void JSDebugger::removePagesFromContext()

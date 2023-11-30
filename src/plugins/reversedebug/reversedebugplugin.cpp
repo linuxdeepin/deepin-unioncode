@@ -6,6 +6,7 @@
 #include "base/abstractmenu.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
+#include "common/util/eventdefinitions.h"
 #include "common/actionmanager/actionmanager.h"
 #include "reversedebuggermgr.h"
 
@@ -49,7 +50,7 @@ bool ReverseDebugPlugin::start()
     connect(recoredAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::recored);
     connect(replayAction, &QAction::triggered, reverseDebug, &ReverseDebuggerMgr::replay);
 
-    windowService->addContextWidget(tr("R&everse Debug"), new AbstractWidget(reverseDebug->getWidget()), "Reverse");
+    windowService->addContextWidget(tr("R&everse Debug"), new AbstractWidget(reverseDebug->getWidget()), "Reverse", false);
 
     return true;
 }

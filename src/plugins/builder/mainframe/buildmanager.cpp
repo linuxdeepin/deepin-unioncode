@@ -29,6 +29,7 @@ class BuildManagerPrivate
     friend class BuildManager;
 
     QSharedPointer<QAction> buildAction;
+    QSharedPointer<QAction> buildActionNoIcon;
     QSharedPointer<QAction> rebuildAction;
     QSharedPointer<QAction> cleanAction;
     QSharedPointer<QAction> cancelAction;
@@ -91,29 +92,36 @@ void BuildManager::addMenu()
 
     auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
         ActionManager::getInstance()->registerAction(action, actionID, action->text(), key, iconFileName);
-        AbstractAction *actionImpl = new AbstractAction(action);
-        windowService->addAction(dpfservice::MWM_BUILD, actionImpl);
     };
 
     d->buildAction.reset(new QAction(MWMBA_BUILD));
     actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
                "build");
-
     windowService->addTopToolBar("toolbar.Build", d->buildAction.get(), MWNA_EDIT, false);
+
+    d->buildActionNoIcon.reset(new QAction(MWMBA_BUILD));
+    actionInit(d->buildActionNoIcon.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+               "");
+    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->buildActionNoIcon.get()));
 
     d->rebuildAction.reset(new QAction(MWMBA_REBUILD));
     actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B),
-               ":/buildercore/images/rebuild.png");
+               "");
+    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->rebuildAction.get()));
 
     d->cleanAction.reset(new QAction(MWMBA_CLEAN));
     actionInit(d->cleanAction.get(), "Build.Clean", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
-               ":/buildercore/images/clean.svg");
+               "");
+    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->cleanAction.get()));
 
     d->cancelAction.reset(new QAction(MWMBA_CANCEL));
     actionInit(d->cancelAction.get(), "Build.Cancel", QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
-               ":/buildercore/images/cancel.svg");
+               "");
+    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->cancelAction.get()));
 
     QObject::connect(d->buildAction.get(), &QAction::triggered,
+                     this, &BuildManager::buildProject, Qt::DirectConnection);
+    QObject::connect(d->buildActionNoIcon.get(), &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);
     QObject::connect(d->rebuildAction.get(), &QAction::triggered,
                      this, &BuildManager::rebuildProject, Qt::DirectConnection);
@@ -390,12 +398,14 @@ void BuildManager::slotBuildState(const BuildState &buildState)
     case BuildState::kNoBuild:
     case BuildState::kBuildFailed:
         d->buildAction->setEnabled(true);
+        d->buildActionNoIcon->setEnabled(true);
         d->rebuildAction->setEnabled(true);
         d->cleanAction->setEnabled(true);
         d->cancelAction->setEnabled(false);
         break;
     case BuildState::kBuilding:
         d->buildAction->setEnabled(false);
+        d->buildActionNoIcon->setEnabled(true);
         d->rebuildAction->setEnabled(false);
         d->cleanAction->setEnabled(false);
         d->cancelAction->setEnabled(true);

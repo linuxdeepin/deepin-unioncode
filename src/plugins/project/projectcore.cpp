@@ -40,7 +40,7 @@ bool ProjectCore::start()
     if (windowService) {
         if (windowService->addWidgetWorkspace) {
             auto view = new AbstractWidget(ProjectKeeper::instance()->treeView());
-            windowService->addWidgetWorkspace(MWCWT_PROJECTS, view);
+            windowService->addWidgetWorkspace(MWCWT_PROJECTS, view, "edit-project");
         }
     }
 

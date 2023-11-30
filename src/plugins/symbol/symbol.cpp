@@ -39,7 +39,7 @@ bool Symbol::start()
     if (windowService) {
         if (windowService->addWidgetWorkspace) {
             auto view = new AbstractWidget(SymbolKeeper::instance()->treeView());
-            windowService->addWidgetWorkspace(MWCWT_SYMBOL, view);
+            windowService->addWidgetWorkspace(MWCWT_SYMBOL, view, "edit-tree");
         }
     }
     return true;

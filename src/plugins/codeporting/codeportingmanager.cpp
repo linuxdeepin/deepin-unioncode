@@ -153,12 +153,7 @@ void CodePortingManager::resetUI()
 
     if (!windowService->hasContextWidget(tr("C&ode Porting"))) {
         // Add output pane
-        windowService->addContextWidget(tr("C&ode Porting"), new AbstractWidget(CodePortingManager::instance()->getOutputPane()), group);
-    }
-
-    if (!windowService->hasContextWidget(tr("Porting &Report"))) {
-        // Add report pane
-        windowService->addContextWidget(tr("Porting &Report"), new AbstractWidget(CodePortingManager::instance()->getReportPane()), group);
+        windowService->addContextWidget(tr("C&ode Porting"), new AbstractWidget(new CodePortingWidget()), group, false);
     }
 
     outputPane->clearContents();

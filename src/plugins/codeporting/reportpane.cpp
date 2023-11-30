@@ -7,6 +7,7 @@
 
 #include <DTabWidget>
 #include <DTableWidget>
+#include <DPushButton>
 
 #include <QHeaderView>
 #include <QDebug>
