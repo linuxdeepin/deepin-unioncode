@@ -5,11 +5,11 @@
 #include "autohidedockwidget.h"
 
 #include <QEvent>
+#include <QHBoxLayout>
 
 AutoHideDockWidget::AutoHideDockWidget(const QString &title, QWidget *parent, Qt::WindowFlags flags)
     : DDockWidget (title, parent, flags)
 {
-
 }
 
 AutoHideDockWidget::AutoHideDockWidget(QWidget *parent, Qt::WindowFlags flags)

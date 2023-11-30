@@ -38,7 +38,7 @@ bool FileBrowser::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService && windowService->addWidgetWorkspace) {
-        windowService->addWidgetWorkspace(FileBrowser_TEXT, createTreeWidget());
+        windowService->addWidgetWorkspace(FileBrowser_TEXT, createTreeWidget(), "edit-file");
     }
     return true;
 }

@@ -815,7 +815,7 @@ void DAPDebugger::initializeView()
     d->breakpointView->setMinimumWidth(300);
     d->breakpointView->setModel(d->breakpointModel.model());
 
-    d->localsView = new QTreeView();
+    d->localsView = new DTreeView();
     d->localsView->setModel(&d->localsModel);
     QStringList headers { "name", "value"/*, "reference" */};
     d->localsModel.setHeaders(headers);

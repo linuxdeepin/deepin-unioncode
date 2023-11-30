@@ -7,7 +7,11 @@
 
 #include <DMainWindow>
 #include <DWidget>
+#include <DFrame>
 #include <DTabWidget>
+#include <DToolButton>
+
+#include <DStackedWidget>
 
 #include <QMutex>
 
@@ -32,7 +36,7 @@ public:
     virtual ~NavEditMainWindow();
     QStringList contextWidgetTitles() const;
 
-    void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget);
+    void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget, const QString &iconName);
     void addWorkspaceArea(const QString &title, AbstractWidget *widget);
     void switchWorkspaceArea(const QString &title);
 
@@ -40,7 +44,7 @@ public:
     DWidget *setWidgetEdit(AbstractCentral *editWidget);
     // return old watch widget
     DWidget *setWidgetWatch(AbstractWidget *watchWidget);
-    void addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group);
+    void addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group, bool isVisibal);
     bool hasContextWidget(const QString &title);
     // the page widget itself is not deleted.
     void removeContextWidget(AbstractWidget *contextWidget);
@@ -71,8 +75,19 @@ private:
     DTabWidget *qTabWidgetTools{nullptr};
     ToolBarManager *mainToolBar{nullptr};
     QMap<QString, DWidget*> workspaceWidgets;
-    QList<QString> contextList;
     QMutex mutex;
+
+    QMap<QString, DWidget*> contextWidgets;
+    QMap<QString, DPushButton*> tabButtons;
+    DFrame *contextTabBar {nullptr};
+    DStackedWidget *stackContextWidget {nullptr};
+    DWidget *contextWidget {nullptr};
+
+    DWidget *editWorkspaceWidget {nullptr};
+    QMap<QString, DWidget*> editWorkspaceWidgets;
+    QMap<QString, DToolButton*> workspaceTabButtons;
+    DStackedWidget *stackEditWorkspaceWidget {nullptr};
+    DFrame *workspaceTabBar {nullptr};
 };
 
 #endif // NAVEDITMAINWINDOW_H

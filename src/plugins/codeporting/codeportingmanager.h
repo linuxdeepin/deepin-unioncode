@@ -6,6 +6,7 @@
 #define CODEPORTINGMANAGER_H
 
 #include "codeporting.h"
+#include "codeportingwidget.h"
 
 #include <QObject>
 

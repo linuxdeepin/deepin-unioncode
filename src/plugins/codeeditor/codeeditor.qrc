@@ -1,4 +1,7 @@
 <RCC>
     <qresource prefix="/icons/deepin/builtin">
+        <file>texts/edit-file_16px.svg</file>
+        <file>texts/edit-tree_16px.svg</file>
+        <file>texts/edit-project_16px.svg</file>
     </qresource>
 </RCC>
