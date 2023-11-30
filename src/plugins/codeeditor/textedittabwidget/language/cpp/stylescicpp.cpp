@@ -36,10 +36,21 @@ QMap<int, QString> StyleSciCpp::keyWords() const
 void StyleSciCpp::setStyle()
 {
     StyleSci::setStyle();
-    auto jsonFile = edit()->getStyleFile();
-    if (jsonFile->setTheme(StyleJsonFile::Theme::get()->Dark)) {
+}
+
+int StyleSciCpp::sectionEnd() const
+{
+    return SCE_C_ESCAPESEQUENCE; //default style key end;
+}
+
+void StyleSciCpp::setThemeColor(DGuiApplicationHelper::ColorType colorType)
+{
+    StyleSci::setThemeColor(colorType);
+
+    if (colorType == DGuiApplicationHelper::DarkType) {
         QJsonObject tempObj;
         int tempFore;
+        auto jsonFile = edit()->getStyleFile();
         tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Comment).toObject();
         tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         edit()->styleSetFore(SCE_C_COMMENT, tempFore); // #整行
@@ -90,6 +101,7 @@ void StyleSciCpp::setStyle()
         tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         edit()->styleSetFore(SCE_C_GLOBALCLASS, tempFore);
     } else {
+        edit()->styleSetFore(SCE_C_DEFAULT, StyleColor::color(StyleColor::Table::get()->DarkBlue)); // #整行
         edit()->styleSetFore(SCE_C_COMMENT, StyleColor::color(StyleColor::Table::get()->DeepSkyBlue)); // #整行
         edit()->styleSetFore(SCE_C_COMMENTLINE, StyleColor::color(StyleColor::Table::get()->DarkTurquoise)); // //注释
         edit()->styleSetFore(SCE_C_COMMENTDOC, StyleColor::color(StyleColor::Table::get()->DarkTurquoise));
@@ -105,7 +117,7 @@ void StyleSciCpp::setStyle()
         edit()->styleSetFore(SCE_C_VERBATIM, StyleColor::color(StyleColor::Table::get()->Magenta));
         edit()->styleSetFore(SCE_C_REGEX, StyleColor::color(StyleColor::Table::get()->Magenta));
         edit()->styleSetFore(SCE_C_COMMENTLINEDOC, StyleColor::color(StyleColor::Table::get()->DarkTurquoise)); // ///注释
-        edit()->styleSetFore(SCE_C_WORD2, StyleColor::color(StyleColor::Table::get()->Gold)); // 1 一般关键字
+        edit()->styleSetFore(SCE_C_WORD2, StyleColor::color(StyleColor::Table::get()->DarkMagenta)); // 1 一般关键字
         edit()->styleSetFore(SCE_C_COMMENTDOCKEYWORD, StyleColor::color(StyleColor::Table::get()->DeepSkyBlue));
         edit()->styleSetFore(SCE_C_COMMENTDOCKEYWORDERROR, StyleColor::color(StyleColor::Table::get()->DeepSkyBlue)); // /// @
         edit()->styleSetFore(SCE_C_GLOBALCLASS, StyleColor::color(StyleColor::Table::get()->Gold));
@@ -117,10 +129,4 @@ void StyleSciCpp::setStyle()
         edit()->styleSetFore(SCE_C_TASKMARKER, StyleColor::color(StyleColor::Table::get()->Gainsboro));
         edit()->styleSetFore(SCE_C_ESCAPESEQUENCE, StyleColor::color(StyleColor::Table::get()->Gainsboro));
     }
-    return;
-}
-
-int StyleSciCpp::sectionEnd() const
-{
-    return SCE_C_ESCAPESEQUENCE; //default style key end;
 }
