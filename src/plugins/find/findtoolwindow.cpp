@@ -20,8 +20,8 @@
 #include <QHBoxLayout>
 #include <QDebug>
 #include <QProcess>
+#include <QFormLayout>
 
-#define LABEL_WIDTH (120)
 DWIDGET_USE_NAMESPACE
 class FindToolWindowPrivate
 {
@@ -99,40 +99,21 @@ void FindToolWindow::setupUi()
 
 void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 {
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    parentWidget->setLayout(hLayout);
+    setFixedSize(458, 220);
 
-    QWidget *widget = new QWidget();
-    widget->setFixedSize(725, 300);
-    hLayout->addWidget(widget, 0, Qt::AlignLeft);
+    QFormLayout *formLayout = new QFormLayout();
+    setLayout(formLayout);
 
-    hLayout->addWidget(widget);
-
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    widget->setLayout(vLayout);
-
-    QHBoxLayout *scopeLayout = new QHBoxLayout();
     DLabel *scopeLabel = new DLabel(QLabel::tr("Scope:"));
-    scopeLabel->setFixedWidth(LABEL_WIDTH);
     d->scopeComboBox = new DComboBox();
     d->scopeComboBox->addItem(tr("All Projects"));
     d->scopeComboBox->addItem(tr("Current Project"));
     d->scopeComboBox->addItem(tr("Current File"));
-    d->scopeComboBox->setFixedWidth(369);
-    scopeLabel->setContentsMargins(72,0,0,0);
-    scopeLayout->addWidget(scopeLabel);
-    scopeLayout->addWidget(d->scopeComboBox);
-    scopeLayout->setAlignment(Qt::AlignLeft );
 
-    QHBoxLayout *searchLayout = new QHBoxLayout();
     DLabel *searchLabel = new DLabel(QLabel::tr("Search for:"));
-    searchLabel->setFixedWidth(LABEL_WIDTH);
-    searchLabel->setContentsMargins(45,0,0,0);
+    QHBoxLayout *hlayout = new QHBoxLayout(this);
     d->searchLineEdit = new DLineEdit();
-    d->searchLineEdit->setFixedWidth(287);
     d->searchLineEdit->setPlaceholderText(tr("thread"));
-    searchLayout->addWidget(searchLabel);
-    searchLayout->addWidget(d->searchLineEdit);
 
     d->senseCheckBtn = new DSuggestButton(this);
     d->senseCheckBtn->setText("Aa");
@@ -140,55 +121,37 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     d->wholeWordsCheckBtn = new DPushButton(this);
     d->wholeWordsCheckBtn->setIcon(QIcon::fromTheme("find_matchComplete"));
     d->wholeWordsCheckBtn->setFixedSize(36,36);
+    hlayout->addWidget(d->searchLineEdit);
+    hlayout->addWidget(d->senseCheckBtn);
+    hlayout->addWidget(d->wholeWordsCheckBtn);
 
-    searchLayout->addWidget(d->senseCheckBtn);
-    searchLayout->addWidget(d->wholeWordsCheckBtn);
-    searchLayout->setAlignment(Qt::AlignLeft);
-    searchLayout->setContentsMargins(0,10,0,0);
-
-    QHBoxLayout *patternLayout = new QHBoxLayout();
     DLabel *patternLabel = new DLabel(QLabel::tr("File pattern:"));
-    patternLabel->setFixedWidth(LABEL_WIDTH);
-    patternLabel->setContentsMargins(35,0,0,0);
     d->patternLineEdit = new DLineEdit();
-    d->patternLineEdit->setFixedWidth(369);
     d->patternLineEdit->setPlaceholderText(tr("e.g.*.ts,src/**/include"));
-    patternLayout->addWidget(patternLabel);
-    patternLayout->addWidget(d->patternLineEdit);
-    patternLayout->setAlignment(Qt::AlignLeft);
-    patternLayout->setContentsMargins(0,10,0,0);
 
-    QHBoxLayout *expatternLayout = new QHBoxLayout();
     DLabel *expatternLabel = new DLabel(QLabel::tr("Exclusion pattern:"));
-    expatternLabel->setFixedWidth(LABEL_WIDTH);
     d->expatternLineEdit = new DLineEdit();
-    d->expatternLineEdit->setFixedWidth(369);
     d->expatternLineEdit->setPlaceholderText(tr("e.g.*.ts,src/**/include"));
-    expatternLayout->addWidget(expatternLabel);
-    expatternLayout->addWidget(d->expatternLineEdit);
-    expatternLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    expatternLayout->setContentsMargins(0,10,0,0);
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     DPushButton *searchBtn = new DPushButton(QPushButton::tr("Search"));
-    searchBtn->setFixedSize(120,36);
-
+    searchBtn->setFixedSize(120, 36);
     DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Search && Replace"));
-    replaceBtn->setFixedSize(155,36);
+    replaceBtn->setFixedSize(120, 36);
     btnLayout->addWidget(searchBtn);
     btnLayout->addWidget(replaceBtn);
-    btnLayout->setAlignment(Qt::AlignCenter | Qt::AlignTop);
-    btnLayout->setContentsMargins(0,5,0,0);
 
     connect(searchBtn, &QAbstractButton::clicked, this, &FindToolWindow::search);
     connect(replaceBtn, &QAbstractButton::clicked, this, &FindToolWindow::replace);
 
-    vLayout->addLayout(scopeLayout);
-    vLayout->addLayout(searchLayout);
-    vLayout->addLayout(patternLayout);
-    vLayout->addLayout(expatternLayout);
-    vLayout->addLayout(btnLayout);
-
+    formLayout->setContentsMargins(26, 10, 0, 0);
+    formLayout->setSpacing(10);
+    formLayout->addRow(scopeLabel, d->scopeComboBox);
+    formLayout->addRow(searchLabel, hlayout);
+    formLayout->addRow(patternLabel, d->patternLineEdit);
+    formLayout->addRow(expatternLabel, d->expatternLineEdit);
+    formLayout->addRow(btnLayout);
+    formLayout->setAlignment(btnLayout, Qt::AlignRight);
 
 }
 
