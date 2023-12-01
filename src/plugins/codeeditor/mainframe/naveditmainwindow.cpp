@@ -71,28 +71,26 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toSwitchWorkspace,
                      this, &NavEditMainWindow::switchWidgetWorkspace);
 
-    qDockWidgetContext = new AutoHideDockWidget(this);
-    qDockWidgetContext->setFeatures(DDockWidget::DockWidgetMovable);
-    qDockWidgetContext->setTitleBarWidget(new DWidget());
-
-    contextWidget = new DWidget(qDockWidgetContext);
-    stackContextWidget = new DStackedWidget();
-    contextTabBar = new DFrame();
-    DStyle::setFrameRadius(contextTabBar, 0);
-    contextTabBar->setLineWidth(0);
-    contextTabBar->setMinimumWidth(200);
-    QHBoxLayout *contextTabLayout = new QHBoxLayout(contextTabBar);
-    QVBoxLayout *contextVLayout = new QVBoxLayout();
-    contextVLayout->setContentsMargins(0, 0, 0, 0);
-    contextVLayout->setSpacing(0);
-    contextVLayout->addWidget(new DHorizontalLine);
-    contextVLayout->addWidget(contextTabBar);
-    contextVLayout->addWidget(stackContextWidget);
-    contextWidget->setLayout(contextVLayout);
-    qDockWidgetContext->setWidget(contextWidget);
-    addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qDockWidgetContext);
-
     // initialize space area.
+    initWorkspaceUI();
+    initContextUI();
+
+    mainToolBar = new ToolBarManager(tr("toolbar"));
+    titlebar()->setFixedHeight(0);
+
+    qTabWidgetContext = new DTabWidget();
+    qTabWidgetWorkspace = new DTabWidget();
+}
+
+NavEditMainWindow::~NavEditMainWindow()
+{
+    qTabWidgetContext->removeTab(findIndex(qTabWidgetContext, dpfservice::CONSOLE_TAB_TEXT));
+    qInfo() << __FUNCTION__;
+}
+
+
+void NavEditMainWindow::initWorkspaceUI()
+{
     qDockWidgetWorkspace = new AutoHideDockWidget(this);
     qDockWidgetWorkspace->setFeatures(DDockWidget::DockWidgetMovable);
     qDockWidgetWorkspace->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -118,35 +116,38 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
     setCorner(Qt::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
 
     workspaceWidgets.insert(DDockWidget::tr("Workspace"), editWorkspaceWidget);
-
-    mainToolBar = new ToolBarManager(tr("toolbar"));
-    titlebar()->setFixedHeight(0);
-
-    qTabWidgetContext = new DTabWidget();
-    qTabWidgetWorkspace = new DTabWidget();
 }
 
-NavEditMainWindow::~NavEditMainWindow()
+void NavEditMainWindow::initContextUI()
 {
-    qTabWidgetContext->removeTab(findIndex(qTabWidgetContext, dpfservice::CONSOLE_TAB_TEXT));
-    qInfo() << __FUNCTION__;
-}
+    qDockWidgetContext = new AutoHideDockWidget(this);
+    qDockWidgetContext->setFeatures(DDockWidget::DockWidgetMovable);
+    qDockWidgetContext->setTitleBarWidget(new DWidget());
 
-QStringList NavEditMainWindow::contextWidgetTitles() const
-{
-    QStringList result;
-    for (int index = 0; index < qTabWidgetContext->count(); index ++) {
-        result<< qTabWidgetContext->tabText(index);
-    }
-    return result;
+    contextWidget = new DWidget(qDockWidgetContext);
+    stackContextWidget = new DStackedWidget();
+    contextTabBar = new DFrame();
+    DStyle::setFrameRadius(contextTabBar, 0);
+    contextTabBar->setLineWidth(0);
+    contextTabBar->setMinimumWidth(200);
+    QHBoxLayout *contextTabLayout = new QHBoxLayout(contextTabBar);
+    contextTabLayout->setAlignment(Qt::AlignLeft);
+    QVBoxLayout *contextVLayout = new QVBoxLayout();
+    contextVLayout->setContentsMargins(0, 0, 0, 0);
+    contextVLayout->setSpacing(0);
+    contextVLayout->addWidget(new DHorizontalLine);
+    contextVLayout->addWidget(contextTabBar);
+    contextVLayout->addWidget(stackContextWidget);
+    contextWidget->setLayout(contextVLayout);
+    qDockWidgetContext->setWidget(contextWidget);
+    addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qDockWidgetContext);
 }
 
 void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget, const QString &iconName)
 {
-    auto qTreeWidget = static_cast<DFrame*>(treeWidget->qWidget());
+    auto qTreeWidget = static_cast<DWidget*>(treeWidget->qWidget());
 
     qTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    qTreeWidget->setLineWidth(0);
 
     editWorkspaceWidgets.insert(title, qTreeWidget);
     stackEditWorkspaceWidget->addWidget(qTreeWidget);
@@ -240,7 +241,7 @@ DWidget *NavEditMainWindow::setWidgetWatch(AbstractWidget *watchWidget)
     return oldWidget;
 }
 
-void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group, bool isVisibal)
+void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group, bool isVisible)
 {
     QMutexLocker locker(&mutex);
     DWidget *qWidget = static_cast<DWidget*>(contextWidget->qWidget());
@@ -255,11 +256,10 @@ void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *c
     tabBtn->setFlat(true);
     tabBtn->setFocusPolicy(Qt::NoFocus);
 
-    if (!isVisibal)
+    if (!isVisible)
         tabBtn->hide();
 
     QHBoxLayout *btnLayout = static_cast<QHBoxLayout*>(contextTabBar->layout());
-    btnLayout->setAlignment(Qt::AlignLeft);
     btnLayout->addWidget(tabBtn);
 
     connect(tabBtn, &DPushButton::clicked, qWidget, [=]{
@@ -272,11 +272,10 @@ void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *c
 bool NavEditMainWindow::hasContextWidget(const QString &title)
 {
     QMutexLocker locker(&mutex);
-    int count = qTabWidgetContext->count();
-    for (int i = 0; i < count; ++i) {
-        if (qTabWidgetContext->tabText(i) == title)
-            return true;
-    }
+
+    if (tabButtons.contains(title))
+        return true;
+
     return false;
 }
 

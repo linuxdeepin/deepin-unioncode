@@ -34,7 +34,6 @@ public:
     static NavEditMainWindow *instance();
     explicit NavEditMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
     virtual ~NavEditMainWindow();
-    QStringList contextWidgetTitles() const;
 
     void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget, const QString &iconName);
     void addWorkspaceArea(const QString &title, AbstractWidget *widget);
@@ -61,6 +60,8 @@ public:
 
 private:
     void adjustWorkspaceItemOrder();
+    void initWorkspaceUI();
+    void initContextUI();
 
     AutoHideDockWidget *qDockWidgetWorkspace{nullptr};
     AutoHideDockWidget *qDockWidgetContext{nullptr};
