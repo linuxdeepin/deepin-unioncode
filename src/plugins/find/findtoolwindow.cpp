@@ -99,10 +99,10 @@ void FindToolWindow::setupUi()
 
 void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 {
-    setFixedSize(458, 220);
+    parentWidget->setFixedSize(458, 220);
 
     QFormLayout *formLayout = new QFormLayout();
-    setLayout(formLayout);
+    parentWidget->setLayout(formLayout);
 
     DLabel *scopeLabel = new DLabel(QLabel::tr("Scope:"));
     d->scopeComboBox = new DComboBox();
@@ -111,14 +111,14 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     d->scopeComboBox->addItem(tr("Current File"));
 
     DLabel *searchLabel = new DLabel(QLabel::tr("Search for:"));
-    QHBoxLayout *hlayout = new QHBoxLayout(this);
+    QHBoxLayout *hlayout = new QHBoxLayout();
     d->searchLineEdit = new DLineEdit();
     d->searchLineEdit->setPlaceholderText(tr("thread"));
 
-    d->senseCheckBtn = new DSuggestButton(this);
+    d->senseCheckBtn = new DSuggestButton();
     d->senseCheckBtn->setText("Aa");
     d->senseCheckBtn->setFixedSize(36,36);
-    d->wholeWordsCheckBtn = new DPushButton(this);
+    d->wholeWordsCheckBtn = new DPushButton();
     d->wholeWordsCheckBtn->setIcon(QIcon::fromTheme("find_matchComplete"));
     d->wholeWordsCheckBtn->setFixedSize(36,36);
     hlayout->addWidget(d->searchLineEdit);
