@@ -60,7 +60,6 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     DButtonBox *btnbox = new DButtonBox(this);
     QList<DButtonBoxButton *> list { btnBuild, btnClean, btnEnv };
     btnbox->setButtonList(list, true);
-    btnbox->setFixedWidth(widthPerBtn * btnbox->buttonList().size());
 
     auto frame = new DWidget(this);
     auto layout = new QVBoxLayout(this);

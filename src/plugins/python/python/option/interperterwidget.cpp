@@ -12,6 +12,7 @@
 #include <DHeaderView>
 #include <DLabel>
 #include <DWidget>
+#include <DFrame>
 
 #include <QtConcurrent>
 #include <QDir>
@@ -149,10 +150,17 @@ void InterpreterWidget::setupUi()
     hLayout->addWidget(d->interpreterComboBox);
     hLayout->setAlignment(d->interpreterComboBox, Qt::AlignRight);
 
+    auto tableframe = new DFrame(this);
+    auto tablelayout = new QVBoxLayout(tableframe);
+    tableframe->setLayout(tablelayout);
+
     DTableView *tableView = new DTableView();
+    tableView->setFrameShape(QFrame::NoFrame);
+    tableView->setAlternatingRowColors(true);
     tableView->setShowGrid(false);
     tableView->horizontalHeader()->setSectionResizeMode(DHeaderView::Stretch);
     tableView->verticalHeader()->hide();
+    tablelayout->addWidget(tableView);
 
     DHeaderView *headerView = tableView->horizontalHeader();
     headerView->setDefaultAlignment(Qt::AlignLeft);
@@ -164,7 +172,7 @@ void InterpreterWidget::setupUi()
     tableView->setModel(d->model);
     tableView->setFixedHeight(180);
     vLayout->addLayout(hLayout);
-    vLayout->addWidget(tableView);
+    vLayout->addWidget(tableframe);
 }
 
 void InterpreterWidget::updateUi()
