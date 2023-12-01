@@ -25,7 +25,7 @@ using namespace dpfservice;
 namespace  {
 const int treeWidgtMinWidth = 70;
 const int treeWidgetMinHeight = 400;
-const QString FileBrowser_TEXT = DWidget::tr("File Browser");
+const QString FileBrowser_TEXT = QWidget::tr("File Browser");
 }
 
 void FileBrowser::initialize()

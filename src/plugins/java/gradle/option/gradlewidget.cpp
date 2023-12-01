@@ -56,7 +56,7 @@ void GradleWidget::setupUi()
 {
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
-    DLabel *label = new DLabel(DLabel::tr("Gradle distribution："));
+    DLabel *label = new DLabel(tr("Gradle distribution："));
     d->useWrapper = new DRadioButton(tr("use Gradle wrapper"));
 
     QHBoxLayout *localLayout = new QHBoxLayout();

@@ -17,6 +17,7 @@
 #include <QFormLayout>
 #include <QDebug>
 #include <QDir>
+#include <QAction>
 
 #define BTN_WIDTH (180)
 
@@ -63,7 +64,7 @@ void ShortCut::setupForm()
 
         auto keyEdit = new DKeySequenceEdit(this);
         keyEdit->setKeySequence(QKeySequence(shortcut));
-        keyEdit->setText(QObject::tr(description.toStdString().c_str()));
+        keyEdit->setText(QAction::tr(description.toStdString().c_str()));
         d->formlayout->addRow(keyEdit);
 
         connect(keyEdit, &DKeySequenceEdit::editingFinished, this, [=](const QKeySequence &sequence) {
