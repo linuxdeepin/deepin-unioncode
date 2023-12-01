@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/icons/deepin/builtin">
-        <file>icons/unioncode_16px.png</file>
         <file>texts/binarytools_add_16px.svg</file>
         <file>texts/binarytools_combine_16px.svg</file>
         <file>texts/binarytools_delete_16px.svg</file>

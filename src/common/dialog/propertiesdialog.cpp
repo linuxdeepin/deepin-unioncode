@@ -106,7 +106,7 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
     titleBar->setMinimumHeight(43);
     titleBar->setMenuVisible(false);
     titleBar->setTitle(tr("Project Properties"));
-    titleBar->setIcon(QIcon::fromTheme("unioncode"));
+    titleBar->setIcon(QIcon::fromTheme("ide"));
     vLayout->addWidget(titleBar);
     vLayout->addWidget(contentFrame);
 

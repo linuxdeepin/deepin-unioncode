@@ -51,6 +51,7 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
         return;
 
     DWidget *widget = new DWidget();
+
     QVBoxLayout *vLayout = new QVBoxLayout();
     widget->setLayout(vLayout);
 
@@ -83,7 +84,8 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     for (; iter != d->wizardInfo.configures.end(); ++iter) {
         QHBoxLayout *hLayout = new QHBoxLayout();
         QString  str = iter->displayName;
-        DLabel *label = new DLabel(iter->displayName + ":");
+
+        DLabel *label = new DLabel(tr(str.toStdString().c_str()) + ":");
 
         label->setFixedSize(100, 20);
         label->setContentsMargins(8,0,0,0);
@@ -126,13 +128,12 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
                  if(!lineEdit->text().isEmpty()) {
                      return;
                  }
-
                  QString alertMsg;
-                 if (str == tr("File Name"))
+                 if (str == "File Name")
                     alertMsg = tr("The filename can't be empty!");
-                 else if(str == tr("Project Name"))
+                 else if(str == "Project Name")
                     alertMsg = tr("The project can't be empty!");
-                 else if(str == tr("Location"))
+                 else if(str == "Location")
                     alertMsg = tr("The address can't be empty!");
 
                  lineEdit->showAlertMessage(alertMsg);
