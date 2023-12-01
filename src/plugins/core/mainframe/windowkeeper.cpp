@@ -236,7 +236,8 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
     window->setMinimumSize(QSize(MW_MIN_WIDTH,MW_MIN_HEIGHT));
     window->setAttribute(Qt::WA_DeleteOnClose);
 
-    window->titlebar()->setIcon(QIcon(":/core/images/unioncode@128.png"));
+//    window->titlebar()->setIcon(QIcon(":/core/images/unioncode@128.png"));
+    window->titlebar()->setIcon(QIcon::fromTheme("ide"));
     window->titlebar()->setTitle(QString(tr("Deepin Union Code")));
     window->titlebar()->setContentsMargins(0, 0, 0, 0);
 

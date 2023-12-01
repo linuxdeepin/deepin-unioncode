@@ -57,10 +57,9 @@ MainDialog::~MainDialog()
 
 void MainDialog::setupUI(TemplateVector &templateVec)
 {
-
-    DTitlebar *titleBar = new DTitlebar();
+    DTitlebar *titleBar = new DTitlebar(this);
     titleBar->setMenuVisible(true);
-    titleBar->setIcon(QIcon::fromTheme("template_unioncode"));
+    titleBar->setIcon(QIcon::fromTheme("ide"));
 
     DButtonBoxButton *newFileButton = new DButtonBoxButton(QObject::tr("New File"), this);
     DButtonBoxButton *newProjectButton = new DButtonBoxButton(QObject::tr("New Project"), this);
@@ -230,19 +229,18 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     QVBoxLayout *vItemLayout = new QVBoxLayout();
     vItemLayout->addWidget(treeView);
 
-    DWidget *contentWidget = new DWidget();
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addLayout(vItemLayout);
     hLayout->addWidget(d->detailStackedWidget);
 
     hLayout->setStretchFactor(vItemLayout, 1);
     hLayout->setStretchFactor(d->detailStackedWidget, 2);
-    contentWidget->setLayout(hLayout);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
 
     vLayout->addWidget(titleBar);
-    vLayout->addWidget(contentWidget);
+    vLayout->addLayout(hLayout);
+    vLayout->setContentsMargins(0,0,0,0);
     setLayout(vLayout);
 }
 
