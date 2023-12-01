@@ -139,7 +139,7 @@ void InterpreterWidget::setupUi()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    DLabel *label = new DLabel(DLabel::tr("Python Interperter:"));
+    DLabel *label = new DLabel(tr("Python Interperter:"));
     label->setFixedWidth(180);
     d->interpreterComboBox = new DComboBox();
     QObject::connect(d->interpreterComboBox, &DComboBox::currentTextChanged,

@@ -55,7 +55,7 @@ void MavenWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
 
-    DLabel *homePathLabel = new DLabel(DLabel::tr("Maven path："));
+    DLabel *homePathLabel = new DLabel(tr("Maven path："));
     homePathLabel->setFixedWidth(120);
     d->homePathComboBox = new DComboBox();
 
@@ -63,19 +63,19 @@ void MavenWidget::setupUi()
     homePathLayout->addWidget(homePathLabel);
     homePathLayout->addWidget(d->homePathComboBox);
 
-    DLabel *userSettingLabel = new DLabel(DLabel::tr("User Setting："));
+    DLabel *userSettingLabel = new DLabel(tr("User Setting："));
     userSettingLabel->setFixedWidth(120);
     d->userSettingEdit = new DLineEdit();
-    DPushButton *userSettingBtn = new DPushButton(DPushButton::tr("Browse"));
+    DPushButton *userSettingBtn = new DPushButton(tr("Browse"));
     QHBoxLayout *userSettingLayout = new QHBoxLayout();
     userSettingLayout->addWidget(userSettingLabel);
     userSettingLayout->addWidget(d->userSettingEdit);
     userSettingLayout->addWidget(userSettingBtn);
 
-    DLabel *localSettingLabel = new DLabel(DLabel::tr("Local Setting："));
+    DLabel *localSettingLabel = new DLabel(tr("Local Setting："));
     localSettingLabel->setFixedWidth(120);
     d->localSettingEdit = new DLineEdit();
-    DPushButton *localSettingBtn = new DPushButton(DPushButton::tr("Browse"));
+    DPushButton *localSettingBtn = new DPushButton(tr("Browse"));
     QHBoxLayout *localSettingLayout = new QHBoxLayout();
     localSettingLayout->addWidget(localSettingLabel);
     localSettingLayout->addWidget(d->localSettingEdit);
@@ -137,7 +137,7 @@ bool MavenWidget::getControlValue(QMap<QString, QVariant> &map)
 }
 
 void MavenWidget::setControlValue(const QMap<QString, QVariant> &map)
-{    
+{
     MavenConfig config;
     mapToData(map, config);
 

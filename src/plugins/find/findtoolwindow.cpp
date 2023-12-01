@@ -112,7 +112,7 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     widget->setLayout(vLayout);
 
     QHBoxLayout *scopeLayout = new QHBoxLayout();
-    DLabel *scopeLabel = new DLabel(DLabel::tr("Scope:"));
+    DLabel *scopeLabel = new DLabel(QLabel::tr("Scope:"));
     scopeLabel->setFixedWidth(LABEL_WIDTH);
     d->scopeComboBox = new DComboBox();
     d->scopeComboBox->addItem(tr("All Projects"));
@@ -125,7 +125,7 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     scopeLayout->setAlignment(Qt::AlignLeft );
 
     QHBoxLayout *searchLayout = new QHBoxLayout();
-    DLabel *searchLabel = new DLabel(DLabel::tr("Search for:"));
+    DLabel *searchLabel = new DLabel(QLabel::tr("Search for:"));
     searchLabel->setFixedWidth(LABEL_WIDTH);
     searchLabel->setContentsMargins(45,0,0,0);
     d->searchLineEdit = new DLineEdit();
@@ -147,7 +147,7 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     searchLayout->setContentsMargins(0,10,0,0);
 
     QHBoxLayout *patternLayout = new QHBoxLayout();
-    DLabel *patternLabel = new DLabel(DLabel::tr("File pattern:"));
+    DLabel *patternLabel = new DLabel(QLabel::tr("File pattern:"));
     patternLabel->setFixedWidth(LABEL_WIDTH);
     patternLabel->setContentsMargins(35,0,0,0);
     d->patternLineEdit = new DLineEdit();
@@ -159,7 +159,7 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     patternLayout->setContentsMargins(0,10,0,0);
 
     QHBoxLayout *expatternLayout = new QHBoxLayout();
-    DLabel *expatternLabel = new DLabel(DLabel::tr("Exclusion pattern:"));
+    DLabel *expatternLabel = new DLabel(QLabel::tr("Exclusion pattern:"));
     expatternLabel->setFixedWidth(LABEL_WIDTH);
     d->expatternLineEdit = new DLineEdit();
     d->expatternLineEdit->setFixedWidth(369);
@@ -170,10 +170,10 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     expatternLayout->setContentsMargins(0,10,0,0);
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
-    DPushButton *searchBtn = new DPushButton(DPushButton::tr("Search"));
+    DPushButton *searchBtn = new DPushButton(QPushButton::tr("Search"));
     searchBtn->setFixedSize(120,36);
 
-    DPushButton *replaceBtn = new DPushButton(DPushButton::tr("Search && Replace"));
+    DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Search && Replace"));
     replaceBtn->setFixedSize(155,36);
     btnLayout->addWidget(searchBtn);
     btnLayout->addWidget(replaceBtn);

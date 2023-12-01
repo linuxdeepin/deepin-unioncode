@@ -39,7 +39,7 @@ void FindToolBar::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     QHBoxLayout *findLayout = new QHBoxLayout();
     vLayout->addLayout(findLayout);
-    DLabel *findLabel = new DLabel(DLabel::tr("Find:"));
+    DLabel *findLabel = new DLabel(QLabel::tr("Find:"));
     findLabel->setFixedWidth(LABEL_WIDTH);
     findLabel->setAlignment(Qt::AlignRight);
 
@@ -51,7 +51,7 @@ void FindToolBar::setupUi()
     findWidgetLayout->setMargin(0);
     findWidget->setLayout(findWidgetLayout);
 
-    DPushButton *findPreBtn = new DPushButton(DPushButton::tr("Find Previous"));
+    DPushButton *findPreBtn = new DPushButton(QPushButton::tr("Find Previous"));
     DPushButton *findNextBtn = new DPushButton(DPushButton::tr("Find Next"));
     DPushButton *advancedBtn = new DPushButton(DPushButton::tr("Advanced..."));
     findWidgetLayout->addWidget(findPreBtn);
@@ -64,7 +64,7 @@ void FindToolBar::setupUi()
 
     QHBoxLayout *repalceLayout = new QHBoxLayout();
     vLayout->addLayout(repalceLayout);
-    DLabel *repalceLabel = new DLabel(DLabel::tr("Repalce:"));
+    DLabel *repalceLabel = new DLabel(QLabel::tr("Repalce:"));
     repalceLabel->setFixedWidth(LABEL_WIDTH);
     repalceLabel->setAlignment(Qt::AlignRight);
 
@@ -76,9 +76,9 @@ void FindToolBar::setupUi()
     replaceWidgetLayout->setMargin(0);
     replaceWidget->setLayout(replaceWidgetLayout);
 
-    DPushButton *replaceBtn = new DPushButton(DPushButton::tr("Replace"));
-    DPushButton *replaceFindBtn = new DPushButton(DPushButton::tr("Replace && Find"));
-    DPushButton *replaceAllBtn = new DPushButton(DPushButton::tr("Repalce All"));
+    DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Replace"));
+    DPushButton *replaceFindBtn = new DPushButton(QPushButton::tr("Replace && Find"));
+    DPushButton *replaceAllBtn = new DPushButton(QPushButton::tr("Repalce All"));
     replaceWidgetLayout->addWidget(replaceBtn);
     replaceWidgetLayout->addWidget(replaceFindBtn);
     replaceWidgetLayout->addWidget(replaceAllBtn);

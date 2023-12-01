@@ -55,7 +55,7 @@ void NinjaWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
 
-    DLabel *homePathLabel = new DLabel(DLabel::tr("Ninja path："));
+    DLabel *homePathLabel = new DLabel(tr("Ninja path："));
     homePathLabel->setFixedWidth(120);
     d->homePathComboBox = new QComboBox();
 
