@@ -17,6 +17,7 @@
 #include <DLineEdit>
 #include <DWidget>
 #include <DSuggestButton>
+#include <DFrame>
 
 #include <QVBoxLayout>
 #include <QPainter>
@@ -49,14 +50,11 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     d->templatePath = templatePath;
     if (!TemplateParser::readWizardConfig(d->templatePath, d->wizardInfo))
         return;
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addSpacing(10);
 
     DWidget *widget = new DWidget();
-
-    QVBoxLayout *vLayout = new QVBoxLayout();
     widget->setLayout(vLayout);
-
-    DLabel *titleLabel = new DLabel(d->wizardInfo.trDisplayName);
-    vLayout->addSpacing(10);
 
     DWidget *bottomWidget = new DWidget();
     QHBoxLayout * bottomLayout = new QHBoxLayout(); //创建一个按钮布局
@@ -67,8 +65,14 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     DSuggestButton *create = new DSuggestButton(tr("Create"));
     create->setFixedSize(200,46);
 
+    // 创建两按钮间的分割线
+    DFrame *separator = new DFrame;
+    separator->setFrameShape(QFrame::VLine);
+    separator->setFrameShadow(QFrame::Sunken);
+
     bottomLayout->addStretch(15);
     bottomLayout->addWidget(cancel,Qt::AlignLeft);
+    bottomLayout->addWidget(separator);
     bottomLayout->addWidget(create);
 
     connect(create, &DSuggestButton::clicked, [&](){
@@ -80,6 +84,9 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
 
     connect(cancel, &DPushButton::clicked, this , &DetailWidget::closeSignal);
 
+    //调整窗口的上边距
+    vLayout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
     auto iter = d->wizardInfo.configures.begin();
     for (; iter != d->wizardInfo.configures.end(); ++iter) {
         QHBoxLayout *hLayout = new QHBoxLayout();
@@ -88,11 +95,10 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
         DLabel *label = new DLabel(tr(str.toStdString().c_str()) + ":");
 
         label->setFixedSize(100, 20);
-        label->setContentsMargins(8,0,0,0);
+        label->setContentsMargins(40,0,0,0);
         label->setAlignment(Qt::AlignLeft);
 
         hLayout->addWidget(label);
-
 
         if ("lineEdit" == iter->type) {
             DLineEdit *lineEdit = new DLineEdit();
@@ -154,13 +160,10 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
 
         vLayout->addLayout(hLayout);
 
-        for (int i = 0; i < 2; ++i) {
-            QWidget *blankWidget = new QWidget;
-            vLayout->addWidget(blankWidget);
-        }
-        vLayout->setContentsMargins(0,30,0,0);
-
+        // 用循环创建的二排label和lineedit， 用spacer控制上下间距
+        vLayout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
     }
+
     //将取消和创建按钮移至窗口底部
     vLayout->addSpacerItem(new QSpacerItem(20, 230, QSizePolicy::Minimum, QSizePolicy::Expanding));
     vLayout->addWidget(bottomWidget,Qt::AlignLeft);
