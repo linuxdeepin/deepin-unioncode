@@ -127,7 +127,7 @@ void ProfileSettingWidget::setupUi()
     d->hlayout->setMargin(10);
     d->hlayout->setSpacing(10);
     d->hlayout->addWidget(d->languageEdit);
-    d->hlayout->addWidget(d->cbChooseLanguage, 5, Qt::AlignmentFlag::AlignLeft);
+    d->hlayout->addWidget(d->cbChooseLanguage, 5, Qt::AlignmentFlag::AlignRight);
 
     d->vLayout->setAlignment(Qt::AlignmentFlag::AlignTop);
     d->vLayout->addLayout(d->hlayout);
