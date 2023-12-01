@@ -106,103 +106,97 @@
 <context>
     <name>BinaryToolsConfigView</name>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="92"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="95"/>
         <source>Binary configuration:</source>
         <translation>运行配置：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="106"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="109"/>
         <source>command combination:</source>
         <translation>命令组合：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="107"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="110"/>
         <source>Use Combination Command</source>
         <translation>使用组合命令</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="152"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="155"/>
         <source>Warning</source>
         <translation>警告</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="153"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="156"/>
         <source>Please select working directory.</source>
         <translation>请选择工作目录。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="302"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="306"/>
         <source>Add new command</source>
         <translation>添加新命令</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="303"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="307"/>
         <source>New command name:</source>
         <translation>命令名称：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="326"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="330"/>
         <source>Delete Configuration?</source>
         <translation>删除配置？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="327"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="331"/>
         <source>Do you really want to delete the command &lt;b&gt;%1&lt;/b&gt;?</source>
         <translation>确定要删除&lt;b&gt;%1&lt;/b&gt;吗？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="349"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="354"/>
         <source>Rename...</source>
         <translation>重命名...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="350"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="355"/>
         <source>New name for command &lt;b&gt;%1&lt;/b&gt;:</source>
         <translation>&lt;b&gt;%1&lt;/b&gt;的新名称：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="401"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="406"/>
         <source>Command:</source>
         <translation>命令：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="405"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="410"/>
         <source>Tool arguments:</source>
         <translation>工具参数：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="407"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="412"/>
         <source>Input your arguments.</source>
         <translation>请输入参数.</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="410"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="415"/>
         <source>Executable:</source>
         <translation>可执行文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="412"/>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="417"/>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="420"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="425"/>
         <source>Configuration environment for the current command:</source>
         <translation>当前命令的配置环境:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="415"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="420"/>
         <source>Working directory:</source>
         <translation>工作目录：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="466"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="470"/>
         <source>Select Executabel Path</source>
         <translation>选择执行路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="474"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="478"/>
         <source>Select Working Directory</source>
         <translation>选择工作目录</translation>
     </message>
@@ -210,67 +204,67 @@
 <context>
     <name>BinaryToolsDialog</name>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="30"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="31"/>
         <source>Binary Tools</source>
         <translation>二进制工具</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="46"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="47"/>
         <source>Use Tool</source>
         <translation>使用工具</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="44"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="45"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="45"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="46"/>
         <source>Save Configuration</source>
         <translation>保存配置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="115"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="114"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation>错误：执行命令错误！原因未知。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="119"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="118"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程&quot;%1&quot; 正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="121"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="120"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程&quot;%1&quot;退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="124"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="123"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程&quot;%1&quot;崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="85"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="84"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="166"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="165"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始执行命令： &quot;%1&quot; &quot;%2&quot;，工作目录为&quot;%3&quot;。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="173"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="172"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -396,47 +390,47 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="205"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="213"/>
         <source>Co&amp;mpile Output</source>
         <translation>编译输出(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="274"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="282"/>
         <source>Execute command failed!
 </source>
         <translation>执行命令失败！
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="278"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="286"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation>开始在工作区%3中执行%1 %2命令。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="286"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="294"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation>进程%1正常退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="289"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="297"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation>进程%1退出，代码为%2。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="293"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="301"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation>进程 %1崩溃。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="321"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="329"/>
         <source>Execute command finished.
 </source>
         <translation>命令执行完成。
@@ -498,7 +492,7 @@
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="247"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="226"/>
         <source>build</source>
         <translation>编译</translation>
     </message>
@@ -639,15 +633,9 @@ A must-have all-round AI tool for developers</source>
     <message>
         <location filename="../../src/plugins/codeporting/codeportingmanager.cpp" line="154"/>
         <location filename="../../src/plugins/codeporting/codeportingmanager.cpp" line="156"/>
-        <location filename="../../src/plugins/codeporting/codeportingmanager.cpp" line="165"/>
+        <location filename="../../src/plugins/codeporting/codeportingmanager.cpp" line="160"/>
         <source>C&amp;ode Porting</source>
         <translation>代码迁移(&amp;O)</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeporting/codeportingmanager.cpp" line="159"/>
-        <location filename="../../src/plugins/codeporting/codeportingmanager.cpp" line="161"/>
-        <source>Porting &amp;Report</source>
-        <translation>迁移报告(&amp;R)</translation>
     </message>
 </context>
 <context>
@@ -656,6 +644,19 @@ A must-have all-round AI tool for developers</source>
         <location filename="../../src/plugins/codeporting/codeportingplugin.cpp" line="31"/>
         <source>Code Porting</source>
         <translation>代码迁移</translation>
+    </message>
+</context>
+<context>
+    <name>CodePortingWidget</name>
+    <message>
+        <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="29"/>
+        <source>C&amp;ode Porting</source>
+        <translation type="unfinished">代码迁移(&amp;O)</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="30"/>
+        <source>Porting &amp;Report</source>
+        <translation type="unfinished">迁移报告(&amp;R)</translation>
     </message>
 </context>
 <context>
@@ -738,7 +739,7 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Console</name>
     <message>
-        <location filename="../../src/plugins/console/console.cpp" line="27"/>
+        <location filename="../../src/plugins/console/console.cpp" line="28"/>
         <source>&amp;Console</source>
         <translation>控制台(&amp;C)</translation>
     </message>
@@ -878,28 +879,23 @@ dap端口未就绪，请重试。
 <context>
     <name>DDockWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="71"/>
-        <source>Context</source>
-        <translation>文本</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="92"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="120"/>
         <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="557"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="155"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="221"/>
         <source>Watcher</source>
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="266"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="325"/>
         <source>Find ToolBar</source>
         <translation>查找</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="291"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="350"/>
         <source>Valgrind</source>
         <translation>Valgrind</translation>
     </message>
@@ -1095,14 +1091,59 @@ Delete anyway?</source>
 <context>
     <name>DetailWidget</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="77"/>
-        <source>Browse...</source>
-        <translation>浏览...</translation>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="64"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="83"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="66"/>
+        <source>Create</source>
+        <translation>创建</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="115"/>
         <source>Choose path</source>
         <translation>选择路径</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="131"/>
+        <source>File Name</source>
+        <translation>文件名</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="132"/>
+        <source>The filename can&apos;t be empty!</source>
+        <translation>文件名不能为空!</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="133"/>
+        <source>Project Name</source>
+        <translation>项目名</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="134"/>
+        <source>The project can&apos;t be empty!</source>
+        <translation>项目名不能为空！</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="135"/>
+        <source>Location</source>
+        <translation>地址</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="136"/>
+        <source>The address can&apos;t be empty!</source>
+        <translation>地址栏不能为空！</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="192"/>
+        <source>error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="192"/>
+        <source>Can not find kit.</source>
+        <translation>找不到配套工具。</translation>
     </message>
 </context>
 <context>
@@ -1227,62 +1268,62 @@ Delete anyway?</source>
 <context>
     <name>FindToolWindow</name>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="118"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="109"/>
         <source>All Projects</source>
         <translation>所有工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="119"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="110"/>
         <source>Current Project</source>
         <translation>当前工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="120"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="111"/>
         <source>Current File</source>
         <translation>当前文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="133"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="116"/>
         <source>thread</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="155"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="166"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="130"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="134"/>
         <source>e.g.*.ts,src/**/include</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="218"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="226"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="234"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="241"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="256"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="181"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="189"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="197"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="204"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="219"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="218"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="181"/>
         <source>All projects path is empty, please import!</source>
         <translation>所有项目路径均为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="226"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="189"/>
         <source>Current project path is empty, please import!</source>
         <translation>当前工程路径为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="234"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="197"/>
         <source>Current file path is empty, please import!</source>
         <translation>当前文件路径为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="241"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="204"/>
         <source>Scope is not selected, please select!</source>
         <translation>未选择范围，请选择！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="256"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="219"/>
         <source>Search for text is empty, please input!</source>
         <translation>搜索文本为空，请输入！</translation>
     </message>
@@ -1559,38 +1600,13 @@ repos path: %0</source>
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="58"/>
-        <source>New File or Project</source>
-        <translation>新建文件或工程</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="60"/>
-        <source>Choose a template:</source>
-        <translation>选择一个模板：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="72"/>
-        <source>Templates</source>
-        <translation>模板</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="156"/>
-        <source>Create</source>
-        <translation>创建</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="157"/>
-        <source>Cancel</source>
-        <translation>取消</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="193"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="206"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="254"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="267"/>
         <source>Tip</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="206"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="267"/>
         <source>Can not find kit.</source>
         <translation>找不到配套工具。</translation>
     </message>
@@ -1668,13 +1684,13 @@ repos path: %0</source>
     <message>
         <location filename="../../src/plugins/java/maven/option/mavenwidget.cpp" line="75"/>
         <source>Local Setting：</source>
-        <translation type="unfinished">本地设置：</translation>
+        <translation>本地设置：</translation>
     </message>
 </context>
 <context>
     <name>NavEditMainWindow</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="77"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="122"/>
         <source>toolbar</source>
         <translation>工具栏</translation>
     </message>
@@ -1881,17 +1897,17 @@ repos path: %0</source>
 <context>
     <name>PropertiesDialog</name>
     <message>
-        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="107"/>
+        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="108"/>
         <source>Project Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="141"/>
+        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="142"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="146"/>
+        <location filename="../../src/common/dialog/propertiesdialog.cpp" line="147"/>
         <source>Apply</source>
         <translation>应用</translation>
     </message>
@@ -2348,22 +2364,22 @@ storage: %2
         <translation type="unfinished">替换：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="115"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="107"/>
         <source>Scope:</source>
         <translation type="unfinished">范围：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="128"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
         <source>Search for:</source>
         <translation type="unfinished">搜索：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="150"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="128"/>
         <source>File pattern:</source>
         <translation type="unfinished">包含的文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="162"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="132"/>
         <source>Exclusion pattern:</source>
         <translation type="unfinished">排除的文件：</translation>
     </message>
@@ -2639,14 +2655,14 @@ storage: %2
         <translation>运行时环境</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="102"/>
+        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="104"/>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/environmentwidget.cpp" line="66"/>
         <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="75"/>
         <source>Variable</source>
         <translation>变量名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="104"/>
+        <location filename="../../src/plugins/binarytools/mainframe/environmentview.cpp" line="106"/>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/environmentwidget.cpp" line="68"/>
         <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="77"/>
         <source>Value</source>
@@ -2702,6 +2718,16 @@ storage: %2
         <source>CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="65"/>
+        <source>New File</source>
+        <translation>新建文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="66"/>
+        <source>New Project</source>
+        <translation>新建工程</translation>
+    </message>
 </context>
 <context>
     <name>QPushButton</name>
@@ -2752,12 +2778,12 @@ storage: %2
         <translation type="unfinished">替换全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="173"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="137"/>
         <source>Search</source>
         <translation type="unfinished">搜索</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="176"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="139"/>
         <source>Search &amp;&amp; Replace</source>
         <translation type="unfinished">搜索并替换</translation>
     </message>
@@ -2881,12 +2907,12 @@ storage: %2
 <context>
     <name>ReportPane</name>
     <message>
-        <location filename="../../src/plugins/codeporting/reportpane.cpp" line="73"/>
+        <location filename="../../src/plugins/codeporting/reportpane.cpp" line="74"/>
         <source>Source files to migrate</source>
         <translation>待迁移的源文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeporting/reportpane.cpp" line="75"/>
+        <location filename="../../src/plugins/codeporting/reportpane.cpp" line="76"/>
         <source>Architecture-dependent library files</source>
         <translation>依赖于体系结构的库文件</translation>
     </message>
@@ -2894,22 +2920,22 @@ storage: %2
 <context>
     <name>ReverseDebugPlugin</name>
     <message>
-        <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="37"/>
+        <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="38"/>
         <source>Reverse debug</source>
         <translation>反向调试</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="42"/>
+        <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="43"/>
         <source>Record</source>
         <translation>记录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="43"/>
+        <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="44"/>
         <source>Replay</source>
         <translation>重放</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="52"/>
+        <location filename="../../src/plugins/reversedebug/reversedebugplugin.cpp" line="53"/>
         <source>R&amp;everse Debug</source>
         <translation>反向调试(&amp;E)</translation>
     </message>
