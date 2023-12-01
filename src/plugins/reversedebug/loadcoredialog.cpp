@@ -30,7 +30,7 @@ LoadCoreDialog::LoadCoreDialog(QWidget *parent)
       d(new StartCoredumpDialogPrivate)
 {
     setTitle(tr("Event Debugger Configure"));
-    setIcon(QIcon(":/core/images/unioncode@128.png"));
+    setIcon(QIcon::fromTheme("ide"));
 
     setupUi();
 }
