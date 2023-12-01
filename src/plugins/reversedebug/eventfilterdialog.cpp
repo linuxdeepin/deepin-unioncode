@@ -139,7 +139,7 @@ EventFilterDialog::EventFilterDialog(
     d->x11Flags = x11Flags;
     d->signalFlags = signalFlags;
     setWindowTitle(tr("event filter."));
-    setIcon(QIcon(":/core/images/unioncode@128.png"));
+    setIcon(QIcon::fromTheme("ide"));
 
     setupUi();
 }
@@ -334,7 +334,7 @@ void EventFilterDialog::setupUi()
     d->maxHeapSize = new DLineEdit(mainFrame);
     d->maxHeapSize->setPlaceholderText(tr("default is 0, in KB"));
     d->maxStackSize = new DLineEdit(mainFrame);
-    d->maxStackSize->setPlaceholderText(tr("default is 256, unit Byte"));
+    d->maxStackSize->setPlaceholderText(tr("default is 32, unit Byte"));
     d->maxParamSize = new DLineEdit(mainFrame);
     d->maxParamSize->setPlaceholderText(tr("default is 256, unit Byte"));
     d->onlyCurrentThread = new DCheckBox(mainFrame);
