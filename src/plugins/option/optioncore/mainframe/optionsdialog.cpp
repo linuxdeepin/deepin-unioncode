@@ -98,7 +98,7 @@ void OptionsDialog::setupUi()
     DTitlebar *titlebar = new DTitlebar(this);
     titlebar->setMenuVisible(false);
     titlebar->setTitle(tr("Global Options"));
-    titlebar->setIcon(QIcon::fromTheme("unioncode"));
+    titlebar->setIcon(QIcon::fromTheme("ide"));
 
     QVBoxLayout *title = new QVBoxLayout(this);
     title->setContentsMargins(0, 0, 0, 0);
