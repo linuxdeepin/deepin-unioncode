@@ -25,7 +25,7 @@ CodePortingWidget::CodePortingWidget(QWidget *parent)
 void CodePortingWidget::initUI()
 {
     DButtonBox *btnBox = new DButtonBox(this);
-    btnBox->setFixedWidth(125);
+    btnBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     DButtonBoxButton *outputBtn = new DButtonBoxButton(tr("C&ode Porting"));
     DButtonBoxButton *reportBtn = new DButtonBoxButton(tr("Porting &Report"));
     QList<DButtonBoxButton*> list;
@@ -41,7 +41,7 @@ void CodePortingWidget::initUI()
     vLayout->addWidget(btnBox);
     vLayout->addWidget(tabWidget);
 
-    auto initConn = [this, tabWidget, list] (DButtonBoxButton* btn) {
+    auto initConn = [tabWidget, list] (DButtonBoxButton* btn) {
         connect(btn, &DButtonBoxButton::clicked, [=]{
             tabWidget->setCurrentIndex(list.indexOf(btn));
         });

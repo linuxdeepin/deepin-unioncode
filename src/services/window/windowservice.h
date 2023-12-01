@@ -101,7 +101,7 @@ public:
      * \param contextTab Tab名称
      * \param contextWidget 实例对象
      */
-    DPF_INTERFACE(void, addContextWidget, const QString &contextTab, AbstractWidget *contextWidget, const QString &group, bool isVisibal);
+    DPF_INTERFACE(void, addContextWidget, const QString &contextTab, AbstractWidget *contextWidget, const QString &group, bool isVisible);
 
     DPF_INTERFACE(bool, hasContextWidget, const QString &title);
 
