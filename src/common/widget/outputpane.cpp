@@ -55,6 +55,9 @@ OutputPane::~OutputPane()
 void OutputPane::initUI()
 {
     setLineWidth(0);
+
+    d->menu = new DMenu(this);
+    d->menu->addActions(actionFactory());
 }
 
 void OutputPane::clearContents()
@@ -163,11 +166,8 @@ OutputPane *OutputPane::instance()
 
 void OutputPane::contextMenuEvent(QContextMenuEvent * event)
 {
-    if (nullptr == d->menu) {
-        d->menu = new DMenu(this);
-        d->menu->setParent(this);
-        d->menu->addActions(actionFactory());
-    }
+    if (!d->menu)
+        return;
 
     d->menu->move(event->globalX(), event->globalY());
     d->menu->show();
