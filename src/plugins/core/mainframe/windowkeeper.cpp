@@ -634,7 +634,13 @@ DIconButton *WindowKeeper::addIconButton(QAction *action)
     iconBtn->setShortcut(action->shortcut());
 
     connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);
-    connect(action, &QAction::changed, iconBtn, [=]{
+    connect(action, &QAction::changed, iconBtn, [=] {
+        if (action->shortcut() != iconBtn->shortcut()) {
+            QString toolTipStr = action->text() + " " + action->shortcut().toString();
+            iconBtn->setToolTip(toolTipStr);
+            iconBtn->setShortcut(action->shortcut());
+        }
+
         iconBtn->setEnabled(action->isEnabled());
     });
 

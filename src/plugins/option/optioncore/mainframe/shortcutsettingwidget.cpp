@@ -73,7 +73,8 @@ void ShortCut::updateUi()
         keyEdit->ShortcutDirection(Qt::AlignLeft);
         keyEdit->setFocusPolicy(Qt::StrongFocus);
 
-        auto label = new DLabel(description, this);
+        auto string = description.toStdString();
+        auto label = new DLabel(QAction::tr(string.c_str()), this);
 
         auto wrapper = new DWidget;
         auto hlayout = new QHBoxLayout(wrapper);
