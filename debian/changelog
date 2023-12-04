@@ -1,3 +1,10 @@
+deepin-unioncode (1.2.0) unstable; urgency=medium
+
+  * Add Codegeex plugin
+  * Change qt to dtk
+
+ -- Deepin Packages Builder <packages@linuxdeepin.com>  Mon, 04 Dec 2023 10:04:27 +0800
+
 deepin-unioncode (1.1.20) unstable; urgency=medium
 
   * 
