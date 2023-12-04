@@ -29,7 +29,7 @@ public:
     int rowCount() const;
     int columnCount() const;
 
-    void setupForm();
+    void updateUi();
     void updateShortcut(QString id, QString shortcut);
     void resetAllShortcut();
     void saveShortcut();
