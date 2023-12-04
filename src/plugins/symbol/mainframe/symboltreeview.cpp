@@ -31,6 +31,8 @@ SymbolTreeView::SymbolTreeView(DWidget *parent)
     : DTreeView(parent)
     , d (new SymbolTreeViewPrivate(this))
 {
+    setLineWidth(0);
+
     d->model = new SymbolModel();
     DTreeView::setModel(d->model);
 

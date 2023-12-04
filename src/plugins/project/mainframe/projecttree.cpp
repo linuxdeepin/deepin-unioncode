@@ -51,9 +51,14 @@ class ProjectTreePrivate
 };
 
 ProjectTree::ProjectTree(QWidget *parent)
-    : QTreeView (parent)
+    : DTreeView (parent)
     , d(new ProjectTreePrivate)
 {
+    setLineWidth(0);
+    setContentsMargins(0, 0, 0, 0);
+    DStyle::setFrameRadius(this, 0);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+
     setEditTriggers(DTreeView::NoEditTriggers);	          //节点不能编辑
     setSelectionBehavior(DTreeView::SelectRows);		  //一次选中整行
     setSelectionMode(DTreeView::SingleSelection);         //单选，配合上面的整行就是一次选单行
@@ -65,7 +70,6 @@ ProjectTree::ProjectTree(QWidget *parent)
     // 右键菜单创建
     QObject::connect(this, &ProjectTree::itemMenuRequest,
                      this, &ProjectTree::doItemMenuRequest);
-
 
     // 双击操作
     QObject::connect(this, &ProjectTree::doubleClicked,

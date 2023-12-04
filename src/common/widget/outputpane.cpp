@@ -40,6 +40,8 @@ OutputPane::OutputPane(QWidget *parent)
     , d(new OutputPanePrivate(document()))
 {
     setReadOnly(true);
+
+    initUI();
 }
 
 OutputPane::~OutputPane()
@@ -48,6 +50,11 @@ OutputPane::~OutputPane()
         delete d;
         d = nullptr;
     }
+}
+
+void OutputPane::initUI()
+{
+    setLineWidth(0);
 }
 
 void OutputPane::clearContents()

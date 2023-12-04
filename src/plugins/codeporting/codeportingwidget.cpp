@@ -8,13 +8,15 @@
 #include <DPushButton>
 #include <DButtonBox>
 #include <DStackedWidget>
+#include <DComboBox>
 
+#include <QAction>
 #include <QHBoxLayout>
 
 DWIDGET_USE_NAMESPACE
 
 CodePortingWidget::CodePortingWidget(QWidget *parent)
-    : DWidget(parent)
+    : DFrame(parent)
 {
     outputPane = CodePortingManager::instance()->getOutputPane();
     reportPane = CodePortingManager::instance()->getReportPane();
@@ -24,6 +26,9 @@ CodePortingWidget::CodePortingWidget(QWidget *parent)
 
 void CodePortingWidget::initUI()
 {
+    DStyle::setFrameRadius(this, 0);
+    setLineWidth(0);
+
     DButtonBox *btnBox = new DButtonBox(this);
     btnBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     DButtonBoxButton *outputBtn = new DButtonBoxButton(tr("C&ode Porting"));
@@ -33,22 +38,38 @@ void CodePortingWidget::initUI()
     list.append(reportBtn);
     btnBox->setButtonList(list, true);
 
+    DComboBox *reportTab = new DComboBox();
+    reportTab->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    reportTab->addItem(REPORT_SRCLIST);
+    reportTab->addItem(REPORT_LIBLIST);
+    reportTab->hide();
+
+    connect(reportTab, &QComboBox::currentTextChanged, reportPane, &ReportPane::onChangeReportList);
+
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->setContentsMargins(0, 0, 0, 0);
+    hLayout->addWidget(btnBox);
+    hLayout->addWidget(reportTab);
+    hLayout->setAlignment(btnBox, Qt::AlignLeft);
+    hLayout->setAlignment(reportTab, Qt::AlignRight);
+
     DStackedWidget *tabWidget = new DStackedWidget();
     tabWidget->addWidget(outputPane);
     tabWidget->addWidget(reportPane);
 
     QVBoxLayout *vLayout = new QVBoxLayout(this);
-    vLayout->addWidget(btnBox);
+    vLayout->addLayout(hLayout);
     vLayout->addWidget(tabWidget);
 
-    auto initConn = [tabWidget, list] (DButtonBoxButton* btn) {
-        connect(btn, &DButtonBoxButton::clicked, [=]{
-            tabWidget->setCurrentIndex(list.indexOf(btn));
-        });
-    };
+    connect(outputBtn, &DButtonBoxButton::clicked, [=]{
+        tabWidget->setCurrentIndex(list.indexOf(outputBtn));
+        reportTab->hide();
+    });
 
-    initConn(outputBtn);
-    initConn(reportBtn);
+    connect(reportBtn, &DButtonBoxButton::clicked, [=]{
+        tabWidget->setCurrentIndex(list.indexOf(reportBtn));
+        reportTab->show();
+    });
 
     outputBtn->setChecked(true);
 }

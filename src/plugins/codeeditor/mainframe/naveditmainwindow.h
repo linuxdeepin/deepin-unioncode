@@ -71,7 +71,7 @@ private:
     AutoHideDockWidget *qDockWidgetTools{nullptr};
     DWidget *qWidgetEdit{nullptr};
     DWidget *qWidgetWatch{nullptr};
-    DTabWidget *qTabWidgetContext{nullptr};
+
     DTabWidget *qTabWidgetWorkspace{nullptr};
     DTabWidget *qTabWidgetTools{nullptr};
     ToolBarManager *mainToolBar{nullptr};
