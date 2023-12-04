@@ -5,17 +5,20 @@
 #ifndef LOGGINDIALOG_H
 #define LOGGINDIALOG_H
 
-#include <QDialog>
-#include <QLabel>
-#include <QLineEdit>
+#include <DDialog>
+#include <DLabel>
+#include <DLineEdit>
+#include <DPushButton>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-class LogginDialog : public QDialog
+DWIDGET_USE_NAMESPACE
+class LogginDialog : public DDialog
 {
     Q_OBJECT
 public:
-    explicit LogginDialog(QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit LogginDialog(QWidget *parent = nullptr);
     void setName(const QString &name);
     QString name() const;
     void setPasswd(const QString &name);
@@ -24,10 +27,10 @@ public:
     QString titleText() const;
 
 private:
-    QLabel *titleLabel{nullptr};
-    QLineEdit *nameEdit{nullptr};
-    QLineEdit *passwdEdit{nullptr};
-    QPushButton *pbtOk{nullptr};
+    DLabel *titleLabel{nullptr};
+    DLineEdit *nameEdit{nullptr};
+    DLineEdit *passwdEdit{nullptr};
+    DPushButton *pbtOk{nullptr};
 
 Q_SIGNALS:
     void logginOk();

@@ -6,7 +6,6 @@
 #define SVNCLIENTWIDGET_H
 
 #include <QMainWindow>
-#include <QToolBar>
 #include <QSet>
 
 class ReposWidget;

@@ -7,11 +7,11 @@
 
 #include "basetype.h"
 
-#include <QTreeView>
+#include <DTreeView>
 
 class QVBoxLayout;
 class FileSourceViewPrivate;
-class FileSourceView : public QTreeView
+class FileSourceView : public DTreeView
 {
     Q_OBJECT
     FileSourceViewPrivate *const d;

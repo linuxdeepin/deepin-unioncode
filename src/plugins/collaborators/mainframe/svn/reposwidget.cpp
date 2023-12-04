@@ -18,35 +18,36 @@
 #include "FileDiffView.h"
 #include "DiffHelper.h"
 
+#include <DLabel>
+#include <DMainWindow>
+#include <DMenu>
+#include <DSplitter>
+#include <DToolBar>
+#include <DToolButton>
+
 #include <QApplication>
 #include <QButtonGroup>
 #include <QDir>
-#include <QLabel>
-#include <QMainWindow>
-#include <QMenu>
 #include <QSet>
-#include <QSplitter>
-#include <QToolBar>
-#include <QToolButton>
 #include <QFileSystemWatcher>
 #include <QDirIterator>
 
 class ReposWidgetPrivate
 {
     friend class ReposWidget;
-    QSplitter *splitter{nullptr};
+    DSplitter *splitter{nullptr};
     //    QTimer fileModifyTimer;
     FileSourceView *fileSrcView{nullptr};
     AmendsWidget *amendsWidget{nullptr};
     HistoryDisplayWidget *historyWidget{nullptr};
     QVBoxLayout *vLayout{nullptr};
     LogginDialog *logginDialog{nullptr};
-    QToolBar *controlBar{nullptr};
+    DToolBar *controlBar{nullptr};
     QButtonGroup *controlGroup{nullptr};
-    QToolButton *refreshButton{nullptr};
-    QToolButton *updateButton{nullptr};
-    QToolButton *optionButton{nullptr};
-    QToolButton *historyButton{nullptr};
+    DToolButton *refreshButton{nullptr};
+    DToolButton *updateButton{nullptr};
+    DToolButton *optionButton{nullptr};
+    DToolButton *historyButton{nullptr};
     QFileSystemWatcher *watcher{nullptr};
     QString reposPath;
     QString name;
@@ -66,7 +67,7 @@ ReposWidget::ReposWidget(QWidget *parent)
     d->vLayout->setAlignment(d->logginDialog, Qt::AlignCenter);
     setLayout(d->vLayout);
 
-    d->splitter = new QSplitter(Qt::Horizontal);
+    d->splitter = new DSplitter(Qt::Horizontal);
     d->splitter->setHandleWidth(2);
     d->fileSrcView = new FileSourceView();
     d->fileSrcView->setMinimumWidth(300);
@@ -353,7 +354,7 @@ void ReposWidget::reloadHistory()
 
 void ReposWidget::modFileMenu(const RevisionFile &file, const QPoint &pos)
 {
-    QMenu menu;
+    DMenu menu;
     if (file.revisionType == AmendsState_Col1::get()->ADD) {
         QAction *action = menu.addAction("revert");
         QObject::connect(action, &QAction::triggered, [=](){
@@ -553,19 +554,19 @@ QWidget *ReposWidget::initControlBar()
     static int barHeight = 48;
     static int buttonWidth = 40;
     static int buttonHeight = 40;
-    d->controlBar = new QToolBar();
+    d->controlBar = new DToolBar();
     d->controlBar->setFixedHeight(barHeight);
     d->controlBar->setOrientation(Qt::Orientation::Horizontal);
     d->controlBar->setIconSize({buttonWidth, buttonHeight});
 
-    d->updateButton = new QToolButton();
+    d->updateButton = new DToolButton();
     d->updateButton->setFixedSize(buttonWidth, buttonHeight);
     d->updateButton->setIcon(QIcon(":/icons/git_pull"));
     d->updateButton->setToolTip(QToolButton::tr("update local from remote repos"));
     QObject::connect(d->updateButton, &QToolButton::clicked, this, &ReposWidget::doUpdateRepos);
     d->controlBar->addWidget(d->updateButton);
 
-    d->refreshButton = new QToolButton();
+    d->refreshButton = new DToolButton();
     d->refreshButton->setFixedSize(buttonWidth, buttonHeight);
     d->refreshButton->setIcon(QIcon(":/icons/refresh"));
     d->refreshButton->setToolTip(QToolButton::tr("refresh current local to display"));
@@ -573,14 +574,14 @@ QWidget *ReposWidget::initControlBar()
     d->controlBar->addWidget(d->refreshButton);
     d->controlBar->addSeparator();
 
-    d->optionButton = new QToolButton();
+    d->optionButton = new DToolButton();
     d->optionButton->setFixedSize(buttonWidth, buttonHeight);
     d->optionButton->setIcon(QIcon(":/icons/blame"));
     d->optionButton->setToolTip(QToolButton::tr("show repos operation"));
     d->optionButton->setCheckable(true);
     d->controlBar->addWidget(d->optionButton);
 
-    d->historyButton = new QToolButton();
+    d->historyButton = new DToolButton();
     d->historyButton->setFixedSize(buttonWidth, buttonHeight);
     d->historyButton->setIcon(QIcon(":/icons/git_orange"));
     d->historyButton->setToolTip(QToolButton::tr("show repos history"));

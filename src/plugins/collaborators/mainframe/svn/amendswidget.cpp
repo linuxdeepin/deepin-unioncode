@@ -9,10 +9,6 @@
 #include "CommitInfoPanel.h"
 
 #include <QBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QTextEdit>
 
 const QString Description = QTextEdit::tr("Description");
 const QString Summary = QLineEdit::tr("Summary");
@@ -20,13 +16,13 @@ const QString Commit = QPushButton::tr("Commit");
 const QString RevertAll = QPushButton::tr("Revert All");
 
 AmendsWidget::AmendsWidget(QWidget *parent)
-    : QSplitter (parent)
+    : DSplitter (parent)
     , modifyView(new FileModifyView)
     , hLayPbt(new QHBoxLayout)
-    , pbtCommit(new QPushButton(Commit))
-    , pbtRevertAll(new QPushButton(RevertAll))
-    , descEdit(new QTextEdit)
-    , pbtWidget(new QFrame)
+    , pbtCommit(new DPushButton(Commit))
+    , pbtRevertAll(new DPushButton(RevertAll))
+    , descEdit(new DTextEdit)
+    , pbtWidget(new DFrame)
 {
     setOrientation(Qt::Vertical);
     pbtRevertAll->setObjectName("warningButton");
