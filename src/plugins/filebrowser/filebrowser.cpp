@@ -9,6 +9,8 @@
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 
+#include <DFrame>
+#include <DStyle>
 #include <DWidget>
 #include <DLabel>
 #include <DTreeView>
@@ -50,24 +52,26 @@ dpf::Plugin::ShutdownFlag FileBrowser::stop()
 
 AbstractWidget *FileBrowser::createTreeWidget()
 {
-    DWidget *treeWidget = new DWidget();
-    treeWidget->setMinimumSize({treeWidgtMinWidth, treeWidgetMinHeight});
-
-    QGridLayout* gridLayout = new QGridLayout();
-    gridLayout->setSpacing(0);
-    gridLayout->setMargin(0);
+    DFrame *treeWidget = new DFrame();
+    treeWidget->setLineWidth(0);
+    DStyle::setFrameRadius(treeWidget, 0);
+    treeWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 
     auto treeView = TreeViewKeeper::instance()->treeView();
-    treeView->setMinimumSize({treeWidgtMinWidth, treeWidgetMinHeight});
-
     auto folderLabel = new DLabel();
+    folderLabel->setMargin(3);
     QObject::connect(treeView, &TreeView::rootPathChanged,
                      folderLabel, &DLabel::setText,
                      Qt::UniqueConnection);
 
-    gridLayout->addWidget(folderLabel);
-    gridLayout->addWidget(treeView);
-    treeWidget->setLayout(gridLayout);
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    vLayout->setContentsMargins(0, 0, 0, 0);
+    vLayout->setSpacing(0);
+    vLayout->addWidget(folderLabel);
+    vLayout->addWidget(new DHorizontalLine());
+    vLayout->addWidget(treeView);
+    vLayout->addSpacing(3);
+    treeWidget->setLayout(vLayout);
 
     return new AbstractWidget(treeWidget);
 }

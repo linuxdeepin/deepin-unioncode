@@ -41,6 +41,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent * event) override;
 
 private:
+    void initUI();
     QString normalizeNewlines(const QString &text);
 
     void appendCustomText(const QString &text, AppendMode mode, const QTextCharFormat &format = QTextCharFormat());

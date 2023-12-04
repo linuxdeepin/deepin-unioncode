@@ -37,6 +37,7 @@ TreeView::TreeView(QWidget *parent)
     : DTreeView (parent)
     , d (new TreeViewPrivate)
 {
+    setLineWidth(0);
     d->model = new QFileSystemModel(this);
     d->menu = new DMenu(this);
     setModel(d->model);

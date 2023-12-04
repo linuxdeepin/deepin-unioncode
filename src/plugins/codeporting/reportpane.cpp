@@ -4,40 +4,46 @@
 
 #include "reportpane.h"
 #include "codeporting.h"
+#include "codeportingmanager.h"
 
 #include <DTabWidget>
 #include <DTableWidget>
 #include <DPushButton>
+#include <DStackedWidget>
+#include <DStyle>
+#include <DGroupBox>
+#include <DTreeView>
+#include <DTableView>
+#include <DStandardItem>
+#include <DPaletteHelper>
+#include <DGuiApplicationHelper>
 
+#include <QStandardItemModel>
 #include <QHeaderView>
 #include <QDebug>
 #include <QHBoxLayout>
 
-DWIDGET_USE_NAMESPACE
-
-ReportPane::ReportPane(CodePorting *_codePorting, QWidget *parent) : QWidget(parent)
-  , srcTableWidget(new DTableWidget(this))
-  , libTableWidget(new DTableWidget(this))
-  , codePorting(_codePorting)
+ReportPane::ReportPane(CodePorting *_codePorting, QWidget *parent)
+    : DWidget(parent)
+    , codePorting(_codePorting)
 {
-    initTableWidget();
+    initUI();
 }
 
 void ReportPane::refreshDispaly()
 {
     auto &&srcReport = codePorting->getSourceReport();
     auto &&libReport = codePorting->getDependLibReport();
-    refreshTableView(srcTableWidget, srcReport);
-    refreshTableView(libTableWidget, libReport);
+
+    setViewItem(srcView, srcReport);
+    setViewItem(libView, libReport);
 }
 
-void ReportPane::srcCellSelected(int row, int col)
+void ReportPane::srcCellSelected(const QModelIndex &index)
 {
-    qDebug() << "srcCellSelected: " << row << col;
-
     auto &&report = codePorting->getSourceReport();
     if (report.size()) {
-        auto items = report[row];
+        auto items = report[index.row()];
         if (items.size() == CodePorting::kItemsCount) {
             QString range = items[CodePorting::kCodeRange];
             QRegularExpression reg("(?<=\\()(\\d)*, (\\d)*(?=\\))");
@@ -62,55 +68,60 @@ void ReportPane::libCellSelected(int row, int col)
     // TODO(mozart)
 }
 
-void ReportPane::initTableWidget()
+void ReportPane::onChangeReportList(const QString &listName)
 {
-    setTableWidgetStyle(srcTableWidget, codePorting->getSrcItemNames());
-    setTableWidgetStyle(libTableWidget, codePorting->getLibItemNames());
+    if (!srcView || !libView)
+        return;
 
-    connect(srcTableWidget, &DTableWidget::cellDoubleClicked, this, &ReportPane::srcCellSelected);
-    connect(libTableWidget, &DTableWidget::cellDoubleClicked, this, &ReportPane::libCellSelected);
+    srcView->hide();
+    libView->hide();
 
-    DTabWidget *tabWidget = new DTabWidget(this);
-    tabWidget->addTab(srcTableWidget, tr("Source files to migrate"));
-
-    tabWidget->addTab(libTableWidget, tr("Architecture-dependent library files"));
-    tabWidget->setTabPosition(DTabWidget::South);
-
-    auto hLayout = new QHBoxLayout(this);
-    hLayout->setContentsMargins(0, 0, 0, 9);
-    this->setLayout(hLayout);
-    hLayout->addWidget(tabWidget);
+    if (listName == REPORT_SRCLIST)
+        srcView->show();
+    else if (listName == REPORT_LIBLIST)
+        libView->show();
 }
 
-void ReportPane::refreshTableView(DTableWidget *widget, const QList<QStringList> &report)
+void ReportPane::initUI()
 {
-    if (widget && report.size() > 0) {
-        widget->clearContents();
+    srcView = new DTreeView(this);
+    srcView->setHeaderHidden(false);
+    srcView->setEditTriggers(QListView::NoEditTriggers);
+    srcView->setTextElideMode(Qt::ElideRight);
 
-        int itemsCount = report.size();
-        widget->setRowCount(itemsCount);
+    libView = new DTreeView(this);
+    libView->setHeaderHidden(false);
+    libView->setEditTriggers(QListView::NoEditTriggers);
+    libView->setTextElideMode(Qt::ElideRight);
+    libView->hide();
 
-        int row = 0;
-        int col = 0;
-        for (auto itItem = report.begin(); itItem != report.end(); ++itItem) {
-            for (auto data : *itItem) {
-                widget->setItem(row, col, new QTableWidgetItem(data));
-                col++;
-            }
-            row++;
-            col = 0;
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
+    vLayout->setContentsMargins(0, 0, 0, 0);
+    vLayout->addWidget(srcView);
+    vLayout->addWidget(libView);
+}
+
+void ReportPane::setViewItem(DTreeView *view, const QList<QStringList> &report)
+{
+    QStandardItemModel *model = new QStandardItemModel(view);
+    view->setModel(model);
+
+    for (auto row : report) {
+        QList<QStandardItem*> items;
+        for (auto col : row) {
+            QStandardItem *item = new QStandardItem(col);
+            item->setSizeHint(QSize(item->sizeHint().width(), 24));
+            items << item;
         }
-        widget->resizeColumnsToContents();
+        model->appendRow(items);
     }
-}
 
-void ReportPane::setTableWidgetStyle(DTableWidget *tableWidget, const QStringList &colNames)
-{
-    tableWidget->setColumnCount(colNames.count());
-    tableWidget->setHorizontalHeaderLabels(colNames);
-    tableWidget->verticalHeader()->setVisible(true);
-    tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-    tableWidget->setShowGrid(true);
+    QStringList colNames = codePorting->getSrcItemNames();
+    for (int i = 0; i < colNames.count(); ++i) {
+        model->setHeaderData(i, Qt::Horizontal, colNames[i], Qt::DisplayRole);
+    }
+
+    view->setAlternatingRowColors(true);
+
+    connect(view, &QListView::doubleClicked, this, &ReportPane::srcCellSelected, Qt::UniqueConnection);
 }

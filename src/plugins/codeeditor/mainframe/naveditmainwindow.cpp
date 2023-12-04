@@ -77,14 +77,10 @@ NavEditMainWindow::NavEditMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mainToolBar = new ToolBarManager(tr("toolbar"));
     titlebar()->setFixedHeight(0);
-
-    qTabWidgetContext = new DTabWidget();
-    qTabWidgetWorkspace = new DTabWidget();
 }
 
 NavEditMainWindow::~NavEditMainWindow()
 {
-    qTabWidgetContext->removeTab(findIndex(qTabWidgetContext, dpfservice::CONSOLE_TAB_TEXT));
     qInfo() << __FUNCTION__;
 }
 
@@ -123,22 +119,25 @@ void NavEditMainWindow::initContextUI()
     qDockWidgetContext = new AutoHideDockWidget(this);
     qDockWidgetContext->setFeatures(DDockWidget::DockWidgetMovable);
     qDockWidgetContext->setTitleBarWidget(new DWidget());
-
     contextWidget = new DWidget(qDockWidgetContext);
     stackContextWidget = new DStackedWidget();
+
     contextTabBar = new DFrame();
     DStyle::setFrameRadius(contextTabBar, 0);
     contextTabBar->setLineWidth(0);
-    contextTabBar->setMinimumWidth(200);
+    contextTabBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QHBoxLayout *contextTabLayout = new QHBoxLayout(contextTabBar);
     contextTabLayout->setAlignment(Qt::AlignLeft);
+
     QVBoxLayout *contextVLayout = new QVBoxLayout();
     contextVLayout->setContentsMargins(0, 0, 0, 0);
     contextVLayout->setSpacing(0);
     contextVLayout->addWidget(new DHorizontalLine);
     contextVLayout->addWidget(contextTabBar);
+    contextVLayout->addWidget(new DHorizontalLine);
     contextVLayout->addWidget(stackContextWidget);
     contextWidget->setLayout(contextVLayout);
+
     qDockWidgetContext->setWidget(contextWidget);
     addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, qDockWidgetContext);
 }
@@ -168,8 +167,6 @@ void NavEditMainWindow::addWidgetWorkspace(const QString &title, AbstractWidget 
         switchWidgetWorkspace(title);
     });
     workspaceTabButtons.insert(title, tabBtn);
-
-    adjustWorkspaceItemOrder();
 }
 
 bool NavEditMainWindow::switchWidgetWorkspace(const QString &title)
@@ -252,6 +249,7 @@ void NavEditMainWindow::addContextWidget(const QString &title, AbstractWidget *c
 
     stackContextWidget->addWidget(qWidget);
     DPushButton *tabBtn = new DPushButton(title);
+    tabBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     tabBtn->setCheckable(true);
     tabBtn->setFlat(true);
     tabBtn->setFocusPolicy(Qt::NoFocus);
@@ -282,11 +280,8 @@ bool NavEditMainWindow::hasContextWidget(const QString &title)
 void NavEditMainWindow::removeContextWidget(AbstractWidget *contextWidget)
 {
     DWidget *qWidget = static_cast<DWidget*>(contextWidget->qWidget());
-    if (!qWidget || !qTabWidgetContext)
+    if (!qWidget)
         return;
-
-    int index = qTabWidgetContext->indexOf(qWidget);
-    qTabWidgetContext->removeTab(index);
 }
 
 bool NavEditMainWindow::switchWidgetContext(const QString &title)
@@ -384,15 +379,4 @@ void NavEditMainWindow::setToolBarItemDisable(const QString &id, bool disable)
 {
     if (mainToolBar)
         mainToolBar->disableItem(id, disable);
-}
-
-void NavEditMainWindow::adjustWorkspaceItemOrder()
-{
-    auto tabBar = qTabWidgetWorkspace->tabBar();
-    for (int i = 0; i < tabBar->count(); i++) {
-        if(tabBar->tabText(i) == MWCWT_PROJECTS)
-            tabBar->moveTab(i, 0);
-        if (tabBar->tabText(i) == MWCWT_SYMBOL)
-            tabBar->moveTab(i, 1);
-    }
 }

@@ -19,7 +19,7 @@ class CodePortingManager : public QObject
 public:
     static CodePortingManager *instance();
     OutputPane *getOutputPane() const;
-    QWidget *getReportPane() const;
+    ReportPane *getReportPane() const;
 
 signals:
 

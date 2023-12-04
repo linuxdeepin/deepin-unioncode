@@ -5,11 +5,15 @@
 #ifndef CODEPORTINGWIDGET_H
 #define CODEPORTINGWIDGET_H
 
+#include "reportpane.h"
 #include "common/widget/outputpane.h"
 
-#include <DWidget>
+#include <DFrame>
 
-class CodePortingWidget : public DTK_WIDGET_NAMESPACE::DWidget
+inline const QString REPORT_SRCLIST { QObject::tr("Source files to migrate") };
+inline const QString REPORT_LIBLIST { QObject::tr("Architecture-dependent library files") };
+
+class CodePortingWidget : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 public:
@@ -19,7 +23,7 @@ private:
     void initUI();
 
     OutputPane *outputPane {nullptr};
-    DTK_WIDGET_NAMESPACE::DWidget *reportPane {nullptr};
+    ReportPane *reportPane {nullptr};
 };
 
 #endif // CODEPORTINGWIDGET_H

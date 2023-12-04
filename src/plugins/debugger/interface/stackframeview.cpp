@@ -23,6 +23,7 @@ StackFrameView::StackFrameView(QWidget *parent)
     setHeader(headerView);
     setTextElideMode(Qt::TextElideMode::ElideLeft);
     setFrameStyle(QFrame::NoFrame);
+    setAlternatingRowColors(true);
 
     connect(this, &QAbstractItemView::activated,
             this, &StackFrameView::rowActivated);

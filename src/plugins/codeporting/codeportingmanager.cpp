@@ -30,7 +30,7 @@ OutputPane *CodePortingManager::getOutputPane() const
     return outputPane;
 }
 
-QWidget *CodePortingManager::getReportPane() const
+ReportPane *CodePortingManager::getReportPane() const
 {
     return reportPane;
 }
