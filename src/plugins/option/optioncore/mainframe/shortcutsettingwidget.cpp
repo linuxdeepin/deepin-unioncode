@@ -5,21 +5,17 @@
 #include "shortcutsettingwidget.h"
 #include "common/common.h"
 
-#include <DTableView>
 #include <DLabel>
 #include <DLineEdit>
 #include <DPushButton>
-#include <DHeaderView>
 #include <DFileDialog>
 #include <DKeySequenceEdit>
 #include <DCommandLinkButton>
+#include <DBackgroundGroup>
 
-#include <QFormLayout>
 #include <QDebug>
 #include <QDir>
 #include <QAction>
-
-#define BTN_WIDTH (180)
 
 DWIDGET_USE_NAMESPACE
 
@@ -28,7 +24,9 @@ class ShortCutPrivate
     QMap<QString, QStringList> shortcutItemMap;
     QMap<QString, QStringList> shortcutItemShadowMap;
     QString configFilePath;
-    QFormLayout *formlayout = nullptr;
+    QVBoxLayout *vlayout = nullptr;
+    QVBoxLayout *bgGplayout = nullptr;
+    DBackgroundGroup *bgGroup = nullptr;
 
     friend class ShortCut;
 };
@@ -40,20 +38,27 @@ ShortCut::ShortCut(QWidget *parent)
                          + QDir::separator() + QString("shortcut.support"));
     readShortcut();
     setFrameShape(QFrame::NoFrame);
-    d->formlayout = new QFormLayout(this);
-    setupForm();
+
+    d->vlayout = new QVBoxLayout(this);
+    d->bgGplayout = new QVBoxLayout(this);
+    d->bgGroup = new DBackgroundGroup(d->bgGplayout);
+    d->bgGroup->setBackgroundRole(QPalette::Window);
+    d->bgGroup->setUseWidgetBackground(false);
+    d->vlayout->addWidget(d->bgGroup);
+    updateUi();
 }
 
 ShortCut::~ShortCut()
 {
 }
 
-void ShortCut::setupForm()
+void ShortCut::updateUi()
 {
-    //在重置配置时先删除旧项
-    if (d->formlayout)
-        while (d->formlayout->rowCount())
-            d->formlayout->removeRow(0);
+    //更新配置时先删除旧项
+    if(d->bgGplayout->count()){
+        while(auto layout = d->bgGplayout->takeAt(0))
+            delete layout->widget();
+    }
 
     QStringList ids = d->shortcutItemMap.keys();
 
@@ -64,9 +69,21 @@ void ShortCut::setupForm()
 
         auto keyEdit = new DKeySequenceEdit(this);
         keyEdit->setKeySequence(QKeySequence(shortcut));
-        keyEdit->setText(QAction::tr(description.toStdString().c_str()));
-        d->formlayout->addRow(keyEdit);
+        keyEdit->setFixedWidth(300);
+        keyEdit->ShortcutDirection(Qt::AlignLeft);
+        keyEdit->setFocusPolicy(Qt::StrongFocus);
 
+        auto label = new DLabel(description, this);
+
+        auto wrapper = new DWidget;
+        auto hlayout = new QHBoxLayout(wrapper);
+        hlayout->setSpacing(0);
+        hlayout->setContentsMargins(0, 0, 0, 0);
+        hlayout->addWidget(label);
+        hlayout->addWidget(keyEdit);
+        hlayout->setAlignment(keyEdit, Qt::AlignRight);
+
+        d->bgGplayout->addWidget(wrapper);
         connect(keyEdit, &DKeySequenceEdit::editingFinished, this, [=](const QKeySequence &sequence) {
             bool inValid = keySequenceIsInvalid(sequence);
             QString oldShortcut = d->shortcutItemMap.value(id).last();
@@ -178,7 +195,7 @@ void ShortCut::importExternalJson(const QString &filePath)
     }
 
     d->shortcutItemShadowMap = d->shortcutItemMap;
-    setupForm();
+    updateUi();
 }
 
 void ShortCut::exportExternalJson(const QString &filePath)
@@ -190,17 +207,13 @@ class ShortCut;
 class ShortcutSettingWidgetPrivate
 {
     ShortcutSettingWidgetPrivate();
-    DTableView *tableView;
-    HotkeyLineEdit *editShortCut;
     ShortCut *shortcut;
-    DPushButton *btnRecord;
-    DLabel *tipLabel;
 
     friend class ShortcutSettingWidget;
 };
 
 ShortcutSettingWidgetPrivate::ShortcutSettingWidgetPrivate()
-    : tableView(nullptr), editShortCut(nullptr), shortcut(nullptr), btnRecord(nullptr), tipLabel(nullptr)
+    : shortcut(nullptr)
 {
 }
 
@@ -220,21 +233,21 @@ void ShortcutSettingWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout();
     setLayout(vLayout);
 
-    auto tableFrame = new DFrame(this);
-    auto tableLayout = new QVBoxLayout(tableFrame);
-    tableFrame->setLayout(tableLayout);
+    auto shortcutFrame = new DFrame(this);
+    auto shortcutLayout = new QVBoxLayout(shortcutFrame);
+    shortcutFrame->setLayout(shortcutLayout);
 
-    d->shortcut = new ShortCut(tableFrame);
+    d->shortcut = new ShortCut(shortcutFrame);
 
-    tableLayout->addWidget(d->shortcut);
+    shortcutLayout->addWidget(d->shortcut);
 
-    vLayout->addWidget(tableFrame);
+    vLayout->addWidget(shortcutFrame);
 
     DCommandLinkButton *resetbtn = new DCommandLinkButton(tr("Reset All"));
-
-    auto spliter = new DVerticalLine(this);
     DCommandLinkButton *exportbtn = new DCommandLinkButton(tr("Export"));
     DCommandLinkButton *importbtn = new DCommandLinkButton(tr("Import"));
+
+    auto spliter = new DVerticalLine(this);
 
     auto hlayout = new QHBoxLayout(this);
     hlayout->setAlignment(Qt::AlignRight);
@@ -253,7 +266,7 @@ void ShortcutSettingWidget::setupUi()
 void ShortcutSettingWidget::onBtnResetAllClicked()
 {
     d->shortcut->resetAllShortcut();
-    d->shortcut->setupForm();
+    d->shortcut->updateUi();
 }
 
 void ShortcutSettingWidget::saveConfig()

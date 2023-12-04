@@ -100,8 +100,8 @@ bool OptionCore::start()
             }
 
             PluginWidget *plugin = new PluginWidget;
-            optionDialog->insertLabel(tr("Installed Plugin"));
-            optionDialog->insertOptionPanel(tr("plugin") ,plugin);
+            optionDialog->insertLabel(tr("plugin"));
+            optionDialog->insertOptionPanel(tr("Installed Plugin") ,plugin);
         }
     });
 
