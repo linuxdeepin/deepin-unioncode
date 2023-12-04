@@ -649,12 +649,12 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>CodePortingWidget</name>
     <message>
-        <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="29"/>
+        <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="34"/>
         <source>C&amp;ode Porting</source>
         <translation type="unfinished">代码迁移(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="30"/>
+        <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="35"/>
         <source>Porting &amp;Report</source>
         <translation type="unfinished">迁移报告(&amp;R)</translation>
     </message>
@@ -879,23 +879,23 @@ dap端口未就绪，请重试。
 <context>
     <name>DDockWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="120"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="557"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="558"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="221"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="219"/>
         <source>Watcher</source>
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="325"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="319"/>
         <source>Find ToolBar</source>
         <translation>查找</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="350"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="344"/>
         <source>Valgrind</source>
         <translation>Valgrind</translation>
     </message>
@@ -1054,28 +1054,28 @@ Delete anyway?</source>
         <translation>忽略警告</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="105"/>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="153"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="106"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="154"/>
         <source>Error, Can&apos;t move to trash: </source>
         <translation>错误，无法移到废纸篓： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="171"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="172"/>
         <source>Error: Can&apos;t create New Document</source>
         <translation>错误：无法创建新文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="174"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="175"/>
         <source>Error: Create New Document, parent not&apos;s dir</source>
         <translation>错误：新建文件没有父级目录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="193"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="194"/>
         <source>Error: Can&apos;t create new folder</source>
         <translation>错误：无法创建新文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="196"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="197"/>
         <source>Error: Create new folder, parent not&apos;s dir</source>
         <translation>错误：新建文件夹没有父级目录</translation>
     </message>
@@ -1091,57 +1091,42 @@ Delete anyway?</source>
 <context>
     <name>DetailWidget</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="64"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="63"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="66"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="65"/>
         <source>Create</source>
         <translation>创建</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="115"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="123"/>
         <source>Choose path</source>
         <translation>选择路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="131"/>
-        <source>File Name</source>
-        <translation>文件名</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="132"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="139"/>
         <source>The filename can&apos;t be empty!</source>
         <translation>文件名不能为空!</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="133"/>
-        <source>Project Name</source>
-        <translation>项目名</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="134"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="141"/>
         <source>The project can&apos;t be empty!</source>
         <translation>项目名不能为空！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="135"/>
-        <source>Location</source>
-        <translation>地址</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="136"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="143"/>
         <source>The address can&apos;t be empty!</source>
         <translation>地址栏不能为空！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="192"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="196"/>
         <source>error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="192"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="196"/>
         <source>Can not find kit.</source>
         <translation>找不到配套工具。</translation>
     </message>
@@ -1285,7 +1270,7 @@ Delete anyway?</source>
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="116"/>
         <source>thread</source>
-        <translation type="unfinished"></translation>
+        <translation>线索</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="130"/>
@@ -1590,7 +1575,7 @@ Delete anyway?</source>
 <context>
     <name>LogginDialog</name>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="103"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="104"/>
         <source>loggin user from svn
 repos path: %0</source>
         <translation>从svn登录用户
@@ -1600,13 +1585,13 @@ repos path: %0</source>
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="254"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="267"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="252"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="265"/>
         <source>Tip</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="267"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="265"/>
         <source>Can not find kit.</source>
         <translation>找不到配套工具。</translation>
     </message>
@@ -1690,7 +1675,7 @@ repos path: %0</source>
 <context>
     <name>NavEditMainWindow</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="122"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="78"/>
         <source>toolbar</source>
         <translation>工具栏</translation>
     </message>
@@ -1745,12 +1730,12 @@ repos path: %0</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="103"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="104"/>
         <source>Installed Plugin</source>
         <translation>已安装的插件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="104"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="103"/>
         <source>plugin</source>
         <translation>插件</translation>
     </message>
@@ -1776,22 +1761,22 @@ repos path: %0</source>
 <context>
     <name>OutputPane</name>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="117"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="127"/>
         <source>Additional output omitted</source>
         <translation>省略附加输出</translation>
     </message>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="175"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="182"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="185"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="192"/>
         <source>Clear</source>
         <translation>清扫</translation>
     </message>
     <message>
-        <location filename="../../src/common/widget/outputpane.cpp" line="195"/>
+        <location filename="../../src/common/widget/outputpane.cpp" line="202"/>
         <source>Select All</source>
         <translation>选择全部</translation>
     </message>
@@ -1878,18 +1863,18 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="304"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="419"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="308"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="423"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="317"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="321"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="423"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="427"/>
         <source>ok</source>
         <translation>ok</translation>
     </message>
@@ -1956,44 +1941,44 @@ repos path: %0</source>
         <translation>查找用法</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="38"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="41"/>
         <source>Checkout repository</source>
         <translation>检出仓库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="44"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="47"/>
         <source>Open repository</source>
         <translation>打开仓库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="242"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="243"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="250"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="251"/>
         <location filename="../../src/services/window/windowelement.h" line="33"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="251"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="252"/>
         <location filename="../../src/services/window/windowelement.h" line="32"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="260"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="261"/>
         <source>Move To Trash</source>
         <translation>移到废纸篓</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="261"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="262"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="274"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="275"/>
         <source>Recover From Trash</source>
         <translation>恢复</translation>
     </message>
@@ -2013,17 +1998,17 @@ repos path: %0</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="341"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="345"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="342"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="346"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="343"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="347"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
@@ -2273,12 +2258,12 @@ storage: %2
         <translation>请从终端安装“subversion”软件：$sudo apt install subversion</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="30"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="33"/>
         <source>Checkout Repos</source>
         <translation>从远程仓库检出</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="59"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="62"/>
         <source>Open path failed, current repos not svn subdir</source>
         <translation>打开路径失败，当前远程仓库不是svn子目录</translation>
     </message>
@@ -2334,60 +2319,60 @@ storage: %2
         <translation>当前文件已更改。是否要重新加载当前文件？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="33"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="36"/>
         <source>Remote Repos: </source>
         <translation>远程仓库： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="35"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="38"/>
         <source>Target path: </source>
         <translation>目标路径： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="37"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="40"/>
         <source>User: </source>
         <translation>用户： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="39"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="42"/>
         <source>Password: </source>
         <translation>密码： </translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="42"/>
         <source>Find:</source>
-        <translation type="unfinished">查找：</translation>
+        <translation>查找：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="67"/>
         <source>Repalce:</source>
-        <translation type="unfinished">替换：</translation>
+        <translation>替换：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="107"/>
         <source>Scope:</source>
-        <translation type="unfinished">范围：</translation>
+        <translation>范围：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
         <source>Search for:</source>
-        <translation type="unfinished">搜索：</translation>
+        <translation>搜索：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="128"/>
         <source>File pattern:</source>
-        <translation type="unfinished">包含的文件：</translation>
+        <translation>包含的文件：</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="132"/>
         <source>Exclusion pattern:</source>
-        <translation type="unfinished">排除的文件：</translation>
+        <translation>排除的文件：</translation>
     </message>
 </context>
 <context>
     <name>QLineEdit</name>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/amendswidget.cpp" line="18"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/amendswidget.cpp" line="14"/>
         <source>Summary</source>
         <translation>概要</translation>
     </message>
@@ -2719,21 +2704,31 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="65"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="64"/>
         <source>New File</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="66"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="65"/>
         <source>New Project</source>
         <translation>新建工程</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeporting/codeportingwidget.h" line="13"/>
+        <source>Source files to migrate</source>
+        <translation>待迁移的源文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeporting/codeportingwidget.h" line="14"/>
+        <source>Architecture-dependent library files</source>
+        <translation>依赖于体系结构的库文件</translation>
     </message>
 </context>
 <context>
     <name>QPushButton</name>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="47"/>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/loggindialog.cpp" line="14"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/checkoutdialog.cpp" line="49"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/loggindialog.cpp" line="12"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
@@ -2748,44 +2743,44 @@ storage: %2
         <translation>重载</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/amendswidget.cpp" line="19"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/amendswidget.cpp" line="15"/>
         <source>Commit</source>
         <translation>提交</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/amendswidget.cpp" line="20"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/amendswidget.cpp" line="16"/>
         <source>Revert All</source>
         <translation>全部还原</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="54"/>
         <source>Find Previous</source>
-        <translation type="unfinished">向前查找</translation>
+        <translation>向前查找</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="79"/>
         <source>Replace</source>
-        <translation type="unfinished">替换</translation>
+        <translation>替换</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="80"/>
         <source>Replace &amp;&amp; Find</source>
-        <translation type="unfinished">替换并查找</translation>
+        <translation>替换并查找</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="81"/>
         <source>Repalce All</source>
-        <translation type="unfinished">替换全部</translation>
+        <translation>替换全部</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="137"/>
         <source>Search</source>
-        <translation type="unfinished">搜索</translation>
+        <translation>搜索</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="139"/>
         <source>Search &amp;&amp; Replace</source>
-        <translation type="unfinished">搜索并替换</translation>
+        <translation>搜索并替换</translation>
     </message>
 </context>
 <context>
@@ -2822,7 +2817,7 @@ storage: %2
 <context>
     <name>QTextEdit</name>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/amendswidget.cpp" line="17"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/amendswidget.cpp" line="13"/>
         <source>Description</source>
         <translation>描述</translation>
     </message>
@@ -2830,22 +2825,22 @@ storage: %2
 <context>
     <name>QToolButton</name>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="564"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="565"/>
         <source>update local from remote repos</source>
         <translation>从远程仓库更新本地代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="571"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="572"/>
         <source>refresh current local to display</source>
         <translation>刷新并展示</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="579"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="580"/>
         <source>show repos operation</source>
         <translation>展示远程仓库操作</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="586"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/reposwidget.cpp" line="587"/>
         <source>show repos history</source>
         <translation>展示远程仓库历史</translation>
     </message>
@@ -2853,7 +2848,7 @@ storage: %2
 <context>
     <name>QWidget</name>
     <message>
-        <location filename="../../src/plugins/filebrowser/filebrowser.cpp" line="28"/>
+        <location filename="../../src/plugins/filebrowser/filebrowser.cpp" line="30"/>
         <source>File Browser</source>
         <translation>文件浏览器</translation>
     </message>
@@ -2902,19 +2897,6 @@ storage: %2
         <location filename="../../src/plugins/codeeditor/renamepopup/renamepopup.cpp" line="92"/>
         <source>Rename %0 to:</source>
         <translation>将%0重命名为：</translation>
-    </message>
-</context>
-<context>
-    <name>ReportPane</name>
-    <message>
-        <location filename="../../src/plugins/codeporting/reportpane.cpp" line="74"/>
-        <source>Source files to migrate</source>
-        <translation>待迁移的源文件</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeporting/reportpane.cpp" line="76"/>
-        <source>Architecture-dependent library files</source>
-        <translation>依赖于体系结构的库文件</translation>
     </message>
 </context>
 <context>
@@ -3017,6 +2999,10 @@ storage: %2
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="337"/>
+        <source>default is 32, unit Byte</source>
+        <translation>默认值为32，以KB为单位 {32,?}</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="339"/>
         <source>default is 256, unit Byte</source>
         <translation>默认值为256，以KB为单位</translation>
@@ -3024,7 +3010,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="342"/>
         <source>format: [*]var1+size1[,[*]var2+size2,...]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="344"/>
@@ -3069,7 +3055,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="89"/>
         <source>trace directory：</source>
-        <translation type="unfinished">跟踪目录:</translation>
+        <translation>跟踪目录:</translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="90"/>
@@ -3333,33 +3319,33 @@ storage: %2
 <context>
     <name>ShortcutSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="233"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="247"/>
         <source>Reset All</source>
         <translation>重置所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="237"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="249"/>
         <source>Import</source>
         <translation>导入</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="236"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="248"/>
         <source>Export</source>
-        <translation>输出</translation>
+        <translation type="unfinished">导出</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="271"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="285"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="271"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="279"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="285"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="293"/>
         <source>Json File(*.json)</source>
         <translation>Json 文件(*.json)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="279"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="293"/>
         <source>Save File</source>
         <translation>保存文件</translation>
     </message>
@@ -3499,17 +3485,17 @@ storage: %2
 <context>
     <name>SvnClientWidget</name>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="40"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="43"/>
         <source>Checkout repository</source>
         <translation>检出仓库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="46"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="49"/>
         <source>Open repository</source>
         <translation>打开仓库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="89"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="92"/>
         <source>select local reops</source>
         <translation>选择本地reops</translation>
     </message>
@@ -3599,8 +3585,8 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="240"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="546"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="241"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="547"/>
         <source>Deepin Union Code</source>
         <translation></translation>
     </message>
