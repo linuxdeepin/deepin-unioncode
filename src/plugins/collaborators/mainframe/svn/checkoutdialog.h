@@ -5,14 +5,15 @@
 #ifndef CHECKOUTDIALOG_H
 #define CHECKOUTDIALOG_H
 
-#include <QDialog>
+#include <DDialog>
+#include <DLabel>
+#include <DLineEdit>
+#include <DPushButton>
 
-
-class QLabel;
-class QLineEdit;
+DWIDGET_USE_NAMESPACE
 class QGridLayout;
 class QVBoxLayout;
-class CheckoutDialog : public QDialog
+class CheckoutDialog : public DDialog
 {
     Q_OBJECT
 public:
@@ -23,16 +24,16 @@ signals:
                        const QString &user, const QString &passwd);
 
 private:
-    QLabel *labelRepos{nullptr};
-    QLabel *labelLocal{nullptr};
-    QLabel *labelUser{nullptr};
-    QLabel *labelPasswd{nullptr};
-    QLineEdit *editRepos{nullptr};
-    QLineEdit *editLocal{nullptr};
-    QLineEdit *editUser{nullptr};
-    QLineEdit *editPasswd{nullptr};
-    QPushButton *pbtSelLocal{nullptr};
-    QPushButton *pbtOk{nullptr};
+    DLabel *labelRepos{nullptr};
+    DLabel *labelLocal{nullptr};
+    DLabel *labelUser{nullptr};
+    DLabel *labelPasswd{nullptr};
+    DLineEdit *editRepos{nullptr};
+    DLineEdit *editLocal{nullptr};
+    DLineEdit *editUser{nullptr};
+    DLineEdit *editPasswd{nullptr};
+    DPushButton *pbtSelLocal{nullptr};
+    DPushButton *pbtOk{nullptr};
     QVBoxLayout *vLayoutPbt{nullptr};
     QGridLayout *gLayout{nullptr};
 };

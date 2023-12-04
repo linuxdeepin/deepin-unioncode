@@ -17,7 +17,7 @@ class FileSourceViewPrivate
 };
 
 FileSourceView::FileSourceView(QWidget *parent)
-    : QTreeView(parent)
+    : DTreeView(parent)
     , d (new FileSourceViewPrivate)
 {
     d->model = new QFileSystemModel;

@@ -15,7 +15,7 @@ class HistoryViewPrivate
 };
 
 HistoryView::HistoryView(QWidget *parent)
-    : QTableView (parent)
+    : DTableView (parent)
     , d (new HistoryViewPrivate)
 {
     d->model = new QStandardItemModel();

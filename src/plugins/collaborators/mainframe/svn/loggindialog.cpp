@@ -4,16 +4,16 @@
 
 #include "loggindialog.h"
 
-#include <QPushButton>
-
-LogginDialog::LogginDialog(QWidget *parent, Qt::WindowFlags f)
-    : QDialog(parent, f)
-    , titleLabel(new QLabel())
-    , nameEdit(new QLineEdit())
-    , passwdEdit(new QLineEdit())
-    , pbtOk(new QPushButton(QPushButton::tr("Ok")))
+LogginDialog::LogginDialog(QWidget *parent)
+    : DDialog(parent)
+    , titleLabel(new DLabel())
+    , nameEdit(new DLineEdit())
+    , passwdEdit(new DLineEdit())
+    , pbtOk(new DPushButton(QPushButton::tr("Ok")))
 {
-    setWindowFlag(Qt::FramelessWindowHint);
+    auto mainwidget = new DWidget;
+    addContent(mainwidget);
+
     QHBoxLayout *hLayoutPbt = new QHBoxLayout();
     QVBoxLayout *vLayoutMain = new QVBoxLayout();
 
@@ -28,23 +28,23 @@ LogginDialog::LogginDialog(QWidget *parent, Qt::WindowFlags f)
     nameEdit->setPlaceholderText("User");
     passwdEdit->setPlaceholderText("Password");
     passwdEdit->setEchoMode(QLineEdit::EchoMode::Password);
-    QObject::connect(nameEdit, &QLineEdit::textChanged, [=](const QString &text){
+    QObject::connect(nameEdit, &DLineEdit::textChanged, [=](const QString &text){
         Q_UNUSED(text);
-        if (!nameEdit->text().isEmpty() && !passwdEdit->text().isEmpty()){
+        if (!nameEdit->lineEdit()->text().isEmpty() && !passwdEdit->lineEdit()->text().isEmpty()){
             pbtOk->setEnabled(true);
         } else {
             pbtOk->setEnabled(false);
         }
     });
-    QObject::connect(passwdEdit, &QLineEdit::textChanged, [=](const QString &text){
+    QObject::connect(passwdEdit, &DLineEdit::textChanged, [=](const QString &text){
         Q_UNUSED(text);
-        if (!nameEdit->text().isEmpty() && !passwdEdit->text().isEmpty()){
+        if (!nameEdit->lineEdit()->text().isEmpty() && !passwdEdit->lineEdit()->text().isEmpty()){
             pbtOk->setEnabled(true);
         } else {
             pbtOk->setEnabled(false);
         }
     });
-    QObject::connect(pbtOk, &QPushButton::pressed, this, &LogginDialog::logginOk);
+    QObject::connect(pbtOk, &DPushButton::pressed, this, &LogginDialog::logginOk);
 
     hLayoutPbt->addStrut(10);
     hLayoutPbt->addWidget(pbtOk);
@@ -53,7 +53,7 @@ LogginDialog::LogginDialog(QWidget *parent, Qt::WindowFlags f)
     vLayoutMain->addWidget(nameEdit);
     vLayoutMain->addWidget(passwdEdit);
     vLayoutMain->addLayout(hLayoutPbt);
-    setLayout(vLayoutMain);
+    mainwidget->setLayout(vLayoutMain);
 }
 
 void LogginDialog::setName(const QString &name)

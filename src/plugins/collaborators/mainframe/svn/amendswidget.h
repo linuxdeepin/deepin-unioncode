@@ -7,20 +7,21 @@
 
 #include "common/common.h"
 
-#include <QSplitter>
-#include <QLineEdit>
-#include <QTextEdit>
+#include <DLabel>
+#include <DLineEdit>
+#include <DPushButton>
+#include <DTextEdit>
+#include <DSplitter>
+#include <DFrame>
 
 class QVBoxLayout;
-class QStackedWidget;
-class QPushButton;
-class QLineEdit;
 class QHBoxLayout;
 class QVBoxLayout;
 class FileModifyView;
 class FileSourceView;
 
-class AmendsWidget : public QSplitter
+DWIDGET_USE_NAMESPACE
+class AmendsWidget : public DSplitter
 {
     Q_OBJECT
 public:
@@ -36,10 +37,10 @@ signals:
 private:
     FileModifyView *modifyView{nullptr};
     QHBoxLayout *hLayPbt{nullptr};
-    QPushButton *pbtCommit{nullptr};
-    QPushButton *pbtRevertAll{nullptr};
-    QTextEdit *descEdit{nullptr};
-    QFrame *pbtWidget{nullptr};
+    DPushButton *pbtCommit{nullptr};
+    DPushButton *pbtRevertAll{nullptr};
+    DTextEdit *descEdit{nullptr};
+    DFrame *pbtWidget{nullptr};
 };
 
 #endif // AMENDSWIDGET_H

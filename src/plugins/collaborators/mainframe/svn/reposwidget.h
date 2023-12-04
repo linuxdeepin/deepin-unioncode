@@ -7,13 +7,10 @@
 
 #include "basetype.h"
 
-#include <QSplitter>
-
 class AmendsWidget;
-class QSplitter;
 class CommitHistoryWidget;
 class ReposWidgetPrivate;
-class ReposWidget : public QWidget
+class ReposWidget : public DWidget
 {
     Q_OBJECT
     ReposWidgetPrivate *const d;

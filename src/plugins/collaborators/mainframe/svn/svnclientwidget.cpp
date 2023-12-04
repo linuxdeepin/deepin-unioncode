@@ -11,22 +11,25 @@
 #include "GitQlientStyles.h"
 #include "QLogger.h"
 
-#include <QMenu>
-#include <QEvent>
-#include <QPushButton>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QLabel>
+#include <DMenu>
+#include <DPushButton>
+#include <DMessageBox>
+#include <DLabel>
+#include <DTitlebar>
+
 #include <QProcess>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QEvent>
 
+DWIDGET_USE_NAMESPACE
 SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
     : QMainWindow (parent, flags)
     , mRepos(new QPinnableTabWidget())
 {
     mRepos = new QPinnableTabWidget();
-    const auto homeMenu = new QPushButton();
-    const auto menu = new QMenu(homeMenu);
+    const auto homeMenu = new DPushButton();
+    const auto menu = new DMenu(homeMenu);
     menu->installEventFilter(this);
 
     homeMenu->setIcon(QIcon(":/icons/burger_menu"));

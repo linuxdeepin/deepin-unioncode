@@ -24,7 +24,7 @@ class FileModifyViewPrivate
 };
 
 FileModifyView::FileModifyView(QWidget *parent)
-    : QTableView (parent)
+    : DTableView (parent)
     , d (new FileModifyViewPrivate)
 {
     d->model = new QStandardItemModel();

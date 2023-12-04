@@ -7,10 +7,11 @@
 
 #include "basetype.h"
 
-#include <QTableView>
+#include <DTableView>
+
 class QStandardItem;
 class HistoryViewPrivate;
-class HistoryView : public QTableView
+class HistoryView : public DTK_WIDGET_NAMESPACE::DTableView
 {
     Q_OBJECT
     HistoryViewPrivate *const d;

@@ -7,13 +7,13 @@
 
 #include "basetype.h"
 
-#include <QTableView>
+#include <DTableView>
 #include <QFileIconProvider>
 
 class QStandardItem;
 class FileListDelegate; // gitqlient class;
 class FileModifyViewPrivate;
-class FileModifyView : public QTableView
+class FileModifyView : public DTableView
 {
     Q_OBJECT
     FileModifyViewPrivate *const d;
