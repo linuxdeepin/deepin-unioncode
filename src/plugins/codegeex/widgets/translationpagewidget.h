@@ -7,6 +7,7 @@
 
 #include <DWidget>
 #include <DComboBox>
+#include <DSuggestButton>
 
 DWIDGET_USE_NAMESPACE
 
@@ -32,7 +33,7 @@ private:
     void initUI();
     void initConnection();
 
-    DPushButton *transBtn { nullptr };
+    DSuggestButton *transBtn { nullptr };
     DComboBox *langComboBox { nullptr };
     CodeEditComponent *inputEdit { nullptr };
     CodeEditComponent *outputEdit { nullptr };

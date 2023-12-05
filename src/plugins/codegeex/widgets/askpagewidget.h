@@ -9,6 +9,7 @@
 
 #include <DWidget>
 #include <DLineEdit>
+#include <DFloatingButton>
 
 #include <QMap>
 
@@ -65,6 +66,7 @@ private:
     DTK_WIDGET_NAMESPACE::DWidget *messageContainer { nullptr };
     DTK_WIDGET_NAMESPACE::DLineEdit *inputEdit { nullptr };
 
+    DTK_WIDGET_NAMESPACE::DFloatingButton *sendButton { nullptr };
     DTK_WIDGET_NAMESPACE::DPushButton *deleteBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DPushButton *historyBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DPushButton *createNewBtn { nullptr };

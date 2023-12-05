@@ -11,7 +11,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <QPlainTextEdit>
 #include <QLabel>
 #include <QDebug>
 #include <QApplication>
@@ -29,6 +28,7 @@ CodeEditComponent::CodeEditComponent(QWidget *parent)
 void CodeEditComponent::showButtons(CodeEditComponent::ShowButtonsType type)
 {
     titleWidget->setVisible(true);
+    hLine->setVisible(true);
     switch (type) {
     case InsertOnly:
         insertButton->setVisible(true);
@@ -43,6 +43,7 @@ void CodeEditComponent::showButtons(CodeEditComponent::ShowButtonsType type)
         copyButton->setVisible(true);
         break;
     default:
+        hLine->setVisible(false);
         insertButton->setVisible(false);
         copyButton->setVisible(false);
         break;
@@ -61,6 +62,12 @@ void CodeEditComponent::setReadOnly(bool readOnly)
         codeEdit->setReadOnly(readOnly);
 }
 
+void CodeEditComponent::setPlaceholderText(const QString &text)
+{
+    if (codeEdit)
+        codeEdit->setPlaceholderText(text);
+}
+
 void CodeEditComponent::setUpdateHeight(bool update)
 {
     heightUpdate = update;
@@ -72,7 +79,7 @@ void CodeEditComponent::updateCode(const QString &code)
         codeEdit->setPlainText(code);
         if (heightUpdate) {
             QTextDocument *doc = codeEdit->document();
-            qreal height = doc->size().height() * codeEdit->fontMetrics().height();
+            qreal height = doc->lineCount() * codeEdit->fontMetrics().height();
             height += 15;
             codeEdit->setFixedHeight(static_cast<int>(height));
         }
@@ -171,39 +178,57 @@ void CodeEditComponent::initUI()
     initTitleWidgets();
     titleWidget->setVisible(false);
 
-    DHorizontalLine *line = new DHorizontalLine(this);
-    layout->addWidget(line);
+    initButton();
 
-    codeEdit = new DPlainTextEdit(this);
+    editFrame = new DFrame(this);
+    auto editLayout = new QVBoxLayout(editFrame);
+    editLayout->setContentsMargins(0, 0, 0, 0);
+    editFrame->setLayout(editLayout);
+
+    auto buttonLayout = new QHBoxLayout(editFrame);
+    buttonLayout->setContentsMargins(0, 0, 10, 0);
+    buttonLayout->setAlignment(Qt::AlignRight);
+
+    buttonLayout->addWidget(copyButton);
+    buttonLayout->addWidget(insertButton);
+
+    codeEdit = new DTextEdit(this);
     codeEdit->setFrameShape(QFrame::NoFrame);
     codeEdit->setWordWrapMode(QTextOption::WrapMode::NoWrap);
     codeEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
-    layout->addWidget(codeEdit);
+
+    hLine = new DHorizontalLine;
+    hLine->setVisible(false);
+
+    editLayout->setSpacing(0);
+    editLayout->addLayout(buttonLayout);
+    editLayout->addWidget(hLine);
+    editLayout->addWidget(codeEdit);
+
+    layout->addWidget(editFrame);
 }
 
 void CodeEditComponent::initTitleWidgets()
 {
     QHBoxLayout *layout = new QHBoxLayout;
-    layout->setMargin(0);
-    layout->setDirection(QHBoxLayout::RightToLeft);
     titleWidget->setLayout(layout);
-
-    copyButton = new DPushButton(titleWidget);
-    copyButton->setFlat(true);
-    copyButton->setIcon(QIcon::fromTheme("codegeex_copy"));
-    layout->addWidget(copyButton);
-
-    insertButton = new DPushButton(titleWidget);
-    insertButton->setFlat(true);
-    insertButton->setIcon(QIcon::fromTheme("codegeex_insert"));
-    layout->addWidget(insertButton);
-
-    layout->addStretch(1);
 
     title = new DLabel(titleWidget);
     title->setText("");
     layout->addWidget(title);
-    layout->addSpacing(10);
+}
+
+void CodeEditComponent::initButton()
+{
+    copyButton = new DPushButton(this);
+    copyButton->setFlat(true);
+    copyButton->setIcon(QIcon::fromTheme("codegeex_copy"));
+    copyButton->setFixedSize(QSize(24, 24));
+
+    insertButton = new DPushButton(this);
+    insertButton->setFlat(true);
+    insertButton->setIcon(QIcon::fromTheme("codegeex_insert"));
+    insertButton->setFixedSize(QSize(24, 24));
 }
 
 void CodeEditComponent::initConnection()

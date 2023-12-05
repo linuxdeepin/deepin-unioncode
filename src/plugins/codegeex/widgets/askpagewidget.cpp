@@ -131,6 +131,8 @@ void AskPageWidget::initUI()
 void AskPageWidget::initInputWidget()
 {
     QVBoxLayout *layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
     inputWidget->setLayout(layout);
 
     QHBoxLayout *btnLayout = new QHBoxLayout;
@@ -152,11 +154,21 @@ void AskPageWidget::initInputWidget()
     createNewBtn->setIcon(QIcon::fromTheme("codegeex_new"));
     btnLayout->addWidget(createNewBtn);
 
+    auto hlayout = new QHBoxLayout(this);
     inputEdit = new DLineEdit(inputWidget);
     inputEdit->setFixedHeight(50);
     placeHolderText = tr("Ask question here, press Enter to send...");
     inputEdit->setPlaceholderText(placeHolderText);
-    layout->addWidget(inputEdit);
+    sendButton = new DFloatingButton(this);
+    sendButton->setFixedSize(30, 30);
+    sendButton->setIcon(QIcon::fromTheme("codegeex_send").pixmap(16));
+    sendButton->setEnabled(false);
+
+    hlayout->addWidget(inputEdit);
+    hlayout->setSpacing(10);
+    hlayout->addWidget(sendButton);
+
+    layout->addLayout(hlayout);
 }
 
 void AskPageWidget::initConnection()
@@ -174,10 +186,17 @@ void AskPageWidget::initConnection()
         inputEdit->setPlaceholderText(holderText);
     });
 
+    connect(sendButton, &DFloatingButton::clicked, inputEdit, &DLineEdit::returnPressed);
     connect(inputEdit, &DLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
     connect(deleteBtn, &DPushButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
     connect(historyBtn, &DPushButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
     connect(createNewBtn, &DPushButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
+    connect(inputEdit, &DLineEdit::textChanged, sendButton, [this](){
+        if(inputEdit->text().isEmpty())
+            sendButton->setEnabled(false);
+        else
+            sendButton->setEnabled(true);
+    });
 }
 
 void AskPageWidget::cleanWidgets()
@@ -246,7 +265,7 @@ void AskPageWidget::resetBtns()
     if (!deleteBtn || !historyBtn || !createNewBtn)
         return;
 
-    deleteBtn->setVisible(!isIntroPageState());
+    deleteBtn->setEnabled(!isIntroPageState());
     createNewBtn->setVisible(!isIntroPageState());
     historyBtn->setVisible(true);
 }

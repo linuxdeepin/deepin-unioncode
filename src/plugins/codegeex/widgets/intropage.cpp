@@ -8,6 +8,7 @@
 #include <DLabel>
 #include <DPushButton>
 #include <DScrollArea>
+#include <QAction>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -25,13 +26,14 @@ void IntroPage::initUI()
     QVBoxLayout *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
 
-    mainLayout->addSpacing(50);
+    mainLayout->addSpacing(30);
     initLogo();
-    mainLayout->addSpacing(50);
+    mainLayout->addSpacing(30);
     initIntroContent();
 
     mainLayout->addStretch(1);
     initSuggestContent();
+    mainLayout->addStretch(1);
 }
 
 void IntroPage::initLogo()
@@ -63,9 +65,9 @@ void IntroPage::initIntroContent()
     introLayout->setSpacing(10);
     qobject_cast<QVBoxLayout*>(layout())->addLayout(introLayout);
 
-    appendDescLabel(introLayout, tr("CodeGeeX provides code completion suggestions in editor, Press Tab to accept."));
-    appendDescLabel(introLayout, tr("Select code and right-click to add comments or translate code."));
-    appendDescLabel(introLayout, tr("Also, you can directly ask CodeGeeX any questions."));
+    appendDescLabel(introLayout, tr("CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.").arg("<font style='color:dodgerblue;'>","</font>"));
+    appendDescLabel(introLayout, tr("Select code and %1 right-click %2 to add comments or translate code.").arg("<font style='color:dodgerblue;'>","</font>"));
+    appendDescLabel(introLayout, tr("Also, you can directly %1 ask CodeGeeX any questions %2.").arg("<font style='color:dodgerblue;'>","</font>"));
 }
 
 void IntroPage::initSuggestContent()
@@ -91,6 +93,7 @@ void IntroPage::appendDescLabel(QVBoxLayout *layout, const QString &text)
     icon->setMargin(2);
     icon->setAlignment(Qt::AlignTop);
     icon->setPixmap(QIcon::fromTheme("codegeex_indicate").pixmap(16));
+
     descLayout->addWidget(icon);
 
     DLabel *descLabel = new DLabel(this);
@@ -107,8 +110,10 @@ void IntroPage::appendSuggestButton(QVBoxLayout *layout, const QString &text, co
 {
     DPushButton *suggestButton = new DPushButton(this);
     suggestButton->setFixedHeight(36);
+    suggestButton->setStyleSheet("text-align: left");
 
     suggestButton->setIcon(QIcon::fromTheme(iconName));
+
     suggestButton->setText(text);
     layout->addWidget(suggestButton);
 

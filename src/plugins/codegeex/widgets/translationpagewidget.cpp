@@ -7,11 +7,12 @@
 #include "copilot.h"
 #include "codegeex/copilotapi.h"
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <DComboBox>
 #include <DPushButton>
 #include <DLabel>
+
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QDebug>
 
 TranslationPageWidget::TranslationPageWidget(QWidget *parent)
@@ -55,10 +56,9 @@ void TranslationPageWidget::initUI()
     inputEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
     inputEdit->showButtons(CodeEditComponent::None);
     inputEdit->setTitle(tr("Input Code"));
-    inputEdit->setFixedHeight(200);
+    inputEdit->setPlaceholderText(tr("Please input the code to be translated"));
+    inputEdit->setFixedHeight(280);
     layout->addWidget(inputEdit);
-
-    layout->addSpacing(20);
 
     QHBoxLayout *midLayout = new QHBoxLayout;
 
@@ -67,28 +67,23 @@ void TranslationPageWidget::initUI()
     langComboBox->addItems(CodeGeeX::SupportLanguage);
     midLayout->addWidget(langComboBox);
 
-    midLayout->addStretch(1);
-
-    transBtn = new DPushButton(this);
+    transBtn = new DSuggestButton(this);
     transBtn->setText(tr("Translate"));
     transBtn->setFixedSize(78, 36);
     midLayout->addWidget(transBtn);
 
     layout->addLayout(midLayout);
 
-    layout->addSpacing(20);
-
     outputEdit = new CodeEditComponent(this);
-    outputEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    outputEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
     outputEdit->setTitle(tr("Output Code"));
     outputEdit->showButtons(CodeEditComponent::InsertOnly);
     outputEdit->setReadOnly(true);
-    outputEdit->setUpdateHeight(true);
+    outputEdit->setUpdateHeight(false);
     outputEdit->updateCode("");
 
+    outputEdit->setContentsMargins(0, 10, 0, 0);
     layout->addWidget(outputEdit);
-
-    layout->addStretch(1);
 }
 
 void TranslationPageWidget::initConnection()
