@@ -18,7 +18,7 @@
 #include <QResizeEvent>
 
 CodeGeeXWidget::CodeGeeXWidget(QWidget *parent)
-    : DWidget(parent)
+    : DFrame(parent)
 {
     initUI();
     initConnection();
@@ -52,8 +52,6 @@ void CodeGeeXWidget::toTranslateCode(const QString &code)
 {
     transPage->setInputEditText(code);
     transPage->cleanOutputEdit();
-
-    tabBar->setCurrentIndex(1);
 }
 
 void CodeGeeXWidget::onCloseHistoryWidget()
@@ -80,7 +78,7 @@ void CodeGeeXWidget::onShowHistoryWidget()
 }
 
 void CodeGeeXWidget::resizeEvent(QResizeEvent *event)
-{
+{    
     if (historyWidget) {
         if (historyShowed) {
             historyWidget->setGeometry(0, 0, this->width(), this->height());
@@ -94,6 +92,8 @@ void CodeGeeXWidget::resizeEvent(QResizeEvent *event)
 
 void CodeGeeXWidget::initUI()
 {
+    //todo(zta) : 低于330宽度时显示有异常，先限制最小宽度，后续找原因
+    setMinimumWidth(330);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     auto initLoginUI = [this](){
@@ -144,18 +144,11 @@ void CodeGeeXWidget::initConnection()
 void CodeGeeXWidget::initAskWidget()
 {
     QHBoxLayout *tabLayout = new QHBoxLayout;
-    tabLayout->setMargin(10);
-    tabLayout->addStretch(1);
+    tabLayout->setContentsMargins(0, 20, 0, 0);
+    tabLayout->setAlignment(Qt::AlignHCenter);
 
-    tabBar = new DTabBar(this);
-    tabBar->setVisibleAddButton(false);
-    tabBar->setUsesScrollButtons(false);
-    tabBar->setFixedWidth(300);
-    tabBar->setExpanding(true);
-    tabBar->setContentsMargins(0, 10, 0, 0);
+    tabBar = new DButtonBox(this);
     tabLayout->addWidget(tabBar, 0);
-
-    tabLayout->addStretch(1);
 
     stackWidget = new QStackedWidget(this);
     stackWidget->setContentsMargins(0, 0, 0, 0);
@@ -189,9 +182,12 @@ void CodeGeeXWidget::initHistoryWidget()
 
 void CodeGeeXWidget::initTabBar()
 {
-    tabBar->setShape(QTabBar::TriangularNorth);
-    tabBar->addTab(tr("Ask CodeGeeX"));
-    tabBar->addTab(tr("Translation"));
+    DButtonBoxButton *askbtn = new DButtonBoxButton(tr("Ask CodeGeeX"), this);
+    askbtn->setCheckable(true);
+    askbtn->setChecked(true);
+    DButtonBoxButton *trsbtn = new DButtonBoxButton(tr("Translation"), this);
+
+    tabBar->setButtonList({askbtn, trsbtn}, true);
 }
 
 void CodeGeeXWidget::initStackWidget()
@@ -216,8 +212,11 @@ void CodeGeeXWidget::initStackWidget()
 
 void CodeGeeXWidget::initAskWidgetConnection()
 {
-    connect(tabBar, &DTabBar::currentChanged, stackWidget, [ = ] (int index){
-        stackWidget->setCurrentIndex(index + 1);
+    connect(tabBar, &DButtonBox::buttonClicked, stackWidget, [ = ] (QAbstractButton *button){
+        if(button->text() == tr("Ask CodeGeeX"))
+            stackWidget->setCurrentWidget(askPage);
+        else
+            stackWidget->setCurrentWidget(transPage);
     });
     connect(askPage, &AskPageWidget::requestShowHistoryPage, this, &CodeGeeXWidget::onShowHistoryWidget);
 }

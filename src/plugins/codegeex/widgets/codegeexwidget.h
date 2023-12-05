@@ -5,16 +5,16 @@
 #ifndef CODEGEEXWIDGET_H
 #define CODEGEEXWIDGET_H
 
-#include <DWidget>
-#include <DTabBar>
+#include <DFrame>
 #include <DPushButton>
+#include <DButtonBox>
 
 #include <QPropertyAnimation>
 
 class AskPageWidget;
 class HistoryListWidget;
 class TranslationPageWidget;
-class CodeGeeXWidget : public DTK_WIDGET_NAMESPACE::DWidget
+class CodeGeeXWidget : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 
@@ -47,7 +47,7 @@ private:
     void initAskWidgetConnection();
     void initHistoryWidgetConnection();
 
-    DTK_WIDGET_NAMESPACE::DTabBar *tabBar { nullptr };
+    DTK_WIDGET_NAMESPACE::DButtonBox *tabBar { nullptr };
     DTK_WIDGET_NAMESPACE::DStackedWidget *stackWidget { nullptr };
 
     QPropertyAnimation *historyWidgetAnimation { nullptr };

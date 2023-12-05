@@ -7,6 +7,8 @@
 
 #include <DWidget>
 #include <DLabel>
+#include <DTextEdit>
+#include <DFrame>
 
 DWIDGET_USE_NAMESPACE
 
@@ -31,6 +33,7 @@ public:
     void showButtons(ShowButtonsType type);
     void setTitle(const QString &title);
     void setReadOnly(bool readOnly);
+    void setPlaceholderText(const QString &text);
 
     void setUpdateHeight(bool update);
     void updateCode(const QString &code);
@@ -50,12 +53,15 @@ protected:
 private:
     void initUI();
     void initTitleWidgets();
+    void initButton();
     void initConnection();
 
     DWidget *titleWidget { nullptr };
     DPushButton *copyButton { nullptr };
     DPushButton *insertButton { nullptr };
-    DPlainTextEdit *codeEdit { nullptr };
+    DFrame *editFrame { nullptr };
+    DHorizontalLine *hLine { nullptr };
+    DTextEdit *codeEdit { nullptr };
     DLabel *title { nullptr };
 
     bool heightUpdate { false };
