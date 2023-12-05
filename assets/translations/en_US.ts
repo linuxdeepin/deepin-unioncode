@@ -93,12 +93,12 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="157"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="160"/>
         <source>Ask question here, press Enter to send...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="173"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="185"/>
         <source>Answering</source>
         <translation type="unfinished"></translation>
     </message>
@@ -548,17 +548,18 @@ A must-have all-round AI tool for developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="193"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="185"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="216"/>
         <source>Ask CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="194"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="188"/>
         <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="208"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="204"/>
         <source>Creating a new session...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -952,18 +953,18 @@ The dap port is not ready, please retry.
 <context>
     <name>DMessageBox</name>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="262"/>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="268"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="300"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="306"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="262"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="300"/>
         <source>Repalce text is empty, will continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="268"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="306"/>
         <source>Will replace permanent, continue?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -986,18 +987,8 @@ The dap port is not ready, please retry.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="127"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="129"/>
         <source>Replace</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="55"/>
-        <source>Find Next</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="56"/>
-        <source>Advanced...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1228,62 +1219,62 @@ Delete anyway?</source>
 <context>
     <name>FindToolWindow</name>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="109"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="111"/>
         <source>All Projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="110"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="112"/>
         <source>Current Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="111"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
         <source>Current File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="116"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="118"/>
         <source>thread</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="130"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="134"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="132"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="136"/>
         <source>e.g.*.ts,src/**/include</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="181"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="189"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="197"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="204"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="219"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="183"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="191"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="199"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="206"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="221"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="181"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="183"/>
         <source>All projects path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="189"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="191"/>
         <source>Current project path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="197"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="199"/>
         <source>Current file path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="204"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="206"/>
         <source>Scope is not selected, please select!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="219"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="221"/>
         <source>Search for text is empty, please input!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1403,42 +1394,42 @@ Delete anyway?</source>
 <context>
     <name>IntroPage</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="55"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="57"/>
         <source>Welcome to CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="66"/>
-        <source>CodeGeeX provides code completion suggestions in editor, Press Tab to accept.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="67"/>
-        <source>Select code and right-click to add comments or translate code.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="68"/>
-        <source>Also, you can directly ask CodeGeeX any questions.</source>
+        <source>CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="77"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="69"/>
+        <source>Select code and %1 right-click %2 to add comments or translate code.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="70"/>
+        <source>Also, you can directly %1 ask CodeGeeX any questions %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="79"/>
         <source>Try the following questions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="80"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
         <source>How to iterate through a dictionary in Python?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="81"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="83"/>
         <source>Write a quicksort function.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="84"/>
         <source>What is the best way to start learning JavaScript?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2309,27 +2300,27 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="67"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="69"/>
         <source>Repalce:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="107"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="109"/>
         <source>Scope:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="115"/>
         <source>Search for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="128"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="130"/>
         <source>File pattern:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="132"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="134"/>
         <source>Exclusion pattern:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2718,32 +2709,42 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="54"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="55"/>
         <source>Find Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="79"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="56"/>
+        <source>Find Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="57"/>
+        <source>Advanced</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="82"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="80"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="83"/>
         <source>Replace &amp;&amp; Find</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolbar.cpp" line="81"/>
+        <location filename="../../src/plugins/find/findtoolbar.cpp" line="84"/>
         <source>Repalce All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="137"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="139"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="139"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="141"/>
         <source>Search &amp;&amp; Replace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3276,6 +3277,39 @@ storage: %2
     </message>
 </context>
 <context>
+    <name>SearchResultWindow</name>
+    <message>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="128"/>
+        <source>Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="201"/>
+        <source>Searching, please wait...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="274"/>
+        <source> matches found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="279"/>
+        <source>Search failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="297"/>
+        <source>Replacing, please wait...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="338"/>
+        <source>Replace failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ShortcutSettingWidget</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="247"/>
@@ -3478,17 +3512,22 @@ storage: %2
 <context>
     <name>TranslationPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="57"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="58"/>
         <source>Input Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="73"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="59"/>
+        <source>Please input the code to be translated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="71"/>
         <source>Translate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="83"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="79"/>
         <source>Output Code</source>
         <translation type="unfinished"></translation>
     </message>
