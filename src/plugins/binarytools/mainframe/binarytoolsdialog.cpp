@@ -31,7 +31,7 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     setWindowTitle(tr("Binary Tools"));
 
     setIcon(QIcon::fromTheme("ide"));
-    DFrame *mainFrame = new DFrame(this);
+    DWidget *mainFrame = new DWidget(this);
     addContent(mainFrame);
 
     QVBoxLayout *vLayout = new QVBoxLayout(mainFrame);
