@@ -15,6 +15,7 @@
 #include <DMessageBox>
 #include <DScrollArea>
 #include <DSuggestButton>
+#include <DFrame>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -78,6 +79,7 @@ void FindToolWindow::setupUi()
 {
     d->stackedWidget = new DStackedWidget();
     QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->setContentsMargins(0, 0, 0, 0);
 
     DScrollArea *scrollArea = new DScrollArea();
     scrollArea->setWidgetResizable(true);

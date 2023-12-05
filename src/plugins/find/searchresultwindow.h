@@ -56,6 +56,10 @@ public:
 
 signals:
     void back();
+    void noResult();
+    void haveResult();
+    void searched();
+    void replaced();
 
 private:
     void setupUi();
