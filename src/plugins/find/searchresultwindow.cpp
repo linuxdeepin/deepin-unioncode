@@ -17,7 +17,7 @@
 #include <QProcess>
 #include <QDebug>
 #include <QtConcurrent>
-
+#include <QPalette>
 
 class SearchResultTreeViewPrivate
 {
@@ -75,7 +75,7 @@ void SearchResultTreeView::setData(FindItemList &itemList, QMap<QString, QString
     QHash<QString, QList<QPair<int, QString>>>::const_iterator iter = findItemHash.begin();
     for (; iter != findItemHash.end(); ++iter) {
         QList<QPair<int, QString>> contentList = iter.value();
-        QStandardItem *parentItem = new QStandardItem(iter.key() + " (" + QString::number(contentList.count()) + ")");
+        QStandardItem *parentItem = new QStandardItem(QIcon::fromTheme("folder"),iter.key() + " (" + QString::number(contentList.count()) + ")");
         parentItem->setData(QVariant::fromValue<QString>(iter.key()));
         parentItem->setEditable(false);
         model->appendRow(parentItem);
@@ -103,6 +103,7 @@ class SearchResultWindowPrivate
     QWidget *replaceWidget{nullptr};
     DLineEdit *replaceEdit{nullptr};
     DLabel *resultLabel{nullptr};
+    QLabel *iconLabel{nullptr};
 
     SearchParams searchParams;
 
@@ -114,6 +115,7 @@ SearchResultWindow::SearchResultWindow(QWidget *parent)
     , d(new SearchResultWindowPrivate())
 {
     setupUi();
+
 }
 
 void SearchResultWindow::setupUi()
@@ -122,8 +124,8 @@ void SearchResultWindow::setupUi()
     QHBoxLayout *replaceLayout = new QHBoxLayout();
 
     d->replaceEdit = new DLineEdit();
-    d->replaceEdit->setFixedWidth(500);
-    d->replaceEdit->setPlaceholderText("Replace");
+    d->replaceEdit->setFixedWidth(280);
+    d->replaceEdit->setPlaceholderText(tr("Replace"));
     DPushButton *replaceBtn = new DPushButton(DPushButton::tr("Replace"));
     replaceBtn->setFixedSize(120,36);
     d->replaceWidget->setLayout(replaceLayout);
@@ -144,18 +146,47 @@ void SearchResultWindow::setupUi()
     hLayout->addWidget(cleanBtn);
     hLayout->addWidget(d->replaceWidget);
     hLayout->addWidget(d->resultLabel);
+    hLayout->setAlignment(Qt::AlignLeft );
 
     d->treeView = new SearchResultTreeView();
     d->treeView->setHeaderHidden(true);
+    d->treeView->setLineWidth(0);
+
     QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->setAlignment(Qt::AlignTop);
+    vLayout->setContentsMargins(0, 0, 0, 0);
     vLayout->addLayout(hLayout);
     vLayout->addWidget(d->treeView);
 
+    d->iconLabel =new QLabel();
+    QVBoxLayout *iconLayout = new QVBoxLayout();
+    d->iconLabel->setPixmap(QIcon::fromTheme("find_noResults").pixmap(QSize(96, 96)));
+    iconLayout->addWidget(d->iconLabel, Qt::AlignCenter);
+
+    iconLayout->setAlignment(Qt::AlignCenter);
+    vLayout->addLayout(iconLayout);
+    vLayout->setAlignment(iconLayout, Qt::AlignCenter);
+
+    connect(this, &SearchResultWindow::searched, this,[=]{
+        d->treeView->setVisible(false);
+        d->iconLabel->setVisible(false);
+    });
+    connect(this, &SearchResultWindow::replaced, this,[=]{
+        d->treeView->setVisible(false);
+        d->iconLabel->setVisible(false);
+    });
     connect(cleanBtn, &DIconButton::clicked, this, &SearchResultWindow::clean);
     connect(replaceBtn, &DPushButton::clicked, this, &SearchResultWindow::replace);
+    connect(this, &SearchResultWindow::haveResult, this,[=]{
+        d->treeView->setVisible(true);
+        d->iconLabel->setVisible(false);
+    });
+    connect(this, &SearchResultWindow::noResult, this,[=]{
+        d->treeView->setVisible(false);
+        d->iconLabel->setVisible(true);
+    });
 
     setLayout(vLayout);
-
     setRepalceWidgtVisible(false);
 }
 
@@ -167,7 +198,7 @@ void SearchResultWindow::setRepalceWidgtVisible(bool visible)
 void SearchResultWindow::search(SearchParams *params)
 {
     d->treeView->clearData();
-    showMsg(true, "Searching, please wait...");
+    showMsg(true, tr("Searching, please wait..."));
     // exam: grep -rn -i -w "main" --include="*.txt" --exclude="*.txt" /project/test
     QString filePath;
     for (QString path : params->filePathList) {
@@ -198,7 +229,10 @@ void SearchResultWindow::search(SearchParams *params)
     d->searchParams.exPatternsList = params->exPatternsList;
     d->searchParams.projectInfoMap = params->projectInfoMap;
 
+    emit searched();
+
     QtConcurrent::run(this, &SearchResultWindow::startSearch, cmd, filePath, params->projectInfoMap);
+
 }
 
 void SearchResultWindow::startSearch(const QString &cmd, const QString &filePath, QMap<QString, QString> projectInfoMap)
@@ -235,11 +269,15 @@ void SearchResultWindow::startSearch(const QString &cmd, const QString &filePath
                     resultCount++;
                 }
             }
+
             d->treeView->setData(findItemList, projectInfoMap);
-            QString msg = QString::number(resultCount) + " matches found.";
+            QString msg = QString::number(resultCount) + tr(" matches found.");
             showMsg(true, msg);
+            emit haveResult();
+
         } else {
-            showMsg(false, "Search failed!");
+            showMsg(false, tr("Search failed!"));
+            emit noResult();
         }
     });
 
@@ -256,17 +294,17 @@ void SearchResultWindow::clean()
 void SearchResultWindow::replace()
 {
     d->treeView->clearData();
-    showMsg(true, "Replacing, please wait...");
+    showMsg(true, tr("Replacing, please wait..."));
     QString replaceText = d->replaceEdit->text();
     if (replaceText.isEmpty()) {
         if (DMessageBox::Yes != DMessageBox::warning(this, DMessageBox::tr("Warning"), DMessageBox::tr("Repalce text is empty, will continue?"),
-                                                     DMessageBox::Yes, DMessageBox::No)) {
+                                                      DMessageBox::Yes, DMessageBox::No)) {
             return;
         }
     }
 
     if (DMessageBox::Yes != DMessageBox::warning(this, DMessageBox::tr("Warning"), DMessageBox::tr("Will replace permanent, continue?"),
-                                                 DMessageBox::Yes, DMessageBox::No)) {
+                                                DMessageBox::Yes, DMessageBox::No)) {
         return;
     }
 
@@ -283,6 +321,8 @@ void SearchResultWindow::replace()
     QStringList options;
     options << "-c" << cmd;
 
+    emit replaced();
+
     QtConcurrent::run(this, &SearchResultWindow::startReplace, options);
 }
 
@@ -295,7 +335,7 @@ void SearchResultWindow::startReplace(const QStringList &options)
             QString output = QString(process.readAllStandardOutput());
             searchAgain();
         } else {
-            showMsg(false, "Replace failed!");
+            showMsg(false, tr("Replace failed!"));
         }
     });
 
@@ -310,10 +350,18 @@ void SearchResultWindow::searchAgain()
 
 void SearchResultWindow::showMsg(bool succeed, QString msg)
 {
-    if (succeed) {
-        d->resultLabel->setStyleSheet("color:black;");
-    } else {
-        d->resultLabel->setStyleSheet("color:red;");
-    }
+
+    QPalette palette = d->resultLabel->palette();
+    QColor textColor = this->palette().color(QPalette::WindowText);
+
+    int red, green, blue, alpha;
+    textColor.getRgb(&red, &green, &blue, &alpha);
+    // 降低透明度
+    alpha = static_cast<int>(alpha * 0.5); // 0.5 表示减少50%
+
+    QColor newColor = QColor::fromRgb(red, green, blue, alpha);
+
+    palette.setColor(QPalette::WindowText, newColor);
+    d->resultLabel->setPalette(palette);
     d->resultLabel->setText(msg);
 }
