@@ -327,6 +327,10 @@ WindowKeeper::WindowKeeper(QObject *parent)
     if (!windowService->getCentralNavigation) {
         windowService->getCentralNavigation = std::bind(&WindowKeeper::getCentralNavigation, this, _1);
     }
+
+    if (!windowService->switchWidgetNavigation) {
+        windowService->switchWidgetNavigation = std::bind(&WindowKeeper::switchWidgetNavigation, this, _1);
+    }
 }
 
 WindowKeeper::~WindowKeeper()
