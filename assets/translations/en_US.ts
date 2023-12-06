@@ -537,29 +537,29 @@
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="116"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="121"/>
         <source>Welcome to CodeGeeX
 A must-have all-round AI tool for developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="123"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="128"/>
         <source>Go to login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="185"/>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="190"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="221"/>
         <source>Ask CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="188"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="193"/>
         <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="204"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="209"/>
         <source>Creating a new session...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -743,12 +743,12 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="88"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="89"/>
         <source>add comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="89"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
         <source>translate</source>
         <translation type="unfinished"></translation>
     </message>
@@ -857,7 +857,7 @@ The dap port is not ready, please retry.
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="558"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="563"/>
         <source>Workspace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -939,11 +939,6 @@ The dap port is not ready, please retry.
 </context>
 <context>
     <name>DMenu</name>
-    <message>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="37"/>
-        <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="39"/>
         <source>Attach</source>
@@ -2395,6 +2390,11 @@ storage: %2
         <source>&amp;Analyze</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="37"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QMessageBox</name>
@@ -3584,7 +3584,7 @@ storage: %2
     <name>WindowKeeper</name>
     <message>
         <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="241"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="547"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="552"/>
         <source>Deepin Union Code</source>
         <translation type="unfinished"></translation>
     </message>

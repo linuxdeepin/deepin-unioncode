@@ -34,7 +34,7 @@ bool FindPlugin::start()
         abort();
     }
 
-    DMenu* editMenu = new DMenu(DMenu::tr("&Edit"));
+    DMenu* editMenu = new DMenu(QMenu::tr("&Edit"));
     QAction* findAction = new QAction();
     QAction* advancedFindAction = new QAction();
 
