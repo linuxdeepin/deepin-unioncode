@@ -40,6 +40,7 @@ void SessionRecordItem::onDeleteButtonClicked()
 void SessionRecordItem::onRecordClicked()
 {
     CodeGeeXManager::instance()->sendMessage(promotLabel->text());
+    Q_EMIT closeHistoryWidget();
 }
 
 void SessionRecordItem::initUI()
