@@ -75,7 +75,6 @@ void KitsManagerWidget::setupUi()
     // leftSide
     auto listFrame = new DFrame(this);
     auto listlayout = new QVBoxLayout(listFrame);
-    listFrame->setLayout(listlayout);
 
     d->listView = new DListView(this);
     d->listView->setAlternatingRowColors(true);
@@ -95,7 +94,7 @@ void KitsManagerWidget::setupUi()
     listlayout->addWidget(d->listView);
     listlayout->addWidget(separator);
 
-    auto btnlayout = new QHBoxLayout(this);
+    auto btnlayout = new QHBoxLayout;
     btnlayout->addWidget(iconBtnI);
     btnlayout->addWidget(iconBtnD);
     btnlayout->setAlignment(Qt::AlignLeft);
@@ -107,7 +106,7 @@ void KitsManagerWidget::setupUi()
     d->listModel->setStringList(QStringList() << tr("Desktop"));
 
     //rightSide
-    auto detailGridLayout = new QGridLayout(this);
+    auto detailGridLayout = new QGridLayout;
     detailGridLayout->setSpacing(6);
     d->cbCXXComplier = new DComboBox();
 
@@ -145,7 +144,7 @@ void KitsManagerWidget::setupUi()
     auto labelCXXCompiler = new DLabel(this);
     labelCXXCompiler->setText(tr("C++ Compiler:"));
 
-    auto formlayout = new QFormLayout(this);
+    auto formlayout = new QFormLayout;
     formlayout->addRow(Name, d->nameEidt);
     formlayout->addRow(labelCCompiler, d->cbCComplier);
     formlayout->addRow(labelCXXCompiler, d->cbCXXComplier);

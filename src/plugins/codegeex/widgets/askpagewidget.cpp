@@ -154,7 +154,7 @@ void AskPageWidget::initInputWidget()
     createNewBtn->setIcon(QIcon::fromTheme("codegeex_new"));
     btnLayout->addWidget(createNewBtn);
 
-    auto hlayout = new QHBoxLayout(this);
+    auto hlayout = new QHBoxLayout;
     inputEdit = new DLineEdit(inputWidget);
     inputEdit->setFixedHeight(50);
     placeHolderText = tr("Ask question here, press Enter to send...");

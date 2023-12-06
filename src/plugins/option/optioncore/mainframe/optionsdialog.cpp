@@ -44,7 +44,7 @@ bool OptionsDialog::insertOptionPanel(const QString &itemName, PageWidget *panel
     headTitle->setFixedHeight(labelHeight);
     headTitle->setText(itemName);
 
-    QVBoxLayout *bgGplayout = new QVBoxLayout(this);
+    QVBoxLayout *bgGplayout = new QVBoxLayout;
     DBackgroundGroup *bgGroup = new DBackgroundGroup(bgGplayout);
     bgGroup->setFixedWidth(685);
     bgGroup->setContentsMargins(0, 0, 0, 30);
@@ -105,13 +105,12 @@ void OptionsDialog::setupUi()
     title->setSpacing(0);
 
     // Center layout.
-    auto mainLayout = new QHBoxLayout(this);
+    auto mainLayout = new QHBoxLayout;
     mainLayout->setSpacing(6);
 
     // Left layout.
     auto leftFrame = new DFrame(this);
     auto leftLayout = new QVBoxLayout(leftFrame);
-    leftFrame->setLayout(leftLayout);
     leftLayout->setSpacing(6);
 
     leftSideBar = new DListView(leftFrame);
@@ -134,7 +133,6 @@ void OptionsDialog::setupUi()
     // Right layout.
     auto rightFrame = new DFrame(this);
     auto rightLayout = new QVBoxLayout(rightFrame);
-    rightFrame->setLayout(rightLayout);
 
     //scollArea
     scrollArea = new QScrollArea(rightFrame);
@@ -147,7 +145,7 @@ void OptionsDialog::setupUi()
 
     connect(scrollArea->verticalScrollBar(),&QScrollBar::valueChanged,this,&OptionsDialog::slotScrollChanged);
 
-    auto buttonLayout = new QHBoxLayout(rightFrame);
+    auto buttonLayout = new QHBoxLayout;
     buttonLayout->setSpacing(6);
     auto horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
