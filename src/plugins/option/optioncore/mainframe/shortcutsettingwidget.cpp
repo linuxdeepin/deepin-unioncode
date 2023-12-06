@@ -40,7 +40,7 @@ ShortCut::ShortCut(QWidget *parent)
     setFrameShape(QFrame::NoFrame);
 
     d->vlayout = new QVBoxLayout(this);
-    d->bgGplayout = new QVBoxLayout(this);
+    d->bgGplayout = new QVBoxLayout;
     d->bgGroup = new DBackgroundGroup(d->bgGplayout);
     d->bgGroup->setBackgroundRole(QPalette::Window);
     d->bgGroup->setUseWidgetBackground(false);
@@ -231,12 +231,10 @@ ShortcutSettingWidget::~ShortcutSettingWidget()
 
 void ShortcutSettingWidget::setupUi()
 {
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    setLayout(vLayout);
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
 
     auto shortcutFrame = new DFrame(this);
     auto shortcutLayout = new QVBoxLayout(shortcutFrame);
-    shortcutFrame->setLayout(shortcutLayout);
 
     d->shortcut = new ShortCut(shortcutFrame);
 
@@ -250,7 +248,7 @@ void ShortcutSettingWidget::setupUi()
 
     auto spliter = new DVerticalLine(this);
 
-    auto hlayout = new QHBoxLayout(this);
+    auto hlayout = new QHBoxLayout;
     hlayout->setAlignment(Qt::AlignRight);
     hlayout->addWidget(resetbtn);
     hlayout->addWidget(spliter);

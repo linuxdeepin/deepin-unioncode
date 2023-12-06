@@ -184,7 +184,7 @@ void CodeEditComponent::initUI()
     editLayout->setContentsMargins(0, 0, 0, 0);
     editFrame->setLayout(editLayout);
 
-    auto buttonLayout = new QHBoxLayout(editFrame);
+    auto buttonLayout = new QHBoxLayout;
     buttonLayout->setContentsMargins(0, 0, 10, 0);
     buttonLayout->setAlignment(Qt::AlignRight);
 
