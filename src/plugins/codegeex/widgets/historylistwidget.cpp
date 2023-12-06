@@ -89,6 +89,7 @@ void HistoryListWidget::initUI()
         item->setVisible(false);
 
         itemsList.append(item);
+        connect(item, &SessionRecordItem::closeHistoryWidget, this, &HistoryListWidget::requestCloseHistoryWidget);
     }
 
     mainLayout->addStretch(1);

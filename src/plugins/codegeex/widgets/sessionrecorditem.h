@@ -23,6 +23,9 @@ public Q_SLOTS:
     void onDeleteButtonClicked();
     void onRecordClicked();
 
+Q_SIGNALS:
+    void closeHistoryWidget();
+
 private:
     void initUI();
     void initConnection();
