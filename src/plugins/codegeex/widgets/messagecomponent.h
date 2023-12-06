@@ -9,6 +9,7 @@
 
 #include <DWidget>
 #include <DLabel>
+#include <DFrame>
 
 #include <QVariant>
 
@@ -21,7 +22,7 @@ class QVBoxLayout;
 QT_END_NAMESPACE
 
 class CodeEditComponent;
-class MessageComponent : public DWidget
+class MessageComponent : public DFrame
 {
     enum UpdateState : uint8_t {
         Label,
@@ -30,9 +31,6 @@ class MessageComponent : public DWidget
 public:
     explicit MessageComponent(const MessageData &msgData, QWidget *parent = nullptr);
     void updateMessage(const MessageData &msgData);
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
 
 private:
     void initUI();
@@ -51,7 +49,6 @@ private:
     CodeEditComponent *curUpdateEdit { nullptr };
     DLabel *curUpdateLabel { nullptr };
 
-    QColor baseBackgroundColor;
     MessageData messageData;
     UpdateState currentUpdateState = Label;
 };
