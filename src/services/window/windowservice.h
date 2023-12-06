@@ -181,7 +181,10 @@ public:
     DPF_INTERFACE(AbstractCentral *, getCentralNavigation, const QString &navName);
 
     DPF_INTERFACE(void, addWorkspaceArea, const QString &title, AbstractWidget *widget);
+
     DPF_INTERFACE(void, switchWorkspaceArea, const QString &title);
+
+    DPF_INTERFACE(void, switchWidgetNavigation, const QString &title);
 
 signals:
 

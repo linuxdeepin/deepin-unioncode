@@ -4,6 +4,7 @@
 #include "copilot.h"
 #include "services/editor/editorservice.h"
 #include "services/option/optionmanager.h"
+#include "services/window/windowservice.h"
 
 #include <QMenu>
 #include <QDebug>
@@ -155,4 +156,9 @@ void Copilot::login()
 void Copilot::translate()
 {
     emit translatingText(selectedText());
+
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    if(windowService->switchWidgetNavigation)
+        windowService->switchWidgetNavigation(MWNA_CODEGEEX);
 }

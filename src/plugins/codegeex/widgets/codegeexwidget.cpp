@@ -50,6 +50,11 @@ void CodeGeeXWidget::onNewSessionCreated()
 
 void CodeGeeXWidget::toTranslateCode(const QString &code)
 {
+    if(stackWidget->currentWidget() != transPage) {
+        tabBar->buttonList().at(0)->setChecked(false);
+        tabBar->buttonList().at(1)->setChecked(true);
+        stackWidget->setCurrentWidget(transPage);
+    }
     transPage->setInputEditText(code);
     transPage->cleanOutputEdit();
 }
