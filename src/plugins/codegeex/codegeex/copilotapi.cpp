@@ -146,7 +146,7 @@ void CopilotApi::processResponse(QNetworkReply *reply)
             qInfo() << "Error:" << reply->errorString();
         } else {
             QString replyMsg = QString::fromUtf8(reply->readAll());
-            qInfo() << "Response:" << replyMsg;
+//            qInfo() << "Response:" << replyMsg;
 
             QJsonParseError error;
             QJsonDocument jsonDocument = QJsonDocument::fromJson(replyMsg.toUtf8(), &error);
