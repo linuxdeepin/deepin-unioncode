@@ -11,6 +11,10 @@ TextEdit *TextEditKeeper::create(const QString &language, QString *err)
         if (focused)
             instance()->activeTextEdit = textEdit;
     });
+    connect(textEdit, &TextEdit::fileClosed, [=](const QString &file){
+        Q_UNUSED(file)
+        instance()->activeTextEdit = nullptr;
+    });
     return textEdit;
 }
 
