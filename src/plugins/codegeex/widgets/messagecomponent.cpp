@@ -16,13 +16,9 @@
 #include <QRegularExpression>
 
 MessageComponent::MessageComponent(const MessageData &msgData, QWidget *parent)
-    : DWidget(parent),
+    : DFrame(parent),
       messageData(msgData)
 {
-    setWindowFlag(Qt::FramelessWindowHint);
-    setAutoFillBackground(true);
-    baseBackgroundColor = palette().color(QPalette::Window);
-
     initUI();
 }
 void MessageComponent::updateMessage(const MessageData &msgData)
@@ -64,41 +60,25 @@ void MessageComponent::updateMessage(const MessageData &msgData)
     messageData = msgData;
 }
 
-void MessageComponent::paintEvent(QPaintEvent *event)
-{
-    QStyleOption opt;
-    opt.initFrom(this);
-
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
-
-    QBitmap bmp(size());
-    bmp.fill();
-    QPainter painter(&bmp);
-
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(Qt::black);
-    painter.setRenderHint(QPainter::HighQualityAntialiasing);
-    painter.drawRoundedRect(bmp.rect(), 8, 8);
-    setMask(bmp);
-
-    DWidget::paintEvent(event);
-}
-
 void MessageComponent::initUI()
 {
+    setAutoFillBackground(true);
+
     QVBoxLayout *msgLayout = new QVBoxLayout;
     setLayout(msgLayout);
 
     QColor bgColor;
     if (messageData.messageType() == MessageData::Ask) {
-        bgColor.setRgba(qRgba(28, 128, 255, 20));
+        auto palatte = palette();
+        bgColor = palatte.color(QPalette::Highlight);
+        bgColor.setAlpha(0xD);
+
+        palatte.setColor(QPalette::Background, bgColor);
+        setPalette(palatte);
+        setBackgroundRole(QPalette::Background);
     } else {
-        bgColor.setRgba(qRgba(200, 200, 200, 50));
+        setBackgroundRole(DPalette::ColorType::ItemBackground);
     }
-    auto palatte = palette();
-    palatte.setColor(QPalette::Window, bgColor);
-    setPalette(palatte);
 
     initSenderInfo();
     initMessageSection();

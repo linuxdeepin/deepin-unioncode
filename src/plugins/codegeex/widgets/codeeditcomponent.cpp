@@ -27,7 +27,6 @@ CodeEditComponent::CodeEditComponent(QWidget *parent)
 
 void CodeEditComponent::showButtons(CodeEditComponent::ShowButtonsType type)
 {
-    titleWidget->setVisible(true);
     hLine->setVisible(true);
     switch (type) {
     case InsertOnly:
