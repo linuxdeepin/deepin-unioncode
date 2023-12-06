@@ -29,6 +29,10 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QHBoxLayout>
+#include <QFormLayout>
+#include <QComboBox>
+#include <QPushButton>
+#include <QPalette>
 
 static QString CURRENT_COMMAND = "Current command";
 static QString ALL_COMMAND = "All command";
@@ -42,7 +46,7 @@ class BinaryToolsConfigViewPrivate
 
     QGridLayout *gridLayout = nullptr;
     DWidget *compatConfigWidget = nullptr;
-    DComboBox *runComandCombo = nullptr;
+    QComboBox *runComandCombo = nullptr;
     DLineEdit *toolArgsEdit = nullptr;
     QDialog *combinationDialog = nullptr;
     DLabel *commandCombination = nullptr;
@@ -61,6 +65,7 @@ class BinaryToolsConfigViewPrivate
     QList<QStringList> argsList;
     QList<QString> workingDirList;
     QList<QMap<QString, QVariant>> envList;
+    QFormLayout *formLayout =nullptr;
 };
 
 BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
@@ -73,38 +78,60 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     d->runComandCombo = new DComboBox(this);
     d->runComandCombo->setMinimumContentsLength(15);
     d->runComandCombo->setSizeAdjustPolicy(DComboBox::AdjustToContents);
+    d->runComandCombo->setFixedWidth(287);
 
-    //Add
-    d->addButton = new DPushButton(this);
+    // Add
+    d->addButton = new QPushButton(this);
     d->addButton->setIcon(QIcon::fromTheme("binarytools_add"));
-    //Delete
-    d->deleteButton = new DPushButton(this);
-    d->deleteButton->setIcon(QIcon::fromTheme("binarytools_delete"));
-    //Rename
-    d->renameButton = new DPushButton(this);
-    d->renameButton->setIcon(QIcon::fromTheme("binarytools_rename"));
-    //Combine
-    d->combineButton = new DPushButton(this);
-    d->combineButton->setIcon(QIcon::fromTheme("binarytools_combine"));
+    d->addButton->setFixedSize(36, 36);
+    d->addButton->setToolTip(tr("add"));
 
-    d->gridLayout = new QGridLayout(this);
-    d->gridLayout->setSpacing(6);
-    d->gridLayout->setContentsMargins(10, 10, 10, 10);
+    // Delete
+    d->deleteButton = new QPushButton(this);
+    d->deleteButton->setIcon(QIcon::fromTheme("binarytools_delete"));
+    d->deleteButton->setFixedSize(36, 36);
+    d->deleteButton->setToolTip(tr("delete"));
+
+    // Rename
+    d->renameButton = new QPushButton(this);
+    d->renameButton->setIcon(QIcon::fromTheme("binarytools_rename"));
+    d->renameButton->setFixedSize(36, 36);
+    d->renameButton->setToolTip(tr("rename"));
+
+    // Combine
+    d->combineButton = new QPushButton(this);
+    d->combineButton->setIcon(QIcon::fromTheme("binarytools_combine"));
+    d->combineButton->setFixedSize(36, 36);
+    d->combineButton->setToolTip(tr("combine"));
+    d->formLayout = new QFormLayout(this);
+    d->formLayout->setLabelAlignment(Qt::AlignLeft);
+    d->formLayout->setFormAlignment(Qt::AlignLeft);
+    d->formLayout->setSpacing(10);
 
     auto configLabel = new DLabel(this);
-    configLabel->setText(tr("Binary configuration:"));
-    configLabel->setContentsMargins(5, 0, 0, 0);
+    configLabel->setText(tr("Run configuration:"));
 
-    d->gridLayout->addWidget(configLabel, 0, 0, 1, 1);
-    d->gridLayout->addWidget(d->runComandCombo, 0, 1, 1, 1);
-    d->gridLayout->addWidget(d->addButton, 0, 2, 1, 1);
-    d->gridLayout->addWidget(d->deleteButton, 0, 3, 1, 1);
-    d->gridLayout->addWidget(d->renameButton, 0, 4, 1, 1);
-    d->gridLayout->addWidget(d->combineButton, 0, 5, 1, 1);
-    d->gridLayout->addWidget(d->compatConfigWidget, 1, 0, 1, 6);
+    // Create a horizontal layout for buttons
+    DWidget *btnWidget = new DWidget();
+    QHBoxLayout *buttonsLayout = new QHBoxLayout;
+    buttonsLayout->setContentsMargins(0,0,0,0);
+    btnWidget->setLayout(buttonsLayout);
+
+    buttonsLayout->addWidget(d->runComandCombo);
+    buttonsLayout->addWidget(d->addButton);
+    buttonsLayout->addWidget(d->deleteButton);
+    buttonsLayout->addWidget(d->renameButton);
+    buttonsLayout->addWidget(d->combineButton);
+    buttonsLayout->setAlignment(Qt::AlignLeft);
+
+
+    // Add the label and the horizontal layout to the form layout
+    d->formLayout->addRow(configLabel,btnWidget);
+    d->formLayout->addRow(d->compatConfigWidget);
 
     setConfigWidget();
 
+    setLayout(d->formLayout);
     d->combinationDialog = new QDialog(this);
     d->commandCombination = new DLabel(tr("command combination:"), d->combinationDialog);
     d->useCombinationButton = new DPushButton(tr("Use Combination Command"), d->combinationDialog);
@@ -123,7 +150,7 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     }
     readConfig();
 
-    connect(d->runComandCombo, static_cast<void (DComboBox::*)(const QString &)>(&DComboBox::currentIndexChanged),
+    connect(d->runComandCombo, static_cast<void (QComboBox::*)(const QString &)>(&DComboBox::currentIndexChanged),
             this, &BinaryToolsConfigView::currentConfigChanged);
 
     connect(d->addButton, &DPushButton::clicked,
@@ -405,66 +432,71 @@ void BinaryToolsConfigView::setConfigWidget()
     auto cmdLabel = new DLabel(d->compatConfigWidget);
     cmdLabel->setText(tr("Command:"));
     d->commandLabel = new DLabel(d->compatConfigWidget);
+    QHBoxLayout *cmdLayout =new QHBoxLayout();
+    cmdLayout->addWidget(d->commandLabel);
+    cmdLayout->setContentsMargins(12,0,0,0);
 
     auto argsLabel = new DLabel(d->compatConfigWidget);
     argsLabel->setText(tr("Tool arguments:"));
     d->toolArgsEdit = new DLineEdit(d->compatConfigWidget);
-    d->toolArgsEdit->setPlaceholderText(tr("Input your arguments."));
+    d->toolArgsEdit->setPlaceholderText(tr("Input your arguments"));
+    d->toolArgsEdit->setFixedWidth(452);
 
     auto exeLabel = new DLabel(d->compatConfigWidget);
     exeLabel->setText(tr("Executable:"));
     d->executableDirEdit = new DLineEdit(d->compatConfigWidget);
+    d->executableDirEdit->setFixedSize(410,36);
     auto browseButton1 = new DSuggestButton("...", d->compatConfigWidget);
+    browseButton1->setFixedSize(36,36);
+
+    // Wrap executableDirEdit and browseButton1 in a QHBoxLayout
+    auto exeLayout = new QHBoxLayout();
+    exeLayout->addWidget(d->executableDirEdit);
+    exeLayout->addWidget(browseButton1);
 
     auto workLabel = new DLabel(d->compatConfigWidget);
     workLabel->setText(tr("Working directory:"));
     d->workingDirEdit = new DLineEdit(d->compatConfigWidget);
+    d->workingDirEdit->setFixedSize(410,36);
     auto browseButton2 = new DSuggestButton("...", d->compatConfigWidget);
+    browseButton2->setFixedSize(36,36);
+
+    // Wrap workingDirEdit and browseButton2 in a QHBoxLayout
+    auto workLayout = new QHBoxLayout();
+    workLayout->addWidget(d->workingDirEdit);
+    workLayout->addWidget(browseButton2);
 
     auto envLabel = new DLabel(d->compatConfigWidget);
     envLabel->setText(tr("Configuration environment for the current command:"));
 
-    //append
-    auto appendButton = new DPushButton(d->compatConfigWidget);
-    appendButton->setIcon(QIcon::fromTheme("binarytools_add"));
-    //Delete
-    auto deleteButton = new DPushButton(d->compatConfigWidget);
-    deleteButton->setIcon(QIcon::fromTheme("binarytools_delete"));
-    //Reset
-    auto resetButton = new DPushButton(d->compatConfigWidget);
-    resetButton->setIcon(QIcon::fromTheme("binarytools_reset"));
+    auto *envViewFrame = new DFrame();
+    d->envView = new EnvironmentView(envViewFrame);
+    QVBoxLayout *envViewlayout = new QVBoxLayout(envViewFrame);
+    envViewlayout->setContentsMargins(5,5,5,5);
+    envViewFrame->setLayout(envViewlayout);
+    envViewlayout->addWidget(d->envView);
+    envViewlayout->setAlignment(Qt::AlignLeft);
 
-    DWidget *ButtonWidget= new DWidget();
-    // 创建一个布局来容纳这三个按钮
-    QHBoxLayout *ButtonLayout = new QHBoxLayout(ButtonWidget);
-    // 将按钮添加到容器布局中
-    ButtonLayout->addWidget(appendButton);
-    ButtonLayout->addWidget(deleteButton);
-    ButtonLayout->addWidget(resetButton);
+    d->envView->setFixedHeight(280);
+    auto formLayout = new QFormLayout(d->compatConfigWidget);
+    formLayout->setSpacing(10);
+    formLayout->setContentsMargins(0, 0, 0, 0);
 
-    d->envView = new EnvironmentView();
-    d->envView->setFixedHeight(270);
+    formLayout->addRow(cmdLabel, cmdLayout);
+    formLayout->addRow(argsLabel, d->toolArgsEdit);
+    formLayout->addRow(exeLabel, exeLayout); // Add the QHBoxLayout for executable
+    formLayout->addRow(workLabel, workLayout); // Add the QHBoxLayout for working directory
 
-    auto gridLayout = new QGridLayout(d->compatConfigWidget);
-    gridLayout->setSpacing(5);
-    gridLayout->setContentsMargins(5, 5, 5, 5);
+    // Add a spacer item to create vertical space
+    auto spacerItem = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    formLayout->addItem(spacerItem);
 
-    gridLayout->addWidget(cmdLabel, 0, 0, 1, 1);
-    gridLayout->addWidget(d->commandLabel, 0, 1, 1, 2);
-    gridLayout->addWidget(argsLabel, 1, 0, 1, 1);
-    gridLayout->addWidget(d->toolArgsEdit, 1, 1, 1, 2);
-    gridLayout->addWidget(exeLabel, 2, 0, 1, 1);
-    gridLayout->addWidget(d->executableDirEdit, 2, 1, 1, 1);
-    gridLayout->addWidget(browseButton1, 2, 2, 1, 1);
-    gridLayout->addWidget(workLabel, 3, 0, 1, 1);
-    gridLayout->addWidget(d->workingDirEdit, 3, 1, 1, 1);
-    gridLayout->addWidget(browseButton2, 3, 2, 1, 1);
-    gridLayout->addWidget(envLabel, 4, 0, 1, 3);
-    gridLayout->addWidget(ButtonWidget, 10, 0, 1, 1);
-    gridLayout->addWidget(d->envView, 5, 0, 5, 3);
+    formLayout->addRow(envLabel);
 
-    d->compatConfigWidget->setLayout(gridLayout);
+   // formLayout->addRow(d->envView);
+    formLayout->addRow(envViewFrame);
 
+    d->compatConfigWidget->setLayout(formLayout);
     connect(browseButton1, &DPushButton::clicked, [=]() {
         QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         QString filePath = DFileDialog::getOpenFileName(nullptr, tr("Select Executabel Path"), dir);
@@ -481,10 +513,6 @@ void BinaryToolsConfigView::setConfigWidget()
         d->workingDirEdit->setText(filePath);
     });
 
-    connect(appendButton, &DPushButton::clicked, d->envView, &EnvironmentView::appendRow);
-    connect(deleteButton, &DPushButton::clicked, d->envView, &EnvironmentView::deleteRow);
-    connect(resetButton, &DPushButton::clicked, d->envView, &EnvironmentView::initModel);
-
     connect(d->toolArgsEdit, &DLineEdit::textChanged, [=](){
         d->commandLabel->setText(d->executableDirEdit->text() + " " + d->toolArgsEdit->text());
     });
@@ -493,13 +521,7 @@ void BinaryToolsConfigView::setConfigWidget()
         d->commandLabel->setText(d->executableDirEdit->text() + " " + d->toolArgsEdit->text());
     });
 
-    connect(d->envView, &EnvironmentView::deleteSignal, [=](bool enable){
-        deleteButton->setEnabled(enable);
-    });
-
-    connect(this, &BinaryToolsConfigView::comboChanged, [=]{
-        deleteButton->setEnabled(false);
-    });
+    connect(this, &BinaryToolsConfigView::comboChanged, d->envView ,&EnvironmentView::deleteButtonChanged);
 }
 
 void BinaryToolsConfigView::appendCommand(const QString &name)

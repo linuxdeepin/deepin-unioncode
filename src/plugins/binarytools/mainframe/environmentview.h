@@ -53,6 +53,10 @@ public:
     void initModel();
     void setValue(const QMap<QString, QVariant> &map);
 
+    void a();
+
+public slots:
+    void deleteButtonChanged();
 signals:
     void deleteSignal(bool enable);
 

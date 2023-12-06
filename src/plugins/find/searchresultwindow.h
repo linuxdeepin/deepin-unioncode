@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include <DTreeView>
+#include <DFileIconProvider>
 
 DWIDGET_USE_NAMESPACE
 typedef struct {
@@ -31,10 +32,13 @@ class SearchResultTreeViewPrivate;
 class SearchResultTreeView : public DTreeView
 {
     Q_OBJECT
+    DFileIconProvider iconProvider;
+
 public:
     explicit SearchResultTreeView(QWidget *parent = nullptr);
     void setData(FindItemList &itemList, QMap<QString, QString> projectInfoMap);
     void clearData();
+    virtual QIcon icon(const QString &data);
 
 signals:
 private:
@@ -42,7 +46,7 @@ private:
 };
 
 class SearchResultWindowPrivate;
-class SearchResultWindow : public QWidget
+class SearchResultWindow : public DWidget
 {
     Q_OBJECT
 public:

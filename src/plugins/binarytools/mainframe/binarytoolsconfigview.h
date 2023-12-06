@@ -5,10 +5,10 @@
 #ifndef BINARYTOOLSCONFIGVIEW_H
 #define BINARYTOOLSCONFIGVIEW_H
 
-#include <QWidget>
+#include <DWidget>
 
 class BinaryToolsConfigViewPrivate;
-class BinaryToolsConfigView : public QWidget
+class BinaryToolsConfigView : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:

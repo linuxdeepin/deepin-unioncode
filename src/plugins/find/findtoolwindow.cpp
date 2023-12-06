@@ -137,9 +137,9 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     DPushButton *searchBtn = new DPushButton(QPushButton::tr("Search"));
-    searchBtn->setFixedSize(120, 36);
+    searchBtn->setFixedSize(130, 36);
     DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Search && Replace"));
-    replaceBtn->setFixedSize(120, 36);
+    replaceBtn->setFixedSize(130,36);
     btnLayout->addWidget(searchBtn);
     btnLayout->addWidget(replaceBtn);
 

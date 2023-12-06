@@ -9,6 +9,8 @@
 #include <DPushButton>
 #include <DDialogButtonBox>
 #include <DFrame>
+#include <DSuggestButton>
+#include <DSizeMode>
 
 #include <QIcon>
 #include <QProcess>
@@ -29,33 +31,41 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
     , d (new BinaryToolsDialogPrivate)
 {
     setWindowTitle(tr("Binary Tools"));
-
+    setFixedSize(644,676);
     setIcon(QIcon::fromTheme("ide"));
+
     DWidget *mainFrame = new DWidget(this);
     addContent(mainFrame);
-
     QVBoxLayout *vLayout = new QVBoxLayout(mainFrame);
-    d->configView = new BinaryToolsConfigView;
+    d->configView = new BinaryToolsConfigView(mainFrame);
     vLayout->addWidget(d->configView);
     vLayout->addStretch();
 
     QHBoxLayout * buttonLayout = new QHBoxLayout(mainFrame);
-    d->buttons = new DDialogButtonBox(mainFrame);
-    d->buttons->setStandardButtons(DDialogButtonBox::Apply | DDialogButtonBox::Save | DDialogButtonBox::Cancel);
-    d->buttons->button(DDialogButtonBox::Cancel)->setText(tr("Cancel"));
-    d->buttons->button(DDialogButtonBox::Save)->setText(tr("Save Configuration"));
-    d->buttons->button(DDialogButtonBox::Apply)->setText(tr("Use Tool"));
-    d->buttons->button(DDialogButtonBox::Apply)->setDefault(true);
+    DPushButton *cancelButton = new DPushButton(tr("Cancel"));
+    DPushButton *saveButton = new DPushButton(tr("Save Configuration"));
+    DSuggestButton *applyButton = new DSuggestButton(tr("Use Tool"));
+    cancelButton->setFixedWidth(173);
+    saveButton->setFixedWidth(173);
+    applyButton->setFixedWidth(173);
 
-    // 将按钮添加到水平布局中
-    buttonLayout->addWidget(d->buttons->button(DDialogButtonBox::Apply),Qt::AlignTop);
-    buttonLayout->addWidget(d->buttons->button(DDialogButtonBox::Save),Qt::AlignTop);
-    buttonLayout->addWidget(d->buttons->button(DDialogButtonBox::Cancel),Qt::AlignTop);
+    DVerticalLine *line1 = new DVerticalLine;
+    line1->setObjectName("VLine");
+    line1->setFixedHeight(DSizeModeHelper::element(20, 30));
 
-    //消除掉按钮默认图片
-    d->buttons->button(DDialogButtonBox::Apply)->setIcon(QIcon());
-    d->buttons->button(DDialogButtonBox::Save)->setIcon(QIcon());
-    d->buttons->button(DDialogButtonBox::Cancel)->setIcon(QIcon());
+    DVerticalLine *line2 = new DVerticalLine;
+    line2->setObjectName("VLine");
+    line2->setFixedHeight(DSizeModeHelper::element(20, 30));
+
+    buttonLayout->addWidget(cancelButton);
+    buttonLayout->addWidget(line1);
+    buttonLayout->addWidget(saveButton);
+    buttonLayout->addWidget(line2);
+    buttonLayout->addWidget(applyButton);
+
+    buttonLayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    buttonLayout->setContentsMargins(0, 0, 0, 0);
+
     vLayout->addLayout(buttonLayout);
 
     connect(d->configView, &BinaryToolsConfigView::useCombinationCommand, [=](){
@@ -63,14 +73,18 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
             useClicked();
         });
     });
-    connect(d->buttons->button(DDialogButtonBox::Apply), &DPushButton::clicked, [=](){
+
+    connect(applyButton, &DSuggestButton::clicked, [=](){
         QtConcurrent::run([=](){
             useClicked();
         });
     });
-    connect(d->buttons->button(DDialogButtonBox::Save), &DPushButton::clicked, this, &BinaryToolsDialog::saveClicked);
-    connect(d->buttons, &DDialogButtonBox::rejected, this, &BinaryToolsDialog::reject);
-    connect(d->buttons, &DDialogButtonBox::accepted, this, &BinaryToolsDialog::accept);
+
+     connect(saveButton, &DPushButton::clicked, this, &BinaryToolsDialog::saveClicked);
+
+     connect(saveButton, &DPushButton::clicked, this, &BinaryToolsDialog::accept);
+     connect(cancelButton, &DPushButton::clicked, this, &BinaryToolsDialog::reject);
+     connect(applyButton, &DSuggestButton::clicked, this, &BinaryToolsDialog::accept);
 }
 
 BinaryToolsDialog::~BinaryToolsDialog()
@@ -172,7 +186,6 @@ void BinaryToolsDialog::useClicked()
         QString endMsg = tr("Execute command finished.\n");
         outputMsg(endMsg, OutputPane::OutputFormat::NormalMessage);
     }
-    QDialog::reject();
 }
 
 void BinaryToolsDialog::outputMsg(const QString &content, OutputPane::OutputFormat format)

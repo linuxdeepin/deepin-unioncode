@@ -11,6 +11,8 @@
 #include <DLineEdit>
 #include <DTreeView>
 #include <DIconButton>
+#include <DStyledItemDelegate>
+#include <DStandardItem>
 
 #include <QVBoxLayout>
 #include <QStandardItemModel>
@@ -51,7 +53,17 @@ SearchResultTreeView::SearchResultTreeView(QWidget *parent)
             }
         }
     });
+
+
 }
+
+
+QIcon SearchResultTreeView::icon(const QString &data)
+{
+    QFileInfo info(data);
+    return iconProvider.icon(info);
+}
+
 
 void SearchResultTreeView::setData(FindItemList &itemList, QMap<QString, QString> projectInfoMap)
 {
@@ -75,7 +87,7 @@ void SearchResultTreeView::setData(FindItemList &itemList, QMap<QString, QString
     QHash<QString, QList<QPair<int, QString>>>::const_iterator iter = findItemHash.begin();
     for (; iter != findItemHash.end(); ++iter) {
         QList<QPair<int, QString>> contentList = iter.value();
-        QStandardItem *parentItem = new QStandardItem(QIcon::fromTheme("folder"),iter.key() + " (" + QString::number(contentList.count()) + ")");
+        QStandardItem *parentItem = new QStandardItem(icon(iter.key()),iter.key() + " (" + QString::number(contentList.count()) + ")");
         parentItem->setData(QVariant::fromValue<QString>(iter.key()));
         parentItem->setEditable(false);
         model->appendRow(parentItem);
@@ -104,7 +116,6 @@ class SearchResultWindowPrivate
     DLineEdit *replaceEdit{nullptr};
     DLabel *resultLabel{nullptr};
     QLabel *iconLabel{nullptr};
-
     SearchParams searchParams;
 
     friend class SearchResultWindow;
@@ -115,6 +126,7 @@ SearchResultWindow::SearchResultWindow(QWidget *parent)
     , d(new SearchResultWindowPrivate())
 {
     setupUi();
+
 
 }
 
