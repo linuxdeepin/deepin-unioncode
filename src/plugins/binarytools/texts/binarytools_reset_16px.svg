@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>ICON / action/Reset</title>
-    <g id="ICON-/-action/Reset" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0.7">
+    <g id="ICON-/-action/Reset" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="1">
         <path d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,11.8659932 11.8659932,15 8,15 C4.21626193,15 1.13369335,11.9979365 1.0042331,8.24574829 L1,8 L2.55555556,8 C2.55555556,11.0068836 4.99311636,13.4444444 8,13.4444444 C11.0068836,13.4444444 13.4444444,11.0068836 13.4444444,8 C13.4444444,4.99311636 11.0068836,2.55555556 8,2.55555556 C6.28351064,2.55555556 4.70316686,3.35502656 3.68216554,4.68300669 L6,7 L1,7 L1,2 L2.57546352,3.57516334 C3.88932468,1.96482206 5.86370299,1 8,1 Z" id="形状结合" fill="#000000" fill-rule="nonzero"></path>
     </g>
 </svg>
