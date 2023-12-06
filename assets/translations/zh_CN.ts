@@ -549,29 +549,29 @@
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="116"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="121"/>
         <source>Welcome to CodeGeeX
 A must-have all-round AI tool for developers</source>
         <translation>欢迎使用CodeGeeX&lt;br /&gt;开发者必备的全能AI工具</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="123"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="128"/>
         <source>Go to login</source>
         <translation>前往登陆</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="185"/>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="216"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="190"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="221"/>
         <source>Ask CodeGeeX</source>
         <translation>询问 CodeGeeX</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="188"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="193"/>
         <source>Translation</source>
         <translation type="unfinished">代码翻译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="204"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="209"/>
         <source>Creating a new session...</source>
         <translation>创建新的会话中...</translation>
     </message>
@@ -761,12 +761,12 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="88"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="89"/>
         <source>add comment</source>
         <translation>添加注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="89"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
         <source>translate</source>
         <translation>翻译</translation>
     </message>
@@ -881,7 +881,7 @@ dap端口未就绪，请重试。
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="558"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="563"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
@@ -963,11 +963,6 @@ dap端口未就绪，请重试。
 </context>
 <context>
     <name>DMenu</name>
-    <message>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="37"/>
-        <source>&amp;Edit</source>
-        <translation>编辑(&amp;E)</translation>
-    </message>
     <message>
         <location filename="../../src/plugins/performance/mainframe/mainwindow.cpp" line="39"/>
         <source>Attach</source>
@@ -2430,6 +2425,11 @@ storage: %2
         <source>&amp;Analyze</source>
         <translation>分析工具</translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="37"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">编辑(&amp;E)</translation>
+    </message>
 </context>
 <context>
     <name>QMessageBox</name>
@@ -3625,7 +3625,7 @@ storage: %2
     <name>WindowKeeper</name>
     <message>
         <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="241"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="547"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="552"/>
         <source>Deepin Union Code</source>
         <translation></translation>
     </message>

@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     DApplication a(argc, argv);
+    a.loadTranslator();
     a.setOrganizationName("deepin");
     CommandParser::instance().process();
 
