@@ -19,9 +19,12 @@
 
 #include "framework/listener/listener.h"
 
+#include <DToolButton>
+
 static QStringList generalKits {};
 
 using namespace dpfservice;
+DWIDGET_USE_NAMESPACE
 void OptionCore::initialize()
 {
     auto &ctx = dpfInstance.serviceContext();
@@ -78,6 +81,13 @@ bool OptionCore::start()
 
         QObject::connect(actionOptions, &QAction::triggered,
                          optionDialog, &QDialog::show);
+
+        auto toolBtn = new DToolButton();
+        toolBtn->setMinimumSize(QSize(48, 48));
+        toolBtn->setIconSize(QSize(20, 20));
+        toolBtn->setIcon(QIcon::fromTheme("options_setting"));
+        connect(toolBtn, &DToolButton::clicked, optionDialog, &QDialog::show);
+        windowService->insertToLeftBarBottom(new AbstractWidget(toolBtn));
     }
 
     DPF_USE_NAMESPACE

@@ -186,6 +186,8 @@ public:
 
     DPF_INTERFACE(void, switchWidgetNavigation, const QString &title);
 
+    DPF_INTERFACE(void, insertToLeftBarBottom, AbstractWidget *toolBtn);
+
 signals:
 
     /*!

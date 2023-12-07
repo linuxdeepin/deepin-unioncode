@@ -49,6 +49,9 @@ class WindowKeeperPrivate
 
     QString lastNavName;
 
+    QVBoxLayout *leftBarBottomLayout{ nullptr };
+    QVBoxLayout *leftBarTopLayout{ nullptr };
+
     friend class WindowKeeper;
 };
 
@@ -166,13 +169,20 @@ void WindowKeeper::createNavIconBtn(const QString &navName, const QString &iconN
         WindowKeeper::switchWidgetNavigation(navName);
     });
 
-    QVBoxLayout *toolbarLayout = static_cast<QVBoxLayout*>(d->leftToolBar->layout());
-    toolbarLayout->addSpacing(5);
+    d->leftBarTopLayout->addSpacing(5);
     if (navName == MWNA_DEBUG) {
-        toolbarLayout->insertWidget(4, toolBtn);
+        d->leftBarTopLayout->insertWidget(4, toolBtn);
         return;
     }
-    toolbarLayout->addWidget(toolBtn);
+    d->leftBarTopLayout->addWidget(toolBtn);
+}
+
+void WindowKeeper::insertToLeftBarBottom(AbstractWidget *toolBtn)
+{
+    d->leftBarBottomLayout->addSpacing(5);
+
+    DWidget* dWidget = static_cast<DWidget*>(toolBtn->qWidget());
+    d->leftBarBottomLayout->addWidget(dWidget);
 }
 
 void WindowKeeper::createMainMenu(DMenu *menu)
@@ -201,7 +211,17 @@ void WindowKeeper::initLeftToolbar()
     DStyle::setFrameRadius(d->leftToolBar, 0);
 
     QVBoxLayout *layout = new QVBoxLayout();
-    layout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    layout->setAlignment(Qt::AlignHCenter);
+
+    d->leftBarTopLayout = new QVBoxLayout();
+    d->leftBarTopLayout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+
+    d->leftBarBottomLayout = new QVBoxLayout();
+    d->leftBarBottomLayout->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+
+
+    layout->addLayout(d->leftBarTopLayout);
+    layout->addLayout(d->leftBarBottomLayout);
     d->leftToolBar->setLayout(layout);
     d->centralWidget->layout()->addWidget(d->leftToolBar);
 }
@@ -330,6 +350,10 @@ WindowKeeper::WindowKeeper(QObject *parent)
 
     if (!windowService->switchWidgetNavigation) {
         windowService->switchWidgetNavigation = std::bind(&WindowKeeper::switchWidgetNavigation, this, _1);
+    }
+
+    if (!windowService->insertToLeftBarBottom) {
+        windowService->insertToLeftBarBottom = std::bind(&WindowKeeper::insertToLeftBarBottom, this, _1);
     }
 }
 

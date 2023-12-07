@@ -70,15 +70,15 @@ private:
     QString uuid();
 
     CodeGeeX::AskApi askApi;
-    QString sessionId {};
-    QString userId {};
-    QString currentTalkID {};
-    bool isLogin { false };
+    QString sessionId;
+    QString userId;
+    QString currentTalkID;
 
-    QMap<QString, MessageData> curSessionMsg {};
+    QMap<QString, MessageData> curSessionMsg;
     QList<RecordData> sessionRecordList {};
 
-    QTimer *queryTimer;
+    QTimer *queryTimer { nullptr };
+    bool isLogin { false };
 };
 
 #endif // CODEGEEXMANAGER_H

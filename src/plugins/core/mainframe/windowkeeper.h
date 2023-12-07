@@ -19,6 +19,7 @@
 #include <DMainWindow>
 #include <DToolBar>
 #include <DMenuBar>
+#include <DToolButton>
 
 #include <QObject>
 
@@ -78,7 +79,8 @@ private :
     void createMainMenu(DMenu *mainMenu);
     void initLeftToolbar();
     void initTopToolbar();
-    void createNavIconBtn(const QString &navName, const QString &iconName);    
+    void createNavIconBtn(const QString &navName, const QString &iconName);
+    void insertToLeftBarBottom(AbstractWidget *toolBtn);
     DIconButton *addIconButton(QAction *action);
 };
 
