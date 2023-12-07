@@ -13,6 +13,7 @@
 #include <DScrollArea>
 #include <DScrollBar>
 #include <DHorizontalLine>
+#include <DDialog>
 
 #include <QVBoxLayout>
 #include <QDebug>
@@ -93,8 +94,20 @@ void AskPageWidget::onChatFinished()
 
 void AskPageWidget::onDeleteBtnClicked()
 {
-    CodeGeeXManager::instance()->deleteCurrentSession();
-    CodeGeeXManager::instance()->cleanHistoryMessage();
+    DDialog *confirmDialog = new DDialog(this);
+    confirmDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+    confirmDialog->setMessage(tr("This operation will delete all the content of this session. confirm to delete it?"));
+    confirmDialog->insertButton(0, tr("cancel"));
+    confirmDialog->insertButton(1, tr("delete"), false, DDialog::ButtonWarning);
+
+    connect(confirmDialog, &DDialog::buttonClicked, this, [](int index) {
+        if (index == 1) {
+            CodeGeeXManager::instance()->deleteCurrentSession();
+            CodeGeeXManager::instance()->cleanHistoryMessage();
+        }
+    });
+
+    confirmDialog->exec();
 }
 
 void AskPageWidget::onHistoryBtnClicked()
