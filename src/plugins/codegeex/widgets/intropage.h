@@ -6,6 +6,8 @@
 #define INTROPAGE_H
 
 #include <DWidget>
+#include <DLabel>
+#include <QList>
 
 DWIDGET_USE_NAMESPACE
 
@@ -22,6 +24,9 @@ public:
 signals:
     void suggestionToSend(const QString &suggesstion);
 
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
 private:
     void initUI();
     void initLogo();
@@ -30,6 +35,8 @@ private:
 
     void appendDescLabel(QVBoxLayout *layout, const QString &text);
     void appendSuggestButton(QVBoxLayout *layout, const QString &text, const QString &iconName = "");
+
+    QList<DLabel *> labelToPaint {};
 };
 
-#endif // INTROPAGE_H
+#endif   // INTROPAGE_H
