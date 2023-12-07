@@ -5,7 +5,6 @@
 #include "intropage.h"
 #include "codegeexmanager.h"
 
-#include <DLabel>
 #include <DPushButton>
 #include <DScrollArea>
 #include <QAction>
@@ -16,7 +15,7 @@
 #include <QDebug>
 
 IntroPage::IntroPage(QWidget *parent)
-    : DWidget (parent)
+    : DWidget(parent)
 {
     initUI();
 }
@@ -41,7 +40,7 @@ void IntroPage::initLogo()
     QVBoxLayout *logoLayout = new QVBoxLayout;
     logoLayout->setAlignment(Qt::AlignCenter);
     logoLayout->setSpacing(20);
-    qobject_cast<QVBoxLayout*>(layout())->addLayout(logoLayout);
+    qobject_cast<QVBoxLayout *>(layout())->addLayout(logoLayout);
 
     DLabel *logo = new DLabel(this);
     logo->setAlignment(Qt::AlignHCenter);
@@ -63,17 +62,17 @@ void IntroPage::initIntroContent()
     QVBoxLayout *introLayout = new QVBoxLayout;
     introLayout->setAlignment(Qt::AlignCenter);
     introLayout->setSpacing(10);
-    qobject_cast<QVBoxLayout*>(layout())->addLayout(introLayout);
+    qobject_cast<QVBoxLayout *>(layout())->addLayout(introLayout);
 
-    appendDescLabel(introLayout, tr("CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.").arg("<font style='color:dodgerblue;'>","</font>"));
-    appendDescLabel(introLayout, tr("Select code and %1 right-click %2 to add comments or translate code.").arg("<font style='color:dodgerblue;'>","</font>"));
-    appendDescLabel(introLayout, tr("Also, you can directly %1 ask CodeGeeX any questions %2.").arg("<font style='color:dodgerblue;'>","</font>"));
+    appendDescLabel(introLayout, tr("CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.").arg("<font style='color:dodgerblue;'>", "</font>"));
+    appendDescLabel(introLayout, tr("Select code and %1 right-click %2 to add comments or translate code.").arg("<font style='color:dodgerblue;'>", "</font>"));
+    appendDescLabel(introLayout, tr("Also, you can directly %1 ask CodeGeeX any questions %2.").arg("<font style='color:dodgerblue;'>", "</font>"));
 }
 
 void IntroPage::initSuggestContent()
 {
     QVBoxLayout *suggestLayout = new QVBoxLayout;
-    qobject_cast<QVBoxLayout*>(layout())->addLayout(suggestLayout);
+    qobject_cast<QVBoxLayout *>(layout())->addLayout(suggestLayout);
 
     DLabel *suggestLabel = new DLabel(this);
     suggestLabel->setText(tr("Try the following questions:"));
@@ -91,9 +90,9 @@ void IntroPage::appendDescLabel(QVBoxLayout *layout, const QString &text)
 
     DLabel *icon = new DLabel(this);
     icon->setMargin(2);
-    icon->setAlignment(Qt::AlignTop);
-    icon->setPixmap(QIcon::fromTheme("codegeex_indicate").pixmap(16));
+    icon->setFixedSize(16, 16);
 
+    labelToPaint.append(icon);
     descLayout->addWidget(icon);
 
     DLabel *descLabel = new DLabel(this);
@@ -117,7 +116,21 @@ void IntroPage::appendSuggestButton(QVBoxLayout *layout, const QString &text, co
     suggestButton->setText(text);
     layout->addWidget(suggestButton);
 
-    connect(suggestButton, &DPushButton::clicked, [ = ] {
+    connect(suggestButton, &DPushButton::clicked, [=] {
         emit suggestionToSend(suggestButton->text());
     });
+}
+
+void IntroPage::paintEvent(QPaintEvent *event)
+{
+    auto pa = QPainter(this);
+    pa.setPen(QColor(30, 144, 255));
+
+    auto icon = QIcon::fromTheme("codegeex_indicate");
+    for (auto index = 0; index < labelToPaint.count(); index++) {
+        auto rect = labelToPaint[index]->geometry();
+        icon.paint(&pa, rect);
+    }
+
+    DWidget::paintEvent(event);
 }
