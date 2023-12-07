@@ -8,6 +8,7 @@
 #include <DLabel>
 #include <DComboBox>
 #include <DPushButton>
+#include <DDialog>
 
 #include <QBoxLayout>
 
@@ -24,8 +25,7 @@ class ProfileSettingWidgetPrivate
 };
 
 ProfileSettingWidget::ProfileSettingWidget(QWidget *parent)
-    : PageWidget(parent)
-    , d(new ProfileSettingWidgetPrivate)
+    : PageWidget(parent), d(new ProfileSettingWidgetPrivate)
 {
     readTranslate();
     setupUi();
@@ -34,7 +34,7 @@ ProfileSettingWidget::ProfileSettingWidget(QWidget *parent)
 
 ProfileSettingWidget::~ProfileSettingWidget()
 {
-    if(d)
+    if (d)
         delete d;
 }
 
@@ -74,11 +74,11 @@ void ProfileSettingWidget::saveConfig()
         file.write(chooseFileName.toUtf8());
         file.close();
     }
-    DMessageBox msgBox;
-    DPushButton *okButton = new DPushButton(tr("Ok"));
-    msgBox.addButton(okButton, QMessageBox::ButtonRole::NoRole);
+
+    DDialog msgBox;
+    msgBox.addButton(tr("Ok"));
     msgBox.setWindowTitle(tr("Restart Required--deep-in unioncode"));
-    msgBox.setText(tr("The language change will take effect after restart."));
+    msgBox.setMessage(tr("The language change will take effect after restart."));
     msgBox.exec();
 }
 
