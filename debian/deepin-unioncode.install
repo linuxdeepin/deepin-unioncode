@@ -1,7 +1,7 @@
 /usr/bin/deepin-unioncode
 /usr/share/deepin-unioncode
 /usr/share/deepin-unioncode/configures/*.support
-/usr/share/deepin-unioncode/configures/icons/*.png
+/usr/share/deepin-unioncode/configures/icons/*.svg
 /usr/share/deepin-unioncode/templates/*
 /usr/share/applications/*.desktop
 /usr/lib/*/deepin-unioncode/lib*.so*

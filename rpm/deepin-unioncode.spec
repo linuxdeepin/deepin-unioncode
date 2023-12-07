@@ -70,7 +70,7 @@ popd
 %{_libdir}/%name/tools/**
 %{_datadir}/applications/unioncode.desktop
 %{_datadir}/%name/configures/*.support
-%{_datadir}/%name/configures/icons/*.png
+%{_datadir}/%name/configures/icons/*.svg
 %{_datadir}/%name/translations/*.qm
 %{_datadir}/%name/templates/**
 %{_datadir}/%name/unioncode-qtermwidget/**

@@ -1,11 +1,8 @@
 <RCC>
-    <qresource prefix="/core">
-        <file>images/unioncode@128.png</file>
-        <file>images/unioncode@200.png</file>  
-    </qresource>
     <qresource prefix="/icons/deepin/builtin">
         <file>texts/recent-navigation_20px.svg</file>
         <file>texts/edit-navigation_20px.svg</file>
+        <file>actions/ide_32px.svg</file>
     </qresource>
 </RCC>
 
