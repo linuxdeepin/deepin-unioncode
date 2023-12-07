@@ -5,11 +5,12 @@
 #include "messagecomponent.h"
 #include "codeeditcomponent.h"
 
+#include <DLabel>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QBitmap>
 #include <QPixmap>
-#include <DLabel>
 #include <QPalette>
 #include <QFrame>
 #include <QDebug>
@@ -21,8 +22,15 @@ MessageComponent::MessageComponent(const MessageData &msgData, QWidget *parent)
 {
     initUI();
 }
+
 void MessageComponent::updateMessage(const MessageData &msgData)
 {
+    if (waitingAnswer) {
+        msgLayout->removeWidget(spinner);
+        delete spinner;
+        waitingAnswer = false;
+    }
+
     if (msgData.messageType() == MessageData::Ask) {
         curUpdateLabel = new DLabel(this);
         curUpdateLabel->setWordWrap(true);
@@ -87,7 +95,7 @@ void MessageComponent::initUI()
 void MessageComponent::initSenderInfo()
 {
     QHBoxLayout *senderInfoLayout = new QHBoxLayout;
-    qobject_cast<QVBoxLayout*>(layout())->addLayout(senderInfoLayout);
+    qobject_cast<QVBoxLayout *>(layout())->addLayout(senderInfoLayout);
 
     senderHead = new DLabel(this);
     senderName = new DLabel(this);
@@ -113,7 +121,20 @@ void MessageComponent::initSenderInfo()
 void MessageComponent::initMessageSection()
 {
     msgLayout = new QVBoxLayout;
-    qobject_cast<QVBoxLayout*>(layout())->addLayout(msgLayout);
+    qobject_cast<QVBoxLayout *>(layout())->addLayout(msgLayout);
+}
+
+void MessageComponent::waitForAnswer()
+{
+    waitingAnswer = true;
+    auto hlayout = new QHBoxLayout;
+    spinner = new DSpinner(this);
+    spinner->setFixedSize(14, 14);
+    hlayout->addWidget(spinner);
+    hlayout->setAlignment(Qt::AlignLeft);
+
+    msgLayout->addLayout(hlayout);
+    spinner->start();
 }
 
 bool MessageComponent::createCodeEdit(const MessageData &newData)

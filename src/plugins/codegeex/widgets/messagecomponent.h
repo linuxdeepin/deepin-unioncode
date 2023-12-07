@@ -10,6 +10,7 @@
 #include <DWidget>
 #include <DLabel>
 #include <DFrame>
+#include <DSpinner>
 
 #include <QVariant>
 
@@ -31,6 +32,7 @@ class MessageComponent : public DFrame
 public:
     explicit MessageComponent(const MessageData &msgData, QWidget *parent = nullptr);
     void updateMessage(const MessageData &msgData);
+    void waitForAnswer();
 
 private:
     void initUI();
@@ -40,9 +42,12 @@ private:
     void createCurrentUpdateWidget();
     bool createCodeEdit(const MessageData &newData);
 
+    bool waitingAnswer { false };
+
     DLabel *senderHead { nullptr };
     DLabel *senderName { nullptr };
     DLabel *context { nullptr };
+    DSpinner *spinner { nullptr };
 
     QVBoxLayout *msgLayout { nullptr };
 

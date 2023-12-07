@@ -57,6 +57,7 @@ private:
 
     void enterAnswerState();
     void enterInputState();
+    void waitForAnswer();
 
     void askQuestion(const QString &question);
     void resetBtns();
@@ -71,13 +72,13 @@ private:
     DTK_WIDGET_NAMESPACE::DPushButton *historyBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DPushButton *createNewBtn { nullptr };
 
-    QTimer *processTimer { nullptr };
-
+    MessageComponent* waitComponets { nullptr };
     QMap<QString, MessageComponent*> msgComponents {};
 
     QString placeHolderText {};
     int progressCalcNum = 0;
     PageState curState;
+    bool waitingAnswer { nullptr };
 };
 
 #endif // ASKPAGEWIDGET_H
