@@ -146,7 +146,7 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
 void CodeGeeXManager::recevieLoginState(AskApi::LoginState loginState)
 {
     if (loginState == AskApi::LoginState::kLoginFailed) {
-        //        qWarning() << "CodeGeeX login failed!";
+        //qWarning() << "CodeGeeX login failed!";
         // switch to login ui.
     } else if (loginState == AskApi::LoginState::kLoginSuccess) {
         isLogin = true;
@@ -155,7 +155,11 @@ void CodeGeeXManager::recevieLoginState(AskApi::LoginState loginState)
         if (queryTimer) {
             queryTimer->stop();
             queryTimer->deleteLater();
+            queryTimer = nullptr;
         }
+    } else if (loginState == AskApi::LoginState::kLoginOut) {
+        isLogin = false;
+        Q_EMIT logoutSuccessed();
     }
 }
 
@@ -232,6 +236,15 @@ void CodeGeeXManager::queryLoginState()
     }
 
     queryTimer->start(1000);
+}
+
+void CodeGeeXManager::logout()
+{
+    if (!isLogin) {
+        qWarning() << "cant`t logout without login";
+        return;
+    }
+    askApi.logout(sessionId);
 }
 
 void CodeGeeXManager::cleanHistoryMessage()

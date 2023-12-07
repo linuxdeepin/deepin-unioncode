@@ -47,6 +47,7 @@ public:
 
 Q_SIGNALS:
     void loginSuccessed();
+    void logoutSuccessed();
     void createdNewSession();
     void requestMessageUpdate(const MessageData &msg);
     void requestToTransCode(const QString &code);
@@ -62,6 +63,7 @@ public Q_SLOTS:
     void recevieSessionRecords(const QVector<CodeGeeX::AskApi::SessionRecord> &records);
     void recevieDeleteResult(const QStringList &talkIds, bool success);
     void stopReceive();
+    void logout();
 
 private:
     explicit CodeGeeXManager(QObject *parent = nullptr);
