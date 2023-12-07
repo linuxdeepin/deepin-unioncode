@@ -29,10 +29,12 @@ class MessageComponent : public DFrame
         Label,
         CodeEdit
     };
+
 public:
     explicit MessageComponent(const MessageData &msgData, QWidget *parent = nullptr);
     void updateMessage(const MessageData &msgData);
     void waitForAnswer();
+    void stopWaiting();
 
 private:
     void initUI();
@@ -58,4 +60,4 @@ private:
     UpdateState currentUpdateState = Label;
 };
 
-#endif // MESSAGECOMPONENT_H
+#endif   // MESSAGECOMPONENT_H

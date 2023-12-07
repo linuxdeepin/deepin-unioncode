@@ -17,6 +17,7 @@
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QTimer>
+#include <QDateTime>
 
 AskPageWidget::AskPageWidget(QWidget *parent)
     : DWidget(parent)
@@ -53,7 +54,7 @@ void AskPageWidget::onMessageUpdate(const MessageData &msgData)
     }
 
     if (!msgComponents.contains(msgData.messageID())) {
-        if (waitingAnswer) {
+        if (waitingAnswer && msgData.messageType() == MessageData::Anwser) {
             msgComponents.insert(msgData.messageID(), waitComponets);
             waitingAnswer = false;
         } else {
@@ -122,6 +123,18 @@ void AskPageWidget::initUI()
     scrollArea->setAlignment(Qt::AlignHCenter);
     layout->addWidget(scrollArea);
 
+    //套一层Widget用以隐藏button和layout
+    stopWidget = new DWidget(this);
+    QHBoxLayout *hlayout = new QHBoxLayout;
+    stopWidget->setLayout(hlayout);
+    stopGenerate = new DPushButton(this);
+    stopGenerate->setText(tr("stop generate"));
+    hlayout->setContentsMargins(0, 20, 0, 20);
+    hlayout->addWidget(stopGenerate);
+    hlayout->setAlignment(Qt::AlignHCenter);
+    layout->addWidget(stopWidget);
+    stopWidget->hide();
+
     DHorizontalLine *line = new DHorizontalLine(this);
     layout->addWidget(line);
 
@@ -177,6 +190,7 @@ void AskPageWidget::initInputWidget()
 void AskPageWidget::initConnection()
 {
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestMessageUpdate, this, &AskPageWidget::onMessageUpdate);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatStarted, this, &AskPageWidget::enterAnswerState);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &AskPageWidget::onChatFinished);
 
     connect(sendButton, &DFloatingButton::clicked, inputEdit, &DLineEdit::returnPressed);
@@ -189,6 +203,16 @@ void AskPageWidget::initConnection()
             sendButton->setEnabled(false);
         else
             sendButton->setEnabled(true);
+    });
+    connect(stopGenerate, &DPushButton::clicked, this, [this]() {
+        CodeGeeXManager::instance()->stopReceive();
+        Q_EMIT CodeGeeXManager::instance()->chatFinished();
+        if (!msgComponents.values().contains(waitComponets)) {
+            QString stopId = "Stop:" + QString::number(QDateTime::currentMSecsSinceEpoch());
+            msgComponents.insert(stopId, waitComponets);
+        }
+        waitComponets->stopWaiting();
+        waitingAnswer = false;
     });
 }
 
@@ -230,11 +254,13 @@ void AskPageWidget::enterAnswerState()
     if (createNewBtn)
         createNewBtn->setEnabled(false);
 
+    stopWidget->show();
     waitForAnswer();
 }
 
 void AskPageWidget::enterInputState()
 {
+    stopWidget->hide();
     inputEdit->setEnabled(true);
     inputEdit->setPlaceholderText(placeHolderText);
 
@@ -258,7 +284,6 @@ void AskPageWidget::waitForAnswer()
 void AskPageWidget::askQuestion(const QString &question)
 {
     CodeGeeXManager::instance()->sendMessage(question);
-    enterAnswerState();
 }
 
 void AskPageWidget::resetBtns()

@@ -33,8 +33,7 @@ public:
             const QString &url,
             const QString &token,
             const QString &prompt,
-            const QString &talkId
-            );
+            const QString &talkId);
 
     struct SessionRecord
     {
@@ -63,8 +62,7 @@ public:
                         const QString &token,
                         const QStringList &talkIds);
 
-    enum LoginState
-    {
+    enum LoginState {
         kLoginFailed,
         kLoginSuccess
     };
@@ -76,6 +74,7 @@ signals:
     void getChatRecordResult(const QVector<ChatRecord> &record);
     void sessionDeleted(const QStringList &talkId, bool isSuccessful);
     void sessionCreated(const QString &talkId, bool isSuccessful);
+    void stopReceive();
 
 public slots:
 
@@ -96,9 +95,8 @@ private:
     QByteArray jsonToByteArray(const QJsonObject &jsonObject);
     QJsonObject toJsonOBject(QNetworkReply *reply);
 
-
     QNetworkAccessManager *manager = nullptr;
 };
-} // end namespace
+}   // end namespace
 
-#endif // ASKAPI_H
+#endif   // ASKAPI_H

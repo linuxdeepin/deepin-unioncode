@@ -71,14 +71,16 @@ private:
     DTK_WIDGET_NAMESPACE::DPushButton *deleteBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DPushButton *historyBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DPushButton *createNewBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DWidget *stopWidget { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *stopGenerate { nullptr };
 
-    MessageComponent* waitComponets { nullptr };
-    QMap<QString, MessageComponent*> msgComponents {};
+    MessageComponent *waitComponets { nullptr };
+    QMap<QString, MessageComponent *> msgComponents {};
 
     QString placeHolderText {};
     int progressCalcNum = 0;
     PageState curState;
-    bool waitingAnswer { nullptr };
+    bool waitingAnswer { false };
 };
 
-#endif // ASKPAGEWIDGET_H
+#endif   // ASKPAGEWIDGET_H

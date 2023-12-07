@@ -10,13 +10,14 @@
 #include <DComboBox>
 #include <DPushButton>
 #include <DLabel>
+#include <DSpinner>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDebug>
 
 TranslationPageWidget::TranslationPageWidget(QWidget *parent)
-    : DWidget (parent)
+    : DWidget(parent)
 {
     initUI();
     initConnection();
@@ -36,6 +37,10 @@ void TranslationPageWidget::cleanOutputEdit()
 
 void TranslationPageWidget::onTranslateBtnClicked()
 {
+    spinner->move(outputEdit->x() + outputEdit->width() / 2, outputEdit->y() + outputEdit->height() / 2);
+    spinner->show();
+    spinner->start();
+
     QString dstLang = langComboBox->currentText();
     QString srcCode = inputEdit->getContent();
     Copilot::instance()->translateCode(srcCode, dstLang);
@@ -43,6 +48,9 @@ void TranslationPageWidget::onTranslateBtnClicked()
 
 void TranslationPageWidget::onRecevieTransCode(const QString &code)
 {
+    spinner->stop();
+    spinner->hide();
+
     if (outputEdit)
         outputEdit->updateCode(code);
 }
@@ -81,6 +89,10 @@ void TranslationPageWidget::initUI()
     outputEdit->setReadOnly(true);
     outputEdit->setUpdateHeight(false);
     outputEdit->updateCode("");
+
+    spinner = new DSpinner(this);
+    spinner->setFixedSize(21, 21);
+    spinner->hide();
 
     outputEdit->setContentsMargins(0, 10, 0, 0);
     layout->addWidget(outputEdit);

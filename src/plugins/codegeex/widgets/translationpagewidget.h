@@ -8,6 +8,7 @@
 #include <DWidget>
 #include <DComboBox>
 #include <DSuggestButton>
+#include <DSpinner>
 
 DWIDGET_USE_NAMESPACE
 
@@ -33,10 +34,11 @@ private:
     void initUI();
     void initConnection();
 
+    DSpinner *spinner { nullptr };
     DSuggestButton *transBtn { nullptr };
     DComboBox *langComboBox { nullptr };
     CodeEditComponent *inputEdit { nullptr };
     CodeEditComponent *outputEdit { nullptr };
 };
 
-#endif // TRANSLATIONPAGEWIDGET_H
+#endif   // TRANSLATIONPAGEWIDGET_H

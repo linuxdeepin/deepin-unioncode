@@ -25,11 +25,7 @@ MessageComponent::MessageComponent(const MessageData &msgData, QWidget *parent)
 
 void MessageComponent::updateMessage(const MessageData &msgData)
 {
-    if (waitingAnswer) {
-        msgLayout->removeWidget(spinner);
-        delete spinner;
-        waitingAnswer = false;
-    }
+    stopWaiting();
 
     if (msgData.messageType() == MessageData::Ask) {
         curUpdateLabel = new DLabel(this);
@@ -135,6 +131,15 @@ void MessageComponent::waitForAnswer()
 
     msgLayout->addLayout(hlayout);
     spinner->start();
+}
+
+void MessageComponent::stopWaiting()
+{
+    if (waitingAnswer) {
+        msgLayout->removeWidget(spinner);
+        delete spinner;
+        waitingAnswer = false;
+    }
 }
 
 bool MessageComponent::createCodeEdit(const MessageData &newData)
