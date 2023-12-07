@@ -4,5 +4,6 @@
     </qresource>
     <qresource prefix="/icons/deepin/builtin/">
         <file>icons/options_alert_16px.svg</file>
+        <file>texts/options_setting_32px.svg</file>
     </qresource>
 </RCC>
