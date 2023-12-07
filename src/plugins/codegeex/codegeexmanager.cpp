@@ -128,7 +128,7 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
     if (msgID.isEmpty())
         return;
 
-//    qInfo() << "resp msg:" << msgID << data << event;
+    //    qInfo() << "resp msg:" << msgID << data << event;
     if (!curSessionMsg.contains(msgID))
         curSessionMsg.insert(msgID, MessageData(msgID, MessageData::Anwser));
 
@@ -139,15 +139,14 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
 
     if (event == "finish") {
         emit chatFinished();
-    } else if (event == "add"){
-
+    } else if (event == "add") {
     }
 }
 
 void CodeGeeXManager::recevieLoginState(AskApi::LoginState loginState)
 {
     if (loginState == AskApi::LoginState::kLoginFailed) {
-//        qWarning() << "CodeGeeX login failed!";
+        //        qWarning() << "CodeGeeX login failed!";
         // switch to login ui.
     } else if (loginState == AskApi::LoginState::kLoginSuccess) {
         isLogin = true;
@@ -213,7 +212,7 @@ void CodeGeeXManager::initConnections()
     connect(&askApi, &AskApi::loginState, this, &CodeGeeXManager::recevieLoginState);
     connect(&askApi, &AskApi::sessionCreated, this, &CodeGeeXManager::onSessionCreated);
     connect(&askApi, &AskApi::getSessionListResult, this, &CodeGeeXManager::recevieSessionRecords);
-    connect(&askApi, &AskApi::sessionDeleted, this,  &CodeGeeXManager::recevieDeleteResult);
+    connect(&askApi, &AskApi::sessionDeleted, this, &CodeGeeXManager::recevieDeleteResult);
     connect(Copilot::instance(), &Copilot::translatingText, this, &CodeGeeXManager::recevieToTranslate);
 }
 
@@ -221,7 +220,7 @@ void CodeGeeXManager::queryLoginState()
 {
     if (!queryTimer) {
         queryTimer = new QTimer(this);
-        connect(queryTimer, &QTimer::timeout, this, [ = ] {
+        connect(queryTimer, &QTimer::timeout, this, [=] {
             if (!sessionId.isEmpty())
                 askApi.sendQueryRequest(sessionId);
         });
@@ -253,5 +252,5 @@ QString CodeGeeXManager::configFilePath() const
 QString CodeGeeXManager::uuid()
 {
     QUuid uuid = QUuid::createUuid();
-    return uuid.toString().replace("{", "").replace("}", "").replace("-", "");;
+    return uuid.toString().replace("{", "").replace("}", "").replace("-", "");
 }

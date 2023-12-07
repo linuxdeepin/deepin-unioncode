@@ -19,13 +19,10 @@
 #include <QTimer>
 
 AskPageWidget::AskPageWidget(QWidget *parent)
-    : DWidget (parent)
-    , processTimer(new QTimer(this))
+    : DWidget(parent)
 {
     initUI();
     initConnection();
-
-    processTimer->setInterval(200);
 }
 
 void AskPageWidget::setIntroPage()
@@ -33,7 +30,7 @@ void AskPageWidget::setIntroPage()
     cleanWidgets();
     curState = Intro;
     IntroPage *introPage = new IntroPage(scrollArea);
-    connect(introPage, &IntroPage::suggestionToSend, [this](const QString &suggesstion){
+    connect(introPage, &IntroPage::suggestionToSend, [this](const QString &suggesstion) {
         askQuestion(suggesstion);
     });
     scrollArea->setWidget(introPage);
@@ -56,14 +53,20 @@ void AskPageWidget::onMessageUpdate(const MessageData &msgData)
     }
 
     if (!msgComponents.contains(msgData.messageID())) {
-        msgComponents.insert(msgData.messageID(), new MessageComponent(msgData, messageContainer));
-        qobject_cast<QVBoxLayout*>(messageContainer->layout())->insertWidget(msgComponents.count() - 1,msgComponents.value(msgData.messageID()));
+        if (waitingAnswer) {
+            msgComponents.insert(msgData.messageID(), waitComponets);
+            waitingAnswer = false;
+        } else {
+            msgComponents.insert(msgData.messageID(), new MessageComponent(msgData, messageContainer));
+            qobject_cast<QVBoxLayout *>(messageContainer->layout())->insertWidget(msgComponents.count() - 1, msgComponents.value(msgData.messageID()));
+        }
+
         msgComponents.value(msgData.messageID())->updateMessage(msgData);
     } else {
         msgComponents.value(msgData.messageID())->updateMessage(msgData);
     }
 
-    QTimer::singleShot(100, [this](){
+    QTimer::singleShot(100, [this]() {
         if (scrollArea->verticalScrollBar()->isVisible()) {
             int maxValue = scrollArea->verticalScrollBar()->maximum();
             scrollArea->verticalScrollBar()->setValue(maxValue);
@@ -175,24 +178,14 @@ void AskPageWidget::initConnection()
 {
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestMessageUpdate, this, &AskPageWidget::onMessageUpdate);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &AskPageWidget::onChatFinished);
-    connect(processTimer, &QTimer::timeout, [this](){
-        QString tips;
-        int maxDotNum = 4;
-        int dotNum = progressCalcNum++ % maxDotNum;
-        for (int i = 0; i < dotNum; i++) {
-            tips += "...";
-        }
-        QString holderText = tr("Answering") + tips;
-        inputEdit->setPlaceholderText(holderText);
-    });
 
     connect(sendButton, &DFloatingButton::clicked, inputEdit, &DLineEdit::returnPressed);
     connect(inputEdit, &DLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
     connect(deleteBtn, &DPushButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
     connect(historyBtn, &DPushButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
     connect(createNewBtn, &DPushButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
-    connect(inputEdit, &DLineEdit::textChanged, sendButton, [this](){
-        if(inputEdit->text().isEmpty())
+    connect(inputEdit, &DLineEdit::textChanged, sendButton, [this]() {
+        if (inputEdit->text().isEmpty())
             sendButton->setEnabled(false);
         else
             sendButton->setEnabled(true);
@@ -237,12 +230,11 @@ void AskPageWidget::enterAnswerState()
     if (createNewBtn)
         createNewBtn->setEnabled(false);
 
-    processTimer->start();
+    waitForAnswer();
 }
 
 void AskPageWidget::enterInputState()
 {
-    processTimer->stop();
     inputEdit->setEnabled(true);
     inputEdit->setPlaceholderText(placeHolderText);
 
@@ -252,6 +244,15 @@ void AskPageWidget::enterInputState()
         historyBtn->setEnabled(true);
     if (createNewBtn)
         createNewBtn->setEnabled(true);
+}
+
+void AskPageWidget::waitForAnswer()
+{
+    waitingAnswer = true;
+    MessageData data("", MessageData::Anwser);
+    waitComponets = new MessageComponent(data, messageContainer);
+    qobject_cast<QVBoxLayout *>(messageContainer->layout())->insertWidget(msgComponents.count(), waitComponets);
+    waitComponets->waitForAnswer();
 }
 
 void AskPageWidget::askQuestion(const QString &question)
