@@ -21,6 +21,7 @@
 #include <QTextLayout>
 #include <QTextBlock>
 #include <QAbstractItemView>
+#include <QPainterPath>
 
 inline constexpr int kRectRadius = { 8 };
 inline constexpr int kIconWidth = { 30 };
