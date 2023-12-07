@@ -18,8 +18,6 @@
 
 DWIDGET_USE_NAMESPACE
 
-const QString ICON_LOGO_128PX = ":/core/images/unioncode@128.png";
-
 AboutDialog::AboutDialog(QWidget *parent)
     : DAbstractDialog(parent)
 {
@@ -38,8 +36,7 @@ void AboutDialog::setupUi()
     titleBar->setTitle(QString(tr("About Deepin Union Code")));
 
     DLabel *logoLabel = new DLabel(this);
-    logoLabel->setText("aaa");
-    logoLabel->setPixmap(QPixmap(ICON_LOGO_128PX));
+    logoLabel->setPixmap(QPixmap(QIcon::fromTheme("ide").pixmap(32, 32)));
 
     QString buildDateInfo = tr("<br/>Built on %1 %2 in %3<br/>")
             .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ProcessUtil::localPlatform());
