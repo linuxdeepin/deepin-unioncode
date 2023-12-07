@@ -3,5 +3,8 @@
         <file>texts/edit-file_16px.svg</file>
         <file>texts/edit-tree_16px.svg</file>
         <file>texts/edit-project_16px.svg</file>
+        <file>texts/edit-hSplit_16px.svg</file>
+        <file>texts/edit-vSplit_16px.svg</file>
+        <file>texts/edit-closeBtn_16px.svg</file>
     </qresource>
 </RCC>

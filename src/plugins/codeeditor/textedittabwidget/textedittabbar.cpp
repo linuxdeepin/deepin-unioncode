@@ -6,37 +6,42 @@
 #include "common/common.h"
 #include "services/editor/editorservice.h"
 
+#include <DToolButton>
+
 #include <QFileInfo>
 #include <QDebug>
 #include <QMessageBox>
 #include <QVBoxLayout>
-#include <QToolButton>
+
+DWIDGET_USE_NAMESPACE
 
 class TextEditTabBarPrivate
 {
     friend class TextEditTabBar;
-    QTabBar *tab = nullptr;
+    DTabBar *tab = nullptr;
     QHBoxLayout * hBoxLayout = nullptr;
-    QToolButton *pbtHorizontal = nullptr;
-    QToolButton *pbtVertical = nullptr;
-    QToolButton *pbtClose = nullptr;
+    DToolButton *pbtHorizontal = nullptr;
+    DToolButton *pbtVertical = nullptr;
+    DToolButton *pbtClose = nullptr;
 };
 
 TextEditTabBar::TextEditTabBar(QWidget *parent)
-    : QWidget (parent)
+    : DFrame (parent)
     , d(new TextEditTabBarPrivate)
 {
-    d->tab = new QTabBar(this);
+    DStyle::setFrameRadius(this, 0);
+    d->tab = new DTabBar(this);
+    d->tab->setVisibleAddButton(false);
     d->hBoxLayout = new QHBoxLayout();
-    d->pbtHorizontal = new QToolButton();
-    d->pbtVertical = new QToolButton();
-    d->pbtClose = new QToolButton(this);
+    d->pbtHorizontal = new DToolButton();
+    d->pbtVertical = new DToolButton();
+    d->pbtClose = new DToolButton(this);
     d->hBoxLayout->setSpacing(5);
     d->hBoxLayout->setMargin(0);
 
-    d->pbtHorizontal->setIcon(QIcon(":/core/images/splitbutton_horizontal.png"));
-    d->pbtVertical->setIcon(QIcon(":/core/images/splitbutton_vertical.png"));
-    d->pbtClose->setIcon(QIcon(":/core/images/close_button_selected.png"));
+    d->pbtHorizontal->setIcon(QIcon::fromTheme("edit-hSplit"));
+    d->pbtVertical->setIcon(QIcon::fromTheme("edit-vSplit"));
+    d->pbtClose->setIcon(QIcon::fromTheme("edit-closeBtn"));
     d->hBoxLayout->addWidget(d->tab);
     d->hBoxLayout->addStretch(10);
     d->hBoxLayout->addWidget(d->pbtHorizontal);
@@ -46,29 +51,29 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
 
     this->setLayout(d->hBoxLayout);
 
-    QObject::connect(d->tab, &QTabBar::currentChanged,
+    QObject::connect(d->tab, &DTabBar::currentChanged,
                      this, [=](int index){
         QString filePath = indexFile(index);
         emit this->fileSwitched(filePath);
         editor.switchedFile(filePath);
     });
 
-    QObject::connect(d->tab, &QTabBar::tabCloseRequested,
+    QObject::connect(d->tab, &DTabBar::tabCloseRequested,
                      this, [=](int index) {
         this->removeTab(this->indexFile(index));
     });
 
-    QObject::connect(d->pbtHorizontal, &QToolButton::clicked,
-                     this, [=]() {
-        emit splitClicked(Qt::Horizontal);
-    });
-
-    QObject::connect(d->pbtVertical, &QToolButton::clicked,
+    QObject::connect(d->pbtHorizontal, &DToolButton::clicked,
                      this, [=]() {
         emit splitClicked(Qt::Vertical);
     });
 
-    QObject::connect(d->pbtClose, &QToolButton::clicked,
+    QObject::connect(d->pbtVertical, &DToolButton::clicked,
+                     this, [=]() {
+        emit splitClicked(Qt::Horizontal);
+    });    
+
+    QObject::connect(d->pbtClose, &DToolButton::clicked,
                      this, [=]() {
         emit closeClicked();
     });
