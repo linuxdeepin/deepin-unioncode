@@ -5,10 +5,11 @@
 #ifndef TEXTEDITTABBAR_H
 #define TEXTEDITTABBAR_H
 
-#include <QTabBar>
+#include <DFrame>
+#include <DTabBar>
 
 class TextEditTabBarPrivate;
-class TextEditTabBar : public QWidget
+class TextEditTabBar : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
     friend class TextEditTabBarPrivate;

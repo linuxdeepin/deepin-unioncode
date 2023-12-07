@@ -50,7 +50,6 @@ TextEditSplitter::TextEditSplitter(QWidget *parent)
     vLayout->addWidget(mainSplitter);
     vLayout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(vLayout);
-
 }
 
 QString TextEditSplitter::getSelectedText()

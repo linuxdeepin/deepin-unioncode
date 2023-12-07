@@ -47,6 +47,7 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     this->setAcceptDrops(true);
 
     setDefaultFileEdit();
+    setFocusPolicy(Qt::ClickFocus);
 
     QObject::connect(EditorCallProxy::instance(), &EditorCallProxy::toOpenFileWithKey,
                      this, &TextEditTabWidget::openFileWithKey);
@@ -227,6 +228,9 @@ void TextEditTabWidget::openFileWithKey(const newlsp::ProjectKey &key, const QSt
         edit->setProjectKey(key);
         edit->setFile(info.filePath());
     }
+
+    QObject::connect(edit, &TextEdit::focusChanged,
+                         this, &TextEditTabWidget::selectSelf);
 
     d->textEdits[filePath] = edit;
     // 添加监听
@@ -758,24 +762,7 @@ void TextEditTabWidget::focusOutEvent(QFocusEvent *event)
 
 void TextEditTabWidget::paintEvent(QPaintEvent *event)
 {
-    if (d->selFlag) {
-        QPainter painter(this);
-        painter.save();
-        painter.setPen(d->selColor);
-        painter.drawRect(this->rect());
-        painter.restore();
-    } else {
-        if (!d->defColor.isValid()) {
-            d->defColor = palette().window().color();
-            d->selColor = QColor(d->defColor.red() + 20, d->defColor.green() + 20, d->defColor.blue() + 20, d->defColor.alpha());
-        } else {
-            QPainter painter(this);
-            painter.save();
-            painter.setPen(d->defColor);
-            painter.drawRect(this->rect());
-            painter.restore();
-        }
-    }
+
 }
 
 void TextEditTabWidget::dragEnterEvent(QDragEnterEvent *event)
