@@ -198,6 +198,11 @@ void CodeGeeXManager::recevieDeleteResult(const QStringList &talkIds, bool succe
     }
 }
 
+void CodeGeeXManager::stopReceive()
+{
+    Q_EMIT askApi.stopReceive();
+}
+
 CodeGeeXManager::CodeGeeXManager(QObject *parent)
     : QObject(parent)
 {

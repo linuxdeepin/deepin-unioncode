@@ -15,7 +15,8 @@ QT_BEGIN_NAMESPACE
 class QTimer;
 QT_END_NAMESPACE
 
-struct RecordData {
+struct RecordData
+{
     QString talkId;
     QString promot;
     QString date;
@@ -60,6 +61,7 @@ public Q_SLOTS:
     void recevieToTranslate(const QString &codeText);
     void recevieSessionRecords(const QVector<CodeGeeX::AskApi::SessionRecord> &records);
     void recevieDeleteResult(const QStringList &talkIds, bool success);
+    void stopReceive();
 
 private:
     explicit CodeGeeXManager(QObject *parent = nullptr);
@@ -81,4 +83,4 @@ private:
     bool isLogin { false };
 };
 
-#endif // CODEGEEXMANAGER_H
+#endif   // CODEGEEXMANAGER_H

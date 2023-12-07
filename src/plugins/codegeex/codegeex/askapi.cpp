@@ -15,9 +15,9 @@ namespace CodeGeeX {
 
 static int kCode_Success = 200;
 
-AskApi::AskApi(QObject *parent) :
-    QObject(parent),
-    manager(new QNetworkAccessManager(this))
+AskApi::AskApi(QObject *parent)
+    : QObject(parent),
+      manager(new QNetworkAccessManager(this))
 
 {
 }
@@ -27,8 +27,7 @@ void AskApi::sendLoginRequest(const QString &sessionId,
                               const QString &userId,
                               const QString &env)
 {
-    QString url = QString("https://codegeex.cn/auth?sessionId=%1&%2=%3&device=%4").\
-            arg(sessionId).arg(machineId).arg(userId).arg(env);
+    QString url = QString("https://codegeex.cn/auth?sessionId=%1&%2=%3&device=%4").arg(sessionId).arg(machineId).arg(userId).arg(env);
     QDesktopServices::openUrl(QUrl(url));
 }
 
@@ -79,6 +78,9 @@ void AskApi::postSSEChat(const QString &url,
     QJsonArray jsonArray = convertHistoryToJSONArray(history);
     QByteArray body = assembleSSEChatBody(prompt, machineId, jsonArray);
     QNetworkReply *reply = postMessage(url, token, body);
+    connect(this, &AskApi::stopReceive, reply, [reply]() {
+        reply->close();
+    });
     processResponse(reply);
 }
 
@@ -199,7 +201,7 @@ void AskApi::processResponse(QNetworkReply *reply)
             QByteArray data;
             QString event;
             QString id;
-            for (const auto& line : lines) {
+            for (const auto &line : lines) {
                 if (line.startsWith("event:add")) {
                     event = "add";
                 } else if (line.startsWith("event:finish")) {
@@ -263,4 +265,4 @@ QJsonObject AskApi::toJsonOBject(QNetworkReply *reply)
     QJsonDocument document = QJsonDocument::fromJson(response.toUtf8());
     return document.object();
 }
-} // end namespace
+}   // end namespace
