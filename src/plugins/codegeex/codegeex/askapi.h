@@ -21,6 +21,8 @@ public:
                           const QString &userId,
                           const QString &env = "deepin-unioncode");
 
+    void logout(const QString &codeToken);
+
     void sendQueryRequest(const QString &codeToken);
 
     void postSSEChat(const QString &url,
@@ -64,7 +66,8 @@ public:
 
     enum LoginState {
         kLoginFailed,
-        kLoginSuccess
+        kLoginSuccess,
+        kLoginOut
     };
 
 signals:

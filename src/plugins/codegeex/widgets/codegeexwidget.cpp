@@ -26,9 +26,9 @@ CodeGeeXWidget::CodeGeeXWidget(QWidget *parent)
 
 void CodeGeeXWidget::onLoginSuccessed()
 {
-    auto mainLayout = qobject_cast<QVBoxLayout*>(layout());
+    auto mainLayout = qobject_cast<QVBoxLayout *>(layout());
     if (mainLayout) {
-        QLayoutItem* item = nullptr;
+        QLayoutItem *item = nullptr;
         while ((item = mainLayout->takeAt(0)) != nullptr) {
             delete item->widget();
             delete item;
@@ -38,6 +38,21 @@ void CodeGeeXWidget::onLoginSuccessed()
     initAskWidget();
     initHistoryWidget();
     CodeGeeXManager::instance()->createNewSession();
+}
+
+void CodeGeeXWidget::onLogOut()
+{
+    auto mainLayout = qobject_cast<QVBoxLayout *>(layout());
+    if (mainLayout) {
+        QLayoutItem *item = nullptr;
+        while ((item = mainLayout->takeAt(0)) != nullptr) {
+            delete item->widget();
+            delete item;
+        }
+    }
+
+    delete mainLayout;
+    initUI();
 }
 
 void CodeGeeXWidget::onNewSessionCreated()
@@ -50,7 +65,7 @@ void CodeGeeXWidget::onNewSessionCreated()
 
 void CodeGeeXWidget::toTranslateCode(const QString &code)
 {
-    if(stackWidget->currentWidget() != transPage) {
+    if (stackWidget->currentWidget() != transPage) {
         tabBar->buttonList().at(0)->setChecked(false);
         tabBar->buttonList().at(1)->setChecked(true);
         stackWidget->setCurrentWidget(transPage);
@@ -83,7 +98,7 @@ void CodeGeeXWidget::onShowHistoryWidget()
 }
 
 void CodeGeeXWidget::resizeEvent(QResizeEvent *event)
-{    
+{
     if (historyWidget) {
         if (historyShowed) {
             historyWidget->setGeometry(0, 0, this->width(), this->height());
@@ -101,7 +116,7 @@ void CodeGeeXWidget::initUI()
     setMinimumWidth(330);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    auto initLoginUI = [this](){
+    auto initLoginUI = [this]() {
         auto verticalLayout = new QVBoxLayout(this);
         verticalLayout->setMargin(0);
         verticalLayout->setAlignment(Qt::AlignCenter);
@@ -126,8 +141,7 @@ void CodeGeeXWidget::initUI()
         auto loginBtn = new DPushButton();
         loginBtn->setSizePolicy(sizePolicy);
         loginBtn->setText(tr("Go to login"));
-        connect(loginBtn, &DPushButton::clicked, this, [ = ]{
-            qInfo() << "on login clicked";
+        connect(loginBtn, &DPushButton::clicked, this, [=] {
             CodeGeeXManager::instance()->login();
         });
 
@@ -142,6 +156,7 @@ void CodeGeeXWidget::initUI()
 void CodeGeeXWidget::initConnection()
 {
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::loginSuccessed, this, &CodeGeeXWidget::onLoginSuccessed);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::logoutSuccessed, this, &CodeGeeXWidget::onLogOut);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::createdNewSession, this, &CodeGeeXWidget::onNewSessionCreated);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestToTransCode, this, &CodeGeeXWidget::toTranslateCode);
 }
@@ -152,6 +167,10 @@ void CodeGeeXWidget::initAskWidget()
     tabLayout->setContentsMargins(0, 20, 0, 0);
     tabLayout->setAlignment(Qt::AlignHCenter);
 
+    //套一层DWidget，用以登出时删除现有窗口。 直接使用layout会删不掉。
+    DWidget *tabWidget = new DWidget(this);
+    tabWidget->setLayout(tabLayout);
+
     tabBar = new DButtonBox(this);
     tabLayout->addWidget(tabBar, 0);
 
@@ -160,11 +179,11 @@ void CodeGeeXWidget::initAskWidget()
     stackWidget->setFrameShape(QFrame::NoFrame);
     stackWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    auto mainLayout = qobject_cast<QVBoxLayout*>(layout());
+    auto mainLayout = qobject_cast<QVBoxLayout *>(layout());
     mainLayout->setMargin(0);
     mainLayout->setSpacing(0);
 
-    mainLayout->addLayout(tabLayout, 0);
+    mainLayout->addWidget(tabWidget, 0);
     mainLayout->addWidget(stackWidget, 1);
 
     initTabBar();
@@ -178,7 +197,7 @@ void CodeGeeXWidget::initHistoryWidget()
     historyWidget->setGeometry(-this->width(), 0, this->width(), this->height());
     historyWidget->show();
 
-    historyWidgetAnimation =  new QPropertyAnimation(historyWidget, "geometry");
+    historyWidgetAnimation = new QPropertyAnimation(historyWidget, "geometry");
     historyWidgetAnimation->setEasingCurve(QEasingCurve::InOutSine);
     historyWidgetAnimation->setDuration(300);
 
@@ -192,7 +211,7 @@ void CodeGeeXWidget::initTabBar()
     askbtn->setChecked(true);
     DButtonBoxButton *trsbtn = new DButtonBoxButton(tr("Translation"), this);
 
-    tabBar->setButtonList({askbtn, trsbtn}, true);
+    tabBar->setButtonList({ askbtn, trsbtn }, true);
 }
 
 void CodeGeeXWidget::initStackWidget()
@@ -217,8 +236,8 @@ void CodeGeeXWidget::initStackWidget()
 
 void CodeGeeXWidget::initAskWidgetConnection()
 {
-    connect(tabBar, &DButtonBox::buttonClicked, stackWidget, [ = ] (QAbstractButton *button){
-        if(button->text() == tr("Ask CodeGeeX"))
+    connect(tabBar, &DButtonBox::buttonClicked, stackWidget, [=](QAbstractButton *button) {
+        if (button->text() == tr("Ask CodeGeeX"))
             stackWidget->setCurrentWidget(askPage);
         else
             stackWidget->setCurrentWidget(transPage);

@@ -31,6 +31,26 @@ void AskApi::sendLoginRequest(const QString &sessionId,
     QDesktopServices::openUrl(QUrl(url));
 }
 
+void AskApi::logout(const QString &codeToken)
+{
+    QString url = "https://codegeex.cn/prod/code/oauth/logout";
+
+    QNetworkReply *reply = getMessage(url, codeToken);
+    connect(reply, &QNetworkReply::finished, [=]() {
+        if (reply->error()) {
+            qCritical() << "Error:" << reply->errorString();
+            return;
+        }
+        QJsonObject jsonObject = toJsonOBject(reply);
+        int code = jsonObject["code"].toInt();
+        if (code == kCode_Success) {
+            emit loginState(kLoginOut);
+        } else {
+            qWarning() << "logout failed";
+        }
+    });
+}
+
 void AskApi::sendQueryRequest(const QString &codeToken)
 {
     QString url = "https://codegeex.cn/prod/code/oauth/getUserInfo";

@@ -24,10 +24,11 @@ class CodeGeeXWidget : public DTK_WIDGET_NAMESPACE::DFrame
     };
 
 public:
-    explicit CodeGeeXWidget(QWidget* parent = nullptr);
+    explicit CodeGeeXWidget(QWidget *parent = nullptr);
 
 public Q_SLOTS:
     void onLoginSuccessed();
+    void onLogOut();
     void onNewSessionCreated();
     void toTranslateCode(const QString &code);
     void onCloseHistoryWidget();
@@ -59,4 +60,4 @@ private:
     bool historyShowed { false };
 };
 
-#endif // CODEGEEXWIDGET_H
+#endif   // CODEGEEXWIDGET_H

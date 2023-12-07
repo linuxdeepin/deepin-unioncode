@@ -210,6 +210,9 @@ void AskPageWidget::initConnection()
     connect(inputEdit, &DLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
     connect(deleteBtn, &DPushButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
     connect(historyBtn, &DPushButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
+    //    connect( , , this, []() {
+    //        CodeGeeXManager::instance()->logout();
+    //    });
     connect(createNewBtn, &DPushButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
     connect(inputEdit, &DLineEdit::textChanged, sendButton, [this]() {
         if (inputEdit->text().isEmpty())
