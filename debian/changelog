@@ -1,3 +1,9 @@
+deepin-unioncode (1.2.1) unstable; urgency=medium
+
+  * bug fix
+
+ -- luzhen <luzhen@uniontech.com>  Fri, 08 Dec 2023 17:47:43 +0800
+
 deepin-unioncode (1.2.0) unstable; urgency=medium
 
   * Add Codegeex plugin
