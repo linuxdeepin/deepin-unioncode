@@ -36,7 +36,7 @@ void AboutDialog::setupUi()
     titleBar->setTitle(QString(tr("About Deepin Union Code")));
 
     DLabel *logoLabel = new DLabel(this);
-    logoLabel->setPixmap(QPixmap(QIcon::fromTheme("ide").pixmap(32, 32)));
+    logoLabel->setPixmap(QPixmap(QIcon::fromTheme("ide").pixmap(96, 96)));
 
     QString buildDateInfo = tr("<br/>Built on %1 %2 in %3<br/>")
             .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ProcessUtil::localPlatform());
@@ -60,12 +60,6 @@ void AboutDialog::setupUi()
     copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     connect(copyRightLabel, &DLabel::linkActivated, this, &AboutDialog::handleLinkActivated);
 
-    QHBoxLayout *layoutButtons = new QHBoxLayout();
-    DPushButton *closeButton = new DPushButton(DPushButton::tr("Close"));
-    connect(closeButton , &DPushButton::clicked, this, &DAbstractDialog::reject);
-    layoutButtons->addStretch();
-    layoutButtons->addWidget(closeButton);
-
     auto vLayout = new QVBoxLayout(this);
     vLayout->setContentsMargins(0, 0, 0, 0);
     vLayout->setSpacing(0);
@@ -74,9 +68,10 @@ void AboutDialog::setupUi()
     detailLayout->setSizeConstraint(QLayout::SetFixedSize);
     detailLayout->addWidget(logoLabel , 1, 0, 1, 1);
     detailLayout->addWidget(copyRightLabel, 0, 4, 4, 5);
-    detailLayout->addLayout(layoutButtons, 4, 4, 1, 5);
+
     vLayout->addWidget(titleBar);
     vLayout->addLayout(detailLayout);
+    vLayout->addSpacing(10);
 }
 
 void AboutDialog::handleLinkActivated(const QString& link)
