@@ -4,27 +4,27 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="38"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="36"/>
         <source>About Deepin Union Code</source>
         <translation>关于Deepin Union Code</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="44"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="41"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation>创建于%1 %2, %3平台</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="47"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="44"/>
         <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                we hope that the scheme will be useful,                but we do not guarantee that it will be of economic value or fit for a particular purpose.                For more information, see the GNU General Public License. &lt;br/&gt;               Thanks to all the &lt;a href=&quot;opensourcesoftware&quot;&gt;open source software&lt;/a&gt; used.&lt;br/&gt;</source>
         <translation type="unfinished">&lt;h3&gt;Deepin Union Code%1&lt;/h3&gt;%2&lt;br/&gt;版权 2019-%3 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;            致谢所有用到的&lt;a href=&quot;opensourcesoftware&quot;&gt;开源软件&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="99"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="96"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="99"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="96"/>
         <source>Failed to open the file.</source>
         <translation>打开文件失败.</translation>
     </message>
@@ -93,14 +93,29 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="160"/>
-        <source>Ask question here, press Enter to send...</source>
-        <translation>在这里提问，按Enter键发送...</translation>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="99"/>
+        <source>This operation will delete all the content of this session. confirm to delete it?</source>
+        <translation>该操作将删除该会话的全部内容，确定删除吗?</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="185"/>
-        <source>Answering</source>
-        <translation>回答中</translation>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
+        <source>cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="101"/>
+        <source>delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="144"/>
+        <source>stop generate</source>
+        <translation>终止生成</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="189"/>
+        <source>Ask question here, press Enter to send...</source>
+        <translation>在这里提问，按Enter键发送...</translation>
     </message>
 </context>
 <context>
@@ -549,29 +564,29 @@
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="121"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="136"/>
         <source>Welcome to CodeGeeX
 A must-have all-round AI tool for developers</source>
         <translation>欢迎使用CodeGeeX&lt;br /&gt;开发者必备的全能AI工具</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="128"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="143"/>
         <source>Go to login</source>
         <translation>前往登陆</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="190"/>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="221"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="209"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="240"/>
         <source>Ask CodeGeeX</source>
         <translation>询问 CodeGeeX</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="193"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="212"/>
         <source>Translation</source>
-        <translation type="unfinished">代码翻译</translation>
+        <translation>代码翻译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="209"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="228"/>
         <source>Creating a new session...</source>
         <translation>创建新的会话中...</translation>
     </message>
@@ -652,12 +667,12 @@ A must-have all-round AI tool for developers</source>
     <message>
         <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="34"/>
         <source>C&amp;ode Porting</source>
-        <translation type="unfinished">代码迁移(&amp;O)</translation>
+        <translation>代码迁移(&amp;O)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeporting/codeportingwidget.cpp" line="35"/>
         <source>Porting &amp;Report</source>
-        <translation type="unfinished">迁移报告(&amp;R)</translation>
+        <translation>迁移报告(&amp;R)</translation>
     </message>
 </context>
 <context>
@@ -881,7 +896,7 @@ dap端口未就绪，请重试。
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="563"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="585"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
@@ -991,7 +1006,7 @@ dap端口未就绪，请重试。
 <context>
     <name>DPushButton</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="67"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="64"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -1414,42 +1429,42 @@ Delete anyway?</source>
 <context>
     <name>IntroPage</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="57"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="56"/>
         <source>Welcome to CodeGeeX</source>
         <translation>欢迎来到CodeGeeX</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="68"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="67"/>
         <source>CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
         <translation>CodeGeeX在编辑器提供代码补全建议，按%1Tab%2键即可接受</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="69"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="68"/>
         <source>Select code and %1 right-click %2 to add comments or translate code.</source>
         <translation>选择代码并%1点击右键%2以添加注释或翻译代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="70"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="69"/>
         <source>Also, you can directly %1 ask CodeGeeX any questions %2.</source>
         <translation>在对话栏中直接%1向CodeGeeX提问%2</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="79"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="78"/>
         <source>Try the following questions:</source>
         <translation>试试下面的问题：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="81"/>
         <source>How to iterate through a dictionary in Python?</source>
         <translation>如何在 Python 中遍历字典？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="83"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
         <source>Write a quicksort function.</source>
         <translation>编写一个快速排序函数。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="84"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="83"/>
         <source>What is the best way to start learning JavaScript?</source>
         <translation>开始学习 JavaScript 的最佳方法是什么？</translation>
     </message>
@@ -1522,38 +1537,38 @@ Delete anyway?</source>
 <context>
     <name>KitsManagerWidget</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="107"/>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="115"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="106"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="114"/>
         <source>Desktop</source>
         <translation>桌面</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="121"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="120"/>
         <source>CMake Tool:</source>
         <translation>CMake工具：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="128"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="127"/>
         <source>CMake generator:</source>
         <translation>CMake生成器:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="143"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="142"/>
         <source>C Compiler:</source>
         <translation>C编译器:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="146"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="145"/>
         <source>C++ Compiler:</source>
         <translation>C++编译器:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="134"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="133"/>
         <source>Debugger:</source>
         <translation>调试器：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="140"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="139"/>
         <source>Name:</source>
         <translation>名称：</translation>
     </message>
@@ -1706,22 +1721,22 @@ repos path: %0</source>
 <context>
     <name>OptionCore</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="57"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="60"/>
         <source>General</source>
         <translation>通用设置</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="87"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="97"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="104"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="114"/>
         <source>Installed Plugin</source>
         <translation>已安装的插件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="103"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="113"/>
         <source>plugin</source>
         <translation>插件</translation>
     </message>
@@ -1734,12 +1749,12 @@ repos path: %0</source>
         <translation>全局选项</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="156"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="154"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="159"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="157"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -1826,7 +1841,7 @@ repos path: %0</source>
 <context>
     <name>ProfileSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="78"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="79"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
@@ -2428,28 +2443,28 @@ storage: %2
     <message>
         <location filename="../../src/plugins/find/findplugin.cpp" line="37"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">编辑(&amp;E)</translation>
+        <translation>编辑(&amp;E)</translation>
     </message>
 </context>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="175"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="180"/>
         <source>Save Changes</source>
         <translation>保存更改</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="176"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="181"/>
         <source>The file has unsaved changes, will save?</source>
         <translation>该文件有未保存的更改，是否保存？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="629"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="633"/>
         <source>File Has Been Removed</source>
         <translation>文件已被移除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="630"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="634"/>
         <source>The file has been removed, Do you want to save it?</source>
         <translation>该文件已被移除，你想保存它吗？</translation>
     </message>
@@ -2751,7 +2766,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="56"/>
         <source>Find Next</source>
-        <translation type="unfinished">向后查找</translation>
+        <translation>向后查找</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolbar.cpp" line="57"/>
@@ -3353,33 +3368,33 @@ storage: %2
 <context>
     <name>ShortcutSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="247"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="245"/>
         <source>Reset All</source>
         <translation>重置所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="249"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="247"/>
         <source>Import</source>
         <translation>导入</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="248"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="246"/>
         <source>Export</source>
         <translation>导出</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="285"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="283"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="285"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="293"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="283"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="291"/>
         <source>Json File(*.json)</source>
         <translation>Json 文件(*.json)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="293"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="291"/>
         <source>Save File</source>
         <translation>保存文件</translation>
     </message>
@@ -3553,22 +3568,22 @@ storage: %2
 <context>
     <name>TranslationPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="58"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="66"/>
         <source>Input Code</source>
         <translation>输入代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="59"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="67"/>
         <source>Please input the code to be translated</source>
         <translation>请输入要翻译的代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="71"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="79"/>
         <source>Translate</source>
         <translation>翻译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="79"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="87"/>
         <source>Output Code</source>
         <translation>输出代码</translation>
     </message>
@@ -3624,8 +3639,8 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="241"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="552"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="260"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="574"/>
         <source>Deepin Union Code</source>
         <translation></translation>
     </message>
