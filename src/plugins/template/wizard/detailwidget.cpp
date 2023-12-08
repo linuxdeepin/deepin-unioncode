@@ -22,6 +22,7 @@
 #include <QVBoxLayout>
 #include <QPainter>
 #include <QSpacerItem>
+#include <QFormLayout>
 
 DWIDGET_USE_NAMESPACE
 
@@ -34,6 +35,8 @@ class DetailWidgetPrivate
     QMap<QString, DLineEdit*> lineEditMap;
     QMap<QString, DComboBox*> comboBoxMap;
     WizardInfo wizardInfo;
+    DLabel *label = nullptr;
+
 };
 
 DetailWidget::DetailWidget(DWidget *parent)
@@ -79,7 +82,6 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
             PojectGenParam param;
             if(this->getGenParams(param))
                 generate(param);
-
     });
 
     connect(cancel, &DPushButton::clicked, this , &DetailWidget::closeSignal);
@@ -90,15 +92,20 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     auto iter = d->wizardInfo.configures.begin();
     for (; iter != d->wizardInfo.configures.end(); ++iter) {
         QHBoxLayout *hLayout = new QHBoxLayout();
-        QString  str = iter->displayName;
+        QFormLayout *fLayout = new QFormLayout();
 
-        DLabel *label = new DLabel(tr(str.toStdString().c_str()) + ":");
+        if (iter->displayName == "File Name")
+             d->label = new DLabel(tr("File Name:"));
+        else if(iter->displayName == "Project Name")
+             d->label = new DLabel(tr("Project Name:"));
+        else if(iter->displayName == "Location")
+             d->label = new DLabel(tr("Location:"));
 
-        label->setFixedSize(100, 20);
-        label->setContentsMargins(40,0,0,0);
-        label->setAlignment(Qt::AlignLeft);
-
-        hLayout->addWidget(label);
+        d->label->setMinimumSize(120, 20);
+        d->label->setMaximumSize(100, 20);
+        d->label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        d->label->setContentsMargins(25, 0, 0, 0);
+        d->label->setAlignment(Qt::AlignLeft);
 
         if ("lineEdit" == iter->type) {
             DLineEdit *lineEdit = new DLineEdit();
@@ -110,8 +117,7 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
 
             d->lineEditMap.insert(iter->key, lineEdit);
             if (iter->browse) {
-                lineEdit->setFixedSize(370, 36);
-                lineEdit->setContentsMargins(3,0,0,0);
+                lineEdit->setFixedSize(360, 36);
                 lineEdit->lineEdit()->setReadOnly(true);  //设置lineedit是否为只读模式
 
                 DSuggestButton *browse = new DSuggestButton("...");
@@ -128,18 +134,20 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
             } else {
                 lineEdit->setFixedSize(405, 36);
 
-            }
 
-            connect(create, &DSuggestButton::clicked, [this, lineEdit,str](){
+            }
+            // 使用传值方式捕获迭代器和displayName
+            auto displayName = iter->displayName;
+            connect(create, &DSuggestButton::clicked, [this, lineEdit, displayName](){
                  if(!lineEdit->text().isEmpty()) {
                      return;
                  }
                  QString alertMsg;
-                 if (str == "File Name")
+                 if (displayName == "File Name")
                     alertMsg = tr("The filename can't be empty!");
-                 else if(str == "Project Name")
+                 else if(displayName == "Project Name")
                     alertMsg = tr("The project can't be empty!");
-                 else if(str == "Location")
+                 else if(displayName == "Location")
                     alertMsg = tr("The address can't be empty!");
 
                  lineEdit->showAlertMessage(alertMsg);
@@ -158,7 +166,8 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
             d->comboBoxMap.insert(iter->key, comboBox);
         }
 
-        vLayout->addLayout(hLayout);
+        fLayout->addRow(d->label,hLayout);
+        vLayout->addLayout(fLayout);
 
         // 用循环创建的二排label和lineedit， 用spacer控制上下间距
         vLayout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
