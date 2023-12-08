@@ -9,6 +9,8 @@
 #include <DLabel>
 #include <DTextEdit>
 #include <DFrame>
+#include <KSyntaxHighlighting/Repository>
+#include <KSyntaxHighlighting/Definition>
 
 DWIDGET_USE_NAMESPACE
 
@@ -64,7 +66,10 @@ private:
     DTextEdit *codeEdit { nullptr };
     DLabel *title { nullptr };
 
+    KSyntaxHighlighting::Repository rep;
+    KSyntaxHighlighting::Definition def;
+
     bool heightUpdate { false };
 };
 
-#endif // CODEEDITCOMPONENT_H
+#endif   // CODEEDITCOMPONENT_H
