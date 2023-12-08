@@ -122,6 +122,9 @@ public:
 
                             event = (const struct inotify_event *) ptr;
 
+                            if (watchPaths.isEmpty())
+                                continue;
+
                             QString filePath = watchPaths.value(event->wd);
                             if (filePath.isEmpty())
                                 continue;
