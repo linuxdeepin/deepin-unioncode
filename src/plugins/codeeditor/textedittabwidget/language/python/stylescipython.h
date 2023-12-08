@@ -16,6 +16,9 @@ public:
     virtual void setStyle() override;
     virtual void setLexer() override;
     virtual int sectionEnd() const override;
+
+protected:
+    virtual void setThemeColor(DGuiApplicationHelper::ColorType colorType) override;
 };
 
 #endif // STYLESCIPYTHON_H
