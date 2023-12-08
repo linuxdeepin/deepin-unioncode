@@ -22,11 +22,26 @@ QMap<int, QString> StyleSciJava::keyWords() const
 void StyleSciJava::setStyle()
 {
     StyleSci::setStyle();
+}
 
-    auto jsonFile = edit()->getStyleFile();
-    if (jsonFile->setTheme(StyleJsonFile::Theme::get()->Dark)) {
+void StyleSciJava::setLexer()
+{
+    StyleSci::setLexer();
+}
+
+int StyleSciJava::sectionEnd() const
+{
+    return SCE_JAVA_ESCAPESEQUENCE;
+}
+
+void StyleSciJava::setThemeColor(DGuiApplicationHelper::ColorType colorType)
+{
+    StyleSci::setThemeColor(colorType);
+
+    if (colorType == DGuiApplicationHelper::DarkType) {
         QJsonObject tempObj;
         int tempFore;
+        auto jsonFile = edit()->getStyleFile();
         tempObj = jsonFile->value(StyleJsonFile::Key_1::get()->Comment).toObject();
         tempFore = StyleColor::color(tempObj.value(StyleJsonFile::Key_2::get()->Foreground).toString().toInt(nullptr, 16));
         edit()->styleSetFore(SCE_JAVA_COMMENT, tempFore); // #整行
@@ -104,15 +119,4 @@ void StyleSciJava::setStyle()
         edit()->styleSetFore(SCE_JAVA_TASKMARKER, StyleColor::color(StyleColor::Table::get()->Gainsboro));
         edit()->styleSetFore(SCE_JAVA_ESCAPESEQUENCE, StyleColor::color(StyleColor::Table::get()->Gainsboro));
     }
-    return;
-}
-
-void StyleSciJava::setLexer()
-{
-    StyleSci::setLexer();
-}
-
-int StyleSciJava::sectionEnd() const
-{
-    return SCE_JAVA_ESCAPESEQUENCE;
 }

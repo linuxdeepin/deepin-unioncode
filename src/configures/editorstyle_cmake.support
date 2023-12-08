@@ -6,5 +6,13 @@
             "Cursor" : "ffffff",
             "FontSize" : 16
         }
+    },
+    "Light": {
+        "Self": {
+            "Background": "F8F8F8",
+            "Foreground": "000000",
+            "Cursor" : "000000",
+            "FontSize" : 16
+        }
     }
 }
