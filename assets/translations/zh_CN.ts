@@ -16,7 +16,7 @@
     <message>
         <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="44"/>
         <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                we hope that the scheme will be useful,                but we do not guarantee that it will be of economic value or fit for a particular purpose.                For more information, see the GNU General Public License. &lt;br/&gt;               Thanks to all the &lt;a href=&quot;opensourcesoftware&quot;&gt;open source software&lt;/a&gt; used.&lt;br/&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;Deepin Union Code%1&lt;/h3&gt;%2&lt;br/&gt;版权 2019-%3 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;            致谢所有用到的&lt;a href=&quot;opensourcesoftware&quot;&gt;开源软件&lt;/a&gt;。</translation>
+        <translation>&lt;h3&gt;Deepin Union Code%1&lt;/h3&gt;%2&lt;br/&gt;版权 2019-%3 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;            致谢所有用到的&lt;a href=&quot;opensourcesoftware&quot;&gt;开源软件&lt;/a&gt;。</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="91"/>
@@ -427,7 +427,7 @@
     <message>
         <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="248"/>
         <source>Build</source>
-        <translation type="unfinished">编译</translation>
+        <translation>编译</translation>
     </message>
     <message>
         <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="317"/>
@@ -490,7 +490,7 @@
     <message>
         <location filename="../../src/plugins/builder/buildercore.cpp" line="35"/>
         <source>Build</source>
-        <translation type="unfinished">编译</translation>
+        <translation>编译</translation>
     </message>
 </context>
 <context>
@@ -503,7 +503,7 @@
     <message>
         <location filename="../../src/plugins/cxx/cmake/builder/mainframe/cmakebuildergenerator.cpp" line="76"/>
         <source>The path of &quot;%1&quot; is not exist! please check and reopen the project.</source>
-        <translation>&quot;%1&quot; 不存在！</translation>
+        <translation type="unfinished">&quot;%1&quot; 不存在！请检查并重新打开工程</translation>
     </message>
 </context>
 <context>
@@ -1035,6 +1035,11 @@ dap端口未就绪，请重试。
         <source>Replace</source>
         <translation>替换</translation>
     </message>
+    <message>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="144"/>
+        <source>Search &amp;&amp; Replace</source>
+        <translation>搜索并替换</translation>
+    </message>
 </context>
 <context>
     <name>DToolBar</name>
@@ -1297,62 +1302,62 @@ Delete anyway?</source>
 <context>
     <name>FindToolWindow</name>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="112"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="111"/>
         <source>All Projects</source>
         <translation>所有工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="112"/>
         <source>Current Project</source>
         <translation>当前工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="114"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
         <source>Current File</source>
         <translation>当前文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="119"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="118"/>
         <source>thread</source>
         <translation>线索</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="133"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="137"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="132"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="136"/>
         <source>e.g.*.ts,src/**/include</source>
         <translation>例如.*.ts,src/**/include</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="190"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="198"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="206"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="213"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="228"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="189"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="197"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="205"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="212"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="227"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="190"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="189"/>
         <source>All projects path is empty, please import!</source>
         <translation>所有项目路径均为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="198"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="197"/>
         <source>Current project path is empty, please import!</source>
         <translation>当前工程路径为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="206"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="205"/>
         <source>Current file path is empty, please import!</source>
         <translation>当前文件路径为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="213"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="212"/>
         <source>Scope is not selected, please select!</source>
         <translation>未选择范围，请选择！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="228"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="227"/>
         <source>Search for text is empty, please input!</source>
         <translation>搜索文本为空，请输入！</translation>
     </message>
@@ -1472,44 +1477,49 @@ Delete anyway?</source>
 <context>
     <name>IntroPage</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="56"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="60"/>
         <source>Welcome to CodeGeeX</source>
         <translation>欢迎来到CodeGeeX</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="67"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="71"/>
         <source>CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
         <translation>CodeGeeX在编辑器提供代码补全建议，按%1Tab%2键即可接受</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="68"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="72"/>
         <source>Select code and %1 right-click %2 to add comments or translate code.</source>
         <translation>选择代码并%1点击右键%2以添加注释或翻译代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="69"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="73"/>
         <source>Also, you can directly %1 ask CodeGeeX any questions %2.</source>
         <translation>在对话栏中直接%1向CodeGeeX提问%2</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="78"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
         <source>Try the following questions:</source>
         <translation>试试下面的问题：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="81"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="85"/>
         <source>How to iterate through a dictionary in Python?</source>
         <translation>如何在 Python 中遍历字典？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="86"/>
         <source>Write a quicksort function.</source>
         <translation>编写一个快速排序函数。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="83"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="87"/>
         <source>What is the best way to start learning JavaScript?</source>
         <translation>开始学习 JavaScript 的最佳方法是什么？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="93"/>
+        <source>logout</source>
+        <translation>登出</translation>
     </message>
 </context>
 <context>
@@ -2393,22 +2403,22 @@ storage: %2
         <translation>替换：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="110"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="109"/>
         <source>Scope:</source>
         <translation>范围：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="116"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="115"/>
         <source>Search for:</source>
         <translation>搜索：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="131"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="130"/>
         <source>File pattern:</source>
         <translation>包含的文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="135"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="134"/>
         <source>Exclusion pattern:</source>
         <translation>排除的文件：</translation>
     </message>
@@ -2750,7 +2760,7 @@ storage: %2
     <message>
         <location filename="../../src/services/window/windowelement.h" line="26"/>
         <source>CodeGeeX</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="64"/>
@@ -2832,14 +2842,9 @@ storage: %2
         <translation>替换全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="140"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="139"/>
         <source>Search</source>
         <translation>搜索</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="145"/>
-        <source>Search &amp;&amp; Replace</source>
-        <translation>搜索并替换</translation>
     </message>
 </context>
 <context>
@@ -2947,7 +2952,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="294"/>
         <source>No Project</source>
-        <translation type="unfinished"></translation>
+        <translation>无记录</translation>
     </message>
 </context>
 <context>
@@ -3405,7 +3410,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/find/searchresultwindow.cpp" line="345"/>
         <source>Replace failed!</source>
-        <translation type="unfinished">替换失败!</translation>
+        <translation>替换失败!</translation>
     </message>
 </context>
 <context>
