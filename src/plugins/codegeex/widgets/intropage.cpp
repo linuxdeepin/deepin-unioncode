@@ -7,12 +7,15 @@
 
 #include <DPushButton>
 #include <DScrollArea>
-#include <QAction>
+#include <DCommandLinkButton>
 
+#include <QAction>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFont>
 #include <QDebug>
+
+DWIDGET_USE_NAMESPACE
 
 IntroPage::IntroPage(QWidget *parent)
     : DWidget(parent)
@@ -33,6 +36,7 @@ void IntroPage::initUI()
     mainLayout->addStretch(1);
     initSuggestContent();
     mainLayout->addStretch(1);
+    initLogoutButton();
 }
 
 void IntroPage::initLogo()
@@ -81,6 +85,21 @@ void IntroPage::initSuggestContent()
     appendSuggestButton(suggestLayout, tr("How to iterate through a dictionary in Python?"), "codegeex_comment");
     appendSuggestButton(suggestLayout, tr("Write a quicksort function."), "codegeex_function");
     appendSuggestButton(suggestLayout, tr("What is the best way to start learning JavaScript?"), "codegeex_advice");
+}
+
+void IntroPage::initLogoutButton()
+{
+    QHBoxLayout *hlayout = new QHBoxLayout;
+    auto logoutButton = new DCommandLinkButton(tr("logout"));
+
+    connect(logoutButton, &DCommandLinkButton::clicked, this, []() {
+        CodeGeeXManager::instance()->logout();
+    });
+
+    hlayout->addWidget(logoutButton);
+    hlayout->setAlignment(Qt::AlignHCenter);
+
+    qobject_cast<QVBoxLayout *>(layout())->addLayout(hlayout);
 }
 
 void IntroPage::appendDescLabel(QVBoxLayout *layout, const QString &text)
