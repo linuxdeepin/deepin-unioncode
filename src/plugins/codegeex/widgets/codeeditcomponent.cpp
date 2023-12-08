@@ -4,6 +4,8 @@
 
 #include "codeeditcomponent.h"
 #include "copilot.h"
+#include <KSyntaxHighlighting/syntaxhighlighter.h>
+#include <KSyntaxHighlighting/theme.h>
 
 #include <DApplication>
 #include <DHorizontalLine>
@@ -19,7 +21,7 @@
 #include <QBitmap>
 
 CodeEditComponent::CodeEditComponent(QWidget *parent)
-    : DWidget (parent)
+    : DWidget(parent)
 {
     initUI();
     initConnection();
@@ -195,6 +197,12 @@ void CodeEditComponent::initUI()
     codeEdit->setFrameShape(QFrame::NoFrame);
     codeEdit->setWordWrapMode(QTextOption::WrapMode::NoWrap);
     codeEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+
+    //todo(zta):只适配了C++，后续需要根据输入文本的格式来修改（包括 选中代码的复制、翻译出的代码）
+    KSyntaxHighlighting::SyntaxHighlighter *highLighter = new KSyntaxHighlighting::SyntaxHighlighter(codeEdit->document());
+    def = rep.definitionForName("C++");
+    highLighter->setDefinition(def);
+    highLighter->setTheme(rep.defaultTheme(KSyntaxHighlighting::Repository::LightTheme));
 
     hLine = new DHorizontalLine;
     hLine->setVisible(false);
