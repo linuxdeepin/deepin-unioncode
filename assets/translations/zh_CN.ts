@@ -19,12 +19,12 @@
         <translation type="unfinished">&lt;h3&gt;Deepin Union Code%1&lt;/h3&gt;%2&lt;br/&gt;版权 2019-%3 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;            致谢所有用到的&lt;a href=&quot;opensourcesoftware&quot;&gt;开源软件&lt;/a&gt;。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="96"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="91"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="96"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="91"/>
         <source>Failed to open the file.</source>
         <translation>打开文件失败.</translation>
     </message>
@@ -522,7 +522,7 @@
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="226"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="225"/>
         <source>build</source>
         <translation>编译</translation>
     </message>
@@ -1021,11 +1021,6 @@ dap端口未就绪，请重试。
 <context>
     <name>DPushButton</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="64"/>
-        <source>Close</source>
-        <translation>关闭</translation>
-    </message>
-    <message>
         <location filename="../../src/common/dialog/contextdialog.cpp" line="96"/>
         <source>Ok</source>
         <translation>确定</translation>
@@ -1039,11 +1034,6 @@ dap端口未就绪，请重试。
         <location filename="../../src/plugins/find/searchresultwindow.cpp" line="136"/>
         <source>Replace</source>
         <translation>替换</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="144"/>
-        <source>Search &amp;&amp; Replace</source>
-        <translation>搜索并替换</translation>
     </message>
 </context>
 <context>
@@ -1307,62 +1297,62 @@ Delete anyway?</source>
 <context>
     <name>FindToolWindow</name>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="111"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="112"/>
         <source>All Projects</source>
         <translation>所有工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="112"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
         <source>Current Project</source>
         <translation>当前工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="114"/>
         <source>Current File</source>
         <translation>当前文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="118"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="119"/>
         <source>thread</source>
         <translation>线索</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="132"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="136"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="133"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="137"/>
         <source>e.g.*.ts,src/**/include</source>
         <translation>例如.*.ts,src/**/include</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="189"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="197"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="205"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="212"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="227"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="190"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="198"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="206"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="213"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="228"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="189"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="190"/>
         <source>All projects path is empty, please import!</source>
         <translation>所有项目路径均为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="197"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="198"/>
         <source>Current project path is empty, please import!</source>
         <translation>当前工程路径为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="205"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="206"/>
         <source>Current file path is empty, please import!</source>
         <translation>当前文件路径为空，请导入！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="212"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="213"/>
         <source>Scope is not selected, please select!</source>
         <translation>未选择范围，请选择！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="227"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="228"/>
         <source>Search for text is empty, please input!</source>
         <translation>搜索文本为空，请输入！</translation>
     </message>
@@ -2403,22 +2393,22 @@ storage: %2
         <translation>替换：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="109"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="110"/>
         <source>Scope:</source>
         <translation>范围：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="115"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="116"/>
         <source>Search for:</source>
         <translation>搜索：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="130"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="131"/>
         <source>File pattern:</source>
         <translation>包含的文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="134"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="135"/>
         <source>Exclusion pattern:</source>
         <translation>排除的文件：</translation>
     </message>
@@ -2842,9 +2832,14 @@ storage: %2
         <translation>替换全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="139"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="140"/>
         <source>Search</source>
         <translation>搜索</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="145"/>
+        <source>Search &amp;&amp; Replace</source>
+        <translation>搜索并替换</translation>
     </message>
 </context>
 <context>
@@ -3410,7 +3405,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/find/searchresultwindow.cpp" line="345"/>
         <source>Replace failed!</source>
-        <translation>替换失败</translation>
+        <translation type="unfinished">替换失败!</translation>
     </message>
 </context>
 <context>
