@@ -9,8 +9,8 @@ unsigned int Task::s_nextId = 1;
 static QIcon taskTypeIcon(Task::TaskType t)
 {
     static QIcon icons[3] = {QIcon(),
-                             QIcon(":/resources/icons/error.png"),
-                             QIcon(":/resources/icons/attention.svg")};
+                             QIcon::fromTheme("builder-error"),
+                             QIcon::fromTheme("builder-warning")};
 
     if (t < 0 || t > 2)
         t = Task::Unknown;

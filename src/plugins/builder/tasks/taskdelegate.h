@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QFont>
 
+class Positions;
 class TaskDelegate : public DTK_WIDGET_NAMESPACE::DStyledItemDelegate
 {
     Q_OBJECT
@@ -32,6 +33,11 @@ public:
 private:
     void generateGradientPixmap(int width, int height, QColor color, bool selected) const;
 
+    void paintItemBackground(QPainter *painter, const QStyleOptionViewItem &option,
+                             const QModelIndex &index) const;
+    void paintItemColumn(QPainter *painter, const QStyleOptionViewItem &option,
+                         const QModelIndex &index, const QRectF &textRect) const;
+
     mutable int cachedHeight = 0;
     mutable QFont cachedFont;
 
@@ -46,9 +52,6 @@ private:
             top(options.rect.top()),
             bottom(options.rect.bottom())
         {
-            int flexibleArea = lineAreaLeft() - textAreaLeft() - ITEM_SPACING;
-            if (maxFileLength > flexibleArea / 2)
-                realFileLength = flexibleArea / 2;
             fontHeight = QFontMetrics(options.font).height();
         }
 
@@ -67,18 +70,8 @@ private:
 
         int textAreaLeft() const { return taskIconRight() + ITEM_SPACING; }
         int textAreaWidth() const { return textAreaRight() - textAreaLeft(); }
-        int textAreaRight() const { return fileAreaLeft() - ITEM_SPACING; }
+        int textAreaRight() const { return right(); }
         QRect textArea() const { return QRect(textAreaLeft(), getTop(), textAreaWidth(), firstLineHeight()); }
-
-        int fileAreaLeft() const { return fileAreaRight() - fileAreaWidth(); }
-        int fileAreaWidth() const { return realFileLength; }
-        int fileAreaRight() const { return lineAreaLeft() - ITEM_SPACING; }
-        QRect fileArea() const { return QRect(fileAreaLeft(), getTop(), fileAreaWidth(), firstLineHeight()); }
-
-        int lineAreaLeft() const { return lineAreaRight() - lineAreaWidth(); }
-        int lineAreaWidth() const { return maxLineLength; }
-        int lineAreaRight() const { return right(); }
-        QRect lineArea() const { return QRect(lineAreaLeft(), getTop(), lineAreaWidth(), firstLineHeight()); }
 
     private:
         int totalWidth = 0;

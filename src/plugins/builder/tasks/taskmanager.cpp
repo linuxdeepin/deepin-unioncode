@@ -28,6 +28,7 @@ TaskManager::TaskManager(QObject *parent) : QObject(parent)
     model.reset(new TaskModel());
     view->setModel(model.get());
     auto tld = new TaskDelegate(view);
+    view->setItemDelegate(tld);
 
     view->setFrameStyle(QFrame::NoFrame);
     view->setSelectionMode(QAbstractItemView::SingleSelection);

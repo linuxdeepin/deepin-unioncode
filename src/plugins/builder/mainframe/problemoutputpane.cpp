@@ -6,14 +6,16 @@
 #include "tasks/taskmanager.h"
 #include "services/builder/task.h"
 
-
 #include "common/common.h"
 
 #include <QVBoxLayout>
 
 ProblemOutputPane::ProblemOutputPane(QWidget *parent)
-    : DWidget(parent)
+    : DFrame (parent)
 {
+    DStyle::setFrameRadius(this, 0);
+    setLineWidth(0);
+
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(TaskManager::instance()->getView());
     setLayout(layout);
