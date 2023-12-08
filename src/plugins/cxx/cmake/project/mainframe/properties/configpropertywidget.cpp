@@ -31,7 +31,7 @@ ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
     , d(new ConfigPropertyWidgetPrivate())
 {
     setWindowTitle(tr("Config"));
-    setIcon(QIcon::fromTheme("unioncode"));
+    setIcon(QIcon::fromTheme("ide"));
 
     auto mainFrame = new DWidget(this);
     addContent(mainFrame);

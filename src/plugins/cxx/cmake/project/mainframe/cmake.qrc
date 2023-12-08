@@ -1,14 +1,5 @@
 <RCC>
-    <qresource prefix="/cmakeproject">
-        <file>images/fileoverlay_cmake.png</file>
-        <file>images/fileoverlay_cmake@2x.png</file>
-        <file>images/build@2x.svg</file>
-        <file>images/build.png</file>
-        <file>images/lib@2x.png</file>
-        <file>images/lib.png</file>
-    </qresource>
     <qresource prefix="/icons/deepin/builtin">
-        <file>icons/unioncode_16px.png</file>
         <file>texts/project_build_16px.svg</file>
     </qresource>
 </RCC>
