@@ -36,6 +36,7 @@ class BuildManagerPrivate
 
     CompileOutputPane *compileOutputPane = nullptr;
     ProblemOutputPane *problemOutputPane = nullptr;
+    DWidget *compileWidget = nullptr;
 
     QString activedKitName;
     QString activedWorkingDir;
@@ -59,9 +60,8 @@ BuildManager::BuildManager(QObject *parent)
     , d(new BuildManagerPrivate())
 {
     addMenu();
+    initCompileWidget();
 
-    d->compileOutputPane = new CompileOutputPane();
-    d->problemOutputPane = new ProblemOutputPane();
     d->outputParser.reset(new CommonParser());
     connect(d->outputParser.get(), &IOutputParser::addOutput, this, &BuildManager::addOutput, Qt::DirectConnection);
     connect(d->outputParser.get(), &IOutputParser::addTask, d->problemOutputPane, &ProblemOutputPane::addTask, Qt::DirectConnection);
@@ -129,6 +129,36 @@ void BuildManager::addMenu()
                      this, &BuildManager::cleanProject, Qt::DirectConnection);
     QObject::connect(d->cancelAction.get(), &QAction::triggered,
                      this, &BuildManager::cancelBuild, Qt::DirectConnection);
+}
+
+void BuildManager::initCompileWidget()
+{
+    d->compileOutputPane = new CompileOutputPane();
+    d->problemOutputPane = new ProblemOutputPane();
+    d->compileWidget = new DWidget();
+
+    QHBoxLayout *mainLayout = new QHBoxLayout(d->compileWidget);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+
+    QLabel *compileOutputText = new QLabel();
+    compileOutputText->setText("Co&mpile Output");
+    compileOutputText->setContentsMargins(10, 0, 0, 0);
+    QLabel *issusListText = new QLabel();
+    issusListText->setText("&Issues");
+    issusListText->setContentsMargins(10, 0, 0, 0);
+
+    QVBoxLayout *outputLayout = new QVBoxLayout();
+    outputLayout->addWidget(compileOutputText);
+    outputLayout->addWidget(d->compileOutputPane);
+
+    QVBoxLayout *issusListLayout = new QVBoxLayout();
+    issusListLayout->addWidget(issusListText);
+    issusListLayout->addWidget(d->problemOutputPane);
+
+    mainLayout->setSpacing(0);
+    mainLayout->addLayout(outputLayout);
+    mainLayout->addWidget(new DVerticalLine());
+    mainLayout->addLayout(issusListLayout);
 }
 
 void BuildManager::buildProject()
@@ -205,12 +235,17 @@ ProblemOutputPane *BuildManager::getProblemOutputPane() const
     return d->problemOutputPane;
 }
 
+DWidget *BuildManager::getCompileWidget() const
+{
+    return d->compileWidget;
+}
+
 void BuildManager::slotResetBuildUI()
 {
     d->compileOutputPane->clearContents();
     d->problemOutputPane->clearContents();
 
-    editor.switchContext(tr("Co&mpile Output"));
+    editor.switchContext(tr("Build"));
 }
 
 void BuildManager::setActivedProjectInfo(const QString &kitName, const QString &workingDir)

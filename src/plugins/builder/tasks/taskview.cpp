@@ -5,7 +5,7 @@
 #include "taskview.h"
 #include "taskdelegate.h"
 
-#include <DScrollBar>
+#include <QScrollBar>
 
 TaskView::TaskView(QWidget *parent) : DListView(parent)
 {

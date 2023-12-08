@@ -1,6 +1,6 @@
 <RCC>
-    <qresource prefix="/resources">
-        <file>icons/attention.svg</file>
-        <file>icons/error.png</file>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>texts/builder-error_16px.svg</file>
+        <file>texts/builder-warning_16px.svg</file>
     </qresource>
 </RCC>

@@ -29,6 +29,7 @@ public:
 
     CompileOutputPane *getCompileOutputPane() const;
     ProblemOutputPane *getProblemOutputPane() const;
+    DTK_WIDGET_NAMESPACE::DWidget  *getCompileWidget() const;
 
     void setActivedProjectInfo(const QString &kitName, const QString &workingDir);
     void clearActivedProjectInfo();
@@ -59,6 +60,7 @@ private:
     virtual ~BuildManager();
 
     void addMenu();
+    void initCompileWidget();
 
     void outputLog(const QString &content, const OutputPane::OutputFormat format);
     void outputError(const QString &content);
