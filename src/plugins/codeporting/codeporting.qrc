@@ -1,5 +1,4 @@
 <RCC>
     <qresource prefix="/codeporting">
-        <file>images/code_port.png</file>
     </qresource>
 </RCC>

@@ -30,7 +30,6 @@ QIcon cmakeFolderIcon()
     static QIcon cmakeFolderIcon;
     if (cmakeFolderIcon.isNull()) {
         cmakeFolderIcon = CustomIcons::icon(QFileIconProvider::Folder);
-        cmakeFolderIcon.addFile(":/cmakeproject/images/fileoverlay_cmake@2x.png");
     }
     return cmakeFolderIcon;
 }
