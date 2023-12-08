@@ -4,27 +4,27 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="38"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="36"/>
         <source>About Deepin Union Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="44"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="41"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="47"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="44"/>
         <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                we hope that the scheme will be useful,                but we do not guarantee that it will be of economic value or fit for a particular purpose.                For more information, see the GNU General Public License. &lt;br/&gt;               Thanks to all the &lt;a href=&quot;opensourcesoftware&quot;&gt;open source software&lt;/a&gt; used.&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="99"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="96"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="99"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="96"/>
         <source>Failed to open the file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -93,13 +93,28 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="160"/>
-        <source>Ask question here, press Enter to send...</source>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="99"/>
+        <source>This operation will delete all the content of this session. confirm to delete it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="185"/>
-        <source>Answering</source>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
+        <source>cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="101"/>
+        <source>delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="144"/>
+        <source>stop generate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="189"/>
+        <source>Ask question here, press Enter to send...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -537,29 +552,29 @@
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="121"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="136"/>
         <source>Welcome to CodeGeeX
 A must-have all-round AI tool for developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="128"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="143"/>
         <source>Go to login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="190"/>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="221"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="209"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="240"/>
         <source>Ask CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="193"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="212"/>
         <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="209"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="228"/>
         <source>Creating a new session...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -857,7 +872,7 @@ The dap port is not ready, please retry.
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="563"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="585"/>
         <source>Workspace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -967,7 +982,7 @@ The dap port is not ready, please retry.
 <context>
     <name>DPushButton</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="67"/>
+        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="64"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1389,42 +1404,42 @@ Delete anyway?</source>
 <context>
     <name>IntroPage</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="57"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="56"/>
         <source>Welcome to CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="68"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="67"/>
         <source>CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="69"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="68"/>
         <source>Select code and %1 right-click %2 to add comments or translate code.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="70"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="69"/>
         <source>Also, you can directly %1 ask CodeGeeX any questions %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="79"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="78"/>
         <source>Try the following questions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="81"/>
         <source>How to iterate through a dictionary in Python?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="83"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="82"/>
         <source>Write a quicksort function.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="84"/>
+        <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="83"/>
         <source>What is the best way to start learning JavaScript?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1497,38 +1512,38 @@ Delete anyway?</source>
 <context>
     <name>KitsManagerWidget</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="107"/>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="115"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="106"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="114"/>
         <source>Desktop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="121"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="120"/>
         <source>CMake Tool:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="128"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="127"/>
         <source>CMake generator:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="143"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="142"/>
         <source>C Compiler:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="146"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="145"/>
         <source>C++ Compiler:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="134"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="133"/>
         <source>Debugger:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="140"/>
+        <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="139"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1680,22 +1695,22 @@ repos path: %0</source>
 <context>
     <name>OptionCore</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="57"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="60"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="87"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="97"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="104"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="114"/>
         <source>Installed Plugin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="103"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="113"/>
         <source>plugin</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1708,12 +1723,12 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="156"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="154"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="159"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="157"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1800,7 +1815,7 @@ repos path: %0</source>
 <context>
     <name>ProfileSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="78"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/profilesettingwidget.cpp" line="79"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2399,22 +2414,22 @@ storage: %2
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="175"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="180"/>
         <source>Save Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="176"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="181"/>
         <source>The file has unsaved changes, will save?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="629"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="633"/>
         <source>File Has Been Removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="630"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="634"/>
         <source>The file has been removed, Do you want to save it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3312,33 +3327,33 @@ storage: %2
 <context>
     <name>ShortcutSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="247"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="245"/>
         <source>Reset All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="249"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="247"/>
         <source>Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="248"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="246"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="285"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="283"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="285"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="293"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="283"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="291"/>
         <source>Json File(*.json)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="293"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="291"/>
         <source>Save File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3512,22 +3527,22 @@ storage: %2
 <context>
     <name>TranslationPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="58"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="66"/>
         <source>Input Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="59"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="67"/>
         <source>Please input the code to be translated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="71"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="79"/>
         <source>Translate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="79"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="87"/>
         <source>Output Code</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3583,8 +3598,8 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="241"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="552"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="260"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="574"/>
         <source>Deepin Union Code</source>
         <translation type="unfinished"></translation>
     </message>
