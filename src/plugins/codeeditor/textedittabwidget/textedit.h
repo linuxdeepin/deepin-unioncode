@@ -20,7 +20,7 @@ class TextEdit : public ScintillaEditExtern
     TextEditPrivate *const d;
 public:
     explicit TextEdit(QWidget * parent = nullptr);
-    virtual ~TextEdit();
+    virtual ~TextEdit() override;
     virtual void setFile(const QString &filePath) override;
     virtual StyleLsp *getStyleLsp() const {return nullptr;}
     virtual StyleSci *getStyleSci() const {return nullptr;}
