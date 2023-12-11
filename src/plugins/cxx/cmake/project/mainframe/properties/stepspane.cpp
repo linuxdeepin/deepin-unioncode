@@ -235,7 +235,7 @@ void StepsPane::setupUi()
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     d->toolArguments = new DLineEdit(this);
-    d->toolArguments->setPlaceholderText(tr("Input your arguments."));
+    d->toolArguments->setPlaceholderText(tr("Input your arguments"));
     DLabel *label = new DLabel(tr("Tool arguments:"), this);
     hLayout->addWidget(label);
     hLayout->addWidget(d->toolArguments);
