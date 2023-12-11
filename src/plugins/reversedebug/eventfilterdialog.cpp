@@ -138,7 +138,7 @@ EventFilterDialog::EventFilterDialog(
     d->dbusFlags = dbusFlags;
     d->x11Flags = x11Flags;
     d->signalFlags = signalFlags;
-    setWindowTitle(tr("event filter."));
+    setWindowTitle(tr("Event Filter"));
     setIcon(QIcon::fromTheme("ide"));
 
     setupUi();

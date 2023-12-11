@@ -863,6 +863,11 @@ The debugee has Terminated.
         <translation>堆栈列表</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="830"/>
+        <source>Breakpoint List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="898"/>
         <source>Please build first.
  Build : Ctrl + B</source>
@@ -3015,11 +3020,6 @@ storage: %2
 <context>
     <name>ReverseDebugger::Internal::EventFilterDialog</name>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="141"/>
-        <source>event filter.</source>
-        <translation>事件过滤器.</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="357"/>
         <source>Record the size of heap memory :</source>
         <translation>记录堆区的大小:</translation>
@@ -3053,6 +3053,11 @@ storage: %2
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="374"/>
         <source>Cancel</source>
         <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="141"/>
+        <source>Event Filter</source>
+        <translation>事件过滤器</translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="270"/>
