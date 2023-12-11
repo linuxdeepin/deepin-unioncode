@@ -84,6 +84,7 @@ void FindToolWindow::setupUi()
     DScrollArea *scrollArea = new DScrollArea();
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(d->stackedWidget);
+    scrollArea->setLineWidth(0);
     vLayout->addWidget(scrollArea);
 
     QWidget *searchParamWidget = new QWidget();
@@ -119,10 +120,10 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 
     d->senseCheckBtn = new DSuggestButton();
     d->senseCheckBtn->setText("Aa");
-    d->senseCheckBtn->setFixedSize(36,36);
+    d->senseCheckBtn->setFixedSize(36, 36);
     d->wholeWordsCheckBtn = new DPushButton();
     d->wholeWordsCheckBtn->setIcon(QIcon::fromTheme("find_matchComplete"));
-    d->wholeWordsCheckBtn->setFixedSize(36,36);
+    d->wholeWordsCheckBtn->setFixedSize(36, 36);
     hlayout->addWidget(d->searchLineEdit);
     hlayout->addWidget(d->senseCheckBtn);
     hlayout->addWidget(d->wholeWordsCheckBtn);
@@ -137,14 +138,14 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     DPushButton *searchBtn = new DPushButton(QPushButton::tr("Search"));
-    searchBtn->setMinimumSize(120,36);
-    searchBtn->setMaximumSize(130,36);
+    searchBtn->setMinimumSize(120, 36);
+    searchBtn->setMaximumSize(130, 36);
     searchBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    DPushButton *replaceBtn = new DPushButton(DPushButton::tr("Search && Replace"));
+    DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Search && Replace"));
     replaceBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    replaceBtn->setMinimumSize(120,36);
-    replaceBtn->setMaximumSize(130,36);
+    replaceBtn->setMinimumSize(120, 36);
+    replaceBtn->setMaximumSize(130, 36);
 
     btnLayout->addWidget(searchBtn);
     btnLayout->addWidget(replaceBtn);
