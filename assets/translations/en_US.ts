@@ -419,6 +419,16 @@
 <context>
     <name>BuildManager</name>
     <message>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="144"/>
+        <source>Compile Output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="147"/>
+        <source>Issues list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="248"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
@@ -824,6 +834,16 @@ The debugee has Terminated.
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="805"/>
         <source>Threads:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="809"/>
+        <source>Stack List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="830"/>
+        <source>Breakpoint List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
