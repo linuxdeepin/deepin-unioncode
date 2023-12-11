@@ -8,10 +8,8 @@
 #include "projectdelegate.h"
 #include "projectmodel.h"
 #include "transceiver/sendevents.h"
-
-#include "services/project/projectservice.h"
-
 #include "common/common.h"
+#include "services/project/projectservice.h"
 
 #include <DTreeView>
 #include <DPushButton>
@@ -79,6 +77,7 @@ ProjectTree::ProjectTree(QWidget *parent)
     setSelectionModel(d->sectionModel);
 
     d->delegate = new ProjectDelegate(this);
+    setItemDelegate(d->delegate);
     this->setDragEnabled(true);
 }
 
@@ -133,7 +132,7 @@ void ProjectTree::appendRootItem(QStandardItem *root)
     auto info = ProjectInfo::get(ProjectGenerator::root(root));
 
     // 添加工程节点
-    QStandardItemModel *model = static_cast<QStandardItemModel*>(QTreeView::model());
+    QStandardItemModel *model = static_cast<QStandardItemModel*>(DTreeView::model());
     if (model)
         model->appendRow(root);
 

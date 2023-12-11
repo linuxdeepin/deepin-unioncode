@@ -6,14 +6,16 @@
 
 #include <QPainter>
 
+DWIDGET_USE_NAMESPACE
+
 class ProjectDelegatePrivate
 {
     friend class ProjectDelegate;
     QModelIndex index;
 };
 
-ProjectDelegate::ProjectDelegate(QObject *parent)
-  : QStyledItemDelegate (parent)
+ProjectDelegate::ProjectDelegate(QAbstractItemView *parent)
+  : DStyledItemDelegate (parent)
   , d (new ProjectDelegatePrivate)
 {
 
@@ -38,4 +40,9 @@ void ProjectDelegate::paint(QPainter *painter,
         iOption.font.setBold(true);
     }
     QStyledItemDelegate::paint(painter, iOption, index);
+}
+
+QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    return {option.rect.width(), 24};
 }
