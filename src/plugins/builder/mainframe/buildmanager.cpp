@@ -141,10 +141,10 @@ void BuildManager::initCompileWidget()
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     QLabel *compileOutputText = new QLabel();
-    compileOutputText->setText("Co&mpile Output");
+    compileOutputText->setText(tr("Compile Output"));
     compileOutputText->setContentsMargins(10, 0, 0, 0);
     QLabel *issusListText = new QLabel();
-    issusListText->setText("&Issues");
+    issusListText->setText(tr("Issues list"));
     issusListText->setContentsMargins(10, 0, 0, 0);
 
     QVBoxLayout *outputLayout = new QVBoxLayout();

@@ -806,7 +806,7 @@ void DAPDebugger::initializeView()
     hLayout->addWidget(label);
     hLayout->addWidget(d->threadSelector);
 
-    vLayout->addLayout(initFrameTitle("Stack List"));
+    vLayout->addLayout(initFrameTitle(tr("Stack List")));
     vLayout->addLayout(hLayout);
     vLayout->addWidget(d->stackView);
 
@@ -827,7 +827,7 @@ void DAPDebugger::initializeView()
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(d->stackPane);
     mainLayout->addWidget(new DHorizontalLine());
-    mainLayout->addLayout(initFrameTitle("Breakpoint List"));
+    mainLayout->addLayout(initFrameTitle(tr("Breakpoint List")));
     mainLayout->addWidget(new DHorizontalLine());
     mainLayout->addWidget(d->breakpointView);
     d->debugMainPane->setLayout(mainLayout);

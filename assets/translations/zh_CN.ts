@@ -425,6 +425,16 @@
 <context>
     <name>BuildManager</name>
     <message>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="144"/>
+        <source>Compile Output</source>
+        <translation>编译输出</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="147"/>
+        <source>Issues list</source>
+        <translation>问题列表</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="248"/>
         <source>Build</source>
         <translation>编译</translation>
@@ -846,6 +856,11 @@ The debugee has Terminated.
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="805"/>
         <source>Threads:</source>
         <translation>线程：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="809"/>
+        <source>Stack List</source>
+        <translation>堆栈列表</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="898"/>
