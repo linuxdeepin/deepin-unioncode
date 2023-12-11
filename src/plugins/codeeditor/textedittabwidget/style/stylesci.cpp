@@ -125,9 +125,6 @@ void StyleSci::setThemeColor(DGuiApplicationHelper::ColorType themeType)
 
 void StyleSci::setStyle()
 {
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
-            this, &StyleSci::setThemeColor);
-
     auto themeType = DGuiApplicationHelper::instance()->themeType();
     setThemeColor(themeType);
 
