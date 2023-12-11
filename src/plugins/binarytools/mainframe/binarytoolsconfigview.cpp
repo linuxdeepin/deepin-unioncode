@@ -76,7 +76,6 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     d->runComandCombo = new DComboBox(this);
     d->runComandCombo->setMinimumContentsLength(15);
     d->runComandCombo->setSizeAdjustPolicy(DComboBox::AdjustToContents);
-    d->runComandCombo->setFixedWidth(298);
 
     // Add
     d->addButton = new DPushButton(this);
@@ -112,7 +111,7 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     // Create a horizontal layout for buttons
     DWidget *btnWidget = new DWidget();
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
-    buttonsLayout->setContentsMargins(0,0,0,0);
+    buttonsLayout->setContentsMargins(0, 0, 0, 0);
     btnWidget->setLayout(buttonsLayout);
 
     buttonsLayout->addWidget(d->runComandCombo);
@@ -120,8 +119,6 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     buttonsLayout->addWidget(d->deleteButton);
     buttonsLayout->addWidget(d->renameButton);
     buttonsLayout->addWidget(d->combineButton);
-    buttonsLayout->setAlignment(Qt::AlignLeft);
-
 
     // Add the label and the horizontal layout to the form layout
     d->formLayout->addRow(configLabel,btnWidget);
