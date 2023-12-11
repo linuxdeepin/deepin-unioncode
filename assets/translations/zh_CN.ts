@@ -921,11 +921,6 @@ dap端口未就绪，请重试。
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="319"/>
-        <source>Find ToolBar</source>
-        <translation>查找</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="344"/>
         <source>Valgrind</source>
         <translation>Valgrind</translation>
@@ -2340,6 +2335,14 @@ storage: %2
 语言：%1
 存储路径：%2
 </translation>
+    </message>
+</context>
+<context>
+    <name>QDockWidget</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="319"/>
+        <source>Find</source>
+        <translation>查找</translation>
     </message>
 </context>
 <context>

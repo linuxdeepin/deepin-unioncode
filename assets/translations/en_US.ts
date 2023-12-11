@@ -897,11 +897,6 @@ The dap port is not ready, please retry.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="319"/>
-        <source>Find ToolBar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="344"/>
         <source>Valgrind</source>
         <translation type="unfinished"></translation>
@@ -2304,6 +2299,14 @@ workspace: %0
 language: %1
 storage: %2
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QDockWidget</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="319"/>
+        <source>Find</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

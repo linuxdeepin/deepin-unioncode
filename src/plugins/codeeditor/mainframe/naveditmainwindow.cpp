@@ -316,7 +316,7 @@ void NavEditMainWindow::addFindToolBar(AbstractWidget *findToolbar)
         return;
 
     if (!qDockWidgetFindToolBar) {
-        qDockWidgetFindToolBar = new AutoHideDockWidget(DDockWidget::tr("Find ToolBar"), this);
+        qDockWidgetFindToolBar = new AutoHideDockWidget(QDockWidget::tr("Find"), this);
         addDockWidget(Qt::DockWidgetArea::TopDockWidgetArea, qDockWidgetFindToolBar);
         DWidget *widget = static_cast<DWidget*>(findToolbar->qWidget());
         qDockWidgetFindToolBar->setWidget(widget);
