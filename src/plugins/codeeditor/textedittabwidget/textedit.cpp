@@ -91,6 +91,8 @@ void TextEdit::setFile(const QString &filePath)
         getStyleSci()->setStyle();
         getStyleSci()->setMargin();
         getStyleSci()->setKeyWords();
+    } else {
+        styleClearAll();
     }
 
     QString currFileLanguage = fileLanguage(filePath);
