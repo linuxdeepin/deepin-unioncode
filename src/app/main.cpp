@@ -64,7 +64,7 @@ static bool loadPlugins()
     return true;
 }
 
-void installTranslator(QApplication &a)
+void installTranslator(DApplication &a)
 {
     QTranslator *translator = new QTranslator();
 
@@ -76,6 +76,7 @@ void installTranslator(QApplication &a)
        if (file.open(QFile::ReadWrite)) {
            QLocale locale;
            QString fileName = locale.name() + ".qm";
+           a.loadTranslator(QList<QLocale>() << locale.system());
            file.write(fileName.toUtf8());
            file.close();
        }
@@ -83,6 +84,8 @@ void installTranslator(QApplication &a)
     if (file.open(QFile::ReadOnly)) {
         QTextStream txtInput(&file);
         QString language = txtInput.readLine();
+        QString name = language.left(language.indexOf("."));
+        a.loadTranslator(QList<QLocale>() << QLocale(name));
         file.close();
         translator->load(result + language);
     }
@@ -103,7 +106,6 @@ int main(int argc, char *argv[])
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     DApplication a(argc, argv);
-    a.loadTranslator();
     a.setOrganizationName("deepin");
     CommandParser::instance().process();
 
