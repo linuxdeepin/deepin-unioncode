@@ -209,7 +209,7 @@ void BuildPropertyWidget::setupOverviewUI()
     overviewLayout->setSpacing(5);
 
     auto formlayout = new QFormLayout(this);
-    formlayout->addRow(DLabel::tr("Build configuration:"), configureLayout);
+    formlayout->addRow(QLabel::tr("Build configuration:"), configureLayout);
     formlayout->addRow(tr("Output direcotry:"), hLayout);
 
     overviewLayout->addLayout(formlayout);
