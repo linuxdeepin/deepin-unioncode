@@ -2985,11 +2985,6 @@ storage: %2
 <context>
     <name>ReverseDebugger::Internal::EventFilterDialog</name>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="141"/>
-        <source>event filter.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="357"/>
         <source>Record the size of heap memory :</source>
         <translation type="unfinished"></translation>
@@ -3022,6 +3017,11 @@ storage: %2
     <message>
         <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="374"/>
         <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="141"/>
+        <source>Event Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
