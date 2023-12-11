@@ -155,10 +155,10 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         QString prefix = "";
         if (target.type == kExecutable) {
             prefix = CDT_TARGETS_TYPE::get()->Exe;
-            targetItem->setIcon(QIcon::fromTheme("project_build"));
+            targetItem->setIcon(QIcon::fromTheme("project_executable"));
         } else if (target.type == kStaticLibrary || target.type == kDynamicLibrary) {
             prefix = CDT_TARGETS_TYPE::get()->Lib;
-            targetItem->setIcon(QIcon::fromTheme("project_build"));
+            targetItem->setIcon(QIcon::fromTheme("project_executable"));
         }
         QString title = prefix + target.title;
         targetItem->setText(title);
