@@ -46,13 +46,13 @@ void TranslationPageWidget::onTranslateBtnClicked()
     Copilot::instance()->translateCode(srcCode, dstLang);
 }
 
-void TranslationPageWidget::onRecevieTransCode(const QString &code)
+void TranslationPageWidget::onRecevieTransCode(const QString &code, const QString &dstLang)
 {
     spinner->stop();
     spinner->hide();
 
     if (outputEdit)
-        outputEdit->updateCode(code);
+        outputEdit->updateCode(code, dstLang);
 }
 
 void TranslationPageWidget::initUI()

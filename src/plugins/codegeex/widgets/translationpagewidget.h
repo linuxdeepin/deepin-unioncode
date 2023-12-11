@@ -28,7 +28,7 @@ public:
 
 public Q_SLOTS:
     void onTranslateBtnClicked();
-    void onRecevieTransCode(const QString &code);
+    void onRecevieTransCode(const QString &code, const QString &dstLang);
 
 private:
     void initUI();

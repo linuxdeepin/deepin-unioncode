@@ -12,7 +12,7 @@
 
 class QMenu;
 namespace dpfservice {
-    class EditorService;
+class EditorService;
 }
 
 class Copilot : public QObject
@@ -31,7 +31,7 @@ signals:
     // the code will be tranlated.
     void translatingText(const QString &text);
     // the result has been tranlated.
-    void translatedResult(const QString &result);
+    void translatedResult(const QString &result, const QString &dstLang);
 
 public slots:
     void addComment();
@@ -51,4 +51,4 @@ private:
     QMutex mutexResponse;
 };
 
-#endif // COPILOT_H
+#endif   // COPILOT_H

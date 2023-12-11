@@ -148,7 +148,7 @@ public:
     };
 
 signals:
-    void response(ResponseType responseType, const QString &response);
+    void response(ResponseType responseType, const QString &response, const QString &dstLang);
 
 private:
     QNetworkReply *postMessage(const QString &url, const QByteArray &body);

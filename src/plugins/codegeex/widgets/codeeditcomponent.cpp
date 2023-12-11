@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "codeeditcomponent.h"
+#include "data/syntaxdefinitionname.h"
 #include "copilot.h"
-#include <KSyntaxHighlighting/syntaxhighlighter.h>
-#include <KSyntaxHighlighting/theme.h>
 
 #include <DApplication>
 #include <DHorizontalLine>
+#include <DGuiApplicationHelper>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -19,6 +19,9 @@
 #include <QClipboard>
 #include <QMimeData>
 #include <QBitmap>
+
+DGUI_USE_NAMESPACE
+using namespace KSyntaxHighlighting;
 
 CodeEditComponent::CodeEditComponent(QWidget *parent)
     : DWidget(parent)
@@ -74,8 +77,9 @@ void CodeEditComponent::setUpdateHeight(bool update)
     heightUpdate = update;
 }
 
-void CodeEditComponent::updateCode(const QString &code)
+void CodeEditComponent::updateCode(const QString &code, const QString &language)
 {
+    updateDefinition(language);
     if (codeEdit) {
         codeEdit->setPlainText(code);
         if (heightUpdate) {
@@ -87,15 +91,40 @@ void CodeEditComponent::updateCode(const QString &code)
     }
 }
 
-void CodeEditComponent::updateCode(const QStringList &codeLines)
+void CodeEditComponent::updateCode(const QStringList &codeLines, const QString &language)
 {
     QString code {};
     for (auto line : codeLines) {
         code += line;
         code += "\n";
     }
+
     code.chop(1);
-    updateCode(code);
+    updateCode(code, language);
+}
+
+void CodeEditComponent::updateDefinition(const QString &la)
+{
+    // 定义正则表达式，匹配 "```" 后面的字符串, codeGeex发送的代码中含有```。
+    QRegularExpression regex("```(\\w+)");
+    QRegularExpressionMatch match = regex.match(la);
+    auto language = la;
+
+    //    代码语言参数：
+    //    1.由codeGeex发送，格式为```language   code ```,参数格式为```language,需要转换为kf5可用的字符
+    //    2.由codeGeex发送，但不含```,不截取，直接转换为kf5可用的字符
+    //    3.其他类直接调用，不转换，直接使用，但可能无效
+    if (match.hasMatch() && ideSyntaxNameMap::definitionName.value(language) != def.name()) {
+        language = match.captured(1);
+        def = rep.definitionForName(ideSyntaxNameMap::definitionName.value(language));
+    } else if (ideSyntaxNameMap::definitionName.keys().contains(language)) {
+        def = rep.definitionForName(ideSyntaxNameMap::definitionName.value(language));
+    } else {
+        def = rep.definitionForName(language);
+    }
+
+    if (def.isValid() && def.name() != highLighter->definition().name())
+        highLighter->setDefinition(def);
 }
 
 void CodeEditComponent::cleanFinalLine()
@@ -198,11 +227,14 @@ void CodeEditComponent::initUI()
     codeEdit->setWordWrapMode(QTextOption::WrapMode::NoWrap);
     codeEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
 
-    //todo(zta):只适配了C++，后续需要根据输入文本的格式来修改（包括 选中代码的复制、翻译出的代码）
-    KSyntaxHighlighting::SyntaxHighlighter *highLighter = new KSyntaxHighlighting::SyntaxHighlighter(codeEdit->document());
+    //默认为C++语言高亮
+    highLighter = new KSyntaxHighlighting::SyntaxHighlighter(codeEdit->document());
     def = rep.definitionForName("C++");
     highLighter->setDefinition(def);
-    highLighter->setTheme(rep.defaultTheme(KSyntaxHighlighting::Repository::LightTheme));
+    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
+        highLighter->setTheme(rep.defaultTheme(KSyntaxHighlighting::Repository::LightTheme));
+    else
+        highLighter->setTheme(rep.defaultTheme(KSyntaxHighlighting::Repository::DarkTheme));
 
     hLine = new DHorizontalLine;
     hLine->setVisible(false);
@@ -242,4 +274,10 @@ void CodeEditComponent::initConnection()
 {
     connect(copyButton, &DPushButton::clicked, this, &CodeEditComponent::onCopyBtnClicked);
     connect(insertButton, &DPushButton::clicked, this, &CodeEditComponent::onInsertBtnClicked);
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=](DGuiApplicationHelper::ColorType theme) {
+        if (theme == DGuiApplicationHelper::LightType)
+            highLighter->setTheme(rep.defaultTheme(KSyntaxHighlighting::Repository::LightTheme));
+        else
+            highLighter->setTheme(rep.defaultTheme(KSyntaxHighlighting::Repository::DarkTheme));
+    });
 }

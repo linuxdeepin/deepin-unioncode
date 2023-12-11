@@ -4,13 +4,15 @@
 
 #ifndef CODEEDITCOMPONENT_H
 #define CODEEDITCOMPONENT_H
+#include <KSyntaxHighlighting/Repository>
+#include <KSyntaxHighlighting/Definition>
+#include <KSyntaxHighlighting/syntaxhighlighter.h>
+#include <KSyntaxHighlighting/theme.h>
 
 #include <DWidget>
 #include <DLabel>
 #include <DTextEdit>
 #include <DFrame>
-#include <KSyntaxHighlighting/Repository>
-#include <KSyntaxHighlighting/Definition>
 
 DWIDGET_USE_NAMESPACE
 
@@ -38,8 +40,8 @@ public:
     void setPlaceholderText(const QString &text);
 
     void setUpdateHeight(bool update);
-    void updateCode(const QString &code);
-    void updateCode(const QStringList &codeLines);
+    void updateCode(const QString &code, const QString &language = "C++");
+    void updateCode(const QStringList &codeLines, const QString &language = "C++");
 
     void cleanFinalLine();
 
@@ -57,6 +59,7 @@ private:
     void initTitleWidgets();
     void initButton();
     void initConnection();
+    void updateDefinition(const QString &language);
 
     DWidget *titleWidget { nullptr };
     DPushButton *copyButton { nullptr };
@@ -66,6 +69,7 @@ private:
     DTextEdit *codeEdit { nullptr };
     DLabel *title { nullptr };
 
+    KSyntaxHighlighting::SyntaxHighlighter *highLighter { nullptr };
     KSyntaxHighlighting::Repository rep;
     KSyntaxHighlighting::Definition def;
 
