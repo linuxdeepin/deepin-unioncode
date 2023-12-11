@@ -26,7 +26,7 @@ Copilot::Copilot(QObject *parent)
         qFatal("Editor service is null!");
     }
 
-    connect(&copilotApi, &CopilotApi::response, [this](CopilotApi::ResponseType responseType, const QString &response){
+    connect(&copilotApi, &CopilotApi::response, [this](CopilotApi::ResponseType responseType, const QString &response, const QString &dstLang) {
         switch (responseType) {
         case CopilotApi::multilingual_code_explain:
             if (editorService->replaceSelectedText) {
@@ -42,16 +42,15 @@ Copilot::Copilot(QObject *parent)
             mutexResponse.unlock();
             break;
         case CopilotApi::multilingual_code_translate:
-            emit translatedResult(response);
+            emit translatedResult(response, dstLang);
             break;
-        default:
-            ;
+        default:;
         }
     });
 
     timer.setSingleShot(true);
 
-    connect(&timer, &QTimer::timeout, [this](){
+    connect(&timer, &QTimer::timeout, [this]() {
         generateCode();
     });
 }
@@ -67,7 +66,9 @@ QString Copilot::selectedText() const
 QString Copilot::apiKey() const
 {
     QStringList properties;
-    properties << "CodeGeeX" << "Detail" << "apiKey";
+    properties << "CodeGeeX"
+               << "Detail"
+               << "apiKey";
     QVariant var = OptionManager::getInstance()->getValue("CodeGeeX", properties);
     if (var.isValid()) {
         return var.toString();
@@ -124,7 +125,7 @@ void Copilot::processKeyPressEvent(Qt::Key key)
     mutexResponse.unlock();
 
     // start generate code.
-    QMetaObject::invokeMethod(this, [this](){
+    QMetaObject::invokeMethod(this, [this]() {
         timer.start(200);
     });
 }
@@ -159,6 +160,6 @@ void Copilot::translate()
 
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if(windowService->switchWidgetNavigation)
+    if (windowService->switchWidgetNavigation)
         windowService->switchWidgetNavigation(MWNA_CODEGEEX);
 }

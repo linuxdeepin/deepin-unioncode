@@ -14,17 +14,15 @@
 #include <QString>
 #include <QHash>
 
-
 namespace CodeGeeX {
-QHash<QString, CopilotApi::ResponseType> kResponseTypes{
-    {"multilingual_code_generate", CopilotApi::multilingual_code_generate},
-    {"multilingual_code_explain", CopilotApi::multilingual_code_explain},
-    {"multilingual_code_translate", CopilotApi::multilingual_code_translate},
-    {"multilingual_code_bugfix", CopilotApi::multilingual_code_bugfix}
+QHash<QString, CopilotApi::ResponseType> kResponseTypes {
+    { "multilingual_code_generate", CopilotApi::multilingual_code_generate },
+    { "multilingual_code_explain", CopilotApi::multilingual_code_explain },
+    { "multilingual_code_translate", CopilotApi::multilingual_code_translate },
+    { "multilingual_code_bugfix", CopilotApi::multilingual_code_bugfix }
 };
 CopilotApi::CopilotApi(QObject *parent)
-    : QObject (parent)
-    , manager(new QNetworkAccessManager(this))
+    : QObject(parent), manager(new QNetworkAccessManager(this))
 {
 }
 
@@ -80,10 +78,10 @@ QNetworkReply *CopilotApi::postMessage(const QString &url, const QByteArray &bod
 }
 
 QByteArray CopilotApi::assembleGenerateBody(const QString &prompt,
-                                     const QString &suffix,
-                                     const QString &apikey,
-                                     int n,
-                                     const QString &apisecret)
+                                            const QString &suffix,
+                                            const QString &apikey,
+                                            int n,
+                                            const QString &apisecret)
 {
     QJsonObject json;
     json.insert("prompt", prompt);
@@ -143,10 +141,9 @@ void CopilotApi::processResponse(QNetworkReply *reply)
 {
     connect(reply, &QNetworkReply::finished, [=]() {
         if (reply->error()) {
-            qInfo() << "Error:" << reply->errorString();
+            qCritical() << "Error:" << reply->errorString();
         } else {
             QString replyMsg = QString::fromUtf8(reply->readAll());
-//            qInfo() << "Response:" << replyMsg;
 
             QJsonParseError error;
             QJsonDocument jsonDocument = QJsonDocument::fromJson(replyMsg.toUtf8(), &error);
@@ -158,10 +155,11 @@ void CopilotApi::processResponse(QNetworkReply *reply)
             QJsonObject jsonObject = jsonDocument.object();
             QString app = jsonObject.value("result").toObject().value("app").toString();
             QJsonArray codeArray = jsonObject.value("result").toObject().value("output").toObject().value("code").toArray();
+            QString dstLang = jsonObject.value("result").toObject().value("input").toObject().value("dst_lang").toString();
             QString code = codeArray.first().toString();
 
-            emit response(kResponseTypes.value(app), code);
+            emit response(kResponseTypes.value(app), code, dstLang);
         }
     });
 }
-} // end namespace
+}   // end namespace

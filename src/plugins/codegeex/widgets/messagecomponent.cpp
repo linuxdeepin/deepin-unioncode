@@ -57,7 +57,7 @@ void MessageComponent::updateMessage(const MessageData &msgData)
     case CodeEdit:
         if (curUpdateEdit) {
             int startIndex = msgData.messageLines().lastIndexOf(QRegularExpression("```([a-z]*|[A-Z]*)"));
-            curUpdateEdit->updateCode(msgData.messageLines().mid(startIndex + 1));
+            curUpdateEdit->updateCode(msgData.messageLines().mid(startIndex + 1), msgData.messageLines().mid(startIndex, 1).at(0));
         }
         break;
     }

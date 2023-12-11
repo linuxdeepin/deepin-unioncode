@@ -35,7 +35,8 @@ Build-Depends:
  libdtkgui-dev,
  libdtkwidget-dev,
  libdtkcore-dev,
- libdtkcore5-bin
+ libdtkcore5-bin,
+ libkf5syntaxhighlighting-dev
 Standards-version: 3.9.8
 Homepage: http://www.deepin.org
 
