@@ -133,10 +133,10 @@ void WindowKeeper::createHelpActions(DMenu *menu)
     helpMenu->addAction(actionAboutPlugin);
 
     QAction::connect(actionReportBug, &QAction::triggered, [=](){
-        QDesktopServices::openUrl(QUrl("https://pms.uniontech.com/project-bug-1039.html"));
+        QDesktopServices::openUrl(QUrl("https://github.com/linuxdeepin/deepin-unioncode/issues"));
     });
     QAction::connect(actionHelpDoc, &QAction::triggered, [=](){
-        QDesktopServices::openUrl(QUrl("https://wiki.deepin.org/zh/05_HOW-TO/02_%E5%BC%80%E5%8F%91%E7%9B%B8%E5%85%B3/deepin-unioncode"));
+        QDesktopServices::openUrl(QUrl("https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e"));
     });
     QAction::connect(actionAboutUnionCode, &QAction::triggered, this, &WindowKeeper::showAboutDlg);
     QAction::connect(actionAboutPlugin, &QAction::triggered, this, &WindowKeeper::showAboutPlugins);
