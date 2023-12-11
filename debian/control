@@ -20,6 +20,7 @@ Build-Depends:
  libargtable2-dev,
  libhiredis-dev,
  catch,
+ libc6-dev,
  libzstd-dev,
  libjson-c-dev,
  libelf-dev,
