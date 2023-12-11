@@ -5,8 +5,10 @@
 #ifndef TEXTEDIT_H
 #define TEXTEDIT_H
 
-#include <QTextEdit>
 #include "scintillaeditextern.h"
+#include "DGuiApplicationHelper"
+
+#include <QTextEdit>
 
 class StyleLsp;
 class StyleSci;
@@ -25,6 +27,8 @@ public:
     virtual StyleJsonFile *getStyleFile() const {return nullptr;}
 
 protected:
+    void slotThemeChanged(DTK_GUI_NAMESPACE::DGuiApplicationHelper::ColorType colorType);
+
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 };

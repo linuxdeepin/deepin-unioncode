@@ -28,6 +28,8 @@
 #include <bitset>
 #include <iostream>
 
+
+DGUI_USE_NAMESPACE
 class TextEditPrivate
 {
     friend class TextEdit;
@@ -66,6 +68,10 @@ TextEdit::TextEdit(QWidget *parent)
 
     QObject::connect(this, &ScintillaEditExtern::saved, this,
                      &TextEdit::fileSaved, Qt::UniqueConnection);
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
+               this, &TextEdit::slotThemeChanged);
+
     setFocusPolicy(Qt::ClickFocus);
     setAcceptDrops(true);
 }
@@ -96,6 +102,12 @@ void TextEdit::setFile(const QString &filePath)
         // 初始化所有lsp client设置
         getStyleLsp()->initLspConnection();
     }
+}
+
+void TextEdit::slotThemeChanged(DGuiApplicationHelper::ColorType colorType)
+{
+    Q_UNUSED(colorType)
+    setFile(file());
 }
 
 void TextEdit::dragEnterEvent(QDragEnterEvent *event)
