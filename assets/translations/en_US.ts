@@ -783,12 +783,12 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="89"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
         <source>add comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="91"/>
         <source>translate</source>
         <translation type="unfinished"></translation>
     </message>
