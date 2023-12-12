@@ -485,12 +485,9 @@ void DapSession::registerHanlder()
     // https://microsoft.github.io/debug-adapter-protocol/specification#Requests_StackTrace
     d->session->registerHandler([&](const dap::StackTraceRequest &request)
                                      -> dap::StackTraceResponse {
-
-        auto threadid = request.threadId.operator long();
-
         // select a given thread id
         // -thread-select 3
-        emit DapProxy::instance()->sigSelectThread(static_cast<int>(threadid));
+        emit DapProxy::instance()->sigSelectThread(static_cast<int>(request.threadId));
 
         dap::StackTraceResponse response;
         Log("<-- Server received StackTrace request from the client\n")
