@@ -30,7 +30,7 @@ Build-Depends:
  libxi-dev,
  qtscript5-dev,
  libqt5scripttools5,
- clang[!mips64,!mips64el],
+ clang[!mips64],
  doxygen,
  libdtkgui-dev,
  libdtkwidget-dev,
