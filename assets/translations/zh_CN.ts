@@ -437,7 +437,7 @@
     <message>
         <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="248"/>
         <source>Build</source>
-        <translation>编译</translation>
+        <translation>构建(B)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="317"/>
@@ -500,7 +500,7 @@
     <message>
         <location filename="../../src/plugins/builder/buildercore.cpp" line="35"/>
         <source>Build</source>
-        <translation>编译</translation>
+        <translation>构建(B)</translation>
     </message>
 </context>
 <context>
@@ -801,12 +801,12 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="89"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
         <source>add comment</source>
         <translation>添加注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="91"/>
         <source>translate</source>
         <translation>翻译</translation>
     </message>
@@ -865,7 +865,7 @@ The debugee has Terminated.
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="830"/>
         <source>Breakpoint List</source>
-        <translation type="unfinished"></translation>
+        <translation>断点列表</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="898"/>
