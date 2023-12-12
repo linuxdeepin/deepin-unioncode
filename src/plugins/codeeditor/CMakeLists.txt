@@ -9,9 +9,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR true)
 add_definitions(-DLIBRARY_INSTALL_PREFIX="${LIBRARY_INSTALL_PREFIX}")
 
 set(CXX_CPP
-    mainframe/autohidedockwidget.cpp
     mainframe/naveditmainwindow.cpp
-    mainframe/toolbarmanager.cpp
     mainframe/texteditkeeper.cpp
     transceiver/codeeditorreceiver.cpp
     codelens/codelenstype.cpp
@@ -50,9 +48,7 @@ set(CXX_CPP
     )
 
 set(CXX_H
-    mainframe/autohidedockwidget.h
     mainframe/naveditmainwindow.h
-    mainframe/toolbarmanager.h
     mainframe/texteditkeeper.h
     transceiver/codeeditorreceiver.h
     codelens/codelenstype.h

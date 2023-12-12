@@ -654,7 +654,7 @@ DIconButton *WindowKeeper::addIconButton(QAction *action)
     iconBtn->setEnabled(action->isEnabled());
     iconBtn->setIcon(action->icon());
     iconBtn->setMinimumSize(QSize(36, 36));
-    iconBtn->setIconSize(QSize(20, 20));
+    iconBtn->setIconSize(QSize(15, 15));
 
     QString toolTipStr = action->text() + " " + action->shortcut().toString();
     iconBtn->setToolTip(toolTipStr);

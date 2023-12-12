@@ -13,6 +13,7 @@
 
 #include <DStackedWidget>
 
+#include <QHBoxLayout>
 #include <QMutex>
 
 DWIDGET_USE_NAMESPACE
@@ -26,13 +27,13 @@ class QDockWidget;
 class AutoHideDockWidget;
 class ToolBarManager;
 
-class NavEditMainWindow : public DMainWindow
+class NavEditMainWindow : public DWidget
 {
     Q_OBJECT
 
 public:
     static NavEditMainWindow *instance();
-    explicit NavEditMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+    explicit NavEditMainWindow(QWidget *parent = nullptr);
     virtual ~NavEditMainWindow();
 
     void addWidgetWorkspace(const QString &title, AbstractWidget *treeWidget, const QString &iconName);
@@ -49,32 +50,26 @@ public:
     void removeContextWidget(AbstractWidget *contextWidget);
     bool switchWidgetWorkspace(const QString &title);
     bool switchWidgetContext(const QString &title);
-    bool switchWidgetTools(const QString &title);
+
     void addFindToolBar(AbstractWidget *findToolbar);
     void showFindToolBar();
-    void addValgrindBar(AbstractWidget *valgrindbar);
-    void showValgrindBar();
-    bool addToolBarWidgetItem(const QString &id, AbstractWidget *widget, const QString &group);
-    void removeToolBarItem(const QString &id);
-    void setToolBarItemDisable(const QString &id, bool disable);
 
 private:
-    void adjustWorkspaceItemOrder();
+    void initUI();
+    void initConnect();
     void initWorkspaceUI();
     void initContextUI();
 
-    AutoHideDockWidget *qDockWidgetWorkspace{nullptr};
-    AutoHideDockWidget *qDockWidgetContext{nullptr};
-    AutoHideDockWidget *qDockWidgetWatch{nullptr};
-    AutoHideDockWidget *qDockWidgetFindToolBar{nullptr};
-    AutoHideDockWidget *qDockWidgetValgrindBar{nullptr};
-    AutoHideDockWidget *qDockWidgetTools{nullptr};
-    DWidget *qWidgetEdit{nullptr};
-    DWidget *qWidgetWatch{nullptr};
+    QHBoxLayout *mainLayout = nullptr;
+    QHBoxLayout *editWatchLayout = nullptr;
 
-    DTabWidget *qTabWidgetWorkspace{nullptr};
-    DTabWidget *qTabWidgetTools{nullptr};
-    ToolBarManager *mainToolBar{nullptr};
+    DStackedWidget *workspaceWidget = nullptr;
+    QSplitter *contextSpliter = nullptr;
+
+    DWidget *editWidget = nullptr;
+    DWidget *watchWidget = nullptr;
+    DWidget *findWidget = nullptr;
+
     QMap<QString, DWidget*> workspaceWidgets;
     QMutex mutex;
 
