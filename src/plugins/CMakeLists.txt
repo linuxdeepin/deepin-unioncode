@@ -15,8 +15,9 @@ add_subdirectory(option)
 add_subdirectory(codeporting)
 add_subdirectory(performance)
 message("processor: ${CMAKE_SYSTEM_PROCESSOR}")
-if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i386"
-        OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "loongarch64")
+if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "i686"
+        OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "loongarch64"
+        OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "sw_64")
     message("reverse debug disabled on ${CMAKE_SYSTEM_PROCESSOR}")
 else()
     if (NOT DISABLE_MODULE)
