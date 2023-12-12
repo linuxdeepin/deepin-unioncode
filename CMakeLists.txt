@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1.0)
 
 project(deepin-unioncode)
 
+message("processor: ${CMAKE_SYSTEM_PROCESSOR}")
+
 function(print_directory arg)
     execute_process(COMMAND ls ${ARGV0} OUTPUT_VARIABLE outVar)
     message(STATUS "print_directory native: ${ARGV0}\n" ${outVar})
@@ -76,7 +78,7 @@ set(CMAKE_AUTOUIC ON)
 
 if ((${CMAKE_SYSTEM_PROCESSOR} STREQUAL "sw_64")
         OR (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "loongarch64")
-#        OR (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64")
+        OR (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64")
         )
     message(STATUS "add cmake params found thread library from ${CMAKE_SYSTEM_PROCESSOR}")
     set(CMAKE_THREAD_LIBS_INIT "-lpthread")
