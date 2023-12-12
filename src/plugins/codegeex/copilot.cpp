@@ -36,7 +36,7 @@ Copilot::Copilot(QObject *parent)
         case CopilotApi::multilingual_code_generate:
             mutexResponse.lock();
             generateResponse = response;
-            if (editorService->showTips && !response.isEmpty()) {
+            if (editorService->showTips && responseValid(response)) {
                 editorService->showTips(generateResponse);
             }
             mutexResponse.unlock();
@@ -74,6 +74,11 @@ QString Copilot::apiKey() const
         return var.toString();
     }
     return {};
+}
+
+bool Copilot::responseValid(const QString &response)
+{
+    return !(response.isEmpty() || response.startsWith("\n\n\n") || response.startsWith("\n    "));
 }
 
 Copilot *Copilot::instance()
