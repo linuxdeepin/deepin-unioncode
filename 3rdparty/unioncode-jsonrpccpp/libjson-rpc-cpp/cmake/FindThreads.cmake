@@ -46,6 +46,7 @@ else()
     set(CMAKE_HAVE_THREADS_LIBRARY)
     if(NOT THREADS_HAVE_PTHREAD_ARG)
       # Check if pthread functions are in normal C library
+      message("CHECK_SYMBOL_EXISTS")
       CHECK_SYMBOL_EXISTS(pthread_create pthread.h CMAKE_HAVE_LIBC_CREATE)
       if(CMAKE_HAVE_LIBC_CREATE)
         set(CMAKE_THREAD_LIBS_INIT "")
@@ -55,14 +56,16 @@ else()
 
       if(NOT CMAKE_HAVE_THREADS_LIBRARY)
         # Do we have -lpthreads
+        message("CHECK_LIBRARY_EXISTS")
         CHECK_LIBRARY_EXISTS(pthreads pthread_create "" CMAKE_HAVE_PTHREADS_CREATE)
         if(CMAKE_HAVE_PTHREADS_CREATE)
-          set(CMAKE_THREAD_LIBS_INIT "-lpthreads")
+#          set(CMAKE_THREAD_LIBS_INIT "-lpthreads") // mozart comment.
           set(CMAKE_HAVE_THREADS_LIBRARY 1)
           set(Threads_FOUND TRUE)
         endif()
 
         # Ok, how about -lpthread
+        message("CHECK_LIBRARY_EXISTS -lpthread")
         CHECK_LIBRARY_EXISTS(pthread pthread_create "" CMAKE_HAVE_PTHREAD_CREATE)
         if(CMAKE_HAVE_PTHREAD_CREATE)
           set(CMAKE_THREAD_LIBS_INIT "-lpthread")
