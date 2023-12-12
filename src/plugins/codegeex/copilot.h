@@ -43,6 +43,7 @@ private:
     explicit Copilot(QObject *parent = nullptr);
     QString selectedText() const;
     QString apiKey() const;
+    bool responseValid(const QString &response);
 
     CodeGeeX::CopilotApi copilotApi;
     dpfservice::EditorService *editorService = nullptr;
