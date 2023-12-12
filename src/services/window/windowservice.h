@@ -157,24 +157,9 @@ public:
     DPF_INTERFACE(void, showFindToolBar);
 
     /*!
-     * \brief addToolBarWidgetItem
-     */
-    DPF_INTERFACE(bool, addToolBarWidgetItem, const QString &id, AbstractWidget *widget, const QString &group);
-
-    /*!
      * \brief addToolBarSeparator
      */
     DPF_INTERFACE(void, addToolBarSeparator, const QString &group);
-
-    /*!
-     * \brief removeToolBarItem
-     */
-    DPF_INTERFACE(void, removeToolBarItem, const QString &id);
-
-    /*!
-     * \brief setToolBarItemDisable
-     */
-    DPF_INTERFACE(void, setToolBarItemDisable, const QString &id, bool disable);
 
     DPF_INTERFACE(void, addTopToolBar, const QString &name, QAction *action, const QString &group, bool isSeparat);
 

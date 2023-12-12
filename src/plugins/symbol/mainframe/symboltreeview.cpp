@@ -35,7 +35,6 @@ SymbolTreeView::SymbolTreeView(DWidget *parent)
 
     d->model = new SymbolModel();
     DTreeView::setModel(d->model);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     setEditTriggers(DTreeView::NoEditTriggers);	          //节点不能编辑

@@ -55,7 +55,6 @@ ProjectTree::ProjectTree(QWidget *parent)
     setLineWidth(0);
     setContentsMargins(0, 0, 0, 0);
     DStyle::setFrameRadius(this, 0);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 
     setEditTriggers(DTreeView::NoEditTriggers);	          //节点不能编辑
     setSelectionBehavior(DTreeView::SelectRows);		  //一次选中整行

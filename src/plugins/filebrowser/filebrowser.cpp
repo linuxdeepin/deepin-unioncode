@@ -55,7 +55,6 @@ AbstractWidget *FileBrowser::createTreeWidget()
     DFrame *treeWidget = new DFrame();
     treeWidget->setLineWidth(0);
     DStyle::setFrameRadius(treeWidget, 0);
-    treeWidget->setMinimumWidth(10);
 
     auto treeView = TreeViewKeeper::instance()->treeView();
     auto folderLabel = new DLabel();
