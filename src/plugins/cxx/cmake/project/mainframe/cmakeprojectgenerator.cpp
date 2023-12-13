@@ -186,6 +186,9 @@ void CmakeProjectGenerator::removeRootItem(QStandardItem *root)
 
 QMenu *CmakeProjectGenerator::createItemMenu(const QStandardItem *item)
 {
+    if (item->parent())
+        return nullptr;
+
     QMenu *menu = nullptr;
 
     // create parse
