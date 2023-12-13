@@ -9,7 +9,6 @@
 _当前的开发分支为**master**，编译依赖可能会在没有更新本说明的情况下发生变化，请参考`./debian/control`以获取构建依赖项列表_
 
 -  debhelper (>=9),
--  dh-systemd,
 -  cmake,
 -  qt5-qmake,
 -  qtbase5-dev,
@@ -36,8 +35,13 @@ _当前的开发分支为**master**，编译依赖可能会在没有更新本说
 -  libxi-dev,
 -  qtscript5-dev,
 -  libqt5scripttools5,
--  clang,
--  doxygen
+-  clang[!mips64],
+-  doxygen,
+-  libdtkgui-dev,
+-  libdtkwidget-dev,
+-  libdtkcore-dev,
+-  libdtkcore5-bin,
+-  libkf5syntaxhighlighting-dev
 
 ## 安装
 
@@ -130,20 +134,20 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 
 - 语言支持
 
-  ![](./docs/rc/language-support.png)
+  <img src="./docs/rc/language-support.png" alt="deepin-app-store" style="border: 1px solid #CCCCCC;" />
 
 - 代码迁移
 
-  ![code porting](./docs/rc/code-porting.png)
+  <img src="./docs/rc/code-porting.png" alt="deepin-app-store" style="border: 1px solid #CCCCCC;" />
 
 - 调试模式
 
-  ![](./docs/rc/debug-mode.png)
+  <img src="./docs/rc/debug-mode.png" alt="deepin-app-store" style="border: 1px solid #CCCCCC;" />
 
 - 反向调试
 
-  ![reverse debug](./docs/rc/reverse-debug.png)
+  <img src="./docs/rc/reverse-debug.png" alt="deepin-app-store" style="border: 1px solid #CCCCCC;" />
 
 - 版本管理
 
-  ![](./docs/rc/version-management.png)
+  <img src="./docs/rc/version-management.png" alt="deepin-app-store" style="border: 1px solid #CCCCCC;" />
