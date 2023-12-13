@@ -51,7 +51,8 @@ Recommends: cmake,
             g++,
             gcc,
             git,
-            npm
+            npm,
+            clangd-13
 Description: IDE 'Deepin Union Code'
  Lightweight cross-platform integrated development environment
 
