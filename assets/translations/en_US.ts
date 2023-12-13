@@ -783,12 +783,12 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="95"/>
         <source>add comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="91"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="96"/>
         <source>translate</source>
         <translation type="unfinished"></translation>
     </message>
@@ -906,19 +906,9 @@ The dap port is not ready, please retry.
 <context>
     <name>DDockWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="585"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="110"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="609"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="219"/>
-        <source>Watcher</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="344"/>
-        <source>Valgrind</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1706,14 +1696,6 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>NavEditMainWindow</name>
-    <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="78"/>
-        <source>toolbar</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>NinjaBuilderGenerator</name>
     <message>
         <location filename="../../src/plugins/cxx/ninja/builder/mainframe/ninjabuildergenerator.cpp" line="62"/>
@@ -1896,18 +1878,18 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="307"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="422"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="306"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="421"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="320"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="319"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="425"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2026,17 +2008,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="343"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="345"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="346"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="345"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2319,14 +2301,6 @@ workspace: %0
 language: %1
 storage: %2
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QDockWidget</name>
-    <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="319"/>
-        <source>Find</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3669,9 +3643,14 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="260"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="574"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="261"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="598"/>
         <source>Deepin Union Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="276"/>
+        <source>loading···</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

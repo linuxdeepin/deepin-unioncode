@@ -20,6 +20,7 @@
 #include <DToolBar>
 #include <DMenuBar>
 #include <DToolButton>
+#include <DLabel>
 
 #include <QObject>
 
@@ -67,6 +68,7 @@ private :
     void showAboutPlugins();
     void layoutWindow(DMainWindow *window);
     void createStatusBar(DMainWindow *window);
+    void waitingForStarted(DMainWindow *window);
 
     void createHelpActions(DMenu *menu);
     void createToolsActions(DMenu *menu);

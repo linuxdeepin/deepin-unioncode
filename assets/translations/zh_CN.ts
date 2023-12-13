@@ -801,12 +801,12 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="90"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="95"/>
         <source>add comment</source>
         <translation>添加注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="91"/>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="96"/>
         <source>translate</source>
         <translation>翻译</translation>
     </message>
@@ -930,20 +930,10 @@ dap端口未就绪，请重试。
 <context>
     <name>DDockWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="585"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="110"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="609"/>
         <source>Workspace</source>
         <translation>工作区</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="219"/>
-        <source>Watcher</source>
-        <translation>视图</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="344"/>
-        <source>Valgrind</source>
-        <translation>Valgrind</translation>
     </message>
 </context>
 <context>
@@ -1732,14 +1722,6 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>NavEditMainWindow</name>
-    <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="78"/>
-        <source>toolbar</source>
-        <translation>工具栏</translation>
-    </message>
-</context>
-<context>
     <name>NinjaBuilderGenerator</name>
     <message>
         <location filename="../../src/plugins/cxx/ninja/builder/mainframe/ninjabuildergenerator.cpp" line="62"/>
@@ -1922,18 +1904,18 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="307"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="422"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="306"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="421"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="320"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="319"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="425"/>
         <source>ok</source>
         <translation>ok</translation>
     </message>
@@ -2057,17 +2039,17 @@ repos path: %0</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="343"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="345"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="346"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="345"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
@@ -2355,14 +2337,6 @@ storage: %2
 语言：%1
 存储路径：%2
 </translation>
-    </message>
-</context>
-<context>
-    <name>QDockWidget</name>
-    <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="319"/>
-        <source>Find</source>
-        <translation>查找</translation>
     </message>
 </context>
 <context>
@@ -3710,10 +3684,15 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="260"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="574"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="261"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="598"/>
         <source>Deepin Union Code</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="276"/>
+        <source>loading···</source>
+        <translation>加载中···</translation>
     </message>
 </context>
 <context>

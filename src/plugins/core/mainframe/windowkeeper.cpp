@@ -43,6 +43,7 @@ class WindowKeeperPrivate
     DMenu *mainMenu{nullptr};
 
     DWidget *centralWidget{nullptr};
+    DWidget *waitingWidget{nullptr};
     DFrame *leftToolBar{nullptr};
     QHash<QString, DToolButton*> leftToolBtns;
     QMap<QString, DWidget*> topToolBar;
@@ -263,6 +264,25 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
     window->titlebar()->setMenu(d->mainMenu);
 }
 
+void WindowKeeper::waitingForStarted(DMainWindow *window)
+{
+    d->waitingWidget = new DWidget(window);
+    QVBoxLayout *vlayout = new QVBoxLayout(d->waitingWidget);
+
+    auto icon = new DLabel(window);
+    icon->setPixmap(QIcon::fromTheme("ide").pixmap(128));
+
+    auto label = new DLabel(window);
+    label->setText(tr("loading···"));
+    label->setAlignment(Qt::AlignCenter);
+
+    vlayout->addWidget(icon);
+    vlayout->addWidget(label);
+    vlayout->setAlignment(Qt::AlignCenter);
+
+    window->setCentralWidget(d->waitingWidget);
+}
+
 WindowKeeper *WindowKeeper::instace()
 {
     if (!ins)
@@ -302,8 +322,10 @@ WindowKeeper::WindowKeeper(QObject *parent)
         layoutWindow(d->window);
 
         //CommandLine Model will not show main window
-        if (CommandParser::instance().getModel() != CommandParser::CommandLine)
+        if (CommandParser::instance().getModel() != CommandParser::CommandLine){
             d->window->show();
+            waitingForStarted(d->window);
+        }
         int currentScreenIndex = qApp->desktop()->screenNumber(d->window);
         QList<QScreen *> screenList = QGuiApplication::screens();
 
@@ -315,6 +337,7 @@ WindowKeeper::WindowKeeper(QObject *parent)
         }
     }
 
+    qApp->processEvents();
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
                      this, &WindowKeeper::initUserWidget);
 
@@ -541,6 +564,7 @@ void WindowKeeper::addOpenProjectAction(const QString &name, AbstractAction *act
 void WindowKeeper::initUserWidget()
 {
     qApp->processEvents();
+
     if (!d->leftToolBar)
         return;
 
