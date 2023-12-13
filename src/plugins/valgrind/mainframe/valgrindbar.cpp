@@ -8,11 +8,10 @@
 
 #include <DTreeWidget>
 #include <DHeaderView>
+#include <DStackedWidget>
+#include <DButtonBox>
 
 #include <QHBoxLayout>
-
-static QStringList memcheckItemNames {QObject::tr("Issue"), QObject::tr("Location")};
-static QStringList helgrindItemNames {QObject::tr("Issue"), QObject::tr("Location")};
 
 class ValgrindBarPrivate
 {
@@ -20,15 +19,19 @@ class ValgrindBarPrivate
     DTreeWidget *memcheckWidget {nullptr};
     DTreeWidget *helgrindWidget {nullptr};
     QTabWidget *tabWidget {nullptr};
+    DStackedWidget *stackedWidget {nullptr};
+    DButtonBox *btnBox {nullptr};
+    DButtonBoxButton *memcheckBtn {nullptr};
+    DButtonBoxButton *helgrindBtn {nullptr};
 };
 
 ValgrindBar::ValgrindBar(QWidget *parent)
     : QWidget(parent)
     , d(new ValgrindBarPrivate())
 {
-    d->tabWidget = new QTabWidget(this);
-    d->memcheckWidget = new DTreeWidget(d->tabWidget);
-    d->helgrindWidget = new DTreeWidget(d->tabWidget);
+    d->stackedWidget = new DStackedWidget(this);
+    d->memcheckWidget = new DTreeWidget(d->stackedWidget);
+    d->helgrindWidget = new DTreeWidget(d->stackedWidget);
 
     initValgrindbar();
 
@@ -52,23 +55,43 @@ void ValgrindBar::clearDisplay(const QString &type)
 
 void ValgrindBar::initValgrindbar()
 {
-    setWidgetStyle(d->memcheckWidget, memcheckItemNames);
-    setWidgetStyle(d->helgrindWidget, helgrindItemNames);
+    int memcheckIndex = d->stackedWidget->addWidget(d->memcheckWidget);
+    int helgrindIndex = d->stackedWidget->addWidget(d->helgrindWidget);
 
-    d->tabWidget->addTab(d->memcheckWidget, tr("memcheck"));
-    d->tabWidget->addTab(d->helgrindWidget, tr("helgrind"));
-    d->tabWidget->setTabPosition(QTabWidget::South);
+    d->memcheckWidget->header()->hide();
+    d->memcheckWidget->setLineWidth(0);
 
-    QHBoxLayout *hLayout = new QHBoxLayout(this);
-    this->setLayout(hLayout);
-    hLayout->addWidget(d->tabWidget);
-}
+    d->helgrindWidget->header()->hide();
+    d->helgrindWidget->setLineWidth(0);
 
-void ValgrindBar::setWidgetStyle(DTreeWidget *treeWidget, const QStringList &itemNames)
-{
-    treeWidget->header()->setSectionResizeMode(DHeaderView::ResizeMode::ResizeToContents);
-    treeWidget->setHeaderLabels(itemNames);
-    treeWidget->setColumnCount(itemNames.size());
+    d->btnBox = new DButtonBox(this);
+    d->btnBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    d->memcheckBtn = new DButtonBoxButton(tr("memcheck"));
+    d->helgrindBtn = new DButtonBoxButton(tr("helgrind"));
+    QList<DButtonBoxButton*> list;
+    list.append(d->memcheckBtn);
+    list.append(d->helgrindBtn);
+    d->btnBox->setButtonList(list, true);
+    d->memcheckBtn->setFixedWidth(93);
+    d->helgrindBtn->setFixedWidth(93);
+    connect(d->memcheckBtn, &DButtonBoxButton::clicked, [=]{
+        d->stackedWidget->setCurrentIndex(memcheckIndex);
+    });
+
+    connect(d->helgrindBtn, &DButtonBoxButton::clicked, [=]{
+        d->stackedWidget->setCurrentIndex(helgrindIndex);
+    });
+
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->addWidget(d->btnBox);
+    hLayout->setAlignment(Qt::AlignLeft);
+
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addLayout(hLayout);
+    vLayout->addWidget(d->stackedWidget);
+    vLayout->setContentsMargins(0, 0, 0, 0);
+    this->setLayout(vLayout);
+    vLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 
 void ValgrindBar::showResult(const QString &xmlFileName, const QString &type)
@@ -76,12 +99,14 @@ void ValgrindBar::showResult(const QString &xmlFileName, const QString &type)
     DTreeWidget *treeWidget = nullptr;
 
     if ("memcheck" == type) {
+        d->memcheckBtn->setChecked(true);
         treeWidget = d->memcheckWidget;
     } else if ("helgrind" == type){
+        d->helgrindBtn->setChecked(true);
         treeWidget = d->helgrindWidget;
     }
 
-    d->tabWidget->setCurrentWidget(treeWidget);
+    d->stackedWidget->setCurrentWidget(treeWidget);
     refreshDisplay(treeWidget);
 
     XmlStreamReader reader(treeWidget);
