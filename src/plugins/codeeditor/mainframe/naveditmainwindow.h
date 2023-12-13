@@ -61,7 +61,7 @@ private:
     void initContextUI();
 
     QHBoxLayout *mainLayout = nullptr;
-    QHBoxLayout *editWatchLayout = nullptr;
+    QSplitter *editWatchSplitter = nullptr;
 
     DStackedWidget *workspaceWidget = nullptr;
     QSplitter *contextSpliter = nullptr;
