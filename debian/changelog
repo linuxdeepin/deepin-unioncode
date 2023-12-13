@@ -1,3 +1,9 @@
+deepin-unioncode (1.2.3) unstable; urgency=medium
+
+  * compile on multi-platforms
+
+ -- luzhen <luzhen@uniontech.com>  Wed, 13 Dec 2023 13:18:49 +0800
+
 deepin-unioncode (1.2.2) unstable; urgency=medium
 
   * bug fix
