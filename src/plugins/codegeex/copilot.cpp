@@ -15,6 +15,8 @@ static const char *kUrlGenerateMultiLine = "https://tianqi.aminer.cn/api/v2/mult
 static const char *kUrlComment = "https://tianqi.aminer.cn/api/v2/multilingual_code_explain";
 static const char *kUrlTranslate = "https://tianqi.aminer.cn/api/v2/multilingual_code_translate";
 //static const char *kUrlBugfix = "https://tianqi.aminer.cn/api/v2/multilingual_code_bugfix";
+// this is a temporary key
+static const char *kDefaultApiKey = "f30ea902c3824ee88e221a32363c0823";
 
 using namespace CodeGeeX;
 using namespace dpfservice;
@@ -65,15 +67,7 @@ QString Copilot::selectedText() const
 
 QString Copilot::apiKey() const
 {
-    QStringList properties;
-    properties << "CodeGeeX"
-               << "Detail"
-               << "apiKey";
-    QVariant var = OptionManager::getInstance()->getValue("CodeGeeX", properties);
-    if (var.isValid()) {
-        return var.toString();
-    }
-    return {};
+    return kDefaultApiKey;
 }
 
 bool Copilot::responseValid(const QString &response)

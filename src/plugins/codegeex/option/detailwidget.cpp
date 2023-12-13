@@ -23,9 +23,6 @@ DWIDGET_USE_NAMESPACE
 
 static const char *kApiKey = "apiKey";
 
-// this is a temporary key
-static const char *kDefaultApiKey = "f30ea902c3824ee88e221a32363c0823";
-
 class DetailWidgetPrivate
 {
     friend class DetailWidget;
@@ -78,13 +75,14 @@ bool DetailWidget::getControlValue(QMap<QString, QVariant> &map)
 
 void DetailWidget::setControlValue(const QMap<QString, QVariant> &map)
 {
-    CodeGeeXConfig config;
-    mapToData(map, config);
+    // TODO(MOZART): change other value to save.
+//    CodeGeeXConfig config;
+//    mapToData(map, config);
 
-    if (config.apiKey.isEmpty()) {
-        config.apiKey = kDefaultApiKey;
-    }
-    d->apiKeyWidget->setText(config.apiKey);
+//    if (config.apiKey.isEmpty()) {
+//        config.apiKey = kDefaultApiKey;
+//    }
+//    d->apiKeyWidget->setText(config.apiKey);
 }
 
 bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVariant> &map)
