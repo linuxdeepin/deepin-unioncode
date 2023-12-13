@@ -25,6 +25,8 @@
 #include <QEvent>
 #include <QWidget>
 
+inline constexpr int kMinimumWidth = { 100 };
+
 using namespace dpfservice;
 static NavEditMainWindow *ins{nullptr};
 
@@ -50,17 +52,17 @@ NavEditMainWindow::~NavEditMainWindow()
 void NavEditMainWindow::initUI()
 {
     workspaceWidget = new DStackedWidget();
+    workspaceWidget->setMinimumWidth(kMinimumWidth);
     contextWidget = new DWidget();
     editWidget = new DWidget();
     watchWidget = new DWidget();
-
-    DWidget *editWatchWidget = new DWidget();
-    editWatchLayout = new QHBoxLayout(editWatchWidget);
-    editWatchLayout->setContentsMargins(0, 0, 0, 0);
+    editWatchSplitter = new QSplitter(Qt::Horizontal);
+    editWatchSplitter->setChildrenCollapsible(false);
 
     contextSpliter = new QSplitter(Qt::Vertical);
+    contextSpliter->setMinimumWidth(kMinimumWidth);
     contextSpliter->setChildrenCollapsible(false);
-    contextSpliter->addWidget(editWatchWidget);
+    contextSpliter->addWidget(editWatchSplitter);
     contextSpliter->addWidget(contextWidget);
     contextSpliter->setStretchFactor(0, 5);
     contextSpliter->setStretchFactor(1, 1);
@@ -69,6 +71,8 @@ void NavEditMainWindow::initUI()
     workspaceSpliter->setChildrenCollapsible(false);
     workspaceSpliter->addWidget(workspaceWidget);
     workspaceSpliter->addWidget(contextSpliter);
+    workspaceSpliter->setStretchFactor(0, 5);
+    workspaceSpliter->setStretchFactor(1, 6);
 
     mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -116,7 +120,6 @@ void NavEditMainWindow::initContextUI()
     contextTabBar = new DFrame();
     DStyle::setFrameRadius(contextTabBar, 0);
     contextTabBar->setLineWidth(0);
-    contextTabBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QHBoxLayout *contextTabLayout = new QHBoxLayout(contextTabBar);
     contextTabLayout->setAlignment(Qt::AlignLeft);
 
@@ -194,7 +197,7 @@ DWidget *NavEditMainWindow::setWidgetEdit(AbstractCentral *edit)
     if (oldWidget) {
         oldWidget->setParent(nullptr);
     }
-    editWatchLayout->addWidget(editWidget);
+    editWatchSplitter->addWidget(editWidget);
     return oldWidget;
 }
 
@@ -206,7 +209,9 @@ DWidget *NavEditMainWindow::setWidgetWatch(AbstractWidget *watch)
     if (oldWidget) {
         oldWidget->setParent(nullptr);
     }
-    editWatchLayout->addWidget(watchWidget);
+    editWatchSplitter->addWidget(watchWidget);
+    editWatchSplitter->setStretchFactor(0, 5);
+    editWatchSplitter->setStretchFactor(1, 1);
     watchWidget->hide();
     return oldWidget;
 }
