@@ -14,6 +14,7 @@
 #include <DTreeView>
 #include <DPushButton>
 #include <DLineEdit>
+#include <DDialog>
 
 #include <QDebug>
 #include <QHeaderView>
@@ -299,9 +300,9 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *ch
     if (projectService->supportGeneratorName<ProjectGenerator>().contains(toolKitName)) {
         menu = projectService->createGenerator<ProjectGenerator>(toolKitName)->createItemMenu(child);
     }
+
     if (!menu)
         menu = new DMenu();
-
 
     QAction *newDocAction = new QAction(tr("New Document"));
     menu->addAction(newDocAction);
@@ -413,7 +414,7 @@ void ProjectTree::doActiveProject(QStandardItem *root)
 
 void ProjectTree::actionNewDocument(const QStandardItem *item)
 {
-    QDialog *dlg = new QDialog;
+    DDialog *dlg = new DDialog;
     DLineEdit *edit = new DLineEdit;
 
     edit->lineEdit()->setAlignment(Qt::AlignLeft);
@@ -421,13 +422,10 @@ void ProjectTree::actionNewDocument(const QStandardItem *item)
     dlg->setWindowTitle(tr("New Document"));
     dlg->resize(400, 100);
 
-    QVBoxLayout *vLayout = new QVBoxLayout(dlg);
-    QPushButton *pbtOk = new QPushButton(tr("ok"));
-    pbtOk->setFixedSize(40, 20);
-    vLayout->addWidget(edit);
-    vLayout->addWidget(pbtOk, 0, Qt::AlignCenter);
+    dlg->addContent(edit);
+    dlg->addButton(tr("ok"), false, DDialog::ButtonType::ButtonRecommend);
 
-    QObject::connect(pbtOk, &QPushButton::clicked, dlg, [=](){
+    QObject::connect(dlg, &DDialog::buttonClicked, dlg, [=](){
         creatNewDocument(item, edit->text());
         dlg->close();
     });
