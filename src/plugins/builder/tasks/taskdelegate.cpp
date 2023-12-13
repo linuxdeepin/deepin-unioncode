@@ -10,6 +10,7 @@
 #include <QTextLayout>
 #include <QPainter>
 #include <QDir>
+#include <QPainterPath>
 
 DWIDGET_USE_NAMESPACE
 
