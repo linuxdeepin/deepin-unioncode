@@ -11,7 +11,6 @@
 #include <DTreeView>
 #include <DMessageBox>
 #include <DPushButton>
-#include <DTreeView>
 #include <DTitlebar>
 #include <DListWidget>
 #include <DStackedWidget>
@@ -58,7 +57,7 @@ MainDialog::~MainDialog()
 void MainDialog::setupUI(TemplateVector &templateVec)
 {
     DTitlebar *titleBar = new DTitlebar(this);
-    titleBar->setMenuVisible(true);
+    titleBar->setMenuVisible(false);
     titleBar->setIcon(QIcon::fromTheme("ide"));
 
     DButtonBoxButton *newFileButton = new DButtonBoxButton(QObject::tr("New File"), this);
@@ -83,6 +82,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     treeView->setSelectionMode(DTreeView::SingleSelection);
     treeView->setSelectionBehavior(DTreeView::SelectRows);
     treeView->setSelectionMode(DTreeView::SingleSelection);
+
 
     //deafult new file显示
     QStandardItemModel *StandardModel = new QStandardItemModel();
@@ -226,19 +226,24 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     });
 
 
-    QVBoxLayout *vItemLayout = new QVBoxLayout();
-    vItemLayout->addWidget(treeView);
+    QVBoxLayout *leftLayout = new QVBoxLayout();
+    leftLayout->addWidget(treeView);
+
+    QVBoxLayout *rightLayout = new QVBoxLayout();
+    rightLayout->setContentsMargins(0, 10, 0, 0);
+    rightLayout->addWidget(d->detailStackedWidget);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    hLayout->addLayout(vItemLayout);
-    hLayout->addWidget(d->detailStackedWidget);
+    hLayout->addLayout(leftLayout);
+    hLayout->addLayout(rightLayout);
 
-    hLayout->setStretchFactor(vItemLayout, 1);
-    hLayout->setStretchFactor(d->detailStackedWidget, 2);
-
+    hLayout->setStretchFactor(leftLayout, 1);
+    hLayout->setStretchFactor(rightLayout, 2);
+    hLayout->setSpacing(10);
     QVBoxLayout *vLayout = new QVBoxLayout();
 
     vLayout->addWidget(titleBar);
+    vLayout->setSpacing(0);
     vLayout->addLayout(hLayout);
     vLayout->setContentsMargins(0,0,0,0);
     setLayout(vLayout);
