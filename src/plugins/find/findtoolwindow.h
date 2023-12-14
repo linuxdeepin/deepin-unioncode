@@ -30,6 +30,10 @@ private:
     bool getSearchParams(SearchParams *searchParams);
 
     FindToolWindowPrivate *const d;
+
+private slots:
+    void onSenseCheckBtnClicked();
+    void onwholeWordsCheckBtnClicked();
 };
 
 #endif // FINDTOOLWINDOW_H
