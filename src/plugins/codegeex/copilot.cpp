@@ -72,7 +72,13 @@ QString Copilot::apiKey() const
 
 bool Copilot::responseValid(const QString &response)
 {
-    return !(response.isEmpty() || response.startsWith("\n\n\n") || response.startsWith("\n    "));
+    bool valid = !(response.isEmpty()
+                   || response.startsWith("\n\n\n")
+                   || response.startsWith("\n    \n    "));
+    if (!valid) {
+        qWarning() << "Reponse not valid: " << response;
+    }
+    return valid;
 }
 
 Copilot *Copilot::instance()
