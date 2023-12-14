@@ -22,6 +22,8 @@ public:
                const QModelIndex &index) const override;
     void setHeightColor(const QColor &color);
     void setHeightRange(int characterStart, int characterEnd);
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+
 };
 
 #endif // CODELENSDELEGATE_H
