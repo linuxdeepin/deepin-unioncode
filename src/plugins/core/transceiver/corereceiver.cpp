@@ -30,6 +30,8 @@ void CoreReceiver::eventProcess(const dpf::Event &event)
     if(event.data() == navigation.doSwitch.name) {
         QString actionTextKey = navigation.doSwitch.pKeys[0];
         QString actionText = event.property(actionTextKey).toString();
-        WindowKeeper::instace()->switchWidgetNavigation(actionText);
+        QMetaObject::invokeMethod(this, [=](){
+            WindowKeeper::instace()->switchWidgetNavigation(actionText);
+        } , Qt::QueuedConnection);
     }
 }
