@@ -19,7 +19,7 @@ CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
 
 dpf::EventHandler::Type CodeEditorReceiver::type()
 {
-    return dpf::EventHandler::Type::Async;
+    return dpf::EventHandler::Type::Sync;
 }
 
 QStringList CodeEditorReceiver::topics()
