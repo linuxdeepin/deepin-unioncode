@@ -43,6 +43,9 @@ class FindToolWindowPrivate
     DLineEdit *expatternLineEdit{nullptr};
     DSuggestButton *senseCheckBtn{nullptr};
     DPushButton *wholeWordsCheckBtn{nullptr};
+
+    bool senseCheckBtnFlag = false;
+    bool wholeWordsCheckBtnFlag = false;
     friend class FindToolWindow;
 };
 
@@ -120,6 +123,7 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 
     d->senseCheckBtn = new DSuggestButton();
     d->senseCheckBtn->setText("Aa");
+
     d->senseCheckBtn->setFixedSize(36, 36);
     d->wholeWordsCheckBtn = new DPushButton();
     d->wholeWordsCheckBtn->setIcon(QIcon::fromTheme("find_matchComplete"));
@@ -138,20 +142,24 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     DPushButton *searchBtn = new DPushButton(QPushButton::tr("Search"));
-    searchBtn->setMinimumSize(120, 36);
-    searchBtn->setMaximumSize(130, 36);
+    searchBtn->setMinimumWidth(120);
+    searchBtn->setMaximumWidth(130);
     searchBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Search && Replace"));
     replaceBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    replaceBtn->setMinimumSize(120, 36);
-    replaceBtn->setMaximumSize(130, 36);
+    replaceBtn->setMinimumWidth(120);
+    replaceBtn->setMaximumWidth(130);
 
     btnLayout->addWidget(searchBtn);
     btnLayout->addWidget(replaceBtn);
 
     connect(searchBtn, &QAbstractButton::clicked, this, &FindToolWindow::search);
     connect(replaceBtn, &QAbstractButton::clicked, this, &FindToolWindow::replace);
+
+    connect(d->senseCheckBtn, &QPushButton::clicked, this, &FindToolWindow::onSenseCheckBtnClicked);
+    connect(d->wholeWordsCheckBtn, &QPushButton::clicked, this, &FindToolWindow::onwholeWordsCheckBtnClicked);
+
 
     formLayout->setContentsMargins(26, 10, 0, 0);
     formLayout->setSpacing(10);
@@ -161,7 +169,16 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     formLayout->addRow(expatternLabel, d->expatternLineEdit);
     formLayout->addRow(btnLayout);
     formLayout->setAlignment(btnLayout, Qt::AlignRight);
+}
 
+void FindToolWindow::onSenseCheckBtnClicked()
+{
+    d->senseCheckBtnFlag = !d->senseCheckBtnFlag;
+}
+
+void FindToolWindow::onwholeWordsCheckBtnClicked()
+{
+    d->wholeWordsCheckBtnFlag = !d->wholeWordsCheckBtnFlag;
 }
 
 void FindToolWindow::addSearchResultWidget(QWidget *parentWidget)
@@ -247,8 +264,8 @@ bool FindToolWindow::getSearchParams(SearchParams *searchParams)
 
     searchParams->filePathList = searchPathList;
     searchParams->searchText = text;
-    searchParams->sensitiveFlag = d->senseCheckBtn->isChecked();
-    searchParams->wholeWordsFlag  = d->wholeWordsCheckBtn->isChecked();
+    searchParams->sensitiveFlag = d->senseCheckBtnFlag;
+    searchParams->wholeWordsFlag = d->wholeWordsCheckBtnFlag;
     searchParams->patternsList = d->patternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
     searchParams->exPatternsList = d->expatternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
     searchParams->projectInfoMap = d->projectInfoMap;
