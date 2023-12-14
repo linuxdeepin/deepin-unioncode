@@ -139,7 +139,8 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
         d->checkBox = new DCheckBox(this);
 
     connect(d->checkBox, &DCheckBox::clicked, [this](){
-        d->envShadow->enable = d->checkBox->isChecked();
+        if (d->envShadow)
+            d->envShadow->enable = d->checkBox->isChecked();
     });
 
     d->checkBox->setText(tr("Enable All Environment"));

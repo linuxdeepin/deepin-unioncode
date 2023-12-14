@@ -145,7 +145,7 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
         this->close();
     });
     auto applyBtn = new DSuggestButton(tr("Apply"), box);
-    connect(applyBtn, SIGNAL(clicked()), this, SLOT(saveSingleConfig()));
+    connect(applyBtn, SIGNAL(clicked()), this, SLOT(saveAllConfig()));
     cancelBtn->setMinimumWidth(173);
     cancelBtn->setAutoDefault(false);
     applyBtn->setMinimumWidth(173);
