@@ -9,7 +9,6 @@ Deepin Union Code is a lightweight integrated development environment independen
 _The **master** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
 
 -  debhelper (>=9),
--  dh-systemd,
 -  cmake,
 -  qt5-qmake,
 -  qtbase5-dev,
@@ -36,12 +35,15 @@ _The **master** branch is current development branch, build dependencies may cha
 -  libxi-dev,
 -  qtscript5-dev,
 -  libqt5scripttools5,
--  clang,
--  doxygen
+-  clang[!mips64],
+-  doxygen,
+-  libdtkgui-dev,
+-  libdtkwidget-dev,
+-  libdtkcore-dev,
+-  libdtkcore5-bin,
+-  libkf5syntaxhighlighting-dev
 
-Installation
-
-## Build from source code
+## Installation
 
 1. Make sure you have installed all dependencies.
 
@@ -132,18 +134,18 @@ deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 
 - language support
 
-  ![](./docs/rc/language-support.png)
+  <img src="./docs/rc/language-support.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
 
 - code porting
 
-  ![code porting](./docs/rc/code-porting.png)
+  <img src="./docs/rc/code-porting.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
 
 - debug mode
 
-  ![](./docs/rc/debug-mode.png)
+  <img src="./docs/rc/debug-mode.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
   
 - reverse debug
 
-  ![reverse debug](./docs/rc/reverse-debug.png)
+  <img src="./docs/rc/reverse-debug.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
   
-- version management![](./docs/rc/version-management.png)
+- version management<img src="./docs/rc/version-management.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
