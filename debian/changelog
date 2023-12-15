@@ -1,3 +1,10 @@
+deepin-unioncode (1.2.4) unstable; urgency=medium
+
+  * add clangd-13
+  * bug fix
+
+ -- luzhen <luzhen@uniontech.com>  Fri, 15 Dec 2023 10:38:26 +0800
+
 deepin-unioncode (1.2.3) unstable; urgency=medium
 
   * compile on multi-platforms
