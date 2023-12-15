@@ -3,6 +3,8 @@
         <file>texts/recent-navigation_20px.svg</file>
         <file>texts/edit-navigation_20px.svg</file>
         <file>actions/ide_32px.svg</file>
+        <file>actions/logo_128px.png</file>
+        <file>actions/backgroundLogo_128px.png</file>
     </qresource>
 </RCC>
 

@@ -8,6 +8,7 @@ set(CXX_CPP
     mainframe/progressbar.cpp
     mainframe/plugindialog.cpp
     transceiver/corereceiver.cpp
+    mainframe/loadingwidget.cpp
     core.cpp
     core.json
     )
@@ -18,6 +19,7 @@ set(CXX_H
     mainframe/progressbar.h
     mainframe/plugindialog.h
     transceiver/corereceiver.h
+    mainframe/loadingwidget.h
     core.h
     )
 

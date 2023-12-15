@@ -5,9 +5,12 @@
 #include "lifecycle.h"
 #include "pluginmetaobject.h"
 
+#include <QtConcurrent>
+#include <QFutureWatcher>
+
 DPF_BEGIN_NAMESPACE
 
-Q_GLOBAL_STATIC(PluginManager,pluginManager);
+Q_GLOBAL_STATIC(PluginManager, pluginManager);
 
 /** @brief 设置插件身份标识，与Qt插件的IID标识接口保持一致
  * 你可以在任何的代码块中使用，如下
@@ -75,7 +78,7 @@ void LifeCycle::setServicePaths(const QStringList &servicePaths)
 }
 
 PluginMetaObjectPointer LifeCycle::pluginMetaObj(const QString &pluginName,
-                                                                 const QString version)
+                                                 const QString version)
 {
     return pluginManager->pluginMetaObj(pluginName, version);
 }
@@ -108,13 +111,23 @@ bool LifeCycle::readPlugins()
  * @endcode
  * 详情可参阅 class PluginManager
  */
+static QFutureWatcher<bool> watcher;
 bool LifeCycle::loadPlugins()
 {
-    if (!pluginManager->loadPlugins())
-        return false;
+    QObject::connect(&watcher, &QFutureWatcher<bool>::finished, [&]() {
+        if (watcher.result()) {
+            pluginManager->initPlugins();
+            pluginManager->startPlugins();
+        } else {
+            qCritical() << "Failed, Load other plugin error!";
+        }
+    });
 
-    pluginManager->initPlugins();
-    pluginManager->startPlugins();
+    QFuture<bool> future = QtConcurrent::run([=]() -> bool {
+        return pluginManager->loadPlugins();
+    });
+
+    watcher.setFuture(future);
 
     return true;
 }
