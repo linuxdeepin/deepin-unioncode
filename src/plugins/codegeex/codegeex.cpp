@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "codegeex.h"
-#include "askpage/askpage.h"
 #include "option/optioncodegeexgenerator.h"
 #include "widgets/codegeexwidget.h"
 #include "codegeexmanager.h"
