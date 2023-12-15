@@ -6,6 +6,7 @@
 
 #include "windowkeeper.h"
 #include "windowstatusbar.h"
+#include "loadingwidget.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include "common/common.h"
@@ -31,43 +32,42 @@
 #include <QStandardPaths>
 #include <DDockWidget>
 
-static WindowKeeper *ins{nullptr};
+static WindowKeeper *ins { nullptr };
 using namespace dpfservice;
 class WindowKeeperPrivate
 {
     WindowKeeperPrivate();
-    QHash<QString, DWidget *> centrals{};
-    DMainWindow *window{nullptr};
-    QActionGroup *navActionGroup{nullptr};
-    DMenu *mainMenu{nullptr};
+    QHash<QString, DWidget *> centrals {};
+    DMainWindow *window { nullptr };
+    QActionGroup *navActionGroup { nullptr };
+    DMenu *mainMenu { nullptr };
 
-    DWidget *centralWidget{nullptr};
-    DWidget *waitingWidget{nullptr};
-    DFrame *leftToolBar{nullptr};
-    QHash<QString, DToolButton*> leftToolBtns;
-    QMap<QString, DWidget*> topToolBar;
+    DWidget *centralWidget { nullptr };
+    loadingWidget *loadingwidget { nullptr };
+    DFrame *leftToolBar { nullptr };
+    QHash<QString, DToolButton *> leftToolBtns;
+    QMap<QString, DWidget *> topToolBar;
 
     QString lastNavName;
 
-    QVBoxLayout *leftBarBottomLayout{ nullptr };
-    QVBoxLayout *leftBarTopLayout{ nullptr };
+    QVBoxLayout *leftBarBottomLayout { nullptr };
+    QVBoxLayout *leftBarTopLayout { nullptr };
 
     friend class WindowKeeper;
 };
 
 WindowKeeperPrivate::WindowKeeperPrivate()
 {
-
 }
 
 void WindowKeeper::createFileActions(DMenu *menu)
 {
     qInfo() << __FUNCTION__;
-    QAction* actionOpenFile = new QAction(MWMFA_OPEN_FILE);
+    QAction *actionOpenFile = new QAction(MWMFA_OPEN_FILE);
     ActionManager::getInstance()->registerAction(actionOpenFile, "File.Open.File",
                                                  MWMFA_OPEN_FILE, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O));
 
-    QAction::connect(actionOpenFile, &QAction::triggered, [=](){
+    QAction::connect(actionOpenFile, &QAction::triggered, [=]() {
         QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
         QString filePath = DFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE, dir);
         if (filePath.isEmpty() && !QFileInfo(filePath).exists())
@@ -78,22 +78,22 @@ void WindowKeeper::createFileActions(DMenu *menu)
 
     menu->addAction(actionOpenFile);
 
-    DMenu* menuOpenProject = new DMenu(MWMFA_OPEN_PROJECT);
+    DMenu *menuOpenProject = new DMenu(MWMFA_OPEN_PROJECT);
     menu->addMenu(menuOpenProject);
 }
 
 void WindowKeeper::createBuildActions(DMenu *menu)
 {
     qInfo() << __FUNCTION__;
-    DMenu* buildMenu = new DMenu();
-    QAction* buildAction = menu->addMenu(buildMenu);
+    DMenu *buildMenu = new DMenu();
+    QAction *buildAction = menu->addMenu(buildMenu);
     buildAction->setText(MWM_BUILD);
 }
 
 void WindowKeeper::createDebugActions(DMenu *menu)
 {
     qInfo() << __FUNCTION__;
-    QAction* debugAction = menu->addMenu(new DMenu());
+    QAction *debugAction = menu->addMenu(new DMenu());
     debugAction->setText(MWM_DEBUG);
 }
 
@@ -126,10 +126,10 @@ void WindowKeeper::createHelpActions(DMenu *menu)
     ActionManager::getInstance()->registerAction(actionAboutPlugin, "Help.AboutPlugins", MWM_ABOUT_PLUGINS, QKeySequence());
     helpMenu->addAction(actionAboutPlugin);
 
-    QAction::connect(actionReportBug, &QAction::triggered, [=](){
+    QAction::connect(actionReportBug, &QAction::triggered, [=]() {
         QDesktopServices::openUrl(QUrl("https://github.com/linuxdeepin/deepin-unioncode/issues"));
     });
-    QAction::connect(actionHelpDoc, &QAction::triggered, [=](){
+    QAction::connect(actionHelpDoc, &QAction::triggered, [=]() {
         QDesktopServices::openUrl(QUrl("https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e"));
     });
     QAction::connect(actionAboutPlugin, &QAction::triggered, this, &WindowKeeper::showAboutPlugins);
@@ -138,7 +138,7 @@ void WindowKeeper::createHelpActions(DMenu *menu)
 void WindowKeeper::createStatusBar(DMainWindow *window)
 {
     qInfo() << __FUNCTION__;
-    DStatusBar* statusBar = new WindowStatusBar();
+    DStatusBar *statusBar = new WindowStatusBar();
     window->setStatusBar(statusBar);
 }
 
@@ -158,7 +158,7 @@ void WindowKeeper::createNavIconBtn(const QString &navName, const QString &iconN
 
     d->leftToolBtns.insert(navName, toolBtn);
 
-    connect(toolBtn, &DIconButton::clicked, [=](){
+    connect(toolBtn, &DIconButton::clicked, [=]() {
         WindowKeeper::switchWidgetNavigation(navName);
     });
 
@@ -174,7 +174,7 @@ void WindowKeeper::insertToLeftBarBottom(AbstractWidget *toolBtn)
 {
     d->leftBarBottomLayout->addSpacing(5);
 
-    DWidget* dWidget = static_cast<DWidget*>(toolBtn->qWidget());
+    DWidget *dWidget = static_cast<DWidget *>(toolBtn->qWidget());
     d->leftBarBottomLayout->addWidget(dWidget);
 }
 
@@ -212,7 +212,6 @@ void WindowKeeper::initLeftToolbar()
     d->leftBarBottomLayout = new QVBoxLayout();
     d->leftBarBottomLayout->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
 
-
     layout->addLayout(d->leftBarTopLayout);
     layout->addLayout(d->leftBarBottomLayout);
     d->leftToolBar->setLayout(layout);
@@ -246,7 +245,7 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
 
     window->setWindowTitle("Deepin Union Code");
     window->setWindowIcon(QIcon::fromTheme("ide"));
-    window->setMinimumSize(QSize(MW_MIN_WIDTH,MW_MIN_HEIGHT));
+    window->setMinimumSize(QSize(MW_MIN_WIDTH, MW_MIN_HEIGHT));
     window->setAttribute(Qt::WA_DeleteOnClose);
 
     window->titlebar()->setIcon(QIcon::fromTheme("ide"));
@@ -258,21 +257,8 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
 
 void WindowKeeper::waitingForStarted(DMainWindow *window)
 {
-    d->waitingWidget = new DWidget(window);
-    QVBoxLayout *vlayout = new QVBoxLayout(d->waitingWidget);
-
-    auto icon = new DLabel(window);
-    icon->setPixmap(QIcon::fromTheme("ide").pixmap(128));
-
-    auto label = new DLabel(window);
-    label->setText(tr("loading···"));
-    label->setAlignment(Qt::AlignCenter);
-
-    vlayout->addWidget(icon);
-    vlayout->addWidget(label);
-    vlayout->setAlignment(Qt::AlignCenter);
-
-    window->setCentralWidget(d->waitingWidget);
+    d->loadingwidget = new loadingWidget(window);
+    window->setCentralWidget(d->loadingwidget);
 }
 
 WindowKeeper *WindowKeeper::instace()
@@ -283,8 +269,7 @@ WindowKeeper *WindowKeeper::instace()
 }
 
 WindowKeeper::WindowKeeper(QObject *parent)
-    : QObject (parent)
-    , d (new WindowKeeperPrivate)
+    : QObject(parent), d(new WindowKeeperPrivate)
 {
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
@@ -308,13 +293,13 @@ WindowKeeper::WindowKeeper(QObject *parent)
             d->mainMenu = new DMenu(d->window->titlebar());
         }
 
-        QObject::connect(d->window, &DMainWindow::destroyed, [&](){
+        QObject::connect(d->window, &DMainWindow::destroyed, [&]() {
             d->window->takeCentralWidget();
         });
         layoutWindow(d->window);
 
         //CommandLine Model will not show main window
-        if (CommandParser::instance().getModel() != CommandParser::CommandLine){
+        if (CommandParser::instance().getModel() != CommandParser::CommandLine) {
             d->window->show();
             waitingForStarted(d->window);
         }
@@ -329,7 +314,6 @@ WindowKeeper::WindowKeeper(QObject *parent)
         }
     }
 
-    qApp->processEvents();
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
                      this, &WindowKeeper::initUserWidget);
 
@@ -391,19 +375,19 @@ void WindowKeeper::addNavigation(const QString &navName, const QString &iconName
 void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral *central)
 {
     qInfo() << __FUNCTION__;
-    DWidget* inputWidget = static_cast<DWidget*>(central->qWidget());
+    DWidget *inputWidget = static_cast<DWidget *>(central->qWidget());
 
-    if(!central || !inputWidget || navName.isEmpty())
+    if (!central || !inputWidget || navName.isEmpty())
         return;
 
-    // use same widget is allowed
+        // use same widget is allowed
 #if 0
     if (d->centrals.values().contains(inputWidget))
         return;
 #endif
 
     if (navName == MWNA_EDIT || navName == MWNA_DEBUG) {
-        QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout*>(d->window->titlebar()->layout());
+        QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout *>(d->window->titlebar()->layout());
         titleBarLayout->insertWidget(1, d->topToolBar[navName], Qt::AlignLeft);
         d->topToolBar[navName]->setVisible(false);
         d->window->titlebar()->setTitle(QString());
@@ -422,7 +406,7 @@ void WindowKeeper::addMenu(AbstractMenu *menu)
 {
     qInfo() << __FUNCTION__;
 
-    DMenu *inputMenu = static_cast<DMenu*>(menu->qMenu());
+    DMenu *inputMenu = static_cast<DMenu *>(menu->qMenu());
     if (!d->window || !inputMenu)
         return;
 
@@ -430,7 +414,7 @@ void WindowKeeper::addMenu(AbstractMenu *menu)
     for (QAction *action : d->mainMenu->actions()) {
         if (action->text() == MWM_TOOLS) {
             d->mainMenu->insertMenu(action, inputMenu);
-            return; //提前返回
+            return;   //提前返回
         }
     }
 
@@ -443,7 +427,7 @@ void WindowKeeper::insertAction(const QString &menuName,
                                 AbstractAction *action)
 {
     qInfo() << __FUNCTION__;
-    QAction *inputAction = static_cast<QAction*>(action->qAction());
+    QAction *inputAction = static_cast<QAction *>(action->qAction());
     if (!action || !inputAction)
         return;
 
@@ -465,7 +449,7 @@ void WindowKeeper::insertAction(const QString &menuName,
 
 void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
 {
-    QAction *inputAction = static_cast<QAction*>(action->qAction());
+    QAction *inputAction = static_cast<QAction *>(action->qAction());
     if (!action || !inputAction)
         return;
 
@@ -535,7 +519,7 @@ void WindowKeeper::addOpenProjectAction(const QString &name, AbstractAction *act
     if (!action || !action->qAction())
         return;
 
-    QAction *inputAction = static_cast<QAction*>(action->qAction());
+    QAction *inputAction = static_cast<QAction *>(action->qAction());
 
     foreach (QAction *action, d->mainMenu->actions()) {
         if (action->text() == MWMFA_OPEN_PROJECT) {
@@ -560,9 +544,9 @@ void WindowKeeper::initUserWidget()
     if (!d->leftToolBar)
         return;
 
-//    if (d->toolbar->actions().size() > 0) {
-//        d->toolbar->actions().at(0)->trigger();
-//    }
+    //    if (d->toolbar->actions().size() > 0) {
+    //        d->toolbar->actions().at(0)->trigger();
+    //    }
 }
 
 void WindowKeeper::switchWidgetNavigation(const QString &navName)
@@ -645,7 +629,7 @@ void WindowKeeper::addTopToolBar(const QString &name, QAction *action, const QSt
     if (!action || name.isNull() || group.isNull())
         return;
 
-    QHBoxLayout *toolBarLayout = static_cast<QHBoxLayout*>(d->topToolBar[group]->layout());
+    QHBoxLayout *toolBarLayout = static_cast<QHBoxLayout *>(d->topToolBar[group]->layout());
     toolBarLayout->addWidget(addIconButton(action));
 
     if (isSeparat)

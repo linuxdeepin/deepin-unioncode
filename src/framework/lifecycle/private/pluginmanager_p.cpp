@@ -528,20 +528,16 @@ PluginManagerPrivate::PluginMetaQueue PluginManagerPrivate::dependsSort(
 bool PluginManagerPrivate::loadPlugins()
 {
     dpfCheckTimeBegin();
-
     loadQueue = dependsSort(readQueue);
     bool ret = true;
 
     for (auto val : loadQueue) {
-        if (val->depends().isEmpty()) {
-            QtConcurrent::run(this, &PluginManagerPrivate::loadPlugin, val);
-        } else {
-            ret &= loadPlugin(val);
-        }
+        ret &= loadPlugin(val);
     }
 
     dpfDebug() << loadQueue;
     dpfCheckTimeEnd();
+
     return ret;
 }
 

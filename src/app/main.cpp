@@ -54,10 +54,7 @@ static bool loadPlugins()
     }
 
     // load plugins without core
-    if (!lifeCycle.loadPlugins()) {
-        qCritical() << "Failed, Load other plugin error!";
-        return false;
-    }
+    lifeCycle.loadPlugins();
 
     dpfCheckTimeEnd();
 
