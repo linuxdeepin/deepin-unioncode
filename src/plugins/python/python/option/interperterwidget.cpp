@@ -166,7 +166,6 @@ void InterpreterWidget::setupUi()
     headerView->setDefaultAlignment(Qt::AlignLeft);
 
     tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-    tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     d->model = new InterpreterModel();
     tableView->setModel(d->model);
