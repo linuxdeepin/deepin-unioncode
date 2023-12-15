@@ -245,7 +245,7 @@ void BuildManager::slotResetBuildUI()
     d->compileOutputPane->clearContents();
     d->problemOutputPane->clearContents();
 
-    editor.switchContext(tr("Build"));
+    editor.switchContext(tr("&Build"));
 }
 
 void BuildManager::setActivedProjectInfo(const QString &kitName, const QString &workingDir)

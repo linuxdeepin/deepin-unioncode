@@ -32,7 +32,7 @@ bool BuilderCore::start()
         abort();
     }
 
-    windowService->addContextWidget(tr("Build"),
+    windowService->addContextWidget(tr("&Build"),
                                     new AbstractWidget(BuildManager::instance()->getCompileWidget()),
                                     "Compile", false);
 
