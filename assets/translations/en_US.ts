@@ -53,44 +53,6 @@
     </message>
 </context>
 <context>
-    <name>AskPage</name>
-    <message>
-        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="229"/>
-        <source>AskPage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="230"/>
-        <source>login</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="231"/>
-        <source>delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="232"/>
-        <source>history</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="233"/>
-        <source>new session</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="234"/>
-        <source>TextLabel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/askpage/askpage.cpp" line="235"/>
-        <source>Send</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>AskPageWidget</name>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="99"/>
@@ -430,7 +392,7 @@
     </message>
     <message>
         <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="248"/>
-        <source>Build</source>
+        <source>&amp;Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -487,7 +449,7 @@
     <name>BuilderCore</name>
     <message>
         <location filename="../../src/plugins/builder/buildercore.cpp" line="35"/>
-        <source>Build</source>
+        <source>&amp;Build</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -528,17 +490,17 @@
 <context>
     <name>CmakeProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="224"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="227"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="361"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="364"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="362"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="365"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
@@ -842,6 +804,16 @@ The debugee has Terminated.
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="830"/>
         <source>Breakpoint List</source>
         <translation type="unfinished"></translation>
@@ -906,7 +878,7 @@ The dap port is not ready, please retry.
 <context>
     <name>DDockWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="110"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
         <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="609"/>
         <source>Workspace</source>
         <translation type="unfinished"></translation>
@@ -915,7 +887,7 @@ The dap port is not ready, please retry.
 <context>
     <name>DLabel</name>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="57"/>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="54"/>
         <source>CodeGeeX Api Key:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1029,7 +1001,7 @@ The dap port is not ready, please retry.
     <name>DTreeView</name>
     <message>
         <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="21"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="26"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="27"/>
         <source>The delete operation will be removed fromthe disk and will not be recoverable after this operation.
 Delete anyway?</source>
         <translation type="unfinished"></translation>
@@ -1243,7 +1215,7 @@ Delete anyway?</source>
 <context>
     <name>EnvironmentWidget</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/environmentwidget.cpp" line="145"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/environmentwidget.cpp" line="146"/>
         <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="16"/>
         <source>Enable All Environment</source>
         <translation type="unfinished"></translation>
@@ -1272,62 +1244,62 @@ Delete anyway?</source>
 <context>
     <name>FindToolWindow</name>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="112"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="115"/>
         <source>All Projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="116"/>
         <source>Current Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="114"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="117"/>
         <source>Current File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="119"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="122"/>
         <source>thread</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="133"/>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="137"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="141"/>
         <source>e.g.*.ts,src/**/include</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="190"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="198"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="206"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="213"/>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="228"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="207"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="215"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="223"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="230"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="245"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="190"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="207"/>
         <source>All projects path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="198"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="215"/>
         <source>Current project path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="206"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="223"/>
         <source>Current file path is empty, please import!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="213"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="230"/>
         <source>Scope is not selected, please select!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="228"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="245"/>
         <source>Search for text is empty, please input!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1608,13 +1580,13 @@ repos path: %0</source>
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="252"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="265"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="257"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="270"/>
         <source>Tip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="265"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="270"/>
         <source>Can not find kit.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1878,18 +1850,18 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="306"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="421"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="307"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="422"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="319"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="320"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="425"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2008,17 +1980,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="343"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="345"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="345"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="346"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2355,22 +2327,22 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="110"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="113"/>
         <source>Scope:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="116"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="119"/>
         <source>Search for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="131"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="135"/>
         <source>File pattern:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="135"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="139"/>
         <source>Exclusion pattern:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2596,18 +2568,6 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="14"/>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="15"/>
-        <source>Issue</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="14"/>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="15"/>
-        <source>Location</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/java/maven/project/properties/mavenconfigpropertywidget.cpp" line="24"/>
         <source>launch mavenConfig</source>
         <translation type="unfinished"></translation>
@@ -2720,12 +2680,12 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="64"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="63"/>
         <source>New File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="65"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="64"/>
         <source>New Project</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2799,12 +2759,12 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="140"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="144"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="145"/>
+        <location filename="../../src/plugins/find/findtoolwindow.cpp" line="149"/>
         <source>Search &amp;&amp; Replace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3556,7 +3516,7 @@ storage: %2
 <context>
     <name>TaskDelegate</name>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="167"/>
+        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="168"/>
         <source>File not found: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3612,17 +3572,17 @@ storage: %2
 <context>
     <name>ValgrindBar</name>
     <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="58"/>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="69"/>
         <source>memcheck</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="59"/>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="70"/>
         <source>helgrind</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="89"/>
+        <location filename="../../src/plugins/valgrind/mainframe/valgrindbar.cpp" line="114"/>
         <source>&amp;Valgrind</source>
         <translation type="unfinished"></translation>
     </message>

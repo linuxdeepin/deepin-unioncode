@@ -817,7 +817,7 @@ void DAPDebugger::initializeView()
 
     d->localsView = new DTreeView();
     d->localsView->setModel(&d->localsModel);
-    QStringList headers { "name", "value"/*, "reference" */};
+    QStringList headers { tr("Name"), tr("Value")/*, "Reference" */};
     d->localsModel.setHeaders(headers);
 
     d->debugMainPane = new DFrame();
