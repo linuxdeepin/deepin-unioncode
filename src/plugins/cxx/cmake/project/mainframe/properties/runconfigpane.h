@@ -18,6 +18,7 @@ public:
     ~RunConfigPane();
 
     void bindValues(config::RunParam *runParam);
+    void insertTitle(DWidget* lWidget, DWidget *rWidget);
 
 signals:
 

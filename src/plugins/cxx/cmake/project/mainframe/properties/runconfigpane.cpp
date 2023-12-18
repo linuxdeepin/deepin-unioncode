@@ -28,6 +28,7 @@ class RunConfigPanePrivate
     DLineEdit *workingDirLineEdit{nullptr};
     DLineEdit *excutableLabel{nullptr};
 
+    QFormLayout *formLayout{nullptr};
     EnvironmentWidget *environmentWidget{nullptr};
     QString currentTargetName;
     config::RunParam *runParam{nullptr};
@@ -52,14 +53,14 @@ void RunConfigPane::setupUi()
     DFrame *mainFrame = new DFrame(this);
     mainFrame->setObjectName("mainframe");
     mainFrame->setFrameShape(QFrame::Shape::NoFrame);
-    QFormLayout *formLayout = new QFormLayout(mainFrame);
+    d->formLayout = new QFormLayout(mainFrame);
 
     // excutable label ui.
     d->excutableLabel = new DLineEdit(mainFrame);
     d->excutableLabel->setText(tr("Here is the executable path"));
     d->excutableLabel->lineEdit()->setReadOnly(true);
-    formLayout->addRow(tr("Executable path:"), d->excutableLabel);
-    formLayout->setSpacing(10);
+    d->formLayout->addRow(tr("Executable path:"), d->excutableLabel);
+    d->formLayout->setSpacing(10);
 
     // command line ui.
     d->cmdArgsLineEdit = new DLineEdit(mainFrame);
@@ -67,7 +68,7 @@ void RunConfigPane::setupUi()
         if (d->runParam)
             d->runParam->arguments = d->cmdArgsLineEdit->text().trimmed();
     });
-    formLayout->addRow(tr("Command line arguments:"), d->cmdArgsLineEdit);
+    d->formLayout->addRow(tr("Command line arguments:"), d->cmdArgsLineEdit);
 
     // working directory ui.
     QHBoxLayout *browLayout = new QHBoxLayout(mainFrame);
@@ -81,7 +82,7 @@ void RunConfigPane::setupUi()
     });
     browLayout->addWidget(d->workingDirLineEdit);
     browLayout->addWidget(browseBtn);
-    formLayout->addRow(tr("Working directory:"), browLayout);
+    d->formLayout->addRow(tr("Working directory:"), browLayout);
     connect(browseBtn, &QPushButton::clicked, [this](){
         QString outputDirectory = QFileDialog::getExistingDirectory(this, tr("Working directory"), d->workingDirLineEdit->text());
         if (!outputDirectory.isEmpty()) {
@@ -89,7 +90,7 @@ void RunConfigPane::setupUi()
         }
     });
 
-    mainFrame->setLayout(formLayout);
+    mainFrame->setLayout(d->formLayout);
 
     d->environmentWidget = new EnvironmentWidget(this);
     vLayout->addWidget(mainFrame);
@@ -108,3 +109,8 @@ void RunConfigPane::bindValues(config::RunParam *runParam)
     d->excutableLabel->setText(runParam->targetPath);
 }
 
+void RunConfigPane::insertTitle(DWidget *lWidget, DWidget *rWidget)
+{
+    if(lWidget && rWidget)
+        d->formLayout->insertRow(0, lWidget, rWidget);
+}
