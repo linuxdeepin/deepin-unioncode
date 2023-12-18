@@ -246,6 +246,7 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
     QJsonObject jsonObject;
     jsonObject.insert("prompt", prompt);
     jsonObject.insert("machineId", machineId);
+    jsonObject.insert("client", "deepin-unioncode");
     jsonObject.insert("history", history);
 
     return jsonToByteArray(jsonObject);
