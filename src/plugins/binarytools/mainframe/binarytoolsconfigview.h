@@ -31,7 +31,6 @@ private:
     void updateView(const QString &command);
     void currentConfigChanged(const QString &text);
     void initializeCombo();
-    void initializeCombinationDialog();
     void addCompatConfig();
     void deleteCompatConfig();
     void renameCompatConfig();
