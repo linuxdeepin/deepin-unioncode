@@ -148,6 +148,4 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 
   <img src="./docs/rc/reverse-debug.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
 
-- 版本管理
-
-  <img src="./docs/rc/version-management.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
+  
