@@ -1879,20 +1879,36 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="313"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="428"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="314"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="430"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="326"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="327"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="432"/>
-        <source>ok</source>
-        <translation>ok</translation>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
+        <source>New Document Name</source>
+        <translation>新文件名</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="435"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="500"/>
+        <source>Ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="498"/>
+        <source>A file with name %1 already exists. Would you like to overwrite it?</source>
+        <translation>名称为&quot;%1&quot; 的文件已经存在，您想覆盖它吗？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="499"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -2014,17 +2030,17 @@ repos path: %0</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="350"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="351"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="351"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="352"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="352"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="353"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
