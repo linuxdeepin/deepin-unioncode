@@ -2,34 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
-    <name>AboutDialog</name>
-    <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="36"/>
-        <source>About Deepin Union Code</source>
-        <translation>关于Deepin Union Code</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="41"/>
-        <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
-        <translation>创建于%1 %2, %3平台</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="44"/>
-        <source>&lt;h3&gt;Deepin Union Code %1&lt;/h3&gt;%2&lt;br/&gt;Copyright 2019-%3 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                we hope that the scheme will be useful,                but we do not guarantee that it will be of economic value or fit for a particular purpose.                For more information, see the GNU General Public License. &lt;br/&gt;               Thanks to all the &lt;a href=&quot;opensourcesoftware&quot;&gt;open source software&lt;/a&gt; used.&lt;br/&gt;</source>
-        <translation>&lt;h3&gt;Deepin Union Code%1&lt;/h3&gt;%2&lt;br/&gt;版权 2019-%3 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;            致谢所有用到的&lt;a href=&quot;opensourcesoftware&quot;&gt;开源软件&lt;/a&gt;。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="91"/>
-        <source>Error</source>
-        <translation>错误</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/mainframe/aboutdialog.cpp" line="91"/>
-        <source>Failed to open the file.</source>
-        <translation>打开文件失败.</translation>
-    </message>
-</context>
-<context>
     <name>AppOutputPane</name>
     <message>
         <location filename="../../src/plugins/debugger/interface/appoutputpane.cpp" line="104"/>
@@ -50,6 +22,24 @@
         <location filename="../../src/plugins/debugger/interface/appoutputpane.cpp" line="177"/>
         <source>Select All</source>
         <translation>选择全部</translation>
+    </message>
+</context>
+<context>
+    <name>Application</name>
+    <message>
+        <location filename="../../src/app/main.cpp" line="110"/>
+        <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
+        <translation>创建于%1 %2, %3平台</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/main.cpp" line="113"/>
+        <source>deepin-unioncode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/main.cpp" line="116"/>
+        <source>%1&lt;br/&gt;Copyright 2019-%2 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                                            we hope that the scheme will be useful,                                            but we do not guarantee that it will be of economic value or fit for a particular purpose.                                            For more information, see the GNU General Public License. &lt;br/&gt;</source>
+        <translation>%1&lt;br/&gt;版权 2019-%2 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;</translation>
     </message>
 </context>
 <context>
@@ -399,7 +389,7 @@
     <message>
         <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="248"/>
         <source>&amp;Build</source>
-        <translation type="unfinished">编译(&amp;B)</translation>
+        <translation>编译(&amp;B)</translation>
     </message>
     <message>
         <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="317"/>
@@ -462,7 +452,7 @@
     <message>
         <location filename="../../src/plugins/builder/buildercore.cpp" line="35"/>
         <source>&amp;Build</source>
-        <translation type="unfinished">编译(&amp;B)</translation>
+        <translation>编译(&amp;B)</translation>
     </message>
 </context>
 <context>
@@ -475,7 +465,7 @@
     <message>
         <location filename="../../src/plugins/cxx/cmake/builder/mainframe/cmakebuildergenerator.cpp" line="76"/>
         <source>The path of &quot;%1&quot; is not exist! please check and reopen the project.</source>
-        <translation type="unfinished">&quot;%1&quot; 不存在！请检查并重新打开工程</translation>
+        <translation>&quot;%1&quot; 不存在！请检查并重新打开工程</translation>
     </message>
 </context>
 <context>
@@ -903,7 +893,7 @@ dap端口未就绪，请重试。
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="609"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="601"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
@@ -2202,21 +2192,16 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="78"/>
-        <source>About</source>
-        <translation>关于UnionCode</translation>
-    </message>
-    <message>
-        <location filename="../../src/services/window/windowelement.h" line="79"/>
         <source>About Plugins...</source>
         <translation>关于插件...</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="85"/>
+        <location filename="../../src/services/window/windowelement.h" line="84"/>
         <source>Valgrind Memcheck</source>
         <translation>Valgrind内存检测</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="86"/>
+        <location filename="../../src/services/window/windowelement.h" line="85"/>
         <source>Valgrind Helgrind</source>
         <translation>Valgrind死锁检测</translation>
     </message>
@@ -2293,7 +2278,7 @@ not exists support files: %0</source>
         <translation>工程信息</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="81"/>
+        <location filename="../../src/services/window/windowelement.h" line="80"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
@@ -2453,7 +2438,7 @@ storage: %2
         <translation>帮助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="84"/>
+        <location filename="../../src/services/window/windowelement.h" line="83"/>
         <source>&amp;Analyze</source>
         <translation>分析工具</translation>
     </message>
@@ -2796,7 +2781,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="144"/>
         <source>Search</source>
-        <translation>搜索</translation>
+        <translation type="unfinished">搜索</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findtoolwindow.cpp" line="149"/>
@@ -2817,7 +2802,7 @@ storage: %2
         <translation>符号</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="82"/>
+        <location filename="../../src/services/window/windowelement.h" line="81"/>
         <source>&amp;Console</source>
         <translation>控制台(&amp;C)</translation>
     </message>
@@ -3244,32 +3229,32 @@ storage: %2
 <context>
     <name>RunConfigPane</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="59"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="60"/>
         <source>Here is the executable path</source>
         <translation>以下是可执行路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="61"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="62"/>
         <source>Executable path:</source>
         <translation>可执行文件路径：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="70"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="71"/>
         <source>Command line arguments:</source>
         <translation>命令行参数：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="75"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="76"/>
         <source>Browse...</source>
         <translation>浏览...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="84"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="85"/>
         <source>Working directory:</source>
         <translation>工作目录：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="86"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="87"/>
         <source>Working directory</source>
         <translation>工作目录</translation>
     </message>
@@ -3277,7 +3262,7 @@ storage: %2
 <context>
     <name>RunPropertyWidget</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runpropertywidget.cpp" line="58"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runpropertywidget.cpp" line="56"/>
         <source>Run configuration:</source>
         <translation>运行时配置：</translation>
     </message>
@@ -3644,13 +3629,13 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="261"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="598"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="253"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="590"/>
         <source>Deepin Union Code</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="276"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="268"/>
         <source>loading···</source>
         <translation>加载中···</translation>
     </message>

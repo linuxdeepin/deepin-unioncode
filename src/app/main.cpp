@@ -104,11 +104,11 @@ int main(int argc, char *argv[])
 {
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-
-    QString buildDateInfo = QObject::tr("<br/>Built on %1 %2 in %3<br/>")
-            .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ProcessUtil::localPlatform());
-
     DApplication a(argc, argv);
+    installTranslator(a);
+
+    QString buildDateInfo = a.translate("Application", "<br/>Built on %1 %2 in %3<br/>")
+            .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ProcessUtil::localPlatform());
     a.setOrganizationName("deepin");
     a.setApplicationDisplayName(a.translate("Application", "deepin-unioncode"));
     a.setApplicationVersion(version());
@@ -137,7 +137,6 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    installTranslator(a);
     dpfInstance.initialize();
     if (!loadPlugins()) {
         qCritical() << "Failed, Load plugins!";
