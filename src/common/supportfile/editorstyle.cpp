@@ -56,27 +56,4 @@ QString EditorStyle::userPath(const QString &languageID)
     return result + QString("editorstyle_%0.support").arg(languageID);
 }
 
-void EditorStyle::initialize(const QString &languageID)
-{
-    auto user = userPath(languageID);
-    auto global = globalPath(languageID);
-
-    if (!CustomPaths::installed()) {
-        QFile::remove(user);
-    }
-
-    if (!QFileInfo(user).exists()) {
-        QFile::copy(global, user);
-    }
-}
-
-bool EditorStyle::recovery(const QString &languageID)
-{
-    bool result = false;
-    auto user = userPath(languageID);
-    result = QFile::remove(user);
-    initialize(languageID);
-    return result;
-}
-
 } // namespace support_file
