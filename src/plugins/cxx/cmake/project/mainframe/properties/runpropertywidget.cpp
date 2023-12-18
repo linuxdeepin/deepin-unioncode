@@ -53,26 +53,18 @@ void RunPropertyWidget::setupUi()
     ConfigureWidget *runCfgWidget = new ConfigureWidget(this);
     runCfgWidget->setFrameShape(QFrame::Shape::NoFrame);
 
-    DWidget *titleWidget = new DWidget(runCfgWidget);
-    QHBoxLayout *runCfgLayout = new QHBoxLayout(titleWidget);
     DLabel *runCfgLabel = new DLabel(tr("Run configuration:"));
-    runCfgLabel->setContentsMargins(10, 0, 0, 0);
-
     d->exeComboBox = new DComboBox();
     d->exeComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    d->exeComboBox->setFixedWidth(220);
     QObject::connect(d->exeComboBox, QOverload<int>::of(&DComboBox::currentIndexChanged), [=](int index){
         if (index >= 0 && index < d->paramsShadow.count()) {
             d->runConfigPane->bindValues(&d->paramsShadow[index]);
         }
     });
-    runCfgLayout->addWidget(runCfgLabel, 0, Qt::AlignLeft);
-    runCfgLayout->addStretch(2);
-    runCfgLayout->addWidget(d->exeComboBox, 0, Qt::AlignLeft);
-    runCfgLayout->addStretch(10);
-    runCfgLayout->setMargin(0);
 
     d->runConfigPane = new RunConfigPane(this);
-    runCfgWidget->addWidget(titleWidget);
+    d->runConfigPane->insertTitle(runCfgLabel, d->exeComboBox);
     runCfgWidget->addWidget(d->runConfigPane);
 
     QVBoxLayout *vLayout = new QVBoxLayout(this);
