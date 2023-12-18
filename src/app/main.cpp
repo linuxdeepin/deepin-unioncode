@@ -105,8 +105,24 @@ int main(int argc, char *argv[])
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
+    QString buildDateInfo = QObject::tr("<br/>Built on %1 %2 in %3<br/>")
+            .arg(QLatin1String(__DATE__), QLatin1String(__TIME__), ProcessUtil::localPlatform());
+
     DApplication a(argc, argv);
     a.setOrganizationName("deepin");
+    a.setApplicationDisplayName(a.translate("Application", "deepin-unioncode"));
+    a.setApplicationVersion(version());
+    a.setProductIcon(QIcon::fromTheme("ide"));
+    a.setApplicationDescription(a.translate("Application",
+                                    "%1<br/>"
+                                    "Copyright 2019-%2 UnionTech Software Technology Co., Ltd. All rights reserved.<br/><br/>"
+                                    "This program is released under <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GPL-3.0-or-later</a>; \
+                                           we hope that the scheme will be useful, \
+                                           but we do not guarantee that it will be of economic value or fit for a particular purpose. \
+                                           For more information, see the GNU General Public License. <br/>"
+                                    )
+                                    .arg(buildDateInfo,
+                                         QString::number(QDateTime::currentDateTime().date().year())));
     CommandParser::instance().process();
 
     // TODO(Any): put to command processor

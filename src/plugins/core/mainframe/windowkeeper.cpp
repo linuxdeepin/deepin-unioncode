@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "aboutdialog.h"
 #include "plugindialog.h"
 
 #include "windowkeeper.h"
@@ -123,14 +122,8 @@ void WindowKeeper::createHelpActions(DMenu *menu)
 
     helpMenu->addSeparator();
 
-    QAction *actionAboutUnionCode = new QAction(MWM_ABOUT);
-    ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.About",
-                                                 MWM_ABOUT, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_A),
-                                                 "");
-    helpMenu->addAction(actionAboutUnionCode);
-
     QAction *actionAboutPlugin = new QAction(MWM_ABOUT_PLUGINS);
-    ActionManager::getInstance()->registerAction(actionAboutUnionCode, "Help.AboutPlugins", MWM_ABOUT, QKeySequence());
+    ActionManager::getInstance()->registerAction(actionAboutPlugin, "Help.AboutPlugins", MWM_ABOUT_PLUGINS, QKeySequence());
     helpMenu->addAction(actionAboutPlugin);
 
     QAction::connect(actionReportBug, &QAction::triggered, [=](){
@@ -139,7 +132,6 @@ void WindowKeeper::createHelpActions(DMenu *menu)
     QAction::connect(actionHelpDoc, &QAction::triggered, [=](){
         QDesktopServices::openUrl(QUrl("https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e"));
     });
-    QAction::connect(actionAboutUnionCode, &QAction::triggered, this, &WindowKeeper::showAboutDlg);
     QAction::connect(actionAboutPlugin, &QAction::triggered, this, &WindowKeeper::showAboutPlugins);
 }
 
@@ -640,12 +632,6 @@ void WindowKeeper::setNavActionChecked(const QString &actionName, bool checked)
             it.value()->setChecked(checked);
         }
     }
-}
-
-void WindowKeeper::showAboutDlg()
-{
-    AboutDialog dlg;
-    dlg.exec();
 }
 
 void WindowKeeper::showAboutPlugins()
