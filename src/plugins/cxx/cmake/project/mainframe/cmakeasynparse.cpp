@@ -125,12 +125,12 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
                 cmakeParentItem = createParentItem(rootItem, relativePath);
             }
 
+            auto cmakeFileItem = new QStandardItem();
+            cmakeFileItem->setText(cmakeFileInfo.fileName());
+            cmakeFileItem->setToolTip(cmakeFileInfo.filePath());
+            cmakeParentItem->appendRow(cmakeFileItem);
             QMetaObject::invokeMethod(this, [=](){
-                auto cmakeFileItem = new QStandardItem();
                 cmakeFileItem->setIcon(CustomIcons::icon(cmakeFileInfo));
-                cmakeFileItem->setText(cmakeFileInfo.fileName());
-                cmakeFileItem->setToolTip(cmakeFileInfo.filePath());
-                cmakeParentItem->appendRow(cmakeFileItem);
             });
 
             // monitor cmake file change to refresh project tree.

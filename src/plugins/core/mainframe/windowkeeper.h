@@ -60,8 +60,8 @@ public slots:
     void removeActions(const QString &menuName);
     void addOpenProjectAction(const QString &name, AbstractAction *action);
     void initUserWidget();
-
     void addTopToolBar(const QString &name, QAction *action, const QString &group, bool isSeparat);
+    void openFileDialog();
 
 private :
     void showAboutPlugins();
@@ -83,6 +83,7 @@ private :
     void createNavIconBtn(const QString &navName, const QString &iconName);
     void insertToLeftBarBottom(AbstractWidget *toolBtn);
     DIconButton *addIconButton(QAction *action);
+    void addMenuShortCut(QAction *action, QKeySequence keySequence = QKeySequence());
 };
 
 #endif // WINDOWKEEPER_H
