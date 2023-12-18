@@ -27,17 +27,17 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../src/app/main.cpp" line="110"/>
+        <location filename="../../src/app/main.cpp" line="107"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="113"/>
+        <location filename="../../src/app/main.cpp" line="110"/>
         <source>deepin-unioncode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="116"/>
+        <location filename="../../src/app/main.cpp" line="113"/>
         <source>%1&lt;br/&gt;Copyright 2019-%2 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                                            we hope that the scheme will be useful,                                            but we do not guarantee that it will be of economic value or fit for a particular purpose.                                            For more information, see the GNU General Public License. &lt;br/&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -73,16 +73,6 @@
 <context>
     <name>BinaryToolsConfigView</name>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="131"/>
-        <source>command combination:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="132"/>
-        <source>Use Combination Command</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="177"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
@@ -93,97 +83,120 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="328"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="301"/>
         <source>Add new command</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="329"/>
-        <source>New command name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="352"/>
-        <source>Delete Configuration?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="353"/>
-        <source>Do you really want to delete the command &lt;b&gt;%1&lt;/b&gt;?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="376"/>
-        <source>Rename...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="377"/>
-        <source>New name for command &lt;b&gt;%1&lt;/b&gt;:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="428"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="447"/>
         <source>Command:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="435"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="454"/>
         <source>Tool arguments:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="440"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="459"/>
         <source>Executable:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="462"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="481"/>
         <source>Configuration environment for the current command:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="451"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="470"/>
         <source>Working directory:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="84"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="89"/>
         <source>add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="90"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="95"/>
         <source>delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="96"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="101"/>
         <source>rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="102"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="107"/>
         <source>combine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="109"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="114"/>
         <source>Run configuration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="437"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="306"/>
+        <source>New command name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="311"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="332"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="371"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="312"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="372"/>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="331"/>
+        <source>Sure you want to delete the configuration?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="333"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="361"/>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="366"/>
+        <source>Enter new name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="424"/>
+        <source>Combination Of Commands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="433"/>
+        <source>Use Conbination Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="456"/>
         <source>Input your arguments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="494"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="513"/>
         <source>Select Executabel Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="502"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="521"/>
         <source>Select Working Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -472,7 +485,7 @@
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="225"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="228"/>
         <source>build</source>
         <translation type="unfinished"></translation>
     </message>
@@ -480,17 +493,17 @@
 <context>
     <name>CmakeProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="227"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="225"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="364"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="362"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="365"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="363"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
@@ -869,7 +882,7 @@ The dap port is not ready, please retry.
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="601"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="585"/>
         <source>Workspace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1224,9 +1237,9 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="60"/>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="67"/>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="79"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="61"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="68"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="83"/>
         <source>Advanced &amp;Search</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1840,18 +1853,18 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="307"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="422"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="313"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="428"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="320"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="326"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="432"/>
         <source>ok</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1970,17 +1983,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="350"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="345"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="351"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="346"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="352"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2757,7 +2770,7 @@ storage: %2
 <context>
     <name>QTabWidget</name>
     <message>
-        <location filename="../../src/services/project/projectservice.h" line="179"/>
+        <location filename="../../src/services/project/projectservice.h" line="185"/>
         <source>Projects</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3501,7 +3514,7 @@ storage: %2
 <context>
     <name>TaskDelegate</name>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="168"/>
+        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="199"/>
         <source>File not found: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3588,14 +3601,9 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="253"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="590"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="252"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="574"/>
         <source>Deepin Union Code</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="268"/>
-        <source>loading···</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3623,6 +3631,14 @@ storage: %2
         <location filename="../../src/plugins/valgrind/mainframe/xmlstreamreader.cpp" line="217"/>
         <source>Location:
 	</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>loadingWidget</name>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/loadingwidget.cpp" line="21"/>
+        <source>loading···</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

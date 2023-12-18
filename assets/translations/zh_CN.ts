@@ -27,17 +27,17 @@
 <context>
     <name>Application</name>
     <message>
-        <location filename="../../src/app/main.cpp" line="110"/>
+        <location filename="../../src/app/main.cpp" line="107"/>
         <source>&lt;br/&gt;Built on %1 %2 in %3&lt;br/&gt;</source>
         <translation>创建于%1 %2, %3平台</translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="113"/>
+        <location filename="../../src/app/main.cpp" line="110"/>
         <source>deepin-unioncode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/main.cpp" line="116"/>
+        <location filename="../../src/app/main.cpp" line="113"/>
         <source>%1&lt;br/&gt;Copyright 2019-%2 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                                            we hope that the scheme will be useful,                                            but we do not guarantee that it will be of economic value or fit for a particular purpose.                                            For more information, see the GNU General Public License. &lt;br/&gt;</source>
         <translation>%1&lt;br/&gt;版权 2019-%2 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;</translation>
     </message>
@@ -73,16 +73,6 @@
 <context>
     <name>BinaryToolsConfigView</name>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="131"/>
-        <source>command combination:</source>
-        <translation>命令组合：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="132"/>
-        <source>Use Combination Command</source>
-        <translation>使用组合命令</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="177"/>
         <source>Warning</source>
         <translation>警告</translation>
@@ -93,97 +83,120 @@
         <translation>请选择工作目录。</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="328"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="301"/>
         <source>Add new command</source>
         <translation>添加新命令</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="329"/>
-        <source>New command name:</source>
-        <translation>命令名称：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="352"/>
-        <source>Delete Configuration?</source>
-        <translation>删除配置？</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="353"/>
-        <source>Do you really want to delete the command &lt;b&gt;%1&lt;/b&gt;?</source>
-        <translation>确定要删除&lt;b&gt;%1&lt;/b&gt;吗？</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="376"/>
-        <source>Rename...</source>
-        <translation>重命名...</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="377"/>
-        <source>New name for command &lt;b&gt;%1&lt;/b&gt;:</source>
-        <translation>&lt;b&gt;%1&lt;/b&gt;的新名称：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="428"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="447"/>
         <source>Command:</source>
         <translation>命令：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="435"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="454"/>
         <source>Tool arguments:</source>
         <translation>工具参数：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="440"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="459"/>
         <source>Executable:</source>
         <translation>可执行文件：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="462"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="481"/>
         <source>Configuration environment for the current command:</source>
         <translation>当前命令的配置环境:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="451"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="470"/>
         <source>Working directory:</source>
         <translation>工作目录：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="84"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="89"/>
         <source>add</source>
         <translation>增加</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="90"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="95"/>
         <source>delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="96"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="101"/>
         <source>rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="102"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="107"/>
         <source>combine</source>
         <translation>组合</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="109"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="114"/>
         <source>Run configuration:</source>
         <translation>运行时配置：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="437"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="306"/>
+        <source>New command name</source>
+        <translation>命令名称</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="311"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="332"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="371"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="312"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="372"/>
+        <source>Ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="331"/>
+        <source>Sure you want to delete the configuration?</source>
+        <translation>确定要删除配置吗？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="333"/>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="361"/>
+        <source>Rename</source>
+        <translation>重命名</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="366"/>
+        <source>Enter new name</source>
+        <translation>输入新名称</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="424"/>
+        <source>Combination Of Commands</source>
+        <translation>组合命令</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="433"/>
+        <source>Use Conbination Command</source>
+        <translation>使用组合命令</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="456"/>
         <source>Input your arguments</source>
         <translation>请输入参数</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="494"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="513"/>
         <source>Select Executabel Path</source>
         <translation>选择执行路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="502"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="521"/>
         <source>Select Working Directory</source>
         <translation>选择工作目录</translation>
     </message>
@@ -484,7 +497,7 @@
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="225"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="228"/>
         <source>build</source>
         <translation>编译</translation>
     </message>
@@ -492,17 +505,17 @@
 <context>
     <name>CmakeProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="227"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="225"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="364"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="362"/>
         <source>Build</source>
         <translation>编译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="365"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="363"/>
         <source>Run</source>
         <translation>运行</translation>
     </message>
@@ -893,7 +906,7 @@ dap端口未就绪，请重试。
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="601"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="585"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
@@ -1249,9 +1262,9 @@ Delete anyway?</source>
         <translation>高级查找</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="60"/>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="67"/>
-        <location filename="../../src/plugins/find/findplugin.cpp" line="79"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="61"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="68"/>
+        <location filename="../../src/plugins/find/findplugin.cpp" line="83"/>
         <source>Advanced &amp;Search</source>
         <translation>高级查找( &amp;S)</translation>
     </message>
@@ -1866,18 +1879,18 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="307"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="422"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="313"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="428"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="320"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="326"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="432"/>
         <source>ok</source>
         <translation>ok</translation>
     </message>
@@ -2001,17 +2014,17 @@ repos path: %0</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="350"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="345"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="351"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="346"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="352"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
@@ -2792,7 +2805,7 @@ storage: %2
 <context>
     <name>QTabWidget</name>
     <message>
-        <location filename="../../src/services/project/projectservice.h" line="179"/>
+        <location filename="../../src/services/project/projectservice.h" line="185"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
@@ -3542,7 +3555,7 @@ storage: %2
 <context>
     <name>TaskDelegate</name>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="168"/>
+        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="199"/>
         <source>File not found: %1</source>
         <translation>找不到文件：%1</translation>
     </message>
@@ -3629,15 +3642,10 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="253"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="590"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="252"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="574"/>
         <source>Deepin Union Code</source>
         <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="268"/>
-        <source>loading···</source>
-        <translation>加载中···</translation>
     </message>
 </context>
 <context>
@@ -3669,6 +3677,14 @@ storage: %2
 	</source>
         <translation>Location:
 	</translation>
+    </message>
+</context>
+<context>
+    <name>loadingWidget</name>
+    <message>
+        <location filename="../../src/plugins/core/mainframe/loadingwidget.cpp" line="21"/>
+        <source>loading···</source>
+        <translation type="unfinished">加载中···</translation>
     </message>
 </context>
 <context>
