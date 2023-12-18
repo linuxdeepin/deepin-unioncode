@@ -21,7 +21,6 @@ class ProjectTree : public DTreeView
 public:
     explicit ProjectTree(QWidget *parent = nullptr);
     ~ProjectTree() override;
-    void appendProjectInfo(const dpfservice::ProjectInfo &info);
     void activeProjectInfo(const dpfservice::ProjectInfo &info);
     void activeProjectInfo(const QString &kitName, const QString &language,
                            const QString &workspace);
@@ -31,8 +30,9 @@ public:
     void expandedProjectDepth(const QStandardItem *root, int depth);
     void expandedProjectAll(const QStandardItem *root);
     QList<dpfservice::ProjectInfo> getAllProjectInfo();
-    dpfservice::ProjectInfo getProjectInfo(const QString &kitName, const QString &workspace);
+    dpfservice::ProjectInfo getProjectInfo(const QString &kitName, const QString &workspace) const;
     dpfservice::ProjectInfo getActiveProjectInfo() const;
+    bool hasProjectInfo(const dpfservice::ProjectInfo &info) const;
 
 Q_SIGNALS:
     void indexMenuRequest(const QModelIndex &index, QContextMenuEvent *event);

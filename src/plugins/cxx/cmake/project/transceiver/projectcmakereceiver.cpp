@@ -50,11 +50,10 @@ void ProjectCmakeReceiver::builderEvent(const dpf::Event &event)
         BuildCommandInfo commandInfo = qvariant_cast<BuildCommandInfo>(event.property(P_ORIGINCMD));
         if (ProjectCmakeProxy::instance()->getBuildCommandUuid() == commandInfo.uuid) {
             int endStatus = event.property(P_STATE).toInt();
-            if (0 == endStatus) {
-                emit ProjectCmakeProxy::instance()->buildExecuteEnd(commandInfo);
-            } else {
-                // ContextDialog::ok(QDialog::tr("Failed open project, with build step."));
+            if (0 != endStatus) {
+                qWarning() << "Build failed with state:" << endStatus;
             }
+            emit ProjectCmakeProxy::instance()->buildExecuteEnd(commandInfo);
         }
     }
 }
