@@ -63,7 +63,12 @@ class BinaryToolsConfigViewPrivate
     QList<QStringList> argsList;
     QList<QString> workingDirList;
     QList<QMap<QString, QVariant>> envList;
-    QFormLayout *formLayout =nullptr;
+    QFormLayout *formLayout = nullptr;
+    DDialog *inputDialog = nullptr;
+    DDialog *deleteDialog = nullptr;
+    DDialog *renameDialog = nullptr;
+    DDialog *combineDialog = nullptr;
+    DLabel  *commandText = nullptr;
 };
 
 BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
@@ -127,11 +132,6 @@ BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)
     setConfigWidget();
 
     setLayout(d->formLayout);
-    d->combinationDialog = new QDialog(this);
-    d->commandCombination = new DLabel(tr("command combination:"), d->combinationDialog);
-    d->useCombinationButton = new DPushButton(tr("Use Combination Command"), d->combinationDialog);
-    initializeCombinationDialog();
-
     if (!d->settings) {
         QString iniPath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("binarytools.ini");
         bool setDefaultVaule = false;
@@ -185,7 +185,6 @@ bool BinaryToolsConfigView::saveConfig()
         d->toolArgsEdit->setText("");
     QStringList commandList = QStringList() << d->executableDirEdit->text() << d->toolArgsEdit->text()
                                             << d->nameLabel->text() << d->workingDirEdit->text();
-
     d->settings->setValue(CURRENT_COMMAND, curCommand);
     d->settings->setValue(curCommand, commandList);
     d->settings->setValue(curCommand + ENVIRONMENT, d->envView->getEnvironment());
@@ -292,134 +291,154 @@ void BinaryToolsConfigView::initializeCombo()
     }
 }
 
-void BinaryToolsConfigView::initializeCombinationDialog()
-{
-    QRect parentRect = this->geometry();
-    int parentX = parentRect.x();
-    int parentY = parentRect.y();
-    int parentWidth = parentRect.width();
-    int parentHeight = parentRect.height();
-    QRect dialogRect = d->combinationDialog->geometry();
-    int dialogWidth = dialogRect.width();
-    int dialogHeight = dialogRect.height();
-    int x = parentX + (parentWidth - dialogWidth) / 2;
-    int y = parentY + (parentHeight - dialogHeight) / 2;
-    setGeometry(x, y, dialogWidth, dialogHeight);
-
-    auto gridLayout = new QGridLayout(d->combinationDialog);
-    d->combinationDialog->setLayout(gridLayout);
-    gridLayout->setSpacing(30);
-    gridLayout->setContentsMargins(30, 30, 30, 30);
-    gridLayout->addWidget(d->commandCombination, 0, 0, 1, 2);
-    gridLayout->addWidget(d->useCombinationButton, 1, 1, 1, 1);
-    QObject::connect(d->useCombinationButton, &DPushButton::clicked, [=](){
-        d->combinationDialog->close();
-        emit useCombinationCommand();
-    });
-}
-
 void BinaryToolsConfigView::addCompatConfig()
 {
     if (!d->runComandCombo->currentText().isEmpty() && !saveConfig())
         return;
 
-    bool ok;
+    d->inputDialog = new DDialog(this);
+    d->inputDialog->setIcon(QIcon::fromTheme("ide"));
+    d->inputDialog->setTitle(tr("Add new command"));
+    d->inputDialog->addSpacing(10);
 
-    QString name = QInputDialog::getText(this, tr("Add new command"),
-                                       tr("New command name:"),
-                                       QLineEdit::Normal, "", &ok);
-    if (!ok)
-        return;
+    // 添加接收内容的inputDialog
+    DLineEdit *searchLineEdit = new DLineEdit();
+    searchLineEdit->setPlaceholderText(tr("New command name"));
+    searchLineEdit->setFixedHeight(35);
+    d->inputDialog->addContent(searchLineEdit);
+    d->inputDialog->addSpacing(10);
 
-    appendCommand(name);
+    d->inputDialog->insertButton(0, tr("Cancel"), true, DDialog::ButtonNormal);
+    d->inputDialog->insertButton(1, tr("Ok"), false, DDialog::ButtonRecommend);
+    connect(d->inputDialog, &DDialog::buttonClicked, this, [=](int index) {
+        if (index == 0) {
+            d->inputDialog->reject();
+        }else if(index == 1){
+            QString name = searchLineEdit->text(); // 在按钮点击时获取文本框内容
+            appendCommand(name); // 将文本框内容传递给函数
+            d->inputDialog->accept();
+        }
+    });
+
+    d->inputDialog->exec();
+
 }
 
 void BinaryToolsConfigView::deleteCompatConfig()
 {
-    bool doSave = false, doCancle = false;
-    auto ok = [&](bool checked) {
-        Q_UNUSED(checked);
-        doSave = true;
-    };
-    auto no = [&](bool checked) {
-        Q_UNUSED(checked);
-        doSave = false;
-    };
-    auto cancel = [&](bool checked) {
-        Q_UNUSED(checked);
-    };
+    d->deleteDialog = new DDialog(this);
+    d->deleteDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+    d->deleteDialog->setMessage(tr("Are you sure you want to delete the configuration?"));
+    d->deleteDialog->insertButton(0, tr("Cancel"));
+    d->deleteDialog->insertButton(1, tr("Delete"), true, DDialog::ButtonWarning);
 
-    ContextDialog::question(tr("Delete Configuration?"),
-                            tr("Do you really want to delete the command <b>%1</b>?").arg(d->nameLabel->text()),
-                            QMessageBox::Question,
-                            ok, no, cancel);
-    if (!doSave || doCancle)
-        return;
+    connect(d->deleteDialog, &DDialog::buttonClicked, [=](int index) {
+        if (index == 0) {
+            d->deleteDialog->reject();
+        }else if(index == 1){
+            QStringList allCommand = qvariant_cast<QStringList>(d->settings->getValue(ALL_COMMAND));
+            allCommand.removeOne(d->runComandCombo->currentText());
+            d->settings->setValue(ALL_COMMAND, allCommand);
+            d->settings->deleteKey(d->runComandCombo->currentText());
+            d->settings->deleteKey(d->runComandCombo->currentText() + ENVIRONMENT);
 
-    QStringList allCommand = qvariant_cast<QStringList>(d->settings->getValue(ALL_COMMAND));
-    allCommand.removeOne(d->runComandCombo->currentText());
-    d->settings->setValue(ALL_COMMAND, allCommand);
-    d->settings->deleteKey(d->runComandCombo->currentText());
-    d->settings->deleteKey(d->runComandCombo->currentText() + ENVIRONMENT);
+            int curIndex = d->runComandCombo->currentIndex();
+            d->runComandCombo->removeItem(curIndex);
+            d->runComandCombo->setCurrentIndex((curIndex - 1) >= 0 ? curIndex - 1 : 0);
+            if (d->runComandCombo->currentText().isEmpty())
+                d->deleteButton->setEnabled(false);
+            d->deleteDialog->accept();
+        }
+    });
 
-    int curIndex = d->runComandCombo->currentIndex();
-    d->runComandCombo->removeItem(curIndex);
-    d->runComandCombo->setCurrentIndex((curIndex - 1) >= 0 ? curIndex - 1 : 0);
-    if (d->runComandCombo->currentText().isEmpty())
-        d->deleteButton->setEnabled(false);
+    d->deleteDialog->exec();
 }
 
 void BinaryToolsConfigView::renameCompatConfig()
 {
-    bool ok;
+    d->renameDialog = new DDialog(this);
+    d->renameDialog->setIcon(QIcon::fromTheme("ide"));
+    d->renameDialog->setTitle(tr("Rename"));
+    d->renameDialog->addSpacing(10);
 
-    QString name = QInputDialog::getText(this, tr("Rename..."),
-                                        tr("New name for command <b>%1</b>:").
-                                        arg(d->runComandCombo->currentText()),
-                                        QLineEdit::Normal,
-                                        d->runComandCombo->currentText(), &ok);
-    if (!ok)
-        return;
+    // 添加接收内容的inputDialog
+    DLineEdit *searchLineEdit = new DLineEdit();
+    searchLineEdit->setPlaceholderText(tr("Enter new name"));
+    searchLineEdit->setFixedHeight(35);
+    d->renameDialog->addContent(searchLineEdit);
+    d->renameDialog->addSpacing(10);
 
-    if (name == d->runComandCombo->currentText())
-        return;
+    d->renameDialog->insertButton(0, tr("Cancel"), true, DDialog::ButtonNormal);
+    d->renameDialog->insertButton(1, tr("Ok"), false, DDialog::ButtonRecommend);
+    connect(d->renameDialog, &DDialog::buttonClicked, this, [=](int index) {
+        if (index == 0) {
+            d->renameDialog->reject();
+        }else if(index == 1){
+            QString name = searchLineEdit->text(); // 在按钮点击时获取文本框内容
 
-    QString uniName = uniqueName(name);
-    if (uniName.isEmpty())
-        return;
+            if (name == d->runComandCombo->currentText())
+                return;
 
-    QStringList allCommand = qvariant_cast<QStringList>(d->settings->getValue(ALL_COMMAND));
-    int index = allCommand.indexOf(d->runComandCombo->currentText());
-    if (index != -1) {
-        allCommand.replace(index, uniName);
-    } else {
-        allCommand.append(uniName);
-    }
-    d->settings->setValue(CURRENT_COMMAND, uniName);
-    d->settings->setValue(ALL_COMMAND, allCommand);
-    d->nameLabel->setText(name);
-    QStringList commandList = QStringList() << d->executableDirEdit->text()<< d->toolArgsEdit->text()
-                                            << d->nameLabel->text() << d->workingDirEdit->text();
-    d->settings->setValue(uniName, commandList);
-    d->settings->setValue(uniName + ENVIRONMENT, d->envView->getEnvironment());
-    d->settings->deleteKey(d->runComandCombo->currentText());
-    d->settings->deleteKey(d->runComandCombo->currentText() + ENVIRONMENT);
+            QString uniName = uniqueName(name);
+            if (uniName.isEmpty())
+                return;
 
-    int itemIndex = d->runComandCombo->currentIndex();
-    d->runComandCombo->insertItem(itemIndex + 1, uniName);
-    d->runComandCombo->setCurrentText(uniName);
-    d->runComandCombo->removeItem(itemIndex);
+            QStringList allCommand = qvariant_cast<QStringList>(d->settings->getValue(ALL_COMMAND));
+            int index = allCommand.indexOf(d->runComandCombo->currentText());
+            if (index != -1) {
+                allCommand.replace(index, uniName);
+            } else {
+                allCommand.append(uniName);
+            }
+            d->settings->setValue(CURRENT_COMMAND, uniName);
+            d->settings->setValue(ALL_COMMAND, allCommand);
+            d->nameLabel->setText(name);
+            QStringList commandList = QStringList() << d->executableDirEdit->text()<< d->toolArgsEdit->text()
+                                                    << d->nameLabel->text() << d->workingDirEdit->text();
+            d->settings->setValue(uniName, commandList);
+            d->settings->setValue(uniName + ENVIRONMENT, d->envView->getEnvironment());
+            d->settings->deleteKey(d->runComandCombo->currentText());
+            d->settings->deleteKey(d->runComandCombo->currentText() + ENVIRONMENT);
+
+            int itemIndex = d->runComandCombo->currentIndex();
+            d->runComandCombo->insertItem(itemIndex + 1, uniName);
+            d->runComandCombo->setCurrentText(uniName);
+            d->runComandCombo->removeItem(itemIndex);
+            d->renameDialog->accept();
+        }
+    });
+
+    d->renameDialog->exec();
 }
 
 void BinaryToolsConfigView::combineCompatConfig()
 {
     saveConfig();
-    d->combinationDialog->showNormal();
     d->programList.push_back(d->executableDirEdit->text());
     d->argsList.push_back(d->toolArgsEdit->text().split(" "));
     d->workingDirList.push_back(d->workingDirEdit->text());
     d->envList.push_back(d->envView->getEnvironment());
-    d->commandCombination->setText(d->commandCombination->text() + " " + d->nameLabel->text());
+
+    d->combineDialog  = new DDialog(this);
+    d->combineDialog->setIcon(QIcon::fromTheme("ide"));
+    d->combineDialog->setTitle(tr("Combination Of Commands"));
+    d->combineDialog->addSpacing(10);
+
+    d->commandText = new DLabel();
+    d->commandText->setText(d->commandText->text() + " " + d->nameLabel->text());
+    d->commandText->setAlignment(Qt::AlignCenter);
+    d->combineDialog->addContent(d->commandText);
+
+    d->combineDialog->addSpacing(10);
+    d->combineDialog->insertButton(0, tr("Use Conbination Command"), true, DDialog::ButtonNormal);
+    connect(d->combineDialog, &DDialog::buttonClicked, this, [=](int index) {
+        if (index == 0) {
+            emit useCombinationCommand();
+            d->combineDialog->accept();
+        }
+    });
+
+    d->combineDialog->exec();
 }
 
 void BinaryToolsConfigView::setConfigWidget()
