@@ -98,8 +98,13 @@ void FindToolBar::setupUi()
     connect(replaceAllBtn, &QAbstractButton::clicked, this, &FindToolBar::replaceAll);
 
 
+
     setLayout(vLayout);
     vLayout->setContentsMargins(0,0,0,0);
+}
+
+void FindToolBar::handleFindActionTriggered() {
+    d->findLineEdit->setFocus();
 }
 
 void FindToolBar::findPrevious()
