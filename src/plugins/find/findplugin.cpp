@@ -54,6 +54,7 @@ bool FindPlugin::start()
 
     connect(findAction, &QAction::triggered, [=] {
         windowService->showFindToolBar();
+        emit onFindActionTriggered();
     });
 
     connect(advancedFindAction, &QAction::triggered, [=] {
@@ -68,6 +69,9 @@ bool FindPlugin::start()
 
     FindToolBar * findToolBar = new FindToolBar();
     AbstractWidget *abstractFindToolBar = new AbstractWidget(findToolBar);
+
+    connect(this,&FindPlugin::onFindActionTriggered,findToolBar,&FindToolBar::handleFindActionTriggered);
+
     windowService->addFindToolBar(abstractFindToolBar);
     connect(findToolBar, &FindToolBar::advanced, this, &FindPlugin::sendSwitchSearchResult);
 
