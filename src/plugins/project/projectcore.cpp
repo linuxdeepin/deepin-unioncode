@@ -49,7 +49,7 @@ bool ProjectCore::start()
     }
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
-                     this, &ProjectCore::pluginsStartedMain);
+                     this, &ProjectCore::pluginsStartedMain, Qt::DirectConnection);
 
 
     using namespace std::placeholders;
