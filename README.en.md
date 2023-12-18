@@ -148,4 +148,4 @@ deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 
   <img src="./docs/rc/reverse-debug.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
   
-- version management<img src="./docs/rc/version-management.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
+  
