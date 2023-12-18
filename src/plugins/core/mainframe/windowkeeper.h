@@ -64,7 +64,6 @@ public slots:
     void addTopToolBar(const QString &name, QAction *action, const QString &group, bool isSeparat);
 
 private :
-    void showAboutDlg();
     void showAboutPlugins();
     void layoutWindow(DMainWindow *window);
     void createStatusBar(DMainWindow *window);

@@ -6,7 +6,6 @@ set(CXX_CPP
     mainframe/windowkeeper.cpp
     mainframe/windowstatusbar.cpp
     mainframe/progressbar.cpp
-    mainframe/aboutdialog.cpp
     mainframe/plugindialog.cpp
     transceiver/corereceiver.cpp
     core.cpp
@@ -17,7 +16,6 @@ set(CXX_H
     mainframe/windowkeeper.h
     mainframe/windowstatusbar.h
     mainframe/progressbar.h
-    mainframe/aboutdialog.h
     mainframe/plugindialog.h
     transceiver/corereceiver.h
     core.h
