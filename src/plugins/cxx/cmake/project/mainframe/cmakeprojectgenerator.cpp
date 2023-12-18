@@ -117,8 +117,6 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
     auto &ctx = dpfInstance.serviceContext();
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
-
-
         BuildCommandInfo commandInfo;
         commandInfo.kitName = projInfo.kitName();
         commandInfo.program = projInfo.buildProgram();

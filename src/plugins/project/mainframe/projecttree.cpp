@@ -241,7 +241,7 @@ QList<dpfservice::ProjectInfo> ProjectTree::getAllProjectInfo()
     return result;
 }
 
-ProjectInfo ProjectTree::getProjectInfo(const QString &kitName, const QString &workspace)
+ProjectInfo ProjectTree::getProjectInfo(const QString &kitName, const QString &workspace) const
 {
     ProjectInfo projectInfo;
     for (int row = 0; row < d->itemModel->rowCount(); row++) {
@@ -262,6 +262,12 @@ ProjectInfo ProjectTree::getActiveProjectInfo() const
         projectInfo = ProjectInfo::get(activeProject);
     }
     return projectInfo;
+}
+
+bool ProjectTree::hasProjectInfo(const ProjectInfo &info) const
+{
+     ProjectInfo projectInfo = getProjectInfo(info.kitName(), info.workspaceFolder());
+     return !projectInfo.isEmpty();
 }
 
 void ProjectTree::contextMenuEvent(QContextMenuEvent *event)

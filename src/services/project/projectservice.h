@@ -154,6 +154,12 @@ public:
      */
     DPF_INTERFACE(dpfservice::ProjectInfo, getActiveProjectInfo);
 
+    /**
+     * @brief DPF_INTERFACE
+     * @param projectInfo
+     */
+    DPF_INTERFACE(bool, hasProjectInfo, const dpfservice::ProjectInfo &projectInfo);
+
     /*!
      * \brief projectView 工程视图接口对象
      */
