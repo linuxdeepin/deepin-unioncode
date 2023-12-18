@@ -134,18 +134,20 @@ deepin-unioncode 在 [GPL-3.0-or-later](LICENSE.txt)下发布。
 
 - 语言支持
 
-  <img src="./docs/rc/language-support.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
+  ![](./docs/rc/language-support.png)
 
 - 代码迁移
 
-  <img src="./docs/rc/code-porting.png" alt="deepin-app-store" style="border: 1.5px solid #ADA6A4;" />
+  ![](./docs/rc/code-porting.png)
 
 - 调试模式
 
-  <img src="./docs/rc/debug-mode.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
+  ![](./docs/rc/debug-mode.png)
 
-- 反向调试
+- 代码翻译
 
-  <img src="./docs/rc/reverse-debug.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
+  ![](./docs/rc/codegeex-translate.png)
 
-  
+- AI 问答
+
+  ![codegeex-answer](./docs/rc/codegeex-answer.png)

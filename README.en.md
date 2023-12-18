@@ -134,18 +134,20 @@ deepin-unioncode is licensed under [GPL-3.0-or-later](LICENSE)
 
 - language support
 
-  <img src="./docs/rc/language-support.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
+  ![](./docs/rc/language-support.png)
 
 - code porting
 
-  <img src="./docs/rc/code-porting.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
+  ![](./docs/rc/code-porting.png)
 
 - debug mode
 
-  <img src="./docs/rc/debug-mode.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
-  
-- reverse debug
+  ![](./docs/rc/debug-mode.png)
 
-  <img src="./docs/rc/reverse-debug.png" alt="deepin-app-store" style="border: 1.5px solid #ACA7A7;" />
-  
-  
+- code translation
+
+  ![](./docs/rc/codegeex-translate.png)
+
+- AI answer
+
+  ![codegeex-answer](./docs/rc/codegeex-answer.png)
