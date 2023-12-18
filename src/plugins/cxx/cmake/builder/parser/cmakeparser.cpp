@@ -55,12 +55,7 @@ void CMakeParser::stdError(const QString &line)
                               commonError.cap(2).toInt(), TASK_CATEGORY_BUILDSYSTEM);
             lines = 1;
             return;
-        } else if (nextSubError.indexIn(trimmedLine) != -1) {
-            lastTask = Task(Task::Error, QString(), Utils::FileName::fromUserInput(nextSubError.cap(1)), -1,
-                              TASK_CATEGORY_BUILDSYSTEM);
-            lines = 1;
-            return;
-        } else if (trimmedLine.startsWith(QLatin1String("  ")) && !lastTask.isNull()) {
+        }  else if (trimmedLine.startsWith(QLatin1String("  ")) && !lastTask.isNull()) {
             if (!lastTask.description.isEmpty())
                 lastTask.description.append(QLatin1Char(' '));
             lastTask.description.append(trimmedLine.trimmed());
@@ -72,12 +67,18 @@ void CMakeParser::stdError(const QString &line)
             lastTask = Task(trimmedLine.contains(QLatin1String("Error")) ? Task::Error : Task::Warning,
                               QString(), Utils::FileName(), -1, TASK_CATEGORY_BUILDSYSTEM);
             return;
-        } else if (trimmedLine.startsWith("CMake Error: ")) {
-            lastTask = Task(Task::Error, trimmedLine.mid(13),
+        } else if (trimmedLine.startsWith("CMake Error")) {
+            lastTask = Task(Task::Error, trimmedLine,
                               Utils::FileName(), -1, TASK_CATEGORY_BUILDSYSTEM);
             lines = 1;
             return;
+        } else if (nextSubError.indexIn(trimmedLine) != -1) {
+            lastTask = Task(Task::Error, QString(), Utils::FileName::fromUserInput(nextSubError.cap(1)), -1,
+                              TASK_CATEGORY_BUILDSYSTEM);
+            lines = 1;
+            return;
         }
+
         IOutputParser::stdError(line);
         return;
     case LINE_LOCATION:

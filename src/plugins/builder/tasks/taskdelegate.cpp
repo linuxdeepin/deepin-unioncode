@@ -134,10 +134,20 @@ void TaskDelegate::paintItemBackground(QPainter *painter, const QStyleOptionView
         QColor baseColor = pl.color(DPalette::ColorGroup::Active, DPalette::ColorType::ItemBackground);
         QColor adjustColor = baseColor;
 
-        painter->setOpacity(0);
-        if (index.row() % 2 == 0) {
-            adjustColor = DGuiApplicationHelper::adjustColor(baseColor, 0, 0, 0, 0, 0, 0, +5);
-            painter->setOpacity(1);
+        bool isSelected = (option.state & QStyle::State_Selected) && option.showDecorationSelected;
+
+        if (isSelected) {
+            adjustColor = option.palette.color(DPalette::ColorGroup::Active, QPalette::Highlight);
+        } else if (option.state & QStyle::StateFlag::State_MouseOver) {
+            // hover color
+            adjustColor = DGuiApplicationHelper::adjustColor(baseColor, 0, 0, 0, 0, 0, 0, +10);
+        } else {
+            // alternately background color
+            painter->setOpacity(0);
+            if (index.row() % 2 == 0) {
+                adjustColor = DGuiApplicationHelper::adjustColor(baseColor, 0, 0, 0, 0, 0, 0, +5);
+                painter->setOpacity(1);
+            }
         }
 
         // set paint path
@@ -156,11 +166,32 @@ void TaskDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem
 
     bool isSelected = (option.state & QStyle::State_Selected) && option.showDecorationSelected;
 
-    QString description = index.data(TaskModel::Description).toString();
-    const QString directory = QDir::toNativeSeparators(index.data(TaskModel::File).toString());
-
     painter->setPen(option.palette.color(DPalette::ColorGroup::Active, QPalette::BrightText));
-    painter->drawText(textRect, Qt::AlignLeft, description);
+    QString description = index.data(TaskModel::Description).toString();
+    if (!isSelected)
+        painter->drawText(textRect, Qt::AlignLeft, description);
+    else {
+        QFontMetrics fm(option.font);
+        description.replace(QLatin1Char('\n'), QChar::LineSeparator);
+        int height = 0;
+        int leading = fm.leading();
+        QTextLayout tl(description);
+        tl.beginLayout();
+        while (true) {
+            QTextLine line = tl.createLine();
+            if (!line.isValid())
+                break;
+            line.setLineWidth(textRect.width());
+            height += leading;
+            line.setPosition(QPoint(0, height));
+            height += static_cast<int>(line.height());
+        }
+        tl.endLayout();
+
+        tl.draw(painter, textRect.topLeft());
+    }
+
+    const QString directory = QDir::toNativeSeparators(index.data(TaskModel::File).toString());
 
     if (isSelected) {
         painter->setPen(option.palette.color(DPalette::ColorGroup::Active, QPalette::Text));
