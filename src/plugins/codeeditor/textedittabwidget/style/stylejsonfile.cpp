@@ -98,12 +98,10 @@ bool StyleJsonFilePrivate::load(const QString &languageID)
 {
     QMutexLocker locker(&::mutex);
 
-    support_file::EditorStyle::initialize(languageID);
-
     if (!userObjects[languageID].isEmpty())
         return true;
 
-    QString languageStyleFilePath = support_file::EditorStyle::userPath(languageID);
+    QString languageStyleFilePath = support_file::EditorStyle::globalPath(languageID);
     QFile file(languageStyleFilePath);
 
     if (!file.exists()) {
