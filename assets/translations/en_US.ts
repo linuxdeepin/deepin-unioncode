@@ -1853,19 +1853,35 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="313"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="428"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="314"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="430"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="326"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="327"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="432"/>
-        <source>ok</source>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
+        <source>New Document Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="435"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="500"/>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="498"/>
+        <source>A file with name %1 already exists. Would you like to overwrite it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="499"/>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1983,17 +1999,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="350"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="351"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="351"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="352"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="352"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="353"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>

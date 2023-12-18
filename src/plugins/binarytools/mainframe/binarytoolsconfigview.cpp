@@ -333,7 +333,7 @@ void BinaryToolsConfigView::deleteCompatConfig()
     d->deleteDialog->insertButton(1, tr("Delete"), true, DDialog::ButtonWarning);
 
     connect(d->deleteDialog, &DDialog::buttonClicked, [=](int index) {
-        if (index == 0) {
+        if (index == 0){
             d->deleteDialog->reject();
         }else if(index == 1){
             QStringList allCommand = qvariant_cast<QStringList>(d->settings->getValue(ALL_COMMAND));

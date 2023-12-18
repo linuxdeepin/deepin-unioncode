@@ -36,6 +36,7 @@ class ProjectTreePrivate
     ProjectModel *itemModel {nullptr};
     ProjectSelectionModel *sectionModel {nullptr};
     ProjectDelegate *delegate {nullptr};
+    DDialog *messDialog = nullptr;
     QPoint startPos;
     int itemDepth(const QStandardItem *item)
     {
@@ -422,14 +423,16 @@ void ProjectTree::actionNewDocument(const QStandardItem *item)
 {
     DDialog *dlg = new DDialog;
     DLineEdit *edit = new DLineEdit;
-
+    edit->setPlaceholderText(tr("New Document Name"));
     edit->lineEdit()->setAlignment(Qt::AlignLeft);
+
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->setWindowTitle(tr("New Document"));
+    dlg->setIcon(QIcon::fromTheme("dialog-warning"));
     dlg->resize(400, 100);
 
     dlg->addContent(edit);
-    dlg->addButton(tr("ok"), false, DDialog::ButtonType::ButtonRecommend);
+    dlg->addButton(tr("Ok"), false, DDialog::ButtonType::ButtonRecommend);
 
     QObject::connect(dlg, &DDialog::buttonClicked, dlg, [=](){
         creatNewDocument(item, edit->text());
@@ -490,15 +493,24 @@ void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fil
             doOverWrite = true;
         };
 
-        QString mess = "A file with name " + fileName + " already exists. Would you like to overwrite it?";
-        ContextDialog::okCancel(mess,
-                                DELETE_MESSAGE_TEXT,
-                                QMessageBox::Warning,
-                                okCallBack,
-                                nullptr);
-        if (doOverWrite) {
-            QFile::remove(filePath);
-        }
+        d->messDialog = new DDialog();
+        d->messDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+        d->messDialog->setMessage(tr("A file with name %1 already exists. Would you like to overwrite it?").arg(fileName));
+        d->messDialog->insertButton(0, tr("Cancel"));
+        d->messDialog->insertButton(1, tr("Ok"), true, DDialog::ButtonWarning);
+
+        connect(d->messDialog, &DDialog::buttonClicked, [=](int index) {
+            if (index == 0){
+                d->messDialog->reject();
+            }else if(index == 1){
+                if (doOverWrite) {
+                    QFile::remove(filePath);
+                }
+                d->messDialog->accept();
+            }
+        });
+
+        d->messDialog->exec();
     }
 
     QFile file(filePath);
