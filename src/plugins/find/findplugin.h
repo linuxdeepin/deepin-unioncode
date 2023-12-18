@@ -22,6 +22,7 @@ public:
 
 signals:
     void asyncStopFinished();
+    void onFindActionTriggered();
 
 private:
     void sendSwitchSearchResult();
