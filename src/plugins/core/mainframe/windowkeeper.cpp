@@ -20,6 +20,7 @@
 #include <DWidget>
 #include <DFrame>
 #include <DToolButton>
+#include <DDockWidget>
 
 #include <QDesktopServices>
 #include <QVBoxLayout>
@@ -30,7 +31,7 @@
 #include <QTranslator>
 #include <QScreen>
 #include <QStandardPaths>
-#include <DDockWidget>
+#include <QShortcut>
 
 static WindowKeeper *ins { nullptr };
 using namespace dpfservice;
@@ -67,16 +68,9 @@ void WindowKeeper::createFileActions(DMenu *menu)
     ActionManager::getInstance()->registerAction(actionOpenFile, "File.Open.File",
                                                  MWMFA_OPEN_FILE, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_O));
 
-    QAction::connect(actionOpenFile, &QAction::triggered, [=]() {
-        QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-        QString filePath = DFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE, dir);
-        if (filePath.isEmpty() && !QFileInfo(filePath).exists())
-            return;
-        recent.saveOpenedFile(filePath);
-        editor.openFile(filePath);
-    });
-
-    menu->addAction(actionOpenFile);
+    QAction::connect(actionOpenFile, &QAction::triggered, this, &WindowKeeper::openFileDialog);
+    menu->addAction(actionOpenFile);    
+    addMenuShortCut(actionOpenFile);
 
     DMenu *menuOpenProject = new DMenu(MWMFA_OPEN_PROJECT);
     menu->addMenu(menuOpenProject);
@@ -114,6 +108,7 @@ void WindowKeeper::createHelpActions(DMenu *menu)
     ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
                                                  MWM_REPORT_BUG, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
                                                  "");
+    addMenuShortCut(actionReportBug);
     helpMenu->addAction(actionReportBug);
     QAction *actionHelpDoc = new QAction(MWM_HELP_DOCUMENTS);
     ActionManager::getInstance()->registerAction(actionHelpDoc, "Help.Help.Documents",
@@ -453,6 +448,8 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
     if (!action || !inputAction)
         return;
 
+    addMenuShortCut(inputAction);
+
     if (menuName == MWMFA_NEW_FILE_OR_PROJECT) {
         for (QAction *qAction : d->mainMenu->actions()) {
             if (qAction->text() == MWM_BUILD) {
@@ -479,7 +476,7 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
     if (menuName == MWM_TOOLS && inputAction->text() == MWMTA_OPTIONS) {
         for (QAction *qAction : d->mainMenu->actions()) {
             if (qAction->text() == "Help") {
-                d->mainMenu->insertAction(qAction, inputAction);
+                d->mainMenu->insertAction(qAction, inputAction);                
             }
             if (qAction->text() == "About") {
                 d->mainMenu->removeAction(qAction);
@@ -638,6 +635,16 @@ void WindowKeeper::addTopToolBar(const QString &name, QAction *action, const QSt
     return;
 }
 
+void WindowKeeper::openFileDialog()
+{
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+    QString filePath = DFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE, dir);
+    if (filePath.isEmpty() && !QFileInfo(filePath).exists())
+        return;
+    recent.saveOpenedFile(filePath);
+    editor.openFile(filePath);
+}
+
 DIconButton *WindowKeeper::addIconButton(QAction *action)
 {
     if (!action)
@@ -666,4 +673,16 @@ DIconButton *WindowKeeper::addIconButton(QAction *action)
     });
 
     return iconBtn;
+}
+
+void WindowKeeper::addMenuShortCut(QAction *action, QKeySequence keySequence)
+{
+    QKeySequence key = keySequence;
+    if (keySequence.isEmpty())
+        key = action->shortcut();
+
+    QShortcut *shortCutOpenFile = new QShortcut(key, d->window);
+    connect(shortCutOpenFile, &QShortcut::activated, [=]{
+        action->trigger();
+    });
 }
