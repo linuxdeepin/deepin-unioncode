@@ -65,7 +65,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="189"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="173"/>
+        <source>delete this session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="181"/>
+        <source>history sessions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="186"/>
+        <source>create new session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="192"/>
         <source>Ask question here, press Enter to send...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -453,6 +468,18 @@
     <message>
         <location filename="../../src/plugins/builder/buildercore.cpp" line="35"/>
         <source>&amp;Build</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BuilderReceiver</name>
+    <message>
+        <location filename="../../src/plugins/builder/transceiver/builderreceiver.cpp" line="47"/>
+        <source>Error parsing project symbol
+workspace: %0
+language: %1
+storage: %2
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -882,7 +909,7 @@ The dap port is not ready, please retry.
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="585"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="559"/>
         <source>Workspace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2184,27 +2211,27 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="76"/>
+        <location filename="../../src/services/window/windowelement.h" line="77"/>
         <source>Report Bug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="77"/>
+        <location filename="../../src/services/window/windowelement.h" line="78"/>
         <source>Help Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="78"/>
+        <location filename="../../src/services/window/windowelement.h" line="79"/>
         <source>About Plugins...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="84"/>
+        <location filename="../../src/services/window/windowelement.h" line="73"/>
         <source>Valgrind Memcheck</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="85"/>
+        <location filename="../../src/services/window/windowelement.h" line="74"/>
         <source>Valgrind Helgrind</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2241,15 +2268,6 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/transceiver/builderreceiver.cpp" line="47"/>
-        <source>Error parsing project symbol
-workspace: %0
-language: %1
-storage: %2
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/collaborators/mainframe/svn/basetype.h" line="194"/>
         <source>Please install &quot;subversion&quot; software from terminal:$ sudo apt install subversion</source>
         <translation type="unfinished"></translation>
@@ -2276,17 +2294,8 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="80"/>
+        <location filename="../../src/services/window/windowelement.h" line="81"/>
         <source>Open Document</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/actionanalyse/mainframe/analysekeeper.cpp" line="48"/>
-        <source>Error Do User Action Anlyse
-workspace: %0
-language: %1
-storage: %2
-</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2427,13 +2436,8 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="75"/>
+        <location filename="../../src/services/window/windowelement.h" line="76"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/services/window/windowelement.h" line="83"/>
-        <source>&amp;Analyze</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2796,7 +2800,7 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="81"/>
+        <location filename="../../src/services/window/windowelement.h" line="82"/>
         <source>&amp;Console</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3617,8 +3621,8 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="252"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="574"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="247"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="548"/>
         <source>Deepin Union Code</source>
         <translation type="unfinished"></translation>
     </message>
