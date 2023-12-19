@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 def println(name):
     print(name);
 
