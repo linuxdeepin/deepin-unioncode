@@ -241,6 +241,7 @@ void WindowKeeper::layoutWindow(DMainWindow *window)
     window->setWindowTitle("Deepin Union Code");
     window->setWindowIcon(QIcon::fromTheme("ide"));
     window->setMinimumSize(QSize(MW_MIN_WIDTH, MW_MIN_HEIGHT));
+    window->resize(QSize(MW_WIDTH, MW_HEIGHT));
     window->setAttribute(Qt::WA_DeleteOnClose);
 
     window->titlebar()->setIcon(QIcon::fromTheme("ide"));
@@ -295,7 +296,7 @@ WindowKeeper::WindowKeeper(QObject *parent)
 
         //CommandLine Model will not show main window
         if (CommandParser::instance().getModel() != CommandParser::CommandLine) {
-            d->window->show();
+            d->window->showMaximized();
             waitingForStarted(d->window);
         }
         int currentScreenIndex = qApp->desktop()->screenNumber(d->window);
