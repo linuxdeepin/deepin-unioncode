@@ -44,7 +44,7 @@ void BuilderReceiver::eventProcess(const dpf::Event &event)
             QString language = event.property("language").toString();
             const QString &storage = workspace;
 
-            QString errMsg = QDialog::tr(
+            QString errMsg = tr(
                         "Error parsing project symbol\n"
                         "workspace: %0\n"
                         "language: %1\n"
