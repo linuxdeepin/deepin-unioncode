@@ -70,7 +70,8 @@ inline const QString MWMTA_ENGLISH { QAction::tr("English") };
 inline const QString MWMTA_CHINESE { QAction::tr("Chinese") };
 inline const QString MWMTA_USR_ACTION_ANALYZE { QAction::tr("User Action Analyse")};
 inline const QString MWMTA_BINARY_TOOLS { QAction::tr("Binary Tools")};
-
+inline const QString MWMTA_VALGRIND_MEMCHECK { QAction::tr("Valgrind Memcheck")};
+inline const QString MWMTA_VALGRIND_HELGRIND { QAction::tr("Valgrind Helgrind")};
 
 inline const QString MWM_HELP { QMenu::tr("&Help") };
 inline const QString MWM_REPORT_BUG { QAction::tr("Report Bug") };
@@ -80,9 +81,6 @@ inline const QString MWM_ABOUT_PLUGINS { QAction::tr("About Plugins...")};
 inline const QString DIALOG_OPEN_DOCUMENT_TITLE { QDialog::tr("Open Document") };
 inline const QString CONSOLE_TAB_TEXT { QTabWidget::tr("&Console") };
 
-inline const QString MWM_ANALYZE { QMenu::tr("&Analyze")};
-inline const QString MWMAA_VALGRIND_MEMCHECK { QAction::tr("Valgrind Memcheck")};
-inline const QString MWMAA_VALGRIND_HELGRIND { QAction::tr("Valgrind Helgrind")};
 } // namespace dpfservice
 
 #endif // WINDOWELEMENT_H
