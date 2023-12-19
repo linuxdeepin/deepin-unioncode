@@ -48,15 +48,15 @@ void ValgrindRunner::initialize()
     if (!windowService)
         return;
 
-    d->memcheckAction.reset(new QAction(MWMAA_VALGRIND_MEMCHECK));
+    d->memcheckAction.reset(new QAction(MWMTA_VALGRIND_MEMCHECK));
     ActionManager::getInstance()->registerAction(d->memcheckAction.get(), "Analyze.ValgrindMemcheck",
                                                  d->memcheckAction->text(), QKeySequence());
-    windowService->addAction(MWM_ANALYZE, new AbstractAction(d->memcheckAction.get()));
+    windowService->addAction(MWM_TOOLS, new AbstractAction(d->memcheckAction.get()));
 
-    d->helgrindAction.reset(new QAction(MWMAA_VALGRIND_HELGRIND));
+    d->helgrindAction.reset(new QAction(MWMTA_VALGRIND_HELGRIND));
     ActionManager::getInstance()->registerAction(d->helgrindAction.get(), "Analyze.ValgrindHelgrind",
                                                  d->helgrindAction->text(), QKeySequence());
-    windowService->addAction(MWM_ANALYZE, new AbstractAction(d->helgrindAction.get()));
+    windowService->addAction(MWM_TOOLS, new AbstractAction(d->helgrindAction.get()));
 
     QObject::connect(d->memcheckAction.get(), &QAction::triggered, [=]() {
         QtConcurrent::run([=]() {
