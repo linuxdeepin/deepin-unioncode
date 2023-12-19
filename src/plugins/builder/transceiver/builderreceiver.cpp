@@ -53,7 +53,9 @@ void BuilderReceiver::eventProcess(const dpf::Event &event)
                     .arg(language)
                     .arg(storage);
 
+#if 0 // TODO(Mozart): not show this error
             BuildManager::instance()->addOutput(errMsg, OutputPane::ErrorMessage);
+#endif
         }
     }
 }
