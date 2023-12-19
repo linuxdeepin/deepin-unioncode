@@ -462,31 +462,6 @@ void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
         }
     }
 
-    if (menuName == MWM_ANALYZE) {
-        for (QAction *qAction : d->mainMenu->actions()) {
-            if (qAction->text() == MWM_TOOLS) {
-                for (QAction *toolAction : qAction->menu()->actions()) {
-                    if (toolAction->text() == MWMTA_BINARY_TOOLS) {
-                        qAction->menu()->insertAction(toolAction, inputAction);
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    if (menuName == MWM_TOOLS && inputAction->text() == MWMTA_OPTIONS) {
-        for (QAction *qAction : d->mainMenu->actions()) {
-            if (qAction->text() == "Help") {
-                d->mainMenu->insertAction(qAction, inputAction);                
-            }
-            if (qAction->text() == "About") {
-                d->mainMenu->removeAction(qAction);
-                return;
-            }
-        }
-    }
-
     for (QAction *qAction : d->mainMenu->actions()) {
         if (qAction->text() == menuName) {
             if (qAction->text() == MWM_FILE) {
