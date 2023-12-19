@@ -44,15 +44,15 @@ void AnalyseKeeper::doAnalyse(const ActionAnalyseArgs &args)
 void AnalyseKeeper::doAnalyseDone(bool result)
 {
     if (!result) {
-        ActionAnalyseArgs args = wordcounter->args();
-        ContextDialog::ok(QDialog::tr(
-                              "Error Do User Action Anlyse\n"
-                              "workspace: %0\n"
-                              "language: %1\n"
-                              "storage: %2\n")
-                          .arg(args.workspace)
-                          .arg(args.language)
-                          .arg(args.storage));
+//        ActionAnalyseArgs args = wordcounter->args();
+//        ContextDialog::ok(QDialog::tr(
+//                              "Error Do User Action Anlyse\n"
+//                              "workspace: %0\n"
+//                              "language: %1\n"
+//                              "storage: %2\n")
+//                          .arg(args.workspace)
+//                          .arg(args.language)
+//                          .arg(args.storage));
     }
 
     QFile wordcountFile(wordcounter->args().storage + QDir::separator() + ".wordcount");
