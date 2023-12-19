@@ -1,3 +1,9 @@
+deepin-unioncode (1.2.6) unstable; urgency=medium
+
+  * Bug fix
+
+ -- luzhen <luzhen@uniontech.com>  Tue, 19 Dec 2023 16:27:28 +0800
+
 deepin-unioncode (1.2.5) unstable; urgency=medium
 
   * Fix the problem of blurry icons in launcher and taskbar
