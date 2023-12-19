@@ -299,6 +299,9 @@ void ProjectTree::mouseMoveEvent(QMouseEvent *event)
 
 DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *child)
 {
+    //todo 菜单内容以及实现逻辑需要改动
+    return nullptr;
+
     DMenu *menu = nullptr;
     QString toolKitName = ProjectInfo::get(root).kitName();
     // 获取支持右键菜单生成器
