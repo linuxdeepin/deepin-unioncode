@@ -445,10 +445,12 @@ void WindowKeeper::insertAction(const QString &menuName,
 void WindowKeeper::addAction(const QString &menuName, AbstractAction *action)
 {
     QAction *inputAction = static_cast<QAction *>(action->qAction());
-    if (!action || !inputAction)
+    if (!inputAction)
         return;
 
-    addMenuShortCut(inputAction);
+    //防止与edit和debug界面的topToolBar快捷键冲突
+    if (menuName != MWM_DEBUG && menuName != MWM_BUILD)
+        addMenuShortCut(inputAction);
 
     if (menuName == MWMFA_NEW_FILE_OR_PROJECT) {
         for (QAction *qAction : d->mainMenu->actions()) {

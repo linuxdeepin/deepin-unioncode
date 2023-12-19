@@ -33,7 +33,6 @@ QStringList ProjectCmakeReceiver::topics()
 void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
 {
     if (event.topic() == T_BUILDER) {
-        navigation.doSwitch(dpfservice::MWNA_EDIT);
         builderEvent(event);
     }
 
