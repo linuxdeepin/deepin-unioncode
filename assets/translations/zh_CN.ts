@@ -65,7 +65,22 @@
         <translation>终止生成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="189"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="173"/>
+        <source>delete this session</source>
+        <translation>删除该会话</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="181"/>
+        <source>history sessions</source>
+        <translation>历史会话</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="186"/>
+        <source>create new session</source>
+        <translation>创建新会话</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="192"/>
         <source>Ask question here, press Enter to send...</source>
         <translation>在这里提问，按Enter键发送...</translation>
     </message>
@@ -466,6 +481,21 @@
         <location filename="../../src/plugins/builder/buildercore.cpp" line="35"/>
         <source>&amp;Build</source>
         <translation>编译(&amp;B)</translation>
+    </message>
+</context>
+<context>
+    <name>BuilderReceiver</name>
+    <message>
+        <location filename="../../src/plugins/builder/transceiver/builderreceiver.cpp" line="47"/>
+        <source>Error parsing project symbol
+workspace: %0
+language: %1
+storage: %2
+</source>
+        <translation type="unfinished">解析项目符号时出错
+工作区：%0
+语言：%1
+存储：%2</translation>
     </message>
 </context>
 <context>
@@ -906,7 +936,7 @@ dap端口未就绪，请重试。
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="585"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="559"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
@@ -2210,27 +2240,27 @@ repos path: %0</source>
         <translation>二进制工具</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="76"/>
+        <location filename="../../src/services/window/windowelement.h" line="77"/>
         <source>Report Bug</source>
         <translation>报告Bug</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="77"/>
+        <location filename="../../src/services/window/windowelement.h" line="78"/>
         <source>Help Documents</source>
         <translation>帮助文档</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="78"/>
+        <location filename="../../src/services/window/windowelement.h" line="79"/>
         <source>About Plugins...</source>
         <translation>关于插件...</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="84"/>
+        <location filename="../../src/services/window/windowelement.h" line="73"/>
         <source>Valgrind Memcheck</source>
         <translation>Valgrind内存检测</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="85"/>
+        <location filename="../../src/services/window/windowelement.h" line="74"/>
         <source>Valgrind Helgrind</source>
         <translation>Valgrind死锁检测</translation>
     </message>
@@ -2268,18 +2298,6 @@ Delete anyway?</source>
         <translation>忽略警告</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/transceiver/builderreceiver.cpp" line="47"/>
-        <source>Error parsing project symbol
-workspace: %0
-language: %1
-storage: %2
-</source>
-        <translation>解析项目符号时出错
-工作区：%0
-语言：%1
-存储：%2</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/collaborators/mainframe/svn/basetype.h" line="194"/>
         <source>Please install &quot;subversion&quot; software from terminal:$ sudo apt install subversion</source>
         <translation>请从终端安装“subversion”软件：$sudo apt install subversion</translation>
@@ -2307,22 +2325,9 @@ not exists support files: %0</source>
         <translation>工程信息</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="80"/>
+        <location filename="../../src/services/window/windowelement.h" line="81"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/actionanalyse/mainframe/analysekeeper.cpp" line="48"/>
-        <source>Error Do User Action Anlyse
-workspace: %0
-language: %1
-storage: %2
-</source>
-        <translation>用户行为分析错误
-工作区：%0
-语言：%1
-存储路径：%2
-</translation>
     </message>
 </context>
 <context>
@@ -2462,14 +2467,9 @@ storage: %2
         <translation>切换语言</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="75"/>
+        <location filename="../../src/services/window/windowelement.h" line="76"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
-    </message>
-    <message>
-        <location filename="../../src/services/window/windowelement.h" line="83"/>
-        <source>&amp;Analyze</source>
-        <translation>分析工具</translation>
     </message>
     <message>
         <location filename="../../src/plugins/find/findplugin.cpp" line="37"/>
@@ -2831,7 +2831,7 @@ storage: %2
         <translation>符号</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="81"/>
+        <location filename="../../src/services/window/windowelement.h" line="82"/>
         <source>&amp;Console</source>
         <translation>控制台(&amp;C)</translation>
     </message>
@@ -3658,8 +3658,8 @@ storage: %2
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="252"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="574"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="247"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="548"/>
         <source>Deepin Union Code</source>
         <translation></translation>
     </message>
