@@ -232,7 +232,7 @@ RecentDisplay::RecentDisplay(DWidget *parent)
     d->btnOpenFile = new DPushButton(tr("Open File"));
     d->btnOpenProject = new DPushButton(tr("Open Project"));
     d->btnNewFileOrPro = new DPushButton(tr("New File or Project"));
-    vLayoutNav->setContentsMargins(60, 200, 60, 200);
+    vLayoutNav->setContentsMargins(60, 0, 60, 0);
     vLayoutNav->setSpacing(20);
     vLayoutNav->setAlignment(Qt::AlignCenter);
     vLayoutNav->addWidget(recentLogo);
