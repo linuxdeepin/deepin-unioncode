@@ -2,7 +2,7 @@ project(common)
 
 include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 
-install(FILES ${CMAKE_SOURCE_DIR}/src/common/icons/ide.svg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/scalable/apps/)
+install(FILES ${CMAKE_SOURCE_DIR}/src/common/icons/ide.svg DESTINATION /usr/share/icons/hicolor/scalable/apps/)
 
 configure_file(util/config.h.in config.h)
 find_package(Qt5Network)
