@@ -10,6 +10,7 @@
 #include "transceiver/sendevents.h"
 #include "common/common.h"
 #include "services/project/projectservice.h"
+#include "services/window/windowelement.h"
 
 #include <DTreeView>
 #include <DPushButton>
@@ -23,6 +24,7 @@
 #include <QDrag>
 #include <QApplication>
 #include <QUrl>
+#include <QClipboard>
 
 const QString DELETE_MESSAGE_TEXT {DTreeView::tr("The delete operation will be removed from"
                                                  "the disk and will not be recoverable "
@@ -299,9 +301,6 @@ void ProjectTree::mouseMoveEvent(QMouseEvent *event)
 
 DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *child)
 {
-    //todo 菜单内容以及实现逻辑需要改动
-    return nullptr;
-
     DMenu *menu = nullptr;
     QString toolKitName = ProjectInfo::get(root).kitName();
     // 获取支持右键菜单生成器
@@ -314,27 +313,27 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *ch
     if (!menu)
         menu = new DMenu();
 
-    QAction *newDocAction = new QAction(tr("New Document"));
-    menu->addAction(newDocAction);
+    QAction *newDocAction = new QAction(tr("New Document"));    
     QObject::connect(newDocAction, &QAction::triggered, this, [=](){
         actionNewDocument(child);
     });
 
-    bool isDir = false;
     QModelIndex index = d->itemModel->indexFromItem(child);
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
-    if (info.isDir()) {
-        isDir = true;
-    }
 
-    QAction *deleteDocAction = new QAction(tr("Delete Document"));
-    menu->addAction(deleteDocAction);
+    QAction *deleteDocAction = new QAction(tr("Delete Document"));    
     QObject::connect(deleteDocAction, &QAction::triggered, this, [=](){
         actionDeleteDocument(child);
     });
-    if (isDir) {
+    if (info.isDir()) {
+        menu->addAction(newDocAction);
         deleteDocAction->setEnabled(false);
     }
+    if (info.isFile()) {
+        newDocAction->setEnabled(false);
+        deleteDocAction->setEnabled(false);
+    }
+    menu->addAction(deleteDocAction);
     return menu;
 }
 
@@ -438,8 +437,8 @@ void ProjectTree::actionNewDocument(const QStandardItem *item)
     dlg->addButton(tr("Ok"), false, DDialog::ButtonType::ButtonRecommend);
 
     QObject::connect(dlg, &DDialog::buttonClicked, dlg, [=](){
-        creatNewDocument(item, edit->text());
         dlg->close();
+        creatNewDocument(item, edit->text());
     });
 
     dlg->exec();
@@ -474,13 +473,9 @@ void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fil
 {
     QModelIndex index = d->itemModel->indexFromItem(item);
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
-    QString workspace, language;
-    QModelIndex rootIndex = ProjectGenerator::root(index);
-    if (rootIndex.isValid()) {
-        auto rootInfo = ProjectInfo::get(rootIndex);
-        workspace = rootInfo.workspaceFolder();
-        language = rootInfo.language();
-    }
+
+    auto root = ProjectGenerator::root(const_cast<QStandardItem *>(item));
+    QString toolKitName = ProjectInfo::get(root).kitName();
 
     QString filePath;
     if (info.isDir()) {
@@ -491,8 +486,7 @@ void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fil
 
     if (QFile::exists(filePath)) {
         bool doOverWrite = false;
-        auto okCallBack = [&](bool checked) {
-            Q_UNUSED(checked);
+        auto okCallBack = [&]() {
             doOverWrite = true;
         };
 
@@ -505,22 +499,24 @@ void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fil
         connect(d->messDialog, &DDialog::buttonClicked, [=](int index) {
             if (index == 0){
                 d->messDialog->reject();
-            }else if(index == 1){
-                if (doOverWrite) {
-                    QFile::remove(filePath);
-                }
+            } else if (index == 1){
+                okCallBack();
+                QFile::remove(filePath);
                 d->messDialog->accept();
             }
         });
 
         d->messDialog->exec();
+
+        if (!doOverWrite)
+            return;
     }
 
-    QFile file(filePath);
-    if (file.open(QFile::OpenModeFlag::NewOnly)) {
-        file.close();
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService->supportGeneratorName<ProjectGenerator>().contains(toolKitName)) {
+        projectService->createGenerator<ProjectGenerator>(toolKitName)->createDocument(item, filePath);
     }
-    editor.openFileWithKey(workspace, language, filePath);
 }
 
 void ProjectTree::doShowProjectInfo(QStandardItem *root)

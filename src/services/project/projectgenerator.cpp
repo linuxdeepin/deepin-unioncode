@@ -211,6 +211,25 @@ QMenu *dpfservice::ProjectGenerator::createItemMenu(const QStandardItem *item)
     return nullptr;
 }
 
+void dpfservice::ProjectGenerator::createDocument(const QStandardItem *item, const QString &filePath)
+{
+    Q_UNUSED(item)
+    QString workspace, language;
+    auto root = ProjectGenerator::root(const_cast<QStandardItem *>(item));
+    if (root) {
+        auto rootInfo = dpfservice::ProjectInfo::get(root);
+        workspace = rootInfo.workspaceFolder();
+        language = rootInfo.language();
+    }
+
+    QFile file(filePath);
+    if (file.open(QFile::OpenModeFlag::NewOnly)) {
+        file.close();
+    }
+
+    editor.openFileWithKey(workspace, language, filePath);
+}
+
 /*!
  * \brief root 获取子节点的根节点
  * \param child 子节点

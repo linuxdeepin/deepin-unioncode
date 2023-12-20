@@ -19,6 +19,7 @@
 #include <QtXml>
 #include <QFileIconProvider>
 #include <QPushButton>
+#include <QClipboard>
 
 class CmakeProjectGeneratorPrivate
 {
@@ -230,6 +231,50 @@ QMenu *CmakeProjectGenerator::createItemMenu(const QStandardItem *item)
     });
 
     return menu;
+}
+
+void CmakeProjectGenerator::createDocument(const QStandardItem *item, const QString &filePath)
+{
+    QString workspace, language;
+    auto root = ProjectGenerator::root(const_cast<QStandardItem *>(item));
+    if (root) {
+        auto rootInfo = dpfservice::ProjectInfo::get(root);
+        workspace = rootInfo.workspaceFolder();
+        language = rootInfo.language();
+    }
+
+    QString fileName = filePath.split("/").last();
+    DDialog *dlg = new DDialog();
+    dlg->setMessage(tr("File are not automatically added to the "
+                       "CmakeList.txt file to the Cmake project. "
+                       "Copy the path to the source files to the clipboard?"));
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->setWindowTitle(tr("Copy to Clipboard?"));
+    dlg->setIcon(QIcon::fromTheme("dialog-warning"));
+    dlg->resize(200, 100);
+    dlg->addButton(tr("Ok"), false, DDialog::ButtonType::ButtonRecommend);
+
+    QFile file(filePath);
+    if (file.open(QFile::OpenModeFlag::NewOnly)) {
+        file.close();
+    }
+
+    QObject::connect(dlg, &DDialog::buttonClicked, dlg, [=](){
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(fileName);
+        dlg->close();
+        QString cmakeFilePath;
+        QString filePathTmp = filePath;
+        QStringList filePathList = filePath.split("/");
+        for (int i = filePathList.size() - 1; i >= 0; i--) {
+            cmakeFilePath = filePathTmp + QDir::separator() + "CMakeLists.txt";
+            if (QFile::exists(cmakeFilePath))
+                break;
+            filePathTmp.remove(QDir::separator() + filePathList[i]);
+        }
+        editor.openFileWithKey(workspace, language, cmakeFilePath);
+    });
+    dlg->exec();
 }
 
 void CmakeProjectGenerator::actionTriggered()

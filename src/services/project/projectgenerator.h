@@ -36,6 +36,7 @@ public:
     virtual QStandardItem *createRootItem(const ProjectInfo &info);
     virtual void removeRootItem(QStandardItem *root);
     virtual QMenu* createItemMenu(const QStandardItem *item);
+    virtual void createDocument(const QStandardItem *item, const QString &filePath);
     static QStandardItem *root(QStandardItem *child);
     static const QModelIndex root(const QModelIndex &child);
 signals:
