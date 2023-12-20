@@ -71,7 +71,7 @@ public slots:
 
 private:
     QStandardItem *findParentItem(QStandardItem *rootItem, QString &name);
-    QStandardItem *createParentItem(QStandardItem *rootItem, QString &name);
+    QStandardItem *createParentItem(QStandardItem *rootItem, const QString &relativeName, const QString &absolutePath);
     QStandardItem *findItem(QStandardItem *rootItem, QString &name, QString &relativePath);
 };
 

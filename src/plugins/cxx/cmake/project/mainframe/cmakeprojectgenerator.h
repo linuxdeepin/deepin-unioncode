@@ -28,6 +28,7 @@ public:
     virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
     virtual void removeRootItem(QStandardItem* root) override;
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
+    virtual void createDocument(const QStandardItem *item, const QString &filePath) override;
 
 private slots:
     void actionTriggered();

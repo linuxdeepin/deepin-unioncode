@@ -121,8 +121,9 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         if (cmakeFileInfo.fileName().toLower() == kProjectFile.toLower()) {
             auto cmakeParentItem = rootItem;
             QString relativePath = QDir(prjInfo.workspaceFolder()).relativeFilePath(cmakeFileInfo.dir().path());
+            QString absolutePath = QDir(prjInfo.workspaceFolder()).absoluteFilePath(cmakeFileInfo.dir().path());
             if (!relativePath.isEmpty() && relativePath != ".") {
-                cmakeParentItem = createParentItem(rootItem, relativePath);
+                cmakeParentItem = createParentItem(rootItem, relativePath, absolutePath);
             }
 
             auto cmakeFileItem = new QStandardItem();
@@ -150,9 +151,10 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         }
         QString targetRootPath = getTargetRootPath(target.srcfiles, target.sourceDirectory);
         QString relativePath = QDir(prjInfo.workspaceFolder()).relativeFilePath(QDir(targetRootPath).path());
+        QString absolutePath = QDir(prjInfo.workspaceFolder()).absoluteFilePath(QDir(targetRootPath).path());
         QStandardItem *targetRootItem = rootItem;
         if (!relativePath.isEmpty() && relativePath != ".") {
-            targetRootItem = createParentItem(rootItem, relativePath);
+            targetRootItem = createParentItem(rootItem, relativePath, absolutePath);
         }
         QStandardItem *targetItem = new QStandardItem();
         QString prefix = "";
@@ -165,6 +167,7 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         }
         QString title = prefix + target.title;
         targetItem->setText(title);
+        targetItem->setToolTip(absolutePath);
 
         targetItem->setData(QVariant::fromValue(target));
         targetRootItem->appendRow(targetItem);
@@ -172,6 +175,7 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         for (const auto &src : target.srcfiles) {
             QFileInfo srcFileInfo(src);
             relativePath = QDir(targetRootPath).relativeFilePath(srcFileInfo.dir().path());
+            absolutePath = QDir(targetRootPath).absoluteFilePath(srcFileInfo.dir().path());
             relativePath.remove(".");
             if (relativePath.startsWith("/"))
                 relativePath.remove(0, 1);
@@ -184,7 +188,7 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             QString upDirName = relativePath.split("/").last();
             QStandardItem *parentItem = findItem(targetItem, upDirName, relativePath);
             if (!parentItem) {
-                parentItem = createParentItem(targetItem, relativePath);
+                parentItem = createParentItem(targetItem, relativePath, absolutePath);
             }
 
             QStandardItem *srcItem = new QStandardItem();
@@ -253,7 +257,7 @@ QStandardItem *CmakeAsynParse::findParentItem(QStandardItem *rootItem, QString &
     return rootItem;
 }
 
-QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, QString &relativeName)
+QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, const QString &relativeName, const QString &absolutePath)
 {
     QStandardItem *retItem = nullptr;
     QStringList nameItems = relativeName.split("/");
@@ -265,7 +269,7 @@ QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, QString
             // create new one.
             item = new QStandardItem();
             item->setText(nameItem);
-            item->setToolTip(relative);
+            item->setToolTip(absolutePath);
             item->setIcon(::cmakeFolderIcon());
             // append to parent.
             QStandardItem *parentItem = findParentItem(rootItem, relative);
