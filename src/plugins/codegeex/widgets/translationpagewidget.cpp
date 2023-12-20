@@ -37,13 +37,14 @@ void TranslationPageWidget::cleanOutputEdit()
 
 void TranslationPageWidget::onTranslateBtnClicked()
 {
-    spinner->move(outputEdit->x() + outputEdit->width() / 2, outputEdit->y() + outputEdit->height() / 2);
-    spinner->show();
-    spinner->start();
-
     QString dstLang = langComboBox->currentText();
     QString srcCode = inputEdit->getContent();
-    Copilot::instance()->translateCode(srcCode, dstLang);
+    if(!srcCode.isEmpty()){
+        spinner->move(outputEdit->x() + outputEdit->width() / 2, outputEdit->y() + outputEdit->height() / 2);
+        spinner->show();
+        spinner->start();
+        Copilot::instance()->translateCode(srcCode, dstLang);
+    }
 }
 
 void TranslationPageWidget::onRecevieTransCode(const QString &code, const QString &dstLang)

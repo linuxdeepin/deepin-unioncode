@@ -263,11 +263,13 @@ void CodeEditComponent::initButton()
     copyButton->setFlat(true);
     copyButton->setIcon(QIcon::fromTheme("codegeex_copy"));
     copyButton->setFixedSize(QSize(24, 24));
+    copyButton->setToolTip(tr("Copy"));
 
     insertButton = new DPushButton(this);
     insertButton->setFlat(true);
     insertButton->setIcon(QIcon::fromTheme("codegeex_insert"));
     insertButton->setFixedSize(QSize(24, 24));
+    insertButton->setToolTip(tr("Insert into code area"));
 }
 
 void CodeEditComponent::initConnection()
