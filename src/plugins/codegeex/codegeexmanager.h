@@ -43,6 +43,8 @@ public:
     void cleanHistoryMessage();
 
     void fetchSessionRecords();
+    void fetchMessageList(const QString &talkId);
+
     QList<RecordData> sessionRecords() const;
 
 Q_SIGNALS:
@@ -62,6 +64,7 @@ public Q_SLOTS:
     void recevieToTranslate(const QString &codeText);
     void recevieSessionRecords(const QVector<CodeGeeX::AskApi::SessionRecord> &records);
     void recevieDeleteResult(const QStringList &talkIds, bool success);
+    void showHistoryMessage(const QVector<CodeGeeX::AskApi::MessageRecord> &records);
     void stopReceive();
     void logout();
 

@@ -29,7 +29,8 @@ public:
                      const QString &token,
                      const QString &prompt,
                      const QString &machineId,
-                     const QMultiMap<QString, QString> &history);
+                     const QMultiMap<QString, QString> &history,
+                     const QString &talkId);
 
     void postNewSession(
             const QString &url,
@@ -48,17 +49,16 @@ public:
                         int pageNumber = 1,
                         int pageSize = 10);
 
-    struct ChatRecord
+    struct MessageRecord
     {
-        QString prompt;
-        QString outputText;
-        QString talkId;
+        QString input;
+        QString output;
     };
-    void getChatRecordByTalkId(const QString &url,
-                               const QString &token,
-                               const QString &talkId,
-                               int pageNumber = 1,
-                               int pageSize = 10);
+    void getMessageList(const QString &url,
+                        const QString &token,
+                        int pageNumber = 1,
+                        int pageSize = 10,
+                        const QString &talkId = "");
 
     void deleteSessions(const QString &url,
                         const QString &token,
@@ -74,7 +74,7 @@ signals:
     void loginState(LoginState loginState);
     void response(const QString &msgID, const QString &response, const QString &event);
     void getSessionListResult(const QVector<SessionRecord> &records);
-    void getChatRecordResult(const QVector<ChatRecord> &record);
+    void getMessageListResult(const QVector<MessageRecord> &records);
     void sessionDeleted(const QStringList &talkId, bool isSuccessful);
     void sessionCreated(const QString &talkId, bool isSuccessful);
     void stopReceive();
@@ -88,7 +88,8 @@ private:
 
     QByteArray assembleSSEChatBody(const QString &prompt,
                                    const QString &machineId,
-                                   const QJsonArray &history);
+                                   const QJsonArray &history,
+                                   const QString &talkId);
 
     QByteArray assembleNewSessionBody(const QString &prompt,
                                       const QString &talkId);

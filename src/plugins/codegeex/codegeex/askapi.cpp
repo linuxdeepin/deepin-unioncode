@@ -93,10 +93,11 @@ void AskApi::postSSEChat(const QString &url,
                          const QString &token,
                          const QString &prompt,
                          const QString &machineId,
-                         const QMultiMap<QString, QString> &history)
+                         const QMultiMap<QString, QString> &history,
+                         const QString &talkId)
 {
     QJsonArray jsonArray = convertHistoryToJSONArray(history);
-    QByteArray body = assembleSSEChatBody(prompt, machineId, jsonArray);
+    QByteArray body = assembleSSEChatBody(prompt, machineId, jsonArray, talkId);
     QNetworkReply *reply = postMessage(url, token, body);
     connect(this, &AskApi::stopReceive, reply, [reply]() {
         reply->close();
@@ -151,7 +152,7 @@ void AskApi::getSessionList(const QString &url, const QString &token, int pageNu
     });
 }
 
-void AskApi::getChatRecordByTalkId(const QString &url, const QString &token, const QString &talkId, int pageNumber, int pageSize)
+void AskApi::getMessageList(const QString &url, const QString &token, int pageNumber, int pageSize, const QString &talkId)
 {
     QString urlWithParameter = QString(url + "?pageNum=%1&pageSize=%2&talkId=%3").arg(pageNumber).arg(pageSize).arg(talkId);
     QNetworkReply *reply = getMessage(urlWithParameter, token);
@@ -161,18 +162,20 @@ void AskApi::getChatRecordByTalkId(const QString &url, const QString &token, con
             return;
         }
         QJsonObject jsonObject = toJsonOBject(reply);
+
         int code = jsonObject["code"].toInt();
         if (code == kCode_Success) {
             QJsonArray listArray = jsonObject.value("data").toObject().value("list").toArray();
-            QVector<ChatRecord> records;
+            QVector<MessageRecord> records;
             for (int i = 0; i < listArray.size(); ++i) {
-                ChatRecord record;
+                MessageRecord record;
                 QJsonObject item = listArray[i].toObject();
-                record.prompt = item.value("prompt").toString();
-                record.outputText = item.value("outputText").toString();
-                records.push_back(record);
+                record.input = item.value("prompt").toString();
+                record.output = item.value("outputText").toString();
+
+                records.append(record);
             }
-            emit getChatRecordResult(records);
+            emit getMessageListResult(records);
         }
     });
 }
@@ -241,13 +244,16 @@ void AskApi::processResponse(QNetworkReply *reply)
 
 QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
                                        const QString &machineId,
-                                       const QJsonArray &history)
+                                       const QJsonArray &history,
+                                       const QString &talkId)
 {
     QJsonObject jsonObject;
     jsonObject.insert("prompt", prompt);
     jsonObject.insert("machineId", machineId);
     jsonObject.insert("client", "deepin-unioncode");
     jsonObject.insert("history", history);
+    if(!talkId.isEmpty())
+        jsonObject.insert("talkId", talkId);
 
     return jsonToByteArray(jsonObject);
 }

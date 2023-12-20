@@ -18,7 +18,8 @@
 static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
 static const char *kUrlNewSession = "https://codegeex.cn/prod/code/chatGlmTalk/insert";
 static const char *kUrlDeleteSession = "https://codegeex.cn/prod/code/chatGlmTalk/delete";
-static const char *kUrlQuerySession = "https://codegeex.cn/prod/code/chatGmlMsg/selectList";
+static const char *kUrlQuerySession = "https://codegeex.cn/prod/code/chatGlmTalk/selectList";
+static const char *kUrlQueryMessage = "https://codegeex.cn/prod/code/chatGmlMsg/selectList";
 
 using namespace CodeGeeX;
 
@@ -108,7 +109,8 @@ void CodeGeeXManager::sendMessage(const QString &prompt)
         history.insert(msgData.messageID(), msgData.messageData());
     }
     QString machineId = QSysInfo::machineUniqueId();
-    askApi.postSSEChat(kUrlSSEChat, sessionId, prompt, machineId, history);
+    QString talkId = currentTalkID;
+    askApi.postSSEChat(kUrlSSEChat, sessionId, prompt, machineId, history, talkId);
 
     Q_EMIT chatStarted();
 }
@@ -184,6 +186,27 @@ void CodeGeeXManager::recevieSessionRecords(const QVector<AskApi::SessionRecord>
     Q_EMIT sessionRecordsUpdated();
 }
 
+void CodeGeeXManager::showHistoryMessage(const QVector<AskApi::MessageRecord> &records)
+{
+    for (auto index = records.size() - 1; index >= 0; index--) {
+        auto messageId = QString::number(QDateTime::currentMSecsSinceEpoch());
+        auto record = records[index];
+        MessageData askData(messageId + "Ask", MessageData::Ask);
+        askData.updateData(record.input);
+        Q_EMIT requestMessageUpdate(askData);
+
+        //正常情况下，答案从网络回复中流式解析。这里如果一次性发送，无法解析代码，需要以流式方式发送，读的长度过长可能会导致解析"```"标志时吞掉其他字符
+        MessageData ansData(messageId + "Anwser", MessageData::Anwser);
+        QTextStream stream(&record.output);
+        QString anwser;
+        while (!stream.atEnd()) {
+            anwser += stream.read(3);
+            ansData.updateData(anwser);
+            Q_EMIT requestMessageUpdate(ansData);
+        }
+    }
+}
+
 void CodeGeeXManager::recevieDeleteResult(const QStringList &talkIds, bool success)
 {
     if (success) {
@@ -222,6 +245,7 @@ void CodeGeeXManager::initConnections()
     connect(&askApi, &AskApi::sessionCreated, this, &CodeGeeXManager::onSessionCreated);
     connect(&askApi, &AskApi::getSessionListResult, this, &CodeGeeXManager::recevieSessionRecords);
     connect(&askApi, &AskApi::sessionDeleted, this, &CodeGeeXManager::recevieDeleteResult);
+    connect(&askApi, &AskApi::getMessageListResult, this, &CodeGeeXManager::showHistoryMessage);
     connect(Copilot::instance(), &Copilot::translatingText, this, &CodeGeeXManager::recevieToTranslate);
 }
 
@@ -255,6 +279,11 @@ void CodeGeeXManager::cleanHistoryMessage()
 void CodeGeeXManager::fetchSessionRecords()
 {
     askApi.getSessionList(kUrlQuerySession, sessionId, 1, 50);
+}
+
+void CodeGeeXManager::fetchMessageList(const QString &talkId)
+{
+    askApi.getMessageList(kUrlQueryMessage, sessionId, 1, 50, talkId);
 }
 
 QList<RecordData> CodeGeeXManager::sessionRecords() const

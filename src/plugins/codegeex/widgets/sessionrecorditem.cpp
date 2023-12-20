@@ -39,7 +39,8 @@ void SessionRecordItem::onDeleteButtonClicked()
 
 void SessionRecordItem::onRecordClicked()
 {
-    CodeGeeXManager::instance()->sendMessage(promotLabel->text());
+    CodeGeeXManager::instance()->fetchMessageList(talkId);
+
     Q_EMIT closeHistoryWidget();
 }
 
