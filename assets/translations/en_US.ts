@@ -536,6 +536,19 @@ storage: %2
     </message>
 </context>
 <context>
+    <name>CodeEditComponent</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="266"/>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="272"/>
+        <source>Insert into code area</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CodeEditor</name>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="33"/>
@@ -909,7 +922,7 @@ The dap port is not ready, please retry.
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="559"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="560"/>
         <source>Workspace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1990,13 +2003,13 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="251"/>
-        <location filename="../../src/services/window/windowelement.h" line="33"/>
+        <location filename="../../src/services/window/windowelement.h" line="36"/>
         <source>New Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="252"/>
-        <location filename="../../src/services/window/windowelement.h" line="32"/>
+        <location filename="../../src/services/window/windowelement.h" line="35"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2056,187 +2069,187 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="34"/>
+        <location filename="../../src/services/window/windowelement.h" line="37"/>
         <source>Open Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="35"/>
+        <location filename="../../src/services/window/windowelement.h" line="38"/>
         <source>Open Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="36"/>
+        <location filename="../../src/services/window/windowelement.h" line="39"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="37"/>
+        <location filename="../../src/services/window/windowelement.h" line="40"/>
         <source>Open Recent Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="38"/>
+        <location filename="../../src/services/window/windowelement.h" line="41"/>
         <source>Open Recent Folders</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="39"/>
+        <location filename="../../src/services/window/windowelement.h" line="42"/>
         <source>New File or Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="40"/>
+        <location filename="../../src/services/window/windowelement.h" line="43"/>
         <source>Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="43"/>
+        <location filename="../../src/services/window/windowelement.h" line="46"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="44"/>
+        <location filename="../../src/services/window/windowelement.h" line="47"/>
         <source>Rebuild</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="45"/>
+        <location filename="../../src/services/window/windowelement.h" line="48"/>
         <source>Clean</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="46"/>
+        <location filename="../../src/services/window/windowelement.h" line="49"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="49"/>
+        <location filename="../../src/services/window/windowelement.h" line="52"/>
         <source>Start Debugging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="50"/>
+        <location filename="../../src/services/window/windowelement.h" line="53"/>
         <source>Running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="51"/>
+        <location filename="../../src/services/window/windowelement.h" line="54"/>
         <source>Interrupt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="52"/>
+        <location filename="../../src/services/window/windowelement.h" line="55"/>
         <source>Continue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="53"/>
+        <location filename="../../src/services/window/windowelement.h" line="56"/>
         <source>Abort Debugging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="54"/>
+        <location filename="../../src/services/window/windowelement.h" line="57"/>
         <source>Restart Debugging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="55"/>
+        <location filename="../../src/services/window/windowelement.h" line="58"/>
         <source>Step Over</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="56"/>
+        <location filename="../../src/services/window/windowelement.h" line="59"/>
         <source>Step In</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="57"/>
+        <location filename="../../src/services/window/windowelement.h" line="60"/>
         <source>Step Out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="60"/>
+        <location filename="../../src/services/window/windowelement.h" line="63"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="61"/>
+        <location filename="../../src/services/window/windowelement.h" line="64"/>
         <source>Package Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="62"/>
+        <location filename="../../src/services/window/windowelement.h" line="65"/>
         <source>Version Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="63"/>
+        <location filename="../../src/services/window/windowelement.h" line="66"/>
         <source>Code Formatting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="64"/>
+        <location filename="../../src/services/window/windowelement.h" line="67"/>
         <source>Runtime Analysis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="65"/>
+        <location filename="../../src/services/window/windowelement.h" line="68"/>
         <source>Test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="66"/>
+        <location filename="../../src/services/window/windowelement.h" line="69"/>
         <source>Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="67"/>
+        <location filename="../../src/services/window/windowelement.h" line="70"/>
         <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="69"/>
+        <location filename="../../src/services/window/windowelement.h" line="72"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="70"/>
+        <location filename="../../src/services/window/windowelement.h" line="73"/>
         <source>Chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="72"/>
+        <location filename="../../src/services/window/windowelement.h" line="75"/>
         <source>Binary Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="77"/>
+        <location filename="../../src/services/window/windowelement.h" line="80"/>
         <source>Report Bug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="78"/>
+        <location filename="../../src/services/window/windowelement.h" line="81"/>
         <source>Help Documents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="79"/>
+        <location filename="../../src/services/window/windowelement.h" line="82"/>
         <source>About Plugins...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="73"/>
+        <location filename="../../src/services/window/windowelement.h" line="76"/>
         <source>Valgrind Memcheck</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="74"/>
+        <location filename="../../src/services/window/windowelement.h" line="77"/>
         <source>Valgrind Helgrind</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="71"/>
+        <location filename="../../src/services/window/windowelement.h" line="74"/>
         <source>User Action Analyse</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2294,7 +2307,7 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="81"/>
+        <location filename="../../src/services/window/windowelement.h" line="84"/>
         <source>Open Document</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2411,32 +2424,32 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="28"/>
+        <location filename="../../src/services/window/windowelement.h" line="31"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="42"/>
+        <location filename="../../src/services/window/windowelement.h" line="45"/>
         <source>&amp;Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="48"/>
+        <location filename="../../src/services/window/windowelement.h" line="51"/>
         <source>&amp;Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="59"/>
+        <location filename="../../src/services/window/windowelement.h" line="62"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="68"/>
+        <location filename="../../src/services/window/windowelement.h" line="71"/>
         <source>Switch language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="76"/>
+        <location filename="../../src/services/window/windowelement.h" line="79"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2663,37 +2676,37 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="20"/>
+        <location filename="../../src/services/window/windowelement.h" line="23"/>
         <source>Recent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="21"/>
+        <location filename="../../src/services/window/windowelement.h" line="24"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="22"/>
+        <location filename="../../src/services/window/windowelement.h" line="25"/>
         <source>Debug</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="23"/>
+        <location filename="../../src/services/window/windowelement.h" line="26"/>
         <source>Git</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="24"/>
+        <location filename="../../src/services/window/windowelement.h" line="27"/>
         <source>Svn</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="25"/>
+        <location filename="../../src/services/window/windowelement.h" line="28"/>
         <source>Runtime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="26"/>
+        <location filename="../../src/services/window/windowelement.h" line="29"/>
         <source>CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2800,7 +2813,7 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="82"/>
+        <location filename="../../src/services/window/windowelement.h" line="85"/>
         <source>&amp;Console</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3550,22 +3563,22 @@ not exists support files: %0</source>
 <context>
     <name>TranslationPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="66"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="67"/>
         <source>Input Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="67"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="68"/>
         <source>Please input the code to be translated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="79"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="80"/>
         <source>Translate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="87"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="88"/>
         <source>Output Code</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3621,8 +3634,8 @@ not exists support files: %0</source>
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="247"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="548"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="248"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="549"/>
         <source>Deepin Union Code</source>
         <translation type="unfinished"></translation>
     </message>
