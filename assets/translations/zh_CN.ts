@@ -551,6 +551,19 @@ storage: %2
     </message>
 </context>
 <context>
+    <name>CodeEditComponent</name>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="266"/>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="272"/>
+        <source>Insert into code area</source>
+        <translation>插入代码到代码区</translation>
+    </message>
+</context>
+<context>
     <name>CodeEditor</name>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="33"/>
@@ -936,7 +949,7 @@ dap端口未就绪，请重试。
     <name>DDockWidget</name>
     <message>
         <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="559"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="560"/>
         <source>Workspace</source>
         <translation>工作区</translation>
     </message>
@@ -2019,13 +2032,13 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="251"/>
-        <location filename="../../src/services/window/windowelement.h" line="33"/>
+        <location filename="../../src/services/window/windowelement.h" line="36"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
         <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="252"/>
-        <location filename="../../src/services/window/windowelement.h" line="32"/>
+        <location filename="../../src/services/window/windowelement.h" line="35"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
@@ -2045,7 +2058,7 @@ repos path: %0</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="67"/>
+        <location filename="../../src/services/window/windowelement.h" line="70"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
@@ -2090,182 +2103,182 @@ repos path: %0</source>
         <translation>转到定义</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="34"/>
+        <location filename="../../src/services/window/windowelement.h" line="37"/>
         <source>Open Project</source>
         <translation>打开工程</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="35"/>
+        <location filename="../../src/services/window/windowelement.h" line="38"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="36"/>
+        <location filename="../../src/services/window/windowelement.h" line="39"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="37"/>
+        <location filename="../../src/services/window/windowelement.h" line="40"/>
         <source>Open Recent Documents</source>
         <translation>打开最近的文件</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="38"/>
+        <location filename="../../src/services/window/windowelement.h" line="41"/>
         <source>Open Recent Folders</source>
         <translation>打开最近的文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="39"/>
+        <location filename="../../src/services/window/windowelement.h" line="42"/>
         <source>New File or Project</source>
         <translation>新建文件或工程</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="40"/>
+        <location filename="../../src/services/window/windowelement.h" line="43"/>
         <source>Quit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="43"/>
+        <location filename="../../src/services/window/windowelement.h" line="46"/>
         <source>Build</source>
         <translation>编译</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="44"/>
+        <location filename="../../src/services/window/windowelement.h" line="47"/>
         <source>Rebuild</source>
         <translation>重新编译</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="45"/>
+        <location filename="../../src/services/window/windowelement.h" line="48"/>
         <source>Clean</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="46"/>
+        <location filename="../../src/services/window/windowelement.h" line="49"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="49"/>
+        <location filename="../../src/services/window/windowelement.h" line="52"/>
         <source>Start Debugging</source>
         <translation>开始调试</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="50"/>
+        <location filename="../../src/services/window/windowelement.h" line="53"/>
         <source>Running</source>
         <translation>运行</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="51"/>
+        <location filename="../../src/services/window/windowelement.h" line="54"/>
         <source>Interrupt</source>
         <translation>中断</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="52"/>
+        <location filename="../../src/services/window/windowelement.h" line="55"/>
         <source>Continue</source>
         <translation>继续</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="53"/>
+        <location filename="../../src/services/window/windowelement.h" line="56"/>
         <source>Abort Debugging</source>
         <translation>停止调试</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="54"/>
+        <location filename="../../src/services/window/windowelement.h" line="57"/>
         <source>Restart Debugging</source>
         <translation>重启调试器</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="55"/>
+        <location filename="../../src/services/window/windowelement.h" line="58"/>
         <source>Step Over</source>
         <translation>单步跳过</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="56"/>
+        <location filename="../../src/services/window/windowelement.h" line="59"/>
         <source>Step In</source>
         <translation>单步进入</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="57"/>
+        <location filename="../../src/services/window/windowelement.h" line="60"/>
         <source>Step Out</source>
         <translation>单步跳出</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="60"/>
+        <location filename="../../src/services/window/windowelement.h" line="63"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="61"/>
+        <location filename="../../src/services/window/windowelement.h" line="64"/>
         <source>Package Tools</source>
         <translation>软件包工具</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="62"/>
+        <location filename="../../src/services/window/windowelement.h" line="65"/>
         <source>Version Tools</source>
         <translation>版本工具</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="63"/>
+        <location filename="../../src/services/window/windowelement.h" line="66"/>
         <source>Code Formatting</source>
         <translation>代码格式化</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="64"/>
+        <location filename="../../src/services/window/windowelement.h" line="67"/>
         <source>Runtime Analysis</source>
         <translation>运行时分析</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="65"/>
+        <location filename="../../src/services/window/windowelement.h" line="68"/>
         <source>Test</source>
         <translation>测试</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="66"/>
+        <location filename="../../src/services/window/windowelement.h" line="69"/>
         <source>Plugins</source>
         <translation>插件</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="69"/>
+        <location filename="../../src/services/window/windowelement.h" line="72"/>
         <source>English</source>
         <translation>英文</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="70"/>
+        <location filename="../../src/services/window/windowelement.h" line="73"/>
         <source>Chinese</source>
         <translation>中文</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="72"/>
+        <location filename="../../src/services/window/windowelement.h" line="75"/>
         <source>Binary Tools</source>
         <translation>二进制工具</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="77"/>
+        <location filename="../../src/services/window/windowelement.h" line="80"/>
         <source>Report Bug</source>
         <translation>报告Bug</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="78"/>
+        <location filename="../../src/services/window/windowelement.h" line="81"/>
         <source>Help Documents</source>
         <translation>帮助文档</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="79"/>
+        <location filename="../../src/services/window/windowelement.h" line="82"/>
         <source>About Plugins...</source>
         <translation>关于插件...</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="73"/>
+        <location filename="../../src/services/window/windowelement.h" line="76"/>
         <source>Valgrind Memcheck</source>
         <translation>Valgrind内存检测</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="74"/>
+        <location filename="../../src/services/window/windowelement.h" line="77"/>
         <source>Valgrind Helgrind</source>
         <translation>Valgrind死锁检测</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="71"/>
+        <location filename="../../src/services/window/windowelement.h" line="74"/>
         <source>User Action Analyse</source>
         <translation>用户行为分析</translation>
     </message>
@@ -2325,7 +2338,7 @@ not exists support files: %0</source>
         <translation>工程信息</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="81"/>
+        <location filename="../../src/services/window/windowelement.h" line="84"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
@@ -2442,32 +2455,32 @@ not exists support files: %0</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="28"/>
+        <location filename="../../src/services/window/windowelement.h" line="31"/>
         <source>&amp;File</source>
         <translation>文件(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="42"/>
+        <location filename="../../src/services/window/windowelement.h" line="45"/>
         <source>&amp;Build</source>
         <translation>编译(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="48"/>
+        <location filename="../../src/services/window/windowelement.h" line="51"/>
         <source>&amp;Debug</source>
         <translation>调试(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="59"/>
+        <location filename="../../src/services/window/windowelement.h" line="62"/>
         <source>&amp;Tools</source>
         <translation>工具(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="68"/>
+        <location filename="../../src/services/window/windowelement.h" line="71"/>
         <source>Switch language</source>
         <translation>切换语言</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="76"/>
+        <location filename="../../src/services/window/windowelement.h" line="79"/>
         <source>&amp;Help</source>
         <translation>帮助(&amp;H)</translation>
     </message>
@@ -2694,37 +2707,37 @@ not exists support files: %0</source>
         <translation>命令</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="20"/>
+        <location filename="../../src/services/window/windowelement.h" line="23"/>
         <source>Recent</source>
         <translation>最近</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="21"/>
+        <location filename="../../src/services/window/windowelement.h" line="24"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="22"/>
+        <location filename="../../src/services/window/windowelement.h" line="25"/>
         <source>Debug</source>
         <translation>调试</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="23"/>
+        <location filename="../../src/services/window/windowelement.h" line="26"/>
         <source>Git</source>
         <translation>Git</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="24"/>
+        <location filename="../../src/services/window/windowelement.h" line="27"/>
         <source>Svn</source>
         <translation>Svn</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="25"/>
+        <location filename="../../src/services/window/windowelement.h" line="28"/>
         <source>Runtime</source>
         <translation>运行时</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="26"/>
+        <location filename="../../src/services/window/windowelement.h" line="29"/>
         <source>CodeGeeX</source>
         <translation></translation>
     </message>
@@ -2831,7 +2844,7 @@ not exists support files: %0</source>
         <translation>符号</translation>
     </message>
     <message>
-        <location filename="../../src/services/window/windowelement.h" line="82"/>
+        <location filename="../../src/services/window/windowelement.h" line="85"/>
         <source>&amp;Console</source>
         <translation>控制台(&amp;C)</translation>
     </message>
@@ -3587,22 +3600,22 @@ not exists support files: %0</source>
 <context>
     <name>TranslationPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="66"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="67"/>
         <source>Input Code</source>
         <translation>输入代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="67"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="68"/>
         <source>Please input the code to be translated</source>
         <translation>请输入要翻译的代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="79"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="80"/>
         <source>Translate</source>
         <translation>翻译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="87"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="88"/>
         <source>Output Code</source>
         <translation>输出代码</translation>
     </message>
@@ -3658,8 +3671,8 @@ not exists support files: %0</source>
 <context>
     <name>WindowKeeper</name>
     <message>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="247"/>
-        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="548"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="248"/>
+        <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="549"/>
         <source>Deepin Union Code</source>
         <translation></translation>
     </message>
