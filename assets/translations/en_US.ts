@@ -38,7 +38,7 @@
     </message>
     <message>
         <location filename="../../src/app/main.cpp" line="113"/>
-        <source>%1&lt;br/&gt;Copyright 2019-%2 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                                            we hope that the scheme will be useful,                                            but we do not guarantee that it will be of economic value or fit for a particular purpose.                                            For more information, see the GNU General Public License. &lt;br/&gt;</source>
+        <source>Deepin Union Code is a lightweight integrated development environment,                                            featured with multilingual and cross platform compatibility.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1893,34 +1893,34 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="314"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="430"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="317"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="433"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="327"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="330"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="429"/>
         <source>New Document Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="435"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="500"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="438"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="503"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="498"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="501"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="499"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="502"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2039,17 +2039,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="351"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="354"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="352"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="355"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="353"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="356"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>

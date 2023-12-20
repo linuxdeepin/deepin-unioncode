@@ -38,8 +38,8 @@
     </message>
     <message>
         <location filename="../../src/app/main.cpp" line="113"/>
-        <source>%1&lt;br/&gt;Copyright 2019-%2 UnionTech Software Technology Co., Ltd. All rights reserved.&lt;br/&gt;&lt;br/&gt;This program is released under &lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;;                                            we hope that the scheme will be useful,                                            but we do not guarantee that it will be of economic value or fit for a particular purpose.                                            For more information, see the GNU General Public License. &lt;br/&gt;</source>
-        <translation>%1&lt;br/&gt;版权 2019-%2 统信软件技术有限公司所有&lt;br/&gt;&lt;br/&gt;本程序基于&lt;a href=&quot;https://www.gnu.org/licenses/gpl-3.0.html&quot;&gt;GPL-3.0-or-later&lt;/a&gt;发布；我们希望发布的这款程序有用，但不提供保证，甚至不保证它有经济价值和适合特定用途。详情参见GNU通用公共许可协议。&lt;br/&gt;</translation>
+        <source>Deepin Union Code is a lightweight integrated development environment,                                            featured with multilingual and cross platform compatibility.</source>
+        <translation>Deepin Union Code是一款具有多语言、跨平台兼容特性的轻量级集成开发环境.</translation>
     </message>
 </context>
 <context>
@@ -1922,34 +1922,34 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="314"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="430"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="317"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="433"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="327"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="330"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="429"/>
         <source>New Document Name</source>
         <translation>新文件名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="435"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="500"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="438"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="503"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="498"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="501"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation>名称为&quot;%1&quot; 的文件已经存在，您想覆盖它吗？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="499"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="502"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -2073,17 +2073,17 @@ repos path: %0</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="351"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="354"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="352"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="355"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="353"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="356"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
