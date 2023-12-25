@@ -264,14 +264,15 @@ QByteArray AskApi::assembleNewSessionBody(const QString &prompt,
 
 QByteArray AskApi::assembleDelSessionBody(const QStringList &talkIds)
 {
-    QJsonObject jsonObject;
-    QJsonArray array;
+    QString ret = "[\n";
     for (auto talkId : talkIds) {
-        array.push_back(talkId);
+        ret += "\"";
+        ret += talkId;
+        ret += "\"\n";
     }
-    jsonObject.insert("talkId", array);
+    ret += "]";
 
-    return jsonToByteArray(jsonObject);
+    return ret.toLatin1();
 }
 
 QByteArray AskApi::jsonToByteArray(const QJsonObject &jsonObject)
