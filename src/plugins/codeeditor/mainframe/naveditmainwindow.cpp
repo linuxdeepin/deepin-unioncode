@@ -71,8 +71,8 @@ void NavEditMainWindow::initUI()
     workspaceSpliter->setChildrenCollapsible(false);
     workspaceSpliter->addWidget(workspaceWidget);
     workspaceSpliter->addWidget(contextSpliter);
-    workspaceSpliter->setStretchFactor(0, 5);
-    workspaceSpliter->setStretchFactor(1, 6);
+    workspaceSpliter->setStretchFactor(0, 1);
+    workspaceSpliter->setStretchFactor(1, 3);
 
     mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
