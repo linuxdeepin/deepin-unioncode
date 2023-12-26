@@ -18,7 +18,7 @@ class NinjaProjectGenerator : public dpfservice::ProjectGenerator
     NinjaProjectGeneratorPrivate *const d;
 public:
     explicit NinjaProjectGenerator();
-    virtual ~NinjaProjectGenerator();
+    virtual ~NinjaProjectGenerator() override;
     static QString toolKitName() { return "ninja"; }
     virtual QStringList supportLanguages() override;
     virtual QStringList supportFileNames() override;

@@ -190,6 +190,7 @@ void DetailWidget::generate(const PojectGenParam &param)
     ProjectGenerate projectGen;
     PojectGenResult result;
     if (!projectGen.create(result, param)) {
+        DMessageBox::critical(this, tr("error"), result.message);
         return;
     }
 

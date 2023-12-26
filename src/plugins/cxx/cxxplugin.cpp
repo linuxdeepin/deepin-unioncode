@@ -42,11 +42,11 @@ bool CxxPlugin::start()
             }
         }
 
-        ret = languageService->regClass<NinjaProjectGenerator>(NinjaProjectGenerator::toolKitName(), &errorString);
+        ret = languageService->regClass<NinjaGenerator>(NinjaProjectGenerator::toolKitName(), &errorString);
         if (!ret) {
             qCritical() << errorString;
         } else {
-            ret = languageService->create<NinjaProjectGenerator>(NinjaProjectGenerator::toolKitName(), &errorString);
+            ret = languageService->create<NinjaGenerator>(NinjaProjectGenerator::toolKitName(), &errorString);
             if (!ret) {
                 qCritical() << errorString;
             }
