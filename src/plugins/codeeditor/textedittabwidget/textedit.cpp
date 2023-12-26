@@ -35,6 +35,7 @@ class TextEditPrivate
     friend class TextEdit;
     StyleLsp *styleLsp {nullptr};
     StyleSci *styleSci {nullptr};
+    bool isInitLsp {false};
 };
 
 using namespace dpfservice;
@@ -100,10 +101,15 @@ void TextEdit::setFile(const QString &filePath)
         return;
     }
 
-    if (getStyleLsp()) {
-        // 初始化所有lsp client设置
+    if (!getStyleLsp())
+        return;
+
+    // 初始化所有lsp client设置
+    if(!d->isInitLsp){
         getStyleLsp()->initLspConnection();
+        d->isInitLsp = true;
     }
+    getStyleLsp()->updateTokens();
 }
 
 void TextEdit::slotThemeChanged(DGuiApplicationHelper::ColorType colorType)

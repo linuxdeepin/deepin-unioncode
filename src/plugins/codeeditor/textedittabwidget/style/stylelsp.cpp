@@ -285,7 +285,10 @@ void StyleLsp::initLspConnection()
                      this, QOverload<const std::vector<newlsp::Location> &>::of(&StyleLsp::setDefinition));
     QObject::connect(d->getClient(), QOverload<const std::vector<newlsp::LocationLink>&>::of(&newlsp::Client::definitionRes),
                      this, QOverload<const std::vector<newlsp::LocationLink>&>::of(&StyleLsp::setDefinition));
+}
 
+void StyleLsp::updateTokens()
+{
     if (d->getClient()) {
         qApp->metaObject()->invokeMethod(d->getClient(), "openRequest", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
         qApp->metaObject()->invokeMethod(d->getClient(), "docSemanticTokensFull", Qt::QueuedConnection, Q_ARG(const QString &, d->edit->file()));
@@ -858,7 +861,6 @@ void StyleLsp::setHover(const newlsp::Hover &hover)
             showText = markedString.value;
         }
     }
-
     if (hover.range) {
         // noting to do
     }

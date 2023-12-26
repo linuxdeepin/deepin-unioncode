@@ -60,6 +60,7 @@ public:
     virtual ~StyleLsp();
 
     virtual void initLspConnection(); //setting main
+    void updateTokens();
 
     virtual IndicStyleExt symbolIndic(lsp::SemanticTokenType::type_value token,
                                       QList<lsp::SemanticTokenType::type_index> modifier);
