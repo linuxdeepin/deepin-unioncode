@@ -46,6 +46,8 @@ TextEditTabWidget::TextEditTabWidget(QWidget *parent)
     this->setLayout(d->gridLayout);
     this->setAcceptDrops(true);
 
+    setMinimumSize(QSize(100, 100));
+
     setDefaultFileEdit();
     setFocusPolicy(Qt::ClickFocus);
 

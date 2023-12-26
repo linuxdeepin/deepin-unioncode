@@ -39,12 +39,21 @@ public slots:
 
 private:
     virtual ~TextEditSplitter() override;
-    void updateClose(QSplitter *splitter, TextEditTabWidget *textEditTabWidget);
     QVBoxLayout *vLayout = nullptr;
-    QSplitter *mainSplitter = nullptr;
+    QSplitter *rootSplitter = nullptr;
     TextEditTabWidget *tabWidget = nullptr;
     QHash<TextEditTabWidget *, bool> tabWidgets;
-    QHash<QSplitter *, QPair<TextEditTabWidget *, TextEditTabWidget*>> splitters;
+
+    void rootSplit(TextEditTabWidget *oldEditWidget, Qt::Orientation orientation,
+                                 const newlsp::ProjectKey &key, const QString &file);
+    void childSplit(TextEditTabWidget *oldEditWidget, Qt::Orientation orientation,
+                     const newlsp::ProjectKey &key, const QString &file);
+    void rootClose(QSplitter *splitter, TextEditTabWidget *closedEditWidget);
+    void childClose(QSplitter *splitter, TextEditTabWidget *closedEditWidget);
+    void splitUpdate(TextEditTabWidget *oldEditWidget, TextEditTabWidget *newEditWidget);
+    void closeUpdate(TextEditTabWidget *closedEditWidget);
+    bool isEditWidget(QWidget *widget);
+    QSplitter *getParentSplitter(QWidget *widget);
 };
 
 #endif // TEXTEDITSPLITTER_H
