@@ -293,7 +293,7 @@ RecentDisplay::RecentDisplay(DWidget *parent)
         QVBoxLayout *nullRecentLayout = new QVBoxLayout();
         DLabel *nullRecentText = new DLabel(tr("No Project"));
         nullRecentText->setAlignment(Qt::AlignCenter);
-        nullRecentLayout->setContentsMargins(60, 200, 60, 200);
+        nullRecentLayout->setContentsMargins(60, 0, 60, 0);
         nullRecentLayout->setSpacing(20);
         nullRecentLayout->setAlignment(Qt::AlignCenter);
         nullRecentLayout->addWidget(recentLogo);
