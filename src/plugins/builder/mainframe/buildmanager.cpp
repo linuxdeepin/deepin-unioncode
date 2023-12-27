@@ -33,6 +33,7 @@ class BuildManagerPrivate
     QSharedPointer<QAction> rebuildAction;
     QSharedPointer<QAction> cleanAction;
     QSharedPointer<QAction> cancelAction;
+    QSharedPointer<QAction> cancelActionNoIcon;
 
     CompileOutputPane *compileOutputPane = nullptr;
     ProblemOutputPane *problemOutputPane = nullptr;
@@ -118,7 +119,11 @@ void BuildManager::addMenu()
     actionInit(d->cancelAction.get(), "Build.Cancel",QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
                "cancel");
     windowService->addTopToolBar("toolbar.Cancel", d->cancelAction.get(), MWNA_EDIT, false);
-    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->cancelAction.get()));
+
+    d->cancelActionNoIcon.reset(new QAction(MWMBA_CANCEL));
+    actionInit(d->buildActionNoIcon.get(), "Build.Cancel", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+               "");
+    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->cancelActionNoIcon.get()));
 
     QObject::connect(d->buildAction.get(), &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);
@@ -129,6 +134,8 @@ void BuildManager::addMenu()
     QObject::connect(d->cleanAction.get(), &QAction::triggered,
                      this, &BuildManager::cleanProject, Qt::DirectConnection);
     QObject::connect(d->cancelAction.get(), &QAction::triggered,
+                     this, &BuildManager::cancelBuild, Qt::DirectConnection);
+    QObject::connect(d->cancelActionNoIcon.get(), &QAction::triggered,
                      this, &BuildManager::cancelBuild, Qt::DirectConnection);
 }
 
