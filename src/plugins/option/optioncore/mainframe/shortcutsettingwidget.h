@@ -36,6 +36,7 @@ public:
     void readShortcut();
     void importExternalJson(const QString &filePath);
     void exportExternalJson(const QString &filePath);
+    void updateDescriptions();
     bool shortcutRepeat(const QString &text) const;
     bool keySequenceIsInvalid(const QKeySequence &sequence) const;
 
