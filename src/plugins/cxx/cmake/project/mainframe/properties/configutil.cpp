@@ -153,7 +153,6 @@ QString ConfigUtil::getConfigPath(const QString &projectPath)
 void ConfigUtil::readConfig(const QString &filePath, ConfigureParam &param)
 {
     param.clear();
-
     QFile file(filePath);
     if (file.open(QIODevice::ReadOnly)) {
         QDataStream stream(&file);
@@ -245,6 +244,13 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                     break;
                 }
             }
+
+            QStringList envs;
+            for (auto it = iter->env.environments.begin() ; it != iter->env.environments.end() ; it++) {
+                envs.append(it.key() + "=" + it.value());
+            }
+            info.setRunEnvironment(envs);
+
             return true;
         }
     }

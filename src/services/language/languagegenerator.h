@@ -15,6 +15,7 @@ struct RunCommandInfo {
     QString program;
     QStringList arguments;
     QString workingDir;
+    QStringList envs;
 };
 
 class LanguageGenerator : public Generator
