@@ -46,6 +46,10 @@ ShortCut::ShortCut(QWidget *parent)
     d->bgGroup->setUseWidgetBackground(false);
     d->vlayout->addWidget(d->bgGroup);
     updateUi();
+
+    QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
+        updateDescriptions();
+    });
 }
 
 ShortCut::~ShortCut()
@@ -73,9 +77,7 @@ void ShortCut::updateUi()
         keyEdit->ShortcutDirection(Qt::AlignLeft);
         keyEdit->setFocusPolicy(Qt::StrongFocus);
 
-        auto string = description.toStdString();
-        auto label = new DLabel(QAction::tr(string.c_str()), this);
-
+        auto label = new DLabel(description, this);
         auto wrapper = new DWidget;
         auto hlayout = new QHBoxLayout(wrapper);
         hlayout->setSpacing(0);
@@ -181,10 +183,34 @@ void ShortCut::readShortcut()
     QMap<QString, QStringList> shortcutItemMap;
     ShortcutUtil::readFromJson(d->configFilePath, shortcutItemMap);
     foreach (const QString key, shortcutItemMap.keys()) {
-        d->shortcutItemMap[key] = shortcutItemMap.value(key);
+        if(d->shortcutItemMap[key].isEmpty())
+            d->shortcutItemMap[key] = shortcutItemMap.value(key);
+        else
+            d->shortcutItemMap[key].last() = shortcutItemMap.value(key).last();
     }
 
     d->shortcutItemShadowMap = d->shortcutItemMap;
+}
+
+void ShortCut::updateDescriptions()
+{
+    QList<Command *> commandsList = ActionManager::getInstance()->commands();
+    QList<Command *>::iterator iter = commandsList.begin();
+    bool update = false;
+    for (; iter != commandsList.end(); ++iter) {
+        Action *action = dynamic_cast<Action *>(*iter);
+        QString id = action->id();
+        //已存在该Id的快捷键，但描述不同 -- 比如 配置中为中文 但应用为英文，显示会异常。
+        if(!d->shortcutItemMap[id].isEmpty() && (d->shortcutItemMap[id].first() != action->description())) {
+            d->shortcutItemMap[id].first() = action->description();
+            update = true;
+        }
+    }
+
+    if(update) {
+        updateUi();
+        d->shortcutItemShadowMap = d->shortcutItemMap;
+    }
 }
 
 void ShortCut::importExternalJson(const QString &filePath)
