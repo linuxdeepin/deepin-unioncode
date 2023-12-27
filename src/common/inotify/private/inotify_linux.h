@@ -119,6 +119,7 @@ public:
                         if (len <= 0)
                             break;
                         for (char *ptr = buf; ptr < buf + len; ptr += sizeof(struct inotify_event) + event->len) {
+                            QReadLocker lock(&rwLock);
 
                             event = (const struct inotify_event *) ptr;
 
