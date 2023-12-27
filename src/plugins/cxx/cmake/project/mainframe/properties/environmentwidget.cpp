@@ -58,6 +58,39 @@ QVariant EnvironmentModel::data(const QModelIndex &index, int role) const
     return {};
 }
 
+bool EnvironmentModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!index.isValid() || role != Qt::EditRole)
+        return false;
+
+    if (data(index, role) == value)
+        return true;
+
+    const QString oldName = data(this->index(index.row(), 0, QModelIndex()), Qt::EditRole).toString();
+    const QString oldValue = data(this->index(index.row(), 1, QModelIndex()), Qt::EditRole).toString();
+    QMap<QString, QString> map = d->envs;
+    if (index.column() == kVaribale) {
+        const QString newName = value.toString();
+        if (newName.isEmpty() || newName.contains("=") || map.contains(newName))
+            return false;
+        map.remove(oldName);
+        map.insert(value.toString(), oldValue);
+    } else if (index.column() == kValue) {
+        const QString stringValue = value.toString();
+        auto var = map.keys()[index.row()];
+        map[var] = stringValue;
+    }
+    update(map);
+    emit dataChanged(index, index);
+    return true;
+}
+
+Qt::ItemFlags EnvironmentModel::flags(const QModelIndex &index) const
+{
+    Q_UNUSED(index);
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
+}
+
 QVariant EnvironmentModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
@@ -125,7 +158,7 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
         d->tableView->setShowGrid(false);
         QHeaderView* headerView = d->tableView->horizontalHeader();
         headerView->setDefaultAlignment(Qt::AlignLeft);
-        headerView->setSectionResizeMode(QHeaderView::ResizeToContents);
+        headerView->setSectionResizeMode(QHeaderView::Stretch);
 
         d->tableView->verticalHeader()->hide();
     }

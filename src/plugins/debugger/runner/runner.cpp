@@ -115,6 +115,7 @@ bool Runner::execCommand(const RunCommandInfo &info)
     QString retMsg = tr("Error: execute command error! The reason is unknown.\n");
     QProcess process;
     process.setWorkingDirectory(info.workingDir);
+    process.setEnvironment(info.envs);
 
     QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
             .arg(info.program, info.arguments.join(" "), info.workingDir);

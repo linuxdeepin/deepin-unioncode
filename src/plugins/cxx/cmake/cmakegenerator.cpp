@@ -103,5 +103,6 @@ RunCommandInfo CMakeGenerator::getRunArguments(const ProjectInfo &projectInfo, c
     runCommaindInfo.program = projectInfo.runProgram();
     runCommaindInfo.arguments = projectInfo.runCustomArgs();
     runCommaindInfo.workingDir = projectInfo.runWorkspaceDir();
+    runCommaindInfo.envs = projectInfo.runEnvironment();
     return runCommaindInfo;
 }
