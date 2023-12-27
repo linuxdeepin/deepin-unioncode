@@ -238,6 +238,23 @@ StyleLsp::StyleLsp(TextEdit *parent)
                                                      "");
         AbstractAction *actionImpl = new AbstractAction(d->rangeFormattingAction);
         windowService->addAction(MWM_TOOLS, actionImpl);
+        QObject::connect(d->rangeFormattingAction, &QAction::triggered, [&](){
+            if (d->getClient()) {
+                auto selStart = getLspPosition(d->edit->docPointer(), d->edit->selectionStart());
+                auto selEnd = getLspPosition(d->edit->docPointer(), d->edit->selectionEnd());
+                newlsp::Position newSelStart = {selStart.line, selStart.character};
+                newlsp::Position newSelEnd = {selEnd.line, selEnd.character};
+                newlsp::DocumentRangeFormattingParams params;
+                params.textDocument.uri = QUrl::fromLocalFile(d->edit->file())
+                        .toString().toStdString();
+                params.range = newlsp::Range{newSelStart, newSelEnd};
+                params.options.tabSize = 4;
+                params.options.insertSpaces = true;
+                d->formattingFile = d->edit->file();
+                qApp->metaObject()->invokeMethod(d->getClient(), "rangeFormatting",
+                                                 Q_ARG(const newlsp::DocumentRangeFormattingParams &, params));
+            }
+        });
     }
 }
 
@@ -570,23 +587,6 @@ void StyleLsp::sciSelectionMenu(QContextMenuEvent *event)
     });
 
     contextMenu.addAction(d->rangeFormattingAction);
-    QObject::connect(d->rangeFormattingAction, &QAction::triggered, [&](){
-        if (d->getClient()) {
-            auto selStart = getLspPosition(d->edit->docPointer(), d->edit->selectionStart());
-            auto selEnd = getLspPosition(d->edit->docPointer(), d->edit->selectionEnd());
-            newlsp::Position newSelStart = {selStart.line, selStart.character};
-            newlsp::Position newSelEnd = {selEnd.line, selEnd.character};
-            newlsp::DocumentRangeFormattingParams params;
-            params.textDocument.uri = QUrl::fromLocalFile(d->edit->file())
-                    .toString().toStdString();
-            params.range = newlsp::Range{newSelStart, newSelEnd};
-            params.options.tabSize = 4;
-            params.options.insertSpaces = true;
-            d->formattingFile = d->edit->file();
-            qApp->metaObject()->invokeMethod(d->getClient(), "rangeFormatting",
-                                             Q_ARG(const newlsp::DocumentRangeFormattingParams &, params));
-        }
-    });
 
     // notify other plugin to add action.
     editor.contextMenu(QVariant::fromValue(&contextMenu));
