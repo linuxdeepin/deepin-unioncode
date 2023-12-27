@@ -121,7 +121,7 @@ void BuildManager::addMenu()
     windowService->addTopToolBar("toolbar.Cancel", d->cancelAction.get(), MWNA_EDIT, false);
 
     d->cancelActionNoIcon.reset(new QAction(MWMBA_CANCEL));
-    actionInit(d->buildActionNoIcon.get(), "Build.Cancel", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+    actionInit(d->cancelActionNoIcon.get(), "Build.Cancel", QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
                "");
     windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->cancelActionNoIcon.get()));
 
