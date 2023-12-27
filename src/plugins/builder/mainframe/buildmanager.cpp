@@ -115,8 +115,9 @@ void BuildManager::addMenu()
     windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->cleanAction.get()));
 
     d->cancelAction.reset(new QAction(MWMBA_CANCEL));
-    actionInit(d->cancelAction.get(), "Build.Cancel", QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
-               "");
+    actionInit(d->cancelAction.get(), "Build.Cancel",QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
+               "cancel");
+    windowService->addTopToolBar("toolbar.Cancel", d->cancelAction.get(), MWNA_EDIT, false);
     windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->cancelAction.get()));
 
     QObject::connect(d->buildAction.get(), &QAction::triggered,
@@ -156,6 +157,7 @@ void BuildManager::initCompileWidget()
     issusListLayout->addWidget(d->problemOutputPane);
 
     mainLayout->setSpacing(0);
+
     mainLayout->addLayout(outputLayout);
     mainLayout->addWidget(new DVerticalLine());
     mainLayout->addLayout(issusListLayout);

@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/icons/deepin/builtin">
         <file>texts/build_16px.svg</file>
+        <file>texts/cancel_16px.svg</file>
     </qresource>
 </RCC>
