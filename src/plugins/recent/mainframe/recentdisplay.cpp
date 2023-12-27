@@ -260,7 +260,6 @@ RecentDisplay::RecentDisplay(DWidget *parent)
     d->docFrame->setLayout(d->vLayoutDoc);
 
     d->proFrame->setLineWidth(0);
-    d->proFrame->setMinimumHeight(720);
     d->proView = new DisplayProView();
     d->dirLabel = new DLabel(tr("Projects"));
     d->dirLabel->setForegroundRole(QPalette::BrightText);
