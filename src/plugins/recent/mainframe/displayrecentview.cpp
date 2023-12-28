@@ -143,6 +143,12 @@ void DisplayRecentView::load()
     model->appendColumn(itemsFromFile());
 }
 
+void DisplayRecentView::clearData()
+{
+    cache.clear();
+    model->clear();
+}
+
 void DisplayRecentView::saveToFile(const QStringList &cache)
 {
     QJsonDocument doc = readRecent();

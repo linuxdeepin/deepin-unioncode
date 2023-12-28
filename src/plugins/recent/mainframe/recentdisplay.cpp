@@ -120,6 +120,13 @@ public:
         return file;
     }
 
+    virtual void clearData()
+    {
+        QJsonArray emptyArr;
+        projects.swap(emptyArr);
+        model->clear();
+    }
+
     virtual QJsonObject projectElem(const QString &kitName,
                                     const QString &language,
                                     const QString &workspace)
@@ -196,11 +203,14 @@ class RecentDisplayPrivate
     friend class RecentDisplay;
     QHBoxLayout *hLayout{nullptr};
     QVBoxLayout *vLayoutDoc{nullptr};
-    QVBoxLayout *vLayoutDir{nullptr};
+    QVBoxLayout *vLayoutPro{nullptr};
+    DWidget *recentOpen{nullptr};
     DisplayProView *proView{nullptr};
     DisplayDocView *docView{nullptr};
-    DLabel *dirLabel{nullptr};
+    DLabel *proLabel{nullptr};
+    DPushButton *proClear{nullptr};
     DLabel *docLabel{nullptr};
+    DPushButton *docClear{nullptr};
 
     DFrame *navFrame{nullptr};
     DFrame *docFrame{nullptr};
@@ -208,126 +218,15 @@ class RecentDisplayPrivate
     DPushButton *btnOpenFile{nullptr};
     DPushButton *btnOpenProject{nullptr};
     DPushButton *btnNewFileOrPro{nullptr};
+    DLabel *nullRecentText{nullptr};
 };
 
 RecentDisplay::RecentDisplay(DWidget *parent)
     : DWidget (parent)
     , d(new RecentDisplayPrivate())
 {
-    d->navFrame = new DFrame();
-    d->docFrame = new DFrame();
-    d->proFrame = new DFrame();
-
-    d->navFrame = new DFrame();
-    d->navFrame->setLineWidth(0);
-    d->navFrame->setContentsMargins(0, 0, 0, 0);
-    DStyle::setFrameRadius(d->navFrame, 0);
-    QVBoxLayout *vLayoutNav = new QVBoxLayout();
-    QLabel *recentLogo = new QLabel();
-    QImageReader maskIimageReader(":/recent/images/recentLogo.png");
-    maskIimageReader.setScaledSize(QSize(200, 143));
-    QPixmap logo = QPixmap::fromImage(maskIimageReader.read());
-    logo.setDevicePixelRatio(recentLogo->devicePixelRatioF());
-    recentLogo->setPixmap(logo);
-    d->btnOpenFile = new DPushButton(tr("Open File"));
-    d->btnOpenProject = new DPushButton(tr("Open Project"));
-    d->btnNewFileOrPro = new DPushButton(tr("New File or Project"));
-    vLayoutNav->setContentsMargins(60, 0, 60, 0);
-    vLayoutNav->setSpacing(20);
-    vLayoutNav->setAlignment(Qt::AlignCenter);
-    vLayoutNav->addWidget(recentLogo);
-    vLayoutNav->addWidget(d->btnOpenFile);
-    vLayoutNav->addWidget(d->btnOpenProject);
-    vLayoutNav->addWidget(d->btnNewFileOrPro);
-    d->navFrame->setLayout(vLayoutNav);
-
-    DLabel *recentTitle = new DLabel(tr("Recent Open"));
-    recentTitle->setForegroundRole(QPalette::BrightText);
-    recentTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    DFontSizeManager::instance()->bind(recentTitle, DFontSizeManager::T4, QFont::Medium);
-
-    d->docFrame->setLineWidth(0);
-    d->docView = new DisplayDocView();
-    d->docLabel = new DLabel(tr("Documents"));
-    d->docLabel->setForegroundRole(QPalette::BrightText);
-    d->docLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    DFontSizeManager::instance()->bind(d->docLabel, DFontSizeManager::T4, QFont::Medium);
-    d->vLayoutDoc = new QVBoxLayout();
-    d->vLayoutDoc->setContentsMargins(10, 10, 10, 10);
-    d->vLayoutDoc->addWidget(d->docLabel);
-    d->vLayoutDoc->setSpacing(20);
-    d->vLayoutDoc->addWidget(d->docView);
-    d->docFrame->setLayout(d->vLayoutDoc);
-
-    d->proFrame->setLineWidth(0);
-    d->proView = new DisplayProView();
-    d->dirLabel = new DLabel(tr("Projects"));
-    d->dirLabel->setForegroundRole(QPalette::BrightText);
-    d->dirLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    DFontSizeManager::instance()->bind(d->dirLabel, DFontSizeManager::T4, QFont::Medium);
-    d->vLayoutDir = new QVBoxLayout();
-    d->vLayoutDir->setContentsMargins(10, 10, 10, 10);
-    d->vLayoutDir->addWidget(d->dirLabel);
-    d->vLayoutDir->setSpacing(20);
-    d->vLayoutDir->addWidget(d->proView);
-    d->proFrame->setLayout(d->vLayoutDir);
-
-    QHBoxLayout *proAndDocLayout = new QHBoxLayout();
-    proAndDocLayout->addWidget(d->proFrame);
-    proAndDocLayout->addSpacing(0);
-    proAndDocLayout->addWidget(d->docFrame);
-
-    QVBoxLayout *recentNavLayout = new QVBoxLayout();
-    recentNavLayout->setContentsMargins(20, 0, 25, 20);
-    recentNavLayout->addSpacing(15);
-    recentNavLayout->setAlignment(Qt::AlignTop);
-    recentNavLayout->addWidget(recentTitle);
-    recentNavLayout->addSpacing(15);
-    recentNavLayout->addLayout(proAndDocLayout);    
-
-    d->hLayout = new QHBoxLayout();
-    d->hLayout->setContentsMargins(0, 0, 0, 0);
-
-    if (isProAndDocNull()) {
-        QVBoxLayout *nullRecentLayout = new QVBoxLayout();
-        DLabel *nullRecentText = new DLabel(tr("No Project"));
-        nullRecentText->setAlignment(Qt::AlignCenter);
-        nullRecentLayout->setContentsMargins(60, 0, 60, 0);
-        nullRecentLayout->setSpacing(20);
-        nullRecentLayout->setAlignment(Qt::AlignCenter);
-        nullRecentLayout->addWidget(recentLogo);
-        nullRecentLayout->addWidget(nullRecentText);
-        nullRecentLayout->addWidget(d->btnOpenFile);
-        nullRecentLayout->addWidget(d->btnOpenProject);
-        nullRecentLayout->addWidget(d->btnNewFileOrPro);
-        d->hLayout->addLayout(nullRecentLayout);
-    }
-    else {
-        d->hLayout->addWidget(d->navFrame);
-        d->hLayout->addLayout(recentNavLayout);
-    }
-
-    setLayout(d->hLayout);
-
-    QObject::connect(d->proView, &QListView::doubleClicked,
-                     this, &RecentDisplay::doDoubleClickedProject,
-                     Qt::UniqueConnection);
-
-    QObject::connect(d->docView, &QListView::doubleClicked,
-                     this, &RecentDisplay::doDoubleCliekedDocument,
-                     Qt::UniqueConnection);
-
-    QObject::connect(d->btnOpenFile, &DPushButton::clicked,
-                     this, &RecentDisplay::btnOpenFileClicked,
-                     Qt::UniqueConnection);
-
-    QObject::connect(d->btnOpenProject, &DPushButton::clicked,
-                     this, &RecentDisplay::btnOpenProjectClicked,
-                     Qt::UniqueConnection);
-
-    QObject::connect(d->btnNewFileOrPro, &DPushButton::clicked,
-                     this, &RecentDisplay::btnNewFileOrProClicked,
-                     Qt::UniqueConnection);
+    updateUi();
+    initConnect();
 }
 
 RecentDisplay::~RecentDisplay()
@@ -382,6 +281,8 @@ void RecentDisplay::btnOpenFileClicked()
         return;
     recent.saveOpenedFile(filePath);
     editor.openFile(filePath);
+
+    d->docView->load();
 }
 
 void RecentDisplay::btnOpenProjectClicked()
@@ -420,6 +321,8 @@ void RecentDisplay::btnOpenProjectClicked()
     d->btnOpenProject->showMenu();
 
     d->btnOpenProject->setMenu(nullptr);
+
+    d->proView->load();
 }
 
 void RecentDisplay::btnNewFileOrProClicked()
@@ -444,4 +347,223 @@ bool RecentDisplay::isProAndDocNull()
     }
 
     return false;
+}
+
+void RecentDisplay::clearProList()
+{
+    QString cachePath = CustomPaths::user(CustomPaths::Configures) + QDir::separator() + "recent.support";
+    QFile file(cachePath);
+    QJsonDocument recentFile;
+
+    if (!file.exists())
+        return;
+
+    if (file.open(QFile::ReadWrite)) {
+        recentFile = QJsonDocument::fromJson(file.readAll());
+        if (recentFile["Projects"].isNull()) {
+            qWarning() << "no projects, clear Projects failed";
+            return;
+        }
+
+        QJsonArray emptyArr;
+        QJsonObject jsonObject = recentFile.object();
+        jsonObject["Projects"] = emptyArr;
+        recentFile.setObject(jsonObject);
+
+        file.seek(0);
+        file.write(recentFile.toJson(QJsonDocument::Indented));
+        file.resize(file.pos());
+
+        d->proView->clearData();
+        d->proView->load();
+    }
+
+    if (isProAndDocNull()) {
+        d->nullRecentText->setVisible(true);
+        d->recentOpen->setVisible(false);
+    }
+}
+
+void RecentDisplay::clearDocList()
+{
+    QString cachePath = CustomPaths::user(CustomPaths::Configures) + QDir::separator() + "recent.support";
+    QFile file(cachePath);
+    QJsonDocument recentFile;
+
+    if (!file.exists())
+        return;
+
+    if (file.open(QFile::ReadWrite)) {
+        recentFile = QJsonDocument::fromJson(file.readAll());
+        if (recentFile["Documents"].isNull()) {
+            qWarning() << "no Documents, clear Projects failed";
+            return;
+        }
+
+        QJsonArray emptyArr;
+        QJsonObject jsonObject = recentFile.object();
+        jsonObject["Documents"] = emptyArr;
+        recentFile.setObject(jsonObject);
+
+        file.seek(0);
+        file.write(recentFile.toJson(QJsonDocument::Indented));
+        file.resize(file.pos());
+
+        d->docView->clearData();
+        d->docView->load();
+    }
+
+    if (isProAndDocNull()) {
+        d->nullRecentText->setVisible(true);
+        d->recentOpen->setVisible(false);
+    }
+}
+
+void RecentDisplay::updateUi()
+{
+    d->navFrame = new DFrame();
+    d->docFrame = new DFrame();
+    d->proFrame = new DFrame();
+
+    d->navFrame->setLineWidth(0);
+    d->navFrame->setContentsMargins(0, 0, 0, 0);
+    DStyle::setFrameRadius(d->navFrame, 0);
+    QVBoxLayout *vLayoutNav = new QVBoxLayout();
+    QLabel *recentLogo = new QLabel();
+    QPixmap logo = QIcon(":/recent/images/recentLogo.png").pixmap(200, 143);
+    logo.setDevicePixelRatio(recentLogo->devicePixelRatioF());
+    recentLogo->setPixmap(logo);
+
+    d->btnOpenFile = new DPushButton(tr("Open File"));
+    d->btnOpenProject = new DPushButton(tr("Open Project"));
+    d->btnNewFileOrPro = new DPushButton(tr("New File or Project"));
+    d->nullRecentText = new DLabel(tr("No Project"));
+    d->nullRecentText->setAlignment(Qt::AlignCenter);
+    vLayoutNav->setContentsMargins(60, 0, 60, 0);
+    vLayoutNav->setSpacing(20);
+    vLayoutNav->setAlignment(Qt::AlignCenter);
+    vLayoutNav->addWidget(recentLogo);
+    vLayoutNav->addWidget(d->nullRecentText);
+    vLayoutNav->addWidget(d->btnOpenFile);
+    vLayoutNav->addWidget(d->btnOpenProject);
+    vLayoutNav->addWidget(d->btnNewFileOrPro);
+    d->navFrame->setLayout(vLayoutNav);
+
+    DLabel *recentTitle = new DLabel(tr("Recent Open"));
+    recentTitle->setForegroundRole(QPalette::BrightText);
+    recentTitle->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    DFontSizeManager::instance()->bind(recentTitle, DFontSizeManager::T4, QFont::Medium);
+
+    //recent open document
+    d->docFrame->setLineWidth(0);
+    d->docView = new DisplayDocView();
+
+    d->docLabel = new DLabel(tr("Documents"));
+    d->docLabel->setForegroundRole(QPalette::BrightText);
+    d->docLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    d->docClear = new DPushButton(tr("clear all"));
+
+    QHBoxLayout *docHlayout = new QHBoxLayout;
+    docHlayout->addWidget(d->docLabel);
+    docHlayout->addWidget(d->docClear);
+
+    DFontSizeManager::instance()->bind(d->docLabel, DFontSizeManager::T4, QFont::Medium);
+    d->vLayoutDoc = new QVBoxLayout();
+    d->vLayoutDoc->setContentsMargins(10, 10, 10, 10);
+    d->vLayoutDoc->addLayout(docHlayout);
+    d->vLayoutDoc->setSpacing(20);
+    d->vLayoutDoc->addWidget(d->docView);
+    d->docFrame->setLayout(d->vLayoutDoc);
+
+    //recent open projects
+    d->proFrame->setLineWidth(0);
+    d->proView = new DisplayProView();
+
+    d->proLabel = new DLabel(tr("Projects"));
+    d->proLabel->setForegroundRole(QPalette::BrightText);
+    d->proLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    d->proClear = new DPushButton(tr("clear all"));
+
+    QHBoxLayout *proHlayout = new QHBoxLayout;
+    proHlayout->addWidget(d->proLabel);
+    proHlayout->addWidget(d->proClear);
+
+    DFontSizeManager::instance()->bind(d->proLabel, DFontSizeManager::T4, QFont::Medium);
+    d->vLayoutPro = new QVBoxLayout();
+    d->vLayoutPro->setContentsMargins(10, 10, 10, 10);
+    d->vLayoutPro->addLayout(proHlayout);
+    d->vLayoutPro->setSpacing(20);
+    d->vLayoutPro->addWidget(d->proView);
+    d->proFrame->setLayout(d->vLayoutPro);
+
+    QHBoxLayout *proAndDocLayout = new QHBoxLayout();
+    proAndDocLayout->addWidget(d->proFrame);
+    proAndDocLayout->addSpacing(0);
+    proAndDocLayout->addWidget(d->docFrame);
+
+    d->recentOpen = new DWidget(this);
+    QVBoxLayout *recentNavLayout = new QVBoxLayout(d->recentOpen);
+    recentNavLayout->setContentsMargins(20, 0, 25, 20);
+    recentNavLayout->addSpacing(15);
+    recentNavLayout->setAlignment(Qt::AlignTop);
+    recentNavLayout->addWidget(recentTitle);
+    recentNavLayout->addSpacing(15);
+    recentNavLayout->addLayout(proAndDocLayout);
+
+    d->hLayout = new QHBoxLayout(this);
+    d->hLayout->setContentsMargins(0, 0, 0, 0);
+
+    d->hLayout->addWidget(d->navFrame);
+    d->hLayout->addWidget(d->recentOpen);
+
+    if (!isProAndDocNull()) {
+        d->nullRecentText->setVisible(false);
+        d->recentOpen->setVisible(true);
+    }
+
+}
+
+void RecentDisplay::initConnect()
+{
+    QObject::connect(d->proView, &QListView::doubleClicked,
+                     this, &RecentDisplay::doDoubleClickedProject,
+                     Qt::UniqueConnection);
+
+    QObject::connect(d->docView, &QListView::doubleClicked,
+                     this, &RecentDisplay::doDoubleCliekedDocument,
+                     Qt::UniqueConnection);
+
+    QObject::connect(d->btnOpenFile, &DPushButton::clicked,
+                     this, &RecentDisplay::btnOpenFileClicked,
+                     Qt::UniqueConnection);
+
+    QObject::connect(d->btnOpenProject, &DPushButton::clicked,
+                     this, &RecentDisplay::btnOpenProjectClicked,
+                     Qt::UniqueConnection);
+
+    QObject::connect(d->btnNewFileOrPro, &DPushButton::clicked,
+                     this, &RecentDisplay::btnNewFileOrProClicked,
+                     Qt::UniqueConnection);
+
+    QObject::connect(d->docClear, &DPushButton::clicked,
+                     this, &RecentDisplay::clearDocList,
+                     Qt::UniqueConnection);
+
+    QObject::connect(d->proClear, &DPushButton::clicked,
+                     this, &RecentDisplay::clearProList,
+                     Qt::UniqueConnection);
+}
+
+void RecentDisplay::showEvent(QShowEvent *event)
+{
+    if(!isProAndDocNull()) {
+        d->nullRecentText->setVisible(false);
+        d->recentOpen->setVisible(true);
+    } else {
+        d->nullRecentText->setVisible(true);
+        d->recentOpen->setVisible(false);
+    }
+
 }

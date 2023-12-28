@@ -26,6 +26,7 @@ public:
     virtual QIcon icon(const QString &data);
     virtual QString title() = 0;
     virtual void load();
+    virtual void clearData();
     virtual QList<QStandardItem*> itemsFromFile();
 
     void focusOutEvent(QFocusEvent *e) override;
