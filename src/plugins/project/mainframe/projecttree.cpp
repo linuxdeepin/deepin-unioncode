@@ -39,6 +39,9 @@ class ProjectTreePrivate
     ProjectSelectionModel *sectionModel {nullptr};
     ProjectDelegate *delegate {nullptr};
     DDialog *messDialog = nullptr;
+    DDialog *dlg = nullptr;
+    DDialog *errordlg = nullptr;
+    DLineEdit *edit = nullptr;
     QPoint startPos;
     int itemDepth(const QStandardItem *item)
     {
@@ -423,25 +426,39 @@ void ProjectTree::doActiveProject(QStandardItem *root)
 
 void ProjectTree::actionNewDocument(const QStandardItem *item)
 {
-    DDialog *dlg = new DDialog;
-    DLineEdit *edit = new DLineEdit;
-    edit->setPlaceholderText(tr("New Document Name"));
-    edit->lineEdit()->setAlignment(Qt::AlignLeft);
+    d->dlg = new DDialog;
+    d->edit = new DLineEdit;
+    d->edit->setPlaceholderText(tr("New Document Name"));
+    d->edit->lineEdit()->setAlignment(Qt::AlignLeft);
 
-    dlg->setAttribute(Qt::WA_DeleteOnClose);
-    dlg->setWindowTitle(tr("New Document"));
-    dlg->setIcon(QIcon::fromTheme("dialog-warning"));
-    dlg->resize(400, 100);
+    d->dlg->setAttribute(Qt::WA_DeleteOnClose);
+    d->dlg->setWindowTitle(tr("New Document"));
+    d->dlg->setIcon(QIcon::fromTheme("dialog-warning"));
+    d->dlg->resize(400, 100);
 
-    dlg->addContent(edit);
-    dlg->addButton(tr("Ok"), false, DDialog::ButtonType::ButtonRecommend);
+    d->dlg->addContent(d->edit);
+    d->dlg->addButton(tr("Ok"), false, DDialog::ButtonType::ButtonRecommend);
 
-    QObject::connect(dlg, &DDialog::buttonClicked, dlg, [=](){
-        dlg->close();
-        creatNewDocument(item, edit->text());
+    QObject::connect(d->dlg, &DDialog::buttonClicked, d->dlg, [=](){
+        d->dlg->close();
+        if (!d->edit->text().isEmpty()) {
+           creatNewDocument(item, d->edit->text());
+        } else {
+            d->errordlg = new DDialog;
+            d->errordlg->setAttribute(Qt::WA_DeleteOnClose);
+            d->errordlg->setIcon(QIcon::fromTheme("dialog-warning"));
+            d->errordlg->setMessage(tr("File name cannot be empty!"));
+            d->errordlg->resize(400, 100);
+            d->errordlg->addButton(tr("Ok"), false, DDialog::ButtonType::ButtonRecommend);
+
+            QObject::connect(d->errordlg, &DDialog::buttonClicked, d->errordlg, [=](){
+                d->errordlg->close();
+            });
+            d->errordlg->exec();
+        };
     });
 
-    dlg->exec();
+    d->dlg->exec();
 }
 
 void ProjectTree::actionDeleteDocument(const QStandardItem *item)
