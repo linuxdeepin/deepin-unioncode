@@ -243,6 +243,15 @@ void TextEditSplitter::rootClose(QSplitter *splitter, TextEditTabWidget *closedE
     delete closedEditWidget;
     tabWidgets.remove(closedEditWidget);
 
+    if (tabWidgets.count() == 0) {
+        TextEditTabWidget *newEditWidget = new TextEditTabWidget();
+        newEditWidget->setCloseButtonVisible(false);
+        newEditWidget->setSplitButtonVisible(false);
+        splitter->addWidget(newEditWidget);
+        tabWidgets.insert(newEditWidget, true);
+        return;
+    }
+
     QWidget *widget = splitter->widget(0);
     if (isEditWidget(widget)) {
         TextEditTabWidget *editWidget = qobject_cast<TextEditTabWidget*>(widget);
@@ -279,6 +288,9 @@ void TextEditSplitter::childClose(QSplitter *splitter, TextEditTabWidget *closed
 
 void TextEditSplitter::closeUpdate(TextEditTabWidget *closedEditWidget)
 {
+    if (tabWidgets.count() == 1) {
+        return;
+    }
     auto it = tabWidgets.begin();
     if (it.key() == closedEditWidget)
         ++it;
