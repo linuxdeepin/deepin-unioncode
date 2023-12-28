@@ -11,6 +11,7 @@
 #include <DLineEdit>
 #include <DTreeView>
 #include <DIconButton>
+#include <DDialog>
 
 #include <QVBoxLayout>
 #include <QStandardItemModel>
@@ -23,7 +24,6 @@ class SearchResultTreeViewPrivate
 {
     SearchResultTreeViewPrivate() {}
     QMap<QString, QString> projectInfoMap;
-
     friend class SearchResultTreeView;
 };
 
@@ -111,6 +111,9 @@ class SearchResultWindowPrivate
     DLineEdit *replaceEdit{nullptr};
     DLabel *resultLabel{nullptr};
     QLabel *iconLabel{nullptr};
+    DDialog *replaceTextDialog{nullptr};
+    DDialog *replaceWarningDialog{nullptr};
+    bool replaceTextFlag = false;
     SearchParams searchParams;
 
     friend class SearchResultWindow;
@@ -304,16 +307,26 @@ void SearchResultWindow::replace()
     showMsg(true, tr("Replacing, please wait..."));
     QString replaceText = d->replaceEdit->text();
     if (replaceText.isEmpty()) {
-        if (DMessageBox::Yes != DMessageBox::warning(this, DMessageBox::tr("Warning"), DMessageBox::tr("Repalce text is empty, will continue?"),
-                                                      DMessageBox::Yes, DMessageBox::No)) {
-            return;
-        }
+        d->replaceTextFlag = false ;
+        d->replaceTextDialog = new DDialog(this);
+        d->replaceTextDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+        d->replaceTextDialog->setMessage(tr("Repalce text is empty, will continue?"));
+        d->replaceTextDialog->insertButton(0, tr("No"));
+        d->replaceTextDialog->insertButton(1, tr("Yes"), true, DDialog::ButtonRecommend);
+
+        connect(d->replaceTextDialog, &DDialog::buttonClicked, [=](int index) {
+            if (index == 0){
+                d->replaceTextFlag = true;
+                d->replaceTextDialog->reject();
+            }else if(index == 1){
+                d->replaceTextDialog->accept();
+            }
+        });
+        d->replaceTextDialog->exec();
     }
 
-    if (DMessageBox::Yes != DMessageBox::warning(this, DMessageBox::tr("Warning"), DMessageBox::tr("Will replace permanent, continue?"),
-                                                DMessageBox::Yes, DMessageBox::No)) {
+    if(d->replaceTextFlag)
         return;
-    }
 
     QString filePath;
     for (QString path : d->searchParams.filePathList) {
@@ -327,7 +340,6 @@ void SearchResultWindow::replace()
             + "\" " + filePath + "`";
     QStringList options;
     options << "-c" << cmd;
-
     emit replaced();
 
     QtConcurrent::run(this, &SearchResultWindow::startReplace, options);
@@ -340,7 +352,10 @@ void SearchResultWindow::startReplace(const QStringList &options)
             [&](int exitcode, QProcess::ExitStatus exitStatus) {
         if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
             QString output = QString(process.readAllStandardOutput());
-            searchAgain();
+            if (!output.isEmpty())
+                searchAgain();
+            else
+                showMsg(true, tr("Replacement successful!"));
         } else {
             showMsg(false, tr("Replace failed!"));
         }
