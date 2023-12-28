@@ -28,6 +28,7 @@ private:
     void switchSearchParamWidget();
     bool checkSelectedScopeValid();
     bool getSearchParams(SearchParams *searchParams);
+    void createMessageDialog(const QString &message);
 
     FindToolWindowPrivate *const d;
 

@@ -16,6 +16,7 @@
 #include <DScrollArea>
 #include <DSuggestButton>
 #include <DFrame>
+#include <DDialog>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -160,7 +161,6 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     connect(d->senseCheckBtn, &QPushButton::clicked, this, &FindToolWindow::onSenseCheckBtnClicked);
     connect(d->wholeWordsCheckBtn, &QPushButton::clicked, this, &FindToolWindow::onwholeWordsCheckBtnClicked);
 
-
     formLayout->setContentsMargins(26, 10, 0, 0);
     formLayout->setSpacing(10);
     formLayout->addRow(scopeLabel, d->scopeComboBox);
@@ -197,6 +197,22 @@ void FindToolWindow::search()
     d->searchResultWindow->setRepalceWidgtVisible(false);
 }
 
+
+void FindToolWindow::createMessageDialog(const QString& message) {
+    DDialog *messageDialog = new DDialog(this);
+    messageDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+    messageDialog->setMessage(message);
+    messageDialog->insertButton(0, tr("Ok"));
+    messageDialog->setAttribute(Qt::WA_DeleteOnClose);
+    connect(messageDialog, &DDialog::buttonClicked, [=](int index) {
+        if (index == 0) {
+            messageDialog->reject();
+        }
+    });
+
+    messageDialog->exec();
+}
+
 bool FindToolWindow::checkSelectedScopeValid()
 {
     int index = d->scopeComboBox->currentIndex();
@@ -204,15 +220,15 @@ bool FindToolWindow::checkSelectedScopeValid()
     case 0:
     {
         if (d->allProjectsPathList.isEmpty()) {
-            DMessageBox::warning(this, tr("Error"), tr("All projects path is empty, please import!"));
-            return false;
+          createMessageDialog(tr("All projects path is empty, please import!"));
+          return false;
         }
         break;
     }
     case 1:
     {
         if (d->currentProjectPath.isEmpty()) {
-            DMessageBox::warning(this, tr("Error"), tr("Current project path is empty, please import!"));
+            createMessageDialog(tr("Current project path is empty, please import!"));
             return false;
         }
         break;
@@ -220,14 +236,14 @@ bool FindToolWindow::checkSelectedScopeValid()
     case 2:
     {
         if (d->currentFilePath.isEmpty()) {
-            DMessageBox::warning(this, tr("Error"), tr("Current file path is empty, please import!"));
+            createMessageDialog(tr("Current project path is empty, please import!"));
             return false;
         }
         break;
     }
     default:
     {
-        DMessageBox::warning(this, tr("Error"), tr("Scope is not selected, please select!"));
+        createMessageDialog(tr("Scope is not selected, please select!"));
         return false;
     }
     }
@@ -239,10 +255,9 @@ bool FindToolWindow::getSearchParams(SearchParams *searchParams)
 {
     if (!checkSelectedScopeValid())
         return false;
-
     QString text = d->searchLineEdit->text();
     if (text.isEmpty()) {
-        DMessageBox::warning(this, tr("Error"), tr("Search for text is empty, please input!"));
+        d->searchLineEdit->showAlertMessage(tr("Search for text is empty, please input!"));
         return false;
     }
 
