@@ -37,8 +37,14 @@ private slots:
     void btnOpenProjectClicked();
     void btnNewFileOrProClicked();
 
+    void clearDocList();
+    void clearProList();
 private:
+    void updateUi();
+    void initConnect();
     bool isProAndDocNull();
+
+    void showEvent(QShowEvent *event) override;
 };
 
 #endif // RECENTDISPLAY_H
