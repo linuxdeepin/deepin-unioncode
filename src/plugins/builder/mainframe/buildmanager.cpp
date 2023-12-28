@@ -19,7 +19,7 @@
 #include "services/project/projectservice.h"
 
 #include "base/abstractaction.h"
-
+#include <QSplitter>
 #include <QCoreApplication>
 
 using namespace dpfservice;
@@ -155,19 +155,24 @@ void BuildManager::initCompileWidget()
     issusListText->setText(tr("Issues list"));
     issusListText->setContentsMargins(10, 0, 0, 0);
 
+    DWidget *outputWidget = new DWidget();
     QVBoxLayout *outputLayout = new QVBoxLayout();
     outputLayout->addWidget(compileOutputText);
     outputLayout->addWidget(d->compileOutputPane);
+    outputWidget->setLayout(outputLayout);
 
+    DWidget *issusWidget = new DWidget();
     QVBoxLayout *issusListLayout = new QVBoxLayout();
     issusListLayout->addWidget(issusListText);
     issusListLayout->addWidget(d->problemOutputPane);
+    issusWidget->setLayout(issusListLayout);
+
+    QSplitter *spl = new QSplitter(Qt::Horizontal);
+    spl->addWidget(outputWidget);
+    spl->addWidget(issusWidget);
 
     mainLayout->setSpacing(0);
-
-    mainLayout->addLayout(outputLayout);
-    mainLayout->addWidget(new DVerticalLine());
-    mainLayout->addLayout(issusListLayout);
+    mainLayout->addWidget(spl);
 }
 
 void BuildManager::buildProject()
