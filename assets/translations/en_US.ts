@@ -399,52 +399,52 @@
 <context>
     <name>BuildManager</name>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="144"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="152"/>
         <source>Compile Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="147"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="155"/>
         <source>Issues list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="248"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="257"/>
         <source>&amp;Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="317"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="326"/>
         <source>Execute command failed!
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="321"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="330"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="329"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="338"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="332"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="341"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="336"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="345"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="364"/>
+        <location filename="../../src/plugins/builder/mainframe/buildmanager.cpp" line="373"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -512,7 +512,7 @@ storage: %2
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="228"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeasynparse.cpp" line="232"/>
         <source>build</source>
         <translation type="unfinished"></translation>
     </message>
@@ -520,17 +520,32 @@ storage: %2
 <context>
     <name>CmakeProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="225"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="226"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="362"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="248"/>
+        <source>File are not automatically added to the CmakeList.txt file to the Cmake project. Copy the path to the source files to the clipboard?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="252"/>
+        <source>Copy to Clipboard?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="255"/>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="407"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="363"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/cmakeprojectgenerator.cpp" line="408"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1044,7 +1059,7 @@ The dap port is not ready, please retry.
     <name>DTreeView</name>
     <message>
         <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="21"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="27"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="29"/>
         <source>The delete operation will be removed fromthe disk and will not be recoverable after this operation.
 Delete anyway?</source>
         <translation type="unfinished"></translation>
@@ -1137,12 +1152,13 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="205"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="193"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="206"/>
         <source>error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="205"/>
+        <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="206"/>
         <source>Can not find kit.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1893,34 +1909,34 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="317"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="433"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="316"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="432"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="330"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="324"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="429"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="428"/>
         <source>New Document Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="438"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="503"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="437"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="497"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="501"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="495"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="502"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="496"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1977,12 +1993,12 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="552"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="555"/>
         <source>Rename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="559"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="562"/>
         <source>Find Usages</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2039,17 +2055,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="354"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="353"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="355"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="354"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="356"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="355"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2235,7 +2251,7 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="82"/>
-        <source>About Plugins...</source>
+        <source>About Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2419,7 +2435,7 @@ not exists support files: %0</source>
 <context>
     <name>QMenu</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="550"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/style/stylelsp.cpp" line="553"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2472,12 +2488,12 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="633"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="635"/>
         <source>File Has Been Removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="634"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="636"/>
         <source>The file has been removed, Do you want to save it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3363,33 +3379,33 @@ not exists support files: %0</source>
 <context>
     <name>ShortcutSettingWidget</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="245"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="271"/>
         <source>Reset All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="247"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="273"/>
         <source>Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="246"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="272"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="283"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="309"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="283"/>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="291"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="309"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="317"/>
         <source>Json File(*.json)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="291"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/shortcutsettingwidget.cpp" line="317"/>
         <source>Save File</source>
         <translation type="unfinished"></translation>
     </message>
