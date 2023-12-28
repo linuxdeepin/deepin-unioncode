@@ -21,7 +21,7 @@ PluginDialog::PluginDialog(QWidget *parent)
     : DAbstractDialog(parent),
       view(new dpf::PluginView(this))
 {
-    resize(1000, 600);
+    resize(1050, 600);
 
     DTitlebar *titleBar = new DTitlebar();
     titleBar->setMenuVisible(false);
