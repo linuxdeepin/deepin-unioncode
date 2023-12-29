@@ -21,6 +21,8 @@
 
 #include "Document.h"
 
+#include <DGuiApplicationHelper>
+
 #include <QHash>
 #include <QTimer>
 #include <QMutex>
@@ -35,6 +37,7 @@
 #include <bitset>
 
 using namespace dpfservice;
+DCORE_USE_NAMESPACE
 
 class SciRangeCache
 {
@@ -229,6 +232,10 @@ StyleLsp::StyleLsp(TextEdit *parent)
         newRange.end.line = range.end.line;
         newRange.end.character = range.end.character;
         EditorCallProxy::instance()->toJumpFileLineWithKey(d->edit->projectKey(), filePath, editLineNumber(range.start.line));
+    });
+    QObject::connect(qApp, &QApplication::applicationStateChanged, this, [=](Qt::ApplicationState state){
+        if(state == Qt::ApplicationState::ApplicationInactive && d->edit->callTipActive())
+            d->edit->callTipCancel();
     });
 
     if (!d->rangeFormattingAction) {
@@ -836,8 +843,11 @@ void StyleLsp::setHover(const newlsp::Hover &hover)
 {
     if (!edit() || edit()->isLeave())
         return;
-
-    d->edit->callTipSetBack(STYLE_DEFAULT);
+//callTipBack:设置背景色，参数为colour "red | (green << 8) | (blue << 16)"
+    if(DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+        d->edit->callTipSetBack(STYLE_DEFAULT);
+    else
+        d->edit->callTipSetBack(0xffffff);
 
     std::string showText;
     if (newlsp::any_contrast<std::vector<newlsp::MarkedString>>(hover.contents)) {
