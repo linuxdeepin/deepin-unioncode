@@ -40,6 +40,7 @@ public slots:
     void tabCloseRequested(int idx);
     void doFileChanged(const QString &file);
     void doFileSaved(const QString &file);
+    void showMenu(QPoint pos);
 };
 
 #endif // TEXTEDITTABBAR_H

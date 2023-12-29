@@ -7,7 +7,9 @@
 #include "services/editor/editorservice.h"
 
 #include <DToolButton>
+#include <DMenu>
 
+#include <QClipboard>
 #include <QFileInfo>
 #include <QDebug>
 #include <QMessageBox>
@@ -49,6 +51,8 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     d->hBoxLayout->addWidget(d->pbtClose);
     d->tab->setTabsClosable(true);
 
+    d->tab->setContextMenuPolicy(Qt::CustomContextMenu);
+
     this->setLayout(d->hBoxLayout);
 
     QObject::connect(d->tab, &DTabBar::currentChanged,
@@ -77,6 +81,10 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
                      this, [=]() {
         emit closeClicked();
     });
+
+    QObject::connect(d->tab, &DTabBar::customContextMenuRequested,
+                     this, &TextEditTabBar::showMenu);
+
 }
 
 TextEditTabBar::~TextEditTabBar()
@@ -112,6 +120,7 @@ void TextEditTabBar::setFile(const QString &file)
     QFileInfo info(file);
     int addIndex = d->tab->addTab(info.fileName());
     d->tab->setTabToolTip(addIndex, file);
+    d->tab->setTabData(addIndex, info.fileName());
 
     editor.openedFile(file); // plugin interface
 }
@@ -227,4 +236,53 @@ void TextEditTabBar::setSplitButtonVisible(bool flag)
 void TextEditTabBar::tabCloseRequested(int idx)
 {
     return d->tab->tabCloseRequested(idx);
+}
+
+void TextEditTabBar::showMenu(QPoint pos)
+{
+    int curIndex = d->tab->tabAt(pos);
+    DMenu *menu = new DMenu(this);
+
+    menu->addAction(tr("Copy File Path"), [=]() {
+        auto file = d->tab->tabToolTip(curIndex);
+        qApp->clipboard()->setText(file);
+    });
+    menu->addAction(tr("Copy File Name"), [=]() {
+        auto fileName = d->tab->tabData(curIndex).toString();
+        qApp->clipboard()->setText(fileName);
+    });
+
+    menu->addSeparator();
+
+    menu->addAction(tr("Close This File"), [=]() {
+        auto file = d->tab->tabToolTip(curIndex);
+        removeTab(file);
+    });
+    menu->addAction(tr("Close All Files"), [=]() {
+        while(d->tab->count() > 0) {
+            auto file = d->tab->tabToolTip(0);
+            removeTab(file);
+        };
+    });
+    menu->addAction(tr("Close All Files Except This"), [=]() {
+        auto curFile = d->tab->tabToolTip(curIndex);
+        int index = 0;
+        while(d->tab->count() > 1) {
+            auto file = d->tab->tabToolTip(index);
+            if (file != curFile)
+                removeTab(file);
+            else
+                index++;
+        };
+    });
+
+    menu->addSeparator();
+
+    menu->addAction(tr("Open File Location"), [=]() {
+        auto file = d->tab->tabToolTip(curIndex);
+        QProcess::startDetached("dde-file-manager", QStringList() << "--show-item" << file << "--raw");
+    });
+
+    menu->exec(QCursor::pos());
+    menu->deleteLater();
 }
