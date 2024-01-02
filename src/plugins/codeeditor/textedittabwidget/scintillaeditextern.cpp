@@ -58,13 +58,20 @@ void ScintillaEditExtern::setThemeColor(DGuiApplicationHelper::ColorType colorTy
 {
     QColor defaultColor(248, 248, 248);
     QColor caretForeColor(0, 0, 0);
+    QColor caretLineBack(229, 239, 249);
     if (colorType == DGuiApplicationHelper::DarkType) {
         defaultColor = QColor(43, 43, 43);
         caretForeColor = QColor(255, 255, 255);
+        caretLineBack = QColor(68, 68, 68);
     }
 
     styleSetBack(STYLE_DEFAULT, StyleColor::color(defaultColor));
     setCaretFore(StyleColor::color(caretForeColor));
+    setCaretLineBack(StyleColor::color(caretLineBack));
+
+    auto palette = DGuiApplicationHelper::instance()->applicationPalette();
+    styleSetFore(STYLE_LINENUMBER, StyleColor::color(palette.color(DPalette::TextTips)));
+    styleSetBack(STYLE_LINENUMBER, StyleColor::color(palette.color(DPalette::Base)));
 }
 
 void ScintillaEditExtern::initThemeColor()
