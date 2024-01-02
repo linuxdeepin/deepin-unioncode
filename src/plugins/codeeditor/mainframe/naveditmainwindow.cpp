@@ -70,6 +70,10 @@ void NavEditMainWindow::initUI()
     QSplitter *workspaceSpliter = new QSplitter(Qt::Horizontal);
     workspaceSpliter->setChildrenCollapsible(false);
     workspaceSpliter->addWidget(workspaceWidget);
+
+    //保证左右拉伸的时候，查找窗口与交互区窗口可以完全显示，不被遮挡
+    contextSpliter->setMinimumWidth(800);
+
     workspaceSpliter->addWidget(contextSpliter);
     workspaceSpliter->setStretchFactor(0, 1);
     workspaceSpliter->setStretchFactor(1, 3);
