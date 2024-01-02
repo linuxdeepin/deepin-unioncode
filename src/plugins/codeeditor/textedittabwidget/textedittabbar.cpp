@@ -6,6 +6,7 @@
 #include "common/common.h"
 #include "services/editor/editorservice.h"
 
+#include <DDialog>
 #include <DToolButton>
 #include <DMenu>
 
@@ -25,6 +26,7 @@ class TextEditTabBarPrivate
     DToolButton *pbtHorizontal = nullptr;
     DToolButton *pbtVertical = nullptr;
     DToolButton *pbtClose = nullptr;
+    DDialog *removeDialog = nullptr;
 };
 
 TextEditTabBar::TextEditTabBar(QWidget *parent)
@@ -182,24 +184,43 @@ void TextEditTabBar::doFileSaved(const QString &file)
 void TextEditTabBar::removeTab(const QString &file)
 {
     int index = fileIndex(file);
-    if (index != -1){
-        QString text = d->tab->tabText(index);
-        QFileInfo info(file);
-        if (info.exists() && text.length() > 0 && text.at(0) == "*") {
-            int ret = QMessageBox::question(this, QMessageBox::tr("Save Changes"),
-                                            QMessageBox::tr("The file has unsaved changes, will save?"),
-                                            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
-                                            QMessageBox::Cancel);
-            if (QMessageBox::Yes != ret && QMessageBox::No != ret) {
-                return;
-            } else if (QMessageBox::Yes == ret) {
+
+    if (index == -1)
+        return;
+
+    bool cancelFlag = false;
+
+    QString text = d->tab->tabText(index);
+    QFileInfo info(file);
+    if (info.exists() && text.length() > 0 && text.at(0) == "*") {
+        d->removeDialog = new DDialog(this);
+        d->removeDialog->setIcon(QIcon::fromTheme("dialog-question"));
+        d->removeDialog->setAttribute(Qt::WA_DeleteOnClose);
+        d->removeDialog->setMessage(tr("The file has unsaved changes, will save?"));
+        d->removeDialog->insertButton(0, tr("Cancel"));
+        d->removeDialog->insertButton(1, tr("No Changes"));
+        d->removeDialog->insertButton(2, tr("Save Changes"), true, DDialog::ButtonRecommend);
+
+        connect(d->removeDialog, &DDialog::buttonClicked, [&](int index) {
+            if (index == 0) {
+                d->removeDialog->reject();
+                cancelFlag = true;
+            } else if(index == 1) {
+                d->removeDialog->accept();
+            } else if(index == 2) {
+                d->removeDialog->accept();
                 emit saveFile(file);
             }
-        }
-        emit fileClosed(file);
-        editor.closedFile(file);
-        d->tab->removeTab(index);
+        });
+        d->removeDialog->exec();
     }
+
+    if (cancelFlag)
+        return;
+
+    emit fileClosed(file);
+    editor.closedFile(file);
+    d->tab->removeTab(index);
 }
 
 int TextEditTabBar::count() const
