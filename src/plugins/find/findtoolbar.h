@@ -18,13 +18,11 @@ public:
 public slots:
     void handleFindActionTriggered();
 signals:
-    void advanced();
 
 private:
     void setupUi();
     void findPrevious();
     void findNext();
-    void advancedSearch();
     void replace();
     void replaceSearch();
     void replaceAll();

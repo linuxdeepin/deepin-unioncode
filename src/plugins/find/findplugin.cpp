@@ -73,8 +73,6 @@ bool FindPlugin::start()
     connect(this,&FindPlugin::onFindActionTriggered,findToolBar,&FindToolBar::handleFindActionTriggered);
 
     windowService->addFindToolBar(abstractFindToolBar);
-    connect(findToolBar, &FindToolBar::advanced, this, &FindPlugin::sendSwitchSearchResult);
-
     return true;
 }
 

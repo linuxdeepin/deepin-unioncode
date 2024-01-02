@@ -8,12 +8,10 @@
 #include <DLabel>
 #include <DLineEdit>
 #include <DPushButton>
+#include <DIconButton>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-
-#define LABEL_WIDTH           (80)
-#define OPERATOR_WIDGET_WIDTH (400)
 
 class FindToolBarPrivate
 {
@@ -36,71 +34,42 @@ void FindToolBar::setupUi()
     setMaximumHeight(85);
     setMinimumWidth(800);
 
+    DWidget *mainFrame = new DWidget(this);
+    QHBoxLayout *hLayout = new QHBoxLayout();
     QVBoxLayout *vLayout = new QVBoxLayout();
-    QHBoxLayout *findLayout = new QHBoxLayout();
-    vLayout->addLayout(findLayout);
-    DLabel *findLabel = new DLabel(QLabel::tr("Find:"));
-    findLabel->setContentsMargins(0,3,0,0);
-    findLabel->setFixedWidth(LABEL_WIDTH);
-    findLabel->setAlignment(Qt::AlignRight);
+    mainFrame->setLayout(hLayout);
+    d->findLineEdit = new DLineEdit();        //搜索框
+    d->findLineEdit->setPlaceholderText(tr("Find"));
+    d->replaceLineEdit = new DLineEdit();     //替换框
+    d->replaceLineEdit->setPlaceholderText(tr("Replace"));
 
-    d->findLineEdit = new DLineEdit();
+    DIconButton *findPreBtn = new DIconButton();
+    DIconButton *findNextBtn = new DIconButton();
+    findPreBtn->setIcon(QIcon::fromTheme("go-up"));
+    findNextBtn->setIcon(QIcon::fromTheme("go-down"));
+    DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Replace"));     //替换按钮
+    DPushButton *replaceAllBtn = new DPushButton(QPushButton::tr("Repalce All"));   //全部替换按钮
+    DPushButton *replaceFindBtn = new DPushButton(QPushButton::tr("Replace && Find"));      //替换别查找
 
-    QWidget *findWidget = new QWidget();
-    findWidget->setFixedWidth(OPERATOR_WIDGET_WIDTH);
-    QHBoxLayout *findWidgetLayout = new QHBoxLayout();
-    findWidgetLayout->setMargin(0);
-    findWidget->setLayout(findWidgetLayout);
+    hLayout->addWidget(d->findLineEdit);
+    hLayout->addWidget(d->replaceLineEdit);
+    hLayout->addWidget(findPreBtn);
+    hLayout->addWidget(findNextBtn);
+    hLayout->addWidget(replaceBtn);
+    hLayout->addWidget(replaceAllBtn);
+    hLayout->addWidget(replaceFindBtn);
 
-    QPushButton *findPreBtn = new QPushButton(QPushButton::tr("Find Previous"));
-    QPushButton *findNextBtn = new QPushButton(QPushButton::tr("Find Next"));
-    QPushButton *advancedBtn = new QPushButton(QPushButton::tr("Advanced"));
-    findWidgetLayout->addWidget(findPreBtn);
-    findWidgetLayout->addWidget(findNextBtn);
-    findWidgetLayout->addWidget(advancedBtn);
+    vLayout->addWidget(mainFrame);
+    vLayout->setContentsMargins(0,0,0,0);
+    vLayout->setSpacing(0);
 
-    findLayout->addWidget(findLabel);
-    findLayout->addWidget(d->findLineEdit);
-    findLayout->addWidget(findWidget);
-
-    QHBoxLayout *repalceLayout = new QHBoxLayout();
-    vLayout->addLayout(repalceLayout);
-
-    DLabel *repalceLabel = new DLabel(QLabel::tr("Repalce:"));
-    repalceLabel->setContentsMargins(0,3,0,0);
-    repalceLabel->setFixedWidth(LABEL_WIDTH);
-    repalceLabel->setAlignment(Qt::AlignRight);
-
-    d->replaceLineEdit = new DLineEdit();
-
-    QWidget *replaceWidget = new QWidget();
-    replaceWidget->setFixedWidth(OPERATOR_WIDGET_WIDTH);
-    QHBoxLayout *replaceWidgetLayout = new QHBoxLayout();
-    replaceWidgetLayout->setMargin(0);
-    replaceWidget->setLayout(replaceWidgetLayout);
-
-    DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Replace"));
-    DPushButton *replaceFindBtn = new DPushButton(QPushButton::tr("Replace && Find"));
-    DPushButton *replaceAllBtn = new DPushButton(QPushButton::tr("Repalce All"));
-    replaceWidgetLayout->addWidget(replaceBtn);
-    replaceWidgetLayout->addWidget(replaceFindBtn);
-    replaceWidgetLayout->addWidget(replaceAllBtn);
-
-    repalceLayout->addWidget(repalceLabel);
-    repalceLayout->addWidget(d->replaceLineEdit);
-    repalceLayout->addWidget(replaceWidget);
+    setLayout(vLayout);
 
     connect(findPreBtn, &QAbstractButton::clicked, this, &FindToolBar::findPrevious);
     connect(findNextBtn, &QAbstractButton::clicked, this, &FindToolBar::findNext);
-    connect(advancedBtn, &QAbstractButton::clicked, this, &FindToolBar::advancedSearch);
     connect(replaceBtn, &QAbstractButton::clicked, this, &FindToolBar::replace);
     connect(replaceFindBtn, &QAbstractButton::clicked, this, &FindToolBar::replaceSearch);
     connect(replaceAllBtn, &QAbstractButton::clicked, this, &FindToolBar::replaceAll);
-
-
-
-    setLayout(vLayout);
-    vLayout->setContentsMargins(0,0,0,0);
 }
 
 void FindToolBar::handleFindActionTriggered() {
@@ -121,11 +90,6 @@ void FindToolBar::findNext()
     if (text.isEmpty())
         return;
     editor.searchText(text, FindType::Next);
-}
-
-void FindToolBar::advancedSearch()
-{
-    emit advanced();
 }
 
 void FindToolBar::replace()
