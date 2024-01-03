@@ -6,10 +6,10 @@
 #define TEXTEDITTABBAR_H
 
 #include <DTabBar>
-#include <DFrame>
+#include <DTabWidget>
 
 class TextEditTabBarPrivate;
-class TextEditTabBar : public DTK_WIDGET_NAMESPACE::DFrame
+class TextEditTabBar : public DTK_WIDGET_NAMESPACE::DTabWidget
 {
     Q_OBJECT
     friend class TextEditTabBarPrivate;

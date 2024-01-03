@@ -28,7 +28,7 @@ class TextEditTabBarPrivate
 };
 
 TextEditTabBar::TextEditTabBar(QWidget *parent)
-    : DFrame (parent)
+    : DTabWidget (parent)
     , d(new TextEditTabBarPrivate)
 {
     d->tab = new QTabBar(this);
@@ -52,6 +52,7 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     d->tab->setContextMenuPolicy(Qt::CustomContextMenu);
 
     this->setLayout(d->hBoxLayout);
+    this->setFixedHeight(36);
 
     QObject::connect(d->tab, &QTabBar::currentChanged,
                      this, [=](int index){
