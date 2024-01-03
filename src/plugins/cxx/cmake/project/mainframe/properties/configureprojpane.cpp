@@ -106,7 +106,7 @@ void ConfigureProjPane::setupUI()
 
     d->radioDebug = new DRadioButton("Debug");
     d->radioDebug->setFixedWidth(100);
-    auto btnDebug = new DPushButton(tr("Browse..."));
+    auto btnDebug = new DPushButton(tr("Browse"));
     d->lineEditDebug = new DLineEdit(this);
     d->lineEditDebug->setMinimumWidth(280);
     btnSignalConnect(btnDebug, d->lineEditDebug);
@@ -117,7 +117,7 @@ void ConfigureProjPane::setupUI()
 
     d->radioRelease = new DRadioButton("Release");
     d->radioRelease->setFixedWidth(100);
-    auto btnRelease = new DPushButton(tr("Browse..."));
+    auto btnRelease = new DPushButton(tr("Browse"));
     d->lineEditRelease = new DLineEdit(this);
     d->lineEditDebug->setMinimumWidth(280);
     btnSignalConnect(btnRelease, d->lineEditRelease);

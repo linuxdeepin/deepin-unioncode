@@ -73,7 +73,7 @@ void RunConfigPane::setupUi()
     // working directory ui.
     QHBoxLayout *browLayout = new QHBoxLayout(mainFrame);
     auto browseBtn = new QPushButton(mainFrame);
-    browseBtn->setText(tr("Browse..."));
+    browseBtn->setText(tr("Browse"));
     d->workingDirLineEdit = new DLineEdit(mainFrame);
     d->workingDirLineEdit->lineEdit()->setReadOnly(true);
     connect(d->workingDirLineEdit, &DLineEdit::textChanged, [this](){

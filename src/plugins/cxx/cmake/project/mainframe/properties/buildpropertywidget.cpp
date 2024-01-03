@@ -185,7 +185,7 @@ void BuildPropertyWidget::setupOverviewUI()
     d->outputDirEdit = new DLineEdit(this);
     d->outputDirEdit->lineEdit()->setReadOnly(true);
     auto button = new QPushButton(this);
-    button->setText(tr("Browse..."));
+    button->setText(tr("Browse"));
     connect(button, &QPushButton::clicked, [this](){
         QString outputDirectory = QFileDialog::getExistingDirectory(this, "Output directory", d->outputDirEdit->text());
         if (!outputDirectory.isEmpty()) {
