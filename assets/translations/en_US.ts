@@ -453,13 +453,13 @@
 <context>
     <name>BuildPropertyWidget</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="213"/>
-        <source>Output direcotry:</source>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="188"/>
+        <source>Browse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="188"/>
-        <source>Browse...</source>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="213"/>
+        <source>Output direcotry:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -775,7 +775,7 @@ A must-have all-round AI tool for developers</source>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/configureprojpane.cpp" line="109"/>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/configureprojpane.cpp" line="120"/>
-        <source>Browse...</source>
+        <source>Browse</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -936,7 +936,7 @@ The dap port is not ready, please retry.
 <context>
     <name>DDockWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="118"/>
         <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="560"/>
         <source>Workspace</source>
         <translation type="unfinished"></translation>
@@ -1371,7 +1371,7 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="106"/>
-        <source>Browse...</source>
+        <source>Browse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1658,7 +1658,7 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/project/properties/mavenconfigpropertywidget.cpp" line="106"/>
-        <source>Browse...</source>
+        <source>Browse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2460,22 +2460,12 @@ not exists support files: %0</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="189"/>
-        <source>Save Changes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="190"/>
-        <source>The file has unsaved changes, will save?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="635"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="639"/>
         <source>File Has Been Removed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="636"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="640"/>
         <source>The file has been removed, Do you want to save it?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2726,6 +2716,16 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/codeporting/codeportingwidget.h" line="14"/>
         <source>Architecture-dependent library files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="96"/>
+        <source>Target</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="98"/>
+        <source>Path</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3043,7 +3043,7 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="68"/>
-        <source>Browse...</source>
+        <source>Browse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3245,7 +3245,7 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="76"/>
-        <source>Browse...</source>
+        <source>Browse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3516,12 +3516,12 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="238"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="240"/>
         <source>Input your arguments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="239"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="241"/>
         <source>Tool arguments:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3564,32 +3564,52 @@ not exists support files: %0</source>
 <context>
     <name>TextEditTabBar</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="246"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="194"/>
+        <source>The file has unsaved changes, will save?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="195"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="196"/>
+        <source>No Changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="197"/>
+        <source>Save Changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="262"/>
         <source>Copy File Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="250"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="266"/>
         <source>Copy File Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="257"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="273"/>
         <source>Close This File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="261"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="277"/>
         <source>Close All Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="267"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="283"/>
         <source>Close All Files Except This</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="281"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="297"/>
         <source>Open File Location</source>
         <translation type="unfinished"></translation>
     </message>

@@ -465,14 +465,14 @@
 <context>
     <name>BuildPropertyWidget</name>
     <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="188"/>
+        <source>Browse</source>
+        <translation>浏览</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="213"/>
         <source>Output direcotry:</source>
         <translation>输出目录：</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/buildpropertywidget.cpp" line="188"/>
-        <source>Browse...</source>
-        <translation>浏览...</translation>
     </message>
 </context>
 <context>
@@ -796,8 +796,8 @@ A must-have all-round AI tool for developers</source>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/configureprojpane.cpp" line="109"/>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/configureprojpane.cpp" line="120"/>
-        <source>Browse...</source>
-        <translation>浏览...</translation>
+        <source>Browse</source>
+        <translation>浏览</translation>
     </message>
 </context>
 <context>
@@ -963,7 +963,7 @@ dap端口未就绪，请重试。
 <context>
     <name>DDockWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="114"/>
+        <location filename="../../src/plugins/codeeditor/mainframe/naveditmainwindow.cpp" line="118"/>
         <location filename="../../src/plugins/core/mainframe/windowkeeper.cpp" line="560"/>
         <source>Workspace</source>
         <translation>工作区</translation>
@@ -1399,8 +1399,8 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="106"/>
-        <source>Browse...</source>
-        <translation>浏览...</translation>
+        <source>Browse</source>
+        <translation>浏览</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="212"/>
@@ -1687,8 +1687,8 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/project/properties/mavenconfigpropertywidget.cpp" line="106"/>
-        <source>Browse...</source>
-        <translation>浏览...</translation>
+        <source>Browse</source>
+        <translation>浏览</translation>
     </message>
     <message>
         <location filename="../../src/plugins/java/maven/project/properties/mavenconfigpropertywidget.cpp" line="212"/>
@@ -2491,22 +2491,12 @@ not exists support files: %0</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="189"/>
-        <source>Save Changes</source>
-        <translation>保存更改</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="190"/>
-        <source>The file has unsaved changes, will save?</source>
-        <translation>该文件有未保存的更改，是否保存？</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="635"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="639"/>
         <source>File Has Been Removed</source>
         <translation>文件已被移除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="636"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabwidget.cpp" line="640"/>
         <source>The file has been removed, Do you want to save it?</source>
         <translation>该文件已被移除，你想保存它吗？</translation>
     </message>
@@ -2758,6 +2748,16 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/codeporting/codeportingwidget.h" line="14"/>
         <source>Architecture-dependent library files</source>
         <translation>依赖于体系结构的库文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="96"/>
+        <source>Target</source>
+        <translation>目标</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="98"/>
+        <source>Path</source>
+        <translation>路径</translation>
     </message>
 </context>
 <context>
@@ -3074,8 +3074,8 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="68"/>
-        <source>Browse...</source>
-        <translation>浏览...</translation>
+        <source>Browse</source>
+        <translation>浏览</translation>
     </message>
     <message>
         <location filename="../../src/plugins/reversedebug/loadcoredialog.cpp" line="78"/>
@@ -3276,8 +3276,8 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="76"/>
-        <source>Browse...</source>
-        <translation>浏览...</translation>
+        <source>Browse</source>
+        <translation>浏览</translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/runconfigpane.cpp" line="85"/>
@@ -3553,12 +3553,12 @@ not exists support files: %0</source>
         <translation>启用所有生成步骤</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="238"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="240"/>
         <source>Input your arguments</source>
         <translation>请输入参数</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="239"/>
+        <location filename="../../src/plugins/cxx/cmake/project/mainframe/properties/stepspane.cpp" line="241"/>
         <source>Tool arguments:</source>
         <translation>工具参数：</translation>
     </message>
@@ -3601,32 +3601,52 @@ not exists support files: %0</source>
 <context>
     <name>TextEditTabBar</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="246"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="194"/>
+        <source>The file has unsaved changes, will save?</source>
+        <translation>该文件有未保存的更改，是否保存？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="195"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="196"/>
+        <source>No Changes</source>
+        <translation>不更改</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="197"/>
+        <source>Save Changes</source>
+        <translation>保存更改</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="262"/>
         <source>Copy File Path</source>
         <translation>复制文件路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="250"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="266"/>
         <source>Copy File Name</source>
         <translation>复制文件名称</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="257"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="273"/>
         <source>Close This File</source>
         <translation>关闭当前文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="261"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="277"/>
         <source>Close All Files</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="267"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="283"/>
         <source>Close All Files Except This</source>
         <translation>关闭其他文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="281"/>
+        <location filename="../../src/plugins/codeeditor/textedittabwidget/textedittabbar.cpp" line="297"/>
         <source>Open File Location</source>
         <translation>打开文件位置</translation>
     </message>
