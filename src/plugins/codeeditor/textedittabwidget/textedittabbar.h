@@ -9,7 +9,7 @@
 #include <DTabWidget>
 
 class TextEditTabBarPrivate;
-class TextEditTabBar : public DTK_WIDGET_NAMESPACE::DTabWidget
+class TextEditTabBar : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
     friend class TextEditTabBarPrivate;
