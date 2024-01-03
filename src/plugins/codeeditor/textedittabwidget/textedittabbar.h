@@ -5,8 +5,8 @@
 #ifndef TEXTEDITTABBAR_H
 #define TEXTEDITTABBAR_H
 
-#include <DFrame>
 #include <DTabBar>
+#include <DFrame>
 
 class TextEditTabBarPrivate;
 class TextEditTabBar : public DTK_WIDGET_NAMESPACE::DFrame
