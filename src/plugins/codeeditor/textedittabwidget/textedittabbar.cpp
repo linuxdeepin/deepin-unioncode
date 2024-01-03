@@ -15,12 +15,10 @@
 #include <QMessageBox>
 #include <QVBoxLayout>
 
-DWIDGET_USE_NAMESPACE
-
 class TextEditTabBarPrivate
 {
     friend class TextEditTabBar;
-    DTabBar *tab = nullptr;
+    QTabBar *tab = nullptr;
     QHBoxLayout * hBoxLayout = nullptr;
     DToolButton *pbtHorizontal = nullptr;
     DToolButton *pbtVertical = nullptr;
@@ -31,9 +29,7 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
     : DFrame (parent)
     , d(new TextEditTabBarPrivate)
 {
-    DStyle::setFrameRadius(this, 0);
-    d->tab = new DTabBar(this);
-    d->tab->setVisibleAddButton(false);
+    d->tab = new QTabBar(this);
     d->hBoxLayout = new QHBoxLayout();
     d->pbtHorizontal = new DToolButton();
     d->pbtVertical = new DToolButton();
@@ -55,14 +51,14 @@ TextEditTabBar::TextEditTabBar(QWidget *parent)
 
     this->setLayout(d->hBoxLayout);
 
-    QObject::connect(d->tab, &DTabBar::currentChanged,
+    QObject::connect(d->tab, &QTabBar::currentChanged,
                      this, [=](int index){
         QString filePath = indexFile(index);
         emit this->fileSwitched(filePath);
         editor.switchedFile(filePath);
     });
 
-    QObject::connect(d->tab, &DTabBar::tabCloseRequested,
+    QObject::connect(d->tab, &QTabBar::tabCloseRequested,
                      this, [=](int index) {
         this->removeTab(this->indexFile(index));
     });
@@ -121,7 +117,6 @@ void TextEditTabBar::setFile(const QString &file)
     int addIndex = d->tab->addTab(info.fileName());
     d->tab->setTabToolTip(addIndex, file);
     d->tab->setTabData(addIndex, info.fileName());
-
     editor.openedFile(file); // plugin interface
 }
 
