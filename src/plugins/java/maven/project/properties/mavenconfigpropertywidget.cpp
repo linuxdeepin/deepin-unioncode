@@ -103,7 +103,7 @@ void MavenDetailPropertyWidget::setupUI()
         label->setFixedWidth(kHeadlineWidth);
 
         DPushButton *btnBrowser = new DPushButton(this);
-        btnBrowser->setText(tr("Browse..."));
+        btnBrowser->setText(tr("Browse"));
         btnBrowser->setObjectName(headLine);
         hLayout->addWidget(label);
         hLayout->addWidget(widget);

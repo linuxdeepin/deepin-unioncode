@@ -93,9 +93,9 @@ QVariant StepsModel::headerData(int section, Qt::Orientation orientation, int ro
             if (orientation == Qt::Horizontal) {
                 switch (section) {
                 case kTarget:
-                    return "Target";
+                    return QObject::tr("Target");
                 case kPath:
-                    return "Path";
+                    return QObject::tr("Path");
                 default:
                     break;
                 }
@@ -226,6 +226,8 @@ void StepsPane::setupUi()
     tableView->setFrameShape(QFrame::NoFrame);
     DHeaderView* headerView = tableView->horizontalHeader();
     headerView->setStretchLastSection(true);
+    headerView->setSectionResizeMode(DHeaderView::ResizeToContents); //表头宽度根据其内容的宽度动态调整
+    headerView->setDefaultAlignment(Qt::AlignLeft);                  //让标头向左对齐
     headerView->setSelectionMode(QAbstractItemView::SingleSelection);
     tableView->verticalHeader()->hide();
 

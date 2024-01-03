@@ -65,7 +65,7 @@ void LoadCoreDialog::setupUi()
     d->traceDir->setPlaceholderText(tr("Trace directory."));
 
     DPushButton *btnBrowser = new DPushButton(this);
-    btnBrowser->setText(tr("Browse..."));
+    btnBrowser->setText(tr("Browse"));
 
     // pid
     d->pidInput = new DComboBox(mainFrame);
