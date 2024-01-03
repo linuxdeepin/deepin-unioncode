@@ -34,7 +34,7 @@
     <message>
         <location filename="../../src/app/main.cpp" line="110"/>
         <source>deepin-unioncode</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../src/app/main.cpp" line="113"/>
@@ -492,7 +492,7 @@ workspace: %0
 language: %1
 storage: %2
 </source>
-        <translation type="unfinished">解析项目符号时出错
+        <translation>解析项目符号时出错
 工作区：%0
 语言：%1
 存储：%2</translation>
@@ -2915,7 +2915,7 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="465"/>
         <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="487"/>
         <source>clear all</source>
-        <translation type="unfinished"></translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="483"/>
