@@ -462,7 +462,10 @@ void RecentDisplay::updateUi()
     d->docLabel->setForegroundRole(QPalette::BrightText);
     d->docLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    d->docClear = new DPushButton(tr("clear all"));
+    d->docClear = new DPushButton();
+    d->docClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
+    d->docClear->setFlat(true);
+    d->docClear->setToolTip(tr("clear all"));
 
     QHBoxLayout *docHlayout = new QHBoxLayout;
     docHlayout->addWidget(d->docLabel);
@@ -484,7 +487,10 @@ void RecentDisplay::updateUi()
     d->proLabel->setForegroundRole(QPalette::BrightText);
     d->proLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    d->proClear = new DPushButton(tr("clear all"));
+    d->proClear = new DPushButton();
+    d->proClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
+    d->proClear->setFlat(true);
+    d->proClear->setToolTip(tr("clear all"));
 
     QHBoxLayout *proHlayout = new QHBoxLayout;
     proHlayout->addWidget(d->proLabel);
