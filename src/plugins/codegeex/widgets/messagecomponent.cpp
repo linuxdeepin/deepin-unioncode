@@ -4,8 +4,10 @@
 
 #include "messagecomponent.h"
 #include "codeeditcomponent.h"
+#include "codegeexmanager.h"
 
 #include <DLabel>
+#include <DPushButton>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -86,6 +88,7 @@ void MessageComponent::initUI()
 
     initSenderInfo();
     initMessageSection();
+    initConnect();
 }
 
 void MessageComponent::initSenderInfo()
@@ -96,6 +99,12 @@ void MessageComponent::initSenderInfo()
     senderHead = new DLabel(this);
     senderName = new DLabel(this);
 
+    editButton = new DPushButton(this);
+    editButton->setIcon(QIcon::fromTheme("codegeex_edit"));
+    editButton->setFlat(true);
+    editButton->setFixedSize(QSize(24, 24));
+    editButton->setToolTip(tr("edit"));
+
     switch (messageData.messageType()) {
     case MessageData::Ask: {
         senderName->setText("You");
@@ -105,6 +114,7 @@ void MessageComponent::initSenderInfo()
     case MessageData::Anwser:
         senderName->setText("CodeGeeX");
         senderHead->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(30, 30));
+        editButton->setVisible(false);
         break;
     }
 
@@ -112,12 +122,22 @@ void MessageComponent::initSenderInfo()
     senderInfoLayout->addWidget(senderHead);
     senderInfoLayout->addWidget(senderName);
     senderInfoLayout->addStretch(1);
+    senderInfoLayout->addWidget(editButton);
 }
 
 void MessageComponent::initMessageSection()
 {
     msgLayout = new QVBoxLayout;
     qobject_cast<QVBoxLayout *>(layout())->addLayout(msgLayout);
+}
+
+void MessageComponent::initConnect()
+{
+    if(!editButton)
+        return;
+    connect(editButton, &QPushButton::clicked, this, [=](){
+        CodeGeeXManager::instance()->setMessage(messageData.messageData());
+    });
 }
 
 void MessageComponent::waitForAnswer()

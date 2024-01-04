@@ -40,6 +40,7 @@ private:
     void initUI();
     void initSenderInfo();
     void initMessageSection();
+    void initConnect();
 
     void createCurrentUpdateWidget();
     bool createCodeEdit(const MessageData &newData);
@@ -49,6 +50,7 @@ private:
     DLabel *senderHead { nullptr };
     DLabel *senderName { nullptr };
     DLabel *context { nullptr };
+    DPushButton *editButton { nullptr };
     DSpinner *spinner { nullptr };
 
     QVBoxLayout *msgLayout { nullptr };
