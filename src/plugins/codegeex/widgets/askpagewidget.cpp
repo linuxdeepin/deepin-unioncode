@@ -208,6 +208,7 @@ void AskPageWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestMessageUpdate, this, &AskPageWidget::onMessageUpdate);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatStarted, this, &AskPageWidget::enterAnswerState);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &AskPageWidget::onChatFinished);
+    connect(CodeGeeXManager::instance(), &CodeGeeXManager::setTextToSend, this, &AskPageWidget::setInputText);
 
     connect(sendButton, &DFloatingButton::clicked, inputEdit, &DLineEdit::returnPressed);
     connect(inputEdit, &DLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
@@ -310,4 +311,10 @@ void AskPageWidget::resetBtns()
     deleteBtn->setEnabled(!isIntroPageState());
     createNewBtn->setVisible(!isIntroPageState());
     historyBtn->setVisible(true);
+}
+
+void AskPageWidget::setInputText(const QString &prompt)
+{
+    if(!waitingAnswer)
+        inputEdit->setText(prompt);
 }

@@ -46,6 +46,7 @@ public Q_SLOTS:
     void onDeleteBtnClicked();
     void onHistoryBtnClicked();
     void onCreateNewBtnClicked();
+    void setInputText(const QString &prompt);
 
 private:
     void initUI();

@@ -37,6 +37,7 @@ public:
     void deleteCurrentSession();
     void deleteSession(const QString &talkId);
 
+    void setMessage(const QString &prompt);
     void sendMessage(const QString &prompt);
     void queryLoginState();
 
@@ -56,6 +57,7 @@ Q_SIGNALS:
     void chatStarted();
     void chatFinished();
     void sessionRecordsUpdated();
+    void setTextToSend(const QString &prompt);
 
 public Q_SLOTS:
     void onSessionCreated(const QString &talkId, bool isSuccessful);

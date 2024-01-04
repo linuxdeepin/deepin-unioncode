@@ -97,6 +97,11 @@ void CodeGeeXManager::deleteSession(const QString &talkId)
     askApi.deleteSessions(kUrlDeleteSession, sessionId, { talkId });
 }
 
+void CodeGeeXManager::setMessage(const QString &prompt)
+{
+    Q_EMIT setTextToSend(prompt);
+}
+
 void CodeGeeXManager::sendMessage(const QString &prompt)
 {
     QString askId = "User" + QString::number(QDateTime::currentMSecsSinceEpoch());
