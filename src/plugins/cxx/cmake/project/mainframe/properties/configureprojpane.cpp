@@ -184,6 +184,11 @@ void ConfigureProjPane::slotConfigure()
         for (int i = 0; i < StepCount; i++) {
             StepItem item;
             item.type = static_cast<StepType>(i);
+            // default use max thread count
+            int coreCount = QThread::idealThreadCount();
+            if (coreCount > 1) {
+                item.arguments = QString("-j%1").arg(coreCount);
+            }
             buildConfigure.steps.push_back(item);
         }
         // init environment
