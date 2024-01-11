@@ -200,6 +200,17 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
         menu = childMenu(rootItem, item);
     }
 
+    // add action that show contain folder.
+    menu->addSeparator();
+    QAction *showContainFolder = new QAction(tr("Show Contain Folder"));
+    connect(showContainFolder, &QAction::triggered, [=](){
+        QString filePath = item->toolTip();
+        QFileInfo fileInfo(filePath);
+        QString openCommand = "xdg-open " + fileInfo.dir().path();
+        QProcess::startDetached(openCommand);
+    });
+    menu->addAction(showContainFolder);
+
     if (menu) {
         menu->move(event->globalPos());
         menu->exec();
@@ -281,7 +292,6 @@ void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
     DTreeView::contextMenuEvent(event);
     QModelIndex index = indexAt(event->pos());
     selectionModel()->select(index, QItemSelectionModel::SelectCurrent);
-    indexMenuRequest(index, event);
     itemMenuRequest(d->itemModel->itemFromIndex(index), event);
 }
 
@@ -324,7 +334,7 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *ch
     QModelIndex index = d->itemModel->indexFromItem(child);
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
 
-    QAction *deleteDocAction = new QAction(tr("Delete Document"));    
+    QAction *deleteDocAction = new QAction(tr("Delete Document"));
     QObject::connect(deleteDocAction, &QAction::triggered, this, [=](){
         actionDeleteDocument(child);
     });
