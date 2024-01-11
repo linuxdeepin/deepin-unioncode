@@ -35,7 +35,6 @@ public:
     bool hasProjectInfo(const dpfservice::ProjectInfo &info) const;
 
 Q_SIGNALS:
-    void indexMenuRequest(const QModelIndex &index, QContextMenuEvent *event);
     void itemMenuRequest(QStandardItem *item, QContextMenuEvent *event);
 
 protected:
