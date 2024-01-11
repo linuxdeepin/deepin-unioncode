@@ -4,6 +4,7 @@
 
 #include "buildpropertywidget.h"
 
+#include "common/common.h"
 #include "environmentwidget.h"
 #include "stepspane.h"
 #include "targetsmanager.h"
@@ -15,13 +16,8 @@
 #include <DComboBox>
 #include <DButtonBox>
 #include <DFrame>
-
 #include <QVBoxLayout>
 #include <QFormLayout>
-
-#include "common/common.h"
-
-const int widthPerBtn = 80;
 
 DWIDGET_USE_NAMESPACE
 using namespace config;
