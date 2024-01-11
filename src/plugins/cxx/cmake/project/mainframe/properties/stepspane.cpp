@@ -62,8 +62,6 @@ QVariant StepsModel::data(const QModelIndex &index, int role) const
         switch (index.column()) {
         case kTarget:
             return target;
-        case kPath:
-            return "";
         default:
             break;
         }
@@ -94,8 +92,6 @@ QVariant StepsModel::headerData(int section, Qt::Orientation orientation, int ro
                 switch (section) {
                 case kTarget:
                     return QObject::tr("Target");
-                case kPath:
-                    return QObject::tr("Path");
                 default:
                     break;
                 }

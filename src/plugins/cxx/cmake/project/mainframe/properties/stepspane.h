@@ -18,7 +18,6 @@ public:
     {
         kCheckBox,
         kTarget,
-        kPath,
         kColumnCount
     };
 
