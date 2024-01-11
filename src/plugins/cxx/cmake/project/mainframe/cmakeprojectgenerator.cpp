@@ -15,6 +15,7 @@
 #include "services/window/windowservice.h"
 #include "common/dialog/propertiesdialog.h"
 #include "common/util/eventdefinitions.h"
+#include "common/actionmanager/actionmanager.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
@@ -223,6 +224,8 @@ QMenu *CmakeProjectGenerator::createItemMenu(const QStandardItem *item)
         menu = new QMenu();
     }
 
+    createBuildMenu(menu);
+
     QAction *action = new QAction(tr("Properties"));
     menu->addAction(action);
     dpfservice::ProjectInfo info = dpfservice::ProjectInfo::get(item);
@@ -426,4 +429,23 @@ void CmakeProjectGenerator::recursionRemoveItem(QStandardItem *item)
 
     delete item;
     return;
+}
+
+void CmakeProjectGenerator::createBuildMenu(QMenu *menu)
+{
+    if (!menu)
+        return;
+
+    menu->addSeparator();
+    auto addBuildMenu = [&](const QString &actionID){
+        auto command = ActionManager::getInstance()->command(actionID);
+        if (command && command->action()) {
+            menu->addAction(command->action());
+        }
+    };
+    addBuildMenu("Build.Build");
+    addBuildMenu("Build.Rebuild");
+    addBuildMenu("Build.Clean");
+    addBuildMenu("Build.Cancel");
+    menu->addSeparator();
 }

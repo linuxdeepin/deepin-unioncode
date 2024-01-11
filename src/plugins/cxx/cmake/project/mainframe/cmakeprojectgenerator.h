@@ -39,6 +39,8 @@ private slots:
     void recursionRemoveItem(QStandardItem *item);
 
 private:
+    void createBuildMenu(QMenu *menu);
+
     QMutex mutex;
     QStandardItem *rootItem = nullptr;
 };

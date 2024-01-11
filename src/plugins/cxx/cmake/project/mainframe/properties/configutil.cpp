@@ -113,7 +113,7 @@ dpfservice::ProjectInfo ConfigUtil::createProjectInfo(const ConfigureParam *para
             cleanArguments << ".";
             cleanArguments << "--target";
             cleanArguments << "clean";
-            info.setCleanCustomArgs(buildArguments);
+            info.setCleanCustomArgs(cleanArguments);
         }
     }
 
@@ -212,7 +212,7 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                 } else if (iterStep->type == StepType::Clean) {
                     QString cleanTarget = iterStep->targetName;
                     if (cleanTarget.isEmpty()) {
-                        cleanTarget = "clean";
+                        cleanTarget = "all";
                     }
                     TargetsManager::instance()->updateActivedCleanTarget(cleanTarget);
                     arguments << cleanTarget;
