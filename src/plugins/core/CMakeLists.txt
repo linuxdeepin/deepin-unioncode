@@ -9,6 +9,7 @@ set(CXX_CPP
     mainframe/plugindialog.cpp
     transceiver/corereceiver.cpp
     mainframe/loadingwidget.cpp
+    mainframe/mainwindow.cpp
     core.cpp
     core.json
     )
@@ -20,6 +21,7 @@ set(CXX_H
     mainframe/plugindialog.h
     transceiver/corereceiver.h
     mainframe/loadingwidget.h
+    mainframe/mainwindow.h
     core.h
     )
 
