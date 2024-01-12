@@ -58,7 +58,6 @@ ConsoleWidget::ConsoleWidget(QWidget *parent)
 
 ConsoleWidget::~ConsoleWidget()
 {
-    qInfo() << __FUNCTION__;
 }
 
 void ConsoleWidget::contextMenuEvent(QContextMenuEvent *event)
