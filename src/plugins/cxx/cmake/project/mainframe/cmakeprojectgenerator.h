@@ -34,7 +34,7 @@ private slots:
     void actionTriggered();
     void setRootItemToView(QStandardItem *root);
     void doBuildCmdExecuteEnd(const BuildCommandInfo &info, int status);
-    void doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files);
+    void runCMake(QStandardItem *root, const QPair<QString, QStringList> &files);
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
     void recursionRemoveItem(QStandardItem *item);
 
