@@ -58,6 +58,7 @@ private slots:
     void doActiveProject(QStandardItem *root);
     void actionNewDocument(const QStandardItem *item);
     void actionDeleteDocument(const QStandardItem *item);
+    void actionOpenInTerminal(const QStandardItem *item);
     void creatNewDocument(const QStandardItem *item, const QString &fileName);
 };
 

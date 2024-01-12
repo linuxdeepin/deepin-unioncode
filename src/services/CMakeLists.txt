@@ -7,7 +7,7 @@ set(CXX_H
     window/windowelement.h
     window/windowservice.h
     debugger/debuggerservice.h
-    container/containerservice.h
+#    container/containerservice.h
     project/projectactioninfo.h
     project/projectviewinterface.h
     project/projectinfo.h
@@ -37,6 +37,7 @@ set(CXX_H
     language/languageservice.h
     symbol/symbolservice.h
     editor/editorservice.h
+    terminal/terminalservice.h
     )
 
 add_library(

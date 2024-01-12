@@ -11,6 +11,7 @@
 #include "common/common.h"
 #include "services/project/projectservice.h"
 #include "services/window/windowelement.h"
+#include "services/terminal/terminalservice.h"
 
 #include <DTreeView>
 #include <DPushButton>
@@ -26,9 +27,7 @@
 #include <QUrl>
 #include <QClipboard>
 
-const QString DELETE_MESSAGE_TEXT {DTreeView::tr("The delete operation will be removed from"
-                                                 "the disk and will not be recoverable "
-                                                 "after this operation.\nDelete anyway?")};
+const QString DELETE_MESSAGE_TEXT {DTreeView::tr("Delete operation not be recoverable, delete anyway?")};
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
@@ -318,7 +317,7 @@ void ProjectTree::mouseMoveEvent(QMouseEvent *event)
     DTreeView::mouseMoveEvent(event);
 }
 
-DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *child)
+DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *childItem)
 {
     DMenu *menu = nullptr;
     QString toolKitName = ProjectInfo::get(root).kitName();
@@ -326,7 +325,7 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *ch
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService->supportGeneratorName<ProjectGenerator>().contains(toolKitName)) {
-        menu = projectService->createGenerator<ProjectGenerator>(toolKitName)->createItemMenu(child);
+        menu = projectService->createGenerator<ProjectGenerator>(toolKitName)->createItemMenu(childItem);
     }
 
     if (!menu)
@@ -334,25 +333,35 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *ch
 
     QAction *newDocAction = new QAction(tr("New Document"));    
     QObject::connect(newDocAction, &QAction::triggered, this, [=](){
-        actionNewDocument(child);
+        actionNewDocument(childItem);
     });
 
-    QModelIndex index = d->itemModel->indexFromItem(child);
+    QModelIndex index = d->itemModel->indexFromItem(childItem);
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
 
+    // add open in terminal menu item.
+    QAction *openInTerminal = new QAction(tr("Open In Terminal"));
+    menu->addAction(openInTerminal);
+    connect(openInTerminal, &QAction::triggered, [=](){
+        actionOpenInTerminal(childItem);
+    });
+
+    // add delete file menu item.
     QAction *deleteDocAction = new QAction(tr("Delete Document"));
     QObject::connect(deleteDocAction, &QAction::triggered, this, [=](){
-        actionDeleteDocument(child);
+        actionDeleteDocument(childItem);
     });
+
     if (info.isDir()) {
         menu->addAction(newDocAction);
         deleteDocAction->setEnabled(false);
     }
     if (info.isFile()) {
         newDocAction->setEnabled(false);
-        deleteDocAction->setEnabled(false);
+        deleteDocAction->setEnabled(true);
     }
     menu->addAction(deleteDocAction);
+
     return menu;
 }
 
@@ -490,9 +499,9 @@ void ProjectTree::actionDeleteDocument(const QStandardItem *item)
         doDelete = true;
     };
 
-    QString mess = DELETE_MESSAGE_TEXT + "\n" + info.filePath();
-    ContextDialog::okCancel(mess,
-                            DELETE_MESSAGE_TEXT,
+    QString message = DELETE_MESSAGE_TEXT;
+    ContextDialog::okCancel(message,
+                            info.fileName(),
                             QMessageBox::Warning,
                             okCallBack,
                             nullptr);
@@ -500,6 +509,22 @@ void ProjectTree::actionDeleteDocument(const QStandardItem *item)
     if (!doDelete)
         return;
     QFile(info.filePath()).remove();
+}
+
+void ProjectTree::actionOpenInTerminal(const QStandardItem *menuItem)
+{
+    if (!menuItem)
+        return;
+
+    QModelIndex index = d->itemModel->indexFromItem(menuItem);
+    QFileInfo fileInfo(index.data(Qt::ToolTipRole).toString());
+    QString dirPath = fileInfo.dir().path();
+    auto terminalService = dpfGetService(TerminalService);
+    if (terminalService) {
+        terminalService->executeCommand(QString("cd %1\n").arg(dirPath));
+        terminalService->executeCommand(QString("clear\n"));
+        editor.switchContext(CONSOLE_TAB_TEXT);
+    }
 }
 
 void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fileName)
