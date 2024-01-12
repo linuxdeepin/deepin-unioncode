@@ -16,6 +16,7 @@
 #include "common/dialog/propertiesdialog.h"
 #include "common/util/eventdefinitions.h"
 #include "common/actionmanager/actionmanager.h"
+#include "base/abstractaction.h"
 
 #include <QtXml>
 #include <QFileIconProvider>
@@ -50,7 +51,7 @@ CmakeProjectGenerator::CmakeProjectGenerator()
     // build cmake file changed notify
     QObject::connect(CmakeItemKeeper::instance(),
                      &CmakeItemKeeper::cmakeFileNodeNotify,
-                     this, &CmakeProjectGenerator::doCmakeFileNodeChanged);
+                     this, &CmakeProjectGenerator::runCMake);
 
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
@@ -59,6 +60,15 @@ CmakeProjectGenerator::CmakeProjectGenerator()
         qCritical() << "Failed, not found service : builderService";
         abort();
     }
+
+    // add run cmake menu item.
+    QAction *runCMake = new QAction(tr("Run CMake"));
+    ActionManager::getInstance()->registerAction(runCMake, "Build.RunCMake", runCMake->text());
+    dpfGetService(WindowService)->addAction(dpfservice::MWM_BUILD, new AbstractAction(runCMake));
+
+    QObject::connect(runCMake, &QAction::triggered, [this](){
+        this->runCMake(this->rootItem, {});
+    });
 }
 
 CmakeProjectGenerator::~CmakeProjectGenerator()
@@ -380,18 +390,15 @@ void CmakeProjectGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, i
     emit projectService->projectConfigureDone(QString());
 }
 
-void CmakeProjectGenerator::doCmakeFileNodeChanged(QStandardItem *root, const QPair<QString, QStringList> &files)
+void CmakeProjectGenerator::runCMake(QStandardItem *root, const QPair<QString, QStringList> &files)
 {
     Q_UNUSED(files)
 
     if (d->reloadCmakeFileItems.contains(root))
         return;
 
-    qInfo() << __FUNCTION__;
-    using namespace dpfservice;
-
     // get current project info
-    auto proInfo = ProjectInfo::get(root);
+    auto proInfo = dpfservice::ProjectInfo::get(root);
 
     // cache the reload item
     d->reloadCmakeFileItems.append(root);
@@ -428,7 +435,7 @@ void CmakeProjectGenerator::recursionRemoveItem(QStandardItem *item)
     }
 
     delete item;
-    return;
+    item = nullptr;
 }
 
 void CmakeProjectGenerator::createBuildMenu(QMenu *menu)
@@ -447,5 +454,6 @@ void CmakeProjectGenerator::createBuildMenu(QMenu *menu)
     addBuildMenu("Build.Rebuild");
     addBuildMenu("Build.Clean");
     addBuildMenu("Build.Cancel");
+    addBuildMenu("Build.RunCMake");
     menu->addSeparator();
 }
