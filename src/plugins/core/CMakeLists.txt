@@ -10,6 +10,8 @@ set(CXX_CPP
     transceiver/corereceiver.cpp
     mainframe/loadingwidget.cpp
     mainframe/mainwindow.cpp
+    mainframe/controller.cpp
+    mainframe/navigationbar.cpp
     core.cpp
     core.json
     )
@@ -22,6 +24,8 @@ set(CXX_H
     transceiver/corereceiver.h
     mainframe/loadingwidget.h
     mainframe/mainwindow.h
+    mainframe/controller.h
+    mainframe/navigationbar.h
     core.h
     )
 

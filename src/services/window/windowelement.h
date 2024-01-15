@@ -12,6 +12,14 @@
 
 // window display elements
 namespace dpfservice {
+enum Position {
+    FullWindow = 0x0,
+    Left = 0x1,
+    Right = 0x2,
+    Top = 0x3,
+    Bottom = 0x4,
+    Central = 0x5
+};
 
 // MWNA = MainWindow Navigation
 inline const QString MWNA_RECENT { QObject::tr("Recent") };

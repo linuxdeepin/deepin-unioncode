@@ -4,6 +4,7 @@
 
 #include "core.h"
 #include "mainframe/windowkeeper.h"
+#include "mainframe/controller.h"
 #include "services/window/windowservice.h"
 
 #include <framework/framework.h>
@@ -41,6 +42,8 @@ bool Core::start()
     }
 
     WindowKeeper::instace();
+
+    //Controller::instance();
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
         ActionManager::getInstance()->readUserSetting();

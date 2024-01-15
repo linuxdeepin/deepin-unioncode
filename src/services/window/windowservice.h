@@ -34,6 +34,56 @@ public:
 
     }
 
+    //--controller--
+    /*!
+     * \brief Check if has plugin view
+     * \param plugin Name
+     */
+    DPF_INTERFACE(bool, hasView, const QString &plugin);
+
+    /*!
+     * \brief add Widget to Position
+     * \param widget name
+     * \param widget
+     * \param Position
+     * \param replace
+     */
+    DPF_INTERFACE(void, addWidget, const QString &name, AbstractWidget *widget, Position pos, bool replace);
+
+
+//    DPF_INTERFACE(void, addNavigation, AbstractAction *action);
+
+//    DPF_INTERFACE(void, addNavigationToBottom, AbstractAction *action);
+
+//    DPF_INTERFACE(void, switchWidgetNavigation, const QString *navName);
+
+
+//    DPF_INTERFACE(void, addContextWidget, const QString &title, AbstractWidget *contextWidget, bool isVisible);
+
+
+//    DPF_INTERFACE(void, showContextWidget);
+
+
+//    DPF_INTERFACE(void, hideContextWidget);
+
+
+//    DPF_INTERFACE(void, switchContextWidget, const QString &title);
+
+
+//    DPF_INTERFACE(void, addChildMenu, AbstractMenu *menu);
+
+//    DPF_INTERFACE(void, insertAction, const QString &menuName, const QString &beforActionName, AbstractAction *action);
+
+//    DPF_INTERFACE(void, addAction, const QString &menuName, AbstractAction *action);
+
+//    DPF_INTERFACE(void, removeActions, const QString &menuName);
+
+//    DPF_INTERFACE(void, addOpenProjectAction, const QString &name, AbstractAction *action);
+
+//    DPF_INTERFACE(void, addTopToolItem, const QString &name, AbstractAction *action);
+
+    //--controller--
+
     /*!
      * \brief addActionNavigation 添加导航栏action
      * \param action 实例对象
