@@ -4,7 +4,7 @@
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include "services/window/windowelement.h"
 #include <DMainWindow>
 #include <DMenu>
 
@@ -14,34 +14,31 @@
 #include <QString>
 
 DWIDGET_USE_NAMESPACE
-
+using dpfservice::Position;
 class MainWindowPrivate;
 class MainWindow : public DMainWindow
 {
     Q_OBJECT
 public:
-    enum Position {
-        FullWindow = 0x0,
-        Left = 0x1,
-        Right = 0x2,
-        Top = 0x3,
-        Bottom = 0x4,
-        Central = 0x5
-    };
-
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     //dockWidget
-    void addWidget(const QString &name, QWidget *widget, Position pos = FullWindow);
+    void addWidget(const QString &name, QWidget *widget, Position pos = Position::FullWindow);
 
-    void replaceWidget(const QString &name, QWidget *widget, Position pos = FullWindow);
+    void replaceWidget(const QString &name, QWidget *widget, Position pos = Position::FullWindow);
 
     void hideWidget(const QString &name);
+    void hideWidget(Position pos);
+    void hideAllWidget();
+
     void showWidget(const QString &name);
+    void showWidget(Position pos);
+    void showAllWidget();
+
     void removeWidget(const QString &name);
     void removeWidget(Position pos);
 
-    //只能对四周的widget生效，centralWidget不生效
+    //only work for dockWidget,can`t work for centralWidget
     void splitWidgetOrientation(const QString &first, const QString &second, Qt::Orientation orientation);
 
     //toolbar
@@ -49,13 +46,12 @@ public:
 
     //topToolBar - titleBar
     void clearTopTollBar();
+    void hideTopTollBar();
     void addTopToolItem(const QString &name, QAction *action);
+    void showTopToolItem(const QString &name);
     void addTopToolBarSpacing(int spacing);
 
     static Qt::DockWidgetArea positionTodockArea(Position pos);
-
-    //menu
-    DMenu *getMenu();
 
 private:
     MainWindowPrivate *d;
@@ -64,6 +60,6 @@ private:
     void addTopToolBar();
     void removeAllDockWidget();
 };
-Q_DECLARE_METATYPE(MainWindow::Position)
+Q_DECLARE_METATYPE(Position)
 
 #endif   // MAINWINDOW_H
