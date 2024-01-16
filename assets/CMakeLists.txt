@@ -1,9 +1,10 @@
+# install templates.
 install(DIRECTORY templates/
     DESTINATION "${SOURCES_INSTALL_RPEFIX}/templates")
 
 find_package(Qt5 COMPONENTS LinguistTools)
 
-
+# install translation.
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
     file(GLOB TS_FILES "translations/*.ts")
     foreach(TS_FILE IN LISTS TS_FILES)
@@ -35,3 +36,13 @@ message("tool install path: ${TOOL_INSTALL_PATH}")
 file(GLOB TOOL_FILES "${CMAKE_SOURCE_DIR}/assets/tools/*.tar.gz")
 message(STATUS "TOOL_FILES ${TOOL_FILES}")
 install(FILES ${TOOL_FILES} DESTINATION ${TOOL_INSTALL_PATH})
+
+# install configure files.
+file(GLOB SUPPORTFILES "${CMAKE_CURRENT_SOURCE_DIR}/configures/*.support")
+file(GLOB DESKTOPFILES "${CMAKE_CURRENT_SOURCE_DIR}/configures/*.desktop")
+file(GLOB ICON "${CMAKE_CURRENT_SOURCE_DIR}/configures/*.svg")
+
+install(FILES ${SUPPORTFILES} DESTINATION "${SOURCES_INSTALL_RPEFIX}/configures")
+install(FILES ${DESKTOPFILES} DESTINATION "/usr/share/applications")
+install(FILES ${ICON} DESTINATION "${SOURCES_INSTALL_RPEFIX}/configures/icons")
+
