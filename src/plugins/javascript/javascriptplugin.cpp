@@ -11,7 +11,6 @@
 #include "services/window/windowservice.h"
 #include "services/debugger/debuggerservice.h"
 #include "base/abstractwidget.h"
-#include "base/abstractcentral.h"
 #include "debugger/jsdebugger.h"
 
 #include <QtWidgets/QAction>

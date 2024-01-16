@@ -9,10 +9,8 @@
 #include "services/window/windowservice.h"
 #include "services/debugger/debuggerservice.h"
 
-#include "base/abstractnav.h"
 #include "base/abstractaction.h"
 #include "base/abstractmenu.h"
-#include "base/abstractmainwindow.h"
 #include "base/abstractwidget.h"
 
 #include <QMenu>

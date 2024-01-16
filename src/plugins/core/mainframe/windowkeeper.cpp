@@ -368,7 +368,7 @@ void WindowKeeper::addNavigation(const QString &navName, const QString &iconName
     createNavIconBtn(navName, iconName);
 }
 
-void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral *central)
+void WindowKeeper::addCentralNavigation(const QString &navName, AbstractWidget *central)
 {
     qInfo() << __FUNCTION__;
     DWidget *inputWidget = static_cast<DWidget *>(central->qWidget());
@@ -393,9 +393,9 @@ void WindowKeeper::addCentralNavigation(const QString &navName, AbstractCentral 
     d->centrals.insert(navName, inputWidget);
 }
 
-AbstractCentral *WindowKeeper::getCentralNavigation(const QString &navName)
+AbstractWidget *WindowKeeper::getCentralNavigation(const QString &navName)
 {
-    return new AbstractCentral(d->centrals.value(navName));
+    return new AbstractWidget(d->centrals.value(navName));
 }
 
 void WindowKeeper::addMenu(AbstractMenu *menu)

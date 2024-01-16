@@ -5,7 +5,6 @@
 #include "recent.h"
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
-#include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "mainframe/recentdisplay.h"
@@ -32,7 +31,7 @@ bool Recent::start()
                          RecentDisplay::instance(), &RecentDisplay::addProject);
         QObject::connect(RecentProxy::instance(), &RecentProxy::saveOpenedFile,
                          RecentDisplay::instance(), &RecentDisplay::addDocument);
-        auto recentWidgetImpl = new AbstractCentral(RecentDisplay::instance());
+        auto recentWidgetImpl = new AbstractWidget(RecentDisplay::instance());
         if (windowService->addCentralNavigation) {
             windowService->addCentralNavigation(MWNA_RECENT, recentWidgetImpl);
         }

@@ -5,7 +5,6 @@
 #ifndef APPOUTPUTPANE_H
 #define APPOUTPUTPANE_H
 
-#include "base/abstractoutputpane.h"
 #include "debuggerglobals.h"
 
 #include <QPlainTextEdit>

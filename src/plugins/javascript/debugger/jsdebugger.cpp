@@ -6,7 +6,6 @@
 
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
-#include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 
 #include <QFile>
@@ -138,6 +137,7 @@ void JSDebugger::runCommand(QScriptEngineDebugger::DebuggerAction command)
 QWidget *JSDebugger::debuggerWidget(QScriptEngineDebugger::DebuggerWidget widget) const
 {
 //    return debugger.widget(widget);
+    Q_UNUSED(widget)
     return {};
 }
 
@@ -159,7 +159,7 @@ QScriptValue JSDebugger::evaluateFile(QScriptEngine &engine, const QString &file
 
 void JSDebugger::addPagesToContext(const QScriptEngineDebugger &debugger)
 {
-    codeEditor = new AbstractCentral(debugger.widget(QScriptEngineDebugger::CodeWidget));
+    codeEditor = new AbstractWidget(debugger.widget(QScriptEngineDebugger::CodeWidget));
     stackPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::StackWidget));
     breakpointsPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::BreakpointsWidget));
     scriptPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::ScriptsWidget));
@@ -189,7 +189,7 @@ void JSDebugger::removePagesFromContext()
     removePage(scriptPane);
     removePage(errorPane);
 
-    windowService->setWidgetEdit(new AbstractCentral(oldWidgetEdit));
+    windowService->setWidgetEdit(new AbstractWidget(oldWidgetEdit));
     windowService->setWidgetWatch(new AbstractWidget(oldWidgetWatch));
 }
 

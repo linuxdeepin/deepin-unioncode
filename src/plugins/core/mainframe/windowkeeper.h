@@ -5,12 +5,8 @@
 #ifndef WINDOWKEEPER_H
 #define WINDOWKEEPER_H
 
-#include "base/abstractnav.h"
 #include "base/abstractaction.h"
 #include "base/abstractmenu.h"
-#include "base/abstractmenubar.h"
-#include "base/abstractmainwindow.h"
-#include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 
 #include <framework/framework.h>
@@ -49,8 +45,8 @@ public:
 
 public slots:
     void addNavigation(const QString &navName, const QString &iconName);
-    void addCentralNavigation(const QString &navName, AbstractCentral *central);
-    AbstractCentral *getCentralNavigation(const QString &navName);
+    void addCentralNavigation(const QString &navName, AbstractWidget *central);
+    AbstractWidget *getCentralNavigation(const QString &navName);
     void switchWidgetNavigation(const QString &navName);
 
     void addMenu(AbstractMenu *menu);

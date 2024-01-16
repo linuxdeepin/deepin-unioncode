@@ -6,7 +6,8 @@
 #include "services/window/windowservice.h"
 #include "mainframe/cvskeeper.h"
 #include "base/abstractaction.h"
-#include "base/abstractcentral.h"
+#include "base/abstractwidget.h"
+
 #include <QAction>
 
 using namespace dpfservice;
@@ -26,9 +27,9 @@ bool Collaborators::start()
         }
         if (windowService->addCentralNavigation) {
             windowService->addCentralNavigation(MWNA_GIT,
-                                                new AbstractCentral(CVSkeeper::instance()->gitMainWidget()));
+                                                new AbstractWidget(CVSkeeper::instance()->gitMainWidget()));
             windowService->addCentralNavigation(MWNA_SVN,
-                                                new AbstractCentral(CVSkeeper::instance()->svnMainWidget()));
+                                                new AbstractWidget(CVSkeeper::instance()->svnMainWidget()));
         }
     }
     return true;

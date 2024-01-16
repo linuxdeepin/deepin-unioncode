@@ -19,10 +19,7 @@ class AbstractMenuPrivate
 AbstractMenu::AbstractMenu(void *qMenu)
     : d(new AbstractMenuPrivate())
 {
-    if (!qMenu) {
-        qCritical() << "Failed, use QAction(0x0) to AbstractAction";
-        abort();
-    }
+    Q_ASSERT(qMenu);
 
     d->menu = static_cast<DMenu*>(qMenu);
     DMenu::connect(d->menu, &DMenu::destroyed,

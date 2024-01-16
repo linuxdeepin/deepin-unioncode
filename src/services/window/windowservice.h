@@ -14,9 +14,7 @@
 class Core;
 class AbstractAction;
 class AbstractMenu;
-class AbstractCentral;
 class AbstractWidget;
-class AbstractConsole;
 
 namespace dpfservice {
 // service interface
@@ -75,30 +73,23 @@ public:
      * \param name 导航栏名称，从AbstractAction获取
      * \param central 添加的居中组件实例对象
      */
-    DPF_INTERFACE(void, addCentralNavigation, const QString &name, AbstractCentral *central);
+    DPF_INTERFACE(void, addCentralNavigation, const QString &name, AbstractWidget *central);
 
     /*!
      * \brief addWidgetWorkspace 左侧工作空间组件,可以是文件树,工程管理等
-     * \param title 设置
+     * \param AbstractWidget 控件
      * \param widget 设置的编辑器文件树实例对象
      */
     DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget, const QString &iconName);
-
-    /*!
-     * \brief setWidgetConsole 设置默认终端
-     * \param console 实例对象
-     */
-    DPF_INTERFACE(void, setWidgetConsole, AbstractConsole *console);
 
     /**
      * @brief DPF_INTERFACE
      * @param widget
      */
-    DPF_INTERFACE(QWidget*, setWidgetEdit, AbstractCentral *widget);
+    DPF_INTERFACE(QWidget*, setWidgetEdit, AbstractWidget *widget);
 
     /*!
-     * \brief addContextWidget 添加交互组件
-     * \param contextTab Tab名称
+     * \brief addContextWidget 添加交AbstractWidgetam contextTab Tab名称
      * \param contextWidget 实例对象
      */
     DPF_INTERFACE(void, addContextWidget, const QString &contextTab, AbstractWidget *contextWidget, const QString &group, bool isVisible);
@@ -163,7 +154,7 @@ public:
 
     DPF_INTERFACE(void, addTopToolBar, const QString &name, QAction *action, const QString &group, bool isSeparat);
 
-    DPF_INTERFACE(AbstractCentral *, getCentralNavigation, const QString &navName);
+    DPF_INTERFACE(AbstractWidget *, getCentralNavigation, const QString &navName);
 
     DPF_INTERFACE(void, addWorkspaceArea, const QString &title, AbstractWidget *widget);
 

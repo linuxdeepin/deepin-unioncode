@@ -20,10 +20,7 @@ DWIDGET_USE_NAMESPACE
 
 class QGridLayout;
 class QTabWidget;
-class AbstractCentral;
 class AbstractWidget;
-class AbstractConsole;
-class QDockWidget;
 class AutoHideDockWidget;
 class ToolBarManager;
 
@@ -41,7 +38,7 @@ public:
     void switchWorkspaceArea(const QString &title);
 
     // return old edit widget
-    DWidget *setWidgetEdit(AbstractCentral *editWidget);
+    DWidget *setWidgetEdit(AbstractWidget *editWidget);
     // return old watch widget
     DWidget *setWidgetWatch(AbstractWidget *watchWidget);
     void addContextWidget(const QString &title, AbstractWidget *contextWidget, const QString &group, bool isVisibal);

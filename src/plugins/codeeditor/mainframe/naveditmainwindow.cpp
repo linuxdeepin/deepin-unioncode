@@ -4,8 +4,6 @@
 
 #include "naveditmainwindow.h"
 #include "base/abstractwidget.h"
-#include "base/abstractcentral.h"
-#include "base/abstractconsole.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include "services/symbol/symbolservice.h"
@@ -193,7 +191,7 @@ void NavEditMainWindow::switchWorkspaceArea(const QString &title)
     }
 }
 
-DWidget *NavEditMainWindow::setWidgetEdit(AbstractCentral *edit)
+DWidget *NavEditMainWindow::setWidgetEdit(AbstractWidget *edit)
 {
     DWidget *oldWidget = editWidget;
     editWidget = static_cast<DWidget*>(edit->qWidget());

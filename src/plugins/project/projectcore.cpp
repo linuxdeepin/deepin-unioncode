@@ -9,7 +9,6 @@
 #include "common/common.h"
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
-#include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
@@ -42,10 +41,6 @@ bool ProjectCore::start()
             auto view = new AbstractWidget(ProjectKeeper::instance()->treeView());
             windowService->addWidgetWorkspace(MWCWT_PROJECTS, view, "edit-project");
         }
-    }
-
-    if (windowService && windowService->addCentralNavigation) {
-        //windowService->addCentralNavigation(MWNA_RUNTIME, new AbstractCentral(RuntimeManager::instance()->getRuntimeWidget()));
     }
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,

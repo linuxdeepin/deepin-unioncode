@@ -6,7 +6,6 @@
 #include "mainframe/optionlspgenerator.h"
 
 #include "base/abstractmenu.h"
-#include "base/abstractmainwindow.h"
 #include "base/abstractwidget.h"
 
 #include "services/option/optionservice.h"
