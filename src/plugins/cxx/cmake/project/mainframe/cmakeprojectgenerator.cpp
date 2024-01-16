@@ -387,7 +387,6 @@ void CmakeProjectGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, i
     } else {
         createRootItem(d->configureProjectInfo);
     }
-    emit projectService->projectConfigureDone(QString());
 }
 
 void CmakeProjectGenerator::runCMake(QStandardItem *root, const QPair<QString, QStringList> &files)

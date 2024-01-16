@@ -171,12 +171,6 @@ public:
      * \return Target
      */
     DPF_INTERFACE(Target, getActiveTarget, TargetType);
-
-Q_SIGNALS:
-    /*!
-     * \brief projectConfigureDone
-     */
-    void projectConfigureDone(const QString &buildDirectory);
 };
 
 /* MainWindow codeediter workspace title,

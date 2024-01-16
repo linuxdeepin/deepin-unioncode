@@ -89,7 +89,6 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     QStandardItem * rootItem = StandardModel->invisibleRootItem();
 
     auto iterTpl = templateVec.begin();
-    DStandardItem *tpl = new DStandardItem(iterTpl->category);
 
     QVector<TemplateCategory> tplVec = iterTpl->templateVec;
     for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
@@ -120,7 +119,6 @@ void MainDialog::setupUI(TemplateVector &templateVec)
             QStandardItem * rootItem = StandardModel->invisibleRootItem();
 
             auto iterTpl = templateVec.begin();
-            DStandardItem *tpl = new DStandardItem(iterTpl->category);
 
             QVector<TemplateCategory> tplVec = iterTpl->templateVec;
             for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
@@ -151,7 +149,6 @@ void MainDialog::setupUI(TemplateVector &templateVec)
             QStandardItem * rootItem = StandardModel->invisibleRootItem();
             auto iterTpl = templateVec.begin() +1 ;
 
-            DStandardItem *tpl = new DStandardItem(iterTpl->category);
             QVector<TemplateCategory> tplVec = iterTpl->templateVec;
             for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
 
