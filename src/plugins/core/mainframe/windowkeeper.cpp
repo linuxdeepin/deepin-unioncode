@@ -33,6 +33,13 @@
 #include <QStandardPaths>
 #include <QShortcut>
 
+// MW = MainWindow
+inline constexpr int MW_WIDTH { 1280 };
+inline constexpr int MW_HEIGHT { 860 };
+
+inline constexpr int MW_MIN_WIDTH { 1280 };
+inline constexpr int MW_MIN_HEIGHT { 600 };
+
 static WindowKeeper *ins { nullptr };
 using namespace dpfservice;
 class WindowKeeperPrivate
@@ -616,7 +623,7 @@ void WindowKeeper::addTopToolBar(const QString &name, QAction *action, const QSt
 void WindowKeeper::openFileDialog()
 {
     QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString filePath = DFileDialog::getOpenFileName(nullptr, DIALOG_OPEN_DOCUMENT_TITLE, dir);
+    QString filePath = DFileDialog::getOpenFileName(nullptr, tr("Open Document"), dir);
     if (filePath.isEmpty() && !QFileInfo(filePath).exists())
         return;
     recent.saveOpenedFile(filePath);

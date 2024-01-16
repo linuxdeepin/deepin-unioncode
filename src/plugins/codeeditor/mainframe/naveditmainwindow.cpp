@@ -6,7 +6,6 @@
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
-#include "services/symbol/symbolservice.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
 
