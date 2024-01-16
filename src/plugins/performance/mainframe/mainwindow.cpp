@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
         if (checked) {
             QString pid = d->editPid->text();
             if (pid.isEmpty()) {
-                ContextDialog::okCancel(QMessageBox::tr("attach processId can't empty!"));
+                CommonDialog::okCancel(QMessageBox::tr("attach processId can't empty!"));
                 return;
             }
 
@@ -77,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
                 queryPidLines = data;
             });
             if (queryPidLines.isEmpty() || queryPidLines.count('\n') < 2) {
-                ContextDialog::okCancel(QMessageBox::tr("attach processId no exites!"));
+                CommonDialog::okCancel(QMessageBox::tr("attach processId no exites!"));
                 return;
             }
 

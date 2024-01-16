@@ -4,7 +4,7 @@
 
 #include "language.h"
 #include "util/custompaths.h"
-#include "dialog/contextdialog.h"
+#include "dialog/commondialog.h"
 
 #include <QJsonDocument>
 #include <QFile>
@@ -54,7 +54,7 @@ void Language::initialize()
     }
 
     if (documents::languageGlobal.isEmpty()) {
-        ContextDialog::ok(QObject::tr("The format of the language configuration file is incorrect or damaged. "
+        CommonDialog::ok(QObject::tr("The format of the language configuration file is incorrect or damaged. "
                                       "Check that the file is released correctly. "
                                       "If it cannot be solved, reinstall the software to solve the problem"));
         qCritical() << QString("Failed, %0 jsonDoc is Empty. ").arg(globalPath())

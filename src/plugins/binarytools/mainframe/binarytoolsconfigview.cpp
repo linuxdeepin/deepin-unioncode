@@ -8,7 +8,7 @@
 
 #include "common/widget/collapsewidget.h"
 #include "common/util/custompaths.h"
-#include "common/dialog/contextdialog.h"
+#include "common/dialog/commondialog.h"
 
 #include <DWidget>
 #include <DComboBox>

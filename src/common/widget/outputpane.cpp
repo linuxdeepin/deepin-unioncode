@@ -15,6 +15,7 @@
 const QColor kTextColorNormal(150, 150, 150);
 const QColor kErrorMessageTextColor(255, 108, 108);
 const QColor kMessageOutput(0, 135, 135);
+constexpr int kDefaultMaxCharCount = 10000000;
 
 class OutputPanePrivate
 {
@@ -30,7 +31,7 @@ public:
 
     bool enforceNewline = false;
     bool scrollToBottom = true;
-    int maxCharCount = default_max_char_count();
+    int maxCharCount = kDefaultMaxCharCount;
     QTextCursor cursor;
     DMenu *menu = nullptr;
 };

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "contextdialog.h"
+#include "commondialog.h"
 
 #include <DMessageBox>
 #include <DDialog>
@@ -15,7 +15,7 @@
 #include <QGroupBox>
 #include <QDebug>
 
-void ContextDialog::okCancel(QString text, QString title,
+void CommonDialog::okCancel(QString text, QString title,
                              DMessageBox::Icon icon,
                              std::function<void (bool)> okCallBack,
                              std::function<void (bool)> cancelCallBack)
@@ -39,7 +39,7 @@ void ContextDialog::okCancel(QString text, QString title,
     messageBox.exec();
 }
 
-void ContextDialog::ok(QString text, QString title,
+void CommonDialog::ok(QString text, QString title,
                        DMessageBox::Icon icon,
                        std::function<void (bool)> okCallBack)
 {
@@ -58,7 +58,7 @@ void ContextDialog::ok(QString text, QString title,
     messageBox.exec();
 }
 
-void ContextDialog::question(QString text, QString title, DMessageBox::Icon icon, std::function<void (bool)> okCallBack, std::function<void (bool)> noCallBack, std::function<void (bool)> cancelCallBack)
+void CommonDialog::question(QString text, QString title, DMessageBox::Icon icon, std::function<void (bool)> okCallBack, std::function<void (bool)> noCallBack, std::function<void (bool)> cancelCallBack)
 {
     if (text.isEmpty())
         return;
@@ -83,7 +83,7 @@ void ContextDialog::question(QString text, QString title, DMessageBox::Icon icon
     messageBox.exec();
 }
 
-void ContextDialog::singleChoice(QSet<SingleChoiceBox::Info> infos,
+void CommonDialog::singleChoice(QSet<SingleChoiceBox::Info> infos,
                                  QString windowTitle, QString choiceTitle,
                                  std::function<void (const SingleChoiceBox::Info&)> okCallBack,
                                  std::function<void (const SingleChoiceBox::Info&)> cancelCallBack)

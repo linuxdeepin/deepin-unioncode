@@ -500,7 +500,7 @@ void ProjectTree::actionDeleteDocument(const QStandardItem *item)
     };
 
     QString message = DELETE_MESSAGE_TEXT;
-    ContextDialog::okCancel(message,
+    CommonDialog::okCancel(message,
                             info.fileName(),
                             QMessageBox::Warning,
                             okCallBack,

@@ -239,7 +239,7 @@ void ScintillaEditExtern::saveAsText()
 {
     QFile file(d->filePath);
     if (!file.open(QFile::ReadWrite | QFile::Text | QFile::Truncate)) {
-        ContextDialog::ok("Can't save current: " + file.errorString());
+        CommonDialog::ok("Can't save current: " + file.errorString());
         return;
     }
     d->isSaveText = true;

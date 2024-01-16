@@ -191,7 +191,7 @@ inline static QString svnProgram()
     QString program("/usr/bin/svn");
     QFileInfo fileInfo(program);
     if (!fileInfo.exists() || !fileInfo.isExecutable()) {
-        ContextDialog::ok(QDialog::tr("Please install \"subversion\" software from terminal:"
+        CommonDialog::ok(QDialog::tr("Please install \"subversion\" software from terminal:"
                                       "$ sudo apt install subversion"));
         return "";
     }

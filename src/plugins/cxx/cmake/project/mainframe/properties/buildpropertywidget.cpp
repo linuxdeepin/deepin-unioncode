@@ -16,6 +16,8 @@
 #include <DComboBox>
 #include <DButtonBox>
 #include <DFrame>
+#include <DLineEdit>
+
 #include <QVBoxLayout>
 #include <QFormLayout>
 
@@ -284,6 +286,8 @@ void BuildPropertyWidget::updateDetail()
 
 void BuildPropertyWidget::initRunConfig(const QString &workDirectory, RunConfigure &runConfigure)
 {
+    Q_UNUSED(workDirectory)
+
     if (runConfigure.params.isEmpty()) {
         QStringList exeTargetList = TargetsManager::instance()->getExeTargetNamesList();
         foreach (auto targetName, exeTargetList) {
