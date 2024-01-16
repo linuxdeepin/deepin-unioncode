@@ -127,7 +127,7 @@ void ReposWidget::loadRevisionFiles()
     process.waitForStarted();
     process.waitForFinished();
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
     }
 
     d->amendsWidget->modView()->setUpdatesEnabled(false);
@@ -156,7 +156,7 @@ void ReposWidget::reloadRevisionFiles()
     process.waitForStarted();
     process.waitForFinished();
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
     }
 
     d->amendsWidget->modView()->setUpdatesEnabled(false);
@@ -204,7 +204,7 @@ void ReposWidget::loadHistory()
     process.waitForStarted();
     process.waitForFinished();
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
         return;
     }
 
@@ -283,7 +283,7 @@ void ReposWidget::reloadHistory()
     process.waitForStarted();
     process.waitForFinished();
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
         return;
     }
 
@@ -458,7 +458,7 @@ void ReposWidget::doUpdateRepos()
     processUpdate.start();
     processUpdate.waitForFinished();
     if (processUpdate.exitCode() != 0 || processUpdate.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(processUpdate.readAllStandardError());
+        CommonDialog::ok(processUpdate.readAllStandardError());
     }
     doRefresh();
 }
@@ -482,7 +482,7 @@ void ReposWidget::doAmendsCommit()
     processCommit.start();
     processCommit.waitForFinished();
     if (processCommit.exitCode() != 0 || processCommit.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(processCommit.readAllStandardError());
+        CommonDialog::ok(processCommit.readAllStandardError());
     }
     reloadRevisionFiles();
 }
@@ -499,7 +499,7 @@ void ReposWidget::doAmendsRevertAll()
     process.start();
     process.waitForFinished();
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
         return;
     }
     qInfo() << process.errorString() << QString::fromUtf8(process.readAll());
@@ -518,7 +518,7 @@ void ReposWidget::doDiffFileAtRevision()
     process.start();
     process.waitForFinished();
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
         return;
     }
 
@@ -543,7 +543,7 @@ bool ReposWidget::testUserLoggin(const QString &reposPath, const QString &name, 
     process.start();
     process.waitForFinished();
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
         return false;
     }
     return true;
@@ -635,7 +635,7 @@ bool ReposWidget::add(const QString &display)
     process.waitForStarted();
     process.waitForFinished();
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
         return false;
     }
     return true;
@@ -654,7 +654,7 @@ bool ReposWidget::revert(const QString &display)
     process.waitForStarted();
     process.waitForFinished();
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
         return false;
     }
     return true;

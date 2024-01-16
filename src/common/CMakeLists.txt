@@ -48,9 +48,8 @@ set(CXX_H
     supportfile/editorstyle.h
     supportfile/language.h
     supportfile/windowstyle.h
-    supportfile/builder.h
     supportfile/dapconfig.h
-    dialog/contextdialog.h
+    dialog/commondialog.h
     dialog/propertiesdialog.h
     dialog/pip3dialog.h
     dialog/processdialog.h
@@ -63,7 +62,6 @@ set(CXX_H
     widget/elidedlabel.h
     widget/generator.h
     widget/pagewidget.h
-    widget/hotkeylineedit.h
     widget/outputpane.h
     type/constants.h
     type/menuext.h
@@ -103,9 +101,8 @@ set(CXX_CPP
     supportfile/language.cpp
     supportfile/editorstyle.cpp
     supportfile/windowstyle.cpp
-    supportfile/builder.cpp
     supportfile/dapconfig.cpp
-    dialog/contextdialog.cpp
+    dialog/commondialog.cpp
     dialog/propertiesdialog.cpp
     dialog/pip3dialog.cpp
     dialog/processdialog.cpp
@@ -118,7 +115,6 @@ set(CXX_CPP
     widget/singlechoicebox.cpp
     widget/generator.cpp
     widget/pagewidget.cpp
-    widget/hotkeylineedit.cpp
     widget/outputpane.cpp
     toolchain/toolchain.cpp
     type/constants.cpp

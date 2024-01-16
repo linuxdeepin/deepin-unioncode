@@ -5,7 +5,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include "dialog/contextdialog.h"
+#include "dialog/commondialog.h"
 #include "dialog/wgetdialog.h"
 #include "dialog/pip3dialog.h"
 #include "dialog/processdialog.h"
@@ -23,7 +23,6 @@
 #include "util/fileoperation.h"
 #include "util/environment.h"
 #include "util/commandparser.h"
-#include "supportfile/builder.h"
 #include "supportfile/editorstyle.h"
 #include "supportfile/windowstyle.h"
 #include "supportfile/language.h"
@@ -35,7 +34,6 @@
 #include "widget/statuswidget.h"
 #include "widget/elidedlabel.h"
 #include "widget/generator.h"
-#include "widget/hotkeylineedit.h"
 #include "toolchain/toolchain.h"
 #include "actionmanager/actionmanager.h"
 #include "actionmanager/command.h"

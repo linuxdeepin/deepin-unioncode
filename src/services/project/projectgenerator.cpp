@@ -81,7 +81,7 @@ bool dpfservice::ProjectGenerator::canOpenProject(const QString &kitName,
             if (QDir(workspace).exists(filename))
                 return true;
         }
-        ContextDialog::ok(QDialog::tr("Cannot open the project!\n"
+        CommonDialog::ok(QDialog::tr("Cannot open the project!\n"
                                       "not exists support files: %0")
                           .arg(supportFileNames().join(",")));
         return false;

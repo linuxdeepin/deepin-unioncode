@@ -106,7 +106,7 @@ void TreeView::selMoveToTrash()
             errMess = DTreeView::tr("Error, Can't move to trash: ") + "\n"
                     + errFilePath  + "\n";
         }
-        ContextDialog::ok(errMess);
+        CommonDialog::ok(errMess);
     }
 }
 
@@ -129,7 +129,7 @@ void TreeView::selRemove()
         mess += path  + "\n";
     }
 
-    ContextDialog::okCancel(mess,
+    CommonDialog::okCancel(mess,
                             DELETE_WINDOW_TEXT,
                             QMessageBox::Warning,
                             okCallBack,
@@ -154,7 +154,7 @@ void TreeView::selRemove()
             errMess = DTreeView::tr("Error, Can't move to trash: ") + "\n"
                     + errFilePath  + "\n";
         }
-        ContextDialog::ok(errMess);
+        CommonDialog::ok(errMess);
     }
 }
 
@@ -177,7 +177,7 @@ void TreeView::selNewDocument()
     }
 
     if (hasErr)
-        ContextDialog::ok(errString);
+        CommonDialog::ok(errString);
 }
 
 void TreeView::selNewFolder()
@@ -199,7 +199,7 @@ void TreeView::selNewFolder()
     }
 
     if (hasErr)
-        ContextDialog::ok(errString);
+        CommonDialog::ok(errString);
 }
 
 void TreeView::recoverFromTrash()

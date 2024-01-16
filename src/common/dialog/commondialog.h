@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef CONTEXTDIALOG_H
-#define CONTEXTDIALOG_H
+#ifndef COMMONDIALOG_H
+#define COMMONDIALOG_H
 
 #include "common/widget/singlechoicebox.h"
 
@@ -12,16 +12,16 @@
 #include <QIcon>
 #include <QString>
 #include <QSet>
+#include <QObject>
 
 #include <functional>
-#include <QObject>
 
 DWIDGET_USE_NAMESPACE
 
-class ContextDialog final
+class CommonDialog final
 {
-    Q_DISABLE_COPY(ContextDialog)
-    ContextDialog() = delete;
+    Q_DISABLE_COPY(CommonDialog)
+    CommonDialog() = delete;
 public:
     static void okCancel(QString text,
                          QString title = "Warning",

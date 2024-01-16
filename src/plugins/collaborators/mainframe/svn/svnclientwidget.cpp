@@ -59,7 +59,7 @@ SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
 void SvnClientWidget::addRepoTab(const QString &repoPath, const QString &user, const QString &passwd)
 {
     if (!isSvnDir(repoPath)) {
-        ContextDialog::ok(QDialog::tr("Open path failed, current repos not svn subdir"));
+        CommonDialog::ok(QDialog::tr("Open path failed, current repos not svn subdir"));
         return;
     }
     addNewRepoTab(repoPath, user, passwd);
@@ -121,7 +121,7 @@ void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &loca
     status->stop();
     delete status;
     if (process.exitCode() != 0 || process.exitStatus() != QProcess::ExitStatus::NormalExit) {
-        ContextDialog::ok(process.readAllStandardError());
+        CommonDialog::ok(process.readAllStandardError());
         return;
     }
 
@@ -130,7 +130,7 @@ void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &loca
         addRepoTab(local, user, passwd);
     };
 
-    ContextDialog::okCancel(QString("checkout repos successful, now to open with user %0?").arg(user),
+    CommonDialog::okCancel(QString("checkout repos successful, now to open with user %0?").arg(user),
                             "Message", QMessageBox::Icon::Question, okCb);
 }
 

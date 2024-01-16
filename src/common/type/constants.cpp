@@ -9,8 +9,3 @@ QString version()
 {
     return VERSION;
 }
-
-int default_max_char_count()
-{
-    return 10000000;
-}

@@ -11,7 +11,6 @@
 * Write global contants here.
 */
 
-int default_max_char_count();
 QString version();
 
 #endif // CONSTANTS_H
