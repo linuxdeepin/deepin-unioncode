@@ -35,7 +35,6 @@ set(CXX_H
     builder/ioutputparser.cpp
     language/languagegenerator.h
     language/languageservice.h
-    symbol/symbolservice.h
     editor/editorservice.h
     terminal/terminalservice.h
     )

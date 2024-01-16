@@ -276,7 +276,7 @@ void RecentDisplay::doDoubleCliekedDocument(const QModelIndex &index)
 void RecentDisplay::btnOpenFileClicked()
 {
     QString dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QString filePath = DFileDialog::getOpenFileName(nullptr, dpfservice::DIALOG_OPEN_DOCUMENT_TITLE, dir);
+    QString filePath = DFileDialog::getOpenFileName(nullptr, tr("Open Document"), dir);
     if (filePath.isEmpty() && !QFileInfo(filePath).exists())
         return;
     recent.saveOpenedFile(filePath);
