@@ -4,7 +4,6 @@ project(framework)
 
 add_definitions(
     -DDPF_LIBRARY
-    -DNO_BACKTRACE
     )
 
 #set Module subdir
