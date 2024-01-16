@@ -48,9 +48,6 @@ bool Framework::initialize()
         qDebug() << "Frame work has been initialized!";
         return true;
     }
-#ifndef NO_BACKTRACE
-    backtrace::initbacktrace();
-#endif
     FrameworkLog::initialize();
 
     // It will be true after all inner moudules initialized
@@ -97,6 +94,11 @@ PluginServiceContext &Framework::serviceContext() const
 EventCallProxy &Framework::eventProxy() const
 {
     return EventCallProxy::instance();
+}
+
+void Framework::enbaleBackTrace() const
+{
+    backtrace::initbacktrace();
 }
 
 Framework::Framework() :

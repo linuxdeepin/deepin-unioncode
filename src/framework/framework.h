@@ -32,6 +32,7 @@ public:
     const LifeCycle &lifeCycle() const;
     PluginServiceContext &serviceContext() const;
     EventCallProxy &eventProxy() const;
+    void enbaleBackTrace() const;
 private:
     Framework();
 

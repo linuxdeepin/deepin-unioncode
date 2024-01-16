@@ -130,6 +130,8 @@ int main(int argc, char *argv[])
     }
 
     dpfInstance.initialize();
+    dpfInstance.enbaleBackTrace();
+
     if (!loadPlugins()) {
         qCritical() << "Failed, Load plugins!";
         abort();
