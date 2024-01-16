@@ -12,7 +12,6 @@
 #include "common/common.h"
 #include "base/abstractwidget.h"
 #include "base/abstractaction.h"
-#include "base/abstractcentral.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include "services/option/optionservice.h"

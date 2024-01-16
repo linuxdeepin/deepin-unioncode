@@ -1,30 +1,16 @@
 project(base)
 
 set(CXX_H
-    abstractcentral.h
-    abstractedit.h
     abstractmenu.h
-    abstractmenubar.h
-    abstractnav.h
     abstractaction.h
-    abstractmainwindow.h
     abstractwidget.h
-    abstractoutputpane.h
-    abstractconsole.h
     abstractdebugger.h
     )
 
 set(CXX_CPP
-    abstractcentral.cpp
-    abstractedit.cpp
     abstractmenu.cpp
-    abstractmenubar.cpp
-    abstractnav.cpp
     abstractaction.cpp
-    abstractmainwindow.cpp
     abstractwidget.cpp
-    abstractoutputpane.cpp
-    abstractconsole.cpp
     abstractdebugger.cpp
     )
 

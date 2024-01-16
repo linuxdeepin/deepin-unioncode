@@ -14,7 +14,6 @@
 
 #include "base/abstractwidget.h"
 #include "base/abstractaction.h"
-#include "base/abstractcentral.h"
 #include "base/abstractmenu.h"
 
 #include <QAction>

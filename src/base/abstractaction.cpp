@@ -16,10 +16,7 @@ class AbstractActionPrivate
 AbstractAction::AbstractAction(void *qAction)
     : d(new AbstractActionPrivate())
 {
-    if (!qAction) {
-        qCritical() << "Failed, use QAction(0x0) to AbstractAction";
-        abort();
-    }
+    Q_ASSERT(qAction);
 
     d->action = static_cast<QAction*>(qAction);
     d->action->setObjectName("AbstractAction");
@@ -38,6 +35,6 @@ AbstractAction::~AbstractAction()
 
 void *AbstractAction::qAction()
 {
-    return(void*)(d->action);
+    return static_cast<void*>(d->action);
 }
 

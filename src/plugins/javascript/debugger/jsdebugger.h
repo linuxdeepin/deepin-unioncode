@@ -67,7 +67,7 @@ private:
     AbstractWidget *scriptPane = nullptr;
     AbstractWidget *errorPane = nullptr;
     AbstractWidget *localsPane = nullptr;
-    AbstractCentral *codeEditor = nullptr;
+    AbstractWidget *codeEditor = nullptr;
 };
 
 #endif // JSDebugger_H

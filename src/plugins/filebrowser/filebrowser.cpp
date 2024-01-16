@@ -5,7 +5,6 @@
 #include "filebrowser.h"
 #include "mainframe/treeviewkeeper.h"
 #include "base/abstractaction.h"
-#include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 

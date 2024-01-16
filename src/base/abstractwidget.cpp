@@ -20,10 +20,7 @@ class AbstractWidgetPrivate
 AbstractWidget::AbstractWidget(void *qWidget)
     : d(new AbstractWidgetPrivate)
 {
-    if (!qWidget) {
-        qCritical() << "Failed, use QWidget(0x0) to AbstractWidget";
-        abort();
-    }
+    Q_ASSERT(qWidget);
 
     d->qWidget = static_cast<DWidget*>(qWidget);
     QObject::connect(d->qWidget, &DWidget::destroyed,

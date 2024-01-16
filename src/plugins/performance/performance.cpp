@@ -6,7 +6,6 @@
 #include "performance.h"
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
-#include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 

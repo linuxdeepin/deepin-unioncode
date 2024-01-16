@@ -17,7 +17,6 @@
 
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
-#include "base/abstractcentral.h"
 #include "base/abstractwidget.h"
 
 #include "services/window/windowservice.h"
@@ -62,9 +61,9 @@ bool CodeEditor::start()
     using namespace std::placeholders;
     if (windowService) {
         NavEditMainWindow *navEditWindow = NavEditMainWindow::instance();
-        navEditWindow->setWidgetEdit(new AbstractCentral(editManager));
+        navEditWindow->setWidgetEdit(new AbstractWidget(editManager));
 
-        windowService->addCentralNavigation(MWNA_EDIT, new AbstractCentral(navEditWindow));
+        windowService->addCentralNavigation(MWNA_EDIT, new AbstractWidget(navEditWindow));
 
         if (!windowService->addWidgetWorkspace) {
             windowService->addWidgetWorkspace = std::bind(&NavEditMainWindow::addWidgetWorkspace, navEditWindow, _1, _2, _3);
