@@ -4,6 +4,7 @@ set(CXX_H
     abstractcentral.h
     abstractedit.h
     abstractmenu.h
+    abstracteditormenu.h
     abstractmenubar.h
     abstractnav.h
     abstractaction.h
@@ -18,6 +19,7 @@ set(CXX_CPP
     abstractcentral.cpp
     abstractedit.cpp
     abstractmenu.cpp
+    abstracteditormenu.cpp
     abstractmenubar.cpp
     abstractnav.cpp
     abstractaction.cpp
