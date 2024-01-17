@@ -20,4 +20,4 @@ public:
     virtual dpf::Plugin::ShutdownFlag stop() override;
 };
 
-#endif // COREPLUGIN_H
+#endif   // COREPLUGIN_H
