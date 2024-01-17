@@ -5,7 +5,6 @@
 #include "codelenstree.h"
 #include "framework.h"
 #include "codelensdelegate.h"
-#include "textedittabwidget/style/stylecolor.h"
 #include <QStandardItem>
 #include <QFile>
 
@@ -79,7 +78,7 @@ void CodeLensTree::setData(const lsp::References &refs)
             }
             QString codeText = readLine(file, range.start.line);
             QString displayText = codeDataFormat(range.start.line, codeText);
-            QColor hColor = StyleColor::Table::get()->Yellow;
+            QColor hColor(Qt::yellow);
             QStandardItem *codeChild = new QStandardItem(displayText);
             codeChild->setData(QVariant::fromValue<lsp::Range>(range), CodeLensItemRole::Range);
             codeChild->setData(QVariant::fromValue<QString>(codeText), CodeLensItemRole::CodeText);
