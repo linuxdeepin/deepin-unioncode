@@ -104,7 +104,7 @@ QString PathMode::builded(CustomPaths::Flags flags)
     case CustomPaths::Resources:
         return formatString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "resource";
     case CustomPaths::Configures:
-        return formatString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "configures";
+        return formatString(ASSETS_SOURCE_RPEFIX) + QDir::separator() + "configures";
     case CustomPaths::Scripts:
         return formatString(PROJECT_SOURCE_RPEFIX) + QDir::separator() + "scripts";
     case CustomPaths::Templates:
