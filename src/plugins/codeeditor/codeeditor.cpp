@@ -4,16 +4,10 @@
 
 #include "codeeditor.h"
 #include "codelens/codelens.h"
-#include "textedittabwidget/textedittabwidget.h"
-#include "textedittabwidget/language/cpp/texteditcpp.h"
-#include "textedittabwidget/language/cmake/texteditcmake.h"
-#include "textedittabwidget/language/java/texteditjava.h"
-#include "textedittabwidget/language/python/texteditpython.h"
-#include "textedittabwidget/language/js/texteditjs.h"
-#include "textedittabwidget/texteditsplitter.h"
 #include "mainframe/naveditmainwindow.h"
 #include "mainframe/texteditkeeper.h"
 #include "transceiver/codeeditorreceiver.h"
+#include "gui/workspacewidget.h"
 
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -36,12 +30,6 @@ const QString PRINT = CodeEditor::tr("Print");
 void CodeEditor::initialize()
 {
     qInfo() << __FUNCTION__;
-    TextEditKeeper::impl<TextEdit>("");
-    TextEditKeeper::impl<TextEditPython>();
-    TextEditKeeper::impl<TextEditCpp>();
-    TextEditKeeper::impl<TextEditCmake>();
-    TextEditKeeper::impl<TextEditJava>();
-    TextEditKeeper::impl<TextEditJS>();
 
     QString errStr;
     auto &ctx = dpfInstance.serviceContext();
@@ -57,11 +45,11 @@ bool CodeEditor::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
-    TextEditSplitter *editManager = TextEditSplitter::instance();
+    auto workspaceWidget = new WorkspaceWidget;
     using namespace std::placeholders;
     if (windowService) {
         NavEditMainWindow *navEditWindow = NavEditMainWindow::instance();
-        navEditWindow->setWidgetEdit(new AbstractWidget(editManager));
+        navEditWindow->setWidgetEdit(new AbstractWidget(workspaceWidget));
 
         windowService->addCentralNavigation(MWNA_EDIT, new AbstractWidget(navEditWindow));
 
@@ -118,29 +106,29 @@ bool CodeEditor::start()
         qCritical() << errStr;
     }
     EditorService *editorService = dpfGetService(EditorService);
-    if (editorService) {
-        if (!editorService->getSelectedText) {
-            editorService->getSelectedText = std::bind(&TextEditSplitter::getSelectedText, editManager);
-        }
-        if (!editorService->getCursorBeforeText) {
-            editorService->getCursorBeforeText = std::bind(&TextEditSplitter::getCursorBeforeText, editManager);
-        }
-        if (!editorService->getCursorAfterText) {
-            editorService->getCursorAfterText = std::bind(&TextEditSplitter::getCursorAfterText, editManager);
-        }
-        if (!editorService->replaceSelectedText) {
-            editorService->replaceSelectedText = std::bind(&TextEditSplitter::replaceSelectedText, editManager, _1);
-        }
-        if (!editorService->showTips) {
-            editorService->showTips = std::bind(&TextEditSplitter::showTips, editManager, _1);
-        }
-        if (!editorService->insertText) {
-            editorService->insertText = std::bind(&TextEditSplitter::insertText, editManager, _1);
-        }
-        if (!editorService->undo) {
-            editorService->undo = std::bind(&TextEditSplitter::undo, editManager);
-        }
-    }
+    //    if (editorService) {
+    //        if (!editorService->getSelectedText) {
+    //            editorService->getSelectedText = std::bind(&TextEditSplitter::getSelectedText, editManager);
+    //        }
+    //        if (!editorService->getCursorBeforeText) {
+    //            editorService->getCursorBeforeText = std::bind(&TextEditSplitter::getCursorBeforeText, editManager);
+    //        }
+    //        if (!editorService->getCursorAfterText) {
+    //            editorService->getCursorAfterText = std::bind(&TextEditSplitter::getCursorAfterText, editManager);
+    //        }
+    //        if (!editorService->replaceSelectedText) {
+    //            editorService->replaceSelectedText = std::bind(&TextEditSplitter::replaceSelectedText, editManager, _1);
+    //        }
+    //        if (!editorService->showTips) {
+    //            editorService->showTips = std::bind(&TextEditSplitter::showTips, editManager, _1);
+    //        }
+    //        if (!editorService->insertText) {
+    //            editorService->insertText = std::bind(&TextEditSplitter::insertText, editManager, _1);
+    //        }
+    //        if (!editorService->undo) {
+    //            editorService->undo = std::bind(&TextEditSplitter::undo, editManager);
+    //        }
+    //    }
 
     return true;
 }
@@ -150,4 +138,3 @@ dpf::Plugin::ShutdownFlag CodeEditor::stop()
     qInfo() << __FUNCTION__;
     return Sync;
 }
-

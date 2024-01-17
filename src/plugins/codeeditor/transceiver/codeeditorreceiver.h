@@ -28,6 +28,8 @@ public:
     static EditorCallProxy* instance();
 
 signals:
+    void openFileRequested(const QString &fileName);
+
     void toOpenFile(const QString &filePath);
     void toRunClean();
     void toDebugPointClean();

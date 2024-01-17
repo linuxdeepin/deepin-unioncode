@@ -2,6 +2,7 @@ project(base)
 
 set(CXX_H
     abstractmenu.h
+    abstracteditormenu.h
     abstractaction.h
     abstractwidget.h
     abstractdebugger.h
@@ -9,6 +10,7 @@ set(CXX_H
 
 set(CXX_CPP
     abstractmenu.cpp
+    abstracteditormenu.cpp
     abstractaction.cpp
     abstractwidget.cpp
     abstractdebugger.cpp
