@@ -11,11 +11,13 @@
 
 #include <QDebug>
 
+static constexpr char DEFAULT_FONT_NAME[] { "Courier New" };
+
 static constexpr int MARGIN_SYMBOLE_DEFAULT_WIDTH = 14;
 static constexpr int MARGIN_FOLDER_DEFAULT_WIDTH = 14;
 static constexpr int MARGIN_CHANGEBAR_DEFAULT_WIDTH = 3;
 
-static constexpr int INDENTATION_DEFAULT_WIDTH = 4;
+static constexpr int TAB_DEFAULT_WIDTH = 4;
 
 DGUI_USE_NAMESPACE
 
@@ -47,7 +49,7 @@ void TextEditorPrivate::initMargins()
     q->setMarginSensitivity(SymbolMargin, true);
     q->setMarginMarkerMask(SymbolMargin, BreakpointMask | BreakpointDisabledMask | BookmarkMask | RuntimeMask | WarningMask | ErrorMask);
 
-    // TODO: 使用图片资源代替？
+    // TODO: using picture to replace?
     q->markerDefine(TextEditor::Circle, BreakpointSymbol);
     q->setMarkerBackgroundColor(QColor(Qt::red), BreakpointSymbol);
 
@@ -80,8 +82,13 @@ void TextEditorPrivate::updateColorTheme()
 
 void TextEditorPrivate::updateSettings()
 {
+    QFont font(DEFAULT_FONT_NAME, 11, QFont::Normal);
+    q->setFont(font);
+    q->setMarginsFont(font);
+
     // Indentation
-    q->setIndentationWidth(INDENTATION_DEFAULT_WIDTH);
+    q->SendScintilla(TextEditor::SCI_SETTABWIDTH, TAB_DEFAULT_WIDTH);
+    q->setWhitespaceSize(3);
     q->setAutoIndent(true);
     q->setIndentationsUseTabs(false);
 
@@ -103,6 +110,8 @@ void TextEditorPrivate::loadDefaultLexer()
 
     if (auto lexer = EditorUtils::defaultLexer(fileName)) {
         lexer->setParent(q);
+        QFont font(DEFAULT_FONT_NAME, 11, QFont::Normal);
+        lexer->setDefaultFont(font);
         q->setLexer(lexer);
         setMarginVisible(FoldingMargin, true);
     } else {

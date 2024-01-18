@@ -43,6 +43,12 @@ void TextEditorManager::gotoPreviousPsontion()
     // TODO
 }
 
+void TextEditorManager::clearAllBreakpoints()
+{
+    for (auto editor : d->editorHash.values())
+        editor->clearAllBreakpoints();
+}
+
 void TextEditorManager::onLinePositionChanged(int line, int pos)
 {
     Q_UNUSED(line)
