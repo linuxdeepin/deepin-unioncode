@@ -222,7 +222,7 @@ void Controller::addContextWidget(const QString &title, AbstractWidget *contextW
     btnLayout->addWidget(tabBtn);
 
     connect(tabBtn, &DPushButton::clicked, qWidget, [=] {
-        swtichContextWidget(title);
+        switchContextWidget(title);
     });
 
     d->tabButtons.insert(title, tabBtn);
