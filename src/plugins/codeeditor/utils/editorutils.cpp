@@ -12,19 +12,19 @@ QsciLexer *EditorUtils::defaultLexer(const QString &fileName)
     auto id = Language::id(fileName);
 
     QsciLexer *lexer { nullptr };
-    if (id.compare("cpp", Qt::CaseInsensitive)) {
+    if (id.compare("cpp", Qt::CaseInsensitive) == 0) {
         lexer = new QsciLexerCPP();
-    } else if (id.compare("java", Qt::CaseInsensitive)) {
+    } else if (id.compare("java", Qt::CaseInsensitive) == 0) {
         lexer = new QsciLexerJava();
-    } else if (id.compare("cmake", Qt::CaseInsensitive)) {
+    } else if (id.compare("cmake", Qt::CaseInsensitive) == 0) {
         lexer = new QsciLexerCMake();
-    } else if (id.compare("json", Qt::CaseInsensitive)) {
+    } else if (id.compare("json", Qt::CaseInsensitive) == 0) {
         lexer = new QsciLexerJSON();
-    } else if (id.compare("xml", Qt::CaseInsensitive)) {
+    } else if (id.compare("xml", Qt::CaseInsensitive) == 0) {
         lexer = new QsciLexerXML();
-    } else if (id.compare("python", Qt::CaseInsensitive)) {
+    } else if (id.compare("python", Qt::CaseInsensitive) == 0) {
         lexer = new QsciLexerPython();
-    } else if (id.compare("js", Qt::CaseInsensitive)) {
+    } else if (id.compare("js", Qt::CaseInsensitive) == 0) {
         lexer = new QsciLexerJavaScript();
     }
 

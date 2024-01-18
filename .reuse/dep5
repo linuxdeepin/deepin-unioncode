@@ -148,13 +148,13 @@ Copyright: 2012, Luca Beltrame <lbeltrame@kde.org>
            2007-2014, Simon Edwards <simon@simonzone.com>
 License: BSD-3-Clause
 
-# scintilla
-Files: 3rdparty/unioncode-scintilla515/scintilla/*
-Copyright: 1998-2021 by Neil Hodgson <neilh@scintilla.org>
-License: HPND
+# qscintilla
+Files: 3rdparty/unioncode-qscintilla214/src/*
+Copyright: 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
+License: GPL-3.0-or-later 
 
-# lexilla
-Files: 3rdparty/unioncode-scintilla515/lexilla/*
+# scintilla
+Files: 3rdparty/unioncode-qscintilla214/scintilla/*
 Copyright: 1998-2021 by Neil Hodgson <neilh@scintilla.org>
 License: HPND
 
