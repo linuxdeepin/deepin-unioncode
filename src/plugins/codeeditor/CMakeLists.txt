@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-codeeditor)
 
+include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-qscintilla214.cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR true)
 
 add_definitions(-DLIBRARY_INSTALL_PREFIX="${LIBRARY_INSTALL_PREFIX}")
@@ -32,7 +33,6 @@ target_link_libraries(${PROJECT_NAME}
     ${QtUseModules}
     ${PkgUserModules}
     ${DtkWidget_LIBRARIES}
-    qscintilla2_qt5
 )
 
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
