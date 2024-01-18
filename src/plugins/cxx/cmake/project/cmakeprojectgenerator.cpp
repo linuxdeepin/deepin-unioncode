@@ -345,8 +345,8 @@ void CmakeProjectGenerator::setRootItemToView(QStandardItem *root)
         if (projectService->projectView.expandedDepth)
             projectService->projectView.expandedDepth(root, 2);
 
-        navigation.doSwitch(MWNA_EDIT);
-        editor.switchWorkspace(MWCWT_PROJECTS);
+        uiController.doSwitch(MWNA_EDIT);
+        uiController.switchWorkspace(MWCWT_PROJECTS);
     }
 }
 

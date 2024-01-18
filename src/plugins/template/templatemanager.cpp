@@ -56,7 +56,7 @@ void TemplateManager::addMenu()
         windowService->addAction(dpfservice::MWMFA_NEW_FILE_OR_PROJECT, actionImpl);
     };
 
-    d->newAction.reset(new QAction(MWMFA_NEW_FILE_OR_PROJECT));
+    d->newAction.reset(new QAction(MWMFA_NEW_FILE_OR_PROJECT, this));
     actionInit(d->newAction.get(),
                "File.New.FileOrProject",
                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_O), QString());

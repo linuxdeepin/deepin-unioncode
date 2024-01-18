@@ -48,12 +48,12 @@ void ValgrindRunner::initialize()
     if (!windowService)
         return;
 
-    d->memcheckAction.reset(new QAction(MWMTA_VALGRIND_MEMCHECK));
+    d->memcheckAction.reset(new QAction(MWMTA_VALGRIND_MEMCHECK, this));
     ActionManager::getInstance()->registerAction(d->memcheckAction.get(), "Analyze.ValgrindMemcheck",
                                                  d->memcheckAction->text(), QKeySequence());
     windowService->addAction(MWM_TOOLS, new AbstractAction(d->memcheckAction.get()));
 
-    d->helgrindAction.reset(new QAction(MWMTA_VALGRIND_HELGRIND));
+    d->helgrindAction.reset(new QAction(MWMTA_VALGRIND_HELGRIND, this));
     ActionManager::getInstance()->registerAction(d->helgrindAction.get(), "Analyze.ValgrindHelgrind",
                                                  d->helgrindAction->text(), QKeySequence());
     windowService->addAction(MWM_TOOLS, new AbstractAction(d->helgrindAction.get()));
@@ -208,7 +208,7 @@ bool ValgrindRunner::checkValgrindToolPath()
 
 void ValgrindRunner::printOutput(const QString &content, OutputPane::OutputFormat format)
 {
-    editor.switchContext(tr("&Application Output"));
+    uiController.switchContext(tr("&Application Output"));
     auto outputPane = OutputPane::instance();
     QString outputContent = content;
     if (format == OutputPane::OutputFormat::NormalMessage) {

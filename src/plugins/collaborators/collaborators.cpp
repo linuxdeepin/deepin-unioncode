@@ -21,15 +21,30 @@ bool Collaborators::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        if (windowService->addNavigation) {
-            windowService->addNavigation(MWNA_GIT, "git-navigation");
-            windowService->addNavigation(MWNA_SVN, "svn-navigation");
-        }
-        if (windowService->addCentralNavigation) {
-            windowService->addCentralNavigation(MWNA_GIT,
-                                                new AbstractWidget(CVSkeeper::instance()->gitMainWidget()));
-            windowService->addCentralNavigation(MWNA_SVN,
-                                                new AbstractWidget(CVSkeeper::instance()->svnMainWidget()));
+        if (windowService->addNavigationItem) {
+            QAction *actionGit = new QAction(MWNA_GIT, this);
+            actionGit->setIcon(QIcon::fromTheme("git-navigation"));
+            QAction *actionSvn = new QAction(MWNA_SVN, this);
+            actionSvn->setIcon(QIcon::fromTheme("svn-navigation"));
+
+            windowService->addNavigationItem(new AbstractAction(actionGit));
+            windowService->addNavigationItem(new AbstractAction(actionSvn));
+
+            AbstractWidget *gitMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->gitMainWidget());
+            AbstractWidget *svnMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->svnMainWidget());
+
+            connect(actionGit, &QAction::triggered, this, [=](){
+                windowService->replaceWidget(MWNA_GIT,
+                                         gitMainWidgetImpl,
+                                         Position::FullWindow);
+                windowService->hideStatusBar();
+            }, Qt::DirectConnection);
+            connect(actionSvn, &QAction::triggered, this, [=](){
+                windowService->replaceWidget(MWNA_SVN,
+                                         svnMainWidgetImpl,
+                                         Position::FullWindow);
+                windowService->hideStatusBar();
+            }, Qt::DirectConnection);
         }
     }
     return true;
@@ -37,5 +52,6 @@ bool Collaborators::start()
 
 dpf::Plugin::ShutdownFlag Collaborators::stop()
 {
+    delete CVSkeeper::instance();
     return Sync;
 }

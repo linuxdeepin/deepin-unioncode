@@ -111,6 +111,6 @@ void ValgrindBar::showResult(const QString &xmlFileName, const QString &type)
 
     XmlStreamReader reader(treeWidget);
     reader.readFile(xmlFileName);
-    editor.switchContext(tr("&Valgrind"));
+    uiController.switchContext(tr("&Valgrind"));
 }
 

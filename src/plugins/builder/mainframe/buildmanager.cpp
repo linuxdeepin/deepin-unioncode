@@ -98,7 +98,7 @@ void BuildManager::addMenu()
     d->buildAction.reset(new QAction(MWMBA_BUILD));
     actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
                "build");
-    windowService->addTopToolBar("toolbar.Build", d->buildAction.get(), MWNA_EDIT, false);
+    windowService->addTopToolItem("toolbar.Build", new AbstractAction(d->buildAction.get()), MWNA_EDIT);
 
     d->buildActionNoIcon.reset(new QAction(MWMBA_BUILD));
     actionInit(d->buildActionNoIcon.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
@@ -118,7 +118,7 @@ void BuildManager::addMenu()
     d->cancelAction.reset(new QAction(MWMBA_CANCEL));
     actionInit(d->cancelAction.get(), "Build.Cancel",QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
                "cancel");
-    windowService->addTopToolBar("toolbar.Cancel", d->cancelAction.get(), MWNA_EDIT, false);
+    windowService->addTopToolItem("toolbar.Cancel",new AbstractAction(d->cancelAction.get()), MWNA_EDIT);
 
     d->cancelActionNoIcon.reset(new QAction(MWMBA_CANCEL));
     actionInit(d->cancelActionNoIcon.get(), "Build.Cancel", QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
@@ -259,7 +259,7 @@ void BuildManager::slotResetBuildUI()
     d->compileOutputPane->clearContents();
     d->problemOutputPane->clearContents();
 
-    editor.switchContext(tr("&Build"));
+    uiController.switchContext(tr("&Build"));
 }
 
 void BuildManager::setActivedProjectInfo(const QString &kitName, const QString &workingDir)

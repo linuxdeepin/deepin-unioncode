@@ -61,8 +61,7 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(switchedFile, "filePath")
            OPI_INTERFACE(breakpointAdded, "filePath", "line")
            OPI_INTERFACE(breakpointRemoved, "filePath", "line")
-           OPI_INTERFACE(switchContext, "name")
-           OPI_INTERFACE(switchWorkspace, "name")
+
            OPI_INTERFACE(contextMenu, "menu")
            OPI_INTERFACE(marginMenu, "menu")
            OPI_INTERFACE(keyPressEvent, "event")
@@ -73,8 +72,10 @@ OPI_OBJECT(symbol,
            OPI_INTERFACE(parseDone, "workspace", "language", "storage", "success")
            )
 
-OPI_OBJECT(navigation,
+OPI_OBJECT(uiController,
            OPI_INTERFACE(doSwitch, "actionText")
+           OPI_INTERFACE(switchContext, "name")
+           OPI_INTERFACE(switchWorkspace, "name")
            )
 
 OPI_OBJECT(actionanalyse,

@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-core)
 
 set(CXX_CPP
-    mainframe/windowkeeper.cpp
     mainframe/windowstatusbar.cpp
     mainframe/progressbar.cpp
     mainframe/plugindialog.cpp
@@ -12,12 +11,12 @@ set(CXX_CPP
     mainframe/mainwindow.cpp
     mainframe/controller.cpp
     mainframe/navigationbar.cpp
+    mainframe/workspacewidget.cpp
     core.cpp
     core.json
     )
 
 set(CXX_H
-    mainframe/windowkeeper.h
     mainframe/windowstatusbar.h
     mainframe/progressbar.h
     mainframe/plugindialog.h
@@ -26,6 +25,7 @@ set(CXX_H
     mainframe/mainwindow.h
     mainframe/controller.h
     mainframe/navigationbar.h
+    mainframe/workspacewidget.h
     core.h
     )
 

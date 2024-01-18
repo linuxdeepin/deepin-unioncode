@@ -44,15 +44,12 @@ bool DebuggerPlugin::start()
 
     debugManager->initialize(windowService, debuggerService);
 
-    // instert output pane to window.
-    windowService->setWidgetWatch(new AbstractWidget(debugManager->getLocalsPane()));
-
-    if (windowService->addCentralNavigation) {
-        auto editWidget = windowService->getCentralNavigation(MWNA_EDIT);
-        windowService->addNavigation(MWNA_DEBUG, "debug-navigation");
-        windowService->addCentralNavigation(MWNA_DEBUG, editWidget);
-
-        windowService->addWorkspaceArea(MWNA_DEBUG, new AbstractWidget(debugManager->getDebugMainPane()));
+    if (windowService->addNavigationItem) {
+        QAction *action = new QAction(MWNA_DEBUG, this);
+        action->setIcon(QIcon::fromTheme("debug-navigation"));
+        windowService->addNavigationItem(new AbstractAction(action));
+        windowService->registerWidgetToMode("debugMainWindow", new AbstractWidget(debugManager->getDebugMainPane()), CM_DEBUG, Position::Left, true, true);
+        windowService->registerWidgetToMode("debuggerWatcher", new AbstractWidget(debugManager->getLocalsPane()), CM_DEBUG, Position::Right, true, false);
     }
 
     connect(debugManager, &DebugManager::debugStarted, this, &DebuggerPlugin::slotDebugStarted);
@@ -62,12 +59,13 @@ bool DebuggerPlugin::start()
 
 dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 {
+    delete debugManager;
     QProcess::execute("killall -9 debugadapter");
     return Sync;
 }
 
 void DebuggerPlugin::slotDebugStarted()
 {
-    navigation.doSwitch(MWNA_DEBUG);
-    editor.switchContext(tr("&Application Output"));
+    uiController.doSwitch(MWNA_DEBUG);
+    uiController.switchContext(tr("&Application Output"));
 }

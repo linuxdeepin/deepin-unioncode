@@ -20,6 +20,9 @@
 #include <QIcon>
 
 using namespace dpfservice;
+
+static CodeGeeXWidget *codeGeex { nullptr };
+
 void CodeGeex::initialize()
 {
 }
@@ -28,13 +31,17 @@ bool CodeGeex::start()
 {
     auto windowService = dpfGetService(dpfservice::WindowService);
     if (windowService) {
-        // Add widget to left bar
-        if (windowService->addCentralNavigation) {
-            auto editWidget = windowService->getCentralNavigation(MWNA_EDIT);
-            windowService->addNavigation(MWNA_CODEGEEX, "codegeex-navigation");
-            windowService->addCentralNavigation(MWNA_CODEGEEX, editWidget);
+        if (windowService->addNavigationItem) {
+            QAction *action = new QAction(MWNA_CODEGEEX, this);
+            action->setIcon(QIcon::fromTheme("codegeex-navigation"));
 
-            windowService->addWorkspaceArea(MWNA_CODEGEEX, new AbstractWidget(new CodeGeeXWidget()));
+            windowService->addNavigationItem(new AbstractAction(action));
+
+            codeGeex = new CodeGeeXWidget;
+            connect(action, &QAction::triggered, this, [=](){
+                windowService->raiseMode(CM_EDIT);
+                windowService->replaceWidget(MWNA_CODEGEEX, new AbstractWidget(codeGeex), Position::Left);
+            }, Qt::DirectConnection);
         }
     }
 
@@ -52,5 +59,7 @@ bool CodeGeex::start()
 
 dpf::Plugin::ShutdownFlag CodeGeex::stop()
 {
+    if(codeGeex)
+        delete codeGeex;
     return Sync;
 }

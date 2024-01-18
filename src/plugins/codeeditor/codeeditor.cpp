@@ -4,7 +4,6 @@
 
 #include "codeeditor.h"
 #include "codelens/codelens.h"
-#include "mainframe/naveditmainwindow.h"
 #include "mainframe/texteditkeeper.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "gui/workspacewidget.h"
@@ -127,56 +126,18 @@ void CodeEditor::initWindowService()
     auto workspaceWidget = new WorkspaceWidget;
     using namespace std::placeholders;
     if (windowService) {
-        NavEditMainWindow *navEditWindow = NavEditMainWindow::instance();
-        navEditWindow->setWidgetEdit(new AbstractWidget(workspaceWidget));
+        QAction *action = new QAction(MWNA_EDIT, this);
+        action->setIcon(QIcon::fromTheme("edit-navigation"));
+        windowService->addNavigationItem(new AbstractAction(action));
 
-        windowService->addCentralNavigation(MWNA_EDIT, new AbstractWidget(navEditWindow));
+        windowService->registerWidgetToMode("editWindow", new AbstractWidget(workspaceWidget), CM_EDIT, Position::Central, true, true);
+        windowService->registerWidgetToMode("editWindow", new AbstractWidget(workspaceWidget), CM_DEBUG, Position::Central, true, true);
 
-        if (!windowService->addWidgetWorkspace) {
-            windowService->addWidgetWorkspace = std::bind(&NavEditMainWindow::addWidgetWorkspace, navEditWindow, _1, _2, _3);
-        }
-
-        if (!windowService->addContextWidget) {
-            windowService->addContextWidget = std::bind(&NavEditMainWindow::addContextWidget, navEditWindow, _1, _2, _3, _4);
-        }
-        if (!windowService->hasContextWidget) {
-            windowService->hasContextWidget = std::bind(&NavEditMainWindow::hasContextWidget, navEditWindow, _1);
-        }
-
-        if (!windowService->removeContextWidget) {
-            windowService->removeContextWidget = std::bind(&NavEditMainWindow::removeContextWidget, navEditWindow, _1);
-        }
-
-        if (!windowService->setWidgetEdit) {
-            windowService->setWidgetEdit = std::bind(&NavEditMainWindow::setWidgetEdit, navEditWindow, _1);
-        }
-
-        windowService->addContextWidget(QTabWidget::tr("Code &Lens"), new AbstractWidget(CodeLens::instance()), "Lens", true);
-
-        if (!windowService->setWidgetWatch) {
-            windowService->setWidgetWatch = std::bind(&NavEditMainWindow::setWidgetWatch, navEditWindow, _1);
-        }
-
-        if (!windowService->addFindToolBar) {
-            windowService->addFindToolBar = std::bind(&NavEditMainWindow::addFindToolBar, navEditWindow, _1);
-        }
-
-        if (!windowService->showFindToolBar) {
-            windowService->showFindToolBar = std::bind(&NavEditMainWindow::showFindToolBar, navEditWindow);
-        }
-
-        if (!windowService->addWorkspaceArea) {
-            windowService->addWorkspaceArea = std::bind(&NavEditMainWindow::addWorkspaceArea, navEditWindow, _1, _2);
-        }
-
-        if (!windowService->switchWorkspaceArea) {
-            windowService->switchWorkspaceArea = std::bind(&NavEditMainWindow::switchWorkspaceArea, navEditWindow, _1);
-        }
-
-        auto sep = new QAction();
+        auto sep = new QAction(this);
         sep->setSeparator(true);
         windowService->addAction(MWM_FILE, new AbstractAction(sep));
 
-        windowService->addContextWidget(tr("&Application Output"), new AbstractWidget(OutputPane::instance()), "Application", true);
+        windowService->addContextWidget(QTabWidget::tr("Code &Lens"), new AbstractWidget(CodeLens::instance()), true);
+        windowService->addContextWidget(tr("&Application Output"), new AbstractWidget(OutputPane::instance()), true);
     }
 }

@@ -27,7 +27,7 @@ bool Valgrind::start()
 
     if (windowService) {
         ValgrindBar *valgrindBar = new ValgrindBar();
-        windowService->addContextWidget(tr("&Valgrind"), new AbstractWidget(valgrindBar), "Valgrind", false);
+        windowService->addContextWidget(tr("&Valgrind"), new AbstractWidget(valgrindBar), false);
     }
 
     ValgrindRunner::instance()->initialize();

@@ -207,7 +207,7 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
 
     // add action that show contain folder.
     menu->addSeparator();
-    QAction *showContainFolder = new QAction(tr("Show Contain Folder"));
+    QAction *showContainFolder = new QAction(tr("Show Contain Folder"), this);
     connect(showContainFolder, &QAction::triggered, [=](){
         QString filePath = item->toolTip();
         QFileInfo fileInfo(filePath);
@@ -331,7 +331,7 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *ch
     if (!menu)
         menu = new DMenu();
 
-    QAction *newDocAction = new QAction(tr("New Document"));    
+    QAction *newDocAction = new QAction(tr("New Document"), this);
     QObject::connect(newDocAction, &QAction::triggered, this, [=](){
         actionNewDocument(childItem);
     });
@@ -340,14 +340,14 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *ch
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
 
     // add open in terminal menu item.
-    QAction *openInTerminal = new QAction(tr("Open In Terminal"));
+    QAction *openInTerminal = new QAction(tr("Open In Terminal"), this);
     menu->addAction(openInTerminal);
     connect(openInTerminal, &QAction::triggered, [=](){
         actionOpenInTerminal(childItem);
     });
 
     // add delete file menu item.
-    QAction *deleteDocAction = new QAction(tr("Delete Document"));
+    QAction *deleteDocAction = new QAction(tr("Delete Document"), this);
     QObject::connect(deleteDocAction, &QAction::triggered, this, [=](){
         actionDeleteDocument(childItem);
     });
@@ -523,7 +523,7 @@ void ProjectTree::actionOpenInTerminal(const QStandardItem *menuItem)
     if (terminalService) {
         terminalService->executeCommand(QString("cd %1\n").arg(dirPath));
         terminalService->executeCommand(QString("clear\n"));
-        editor.switchContext(CONSOLE_TAB_TEXT);
+        uiController.switchContext(CONSOLE_TAB_TEXT);
     }
 }
 
