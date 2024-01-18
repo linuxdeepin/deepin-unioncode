@@ -166,14 +166,16 @@ void JSDebugger::addPagesToContext(const QScriptEngineDebugger &debugger)
     errorPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::ErrorLogWidget));
     localsPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::LocalsWidget));
     auto windowService = dpfGetService(WindowService);
-    oldWidgetEdit = windowService->setWidgetEdit(codeEditor);
+    windowService->setCurrentPlugin("JsDebugger");
+    windowService->raiseMode(CM_DEBUG);
+    windowService->addWidget("jsCodeEditor", codeEditor, Position::Central, true);
     // instert output pane to window.
-    windowService->addContextWidget(tr("Stac&kFrame"), stackPane, "Application", false);
-    oldWidgetWatch = windowService->setWidgetWatch(localsPane);
+    windowService->addContextWidget(tr("Stac&kFrame"), stackPane, false);
+    windowService->addWidget("jsCodeWatcher", localsPane, Position::Right, true);
     debugger.widget(QScriptEngineDebugger::LocalsWidget)->show();
-    windowService->addContextWidget(tr("Break&points"), breakpointsPane, "Application", false);
-    windowService->addContextWidget(tr("ScriptWidget"), scriptPane, "Application", false);
-    windowService->addContextWidget(tr("ErrorLogWidget"), errorPane, "Application", false);
+    windowService->addContextWidget(tr("Break&points"), breakpointsPane, false);
+    windowService->addContextWidget(tr("ScriptWidget"), scriptPane, false);
+    windowService->addContextWidget(tr("ErrorLogWidget"), errorPane, false);
 }
 
 void JSDebugger::removePagesFromContext()
@@ -181,7 +183,7 @@ void JSDebugger::removePagesFromContext()
     auto windowService = dpfGetService(WindowService);
     auto removePage = [windowService](AbstractWidget *page){
         Q_ASSERT(page != nullptr);
-        windowService->removeContextWidget(page);
+        //windowService->removeContextWidget(page);
     };
 
     removePage(stackPane);
@@ -189,8 +191,8 @@ void JSDebugger::removePagesFromContext()
     removePage(scriptPane);
     removePage(errorPane);
 
-    windowService->setWidgetEdit(new AbstractWidget(oldWidgetEdit));
-    windowService->setWidgetWatch(new AbstractWidget(oldWidgetWatch));
+    if(windowService->hasView(MWNA_EDIT))
+        windowService->raiseMode(CM_EDIT);
 }
 
 void JSDebugger::setupDebugEnv()

@@ -35,8 +35,8 @@ bool FindPlugin::start()
     }
 
     DMenu* editMenu = new DMenu(QMenu::tr("&Edit"));
-    QAction* findAction = new QAction();
-    QAction* advancedFindAction = new QAction();
+    QAction* findAction = new QAction(this);
+    QAction* advancedFindAction = new QAction(this);
 
 
     ActionManager::getInstance()->registerAction(findAction, "Edit.Find",
@@ -49,36 +49,44 @@ bool FindPlugin::start()
     editMenu->addAction(findAction);
     editMenu->addAction(advancedFindAction);
 
-    windowService->addTopToolBar("Edit.Find", findAction, MWNA_EDIT, false);
-    windowService->addTopToolBar("Edit.Find", findAction, MWNA_DEBUG, false);
-
-    connect(findAction, &QAction::triggered, [=] {
-        windowService->showFindToolBar();
-        emit onFindActionTriggered();
-    });
+    windowService->addTopToolItem("Edit.Find", new AbstractAction(findAction), MWNA_EDIT);
+    windowService->addTopToolItem("Edit.Find", new AbstractAction(findAction), MWNA_DEBUG);
+    windowService->addTopToolSpacing("Edit.Find", 20);
 
     connect(advancedFindAction, &QAction::triggered, [=] {
-        editor.switchContext(tr("Advanced &Search"));
+        uiController.switchContext(tr("Advanced &Search"));
     });
 
     AbstractMenu * menuImpl = new AbstractMenu(editMenu);
-    windowService->addMenu(menuImpl);
+    windowService->addChildMenu(menuImpl);
 
     AbstractWidget *widgetImpl = new AbstractWidget(new FindToolWindow());
-    windowService->addContextWidget(tr("Advanced &Search"), widgetImpl, MWNA_EDIT, true);
+    windowService->addContextWidget(tr("Advanced &Search"), widgetImpl, true);
 
     FindToolBar * findToolBar = new FindToolBar();
     AbstractWidget *abstractFindToolBar = new AbstractWidget(findToolBar);
 
-    connect(this,&FindPlugin::onFindActionTriggered,findToolBar,&FindToolBar::handleFindActionTriggered);
+    connect(this, &FindPlugin::onFindActionTriggered, findToolBar, &FindToolBar::handleFindActionTriggered);
+    connect(findAction, &QAction::triggered, [=] {
+        if (findToolBar) {
+            if (findToolBar->isVisible()) {
+                findToolBar->hide();
+            } else {
+                findToolBar->show();
+            }
+        }
+    });
 
-    windowService->addFindToolBar(abstractFindToolBar);
+    if(windowService->registerWidgetToMode) {
+        windowService->registerWidgetToMode("findWidget", abstractFindToolBar, CM_EDIT, Position::Top, true, false);
+        windowService->registerWidgetToMode("findWidget", abstractFindToolBar, CM_DEBUG, Position::Top, true, false);
+    }
     return true;
 }
 
 void FindPlugin::sendSwitchSearchResult()
 {
-    editor.switchContext(tr("Advanced &Search"));
+    uiController.switchContext(tr("Advanced &Search"));
 }
 
 dpf::Plugin::ShutdownFlag FindPlugin::stop()

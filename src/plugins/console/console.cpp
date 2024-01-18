@@ -33,7 +33,7 @@ bool Console::start()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        windowService->addContextWidget(QString(tr("&Console")), new AbstractWidget(ConsoleWidget::instance()), MWNA_EDIT, true);
+        windowService->addContextWidget(QString(tr("&Console")), new AbstractWidget(ConsoleWidget::instance()), true);
     }
 
     // bind service.

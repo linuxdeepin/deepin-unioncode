@@ -95,7 +95,7 @@ BinaryToolsDialog::~BinaryToolsDialog()
 
 void BinaryToolsDialog::printOutput(const QString &content, OutputPane::OutputFormat format)
 {
-    editor.switchContext(tr("&Application Output"));
+    uiController.switchContext(tr("&Application Output"));
     auto outputPane = OutputPane::instance();
     QString outputContent = content;
     if (format == OutputPane::OutputFormat::NormalMessage) {

@@ -36,7 +36,7 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
         QString workspace = event.property(project.openProject.pKeys[2]).toString();
         ProjectKeeper::instance()->treeView()->activeProjectInfo(kitName, language, workspace);
     } else if (event.data() == project.openProject.name) {
-        navigation.doSwitch(dpfservice::MWNA_EDIT);
+        uiController.doSwitch(dpfservice::MWNA_EDIT);
         auto &ctx = dpfInstance.serviceContext();
         ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
         if (projectService) {

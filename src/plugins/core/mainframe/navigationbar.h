@@ -29,7 +29,7 @@ private:
     QVBoxLayout *topLayout { nullptr };
     QVBoxLayout *bottomLayout { nullptr };
 
-    DTK_WIDGET_NAMESPACE::DToolButton *createToolBtn(QAction *action);
+    DTK_WIDGET_NAMESPACE::DToolButton *createToolBtn(QAction *action, bool isNavigationItem);
 
     QHash<QString, DTK_WIDGET_NAMESPACE::DToolButton*> navBtns;
 };

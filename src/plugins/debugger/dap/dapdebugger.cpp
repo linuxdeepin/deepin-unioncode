@@ -889,6 +889,8 @@ QString DAPDebugger::requestBuild()
 
 void DAPDebugger::start()
 {
+    if(!d->localsView->isVisible())
+        d->localsView->show();
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
     if (service) {

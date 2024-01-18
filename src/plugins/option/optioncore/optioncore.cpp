@@ -68,7 +68,8 @@ bool OptionCore::start()
     }
 
     if (windowService && windowService->addAction) {
-        auto actionOptions = new QAction(MWMTA_OPTIONS);
+        auto actionOptions = new QAction(MWMTA_OPTIONS, this);
+        actionOptions->setIcon(QIcon::fromTheme("options_setting"));
         ActionManager::getInstance()->registerAction(actionOptions,
                                                      "Tools.Options",
                                                      MWMTA_OPTIONS,
@@ -78,15 +79,9 @@ bool OptionCore::start()
                                                      QString());
         windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptions));
 
+        windowService->addNavigationItemToBottom(new AbstractAction(actionOptions));
         QObject::connect(actionOptions, &QAction::triggered,
                          optionDialog, &QDialog::show);
-
-        auto toolBtn = new DToolButton();
-        toolBtn->setMinimumSize(QSize(48, 48));
-        toolBtn->setIconSize(QSize(20, 20));
-        toolBtn->setIcon(QIcon::fromTheme("options_setting"));
-        connect(toolBtn, &DToolButton::clicked, optionDialog, &QDialog::show);
-        windowService->insertToLeftBarBottom(new AbstractWidget(toolBtn));
     }
 
     DPF_USE_NAMESPACE

@@ -18,13 +18,13 @@
 struct View
 {
     View() {}
-    QString pluginName;
-    QString previousView;
+    QString mode { "" };
+    QString pluginName { "" };
 
-    QStringList widgetList;
-    QStringList topToolItemList;
+    QStringList widgetList {};
+    QStringList topToolItemList {};
     bool showContextWidget { false };
-    QList<Position> hiddenposList;
+    QList<Position> hiddenposList {};
 };
 
 class ControllerPrivate;
@@ -41,14 +41,22 @@ signals:
 
 public slots:
     void raiseView(const QString &plugin);
+    //mode : MD_EDIT/MD_DEBUG/MD_RECENT
+    void raiseMode(const QString &mode);
     bool hasView(const QString &plugin);
-    void setCurrentPlugin(const QString &plugin);
-    //1 Pluginname == 1navName -> n name - n widget
-    void setPreviousView(const QString &pluginName, const QString &previous);
-    void addWidget(const QString &name, AbstractWidget *abstractWidget, Position pos = Position::FullWindow, bool replace = true);
 
-    void addNavigation(AbstractAction *action);
-    void addNavigationToBottom(AbstractAction *action);
+    //1 Plugi -> 1navName -> n widget(name)
+    void setCurrentPlugin(const QString &plugin);
+    void registerWidgetToMode(const QString &name, AbstractWidget *abstractWidget, const QString &mode, Position pos, bool replace, bool isVisible);
+    void addWidget(const QString &name, AbstractWidget *abstractWidget, Position pos = Position::FullWindow, bool replace = true);
+    void addWidgetByOrientation(const QString &name, AbstractWidget *abstractWidget, Position pos, bool replace, Qt::Orientation orientation);
+    void replaceWidget(const QString &name, AbstractWidget *abstractWidget, Position pos = Position::FullWindow);
+    void insertWidget(const QString &name, AbstractWidget *abstractWidget, Position pos = Position::FullWindow);
+    void showWidget(const QString &name);
+    void hideWidget(const QString &name);
+
+    void addNavigationItem(AbstractAction *action);
+    void addNavigationItemToBottom(AbstractAction *action);
     void switchWidgetNavigation(const QString &navName);
 
     //bottom contextWidget
@@ -67,13 +75,24 @@ public slots:
     void addOpenProjectAction(const QString &name, AbstractAction *action);
 
     //topToolBar
-    void addTopToolItem(const QString &name, AbstractAction *action);
+    void addTopToolItem(const QString &itemName, AbstractAction *action, const QString &plugin);
+    void addTopToolSpacing(const QString &itemName, int spacing);
+    void resetTopTool(const QString &pluginName);
 
     void openFileDialog();
     void showAboutPlugins();
 
+    //statusBar
+    void showStatusBar();
+    void hideStatusBar();
+
+    //workspace
+    void switchWorkspace(const QString &titleName);
+
 private:
     ControllerPrivate *d;
+
+    bool initView(const QString &name, Position pos, bool replace);
 
     void registerService();
 
@@ -85,6 +104,7 @@ private:
     void initMenu();
     void initContextWidget();
     void initStatusBar();
+    void initWorkspaceWidget();
 
     //menu
     void createHelpActions();
@@ -94,6 +114,8 @@ private:
     void createFileActions();
 
     void addMenuShortCut(QAction *action, QKeySequence keySequence = QKeySequence());
+
+    void showWorkspace();
 };
 
 #endif   // CONTROLLER_H
