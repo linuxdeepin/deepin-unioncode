@@ -19,6 +19,7 @@ public:
 
     void gotoNextPosition();
     void gotoPreviousPsontion();
+    void clearAllBreakpoints();
 
 public slots:
     void onLinePositionChanged(int line, int pos);

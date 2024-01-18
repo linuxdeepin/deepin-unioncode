@@ -30,6 +30,11 @@ public:
 signals:
     void openFileRequested(const QString &fileName);
 
+    // debug
+    void addBreakpointRequested(const QString &fileName, int line);
+    void removeBreakpointRequested(const QString &fileName, int line);
+    void clearAllBreakpointsRequested();
+
     void toOpenFile(const QString &filePath);
     void toRunClean();
     void toDebugPointClean();
