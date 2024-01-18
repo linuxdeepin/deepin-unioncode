@@ -59,9 +59,6 @@ private:
 
     RunState runState = kNoRun;
 
-    QWidget *oldWidgetEdit = nullptr;
-    QWidget *oldWidgetWatch = nullptr;
-
     AbstractWidget *stackPane = nullptr;
     AbstractWidget *breakpointsPane = nullptr;
     AbstractWidget *scriptPane = nullptr;

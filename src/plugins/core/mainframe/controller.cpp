@@ -7,7 +7,9 @@
 #include "navigationbar.h"
 #include "plugindialog.h"
 #include "windowstatusbar.h"
+#include "workspacewidget.h"
 #include "services/window/windowservice.h"
+#include "services/window/windowcontroller.h"
 #include "services/project/projectservice.h"
 
 #include <DFrame>
@@ -23,7 +25,12 @@
 #include <QScreen>
 
 static Controller *ins { nullptr };
-inline const QString contextWidgetName = "ContextWidget";
+
+//WN = window name
+inline const QString WN_CONTEXTWIDGET = "contextWidget";
+inline const QString WN_LOADINGWIDGET = "loadingWidget";
+inline const QString WN_WORKSPACE = "workspaceWidget";
+
 // MW = MainWindow
 inline constexpr int MW_WIDTH { 1280 };
 inline constexpr int MW_HEIGHT { 860 };
@@ -32,28 +39,46 @@ inline constexpr int MW_MIN_WIDTH { 1280 };
 inline constexpr int MW_MIN_HEIGHT { 600 };
 using namespace dpfservice;
 
+struct WidgetInfo
+{
+    QString name;
+    DWidget *widget;
+    Position pos;
+    bool replace;
+    bool isVisible;
+};
+
 class ControllerPrivate
 {
     MainWindow *mainWindow { nullptr };
     loadingWidget *loadingwidget { nullptr };
+    WorkspaceWidget *workspace { nullptr };
+    bool showWorkspace { nullptr };
+
     NavigationBar *navigationBar { nullptr };
-    QVBoxLayout *leftBarBottomLayout { nullptr };
-    QVBoxLayout *leftBarTopLayout { nullptr };
 
     QMap<QString, QAction *> navigationActions;
+    QMap<QString, QList<QPair<QString, QAction *>>> topToolActions;
+    QMap<QString, int> topToolSpacing;
 
     QMap<QString, DWidget *> contextWidgets;
     QMap<QString, DPushButton *> tabButtons;
     DWidget *contextWidget { nullptr };
     DStackedWidget *stackContextWidget { nullptr };
     DFrame *contextTabBar { nullptr };
+    bool contextWidgetAdded { false };
 
     WindowStatusBar *statusBar { nullptr };
 
     DMenu *menu { nullptr };
 
     QMap<QString, View *> viewList;
-    QString currentPlugin { "" };
+    QStringList hiddenWidgetList;
+    QString currentPlugin { "" };   //navigation - widget
+    View *currentView { nullptr };
+
+    QString mode { "" };   //mode: CM_EDIT/CM_DEBUG/CM_RECENT
+    QMap<QString, QList<WidgetInfo>> modeInfo;
 
     friend class Controller;
 };
@@ -73,6 +98,7 @@ Controller::Controller(QObject *parent)
     initNavigationBar();
     initContextWidget();
     initStatusBar();
+    initWorkspaceWidget();
 
     registerService();
 }
@@ -83,15 +109,107 @@ void Controller::registerService()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     using namespace std::placeholders;
-    //        if (!windowService->addWidget) {
-    //            windowService->addWidget = std::bind(&Controller::addWidget, this, _1, _2, _3, _4);
-    //        }
-    //        if (!windowService->addNavigation2) {
-    //            windowService->addNavigation2 = std::bind(&Controller::addNavigation, this, _1);
-    //        }
-    //        if (!windowService->addContextWidget2) {
-    //            windowService->addContextWidget2 = std::bind(&Controller::addContextWidget, this, _1, _2, _3);
-    //        }
+    if (!windowService->hasView) {
+        windowService->hasView = std::bind(&Controller::hasView, this, _1);
+    }
+    if (!windowService->raiseView) {
+        windowService->raiseView = std::bind(&Controller::raiseView, this, _1);
+    }
+    if (!windowService->raiseMode) {
+        windowService->raiseMode = std::bind(&Controller::raiseMode, this, _1);
+    }
+    if (!windowService->setCurrentPlugin) {
+        windowService->setCurrentPlugin = std::bind(&Controller::setCurrentPlugin, this, _1);
+    }
+    if (!windowService->addWidget) {
+        windowService->addWidget = std::bind(&Controller::addWidget, this, _1, _2, _3, _4);
+    }
+    if(!windowService->replaceWidget) {
+        windowService->replaceWidget = std::bind(&Controller::replaceWidget, this, _1, _2, _3);
+    }
+    if(!windowService->insertWidget) {
+        windowService->insertWidget = std::bind(&Controller::insertWidget, this, _1, _2, _3);
+    }
+    if (!windowService->registerWidgetToMode) {
+        windowService->registerWidgetToMode = std::bind(&Controller::registerWidgetToMode, this, _1, _2, _3, _4, _5, _6);
+    }
+    if (!windowService->addWidgetByOrientation) {
+        windowService->addWidgetByOrientation = std::bind(&Controller::addWidgetByOrientation, this, _1, _2, _3, _4, _5);
+    }
+    if (!windowService->setDockWidgetFeatures) {
+        windowService->setDockWidgetFeatures = std::bind(&MainWindow::setDockWidgetFeatures, d->mainWindow, _1, _2);
+    }
+    if (!windowService->showWidget) {
+        //auto showWidgetByName = static_cast<void (MainWindow::*)(const QString &)>(&MainWindow::showWidget);
+        windowService->showWidget = std::bind(&Controller::showWidget, this, _1);
+    }
+    if (!windowService->hideWidget) {
+        //auto hideWidgetByName = static_cast<void (MainWindow::*)(const QString &)>(&MainWindow::hideWidget);
+        windowService->hideWidget = std::bind(&Controller::hideWidget, this, _1);
+    }
+    if (!windowService->splitWidgetOrientation) {
+        windowService->splitWidgetOrientation = std::bind(&MainWindow::splitWidgetOrientation, d->mainWindow, _1, _2, _3);
+    }
+    if (!windowService->addNavigationItem) {
+        windowService->addNavigationItem = std::bind(&Controller::addNavigationItem, this, _1);
+    }
+    if (!windowService->addNavigationItemToBottom) {
+        windowService->addNavigationItemToBottom = std::bind(&Controller::addNavigationItemToBottom, this, _1);
+    }
+    if (!windowService->switchWidgetNavigation) {
+        windowService->switchWidgetNavigation = std::bind(&Controller::switchWidgetNavigation, this, _1);
+    }
+    if (!windowService->addContextWidget) {
+        windowService->addContextWidget = std::bind(&Controller::addContextWidget, this, _1, _2, _3);
+    }
+    if (!windowService->hasContextWidget) {
+        windowService->hasContextWidget = std::bind(&Controller::hasContextWidget, this, _1);
+    }
+    if (!windowService->showContextWidget) {
+        windowService->showContextWidget = std::bind(&Controller::showContextWidget, this);
+    }
+    if (!windowService->hideContextWidget) {
+        windowService->hideContextWidget = std::bind(&Controller::hideContextWidget, this);
+    }
+    if (!windowService->switchContextWidget) {
+        windowService->switchContextWidget = std::bind(&Controller::switchContextWidget, this, _1);
+    }
+    if (!windowService->addChildMenu) {
+        windowService->addChildMenu = std::bind(&Controller::addChildMenu, this, _1);
+    }
+    if (!windowService->insertAction) {
+        windowService->insertAction = std::bind(&Controller::insertAction, this, _1, _2, _3);
+    }
+    if (!windowService->addAction) {
+        windowService->addAction = std::bind(&Controller::addAction, this, _1, _2);
+    }
+    if (!windowService->removeActions) {
+        windowService->removeActions = std::bind(&Controller::removeActions, this, _1);
+    }
+    if (!windowService->addOpenProjectAction) {
+        windowService->addOpenProjectAction = std::bind(&Controller::addOpenProjectAction, this, _1, _2);
+    }
+    if (!windowService->addTopToolItem) {
+        windowService->addTopToolItem = std::bind(&Controller::addTopToolItem, this, _1, _2, _3);
+    }
+    if (!windowService->addTopToolSpacing) {
+        windowService->addTopToolSpacing = std::bind(&Controller::addTopToolSpacing, this, _1, _2);
+    }
+    if (!windowService->showTopToolItem) {
+        windowService->showTopToolItem = std::bind(&MainWindow::showTopToolItem, d->mainWindow, _1);
+    }
+    if (!windowService->hideTopToolItem) {
+        windowService->hideTopToolItem = std::bind(&MainWindow::hideTopToolItem, d->mainWindow, _1);
+    }
+    if (!windowService->showStatusBar) {
+        windowService->showStatusBar = std::bind(&Controller::showStatusBar, this);
+    }
+    if (!windowService->hideStatusBar) {
+        windowService->hideStatusBar = std::bind(&Controller::hideStatusBar, this);
+    }
+    if (!windowService->addWidgetWorkspace) {
+        windowService->addWidgetWorkspace = std::bind(&WorkspaceWidget::addWorkspaceWidget, d->workspace, _1, _2, _3);
+    }
 }
 
 Controller::~Controller()
@@ -105,60 +223,97 @@ Controller::~Controller()
         delete d;
 }
 
+void Controller::raiseMode(const QString &mode)
+{
+    if (mode != CM_EDIT && mode != CM_DEBUG && mode != CM_RECENT) {
+        qWarning() << "mode can only choose CM_RECENT / CM_EDIT / CM_DEBUG";
+        return;
+    }
+
+    d->mainWindow->hideAllWidget();
+
+    auto widgetInfoList = d->modeInfo[mode];
+    foreach (auto widgetInfo, widgetInfoList) {
+        if (widgetInfo.replace)
+            d->mainWindow->hideWidget(widgetInfo.pos);
+        d->mainWindow->showWidget(widgetInfo.name);
+        //widget in mainWindow is Dock(widget), show dock and hide widget.
+        if (!widgetInfo.isVisible)
+            widgetInfo.widget->hide();
+    }
+
+    if(mode == CM_RECENT) {
+        d->mode = mode;
+        return;
+    }
+
+    if(mode == CM_EDIT)
+        showWorkspace();
+
+    showContextWidget();
+    showStatusBar();
+
+    QString plugin = mode == CM_EDIT ? MWNA_EDIT : MWNA_DEBUG;
+    d->currentView = d->viewList[plugin];
+    resetTopTool(plugin);
+
+    d->mode = mode;
+}
+
 void Controller::raiseView(const QString &plugin)
 {
-    auto *view = d->viewList[plugin];
-    if (!view) {
-        qWarning() << "no existed View named " << plugin;
+    if (!d->viewList.contains(plugin)) {
+        qWarning() << "no view of plugin: " << plugin << "try to trigger it";
+        d->navigationActions[plugin]->trigger();
         return;
     }
 
-    if (view->previousView.isEmpty() && (view->previousView != plugin))
-        raiseView(view->previousView);
+    auto view = d->viewList[plugin];
+    if(d->currentView == view)
+        return;
 
-    foreach (auto hidepos, view->hiddenposList)
+    if (d->topToolActions.contains(plugin))
+        resetTopTool(plugin);
+
+    if (!view->mode.isEmpty())
+        raiseMode(view->mode);
+
+    bool restoreContextWidget = false;
+    foreach (auto hidepos, view->hiddenposList) {
+        //if hide centralWidget when contextWidget is visible, contextWidget`s height will resize to window`s height
+        if (hidepos == Position::Central && d->contextWidget->isVisible()) {
+            d->mainWindow->hideWidget(WN_CONTEXTWIDGET);
+            restoreContextWidget = true;
+        }
         d->mainWindow->hideWidget(hidepos);
-
-    foreach (auto widgetName, view->widgetList)
-        d->mainWindow->showWidget(widgetName);
-
-    d->mainWindow->hideTopTollBar();
-    foreach (auto item, view->topToolItemList)
-        d->mainWindow->showTopToolItem(item);
-
-    if (view->showContextWidget && !d->contextWidgets.isEmpty())
-        d->mainWindow->showWidget(contextWidgetName);
-
-    d->currentPlugin = plugin;
-}
-
-void Controller::setCurrentPlugin(const QString &plugin)
-{
-    d->currentPlugin = plugin;
-}
-
-void Controller::setPreviousView(const QString &pluginName, const QString &previous)
-{
-    if (!d->viewList.contains(pluginName) || !d->viewList.contains(previous)) {
-        qWarning() << pluginName << "or" << previous << "haven`t set yet";
-        return;
     }
-    d->viewList[pluginName]->previousView = previous;
+
+    foreach (auto widgetName, view->widgetList) {
+        if (!d->hiddenWidgetList.contains(widgetName))
+            d->mainWindow->showWidget(widgetName);
+    }
+
+    if (restoreContextWidget)
+        d->mainWindow->showWidget(WN_CONTEXTWIDGET);
+
+    d->currentView = view;
 }
 
-void Controller::addWidget(const QString &name, AbstractWidget *abstractWidget, Position pos, bool replace)
+bool Controller::initView(const QString &widgetName, Position pos, bool replace)
 {
-    auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
+    if (d->currentPlugin.isEmpty())
+        return false;
 
     auto view = d->viewList[d->currentPlugin];
     if (!view) {
         view = new View;
-        view->pluginName = d->currentPlugin;
-        view->widgetList.append(name);
         d->viewList.insert(d->currentPlugin, view);
+        view->pluginName = d->currentPlugin;
+        view->widgetList.append(widgetName);
+    } else if (!view->widgetList.contains(widgetName)) {
+        view->widgetList.append(widgetName);
     } else {
-        raiseView(d->currentPlugin);
-        return;
+        return true;
     }
 
     if (replace) {
@@ -166,10 +321,107 @@ void Controller::addWidget(const QString &name, AbstractWidget *abstractWidget, 
         d->mainWindow->hideWidget(pos);
     }
 
-    d->mainWindow->addWidget(name, widget, pos);
+    return false;
 }
 
-void Controller::addNavigation(AbstractAction *action)
+bool Controller::hasView(const QString &plugin)
+{
+    return d->viewList.contains(plugin);
+}
+
+void Controller::setCurrentPlugin(const QString &plugin)
+{
+    d->currentPlugin = plugin;
+}
+
+void Controller::addWidget(const QString &name, AbstractWidget *abstractWidget, Position pos, bool replace)
+{
+    bool viewIsAlreayExisted = initView(name, pos, replace);
+
+    if (viewIsAlreayExisted) {
+        raiseView(d->currentPlugin);
+        return;
+    }
+
+    d->currentView = d->viewList[d->currentPlugin];
+
+    if (abstractWidget) {
+        auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
+        d->mainWindow->addWidget(name, widget, pos);
+    }
+}
+
+void Controller::replaceWidget(const QString &name, AbstractWidget *abstractWidget, Position pos)
+{
+    addWidget(name, abstractWidget, pos, true);
+}
+
+void Controller::insertWidget(const QString &name, AbstractWidget *abstractWidget, Position pos)
+{
+    addWidget(name, abstractWidget, pos, false);
+}
+
+void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstractWidget, const QString &mode, Position pos, bool replace, bool isVisible)
+{
+    if (mode == CM_EDIT)
+        setCurrentPlugin(MWNA_EDIT);
+    else if (mode == CM_DEBUG)
+        setCurrentPlugin(MWNA_DEBUG);
+    else if (mode == CM_RECENT)
+        setCurrentPlugin(MWNA_RECENT);
+    else
+        return;
+
+    DWidget *qWidget = static_cast<DWidget *>(abstractWidget->qWidget());
+
+    WidgetInfo widgetInfo;
+    widgetInfo.name = name;
+    widgetInfo.pos = pos;
+    widgetInfo.replace = replace;
+    widgetInfo.widget = qWidget;
+    widgetInfo.isVisible = isVisible;
+
+    initView(name, pos, replace);
+    d->mainWindow->addWidget(name, qWidget, pos);
+    d->mainWindow->hideWidget(name);
+
+    d->modeInfo[mode].append(widgetInfo);
+    setCurrentPlugin("");
+}
+
+void Controller::addWidgetByOrientation(const QString &name, AbstractWidget *abstractWidget, Position pos, bool replace, Qt::Orientation orientation)
+{
+    bool viewIsAlreayExisted = initView(name, pos, replace);
+
+    if (viewIsAlreayExisted) {
+        raiseView(d->currentPlugin);
+        return;
+    }
+    if (abstractWidget) {
+        auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
+        d->mainWindow->addWidget(name, widget, pos, orientation);
+    }
+    showStatusBar();
+}
+
+void Controller::showWidget(const QString &name)
+{
+    if (!d->hiddenWidgetList.contains(name)) {
+        qWarning() << "there is no widget named " << name << "or it`s not hidden";
+        return;
+    }
+
+    d->mainWindow->showWidget(name);
+    d->hiddenWidgetList.removeOne(name);
+}
+
+void Controller::hideWidget(const QString &name)
+{
+    d->hiddenWidgetList.append(name);
+    d->mainWindow->hideWidget(name);
+}
+
+void Controller::addNavigationItem(AbstractAction *action)
 {
     if (!action)
         return;
@@ -179,7 +431,7 @@ void Controller::addNavigation(AbstractAction *action)
     d->navigationActions.insert(inputAction->text(), inputAction);
 }
 
-void Controller::addNavigationToBottom(AbstractAction *action)
+void Controller::addNavigationItemToBottom(AbstractAction *action)
 {
     if (!action)
         return;
@@ -194,10 +446,16 @@ void Controller::switchWidgetNavigation(const QString &navName)
     if (navName != d->currentPlugin)
         d->navigationBar->setNavActionChecked(navName, true);
 
-    if(hasView(navName)) {
-        d->currentPlugin = navName;
+    d->mainWindow->clearTopTollBar();
+    setCurrentPlugin(navName);
+    if (navName == MWNA_RECENT)
+        raiseMode(CM_RECENT);
+    else if (navName == MWNA_EDIT)
+        raiseMode(CM_EDIT);
+    else if (navName == MWNA_DEBUG)
+        raiseMode(CM_DEBUG);
+    else
         raiseView(navName);
-    }
 }
 
 void Controller::addContextWidget(const QString &title, AbstractWidget *contextWidget, bool isVisible)
@@ -230,8 +488,14 @@ void Controller::addContextWidget(const QString &title, AbstractWidget *contextW
 
 void Controller::showContextWidget()
 {
-    d->mainWindow->showWidget(contextWidgetName);
-    d->viewList[d->currentPlugin]->showContextWidget = true;
+    if (!d->contextWidgetAdded) {
+        d->mainWindow->addWidget(WN_CONTEXTWIDGET, d->contextWidget, Position::Bottom);
+        d->contextWidgetAdded = true;
+    } else {
+        d->mainWindow->showWidget(WN_CONTEXTWIDGET);
+    }
+    if (!d->currentPlugin.isEmpty() && d->viewList.contains(d->currentPlugin))
+        d->viewList[d->currentPlugin]->showContextWidget = true;
 }
 
 bool Controller::hasContextWidget(const QString &title)
@@ -241,12 +505,14 @@ bool Controller::hasContextWidget(const QString &title)
 
 void Controller::hideContextWidget()
 {
-    d->mainWindow->hideWidget(contextWidgetName);
-    d->viewList[d->currentPlugin]->showContextWidget = false;
+    d->mainWindow->hideWidget(WN_CONTEXTWIDGET);
+    if (!d->currentPlugin.isEmpty() && d->viewList.contains(d->currentPlugin))
+        d->viewList[d->currentPlugin]->showContextWidget = false;
 }
 
 void Controller::switchContextWidget(const QString &title)
 {
+    qInfo() << __FUNCTION__;
     d->stackContextWidget->setCurrentWidget(d->contextWidgets[title]);
     if (d->tabButtons.contains(title))
         d->tabButtons[title]->show();
@@ -366,16 +632,45 @@ void Controller::addOpenProjectAction(const QString &name, AbstractAction *actio
     }
 }
 
-void Controller::addTopToolItem(const QString &name, AbstractAction *action)
+void Controller::addTopToolItem(const QString &itemName, AbstractAction *action, const QString &plugin)
 {
-    if (!action || name.isNull())
+    if (!action || itemName.isNull())
         return;
     auto inputAction = static_cast<QAction *>(action->qAction());
 
-    auto view = d->viewList[d->currentPlugin];
-    if (!view->topToolItemList.contains(name)) {
-        view->topToolItemList.append(name);
-        d->mainWindow->addTopToolItem(name, inputAction);
+    d->topToolActions[plugin].append(qMakePair(itemName, inputAction));
+
+    //add TopToolItem when plugin is already create
+    if (d->currentPlugin == plugin)
+        resetTopTool(plugin);
+}
+
+void Controller::addTopToolSpacing(const QString &itemName, int spacing)
+{
+    d->topToolSpacing[itemName] = spacing;
+}
+
+void Controller::resetTopTool(const QString &pluginName)
+{
+    d->mainWindow->clearTopTollBar();
+    if (!d->topToolActions.contains(pluginName) || !d->viewList.contains(pluginName))
+        return;
+
+    auto view = d->viewList[pluginName];
+    if (!view)
+        return;
+
+    // pair : actionName - action.
+    foreach (auto pair, d->topToolActions[pluginName]) {
+        //add spacing
+        if (d->topToolSpacing.contains(pair.first))
+            d->mainWindow->addTopToolBarSpacing(d->topToolSpacing[pair.first]);
+
+        //save View
+        if (!view->topToolItemList.contains(pair.first))
+            view->topToolItemList.append(pair.first);
+
+        d->mainWindow->addTopToolItem(pair.first, pair.second);
     }
 }
 
@@ -398,12 +693,11 @@ void Controller::showAboutPlugins()
 void Controller::loading()
 {
     d->loadingwidget = new loadingWidget(d->mainWindow);
-    d->mainWindow->addWidget("loadingWidget", d->loadingwidget);
+    d->mainWindow->addWidget(WN_LOADINGWIDGET, d->loadingwidget);
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
                      this, [=]() {
-                         //d->navigationActions[MWNA_RECENT]->trigger();
-                         d->mainWindow->removeWidget("loadingWidget");
+                         d->mainWindow->removeWidget(WN_LOADINGWIDGET);
 
                          d->navigationBar->show();
                          d->mainWindow->setToolbar(Qt::ToolBarArea::LeftToolBarArea, d->navigationBar);
@@ -546,14 +840,13 @@ void Controller::initContextWidget()
     QVBoxLayout *contextVLayout = new QVBoxLayout();
     contextVLayout->setContentsMargins(0, 0, 0, 0);
     contextVLayout->setSpacing(0);
-    contextVLayout->addWidget(new DHorizontalLine);
     contextVLayout->addWidget(d->contextTabBar);
     contextVLayout->addWidget(new DHorizontalLine);
     contextVLayout->addWidget(d->stackContextWidget);
     d->contextWidget->setLayout(contextVLayout);
 
-    d->mainWindow->addWidget(contextWidgetName, d->contextWidget, Position::Bottom);
-    d->mainWindow->hideWidget(contextWidgetName);
+    //add contextWidget after add centralWidget or it`s height is incorrect
+    //d->mainWindow->addWidget(WN_CONTEXTWIDGET, d->contextWidget, Position::Bottom);
 }
 
 void Controller::initStatusBar()
@@ -563,6 +856,13 @@ void Controller::initStatusBar()
     d->statusBar = new WindowStatusBar(d->mainWindow);
     d->statusBar->hide();
     d->mainWindow->setStatusBar(d->statusBar);
+}
+
+void Controller::initWorkspaceWidget()
+{
+    if (d->workspace)
+        return;
+    d->workspace = new WorkspaceWidget(d->mainWindow);
 }
 
 void Controller::addMenuShortCut(QAction *action, QKeySequence keySequence)
@@ -575,4 +875,33 @@ void Controller::addMenuShortCut(QAction *action, QKeySequence keySequence)
     connect(shortCutOpenFile, &QShortcut::activated, [=] {
         action->trigger();
     });
+}
+
+void Controller::showStatusBar()
+{
+    if (d->statusBar)
+        d->statusBar->show();
+}
+
+void Controller::hideStatusBar()
+{
+    if (d->statusBar)
+        d->statusBar->hide();
+}
+
+void Controller::switchWorkspace(const QString &titleName)
+{
+    if (d->workspace)
+        d->workspace->switchWidgetWorkspace(titleName);
+}
+
+void Controller::showWorkspace()
+{
+    if (d->showWorkspace != true) {
+        d->mainWindow->addWidget(WN_WORKSPACE, d->workspace, Position::Left);
+        d->mainWindow->resizeDock(WN_WORKSPACE, QSize(300, 300));
+        d->showWorkspace = true;
+    }
+
+    d->mainWindow->showWidget(WN_WORKSPACE);
 }

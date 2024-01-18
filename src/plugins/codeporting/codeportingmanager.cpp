@@ -153,9 +153,9 @@ void CodePortingManager::resetUI()
 
     if (!windowService->hasContextWidget(tr("C&ode Porting"))) {
         // Add output pane
-        windowService->addContextWidget(tr("C&ode Porting"), new AbstractWidget(new CodePortingWidget()), group, false);
+        windowService->addContextWidget(tr("C&ode Porting"), new AbstractWidget(new CodePortingWidget()), false);
     }
 
     outputPane->clearContents();
-    editor.switchContext(tr("C&ode Porting"));
+    uiController.switchContext(tr("C&ode Porting"));
 }

@@ -43,7 +43,7 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         QString workspace = QDir::homePath();
         editor.openFileWithKey(workspace, language, filePath);
     } else if (event.data() == editor.openFileWithKey.name) {
-        navigation.doSwitch(dpfservice::MWNA_EDIT);
+        uiController.doSwitch(dpfservice::MWNA_EDIT);
         using namespace support_file;
         QString workspace = event.property(editor.openFileWithKey.pKeys[0]).toString();
         QString language = event.property(editor.openFileWithKey.pKeys[1]).toString();

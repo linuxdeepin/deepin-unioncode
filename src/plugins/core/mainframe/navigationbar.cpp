@@ -13,6 +13,7 @@ NavigationBar::NavigationBar(QWidget *parent)
 {
     setLineWidth(0);
     setFixedWidth(58);
+
     DStyle::setFrameRadius(this, 0);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -40,32 +41,41 @@ NavigationBar::~NavigationBar()
 
 void NavigationBar::addNavItem(QAction *action, itemPositioin pos)
 {
-    auto btn = createToolBtn(action);
-    if(pos == top)
+    if(pos == top){
+        auto btn = createToolBtn(action, true);
         topLayout->addWidget(btn);
-    else
+   } else {
+        auto btn = createToolBtn(action, false);
         bottomLayout->addWidget(btn);
+    }
 }
 
-DToolButton *NavigationBar::createToolBtn(QAction *action)
+DToolButton *NavigationBar::createToolBtn(QAction *action, bool isNavigationItem)
 {
     DToolButton *navBtn = new DToolButton(this);
-    navBtn->setCheckable(true);
-    navBtn->setChecked(false);
-    navBtn->setToolTip(action->text());
 
+    navBtn->setToolTip(action->text());
     navBtn->setIcon(action->icon());
 
     navBtn->setMinimumSize(QSize(48, 48));
     navBtn->setIconSize(QSize(20, 20));
+    navBtn->setFocusPolicy(Qt::NoFocus);
 
-    navBtns.insert(action->text(), navBtn);
+    if(isNavigationItem) {
+        navBtn->setCheckable(true);
+        navBtn->setChecked(false);
 
-    connect(navBtn, &DToolButton::clicked, this, [=](){
-        Controller::instance()->setCurrentPlugin(action->text());
-        setNavActionChecked(action->text(), true);
-        action->trigger();
-    });
+        navBtns.insert(action->text(), navBtn);
+
+        connect(navBtn, &DToolButton::clicked, this, [=](){
+            Controller::instance()->switchWidgetNavigation(action->text());
+            setNavActionChecked(action->text(), true);
+            action->trigger();
+        });
+        return navBtn;
+    }
+
+    connect(navBtn, &DToolButton::clicked, action, &QAction::trigger);
 
     return navBtn;
 }

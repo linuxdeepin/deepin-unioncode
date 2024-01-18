@@ -6,6 +6,7 @@ include_directories(${CPPDAP_DIR}/include)
 set(CXX_H
     window/windowelement.h
     window/windowservice.h
+    window/windowcontroller.h
     debugger/debuggerservice.h
 #    container/containerservice.h
     project/projectactioninfo.h

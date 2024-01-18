@@ -7,7 +7,6 @@
 #include <DTitlebar>
 #include <DIconButton>
 #include <DStatusBar>
-#include <DDockWidget>
 #include <DToolBar>
 
 #include <QHBoxLayout>
@@ -20,7 +19,8 @@ class MainWindowPrivate
     QMap<QString, QDockWidget *> dockList;
 
     DWidget *topToolbar { nullptr };
-    QMap<QString, QWidget *> topToolList;
+    QMap<QString, DWidget *> topToolList;
+    QMap<QString, DWidget *> centralWidgets;
 
     QString centralWidgetName;
     DMenu *menu { nullptr };
@@ -30,8 +30,7 @@ class MainWindowPrivate
 
 Qt::DockWidgetArea MainWindow::positionTodockArea(Position pos)
 {
-    if(pos == Position::FullWindow || pos == Position::Central)
-    {
+    if (pos == Position::FullWindow || pos == Position::Central) {
         qWarning() << "only converting values of Left、Right、Top、Bottom";
         return Qt::NoDockWidgetArea;
     }
@@ -55,7 +54,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     titlebar()->setTitle("Deepin Union Code");
     titlebar()->setIcon(QIcon::fromTheme("ide"));
+
+    setWindowIcon(QIcon::fromTheme("ide"));
     setAttribute(Qt::WA_DeleteOnClose);
+
+    //setStyleSheet("QMainWindow::separator { width: 2px; margin: 0px; padding: 0px; }");
 
     setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
     setCorner(Qt::Corner::TopLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
@@ -63,6 +66,21 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+}
+
+DDockWidget *MainWindow::createDockWidget(DWidget *widget)
+{
+    DDockWidget *dock = new DDockWidget(this);
+    dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+
+    //todo(zta: set titleBar
+    if (dock->titleBarWidget())
+        delete dock->titleBarWidget();
+    dock->setTitleBarWidget(new DWidget(this));
+
+    dock->setWidget(widget);
+
+    return dock;
 }
 
 void MainWindow::addWidget(const QString &name, QWidget *widget, Position pos)
@@ -76,30 +94,74 @@ void MainWindow::addWidget(const QString &name, QWidget *widget, Position pos)
         hideAllWidget();
 
     if (pos == Position::Central || pos == Position::FullWindow) {
+        if (!d->centralWidgetName.isEmpty() && centralWidget())
+            hideWidget(d->centralWidgetName);
+
         setCentralWidget(widget);
         d->centralWidgetName = name;
+        d->centralWidgets.insert(name, widget);
         return;
     }
 
     auto area = positionTodockArea(pos);
-    DDockWidget *dock = new DDockWidget(this);
-    dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-
-    //todo(zta: set titleBar
-    if (0)
-        dock->setWindowTitle(name);
-    if (dock->titleBarWidget())
-        delete dock->titleBarWidget();
-    dock->setTitleBarWidget(new DWidget(this));
-
-    dock->setWidget(widget);
-    d->dockList.insert(name, dock);
+    auto dock = createDockWidget(widget);
     addDockWidget(area, dock);
 
-    if(pos == Position::Left || pos == Position::Right)
-        resizeDocks({dock}, {widget->width()}, Qt::Horizontal);
+    //initial dock size , modify it as other dock which on same position
+    resizeDock(dock);
+    d->dockList.insert(name, dock);
+}
+
+void MainWindow::addWidget(const QString &name, QWidget *widget, dpfservice::Position pos, Qt::Orientation orientation)
+{
+    if (d->dockList.contains(name)) {
+        qWarning() << "dockWidget-" << name << "is already exist";
+        return;
+    }
+
+    if (pos == Position::Central || pos == Position::FullWindow) {
+        addWidget(name, widget, pos);
+        return;
+    }
+
+    auto area = positionTodockArea(pos);
+    auto dock = createDockWidget(widget);
+
+    addDockWidget(area, dock, orientation);
+
+    //initial dock size , modify it as other dock which on same position
+    resizeDock(dock);
+    d->dockList.insert(name, dock);
+}
+
+void MainWindow::resizeDock(QDockWidget *dock)
+{
+    auto area = dockWidgetArea(dock);
+
+    QSize size(300, 300);
+    foreach (auto name, d->dockList.keys()) {
+        if (dockWidgetArea(d->dockList[name]) == area) {
+            size = d->dockList[name]->size();
+        }
+    }
+
+    if (area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea)
+        resizeDocks({ dock }, { size.width() }, Qt::Horizontal);
     else
-        resizeDocks({dock}, {widget->height()}, Qt::Vertical);
+        resizeDocks({ dock }, { size.height() }, Qt::Vertical);
+}
+
+void MainWindow::resizeDock(const QString &dockName, QSize size)
+{
+    if (!d->dockList.contains(dockName))
+        return;
+
+    auto dock = d->dockList[dockName];
+    auto area = dockWidgetArea(dock);
+    if (area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea)
+        resizeDocks({ dock }, { size.width() }, Qt::Horizontal);
+    else
+        resizeDocks({ dock }, { size.height() }, Qt::Vertical);
 }
 
 void MainWindow::replaceWidget(const QString &name, QWidget *widget, Position pos)
@@ -110,7 +172,7 @@ void MainWindow::replaceWidget(const QString &name, QWidget *widget, Position po
     }
 
     if (pos != Position::FullWindow)
-        removeWidget(pos);
+        hideWidget(pos);
     addWidget(name, widget, pos);
 }
 
@@ -134,6 +196,15 @@ void MainWindow::removeWidget(Position pos)
     }
 }
 
+void MainWindow::setDockWidgetFeatures(const QString &name,QDockWidget::DockWidgetFeatures feature)
+{
+    if(!d->dockList.contains(name)) {
+        qWarning() << name << " is not a dockWidget.";
+        return;
+    }
+    d->dockList[name]->setFeatures(feature);
+}
+
 void MainWindow::removeWidget(const QString &name)
 {
     if (name == d->centralWidgetName) {
@@ -152,8 +223,12 @@ void MainWindow::removeWidget(const QString &name)
 
 void MainWindow::hideWidget(const QString &name)
 {
-    if(d->centralWidgetName == name)
-        centralWidget()->hide();
+    if (d->centralWidgetName == name && centralWidget()) {
+        auto central = takeCentralWidget();
+        central->setParent(this);
+        central->hide();
+        return;
+    }
 
     if (!d->dockList.contains(name)) {
         qWarning() << "no dockWidget named: " << name;
@@ -165,11 +240,14 @@ void MainWindow::hideWidget(const QString &name)
 
 void MainWindow::hideWidget(Position pos)
 {
-    if (pos == Position::FullWindow)
+    if (pos == Position::FullWindow) {
         hideAllWidget();
+        return;
+    }
 
-    if ((pos == Position::Central || pos == Position::FullWindow) && centralWidget()) {
-        centralWidget()->hide();
+    if (pos == Position::Central) {
+        if(centralWidget())
+            hideWidget(d->centralWidgetName);
         return;
     }
 
@@ -185,14 +263,24 @@ void MainWindow::hideAllWidget()
 {
     foreach (auto dock, d->dockList.values())
         dock->hide();
-    if(centralWidget())
-        centralWidget()->hide();
+
+    if (!d->centralWidgetName.isEmpty() && centralWidget()) {
+        hideWidget(d->centralWidgetName);
+    }
 }
 
 void MainWindow::showWidget(const QString &name)
 {
-    if(name == d->centralWidgetName)
-        showWidget(Position::FullWindow);
+    if (d->centralWidgets.contains(name) && !d->centralWidgetName.isEmpty()) {
+        if (centralWidget())
+            hideWidget(d->centralWidgetName);
+
+        auto central = d->centralWidgets[name];
+        d->centralWidgetName = name;
+        central->show();
+        setCentralWidget(central);
+        return;
+    }
 
     if (!d->dockList.contains(name)) {
         qWarning() << "no dockWidget named: " << name;
@@ -204,11 +292,12 @@ void MainWindow::showWidget(const QString &name)
 
 void MainWindow::showWidget(Position pos)
 {
-    if (pos == Position::FullWindow)
+    if (pos == Position::FullWindow) {
         hideAllWidget();
+    }
 
     if ((pos == Position::Central || pos == Position::FullWindow) && centralWidget()) {
-        centralWidget()->show();
+        showWidget(d->centralWidgetName);
         return;
     }
 
@@ -224,7 +313,7 @@ void MainWindow::showAllWidget()
 {
     foreach (auto dock, d->dockList.values())
         dock->show();
-    centralWidget()->show();
+    showWidget(d->centralWidgetName);
 }
 
 void MainWindow::removeAllDockWidget()
@@ -247,14 +336,12 @@ void MainWindow::setToolbar(Qt::ToolBarArea area, QWidget *widget)
 {
     DToolBar *tb = new DToolBar(this);
     tb->setContentsMargins(0, 0, 0, 0);
+    tb->layout()->setMargin(0);
     tb->setMovable(false);
     tb->setFloatable(false);
 
-    tb->setStyleSheet("QToolBar { border: 0; }");
-
     widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     tb->addWidget(widget);
-
     addToolBar(area, tb);
 }
 
@@ -314,7 +401,21 @@ void MainWindow::addTopToolItem(const QString &name, QAction *action)
 
 void MainWindow::showTopToolItem(const QString &name)
 {
-    d->topToolList[name]->setVisible(true);
+    if (d->topToolList.contains(name)) {
+        titlebar()->setTitle(QString(""));
+        d->topToolList[name]->setVisible(true);
+    }
+}
+
+void MainWindow::hideTopToolItem(const QString &name)
+{
+    if (d->topToolList.contains(name))
+        d->topToolList[name]->setVisible(false);
+    foreach (auto item, d->topToolList.values()) {
+        if(item->isVisible() == true)
+            return;
+    }
+    titlebar()->setTitle(QString("Deepin Union Code"));
 }
 
 void MainWindow::addTopToolBarSpacing(int spacing)
@@ -326,7 +427,8 @@ void MainWindow::addTopToolBarSpacing(int spacing)
 void MainWindow::clearTopTollBar()
 {
     QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout *>(titlebar()->layout());
-    titleBarLayout->removeWidget(d->topToolbar);
+    if(titleBarLayout)
+        titleBarLayout->removeWidget(d->topToolbar);
     delete d->topToolbar;
     d->topToolbar = nullptr;
 

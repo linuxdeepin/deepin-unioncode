@@ -31,15 +31,19 @@ bool Recent::start()
                          RecentDisplay::instance(), &RecentDisplay::addProject);
         QObject::connect(RecentProxy::instance(), &RecentProxy::saveOpenedFile,
                          RecentDisplay::instance(), &RecentDisplay::addDocument);
+
+        QAction *action = new QAction(MWNA_RECENT, this);
+        action->setIcon(QIcon::fromTheme("recent-navigation"));
+        windowService->addNavigationItem(new AbstractAction(action));
+
         auto recentWidgetImpl = new AbstractWidget(RecentDisplay::instance());
-        if (windowService->addCentralNavigation) {
-            windowService->addCentralNavigation(MWNA_RECENT, recentWidgetImpl);
-        }
+        windowService->registerWidgetToMode("recentWindow", recentWidgetImpl, CM_RECENT, Position::FullWindow, true, true);
     }
     return true;
 }
 
 dpf::Plugin::ShutdownFlag Recent::stop()
 {
+    delete RecentDisplay::instance();
     return Sync;
 }

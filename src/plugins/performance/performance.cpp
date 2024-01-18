@@ -36,7 +36,7 @@ bool Performance::start()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     if (::mainWindow && windowService) {
-        windowService->addContextWidget(QString(tr("&Performance")), new AbstractWidget(::mainWindow), "Performance", false);
+        windowService->addContextWidget(QString(tr("&Performance")), new AbstractWidget(::mainWindow), false);
     }
 
     return true;

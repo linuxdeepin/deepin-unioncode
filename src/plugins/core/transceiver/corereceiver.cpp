@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "corereceiver.h"
-#include "mainframe/windowkeeper.h"
+#include "mainframe/controller.h"
 #include "common/common.h"
 
 #include <QGridLayout>
@@ -22,16 +22,24 @@ dpf::EventHandler::Type CoreReceiver::type()
 
 QStringList CoreReceiver::topics()
 {
-    return {navigation.topic};
+    return {uiController.topic};
 }
 
 void CoreReceiver::eventProcess(const dpf::Event &event)
 {
-    if(event.data() == navigation.doSwitch.name) {
-        QString actionTextKey = navigation.doSwitch.pKeys[0];
+    if(event.data() == uiController.doSwitch.name) {
+        QString actionTextKey = uiController.doSwitch.pKeys[0];
         QString actionText = event.property(actionTextKey).toString();
         QMetaObject::invokeMethod(this, [=](){
-            WindowKeeper::instace()->switchWidgetNavigation(actionText);
+            Controller::instance()->switchWidgetNavigation(actionText);
         } , Qt::QueuedConnection);
+    } else if(event.data() == uiController.switchContext.name) {
+        QString titleName = event.property(uiController.switchContext.pKeys[0]).toString();
+        QMetaObject::invokeMethod(this, [=](){
+            Controller::instance()->switchContextWidget(titleName);
+        } , Qt::QueuedConnection);
+    } else if(event.data() == uiController.switchWorkspace.name) {
+        QString titleName = event.property(uiController.switchWorkspace.pKeys[0]).toString();
+        Controller::instance()->switchWorkspace(titleName);
     }
 }
