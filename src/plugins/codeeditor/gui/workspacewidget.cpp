@@ -37,8 +37,11 @@ void WorkspaceWidgetPrivate::initUI()
 
 void WorkspaceWidgetPrivate::initConnection()
 {
-    connect(EditorCallProxy::instance(), &EditorCallProxy::openFileRequested, this, &WorkspaceWidgetPrivate::onOpenFileRequested);
     connect(qApp, &QApplication::focusChanged, this, &WorkspaceWidgetPrivate::onFocusChanged);
+
+    connect(EditorCallProxy::instance(), &EditorCallProxy::openFileRequested, this, &WorkspaceWidgetPrivate::onOpenFileRequested);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::addBreakpointRequested, this, &WorkspaceWidgetPrivate::onAddBreakpointRequested);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::removeBreakpointRequested, this, &WorkspaceWidgetPrivate::onRemoveBreakpointRequested);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
@@ -125,11 +128,20 @@ void WorkspaceWidgetPrivate::onCloseRequested()
 
 void WorkspaceWidgetPrivate::onOpenFileRequested(const QString &fileName)
 {
-    auto tabWidget = currentTabWidget();
-    if (!tabWidget)
-        return;
+    if (auto tabWidget = currentTabWidget())
+        tabWidget->openFile(fileName);
+}
 
-    tabWidget->openFile(fileName);
+void WorkspaceWidgetPrivate::onAddBreakpointRequested(const QString &fileName, int line)
+{
+    if (auto tabWidget = currentTabWidget())
+        tabWidget->addBreakpoint(fileName, line);
+}
+
+void WorkspaceWidgetPrivate::onRemoveBreakpointRequested(const QString &fileName, int line)
+{
+    if (auto tabWidget = currentTabWidget())
+        tabWidget->removeBreakpoint(fileName, line);
 }
 
 void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
@@ -157,36 +169,30 @@ WorkspaceWidget::WorkspaceWidget(QWidget *parent)
 
 QString WorkspaceWidget::selectedText() const
 {
-    auto tabWidget = d->currentTabWidget();
-    if (!tabWidget)
-        return "";
+    if (auto tabWidget = d->currentTabWidget())
+        return tabWidget->selectedText();
 
-    return tabWidget->selectedText();
+    return "";
 }
 
 QString WorkspaceWidget::cursorBeforeText() const
 {
-    auto tabWidget = d->currentTabWidget();
-    if (!tabWidget)
-        return "";
+    if (auto tabWidget = d->currentTabWidget())
+        return tabWidget->cursorBeforeText();
 
-    return tabWidget->cursorBeforeText();
+    return "";
 }
 
 QString WorkspaceWidget::cursorBehindText() const
 {
-    auto tabWidget = d->currentTabWidget();
-    if (!tabWidget)
-        return "";
+    if (auto tabWidget = d->currentTabWidget())
+        return tabWidget->cursorBehindText();
 
-    return tabWidget->cursorBehindText();
+    return "";
 }
 
 void WorkspaceWidget::replaceSelectedText(const QString &text)
 {
-    auto tabWidget = d->currentTabWidget();
-    if (!tabWidget)
-        return;
-
-    tabWidget->replaceSelectedText(text);
+    if (auto tabWidget = d->currentTabWidget())
+        tabWidget->replaceSelectedText(text);
 }

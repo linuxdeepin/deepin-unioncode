@@ -191,6 +191,23 @@ int TabWidget::editorScrollValue()
     return editor->verticalScrollBar()->value();
 }
 
+void TabWidget::addBreakpoint(const QString &fileName, int line)
+{
+    if (auto editor = d->editorMng->findEditor(fileName))
+        editor->addBreakpoint(line);
+}
+
+void TabWidget::removeBreakpoint(const QString &fileName, int line)
+{
+    if (auto editor = d->editorMng->findEditor(fileName))
+        editor->removeBreakpoint(line);
+}
+
+void TabWidget::clearAllBreakpoints()
+{
+    d->editorMng->clearAllBreakpoints();
+}
+
 void TabWidget::openFile(const QString &fileName)
 {
     if (!QFile::exists(fileName))
