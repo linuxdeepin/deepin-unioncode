@@ -22,9 +22,11 @@ static constexpr int TAB_DEFAULT_WIDTH = 4;
 DGUI_USE_NAMESPACE
 
 TextEditorPrivate::TextEditorPrivate(TextEditor *qq)
-    : q(qq)
+    : QObject(qq),
+      q(qq)
 {
     init();
+    initConnection();
 }
 
 void TextEditorPrivate::init()
@@ -32,6 +34,11 @@ void TextEditorPrivate::init()
     initMargins();
     updateColorTheme();
     updateSettings();
+}
+
+void TextEditorPrivate::initConnection()
+{
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::updateColorTheme);
 }
 
 void TextEditorPrivate::initMargins()

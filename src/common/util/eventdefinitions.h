@@ -34,6 +34,8 @@ OPI_OBJECT(debugger,
 OPI_OBJECT(editor,
            // in
            OPI_INTERFACE(openFile, "filePath")
+           OPI_INTERFACE(back)
+           OPI_INTERFACE(forward)
            OPI_INTERFACE(jumpToLine, "filePath", "line")
            OPI_INTERFACE(openFileWithKey, "workspace", "language", "filePath")
            OPI_INTERFACE(jumpToLineWithKey, "workspace", "language", "filePath", "line")

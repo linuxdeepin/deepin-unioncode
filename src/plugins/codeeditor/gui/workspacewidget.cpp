@@ -39,9 +39,11 @@ void WorkspaceWidgetPrivate::initConnection()
 {
     connect(qApp, &QApplication::focusChanged, this, &WorkspaceWidgetPrivate::onFocusChanged);
 
-    connect(EditorCallProxy::instance(), &EditorCallProxy::openFileRequested, this, &WorkspaceWidgetPrivate::onOpenFileRequested);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::addBreakpointRequested, this, &WorkspaceWidgetPrivate::onAddBreakpointRequested);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::removeBreakpointRequested, this, &WorkspaceWidgetPrivate::onRemoveBreakpointRequested);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqOpenFile, this, &WorkspaceWidgetPrivate::handleOpenFile);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqAddBreakpoint, this, &WorkspaceWidgetPrivate::handleAddBreakpoint);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveBreakpoint, this, &WorkspaceWidgetPrivate::handleRemoveBreakpoint);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqBack, this, &WorkspaceWidgetPrivate::handleBack);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqForward, this, &WorkspaceWidgetPrivate::handleForward);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
@@ -126,22 +128,34 @@ void WorkspaceWidgetPrivate::onCloseRequested()
         tabWidgetList.first()->setCloseButtonVisible(false);
 }
 
-void WorkspaceWidgetPrivate::onOpenFileRequested(const QString &fileName)
+void WorkspaceWidgetPrivate::handleOpenFile(const QString &fileName)
 {
     if (auto tabWidget = currentTabWidget())
         tabWidget->openFile(fileName);
 }
 
-void WorkspaceWidgetPrivate::onAddBreakpointRequested(const QString &fileName, int line)
+void WorkspaceWidgetPrivate::handleAddBreakpoint(const QString &fileName, int line)
 {
     if (auto tabWidget = currentTabWidget())
         tabWidget->addBreakpoint(fileName, line);
 }
 
-void WorkspaceWidgetPrivate::onRemoveBreakpointRequested(const QString &fileName, int line)
+void WorkspaceWidgetPrivate::handleRemoveBreakpoint(const QString &fileName, int line)
 {
     if (auto tabWidget = currentTabWidget())
         tabWidget->removeBreakpoint(fileName, line);
+}
+
+void WorkspaceWidgetPrivate::handleBack()
+{
+    if (auto tabWidget = currentTabWidget())
+        tabWidget->gotoPreviousPosition();
+}
+
+void WorkspaceWidgetPrivate::handleForward()
+{
+    if (auto tabWidget = currentTabWidget())
+        tabWidget->gotoNextPosition();
 }
 
 void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)

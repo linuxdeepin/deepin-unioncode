@@ -28,12 +28,16 @@ public:
     static EditorCallProxy* instance();
 
 signals:
-    void openFileRequested(const QString &fileName);
+    void reqOpenFile(const QString &fileName);
+    void reqSearch(const QString &keyword, int operateType);
+    void reqReplace(const QString &srcText, const QString &destText, int operateType);
+    void reqBack();
+    void reqForward();
 
     // debug
-    void addBreakpointRequested(const QString &fileName, int line);
-    void removeBreakpointRequested(const QString &fileName, int line);
-    void clearAllBreakpointsRequested();
+    void reqAddBreakpoint(const QString &fileName, int line);
+    void reqRemoveBreakpoint(const QString &fileName, int line);
+    void reqClearAllBreakpoints();
 
     void toOpenFile(const QString &filePath);
     void toRunClean();
