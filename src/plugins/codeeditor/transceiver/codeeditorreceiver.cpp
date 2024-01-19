@@ -59,7 +59,11 @@ void CodeEditorReceiver::eventProcess(const dpf::Event &event)
         newlsp::ProjectKey proKey;
         proKey.language = language.toStdString();
         proKey.workspace = workspace.toStdString();
-        EditorCallProxy::instance()->openFileRequested(filePath);
+        EditorCallProxy::instance()->reqOpenFile(filePath);
+    } else if (event.data() == editor.back.name) {
+            EditorCallProxy::instance()->reqBack();
+    } else if (event.data() == editor.forward.name) {
+            EditorCallProxy::instance()->reqForward();
 //    } else if (event.data() == editor.searchText.name) {
 //        QString srcText = event.property(editor.searchText.pKeys[0]).toString();
 //        int findType = event.property(editor.searchText.pKeys[1]).toInt();

@@ -79,6 +79,7 @@ void TextEditor::save()
 
     file.write(text().toUtf8());
     file.close();
+    emit fileSaved(d->fileName);
 }
 
 void TextEditor::saveAs()
