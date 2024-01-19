@@ -51,7 +51,7 @@ public:
 
     void getValues(config::EnvironmentItem &env);
     void setValues(const config::EnvironmentItem &env);
-    void bindValues(config::EnvironmentItem *env);
+    void updateEnvList(config::EnvironmentItem *env);
 
 private:
     EnvironmentWidgetPrivate *const d;

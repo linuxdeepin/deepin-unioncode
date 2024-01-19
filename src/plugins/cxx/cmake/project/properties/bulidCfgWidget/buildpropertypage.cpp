@@ -84,28 +84,30 @@ DetailPropertyWidget::~DetailPropertyWidget()
         delete d;
 }
 
-void DetailPropertyWidget::setValues(const BuildConfigure &configure)
+void DetailPropertyWidget::setValues(const BuildTypeConfigure &configure)
 {
-    for(auto iter = configure.steps.begin(); iter != configure.steps.end(); ++iter) {
+    auto &steps = configure.buildConfigure.steps;
+    for(auto iter = steps.begin(); iter != steps.end(); ++iter) {
         if (iter->type == Build)
             d->buildStepsPane->setValues(*iter);
         else if (iter->type == Clean)
             d->cleanStepsPane->setValues(*iter);
     }
 
-    d->envWidget->setValues(configure.env);
+    d->envWidget->setValues(configure.buildConfigure.env);
 }
 
-void DetailPropertyWidget::getValues(BuildConfigure &configure)
+void DetailPropertyWidget::getValues(BuildTypeConfigure &configure)
 {
-    for(auto iter = configure.steps.begin(); iter != configure.steps.end(); ++iter) {
+    auto &steps = configure.buildConfigure.steps;
+    for(auto iter = steps.begin(); iter != steps.end(); ++iter) {
         if (iter->type == Build)
             d->buildStepsPane->getValues(*iter);
         else if (iter->type == Clean)
             d->cleanStepsPane->getValues(*iter);
     }
 
-    d->envWidget->getValues(configure.env);
+    d->envWidget->getValues(configure.buildConfigure.env);
 }
 
 class BuildPropertyWidgetPrivate
@@ -174,7 +176,7 @@ void BuildPropertyPage::setupOverviewUI()
             }
         }
 
-        ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+        ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
         param->tempSelType = ConfigUtil::instance()->getTypeFromName(d->configureComboBox->currentText());
         ConfigUtil::instance()->checkConfigInfo(d->configureComboBox->currentText(), d->outputDirEdit->text());
     });
@@ -220,15 +222,15 @@ void BuildPropertyPage::initData(const dpfservice::ProjectInfo &projectInfo)
 {
     d->configureComboBox->clear();
 
-    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
     ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(projectInfo.workspaceFolder()), *param);
 
-    auto iter = param->buildConfigures.begin();
+    auto iter = param->buildTypeConfigures.begin();
     int index = 0;
-    for (; iter != param->buildConfigures.end(); ++iter, index++) {
-        for (auto iterStep = iter->steps.begin(); iterStep != iter->steps.end(); ++iterStep) {
-            if (iterStep->targetList.isEmpty()) {
-                iterStep->targetList = TargetsManager::instance()->getTargetNamesList();
+    for (; iter != param->buildTypeConfigures.end(); ++iter, index++) {
+        for (auto iterStep = iter->buildConfigure.steps.begin(); iterStep != iter->buildConfigure.steps.end(); ++iterStep) {
+            if (iterStep->allTargetNames.isEmpty()) {
+                iterStep->allTargetNames = TargetsManager::instance()->getTargetNamesList();
                 dpfservice::TargetType targetType = dpfservice::TargetType::kUnknown;
                 if (iterStep->type == Build) {
                     targetType = dpfservice::TargetType::kBuildTarget;
@@ -236,7 +238,7 @@ void BuildPropertyPage::initData(const dpfservice::ProjectInfo &projectInfo)
                     targetType = dpfservice::TargetType::kCleanTarget;
                 }
                 dpfservice::Target target = TargetsManager::instance()->getActivedTargetByTargetType(targetType);
-                iterStep->targetName = target.buildTarget;
+                iterStep->activeTargetName = target.buildTarget;
             }
         }
 
@@ -260,16 +262,16 @@ void BuildPropertyPage::initData(const dpfservice::ProjectInfo &projectInfo)
 
 void BuildPropertyPage::updateDetail()
 {
-    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
 
     QString currentTypeString = d->configureComboBox->currentText();
-    auto iter = param->buildConfigures.begin();
-    for (; iter != param->buildConfigures.end(); ++iter) {
+    auto iter = param->buildTypeConfigures.begin();
+    for (; iter != param->buildTypeConfigures.end(); ++iter) {
         if (iter->type == ConfigUtil::instance()->getTypeFromName(currentTypeString)) {
-            for (auto iterStep = iter->steps.begin(); iterStep != iter->steps.end(); ++iterStep) {
-                iterStep->targetList = TargetsManager::instance()->getTargetNamesList();
+            for (auto iterStep = iter->buildConfigure.steps.begin(); iterStep != iter->buildConfigure.steps.end(); ++iterStep) {
+                iterStep->allTargetNames = TargetsManager::instance()->getTargetNamesList();
                 dpfservice::Target target = TargetsManager::instance()->getActivedTargetByTargetType(d->typeMap.value(iterStep->type));
-                iterStep->targetName = target.buildTarget;
+                iterStep->activeTargetName = target.buildTarget;
             }
 
             DetailPropertyWidget *detail = dynamic_cast<DetailPropertyWidget *>(d->stackWidget->currentWidget());
@@ -288,10 +290,10 @@ void BuildPropertyPage::initRunConfig(const QString &workDirectory, RunConfigure
 {
     Q_UNUSED(workDirectory)
 
-    if (runConfigure.params.isEmpty()) {
+    if (runConfigure.targetsParams.isEmpty()) {
         QStringList exeTargetList = TargetsManager::instance()->getExeTargetNamesList();
         foreach (auto targetName, exeTargetList) {
-            RunParam param;
+            TargetRunConfigure param;
             QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
             foreach (auto key, env.keys()) {
                 param.env.environments.insert(key, env.value(key));
@@ -300,7 +302,7 @@ void BuildPropertyPage::initRunConfig(const QString &workDirectory, RunConfigure
             dpfservice::Target target = TargetsManager::instance()->getTargetByName(targetName);
             param.targetPath = target.output;
 
-            runConfigure.params.push_back(param);
+            runConfigure.targetsParams.push_back(param);
         }
 
         dpfservice::Target target = TargetsManager::instance()->getActivedTargetByTargetType(dpfservice::TargetType::kActiveExecTarget);
@@ -315,10 +317,10 @@ void BuildPropertyPage::readConfig()
 
 void BuildPropertyPage::saveConfig()
 {
-    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
-    auto iter = param->buildConfigures.begin();
+    ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
+    auto iter = param->buildTypeConfigures.begin();
     int index = 0;
-    for (; iter != param->buildConfigures.end(); ++iter) {
+    for (; iter != param->buildTypeConfigures.end(); ++iter) {
         DetailPropertyWidget *detailWidget = dynamic_cast<DetailPropertyWidget *>(d->stackWidget->widget(index));
         if (detailWidget) {
             detailWidget->getValues(*iter);

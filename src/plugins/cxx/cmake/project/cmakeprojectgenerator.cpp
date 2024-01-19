@@ -104,7 +104,7 @@ QDialog *CmakeProjectGenerator::configureWidget(const QString &language,
 {
     ProjectGenerator::configureWidget(language, workspace);
 
-    config::ConfigureParam *param = config::ConfigUtil::instance()->getConfigureParamPointer();
+    config::ProjectConfigure *param = config::ConfigUtil::instance()->getConfigureParamPointer();
     if (!config::ConfigUtil::instance()->isNeedConfig(workspace, *param)) {
         dpfservice::ProjectInfo info;
         if (config::ConfigUtil::instance()->updateProjectInfo(info, param)) {

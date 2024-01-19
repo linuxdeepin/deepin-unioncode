@@ -17,7 +17,7 @@ public:
     explicit RunConfigPane(QWidget *parent = nullptr);
     ~RunConfigPane();
 
-    void bindValues(config::RunParam *runParam);
+    void setTargetRunParam(config::TargetRunConfigure *targetRunParam);
     void insertTitle(DWidget* lWidget, DWidget *rWidget);
 
 signals:
@@ -26,6 +26,7 @@ public slots:
 
 private:
     void setupUi();
+    void updateUi();
 
     RunConfigPanePrivate *const d;
 };

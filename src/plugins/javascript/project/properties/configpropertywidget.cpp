@@ -76,7 +76,7 @@ void DetailPropertyWidget::initData()
     }
 }
 
-void DetailPropertyWidget::setValues(const config::ConfigureParam *param)
+void DetailPropertyWidget::setValues(const config::ProjectConfigure *param)
 {
     if (!param)
         return;
@@ -96,7 +96,7 @@ void DetailPropertyWidget::setValues(const config::ConfigureParam *param)
     initComboBox(d->pyVersionComboBox, param->jsVersion);
 }
 
-void DetailPropertyWidget::getValues(config::ConfigureParam *param)
+void DetailPropertyWidget::getValues(config::ProjectConfigure *param)
 {
     if (!param)
         return;
@@ -151,7 +151,7 @@ void ConfigPropertyWidget::setupUI()
 
 void ConfigPropertyWidget::initData(const dpfservice::ProjectInfo &projectInfo)
 {
-    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
     ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(projectInfo.workspaceFolder()), *param);
     d->detail->setValues(param);
     param->kit = projectInfo.kitName();
@@ -161,7 +161,7 @@ void ConfigPropertyWidget::initData(const dpfservice::ProjectInfo &projectInfo)
 
 void ConfigPropertyWidget::saveConfig()
 {
-    ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
+    ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
     d->detail->getValues(param);
 
     QString filePath = ConfigUtil::instance()->getConfigPath(param->projectPath);

@@ -32,7 +32,7 @@ private:
     void setupUI();
     void resetUI();
     void updateUI();
-    void configProject(const config::ConfigureParam *param);
+    void configProject(const config::ProjectConfigure *param);
 
     ConfigureProjPanePrivate *const d;
 };

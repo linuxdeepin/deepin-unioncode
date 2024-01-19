@@ -13,7 +13,7 @@
 
 class MavenProjectGeneratorPrivate;
 namespace config {
-class ConfigureParam;
+class ProjectConfigure;
 }
 class MavenProjectGenerator : public dpfservice::ProjectGenerator
 {

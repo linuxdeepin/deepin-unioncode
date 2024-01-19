@@ -12,7 +12,7 @@ namespace config {
 class ConfigUtilPrivate
 {
     friend class ConfigUtil;
-    ConfigureParam configureParam;
+    ProjectConfigure configureParam;
 };
 
 ConfigUtil::ConfigUtil(QObject *parent)
@@ -35,12 +35,12 @@ ConfigUtil *ConfigUtil::instance()
     return &ins;
 }
 
-ConfigureParam *ConfigUtil::getConfigureParamPointer()
+ProjectConfigure *ConfigUtil::getConfigureParamPointer()
 {
     return &d->configureParam;
 }
 
-bool ConfigUtil::getProjectInfo(const ConfigureParam *param, dpfservice::ProjectInfo &info)
+bool ConfigUtil::getProjectInfo(const ProjectConfigure *param, dpfservice::ProjectInfo &info)
 {
     QString sourceFolder = QFileInfo(param->projectPath).path();
     info.setLanguage(param->language);
@@ -56,7 +56,7 @@ QString ConfigUtil::getConfigPath(const QString &projectPath)
     return CustomPaths::projectCachePath(projectPath) + QDir::separator() + "project.properties";
 }
 
-void ConfigUtil::readConfig(const QString &filePath, ConfigureParam &param)
+void ConfigUtil::readConfig(const QString &filePath, ProjectConfigure &param)
 {
     param.clear();
 
@@ -68,7 +68,7 @@ void ConfigUtil::readConfig(const QString &filePath, ConfigureParam &param)
     }
 }
 
-void ConfigUtil::saveConfig(const QString &filePath, const ConfigureParam &param)
+void ConfigUtil::saveConfig(const QString &filePath, const ProjectConfigure &param)
 {
     QFile file(filePath);
     if (file.open(QIODevice::ReadWrite)) {
@@ -78,7 +78,7 @@ void ConfigUtil::saveConfig(const QString &filePath, const ConfigureParam &param
     }
 }
 
-void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param)
+void ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectConfigure *param)
 {
     if (!param)
         return;
