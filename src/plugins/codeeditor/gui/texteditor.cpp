@@ -4,16 +4,10 @@
 
 #include "texteditor.h"
 #include "private/texteditor_p.h"
-#include "menu/texteditormarginmenu.h"
-#include "menu/texteditormenu.h"
 #include "utils/editorutils.h"
 
 #include <QFile>
-#include <QEvent>
-#include <QMenu>
-#include <QUuid>
 #include <QScrollBar>
-#include <QMimeData>
 #include <QFileDialog>
 #include <QApplication>
 #include <QContextMenuEvent>
@@ -57,12 +51,6 @@ void TextEditor::setFile(const QString &fileName)
 QString TextEditor::getFile() const
 {
     return d->fileName;
-}
-
-QString TextEditor::id() const
-{
-    static auto id = QUuid::createUuid().toString(QUuid::Id128);
-    return id;
 }
 
 void TextEditor::save()
@@ -286,25 +274,9 @@ void TextEditor::contextMenuEvent(QContextMenuEvent *event)
     if (!contextMenuNeeded(event->pos().x(), event->pos().y()))
         return;
 
-    const auto &params = d->getMenuParams(event);
-    AbstractEditorMenu *editorMenu { nullptr };
     if (event->pos().x() <= d->marginsWidth()) {
-        editorMenu = new TextEditorMarginMenu;
+        d->showMarginMenu();
     } else {
-        editorMenu = new TextEditorMenu;
+        d->showContextMenu();
     }
-
-    if (!editorMenu->initialize(params)) {
-        delete editorMenu;
-        return;
-    }
-
-    QMenu menu(this);
-    editorMenu->create(&menu);
-    editorMenu->updateState(&menu);
-
-    if (auto act = menu.exec(QCursor::pos()))
-        editorMenu->triggered(act);
-
-    delete editorMenu;
 }

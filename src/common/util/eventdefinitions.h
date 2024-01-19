@@ -63,6 +63,7 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(switchContext, "name")
            OPI_INTERFACE(switchWorkspace, "name")
            OPI_INTERFACE(contextMenu, "menu")
+           OPI_INTERFACE(marginMenu, "menu")
            OPI_INTERFACE(keyPressEvent, "event")
            )
 

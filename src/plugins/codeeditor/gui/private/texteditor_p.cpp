@@ -4,11 +4,13 @@
 
 #include "texteditor_p.h"
 #include "utils/editorutils.h"
+#include "common/common.h"
 
 #include <Qsci/qsciapis.h>
 
 #include <DGuiApplicationHelper>
 
+#include <QMenu>
 #include <QDebug>
 
 static constexpr char DEFAULT_FONT_NAME[] { "Courier New" };
@@ -170,19 +172,59 @@ void TextEditorPrivate::updateLineNumberMargin(bool visible)
     q->updateLineNumberWidth(false);
 }
 
-QVariantHash TextEditorPrivate::getMenuParams(QContextMenuEvent *event)
+void TextEditorPrivate::showContextMenu()
 {
-    QVariantHash params;
-    params.insert("id", q->id());
-    params.insert("fileName", fileName);
-    params.insert("selectedText", q->selectedText());
+    QMenu menu;
+    QAction *action { nullptr };
+    if (!q->isReadOnly()) {
+        action = menu.addAction(tr("Undo"), q, &TextEditor::undo);
+        action->setEnabled(q->isUndoAvailable());
 
+        action = menu.addAction(tr("Redo"), q, &TextEditor::redo);
+        action->setEnabled(q->isRedoAvailable());
+
+        menu.addSeparator();
+
+        action = menu.addAction(tr("Cut"), q, &TextEditor::cut);
+        action->setEnabled(q->hasSelectedText());
+    }
+
+    action = menu.addAction(tr("Copy"), q, &TextEditor::copy);
+    action->setEnabled(q->hasSelectedText());
+
+    if (!q->isReadOnly()) {
+        action = menu.addAction(tr("Paste"), q, &TextEditor::paste);
+        action->setEnabled(q->SendScintilla(TextEditor::SCI_CANPASTE));
+
+        action = menu.addAction(tr("Delete"), q, [this] { q->SendScintilla(TextEditor::SCI_CLEAR); });
+        action->setEnabled(q->hasSelectedText());
+    }
+
+    menu.addSeparator();
+    action = menu.addAction(tr("Select All"), q, [this] { q->selectAll(true); });
+    action->setEnabled(q->length() != 0);
+
+    // notify other plugin to add action.
+    editor.contextMenu(QVariant::fromValue(&menu));
+    menu.exec(QCursor::pos());
+}
+
+void TextEditorPrivate::showMarginMenu()
+{
+    QMenu menu;
     int line = 0, index = 0;
     q->getCursorPosition(&line, &index);
-    params.insert("cursorLine", line);
-    params.insert("cursorIndex", index);
 
-    return params;
+    if (q->hasBreakpoint(line)) {
+        menu.addAction(tr("Remove Breakpoint"), q, [this, line] { q->removeBreakpoint(line); });
+    } else {
+        static QString text("Add a breakpoint on line %1");
+        menu.addAction(text.arg(line + 1), q, [this, line] { q->addBreakpoint(line); });
+    }
+
+    // notify other plugin to add action.
+    editor.marginMenu(QVariant::fromValue(&menu));
+    menu.exec(QCursor::pos());
 }
 
 void TextEditorPrivate::gotoNextMark(MarginMask mask)
