@@ -17,12 +17,9 @@ public:
     TextEditor *createEditor(QWidget *parent, const QString &fileName = "");
     TextEditor *findEditor(const QString &fileName);
 
-    void gotoNextPosition();
-    void gotoPreviousPsontion();
     void clearAllBreakpoints();
 
 public slots:
-    void onLinePositionChanged(int line, int pos);
     void onEditorDestroyed(const QString &fileName);
 
 private:

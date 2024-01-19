@@ -15,6 +15,12 @@ class TabWidgetPrivate : public QObject
 {
     Q_OBJECT
 public:
+    struct PosRecord
+    {
+        int pos = 0;
+        QString fileName;
+    };
+
     explicit TabWidgetPrivate(TabWidget *qq);
 
     void initUI();
@@ -22,11 +28,16 @@ public:
 
     TextEditor *currentTextEditor() const;
     void changeFocusProxy();
+    bool processKeyPressEvent(QKeyEvent *event);
+
+    void doSave();
+    void removePositionRecord(const QString &fileName);
 
 public:
     void onTabSwitched(const QString &fileName);
     void onTabClosed(const QString &fileName);
     void onSpliterClicked(Qt::Orientation ori);
+    void onLinePositionChanged(int line, int index);
 
 public:
     TabWidget *q;
@@ -36,6 +47,10 @@ public:
     TextEditorManager *editorMng { nullptr };
 
     QHash<QString, int> editorIndexHash;
+
+    PosRecord curPosRecord;
+    QList<PosRecord> prePosRecord;
+    QList<PosRecord> nextPosRecord;
 };
 
 #endif   // TABWIDGET_P_H

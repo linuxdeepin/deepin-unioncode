@@ -24,9 +24,11 @@ public:
 public:
     void onSplitRequested(Qt::Orientation ori, const QString &fileName);
     void onCloseRequested();
-    void onOpenFileRequested(const QString &fileName);
-    void onAddBreakpointRequested(const QString &fileName, int line);
-    void onRemoveBreakpointRequested(const QString &fileName, int line);
+    void handleOpenFile(const QString &fileName);
+    void handleAddBreakpoint(const QString &fileName, int line);
+    void handleRemoveBreakpoint(const QString &fileName, int line);
+    void handleBack();
+    void handleForward();
     void onFocusChanged(QWidget *old, QWidget *now);
 
 public:
