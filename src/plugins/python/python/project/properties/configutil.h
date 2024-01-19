@@ -40,13 +40,13 @@ struct ItemInfo {
     }
 };
 
-struct ConfigureParam {
+struct ProjectConfigure {
     QString kit;
     QString language;
     QString projectPath;
     ItemInfo pythonVersion;
 
-    friend QDataStream &operator<<(QDataStream &stream, const ConfigureParam &data)
+    friend QDataStream &operator<<(QDataStream &stream, const ProjectConfigure &data)
     {
         stream << data.kit;
         stream << data.language;
@@ -56,7 +56,7 @@ struct ConfigureParam {
         return stream;
     }
 
-    friend QDataStream &operator>>(QDataStream &stream, ConfigureParam &data)
+    friend QDataStream &operator>>(QDataStream &stream, ProjectConfigure &data)
     {
         stream >> data.kit;
         stream >> data.language;
@@ -87,14 +87,14 @@ public:
 
     QString getConfigPath(const QString &projectPath);
 
-    ConfigureParam *getConfigureParamPointer();
+    ProjectConfigure *getConfigureParamPointer();
 
-    bool getProjectInfo(const ConfigureParam *param, dpfservice::ProjectInfo &info);
+    bool getProjectInfo(const ProjectConfigure *param, dpfservice::ProjectInfo &info);
 
-    void readConfig(const QString &filePath, ConfigureParam &param);
-    void saveConfig(const QString &filePath, const ConfigureParam &param);
+    void readConfig(const QString &filePath, ProjectConfigure &param);
+    void saveConfig(const QString &filePath, const ProjectConfigure &param);
 
-    void updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param);
+    void updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectConfigure *param);
 signals:
 
 private:

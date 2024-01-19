@@ -27,11 +27,11 @@ class RunConfigPanePrivate
     DLineEdit *cmdArgsLineEdit{nullptr};
     DLineEdit *workingDirLineEdit{nullptr};
     DLineEdit *excutableLabel{nullptr};
-
     QFormLayout *formLayout{nullptr};
+
     EnvironmentWidget *environmentWidget{nullptr};
+    config::TargetRunConfigure *targetRunParam{nullptr};
     QString currentTargetName;
-    config::RunParam *runParam{nullptr};
 };
 
 RunConfigPane::RunConfigPane(QWidget *parent)
@@ -65,8 +65,8 @@ void RunConfigPane::setupUi()
     // command line ui.
     d->cmdArgsLineEdit = new DLineEdit(mainFrame);
     connect(d->cmdArgsLineEdit, &DLineEdit::textChanged, [this](){
-        if (d->runParam)
-            d->runParam->arguments = d->cmdArgsLineEdit->text().trimmed();
+        if (d->targetRunParam)
+            d->targetRunParam->arguments = d->cmdArgsLineEdit->text().trimmed();
     });
     d->formLayout->addRow(tr("Command line arguments:"), d->cmdArgsLineEdit);
 
@@ -77,8 +77,8 @@ void RunConfigPane::setupUi()
     d->workingDirLineEdit = new DLineEdit(mainFrame);
     d->workingDirLineEdit->lineEdit()->setReadOnly(true);
     connect(d->workingDirLineEdit, &DLineEdit::textChanged, [this](){
-        if (d->runParam)
-            d->runParam->workDirectory = d->workingDirLineEdit->text().trimmed();
+        if (d->targetRunParam)
+            d->targetRunParam->workDirectory = d->workingDirLineEdit->text().trimmed();
     });
     browLayout->addWidget(d->workingDirLineEdit);
     browLayout->addWidget(browseBtn);
@@ -99,14 +99,20 @@ void RunConfigPane::setupUi()
     vLayout->setMargin(0);
 }
 
-void RunConfigPane::bindValues(config::RunParam *runParam)
+void RunConfigPane::updateUi()
 {
-    d->runParam = runParam;
-    d->environmentWidget->bindValues(&runParam->env);
-    d->cmdArgsLineEdit->setText(runParam->arguments);
-    d->workingDirLineEdit->setText(runParam->workDirectory);
-    d->currentTargetName = runParam->targetName;
-    d->excutableLabel->setText(runParam->targetPath);
+    d->environmentWidget->updateEnvList(&d->targetRunParam->env);
+    d->cmdArgsLineEdit->setText(d->targetRunParam->arguments);
+    d->workingDirLineEdit->setText(d->targetRunParam->workDirectory);
+    d->currentTargetName = d->targetRunParam->targetName;
+    d->excutableLabel->setText(d->targetRunParam->targetPath);
+}
+
+void RunConfigPane::setTargetRunParam(config::TargetRunConfigure *targetRunParam)
+{
+    d->targetRunParam = targetRunParam;
+
+    updateUi();
 }
 
 void RunConfigPane::insertTitle(DWidget *lWidget, DWidget *rWidget)

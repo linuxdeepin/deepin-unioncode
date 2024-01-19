@@ -18,8 +18,8 @@ public:
     explicit DetailPropertyWidget(QWidget *parent = nullptr);
     ~DetailPropertyWidget();
 
-    void setValues(const config::BuildConfigure &configure);
-    void getValues(config::BuildConfigure &configure);
+    void setValues(const config::BuildTypeConfigure &configure);
+    void getValues(config::BuildTypeConfigure &configure);
 
 private:
     DetailPropertyWidgetPrivate *const d;
