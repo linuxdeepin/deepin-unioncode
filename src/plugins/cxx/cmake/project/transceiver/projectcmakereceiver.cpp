@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "projectcmakereceiver.h"
-#include "cmake/project/mainframe/cmakeprojectgenerator.h"
-#include "cmake/project/mainframe/properties/targetsmanager.h"
+#include "cmakeprojectgenerator.h"
+#include "targetsmanager.h"
 
 #include "services/project/projectinfo.h"
 #include "services/project/projectservice.h"

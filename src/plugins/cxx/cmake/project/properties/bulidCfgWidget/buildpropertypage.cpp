@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "buildpropertywidget.h"
+#include "buildpropertypage.h"
 
 #include "common/common.h"
 #include "environmentwidget.h"
@@ -110,7 +110,7 @@ void DetailPropertyWidget::getValues(BuildConfigure &configure)
 
 class BuildPropertyWidgetPrivate
 {
-    friend class BuildPropertyWidget;
+    friend class BuildPropertyPage;
 
     DComboBox *configureComboBox{nullptr};
     DLineEdit *outputDirEdit{nullptr};
@@ -122,7 +122,7 @@ class BuildPropertyWidgetPrivate
                                                       {StepType::Build, dpfservice::TargetType::kBuildTarget}};
 };
 
-BuildPropertyWidget::BuildPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QWidget *parent)
+BuildPropertyPage::BuildPropertyPage(const dpfservice::ProjectInfo &projectInfo, QWidget *parent)
     : PageWidget(parent)
     , d(new BuildPropertyWidgetPrivate())
 {
@@ -131,16 +131,16 @@ BuildPropertyWidget::BuildPropertyWidget(const dpfservice::ProjectInfo &projectI
     initData(projectInfo);
 
     QObject::connect(TargetsManager::instance(), &TargetsManager::initialized,
-                     this, &BuildPropertyWidget::updateDetail);
+                     this, &BuildPropertyPage::updateDetail);
 }
 
-BuildPropertyWidget::~BuildPropertyWidget()
+BuildPropertyPage::~BuildPropertyPage()
 {
     if (d)
         delete d;
 }
 
-void BuildPropertyWidget::setupOverviewUI()
+void BuildPropertyPage::setupOverviewUI()
 {
     QVBoxLayout *vLayout = new QVBoxLayout();
     ConfigureWidget *buildCfgWidget = new ConfigureWidget(this);
@@ -216,7 +216,7 @@ void BuildPropertyWidget::setupOverviewUI()
     buildCfgWidget->addWidget(d->stackWidget);
 }
 
-void BuildPropertyWidget::initData(const dpfservice::ProjectInfo &projectInfo)
+void BuildPropertyPage::initData(const dpfservice::ProjectInfo &projectInfo)
 {
     d->configureComboBox->clear();
 
@@ -258,7 +258,7 @@ void BuildPropertyWidget::initData(const dpfservice::ProjectInfo &projectInfo)
 
 }
 
-void BuildPropertyWidget::updateDetail()
+void BuildPropertyPage::updateDetail()
 {
     ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
 
@@ -284,7 +284,7 @@ void BuildPropertyWidget::updateDetail()
     }
 }
 
-void BuildPropertyWidget::initRunConfig(const QString &workDirectory, RunConfigure &runConfigure)
+void BuildPropertyPage::initRunConfig(const QString &workDirectory, RunConfigure &runConfigure)
 {
     Q_UNUSED(workDirectory)
 
@@ -308,12 +308,12 @@ void BuildPropertyWidget::initRunConfig(const QString &workDirectory, RunConfigu
     }
 }
 
-void BuildPropertyWidget::readConfig()
+void BuildPropertyPage::readConfig()
 {
 
 }
 
-void BuildPropertyWidget::saveConfig()
+void BuildPropertyPage::saveConfig()
 {
     ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
     auto iter = param->buildConfigures.begin();

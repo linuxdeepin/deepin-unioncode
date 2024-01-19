@@ -4,7 +4,7 @@
 
 #include "targetsmanager.h"
 #include "services/project/projectservice.h"
-#include "cmake/project/mainframe/cbp/cbpparser.h"
+#include "cbp/cbpparser.h"
 
 //static const char *kProjectFile = ".cproject";
 static const char *kProjectFile = ".cbp";

@@ -26,12 +26,12 @@ private:
 };
 
 class BuildPropertyWidgetPrivate;
-class BuildPropertyWidget : public PageWidget
+class BuildPropertyPage : public PageWidget
 {
     Q_OBJECT
 public:
-    explicit BuildPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QWidget *parent = nullptr);
-    virtual ~BuildPropertyWidget() override;
+    explicit BuildPropertyPage(const dpfservice::ProjectInfo &projectInfo, QWidget *parent = nullptr);
+    virtual ~BuildPropertyPage() override;
 
     void readConfig() override;
     void saveConfig() override;
