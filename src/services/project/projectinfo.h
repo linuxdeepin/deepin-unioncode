@@ -106,6 +106,18 @@ public:
         return false;
     }
 
+    friend QDataStream &operator<<(QDataStream &stream, ProjectInfo &projInfo)
+    {
+        stream << projInfo.data;
+        return stream;
+    }
+
+    friend QDataStream &operator>>(QDataStream &stream, ProjectInfo &projInfo)
+    {
+        stream >> projInfo.data;
+        return stream;
+    }
+
 private:
     QVariantHash data;
 };

@@ -20,7 +20,6 @@ DWIDGET_USE_NAMESPACE
 class ConfigPropertyWidgetPrivate
 {
     friend class ConfigPropertyWidget;
-    ConfigureWidget *configureProjWidget{nullptr};
     ConfigureProjPane *configureProjPane{nullptr};
 };
 

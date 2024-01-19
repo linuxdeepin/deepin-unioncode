@@ -6,10 +6,10 @@
 
 #include "cmake/cmakegenerator.h"
 #include "ninja/ninjagenerator.h"
-#include "cmake/builder/mainframe/cmakebuildergenerator.h"
+#include "cmake/builder/generator/cmakebuildergenerator.h"
 #include "cmake/option/optioncmakegenerator.h"
-#include "cmake/project/mainframe/properties/targetsmanager.h"
-#include "cmake/project/mainframe/cmakeprojectgenerator.h"
+#include "targetsmanager.h"
+#include "cmakeprojectgenerator.h"
 #include "ninja/project/ninjaprojectgenerator.h"
 #include "ninja/builder/mainframe/ninjabuildergenerator.h"
 #include "ninja/option/optionninjagenerator.h"

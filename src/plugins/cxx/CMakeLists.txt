@@ -3,96 +3,51 @@ cmake_minimum_required(VERSION 3.0.2)
 project(plugin-cxx)
 
 find_package(Qt5 COMPONENTS Xml REQUIRED)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties")
 
-set(CXX_CPP
-    cmake/cmakegenerator.cpp
-    cmake/cmakebuild.cpp
-    cmake/cmakedebug.cpp
-    ninja/ninjagenerator.cpp
-    ninja/ninjabuild.cpp
-    ninja/ninjadebug.cpp
-    cmake/builder/mainframe/cmakebuildergenerator.cpp
-    cmake/builder/parser/cmakeparser.cpp
-    cmake/builder/parser/ansifilterparser.cpp
-    cmake/builder/parser/gnumakeparser.cpp
-    cmake/builder/parser/gccparser.cpp
-    cmake/builder/parser/ldparser.cpp
-    cmake/project/mainframe/cmakeasynparse.cpp
-    cmake/project/mainframe/cmakeitemkeeper.cpp
-    cmake/project/mainframe/cmakeprojectgenerator.cpp
-    cmake/project/mainframe/properties/environmentwidget.cpp
-    cmake/project/mainframe/properties/stepspane.cpp
-    cmake/project/mainframe/properties/targetsmanager.cpp
-    cmake/project/mainframe/properties/runconfigpane.cpp
-    cmake/project/mainframe/properties/configureprojpane.cpp
-    cmake/project/mainframe/properties/buildpropertywidget.cpp
-    cmake/project/mainframe/properties/runpropertywidget.cpp
-    cmake/project/mainframe/properties/configpropertywidget.cpp
-    cmake/project/mainframe/properties/configutil.cpp
-    cmake/project/mainframe/cbp/cbpparser.cpp
-    cmake/project/transceiver/projectcmakereceiver.cpp
-    cmake/option/kitsmanagerwidget.cpp
-    cmake/option/optioncmakegenerator.cpp
-    cmake/option/cmakeoptionwidget.cpp
-    cmake/option/kitmanager.cpp
-    cmake/option/kit.cpp
-    cmake/option/persistentsettings.cpp
-    ninja/builder/mainframe/ninjabuildergenerator.cpp
-    ninja/builder/parser/ninjaparser.cpp
-    ninja/project/ninjaasynparse.cpp
-    ninja/project/ninjaprojectgenerator.cpp
-    ninja/option/ninjawidget.cpp
-    ninja/option/ninjaoptionwidget.cpp
-    ninja/option/optionninjagenerator.cpp
-    cxxplugin.cpp
-    cxxplugin.json
-    )
-
-set(CXX_H
-    cmake/cmakegenerator.h
-    cmake/cmakebuild.h
-    cmake/cmakedebug.h
-    ninja/ninjagenerator.h
-    ninja/ninjabuild.h
-    ninja/ninjadebug.h
-    cmake/builder/mainframe/cmakebuildergenerator.h
-    cmake/builder/parser/cmakeparser.h
-    cmake/builder/parser/ansifilterparser.h
-    cmake/builder/parser/gnumakeparser.h
-    cmake/builder/parser/gccparser.h
-    cmake/builder/parser/ldparser.h
-    cmake/project/mainframe/cmakeasynparse.h
-    cmake/project/mainframe/cmakeitemkeeper.h
-    cmake/project/mainframe/cmakeprojectgenerator.h
-    cmake/project/mainframe/properties/environmentwidget.h
-    cmake/project/mainframe/properties/stepspane.h
-    cmake/project/mainframe/properties/targetsmanager.h
-    cmake/project/mainframe/properties/runconfigpane.h
-    cmake/project/mainframe/properties/configureprojpane.h
-    cmake/project/mainframe/properties/buildpropertywidget.h
-    cmake/project/mainframe/properties/runpropertywidget.h
-    cmake/project/mainframe/properties/configpropertywidget.h
-    cmake/project/mainframe/properties/configutil.h
-    cmake/project/mainframe/cbp/cbpparser.h
-    cmake/project/transceiver/projectcmakereceiver.h
-    cmake/option/kitsmanagerwidget.h
-    cmake/option/optioncmakegenerator.h
-    cmake/option/cmakeoptionwidget.h
-    cmake/option/kitmanager.h
-    cmake/option/kit.h
-    cmake/option/persistentsettings.h
-    ninja/builder/mainframe/ninjabuildergenerator.h
-    ninja/builder/parser/ninjaparser.h
-    ninja/project/ninjaasynparse.h
-    ninja/project/ninjaprojectgenerator.h
-    ninja/option/ninjawidget.h
-    ninja/option/ninjaoptionwidget.h
-    ninja/option/optionninjagenerator.h
-    cxxplugin.h
+FILE(GLOB PROJECT_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ninja/builder/mainframe/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ninja/builder/mainframe/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ninja/project/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ninja/project/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ninja/option/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ninja/option/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ninja/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/ninja/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/builder/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/builder/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/builder/parser/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/builder/parser/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/builder/generator/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/builder/generator/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties/configWidget/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties/configWidget/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties/bulidCfgWidget/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties/bulidCfgWidget/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties/runCfgWidget/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/properties/runCfgWidget/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/cbp/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/cbp/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/transceiver/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/project/transceiver/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/option/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/option/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.json"
     )
 
 set(CXX_QRC
-    cmake/project/mainframe/cmake.qrc
+    cmake/project/cmake.qrc
     ninja/project/ninja.qrc
     )
 
@@ -100,8 +55,7 @@ set(QT_THEME)
 
 add_library(${PROJECT_NAME}
     SHARED
-    ${CXX_CPP}
-    ${CXX_H}
+    ${PROJECT_FILES}
     ${QT_THEME}
     ${CXX_QRC}
     )

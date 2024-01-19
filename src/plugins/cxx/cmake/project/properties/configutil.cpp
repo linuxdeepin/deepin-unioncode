@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "configutil.h"
-#include "cmake/project/mainframe/cmakeasynparse.h"
-#include "cmake/project/mainframe/cmakeprojectgenerator.h"
+#include "cmakeasynparse.h"
+#include "cmakeprojectgenerator.h"
 #include "targetsmanager.h"
 
 #include "services/option/optionmanager.h"

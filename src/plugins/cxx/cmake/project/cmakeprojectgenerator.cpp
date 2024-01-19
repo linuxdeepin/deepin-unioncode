@@ -6,9 +6,9 @@
 #include "cmakeasynparse.h"
 #include "cmakeitemkeeper.h"
 #include "cmake/project/transceiver/projectcmakereceiver.h"
-#include "properties/buildpropertywidget.h"
-#include "properties/runpropertywidget.h"
-#include "properties/configpropertywidget.h"
+#include "properties/bulidCfgWidget/buildpropertypage.h"
+#include "properties/runCfgWidget/runpropertywidget.h"
+#include "properties/configWidget/configpropertywidget.h"
 #include "properties/configutil.h"
 #include "properties/targetsmanager.h"
 #include "services/builder/builderservice.h"
@@ -410,7 +410,7 @@ void CmakeProjectGenerator::actionProperties(const dpfservice::ProjectInfo &info
 {
     PropertiesDialog dlg;
 
-    BuildPropertyWidget *buildWidget = new BuildPropertyWidget(info);
+    BuildPropertyPage *buildWidget = new BuildPropertyPage(info);
     RunPropertyWidget *runWidget = new RunPropertyWidget(info, item);
 
     dlg.insertPropertyPanel(tr("Build"), buildWidget);
