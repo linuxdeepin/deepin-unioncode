@@ -7,8 +7,9 @@
 
 #include "gui/texteditor.h"
 
-class TextEditorPrivate
+class TextEditorPrivate : public QObject
 {
+    Q_OBJECT
 public:
     enum MarkSymbol {
         BreakpointSymbol = 0,
@@ -38,6 +39,7 @@ public:
     explicit TextEditorPrivate(TextEditor *qq);
 
     void init();
+    void initConnection();
     void initMargins();
     void updateColorTheme();
     void updateSettings();

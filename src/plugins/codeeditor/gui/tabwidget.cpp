@@ -12,6 +12,8 @@
 #include <QLabel>
 #include <QScrollBar>
 
+static constexpr int MAX_PRE_NEXT_TIMES = 30;
+
 TabWidgetPrivate::TabWidgetPrivate(TabWidget *qq)
     : QObject(qq),
       q(qq),
@@ -67,6 +69,42 @@ void TabWidgetPrivate::changeFocusProxy()
     q->setFocus();
 }
 
+bool TabWidgetPrivate::processKeyPressEvent(QKeyEvent *event)
+{
+    switch (event->modifiers()) {
+    case Qt::ControlModifier: {
+        switch (event->key()) {
+        case Qt::Key_S:
+            doSave();
+            return true;
+        }
+    } break;
+    }
+
+    return false;
+}
+
+void TabWidgetPrivate::doSave()
+{
+    if (auto editor = currentTextEditor())
+        editor->save();
+}
+
+void TabWidgetPrivate::removePositionRecord(const QString &fileName)
+{
+    auto iter = std::remove_if(prePosRecord.begin(), prePosRecord.end(),
+                               [=](const PosRecord &record) {
+                                   return record.fileName == fileName;
+                               });
+    prePosRecord.erase(iter, prePosRecord.end());
+
+    iter = std::remove_if(nextPosRecord.begin(), nextPosRecord.end(),
+                          [=](const PosRecord &record) {
+                              return record.fileName == fileName;
+                          });
+    nextPosRecord.erase(iter, nextPosRecord.end());
+}
+
 void TabWidgetPrivate::onTabSwitched(const QString &fileName)
 {
     if (!editorIndexHash.contains(fileName))
@@ -82,6 +120,7 @@ void TabWidgetPrivate::onTabClosed(const QString &fileName)
     if (!editor)
         return;
 
+    removePositionRecord(fileName);
     editorIndexHash.remove(fileName);
     editorLayout->removeWidget(editor);
     changeFocusProxy();
@@ -99,6 +138,22 @@ void TabWidgetPrivate::onSpliterClicked(Qt::Orientation ori)
 {
     const auto &fileName = tabBar->currentFileName();
     emit q->splitRequested(ori, fileName);
+}
+
+void TabWidgetPrivate::onLinePositionChanged(int line, int index)
+{
+    auto editor = qobject_cast<TextEditor *>(sender());
+    if (!editor)
+        return;
+
+    int pos = editor->positionFromLineIndex(line, index);
+
+    if (curPosRecord.fileName == editor->getFile() && curPosRecord.pos == pos)
+        return;
+
+    prePosRecord.append({ pos, editor->getFile() });
+    if (prePosRecord.size() >= MAX_PRE_NEXT_TIMES)
+        prePosRecord.takeFirst();
 }
 
 TabWidget::TabWidget(QWidget *parent)
@@ -121,74 +176,96 @@ void TabWidget::setSplitButtonVisible(bool visible)
 
 QString TabWidget::selectedText() const
 {
-    auto editor = d->currentTextEditor();
-    if (!editor)
-        return "";
+    if (auto editor = d->currentTextEditor())
+        return editor->selectedText();
 
-    return d->currentTextEditor()->selectedText();
+    return "";
 }
 
 QString TabWidget::cursorBeforeText() const
 {
-    auto editor = d->currentTextEditor();
-    if (!editor)
-        return "";
+    if (auto editor = d->currentTextEditor())
+        return editor->cursorBeforeText();
 
-    return editor->cursorBeforeText();
+    return "";
 }
 
 QString TabWidget::cursorBehindText() const
 {
-    auto editor = d->currentTextEditor();
-    if (!editor)
-        return "";
+    if (auto editor = d->currentTextEditor())
+        return editor->cursorBehindText();
 
-    return editor->cursorBehindText();
+    return "";
 }
 
 void TabWidget::replaceSelectedText(const QString &text)
 {
-    auto editor = d->currentTextEditor();
+    if (auto editor = d->currentTextEditor())
+        editor->replaceSelectedText(text);
+}
+
+void TabWidget::gotoNextPosition()
+{
+    if (d->nextPosRecord.isEmpty())
+        return;
+
+    auto record = d->nextPosRecord.takeFirst();
+    auto editor = d->editorMng->findEditor(record.fileName);
     if (!editor)
         return;
 
-    return editor->replaceSelectedText(text);
+    d->prePosRecord.append(record);
+    d->tabBar->switchTab(record.fileName);
+    editor->gotoPosition(record.pos);
+    d->curPosRecord = record;
+}
+
+void TabWidget::gotoPreviousPosition()
+{
+    if (d->prePosRecord.size() <= 1)
+        return;
+
+    auto record = d->prePosRecord.takeLast();
+    d->nextPosRecord.push_front(record);
+    if (d->nextPosRecord.size() >= MAX_PRE_NEXT_TIMES)
+        d->nextPosRecord.takeLast();
+
+    record = d->prePosRecord.last();
+    auto editor = d->editorMng->findEditor(record.fileName);
+    if (!editor)
+        return;
+
+    d->tabBar->switchTab(record.fileName);
+    editor->gotoPosition(record.pos);
+    d->curPosRecord = record;
 }
 
 void TabWidget::setEditorCursorPosition(int pos)
 {
-    auto editor = d->currentTextEditor();
-    if (!editor)
-        return;
-
-    editor->gotoPosition(pos);
+    if (auto editor = d->currentTextEditor())
+        editor->gotoPosition(pos);
 }
 
 int TabWidget::editorCursorPosition()
 {
-    auto editor = d->currentTextEditor();
-    if (!editor)
-        return 0;
+    if (auto editor = d->currentTextEditor())
+        return editor->cursorPosition();
 
-    return editor->cursorPosition();
+    return 0;
 }
 
 void TabWidget::setEditorScrollValue(int value)
 {
-    auto editor = d->currentTextEditor();
-    if (!editor)
-        return;
-
-    editor->verticalScrollBar()->setValue(value);
+    if (auto editor = d->currentTextEditor())
+        editor->verticalScrollBar()->setValue(value);
 }
 
 int TabWidget::editorScrollValue()
 {
-    auto editor = d->currentTextEditor();
-    if (!editor)
-        return 0;
+    if (auto editor = d->currentTextEditor())
+        return editor->verticalScrollBar()->value();
 
-    return editor->verticalScrollBar()->value();
+    return 0;
 }
 
 void TabWidget::addBreakpoint(const QString &fileName, int line)
@@ -223,7 +300,9 @@ void TabWidget::openFile(const QString &fileName)
 
     d->tabBar->setFileName(fileName);
     TextEditor *editor = d->editorMng->createEditor(this, fileName);
+    editor->installEventFilter(this);
     editor->setCursorPosition(0, 0);
+    connect(editor, &TextEditor::cursorPositionChanged, d.data(), &TabWidgetPrivate::onLinePositionChanged);
     connect(editor, &TextEditor::fileSaved, d->tabBar, &TabBar::onFileSaved);
     connect(editor, &TextEditor::textChanged, d->tabBar,
             [this, fileName] {
@@ -238,21 +317,6 @@ void TabWidget::openFile(const QString &fileName)
     if (d->editorIndexHash.isEmpty())
         setSplitButtonVisible(true);
     d->editorIndexHash.insert(fileName, index);
-}
-
-void TabWidget::keyPressEvent(QKeyEvent *event)
-{
-    QWidget::keyPressEvent(event);
-}
-
-void TabWidget::focusInEvent(QFocusEvent *event)
-{
-    QWidget::focusInEvent(event);
-}
-
-void TabWidget::focusOutEvent(QFocusEvent *event)
-{
-    QWidget::focusOutEvent(event);
 }
 
 void TabWidget::dragEnterEvent(QDragEnterEvent *event)
@@ -273,4 +337,16 @@ void TabWidget::dropEvent(QDropEvent *event)
         if (!fileName.isEmpty())
             openFile(fileName);
     }
+}
+
+bool TabWidget::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() != QEvent::KeyPress)
+        return false;
+
+    auto editor = qobject_cast<TextEditor *>(obj);
+    if (!editor)
+        return false;
+
+    return d->processKeyPressEvent(static_cast<QKeyEvent *>(event));
 }

@@ -22,6 +22,8 @@ public:
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
     void replaceSelectedText(const QString &text);
+    void gotoNextPosition();
+    void gotoPreviousPosition();
 
     void setEditorCursorPosition(int pos);
     int editorCursorPosition();
@@ -40,14 +42,11 @@ signals:
     void splitRequested(Qt::Orientation ori, const QString &fileName);
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *event) override;
-    virtual void focusInEvent(QFocusEvent *event) override;
-    virtual void focusOutEvent(QFocusEvent *event) override;
     virtual void dragEnterEvent(QDragEnterEvent *event) override;
     virtual void dropEvent(QDropEvent *event) override;
+    virtual bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
-    std::once_flag flag;
     QSharedPointer<TabWidgetPrivate> d { nullptr };
 };
 

@@ -19,7 +19,6 @@ TextEditorManager::TextEditorManager(QObject *parent)
 TextEditor *TextEditorManager::createEditor(QWidget *parent, const QString &fileName)
 {
     TextEditor *editor = new TextEditor(parent);
-    connect(editor, &TextEditor::cursorPositionChanged, this, &TextEditorManager::onLinePositionChanged, Qt::QueuedConnection);
     connect(editor, &TextEditor::destroyed, this, [this, fileName] { onEditorDestroyed(fileName); });
 
     editor->setFile(fileName);
@@ -33,26 +32,10 @@ TextEditor *TextEditorManager::findEditor(const QString &fileName)
     return d->editorHash.value(fileName, nullptr);
 }
 
-void TextEditorManager::gotoNextPosition()
-{
-    // TODO
-}
-
-void TextEditorManager::gotoPreviousPsontion()
-{
-    // TODO
-}
-
 void TextEditorManager::clearAllBreakpoints()
 {
     for (auto editor : d->editorHash.values())
         editor->clearAllBreakpoints();
-}
-
-void TextEditorManager::onLinePositionChanged(int line, int pos)
-{
-    Q_UNUSED(line)
-    // TODO
 }
 
 void TextEditorManager::onEditorDestroyed(const QString &fileName)

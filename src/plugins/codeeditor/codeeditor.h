@@ -18,6 +18,9 @@ public:
     virtual void initialize() override;
     virtual bool start() override;
     virtual dpf::Plugin::ShutdownFlag stop() override;
+
+private:
+    void initActions();
 };
 
 #endif   // COREPLUGIN_H
