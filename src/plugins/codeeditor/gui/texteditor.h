@@ -17,7 +17,6 @@ public:
 
     virtual void setFile(const QString &fileName);
     QString getFile() const;
-    QString id() const;
 
     void save();
     void saveAs();

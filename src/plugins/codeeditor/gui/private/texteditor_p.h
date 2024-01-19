@@ -51,7 +51,8 @@ public:
     void setMarginVisible(MarginType type, bool visible);
     void updateLineNumberMargin(bool visible);
 
-    QVariantHash getMenuParams(QContextMenuEvent *event);
+    void showContextMenu();
+    void showMarginMenu();
 
     void gotoNextMark(MarginMask mask);
     void gotoPreviousMark(MarginMask mask);
