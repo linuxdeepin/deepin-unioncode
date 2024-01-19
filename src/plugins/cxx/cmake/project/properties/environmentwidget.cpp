@@ -202,7 +202,7 @@ void EnvironmentWidget::setValues(const config::EnvironmentItem &env)
     d->model->update(env.environments);
 }
 
-void EnvironmentWidget::bindValues(config::EnvironmentItem *env)
+void EnvironmentWidget::updateEnvList(config::EnvironmentItem *env)
 {
     d->envShadow = env;
     d->checkBox->setChecked(env->enable);

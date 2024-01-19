@@ -277,11 +277,11 @@ void StepsPane::updateSummaryText()
 
 void StepsPane::setValues(const config::StepItem &item)
 {
-    d->toolArguments->setText(item.arguments);
+    d->toolArguments->setText(item.buildArguments);
 
     QMap<QString, bool> data;
-    foreach (auto targetName, item.targetList) {
-        data.insert(targetName, targetName == item.targetName ? true : false);
+    foreach (auto targetName, item.allTargetNames) {
+        data.insert(targetName, targetName == item.activeTargetName ? true : false);
     }
 
     d->model->setData(data);
@@ -290,6 +290,6 @@ void StepsPane::setValues(const config::StepItem &item)
 
 void StepsPane::getValues(config::StepItem &item)
 {
-    item.arguments = d->toolArguments->text();
-    item.targetName = d->model->getSelectedTarget();
+    item.buildArguments = d->toolArguments->text();
+    item.activeTargetName = d->model->getSelectedTarget();
 }

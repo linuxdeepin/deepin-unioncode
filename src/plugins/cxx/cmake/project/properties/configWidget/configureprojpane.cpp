@@ -51,7 +51,7 @@ class ConfigureProjPanePrivate
 
     QButtonGroup *group{nullptr};
 
-    ConfigureParam *cfgItem{nullptr};
+    ProjectConfigure *cfgItem{nullptr};
 };
 
 ConfigureProjPane::ConfigureProjPane(const QString &language,
@@ -172,13 +172,13 @@ void ConfigureProjPane::slotConfigure()
 {
     QList<ConfigType> initType = {Debug, Release};
     foreach (auto type, initType) {
-        BuildConfigure buildConfigure;
-        buildConfigure.type = type;
+        BuildTypeConfigure buildTypeConfigure;
+        buildTypeConfigure.type = type;
         // init output directory
         if (Debug == type) {
-            buildConfigure.directory = d->lineEditDebug->text().trimmed();
+            buildTypeConfigure.directory = d->lineEditDebug->text().trimmed();
         } else if (Release == type) {
-            buildConfigure.directory = d->lineEditRelease->text().trimmed();
+            buildTypeConfigure.directory = d->lineEditRelease->text().trimmed();
         }
         // init build steps
         for (int i = 0; i < StepCount; i++) {
@@ -187,17 +187,17 @@ void ConfigureProjPane::slotConfigure()
             // default use max thread count
             int coreCount = QThread::idealThreadCount();
             if (coreCount > 1) {
-                item.arguments = QString("-j%1").arg(coreCount);
+                item.buildArguments = QString("-j%1").arg(coreCount);
             }
-            buildConfigure.steps.push_back(item);
+            buildTypeConfigure.buildConfigure.steps.push_back(item);
         }
         // init environment
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         foreach (auto key, env.keys()) {
-            buildConfigure.env.environments.insert(key, env.value(key));
+            buildTypeConfigure.buildConfigure.env.environments.insert(key, env.value(key));
         }
 
-        d->cfgItem->buildConfigures.push_back(buildConfigure);
+        d->cfgItem->buildTypeConfigures.push_back(buildTypeConfigure);
     }
 
     d->cfgItem->defaultType = ConfigUtil::instance()->getTypeFromName(d->group->checkedButton()->text());

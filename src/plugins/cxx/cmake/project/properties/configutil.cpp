@@ -22,7 +22,7 @@ namespace config {
 class ConfigUtilPrivate
 {
     friend class ConfigUtil;
-    ConfigureParam configureParam;
+    ProjectConfigure configureParam;
     QMap<ConfigType, QString> configTypeStringMap;
 };
 
@@ -46,7 +46,7 @@ ConfigUtil *ConfigUtil::instance()
     return &ins;
 }
 
-ConfigureParam *ConfigUtil::getConfigureParamPointer()
+ProjectConfigure *ConfigUtil::getConfigureParamPointer()
 {
     return &d->configureParam;
 }
@@ -66,22 +66,22 @@ ConfigType ConfigUtil::getTypeFromName(QString name)
     return type;
 }
 
-bool ConfigUtil::isNeedConfig(const QString &workspace, ConfigureParam &param)
+bool ConfigUtil::isNeedConfig(const QString &workspace, ProjectConfigure &param)
 {
     QString propertyFile = getConfigPath(workspace);
     if (QFileInfo(propertyFile).exists() || QFileInfo(propertyFile).isFile()) {
         readConfig(propertyFile, param);
-        if (!param.buildConfigures.isEmpty()) {
+        if (!param.buildTypeConfigures.isEmpty()) {
             return false;
         }
     }
     return true;
 }
 
-dpfservice::ProjectInfo ConfigUtil::createProjectInfo(const ConfigureParam *param)
+dpfservice::ProjectInfo ConfigUtil::createProjectInfo(const ProjectConfigure *param)
 {
     dpfservice::ProjectInfo info;
-    for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
+    for (auto iter = param->buildTypeConfigures.begin(); iter != param->buildTypeConfigures.end(); ++iter) {
         if (d->configureParam.tempSelType == iter->type) {
             info.setLanguage(param->language);
             info.setKitName(CmakeProjectGenerator::toolKitName());
@@ -120,7 +120,7 @@ dpfservice::ProjectInfo ConfigUtil::createProjectInfo(const ConfigureParam *para
     return info;
 }
 
-void ConfigUtil::configProject(const ConfigureParam *param)
+void ConfigUtil::configProject(const ProjectConfigure *param)
 {
     dpfservice::ProjectInfo info = createProjectInfo(param);
     if (info.isVaild()) {
@@ -131,8 +131,8 @@ void ConfigUtil::configProject(const ConfigureParam *param)
 void ConfigUtil::checkConfigInfo(const QString &buildType, const QString &directory)
 {
     ConfigType type = getTypeFromName(buildType);
-    auto iter = d->configureParam.buildConfigures.begin();
-    for (; iter != d->configureParam.buildConfigures.end(); ++iter) {
+    auto iter = d->configureParam.buildTypeConfigures.begin();
+    for (; iter != d->configureParam.buildTypeConfigures.end(); ++iter) {
         if (type == iter->type) {
             if (!directory.isEmpty())
                 iter->directory = directory;
@@ -150,7 +150,7 @@ QString ConfigUtil::getConfigPath(const QString &projectPath)
     return CustomPaths::projectCachePath(projectPath) + QDir::separator() + "project.properties";
 }
 
-void ConfigUtil::readConfig(const QString &filePath, ConfigureParam &param)
+void ConfigUtil::readConfig(const QString &filePath, ProjectConfigure &param)
 {
     param.clear();
     QFile file(filePath);
@@ -161,7 +161,7 @@ void ConfigUtil::readConfig(const QString &filePath, ConfigureParam &param)
     }
 }
 
-void ConfigUtil::saveConfig(const QString &filePath, const ConfigureParam &param)
+void ConfigUtil::saveConfig(const QString &filePath, const ProjectConfigure &param)
 {
     QFile file(filePath);
     if (file.open(QIODevice::ReadWrite)) {
@@ -171,12 +171,12 @@ void ConfigUtil::saveConfig(const QString &filePath, const ConfigureParam &param
     }
 }
 
-bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ConfigureParam *param)
+bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectConfigure *param)
 {
     if (!param)
         return false;
 
-    for (auto iter = param->buildConfigures.begin(); iter != param->buildConfigures.end(); ++iter) {
+    for (auto iter = param->buildTypeConfigures.begin(); iter != param->buildTypeConfigures.end(); ++iter) {
         if (d->configureParam.defaultType == iter->type) {
             info.setLanguage(param->language);
             info.setKitName(CmakeProjectGenerator::toolKitName());
@@ -196,21 +196,21 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
             arguments << "-DCMAKE_EXPORT_COMPILE_COMMANDS=1";
             info.setConfigCustomArgs(arguments);
 
-            for (auto iterStep = iter->steps.begin(); iterStep != iter->steps.end(); ++iterStep) {
+            for (auto iterStep = iter->buildConfigure.steps.begin(); iterStep != iter->buildConfigure.steps.end(); ++iterStep) {
                 QStringList arguments;
                 arguments << "--build";
                 arguments << ".";
                 arguments << "--target";
 
                 if (iterStep->type == StepType::Build) {
-                    QString buildTarget = iterStep->targetName;
+                    QString buildTarget = iterStep->activeTargetName;
                     if (buildTarget.isEmpty()) {
                         buildTarget = "all";
                     }
                     TargetsManager::instance()->updateActivedBuildTarget(buildTarget);
                     arguments << buildTarget;
                 } else if (iterStep->type == StepType::Clean) {
-                    QString cleanTarget = iterStep->targetName;
+                    QString cleanTarget = iterStep->activeTargetName;
                     if (cleanTarget.isEmpty()) {
                         cleanTarget = "all";
                     }
@@ -218,9 +218,9 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                     arguments << cleanTarget;
                 }
 
-                if (!iterStep->arguments.isEmpty()) {
+                if (!iterStep->buildArguments.isEmpty()) {
                     arguments << "--";
-                    arguments << iterStep->arguments;
+                    arguments << iterStep->buildArguments;
                 }
 
                 if (iterStep->type == StepType::Build) {
@@ -230,8 +230,8 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                 }
             }
             // update run config according to ui parameters.
-            auto iterRun = iter->runConfigure.params.begin();
-            for (; iterRun != iter->runConfigure.params.end(); ++iterRun) {
+            auto iterRun = iter->runConfigure.targetsParams.begin();
+            for (; iterRun != iter->runConfigure.targetsParams.end(); ++iterRun) {
                 if (iterRun->targetName == iter->runConfigure.defaultTargetName) {
                     info.setRunProgram(iterRun->targetPath);
                     QStringList arguments;
@@ -244,12 +244,6 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const Configur
                     break;
                 }
             }
-
-            QStringList envs;
-            for (auto it = iter->env.environments.begin() ; it != iter->env.environments.end() ; it++) {
-                envs.append(it.key() + "=" + it.value());
-            }
-            info.setRunEnvironment(envs);
 
             return true;
         }
