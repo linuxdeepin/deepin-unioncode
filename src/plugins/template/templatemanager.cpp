@@ -58,7 +58,7 @@ void TemplateManager::addMenu()
 
     d->newAction.reset(new QAction(MWMFA_NEW_FILE_OR_PROJECT));
     actionInit(d->newAction.get(),
-               "Fiel.New.FileOrProject",
+               "File.New.FileOrProject",
                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_O), QString());
     QObject::connect(d->newAction.get(), &QAction::triggered,
                      this, &TemplateManager::newWizard, Qt::DirectConnection);

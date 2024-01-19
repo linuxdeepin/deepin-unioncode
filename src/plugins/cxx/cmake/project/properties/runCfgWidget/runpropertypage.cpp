@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "runpropertywidget.h"
+#include "runpropertypage.h"
 #include "environmentwidget.h"
 #include "common/common.h"
 #include "runconfigpane.h"
@@ -23,7 +23,7 @@ using namespace config;
 
 class RunPropertyWidgetPrivate
 {
-    friend class RunPropertyWidget;
+    friend class RunPropertyPage;
 
     DComboBox *exeComboBox{nullptr};
     RunConfigPane *runConfigPane{nullptr};
@@ -33,7 +33,7 @@ class RunPropertyWidgetPrivate
     dpfservice::ProjectInfo projectInfo;
 };
 
-RunPropertyWidget::RunPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, DWidget *parent)
+RunPropertyPage::RunPropertyPage(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, DWidget *parent)
     : PageWidget(parent)
     , d(new RunPropertyWidgetPrivate())
 {
@@ -42,13 +42,13 @@ RunPropertyWidget::RunPropertyWidget(const dpfservice::ProjectInfo &projectInfo,
     setupUi();
 }
 
-RunPropertyWidget::~RunPropertyWidget()
+RunPropertyPage::~RunPropertyPage()
 {
     if (d)
         delete d;
 }
 
-void RunPropertyWidget::setupUi()
+void RunPropertyPage::setupUi()
 {
     ConfigureWidget *runCfgWidget = new ConfigureWidget(this);
     runCfgWidget->setFrameShape(QFrame::Shape::NoFrame);
@@ -71,7 +71,7 @@ void RunPropertyWidget::setupUi()
     vLayout->addWidget(runCfgWidget);
 }
 
-void RunPropertyWidget::updateData()
+void RunPropertyPage::updateData()
 {
     d->exeComboBox->clear();
 
@@ -93,12 +93,12 @@ void RunPropertyWidget::updateData()
     }
 }
 
-void RunPropertyWidget::readConfig()
+void RunPropertyPage::readConfig()
 {
     updateData();
 }
 
-void RunPropertyWidget::saveConfig()
+void RunPropertyPage::saveConfig()
 {
     ConfigureParam *param = ConfigUtil::instance()->getConfigureParamPointer();
     auto iter = param->buildConfigures.begin();

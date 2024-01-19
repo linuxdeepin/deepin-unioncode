@@ -7,7 +7,7 @@
 #include "cmakeitemkeeper.h"
 #include "cmake/project/transceiver/projectcmakereceiver.h"
 #include "properties/bulidCfgWidget/buildpropertypage.h"
-#include "properties/runCfgWidget/runpropertywidget.h"
+#include "properties/runCfgWidget/runpropertypage.h"
 #include "properties/configWidget/configpropertywidget.h"
 #include "properties/configutil.h"
 #include "properties/targetsmanager.h"
@@ -411,7 +411,7 @@ void CmakeProjectGenerator::actionProperties(const dpfservice::ProjectInfo &info
     PropertiesDialog dlg;
 
     BuildPropertyPage *buildWidget = new BuildPropertyPage(info);
-    RunPropertyWidget *runWidget = new RunPropertyWidget(info, item);
+    RunPropertyPage *runWidget = new RunPropertyPage(info, item);
 
     dlg.insertPropertyPanel(tr("Build"), buildWidget);
     dlg.insertPropertyPanel(tr("Run"), runWidget);

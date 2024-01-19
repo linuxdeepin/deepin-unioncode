@@ -10,12 +10,12 @@
 
 class QStandardItem;
 class RunPropertyWidgetPrivate;
-class RunPropertyWidget : public PageWidget
+class RunPropertyPage : public PageWidget
 {
     Q_OBJECT
 public:
-    explicit RunPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, QWidget *parent = nullptr);
-    virtual ~RunPropertyWidget() override;
+    explicit RunPropertyPage(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, QWidget *parent = nullptr);
+    virtual ~RunPropertyPage() override;
 
     void saveConfig() override;
     void readConfig() override;
