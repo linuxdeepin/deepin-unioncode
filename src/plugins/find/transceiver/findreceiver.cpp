@@ -41,10 +41,10 @@ void FindReceiver::eventProcess(const dpf::Event &event)
                     event.property(project.deletedProject.pKeys[0]));
         QString workspace = projectInfo.workspaceFolder();
         emit FindEventTransmit::instance()->sendRemovedProject(workspace);
-    } else if (event.data() == editor.openedFile.name) {
-        QString filePath = event.property(editor.openedFile.pKeys[0]).toString();
+    } else if (event.data() == editor.fileOpened.name) {
+        QString filePath = event.property(editor.fileOpened.pKeys[0]).toString();
         emit FindEventTransmit::instance()->sendCurrentEditFile(filePath, true);
-    } else if (event.data() == editor.closedFile.name) {
+    } else if (event.data() == editor.fileClosed.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         emit FindEventTransmit::instance()->sendCurrentEditFile(filePath, false);
     } else if (event.data() == editor.switchedFile.name) {

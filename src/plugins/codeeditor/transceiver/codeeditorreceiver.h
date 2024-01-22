@@ -38,6 +38,8 @@ signals:
     void reqAddBreakpoint(const QString &fileName, int line);
     void reqRemoveBreakpoint(const QString &fileName, int line);
     void reqClearAllBreakpoints();
+    void reqSetDebugLine(const QString &fileName, int line);
+    void reqRemoveDebugLine();
 
     void toOpenFile(const QString &filePath);
     void toRunClean();
