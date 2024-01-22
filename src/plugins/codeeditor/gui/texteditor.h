@@ -31,6 +31,9 @@ public:
     void gotoPreviousBreakpoint();
     void clearAllBreakpoints();
 
+    void setDebugLine(int line);
+    void removeDebugLine();
+
     // bookmark
     void addBookmark(int line);
     void removeBookmark(int line);
@@ -57,6 +60,7 @@ public slots:
 signals:
     void fileSaved(const QString &fileName);
     void fileClosed(const QString &fileName);
+    void zoomValueChanged();
 
 private:
     void init();

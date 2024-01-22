@@ -30,7 +30,7 @@ public:
 
 public slots:
     void closeTab(int index);
-    void onFileChanged(const QString &fileName);
+    void onFileChanged(const QString &fileName, bool isModified);
     void onFileSaved(const QString &fileName);
 
 signals:

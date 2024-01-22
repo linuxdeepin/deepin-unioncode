@@ -172,9 +172,9 @@ void DebugManager::handleEvents(const dpf::Event &event)
         activeProjectKitName.clear();
     } else if (event.data() == editor.switchedFile.name) {
         // TODO(logan)
-    } else if (event.data() == editor.openedFile.name) {
+    } else if (event.data() == editor.fileOpened.name) {
         // TODO(logan)
-    } else if (event.data() == editor.closedFile.name) {
+    } else if (event.data() == editor.fileClosed.name) {
         // TODO(logan)
     }
 }

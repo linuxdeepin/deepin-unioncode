@@ -11,12 +11,6 @@ class TextEditorPrivate : public QObject
 {
     Q_OBJECT
 public:
-    enum MarkSymbol {
-        BreakpointSymbol = 0,
-        RuntimeSymbol,
-        BookmarkSymbol
-    };
-
     enum MarginType {
         LineNumberMargin = 0,
         SymbolMargin,
@@ -24,16 +18,16 @@ public:
         FoldingMargin
     };
 
-    enum MarginMask {
-        BreakpointMask = 1,
-        BreakpointDisabledMask = 1 << 1,
-        BookmarkMask = 1 << 2,
-        RuntimeMask = 1 << 3,
-        WarningMask = 1 << 4,
-        ErrorMask = 1 << 5,
-
-        ChangeUnsavedMask = 1 << 6,
-        ChangeSavedMask = 1 << 7
+    enum MarkerNumber {
+        Breakpoint = 0,
+        BreakpointDisabled,
+        Bookmark,
+        Runtime,
+        RuntimeLine,
+        Warning,
+        Error,
+        ChangeUnsaved,
+        ChangeSaved
     };
 
     explicit TextEditorPrivate(TextEditor *qq);
@@ -54,8 +48,8 @@ public:
     void showContextMenu();
     void showMarginMenu();
 
-    void gotoNextMark(MarginMask mask);
-    void gotoPreviousMark(MarginMask mask);
+    void gotoNextMark(uint mask);
+    void gotoPreviousMark(uint mask);
 
 public:
     TextEditor *q { nullptr };
