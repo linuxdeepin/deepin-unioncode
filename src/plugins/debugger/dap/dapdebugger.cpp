@@ -193,7 +193,7 @@ void DAPDebugger::continueDebug()
 {
     if (d->runState == kStopped) {
         d->session->continueDbg(d->threadId);
-        editor.cleanRunning();
+        editor.removeDebugLine();
     }
 }
 
@@ -581,28 +581,28 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         if (d->currentOpenedFileName != filePath) {
             d->currentOpenedFileName = filePath;
         }
-    } else if (event.data() == editor.openedFile.name) {
+    } else if (event.data() == editor.fileOpened.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         d->currentOpenedFileName = filePath;
         if (d->bps.count(filePath)) {
             QList<int> lines = d->bps.values(filePath);
             for (int line: lines) {
-                editor.addDebugPoint(filePath, line);
+                editor.addBreakpoint(filePath, line);
             }
         }
-    } else if (event.data() == editor.closedFile.name) {
+    } else if (event.data() == editor.fileClosed.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         if (d->currentOpenedFileName == filePath) {
             d->currentOpenedFileName.clear();
         }
-    } else if (event.data() == editor.addadDebugPoint.name) {
-        QString filePath = event.property(editor.addadDebugPoint.pKeys[0]).toString();
-        int line = event.property(editor.addadDebugPoint.pKeys[1]).toInt();
+    } else if (event.data() == editor.breakpointAdded.name) {
+        QString filePath = event.property(editor.breakpointAdded.pKeys[0]).toString();
+        int line = event.property(editor.breakpointAdded.pKeys[1]).toInt();
         d->bps.insert(filePath, line);
         addBreakpoint(filePath, line);
-    } else if (event.data() == editor.removedDebugPoint.name) {
-        QString filePath = event.property(editor.removeDebugPoint.pKeys[0]).toString();
-        int line = event.property(editor.removeDebugPoint.pKeys[1]).toInt();
+    } else if (event.data() == editor.breakpointRemoved.name) {
+        QString filePath = event.property(editor.breakpointRemoved.pKeys[0]).toString();
+        int line = event.property(editor.breakpointRemoved.pKeys[1]).toInt();
         d->bps.remove(filePath, line);
         removeBreakpoint(filePath, line);
     }
@@ -643,7 +643,7 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
     }
 
     if (QFileInfo(curFrame.file).exists()) {
-        editor.runningToLine(curFrame.file, curFrame.line);
+        editor.setDebugLine(curFrame.file, curFrame.line);
     } else {
         if (curFrame.address.isEmpty()) {
             disassemble(curFrame.address);
@@ -760,7 +760,7 @@ void DAPDebugger::slotFrameSelected(const QModelIndex &index)
     auto curFrame = d->stackModel.currentFrame();
 
     if (QFileInfo(curFrame.file).exists()) {
-        editor.jumpToLine(curFrame.file, curFrame.line);
+        editor.gotoLine(curFrame.file, curFrame.line);
     } else {
         if (!curFrame.address.isEmpty()) {
             disassemble(curFrame.address);
@@ -777,7 +777,7 @@ void DAPDebugger::slotBreakpointSelected(const QModelIndex &index)
 {
     Q_UNUSED(index);
     auto curBP = d->breakpointModel.currentBreakpoint();
-    editor.jumpToLine(curBP.filePath, curBP.lineNumber);
+    editor.gotoLine(curBP.filePath, curBP.lineNumber);
 }
 
 void DAPDebugger::initializeView()
@@ -839,7 +839,7 @@ void DAPDebugger::initializeView()
 void DAPDebugger::exitDebug()
 {
     // Change UI.
-    editor.cleanRunning({});
+    editor.removeDebugLine();
     d->localsView->hide();
 
     d->localsModel.clear();
@@ -1116,7 +1116,7 @@ void DAPDebugger::handleAssemble(const QString &content)
         // avoid load manually.
         editor.setModifiedAutoReload(assemblerPath, true);
 
-        editor.jumpToLine(assemblerPath, 0);
+        editor.gotoLine(assemblerPath, 0);
     }
 }
 

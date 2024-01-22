@@ -44,12 +44,15 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveBreakpoint, this, &WorkspaceWidgetPrivate::handleRemoveBreakpoint);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqBack, this, &WorkspaceWidgetPrivate::handleBack);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqForward, this, &WorkspaceWidgetPrivate::handleForward);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetDebugLine, this, &WorkspaceWidgetPrivate::handleSetDebugLine);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveDebugLine, this, &WorkspaceWidgetPrivate::handleRemoveDebugLine);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
 {
     connect(tabWidget, &TabWidget::splitRequested, this, &WorkspaceWidgetPrivate::onSplitRequested);
     connect(tabWidget, &TabWidget::closeRequested, this, &WorkspaceWidgetPrivate::onCloseRequested);
+    connect(tabWidget, &TabWidget::zoomValueChanged, this, &WorkspaceWidgetPrivate::onZoomValueChanged);
 }
 
 TabWidget *WorkspaceWidgetPrivate::currentTabWidget() const
@@ -64,6 +67,7 @@ TabWidget *WorkspaceWidgetPrivate::currentTabWidget() const
 void WorkspaceWidgetPrivate::doSplit(QSplitter *spliter, int index, const QString &fileName, int pos, int scroll)
 {
     TabWidget *tabWidget = new TabWidget(spliter);
+    tabWidget->setZoomValue(zoomValue);
     connectTabWidgetSignals(tabWidget);
 
     tabWidgetList.append(tabWidget);
@@ -136,13 +140,13 @@ void WorkspaceWidgetPrivate::handleOpenFile(const QString &fileName)
 
 void WorkspaceWidgetPrivate::handleAddBreakpoint(const QString &fileName, int line)
 {
-    if (auto tabWidget = currentTabWidget())
+    for (auto tabWidget : tabWidgetList)
         tabWidget->addBreakpoint(fileName, line);
 }
 
 void WorkspaceWidgetPrivate::handleRemoveBreakpoint(const QString &fileName, int line)
 {
-    if (auto tabWidget = currentTabWidget())
+    for (auto tabWidget : tabWidgetList)
         tabWidget->removeBreakpoint(fileName, line);
 }
 
@@ -158,6 +162,22 @@ void WorkspaceWidgetPrivate::handleForward()
         tabWidget->gotoNextPosition();
 }
 
+void WorkspaceWidgetPrivate::handleSetDebugLine(const QString &fileName, int line)
+{
+    auto tabWidget = currentTabWidget();
+    if (!tabWidget)
+        return;
+
+    tabWidget->openFile(fileName);
+    tabWidget->setDebugLine(line);
+}
+
+void WorkspaceWidgetPrivate::handleRemoveDebugLine()
+{
+    for (auto tabWidget : tabWidgetList)
+        tabWidget->removeDebugLine();
+}
+
 void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
 {
     Q_UNUSED(old)
@@ -171,6 +191,17 @@ void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
         return;
 
     focusTabWidget = tabWidget;
+}
+
+void WorkspaceWidgetPrivate::onZoomValueChanged()
+{
+    auto tabWidget = qobject_cast<TabWidget *>(sender());
+    if (!tabWidget)
+        return;
+
+    zoomValue = tabWidget->zoomValue();
+    for (auto tabWidget : tabWidgetList)
+        tabWidget->updateZoomValue(zoomValue);
 }
 
 WorkspaceWidget::WorkspaceWidget(QWidget *parent)

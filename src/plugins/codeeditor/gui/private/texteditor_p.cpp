@@ -4,7 +4,7 @@
 
 #include "texteditor_p.h"
 #include "utils/editorutils.h"
-#include "common/common.h"
+#include "utils/colordefine.h"
 
 #include <Qsci/qsciapis.h>
 
@@ -41,6 +41,8 @@ void TextEditorPrivate::init()
 void TextEditorPrivate::initConnection()
 {
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::updateColorTheme);
+
+    connect(q, SIGNAL(SCN_ZOOM()), q, SIGNAL(zoomValueChanged()));
 }
 
 void TextEditorPrivate::initMargins()
@@ -56,14 +58,30 @@ void TextEditorPrivate::initMargins()
     q->setMarginType(SymbolMargin, TextEditor::SymbolMargin);
     setMarginVisible(SymbolMargin, true);
     q->setMarginSensitivity(SymbolMargin, true);
-    q->setMarginMarkerMask(SymbolMargin, BreakpointMask | BreakpointDisabledMask | BookmarkMask | RuntimeMask | WarningMask | ErrorMask);
+    q->setMarginMarkerMask(SymbolMargin,
+                           1 << Breakpoint
+                                   | 1 << BreakpointDisabled
+                                   | 1 << Bookmark
+                                   | 1 << Runtime
+                                   | 1 << RuntimeLine
+                                   | 1 << Warning
+                                   | 1 << Error);
 
     // TODO: using picture to replace?
-    q->markerDefine(TextEditor::Circle, BreakpointSymbol);
-    q->setMarkerBackgroundColor(QColor(Qt::red), BreakpointSymbol);
+    q->markerDefine(TextEditor::Circle, Breakpoint);
+    q->setMarkerForegroundColor(EditorColor::Table::get()->FireBrick, Breakpoint);
+    q->setMarkerBackgroundColor(EditorColor::Table::get()->FireBrick, Breakpoint);
 
-    q->markerDefine(TextEditor::RightTriangle, BookmarkSymbol);
-    q->setMarkerBackgroundColor(QColor(Qt::red), BookmarkSymbol);
+    q->markerDefine(TextEditor::RightTriangle, Bookmark);
+    q->setMarkerBackgroundColor(QColor(Qt::red), Bookmark);
+
+    q->markerDefine(TextEditor::RightArrow, Runtime);
+    q->setMarkerForegroundColor(EditorColor::Table::get()->YellowGreen, Runtime);
+    q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, Runtime);
+
+    q->markerDefine(TextEditor::Background, RuntimeLine);
+    q->setMarkerForegroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLine);
+    q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLine);
 }
 
 void TextEditorPrivate::updateColorTheme()
@@ -216,10 +234,10 @@ void TextEditorPrivate::showMarginMenu()
     q->getCursorPosition(&line, &index);
 
     if (q->hasBreakpoint(line)) {
-        menu.addAction(tr("Remove Breakpoint"), q, [this, line] { q->removeBreakpoint(line); });
+        menu.addAction(tr("Remove Breakpoint"), q, [this, line] { editor.removeBreakpoint(fileName, line + 1); });
     } else {
         static QString text("Add a breakpoint on line %1");
-        menu.addAction(text.arg(line + 1), q, [this, line] { q->addBreakpoint(line); });
+        menu.addAction(text.arg(line + 1), q, [this, line] { editor.addBreakpoint(fileName, line + 1); });
     }
 
     // notify other plugin to add action.
@@ -227,7 +245,7 @@ void TextEditorPrivate::showMarginMenu()
     menu.exec(QCursor::pos());
 }
 
-void TextEditorPrivate::gotoNextMark(MarginMask mask)
+void TextEditorPrivate::gotoNextMark(uint mask)
 {
     int line = q->currentLineNumber() + 1;
     int newLine = q->markerFindNext(line, mask);
@@ -241,7 +259,7 @@ void TextEditorPrivate::gotoNextMark(MarginMask mask)
         q->gotoLine(newLine);
 }
 
-void TextEditorPrivate::gotoPreviousMark(MarginMask mask)
+void TextEditorPrivate::gotoPreviousMark(uint mask)
 {
     int line = q->currentLineNumber() - 1;
     int newLine = q->markerFindPrevious(line, mask);

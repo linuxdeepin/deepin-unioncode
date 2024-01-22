@@ -65,6 +65,6 @@ void TaskManager::triggerDefaultHandler(const QModelIndex &index)
         return;
 
     if (task.file.exists()) {
-        editor.jumpToLine(task.file.toString(), task.movedLine);
+        editor.gotoLine(task.file.toString(), task.movedLine);
     }
 }

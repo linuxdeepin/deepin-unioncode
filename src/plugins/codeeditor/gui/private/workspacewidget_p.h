@@ -29,13 +29,18 @@ public:
     void handleRemoveBreakpoint(const QString &fileName, int line);
     void handleBack();
     void handleForward();
+    void handleSetDebugLine(const QString &fileName, int line);
+    void handleRemoveDebugLine();
     void onFocusChanged(QWidget *old, QWidget *now);
+    void onZoomValueChanged();
 
 public:
     WorkspaceWidget *q;
 
     TabWidget *focusTabWidget { nullptr };
     QList<TabWidget *> tabWidgetList;
+
+    int zoomValue { 0 };
 };
 
 #endif   // WORKSPACEWIDGET_P_H

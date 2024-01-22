@@ -48,10 +48,10 @@ void ValgrindReceiver::eventProcess(const dpf::Event &event)
     }  else if (event.data() == editor.switchedFile.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         ValgrindRunner::instance()->saveCurrentFilePath(filePath);
-    } else if (event.data() == editor.openedFile.name) {
+    } else if (event.data() == editor.gotoLine.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         ValgrindRunner::instance()->saveCurrentFilePath(filePath);
-    } else if (event.data() == editor.closedFile.name) {
+    } else if (event.data() == editor.fileClosed.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         ValgrindRunner::instance()->removeCurrentFilePath();
     }

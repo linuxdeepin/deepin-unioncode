@@ -34,12 +34,19 @@ public:
     void removeBreakpoint(const QString &fileName, int line);
     void clearAllBreakpoints();
 
+    int zoomValue();
+    void setZoomValue(int value);
+    void updateZoomValue(int value);
+
 public slots:
     void openFile(const QString &fileName);
+    void setDebugLine(int line);
+    void removeDebugLine();
 
 signals:
     void closeRequested();
     void splitRequested(Qt::Orientation ori, const QString &fileName);
+    void zoomValueChanged();
 
 protected:
     virtual void dragEnterEvent(QDragEnterEvent *event) override;

@@ -5,6 +5,7 @@
 #include "texteditor.h"
 #include "private/texteditor_p.h"
 #include "utils/editorutils.h"
+#include "common/common.h"
 
 #include <QFile>
 #include <QScrollBar>
@@ -45,6 +46,7 @@ void TextEditor::setFile(const QString &fileName)
     }
 
     setText(text.toUtf8());
+    editor.fileOpened(fileName);
     d->loadDefaultLexer();
 }
 
@@ -102,12 +104,17 @@ void TextEditor::reload()
 
 void TextEditor::addBreakpoint(int line)
 {
-    markerAdd(line, TextEditorPrivate::BreakpointSymbol);
+    if (hasBreakpoint(line))
+        return;
+
+    markerAdd(line, TextEditorPrivate::Breakpoint);
+    editor.breakpointAdded(d->fileName, line + 1);
 }
 
 void TextEditor::removeBreakpoint(int line)
 {
-    markerDelete(line, TextEditorPrivate::BreakpointSymbol);
+    markerDelete(line, TextEditorPrivate::Breakpoint);
+    editor.breakpointRemoved(d->fileName, line + 1);
 }
 
 void TextEditor::setBreakpointEnabled(int line)
@@ -119,53 +126,69 @@ void TextEditor::setBreakpointEnabled(int line)
 bool TextEditor::hasBreakpoint(int line)
 {
     int mask = static_cast<int>(markersAtLine(line));
-    return (mask & TextEditorPrivate::BreakpointMask);
+    return (mask & (1 << TextEditorPrivate::Breakpoint));
 }
 
 void TextEditor::gotoNextBreakpoint()
 {
-    d->gotoNextMark(TextEditorPrivate::BreakpointMask);
+    d->gotoNextMark(1 << TextEditorPrivate::Breakpoint);
 }
 
 void TextEditor::gotoPreviousBreakpoint()
 {
-    d->gotoPreviousMark(TextEditorPrivate::BreakpointMask);
+    d->gotoPreviousMark(1 << TextEditorPrivate::Breakpoint);
 }
 
 void TextEditor::clearAllBreakpoints()
 {
-    markerDeleteAll(TextEditorPrivate::BreakpointSymbol);
+    markerDeleteAll(TextEditorPrivate::Breakpoint);
+}
+
+void TextEditor::setDebugLine(int line)
+{
+    removeDebugLine();
+
+    int lineOffset = line - 1;
+    gotoLine(lineOffset);
+    markerAdd(lineOffset, TextEditorPrivate::Runtime);
+    markerAdd(lineOffset, TextEditorPrivate::RuntimeLine);
+}
+
+void TextEditor::removeDebugLine()
+{
+    markerDeleteAll(TextEditorPrivate::Runtime);
+    markerDeleteAll(TextEditorPrivate::RuntimeLine);
 }
 
 void TextEditor::addBookmark(int line)
 {
-    markerAdd(line, TextEditorPrivate::BookmarkSymbol);
+    markerAdd(line, TextEditorPrivate::Bookmark);
 }
 
 void TextEditor::removeBookmark(int line)
 {
-    markerDelete(line, TextEditorPrivate::BookmarkSymbol);
+    markerDelete(line, TextEditorPrivate::Bookmark);
 }
 
 bool TextEditor::hasBookmark(int line)
 {
     int mask = static_cast<int>(markersAtLine(line));
-    return (mask & TextEditorPrivate::BookmarkMask);
+    return (mask & TextEditorPrivate::Bookmark);
 }
 
 void TextEditor::gotoNextBookmark()
 {
-    d->gotoNextMark(TextEditorPrivate::BookmarkMask);
+    d->gotoNextMark(TextEditorPrivate::Bookmark);
 }
 
 void TextEditor::gotoPreviousBookmark()
 {
-    d->gotoPreviousMark(TextEditorPrivate::BookmarkMask);
+    d->gotoPreviousMark(TextEditorPrivate::Bookmark);
 }
 
 void TextEditor::clearAllBookmarks()
 {
-    markerDeleteAll(TextEditorPrivate::BookmarkSymbol);
+    markerDeleteAll(TextEditorPrivate::Bookmark);
 }
 
 int TextEditor::currentLineNumber()
@@ -209,20 +232,21 @@ void TextEditor::onMarginClicked(int margin, int line, Qt::KeyboardModifiers sta
     Q_UNUSED(state)
 
     if (margin == TextEditorPrivate::SymbolMargin) {
+        // The value of `state` is not accurate
         auto modifers = QApplication::queryKeyboardModifiers();
         int mask = static_cast<int>(markersAtLine(line));
         switch (modifers) {
-        case Qt::ControlModifier:   // 按下Ctrl键
-            if (mask & TextEditorPrivate::BookmarkMask)
-                markerDelete(line, TextEditorPrivate::BookmarkSymbol);
+        case Qt::ControlModifier:
+            if (mask & (1 << TextEditorPrivate::Bookmark))
+                removeBookmark(line);
             else
-                markerAdd(line, TextEditorPrivate::BookmarkSymbol);   // 添加书签
+                addBookmark(line);
             break;
         default:
-            if (mask & TextEditorPrivate::BreakpointMask)
-                markerDelete(line, TextEditorPrivate::BreakpointSymbol);
+            if (mask & (1 << TextEditorPrivate::Breakpoint))
+                editor.removeBreakpoint(d->fileName, line + 1);
             else
-                markerAdd(line, TextEditorPrivate::BreakpointSymbol);   // 添加断点
+                editor.addBreakpoint(d->fileName, line + 1);
         }
     }
 }

@@ -7,7 +7,7 @@
 
 #include "gui/tabwidget.h"
 #include "gui/tabbar.h"
-#include "manager/texteditormanager.h"
+#include "gui/texteditor.h"
 
 #include <QStackedLayout>
 
@@ -26,6 +26,8 @@ public:
     void initUI();
     void initConnection();
 
+    TextEditor *createEditor(const QString &fileName = "");
+    TextEditor *findEditor(const QString &fileName);
     TextEditor *currentTextEditor() const;
     void changeFocusProxy();
     bool processKeyPressEvent(QKeyEvent *event);
@@ -33,24 +35,25 @@ public:
     void doSave();
     void removePositionRecord(const QString &fileName);
 
-public:
+public slots:
     void onTabSwitched(const QString &fileName);
     void onTabClosed(const QString &fileName);
     void onSpliterClicked(Qt::Orientation ori);
     void onLinePositionChanged(int line, int index);
+    void onFileChanged(const QString &fileName);
 
 public:
     TabWidget *q;
 
     QStackedLayout *editorLayout { nullptr };
     TabBar *tabBar { nullptr };
-    TextEditorManager *editorMng { nullptr };
-
-    QHash<QString, int> editorIndexHash;
+    QHash<QString, TextEditor *> editorMng;
 
     PosRecord curPosRecord;
     QList<PosRecord> prePosRecord;
     QList<PosRecord> nextPosRecord;
+
+    int zoomValue { 0 };
 };
 
 #endif   // TABWIDGET_P_H
