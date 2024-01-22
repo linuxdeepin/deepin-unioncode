@@ -8,6 +8,7 @@
 #include "environmentwidget.h"
 #include "stepspane.h"
 #include "targetsmanager.h"
+#include "services/project/projectservice.h"
 
 #include <DTabWidget>
 #include <DPushButton>
@@ -23,6 +24,7 @@
 
 DWIDGET_USE_NAMESPACE
 using namespace config;
+using namespace dpfservice;
 
 class DetailPropertyWidgetPrivate
 {
@@ -36,7 +38,7 @@ class DetailPropertyWidgetPrivate
 DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     : ConfigureWidget(parent)
     , d(new DetailPropertyWidgetPrivate())
-{   
+{
     setBackgroundRole(QPalette::Window);
     setFrameShape(QFrame::Shape::NoFrame);
 
@@ -223,7 +225,6 @@ void BuildPropertyPage::initData(const dpfservice::ProjectInfo &projectInfo)
     d->configureComboBox->clear();
 
     ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
-    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(projectInfo.workspaceFolder()), *param);
 
     auto iter = param->buildTypeConfigures.begin();
     int index = 0;
@@ -254,10 +255,7 @@ void BuildPropertyPage::initData(const dpfservice::ProjectInfo &projectInfo)
             d->outputDirEdit->setText(iter->directory);
             d->stackWidget->setCurrentWidget(detailWidget);
         }
-
-        initRunConfig(iter->directory, iter->runConfigure);
     }
-
 }
 
 void BuildPropertyPage::updateDetail()
@@ -278,35 +276,8 @@ void BuildPropertyPage::updateDetail()
             if (detail) {
                 detail->setValues(*iter);
             }
-
             break;
         }
-
-        initRunConfig(iter->directory, iter->runConfigure);
-    }
-}
-
-void BuildPropertyPage::initRunConfig(const QString &workDirectory, RunConfigure &runConfigure)
-{
-    Q_UNUSED(workDirectory)
-
-    if (runConfigure.targetsParams.isEmpty()) {
-        QStringList exeTargetList = TargetsManager::instance()->getExeTargetNamesList();
-        foreach (auto targetName, exeTargetList) {
-            TargetRunConfigure param;
-            QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-            foreach (auto key, env.keys()) {
-                param.env.environments.insert(key, env.value(key));
-            }
-            param.targetName = targetName;
-            dpfservice::Target target = TargetsManager::instance()->getTargetByName(targetName);
-            param.targetPath = target.output;
-
-            runConfigure.targetsParams.push_back(param);
-        }
-
-        dpfservice::Target target = TargetsManager::instance()->getActivedTargetByTargetType(dpfservice::TargetType::kActiveExecTarget);
-        runConfigure.defaultTargetName = target.buildTarget;
     }
 }
 
@@ -325,6 +296,16 @@ void BuildPropertyPage::saveConfig()
         if (detailWidget) {
             detailWidget->getValues(*iter);
         }
+        if (iter->type == param->tempSelType) {
+            auto projectInfo = dpfGetService(ProjectService)->getActiveProjectInfo();
+            auto activeTarget = TargetsManager::instance()->getActivedTargetByTargetType(kActiveExecTarget);
+            for (auto it : iter->runConfigure.targetsRunConfigure) {
+                if (it.targetName == activeTarget.name) {
+                    projectInfo.setRunEnvironment(it.env.toList());
+                    dpfGetService(ProjectService)->updateProjectInfo(projectInfo);
+                }
+            }
+        }
 
         for (int i = 0; i < d->configureComboBox->count(); i++) {
             ConfigType type = ConfigUtil::instance()->getTypeFromName(d->configureComboBox->itemText(i));
@@ -340,7 +321,6 @@ void BuildPropertyPage::saveConfig()
                 break;
             }
         }
-
         index++;
     }
 }

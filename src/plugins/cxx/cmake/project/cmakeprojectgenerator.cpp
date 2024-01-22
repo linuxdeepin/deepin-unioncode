@@ -13,6 +13,7 @@
 #include "properties/targetsmanager.h"
 #include "services/builder/builderservice.h"
 #include "services/window/windowservice.h"
+#include "services/project/projectservice.h"
 #include "common/dialog/propertiesdialog.h"
 #include "common/util/eventdefinitions.h"
 #include "common/actionmanager/actionmanager.h"
@@ -23,6 +24,8 @@
 #include <QPushButton>
 #include <QClipboard>
 
+using namespace config;
+using namespace dpfservice;
 class CmakeProjectGeneratorPrivate
 {
     friend class CmakeProjectGenerator;
@@ -44,6 +47,8 @@ CmakeProjectGenerator::CmakeProjectGenerator()
     QObject::connect(ProjectCmakeProxy::instance(),
                      &ProjectCmakeProxy::buildExecuteEnd,
                      this, &CmakeProjectGenerator::doBuildCmdExecuteEnd);
+
+    connect(TargetsManager::instance(), &TargetsManager::initialized, this, &CmakeProjectGenerator::targetInitialized);
 
     // main thread init watcher class
     CmakeItemKeeper::instance();
@@ -435,6 +440,51 @@ void CmakeProjectGenerator::recursionRemoveItem(QStandardItem *item)
 
     delete item;
     item = nullptr;
+}
+
+void CmakeProjectGenerator::targetInitialized(const QString& workspace)
+{
+    ProjectConfigure *projectConfigure = ConfigUtil::instance()->getConfigureParamPointer();
+    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(workspace), *projectConfigure);
+
+    dpfservice::Target activeExecTarget = TargetsManager::instance()->getActivedTargetByTargetType(dpfservice::TargetType::kActiveExecTarget);
+    for (auto &buildTypeConfigure : projectConfigure->buildTypeConfigures) {
+        createTargetsRunConfigure(buildTypeConfigure.directory, buildTypeConfigure.runConfigure);
+        if (buildTypeConfigure.type != projectConfigure->defaultType)
+            continue;
+
+        // update environment.
+        for (auto targetRunConfigure : buildTypeConfigure.runConfigure.targetsRunConfigure) {
+            if (targetRunConfigure.targetName == activeExecTarget.name) {
+                auto projectInfo = dpfGetService(ProjectService)->
+                        getProjectInfo(d->configureProjectInfo.kitName(), d->configureProjectInfo.workspaceFolder());
+                projectInfo.setRunEnvironment(targetRunConfigure.env.toList());
+                dpfGetService(ProjectService)->updateProjectInfo(projectInfo);
+            }
+        }
+    }
+}
+
+void CmakeProjectGenerator::createTargetsRunConfigure(const QString &workDirectory, config::RunConfigure &runConfigure)
+{
+    Q_UNUSED(workDirectory)
+
+    if (!runConfigure.targetsRunConfigure.isEmpty())
+        return;
+
+    QStringList exeTargetList = TargetsManager::instance()->getExeTargetNamesList();
+    foreach (auto targetName, exeTargetList) {
+        dpfservice::Target target = TargetsManager::instance()->getTargetByName(targetName);
+
+        TargetRunConfigure targetRunConfigure;
+        targetRunConfigure.targetName = targetName;
+        targetRunConfigure.targetPath = target.output;
+
+        runConfigure.targetsRunConfigure.push_back(targetRunConfigure);
+    }
+
+    dpfservice::Target target = TargetsManager::instance()->getActivedTargetByTargetType(dpfservice::TargetType::kActiveExecTarget);
+    runConfigure.defaultTargetName = target.buildTarget;
 }
 
 void CmakeProjectGenerator::createBuildMenu(QMenu *menu)

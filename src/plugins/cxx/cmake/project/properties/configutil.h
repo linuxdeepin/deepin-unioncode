@@ -58,9 +58,46 @@ struct EnvironmentItem {
     bool enable = true;
     QMap<QString, QString> environments;
 
+    void setQDebugLevel(bool enable)
+    {
+        enableQDebugLevel = enable;
+        QString loggingValue = enableQDebugLevel ? "*.debug=true" : "*.debug=false";
+        environments.insert("QT_LOGGING_RULES", loggingValue);
+    }
+
+    bool isQDebugLevelEnable() const
+    {
+        return enableQDebugLevel;
+    }
+
+    EnvironmentItem() {
+        initEnvironments();
+    }
+
+    QStringList toList() const
+    {
+        QStringList envList;
+        for (auto it = environments.begin() ; it != environments.end() ; it++) {
+            envList.append(it.key() + "=" + it.value());
+        }
+        return envList;
+    }
+
+    void initEnvironments()
+    {
+        environments.clear();
+
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        foreach (auto key, env.keys()) {
+            environments.insert(key, env.value(key));
+        }
+        setQDebugLevel(enableQDebugLevel);
+    }
+
     friend QDataStream &operator<<(QDataStream &stream, const EnvironmentItem &data)
     {
         stream << data.enable;
+        stream << data.enableQDebugLevel;
         stream << data.environments;
 
         return stream;
@@ -69,10 +106,14 @@ struct EnvironmentItem {
     friend QDataStream &operator>>(QDataStream &stream, EnvironmentItem &data)
     {
         stream >> data.enable;
+        stream >> data.enableQDebugLevel;
         stream >> data.environments;
 
         return stream;
     }
+
+private:
+    bool enableQDebugLevel = true;
 };
 
 struct TargetRunConfigure {
@@ -107,12 +148,12 @@ struct TargetRunConfigure {
 
 struct RunConfigure {
     QString defaultTargetName;
-    QVector<TargetRunConfigure> targetsParams;
+    QVector<TargetRunConfigure> targetsRunConfigure;
 
     friend QDataStream &operator<<(QDataStream &stream, const RunConfigure &data)
     {
         stream << data.defaultTargetName;
-        stream << data.targetsParams;
+        stream << data.targetsRunConfigure;
 
         return stream;
     }
@@ -120,7 +161,7 @@ struct RunConfigure {
     friend QDataStream &operator>>(QDataStream &stream, RunConfigure &data)
     {
         stream >> data.defaultTargetName;
-        stream >> data.targetsParams;
+        stream >> data.targetsRunConfigure;
 
         return stream;
     }

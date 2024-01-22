@@ -230,8 +230,8 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectC
                 }
             }
             // update run config according to ui parameters.
-            auto iterRun = iter->runConfigure.targetsParams.begin();
-            for (; iterRun != iter->runConfigure.targetsParams.end(); ++iterRun) {
+            auto iterRun = iter->runConfigure.targetsRunConfigure.begin();
+            for (; iterRun != iter->runConfigure.targetsRunConfigure.end(); ++iterRun) {
                 if (iterRun->targetName == iter->runConfigure.defaultTargetName) {
                     info.setRunProgram(iterRun->targetPath);
                     QStringList arguments;

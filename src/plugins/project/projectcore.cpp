@@ -83,6 +83,10 @@ bool ProjectCore::start()
             projectService->hasProjectInfo
                     = std::bind(&ProjectTree::hasProjectInfo, treeView, _1);
         }
+        if (!projectService->updateProjectInfo) {
+            projectService->updateProjectInfo
+                    = std::bind(&ProjectTree::updateProjectInfo, treeView, _1);
+        }
     }
     return true;
 }

@@ -140,7 +140,7 @@ void TargetsManager::readTargets(const QString &buildDirectory, const QString &w
         exeTargetSelected = exeTargets.front();
     }
 
-    emit initialized();
+    emit initialized(workspaceDirectory);
 }
 
 const QStringList TargetsManager::getTargetNamesList() const

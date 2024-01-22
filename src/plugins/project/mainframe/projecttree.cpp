@@ -76,7 +76,7 @@ ProjectTree::ProjectTree(QWidget *parent)
 
     // 双击操作
     QObject::connect(this, &ProjectTree::doubleClicked,
-                     this, &ProjectTree::doDoubleClieked);
+                     this, &ProjectTree::doDoubleClicked);
 
     d->sectionModel = new ProjectSelectionModel(d->itemModel);
     setSelectionModel(d->sectionModel);
@@ -286,6 +286,19 @@ ProjectInfo ProjectTree::getActiveProjectInfo() const
     return projectInfo;
 }
 
+bool ProjectTree::updateProjectInfo(ProjectInfo &projectInfo)
+{
+    for (int row = 0; row < d->itemModel->rowCount(); row++) {
+        QModelIndex modelIndex = d->itemModel->index(row, 0);
+        ProjectInfo innerInfo = ProjectInfo::get(modelIndex);
+        if (projectInfo.isSame(innerInfo)) {
+            ProjectInfo::set(d->itemModel->itemFromIndex(modelIndex), projectInfo);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool ProjectTree::hasProjectInfo(const ProjectInfo &info) const
 {
      ProjectInfo projectInfo = getProjectInfo(info.kitName(), info.workspaceFolder());
@@ -417,7 +430,7 @@ void ProjectTree::itemModified(QStandardItem *item, const QList<QStandardItem *>
     setUpdatesEnabled(true);
 }
 
-void ProjectTree::doDoubleClieked(const QModelIndex &index)
+void ProjectTree::doDoubleClicked(const QModelIndex &index)
 {
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
     if (info.exists() && info.isFile()) {
