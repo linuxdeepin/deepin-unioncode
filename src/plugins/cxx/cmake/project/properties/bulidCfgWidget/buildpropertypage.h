@@ -42,7 +42,6 @@ public slots:
 private:
     void setupOverviewUI();
     void initData(const dpfservice::ProjectInfo &projectInfo);
-    void initRunConfig(const QString &workDirectory, config::RunConfigure &runConfigure);
 
     BuildPropertyWidgetPrivate *const d;
 };

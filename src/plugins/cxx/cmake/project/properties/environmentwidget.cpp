@@ -13,6 +13,8 @@
 
 DWIDGET_USE_NAMESPACE
 
+const char kLoggingRules[] = "QT_LOGGING_RULES";
+
 class EnvironmentModelPrivate
 {
     friend class EnvironmentModel;
@@ -132,7 +134,8 @@ class EnvironmentWidgetPrivate
 
     QVBoxLayout *vLayout{nullptr};
     DTableView *tableView{nullptr};
-    DCheckBox *checkBox{nullptr};
+    DCheckBox *enableEnvCB{nullptr};
+    DCheckBox *enableQDebugLevelCB{nullptr};
     EnvironmentModel *model{nullptr};
 
     config::EnvironmentItem *envShadow{nullptr};
@@ -168,20 +171,33 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
 
     d->tableView->setModel(d->model);
 
-    if (!d->checkBox)
-        d->checkBox = new DCheckBox(this);
+    // add enable env check box.
+    if (!d->enableEnvCB)
+        d->enableEnvCB = new DCheckBox(this);
 
-    connect(d->checkBox, &DCheckBox::clicked, [this](){
+    connect(d->enableEnvCB, &DCheckBox::clicked, [this](){
         if (d->envShadow)
-            d->envShadow->enable = d->checkBox->isChecked();
+            d->envShadow->enable = d->enableEnvCB->isChecked();
     });
 
-    d->checkBox->setText(tr("Enable All Environment"));
-    d->checkBox->setChecked(true);
+    d->enableEnvCB->setText(tr("Enable All Environment"));
+    d->enableEnvCB->setChecked(true);
+
+    // add enable qdebug level check box.
+    if (!d->enableQDebugLevelCB)
+        d->enableQDebugLevelCB = new DCheckBox(this);
+
+    connect(d->enableQDebugLevelCB, &DCheckBox::stateChanged, this, &EnvironmentWidget::onEnableQDebugLevel);
+
+    d->enableQDebugLevelCB->setText(tr("Enable Qt Debug Level"));
+    d->enableQDebugLevelCB->setChecked(false);
+
+    // instert to layout.
     d->vLayout->setSpacing(0);
     d->vLayout->setMargin(0);
     d->vLayout->addWidget(d->tableView);
-    d->vLayout->addWidget(d->checkBox);
+    d->vLayout->addWidget(d->enableEnvCB);
+    d->vLayout->addWidget(d->enableQDebugLevelCB);
 }
 
 EnvironmentWidget::~EnvironmentWidget()
@@ -192,21 +208,32 @@ EnvironmentWidget::~EnvironmentWidget()
 
 void EnvironmentWidget::getValues(config::EnvironmentItem &env)
 {
-    env.enable = d->checkBox->isChecked();
-    env.environments = d->model->getEnvironment();
 }
 
 void EnvironmentWidget::setValues(const config::EnvironmentItem &env)
 {
-    d->checkBox->setChecked(env.enable);
+    d->enableEnvCB->setChecked(env.enable);
+    d->enableQDebugLevelCB->setChecked(env.isQDebugLevelEnable());
     d->model->update(env.environments);
 }
 
 void EnvironmentWidget::updateEnvList(config::EnvironmentItem *env)
 {
     d->envShadow = env;
-    d->checkBox->setChecked(env->enable);
+    d->enableEnvCB->setChecked(env->enable);
+    d->enableQDebugLevelCB->setChecked(env->isQDebugLevelEnable());
     d->model->update(env->environments);
+}
+
+void EnvironmentWidget::onEnableQDebugLevel()
+{
+    if (!d->envShadow)
+        return;
+
+    bool isQDebugLevelEnabled = d->enableQDebugLevelCB->isChecked();
+    d->envShadow->setQDebugLevel(isQDebugLevelEnabled);
+
+    d->model->update(d->envShadow->environments);
 }
 
 

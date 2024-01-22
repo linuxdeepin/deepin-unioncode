@@ -32,6 +32,7 @@ public:
     QList<dpfservice::ProjectInfo> getAllProjectInfo();
     dpfservice::ProjectInfo getProjectInfo(const QString &kitName, const QString &workspace) const;
     dpfservice::ProjectInfo getActiveProjectInfo() const;
+    bool updateProjectInfo(dpfservice::ProjectInfo &projectInfo);
     bool hasProjectInfo(const dpfservice::ProjectInfo &info) const;
 
 Q_SIGNALS:
@@ -52,7 +53,7 @@ public slots:
 
 private slots:
     void doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event);
-    void doDoubleClieked(const QModelIndex &index);
+    void doDoubleClicked(const QModelIndex &index);
     void doCloseProject(QStandardItem *root);
     void doShowProjectInfo(QStandardItem *root);
     void doActiveProject(QStandardItem *root);
