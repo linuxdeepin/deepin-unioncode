@@ -149,6 +149,12 @@ public:
      */
     DPF_INTERFACE(dpfservice::ProjectInfo, getProjectInfo, const QString &kitName, const QString &workspace);
 
+    /*!
+     * \brief updateProjectInfo
+     * \param projectInfo
+     */
+    DPF_INTERFACE(bool, updateProjectInfo, ProjectInfo &projectInfo);
+
     /**
      * @brief getActiveProjectInfo
      */

@@ -28,7 +28,7 @@ class RunPropertyWidgetPrivate
     DComboBox *exeComboBox{nullptr};
     RunConfigPane *runConfigPane{nullptr};
 
-    QVector<TargetRunConfigure> targetsRunParams;
+    QVector<TargetRunConfigure> targetsRunConfigure;
     QStandardItem *item{nullptr};
     dpfservice::ProjectInfo projectInfo;
 };
@@ -58,8 +58,8 @@ void RunPropertyPage::setupUi()
     d->exeComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     d->exeComboBox->setFixedWidth(220);
     QObject::connect(d->exeComboBox, QOverload<int>::of(&DComboBox::currentIndexChanged), [=](int index){
-        if (index >= 0 && index < d->targetsRunParams.count()) {
-            d->runConfigPane->setTargetRunParam(&d->targetsRunParams[index]);
+        if (index >= 0 && index < d->targetsRunConfigure.count()) {
+            d->runConfigPane->setTargetRunParam(&d->targetsRunConfigure[index]);
         }
     });
 
@@ -78,10 +78,10 @@ void RunPropertyPage::updateData()
     ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
     for (auto iter = param->buildTypeConfigures.begin(); iter != param->buildTypeConfigures.end(); ++iter) {
         if (param->tempSelType == iter->type) {
-            d->targetsRunParams = iter->runConfigure.targetsParams;
-            auto iterExe = d->targetsRunParams.begin();
+            d->targetsRunConfigure = iter->runConfigure.targetsRunConfigure;
+            auto iterExe = d->targetsRunConfigure.begin();
             int index = 0;
-            for (; iterExe != d->targetsRunParams.end(); ++iterExe, index++) {
+            for (; iterExe != d->targetsRunConfigure.end(); ++iterExe, index++) {
                 d->exeComboBox->insertItem(index, iterExe->targetName);
                 if (iter->runConfigure.defaultTargetName == iterExe->targetName) {
                     d->exeComboBox->setCurrentIndex(index);
@@ -104,7 +104,7 @@ void RunPropertyPage::saveConfig()
     auto iter = param->buildTypeConfigures.begin();
     for (; iter != param->buildTypeConfigures.end(); ++iter) {
         if (param->defaultType == iter->type) {
-            iter->runConfigure.targetsParams = d->targetsRunParams;
+            iter->runConfigure.targetsRunConfigure = d->targetsRunConfigure;
             iter->runConfigure.defaultTargetName = d->exeComboBox->currentText();
         }
     }

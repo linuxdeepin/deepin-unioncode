@@ -35,7 +35,7 @@ public:
     QString getCMakeConfigFile();
 
 signals:
-    void initialized();
+    void initialized(const QString& workspace);
 
 public slots:
 

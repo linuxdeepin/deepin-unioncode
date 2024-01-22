@@ -7,6 +7,7 @@
 
 #include "services/project/projectservice.h"
 #include "services/builder/builderservice.h"
+#include "configutil.h"
 
 #include <QObject>
 #include <QDomDocument>
@@ -37,8 +38,10 @@ private slots:
     void runCMake(QStandardItem *root, const QPair<QString, QStringList> &files);
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
     void recursionRemoveItem(QStandardItem *item);
+    void targetInitialized(const QString& workspace);
 
 private:
+    void createTargetsRunConfigure(const QString &workDirectory, config::RunConfigure &runConfigure);
     void createBuildMenu(QMenu *menu);
 
     QMutex mutex;
