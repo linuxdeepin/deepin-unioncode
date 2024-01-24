@@ -52,6 +52,5 @@ bool Collaborators::start()
 
 dpf::Plugin::ShutdownFlag Collaborators::stop()
 {
-    delete CVSkeeper::instance();
     return Sync;
 }
