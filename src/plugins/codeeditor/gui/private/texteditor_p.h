@@ -38,7 +38,7 @@ public:
     void updateColorTheme();
     void updateSettings();
 
-    void loadDefaultLexer();
+    void loadLexer();
 
     int cursorPosition() const;
     int marginsWidth();
@@ -50,6 +50,9 @@ public:
 
     void gotoNextMark(uint mask);
     void gotoPreviousMark(uint mask);
+
+public:
+    void onThemeTypeChanged();
 
 public:
     TextEditor *q { nullptr };

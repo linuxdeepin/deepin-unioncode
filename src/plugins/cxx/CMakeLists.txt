@@ -11,6 +11,8 @@ FILE(GLOB PROJECT_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/lexer/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/lexer/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ninja/builder/mainframe/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/ninja/builder/mainframe/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/ninja/project/*.h"

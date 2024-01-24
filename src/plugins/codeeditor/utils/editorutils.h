@@ -5,12 +5,9 @@
 #ifndef EDITORUTILS_H
 #define EDITORUTILS_H
 
-#include <Qsci/qscilexer.h>
-
 class EditorUtils
 {
 public:
-    static QsciLexer *defaultLexer(const QString &fileName);
     static int nbDigitsFromNbLines(long nbLines);
 };
 

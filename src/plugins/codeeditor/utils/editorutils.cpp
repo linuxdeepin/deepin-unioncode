@@ -3,33 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "editorutils.h"
-#include "defaultlexer.h"
 #include "common/common.h"
-
-QsciLexer *EditorUtils::defaultLexer(const QString &fileName)
-{
-    using namespace support_file;
-    auto id = Language::id(fileName);
-
-    QsciLexer *lexer { nullptr };
-    if (id.compare("cpp", Qt::CaseInsensitive) == 0) {
-        lexer = new QsciLexerCPP();
-    } else if (id.compare("java", Qt::CaseInsensitive) == 0) {
-        lexer = new QsciLexerJava();
-    } else if (id.compare("cmake", Qt::CaseInsensitive) == 0) {
-        lexer = new QsciLexerCMake();
-    } else if (id.compare("json", Qt::CaseInsensitive) == 0) {
-        lexer = new QsciLexerJSON();
-    } else if (id.compare("xml", Qt::CaseInsensitive) == 0) {
-        lexer = new QsciLexerXML();
-    } else if (id.compare("python", Qt::CaseInsensitive) == 0) {
-        lexer = new QsciLexerPython();
-    } else if (id.compare("js", Qt::CaseInsensitive) == 0) {
-        lexer = new QsciLexerJavaScript();
-    }
-
-    return lexer;
-}
 
 int EditorUtils::nbDigitsFromNbLines(long nbLines)
 {

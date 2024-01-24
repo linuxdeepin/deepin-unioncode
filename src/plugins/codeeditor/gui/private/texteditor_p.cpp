@@ -5,6 +5,8 @@
 #include "texteditor_p.h"
 #include "utils/editorutils.h"
 #include "utils/colordefine.h"
+#include "lexer/lexermanager.h"
+#include "common/common.h"
 
 #include <Qsci/qsciapis.h>
 
@@ -40,7 +42,7 @@ void TextEditorPrivate::init()
 
 void TextEditorPrivate::initConnection()
 {
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::updateColorTheme);
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::onThemeTypeChanged);
 
     connect(q, SIGNAL(SCN_ZOOM()), q, SIGNAL(zoomValueChanged()));
 }
@@ -109,7 +111,7 @@ void TextEditorPrivate::updateColorTheme()
 
 void TextEditorPrivate::updateSettings()
 {
-    QFont font(DEFAULT_FONT_NAME, 11, QFont::Normal);
+    QFont font(DEFAULT_FONT_NAME, 10, QFont::Normal);
     q->setFont(font);
     q->setMarginsFont(font);
 
@@ -130,15 +132,15 @@ void TextEditorPrivate::updateSettings()
     q->setScrollWidthTracking(true);
 }
 
-void TextEditorPrivate::loadDefaultLexer()
+void TextEditorPrivate::loadLexer()
 {
     if (fileName.isEmpty())
         return;
 
-    if (auto lexer = EditorUtils::defaultLexer(fileName)) {
+    using namespace support_file;
+    auto id = Language::id(fileName);
+    if (auto lexer = LexerManager::instance()->createSciLexer(id, fileName)) {
         lexer->setParent(q);
-        QFont font(DEFAULT_FONT_NAME, 11, QFont::Normal);
-        lexer->setDefaultFont(font);
         q->setLexer(lexer);
         setMarginVisible(FoldingMargin, true);
     } else {
@@ -271,4 +273,10 @@ void TextEditorPrivate::gotoPreviousMark(uint mask)
 
     if (-1 != newLine)
         q->gotoLine(newLine);
+}
+
+void TextEditorPrivate::onThemeTypeChanged()
+{
+    updateColorTheme();
+    // TODO: change lexer theme
 }
