@@ -21,6 +21,8 @@ public:
 
 private:
     void initActions();
+    void initEditorService();
+    void initWindowService();
 };
 
 #endif   // COREPLUGIN_H

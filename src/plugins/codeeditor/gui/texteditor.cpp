@@ -47,7 +47,7 @@ void TextEditor::setFile(const QString &fileName)
 
     setText(text.toUtf8());
     editor.fileOpened(fileName);
-    d->loadDefaultLexer();
+    d->loadLexer();
 }
 
 QString TextEditor::getFile() const

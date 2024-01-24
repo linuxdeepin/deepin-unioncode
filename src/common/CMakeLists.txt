@@ -45,6 +45,7 @@ set(CXX_H
     util/downloadutil.h
     util/environment.h
     util/commandparser.h
+    util/themeparser.h
     supportfile/editorstyle.h
     supportfile/language.h
     supportfile/windowstyle.h
@@ -98,6 +99,7 @@ set(CXX_CPP
     util/downloadutil.cpp
     util/environment.cpp
     util/commandparser.cpp
+    util/themeparser.cpp
     supportfile/language.cpp
     supportfile/editorstyle.cpp
     supportfile/windowstyle.cpp

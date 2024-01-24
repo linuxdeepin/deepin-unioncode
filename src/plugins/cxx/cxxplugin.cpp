@@ -13,10 +13,12 @@
 #include "ninja/project/ninjaprojectgenerator.h"
 #include "ninja/builder/mainframe/ninjabuildergenerator.h"
 #include "ninja/option/optionninjagenerator.h"
+#include "lexer/scilexercpp.h"
 
 #include "services/language/languageservice.h"
 #include "services/project/projectservice.h"
 #include "services/option/optionservice.h"
+#include "services/editor/editorservice.h"
 
 using namespace dpfservice;
 
@@ -88,6 +90,8 @@ bool CxxPlugin::start()
             builderService->create<NinjaBuilderGenerator>(NinjaBuilderGenerator::toolKitName(), &errorString);
         }
     }
+    registEditorService();
+
     return true;
 }
 
@@ -96,4 +100,13 @@ dpf::Plugin::ShutdownFlag CxxPlugin::stop()
     return Sync;
 }
 
+void CxxPlugin::registEditorService()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    EditorService *editorSvc = ctx.service<EditorService>(EditorService::name());
+    if (!editorSvc)
+        return;
 
+    SciLexerCPP *lexerCpp = new SciLexerCPP;
+    editorSvc->registSciLexerProxy(lexerCpp->language(), lexerCpp);
+}

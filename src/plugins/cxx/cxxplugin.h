@@ -8,7 +8,7 @@
 #include <framework/framework.h>
 
 namespace dpfservice {
-    class WindowService;
+class WindowService;
 }
 
 class CxxPlugin : public dpf::Plugin
@@ -20,10 +20,11 @@ public:
     virtual bool start() override;
     virtual dpf::Plugin::ShutdownFlag stop() override;
 
-signals:
+private:
+    void registEditorService();
 
 private:
     dpfservice::WindowService *windowService = nullptr;
 };
 
-#endif // CXXPLUGIN_H
+#endif   // CXXPLUGIN_H
