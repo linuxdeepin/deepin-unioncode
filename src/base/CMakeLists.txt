@@ -5,6 +5,7 @@ set(CXX_H
     abstractaction.h
     abstractwidget.h
     abstractdebugger.h
+    abstractlexerproxy.h
     )
 
 set(CXX_CPP
@@ -12,6 +13,7 @@ set(CXX_CPP
     abstractaction.cpp
     abstractwidget.cpp
     abstractdebugger.cpp
+    abstractlexerproxy.cpp
     )
 
 add_library(

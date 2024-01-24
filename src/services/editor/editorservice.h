@@ -7,6 +7,7 @@
 
 #include <framework/framework.h>
 #include "base/abstractdebugger.h"
+#include "base/abstractlexerproxy.h"
 
 namespace dpfservice {
 
@@ -35,6 +36,8 @@ public:
     DPF_INTERFACE(void, insertText, const QString &);
     DPF_INTERFACE(void, showTips, const QString &tips);
     DPF_INTERFACE(void, undo);
+
+    DPF_INTERFACE(void, registSciLexerProxy, const QString &language, AbstractLexerProxy *proxy);
 };
 
 } // namespace dpfservice
