@@ -44,6 +44,5 @@ bool Recent::start()
 
 dpf::Plugin::ShutdownFlag Recent::stop()
 {
-    delete RecentDisplay::instance();
     return Sync;
 }
