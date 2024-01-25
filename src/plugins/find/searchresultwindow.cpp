@@ -46,7 +46,7 @@ SearchResultTreeView::SearchResultTreeView(QWidget *parent)
 
         foreach (QString key, d->projectInfoMap.keys()) {
             if (filePath.contains(key, Qt::CaseInsensitive)) {
-                editor.jumpToLineWithKey(key, d->projectInfoMap.value(key), filePath, lineNumber);
+                editor.gotoLine(filePath, lineNumber);
                 break;
             }
         }

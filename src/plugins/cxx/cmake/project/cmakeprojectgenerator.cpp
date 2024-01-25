@@ -290,7 +290,7 @@ void CmakeProjectGenerator::createDocument(const QStandardItem *item, const QStr
                 break;
             filePathTmp.remove(QDir::separator() + filePathList[i]);
         }
-        editor.openFileWithKey(workspace, language, cmakeFilePath);
+        editor.openFile(workspace, cmakeFilePath);
     });
     dlg->exec();
 }

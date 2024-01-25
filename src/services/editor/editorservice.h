@@ -31,7 +31,7 @@ public:
 
     DPF_INTERFACE(QString, getSelectedText);
     DPF_INTERFACE(QString, getCursorBeforeText);
-    DPF_INTERFACE(QString, getCursorAfterText);
+    DPF_INTERFACE(QString, getCursorBehindText);
     DPF_INTERFACE(void, replaceSelectedText, const QString &);
     DPF_INTERFACE(void, insertText, const QString &);
     DPF_INTERFACE(void, showTips, const QString &tips);

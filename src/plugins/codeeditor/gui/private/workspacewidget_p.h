@@ -8,6 +8,8 @@
 #include "gui/workspacewidget.h"
 #include "gui/tabwidget.h"
 
+#include "common/util/eventdefinitions.h"
+
 class WorkspaceWidgetPrivate : public QObject
 {
     Q_OBJECT
@@ -24,15 +26,17 @@ public:
 public:
     void onSplitRequested(Qt::Orientation ori, const QString &fileName);
     void onCloseRequested();
-    void handleOpenFile(const QString &fileName);
+    void onFocusChanged(QWidget *old, QWidget *now);
+    void onZoomValueChanged();
+
+    void handleOpenFile(const QString &workspace, const QString &fileName);
     void handleAddBreakpoint(const QString &fileName, int line);
     void handleRemoveBreakpoint(const QString &fileName, int line);
     void handleBack();
     void handleForward();
     void handleSetDebugLine(const QString &fileName, int line);
     void handleRemoveDebugLine();
-    void onFocusChanged(QWidget *old, QWidget *now);
-    void onZoomValueChanged();
+    void handleGotoLine(const QString &fileName, int line);
 
 public:
     WorkspaceWidget *q;

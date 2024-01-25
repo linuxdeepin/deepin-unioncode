@@ -6,6 +6,7 @@
 #include "utils/editorutils.h"
 #include "utils/colordefine.h"
 #include "lexer/lexermanager.h"
+#include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
 
 #include <Qsci/qsciapis.h>
@@ -43,8 +44,9 @@ void TextEditorPrivate::init()
 void TextEditorPrivate::initConnection()
 {
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::onThemeTypeChanged);
-
     connect(q, SIGNAL(SCN_ZOOM()), q, SIGNAL(zoomValueChanged()));
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSearch, this, &TextEditorPrivate::handleSearch);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqReplace, this, &TextEditorPrivate::handleReplace);
 }
 
 void TextEditorPrivate::initMargins()
@@ -65,9 +67,8 @@ void TextEditorPrivate::initMargins()
                                    | 1 << BreakpointDisabled
                                    | 1 << Bookmark
                                    | 1 << Runtime
-                                   | 1 << RuntimeLine
-                                   | 1 << Warning
-                                   | 1 << Error);
+                                   | 1 << RuntimeLineBackground
+                                   | 1 << CustomLineBackground);
 
     // TODO: using picture to replace?
     q->markerDefine(TextEditor::Circle, Breakpoint);
@@ -81,9 +82,11 @@ void TextEditorPrivate::initMargins()
     q->setMarkerForegroundColor(EditorColor::Table::get()->YellowGreen, Runtime);
     q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, Runtime);
 
-    q->markerDefine(TextEditor::Background, RuntimeLine);
-    q->setMarkerForegroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLine);
-    q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLine);
+    q->markerDefine(TextEditor::Background, RuntimeLineBackground);
+    q->setMarkerForegroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLineBackground);
+    q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLineBackground);
+
+    q->markerDefine(TextEditor::Background, CustomLineBackground);
 }
 
 void TextEditorPrivate::updateColorTheme()
@@ -275,8 +278,54 @@ void TextEditorPrivate::gotoPreviousMark(uint mask)
         q->gotoLine(newLine);
 }
 
+bool TextEditorPrivate::doFind(const QString &keyword, bool isForward)
+{
+    int line = 0, index = 0;
+    q->getCursorPosition(&line, &index);
+    // For forward search, 'index' needs to subtract the length of 'keyword',
+    // otherwise it cannot jump to the previous one
+    if (!isForward)
+        index -= keyword.length();
+
+    return q->findFirst(keyword, false, false, false, true, isForward, line, index);
+}
+
 void TextEditorPrivate::onThemeTypeChanged()
 {
     updateColorTheme();
     // TODO: change lexer theme
+}
+
+void TextEditorPrivate::handleSearch(const QString &keyword, int operateType)
+{
+    switch (operateType) {
+    case FindType::Previous:
+        doFind(keyword, false);
+        break;
+    case FindType::Next:
+        doFind(keyword, true);
+        break;
+    }
+}
+
+void TextEditorPrivate::handleReplace(const QString &srcText, const QString &destText, int operateType)
+{
+    switch (operateType) {
+    case RepalceType::Repalce: {
+        const auto &selectedText = q->selectedText();
+        if (selectedText.compare(srcText, Qt::CaseInsensitive) == 0)
+            q->replaceSelectedText(destText);
+    } break;
+    case RepalceType::FindAndReplace: {
+        const auto &selectedText = q->selectedText();
+        if (selectedText.compare(srcText, Qt::CaseInsensitive) == 0)
+            q->replaceSelectedText(destText);
+        doFind(srcText, true);
+    } break;
+    case RepalceType::RepalceAll: {
+        while (doFind(srcText, true)) {
+            q->replace(destText);
+        }
+    } break;
+    }
 }

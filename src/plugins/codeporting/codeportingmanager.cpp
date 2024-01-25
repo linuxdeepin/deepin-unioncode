@@ -92,7 +92,7 @@ void CodePortingManager::slotSelectedChanged(const QString &filePath, const QStr
     QColor backgroundColor(Qt::red);
     backgroundColor.setAlpha(100);
     for (int lineNumber = startLineInEditor; lineNumber <= endLineInEditor; ++lineNumber) {
-        editor.setLineBackground(filePath, lineNumber, backgroundColor);
+        editor.setLineBackgroundColor(filePath, lineNumber, backgroundColor);
     }
 }
 

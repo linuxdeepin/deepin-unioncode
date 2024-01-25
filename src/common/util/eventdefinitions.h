@@ -33,24 +33,23 @@ OPI_OBJECT(debugger,
 
 OPI_OBJECT(editor,
            // in
-           OPI_INTERFACE(openFile, "filePath")
+           OPI_INTERFACE(openFile, "workspace", "filePath")
            OPI_INTERFACE(back)
            OPI_INTERFACE(forward)
            OPI_INTERFACE(gotoLine, "filePath", "line")
 
-           OPI_INTERFACE(openFileWithKey, "workspace", "language", "filePath")
-           OPI_INTERFACE(jumpToLineWithKey, "workspace", "language", "filePath", "line")
            // (AnnotationInfo)annInfo
            OPI_INTERFACE(setAnnotation, "filePath", "line", "title", "annInfo")
-           OPI_INTERFACE(cleanAnnotation, "filePath", "title")
+           OPI_INTERFACE(resetAnnotation, "filePath", "title")
            OPI_INTERFACE(setDebugLine, "filePath", "line")
            OPI_INTERFACE(removeDebugLine)
-           OPI_INTERFACE(setLineBackground, "filePath", "line", "color")
-           OPI_INTERFACE(deleteLineBackground, "filePath", "line")
-           OPI_INTERFACE(cleanLineBackground, "filePath")
+           OPI_INTERFACE(setLineBackgroundColor, "filePath", "line", "color")
+           OPI_INTERFACE(resetLineBackgroundColor, "filePath", "line")
+           OPI_INTERFACE(clearLineBackgroundColor, "filePath")
            OPI_INTERFACE(setModifiedAutoReload, "filePath", "flag")
            OPI_INTERFACE(addBreakpoint, "filePath", "line")
            OPI_INTERFACE(removeBreakpoint, "filePath", "line")
+           OPI_INTERFACE(clearAllBreakpoint)
            // (FindType)findType
            OPI_INTERFACE(searchText, "text", "findType")
            // (FindType)repalceType
@@ -61,7 +60,6 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(switchedFile, "filePath")
            OPI_INTERFACE(breakpointAdded, "filePath", "line")
            OPI_INTERFACE(breakpointRemoved, "filePath", "line")
-
            OPI_INTERFACE(contextMenu, "menu")
            OPI_INTERFACE(marginMenu, "menu")
            OPI_INTERFACE(keyPressEvent, "event")

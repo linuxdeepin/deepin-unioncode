@@ -47,6 +47,10 @@ public:
     void gotoLine(int line);
     void gotoPosition(int pos);
     int cursorPosition();
+    void setLineBackgroundColor(int line, const QColor &color);
+    void resetLineBackgroundColor(int line);
+    void clearLineBackgroundColor();
+    void showTips(const QString &tips);
 
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
