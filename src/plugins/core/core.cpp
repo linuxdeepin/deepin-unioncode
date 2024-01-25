@@ -41,6 +41,5 @@ bool Core::start()
 
 dpf::Plugin::ShutdownFlag Core::stop()
 {
-    delete Controller::instance();
     return Sync;
 }

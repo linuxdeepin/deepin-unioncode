@@ -77,6 +77,8 @@ class ControllerPrivate
     QString currentPlugin { "" };   //navigation - widget
     View *currentView { nullptr };
 
+    QStringList validModeList { CM_EDIT, CM_DEBUG, CM_RECENT};
+    QMap<QString, QString> modePluginMap{ {CM_EDIT, MWNA_EDIT}, {CM_RECENT, MWNA_RECENT}, {CM_DEBUG, MWNA_DEBUG} };
     QString mode { "" };   //mode: CM_EDIT/CM_DEBUG/CM_RECENT
     QMap<QString, QList<WidgetInfo>> modeInfo;
 
@@ -216,16 +218,15 @@ Controller::~Controller()
 {
     if (d->mainWindow)
         delete d->mainWindow;
-    foreach (auto view, d->viewList.values()) {
+    foreach (auto view, d->viewList.values())
         delete view;
-    }
     if (d)
         delete d;
 }
 
 void Controller::raiseMode(const QString &mode)
 {
-    if (mode != CM_EDIT && mode != CM_DEBUG && mode != CM_RECENT) {
+    if (!d->validModeList.contains(mode)) {
         qWarning() << "mode can only choose CM_RECENT / CM_EDIT / CM_DEBUG";
         return;
     }
@@ -363,14 +364,11 @@ void Controller::insertWidget(const QString &name, AbstractWidget *abstractWidge
 
 void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstractWidget, const QString &mode, Position pos, bool replace, bool isVisible)
 {
-    if (mode == CM_EDIT)
-        setCurrentPlugin(MWNA_EDIT);
-    else if (mode == CM_DEBUG)
-        setCurrentPlugin(MWNA_DEBUG);
-    else if (mode == CM_RECENT)
-        setCurrentPlugin(MWNA_RECENT);
-    else
+    if (!d->validModeList.contains(mode)) {
+        qWarning() << "mode can only choose CM_RECENT / CM_EDIT / CM_DEBUG";
         return;
+    }
+    setCurrentPlugin(d->modePluginMap.value(mode));
 
     DWidget *qWidget = static_cast<DWidget *>(abstractWidget->qWidget());
 
@@ -448,12 +446,8 @@ void Controller::switchWidgetNavigation(const QString &navName)
 
     d->mainWindow->clearTopTollBar();
     setCurrentPlugin(navName);
-    if (navName == MWNA_RECENT)
-        raiseMode(CM_RECENT);
-    else if (navName == MWNA_EDIT)
-        raiseMode(CM_EDIT);
-    else if (navName == MWNA_DEBUG)
-        raiseMode(CM_DEBUG);
+    if(d->modePluginMap.values().contains(navName))
+        raiseMode(d->modePluginMap.key(navName));
     else
         raiseView(navName);
 }
