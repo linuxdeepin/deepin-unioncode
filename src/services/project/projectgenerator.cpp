@@ -227,7 +227,7 @@ void dpfservice::ProjectGenerator::createDocument(const QStandardItem *item, con
         file.close();
     }
 
-    editor.openFileWithKey(workspace, language, filePath);
+    editor.openFile(workspace, filePath);
 }
 
 /*!

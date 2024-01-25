@@ -19,6 +19,9 @@ public:
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
     void replaceSelectedText(const QString &text);
+    void showTips(const QString &tips);
+    void insertText(const QString &text);
+    void undo();
 
 private:
     QSharedPointer<WorkspaceWidgetPrivate> d { nullptr };

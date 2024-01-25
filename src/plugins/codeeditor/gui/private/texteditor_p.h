@@ -23,11 +23,8 @@ public:
         BreakpointDisabled,
         Bookmark,
         Runtime,
-        RuntimeLine,
-        Warning,
-        Error,
-        ChangeUnsaved,
-        ChangeSaved
+        RuntimeLineBackground,
+        CustomLineBackground
     };
 
     explicit TextEditorPrivate(TextEditor *qq);
@@ -50,9 +47,12 @@ public:
 
     void gotoNextMark(uint mask);
     void gotoPreviousMark(uint mask);
+    bool doFind(const QString &keyword, bool isForward);
 
-public:
+public slots:
     void onThemeTypeChanged();
+    void handleSearch(const QString &keyword, int operateType);
+    void handleReplace(const QString &srcText, const QString &destText, int operateType);
 
 public:
     TextEditor *q { nullptr };

@@ -8,31 +8,67 @@
 #include "common/common.h"
 #include "framework.h"
 
-class CodeEditorReceiver: public dpf::EventHandler, dpf::AutoEventHandlerRegister<CodeEditorReceiver>
+class CodeEditorReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<CodeEditorReceiver>
 {
     friend class dpf::AutoEventHandlerRegister<CodeEditorReceiver>;
+
 public:
-    explicit CodeEditorReceiver(QObject * parent = nullptr);
+    explicit CodeEditorReceiver(QObject *parent = nullptr);
     static Type type();
     static QStringList topics();
-    virtual void eventProcess(const dpf::Event& event) override;
+    virtual void eventProcess(const dpf::Event &event) override;
+
+private:
+    void processOpenFileEvent(const dpf::Event &event);
+    void processSearchEvent(const dpf::Event &event);
+    void processReplaceEvent(const dpf::Event &event);
+    void processBackEvent(const dpf::Event &event);
+    void processForwardEvent(const dpf::Event &event);
+    void processGotoLineEvent(const dpf::Event &event);
+    void processSetLineBackgroundColorEvent(const dpf::Event &event);
+    void processResetLineBackgroundEvent(const dpf::Event &event);
+    void processClearLineBackgroundEvent(const dpf::Event &event);
+
+    // annotation
+    void processSetAnnotationEvent(const dpf::Event &event);
+    void processResetAnnotationEvent(const dpf::Event &event);
+    void processClearAllAnnotationEvent(const dpf::Event &event);
+
+    // debug
+    void processAddBreakpointEvent(const dpf::Event &event);
+    void processRemoveBreakpointEvent(const dpf::Event &event);
+    void processClearAllBreakpointsEvent(const dpf::Event &event);
+    void processSetDebugLineEvent(const dpf::Event &event);
+    void processRemoveDebugLineEvent(const dpf::Event &event);
+
+private:
+    QHash<QString, std::function<void(const dpf::Event &)>> eventHandleMap;
 };
 
 class EditorCallProxy : public QObject
 {
     Q_OBJECT
-    EditorCallProxy(const EditorCallProxy&) = delete;
+    EditorCallProxy(const EditorCallProxy &) = delete;
     EditorCallProxy();
 
 public:
-    static EditorCallProxy* instance();
+    static EditorCallProxy *instance();
 
 signals:
-    void reqOpenFile(const QString &fileName);
+    void reqOpenFile(const QString &workspace, const QString &fileName);
     void reqSearch(const QString &keyword, int operateType);
     void reqReplace(const QString &srcText, const QString &destText, int operateType);
     void reqBack();
     void reqForward();
+    void reqGotoLine(const QString &fileName, int line);
+    void reqSetLineBackgroundColor(const QString &fileName, int line, const QColor &color);
+    void reqResetLineBackground(const QString &fileName, int line);
+    void reqClearLineBackground(const QString &fileName);
+
+    // annotation
+    void reqSetAnnotation(const QString &fileName, int line, const QString &title, const AnnotationInfo &info);
+    void reqResetAnnotation(const QString &fileName, const QString &title);
+    void reqClearAllAnnotation(const QString &title);
 
     // debug
     void reqAddBreakpoint(const QString &fileName, int line);
@@ -40,26 +76,6 @@ signals:
     void reqClearAllBreakpoints();
     void reqSetDebugLine(const QString &fileName, int line);
     void reqRemoveDebugLine();
-
-    void toOpenFile(const QString &filePath);
-    void toRunClean();
-    void toDebugPointClean();
-    void toSearchText(const QString &srcText, int operateType);
-    void toReplaceText(const QString &srcText, const QString &destText, int operateType);
-    void toOpenFileWithKey(const newlsp::ProjectKey &key, const QString &filePath);
-    void toRunFileLineWithKey(const newlsp::ProjectKey &key, const QString &filePath, int line);
-    void toJumpFileLineWithKey(const newlsp::ProjectKey &key, const QString &filePath, int line);
-    void toSetLineBackground(const QString &filePath, int line, const QColor &color);
-    void toDelLineBackground(const QString &filePath, int line);
-    void toCleanLineBackground(const QString &filePath);
-    void toSetAnnotation(const QString &filePath, int line, const QString &title, const AnnotationInfo &info);
-    void toCleanAnnotation(const QString &filePath, const QString &title);
-    void toCleanAllAnnotation(const QString &title);
-    void toSwitchContext(const QString &name);
-    void toSwitchWorkspace(const QString &name);
-    void toSetModifiedAutoReload(const QString filePath, bool flag);
-    void toAddDebugPoint(const QString &filePath, int line);
-    void toRemoveDebugPoint(const QString &filePath, int line);
 };
 
-#endif // CODEEDITORRECEIVER_H
+#endif   // CODEEDITORRECEIVER_H

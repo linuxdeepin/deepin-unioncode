@@ -22,6 +22,9 @@ public:
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
     void replaceSelectedText(const QString &text);
+    void showTips(const QString &tips);
+    void insertText(const QString &text);
+    void undo();
     void gotoNextPosition();
     void gotoPreviousPosition();
 
@@ -42,6 +45,7 @@ public slots:
     void openFile(const QString &fileName);
     void setDebugLine(int line);
     void removeDebugLine();
+    void gotoLine(int line);
 
 signals:
     void closeRequested();

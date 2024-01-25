@@ -9,6 +9,8 @@
 #include "gui/tabbar.h"
 #include "gui/texteditor.h"
 
+#include "common/util/eventdefinitions.h"
+
 #include <QStackedLayout>
 
 class TabWidgetPrivate : public QObject
@@ -41,6 +43,12 @@ public slots:
     void onSpliterClicked(Qt::Orientation ori);
     void onLinePositionChanged(int line, int index);
     void onFileChanged(const QString &fileName);
+    void handleSetAnnotation(const QString &fileName, int line, const QString &title, const AnnotationInfo &info);
+    void handleResetAnnotation(const QString &fileName, const QString &title);
+    void handleClearAllAnnotation(const QString &title);
+    void handleSetLineBackgroundColor(const QString &fileName, int line, const QColor &color);
+    void handleResetLineBackground(const QString &fileName, int line);
+    void handleClearLineBackground(const QString &fileName);
 
 public:
     TabWidget *q;

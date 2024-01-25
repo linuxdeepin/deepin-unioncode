@@ -147,7 +147,7 @@ void Copilot::addComment()
 void Copilot::generateCode()
 {
     QString prompt = editorService->getCursorBeforeText();
-    QString suffix = editorService->getCursorAfterText();
+    QString suffix = editorService->getCursorBehindText();
 
     copilotApi.postGenerate(kUrlGenerateMultiLine,
                             apiKey(),

@@ -148,16 +148,15 @@ void TextEditor::setDebugLine(int line)
 {
     removeDebugLine();
 
-    int lineOffset = line - 1;
-    gotoLine(lineOffset);
-    markerAdd(lineOffset, TextEditorPrivate::Runtime);
-    markerAdd(lineOffset, TextEditorPrivate::RuntimeLine);
+    gotoLine(line);
+    markerAdd(line, TextEditorPrivate::Runtime);
+    markerAdd(line, TextEditorPrivate::RuntimeLineBackground);
 }
 
 void TextEditor::removeDebugLine()
 {
     markerDeleteAll(TextEditorPrivate::Runtime);
-    markerDeleteAll(TextEditorPrivate::RuntimeLine);
+    markerDeleteAll(TextEditorPrivate::RuntimeLineBackground);
 }
 
 void TextEditor::addBookmark(int line)
@@ -213,6 +212,29 @@ void TextEditor::gotoPosition(int pos)
 int TextEditor::cursorPosition()
 {
     return d->lastCursorPos;
+}
+
+void TextEditor::setLineBackgroundColor(int line, const QColor &color)
+{
+    markerAdd(line, TextEditorPrivate::CustomLineBackground);
+    setMarkerBackgroundColor(color, TextEditorPrivate::CustomLineBackground);
+}
+
+void TextEditor::resetLineBackgroundColor(int line)
+{
+    markerDelete(line, TextEditorPrivate::CustomLineBackground);
+}
+
+void TextEditor::clearLineBackgroundColor()
+{
+    markerDeleteAll(TextEditorPrivate::CustomLineBackground);
+}
+
+void TextEditor::showTips(const QString &tips)
+{
+    int pos = d->cursorPosition();
+    auto data = tips.toLocal8Bit();
+    SendScintilla(SCI_CALLTIPSHOW, static_cast<uintptr_t>(pos), data.data());
 }
 
 QString TextEditor::cursorBeforeText() const

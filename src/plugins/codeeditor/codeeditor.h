@@ -10,6 +10,7 @@
 class QTabWidget;
 class AbstractWidget;
 class QSplitter;
+class WorkspaceWidget;
 class CodeEditor : public dpf::Plugin
 {
     Q_OBJECT
@@ -23,6 +24,9 @@ private:
     void initActions();
     void initEditorService();
     void initWindowService();
+
+private:
+    WorkspaceWidget *workspaceWidget {nullptr};
 };
 
 #endif   // COREPLUGIN_H
