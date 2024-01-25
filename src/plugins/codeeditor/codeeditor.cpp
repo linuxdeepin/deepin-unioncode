@@ -22,6 +22,7 @@
 #include <QSplitter>
 
 using namespace dpfservice;
+using namespace std::placeholders;
 
 const QString SAVE_ALL_DOCUMENTS = CodeEditor::tr("Save All Documents");
 const QString CLOSE_ALL_DOCUMENTS = CodeEditor::tr("Close All Documents");
@@ -43,8 +44,8 @@ bool CodeEditor::start()
 {
     qInfo() << __FUNCTION__;
 
-    initActions();
     initWindowService();
+    initActions();
     initEditorService();
 
     return true;
@@ -92,29 +93,14 @@ void CodeEditor::initEditorService()
     if (!editorService)
         return;
 
-    //    if (editorService) {
-    //        if (!editorService->getSelectedText) {
-    //            editorService->getSelectedText = std::bind(&TextEditSplitter::getSelectedText, editManager);
-    //        }
-    //        if (!editorService->getCursorBeforeText) {
-    //            editorService->getCursorBeforeText = std::bind(&TextEditSplitter::getCursorBeforeText, editManager);
-    //        }
-    //        if (!editorService->getCursorAfterText) {
-    //            editorService->getCursorAfterText = std::bind(&TextEditSplitter::getCursorAfterText, editManager);
-    //        }
-    //        if (!editorService->replaceSelectedText) {
-    //            editorService->replaceSelectedText = std::bind(&TextEditSplitter::replaceSelectedText, editManager, _1);
-    //        }
-    //        if (!editorService->showTips) {
-    //            editorService->showTips = std::bind(&TextEditSplitter::showTips, editManager, _1);
-    //        }
-    //        if (!editorService->insertText) {
-    //            editorService->insertText = std::bind(&TextEditSplitter::insertText, editManager, _1);
-    //        }
-    //        if (!editorService->undo) {
-    //            editorService->undo = std::bind(&TextEditSplitter::undo, editManager);
-    //        }
-    //    }
+    editorService->getSelectedText = std::bind(&WorkspaceWidget::selectedText, workspaceWidget);
+    editorService->getCursorBeforeText = std::bind(&WorkspaceWidget::cursorBeforeText, workspaceWidget);
+    editorService->getCursorBehindText = std::bind(&WorkspaceWidget::cursorBehindText, workspaceWidget);
+    editorService->replaceSelectedText = std::bind(&WorkspaceWidget::replaceSelectedText, workspaceWidget, _1);
+    editorService->showTips = std::bind(&WorkspaceWidget::showTips, workspaceWidget, _1);
+    editorService->insertText = std::bind(&WorkspaceWidget::insertText, workspaceWidget, _1);
+    editorService->undo = std::bind(&WorkspaceWidget::undo, workspaceWidget);
+
     LexerManager::instance()->init(editorService);
 }
 
@@ -123,7 +109,7 @@ void CodeEditor::initWindowService()
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
-    auto workspaceWidget = new WorkspaceWidget;
+    workspaceWidget = new WorkspaceWidget;
     using namespace std::placeholders;
     if (windowService) {
         QAction *action = new QAction(MWNA_EDIT, this);

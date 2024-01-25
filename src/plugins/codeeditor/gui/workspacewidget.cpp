@@ -46,6 +46,7 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqForward, this, &WorkspaceWidgetPrivate::handleForward);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetDebugLine, this, &WorkspaceWidgetPrivate::handleSetDebugLine);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveDebugLine, this, &WorkspaceWidgetPrivate::handleRemoveDebugLine);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqGotoLine, this, &WorkspaceWidgetPrivate::handleGotoLine);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
@@ -132,8 +133,10 @@ void WorkspaceWidgetPrivate::onCloseRequested()
         tabWidgetList.first()->setCloseButtonVisible(false);
 }
 
-void WorkspaceWidgetPrivate::handleOpenFile(const QString &fileName)
+void WorkspaceWidgetPrivate::handleOpenFile(const QString &workspace, const QString &fileName)
 {
+    Q_UNUSED(workspace)
+
     if (auto tabWidget = currentTabWidget())
         tabWidget->openFile(fileName);
 }
@@ -176,6 +179,16 @@ void WorkspaceWidgetPrivate::handleRemoveDebugLine()
 {
     for (auto tabWidget : tabWidgetList)
         tabWidget->removeDebugLine();
+}
+
+void WorkspaceWidgetPrivate::handleGotoLine(const QString &fileName, int line)
+{
+    auto tabWidget = currentTabWidget();
+    if (!tabWidget)
+        return;
+
+    tabWidget->openFile(fileName);
+    tabWidget->gotoLine(line);
 }
 
 void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
@@ -240,4 +253,22 @@ void WorkspaceWidget::replaceSelectedText(const QString &text)
 {
     if (auto tabWidget = d->currentTabWidget())
         tabWidget->replaceSelectedText(text);
+}
+
+void WorkspaceWidget::showTips(const QString &tips)
+{
+    if (auto tabWidget = d->currentTabWidget())
+        tabWidget->showTips(tips);
+}
+
+void WorkspaceWidget::insertText(const QString &text)
+{
+    if (auto tabWidget = d->currentTabWidget())
+        tabWidget->insertText(text);
+}
+
+void WorkspaceWidget::undo()
+{
+    if (auto tabWidget = d->currentTabWidget())
+        tabWidget->undo();
 }

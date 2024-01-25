@@ -441,7 +441,7 @@ void ProjectTree::doDoubleClicked(const QModelIndex &index)
             workspaceFolder = info.workspaceFolder();
             language = info.language();
         }
-        editor.openFileWithKey(workspaceFolder, language, info.filePath());
+        editor.openFile(workspaceFolder, info.filePath());
     }
 }
 

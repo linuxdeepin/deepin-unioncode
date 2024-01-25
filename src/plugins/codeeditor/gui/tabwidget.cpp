@@ -4,6 +4,7 @@
 
 #include "tabwidget.h"
 #include "private/tabwidget_p.h"
+#include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
 
 #include <QFileInfo>
@@ -50,6 +51,13 @@ void TabWidgetPrivate::initConnection()
     connect(tabBar, &TabBar::tabClosed, this, &TabWidgetPrivate::onTabClosed);
     connect(tabBar, &TabBar::spliterClicked, this, &TabWidgetPrivate::onSpliterClicked);
     connect(tabBar, &TabBar::closeRequested, q, &TabWidget::closeRequested);
+
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetAnnotation, this, &TabWidgetPrivate::handleSetAnnotation);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqResetAnnotation, this, &TabWidgetPrivate::handleResetAnnotation);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqClearAllAnnotation, this, &TabWidgetPrivate::handleClearAllAnnotation);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetLineBackgroundColor, this, &TabWidgetPrivate::handleSetLineBackgroundColor);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqResetLineBackground, this, &TabWidgetPrivate::handleResetLineBackground);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqClearLineBackground, this, &TabWidgetPrivate::handleClearLineBackground);
 }
 
 TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
@@ -98,6 +106,7 @@ void TabWidgetPrivate::changeFocusProxy()
 
 bool TabWidgetPrivate::processKeyPressEvent(QKeyEvent *event)
 {
+    editor.keyPressEvent(event->key());
     switch (event->modifiers()) {
     case Qt::ControlModifier: {
         switch (event->key()) {
@@ -195,6 +204,39 @@ void TabWidgetPrivate::onFileChanged(const QString &fileName)
     });
 }
 
+void TabWidgetPrivate::handleSetAnnotation(const QString &fileName, int line, const QString &title, const AnnotationInfo &info)
+{
+    // TODO:lzj
+}
+
+void TabWidgetPrivate::handleResetAnnotation(const QString &fileName, const QString &title)
+{
+    // TODO:lzj
+}
+
+void TabWidgetPrivate::handleClearAllAnnotation(const QString &title)
+{
+    // TODO:lzj
+}
+
+void TabWidgetPrivate::handleSetLineBackgroundColor(const QString &fileName, int line, const QColor &color)
+{
+    if (auto editor = findEditor(fileName))
+        editor->setLineBackgroundColor(line, color);
+}
+
+void TabWidgetPrivate::handleResetLineBackground(const QString &fileName, int line)
+{
+    if (auto editor = findEditor(fileName))
+        editor->resetLineBackgroundColor(line);
+}
+
+void TabWidgetPrivate::handleClearLineBackground(const QString &fileName)
+{
+    if (auto editor = findEditor(fileName))
+        editor->clearLineBackgroundColor();
+}
+
 TabWidget::TabWidget(QWidget *parent)
     : QWidget(parent),
       d(new TabWidgetPrivate(this))
@@ -241,6 +283,24 @@ void TabWidget::replaceSelectedText(const QString &text)
 {
     if (auto editor = d->currentTextEditor())
         editor->replaceSelectedText(text);
+}
+
+void TabWidget::showTips(const QString &tips)
+{
+    if (auto editor = d->currentTextEditor())
+        editor->showTips(tips);
+}
+
+void TabWidget::insertText(const QString &text)
+{
+    if (auto editor = d->currentTextEditor())
+        editor->insert(text);
+}
+
+void TabWidget::undo()
+{
+    if (auto editor = d->currentTextEditor())
+        editor->undo();
 }
 
 void TabWidget::gotoNextPosition()
@@ -392,6 +452,12 @@ void TabWidget::removeDebugLine()
 {
     for (auto editor : d->editorMng)
         editor->removeDebugLine();
+}
+
+void TabWidget::gotoLine(int line)
+{
+    if (auto editor = d->currentTextEditor())
+        editor->gotoLine(line);
 }
 
 void TabWidget::dragEnterEvent(QDragEnterEvent *event)
