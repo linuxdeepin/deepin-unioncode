@@ -7,7 +7,6 @@
 
 #include "projectgenerator.h"
 #include "projectinfo.h"
-#include "projectviewinterface.h"
 
 #include <QTabWidget>
 
@@ -167,16 +166,44 @@ public:
     DPF_INTERFACE(bool, hasProjectInfo, const dpfservice::ProjectInfo &projectInfo);
 
     /*!
-     * \brief projectView 工程视图接口对象
-     */
-    ProjectViewInterface projectView;
-
-    /*!
      * \brief getActiveTarget
      * \param TargetType
      * \return Target
      */
     DPF_INTERFACE(Target, getActiveTarget, TargetType);
+
+    /////////////////////////project view interface////////////////////////////
+
+    /*!
+     * \brief addRootItem Add project root data node
+     * \param aitem
+     */
+    DPF_INTERFACE(void, addRootItem, QStandardItem *aitem);
+
+    /*!
+     * \brief removeRootItem Delete the project root data node
+     * \param aitem
+     */
+    DPF_INTERFACE(void, removeRootItem, QStandardItem *aitem);
+
+    /*!
+     * \brief takeRootItem Removes but does not delete the project node from the View
+     * \param aitem
+     */
+    DPF_INTERFACE(void, takeRootItem, QStandardItem *aitem);
+
+    /*!
+     * \brief expandedDepth Expand project sub-items based on depth
+     * \param aitem
+     * \param depth
+     */
+    DPF_INTERFACE(void, expandedDepth, QStandardItem *aitem, int depth);
+
+    /*!
+     * \brief expandedAll Expand all sub-items of the project
+     * \param aitem
+     */
+    DPF_INTERFACE(void, expandedAll, QStandardItem *aitem);
 };
 
 /* MainWindow codeediter workspace title,

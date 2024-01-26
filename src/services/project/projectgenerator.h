@@ -39,6 +39,7 @@ public:
     virtual void createDocument(const QStandardItem *item, const QString &filePath);
     static QStandardItem *root(QStandardItem *child);
     static const QModelIndex root(const QModelIndex &child);
+
 signals:
     void itemChanged(QStandardItem *item, const QList<QStandardItem*> &newChilds);
 };

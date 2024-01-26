@@ -68,8 +68,8 @@ bool JSProjectGenerator::configure(const ProjectInfo &info)
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService && root) {
-        projectService->projectView.addRootItem(root);
-        projectService->projectView.expandedDepth(root, 1);
+        projectService->addRootItem(root);
+        projectService->expandedDepth(root, 1);
     }
 
     return true;
