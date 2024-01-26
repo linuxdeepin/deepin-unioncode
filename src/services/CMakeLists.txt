@@ -9,7 +9,6 @@ set(CXX_H
     window/windowcontroller.h
     debugger/debuggerservice.h
 #    container/containerservice.h
-    project/projectviewinterface.h
     project/projectinfo.h
     project/projectgenerator.h
     project/projectgenerator.cpp
