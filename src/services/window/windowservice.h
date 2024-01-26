@@ -214,27 +214,6 @@ public:
     DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget, const QString &iconName);
 
     DPF_INTERFACE(void, switchWorkspaceArea, const QString &title);
-
-    //--controller--
-signals:
-
-    /*!
-     * \brief showMessageDisplay 展示处理消息提示框
-     */
-    void showMessageDisplay();
-
-    /*!
-     * \brief appendProcessMessage 添加处理消息
-     * \param mess 消息
-     * \param currentPercent 当前百分比
-     * \param maxPercent 最大的百分比
-     */
-    void appendProcessMessage(const QString &mess, int currentPercent, int maxPrecent = 100);
-
-    /*!
-     * \brief hideMessageDisplay 隐藏处理消息提示框
-     */
-    void hideMessageDisplay();
 };
 
 }   // namespace dpfservice
