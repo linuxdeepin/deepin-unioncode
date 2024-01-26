@@ -45,6 +45,7 @@ set(CXX_H
     maven/project/mavenprojectgenerator.h
     maven/project/properties/mavenconfigpropertywidget.h
     maven/project/properties/mavenconfigutil.h
+    maven/project/projectactioninfo.h
     maven/option/mavenwidget.h
     maven/option/mavenoptionwidget.h
     maven/option/optionmavengenerator.h

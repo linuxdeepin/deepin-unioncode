@@ -33,7 +33,7 @@ public:
     virtual QMenu* createItemMenu(const QStandardItem *item) override;
 private slots:
     void itemModified(const QList<QStandardItem*> &item);
-    void doAddMavenMeue(const dpfservice::ProjectActionInfos &infos);
+    void doAddMavenMeue(const ProjectActionInfos &infos);
     void doActionTriggered();
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
 
