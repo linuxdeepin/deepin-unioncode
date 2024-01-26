@@ -8,8 +8,6 @@
 #include <QString>
 #include <QAction>
 
-namespace dpfservice {
-
 struct ProjectMenuActionInfo
 {
     QString displyText;
@@ -45,8 +43,6 @@ struct ProjectMenuActionInfo
 
 typedef QList<ProjectMenuActionInfo> ProjectActionInfos;
 
-} // namespace dpfservice
-
-Q_DECLARE_METATYPE(dpfservice::ProjectMenuActionInfo);
+Q_DECLARE_METATYPE(ProjectMenuActionInfo);
 
 #endif // PROJECTACTIONINFO_H

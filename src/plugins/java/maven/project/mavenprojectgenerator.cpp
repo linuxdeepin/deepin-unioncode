@@ -177,12 +177,12 @@ void MavenProjectGenerator::itemModified(const QList<QStandardItem *> &items)
     }
 }
 
-void MavenProjectGenerator::doAddMavenMeue(const dpfservice::ProjectActionInfos &infos)
+void MavenProjectGenerator::doAddMavenMeue(const ProjectActionInfos &infos)
 {
     if (d->mavenMenu) {
         for (auto actionInfo : infos) {
             QAction *action = new QAction(actionInfo.displyText, d->mavenMenu);
-            dpfservice::ProjectMenuActionInfo::set(action, actionInfo);
+            ProjectMenuActionInfo::set(action, actionInfo);
             d->mavenMenu->addAction(action);
             QObject::connect(action, &QAction::triggered,
                              this, &MavenProjectGenerator::doActionTriggered,
@@ -195,7 +195,7 @@ void MavenProjectGenerator::doActionTriggered()
 {
     QAction *action = qobject_cast<QAction*>(sender());
     if (action) {
-        auto value = dpfservice::ProjectMenuActionInfo::get(action);
+        auto value = ProjectMenuActionInfo::get(action);
 
         auto &ctx = dpfInstance.serviceContext();
         auto builderService = ctx.service<dpfservice::BuilderService>(dpfservice::BuilderService::name());

@@ -6,6 +6,7 @@
 #define MAVENASYNPARSE_H
 
 #include "services/project/projectinfo.h"
+#include "projectactioninfo.h"
 #include "common/common.h"
 
 #include <QFileSystemWatcher>
@@ -24,7 +25,7 @@ public:
     virtual ~MavenAsynParse();
 
 signals:
-    void parsedActions(const dpfservice::ProjectActionInfos &info);
+    void parsedActions(const ProjectActionInfos &info);
     void parsedError(const QString &info);
     void itemsModified(const QList<QStandardItem*> &info);
 
