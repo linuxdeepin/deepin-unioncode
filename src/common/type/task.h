@@ -5,7 +5,7 @@
 #ifndef TASK_H
 #define TASK_H
 
-#include "fileutils.h"
+#include "common/util/fileutils.h"
 
 #include <QObject>
 #include <QIcon>

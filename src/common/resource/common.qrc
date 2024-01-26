@@ -2,5 +2,7 @@
     <qresource prefix="/icons/deepin/builtin">
         <file>icons/ide.svg</file>
         <file>icons/about_logo_128px.svg</file>
+        <file>texts/builder-error_16px.svg</file>
+        <file>texts/builder-warning_16px.svg</file>
     </qresource>
 </RCC>

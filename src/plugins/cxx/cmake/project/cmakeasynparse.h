@@ -5,8 +5,6 @@
 #ifndef CMAKEASYNPARSE_H
 #define CMAKEASYNPARSE_H
 
-#include "services/project/projectinfo.h"
-
 #include "common/common.h"
 
 #include <QObject>

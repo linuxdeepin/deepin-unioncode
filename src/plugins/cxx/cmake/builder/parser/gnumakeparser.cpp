@@ -4,8 +4,8 @@
 
 #include "gnumakeparser.h"
 
-#include "services/builder/task.h"
-#include "services/builder/fileutils.h"
+#include "common/type/task.h"
+#include "common/util/fileutils.h"
 
 #include "common/util/qtcassert.h"
 
@@ -35,12 +35,12 @@ GnuMakeParser::GnuMakeParser()
 void GnuMakeParser::setWorkingDirectory(const QString &workingDirectory)
 {
     addDirectory(workingDirectory);
-    IOutputParser::setWorkingDirectory(workingDirectory);
+    AbstractOutputParser::setWorkingDirectory(workingDirectory);
 }
 
 bool GnuMakeParser::hasFatalErrors() const
 {
-    return (fatalErrorCount > 0) || IOutputParser::hasFatalErrors();
+    return (fatalErrorCount > 0) || AbstractOutputParser::hasFatalErrors();
 }
 
 void GnuMakeParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
@@ -56,7 +56,7 @@ void GnuMakeParser::stdOutput(const QString &line, OutputPane::OutputFormat form
         return;
     }
 
-    IOutputParser::stdOutput(line, format);
+    AbstractOutputParser::stdOutput(line, format);
 }
 
 class Result {
@@ -120,7 +120,7 @@ void GnuMakeParser::stdError(const QString &line)
         return;
     }
 
-    IOutputParser::stdError(line);
+    AbstractOutputParser::stdError(line);
 }
 
 void GnuMakeParser::addDirectory(const QString &dir)
@@ -162,5 +162,5 @@ void GnuMakeParser::taskAdded(const Task &task, int linkedLines, int skippedLine
         // identify the file!
     }
 
-    IOutputParser::taskAdded(editable, linkedLines, skippedLines);
+    AbstractOutputParser::taskAdded(editable, linkedLines, skippedLines);
 }

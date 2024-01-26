@@ -5,9 +5,9 @@
 #ifndef GRADLEPARSER_H
 #define GRADLEPARSER_H
 
-#include "services/builder/ioutputparser.h"
+#include "base/abstractoutputparser.h"
 
-class GradleParser : public IOutputParser
+class GradleParser : public AbstractOutputParser
 {
     Q_OBJECT
 

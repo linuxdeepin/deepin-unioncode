@@ -5,7 +5,7 @@
 #ifndef TASKMODEL_H
 #define TASKMODEL_H
 
-#include "services/builder/task.h"
+#include "common/type/task.h"
 
 #include <QAbstractItemModel>
 #include <QFont>

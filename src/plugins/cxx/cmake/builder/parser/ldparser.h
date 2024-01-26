@@ -5,10 +5,10 @@
 #ifndef LDPARSER_H
 #define LDPARSER_H
 
-#include "services/builder/ioutputparser.h"
+#include "base/abstractoutputparser.h"
 #include <QRegularExpression>
 
-class LdParser : public IOutputParser
+class LdParser : public AbstractOutputParser
 {
     Q_OBJECT
 

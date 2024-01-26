@@ -5,8 +5,6 @@
 #ifndef PYTHONASYNPARSE_H
 #define PYTHONASYNPARSE_H
 
-#include "services/project/projectinfo.h"
-
 #include "common/common.h"
 
 #include <QObject>

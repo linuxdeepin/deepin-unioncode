@@ -6,7 +6,7 @@
 #define CONFIGPROPERTYWIDGET_H
 
 #include "project/properties/configutil.h"
-#include "services/project/projectinfo.h"
+#include "common/project/projectinfo.h"
 
 class PageWidget;
 class DetailPropertyWidgetPrivate;

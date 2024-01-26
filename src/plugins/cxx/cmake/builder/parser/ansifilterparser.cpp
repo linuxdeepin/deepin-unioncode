@@ -22,12 +22,12 @@ AnsiFilterParser::AnsiFilterParser()
 
 void AnsiFilterParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
-    IOutputParser::stdOutput(filterLine(line), format);
+    AbstractOutputParser::stdOutput(filterLine(line), format);
 }
 
 void AnsiFilterParser::stdError(const QString &line)
 {
-    IOutputParser::stdError(filterLine(line));
+    AbstractOutputParser::stdError(filterLine(line));
 }
 
 QString AnsiFilterParser::filterLine(const QString &line)

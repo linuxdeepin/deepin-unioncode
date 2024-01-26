@@ -11,11 +11,11 @@ CommonParser::CommonParser()
 
 void CommonParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
-    IOutputParser::stdOutput(line, format);
+    AbstractOutputParser::stdOutput(line, format);
 }
 
 void CommonParser::stdError(const QString &line)
 {
-    IOutputParser::stdError(line);
+    AbstractOutputParser::stdError(line);
 }
 

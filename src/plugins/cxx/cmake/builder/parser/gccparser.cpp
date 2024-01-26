@@ -5,7 +5,7 @@
 #include "gccparser.h"
 
 #include "ldparser.h"
-#include "services/builder/task.h"
+#include "common/type/task.h"
 
 #include "common/util/qtcassert.h"
 
@@ -46,7 +46,7 @@ void GccParser::stdError(const QString &line)
     // Blacklist some lines to not handle them:
     if (lne.startsWith(QLatin1String("TeamBuilder ")) ||
         lne.startsWith(QLatin1String("distcc["))) {
-        IOutputParser::stdError(line);
+        AbstractOutputParser::stdError(line);
         return;
     }
 
@@ -113,13 +113,13 @@ void GccParser::stdError(const QString &line)
     }
 
     doFlush();
-    IOutputParser::stdError(line);
+    AbstractOutputParser::stdError(line);
 }
 
 void GccParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     doFlush();
-    IOutputParser::stdOutput(line, format);
+    AbstractOutputParser::stdOutput(line, format);
 }
 
 QString GccParser::id()

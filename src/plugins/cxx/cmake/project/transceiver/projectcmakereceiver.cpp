@@ -5,13 +5,12 @@
 #include "projectcmakereceiver.h"
 #include "cmakeprojectgenerator.h"
 #include "targetsmanager.h"
+#include "common/common.h"
 
-#include "services/project/projectinfo.h"
 #include "services/project/projectservice.h"
 #include "services/window/windowelement.h"
 #include "services/project/projectgenerator.h"
 #include "services/builder/builderglobals.h"
-#include "common/common.h"
 
 ProjectCmakeReceiver::ProjectCmakeReceiver(QObject *parent)
     : dpf::EventHandler (parent)

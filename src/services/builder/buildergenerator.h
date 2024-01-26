@@ -7,8 +7,7 @@
 
 #include "builderglobals.h"
 #include "common/common.h"
-#include "services/builder/ioutputparser.h"
-#include "services/project/projectinfo.h"
+#include "base/abstractoutputparser.h"
 
 #include <QWidget>
 #include <QMenu>
@@ -27,7 +26,7 @@ public:
         return BuildCommandInfo();
     }
 
-    virtual void appendOutputParser(std::unique_ptr<IOutputParser>& outputParser) {
+    virtual void appendOutputParser(std::unique_ptr<AbstractOutputParser>& outputParser) {
         Q_UNUSED(outputParser)
     }
 

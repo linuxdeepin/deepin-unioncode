@@ -5,7 +5,6 @@
 #ifndef MAVENASYNPARSE_H
 #define MAVENASYNPARSE_H
 
-#include "services/project/projectinfo.h"
 #include "projectactioninfo.h"
 #include "common/common.h"
 

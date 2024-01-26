@@ -9,7 +9,7 @@
 #include "cmake/builder/parser/cmakeparser.h"
 
 #include "services/builder/builderservice.h"
-#include "services/builder/ioutputparser.h"
+#include "base/abstractoutputparser.h"
 #include "services/project/projectservice.h"
 #include "services/option/optionmanager.h"
 
@@ -52,7 +52,7 @@ BuildCommandInfo CMakeBuilderGenerator::getMenuCommand(const BuildMenuType build
     return info;
 }
 
-void CMakeBuilderGenerator::appendOutputParser(std::unique_ptr<IOutputParser>& outputParser)
+void CMakeBuilderGenerator::appendOutputParser(std::unique_ptr<AbstractOutputParser>& outputParser)
 {
     if (outputParser) {
         outputParser->takeOutputParserChain();

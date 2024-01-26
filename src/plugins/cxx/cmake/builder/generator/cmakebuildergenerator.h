@@ -6,7 +6,7 @@
 #define CMAKEBUILDERGENERATOR_H
 
 #include "services/builder/buildergenerator.h"
-#include "services/project/projectinfo.h"
+#include "common/project/projectinfo.h"
 
 #include <QObject>
 
@@ -22,7 +22,7 @@ public:
     static QString toolKitName() { return "cmake"; }
 
     BuildCommandInfo getMenuCommand(const BuildMenuType buildMenuType, const dpfservice::ProjectInfo &projectInfo) override;
-    void appendOutputParser(std::unique_ptr<IOutputParser>& outputParser) override;
+    void appendOutputParser(std::unique_ptr<AbstractOutputParser>& outputParser) override;
     bool checkCommandValidity(const BuildCommandInfo &info, QString &retMsg) override;
 
 signals:

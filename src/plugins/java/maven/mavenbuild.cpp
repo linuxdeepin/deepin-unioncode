@@ -39,7 +39,7 @@ QString MavenBuild::build(const QString& kitName, const QString& projectPath)
         commandInfo.workingDir = projectPath;
 
         buildUuid = commandInfo.uuid;
-        builderService->interface.builderCommand({commandInfo}, false);
+        builderService->runbuilderCommand({commandInfo}, false);
     }
 
     return buildUuid;

@@ -5,12 +5,12 @@
 #ifndef GCCPARSER_H
 #define GCCPARSER_H
 
-#include "services/builder/ioutputparser.h"
-#include "services/builder/task.h"
+#include "base/abstractoutputparser.h"
+#include "common/type/task.h"
 
 #include <QRegularExpression>
 
-class GccParser : public IOutputParser
+class GccParser : public AbstractOutputParser
 {
     Q_OBJECT
 

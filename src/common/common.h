@@ -37,5 +37,6 @@
 #include "toolchain/toolchain.h"
 #include "actionmanager/actionmanager.h"
 #include "actionmanager/command.h"
+#include "project/projectinfo.h"
 
 #endif // COMMON_H
