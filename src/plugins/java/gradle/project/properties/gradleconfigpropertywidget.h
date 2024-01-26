@@ -6,7 +6,7 @@
 #define GRADLECONFIGPROPERTYWIDGET_H
 
 #include "gradle/project/properties/gradleconfigutil.h"
-#include "services/project/projectinfo.h"
+#include "common/project/projectinfo.h"
 #include <DFrame>
 
 class PageWidget;

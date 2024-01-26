@@ -140,7 +140,7 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
         commandInfo.arguments = projInfo.configCustomArgs();
         commandInfo.workingDir = projInfo.workspaceFolder();
 
-        bool isSuccess = builderService->interface.builderCommand({commandInfo}, false);
+        bool isSuccess = builderService->runbuilderCommand({commandInfo}, false);
         if (isSuccess) {
             ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
             // display root item before everything is done.
@@ -322,7 +322,7 @@ void CmakeProjectGenerator::actionTriggered()
             commandInfo.program = program;
             commandInfo.arguments = args;
             commandInfo.workingDir = workDir;
-            builderService->interface.builderCommand({commandInfo}, false);
+            builderService->runbuilderCommand({commandInfo}, false);
         }
     }
 }

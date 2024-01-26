@@ -53,7 +53,7 @@ BuildCommandInfo GradleBuilderGenerator::getMenuCommand(const BuildMenuType buil
     return info;
 }
 
-void GradleBuilderGenerator::appendOutputParser(std::unique_ptr<IOutputParser> &outputParser)
+void GradleBuilderGenerator::appendOutputParser(std::unique_ptr<AbstractOutputParser> &outputParser)
 {
     if (outputParser) {
         outputParser->takeOutputParserChain();

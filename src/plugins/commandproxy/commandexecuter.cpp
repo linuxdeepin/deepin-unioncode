@@ -67,7 +67,7 @@ void CommandExecuter::buildProject()
     buildInfo.arguments = args;
     buildCommandInfos.append(buildInfo);
     QFuture<void> future = QtConcurrent::run([=](){
-        builderService->interface.builderCommand(buildCommandInfos, true);
+        builderService->runbuilderCommand(buildCommandInfos, true);
     });
     future.waitForFinished();
 
@@ -79,7 +79,7 @@ void CommandExecuter::buildProject()
             buildInfo.arguments = QStringList() << "--add-section" << ".note.builder=" + elfPath << exeFile;
         }
     }
-    builderService->interface.builderCommand({buildInfo}, true);
+    builderService->runbuilderCommand({buildInfo}, true);
 }
 
 CommandExecuter::CommandExecuter(QObject *parent)

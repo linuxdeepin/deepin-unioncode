@@ -4,7 +4,7 @@
 
 #include "problemoutputpane.h"
 #include "tasks/taskmanager.h"
-#include "services/builder/task.h"
+#include "common/type/task.h"
 
 #include "common/common.h"
 

@@ -5,9 +5,9 @@
 #ifndef NINJAPARSER_H
 #define NINJAPARSER_H
 
-#include "services/builder/ioutputparser.h"
+#include "base/abstractoutputparser.h"
 
-class NinjaParser : public IOutputParser
+class NinjaParser : public AbstractOutputParser
 {
     Q_OBJECT
 

@@ -18,7 +18,7 @@ public:
     static QString toolKitName() { return "maven"; }
 
     BuildCommandInfo getMenuCommand(const BuildMenuType buildMenuType, const dpfservice::ProjectInfo &projectInfo) override;
-    void appendOutputParser(std::unique_ptr<IOutputParser> &outputParser) override;
+    void appendOutputParser(std::unique_ptr<AbstractOutputParser> &outputParser) override;
     bool checkCommandValidity(const BuildCommandInfo &info, QString &retMsg) override;
 
 signals:

@@ -5,9 +5,9 @@
 #ifndef MAVENPARSER_H
 #define MAVENPARSER_H
 
-#include "services/builder/ioutputparser.h"
+#include "base/abstractoutputparser.h"
 
-class MavenParser : public IOutputParser
+class MavenParser : public AbstractOutputParser
 {
     Q_OBJECT
 

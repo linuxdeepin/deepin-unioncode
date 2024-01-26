@@ -49,7 +49,7 @@ QString CMakeBuild::build(const QString& kitName, const QString& projectPath)
             commandInfo.workingDir = target.workingDir;
 
             buildUuid = commandInfo.uuid;
-            builderService->interface.builderCommand({commandInfo}, false);
+            builderService->runbuilderCommand({commandInfo}, false);
         }
     }
 

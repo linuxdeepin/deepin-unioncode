@@ -4,7 +4,7 @@
 
 #include "cmakeparser.h"
 
-#include "services/builder/fileutils.h"
+#include "common/util/fileutils.h"
 #include "common/util/qtcassert.h"
 
 
@@ -31,7 +31,7 @@ CMakeParser::CMakeParser()
 void CMakeParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
 {
     emit outputAdded(line, format);
-    IOutputParser::stdOutput(line, format);
+    AbstractOutputParser::stdOutput(line, format);
 }
 
 void CMakeParser::stdError(const QString &line)
@@ -79,7 +79,7 @@ void CMakeParser::stdError(const QString &line)
             return;
         }
 
-        IOutputParser::stdError(line);
+        AbstractOutputParser::stdError(line);
         return;
     case LINE_LOCATION:
         {

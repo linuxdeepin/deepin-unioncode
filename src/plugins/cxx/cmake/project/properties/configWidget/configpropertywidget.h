@@ -5,7 +5,7 @@
 #ifndef CONFIGPROPERTYDIALOG_H
 #define CONFIGPROPERTYDIALOG_H
 
-#include "services/project/projectinfo.h"
+#include "common/project/projectinfo.h"
 
 #include <DDialog>
 

@@ -5,12 +5,12 @@
 #ifndef GNUMAKEPARSER_H
 #define GNUMAKEPARSER_H
 
-#include "services/builder/ioutputparser.h"
+#include "base/abstractoutputparser.h"
 
 #include <QRegularExpression>
 #include <QStringList>
 
-class GnuMakeParser : public IOutputParser
+class GnuMakeParser : public AbstractOutputParser
 {
     Q_OBJECT
 

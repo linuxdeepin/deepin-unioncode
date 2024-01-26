@@ -5,7 +5,7 @@
 #ifndef PROBLEMOUTPUTPANE_H
 #define PROBLEMOUTPUTPANE_H
 
-#include "services/builder/task.h"
+#include "common/type/task.h"
 
 #include <DFrame>
 #include <DMenu>

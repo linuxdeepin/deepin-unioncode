@@ -7,7 +7,6 @@
 
 #include "buildergenerator.h"
 #include "builderglobals.h"
-#include "builderinterface.h"
 #include <framework/framework.h>
 
 namespace dpfservice {
@@ -46,7 +45,11 @@ public:
         return dynamic_cast<T*>(value);
     }
 
-    BuilderInterface interface;
+    /*!
+     * \brief builderCommand
+     * \param commandInfo
+     */
+    DPF_INTERFACE(bool, runbuilderCommand, const QList<BuildCommandInfo> &commandInfo, bool isSynchronous);
 };
 
 } // namespace dpfservice

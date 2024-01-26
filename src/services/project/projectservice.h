@@ -6,7 +6,7 @@
 #define PROJECTSERVICE_H
 
 #include "projectgenerator.h"
-#include "projectinfo.h"
+#include "common/project/projectinfo.h"
 
 #include <QTabWidget>
 

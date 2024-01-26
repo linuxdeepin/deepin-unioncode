@@ -47,7 +47,7 @@ BuildCommandInfo NinjaBuilderGenerator::getMenuCommand(const BuildMenuType build
     return info;
 }
 
-void NinjaBuilderGenerator::appendOutputParser(std::unique_ptr<IOutputParser> &outputParser)
+void NinjaBuilderGenerator::appendOutputParser(std::unique_ptr<AbstractOutputParser> &outputParser)
 {
     if (outputParser) {
         outputParser->takeOutputParserChain();

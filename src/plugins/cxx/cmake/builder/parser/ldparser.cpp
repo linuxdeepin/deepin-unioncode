@@ -5,7 +5,7 @@
 #include "ldparser.h"
 
 #include "ldparser.h"
-#include "services/builder/task.h"
+#include "common/type/task.h"
 
 #include "common/util/qtcassert.h"
 
@@ -41,7 +41,7 @@ void LdParser::stdError(const QString &line)
     if (lne.startsWith(QLatin1String("TeamBuilder "))
             || lne.startsWith(QLatin1String("distcc["))
             || lne.contains(QLatin1String("ar: creating "))) {
-        IOutputParser::stdError(line);
+        AbstractOutputParser::stdError(line);
         return;
     }
 
@@ -112,5 +112,5 @@ void LdParser::stdError(const QString &line)
         return;
     }
 
-    IOutputParser::stdError(line);
+    AbstractOutputParser::stdError(line);
 }

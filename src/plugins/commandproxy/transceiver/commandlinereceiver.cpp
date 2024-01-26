@@ -5,7 +5,6 @@
 #include "commandlinereceiver.h"
 #include "commandexecuter.h"
 
-#include "services/project/projectinfo.h"
 #include "services/project/projectservice.h"
 #include "services/window/windowelement.h"
 #include "services/project/projectgenerator.h"
