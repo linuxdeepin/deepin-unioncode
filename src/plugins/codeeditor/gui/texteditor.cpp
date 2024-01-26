@@ -237,6 +237,29 @@ void TextEditor::showTips(const QString &tips)
     SendScintilla(SCI_CALLTIPSHOW, static_cast<uintptr_t>(pos), data.data());
 }
 
+void TextEditor::addAnnotation(const QString &title, const QString &content, int line, int type)
+{
+    auto style = d->createAnnotationStyle(type);
+    if (style.description().isEmpty())
+        return;
+
+    d->annotationRecords.insertMulti(title, line);
+    static QString formatText("%1:\n%2:\n%3");
+    annotate(line, formatText.arg(title, style.description(), content), style);
+}
+
+void TextEditor::removeAnnotation(const QString &title)
+{
+    if (!d->annotationRecords.contains(title))
+        return;
+
+    auto lineList = d->annotationRecords.values(title);
+    d->annotationRecords.remove(title);
+
+    for (int line : lineList)
+        clearAnnotations(line);
+}
+
 QString TextEditor::cursorBeforeText() const
 {
     int pos = d->cursorPosition();
