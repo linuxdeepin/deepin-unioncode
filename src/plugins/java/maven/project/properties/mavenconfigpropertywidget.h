@@ -7,7 +7,7 @@
 
 #include "maven/project/properties/mavenconfigutil.h"
 
-#include "services/project/projectinfo.h"
+#include "common/project/projectinfo.h"
 
 #include <DFrame>
 

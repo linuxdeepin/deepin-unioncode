@@ -5,8 +5,6 @@
 #ifndef PROJECTGENERATOR_H
 #define PROJECTGENERATOR_H
 
-#include "projectinfo.h"
-
 #include "common/common.h"
 
 #include <framework/framework.h>

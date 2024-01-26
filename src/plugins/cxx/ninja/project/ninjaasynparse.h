@@ -5,8 +5,6 @@
 #ifndef NINJAASYNPARSE_H
 #define NINJAASYNPARSE_H
 
-#include "services/project/projectinfo.h"
-
 #include "common/common.h"
 
 #include <QFileSystemWatcher>

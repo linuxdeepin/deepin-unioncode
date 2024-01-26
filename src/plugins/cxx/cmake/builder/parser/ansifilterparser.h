@@ -5,9 +5,9 @@
 #ifndef ANSIFILTERPARSER_H
 #define ANSIFILTERPARSER_H
 
-#include "services/builder/ioutputparser.h"
+#include "base/abstractoutputparser.h"
 
-class AnsiFilterParser : public IOutputParser
+class AnsiFilterParser : public AbstractOutputParser
 {
     Q_OBJECT
 

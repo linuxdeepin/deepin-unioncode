@@ -7,7 +7,6 @@
 
 #include "common/common.h"
 #include "dap/protocol.h"
-#include "services/project/projectinfo.h"
 
 namespace dpfservice {
 

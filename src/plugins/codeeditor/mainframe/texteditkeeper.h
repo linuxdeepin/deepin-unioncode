@@ -6,7 +6,7 @@
 //#define TEXTEDITKEEPER_H
 
 //#include "textedittabwidget/textedit.h"
-//#include "services/project/projectinfo.h"
+//#include "common/project/projectinfo.h"
 //#include <framework/service/qtclassfactory.h>
 //#include <framework/service/qtclassmanager.h>
 

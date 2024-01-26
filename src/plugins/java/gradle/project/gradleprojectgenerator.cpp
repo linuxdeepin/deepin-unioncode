@@ -319,7 +319,7 @@ void GradleProjectGenerator::doGradleTaskActionTriggered()
             commandInfo.program = action->property("program").toString();
             commandInfo.arguments = action->property("arguments").toStringList();
             commandInfo.workingDir = action->property("workDir").toString();
-            builderService->interface.builderCommand({commandInfo}, false);
+            builderService->runbuilderCommand({commandInfo}, false);
         }
     }
 }

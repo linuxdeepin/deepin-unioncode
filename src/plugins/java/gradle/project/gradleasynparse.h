@@ -5,8 +5,6 @@
 #ifndef GRADLEASYNPARSE_H
 #define GRADLEASYNPARSE_H
 
-#include "services/project/projectinfo.h"
-
 #include "common/common.h"
 
 #include <QFileSystemWatcher>

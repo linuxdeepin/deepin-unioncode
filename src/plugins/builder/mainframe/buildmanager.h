@@ -6,8 +6,8 @@
 #define BUILDMANAGER_H
 
 #include "services/builder/builderglobals.h"
-#include "services/builder/task.h"
-#include "services/project/projectinfo.h"
+#include "common/type/task.h"
+#include "common/project/projectinfo.h"
 #include "common/widget/outputpane.h"
 
 #include <QObject>

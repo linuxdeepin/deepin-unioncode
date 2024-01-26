@@ -11,7 +11,7 @@
 #include "services/debugger/debuggerservice.h"
 #include "services/language/languageservice.h"
 #include "common/util/custompaths.h"
-#include "services/project/projectinfo.h"
+#include "common/project/projectinfo.h"
 
 using namespace DEBUG_NAMESPACE;
 using namespace dpfservice;

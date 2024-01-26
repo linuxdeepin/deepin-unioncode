@@ -205,7 +205,7 @@ void MavenProjectGenerator::doActionTriggered()
             commandInfo.program = value.buildProgram;
             commandInfo.arguments = value.buildArguments;
             commandInfo.workingDir = QFileInfo(value.workingDirectory).path();
-            builderService->interface.builderCommand({commandInfo}, false);
+            builderService->runbuilderCommand({commandInfo}, false);
         }
     }
 }

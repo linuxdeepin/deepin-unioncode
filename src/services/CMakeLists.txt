@@ -3,47 +3,29 @@ project(services)
 set(CPPDAP_DIR ${CMAKE_SOURCE_DIR}/3rdparty/cppdap)
 include_directories(${CPPDAP_DIR}/include)
 
-set(CXX_H
-    window/windowelement.h
-    window/windowservice.h
-    window/windowcontroller.h
-    debugger/debuggerservice.h
-#    container/containerservice.h
-    project/projectinfo.h
-    project/projectgenerator.h
-    project/projectgenerator.cpp
-    project/projectservice.h
-    option/optionservice.h
-    option/optiongenerator.h
-    option/toolchaindata.h
-    option/toolchaindata.cpp
-    option/optionutils.cpp
-    option/optionutils.h
-    option/optionmanager.h
-    option/optionmanager.cpp
-    option/optiondatastruct.h
-    builder/builderservice.h
-    builder/buildergenerator.h
-    builder/builderglobals.h
-    builder/builderinterface.h
-    builder/task.h
-    builder/task.cpp
-    builder/fileutils.h
-    builder/fileutils.cpp
-    builder/ioutputparser.h
-    builder/ioutputparser.cpp
-    language/languagegenerator.h
-    language/languageservice.h
-    editor/editorservice.h
-    terminal/terminalservice.h
+
+FILE(GLOB SERVICES_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/window/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/window/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/debugger/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/debugger/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/project/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/project/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/option/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/option/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/builder/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/builder/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/language/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/language/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/editor/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/editor/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/terminal/*.h"
     )
 
 add_library(
     ${PROJECT_NAME}
     SHARED
-    ${CXX_H}
-    ${CXX_CPP}
-    builder/resources.qrc
+    ${SERVICES_FILES}
     )
 
 link_libraries(

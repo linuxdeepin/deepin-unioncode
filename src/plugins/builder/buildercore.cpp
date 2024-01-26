@@ -37,7 +37,7 @@ bool BuilderCore::start()
                                     false);
 
     using namespace std::placeholders;
-    builderService->interface.builderCommand = std::bind(&BuildManager::handleCommand, BuildManager::instance(), _1, _2);
+    builderService->runbuilderCommand = std::bind(&BuildManager::handleCommand, BuildManager::instance(), _1, _2);
     return true;
 }
 

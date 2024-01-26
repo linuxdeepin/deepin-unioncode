@@ -5,9 +5,9 @@
 #ifndef COMMONPARSER_H
 #define COMMONPARSER_H
 
-#include "services/builder/ioutputparser.h"
+#include "base/abstractoutputparser.h"
 
-class CommonParser : public IOutputParser
+class CommonParser : public AbstractOutputParser
 {
     Q_OBJECT
 public:

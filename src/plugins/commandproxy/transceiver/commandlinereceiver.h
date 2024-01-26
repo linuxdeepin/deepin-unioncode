@@ -5,7 +5,7 @@
 #ifndef COMMANDLINERECEIVER_H
 #define COMMANDLINERECEIVER_H
 
-#include "services/project/projectinfo.h"
+#include "common/project/projectinfo.h"
 #include "services/builder/builderglobals.h"
 
 #include <framework/framework.h>

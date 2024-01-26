@@ -5,13 +5,13 @@
 #ifndef CMAKEPARSER_H
 #define CMAKEPARSER_H
 
-#include "services/builder/ioutputparser.h"
-#include "services/builder/task.h"
+#include "base/abstractoutputparser.h"
+#include "common/type/task.h"
 
 #include <QObject>
 #include <QRegularExpression>
 
-class CMakeParser : public IOutputParser
+class CMakeParser : public AbstractOutputParser
 {
     Q_OBJECT
 public:

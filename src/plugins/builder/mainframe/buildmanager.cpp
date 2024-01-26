@@ -3,22 +3,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "buildmanager.h"
+#include "base/abstractaction.h"
 #include "common/widget/outputpane.h"
 #include "common/util/commandparser.h"
+#include "common/project/projectinfo.h"
 #include "problemoutputpane.h"
 #include "commonparser.h"
 #include "transceiver/buildersender.h"
 #include "compileoutputpane.h"
 
 #include "services/builder/builderservice.h"
-#include "services/builder/ioutputparser.h"
+#include "base/abstractoutputparser.h"
 #include "services/window/windowservice.h"
-#include "services/project/projectinfo.h"
 #include "services/builder/buildergenerator.h"
 #include "services/option/optionmanager.h"
 #include "services/project/projectservice.h"
 
-#include "base/abstractaction.h"
 #include <QSplitter>
 #include <QCoreApplication>
 
@@ -42,7 +42,7 @@ class BuildManagerPrivate
     QString activedKitName;
     QString activedWorkingDir;
 
-    std::unique_ptr<IOutputParser> outputParser = nullptr;
+    std::unique_ptr<AbstractOutputParser> outputParser = nullptr;
 
     QProcess cmdProcess;
     QFuture<void> buildThread;
@@ -64,8 +64,8 @@ BuildManager::BuildManager(QObject *parent)
     initCompileWidget();
 
     d->outputParser.reset(new CommonParser());
-    connect(d->outputParser.get(), &IOutputParser::addOutput, this, &BuildManager::addOutput, Qt::DirectConnection);
-    connect(d->outputParser.get(), &IOutputParser::addTask, d->problemOutputPane, &ProblemOutputPane::addTask, Qt::DirectConnection);
+    connect(d->outputParser.get(), &AbstractOutputParser::addOutput, this, &BuildManager::addOutput, Qt::DirectConnection);
+    connect(d->outputParser.get(), &AbstractOutputParser::addTask, d->problemOutputPane, &ProblemOutputPane::addTask, Qt::DirectConnection);
 
     QObject::connect(this, &BuildManager::sigOutputCompileInfo, this, &BuildManager::slotOutputCompileInfo);
     QObject::connect(this, &BuildManager::sigOutputProblemInfo, this, &BuildManager::slotOutputProblemInfo);

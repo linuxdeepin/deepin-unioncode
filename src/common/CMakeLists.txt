@@ -46,6 +46,7 @@ set(CXX_H
     util/environment.h
     util/commandparser.h
     util/themeparser.h
+    util/fileutils.h
     supportfile/editorstyle.h
     supportfile/language.h
     supportfile/windowstyle.h
@@ -66,10 +67,12 @@ set(CXX_H
     widget/outputpane.h
     type/constants.h
     type/menuext.h
+    type/task.h
     toolchain/toolchain.h
     actionmanager/actionmanager.h
     actionmanager/command.h
     unilog.h
+    project/projectinfo.h
     )
 
 set(CXX_CPP
@@ -100,6 +103,7 @@ set(CXX_CPP
     util/environment.cpp
     util/commandparser.cpp
     util/themeparser.cpp
+    util/fileutils.cpp
     supportfile/language.cpp
     supportfile/editorstyle.cpp
     supportfile/windowstyle.cpp
@@ -120,6 +124,7 @@ set(CXX_CPP
     widget/outputpane.cpp
     toolchain/toolchain.cpp
     type/constants.cpp
+    type/task.cpp
     actionmanager/actionmanager.cpp
     actionmanager/command.cpp
     )
@@ -129,7 +134,7 @@ add_library(
     SHARED
     ${CXX_H}
     ${CXX_CPP}
-    common.qrc
+    resource/common.qrc
     )
 
 target_link_libraries(

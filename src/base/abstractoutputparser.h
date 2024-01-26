@@ -5,25 +5,25 @@
 #ifndef IOUTPUTPARSER_H
 #define IOUTPUTPARSER_H
 
-#include "task.h"
+#include "common/type/task.h"
 #include "common/widget/outputpane.h"
 
 #include <QObject>
 
 class Task;
-class IOutputParser : public QObject
+class AbstractOutputParser : public QObject
 {
     Q_OBJECT
 public:
-    IOutputParser() = default;
-    ~IOutputParser() override;
+    AbstractOutputParser() = default;
+    ~AbstractOutputParser() override;
 
-    virtual void appendOutputParser(IOutputParser *parser);
+    virtual void appendOutputParser(AbstractOutputParser *parser);
 
-    IOutputParser *takeOutputParserChain();
+    AbstractOutputParser *takeOutputParserChain();
 
-    IOutputParser *childParser() const;
-    void setChildParser(IOutputParser *parser);
+    AbstractOutputParser *childParser() const;
+    void setChildParser(AbstractOutputParser *parser);
 
     virtual void stdOutput(const QString &line, OutputPane::OutputFormat format);
     virtual void stdError(const QString &line);
@@ -46,7 +46,7 @@ public slots:
 private:
     virtual void doFlush();
 
-    IOutputParser *outParser = nullptr;
+    AbstractOutputParser *outParser = nullptr;
 };
 
 #endif // IOUTPUTPARSER_H

@@ -5,8 +5,6 @@
 #ifndef JSAsynParse_H
 #define JSAsynParse_H
 
-#include "services/project/projectinfo.h"
-
 #include "common/common.h"
 
 #include <QObject>

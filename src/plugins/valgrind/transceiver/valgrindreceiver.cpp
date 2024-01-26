@@ -4,13 +4,12 @@
 
 #include "valgrindreceiver.h"
 #include "mainframe/valgrindrunner.h"
+#include "common/common.h"
 
-#include "services/project/projectinfo.h"
 #include "services/project/projectservice.h"
 #include "services/window/windowelement.h"
 #include "services/project/projectgenerator.h"
 #include "services/builder/builderglobals.h"
-#include "common/common.h"
 
 ValgrindReceiver::ValgrindReceiver(QObject *parent)
     : dpf::EventHandler (parent)
