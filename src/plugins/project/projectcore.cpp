@@ -51,20 +51,20 @@ bool ProjectCore::start()
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {
         ProjectTree *treeView = ProjectKeeper::instance()->treeView();
-        if (!projectService->projectView.addRootItem) {
-            projectService->projectView.addRootItem
+        if (!projectService->addRootItem) {
+            projectService->addRootItem
                     = std::bind(&ProjectTree::appendRootItem, treeView, _1);
         }
-        if (!projectService->projectView.removeRootItem) {
-            projectService->projectView.removeRootItem
+        if (!projectService->removeRootItem) {
+            projectService->removeRootItem
                     = std::bind(&ProjectTree::removeRootItem, treeView, _1);
         }
-        if (!projectService->projectView.expandedDepth) {
-            projectService->projectView.expandedDepth
+        if (!projectService->expandedDepth) {
+            projectService->expandedDepth
                     = std::bind(&ProjectTree::expandedProjectDepth, treeView, _1, _2);
         }
-        if (!projectService->projectView.expandedAll) {
-            projectService->projectView.expandedAll
+        if (!projectService->expandedAll) {
+            projectService->expandedAll
                     = std::bind(&ProjectTree::expandedProjectAll, treeView, _1);
         }
         if (!projectService->getAllProjectInfo) {

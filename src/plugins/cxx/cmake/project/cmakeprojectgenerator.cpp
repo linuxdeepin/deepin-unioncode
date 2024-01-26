@@ -343,12 +343,12 @@ void CmakeProjectGenerator::setRootItemToView(QStandardItem *root)
 
     if (root) {
         // setting item to view
-        if (projectService->projectView.addRootItem)
-            projectService->projectView.addRootItem(root);
+        if (projectService->addRootItem)
+            projectService->addRootItem(root);
 
         // expand view from tree two level
-        if (projectService->projectView.expandedDepth)
-            projectService->projectView.expandedDepth(root, 2);
+        if (projectService->expandedDepth)
+            projectService->expandedDepth(root, 2);
 
         uiController.doSwitch(MWNA_EDIT);
         uiController.switchWorkspace(MWCWT_PROJECTS);
@@ -381,7 +381,7 @@ void CmakeProjectGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, i
     if (reloadItem) {
         d->reloadCmakeFileItems.removeOne(reloadItem);   //clean cache
         if (status == 0) {
-            projectService->projectView.removeRootItem(reloadItem);
+            projectService->removeRootItem(reloadItem);
             createRootItem(d->configureProjectInfo);
         } else {
             qCritical() << "Failed execute cmd : "
