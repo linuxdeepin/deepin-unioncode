@@ -30,8 +30,8 @@ private:
     void processClearLineBackgroundEvent(const dpf::Event &event);
 
     // annotation
-    void processSetAnnotationEvent(const dpf::Event &event);
-    void processResetAnnotationEvent(const dpf::Event &event);
+    void processAddAnnotationEvent(const dpf::Event &event);
+    void processRemoveAnnotationEvent(const dpf::Event &event);
     void processClearAllAnnotationEvent(const dpf::Event &event);
 
     // debug
@@ -66,8 +66,8 @@ signals:
     void reqClearLineBackground(const QString &fileName);
 
     // annotation
-    void reqSetAnnotation(const QString &fileName, int line, const QString &title, const AnnotationInfo &info);
-    void reqResetAnnotation(const QString &fileName, const QString &title);
+    void reqAddAnnotation(const QString &fileName, const QString &title, const QString &content,int line,  AnnotationType type);
+    void reqRemoveAnnotation(const QString &fileName, const QString &title);
     void reqClearAllAnnotation(const QString &title);
 
     // debug

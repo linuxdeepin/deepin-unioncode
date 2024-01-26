@@ -52,8 +52,8 @@ void TabWidgetPrivate::initConnection()
     connect(tabBar, &TabBar::spliterClicked, this, &TabWidgetPrivate::onSpliterClicked);
     connect(tabBar, &TabBar::closeRequested, q, &TabWidget::closeRequested);
 
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetAnnotation, this, &TabWidgetPrivate::handleSetAnnotation);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqResetAnnotation, this, &TabWidgetPrivate::handleResetAnnotation);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqAddAnnotation, this, &TabWidgetPrivate::handleAddAnnotation);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveAnnotation, this, &TabWidgetPrivate::handleRemoveAnnotation);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqClearAllAnnotation, this, &TabWidgetPrivate::handleClearAllAnnotation);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetLineBackgroundColor, this, &TabWidgetPrivate::handleSetLineBackgroundColor);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqResetLineBackground, this, &TabWidgetPrivate::handleResetLineBackground);
@@ -204,19 +204,22 @@ void TabWidgetPrivate::onFileChanged(const QString &fileName)
     });
 }
 
-void TabWidgetPrivate::handleSetAnnotation(const QString &fileName, int line, const QString &title, const AnnotationInfo &info)
+void TabWidgetPrivate::handleAddAnnotation(const QString &fileName, const QString &title, const QString &content, int line, AnnotationType type)
 {
-    // TODO:lzj
+    if (auto editor = findEditor(fileName))
+        editor->addAnnotation(title, content, line, type);
 }
 
-void TabWidgetPrivate::handleResetAnnotation(const QString &fileName, const QString &title)
+void TabWidgetPrivate::handleRemoveAnnotation(const QString &fileName, const QString &title)
 {
-    // TODO:lzj
+    if (auto editor = findEditor(fileName))
+        editor->removeAnnotation(title);
 }
 
 void TabWidgetPrivate::handleClearAllAnnotation(const QString &title)
 {
-    // TODO:lzj
+    for (auto editor : editorMng)
+        editor->removeAnnotation(title);
 }
 
 void TabWidgetPrivate::handleSetLineBackgroundColor(const QString &fileName, int line, const QColor &color)

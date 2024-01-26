@@ -6,6 +6,9 @@
 #define TEXTEDITOR_P_H
 
 #include "gui/texteditor.h"
+#include "common/util/eventdefinitions.h"
+
+#include <Qsci/qscistyle.h>
 
 class TextEditorPrivate : public QObject
 {
@@ -34,7 +37,6 @@ public:
     void initMargins();
     void updateColorTheme();
     void updateSettings();
-
     void loadLexer();
 
     int cursorPosition() const;
@@ -48,6 +50,7 @@ public:
     void gotoNextMark(uint mask);
     void gotoPreviousMark(uint mask);
     bool doFind(const QString &keyword, bool isForward);
+    QsciStyle createAnnotationStyle(int type);
 
 public slots:
     void onThemeTypeChanged();
@@ -60,6 +63,7 @@ public:
     QString fileName;
     int preFirstLineNum { 0 };
     int lastCursorPos { 0 };
+    QMultiHash<QString, int> annotationRecords;
 };
 
 #endif   // TEXTEDITOR_P_H

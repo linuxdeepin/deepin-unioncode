@@ -23,6 +23,10 @@ static constexpr int MARGIN_FOLDER_DEFAULT_WIDTH = 14;
 static constexpr int MARGIN_CHANGEBAR_DEFAULT_WIDTH = 3;
 
 static constexpr int TAB_DEFAULT_WIDTH = 4;
+static constexpr int NOTE_ANNOTATION_STYLE = 767;
+static constexpr int WARNING_ANNOTATION_STYLE = 766;
+static constexpr int ERROR_ANNOTATION_STYLE = 765;
+static constexpr int FATAL_ANNOTATION_STYLE = 764;
 
 DGUI_USE_NAMESPACE
 
@@ -36,6 +40,8 @@ TextEditorPrivate::TextEditorPrivate(TextEditor *qq)
 
 void TextEditorPrivate::init()
 {
+    q->setFrameShape(QFrame::NoFrame);
+
     initMargins();
     updateColorTheme();
     updateSettings();
@@ -63,12 +69,9 @@ void TextEditorPrivate::initMargins()
     setMarginVisible(SymbolMargin, true);
     q->setMarginSensitivity(SymbolMargin, true);
     q->setMarginMarkerMask(SymbolMargin,
-                           1 << Breakpoint
-                                   | 1 << BreakpointDisabled
-                                   | 1 << Bookmark
-                                   | 1 << Runtime
-                                   | 1 << RuntimeLineBackground
-                                   | 1 << CustomLineBackground);
+                           1 << Breakpoint | 1 << BreakpointDisabled
+                                   | 1 << Bookmark | 1 << Runtime
+                                   | 1 << RuntimeLineBackground | 1 << CustomLineBackground);
 
     // TODO: using picture to replace?
     q->markerDefine(TextEditor::Circle, Breakpoint);
@@ -288,6 +291,47 @@ bool TextEditorPrivate::doFind(const QString &keyword, bool isForward)
         index -= keyword.length();
 
     return q->findFirst(keyword, false, false, false, true, isForward, line, index);
+}
+
+QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
+{
+    QFont font = q->font();
+    font.setItalic(true);
+    switch (type) {
+    case AnnotationType::NoteAnnotation: {
+        static QsciStyle style(NOTE_ANNOTATION_STYLE,
+                               "Note",
+                               EditorColor::Table::get()->Black,
+                               EditorColor::Table::get()->Gainsboro,
+                               font);
+        return style;
+    }
+    case AnnotationType::ErrorAnnotation: {
+        static QsciStyle style(ERROR_ANNOTATION_STYLE,
+                               "Error",
+                               EditorColor::Table::get()->FireBrick,
+                               EditorColor::Table::get()->LightCoral,
+                               font);
+        return style;
+    }
+    case AnnotationType::FatalAnnotation: {
+        static QsciStyle style(FATAL_ANNOTATION_STYLE,
+                               "Fatal",
+                               EditorColor::Table::get()->FireBrick,
+                               EditorColor::Table::get()->LightCoral,
+                               font);
+        return style;
+    }
+    case AnnotationType::WarningAnnotation:
+        static QsciStyle style(WARNING_ANNOTATION_STYLE,
+                               "Warning",
+                               EditorColor::Table::get()->GoldenRod,
+                               EditorColor::Table::get()->Ivory,
+                               font);
+        return style;
+    }
+
+    return {};
 }
 
 void TextEditorPrivate::onThemeTypeChanged()

@@ -33,33 +33,34 @@ OPI_OBJECT(debugger,
 
 OPI_OBJECT(editor,
            // in
-           OPI_INTERFACE(openFile, "workspace", "filePath")
+           OPI_INTERFACE(openFile, "workspace", "fileName")
            OPI_INTERFACE(back)
            OPI_INTERFACE(forward)
-           OPI_INTERFACE(gotoLine, "filePath", "line")
+           OPI_INTERFACE(gotoLine, "fileName", "line")
 
-           // (AnnotationInfo)annInfo
-           OPI_INTERFACE(setAnnotation, "filePath", "line", "title", "annInfo")
-           OPI_INTERFACE(resetAnnotation, "filePath", "title")
-           OPI_INTERFACE(setDebugLine, "filePath", "line")
+           // (AnnotationType)type
+           OPI_INTERFACE(addAnnotation, "fileName", "title", "content", "line", "type")
+           OPI_INTERFACE(removeAnnotation, "fileName", "title")
+           OPI_INTERFACE(clearAllAnnotation, "title")
+           OPI_INTERFACE(setDebugLine, "fileName", "line")
            OPI_INTERFACE(removeDebugLine)
-           OPI_INTERFACE(setLineBackgroundColor, "filePath", "line", "color")
-           OPI_INTERFACE(resetLineBackgroundColor, "filePath", "line")
-           OPI_INTERFACE(clearLineBackgroundColor, "filePath")
-           OPI_INTERFACE(setModifiedAutoReload, "filePath", "flag")
-           OPI_INTERFACE(addBreakpoint, "filePath", "line")
-           OPI_INTERFACE(removeBreakpoint, "filePath", "line")
+           OPI_INTERFACE(setLineBackgroundColor, "fileName", "line", "color")
+           OPI_INTERFACE(resetLineBackgroundColor, "fileName", "line")
+           OPI_INTERFACE(clearLineBackgroundColor, "fileName")
+           OPI_INTERFACE(setModifiedAutoReload, "fileName", "flag")
+           OPI_INTERFACE(addBreakpoint, "fileName", "line")
+           OPI_INTERFACE(removeBreakpoint, "fileName", "line")
            OPI_INTERFACE(clearAllBreakpoint)
            // (FindType)findType
-           OPI_INTERFACE(searchText, "text", "findType")
+           OPI_INTERFACE(searchText, "keyword", "findType")
            // (FindType)repalceType
            OPI_INTERFACE(replaceText, "text", "target", "repalceType")
            // out
-           OPI_INTERFACE(fileOpened, "filePath")
-           OPI_INTERFACE(fileClosed, "filePath")
-           OPI_INTERFACE(switchedFile, "filePath")
-           OPI_INTERFACE(breakpointAdded, "filePath", "line")
-           OPI_INTERFACE(breakpointRemoved, "filePath", "line")
+           OPI_INTERFACE(fileOpened, "fileName")
+           OPI_INTERFACE(fileClosed, "fileName")
+           OPI_INTERFACE(switchedFile, "fileName")
+           OPI_INTERFACE(breakpointAdded, "fileName", "line")
+           OPI_INTERFACE(breakpointRemoved, "fileName", "line")
            OPI_INTERFACE(contextMenu, "menu")
            OPI_INTERFACE(marginMenu, "menu")
            OPI_INTERFACE(keyPressEvent, "event")
@@ -93,41 +94,6 @@ OPI_OBJECT(projectTemplate,
            OPI_INTERFACE(newWizard)
            )
 
-struct AnnotationInfo
-{
-    struct RoleElem
-    {
-        QString display;
-        int code;
-        bool operator == (const RoleElem &elem)
-        {
-            return display == elem.display
-                    && code == elem.code;
-        }
-    };
-    enum_def(Role, RoleElem)
-    {
-        enum_exp Note = {"Note", 767};
-        enum_exp Warning = {"Warning", 766};
-        enum_exp Error = {"Error", 765};
-        enum_exp Fatal = {"Fatal", 764};
-    };
-    Role::type_value role;
-    QString text;
-    AnnotationInfo(const QString &text)
-        : text(text) { role = Role::get()->Note;}
-    AnnotationInfo(Role::type_value role, const QString &text)
-        : role(role), text(text){}
-    AnnotationInfo() :role(Role::get()->Note), text(""){}
-    AnnotationInfo(const AnnotationInfo &info)
-        : role(info.role), text(info.text){}
-    bool operator == (const AnnotationInfo &info) {
-        return role == info.role
-                && text == info.text;
-    }
-};
-Q_DECLARE_METATYPE(AnnotationInfo);
-
 struct AnalysedData
 {
     struct TokenMap
@@ -153,6 +119,14 @@ enum RepalceType{
     RepalceAll
 };
 Q_DECLARE_METATYPE(RepalceType);
+
+enum AnnotationType {
+    NoteAnnotation,
+    WarningAnnotation,
+    ErrorAnnotation,
+    FatalAnnotation
+};
+Q_DECLARE_METATYPE(AnnotationType);
 
 extern const QString T_MENU;
 extern const QString T_FILEBROWSER;

@@ -43,8 +43,8 @@ public slots:
     void onSpliterClicked(Qt::Orientation ori);
     void onLinePositionChanged(int line, int index);
     void onFileChanged(const QString &fileName);
-    void handleSetAnnotation(const QString &fileName, int line, const QString &title, const AnnotationInfo &info);
-    void handleResetAnnotation(const QString &fileName, const QString &title);
+    void handleAddAnnotation(const QString &fileName, const QString &title, const QString &content, int line, AnnotationType type);
+    void handleRemoveAnnotation(const QString &fileName, const QString &title);
     void handleClearAllAnnotation(const QString &title);
     void handleSetLineBackgroundColor(const QString &fileName, int line, const QColor &color);
     void handleResetLineBackground(const QString &fileName, int line);
