@@ -20,7 +20,6 @@ using namespace dpfservice;
 void FindPlugin::initialize()
 {
     qInfo() << __FUNCTION__;
-
 }
 
 bool FindPlugin::start()
@@ -34,50 +33,48 @@ bool FindPlugin::start()
         abort();
     }
 
-    DMenu* editMenu = new DMenu(QMenu::tr("&Edit"));
-    QAction* findAction = new QAction(this);
-    QAction* advancedFindAction = new QAction(this);
+    DMenu *editMenu = new DMenu(QMenu::tr("&Edit"));
+    AbstractMenu *menuImpl = new AbstractMenu(editMenu);
 
+    QAction *findAction = new QAction(this);
+    findAction->setIcon(QIcon::fromTheme("search-find"));
+    auto findActionImpl = new AbstractAction(findAction);
+    findActionImpl->setShortCutInfo("Edit.Find",
+                                    tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
 
-    ActionManager::getInstance()->registerAction(findAction, "Edit.Find",
-                                                 tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F),
-                                                 "search-find");
-    ActionManager::getInstance()->registerAction(advancedFindAction, "Edit.Advanced.Find",
-                                                 tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F),
-                                                 "search-find");
-
-    editMenu->addAction(findAction);
-    editMenu->addAction(advancedFindAction);
-
-    windowService->addTopToolItem("Edit.Find", new AbstractAction(findAction), MWNA_EDIT);
-    windowService->addTopToolItem("Edit.Find", new AbstractAction(findAction), MWNA_DEBUG);
+    windowService->addTopToolItem("Edit.Find", findActionImpl, MWNA_EDIT);
+    windowService->addTopToolItem("Edit.Find", findActionImpl, MWNA_DEBUG);
     windowService->addTopToolSpacing("Edit.Find", 20);
 
-    connect(advancedFindAction, &QAction::triggered, [=] {
+    QAction *advancedFindAction = new QAction(this);
+    auto advancedFindActionImpl = new AbstractAction(advancedFindAction);
+    advancedFindActionImpl->setShortCutInfo("Edit.Advanced.Find",
+                                            tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F));
+    connect(advancedFindAction, &QAction::triggered, this, [=] {
         uiController.switchContext(tr("Advanced &Search"));
     });
 
-    AbstractMenu * menuImpl = new AbstractMenu(editMenu);
+    menuImpl->addAction(findActionImpl);
+    menuImpl->addAction(advancedFindActionImpl);
+
     windowService->addChildMenu(menuImpl);
 
     AbstractWidget *widgetImpl = new AbstractWidget(new FindToolWindow());
     windowService->addContextWidget(tr("Advanced &Search"), widgetImpl, true);
 
-    FindToolBar * findToolBar = new FindToolBar();
+    FindToolBar *findToolBar = new FindToolBar();
     AbstractWidget *abstractFindToolBar = new AbstractWidget(findToolBar);
 
     connect(this, &FindPlugin::onFindActionTriggered, findToolBar, &FindToolBar::handleFindActionTriggered);
-    connect(findAction, &QAction::triggered, [=] {
-        if (findToolBar) {
-            if (findToolBar->isVisible()) {
-                findToolBar->hide();
-            } else {
-                findToolBar->show();
-            }
+    connect(findAction, &QAction::triggered, findToolBar, [=] {
+        if (findToolBar->isVisible()) {
+            findToolBar->hide();
+        } else {
+            findToolBar->show();
         }
     });
 
-    if(windowService->registerWidgetToMode) {
+    if (windowService->registerWidgetToMode) {
         windowService->registerWidgetToMode("findWidget", abstractFindToolBar, CM_EDIT, Position::Top, true, false);
         windowService->registerWidgetToMode("findWidget", abstractFindToolBar, CM_DEBUG, Position::Top, true, false);
     }
@@ -94,5 +91,3 @@ dpf::Plugin::ShutdownFlag FindPlugin::stop()
     qInfo() << __FUNCTION__;
     return Sync;
 }
-
-

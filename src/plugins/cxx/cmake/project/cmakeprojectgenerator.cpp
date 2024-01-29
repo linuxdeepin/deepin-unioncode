@@ -68,10 +68,11 @@ CmakeProjectGenerator::CmakeProjectGenerator()
 
     // add run cmake menu item.
     QAction *runCMake = new QAction(tr("Run CMake"));
-    ActionManager::getInstance()->registerAction(runCMake, "Build.RunCMake", runCMake->text());
-    dpfGetService(WindowService)->addAction(dpfservice::MWM_BUILD, new AbstractAction(runCMake));
+    auto inputAction = new AbstractAction(runCMake);
+    inputAction->setShortCutInfo("Build.RunCMake", runCMake->text());
+    dpfGetService(WindowService)->addAction(dpfservice::MWM_BUILD, inputAction);
 
-    QObject::connect(runCMake, &QAction::triggered, [this](){
+    QObject::connect(runCMake, &QAction::triggered, this,[this](){
         this->runCMake(this->rootItem, {});
     });
 }

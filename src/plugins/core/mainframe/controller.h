@@ -36,8 +36,8 @@ public:
     ~Controller();
     static Controller *instance();
 
-signals:
-    void switchWidget(const QString &PluginName);
+//signals:
+//    void switchWidget(const QString &PluginName);
 
 public slots:
     void raiseView(const QString &plugin);
@@ -114,6 +114,8 @@ private:
     void createFileActions();
 
     void addMenuShortCut(QAction *action, QKeySequence keySequence = QKeySequence());
+
+    void registerActionShortCut(AbstractAction *action);
 
     void showWorkspace();
 };

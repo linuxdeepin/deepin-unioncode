@@ -70,16 +70,15 @@ bool OptionCore::start()
     if (windowService && windowService->addAction) {
         auto actionOptions = new QAction(MWMTA_OPTIONS, this);
         actionOptions->setIcon(QIcon::fromTheme("options_setting"));
-        ActionManager::getInstance()->registerAction(actionOptions,
-                                                     "Tools.Options",
-                                                     MWMTA_OPTIONS,
-                                                     QKeySequence(Qt::Modifier::CTRL |
-                                                                  Qt::Modifier::SHIFT |
-                                                                  Qt::Key::Key_H),
-                                                     QString());
-        windowService->addAction(MWM_TOOLS, new AbstractAction(actionOptions));
+        auto actionOptionsImpl = new AbstractAction(actionOptions);
+        actionOptionsImpl->setShortCutInfo("Tools.Options",
+                                           MWMTA_OPTIONS,
+                                           QKeySequence(Qt::Modifier::CTRL |
+                                                        Qt::Modifier::SHIFT |
+                                                        Qt::Key::Key_H));
 
-        windowService->addNavigationItemToBottom(new AbstractAction(actionOptions));
+        windowService->addAction(MWM_TOOLS, actionOptionsImpl);
+        windowService->addNavigationItemToBottom(actionOptionsImpl);
         QObject::connect(actionOptions, &QAction::triggered,
                          optionDialog, &QDialog::show);
     }

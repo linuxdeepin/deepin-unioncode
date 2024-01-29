@@ -4,24 +4,21 @@
 
 #include "abstractmenu.h"
 
-#include <DMenu>
-
 #include <QDebug>
-
-DWIDGET_USE_NAMESPACE
 
 class AbstractMenuPrivate
 {
     friend class AbstractMenu;
     DMenu *menu;
+    QList<AbstractAction *> actionlist;
 };
 
-AbstractMenu::AbstractMenu(void *qMenu)
+AbstractMenu::AbstractMenu(DMenu *qMenu)
     : d(new AbstractMenuPrivate())
 {
     Q_ASSERT(qMenu);
 
-    d->menu = static_cast<DMenu*>(qMenu);
+    d->menu = qMenu;
     DMenu::connect(d->menu, &DMenu::destroyed,
                    d->menu, [this]() {
         delete this;
@@ -35,7 +32,18 @@ AbstractMenu::~AbstractMenu()
     }
 }
 
-void *AbstractMenu::qMenu()
+DMenu *AbstractMenu::qMenu()
 {
     return d->menu;
+}
+
+void AbstractMenu::addAction(AbstractAction *action)
+{
+    d->actionlist.append(action);
+    d->menu->addAction(action->qAction());
+}
+
+QList<AbstractAction *> AbstractMenu::actionList()
+{
+    return d->actionlist;
 }
