@@ -66,13 +66,16 @@ void CodeEditor::initActions()
 
     QAction *backAction = new QAction(this);
     QAction *forwardAction = new QAction(this);
-    ActionManager::getInstance()->registerAction(backAction, "Editor.back",
-                                                 tr("Back"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
-    ActionManager::getInstance()->registerAction(forwardAction, "Editor.forward",
-                                                 tr("Forward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Right));
 
-    windowService->addAction(tr("&Edit"), new AbstractAction(backAction));
-    windowService->addAction(tr("&Edit"), new AbstractAction(forwardAction));
+    auto inputBackAction = new AbstractAction(backAction);
+    inputBackAction->setShortCutInfo("Editor.back", tr("Back"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
+    auto inputForwardAction = new AbstractAction(forwardAction);
+    inputForwardAction->setShortCutInfo("Editor.forward",
+                                        tr("Forward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Right));
+
+    windowService->addAction(tr("&Edit"), inputBackAction);
+    windowService->addAction(tr("&Edit"), inputForwardAction);
+
     connect(backAction, &QAction::triggered, [=] {
         editor.back();
     });

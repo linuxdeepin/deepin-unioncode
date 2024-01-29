@@ -18,8 +18,7 @@ public:
 
     Command *registerAction(QAction *action, const QString &id,
                             const QString &description = nullptr,
-                            const QKeySequence defaultShortcut = QKeySequence(),
-                            const QString &iconFileName = nullptr);
+                            const QKeySequence defaultShortcut = QKeySequence());
     void unregisterAction(QString id);
 
     Command *command(QString id);

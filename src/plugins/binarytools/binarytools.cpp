@@ -22,8 +22,9 @@ bool BinaryTools::start()
 
     if (windowService) {
         auto action = new QAction(MWMTA_BINARY_TOOLS);
-        ActionManager::getInstance()->registerAction(action, "Tools.Binary", action->text(), QKeySequence());
-        windowService->addAction(MWM_TOOLS, new AbstractAction(action));
+        auto inputAction = new AbstractAction(action);
+        inputAction->setShortCutInfo("Tools.Binary", action->text());
+        windowService->addAction(MWM_TOOLS, inputAction);
 
         QObject::connect(action, &QAction::triggered, [=](){
            BinaryToolsDialog dlg;

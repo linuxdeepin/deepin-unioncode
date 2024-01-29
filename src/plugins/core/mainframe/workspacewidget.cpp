@@ -45,7 +45,7 @@ void WorkspaceWidget::initUi()
 
 void WorkspaceWidget::addWorkspaceWidget(const QString &title, AbstractWidget *treeWidget, const QString &iconName)
 {
-    auto qTreeWidget = static_cast<DWidget*>(treeWidget->qWidget());
+    auto qTreeWidget = static_cast<DWidget *>(treeWidget->qWidget());
 
     qTreeWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 

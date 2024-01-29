@@ -11,14 +11,19 @@ class AbstractActionPrivate
 {
     friend class AbstractAction;
     QAction *action = nullptr;
+
+    bool hasShortCut { false };
+    QString id { "" };
+    QString description { "" };
+    QKeySequence keySequence {};
 };
 
-AbstractAction::AbstractAction(void *qAction)
+AbstractAction::AbstractAction(QAction *qAction)
     : d(new AbstractActionPrivate())
 {
     Q_ASSERT(qAction);
 
-    d->action = static_cast<QAction*>(qAction);
+    d->action = qAction;
     d->action->setObjectName("AbstractAction");
     QAction::connect(d->action, &QAction::destroyed,
                      d->action, [this]() {
@@ -33,8 +38,35 @@ AbstractAction::~AbstractAction()
     }
 }
 
-void *AbstractAction::qAction()
+QAction *AbstractAction::qAction()
 {
-    return static_cast<void*>(d->action);
+    return d->action;
 }
 
+void AbstractAction::setShortCutInfo(const QString &id, const QString &description, const QKeySequence defaultShortCut)
+{
+    d->hasShortCut = true;
+    d->id = id;
+    d->description = description;
+    d->keySequence = defaultShortCut.isEmpty() ? d->action->shortcut() : defaultShortCut;
+}
+
+bool AbstractAction::hasShortCut()
+{
+    return d->hasShortCut;
+}
+
+QString AbstractAction::id()
+{
+    return d->id;
+}
+
+QString AbstractAction::description()
+{
+    return d->description;
+}
+
+QKeySequence AbstractAction::keySequence()
+{
+    return d->keySequence;
+}

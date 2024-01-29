@@ -33,12 +33,14 @@ Runner::Runner(QObject *parent)
     connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &Runner::handleEvents);
 
     d->runAction.reset(new QAction(MWMDA_RUNNING));
-    ActionManager::getInstance()->registerAction(d->runAction.get(), "Debug.Running",
-                                                 MWMDA_RUNNING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5),
-                                                 "run");
+    d->runAction.get()->setIcon(QIcon::fromTheme("run"));
     connect(d->runAction.get(), &QAction::triggered, this, &Runner::run);
+
+    auto actionImpl = new AbstractAction(d->runAction.get());
+    actionImpl->setShortCutInfo("Debug.Running",
+                                MWMDA_RUNNING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5));
     WindowService *service = dpfGetService(WindowService);
-    service->addTopToolItem(tr("Running"), new AbstractAction(d->runAction.get()), MWNA_EDIT);
+    service->addTopToolItem(tr("Running"), actionImpl, MWNA_EDIT);
 }
 
 void Runner::run()

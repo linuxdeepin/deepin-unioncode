@@ -162,17 +162,12 @@ ActionManager *ActionManager::getInstance()
 */
 Command *ActionManager::registerAction(QAction *action, const QString &id,
                                        const QString &description/* = nullptr*/,
-                                       const QKeySequence defaultShortcut/* = QKeySequence()*/,
-                                       const QString &iconFileName/* = nullptr*/)
+                                       const QKeySequence defaultShortcut/* = QKeySequence()*/)
 {
     if(!action || id.isEmpty())
         return nullptr;
 
-    const QIcon icon = QIcon::fromTheme(iconFileName);
-    if (!icon.isNull())
-        action->setIcon(icon);
-    
-    connect(action, &QAction::destroyed, [=] {
+    connect(action, &QAction::destroyed, this, [=] {
         unregisterAction(id);
     });
 

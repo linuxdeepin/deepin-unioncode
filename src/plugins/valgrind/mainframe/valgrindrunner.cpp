@@ -49,22 +49,25 @@ void ValgrindRunner::initialize()
         return;
 
     d->memcheckAction.reset(new QAction(MWMTA_VALGRIND_MEMCHECK, this));
-    ActionManager::getInstance()->registerAction(d->memcheckAction.get(), "Analyze.ValgrindMemcheck",
-                                                 d->memcheckAction->text(), QKeySequence());
-    windowService->addAction(MWM_TOOLS, new AbstractAction(d->memcheckAction.get()));
+    auto memcheckActionImpl = new AbstractAction(d->memcheckAction.get());
+    memcheckActionImpl->setShortCutInfo("Analyze.ValgrindMemcheck",
+                                        d->memcheckAction->text());
+    windowService->addAction(MWM_TOOLS, memcheckActionImpl);
 
-    d->helgrindAction.reset(new QAction(MWMTA_VALGRIND_HELGRIND, this));
-    ActionManager::getInstance()->registerAction(d->helgrindAction.get(), "Analyze.ValgrindHelgrind",
-                                                 d->helgrindAction->text(), QKeySequence());
-    windowService->addAction(MWM_TOOLS, new AbstractAction(d->helgrindAction.get()));
+    d->helgrindAction.reset(new QAction(MWMTA_VALGRIND_HELGRIND, this));\
+    auto helgrindActionImpl = new AbstractAction(d->helgrindAction.get());
+    helgrindActionImpl->setShortCutInfo("Analyze.ValgrindHelgrind",
+                                        d->helgrindAction->text());
 
-    QObject::connect(d->memcheckAction.get(), &QAction::triggered, [=]() {
+    windowService->addAction(MWM_TOOLS, helgrindActionImpl);
+
+    QObject::connect(d->memcheckAction.get(), &QAction::triggered, this, [=]() {
         QtConcurrent::run([=]() {
             ValgrindRunner::instance()->runValgrind("memcheck");
         });
     });
 
-    QObject::connect(d->helgrindAction.get(), &QAction::triggered, [=]() {
+    QObject::connect(d->helgrindAction.get(), &QAction::triggered, this, [=]() {
         QtConcurrent::run([=]() {
             ValgrindRunner::instance()->runValgrind("helgrind");
         });

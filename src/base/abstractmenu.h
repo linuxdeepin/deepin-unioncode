@@ -7,14 +7,23 @@
 
 #include "abstractaction.h"
 
+#include <DMenu>
+
+#include <QList>
+
+DWIDGET_USE_NAMESPACE
+
 class AbstractMenuPrivate;
+class AbstractAction;
 class AbstractMenu
 {
     AbstractMenuPrivate *const d;
 public:
-    explicit AbstractMenu(void *qMenu);
+    explicit AbstractMenu(DMenu *qMenu);
     virtual ~AbstractMenu();
-    void *qMenu();
+    DMenu *qMenu();
+    void addAction(AbstractAction *action);
+    QList<AbstractAction *> actionList();
 };
 
 #endif // ABSTRACTMENU_H

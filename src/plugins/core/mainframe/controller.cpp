@@ -423,7 +423,7 @@ void Controller::addNavigationItem(AbstractAction *action)
 {
     if (!action)
         return;
-    auto inputAction = static_cast<QAction *>(action->qAction());
+    auto inputAction = action->qAction();
 
     d->navigationBar->addNavItem(inputAction);
     d->navigationActions.insert(inputAction->text(), inputAction);
@@ -433,7 +433,7 @@ void Controller::addNavigationItemToBottom(AbstractAction *action)
 {
     if (!action)
         return;
-    auto inputAction = static_cast<QAction *>(action->qAction());
+    auto inputAction = action->qAction();
 
     d->navigationBar->addNavItem(inputAction, NavigationBar::bottom);
     d->navigationActions.insert(inputAction->text(), inputAction);
@@ -520,9 +520,14 @@ void Controller::switchContextWidget(const QString &title)
 
 void Controller::addChildMenu(AbstractMenu *abstractMenu)
 {
-    DMenu *inputMenu = static_cast<DMenu *>(abstractMenu->qMenu());
+    DMenu *inputMenu = abstractMenu->qMenu();
     if (!d->mainWindow || !inputMenu)
         return;
+
+    foreach (AbstractAction *action, abstractMenu->actionList()) {
+        if(action && action->hasShortCut())
+            registerActionShortCut(action);
+    }
 
     //make the `helper` menu at the last
     for (QAction *action : d->menu->actions()) {
@@ -538,9 +543,15 @@ void Controller::addChildMenu(AbstractMenu *abstractMenu)
 
 void Controller::insertAction(const QString &menuName, const QString &beforActionName, AbstractAction *action)
 {
-    QAction *inputAction = static_cast<QAction *>(action->qAction());
-    if (!action || !inputAction)
+    if(!action)
         return;
+
+    QAction *inputAction = action->qAction();
+    if (!inputAction)
+        return;
+
+    if(action->hasShortCut())
+        registerActionShortCut(action);
 
     for (QAction *qAction : d->mainWindow->menuBar()->actions()) {
         if (qAction->text() == menuName) {
@@ -560,9 +571,12 @@ void Controller::insertAction(const QString &menuName, const QString &beforActio
 
 void Controller::addAction(const QString &menuName, AbstractAction *action)
 {
-    QAction *inputAction = static_cast<QAction *>(action->qAction());
+    QAction *inputAction = action->qAction();
     if (!inputAction)
         return;
+
+    if(action->hasShortCut())
+        registerActionShortCut(action);
 
     //防止与edit和debug界面的topToolBar快捷键冲突
     if (menuName != MWM_DEBUG && menuName != MWM_BUILD)
@@ -589,6 +603,9 @@ void Controller::addAction(const QString &menuName, AbstractAction *action)
             qAction->menu()->addAction(inputAction);
         }
     }
+
+    if(!inputAction->parent())
+        inputAction->setParent(this);
 }
 
 void Controller::removeActions(const QString &menuName)
@@ -608,7 +625,10 @@ void Controller::addOpenProjectAction(const QString &name, AbstractAction *actio
     if (!action || !action->qAction())
         return;
 
-    QAction *inputAction = static_cast<QAction *>(action->qAction());
+    if(action->hasShortCut())
+        registerActionShortCut(action);
+
+    QAction *inputAction = action->qAction();
 
     foreach (QAction *action, d->menu->actions()) {
         if (action->text() == MWMFA_OPEN_PROJECT) {
@@ -630,7 +650,11 @@ void Controller::addTopToolItem(const QString &itemName, AbstractAction *action,
 {
     if (!action || itemName.isNull())
         return;
-    auto inputAction = static_cast<QAction *>(action->qAction());
+
+    if(action->hasShortCut())
+        registerActionShortCut(action);
+
+    auto inputAction = action->qAction();
 
     d->topToolActions[plugin].append(qMakePair(itemName, inputAction));
 
@@ -756,30 +780,32 @@ void Controller::initMenu()
 
 void Controller::createHelpActions()
 {
-    auto helpMenu = new DMenu(MWM_HELP);
+    auto helpMenu = new DMenu(MWM_HELP, d->menu);
     d->menu->addMenu(helpMenu);
 
-    QAction *actionReportBug = new QAction(MWM_REPORT_BUG);
+    QAction *actionReportBug = new QAction(MWM_REPORT_BUG, helpMenu);
     ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
-                                                 MWM_REPORT_BUG, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R),
-                                                 "");
+                                                 MWM_REPORT_BUG, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R));
     addMenuShortCut(actionReportBug);
     helpMenu->addAction(actionReportBug);
-    QAction *actionHelpDoc = new QAction(MWM_HELP_DOCUMENTS);
+
+    QAction *actionHelpDoc = new QAction(MWM_HELP_DOCUMENTS, helpMenu);
     ActionManager::getInstance()->registerAction(actionHelpDoc, "Help.Help.Documents",
                                                  MWM_HELP_DOCUMENTS, QKeySequence());
     helpMenu->addAction(actionHelpDoc);
+    addMenuShortCut(actionHelpDoc);
 
     helpMenu->addSeparator();
 
-    QAction *actionAboutPlugin = new QAction(MWM_ABOUT_PLUGINS);
+    QAction *actionAboutPlugin = new QAction(MWM_ABOUT_PLUGINS, helpMenu);
     ActionManager::getInstance()->registerAction(actionAboutPlugin, "Help.AboutPlugins", MWM_ABOUT_PLUGINS, QKeySequence());
     helpMenu->addAction(actionAboutPlugin);
+    addMenuShortCut(actionAboutPlugin);
 
-    QAction::connect(actionReportBug, &QAction::triggered, [=]() {
+    QAction::connect(actionReportBug, &QAction::triggered, this, [=]() {
         QDesktopServices::openUrl(QUrl("https://github.com/linuxdeepin/deepin-unioncode/issues"));
     });
-    QAction::connect(actionHelpDoc, &QAction::triggered, [=]() {
+    QAction::connect(actionHelpDoc, &QAction::triggered, this, [=]() {
         QDesktopServices::openUrl(QUrl("https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e"));
     });
     QAction::connect(actionAboutPlugin, &QAction::triggered, this, &Controller::showAboutPlugins);
@@ -865,8 +891,12 @@ void Controller::addMenuShortCut(QAction *action, QKeySequence keySequence)
     if (keySequence.isEmpty())
         key = action->shortcut();
 
-    QShortcut *shortCutOpenFile = new QShortcut(key, d->mainWindow);
-    connect(shortCutOpenFile, &QShortcut::activated, [=] {
+    QShortcut *shortCut = new QShortcut(key, d->mainWindow);
+    connect(action, &QAction::changed, this, [=](){
+        if(action->shortcut() != shortCut->key())
+            shortCut->setKey(action->shortcut());
+    });
+    connect(shortCut, &QShortcut::activated, action, [=] {
         action->trigger();
     });
 }
@@ -887,6 +917,14 @@ void Controller::switchWorkspace(const QString &titleName)
 {
     if (d->workspace)
         d->workspace->switchWidgetWorkspace(titleName);
+}
+
+void Controller::registerActionShortCut(AbstractAction *action)
+{
+    auto qAction = action->qAction();
+    if(!qAction)
+        return;
+    ActionManager::getInstance()->registerAction(qAction, action->id(), action->description(), action->keySequence());
 }
 
 void Controller::showWorkspace()
