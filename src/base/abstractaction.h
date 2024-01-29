@@ -6,14 +6,24 @@
 #define ABSTRACTNAVACTION_H
 
 #include <functional>
+
+#include <QKeySequence>
+#include <QAction>
+
 class AbstractActionPrivate;
 class AbstractAction
 {
     AbstractActionPrivate *const d;
 public:
-    explicit AbstractAction(void *qAction);
+    explicit AbstractAction(QAction *qAction);
     virtual ~AbstractAction();
-    void *qAction();
+    void setShortCutInfo(const QString &id, const QString &description, const QKeySequence defaultShortCut = QKeySequence());
+    bool hasShortCut();
+    QString id();
+    QString description();
+    QKeySequence keySequence();
+
+    QAction *qAction();
 };
 
 #endif // ABSTRACTNAVACTION_H

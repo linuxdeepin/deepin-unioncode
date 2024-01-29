@@ -22,14 +22,21 @@ void MenuManager::initialize(WindowService *windowService)
     if (!windowService)
         return;
 
+    auto initAction = [&](QAction *action, const QString &id, const QString &description,
+            QKeySequence key, const QString &iconName) -> AbstractAction*{
+        action->setIcon(QIcon::fromTheme(iconName));
+        auto actionImpl = new AbstractAction(action);
+        actionImpl->setShortCutInfo(id, description, key);
+        return actionImpl;
+    };
+
     startDebugging.reset(new QAction(MWMDA_START_DEBUG));
-    ActionManager::getInstance()->registerAction(startDebugging.get(), "Debug.Start.Debugging",
-                                                 MWMDA_START_DEBUG, QKeySequence(Qt::Key::Key_F5),
-                                                 "debugger_start");
     connect(startDebugging.get(), &QAction::triggered, debugManager, &DebugManager::run);
-    AbstractAction *actionImpl = new AbstractAction(startDebugging.get());
+    auto actionImpl = initAction(startDebugging.get(), "Debug.Start.Debugging",
+                                 MWMDA_START_DEBUG, QKeySequence(Qt::Key::Key_F5),
+                                 "debugger_start");
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addTopToolItem("Start Debugging", new AbstractAction(startDebugging.get()), MWNA_DEBUG);
+    windowService->addTopToolItem("Start Debugging", actionImpl, MWNA_DEBUG);
 #if 0 // not used yet.
     detachDebugger.reset(new QAction("Detach Debugger"));
     connect(detachDebugger.get(), &QAction::triggered, debugManager, &DebugManager::detachDebug);
@@ -38,76 +45,69 @@ void MenuManager::initialize(WindowService *windowService)
 #endif
 
     interrupt.reset(new QAction(MWMDA_INTERRUPT));
-    ActionManager::getInstance()->registerAction(interrupt.get(), "Debug.Interrupt",
-                                                 MWMDA_INTERRUPT, QKeySequence(Qt::Key::Key_F5),
-                                                 "debugger_interrupt");
     interrupt->setEnabled(false);
     connect(interrupt.get(), &QAction::triggered, debugManager, &DebugManager::interruptDebug);
-    actionImpl = new AbstractAction(interrupt.get());
-    interrupt->setEnabled(false);
+
+    actionImpl = initAction(interrupt.get(), "Debug.Interrupt",
+                            MWMDA_INTERRUPT, QKeySequence(Qt::Key::Key_F5),
+                            "debugger_interrupt");
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addTopToolItem("Interrupt", new AbstractAction(interrupt.get()), MWNA_DEBUG);
+    windowService->addTopToolItem("Interrupt", actionImpl, MWNA_DEBUG);
 
     continueDebugging.reset(new QAction(MWMDA_CONTINUE));
-    ActionManager::getInstance()->registerAction(continueDebugging.get(), "Debug.Continue",
-                                                 MWMDA_CONTINUE, QKeySequence(Qt::Key::Key_F5),
-                                                 "debugger_continue");
     continueDebugging->setEnabled(false);
     connect(continueDebugging.get(), &QAction::triggered, debugManager, &DebugManager::continueDebug);
-    actionImpl = new AbstractAction(continueDebugging.get());
+    actionImpl = initAction(continueDebugging.get(), "Debug.Continue",
+                            MWMDA_CONTINUE, QKeySequence(Qt::Key::Key_F5),
+                            "debugger_continue");
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addTopToolItem("Debugger.Continue", new AbstractAction(continueDebugging.get()), MWNA_DEBUG);
+    windowService->addTopToolItem("Debugger.Continue", actionImpl, MWNA_DEBUG);
 
     abortDebugging.reset(new QAction(MWMDA_ABORT_DEBUGGING));
-    ActionManager::getInstance()->registerAction(abortDebugging.get(), "Debug.Abort.Debugging",
-                                                 MWMDA_ABORT_DEBUGGING, QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F5),
-                                                 "debugger_stop");
     abortDebugging->setEnabled(false);
     connect(abortDebugging.get(), &QAction::triggered, debugManager, &DebugManager::abortDebug);
-    actionImpl = new AbstractAction(abortDebugging.get());
+    actionImpl = initAction(abortDebugging.get(), "Debug.Abort.Debugging",
+                            MWMDA_ABORT_DEBUGGING, QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F5),
+                            "debugger_stop");
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addTopToolItem("abort_debug", new AbstractAction(abortDebugging.get()), MWNA_DEBUG);
+    windowService->addTopToolItem("abort_debug", actionImpl, MWNA_DEBUG);
 
     restartDebugging.reset(new QAction(MWMDA_RESTART_DEBUGGING));
-    ActionManager::getInstance()->registerAction(restartDebugging.get(), "Debug.Restart.Debugging",
-                                                 MWMDA_RESTART_DEBUGGING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
-                                                 "restart_debug");
     restartDebugging->setEnabled(false);
     connect(restartDebugging.get(), &QAction::triggered, debugManager, &DebugManager::restartDebug);
-    actionImpl = new AbstractAction(restartDebugging.get());
+    actionImpl = initAction(restartDebugging.get(), "Debug.Restart.Debugging",
+                            MWMDA_RESTART_DEBUGGING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+                            "restart_debug");
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addTopToolItem("Restart.Debugging", new AbstractAction(restartDebugging.get()), MWNA_DEBUG);
+    windowService->addTopToolItem("Restart.Debugging", actionImpl, MWNA_DEBUG);
 
     stepOver.reset(new QAction(MWMDA_STEP_OVER));
-    ActionManager::getInstance()->registerAction(stepOver.get(), "Debug.Step.Over",
-                                                 MWMDA_STEP_OVER, QKeySequence(Qt::Key::Key_F10),
-                                                 "debugger_stepover");
     stepOver->setEnabled(false);
     connect(stepOver.get(), &QAction::triggered, debugManager, &DebugManager::stepOver);
-    actionImpl = new AbstractAction(stepOver.get());
+    actionImpl = initAction(stepOver.get(), "Debug.Step.Over",
+                            MWMDA_STEP_OVER, QKeySequence(Qt::Key::Key_F10),
+                            "debugger_stepover");
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addTopToolItem("Step.Over", new AbstractAction(stepOver.get()), MWNA_DEBUG);
+    windowService->addTopToolItem("Step.Over", actionImpl, MWNA_DEBUG);
     windowService->addTopToolSpacing("Step.Over", 20);
 
     stepIn.reset(new QAction(MWMDA_STEP_IN));
-    ActionManager::getInstance()->registerAction(stepIn.get(), "Debug.Step.In",
-                                                 MWMDA_STEP_IN, QKeySequence(Qt::Key::Key_F11),
-                                                 "debugger_stepinto");
     stepIn->setEnabled(false);
     connect(stepIn.get(), &QAction::triggered, debugManager, &DebugManager::stepIn);
-    actionImpl = new AbstractAction(stepIn.get());
+    actionImpl = initAction(stepIn.get(), "Debug.Step.In",
+                            MWMDA_STEP_IN, QKeySequence(Qt::Key::Key_F11),
+                            "debugger_stepinto");
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addTopToolItem("Step.In", new AbstractAction(stepIn.get()), MWNA_DEBUG);
+    windowService->addTopToolItem("Step.In", actionImpl, MWNA_DEBUG);
 
     stepOut.reset(new QAction(MWMDA_STEP_OUT));
-    ActionManager::getInstance()->registerAction(stepOut.get(), "Debug.Step.Out",
-                                                 MWMDA_STEP_OUT, QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F11),
-                                                 "debugger_stepout");
     stepOut->setEnabled(false);
     connect(stepOut.get(), &QAction::triggered, debugManager, &DebugManager::stepOut);
-    actionImpl = new AbstractAction(stepOut.get());
+    actionImpl = initAction(stepOut.get(), "Debug.Step.Out",
+                            MWMDA_STEP_OUT, QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_F11),
+                            "debugger_stepout");
     windowService->addAction(MWM_DEBUG, actionImpl);
-    windowService->addTopToolItem("Step.Out", new AbstractAction(stepOut.get()), MWNA_DEBUG);
+    windowService->addTopToolItem("Step.Out", actionImpl, MWNA_DEBUG);
 }
 
 void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)

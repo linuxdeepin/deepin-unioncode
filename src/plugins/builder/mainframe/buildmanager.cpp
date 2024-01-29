@@ -91,39 +91,43 @@ void BuildManager::addMenu()
     if (!windowService)
         return;
 
-    auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
-        ActionManager::getInstance()->registerAction(action, actionID, action->text(), key, iconFileName);
+    auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName)
+            -> AbstractAction* {
+        action->setIcon(QIcon::fromTheme(iconFileName));
+        auto inputAction = new AbstractAction(action);
+        inputAction->setShortCutInfo(actionID, action->text(), key);
+        return inputAction;
     };
 
     d->buildAction.reset(new QAction(MWMBA_BUILD));
-    actionInit(d->buildAction.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
-               "build");
-    windowService->addTopToolItem("toolbar.Build", new AbstractAction(d->buildAction.get()), MWNA_EDIT);
+    windowService->addTopToolItem("toolbar.Build", actionInit(d->buildAction.get(), "Build.Build",
+                                                              QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+                                                              "build"), MWNA_EDIT);
 
     d->buildActionNoIcon.reset(new QAction(MWMBA_BUILD));
-    actionInit(d->buildActionNoIcon.get(), "Build.Build", QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
-               "");
-    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->buildActionNoIcon.get()));
+    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->buildActionNoIcon.get(), "Build.Build",
+                                                               QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+                                                               ""));
 
     d->rebuildAction.reset(new QAction(MWMBA_REBUILD));
-    actionInit(d->rebuildAction.get(), "Build.Rebuild", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B),
-               "");
-    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->rebuildAction.get()));
+    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->rebuildAction.get(), "Build.Rebuild",
+                                                               QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B),
+                                                               ""));
 
     d->cleanAction.reset(new QAction(MWMBA_CLEAN));
-    actionInit(d->cleanAction.get(), "Build.Clean", QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
-               "");
-    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->cleanAction.get()));
+    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->cleanAction.get(), "Build.Clean",
+                                                               QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
+                                                               ""));
 
     d->cancelAction.reset(new QAction(MWMBA_CANCEL));
-    actionInit(d->cancelAction.get(), "Build.Cancel",QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
-               "cancel");
-    windowService->addTopToolItem("toolbar.Cancel",new AbstractAction(d->cancelAction.get()), MWNA_EDIT);
+    windowService->addTopToolItem("toolbar.Cancel", actionInit(d->cancelAction.get(), "Build.Cancel",
+                                                               QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
+                                                               "cancel"), MWNA_EDIT);
 
     d->cancelActionNoIcon.reset(new QAction(MWMBA_CANCEL));
-    actionInit(d->cancelActionNoIcon.get(), "Build.Cancel", QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
-               "");
-    windowService->addAction(dpfservice::MWM_BUILD, new AbstractAction(d->cancelActionNoIcon.get()));
+    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->cancelActionNoIcon.get(), "Build.Cancel",
+                                                               QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
+                                                               ""));
 
     QObject::connect(d->buildAction.get(), &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);

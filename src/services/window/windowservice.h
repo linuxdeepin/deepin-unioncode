@@ -82,7 +82,7 @@ public:
     DPF_INTERFACE(void, replaceWidget, const QString &name, AbstractWidget *abstractWidget, Position pos);
 
     /*!
-     * \brief replace Widget to Position, Effective immediately, can use this interface when action triggerd
+     * \brief insert Widget to Position, stay with current widget, Effective immediately, can use this interface when action triggerd
      * \param widget name
      * \param abstractWidget
      * \param Position

@@ -29,12 +29,11 @@ bool CodePortingPlugin::start()
 
     // Add code porting item in tool menu.
     QAction *action = new QAction(tr("Code Porting"));
-    ActionManager::getInstance()->registerAction(action, "Tool.CodePorting", action->text(),QKeySequence(),
-                                                 QString());
+    auto inputAction = new AbstractAction(action);
+    inputAction->setShortCutInfo("Tool.CodePorting", action->text(),QKeySequence());
     connect(action, &QAction::triggered, CodePortingManager::instance(), &CodePortingManager::slotShowConfigWidget);
 
-    AbstractAction *actionImpl = new AbstractAction(action);
-    windowService->addAction(MWM_TOOLS, actionImpl);
+    windowService->addAction(MWM_TOOLS, inputAction);
 
     return true;
 }

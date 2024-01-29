@@ -27,11 +27,13 @@ bool ActionAnalyse::start()
 
     if (windowService) {
         auto action = new QAction(MWMTA_USR_ACTION_ANALYZE);
-        ActionManager::getInstance()->registerAction(action, "Analyze.UsrActionAnalyze", action->text(), QKeySequence());
         action->setCheckable(true);
         action->setChecked(Configure::enabled());
         QObject::connect(action, &QAction::toggled, Configure::setEnabled);
-        windowService->addAction(MWM_TOOLS, new AbstractAction(action));
+
+        auto inputAction = new AbstractAction(action);
+        inputAction->setShortCutInfo("Analyze.UsrActionAnalyze", action->text());
+        windowService->addAction(MWM_TOOLS, inputAction);
     }
 
     return true;
