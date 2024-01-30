@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include <dfm-framework/backtrace/backtrace.h>
+#include <backtrace/backtrace.h>
 
 #include <QCoreApplication>
 #include <qloggingcategory.h>
