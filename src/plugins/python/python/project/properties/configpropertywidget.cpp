@@ -12,8 +12,8 @@
 #include <DLabel>
 
 #include <QVBoxLayout>
-using namespace config;
 
+using namespace config;
 class DetailPropertyWidgetPrivate
 {
     friend class DetailPropertyWidget;
@@ -51,26 +51,72 @@ void DetailPropertyWidget::setupUI()
     vLayout->addStretch(10);
 }
 
+/**
+ * @brief findAll
+ * @param pattern
+ * @param str
+ * @param Greedy: find all items matched when Greedy is true.
+ * @return matched items.
+ */
+QList<QString> findAll(QString pattern, QString str, bool Greedy)
+{
+    QRegExp rxlen(pattern);
+    rxlen.setMinimal(Greedy);
+    int position = 0;
+    QList<QString> strList;
+    while (position >= 0) {
+        position = rxlen.indexIn(str, position);
+        if (position < 0)
+            break;
+        strList << rxlen.cap(1);
+        position += rxlen.matchedLength();
+    }
+    return strList;
+}
+
+QStringList getPythonAllVersion()
+{
+    QDir dir("/usr/bin");
+    QStringList filter { "Python*.*" };
+    dir.setNameFilters(filter);
+    QStringList pythonList = dir.entryList();
+
+    QString pattern = "((\\d)|(\\d.\\d))($|\\s)";
+    QStringList versions = findAll(pattern, pythonList.join(" "), true);
+    return versions;
+}
+
+QString getNewVersionPython()
+{
+    QStringList versions = getPythonAllVersion();
+    double newVersion = 0;
+    for (auto version : versions) {
+        double v = version.toDouble();
+        if (v > newVersion) {
+            newVersion = v;
+        }
+    }
+    QString pythonCmd = "python" + QString::number(newVersion);
+    return pythonCmd;
+}
+
 void DetailPropertyWidget::initData()
 {
     d->toolChainData.reset(new ToolChainData());
-    QString retMsg;
-    bool ret = d->toolChainData->readToolChainData(retMsg);
-    if (ret) {
-        const ToolChainData::ToolChains &data = d->toolChainData->getToolChanins();
-        auto initComboBox = [](DComboBox *comboBox, const ToolChainData::ToolChains &data, const QString &type) {
-            int index = 0;
-            ToolChainData::Params params = data.value(type);
-            for (auto param : params) {
-                QString text = param.name + "(" + param.path + ")";
-                comboBox->insertItem(index, text);
-                comboBox->setItemData(index, QVariant::fromValue(param), Qt::UserRole + 1);
-                index++;
-            }
-        };
-
-        initComboBox(d->pyVersionComboBox, data, kPython);
-    }
+    auto initComboBox = [](DComboBox *comboBox, const QStringList &data) {
+        int index = 0;
+        for (auto version : data) {
+            ToolChainData::ToolChainParam param;
+            param.name =  QString("python%1").arg(version);
+            param.path = "/usr/bin/" + param.name;
+            QString text = param.name + "(" + param.path + ")";
+            comboBox->insertItem(index, text);
+            comboBox->setItemData(index, QVariant::fromValue(param), Qt::UserRole + 1);
+            index++;
+        }
+        comboBox->setCurrentText(getNewVersionPython());
+    };
+    initComboBox(d->pyVersionComboBox, getPythonAllVersion());
 }
 
 void DetailPropertyWidget::setValues(const config::ProjectConfigure *param)
@@ -89,7 +135,6 @@ void DetailPropertyWidget::setValues(const config::ProjectConfigure *param)
             }
         }
     };
-
     initComboBox(d->pyVersionComboBox, param->pythonVersion);
 }
 
@@ -148,8 +193,7 @@ void ConfigPropertyWidget::setupUI()
 
 void ConfigPropertyWidget::initData(const dpfservice::ProjectInfo &projectInfo)
 {
-    ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
-    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(projectInfo.workspaceFolder()), *param);
+    auto param = ConfigUtil::instance()->getConfigureParamPointer();
     d->detail->setValues(param);
     param->kit = projectInfo.kitName();
     param->language = projectInfo.language();

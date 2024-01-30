@@ -4,8 +4,10 @@
 
 #include "pythongenerator.h"
 #include "python/pythondebug.h"
+#include "project/properties/configutil.h"
 
 using namespace dpfservice;
+using namespace config;
 
 class PythonGeneratorPrivate
 {
@@ -85,7 +87,7 @@ static QString getEntryFilePath(const QDir &dir)
 {
     QFileInfoList entries = dir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
     //Create a QRegExp object with the given regular expression
-    QRegExp regExp("if\\s*__name__\\s*==\\s*'__main__'");
+    QRegExp regExp("if\\s*__name__\\s*==\\s*['|\"]__main__['|\"]");
 
     //Loop through files
     foreach (QFileInfo entry, entries) {
@@ -118,8 +120,17 @@ RunCommandInfo PythonGenerator::getRunArguments(const ProjectInfo &projectInfo, 
     bool isRunCurrentFile = false;
 
     RunCommandInfo runCommandInfo;
-    runCommandInfo.program = "python";
-    runCommandInfo.arguments << (isRunCurrentFile ? currentFile : getEntryFilePath(projectInfo.workspaceFolder()));
+    runCommandInfo.program = ConfigUtil::instance()->getConfigureParamPointer()->pythonVersion.path;
     runCommandInfo.workingDir = projectInfo.workspaceFolder();
+    // get run file path.
+    QString runFilePath = currentFile;
+    if (!isRunCurrentFile) {
+        QString entryFilePath = getEntryFilePath(projectInfo.workspaceFolder());
+        if (!entryFilePath.isEmpty()) {
+            runFilePath = entryFilePath;
+        }
+    }
+    runCommandInfo.arguments << runFilePath;
+
     return runCommandInfo;
 }
