@@ -5,6 +5,7 @@
 #include "pythonprojectgenerator.h"
 #include "pythonasynparse.h"
 #include "python/project/properties/configpropertywidget.h"
+#include "python/project/properties/configutil.h"
 #include "common/dialog/propertiesdialog.h"
 #include "services/window/windowservice.h"
 #include "services/builder/builderservice.h"
@@ -14,6 +15,7 @@
 #include <QtXml>
 #include <QFileIconProvider>
 
+using namespace config;
 class PythonProjectGeneratorPrivate
 {
     friend class PythonProjectGenerator;
@@ -64,11 +66,11 @@ QDialog *PythonProjectGenerator::configureWidget(const QString &language,
     return nullptr;
 }
 
-bool PythonProjectGenerator::configure(const dpfservice::ProjectInfo &info)
+bool PythonProjectGenerator::configure(const dpfservice::ProjectInfo &projectInfo)
 {
-    dpfservice::ProjectGenerator::configure(info);
+    dpfservice::ProjectGenerator::configure(projectInfo);
 
-    auto root = createRootItem(info);
+    auto root = createRootItem(projectInfo);
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
@@ -76,6 +78,8 @@ bool PythonProjectGenerator::configure(const dpfservice::ProjectInfo &info)
         projectService->addRootItem(root);
         projectService->expandedDepth(root, 1);
     }
+    ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
+    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(projectInfo.workspaceFolder()), *param);
 
     return true;
 }
