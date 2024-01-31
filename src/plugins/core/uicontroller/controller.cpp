@@ -13,6 +13,7 @@
 #include "services/project/projectservice.h"
 #include "modules/abstractmodule.h"
 #include "modules/pluginmanagermodule.h"
+#include "locator/locatormanager.h"
 
 #include <DFrame>
 #include <DFileDialog>
@@ -750,7 +751,7 @@ void Controller::openFileDialog()
     if (filePath.isEmpty() && !QFileInfo(filePath).exists())
         return;
     recent.saveOpenedFile(filePath);
-    editor.openFile(filePath);
+    editor.openFile(QString(), filePath);
 }
 
 void Controller::loading()
@@ -842,8 +843,6 @@ void Controller::createHelpActions()
 
     helpMenu->addSeparator();
 
-
-
     QAction::connect(actionReportBug, &QAction::triggered, this, [=]() {
         QDesktopServices::openUrl(QUrl("https://github.com/linuxdeepin/deepin-unioncode/issues"));
     });
@@ -929,7 +928,7 @@ void Controller::initWorkspaceWidget()
 void Controller::initTopToolBar()
 {
     d->leftTopToolBar = new DStackedWidget(d->mainWindow);
-    d->globalSearchBar = new DSearchEdit(d->mainWindow);
+    d->globalSearchBar = LocatorManager::instance()->getInputEdit();
     d->rightTopToolBar = new DWidget(d->mainWindow);
 
     QHBoxLayout *rtLayout = new QHBoxLayout(d->rightTopToolBar);

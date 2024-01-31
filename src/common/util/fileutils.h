@@ -22,9 +22,11 @@ public:
 
     bool exists() const;
 
+    QString toShortNativePath();
+
 private:
     explicit FileName(const QString &string);
 };
 }
 
-#endif // FILEUTILS_H
+#endif   // FILEUTILS_H

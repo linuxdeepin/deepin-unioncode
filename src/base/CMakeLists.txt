@@ -7,6 +7,8 @@ set(CXX_H
     abstractdebugger.h
     abstractlexerproxy.h
     abstractoutputparser.h
+    abstractlocator.h
+    basefilelocator.h
     )
 
 set(CXX_CPP
@@ -16,6 +18,8 @@ set(CXX_CPP
     abstractdebugger.cpp
     abstractlexerproxy.cpp
     abstractoutputparser.cpp
+    abstractlocator.cpp
+    basefilelocator.cpp
     )
 
 add_library(

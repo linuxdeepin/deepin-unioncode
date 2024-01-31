@@ -269,6 +269,6 @@ void MainDialog::generate(const PojectGenParam &param)
         }
     } else if (param.type == File) {
         close();
-        editor.openFile(result.filePath);
+        editor.openFile(QString(), result.filePath);
     }
 }
