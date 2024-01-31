@@ -3,13 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "fileutils.h"
-
 #include <QDir>
 
 namespace Utils {
 FileName::FileName()
 {
-
 }
 
 FileName::FileName(const QFileInfo &info)
@@ -25,6 +23,13 @@ FileName FileName::fromUserInput(const QString &filename)
     return FileName(clean);
 }
 
+QString FileName::toShortNativePath()
+{
+    auto home = QDir::cleanPath(QDir::homePath());
+    auto nativePath = toString().mid(home.size() + 1);
+    return QLatin1Char('~') + QDir::separator() + nativePath;
+}
+
 const QString &FileName::toString() const
 {
     return *this;
@@ -38,7 +43,6 @@ bool FileName::exists() const
 FileName::FileName(const QString &string)
     : QString(string)
 {
-
 }
 
 }

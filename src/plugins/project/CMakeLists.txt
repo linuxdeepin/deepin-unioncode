@@ -9,6 +9,8 @@ set(CXX_CPP
     mainframe/projectinfodialog.cpp
     mainframe/projecttree.cpp
     mainframe/projectkeeper.cpp
+    locator/allprojectfilelocator.cpp
+    locator/currentprojectlocator.cpp
     transceiver/projectcorereceiver.cpp
     transceiver/sendevents.cpp
     projectcore.cpp
@@ -24,6 +26,8 @@ set(CXX_H
     mainframe/projectkeeper.h
     transceiver/projectcorereceiver.h
     transceiver/sendevents.h
+    locator/allprojectfilelocator.h
+    locator/currentprojectlocator.h
     projectcore.h
     )
 

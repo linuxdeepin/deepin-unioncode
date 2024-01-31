@@ -208,7 +208,7 @@ void DetailWidget::generate(const PojectGenParam &param)
         }
     } else if (param.type == File) {
         emit closeSignal();
-        editor.openFile(result.filePath);
+        editor.openFile(QString(), result.filePath);
     }
 }
 

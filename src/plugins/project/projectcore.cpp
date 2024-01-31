@@ -12,6 +12,9 @@
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
+#include "services/locator/locatorservice.h"
+#include "locator/allprojectfilelocator.h"
+#include "locator/currentprojectlocator.h"
 
 #include <QProcess>
 #include <QAction>
@@ -46,48 +49,46 @@ bool ProjectCore::start()
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted,
                      this, &ProjectCore::pluginsStartedMain, Qt::DirectConnection);
 
-
     using namespace std::placeholders;
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
     if (projectService) {
         ProjectTree *treeView = ProjectKeeper::instance()->treeView();
         if (!projectService->addRootItem) {
-            projectService->addRootItem
-                    = std::bind(&ProjectTree::appendRootItem, treeView, _1);
+            projectService->addRootItem = std::bind(&ProjectTree::appendRootItem, treeView, _1);
         }
         if (!projectService->removeRootItem) {
-            projectService->removeRootItem
-                    = std::bind(&ProjectTree::removeRootItem, treeView, _1);
+            projectService->removeRootItem = std::bind(&ProjectTree::removeRootItem, treeView, _1);
         }
         if (!projectService->expandedDepth) {
-            projectService->expandedDepth
-                    = std::bind(&ProjectTree::expandedProjectDepth, treeView, _1, _2);
+            projectService->expandedDepth = std::bind(&ProjectTree::expandedProjectDepth, treeView, _1, _2);
         }
         if (!projectService->expandedAll) {
-            projectService->expandedAll
-                    = std::bind(&ProjectTree::expandedProjectAll, treeView, _1);
+            projectService->expandedAll = std::bind(&ProjectTree::expandedProjectAll, treeView, _1);
         }
         if (!projectService->getAllProjectInfo) {
-            projectService->getAllProjectInfo
-                    = std::bind(&ProjectTree::getAllProjectInfo, treeView);
+            projectService->getAllProjectInfo = std::bind(&ProjectTree::getAllProjectInfo, treeView);
         }
         if (!projectService->getProjectInfo) {
-            projectService->getProjectInfo
-                    = std::bind(&ProjectTree::getProjectInfo, treeView, _1, _2);
+            projectService->getProjectInfo = std::bind(&ProjectTree::getProjectInfo, treeView, _1, _2);
         }
         if (!projectService->getActiveProjectInfo) {
-            projectService->getActiveProjectInfo
-                    = std::bind(&ProjectTree::getActiveProjectInfo, treeView);
+            projectService->getActiveProjectInfo = std::bind(&ProjectTree::getActiveProjectInfo, treeView);
         }
         if (!projectService->hasProjectInfo) {
-            projectService->hasProjectInfo
-                    = std::bind(&ProjectTree::hasProjectInfo, treeView, _1);
+            projectService->hasProjectInfo = std::bind(&ProjectTree::hasProjectInfo, treeView, _1);
         }
         if (!projectService->updateProjectInfo) {
-            projectService->updateProjectInfo
-                    = std::bind(&ProjectTree::updateProjectInfo, treeView, _1);
+            projectService->updateProjectInfo = std::bind(&ProjectTree::updateProjectInfo, treeView, _1);
         }
     }
+
+    //init locator
+    LocatorService *locatorService = ctx.service<LocatorService>(LocatorService::name());
+    AllProjectFileLocator *allProjectFileLocator = new AllProjectFileLocator(this);
+    CurrentProjectLocator *currentProjectLocator = new CurrentProjectLocator(this);
+    locatorService->registerLocator(allProjectFileLocator);
+    locatorService->registerLocator(currentProjectLocator);
+
     return true;
 }
 
@@ -107,7 +108,7 @@ void ProjectCore::pluginsStartedMain()
         for (auto kitName : kitNames) {
             auto generator = projectService->createGenerator<ProjectGenerator>(kitName);
             if (generator) {
-                for(auto lang : generator->supportLanguages()) {
+                for (auto lang : generator->supportLanguages()) {
                     auto action = generator->openProjectAction(lang, kitName);
                     if (action)
                         windowService->addOpenProjectAction(lang, new AbstractAction(action));

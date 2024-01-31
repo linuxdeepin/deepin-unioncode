@@ -20,6 +20,7 @@ FILE(GLOB SERVICES_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/editor/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/editor/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/terminal/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/locator/*.h"
     )
 
 add_library(

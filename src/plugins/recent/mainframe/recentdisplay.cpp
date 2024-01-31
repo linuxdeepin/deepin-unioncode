@@ -270,7 +270,7 @@ void RecentDisplay::doDoubleCliekedDocument(const QModelIndex &index)
 {
     QString filePath = index.data(Qt::DisplayRole).toString();
     RecentDisplay::addDocument(filePath);
-    editor.openFile(filePath);
+    editor.openFile(QString(), filePath);
 }
 
 void RecentDisplay::btnOpenFileClicked()
@@ -280,7 +280,7 @@ void RecentDisplay::btnOpenFileClicked()
     if (filePath.isEmpty() && !QFileInfo(filePath).exists())
         return;
     recent.saveOpenedFile(filePath);
-    editor.openFile(filePath);
+    editor.openFile(QString(), filePath);
 
     d->docView->load();
 }
