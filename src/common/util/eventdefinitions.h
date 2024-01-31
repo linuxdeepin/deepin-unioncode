@@ -75,6 +75,7 @@ OPI_OBJECT(uiController,
            OPI_INTERFACE(doSwitch, "actionText")
            OPI_INTERFACE(switchContext, "name")
            OPI_INTERFACE(switchWorkspace, "name")
+           OPI_INTERFACE(switchToWidget, "name")
            )
 
 OPI_OBJECT(actionanalyse,

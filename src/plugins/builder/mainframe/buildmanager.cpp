@@ -100,9 +100,9 @@ void BuildManager::addMenu()
     };
 
     d->buildAction.reset(new QAction(MWMBA_BUILD));
-    windowService->addTopToolItem("toolbar.Build", actionInit(d->buildAction.get(), "Build.Build",
-                                                              QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
-                                                              "build"), MWNA_EDIT);
+    windowService->addTopToolItem(actionInit(d->buildAction.get(), "Build.Build",
+                                QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+                                "build"), MWTG_EDIT, false);
 
     d->buildActionNoIcon.reset(new QAction(MWMBA_BUILD));
     windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->buildActionNoIcon.get(), "Build.Build",
@@ -120,10 +120,9 @@ void BuildManager::addMenu()
                                                                ""));
 
     d->cancelAction.reset(new QAction(MWMBA_CANCEL));
-    windowService->addTopToolItem("toolbar.Cancel", actionInit(d->cancelAction.get(), "Build.Cancel",
-                                                               QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
-                                                               "cancel"), MWNA_EDIT);
-
+    windowService->addTopToolItem(actionInit(d->cancelAction.get(), "Build.Cancel",
+                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
+                                "cancel"), MWTG_EDIT, false);
     d->cancelActionNoIcon.reset(new QAction(MWMBA_CANCEL));
     windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->cancelActionNoIcon.get(), "Build.Cancel",
                                                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),

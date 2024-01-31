@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "core.h"
-#include "mainframe/controller.h"
+#include "uicontroller//controller.h"
 #include "services/window/windowservice.h"
 
 #include <framework/framework.h>

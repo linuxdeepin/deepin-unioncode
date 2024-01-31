@@ -40,7 +40,7 @@ Runner::Runner(QObject *parent)
     actionImpl->setShortCutInfo("Debug.Running",
                                 MWMDA_RUNNING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5));
     WindowService *service = dpfGetService(WindowService);
-    service->addTopToolItem(tr("Running"), actionImpl, MWNA_EDIT);
+    service->addTopToolItem(actionImpl, MWTG_EDIT, true);
 }
 
 void Runner::run()
