@@ -48,6 +48,8 @@ void AbstractAction::setShortCutInfo(const QString &id, const QString &descripti
     d->hasShortCut = true;
     d->id = id;
     d->description = description;
+    if(!defaultShortCut.isEmpty() && d->action->shortcut().isEmpty())
+        d->action->setShortcut(defaultShortCut);
     d->keySequence = defaultShortCut.isEmpty() ? d->action->shortcut() : defaultShortCut;
 }
 

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "navigationbar.h"
-#include "controller.h"
+#include "uicontroller/controller.h"
 
 #include <DStyle>
 

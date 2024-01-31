@@ -184,24 +184,21 @@ public:
     DPF_INTERFACE(void, addOpenProjectAction, const QString &name, AbstractAction *action);
 
     /*!
-    * \brief addTopToolItem  Adding actions to a plugin
-    * and it will automatically display these actions when the plugin view is raised
-    * \param name
-    * \param action
-    * \param plugin
+    * \brief addWidgetToTopTool  Adding widget to a toptoolbar
+    * widgets belongs to a group, you can show toptoolbar by group in swtichWidget event.
+    * or you can add it to MWTG_EDIT/MWTG_DEBUG, it will automatically show shen switch to Edit/Debug mode
+    * \param abstractWidget
+    * \param group
+    * \param addSeparator separator in front of this widget
+    * \param addToLeft
     */
-    DPF_INTERFACE(void, addTopToolItem, const QString &name, AbstractAction *action, const QString &plugin);
+    DPF_INTERFACE(void, addWidgetToTopTool, AbstractWidget *abstractWidget, const QString &group, bool addSeparator, bool addToLeft);
 
-    /*!
-    * \brief addTopToolSpacing  set a spacing to a action`s name
-    * when this action is showing, will add spacing infront of it
-    * \param name
-    * \param action
-    * \param plugin
-    */
-    DPF_INTERFACE(void, addTopToolSpacing, const QString &name, int spacing);
-    DPF_INTERFACE(void, showTopToolItem, const QString &name);
-    DPF_INTERFACE(void, hideTopToolItem, const QString &name);
+    DPF_INTERFACE(void, addTopToolItem, AbstractAction *action, const QString &group, bool addSeparator);
+    DPF_INTERFACE(void, addTopToolItemToRight, AbstractAction *action, bool addSeparator);
+
+    DPF_INTERFACE(void, showTopToolBar, const QString &group);
+    DPF_INTERFACE(void, hideTopToolBar);
 
     DPF_INTERFACE(void, showStatusBar);
     DPF_INTERFACE(void, hideStatusBar);

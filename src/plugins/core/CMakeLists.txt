@@ -2,37 +2,17 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(plugin-core)
 
-set(CXX_CPP
-    mainframe/windowstatusbar.cpp
-    mainframe/progressbar.cpp
-    mainframe/plugindialog.cpp
-    transceiver/corereceiver.cpp
-    mainframe/loadingwidget.cpp
-    mainframe/mainwindow.cpp
-    mainframe/controller.cpp
-    mainframe/navigationbar.cpp
-    mainframe/workspacewidget.cpp
-    core.cpp
-    core.json
-    )
-
-set(CXX_H
-    mainframe/windowstatusbar.h
-    mainframe/progressbar.h
-    mainframe/plugindialog.h
-    transceiver/corereceiver.h
-    mainframe/loadingwidget.h
-    mainframe/mainwindow.h
-    mainframe/controller.h
-    mainframe/navigationbar.h
-    mainframe/workspacewidget.h
-    core.h
-    )
+FILE(GLOB_RECURSE PROJECT_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.json"
+)
 
 add_library(${PROJECT_NAME}
     SHARED
-    ${CXX_CPP}
-    ${CXX_H}
+    ${PROJECT_SOURCES}
     ${QT_THEME}
     core.qrc
     )
