@@ -22,7 +22,6 @@ struct View
     QString pluginName { "" };
 
     QStringList widgetList {};
-    QStringList topToolItemList {};
     bool showContextWidget { false };
     QList<Position> hiddenposList {};
 };
@@ -75,9 +74,10 @@ public slots:
     void addOpenProjectAction(const QString &name, AbstractAction *action);
 
     //topToolBar
-    void addTopToolItem(const QString &itemName, AbstractAction *action, const QString &plugin);
-    void addTopToolSpacing(const QString &itemName, int spacing);
-    void resetTopTool(const QString &pluginName);
+    void addWidgetToTopTool(AbstractWidget *abstractWidget, const QString &group, bool addSeparator, bool addToLeft);
+    void addTopToolItem(AbstractAction *action, const QString &group, bool addSeparator);
+    void addTopToolItemToRight(AbstractAction *action, bool addSeparator);
+    void showTopToolBar(const QString &group);
 
     void openFileDialog();
     void showAboutPlugins();
@@ -105,6 +105,7 @@ private:
     void initContextWidget();
     void initStatusBar();
     void initWorkspaceWidget();
+    void initTopToolBar();
 
     //menu
     void createHelpActions();
@@ -118,6 +119,8 @@ private:
     void registerActionShortCut(AbstractAction *action);
 
     void showWorkspace();
+
+    DIconButton *createIconButton(QAction *action);
 };
 
 #endif   // CONTROLLER_H

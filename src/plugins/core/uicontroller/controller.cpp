@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "controller.h"
-#include "loadingwidget.h"
-#include "navigationbar.h"
-#include "plugindialog.h"
-#include "windowstatusbar.h"
-#include "workspacewidget.h"
+#include "gui/loadingwidget.h"
+#include "gui/navigationbar.h"
+#include "gui/plugindialog.h"
+#include "gui/windowstatusbar.h"
+#include "gui/workspacewidget.h"
 #include "services/window/windowservice.h"
 #include "services/window/windowcontroller.h"
 #include "services/project/projectservice.h"
@@ -16,6 +16,7 @@
 #include <DFileDialog>
 #include <DTitlebar>
 #include <DStackedWidget>
+#include <DSearchEdit>
 
 #include <QDebug>
 #include <QShortcut>
@@ -39,6 +40,8 @@ inline constexpr int MW_MIN_WIDTH { 1280 };
 inline constexpr int MW_MIN_HEIGHT { 600 };
 using namespace dpfservice;
 
+DWIDGET_USE_NAMESPACE
+
 struct WidgetInfo
 {
     QString name;
@@ -56,10 +59,12 @@ class ControllerPrivate
     bool showWorkspace { nullptr };
 
     NavigationBar *navigationBar { nullptr };
-
     QMap<QString, QAction *> navigationActions;
-    QMap<QString, QList<QPair<QString, QAction *>>> topToolActions;
-    QMap<QString, int> topToolSpacing;
+
+    DStackedWidget *leftTopToolBar { nullptr };
+    DSearchEdit *globalSearchBar { nullptr };
+    DWidget *rightTopToolBar { nullptr };
+    QMap<QString, DWidget *> topToolBarGroup;
 
     QMap<QString, DWidget *> contextWidgets;
     QMap<QString, DPushButton *> tabButtons;
@@ -77,8 +82,8 @@ class ControllerPrivate
     QString currentPlugin { "" };   //navigation - widget
     View *currentView { nullptr };
 
-    QStringList validModeList { CM_EDIT, CM_DEBUG, CM_RECENT};
-    QMap<QString, QString> modePluginMap{ {CM_EDIT, MWNA_EDIT}, {CM_RECENT, MWNA_RECENT}, {CM_DEBUG, MWNA_DEBUG} };
+    QStringList validModeList { CM_EDIT, CM_DEBUG, CM_RECENT };
+    QMap<QString, QString> modePluginMap { { CM_EDIT, MWNA_EDIT }, { CM_RECENT, MWNA_RECENT }, { CM_DEBUG, MWNA_DEBUG } };
     QString mode { "" };   //mode: CM_EDIT/CM_DEBUG/CM_RECENT
     QMap<QString, QList<WidgetInfo>> modeInfo;
 
@@ -101,6 +106,7 @@ Controller::Controller(QObject *parent)
     initContextWidget();
     initStatusBar();
     initWorkspaceWidget();
+    initTopToolBar();
 
     registerService();
 }
@@ -126,10 +132,10 @@ void Controller::registerService()
     if (!windowService->addWidget) {
         windowService->addWidget = std::bind(&Controller::addWidget, this, _1, _2, _3, _4);
     }
-    if(!windowService->replaceWidget) {
+    if (!windowService->replaceWidget) {
         windowService->replaceWidget = std::bind(&Controller::replaceWidget, this, _1, _2, _3);
     }
-    if(!windowService->insertWidget) {
+    if (!windowService->insertWidget) {
         windowService->insertWidget = std::bind(&Controller::insertWidget, this, _1, _2, _3);
     }
     if (!windowService->registerWidgetToMode) {
@@ -191,17 +197,20 @@ void Controller::registerService()
     if (!windowService->addOpenProjectAction) {
         windowService->addOpenProjectAction = std::bind(&Controller::addOpenProjectAction, this, _1, _2);
     }
+    if (!windowService->addWidgetToTopTool) {
+        windowService->addWidgetToTopTool = std::bind(&Controller::addWidgetToTopTool, this, _1, _2, _3, _4);
+    }
     if (!windowService->addTopToolItem) {
         windowService->addTopToolItem = std::bind(&Controller::addTopToolItem, this, _1, _2, _3);
     }
-    if (!windowService->addTopToolSpacing) {
-        windowService->addTopToolSpacing = std::bind(&Controller::addTopToolSpacing, this, _1, _2);
+    if (!windowService->addTopToolItemToRight) {
+        windowService->addTopToolItemToRight = std::bind(&Controller::addTopToolItemToRight, this, _1, _2);
     }
-    if (!windowService->showTopToolItem) {
-        windowService->showTopToolItem = std::bind(&MainWindow::showTopToolItem, d->mainWindow, _1);
+    if (!windowService->showTopToolBar) {
+        windowService->showTopToolBar = std::bind(&Controller::showTopToolBar, this, _1);
     }
-    if (!windowService->hideTopToolItem) {
-        windowService->hideTopToolItem = std::bind(&MainWindow::hideTopToolItem, d->mainWindow, _1);
+    if (!windowService->hideTopToolBar) {
+        windowService->hideTopToolBar = std::bind(&MainWindow::hideTopTollBar, d->mainWindow);
     }
     if (!windowService->showStatusBar) {
         windowService->showStatusBar = std::bind(&Controller::showStatusBar, this);
@@ -243,21 +252,23 @@ void Controller::raiseMode(const QString &mode)
             widgetInfo.widget->hide();
     }
 
-    if(mode == CM_RECENT) {
+    if (mode == CM_RECENT) {
         d->mode = mode;
         return;
     }
 
-    if(mode == CM_EDIT)
+    if (mode == CM_EDIT) {
+        showTopToolBar(MWTG_EDIT);
         showWorkspace();
+    } else if (mode == CM_DEBUG) {
+        showTopToolBar(MWTG_DEBUG);
+    }
 
     showContextWidget();
     showStatusBar();
 
     QString plugin = mode == CM_EDIT ? MWNA_EDIT : MWNA_DEBUG;
     d->currentView = d->viewList[plugin];
-    resetTopTool(plugin);
-
     d->mode = mode;
 }
 
@@ -270,11 +281,8 @@ void Controller::raiseView(const QString &plugin)
     }
 
     auto view = d->viewList[plugin];
-    if(d->currentView == view)
+    if (d->currentView == view)
         return;
-
-    if (d->topToolActions.contains(plugin))
-        resetTopTool(plugin);
 
     if (!view->mode.isEmpty())
         raiseMode(view->mode);
@@ -444,12 +452,15 @@ void Controller::switchWidgetNavigation(const QString &navName)
     if (navName != d->currentPlugin)
         d->navigationBar->setNavActionChecked(navName, true);
 
-    d->mainWindow->clearTopTollBar();
+    d->mainWindow->hideTopTollBar();
     setCurrentPlugin(navName);
-    if(d->modePluginMap.values().contains(navName))
+    if (d->modePluginMap.values().contains(navName))
         raiseMode(d->modePluginMap.key(navName));
     else
         raiseView(navName);
+
+    //send event
+    uiController.switchToWidget(navName);
 }
 
 void Controller::addContextWidget(const QString &title, AbstractWidget *contextWidget, bool isVisible)
@@ -525,7 +536,7 @@ void Controller::addChildMenu(AbstractMenu *abstractMenu)
         return;
 
     foreach (AbstractAction *action, abstractMenu->actionList()) {
-        if(action && action->hasShortCut())
+        if (action && action->hasShortCut())
             registerActionShortCut(action);
     }
 
@@ -543,14 +554,14 @@ void Controller::addChildMenu(AbstractMenu *abstractMenu)
 
 void Controller::insertAction(const QString &menuName, const QString &beforActionName, AbstractAction *action)
 {
-    if(!action)
+    if (!action)
         return;
 
     QAction *inputAction = action->qAction();
     if (!inputAction)
         return;
 
-    if(action->hasShortCut())
+    if (action->hasShortCut())
         registerActionShortCut(action);
 
     for (QAction *qAction : d->mainWindow->menuBar()->actions()) {
@@ -575,7 +586,7 @@ void Controller::addAction(const QString &menuName, AbstractAction *action)
     if (!inputAction)
         return;
 
-    if(action->hasShortCut())
+    if (action->hasShortCut())
         registerActionShortCut(action);
 
     //防止与edit和debug界面的topToolBar快捷键冲突
@@ -604,7 +615,7 @@ void Controller::addAction(const QString &menuName, AbstractAction *action)
         }
     }
 
-    if(!inputAction->parent())
+    if (!inputAction->parent())
         inputAction->setParent(this);
 }
 
@@ -625,7 +636,7 @@ void Controller::addOpenProjectAction(const QString &name, AbstractAction *actio
     if (!action || !action->qAction())
         return;
 
-    if(action->hasShortCut())
+    if (action->hasShortCut())
         registerActionShortCut(action);
 
     QAction *inputAction = action->qAction();
@@ -646,50 +657,73 @@ void Controller::addOpenProjectAction(const QString &name, AbstractAction *actio
     }
 }
 
-void Controller::addTopToolItem(const QString &itemName, AbstractAction *action, const QString &plugin)
+void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, const QString &group, bool addSeparator, bool addToLeft)
 {
-    if (!action || itemName.isNull())
+    if (!abstractWidget)
+        return;
+    auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
+    if(!widget)
         return;
 
-    if(action->hasShortCut())
+    QHBoxLayout *hlayout { nullptr };
+    DWidget *toolBar { nullptr };
+
+    if (!addToLeft) {
+        hlayout = qobject_cast<QHBoxLayout *>(d->rightTopToolBar->layout());
+    } else if (d->topToolBarGroup.contains(group)) {
+        toolBar = d->topToolBarGroup[group];
+        hlayout = qobject_cast<QHBoxLayout *>(toolBar->layout());
+    } else {
+        toolBar = new DWidget(d->leftTopToolBar);
+        hlayout = new QHBoxLayout(toolBar);
+        hlayout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        hlayout->setSpacing(10);
+        hlayout->setContentsMargins(0, 0, 0, 0);
+        d->topToolBarGroup.insert(group, toolBar);
+        d->leftTopToolBar->addWidget(toolBar);
+    }
+
+    if (addSeparator) {
+        DVerticalLine *line = new DVerticalLine(d->mainWindow);
+        line->setFixedHeight(20);
+        line->setFixedWidth(1);
+        hlayout->addWidget(line);
+    }
+
+    hlayout->addWidget(widget);
+}
+
+void Controller::addTopToolItem(AbstractAction *action, const QString &group, bool addSeparator)
+{
+    if (!action || !action->qAction())
+        return;
+
+    if (action->hasShortCut())
         registerActionShortCut(action);
 
-    auto inputAction = action->qAction();
-
-    d->topToolActions[plugin].append(qMakePair(itemName, inputAction));
-
-    //add TopToolItem when plugin is already create
-    if (d->currentPlugin == plugin)
-        resetTopTool(plugin);
+    auto iconBtn = createIconButton(action->qAction());
+    addWidgetToTopTool(new AbstractWidget(iconBtn), group, addSeparator, true);
 }
 
-void Controller::addTopToolSpacing(const QString &itemName, int spacing)
+void Controller::addTopToolItemToRight(AbstractAction *action, bool addSeparator)
 {
-    d->topToolSpacing[itemName] = spacing;
+    if (!action || !action->qAction())
+        return;
+
+    if (action->hasShortCut())
+        registerActionShortCut(action);
+
+    auto iconBtn = createIconButton(action->qAction());
+    addWidgetToTopTool(new AbstractWidget(iconBtn), "", addSeparator, false);
 }
 
-void Controller::resetTopTool(const QString &pluginName)
+void Controller::showTopToolBar(const QString &group)
 {
-    d->mainWindow->clearTopTollBar();
-    if (!d->topToolActions.contains(pluginName) || !d->viewList.contains(pluginName))
+    if (!d->topToolBarGroup.contains(group))
         return;
 
-    auto view = d->viewList[pluginName];
-    if (!view)
-        return;
-
-    // pair : actionName - action.
-    foreach (auto pair, d->topToolActions[pluginName]) {
-        //add spacing
-        if (d->topToolSpacing.contains(pair.first))
-            d->mainWindow->addTopToolBarSpacing(d->topToolSpacing[pair.first]);
-
-        //save View
-        if (!view->topToolItemList.contains(pair.first))
-            view->topToolItemList.append(pair.first);
-
-        d->mainWindow->addTopToolItem(pair.first, pair.second);
-    }
+    d->mainWindow->showTopToolBar();
+    d->leftTopToolBar->setCurrentWidget(d->topToolBarGroup[group]);
 }
 
 void Controller::openFileDialog()
@@ -885,6 +919,24 @@ void Controller::initWorkspaceWidget()
     d->workspace = new WorkspaceWidget(d->mainWindow);
 }
 
+void Controller::initTopToolBar()
+{
+    d->leftTopToolBar = new DStackedWidget(d->mainWindow);
+    d->globalSearchBar = new DSearchEdit(d->mainWindow);
+    d->rightTopToolBar = new DWidget(d->mainWindow);
+
+    QHBoxLayout *rtLayout = new QHBoxLayout(d->rightTopToolBar);
+    rtLayout->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    rtLayout->setContentsMargins(0, 0, 0, 0);
+    rtLayout->setSpacing(10);
+
+    d->mainWindow->setLeftTopToolWidget(d->leftTopToolBar);
+    d->mainWindow->setMiddleTopToolWidget(d->globalSearchBar);
+    d->mainWindow->setRightTopToolWidget(d->rightTopToolBar);
+
+    d->mainWindow->hideTopTollBar();
+}
+
 void Controller::addMenuShortCut(QAction *action, QKeySequence keySequence)
 {
     QKeySequence key = keySequence;
@@ -892,8 +944,8 @@ void Controller::addMenuShortCut(QAction *action, QKeySequence keySequence)
         key = action->shortcut();
 
     QShortcut *shortCut = new QShortcut(key, d->mainWindow);
-    connect(action, &QAction::changed, this, [=](){
-        if(action->shortcut() != shortCut->key())
+    connect(action, &QAction::changed, this, [=]() {
+        if (action->shortcut() != shortCut->key())
             shortCut->setKey(action->shortcut());
     });
     connect(shortCut, &QShortcut::activated, action, [=] {
@@ -922,7 +974,7 @@ void Controller::switchWorkspace(const QString &titleName)
 void Controller::registerActionShortCut(AbstractAction *action)
 {
     auto qAction = action->qAction();
-    if(!qAction)
+    if (!qAction)
         return;
     ActionManager::getInstance()->registerAction(qAction, action->id(), action->description(), action->keySequence());
 }
@@ -936,4 +988,31 @@ void Controller::showWorkspace()
     }
 
     d->mainWindow->showWidget(WN_WORKSPACE);
+}
+
+DIconButton *Controller::createIconButton(QAction *action)
+{
+    DIconButton *iconBtn = new DIconButton(d->mainWindow);
+    iconBtn->setFocusPolicy(Qt::NoFocus);
+    iconBtn->setEnabled(action->isEnabled());
+    iconBtn->setIcon(action->icon());
+    iconBtn->setFixedSize(QSize(36, 36));
+    iconBtn->setIconSize(QSize(15, 15));
+
+    QString toolTipStr = action->text() + " " + action->shortcut().toString();
+    iconBtn->setToolTip(toolTipStr);
+    iconBtn->setShortcut(action->shortcut());
+
+    connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);
+    connect(action, &QAction::changed, iconBtn, [=] {
+        if (action->shortcut() != iconBtn->shortcut()) {
+            QString toolTipStr = action->text() + " " + action->shortcut().toString();
+            iconBtn->setToolTip(toolTipStr);
+            iconBtn->setShortcut(action->shortcut());
+        }
+
+        iconBtn->setEnabled(action->isEnabled());
+    });
+
+    return iconBtn;
 }

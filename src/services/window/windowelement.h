@@ -22,6 +22,11 @@ inline const QString MWNA_SVN { QObject::tr("Svn") };
 inline const QString MWNA_RUNTIME { QObject::tr("Runtime") };
 inline const QString MWNA_CODEGEEX { QObject::tr("CodeGeeX") };
 
+// MWTG = MainWindow TopTool group
+inline const QString MWTG_EDIT { "Edit" };
+inline const QString MWTG_DEBUG { "Debug" };
+
+
 // MWM = MW menu
 // MWMFA = MWM File Action
 inline const QString MWM_FILE { QMenu::tr("&File") };

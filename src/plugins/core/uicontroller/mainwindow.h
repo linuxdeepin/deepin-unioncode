@@ -51,20 +51,17 @@ public:
     void setToolbar(Qt::ToolBarArea area, QWidget *widget);
 
     //topToolBar - titleBar
-    void clearTopTollBar();
+    void showTopToolBar();
     void hideTopTollBar();
-    void addTopToolItem(const QString &name, QAction *action);
-    void showTopToolItem(const QString &name);
-    void hideTopToolItem(const QString &name);
-
-    void addTopToolBarSpacing(int spacing);
+    void setLeftTopToolWidget(DWidget *widget);
+    void setMiddleTopToolWidget(DWidget *widget);
+    void setRightTopToolWidget(DWidget *widget);
 
     static Qt::DockWidgetArea positionTodockArea(Position pos);
 
 private:
     MainWindowPrivate *d;
 
-    DIconButton *createIconButton(QAction *action);
     DDockWidget *createDockWidget(DWidget *widget);
     void addTopToolBar();
     void removeAllDockWidget();

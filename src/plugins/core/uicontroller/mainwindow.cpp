@@ -19,6 +19,10 @@ class MainWindowPrivate
     QMap<QString, QDockWidget *> dockList;
 
     DWidget *topToolbar { nullptr };
+    QHBoxLayout *leftHlayout { nullptr };
+    QHBoxLayout *middleHlayout { nullptr };
+    QHBoxLayout *rightHlayout { nullptr };
+
     QMap<QString, DWidget *> topToolList;
     QMap<QString, DWidget *> centralWidgets;
 
@@ -58,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowIcon(QIcon::fromTheme("ide"));
     setAttribute(Qt::WA_DeleteOnClose);
 
+    addTopToolBar();
     //setStyleSheet("QMainWindow::separator { width: 2px; margin: 0px; padding: 0px; }");
 
     setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
@@ -66,6 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete d;
 }
 
 DDockWidget *MainWindow::createDockWidget(DWidget *widget)
@@ -350,97 +356,62 @@ void MainWindow::addTopToolBar()
     if (d->topToolbar)
         return;
 
+    d->leftHlayout = new QHBoxLayout;
+    d->leftHlayout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    d->middleHlayout = new QHBoxLayout;
+    d->middleHlayout->setAlignment(Qt::AlignCenter);
+    d->rightHlayout = new QHBoxLayout;
+    d->rightHlayout->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
     d->topToolbar = new DWidget(this);
+    d->topToolbar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
     QHBoxLayout *hl = new QHBoxLayout(d->topToolbar);
-    hl->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    hl->setContentsMargins(20, 0, 20, 0);
+    hl->addLayout(d->leftHlayout, 1);
+    hl->addLayout(d->middleHlayout, 1);
+    hl->addLayout(d->rightHlayout, 1);
+
 
     QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout *>(titlebar()->layout());
-    titleBarLayout->insertWidget(1, d->topToolbar, Qt::AlignLeft);
+    titleBarLayout->insertWidget(1, d->topToolbar);
 }
 
-DIconButton *MainWindow::createIconButton(QAction *action)
+
+void MainWindow::setLeftTopToolWidget(DWidget *widget)
 {
-    DIconButton *iconBtn = new DIconButton(this);
-    iconBtn->setFocusPolicy(Qt::NoFocus);
-    iconBtn->setEnabled(action->isEnabled());
-    iconBtn->setIcon(action->icon());
-    iconBtn->setFixedSize(QSize(36, 36));
-    iconBtn->setIconSize(QSize(15, 15));
-
-    QString toolTipStr = action->text() + " " + action->shortcut().toString();
-    iconBtn->setToolTip(toolTipStr);
-    iconBtn->setShortcut(action->shortcut());
-
-    connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);
-    connect(action, &QAction::changed, iconBtn, [=] {
-        if (action->shortcut() != iconBtn->shortcut()) {
-            QString toolTipStr = action->text() + " " + action->shortcut().toString();
-            iconBtn->setToolTip(toolTipStr);
-            iconBtn->setShortcut(action->shortcut());
-        }
-
-        iconBtn->setEnabled(action->isEnabled());
-    });
-
-    return iconBtn;
-}
-
-void MainWindow::addTopToolItem(const QString &name, QAction *action)
-{
-    if (!action)
+    if(!d->leftHlayout)
         return;
-    if (!d->topToolbar)
-        addTopToolBar();
+
+    d->leftHlayout->addWidget(widget);
+}
+
+void MainWindow::setMiddleTopToolWidget(DWidget *widget)
+{
+    if(!d->middleHlayout)
+        return;
+
+    d->middleHlayout->addWidget(widget);
+}
+
+void MainWindow::setRightTopToolWidget(DWidget *widget)
+{
+    if(!d->rightHlayout)
+        return;
+
+    d->rightHlayout->addWidget(widget);
+}
+
+void MainWindow::showTopToolBar()
+{
+    d->topToolbar->show();
+
     titlebar()->setTitle(QString(""));
-
-    auto iconBtn = createIconButton(action);
-    auto toolBarLayout = qobject_cast<QHBoxLayout *>(d->topToolbar->layout());
-    toolBarLayout->addWidget(iconBtn, Qt::AlignLeft);
-    d->topToolList.insert(name, iconBtn);
-}
-
-void MainWindow::showTopToolItem(const QString &name)
-{
-    if (d->topToolList.contains(name)) {
-        titlebar()->setTitle(QString(""));
-        d->topToolList[name]->setVisible(true);
-    }
-}
-
-void MainWindow::hideTopToolItem(const QString &name)
-{
-    if (d->topToolList.contains(name))
-        d->topToolList[name]->setVisible(false);
-    foreach (auto item, d->topToolList.values()) {
-        if(item->isVisible() == true)
-            return;
-    }
-    titlebar()->setTitle(QString("Deepin Union Code"));
-}
-
-void MainWindow::addTopToolBarSpacing(int spacing)
-{
-    auto toolBarLayout = qobject_cast<QHBoxLayout *>(d->topToolbar->layout());
-    toolBarLayout->addSpacing(spacing);
-}
-
-void MainWindow::clearTopTollBar()
-{
-    QHBoxLayout *titleBarLayout = static_cast<QHBoxLayout *>(titlebar()->layout());
-    if(titleBarLayout)
-        titleBarLayout->removeWidget(d->topToolbar);
-    delete d->topToolbar;
-    d->topToolbar = nullptr;
-
-    d->topToolList.clear();
-    titlebar()->setTitle(QString("Deepin Union Code"));
 }
 
 void MainWindow::hideTopTollBar()
 {
-    foreach (auto btn, d->topToolList.values()) {
-        btn->setVisible(false);
-    }
+    d->topToolbar->hide();
 
     titlebar()->setTitle(QString("Deepin Union Code"));
 }

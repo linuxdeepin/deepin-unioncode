@@ -36,15 +36,13 @@ bool FindPlugin::start()
     DMenu *editMenu = new DMenu(QMenu::tr("&Edit"));
     AbstractMenu *menuImpl = new AbstractMenu(editMenu);
 
-    QAction *findAction = new QAction(this);
+    QAction *findAction = new QAction(tr("Find/Replace"), this);
     findAction->setIcon(QIcon::fromTheme("search-find"));
     auto findActionImpl = new AbstractAction(findAction);
     findActionImpl->setShortCutInfo("Edit.Find",
                                     tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
 
-    windowService->addTopToolItem("Edit.Find", findActionImpl, MWNA_EDIT);
-    windowService->addTopToolItem("Edit.Find", findActionImpl, MWNA_DEBUG);
-    windowService->addTopToolSpacing("Edit.Find", 20);
+    windowService->addTopToolItemToRight(findActionImpl, false);
 
     QAction *advancedFindAction = new QAction(this);
     auto advancedFindActionImpl = new AbstractAction(advancedFindAction);

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "corereceiver.h"
-#include "mainframe/controller.h"
+#include "uicontroller/controller.h"
 #include "common/common.h"
 
 #include <QGridLayout>

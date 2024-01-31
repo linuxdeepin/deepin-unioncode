@@ -22,6 +22,7 @@ public:
 
 private:
     void initActions();
+    void initButtonBox();
     void initEditorService();
     void initWindowService();
 

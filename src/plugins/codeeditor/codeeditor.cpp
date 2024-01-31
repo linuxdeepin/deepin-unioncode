@@ -18,11 +18,14 @@
 #include "services/editor/editorservice.h"
 #include "common/widget/outputpane.h"
 
+#include <DButtonBox>
+
 #include <QAction>
 #include <QSplitter>
 
 using namespace dpfservice;
 using namespace std::placeholders;
+using DTK_WIDGET_NAMESPACE::DButtonBox;
 
 const QString SAVE_ALL_DOCUMENTS = CodeEditor::tr("Save All Documents");
 const QString CLOSE_ALL_DOCUMENTS = CodeEditor::tr("Close All Documents");
@@ -46,6 +49,7 @@ bool CodeEditor::start()
 
     initWindowService();
     initActions();
+    initButtonBox();
     initEditorService();
 
     return true;
@@ -57,6 +61,31 @@ dpf::Plugin::ShutdownFlag CodeEditor::stop()
     return Sync;
 }
 
+void CodeEditor::initButtonBox()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    if (!windowService)
+        return;
+
+    DButtonBox *btnBox = new DButtonBox(workspaceWidget);
+
+    DButtonBoxButton *backBtn = new DButtonBoxButton(QIcon::fromTheme("go-previous"), "", btnBox);
+    backBtn->setToolTip(tr("backward"));
+    connect(backBtn, &DButtonBoxButton::clicked, [=]() {
+        editor.back();
+    });
+
+    DButtonBoxButton *forwardBtn = new DButtonBoxButton(QIcon::fromTheme("go-next"), "", btnBox);
+    forwardBtn->setToolTip(tr("forward"));
+    connect(forwardBtn, &DButtonBoxButton::clicked, [=]() {
+        editor.forward();
+    });
+
+    btnBox->setButtonList({ backBtn, forwardBtn }, false);
+    windowService->addWidgetToTopTool(new AbstractWidget(btnBox), "", false, false);
+}
+
 void CodeEditor::initActions()
 {
     auto &ctx = dpfInstance.serviceContext();
@@ -64,8 +93,8 @@ void CodeEditor::initActions()
     if (!windowService)
         return;
 
-    QAction *backAction = new QAction(this);
-    QAction *forwardAction = new QAction(this);
+    QAction *backAction = new QAction(tr("backward"), this);
+    QAction *forwardAction = new QAction(tr("forward"), this);
 
     auto inputBackAction = new AbstractAction(backAction);
     inputBackAction->setShortCutInfo("Editor.back", tr("Back"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
