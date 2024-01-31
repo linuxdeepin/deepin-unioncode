@@ -73,7 +73,7 @@ void TreeView::selOpen()
 
     for (auto path : countPaths) {
         if (QFileInfo(path).isFile())
-            editor.openFile(path);
+            editor.openFile(QString(), path);
     }
 }
 

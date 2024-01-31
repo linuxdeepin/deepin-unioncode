@@ -38,9 +38,6 @@ public:
 
     void registerModule(const QString &moduleName, AbstractModule *module);
 
-//signals:
-//    void switchWidget(const QString &PluginName);
-
 public slots:
     void raiseView(const QString &plugin);
     //mode : MD_EDIT/MD_DEBUG/MD_RECENT

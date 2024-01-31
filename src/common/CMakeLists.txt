@@ -47,6 +47,7 @@ set(CXX_H
     util/commandparser.h
     util/themeparser.h
     util/fileutils.h
+    util/fuzzymatcher.h
     supportfile/editorstyle.h
     supportfile/language.h
     supportfile/windowstyle.h
@@ -104,6 +105,7 @@ set(CXX_CPP
     util/commandparser.cpp
     util/themeparser.cpp
     util/fileutils.cpp
+    util/fuzzymatcher.cpp
     supportfile/language.cpp
     supportfile/editorstyle.cpp
     supportfile/windowstyle.cpp

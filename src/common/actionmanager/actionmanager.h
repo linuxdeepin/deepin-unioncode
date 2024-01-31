@@ -6,6 +6,7 @@
 #define ACTIONMANAGER_H
 
 #include "command.h"
+
 #include <QObject>
 #include <QHash>
 
