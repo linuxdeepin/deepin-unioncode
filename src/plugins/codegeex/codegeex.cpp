@@ -21,8 +21,6 @@
 
 using namespace dpfservice;
 
-static CodeGeeXWidget *codeGeex { nullptr };
-
 void CodeGeex::initialize()
 {
 }
@@ -37,7 +35,7 @@ bool CodeGeex::start()
 
             windowService->addNavigationItem(new AbstractAction(action));
 
-            codeGeex = new CodeGeeXWidget;
+            auto codeGeex = new CodeGeeXWidget;
             connect(action, &QAction::triggered, this, [=](){
                 windowService->raiseMode(CM_EDIT);
                 windowService->replaceWidget(MWNA_CODEGEEX, new AbstractWidget(codeGeex), Position::Left);
@@ -59,7 +57,5 @@ bool CodeGeex::start()
 
 dpf::Plugin::ShutdownFlag CodeGeex::stop()
 {
-    if(codeGeex)
-        delete codeGeex;
     return Sync;
 }

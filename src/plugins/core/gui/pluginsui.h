@@ -27,12 +27,14 @@ namespace dpf {
 class PluginView;
 }
 
-class PluginDialog : public DTK_WIDGET_NAMESPACE::DAbstractDialog
+class PluginsUi : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit PluginDialog(QWidget *parent = nullptr);
+    explicit PluginsUi(QObject *parent = nullptr);
+    dpf::PluginView *getPluginView() const;
+    DetailsView *getPluginDetailView() const;
 
 private slots:
     void slotCurrentPluginActived();
@@ -40,14 +42,10 @@ private slots:
 private:
     void updateRestartRequired();
     void updateButtons();
-    void closeDialog();
+    void saveConfig();
 
-    dpf::PluginView *view = nullptr;
-    DetailsView *detailView = nullptr;
-
-    DDialogButtonBox *closeButton = nullptr;
-    DPushButton *detailsButton = nullptr;
-    DLabel *restratRequired = nullptr;
+    dpf::PluginView *pluginListView = nullptr;
+    DetailsView *pluginDetailView = nullptr;
 };
 
 class DetailsView : public DTK_WIDGET_NAMESPACE::DWidget

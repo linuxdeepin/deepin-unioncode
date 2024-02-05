@@ -83,7 +83,6 @@ public slots:
     void showTopToolBar(const QString &group);
 
     void openFileDialog();
-    void showAboutPlugins();
 
     //statusBar
     void showStatusBar();
