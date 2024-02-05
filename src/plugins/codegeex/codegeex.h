@@ -8,6 +8,7 @@
 #include <framework/framework.h>
 #include <QObject>
 
+class CodeGeeXWidget;
 class CodeGeex: public dpf::Plugin
 {
     Q_OBJECT

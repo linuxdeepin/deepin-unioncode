@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "plugindialog.h"
+#include "pluginsui.h"
 
 #include "framework/lifecycle/lifecycle.h"
 #include "framework/lifecycle/pluginmanager.h"
@@ -17,67 +17,43 @@
 
 static bool isRestartRequired = false;
 
-PluginDialog::PluginDialog(QWidget *parent)
-    : DAbstractDialog(parent),
-      view(new dpf::PluginView(this))
+PluginsUi::PluginsUi(QObject *parent)
+    : QObject(parent),
+      pluginListView(new dpf::PluginView())
 {
-    resize(1050, 600);
-
-    DTitlebar *titleBar = new DTitlebar();
-    titleBar->setMenuVisible(false);
-    titleBar->setTitle(QString(tr("Installed Plugins")));
-
-    auto vLayout = new QVBoxLayout(this);
-    vLayout->setContentsMargins(0, 0, 0, 0);
-    vLayout->setSpacing(0);
-    auto detailLayout = new QHBoxLayout;
-    detailLayout->addWidget(view);
-
-    closeButton = new DDialogButtonBox(DDialogButtonBox::Close, Qt::Horizontal, this);
-    closeButton->button(DDialogButtonBox::Close)->setText(tr("Close"));
-    closeButton->setEnabled(true);
-
-    restratRequired = new DLabel(tr(" Restart required."), this);
-    if (!isRestartRequired)
-        restratRequired->setVisible(false);
-
-    auto buttonLayout = new QHBoxLayout;
-    buttonLayout->addSpacing(10);
-    buttonLayout->addWidget(restratRequired);
-    buttonLayout->addStretch(5);
-    buttonLayout->addWidget(closeButton);
-
-    detailView = new DetailsView();
-    detailLayout->addWidget(detailView);
+    pluginDetailView = new DetailsView();
     slotCurrentPluginActived();
 
-    vLayout->addWidget(titleBar);
-    vLayout->addLayout(detailLayout);
-    vLayout->addLayout(buttonLayout);
-
-    QObject::connect(view, &dpf::PluginView::currentPluginActived, this, &PluginDialog::slotCurrentPluginActived);
-    QObject::connect(view, &dpf::PluginView::pluginSettingChanged,
-                     this, &PluginDialog::updateRestartRequired);
-    QObject::connect(closeButton->button(DDialogButtonBox::Close), &DPushButton::clicked,
-                     [this] { closeDialog() ;});
+    QObject::connect(pluginListView, &dpf::PluginView::currentPluginActived, this, &PluginsUi::slotCurrentPluginActived);
+    QObject::connect(pluginListView, &dpf::PluginView::pluginSettingChanged,
+                     this, &PluginsUi::updateRestartRequired);
 }
 
-void PluginDialog::slotCurrentPluginActived()
+dpf::PluginView *PluginsUi::getPluginView() const
 {
-    dpf::PluginMetaObjectPointer plugin = view->currentPlugin();
-    detailView->update(plugin);
+    return pluginListView;
 }
 
-void PluginDialog::updateRestartRequired()
+DetailsView *PluginsUi::getPluginDetailView() const
+{
+    return pluginDetailView;
+}
+
+void PluginsUi::slotCurrentPluginActived()
+{
+    dpf::PluginMetaObjectPointer plugin = pluginListView->currentPlugin();
+    pluginDetailView->update(plugin);
+}
+
+void PluginsUi::updateRestartRequired()
 {
     isRestartRequired = true;
-    restratRequired->setVisible(true);
+    saveConfig();
 }
 
-void PluginDialog::closeDialog()
+void PluginsUi::saveConfig()
 {
     dpf::LifeCycle::getPluginManagerInstance()->writeSettings();
-    accept();
 }
 
 DetailsView::DetailsView(QWidget *parent)

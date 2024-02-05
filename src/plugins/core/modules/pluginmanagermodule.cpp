@@ -7,7 +7,7 @@
 #include "services/window/windowelement.h"
 #include "base/abstractaction.h"
 #include "uicontroller/controller.h"
-#include "gui/plugindialog.h"
+#include "gui/pluginsui.h"
 
 #include <QAction>
 
@@ -16,14 +16,14 @@ using namespace dpfservice;
 PluginManagerModule::PluginManagerModule()
 {
 
-    pluginDialog = new PluginDialog();
+    pluginsUi = new PluginsUi();
 }
 
 PluginManagerModule::~PluginManagerModule()
 {
-    if (pluginDialog) {
-        delete pluginDialog;
-        pluginDialog = nullptr;
+    if (pluginsUi) {
+        delete pluginsUi;
+        pluginsUi = nullptr;
     }
 }
 
@@ -41,6 +41,9 @@ void PluginManagerModule::initialize(Controller *_uiController)
 
     uiController->addAction(MWM_HELP, actionOptionsImpl);
     uiController->addNavigationItem(actionOptionsImpl);
-    QObject::connect(pluginManagerAction, &QAction::triggered,
-                     pluginDialog, &QDialog::show);
+    QObject::connect(pluginManagerAction, &QAction::triggered, this, [this](){
+        uiController->raiseMode(CM_EDIT);
+        uiController->replaceWidget("pluginDetail", new AbstractWidget(pluginsUi->getPluginDetailView()), Position::FullWindow);
+        uiController->replaceWidget(MWMTA_PLUGINS, new AbstractWidget(pluginsUi->getPluginView()), Position::Left);
+    });
 }
