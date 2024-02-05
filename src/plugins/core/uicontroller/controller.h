@@ -27,6 +27,7 @@ struct View
 };
 
 class ControllerPrivate;
+class AbstractModule;
 class Controller : public QObject
 {
     Q_OBJECT
@@ -34,6 +35,8 @@ public:
     explicit Controller(QObject *parent = nullptr);
     ~Controller();
     static Controller *instance();
+
+    void registerModule(const QString &moduleName, AbstractModule *module);
 
 //signals:
 //    void switchWidget(const QString &PluginName);
@@ -106,6 +109,7 @@ private:
     void initStatusBar();
     void initWorkspaceWidget();
     void initTopToolBar();
+    void initModules();
 
     //menu
     void createHelpActions();
