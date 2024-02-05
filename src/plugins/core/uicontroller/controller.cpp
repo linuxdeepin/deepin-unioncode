@@ -11,6 +11,8 @@
 #include "services/window/windowservice.h"
 #include "services/window/windowcontroller.h"
 #include "services/project/projectservice.h"
+#include "modules/abstractmodule.h"
+#include "modules/pluginmanagermodule.h"
 
 #include <DFrame>
 #include <DFileDialog>
@@ -87,6 +89,8 @@ class ControllerPrivate
     QString mode { "" };   //mode: CM_EDIT/CM_DEBUG/CM_RECENT
     QMap<QString, QList<WidgetInfo>> modeInfo;
 
+    QMap<QString, AbstractModule *> modules;
+
     friend class Controller;
 };
 
@@ -97,16 +101,25 @@ Controller *Controller::instance()
     return ins;
 }
 
+void Controller::registerModule(const QString &moduleName, AbstractModule *module)
+{
+    Q_ASSERT(module && !moduleName.isEmpty());
+
+    d->modules.insert(moduleName, module);
+}
+
 Controller::Controller(QObject *parent)
     : QObject(parent), d(new ControllerPrivate)
 {
-    qInfo() << __FUNCTION__;
     initMainWindow();
     initNavigationBar();
     initContextWidget();
     initStatusBar();
     initWorkspaceWidget();
     initTopToolBar();
+
+    registerModule("pluginManagerModule", new PluginManagerModule());
+    initModules();
 
     registerService();
 }
@@ -229,6 +242,10 @@ Controller::~Controller()
         delete d->mainWindow;
     foreach (auto view, d->viewList.values())
         delete view;
+    foreach (auto module, d->modules.values()) {
+        delete module;
+        module = nullptr;
+    }
     if (d)
         delete d;
 }
@@ -831,10 +848,7 @@ void Controller::createHelpActions()
 
     helpMenu->addSeparator();
 
-    QAction *actionAboutPlugin = new QAction(MWM_ABOUT_PLUGINS, helpMenu);
-    ActionManager::getInstance()->registerAction(actionAboutPlugin, "Help.AboutPlugins", MWM_ABOUT_PLUGINS, QKeySequence());
-    helpMenu->addAction(actionAboutPlugin);
-    addMenuShortCut(actionAboutPlugin);
+
 
     QAction::connect(actionReportBug, &QAction::triggered, this, [=]() {
         QDesktopServices::openUrl(QUrl("https://github.com/linuxdeepin/deepin-unioncode/issues"));
@@ -842,7 +856,6 @@ void Controller::createHelpActions()
     QAction::connect(actionHelpDoc, &QAction::triggered, this, [=]() {
         QDesktopServices::openUrl(QUrl("https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e"));
     });
-    QAction::connect(actionAboutPlugin, &QAction::triggered, this, &Controller::showAboutPlugins);
 }
 
 void Controller::createToolsActions()
@@ -935,6 +948,13 @@ void Controller::initTopToolBar()
     d->mainWindow->setRightTopToolWidget(d->rightTopToolBar);
 
     d->mainWindow->hideTopTollBar();
+}
+
+void Controller::initModules()
+{
+    for (auto module : d->modules.values()) {
+        module->initialize(this);
+    }
 }
 
 void Controller::addMenuShortCut(QAction *action, QKeySequence keySequence)

@@ -13,10 +13,8 @@ using namespace dpfservice;
 
 void Core::initialize()
 {
-    qInfo() << Q_FUNC_INFO;
     QString errStr;
 
-    // 发布窗口服务
     auto &ctx = dpfInstance.serviceContext();
     if (!ctx.load(WindowService::name(), &errStr)) {
         qCritical() << errStr;
@@ -26,9 +24,6 @@ void Core::initialize()
 
 bool Core::start()
 {
-    qInfo() << "set Application Theme";
-    qInfo() << __FUNCTION__;
-
     Controller::instance();
 
     QObject::connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
