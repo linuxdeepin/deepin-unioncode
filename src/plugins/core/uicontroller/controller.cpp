@@ -5,7 +5,7 @@
 #include "controller.h"
 #include "gui/loadingwidget.h"
 #include "gui/navigationbar.h"
-#include "gui/plugindialog.h"
+#include "gui/pluginsui.h"
 #include "gui/windowstatusbar.h"
 #include "gui/workspacewidget.h"
 #include "services/window/windowservice.h"
@@ -751,12 +751,6 @@ void Controller::openFileDialog()
         return;
     recent.saveOpenedFile(filePath);
     editor.openFile(filePath);
-}
-
-void Controller::showAboutPlugins()
-{
-    PluginDialog dialog;
-    dialog.exec();
 }
 
 void Controller::loading()

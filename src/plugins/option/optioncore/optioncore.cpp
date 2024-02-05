@@ -7,7 +7,6 @@
 #include "mainframe/optionenvironmentgenerator.h"
 #include "mainframe/optionprofilesettinggenerator.h"
 #include "mainframe/optionshortcutsettinggenerator.h"
-#include <mainframe/pluginwidget.h>
 
 #include "common/common.h"
 #include "base/abstractwidget.h"
@@ -101,10 +100,6 @@ bool OptionCore::start()
                     }
                 }
             }
-
-            PluginWidget *plugin = new PluginWidget;
-            optionDialog->insertLabel(tr("plugin"));
-            optionDialog->insertOptionPanel(tr("Installed Plugin") ,plugin);
         }
     });
 

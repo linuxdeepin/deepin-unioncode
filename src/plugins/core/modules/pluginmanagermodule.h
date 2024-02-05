@@ -9,7 +9,7 @@
 
 #include <QObject>
 
-class PluginDialog;
+class PluginsUi;
 class PluginManagerModule : public AbstractModule
 {
     Q_OBJECT
@@ -21,7 +21,7 @@ public:
     virtual void initialize(Controller *uiController) override;
 
 private:
-    PluginDialog *pluginDialog = nullptr;
+    PluginsUi *pluginsUi = nullptr;
 };
 
 #endif   // PLUGINMANAGERMODULE_H
