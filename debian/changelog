@@ -1,3 +1,11 @@
+deepin-unioncode (1.2.10) unstable; urgency=medium
+
+  * Replace editor
+  * Refactor core
+  * Optimize project manager
+
+ -- luzhen <luzhen@uniontech.com>  Mon, 05 Feb 2024 10:27:32 +0800
+
 deepin-unioncode (1.2.9) unstable; urgency=medium
 
   * bug fix.
