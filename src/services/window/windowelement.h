@@ -66,6 +66,7 @@ inline const QString MWMDA_STEP_OUT { QAction::tr("Step Out") };
 inline const QString MWM_TOOLS { QMenu::tr("&Tools") };
 inline const QString MWMTA_SEARCH { QAction::tr("Search") };
 inline const QString MWMTA_OPTIONS { QAction::tr("Options") };
+inline const QString MWMTA_PLUGINS { QAction::tr("Plugins") };
 inline const QString MWMTA_USR_ACTION_ANALYZE { QAction::tr("User Action Analyse")};
 inline const QString MWMTA_BINARY_TOOLS { QAction::tr("Binary Tools")};
 inline const QString MWMTA_VALGRIND_MEMCHECK { QAction::tr("Valgrind Memcheck")};
