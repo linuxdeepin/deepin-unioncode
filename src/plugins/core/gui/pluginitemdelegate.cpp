@@ -1,41 +1,28 @@
-// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "pluginitemdelegate.h"
+#include "pluginlistview.h"
 
-#include "displayitemdelegate.h"
-#include "displayrecentview.h"
-
-#include <DApplication>
-#include <DGuiApplicationHelper>
-#include <DStyle>
-#include <DStyleOptionViewItem>
 #include <DPaletteHelper>
-#include <DSizeMode>
-#include <DListView>
+#include <DGuiApplicationHelper>
 
 #include <QPainter>
-#include <QDebug>
-#include <QApplication>
-#include <QFileInfo>
-#include <QTextDocument>
-#include <QTextLayout>
-#include <QTextBlock>
-#include <QAbstractItemView>
-#include <QPainterPath>
 
-inline constexpr int kRectRadius = { 8 };
+inline constexpr int kRectRadius = { 0 }; // do not show rounded corners.
 inline constexpr int kIconWidth = { 30 };
 inline constexpr int kIconHeight = { 30 };
 inline constexpr int kIconLeftMargin = { 10 };
 inline constexpr int kTextLeftMargin = { 8 };
 
-DisplayItemDelegate::DisplayItemDelegate(QAbstractItemView *parent)
+DWIDGET_USE_NAMESPACE
+PluginItemDelegate::PluginItemDelegate(QAbstractItemView *parent)
     : DStyledItemDelegate (parent)
 {
 
 }
 
-void DisplayItemDelegate::paint(QPainter *painter,
+void PluginItemDelegate::paint(QPainter *painter,
                                 const QStyleOptionViewItem &option,
                                 const QModelIndex &index) const
 {
@@ -57,7 +44,7 @@ void DisplayItemDelegate::paint(QPainter *painter,
     painter->setOpacity(1);
 }
 
-QSize DisplayItemDelegate::sizeHint(const QStyleOptionViewItem &option,
+QSize PluginItemDelegate::sizeHint(const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const
 {
     if (index.isValid()) {
@@ -65,13 +52,13 @@ QSize DisplayItemDelegate::sizeHint(const QStyleOptionViewItem &option,
         if (size.isValid()) {
             return size;
         } else {
-            return {option.rect.width(), option.fontMetrics.height() * 2 + 5};
+            return {option.rect.width(), option.fontMetrics.height() * 3 + 5};
         }
     }
     return DStyledItemDelegate::sizeHint(option, index);
 }
 
-void DisplayItemDelegate::paintItemBackground(QPainter *painter, const QStyleOptionViewItem &option,
+void PluginItemDelegate::paintItemBackground(QPainter *painter, const QStyleOptionViewItem &option,
                                               const QModelIndex &index) const
 {
     painter->save();
@@ -106,9 +93,11 @@ void DisplayItemDelegate::paintItemBackground(QPainter *painter, const QStyleOpt
     painter->restore();
 }
 
-QRectF DisplayItemDelegate::paintItemIcon(QPainter *painter, const QStyleOptionViewItem &option,
+QRectF PluginItemDelegate::paintItemIcon(QPainter *painter, const QStyleOptionViewItem &option,
                                           const QModelIndex &index) const
 {
+    Q_UNUSED(index);
+
     painter->save();
 
     if (!parent() || !parent()->parent())
@@ -146,12 +135,11 @@ QRectF DisplayItemDelegate::paintItemIcon(QPainter *painter, const QStyleOptionV
     return iconRect;
 }
 
-QPixmap DisplayItemDelegate::getIconPixmap(const QIcon &icon, const QSize &size, qreal pixelRatio = 1.0, QIcon::Mode mode, QIcon::State state)
+QPixmap PluginItemDelegate::getIconPixmap(const QIcon &icon, const QSize &size, qreal pixelRatio = 1.0, QIcon::Mode mode, QIcon::State state)
 {
     if (icon.isNull())
         return QPixmap();
 
-    // 确保当前参数参入获取图片大小大于0
     if (size.width() <= 0 || size.height() <= 0)
         return QPixmap();
 
@@ -161,7 +149,7 @@ QPixmap DisplayItemDelegate::getIconPixmap(const QIcon &icon, const QSize &size,
     return px;
 }
 
-void DisplayItemDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem &option,
+void PluginItemDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem &option,
                                           const QModelIndex &index, const QRectF &iconRect) const
 {
     painter->save();
@@ -170,22 +158,39 @@ void DisplayItemDelegate::paintItemColumn(QPainter *painter, const QStyleOptionV
     if (isSelected)
         painter->setPen(option.palette.color(DPalette::ColorGroup::Active, QPalette::HighlightedText));
 
-    QString filePath = index.data(Qt::DisplayRole).toString();
-    QString fileName = QFileInfo(filePath).fileName();
+    QFont boldFont = option.font;
+    boldFont.setPointSize(10);
+    boldFont.setBold(true);
+    QFontMetrics fmBold(boldFont);
+
+    // display plugin name.
+    QString pluginName = index.data(Qt::DisplayRole).toString();
+    pluginName = fmBold.elidedText(pluginName, Qt::ElideRight,
+                               qRound(option.rect.width() - iconRect.width() - kIconLeftMargin * 2));
+    painter->setFont(boldFont);
+    painter->drawText(option.rect.adjusted(kIconLeftMargin + kIconWidth + kTextLeftMargin, 5, 0, -5),
+                      Qt::AlignLeft | Qt::AlignTop, pluginName);
+    painter->restore();
+
+    painter->save();
+    // display description.
+    painter->setOpacity(0.7);
+    QString description = index.data(PluginListView::Description).toString();
     QFontMetrics fm(option.font);
-
-    QString elidFilePath;
-    elidFilePath = fm.elidedText(filePath, Qt::ElideMiddle,
-                                 qRound(option.rect.width() - iconRect.width() - kIconLeftMargin * 2));
-
+    description = fm.elidedText(description, Qt::ElideRight,
+                                qRound(option.rect.width() - iconRect.width() - kIconLeftMargin * 2));
     painter->drawText(option.rect.adjusted(kIconLeftMargin + kIconWidth + kTextLeftMargin, 5, 0, -5),
-                      Qt::AlignLeft | Qt::AlignBottom, elidFilePath);
+                      Qt::AlignLeft | Qt::AlignVCenter, description);
 
-    QString elidFileName;
-    elidFileName = fm.elidedText(fileName, Qt::ElideMiddle,
-                                 qRound(option.rect.width() - iconRect.width() - kIconLeftMargin * 2));
+    // display vender.
+    boldFont.setPointSize(9);
+    QFontMetrics fmSmallBold(boldFont);
+    QString vender = index.data(PluginListView::Vender).toString();
+    vender = fmSmallBold.elidedText(vender, Qt::ElideRight,
+                           qRound(option.rect.width() - iconRect.width() - kIconLeftMargin * 2));
+    painter->setFont(boldFont);
     painter->drawText(option.rect.adjusted(kIconLeftMargin + kIconWidth + kTextLeftMargin, 5, 0, -5),
-                      Qt::AlignLeft | Qt::AlignTop, elidFileName);
+                      Qt::AlignLeft | Qt::AlignBottom, vender);
 
     painter->restore();
 }

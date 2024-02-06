@@ -7,7 +7,7 @@
 #include "framework/lifecycle/lifecycle.h"
 #include "framework/lifecycle/pluginmanager.h"
 #include "framework/lifecycle/pluginmetaobject.h"
-#include "framework/lifecycle/pluginview.h"
+#include "pluginlistview.h"
 
 #include <DTitlebar>
 
@@ -19,17 +19,17 @@ static bool isRestartRequired = false;
 
 PluginsUi::PluginsUi(QObject *parent)
     : QObject(parent),
-      pluginListView(new dpf::PluginView())
+      pluginListView(new PluginListView())
 {
     pluginDetailView = new DetailsView();
     slotCurrentPluginActived();
 
-    QObject::connect(pluginListView, &dpf::PluginView::currentPluginActived, this, &PluginsUi::slotCurrentPluginActived);
-    QObject::connect(pluginListView, &dpf::PluginView::pluginSettingChanged,
+    QObject::connect(pluginListView, &PluginListView::currentPluginActived, this, &PluginsUi::slotCurrentPluginActived);
+    QObject::connect(pluginListView, &PluginListView::pluginSettingChanged,
                      this, &PluginsUi::updateRestartRequired);
 }
 
-dpf::PluginView *PluginsUi::getPluginView() const
+PluginListView *PluginsUi::getPluginView() const
 {
     return pluginListView;
 }
@@ -146,6 +146,9 @@ DetailsView::DetailsView(QWidget *parent)
 
 void DetailsView::update(dpf::PluginMetaObjectPointer plugin)
 {
+    if (plugin.isNull())
+        return;
+
     name->setText(plugin->name());
     version->setText(plugin->version());
     compatVersion->setText(plugin->compatVersion());
@@ -168,7 +171,8 @@ void DetailsView::update(dpf::PluginMetaObjectPointer plugin)
     }
     dependencies->addItems(dependsList);
 
-    connect(urlLink, &DLabel::linkActivated, [=](){
+    disconnect(urlLink, &DLabel::linkActivated, this, nullptr);
+    connect(urlLink, &DLabel::linkActivated, this, [=](){
         QDesktopServices::openUrl(QUrl(plugin->urlLink()));
     });
 }

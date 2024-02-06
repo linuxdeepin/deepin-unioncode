@@ -28,11 +28,11 @@ using namespace dpfservice;
 
 static RecentDisplay *ins{nullptr};
 
-class DisplayProView : public DisplayRecentView
+class DisplayProjectView : public DisplayRecentView
 {
     QJsonArray projects;
 public:
-    explicit DisplayProView(QWidget *parent = nullptr)
+    explicit DisplayProjectView(QWidget *parent = nullptr)
         : DisplayRecentView(parent)
     {
         load();
@@ -205,7 +205,7 @@ class RecentDisplayPrivate
     QVBoxLayout *vLayoutDoc{nullptr};
     QVBoxLayout *vLayoutPro{nullptr};
     DWidget *recentOpen{nullptr};
-    DisplayProView *proView{nullptr};
+    DisplayProjectView *proView{nullptr};
     DisplayDocView *docView{nullptr};
     DLabel *proLabel{nullptr};
     DPushButton *proClear{nullptr};
@@ -225,7 +225,7 @@ RecentDisplay::RecentDisplay(DWidget *parent)
     : DWidget (parent)
     , d(new RecentDisplayPrivate())
 {
-    updateUi();
+    initializeUi();
     initConnect();
 }
 
@@ -419,7 +419,7 @@ void RecentDisplay::clearDocList()
     }
 }
 
-void RecentDisplay::updateUi()
+void RecentDisplay::initializeUi()
 {
     d->navFrame = new DFrame();
     d->docFrame = new DFrame();
@@ -481,7 +481,7 @@ void RecentDisplay::updateUi()
 
     //recent open projects
     d->proFrame->setLineWidth(0);
-    d->proView = new DisplayProView();
+    d->proView = new DisplayProjectView();
 
     d->proLabel = new DLabel(tr("Projects"));
     d->proLabel->setForegroundRole(QPalette::BrightText);
