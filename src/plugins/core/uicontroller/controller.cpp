@@ -173,10 +173,10 @@ void Controller::registerService()
         windowService->splitWidgetOrientation = std::bind(&MainWindow::splitWidgetOrientation, d->mainWindow, _1, _2, _3);
     }
     if (!windowService->addNavigationItem) {
-        windowService->addNavigationItem = std::bind(&Controller::addNavigationItem, this, _1);
+        windowService->addNavigationItem = std::bind(&Controller::addNavigationItem, this, _1, _2);
     }
     if (!windowService->addNavigationItemToBottom) {
-        windowService->addNavigationItemToBottom = std::bind(&Controller::addNavigationItemToBottom, this, _1);
+        windowService->addNavigationItemToBottom = std::bind(&Controller::addNavigationItemToBottom, this, _1, _2);
     }
     if (!windowService->switchWidgetNavigation) {
         windowService->switchWidgetNavigation = std::bind(&Controller::switchWidgetNavigation, this, _1);
@@ -445,23 +445,23 @@ void Controller::hideWidget(const QString &name)
     d->mainWindow->hideWidget(name);
 }
 
-void Controller::addNavigationItem(AbstractAction *action)
+void Controller::addNavigationItem(AbstractAction *action, quint8 priority)
 {
     if (!action)
         return;
     auto inputAction = action->qAction();
 
-    d->navigationBar->addNavItem(inputAction);
+    d->navigationBar->addNavItem(inputAction, NavigationBar::top, priority);
     d->navigationActions.insert(inputAction->text(), inputAction);
 }
 
-void Controller::addNavigationItemToBottom(AbstractAction *action)
+void Controller::addNavigationItemToBottom(AbstractAction *action, quint8 priority)
 {
     if (!action)
         return;
     auto inputAction = action->qAction();
 
-    d->navigationBar->addNavItem(inputAction, NavigationBar::bottom);
+    d->navigationBar->addNavItem(inputAction, NavigationBar::bottom, priority);
     d->navigationActions.insert(inputAction->text(), inputAction);
 }
 
@@ -680,7 +680,7 @@ void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, const QStrin
     if (!abstractWidget)
         return;
     auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
-    if(!widget)
+    if (!widget)
         return;
 
     QHBoxLayout *hlayout { nullptr };

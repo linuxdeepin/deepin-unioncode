@@ -54,8 +54,8 @@ public slots:
     void showWidget(const QString &name);
     void hideWidget(const QString &name);
 
-    void addNavigationItem(AbstractAction *action);
-    void addNavigationItemToBottom(AbstractAction *action);
+    void addNavigationItem(AbstractAction *action, quint8 priority);
+    void addNavigationItemToBottom(AbstractAction *action, quint8 priority);
     void switchWidgetNavigation(const QString &navName);
 
     //bottom contextWidget
