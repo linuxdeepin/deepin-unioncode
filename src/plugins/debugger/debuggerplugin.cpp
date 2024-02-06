@@ -47,7 +47,7 @@ bool DebuggerPlugin::start()
     if (windowService->addNavigationItem) {
         QAction *action = new QAction(MWNA_DEBUG, this);
         action->setIcon(QIcon::fromTheme("debug-navigation"));
-        windowService->addNavigationItem(new AbstractAction(action));
+        windowService->addNavigationItem(new AbstractAction(action), 5);
         windowService->registerWidgetToMode("debugMainWindow", new AbstractWidget(debugManager->getDebugMainPane()), CM_DEBUG, Position::Left, true, true);
         windowService->registerWidgetToMode("debuggerWatcher", new AbstractWidget(debugManager->getLocalsPane()), CM_DEBUG, Position::Right, true, false);
     }

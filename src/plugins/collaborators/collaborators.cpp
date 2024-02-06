@@ -27,8 +27,8 @@ bool Collaborators::start()
             QAction *actionSvn = new QAction(MWNA_SVN, this);
             actionSvn->setIcon(QIcon::fromTheme("svn-navigation"));
 
-            windowService->addNavigationItem(new AbstractAction(actionGit));
-            windowService->addNavigationItem(new AbstractAction(actionSvn));
+            windowService->addNavigationItem(new AbstractAction(actionGit), 10);
+            windowService->addNavigationItem(new AbstractAction(actionSvn), 10);
 
             AbstractWidget *gitMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->gitMainWidget());
             AbstractWidget *svnMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->svnMainWidget());
