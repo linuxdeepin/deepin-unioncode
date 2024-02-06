@@ -137,8 +137,13 @@ public:
 
     DPF_INTERFACE(void, setDockWidgetFeatures, const QString &name, QDockWidget::DockWidgetFeatures feature);
 
-    DPF_INTERFACE(void, addNavigationItem, AbstractAction *action);
-    DPF_INTERFACE(void, addNavigationItemToBottom, AbstractAction *action);
+    /*!
+     * \brief add navigationItem to leftToolBar
+     * \param action
+     * \param priority 0~255  0 is highest. default:10
+     */
+    DPF_INTERFACE(void, addNavigationItem, AbstractAction *action, quint8 priority);
+    DPF_INTERFACE(void, addNavigationItemToBottom, AbstractAction *action, quint8 priority);
     DPF_INTERFACE(void, switchWidgetNavigation, const QString &navName);
 
     /*!

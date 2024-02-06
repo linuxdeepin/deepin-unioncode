@@ -33,21 +33,48 @@ NavigationBar::NavigationBar(QWidget *parent)
 
 NavigationBar::~NavigationBar()
 {
-    if(topLayout)
+    if (topLayout)
         delete topLayout;
-    if(bottomLayout)
+    if (bottomLayout)
         delete bottomLayout;
 }
 
-void NavigationBar::addNavItem(QAction *action, itemPositioin pos)
+void NavigationBar::updateUi()
 {
-    if(pos == top){
-        auto btn = createToolBtn(action, true);
-        topLayout->addWidget(btn);
-   } else {
-        auto btn = createToolBtn(action, false);
-        bottomLayout->addWidget(btn);
+    //update top
+    auto widgets = topLayout->findChildren<DToolButton *>();
+    foreach (auto widget, widgets) {
+        topLayout->removeWidget(widget);
     }
+    foreach (auto btnList, topBtnsByPriority) {
+        foreach (auto btn, btnList) {
+            topLayout->addWidget(btn);
+        }
+    }
+
+    //update bottom
+    widgets = bottomLayout->findChildren<DToolButton *>();
+    foreach (auto widget, widgets) {
+        bottomLayout->removeWidget(widget);
+    }
+    foreach (auto btnList, bottomBtnsByPriority) {
+        foreach (auto btn, btnList) {
+            bottomLayout->addWidget(btn);
+        }
+    }
+}
+
+void NavigationBar::addNavItem(QAction *action, itemPositioin pos, quint8 priority)
+{
+    if (pos == top) {
+        auto btn = createToolBtn(action, true);
+        topBtnsByPriority[priority].append(btn);
+    } else {
+        auto btn = createToolBtn(action, false);
+        bottomBtnsByPriority[priority].append(btn);
+    }
+
+    updateUi();
 }
 
 DToolButton *NavigationBar::createToolBtn(QAction *action, bool isNavigationItem)
@@ -61,13 +88,13 @@ DToolButton *NavigationBar::createToolBtn(QAction *action, bool isNavigationItem
     navBtn->setIconSize(QSize(20, 20));
     navBtn->setFocusPolicy(Qt::NoFocus);
 
-    if(isNavigationItem) {
+    if (isNavigationItem) {
         navBtn->setCheckable(true);
         navBtn->setChecked(false);
 
         navBtns.insert(action->text(), navBtn);
 
-        connect(navBtn, &DToolButton::clicked, this, [=](){
+        connect(navBtn, &DToolButton::clicked, this, [=]() {
             Controller::instance()->switchWidgetNavigation(action->text());
             setNavActionChecked(action->text(), true);
             action->trigger();

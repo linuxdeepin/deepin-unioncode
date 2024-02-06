@@ -40,7 +40,7 @@ void PluginManagerModule::initialize(Controller *_uiController)
                                        MWMTA_PLUGINS);
 
     uiController->addAction(MWM_HELP, actionOptionsImpl);
-    uiController->addNavigationItem(actionOptionsImpl);
+    uiController->addNavigationItem(actionOptionsImpl, 255);
     QObject::connect(pluginManagerAction, &QAction::triggered, this, [this](){
         uiController->raiseMode(CM_EDIT);
         uiController->replaceWidget("pluginDetail", new AbstractWidget(pluginsUi->getPluginDetailView()), Position::FullWindow);

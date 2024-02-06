@@ -11,10 +11,11 @@
 #include <QVBoxLayout>
 #include <QHash>
 
+using DTK_WIDGET_NAMESPACE::DToolButton;
 class NavigationBar : public DTK_WIDGET_NAMESPACE::DFrame
 {
 public:
-    enum itemPositioin{
+    enum itemPositioin {
         top,
         bottom
     };
@@ -22,16 +23,19 @@ public:
     NavigationBar(QWidget *parent = nullptr);
     ~NavigationBar();
 
-    void addNavItem(QAction *action, itemPositioin pos = top);
+    void addNavItem(QAction *action, itemPositioin pos = top, quint8 priority = 10);   //priority : 0 highest, 255 lowest
     void setNavActionChecked(const QString &actionName, bool checked);
+    void updateUi();
 
 private:
     QVBoxLayout *topLayout { nullptr };
     QVBoxLayout *bottomLayout { nullptr };
 
-    DTK_WIDGET_NAMESPACE::DToolButton *createToolBtn(QAction *action, bool isNavigationItem);
+    DToolButton *createToolBtn(QAction *action, bool isNavigationItem);
 
-    QHash<QString, DTK_WIDGET_NAMESPACE::DToolButton*> navBtns;
+    QHash<QString, DToolButton *> navBtns;
+    QMap<quint8, QList<DToolButton *>> topBtnsByPriority;
+    QMap<quint8, QList<DToolButton *>> bottomBtnsByPriority;
 };
 
 #endif   // NAVIGATIONBAR_H
