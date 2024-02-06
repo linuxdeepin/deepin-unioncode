@@ -19,6 +19,38 @@
 
 #define INIT_DATA "{\n    \"Projects\":[],\n    \"Documents\":[]\n}\n"
 
+DisplayRecentView::DisplayRecentView(QWidget *parent)
+    : DListView (parent)
+    , cache({})
+    , model(new QStandardItemModel(this))
+{    
+    setDragDropMode(QAbstractItemView::NoDragDrop);
+    setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionBehavior(QAbstractItemView::SelectRows);
+    setEditTriggers(QListView::NoEditTriggers);
+    setTextElideMode(Qt::ElideMiddle);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setAlternatingRowColors(false);
+    setSelectionRectVisible(true);
+    setMouseTracking(true);
+
+    setUniformItemSizes(true);
+    setResizeMode(Fixed);
+    setOrientation(QListView::TopToBottom, false);
+    setFrameStyle(QFrame::NoFrame);
+    setSpacing(0);
+    setContentsMargins(0, 0, 0, 0);
+
+    setModel(model);
+    setItemDelegate(new DisplayItemDelegate(this));
+}
+
+DisplayRecentView::~DisplayRecentView()
+{
+
+}
+
 QJsonDocument DisplayRecentView::readRecent()
 {
     QJsonDocument recentDoc;
@@ -67,38 +99,6 @@ QList<QStandardItem *> DisplayRecentView::itemsFromFile()
         result << rowItem;
     }
     return result;
-}
-
-DisplayRecentView::DisplayRecentView(QWidget *parent)
-    : DListView (parent)
-    , cache({})
-    , model(new QStandardItemModel(this))
-{    
-    setDragDropMode(QAbstractItemView::NoDragDrop);
-    setSelectionMode(QAbstractItemView::SingleSelection);
-    setSelectionBehavior(QAbstractItemView::SelectRows);
-    setEditTriggers(QListView::NoEditTriggers);
-    setTextElideMode(Qt::ElideMiddle);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setAlternatingRowColors(false);
-    setSelectionRectVisible(true);
-    setMouseTracking(true);
-
-    setUniformItemSizes(true);
-    setResizeMode(Fixed);
-    setOrientation(QListView::TopToBottom, false);
-    setFrameStyle(QFrame::NoFrame);
-    setSpacing(0);
-    setContentsMargins(0, 0, 0, 0);
-
-    setModel(model);
-    setItemDelegate(new DisplayItemDelegate(this));
-}
-
-DisplayRecentView::~DisplayRecentView()
-{
-
 }
 
 void DisplayRecentView::focusOutEvent(QFocusEvent *e)

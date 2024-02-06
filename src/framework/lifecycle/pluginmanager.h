@@ -49,7 +49,7 @@ public:
     void stopPlugins();
     void setSettings(PluginSetting *settings);
     void writeSettings();
-    QHash<QString, QQueue<PluginMetaObjectPointer>> pluginCollections();
+    const QHash<QString, QQueue<PluginMetaObjectPointer>> &pluginCollections() const;
 
     PluginMetaObjectPointer pluginMetaObj(const QString &pluginName,
                                              const QString version = "") const;

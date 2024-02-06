@@ -20,7 +20,7 @@ public:
         ProjectWorkspace,
     };
     explicit RecentDisplay(DTK_WIDGET_NAMESPACE::DWidget *parent = nullptr);
-    virtual ~RecentDisplay();
+    virtual ~RecentDisplay() override;
     static RecentDisplay *instance();
 
 public slots:
@@ -40,7 +40,7 @@ private slots:
     void clearDocList();
     void clearProList();
 private:
-    void updateUi();
+    void initializeUi();
     void initConnect();
     bool isProAndDocNull();
 
