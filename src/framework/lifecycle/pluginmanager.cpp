@@ -136,7 +136,7 @@ void PluginManager::writeSettings()
     d->writeSettings();
 }
 
-QHash<QString, QQueue<PluginMetaObjectPointer> > PluginManager::pluginCollections()
+const QHash<QString, QQueue<PluginMetaObjectPointer> > &PluginManager::pluginCollections() const
 {
     return d->pluginCategories;
 }

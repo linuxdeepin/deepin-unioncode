@@ -22,10 +22,7 @@ DWIDGET_USE_NAMESPACE
 class DetailsView;
 class QDialogButtonBox;
 class QLabel;
-
-namespace dpf {
-class PluginView;
-}
+class PluginListView;
 
 class PluginsUi : public QObject
 {
@@ -33,7 +30,7 @@ class PluginsUi : public QObject
 
 public:
     explicit PluginsUi(QObject *parent = nullptr);
-    dpf::PluginView *getPluginView() const;
+    PluginListView *getPluginView() const;
     DetailsView *getPluginDetailView() const;
 
 private slots:
@@ -44,7 +41,7 @@ private:
     void updateButtons();
     void saveConfig();
 
-    dpf::PluginView *pluginListView = nullptr;
+    PluginListView *pluginListView = nullptr;
     DetailsView *pluginDetailView = nullptr;
 };
 

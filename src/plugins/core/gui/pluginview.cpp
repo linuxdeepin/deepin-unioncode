@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "lifecycle.h"
+#include "framework/lifecycle/lifecycle.h"
 #include "pluginview.h"
-#include "pluginmetaobject.h"
+#include "framework/lifecycle/pluginmetaobject.h"
 
 #include <DTreeWidget>
 #include <DFrame>
