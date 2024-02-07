@@ -145,6 +145,8 @@ public:
     DPF_INTERFACE(void, addNavigationItem, AbstractAction *action, quint8 priority);
     DPF_INTERFACE(void, addNavigationItemToBottom, AbstractAction *action, quint8 priority);
     DPF_INTERFACE(void, switchWidgetNavigation, const QString &navName);
+    DPF_INTERFACE(QStringList, getAllNavigationItemName);
+    DPF_INTERFACE(quint8, getPriorityOfNavigationItem, const QString &itemName);
 
     /*!
      * \brief add widget to ContextWidget, the visible of contextWidget is controlled by controller.
