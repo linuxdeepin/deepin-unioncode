@@ -53,9 +53,7 @@ class ConfigWidgetPrivate
     DComboBox *combSrc = nullptr;
     DLabel *lbTarget = nullptr;
     DComboBox *combTarget = nullptr;
-    QSpacerItem *verticalSpacer = nullptr;
     QHBoxLayout *horizontalLayout = nullptr;
-    QSpacerItem *horizontalSpacer = nullptr;
     DPushButton *btnPoting = nullptr;
     DPushButton *btnCancel = nullptr;
     DLabel *lbWarning = nullptr;

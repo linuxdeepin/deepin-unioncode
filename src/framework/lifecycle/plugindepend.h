@@ -30,7 +30,7 @@ public:
     PluginDepend& operator = (const PluginDepend &depend);
     QString name() const {return pluginName;}
     QString version() const {return pluginVersion;}
-    QString toString() const {return pluginName + " (" + pluginVersion + ")";}
+    QString toString() const {return pluginName + pluginVersion;}
 
 private:
     PluginDepend();
