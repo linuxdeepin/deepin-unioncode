@@ -33,7 +33,7 @@ void PluginManagerModule::initialize(Controller *_uiController)
     QAction *pluginManagerAction = new QAction(MWMTA_PLUGINS, this);
     pluginManagerAction->setIcon(QIcon::fromTheme("plugins-navigation"));
     ActionManager::getInstance()->registerAction(
-                pluginManagerAction, "Help.AboutPlugins", MWM_ABOUT_PLUGINS, QKeySequence());
+            pluginManagerAction, "Help.AboutPlugins", MWM_ABOUT_PLUGINS, QKeySequence());
 
     auto actionOptionsImpl = new AbstractAction(pluginManagerAction);
     actionOptionsImpl->setShortCutInfo("Tools.Plugins",
@@ -41,10 +41,15 @@ void PluginManagerModule::initialize(Controller *_uiController)
 
     uiController->addAction(MWM_HELP, actionOptionsImpl);
     uiController->addNavigationItem(actionOptionsImpl, 255);
+
+    auto detailViewImpl = new AbstractWidget(pluginsUi->getPluginDetailView());
+    auto storeWidgetImpl = new AbstractWidget(pluginsUi->getStoreWidget());
+
+    uiController->registerWidget("pluginDetail", detailViewImpl);
+    uiController->registerWidget(MWMTA_PLUGINS, storeWidgetImpl);
+
     QObject::connect(pluginManagerAction, &QAction::triggered, this, [this]() {
-        uiController->replaceWidget("pluginDetail",
-                                    new AbstractWidget(pluginsUi->getPluginDetailView()), Position::FullWindow);
-        uiController->replaceWidget(MWMTA_PLUGINS,
-                                    new AbstractWidget(pluginsUi->getStoreWidget()), Position::Left);
+        uiController->showWidgetAtPosition("pluginDetail", Position::Central);
+        uiController->showWidgetAtPosition(MWMTA_PLUGINS, Position::Left);
     });
 }

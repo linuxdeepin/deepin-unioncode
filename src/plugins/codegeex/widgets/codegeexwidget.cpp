@@ -112,9 +112,8 @@ void CodeGeeXWidget::resizeEvent(QResizeEvent *event)
 
 void CodeGeeXWidget::initUI()
 {
-//    //todo(zta) : 低于330宽度时显示有异常，先限制最小宽度，后续找原因
-//    setMinimumWidth(330);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setContentsMargins(0, 0, 0, 0);
 
     auto initLoginUI = [this]() {
         auto verticalLayout = new QVBoxLayout(this);

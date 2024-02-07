@@ -148,8 +148,13 @@ void MainWindow::resizeDock(QDockWidget *dock)
     foreach (auto name, d->dockList.keys()) {
         if (dockWidgetArea(d->dockList[name]) == area) {
             size = d->dockList[name]->size();
+            break;
         }
     }
+
+    //(100, 30) means dockWidget havn`t init
+    if(size == QSize(100, 30))
+        size = QSize(300, 300);
 
     if (area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea)
         resizeDocks({ dock }, { size.width() }, Qt::Horizontal);
@@ -278,6 +283,15 @@ void MainWindow::hideAllWidget()
 void MainWindow::showWidget(const QString &name)
 {
     if (d->centralWidgets.contains(name) && !d->centralWidgetName.isEmpty()) {
+        //Prevent the dock widget being stretched when switching central widget
+        QList<QDockWidget *> restoreDock;
+        foreach (auto dock, d->dockList) {
+            if(dock->isVisible()) {
+                dock->setVisible(false);
+                restoreDock.append(dock);
+            }
+        }
+
         if (centralWidget())
             hideWidget(d->centralWidgetName);
 
@@ -285,6 +299,10 @@ void MainWindow::showWidget(const QString &name)
         d->centralWidgetName = name;
         central->show();
         setCentralWidget(central);
+
+        foreach (auto dock, restoreDock)
+            dock->setVisible(true);
+
         return;
     }
 

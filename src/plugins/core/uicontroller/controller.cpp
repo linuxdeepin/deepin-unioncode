@@ -61,6 +61,9 @@ class ControllerPrivate
     WorkspaceWidget *workspace { nullptr };
     bool showWorkspace { nullptr };
 
+    QMap<QString, DWidget *> widgetWaitForAdd;
+    QMap<QString, DWidget *> addedWidget;
+
     NavigationBar *navigationBar { nullptr };
     QMap<QString, QAction *> navigationActions;
 
@@ -80,10 +83,7 @@ class ControllerPrivate
 
     DMenu *menu { nullptr };
 
-    QMap<QString, View *> viewList;
     QStringList hiddenWidgetList;
-    QString currentPlugin { "" };   //navigation - widget
-    View *currentView { nullptr };
 
     QStringList validModeList { CM_EDIT, CM_DEBUG, CM_RECENT };
     QMap<QString, QString> modePluginMap { { CM_EDIT, MWNA_EDIT }, { CM_RECENT, MWNA_RECENT }, { CM_DEBUG, MWNA_DEBUG } };
@@ -131,23 +131,11 @@ void Controller::registerService()
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
 
     using namespace std::placeholders;
-    if (!windowService->hasView) {
-        windowService->hasView = std::bind(&Controller::hasView, this, _1);
-    }
-    if (!windowService->raiseView) {
-        windowService->raiseView = std::bind(&Controller::raiseView, this, _1);
-    }
     if (!windowService->raiseMode) {
         windowService->raiseMode = std::bind(&Controller::raiseMode, this, _1);
     }
-    if (!windowService->setCurrentPlugin) {
-        windowService->setCurrentPlugin = std::bind(&Controller::setCurrentPlugin, this, _1);
-    }
-    if (!windowService->addWidget) {
-        windowService->addWidget = std::bind(&Controller::addWidget, this, _1, _2, _3, _4);
-    }
     if (!windowService->replaceWidget) {
-        windowService->replaceWidget = std::bind(&Controller::replaceWidget, this, _1, _2, _3);
+        windowService->replaceWidget = std::bind(&Controller::replaceWidget, this, _1, _2);
     }
     if (!windowService->insertWidget) {
         windowService->insertWidget = std::bind(&Controller::insertWidget, this, _1, _2, _3);
@@ -155,19 +143,14 @@ void Controller::registerService()
     if (!windowService->registerWidgetToMode) {
         windowService->registerWidgetToMode = std::bind(&Controller::registerWidgetToMode, this, _1, _2, _3, _4, _5, _6);
     }
-    if (!windowService->addWidgetByOrientation) {
-        windowService->addWidgetByOrientation = std::bind(&Controller::addWidgetByOrientation, this, _1, _2, _3, _4, _5);
+    if (!windowService->registerWidget) {
+        windowService->registerWidget = std::bind(&Controller::registerWidget, this, _1, _2);
+    }
+    if (!windowService->showWidgetAtPosition) {
+        windowService->showWidgetAtPosition = std::bind(&Controller::showWidgetAtPosition, this, _1, _2, _3);
     }
     if (!windowService->setDockWidgetFeatures) {
         windowService->setDockWidgetFeatures = std::bind(&MainWindow::setDockWidgetFeatures, d->mainWindow, _1, _2);
-    }
-    if (!windowService->showWidget) {
-        //auto showWidgetByName = static_cast<void (MainWindow::*)(const QString &)>(&MainWindow::showWidget);
-        windowService->showWidget = std::bind(&Controller::showWidget, this, _1);
-    }
-    if (!windowService->hideWidget) {
-        //auto hideWidgetByName = static_cast<void (MainWindow::*)(const QString &)>(&MainWindow::hideWidget);
-        windowService->hideWidget = std::bind(&Controller::hideWidget, this, _1);
     }
     if (!windowService->splitWidgetOrientation) {
         windowService->splitWidgetOrientation = std::bind(&MainWindow::splitWidgetOrientation, d->mainWindow, _1, _2, _3);
@@ -247,8 +230,6 @@ Controller::~Controller()
 {
     if (d->mainWindow)
         delete d->mainWindow;
-    foreach (auto view, d->viewList.values())
-        delete view;
     foreach (auto module, d->modules.values()) {
         delete module;
         module = nullptr;
@@ -263,8 +244,6 @@ void Controller::raiseMode(const QString &mode)
         qWarning() << "mode can only choose CM_RECENT / CM_EDIT / CM_DEBUG";
         return;
     }
-
-    d->mainWindow->hideAllWidget();
 
     auto widgetInfoList = d->modeInfo[mode];
     foreach (auto widgetInfo, widgetInfoList) {
@@ -291,107 +270,27 @@ void Controller::raiseMode(const QString &mode)
     showContextWidget();
     showStatusBar();
 
-    QString plugin = mode == CM_EDIT ? MWNA_EDIT : MWNA_DEBUG;
-    d->currentView = d->viewList[plugin];
     d->mode = mode;
 }
 
-void Controller::raiseView(const QString &plugin)
+void Controller::replaceWidget(const QString &name, Position pos)
 {
-    if (!d->viewList.contains(plugin)) {
-        qWarning() << "no view of plugin: " << plugin << "try to trigger it";
-        d->navigationActions[plugin]->trigger();
-        return;
-    }
-
-    auto view = d->viewList[plugin];
-    if (d->currentView == view)
-        return;
-
-    if (!view->mode.isEmpty())
-        raiseMode(view->mode);
-
-    bool restoreContextWidget = false;
-    foreach (auto hidepos, view->hiddenposList) {
-        //if hide centralWidget when contextWidget is visible, contextWidget`s height will resize to window`s height
-        if (hidepos == Position::Central && d->contextWidget->isVisible()) {
-            d->mainWindow->hideWidget(WN_CONTEXTWIDGET);
-            restoreContextWidget = true;
-        }
-        d->mainWindow->hideWidget(hidepos);
-    }
-
-    foreach (auto widgetName, view->widgetList) {
-        if (!d->hiddenWidgetList.contains(widgetName))
-            d->mainWindow->showWidget(widgetName);
-    }
-
-    if (restoreContextWidget)
-        d->mainWindow->showWidget(WN_CONTEXTWIDGET);
-
-    d->currentView = view;
+    showWidgetAtPosition(name, pos, true);
 }
 
-bool Controller::initView(const QString &widgetName, Position pos, bool replace)
+void Controller::insertWidget(const QString &name, Position pos, Qt::Orientation orientation)
 {
-    if (d->currentPlugin.isEmpty())
-        return false;
-
-    auto view = d->viewList[d->currentPlugin];
-    if (!view) {
-        view = new View;
-        d->viewList.insert(d->currentPlugin, view);
-        view->pluginName = d->currentPlugin;
-        view->widgetList.append(widgetName);
-    } else if (!view->widgetList.contains(widgetName)) {
-        view->widgetList.append(widgetName);
+    if (d->widgetWaitForAdd.contains(name)) {
+        d->mainWindow->addWidget(name, d->widgetWaitForAdd[name], pos, orientation);
+    } else if (d->addedWidget.contains(name)) {
+        d->mainWindow->showWidget(name);
     } else {
-        return true;
-    }
-
-    if (replace) {
-        view->hiddenposList.append(pos);
-        d->mainWindow->hideWidget(pos);
-    }
-
-    return false;
-}
-
-bool Controller::hasView(const QString &plugin)
-{
-    return d->viewList.contains(plugin);
-}
-
-void Controller::setCurrentPlugin(const QString &plugin)
-{
-    d->currentPlugin = plugin;
-}
-
-void Controller::addWidget(const QString &name, AbstractWidget *abstractWidget, Position pos, bool replace)
-{
-    bool viewIsAlreayExisted = initView(name, pos, replace);
-
-    if (viewIsAlreayExisted) {
-        raiseView(d->currentPlugin);
+        qWarning() << "no widget named:" << name;
         return;
     }
 
-    d->currentView = d->viewList[d->currentPlugin];
-
-    if (abstractWidget) {
-        auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
-        d->mainWindow->addWidget(name, widget, pos);
-    }
-}
-
-void Controller::replaceWidget(const QString &name, AbstractWidget *abstractWidget, Position pos)
-{
-    addWidget(name, abstractWidget, pos, true);
-}
-
-void Controller::insertWidget(const QString &name, AbstractWidget *abstractWidget, Position pos)
-{
-    addWidget(name, abstractWidget, pos, false);
+    d->addedWidget.insert(name, d->widgetWaitForAdd[name]);
+    d->widgetWaitForAdd.remove(name);
 }
 
 void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstractWidget, const QString &mode, Position pos, bool replace, bool isVisible)
@@ -400,7 +299,6 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
         qWarning() << "mode can only choose CM_RECENT / CM_EDIT / CM_DEBUG";
         return;
     }
-    setCurrentPlugin(d->modePluginMap.value(mode));
 
     DWidget *qWidget = static_cast<DWidget *>(abstractWidget->qWidget());
 
@@ -411,44 +309,37 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
     widgetInfo.widget = qWidget;
     widgetInfo.isVisible = isVisible;
 
-    initView(name, pos, replace);
     d->mainWindow->addWidget(name, qWidget, pos);
     d->mainWindow->hideWidget(name);
 
     d->modeInfo[mode].append(widgetInfo);
-    setCurrentPlugin("");
 }
 
-void Controller::addWidgetByOrientation(const QString &name, AbstractWidget *abstractWidget, Position pos, bool replace, Qt::Orientation orientation)
+void Controller::registerWidget(const QString &name, AbstractWidget *abstractWidget)
 {
-    bool viewIsAlreayExisted = initView(name, pos, replace);
+    if (d->widgetWaitForAdd.contains(name) || d->addedWidget.contains(name))
+        return;
 
-    if (viewIsAlreayExisted) {
-        raiseView(d->currentPlugin);
+    auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
+    d->widgetWaitForAdd.insert(name, widget);
+}
+
+void Controller::showWidgetAtPosition(const QString &name, Position pos, bool replace)
+{
+    if (replace)
+        d->mainWindow->hideWidget(pos);
+
+    if (d->widgetWaitForAdd.contains(name)) {
+        d->mainWindow->addWidget(name, d->widgetWaitForAdd[name], pos);
+        d->addedWidget.insert(name, d->widgetWaitForAdd[name]);
+        d->widgetWaitForAdd.remove(name);
+    } else if (d->addedWidget.contains(name)) {
+        d->mainWindow->showWidget(name);
+    } else {
+        qWarning() << "no widget named:" << name;
         return;
     }
-    if (abstractWidget) {
-        auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
-        d->mainWindow->addWidget(name, widget, pos, orientation);
-    }
-    showStatusBar();
-}
 
-void Controller::showWidget(const QString &name)
-{
-    if (!d->hiddenWidgetList.contains(name)) {
-        qWarning() << "there is no widget named " << name << "or it`s not hidden";
-        return;
-    }
-
-    d->mainWindow->showWidget(name);
-    d->hiddenWidgetList.removeOne(name);
-}
-
-void Controller::hideWidget(const QString &name)
-{
-    d->hiddenWidgetList.append(name);
-    d->mainWindow->hideWidget(name);
 }
 
 void Controller::addNavigationItem(AbstractAction *action, quint8 priority)
@@ -473,15 +364,16 @@ void Controller::addNavigationItemToBottom(AbstractAction *action, quint8 priori
 
 void Controller::switchWidgetNavigation(const QString &navName)
 {
-    if (navName != d->currentPlugin)
-        d->navigationBar->setNavActionChecked(navName, true);
+    d->navigationBar->setNavActionChecked(navName, true);
 
+    d->mainWindow->hideAllWidget();
     d->mainWindow->hideTopTollBar();
-    setCurrentPlugin(navName);
+    hideStatusBar();
+
     if (d->modePluginMap.values().contains(navName))
         raiseMode(d->modePluginMap.key(navName));
     else
-        raiseView(navName);
+        d->navigationActions[navName]->trigger();
 
     //send event
     uiController.switchToWidget(navName);
@@ -523,8 +415,6 @@ void Controller::showContextWidget()
     } else {
         d->mainWindow->showWidget(WN_CONTEXTWIDGET);
     }
-    if (!d->currentPlugin.isEmpty() && d->viewList.contains(d->currentPlugin))
-        d->viewList[d->currentPlugin]->showContextWidget = true;
 }
 
 bool Controller::hasContextWidget(const QString &title)
@@ -535,8 +425,6 @@ bool Controller::hasContextWidget(const QString &title)
 void Controller::hideContextWidget()
 {
     d->mainWindow->hideWidget(WN_CONTEXTWIDGET);
-    if (!d->currentPlugin.isEmpty() && d->viewList.contains(d->currentPlugin))
-        d->viewList[d->currentPlugin]->showContextWidget = false;
 }
 
 void Controller::switchContextWidget(const QString &title)

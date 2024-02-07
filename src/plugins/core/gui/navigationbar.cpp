@@ -96,8 +96,10 @@ DToolButton *NavigationBar::createToolBtn(QAction *action, bool isNavigationItem
 
         connect(navBtn, &DToolButton::clicked, this, [=]() {
             Controller::instance()->switchWidgetNavigation(action->text());
+        });
+
+        connect(action, &QAction::triggered, this, [=](){
             setNavActionChecked(action->text(), true);
-            action->trigger();
         });
         return navBtn;
     }
