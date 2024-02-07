@@ -75,7 +75,7 @@ void DetailsView::setupUi()
 
     detailLayout->addWidget(iconLabel);
     detailLayout->addWidget(metaInfoLabel, 1);
-    detailLayout->setContentsMargins(64, 0, 0, 0);
+    detailLayout->setContentsMargins(64, 10, 0, 0);
     mainLayout->addLayout(detailLayout);
     mainLayout->addLayout(webViewLayout);
 }
