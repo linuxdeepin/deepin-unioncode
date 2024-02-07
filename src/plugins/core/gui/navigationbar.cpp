@@ -116,3 +116,30 @@ void NavigationBar::setNavActionChecked(const QString &actionName, bool checked)
         }
     }
 }
+
+QStringList NavigationBar::getAllNavigationItemName()
+{
+    QStringList result;
+    foreach (auto name, navBtns.keys()) {
+        result.append(name);
+    }
+
+    return result;
+}
+
+quint8 NavigationBar::getPriorityOfNavigationItem(const QString &name)
+{
+    Q_ASSERT(navBtns.contains(name));
+
+    auto btn = navBtns[name];
+    foreach (auto btnList, topBtnsByPriority) {
+        if(btnList.contains(btn))
+            return topBtnsByPriority.key(btnList);
+    }
+
+    foreach (auto btnList, bottomBtnsByPriority) {
+        if(btnList.contains(btn))
+            return topBtnsByPriority.key(btnList);
+    }
+
+}

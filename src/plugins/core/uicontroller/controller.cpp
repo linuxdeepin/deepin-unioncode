@@ -181,6 +181,12 @@ void Controller::registerService()
     if (!windowService->switchWidgetNavigation) {
         windowService->switchWidgetNavigation = std::bind(&Controller::switchWidgetNavigation, this, _1);
     }
+    if (!windowService->getAllNavigationItemName) {
+        windowService->getAllNavigationItemName = std::bind(&NavigationBar::getAllNavigationItemName, d->navigationBar);
+    }
+    if (!windowService->getPriorityOfNavigationItem) {
+        windowService->getPriorityOfNavigationItem = std::bind(&NavigationBar::getPriorityOfNavigationItem, d->navigationBar, _1);
+    }
     if (!windowService->addContextWidget) {
         windowService->addContextWidget = std::bind(&Controller::addContextWidget, this, _1, _2, _3);
     }
