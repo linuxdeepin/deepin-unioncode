@@ -16,6 +16,8 @@ PluginListView::PluginListView(QWidget *parent)
     : QListView(parent)
     , model(new QStandardItemModel(this))
 {
+    setEditTriggers(QAbstractItemView::NoEditTriggers);
+
     setModel(model);
     setItemDelegate(new PluginItemDelegate(this));
 
