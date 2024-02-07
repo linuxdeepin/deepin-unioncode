@@ -34,6 +34,7 @@ public slots:
 
 private:
     bool isFilterdOut(const QString &filteringText);
+    bool isCorePlugin(const QString &category);
 
     QStandardItemModel *model = nullptr;
     QString filterText;

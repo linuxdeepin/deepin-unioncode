@@ -31,6 +31,7 @@ void PluginStoreWidget::slotSearchChanged(const QString &searchText)
 void PluginStoreWidget::initializeUi()
 {
     inputEdit = new DSearchEdit(this);
+    inputEdit->setPlaceHolder(tr("Search Extension"));
     connect(inputEdit, &DSearchEdit::textChanged,
             this, &PluginStoreWidget::slotSearchChanged);
 
@@ -42,4 +43,5 @@ void PluginStoreWidget::initializeUi()
     vLayout->addWidget(titleLabel);
     vLayout->addWidget(inputEdit);
     vLayout->addWidget(pluginListView);
+    vLayout->setMargin(0);
 }
