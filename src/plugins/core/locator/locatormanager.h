@@ -14,9 +14,6 @@
 #include <QObject>
 #include <QtConcurrent>
 
-using DTK_WIDGET_NAMESPACE::DSearchEdit;
-using DTK_WIDGET_NAMESPACE::DWidget;
-
 class AllLocators : public abstractLocator
 {
 public:
@@ -39,7 +36,7 @@ public:
     static LocatorManager *instance();
 
     PopupWidget *getPopupWidget() { return popupWidget; }
-    DSearchEdit *getInputEdit() { return inputEdit; }
+    DTK_WIDGET_NAMESPACE::DSearchEdit *getInputEdit() { return inputEdit; }
     locatorModel *getModel() { return model; }
     QList<abstractLocator *> getLocatorlist() { return locatorList; }
 
@@ -64,7 +61,7 @@ private:
 
     locatorModel *model { nullptr };
     PopupWidget *popupWidget { nullptr };
-    DSearchEdit *inputEdit { nullptr };
+    DTK_WIDGET_NAMESPACE::DSearchEdit *inputEdit { nullptr };
 
     DSpinner *spinner { nullptr };
 
