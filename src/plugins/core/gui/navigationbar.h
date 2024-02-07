@@ -25,6 +25,8 @@ public:
 
     void addNavItem(QAction *action, itemPositioin pos = top, quint8 priority = 10);   //priority : 0 highest, 255 lowest
     void setNavActionChecked(const QString &actionName, bool checked);
+    QStringList getAllNavigationItemName();
+    quint8 getPriorityOfNavigationItem(const QString &name);
     void updateUi();
 
 private:
