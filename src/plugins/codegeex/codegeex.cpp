@@ -36,9 +36,12 @@ bool CodeGeex::start()
             windowService->addNavigationItem(new AbstractAction(action), 10);
 
             auto codeGeex = new CodeGeeXWidget;
+            auto codeGeexImpl = new AbstractWidget(codeGeex);
+            windowService->registerWidget(MWNA_CODEGEEX, codeGeexImpl);
+
             connect(action, &QAction::triggered, this, [=](){
                 windowService->raiseMode(CM_EDIT);
-                windowService->replaceWidget(MWNA_CODEGEEX, new AbstractWidget(codeGeex), Position::Left);
+                windowService->showWidgetAtPosition(MWNA_CODEGEEX, Position::Left, true);
             }, Qt::DirectConnection);
         }
     }

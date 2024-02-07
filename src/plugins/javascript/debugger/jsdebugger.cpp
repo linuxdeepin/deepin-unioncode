@@ -166,12 +166,13 @@ void JSDebugger::addPagesToContext(const QScriptEngineDebugger &debugger)
     errorPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::ErrorLogWidget));
     localsPane = new AbstractWidget(debugger.widget(QScriptEngineDebugger::LocalsWidget));
     auto windowService = dpfGetService(WindowService);
-    windowService->setCurrentPlugin("JsDebugger");
     windowService->raiseMode(CM_DEBUG);
-    windowService->addWidget("jsCodeEditor", codeEditor, Position::Central, true);
+    windowService->registerWidget("jsCodeEditor", codeEditor);
+    windowService->replaceWidget("jsCodeEditor", Position::Central);
     // instert output pane to window.
     windowService->addContextWidget(tr("Stac&kFrame"), stackPane, false);
-    windowService->addWidget("jsCodeWatcher", localsPane, Position::Right, true);
+    windowService->registerWidget("jsCodeWatcher", localsPane);
+    windowService->replaceWidget("jsCodeWatcher", Position::Right);
     debugger.widget(QScriptEngineDebugger::LocalsWidget)->show();
     windowService->addContextWidget(tr("Break&points"), breakpointsPane, false);
     windowService->addContextWidget(tr("ScriptWidget"), scriptPane, false);
@@ -191,8 +192,7 @@ void JSDebugger::removePagesFromContext()
     removePage(scriptPane);
     removePage(errorPane);
 
-    if(windowService->hasView(MWNA_EDIT))
-        windowService->raiseMode(CM_EDIT);
+    windowService->raiseMode(CM_EDIT);
 }
 
 void JSDebugger::setupDebugEnv()

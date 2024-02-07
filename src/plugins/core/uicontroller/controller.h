@@ -15,17 +15,6 @@
 #include <QMap>
 #include <QStringList>
 
-struct View
-{
-    View() {}
-    QString mode { "" };
-    QString pluginName { "" };
-
-    QStringList widgetList {};
-    bool showContextWidget { false };
-    QList<Position> hiddenposList {};
-};
-
 class ControllerPrivate;
 class AbstractModule;
 class Controller : public QObject
@@ -39,20 +28,16 @@ public:
     void registerModule(const QString &moduleName, AbstractModule *module);
 
 public slots:
-    void raiseView(const QString &plugin);
     //mode : MD_EDIT/MD_DEBUG/MD_RECENT
     void raiseMode(const QString &mode);
-    bool hasView(const QString &plugin);
 
     //1 Plugi -> 1navName -> n widget(name)
     void setCurrentPlugin(const QString &plugin);
     void registerWidgetToMode(const QString &name, AbstractWidget *abstractWidget, const QString &mode, Position pos, bool replace, bool isVisible);
-    void addWidget(const QString &name, AbstractWidget *abstractWidget, Position pos = Position::FullWindow, bool replace = true);
-    void addWidgetByOrientation(const QString &name, AbstractWidget *abstractWidget, Position pos, bool replace, Qt::Orientation orientation);
-    void replaceWidget(const QString &name, AbstractWidget *abstractWidget, Position pos = Position::FullWindow);
-    void insertWidget(const QString &name, AbstractWidget *abstractWidget, Position pos = Position::FullWindow);
-    void showWidget(const QString &name);
-    void hideWidget(const QString &name);
+    void registerWidget(const QString &name, AbstractWidget *abstractWidget);
+    void replaceWidget(const QString &name, Position pos = Position::FullWindow);
+    void insertWidget(const QString &name, Position pos, Qt::Orientation orientation);
+    void showWidgetAtPosition(const QString &name, Position pos, bool replace = true);
 
     void addNavigationItem(AbstractAction *action, quint8 priority);
     void addNavigationItemToBottom(AbstractAction *action, quint8 priority);
@@ -90,8 +75,6 @@ public slots:
 
 private:
     ControllerPrivate *d;
-
-    bool initView(const QString &name, Position pos, bool replace);
 
     void registerService();
 

@@ -33,15 +33,16 @@ bool Collaborators::start()
             AbstractWidget *gitMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->gitMainWidget());
             AbstractWidget *svnMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->svnMainWidget());
 
+            windowService->registerWidget(MWNA_GIT, gitMainWidgetImpl);
+            windowService->registerWidget(MWNA_SVN, svnMainWidgetImpl);
+
             connect(actionGit, &QAction::triggered, this, [=](){
                 windowService->replaceWidget(MWNA_GIT,
-                                         gitMainWidgetImpl,
                                          Position::FullWindow);
                 windowService->hideStatusBar();
             }, Qt::DirectConnection);
             connect(actionSvn, &QAction::triggered, this, [=](){
                 windowService->replaceWidget(MWNA_SVN,
-                                         svnMainWidgetImpl,
                                          Position::FullWindow);
                 windowService->hideStatusBar();
             }, Qt::DirectConnection);
