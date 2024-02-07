@@ -7,7 +7,7 @@
     "License" : [
         "GPL-3.0-or-later"
     ],
-    "Category" : "Utils",
+    "Category" : "Core Plugins",
     "Description" : "The core plugin for the unioncode.",
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [

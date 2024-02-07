@@ -39,12 +39,12 @@ void PluginListView::display()
     for (auto collection : pluginCollections) {
         for (auto metaOBject : collection) {
             QString pluginName = metaOBject->name();
-            if (isFilterdOut(pluginName))
+            QString category = metaOBject->category();
+            if (isCorePlugin(category) || isFilterdOut(pluginName))
                 continue;
 
             QString description = metaOBject->description();
             QString vender = metaOBject->vendor();
-            QString category = metaOBject->category();
             QString copyright = metaOBject->copyright();
             QStringList license = metaOBject->license();
             QString version = metaOBject->version();
@@ -80,6 +80,13 @@ bool PluginListView::isFilterdOut(const QString &filteringText)
         }
     }
     return filterOut;
+}
+
+bool PluginListView::isCorePlugin(const QString &category)
+{
+    if (category.toLower() == QString("Core Plugins").toLower())
+        return true;
+    return false;
 }
 
 PluginMetaObjectPointer PluginListView::currentPlugin() const
