@@ -19,10 +19,11 @@ public:
         Category
     };
 
-    explicit PluginListView(QListView *parent = nullptr);
+    explicit PluginListView(QWidget *parent = nullptr);
 
 
     dpf::PluginMetaObjectPointer currentPlugin() const;
+    void filter(const QString &filterText);
 
 signals:
     void currentPluginActived();
@@ -32,7 +33,10 @@ public slots:
     void display();
 
 private:
+    bool isFilterdOut(const QString &filteringText);
+
     QStandardItemModel *model = nullptr;
+    QString filterText;
 };
 
 #endif // PLUGINSLIST_H

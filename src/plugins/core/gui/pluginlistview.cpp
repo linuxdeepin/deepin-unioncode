@@ -4,13 +4,15 @@
 #include "pluginlistview.h"
 #include "framework/lifecycle/lifecycle.h"
 #include "pluginitemdelegate.h"
+#include "common/util/fuzzymatcher.h"
 
 #include <QStandardItemModel>
 #include <DStandardItem>
 
 DPF_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
-PluginListView::PluginListView(QListView *parent)
+
+PluginListView::PluginListView(QWidget *parent)
     : QListView(parent)
     , model(new QStandardItemModel(this))
 {
@@ -37,6 +39,9 @@ void PluginListView::display()
     for (auto collection : pluginCollections) {
         for (auto metaOBject : collection) {
             QString pluginName = metaOBject->name();
+            if (isFilterdOut(pluginName))
+                continue;
+
             QString description = metaOBject->description();
             QString vender = metaOBject->vendor();
             QString category = metaOBject->category();
@@ -64,6 +69,19 @@ void PluginListView::display()
     model->appendColumn(result);
 }
 
+bool PluginListView::isFilterdOut(const QString &filteringText)
+{
+    bool filterOut = false;
+    if (!filterText.isEmpty()) {
+        QRegularExpression regexp = FuzzyMatcher::createRegExp(filterText);
+        QRegularExpressionMatch match = regexp.match(filteringText);
+        if (!match.hasMatch()) {
+            filterOut = true;
+        }
+    }
+    return filterOut;
+}
+
 PluginMetaObjectPointer PluginListView::currentPlugin() const
 {
     QStandardItem *item = model->itemFromIndex(currentIndex());
@@ -79,4 +97,10 @@ PluginMetaObjectPointer PluginListView::currentPlugin() const
         }
     }
     return {};
+}
+
+void PluginListView::filter(const QString &filterText)
+{
+    this->filterText = filterText;
+    display();
 }

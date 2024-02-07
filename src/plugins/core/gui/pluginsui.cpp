@@ -7,6 +7,7 @@
 #include "framework/lifecycle/lifecycle.h"
 #include "framework/lifecycle/pluginmanager.h"
 #include "framework/lifecycle/pluginmetaobject.h"
+#include "pluginstorewidget.h"
 #include "pluginlistview.h"
 
 #include <DTitlebar>
@@ -18,20 +19,33 @@
 static bool isRestartRequired = false;
 
 PluginsUi::PluginsUi(QObject *parent)
-    : QObject(parent),
-      pluginListView(new PluginListView())
+    : QObject(parent)
+    , pluginStoreWidget(new PluginStoreWidget())
+    , pluginDetailView(new DetailsView())
 {
-    pluginDetailView = new DetailsView();
-    slotCurrentPluginActived();
+    auto pluginListView = pluginStoreWidget->getPluginListView();
+    QObject::connect(pluginListView, &PluginListView::currentPluginActived,
+                     this, &PluginsUi::slotPluginItemSelected);
 
-    QObject::connect(pluginListView, &PluginListView::currentPluginActived, this, &PluginsUi::slotCurrentPluginActived);
     QObject::connect(pluginListView, &PluginListView::pluginSettingChanged,
-                     this, &PluginsUi::updateRestartRequired);
+                     this, &PluginsUi::reLaunchRequired);
 }
 
-PluginListView *PluginsUi::getPluginView() const
+PluginsUi::~PluginsUi()
 {
-    return pluginListView;
+    if (pluginDetailView) {
+        delete pluginDetailView;
+        pluginDetailView = nullptr;
+    }
+    if (pluginStoreWidget) {
+        delete pluginStoreWidget;
+        pluginStoreWidget = nullptr;
+    }
+}
+
+PluginStoreWidget *PluginsUi::getStoreWidget() const
+{
+    return pluginStoreWidget;
 }
 
 DetailsView *PluginsUi::getPluginDetailView() const
@@ -39,13 +53,14 @@ DetailsView *PluginsUi::getPluginDetailView() const
     return pluginDetailView;
 }
 
-void PluginsUi::slotCurrentPluginActived()
+void PluginsUi::slotPluginItemSelected()
 {
+    auto pluginListView = pluginStoreWidget->getPluginListView();
     dpf::PluginMetaObjectPointer plugin = pluginListView->currentPlugin();
     pluginDetailView->update(plugin);
 }
 
-void PluginsUi::updateRestartRequired()
+void PluginsUi::reLaunchRequired()
 {
     isRestartRequired = true;
     saveConfig();

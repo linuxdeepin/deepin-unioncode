@@ -22,7 +22,7 @@ DWIDGET_USE_NAMESPACE
 class DetailsView;
 class QDialogButtonBox;
 class QLabel;
-class PluginListView;
+class PluginStoreWidget;
 
 class PluginsUi : public QObject
 {
@@ -30,18 +30,19 @@ class PluginsUi : public QObject
 
 public:
     explicit PluginsUi(QObject *parent = nullptr);
-    PluginListView *getPluginView() const;
+    ~PluginsUi();
+    PluginStoreWidget *getStoreWidget() const;
     DetailsView *getPluginDetailView() const;
 
 private slots:
-    void slotCurrentPluginActived();
+    void slotPluginItemSelected();
 
 private:
-    void updateRestartRequired();
+    void reLaunchRequired();
     void updateButtons();
     void saveConfig();
 
-    PluginListView *pluginListView = nullptr;
+    PluginStoreWidget *pluginStoreWidget = nullptr;
     DetailsView *pluginDetailView = nullptr;
 };
 
