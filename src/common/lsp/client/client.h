@@ -157,6 +157,7 @@ public slots:
     void referencesRequest(const QString &filePath, const lsp::Position &pos);
     void docHighlightRequest(const QString &filePath, const lsp::Position &pos);
     void docSemanticTokensFull(const QString &filePath); //yes
+    void docSemanticTokensRange(const QString &filePath, lsp::Range range);
     void docHoverRequest(const QString &filePath, const lsp::Position &pos); // yes
 
 signals:

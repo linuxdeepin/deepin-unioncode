@@ -7,6 +7,7 @@
 
 #include "gui/texteditor.h"
 #include "common/util/eventdefinitions.h"
+#include "lsp/lspstyle.h"
 
 #include <Qsci/qscistyle.h>
 
@@ -38,6 +39,7 @@ public:
     void updateColorTheme();
     void updateSettings();
     void loadLexer();
+    void loadLSPStyle();
 
     int cursorPosition() const;
     int marginsWidth();
@@ -54,6 +56,10 @@ public:
 
 public slots:
     void onThemeTypeChanged();
+    void onDwellStart(int position, int x, int y);
+    void onDwellEnd(int position, int x, int y);
+    void onModified(int pos, int mtype, const char *text, int len, int added,
+                    int line, int foldNow, int foldPrev, int token, int annotationLinesAdded);
     void handleSearch(const QString &keyword, int operateType);
     void handleReplace(const QString &srcText, const QString &destText, int operateType);
 
@@ -64,6 +70,10 @@ public:
     int preFirstLineNum { 0 };
     int lastCursorPos { 0 };
     QMultiHash<QString, int> annotationRecords;
+
+    QTimer hoverTimer;
+    int hoverPos { -1 };
+    LSPStyle *lspStyle { nullptr };
 };
 
 #endif   // TEXTEDITOR_P_H

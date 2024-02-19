@@ -1349,6 +1349,16 @@ void QsciScintilla::setFolding(FoldStyle folding, int margin)
     case NoFoldStyle:
         break;
 
+    case ArrowFoldStyle:
+        setFoldMarker(SC_MARKNUM_FOLDEROPEN, SC_MARK_ARROWDOWN);
+        setFoldMarker(SC_MARKNUM_FOLDER, SC_MARK_ARROW);
+        setFoldMarker(SC_MARKNUM_FOLDERSUB);
+        setFoldMarker(SC_MARKNUM_FOLDERTAIL);
+        setFoldMarker(SC_MARKNUM_FOLDEREND);
+        setFoldMarker(SC_MARKNUM_FOLDEROPENMID);
+        setFoldMarker(SC_MARKNUM_FOLDERMIDTAIL);
+        break;
+
     case PlainFoldStyle:
         setFoldMarker(SC_MARKNUM_FOLDEROPEN, SC_MARK_MINUS);
         setFoldMarker(SC_MARKNUM_FOLDER, SC_MARK_PLUS);

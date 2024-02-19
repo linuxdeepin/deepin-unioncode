@@ -210,6 +210,9 @@ public:
         //! Folding is disabled.
         NoFoldStyle,
 
+        //! Arrow folding style using right-arrow and down-arrow symbols.
+        ArrowFoldStyle,
+
         //! Plain folding style using plus and minus symbols.
         PlainFoldStyle,
 
