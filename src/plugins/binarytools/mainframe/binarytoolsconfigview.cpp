@@ -210,29 +210,29 @@ void BinaryToolsConfigView::readConfig()
 QList<QString> BinaryToolsConfigView::getProgramList()
 {
     saveConfig();
-    if (d->programList.isEmpty())
-        d->programList.push_back(d->executableDirEdit->text());
+    d->programList.clear();
+    d->programList.push_back(d->executableDirEdit->text());
     return d->programList;
 }
 
 QList<QStringList> BinaryToolsConfigView::getArgumentsList()
 {
-    if (d->argsList.isEmpty())
-        d->argsList.push_back(d->toolArgsEdit->text().split(" "));
+    d->argsList.clear();
+    d->argsList.push_back(d->toolArgsEdit->text().split(" "));
     return d->argsList;
 }
 
 QList<QString> BinaryToolsConfigView::getWorkingDirList()
 {
-    if (d->workingDirList.isEmpty())
-        d->workingDirList.push_back(d->workingDirEdit->text());
+    d->workingDirList.clear();
+    d->workingDirList.push_back(d->workingDirEdit->text());
     return d->workingDirList;
 }
 
 QList<QMap<QString, QVariant>> BinaryToolsConfigView::getEnvironmentList()
 {
-    if (d->envList.isEmpty())
-        d->envList.push_back(d->envView->getEnvironment());
+    d->envList.clear();
+    d->envList.push_back(d->envView->getEnvironment());
     return d->envList;
 }
 

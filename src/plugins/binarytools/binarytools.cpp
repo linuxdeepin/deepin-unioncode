@@ -27,7 +27,7 @@ bool BinaryTools::start()
         windowService->addAction(MWM_TOOLS, inputAction);
 
         QObject::connect(action, &QAction::triggered, [=](){
-           BinaryToolsDialog dlg;
+           static BinaryToolsDialog dlg;
            dlg.exec();
         });
     }
