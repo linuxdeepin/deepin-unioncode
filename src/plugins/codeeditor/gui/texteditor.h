@@ -66,7 +66,12 @@ public slots:
 signals:
     void fileSaved(const QString &fileName);
     void fileClosed(const QString &fileName);
+    void textAdded(int pos, int len, int added, const QString &text, int line);
+    void textRemoved(int pos, int len, int removed, const QString &text, int line);
     void zoomValueChanged();
+    void documentHovered(int pos);
+    void documentHoveredWithCtrl(int pos);
+    void documentHoverEnd(int pos);
 
 private:
     void init();
@@ -77,4 +82,4 @@ protected:
 private:
     QSharedPointer<TextEditorPrivate> d { nullptr };
 };
-#endif // TEXTEDITOR_H
+#endif   // TEXTEDITOR_H

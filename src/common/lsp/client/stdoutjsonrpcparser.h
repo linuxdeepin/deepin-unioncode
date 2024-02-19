@@ -23,6 +23,9 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void readedJsonObject(const QJsonObject &);
+
+private:
+    QByteArray outputCache;
 };
 
 }

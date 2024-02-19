@@ -263,6 +263,11 @@ void Client::docSemanticTokensFull(const QString &filePath)
     d->callMethod(lsp::V_TEXTDOCUMENT_SEMANTICTOKENS_FULL, lsp::documentSemanticTokensFull(filePath));
 }
 
+void Client::docSemanticTokensRange(const QString &filePath, lsp::Range range)
+{
+    d->callMethod(lsp::V_TEXTDOCUMENT_SEMANTICTOKENS_RANGE, lsp::documentSemanticTokensRange(filePath, range));
+}
+
 void Client::docHoverRequest(const QString &filePath, const lsp::Position &pos)
 {
     d->callMethod(lsp::V_TEXTDOCUMENT_HOVER, lsp::hover(filePath, pos));
@@ -1052,7 +1057,7 @@ void ClientPrivate::doReadStdoutLine()
         doReadedLine(q->readLine());
     }
     if (q->bytesAvailable()) {
-        doReadedLine(q->readAll());
+        doReadedLine(q->readAllStandardOutput());
     }
 }
 

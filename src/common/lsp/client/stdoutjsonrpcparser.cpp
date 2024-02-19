@@ -5,9 +5,11 @@
 #include "stdoutjsonrpcparser.h"
 #include "common/lsp/protocol/new/jsonrpcparser.h"
 
+#include <QDebug>
+#include <QJsonDocument>
+
 newlsp::StdoutJsonRpcParser::StdoutJsonRpcParser(QObject *parent)
-    : QObject(parent)
-    , d (new JsonRpcParser)
+    : QObject(parent), d(new JsonRpcParser)
 {
     QObject::connect(d, &JsonRpcParser::readedJsonObject,
                      this, &StdoutJsonRpcParser::readedJsonObject,
