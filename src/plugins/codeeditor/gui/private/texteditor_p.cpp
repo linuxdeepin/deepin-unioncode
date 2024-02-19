@@ -41,6 +41,9 @@ TextEditorPrivate::TextEditorPrivate(TextEditor *qq)
 void TextEditorPrivate::init()
 {
     q->setFrameShape(QFrame::NoFrame);
+    q->SendScintilla(TextEditor::SCI_SETMOUSEDWELLTIME, 50);
+
+    hoverTimer.setSingleShot(true);
 
     initMargins();
     updateColorTheme();
@@ -50,9 +53,13 @@ void TextEditorPrivate::init()
 void TextEditorPrivate::initConnection()
 {
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::onThemeTypeChanged);
-    connect(q, SIGNAL(SCN_ZOOM()), q, SIGNAL(zoomValueChanged()));
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSearch, this, &TextEditorPrivate::handleSearch);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqReplace, this, &TextEditorPrivate::handleReplace);
+
+    connect(q, &TextEditor::SCN_ZOOM, q, &TextEditor::zoomValueChanged);
+    connect(q, &TextEditor::SCN_DWELLSTART, this, &TextEditorPrivate::onDwellStart);
+    connect(q, &TextEditor::SCN_DWELLEND, this, &TextEditorPrivate::onDwellEnd);
+    connect(q, &TextEditor::SCN_MODIFIED, this, &TextEditorPrivate::onModified);
 }
 
 void TextEditorPrivate::initMargins()
@@ -62,7 +69,7 @@ void TextEditorPrivate::initMargins()
     setMarginVisible(LineNumberMargin, true);
 
     // folding
-    q->setFolding(TextEditor::BoxedTreeFoldStyle, FoldingMargin);
+    q->setFolding(TextEditor::ArrowFoldStyle, FoldingMargin);
 
     // Set the margin symbol
     q->setMarginType(SymbolMargin, TextEditor::SymbolMargin);
@@ -152,6 +159,16 @@ void TextEditorPrivate::loadLexer()
     } else {
         setMarginVisible(FoldingMargin, false);
     }
+}
+
+void TextEditorPrivate::loadLSPStyle()
+{
+    if (!lspStyle) {
+        lspStyle = new LSPStyle(q);
+        lspStyle->initLspConnection();
+    }
+
+    lspStyle->updateTokens();
 }
 
 int TextEditorPrivate::cursorPosition() const
@@ -338,6 +355,47 @@ void TextEditorPrivate::onThemeTypeChanged()
 {
     updateColorTheme();
     // TODO: change lexer theme
+}
+
+void TextEditorPrivate::onDwellStart(int position, int x, int y)
+{
+    Q_UNUSED(x)
+    Q_UNUSED(y)
+
+    if (position == -1)
+        return;
+
+    bool isKeyCtrl = QApplication::keyboardModifiers().testFlag(Qt::ControlModifier);
+    if (isKeyCtrl)
+        emit q->documentHoveredWithCtrl(position);
+    else
+        emit q->documentHovered(position);
+}
+
+void TextEditorPrivate::onDwellEnd(int position, int x, int y)
+{
+    Q_UNUSED(x)
+    Q_UNUSED(y)
+
+    if (position == -1)
+        return;
+
+    emit q->documentHoverEnd(position);
+}
+
+void TextEditorPrivate::onModified(int pos, int mtype, const char *text, int len, int added, int line,
+                                   int foldNow, int foldPrev, int token, int annotationLinesAdded)
+{
+    Q_UNUSED(foldNow);
+    Q_UNUSED(foldPrev);
+    Q_UNUSED(token);
+    Q_UNUSED(annotationLinesAdded);
+
+    if (mtype & TextEditor::SC_MOD_INSERTTEXT) {
+        emit q->textAdded(pos, len, added, text, line);
+    } else if (mtype & TextEditor::SC_MOD_DELETETEXT) {
+        emit q->textRemoved(pos, len, -added, text, line);
+    }
 }
 
 void TextEditorPrivate::handleSearch(const QString &keyword, int operateType)

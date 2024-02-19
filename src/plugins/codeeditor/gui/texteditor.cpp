@@ -48,6 +48,7 @@ void TextEditor::setFile(const QString &fileName)
     setText(text.toUtf8());
     editor.fileOpened(fileName);
     d->loadLexer();
+    d->loadLSPStyle();
 }
 
 QString TextEditor::getFile() const
