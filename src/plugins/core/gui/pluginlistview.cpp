@@ -29,6 +29,8 @@ PluginListView::PluginListView(QWidget *parent)
     });
 
     display();
+
+    selectDefaultItem();
 }
 
 void PluginListView::display()
@@ -112,4 +114,9 @@ void PluginListView::filter(const QString &filterText)
 {
     this->filterText = filterText;
     display();
+}
+
+void PluginListView::selectDefaultItem()
+{
+    setCurrentIndex(model->index(0, 0));
 }

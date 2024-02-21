@@ -18,7 +18,7 @@ class PluginStoreWidget : public QWidget
     Q_OBJECT
 public:
     explicit PluginStoreWidget(QWidget *parent = nullptr);
-    const PluginListView *getPluginListView() const;
+    PluginListView *getPluginListView() const;
 
 signals:
 
