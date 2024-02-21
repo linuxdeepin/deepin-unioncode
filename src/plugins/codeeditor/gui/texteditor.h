@@ -51,6 +51,8 @@ public:
     void resetLineBackgroundColor(int line);
     void clearLineBackgroundColor();
     void showTips(const QString &tips);
+    void showTips(int pos, const QString &tips);
+    void cancelTips();
     void addAnnotation(const QString &title, const QString &content, int line, int type);
     void removeAnnotation(const QString &title);
 
