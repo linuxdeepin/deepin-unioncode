@@ -14,6 +14,7 @@ QT_BEGIN_NAMESPACE
 class QGridLayout;
 class QVBoxLayout;
 class QSpacerItem;
+class QWebEngineView;
 QT_END_NAMESPACE
 
 DWIDGET_BEGIN_NAMESPACE
@@ -60,6 +61,7 @@ public:
     };
 
     explicit DetailsView(QWidget *parent = nullptr);
+    ~DetailsView();
 
     void update(const dpf::PluginMetaObjectPointer &metaInfo);
 
@@ -73,7 +75,7 @@ private:
     DTK_WIDGET_NAMESPACE::DLabel *metaInfoLabel {nullptr};
     DTK_WIDGET_NAMESPACE::DPushButton *loadBtn {nullptr};
     dpf::PluginMetaObjectPointer pluginMetaInfo;
-
+    QWebEngineView *webView {nullptr};
 };
 
 #endif // PLUGINDETAILSVIEW_H
