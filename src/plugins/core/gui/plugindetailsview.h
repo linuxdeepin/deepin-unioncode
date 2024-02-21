@@ -52,7 +52,7 @@ public:
                                   "<tr><td><strong>" + tr("License") + "：</strong></td><td>" + license + "</td></tr>"
                                   "<tr><td><strong>" + tr("Description") + "：</strong></td><td>" + description + "</td></tr>"
                                   "<tr><td><strong>" + tr("Dependency") + "：</strong></td><td>" + dependency + "</td></tr>"
-                              "</table><br><hr>"
+                              "</table><br>"
                               "</body>"
                               "</html>";
             return html;
@@ -63,10 +63,17 @@ public:
 
     void update(const dpf::PluginMetaObjectPointer &metaInfo);
 
+private slots:
+    void changeLoadBtnState();
+
 private:
     void setupUi();
+    void updateLoadBtnDisplay(bool isEnabled);
 
     DTK_WIDGET_NAMESPACE::DLabel *metaInfoLabel {nullptr};
+    DTK_WIDGET_NAMESPACE::DPushButton *loadBtn {nullptr};
+    dpf::PluginMetaObjectPointer pluginMetaInfo;
+
 };
 
 #endif // PLUGINDETAILSVIEW_H
