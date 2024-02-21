@@ -58,8 +58,9 @@ QSize PluginItemDelegate::sizeHint(const QStyleOptionViewItem &option,
     return DStyledItemDelegate::sizeHint(option, index);
 }
 
-void PluginItemDelegate::paintItemBackground(QPainter *painter, const QStyleOptionViewItem &option,
-                                              const QModelIndex &index) const
+void PluginItemDelegate::paintItemBackground(QPainter *painter,
+                                             const QStyleOptionViewItem &option,
+                                             const QModelIndex &index) const
 {
     painter->save();
 
@@ -93,8 +94,9 @@ void PluginItemDelegate::paintItemBackground(QPainter *painter, const QStyleOpti
     painter->restore();
 }
 
-QRectF PluginItemDelegate::paintItemIcon(QPainter *painter, const QStyleOptionViewItem &option,
-                                          const QModelIndex &index) const
+QRectF PluginItemDelegate::paintItemIcon(QPainter *painter,
+                                         const QStyleOptionViewItem &option,
+                                         const QModelIndex &index) const
 {
     Q_UNUSED(index);
 
@@ -135,8 +137,14 @@ QRectF PluginItemDelegate::paintItemIcon(QPainter *painter, const QStyleOptionVi
     return iconRect;
 }
 
-QPixmap PluginItemDelegate::getIconPixmap(const QIcon &icon, const QSize &size, qreal pixelRatio = 1.0, QIcon::Mode mode, QIcon::State state)
+QPixmap PluginItemDelegate::getIconPixmap(const QIcon &icon,
+                                          const QSize &size,
+                                          qreal pixelRatio = 1.0,
+                                          QIcon::Mode mode,
+                                          QIcon::State state)
 {
+    Q_UNUSED(pixelRatio)
+
     if (icon.isNull())
         return QPixmap();
 
@@ -149,8 +157,10 @@ QPixmap PluginItemDelegate::getIconPixmap(const QIcon &icon, const QSize &size, 
     return px;
 }
 
-void PluginItemDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem &option,
-                                          const QModelIndex &index, const QRectF &iconRect) const
+void PluginItemDelegate::paintItemColumn(QPainter *painter,
+                                         const QStyleOptionViewItem &option,
+                                         const QModelIndex &index,
+                                         const QRectF &iconRect) const
 {
     painter->save();
 

@@ -2,11 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "plugindetailsview.h"
+#include "framework/lifecycle/lifecycle.h"
 
 #include <DWidget>
 #include <DLabel>
 #include <DTextEdit>
 #include <DListWidget>
+#include <DPushButton>
 
 #include <QGridLayout>
 #include <QDesktopServices>
@@ -22,6 +24,8 @@ DetailsView::DetailsView(QWidget *parent)
 
 void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
 {
+    pluginMetaInfo = metaInfo;
+
     if (metaInfo.isNull())
         return;
 
@@ -48,6 +52,21 @@ void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
     updateMetaInfo.description = metaInfo->description();
 
     metaInfoLabel->setText(updateMetaInfo.toHtml());
+
+    bool pluginIsEnabled = pluginMetaInfo->isEnabledBySettings();
+    updateLoadBtnDisplay(pluginIsEnabled);
+}
+
+void DetailsView::changeLoadBtnState()
+{
+    if (pluginMetaInfo.isNull())
+        return;
+
+    bool isEnabled = !pluginMetaInfo->isEnabledBySettings();
+    updateLoadBtnDisplay(isEnabled);
+
+    pluginMetaInfo->setEnabledBySettings(isEnabled);
+    dpf::LifeCycle::getPluginManagerInstance()->writeSettings();
 }
 
 void DetailsView::setupUi()
@@ -57,13 +76,22 @@ void DetailsView::setupUi()
     mainLayout->setMargin(0);
     auto detailLayout = new QHBoxLayout(this);
 
+    auto midLayout = new QVBoxLayout(this);
+    midLayout->setSpacing(0);
+    midLayout->setMargin(0);
     metaInfoLabel = new DLabel(this);
     metaInfoLabel->setText(MetaInfo().toHtml());
     metaInfoLabel->setOpenExternalLinks(true);
     metaInfoLabel->setWordWrap(true);
+    midLayout->addWidget(metaInfoLabel);
 
-    QLabel *iconLabel = new QLabel(this);
-    iconLabel->setPixmap(QIcon::fromTheme("plugins-navigation").pixmap(QSize(128, 128)));
+    loadBtn = new DPushButton(this);
+    loadBtn->setToolTip(tr("reLaunch when changed!"));
+    connect(loadBtn, &DPushButton::clicked, this, &DetailsView::changeLoadBtnState);
+    midLayout->addWidget(loadBtn, 0, Qt::AlignLeft);
+
+    QLabel *logoLabel = new QLabel(this);
+    logoLabel->setPixmap(QIcon::fromTheme("plugins-navigation").pixmap(QSize(128, 128)));
 
     auto webViewLayout = new QHBoxLayout(this);
     QWebEngineView *webView = new QWebEngineView(this);
@@ -73,9 +101,15 @@ void DetailsView::setupUi()
     webView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     webViewLayout->addWidget(webView);
 
-    detailLayout->addWidget(iconLabel);
-    detailLayout->addWidget(metaInfoLabel, 1);
-    detailLayout->setContentsMargins(64, 10, 0, 0);
+    detailLayout->addWidget(logoLabel);
+    detailLayout->addLayout(midLayout, 1);
+    detailLayout->setContentsMargins(64, 10, 0, 10);
     mainLayout->addLayout(detailLayout);
     mainLayout->addLayout(webViewLayout);
+}
+
+void DetailsView::updateLoadBtnDisplay(bool isEnabled)
+{
+    QString loadOperation = isEnabled ? tr("unload") : tr("load");
+    loadBtn->setText(loadOperation);
 }
