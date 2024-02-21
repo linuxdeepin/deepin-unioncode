@@ -18,7 +18,7 @@ PluginStoreWidget::PluginStoreWidget(QWidget *parent)
     initializeUi();
 }
 
-const PluginListView *PluginStoreWidget::getPluginListView() const
+PluginListView *PluginStoreWidget::getPluginListView() const
 {
     return pluginListView;
 }

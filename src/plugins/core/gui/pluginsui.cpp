@@ -30,6 +30,9 @@ PluginsUi::PluginsUi(QObject *parent)
 
     QObject::connect(pluginListView, &PluginListView::pluginSettingChanged,
                      this, &PluginsUi::reLaunchRequired);
+
+    // display detail default.
+    emit pluginListView->currentPluginActived();
 }
 
 PluginsUi::~PluginsUi()

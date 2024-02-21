@@ -24,6 +24,7 @@ public:
 
     dpf::PluginMetaObjectPointer currentPlugin() const;
     void filter(const QString &filterText);
+    void selectDefaultItem();
 
 signals:
     void currentPluginActived();
