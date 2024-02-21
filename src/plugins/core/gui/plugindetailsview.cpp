@@ -22,6 +22,15 @@ DetailsView::DetailsView(QWidget *parent)
     setupUi();
 }
 
+DetailsView::~DetailsView()
+{
+    if (webView) {
+        webView->stop();
+        // delete webView will cause app cannot exit.
+        webView->setParent(nullptr);
+    }
+}
+
 void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
 {
     pluginMetaInfo = metaInfo;
@@ -94,7 +103,7 @@ void DetailsView::setupUi()
     logoLabel->setPixmap(QIcon::fromTheme("plugins-navigation").pixmap(QSize(128, 128)));
 
     auto webViewLayout = new QHBoxLayout(this);
-    QWebEngineView *webView = new QWebEngineView(this);
+    webView = new QWebEngineView();
     // TODO(mozart): load from local.
 //    webView->load(QUrl::fromLocalFile("url"));
     webView->load(QUrl("https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e"));
