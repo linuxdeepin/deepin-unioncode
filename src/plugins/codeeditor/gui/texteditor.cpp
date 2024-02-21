@@ -234,8 +234,18 @@ void TextEditor::clearLineBackgroundColor()
 void TextEditor::showTips(const QString &tips)
 {
     int pos = d->cursorPosition();
+    showTips(pos, tips);
+}
+
+void TextEditor::showTips(int pos, const QString &tips)
+{
     auto data = tips.toLocal8Bit();
     SendScintilla(SCI_CALLTIPSHOW, static_cast<uintptr_t>(pos), data.data());
+}
+
+void TextEditor::cancelTips()
+{
+    SendScintilla(SCI_CALLTIPCANCEL);
 }
 
 void TextEditor::addAnnotation(const QString &title, const QString &content, int line, int type)

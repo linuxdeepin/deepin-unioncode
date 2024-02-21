@@ -41,7 +41,7 @@ TextEditorPrivate::TextEditorPrivate(TextEditor *qq)
 void TextEditorPrivate::init()
 {
     q->setFrameShape(QFrame::NoFrame);
-    q->SendScintilla(TextEditor::SCI_SETMOUSEDWELLTIME, 50);
+    q->SendScintilla(TextEditor::SCI_SETMOUSEDWELLTIME, 20);
 
     hoverTimer.setSingleShot(true);
 

@@ -7,58 +7,62 @@
 
 #include "lsp/lspstyle.h"
 
-class SciRangeCache
+class RangeCache
 {
-    std::optional<int> start;
-    std::optional<int> end;
+    int start = 0;
+    int end = 0;
 
 public:
-    SciRangeCache(int start, int end)
+    RangeCache(int start, int end)
         : start(start), end(end) {}
-    SciRangeCache() {}
+    RangeCache() {}
     void clean()
     {
-        start.reset();
-        end.reset();
+        start = 0;
+        end = 0;
     }
-    bool isEmpty() { return start && end; }
-    int getStart() const { return start.value(); }
+    bool isEmpty() { return !(start && end); }
+    int getStart() const { return start; }
     void setStart(int value) { start = value; }
-    int getEnd() const { return end.value(); }
+    int getEnd() const { return end; }
     void setEnd(int value) { end = value; }
-    bool operator==(const SciRangeCache &other)
+    bool operator==(const RangeCache &other)
     {
         return start == other.start && end == other.end;
     }
+    bool operator!=(const RangeCache &other)
+    {
+        return !(operator==(other));
+    }
 };
 
-class SciPositionCache
+class PositionCache
 {
-    int sciPosition = -1;
+    int position = -1;
 
 public:
-    SciPositionCache() {}
-    SciPositionCache(int pos)
-        : sciPosition(pos) {}
-    void clean() { sciPosition = -1; }
-    bool isEmpty() { return sciPosition == -1; }
-    int getSciPosition() const { return sciPosition; }
-    void setSciPosition(int value) { sciPosition = value; }
+    PositionCache() {}
+    PositionCache(int pos)
+        : position(pos) {}
+    void clean() { position = -1; }
+    bool isEmpty() { return position == -1; }
+    int getPosition() const { return position; }
+    void setPosition(int value) { position = value; }
 };
 
-class DefinitionCache : public SciPositionCache
+class DefinitionCache : public PositionCache
 {
     std::optional<std::vector<newlsp::Location>> locations {};
     std::optional<std::vector<newlsp::LocationLink>> locationLinks {};
     std::optional<newlsp::Location> location {};
-    SciRangeCache textRange {};
+    RangeCache textRange {};
     int cursor = 0;   //Invalid
 public:
     void clean()
     {
         cleanFromLsp();
         cursor = 0;
-        SciPositionCache::clean();
+        PositionCache::clean();
         textRange.clean();
     }
     void cleanFromLsp()
@@ -70,8 +74,8 @@ public:
 
     bool isEmpty()
     {
-        return locations && location && locationLinks
-                && cursor == 0 && SciPositionCache::isEmpty()
+        return locations->empty() && !location.has_value() && locationLinks->empty()
+                && cursor == 0 && PositionCache::isEmpty()
                 && textRange.isEmpty();
     }
     std::vector<newlsp::Location> getLocations() const
@@ -87,21 +91,21 @@ public:
     void set(const std::vector<newlsp::LocationLink> &value) { locationLinks = value; }
     int getCursor() const { return cursor; }
     void setCursor(int value) { cursor = value; }
-    SciRangeCache getTextRange() const { return textRange; }
-    void setTextRange(const SciRangeCache &value) { textRange = value; }
+    RangeCache getTextRange() const { return textRange; }
+    void setTextRange(const RangeCache &value) { textRange = value; }
 };
 
-class HoverCache : public SciPositionCache
+class HoverCache : public PositionCache
 {
 public:
-    void clean() { SciPositionCache::clean(); }
-    bool isEmpty() { return SciPositionCache::isEmpty(); }
+    void clean() { PositionCache::clean(); }
+    bool isEmpty() { return PositionCache::isEmpty(); }
 };
 
 class RenameCache
 {
-    SciPositionCache start;
-    SciPositionCache end;
+    PositionCache start;
+    PositionCache end;
 
 public:
     void clean()
@@ -110,10 +114,10 @@ public:
         end.clean();
     }
     bool isEmpty() { return start.isEmpty() && end.isEmpty(); }
-    SciPositionCache getStart() const { return start; }
-    void setStart(const SciPositionCache &value) { start = value; }
-    SciPositionCache getEnd() const { return end; }
-    void setEnd(const SciPositionCache &value) { end = value; }
+    PositionCache getStart() const { return start; }
+    void setStart(const PositionCache &value) { start = value; }
+    PositionCache getEnd() const { return end; }
+    void setEnd(const PositionCache &value) { end = value; }
 };
 
 class CompletionCache
@@ -143,7 +147,7 @@ public:
     DefinitionCache definitionCache;
     QTimer textChangedTimer;
     HoverCache hoverCache;
-//    RenamePopup renamePopup;
+    //    RenamePopup renamePopup;
     RenameCache renameCache;
     TextEditor *editor { nullptr };
     TextChangeCache textChangedCache;
