@@ -41,7 +41,6 @@ public:
     virtual void cleanTokenFull();
 
     virtual void setHover(const newlsp::Hover &hover);
-    virtual void cleanHover();
 
     virtual void setDefinition(const newlsp::Location &data);
     virtual void setDefinition(const std::vector<newlsp::Location> &data);
@@ -64,7 +63,7 @@ private slots:
     void onHoverCleaned(int position);
     void onDefinitionHover(int position);
     void onDefinitionHoverCleaned(int position);
-    void onIndicClicked(int position);
+    void onIndicClicked(int line, int index);
     void onIndicReleased(int position);
     void onSelectionMenu(QContextMenuEvent *event);
     void onContentReplaced(const QString &file, int start, int end, const QString &text);

@@ -6,8 +6,15 @@
 #include "private/lspstyle_p.h"
 #include "gui/texteditor.h"
 #include "lspclientmanager.h"
+#include "transceiver/codeeditorreceiver.h"
 
 #include "services/project/projectservice.h"
+
+#include <DApplicationHelper>
+
+#include <bitset>
+
+DGUI_USE_NAMESPACE
 
 LSPStyle::LSPStyle(TextEditor *parent)
     : QObject(parent),
@@ -19,12 +26,12 @@ LSPStyle::LSPStyle(TextEditor *parent)
 
     connect(d->editor, &TextEditor::textAdded, this, &LSPStyle::onTextInsertedTotal);
     connect(d->editor, &TextEditor::textRemoved, this, &LSPStyle::onTextDeletedTotal);
-    //    connect(d->editor, &TextEditor::hovered, this, &LSPStyle::sciHovered);
-    //    connect(d->editor, &TextEditor::hoverCleaned, this, &LSPStyle::sciHoverCleaned);
-    //    connect(d->editor, &TextEditor::definitionHover, this, &LSPStyle::sciDefinitionHover);
+    connect(d->editor, &TextEditor::documentHovered, this, &LSPStyle::onHovered);
+    connect(d->editor, &TextEditor::documentHoverEnd, this, &LSPStyle::onHoverCleaned);
+    connect(d->editor, &TextEditor::documentHoveredWithCtrl, this, &LSPStyle::onDefinitionHover);
     //    connect(d->editor, &TextEditor::definitionHoverCleaned, this, &LSPStyle::sciDefinitionHoverCleaned);
-    //    connect(d->editor, &TextEditor::indicClicked, this, &LSPStyle::sciIndicClicked);
-    //    connect(d->editor, &TextEditor::indicReleased, this, &LSPStyle::sciIndicReleased);
+    connect(d->editor, &TextEditor::indicatorClicked, this, &LSPStyle::onIndicClicked);
+    connect(d->editor, &TextEditor::indicatorReleased, this, &LSPStyle::onIndicReleased);
     //    connect(d->editor, &TextEditor::selectionMenu, this, &LSPStyle::sciSelectionMenu);
     //    connect(d->editor, &TextEditor::replaceed, this, &LSPStyle::sciReplaced);
     //    connect(d->editor, &TextEditor::fileClosed, this, &LSPStyle::sciClosed);
@@ -80,7 +87,7 @@ void LSPStyle::updateTokens()
 }
 
 QMap<int, QColor> LSPStyle::symbolIndic(lsp::SemanticTokenType::type_value token,
-                                     QList<lsp::SemanticTokenType::type_index> modifier)
+                                        QList<lsp::SemanticTokenType::type_index> modifier)
 {
     Q_UNUSED(modifier);
     QMap<int, QColor> result;
@@ -198,26 +205,80 @@ void LSPStyle::cleanTokenFull()
 
 void LSPStyle::setHover(const newlsp::Hover &hover)
 {
-}
+    if (!d->editor || d->hoverCache.getPosition() == -1)
+        return;
+    //callTipBack:设置背景色，参数为colour "red | (green << 8) | (blue << 16)"
+    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+        d->editor->SendScintilla(TextEditor::SCI_CALLTIPSETBACK, TextEditor::STYLE_DEFAULT);
+    else
+        d->editor->SendScintilla(TextEditor::SCI_CALLTIPSETBACK, 0xffffff);
 
-void LSPStyle::cleanHover()
-{
+    std::string showText;
+    if (newlsp::any_contrast<std::vector<newlsp::MarkedString>>(hover.contents)) {
+        auto markupStrings = std::any_cast<std::vector<newlsp::MarkedString>>(hover.contents);
+        for (auto one : markupStrings) {
+            if (!showText.empty()) showText += "\n";
+
+            if (!one.value.empty())   // markedString value append
+                showText += one.value;
+            else if (!std::string(one).empty())   // markedString self is String append
+                showText += one;
+        };
+    } else if (newlsp::any_contrast<newlsp::MarkupContent>(hover.contents)) {
+        auto markupContent = std::any_cast<newlsp::MarkupContent>(hover.contents);
+        showText = markupContent.value;
+    } else if (newlsp::any_contrast<newlsp::MarkedString>(hover.contents)) {
+        auto markedString = std::any_cast<newlsp::MarkedString>(hover.contents);
+        if (!std::string(markedString).empty()) {
+            showText = std::string(markedString);
+        } else {
+            showText = markedString.value;
+        }
+    }
+
+    if (!showText.empty())
+        d->editor->showTips(d->hoverCache.getPosition(), showText.c_str());
+    d->hoverCache.clean();
 }
 
 void LSPStyle::setDefinition(const newlsp::Location &data)
 {
+    if (!d->editor)
+        return;
+
+    d->definitionCache.set(data);
+    auto textRange = d->definitionCache.getTextRange();
+    setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
 }
 
 void LSPStyle::setDefinition(const std::vector<newlsp::Location> &data)
 {
+    if (!d->editor || data.empty())
+        return;
+
+    d->definitionCache.set(data);
+    auto textRange = d->definitionCache.getTextRange();
+    setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
 }
 
 void LSPStyle::setDefinition(const std::vector<newlsp::LocationLink> &data)
 {
+    if (!d->editor || data.empty())
+        return;
+
+    d->definitionCache.set(data);
+    auto textRange = d->definitionCache.getTextRange();
+    setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
 }
 
 void LSPStyle::cleanDefinition(int pos)
 {
+    auto data = d->editor->SendScintilla(TextEditor::SCI_INDICATORALLONFOR, pos);
+    std::bitset<32> flags(static_cast<ulong>(data));
+    if (flags[TextEditor::INDIC_COMPOSITIONTHICK]) {
+        d->editor->SendScintilla(TextEditor::SCI_SETCURSOR, d->definitionCache.getCursor());
+        d->editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, d->editor->length());
+    }
 }
 
 void LSPStyle::rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits)
@@ -230,6 +291,15 @@ bool LSPStyle::isCharSymbol(const char ch)
 
 void LSPStyle::setDefinitionSelectedStyle(int start, int end)
 {
+    d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_COMPOSITIONTHICK);
+    d->editor->SendScintilla(TextEditor::SCI_INDICSETFORE, d->editor->SendScintilla(TextEditor::SCI_STYLEGETFORE, 0));
+    d->editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE, static_cast<ulong>(start), end - start);
+
+    auto cursor = d->editor->SendScintilla(TextEditor::SCI_GETCURSOR);
+    if (cursor != 8) {
+        d->definitionCache.setCursor(static_cast<int>(cursor));
+        d->editor->SendScintilla(TextEditor::SCI_SETCURSOR, 8);   // hand from Scintilla platfrom.h
+    }
 }
 
 void LSPStyle::setCompletion(const QString &text, int enterLenght, const lsp::CompletionProvider &provider)
@@ -320,22 +390,101 @@ void LSPStyle::onTextChangedTotal()
 
 void LSPStyle::onHovered(int position)
 {
+    if (!d->editor || !d->getClient())
+        return;
+
+    d->hoverCache.setPosition(position);
+
+    lsp::Position pos;
+    d->editor->lineIndexFromPosition(position, &pos.line, &pos.character);
+    qApp->metaObject()->invokeMethod(d->getClient(), "docHoverRequest",
+                                     Q_ARG(const QString &, d->editor->getFile()),
+                                     Q_ARG(const lsp::Position &, pos));
 }
 
 void LSPStyle::onHoverCleaned(int position)
 {
+    Q_UNUSED(position)
+
+    if (!d->editor)
+        return;
+
+    d->editor->cancelTips();
+    d->hoverCache.clean();
+    onDefinitionHoverCleaned(position);
 }
 
 void LSPStyle::onDefinitionHover(int position)
 {
+    if (!d->editor)
+        return;
+
+    auto startPos = d->editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(position), true);
+    auto endPos = d->editor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(position), true);
+    RangeCache textRange { static_cast<int>(startPos), static_cast<int>(endPos) };
+
+    if (d->definitionCache.getTextRange() == textRange)
+        return;
+
+    if (!d->definitionCache.getTextRange().isEmpty())
+        onDefinitionHoverCleaned(position);
+
+    d->definitionCache.setPosition(position);
+    d->definitionCache.setTextRange(textRange);
+    d->definitionCache.cleanFromLsp();
+
+    lsp::Position pos;
+    d->editor->lineIndexFromPosition(position, &pos.line, &pos.character);
+    if (d->getClient()) {
+        qApp->metaObject()->invokeMethod(d->getClient(), "definitionRequest",
+                                         Q_ARG(const QString &, d->editor->getFile()),
+                                         Q_ARG(const lsp::Position &, pos));
+    }
 }
 
 void LSPStyle::onDefinitionHoverCleaned(int position)
 {
+    if (!d->editor || d->definitionCache.getTextRange().isEmpty())
+        return;
+
+    auto startPos = d->editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(position), true);
+    auto endPos = d->editor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(position), true);
+    RangeCache textRange { static_cast<int>(startPos), static_cast<int>(endPos) };
+    bool isKeyCtrl = QApplication::keyboardModifiers().testFlag(Qt::ControlModifier);
+    bool isSameRange = d->definitionCache.getTextRange() == textRange;
+
+    if (!isSameRange || !isKeyCtrl) {
+        cleanDefinition(d->definitionCache.getPosition());
+        d->definitionCache.clean();
+    }
 }
 
-void LSPStyle::onIndicClicked(int position)
+void LSPStyle::onIndicClicked(int line, int index)
 {
+    if (!d->editor)
+        return;
+
+    auto pos = d->editor->positionFromLineIndex(line, index);
+    auto data = d->editor->SendScintilla(TextEditor::SCI_INDICATORALLONFOR, pos);
+    std::bitset<32> flags(static_cast<ulong>(data));
+    if (flags[TextEditor::INDIC_COMPOSITIONTHICK]) {
+        if (d->definitionCache.getLocations().size() > 0) {
+            auto one = d->definitionCache.getLocations().front();
+            EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                     one.range.end.line);
+            cleanDefinition(pos);
+        } else if (d->definitionCache.getLocationLinks().size() > 0) {
+            auto one = d->definitionCache.getLocationLinks().front();
+            EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
+                                                     one.targetRange.end.line);
+            cleanDefinition(pos);
+        } else {
+            auto one = d->definitionCache.getLocation();
+            EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                     one.range.end.line);
+            cleanDefinition(pos);
+        }
+    }
 }
 
 void LSPStyle::onIndicReleased(int position)
