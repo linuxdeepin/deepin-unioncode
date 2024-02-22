@@ -31,6 +31,7 @@ public:
     explicit OptionsDialog(QWidget *parent = nullptr);
     bool insertOptionPanel(const QString &itemName, PageWidget *panel);
     bool insertLabel(const QString &itemName);
+    void showAtItem(const QString &itemName);
 
 public slots:
     void slotLeftBarClicked(const QModelIndex &index);

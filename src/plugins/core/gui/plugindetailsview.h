@@ -67,6 +67,7 @@ public:
 
 private slots:
     void changeLoadBtnState();
+    void showCfgWidget();
 
 private:
     void setupUi();

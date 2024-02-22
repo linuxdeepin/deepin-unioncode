@@ -46,12 +46,10 @@ bool CodeGeex::start()
         }
     }
 
-#if 0 // option not used.
     auto optionService = dpfGetService(dpfservice::OptionService);
     if (optionService) {
         optionService->implGenerator<OptionCodeGeeXGenerator>(OptionCodeGeeXGenerator::kitName());
     }
-#endif
 
     Copilot::instance();
 
