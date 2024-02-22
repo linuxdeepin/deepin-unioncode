@@ -83,8 +83,19 @@ bool OptionsDialog::insertLabel(const QString &itemName)
     return true;
 }
 
+void OptionsDialog::showAtItem(const QString &itemName)
+{
+    show();
+
+    QModelIndex index = leftBarModel->indexFromItem(leftBarModel->findItems(itemName).at(0));
+    slotLeftBarClicked(index);
+}
+
 void OptionsDialog::slotLeftBarClicked(const QModelIndex &index)
 {
+    if (!index.isValid())
+        return;
+
     auto item = leftBarModel->itemFromIndex(index);
     auto y = itemList[item]->y();
     scrollArea->verticalScrollBar()->setValue(y);

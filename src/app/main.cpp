@@ -113,8 +113,7 @@ int main(int argc, char *argv[])
     a.setApplicationDescription(a.translate("Application",
                                             "Deepin Union Code is a lightweight integrated development environment,\
                                             featured with multilingual and cross platform compatibility."
-                                            )
-                                        .arg(buildDateInfo, QString::number(QDateTime::currentDateTime().date().year())));
+                                            ));
     CommandParser::instance().process();
 
     // TODO(Any): put to command processor

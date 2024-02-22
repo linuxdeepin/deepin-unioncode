@@ -3,6 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "plugindetailsview.h"
 #include "framework/lifecycle/lifecycle.h"
+#include "services/option/optionservice.h"
+#include "common/util/eventdefinitions.h"
 
 #include <DWidget>
 #include <DLabel>
@@ -15,6 +17,7 @@
 #include <QWebEngineView>
 
 DWIDGET_USE_NAMESPACE
+using namespace dpfservice;
 
 DetailsView::DetailsView(QWidget *parent)
     : DWidget(parent)
@@ -64,6 +67,8 @@ void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
 
     bool pluginIsEnabled = pluginMetaInfo->isEnabledBySettings();
     updateLoadBtnDisplay(pluginIsEnabled);
+
+    webView->load(QUrl(updateMetaInfo.url));
 }
 
 void DetailsView::changeLoadBtnState()
@@ -76,6 +81,12 @@ void DetailsView::changeLoadBtnState()
 
     pluginMetaInfo->setEnabledBySettings(isEnabled);
     dpf::LifeCycle::getPluginManagerInstance()->writeSettings();
+}
+
+void DetailsView::showCfgWidget()
+{
+    dpfGetService(OptionService)->showOptionDialog(pluginMetaInfo->name());
+    options.showCfgDialg(pluginMetaInfo->name());
 }
 
 void DetailsView::setupUi()
@@ -94,22 +105,29 @@ void DetailsView::setupUi()
     metaInfoLabel->setWordWrap(true);
     midLayout->addWidget(metaInfoLabel);
 
+    auto operationLayout = new QHBoxLayout(this);
+    operationLayout->setSpacing(0);
+    operationLayout->setMargin(0);
     loadBtn = new DPushButton(this);
     loadBtn->setToolTip(tr("reLaunch when changed!"));
     connect(loadBtn, &DPushButton::clicked, this, &DetailsView::changeLoadBtnState);
-    midLayout->addWidget(loadBtn, 0, Qt::AlignLeft);
+    operationLayout->addWidget(loadBtn, 0, Qt::AlignLeft);
+
+    auto *cfgBtn = new DPushButton(this);
+    cfgBtn->setIcon(QIcon::fromTheme("options_setting"));
+    cfgBtn->setFlat(true);
+    connect(cfgBtn, &DPushButton::clicked, this, &DetailsView::showCfgWidget);
+    operationLayout->addWidget(cfgBtn, 1, Qt::AlignLeft);
 
     QLabel *logoLabel = new QLabel(this);
     logoLabel->setPixmap(QIcon::fromTheme("plugins-navigation").pixmap(QSize(128, 128)));
 
     auto webViewLayout = new QHBoxLayout(this);
     webView = new QWebEngineView();
-    // TODO(mozart): load from local.
-//    webView->load(QUrl::fromLocalFile("url"));
-    webView->load(QUrl("https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e"));
     webView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     webViewLayout->addWidget(webView);
 
+    midLayout->addLayout(operationLayout);
     detailLayout->addWidget(logoLabel);
     detailLayout->addLayout(midLayout, 1);
     detailLayout->setContentsMargins(64, 10, 0, 10);

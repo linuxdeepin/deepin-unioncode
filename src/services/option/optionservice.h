@@ -79,6 +79,12 @@ public:
         }
         return nullptr;
     }
+
+    /**
+     * @brief DPF_INTERFACE showOptionDialog
+     * @param itemName will scroll to item with itemName, if empty, keep at top.
+     */
+    DPF_INTERFACE(void, showOptionDialog, const QString &itemName);
 };
 } //namespace dpfservice
 
