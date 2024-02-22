@@ -528,7 +528,7 @@ storage: %2
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="232"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="243"/>
         <source>build</source>
         <translation type="unfinished"></translation>
     </message>
@@ -646,29 +646,29 @@ storage: %2
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="136"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="135"/>
         <source>Welcome to CodeGeeX
 A must-have all-round AI tool for developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="143"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="142"/>
         <source>Go to login</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="209"/>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="240"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="208"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="239"/>
         <source>Ask CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="212"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="211"/>
         <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="228"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="227"/>
         <source>Creating a new session...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -852,7 +852,7 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="756"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="644"/>
         <source>Open Document</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1215,53 +1215,68 @@ Delete anyway?</source>
 <context>
     <name>DetailsView</name>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="45"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="46"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="46"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="47"/>
         <source>Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="47"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="48"/>
         <source>Compatible Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="48"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="49"/>
         <source>Vendor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="49"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="50"/>
         <source>Copyright</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="50"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="51"/>
         <source>Category</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="51"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="52"/>
         <source>URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="52"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="53"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="53"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="54"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="54"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="55"/>
         <source>Dependency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="112"/>
+        <source>reLaunch when changed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="140"/>
+        <source>unload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="140"/>
+        <source>load</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1583,17 +1598,17 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="176"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="177"/>
         <source>Break&amp;points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="177"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="178"/>
         <source>ScriptWidget</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="178"/>
+        <location filename="../../src/plugins/javascript/debugger/jsdebugger.cpp" line="179"/>
         <source>ErrorLogWidget</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1826,12 +1841,12 @@ repos path: %0</source>
 <context>
     <name>OptionCore</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="58"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="60"/>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="89"/>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="94"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1839,17 +1854,17 @@ repos path: %0</source>
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="100"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="111"/>
         <source>Global Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="154"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="165"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="157"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="168"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1888,17 +1903,17 @@ repos path: %0</source>
 <context>
     <name>PluginListView</name>
     <message>
-        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="63"/>
+        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="65"/>
         <source>Category</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="64"/>
+        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="66"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="65"/>
+        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="67"/>
         <source>CopyRight</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2283,19 +2298,6 @@ repos path: %0</source>
     </message>
 </context>
 <context>
-    <name>QCheckBox</name>
-    <message>
-        <location filename="../../src/plugins/option/optionlsp/mainframe/adapterconfigure.cpp" line="9"/>
-        <source>Read from Stdout:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optionlsp/mainframe/adapterconfigure.cpp" line="10"/>
-        <source>Read from Socket:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QDialog</name>
     <message>
         <location filename="../../src/common/util/fileoperation.cpp" line="13"/>
@@ -2401,21 +2403,6 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/collaborators/mainframe/svn/historydiffview.cpp" line="21"/>
         <source>Search Text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optionlsp/mainframe/adapterconfigure.cpp" line="55"/>
-        <source>listen backend ip</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optionlsp/mainframe/adapterconfigure.cpp" line="56"/>
-        <source>listen backend port</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/option/optionlsp/mainframe/adapterconfigure.cpp" line="67"/>
-        <source>launch program command</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3816,42 +3803,42 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="206"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="223"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="209"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="226"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="214"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="231"/>
         <source>Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="218"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="235"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="222"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="239"/>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="225"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="242"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="230"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="247"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="245"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="262"/>
         <source>Remove Breakpoint</source>
         <translation type="unfinished"></translation>
     </message>

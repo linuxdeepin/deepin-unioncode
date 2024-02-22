@@ -50,7 +50,9 @@ bool OptionCore::start()
     OptionService *optionService = ctx.service<OptionService>(OptionService::name());
 
     if (optionService) {
-        generalKits << OptionEnvironmentGenerator::kitName() << OptionShortcutsettingGenerator::kitName() << OptionProfilesettingGenerator::kitName();
+        generalKits << OptionEnvironmentGenerator::kitName()
+                    << OptionShortcutsettingGenerator::kitName()
+                    << OptionProfilesettingGenerator::kitName();
         optionService->implGenerator<OptionEnvironmentGenerator>(generalKits[0]);
         optionService->implGenerator<OptionShortcutsettingGenerator>(generalKits[1]);
         optionService->implGenerator<OptionProfilesettingGenerator>(generalKits[2]);
@@ -64,6 +66,9 @@ bool OptionCore::start()
                     optionDialog->insertOptionPanel(name, optionWidget);
             }
         }
+        using namespace std::placeholders;
+
+        optionService->showOptionDialog = std::bind(&OptionsDialog::showAtItem, OptionDefaultKeeper::getOptionDialog(), _1);
     }
 
     if (windowService && windowService->addAction) {

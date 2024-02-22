@@ -95,6 +95,10 @@ OPI_OBJECT(projectTemplate,
            OPI_INTERFACE(newWizard)
            )
 
+OPI_OBJECT(options,
+           OPI_INTERFACE(showCfgDialg, "itemName")
+           )
+
 struct AnalysedData
 {
     struct TokenMap
