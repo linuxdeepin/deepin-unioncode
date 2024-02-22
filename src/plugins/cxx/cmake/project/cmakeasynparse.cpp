@@ -46,17 +46,29 @@ CmakeAsynParse::~CmakeAsynParse()
 {
 }
 
-QString getTargetRootPath(const QList<QString> &srcFiles, const QString &topPath)
+QString getTargetRootPath(const CMakeBuildTarget &target, const dpfservice::ProjectInfo &prjInfo)
 {
+    auto srcFiles = target.srcfiles;
+    auto topPath = target.sourceDirectory;
+
     if (srcFiles.isEmpty()) {
         return QString();
     }
 
+    //get target root path by build-directory
+    auto workingDirectory = target.workingDirectory;
+    auto buildDirectory = prjInfo.buildFolder();
+    if(workingDirectory.startsWith(buildDirectory)) {
+        workingDirectory.remove(buildDirectory);
+        return topPath + QDir::separator() + workingDirectory;
+    }
+
+    //get target root path by srcFiles path
     // Divide all paths into multiple lists according to directory hierarchy
     QList<QList<QString>> pathPartsList;
     for (const QString &filePath : srcFiles) {
         // remove outter file.
-        if ((!topPath.isEmpty() && !filePath.startsWith(topPath)) || QFileInfo(filePath).suffix() == "h" || QFileInfo(filePath).suffix() == "hpp") {
+        if ((!topPath.isEmpty() && !filePath.startsWith(topPath))/* || QFileInfo(filePath).suffix() == "h" || QFileInfo(filePath).suffix() == "hpp"*/) {
             continue;
         }
 
@@ -112,7 +124,6 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
 
     TargetsManager::instance()->readTargets(prjInfo.buildFolder(), prjInfo.workspaceFolder());
     auto cbpParser = TargetsManager::instance()->cbpParser();
-
     // add cmakefile to tree first.
     auto cmakeList = cbpParser->getCmakeFileList();
     for (auto &cmakeFile : cmakeList) {
@@ -149,7 +160,7 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         if (target.type == kUtility) {
             continue;
         }
-        QString targetRootPath = getTargetRootPath(target.srcfiles, target.sourceDirectory);
+        QString targetRootPath = getTargetRootPath(target, prjInfo);
         QString relativePath = QDir(prjInfo.workspaceFolder()).relativeFilePath(QDir(targetRootPath).path());
         QString absolutePath = QDir(prjInfo.workspaceFolder()).absoluteFilePath(QDir(targetRootPath).path());
         QStandardItem *targetRootItem = rootItem;
@@ -177,7 +188,7 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             relativePath = QDir(targetRootPath).relativeFilePath(srcFileInfo.dir().path());
             absolutePath = QDir(targetRootPath).absoluteFilePath(srcFileInfo.dir().path());
             relativePath.remove(".");
-            if (relativePath.startsWith("/"))
+            while (relativePath.startsWith("/"))
                 relativePath.remove(0, 1);
             if (srcFileInfo.suffix() == "qm" || srcFileInfo.fileName().startsWith("moc_")
                 || srcFileInfo.fileName().startsWith("mocs_")
@@ -273,7 +284,6 @@ QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, const Q
             item->setIcon(::cmakeFolderIcon());
             // append to parent.
             QStandardItem *parentItem = findParentItem(rootItem, relative);
-            QString test = parentItem->text();
             parentItem->appendRow(item);
         }
         preItems += nameItem + "/";
