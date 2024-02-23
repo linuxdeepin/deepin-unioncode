@@ -4,9 +4,12 @@
 
 #include "projectdelegate.h"
 
+#include <DGuiApplicationHelper>
+
 #include <QPainter>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 class ProjectDelegatePrivate
 {
@@ -15,10 +18,14 @@ class ProjectDelegatePrivate
 };
 
 ProjectDelegate::ProjectDelegate(QAbstractItemView *parent)
-  : DStyledItemDelegate (parent)
-  , d (new ProjectDelegatePrivate)
+    : DStyledItemDelegate(parent), d(new ProjectDelegatePrivate)
 {
+}
 
+ProjectDelegate::~ProjectDelegate()
+{
+    if (d)
+        delete d;
 }
 
 void ProjectDelegate::setActiveProject(const QModelIndex &root)
@@ -39,10 +46,19 @@ void ProjectDelegate::paint(QPainter *painter,
     if (d->index.isValid() && d->index == index) {
         iOption.font.setBold(true);
     }
+
+    if (!option.state.testFlag(QStyle::State_HasFocus)) {
+        QColor color;
+        DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType
+                ? color = Qt::black
+                : color = Qt::white;
+        iOption.palette.setColor(QPalette::Text, color);
+    }
+
     QStyledItemDelegate::paint(painter, iOption, index);
 }
 
 QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    return {option.rect.width(), 24};
+    return { option.rect.width(), 24 };
 }

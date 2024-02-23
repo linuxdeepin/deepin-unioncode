@@ -8,8 +8,14 @@
 #include "common/common.h"
 #include "services/editor/editorservice.h"
 
+#include <DMenu>
+#include <DDesktopServices>
+
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QClipboard>
+
+DWIDGET_USE_NAMESPACE
 
 TabBarPrivate::TabBarPrivate(TabBar *qq)
     : QObject(qq),
@@ -23,6 +29,7 @@ void TabBarPrivate::initUI()
     tabBar->setVisibleAddButton(false);
     tabBar->setTabsClosable(true);
     tabBar->setEnabledEmbedStyle(true);
+    tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
     hSplitBtn = new DToolButton(q);
     hSplitBtn->setIcon(QIcon::fromTheme("edit-hSplit"));
     vSplitBtn = new DToolButton(q);
@@ -42,6 +49,7 @@ void TabBarPrivate::initConnection()
 {
     connect(tabBar, &DTabBar::currentChanged, this, &TabBarPrivate::onCurrentTabChanged);
     connect(tabBar, &DTabBar::tabCloseRequested, this, &TabBarPrivate::onTabColseRequested);
+    connect(tabBar, &DTabBar::customContextMenuRequested, this, &TabBarPrivate::showMenu);
     connect(hSplitBtn, &DToolButton::clicked, this, [this] { emit q->spliterClicked(Qt::Horizontal); });
     connect(vSplitBtn, &DToolButton::clicked, this, [this] { emit q->spliterClicked(Qt::Vertical); });
     connect(closeBtn, &DToolButton::clicked, q, &TabBar::closeRequested);
@@ -58,6 +66,53 @@ void TabBarPrivate::onTabColseRequested(int index)
 {
     const auto &file = q->indexFile(index);
     q->removeTab(file);
+}
+
+void TabBarPrivate::showMenu(QPoint pos)
+{
+    int curIndex = tabBar->tabAt(pos);
+    DMenu menu;
+
+    menu.addAction(tr("Copy File Path"), [=]() {
+        auto file = tabBar->tabToolTip(curIndex);
+        qApp->clipboard()->setText(file);
+    });
+    menu.addAction(tr("Copy File Name"), [=]() {
+        auto file = tabBar->tabToolTip(curIndex);
+        auto fileName = QFileInfo(file).fileName();
+        qApp->clipboard()->setText(fileName);
+    });
+
+    menu.addSeparator();
+    menu.addAction(tr("Close This File"), [=]() {
+        auto file = tabBar->tabToolTip(curIndex);
+        q->removeTab(file);
+    });
+    menu.addAction(tr("Close All Files"), [=]() {
+        while (tabBar->count() > 0) {
+            auto file = tabBar->tabToolTip(0);
+            q->removeTab(file);
+        };
+    });
+    menu.addAction(tr("Close All Files Except This"), [=]() {
+        auto curFile = tabBar->tabToolTip(curIndex);
+        int index = 0;
+        while (tabBar->count() > 1) {
+            auto file = tabBar->tabToolTip(index);
+            if (file != curFile)
+                q->removeTab(file);
+            else
+                index++;
+        };
+    });
+
+    menu.addSeparator();
+    menu.addAction(tr("Open File Location"), [=]() {
+        auto file = tabBar->tabToolTip(curIndex);
+        DDesktopServices::showFileItem(file);
+    });
+
+    menu.exec(QCursor::pos());
 }
 
 TabBar::TabBar(QWidget *parent)

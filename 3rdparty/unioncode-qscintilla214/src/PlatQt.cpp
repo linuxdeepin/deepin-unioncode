@@ -250,6 +250,7 @@ void SurfaceImpl::Init(SurfaceID sid, WindowID)
 
     pd = p->device();
     painter = p;
+    painter->setRenderHint(QPainter::Antialiasing);
 }
 
 void SurfaceImpl::Init(QPainter *p)
@@ -258,6 +259,7 @@ void SurfaceImpl::Init(QPainter *p)
 
     pd = p->device();
     painter = p;
+    painter->setRenderHint(QPainter::Antialiasing);
 }
 
 void SurfaceImpl::InitPixMap(int width, int height, Surface *sid, WindowID wid)
@@ -271,6 +273,7 @@ void SurfaceImpl::InitPixMap(int width, int height, Surface *sid, WindowID wid)
     pd = pixmap;
 
     painter = new QPainter(pd);
+    painter->setRenderHint(QPainter::Antialiasing);
     my_resources = true;
 
     SetUnicodeMode(static_cast<SurfaceImpl *>(sid)->unicodeMode);

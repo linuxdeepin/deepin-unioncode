@@ -23,7 +23,23 @@ newlsp::StdoutJsonRpcParser::~StdoutJsonRpcParser()
     }
 }
 
+bool newlsp::StdoutJsonRpcParser::checkJsonValid(const QByteArray &data)
+{
+    QJsonParseError error;
+    QJsonDocument::fromJson(data, &error);
+    return error.error == QJsonParseError::NoError;
+}
+
 void newlsp::StdoutJsonRpcParser::doReadedLine(const QByteArray &line)
 {
-    d->doParseReadLine(line);
+    auto data = line;
+    if (!outputCache.isEmpty() || (data.contains("\"jsonrpc\":") && !checkJsonValid(data))) {
+        outputCache.append(data);
+        if (!checkJsonValid(outputCache))
+            return;
+
+        data = outputCache;
+        outputCache.clear();
+    }
+    d->doParseReadLine(data);
 }

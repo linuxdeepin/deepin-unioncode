@@ -42,6 +42,7 @@ void TextEditorPrivate::init()
 {
     q->setFrameShape(QFrame::NoFrame);
     q->SendScintilla(TextEditor::SCI_SETMOUSEDWELLTIME, 20);
+    q->setAnnotationDisplay(TextEditor::AnnotationStandard);
 
     hoverTimer.setSingleShot(true);
 
@@ -327,7 +328,7 @@ QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
         static QsciStyle style(ERROR_ANNOTATION_STYLE,
                                "Error",
                                EditorColor::Table::get()->FireBrick,
-                               EditorColor::Table::get()->LightCoral,
+                               "#fbe8e8",
                                font);
         return style;
     }

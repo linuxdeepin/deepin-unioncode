@@ -86,6 +86,8 @@ QsciLexer *LexerManager::defaultSciLexer(const QString &language)
         lexer = new QsciLexerPython();
     } else if (language.compare("js", Qt::CaseInsensitive) == 0) {
         lexer = new QsciLexerJavaScript();
+    } else {
+        lexer = new QsciLexerCPP();
     }
 
     // The `lexer` is structured by `TextEditor`
