@@ -15,14 +15,14 @@ class LSPStyle : public QObject
 {
     Q_OBJECT
 public:
-    LSPStyle(TextEditor *parent);
-    TextEditor *editor();
+    explicit LSPStyle(TextEditor *parent);
     virtual ~LSPStyle();
 
     virtual void initLspConnection();   //setting main
     void updateTokens();
+    void setIndicStyle();
     virtual QMap<int, QColor> symbolIndic(lsp::SemanticTokenType::type_value token,
-                                       QList<lsp::SemanticTokenType::type_index> modifier);
+                                          QList<lsp::SemanticTokenType::type_index> modifier);
 
     /*!
      * \brief tokenFromServProvider find local token from lsp protocol init response provider data
@@ -31,7 +31,6 @@ public:
      */
     virtual lsp::SemanticTokenType::type_value tokenToDefine(int token);
 
-    virtual void setIndicStyle();
     virtual void setMargin();
 
     virtual void setDiagnostics(const newlsp::PublishDiagnosticsParams &data);
@@ -49,8 +48,6 @@ public:
 
     virtual void rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits);
 
-    static bool isCharSymbol(const char ch);
-
 private slots:
     void setDefinitionSelectedStyle(int start, int end);
     void setCompletion(const QString &text, int enterLenght,
@@ -64,9 +61,7 @@ private slots:
     void onDefinitionHover(int position);
     void onDefinitionHoverCleaned(int position);
     void onIndicClicked(int line, int index);
-    void onIndicReleased(int position);
     void onSelectionMenu(QContextMenuEvent *event);
-    void onContentReplaced(const QString &file, int start, int end, const QString &text);
     void onFileClosed(const QString &file);
     void renameRequest(const QString &newText);
 

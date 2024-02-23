@@ -18,6 +18,8 @@ public:
     explicit StdoutJsonRpcParser(QObject *parent = nullptr);
     virtual ~StdoutJsonRpcParser();
 
+    bool checkJsonValid(const QByteArray &data);
+
 public Q_SLOTS:
     void doReadedLine(const QByteArray &line);
 

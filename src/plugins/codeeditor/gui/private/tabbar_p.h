@@ -24,6 +24,7 @@ public:
 public slots:
     void onCurrentTabChanged(int index);
     void onTabColseRequested(int index);
+    void showMenu(QPoint pos);
 
 public:
     TabBar *q;

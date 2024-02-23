@@ -7,6 +7,7 @@
 #include "gui/texteditor.h"
 #include "lspclientmanager.h"
 #include "transceiver/codeeditorreceiver.h"
+#include "utils/colordefine.h"
 
 #include "services/project/projectservice.h"
 
@@ -21,6 +22,7 @@ LSPStyle::LSPStyle(TextEditor *parent)
       d(new LSPStylePrivate)
 {
     d->editor = parent;
+    d->diagnosticFormat = "%1\n%2:%3";
 
     setIndicStyle();
 
@@ -29,20 +31,13 @@ LSPStyle::LSPStyle(TextEditor *parent)
     connect(d->editor, &TextEditor::documentHovered, this, &LSPStyle::onHovered);
     connect(d->editor, &TextEditor::documentHoverEnd, this, &LSPStyle::onHoverCleaned);
     connect(d->editor, &TextEditor::documentHoveredWithCtrl, this, &LSPStyle::onDefinitionHover);
-    //    connect(d->editor, &TextEditor::definitionHoverCleaned, this, &LSPStyle::sciDefinitionHoverCleaned);
     connect(d->editor, &TextEditor::indicatorClicked, this, &LSPStyle::onIndicClicked);
-    connect(d->editor, &TextEditor::indicatorReleased, this, &LSPStyle::onIndicReleased);
     //    connect(d->editor, &TextEditor::selectionMenu, this, &LSPStyle::sciSelectionMenu);
-    //    connect(d->editor, &TextEditor::replaceed, this, &LSPStyle::sciReplaced);
-    //    connect(d->editor, &TextEditor::fileClosed, this, &LSPStyle::sciClosed);
-    //    connect(qApp, &QApplication::applicationStateChanged, this, [=](Qt::ApplicationState state) {
-    //        if (state == Qt::ApplicationState::ApplicationInactive && d->edit->callTipActive())
-    //            d->edit->callTipCancel();
-    //    });
-}
-
-TextEditor *LSPStyle::editor()
-{
+    connect(d->editor, &TextEditor::fileClosed, this, &LSPStyle::onFileClosed);
+    connect(qApp, &QApplication::applicationStateChanged, this, [=](Qt::ApplicationState state) {
+        if (state == Qt::ApplicationState::ApplicationInactive)
+            d->editor->cancelTips();
+    });
 }
 
 LSPStyle::~LSPStyle()
@@ -142,6 +137,28 @@ void LSPStyle::setMargin()
 
 void LSPStyle::setDiagnostics(const newlsp::PublishDiagnosticsParams &data)
 {
+    if (!d->editor)
+        return;
+
+    if (QUrl(QString::fromStdString(data.uri)).toLocalFile() != d->editor->getFile())
+        return;
+
+    this->cleanDiagnostics();
+    for (auto val : data.diagnostics) {
+        if (newlsp::Enum::DiagnosticSeverity::get()->Error == val.severity.value()) {   // error
+            newlsp::Position start { val.range.start.line, val.range.start.character };
+            newlsp::Position end { val.range.end.line, val.range.end.character };
+            int startPos = d->editor->positionFromLineIndex(start.line, start.character);
+            int endPos = d->editor->positionFromLineIndex(end.line, end.character);
+
+            d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_SQUIGGLE);
+            d->editor->SendScintilla(TextEditor::SCI_INDICSETFORE, TextEditor::INDIC_SQUIGGLE, QColor(Qt::red));
+            d->editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE, static_cast<ulong>(startPos), endPos - startPos);
+
+            std::string message = val.message.value();
+            d->diagnosticCache.append({ startPos, endPos, message.c_str(), AnnotationType::ErrorAnnotation });
+        }
+    }
 }
 
 void LSPStyle::cleanDiagnostics()
@@ -283,10 +300,17 @@ void LSPStyle::cleanDefinition(int pos)
 
 void LSPStyle::rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits)
 {
-}
+    if (edits.empty())
+        return;
 
-bool LSPStyle::isCharSymbol(const char ch)
-{
+    for (auto iter = edits.rbegin(); iter != edits.rend(); iter++) {
+        int startPos = d->editor->positionFromLineIndex(iter->range.start.line, iter->range.start.character);
+        int endPos = d->editor->positionFromLineIndex(iter->range.end.line, iter->range.end.character);
+        auto newText = QString::fromStdString(iter->newText);
+        QString curFile = d->editor->getFile();
+        //        if (curFile == d->formattingFile)
+        //            d->editor->replaceRange(sciPosStart, sciPosEnd, newText);
+    }
 }
 
 void LSPStyle::setDefinitionSelectedStyle(int start, int end)
@@ -314,7 +338,7 @@ void LSPStyle::setCompletion(const QString &text, int enterLenght, const lsp::Co
     d->editor->SendScintilla(TextEditor::SCI_AUTOCSETSEPARATOR, sep);
     QStringList inserts;
     for (auto item : provider.items) {
-        if (!item.insertText.startsWith(text, Qt::CaseInsensitive))
+        if (item.insertText.isEmpty() || !item.insertText.startsWith(text, Qt::CaseInsensitive))
             continue;
         inserts << item.insertText;
     }
@@ -359,6 +383,37 @@ void LSPStyle::onTextInsertedTotal(int position, int length, int linesAdded, con
 
 void LSPStyle::onTextDeletedTotal(int position, int length, int linesAdded, const QString &text, int line)
 {
+    if (!d->editor || !d->getClient())
+        return;
+
+    if (d->textChangedTimer.isActive())
+        d->textChangedTimer.stop();
+
+    if (d->textChangedCache.lengthCache == 0) {
+        d->textChangedCache.state = TextChangeCache::State::Deleted;
+        d->textChangedCache.positionCache = position + length;
+        d->textChangedCache.lengthCache = length;
+        d->textChangedCache.textCache.insert(0, text);
+    }
+
+    if (d->textChangedCache.state == TextChangeCache::State::Inserted) {
+        if (d->textChangedCache.positionCache + d->textChangedCache.lengthCache - length == position && 0 != position) {
+            d->textChangedCache.textCache.remove(d->textChangedCache.textCache.size() - length,
+                                                 d->textChangedCache.textCache.size());
+            d->textChangedCache.lengthCache -= length;
+            d->textChangedCache.state = TextChangeCache::State::Inserted;
+        }
+    } else if (d->textChangedCache.state == TextChangeCache::State::Deleted) {
+        if (d->textChangedCache.positionCache == position + d->textChangedCache.lengthCache) {
+            d->textChangedCache.lengthCache += length;
+            d->textChangedCache.textCache.insert(0, text);
+        }
+    }
+
+    d->textChangedTimer.start(500);
+    QObject::connect(&d->textChangedTimer, &QTimer::timeout,
+                     this, &LSPStyle::onTextChangedTotal,
+                     Qt::UniqueConnection);
 }
 
 void LSPStyle::onTextChangedTotal()
@@ -393,8 +448,20 @@ void LSPStyle::onHovered(int position)
     if (!d->editor || !d->getClient())
         return;
 
-    d->hoverCache.setPosition(position);
+    if (!d->diagnosticCache.isEmpty()) {
+        auto iter = std::find_if(d->diagnosticCache.begin(), d->diagnosticCache.end(),
+                                 [position](const DiagnosticCache &cache) {
+                                     return cache.contains(position);
+                                 });
+        if (iter != d->diagnosticCache.end()) {
+            d->editor->SendScintilla(TextEditor::SCI_CALLTIPSETBACK, QColor(EditorColor::Table::get()->LemonChiffon));
+            const auto &msg = d->formatDiagnosticMessage(iter->message, iter->type);
+            d->editor->showTips(position, msg);
+            return;
+        }
+    }
 
+    d->hoverCache.setPosition(position);
     lsp::Position pos;
     d->editor->lineIndexFromPosition(position, &pos.line, &pos.character);
     qApp->metaObject()->invokeMethod(d->getClient(), "docHoverRequest",
@@ -487,24 +554,32 @@ void LSPStyle::onIndicClicked(int line, int index)
     }
 }
 
-void LSPStyle::onIndicReleased(int position)
-{
-}
-
 void LSPStyle::onSelectionMenu(QContextMenuEvent *event)
-{
-}
-
-void LSPStyle::onContentReplaced(const QString &file, int start, int end, const QString &text)
 {
 }
 
 void LSPStyle::onFileClosed(const QString &file)
 {
+    if (d->getClient())
+        qApp->metaObject()->invokeMethod(d->getClient(), "closeRequest", Q_ARG(const QString &, file));
 }
 
 void LSPStyle::renameRequest(const QString &newText)
 {
+}
+
+QString LSPStylePrivate::formatDiagnosticMessage(const QString &message, int type)
+{
+    auto result = message;
+    switch (type) {
+    case AnnotationType::ErrorAnnotation:
+        result = diagnosticFormat.arg("Parse Issue", "Error", result);
+        break;
+    default:
+        break;
+    }
+
+    return result;
 }
 
 newlsp::Client *LSPStylePrivate::getClient() const
