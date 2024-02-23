@@ -9,6 +9,7 @@
 #include <QVariant>
 #include <QString>
 #include <QIcon>
+#include <QKeySequence>
 
 class abstractLocator;
 struct baseLocatorItem
@@ -43,18 +44,22 @@ public:
 
     virtual void refresh() {}
 
-    QString getShortcut();
-    void setShortcut(const QString &shortcut);
+    QString getDisplayName();
+    void setDisplayName(const QString &displayName);
 
     QString getDescription();
     void setDescription(const QString &description);
+
+    QKeySequence getShortCut();
+    void setShortCut(const QKeySequence &key);
 
     bool isIncluedByDefault();
     void setIncludedDefault(bool isDefault);
 
 private:
     QString description { "" };
-    QString shortcut { "" };
+    QString displayName { "" };
+    QKeySequence shortCut { "" };
     bool includedByDefault { false };
 };
 

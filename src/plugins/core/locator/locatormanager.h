@@ -13,6 +13,8 @@
 
 #include <QObject>
 #include <QtConcurrent>
+#include <QShortcut>
+#include <QKeySequence>
 
 class AllLocators : public abstractLocator
 {
@@ -46,7 +48,6 @@ public:
     void updatePopupWidget(const QString &text);
 
     void accept(const QModelIndex &index);
-
 signals:
     void handleKey(QKeyEvent *keyEvent);
 
@@ -58,6 +59,8 @@ private:
     void initConnect();
     void initService();
     void showSpinner();
+    void initShortCut();
+    void setShortCutForLocator(abstractLocator *locator, const QKeySequence &key);
 
     locatorModel *model { nullptr };
     PopupWidget *popupWidget { nullptr };
@@ -68,6 +71,8 @@ private:
     QFutureWatcher<void> watcher;
 
     QList<abstractLocator *> locatorList;
+    QShortcut *shortCut { nullptr };
+
     QTimer timer;
 };
 

@@ -16,7 +16,8 @@ CurrentProjectLocator::CurrentProjectLocator(QObject *parent)
 {
     setIncludedDefault(true);
     setDescription(tr("files in current project"));
-    setShortcut("p");
+    setDisplayName("p");
+    setShortCut(QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_P));
 }
 
 void CurrentProjectLocator::prepareSearch(const QString &searchText)
