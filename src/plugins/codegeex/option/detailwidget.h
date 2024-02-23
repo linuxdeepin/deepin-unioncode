@@ -9,7 +9,7 @@
 #include "common/widget/pagewidget.h"
 
 struct CodeGeeXConfig{
-    QString apiKey;
+    bool codeCompletionEnabled = true;
 };
 
 class DetailWidgetPrivate;
@@ -29,7 +29,6 @@ public slots:
 
 private:
     void setupUi();
-    void updateUi();
 
     bool dataToMap(const CodeGeeXConfig &config, QMap<QString, QVariant> &map);
     bool mapToData(const QMap<QString, QVariant> &map, CodeGeeXConfig &config);

@@ -4,6 +4,9 @@
 
 #include "detailwidget.h"
 #include "common/util/custompaths.h"
+#include "copilot.h"
+
+#include <DCheckBox>
 
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -21,13 +24,13 @@
 
 DWIDGET_USE_NAMESPACE
 
-static const char *kApiKey = "apiKey";
+static const char *kCodeCompletion = "codeCompletion";
 
 class DetailWidgetPrivate
 {
     friend class DetailWidget;
 
-    DLineEdit *apiKeyWidget = nullptr;
+    DCheckBox *cbCodeCompletion = nullptr;
 };
 
 DetailWidget::DetailWidget(QWidget *parent)
@@ -35,7 +38,6 @@ DetailWidget::DetailWidget(QWidget *parent)
     , d(new DetailWidgetPrivate())
 {
     setupUi();
-    updateUi();
 }
 
 DetailWidget::~DetailWidget()
@@ -47,27 +49,26 @@ DetailWidget::~DetailWidget()
 
 void DetailWidget::setupUi()
 {
-    QVBoxLayout *vLayout = new QVBoxLayout();
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
     setLayout(vLayout);
 
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    DLabel *label = new DLabel(DLabel::tr("CodeGeeX Api Key:"));
-    d->apiKeyWidget = new DLineEdit();
+    QHBoxLayout *hLayout = new QHBoxLayout(this);
+    DLabel *label = new DLabel(DLabel::tr("Code Completion:"));
+    d->cbCodeCompletion = new DCheckBox(this);
     hLayout->addWidget(label);
-    hLayout->addWidget(d->apiKeyWidget);
+    hLayout->addWidget(d->cbCodeCompletion);
+    connect(d->cbCodeCompletion, &DCheckBox::clicked, this, [](bool checked){
+        Copilot::instance()->setGenerateCodeEnabled(checked);
+    });
 
     vLayout->addLayout(hLayout);
     vLayout->addStretch();
 }
 
-void DetailWidget::updateUi()
-{
-}
-
 bool DetailWidget::getControlValue(QMap<QString, QVariant> &map)
 {
     CodeGeeXConfig config;
-    config.apiKey = d->apiKeyWidget->text();
+    config.codeCompletionEnabled = d->cbCodeCompletion->isChecked();
     dataToMap(config, map);
 
     return true;
@@ -76,19 +77,18 @@ bool DetailWidget::getControlValue(QMap<QString, QVariant> &map)
 void DetailWidget::setControlValue(const QMap<QString, QVariant> &map)
 {
     // TODO(MOZART): change other value to save.
-//    CodeGeeXConfig config;
-//    mapToData(map, config);
+    CodeGeeXConfig config;
+    mapToData(map, config);
 
-//    if (config.apiKey.isEmpty()) {
-//        config.apiKey = kDefaultApiKey;
-//    }
-//    d->apiKeyWidget->setText(config.apiKey);
+    d->cbCodeCompletion->setChecked(config.codeCompletionEnabled);
+
+    Copilot::instance()->setGenerateCodeEnabled(config.codeCompletionEnabled);
 }
 
 bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVariant> &map)
 {
     QMap<QString, QVariant> apiKey;
-    apiKey.insert(kApiKey, config.apiKey);
+    apiKey.insert(kCodeCompletion, config.codeCompletionEnabled);
 
     map.insert("Detail", apiKey);
 
@@ -98,7 +98,9 @@ bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVarian
 bool DetailWidget::mapToData(const QMap<QString, QVariant> &map, CodeGeeXConfig &config)
 {
     QMap<QString, QVariant> detail = map.value("Detail").toMap();
-    config.apiKey = detail.value(kApiKey).toString();
+    auto var = detail.value(kCodeCompletion);
+    if (var.isValid())
+        config.codeCompletionEnabled = var.toBool();
 
     return true;
 }
