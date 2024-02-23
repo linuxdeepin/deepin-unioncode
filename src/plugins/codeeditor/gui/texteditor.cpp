@@ -7,6 +7,8 @@
 #include "utils/editorutils.h"
 #include "common/common.h"
 
+#include "Qsci/qscistyledtext.h"
+
 #include <QFile>
 #include <QScrollBar>
 #include <QFileDialog>
@@ -239,6 +241,9 @@ void TextEditor::showTips(const QString &tips)
 
 void TextEditor::showTips(int pos, const QString &tips)
 {
+    if (!hasFocus())
+        return;
+
     auto data = tips.toLocal8Bit();
     SendScintilla(SCI_CALLTIPSHOW, static_cast<uintptr_t>(pos), data.data());
 }
@@ -250,13 +255,32 @@ void TextEditor::cancelTips()
 
 void TextEditor::addAnnotation(const QString &title, const QString &content, int line, int type)
 {
-    auto style = d->createAnnotationStyle(type);
-    if (style.description().isEmpty())
-        return;
+    QString typeStr;
+    switch (type) {
+    case AnnotationType::NoteAnnotation:
+        typeStr = "Note";
+        break;
+    case AnnotationType::ErrorAnnotation:
+        typeStr = "Error";
+        break;
+    case AnnotationType::FatalAnnotation:
+        typeStr = "Fatal";
+        break;
+    case AnnotationType::WarningAnnotation:
+        typeStr = "Warning";
+        break;
+    }
 
     d->annotationRecords.insertMulti(title, line);
     static QString formatText("%1:\n%2:\n%3");
-    annotate(line, formatText.arg(title, style.description(), content), style);
+    auto msg = formatText.arg(title, typeStr, content);
+    addAnnotation(msg, line, type);
+}
+
+void TextEditor::addAnnotation(const QString &content, int line, int type)
+{
+    auto style = d->createAnnotationStyle(type);
+    annotate(line, content, style);
 }
 
 void TextEditor::removeAnnotation(const QString &title)

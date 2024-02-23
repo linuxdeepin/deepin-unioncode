@@ -14,6 +14,7 @@ class ProjectDelegate : public DTK_WIDGET_NAMESPACE::DStyledItemDelegate
     ProjectDelegatePrivate *const d;
 public:
     explicit ProjectDelegate(QAbstractItemView *parent = nullptr);
+    ~ProjectDelegate() override;
     void setActiveProject(const QModelIndex &root);
     const QModelIndex &getActiveProject() const;
 

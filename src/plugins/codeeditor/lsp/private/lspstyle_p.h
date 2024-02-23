@@ -140,9 +140,25 @@ struct TextChangeCache
     int lineCache;
 };
 
+struct DiagnosticCache
+{
+    int startPos = 0;
+    int endPos = 0;
+    QString message;
+    int type;
+
+public:
+    bool contains(int pos) const
+    {
+        return (pos >= startPos && pos <= endPos);
+    }
+};
+
 class LSPStylePrivate
 {
 public:
+    QString formatDiagnosticMessage(const QString &message, int type);
+
     CompletionCache completionCache;
     DefinitionCache definitionCache;
     QTimer textChangedTimer;
@@ -152,10 +168,12 @@ public:
     TextEditor *editor { nullptr };
     TextChangeCache textChangedCache;
     QList<lsp::Data> tokensCache;
+    QList<DiagnosticCache> diagnosticCache;
     static QAction *rangeFormattingAction;
     static QString formattingFile;
     friend class StyleLsp;
     newlsp::Client *getClient() const;
+    QString diagnosticFormat;
 };
 
 #endif   // LSPSTYLE_P_H
