@@ -22,14 +22,14 @@ QRegularExpression abstractLocator::createRegExp(const QString &text)
     return FuzzyMatcher::createRegExp(text);
 }
 
-QString abstractLocator::getShortcut()
+QString abstractLocator::getDisplayName()
 {
-    return shortcut;
+    return displayName;
 }
 
-void abstractLocator::setShortcut(const QString &shortcut)
+void abstractLocator::setDisplayName(const QString &displayName)
 {
-    this->shortcut = shortcut;
+    this->displayName = displayName;
 }
 
 QString abstractLocator::getDescription()
@@ -45,4 +45,14 @@ void abstractLocator::setDescription(const QString &description)
 void abstractLocator::setIncludedDefault(bool isDefault)
 {
     includedByDefault = isDefault;
+}
+
+QKeySequence abstractLocator::getShortCut()
+{
+    return this->shortCut;
+}
+
+void abstractLocator::setShortCut(const QKeySequence &key)
+{
+    this->shortCut = key;
 }
