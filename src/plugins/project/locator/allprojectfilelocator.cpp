@@ -16,7 +16,7 @@ AllProjectFileLocator::AllProjectFileLocator(QObject *parent)
 {
     setIncludedDefault(true);
     setDescription(tr("files in all project"));
-    setShortcut("a");
+    setDisplayName("a");
 }
 
 void AllProjectFileLocator::prepareSearch(const QString &searchText)

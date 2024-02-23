@@ -68,7 +68,7 @@ class ControllerPrivate
     QMap<QString, QAction *> navigationActions;
 
     DStackedWidget *leftTopToolBar { nullptr };
-    DSearchEdit *globalSearchBar { nullptr };
+    DSearchEdit *locatorBar { nullptr };
     DWidget *rightTopToolBar { nullptr };
     QMap<QString, DWidget *> topToolBarGroup;
 
@@ -822,7 +822,7 @@ void Controller::initWorkspaceWidget()
 void Controller::initTopToolBar()
 {
     d->leftTopToolBar = new DStackedWidget(d->mainWindow);
-    d->globalSearchBar = LocatorManager::instance()->getInputEdit();
+    d->locatorBar = LocatorManager::instance()->getInputEdit();
     d->rightTopToolBar = new DWidget(d->mainWindow);
 
     QHBoxLayout *rtLayout = new QHBoxLayout(d->rightTopToolBar);
@@ -831,7 +831,7 @@ void Controller::initTopToolBar()
     rtLayout->setSpacing(10);
 
     d->mainWindow->setLeftTopToolWidget(d->leftTopToolBar);
-    d->mainWindow->setMiddleTopToolWidget(d->globalSearchBar);
+    d->mainWindow->setMiddleTopToolWidget(d->locatorBar);
     d->mainWindow->setRightTopToolWidget(d->rightTopToolBar);
 
     d->mainWindow->hideTopTollBar();

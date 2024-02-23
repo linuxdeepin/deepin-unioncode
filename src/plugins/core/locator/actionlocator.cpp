@@ -11,7 +11,7 @@
 ActionLocator::ActionLocator(QObject *parent)
     : abstractLocator(parent)
 {
-    setShortcut("s");
+    setDisplayName("s");
     setDescription(tr("show actions in application"));
     setIncludedDefault(false);
 }

@@ -4,9 +4,11 @@
 
 #include "services/locator/locatorservice.h"
 #include "locatormanager.h"
+#include "common/actionmanager/actionmanager.h"
 
 #include <QEvent>
 #include <QKeyEvent>
+#include <QAction>
 
 using namespace dpfservice;
 static LocatorManager *ins { nullptr };
@@ -31,7 +33,7 @@ void AllLocators::prepareSearch(const QString &searchText)
         if (locator == this)
             continue;
         baseLocatorItem item(this);
-        item.displayName = locator->getShortcut();
+        item.displayName = locator->getDisplayName();
         item.extraInfo = locator->getDescription();
         item.id = locator->getDescription();
         item.icon = QIcon::fromTheme("go-next");
@@ -77,6 +79,7 @@ LocatorManager::LocatorManager(QObject *parent)
     installEventFilter(this);
 
     initService();
+    initShortCut();
 }
 
 LocatorManager::~LocatorManager()
@@ -100,11 +103,12 @@ LocatorManager *LocatorManager::instance()
 void LocatorManager::initConnect()
 {
     connect(inputEdit, &DSearchEdit::textChanged, popupWidget, &PopupWidget::show);
+    connect(inputEdit, &DSearchEdit::textChanged, this, &LocatorManager::updatePopupWidget);
+
     connect(inputEdit, &DSearchEdit::focusChanged, popupWidget, [=](bool on) {
         popupWidget->setVisible(on);
         updatePopupWidget(inputEdit->text());
     });
-    connect(inputEdit, &DSearchEdit::textChanged, this, &LocatorManager::updatePopupWidget);
     connect(popupWidget, &PopupWidget::selectIndex, this, [=](const QModelIndex &index) {
         accept(index);
     });
@@ -176,6 +180,9 @@ void LocatorManager::registerLocator(abstractLocator *locator)
 {
     if (!locator || locatorList.contains(locator))
         return;
+    if(!locator->getShortCut().isEmpty())
+        setShortCutForLocator(locator, locator->getShortCut());
+
     locatorList.append(locator);
 }
 
@@ -193,7 +200,7 @@ QList<abstractLocator *> LocatorManager::getValidLocator(const QString &text, QS
         const QString prefix = text.mid(firstNonSpace, whiteSpace - firstNonSpace).toLower();
         QList<abstractLocator *> LocatorByShortCut;
         for (abstractLocator *locator : locatorList) {
-            if (prefix == locator->getShortcut()) {
+            if (prefix == locator->getDisplayName()) {
                 searchText = text.mid(whiteSpace).trimmed();
                 LocatorByShortCut << locator;
             }
@@ -271,4 +278,49 @@ void LocatorManager::showSpinner()
     spinner->move(inputEdit->width() - spinner->width() * 3, (inputEdit->height() - spinner->height()) / 2);
     spinner->start();
     spinner->show();
+}
+
+void LocatorManager::initShortCut()
+{
+    shortCut = new QShortcut(inputEdit);
+    shortCut->setKey(Qt::Modifier::CTRL | Qt::Key::Key_K);
+    connect(shortCut, &QShortcut::activated, inputEdit, [=]() {
+        inputEdit->setFocus();
+    });
+
+    QAction *action = new QAction(this);
+    action->setShortcut(shortCut->key());
+    ActionManager::getInstance()->registerAction(action, "locator.EnterCommand", tr("Enter command"), shortCut->key());
+
+    inputEdit->setPlaceHolder(tr("Enter command %1").arg(shortCut->key().toString()));
+    connect(action, &QAction::changed, shortCut, [=]() {
+        if (action->shortcut() != shortCut->key()) {
+            shortCut->setKey(action->shortcut());
+            inputEdit->setPlaceHolder(tr("Enter command %1").arg(shortCut->key().toString()));
+        }
+    });
+}
+
+void LocatorManager::setShortCutForLocator(abstractLocator *locator, const QKeySequence &key)
+{
+    if(key.isEmpty())
+        return;
+
+    QShortcut *shortCut = new QShortcut(this->inputEdit);
+    shortCut->setKey(key);
+    connect(shortCut, &QShortcut::activated, inputEdit, [=]() {
+        inputEdit->setFocus();
+        inputEdit->setText(locator->getDisplayName() + " ");
+    });
+
+    QAction *action = new QAction(this);
+    action->setShortcut(shortCut->key());
+    QString id = QString("locator.EnterCommand.%1").arg(locator->getDisplayName());
+    QString description = locator->getDescription();
+    ActionManager::getInstance()->registerAction(action, id, description, shortCut->key());
+
+    connect(action, &QAction::changed, shortCut, [=]() {
+        if (action->shortcut() != shortCut->key())
+            shortCut->setKey(action->shortcut());
+    });
 }
