@@ -135,6 +135,11 @@ void Copilot::processKeyPressEvent(Qt::Key key)
     });
 }
 
+void Copilot::setGenerateCodeEnabled(bool enabled)
+{
+    generateCodeEnabled = enabled;
+}
+
 void Copilot::addComment()
 {
     copilotApi.postComment(kUrlComment,
@@ -146,6 +151,9 @@ void Copilot::addComment()
 
 void Copilot::generateCode()
 {
+    if (!generateCodeEnabled)
+        return;
+
     QString prompt = editorService->getCursorBeforeText();
     QString suffix = editorService->getCursorBehindText();
 

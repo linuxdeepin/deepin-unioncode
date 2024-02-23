@@ -26,6 +26,7 @@ public:
     void replaceSelectedText(const QString &text);
     void insterText(const QString &text);
     void processKeyPressEvent(Qt::Key key);
+    void setGenerateCodeEnabled(bool enabled);
 
 signals:
     // the code will be tranlated.
@@ -50,6 +51,7 @@ private:
     QString generateResponse;
     QTimer timer;
     QMutex mutexResponse;
+    bool generateCodeEnabled = true;
 };
 
 #endif   // COPILOT_H
