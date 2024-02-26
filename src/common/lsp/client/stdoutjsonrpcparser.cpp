@@ -7,6 +7,7 @@
 
 #include <QDebug>
 #include <QJsonDocument>
+#include <QRegularExpression>
 
 newlsp::StdoutJsonRpcParser::StdoutJsonRpcParser(QObject *parent)
     : QObject(parent), d(new JsonRpcParser)
@@ -33,13 +34,26 @@ bool newlsp::StdoutJsonRpcParser::checkJsonValid(const QByteArray &data)
 void newlsp::StdoutJsonRpcParser::doReadedLine(const QByteArray &line)
 {
     auto data = line;
-    if (!outputCache.isEmpty() || (data.contains("\"jsonrpc\":") && !checkJsonValid(data))) {
-        outputCache.append(data);
-        if (!checkJsonValid(outputCache))
-            return;
 
-        data = outputCache;
-        outputCache.clear();
+    QRegularExpression regExpContentLength("^Content-Length:\\s?(?<Length>[0-9]+)");
+    auto match = regExpContentLength.match(line);
+    if (match.hasMatch())
+        contentLength = match.captured("Length").toInt();
+
+    // The data in `line` may be truncated and assembled according to the `Content-Length`
+    if (!outputCache.isEmpty() || (contentLength != 0 && data.contains("\"jsonrpc\":") && !checkJsonValid(data))) {
+        outputCache.append(data.mid(0, contentLength - outputCache.size()));
+        if (outputCache.size() == contentLength && checkJsonValid(outputCache)) {
+            data = outputCache;
+            outputCache.clear();
+            contentLength = 0;
+        } else if (outputCache.size() >= contentLength) {
+            outputCache.clear();
+            contentLength = 0;
+        } else {
+            return;
+        }
     }
+
     d->doParseReadLine(data);
 }

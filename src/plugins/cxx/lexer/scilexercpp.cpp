@@ -507,5 +507,5 @@ void SciLexerCPP::refreshProperties()
 
 bool SciLexerCPP::caseSensitive() const
 {
-    return true;
+    return false;
 }

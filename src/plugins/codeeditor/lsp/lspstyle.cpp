@@ -46,6 +46,9 @@ LSPStyle::~LSPStyle()
 
 void LSPStyle::initLspConnection()
 {
+    if (!d->editor)
+        return;
+
     //bind signals to file diagnostics
     connect(d->getClient(), QOverload<const newlsp::PublishDiagnosticsParams &>::of(&newlsp::Client::publishDiagnostics),
             this, [=](const newlsp::PublishDiagnosticsParams &data) { this->setDiagnostics(data); });

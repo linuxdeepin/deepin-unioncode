@@ -43,6 +43,8 @@ void TextEditorPrivate::init()
     q->setFrameShape(QFrame::NoFrame);
     q->SendScintilla(TextEditor::SCI_SETMOUSEDWELLTIME, 20);
     q->setAnnotationDisplay(TextEditor::AnnotationStandard);
+    q->SendScintilla(TextEditor::SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR,
+            TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
 
     hoverTimer.setSingleShot(true);
 
