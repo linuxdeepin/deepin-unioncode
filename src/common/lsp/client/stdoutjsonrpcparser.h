@@ -28,6 +28,7 @@ Q_SIGNALS:
 
 private:
     QByteArray outputCache;
+    int contentLength = 0;
 };
 
 }
