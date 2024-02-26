@@ -8,6 +8,7 @@
 #include <DGuiApplicationHelper>
 
 #include <QPainter>
+#include <QPainterPath>
 
 inline constexpr int kRectRadius = { 0 }; // do not show rounded corners.
 inline constexpr int kIconWidth = { 30 };
