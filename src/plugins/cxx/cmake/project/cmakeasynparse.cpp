@@ -38,6 +38,43 @@ QIcon cmakeFolderIcon()
 
 const QString kProjectFile = "CMakeLists.txt";
 
+void sortParentItem(QStandardItem *parentItem)
+{
+    QList<QStandardItem *> cmakeFileList;
+    QList<QStandardItem *> fileList;
+    QList<QStandardItem *> directoryList;
+    int count = parentItem->rowCount();
+
+    for (int row = 0; row < count; row++) {
+        auto child = parentItem->child(row);
+        if (child->text() == kProjectFile) {
+            cmakeFileList.append(parentItem->takeChild(row));
+            continue;
+        }
+
+        auto absolutePath = child->toolTip();
+        QFileInfo fileInfo(absolutePath);
+        if (fileInfo.isFile())
+            fileList.append(parentItem->takeChild(row));
+        else if (fileInfo.isDir())
+            directoryList.append(parentItem->takeChild(row));
+    }
+
+    parentItem->removeRows(0, parentItem->rowCount());
+
+    //fileList is already sorted
+    std::sort(directoryList.begin(), directoryList.end(), [](const QStandardItem *item1, const QStandardItem *item2) {
+        return item1->text().toLower().localeAwareCompare(item2->text().toLower()) < 0;
+    });
+
+    for ( auto item : cmakeFileList )
+        parentItem->appendRow(item);
+    for ( auto item : directoryList )
+        parentItem->appendRow(item);
+    for ( auto item : fileList )
+        parentItem->appendRow(item);
+}
+
 CmakeAsynParse::CmakeAsynParse()
 {
 }
@@ -285,6 +322,7 @@ QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, const Q
             // append to parent.
             QStandardItem *parentItem = findParentItem(rootItem, relative);
             parentItem->appendRow(item);
+            sortParentItem(parentItem);
         }
         preItems += nameItem + "/";
         retItem = item;
