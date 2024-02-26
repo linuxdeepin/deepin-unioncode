@@ -91,5 +91,5 @@ void AbstractLexerProxy::refreshProperties()
 
 bool AbstractLexerProxy::caseSensitive() const
 {
-    return true;
+    return false;
 }

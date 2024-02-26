@@ -79,7 +79,7 @@ public:
     //! propertyChanged() signal as required.
     virtual void refreshProperties();
 
-    //! Returns true if the language is case sensitive.  The default is true.
+    //! Returns true if the language is case sensitive.  The default is false.
     virtual bool caseSensitive() const;
 
 signals:

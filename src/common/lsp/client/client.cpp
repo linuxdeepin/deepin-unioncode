@@ -1108,7 +1108,7 @@ ClientPrivate::ClientPrivate(Client * const q)
     QObject::connect(q, &QProcess::readyReadStandardError,
                      this, [=]()
     {
-        uniCritical() << "\nclient <- server\n{\n" <<q->readAllStandardError() << "\n}";
+        uniCritical() << "\nclient <- server\n{\n" << q->readAllStandardError() << "\n}";
     });
 
     QObject::connect(q, &QProcess::readyReadStandardOutput,
