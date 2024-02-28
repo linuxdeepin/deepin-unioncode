@@ -123,7 +123,7 @@ void CodeEditorReceiver::processAddAnnotationEvent(const dpf::Event &event)
     QString title = event.property("title").toString();
     int line = event.property("line").toInt() - 1;
     QString content = event.property("content").toString();
-    AnnotationType type = qvariant_cast<AnnotationType>("type");
+    AnnotationType type = qvariant_cast<AnnotationType>(event.property("type"));
     EditorCallProxy::instance()->reqAddAnnotation(filePath, title, content, line, type);
 }
 

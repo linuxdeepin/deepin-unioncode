@@ -8,6 +8,7 @@
 #include "lspclientmanager.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "utils/colordefine.h"
+#include "codelens/codelens.h"
 
 #include "services/project/projectservice.h"
 
@@ -32,8 +33,13 @@ LSPStyle::LSPStyle(TextEditor *parent)
     connect(d->editor, &TextEditor::documentHoverEnd, this, &LSPStyle::onHoverCleaned);
     connect(d->editor, &TextEditor::documentHoveredWithCtrl, this, &LSPStyle::onDefinitionHover);
     connect(d->editor, &TextEditor::indicatorClicked, this, &LSPStyle::onIndicClicked);
-    //    connect(d->editor, &TextEditor::selectionMenu, this, &LSPStyle::sciSelectionMenu);
+    connect(d->editor, &TextEditor::contextMenuRequested, this, &LSPStyle::onShowContextMenu);
     connect(d->editor, &TextEditor::fileClosed, this, &LSPStyle::onFileClosed);
+    connect(&d->renamePopup, &RenamePopup::editingFinished, this, &LSPStyle::renameSymbol);
+    connect(CodeLens::instance(), &CodeLens::doubleClicked,
+            this, [=](const QString &filePath, const lsp::Range &range) {
+                EditorCallProxy::instance()->reqGotoLine(filePath, range.start.line);
+            });
     connect(qApp, &QApplication::applicationStateChanged, this, [=](Qt::ApplicationState state) {
         if (state == Qt::ApplicationState::ApplicationInactive)
             d->editor->cancelTips();
@@ -49,6 +55,9 @@ void LSPStyle::initLspConnection()
     if (!d->editor)
         return;
 
+    connect(d->getClient(), QOverload<const lsp::References &>::of(&newlsp::Client::requestResult),
+            CodeLens::instance(), &CodeLens::displayReference, Qt::UniqueConnection);
+
     //bind signals to file diagnostics
     connect(d->getClient(), QOverload<const newlsp::PublishDiagnosticsParams &>::of(&newlsp::Client::publishDiagnostics),
             this, [=](const newlsp::PublishDiagnosticsParams &data) { this->setDiagnostics(data); });
@@ -63,6 +72,9 @@ void LSPStyle::initLspConnection()
             this, [=](const lsp::CompletionProvider &provider) {
                 d->completionCache.provider = provider;
             });
+
+    connect(d->getClient(), QOverload<const newlsp::WorkspaceEdit &>::of(&newlsp::Client::renameRes),
+            EditorCallProxy::instance(), &EditorCallProxy::reqDoRename, Qt::UniqueConnection);
 
     connect(d->getClient(), &newlsp::Client::rangeFormattingRes,
             this, &LSPStyle::rangeFormattingReplace);
@@ -166,6 +178,7 @@ void LSPStyle::setDiagnostics(const newlsp::PublishDiagnosticsParams &data)
 
 void LSPStyle::cleanDiagnostics()
 {
+    d->diagnosticCache.clear();
 }
 
 void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens)
@@ -227,7 +240,6 @@ void LSPStyle::setHover(const newlsp::Hover &hover)
 {
     if (!d->editor || d->hoverCache.getPosition() == -1)
         return;
-    //callTipBack:设置背景色，参数为colour "red | (green << 8) | (blue << 16)"
     if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
         d->editor->SendScintilla(TextEditor::SCI_CALLTIPSETBACK, TextEditor::STYLE_DEFAULT);
     else
@@ -267,8 +279,12 @@ void LSPStyle::setDefinition(const newlsp::Location &data)
         return;
 
     d->definitionCache.set(data);
-    auto textRange = d->definitionCache.getTextRange();
-    setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
+    if (d->definitionCache.switchMode() == DefinitionCache::ClickMode) {
+        auto textRange = d->definitionCache.getTextRange();
+        setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
+    } else {
+        gotoDefinition();
+    }
 }
 
 void LSPStyle::setDefinition(const std::vector<newlsp::Location> &data)
@@ -277,8 +293,12 @@ void LSPStyle::setDefinition(const std::vector<newlsp::Location> &data)
         return;
 
     d->definitionCache.set(data);
-    auto textRange = d->definitionCache.getTextRange();
-    setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
+    if (d->definitionCache.switchMode() == DefinitionCache::ClickMode) {
+        auto textRange = d->definitionCache.getTextRange();
+        setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
+    } else {
+        gotoDefinition();
+    }
 }
 
 void LSPStyle::setDefinition(const std::vector<newlsp::LocationLink> &data)
@@ -287,8 +307,12 @@ void LSPStyle::setDefinition(const std::vector<newlsp::LocationLink> &data)
         return;
 
     d->definitionCache.set(data);
-    auto textRange = d->definitionCache.getTextRange();
-    setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
+    if (d->definitionCache.switchMode() == DefinitionCache::ClickMode) {
+        auto textRange = d->definitionCache.getTextRange();
+        setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
+    } else {
+        gotoDefinition();
+    }
 }
 
 void LSPStyle::cleanDefinition(int pos)
@@ -502,6 +526,7 @@ void LSPStyle::onDefinitionHover(int position)
     d->definitionCache.setPosition(position);
     d->definitionCache.setTextRange(textRange);
     d->definitionCache.cleanFromLsp();
+    d->definitionCache.setSwitchMode(DefinitionCache::ClickMode);
 
     lsp::Position pos;
     d->editor->lineIndexFromPosition(position, &pos.line, &pos.character);
@@ -538,27 +563,32 @@ void LSPStyle::onIndicClicked(int line, int index)
     auto data = d->editor->SendScintilla(TextEditor::SCI_INDICATORALLONFOR, pos);
     std::bitset<32> flags(static_cast<ulong>(data));
     if (flags[TextEditor::INDIC_COMPOSITIONTHICK]) {
-        if (d->definitionCache.getLocations().size() > 0) {
-            auto one = d->definitionCache.getLocations().front();
-            EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                     one.range.end.line);
-            cleanDefinition(pos);
-        } else if (d->definitionCache.getLocationLinks().size() > 0) {
-            auto one = d->definitionCache.getLocationLinks().front();
-            EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
-                                                     one.targetRange.end.line);
-            cleanDefinition(pos);
-        } else {
-            auto one = d->definitionCache.getLocation();
-            EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                     one.range.end.line);
-            cleanDefinition(pos);
-        }
+        gotoDefinition();
+        cleanDefinition(pos);
     }
 }
 
-void LSPStyle::onSelectionMenu(QContextMenuEvent *event)
+void LSPStyle::onShowContextMenu(QMenu *menu)
 {
+    if (!d->editor)
+        return;
+
+    auto actionList = menu->actions();
+    for (auto act : actionList) {
+        if (act->text() == tr("Refactor")) {
+            QMenu *subMenu = new QMenu(menu);
+            subMenu->addAction(tr("Rename Symbol Under Cursor"), this, &LSPStyle::renameActionTriggered);
+            act->setMenu(subMenu);
+            break;
+        }
+    }
+
+    auto act = menu->addAction(tr("Switch Between Function Declaration/Definition"), this, &LSPStyle::switchDeclarationOrDefinition);
+    menu->insertAction(actionList.first(), act);
+
+    act = menu->addAction(tr("Find Usages"), this, &LSPStyle::findUsagesActionTriggered);
+    menu->insertAction(actionList.first(), act);
+    menu->insertSeparator(actionList.first());
 }
 
 void LSPStyle::onFileClosed(const QString &file)
@@ -567,8 +597,78 @@ void LSPStyle::onFileClosed(const QString &file)
         qApp->metaObject()->invokeMethod(d->getClient(), "closeRequest", Q_ARG(const QString &, file));
 }
 
-void LSPStyle::renameRequest(const QString &newText)
+void LSPStyle::switchDeclarationOrDefinition()
 {
+    if (!d->editor || !d->getClient())
+        return;
+
+    d->definitionCache.setSwitchMode(DefinitionCache::ActionMode);
+
+    lsp::Position pos;
+    d->editor->lineIndexFromPosition(d->editor->cursorPosition(), &pos.line, &pos.character);
+    qApp->metaObject()->invokeMethod(d->getClient(), "definitionRequest",
+                                     Q_ARG(const QString &, d->editor->getFile()),
+                                     Q_ARG(const lsp::Position &, pos));
+}
+
+void LSPStyle::findUsagesActionTriggered()
+{
+    if (!d->editor || !d->getClient())
+        return;
+
+    lsp::Position pos;
+    d->editor->lineIndexFromPosition(d->editor->cursorPosition(), &pos.line, &pos.character);
+    qApp->metaObject()->invokeMethod(d->getClient(), "referencesRequest",
+                                     Q_ARG(const QString &, d->editor->getFile()),
+                                     Q_ARG(const lsp::Position &, pos));
+}
+
+void LSPStyle::renameActionTriggered()
+{
+    if (!d->editor)
+        return;
+
+    int pos = d->editor->cursorPosition();
+    const auto &symbol = d->editor->wordAtPosition(pos);
+    if (symbol.isEmpty())
+        return;
+
+    d->editor->lineIndexFromPosition(pos, &d->renameCache.line, &d->renameCache.column);
+    auto point = d->editor->pointFromPosition(pos);
+    point = d->editor->mapToGlobal(point);
+
+    d->renamePopup.setOldName(symbol);
+    d->renamePopup.exec(point);
+}
+
+void LSPStyle::renameSymbol(const QString &text)
+{
+    if (!d->editor || !d->getClient() || !d->renameCache.isValid())
+        return;
+
+    lsp::Position pos { d->renameCache.line, d->renameCache.column };
+    qApp->metaObject()->invokeMethod(d->getClient(), "renameRequest",
+                                     Q_ARG(const QString &, d->editor->getFile()),
+                                     Q_ARG(const lsp::Position &, pos),
+                                     Q_ARG(const QString &, text));
+    d->renameCache.clear();
+}
+
+void LSPStyle::gotoDefinition()
+{
+    if (d->definitionCache.getLocations().size() > 0) {
+        auto one = d->definitionCache.getLocations().front();
+        EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                 one.range.end.line);
+    } else if (d->definitionCache.getLocationLinks().size() > 0) {
+        auto one = d->definitionCache.getLocationLinks().front();
+        EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
+                                                 one.targetRange.end.line);
+    } else {
+        auto one = d->definitionCache.getLocation();
+        EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                 one.range.end.line);
+    }
 }
 
 QString LSPStylePrivate::formatDiagnosticMessage(const QString &message, int type)

@@ -33,6 +33,7 @@ public:
     TextEditor *currentTextEditor() const;
     void changeFocusProxy();
     bool processKeyPressEvent(QKeyEvent *event);
+    void replaceRange(const QString &fileName, const newlsp::Range &range,const QString &text);
 
     void doSave();
     void removePositionRecord(const QString &fileName);
@@ -49,6 +50,7 @@ public slots:
     void handleSetLineBackgroundColor(const QString &fileName, int line, const QColor &color);
     void handleResetLineBackground(const QString &fileName, int line);
     void handleClearLineBackground(const QString &fileName);
+    void handleDoRename(const newlsp::WorkspaceEdit &info);
 
 public:
     TabWidget *q;
