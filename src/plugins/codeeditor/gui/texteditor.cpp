@@ -204,12 +204,16 @@ void TextEditor::gotoLine(int line)
     ensureLineVisible(line);
 
     SendScintilla(SCI_GOTOLINE, line);
+    setFocus();
+    d->adjustScrollBar();
 }
 
 void TextEditor::gotoPosition(int pos)
 {
     SendScintilla(SCI_GOTOPOS, pos);
     ensureCursorVisible();
+    setFocus();
+    d->adjustScrollBar();
 }
 
 int TextEditor::cursorPosition()
@@ -295,6 +299,22 @@ void TextEditor::removeAnnotation(const QString &title)
         clearAnnotations(line);
 }
 
+QPoint TextEditor::pointFromPosition(int position)
+{
+    int x = static_cast<int>(SendScintilla(SCI_POINTXFROMPOSITION, 0, position));
+    int y = static_cast<int>(SendScintilla(SCI_POINTYFROMPOSITION, 0, position));
+
+    return QPoint(x, y);
+}
+
+void TextEditor::replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text)
+{
+    SendScintilla(SCI_CLEARSELECTIONS);
+
+    setSelection(lineFrom, indexFrom, lineTo, indexTo);
+    replaceSelectedText(text);
+}
+
 QString TextEditor::cursorBeforeText() const
 {
     int pos = d->cursorPosition();
@@ -375,12 +395,17 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 
 void TextEditor::contextMenuEvent(QContextMenuEvent *event)
 {
+    cancelTips();
     if (!contextMenuNeeded(event->pos().x(), event->pos().y()))
         return;
 
-    if (event->pos().x() <= d->marginsWidth()) {
-        d->showMarginMenu();
-    } else {
-        d->showContextMenu();
-    }
+    int xPos = event->pos().x();
+    // Delay the display of the menu to ensure that tips can disappear normally
+    QTimer::singleShot(20, this, [this, xPos] {
+        if (xPos <= d->marginsWidth()) {
+            d->showMarginMenu();
+        } else {
+            d->showContextMenu();
+        }
+    });
 }

@@ -13,6 +13,7 @@
 
 #include <DGuiApplicationHelper>
 
+#include <QScrollBar>
 #include <QMenu>
 #include <QDebug>
 
@@ -44,7 +45,7 @@ void TextEditorPrivate::init()
     q->SendScintilla(TextEditor::SCI_SETMOUSEDWELLTIME, 20);
     q->setAnnotationDisplay(TextEditor::AnnotationStandard);
     q->SendScintilla(TextEditor::SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR,
-            TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
+                     TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
 
     hoverTimer.setSingleShot(true);
 
@@ -221,6 +222,9 @@ void TextEditorPrivate::updateLineNumberMargin(bool visible)
 void TextEditorPrivate::showContextMenu()
 {
     QMenu menu;
+    menu.addAction(tr("Refactor"));
+    menu.addSeparator();
+
     QAction *action { nullptr };
     if (!q->isReadOnly()) {
         action = menu.addAction(tr("Undo"), q, &TextEditor::undo);
@@ -252,6 +256,7 @@ void TextEditorPrivate::showContextMenu()
 
     // notify other plugin to add action.
     editor.contextMenu(QVariant::fromValue(&menu));
+    emit q->contextMenuRequested(&menu);
     menu.exec(QCursor::pos());
 }
 
@@ -352,6 +357,14 @@ QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
     }
 
     return {};
+}
+
+void TextEditorPrivate::adjustScrollBar()
+{
+    int currentRow = q->currentLineNumber();
+    double ratio = static_cast<double>(currentRow) / q->lines();
+    int scrollValue = static_cast<int>(ratio * q->verticalScrollBar()->maximum());
+    q->verticalScrollBar()->setValue(scrollValue);
 }
 
 void TextEditorPrivate::onThemeTypeChanged()

@@ -58,6 +58,7 @@ void TabWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetLineBackgroundColor, this, &TabWidgetPrivate::handleSetLineBackgroundColor);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqResetLineBackground, this, &TabWidgetPrivate::handleResetLineBackground);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqClearLineBackground, this, &TabWidgetPrivate::handleClearLineBackground);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqDoRename, this, &TabWidgetPrivate::handleDoRename);
 }
 
 TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
@@ -118,6 +119,52 @@ bool TabWidgetPrivate::processKeyPressEvent(QKeyEvent *event)
     }
 
     return false;
+}
+
+void TabWidgetPrivate::replaceRange(const QString &fileName, const newlsp::Range &range, const QString &text)
+{
+    auto editor = findEditor(fileName);
+    if (editor) {
+        editor->replaceRange(range.start.line, range.start.character,
+                             range.end.line, range.end.character, text);
+        return;
+    }
+
+    // Modify the file directly
+    if (range.start.line != range.end.line) {
+        qWarning() << "Failed, The start line is inconsistent with the end line";
+        return;
+    }
+
+    QFile changeFile(fileName);
+    QString cacheData;
+    if (changeFile.open(QFile::ReadOnly)) {
+        int i = 0;
+        while (i != range.start.line) {
+            cacheData += changeFile.readLine();
+            i++;
+        }
+        QString changeLine = changeFile.readLine();
+        int removeLength = range.end.character - range.start.character;
+        changeLine = changeLine.replace(range.start.character, removeLength, text);
+        cacheData += changeLine;
+        QByteArray array = changeFile.readLine();
+        while (!array.isEmpty()) {
+            cacheData += array;
+            array = changeFile.readLine();
+        }
+        changeFile.close();
+    }
+
+    if (changeFile.open(QFile::WriteOnly | QFile::Truncate)) {
+        auto writeCount = changeFile.write(cacheData.toLatin1());
+        if (writeCount != cacheData.size()) {
+            qWarning() << "Failed, Write size does not match expectations."
+                       << "Expectation: " << cacheData
+                       << "Actual: " << writeCount;
+        }
+        changeFile.close();
+    }
 }
 
 void TabWidgetPrivate::doSave()
@@ -238,6 +285,43 @@ void TabWidgetPrivate::handleClearLineBackground(const QString &fileName)
 {
     if (auto editor = findEditor(fileName))
         editor->clearLineBackgroundColor();
+}
+
+void TabWidgetPrivate::handleDoRename(const newlsp::WorkspaceEdit &info)
+{
+    if (info.changes) {
+        auto changes = info.changes;
+        auto itera = changes->begin();
+        while (itera != changes->end()) {
+            for (auto edit : itera->second) {
+                QString filePath = QUrl(QString::fromStdString(itera->first)).toLocalFile();
+                QString newText = QString::fromStdString(edit.newText);
+                replaceRange(filePath, edit.range, newText);
+            }
+            itera++;
+        }
+    }
+    if (info.documentChanges) {
+        if (newlsp::any_contrast<std::vector<newlsp::TextDocumentEdit>>(info.documentChanges.value())) {
+            std::vector<newlsp::TextDocumentEdit> documentChanges = std::any_cast<std::vector<newlsp::TextDocumentEdit>>(info.documentChanges.value());
+            for (auto documentChange : documentChanges) {
+                QString filePath = QUrl(QString::fromStdString(documentChange.textDocument.uri)).toLocalFile();
+                if (!std::vector<newlsp::TextEdit>(documentChange.edits).empty()) {
+                    auto edits = std::vector<newlsp::TextEdit>(documentChange.edits);
+                    for (auto edit : edits) {
+                        QString newText = QString::fromStdString(edit.newText);
+                        replaceRange(filePath, edit.range, newText);
+                    }
+                } else if (!std::vector<newlsp::AnnotatedTextEdit>(documentChange.edits).empty()) {
+                    auto edits = std::vector<newlsp::AnnotatedTextEdit>(documentChange.edits);
+                    for (auto edit : edits) {
+                        QString newText = QString::fromStdString(edit.newText);
+                        replaceRange(filePath, edit.range, newText);
+                    }
+                }
+            }
+        }
+    }
 }
 
 TabWidget::TabWidget(QWidget *parent)
