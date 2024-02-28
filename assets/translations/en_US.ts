@@ -528,7 +528,7 @@ storage: %2
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="243"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="280"/>
         <source>build</source>
         <translation type="unfinished"></translation>
     </message>
@@ -615,7 +615,7 @@ storage: %2
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="100"/>
-        <source>Back</source>
+        <source>Backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -638,7 +638,7 @@ storage: %2
 <context>
     <name>CodeGeeXOptionWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/option/codegeexoptionwidget.cpp" line="35"/>
+        <location filename="../../src/plugins/codegeex/option/codegeexoptionwidget.cpp" line="36"/>
         <source>CodeGeeX</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1001,11 +1001,6 @@ The dap port is not ready, please retry.
 <context>
     <name>DLabel</name>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="54"/>
-        <source>CodeGeeX Api Key:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="64"/>
         <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="65"/>
         <source>JDK version：</source>
@@ -1050,6 +1045,11 @@ The dap port is not ready, please retry.
     <message>
         <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="44"/>
         <source>Python interpreter: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="56"/>
+        <source>Code Completion:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1691,6 +1691,43 @@ Delete anyway?</source>
     <message>
         <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="139"/>
         <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LSPStyle</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="578"/>
+        <source>Refactor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="580"/>
+        <source>Rename Symbol Under Cursor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="586"/>
+        <source>Switch Between Function Declaration/Definition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="589"/>
+        <source>Find Usages</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LocatorManager</name>
+    <message>
+        <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="293"/>
+        <source>Enter command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="295"/>
+        <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="299"/>
+        <source>Enter command %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2452,12 +2489,12 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="143"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="198"/>
         <source>Save Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="144"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="199"/>
         <source>The file has unsaved changes, will save?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2862,7 +2899,7 @@ not exists support files: %0</source>
 <context>
     <name>RenamePopup</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/renamepopup/renamepopup.cpp" line="92"/>
+        <location filename="../../src/plugins/codeeditor/renamepopup/renamepopup.cpp" line="93"/>
         <source>Rename %0 to:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3785,6 +3822,39 @@ not exists support files: %0</source>
     </message>
 </context>
 <context>
+    <name>TabBarPrivate</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="76"/>
+        <source>Copy File Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="80"/>
+        <source>Copy File Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="87"/>
+        <source>Close This File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="91"/>
+        <source>Close All Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="97"/>
+        <source>Close All Files Except This</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="110"/>
+        <source>Open File Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>TabWidgetPrivate</name>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="34"/>
@@ -3803,42 +3873,47 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="223"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="225"/>
+        <source>Refactor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="230"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="226"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="233"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="231"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="238"/>
         <source>Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="235"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="242"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="239"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="246"/>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="242"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="249"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="247"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="254"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="262"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="270"/>
         <source>Remove Breakpoint</source>
         <translation type="unfinished"></translation>
     </message>

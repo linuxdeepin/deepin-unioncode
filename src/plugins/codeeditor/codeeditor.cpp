@@ -97,7 +97,7 @@ void CodeEditor::initActions()
     QAction *forwardAction = new QAction(tr("forward"), this);
 
     auto inputBackAction = new AbstractAction(backAction);
-    inputBackAction->setShortCutInfo("Editor.back", tr("Back"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
+    inputBackAction->setShortCutInfo("Editor.back", tr("Backward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
     auto inputForwardAction = new AbstractAction(forwardAction);
     inputForwardAction->setShortCutInfo("Editor.forward",
                                         tr("Forward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Right));
