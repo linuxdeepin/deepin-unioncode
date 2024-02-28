@@ -543,7 +543,7 @@ storage: %2
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="243"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="280"/>
         <source>build</source>
         <translation>编译</translation>
     </message>
@@ -620,17 +620,17 @@ storage: %2
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="74"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="96"/>
         <source>backward</source>
-        <translation>撤销</translation>
+        <translation>后退</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="80"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="97"/>
         <source>forward</source>
-        <translation>恢复</translation>
+        <translation>前进</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="100"/>
-        <source>Back</source>
+        <source>Backward</source>
         <translation>后退</translation>
     </message>
     <message>
@@ -653,7 +653,7 @@ storage: %2
 <context>
     <name>CodeGeeXOptionWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/option/codegeexoptionwidget.cpp" line="35"/>
+        <location filename="../../src/plugins/codegeex/option/codegeexoptionwidget.cpp" line="36"/>
         <source>CodeGeeX</source>
         <translation></translation>
     </message>
@@ -1028,11 +1028,6 @@ dap端口未就绪，请重试。
 <context>
     <name>DLabel</name>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="54"/>
-        <source>CodeGeeX Api Key:</source>
-        <translation>CodeGeeX Api 密钥:</translation>
-    </message>
-    <message>
         <location filename="../../src/plugins/java/gradle/project/properties/gradleconfigpropertywidget.cpp" line="64"/>
         <location filename="../../src/plugins/java/java/option/jdkwidget.cpp" line="65"/>
         <source>JDK version：</source>
@@ -1078,6 +1073,11 @@ dap端口未就绪，请重试。
         <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="44"/>
         <source>Python interpreter: </source>
         <translation>Python解释器： </translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="56"/>
+        <source>Code Completion:</source>
+        <translation>代码补全</translation>
     </message>
 </context>
 <context>
@@ -1720,6 +1720,43 @@ Delete anyway?</source>
         <location filename="../../src/plugins/cxx/cmake/option/kitsmanagerwidget.cpp" line="139"/>
         <source>Name:</source>
         <translation>名称：</translation>
+    </message>
+</context>
+<context>
+    <name>LSPStyle</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="578"/>
+        <source>Refactor</source>
+        <translation>重构</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="580"/>
+        <source>Rename Symbol Under Cursor</source>
+        <translation>重命名</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="586"/>
+        <source>Switch Between Function Declaration/Definition</source>
+        <translation>在声明和定义之间切换</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="589"/>
+        <source>Find Usages</source>
+        <translation>查找引用</translation>
+    </message>
+</context>
+<context>
+    <name>LocatorManager</name>
+    <message>
+        <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="293"/>
+        <source>Enter command</source>
+        <translation>键入命令</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="295"/>
+        <location filename="../../src/plugins/core/locator/locatormanager.cpp" line="299"/>
+        <source>Enter command %1</source>
+        <translation>键入命令  %1</translation>
     </message>
 </context>
 <context>
@@ -2483,12 +2520,12 @@ not exists support files: %0</source>
         <translation>附加进程ID不存在！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="143"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="198"/>
         <source>Save Changes</source>
         <translation>保存更改</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="144"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="199"/>
         <source>The file has unsaved changes, will save?</source>
         <translation>该文件有未保存的更改，是否保存？</translation>
     </message>
@@ -2893,7 +2930,7 @@ not exists support files: %0</source>
 <context>
     <name>RenamePopup</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/renamepopup/renamepopup.cpp" line="92"/>
+        <location filename="../../src/plugins/codeeditor/renamepopup/renamepopup.cpp" line="93"/>
         <source>Rename %0 to:</source>
         <translation>将%0重命名为：</translation>
     </message>
@@ -3822,6 +3859,39 @@ not exists support files: %0</source>
     </message>
 </context>
 <context>
+    <name>TabBarPrivate</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="76"/>
+        <source>Copy File Path</source>
+        <translation>拷贝文件路径</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="80"/>
+        <source>Copy File Name</source>
+        <translation>拷贝文件名</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="87"/>
+        <source>Close This File</source>
+        <translation>关闭</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="91"/>
+        <source>Close All Files</source>
+        <translation>关闭所有文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="97"/>
+        <source>Close All Files Except This</source>
+        <translation>关闭除该文件的所有文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="110"/>
+        <source>Open File Location</source>
+        <translation>打开文件位置</translation>
+    </message>
+</context>
+<context>
     <name>TabWidgetPrivate</name>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="34"/>
@@ -3840,42 +3910,47 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="223"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="225"/>
+        <source>Refactor</source>
+        <translation>重构</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="230"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="226"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="233"/>
         <source>Redo</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="231"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="238"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="235"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="242"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="239"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="246"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="242"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="249"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="247"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="254"/>
         <source>Select All</source>
         <translation>选择全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="262"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="270"/>
         <source>Remove Breakpoint</source>
         <translation>移除断点</translation>
     </message>
