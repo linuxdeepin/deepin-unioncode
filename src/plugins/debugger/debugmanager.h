@@ -38,6 +38,7 @@ public:
     DWidget *getLocalsPane() const;
     DWidget *getBreakpointPane() const;
     DWidget *getDebugMainPane() const;
+    AbstractDebugger::RunState getRunState() const;
     void registerDebugger(const QString &kit, AbstractDebugger *debugger);
 
 signals:
