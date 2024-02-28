@@ -155,7 +155,7 @@ void CodeEditor::initWindowService()
         sep->setSeparator(true);
         windowService->addAction(MWM_FILE, new AbstractAction(sep));
 
-        windowService->addContextWidget(QTabWidget::tr("Code &Lens"), new AbstractWidget(CodeLens::instance()), true);
+        windowService->addContextWidget(QTabWidget::tr("Search &Results"), new AbstractWidget(CodeLens::instance()), true);
         windowService->addContextWidget(tr("&Application Output"), new AbstractWidget(OutputPane::instance()), true);
     }
 }

@@ -677,7 +677,7 @@ A must-have all-round AI tool for developers</source>
     <name>CodeLens</name>
     <message>
         <location filename="../../src/plugins/codeeditor/codelens/codelens.cpp" line="46"/>
-        <source>Code &amp;Lens</source>
+        <source>Search &amp;Results</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2796,7 +2796,7 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="158"/>
-        <source>Code &amp;Lens</source>
+        <source>Search &amp;Results</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
