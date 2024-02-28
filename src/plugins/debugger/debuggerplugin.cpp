@@ -40,7 +40,7 @@ bool DebuggerPlugin::start()
     if (!debuggerService) {
         qCritical() << "Failed, can't found debugger service";
         abort();
-    }    
+    }
 
     debugManager->initialize(windowService, debuggerService);
 
@@ -49,7 +49,12 @@ bool DebuggerPlugin::start()
         action->setIcon(QIcon::fromTheme("debug-navigation"));
         windowService->addNavigationItem(new AbstractAction(action), 5);
         windowService->registerWidgetToMode("debugMainWindow", new AbstractWidget(debugManager->getDebugMainPane()), CM_DEBUG, Position::Left, true, true);
-        windowService->registerWidgetToMode("debuggerWatcher", new AbstractWidget(debugManager->getLocalsPane()), CM_DEBUG, Position::Right, true, false);
+        windowService->registerWidget("debuggerWatcher", new AbstractWidget(debugManager->getLocalsPane()));
+        connect(action, &QAction::triggered, this, [=]() {
+            windowService->showWidgetAtPosition("debuggerWatcher", Position::Right, true);
+            if (debugManager->getRunState() == AbstractDebugger::kNoRun)
+                debugManager->getLocalsPane()->hide();
+        }, Qt::DirectConnection);
     }
 
     connect(debugManager, &DebugManager::debugStarted, this, &DebuggerPlugin::slotDebugStarted);

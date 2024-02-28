@@ -89,6 +89,7 @@ class ControllerPrivate
     QMap<QString, QString> modePluginMap { { CM_EDIT, MWNA_EDIT }, { CM_RECENT, MWNA_RECENT }, { CM_DEBUG, MWNA_DEBUG } };
     QString mode { "" };   //mode: CM_EDIT/CM_DEBUG/CM_RECENT
     QMap<QString, QList<WidgetInfo>> modeInfo;
+    QString currentNavigation { "" };
 
     QMap<QString, AbstractModule *> modules;
 
@@ -365,6 +366,9 @@ void Controller::addNavigationItemToBottom(AbstractAction *action, quint8 priori
 void Controller::switchWidgetNavigation(const QString &navName)
 {
     d->navigationBar->setNavActionChecked(navName, true);
+    if(d->currentNavigation == navName)
+        return;
+    d->currentNavigation = navName;
 
     d->mainWindow->hideAllWidget();
     d->mainWindow->hideTopTollBar();
@@ -372,8 +376,7 @@ void Controller::switchWidgetNavigation(const QString &navName)
 
     if (d->modePluginMap.values().contains(navName))
         raiseMode(d->modePluginMap.key(navName));
-    else
-        d->navigationActions[navName]->trigger();
+    d->navigationActions[navName]->trigger();
 
     //send event
     uiController.switchToWidget(navName);
