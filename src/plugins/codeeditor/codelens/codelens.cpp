@@ -43,6 +43,6 @@ CodeLens::~CodeLens()
 
 void CodeLens::displayReference(const lsp::References &data)
 {
-    uiController.switchContext(tr("Code &Lens"));
+    uiController.switchContext(tr("Search &Results"));
     d->lens->setData(data);
 }
