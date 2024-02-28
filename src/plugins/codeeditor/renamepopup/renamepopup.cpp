@@ -64,6 +64,7 @@ RenamePopup::~RenamePopup()
 void RenamePopup::setOldName(const QString &name)
 {
     d->oldName = name;
+    d->renameEdit->setText(name);
 }
 
 QString RenamePopup::oldName()

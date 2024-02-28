@@ -53,6 +53,7 @@ public:
     void gotoPreviousMark(uint mask);
     bool doFind(const QString &keyword, bool isForward);
     QsciStyle createAnnotationStyle(int type);
+    void adjustScrollBar();
 
 public slots:
     void onThemeTypeChanged();

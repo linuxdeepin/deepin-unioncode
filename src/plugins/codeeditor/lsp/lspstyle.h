@@ -61,9 +61,13 @@ private slots:
     void onDefinitionHover(int position);
     void onDefinitionHoverCleaned(int position);
     void onIndicClicked(int line, int index);
-    void onSelectionMenu(QContextMenuEvent *event);
+    void onShowContextMenu(QMenu *menu);
     void onFileClosed(const QString &file);
-    void renameRequest(const QString &newText);
+    void switchDeclarationOrDefinition();
+    void findUsagesActionTriggered();
+    void renameActionTriggered();
+    void renameSymbol(const QString &text);
+    void gotoDefinition();
 
 private:
     QSharedPointer<LSPStylePrivate> d { nullptr };

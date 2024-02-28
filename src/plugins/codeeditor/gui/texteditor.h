@@ -56,6 +56,8 @@ public:
     void addAnnotation(const QString &title, const QString &content, int line, int type);
     void addAnnotation(const QString &content, int line, int type);
     void removeAnnotation(const QString &title);
+    QPoint pointFromPosition(int position);
+    void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text);
 
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
@@ -75,6 +77,7 @@ signals:
     void documentHovered(int pos);
     void documentHoveredWithCtrl(int pos);
     void documentHoverEnd(int pos);
+    void contextMenuRequested(QMenu *menu);
 
 private:
     void init();

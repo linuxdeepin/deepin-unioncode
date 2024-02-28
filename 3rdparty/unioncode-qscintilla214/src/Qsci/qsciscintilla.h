@@ -1609,6 +1609,8 @@ public:
     //! Returns the word at the \a point pixel coordinates.
     QString wordAtPoint(const QPoint &point) const;
 
+    QString wordAtPosition(int position) const;
+
     //! Returns the set of valid word character as defined by the current
     //! language lexer.  If there is no current lexer then the set contains an
     //! an underscore, numbers and all upper and lower case alphabetic
@@ -2242,8 +2244,6 @@ private:
     bool ensureRW();
     void insertAtPos(const QString &text, int pos);
     static int mapModifiers(int modifiers);
-
-    QString wordAtPosition(int position) const;
 
     QByteArray styleText(const QList<QsciStyledText> &styled_text,
             char **styles, int style_offset = 0);

@@ -6,6 +6,7 @@
 #define LSPSTYLE_P_H
 
 #include "lsp/lspstyle.h"
+#include "renamepopup/renamepopup.h"
 
 class RangeCache
 {
@@ -52,12 +53,12 @@ public:
 
 class DefinitionCache : public PositionCache
 {
-    std::optional<std::vector<newlsp::Location>> locations {};
-    std::optional<std::vector<newlsp::LocationLink>> locationLinks {};
-    std::optional<newlsp::Location> location {};
-    RangeCache textRange {};
-    int cursor = 0;   //Invalid
 public:
+    enum SwitchMode {
+        ActionMode,   // menu
+        ClickMode   // click with Ctrl
+    };
+
     void clean()
     {
         cleanFromLsp();
@@ -93,6 +94,16 @@ public:
     void setCursor(int value) { cursor = value; }
     RangeCache getTextRange() const { return textRange; }
     void setTextRange(const RangeCache &value) { textRange = value; }
+    void setSwitchMode(SwitchMode mode) { this->mode = mode; }
+    SwitchMode switchMode() const { return mode; }
+
+private:
+    std::optional<std::vector<newlsp::Location>> locations {};
+    std::optional<std::vector<newlsp::LocationLink>> locationLinks {};
+    std::optional<newlsp::Location> location {};
+    RangeCache textRange {};
+    int cursor = 0;   //Invalid
+    SwitchMode mode { ClickMode };
 };
 
 class HoverCache : public PositionCache
@@ -100,24 +111,6 @@ class HoverCache : public PositionCache
 public:
     void clean() { PositionCache::clean(); }
     bool isEmpty() { return PositionCache::isEmpty(); }
-};
-
-class RenameCache
-{
-    PositionCache start;
-    PositionCache end;
-
-public:
-    void clean()
-    {
-        start.clean();
-        end.clean();
-    }
-    bool isEmpty() { return start.isEmpty() && end.isEmpty(); }
-    PositionCache getStart() const { return start; }
-    void setStart(const PositionCache &value) { start = value; }
-    PositionCache getEnd() const { return end; }
-    void setEnd(const PositionCache &value) { end = value; }
 };
 
 class CompletionCache
@@ -138,6 +131,20 @@ struct TextChangeCache
     int linesAddedCache;
     QString textCache;
     int lineCache;
+};
+
+struct RenamePositionCache
+{
+    int line = -1;
+    int column = -1;
+
+    void clear()
+    {
+        line = -1;
+        column = -1;
+    }
+
+    bool isValid() { return line != -1 && column != -1; }
 };
 
 struct DiagnosticCache
@@ -163,8 +170,8 @@ public:
     DefinitionCache definitionCache;
     QTimer textChangedTimer;
     HoverCache hoverCache;
-    //    RenamePopup renamePopup;
-    RenameCache renameCache;
+    RenamePopup renamePopup;
+    RenamePositionCache renameCache;
     TextEditor *editor { nullptr };
     TextChangeCache textChangedCache;
     QList<lsp::Data> tokensCache;
