@@ -66,6 +66,11 @@ DWidget *DebugManager::getDebugMainPane() const
     return currentDebugger->getDebugMainPane();
 }
 
+AbstractDebugger::RunState DebugManager::getRunState() const
+{
+    return currentDebugger->getRunState();
+}
+
 void DebugManager::registerDebugger(const QString &kit, AbstractDebugger *debugger)
 {
     auto iterator = debuggers.find(kit);
