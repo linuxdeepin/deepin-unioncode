@@ -48,6 +48,8 @@ private:
     DMenu *rootMenu(QStandardItem *root);
     void performDrag();
 
+    void runCMake();
+
 public slots:
     void itemModified(QStandardItem *item, const QList<QStandardItem *> &childs);
 

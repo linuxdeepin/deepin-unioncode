@@ -15,7 +15,6 @@ public:
     static bool doRemove(const QString &filePath);
     static bool doNewDocument(const QString &parentPath, const QString &docName);
     static bool doNewFolder(const QString &parentPath, const QString &folderName);
-    static bool deleteDir(const QString &path);
     static QString checkCreateDir(const QString &src, const QString &dirName);
     static QString readAll(const QString &filePath);
     static bool exists(const QString &filePath);
