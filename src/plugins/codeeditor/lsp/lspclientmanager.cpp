@@ -80,7 +80,7 @@ QColor LSPClientManager::highlightColor(const QString &langId, lsp::SemanticToke
     } else if (lsp::SemanticTokenType::get()->TypeParameter == token) {
         typeObj = styleMap[langId].value(theme, StyleSettings::Key_1::get()->Variable).toObject();
     } else if (lsp::SemanticTokenType::get()->Parameter == token) {
-        typeObj = styleMap[langId].value(theme, StyleSettings::Key_1::get()->Text).toObject();
+        typeObj = styleMap[langId].value(theme, StyleSettings::Key_1::get()->Parameter).toObject();
     } else if (lsp::SemanticTokenType::get()->Variable == token) {
         typeObj = styleMap[langId].value(theme, StyleSettings::Key_1::get()->Variable).toObject();
     } else if (lsp::SemanticTokenType::get()->Property == token) {
@@ -115,7 +115,7 @@ QColor LSPClientManager::highlightColor(const QString &langId, lsp::SemanticToke
         return defaultColor;
 
     auto colorName = typeObj.value(StyleSettings::Key_2::get()->Foreground).toString();
-    if (!colorName.isEmpty())
+    if (!colorName.isEmpty() && colorName.at(0) != '#')
         colorName.prepend("#");
 
     return QColor(colorName);
