@@ -15,6 +15,7 @@ class TreeView : public DTK_WIDGET_NAMESPACE::DTreeView
 {
     Q_OBJECT
     TreeViewPrivate *const d;
+
 public:
     explicit TreeView(QWidget *parent = nullptr);
     virtual ~TreeView();
@@ -29,10 +30,11 @@ public slots:
     void doDoubleClicked(const QModelIndex &index);
 signals:
     void rootPathChanged(const QString &folder);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event);
     virtual DTK_WIDGET_NAMESPACE::DMenu *createContextMenu(const QModelIndexList &indexs);
     virtual DTK_WIDGET_NAMESPACE::DMenu *createEmptyMenu();
 };
 
-#endif // TREEVIEW_H
+#endif   // TREEVIEW_H

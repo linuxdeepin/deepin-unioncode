@@ -4,6 +4,7 @@
 
 #include "symboltreeview.h"
 #include "symbolmodel.h"
+#include "symbolitemdelegate.h"
 #include "definitions.h"
 
 #include "services/project/projectservice.h"
@@ -22,24 +23,25 @@ class SymbolTreeViewPrivate
     friend class SymbolTreeView;
     SymbolTreeView *const q;
     QModelIndex selIndex;
-    QFileSystemModel *model {nullptr};
+    QFileSystemModel *model { nullptr };
     DMenu *getFileLineMenu(const QString &filePath);
-    SymbolTreeViewPrivate(SymbolTreeView *qq): q(qq){}
+    explicit SymbolTreeViewPrivate(SymbolTreeView *qq)
+        : q(qq) {}
 };
 
 SymbolTreeView::SymbolTreeView(DWidget *parent)
-    : DTreeView(parent)
-    , d (new SymbolTreeViewPrivate(this))
+    : DTreeView(parent), d(new SymbolTreeViewPrivate(this))
 {
     setLineWidth(0);
 
     d->model = new SymbolModel();
     DTreeView::setModel(d->model);
+    setItemDelegate(new SymbolItemDelegate(this));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
-    setEditTriggers(DTreeView::NoEditTriggers);	          //节点不能编辑
-    setSelectionBehavior(DTreeView::SelectRows);		  //一次选中整行
-    setSelectionMode(DTreeView::SingleSelection);         //单选，配合上面的整行就是一次选单行
+    setEditTriggers(DTreeView::NoEditTriggers);   //节点不能编辑
+    setSelectionBehavior(DTreeView::SelectRows);   //一次选中整行
+    setSelectionMode(DTreeView::SingleSelection);   //单选，配合上面的整行就是一次选单行
     header()->setVisible(false);
 
     QObject::connect(this, &DTreeView::doubleClicked,
@@ -48,8 +50,6 @@ SymbolTreeView::SymbolTreeView(DWidget *parent)
     QObject::connect(this, &DTreeView::customContextMenuRequested,
                      this, &SymbolTreeView::doContextMenu,
                      Qt::UniqueConnection);
-
-
 }
 
 SymbolTreeView::~SymbolTreeView()
@@ -78,17 +78,17 @@ void SymbolTreeView::doContextMenu(const QPoint &point)
 
     setCurrentIndex(index);
 
-    DMenu *contextMenu{nullptr};
+    DMenu *contextMenu { nullptr };
     if (d->model->isDir(index)) {
         QString filePath = d->model->filePath(index);
         QDir currDir(filePath);
-        currDir.setFilter(QDir::Files|QDir::Hidden);
+        currDir.setFilter(QDir::Files | QDir::Hidden);
         currDir.setSorting(QDir::Name);
         QStringList files = currDir.entryList();
         qInfo() << files;
 
         if (files.contains(SymbolPri::definitionsFileName)
-                || files.contains(SymbolPri::declaredFileName)) {
+            || files.contains(SymbolPri::declaredFileName)) {
             contextMenu = new DMenu(this);
         }
 
@@ -131,7 +131,7 @@ DMenu *SymbolTreeViewPrivate::getFileLineMenu(const QString &filePath)
                 defMenu = new DMenu();
             }
             QAction *action = new QAction(defMenu);
-            QObject::connect(action, &QAction::triggered, [=](){
+            QObject::connect(action, &QAction::triggered, [=]() {
                 QStringList jumpLists = action->text().split(":");
                 if (jumpLists.size() >= 2) {
                     q->jumpToLine(jumpLists[0], jumpLists[1]);
