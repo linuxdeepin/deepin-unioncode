@@ -112,8 +112,8 @@ void TextEditorPrivate::updateColorTheme()
         q->setCaretLineBackgroundColor(QColor("#373737"));
 
         // margins
-        q->setFoldMarginColors(QColor("#404244"), QColor("#404244"));
-        q->setMarginsBackgroundColor(QColor("#404244"));
+        q->setFoldMarginColors(QColor("#252525"), QColor("#252525"));
+        q->setMarginsBackgroundColor(QColor("#252525"));
         q->setMarginsForegroundColor(QColor("#bec0c2"));
 
         q->setMatchedBraceForegroundColor(QColor("#bec0c2"));
@@ -125,8 +125,8 @@ void TextEditorPrivate::updateColorTheme()
         q->setCaretLineBackgroundColor(QColor("#c1ddee"));
 
         // margins
-        q->setFoldMarginColors(QColor("#efefef"), QColor("#efefef"));
-        q->setMarginsBackgroundColor(QColor("#efefef"));
+        q->setFoldMarginColors(QColor("#fefefe"), QColor("#fefefe"));
+        q->setMarginsBackgroundColor(QColor("#fefefe"));
         q->setMarginsForegroundColor(QColor("#9f9f9f"));
 
         q->setMatchedBraceForegroundColor(QColor("#ff0000"));
