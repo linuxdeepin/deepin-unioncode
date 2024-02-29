@@ -38,9 +38,6 @@ class ProjectTreePrivate
     ProjectSelectionModel *sectionModel {nullptr};
     ProjectDelegate *delegate {nullptr};
     DDialog *messDialog = nullptr;
-    DDialog *dlg = nullptr;
-    DDialog *errordlg = nullptr;
-    DLineEdit *edit = nullptr;
     QPoint startPos;
     int itemDepth(const QStandardItem *item)
     {
@@ -461,42 +458,36 @@ void ProjectTree::doActiveProject(QStandardItem *root)
     SendEvents::projectActived(ProjectInfo::get(root));
 }
 
-
 void ProjectTree::actionNewDocument(const QStandardItem *item)
 {
-    d->dlg = new DDialog;
-    d->edit = new DLineEdit;
-    d->edit->setPlaceholderText(tr("New Document Name"));
-    d->edit->lineEdit()->setAlignment(Qt::AlignLeft);
+    auto dialog = new DDialog(this);
+    auto inputEdit = new DLineEdit(dialog);
 
-    d->dlg->setAttribute(Qt::WA_DeleteOnClose);
-    d->dlg->setWindowTitle(tr("New Document"));
-    d->dlg->setIcon(QIcon::fromTheme("dialog-warning"));
-    d->dlg->resize(400, 100);
+    inputEdit->setPlaceholderText(tr("New Document Name"));
+    inputEdit->lineEdit()->setAlignment(Qt::AlignLeft);
 
-    d->dlg->addContent(d->edit);
-    d->dlg->addButton(tr("Ok"), false, DDialog::ButtonType::ButtonRecommend);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setWindowTitle(tr("New Document"));
 
-    QObject::connect(d->dlg, &DDialog::buttonClicked, d->dlg, [=](){
-        d->dlg->close();
-        if (!d->edit->text().isEmpty()) {
-           creatNewDocument(item, d->edit->text());
-        } else {
-            d->errordlg = new DDialog;
-            d->errordlg->setAttribute(Qt::WA_DeleteOnClose);
-            d->errordlg->setIcon(QIcon::fromTheme("dialog-warning"));
-            d->errordlg->setMessage(tr("File name cannot be empty!"));
-            d->errordlg->resize(400, 100);
-            d->errordlg->addButton(tr("Ok"), false, DDialog::ButtonType::ButtonRecommend);
+    dialog->addContent(inputEdit);
+    dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
 
-            QObject::connect(d->errordlg, &DDialog::buttonClicked, d->errordlg, [=](){
-                d->errordlg->close();
-            });
-            d->errordlg->exec();
-        };
+    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=](){
+        if (!inputEdit->text().isEmpty()) {
+            creatNewDocument(item, inputEdit->text());
+        }
+        dialog->close();
     });
 
-    d->dlg->exec();
+    dialog->exec();
+}
+
+void ProjectTree::runCMake()
+{
+    auto runCMake = ActionManager::getInstance()->command("Build.RunCMake");
+    if (runCMake && runCMake->action()) {
+        runCMake->action()->trigger();
+    }
 }
 
 void ProjectTree::actionDeleteDocument(const QStandardItem *item)
@@ -522,6 +513,8 @@ void ProjectTree::actionDeleteDocument(const QStandardItem *item)
     if (!doDelete)
         return;
     QFile(info.filePath()).remove();
+
+    runCMake();
 }
 
 void ProjectTree::actionOpenInTerminal(const QStandardItem *menuItem)
