@@ -232,6 +232,17 @@ void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens)
     }
 }
 
+void LSPStyle::refreshTokens()
+{
+    if (!d->editor || !d->getClient())
+        return;
+
+    qApp->metaObject()->invokeMethod(d->getClient(),
+                                     "docSemanticTokensFull",
+                                     Qt::QueuedConnection,
+                                     Q_ARG(const QString &, d->editor->getFile()));
+}
+
 void LSPStyle::cleanTokenFull()
 {
 }

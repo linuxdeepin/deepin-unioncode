@@ -261,6 +261,8 @@ public:
     bool writeSettings(QSettings &qs,
                const char *prefix = "/Scintilla") const;
 
+    void resetStyle();
+
 public slots:
     //! The auto-indentation style is set to \a autoindentstyle.
     //!
