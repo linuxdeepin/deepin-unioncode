@@ -15,3 +15,6 @@ install(DIRECTORY action-analysis/
 
 install(DIRECTORY symbol-parser/
     DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/symbol-parser")
+
+install(DIRECTORY prettyprinters/
+    DESTINATION "${LIBRARY_INSTALL_PREFIX}/scripts/prettyprinters")

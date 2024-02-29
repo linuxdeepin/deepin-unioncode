@@ -14,6 +14,7 @@
 enum ColumnType {
     kName,
     KVaule,
+    kType,
     KReference
 };
 
