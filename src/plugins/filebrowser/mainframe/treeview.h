@@ -24,6 +24,7 @@ public slots:
     void selOpen();
     void selMoveToTrash();
     void selRemove();
+    void selRename();
     void selNewDocument();
     void selNewFolder();
     void recoverFromTrash();

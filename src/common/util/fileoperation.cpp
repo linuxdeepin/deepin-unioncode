@@ -28,21 +28,39 @@ bool FileOperation::doRecoverFromTrash(const QString &filePath)
 
 bool FileOperation::doRemove(const QString &filePath)
 {
-    return QFile(filePath).remove();
+    bool ret = false;
+    if (QFileInfo(filePath).isFile()) {
+        ret = QFile(filePath).remove();
+    } else {
+        ret = QDir(filePath).removeRecursively();
+    }
+    return ret;
 }
+
+QString checkDuplicate(const QString & parentPath, const QString &newFileName)
+{
+    QString newFilePath = parentPath + QDir::separator() + newFileName;
+    if (QFile::exists(newFilePath)) {
+        QString newName = newFileName + QString("(1)");
+        newFilePath = checkDuplicate(parentPath, newName);
+    }
+
+    return newFilePath;
+};
 
 bool FileOperation::doNewDocument(const QString &parentPath, const QString &docName)
 {
     QFileInfo info(parentPath);
     if (!info.exists() || !info.isDir())
         return false;
-    else  {
-        QFile file(parentPath + QDir::separator() + docName);
-        if (file.open(QFile::OpenModeFlag::NewOnly)){
-            file.close();
-        }
-        return false;
+
+    QString newFilePath = checkDuplicate(parentPath, docName);
+
+    QFile newFile(newFilePath);
+    if (newFile.open(QFile::OpenModeFlag::NewOnly)){
+        newFile.close();
     }
+    return true;
 }
 
 bool FileOperation::doNewFolder(const QString &parentPath, const QString &folderName)
@@ -52,29 +70,6 @@ bool FileOperation::doNewFolder(const QString &parentPath, const QString &folder
         return false;
     else
         return QDir(parentPath).mkdir(folderName);
-}
-
-bool FileOperation::deleteDir(const QString &path)
-{
-    if (path.isEmpty()){
-        return true;
-    }
-
-    QDir dir(path);
-    if(!dir.exists()){
-        return true;
-    }
-
-    dir.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
-    QFileInfoList fileList = dir.entryInfoList();
-    foreach (auto file, fileList) {
-        if (file.isFile())
-            file.dir().remove(file.fileName());
-        else
-            deleteDir(file.absoluteFilePath());
-    }
-
-    return dir.rmdir(dir.absolutePath());
 }
 
 QString FileOperation::checkCreateDir(const QString &src, const QString &dirName)

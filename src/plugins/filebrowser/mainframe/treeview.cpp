@@ -9,6 +9,8 @@
 #include "common/common.h"
 #include <DMenu>
 #include <DHeaderView>
+#include <DDialog>
+#include <DLineEdit>
 
 #include <QDebug>
 #include <QContextMenuEvent>
@@ -45,6 +47,7 @@ TreeView::TreeView(QWidget *parent)
     setItemDelegate(new FileBrowserDelegate(this));
     header()->setSectionResizeMode(DHeaderView::ResizeMode::ResizeToContents);
     setAlternatingRowColors(true);
+    setSelectionMode(SingleSelection);
     QObject::connect(this, &DTreeView::doubleClicked, this, &TreeView::doDoubleClicked);
 }
 
@@ -148,26 +151,73 @@ void TreeView::selRemove()
     }
 }
 
+void TreeView::selRename()
+{
+    QModelIndexList indexs = selectedIndexes();
+    if (indexs.isEmpty())
+        return;
+
+    QString filePath = d->model->filePath(indexs[0]);
+    QFileInfo fileInfo(filePath);
+
+    auto dialog = new DDialog(this);
+    auto inputEdit = new DLineEdit(dialog);
+
+    inputEdit->setPlaceholderText(tr("New Document Name"));
+    inputEdit->lineEdit()->setAlignment(Qt::AlignLeft);
+
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setWindowTitle(tr("New Document"));
+
+    dialog->addContent(inputEdit);
+    dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
+
+    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=](){
+        QString newFileName = inputEdit->text();
+          QString newPath = fileInfo.absoluteDir().filePath(newFileName);
+          if (fileInfo.isFile()) {
+              QFile file(filePath);
+              if (file.rename(newPath)) {
+                  qDebug() << "File renamed successfully.";
+              } else {
+                  qDebug() << "Failed to rename file.";
+              }
+          } else if (fileInfo.isDir()) {
+              QDir dir(filePath);
+              if (dir.rename(filePath, newPath)) {
+                  qDebug() << "Directory renamed successfully.";
+              } else {
+                  qDebug() << "Failed to rename directory.";
+              }
+          }
+          dialog->accept();
+    });
+
+    dialog->exec();
+}
+
 void TreeView::selNewDocument()
 {
     QModelIndexList indexs = selectedIndexes();
-    bool hasErr = false;
+    if (indexs.isEmpty())
+        return;
+
+    QString upDirPath = d->model->filePath(indexs[0]);
+    QFileInfo upDirInfo(upDirPath);
+
     QString errString;
-    if (indexs.size() == 1) {
-        QString filePath = d->model->filePath(indexs[0]);
-        QFileInfo info(filePath);
-        if (info.isDir()) {
-            hasErr = !FileOperation::doNewDocument(filePath, NEW_DOCUMENT_NAME);
-            if (hasErr)
-                errString = DTreeView::tr("Error: Can't create New Document");
-        } else {
-            hasErr = true;
-            errString = DTreeView::tr("Error: Create New Document, parent not's dir");
-        }
+
+    if (upDirInfo.isDir()) {
+        bool success = FileOperation::doNewDocument(upDirPath, NEW_DOCUMENT_NAME);
+        if (!success)
+            errString = tr("Error: Can't create New Document");
+    } else {
+        errString = tr("Error: Create New Document, parent not's dir");
     }
 
-    if (hasErr)
+    if (!errString.isEmpty()) {
         CommonDialog::ok(errString);
+    }
 }
 
 void TreeView::selNewFolder()
@@ -181,10 +231,10 @@ void TreeView::selNewFolder()
         if (info.isDir()) {
             hasErr = !FileOperation::doNewFolder(filePath, NEW_FOLDER_NAME);
             if (hasErr)
-                errString = DTreeView::tr("Error: Can't create new folder");
+                errString = tr("Error: Can't create new folder");
         } else {
             hasErr = true;
-            errString = DTreeView::tr("Error: Create new folder, parent not's dir");
+            errString = tr("Error: Create new folder, parent not's dir");
         }
     }
 
@@ -222,47 +272,51 @@ void TreeView::contextMenuEvent(QContextMenuEvent *event)
 
 DMenu *TreeView::createContextMenu(const QModelIndexList &indexs)
 {
-    DMenu *menu = new DMenu();
-    bool hasDir = false;
-    bool selOne = indexs.size() == 0;
-    for (auto index : indexs) {
-        if (d->model->isDir(index))
-            hasDir = true;
-    }
+    if (indexs.isEmpty())
+        return nullptr;
 
-    QAction *openAction = new QAction(QAction::tr("Open"));
+    DMenu *menu = new DMenu();
+
+    QString filePath = d->model->filePath(indexs[0]);
+    QFileInfo info(filePath);
+
+    QAction *openAction = new QAction(tr("Open"));
     QObject::connect(openAction, &QAction::triggered, this, &TreeView::selOpen);
     menu->addAction(openAction);
-    if (hasDir) {
+    if (info.isDir()) {
         openAction->setEnabled(false);
-    }
+        QAction *newFolderAction = new QAction(tr("New Folder"));
+        connect(newFolderAction, &QAction::triggered, this, &TreeView::selNewFolder);
 
-    if (selOne || hasDir) {
-        QAction *newFolderAction = new QAction(QAction::tr("New Folder"));
-        QAction *newDocumentAction = new QAction(QAction::tr("New Document"));
+        QAction *newDocumentAction = new QAction(tr("New Document"));
+        connect(newDocumentAction, &QAction::triggered, this, &TreeView::selNewDocument);
 
-        QObject::connect(newFolderAction, &QAction::triggered, this, &TreeView::selNewFolder);
-        QObject::connect(newDocumentAction, &QAction::triggered, this, &TreeView::selNewDocument);
         menu->addSeparator();
         menu->addAction(newFolderAction);
         menu->addAction(newDocumentAction);
     }
 
-    QAction *moveToTrashAction = new QAction(QAction::tr("Move To Trash"));
-    QAction *removeAction = new QAction(QAction::tr("Remove"));
-    QObject::connect(moveToTrashAction, &QAction::triggered, this, &TreeView::selMoveToTrash);
-    QObject::connect(removeAction, &QAction::triggered, this, &TreeView::selRemove);
+    QAction *moveToTrashAction = new QAction(tr("Move To Trash"));
+    connect(moveToTrashAction, &QAction::triggered, this, &TreeView::selMoveToTrash);
+
+    QAction *removeAction = new QAction(tr("Remove"));
+    connect(removeAction, &QAction::triggered, this, &TreeView::selRemove);
+
+    QAction *rename = new QAction(tr("Rename"));
+    connect(rename, &QAction::triggered, this, &TreeView::selRename);
 
     menu->addSeparator();
     menu->addAction(moveToTrashAction);
     menu->addAction(removeAction);
+    menu->addAction(rename);
+
     return menu;
 }
 
 DMenu *TreeView::createEmptyMenu()
 {
     DMenu *menu = new DMenu();
-    QAction *recoverFromTrashAction = new QAction(QAction::tr("Recover From Trash"));
+    QAction *recoverFromTrashAction = new QAction(tr("Recover From Trash"));
     QObject::connect(recoverFromTrashAction, &QAction::triggered,
                      this, &TreeView::recoverFromTrash);
     menu->addAction(recoverFromTrashAction);
