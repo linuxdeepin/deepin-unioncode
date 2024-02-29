@@ -37,6 +37,7 @@ public:
     virtual void cleanDiagnostics();
 
     virtual void setTokenFull(const QList<lsp::Data> &tokens);
+    virtual void refreshTokens();
     virtual void cleanTokenFull();
 
     virtual void setHover(const newlsp::Hover &hover);

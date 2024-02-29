@@ -4,9 +4,11 @@
 
 #include "abstractlexerproxy.h"
 
+#include <DGuiApplicationHelper>
+
 #include <QFont>
-#include <QApplication>
-#include <QPalette>
+
+DGUI_USE_NAMESPACE
 
 AbstractLexerProxy::AbstractLexerProxy(QObject *parent)
     : QObject(parent)
@@ -55,8 +57,8 @@ const char *AbstractLexerProxy::wordCharacters() const
 QColor AbstractLexerProxy::defaultColor(int style) const
 {
     Q_UNUSED(style)
-    QPalette pal = QApplication::palette();
-    return pal.text().color();
+    bool isDarkTheme = DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType;
+    return isDarkTheme ? QColor("#d6cf9a") : QColor("#000000");
 }
 
 bool AbstractLexerProxy::defaultEolFill(int style) const
@@ -75,8 +77,8 @@ QFont AbstractLexerProxy::defaultFont(int style) const
 QColor AbstractLexerProxy::defaultPaper(int style) const
 {
     Q_UNUSED(style)
-    QPalette pal = QApplication::palette();
-    return pal.base().color();
+    bool isDarkTheme = DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType;
+    return isDarkTheme ? QColor("#2e2f30") : QColor("#F8F8F8");
 }
 
 const char *AbstractLexerProxy::keywords(int set) const

@@ -1,472 +1,114 @@
 {
     "Dark": {
-        "Self": {
-            "Background": "2B2B2B",
-            "Foreground": "000000",
-            "Cursor" : "ffffff",
-            "FontSize" : 16
-        },
         "Namespace": {
-            "Foreground": "f08080",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#ff8080"
         },
         "Macro": {
-            "Foreground": "ff69b4",
-            "Background": "000000",
-            "FontSize" : 16
+            "Foreground": "#d6cf9a"
         },
         "Type": {
-            "Foreground": "ff69b4",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#ff8080"
         },
         "Method": {
-            "Foreground": "f0e68c",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#d6cf9a"
         },
         "Class": {
-            "Foreground": "f08080",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#ff8080"
         },
         "Variable": {
-            "Foreground": "eee8aa",
-            "Background": "000000",
-            "FontSize": 16   
+            "Foreground": "#d6bb9a"
         },
         "Property": {
-            "Foreground": "eee8aa",
-            "Background": "000000",
-            "FontSize": 16   
+            "Foreground": "#ff8080"
         },
         "Parameter": {
-            "Foreground": "eee8aa",
-            "Background": "000000",
-            "FontSize": 16   
+            "Foreground": "#d6bb9a"
         },
         "Text": {
-            "Foreground": "eee8aa",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#d6cf9a"
         },
         "Link": {
-            "Foreground": "ffd700",
-            "Background": "aaaaaa",
-            "FontSize": 16
-        },
-        "Selection": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Line Number": {
-            "Foreground": "888888",
-            "Background": "232323",
-            "FontSize": 16
+            "Foreground": "#d6c540"
         },
         "Keyword": {
-            "Foreground": "ff7f50",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Punctuation": {
-            "Foreground": "eee8aa",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#45c6d6"
         },
         "Operators": {
-            "Foreground": "faebd7",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Overloaded Operators": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Preprocessor": {
-            "Foreground": "ff69b4",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Search Result": {
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Search Scope": {
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Parentheses": {
-            "Foreground": "ff5555",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Mismatched Parentheses": {
-            "Foreground": "000000",
-            "Background": "800080",
-            "FontSize": 16
-        },
-        "Auto Complete": {
-            "Foreground": "a0a0ff",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Current Line": {
-            "Background": 232323,
-            "FontSize": 16
-        },
-        "Current Line Number": {
-            "Foreground": "aaaaaa",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Occurrences": {
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Unused Occurrences": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Renaming Occurrences": {
-            "Foreground": "aaaaaa",
-            "Background": "553636",
-            "FontSize": 16
+            "Foreground": "#d6bb9a"
         },
         "Number": {
-            "Foreground": "ffe4c4",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#8a602c"
         },
         "String": {
-            "Foreground": "ffa500",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Primitive Type": {
-            "Foreground": "ffff55",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Local": {
-            "Foreground": "faebd7",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Field": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Global": {
-            "Foreground": "faebd7",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#d69545"
         },
         "Enumeration": {
-            "Foreground": "55ff55",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#66a334"
         },
         "Function": {
-            "Foreground": "fff8dc",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#d6cf9a"
         },
         "Function Declaration": {
-            "Foreground": "fff8dc",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Function Definition": {
-            "Foreground": "fff8dc",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Virtual Function": {
-            "Foreground": "fff8dc",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#d6cf9a"
         },
         "Comment": {
-            "Foreground": "aaaaaa",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Error": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16,
-            "Underline": {
-                "Color": "ff0000",
-                "Style": 0
-            }
-        },
-        "Error Context": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16,
-            "Underline": {
-                "Color": "ff0000",
-                "Style": 1
-            }
-        },
-        "Warning": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16,
-            "Underline": {
-                "Color": "ff0000",
-                "Style": 0
-            }
-        },
-        "Warning Context": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16,
-            "Underline": {
-                "Color": "ff0000",
-                "Style": 1
-            }
+            "Foreground": "#a8abb0"
         }
     },
     "Light": {
-        "Self": {
-            "Background": "F8F8F8",
-            "Foreground": "000000",
-            "Cursor" : "000000",
-            "FontSize" : 16
-        },  
         "Namespace": {
-            "Foreground": "f08080",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#800080"
         },
         "Macro": {
-            "Foreground": "ff69b4",
-            "Background": "000000",
-            "FontSize" : 16
+            "Foreground": "#00677c"
         },
         "Type": {
-            "Foreground": "ff69b4",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#800080"
         },
         "Method": {
-            "Foreground": "f0e68c",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#00677c"
         },
         "Class": {
-            "Foreground": "f08080",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#800080"
         },
         "Variable": {
-            "Foreground": "0e080a",
-            "Background": "000000",
-            "FontSize": 16   
+            "Foreground": "#092e64"
         },
         "Property": {
-            "Foreground": "eee8aa",
-            "Background": "000000",
-            "FontSize": 16   
+            "Foreground": "#800080"
         },
         "Parameter": {
-            "Foreground": "eee8aa",
-            "Background": "000000",
-            "FontSize": 16   
+            "Foreground": "#092e64"
         },
         "Text": {
-            "Foreground": "eee8aa",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#00677c"
         },
         "Link": {
-            "Foreground": "ffd700",
-            "Background": "aaaaaa",
-            "FontSize": 16
-        },
-        "Selection": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Line Number": {
-            "Foreground": "888888",
-            "Background": "232323",
-            "FontSize": 16
+            "Foreground": "#0000ff"
         },
         "Keyword": {
-            "Foreground": "ff7f50",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Punctuation": {
-            "Foreground": "eee8aa",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#808000"
         },
         "Operators": {
-            "Foreground": "faebd7",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Overloaded Operators": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Preprocessor": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Search Result": {
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Search Scope": {
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Parentheses": {
-            "Foreground": "ff5555",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Mismatched Parentheses": {
-            "Foreground": "000000",
-            "Background": "800080",
-            "FontSize": 16
-        },
-        "Auto Complete": {
-            "Foreground": "a0a0ff",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Current Line": {
-            "Background": 232323,
-            "FontSize": 16
-        },
-        "Current Line Number": {
-            "Foreground": "aaaaaa",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Occurrences": {
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Unused Occurrences": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Renaming Occurrences": {
-            "Foreground": "aaaaaa",
-            "Background": "553636",
-            "FontSize": 16
+            "Foreground": "#faebd7"
         },
         "Number": {
-            "Foreground": "ffe4c4",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#000080"
         },
         "String": {
-            "Foreground": "ffa500",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Primitive Type": {
-            "Foreground": "ffff55",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Local": {
-            "Foreground": "faebd7",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Field": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Global": {
-            "Foreground": "faebd7",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#008000"
         },
         "Enumeration": {
-            "Foreground": "55ff55",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#800080"
         },
         "Function": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#00677c"
         },
         "Function Declaration": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Function Definition": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Virtual Function": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16
+            "Foreground": "#00677c"
         },
         "Comment": {
-            "Foreground": "aaaaaa",
-            "Background": "000000",
-            "FontSize": 16
-        },
-        "Error": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16,
-            "Underline": {
-                "Color": "ff0000",
-                "Style": 0
-            }
-        },
-        "Error Context": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16,
-            "Underline": {
-                "Color": "ff0000",
-                "Style": 1
-            }
-        },
-        "Warning": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16,
-            "Underline": {
-                "Color": "ff0000",
-                "Style": 0
-            }
-        },
-        "Warning Context": {
-            "Foreground": "000000",
-            "Background": "000000",
-            "FontSize": 16,
-            "Underline": {
-                "Color": "ff0000",
-                "Style": 1
-            }
+            "Foreground": "#008000"
         }
     }
 }

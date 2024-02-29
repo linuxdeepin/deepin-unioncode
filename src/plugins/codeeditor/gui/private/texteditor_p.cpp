@@ -107,22 +107,30 @@ void TextEditorPrivate::updateColorTheme()
 {
     if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
         // editor
-        q->setPaper(QColor("#2b2b2b"));
-        q->setCaretForegroundColor(QColor("#FFFFFF"));
-        q->setCaretLineBackgroundColor(QColor("#444444"));
+        q->setPaper(QColor("#2e2f30"));
+        q->setCaretForegroundColor(QColor("#d6cf9a"));
+        q->setCaretLineBackgroundColor(QColor("#373737"));
 
         // margins
-        q->setMarginsBackgroundColor(QColor("#000000"));
-        q->setMarginsForegroundColor(QColor("#F8F8F8"));
+        q->setFoldMarginColors(QColor("#404244"), QColor("#404244"));
+        q->setMarginsBackgroundColor(QColor("#404244"));
+        q->setMarginsForegroundColor(QColor("#bec0c2"));
+
+        q->setMatchedBraceForegroundColor(QColor("#bec0c2"));
+        q->setMatchedBraceBackgroundColor(QColor("#1d545c"));
     } else {
         // editor
         q->setPaper(QColor("#F8F8F8"));
         q->setCaretForegroundColor(QColor("#000000"));
-        q->setCaretLineBackgroundColor(QColor("#E8E8FF"));
+        q->setCaretLineBackgroundColor(QColor("#c1ddee"));
 
         // margins
-        q->setMarginsBackgroundColor(QColor("#FFFFFF"));
-        q->setMarginsForegroundColor(QColor("#b2b2b2"));
+        q->setFoldMarginColors(QColor("#efefef"), QColor("#efefef"));
+        q->setMarginsBackgroundColor(QColor("#efefef"));
+        q->setMarginsForegroundColor(QColor("#9f9f9f"));
+
+        q->setMatchedBraceForegroundColor(QColor("#ff0000"));
+        q->setMatchedBraceBackgroundColor(QColor("#b4eeb4"));
     }
 }
 
@@ -369,8 +377,15 @@ void TextEditorPrivate::adjustScrollBar()
 
 void TextEditorPrivate::onThemeTypeChanged()
 {
+    if (q->lexer()) {
+        q->lexer()->resetStyle();
+        q->setLexer(q->lexer());
+    }
+
+    if (lspStyle)
+        lspStyle->refreshTokens();
+
     updateColorTheme();
-    // TODO: change lexer theme
 }
 
 void TextEditorPrivate::onDwellStart(int position, int x, int y)

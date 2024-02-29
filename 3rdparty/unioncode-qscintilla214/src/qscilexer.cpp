@@ -647,6 +647,12 @@ bool QsciLexer::writeSettings(QSettings &qs,const char *prefix) const
     return rc;
 }
 
+void QsciLexer::resetStyle()
+{
+    style_map->style_data.clear();
+    style_map->style_data_set = false;
+}
+
 
 // Return the auto-indentation style.
 int QsciLexer::autoIndentStyle()

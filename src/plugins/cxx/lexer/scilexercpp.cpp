@@ -247,53 +247,46 @@ const char *SciLexerCPP::wordCharacters() const
 
 QColor SciLexerCPP::defaultColor(int style) const
 {
+    bool isDarkTheme = DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType;
     switch (style) {
     case Default:
-        return QColor(0x80, 0x80, 0x80);
+        return isDarkTheme ? QColor("#d6cf9a") : QColor("#000000");
 
     case Comment:
     case CommentLine:
-        return QColor(0x00, 0x7f, 0x00);
-
     case CommentDoc:
     case CommentLineDoc:
     case PreProcessorCommentLineDoc:
-        return QColor(0x3f, 0x70, 0x3f);
+    case CommentDocKeyword:
+    case CommentDocKeywordError:
+    case PreProcessorComment:
+        return isDarkTheme ? QColor("#a8abb0") : QColor("#008000");
 
     case Number:
-        return QColor(0x00, 0x7f, 0x7f);
+        return isDarkTheme ? QColor("#8a602c") : QColor("#000080");
 
     case Keyword:
-        return QColor(0x00, 0x00, 0x7f);
+        return isDarkTheme ? QColor("#45c6d6") : QColor("#808000");
 
     case DoubleQuotedString:
     case SingleQuotedString:
     case RawString:
-        return QColor(0x7f, 0x00, 0x7f);
+        return isDarkTheme ? QColor("#d69545") : QColor("#008000");
 
     case PreProcessor:
-        return QColor(0x7f, 0x7f, 0x00);
+        return isDarkTheme ? QColor("#ff6aad") : QColor("#000080");
 
     case Operator:
     case UnclosedString:
-        return QColor(0x00, 0x00, 0x00);
+        return isDarkTheme ? QColor("#d6cf9a") : QColor("#000000");
 
     case VerbatimString:
     case TripleQuotedVerbatimString:
     case HashQuotedString:
-        return QColor(0x00, 0x7f, 0x00);
+        return isDarkTheme ? QColor("#d69545") : QColor("#008000");
 
     case Regex:
-        return QColor(0x3f, 0x7f, 0x3f);
-
-    case CommentDocKeyword:
-        return QColor(0x30, 0x60, 0xa0);
-
-    case CommentDocKeywordError:
-        return QColor(0x80, 0x40, 0x20);
-
-    case PreProcessorComment:
-        return QColor(0x65, 0x99, 0x00);
+        return isDarkTheme ? QColor("#45c6d6") : QColor("#3f7f3f");
 
     case InactiveDefault:
     case InactiveUUID:
@@ -302,55 +295,33 @@ QColor SciLexerCPP::defaultColor(int style) const
     case InactiveCommentDocKeyword:
     case InactiveCommentDocKeywordError:
     case InactivePreProcessorCommentLineDoc:
-        return QColor(0xc0, 0xc0, 0xc0);
-
     case InactiveComment:
     case InactiveCommentLine:
     case InactiveNumber:
     case InactiveVerbatimString:
     case InactiveTripleQuotedVerbatimString:
     case InactiveHashQuotedString:
-        return QColor(0x90, 0xb0, 0x90);
-
     case InactiveCommentDoc:
-        return QColor(0xd0, 0xd0, 0xd0);
-
     case InactiveKeyword:
-        return QColor(0x90, 0x90, 0xb0);
-
     case InactiveDoubleQuotedString:
     case InactiveSingleQuotedString:
     case InactiveRawString:
-        return QColor(0xb0, 0x90, 0xb0);
-
     case InactivePreProcessor:
-        return QColor(0xb0, 0xb0, 0x90);
-
     case InactiveOperator:
     case InactiveIdentifier:
     case InactiveGlobalClass:
-        return QColor(0xb0, 0xb0, 0xb0);
-
     case InactiveUnclosedString:
-        return QColor(0x00, 0x00, 0x00);
-
     case InactiveRegex:
-        return QColor(0x7f, 0xaf, 0x7f);
-
     case InactivePreProcessorComment:
-        return QColor(0xa0, 0xc0, 0x90);
+    case InactiveTaskMarker:
+    case InactiveUserLiteral:
+        return isDarkTheme ? QColor("#474747") : QColor("#c0c0c0");
 
     case UserLiteral:
-        return QColor(0xc0, 0x60, 0x00);
-
-    case InactiveUserLiteral:
-        return QColor(0xd7, 0xa0, 0x90);
+        return isDarkTheme ? QColor("#d6cf9a") : QColor("#c06000");
 
     case TaskMarker:
-        return QColor(0xbe, 0x07, 0xff);
-
-    case InactiveTaskMarker:
-        return QColor(0xc3, 0xa1, 0xcf);
+        return isDarkTheme ? QColor("#ff6aad") : QColor("#be07ff");
     }
 
     return AbstractLexerProxy::defaultColor(style);
@@ -402,7 +373,6 @@ QFont SciLexerCPP::defaultFont(int style) const
     case Operator:
     case InactiveOperator:
         f = AbstractLexerProxy::defaultFont(style);
-        f.setBold(true);
         break;
 
     case DoubleQuotedString:
