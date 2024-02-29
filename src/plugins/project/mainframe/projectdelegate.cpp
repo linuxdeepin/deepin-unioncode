@@ -51,7 +51,7 @@ void ProjectDelegate::paint(QPainter *painter,
         QColor color;
         DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType
                 ? color = Qt::black
-                : color = Qt::white;
+                : color = QColor("#c5c8c9");
         iOption.palette.setColor(QPalette::Text, color);
     }
 

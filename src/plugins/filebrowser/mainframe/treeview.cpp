@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "treeview.h"
+#include "filebrowserdelegate.h"
 #include "transceiver/sendevents.h"
 
 #include "common/common.h"
@@ -15,32 +16,33 @@
 #include <QStack>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 const QString NEW_DOCUMENT_NAME = "NewDocument.txt";
 const QString NEW_FOLDER_NAME = "NewFolder";
-const QString DELETE_MESSAGE_TEXT {DTreeView::tr("The delete operation will be removed from"
-                                                 "the disk and will not be recoverable "
-                                                 "after this operation.\nDelete anyway?")};
+const QString DELETE_MESSAGE_TEXT { DTreeView::tr("The delete operation will be removed from"
+                                                  "the disk and will not be recoverable "
+                                                  "after this operation.\nDelete anyway?") };
 
-const QString DELETE_WINDOW_TEXT {DTreeView::tr("Delete Warning")};
+const QString DELETE_WINDOW_TEXT { DTreeView::tr("Delete Warning") };
 
 class TreeViewPrivate
 {
     friend class TreeView;
-    QFileSystemModel *model {nullptr};
-    DMenu* menu {nullptr};
+    QFileSystemModel *model { nullptr };
+    DMenu *menu { nullptr };
     QStack<QStringList> moveToTrashStack;
     dpfservice::ProjectInfo proInfo;
 };
 
 TreeView::TreeView(QWidget *parent)
-    : DTreeView (parent)
-    , d (new TreeViewPrivate)
+    : DTreeView(parent), d(new TreeViewPrivate)
 {
     setLineWidth(0);
     d->model = new QFileSystemModel(this);
     d->menu = new DMenu(this);
     setModel(d->model);
+    setItemDelegate(new FileBrowserDelegate(this));
     header()->setSectionResizeMode(DHeaderView::ResizeMode::ResizeToContents);
     setAlternatingRowColors(true);
     QObject::connect(this, &DTreeView::doubleClicked, this, &TreeView::doDoubleClicked);
@@ -90,7 +92,7 @@ void TreeView::selMoveToTrash()
     bool hasError = false;
     for (auto path : countPaths) {
         bool currErr = !FileOperation::doMoveMoveToTrash(path);
-        if (currErr){
+        if (currErr) {
             errFilePaths << path;
             hasError = true;
         } else {
@@ -101,11 +103,7 @@ void TreeView::selMoveToTrash()
     if (!hasError) {
         d->moveToTrashStack.push(okFilePaths);
     } else {
-        QString errMess;
-        for (auto errFilePath : errFilePaths) {
-            errMess = DTreeView::tr("Error, Can't move to trash: ") + "\n"
-                    + errFilePath  + "\n";
-        }
+        QString errMess = tr("Error, Can't move to trash: ") + "\n" + errFilePaths.join('\n');
         CommonDialog::ok(errMess);
     }
 }
@@ -113,7 +111,7 @@ void TreeView::selMoveToTrash()
 void TreeView::selRemove()
 {
     QModelIndexList indexs = selectedIndexes();
-    QSet<QString> countPaths;
+    QStringList countPaths;
     for (auto index : indexs) {
         countPaths << d->model->filePath(index);
     }
@@ -124,36 +122,28 @@ void TreeView::selRemove()
         doDeleta = true;
     };
 
-    QString mess = DELETE_MESSAGE_TEXT + "\n";
-    for (auto path : countPaths)  {
-        mess += path  + "\n";
-    }
-
+    QString mess = DELETE_MESSAGE_TEXT + "\n" + countPaths.join('\n');
     CommonDialog::okCancel(mess,
-                            DELETE_WINDOW_TEXT,
-                            QMessageBox::Warning,
-                            okCallBack,
-                            nullptr);
+                           DELETE_WINDOW_TEXT,
+                           QMessageBox::Warning,
+                           okCallBack,
+                           nullptr);
 
     if (!doDeleta)
         return;
 
     bool hasError = false;
     QStringList errFilePaths;
-    for (auto currPath : countPaths){
+    for (auto currPath : countPaths) {
         bool currErr = !FileOperation::doRemove(currPath);
-        if (currErr){
+        if (currErr) {
             errFilePaths << currPath;
             hasError = true;
         }
     }
 
-    if (hasError)  {
-        QString errMess;
-        for (auto errFilePath : errFilePaths) {
-            errMess = DTreeView::tr("Error, Can't move to trash: ") + "\n"
-                    + errFilePath  + "\n";
-        }
+    if (hasError) {
+        QString errMess = tr("Error, Can't move to trash: ") + "\n" + errFilePaths.join('\n');
         CommonDialog::ok(errMess);
     }
 }
@@ -169,10 +159,10 @@ void TreeView::selNewDocument()
         if (info.isDir()) {
             hasErr = !FileOperation::doNewDocument(filePath, NEW_DOCUMENT_NAME);
             if (hasErr)
-                errString =  DTreeView::tr("Error: Can't create New Document");
+                errString = DTreeView::tr("Error: Can't create New Document");
         } else {
             hasErr = true;
-            errString =  DTreeView::tr("Error: Create New Document, parent not's dir");
+            errString = DTreeView::tr("Error: Create New Document, parent not's dir");
         }
     }
 
@@ -191,10 +181,10 @@ void TreeView::selNewFolder()
         if (info.isDir()) {
             hasErr = !FileOperation::doNewFolder(filePath, NEW_FOLDER_NAME);
             if (hasErr)
-                errString =  DTreeView::tr("Error: Can't create new folder");
+                errString = DTreeView::tr("Error: Can't create new folder");
         } else {
             hasErr = true;
-            errString =  DTreeView::tr("Error: Create new folder, parent not's dir");
+            errString = DTreeView::tr("Error: Create new folder, parent not's dir");
         }
     }
 
@@ -235,7 +225,7 @@ DMenu *TreeView::createContextMenu(const QModelIndexList &indexs)
     DMenu *menu = new DMenu();
     bool hasDir = false;
     bool selOne = indexs.size() == 0;
-    for (auto index: indexs)  {
+    for (auto index : indexs) {
         if (d->model->isDir(index))
             hasDir = true;
     }
