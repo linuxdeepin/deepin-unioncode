@@ -5,6 +5,7 @@
 #include "debugmanager.h"
 #include "locker.h"
 
+#include "common/util/custompaths.h"
 #include "debugger/debugger.h"
 #include "debugger/gdbmi/gdbdebugger.h"
 #include "debugger/javascript/jsdebugger.h"
@@ -19,6 +20,7 @@ class DebugManagerPrivate {
     QString tempBuffer;
     ConditionLockEx locker;
     ConditionLockEx stacklocker;
+    ConditionLockEx varibalelocker;
     QHash<int, DebugManager::ResponseEntry> resposeExpected;
     QStringList arguments;
     int tokenCounter = 0;
@@ -50,6 +52,7 @@ void DebugManager::initProcess()
 
     connect(d->process.data(), &QProcess::readyReadStandardOutput, [this]() {
         QString output = d->process->readAllStandardOutput();
+        d->tempBuffer.clear();
         for (const auto& c: output)
             switch (c.toLatin1()) {
             case '\r':
@@ -129,6 +132,11 @@ void DebugManager::fireLocker()
     d->locker.fire();
 }
 
+void DebugManager::fireVariablesLocker()
+{
+    d->varibalelocker.fire();
+}
+
 void DebugManager::fireStackLocker()
 {
     d->stacklocker.fire();
@@ -149,6 +157,12 @@ void DebugManager::execute()
     d->process->setArguments(d->arguments);
     d->process->setProgram(d->debugger->program());
     d->process->start();
+
+    QString prettyPrintersPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/prettyprinters";
+
+    command(QString("python sys.path.insert(0, \"%1\")").arg(prettyPrintersPath));
+    command("python from qt import register_qt_printers");
+    command("python register_qt_printers(None)");
 }
 
 bool DebugManager::command(const QString &cmd)
@@ -215,7 +229,8 @@ void DebugManager::updateExceptResponse(const int token, const QVariant& payload
 {
     if (d->resposeExpected.contains(token)) {
         auto& expect = d->resposeExpected.value(token);
-        expect.handler(payload);
+        if(expect.handler)
+            expect.handler(payload);
         if (expect.action == ResponseEntry::ResponseEntry::ResponseAction_t::Temporal)
             d->resposeExpected.remove(token);
     }
@@ -245,7 +260,7 @@ void DebugManager::stackListFrames()
 void DebugManager::stackListVariables()
 {
     if (command(d->debugger->stackListVariables()))
-        waitLocker();
+        d->varibalelocker.wait();
 }
 
 void DebugManager::threadInfo()
@@ -299,9 +314,9 @@ dap::array<dap::Thread> DebugManager::allThreadList()
     return d->debugger->allThreadList();
 }
 
-dap::array<dap::Variable> DebugManager::allVariableList()
+dap::array<dap::Variable> DebugManager::getVariableList(int64_t reference)
 {
-    return d->debugger->allVariableList();
+    return d->debugger->getVariableListByRef(reference);
 }
 
 void DebugManager::disassemble(const QString &address)

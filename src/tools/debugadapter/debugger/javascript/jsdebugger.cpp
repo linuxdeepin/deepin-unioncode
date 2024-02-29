@@ -136,6 +136,11 @@ dap::array<dap::Variable> JSDebugger::allVariableList()
     return d->variables;
 }
 
+dap::array<dap::Variable> JSDebugger::getVariableListByRef(int64_t ref)
+{
+    return d->variables;
+}
+
 void JSDebugger::handleOutputRecord(const QString &text)
 {
     qInfo() << text;
