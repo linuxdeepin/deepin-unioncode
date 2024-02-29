@@ -16,6 +16,8 @@
 #include <QMenu>
 
 using namespace dpfservice;
+inline constexpr char* mainWindow = "debugMainWindow";
+inline constexpr char* localsPane = "debuggerWatcher";
 
 void DebuggerPlugin::initialize()
 {
@@ -48,12 +50,15 @@ bool DebuggerPlugin::start()
         QAction *action = new QAction(MWNA_DEBUG, this);
         action->setIcon(QIcon::fromTheme("debug-navigation"));
         windowService->addNavigationItem(new AbstractAction(action), 5);
-        windowService->registerWidgetToMode("debugMainWindow", new AbstractWidget(debugManager->getDebugMainPane()), CM_DEBUG, Position::Left, true, true);
-        windowService->registerWidget("debuggerWatcher", new AbstractWidget(debugManager->getLocalsPane()));
+        windowService->registerWidgetToMode(mainWindow, new AbstractWidget(debugManager->getDebugMainPane()), CM_DEBUG, Position::Left, true, true);
+        windowService->registerWidget(localsPane, new AbstractWidget(debugManager->getLocalsPane()));
         connect(action, &QAction::triggered, this, [=]() {
-            windowService->showWidgetAtPosition("debuggerWatcher", Position::Right, true);
-            if (debugManager->getRunState() == AbstractDebugger::kNoRun)
-                debugManager->getLocalsPane()->hide();
+            if (debugManager->getRunState() != AbstractDebugger::kNoRun)
+                windowService->showWidgetAtPosition(localsPane, Position::Right, true);
+        }, Qt::DirectConnection);
+        connect(debugManager, &DebugManager::debugStarted, this, [=](){
+            debugManager->getLocalsPane()->show();
+            windowService->showWidgetAtPosition(localsPane, Position::Right, true);
         }, Qt::DirectConnection);
     }
 

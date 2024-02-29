@@ -46,6 +46,8 @@ public:
     dap::array<dap::StackFrame> allStackframes() override;
     dap::array<dap::Thread> allThreadList() override;
     dap::array<dap::Variable> allVariableList() override;
+    dap::array<dap::Variable> getVariableListByRef(int64_t ref) override;
+
 
     void handleOutputRecord(const QString &text) override;
     void handleOutputStreamText(const QString &streamText) override;
