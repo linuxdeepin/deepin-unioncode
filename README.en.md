@@ -6,7 +6,7 @@ Deepin Union Code is a lightweight integrated development environment independen
 
 ## Build dependencies
 
-_The **master** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
+_The **dev** branch is current development branch, build dependencies may changes without update README.md, refer to `./debian/control` for a working build depends list_
 
 -  debhelper (>=9),
 -  cmake,
