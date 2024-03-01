@@ -21,8 +21,8 @@ public:
     virtual void initLspConnection();   //setting main
     void updateTokens();
     void setIndicStyle();
-    virtual QMap<int, QColor> symbolIndic(lsp::SemanticTokenType::type_value token,
-                                          QList<lsp::SemanticTokenType::type_index> modifier);
+    virtual QColor symbolIndicColor(lsp::SemanticTokenType::type_value token,
+                                    QList<lsp::SemanticTokenType::type_index> modifier);
 
     /*!
      * \brief tokenFromServProvider find local token from lsp protocol init response provider data

@@ -96,17 +96,16 @@ void LSPStyle::updateTokens()
     }
 }
 
-QMap<int, QColor> LSPStyle::symbolIndic(lsp::SemanticTokenType::type_value token,
-                                        QList<lsp::SemanticTokenType::type_index> modifier)
+QColor LSPStyle::symbolIndicColor(lsp::SemanticTokenType::type_value token,
+                                  QList<lsp::SemanticTokenType::type_index> modifier)
 {
     Q_UNUSED(modifier);
     QMap<int, QColor> result;
 
     const auto &filePath = d->editor->getFile();
     auto langId = support_file::Language::id(filePath);
-    result[TextEditor::INDIC_TEXTFORE] = LSPClientManager::instance()->highlightColor(langId, token);
 
-    return result;
+    return LSPClientManager::instance()->highlightColor(langId, token);
 }
 
 lsp::SemanticTokenType::type_value LSPStyle::tokenToDefine(int token)
@@ -190,10 +189,7 @@ void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens)
     if (!d->editor || !d->editor->lexer())
         return;
 
-    // clear all text color
-    d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_TEXTFORE);
-    d->editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, d->editor->length());
-
+    QList<std::tuple<int, QString, QString>> textTokenList;
     int cacheLine = 0;
     for (auto val : tokens) {
         cacheLine += val.start.line;
@@ -219,25 +215,30 @@ void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens)
 #ifdef QT_DEBUG
             qInfo() << "tokenValue:" << tokenValue;
 #endif
-            auto indics = symbolIndic(tokenValue, val.tokenModifiers);
-            for (int i = 0; i < TextEditor::INDIC_MAX; i++) {
-                if (!indics.contains(i))
-                    continue;
-
-                d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, i);
-                d->editor->SendScintilla(TextEditor::SCI_INDICSETFLAGS, static_cast<ulong>(i), 1);
-                d->editor->SendScintilla(TextEditor::SCI_SETINDICATORVALUE, indics[i]);
-                d->editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE, static_cast<ulong>(startPos), sourceText.length());
-            }
-
-            //            QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue, sourceText);
-            //            if (!tokenAnnLine.isEmpty()) {
-            //                editor.setAnnotation(d->edit->file(), cacheLine,
-            //                                     QString(TextEditKeeper::userActionAnalyseTitle()),
-            //                                     AnnotationInfo { tokenAnnLine });
-            //            }
+            textTokenList << std::make_tuple(startPos, sourceText, tokenValue);
         }
     }
+
+    if (textTokenList.isEmpty())
+        return;
+
+    // clear all text color
+    d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_TEXTFORE);
+    d->editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, d->editor->length());
+    for (const auto &value : textTokenList) {
+        auto color = symbolIndicColor(std::get<2>(value), {});
+        d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_TEXTFORE);
+        d->editor->SendScintilla(TextEditor::SCI_INDICSETFLAGS, TextEditor::INDIC_TEXTFORE, 1);
+        d->editor->SendScintilla(TextEditor::SCI_SETINDICATORVALUE, color);
+        d->editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE, static_cast<ulong>(std::get<0>(value)), std::get<1>(value).length());
+    }
+
+    //            QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue, sourceText);
+    //            if (!tokenAnnLine.isEmpty()) {
+    //                editor.setAnnotation(d->edit->file(), cacheLine,
+    //                                     QString(TextEditKeeper::userActionAnalyseTitle()),
+    //                                     AnnotationInfo { tokenAnnLine });
+    //            }
 }
 
 void LSPStyle::refreshTokens()
