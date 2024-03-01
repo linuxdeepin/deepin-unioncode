@@ -1,3 +1,10 @@
+deepin-unioncode (1.2.12) UNRELEASED; urgency=medium
+
+  * Project tree optimization
+  * LSP optimization
+
+ -- luzhen <luzhen@uniontech.com>  Fri, 01 Mar 2024 14:44:12 +0800
+
 deepin-unioncode (1.2.11) unstable; urgency=medium
 
   * LSP optimization
