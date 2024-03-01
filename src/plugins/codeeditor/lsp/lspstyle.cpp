@@ -158,6 +158,9 @@ void LSPStyle::setDiagnostics(const newlsp::PublishDiagnosticsParams &data)
     if (QUrl(QString::fromStdString(data.uri)).toLocalFile() != d->editor->getFile())
         return;
 
+    // clear all flags of diagnostics
+    d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_SQUIGGLE);
+    d->editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, d->editor->length());
     this->cleanDiagnostics();
     for (auto val : data.diagnostics) {
         if (newlsp::Enum::DiagnosticSeverity::get()->Error == val.severity.value()) {   // error
@@ -187,6 +190,10 @@ void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens)
     if (!d->editor || !d->editor->lexer())
         return;
 
+    // clear all text color
+    d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_TEXTFORE);
+    d->editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, d->editor->length());
+
     int cacheLine = 0;
     for (auto val : tokens) {
         cacheLine += val.start.line;
@@ -214,12 +221,13 @@ void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens)
 #endif
             auto indics = symbolIndic(tokenValue, val.tokenModifiers);
             for (int i = 0; i < TextEditor::INDIC_MAX; i++) {
-                if (indics.contains(i)) {
-                    d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, i);
-                    d->editor->SendScintilla(TextEditor::SCI_INDICSETFLAGS, i, 1);
-                    d->editor->SendScintilla(TextEditor::SCI_SETINDICATORVALUE, indics[i]);
-                    d->editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE, startPos, sourceText.length());
-                }
+                if (!indics.contains(i))
+                    continue;
+
+                d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, i);
+                d->editor->SendScintilla(TextEditor::SCI_INDICSETFLAGS, static_cast<ulong>(i), 1);
+                d->editor->SendScintilla(TextEditor::SCI_SETINDICATORVALUE, indics[i]);
+                d->editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE, static_cast<ulong>(startPos), sourceText.length());
             }
 
             //            QString tokenAnnLine = TextEditKeeper::getTokenTypeAnnLine(tokenValue, sourceText);
@@ -390,7 +398,7 @@ void LSPStyle::setCompletion(const QString &text, int enterLenght, const lsp::Co
           });
 
     auto completionData = inserts.join(sep).toUtf8();
-    d->editor->SendScintilla(TextEditor::SCI_AUTOCSHOW, enterLenght, completionData.constData());
+    d->editor->SendScintilla(TextEditor::SCI_AUTOCSHOW, static_cast<ulong>(enterLenght), completionData.constData());
 }
 
 void LSPStyle::onTextInsertedTotal(int position, int length, int linesAdded, const QString &text, int line)
@@ -405,8 +413,8 @@ void LSPStyle::onTextInsertedTotal(int position, int length, int linesAdded, con
         d->textChangedTimer.stop();
 
     auto wordStartPos = d->editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(position - length), true);
-    setCompletion(d->editor->text(wordStartPos, position).replace(" ", "") + text,
-                  position - wordStartPos, d->completionCache.provider);
+    setCompletion(d->editor->text(static_cast<int>(wordStartPos), position).replace(" ", "") + text,
+                  static_cast<int>(position - wordStartPos), d->completionCache.provider);
 
     d->textChangedCache.positionCache = position;
     d->textChangedCache.lengthCache = length;
@@ -421,6 +429,9 @@ void LSPStyle::onTextInsertedTotal(int position, int length, int linesAdded, con
 
 void LSPStyle::onTextDeletedTotal(int position, int length, int linesAdded, const QString &text, int line)
 {
+    Q_UNUSED(linesAdded)
+    Q_UNUSED(line)
+
     if (!d->editor || !d->getClient())
         return;
 
@@ -462,9 +473,7 @@ void LSPStyle::onTextChangedTotal()
     if (!d->editor)
         return;
 
-    d->editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, d->editor->length());   // clean all indicator range style
     cleanDiagnostics();
-
     if (d->getClient()) {
         const auto &content = d->editor->text();
         qApp->metaObject()->invokeMethod(d->getClient(), "changeRequest",
