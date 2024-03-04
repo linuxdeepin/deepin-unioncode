@@ -15,8 +15,8 @@
 DWIDGET_USE_NAMESPACE
 
 static const char *const IID = "org.deepin.plugin.unioncode";
-static const char *const CORE_PLUGIN = "plugin-core";
-static const char *const CORE_NAME = "libplugin-core.so";
+static const char *const CORE_PLUGIN = "core";
+static const char *const CORE_NAME = "libcore.so";
 static bool loadPlugins()
 {
     dpfCheckTimeBegin();

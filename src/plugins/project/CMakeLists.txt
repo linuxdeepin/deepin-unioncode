@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(plugin-projectcore)
+project(projectcore)
 
 set(CXX_CPP
     mainframe/projectmodel.cpp
