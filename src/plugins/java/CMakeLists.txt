@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(plugin-java)
+project(java)
 
 find_package(Qt5 COMPONENTS Xml REQUIRED)
 

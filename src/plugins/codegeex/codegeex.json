@@ -1,5 +1,5 @@
 {
-    "Name" : "plugin-codegeex",
+    "Name" : "codegeex",
     "Version" : "4.8.2",
     "CompatVersion" : "4.8.0",
     "Vendor" : "The Uniontech Software Technology Co., Ltd.",
@@ -11,6 +11,6 @@
     "Description" : "The AI plugin for the unioncode.",
     "UrlLink" : "https://ecology.chinauos.com/adaptidentification/doc_new/#document3?dirid=656d40c5bd766615b0b02e64&id=6597c7ad63a85b76997a070d",
     "Depends" : [
-        {"Name" : "plugin-codeeditor"}
+        {"Name" : "codeeditor"}
     ]
 }

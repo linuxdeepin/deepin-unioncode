@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(plugin-codeeditor)
+project(codeeditor)
 
 include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-qscintilla214.cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR true)
