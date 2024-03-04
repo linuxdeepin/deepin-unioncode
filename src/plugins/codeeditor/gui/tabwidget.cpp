@@ -24,6 +24,7 @@ TabWidgetPrivate::TabWidgetPrivate(TabWidget *qq)
 void TabWidgetPrivate::initUI()
 {
     q->setFocusPolicy(Qt::ClickFocus);
+    q->setAcceptDrops(true);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(q);
     mainLayout->setSpacing(0);
@@ -507,7 +508,7 @@ void TabWidget::updateZoomValue(int value)
 
 void TabWidget::openFile(const QString &fileName)
 {
-    if (!QFile::exists(fileName))
+    if (!QFile::exists(fileName) || QFileInfo(fileName).isDir())
         return;
 
     if (d->findEditor(fileName)) {
@@ -549,11 +550,15 @@ void TabWidget::gotoLine(int line)
 
 void TabWidget::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasUrls()) {
-        event->acceptProposedAction();
-    } else {
-        event->ignore();
-    }
+    if (!event->mimeData()->hasUrls())
+        return event->ignore();
+
+    const QMimeData *mimeData = event->mimeData();
+    const auto &urlList = mimeData->urls();
+    if (QFileInfo(urlList[0].toLocalFile()).isDir())
+        return event->ignore();
+
+    event->acceptProposedAction();
 }
 
 void TabWidget::dropEvent(QDropEvent *event)
@@ -561,9 +566,8 @@ void TabWidget::dropEvent(QDropEvent *event)
     const QMimeData *mimeData = event->mimeData();
     if (mimeData->hasUrls()) {
         const auto &urlList = mimeData->urls();
-        const auto &fileName = urlList.at(0).toLocalFile();
-        if (!fileName.isEmpty())
-            openFile(fileName);
+        for (const auto &url : urlList)
+            openFile(url.toLocalFile());
     }
 }
 
