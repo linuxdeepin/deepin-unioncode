@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(plugin-reversedebug)
+project(reversedebug)
 
 set(CXX_CPP
     reversedebug.json

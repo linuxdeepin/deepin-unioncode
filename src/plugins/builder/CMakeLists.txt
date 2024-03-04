@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(plugin-buildercore)
+project(buildercore)
 
 set(CXX_CPP
     tasks/taskmodel.cpp

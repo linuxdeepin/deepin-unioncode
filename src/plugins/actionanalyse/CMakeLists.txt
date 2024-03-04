@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(plugin-actionanalyse)
+project(actionanalyse)
 
 set(CXX_CPP
     mainframe/configure.cpp
