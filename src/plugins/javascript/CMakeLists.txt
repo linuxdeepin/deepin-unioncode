@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(plugin-javascript)
+project(javascript)
 
 find_package(Qt5 COMPONENTS Xml Script ScriptTools REQUIRED)
 

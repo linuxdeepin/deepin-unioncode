@@ -1,5 +1,5 @@
 {
-    "Name" : "plugin-codeeditor",
+    "Name" : "codeeditor",
     "Version" : "4.8.2",
     "CompatVersion" : "4.8.0",
     "Vendor" : "The Uniontech Software Technology Co., Ltd.",
@@ -11,6 +11,6 @@
     "Description" : "The core plugin for the unioncode.",
     "UrlLink" : "https://ecology.chinauos.com/adaptidentification/doc_new/#document3?dirid=656d40c5bd766615b0b02e64&id=656d415bbd766615b0b02e78",
     "Depends" : [
-        {"Name" : "plugin-core"}
+        {"Name" : "core"}
     ]
 }
