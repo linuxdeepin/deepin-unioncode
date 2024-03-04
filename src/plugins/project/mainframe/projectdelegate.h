@@ -5,10 +5,10 @@
 #ifndef PROJECTDELEGATE_H
 #define PROJECTDELEGATE_H
 
-#include <DStyledItemDelegate>
+#include <QStyledItemDelegate>
 
 class ProjectDelegatePrivate;
-class ProjectDelegate : public DTK_WIDGET_NAMESPACE::DStyledItemDelegate
+class ProjectDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
     ProjectDelegatePrivate *const d;

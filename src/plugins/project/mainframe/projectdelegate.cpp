@@ -5,10 +5,11 @@
 #include "projectdelegate.h"
 
 #include <DGuiApplicationHelper>
+#include <QStyledItemDelegate>
+#include <QAbstractItemView>
 
 #include <QPainter>
 
-DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
 
 class ProjectDelegatePrivate
@@ -18,7 +19,7 @@ class ProjectDelegatePrivate
 };
 
 ProjectDelegate::ProjectDelegate(QAbstractItemView *parent)
-    : DStyledItemDelegate(parent), d(new ProjectDelegatePrivate)
+    : QStyledItemDelegate(parent), d(new ProjectDelegatePrivate)
 {
 }
 
@@ -60,5 +61,6 @@ void ProjectDelegate::paint(QPainter *painter,
 
 QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(index)
     return { option.rect.width(), 24 };
 }
