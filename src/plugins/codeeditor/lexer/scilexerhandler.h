@@ -21,6 +21,7 @@ public:
     virtual const char *lexer() const override;
     virtual QString description(int style) const override;
     virtual const char *blockEnd(int *style) const override;
+    virtual int blockLookback() const override;
     virtual const char *blockStart(int *style) const override;
     virtual const char *blockStartKeyword(int *style) const override;
     virtual int braceStyle() const override;
