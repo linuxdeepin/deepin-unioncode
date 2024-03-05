@@ -2175,7 +2175,7 @@ private slots:
     void handleIndicatorRelease(int pos, int modifiers);
     void handleMarginClick(int pos, int margin, int modifiers);
     void handleMarginRightClick(int pos, int margin, int modifiers);
-    void handleModified(int pos, int mtype, const char *text, int len,
+    void handleModified(int pos, int mtype, const QString &text, int len,
             int added, int line, int foldNow, int foldPrev, int token,
             int annotationLinesAdded);
     void handlePropertyChange(const char *prop, const char *val);
