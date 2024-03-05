@@ -62,7 +62,7 @@ void LSPStyle::initLspConnection()
     connect(d->getClient(), QOverload<const newlsp::PublishDiagnosticsParams &>::of(&newlsp::Client::publishDiagnostics),
             this, [=](const newlsp::PublishDiagnosticsParams &data) { this->setDiagnostics(data); });
 
-    connect(d->getClient(), QOverload<const QList<lsp::Data> &>::of(&newlsp::Client::requestResult),
+    connect(d->getClient(), QOverload<const QList<lsp::Data> &, const QString &>::of(&newlsp::Client::requestResult),
             this, &LSPStyle::setTokenFull);
 
     connect(d->getClient(), QOverload<const newlsp::Hover &>::of(&newlsp::Client::hoverRes),
@@ -183,10 +183,10 @@ void LSPStyle::cleanDiagnostics()
     d->diagnosticCache.clear();
 }
 
-void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens)
+void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens, const QString &filePath)
 {
     qInfo() << Q_FUNC_INFO << tokens.size();
-    if (!d->editor || !d->editor->lexer())
+    if (!d->editor || d->editor->getFile() != filePath || !d->editor->lexer())
         return;
 
     QList<std::tuple<int, QString, QString>> textTokenList;
