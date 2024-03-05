@@ -17,10 +17,17 @@ class Client;
 class ClientPrivate : public newlsp::StdoutJsonRpcParser
 {
     Q_OBJECT
+
+    struct RequestInfo
+    {
+        QString method;
+        QString file;
+    };
+
     friend class Client;
     Client *const q;
     int requestIndex;
-    QHash<int, QString> requestSave;
+    QHash<int, RequestInfo> requestSave;
     int semanticTokenResultId;
     QHash<QString, int> fileVersion;
     lsp::SemanticTokensProvider secTokensProvider;
@@ -59,7 +66,7 @@ public Q_SLOTS:
     void doReadStdoutLine();
     void identifyJsonObject(const QJsonObject &jsonObj);
 
-    void callMethod(const QString &method, const QJsonObject &params);
+    void callMethod(const QString &method, const QJsonObject &params, const QString &filePath = "");
     void callNotification(const QString &method, const QJsonObject &params);
     void writeLspData(const QByteArray &jsonObj);
 };

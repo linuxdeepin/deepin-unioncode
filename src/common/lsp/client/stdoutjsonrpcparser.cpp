@@ -34,15 +34,17 @@ bool newlsp::StdoutJsonRpcParser::checkJsonValid(const QByteArray &data)
 void newlsp::StdoutJsonRpcParser::doReadedLine(const QByteArray &line)
 {
     auto data = line;
-
     QRegularExpression regExpContentLength("^Content-Length:\\s?(?<Length>[0-9]+)");
     auto match = regExpContentLength.match(line);
     if (match.hasMatch())
         contentLength = match.captured("Length").toInt();
 
+    QByteArray extraData;
     // The data in `line` may be truncated and assembled according to the `Content-Length`
     if (!outputCache.isEmpty() || (contentLength != 0 && data.contains("\"jsonrpc\":") && !checkJsonValid(data))) {
-        outputCache.append(data.mid(0, contentLength - outputCache.size()));
+        auto subInfo = data.mid(0, contentLength - outputCache.size());
+        outputCache.append(subInfo);
+        extraData = data.right(data.size() - subInfo.size());
         if (outputCache.size() == contentLength && checkJsonValid(outputCache)) {
             data = outputCache;
             outputCache.clear();
@@ -56,4 +58,6 @@ void newlsp::StdoutJsonRpcParser::doReadedLine(const QByteArray &line)
     }
 
     d->doParseReadLine(data);
+    if (!extraData.isEmpty())
+        doReadedLine(extraData);
 }

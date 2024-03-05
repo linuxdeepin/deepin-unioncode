@@ -415,7 +415,7 @@ void TextEditorPrivate::onDwellEnd(int position, int x, int y)
     emit q->documentHoverEnd(position);
 }
 
-void TextEditorPrivate::onModified(int pos, int mtype, const char *text, int len, int added, int line,
+void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int len, int added, int line,
                                    int foldNow, int foldPrev, int token, int annotationLinesAdded)
 {
     Q_UNUSED(foldNow);

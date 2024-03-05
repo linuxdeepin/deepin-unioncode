@@ -3694,7 +3694,7 @@ signals:
     void SCN_MARGINRIGHTCLICK(int position, int modifiers, int margin);
 
     //!
-    void SCN_MODIFIED(int, int, const char *, int, int, int, int, int, int, int);
+    void SCN_MODIFIED(int, int, QString, int, int, int, int, int, int, int);
 
     //! This signal is emitted when the user attempts to modify read-only
     //! text.
