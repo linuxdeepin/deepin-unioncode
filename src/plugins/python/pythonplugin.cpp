@@ -6,10 +6,12 @@
 #include "python/pythongenerator.h"
 #include "python/project/pythonprojectgenerator.h"
 #include "python/option/optionpythongenerator.h"
+#include "lexer/scilexerpython.h"
 
 #include "services/language/languageservice.h"
 #include "services/project/projectservice.h"
 #include "services/option/optionservice.h"
+#include "services/editor/editorservice.h"
 
 using namespace dpfservice;
 
@@ -49,6 +51,7 @@ bool PythonPlugin::start()
     }
     optionService->implGenerator<OptionPythonGenerator>(OptionPythonGenerator::kitName());
 
+    registEditorService();
     return true;
 }
 
@@ -58,4 +61,13 @@ dpf::Plugin::ShutdownFlag PythonPlugin::stop()
     return Sync;
 }
 
+void PythonPlugin::registEditorService()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    EditorService *editorSvc = ctx.service<EditorService>(EditorService::name());
+    if (!editorSvc)
+        return;
 
+    SciLexerPython *lexerPython = new SciLexerPython;
+    editorSvc->registSciLexerProxy(lexerPython->language(), lexerPython);
+}
