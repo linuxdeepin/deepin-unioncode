@@ -308,8 +308,8 @@ void BinaryToolsConfigView::addCompatConfig()
     d->inputDialog->addContent(searchLineEdit);
     d->inputDialog->addSpacing(10);
 
-    d->inputDialog->insertButton(0, tr("Cancel"), true, DDialog::ButtonNormal);
-    d->inputDialog->insertButton(1, tr("Ok"), false, DDialog::ButtonRecommend);
+    d->inputDialog->insertButton(0, tr("Cancel", "button"), true, DDialog::ButtonNormal);
+    d->inputDialog->insertButton(1, tr("Ok", "button"), false, DDialog::ButtonRecommend);
     connect(d->inputDialog, &DDialog::buttonClicked, this, [=](int index){
         if (index == 0){
             d->inputDialog->reject();
@@ -329,8 +329,8 @@ void BinaryToolsConfigView::deleteCompatConfig()
     d->deleteDialog = new DDialog(this);
     d->deleteDialog->setIcon(QIcon::fromTheme("dialog-warning"));
     d->deleteDialog->setMessage(tr("Sure you want to delete the configuration?"));
-    d->deleteDialog->insertButton(0, tr("Cancel"));
-    d->deleteDialog->insertButton(1, tr("Delete"), true, DDialog::ButtonWarning);
+    d->deleteDialog->insertButton(0, tr("Cancel", "button"));
+    d->deleteDialog->insertButton(1, tr("Delete", "button"), true, DDialog::ButtonWarning);
 
     connect(d->deleteDialog, &DDialog::buttonClicked, [=](int index) {
         if (index == 0){
@@ -368,8 +368,8 @@ void BinaryToolsConfigView::renameCompatConfig()
     d->renameDialog->addContent(searchLineEdit);
     d->renameDialog->addSpacing(10);
 
-    d->renameDialog->insertButton(0, tr("Cancel"), true, DDialog::ButtonNormal);
-    d->renameDialog->insertButton(1, tr("Ok"), false, DDialog::ButtonRecommend);
+    d->renameDialog->insertButton(0, tr("Cancel", "button"), true, DDialog::ButtonNormal);
+    d->renameDialog->insertButton(1, tr("Ok", "button"), false, DDialog::ButtonRecommend);
     connect(d->renameDialog, &DDialog::buttonClicked, this, [=](int index) {
         if (index == 0) {
             d->renameDialog->reject();
@@ -430,7 +430,7 @@ void BinaryToolsConfigView::combineCompatConfig()
     d->combineDialog->addContent(d->commandText);
 
     d->combineDialog->addSpacing(10);
-    d->combineDialog->insertButton(0, tr("Use Conbination Command"), true, DDialog::ButtonNormal);
+    d->combineDialog->insertButton(0, tr("Use Conbination Command", "button"), true, DDialog::ButtonNormal);
     connect(d->combineDialog, &DDialog::buttonClicked, this, [=](int index) {
         if (index == 0) {
             emit useCombinationCommand();
