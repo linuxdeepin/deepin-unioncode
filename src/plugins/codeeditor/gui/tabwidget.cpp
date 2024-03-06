@@ -382,7 +382,7 @@ void TabWidget::showTips(const QString &tips)
 void TabWidget::insertText(const QString &text)
 {
     if (auto editor = d->currentTextEditor())
-        editor->insert(text);
+        editor->insertText(text);
 }
 
 void TabWidget::undo()
