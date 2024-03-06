@@ -367,6 +367,25 @@ QString TabWidget::cursorBehindText() const
     return "";
 }
 
+QStringList TabWidget::modifiedFiles() const
+{
+    QStringList files;
+    for (auto editor : d->editorMng.values()) {
+        if (!editor->isModified())
+            continue;
+
+        files << editor->getFile();
+    }
+
+    return files;
+}
+
+void TabWidget::saveAll() const
+{
+    for (auto editor : d->editorMng.values())
+        editor->save();
+}
+
 void TabWidget::replaceSelectedText(const QString &text)
 {
     if (auto editor = d->currentTextEditor())
