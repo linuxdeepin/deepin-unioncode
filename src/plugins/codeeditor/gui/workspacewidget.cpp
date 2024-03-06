@@ -255,6 +255,27 @@ QString WorkspaceWidget::cursorBehindText() const
     return "";
 }
 
+QStringList WorkspaceWidget::modifiedFiles() const
+{
+    Q_ASSERT(QThread::currentThread() == qApp->thread());
+
+    QStringList files;
+    for (auto tabWidget : d->tabWidgetList)
+        files << tabWidget->modifiedFiles();
+
+    // Delete duplicates
+    auto tmp = files.toSet();
+    return tmp.toList();
+}
+
+void WorkspaceWidget::saveAll() const
+{
+    Q_ASSERT(QThread::currentThread() == qApp->thread());
+
+    for (auto tabWidget : d->tabWidgetList)
+        tabWidget->saveAll();
+}
+
 void WorkspaceWidget::replaceSelectedText(const QString &text)
 {
     if (auto tabWidget = d->currentTabWidget())

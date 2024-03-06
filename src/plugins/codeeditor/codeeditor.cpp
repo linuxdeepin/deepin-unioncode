@@ -132,6 +132,8 @@ void CodeEditor::initEditorService()
     editorService->showTips = std::bind(&WorkspaceWidget::showTips, workspaceWidget, _1);
     editorService->insertText = std::bind(&WorkspaceWidget::insertText, workspaceWidget, _1);
     editorService->undo = std::bind(&WorkspaceWidget::undo, workspaceWidget);
+    editorService->modifiedFiles = std::bind(&WorkspaceWidget::modifiedFiles, workspaceWidget);
+    editorService->saveAll = std::bind(&WorkspaceWidget::saveAll, workspaceWidget);
 
     LexerManager::instance()->init(editorService);
 }

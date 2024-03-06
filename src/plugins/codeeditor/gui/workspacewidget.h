@@ -18,6 +18,8 @@ public:
     QString selectedText() const;
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
+    QStringList modifiedFiles() const;
+    void saveAll();
     void replaceSelectedText(const QString &text);
     void showTips(const QString &tips);
     void insertText(const QString &text);
