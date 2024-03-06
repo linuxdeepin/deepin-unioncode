@@ -110,14 +110,14 @@ void BuildManager::addMenu()
                                                                ""));
 
     d->rebuildAction.reset(new QAction(MWMBA_REBUILD));
-    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->rebuildAction.get(), "Build.Rebuild",
-                                                               QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B),
-                                                               ""));
+    windowService->addTopToolItem(actionInit(d->rebuildAction.get(), "Build.Rebuild",
+                                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B),
+                                "rebuild"), MWTG_EDIT, false);
 
     d->cleanAction.reset(new QAction(MWMBA_CLEAN));
-    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->cleanAction.get(), "Build.Clean",
-                                                               QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
-                                                               ""));
+    windowService->addTopToolItem(actionInit(d->cleanAction.get(), "Build.Clean",
+                                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
+                                "clearall"), MWTG_EDIT, false);
 
     d->cancelAction.reset(new QAction(MWMBA_CANCEL));
     windowService->addTopToolItem(actionInit(d->cancelAction.get(), "Build.Cancel",
