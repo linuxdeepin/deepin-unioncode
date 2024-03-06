@@ -319,7 +319,7 @@ void TextEditor::insertText(const QString &text)
 {
     auto textData = text.toLocal8Bit();
 
-    SendScintilla(SCI_INSERTTEXT, static_cast<ulong>(d->cursorPosition()), textData.data());
+    SendScintilla(SCI_INSERTTEXT, static_cast<ulong>(d->cursorPosition()), textData.constData());
     SendScintilla(SCI_SETEMPTYSELECTION, d->cursorPosition() + textData.size());
 }
 
