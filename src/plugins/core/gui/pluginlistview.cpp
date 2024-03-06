@@ -53,7 +53,7 @@ void PluginListView::display()
             QStringList license = metaOBject->license();
             QString version = metaOBject->version();
 
-            auto rowItem = new DStandardItem(QIcon::fromTheme("plugins-navigation"), pluginName);
+            auto rowItem = new DStandardItem(QIcon::fromTheme("defaultplugin"), pluginName);
             rowItem->setData(description, PluginListView::Description);
             rowItem->setData(vender, PluginListView::Vender);
             rowItem->setData(category, PluginListView::Category);

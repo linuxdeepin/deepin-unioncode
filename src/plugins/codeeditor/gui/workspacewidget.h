@@ -19,7 +19,7 @@ public:
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
     QStringList modifiedFiles() const;
-    void saveAll();
+    void saveAll() const;
     void replaceSelectedText(const QString &text);
     void showTips(const QString &tips);
     void insertText(const QString &text);
