@@ -8,6 +8,7 @@
 
 #include <QVBoxLayout>
 #include <QVariant>
+#include <QApplication>
 
 WorkspaceWidgetPrivate::WorkspaceWidgetPrivate(WorkspaceWidget *qq)
     : QObject(qq),
