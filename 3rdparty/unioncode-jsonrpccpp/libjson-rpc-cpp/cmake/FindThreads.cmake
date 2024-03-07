@@ -60,7 +60,8 @@ else()
         CHECK_LIBRARY_EXISTS(pthreads pthread_create "" CMAKE_HAVE_PTHREADS_CREATE)
         if(CMAKE_HAVE_PTHREADS_CREATE)
             #          set(CMAKE_THREAD_LIBS_INIT "-lpthreads") // mozart comment.
-            if (NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64")
+            if (NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64"
+                    AND NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "sw_64")
                 set(CMAKE_THREAD_LIBS_INIT "-lpthreads")
             endif()
             set(CMAKE_HAVE_THREADS_LIBRARY 1)
