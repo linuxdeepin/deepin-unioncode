@@ -4,8 +4,10 @@
 #include "pluginitemdelegate.h"
 #include "pluginlistview.h"
 
-#include <DPaletteHelper>
 #include <DGuiApplicationHelper>
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
+#include <DPaletteHelper>
+#endif
 
 #include <QPainter>
 #include <QPainterPath>
@@ -66,7 +68,11 @@ void PluginItemDelegate::paintItemBackground(QPainter *painter,
     painter->save();
 
     if (option.widget) {
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
         DPalette pl(DPaletteHelper::instance()->palette(option.widget));
+#else
+        DPalette pl = DGuiApplicationHelper::instance()->applicationPalette();
+#endif
         QColor baseColor = pl.color(DPalette::ColorGroup::Active, DPalette::ColorType::ItemBackground);
         QColor adjustColor = baseColor;
 

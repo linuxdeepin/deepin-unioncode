@@ -13,6 +13,7 @@
 #include "services/project/projectservice.h"
 
 #include <DApplicationHelper>
+#include <QApplication>
 
 #include <bitset>
 
