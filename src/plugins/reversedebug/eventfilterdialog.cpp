@@ -12,7 +12,6 @@
 #include <DTitlebar>
 #include <DLabel>
 #include <DFrame>
-#include <DSizeMode>
 
 #include <QVBoxLayout>
 #include <QFormLayout>
@@ -378,7 +377,7 @@ void EventFilterDialog::setupButton(QHBoxLayout *buttonLayout)
 
     DVerticalLine *line = new DVerticalLine;
     line->setObjectName("VLine");
-    line->setFixedHeight(DSizeModeHelper::element(20, 30));
+    line->setFixedHeight(30);
 
     buttonLayout->addWidget(rejectButton);
     buttonLayout->addWidget(line);
