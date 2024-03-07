@@ -23,6 +23,7 @@
 #include <QFileIconProvider>
 #include <QPushButton>
 #include <QClipboard>
+#include <QApplication>
 
 using namespace config;
 using namespace dpfservice;

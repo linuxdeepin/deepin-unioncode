@@ -15,7 +15,6 @@
 #include <DTreeView>
 #include <DTableView>
 #include <DStandardItem>
-#include <DPaletteHelper>
 #include <DGuiApplicationHelper>
 
 #include <QStandardItemModel>

@@ -27,6 +27,7 @@
 #include <QMenuBar>
 #include <QDesktopWidget>
 #include <QScreen>
+#include <QApplication>
 
 static Controller *ins { nullptr };
 
