@@ -56,6 +56,7 @@ public:
 
     void stackListFrames();
     void stackListVariables();
+    void fetchChildVariables(int64_t childReference);
 
     void listSourceFiles();
 

@@ -753,6 +753,7 @@ bool DAPDebugger::showStoppedBySignalMessageBox(QString meaning, QString name)
     return true;
 }
 
+//todo:  use InvalidatedEvent to select-frame, then get locals
 void DAPDebugger::slotFrameSelected(const QModelIndex &index)
 {
     Q_UNUSED(index)
@@ -777,6 +778,18 @@ void DAPDebugger::slotBreakpointSelected(const QModelIndex &index)
     Q_UNUSED(index);
     auto curBP = d->breakpointModel.currentBreakpoint();
     editor.gotoLine(curBP.filePath, curBP.lineNumber);
+}
+
+void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
+{
+    auto treeItem = static_cast<LocalTreeItem*>(index.internalPointer());
+    if(treeItem->childCount() > 0) // is already get child Variables
+        return;
+    IVariables variables;
+    d->session->getVariables(treeItem->childReference(), &variables, 0);
+
+    d->localsModel.appendItem(treeItem, variables);
+    emit d->localsModel.layoutChanged();
 }
 
 void DAPDebugger::initializeView()
@@ -833,6 +846,7 @@ void DAPDebugger::initializeView()
 
     connect(d->stackView, &QTreeView::doubleClicked, this, &DAPDebugger::slotFrameSelected);
     connect(d->breakpointView, &QTreeView::doubleClicked, this, &DAPDebugger::slotBreakpointSelected);
+    connect(d->localsView, &QTreeView::expanded, this, &DAPDebugger::slotGetChildVariable);
 }
 
 void DAPDebugger::exitDebug()

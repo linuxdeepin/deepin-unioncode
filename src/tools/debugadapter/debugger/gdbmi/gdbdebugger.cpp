@@ -16,7 +16,7 @@ class GDBDebuggerPrivate {
     QList<gdbmi::Frame> stackFrames;
     QList<gdbmi::Thread> threadList;
 
-    QMultiMap<int64_t, gdbmi::Variable> variableListByReference;
+    QMultiMap<int64_t, gdbmi::Variable *> variableListByReference;
     QList<QString> createdValue;
 
     std::atomic_bool inferiorRunning{false};
@@ -29,9 +29,9 @@ class GDBDebuggerPrivate {
     int unProcessedCount = 0;
 };
 
-bool isPointer(const gdbmi::Variable &variable)
+bool isPointer(const gdbmi::Variable *variable)
 {
-    if(variable.value.startsWith("0x") && variable.type.endsWith("*"))
+    if(variable->value.startsWith("0x") && variable->type.endsWith("*"))
         return true;
     return false;
 }
@@ -231,14 +231,33 @@ dap::array<dap::Variable> GDBDebugger::getVariableListByRef(int64_t ref)
     dap::array<dap::Variable> variables;
     for (const auto &var : d->variableListByReference.values(ref)) {
         dap::Variable variable;
-        variable.name = var.name.toStdString();
-        variable.type = var.type.toStdString();
-        variable.value = var.value.toStdString();
-        variable.variablesReference = var.childRefrence;
+        variable.name = var->name.toStdString();
+        variable.evaluateName = var->evaluateName.toStdString();
+        variable.type = var->type.toStdString();
+        variable.value = var->value.toStdString();
+        variable.variablesReference = var->childRefrence;
         variables.push_back(variable);
     }
 
     return variables;
+}
+
+bool GDBDebugger::fetchChildVariables(int64_t ref)
+{
+    gdbmi::Variable *parent = nullptr;
+    foreach (auto var, d->variableListByReference.values()) {
+        if(var->childRefrence == ref) {
+            parent = var;
+            break;
+        }
+    }
+
+    if(!parent)
+        return false;
+
+    d->unProcessedCount = parent->numChild;
+    parseChildVariable(parent->evaluateName, parent);
+    return true;
 }
 
 void GDBDebugger::handleOutputStreamText(const QString &streamText)
@@ -459,17 +478,13 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
                 emit updateCurrentFrame(f);
             } else if(key == "variables") {
                 // -stack-list-varablbes => Scopes Request
-                QList<gdbmi::Variable> variableList;
+                QList<gdbmi::Variable *> variableList;
                 auto locals = record.payload.toMap().value("variables").toList();
                 for (const auto& e: locals)
                     variableList.append(gdbmi::Variable::parseMap(e.toMap()));
-                d->variableListByReference.clear();
-                d->reference = 0;
-                d->watchVariableCounter = 0;
-                if(!d->createdValue.isEmpty())
-                    delAllTraceVariable();
+                resetVariables();
                 addVariablesWatched(variableList, d->reference);
-                emit updateLocalVariables(variableList);
+                //emit updateLocalVariables(variableList); //unused
             } else if(key == "threads") {
                  // -thread-info => Thread Request
                 QList<gdbmi::Thread> threadList;
@@ -530,30 +545,30 @@ void GDBDebugger::parseDisassembleData(const gdbmi::Record &record)
     }
 }
 
-void GDBDebugger::traceAddVariable(const gdbmi::Variable &variable, int reference, int frame)
+void GDBDebugger::traceAddVariable(gdbmi::Variable *variable, int reference, int frame)
 {
     auto frameId = frame == -1 ? "@" : QString { "%1" }.arg(frame);
     auto varName = QString("var%1").arg(d->watchVariableCounter++);
 
-    DebugManager::instance()->commandAndResponse(QString { "-var-create \"%1\" %2 \"%3\"" }.arg(varName, frameId, variable.name),
+    d->variableListByReference.insert(reference, variable);
+    variable->evaluateName = varName;
+
+    //input variables is already have name/value.
+    DebugManager::instance()->commandAndResponse(QString { "-var-create \"%1\" %2 \"%3\"" }.arg(varName, frameId, variable->name),
                                                  [=](const QVariant &r) {
                                                      auto m = r.toMap();
-                                                     auto v = gdbmi::Variable::parseMap(m);
-                                                     d->createdValue.append(v.name);
+                                                     auto v = gdbmi::Variable::parseMap(m); // created variable, used to check input variable
+                                                     d->createdValue.append(v->name);
 
-                                                     v.name = variable.name;
-                                                     if (v.value == "{...}" || isPointer(variable))
-                                                         v.value = variable.value;
-
-                                                     if(v.numChild > 0) {
-                                                         d->reference++;
-                                                         v.childRefrence = d->reference;
-                                                         parseChildVariable(varName, v);
-                                                     } else {
-                                                         d->unProcessedCount--;
+                                                     variable->type = v->type;
+                                                     if(v->numChild > 0) {
+                                                         variable->childRefrence = ++d->reference;
+                                                         variable->numChild = v->numChild;
                                                      }
+                                                     d->unProcessedCount--;
 
-                                                     d->variableListByReference.insert(reference, v);
+                                                     if (d->unProcessedCount == 0)
+                                                         emit fireVariablesLocker();
                                                  });
 }
 
@@ -566,7 +581,7 @@ void GDBDebugger::delAllTraceVariable()
 
 void GDBDebugger::traceUpdateVariable(const QString &expression)
 {
-//    commandAndResponse(QString{"-var-update --all-values %1"}.arg(name), [this](const QVariant& r) {
+//    DebugManager::instance()->commandAndResponse(QString{"-var-update --all-values %1"}.arg(expression), [this](const QVariant& r) {
 //        auto changeList = r.toMap().value("changelist").toList();
 //        QStringList changedNames;
 //        for(const auto& e: changeList) {
@@ -584,7 +599,7 @@ void GDBDebugger::traceUpdateVariable(const QString &expression)
 //    });
 }
 
-void GDBDebugger::addVariablesWatched(const QList<gdbmi::Variable> &variableList, int reference)
+void GDBDebugger::addVariablesWatched(const QList<gdbmi::Variable *> &variableList, int reference)
 {
     d->unProcessedCount = variableList.size();
     foreach (auto variable, variableList) {
@@ -592,9 +607,9 @@ void GDBDebugger::addVariablesWatched(const QList<gdbmi::Variable> &variableList
     }
 }
 
-void GDBDebugger::parseChildVariable(const QString &varName, const gdbmi::Variable &variable)
+void GDBDebugger::parseChildVariable(const QString &evaluateName, const gdbmi::Variable *parentVariable)
 {
-    DebugManager::instance()->commandAndResponse(QString { "-var-list-children --all-values %1" }.arg(varName), [=](const QVariant &r) {
+    DebugManager::instance()->commandAndResponse(QString { "-var-list-children --all-values %1" }.arg(evaluateName), [=](const QVariant &r) {
         auto m = r.toMap();
 
         //children: [QMap(, QMap()), QMap(, QMap()) ···];
@@ -605,17 +620,54 @@ void GDBDebugger::parseChildVariable(const QString &varName, const gdbmi::Variab
                 if(childMap.value("exp").toString() == "public"
                         || childMap.value("exp").toString() == "private"
                         || childMap.value("exp").toString() == "protected"){
-                    d->unProcessedCount++;
-                    parseChildVariable(childMap.value("name").toString(), variable);
+                    d->unProcessedCount += childMap.value("numchild").toInt();
+                    parseChildVariable(childMap.value("name").toString(), parentVariable);
                 } else {
-                    gdbmi::Variable var = gdbmi::Variable::parseMap(childMap);
-                    var.name = childMap.value("exp").toString();
-                    d->variableListByReference.insert(variable.childRefrence, var);
+                    auto var = gdbmi::Variable::parseMap(childMap);
+                    var->name = childMap.value("exp").toString();
+                    if(var->numChild > 0)
+                        var->childRefrence = ++d->reference;
+                    d->variableListByReference.insert(parentVariable->childRefrence, var);
+                    evaluateValue(var);
                 }
+                d->unProcessedCount--;
             }
         }
-        d->unProcessedCount--;
+
         if (d->unProcessedCount == 0)
             emit fireVariablesLocker();
     });
+}
+
+void GDBDebugger::evaluateValue(gdbmi::Variable *variable)
+{
+    d->unProcessedCount++;
+    auto exp = variable->evaluateName;
+    DebugManager::instance()->command(QString { "-var-set-visualizer %1 gdb.default_visualizer" }.arg(exp));
+    DebugManager::instance()->commandAndResponse(QString { "-var-evaluate-expression %1" }.arg(exp), [=](const QVariant &r) {
+        auto m = r.toMap();
+        auto value = m.value("value").toString();
+
+        if (value != "{...}")
+            variable->value = value;
+        else
+            variable->value.clear();  // do more parser
+
+        d->unProcessedCount--;
+        if (d->unProcessedCount == 0)
+            emit fireVariablesLocker();
+
+        DebugManager::instance()->command(QString { "-var-set-visualizer %1 None" }.arg(exp));  //restore it  or -var-list-children will return unexpected result
+    });
+}
+
+void GDBDebugger::resetVariables()
+{
+    foreach (auto var, d->variableListByReference.values())
+        delete var;
+    d->variableListByReference.clear();
+    d->reference = 0;
+    d->watchVariableCounter = 0;
+    if(!d->createdValue.isEmpty())
+        delAllTraceVariable();
 }

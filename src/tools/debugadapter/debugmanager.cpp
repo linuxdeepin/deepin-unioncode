@@ -319,6 +319,12 @@ dap::array<dap::Variable> DebugManager::getVariableList(int64_t reference)
     return d->debugger->getVariableListByRef(reference);
 }
 
+void DebugManager::fetchChildVariables(int64_t childReference)
+{
+    if(d->debugger->fetchChildVariables(childReference))
+        d->varibalelocker.wait();
+}
+
 void DebugManager::disassemble(const QString &address)
 {
     command(d->debugger->disassemble(address));

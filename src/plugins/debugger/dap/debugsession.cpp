@@ -788,8 +788,6 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out, dap:
         v.name = var.name;
         v.var = var;
         v.depth = depth + 1;
-        if (var.variablesReference > 0)
-            getVariables(var.variablesReference, &v.children, v.depth);
         out->push_back(v);
     }
     return true;
@@ -798,6 +796,7 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out, dap:
 // GetLocals fetches the fully traversed set of local Variables from the
 // debugger for the given stack frame.
 // Returns true on success, false on error.
+// todo: get different frame locals: select-frame and then getlocals
 bool DebugSession::getLocals(dap::integer frameId, IVariables *out)
 {
     dap::ScopesRequest scopeReq;
