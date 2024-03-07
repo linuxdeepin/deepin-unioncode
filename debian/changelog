@@ -1,8 +1,14 @@
+deepin-unioncode (1.2.14) unstable; urgency=medium
+
+  * bug fix
+
+ -- luzhen <luzhen@uniontech.com>  Thu, 07 Mar 2024 10:35:04 +0800
+
 deepin-unioncode (1.2.13) unstable; urgency=medium
 
   * bug fix
 
- -- luzhen <mozart@mozart-PC>  Wed, 06 Mar 2024 14:46:49 +0800
+ -- luzhen <luzhen@uniontech.com>  Wed, 06 Mar 2024 14:46:49 +0800
 
 deepin-unioncode (1.2.12) unstable; urgency=medium
 
