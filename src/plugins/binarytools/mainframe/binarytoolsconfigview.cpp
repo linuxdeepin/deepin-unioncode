@@ -18,8 +18,8 @@
 #include <DLabel>
 #include <DScrollArea>
 #include <DSuggestButton>
-#include <dinputdialog.h>
 #include <DFrame>
+#include <DDialog>
 
 #include <QIcon>
 #include <qmessagebox.h>
