@@ -144,8 +144,8 @@ void SearchResultWindow::setupUi()
     replaceLayout->addWidget(replaceBtn, 0, Qt::AlignLeft);
     replaceLayout->setAlignment(Qt::AlignLeft);
 
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    DIconButton *cleanBtn = new DIconButton();//Clean && Return
+    QHBoxLayout *hLayout = new QHBoxLayout(this);
+    DIconButton *cleanBtn = new DIconButton(this);//Clean && Return
     cleanBtn->setIcon(QIcon::fromTheme("go-previous"));
     QSize iconSize(12,12);
     cleanBtn->setIconSize(iconSize);
