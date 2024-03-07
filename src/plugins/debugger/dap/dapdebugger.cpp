@@ -25,7 +25,6 @@
 #include <DFrame>
 #include <DComboBox>
 #include <DPushButton>
-#include <DIconButton>
 #include <DSimpleListView>
 
 #include <QDateTime>

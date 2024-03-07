@@ -10,7 +10,6 @@
 #include <DStyle>
 #include <DStyleOptionViewItem>
 #include <DPaletteHelper>
-#include <DSizeMode>
 #include <DListView>
 
 #include <QPainter>

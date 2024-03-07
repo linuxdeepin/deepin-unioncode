@@ -5,7 +5,6 @@
 #include "mainwindow.h"
 
 #include <DTitlebar>
-#include <DIconButton>
 #include <DStatusBar>
 #include <DToolBar>
 
