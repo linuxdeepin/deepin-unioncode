@@ -34,7 +34,7 @@ void LocalTreeModel::setHeaders(const QList<QString> &headers)
 int LocalTreeModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
-        return static_cast<LocalTreeItem*>(parent.internalPointer())->columnCount();
+        return static_cast<LocalTreeItem *>(parent.internalPointer())->columnCount();
     return headers.count();
 }
 
@@ -43,8 +43,8 @@ QVariant LocalTreeModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    LocalTreeItem *item = static_cast<LocalTreeItem*>(index.internalPointer());
-    if(!items.contains(item))
+    LocalTreeItem *item = static_cast<LocalTreeItem *>(index.internalPointer());
+    if (!items.contains(item))
         return QVariant();
 
     if (role == Qt::ToolTipRole)
@@ -68,7 +68,7 @@ Qt::ItemFlags LocalTreeModel::flags(const QModelIndex &index) const
 }
 
 QVariant LocalTreeModel::headerData(int section, Qt::Orientation orientation,
-                               int role) const
+                                    int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
         return headers.at(section);
@@ -86,7 +86,7 @@ QModelIndex LocalTreeModel::index(int row, int column, const QModelIndex &parent
     if (!parent.isValid())
         parentItem = rootItem;
     else
-        parentItem = static_cast<LocalTreeItem*>(parent.internalPointer());
+        parentItem = static_cast<LocalTreeItem *>(parent.internalPointer());
 
     LocalTreeItem *childItem = parentItem->child(row);
     if (childItem)
@@ -99,7 +99,7 @@ QModelIndex LocalTreeModel::parent(const QModelIndex &index) const
     if (!index.isValid())
         return QModelIndex();
 
-    LocalTreeItem *childItem = static_cast<LocalTreeItem*>(index.internalPointer());
+    LocalTreeItem *childItem = static_cast<LocalTreeItem *>(index.internalPointer());
 
     if (!childItem || !items.contains(childItem))
         return QModelIndex();
@@ -121,8 +121,8 @@ int LocalTreeModel::rowCount(const QModelIndex &parent) const
     if (!parent.isValid()) {
         parentItem = rootItem;
     } else {
-        parentItem = static_cast<LocalTreeItem*>(parent.internalPointer());
-        if(!items.contains(parentItem))
+        parentItem = static_cast<LocalTreeItem *>(parent.internalPointer());
+        if (!items.contains(parentItem))
             return 0;
     }
 
@@ -132,7 +132,22 @@ int LocalTreeModel::rowCount(const QModelIndex &parent) const
     return 0;
 }
 
-void LocalTreeModel::appendItem(LocalTreeItem* parent, IVariables &vars)
+bool LocalTreeModel::hasChildren(const QModelIndex &parent) const
+{
+    LocalTreeItem *parentItem;
+
+    if (!parent.isValid()) {
+        parentItem = rootItem;
+    } else {
+        parentItem = static_cast<LocalTreeItem *>(parent.internalPointer());
+        if (!items.contains(parentItem))
+            return false;
+    }
+
+    return parentItem->hasChildren();
+}
+
+void LocalTreeModel::appendItem(LocalTreeItem *parent, IVariables &vars)
 {
     if (parent) {
         for (auto var : vars) {
