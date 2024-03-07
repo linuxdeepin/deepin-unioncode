@@ -99,6 +99,7 @@ public:
     void setName(dap::string &name) override;
 
     bool getLocals(dap::integer frameId, IVariables *out) override;
+    bool getVariables(dap::integer variablesRef, IVariables *out, dap::integer depth = 0);
 
     dap::Session *getDapSession() const;
     dap::RawDebugSession *getRawSession() const;
@@ -127,7 +128,6 @@ private:
     dap::Source getRawSource(QUrl &uri);
     void cancelAllRequests();
 
-    bool getVariables(dap::integer variablesRef, IVariables *out, dap::integer depth = 0);
 
     QSharedPointer<dap::RawDebugSession> raw;
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
