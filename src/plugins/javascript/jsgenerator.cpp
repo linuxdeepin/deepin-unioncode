@@ -41,7 +41,7 @@ bool JSGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString &re
     return true;
 }
 
-bool JSGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg)
+bool JSGenerator::requestDAPPort(const QString &ppid, const QMap<QString, QVariant> &param, QString &retMsg)
 {
     QString targetPath = param.value("targetPath").toString();
     QStringList arguments = param.value("arguments").toStringList();
@@ -51,7 +51,7 @@ bool JSGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVaria
                                                   "com.deepin.unioncode.interface",
                                                   "getDebugPort");
 
-    msg << uuid
+    msg << ppid
         << kit
         << targetPath
         << arguments;
