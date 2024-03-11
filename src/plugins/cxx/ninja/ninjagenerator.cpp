@@ -43,12 +43,12 @@ bool NinjaGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString 
     return true;
 }
 
-bool NinjaGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg)
+bool NinjaGenerator::requestDAPPort(const QString &ppid, const QMap<QString, QVariant> &param, QString &retMsg)
 {
     QString targetPath = param.value("targetPath").toString();
     QStringList arguments = param.value("arguments").toStringList();
 
-    return d->ninjaDebug->requestDAPPort(uuid, toolKitName(), targetPath, arguments, retMsg);
+    return d->ninjaDebug->requestDAPPort(ppid, toolKitName(), targetPath, arguments, retMsg);
 }
 
 bool NinjaGenerator::isNeedBuild()
