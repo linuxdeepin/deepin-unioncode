@@ -20,6 +20,7 @@
 #include "services/builder/builderservice.h"
 #include "services/option/optionmanager.h"
 #include "services/language/languageservice.h"
+#include "unistd.h"
 
 #include <DLabel>
 #include <DFrame>
@@ -54,7 +55,7 @@ class DebuggerPrivate
     dpfservice::ProjectInfo projectInfo;
     QString currentOpenedFileName;
     QString currentBuildUuid;
-    QString requestDAPPortUuid;
+    QString requestDAPPortPpid;
     QString userKitName;
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
@@ -124,7 +125,6 @@ DAPDebugger::DAPDebugger(QObject *parent)
 
     initializeView();
 
-    killBackend();
     launchBackend();
 }
 
@@ -959,9 +959,9 @@ bool DAPDebugger::requestDebugPort(const QMap<QString, QVariant> &param, const Q
         if (generator) {
             d->isCustomDap = customDap;
             QString retMsg;
-            d->requestDAPPortUuid = QUuid::createUuid().toString();
+            d->requestDAPPortPpid = QString(getpid());
             printOutput(tr("Requesting debug port..."));
-            if (!generator->requestDAPPort(d->requestDAPPortUuid, param, retMsg)) {
+            if (!generator->requestDAPPort(d->requestDAPPortPpid, param, retMsg)) {
                 printOutput(retMsg, OutputPane::ErrorMessage);
                 stopWaitingDebugPort();
                 return false;
@@ -978,9 +978,9 @@ void DAPDebugger::stopDAP()
     d->session->closeSession();
 }
 
-void DAPDebugger::slotReceivedDAPPort(const QString &uuid, int port, const QString &kitName, const QMap<QString, QVariant> &param)
+void DAPDebugger::slotReceivedDAPPort(const QString &ppid, int port, const QString &kitName, const QMap<QString, QVariant> &param)
 {
-    if (d->requestDAPPortUuid == uuid)
+    if (d->requestDAPPortPpid == ppid)
         launchSession(port, param, kitName);
 }
 
@@ -1012,14 +1012,6 @@ void DAPDebugger::launchBackend()
     d->backend.setProgram(backendPath);
     d->backend.start();
     d->backend.waitForStarted();
-}
-
-void DAPDebugger::killBackend()
-{
-    // TODO(logan):backend not support re-connect yet,
-    // so kill it when client launched.
-    // those code will be removed when backend got modified.
-    QProcess::execute("killall -9 debugadapter");
 }
 
 void DAPDebugger::stopWaitingDebugPort()

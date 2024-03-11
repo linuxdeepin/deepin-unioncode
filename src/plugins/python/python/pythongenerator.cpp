@@ -43,11 +43,11 @@ bool PythonGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString
     return d->pythonDebug->prepareDebug(currentFile, retMsg);
 }
 
-bool PythonGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg)
+bool PythonGenerator::requestDAPPort(const QString &ppid, const QMap<QString, QVariant> &param, QString &retMsg)
 {
     QString fileName = param.value("currentFile").toString();
     QString projectPath = param.value("workspace").toString();
-    return d->pythonDebug->requestDAPPort(uuid, toolKitName(), projectPath, fileName, retMsg);
+    return d->pythonDebug->requestDAPPort(ppid, toolKitName(), projectPath, fileName, retMsg);
 }
 
 bool PythonGenerator::isLaunchNotAttach()

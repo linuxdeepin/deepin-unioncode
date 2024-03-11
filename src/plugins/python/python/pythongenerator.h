@@ -21,7 +21,7 @@ public:
 
     bool isTargetReady() override;
     bool prepareDebug(const QMap<QString, QVariant> &param, QString &retMsg) override;
-    bool requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg) override;
+    bool requestDAPPort(const QString &ppid, const QMap<QString, QVariant> &param, QString &retMsg) override;
     bool isLaunchNotAttach() override;
     dap::AttachRequest attachDAP(int port, const QMap<QString, QVariant> &param) override;
     bool isRestartDAPManually() override;
