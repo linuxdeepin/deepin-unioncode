@@ -30,6 +30,11 @@ JSDebugger::~JSDebugger()
 
 }
 
+void JSDebugger::init()
+{
+
+}
+
 QString JSDebugger::program()
 {
     return "qsdbg";

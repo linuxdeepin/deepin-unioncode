@@ -329,16 +329,12 @@ void DAPDebugger::registerDapHandlers()
                 << "InitializedEvent";
 
         if (d->isCustomDap) {
-            auto threads = d->session->fetchThreads(nullptr);
-            updateThreadList(-1, threads);
             updateRunState(DAPDebugger::RunState::kCustomRunning);
         } else {
             d->session.get()->getRawSession()->setReadyForBreakpoints(true);
             debugService->sendAllBreakpoints(d->session.get());
 
             d->session.get()->getRawSession()->configurationDone().wait();
-
-            d->session->fetchThreads(nullptr);
             updateRunState(DAPDebugger::RunState::kRunning);
         }
     });

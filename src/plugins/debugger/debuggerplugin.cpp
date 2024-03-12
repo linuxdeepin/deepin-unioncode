@@ -61,6 +61,9 @@ bool DebuggerPlugin::start()
             windowService->showWidgetAtPosition(localsPane, Position::Right, true);
             uiController.switchContext(tr("&Application Output"));
         }, Qt::DirectConnection);
+        connect(debugManager, &DebugManager::debugStopped, this, [=](){
+            windowService->hideWidget(localsPane);
+        }, Qt::DirectConnection);
     }
 
     return true;
@@ -68,6 +71,5 @@ bool DebuggerPlugin::start()
 
 dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 {
-    QProcess::execute("killall -9 debugadapter");
     return Sync;
 }
