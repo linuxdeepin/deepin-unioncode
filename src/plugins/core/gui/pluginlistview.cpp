@@ -5,9 +5,12 @@
 #include "framework/lifecycle/lifecycle.h"
 #include "pluginitemdelegate.h"
 #include "common/util/fuzzymatcher.h"
+#include "common/util/custompaths.h"
+
+#include <DStandardItem>
 
 #include <QStandardItemModel>
-#include <DStandardItem>
+#include <QDir>
 
 DPF_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
@@ -53,7 +56,16 @@ void PluginListView::display()
             QStringList license = metaOBject->license();
             QString version = metaOBject->version();
 
-            auto rowItem = new DStandardItem(QIcon::fromTheme("defaultplugin"), pluginName);
+            QString pluginPath = CustomPaths::global(CustomPaths::Plugins);
+            QString pluginLogoPath = pluginPath + QDir::separator() + pluginName + ".svg";
+            QIcon pluginLogo;
+            if (QFile::exists(pluginLogoPath)) {
+                pluginLogo = QIcon::fromTheme(pluginLogoPath);
+            } else {
+                pluginLogo = QIcon::fromTheme("default_plugin");
+            }
+
+            auto rowItem = new DStandardItem(pluginLogo, pluginName);
             rowItem->setData(description, PluginListView::Description);
             rowItem->setData(vender, PluginListView::Vender);
             rowItem->setData(category, PluginListView::Category);
