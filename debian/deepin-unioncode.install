@@ -7,5 +7,6 @@
 /usr/share/applications/*.desktop
 /usr/lib/*/deepin-unioncode/lib*.so*
 /usr/lib/*/deepin-unioncode/plugins/lib*.so
+/usr/lib/*/deepin-unioncode/plugins/*.svg
 /usr/lib/*/deepin-unioncode/scripts
 /usr/lib/*/deepin-unioncode/tools
