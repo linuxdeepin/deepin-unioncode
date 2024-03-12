@@ -35,13 +35,9 @@ void PluginStoreWidget::initializeUi()
     connect(inputEdit, &DSearchEdit::textChanged,
             this, &PluginStoreWidget::slotSearchChanged);
 
-    auto titleLabel = new DLabel(this);
-    titleLabel->setText(tr("Extension"));
-
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     setLayout(vLayout);
-    vLayout->addWidget(titleLabel);
     vLayout->addWidget(inputEdit);
     vLayout->addWidget(pluginListView);
-    vLayout->setMargin(0);
+    vLayout->setContentsMargins(0, 5, 0, 5);
 }
