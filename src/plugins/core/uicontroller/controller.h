@@ -37,6 +37,7 @@ public slots:
     void registerWidget(const QString &name, AbstractWidget *abstractWidget);
     void replaceWidget(const QString &name, Position pos = Position::FullWindow);
     void insertWidget(const QString &name, Position pos, Qt::Orientation orientation);
+    void hideWidget(const QString &name);
     void showWidgetAtPosition(const QString &name, Position pos, bool replace = true);
 
     void addNavigationItem(AbstractAction *action, quint8 priority);

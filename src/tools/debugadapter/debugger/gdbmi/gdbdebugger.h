@@ -20,6 +20,7 @@ public:
     explicit GDBDebugger(QObject *parent = nullptr);
     virtual ~GDBDebugger() override;
 
+    void init() override;
     QString program() override;
     QStringList preArguments() override;
 

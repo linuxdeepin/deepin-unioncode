@@ -61,6 +61,7 @@ public:
     */
     DPF_INTERFACE(void, insertWidget, const QString &name, Position pos, Qt::Orientation orientation);
 
+    DPF_INTERFACE(void, hideWidget, const QString &name);
     /*!
      * \brief register Widget to mode, when switch to this mode, automatically show widget.
      * \param widget name
