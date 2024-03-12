@@ -142,6 +142,9 @@ void Controller::registerService()
     if (!windowService->insertWidget) {
         windowService->insertWidget = std::bind(&Controller::insertWidget, this, _1, _2, _3);
     }
+    if (!windowService->hideWidget) {
+        windowService->hideWidget = std::bind(&Controller::hideWidget, this, _1);
+    }
     if (!windowService->registerWidgetToMode) {
         windowService->registerWidgetToMode = std::bind(&Controller::registerWidgetToMode, this, _1, _2, _3, _4, _5, _6);
     }
@@ -293,6 +296,11 @@ void Controller::insertWidget(const QString &name, Position pos, Qt::Orientation
 
     d->addedWidget.insert(name, d->widgetWaitForAdd[name]);
     d->widgetWaitForAdd.remove(name);
+}
+
+void Controller::hideWidget(const QString &name)
+{
+    d->mainWindow->hideWidget(name);
 }
 
 void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstractWidget, const QString &mode, Position pos, bool replace, bool isVisible)

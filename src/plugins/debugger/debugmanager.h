@@ -43,6 +43,7 @@ public:
 
 signals:
     void debugStarted();
+    void debugStopped();
 
 public slots:
     /**
