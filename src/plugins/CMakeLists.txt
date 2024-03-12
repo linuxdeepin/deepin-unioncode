@@ -1,3 +1,10 @@
+# use to install plugin logo
+function(install_logo LOGO)
+    get_filename_component(LOGO_PATH "${CMAKE_CURRENT_SOURCE_DIR}/${LOGO}" ABSOLUTE)
+    message("LOGO_PATH": "${LOGO_PATH}")
+    install(FILES "${LOGO_PATH}" DESTINATION "${PLUGIN_INSTALL_PATH}")
+endfunction()
+
 add_subdirectory(core)
 add_subdirectory(recent)
 add_subdirectory(debugger)

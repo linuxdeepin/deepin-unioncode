@@ -15,6 +15,7 @@
 #include <QGridLayout>
 #include <QDesktopServices>
 #include <QWebEngineView>
+#include <QDir>
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
@@ -68,6 +69,17 @@ void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
     bool pluginIsEnabled = pluginMetaInfo->isEnabledBySettings();
     updateLoadBtnDisplay(pluginIsEnabled);
 
+    QString pluginPath = CustomPaths::global(CustomPaths::Plugins);
+    QString pluginLogoPath = pluginPath + QDir::separator() + pluginMetaInfo->name() + ".svg";
+    QIcon pluginLogo;
+    if (QFile::exists(pluginLogoPath)) {
+        pluginLogo = QIcon::fromTheme(pluginLogoPath);
+    } else {
+        pluginLogo = QIcon::fromTheme("default_plugin");
+    }
+
+    logoLabel->setPixmap(pluginLogo.pixmap(QSize(128, 128)));
+
     webView->load(QUrl(updateMetaInfo.url));
 }
 
@@ -119,8 +131,9 @@ void DetailsView::setupUi()
     connect(cfgBtn, &DPushButton::clicked, this, &DetailsView::showCfgWidget);
     operationLayout->addWidget(cfgBtn, 1, Qt::AlignLeft);
 
-    QLabel *logoLabel = new QLabel(this);
-    logoLabel->setPixmap(QIcon::fromTheme("defaultplugin").pixmap(QSize(128, 128)));
+    logoLabel = new QLabel(this);
+    auto logo = QIcon::fromTheme("default_plugin");
+    logoLabel->setPixmap(logo.pixmap(QSize(128, 128)));
 
     auto webViewLayout = new QHBoxLayout(this);
     webView = new QWebEngineView();
