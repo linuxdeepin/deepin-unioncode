@@ -116,6 +116,7 @@ private:
     void parseChildVariable(const QString &evaluateName , const gdbmi::Variable *parentVariable);
     void evaluateValue(gdbmi::Variable *variable);
     void resetVariables();
+    void checkVariablesLocker();
 
     GDBDebuggerPrivate *const d;
 };
