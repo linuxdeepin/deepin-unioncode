@@ -37,6 +37,7 @@ public:
     void handleSetDebugLine(const QString &fileName, int line);
     void handleRemoveDebugLine();
     void handleGotoLine(const QString &fileName, int line);
+    void handleGotoPosition(const QString &fileName, int line, int column);
 
 public:
     WorkspaceWidget *q;
