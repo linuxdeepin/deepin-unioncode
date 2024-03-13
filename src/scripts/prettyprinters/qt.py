@@ -127,7 +127,10 @@ class QListPrinter:
             if isQt6:
                 size = self.d['size']
             else:
-                size = self.d['end'] - self.d['begin']
+                if (self.d['end'] < 0 or self.d['begin'] < 0):      #QList not initialize
+                    size = 0
+                else:
+                    size = self.d['end'] - self.d['begin']
 
             if self.count >= size:
                 raise StopIteration
@@ -152,7 +155,10 @@ class QListPrinter:
         if self.isQt6:
             self.size = self.d['size']
         else:
-            self.size = self.d['end'] - self.d['begin']
+            if (self.d['end'] < 0 or self.d['begin'] < 0):    #QList not initialize
+                self.size = 0
+            else:
+                self.size = self.d['end'] - self.d['begin']
 
         if itype == None:
             self.itype = val.type.template_argument(0)
@@ -197,7 +203,10 @@ class QVectorPrinter:
             return self._iterator(self.itype, self.val['p']['array'], self.val['p']['size'])
         else:
             data = self.val['d'].cast(gdb.lookup_type("char").const().pointer()) + self.val['d']['offset']
-            return self._iterator(self.itype, data.cast(self.itype.pointer()), self.val['d']['size'])
+            if (self.val['d']['alloc'] >= 1000 * 1000 * 1000 or self.val['d']['size'] <= 0):
+                return self._iterator(self.itype, data.cast(self.itype.pointer()), 0)
+            else:
+                return self._iterator(self.itype, data.cast(self.itype.pointer()), self.val['d']['size'])
 
     def to_string(self):
         size = self.val['d']['size']
