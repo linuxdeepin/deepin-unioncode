@@ -39,7 +39,7 @@ LSPStyle::LSPStyle(TextEditor *parent)
     connect(&d->renamePopup, &RenamePopup::editingFinished, this, &LSPStyle::renameSymbol);
     connect(CodeLens::instance(), &CodeLens::doubleClicked,
             this, [=](const QString &filePath, const lsp::Range &range) {
-                EditorCallProxy::instance()->reqGotoLine(filePath, range.start.line);
+                emit EditorCallProxy::instance()->reqGotoPosition(filePath, range.start.line, range.start.character);
             });
     connect(qApp, &QApplication::applicationStateChanged, this, [=](Qt::ApplicationState state) {
         if (state == Qt::ApplicationState::ApplicationInactive)
