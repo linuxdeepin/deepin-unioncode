@@ -137,3 +137,13 @@ int64_t LocalTreeItem::childReference()
 {
     return itemVariable.variablesReference;
 }
+
+void LocalTreeItem::setChildrenFetched(bool fetch)
+{
+    childrenFetched = fetch;
+}
+
+bool LocalTreeItem::canFetchChildren()
+{
+    return !childrenFetched;
+}

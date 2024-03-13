@@ -779,8 +779,9 @@ void DAPDebugger::slotBreakpointSelected(const QModelIndex &index)
 void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
 {
     auto treeItem = static_cast<LocalTreeItem*>(index.internalPointer());
-    if(treeItem->childCount() > 0) // is already get child Variables
+    if(!treeItem->canFetchChildren())
         return;
+    treeItem->setChildrenFetched(true);
     IVariables variables;
     d->session->getVariables(treeItem->childReference(), &variables, 0);
 
