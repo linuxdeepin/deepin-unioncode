@@ -73,21 +73,29 @@ void TextEditor::save()
 
     file.write(text().toUtf8());
     file.close();
+    d->isSaved = true;
     emit fileSaved(d->fileName);
 }
 
 void TextEditor::saveAs()
 {
-    d->fileName = QFileDialog::getSaveFileName(this);
-    if (d->fileName.isEmpty())
+    auto fileName = QFileDialog::getSaveFileName(this);
+    if (fileName.isEmpty())
         return;
 
-    QFile file(d->fileName);
+    saveAs(fileName);
+}
+
+void TextEditor::saveAs(const QString &fileName)
+{
+    QFile file(fileName);
     if (!file.open(QFile::ReadWrite | QFile::Text | QFile::Truncate))
         return;
 
+    d->fileName = fileName;
     file.write(text().toUtf8());
     file.close();
+    d->isSaved = true;
 }
 
 void TextEditor::reload()
@@ -102,6 +110,7 @@ void TextEditor::reload()
         file.close();
     }
     setText(text.toUtf8());
+    setModified(false);
 
     setCursorPosition(line, index);
 }
@@ -328,6 +337,16 @@ void TextEditor::insertText(const QString &text)
 
     SendScintilla(SCI_INSERTTEXT, static_cast<ulong>(d->cursorPosition()), textData.constData());
     SendScintilla(SCI_SETEMPTYSELECTION, d->cursorPosition() + textData.size());
+}
+
+bool TextEditor::isSaved() const
+{
+    return d->isSaved;
+}
+
+void TextEditor::resetSaveState()
+{
+    d->isSaved = false;
 }
 
 QString TextEditor::cursorBeforeText() const
