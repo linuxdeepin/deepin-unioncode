@@ -75,6 +75,7 @@ public:
     QTimer hoverTimer;
     int hoverPos { -1 };
     LSPStyle *lspStyle { nullptr };
+    bool isSaved { false };
 };
 
 #endif   // TEXTEDITOR_P_H

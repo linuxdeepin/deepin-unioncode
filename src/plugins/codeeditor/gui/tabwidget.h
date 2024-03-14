@@ -22,13 +22,19 @@ public:
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
     QStringList modifiedFiles() const;
+    QStringList openedFiles() const;
     void saveAll() const;
+    bool saveAs(const QString &from, const QString &to);
+    void reloadFile(const QString &fileName);
+    void setFileModified(const QString &fileName, bool isModified);
+    void closeFileEditor(const QString &fileName);
     Q_INVOKABLE void replaceSelectedText(const QString &text);
     Q_INVOKABLE void showTips(const QString &tips);
     Q_INVOKABLE void insertText(const QString &text);
     Q_INVOKABLE void undo();
     void gotoNextPosition();
     void gotoPreviousPosition();
+    bool checkAndResetSaveState(const QString &fileName);
 
     void setEditorCursorPosition(int pos);
     int editorCursorPosition();

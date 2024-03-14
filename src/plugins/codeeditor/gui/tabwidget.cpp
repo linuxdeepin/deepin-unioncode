@@ -204,6 +204,7 @@ void TabWidgetPrivate::onTabClosed(const QString &fileName)
     if (!editor)
         return;
 
+    Inotify::globalInstance()->removePath(fileName);
     removePositionRecord(fileName);
     editorMng.remove(fileName);
     editorLayout->removeWidget(editor);
@@ -380,10 +381,49 @@ QStringList TabWidget::modifiedFiles() const
     return files;
 }
 
+QStringList TabWidget::openedFiles() const
+{
+    QStringList files;
+    for (auto editor : d->editorMng.values())
+        files << editor->getFile();
+
+    return files;
+}
+
 void TabWidget::saveAll() const
 {
     for (auto editor : d->editorMng.values())
         editor->save();
+}
+
+bool TabWidget::saveAs(const QString &from, const QString &to)
+{
+    if (auto editor = d->findEditor(from)) {
+        editor->saveAs(to);
+        return true;
+    }
+
+    return false;
+}
+
+void TabWidget::reloadFile(const QString &fileName)
+{
+    if (auto editor = d->findEditor(fileName))
+        editor->reload();
+}
+
+void TabWidget::setFileModified(const QString &fileName, bool isModified)
+{
+    if (auto editor = d->findEditor(fileName)) {
+        editor->setModified(isModified);
+        if (isModified)
+            emit editor->textChanged();
+    }
+}
+
+void TabWidget::closeFileEditor(const QString &fileName)
+{
+    d->tabBar->removeTab(fileName);
 }
 
 void TabWidget::replaceSelectedText(const QString &text)
@@ -444,6 +484,19 @@ void TabWidget::gotoPreviousPosition()
     d->tabBar->switchTab(record.fileName);
     editor->gotoPosition(record.pos);
     d->curPosRecord = record;
+}
+
+bool TabWidget::checkAndResetSaveState(const QString &fileName)
+{
+    if (auto editor = d->findEditor(fileName)) {
+        bool ret = editor->isSaved();
+        if (ret)
+            editor->resetSaveState();
+
+        return ret;
+    }
+
+    return false;
 }
 
 void TabWidget::setEditorCursorPosition(int pos)
