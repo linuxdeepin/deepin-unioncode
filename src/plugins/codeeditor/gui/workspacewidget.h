@@ -20,10 +20,17 @@ public:
     QString cursorBehindText() const;
     QStringList modifiedFiles() const;
     void saveAll() const;
+    void saveAs(const QString &from, const QString &to = "");
     void replaceSelectedText(const QString &text);
     void showTips(const QString &tips);
     void insertText(const QString &text);
     void undo();
+    void reloadFile(const QString &fileName);
+    void setFileModified(const QString &fileName, bool isModified);
+    void closeFileEditor(const QString &fileName);
+
+protected:
+    bool event(QEvent *event) override;
 
 private:
     QSharedPointer<WorkspaceWidgetPrivate> d { nullptr };
