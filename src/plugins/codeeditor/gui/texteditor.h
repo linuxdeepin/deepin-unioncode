@@ -20,6 +20,7 @@ public:
 
     void save();
     void saveAs();
+    void saveAs(const QString &fileName);
     void reload();
 
     // debug
@@ -60,6 +61,8 @@ public:
     int positionFromPoint(int x, int y);
     void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text);
     void insertText(const QString &text);
+    bool isSaved() const;
+    void resetSaveState();
 
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
