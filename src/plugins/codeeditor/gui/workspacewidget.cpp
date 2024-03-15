@@ -493,10 +493,10 @@ void WorkspaceWidget::saveAs(const QString &from, const QString &to)
             return;
     }
 
-    std::find_if(d->tabWidgetList.begin(), d->tabWidgetList.end(),
-                 [&](TabWidget *w) {
-                     return w->saveAs(from, tmpTo);
-                 });
+    Q_UNUSED(std::find_if(d->tabWidgetList.begin(), d->tabWidgetList.end(),
+                          [&](TabWidget *w) {
+                              return w->saveAs(from, tmpTo);
+                          });)
     Inotify::globalInstance()->addPath(tmpTo);
 }
 
