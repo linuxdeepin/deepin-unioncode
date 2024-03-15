@@ -27,6 +27,7 @@ typedef struct{
 }FindItem;
 
 using FindItemList = QList<FindItem>;
+using ProjectInfo = QMap<QString, QString>;
 
 class SearchResultTreeViewPrivate;
 class SearchResultTreeView : public DTreeView
@@ -36,7 +37,7 @@ class SearchResultTreeView : public DTreeView
 
 public:
     explicit SearchResultTreeView(QWidget *parent = nullptr);
-    void setData(FindItemList &itemList, QMap<QString, QString> projectInfoMap);
+    Q_INVOKABLE void setData(const FindItemList &itemList, ProjectInfo projectInfoMap);
     void clearData();
     virtual QIcon icon(const QString &data);
 

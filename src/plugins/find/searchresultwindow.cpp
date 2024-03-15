@@ -4,6 +4,7 @@
 
 #include "searchresultwindow.h"
 #include "common/common.h"
+#include "qobjectdefs.h"
 
 #include <DPushButton>
 #include <DMessageBox>
@@ -60,7 +61,7 @@ QIcon SearchResultTreeView::icon(const QString &data)
     return iconProvider.icon(info);
 }
 
-void SearchResultTreeView::setData(FindItemList &itemList, QMap<QString, QString> projectInfoMap)
+void SearchResultTreeView::setData(const FindItemList &itemList, ProjectInfo projectInfoMap)
 {
     auto model = qobject_cast<QStandardItemModel*>(SearchResultTreeView::model());
     model->clear();
@@ -125,18 +126,19 @@ SearchResultWindow::SearchResultWindow(QWidget *parent)
 {
     setupUi();
 
-
+    qRegisterMetaType<FindItemList>("FindItemList");
+    qRegisterMetaType<ProjectInfo>("ProjectInfo");
 }
 
 void SearchResultWindow::setupUi()
 {
-    d->replaceWidget = new QWidget();
+    d->replaceWidget = new QWidget(this);
     QHBoxLayout *replaceLayout = new QHBoxLayout();
 
-    d->replaceEdit = new DLineEdit();
+    d->replaceEdit = new DLineEdit(this);
     d->replaceEdit->setFixedWidth(280);
     d->replaceEdit->setPlaceholderText(tr("Replace"));
-    DPushButton *replaceBtn = new DPushButton(DPushButton::tr("Replace"));
+    DPushButton *replaceBtn = new DPushButton(DPushButton::tr("Replace"), this);
     replaceBtn->setFixedSize(120,36);
     d->replaceWidget->setLayout(replaceLayout);
 
@@ -144,31 +146,31 @@ void SearchResultWindow::setupUi()
     replaceLayout->addWidget(replaceBtn, 0, Qt::AlignLeft);
     replaceLayout->setAlignment(Qt::AlignLeft);
 
-    QHBoxLayout *hLayout = new QHBoxLayout(this);
+    QHBoxLayout *hLayout = new QHBoxLayout();
     DIconButton *cleanBtn = new DIconButton(this);//Clean && Return
     cleanBtn->setIcon(QIcon::fromTheme("go-previous"));
     QSize iconSize(12,12);
     cleanBtn->setIconSize(iconSize);
 
     cleanBtn->setFixedSize(36,36);
-    d->resultLabel = new DLabel();
+    d->resultLabel = new DLabel(this);
 
     hLayout->addWidget(cleanBtn);
     hLayout->addWidget(d->replaceWidget);
     hLayout->addWidget(d->resultLabel);
     hLayout->setAlignment(Qt::AlignLeft );
 
-    d->treeView = new SearchResultTreeView();
+    d->treeView = new SearchResultTreeView(this);
     d->treeView->setHeaderHidden(true);
     d->treeView->setLineWidth(0);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->setAlignment(Qt::AlignTop);
+    // vLayout->setAlignment(Qt::AlignTop);
     vLayout->setContentsMargins(0, 0, 0, 0);
     vLayout->addLayout(hLayout);
-    vLayout->addWidget(d->treeView);
+    vLayout->addWidget(d->treeView, 1);
 
-    d->iconLabel =new QLabel();
+    d->iconLabel =new QLabel(this);
     QVBoxLayout *iconLayout = new QVBoxLayout();
     d->iconLabel->setPixmap(QIcon::fromTheme("find_noResults").pixmap(QSize(96, 96)));
     iconLayout->addWidget(d->iconLabel, Qt::AlignCenter);
@@ -280,11 +282,17 @@ void SearchResultWindow::startSearch(const QString &cmd, const QString &filePath
                 }
             }
 
-            d->treeView->setData(findItemList, projectInfoMap);
+            // It is not safe to get the icon in a sub-thread,
+            // so move this operation to the main thread.
+            QMetaObject::invokeMethod(d->treeView,
+                                      "setData",
+                                      Qt::QueuedConnection,
+                                      Q_ARG(FindItemList, findItemList),
+                                      Q_ARG(ProjectInfo, projectInfoMap));
+
             QString msg = QString::number(resultCount) + tr(" matches found.");
             showMsg(true, msg);
             emit haveResult();
-
         } else {
             showMsg(false, tr("Search failed!"));
             emit noResult();
