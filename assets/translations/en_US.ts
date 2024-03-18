@@ -241,62 +241,62 @@
 <context>
     <name>BinaryToolsDialog</name>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="33"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="32"/>
         <source>Binary Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="47"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="46"/>
         <source>Use Tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="45"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="44"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="46"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="45"/>
         <source>Save Configuration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="128"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="127"/>
         <source>Error: execute command error! The reason is unknown.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="132"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="131"/>
         <source>The process &quot;%1&quot; exited normally.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="134"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="133"/>
         <source>The process &quot;%1&quot; exited with code %2.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="137"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="136"/>
         <source>The process &quot;%1&quot; crashed.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="98"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="97"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="179"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="178"/>
         <source>Start execute command: &quot;%1&quot; &quot;%2&quot; in workspace &quot;%3&quot;.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="186"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsdialog.cpp" line="185"/>
         <source>Execute command finished.
 </source>
         <translation type="unfinished"></translation>
@@ -508,12 +508,12 @@ storage: %2
 <context>
     <name>CMakeBuilderGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/builder/generator/cmakebuildergenerator.cpp" line="69"/>
+        <location filename="../../src/plugins/cxx/cmake/builder/generator/cmakebuildergenerator.cpp" line="75"/>
         <source>The build command of %1 project is null! please install it in console with &quot;sudo apt install cmake&quot;, and then restart the tool.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/builder/generator/cmakebuildergenerator.cpp" line="76"/>
+        <location filename="../../src/plugins/cxx/cmake/builder/generator/cmakebuildergenerator.cpp" line="82"/>
         <source>The path of &quot;%1&quot; is not exist! please check and reopen the project.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -534,7 +534,7 @@ storage: %2
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="280"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="282"/>
         <source>build</source>
         <translation type="unfinished"></translation>
     </message>
@@ -542,37 +542,37 @@ storage: %2
 <context>
     <name>CmakeProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="70"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="71"/>
         <source>Run CMake</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="245"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="246"/>
         <source>Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="267"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="268"/>
         <source>File are not automatically added to the CmakeList.txt file to the Cmake project. Copy the path to the source files to the clipboard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="271"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="272"/>
         <source>Copy to Clipboard?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="274"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="275"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="422"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="423"/>
         <source>Build</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="423"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="424"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
@@ -636,7 +636,7 @@ storage: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="159"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="161"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
@@ -858,7 +858,7 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="647"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="656"/>
         <source>Open Document</source>
         <translation type="unfinished"></translation>
     </message>
@@ -887,116 +887,116 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>DAPDebugger</name>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="397"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="425"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="392"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="420"/>
         <source>
 The debugee has Terminated.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="415"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="410"/>
         <source>The debugee has Exited.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="744"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="739"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="746"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="741"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="747"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="742"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="753"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="748"/>
         <source>Signal Received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="805"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="814"/>
         <source>Threads:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="809"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="818"/>
         <source>Stack List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="829"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="829"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="829"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="830"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="839"/>
         <source>Breakpoint List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="900"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="910"/>
         <source>Please build first.
  Build : Ctrl + B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="912"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="922"/>
         <source>Is preparing dependence, please waiting for a moment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="938"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="948"/>
         <source>Is getting the dap port, please waiting for a moment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="950"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="960"/>
         <source>Requesting debug port...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1020"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1022"/>
         <source>
 The dap port is not ready, please retry.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1024"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1026"/>
         <source>Debugging starts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1076"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1078"/>
         <source>Start debugging coredump file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1079"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1081"/>
         <source>The coredump target file is error: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1085"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1087"/>
         <source>The coredump file is error: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -1085,7 +1085,7 @@ The dap port is not ready, please retry.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="139"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="141"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1125,7 +1125,7 @@ Delete anyway?</source>
 <context>
     <name>DebuggerPlugin</name>
     <message>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="79"/>
+        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="62"/>
         <source>&amp;Application Output</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1200,57 +1200,57 @@ Delete anyway?</source>
 <context>
     <name>DetailsView</name>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="46"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="47"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="47"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="48"/>
         <source>Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="48"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="49"/>
         <source>Compatible Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="49"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="50"/>
         <source>Vendor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="51"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="52"/>
         <source>Category</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="53"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="54"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="54"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="55"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="55"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="56"/>
         <source>Dependency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="112"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="124"/>
         <source>reLaunch when changed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="140"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="153"/>
         <source>unload</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="140"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="153"/>
         <source>load</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1672,22 +1672,22 @@ Delete anyway?</source>
 <context>
     <name>LSPStyle</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="599"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="606"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="601"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="608"/>
         <source>Rename Symbol Under Cursor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="607"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="614"/>
         <source>Switch Between Function Declaration/Definition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="610"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="617"/>
         <source>Find Usages</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1866,17 +1866,17 @@ repos path: %0</source>
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="111"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="114"/>
         <source>Global Options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="165"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="174"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="168"/>
+        <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="177"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1915,17 +1915,17 @@ repos path: %0</source>
 <context>
     <name>PluginListView</name>
     <message>
-        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="65"/>
+        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="77"/>
         <source>Category</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="66"/>
+        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="78"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="67"/>
+        <location filename="../../src/plugins/core/gui/pluginlistview.cpp" line="79"/>
         <source>CopyRight</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1935,11 +1935,6 @@ repos path: %0</source>
     <message>
         <location filename="../../src/plugins/core/gui/pluginstorewidget.cpp" line="34"/>
         <source>Search Extension</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/gui/pluginstorewidget.cpp" line="39"/>
-        <source>Extension</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1977,44 +1972,44 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="207"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="210"/>
         <source>Show Contain Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="470"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="347"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="473"/>
         <source>New Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="353"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="356"/>
         <source>Open In Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="360"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="363"/>
         <source>Delete Document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="466"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="469"/>
         <source>New Document Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="473"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="561"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="476"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="564"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="559"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="562"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="560"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="563"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2101,17 +2096,17 @@ repos path: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="391"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="394"/>
         <source>Project Active</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="392"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="395"/>
         <source>Project Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="393"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="396"/>
         <source>Project Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2436,12 +2431,12 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="198"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="199"/>
         <source>Save Changes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="199"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="200"/>
         <source>The file has unsaved changes, will save?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2742,7 +2737,7 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="158"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="160"/>
         <source>Search &amp;Results</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2909,92 +2904,92 @@ not exists support files: %0</source>
 <context>
     <name>ReverseDebugger::Internal::EventFilterDialog</name>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="357"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="356"/>
         <source>Record the size of heap memory :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="358"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="357"/>
         <source>Record the size of stack memory :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="359"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="358"/>
         <source>Record system call parameter size :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="360"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="359"/>
         <source>Record the specified global variable :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="361"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="360"/>
         <source>Start record after the specified function is executed :</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="375"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="374"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="374"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="373"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="141"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="140"/>
         <source>Event Filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="270"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="269"/>
         <source>event list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="283"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="282"/>
         <source>syscall filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="297"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="296"/>
         <source>x11 events filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="315"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="314"/>
         <source>dbus filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="335"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="334"/>
         <source>default is 0, in KB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="337"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="336"/>
         <source>default is 32, unit Byte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="339"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="338"/>
         <source>default is 256, unit Byte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="342"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="341"/>
         <source>format: [*]var1+size1[,[*]var2+size2,...]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="344"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="343"/>
         <source>c++ mangle name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="351"/>
+        <location filename="../../src/plugins/reversedebug/eventfilterdialog.cpp" line="350"/>
         <source>Only record the thread where event occurred:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3748,52 +3743,52 @@ not exists support files: %0</source>
 <context>
     <name>SearchResultWindow</name>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="138"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="140"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="211"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="213"/>
         <source>Searching, please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="284"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="293"/>
         <source> matches found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="289"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="297"/>
         <source>Search failed!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="307"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="315"/>
         <source>Replacing, please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="313"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="321"/>
         <source>Repalce text is empty, will continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="314"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="322"/>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="315"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="323"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="358"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="366"/>
         <source>Replacement successful!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="360"/>
+        <location filename="../../src/plugins/find/searchresultwindow.cpp" line="368"/>
         <source>Replace failed!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3976,32 +3971,32 @@ not exists support files: %0</source>
 <context>
     <name>TabBarPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="76"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="77"/>
         <source>Copy File Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="80"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="81"/>
         <source>Copy File Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="87"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="88"/>
         <source>Close This File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="91"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="92"/>
         <source>Close All Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="97"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="98"/>
         <source>Close All Files Except This</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="110"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="111"/>
         <source>Open File Location</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4017,7 +4012,7 @@ not exists support files: %0</source>
 <context>
     <name>TaskDelegate</name>
     <message>
-        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="199"/>
+        <location filename="../../src/plugins/builder/tasks/taskdelegate.cpp" line="205"/>
         <source>File not found: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4025,47 +4020,47 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="234"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="235"/>
         <source>Refactor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="239"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="240"/>
         <source>Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="242"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="243"/>
         <source>Redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="247"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="248"/>
         <source>Cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="251"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="252"/>
         <source>Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="255"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="256"/>
         <source>Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="258"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="259"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="263"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="264"/>
         <source>Select All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="279"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="280"/>
         <source>Remove Breakpoint</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4221,6 +4216,78 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/valgrind/mainframe/valgrindrunner.cpp" line="214"/>
         <source>&amp;Application Output</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WorkspaceWidgetPrivate</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="103"/>
+        <source>The file &lt;i&gt;%1&lt;/i&gt; has been changed on disk.Do you want to reload it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="104"/>
+        <source>File Has Been Changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="107"/>
+        <source>Yes</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="108"/>
+        <source>Yes To All</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="109"/>
+        <source>No</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="110"/>
+        <source>No To All</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="111"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="140"/>
+        <source>Close</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="131"/>
+        <source>The file &lt;i&gt;%1&lt;/i&gt; has been removed from disk. Do you want to save it under a different name, or close the editor?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="135"/>
+        <source>File Has Been Removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="138"/>
+        <source>Save</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="139"/>
+        <source>Save As</source>
+        <comment>button</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="141"/>
+        <source>Close All</source>
+        <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
