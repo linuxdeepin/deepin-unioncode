@@ -27,6 +27,7 @@
 #include <DComboBox>
 #include <DPushButton>
 #include <DSimpleListView>
+#include <DSpinner>
 
 #include <QDateTime>
 #include <QTextBlock>
@@ -46,6 +47,7 @@
 using namespace dap;
 using namespace DEBUG_NAMESPACE;
 using namespace dpfservice;
+using DTK_WIDGET_NAMESPACE::DSpinner;
 
 class DebuggerPrivate
 {
@@ -75,6 +77,9 @@ class DebuggerPrivate
 
     DTreeView *localsView = nullptr;
     LocalTreeModel localsModel;
+    DSpinner *variablesSpinner { nullptr };
+    QTimer processingVariablesTimer;
+    QFuture<void> getLocalsFuture;
 
     StackFrameView *breakpointView = nullptr;
     BreakpointModel breakpointModel;
@@ -356,11 +361,6 @@ void DAPDebugger::registerDapHandlers()
         details->hitBreakpointIds = event.hitBreakpointIds;
         d->session->getStoppedDetails().push_back(details);
 
-        auto threads = d->session->fetchThreads(details);
-
-        int curThreadID = static_cast<int>(event.threadId.value(0));
-        updateThreadList(curThreadID, threads);
-
         // ui focus on the active frame.
         if (event.reason == "function breakpoint"
                 || event.reason == "breakpoint"
@@ -371,6 +371,9 @@ void DAPDebugger::registerDapHandlers()
                 || event.reason == "signal-received") {
             if (event.threadId) {
                 d->threadId = event.threadId.value(0);
+                int curThreadID = static_cast<int>(d->threadId);
+                auto threads = d->session->fetchThreads(details);
+                updateThreadList(curThreadID, threads);
                 switchCurrentThread(static_cast<int>(d->threadId));
             }
             updateRunState(DAPDebugger::RunState::kStopped);
@@ -645,10 +648,17 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
         }
     }
 
+    if(d->getLocalsFuture.isRunning())
+        d->getLocalsFuture.cancel();
+
     // update local variables.
-    IVariables locals;
-    getLocals(curFrame.frameId, &locals);
-    d->localsModel.setDatas(locals);
+    d->processingVariablesTimer.start(50);     // if processing time < 50ms, do not show spinner
+    d->getLocalsFuture = QtConcurrent::run([&](){
+        IVariables locals;
+        getLocals(curFrame.frameId, &locals);
+        d->localsModel.setDatas(locals);
+        emit processingVariablesDone();
+    });
 }
 
 void DAPDebugger::updateThreadList(int curr, const dap::array<dap::Thread> &threads)
@@ -781,12 +791,16 @@ void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
     auto treeItem = static_cast<LocalTreeItem*>(index.internalPointer());
     if(!treeItem->canFetchChildren())
         return;
-    treeItem->setChildrenFetched(true);
-    IVariables variables;
-    d->session->getVariables(treeItem->childReference(), &variables, 0);
 
-    d->localsModel.appendItem(treeItem, variables);
-    emit d->localsModel.layoutChanged();
+    d->processingVariablesTimer.start(50);
+    treeItem->setChildrenFetched(true);
+    QtConcurrent::run([=](){
+        IVariables variables;
+        d->session->getVariables(treeItem->childReference(), &variables, 0);
+
+        emit processingVariablesDone();
+        emit childVariablesUpdated(treeItem, variables);
+    });
 }
 
 void DAPDebugger::initializeView()
@@ -829,6 +843,21 @@ void DAPDebugger::initializeView()
     QStringList headers { tr("Name"), tr("Value"), tr("Type")/*, "Reference" */};
     d->localsModel.setHeaders(headers);
 
+    d->variablesSpinner = new DSpinner(d->localsView);
+    d->variablesSpinner->setFixedSize(30, 30);
+    d->variablesSpinner->start();
+    d->variablesSpinner->hide();
+    connect(&d->processingVariablesTimer, &QTimer::timeout, this, [=](){
+        d->localsView->setEnabled(false);
+        d->variablesSpinner->show();
+        d->variablesSpinner->move(d->localsView->width() / 2 - d->variablesSpinner->width(), d->localsView->height() / 3);
+    });
+    connect(this, &DAPDebugger::processingVariablesDone, this, [=](){
+        d->localsView->setEnabled(true);
+        d->processingVariablesTimer.stop();
+        d->variablesSpinner->hide();
+    });
+
     d->debugMainPane = new DFrame();
     d->debugMainPane->setLineWidth(0);
     DStyle::setFrameRadius(d->debugMainPane, 0);
@@ -844,6 +873,10 @@ void DAPDebugger::initializeView()
     connect(d->stackView, &QTreeView::doubleClicked, this, &DAPDebugger::slotFrameSelected);
     connect(d->breakpointView, &QTreeView::doubleClicked, this, &DAPDebugger::slotBreakpointSelected);
     connect(d->localsView, &QTreeView::expanded, this, &DAPDebugger::slotGetChildVariable);
+    connect(this, &DAPDebugger::childVariablesUpdated, d->localsView, [=](LocalTreeItem *treeItem, IVariables vars){
+        d->localsModel.appendItem(treeItem, vars);
+        emit d->localsModel.layoutChanged();
+    });
 }
 
 void DAPDebugger::exitDebug()

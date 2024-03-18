@@ -66,6 +66,10 @@ public:
     RunState getRunState() const override;
     bool runCoredump(const QString &target, const QString &core, const QString &kit) override;
 
+signals:
+    void childVariablesUpdated(LocalTreeItem* parentItem, IVariables vars);
+    void processingVariablesDone();
+
 public slots:
     void registerDapHandlers();
     void handleEvents(const dpf::Event &event);
