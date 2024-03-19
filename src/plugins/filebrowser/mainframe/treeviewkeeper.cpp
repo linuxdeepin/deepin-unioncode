@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "treeviewkeeper.h"
-#include "treeview.h"
+#include "filetreeview.h"
 
 TreeViewKeeper::TreeViewKeeper()
 {
@@ -16,10 +16,10 @@ TreeViewKeeper *TreeViewKeeper::instance()
     return &ins;
 }
 
-TreeView *TreeViewKeeper::treeView()
+FileTreeView *TreeViewKeeper::treeView()
 {
     if (!iTreeView) {
-        iTreeView  = new TreeView;
+        iTreeView  = new FileTreeView;
     }
     return iTreeView;
 }
