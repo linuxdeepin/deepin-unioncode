@@ -41,6 +41,7 @@ public:
 
 signals:
     void buildExecuteEnd(const BuildCommandInfo &commandInfo, int status = 0);
+    void fileDeleted(const QString &filePath);
 
 private:
     QString buildCommandUuid;

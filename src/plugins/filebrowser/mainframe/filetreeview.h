@@ -11,14 +11,14 @@
 #include <DMenu>
 
 class TreeViewPrivate;
-class TreeView : public DTK_WIDGET_NAMESPACE::DTreeView
+class FileTreeView : public DTK_WIDGET_NAMESPACE::DTreeView
 {
     Q_OBJECT
     TreeViewPrivate *const d;
 
 public:
-    explicit TreeView(QWidget *parent = nullptr);
-    virtual ~TreeView();
+    explicit FileTreeView(QWidget *parent = nullptr);
+    virtual ~FileTreeView();
     void setProjectInfo(const dpfservice::ProjectInfo &proInfo);
 public slots:
     void selOpen();
