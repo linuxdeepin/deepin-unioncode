@@ -376,6 +376,7 @@ void DAPDebugger::registerDapHandlers()
                 updateThreadList(curThreadID, threads);
                 switchCurrentThread(static_cast<int>(d->threadId));
             }
+            qApp->setActiveWindow(d->localsView);
             updateRunState(DAPDebugger::RunState::kStopped);
         } else if (event.reason == "exception") {
             QString name;
@@ -854,6 +855,7 @@ void DAPDebugger::initializeView()
     });
     connect(this, &DAPDebugger::processingVariablesDone, this, [=](){
         d->localsView->setEnabled(true);
+        d->localsView->setFocus();
         d->processingVariablesTimer.stop();
         d->variablesSpinner->hide();
     });
