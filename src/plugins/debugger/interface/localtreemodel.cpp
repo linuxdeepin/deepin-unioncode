@@ -175,6 +175,8 @@ void LocalTreeModel::clear()
 {
     QWriteLocker locker(&mutex);
     items.clear();
+    locker.unlock();
+
     if (rootItem) {
         beginRemoveRows(rootItem->index(), 0, rootItem->childCount() - 1);
         rootItem->removeChildren();
