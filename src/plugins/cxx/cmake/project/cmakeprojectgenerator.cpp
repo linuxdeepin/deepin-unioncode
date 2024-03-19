@@ -49,6 +49,12 @@ CmakeProjectGenerator::CmakeProjectGenerator()
                      &ProjectCmakeProxy::buildExecuteEnd,
                      this, &CmakeProjectGenerator::doBuildCmdExecuteEnd);
 
+    QObject::connect(ProjectCmakeProxy::instance(),
+                     &ProjectCmakeProxy::fileDeleted,
+                     this, [this](){
+        runCMake(this->rootItem, {});
+    });
+
     connect(TargetsManager::instance(), &TargetsManager::initialized, this, &CmakeProjectGenerator::targetInitialized);
 
     // main thread init watcher class
