@@ -59,7 +59,7 @@ AbstractWidget *FileBrowser::createTreeWidget()
     auto folderLabel = new DLabel();
     folderLabel->setMargin(3);
     folderLabel->setElideMode(Qt::TextElideMode::ElideMiddle);
-    QObject::connect(treeView, &TreeView::rootPathChanged,
+    QObject::connect(treeView, &FileTreeView::rootPathChanged,
                      folderLabel, &DLabel::setText,
                      Qt::UniqueConnection);
 
