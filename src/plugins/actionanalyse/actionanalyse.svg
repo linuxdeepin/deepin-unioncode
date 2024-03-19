@@ -15,7 +15,7 @@
         </filter>
         <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-4">
             <stop stop-color="#9036CD" offset="0%"></stop>
-            <stop stop-color="#4CADE1" offset="100%"></stop>
+            <stop stop-color="#1025C5" offset="100%"></stop>
         </linearGradient>
         <linearGradient x1="50%" y1="100%" x2="50%" y2="0%" id="linearGradient-5">
             <stop stop-color="#FFFFFF" stop-opacity="0.511139983" offset="0%"></stop>
