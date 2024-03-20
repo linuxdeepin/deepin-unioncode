@@ -30,6 +30,11 @@ QString SciLexerHandler::description(int style) const
     return proxy->description(style);
 }
 
+QStringList SciLexerHandler::autoCompletionWordSeparators() const
+{
+    return proxy->autoCompletionWordSeparators();
+}
+
 const char *SciLexerHandler::blockEnd(int *style) const
 {
     return proxy->blockEnd(style);

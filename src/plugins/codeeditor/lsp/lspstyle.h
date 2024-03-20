@@ -19,6 +19,7 @@ public:
     virtual ~LSPStyle();
 
     virtual void initLspConnection();   //setting main
+    void requestCompletion(int line, int column);
     void updateTokens();
     void setIndicStyle();
     virtual QColor symbolIndicColor(lsp::SemanticTokenType::type_value token,
@@ -49,14 +50,13 @@ public:
 
     virtual void rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits);
 
+signals:
+    void completeFinished(const lsp::CompletionProvider &provider);
+
 private slots:
     void setDefinitionSelectedStyle(int start, int end);
-    void setCompletion(const QString &text, int enterLenght,
-                       const lsp::CompletionProvider &provider);
 
-    void onTextInsertedTotal(int position, int length, int linesAdded, const QString &text, int line);
-    void onTextDeletedTotal(int position, int length, int linesAdded, const QString &text, int line);
-    void onTextChangedTotal();
+    void onTextChanged();
     void onHovered(int position);
     void onHoverCleaned(int position);
     void onDefinitionHover(int position);
