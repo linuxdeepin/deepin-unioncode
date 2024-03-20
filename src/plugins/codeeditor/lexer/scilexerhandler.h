@@ -20,6 +20,7 @@ public:
     virtual const char *language() const override;
     virtual const char *lexer() const override;
     virtual QString description(int style) const override;
+    virtual QStringList autoCompletionWordSeparators() const override;
     virtual const char *blockEnd(int *style) const override;
     virtual int blockLookback() const override;
     virtual const char *blockStart(int *style) const override;

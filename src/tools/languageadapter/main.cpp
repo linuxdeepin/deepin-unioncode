@@ -46,6 +46,7 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     procAs << "--log=verbose";
     procAs << QString("--compile-commands-dir=%0").arg(compileDB_Path);
     procAs << "--clang-tidy";
+    procAs << "--completion-style=bundled";
     procAs << "-j=$(nproc)";
 
     auto proc = new QProcess();

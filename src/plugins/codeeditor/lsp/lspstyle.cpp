@@ -12,6 +12,8 @@
 
 #include "services/project/projectservice.h"
 
+#include "Qsci/qscilexer.h"
+
 #include <DApplicationHelper>
 #include <QApplication>
 
@@ -25,11 +27,12 @@ LSPStyle::LSPStyle(TextEditor *parent)
 {
     d->editor = parent;
     d->diagnosticFormat = "%1\n%2:%3";
+    d->textChangedTimer.setSingleShot(true);
+    d->textChangedTimer.setInterval(200);
 
     setIndicStyle();
 
-    connect(d->editor, &TextEditor::textAdded, this, &LSPStyle::onTextInsertedTotal);
-    connect(d->editor, &TextEditor::textRemoved, this, &LSPStyle::onTextDeletedTotal);
+    connect(d->editor, &TextEditor::textChanged, this, [this] { d->textChangedTimer.start(); });
     connect(d->editor, &TextEditor::documentHovered, this, &LSPStyle::onHovered);
     connect(d->editor, &TextEditor::documentHoverEnd, this, &LSPStyle::onHoverCleaned);
     connect(d->editor, &TextEditor::documentHoveredWithCtrl, this, &LSPStyle::onDefinitionHover);
@@ -37,6 +40,7 @@ LSPStyle::LSPStyle(TextEditor *parent)
     connect(d->editor, &TextEditor::contextMenuRequested, this, &LSPStyle::onShowContextMenu);
     connect(d->editor, &TextEditor::fileClosed, this, &LSPStyle::onFileClosed);
     connect(&d->renamePopup, &RenamePopup::editingFinished, this, &LSPStyle::renameSymbol);
+    connect(&d->textChangedTimer, &QTimer::timeout, this, &LSPStyle::onTextChanged);
     connect(CodeLens::instance(), &CodeLens::doubleClicked,
             this, [=](const QString &filePath, const lsp::Range &range) {
                 emit EditorCallProxy::instance()->reqGotoPosition(filePath, range.start.line, range.start.character);
@@ -70,9 +74,7 @@ void LSPStyle::initLspConnection()
             this, &LSPStyle::setHover);
 
     connect(d->getClient(), QOverload<const lsp::CompletionProvider &>::of(&newlsp::Client::requestResult),
-            this, [=](const lsp::CompletionProvider &provider) {
-                d->completionCache.provider = provider;
-            });
+            this, &LSPStyle::completeFinished);
 
     connect(d->getClient(), QOverload<const newlsp::WorkspaceEdit &>::of(&newlsp::Client::renameRes),
             EditorCallProxy::instance(), &EditorCallProxy::reqDoRename, Qt::UniqueConnection);
@@ -87,6 +89,17 @@ void LSPStyle::initLspConnection()
             this, QOverload<const std::vector<newlsp::Location> &>::of(&LSPStyle::setDefinition));
     connect(d->getClient(), QOverload<const std::vector<newlsp::LocationLink> &>::of(&newlsp::Client::definitionRes),
             this, QOverload<const std::vector<newlsp::LocationLink> &>::of(&LSPStyle::setDefinition));
+}
+
+void LSPStyle::requestCompletion(int line, int column)
+{
+    if (!d->getClient())
+        return;
+
+    lsp::Position pos { line, column };
+    qApp->metaObject()->invokeMethod(d->getClient(), "completionRequest",
+                                     Q_ARG(const QString &, d->editor->getFile()),
+                                     Q_ARG(const lsp::Position &, pos));
 }
 
 void LSPStyle::updateTokens()
@@ -369,104 +382,8 @@ void LSPStyle::setDefinitionSelectedStyle(int start, int end)
     }
 }
 
-void LSPStyle::setCompletion(const QString &text, int enterLenght, const lsp::CompletionProvider &provider)
+void LSPStyle::onTextChanged()
 {
-    if (!d->editor->hasFocus())
-        return;
-
-    if (provider.items.isEmpty() || d->textChangedCache.textCache.isEmpty())
-        return;
-
-    const unsigned char sep = 0x7C;   // "|"
-    d->editor->SendScintilla(TextEditor::SCI_AUTOCSETSEPARATOR, sep);
-    QStringList inserts;
-    for (auto item : provider.items) {
-        if (item.insertText.isEmpty() || !item.insertText.startsWith(text, Qt::CaseInsensitive))
-            continue;
-        inserts << item.insertText;
-    }
-
-    if (inserts.isEmpty())
-        return;
-
-    qSort(inserts.begin(), inserts.end(),
-          [](const QString &str1, const QString &str2) {
-              return str1.toLower() < str2.toLower();
-          });
-
-    auto completionData = inserts.join(sep).toUtf8();
-    d->editor->SendScintilla(TextEditor::SCI_AUTOCSHOW, static_cast<ulong>(enterLenght), completionData.constData());
-}
-
-void LSPStyle::onTextInsertedTotal(int position, int length, int linesAdded, const QString &text, int line)
-{
-    Q_UNUSED(linesAdded)
-    Q_UNUSED(line)
-
-    if (!d->editor || !d->getClient())
-        return;
-
-    if (d->textChangedTimer.isActive())
-        d->textChangedTimer.stop();
-
-    auto wordStartPos = d->editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(position - length), true);
-    setCompletion(d->editor->text(static_cast<int>(wordStartPos), position).replace(" ", "") + text,
-                  static_cast<int>(position - wordStartPos), d->completionCache.provider);
-
-    d->textChangedCache.positionCache = position;
-    d->textChangedCache.lengthCache = length;
-    d->textChangedCache.textCache = text;
-    d->textChangedCache.state = TextChangeCache::State::Inserted;
-
-    d->textChangedTimer.start(500);
-    connect(&d->textChangedTimer, &QTimer::timeout,
-            this, &LSPStyle::onTextChangedTotal,
-            Qt::UniqueConnection);
-}
-
-void LSPStyle::onTextDeletedTotal(int position, int length, int linesAdded, const QString &text, int line)
-{
-    Q_UNUSED(linesAdded)
-    Q_UNUSED(line)
-
-    if (!d->editor || !d->getClient())
-        return;
-
-    if (d->textChangedTimer.isActive())
-        d->textChangedTimer.stop();
-
-    if (d->textChangedCache.lengthCache == 0) {
-        d->textChangedCache.state = TextChangeCache::State::Deleted;
-        d->textChangedCache.positionCache = position + length;
-        d->textChangedCache.lengthCache = length;
-        d->textChangedCache.textCache.insert(0, text);
-    }
-
-    if (d->textChangedCache.state == TextChangeCache::State::Inserted) {
-        if (d->textChangedCache.positionCache + d->textChangedCache.lengthCache - length == position && 0 != position) {
-            d->textChangedCache.textCache.remove(d->textChangedCache.textCache.size() - length,
-                                                 d->textChangedCache.textCache.size());
-            d->textChangedCache.lengthCache -= length;
-            d->textChangedCache.state = TextChangeCache::State::Inserted;
-        }
-    } else if (d->textChangedCache.state == TextChangeCache::State::Deleted) {
-        if (d->textChangedCache.positionCache == position + d->textChangedCache.lengthCache) {
-            d->textChangedCache.lengthCache += length;
-            d->textChangedCache.textCache.insert(0, text);
-        }
-    }
-
-    d->textChangedTimer.start(500);
-    QObject::connect(&d->textChangedTimer, &QTimer::timeout,
-                     this, &LSPStyle::onTextChangedTotal,
-                     Qt::UniqueConnection);
-}
-
-void LSPStyle::onTextChangedTotal()
-{
-    if (d->textChangedTimer.isActive())
-        d->textChangedTimer.stop();
-
     if (!d->editor)
         return;
 
@@ -476,12 +393,6 @@ void LSPStyle::onTextChangedTotal()
         qApp->metaObject()->invokeMethod(d->getClient(), "changeRequest",
                                          Q_ARG(const QString &, d->editor->getFile()),
                                          Q_ARG(const QByteArray &, content.toUtf8()));
-        lsp::Position pos;
-        d->editor->lineIndexFromPosition(d->textChangedCache.positionCache, &pos.line, &pos.character);
-        pos.character += d->textChangedCache.lengthCache;
-        qApp->metaObject()->invokeMethod(d->getClient(), "completionRequest",
-                                         Q_ARG(const QString &, d->editor->getFile()),
-                                         Q_ARG(const lsp::Position &, pos));
         qApp->metaObject()->invokeMethod(d->getClient(), "docSemanticTokensFull",
                                          Q_ARG(const QString &, d->editor->getFile()));
     }
@@ -711,6 +622,27 @@ QString LSPStylePrivate::formatDiagnosticMessage(const QString &message, int typ
     }
 
     return result;
+}
+
+bool LSPStylePrivate::shouldStartCompletion(const QString &insertedText)
+{
+    if (insertedText.isEmpty())
+        return false;
+
+    QChar lastChar = insertedText.at(insertedText.count() - 1);
+    if (lastChar.isLetter() || lastChar.isNumber() || lastChar == QLatin1Char('_'))
+        return true;
+
+    if (editor && editor->lexer()) {
+        auto spList = editor->lexer()->autoCompletionWordSeparators();
+        auto iter = std::find_if(spList.begin(), spList.end(),
+                                 [&insertedText](const QString &sp) {
+                                     return insertedText.endsWith(sp);
+                                 });
+        return iter != spList.end();
+    }
+
+    return false;
 }
 
 newlsp::Client *LSPStylePrivate::getClient() const
