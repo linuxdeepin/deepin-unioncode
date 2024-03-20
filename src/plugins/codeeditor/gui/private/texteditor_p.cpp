@@ -34,7 +34,8 @@ DGUI_USE_NAMESPACE
 
 TextEditorPrivate::TextEditorPrivate(TextEditor *qq)
     : QObject(qq),
-      q(qq)
+      q(qq),
+      completionWidget(new CodeCompletionWidget(qq))
 {
     init();
     initConnection();

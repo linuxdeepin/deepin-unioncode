@@ -508,7 +508,7 @@ void TabWidget::setEditorCursorPosition(int pos)
 int TabWidget::editorCursorPosition()
 {
     if (auto editor = d->currentTextEditor())
-        return editor->cursorPosition();
+        return editor->cursorLastPosition();
 
     return 0;
 }

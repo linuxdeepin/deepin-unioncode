@@ -7,6 +7,8 @@
 
 #include <Qsci/qsciscintilla.h>
 
+class CodeCompletionWidget;
+class LSPStyle;
 class TextEditorPrivate;
 class TextEditor : public QsciScintilla
 {
@@ -47,6 +49,7 @@ public:
     int currentLineNumber();
     void gotoLine(int line);
     void gotoPosition(int pos);
+    int cursorLastPosition();
     int cursorPosition();
     void setLineBackgroundColor(int line, const QColor &color);
     void resetLineBackgroundColor(int line);
@@ -60,18 +63,29 @@ public:
     QPoint pointFromPosition(int position);
     int positionFromPoint(int x, int y);
     void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text);
+    void replaceRange(int startPosition, int endPosition, const QString &text);
     void insertText(const QString &text);
     bool isSaved() const;
     void resetSaveState();
+    LSPStyle *lspStyle() const;
+    int wordStartPositoin(int position);
+    int wordEndPosition(int position);
 
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
+
+    void setAutomaticInvocationEnabled(bool enabled);
+    bool isAutomaticInvocationEnabled() const;
 
 public slots:
     void onMarginClicked(int margin, int line, Qt::KeyboardModifiers state);
     void updateLineNumberWidth(bool isDynamicWidth);
     void onScrollValueChanged(int value);
     void onCursorPositionChanged(int line, int index);
+
+protected:
+    virtual void focusOutEvent(QFocusEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
 
 signals:
     void fileSaved(const QString &fileName);
@@ -83,6 +97,7 @@ signals:
     void documentHoveredWithCtrl(int pos);
     void documentHoverEnd(int pos);
     void contextMenuRequested(QMenu *menu);
+    void focusOut();
 
 private:
     void init();
