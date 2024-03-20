@@ -13,7 +13,7 @@
 #include "interface/appoutputpane.h"
 #include "interface/stackframemodel.h"
 #include "interface/stackframeview.h"
-#include "interface/messagebox.h"
+#include "common/widget/messagebox.h"
 #include "interface/breakpointmodel.h"
 #include "event/eventreceiver.h"
 #include "common/common.h"
