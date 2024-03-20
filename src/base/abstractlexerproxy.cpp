@@ -26,6 +26,11 @@ bool AbstractLexerProxy::isSupport(const QString &fileName) const
     return false;
 }
 
+QStringList AbstractLexerProxy::autoCompletionWordSeparators() const
+{
+    return {};
+}
+
 const char *AbstractLexerProxy::blockEnd(int *style) const
 {
     Q_UNUSED(style)

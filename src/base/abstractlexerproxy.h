@@ -29,6 +29,10 @@ public:
     //! Return true if support this `fileName`, otherwise return false
     virtual bool isSupport(const QString &fileName) const;
 
+    //! \internal Returns the character sequences that can separate
+    //! auto-completion words.
+    virtual QStringList autoCompletionWordSeparators() const;
+
     //! \internal Returns a space separated list of words or characters in
     //! a particular style that define the end of a block for
     //! auto-indentation.  The styles is returned via \a style.

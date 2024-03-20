@@ -8,6 +8,7 @@
 #include "gui/texteditor.h"
 #include "common/util/eventdefinitions.h"
 #include "lsp/lspstyle.h"
+#include "gui/completion/codecompletionwidget.h"
 
 #include <Qsci/qscistyle.h>
 
@@ -76,6 +77,9 @@ public:
     int hoverPos { -1 };
     LSPStyle *lspStyle { nullptr };
     bool isSaved { false };
+    bool isAutoCompletionEnabled { false };
+
+    CodeCompletionWidget *completionWidget { nullptr };
 };
 
 #endif   // TEXTEDITOR_P_H
