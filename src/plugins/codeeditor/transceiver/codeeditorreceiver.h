@@ -66,6 +66,8 @@ signals:
     void reqResetLineBackground(const QString &fileName, int line);
     void reqClearLineBackground(const QString &fileName);
     void reqDoRename(const newlsp::WorkspaceEdit &info);
+    void reqCloseCurrentEditor();
+    void reqSwitchHeaderSource();
 
     // annotation
     void reqAddAnnotation(const QString &fileName, const QString &title, const QString &content,int line,  AnnotationType type);

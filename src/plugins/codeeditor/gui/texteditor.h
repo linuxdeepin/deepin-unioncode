@@ -70,6 +70,7 @@ public:
     LSPStyle *lspStyle() const;
     int wordStartPositoin(int position);
     int wordEndPosition(int position);
+    void switchHeaderSource();
 
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
