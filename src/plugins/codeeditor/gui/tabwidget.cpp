@@ -435,10 +435,19 @@ void TabWidget::closeFileEditor()
 void TabWidget::switchHeaderSource()
 {
     auto editor = d->currentTextEditor();
-    if (!editor->hasFocus())
+    if (!editor || !editor->hasFocus())
         return;
 
     editor->switchHeaderSource();
+}
+
+void TabWidget::followSymbolUnderCursor()
+{
+    auto editor = d->currentTextEditor();
+    if (!editor || !editor->hasFocus())
+        return;
+
+    editor->followSymbolUnderCursor();
 }
 
 void TabWidget::replaceSelectedText(const QString &text)
@@ -552,6 +561,13 @@ void TabWidget::removeBreakpoint(const QString &fileName, int line)
 {
     if (auto editor = d->findEditor(fileName))
         editor->removeBreakpoint(line);
+}
+
+void TabWidget::toggleBreakpoint()
+{
+    auto editor = d->currentTextEditor();
+    if (editor && editor->hasFocus())
+        editor->toggleBreakpoint();
 }
 
 void TabWidget::clearAllBreakpoints()
