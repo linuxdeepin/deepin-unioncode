@@ -8,6 +8,7 @@
 #include "common/common.h"
 
 #include <QAbstractItemModel>
+#include <QKeySequence>
 
 class TextEditor;
 class CodeCompletionModelPrivate;
@@ -19,18 +20,12 @@ public:
     ~CodeCompletionModel() override;
 
     enum Columns {
-        Prefix = 0,
-        /// Icon representing the type of completion. We have a separate icon field
-        /// so that names remain aligned where only some completions have icons,
-        /// and so that they can be rearranged by the user.
         Icon,
-        Scope,
-        Name,
-        Arguments,
-        Postfix
+        Name
     };
-    static const int ColumnCount = Postfix + 1;
+    static const int ColumnCount = Name + 1;
 
+    void clear();
     void completionInvoked(TextEditor *editor, int position);
     void executeCompletionItem(TextEditor *editor, int start, int end, const QModelIndex &index);
 
