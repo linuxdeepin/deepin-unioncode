@@ -382,6 +382,14 @@ int TextEditor::wordEndPosition(int position)
     return static_cast<int>(SendScintilla(SCI_WORDENDPOSITION, static_cast<ulong>(position), true));
 }
 
+void TextEditor::switchHeaderSource()
+{
+    if (!d->lspStyle)
+        return;
+
+    d->lspStyle->switchHeaderSource(d->fileName);
+}
+
 QString TextEditor::cursorBeforeText() const
 {
     int pos = d->cursorPosition();

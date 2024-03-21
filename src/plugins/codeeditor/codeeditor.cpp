@@ -95,23 +95,30 @@ void CodeEditor::initActions()
 
     QAction *backAction = new QAction(tr("backward"), this);
     QAction *forwardAction = new QAction(tr("forward"), this);
+    QAction *closeAction = new QAction(tr("Close"), this);
+    QAction *switchHeaderSourceAction = new QAction(tr("Switch Header/Source"), this);
 
     auto inputBackAction = new AbstractAction(backAction);
     inputBackAction->setShortCutInfo("Editor.back", tr("Backward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
     auto inputForwardAction = new AbstractAction(forwardAction);
     inputForwardAction->setShortCutInfo("Editor.forward",
                                         tr("Forward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Right));
+    auto inputCloseAction = new AbstractAction(closeAction);
+    inputCloseAction->setShortCutInfo("Editor.close",
+                                      tr("Close"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_W));
+    auto inputswitchHeaderSourceAction = new AbstractAction(switchHeaderSourceAction);
+    inputswitchHeaderSourceAction->setShortCutInfo("Editor.switchHS",
+                                                   tr("Switch Header/Source"), QKeySequence(Qt::Key_F4));
 
     windowService->addAction(tr("&Edit"), inputBackAction);
     windowService->addAction(tr("&Edit"), inputForwardAction);
+    windowService->addAction(tr("&Edit"), inputCloseAction);
+    windowService->addAction(tr("&Edit"), inputswitchHeaderSourceAction);
 
-    connect(backAction, &QAction::triggered, [=] {
-        editor.back();
-    });
-
-    connect(forwardAction, &QAction::triggered, [=] {
-        editor.forward();
-    });
+    connect(backAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqBack);
+    connect(forwardAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqForward);
+    connect(closeAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqCloseCurrentEditor);
+    connect(switchHeaderSourceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource);
 }
 
 void CodeEditor::initEditorService()

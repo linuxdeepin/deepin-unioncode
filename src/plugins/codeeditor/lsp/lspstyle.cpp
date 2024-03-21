@@ -62,6 +62,8 @@ void LSPStyle::initLspConnection()
 
     connect(d->getClient(), QOverload<const lsp::References &>::of(&newlsp::Client::requestResult),
             CodeLens::instance(), &CodeLens::displayReference, Qt::UniqueConnection);
+    connect(d->getClient(), &newlsp::Client::switchHeaderSourceResult,
+            this, &LSPStyle::handleSwitchHeaderSource, Qt::UniqueConnection);
 
     //bind signals to file diagnostics
     connect(d->getClient(), QOverload<const newlsp::PublishDiagnosticsParams &>::of(&newlsp::Client::publishDiagnostics),
@@ -369,6 +371,15 @@ void LSPStyle::rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits
     }
 }
 
+void LSPStyle::switchHeaderSource(const QString &file)
+{
+    if (!d->getClient())
+        return;
+
+    qApp->metaObject()->invokeMethod(d->getClient(), "switchHeaderSource",
+                                     Q_ARG(const QString &, file));
+}
+
 void LSPStyle::setDefinitionSelectedStyle(int start, int end)
 {
     d->editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_COMPOSITIONTHICK);
@@ -522,7 +533,10 @@ void LSPStyle::onShowContextMenu(QMenu *menu)
         }
     }
 
-    auto act = menu->addAction(tr("Switch Between Function Declaration/Definition"), this, &LSPStyle::switchDeclarationOrDefinition);
+    auto act = menu->addAction(tr("Switch Header/Source"), this, std::bind(&LSPStyle::switchHeaderSource, this, d->editor->getFile()));
+    menu->insertAction(actionList.first(), act);
+
+    act = menu->addAction(tr("Switch Between Function Declaration/Definition"), this, &LSPStyle::switchDeclarationOrDefinition);
     menu->insertAction(actionList.first(), act);
 
     act = menu->addAction(tr("Find Usages"), this, &LSPStyle::findUsagesActionTriggered);
@@ -608,6 +622,14 @@ void LSPStyle::gotoDefinition()
         EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
                                                  one.range.end.line);
     }
+}
+
+void LSPStyle::handleSwitchHeaderSource(const QString &file)
+{
+    if (file.isEmpty())
+        return;
+
+    emit EditorCallProxy::instance()->reqOpenFile("", file);
 }
 
 QString LSPStylePrivate::formatDiagnosticMessage(const QString &message, int type)

@@ -159,6 +159,7 @@ public slots:
     void docSemanticTokensFull(const QString &filePath); //yes
     void docSemanticTokensRange(const QString &filePath, lsp::Range range);
     void docHoverRequest(const QString &filePath, const lsp::Position &pos); // yes
+    void switchHeaderSource(const QString &filePath);
 
 signals:
     void request();
@@ -171,6 +172,7 @@ signals:
     void requestResult(const lsp::Highlights &highlights);
     void requestResult(const QList<lsp::Data> &tokensResult, const QString &filePath);
     void requestResult(const lsp::References &refs);
+    void switchHeaderSourceResult(const QString &filePath);
     void renameRes(const newlsp::WorkspaceEdit &changes);
     void hoverRes(const newlsp::Hover &hover);
     void definitionRes(const newlsp::Location &location);
