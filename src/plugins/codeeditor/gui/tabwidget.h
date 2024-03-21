@@ -28,6 +28,8 @@ public:
     void reloadFile(const QString &fileName);
     void setFileModified(const QString &fileName, bool isModified);
     void closeFileEditor(const QString &fileName);
+    void closeFileEditor();
+    void switchHeaderSource();
     Q_INVOKABLE void replaceSelectedText(const QString &text);
     Q_INVOKABLE void showTips(const QString &tips);
     Q_INVOKABLE void insertText(const QString &text);

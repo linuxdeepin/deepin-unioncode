@@ -398,6 +398,11 @@ void Client::docHoverRequest(const QString &filePath, const lsp::Position &pos)
     d->callMethod(lsp::V_TEXTDOCUMENT_HOVER, lsp::hover(filePath, pos), filePath);
 }
 
+void Client::switchHeaderSource(const QString &filePath)
+{
+    d->callMethod(lsp::V_TEXTDOCUMENT_SWITCHHEADERSOURCE, lsp::switchHeaderSource(filePath));
+}
+
 void Client::shutdownRequest()
 {
     d->callMethod(lsp::V_SHUTDOWN, lsp::shutdown());
@@ -1022,6 +1027,22 @@ bool ClientPrivate::exitResult(const QJsonObject &jsonObj)
     return false;
 }
 
+bool ClientPrivate::switchHeaderSourceResult(const QJsonObject &jsonObj)
+{
+    auto calledID = jsonObj.value(K_ID).toInt();
+    if (requestSave.keys().contains(calledID)
+        && requestSave.value(calledID).method == lsp::V_TEXTDOCUMENT_SWITCHHEADERSOURCE) {
+        requestSave.remove(calledID);
+
+        auto ret = jsonObj.value(K_RESULT).toString();
+        QUrl url(ret);
+        emit q->switchHeaderSourceResult(url.toLocalFile());
+        return true;
+    }
+
+    return false;
+}
+
 bool ClientPrivate::shutdownResult(const QJsonObject &jsonObj)
 {
     auto calledID = jsonObj.value(K_ID).toInt();
@@ -1166,6 +1187,7 @@ bool ClientPrivate::calledResult(const QJsonObject &jsonObj)
     any |= shutdownResult(jsonObj);
     any |= exitResult(jsonObj);
     any |= rangeFormattingResult(jsonObj);
+    any |= switchHeaderSourceResult(jsonObj);
 
     requestSave.remove(calledID);
 
