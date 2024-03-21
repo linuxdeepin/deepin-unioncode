@@ -62,6 +62,8 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqGotoPosition, this, &WorkspaceWidgetPrivate::handleGotoPosition);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqCloseCurrentEditor, this, &WorkspaceWidgetPrivate::handleCloseCurrentEditor);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource, this, &WorkspaceWidgetPrivate::handleSwitchHeaderSource);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqFollowSymbolUnderCursor, this, &WorkspaceWidgetPrivate::handleFollowSymbolUnderCursor);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint, this, &WorkspaceWidgetPrivate::handleToggleBreakpoint);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
@@ -315,6 +317,12 @@ void WorkspaceWidgetPrivate::handleRemoveBreakpoint(const QString &fileName, int
         tabWidget->removeBreakpoint(fileName, line);
 }
 
+void WorkspaceWidgetPrivate::handleToggleBreakpoint()
+{
+    if (auto tabWidget = currentTabWidget())
+        tabWidget->toggleBreakpoint();
+}
+
 void WorkspaceWidgetPrivate::handleBack()
 {
     if (auto tabWidget = currentTabWidget())
@@ -379,6 +387,15 @@ void WorkspaceWidgetPrivate::handleSwitchHeaderSource()
         return;
 
     tabWidget->switchHeaderSource();
+}
+
+void WorkspaceWidgetPrivate::handleFollowSymbolUnderCursor()
+{
+    auto tabWidget = currentTabWidget();
+    if (!tabWidget)
+        return;
+
+    tabWidget->followSymbolUnderCursor();
 }
 
 void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
