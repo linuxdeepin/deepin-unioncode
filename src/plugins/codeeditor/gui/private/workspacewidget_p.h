@@ -42,6 +42,7 @@ public slots:
     void handleOpenFile(const QString &workspace, const QString &fileName);
     void handleAddBreakpoint(const QString &fileName, int line);
     void handleRemoveBreakpoint(const QString &fileName, int line);
+    void handleToggleBreakpoint();
     void handleBack();
     void handleForward();
     void handleSetDebugLine(const QString &fileName, int line);
@@ -50,6 +51,7 @@ public slots:
     void handleGotoPosition(const QString &fileName, int line, int column);
     void handleCloseCurrentEditor();
     void handleSwitchHeaderSource();
+    void handleFollowSymbolUnderCursor();
 
 public:
     WorkspaceWidget *q;
