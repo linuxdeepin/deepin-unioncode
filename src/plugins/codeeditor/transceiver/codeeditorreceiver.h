@@ -68,6 +68,7 @@ signals:
     void reqDoRename(const newlsp::WorkspaceEdit &info);
     void reqCloseCurrentEditor();
     void reqSwitchHeaderSource();
+    void reqFollowSymbolUnderCursor();
 
     // annotation
     void reqAddAnnotation(const QString &fileName, const QString &title, const QString &content,int line,  AnnotationType type);
@@ -77,6 +78,7 @@ signals:
     // debug
     void reqAddBreakpoint(const QString &fileName, int line);
     void reqRemoveBreakpoint(const QString &fileName, int line);
+    void reqToggleBreakpoint();
     void reqClearAllBreakpoints();
     void reqSetDebugLine(const QString &fileName, int line);
     void reqRemoveDebugLine();

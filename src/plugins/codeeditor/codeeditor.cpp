@@ -97,6 +97,8 @@ void CodeEditor::initActions()
     QAction *forwardAction = new QAction(tr("forward"), this);
     QAction *closeAction = new QAction(tr("Close"), this);
     QAction *switchHeaderSourceAction = new QAction(tr("Switch Header/Source"), this);
+    QAction *follSymbolAction = new QAction(tr("Follow Symbol Under Cursor"), this);
+    QAction *toggleBreakpointAction = new QAction(tr("Toggle Breakpoint"), this);
 
     auto inputBackAction = new AbstractAction(backAction);
     inputBackAction->setShortCutInfo("Editor.back", tr("Backward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
@@ -109,16 +111,26 @@ void CodeEditor::initActions()
     auto inputswitchHeaderSourceAction = new AbstractAction(switchHeaderSourceAction);
     inputswitchHeaderSourceAction->setShortCutInfo("Editor.switchHS",
                                                    tr("Switch Header/Source"), QKeySequence(Qt::Key_F4));
+    auto inputfollSymbolAction = new AbstractAction(follSymbolAction);
+    inputfollSymbolAction->setShortCutInfo("Editor.followSymbol",
+                                           tr("Follow Symbol Under Cursor"), QKeySequence(Qt::Key_F2));
+    auto inputtoggleBreakpointAction = new AbstractAction(toggleBreakpointAction);
+    inputtoggleBreakpointAction->setShortCutInfo("Editor.toggleBreak",
+                                                 tr("Toggle Breakpoint"), QKeySequence(Qt::Key_F9));
 
     windowService->addAction(tr("&Edit"), inputBackAction);
     windowService->addAction(tr("&Edit"), inputForwardAction);
     windowService->addAction(tr("&Edit"), inputCloseAction);
     windowService->addAction(tr("&Edit"), inputswitchHeaderSourceAction);
+    windowService->addAction(tr("&Edit"), inputfollSymbolAction);
+    windowService->addAction(tr("&Edit"), inputtoggleBreakpointAction);
 
     connect(backAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqBack);
     connect(forwardAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqForward);
     connect(closeAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqCloseCurrentEditor);
     connect(switchHeaderSourceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource);
+    connect(follSymbolAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFollowSymbolUnderCursor);
+    connect(toggleBreakpointAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint);
 }
 
 void CodeEditor::initEditorService()
