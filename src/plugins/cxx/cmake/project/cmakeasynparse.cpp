@@ -220,7 +220,8 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         targetItem->setToolTip(absolutePath);
 
         targetItem->setData(QVariant::fromValue(target));
-        targetRootItem->appendRow(targetItem);
+        if (targetRootItem)
+            targetRootItem->appendRow(targetItem);
 
         for (const auto &src : target.srcfiles) {
             QFileInfo srcFileInfo(src);
@@ -246,7 +247,8 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             srcItem->setToolTip(srcFileInfo.filePath());
             srcItem->setIcon(CustomIcons::icon(srcFileInfo));
 
-            parentItem->appendRow(srcItem);
+            if (parentItem)
+                parentItem->appendRow(srcItem);
 
             allFiles.insert(src);
         }
