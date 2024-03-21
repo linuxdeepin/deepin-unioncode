@@ -509,26 +509,11 @@ void DapSession::registerHanlder()
         Q_UNUSED(request)
         auto frameId = request.frameId;
         static dap::ScopesResponse response;
-        dap::array<dap::Scope> scopes;
         Log("<-- Server received Scopes request from the client\n")
         //emit DapProxy::instance()->sigScopes(frameId);
 
-        // locals
-        dap::Scope scopeLocals;
-        scopeLocals.presentationHint = "locals";
-        scopeLocals.name = "Locals";
-        scopeLocals.expensive = false;
-        scopeLocals.variablesReference = frameId;
-        scopes.push_back(scopeLocals);
+        d->debugger->frameSelect(frameId);
 
-        // register
-        dap::Scope scopeRegisters;
-        scopeRegisters.presentationHint = "registers";
-        scopeRegisters.name = "Registers";
-        scopeRegisters.expensive = false;
-        scopeRegisters.variablesReference = frameId + 1;
-        scopes.push_back(scopeRegisters);
-        response.scopes = scopes;
         Log("--> Server sent Scopes response to the client\n")
         return response;
     });

@@ -297,6 +297,11 @@ void DebugManager::threadSelect(const int threadId)
     command(d->debugger->threadSelect(threadId));
 }
 
+void DebugManager::frameSelect(const int frameId)
+{
+    command(d->debugger->frameSelect(frameId));
+}
+
 void DebugManager::listSourceFiles()
 {
     command(d->debugger->listSourceFiles());

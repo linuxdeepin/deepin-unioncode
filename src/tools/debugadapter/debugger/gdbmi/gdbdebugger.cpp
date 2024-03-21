@@ -171,6 +171,11 @@ QString GDBDebugger::threadSelect(const int threadId)
     return QString{"-thread-select %1"}.arg(threadId);
 }
 
+QString GDBDebugger::frameSelect(const int frameId)
+{
+    return QString{"-stack-select-frame %1"}.arg(frameId);
+}
+
 QString GDBDebugger::listSourceFiles()
 {
     return ("-file-list-exec-source-files");
@@ -505,6 +510,8 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
                 auto locals = record.payload.toMap().value("variables").toList();
                 for (const auto& e: locals)
                     variableList.append(gdbmi::Variable::parseMap(e.toMap()));
+                if (variableList.size() == 0)
+                    emit fireVariablesLocker();
                 resetVariables();
                 addVariablesWatched(variableList, d->reference);
                 //emit updateLocalVariables(variableList); //unused

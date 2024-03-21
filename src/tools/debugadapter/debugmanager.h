@@ -53,6 +53,7 @@ public:
 
     void threadInfo();
     void threadSelect(const int threadId);
+    void frameSelect(const int frameId);
 
     void stackListFrames();
     void stackListVariables();

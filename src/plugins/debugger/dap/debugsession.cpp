@@ -793,28 +793,11 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out, dap:
     return true;
 }
 
-// GetLocals fetches the fully traversed set of local Variables from the
-// debugger for the given stack frame.
+// GetLocals fetches the fully traversed set of local Variables
 // Returns true on success, false on error.
-// todo: get different frame locals: select-frame and then getlocals
-bool DebugSession::getLocals(dap::integer frameId, IVariables *out)
+bool DebugSession::getLocals(dap::integer variablesRef, IVariables *out)
 {
-    dap::ScopesRequest scopeReq;
-    scopeReq.frameId = frameId;
-
-    if (!raw->scopes(scopeReq).valid()) {
-        return false;
-    }
-    auto scopeRes = raw->scopes(scopeReq).get().response;
-    for (auto scope : scopeRes.scopes) {
-        if (scope.presentationHint.value("") == kLocals
-                || scope.name == "Local") {
-            return getVariables(0, out);
-        }
-    }
-
-    qInfo() << "Locals scope not found";
-    return false;
+    return getVariables(variablesRef, out);
 }
 
 Session *DebugSession::getDapSession() const
