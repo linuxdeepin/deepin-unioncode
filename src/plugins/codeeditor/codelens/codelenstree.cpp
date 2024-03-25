@@ -28,10 +28,10 @@ QByteArray readLine(const QString &filePath, int line)
 CodeLensTree::CodeLensTree(QWidget *parent)
     : QTreeView (parent)
 {
-    setModel(new QStandardItemModel);
+    setModel(new QStandardItemModel(this));
     setEnabled(true);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
-    setItemDelegate(new CodeLensDelegate);
+    setItemDelegate(new CodeLensDelegate(this));
     setHeaderHidden(true);
     setLineWidth(0);
 

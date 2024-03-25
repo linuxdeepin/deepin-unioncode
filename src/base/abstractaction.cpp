@@ -18,24 +18,22 @@ class AbstractActionPrivate
     QKeySequence keySequence {};
 };
 
-AbstractAction::AbstractAction(QAction *qAction)
-    : d(new AbstractActionPrivate())
+AbstractAction::AbstractAction(QAction *qAction, QObject *parent)
+    : QObject(parent),
+      d(new AbstractActionPrivate())
 {
     Q_ASSERT(qAction);
 
+    if (!qAction->parent())
+        qAction->setParent(this);
+
     d->action = qAction;
     d->action->setObjectName("AbstractAction");
-    QAction::connect(d->action, &QAction::destroyed,
-                     d->action, [this]() {
-        delete this;
-    }, Qt::UniqueConnection);
 }
 
 AbstractAction::~AbstractAction()
 {
-    if (d) {
-        delete d;
-    }
+    delete d;
 }
 
 QAction *AbstractAction::qAction()

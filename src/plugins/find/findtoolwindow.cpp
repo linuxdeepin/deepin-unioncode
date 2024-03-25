@@ -79,6 +79,11 @@ FindToolWindow::FindToolWindow(QWidget *parent)
     });
 }
 
+FindToolWindow::~FindToolWindow()
+{
+    delete d;
+}
+
 void FindToolWindow::setupUi()
 {
     d->stackedWidget = new DStackedWidget();

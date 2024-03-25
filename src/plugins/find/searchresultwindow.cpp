@@ -32,7 +32,7 @@ SearchResultTreeView::SearchResultTreeView(QWidget *parent)
     : DTreeView(parent)
     , d(new SearchResultTreeViewPrivate())
 {
-    QAbstractItemModel *itemModel = new QStandardItemModel();
+    QAbstractItemModel *itemModel = new QStandardItemModel(this);
     setModel(itemModel);
 
     QObject::connect(this, &DTreeView::doubleClicked, [=](const QModelIndex &index){
@@ -54,6 +54,10 @@ SearchResultTreeView::SearchResultTreeView(QWidget *parent)
     });
 }
 
+SearchResultTreeView::~SearchResultTreeView()
+{
+    delete d;
+}
 
 QIcon SearchResultTreeView::icon(const QString &data)
 {
@@ -128,6 +132,11 @@ SearchResultWindow::SearchResultWindow(QWidget *parent)
 
     qRegisterMetaType<FindItemList>("FindItemList");
     qRegisterMetaType<ProjectInfo>("ProjectInfo");
+}
+
+SearchResultWindow::~SearchResultWindow()
+{
+    delete d;
 }
 
 void SearchResultWindow::setupUi()

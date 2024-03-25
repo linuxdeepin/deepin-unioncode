@@ -104,6 +104,11 @@ TimelineWidget::TimelineWidget(QWidget *parent)
     connect(d->zoomFit, &QAction::triggered, this, &TimelineWidget::zoomFit);
 }
 
+TimelineWidget::~TimelineWidget()
+{
+    delete d;
+}
+
 void TimelineWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);

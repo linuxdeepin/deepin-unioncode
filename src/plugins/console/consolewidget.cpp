@@ -48,8 +48,8 @@ ConsoleWidget::ConsoleWidget(QWidget *parent)
     changeDir(QDir::homePath());
     sendText("clear\n");
 
-    d->consoleCopy = new QAction(tr("copy"));
-    d->consolePaste = new QAction(tr("paste"));
+    d->consoleCopy = new QAction(tr("copy"), this);
+    d->consolePaste = new QAction(tr("paste"), this);
     QObject::connect(d->consoleCopy, &QAction::triggered, this, &QTermWidget::copyClipboard);
     QObject::connect(d->consolePaste, &QAction::triggered, this, &QTermWidget::pasteClipboard);
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
@@ -58,6 +58,7 @@ ConsoleWidget::ConsoleWidget(QWidget *parent)
 
 ConsoleWidget::~ConsoleWidget()
 {
+    delete d;
 }
 
 void ConsoleWidget::contextMenuEvent(QContextMenuEvent *event)

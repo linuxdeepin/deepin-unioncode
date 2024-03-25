@@ -74,7 +74,7 @@ bool OptionCore::start()
     if (windowService && windowService->addAction) {
         auto actionOptions = new QAction(MWMTA_OPTIONS, this);
         actionOptions->setIcon(QIcon::fromTheme("options_setting"));
-        auto actionOptionsImpl = new AbstractAction(actionOptions);
+        auto actionOptionsImpl = new AbstractAction(actionOptions, this);
         actionOptionsImpl->setShortCutInfo("Tools.Options",
                                            MWMTA_OPTIONS,
                                            QKeySequence(Qt::Modifier::CTRL |

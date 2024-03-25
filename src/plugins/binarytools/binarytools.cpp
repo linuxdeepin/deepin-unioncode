@@ -22,7 +22,7 @@ bool BinaryTools::start()
 
     if (windowService) {
         auto action = new QAction(MWMTA_BINARY_TOOLS);
-        auto inputAction = new AbstractAction(action);
+        auto inputAction = new AbstractAction(action, this);
         inputAction->setShortCutInfo("Tools.Binary", action->text());
         windowService->addAction(MWM_TOOLS, inputAction);
 
