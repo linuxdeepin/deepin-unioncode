@@ -14,6 +14,7 @@ class FindToolBar : public QWidget
     Q_OBJECT
 public:
     explicit FindToolBar(QWidget *parent = nullptr);
+    ~FindToolBar();
 
 public slots:
     void handleFindActionTriggered();

@@ -13,7 +13,7 @@
 #include <QEvent>
 #include <QAction>
 
-namespace ReverseDebugger{
+namespace ReverseDebugger {
 namespace Internal {
 
 class TaskWindow;
@@ -21,8 +21,10 @@ class TimelineWidgetPrivate;
 class TimelineWidget : public DTK_WIDGET_NAMESPACE::DWidget
 {
 public:
-    TimelineWidget(QWidget *parent);
-    void setData(TaskWindow* window, void* timeline, int count);
+    explicit TimelineWidget(QWidget *parent);
+    ~TimelineWidget() override;
+
+    void setData(TaskWindow *window, void *timeline, int count);
     void setEventTid(int tid);
     void setEventRange(int begin, int end);
     void setEventIndexRange(int begin, int end);
@@ -35,20 +37,20 @@ public slots:
     void valueChanged(int value);
 
 private:
-    void paintEvent(QPaintEvent *);
-    void mousePressEvent(QMouseEvent*);
-    void mouseReleaseEvent(QMouseEvent*);
-    void mouseMoveEvent(QMouseEvent*);
-    void contextMenuEvent(QContextMenuEvent*);
-    void resizeEvent(QResizeEvent *e);
+    void paintEvent(QPaintEvent *) override;
+    void mousePressEvent(QMouseEvent *) override;
+    void mouseReleaseEvent(QMouseEvent *) override;
+    void mouseMoveEvent(QMouseEvent *) override;
+    void contextMenuEvent(QContextMenuEvent *) override;
+    void resizeEvent(QResizeEvent *e) override;
     void updateVisibleEvent(void);
-    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
     void invalidateFilter();
 
     TimelineWidgetPrivate *const d;
 };
 
-} // namespace Internal
-} // namespace ReverseDebugger
+}   // namespace Internal
+}   // namespace ReverseDebugger
 
-#endif // TIMELINEWIDGET_H
+#endif   // TIMELINEWIDGET_H

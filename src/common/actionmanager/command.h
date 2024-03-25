@@ -15,6 +15,9 @@ class Command : public QObject
 {
     Q_OBJECT
 public:
+    explicit Command(QObject *parent = nullptr)
+        : QObject(parent) {}
+
     virtual QString id() const = 0;
     virtual QAction *action() const = 0;
 
@@ -32,7 +35,7 @@ class Action : public Command
 {
     Q_OBJECT
 public:
-    Action(QString id, QAction *action);
+    Action(QString id, QAction *action, QObject *parent = nullptr);
     virtual ~Action() override;
 
     QString id() const override;
@@ -48,4 +51,4 @@ private:
     ActionPrivate *const d;
 };
 
-#endif // COMMAND_H
+#endif   // COMMAND_H

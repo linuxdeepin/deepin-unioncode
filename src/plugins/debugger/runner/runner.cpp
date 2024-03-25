@@ -36,11 +36,16 @@ Runner::Runner(QObject *parent)
     d->runAction.get()->setIcon(QIcon::fromTheme("run"));
     connect(d->runAction.get(), &QAction::triggered, this, &Runner::run);
 
-    auto actionImpl = new AbstractAction(d->runAction.get());
+    auto actionImpl = new AbstractAction(d->runAction.get(), this);
     actionImpl->setShortCutInfo("Debug.Running",
                                 MWMDA_RUNNING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5));
     WindowService *service = dpfGetService(WindowService);
     service->addTopToolItem(actionImpl, MWTG_EDIT, true);
+}
+
+Runner::~Runner()
+{
+    delete d;
 }
 
 void Runner::run()
