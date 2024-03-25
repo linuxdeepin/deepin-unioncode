@@ -25,7 +25,7 @@ void MenuManager::initialize(WindowService *windowService)
     auto initAction = [&](QAction *action, const QString &id, const QString &description,
             QKeySequence key, const QString &iconName) -> AbstractAction*{
         action->setIcon(QIcon::fromTheme(iconName));
-        auto actionImpl = new AbstractAction(action);
+        auto actionImpl = new AbstractAction(action, this);
         actionImpl->setShortCutInfo(id, description, key);
         return actionImpl;
     };

@@ -106,9 +106,7 @@ void KitsManagerWidget::setupUi()
     d->listModel->setStringList(QStringList() << tr("Desktop"));
 
     //rightSide
-    auto detailGridLayout = new QGridLayout;
-    detailGridLayout->setSpacing(6);
-    d->cbCXXComplier = new DComboBox();
+    d->cbCXXComplier = new DComboBox(this);
 
     d->nameEidt = new DLineEdit(this);
     d->nameEidt->setText(tr("Desktop"));

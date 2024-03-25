@@ -19,6 +19,7 @@ class Runner : public QObject
     Q_OBJECT
 public:
     explicit Runner(QObject *parent = nullptr);
+    ~Runner();
 
 public slots:
     void run();

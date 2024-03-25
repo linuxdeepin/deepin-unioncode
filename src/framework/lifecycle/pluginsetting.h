@@ -22,7 +22,8 @@ class PluginSetting final : public QSettings
 {
     Q_OBJECT
 public:
-    PluginSetting(Scope scope = Scope::UserScope,
+    explicit PluginSetting(QObject *parent = nullptr);
+    explicit PluginSetting(Scope scope = Scope::UserScope,
                       const QString &organization = ORGANIZATION,
                       const QString &application = QCoreApplication::applicationName(),
                       QObject *parent = nullptr);

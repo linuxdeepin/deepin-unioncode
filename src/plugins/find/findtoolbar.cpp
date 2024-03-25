@@ -29,6 +29,11 @@ FindToolBar::FindToolBar(QWidget *parent)
     setupUi();
 }
 
+FindToolBar::~FindToolBar()
+{
+    delete d;
+}
+
 void FindToolBar::setupUi()
 {
     setMaximumHeight(85);

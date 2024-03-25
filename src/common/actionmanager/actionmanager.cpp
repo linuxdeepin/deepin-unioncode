@@ -9,14 +9,14 @@
 #include <QAction>
 #include <QDir>
 
-static ActionManager *kActionManagerInstance = nullptr;
-
 class ActionManagerPrivate final
 {
 public:
     using IdCmdMap = QHash<QString, Action *>;
 
-    ActionManagerPrivate();
+    explicit ActionManagerPrivate(ActionManager *qq);
+    ~ActionManagerPrivate();
+
     Action *addOverrideAction(QString id, QAction *action);
     Action *removeOverrideAction(QString id);
     Command *command(QString id);
@@ -28,21 +28,27 @@ public:
     void readUserSetting();
 
 private:
+    ActionManager *q;
     IdCmdMap idCmdMap;
     QString configFilePath;
 };
 
-ActionManagerPrivate::ActionManagerPrivate()
-    : configFilePath(CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support"))
+ActionManagerPrivate::ActionManagerPrivate(ActionManager *qq)
+    : q(qq),
+      configFilePath(CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("shortcut.support"))
 {
 
+}
+
+ActionManagerPrivate::~ActionManagerPrivate()
+{
 }
 
 Action *ActionManagerPrivate::addOverrideAction(QString id, QAction *action)
 {
     Action *a = idCmdMap.value(id, nullptr);
     if (!a) {
-        a = new Action(id, action);
+        a = new Action(id, action, q);
         idCmdMap.insert(id, a);
     }
 
@@ -127,7 +133,7 @@ void ActionManagerPrivate::readUserSetting()
 
 ActionManager::ActionManager(QObject *parent)
     : QObject(parent)
-    , d(new ActionManagerPrivate())
+    , d(new ActionManagerPrivate(this))
 {
 
 }
@@ -141,10 +147,8 @@ ActionManager::~ActionManager()
 
 ActionManager *ActionManager::getInstance()
 {
-    if (!kActionManagerInstance) {
-        kActionManagerInstance = new ActionManager();
-    }
-    return kActionManagerInstance;
+    static ActionManager ins;
+    return &ins;
 }
 
 /*!

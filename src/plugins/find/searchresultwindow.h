@@ -37,6 +37,8 @@ class SearchResultTreeView : public DTreeView
 
 public:
     explicit SearchResultTreeView(QWidget *parent = nullptr);
+    ~SearchResultTreeView();
+
     Q_INVOKABLE void setData(const FindItemList &itemList, ProjectInfo projectInfoMap);
     void clearData();
     virtual QIcon icon(const QString &data);
@@ -52,6 +54,8 @@ class SearchResultWindow : public DWidget
     Q_OBJECT
 public:
     explicit SearchResultWindow(QWidget *parent = nullptr);
+    ~SearchResultWindow();
+
     void search(SearchParams *params);
     void setRepalceWidgtVisible(bool hide);
     void startSearch(const QString &cmd, const QString &filePath, QMap<QString, QString> projectInfoMap);
