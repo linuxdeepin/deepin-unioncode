@@ -654,7 +654,7 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
 
     // update local variables.
     d->processingVariablesTimer.start(50);     // if processing time < 50ms, do not show spinner
-    d->getLocalsFuture = QtConcurrent::run([&](){
+    d->getLocalsFuture = QtConcurrent::run([=](){
         IVariables locals;
         getLocals(curFrame.frameId, &locals);
         d->localsModel.setDatas(locals);
@@ -775,9 +775,13 @@ void DAPDebugger::slotFrameSelected(const QModelIndex &index)
     }
 
     // update local variables.
-    IVariables locals;
-    getLocals(curFrame.frameId, &locals);
-    d->localsModel.setDatas(locals);
+    d->processingVariablesTimer.start(50);
+    QtConcurrent::run([=](){
+        IVariables locals;
+        getLocals(curFrame.frameId, &locals);
+        d->localsModel.setDatas(locals);
+        emit processingVariablesDone();
+    });
 }
 
 void DAPDebugger::slotBreakpointSelected(const QModelIndex &index)
