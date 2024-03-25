@@ -513,12 +513,13 @@ void DapSession::registerHanlder()
         Log("<-- Server received Scopes request from the client\n")
         //emit DapProxy::instance()->sigScopes(frameId);
 
+        d->debugger->frameSelect(frameId);
         // locals
         dap::Scope scopeLocals;
         scopeLocals.presentationHint = "locals";
         scopeLocals.name = "Locals";
         scopeLocals.expensive = false;
-        scopeLocals.variablesReference = frameId;
+        scopeLocals.variablesReference = rootVariablesReference;
         scopes.push_back(scopeLocals);
 
         // register
@@ -526,7 +527,7 @@ void DapSession::registerHanlder()
         scopeRegisters.presentationHint = "registers";
         scopeRegisters.name = "Registers";
         scopeRegisters.expensive = false;
-        scopeRegisters.variablesReference = frameId + 1;
+        scopeRegisters.variablesReference = registersReference;
         scopes.push_back(scopeRegisters);
         response.scopes = scopes;
         Log("--> Server sent Scopes response to the client\n")
