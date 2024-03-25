@@ -302,6 +302,11 @@ void DebugManager::listSourceFiles()
     command(d->debugger->listSourceFiles());
 }
 
+void DebugManager::frameSelect(const int frameId)
+{
+    command(d->debugger->frameSelect(frameId));
+}
+
 dap::array<dap::StackFrame> DebugManager::allStackframes()
 {
     return d->debugger->allStackframes();

@@ -24,7 +24,7 @@ class GDBDebuggerPrivate {
     std::atomic_bool firstPromt{true};
     QStringList assemblers;
 
-    int64_t reference = 0;
+    int64_t reference = childVariablesReferenceBegin;
     int64_t watchVariableCounter = 0;
 
     int runningCommand = 0;
@@ -171,6 +171,11 @@ QString GDBDebugger::threadSelect(const int threadId)
     return QString{"-thread-select %1"}.arg(threadId);
 }
 
+QString GDBDebugger::frameSelect(const int frameId)
+{
+    return QString{"-stack-select-frame %1"}.arg(frameId);
+}
+
 QString GDBDebugger::listSourceFiles()
 {
     return ("-file-list-exec-source-files");
@@ -241,7 +246,7 @@ dap::array<dap::Thread> GDBDebugger::allThreadList()
 
 dap::array<dap::Variable> GDBDebugger::allVariableList()
 {
-    return getVariableListByRef(0);
+    return getVariableListByRef(rootVariablesReference);
 }
 
 dap::array<dap::Variable> GDBDebugger::getVariableListByRef(int64_t ref)
@@ -506,7 +511,9 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
                 for (const auto& e: locals)
                     variableList.append(gdbmi::Variable::parseMap(e.toMap()));
                 resetVariables();
-                addVariablesWatched(variableList, d->reference);
+                addVariablesWatched(variableList, rootVariablesReference);
+                if (variableList.size() == 0)
+                    emit fireVariablesLocker();
                 //emit updateLocalVariables(variableList); //unused
             } else if(key == "threads") {
                  // -thread-info => Thread Request
@@ -686,7 +693,8 @@ void GDBDebugger::resetVariables()
     foreach (auto var, d->variableListByReference.values())
         delete var;
     d->variableListByReference.clear();
-    d->reference = 0;
+    d->runningCommand = 0;
+    d->reference = childVariablesReferenceBegin;
     d->watchVariableCounter = 0;
     if(!d->createdValue.isEmpty())
         delAllTraceVariable();

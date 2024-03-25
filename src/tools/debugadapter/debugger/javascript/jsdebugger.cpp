@@ -121,6 +121,12 @@ QString JSDebugger::threadSelect(const int threadId)
     RET_EMPTY
 }
 
+QString JSDebugger::frameSelect(const int frameId)
+{
+    Q_UNUSED(frameId);
+    RET_EMPTY
+}
+
 QString JSDebugger::listSourceFiles()
 {
     return ".list";
