@@ -94,7 +94,7 @@ void BuildManager::addMenu()
     auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName)
             -> AbstractAction* {
         action->setIcon(QIcon::fromTheme(iconFileName));
-        auto inputAction = new AbstractAction(action);
+        auto inputAction = new AbstractAction(action, this);
         inputAction->setShortCutInfo(actionID, action->text(), key);
         return inputAction;
     };

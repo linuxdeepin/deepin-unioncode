@@ -24,6 +24,11 @@ OptionGradleGenerator::OptionGradleGenerator()
     d->widget = new GradleOptionWidget();
 }
 
+OptionGradleGenerator::~OptionGradleGenerator()
+{
+    delete d;
+}
+
 QWidget *OptionGradleGenerator::optionWidget()
 {
     return d->widget;

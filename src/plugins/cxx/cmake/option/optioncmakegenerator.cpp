@@ -18,6 +18,11 @@ OptionCmakeGenerator::OptionCmakeGenerator()
     d->widget = new CMakeOptionWidget();
 }
 
+OptionCmakeGenerator::~OptionCmakeGenerator()
+{
+    delete d;
+}
+
 QWidget *OptionCmakeGenerator::optionWidget()
 {
     return d->widget;
