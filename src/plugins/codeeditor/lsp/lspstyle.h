@@ -48,8 +48,6 @@ public:
     virtual void setDefinition(const std::vector<newlsp::LocationLink> &data);
     virtual void cleanDefinition(int pos);
 
-    virtual void rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits);
-
 public slots:
     void switchHeaderSource(const QString &file);
     void followSymbolUnderCursor();
