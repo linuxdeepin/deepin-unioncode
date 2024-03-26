@@ -38,7 +38,6 @@ public:
     void initConnection();
     void initMargins();
     void updateColorTheme();
-    void updateSettings();
     void loadLexer();
     void loadLSPStyle();
 
@@ -64,6 +63,7 @@ public slots:
                     int line, int foldNow, int foldPrev, int token, int annotationLinesAdded);
     void handleSearch(const QString &keyword, int operateType);
     void handleReplace(const QString &srcText, const QString &destText, int operateType);
+    void updateSettings();
 
 public:
     TextEditor *q { nullptr };
@@ -78,6 +78,9 @@ public:
     LSPStyle *lspStyle { nullptr };
     bool isSaved { false };
     bool isAutoCompletionEnabled { false };
+
+    QString fontName;
+    int fontSize { 10 };
 
     CodeCompletionWidget *completionWidget { nullptr };
 };

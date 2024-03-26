@@ -59,7 +59,6 @@ public:
     TabWidget *focusTabWidget { nullptr };
     QList<TabWidget *> tabWidgetList;
 
-    int zoomValue { 0 };
     QStringList modifiedFileList;
     QStringList removedFileList;
     QTimer fileCheckTimer;

@@ -50,7 +50,6 @@ public:
     void clearAllBreakpoints();
 
     int zoomValue();
-    void setZoomValue(int value);
     void updateZoomValue(int value);
 
 public slots:

@@ -30,7 +30,6 @@ public:
     virtual const char *keywords(int set) const override;
     virtual QColor defaultColor(int style) const override;
     virtual bool defaultEolFill(int style) const override;
-    virtual QFont defaultFont(int style) const override;
     virtual QColor defaultPaper(int style) const override;
     virtual void refreshProperties() override;
     virtual const char *wordCharacters() const override;
