@@ -80,11 +80,6 @@ bool SciLexerHandler::defaultEolFill(int style) const
     return proxy->defaultEolFill(style);
 }
 
-QFont SciLexerHandler::defaultFont(int style) const
-{
-    return proxy->defaultFont(style);
-}
-
 QColor SciLexerHandler::defaultPaper(int style) const
 {
     return proxy->defaultPaper(style);
