@@ -7,6 +7,7 @@
 #include "mainframe/texteditkeeper.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "gui/workspacewidget.h"
+#include "gui/settings/editorsettingswidget.h"
 #include "lexer/lexermanager.h"
 
 #include "base/abstractmenu.h"
@@ -16,6 +17,7 @@
 #include "services/window/windowservice.h"
 #include "services/language/languageservice.h"
 #include "services/editor/editorservice.h"
+#include "services/option/optionservice.h"
 #include "common/widget/outputpane.h"
 
 #include <DButtonBox>
@@ -57,6 +59,7 @@ bool CodeEditor::start()
     initActions();
     initButtonBox();
     initEditorService();
+    initOptionService();
 
     return true;
 }
@@ -185,4 +188,15 @@ void CodeEditor::initWindowService()
         windowService->addContextWidget(QTabWidget::tr("Search &Results"), new AbstractWidget(CodeLens::instance()), true);
         windowService->addContextWidget(tr("&Application Output"), new AbstractWidget(OutputPane::instance()), true);
     }
+}
+
+void CodeEditor::initOptionService()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    OptionService *optionService = ctx.service<OptionService>(OptionService::name());
+    if (!optionService) {
+        qCritical() << "Failed, not found OptionPython service!";
+        abort();
+    }
+    optionService->implGenerator<EditorSettingsWidgetGenerator>(EditorSettingsWidgetGenerator::kitName());
 }

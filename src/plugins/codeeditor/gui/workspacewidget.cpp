@@ -5,6 +5,8 @@
 #include "workspacewidget.h"
 #include "private/workspacewidget_p.h"
 #include "transceiver/codeeditorreceiver.h"
+#include "settings/editorsettings.h"
+#include "settings/settingsdefine.h"
 
 #include <DDialog>
 
@@ -85,7 +87,6 @@ TabWidget *WorkspaceWidgetPrivate::currentTabWidget() const
 void WorkspaceWidgetPrivate::doSplit(QSplitter *spliter, int index, const QString &fileName, int pos, int scroll)
 {
     TabWidget *tabWidget = new TabWidget(spliter);
-    tabWidget->setZoomValue(zoomValue);
     connectTabWidgetSignals(tabWidget);
 
     tabWidgetList.append(tabWidget);
@@ -419,7 +420,9 @@ void WorkspaceWidgetPrivate::onZoomValueChanged()
     if (!tabWidget)
         return;
 
-    zoomValue = tabWidget->zoomValue();
+    int zoomValue = tabWidget->zoomValue();
+    int displayZoomValue = 100 + 10 * zoomValue;
+    EditorSettings::instance()->setValue(Node::FontColor, Group::FontGroup, Key::FontZoom, displayZoomValue, false);
     for (auto tabWidget : tabWidgetList)
         tabWidget->updateZoomValue(zoomValue);
 }
