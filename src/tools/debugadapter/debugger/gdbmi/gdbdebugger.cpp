@@ -589,12 +589,13 @@ void GDBDebugger::traceAddVariable(gdbmi::Variable *variable, int reference, int
 
                                                      if (m.value("msg").toString().isEmpty()) {  //if msg has value means accept error
                                                          auto v = gdbmi::Variable::parseMap(m); // created variable, used to check input variable
-                                                         d->createdValue.append(v->name);
                                                          variable->type = v->type;
                                                          variable->numChild = v->numChild;
                                                          variable->hasMore = (v->dynamic && v->hasMore) || v->numChild;
                                                          variable->evaluateName = varName;
                                                      }
+
+                                                     d->createdValue.append(varName);
 
                                                      if(variable->hasMore)
                                                         variable->childRefrence = ++d->reference;
