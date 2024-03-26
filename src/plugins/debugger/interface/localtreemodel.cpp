@@ -51,6 +51,9 @@ QVariant LocalTreeModel::data(const QModelIndex &index, int role) const
     if (role == Qt::ToolTipRole)
         QToolTip::showText(QCursor::pos(), item->data(index.column()).toString());
 
+    if(role == Qt::TextColorRole && item->hasUpdated() == true && index.column() == 1)
+        return QVariant(QColor(Qt::red));
+
     if (role != Qt::DisplayRole)
         return QVariant();
 
@@ -148,26 +151,50 @@ bool LocalTreeModel::hasChildren(const QModelIndex &parent) const
     return parentItem->hasChildren();
 }
 
-void LocalTreeModel::appendItem(LocalTreeItem *parent, IVariables &vars)
+void LocalTreeModel::clearHighlightItems()
+{
+    if (rootItem)
+        rootItem->setChildrenUpdated(false);
+}
+
+void LocalTreeModel::appendItem(LocalTreeItem *parent, const IVariables &vars)
 {
     QWriteLocker locker(&mutex);
     if (!items.contains(parent) && parent != rootItem)
         return;
 
     if (parent) {
+        QList<LocalTreeItem *> newItems;
+
+        // when fetchChild do not highlight variables.
+        // append item to a parent which has child, highLight new item
+        bool fetchChild = parent->childCount() == 0;
+
         for (auto var : vars) {
-            LocalTreeItem *item = new LocalTreeItem(this, parent);
-            item->setVariable(var.var);
-            parent->appendChild(item);
-            items.append(item);
+            auto item = parent->updateVariable(var.var);
+            //item = nullptr : parent has no child equal this var
+            if (!item) {
+                beginInsertColumns(parent->index(), parent->childCount(), 1);
+                item = new LocalTreeItem(this, parent);
+                item->setUpdated(!fetchChild);
+                item->setVariable(var.var);
+                parent->appendChild(item);
+
+                locker.relock();
+                items.append(item);
+                locker.unlock();
+
+                endInsertRows();
+            }
+
+            newItems.append(item);
         }
+        parent->removeRedundantItems(newItems);
     }
 }
 
 void LocalTreeModel::setDatas(IVariables &datas)
 {
-    clear();
-
     appendItem(rootItem, datas);
 }
 

@@ -35,10 +35,14 @@ public:
 
     // Custumize functions.
     void setDatas(IVariables &datas);
-    void appendItem(LocalTreeItem* parent, IVariables &vars);
+    void appendItem(LocalTreeItem* parent, const IVariables &vars);
     void clear();
+    void clearHighlightItems();
 
     QModelIndex indexForItem(const LocalTreeItem *needle) const;
+
+signals:
+    void updateChildVariables(const QModelIndex &index);
 
 private:
     LocalTreeItem *rootItem = nullptr;
