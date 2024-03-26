@@ -12,6 +12,7 @@ LocalTreeItem::LocalTreeItem(LocalTreeModel *_model, LocalTreeItem *parent)
     : model(_model)
 {
     parentItem = parent;
+    QObject::connect(this, &LocalTreeItem::updateChildVariables, model, &LocalTreeModel::updateChildVariables);
 }
 
 LocalTreeItem::~LocalTreeItem()
@@ -24,7 +25,64 @@ void LocalTreeItem::appendChild(LocalTreeItem *item)
     children.append(item);
 }
 
-void LocalTreeItem::setVariable(dap::Variable &variable)
+bool LocalTreeItem::hasUpdated()
+{
+    return updated;
+}
+
+void LocalTreeItem::setUpdated(bool updated)
+{
+    this->updated = updated;
+}
+
+void LocalTreeItem::setChildrenUpdated(bool updated)
+{
+    if (childCount() > 0) {
+        auto it = children.begin();
+        while (it != children.end()) {
+            (*it)->setUpdated(updated);
+            if ((*it)->childCount() > 0)
+                (*it)->setChildrenUpdated(updated);
+            it++;
+        }
+    }
+}
+
+LocalTreeItem *LocalTreeItem::updateVariable(dap::Variable &var)
+{
+    auto it = std::find_if(children.begin(), children.end(), [&](const auto& child) {
+        return child->itemVariable.name == var.name;
+    });
+
+    if (it != children.end()) {
+        auto child = *it;
+        bool updated = child->itemVariable.value != var.value;
+        child->setVariable(var);
+        child->updated = updated;
+
+        if (child->childrenFetched && var.variablesReference > 0) {
+            child->setChildrenFetched(false);
+            emit updateChildVariables(child->index());
+        }
+        return child;
+    }
+
+    return nullptr;
+}
+
+void LocalTreeItem::removeRedundantItems(const QList<LocalTreeItem *> &itemList)
+{
+    auto it = children.begin();
+    while (it != children.end()) {
+        if (!itemList.contains(*it))
+            children.removeOne(*it);
+        else
+            it++;
+    }
+    emit model->layoutChanged();
+}
+
+void LocalTreeItem::setVariable(const dap::Variable &variable)
 {
     itemVariable = variable;
 }

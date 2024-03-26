@@ -19,14 +19,19 @@ enum ColumnType {
 };
 
 class LocalTreeModel;
-class LocalTreeItem
+class LocalTreeItem : public QObject
 {
+    Q_OBJECT
 public:
     explicit LocalTreeItem(LocalTreeModel *model, LocalTreeItem *parentItem = nullptr);
     ~LocalTreeItem();
 
+    void removeRedundantItems(const QList<LocalTreeItem *> &itemList);
+    void setUpdated(bool updated);
+    void setChildrenUpdated(bool updated);
+    LocalTreeItem *updateVariable(dap::Variable &var);
     void appendChild(LocalTreeItem *child);
-    void setVariable(dap::Variable &variable);
+    void setVariable(const dap::Variable &variable);
 
     LocalTreeItem *child(int row);
     int childCount() const;
@@ -39,11 +44,15 @@ public:
     int indexOf(const LocalTreeItem *item) const;
     bool hasChildren();
     int64_t childReference();
+    bool hasUpdated();
 
     bool canFetchChildren();
     void setChildrenFetched(bool fetch);
 
     QModelIndex index() const;
+
+signals:
+    void updateChildVariables(const QModelIndex &index);
 
 private:
     using const_iterator = QVector<LocalTreeItem *>::const_iterator;
@@ -57,6 +66,7 @@ private:
     LocalTreeItem *parentItem = nullptr;
     LocalTreeModel *model = nullptr;
     bool childrenFetched = false;
+    bool updated = false;
 };
 
 #endif // TREEITEM_H
