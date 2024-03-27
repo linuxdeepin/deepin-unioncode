@@ -867,7 +867,6 @@ void DAPDebugger::initializeView()
     });
     connect(this, &DAPDebugger::processingVariablesDone, this, [=](){
         d->localsView->setEnabled(true);
-        d->localsView->setFocus();
         d->processingVariablesTimer.stop();
         d->variablesSpinner->hide();
     });
