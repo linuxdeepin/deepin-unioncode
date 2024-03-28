@@ -6,7 +6,6 @@
 #define TABWIDGET_H
 
 #include <QWidget>
-#include <mutex>
 
 class TabWidgetPrivate;
 class TabWidget : public QWidget
@@ -51,6 +50,9 @@ public:
 
     int zoomValue();
     void updateZoomValue(int value);
+
+    QWidget *currentWidget() const;
+    void showFindToolBar();
 
 public slots:
     void openFile(const QString &fileName);
