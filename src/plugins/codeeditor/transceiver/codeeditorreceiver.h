@@ -65,6 +65,8 @@ signals:
     void reqCloseCurrentEditor();
     void reqSwitchHeaderSource();
     void reqFollowSymbolUnderCursor();
+    void reqFindUsage();
+    void reqRenameSymbol();
     void reqShowFindToolBar();
 
     // annotation
