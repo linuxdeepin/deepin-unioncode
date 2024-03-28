@@ -4,6 +4,8 @@
 
 #include "debugmanager.h"
 #include "locker.h"
+#include "unistd.h"
+#include "signal.h"
 
 #include "common/util/custompaths.h"
 #include "debugger/debugger.h"
@@ -163,10 +165,15 @@ void DebugManager::execute()
     d->debugger->init();
 }
 
-bool DebugManager::command(const QString &cmd)
+bool DebugManager::command(const QString &cmd, bool interrupt)
 {
-    if (d->debugger->isInferiorRunning())
-        return false;
+    bool restart = false;
+    if (d->debugger->isInferiorRunning()) {
+        if(!interrupt)
+            return false;
+        pauseDebugger();
+        restart = true;
+    }
 
     auto tokStr = QString{"%1"}.arg(d->tokenCounter, 6, 10, QChar{'0'});
     auto line = QString{"%1%2%3"}.arg(tokStr, cmd, "\n");
@@ -177,15 +184,19 @@ bool DebugManager::command(const QString &cmd)
     QTextStream(&sOut) << "Command:" << line << "\n";
     d->debugger->handleOutputStreamText(sOut);
 
+    if(restart)
+        commandContinue();
+
     return true;
 }
 
 void DebugManager::commandAndResponse(const QString& cmd,
                                       const ResponseEntry::ResponseHandler_t& handler,
+                                      bool interrupt,
                                       ResponseEntry::ResponseAction_t action)
 {
     d->resposeExpected.insert(d->tokenCounter, { action, handler });
-    command(cmd);
+    command(cmd, interrupt);
 }
 
 void DebugManager::launchLocal()
@@ -206,21 +217,21 @@ void DebugManager::terminate()
 
 void DebugManager::kill()
 {
-    command(d->debugger->kill());
+    command(d->debugger->kill(), true);
 }
 
 void DebugManager::breakRemoveAll()
 {
     commandAndResponse(d->debugger->breakRemoveAll(), [this](const QVariant&) {
         d->debugger->clearBreakPoint();
-    });
+    }, true);
 }
 
 void DebugManager::breakInsert(const QString &path)
 {
     commandAndResponse(d->debugger->breakInsert(path), [this](const QVariant& r) {
         d->debugger->parseBreakPoint(r);
-    });
+    }, true);
 }
 
 void DebugManager::updateExceptResponse(const int token, const QVariant& payload)
@@ -232,6 +243,11 @@ void DebugManager::updateExceptResponse(const int token, const QVariant& payload
         if (expect.action == ResponseEntry::ResponseEntry::ResponseAction_t::Temporal)
             d->resposeExpected.remove(token);
     }
+}
+
+void DebugManager::updateBreakpoints(const QString &file, const QList<int> &lines)
+{
+    d->debugger->updateBreakpoints(file, lines);
 }
 
 void DebugManager::removeBreakpointInFile(const QString &filePath)
@@ -246,7 +262,7 @@ void DebugManager::breakRemove(int bpid)
 {
     commandAndResponse(d->debugger->breakRemove(bpid), [this, bpid](const QVariant&) {
         d->debugger->removeBreakPoint(bpid);
-    });
+    }, true);
 }
 
 void DebugManager::stackListFrames()
@@ -267,9 +283,13 @@ void DebugManager::threadInfo()
         waitLocker();
 }
 
-void DebugManager::commandPause()
+void DebugManager::pauseDebugger()
 {
-    command(d->debugger->commandPause());
+    auto pid = getProcessId();
+    d->debugger->pause();
+    if (pid == 0)
+        return;
+    ::kill(pid, SIGINT);
 }
 
 void DebugManager::commandContinue()
