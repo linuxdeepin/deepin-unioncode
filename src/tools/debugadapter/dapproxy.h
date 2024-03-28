@@ -40,8 +40,9 @@ Q_SIGNALS:
     void sigScopes(const qint64 frame);
     void sigVariables();
     void sigSource();
-    void sigStreamOutput(const QString sOut);
+    void sigStreamOutput(const QString &sOut);
     void sigBreakRemoveAll();
+    void sigUpdateBreakpoints(const QString &file, const QList<int> &lines);
 
 private:
     explicit DapProxy(QObject *parent = nullptr);
