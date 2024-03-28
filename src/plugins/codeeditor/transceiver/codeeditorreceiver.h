@@ -20,8 +20,6 @@ public:
 
 private:
     void processOpenFileEvent(const dpf::Event &event);
-    void processSearchEvent(const dpf::Event &event);
-    void processReplaceEvent(const dpf::Event &event);
     void processBackEvent(const dpf::Event &event);
     void processForwardEvent(const dpf::Event &event);
     void processGotoLineEvent(const dpf::Event &event);
@@ -56,8 +54,6 @@ public:
 
 signals:
     void reqOpenFile(const QString &workspace, const QString &fileName);
-    void reqSearch(const QString &keyword, int operateType);
-    void reqReplace(const QString &srcText, const QString &destText, int operateType);
     void reqBack();
     void reqForward();
     void reqGotoLine(const QString &fileName, int line);
@@ -69,6 +65,7 @@ signals:
     void reqCloseCurrentEditor();
     void reqSwitchHeaderSource();
     void reqFollowSymbolUnderCursor();
+    void reqShowFindToolBar();
 
     // annotation
     void reqAddAnnotation(const QString &fileName, const QString &title, const QString &content,int line,  AnnotationType type);
