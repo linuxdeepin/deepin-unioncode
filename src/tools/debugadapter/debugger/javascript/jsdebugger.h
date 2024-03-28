@@ -24,13 +24,14 @@ public:
     QString quit() override;
     QString kill() override;
 
+    void updateBreakpoints(const QString &file, const QList<int> &lines) override;
     QString breakInsert(const QString& path) override;
     QString breakRemove(int bpid) override;
     QString breakRemoveAll() override;
 
     QString launchLocal() override;
 
-    QString commandPause() override;
+    void pause() override;
     QString commandContinue() override;
     QString commandNext() override;
     QString commandStep() override;
