@@ -62,8 +62,6 @@ void TextEditorPrivate::init()
 void TextEditorPrivate::initConnection()
 {
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::resetThemeColor);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSearch, this, &TextEditorPrivate::handleSearch);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqReplace, this, &TextEditorPrivate::handleReplace);
     connect(EditorSettings::instance(), &EditorSettings::valueChanged, this, &TextEditorPrivate::updateSettings);
 
     connect(q, &TextEditor::SCN_ZOOM, q, &TextEditor::zoomValueChanged);
@@ -336,18 +334,6 @@ void TextEditorPrivate::gotoPreviousMark(uint mask)
         q->gotoLine(newLine);
 }
 
-bool TextEditorPrivate::doFind(const QString &keyword, bool isForward)
-{
-    int line = 0, index = 0;
-    q->getCursorPosition(&line, &index);
-    // For forward search, 'index' needs to subtract the length of 'keyword',
-    // otherwise it cannot jump to the previous one
-    if (!isForward)
-        index -= keyword.length();
-
-    return q->findFirst(keyword, false, false, false, true, isForward, line, index);
-}
-
 QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
 {
     QFont font = q->font();
@@ -452,39 +438,5 @@ void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int 
         emit q->textAdded(pos, len, added, text, line);
     } else if (mtype & TextEditor::SC_MOD_DELETETEXT) {
         emit q->textRemoved(pos, len, -added, text, line);
-    }
-}
-
-void TextEditorPrivate::handleSearch(const QString &keyword, int operateType)
-{
-    switch (operateType) {
-    case FindType::Previous:
-        doFind(keyword, false);
-        break;
-    case FindType::Next:
-        doFind(keyword, true);
-        break;
-    }
-}
-
-void TextEditorPrivate::handleReplace(const QString &srcText, const QString &destText, int operateType)
-{
-    switch (operateType) {
-    case RepalceType::Repalce: {
-        const auto &selectedText = q->selectedText();
-        if (selectedText.compare(srcText, Qt::CaseInsensitive) == 0)
-            q->replaceSelectedText(destText);
-    } break;
-    case RepalceType::FindAndReplace: {
-        const auto &selectedText = q->selectedText();
-        if (selectedText.compare(srcText, Qt::CaseInsensitive) == 0)
-            q->replaceSelectedText(destText);
-        doFind(srcText, true);
-    } break;
-    case RepalceType::RepalceAll: {
-        while (doFind(srcText, true)) {
-            q->replace(destText);
-        }
-    } break;
     }
 }

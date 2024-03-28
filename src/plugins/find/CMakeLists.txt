@@ -4,7 +4,6 @@ project(find)
 
 set(CXX_CPP
     transceiver/findreceiver.cpp
-    findtoolbar.cpp
     findtoolwindow.cpp
     searchresultwindow.cpp
     findplugin.cpp
@@ -13,7 +12,6 @@ set(CXX_CPP
 
 set(CXX_H
     transceiver/findreceiver.h
-    findtoolbar.h
     findtoolwindow.h
     searchresultwindow.h
     findplugin.h

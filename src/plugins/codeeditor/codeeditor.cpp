@@ -34,9 +34,8 @@ const QString CLOSE_ALL_DOCUMENTS = CodeEditor::tr("Close All Documents");
 const QString PRINT = CodeEditor::tr("Print");
 
 CodeEditor::CodeEditor()
-    :dpf::Plugin()
+    : dpf::Plugin()
 {
-
 }
 
 void CodeEditor::initialize()
@@ -108,6 +107,7 @@ void CodeEditor::initActions()
     QAction *switchHeaderSourceAction = new QAction(tr("Switch Header/Source"), this);
     QAction *follSymbolAction = new QAction(tr("Follow Symbol Under Cursor"), this);
     QAction *toggleBreakpointAction = new QAction(tr("Toggle Breakpoint"), this);
+    QAction *findReplaceAction = new QAction(tr("Find/Replace"), this);
 
     auto inputBackAction = new AbstractAction(backAction, this);
     inputBackAction->setShortCutInfo("Editor.back", tr("Backward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
@@ -117,22 +117,26 @@ void CodeEditor::initActions()
     auto inputCloseAction = new AbstractAction(closeAction, this);
     inputCloseAction->setShortCutInfo("Editor.close",
                                       tr("Close"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_W));
-    auto inputswitchHeaderSourceAction = new AbstractAction(switchHeaderSourceAction, this);
-    inputswitchHeaderSourceAction->setShortCutInfo("Editor.switchHS",
+    auto inputSwitchHeaderSourceAction = new AbstractAction(switchHeaderSourceAction, this);
+    inputSwitchHeaderSourceAction->setShortCutInfo("Editor.switchHS",
                                                    tr("Switch Header/Source"), QKeySequence(Qt::Key_F4));
-    auto inputfollSymbolAction = new AbstractAction(follSymbolAction, this);
-    inputfollSymbolAction->setShortCutInfo("Editor.followSymbol",
+    auto inputFollSymbolAction = new AbstractAction(follSymbolAction, this);
+    inputFollSymbolAction->setShortCutInfo("Editor.followSymbol",
                                            tr("Follow Symbol Under Cursor"), QKeySequence(Qt::Key_F2));
-    auto inputtoggleBreakpointAction = new AbstractAction(toggleBreakpointAction, this);
-    inputtoggleBreakpointAction->setShortCutInfo("Editor.toggleBreak",
+    auto inputToggleBreakpointAction = new AbstractAction(toggleBreakpointAction, this);
+    inputToggleBreakpointAction->setShortCutInfo("Editor.toggleBreak",
                                                  tr("Toggle Breakpoint"), QKeySequence(Qt::Key_F9));
+    auto inputFindReplaceActionAction = new AbstractAction(findReplaceAction, this);
+    inputFindReplaceActionAction->setShortCutInfo("Editor.findReplace",
+                                                  tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
 
     windowService->addAction(tr("&Edit"), inputBackAction);
     windowService->addAction(tr("&Edit"), inputForwardAction);
     windowService->addAction(tr("&Edit"), inputCloseAction);
-    windowService->addAction(tr("&Edit"), inputswitchHeaderSourceAction);
-    windowService->addAction(tr("&Edit"), inputfollSymbolAction);
-    windowService->addAction(tr("&Edit"), inputtoggleBreakpointAction);
+    windowService->addAction(tr("&Edit"), inputSwitchHeaderSourceAction);
+    windowService->addAction(tr("&Edit"), inputFollSymbolAction);
+    windowService->addAction(tr("&Edit"), inputToggleBreakpointAction);
+    windowService->addAction(tr("&Edit"), inputFindReplaceActionAction);
 
     connect(backAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqBack);
     connect(forwardAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqForward);
@@ -140,6 +144,7 @@ void CodeEditor::initActions()
     connect(switchHeaderSourceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource);
     connect(follSymbolAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFollowSymbolUnderCursor);
     connect(toggleBreakpointAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint);
+    connect(findReplaceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqShowFindToolBar);
 }
 
 void CodeEditor::initEditorService()
