@@ -30,6 +30,8 @@ public:
     void closeFileEditor();
     void switchHeaderSource();
     void followSymbolUnderCursor();
+    void findUsage();
+    void renameSymbol();
     Q_INVOKABLE void replaceSelectedText(const QString &text);
     Q_INVOKABLE void showTips(const QString &tips);
     Q_INVOKABLE void insertText(const QString &text);
