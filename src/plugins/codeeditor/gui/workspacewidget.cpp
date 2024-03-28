@@ -65,6 +65,8 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqCloseCurrentEditor, this, &WorkspaceWidgetPrivate::handleCloseCurrentEditor);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource, this, &WorkspaceWidgetPrivate::handleSwitchHeaderSource);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqFollowSymbolUnderCursor, this, &WorkspaceWidgetPrivate::handleFollowSymbolUnderCursor);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqFindUsage, this, &WorkspaceWidgetPrivate::handleFindUsage);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqRenameSymbol, this, &WorkspaceWidgetPrivate::handleRenameSymbol);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint, this, &WorkspaceWidgetPrivate::handleToggleBreakpoint);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqShowFindToolBar, this, &WorkspaceWidgetPrivate::handleShowFindToolBar);
 }
@@ -398,6 +400,24 @@ void WorkspaceWidgetPrivate::handleFollowSymbolUnderCursor()
         return;
 
     tabWidget->followSymbolUnderCursor();
+}
+
+void WorkspaceWidgetPrivate::handleFindUsage()
+{
+    auto tabWidget = currentTabWidget();
+    if (!tabWidget)
+        return;
+
+    tabWidget->findUsage();
+}
+
+void WorkspaceWidgetPrivate::handleRenameSymbol()
+{
+    auto tabWidget = currentTabWidget();
+    if (!tabWidget)
+        return;
+
+    tabWidget->renameSymbol();
 }
 
 void WorkspaceWidgetPrivate::handleShowFindToolBar()

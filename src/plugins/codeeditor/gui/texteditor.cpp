@@ -418,6 +418,22 @@ void TextEditor::followSymbolUnderCursor()
     d->lspStyle->followSymbolUnderCursor();
 }
 
+void TextEditor::findUsage()
+{
+    if (!d->lspStyle)
+        return;
+
+    d->lspStyle->findUsagesActionTriggered();
+}
+
+void TextEditor::renameSymbol()
+{
+    if (!d->lspStyle)
+        return;
+
+    d->lspStyle->renameActionTriggered();
+}
+
 QString TextEditor::cursorBeforeText() const
 {
     int pos = d->cursorPosition();

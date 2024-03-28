@@ -76,6 +76,8 @@ public:
     int wordEndPosition(int position);
     void switchHeaderSource();
     void followSymbolUnderCursor();
+    void findUsage();
+    void renameSymbol();
 
     QString cursorBeforeText() const;
     QString cursorBehindText() const;

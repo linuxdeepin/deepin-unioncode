@@ -51,6 +51,8 @@ public:
 public slots:
     void switchHeaderSource(const QString &file);
     void followSymbolUnderCursor();
+    void findUsagesActionTriggered();
+    void renameActionTriggered();
 
 signals:
     void completeFinished(const lsp::CompletionProvider &provider);
@@ -66,8 +68,6 @@ private slots:
     void onIndicClicked(int line, int index);
     void onShowContextMenu(QMenu *menu);
     void onFileClosed(const QString &file);
-    void findUsagesActionTriggered();
-    void renameActionTriggered();
     void renameSymbol(const QString &text);
     void gotoDefinition();
     void handleSwitchHeaderSource(const QString &file);
