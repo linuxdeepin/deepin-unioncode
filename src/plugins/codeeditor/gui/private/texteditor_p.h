@@ -51,7 +51,6 @@ public:
 
     void gotoNextMark(uint mask);
     void gotoPreviousMark(uint mask);
-    bool doFind(const QString &keyword, bool isForward);
     QsciStyle createAnnotationStyle(int type);
     void adjustScrollBar();
 
@@ -61,8 +60,6 @@ public slots:
     void onDwellEnd(int position, int x, int y);
     void onModified(int pos, int mtype, const QString &text, int len, int added,
                     int line, int foldNow, int foldPrev, int token, int annotationLinesAdded);
-    void handleSearch(const QString &keyword, int operateType);
-    void handleReplace(const QString &srcText, const QString &destText, int operateType);
     void updateSettings();
 
 public:

@@ -6,7 +6,6 @@
 #define TABWIDGET_H
 
 #include <QWidget>
-#include <mutex>
 
 class TabWidgetPrivate;
 class TabWidget : public QWidget
@@ -31,6 +30,8 @@ public:
     void closeFileEditor();
     void switchHeaderSource();
     void followSymbolUnderCursor();
+    void findUsage();
+    void renameSymbol();
     Q_INVOKABLE void replaceSelectedText(const QString &text);
     Q_INVOKABLE void showTips(const QString &tips);
     Q_INVOKABLE void insertText(const QString &text);
@@ -51,6 +52,9 @@ public:
 
     int zoomValue();
     void updateZoomValue(int value);
+
+    QWidget *currentWidget() const;
+    void showFindToolBar();
 
 public slots:
     void openFile(const QString &fileName);

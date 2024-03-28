@@ -52,6 +52,9 @@ public slots:
     void handleCloseCurrentEditor();
     void handleSwitchHeaderSource();
     void handleFollowSymbolUnderCursor();
+    void handleFindUsage();
+    void handleRenameSymbol();
+    void handleShowFindToolBar();
 
 public:
     WorkspaceWidget *q;

@@ -34,9 +34,8 @@ const QString CLOSE_ALL_DOCUMENTS = CodeEditor::tr("Close All Documents");
 const QString PRINT = CodeEditor::tr("Print");
 
 CodeEditor::CodeEditor()
-    :dpf::Plugin()
+    : dpf::Plugin()
 {
-
 }
 
 void CodeEditor::initialize()
@@ -108,6 +107,9 @@ void CodeEditor::initActions()
     QAction *switchHeaderSourceAction = new QAction(tr("Switch Header/Source"), this);
     QAction *follSymbolAction = new QAction(tr("Follow Symbol Under Cursor"), this);
     QAction *toggleBreakpointAction = new QAction(tr("Toggle Breakpoint"), this);
+    QAction *findReplaceAction = new QAction(tr("Find/Replace"), this);
+    QAction *findUsageAction = new QAction(tr("Find Usages"), this);
+    QAction *renameAction = new QAction(tr("Rename Symbol Under Cursor"), this);
 
     auto inputBackAction = new AbstractAction(backAction, this);
     inputBackAction->setShortCutInfo("Editor.back", tr("Backward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
@@ -117,22 +119,34 @@ void CodeEditor::initActions()
     auto inputCloseAction = new AbstractAction(closeAction, this);
     inputCloseAction->setShortCutInfo("Editor.close",
                                       tr("Close"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_W));
-    auto inputswitchHeaderSourceAction = new AbstractAction(switchHeaderSourceAction, this);
-    inputswitchHeaderSourceAction->setShortCutInfo("Editor.switchHS",
+    auto inputSwitchHeaderSourceAction = new AbstractAction(switchHeaderSourceAction, this);
+    inputSwitchHeaderSourceAction->setShortCutInfo("Editor.switchHS",
                                                    tr("Switch Header/Source"), QKeySequence(Qt::Key_F4));
-    auto inputfollSymbolAction = new AbstractAction(follSymbolAction, this);
-    inputfollSymbolAction->setShortCutInfo("Editor.followSymbol",
+    auto inputFollSymbolAction = new AbstractAction(follSymbolAction, this);
+    inputFollSymbolAction->setShortCutInfo("Editor.followSymbol",
                                            tr("Follow Symbol Under Cursor"), QKeySequence(Qt::Key_F2));
-    auto inputtoggleBreakpointAction = new AbstractAction(toggleBreakpointAction, this);
-    inputtoggleBreakpointAction->setShortCutInfo("Editor.toggleBreak",
+    auto inputToggleBreakpointAction = new AbstractAction(toggleBreakpointAction, this);
+    inputToggleBreakpointAction->setShortCutInfo("Editor.toggleBreak",
                                                  tr("Toggle Breakpoint"), QKeySequence(Qt::Key_F9));
+    auto inputFindReplaceAction = new AbstractAction(findReplaceAction, this);
+    inputFindReplaceAction->setShortCutInfo("Editor.findReplace",
+                                            tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
+    auto inputFindUsageAction = new AbstractAction(findUsageAction, this);
+    inputFindUsageAction->setShortCutInfo("Editor.findUsage",
+                                          tr("Find Usages"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_U));
+    auto inputRenameAction = new AbstractAction(renameAction, this);
+    inputRenameAction->setShortCutInfo("Editor.rename",
+                                       tr("Rename Symbol Under Cursor"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_R));
 
     windowService->addAction(tr("&Edit"), inputBackAction);
     windowService->addAction(tr("&Edit"), inputForwardAction);
     windowService->addAction(tr("&Edit"), inputCloseAction);
-    windowService->addAction(tr("&Edit"), inputswitchHeaderSourceAction);
-    windowService->addAction(tr("&Edit"), inputfollSymbolAction);
-    windowService->addAction(tr("&Edit"), inputtoggleBreakpointAction);
+    windowService->addAction(tr("&Edit"), inputSwitchHeaderSourceAction);
+    windowService->addAction(tr("&Edit"), inputFollSymbolAction);
+    windowService->addAction(tr("&Edit"), inputToggleBreakpointAction);
+    windowService->addAction(tr("&Edit"), inputFindReplaceAction);
+    windowService->addAction(tr("&Edit"), inputFindUsageAction);
+    windowService->addAction(tr("&Edit"), inputRenameAction);
 
     connect(backAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqBack);
     connect(forwardAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqForward);
@@ -140,6 +154,9 @@ void CodeEditor::initActions()
     connect(switchHeaderSourceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource);
     connect(follSymbolAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFollowSymbolUnderCursor);
     connect(toggleBreakpointAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint);
+    connect(findReplaceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqShowFindToolBar);
+    connect(findUsageAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFindUsage);
+    connect(renameAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqRenameSymbol);
 }
 
 void CodeEditor::initEditorService()

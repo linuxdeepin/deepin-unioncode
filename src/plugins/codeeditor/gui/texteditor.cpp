@@ -211,6 +211,20 @@ void TextEditor::clearAllBookmarks()
     markerDeleteAll(TextEditorPrivate::Bookmark);
 }
 
+intptr_t TextEditor::searchInTarget(QByteArray &text2Find, size_t fromPos, size_t toPos) const
+{
+    SendScintilla(SCI_SETTARGETRANGE, fromPos, toPos);
+    return SendScintilla(SCI_SEARCHINTARGET, text2Find.size(), reinterpret_cast<intptr_t>(text2Find.data()));
+}
+
+intptr_t TextEditor::replaceTarget(QByteArray &str2replace, intptr_t fromTargetPos, intptr_t toTargetPos) const
+{
+    if (fromTargetPos != -1 || toTargetPos != -1)
+        SendScintilla(SCI_SETTARGETRANGE, fromTargetPos, toTargetPos);
+
+    return SendScintilla(SCI_REPLACETARGET, str2replace.size(), reinterpret_cast<intptr_t>(str2replace.data()));
+}
+
 int TextEditor::currentLineNumber()
 {
     auto num = SendScintilla(SCI_LINEFROMPOSITION, SendScintilla(SCI_GETCURRENTPOS));
@@ -402,6 +416,22 @@ void TextEditor::followSymbolUnderCursor()
         return;
 
     d->lspStyle->followSymbolUnderCursor();
+}
+
+void TextEditor::findUsage()
+{
+    if (!d->lspStyle)
+        return;
+
+    d->lspStyle->findUsagesActionTriggered();
+}
+
+void TextEditor::renameSymbol()
+{
+    if (!d->lspStyle)
+        return;
+
+    d->lspStyle->renameActionTriggered();
 }
 
 QString TextEditor::cursorBeforeText() const

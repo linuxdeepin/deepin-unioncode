@@ -42,8 +42,12 @@ void TabWidgetPrivate::initUI()
     editorLayout->addWidget(spaceWidget);
 
     tabBar = new TabBar(q);
+    findToolBar = new FindToolBar(q);
+    findToolBar->setVisible(false);
+
     mainLayout->addWidget(tabBar, 0, Qt::AlignTop);
     mainLayout->addLayout(editorLayout);
+    mainLayout->addWidget(findToolBar);
 }
 
 void TabWidgetPrivate::initConnection()
@@ -449,6 +453,24 @@ void TabWidget::followSymbolUnderCursor()
     editor->followSymbolUnderCursor();
 }
 
+void TabWidget::findUsage()
+{
+    auto editor = d->currentTextEditor();
+    if (!editor || !editor->hasFocus())
+        return;
+
+    editor->findUsage();
+}
+
+void TabWidget::renameSymbol()
+{
+    auto editor = d->currentTextEditor();
+    if (!editor || !editor->hasFocus())
+        return;
+
+    editor->renameSymbol();
+}
+
 void TabWidget::replaceSelectedText(const QString &text)
 {
     if (auto editor = d->currentTextEditor())
@@ -600,6 +622,24 @@ void TabWidget::updateZoomValue(int value)
         other->updateLineNumberWidth(false);
         connect(other, &TextEditor::zoomValueChanged, this, &TabWidget::zoomValueChanged);
     }
+}
+
+QWidget *TabWidget::currentWidget() const
+{
+    return d->currentTextEditor();
+}
+
+void TabWidget::showFindToolBar()
+{
+    if (auto editor = d->currentTextEditor()) {
+        QString findText = editor->selectedText();
+        if (findText.isEmpty())
+            findText = editor->wordAtPosition(editor->cursorPosition());
+
+        d->findToolBar->setFindText(findText);
+    }
+
+    d->findToolBar->setVisible(true);
 }
 
 void TabWidget::openFile(const QString &fileName)

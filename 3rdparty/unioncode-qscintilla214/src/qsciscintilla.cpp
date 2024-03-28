@@ -40,7 +40,7 @@
 #include "Qsci/qscilexer.h"
 #include "Qsci/qscistyle.h"
 #include "Qsci/qscistyledtext.h"
-
+#include "BoostRegexSearch.h"
 
 // Make sure these match the values in Scintilla.h.  We don't #include that
 // file because it just causes more clashes.
@@ -1720,10 +1720,15 @@ void QsciScintilla::zoomTo(int size)
     SendScintilla(SCI_SETZOOM, size);
 }
 
+FindState &QsciScintilla::getLastFindState()
+{
+    return findState;
+}
+
 
 // Find the first occurrence of a string.
 bool QsciScintilla::findFirst(const QString &expr, bool re, bool cs, bool wo,
-        bool wrap, bool forward, int line, int index, bool show, bool posix,
+        bool wrap, bool forward, FindNextType findNextType, int line, int index, bool show, bool posix,
         bool cxx11)
 {
     if (expr.isEmpty())
@@ -1743,6 +1748,21 @@ bool QsciScintilla::findFirst(const QString &expr, bool re, bool cs, bool wo,
         (re ? SCFIND_REGEXP : 0) |
         (posix ? SCFIND_POSIX : 0) |
         (cxx11 ? SCFIND_CXX11REGEX : 0);
+
+    switch (findNextType)
+    {
+    case FINDNEXTTYPE_FINDNEXT:
+        findState.flags |= SCFIND_REGEXP_EMPTYMATCH_ALL | SCFIND_REGEXP_SKIPCRLFASONE;
+        break;
+
+    case FINDNEXTTYPE_REPLACENEXT:
+        findState.flags |= SCFIND_REGEXP_EMPTYMATCH_NOTAFTERMATCH | SCFIND_REGEXP_SKIPCRLFASONE;
+        break;
+
+    case FINDNEXTTYPE_FINDNEXTFORREPLACE:
+        findState.flags |= SCFIND_REGEXP_EMPTYMATCH_ALL | SCFIND_REGEXP_EMPTYMATCH_ALLOWATSTART | SCFIND_REGEXP_SKIPCRLFASONE;
+        break;
+    }
 
     if (line < 0 || index < 0)
         findState.startpos = SendScintilla(SCI_GETCURRENTPOS);
@@ -1843,7 +1863,7 @@ bool QsciScintilla::doFind()
         pos = simpleFind();
     }
 
-    if (pos == -1)
+    if (pos < 0)
     {
         // Restore the original selection.
         if (findState.status == FindState::FindingInSelection)
@@ -1866,10 +1886,15 @@ bool QsciScintilla::doFind()
 
         for (int i = startLine; i <= endLine; ++i)
             SendScintilla(SCI_ENSUREVISIBLEENFORCEPOLICY, i);
+    } else {
+        findState.linenum = -1;
     }
 
     // Now set the selection.
     SendScintilla(SCI_SETSEL, targstart, targend);
+
+    findState.targstart = targstart;
+    findState.targend = targend;
 
     // Finally adjust the start position so that we don't find the same one
     // again.
@@ -1885,7 +1910,9 @@ bool QsciScintilla::doFind()
 // Do a simple find between the start and end positions.
 int QsciScintilla::simpleFind()
 {
-    if (findState.startpos == findState.endpos)
+    if (findState.forward && (findState.startpos >= findState.endpos))
+        return -1;
+    else if (!findState.forward && (findState.startpos == findState.endpos))
         return -1;
 
     SendScintilla(SCI_SETTARGETSTART, findState.startpos);
@@ -1905,6 +1932,9 @@ void QsciScintilla::replace(const QString &replaceStr)
 
     long start = SendScintilla(SCI_GETSELECTIONSTART);
     long orig_len = SendScintilla(SCI_GETSELECTIONEND) - start;
+
+    findState.targstart = start;
+    findState.targend = start + orig_len;
 
     SendScintilla(SCI_TARGETFROMSELECTION);
 
