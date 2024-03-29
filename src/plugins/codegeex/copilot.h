@@ -26,6 +26,7 @@ public:
     void replaceSelectedText(const QString &text);
     void insterText(const QString &text);
     void setGenerateCodeEnabled(bool enabled);
+    void setCurrentModel(CodeGeeX::languageModel model);
     void handleTextChanged();
 
 signals:
@@ -34,16 +35,23 @@ signals:
     // the result has been tranlated.
     void translatedResult(const QString &result, const QString &dstLang);
 
+    void response(const QString &msgID, const QString &response, const QString &event);
+    void messageSended();
+
 public slots:
     void addComment();
     void generateCode();
     void login();
     void translate();
+    void fixBug();
+    void explain();
+    void review();
+    void tests();
 
 private:
     explicit Copilot(QObject *parent = nullptr);
     QString selectedText() const;
-    QString apiKey() const;
+    void switchToCodegeexPage();
     bool responseValid(const QString &response);
 
     CodeGeeX::CopilotApi copilotApi;

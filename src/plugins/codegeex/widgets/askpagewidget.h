@@ -34,7 +34,6 @@ public:
     bool isIntroPageState();
 
 Q_SIGNALS:
-    void sendPromot(const QString &promot);
     void introPageShown();
     void sessionPageShown();
     void requestShowHistoryPage();
