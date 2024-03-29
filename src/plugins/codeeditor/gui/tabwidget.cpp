@@ -495,6 +495,12 @@ void TabWidget::undo()
         editor->undo();
 }
 
+void TabWidget::setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key)
+{
+    if (auto editor = d->currentTextEditor())
+        editor->setCompletion(info, icon, key);
+}
+
 void TabWidget::gotoNextPosition()
 {
     if (d->nextPosRecord.isEmpty())

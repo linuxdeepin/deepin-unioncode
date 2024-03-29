@@ -434,6 +434,14 @@ void TextEditor::renameSymbol()
     d->lspStyle->renameActionTriggered();
 }
 
+void TextEditor::setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key)
+{
+    if (!d->completionWidget)
+        return;
+
+    d->completionWidget->setCompletion(info, icon, key);
+}
+
 QString TextEditor::cursorBeforeText() const
 {
     int pos = d->cursorPosition();

@@ -37,6 +37,7 @@ public:
     DPF_INTERFACE(void, insertText, const QString &);
     DPF_INTERFACE(void, showTips, const QString &tips);
     DPF_INTERFACE(void, undo);
+    DPF_INTERFACE(void, setCompletion, const QString &info, const QIcon &icon, const QKeySequence &key);
 
     DPF_INTERFACE(void, registSciLexerProxy, const QString &language, AbstractLexerProxy *proxy);
 };
