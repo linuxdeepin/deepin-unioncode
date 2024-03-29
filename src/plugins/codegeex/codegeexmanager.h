@@ -22,6 +22,21 @@ struct RecordData
     QString date;
 };
 
+namespace CodeGeeX {
+    static const char* chatModelLite = "codegeex-chat-lite";
+    static const char* chatModelPro = "codegeex-chat-pro";
+
+    static const char* completionModelLite = "codegeex-lite";
+    static const char* completionModelPro = "codegeex-pro";
+
+    enum languageModel{
+        Lite,
+        Pro
+    };
+}
+Q_DECLARE_METATYPE(CodeGeeX::languageModel)
+
+typedef QPair<QString, QString> chatRecord;
 class CodeGeeXManager : public QObject
 {
     Q_OBJECT
@@ -32,6 +47,8 @@ public:
 
     void saveConfig(const QString &sessionId, const QString &userId);
     void loadConfig();
+
+    void setCurrentModel(CodeGeeX::languageModel model);
 
     void createNewSession();
     void deleteCurrentSession();
@@ -45,7 +62,12 @@ public:
 
     void fetchSessionRecords();
     void fetchMessageList(const QString &talkId);
+    void startReceiving();
+    void stopReceiving();
+    bool checkRunningState(bool state);
 
+    QString getSessionId() const;
+    QString getTalkId() const;
     QList<RecordData> sessionRecords() const;
 
 Q_SIGNALS:
@@ -58,6 +80,7 @@ Q_SIGNALS:
     void chatFinished();
     void sessionRecordsUpdated();
     void setTextToSend(const QString &prompt);
+    void requestStop();
 
 public Q_SLOTS:
     void onSessionCreated(const QString &talkId, bool isSuccessful);
@@ -67,7 +90,6 @@ public Q_SLOTS:
     void recevieSessionRecords(const QVector<CodeGeeX::AskApi::SessionRecord> &records);
     void recevieDeleteResult(const QStringList &talkIds, bool success);
     void showHistoryMessage(const QVector<CodeGeeX::AskApi::MessageRecord> &records);
-    void stopReceive();
     void logout();
 
 private:
@@ -82,12 +104,16 @@ private:
     QString sessionId;
     QString userId;
     QString currentTalkID;
+    QString responseData;
 
     QMap<QString, MessageData> curSessionMsg;
+    QList<chatRecord> chatHistory {};
+    chatRecord currentChat {};
     QList<RecordData> sessionRecordList {};
 
     QTimer *queryTimer { nullptr };
     bool isLogin { false };
+    bool isRunning { false };
 };
 
 #endif   // CODEGEEXMANAGER_H

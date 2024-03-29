@@ -5,11 +5,13 @@
 #ifndef DETAILWIDGET_H
 #define DETAILWIDGET_H
 
+#include "copilot.h"
 #include "services/option/toolchaindata.h"
 #include "common/widget/pagewidget.h"
 
 struct CodeGeeXConfig{
     bool codeCompletionEnabled = true;
+    CodeGeeX::languageModel model = CodeGeeX::Lite;
 };
 
 class DetailWidgetPrivate;

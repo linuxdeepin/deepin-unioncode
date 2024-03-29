@@ -18,7 +18,7 @@ class CodeGeeXWidget : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 
-    enum CurrentPageState : uint8_t {
+    enum pageState : uint8_t {
         AskPage,
         TrasnlatePage
     };
@@ -40,6 +40,7 @@ protected:
 private:
     void initUI();
     void initConnection();
+    void switchPage(pageState state);
 
     void initAskWidget();
     void initHistoryWidget();
