@@ -10,13 +10,13 @@
 #include <QDebug>
 #include <QTimer>
 
-//static const char *kUrlGenerateOneLine = "https://tianqi.aminer.cn/api/v2/multilingual_code_generate";
-static const char *kUrlGenerateMultiLine = "https://tianqi.aminer.cn/api/v2/multilingual_code_generate_adapt";
-static const char *kUrlComment = "https://tianqi.aminer.cn/api/v2/multilingual_code_explain";
-static const char *kUrlTranslate = "https://tianqi.aminer.cn/api/v2/multilingual_code_translate";
-//static const char *kUrlBugfix = "https://tianqi.aminer.cn/api/v2/multilingual_code_bugfix";
-// this is a temporary key
-static const char *kDefaultApiKey = "f30ea902c3824ee88e221a32363c0823";
+static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
+static const char *kUrlGenerateMultiLine = "https://api.codegeex.cn:8443/tx/v3/completions/inline?stream=false";
+
+static const char *commandFixBug = "fixbug";
+static const char *commandExplain = "explain";
+static const char *commandReview = "review";
+static const char *commandTests = "tests";
 
 using namespace CodeGeeX;
 using namespace dpfservice;
@@ -30,12 +30,10 @@ Copilot::Copilot(QObject *parent)
 
     connect(&copilotApi, &CopilotApi::response, [this](CopilotApi::ResponseType responseType, const QString &response, const QString &dstLang) {
         switch (responseType) {
-        case CopilotApi::multilingual_code_explain:
-            if (editorService->replaceSelectedText) {
-                editorService->replaceSelectedText(response);
-            }
+        case CopilotApi::multilingual_code_comment:
+            replaceSelectedText(response);
             break;
-        case CopilotApi::multilingual_code_generate:
+        case CopilotApi::inline_completions:
             mutexResponse.lock();
             generateResponse = response;
             if (editorService->setCompletion && responseValid(response)) {
@@ -50,6 +48,9 @@ Copilot::Copilot(QObject *parent)
         }
     });
 
+    connect(&copilotApi, &CopilotApi::responseByStream, this, &Copilot::response);
+    connect(&copilotApi, &CopilotApi::messageSended, this, &Copilot::messageSended);
+
     timer.setSingleShot(true);
 
     connect(&timer, &QTimer::timeout, [this]() {
@@ -63,11 +64,6 @@ QString Copilot::selectedText() const
         return "";
 
     return editorService->getSelectedText();
-}
-
-QString Copilot::apiKey() const
-{
-    return kDefaultApiKey;
 }
 
 bool Copilot::responseValid(const QString &response)
@@ -92,20 +88,35 @@ QMenu *Copilot::getMenu()
     QMenu *menu = new QMenu();
     menu->setTitle("CodeGeeX");
 
-    QAction *addComment = new QAction(tr("add comment"));
-    QAction *translate = new QAction(tr("translate"));
+    QAction *addComment = new QAction(tr("Add Comment"));
+    QAction *translate = new QAction(tr("Translate"));
+    QAction *fixBug = new QAction(tr("Fix Bug"));
+    QAction *explain = new QAction(tr("Explain Code"));
+    QAction *review = new QAction(tr("Review Code"));
+    QAction *tests = new QAction(tr("Generate Unit Tests"));
+
     menu->addAction(addComment);
     menu->addAction(translate);
+    menu->addAction(fixBug);
+    menu->addAction(explain);
+    menu->addAction(review);
+    menu->addAction(tests);
 
     connect(addComment, &QAction::triggered, this, &Copilot::addComment);
     connect(translate, &QAction::triggered, this, &Copilot::translate);
+    connect(fixBug, &QAction::triggered, this, &Copilot::fixBug);
+    connect(explain, &QAction::triggered, this, &Copilot::explain);
+    connect(review, &QAction::triggered, this, &Copilot::review);
+    connect(tests, &QAction::triggered, this, &Copilot::tests);
+
 
     return menu;
 }
 
 void Copilot::translateCode(const QString &code, const QString &dstLanguage)
 {
-    copilotApi.postTranslate(kUrlTranslate, apiKey(), code, "c++", dstLanguage);
+    QString url = QString(kUrlSSEChat) + "?stream=false"; //receive all msg at once
+    copilotApi.postTranslate(url, code, dstLanguage);
 }
 
 void Copilot::replaceSelectedText(const QString &text)
@@ -125,6 +136,11 @@ void Copilot::setGenerateCodeEnabled(bool enabled)
     generateCodeEnabled = enabled;
 }
 
+void Copilot::setCurrentModel(CodeGeeX::languageModel model)
+{
+    copilotApi.setModel(model);
+}
+
 void Copilot::handleTextChanged()
 {
     // start generate code.
@@ -135,11 +151,10 @@ void Copilot::handleTextChanged()
 
 void Copilot::addComment()
 {
-    copilotApi.postComment(kUrlComment,
-                           apiKey(),
+    QString url = QString(kUrlSSEChat) + "?stream=false"; //receive all msg at once
+    copilotApi.postComment(url,
                            selectedText(),
-                           "cpp",
-                           "zh-CN");
+                           "zh");
 }
 
 void Copilot::generateCode()
@@ -151,7 +166,6 @@ void Copilot::generateCode()
     QString suffix = editorService->getCursorBehindText();
 
     copilotApi.postGenerate(kUrlGenerateMultiLine,
-                            apiKey(),
                             prompt,
                             suffix);
 }
@@ -163,7 +177,43 @@ void Copilot::login()
 void Copilot::translate()
 {
     emit translatingText(selectedText());
+    switchToCodegeexPage();
+}
 
+void Copilot::fixBug()
+{
+    QString url = QString(kUrlSSEChat) + "?stream=true";
+    copilotApi.postCommand(url, selectedText(), "zh", commandFixBug);
+
+    switchToCodegeexPage();
+}
+
+void Copilot::explain()
+{
+    QString url = QString(kUrlSSEChat) + "?stream=true";
+    copilotApi.postCommand(url, selectedText(), "zh", commandExplain);
+
+    switchToCodegeexPage();
+}
+
+void Copilot::review()
+{
+    QString url = QString(kUrlSSEChat) + "?stream=true";
+    copilotApi.postCommand(url, selectedText(), "zh", commandReview);
+
+    switchToCodegeexPage();
+}
+
+void Copilot::tests()
+{
+    QString url = QString(kUrlSSEChat) + "?stream=true";
+    copilotApi.postCommand(url, selectedText(), "zh", commandTests);
+
+    switchToCodegeexPage();
+}
+
+void Copilot::switchToCodegeexPage()
+{
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService->switchWidgetNavigation)

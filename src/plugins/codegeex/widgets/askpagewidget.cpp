@@ -68,7 +68,7 @@ void AskPageWidget::onMessageUpdate(const MessageData &msgData)
         msgComponents.value(msgData.messageID())->updateMessage(msgData);
     }
 
-    QTimer::singleShot(100, [this]() {
+    QTimer::singleShot(50, [this]() {
         if (scrollArea->verticalScrollBar()->isVisible()) {
             int maxValue = scrollArea->verticalScrollBar()->maximum();
             scrollArea->verticalScrollBar()->setValue(maxValue);
@@ -222,7 +222,7 @@ void AskPageWidget::initConnection()
             sendButton->setEnabled(true);
     });
     connect(stopGenerate, &DPushButton::clicked, this, [this]() {
-        CodeGeeXManager::instance()->stopReceive();
+        CodeGeeXManager::instance()->stopReceiving();
         Q_EMIT CodeGeeXManager::instance()->chatFinished();
         if (!msgComponents.values().contains(waitComponets)) {
             QString stopId = "Stop:" + QString::number(QDateTime::currentMSecsSinceEpoch());
@@ -260,6 +260,11 @@ void AskPageWidget::setSessionPage()
 
 void AskPageWidget::enterAnswerState()
 {
+    if (curState == Intro) {
+        curState = Session;
+        setSessionPage();
+    }
+
     progressCalcNum = 0;
     inputEdit->clear();
     inputEdit->setEnabled(false);
