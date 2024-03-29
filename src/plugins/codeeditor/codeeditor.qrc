@@ -1,11 +1,50 @@
 <RCC>
-    <qresource prefix="/icons/deepin/builtin">
-        <file>texts/edit-file_16px.svg</file>
-        <file>texts/edit-tree_16px.svg</file>
-        <file>texts/edit-project_16px.svg</file>
-        <file>texts/edit-vSplit_16px.svg</file>
-        <file>texts/edit-hSplit_16px.svg</file>
-        <file>texts/edit-closeBtn_16px.svg</file>
+    <qresource prefix="/icons/deepin/builtin"/>
+    <qresource prefix="/icons/deepin"/>
+    <qresource prefix="/">
+        <file>icons/deepin/builtin/texts/edit-closeBtn_16px.svg</file>
+        <file>icons/deepin/builtin/texts/edit-file_16px.svg</file>
+        <file>icons/deepin/builtin/texts/edit-hSplit_16px.svg</file>
+        <file>icons/deepin/builtin/texts/edit-project_16px.svg</file>
+        <file>icons/deepin/builtin/texts/edit-tree_16px.svg</file>
+        <file>icons/deepin/builtin/texts/edit-vSplit_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/class_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/element_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/enum_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/enumerator_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/func_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/func_priv_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/func_prot_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/keyword_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/macro_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/namespace_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/qmlsnippet_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/signal_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/slot_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/slot_priv_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/slot_prot_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/snippet_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/var_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/var_priv_16px.svg</file>
+        <file>icons/deepin/builtin/dark/icons/var_prot_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/class_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/element_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/enum_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/enumerator_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/func_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/func_priv_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/func_prot_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/keyword_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/macro_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/namespace_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/qmlsnippet_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/signal_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/slot_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/slot_priv_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/slot_prot_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/snippet_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/var_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/var_priv_16px.svg</file>
+        <file>icons/deepin/builtin/light/icons/var_prot_16px.svg</file>
     </qresource>
-    <qresource prefix="/"/>
 </RCC>
