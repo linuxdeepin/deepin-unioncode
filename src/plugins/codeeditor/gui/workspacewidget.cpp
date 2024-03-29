@@ -586,6 +586,16 @@ void WorkspaceWidget::showTips(const QString &tips)
                                   Q_ARG(const QString &, tips));
 }
 
+void WorkspaceWidget::setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key)
+{
+    if (auto tabWidget = d->currentTabWidget())
+        QMetaObject::invokeMethod(tabWidget, "setCompletion",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(const QString &, info),
+                                  Q_ARG(const QIcon &, icon),
+                                  Q_ARG(const QKeySequence &, key));
+}
+
 void WorkspaceWidget::insertText(const QString &text)
 {
     if (auto tabWidget = d->currentTabWidget())

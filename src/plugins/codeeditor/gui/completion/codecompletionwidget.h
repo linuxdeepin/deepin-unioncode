@@ -10,6 +10,7 @@
 class TextEditor;
 class CodeCompletionView;
 class CodeCompletionModel;
+class CodeCompletionExtendWidget;
 
 class CodeCompletionWidget : public QFrame
 {
@@ -24,6 +25,7 @@ public:
 
     void updateHeight();
     void updatePosition(bool force = false);
+    void setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key);
 
 public slots:
     bool processKeyPressEvent(QKeyEvent *event);
@@ -45,6 +47,7 @@ private:
 
 private slots:
     void modelContentChanged();
+    void onCompletionChanged();
     void onTextAdded(int pos, int len, int added, const QString &text, int line);
     void onTextRemoved(int pos, int len, int added, const QString &text, int line);
     void viewFocusOut();
@@ -53,6 +56,7 @@ private slots:
 private:
     CodeCompletionView *completionView { nullptr };
     CodeCompletionModel *completionModel { nullptr };
+    CodeCompletionExtendWidget *completionExtWidget { nullptr };
 
     QTimer *automaticInvocationTimer { nullptr };
 
