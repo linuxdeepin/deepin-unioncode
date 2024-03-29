@@ -28,7 +28,6 @@ MessageComponent::MessageComponent(const MessageData &msgData, QWidget *parent)
 void MessageComponent::updateMessage(const MessageData &msgData)
 {
     stopWaiting();
-
     if (msgData.messageType() == MessageData::Ask) {
         curUpdateLabel = new DLabel(this);
         curUpdateLabel->setWordWrap(true);
@@ -54,12 +53,14 @@ void MessageComponent::updateMessage(const MessageData &msgData)
             curUpdateLabel->setWordWrap(true);
             msgLayout->addWidget(curUpdateLabel);
         }
-        curUpdateLabel->setText(msgData.messageLines().last());
+        if (!messageData.messageLines().isEmpty() && msgData.messageLines().last() != messageData.messageLines().last())
+            curUpdateLabel->setText(msgData.messageLines().last());
         break;
     case CodeEdit:
         if (curUpdateEdit) {
             int startIndex = msgData.messageLines().lastIndexOf(QRegularExpression("```([a-z]*|[A-Z]*)"));
-            curUpdateEdit->updateCode(msgData.messageLines().mid(startIndex + 1), msgData.messageLines().mid(startIndex, 1).at(0));
+            if (startIndex != -1)
+                curUpdateEdit->updateCode(msgData.messageLines().mid(startIndex + 1), msgData.messageLines().mid(startIndex, 1).at(0));
         }
         break;
     }
@@ -170,6 +171,7 @@ bool MessageComponent::createCodeEdit(const MessageData &newData)
 
     for (int i = 0; i < addedLines.count(); ++i) {
         QString addedLine = addedLines.at(i);
+
         if (addedLine.contains("`")) {
             if (i != 0) {
                 MessageData addedMsgData = messageData;
