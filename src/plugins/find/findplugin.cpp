@@ -39,7 +39,7 @@ bool FindPlugin::start()
     auto advancedFindActionImpl = new AbstractAction(advancedFindAction);
     advancedFindActionImpl->setShortCutInfo("Edit.Advanced.Find",
                                             tr("Advanced Find"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_F));
-    connect(advancedFindAction, &QAction::triggered, this, [=] {
+    connect(advancedFindAction, &QAction::triggered, [=] {
         uiController.switchContext(tr("Advanced &Search"));
     });
 
