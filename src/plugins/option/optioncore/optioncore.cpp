@@ -91,7 +91,7 @@ bool OptionCore::start()
     QObject::connect(&Listener::instance(), &Listener::pluginsStarted, [=](){
         if (optionDialog) {
             auto list = optionService->supportGeneratorName<OptionGenerator>();
-            optionDialog->insertLabel(tr("Language"));
+            optionDialog->insertLabel(tr("Extended Settings"));
             for (auto name : list) {
                 if (generalKits.contains(name))
                     continue;
