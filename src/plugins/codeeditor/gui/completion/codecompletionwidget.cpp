@@ -280,9 +280,13 @@ bool CodeCompletionWidget::processKeyPressEvent(QKeyEvent *event)
     case Qt::Key_Return:
         return execute();
     case Qt::Key_Down:
+        if (!completionView->isVisible())
+            return false;
         completionView->nextCompletion();
         return true;
     case Qt::Key_Up:
+        if (!completionView->isVisible())
+            return false;
         completionView->previousCompletion();
         return true;
     case Qt::Key_Escape:

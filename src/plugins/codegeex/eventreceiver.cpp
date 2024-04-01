@@ -35,10 +35,8 @@ void EventReceiverDemo::eventProcess(const dpf::Event &event)
             QMetaObject::invokeMethod(this, [contextMenu](){
                 contextMenu->addMenu(Copilot::instance()->getMenu());
             });
-        } else if (eventData == "keyPressEvent") {
-            int eventType = event.property("event").toInt();
-
-            Copilot::instance()->processKeyPressEvent(static_cast<Qt::Key>(eventType));
+        } else if (eventData == "textChanged") {
+            Copilot::instance()->handleTextChanged();
         }
     }
 }
