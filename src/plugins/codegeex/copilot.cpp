@@ -120,24 +120,17 @@ void Copilot::insterText(const QString &text)
         editorService->insertText(text);
 }
 
-void Copilot::processKeyPressEvent(Qt::Key key)
+void Copilot::setGenerateCodeEnabled(bool enabled)
 {
-    // mutexResponse.lock();
-    // if (key == Qt::Key_Tab && !generateResponse.isEmpty()) {
-    //     insterText(generateResponse);
-    //     generateResponse = "";
-    // }
-    // mutexResponse.unlock();
+    generateCodeEnabled = enabled;
+}
 
+void Copilot::handleTextChanged()
+{
     // start generate code.
     QMetaObject::invokeMethod(this, [this]() {
         timer.start(200);
     });
-}
-
-void Copilot::setGenerateCodeEnabled(bool enabled)
-{
-    generateCodeEnabled = enabled;
 }
 
 void Copilot::addComment()
