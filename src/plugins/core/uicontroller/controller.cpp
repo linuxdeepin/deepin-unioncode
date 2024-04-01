@@ -460,8 +460,10 @@ void Controller::addChildMenu(AbstractMenu *abstractMenu)
         return;
 
     foreach (AbstractAction *action, abstractMenu->actionList()) {
-        if (action && action->hasShortCut())
+        if (action && action->hasShortCut()) {
             registerActionShortCut(action);
+            addMenuShortCut(action->qAction());
+        }
     }
 
     //make the `helper` menu at the last
@@ -738,7 +740,7 @@ void Controller::createHelpActions()
 
     QAction *actionReportBug = new QAction(MWM_REPORT_BUG, helpMenu);
     ActionManager::getInstance()->registerAction(actionReportBug, "Help.Report.Bug",
-                                                 MWM_REPORT_BUG, QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R));
+                                                 MWM_REPORT_BUG, QKeySequence());
     addMenuShortCut(actionReportBug);
     helpMenu->addAction(actionReportBug);
 
