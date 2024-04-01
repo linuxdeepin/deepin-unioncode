@@ -25,8 +25,8 @@ public:
     void translateCode(const QString &code, const QString &dstLanguage);
     void replaceSelectedText(const QString &text);
     void insterText(const QString &text);
-    void processKeyPressEvent(Qt::Key key);
     void setGenerateCodeEnabled(bool enabled);
+    void handleTextChanged();
 
 signals:
     // the code will be tranlated.
