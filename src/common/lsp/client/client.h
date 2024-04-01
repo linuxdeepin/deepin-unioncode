@@ -175,9 +175,9 @@ signals:
     void switchHeaderSourceResult(const QString &filePath);
     void renameRes(const newlsp::WorkspaceEdit &changes);
     void hoverRes(const newlsp::Hover &hover);
-    void definitionRes(const newlsp::Location &location);
-    void definitionRes(const std::vector<newlsp::Location> &locations);
-    void definitionRes(const std::vector<newlsp::LocationLink> &locations);
+    void definitionRes(const newlsp::Location &location, const QString &filePath);
+    void definitionRes(const std::vector<newlsp::Location> &locations, const QString &filePath);
+    void definitionRes(const std::vector<newlsp::LocationLink> &locations, const QString &filePath);
     void rangeFormattingRes(const std::vector<TextEdit> &edits);
 
     /* server request */

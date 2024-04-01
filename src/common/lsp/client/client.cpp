@@ -721,6 +721,7 @@ bool ClientPrivate::definitionResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
         && requestSave.value(calledID).method == lsp::V_TEXTDOCUMENT_DEFINITION) {
+        auto filePath = requestSave.value(calledID).file;
         requestSave.remove(calledID);
 
         QJsonValue resultJV = jsonObj.value(K_RESULT);
@@ -778,10 +779,10 @@ bool ClientPrivate::definitionResult(const QJsonObject &jsonObj)
             }
 
             if (!locationLinks.empty()) {
-                emit q->definitionRes(locationLinks);
+                emit q->definitionRes(locationLinks, filePath);
                 return true;
             } else if (!locations.empty()) {
-                emit q->definitionRes(locations);
+                emit q->definitionRes(locations, filePath);
                 return true;
             }
         } else if (resultJV.isObject()) {
@@ -795,7 +796,7 @@ bool ClientPrivate::definitionResult(const QJsonObject &jsonObj)
                     { startObj.value("line").toInt(), startObj.value("character").toInt() },
                     { endObj.value("line").toInt(), endObj.value("character").toInt() }
                 };
-                emit q->definitionRes(newlsp::Location { uri, range });
+                emit q->definitionRes(newlsp::Location { uri, range }, filePath);
                 return true;
             }
         }
