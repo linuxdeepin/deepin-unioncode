@@ -2241,6 +2241,7 @@ private:
     int blockIndent(int line);
     IndentState getIndentState(int line);
     bool rangeIsWhitespace(long spos, long epos);
+    bool blockWordContains(long spos, long epos, const char block);
     int findStyledWord(const char *text, int style, const char *words);
 
     void checkMarker(int &markerNumber);
