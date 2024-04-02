@@ -55,6 +55,7 @@ public slots:
     void handleFindUsage();
     void handleRenameSymbol();
     void handleShowFindToolBar();
+    void handleSetModifiedAutoReload(const QString &fileName, bool flag);
 
 public:
     WorkspaceWidget *q;
@@ -62,6 +63,7 @@ public:
     TabWidget *focusTabWidget { nullptr };
     QList<TabWidget *> tabWidgetList;
 
+    QStringList autoReloadList;
     QStringList modifiedFileList;
     QStringList removedFileList;
     QTimer fileCheckTimer;
