@@ -16,7 +16,7 @@
 
 namespace toolchains {
 const QString K_SCIRPTNAME{"toolchain.sh"};
-const QString K_TOOLCHAINFILE{"toolchains_cxx.support"};
+const QString K_TOOLCHAINFILE{"toolchains.support"};
 const QString K_VERSION{"version"};
 const QString K_HOSTK_TOOLCHAINFILEK_TOOLCHAINFILEK_TOOLCHAINFILE_OS{"host_os"};
 const QString K_HOST_ARCH{"host_arch"};

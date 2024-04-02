@@ -9,6 +9,7 @@
 
 #include <QObject>
 #include <QtXml>
+#include <QSet>
 
 class QStandardItem;
 class QAction;
@@ -26,6 +27,7 @@ public:
     };
 
     PythonAsynParse();
+    QSet<QString> getFilelist();
     virtual ~PythonAsynParse();
 
 signals:
