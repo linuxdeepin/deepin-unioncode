@@ -26,6 +26,7 @@ private:
     void processSetLineBackgroundColorEvent(const dpf::Event &event);
     void processResetLineBackgroundEvent(const dpf::Event &event);
     void processClearLineBackgroundEvent(const dpf::Event &event);
+    void processSetModifiedAutoReloadEvent(const dpf::Event &event);
 
     // annotation
     void processAddAnnotationEvent(const dpf::Event &event);
@@ -61,6 +62,7 @@ signals:
     void reqSetLineBackgroundColor(const QString &fileName, int line, const QColor &color);
     void reqResetLineBackground(const QString &fileName, int line);
     void reqClearLineBackground(const QString &fileName);
+    void reqSetModifiedAutoReload(const QString &fileName, bool flag);
     void reqDoRename(const newlsp::WorkspaceEdit &info);
     void reqCloseCurrentEditor();
     void reqSwitchHeaderSource();
