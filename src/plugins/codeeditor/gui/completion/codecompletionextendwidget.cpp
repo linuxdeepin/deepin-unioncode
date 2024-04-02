@@ -8,8 +8,10 @@
 #include <DLabel>
 #include <DFrame>
 #include <DIconButton>
-#include <DPaletteHelper>
 #include <DGuiApplicationHelper>
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
+#include <DPaletteHelper>
+#endif
 
 #include <QLabel>
 #include <QPlainTextEdit>
@@ -46,7 +48,11 @@ public:
 
         opt.features |= QStyleOptionFrame::Rounded;
 
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
         const DPalette &dp = DPaletteHelper::instance()->palette(this);
+#else
+        const DPalette &dp = DGuiApplicationHelper::instance()->applicationPalette();
+#endif
 
         if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType) {
             p.setBackground(QColor(255, 255, 255));
