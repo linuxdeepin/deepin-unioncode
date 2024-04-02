@@ -4,8 +4,8 @@
 
 #include "ninjaparser.h"
 
-#include "services/builder/task.h"
-#include "services/builder/fileutils.h"
+#include "common/type/task.h"
+#include "common/util/fileutils.h"
 
 const char TASK_CATEGORY_BUILDSYSTEM[] = "Task.Category.Buildsystem";
 
@@ -19,7 +19,7 @@ void NinjaParser::stdOutput(const QString &line, OutputPane::OutputFormat format
     QString newContent = line;
     emit outputAdded(newContent, format);
 
-    IOutputParser::stdOutput(newContent, format);
+    AbstractOutputParser::stdOutput(newContent, format);
 }
 
 void NinjaParser::stdError(const QString &line)
