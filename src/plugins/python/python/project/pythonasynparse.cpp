@@ -16,6 +16,7 @@ class PythonAsynParsePrivate
     QDomDocument xmlDoc;
     QThread *thread {nullptr};
     QString rootPath;
+    QSet<QString> fileList {};
     QList<QStandardItem *> rows {};
 };
 
@@ -46,7 +47,13 @@ PythonAsynParse::~PythonAsynParse()
 void PythonAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
     createRows(info.workspaceFolder());
+
     emit itemsModified(d->rows);
+}
+
+QSet<QString> PythonAsynParse::getFilelist()
+{
+    return d->fileList;
 }
 
 void PythonAsynParse::doDirectoryChanged(const QString &path)
@@ -71,6 +78,7 @@ QString PythonAsynParse::itemDisplayName(const QStandardItem *item) const
 void PythonAsynParse::createRows(const QString &path)
 {
     QString rootPath = path;
+    d->fileList.clear();
     if (rootPath.endsWith(QDir::separator())) {
         int separatorSize = QString(QDir::separator()).size();
         rootPath = rootPath.remove(rootPath.size() - separatorSize, separatorSize);
@@ -117,6 +125,7 @@ void PythonAsynParse::createRows(const QString &path)
             } else {
                 item->appendRow(newItem);
             }
+           d->fileList.insert(fileItera.filePath());
         }
     }
 }
