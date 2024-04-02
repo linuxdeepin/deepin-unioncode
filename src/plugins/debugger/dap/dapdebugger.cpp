@@ -37,6 +37,7 @@
 #include <QDBusMessage>
 #include <QFileInfo>
 #include <QAtomicInt>
+#include <QApplication>
 
 #define PER_WAIT_MSEC (1000)
 #define MAX_WAIT_TIMES (10)
