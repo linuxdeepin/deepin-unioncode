@@ -10,6 +10,7 @@
 
 #include "services/debugger/debuggerservice.h"
 #include "services/language/languageservice.h"
+#include "services/editor/editorservice.h"
 #include "common/util/custompaths.h"
 #include "common/project/projectinfo.h"
 
@@ -81,6 +82,9 @@ void DebugManager::registerDebugger(const QString &kit, AbstractDebugger *debugg
 
 void DebugManager::run()
 {
+    // save all modified files before debugging.
+    dpfGetService(EditorService)->saveAll();
+
     AbstractDebugger::RunState state = currentDebugger->getRunState();
     switch (state) {
     case AbstractDebugger::RunState::kNoRun:
@@ -134,6 +138,9 @@ void DebugManager::abortDebug()
 
 void DebugManager::restartDebug()
 {
+    // save all modified files before debugging.
+    dpfGetService(EditorService)->saveAll();
+
     AsynInvoke(currentDebugger->restartDebug());
 }
 
