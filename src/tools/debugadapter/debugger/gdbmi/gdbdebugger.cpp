@@ -606,6 +606,7 @@ void GDBDebugger::parseDisassembleData(const gdbmi::Record &record)
     if (record.message == "data") {
         d->assemblers.push_back(gdbmi::escapedText(record.payload.toString()));
     } else if (record.message == "end") {
+        emit fireLocker();
         emit assemblerData(d->assemblers);
         d->assemblers.clear();
     }
