@@ -5,6 +5,7 @@
 #include "configpropertywidget.h"
 
 #include "services/option/toolchaindata.h"
+#include "services/option/optionmanager.h"
 #include "common/toolchain/toolchain.h"
 #include "common/widget/pagewidget.h"
 
@@ -81,7 +82,7 @@ QStringList getPythonAllVersion()
     dir.setNameFilters(filter);
     QStringList pythonList = dir.entryList();
 
-    QString pattern = "((\\d)|(\\d.\\d))($|\\s)";
+    QString pattern = "((\\d)|(\\d+.\\d+))($|\\s)";
     QStringList versions = findAll(pattern, pythonList.join(" "), true);
     return versions;
 }
@@ -126,10 +127,12 @@ void DetailPropertyWidget::setValues(const config::ProjectConfigure *param)
 
     auto initComboBox = [](DComboBox *comboBox, const config::ItemInfo &itemInfo) {
         int count = comboBox->count();
+        auto globalToolPath = OptionManager::getInstance()->getPythonToolPath();
         for (int i = 0; i < count; i++) {
             ToolChainData::ToolChainParam toolChainParam = qvariant_cast<ToolChainData::ToolChainParam>(comboBox->itemData(i, Qt::UserRole + 1));
-            if (itemInfo.name == toolChainParam.name
-                    && itemInfo.path == toolChainParam.path) {
+            if ((itemInfo.name == toolChainParam.name
+                       && itemInfo.path == toolChainParam.path)
+                       || globalToolPath == toolChainParam.path) {
                 comboBox->setCurrentIndex(i);
                 break;
             }
