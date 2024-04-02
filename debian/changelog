@@ -1,3 +1,11 @@
+deepin-unioncode (1.2.16) unstable; urgency=medium
+
+  * Optimize editor
+  * Optimize debugger
+  * Bug fix
+
+ -- luzhen <luzhen@uniontech.com>  Tue, 02 Apr 2024 16:47:51 +0800
+
 deepin-unioncode (1.2.15) unstable; urgency=medium
 
   * bug fix
