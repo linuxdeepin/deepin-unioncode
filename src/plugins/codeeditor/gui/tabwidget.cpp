@@ -7,6 +7,11 @@
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
 
+#include <DFrame>
+#include <DPaletteHelper>
+#include <DGuiApplicationHelper>
+
+#include <QAction>
 #include <QFileInfo>
 #include <QDropEvent>
 #include <QMimeData>
@@ -14,6 +19,69 @@
 #include <QScrollBar>
 
 static constexpr int MAX_PRE_NEXT_TIMES = 30;
+
+class KeyLabel : public DFrame
+{
+public:
+    KeyLabel(const QString &key, QWidget *parent = nullptr)
+        : DFrame(parent)
+    {
+        label = new DLabel(key, this);
+        QVBoxLayout *layout = new QVBoxLayout(this);
+        layout->setContentsMargins(layout->contentsMargins().left(), 0, layout->contentsMargins().right(), 0);
+        layout->setSpacing(0);
+        label->setForegroundRole(QPalette::ButtonText);
+        layout->addWidget(label);
+    }
+
+    void paintEvent(QPaintEvent *event)
+    {
+        Q_UNUSED(event)
+        QStyleOptionFrame opt;
+        initStyleOption(&opt);
+        QPainter p(this);
+        drawShadow(&p, event->rect() - contentsMargins(), QColor(0, 0, 0, 20));
+
+        opt.features |= QStyleOptionFrame::Rounded;
+
+        const DPalette &dp = DPaletteHelper::instance()->palette(this);
+
+        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType) {
+            p.setBackground(QColor(255, 255, 255));
+        } else {
+            QColor bgColor(109, 109, 109);
+            if ((opt.state & QStyle::State_Active) == 0) {
+                auto inactive_mask_color = dp.color(QPalette::Window);
+                inactive_mask_color.setAlphaF(0.6);
+                bgColor = DGuiApplicationHelper::blendColor(bgColor, inactive_mask_color);
+            }
+            p.setBackground(bgColor);
+        }
+
+        p.setPen(QPen(dp.frameBorder(), opt.lineWidth));
+        style()->drawControl(QStyle::CE_ShapedFrame, &opt, &p, this);
+    }
+
+    void drawShadow(QPainter *p, const QRect &rect, const QColor &color) const
+    {
+        DStyle dstyle;
+        int frame_radius = dstyle.pixelMetric(DStyle::PM_FrameRadius);
+        int shadow_xoffset = dstyle.pixelMetric(DStyle::PM_ShadowHOffset);
+        int shadow_yoffset = dstyle.pixelMetric(DStyle::PM_ShadowVOffset);
+
+        QRect shadow = rect;
+        QPoint pointOffset(rect.center().x() + shadow_xoffset, rect.center().y() + shadow_yoffset);
+        shadow.moveCenter(pointOffset);
+
+        p->setBrush(color);
+        p->setPen(Qt::NoPen);
+        p->setRenderHint(QPainter::Antialiasing);
+        p->drawRoundedRect(shadow, frame_radius, frame_radius);
+    }
+
+private:
+    DLabel *label { nullptr };
+};
 
 TabWidgetPrivate::TabWidgetPrivate(TabWidget *qq)
     : QObject(qq),
@@ -31,10 +99,7 @@ void TabWidgetPrivate::initUI()
     mainLayout->setMargin(0);
     mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
-    // TODO: space page
-    QLabel *spaceWidget = new QLabel(tr("This is a blank page"), q);
-    spaceWidget->setAlignment(Qt::AlignCenter);
-    spaceWidget->setBackgroundRole(QPalette::Dark);
+    auto spaceWidget = createSpaceWidget();
 
     editorLayout = new QStackedLayout();
     editorLayout->setSpacing(0);
@@ -64,6 +129,43 @@ void TabWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqResetLineBackground, this, &TabWidgetPrivate::handleResetLineBackground);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqClearLineBackground, this, &TabWidgetPrivate::handleClearLineBackground);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqDoRename, this, &TabWidgetPrivate::handleDoRename);
+}
+
+QWidget *TabWidgetPrivate::createSpaceWidget()
+{
+    QWidget *widget = new QWidget(q);
+    QVBoxLayout *vLayout = new QVBoxLayout(widget);
+    vLayout->setSpacing(5);
+
+    QLabel *titleLabel = new QLabel(tr("File Operation"), q);
+    titleLabel->setAlignment(Qt::AlignCenter);
+    auto font = titleLabel->font();
+    font.setPointSize(font.pointSize() * 1.5);
+    titleLabel->setFont(font);
+
+    QGridLayout *gridLayout = new QGridLayout;
+    gridLayout->setSpacing(10);
+    auto addCommandLine = [this, gridLayout](const QString &id) {
+        auto cmd = ActionManager::getInstance()->command(id);
+        if (!cmd || !cmd->action())
+            return;
+
+        int row = gridLayout->rowCount();
+        gridLayout->addWidget(new QLabel(cmd->action()->text(), q), row, 0, Qt::AlignRight);
+        gridLayout->addWidget(new KeyLabel(cmd->keySequence().toString(), q), row, 1, Qt::AlignLeft);
+    };
+
+    addCommandLine("File.Open.File");
+    addCommandLine("Editor.findReplace");
+    addCommandLine("Editor.close");
+    addCommandLine("locator.EnterCommand");
+
+    vLayout->addStretch(1);
+    vLayout->addWidget(titleLabel, 0, Qt::AlignHCenter);
+    vLayout->addLayout(gridLayout);
+    vLayout->addStretch(1);
+
+    return widget;
 }
 
 TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)

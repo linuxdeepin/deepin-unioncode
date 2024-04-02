@@ -28,6 +28,7 @@ public:
 
     void initUI();
     void initConnection();
+    QWidget *createSpaceWidget();
 
     TextEditor *createEditor(const QString &fileName = "");
     TextEditor *findEditor(const QString &fileName);
