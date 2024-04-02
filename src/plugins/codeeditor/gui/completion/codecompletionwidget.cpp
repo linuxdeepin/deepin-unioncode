@@ -12,6 +12,7 @@
 
 #include <QVBoxLayout>
 #include <QScrollBar>
+#include <QApplication>
 
 CodeCompletionWidget::CodeCompletionWidget(TextEditor *parent)
     : QFrame(parent, Qt::ToolTip)
