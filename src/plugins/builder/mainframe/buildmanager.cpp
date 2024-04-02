@@ -13,6 +13,7 @@
 #include "compileoutputpane.h"
 
 #include "services/builder/builderservice.h"
+#include "services/editor/editorservice.h"
 #include "base/abstractoutputparser.h"
 #include "services/window/windowservice.h"
 #include "services/builder/buildergenerator.h"
@@ -205,6 +206,9 @@ void BuildManager::cancelBuild()
 
 void BuildManager::execBuildStep(QList<BuildMenuType> menuTypelist)
 {
+    // save all modified files before build.
+    dpfGetService(EditorService)->saveAll();
+
     if(!canStartBuild()) {
         QMetaObject::invokeMethod(this, "message",
                                   Q_ARG(QString, "The builder is running, please try again later!"));
