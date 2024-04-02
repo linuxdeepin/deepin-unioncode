@@ -92,7 +92,7 @@ QString WordCountAnalyse::getPythonVersion()
         QStringList filter {"Python*.*"};
         QStringList pythonList = dir.entryList(filter);
 
-        QRegExp reg("((\\d)|(\\d.\\d))($|\\s)");
+        QRegExp reg("((\\d)|(\\d+.\\d+))($|\\s)");
         reg.setMinimal(true);
         int position = 0;
         QList<QString> versions;
