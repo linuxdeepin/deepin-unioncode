@@ -7,7 +7,9 @@
 #include "codecompletionview.h"
 
 #include <DGuiApplicationHelper>
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
 #include <DPaletteHelper>
+#endif
 
 #include <QApplication>
 #include <QTextLayout>
