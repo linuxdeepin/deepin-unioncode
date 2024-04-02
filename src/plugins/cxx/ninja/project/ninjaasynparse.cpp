@@ -92,14 +92,16 @@ void NinjaAsynParse::createRows(const QString &path)
             QString childPath = dirItera.next().remove(0, rootPath.size());
             QFileSystemWatcher::addPath(dirItera.filePath());
             QStandardItem *item = findItem(childPath);
-            QIcon icon = CustomIcons::icon(dirItera.fileInfo());
-            auto newItem = new QStandardItem(icon, dirItera.fileName());
-            newItem->setToolTip(dirItera.filePath());
-            if (!item) {
-                d->rows.append(newItem);
-            } else {
-                item->appendRow(newItem);
-            }
+            QMetaObject::invokeMethod(this, [&](){
+                QIcon icon = CustomIcons::icon(dirItera.fileInfo());
+                auto newItem = new QStandardItem(icon, dirItera.fileName());
+                newItem->setToolTip(dirItera.filePath());
+                if (!item) {
+                    d->rows.append(newItem);
+                } else {
+                    item->appendRow(newItem);
+                }
+            });
         }
     }
     {// 避免变量冲突 迭代文件
@@ -111,14 +113,17 @@ void NinjaAsynParse::createRows(const QString &path)
         while (fileItera.hasNext()) {
             QString childPath = fileItera.next().remove(0, rootPath.size());
             QStandardItem *item = findItem(childPath);
-            QIcon icon = CustomIcons::icon(fileItera.fileInfo());
-            auto newItem = new QStandardItem(icon, fileItera.fileName());
-            newItem->setToolTip(fileItera.filePath());
-            if (!item) {
-                d->rows.append(newItem);
-            } else {
-                item->appendRow(newItem);
-            }
+            // run in main thread.
+            QMetaObject::invokeMethod(this, [&](){
+                QIcon icon = CustomIcons::icon(fileItera.fileInfo());
+                auto newItem = new QStandardItem(icon, fileItera.fileName());
+                newItem->setToolTip(fileItera.filePath());
+                if (!item) {
+                    d->rows.append(newItem);
+                } else {
+                    item->appendRow(newItem);
+                }
+            });
         }
     }
 }

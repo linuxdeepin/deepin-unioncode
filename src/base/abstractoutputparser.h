@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef IOUTPUTPARSER_H
-#define IOUTPUTPARSER_H
+#ifndef ABSTRACTOUTPUTPARSER_H
+#define ABSTRACTOUTPUTPARSER_H
 
 #include "common/type/task.h"
 #include "common/widget/outputpane.h"
@@ -49,4 +49,4 @@ private:
     AbstractOutputParser *outParser = nullptr;
 };
 
-#endif // IOUTPUTPARSER_H
+#endif // ABSTRACTOUTPUTPARSER_H
