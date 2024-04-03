@@ -39,5 +39,4 @@ void PluginStoreWidget::initializeUi()
     setLayout(vLayout);
     vLayout->addWidget(inputEdit);
     vLayout->addWidget(pluginListView);
-    vLayout->setContentsMargins(0, 5, 0, 5);
 }

@@ -12,7 +12,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-inline constexpr int kRectRadius = { 0 }; // do not show rounded corners.
+inline constexpr int kRectRadius = { 5 }; // do not show rounded corners.
 inline constexpr int kIconWidth = { 30 };
 inline constexpr int kIconHeight = { 30 };
 inline constexpr int kIconLeftMargin = { 10 };

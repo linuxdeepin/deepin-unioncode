@@ -135,7 +135,7 @@ void DetailsView::showCfgWidget()
 void DetailsView::setupUi()
 {
     auto mainLayout = new QVBoxLayout(this);
-    mainLayout->setSpacing(0);
+    mainLayout->setSpacing(2);
     mainLayout->setMargin(0);
     DFrame *detailFrame = new DFrame(this);
     auto detailLayout = new QHBoxLayout(detailFrame);
