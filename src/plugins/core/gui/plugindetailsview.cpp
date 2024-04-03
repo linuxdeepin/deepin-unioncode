@@ -11,6 +11,8 @@
 #include <DTextEdit>
 #include <DListWidget>
 #include <DPushButton>
+#include <DSuggestButton>
+#include <DFrame>
 
 #include <QGridLayout>
 #include <QDesktopServices>
@@ -42,29 +44,27 @@ void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
     if (metaInfo.isNull())
         return;
 
-    MetaInfo updateMetaInfo;
+    QString dependencies;
     for (auto depend : metaInfo->depends()) {
-        updateMetaInfo.dependency += depend.toString();
+        dependencies += depend.toString();
         if (depend.name() != metaInfo->depends().back().name()) {
-            updateMetaInfo.dependency += "、";
+            dependencies += "、";
         }
     }
+    QString licenses;
     for (QString &text : metaInfo->license()) {
-        updateMetaInfo.license += text.simplified();
+        licenses += text.simplified();
         if (text != metaInfo->license().back()) {
-            updateMetaInfo.license += "、";
+            licenses += "、";
         }
     }
-    updateMetaInfo.name = metaInfo->name();
-    updateMetaInfo.version = metaInfo->version();
-    updateMetaInfo.compatibleVersion = metaInfo->compatVersion();
-    updateMetaInfo.vendor = metaInfo->vendor();
-    updateMetaInfo.copyright = metaInfo->copyright();
-    updateMetaInfo.category = metaInfo->category();
-    updateMetaInfo.url = metaInfo->urlLink();
-    updateMetaInfo.description = metaInfo->description();
 
-    metaInfoLabel->setText(updateMetaInfo.toHtml());
+    name->setText(metaInfo->name());
+    version->setText(metaInfo->version());
+    category->setText(metaInfo->category());
+    vendor->setText(metaInfo->vendor());
+    description->setText(tr("Description") + ": " + metaInfo->description());
+    dependency->setText(tr("Dependency") + ": " + dependencies);
 
     bool pluginIsEnabled = pluginMetaInfo->isEnabledBySettings();
     updateLoadBtnDisplay(pluginIsEnabled);
@@ -78,9 +78,9 @@ void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
         pluginLogo = QIcon::fromTheme("default_plugin");
     }
 
-    logoLabel->setPixmap(pluginLogo.pixmap(QSize(128, 128)));
+    logoLabel->setPixmap(pluginLogo.pixmap(QSize(96, 96)));
 
-    webView->load(QUrl(updateMetaInfo.url));
+    webView->load(QUrl(metaInfo->urlLink()));
 }
 
 void DetailsView::changeLoadBtnState()
@@ -106,23 +106,22 @@ void DetailsView::setupUi()
     auto mainLayout = new QVBoxLayout(this);
     mainLayout->setSpacing(0);
     mainLayout->setMargin(0);
-    auto detailLayout = new QHBoxLayout(this);
+    DFrame *detailFrame = new DFrame(this);
+    auto detailLayout = new QHBoxLayout(detailFrame);
 
-    auto midLayout = new QVBoxLayout(this);
+    auto midLayout = new QVBoxLayout();
     midLayout->setSpacing(0);
     midLayout->setMargin(0);
-    metaInfoLabel = new DLabel(this);
-    metaInfoLabel->setText(MetaInfo().toHtml());
-    metaInfoLabel->setOpenExternalLinks(true);
-    metaInfoLabel->setWordWrap(true);
-    midLayout->addWidget(metaInfoLabel);
+    initMetaInfoLayout();
 
-    auto operationLayout = new QHBoxLayout(this);
+    auto operationLayout = new QHBoxLayout();
     operationLayout->setSpacing(0);
     operationLayout->setMargin(0);
-    loadBtn = new DPushButton(this);
+    loadBtn = new DSuggestButton(this);
+    loadBtn->setFixedSize(86, 36);
     loadBtn->setToolTip(tr("reLaunch when changed!"));
-    connect(loadBtn, &DPushButton::clicked, this, &DetailsView::changeLoadBtnState);
+    loadBtn->setChecked(true);
+    connect(loadBtn, &DSuggestButton::clicked, this, &DetailsView::changeLoadBtnState);
     operationLayout->addWidget(loadBtn, 0, Qt::AlignLeft);
 
     auto *cfgBtn = new DPushButton(this);
@@ -133,19 +132,52 @@ void DetailsView::setupUi()
 
     logoLabel = new QLabel(this);
     auto logo = QIcon::fromTheme("default_plugin");
-    logoLabel->setPixmap(logo.pixmap(QSize(128, 128)));
+    logoLabel->setPixmap(logo.pixmap(QSize(96, 96)));
 
-    auto webViewLayout = new QHBoxLayout(this);
-    webView = new QWebEngineView();
+    auto webViewLayout = new QHBoxLayout();
+    webView = new QWebEngineView(this);
     webView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     webViewLayout->addWidget(webView);
 
+    midLayout->addLayout(metaInfoLayout);
+    midLayout->addSpacing(10);
     midLayout->addLayout(operationLayout);
     detailLayout->addWidget(logoLabel);
+    detailLayout->addSpacing(30);
     detailLayout->addLayout(midLayout, 1);
-    detailLayout->setContentsMargins(64, 10, 0, 10);
-    mainLayout->addLayout(detailLayout);
+    detailLayout->setContentsMargins(80, 40, 80, 40);
+    mainLayout->addWidget(detailFrame);
     mainLayout->addLayout(webViewLayout);
+}
+
+void DetailsView::initMetaInfoLayout()
+{
+    metaInfoLayout = new QVBoxLayout();
+    name = new DLabel(this);
+    QFont font = name->font();
+    font.setBold(true);
+    font.setPointSize(20);
+    name->setFont(font);
+
+    version = new DLabel(this);
+    category = new DLabel(this);
+    category->setForegroundRole(DPalette::LightLively);
+    description = new DLabel(this);
+    vendor = new DLabel(this);
+    dependency = new DLabel(this);
+
+    QHBoxLayout *hbox = new QHBoxLayout;
+    hbox->setAlignment(Qt::AlignLeft);
+    hbox->setSpacing(10);
+    hbox->addWidget(name);
+    hbox->addWidget(version);
+    hbox->addWidget(category);
+
+    metaInfoLayout->addLayout(hbox);
+    metaInfoLayout->addWidget(vendor);
+    metaInfoLayout->addSpacing(10);
+    metaInfoLayout->addWidget(description);
+    metaInfoLayout->addWidget(dependency);
 }
 
 void DetailsView::updateLoadBtnDisplay(bool isEnabled)
