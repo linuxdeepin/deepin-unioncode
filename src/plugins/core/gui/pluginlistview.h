@@ -6,10 +6,10 @@
 
 #include "framework/lifecycle/pluginmetaobject.h"
 
-#include <QListView>
+#include <DListView>
 
 class QStandardItemModel;
-class PluginListView : public QListView
+class PluginListView : public DTK_WIDGET_NAMESPACE::DListView
 {
     Q_OBJECT
 public:
