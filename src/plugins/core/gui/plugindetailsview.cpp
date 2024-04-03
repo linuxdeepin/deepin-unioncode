@@ -22,6 +22,37 @@
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
+class AutoZoomWebEngineView : public QWebEngineView {
+public:
+    explicit AutoZoomWebEngineView(QWidget *parent = nullptr)
+        : QWebEngineView(parent) {}
+
+protected:
+    void resizeEvent(QResizeEvent *event) override {
+        QWebEngineView::resizeEvent(event);
+
+        // first resize is full screen
+        if (isFirstResize) {
+            isFirstResize = false;
+            return;
+        }
+
+        QSize newSize = event->size();
+        qreal zoomFactor = calculateZoomFactor(newSize);
+        setZoomFactor(zoomFactor);
+    }
+
+    qreal calculateZoomFactor(const QSize &size) {
+        if (size.width() > maxWidth)
+            maxWidth = size.width();
+        qreal zoomFactor = static_cast<qreal>(size.width()) / maxWidth;
+        return zoomFactor;
+    }
+private:
+    int maxWidth = 0;
+    bool isFirstResize = true;
+};
+
 DetailsView::DetailsView(QWidget *parent)
     : DWidget(parent)
 {
@@ -135,7 +166,7 @@ void DetailsView::setupUi()
     logoLabel->setPixmap(logo.pixmap(QSize(96, 96)));
 
     auto webViewLayout = new QHBoxLayout();
-    webView = new QWebEngineView(this);
+    webView = new AutoZoomWebEngineView(this);
     webView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     webViewLayout->addWidget(webView);
 
