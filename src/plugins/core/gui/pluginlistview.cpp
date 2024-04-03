@@ -16,7 +16,7 @@ DPF_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
 
 PluginListView::PluginListView(QWidget *parent)
-    : QListView(parent)
+    : DListView(parent)
     , model(new QStandardItemModel(this))
 {
     setEditTriggers(QAbstractItemView::NoEditTriggers);
