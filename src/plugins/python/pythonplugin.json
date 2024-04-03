@@ -9,7 +9,7 @@
     ],
     "Category" : "Languages",
     "Description" : "The python plugin for the unioncode.",
-    "UrlLink" : "https://www.uniontech.com",
+    "UrlLink" : "https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e",
     "Depends" : [
         {"Name" : "codeeditor"}
     ]
