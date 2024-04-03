@@ -6,6 +6,8 @@
 
 #include "dtkwidget_global.h"
 
+#include <DFrame>
+
 #include <QWidget>
 
 class PluginListView;
@@ -13,7 +15,7 @@ DWIDGET_BEGIN_NAMESPACE
 class DSearchEdit;
 DWIDGET_END_NAMESPACE
 
-class PluginStoreWidget : public QWidget
+class PluginStoreWidget : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 public:
