@@ -79,7 +79,7 @@ bool PathMode::isInstalled(CustomPaths::Flags flags, const QString &path)
 {
     switch (flags) {
     case CustomPaths::Applition:
-        return RUNTIME_INSTALL_RPEFIX == path;
+        return RUNTIME_INSTALL_RPEFIX == path || path.startsWith(LIBRARY_INSTALL_PREFIX); //debugAdapter installed in '/usr/lib/xxx/deepin-unioncode/tools' not '/usr/bin'
     default:
         return false;
     }
