@@ -53,7 +53,8 @@ Recommends: cmake,
             gcc,
             git,
             npm,
-            clangd-13
+            clangd-13|clangd,
+            python3-pip
 Description: IDE 'Deepin Union Code'
  Lightweight cross-platform integrated development environment
 
