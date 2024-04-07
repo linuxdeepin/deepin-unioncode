@@ -51,4 +51,5 @@ void StackFrameView::initHeaderView()
     headerView->setDefaultSectionSize(68);
     headerView->setDefaultAlignment(Qt::AlignLeft);
     headerView->setSectionResizeMode(QHeaderView::ResizeMode::Interactive);
+    headerView->setStretchLastSection(true);
 }
