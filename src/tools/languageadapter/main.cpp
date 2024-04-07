@@ -33,14 +33,7 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     if (ProcessUtil::exists(clangd)) {
         procAs << clangd;
     } else {
-        QString clangdFileName = "clangd";
-        if (!env::pkg::native::installed()) {
-            RemoteChecker::instance().checkLanguageBackend(QString::fromStdString(key.language));
-            QString runtimePath = CustomPaths::lspRuntimePath(QString::fromStdString(key.language));
-            procAs << runtimePath + QDir::separator() + clangdFileName;
-        } else {
-            procAs << env::pkg::native::path(clangdFileName);
-        }
+        procAs << "clangd";
     }
 
     procAs << "--log=verbose";
