@@ -207,6 +207,26 @@ dap::array<IBreakpoint> DebugModel::removeBreakpoint(const QString &filePath, in
         retBreakpoints.push_back(ibp);
     }
     return retBreakpoints;
+}
+
+dap::array<IBreakpoint> DebugModel::switchBreakpointStatus(const QString &filePath, int lineNumber, bool status)
+{
+    for (auto bp = breakPoints.begin(); bp != breakPoints.end(); ) {
+        if (bp->lineNumber() == lineNumber
+                && bp->uri().toString() == filePath) {
+            bp->enabled = status;
+            break;
+        } else {
+            ++bp;
+        }
+    }
+
+    dap::array<IBreakpoint> retBreakpoints;
+    for (auto bp : breakPoints) {
+        auto ibp = convertToIBreakpoint(bp);
+        retBreakpoints.push_back(ibp);
+    }
+    return retBreakpoints;
     // fire event.
 }
 

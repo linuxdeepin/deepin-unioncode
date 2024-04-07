@@ -30,6 +30,8 @@ OPI_OBJECT(debugger,
            OPI_INTERFACE(prepareDebugProgress, "message")
            OPI_INTERFACE(prepareDebugDone, "succeed", "message")
            OPI_INTERFACE(executeStart)
+           OPI_INTERFACE(enableBreakpoints, "breakpoints")
+           OPI_INTERFACE(disableBreakpoints, "breakpoints")
            )
 
 OPI_OBJECT(editor,
