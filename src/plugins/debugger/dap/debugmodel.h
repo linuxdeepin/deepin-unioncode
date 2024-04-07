@@ -38,6 +38,7 @@ public:
     void setBreakpointsActivated(bool activated);
     ReadonlyArray<IBreakpoint> addBreakpoints(QUrl &uri, dap::array<IBreakpointData> &rawData, bool fireEvent = true);
     dap::array<IBreakpoint> removeBreakpoint(const QString &filePath, int lineNumber);
+    dap::array<IBreakpoint> switchBreakpointStatus(const QString &filePath, int lineNumber, bool status);
     void updateBreakpoints(std::map<dap::string, IBreakpointUpdateData> &data);
     void setBreakpointSessionData(dap::string &sessionId, const dap::Capabilities &capabilites, dap::optional<std::map<dap::string, dap::Breakpoint>> data);
     dap::optional<dap::Breakpoint> getDebugProtocolBreakpoint(dap::string &breakpointId, dap::string &sessionId);

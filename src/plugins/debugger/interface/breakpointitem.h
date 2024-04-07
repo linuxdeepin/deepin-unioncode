@@ -12,6 +12,7 @@
 
 enum StackColumns {
     kIndexColumn,
+    kIsEnabled,
     kFunctionNameColumn,
     kFileNameColumn,
     kLineNumberColumn,
