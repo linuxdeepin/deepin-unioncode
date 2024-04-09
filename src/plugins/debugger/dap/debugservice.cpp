@@ -55,20 +55,13 @@ dap::array<IBreakpoint> DebugService::removeBreakpoints(
     return breakpoints;
 }
 
-void DebugService::switchBreakpointStatus(const QList<QPair<QString, int>> &breakpoints, bool status,
+void DebugService::switchBreakpointStatus(const QString &filePath, int lineNumber, bool status,
                                                            dap::optional<DebugSession *> session)
 {
-    QStringList urlList;
-    for (auto bp : breakpoints) {
-        if (!urlList.contains(bp.first))
-            urlList.append(bp.first);
-        model->switchBreakpointStatus(bp.first, bp.second, status);
-    }
+    model->switchBreakpointStatus(filePath, lineNumber, status);
 
-    if (session) {
-        for (auto url : urlList)
-            sendBreakpoints(QUrl(url), session.value());
-    }
+    if (session)
+        sendBreakpoints(QUrl(filePath), session.value());
 }
 
 DebugModel *DebugService::getModel() const

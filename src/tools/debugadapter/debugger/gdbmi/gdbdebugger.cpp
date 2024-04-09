@@ -14,6 +14,7 @@ class GDBDebuggerPrivate {
     friend class GDBDebugger;
 
     QMap<int, gdbmi::Breakpoint> breakpoints;
+    QList<QString> breakpointsBuffer; //use to record breakpoints that send to gdb but not receive yet
     QList<gdbmi::Frame> stackFrames;
     QList<gdbmi::Thread> threadList;
 
@@ -194,10 +195,14 @@ void GDBDebugger::updateBreakpoints(const QString &file, const QList<int> &lines
             QString originalLine = bp.originalLocation.split(":").last();
             bool ok = false;
             int line = originalLine.toInt(&ok);
-            if (ok && !lines.contains(line))
+            QString filePath = bp.fullname + ':' + QString::number(line);
+            if (ok && !lines.contains(line)) {
+                if (d->breakpointsBuffer.contains(filePath))
+                    d->breakpointsBuffer.removeOne(filePath);
                 DebugManager::instance()->breakRemove(bp.number);
-            else
+            } else {
                 curLines.append(line);
+            }
         }
     }
 
@@ -207,7 +212,10 @@ void GDBDebugger::updateBreakpoints(const QString &file, const QList<int> &lines
             auto filePath = file;
             filePath.append(":");
             filePath.append(QString::number(line));
-            DebugManager::instance()->breakInsert(filePath);
+            if (!d->breakpointsBuffer.contains(filePath)) {
+                d->breakpointsBuffer.append(filePath);    //filePath added to buffer immediately
+                DebugManager::instance()->breakInsert(filePath); //breakpoints added to d->breakpoints when gdb send
+            }
         }
     }
 }

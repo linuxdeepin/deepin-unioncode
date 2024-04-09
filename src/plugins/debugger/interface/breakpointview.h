@@ -9,7 +9,6 @@
 
 #include <QHeaderView>
 
-
 class BreakpointView : public DTK_WIDGET_NAMESPACE::DTreeView
 {
 public:
@@ -20,6 +19,10 @@ private:
     QModelIndex eventIndex(QMouseEvent *ev);
     void contextMenuEvent(QContextMenuEvent *event) override;
     void initHeaderView();
+
+    void enableBreakpoints(const QModelIndexList &rows);
+    void disableBreakpoints(const QModelIndexList &rows);
+    void removeBreakpoints(const QModelIndexList &rows);
 
     QHeaderView *headerView {nullptr};
 };

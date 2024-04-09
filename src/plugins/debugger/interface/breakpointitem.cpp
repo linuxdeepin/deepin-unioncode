@@ -38,8 +38,6 @@ QVariant BreakpointItem::data(int row, int column, int role) const
         switch (column) {
             case kIndexColumn:
                 return QString::number(row + 1);
-            case kIsEnabled:
-                return bp.enabled;
             case kFunctionNameColumn:
                 return empty;
             case kFileNameColumn:
@@ -49,6 +47,10 @@ QVariant BreakpointItem::data(int row, int column, int role) const
             case kAddressColumn:
                 return bp.address;
         }
+    }
+
+    if (role == Qt::DecorationRole && column == kIsEnabled) {
+        return bp.enabled ? QIcon::fromTheme("breakpoint") : QIcon::fromTheme("disabled_breakpoint");
     }
 
     if (role == Qt::ToolTipRole)
