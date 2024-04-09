@@ -27,7 +27,6 @@
 #include <QUrl>
 #include <QClipboard>
 
-const QString DELETE_MESSAGE_TEXT {DTreeView::tr("Delete operation not be recoverable, delete anyway?")};
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
@@ -498,7 +497,7 @@ void ProjectTree::actionDeleteDocument(QStandardItem *item)
         doDelete = true;
     };
 
-    QString message = DELETE_MESSAGE_TEXT;
+    QString message = tr("Delete operation not be recoverable, delete anyway?");
     CommonDialog::okCancel(message,
                             info.fileName(),
                             QMessageBox::Warning,
