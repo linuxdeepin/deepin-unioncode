@@ -314,41 +314,20 @@ void DAPDebugger::removeBreakpoint(const QString &filePath, int lineNumber)
     }
 }
 
-void DAPDebugger::enableBreakpoints(const QList<QPair<QString, int>> &breakpoints)
+void DAPDebugger::switchBreakpointsStatus(const QString &filePath, int lineNumber, bool enabled)
 {
-    for (auto breakpoint : breakpoints) {
-        Internal::Breakpoint bp;
-        bp.filePath = breakpoint.first;
-        bp.fileName = QFileInfo(breakpoint.first).fileName();
-        bp.lineNumber = breakpoint.second;
-        bp.enabled = true;
-        d->breakpointModel.switchBreakpointStatus(bp);
-    }
+    Internal::Breakpoint bp;
+    bp.filePath = filePath;
+    bp.fileName = QFileInfo(filePath).fileName();
+    bp.lineNumber = lineNumber;
+    bp.enabled = enabled;
+    d->breakpointModel.switchBreakpointStatus(bp);
 
     // send to backend.
     if (d->runState == kStopped || d->runState == kRunning) {
-        debugService->switchBreakpointStatus(breakpoints, true, d->session.get());
+        debugService->switchBreakpointStatus(filePath, lineNumber, enabled, d->session.get());
     } else {
-        debugService->switchBreakpointStatus(breakpoints, true, undefined);
-    }
-}
-
-void DAPDebugger::disableBreakpoints(const QList<QPair<QString, int>> &breakpoints)
-{
-    for (auto breakpoint : breakpoints) {
-        Internal::Breakpoint bp;
-        bp.filePath = breakpoint.first;
-        bp.fileName = QFileInfo(breakpoint.first).fileName();
-        bp.lineNumber = breakpoint.second;
-        bp.enabled = false;
-        d->breakpointModel.switchBreakpointStatus(bp);
-    }
-
-    // send to backend.
-    if (d->runState == kStopped || d->runState == kRunning) {
-        debugService->switchBreakpointStatus(breakpoints, false, d->session.get());
-    } else {
-        debugService->switchBreakpointStatus(breakpoints, false, undefined);
+        debugService->switchBreakpointStatus(filePath, lineNumber, enabled, undefined);
     }
 }
 
@@ -636,10 +615,11 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
     } else if (event.data() == editor.fileOpened.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         d->currentOpenedFileName = filePath;
-        if (d->bps.count(filePath)) {
-            QList<int> lines = d->bps.values(filePath);
-            for (int line: lines) {
-                editor.addBreakpoint(filePath, line, true);
+        if (d->breakpointModel.breakpointSize() > 0) {
+            for (auto index = 0; index < d->breakpointModel.breakpointSize(); index++) {
+                auto bp = d->breakpointModel.BreakpointAt(index);
+                if (bp.filePath == filePath)
+                    editor.addBreakpoint(filePath, bp.lineNumber, bp.enabled);
             }
         }
     } else if (event.data() == editor.fileClosed.name) {
@@ -657,12 +637,11 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         int line = event.property(editor.breakpointRemoved.pKeys[1]).toInt();
         d->bps.remove(filePath, line);
         removeBreakpoint(filePath, line);
-    } else if (event.data() == debugger.enableBreakpoints.name) {
-        QList<QPair<QString, int>> breakpoints = event.property("breakpoints").value<QList<QPair<QString, int>>>();
-        enableBreakpoints(breakpoints);
-    } else if (event.data() == debugger.disableBreakpoints.name) {
-        QList<QPair<QString, int>> breakpoints = event.property("breakpoints").value<QList<QPair<QString, int>>>();
-        disableBreakpoints(breakpoints);
+    } else if (event.data() == editor.breakpointStatusChanged.name) {
+        QString filePath = event.property("fileName").toString();
+        int line = event.property("line").toInt();
+        bool enabled = event.property("enabled").toBool();
+        switchBreakpointsStatus(filePath, line, enabled);
     }
 }
 

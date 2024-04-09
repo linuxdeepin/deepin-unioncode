@@ -27,6 +27,12 @@ BreakpointView::BreakpointView(QWidget *parent)
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setFrameStyle(QFrame::NoFrame);
     setAlternatingRowColors(true);
+
+    connect(this, &QAbstractItemView::clicked,
+            this, [=](const QModelIndex &index) {
+                BreakpointModel *bpModel = static_cast<BreakpointModel *>(model());
+                bpModel->setCurrentIndex(index.row());
+            });
 }
 
 BreakpointView::~BreakpointView()
@@ -37,43 +43,80 @@ void BreakpointView::contextMenuEvent(QContextMenuEvent *event)
 {
     DTreeView::contextMenuEvent(event);
     BreakpointModel* bpModel = static_cast<BreakpointModel *>(model());
+    if (bpModel->breakpointSize() == 0)
+        return;
 
+    bool allSelectEnabled = true;
+    bool allSelectDisabled = true;
     //selectedRows
     auto rows = selectionModel()->selectedRows();
-    using bp = QPair<QString, int>;
-    QList<bp> selectedBps;
     for (auto row : rows) {
         auto bp = bpModel->BreakpointAt(row.row());
-        selectedBps.append(qMakePair(bp.filePath, bp.lineNumber));
+        if (bp.enabled)
+            allSelectDisabled = false;
+        else
+            allSelectEnabled = false;
+    }
+
+    //all rows
+    bool allEnabled = true;
+    bool allDisabled = true;
+    QModelIndexList allRows;
+    for(int index = 0; index < bpModel->breakpointSize(); index++) {
+        allRows.append(bpModel->index(index, 0));
+        auto bp = bpModel->BreakpointAt(index);
+        if (bp.enabled)
+            allDisabled = false;
+        else
+            allEnabled = false;
     }
 
     QMenu menu(this);
-    menu.addAction(tr("Enable selected breakpoints"), this, [=]() {
-        debugger.enableBreakpoints(selectedBps);
-    });
-    menu.addAction(tr("Disable selected breakpoints"), this, [=]() {
-        debugger.disableBreakpoints(selectedBps);
-    });
+    if (!allSelectEnabled)
+        menu.addAction(tr("Enable selected breakpoints"), this, [=](){enableBreakpoints(rows);});
+    if (!allSelectDisabled)
+        menu.addAction(tr("Disable selected breakpoints"), this, [=](){disableBreakpoints(rows);});
+    menu.addSeparator();
 
-    menu.addAction(tr("Remove selected breakpoint"), this, [=](){
-        for (auto breakpoint : selectedBps)
-            editor.removeBreakpoint(breakpoint.first, breakpoint.second);
-    });
+    if (!rows.isEmpty())
+        menu.addAction(tr("Remove selected breakpoints"), this, [=]() {removeBreakpoints(rows);});
 
-    //all rows
-    QList<bp> allBps;
-    for(int index = 0; index < bpModel->breakpointSize(); index++) {
-        auto bpItem = bpModel->BreakpointAt(index);
-        allBps.append(qMakePair(bpItem.filePath, bpItem.lineNumber));
-    }
-    menu.addAction(tr("Enable all breakpoints"), this, [=](){
-        debugger.enableBreakpoints(allBps);
-    });
-    menu.addAction(tr("Disable all breakpoints"), this, [=](){
-        debugger.disableBreakpoints(allBps);
-    });
+    menu.addAction(tr("Remove all breakpoints"), this, [=]() {removeBreakpoints(allRows);});
+    menu.addSeparator();
+
+    if (!allEnabled)
+        menu.addAction(tr("Enable all breakpoints"), this, [=](){enableBreakpoints(allRows);});
+    if (!allDisabled)
+        menu.addAction(tr("Disable all breakpoints"), this, [=](){disableBreakpoints(allRows);});
 
     menu.exec(event->globalPos());
+}
+
+void BreakpointView::enableBreakpoints(const QModelIndexList &rows)
+{
+    BreakpointModel* bpModel = static_cast<BreakpointModel *>(model());
+    for (auto row : rows) {
+        auto bp = bpModel->BreakpointAt(row.row());
+        editor.setBreakpointEnabled(bp.filePath, bp.lineNumber, true);
+    }
+}
+
+void BreakpointView::disableBreakpoints(const QModelIndexList &rows)
+{
+    BreakpointModel* bpModel = static_cast<BreakpointModel *>(model());
+    for (auto row : rows) {
+        auto bp = bpModel->BreakpointAt(row.row());
+        editor.setBreakpointEnabled(bp.filePath, bp.lineNumber, false);
+    }
+}
+
+void BreakpointView::removeBreakpoints(const QModelIndexList &rows)
+{
+    BreakpointModel* bpModel = static_cast<BreakpointModel *>(model());
+    for (auto row : rows) {
+        auto bp = bpModel->BreakpointAt(row.row());
+        editor.removeBreakpoint(bp.filePath, bp.lineNumber);
+    }
 }
 
 void BreakpointView::initHeaderView()
