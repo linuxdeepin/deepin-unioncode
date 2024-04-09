@@ -19,6 +19,7 @@ class DetailPropertyWidgetPrivate
 {
     friend class DetailPropertyWidget;
     DComboBox *pyVersionComboBox{nullptr};
+    DComboBox *executeFileComboBox{nullptr};
     QSharedPointer<ToolChainData> toolChainData;
 };
 
@@ -42,11 +43,19 @@ void DetailPropertyWidget::setupUI()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    DLabel *label = new DLabel(DLabel::tr("Python interpreter: "));
+    DLabel *label = new DLabel(DLabel::tr("Python interpreter: "), this);
     label->setFixedWidth(120);
-    d->pyVersionComboBox = new DComboBox();
+    d->pyVersionComboBox = new DComboBox(this);
     hLayout->addWidget(label);
     hLayout->addWidget(d->pyVersionComboBox);
+    vLayout->addLayout(hLayout);
+
+    hLayout = new QHBoxLayout;
+    label = new DLabel(DLabel::tr("Executable File: "), this);
+    label->setFixedWidth(120);
+    d->executeFileComboBox = new DComboBox(this);
+    hLayout->addWidget(label);
+    hLayout->addWidget(d->executeFileComboBox);
     vLayout->addLayout(hLayout);
 
     vLayout->addStretch(10);
@@ -104,7 +113,7 @@ QString getNewVersionPython()
 void DetailPropertyWidget::initData()
 {
     d->toolChainData.reset(new ToolChainData());
-    auto initComboBox = [](DComboBox *comboBox, const QStringList &data) {
+    auto initPyVersionComboBox = [](DComboBox *comboBox, const QStringList &data) {
         int index = 0;
         for (auto version : data) {
             ToolChainData::ToolChainParam param;
@@ -117,7 +126,10 @@ void DetailPropertyWidget::initData()
         }
         comboBox->setCurrentText(getNewVersionPython());
     };
-    initComboBox(d->pyVersionComboBox, getPythonAllVersion());
+    initPyVersionComboBox(d->pyVersionComboBox, getPythonAllVersion());
+
+    d->executeFileComboBox->insertItem(0, tr("Current File"));
+    d->executeFileComboBox->insertItem(1, tr("Automatically obtain the entry file"));
 }
 
 void DetailPropertyWidget::setValues(const config::ProjectConfigure *param)
@@ -125,20 +137,26 @@ void DetailPropertyWidget::setValues(const config::ProjectConfigure *param)
     if (!param)
         return;
 
-    auto initComboBox = [](DComboBox *comboBox, const config::ItemInfo &itemInfo) {
-        int count = comboBox->count();
-        auto globalToolPath = OptionManager::getInstance()->getPythonToolPath();
-        for (int i = 0; i < count; i++) {
-            ToolChainData::ToolChainParam toolChainParam = qvariant_cast<ToolChainData::ToolChainParam>(comboBox->itemData(i, Qt::UserRole + 1));
-            if ((itemInfo.name == toolChainParam.name
-                       && itemInfo.path == toolChainParam.path)
-                       || globalToolPath == toolChainParam.path) {
-                comboBox->setCurrentIndex(i);
-                break;
-            }
+    int count = d->pyVersionComboBox->count();
+    auto globalToolPath = OptionManager::getInstance()->getPythonToolPath();
+    for (int i = 0; i < count; i++) {
+        ToolChainData::ToolChainParam toolChainParam = qvariant_cast<ToolChainData::ToolChainParam>(d->pyVersionComboBox->itemData(i, Qt::UserRole + 1));
+        if ((param->pythonVersion.name == toolChainParam.name
+                   && param->pythonVersion.path == toolChainParam.path)
+                   || globalToolPath == toolChainParam.path) {
+            d->pyVersionComboBox->setCurrentIndex(i);
+            break;
         }
-    };
-    initComboBox(d->pyVersionComboBox, param->pythonVersion);
+    }
+
+    count = d->executeFileComboBox->count();
+    for (int i = 0; i < count; i++) {
+        if (param->executeFile == ExecuteFile::CURRENTFILE) {
+            d->executeFileComboBox->setCurrentIndex(0);
+        } else if(param->executeFile == ExecuteFile::ENTRYFILE) {
+            d->executeFileComboBox->setCurrentIndex(1);
+        }
+    }
 }
 
 void DetailPropertyWidget::getValues(config::ProjectConfigure *param)
@@ -146,17 +164,20 @@ void DetailPropertyWidget::getValues(config::ProjectConfigure *param)
     if (!param)
         return;
 
-    auto getValue = [](DComboBox *comboBox, ItemInfo &itemInfo){
-        itemInfo.clear();
-        int index = comboBox->currentIndex();
-        if (index > -1) {
-            ToolChainData::ToolChainParam value = qvariant_cast<ToolChainData::ToolChainParam>(comboBox->itemData(index, Qt::UserRole + 1));
-            itemInfo.name = value.name;
-            itemInfo.path = value.path;
-        }
-    };
+    param->pythonVersion.clear();
+    int index = d->pyVersionComboBox->currentIndex();
+    if (index > -1) {
+        ToolChainData::ToolChainParam value = qvariant_cast<ToolChainData::ToolChainParam>(d->pyVersionComboBox->itemData(index, Qt::UserRole + 1));
+        param->pythonVersion.name = value.name;
+        param->pythonVersion.path = value.path;
+    }
 
-    getValue(d->pyVersionComboBox, param->pythonVersion);
+    index = d->executeFileComboBox->currentIndex();
+    if (index == 0) {    //current file
+        param->executeFile = ExecuteFile::CURRENTFILE;
+    } else if (index == 1) { //Entry file
+        param->executeFile = ExecuteFile::ENTRYFILE;
+    }
 }
 
 class ConfigPropertyWidgetPrivate
