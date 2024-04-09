@@ -481,7 +481,6 @@ void DebugSession::sendBreakpoints(const QString &sourcePath, dap::array<IBreakp
 {
     if (!raw || !raw->readyForBreakpoints())
         return;
-
     SetBreakpointsRequest request;
     request.source.path = sourcePath.toStdString();
     dap::array<SourceBreakpoint> breakpoints;
