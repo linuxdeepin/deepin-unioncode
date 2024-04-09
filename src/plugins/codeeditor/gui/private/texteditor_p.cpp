@@ -88,17 +88,8 @@ void TextEditorPrivate::initMargins()
                                    | 1 << Bookmark | 1 << Runtime
                                    | 1 << RuntimeLineBackground | 1 << CustomLineBackground);
 
-    // TODO: using picture to replace?
-    q->markerDefine(TextEditor::Circle, Breakpoint);
-    q->setMarkerForegroundColor(EditorColor::Table::get()->FireBrick, Breakpoint);
-    q->setMarkerBackgroundColor(EditorColor::Table::get()->FireBrick, Breakpoint);
-
     q->markerDefine(TextEditor::RightTriangle, Bookmark);
     q->setMarkerBackgroundColor(QColor(Qt::red), Bookmark);
-
-    q->markerDefine(TextEditor::RightArrow, Runtime);
-    q->setMarkerForegroundColor(EditorColor::Table::get()->YellowGreen, Runtime);
-    q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, Runtime);
 
     q->markerDefine(TextEditor::Background, RuntimeLineBackground);
     q->markerDefine(TextEditor::Background, CustomLineBackground);
@@ -106,6 +97,15 @@ void TextEditorPrivate::initMargins()
 
 void TextEditorPrivate::updateColorTheme()
 {
+    auto bpIcon = QIcon::fromTheme("breakpoint");
+    q->markerDefine(bpIcon.pixmap(14, 14), Breakpoint);
+
+    auto bpIconDis = QIcon::fromTheme("disabled_breakpoint");
+    q->markerDefine(bpIconDis.pixmap(14, 14), BreakpointDisabled);
+
+    auto rtIcon = QIcon::fromTheme("arrow");
+    q->markerDefine(rtIcon.pixmap(14, 14), Runtime);
+
     if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
         // editor
         q->setPaper(QColor("#2e2f30"));
@@ -120,8 +120,8 @@ void TextEditorPrivate::updateColorTheme()
         q->setMatchedBraceForegroundColor(QColor("#bec0c2"));
         q->setMatchedBraceBackgroundColor(QColor("#1d545c"));
 
-        QColor rlbColor = EditorColor::Table::get()->LightGreen;
-        rlbColor.setAlpha(qRound(255 * 0.3));
+        QColor rlbColor("#F2C55C");
+        rlbColor.setAlpha(qRound(255 * 0.1));
         q->setMarkerForegroundColor(rlbColor, RuntimeLineBackground);
         q->setMarkerBackgroundColor(rlbColor, RuntimeLineBackground);
     } else {
@@ -138,8 +138,10 @@ void TextEditorPrivate::updateColorTheme()
         q->setMatchedBraceForegroundColor(QColor("#ff0000"));
         q->setMatchedBraceBackgroundColor(QColor("#b4eeb4"));
 
-        q->setMarkerForegroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLineBackground);
-        q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLineBackground);
+        QColor rlbColor("#FFA715");
+        rlbColor.setAlpha(qRound(255 * 0.1));
+        q->setMarkerForegroundColor(rlbColor, RuntimeLineBackground);
+        q->setMarkerBackgroundColor(rlbColor, RuntimeLineBackground);
     }
 }
 
@@ -300,10 +302,14 @@ void TextEditorPrivate::showMarginMenu()
     q->getCursorPosition(&line, &index);
 
     if (q->hasBreakpoint(line)) {
-        menu.addAction(tr("Remove Breakpoint"), q, [this, line] { editor.removeBreakpoint(fileName, line + 1); });
+        menu.addAction(tr("Remove Breakpoint"), q, [this, line] { q->removeBreakpoint(line); });
+        if (q->breakpointEnabled(line))
+            menu.addAction(tr("Disable Breakpoint"), q, [this, line] { q->setBreakpointEnabled(line, false); });
+        else
+            menu.addAction(tr("Enable Breakpoint"), q, [this, line] { q->setBreakpointEnabled(line, true); });
     } else {
         static QString text("Add a breakpoint on line %1");
-        menu.addAction(text.arg(line + 1), q, [this, line] { editor.addBreakpoint(fileName, line + 1); });
+        menu.addAction(text.arg(line + 1), q, [this, line] { q->addBreakpoint(line); });
     }
 
     // notify other plugin to add action.
