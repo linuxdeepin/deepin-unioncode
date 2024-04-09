@@ -51,8 +51,9 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(resetLineBackgroundColor, "fileName", "line")
            OPI_INTERFACE(clearLineBackgroundColor, "fileName")
            OPI_INTERFACE(setModifiedAutoReload, "fileName", "flag")
-           OPI_INTERFACE(addBreakpoint, "fileName", "line")
+           OPI_INTERFACE(addBreakpoint, "fileName", "line", "enabled")
            OPI_INTERFACE(removeBreakpoint, "fileName", "line")
+           OPI_INTERFACE(setBreakpointEnabled, "fileName", "line", "enabled")
            OPI_INTERFACE(clearAllBreakpoint)
            // out
            OPI_INTERFACE(fileOpened, "fileName")
@@ -60,6 +61,7 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(switchedFile, "fileName")
            OPI_INTERFACE(breakpointAdded, "fileName", "line")
            OPI_INTERFACE(breakpointRemoved, "fileName", "line")
+           OPI_INTERFACE(breakpointStatusChanged, "fileName", "line", "enabled")
            OPI_INTERFACE(contextMenu, "menu")
            OPI_INTERFACE(marginMenu, "menu")
            OPI_INTERFACE(textChanged)
