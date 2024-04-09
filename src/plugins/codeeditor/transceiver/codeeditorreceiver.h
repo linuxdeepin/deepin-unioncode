@@ -36,6 +36,7 @@ private:
     // debug
     void processAddBreakpointEvent(const dpf::Event &event);
     void processRemoveBreakpointEvent(const dpf::Event &event);
+    void processSetBreakpointEnabledEvent(const dpf::Event &event);
     void processClearAllBreakpointsEvent(const dpf::Event &event);
     void processSetDebugLineEvent(const dpf::Event &event);
     void processRemoveDebugLineEvent(const dpf::Event &event);
@@ -77,8 +78,9 @@ signals:
     void reqClearAllAnnotation(const QString &title);
 
     // debug
-    void reqAddBreakpoint(const QString &fileName, int line);
+    void reqAddBreakpoint(const QString &fileName, int line, bool enabled);
     void reqRemoveBreakpoint(const QString &fileName, int line);
+    void reqSetBreakpointEnabled(const QString &fileName, int line, bool enabled);
     void reqToggleBreakpoint();
     void reqClearAllBreakpoints();
     void reqSetDebugLine(const QString &fileName, int line);
