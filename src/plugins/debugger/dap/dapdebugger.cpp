@@ -639,7 +639,7 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         if (d->bps.count(filePath)) {
             QList<int> lines = d->bps.values(filePath);
             for (int line: lines) {
-                editor.addBreakpoint(filePath, line);
+                editor.addBreakpoint(filePath, line, true);
             }
         }
     } else if (event.data() == editor.fileClosed.name) {

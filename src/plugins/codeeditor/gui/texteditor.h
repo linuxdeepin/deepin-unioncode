@@ -26,10 +26,11 @@ public:
     void reload();
 
     // debug
-    void addBreakpoint(int line);
+    void addBreakpoint(int line, bool enabled = true);
     void removeBreakpoint(int line);
     void toggleBreakpoint();
-    void setBreakpointEnabled(int line);
+    void setBreakpointEnabled(int line, bool enabled);
+    bool breakpointEnabled(int line);
     bool hasBreakpoint(int line);
     void gotoNextBreakpoint();
     void gotoPreviousBreakpoint();
