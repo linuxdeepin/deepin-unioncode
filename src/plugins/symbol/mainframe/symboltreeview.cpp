@@ -4,9 +4,9 @@
 
 #include "symboltreeview.h"
 #include "symbolmodel.h"
-#include "symbolitemdelegate.h"
 #include "definitions.h"
 
+#include "base/baseitemdelegate.h"
 #include "services/project/projectservice.h"
 
 #include <DMenu>
@@ -36,7 +36,7 @@ SymbolTreeView::SymbolTreeView(DWidget *parent)
 
     d->model = new SymbolModel();
     DTreeView::setModel(d->model);
-    setItemDelegate(new SymbolItemDelegate(this));
+    setItemDelegate(new BaseItemDelegate(this));
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     setEditTriggers(DTreeView::NoEditTriggers);   //节点不能编辑

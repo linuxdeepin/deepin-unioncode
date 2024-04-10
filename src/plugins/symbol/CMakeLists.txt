@@ -10,7 +10,6 @@ set(CXX_CPP
     mainframe/symboltreeview.cpp
     mainframe/symbolkeeper.cpp
     mainframe/symbolparser.cpp
-    mainframe/symbolitemdelegate.cpp
     transceiver/symbolreceiver.cpp
     clangparser/clangcursor.cpp
     clangparser/clangparser.cpp
@@ -24,7 +23,6 @@ set(CXX_H
     mainframe/symboltreeview.h
     mainframe/symbolkeeper.h
     mainframe/symbolparser.h
-    mainframe/symbolitemdelegate.h
     transceiver/symbolreceiver.h
     clangparser/clangcursor.h
     clangparser/clangparser.h
