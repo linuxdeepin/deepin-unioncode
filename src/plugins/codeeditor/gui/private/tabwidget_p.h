@@ -8,7 +8,6 @@
 #include "gui/tabwidget.h"
 #include "gui/tabbar.h"
 #include "gui/texteditor.h"
-#include "gui/find/findtoolbar.h"
 
 #include "common/util/eventdefinitions.h"
 
@@ -29,6 +28,7 @@ public:
     void initUI();
     void initConnection();
     QWidget *createSpaceWidget();
+    QWidget *createFindPlaceHolder();
 
     TextEditor *createEditor(const QString &fileName = "");
     TextEditor *findEditor(const QString &fileName);
@@ -59,7 +59,6 @@ public:
 
     QStackedLayout *editorLayout { nullptr };
     TabBar *tabBar { nullptr };
-    FindToolBar *findToolBar { nullptr };
     QHash<QString, TextEditor *> editorMng;
 
     PosRecord curPosRecord;

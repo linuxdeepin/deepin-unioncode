@@ -7,6 +7,7 @@
 #include "services/window/windowservice.h"
 #include "locator/locatormanager.h"
 #include "locator/actionlocator.h"
+#include "find/findtoolbar.h"
 
 #include <framework/framework.h>
 #include "common/common.h"

@@ -57,7 +57,7 @@ LSPStyle::~LSPStyle()
 
 void LSPStyle::initLspConnection()
 {
-    if (!d->editor)
+    if (!d->editor || !d->getClient())
         return;
 
     connect(d->getClient(), QOverload<const lsp::References &>::of(&newlsp::Client::requestResult),
