@@ -3,10 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "filetreeview.h"
-#include "filebrowserdelegate.h"
 #include "transceiver/sendevents.h"
 
 #include "common/common.h"
+#include "base/baseitemdelegate.h"
+
 #include <DMenu>
 #include <DHeaderView>
 #include <DDialog>
@@ -44,7 +45,7 @@ FileTreeView::FileTreeView(QWidget *parent)
     d->model = new QFileSystemModel(this);
     d->menu = new DMenu(this);
     setModel(d->model);
-    setItemDelegate(new FileBrowserDelegate(this));
+    setItemDelegate(new BaseItemDelegate(this));
     header()->setSectionResizeMode(DHeaderView::ResizeMode::ResizeToContents);
     setAlternatingRowColors(true);
     setSelectionMode(SingleSelection);

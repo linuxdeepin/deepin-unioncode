@@ -7,7 +7,6 @@ set(CXX_CPP
     transceiver/filebrowserreceiver.cpp
     mainframe/treeviewkeeper.cpp
     mainframe/filetreeview.cpp
-    mainframe/filebrowserdelegate.cpp
     filebrowser.cpp
     filebrowser.json
     )
@@ -17,7 +16,6 @@ set(CXX_H
     transceiver/filebrowserreceiver.h
     mainframe/treeviewkeeper.h
     mainframe/filetreeview.h
-    mainframe/filebrowserdelegate.h
     filebrowser.h
     )
 
