@@ -720,14 +720,13 @@ class QVariantPrinter:
 
     def to_string(self):
         d = self.val['d']
-
         if d['is_null']:
             return "QVariant(NULL)"
 
         data_type = d['type']
         type_str = ("type = %d" % data_type)
         try:
-            typeAsCharPointer = (gdb.parse_and_eval("QVariant::typeToName(%d)" % data_type).cast(gdb.lookup_type("char").pointer()))
+            typeAsCharPointer = (gdb.parse_and_eval("QVariant::typeToName(%d)" % data_type, False).cast(gdb.lookup_type("char").pointer()))
             if typeAsCharPointer:
                 type_str = typeAsCharPointer.string(encoding = 'UTF-8')
         except Exception as e:
