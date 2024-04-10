@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "popupwidget.h"
+#include "base/baseitemdelegate.h"
 
 #include <QEvent>
 #include <QKeyEvent>
@@ -71,6 +72,7 @@ PopupWidget::PopupWidget(QWidget *parent)
     : DFrame(parent), tree(new DTreeView(this))
 {
     tree->setFrameShape(QFrame::NoFrame);
+    tree->setItemDelegate(new BaseItemDelegate(this));
     auto layout = new QVBoxLayout;
     layout->setSizeConstraint(QLayout::SetMinimumSize);
     setLayout(layout);
