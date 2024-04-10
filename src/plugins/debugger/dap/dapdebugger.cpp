@@ -22,6 +22,7 @@
 #include "services/option/optionmanager.h"
 #include "services/language/languageservice.h"
 #include "unistd.h"
+#include "base/baseitemdelegate.h"
 
 #include <DLabel>
 #include <DFrame>
@@ -880,6 +881,7 @@ void DAPDebugger::initializeView()
     d->localsView = new DTreeView();
     d->localsView->setModel(&d->localsModel);
     d->localsView->setUniformRowHeights(true);
+    d->localsView->setItemDelegate(new BaseItemDelegate(this));
 
     QStringList headers { tr("Name"), tr("Value"), tr("Type")/*, "Reference" */};
     d->localsModel.setHeaders(headers);

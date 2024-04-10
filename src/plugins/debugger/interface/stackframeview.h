@@ -19,7 +19,6 @@ public:
 private:
     QModelIndex eventIndex(QMouseEvent *ev);
     void rowActivated(const QModelIndex &index);
-    void rowClicked(const QModelIndex &index);
 
     void initHeaderView();
 
