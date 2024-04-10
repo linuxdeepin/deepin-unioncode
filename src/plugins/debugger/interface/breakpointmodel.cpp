@@ -157,14 +157,3 @@ QVariant BreakpointModel::headerData(int section, Qt::Orientation orient, int ro
     }
     return QVariant();
 }
-
-bool BreakpointModel::setData(const QModelIndex &idx, const QVariant &data, int role)
-{
-    Q_UNUSED(data)
-    if (role == ItemActivatedRole || role == ItemClickedRole) {
-        setCurrentIndex(idx.row());
-        return true;
-    }
-
-    return false;
-}

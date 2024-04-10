@@ -5,6 +5,7 @@
 #include "breakpointview.h"
 #include "common/common.h"
 #include "breakpointmodel.h"
+#include "base/baseitemdelegate.h"
 
 #include <QDebug>
 #include <QFontMetrics>
@@ -27,6 +28,7 @@ BreakpointView::BreakpointView(QWidget *parent)
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setFrameStyle(QFrame::NoFrame);
     setAlternatingRowColors(true);
+    setItemDelegate(new BaseItemDelegate(this));
 
     connect(this, &QAbstractItemView::clicked,
             this, [=](const QModelIndex &index) {
