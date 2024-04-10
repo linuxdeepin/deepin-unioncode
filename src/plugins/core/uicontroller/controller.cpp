@@ -13,7 +13,9 @@
 #include "services/project/projectservice.h"
 #include "modules/abstractmodule.h"
 #include "modules/pluginmanagermodule.h"
+#include "modules/documentfindmodule.h"
 #include "locator/locatormanager.h"
+#include "find/placeholdermanager.h"
 
 #include <DFrame>
 #include <DFileDialog>
@@ -120,11 +122,11 @@ Controller::Controller(QObject *parent)
     initStatusBar();
     initWorkspaceWidget();
     initTopToolBar();
+    registerService();
 
     registerModule("pluginManagerModule", new PluginManagerModule());
+    registerModule("docFindModule", new DocumentFindModule());
     initModules();
-
-    registerService();
 }
 
 void Controller::registerService()
@@ -228,6 +230,9 @@ void Controller::registerService()
     }
     if (!windowService->addWidgetWorkspace) {
         windowService->addWidgetWorkspace = std::bind(&WorkspaceWidget::addWorkspaceWidget, d->workspace, _1, _2, _3);
+    }
+    if (!windowService->createFindPlaceHolder) {
+        windowService->createFindPlaceHolder = std::bind(&PlaceHolderManager::createPlaceHolder, PlaceHolderManager::instance(), _1, _2);
     }
 }
 
@@ -349,7 +354,6 @@ void Controller::showWidgetAtPosition(const QString &name, Position pos, bool re
         qWarning() << "no widget named:" << name;
         return;
     }
-
 }
 
 void Controller::addNavigationItem(AbstractAction *action, quint8 priority)
@@ -375,7 +379,7 @@ void Controller::addNavigationItemToBottom(AbstractAction *action, quint8 priori
 void Controller::switchWidgetNavigation(const QString &navName)
 {
     d->navigationBar->setNavActionChecked(navName, true);
-    if(d->currentNavigation == navName)
+    if (d->currentNavigation == navName)
         return;
     d->currentNavigation = navName;
 
