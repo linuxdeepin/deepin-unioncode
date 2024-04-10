@@ -10,6 +10,7 @@ set(CXX_H
     abstractlocator.h
     basefilelocator.h
     baseitemdelegate.h
+    abstractdocumentfind.h
     )
 
 set(CXX_CPP
@@ -22,6 +23,7 @@ set(CXX_CPP
     abstractlocator.cpp
     basefilelocator.cpp
     baseitemdelegate.cpp
+    abstractdocumentfind.cpp
     )
 
 add_library(

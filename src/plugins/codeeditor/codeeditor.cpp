@@ -107,7 +107,6 @@ void CodeEditor::initActions()
     QAction *switchHeaderSourceAction = new QAction(tr("Switch Header/Source"), this);
     QAction *follSymbolAction = new QAction(tr("Follow Symbol Under Cursor"), this);
     QAction *toggleBreakpointAction = new QAction(tr("Toggle Breakpoint"), this);
-    QAction *findReplaceAction = new QAction(tr("Find/Replace"), this);
     QAction *findUsageAction = new QAction(tr("Find Usages"), this);
     QAction *renameAction = new QAction(tr("Rename Symbol Under Cursor"), this);
 
@@ -128,9 +127,6 @@ void CodeEditor::initActions()
     auto inputToggleBreakpointAction = new AbstractAction(toggleBreakpointAction, this);
     inputToggleBreakpointAction->setShortCutInfo("Editor.toggleBreak",
                                                  tr("Toggle Breakpoint"), QKeySequence(Qt::Key_F9));
-    auto inputFindReplaceAction = new AbstractAction(findReplaceAction, this);
-    inputFindReplaceAction->setShortCutInfo("Editor.findReplace",
-                                            tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
     auto inputFindUsageAction = new AbstractAction(findUsageAction, this);
     inputFindUsageAction->setShortCutInfo("Editor.findUsage",
                                           tr("Find Usages"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_G));
@@ -144,7 +140,6 @@ void CodeEditor::initActions()
     windowService->addAction(tr("&Edit"), inputSwitchHeaderSourceAction);
     windowService->addAction(tr("&Edit"), inputFollSymbolAction);
     windowService->addAction(tr("&Edit"), inputToggleBreakpointAction);
-    windowService->addAction(tr("&Edit"), inputFindReplaceAction);
     windowService->addAction(tr("&Edit"), inputFindUsageAction);
     windowService->addAction(tr("&Edit"), inputRenameAction);
 
@@ -154,7 +149,6 @@ void CodeEditor::initActions()
     connect(switchHeaderSourceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource);
     connect(follSymbolAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFollowSymbolUnderCursor);
     connect(toggleBreakpointAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint);
-    connect(findReplaceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqShowFindToolBar);
     connect(findUsageAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFindUsage);
     connect(renameAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqRenameSymbol);
 }
