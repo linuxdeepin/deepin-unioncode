@@ -52,12 +52,8 @@ QVariant StackFrameModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (role == Qt::ForegroundRole) {
-        if (index.row() != currentIndex && DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
-            return QBrush(Qt::lightGray);
-        if (index.row() == currentIndex && DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
-            return QBrush(Qt::white);
-    }
+    if (role == Qt::ForegroundRole && (index.row() != currentIndex))
+        return QBrush(Qt::darkGray);
 
     const StackFrameData &frame = stackFrames.at(index.row());
 
@@ -138,7 +134,7 @@ StackFrameData StackFrameModel::currentFrame() const
 bool StackFrameModel::setData(const QModelIndex &idx, const QVariant &data, int role)
 {
     Q_UNUSED(data)
-    if (role == ItemActivatedRole || role == ItemClickedRole) {
+    if (role == ItemActivatedRole/* || role == ItemClickedRole*/) {
         setCurrentIndex(idx.row());
         return true;
     }
