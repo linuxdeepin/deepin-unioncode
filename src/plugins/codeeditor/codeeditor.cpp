@@ -18,6 +18,7 @@
 #include "services/language/languageservice.h"
 #include "services/editor/editorservice.h"
 #include "services/option/optionservice.h"
+#include "services/option/optiondatastruct.h"
 #include "common/widget/outputpane.h"
 
 #include <DButtonBox>
@@ -210,5 +211,5 @@ void CodeEditor::initOptionService()
         qCritical() << "Failed, not found OptionPython service!";
         abort();
     }
-    optionService->implGenerator<EditorSettingsWidgetGenerator>(EditorSettingsWidgetGenerator::kitName());
+    optionService->implGenerator<EditorSettingsWidgetGenerator>(option::GROUP_GENERAL, EditorSettingsWidgetGenerator::kitName());
 }

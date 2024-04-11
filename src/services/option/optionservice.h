@@ -22,6 +22,8 @@ class OptionService final : public dpf::PluginService,
     Q_DISABLE_COPY(OptionService)
     typedef dpf::QtClassManager<OptionGenerator> GeneratorOptManager;
     typedef dpf::QtClassFactory<OptionGenerator> GeneratorOptFactory;
+
+    QMap<QString, QStringList> groupGeneratorsMap;
 public:
     inline static QString name()
     {
@@ -47,15 +49,47 @@ public:
     }
 
     /*!
+     * \brief supportGenerator 獲取支持的工程名稱
+     * \param group
+     * \return
+     */
+    template<class T>
+    QStringList supportGeneratorNameByGroup(const QString &group)
+    {
+        QStringList allGenerators {};
+        if (std::is_same<OptionGenerator, T>())
+            allGenerators = GeneratorOptFactory::createKeys();
+        if (!allGenerators.isEmpty()) {
+            QStringList ret {};
+            for (auto Generator : allGenerators) {
+                if (groupGeneratorsMap.contains(group) && groupGeneratorsMap[group].contains(Generator))
+                    ret.append(Generator);
+            }
+            return ret;
+        }
+
+        return {};
+    }
+
+    QStringList generatorGroups()
+    {
+        return groupGeneratorsMap.keys();
+    }
+    /*!
      * \brief implGenerator 導入工程文件生成器對象 T = Project::Generator類泛化對象
+     * \param group
      * \param name 生成器對象名稱(唯一鍵)
      * \param errorString 錯誤信息
      */
     template<class T>
-    bool implGenerator(const QString &name, QString *errorString = nullptr)
+    bool implGenerator(const QString &group, const QString &name, QString *errorString = nullptr)
     {
-        if (std::is_base_of<OptionGenerator, T>())
-            return GeneratorOptFactory::regClass<T>(name, errorString);
+        bool ret = false;
+        if (std::is_base_of<OptionGenerator, T>()) {
+            ret = GeneratorOptFactory::regClass<T>(name, errorString);
+            if (ret)
+                groupGeneratorsMap[group].append(name);
+        }
         return false;
     }
 

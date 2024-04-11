@@ -20,6 +20,7 @@
 #include "services/project/projectservice.h"
 #include "services/option/optionservice.h"
 #include "services/editor/editorservice.h"
+#include "services/option/optiondatastruct.h"
 
 using namespace dpfservice;
 
@@ -76,8 +77,8 @@ bool CxxPlugin::start()
         qCritical() << "Failed, not found option service!";
         abort();
     }
-    optionService->implGenerator<OptionCmakeGenerator>(OptionCmakeGenerator::kitName());
-    optionService->implGenerator<OptionNinjaGenerator>(OptionNinjaGenerator::kitName());
+    optionService->implGenerator<OptionCmakeGenerator>(option::GROUP_LANGUAGE, OptionCmakeGenerator::kitName());
+    optionService->implGenerator<OptionNinjaGenerator>(option::GROUP_LANGUAGE, OptionNinjaGenerator::kitName());
 
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {
