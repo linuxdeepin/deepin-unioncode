@@ -207,6 +207,7 @@ void OptionsDialog::saveAllConfig()
         }
     }
 
+    options.configSaved();
     accept();
 }
 

@@ -48,7 +48,7 @@ bool CodeGeex::start()
 
     auto optionService = dpfGetService(dpfservice::OptionService);
     if (optionService) {
-        optionService->implGenerator<OptionCodeGeeXGenerator>(OptionCodeGeeXGenerator::kitName());
+        optionService->implGenerator<OptionCodeGeeXGenerator>(QObject::tr("AI"), OptionCodeGeeXGenerator::kitName());
     }
 
     Copilot::instance();
