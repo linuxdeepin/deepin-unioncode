@@ -53,11 +53,11 @@ void FindToolBarPrivate::initUI()
     mainLayout->setContentsMargins(10, 6, 10, 6);
 
     findEdit = new DLineEdit(q);
-    findEdit->setPlaceholderText(q->tr("Find"));
+    findEdit->setPlaceholderText(FindToolBar::tr("Find"));
     findEdit->setMinimumWidth(100);
 
     replaceEdit = new DLineEdit(q);
-    replaceEdit->setPlaceholderText(q->tr("Relace"));
+    replaceEdit->setPlaceholderText(FindToolBar::tr("Replace"));
     replaceEdit->setMinimumWidth(100);
 
     findPrevButton = new DIconButton(q);
@@ -66,9 +66,9 @@ void FindToolBarPrivate::initUI()
     findNextButton = new DIconButton(q);
     findNextButton->setIcon(QIcon::fromTheme("go-down"));
 
-    replaceButton = new DPushButton(q->tr("Replace"), q);
-    replaceAllButton = new DPushButton(q->tr("Replace All"), q);
-    replaceFindButton = new DPushButton(q->tr("Replace && Find"), q);
+    replaceButton = new DPushButton(FindToolBar::tr("Replace"), q);
+    replaceAllButton = new DPushButton(FindToolBar::tr("Replace All"), q);
+    replaceFindButton = new DPushButton(FindToolBar::tr("Replace && Find"), q);
 
     closeButton = new DIconButton(DStyle::SP_CloseButton, q);
     closeButton->setIconSize(QSize(30, 30));
@@ -108,11 +108,11 @@ void FindToolBarPrivate::initActions()
     if (!windowService)
         return;
 
-    QAction *findReplaceAction = new QAction(q->tr("Find/Replace"), q);
+    QAction *findReplaceAction = new QAction(FindToolBar::tr("Find/Replace"), q);
     auto inputFindReplaceAction = new AbstractAction(findReplaceAction, q);
     inputFindReplaceAction->setShortCutInfo("Find.findInDocument",
-                                            q->tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
-    windowService->addAction(q->tr("&Find"), inputFindReplaceAction);
+                                            FindToolBar::tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
+    windowService->addAction(FindToolBar::tr("&Find"), inputFindReplaceAction);
     q->connect(findReplaceAction, &QAction::triggered, q, [this] { q->openFindToolBar(); });
 }
 
