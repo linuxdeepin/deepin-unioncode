@@ -14,6 +14,7 @@
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 #include "services/option/optionservice.h"
+#include "services/option/optiondatastruct.h"
 
 #include "framework/listener/listener.h"
 
@@ -53,21 +54,11 @@ bool OptionCore::start()
         generalKits << OptionEnvironmentGenerator::kitName()
                     << OptionShortcutsettingGenerator::kitName()
                     << OptionProfilesettingGenerator::kitName();
-        optionService->implGenerator<OptionEnvironmentGenerator>(generalKits[0]);
-        optionService->implGenerator<OptionShortcutsettingGenerator>(generalKits[1]);
-        optionService->implGenerator<OptionProfilesettingGenerator>(generalKits[2]);
+        optionService->implGenerator<OptionEnvironmentGenerator>(option::GROUP_GENERAL, generalKits[0]);
+        optionService->implGenerator<OptionShortcutsettingGenerator>(option::GROUP_GENERAL, generalKits[1]);
+        optionService->implGenerator<OptionProfilesettingGenerator>(option::GROUP_GENERAL, generalKits[2]);
 
-        optionDialog->insertLabel(tr("General"));
-        for (auto name : generalKits) {
-            auto generator = optionService->createGenerator<OptionGenerator>(name);
-            if (generator) {
-                PageWidget *optionWidget = dynamic_cast<PageWidget *>(generator->optionWidget());
-                if (optionWidget)
-                    optionDialog->insertOptionPanel(name, optionWidget);
-            }
-        }
         using namespace std::placeholders;
-
         optionService->showOptionDialog = std::bind(&OptionsDialog::showAtItem, OptionDefaultKeeper::getOptionDialog(), _1);
     }
 
@@ -90,18 +81,33 @@ bool OptionCore::start()
     DPF_USE_NAMESPACE
     QObject::connect(&Listener::instance(), &Listener::pluginsStarted, [=](){
         if (optionDialog) {
-            auto list = optionService->supportGeneratorName<OptionGenerator>();
-            optionDialog->insertLabel(tr("Extended Settings"));
-            for (auto name : list) {
-                if (generalKits.contains(name))
-                    continue;
-                auto generator = optionService->createGenerator<OptionGenerator>(name);
-                if (generator) {
-                    PageWidget *optionWidget = dynamic_cast<PageWidget*>(generator->optionWidget());
-                    if (optionWidget) {
-                        optionDialog->insertOptionPanel(name, optionWidget);
-                        optionWidget->readConfig();
-                        optionWidget->saveConfig();
+            auto groups = optionService->generatorGroups();
+            if (groups.isEmpty())
+                return;
+
+            //raise general and language group
+            auto raiseGroupPriority= [=](QStringList &groupList, const QString &groupName){
+                if (groupList.contains(groupName)) {
+                    groupList.removeOne(groupName);
+                    groupList.insert(0, groupName);
+                }
+            };
+
+            raiseGroupPriority(groups, option::GROUP_LANGUAGE);
+            raiseGroupPriority(groups, option::GROUP_GENERAL);
+
+            for (auto group : groups) {
+                optionDialog->insertLabel(group);
+                auto generatorNames = optionService->supportGeneratorNameByGroup<OptionGenerator>(group);
+                for (auto name : generatorNames) {
+                    auto generator = optionService->createGenerator<OptionGenerator>(name);
+                    if (generator) {
+                        PageWidget *optionWidget = dynamic_cast<PageWidget*>(generator->optionWidget());
+                        if (optionWidget) {
+                            optionDialog->insertOptionPanel(name, optionWidget);
+                            optionWidget->readConfig();
+                            optionWidget->saveConfig();
+                        }
                     }
                 }
             }
