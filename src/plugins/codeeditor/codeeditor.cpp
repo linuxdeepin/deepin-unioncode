@@ -79,7 +79,7 @@ void CodeEditor::initButtonBox()
         return;
 
     DToolButton *backBtn = new DToolButton(workspaceWidget);
-    backBtn->setIcon(QIcon::fromTheme("edit-forward"));
+    backBtn->setIcon(QIcon::fromTheme("edit-back"));
     backBtn->setToolTip(tr("backward"));
     backBtn->setFixedSize(36, 36);
     connect(backBtn, &DToolButton::clicked, [=]() {
@@ -87,7 +87,7 @@ void CodeEditor::initButtonBox()
     });
 
     DToolButton *forwardBtn = new DToolButton(workspaceWidget);
-    forwardBtn->setIcon(QIcon::fromTheme("edit-back"));
+    forwardBtn->setIcon(QIcon::fromTheme("edit-forward"));
     forwardBtn->setToolTip(tr("forward"));
     forwardBtn->setFixedSize(36, 36);
     connect(forwardBtn, &DButtonBoxButton::clicked, [=]() {
