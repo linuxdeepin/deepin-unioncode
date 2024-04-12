@@ -3,11 +3,11 @@
     <qresource prefix="/icons/deepin"/>
     <qresource prefix="/">
         <file>icons/deepin/builtin/texts/edit-closeBtn_16px.svg</file>
-        <file>icons/deepin/builtin/texts/edit-file_16px.svg</file>
         <file>icons/deepin/builtin/texts/edit-hSplit_16px.svg</file>
-        <file>icons/deepin/builtin/texts/edit-project_16px.svg</file>
-        <file>icons/deepin/builtin/texts/edit-tree_16px.svg</file>
         <file>icons/deepin/builtin/texts/edit-vSplit_16px.svg</file>
+        <file>icons/deepin/builtin/texts/edit-navigation_22px.svg</file>
+        <file>icons/deepin/builtin/texts/edit-back_16px.svg</file>
+        <file>icons/deepin/builtin/texts/edit-forward_16px.svg</file>
         <file>icons/deepin/builtin/dark/icons/class_16px.svg</file>
         <file>icons/deepin/builtin/dark/icons/element_16px.svg</file>
         <file>icons/deepin/builtin/dark/icons/enum_16px.svg</file>
