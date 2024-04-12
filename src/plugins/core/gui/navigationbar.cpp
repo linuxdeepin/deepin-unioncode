@@ -18,16 +18,16 @@ NavigationBar::NavigationBar(QWidget *parent)
     DStyle::setFrameRadius(this, 0);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(8, 10, 8, 0);
+    layout->setContentsMargins(8, 8, 8, 8);
     layout->setAlignment(Qt::AlignHCenter);
 
     topLayout = new QVBoxLayout;
     topLayout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
-    topLayout->setSpacing(5);
+    topLayout->setSpacing(10);
 
     bottomLayout = new QVBoxLayout;
     bottomLayout->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
-    bottomLayout->setSpacing(5);
+    bottomLayout->setSpacing(10);
 
     layout->addLayout(topLayout);
     layout->addLayout(bottomLayout);

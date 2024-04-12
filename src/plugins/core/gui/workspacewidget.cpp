@@ -12,7 +12,7 @@
 
 inline constexpr int kMinimumWidth = { 100 };
 
-WorkspaceWidget::WorkspaceWidget(QWidget *parent) : QWidget(parent)
+WorkspaceWidget::WorkspaceWidget(QWidget *parent) : DWidget(parent)
 {
     initUi();
 }
@@ -25,7 +25,8 @@ void WorkspaceWidget::initUi()
 
     setMinimumWidth(kMinimumWidth);
 
-    editWorkspaceWidget = new DWidget(this);
+    editWorkspaceWidget = new DFrame(this);
+    DStyle::setFrameRadius(editWorkspaceWidget, 0);
     stackEditWorkspaceWidget = new DStackedWidget(this);
     workspaceTabBar = new DFrame(this);
     workspaceTabBar->setLineWidth(0);
