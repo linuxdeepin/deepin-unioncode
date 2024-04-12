@@ -11,6 +11,7 @@
 #include <DFrame>
 #include <DSuggestButton>
 
+#include <QTextDocument>
 #include <QIcon>
 #include <QProcess>
 #include <QBoxLayout>
