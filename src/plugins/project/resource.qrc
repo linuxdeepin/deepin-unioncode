@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>texts/project_16px.svg</file>
+    </qresource>
+</RCC>

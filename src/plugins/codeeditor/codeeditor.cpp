@@ -22,6 +22,7 @@
 #include "common/widget/outputpane.h"
 
 #include <DButtonBox>
+#include <DToolButton>
 
 #include <QAction>
 #include <QSplitter>
@@ -77,22 +78,29 @@ void CodeEditor::initButtonBox()
     if (!windowService)
         return;
 
-    DButtonBox *btnBox = new DButtonBox(workspaceWidget);
-
-    DButtonBoxButton *backBtn = new DButtonBoxButton(QIcon::fromTheme("go-previous"), "", btnBox);
+    DToolButton *backBtn = new DToolButton(workspaceWidget);
+    backBtn->setIcon(QIcon::fromTheme("edit-forward"));
     backBtn->setToolTip(tr("backward"));
-    connect(backBtn, &DButtonBoxButton::clicked, [=]() {
+    backBtn->setFixedSize(36, 36);
+    connect(backBtn, &DToolButton::clicked, [=]() {
         editor.back();
     });
 
-    DButtonBoxButton *forwardBtn = new DButtonBoxButton(QIcon::fromTheme("go-next"), "", btnBox);
+    DToolButton *forwardBtn = new DToolButton(workspaceWidget);
+    forwardBtn->setIcon(QIcon::fromTheme("edit-back"));
     forwardBtn->setToolTip(tr("forward"));
+    forwardBtn->setFixedSize(36, 36);
     connect(forwardBtn, &DButtonBoxButton::clicked, [=]() {
         editor.forward();
     });
 
-    btnBox->setButtonList({ backBtn, forwardBtn }, false);
-    windowService->addWidgetToTopTool(new AbstractWidget(btnBox), "", false, false);
+    QWidget *btnWidget = new QWidget(workspaceWidget);
+    QHBoxLayout *layout = new QHBoxLayout(btnWidget);
+    layout->addWidget(backBtn);
+    layout->addWidget(forwardBtn);
+    layout->setSpacing(0);
+
+    windowService->addWidgetToTopTool(new AbstractWidget(btnWidget), "", false, false);
 }
 
 void CodeEditor::initActions()

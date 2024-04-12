@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/icons/deepin">
-        <file>builtin/texts/codegeex-navigation_20px.svg</file>
+        <file>builtin/texts/codegeex-navigation_22px.svg</file>
         <file>builtin/texts/codegeex_clear_16px.svg</file>
         <file>builtin/texts/codegeex_copy_16px.svg</file>
         <file>builtin/texts/codegeex_history_16px.svg</file>

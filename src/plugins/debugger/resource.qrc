@@ -1,18 +1,20 @@
 <RCC>
     <qresource prefix="/icons/deepin/builtin">
-        <file>texts/debug-navigation_20px.svg</file>
+        <file>texts/debug-navigation_22px.svg</file>
         <file>texts/debugger_continue_16px.svg</file>
-        <file>texts/debugger_start_16px.svg</file>
         <file>texts/debugger_interrupt_16px.svg</file>
         <file>texts/debugger_stepinto_16px.svg</file>
         <file>texts/debugger_stepout_16px.svg</file>
         <file>texts/debugger_stepover_16px.svg</file>
-        <file>texts/debugger_stop_16px.svg</file>
         <file>texts/restart_debug_16px.svg</file>
         <file>texts/run_16px.svg</file>
         <file>light/icons/breakpoint_14px.svg</file>
         <file>light/icons/disabled_breakpoint_14px.svg</file>
+        <file>light/icons/debugger_start_16px.svg</file>
+        <file>light/icons/debugger_stop_16px.svg</file>
         <file>dark/icons/breakpoint_14px.svg</file>
         <file>dark/icons/disabled_breakpoint_14px.svg</file>
+        <file>dark/icons/debugger_start_16px.svg</file>
+        <file>dark/icons/debugger_stop_16px.svg</file>
     </qresource>
 </RCC>
