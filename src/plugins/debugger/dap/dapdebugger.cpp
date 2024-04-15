@@ -831,6 +831,11 @@ void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
 
     treeItem->setChildrenFetched(true);
 
+    if (treeItem->childReference() == 0) { //clear child variables
+        emit childVariablesUpdated(treeItem, {});
+        return;
+    }
+
     d->processingVariablesTimer.start(50);
     d->processingVariablesCount.ref();
     QtConcurrent::run([=](){
