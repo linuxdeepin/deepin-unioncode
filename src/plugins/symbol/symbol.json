@@ -7,7 +7,7 @@
     "License" : [
         "GPL-3.0-or-later"
     ],
-    "Category" : "Utils",
+    "Category" : "Core Plugins",
     "Description" : "Display symbol in source code",
     "UrlLink" : "https://ecology.chinauos.com/adaptidentification/doc_new/#document2?dirid=656d40a9bd766615b0b02e5e",
     "Depends" : [
