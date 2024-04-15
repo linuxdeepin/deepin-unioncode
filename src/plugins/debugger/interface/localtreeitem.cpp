@@ -60,10 +60,11 @@ LocalTreeItem *LocalTreeItem::updateVariable(dap::Variable &var)
         child->setVariable(var);
         child->updated = updated;
 
-        if (child->childrenFetched && var.variablesReference > 0) {
+        if (child->childrenFetched) {
             child->setChildrenFetched(false);
             emit updateChildVariables(child->index());
         }
+
         emit model->dataChanged(index(), index());
         return child;
     }
