@@ -4,13 +4,13 @@
 
 #include "editorsettingswidget.h"
 #include "fontcolorwidget.h"
+#include "behaviorwidget.h"
 #include "settingsdefine.h"
 
 #include "services/option/optionutils.h"
 #include "services/option/optionmanager.h"
 
-#include <QTabWidget>
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 QWidget *EditorSettingsWidgetGenerator::optionWidget()
 {
@@ -21,10 +21,14 @@ class EditorSettingsWidgetPrivate
 {
 public:
     explicit EditorSettingsWidgetPrivate(EditorSettingsWidget *qq);
+
     void initUI();
+    void saveConfig(PageWidget *page, const QString &node);
+    void readConfig(PageWidget *page);
 
     EditorSettingsWidget *q;
-    QTabWidget *tabWidget { nullptr };
+    FontColorWidget *fontColorWidget { nullptr };
+    BehaviorWidget *behaviorWidget { nullptr };
 };
 
 EditorSettingsWidgetPrivate::EditorSettingsWidgetPrivate(EditorSettingsWidget *qq)
@@ -34,13 +38,33 @@ EditorSettingsWidgetPrivate::EditorSettingsWidgetPrivate(EditorSettingsWidget *q
 
 void EditorSettingsWidgetPrivate::initUI()
 {
-    tabWidget = new QTabWidget(q);
-    tabWidget->tabBar()->setAutoHide(true);
-    tabWidget->setDocumentMode(true);
-    tabWidget->addTab(new FontColorWidget(q), Node::FontColor);
+    auto addHorizontalLine = [this](QLayout *layout) {
+        QFrame *hLine = new QFrame(q);
+        hLine->setFrameShape(QFrame::HLine);
+        layout->addWidget(hLine);
+    };
 
-    QHBoxLayout *layout = new QHBoxLayout(q);
-    layout->addWidget(tabWidget);
+    QVBoxLayout *layout = new QVBoxLayout(q);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    fontColorWidget = new FontColorWidget(q);
+    behaviorWidget = new BehaviorWidget(q);
+
+    layout->addWidget(fontColorWidget);
+    addHorizontalLine(layout);
+    layout->addWidget(behaviorWidget);
+}
+
+void EditorSettingsWidgetPrivate::saveConfig(PageWidget *page, const QString &node)
+{
+    QMap<QString, QVariant> map;
+    page->getUserConfig(map);
+    OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(), EditorConfig, node, map);
+}
+
+void EditorSettingsWidgetPrivate::readConfig(PageWidget *page)
+{
+    page->setUserConfig({});
 }
 
 EditorSettingsWidget::EditorSettingsWidget(QWidget *parent)
@@ -57,25 +81,13 @@ EditorSettingsWidget::~EditorSettingsWidget()
 
 void EditorSettingsWidget::saveConfig()
 {
-    for (int i = 0; i < d->tabWidget->count(); ++i) {
-        PageWidget *pageWidget = qobject_cast<PageWidget *>(d->tabWidget->widget(i));
-        if (pageWidget) {
-            QString itemNode = d->tabWidget->tabText(d->tabWidget->currentIndex());
-            QMap<QString, QVariant> map;
-            pageWidget->getUserConfig(map);
-            OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(),
-                                          EditorConfig, itemNode, map);
-
-            OptionManager::getInstance()->updateData();
-        }
-    }
+    d->saveConfig(d->fontColorWidget, Node::FontColor);
+    d->saveConfig(d->behaviorWidget, Node::Behavior);
+    OptionManager::getInstance()->updateData();
 }
 
 void EditorSettingsWidget::readConfig()
 {
-    for (int i = 0; i < d->tabWidget->count(); ++i) {
-        PageWidget *pageWidget = qobject_cast<PageWidget *>(d->tabWidget->widget(i));
-        if (pageWidget)
-            pageWidget->setUserConfig({});
-    }
+    d->readConfig(d->fontColorWidget);
+    d->readConfig(d->behaviorWidget);
 }
