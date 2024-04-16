@@ -84,7 +84,6 @@ BehaviorWidget::BehaviorWidget(QWidget *parent)
       d(new BehaviorWidgetPrivate(this))
 {
     d->initUI();
-    d->initConnection();
 }
 
 BehaviorWidget::~BehaviorWidget()
