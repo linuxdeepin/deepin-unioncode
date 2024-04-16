@@ -10,10 +10,10 @@
 #include <DSpinBox>
 
 #include <QComboBox>
-#include <QGridLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 
-const QString DefaultFontFamily { "Noto Mono" };
+const char DefaultFontFamily[] { "Noto Mono" };
 const int DefaultFontSize { 10 };
 const int DefaultFontZoom { 100 };
 
@@ -26,6 +26,7 @@ public:
 
     void initUI();
     void initConnection();
+    QWidget *createItem(const QString &name, QWidget *widget);
 
     QList<int> pointSizesForSelectedFont() const;
     void updatePointSizes();
@@ -45,38 +46,52 @@ FontColorWidgetPrivate::FontColorWidgetPrivate(FontColorWidget *qq)
 void FontColorWidgetPrivate::initUI()
 {
     QLabel *infoLabel = new QLabel(FontColorWidget::tr("Font"), q);
-    QLabel *fontName = new QLabel(FontColorWidget::tr("Family:"), q);
     fontComboBox = new DFontComboBox(q);
     fontComboBox->setFontFilters(QFontComboBox::MonospacedFonts);
 
-    QLabel *fontSize = new QLabel(FontColorWidget::tr("Size:"), q);
     fontSizeComboBox = new QComboBox(q);
+    fontSizeComboBox->setMinimumWidth(100);
     fontSizeComboBox->setEditable(true);
     auto sizeValidator = new QIntValidator(fontSizeComboBox);
     sizeValidator->setBottom(0);
     fontSizeComboBox->setValidator(sizeValidator);
 
-    QLabel *zoom = new QLabel(FontColorWidget::tr("Zoom:"), q);
     zoomSpinBox = new DSpinBox(q);
     zoomSpinBox->setSuffix("%");
     zoomSpinBox->setRange(10, 3000);
     zoomSpinBox->setSingleStep(10);
 
-    QGridLayout *mainLayout = new QGridLayout(q);
-    mainLayout->setSpacing(10);
-    mainLayout->addWidget(infoLabel, 0, 0);
-    mainLayout->addWidget(fontName, 1, 0, Qt::AlignRight);
-    mainLayout->addWidget(fontComboBox, 1, 1);
-    mainLayout->addWidget(fontSize, 1, 2, Qt::AlignRight);
-    mainLayout->addWidget(fontSizeComboBox, 1, 3);
-    mainLayout->addWidget(zoom, 1, 4, Qt::AlignRight);
-    mainLayout->addWidget(zoomSpinBox, 1, 5);
+    QHBoxLayout *itemLayout = new QHBoxLayout;
+    itemLayout->setSpacing(15);
+    itemLayout->addWidget(createItem(FontColorWidget::tr("Family:"), fontComboBox));
+    itemLayout->addWidget(createItem(FontColorWidget::tr("Size:"), fontSizeComboBox));
+    itemLayout->addWidget(createItem(FontColorWidget::tr("Zoom:"), zoomSpinBox));
+    itemLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Expanding));
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(q);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->addWidget(infoLabel);
+    mainLayout->addLayout(itemLayout);
 }
 
 void FontColorWidgetPrivate::initConnection()
 {
     q->connect(fontComboBox, &DFontComboBox::currentFontChanged, q, &FontColorWidget::fontSelected);
     q->connect(fontSizeComboBox, qOverload<int>(&QComboBox::currentIndexChanged), q, &FontColorWidget::fontSizeSelected);
+}
+
+QWidget *FontColorWidgetPrivate::createItem(const QString &name, QWidget *widget)
+{
+    QWidget *box = new QWidget(q);
+    QHBoxLayout *layout = new QHBoxLayout(box);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    QLabel *label = new QLabel(name, q);
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    layout->addWidget(label);
+    layout->addWidget(widget);
+    return box;
 }
 
 QList<int> FontColorWidgetPrivate::pointSizesForSelectedFont() const
