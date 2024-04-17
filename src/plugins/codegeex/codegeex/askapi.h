@@ -65,7 +65,7 @@ public:
                         const QStringList &talkIds);
 
     void setModel(const QString &model);
-
+    void setLocale(const QString &locale);
     enum LoginState {
         kLoginFailed,
         kLoginSuccess,
@@ -103,6 +103,7 @@ private:
 
     QNetworkAccessManager *manager = nullptr;
     QString model = "codegeex-chat-lite";
+    QString locale = "zh";
 };
 }   // end namespace
 

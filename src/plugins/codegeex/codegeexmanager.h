@@ -33,6 +33,11 @@ namespace CodeGeeX {
         Lite,
         Pro
     };
+
+    enum locale{
+        Zh,
+        En
+    };
 }
 Q_DECLARE_METATYPE(CodeGeeX::languageModel)
 
@@ -48,6 +53,7 @@ public:
     void saveConfig(const QString &sessionId, const QString &userId);
     void loadConfig();
 
+    void setLocale(CodeGeeX::locale locale);
     void setCurrentModel(CodeGeeX::languageModel model);
 
     void createNewSession();

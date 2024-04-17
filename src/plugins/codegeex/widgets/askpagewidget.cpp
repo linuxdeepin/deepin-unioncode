@@ -19,6 +19,36 @@
 #include <QDebug>
 #include <QTimer>
 #include <QDateTime>
+#include <QKeyEvent>
+
+static const int minInputEditHeight = 36;
+static const int minInputWidgetHeight = 86;
+
+InputEdit::InputEdit(QWidget *parent)
+    : DTextEdit(parent)
+{
+    setMinimumHeight(minInputEditHeight);
+    setFixedHeight(minInputEditHeight);
+    setLineWrapMode(QTextEdit::WidgetWidth);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    connect(this, &DTextEdit::textChanged, this, [this]() {
+        setFixedHeight(document()->size().height());
+    });
+}
+
+void InputEdit::keyPressEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter) {
+        if (e->modifiers() & Qt::AltModifier)
+            insertPlainText("\n");
+        else if (!document()->toPlainText().isEmpty())
+            emit pressedEnter();
+        return;
+    }
+
+    DTextEdit::keyPressEvent(e);
+}
 
 AskPageWidget::AskPageWidget(QWidget *parent)
     : DWidget(parent)
@@ -76,13 +106,12 @@ void AskPageWidget::onMessageUpdate(const MessageData &msgData)
     });
 }
 
-void AskPageWidget::onSendBtnClicked()
+void AskPageWidget::slotMessageSend()
 {
     if (inputEdit) {
-        auto prompt = inputEdit->text();
+        auto prompt = inputEdit->toPlainText();
         if (prompt.isEmpty())
             return;
-
         askQuestion(prompt);
     }
 }
@@ -187,14 +216,17 @@ void AskPageWidget::initInputWidget()
     btnLayout->addWidget(createNewBtn);
 
     auto hlayout = new QHBoxLayout;
-    inputEdit = new DLineEdit(inputWidget);
-    inputEdit->setFixedHeight(50);
+    inputEdit = new InputEdit(inputWidget);
     placeHolderText = tr("Ask question here, press Enter to send...");
     inputEdit->setPlaceholderText(placeHolderText);
+
     sendButton = new DFloatingButton(this);
     sendButton->setFixedSize(30, 30);
     sendButton->setIcon(QIcon::fromTheme("codegeex_send").pixmap(16));
     sendButton->setEnabled(false);
+
+    inputWidget->setFixedHeight(minInputWidgetHeight);
+    inputWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
     hlayout->addWidget(inputEdit);
     hlayout->setSpacing(10);
@@ -210,16 +242,18 @@ void AskPageWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::chatFinished, this, &AskPageWidget::onChatFinished);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::setTextToSend, this, &AskPageWidget::setInputText);
 
-    connect(sendButton, &DFloatingButton::clicked, inputEdit, &DLineEdit::returnPressed);
-    connect(inputEdit, &DLineEdit::returnPressed, this, &AskPageWidget::onSendBtnClicked);
+    connect(sendButton, &DFloatingButton::clicked, this, &AskPageWidget::slotMessageSend);
+    connect(inputEdit, &InputEdit::pressedEnter, this, &AskPageWidget::slotMessageSend);
     connect(deleteBtn, &DPushButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
     connect(historyBtn, &DPushButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
     connect(createNewBtn, &DPushButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
-    connect(inputEdit, &DLineEdit::textChanged, sendButton, [this]() {
-        if (inputEdit->text().isEmpty())
+    connect(inputEdit, &DTextEdit::textChanged, this, [this]() {
+        if (inputEdit->toPlainText().isEmpty())
             sendButton->setEnabled(false);
         else
             sendButton->setEnabled(true);
+
+        inputWidget->setFixedHeight(inputEdit->document()->size().height() + minInputWidgetHeight - minInputEditHeight);
     });
     connect(stopGenerate, &DPushButton::clicked, this, [this]() {
         CodeGeeXManager::instance()->stopReceiving();

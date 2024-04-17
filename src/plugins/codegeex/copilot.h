@@ -26,6 +26,7 @@ public:
     void replaceSelectedText(const QString &text);
     void insterText(const QString &text);
     void setGenerateCodeEnabled(bool enabled);
+    void setLocale(const QString &locale);
     void setCurrentModel(CodeGeeX::languageModel model);
     void handleTextChanged();
 
@@ -47,10 +48,12 @@ public slots:
     void explain();
     void review();
     void tests();
+    void commits();
 
 private:
     explicit Copilot(QObject *parent = nullptr);
     QString selectedText() const;
+    QString locale { "zh" };
     void switchToCodegeexPage();
     bool responseValid(const QString &response);
 
