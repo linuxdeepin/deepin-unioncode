@@ -5,6 +5,7 @@
 #include "services/editor/editorservice.h"
 #include "services/option/optionmanager.h"
 #include "services/window/windowservice.h"
+#include "services/project/projectservice.h"
 
 #include <QMenu>
 #include <QDebug>
@@ -17,6 +18,7 @@ static const char *commandFixBug = "fixbug";
 static const char *commandExplain = "explain";
 static const char *commandReview = "review";
 static const char *commandTests = "tests";
+static const char *commandCommits = "commit_message";
 
 using namespace CodeGeeX;
 using namespace dpfservice;
@@ -94,6 +96,7 @@ QMenu *Copilot::getMenu()
     QAction *explain = new QAction(tr("Explain Code"));
     QAction *review = new QAction(tr("Review Code"));
     QAction *tests = new QAction(tr("Generate Unit Tests"));
+    QAction *commits = new QAction(tr("Generate git commits"));
 
     menu->addAction(addComment);
     menu->addAction(translate);
@@ -101,6 +104,7 @@ QMenu *Copilot::getMenu()
     menu->addAction(explain);
     menu->addAction(review);
     menu->addAction(tests);
+    menu->addAction(commits);
 
     connect(addComment, &QAction::triggered, this, &Copilot::addComment);
     connect(translate, &QAction::triggered, this, &Copilot::translate);
@@ -108,7 +112,7 @@ QMenu *Copilot::getMenu()
     connect(explain, &QAction::triggered, this, &Copilot::explain);
     connect(review, &QAction::triggered, this, &Copilot::review);
     connect(tests, &QAction::triggered, this, &Copilot::tests);
-
+    connect(commits, &QAction::triggered, this, &Copilot::commits);
 
     return menu;
 }
@@ -116,7 +120,7 @@ QMenu *Copilot::getMenu()
 void Copilot::translateCode(const QString &code, const QString &dstLanguage)
 {
     QString url = QString(kUrlSSEChat) + "?stream=false"; //receive all msg at once
-    copilotApi.postTranslate(url, code, dstLanguage);
+    copilotApi.postTranslate(url, code, dstLanguage, locale);
 }
 
 void Copilot::replaceSelectedText(const QString &text)
@@ -134,6 +138,11 @@ void Copilot::insterText(const QString &text)
 void Copilot::setGenerateCodeEnabled(bool enabled)
 {
     generateCodeEnabled = enabled;
+}
+
+void Copilot::setLocale(const QString &locale)
+{
+    this->locale = locale;
 }
 
 void Copilot::setCurrentModel(CodeGeeX::languageModel model)
@@ -154,7 +163,7 @@ void Copilot::addComment()
     QString url = QString(kUrlSSEChat) + "?stream=false"; //receive all msg at once
     copilotApi.postComment(url,
                            selectedText(),
-                           "zh");
+                           locale);
 }
 
 void Copilot::generateCode()
@@ -183,7 +192,7 @@ void Copilot::translate()
 void Copilot::fixBug()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, selectedText(), "zh", commandFixBug);
+    copilotApi.postCommand(url, selectedText(), locale, commandFixBug);
 
     switchToCodegeexPage();
 }
@@ -191,7 +200,7 @@ void Copilot::fixBug()
 void Copilot::explain()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, selectedText(), "zh", commandExplain);
+    copilotApi.postCommand(url, selectedText(), locale, commandExplain);
 
     switchToCodegeexPage();
 }
@@ -199,7 +208,7 @@ void Copilot::explain()
 void Copilot::review()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, selectedText(), "zh", commandReview);
+    copilotApi.postCommand(url, selectedText(), locale, commandReview);
 
     switchToCodegeexPage();
 }
@@ -207,9 +216,37 @@ void Copilot::review()
 void Copilot::tests()
 {
     QString url = QString(kUrlSSEChat) + "?stream=true";
-    copilotApi.postCommand(url, selectedText(), "zh", commandTests);
+    copilotApi.postCommand(url, selectedText(), locale, commandTests);
 
     switchToCodegeexPage();
+}
+
+void Copilot::commits()
+{
+    QProcess process;
+    process.setProgram("git");
+    process.setArguments(QStringList() << "diff");
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    auto prjInfo = projectService->getActiveProjectInfo();
+    auto workingDirectory = prjInfo.workspaceFolder();
+    process.setWorkingDirectory(workingDirectory);
+
+    connect(&process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, [this, &process](int exitCode, QProcess::ExitStatus exitStatus){
+        Q_UNUSED(exitStatus)
+
+        if (exitCode != 0)
+            return;
+
+        auto diff = QString::fromUtf8(process.readAll());
+        QString url = QString(kUrlSSEChat) + "?stream=true";
+
+        copilotApi.postCommand(url, diff, locale, commandCommits);
+        switchToCodegeexPage();
+    });
+
+    process.start();
+    process.waitForFinished();
 }
 
 void Copilot::switchToCodegeexPage()
