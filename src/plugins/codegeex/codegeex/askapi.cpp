@@ -200,6 +200,11 @@ void AskApi::setModel(const QString &model)
     this->model = model;
 }
 
+void AskApi::setLocale(const QString &locale)
+{
+    this->locale = locale;
+}
+
 QNetworkReply *AskApi::postMessage(const QString &url, const QString &token, const QByteArray &body)
 {
     QNetworkRequest request(url);
@@ -260,7 +265,7 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
     jsonObject.insert("client", "deepin-unioncode");
     jsonObject.insert("history", history);
     //temp  support choose to use later
-    jsonObject.insert("locale", "zh");
+    jsonObject.insert("locale", locale);
     jsonObject.insert("model", model);
     if(!talkId.isEmpty())
         jsonObject.insert("talkId", talkId);

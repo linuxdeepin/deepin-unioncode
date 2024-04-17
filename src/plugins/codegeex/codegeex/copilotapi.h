@@ -128,7 +128,8 @@ public:
 
     void postTranslate(const QString &url,
                        const QString &code,
-                       const QString &dst_lang);
+                       const QString &dst_lang,
+                       const QString &locale);
 
     void postCommand(const QString &url,
                      const QString &code,
@@ -160,7 +161,8 @@ private:
                              const QString &suffix);
 
     QByteArray assembleTranslateBody(const QString &code,
-                             const QString &dst_lang);
+                             const QString &dst_lang,
+                             const QString &locale);
 
     QByteArray assembleCommandBody(const QString &code,
                              const QString &locale,
