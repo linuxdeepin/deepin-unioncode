@@ -100,7 +100,7 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
     contentFrame->setLineWidth(0);
 
     auto contentlayout = new QHBoxLayout(contentFrame);
-    contentlayout->setContentsMargins(10, 0, 0, 0);
+    contentlayout->setContentsMargins(0, 0, 0, 0);
 
     DTitlebar *titleBar = new DTitlebar(Dialog);
     titleBar->setMinimumHeight(43);
@@ -112,9 +112,10 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
 
     // Left layout.
     auto leftLayout = new QVBoxLayout();
-    leftLayout->setContentsMargins(0, 10, 10, 0);
+    leftLayout->setContentsMargins(10, 0, 10, 0);
     leftLayout->setAlignment(Qt::AlignTop);
     leftSideBar = new DListView(Dialog);
+    leftSideBar->setItemSpacing(0);
     leftSideBar->setEditTriggers(QAbstractItemView::NoEditTriggers);
     leftBarModel = new QStringListModel(leftSideBar);
     leftSideBar->setModel(leftBarModel);
@@ -131,37 +132,40 @@ void PropertiesDialog::setupUi(DAbstractDialog *Dialog)
 
     // Right layout.
     auto rightLayout = new QVBoxLayout();
+    rightLayout->setContentsMargins(0, 0, 0, 0);
 
     stackWidget = new DStackedWidget(Dialog);
     rightLayout->addWidget(stackWidget);
 
-    QWidget *box = new QWidget();
-    QHBoxLayout *box_layout = new QHBoxLayout(box);
-    box_layout->setContentsMargins(0, 30, 0, 30);
+    QHBoxLayout *box_layout = new QHBoxLayout(this);
+    box_layout->setSpacing(9);
+    DVerticalLine *vLine = new DVerticalLine(this);
+    vLine->setLineWidth(1);
+    box_layout->setContentsMargins(0, 10, 0, 20);
 
-    auto cancelBtn = new DPushButton(tr("Cancel"), box);
+    auto cancelBtn = new DPushButton(tr("Cancel"), this);
     connect(cancelBtn, &DPushButton::clicked, [this] {
         // TODO(Mozart)
         this->close();
     });
-    auto applyBtn = new DSuggestButton(tr("Apply"), box);
+    auto applyBtn = new DSuggestButton(tr("Apply"), this);
     connect(applyBtn, SIGNAL(clicked()), this, SLOT(saveAllConfig()));
     cancelBtn->setMinimumWidth(173);
     cancelBtn->setAutoDefault(false);
+
     applyBtn->setMinimumWidth(173);
     applyBtn->setAutoDefault(true);
+
     box_layout->setAlignment(Qt::AlignCenter);
     box_layout->addWidget(cancelBtn);
-    box_layout->addSpacing(20);
+    box_layout->addWidget(vLine);
     box_layout->addWidget(applyBtn);
-    box->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    rightLayout->addWidget(box);
+    rightLayout->addLayout(box_layout);
 
     // Insert left & right layout to main layout.
 
     QVBoxLayout *bgGpLayout = new QVBoxLayout;
-    bgGpLayout->setContentsMargins(0, 0, 0, 0);
     DBackgroundGroup *bgGroup = new DBackgroundGroup(bgGpLayout);
     bgGroup->setItemMargins(QMargins(0, 0, 0, 0));
     bgGroup->setBackgroundRole(QPalette::Window);
