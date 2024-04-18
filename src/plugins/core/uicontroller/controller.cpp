@@ -23,6 +23,7 @@
 #include <DTitlebar>
 #include <DStackedWidget>
 #include <DSearchEdit>
+#include <DFontSizeManager>
 
 #include <QDebug>
 #include <QShortcut>
@@ -409,15 +410,20 @@ void Controller::addContextWidget(const QString &title, AbstractWidget *contextW
     DPushButton *tabBtn = new DPushButton(title);
     tabBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     tabBtn->setCheckable(true);
+    tabBtn->setFixedHeight(28);
     tabBtn->setFlat(true);
     tabBtn->setFocusPolicy(Qt::NoFocus);
-
+    DFontSizeManager *fontSizeManager = DFontSizeManager::instance();
+    QFont font = fontSizeManager->t7();
+    tabBtn->setFont(font);
     if (!isVisible)
         tabBtn->hide();
 
     QHBoxLayout *btnLayout = static_cast<QHBoxLayout *>(d->contextTabBar->layout());
-    btnLayout->addWidget(tabBtn);
 
+    btnLayout->addWidget(tabBtn);
+    btnLayout->setSpacing(0);
+    btnLayout->setContentsMargins(12, 6, 12, 6);
     connect(tabBtn, &DPushButton::clicked, qWidget, [=] {
         switchContextWidget(title);
     });
@@ -811,6 +817,8 @@ void Controller::initContextWidget()
 
     DStyle::setFrameRadius(d->contextTabBar, 0);
     d->contextTabBar->setLineWidth(0);
+    d->contextTabBar->setFixedHeight(40);
+
     QHBoxLayout *contextTabLayout = new QHBoxLayout(d->contextTabBar);
     contextTabLayout->setAlignment(Qt::AlignLeft);
 
