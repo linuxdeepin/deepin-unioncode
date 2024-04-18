@@ -24,11 +24,11 @@ ConfigureWidget::ConfigureWidget(QWidget *parent)
 {
     setAutoFillBackground(true);
     setWidgetResizable(true);
-    d->centrelWidget = new DWidget();
+    d->centrelWidget = new DWidget(this);
     d->centrelWidget->setObjectName("ConfigureCentrelWidget");
     d->centrelWidget->setAutoFillBackground(true);
     d->layout = new QVBoxLayout(d->centrelWidget);
-    d->layout->setContentsMargins(10, 10, 10, 10);
+    d->layout->setContentsMargins(20, 20, 20, 20);
     d->centrelWidget->setLayout(d->layout);
     setWidget(d->centrelWidget);
 }
