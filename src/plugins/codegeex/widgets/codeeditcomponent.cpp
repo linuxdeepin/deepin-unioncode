@@ -211,18 +211,21 @@ void CodeEditComponent::initUI()
     initButton();
 
     editFrame = new DFrame(this);
+    editFrame->setFrameRounded(true);
+    editFrame->setLineWidth(2);
     auto editLayout = new QVBoxLayout(editFrame);
-    editLayout->setContentsMargins(0, 0, 0, 0);
+    editLayout->setContentsMargins(2, 0, 2, 2);
     editFrame->setLayout(editLayout);
 
     auto buttonLayout = new QHBoxLayout;
-    buttonLayout->setContentsMargins(0, 0, 10, 0);
+    buttonLayout->setSpacing(10);
+    buttonLayout->setContentsMargins(0, 5, 10, 5);
     buttonLayout->setAlignment(Qt::AlignRight);
 
     buttonLayout->addWidget(copyButton);
     buttonLayout->addWidget(insertButton);
 
-    codeEdit = new DTextEdit(this);
+    codeEdit = new QTextEdit(this);
     codeEdit->setFrameShape(QFrame::NoFrame);
     codeEdit->setWordWrapMode(QTextOption::WrapMode::NoWrap);
     codeEdit->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
@@ -259,14 +262,12 @@ void CodeEditComponent::initTitleWidgets()
 
 void CodeEditComponent::initButton()
 {
-    copyButton = new DPushButton(this);
-    copyButton->setFlat(true);
+    copyButton = new DToolButton(this);
     copyButton->setIcon(QIcon::fromTheme("codegeex_copy"));
     copyButton->setFixedSize(QSize(24, 24));
     copyButton->setToolTip(tr("Copy"));
 
-    insertButton = new DPushButton(this);
-    insertButton->setFlat(true);
+    insertButton = new DToolButton(this);
     insertButton->setIcon(QIcon::fromTheme("codegeex_insert"));
     insertButton->setFixedSize(QSize(24, 24));
     insertButton->setToolTip(tr("Insert into code area"));
