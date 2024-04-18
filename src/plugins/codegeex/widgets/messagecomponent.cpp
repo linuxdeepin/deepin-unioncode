@@ -8,6 +8,9 @@
 
 #include <DLabel>
 #include <DPushButton>
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
+#include <DPaletteHelper>
+#endif
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -70,19 +73,28 @@ void MessageComponent::updateMessage(const MessageData &msgData)
 void MessageComponent::initUI()
 {
     setAutoFillBackground(true);
+    setLineWidth(0);
 
     QVBoxLayout *msgLayout = new QVBoxLayout;
     setLayout(msgLayout);
 
     QColor bgColor;
     if (messageData.messageType() == MessageData::Ask) {
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
+        DPalette palatte = DPaletteHelper::instance()->palette(this);
+        bgColor = palatte.color(DPalette::ColorType::LightLively);
+        bgColor.setAlpha(0xD);
+        palatte.setColor(DPalette::ColorType::LightLively, bgColor);
+        DPaletteHelper::instance()->setPalette(this, palatte);
+        setBackgroundRole(DPalette::ColorType::LightLively);
+#else
         auto palatte = palette();
         bgColor = palatte.color(QPalette::Highlight);
         bgColor.setAlpha(0xD);
-
         palatte.setColor(QPalette::Background, bgColor);
         setPalette(palatte);
         setBackgroundRole(QPalette::Background);
+#endif
     } else {
         setBackgroundRole(DPalette::ColorType::ItemBackground);
     }
@@ -109,12 +121,12 @@ void MessageComponent::initSenderInfo()
     switch (messageData.messageType()) {
     case MessageData::Ask: {
         senderName->setText("You");
-        senderHead->setPixmap(QIcon::fromTheme("codegeex_user").pixmap(30, 30));
+        senderHead->setPixmap(QIcon::fromTheme("codegeex_user").pixmap(24, 24));
         break;
     }
     case MessageData::Anwser:
         senderName->setText("CodeGeeX");
-        senderHead->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(30, 30));
+        senderHead->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(24, 24));
         editButton->setVisible(false);
         break;
     }
