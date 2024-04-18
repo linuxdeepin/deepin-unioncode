@@ -173,7 +173,7 @@ void CodeGeeXWidget::initConnection()
 void CodeGeeXWidget::initAskWidget()
 {
     QHBoxLayout *tabLayout = new QHBoxLayout;
-    tabLayout->setContentsMargins(0, 20, 0, 0);
+    tabLayout->setContentsMargins(0, 20, 0, 20);
     tabLayout->setAlignment(Qt::AlignHCenter);
 
     //套一层DWidget，用以登出时删除现有窗口。 直接使用layout会删不掉。
