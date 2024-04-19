@@ -38,44 +38,44 @@
 <context>
     <name>AskPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="99"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="135"/>
         <source>This operation will delete all the content of this session. confirm to delete it?</source>
         <translation>该操作将删除该会话的全部内容，确定删除吗?</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="136"/>
         <source>Cancel</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="101"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="137"/>
         <source>Delete</source>
         <comment>button</comment>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="144"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="180"/>
         <source>stop generate</source>
         <translation>终止生成</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="173"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="208"/>
         <source>delete this session</source>
         <translation>删除该会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="181"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="215"/>
         <source>history sessions</source>
         <translation>历史会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="186"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="220"/>
         <source>create new session</source>
         <translation>创建新会话</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="192"/>
+        <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="225"/>
         <source>Ask question here, press Enter to send...</source>
         <translation>在这里提问，按Enter键发送...</translation>
     </message>
@@ -656,12 +656,12 @@ storage: %2
 <context>
     <name>CodeEditComponent</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="266"/>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="268"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="272"/>
+        <location filename="../../src/plugins/codegeex/widgets/codeeditcomponent.cpp" line="273"/>
         <source>Insert into code area</source>
         <translation>插入代码到代码区</translation>
     </message>
@@ -765,29 +765,29 @@ storage: %2
 <context>
     <name>CodeGeeXWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="135"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="144"/>
         <source>Welcome to CodeGeeX
 A must-have all-round AI tool for developers</source>
         <translation>欢迎使用CodeGeeX&lt;br /&gt;开发者必备的全能AI工具</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="142"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="151"/>
         <source>Go to login</source>
         <translation>前往登陆</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="208"/>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="239"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="218"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="249"/>
         <source>Ask CodeGeeX</source>
         <translation>询问 CodeGeeX</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="211"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="221"/>
         <source>Translation</source>
         <translation>代码翻译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="227"/>
+        <location filename="../../src/plugins/codegeex/widgets/codegeexwidget.cpp" line="237"/>
         <source>Creating a new session...</source>
         <translation>创建新的会话中...</translation>
     </message>
@@ -993,14 +993,39 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Copilot</name>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="95"/>
-        <source>add comment</source>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="93"/>
+        <source>Add Comment</source>
         <translation>添加注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/copilot.cpp" line="96"/>
-        <source>translate</source>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="94"/>
+        <source>Translate</source>
         <translation>翻译</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="95"/>
+        <source>Fix Bug</source>
+        <translation>修复bug</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="96"/>
+        <source>Explain Code</source>
+        <translation>解释代码</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="97"/>
+        <source>Review Code</source>
+        <translation>代码审查</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="98"/>
+        <source>Generate Unit Tests</source>
+        <translation>生成单元测试</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/copilot.cpp" line="99"/>
+        <source>Generate git commits</source>
+        <translation>生成git commits</translation>
     </message>
 </context>
 <context>
@@ -1187,9 +1212,14 @@ dap端口未就绪，请重试。
         <translation>JS解释器： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="56"/>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="59"/>
         <source>Code Completion:</source>
-        <translation>代码补全</translation>
+        <translation>代码补全：</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="65"/>
+        <source>model</source>
+        <translation>模型</translation>
     </message>
 </context>
 <context>
@@ -1334,6 +1364,16 @@ Delete anyway?</source>
         <location filename="../../src/plugins/template/wizard/detailwidget.cpp" line="206"/>
         <source>Can not find kit.</source>
         <translation>找不到配套工具。</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="74"/>
+        <source>Quickly Answer Questions</source>
+        <translation>快速回答问题</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="76"/>
+        <source>Provide More Accurate Answers to Technical Questions</source>
+        <translation>在技术问题上提供更准确的回答</translation>
     </message>
 </context>
 <context>
@@ -1769,8 +1809,8 @@ Delete anyway?</source>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="71"/>
-        <source>CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.</source>
-        <translation>CodeGeeX在编辑器提供代码补全建议，按%1Tab%2键即可接受</translation>
+        <source>CodeGeeX provides code completion suggestions in editor, Press %1 Ctrl + T %2 to accept.</source>
+        <translation>CodeGeex在编辑器提供代码补全建议，按%1 Ctrl + T %2即可接受</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/intropage.cpp" line="72"/>
@@ -2057,7 +2097,7 @@ repos path: %0</source>
 <context>
     <name>MessageComponent</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="106"/>
+        <location filename="../../src/plugins/codegeex/widgets/messagecomponent.cpp" line="119"/>
         <source>edit</source>
         <translation>编辑</translation>
     </message>
@@ -4373,12 +4413,12 @@ not exists support files: %0</source>
 <context>
     <name>TranslationPageWidget</name>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="67"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="68"/>
         <source>Input Code</source>
         <translation>输入代码</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="68"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="69"/>
         <source>Please input the code to be translated</source>
         <translation>请输入要翻译的代码</translation>
     </message>
@@ -4388,7 +4428,7 @@ not exists support files: %0</source>
         <translation>翻译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="88"/>
+        <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="87"/>
         <source>Output Code</source>
         <translation>输出代码</translation>
     </message>
