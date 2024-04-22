@@ -98,7 +98,7 @@ void LoadCoreDialog::setupUi()
     centerLayout->setMargin(0);
     centerLayout->setContentsMargins(0, 0, 0, 5);
 
-    connect(d->traceDir, &DLineEdit::textChanged,
+    connect(d->traceDir, &DLineEdit::editingFinished,
             this, &LoadCoreDialog::updatePid);
 
     connect(btnBrowser, &DSuggestButton::clicked, this, &LoadCoreDialog::showFileDialog);
@@ -114,7 +114,7 @@ void LoadCoreDialog::updatePid()
     QString traceDir = d->traceDir->text();
     QDir dir(traceDir);
     bool okEnabled = dir.exists();
-    getButton(1)->setEnabled(okEnabled);
+    getButton(1)->setEnabled(okEnabled && !traceDir.isEmpty());
 
     // fill pid combo list here!
     if (okEnabled) {
@@ -132,6 +132,9 @@ void LoadCoreDialog::updatePid()
         }
 
         d->pidInput->setCurrentIndex(0);
+    } else {
+        d->traceDir->showAlertMessage(tr("Invalid Path!"), 500);
+
     }
 }
 
