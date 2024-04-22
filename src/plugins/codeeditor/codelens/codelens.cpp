@@ -30,6 +30,7 @@ CodeLens::CodeLens(QWidget *parent)
     d->lens = new CodeLensTree();
     d->gLayout = new QGridLayout();
     d->gLayout->addWidget(d->lens);
+    d->gLayout->setMargin(0);
     setLayout(d->gLayout);
     QObject::connect(d->lens, &CodeLensTree::doubleClicked, this, &CodeLens::doubleClicked);
 }
