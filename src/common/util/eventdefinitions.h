@@ -79,6 +79,11 @@ OPI_OBJECT(uiController,
            OPI_INTERFACE(switchToWidget, "name")
            )
 
+OPI_OBJECT(notifyManager,
+           // out
+           OPI_INTERFACE(actionInvoked, "actionId")
+           )
+
 OPI_OBJECT(actionanalyse,
            // in
            OPI_INTERFACE(analyse, "workspace", "language", "storage")
