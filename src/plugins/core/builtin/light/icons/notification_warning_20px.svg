@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>notification/warning</title>
+    <defs>
+        <linearGradient x1="50%" y1="-68.469118%" x2="50%" y2="125.234786%" id="linearGradient-1">
+            <stop stop-color="#FFD56A" offset="0%"></stop>
+            <stop stop-color="#F3B517" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="notification/warning" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M10.6156673,2.0466344 L19.3667983,16.9235571 C19.5668122,17.2635807 19.4533119,17.7013677 19.1132882,17.9013816 C19.0035192,17.9659516 18.878483,18 18.751131,18 L1.24886903,18 C0.854379923,18 0.534583316,17.6802034 0.534583316,17.2857143 C0.534583316,17.1583623 0.568631715,17.0333261 0.633201734,16.9235571 L9.3843327,2.0466344 C9.58434662,1.70661075 10.0221336,1.59311042 10.3621572,1.79312434 C10.4668384,1.85470151 10.5540901,1.94195321 10.6156673,2.0466344 Z" id="三角形" fill="url(#linearGradient-1)"></path>
+        <g id="warning" transform="translate(9, 6)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="Combined-Shape">
+                <path d="M0,0 L2,0 L2,6 L0,6 L0,0 Z M0,8 L2,8 L2,10 L0,10 L0,8 Z"></path>
+            </g>
+        </g>
+    </g>
+</svg>

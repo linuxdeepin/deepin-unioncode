@@ -48,7 +48,8 @@ class CodeGeeXManager : public QObject
 public:
     static CodeGeeXManager *instance();
 
-    void login();
+    Q_INVOKABLE void login();
+    bool isLoggedIn() const;
 
     void saveConfig(const QString &sessionId, const QString &userId);
     void loadConfig();
