@@ -56,8 +56,13 @@ void MessageComponent::updateMessage(const MessageData &msgData)
             curUpdateLabel->setWordWrap(true);
             msgLayout->addWidget(curUpdateLabel);
         }
-        if (!messageData.messageLines().isEmpty() && msgData.messageLines().last() != messageData.messageLines().last())
-            curUpdateLabel->setText(msgData.messageLines().last());
+        if (!messageData.messageLines().isEmpty() && msgData.messageLines().last()
+                != messageData.messageLines().last()) {
+            auto messageLine = msgData.messageLines().last();
+            // TODO(Mozart): use markdown format
+            messageLine.replace("`", "");
+            curUpdateLabel->setText(messageLine);
+        }
         break;
     case CodeEdit:
         if (curUpdateEdit) {
