@@ -17,7 +17,7 @@ SymbolReceiver::SymbolReceiver(QObject *parent)
     : dpf::EventHandler (parent)
     , dpf::AutoEventHandlerRegister<SymbolReceiver> ()
 {
-
+    qRegisterMetaType<SymbolParseArgs>("SymbolParseArgs");
 }
 
 dpf::EventHandler::Type SymbolReceiver::type()
@@ -40,7 +40,10 @@ void SymbolReceiver::eventProcess(const dpf::Event &event)
         QString language = info.language();
         QString storage = FO::checkCreateDir(FO::checkCreateDir(workspace, ".unioncode"), "symbol");
         if (!language.isEmpty() && !storage.isEmpty()) {
-            SymbolKeeper::instance()->doParse({workspace, language, storage});
+            SymbolParseArgs args { workspace, language, storage };
+            QMetaObject::invokeMethod(SymbolKeeper::instance(), "doParse",
+                                      Qt::QueuedConnection,
+                                      Q_ARG(SymbolParseArgs, args));
         }
         SymbolKeeper::instance()->treeView()->setRootPath(storage);
     } else if (event.data() == symbol.parse.name) { // "workspace", "language", "storage"
