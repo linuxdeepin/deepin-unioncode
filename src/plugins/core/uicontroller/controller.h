@@ -26,6 +26,7 @@ public:
     static Controller *instance();
 
     void registerModule(const QString &moduleName, AbstractModule *module);
+    MainWindow *mainWindow() const;
 
 public slots:
     //mode : MD_EDIT/MD_DEBUG/MD_RECENT
