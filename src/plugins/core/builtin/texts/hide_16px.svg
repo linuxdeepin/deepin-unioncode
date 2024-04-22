@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>ICON / statusbar / hide</title>
+    <g id="ICON-/-statusbar-/-hide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="arrow_left" transform="translate(7.8333, 8) scale(-1, 1) translate(-7.8333, -8)translate(1.6167, 4.6167)" fill="#000000">
+            <path d="M8.66109127,-2.67224206 C8.87587963,-2.88703042 9.22412037,-2.88703042 9.43890873,-2.67224206 C9.65369709,-2.4574537 9.65369709,-2.10921296 9.43890873,-1.8944246 L4.16033333,3.38266667 L9.43890873,8.66109127 C9.62983172,8.85201426 9.65104538,9.1483811 9.50254973,9.36273605 L9.43890873,9.43890873 C9.22412037,9.65369709 8.87587963,9.65369709 8.66109127,9.43890873 L2.9944246,3.77224206 C2.77963624,3.5574537 2.77963624,3.20921296 2.9944246,2.9944246 L8.66109127,-2.67224206 Z" transform="translate(6.2167, 3.3833) scale(1, -1) rotate(-270) translate(-6.2167, -3.3833)"></path>
+        </g>
+    </g>
+</svg>
