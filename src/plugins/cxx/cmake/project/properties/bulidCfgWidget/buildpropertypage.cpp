@@ -9,6 +9,7 @@
 #include "stepspane.h"
 #include "targetsmanager.h"
 #include "services/project/projectservice.h"
+#include "cmakeCfgWidget/cmakepropertypage.h"
 
 #include <DTabWidget>
 #include <DPushButton>
@@ -33,6 +34,7 @@ class DetailPropertyWidgetPrivate
     StepsPane *buildStepsPane{nullptr};
     StepsPane *cleanStepsPane{nullptr};
     EnvironmentWidget *envWidget{nullptr};
+    CMakePropertyPage *cmakeWidget{nullptr};
 };
 
 DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
@@ -45,20 +47,27 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     d->buildStepsPane = new StepsPane(this);
     d->cleanStepsPane = new StepsPane(this);
     d->envWidget = new EnvironmentWidget(this);
+    d->cmakeWidget = new CMakePropertyPage(this);
 
     DStackedWidget *stackWidget = new DStackedWidget(this);
     stackWidget->insertWidget(0, d->buildStepsPane);
     stackWidget->insertWidget(1, d->cleanStepsPane);
     stackWidget->insertWidget(2, d->envWidget);
+    stackWidget->insertWidget(3, d->cmakeWidget);
+
+    auto buildPage = static_cast<BuildPropertyPage *>(parentWidget());
+    if (buildPage)
+        connect(d->cmakeWidget, &CMakePropertyPage::cacheFileUpdated, buildPage, &BuildPropertyPage::cacheFileUpdated);
 
     DButtonBoxButton *btnBuild = new DButtonBoxButton(QObject::tr("Build Steps"), this);
     btnBuild->setCheckable(true);
     btnBuild->setChecked(true);
     DButtonBoxButton *btnClean = new DButtonBoxButton(QObject::tr("Clean Steps"), this);
     DButtonBoxButton *btnEnv = new DButtonBoxButton(QObject::tr("Runtime Env"), this);
+    DButtonBoxButton *btnCMake = new DButtonBoxButton(QObject::tr("CMake config"), this);
 
     DButtonBox *btnbox = new DButtonBox(this);
-    QList<DButtonBoxButton *> list { btnBuild, btnClean, btnEnv };
+    QList<DButtonBoxButton *> list { btnBuild, btnClean, btnEnv, btnCMake};
     btnbox->setButtonList(list, true);
 
     auto frame = new DWidget(this);
@@ -74,6 +83,8 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
             stackWidget->setCurrentIndex(1);
         else if (button == btnEnv)
             stackWidget->setCurrentIndex(2);
+        else if (button == btnCMake)
+            stackWidget->setCurrentIndex(3);
     });
 
     addWidget(frame);
@@ -96,6 +107,10 @@ void DetailPropertyWidget::setValues(const BuildTypeConfigure &configure)
             d->cleanStepsPane->setValues(*iter);
     }
 
+    auto cacheFile = configure.directory + QDir::separator() + "CMakeCache.txt";
+    if (QFileInfo(cacheFile).exists())
+        d->cmakeWidget->getItemsFromCacheFile(cacheFile);
+
     d->envWidget->setValues(configure.buildConfigure.env);
 }
 
@@ -110,6 +125,11 @@ void DetailPropertyWidget::getValues(BuildTypeConfigure &configure)
     }
 
     d->envWidget->getValues(configure.buildConfigure.env);
+
+    auto cacheFile = configure.directory + QDir::separator() + "CMakeCache.txt";
+    if (QFileInfo(cacheFile).exists()) {
+        d->cmakeWidget->saveConfigToCacheFile(cacheFile);
+    }
 }
 
 class BuildPropertyWidgetPrivate
@@ -226,7 +246,6 @@ void BuildPropertyPage::initData(const dpfservice::ProjectInfo &projectInfo)
     d->configureComboBox->clear();
 
     ProjectConfigure *param = ConfigUtil::instance()->getConfigureParamPointer();
-
     auto iter = param->buildTypeConfigures.begin();
     int index = 0;
     for (; iter != param->buildTypeConfigures.end(); ++iter, index++) {
@@ -244,7 +263,7 @@ void BuildPropertyPage::initData(const dpfservice::ProjectInfo &projectInfo)
             }
         }
 
-        DetailPropertyWidget *detailWidget = new DetailPropertyWidget();
+        DetailPropertyWidget *detailWidget = new DetailPropertyWidget(this);
         detailWidget->setValues(*iter);
         d->stackWidget->insertWidget(index, detailWidget);
 
