@@ -17,6 +17,7 @@
 #include <DStandardItem>
 #include <DSuggestButton>
 #include <DButtonBox>
+#include <DFrame>
 
 #include <QStandardItemModel>
 #include <QDebug>
@@ -75,13 +76,20 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     d->blankWidget = new DetailWidget(this);
     d->detailStackedWidget->addWidget(d->blankWidget);
 
-    DTreeView * treeView =  new DTreeView();
+    DFrame *leftFrame = new DFrame(this);
+    leftFrame->setFixedHeight(this->height());
+    leftFrame->setContentsMargins(0, 0, 0, 0);
+    DStyle::setFrameRadius(leftFrame, 0);
+    DTreeView * treeView =  new DTreeView(leftFrame);
+    treeView->move(10, 0);
     treeView->setHeaderHidden(true);
+    treeView->setLineWidth(0);
 
     treeView->setEditTriggers(DTreeView::NoEditTriggers);
     treeView->setSelectionMode(DTreeView::SingleSelection);
     treeView->setSelectionBehavior(DTreeView::SelectRows);
     treeView->setSelectionMode(DTreeView::SingleSelection);
+    treeView->setFixedHeight(leftFrame->height());
 
 
     //deafult new file显示
@@ -93,10 +101,13 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     QVector<TemplateCategory> tplVec = iterTpl->templateVec;
     for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
         DStandardItem *typeItem = new DStandardItem(iterCate->type);
+        typeItem->setSizeHint(QSize(100, 30));
+        typeItem->setFlags(typeItem->flags() &~ Qt::ItemIsSelectable);
         rootItem->appendRow(typeItem);
         auto iterDetail = iterCate->templateVec.begin();
         for (; iterDetail != iterCate->templateVec.end(); ++iterDetail) {
             DStandardItem *detailItem = new DStandardItem(iterDetail->name);
+            detailItem->setSizeHint(QSize(100, 36));
             TemplateDetail detail;
             detail.name = iterDetail->name;
             detail.path = iterDetail->path;
@@ -104,10 +115,6 @@ void MainDialog::setupUI(TemplateVector &templateVec)
             detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
             detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
             typeItem->appendRow(detailItem);
-
-            QFont font;
-            font.setPointSize(12);
-            detailItem->setFont(font);
         }
     }
     treeView->setModel(StandardModel);
@@ -123,10 +130,13 @@ void MainDialog::setupUI(TemplateVector &templateVec)
             QVector<TemplateCategory> tplVec = iterTpl->templateVec;
             for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
                 DStandardItem *typeItem = new DStandardItem(iterCate->type);
+                typeItem->setFlags(typeItem->flags() &~ Qt::ItemIsSelectable);
+                typeItem->setSizeHint(QSize(100, 30));
                 rootItem->appendRow(typeItem);
                 auto iterDetail = iterCate->templateVec.begin();
                 for (; iterDetail != iterCate->templateVec.end(); ++iterDetail) {
                     DStandardItem *detailItem = new DStandardItem(iterDetail->name);
+                    detailItem->setSizeHint(QSize(100, 36));
                     TemplateDetail detail;
                     detail.name = iterDetail->name;
                     detail.path = iterDetail->path;
@@ -135,10 +145,6 @@ void MainDialog::setupUI(TemplateVector &templateVec)
                     detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
                     detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
                     typeItem->appendRow(detailItem);
-
-                    QFont font;
-                    font.setPointSize(12);
-                    detailItem->setFont(font);
                 }
             }
             treeView->setModel(StandardModel);
@@ -153,11 +159,14 @@ void MainDialog::setupUI(TemplateVector &templateVec)
             for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
 
                 DStandardItem *typeItem = new DStandardItem(iterCate->type);
+                typeItem->setFlags(typeItem->flags() &~ Qt::ItemIsSelectable);
+                typeItem->setSizeHint(QSize(100, 30));
                 rootItem->appendRow(typeItem);
 
                 auto iterDetail = iterCate->templateVec.begin();
                 for (; iterDetail != iterCate->templateVec.end(); ++iterDetail) {
                     DStandardItem *detailItem = new DStandardItem(iterDetail->name);
+                    detailItem->setSizeHint(QSize(100, 36));
                     TemplateDetail detail;
                     detail.name = iterDetail->name;
                     detail.path = iterDetail->path;
@@ -166,10 +175,6 @@ void MainDialog::setupUI(TemplateVector &templateVec)
                     detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
                     detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
                     typeItem->appendRow(detailItem);
-
-                    QFont font;
-                    font.setPointSize(12);
-                    detailItem->setFont(font);
                 }
             }
             treeView->setModel(StandardModel);
@@ -224,7 +229,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
 
 
     QVBoxLayout *leftLayout = new QVBoxLayout();
-    leftLayout->addWidget(treeView);
+    leftLayout->addWidget(leftFrame);
 
     QVBoxLayout *rightLayout = new QVBoxLayout();
     rightLayout->setContentsMargins(0, 10, 0, 0);
