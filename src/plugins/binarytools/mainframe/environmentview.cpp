@@ -112,11 +112,16 @@ QVariant EnvironmentModel::headerData(int section, Qt::Orientation orientation, 
     return {};
 }
 
-void EnvironmentModel::append(const QString &key, const QVariant &value)
+QModelIndex EnvironmentModel::append(const QString &key, const QVariant &value)
 {
-    beginInsertRows({}, d->envs.keys().count(), d->envs.keys().count());
+    beginResetModel();
     d->envs.insert(key, value);
-    endInsertRows();
+    endResetModel();
+
+    for (int row = 0; row < d->envs.count(); row++) {
+        if (index(row, 0).data() == key)
+            return index(row, 0);
+    }
 }
 
 void EnvironmentModel::remove(QModelIndex &index)
@@ -124,10 +129,10 @@ void EnvironmentModel::remove(QModelIndex &index)
     if (d->envs.keys().isEmpty() || index.row() < 0)
         return;
 
-    beginRemoveRows({}, d->envs.keys().count(), d->envs.keys().count());
+    beginResetModel();
     QString key = d->envs.keys()[index.row()];
     d->envs.remove(key);
-    endRemoveRows();
+    endResetModel();
 }
 
 void EnvironmentModel::update(const QMap<QString, QVariant> &data)
@@ -261,7 +266,8 @@ const QMap<QString, QVariant> EnvironmentView::getEnvironment()
 
 void EnvironmentView::appendRow()
 {
-    d->model->append("<KEY>", "<VALUE>");
+    auto index = d->model->append("<KEY>", "<VALUE>");
+    d->tableView->setCurrentIndex(index);
 }
 
 void EnvironmentView::deleteRow()
