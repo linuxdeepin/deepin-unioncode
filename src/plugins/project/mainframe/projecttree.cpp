@@ -358,21 +358,20 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childIte
         actionOpenInTerminal(childItem);
     });
 
-    // add delete file menu item.
-    QAction *deleteDocAction = new QAction(tr("Delete Document"), this);
-    QObject::connect(deleteDocAction, &QAction::triggered, this, [=](){
-        actionDeleteDocument(childItem);
-    });
-
-    if (info.isDir()) {
+    if (info.isDir())
         menu->addAction(newDocAction);
-        deleteDocAction->setEnabled(false);
-    }
+
     if (info.isFile()) {
         newDocAction->setEnabled(false);
+        // add delete file menu item.
+        QAction *deleteDocAction = new QAction(tr("Delete Document"), this);
+        QObject::connect(deleteDocAction, &QAction::triggered, this, [=](){
+            actionDeleteDocument(childItem);
+        });
         deleteDocAction->setEnabled(true);
+
+        menu->addAction(deleteDocAction);
     }
-    menu->addAction(deleteDocAction);
 
     return menu;
 }
