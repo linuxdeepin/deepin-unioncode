@@ -26,6 +26,7 @@ void WorkspaceWidget::initUi()
     setMinimumWidth(kMinimumWidth);
 
     editWorkspaceWidget = new DFrame(this);
+    editWorkspaceWidget->setLineWidth(0);
     DStyle::setFrameRadius(editWorkspaceWidget, 0);
     stackEditWorkspaceWidget = new DStackedWidget(this);
     workspaceTabBar = new DFrame(this);
@@ -74,12 +75,20 @@ void WorkspaceWidget::addWorkspaceWidget(const QString &title, AbstractWidget *t
 
 bool WorkspaceWidget::switchWidgetWorkspace(const QString &title)
 {
-    stackEditWorkspaceWidget->setCurrentWidget(editWorkspaceWidgets[title]);
+    auto widget = editWorkspaceWidgets[title];
+    stackEditWorkspaceWidget->setCurrentWidget(widget);
     for (auto it = workspaceTabButtons.begin(); it != workspaceTabButtons.end(); ++it) {
         it.value()->setChecked(false);
         if (it.key() == title)
             it.value()->setChecked(true);
     }
 
+    emit expandStateChange(widget->property("canExpand").toBool());
+
     return false;
+}
+
+bool WorkspaceWidget::getCurrentExpandState()
+{
+    return stackEditWorkspaceWidget->currentWidget()->property("canExpand").toBool();
 }

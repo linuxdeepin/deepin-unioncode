@@ -80,6 +80,8 @@ ProjectTree::ProjectTree(QWidget *parent)
     d->delegate = new ProjectDelegate(this);
     setItemDelegate(d->delegate);
     this->setDragEnabled(true);
+
+    setProperty("canExpand", true);
 }
 
 ProjectTree::~ProjectTree()
