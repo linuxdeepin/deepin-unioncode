@@ -5,6 +5,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include "services/window/windowcontroller.h"
+#include "gui/dockheader.h"
+
 #include <DMainWindow>
 #include <DMenu>
 #include <DDockWidget>
@@ -40,6 +42,8 @@ public:
     void removeWidget(const QString &name);
     void removeWidget(Position pos);
 
+    void deleteDockHeader(const QString &name);
+    void addToolBtnToDockHeader(const QString &dockName, DToolButton *btn);
     void setDockWidgetFeatures(const QString &name, QDockWidget::DockWidgetFeatures feature);
     //size(width,heigt) width used for widget in Left and Right.
     //heigth used for widget in top and bottom
@@ -63,6 +67,7 @@ private:
     MainWindowPrivate *d;
 
     DDockWidget *createDockWidget(DWidget *widget);
+    void initDockHeader(DDockWidget *dock, Position pos);
     void addTopToolBar();
     void removeAllDockWidget();
 

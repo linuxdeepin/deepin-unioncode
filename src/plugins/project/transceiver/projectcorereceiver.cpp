@@ -23,7 +23,7 @@ dpf::EventHandler::Type ProjectCoreReceiver::type()
 
 QStringList ProjectCoreReceiver::topics()
 {
-    return {project.topic}; //绑定menu 事件
+    return {project.topic, workspace.topic}; //绑定menu 事件
 }
 
 void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
@@ -56,6 +56,10 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
                 }
             }
         }
+    } else if (event.data() == workspace.expandAll.name) {
+        ProjectKeeper::instance()->treeView()->expandAll();
+    } else if (event.data() == workspace.foldAll.name) {
+        ProjectKeeper::instance()->treeView()->collapseAll();
     }
 }
 
