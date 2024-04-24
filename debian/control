@@ -9,7 +9,7 @@ Build-Depends:
  qtbase5-dev,
  qttools5-dev,
  qttools5-dev-tools,
- qtwebengine5-dev,
+ qtwebengine5-dev[!loongarch64],
  lxqt-build-tools (>= 0.6.0~),
  libssl-dev,
  llvm (>=1:7~),
