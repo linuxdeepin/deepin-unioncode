@@ -238,6 +238,9 @@ void Controller::registerService()
     if (!windowService->hideStatusBar) {
         windowService->hideStatusBar = std::bind(&Controller::hideStatusBar, this);
     }
+    if (!windowService->addStatusBarItem) {
+        windowService->addStatusBarItem = std::bind(&Controller::addStatusBarItem, this, _1);
+    }
     if (!windowService->addWidgetWorkspace) {
         windowService->addWidgetWorkspace = std::bind(&WorkspaceWidget::addWorkspaceWidget, d->workspace, _1, _2, _3);
     }
@@ -908,6 +911,15 @@ void Controller::hideStatusBar()
 {
     if (d->statusBar)
         d->statusBar->hide();
+}
+
+void Controller::addStatusBarItem(QWidget *item)
+{
+    if (d->statusBar && item) {
+        if (!item->parent())
+            item->setParent(d->statusBar);
+        d->statusBar->insertPermanentWidget(0, item);
+    }
 }
 
 void Controller::switchWorkspace(const QString &titleName)
