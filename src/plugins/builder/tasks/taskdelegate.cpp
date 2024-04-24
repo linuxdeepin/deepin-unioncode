@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QDir>
 #include <QPainterPath>
+#include <QPalette>
 
 DWIDGET_USE_NAMESPACE
 
@@ -51,6 +52,7 @@ QSize TaskDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
         // Layout the description
         int leading = fontLeading;
         int height = 0;
+
         description.replace(QLatin1Char('\n'), QChar::LineSeparator);
         QTextLayout tl(description);
         tl.beginLayout();
@@ -179,6 +181,7 @@ void TaskDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem
     else {
         QFontMetrics fm(option.font);
         description.replace(QLatin1Char('\n'), QChar::LineSeparator);
+        painter->setPen(Qt::white);
         int height = 0;
         int leading = fm.leading();
         QTextLayout tl(description);
@@ -200,7 +203,7 @@ void TaskDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem
     const QString directory = QDir::toNativeSeparators(index.data(TaskModel::File).toString());
 
     if (isSelected) {
-        painter->setPen(option.palette.color(DPalette::ColorGroup::Active, QPalette::Text));
+        painter->setPen(Qt::white);
         if (index.data(TaskModel::FileNotFound).toBool() && !directory.isEmpty()) {
             QString fileNotFound = tr("File not found: %1").arg(directory);
             painter->setPen(Qt::red);
