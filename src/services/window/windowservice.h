@@ -11,6 +11,8 @@
 
 #include <framework/framework.h>
 
+#include <DToolButton>
+
 #include <QMap>
 #include <QDockWidget>
 
@@ -92,6 +94,8 @@ public:
 
     DPF_INTERFACE(void, setDockWidgetFeatures, const QString &name, QDockWidget::DockWidgetFeatures feature);
 
+    DPF_INTERFACE(void, deleteDockHeader, const QString &name);
+    DPF_INTERFACE(void, addToolBtnToDockHeader, const QString &name, DTK_WIDGET_NAMESPACE::DToolButton *btn);
     /*!
      * \brief add navigationItem to leftToolBar
      * \param action

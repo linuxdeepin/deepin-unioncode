@@ -106,6 +106,11 @@ OPI_OBJECT(options,
            OPI_INTERFACE(configSaved)
            )
 
+OPI_OBJECT(workspace,
+           OPI_INTERFACE(expandAll)
+           OPI_INTERFACE(foldAll)
+           )
+
 struct AnalysedData
 {
     struct TokenMap

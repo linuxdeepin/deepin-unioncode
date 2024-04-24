@@ -23,6 +23,10 @@ public:
 
     void addWorkspaceWidget(const QString &title, AbstractWidget *treeWidget, const QString &iconName);
     bool switchWidgetWorkspace(const QString &title);
+    bool getCurrentExpandState();
+
+signals:
+    void expandStateChange(bool canExpand);
 
 private:
     void initUi();
@@ -30,7 +34,7 @@ private:
     QVBoxLayout *mainLayout { nullptr };
 
     QMap<QString, DWidget *> workspaceWidgets;
-    DWidget *editWorkspaceWidget { nullptr };
+    DFrame *editWorkspaceWidget { nullptr };
 
     QMap<QString, DWidget *> editWorkspaceWidgets;
     QMap<QString, DToolButton *> workspaceTabButtons;
