@@ -164,6 +164,7 @@ public:
 
     DPF_INTERFACE(void, showStatusBar);
     DPF_INTERFACE(void, hideStatusBar);
+    DPF_INTERFACE(void, addStatusBarItem, QWidget *item);
 
     /*!
      * \brief addWidgetWorkspace
