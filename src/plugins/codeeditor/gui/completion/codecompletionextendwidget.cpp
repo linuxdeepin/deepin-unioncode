@@ -127,6 +127,9 @@ void CodeCompletionExtendWidgetPrivate::initUI()
 
     messageEdit = new QPlainTextEdit(q);
     messageEdit->setReadOnly(true);
+    QPalette pal = messageEdit->palette();
+    pal.setColor(QPalette::Text, q->palette().color(QPalette::WindowText));
+    messageEdit->setPalette(pal);
 
     QHBoxLayout *hLayout = new QHBoxLayout;
     hLayout->setContentsMargins(5, 0, 0, 0);
