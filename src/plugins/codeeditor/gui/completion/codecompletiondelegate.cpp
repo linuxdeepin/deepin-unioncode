@@ -48,6 +48,10 @@ void CodeCompletionDelegate::paint(QPainter *painter, const QStyleOptionViewItem
 
     opt.rect.adjust(iconRect.x() + 20, 0, 0, 0);
     opt.displayAlignment = Qt::AlignVCenter;
+
+    // Set the text color to windowText color
+    painter->setPen(option.palette.color(QPalette::WindowText));
+
     paintItemText(painter, opt, index);
 }
 
