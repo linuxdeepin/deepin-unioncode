@@ -115,11 +115,9 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 
     // Paint TaskIconArea:
     QPoint iconPos;
-    if (selected)
-        iconPos = QPoint(positions.left(),
-                         positions.getTop() + (positions.getBottom() - positions.getTop()) / 2 - positions.taskIconHeight());
-    else
-        iconPos = QPoint(positions.left(), positions.getTop());
+
+    iconPos = QPoint(positions.left() + 10,
+                     positions.getTop() + (positions.getBottom() - positions.getTop() - positions.taskIconHeight()) / 2 );
 
     QIcon icon = index.data(TaskModel::Icon).value<QIcon>();
     painter->drawPixmap(iconPos, icon.pixmap(positions.taskIconWidth(), positions.taskIconHeight()));
@@ -174,14 +172,19 @@ void TaskDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem
 
     bool isSelected = (option.state & QStyle::State_Selected) && option.showDecorationSelected;
 
-    painter->setPen(option.palette.color(DPalette::ColorGroup::Active, QPalette::BrightText));
+    if(DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::ColorType::DarkType){
+        painter->setPen(QColor(255, 255, 255, 180));
+    } else {
+        painter->setPen(QColor(0, 0, 0, 180));
+    }
+
     QString description = index.data(TaskModel::Description).toString();
     if (!isSelected)
         painter->drawText(textRect, Qt::AlignLeft, description);
     else {
         QFontMetrics fm(option.font);
         description.replace(QLatin1Char('\n'), QChar::LineSeparator);
-        painter->setPen(Qt::white);
+        painter->setPen(QColor(Qt::white));
         int height = 0;
         int leading = fm.leading();
         QTextLayout tl(description);
@@ -203,7 +206,7 @@ void TaskDelegate::paintItemColumn(QPainter *painter, const QStyleOptionViewItem
     const QString directory = QDir::toNativeSeparators(index.data(TaskModel::File).toString());
 
     if (isSelected) {
-        painter->setPen(Qt::white);
+        painter->setPen(QColor(Qt::white));
         if (index.data(TaskModel::FileNotFound).toBool() && !directory.isEmpty()) {
             QString fileNotFound = tr("File not found: %1").arg(directory);
             painter->setPen(Qt::red);
