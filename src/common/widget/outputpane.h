@@ -41,6 +41,7 @@ public:
 
     static OutputPane* instance();
 
+    void addApplicationOutPane();
 protected:
     void contextMenuEvent(QContextMenuEvent * event) override;
 
