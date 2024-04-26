@@ -101,7 +101,7 @@ void Runner::handleEvents(const dpf::Event &event)
 void Runner::running()
 {
     if(d->isRunning) {
-        outputMsg("The program is running, please try again later!", OutputPane::OutputFormat::ErrorMessage);
+        outputMsg(0, "The program is running, please try again later!", OutputPane::OutputFormat::ErrorMessage);
         return;
     }
 
@@ -130,7 +130,6 @@ bool Runner::execCommand(const RunCommandInfo &info)
 
     QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
             .arg(info.program, info.arguments.join(" "), info.workingDir);
-    outputMsg(startMsg, OutputPane::OutputFormat::NormalMessage);
 
     connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             [&](int exitcode, QProcess::ExitStatus exitStatus) {
@@ -152,7 +151,7 @@ bool Runner::execCommand(const RunCommandInfo &info)
         process.setReadChannel(QProcess::StandardOutput);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputMsg(line, OutputPane::OutputFormat::StdOut);
+            outputMsg(process.pid(), line, OutputPane::OutputFormat::StdOut);
         }
     });
 
@@ -160,24 +159,29 @@ bool Runner::execCommand(const RunCommandInfo &info)
         process.setReadChannel(QProcess::StandardError);
         while (process.canReadLine()) {
             QString line = QString::fromUtf8(process.readLine());
-            outputMsg(line, OutputPane::OutputFormat::StdErr);
+            outputMsg(process.pid(), line, OutputPane::OutputFormat::StdErr);
         }
     });
 
     process.start(info.program, info.arguments);
+    quint64 pid = process.pid();
+    QMetaObject::invokeMethod(AppOutputPane::instance(), "createApplicationPane", Q_ARG(quint64, pid), Q_ARG(QString, info.program));
+    outputMsg(pid, startMsg, OutputPane::OutputFormat::NormalMessage);
     process.waitForFinished(-1);
 
-    outputMsg(retMsg, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::StdErr);
+    AppOutputPane::instance()->setProcessFinished(pid);
+
+    outputMsg(pid, retMsg, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::StdErr);
 
     QString endMsg = tr("Execute command finished.\n");
-    outputMsg(endMsg, OutputPane::OutputFormat::NormalMessage);
+    outputMsg(pid, endMsg, OutputPane::OutputFormat::NormalMessage);
 
     return ret;
 }
 
-void Runner::outputMsg(const QString &content, OutputPane::OutputFormat format)
+void Runner::outputMsg(const quint64 &pid, const QString &content, OutputPane::OutputFormat format)
 {
-    QMetaObject::invokeMethod(this, "synOutputMsg", Q_ARG(QString, content), Q_ARG(OutputPane::OutputFormat, format));
+    QMetaObject::invokeMethod(this, "synOutputMsg", Q_ARG(quint64, pid), Q_ARG(QString, content), Q_ARG(OutputPane::OutputFormat, format));
 }
 
 ProjectInfo Runner::getActiveProjectInfo() const
@@ -185,9 +189,9 @@ ProjectInfo Runner::getActiveProjectInfo() const
     return dpfGetService(ProjectService)->getActiveProjectInfo();
 }
 
-void Runner::synOutputMsg(const QString &content, OutputPane::OutputFormat format)
+void Runner::synOutputMsg(const quint64 &pid, const QString &content, OutputPane::OutputFormat format)
 {
-    auto outputPane = OutputPane::instance();
+    auto outputPane = AppOutputPane::instance()->getOutputPaneByPid(pid);
     QString outputContent = content;
     if (format == OutputPane::OutputFormat::NormalMessage) {
         QTextDocument *doc = outputPane->document();
