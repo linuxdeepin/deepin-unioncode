@@ -12,6 +12,7 @@
 #include "commonparser.h"
 #include "transceiver/buildersender.h"
 #include "compileoutputpane.h"
+#include "builderwidget.h"
 
 #include "services/builder/builderservice.h"
 #include "services/editor/editorservice.h"
@@ -20,6 +21,8 @@
 #include "services/builder/buildergenerator.h"
 #include "services/option/optionmanager.h"
 #include "services/project/projectservice.h"
+
+#include <DGuiApplicationHelper>
 
 #include <QSplitter>
 #include <QCoreApplication>
@@ -148,40 +151,64 @@ void BuildManager::addMenu()
 void BuildManager::initCompileWidget()
 {
     d->compileWidget = new DWidget();
-    DFrame *outputFrame = new DFrame(d->compileWidget);
-    DFrame *issusFrame = new DFrame(d->compileWidget);
-    d->compileOutputPane = new CompileOutputPane(outputFrame);
-    d->problemOutputPane = new ProblemOutputPane(issusFrame);
+
+    d->problemOutputPane = new ProblemOutputPane(d->compileWidget);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(d->compileWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *compileOutputText = new QLabel(outputFrame);
+    QLabel *compileOutputText = new QLabel(d->compileWidget);
     compileOutputText->setText(tr("Compile Output"));
-    compileOutputText->setContentsMargins(10, 0, 0, 0);
-    QLabel *issusListText = new QLabel(issusFrame);
+    compileOutputText->setContentsMargins(10, 3, 0, 0);
+    QLabel *issusListText = new QLabel(d->compileWidget);
     issusListText->setText(tr("Issues list"));
-    issusListText->setContentsMargins(10, 0, 0, 0);
+    issusListText->setContentsMargins(10, 3, 0, 0);
 
+    DWidget *outputWidget = new DWidget(d->compileWidget);
     QVBoxLayout *outputLayout = new QVBoxLayout();
     outputLayout->addWidget(compileOutputText);
-    outputLayout->addWidget(d->compileOutputPane);
-    outputFrame->setLayout(outputLayout);
+    DFrame *outputFrame = new DFrame(d->compileWidget);
+    outputFrame->setContentsMargins(0, 0, 0, 0);
+    outputFrame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    d->compileOutputPane = new CompileOutputPane(outputFrame);
+    QHBoxLayout *outputPaneLayout = new QHBoxLayout();
+    outputPaneLayout->setMargin(0);
+    outputPaneLayout->setSpacing(0);
+    outputPaneLayout->setContentsMargins(10, 0, 0, 0);
+    outputPaneLayout->addWidget(d->compileOutputPane);
+    outputFrame->setLayout(outputPaneLayout);
     DStyle::setFrameRadius(outputFrame, 0);
-    outputFrame->setLineWidth(0);
 
+    outputLayout->addWidget(outputFrame);
+    outputLayout->setMargin(0);
+    outputWidget->setLayout(outputLayout);
+
+    QHBoxLayout *outputLayoutWithLine = new QHBoxLayout();
+    BuilderWidget *outputWidgetWithLine = new BuilderWidget(d->compileWidget);
+    outputWidgetWithLine->setContentsMargins(0, 0, 0, 0);
+    DFrame *vLine = new DFrame(d->compileWidget);
+    vLine->setFrameShape(QFrame::VLine);
+    vLine->setLineWidth(1);
+    outputWidgetWithLine->setLayout(outputLayoutWithLine);
+    outputLayoutWithLine->addWidget(outputWidget);
+    outputLayoutWithLine->addWidget(vLine);
+    outputLayoutWithLine->setSpacing(0);
+    outputLayoutWithLine->setContentsMargins(0, 0, 0, 0);
+
+    BuilderWidget *issusWidget = new BuilderWidget(d->compileWidget);
     QVBoxLayout *issusListLayout = new QVBoxLayout();
     issusListLayout->addWidget(issusListText);
     issusListLayout->addWidget(d->problemOutputPane);
-    issusFrame->setLayout(issusListLayout);
-    DStyle::setFrameRadius(issusFrame, 0);
-    issusFrame->setLineWidth(0);
+    issusListLayout->setMargin(0);
+    issusWidget->setContentsMargins(0, 0, 0, 0);
+    issusWidget->setLayout(issusListLayout);
 
     QSplitter *spl = new QSplitter(Qt::Horizontal);
-    spl->addWidget(outputFrame);
-    spl->addWidget(issusFrame);
 
-    mainLayout->setSpacing(1);
+    spl->addWidget(outputWidgetWithLine);
+    spl->addWidget(issusWidget);
+    spl->setHandleWidth(0);
+    mainLayout->setSpacing(0);
     mainLayout->addWidget(spl);
     if (auto holder = createFindPlaceHolder())
         mainLayout->addWidget(holder);
