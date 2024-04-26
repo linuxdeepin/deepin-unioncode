@@ -87,6 +87,7 @@ FindToolWindow::~FindToolWindow()
 void FindToolWindow::setupUi()
 {
     DFrame *mainPaneFrame = new DFrame(this);
+    DStyle::setFrameRadius(mainPaneFrame, 0);
     d->stackedWidget = new DStackedWidget();
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->setContentsMargins(0, 0, 0, 0);
