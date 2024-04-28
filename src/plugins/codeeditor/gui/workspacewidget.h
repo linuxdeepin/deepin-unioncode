@@ -15,6 +15,7 @@ class WorkspaceWidget : public QWidget
 public:
     explicit WorkspaceWidget(QWidget *parent = nullptr);
 
+    QString currentFile() const;
     QString selectedText() const;
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
