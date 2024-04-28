@@ -262,6 +262,20 @@ void MainWindow::removeWidget(Position pos)
     }
 }
 
+QString MainWindow::getCurrentDockName(dpfservice::Position pos)
+{
+    if (pos == Position::Central || pos == Position::FullWindow)
+        return d->centralWidgetName;
+
+    auto area = positionTodockArea(pos);
+    for (auto dock : d->dockList.values()) {
+        if (dockWidgetArea(dock) == area && dock->isVisible() == true)
+            return d->dockList.key(dock);
+    }
+
+    return QString();
+}
+
 void MainWindow::setDockWidgetFeatures(const QString &name,QDockWidget::DockWidgetFeatures feature)
 {
     if(!d->dockList.contains(name)) {

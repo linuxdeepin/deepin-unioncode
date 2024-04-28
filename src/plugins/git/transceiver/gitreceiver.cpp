@@ -4,10 +4,12 @@
 
 #include "gitreceiver.h"
 #include "client/gitclient.h"
+#include "utils/gitmenumanager.h"
 
 #include "common/util/eventdefinitions.h"
 
 #include <QFileInfo>
+#include <QMenu>
 
 GitReceiver::GitReceiver(QObject *parent)
     : dpf::EventHandler(parent)
@@ -47,6 +49,8 @@ void GitReceiver::handleCursorPositionChangedEvent(const dpf::Event &event)
 void GitReceiver::handleSwitchedFileEvent(const dpf::Event &event)
 {
     const auto &fileName = event.property("fileName").toString();
+    GitMenuManager::instance()->setCurrentFile(fileName);
+
     bool ret = GitClient::instance()->setupInstantBlame(fileName);
     if (ret) {
         if (!eventHandleMap.contains(editor.cursorPositionChanged.name))
