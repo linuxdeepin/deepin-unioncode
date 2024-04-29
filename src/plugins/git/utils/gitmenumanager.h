@@ -42,6 +42,7 @@ private:
 
     QAction *curFileAct { nullptr };
     QAction *fileLogAct { nullptr };
+    QAction *fileBlameAct { nullptr };
 
     QAction *curProjectAct { nullptr };
 };

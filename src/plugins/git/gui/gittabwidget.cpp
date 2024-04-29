@@ -4,6 +4,7 @@
 
 #include "gittabwidget.h"
 #include "gitlogwidget.h"
+#include "gitblamewidget.h"
 
 #include <DTabBar>
 #include <DToolButton>
@@ -23,7 +24,7 @@ public:
     void initConnection();
 
     int indexOf(const QString &tip);
-    int addLogWidget(const QString &path);
+    GitBaseWidget *createWidget(GitTabWidget::Type type);
 
 public Q_SLOTS:
     void tabSwitched(int index);
@@ -89,27 +90,21 @@ int GitTabWidgetPrivate::indexOf(const QString &tip)
     return index;
 }
 
-int GitTabWidgetPrivate::addLogWidget(const QString &path)
+GitBaseWidget *GitTabWidgetPrivate::createWidget(GitTabWidget::Type type)
 {
-    QFileInfo info(path);
-    QString tip(tr("Git Log \"%1\"").arg(path));
-    int index = indexOf(tip);
-    if (index == -1) {
-        QString title = tr("Git Log \"%1\"").arg(info.fileName());
-        GitLogWidget *logWidget = new GitLogWidget(q);
-        logWidget->textDocument()->setPlainText(tr("Working..."));
-
-        stackedWidget->addWidget(logWidget);
-        index = tabBar->addTab(title);
-        tabBar->setTabToolTip(index, tip);
-    } else {
-        auto logWidget = qobject_cast<GitLogWidget *>(stackedWidget->widget(index));
-        if (logWidget)
-            logWidget->textDocument()->setPlainText(tr("Working..."));
+    GitBaseWidget *widget { nullptr };
+    switch (type) {
+    case GitTabWidget::GitLog:
+        widget = new GitLogWidget(q);
+        break;
+    case GitTabWidget::GitBlame:
+        widget = new GitBlameWidget(q);
+        break;
+    case GitTabWidget::GitDiff:
+        break;
     }
 
-    tabBar->setCurrentIndex(index);
-    return index;
+    return widget;
 }
 
 void GitTabWidgetPrivate::tabSwitched(int index)
@@ -142,16 +137,41 @@ GitTabWidget::~GitTabWidget()
 
 int GitTabWidget::addWidget(Type type, const QString &path)
 {
+    QFileInfo info(path);
+    QString indexStr, title;
     switch (type) {
     case GitLog:
-        return d->addLogWidget(path);
+        indexStr = tr("Git Log \"%1\"").arg(path);
+        title = tr("Git Log \"%1\"").arg(info.fileName());
+        break;
     case GitBlame:
+        indexStr = tr("Git Blame \"%1\"").arg(path);
+        title = tr("Git Blame \"%1\"").arg(info.fileName());
+        break;
     case GitDiff:
-    default:
+        indexStr = tr("Git Diff \"%1\"").arg(path);
+        title = tr("Git Diff \"%1\"").arg(info.fileName());
         break;
     }
 
-    return -1;
+    int index = d->indexOf(indexStr);
+    if (index == -1) {
+        auto widget = d->createWidget(type);
+        if (!widget)
+            return -1;
+
+        widget->textDocument()->setPlainText(tr("Working..."));
+        d->stackedWidget->addWidget(widget);
+        index = d->tabBar->addTab(title);
+        d->tabBar->setTabToolTip(index, indexStr);
+    } else {
+        auto widget = qobject_cast<GitBaseWidget *>(d->stackedWidget->widget(index));
+        if (widget)
+            widget->textDocument()->setPlainText(tr("Working..."));
+    }
+
+    d->tabBar->setCurrentIndex(index);
+    return index;
 }
 
 void GitTabWidget::setInfo(int index, const QString &info)

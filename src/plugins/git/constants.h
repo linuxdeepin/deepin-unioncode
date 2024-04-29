@@ -8,6 +8,8 @@
 #include <QString>
 #include <QDateTime>
 
+#include <tuple>
+
 struct CommitInfo
 {
     QString sha1;
@@ -44,5 +46,7 @@ constexpr char GitShowFormat[] { "--pretty=format:commit %H%d%n"
                                  "Committer: %cn <%ce>, %cd (%cr)%n"
                                  "%n"
                                  "%B" };
+
+constexpr char AnnotationEntryPattern[] { "^(\\b[a-f0-9]{7,40}\\b) " };
 
 #endif   // CONSTANTS_H
