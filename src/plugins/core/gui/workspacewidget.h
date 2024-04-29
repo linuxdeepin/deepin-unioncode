@@ -24,9 +24,11 @@ public:
     void addWorkspaceWidget(const QString &title, AbstractWidget *treeWidget, const QString &iconName);
     bool switchWidgetWorkspace(const QString &title);
     bool getCurrentExpandState();
+    QString getCurrentTitle() const;
 
 signals:
     void expandStateChange(bool canExpand);
+    void workSpaceWidgeSwitched(const QString &title);
 
 private:
     void initUi();

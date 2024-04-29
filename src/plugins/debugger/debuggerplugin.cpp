@@ -51,14 +51,17 @@ bool DebuggerPlugin::start()
         action->setIcon(QIcon::fromTheme("debug-navigation"));
         windowService->addNavigationItem(new AbstractAction(action), 5);
         windowService->registerWidgetToMode(mainWindow, new AbstractWidget(debugManager->getDebugMainPane()), CM_DEBUG, Position::Left, true, true);
+        windowService->setDockHeaderName(mainWindow, tr("debug"));
         windowService->registerWidget(localsPane, new AbstractWidget(debugManager->getLocalsPane()));
         connect(action, &QAction::triggered, this, [=]() {
             if (debugManager->getRunState() != AbstractDebugger::kNoRun)
                 windowService->showWidgetAtPosition(localsPane, Position::Right, true);
+            windowService->deleteDockHeader(localsPane);
         }, Qt::DirectConnection);
         connect(debugManager, &DebugManager::debugStarted, this, [=](){
             uiController.doSwitch(MWNA_DEBUG);
             windowService->showWidgetAtPosition(localsPane, Position::Right, true);
+            windowService->deleteDockHeader(localsPane);
             uiController.switchContext(tr("&Application Output"));
         }, Qt::DirectConnection);
         connect(debugManager, &DebugManager::debugStopped, this, [=](){

@@ -16,6 +16,7 @@ public:
     explicit DockHeader(QWidget *parent = nullptr);
     ~DockHeader();
 
+    void setHeaderName(const QString &headerName);
     void addToolButton(DTK_WIDGET_NAMESPACE::DToolButton *btn);
 
 private:
