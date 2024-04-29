@@ -46,7 +46,7 @@ void ProblemOutputPane::contextMenuEvent(QContextMenuEvent * event)
     }
 
     menu->move(event->globalX(), event->globalY());
-    menu->show();
+    menu->exec();
 }
 
 QList<QAction*> ProblemOutputPane::actionFactory()
