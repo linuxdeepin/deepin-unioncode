@@ -23,10 +23,13 @@ signals:
 public slots:
     void printOutput(const QString &content, OutputPane::OutputFormat format);
     void saveClicked();
+    void cancelClicked();
     void useClicked();
 
 private:
     void outputMsg(const QString &content, OutputPane::OutputFormat format);
+    bool canRename();
+    void doSaveOperation();
 
     BinaryToolsDialogPrivate *const d = nullptr;
 };
