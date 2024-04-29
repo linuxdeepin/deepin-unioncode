@@ -7,6 +7,7 @@
 
 #include <DWidget>
 #include <DFrame>
+#include <DDialog>
 #include <QAbstractTableModel>
 #include <common/widget/pagewidget.h>
 
@@ -39,6 +40,7 @@ public:
     void updateDescriptions();
     bool shortcutRepeat(const QString &text) const;
     bool keySequenceIsInvalid(const QKeySequence &sequence) const;
+    void showWarning(const QString& title, const QString& message);
 
 signals:
 
