@@ -42,6 +42,7 @@ bool CodeGeex::start()
             connect(action, &QAction::triggered, this, [=]() {
                 windowService->raiseMode(CM_EDIT);
                 windowService->showWidgetAtPosition(MWNA_CODEGEEX, Position::Left, true);
+                windowService->setDockHeaderName(MWNA_CODEGEEX, "codeGeex");
             },
                     Qt::DirectConnection);
         }
