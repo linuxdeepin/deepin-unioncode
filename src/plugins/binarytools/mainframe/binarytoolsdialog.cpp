@@ -84,6 +84,7 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
 
      connect(saveButton, &DPushButton::clicked, this, &BinaryToolsDialog::accept);
      connect(cancelButton, &DPushButton::clicked, this, &BinaryToolsDialog::reject);
+     connect(cancelButton, &DPushButton::clicked, this, &BinaryToolsDialog::cancelClicked);
      connect(applyButton, &DSuggestButton::clicked, this, &BinaryToolsDialog::accept);
 }
 
@@ -117,12 +118,38 @@ void BinaryToolsDialog::printOutput(const QString &content, OutputPane::OutputFo
 
 void BinaryToolsDialog::saveClicked()
 {
+    doSaveOperation();
+}
+
+void BinaryToolsDialog::doSaveOperation(){
     d->configView->saveConfig();
+    if (canRename()) {
+        QString &name = d->configView->renameInfo.name;
+        QString &oldname = d->configView->renameInfo.oldName;
+        QString &uniName = d->configView->renameInfo.uniName;
+        d->configView->renameConfigOperation(name, oldname, uniName);
+    }
+}
+
+bool BinaryToolsDialog::canRename(){
+    return d->configView->hasRename && !d->configView->renameInfo.name.isEmpty() &&
+            !d->configView->renameInfo.oldName.isEmpty() &&
+            !d->configView->renameInfo.uniName.isEmpty();
+}
+
+void BinaryToolsDialog::cancelClicked()
+{
+    if (d->configView->hasRename && !d->configView->renameInfo.oldName.isEmpty() &&
+            (d->configView->renameInfo.index != -1)) {
+        QString &oldname = d->configView->renameInfo.oldName;
+        int index = d->configView->renameInfo.index;
+        d->configView->resetConfigOperation(oldname, index);
+    }
 }
 
 void BinaryToolsDialog::useClicked()
 {
-    d->configView->saveConfig();
+    doSaveOperation();
 
     QProcess proc;
     QString retMsg = tr("Error: execute command error! The reason is unknown.\n");;
