@@ -2,24 +2,24 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef GITLOGWIDGET_H
-#define GITLOGWIDGET_H
+#ifndef GITBLAMEWIDGET_H
+#define GITBLAMEWIDGET_H
 
 #include "gitbasewidget.h"
 
-class GitLogWidgetPrivate;
-class GitLogWidget : public GitBaseWidget
+class GitBlameWidgetPrivate;
+class GitBlameWidget : public GitBaseWidget
 {
     Q_OBJECT
 public:
-    explicit GitLogWidget(QWidget *parent = nullptr);
-    ~GitLogWidget();
+    explicit GitBlameWidget(QWidget *parent = nullptr);
+    ~GitBlameWidget();
 
     void setGitInfo(const QString &info) override;
     QTextDocument *textDocument() const override;
 
 private:
-    GitLogWidgetPrivate *const d;
+    GitBlameWidgetPrivate *const d;
 };
 
-#endif   // GITLOGWIDGET_H
+#endif   // GITBLAMEWIDGET_H
