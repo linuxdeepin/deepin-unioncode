@@ -64,6 +64,9 @@ void GitMenuManager::setCurrentFile(const QString &file)
 
     fileLogAct->setProperty(GitFilePath, file);
     fileLogAct->setText(tr("Log of \"%1\"").arg(info.fileName()));
+
+    fileBlameAct->setProperty(GitFilePath, file);
+    fileBlameAct->setText(tr("Blame of \"%1\"").arg(info.fileName()));
 }
 
 void GitMenuManager::createGitSubMenu()
@@ -94,7 +97,21 @@ void GitMenuManager::createFileSubMenu()
         }
     });
 
+    fileBlameAct = new QAction(this);
+    connect(fileBlameAct, &QAction::triggered, this, [this] {
+        const auto &filePath = fileBlameAct->property(GitFilePath).toString();
+        if (GitClient::instance()->blameFile(filePath)) {
+            auto dockName = winSer->getCurrentDockName(Position::Central);
+            if (dockName == GitWindow)
+                return;
+
+            GitClient::instance()->setLastCentralWidget(dockName);
+            winSer->showWidgetAtPosition(GitWindow, Position::Central, true);
+        }
+    });
+
     fileSubMenu.addAction(fileLogAct);
+    fileSubMenu.addAction(fileBlameAct);
 }
 
 void GitMenuManager::createProjectSubMenu()

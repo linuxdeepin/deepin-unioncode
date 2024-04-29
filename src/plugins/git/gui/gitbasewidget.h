@@ -6,6 +6,7 @@
 #define GITBASEWIDGET_H
 
 #include <QWidget>
+#include <QTextDocument>
 
 class GitBaseWidget : public QWidget
 {
@@ -15,6 +16,7 @@ public:
         : QWidget(parent) {}
 
     virtual void setGitInfo(const QString &info) = 0;
+    virtual QTextDocument *textDocument() const = 0;
 };
 
 #endif   // GITBASEWIDGET_H
