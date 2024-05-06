@@ -43,6 +43,7 @@ private slots:
 private:
     void createTargetsRunConfigure(const QString &workDirectory, config::RunConfigure &runConfigure);
     void createBuildMenu(QMenu *menu);
+    void clearCMake(QStandardItem *root);
 
     QMutex mutex;
     QStandardItem *rootItem = nullptr;
