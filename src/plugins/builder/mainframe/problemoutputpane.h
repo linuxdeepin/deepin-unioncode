@@ -6,6 +6,7 @@
 #define PROBLEMOUTPUTPANE_H
 
 #include "common/type/task.h"
+#include "tasks/taskmodel.h"
 
 #include <DFrame>
 #include <DMenu>
@@ -21,6 +22,7 @@ public:
 
     void clearContents();
     void addTask(const Task &task, int linkedOutputLines, int skipLines);
+    void showSpecificTasks(ShowType type);
 
 protected:
     void contextMenuEvent(QContextMenuEvent * event) override;

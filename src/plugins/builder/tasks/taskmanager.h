@@ -28,14 +28,17 @@ signals:
 public slots:
     void slotAddTask(const Task &task, int linkedOutputLines, int skipLines);
 
-     void currentChanged(const QModelIndex &index);
-     void triggerDefaultHandler(const QModelIndex &index);
+    void currentChanged(const QModelIndex &index);
+    void triggerDefaultHandler(const QModelIndex &index);
+
+    void showSpecificTasks(ShowType type);
 
 private:
     explicit TaskManager(QObject *parent = nullptr);
 
     TaskView *view = nullptr;
     QSharedPointer<TaskModel> model;
+    QList<Task> tasks;
 };
 
 #endif // TASKMANAGER_H

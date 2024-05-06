@@ -36,6 +36,10 @@ void ProblemOutputPane::addTask(const Task &task, int linkedOutputLines, int ski
     TaskManager::instance()->slotAddTask(task, linkedOutputLines, skipLines);
 }
 
+void ProblemOutputPane::showSpecificTasks(ShowType type)
+{
+    TaskManager::instance()->showSpecificTasks(type);
+}
 
 void ProblemOutputPane::contextMenuEvent(QContextMenuEvent * event)
 {
@@ -60,5 +64,3 @@ QList<QAction*> ProblemOutputPane::actionFactory()
     list.append(action);
     return list;
 }
-
-

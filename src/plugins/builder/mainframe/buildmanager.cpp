@@ -13,6 +13,7 @@
 #include "transceiver/buildersender.h"
 #include "compileoutputpane.h"
 #include "builderwidget.h"
+#include "tasks/taskmodel.h"
 
 #include "services/builder/builderservice.h"
 #include "services/editor/editorservice.h"
@@ -23,6 +24,7 @@
 #include "services/project/projectservice.h"
 
 #include <DGuiApplicationHelper>
+#include <DComboBox>
 
 #include <QSplitter>
 #include <QCoreApplication>
@@ -162,6 +164,27 @@ void BuildManager::initCompileWidget()
     compileOutputText->setContentsMargins(10, 3, 0, 0);
     QLabel *issusListText = new QLabel(d->compileWidget);
     issusListText->setText(tr("Issues list"));
+    DComboBox *combox = new DComboBox(d->compileWidget);
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->addWidget(issusListText);
+    hLayout->addWidget(combox);
+    hLayout->setMargin(0);
+    hLayout->setSpacing(0);
+    hLayout->setContentsMargins(0, 0, 10, 0);
+    BuilderWidget *issueTopWidget = new BuilderWidget(d->compileWidget);
+    issueTopWidget->setLayout(hLayout);
+
+    combox->setInsertPolicy(QComboBox::InsertAtBottom);
+    combox->setDuplicatesEnabled(false);
+    combox->setFixedSize(50, 25);
+    combox->addItem(tr("show all"), ShowType::All);
+    combox->addItem(tr("show error"), ShowType::Error);
+    combox->addItem(tr("show warning"), ShowType::Warning);
+
+    connect(combox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index) {
+        d->problemOutputPane->showSpecificTasks(combox->itemData(index).value<ShowType>());
+    });
+
     issusListText->setContentsMargins(10, 3, 0, 0);
 
     DWidget *outputWidget = new DWidget(d->compileWidget);
@@ -197,7 +220,7 @@ void BuildManager::initCompileWidget()
 
     BuilderWidget *issusWidget = new BuilderWidget(d->compileWidget);
     QVBoxLayout *issusListLayout = new QVBoxLayout();
-    issusListLayout->addWidget(issusListText);
+    issusListLayout->addWidget(issueTopWidget);
     issusListLayout->addWidget(d->problemOutputPane);
     issusListLayout->setMargin(0);
     issusWidget->setContentsMargins(0, 0, 0, 0);
