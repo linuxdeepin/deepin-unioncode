@@ -10,6 +10,13 @@
 #include <QAbstractItemModel>
 #include <QFont>
 
+enum ShowType {
+    All,
+    Error,
+    Warning
+};
+Q_DECLARE_METATYPE(ShowType)
+
 class TaskModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -26,6 +33,7 @@ public:
     Task task(const QModelIndex &index) const;
 
     QList<Task> getTasks() const;
+    void addTasks(const QList<Task>& tasks);
     void addTask(const Task &task);
     void removeTask(const Task &task);
     void clearTasks();
