@@ -67,7 +67,7 @@ QSize TaskDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
         }
         tl.endLayout();
 
-        s.setHeight(height + leading + fontHeight + 15);
+        s.setHeight(height + leading + 2 * fontHeight);
     } else {
         s.setHeight(fontHeight + 3);
     }
