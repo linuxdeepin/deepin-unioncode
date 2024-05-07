@@ -52,6 +52,7 @@ public:
     DWidget *getDebugMainPane() const override;
 
     void startDebug() override;
+    void startDebugRemote(const RemoteInfo &info) override;
     void detachDebug() override;
 
     void interruptDebug() override;
@@ -112,6 +113,9 @@ private:
     void launchSession(int port, const QMap<QString, QVariant> &param, const QString &kitName);
     void disassemble(const QString &address);
     void handleAssemble(const QString &content);
+    
+    QString transformRemotePath(const QString &remotePath);
+    
     dpfservice::ProjectInfo getActiveProjectInfo() const;
 
     DebuggerPrivate *const d;

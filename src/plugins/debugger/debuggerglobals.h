@@ -34,4 +34,9 @@ const QColor kMessageOutput(0, 135, 135);
         Fun;                     \
     });
 
+#define AsynInvokeWithParam(Fun, param)          \
+    QtConcurrent::run([this, param]() { \
+        Fun(param);                     \
+    });
+
 #endif   // DEBUGGERGLOBALS_H
