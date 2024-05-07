@@ -9,6 +9,7 @@
 #include "base/abstractmenu.h"
 #include "common/common.h"
 #include "services/window/windowservice.h"
+#include "remotedebug/remotedebugdlg.h"
 
 #include <QMenu>
 
@@ -107,6 +108,17 @@ void MenuManager::initialize(WindowService *windowService)
                             "debugger_stepout");
     windowService->addAction(MWM_DEBUG, actionImpl);
     windowService->addTopToolItem(actionImpl, MWTG_DEBUG, false);
+    
+    remoteDebug.reset(new QAction(MWMDA_REMOTE_DEBUG));
+    connect(remoteDebug.get(), &QAction::triggered, debugManager, [=](){
+        auto remoteDlg = new RemoteDebugDlg();
+        remoteDlg->setAttribute(Qt::WA_DeleteOnClose);
+        remoteDlg->exec();
+    });
+    actionImpl = initAction(remoteDebug.get(), "Debug.Remote.Debug",
+                            MWMDA_REMOTE_DEBUG, QKeySequence(),
+                            "debugger_remotedebug");
+    windowService->addAction(MWM_DEBUG, actionImpl);
 }
 
 void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)

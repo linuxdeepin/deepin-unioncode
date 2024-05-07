@@ -11,6 +11,15 @@
 
 DWIDGET_USE_NAMESPACE
 
+//use to remote debug
+struct RemoteInfo {
+    QString ip;
+    int port = 4711;
+
+    QString executablePath;
+    QString projectPath;
+};
+
 class AbstractDebugger : public QObject
 {
     Q_OBJECT
@@ -37,6 +46,7 @@ public:
     virtual DWidget *getDebugMainPane() const = 0;
 
     virtual void startDebug() = 0;
+    virtual void startDebugRemote(const RemoteInfo &info) = 0;
     virtual void detachDebug() = 0;
 
     virtual void interruptDebug() = 0;

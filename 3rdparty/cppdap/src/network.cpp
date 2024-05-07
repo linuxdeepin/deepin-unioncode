@@ -34,8 +34,10 @@ class Impl : public dap::net::Server {
              const OnError& onError) override {
     std::unique_lock<std::mutex> lock(mutex);
     stopWithLock();
+    // modified by ZhangTingAn:‘localhost‘ -> ‘0.0.0.0‘  receive network connections from other machines
+    // used to remote debug
     socket = std::unique_ptr<dap::Socket>(
-        new dap::Socket("localhost", std::to_string(port).c_str()));
+        new dap::Socket("0.0.0.0", std::to_string(port).c_str()));
 
     if (!socket->isOpen()) {
       onError("Failed to open socket");
