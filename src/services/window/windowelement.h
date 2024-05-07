@@ -61,6 +61,7 @@ inline const QString MWMDA_RESTART_DEBUGGING { QAction::tr("Restart Debugging") 
 inline const QString MWMDA_STEP_OVER { QAction::tr("Step Over") };
 inline const QString MWMDA_STEP_IN { QAction::tr("Step In") };
 inline const QString MWMDA_STEP_OUT { QAction::tr("Step Out") };
+inline const QString MWMDA_REMOTE_DEBUG { QAction::tr("Remote Debug") };
 
 // MWMTA = MWM Tool Action
 inline const QString MWM_TOOLS { QMenu::tr("&Tools") };

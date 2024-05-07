@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "debuggerglobals.h"
 #include "dapdebugger.h"
 #include "runtimecfgprovider.h"
 #include "debugsession.h"
@@ -64,7 +65,9 @@ class DebuggerPrivate
     QString userKitName;
 
     QSharedPointer<RunTimeCfgProvider> rtCfgProvider;
-    QSharedPointer<DEBUG::DebugSession> session;
+    DEBUG::DebugSession *localSession { nullptr };
+    DEBUG::DebugSession *remoteSession { nullptr };
+    DEBUG::DebugSession *currentSession { nullptr };
 
     dap::integer threadId = 0;
     StackFrameData currentValidFrame;
@@ -101,6 +104,8 @@ class DebuggerPrivate
     QProcess backend;
 
     QMultiMap<QString, int> bps;
+    bool isRemote = false;
+    RemoteInfo remoteInfo;
 };
 
 DAPDebugger::DAPDebugger(QObject *parent)
@@ -116,8 +121,9 @@ DAPDebugger::DAPDebugger(QObject *parent)
     qRegisterMetaType<dpf::Event>("dpf::Event");
     qRegisterMetaType<RunState>("RunState");
 
-    d->session.reset(new DebugSession(debugService->getModel(), this));
-    connect(d->session.get(), &DebugSession::sigRegisterHandlers, this, &DAPDebugger::registerDapHandlers);
+    d->localSession = new DebugSession(debugService->getModel(), this);
+    d->currentSession = d->localSession;
+    connect(d->currentSession, &DebugSession::sigRegisterHandlers, this, &DAPDebugger::registerDapHandlers);
     d->rtCfgProvider.reset(new RunTimeCfgProvider(this));
 
     connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &DAPDebugger::handleEvents);
@@ -173,6 +179,10 @@ DWidget *DAPDebugger::getDebugMainPane() const
 
 void DAPDebugger::startDebug()
 {
+    d->isRemote = false;
+    if (d->currentSession == d->remoteSession)
+        d->currentSession = d->localSession;
+    
     updateRunState(kPreparing);
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
@@ -188,6 +198,33 @@ void DAPDebugger::startDebug()
     }
 }
 
+void DAPDebugger::startDebugRemote(const RemoteInfo &info)
+{
+    d->remoteInfo = info;
+    d->isRemote = true;
+    
+    if (d->remoteSession)
+        delete d->remoteSession;
+    
+    d->remoteSession = new DebugSession(debugService->getModel(), this);
+    d->remoteSession->setRemote(true);
+    d->remoteSession->setLocalProjectPath(getActiveProjectInfo().workspaceFolder());
+    d->remoteSession->setRemoteProjectPath(info.projectPath);
+    
+    d->currentSession = d->remoteSession;
+    connect(d->currentSession, &DebugSession::sigRegisterHandlers, this, &DAPDebugger::registerDapHandlers, Qt::DirectConnection);
+    
+    QMap<QString, QVariant> param;
+    param.insert("ip", info.ip);
+    param.insert("workspace", info.projectPath);
+    param.insert("targetPath", info.executablePath);
+    prepareDebug();
+
+    launchSession(info.port, param, d->activeProjectKitName);
+    
+    updateRunState(kPreparing);
+}
+
 void DAPDebugger::detachDebug()
 {
 }
@@ -197,14 +234,14 @@ void DAPDebugger::interruptDebug()
     if (d->runState == kRunning) {
         // Just use temporary parameters now, same for the back
         d->pausing = true;
-        d->session->pause(d->threadId);
+        d->currentSession->pause(d->threadId);
     }
 }
 
 void DAPDebugger::continueDebug()
 {
     if (d->runState == kStopped) {
-        d->session->continueDbg(d->threadId);
+        d->currentSession->continueDbg(d->threadId);
         editor.removeDebugLine();
     }
 }
@@ -221,7 +258,7 @@ void DAPDebugger::abortDebug()
                 if (generator->isStopDAPManually()) {
                     stopDAP();
                 } else {
-                    d->session->terminate();
+                    d->currentSession->terminate();
                 }
             }
         }
@@ -240,7 +277,7 @@ void DAPDebugger::restartDebug()
                     stopDAP();
                     prepareDebug();
                 } else {
-                    d->session->restart();
+                    d->currentSession->restart();
                 }
             }
         }
@@ -250,21 +287,21 @@ void DAPDebugger::restartDebug()
 void DAPDebugger::stepOver()
 {
     if (d->runState == kStopped && d->processingVariablesCount == 0) {
-        d->session->next(d->threadId, undefined);
+        d->currentSession->next(d->threadId, undefined);
     }
 }
 
 void DAPDebugger::stepIn()
 {
     if (d->runState == kStopped && d->processingVariablesCount == 0) {
-        d->session->stepIn(d->threadId, undefined, undefined);
+        d->currentSession->stepIn(d->threadId, undefined, undefined);
     }
 }
 
 void DAPDebugger::stepOut()
 {
     if (d->runState == kStopped && d->processingVariablesCount == 0) {
-        d->session->stepOut(d->threadId, undefined);
+        d->currentSession->stepOut(d->threadId, undefined);
     }
 }
 
@@ -291,7 +328,7 @@ void DAPDebugger::addBreakpoint(const QString &filePath, int lineNumber)
     rawBreakpoints.push_back(bpData);
 
     if (d->runState == kStopped || d->runState == kRunning) {
-        debugService->addBreakpoints(filePath, rawBreakpoints, d->session.get());
+        debugService->addBreakpoints(filePath, rawBreakpoints, d->currentSession);
     } else {
         debugService->addBreakpoints(filePath, rawBreakpoints, undefined);
     }
@@ -308,7 +345,7 @@ void DAPDebugger::removeBreakpoint(const QString &filePath, int lineNumber)
 
     // send to backend.
     if (d->runState == kStopped || d->runState == kRunning) {
-        debugService->removeBreakpoints(filePath, lineNumber, d->session.get());
+        debugService->removeBreakpoints(filePath, lineNumber, d->currentSession);
     } else {
         debugService->removeBreakpoints(filePath, lineNumber, undefined);
     }
@@ -325,7 +362,7 @@ void DAPDebugger::switchBreakpointsStatus(const QString &filePath, int lineNumbe
 
     // send to backend.
     if (d->runState == kStopped || d->runState == kRunning) {
-        debugService->switchBreakpointStatus(filePath, lineNumber, enabled, d->session.get());
+        debugService->switchBreakpointStatus(filePath, lineNumber, enabled, d->currentSession);
     } else {
         debugService->switchBreakpointStatus(filePath, lineNumber, enabled, undefined);
     }
@@ -333,12 +370,12 @@ void DAPDebugger::switchBreakpointsStatus(const QString &filePath, int lineNumbe
 
 bool DAPDebugger::getLocals(dap::integer frameId, IVariables *out)
 {
-    return d->session->getLocals(frameId, out);
+    return d->currentSession->getLocals(frameId, out);
 }
 
 void DAPDebugger::registerDapHandlers()
 {
-    dap::Session *dapSession = d->session.get()->getDapSession();
+    dap::Session *dapSession = d->currentSession->getDapSession();
     /*
      *  Process the only one reverse request.
      */
@@ -361,10 +398,10 @@ void DAPDebugger::registerDapHandlers()
         if (d->isCustomDap) {
             updateRunState(DAPDebugger::RunState::kCustomRunning);
         } else {
-            d->session.get()->getRawSession()->setReadyForBreakpoints(true);
-            debugService->sendAllBreakpoints(d->session.get());
+            d->currentSession->getRawSession()->setReadyForBreakpoints(true);
+            debugService->sendAllBreakpoints(d->currentSession);
 
-            d->session.get()->getRawSession()->configurationDone().wait();
+            d->currentSession->getRawSession()->configurationDone().wait();
             updateRunState(DAPDebugger::RunState::kRunning);
         }
     });
@@ -391,7 +428,7 @@ void DAPDebugger::registerDapHandlers()
         details->allThreadsStopped = event.allThreadsStopped.value();
         //        details.framesErrorMessage = even;
         details->hitBreakpointIds = event.hitBreakpointIds;
-        d->session->getStoppedDetails().push_back(details);
+        d->currentSession->getStoppedDetails().push_back(details);
 
         // ui focus on the active frame.
         if (event.reason == "function breakpoint"
@@ -404,7 +441,7 @@ void DAPDebugger::registerDapHandlers()
             if (event.threadId) {
                 d->threadId = event.threadId.value(0);
                 int curThreadID = static_cast<int>(d->threadId);
-                auto threads = d->session->fetchThreads(details);
+                auto threads = d->currentSession->fetchThreads(details);
                 updateThreadList(curThreadID, threads);
                 switchCurrentThread(static_cast<int>(d->threadId));
             }
@@ -721,7 +758,7 @@ void DAPDebugger::updateThreadList(int curr, const dap::array<dap::Thread> &thre
 
 void DAPDebugger::switchCurrentThread(int threadId)
 {
-    auto thread = d->session->getThread(threadId);
+    auto thread = d->currentSession->getThread(threadId);
     if (thread) {
         thread.value()->fetchCallStack();
         auto stacks = thread.value()->getCallStack();
@@ -734,6 +771,8 @@ void DAPDebugger::switchCurrentThread(int threadId)
             sf.function = it.name.c_str();
             if (it.source) {
                 sf.file = it.source.value().path ? it.source.value().path->c_str() : "";
+                if (d->isRemote)
+                    sf.file = transformRemotePath(sf.file);
             } else {
                 sf.file = "No file found.";
             }
@@ -839,7 +878,7 @@ void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
     d->processingVariablesCount.ref();
     QtConcurrent::run([=](){
         IVariables variables;
-        d->session->getVariables(treeItem->childReference(), &variables, 0);
+        d->currentSession->getVariables(treeItem->childReference(), &variables, 0);
 
         d->processingVariablesCount.deref();
         emit childVariablesUpdated(treeItem, variables);
@@ -984,6 +1023,7 @@ void DAPDebugger::start()
 {
     if(!d->localsView->isVisible())
         d->localsView->show();
+    
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
     if (service) {
@@ -1013,12 +1053,15 @@ void DAPDebugger::prepareDebug()
         if (generator) {
             updateRunState(kStart);
             QString retMsg;
-            QMap<QString, QVariant> param = generator->getDebugArguments(getActiveProjectInfo(), d->currentOpenedFileName);
+            QMap<QString, QVariant> param;
+            if (!d->isRemote)
+                param = generator->getDebugArguments(getActiveProjectInfo(), d->currentOpenedFileName);
+            
             bool ret = generator->prepareDebug(param, retMsg);
             if (!ret) {
                 printOutput(retMsg, OutputPane::ErrorMessage);
                 updateRunState(kPreparing);
-            } else if (!generator->isAnsyPrepareDebug()) {
+            } else if (!generator->isAnsyPrepareDebug() && !d->isRemote) {
                 requestDebugPort(param, d->activeProjectKitName, false);
             }
         }
@@ -1055,7 +1098,7 @@ bool DAPDebugger::requestDebugPort(const QMap<QString, QVariant> &param, const Q
 void DAPDebugger::stopDAP()
 {
     updateRunState(kNoRun);
-    d->session->closeSession();
+    d->currentSession->closeSession();
 }
 
 void DAPDebugger::slotReceivedDAPPort(const QString &ppid, int port, const QString &kitName, const QMap<QString, QVariant> &param)
@@ -1112,7 +1155,13 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
     printOutput(launchTip);
 
     auto iniRequet = d->rtCfgProvider->initalizeRequest();
-    bool bSuccess = d->session->initialize(d->rtCfgProvider->ip(),
+    bool bSuccess = false;
+    if (!d->isRemote)
+        bSuccess = d->currentSession->initialize(d->rtCfgProvider->ip(),
+                                           port,
+                                           iniRequet);
+    else
+        bSuccess = d->currentSession->initialize(param.value("ip").toString().toLatin1(),
                                            port,
                                            iniRequet);
 
@@ -1125,10 +1174,10 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
             if (generator) {
                 if (generator->isLaunchNotAttach()) {
                     dap::LaunchRequest request = generator->launchDAP(param);
-                    bSuccess &= d->session->launch(request);
+                    bSuccess &= d->currentSession->launch(request);
                 } else {
                     dap::AttachRequest request = generator->attachDAP(port, param);
-                    bSuccess &= d->session->attach(request);
+                    bSuccess &= d->currentSession->attach(request);
                 }
             }
         } else
@@ -1139,7 +1188,7 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
         qCritical() << "startDebug failed!";
     } else {
         debugService->getModel()->clear();
-        debugService->getModel()->addSession(d->session.get());
+        debugService->getModel()->addSession(d->currentSession);
     }
 }
 
@@ -1183,7 +1232,7 @@ bool DAPDebugger::runCoredump(const QString &target, const QString &core, const 
 void DAPDebugger::disassemble(const QString &address)
 {
     if (d->runState == kCustomRunning || d->runState == kStopped) {
-        d->session->disassemble(address.toStdString());
+        d->currentSession->disassemble(address.toStdString());
     }
 }
 
@@ -1216,10 +1265,32 @@ void DAPDebugger::handleUpdateDebugLine()
 {
     auto curFrame = d->stackModel.currentFrame();
     if (curFrame.line != -1) {
-        if (QFileInfo(curFrame.file).exists()) {
-           editor.setDebugLine(curFrame.file, curFrame.line);
+        QString localFile;
+        localFile = d->isRemote ? transformRemotePath(curFrame.file) : curFrame.file;
+
+        if (QFileInfo(localFile).exists()) {
+           editor.setDebugLine(localFile, curFrame.line);
         } else if (!curFrame.address.isEmpty()) {
             disassemble(curFrame.address);
         }
     }
+}
+
+QString DAPDebugger::transformRemotePath(const QString &remotePath)
+{
+    if (!d->isRemote || d->remoteInfo.projectPath.isEmpty())
+        return remotePath;
+    
+    auto prjInfo = getActiveProjectInfo();
+    auto workSpace = prjInfo.workspaceFolder();
+    
+    QString ret = remotePath;
+    if (remotePath.startsWith(d->remoteInfo.projectPath)) {
+        ret.replace(0, d->remoteInfo.projectPath.size(), workSpace);
+        
+        QFileInfo info(ret);
+        if (!info.exists())
+            qWarning() << ret << " is not exists!";
+    }
+    return ret;
 }

@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "remotedebugdlg.h"
+#include "debugmanager.h"
 
 #include <DDialog>
 #include <DLabel>
-#include <DLineEdit>
 #include <DPushButton>
 
 #include <QGridLayout>
@@ -26,6 +26,13 @@ RemoteDebugDlg::~RemoteDebugDlg()
 
 void RemoteDebugDlg::on_pbtnOK_clicked()
 {
+    RemoteInfo info;
+    info.executablePath = leDebugee->text();
+    info.ip = leIP->text();
+    info.port = lePort->text().toInt();
+    info.projectPath = leProjectPath->text();
+    debugManager->remoteDebug(info);
+    
     accept();
 }
 
@@ -38,7 +45,7 @@ void RemoteDebugDlg::setupUi()
 {
     setWindowTitle(tr("Remote Debug"));
     resize(400, 196);
-    auto verticalLayout = new QVBoxLayout(this);
+    auto verticalLayout = static_cast<QVBoxLayout *>(this->layout());
     verticalLayout->setSpacing(6);
     verticalLayout->setContentsMargins(11, 11, 11, 11);
     auto gridLayout = new QGridLayout();
@@ -48,12 +55,11 @@ void RemoteDebugDlg::setupUi()
 
     gridLayout->addWidget(lbDebuggee, 3, 0, 1, 1);
 
-    auto lePort = new DLineEdit(this);
-
+    lePort = new DLineEdit(this);
+    lePort->setPlaceholderText("default: 4711");
     gridLayout->addWidget(lePort, 2, 1, 1, 1);
 
-    auto leIP = new DLineEdit(this);
-
+    leIP = new DLineEdit(this);
     gridLayout->addWidget(leIP, 1, 1, 1, 1);
 
     auto lbPort = new DLabel(this);
@@ -61,8 +67,7 @@ void RemoteDebugDlg::setupUi()
 
     gridLayout->addWidget(lbPort, 2, 0, 1, 1);
 
-    auto leDebugee = new DLineEdit(this);
-
+    leDebugee = new DLineEdit(this);
     gridLayout->addWidget(leDebugee, 3, 1, 1, 1);
 
     auto lbIP = new DLabel(this);
@@ -70,7 +75,7 @@ void RemoteDebugDlg::setupUi()
 
     gridLayout->addWidget(lbIP, 1, 0, 1, 1);
 
-    auto leParameters = new DLineEdit(this);
+    leParameters = new DLineEdit(this);
 
     gridLayout->addWidget(leParameters, 4, 1, 1, 1);
 
@@ -78,6 +83,14 @@ void RemoteDebugDlg::setupUi()
     lbParameters->setText(tr("Parameters:"));
 
     gridLayout->addWidget(lbParameters, 4, 0, 1, 1);
+
+    leProjectPath = new DLineEdit(this);
+    gridLayout->addWidget(leProjectPath, 5, 1, 1, 1);
+
+    auto lbProjectPath = new DLabel(this);
+    lbProjectPath->setText(tr("remote project root path:"));
+
+    gridLayout->addWidget(lbProjectPath, 5, 0, 1, 1);
 
     verticalLayout->addLayout(gridLayout);
 
