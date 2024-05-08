@@ -16,6 +16,9 @@ GitReceiver::GitReceiver(QObject *parent)
 {
     using namespace std::placeholders;
     eventHandleMap.insert(editor.switchedFile.name, std::bind(&GitReceiver::handleSwitchedFileEvent, this, _1));
+    eventHandleMap.insert(editor.contextMenu.name, std::bind(&GitReceiver::handleContextMenuEvent, this, _1));
+    eventHandleMap.insert(project.activedProject.name, std::bind(&GitReceiver::handleProjectChangedEvent, this, _1));
+    eventHandleMap.insert(project.deletedProject.name, std::bind(&GitReceiver::handleProjectChangedEvent, this, _1));
 }
 
 dpf::EventHandler::Type GitReceiver::type()
@@ -25,7 +28,7 @@ dpf::EventHandler::Type GitReceiver::type()
 
 QStringList GitReceiver::topics()
 {
-    return { editor.topic };
+    return { editor.topic, project.topic };
 }
 
 void GitReceiver::eventProcess(const dpf::Event &event)
@@ -46,10 +49,17 @@ void GitReceiver::handleCursorPositionChangedEvent(const dpf::Event &event)
     GitClient::instance()->instantBlame(info.absolutePath(), fileName, line);
 }
 
+void GitReceiver::handleContextMenuEvent(const dpf::Event &event)
+{
+    auto editorMenu = event.property("menu").value<QMenu *>();
+    if (editorMenu)
+        editorMenu->addAction(GitMenuManager::instance()->gitAction());
+}
+
 void GitReceiver::handleSwitchedFileEvent(const dpf::Event &event)
 {
     const auto &fileName = event.property("fileName").toString();
-    GitMenuManager::instance()->setCurrentFile(fileName);
+    GitMenuManager::instance()->setupFileMenu(fileName);
 
     bool ret = GitClient::instance()->setupInstantBlame(fileName);
     if (ret) {
@@ -58,4 +68,9 @@ void GitReceiver::handleSwitchedFileEvent(const dpf::Event &event)
     } else if (eventHandleMap.contains(editor.cursorPositionChanged.name)) {
         eventHandleMap.remove(editor.cursorPositionChanged.name);
     }
+}
+
+void GitReceiver::handleProjectChangedEvent(const dpf::Event &event)
+{
+    GitMenuManager::instance()->setupProjectMenu();
 }
