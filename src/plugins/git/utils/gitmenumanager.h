@@ -22,8 +22,9 @@ public:
     static GitMenuManager *instance();
 
     void initialize(dpfservice::WindowService *service);
-    void setCurrentProject(const QString &project);
-    void setCurrentFile(const QString &file);
+    void setupProjectMenu();
+    void setupFileMenu(const QString &filePath = QString());
+    QAction *gitAction() const;
 
 private:
     explicit GitMenuManager(QObject *parent = nullptr);
@@ -36,19 +37,19 @@ private:
 private:
     dpfservice::WindowService *winSer { nullptr };
 
-    QString curProjectName;
-    QString curFileName;
-
     QMenu gitSubMenu;
     QMenu fileSubMenu;
     QMenu projectSubMenu;
 
+    QAction *gitAct { nullptr };
     QAction *curFileAct { nullptr };
     QAction *fileLogAct { nullptr };
     QAction *fileBlameAct { nullptr };
     QAction *fileDiffAct { nullptr };
 
     QAction *curProjectAct { nullptr };
+    QAction *projectLogAct { nullptr };
+    QAction *projectDiffAct { nullptr };
 };
 
 #endif   // GITMENUMANAGER_H
