@@ -25,9 +25,9 @@ public:
     GitCommand *readyWork(GitType type, const QString &workspace, const QString &name);
 
     void instantBlame();
-    void logFile(const QString &workspace, const QString &filePath);
+    void gitLog(const QString &workspace, const QString &filePath, bool isProject);
     void blameFile(const QString &workspace, const QString &filePath);
-    void gitDiff(const QString &workspace, const QString &filePath);
+    void gitDiff(const QString &workspace, const QString &filePath, bool isProject);
     bool canShow(const QString &commitId);
     void show(const QString &workspace, const QString &commitId);
 
@@ -119,14 +119,18 @@ void GitClientPrivate::instantBlame()
     cmd->start();
 }
 
-void GitClientPrivate::logFile(const QString &workspace, const QString &filePath)
+void GitClientPrivate::gitLog(const QString &workspace, const QString &filePath, bool isProject)
 {
     auto cmd = readyWork(GitLog, workspace, filePath);
     QStringList arguments = { "log", DecorateOption,
                               "-n", QString::number(LogMaxCount),
                               "--patience", "--ignore-space-change",
-                              ColorOption, "--follow",
-                              normalLogArguments(), "--", filePath };
+                              ColorOption, normalLogArguments() };
+
+    if (!isProject)
+        arguments << "--follow"
+                  << "--"
+                  << filePath;
 
     cmd->addJob(GitBinaryPath, arguments);
     cmd->start();
@@ -142,14 +146,16 @@ void GitClientPrivate::blameFile(const QString &workspace, const QString &filePa
     cmd->start();
 }
 
-void GitClientPrivate::gitDiff(const QString &workspace, const QString &filePath)
+void GitClientPrivate::gitDiff(const QString &workspace, const QString &filePath, bool isProject)
 {
     auto cmd = readyWork(GitDiff, workspace, filePath);
     QStringList arguments = { "-c", "diff.color=false",
                               "diff", "-m", "-M", "-C",
                               "--first-parent", "--unified=3",
-                              "--src-prefix=a/", "--dst-prefix=b/",
-                              "--", filePath };
+                              "--src-prefix=a/", "--dst-prefix=b/" };
+
+    if (!isProject)
+        arguments << "--" << filePath;
 
     cmd->addJob(GitBinaryPath, arguments);
     cmd->start();
@@ -246,13 +252,13 @@ bool GitClient::setupInstantBlame(const QString &filePath)
     return checkRepositoryExist(filePath);
 }
 
-bool GitClient::logFile(const QString &filePath)
+bool GitClient::gitLog(const QString &filePath, bool isProject)
 {
     QString repository;
     if (!checkRepositoryExist(filePath, &repository))
         return false;
 
-    d->logFile(repository, filePath);
+    d->gitLog(repository, filePath, isProject);
     return true;
 }
 
@@ -266,13 +272,13 @@ bool GitClient::blameFile(const QString &filePath)
     return true;
 }
 
-bool GitClient::gitDiff(const QString &filePath)
+bool GitClient::gitDiff(const QString &filePath, bool isProject)
 {
     QString repository;
     if (!checkRepositoryExist(filePath, &repository))
         return false;
 
-    d->gitDiff(repository, filePath);
+    d->gitDiff(repository, filePath, isProject);
     return true;
 }
 
