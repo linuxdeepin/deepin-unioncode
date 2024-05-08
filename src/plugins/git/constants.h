@@ -34,7 +34,8 @@ enum FormatCodes {
 enum GitType {
     GitLog,
     GitBlame,
-    GitDiff
+    GitDiff,
+    GitShow
 };
 
 enum DiffSide {

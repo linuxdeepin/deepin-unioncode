@@ -15,7 +15,7 @@ public:
     explicit GitLogWidget(QWidget *parent = nullptr);
     ~GitLogWidget();
 
-    void setGitInfo(const QString &info) override;
+    void setGitInfo(const QStringList &infos) override;
     void setReadyMessage(const QString &msg) override;
     void setSourceFile(const QString &sf) override;
 

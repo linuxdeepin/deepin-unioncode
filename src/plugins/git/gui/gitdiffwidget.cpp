@@ -74,17 +74,10 @@ void GitDiffWidgetPrivate::initUI()
 
 void GitDiffWidgetPrivate::initConnection()
 {
-    q->connect(leftEditor->verticalScrollBar(), &QScrollBar::valueChanged, rightEditor,
-               [this](int v) {
-                   QSignalBlocker blocker(rightEditor->verticalScrollBar());
-                   rightEditor->verticalScrollBar()->setValue(v);
-               });
-
-    q->connect(rightEditor->verticalScrollBar(), &QScrollBar::valueChanged, leftEditor,
-               [this](int v) {
-                   QSignalBlocker blocker(leftEditor->verticalScrollBar());
-                   leftEditor->verticalScrollBar()->setValue(v);
-               });
+    q->connect(leftEditor->verticalScrollBar(), &QScrollBar::valueChanged,
+               rightEditor->verticalScrollBar(), &QScrollBar::setValue);
+    q->connect(rightEditor->verticalScrollBar(), &QScrollBar::valueChanged,
+               leftEditor->verticalScrollBar(), &QScrollBar::setValue);
 
     q->connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &GitDiffWidgetPrivate::updateTheme);
     q->connect(q, &GitDiffWidget::reqParsePatch, worker.data(), &GitDiffWorker::handleParsePatch, Qt::QueuedConnection);
@@ -121,8 +114,12 @@ GitDiffWidget::~GitDiffWidget()
     delete d;
 }
 
-void GitDiffWidget::setGitInfo(const QString &info)
+void GitDiffWidget::setGitInfo(const QStringList &infos)
 {
+    if (infos.isEmpty())
+        return;
+
+    const auto &info = infos.first();
     d->fileDataList.clear();
     Q_EMIT reqParsePatch(info);
 }
