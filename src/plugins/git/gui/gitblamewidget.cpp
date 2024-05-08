@@ -153,7 +153,12 @@ void GitBlameWidget::setGitInfo(const QString &info)
     d->gitEditor->setPlainText(result);
 }
 
-QTextDocument *GitBlameWidget::textDocument() const
+void GitBlameWidget::setReadyMessage(const QString &msg)
 {
-    return d->gitEditor->document();
+    d->gitEditor->setPlainText(msg);
+}
+
+void GitBlameWidget::setSourceFile(const QString &sf)
+{
+    d->gitEditor->setSourceFile(sf);
 }
