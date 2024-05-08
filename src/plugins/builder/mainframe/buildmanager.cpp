@@ -164,32 +164,79 @@ void BuildManager::initCompileWidget()
     compileOutputText->setContentsMargins(10, 3, 0, 0);
     QLabel *issusListText = new QLabel(d->compileWidget);
     issusListText->setText(tr("Issues list"));
-    DComboBox *combox = new DComboBox(d->compileWidget);
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    hLayout->addWidget(issusListText);
-    hLayout->addWidget(combox);
-    hLayout->setMargin(0);
-    hLayout->setSpacing(0);
-    hLayout->setContentsMargins(0, 0, 10, 0);
+    DToolButton *filterButton = new DToolButton(d->compileWidget);
+
+    QHBoxLayout *hIssueTopLayout = new QHBoxLayout();
+    hIssueTopLayout->addWidget(issusListText);
+    hIssueTopLayout->addWidget(filterButton);
+
+    hIssueTopLayout->setMargin(0);
+    hIssueTopLayout->setSpacing(0);
+    hIssueTopLayout->setContentsMargins(0, 0, 5, 0);
+    hIssueTopLayout->setAlignment(Qt::AlignVCenter);
     BuilderWidget *issueTopWidget = new BuilderWidget(d->compileWidget);
-    issueTopWidget->setLayout(hLayout);
+    issueTopWidget->setLayout(hIssueTopLayout);
+    issueTopWidget->setFixedHeight(30);
 
-    combox->setInsertPolicy(QComboBox::InsertAtBottom);
-    combox->setDuplicatesEnabled(false);
-    combox->setFixedSize(50, 25);
-    combox->addItem(tr("show all"), ShowType::All);
-    combox->addItem(tr("show error"), ShowType::Error);
-    combox->addItem(tr("show warning"), ShowType::Warning);
+    filterButton->setFixedSize(28, 28);
+    filterButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    filterButton->setIcon(QIcon::fromTheme("filter"));
+    filterButton->setContentsMargins(0, 0, 0, 0);
+    filterButton->setToolTip(tr("Filter"));
+    DMenu* filterMenu = new DMenu(filterButton);
 
-    connect(combox, QOverload<int>::of(&QComboBox::currentIndexChanged), [=](int index) {
-        d->problemOutputPane->showSpecificTasks(combox->itemData(index).value<ShowType>());
+    QAction* showAllAction = new QAction(tr("All"), this);
+    showAllAction->setCheckable(true);
+    filterMenu->addAction(showAllAction);
+
+    QAction* showErrorAction = new QAction(tr("Error"), this);
+    showErrorAction->setCheckable(true);
+    filterMenu->addAction(showErrorAction);
+
+    QAction* showWarningAction = new QAction(tr("Warning"), this);
+    showWarningAction->setCheckable(true);
+    filterMenu->addAction(showWarningAction);
+
+    connect(showAllAction, &QAction::triggered, [=]() {
+        d->problemOutputPane->showSpecificTasks(ShowType::All);
+        showAllAction->setChecked(true);
+        showErrorAction->setChecked(false);
+        showWarningAction->setChecked(false);
+    });
+    connect(showErrorAction, &QAction::triggered, [=]() {
+        d->problemOutputPane->showSpecificTasks(ShowType::Error);
+        showAllAction->setChecked(false);
+        showErrorAction->setChecked(true);
+        showWarningAction->setChecked(false);
+    });
+    connect(showWarningAction, &QAction::triggered, [=]() {
+        d->problemOutputPane->showSpecificTasks(ShowType::Warning);
+        showAllAction->setChecked(false);
+        showErrorAction->setChecked(false);
+        showWarningAction->setChecked(true);
+    });
+    connect(filterButton, &DToolButton::clicked, [=]() {
+        QPoint buttonPos = filterButton->mapToGlobal(QPoint(0, filterButton->height()));
+        QPoint menuPos = buttonPos + QPoint(0, 5);
+        filterMenu->popup(menuPos);
     });
 
     issusListText->setContentsMargins(10, 3, 0, 0);
 
+    QHBoxLayout *hOutputTopLayout = new QHBoxLayout();
+    hOutputTopLayout->addWidget(compileOutputText);
+
+    hOutputTopLayout->setMargin(0);
+    hOutputTopLayout->setSpacing(0);
+    hOutputTopLayout->setContentsMargins(0, 0, 5, 0);
+    hOutputTopLayout->setAlignment(Qt::AlignVCenter);
+    BuilderWidget *OutputTopWidget = new BuilderWidget(d->compileWidget);
+    OutputTopWidget->setLayout(hOutputTopLayout);
+    OutputTopWidget->setFixedHeight(30);
+
     DWidget *outputWidget = new DWidget(d->compileWidget);
     QVBoxLayout *outputLayout = new QVBoxLayout();
-    outputLayout->addWidget(compileOutputText);
+    outputLayout->addWidget(OutputTopWidget);
     DFrame *outputFrame = new DFrame(d->compileWidget);
     outputFrame->setContentsMargins(0, 0, 0, 0);
     outputFrame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -204,6 +251,7 @@ void BuildManager::initCompileWidget()
 
     outputLayout->addWidget(outputFrame);
     outputLayout->setMargin(0);
+    outputLayout->setSpacing(0);
     outputWidget->setLayout(outputLayout);
 
     QHBoxLayout *outputLayoutWithLine = new QHBoxLayout();
@@ -223,6 +271,7 @@ void BuildManager::initCompileWidget()
     issusListLayout->addWidget(issueTopWidget);
     issusListLayout->addWidget(d->problemOutputPane);
     issusListLayout->setMargin(0);
+    issusListLayout->setSpacing(0);
     issusWidget->setContentsMargins(0, 0, 0, 0);
     issusWidget->setLayout(issusListLayout);
 
