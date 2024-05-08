@@ -139,6 +139,9 @@ void ProjectTree::appendRootItem(QStandardItem *root)
     if (model)
         model->appendRow(root);
 
+    if (root->data(Parsing_State_Role).value<ParsingState>() != ParsingState::Done) //avoid appent root item after complete parse
+        root->setData(ParsingState::Wait, Parsing_State_Role);
+
     // 发送工程节点已创建信号
     SendEvents::projectCreated(info);
 

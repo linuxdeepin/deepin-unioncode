@@ -152,6 +152,8 @@ void PythonProjectGenerator::doProjectChildsModified(const QList<QStandardItem *
         }
         rootItem->appendRows(info);
     }
+
+    rootItem->setData(ParsingState::Done, Parsing_State_Role);
 }
 
 void PythonProjectGenerator::doPythonCleanMenu()
