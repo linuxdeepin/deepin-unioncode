@@ -44,9 +44,9 @@ enum DiffSide {
     SideCount
 };
 
-
 constexpr char GitWindow[] { "GitWindow" };
 constexpr char GitFilePath[] { "FilePath" };
+constexpr char GitIsProject[] { "IsProject" };
 
 constexpr char GitBinaryPath[] { "/usr/bin/git" };
 constexpr char GitDirectory[] { ".git" };
