@@ -50,8 +50,12 @@ GitLogWidget::~GitLogWidget()
     delete d;
 }
 
-void GitLogWidget::setGitInfo(const QString &info)
+void GitLogWidget::setGitInfo(const QStringList &infos)
 {
+    if (infos.isEmpty())
+        return d->gitEditor->clear();
+
+    const auto &info = infos.first();
     CodeFormatHandler handler;
     const QList<FormattedText> formattedTextList = handler.parseText(FormattedText(info));
 
