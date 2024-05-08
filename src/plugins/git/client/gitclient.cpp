@@ -22,11 +22,14 @@ class GitClientPrivate : public QObject
 public:
     QString findRepository(const QString &filePath);
     QString normalLogArguments();
-    GitCommand *readyWork(GitTabWidget::Type type, const QString &workspace, const QString &filePath);
+    GitCommand *readyWork(GitType type, const QString &workspace, const QString &name);
 
     void instantBlame();
     void logFile(const QString &workspace, const QString &filePath);
     void blameFile(const QString &workspace, const QString &filePath);
+    void gitDiff(const QString &workspace, const QString &filePath);
+    bool canShow(const QString &commitId);
+    void show(const QString &workspace, const QString &source, const QString &commitId);
 
 public:
     QString lastCentral;
@@ -75,9 +78,9 @@ QString GitClientPrivate::normalLogArguments()
     return logArgs;
 }
 
-GitCommand *GitClientPrivate::readyWork(GitTabWidget::Type type, const QString &workspace, const QString &filePath)
+GitCommand *GitClientPrivate::readyWork(GitType type, const QString &workspace, const QString &name)
 {
-    int index = gitTabWidget->addWidget(type, filePath);
+    int index = gitTabWidget->addWidget(type, name);
     GitCommand *cmd = new GitCommand(workspace);
     connect(cmd, &GitCommand::finished, this, [=](int code) {
         if (code == 0) {
@@ -115,7 +118,7 @@ void GitClientPrivate::instantBlame()
 
 void GitClientPrivate::logFile(const QString &workspace, const QString &filePath)
 {
-    auto cmd = readyWork(GitTabWidget::GitLog, workspace, filePath);
+    auto cmd = readyWork(GitLog, workspace, filePath);
     QStringList arguments = { "log", DecorateOption,
                               "-n", QString::number(LogMaxCount),
                               "--patience", "--ignore-space-change",
@@ -128,12 +131,35 @@ void GitClientPrivate::logFile(const QString &workspace, const QString &filePath
 
 void GitClientPrivate::blameFile(const QString &workspace, const QString &filePath)
 {
-    auto cmd = readyWork(GitTabWidget::GitBlame, workspace, filePath);
+    auto cmd = readyWork(GitBlame, workspace, filePath);
     QStringList arguments = { "blame", "--root",
                               "-w", "--", filePath };
 
     cmd->addJob(GitBinaryPath, arguments);
     cmd->start();
+}
+
+void GitClientPrivate::gitDiff(const QString &workspace, const QString &filePath)
+{
+    auto cmd = readyWork(GitDiff, workspace, filePath);
+    QStringList arguments = { "-c", "diff.color=false",
+                              "diff", "-m", "-M", "-C",
+                              "--first-parent", "--unified=3",
+                              "--src-prefix=a/", "--dst-prefix=b/",
+                              "--", filePath };
+
+    cmd->addJob(GitBinaryPath, arguments);
+    cmd->start();
+}
+
+bool GitClientPrivate::canShow(const QString &commitId)
+{
+    return !commitId.startsWith('^') && commitId.count('0') != commitId.size();
+}
+
+void GitClientPrivate::show(const QString &workspace, const QString &source, const QString &commitId)
+{
+    // TODO:
 }
 
 GitClient::GitClient(QObject *parent)
@@ -223,6 +249,28 @@ bool GitClient::blameFile(const QString &filePath)
 
     d->blameFile(repository, filePath);
     return true;
+}
+
+bool GitClient::gitDiff(const QString &filePath)
+{
+    QString repository;
+    if (!checkRepositoryExist(filePath, &repository))
+        return false;
+
+    d->gitDiff(repository, filePath);
+    return true;
+}
+
+void GitClient::show(const QString &source, const QString &commitId)
+{
+    if (!d->canShow(commitId))
+        return;
+
+    QString repository;
+    if (!checkRepositoryExist(source, &repository))
+        return;
+
+    d->show(repository, source, commitId);
 }
 
 QWidget *GitClient::instantBlameWidget() const
