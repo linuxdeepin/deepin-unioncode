@@ -5,6 +5,7 @@
 #include "gittabwidget.h"
 #include "gitlogwidget.h"
 #include "gitblamewidget.h"
+#include "gitdiffwidget.h"
 
 #include <DTabBar>
 #include <DToolButton>
@@ -24,7 +25,7 @@ public:
     void initConnection();
 
     int indexOf(const QString &tip);
-    GitBaseWidget *createWidget(GitTabWidget::Type type);
+    GitBaseWidget *createWidget(GitType type);
 
 public Q_SLOTS:
     void tabSwitched(int index);
@@ -90,17 +91,18 @@ int GitTabWidgetPrivate::indexOf(const QString &tip)
     return index;
 }
 
-GitBaseWidget *GitTabWidgetPrivate::createWidget(GitTabWidget::Type type)
+GitBaseWidget *GitTabWidgetPrivate::createWidget(GitType type)
 {
     GitBaseWidget *widget { nullptr };
     switch (type) {
-    case GitTabWidget::GitLog:
+    case GitLog:
         widget = new GitLogWidget(q);
         break;
-    case GitTabWidget::GitBlame:
+    case GitBlame:
         widget = new GitBlameWidget(q);
         break;
-    case GitTabWidget::GitDiff:
+    case GitDiff:
+        widget = new GitDiffWidget(q);
         break;
     }
 
@@ -135,21 +137,21 @@ GitTabWidget::~GitTabWidget()
     delete d;
 }
 
-int GitTabWidget::addWidget(Type type, const QString &path)
+int GitTabWidget::addWidget(GitType type, const QString &name)
 {
-    QFileInfo info(path);
+    QFileInfo info(name);
     QString indexStr, title;
     switch (type) {
     case GitLog:
-        indexStr = tr("Git Log \"%1\"").arg(path);
+        indexStr = tr("Git Log \"%1\"").arg(name);
         title = tr("Git Log \"%1\"").arg(info.fileName());
         break;
     case GitBlame:
-        indexStr = tr("Git Blame \"%1\"").arg(path);
+        indexStr = tr("Git Blame \"%1\"").arg(name);
         title = tr("Git Blame \"%1\"").arg(info.fileName());
         break;
     case GitDiff:
-        indexStr = tr("Git Diff \"%1\"").arg(path);
+        indexStr = tr("Git Diff \"%1\"").arg(name);
         title = tr("Git Diff \"%1\"").arg(info.fileName());
         break;
     }
@@ -160,14 +162,15 @@ int GitTabWidget::addWidget(Type type, const QString &path)
         if (!widget)
             return -1;
 
-        widget->textDocument()->setPlainText(tr("Working..."));
+        widget->setSourceFile(name);
+        widget->setReadyMessage(tr("Working..."));
         d->stackedWidget->addWidget(widget);
         index = d->tabBar->addTab(title);
         d->tabBar->setTabToolTip(index, indexStr);
     } else {
         auto widget = qobject_cast<GitBaseWidget *>(d->stackedWidget->widget(index));
         if (widget)
-            widget->textDocument()->setPlainText(tr("Working..."));
+            widget->setReadyMessage(tr("Working..."));
     }
 
     d->tabBar->setCurrentIndex(index);

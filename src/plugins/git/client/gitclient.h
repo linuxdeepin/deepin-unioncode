@@ -24,6 +24,8 @@ public:
     bool setupInstantBlame(const QString &filePath);
     bool logFile(const QString &filePath);
     bool blameFile(const QString &filePath);
+    bool gitDiff(const QString &filePath);
+    void show(const QString &source, const QString &commitId);
 
     QWidget *instantBlameWidget() const;
     QWidget *gitTabWidget() const;
