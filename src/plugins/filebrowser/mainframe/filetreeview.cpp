@@ -21,8 +21,6 @@
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
 
-const QString NEW_DOCUMENT_NAME = "NewDocument.txt";
-const QString NEW_FOLDER_NAME = "NewFolder";
 const QString DELETE_MESSAGE_TEXT { DTreeView::tr("The delete operation will be removed from"
                                                   "the disk and will not be recoverable "
                                                   "after this operation.\nDelete anyway?") };
@@ -201,48 +199,61 @@ void FileTreeView::selRename()
 
 void FileTreeView::selNewDocument()
 {
-    QModelIndexList indexs = selectedIndexes();
-    if (indexs.isEmpty())
-        return;
-
-    QString upDirPath = d->model->filePath(indexs[0]);
-    QFileInfo upDirInfo(upDirPath);
-
-    QString errString;
-
-    if (upDirInfo.isDir()) {
-        bool success = FileOperation::doNewDocument(upDirPath, NEW_DOCUMENT_NAME);
-        if (!success)
-            errString = tr("Error: Can't create New Document");
-    } else {
-        errString = tr("Error: Create New Document, parent not's dir");
-    }
-
-    if (!errString.isEmpty()) {
-        CommonDialog::ok(errString);
-    }
+    createNew(NewType::File);
 }
 
 void FileTreeView::selNewFolder()
 {
-    QModelIndexList indexs = selectedIndexes();
-    bool hasErr = false;
-    QString errString;
-    if (indexs.size() > 0) {
-        QString filePath = d->model->filePath(indexs[0]);
-        QFileInfo info(filePath);
-        if (info.isDir()) {
-            hasErr = !FileOperation::doNewFolder(filePath, NEW_FOLDER_NAME);
-            if (hasErr)
-                errString = tr("Error: Can't create new folder");
-        } else {
-            hasErr = true;
-            errString = tr("Error: Create new folder, parent not's dir");
-        }
+    createNew(NewType::Folder);
+}
+
+void FileTreeView::createNew(NewType type)
+{
+    DDialog dialog(this);
+    DLineEdit inputEdit(&dialog);
+
+    if (type == NewType::File) {
+        inputEdit.setPlaceholderText(tr("New File Name"));
+        dialog.setWindowTitle(tr("New File"));
+    } else {
+        inputEdit.setPlaceholderText(tr("New Folder Name"));
+        dialog.setWindowTitle(tr("New Folder"));
     }
 
-    if (hasErr)
-        CommonDialog::ok(errString);
+    inputEdit.lineEdit()->setAlignment(Qt::AlignLeft);
+
+    dialog.addContent(&inputEdit);
+    dialog.addButton(tr("Ok"), true, DDialog::ButtonRecommend);
+
+    int code = dialog.exec();
+    if (code == 0)
+        createNewOperation(inputEdit.text(), type);
+}
+
+void FileTreeView::createNewOperation(const QString &newName, NewType type)
+{
+    if (!newName.isEmpty()) {
+        QModelIndexList indexs = selectedIndexes();
+        if (indexs.isEmpty())
+            return;
+
+        QString Path = d->model->filePath(indexs[0]);
+        QFileInfo upDirInfo(Path);
+
+        if (upDirInfo.isDir()) {
+            bool success;
+            if (type == NewType::File) {
+                success = FileOperation::doNewDocument(Path, newName);
+            } else {
+                success = FileOperation::doNewFolder(Path, newName);
+            }
+            if (!success) {
+                CommonDialog::ok(tr("Error: Can't create new document or folder, please check whether the name already exists!"));
+            }
+        } else {
+            CommonDialog::ok(tr("Error: Can't create new document or folder, parent not's dir"));
+        }
+    }
 }
 
 void FileTreeView::recoverFromTrash()
