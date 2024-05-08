@@ -58,9 +58,11 @@ private slots:
     void doShowProjectInfo(QStandardItem *root);
     void doActiveProject(QStandardItem *root);
     void actionNewDocument(const QStandardItem *item);
+    void actionRenameDocument(const QStandardItem *item);
     void actionDeleteDocument(QStandardItem *item);
     void actionOpenInTerminal(const QStandardItem *item);
     void creatNewDocument(const QStandardItem *item, const QString &fileName);
+    void renameDocument(const QStandardItem *item, const QString &fileName);
 };
 
 #endif // PROJECTTREE_H

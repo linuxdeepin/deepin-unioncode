@@ -350,6 +350,11 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childIte
         actionNewDocument(childItem);
     });
 
+    QAction *renameDocAction = new QAction(tr("Rename"), this);
+    QObject::connect(renameDocAction, &QAction::triggered, this, [=](){
+        actionRenameDocument(childItem);
+    });
+
     QModelIndex index = d->itemModel->indexFromItem(childItem);
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
 
@@ -373,6 +378,7 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childIte
         deleteDocAction->setEnabled(true);
 
         menu->addAction(deleteDocAction);
+        menu->addAction(renameDocAction);
     }
 
     return menu;
@@ -459,6 +465,83 @@ void ProjectTree::doActiveProject(QStandardItem *root)
         return;
     d->delegate->setActiveProject(d->itemModel->indexFromItem(root));
     SendEvents::projectActived(ProjectInfo::get(root));
+}
+
+void ProjectTree::actionRenameDocument(const QStandardItem *item)
+{
+    auto dialog = new DDialog(this);
+    auto inputEdit = new DLineEdit(dialog);
+
+    inputEdit->setPlaceholderText(tr("New Document Name"));
+    inputEdit->lineEdit()->setAlignment(Qt::AlignLeft);
+
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setWindowTitle(tr("Rename"));
+
+    dialog->addContent(inputEdit);
+    dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
+
+    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=](){
+        if (!inputEdit->text().isEmpty()) {
+            renameDocument(item, inputEdit->text());
+        }
+        dialog->close();
+    });
+
+    dialog->exec();
+}
+
+void ProjectTree::renameDocument(const QStandardItem *item, const QString &newFileName)
+{
+    QModelIndex index = d->itemModel->indexFromItem(item);
+    QFileInfo info(index.data(Qt::ToolTipRole).toString());
+
+    auto root = ProjectGenerator::root(const_cast<QStandardItem *>(item));
+    QString toolKitName = ProjectInfo::get(root).kitName();
+
+    QString oldFilePath = info.absoluteFilePath();
+    QString newFilePath;
+
+    if (info.isDir()) {
+        newFilePath = info.filePath() + QDir::separator() + newFileName;
+    } else if (info.isFile()) {
+        newFilePath = info.path() + QDir::separator() + newFileName;
+    }
+
+    if (QFile::exists(newFilePath)) {
+        bool doOverWrite = false;
+        auto okCallBack = [&]() {
+            doOverWrite = true;
+        };
+
+        if (d->messDialog != nullptr) {
+            d->messDialog->setMessage(tr("A file with name %1 already exists. Would you like to overwrite it?").arg(newFileName));
+        } else {
+            d->messDialog = new DDialog(this);
+            d->messDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+            d->messDialog->setMessage(tr("A file with name %1 already exists. Would you like to overwrite it?").arg(newFileName));
+            d->messDialog->insertButton(0, tr("Cancel"));
+            d->messDialog->insertButton(1, tr("Ok"), true, DDialog::ButtonWarning);
+        }
+        
+
+        connect(d->messDialog, &DDialog::buttonClicked, [=](int index) {
+            if (index == 0){
+                d->messDialog->reject();
+            } else if (index == 1){
+                okCallBack();
+                QFile::remove(newFilePath);
+                d->messDialog->accept();
+            }
+        });
+
+        d->messDialog->exec();
+
+        if (!doOverWrite)
+            return;
+    }
+    QFile file(oldFilePath);
+    file.rename(newFilePath);
 }
 
 void ProjectTree::actionNewDocument(const QStandardItem *item)
