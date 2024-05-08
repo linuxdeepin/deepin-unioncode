@@ -66,6 +66,9 @@ public:
         if (inotifyFD == -1)
             return;
 
+        if (watchPaths.values().contains(path))
+            removePath(path);
+
         QWriteLocker lock(&rwLock);
         int watcherID = inotify_add_watch(inotifyFD, path.toLatin1(),
                                           IN_MODIFY| IN_OPEN| IN_CLOSE| IN_CREATE|
