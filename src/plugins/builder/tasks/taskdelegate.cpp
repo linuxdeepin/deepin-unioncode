@@ -67,7 +67,7 @@ QSize TaskDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
         }
         tl.endLayout();
 
-        s.setHeight(height + leading + 2 * fontHeight);
+        s.setHeight(height + leading + fontHeight + 3);
     } else {
         s.setHeight(fontHeight + 3);
     }
@@ -122,7 +122,7 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
     QIcon icon = index.data(TaskModel::Icon).value<QIcon>();
     painter->drawPixmap(iconPos, icon.pixmap(positions.taskIconWidth(), positions.taskIconHeight()));
 
-    QRect textRect = option.rect.adjusted(30, 0, 0, 0);
+    QRect textRect = option.rect.adjusted(30, 0, 6, 0);
     paintItemColumn(painter, opt, index, textRect);
 }
 
