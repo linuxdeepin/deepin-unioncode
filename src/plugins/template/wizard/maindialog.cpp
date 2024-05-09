@@ -17,6 +17,7 @@
 #include <DStandardItem>
 #include <DSuggestButton>
 #include <DButtonBox>
+#include <DFrame>
 
 #include <QStandardItemModel>
 #include <QDebug>
@@ -35,14 +36,14 @@ class MainDialogPrivate
     QMap<QString, DetailWidget*> detailWidgetMap;
     DStackedWidget *detailStackedWidget = nullptr;
     DStackedWidget *StackedWidget = nullptr;
-    DWidget *blankWidget = nullptr;
+    DFrame *blankWidget = nullptr;
 };
 
 MainDialog::MainDialog(DWidget *parent)
     : DAbstractDialog(parent)
     , d(new MainDialogPrivate())
 {
-    setMinimumSize(850, 550);
+    setMinimumSize(611, 427);
     TemplateVector templateVec;
     TemplateParser::readTemplateConfig(templateVec);
     setupUI(templateVec);
@@ -69,20 +70,37 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     titleBar->addWidget(btnbox);
     newFileButton->click();
 
-    d->detailStackedWidget = new DStackedWidget(this);
-    d->StackedWidget = new DStackedWidget();
+    DFrame *detailFrame = new DFrame(this);
+    QHBoxLayout *detailLayout = new QHBoxLayout();
+    detailFrame->setLayout(detailLayout);
+    detailFrame->setLineWidth(0);
 
-    d->blankWidget = new DetailWidget(this);
+    d->detailStackedWidget = new DStackedWidget(detailFrame);
+    d->StackedWidget = new DStackedWidget(this);
+    d->detailStackedWidget->setContentsMargins(0, 0, 0, 0);
+    detailLayout->addWidget(d->detailStackedWidget);
+
+    d->blankWidget = new DFrame(this);
+    d->blankWidget->setLineWidth(0);
     d->detailStackedWidget->addWidget(d->blankWidget);
+    d->StackedWidget->setLineWidth(0);
 
-    DTreeView * treeView =  new DTreeView();
+    DFrame *leftFrame = new DFrame(this);
+    DTreeView * treeView =  new DTreeView(leftFrame);
+    QHBoxLayout *leftFrameLayout = new QHBoxLayout();
     treeView->setHeaderHidden(true);
 
     treeView->setEditTriggers(DTreeView::NoEditTriggers);
     treeView->setSelectionMode(DTreeView::SingleSelection);
     treeView->setSelectionBehavior(DTreeView::SelectRows);
     treeView->setSelectionMode(DTreeView::SingleSelection);
-
+    treeView->setLineWidth(0);
+    leftFrameLayout->addWidget(treeView);
+    leftFrameLayout->setContentsMargins(10, 0, 10, 0);
+    leftFrame->setLayout(leftFrameLayout);
+    leftFrame->setLineWidth(0);
+    leftFrame->setFixedWidth(164);
+    DStyle::setFrameRadius(leftFrame, 0);
 
     //deafult new file显示
     QStandardItemModel *StandardModel = new QStandardItemModel();
@@ -104,10 +122,6 @@ void MainDialog::setupUI(TemplateVector &templateVec)
             detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
             detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
             typeItem->appendRow(detailItem);
-
-            QFont font;
-            font.setPointSize(12);
-            detailItem->setFont(font);
         }
     }
     treeView->setModel(StandardModel);
@@ -135,10 +149,6 @@ void MainDialog::setupUI(TemplateVector &templateVec)
                     detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
                     detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
                     typeItem->appendRow(detailItem);
-
-                    QFont font;
-                    font.setPointSize(12);
-                    detailItem->setFont(font);
                 }
             }
             treeView->setModel(StandardModel);
@@ -166,10 +176,6 @@ void MainDialog::setupUI(TemplateVector &templateVec)
                     detailItem->setData(QVariant::fromValue(detail), Qt::UserRole + 1);
                     detailItem->setData(QVariant::fromValue(QUuid::createUuid().toString()), Qt::UserRole + 2);
                     typeItem->appendRow(detailItem);
-
-                    QFont font;
-                    font.setPointSize(12);
-                    detailItem->setFont(font);
                 }
             }
             treeView->setModel(StandardModel);
@@ -224,25 +230,23 @@ void MainDialog::setupUI(TemplateVector &templateVec)
 
 
     QVBoxLayout *leftLayout = new QVBoxLayout();
-    leftLayout->addWidget(treeView);
+    leftLayout->addWidget(leftFrame);
 
     QVBoxLayout *rightLayout = new QVBoxLayout();
-    rightLayout->setContentsMargins(0, 10, 0, 0);
-    rightLayout->addWidget(d->detailStackedWidget);
+    rightLayout->addWidget(detailFrame);
+    rightLayout->setMargin(10);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addLayout(leftLayout);
     hLayout->addLayout(rightLayout);
 
-    hLayout->setStretchFactor(leftLayout, 1);
-    hLayout->setStretchFactor(rightLayout, 2);
-    hLayout->setSpacing(10);
+    hLayout->setSpacing(0);
     QVBoxLayout *vLayout = new QVBoxLayout();
 
     vLayout->addWidget(titleBar);
     vLayout->setSpacing(0);
     vLayout->addLayout(hLayout);
-    vLayout->setContentsMargins(0,0,0,0);
+    vLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(vLayout);
 }
 
