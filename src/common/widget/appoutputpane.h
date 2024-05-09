@@ -31,6 +31,9 @@ public:
 
     void setProcessFinished(const quint64 &pid);
 
+signals:
+    void paneCreated(const quint64 &pid);
+
 public slots:
     void slotCloseOutputPane();
 
