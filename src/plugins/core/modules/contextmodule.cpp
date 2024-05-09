@@ -17,8 +17,17 @@ void ContextModule::initialize(Controller *_uiController)
 
     auto outputWidget = new AbstractWidget(AppOutputPane::instance());
     auto docFind = new OutputDocumentFind(AppOutputPane::instance()->defaultPane());
-    if (auto holder = PlaceHolderManager::instance()->createPlaceHolder(AppOutputPane::instance(), docFind))
-        AppOutputPane::instance()->layout()->addWidget(holder);
+    if (auto holder = PlaceHolderManager::instance()->createPlaceHolder(AppOutputPane::instance()->defaultPane(), docFind))
+        AppOutputPane::instance()->defaultPane()->layout()->addWidget(holder);
+
+    connect(AppOutputPane::instance(), &AppOutputPane::paneCreated, this, [=](const quint64 &pid){
+        auto pane = AppOutputPane::instance()->getOutputPaneByPid(pid);
+        if (pane == AppOutputPane::instance()->defaultPane())
+            return;
+        auto docFind = new OutputDocumentFind(pane);
+        if (auto holder = PlaceHolderManager::instance()->createPlaceHolder(pane, docFind))
+            pane->layout()->addWidget(holder);
+    });
 
     uiController->addContextWidget(tr("&Application Output"), outputWidget, true);
 }
