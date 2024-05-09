@@ -50,31 +50,34 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     : DScrollArea(parent)
     , d(new DetailWidgetPrivate())
 {
+    this->setLineWidth(0);
     d->templatePath = templatePath;
     if (!TemplateParser::readWizardConfig(d->templatePath, d->wizardInfo))
         return;
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addSpacing(10);
 
-    DWidget *widget = new DWidget();
+    DWidget *widget = new DWidget(this);
     widget->setLayout(vLayout);
 
-    DWidget *bottomWidget = new DWidget();
+    DWidget *bottomWidget = new DWidget(this);
     QHBoxLayout * bottomLayout = new QHBoxLayout(); //创建一个按钮布局
     bottomWidget->setLayout(bottomLayout);
+    bottomWidget->setContentsMargins(8, 0, 0, 0);
 
     DPushButton *cancel = new DPushButton(tr("Cancel"));
-    cancel->setFixedSize(200,46);
+    cancel->setFixedSize(173, 36);
     DSuggestButton *create = new DSuggestButton(tr("Create"));
-    create->setFixedSize(200,46);
+    create->setFixedSize(173, 36);
 
     // 创建两按钮间的分割线
     DFrame *separator = new DFrame;
     separator->setFrameShape(QFrame::VLine);
-    separator->setFrameShadow(QFrame::Sunken);
+    separator->setMaximumHeight(28);
+    
 
     bottomLayout->addStretch(15);
-    bottomLayout->addWidget(cancel,Qt::AlignLeft);
+    bottomLayout->addWidget(cancel);
     bottomLayout->addWidget(separator);
     bottomLayout->addWidget(create);
 
@@ -87,7 +90,7 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     connect(cancel, &DPushButton::clicked, this , &DetailWidget::closeSignal);
 
     //调整窗口的上边距
-    vLayout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    vLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     auto iter = d->wizardInfo.configures.begin();
     for (; iter != d->wizardInfo.configures.end(); ++iter) {
@@ -95,35 +98,35 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
         QFormLayout *fLayout = new QFormLayout();
 
         if (iter->displayName == "File Name")
-             d->label = new DLabel(tr("File Name:"));
+            d->label = new DLabel(tr("File Name:"), this);
         else if(iter->displayName == "Project Name")
-             d->label = new DLabel(tr("Project Name:"));
+            d->label = new DLabel(tr("Project Name:"), this);
         else if(iter->displayName == "Location")
-             d->label = new DLabel(tr("Location:"));
+            d->label = new DLabel(tr("Location:"), this);
 
-        d->label->setMinimumSize(120, 20);
-        d->label->setMaximumSize(100, 20);
+        d->label->setMinimumSize(55, 20);
         d->label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        d->label->setContentsMargins(25, 0, 0, 0);
-        d->label->setAlignment(Qt::AlignLeft);
+        d->label->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
 
         if ("lineEdit" == iter->type) {
             DLineEdit *lineEdit = new DLineEdit();
             if (!iter->defaultValues.isEmpty()) {
                 lineEdit->setText(iter->defaultValues.at(0));
             }
-
-            hLayout->addWidget(lineEdit,Qt::AlignRight);
+            hLayout->addWidget(d->label, 0, Qt::AlignRight);
+            hLayout->addWidget(lineEdit,Qt::AlignCenter);
+            hLayout->setSpacing(10);
 
             d->lineEditMap.insert(iter->key, lineEdit);
             if (iter->browse) {
-                lineEdit->setFixedSize(360, 36);
+                lineEdit->setFixedSize(244, 36);
                 lineEdit->lineEdit()->setReadOnly(true);  //设置lineedit是否为只读模式
 
                 DSuggestButton *browse = new DSuggestButton("...");
                 browse->setFixedSize(36, 36);
-                hLayout->addWidget(browse, 0, Qt::AlignRight);
-                hLayout->setStretchFactor(browse, 1);
+                hLayout->addWidget(browse, 0);
+                lineEdit->lineEdit()->setAlignment(Qt::AlignCenter);
+                hLayout->setContentsMargins(0, 0, 0, 0);
 
                 connect(browse, &DPushButton::clicked, [=]() {
                     QString path = DFileDialog::getExistingDirectory(this, tr("Choose path"), QDir::homePath());
@@ -132,9 +135,7 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
                     }
                 });
             } else {
-                lineEdit->setFixedSize(405, 36);
-
-
+                lineEdit->setFixedSize(290, 36);
             }
             // 使用传值方式捕获迭代器和displayName
             auto displayName = iter->displayName;
@@ -166,16 +167,16 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
             d->comboBoxMap.insert(iter->key, comboBox);
         }
 
-        fLayout->addRow(d->label,hLayout);
+        fLayout->addRow(hLayout);
         vLayout->addLayout(fLayout);
 
         // 用循环创建的二排label和lineedit， 用spacer控制上下间距
-        vLayout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+        vLayout->addSpacerItem(new QSpacerItem(0, 13, QSizePolicy::Minimum, QSizePolicy::Expanding));
     }
 
     //将取消和创建按钮移至窗口底部
-    vLayout->addSpacerItem(new QSpacerItem(20, 230, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    vLayout->addWidget(bottomWidget,Qt::AlignLeft);
+    vLayout->addSpacerItem(new QSpacerItem(0, 160, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    vLayout->addWidget(bottomWidget);
     setWidget(widget);
 }
 
@@ -240,6 +241,3 @@ bool DetailWidget::getGenParams(PojectGenParam &param)
 
     return true;
 }
-
-
-
