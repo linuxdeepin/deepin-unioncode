@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "basefilelocator.h"
-#include "services/project/projectservice.h"
 #include "services/editor/editorservice.h"
 
 #include <DFileIconProvider>
@@ -31,6 +30,8 @@ static int matchLevelFor(const QRegularExpressionMatch &match, const QString &ma
 baseFileLocator::baseFileLocator(QObject *parent)
     : abstractLocator(parent)
 {
+    auto &ctx = dpfInstance.serviceContext();
+    projectService = ctx.service<ProjectService>(ProjectService::name());
 }
 
 void baseFileLocator::prepareSearch(const QString &searchText)
@@ -51,7 +52,11 @@ void baseFileLocator::prepareSearch(const QString &searchText)
         fileLocatorItem item(this);
         item.filePath = file;
         item.id = file.toString();
-        item.extraInfo = file.toShortNativePath();
+        item.tooltip = file.toString();
+        auto nativePath = toShortProjectPath(file.toString());
+        if (nativePath == file.toString())
+            nativePath = file.toShortNativePath();
+        item.extraInfo = nativePath;
         QFileInfo fi(filePath);
         item.displayName = fi.fileName();
 
@@ -99,4 +104,22 @@ void baseFileLocator::setFileList(const QList<QString> &fileList)
 void baseFileLocator::clear()
 {
     locatorItemList.clear();
+}
+
+QString baseFileLocator::toShortProjectPath(const QString &path)
+{
+    QMap<QString, QString> projectList;
+    QString nativePath = path;
+    if (projectService->getAllProjectInfo) {
+        auto allProject = projectService->getAllProjectInfo();
+        foreach (auto project, allProject) {
+            auto projectRootPath = project.workspaceFolder();
+            if (path.startsWith(projectRootPath)) {
+                nativePath.replace(0, projectRootPath.size(), QFileInfo(projectRootPath).fileName() + ':');
+                break;
+            }
+        }
+    }
+
+    return nativePath;
 }
