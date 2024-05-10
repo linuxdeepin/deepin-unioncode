@@ -10,6 +10,7 @@
 #include <DPalette>
 #include <DComboBox>
 #include <DToolButton>
+#include <DStyle>
 
 #include <QVBoxLayout>
 #include <QProcess>
@@ -30,6 +31,7 @@ class OutputWindowPrivate
 public:
     OutputPane *defaultPane { nullptr };
     DWidget *tabbar { nullptr };
+    DFrame *hLine { nullptr };
     DComboBox *tabChosser { nullptr };
     DToolButton *closeProcessBtn { nullptr };
     DToolButton *closePaneBtn { nullptr };
@@ -42,7 +44,7 @@ public:
 };
 
 AppOutputPane::AppOutputPane(QWidget *parent)
-    :DWidget(parent), d(new OutputWindowPrivate)
+    :DFrame(parent), d(new OutputWindowPrivate)
 {
     initUi();
 }
@@ -71,28 +73,38 @@ void AppOutputPane::initUi()
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
+    this->setLineWidth(0);
+    DStyle::setFrameRadius(this, 0);
 
     initTabWidget();
     d->stackWidget = new DStackedWidget(this);
     d->tabChosser->addItem(tr("default"));
     d->stackWidget->addWidget(d->defaultPane);
+    d->stackWidget->setContentsMargins(10, 0, 0, 10);
+    
+    d->hLine = new DFrame(this);
+    d->hLine->setFrameShape(QFrame::HLine);
+    d->hLine->hide();
 
     mainLayout->addWidget(d->tabbar);
+    mainLayout->addWidget(d->hLine);
     mainLayout->addWidget(d->stackWidget);
 }
 
 void AppOutputPane::initTabWidget()
 {
     d->tabbar = new DWidget(this);
-    d->tabbar->setFixedHeight(30);
+    d->tabbar->setFixedHeight(38);
     d->tabbar->setAutoFillBackground(true);
     d->tabbar->setBackgroundRole(DPalette::Base);
+    d->tabbar->setContentsMargins(10, 2, 0, 2);
 
     QHBoxLayout *tabLayout = new QHBoxLayout(d->tabbar);
     tabLayout->setContentsMargins(0, 0, 0, 0);
     tabLayout->setAlignment(Qt::AlignLeft);
 
     d->tabChosser = new DComboBox(d->tabbar);
+    d->tabChosser->setFixedSize(120, 28);
 
     d->closeProcessBtn = new DToolButton(d->tabbar);
     d->closeProcessBtn->setIcon(QIcon::fromTheme("common_stop"));
@@ -140,6 +152,7 @@ OutputPane *AppOutputPane::getOutputPaneByPid(const quint64 &pid)
 void AppOutputPane::createApplicationPane(const quint64 &pid, const QString &program)
 {
     d->tabbar->show();
+    d->hLine->show();
 
     //check if exist avaliable pane of this name
     for (auto index = 0; index < d->stackWidget->count(); index++) {
