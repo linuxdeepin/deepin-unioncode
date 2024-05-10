@@ -466,6 +466,7 @@ void RecentDisplay::initializeUi()
     d->docLabel = new DLabel(tr("Documents"));
     d->docLabel->setForegroundRole(QPalette::BrightText);
     d->docLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    d->docLabel->setContentsMargins(10, 5, 0, 10);
 
     d->docClear = new DPushButton();
     d->docClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
@@ -484,9 +485,9 @@ void RecentDisplay::initializeUi()
 
     DFontSizeManager::instance()->bind(d->docLabel, DFontSizeManager::T4, QFont::Medium);
     d->vLayoutDoc = new QVBoxLayout();
-    d->vLayoutDoc->setContentsMargins(20, 10, 10, 10);
+    d->vLayoutDoc->setContentsMargins(10, 10, 10, 10);
     d->vLayoutDoc->addLayout(docHlayout);
-    d->vLayoutDoc->setSpacing(20);
+    d->vLayoutDoc->setSpacing(0);
     d->vLayoutDoc->addWidget(d->docView);
     d->docFrame->setLayout(d->vLayoutDoc);
 
@@ -498,7 +499,8 @@ void RecentDisplay::initializeUi()
     d->proLabel = new DLabel(tr("Projects"));
     d->proLabel->setForegroundRole(QPalette::BrightText);
     d->proLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
+    d->proLabel->setContentsMargins(10, 5, 0, 10);
+    
     d->proClear = new DPushButton();
     d->proClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
     d->proClear->setFlat(true);
@@ -516,24 +518,24 @@ void RecentDisplay::initializeUi()
 
     DFontSizeManager::instance()->bind(d->proLabel, DFontSizeManager::T4, QFont::Medium);
     d->vLayoutPro = new QVBoxLayout();
-    d->vLayoutPro->setContentsMargins(20, 10, 10, 10);
+    d->vLayoutPro->setContentsMargins(10, 10, 10, 10);
     d->vLayoutPro->addLayout(proHlayout);
-    d->vLayoutPro->setSpacing(20);
+    d->vLayoutPro->setSpacing(0);
     d->vLayoutPro->addWidget(d->proView);
     d->proFrame->setLayout(d->vLayoutPro);
 
     QHBoxLayout *proAndDocLayout = new QHBoxLayout();
     proAndDocLayout->addWidget(d->proFrame);
-    proAndDocLayout->addSpacing(0);
+    proAndDocLayout->setSpacing(2);
     proAndDocLayout->addWidget(d->docFrame);
 
     d->recentOpen = new DWidget(this);
     QVBoxLayout *recentNavLayout = new QVBoxLayout(d->recentOpen);
     recentNavLayout->setContentsMargins(15, 0, 25, 20);
-    recentNavLayout->addSpacing(10);
+    recentNavLayout->addSpacing(25);
     recentNavLayout->setAlignment(Qt::AlignTop);
     recentNavLayout->addWidget(recentTitle);
-    recentNavLayout->addSpacing(20);
+    recentNavLayout->addSpacing(5);
     recentNavLayout->addLayout(proAndDocLayout);
 
     d->hLayout = new QHBoxLayout(this);
