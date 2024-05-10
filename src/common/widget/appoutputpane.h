@@ -8,11 +8,12 @@
 #include "outputpane.h"
 
 #include <DWidget>
+#include <DFrame>
 
 #include <QPlainTextEdit>
 
 class OutputWindowPrivate;
-class AppOutputPane : public DTK_WIDGET_NAMESPACE::DWidget
+class AppOutputPane : public DTK_WIDGET_NAMESPACE::DFrame
 {
     Q_OBJECT
 public:
