@@ -120,20 +120,17 @@ void FileTreeView::selRemove()
     // Remove duplicates
     countPaths = countPaths.toSet().toList();
 
-    bool doDeleta = false;
-    auto okCallBack = [&](bool checked) {
-        Q_UNUSED(checked);
-        doDeleta = true;
-    };
+    QString message = tr("Delete operation not be recoverable, delete anyway?");
 
-    QString mess = DELETE_MESSAGE_TEXT + "\n" + countPaths.join('\n');
-    CommonDialog::okCancel(mess,
-                           DELETE_WINDOW_TEXT,
-                           QMessageBox::Warning,
-                           okCallBack,
-                           nullptr);
+    DDialog dialog;
+    dialog.setMessage(message);
+    dialog.setWindowTitle(tr("Delete Warining"));
+    dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+    dialog.insertButton(0, tr("Ok"));
+    dialog.insertButton(1, tr("Cancel"));
+    int code = dialog.exec();
 
-    if (!doDeleta)
+    if (code == 1)
         return;
 
     bool hasError = false;
