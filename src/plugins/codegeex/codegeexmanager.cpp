@@ -15,7 +15,7 @@
 #include <QTimer>
 #include <QDateTime>
 
-static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
+static const char *kUrlSSEChat = "https://api.codegeex.cn:8443/tx/v3/chat/message";
 //static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
 static const char *kUrlNewSession = "https://codegeex.cn/prod/code/chatGlmTalk/insert";
 static const char *kUrlDeleteSession = "https://codegeex.cn/prod/code/chatGlmTalk/delete";
@@ -381,6 +381,7 @@ QString CodeGeeXManager::modifiedData(const QString &data)
     auto retData = data;
     retData.replace("\\n", "\n");
     retData.replace("\\\"", "\"");
+    retData.replace("\\\\", "\\");
 
     return retData;
 }
