@@ -10,6 +10,7 @@
 #include "common/common.h"
 #include "gui/settings/editorsettings.h"
 #include "gui/settings/settingsdefine.h"
+#include "services/option/optionutils.h"
 
 #include <Qsci/qsciapis.h>
 
@@ -34,6 +35,7 @@ static constexpr int ERROR_ANNOTATION_STYLE = 765;
 static constexpr int FATAL_ANNOTATION_STYLE = 764;
 
 DGUI_USE_NAMESPACE
+using namespace dpfservice;
 
 TextEditorPrivate::TextEditorPrivate(TextEditor *qq)
     : QObject(qq),
@@ -302,6 +304,9 @@ void TextEditorPrivate::showContextMenu()
     menu.addSeparator();
     action = menu.addAction(tr("Select All"), q, [this] { q->selectAll(true); });
     action->setEnabled(q->length() != 0);
+
+    action = menu.addAction(tr("Add/Del Comment"), q, [this] { q->commentOperation(); });
+    action->setEnabled(q->hasSelectedText());
 
     // notify other plugin to add action.
     editor.contextMenu(QVariant::fromValue(&menu));

@@ -65,6 +65,15 @@ public:
     void addAnnotation(const QString &title, const QString &content, int line, int type);
     void addAnnotation(const QString &content, int line, int type);
     void removeAnnotation(const QString &title);
+    void commentOperation();
+    void initCommentSettings(const QMap<QString, QVariant> &map);
+    QString getFileType(const QString& fileName);
+    QString addCommentPrefix(const QString &selectedTexts, const QString &commentSymbol);
+    bool hasUncommentedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo);
+    void addCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo);
+    void delCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo);
+    bool selectionStatus(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo);
+    QStringList parseString(const QString &input);
     QPoint pointFromPosition(int position);
     int positionFromPoint(int x, int y);
     void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text);
