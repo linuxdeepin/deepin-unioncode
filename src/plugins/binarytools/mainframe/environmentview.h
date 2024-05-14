@@ -53,7 +53,7 @@ public:
     void initModel();
     void setValue(const QMap<QString, QVariant> &map);
 
-    void a();
+    static QMap<QString, QVariant> defaultEnvironment();
 
 public slots:
     void disableDleteButton();
