@@ -544,7 +544,7 @@ void LSPStyle::followSymbolUnderCursor()
     d->definitionCache.setSwitchMode(DefinitionCache::ActionMode);
 
     lsp::Position pos;
-    d->editor->lineIndexFromPosition(d->editor->cursorPosition(), &pos.line, &pos.character);
+    d->editor->lineIndexFromPosition(d->wordPostion(), &pos.line, &pos.character);
     qApp->metaObject()->invokeMethod(d->getClient(), "definitionRequest",
                                      Q_ARG(const QString &, d->editor->getFile()),
                                      Q_ARG(const lsp::Position &, pos));
@@ -556,7 +556,7 @@ void LSPStyle::findUsagesActionTriggered()
         return;
 
     lsp::Position pos;
-    d->editor->lineIndexFromPosition(d->editor->cursorPosition(), &pos.line, &pos.character);
+    d->editor->lineIndexFromPosition(d->wordPostion(), &pos.line, &pos.character);
     qApp->metaObject()->invokeMethod(d->getClient(), "referencesRequest",
                                      Q_ARG(const QString &, d->editor->getFile()),
                                      Q_ARG(const lsp::Position &, pos));
@@ -651,6 +651,15 @@ bool LSPStylePrivate::shouldStartCompletion(const QString &insertedText)
     }
 
     return false;
+}
+
+int LSPStylePrivate::wordPostion()
+{
+    int pos = editor->cursorPosition();
+    if (editor->hasSelectedText())
+        return editor->wordStartPositoin(pos);
+
+    return pos;
 }
 
 newlsp::Client *LSPStylePrivate::getClient() const

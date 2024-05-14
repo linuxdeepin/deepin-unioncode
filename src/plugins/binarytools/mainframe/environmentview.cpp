@@ -10,11 +10,11 @@
 #include <DHeaderView>
 #include <DFrame>
 #include <DPushButton>
+#include <DIconButton>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QProcessEnvironment>
-#include <DToolButton>
 
 DWIDGET_USE_NAMESPACE
 class EnvironmentModelPrivate
@@ -24,10 +24,8 @@ class EnvironmentModelPrivate
 };
 
 EnvironmentModel::EnvironmentModel(QObject *parent)
-    : QAbstractTableModel(parent)
-    , d (new EnvironmentModelPrivate())
+    : QAbstractTableModel(parent), d(new EnvironmentModelPrivate())
 {
-
 }
 
 EnvironmentModel::~EnvironmentModel()
@@ -155,17 +153,14 @@ class EnvironmentViewPrivate
     QVBoxLayout *vLayout = nullptr;
     DTableView *tableView = nullptr;
     EnvironmentModel *model = nullptr;
-    DWidget *btnWidget = nullptr;
-    DWidget *btnTotalWidget = nullptr;
     BinaryToolsConfigView *configView = nullptr;
-    DToolButton *appendButton =nullptr;
-    DToolButton *deleteButton =nullptr;
-    DToolButton *resetButton  =nullptr;
+    DIconButton *appendButton = nullptr;
+    DIconButton *deleteButton = nullptr;
+    DIconButton *resetButton = nullptr;
 };
 
 EnvironmentView::EnvironmentView(DWidget *parent)
-    : DWidget(parent)
-    , d(new EnvironmentViewPrivate)
+    : DWidget(parent), d(new EnvironmentViewPrivate)
 {
     setAutoFillBackground(true);
 
@@ -176,7 +171,7 @@ EnvironmentView::EnvironmentView(DWidget *parent)
     if (!d->tableView) {
         d->tableView = new DTableView();
         d->tableView->setShowGrid(false);
-        DHeaderView* headerView = d->tableView->horizontalHeader();
+        DHeaderView *headerView = d->tableView->horizontalHeader();
         headerView->setSectionResizeMode(DHeaderView::ResizeToContents);
         headerView->setDefaultAlignment(Qt::AlignLeft);
         d->tableView->verticalHeader()->hide();
@@ -195,42 +190,36 @@ EnvironmentView::EnvironmentView(DWidget *parent)
     d->tableView->setModel(d->model);
 
     //append
-    d->appendButton = new DToolButton();
+    d->appendButton = new DIconButton(this);
     d->appendButton->setIcon(QIcon::fromTheme("binarytools_add"));
-    d->appendButton->setFixedSize(16,16);
+    d->appendButton->setIconSize({16, 16});
+    d->appendButton->setFlat(true);
     d->appendButton->setToolTip(tr("append"));
 
     //Delete
-    d->deleteButton = new DToolButton();
+    d->deleteButton = new DIconButton(this);
     d->deleteButton->setIcon(QIcon::fromTheme("binarytools_reduce"));
-    d->deleteButton->setFixedSize(16,16);
+    d->deleteButton->setIconSize({16, 16});
+    d->deleteButton->setFlat(true);
     d->deleteButton->setToolTip(tr("reduce"));
 
     //Reset
-    d->resetButton = new DToolButton();
+    d->resetButton = new DIconButton(this);
     d->resetButton->setIcon(QIcon::fromTheme("binarytools_reset"));
-    d->resetButton->setFixedSize(14,14);
+    d->resetButton->setIconSize({16, 16});
+    d->resetButton->setFlat(true);
     d->resetButton->setToolTip(tr("reset"));
 
-    d->btnWidget =new DWidget();
-    d->btnWidget->setFixedSize(605,40);
-    QHBoxLayout *btnTotalLayout = new QHBoxLayout(d->btnWidget);
+    QHBoxLayout *btnLayout = new QHBoxLayout();
+    btnLayout->addWidget(d->appendButton);
+    btnLayout->addWidget(d->deleteButton);
+    btnLayout->addWidget(d->resetButton);
+    btnLayout->addStretch(1);
 
-    btnTotalLayout->addWidget(d->appendButton);
-    btnTotalLayout->addWidget(d->deleteButton);
-    btnTotalLayout->addWidget(d->resetButton);
-    btnTotalLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    d->vLayout->addLayout(btnLayout);
+    d->vLayout->setContentsMargins(0, 0, 0, 0);
 
-    d->btnTotalWidget =new DWidget();
-    QVBoxLayout *vbtnLayout =new  QVBoxLayout();
-    vbtnLayout->addWidget(d->btnWidget);
-    vbtnLayout->setAlignment(Qt::AlignCenter);
-    d->btnTotalWidget->setLayout(vbtnLayout);
-
-    d->vLayout->addWidget(d->btnWidget);
-    d->vLayout->setContentsMargins(0,0,0,0);
-
-    connect(d->tableView->selectionModel(), &QItemSelectionModel::currentChanged, [=](const QModelIndex &current){
+    connect(d->tableView->selectionModel(), &QItemSelectionModel::currentChanged, [=](const QModelIndex &current) {
         if (current.isValid() || d->tableView->selectionModel()->hasSelection()) {
             emit deleteSignal(true);
         } else {
@@ -243,7 +232,7 @@ EnvironmentView::EnvironmentView(DWidget *parent)
     connect(d->appendButton, &DPushButton::clicked, this, &EnvironmentView::appendRow);
     connect(d->deleteButton, &DPushButton::clicked, this, &EnvironmentView::deleteRow);
     connect(d->resetButton, &DPushButton::clicked, this, &EnvironmentView::initModel);
-    connect(this, &EnvironmentView::deleteSignal, [=](bool enable){
+    connect(this, &EnvironmentView::deleteSignal, [=](bool enable) {
         d->deleteButton->setEnabled(enable);
     });
 }
@@ -255,7 +244,7 @@ void EnvironmentView::disableDleteButton()
 
 EnvironmentView::~EnvironmentView()
 {
-    if(d)
+    if (d)
         delete d;
 }
 
@@ -294,5 +283,14 @@ void EnvironmentView::setValue(const QMap<QString, QVariant> &map)
     d->model->update(map);
 }
 
+QMap<QString, QVariant> EnvironmentView::defaultEnvironment()
+{
+    QMap<QString, QVariant> envs;
+    QStringList keys = QProcessEnvironment::systemEnvironment().keys();
+    for (auto key : keys) {
+        QString value = QProcessEnvironment::systemEnvironment().value(key);
+        envs.insert(key, value);
+    }
 
-
+    return envs;
+}
