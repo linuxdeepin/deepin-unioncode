@@ -32,6 +32,7 @@ private slots:
 private:
     DetailWidgetPrivate *const d;
     void generate(const PojectGenParam &param);
+    QString getVariable(const QString &variable, PojectGenParam &param);
 
 };
 

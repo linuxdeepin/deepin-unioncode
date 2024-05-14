@@ -7,6 +7,9 @@ set(CXX_CPP
     wizard/maindialog.cpp
     wizard/templateparser.cpp
     wizard/projectgenerate.cpp
+    wizard/projectpane.cpp
+    wizard/fieldspane.cpp
+    wizard/kitspane.cpp
     transceiver/templatereceiver.cpp
     templatemanager.cpp
     templateplugin.cpp
@@ -18,6 +21,10 @@ set(CXX_H
     wizard/maindialog.h
     wizard/templateparser.h
     wizard/projectgenerate.h
+    wizard/projectpane.h
+    wizard/fieldspane.h
+    wizard/abstractpane.h
+    wizard/kitspane.h
     transceiver/templatereceiver.h
     templatemanager.h
     templateplugin.h
