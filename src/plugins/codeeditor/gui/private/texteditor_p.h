@@ -64,6 +64,7 @@ public slots:
 
 public:
     TextEditor *q { nullptr };
+    QStringList commentSettings = {};
 
     QString fileName;
     int preFirstLineNum { 0 };
