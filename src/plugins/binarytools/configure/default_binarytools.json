@@ -1,0 +1,79 @@
+{
+    "groups": [
+        {
+            "name": "",
+            "tools": [
+                {
+                    "addToToolbar": false,
+                    "arguments": "-uc -nc -us",
+                    "command": "dpkg-buildpackage",
+                    "description": "Debian系统中用于构建二进制包（.deb 文件）的工具",
+                    "environment": {},
+                    "errorOutputOption": 1,
+                    "icon": "binarytools_packing",
+                    "id": "",
+                    "name": "打包工具",
+                    "outputOption": 1,
+                    "type": 0,
+                    "workingDirectory": ""
+                },
+                {
+                    "addToToolbar": false,
+                    "arguments": "",
+                    "command": "deepin-deb-verify",
+                    "description": "签名验证工具是一款针对Linux下deb格式的验签工具，用于deb包的签名验证",
+                    "environment": {},
+                    "errorOutputOption": 1,
+                    "icon": "binarytools_signature",
+                    "id": "",
+                    "name": "签名验证工具",
+                    "outputOption": 1,
+                    "type": 0,
+                    "workingDirectory": ""
+                },
+                {
+                    "addToToolbar": false,
+                    "arguments": "push --branch",
+                    "command": "tx",
+                    "description": "上传翻译",
+                    "environment": {},
+                    "errorOutputOption": 1,
+                    "icon": "binarytools_translate",
+                    "id": "",
+                    "name": "上传翻译",
+                    "outputOption": 1,
+                    "type": 0,
+                    "workingDirectory": ""
+                },
+                {
+                    "addToToolbar": false,
+                    "arguments": "pull -f --branch",
+                    "command": "tx",
+                    "description": "拉取翻译",
+                    "environment": {},
+                    "errorOutputOption": 1,
+                    "icon": "binarytools_translate",
+                    "id": "",
+                    "name": "拉取翻译",
+                    "outputOption": 1,
+                    "type": 0,
+                    "workingDirectory": ""
+                },
+                {
+                    "addToToolbar": true,
+                    "arguments": "",
+                    "command": "assistant",
+                    "description": "Qt 助手",
+                    "environment": {},
+                    "errorOutputOption": 1,
+                    "icon": "binarytools_light",
+                    "id": "",
+                    "name": "Qt 助手",
+                    "outputOption": 1,
+                    "type": 0,
+                    "workingDirectory": ""
+                }
+            ]
+        }
+    ]
+}
