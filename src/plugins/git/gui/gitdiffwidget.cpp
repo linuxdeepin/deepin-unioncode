@@ -116,8 +116,11 @@ GitDiffWidget::~GitDiffWidget()
 
 void GitDiffWidget::setGitInfo(const QStringList &infos)
 {
-    if (infos.isEmpty())
+    if (infos.isEmpty()) {
+        d->leftEditor->setPlainText(tr("No difference."));
+        d->rightEditor->setPlainText(tr("No difference."));
         return;
+    }
 
     const auto &info = infos.join("");
     d->fileDataList.clear();
