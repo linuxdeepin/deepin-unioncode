@@ -289,6 +289,10 @@ void StepsPane::setValues(const config::StepItem &item)
 
 void StepsPane::getValues(config::StepItem &item)
 {
-    item.buildArguments = d->toolArguments->text().split(" ");
+    QString arguments = d->toolArguments->text();
+    if (!arguments.isEmpty()){
+        item.buildArguments << arguments.split(" ");
+    }
+    
     item.activeTargetName = d->model->getSelectedTarget();
 }
