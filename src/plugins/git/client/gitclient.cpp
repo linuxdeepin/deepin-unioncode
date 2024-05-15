@@ -140,7 +140,8 @@ void GitClientPrivate::blameFile(const QString &workspace, const QString &filePa
 {
     auto cmd = readyWork(GitBlame, workspace, filePath);
     QStringList arguments = { "blame", "--root",
-                              "-w", "--", filePath };
+                              "--date=short", "-w",
+                              "--", filePath };
 
     cmd->addJob(GitBinaryPath, arguments);
     cmd->start();
