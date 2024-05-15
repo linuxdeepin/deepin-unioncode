@@ -95,20 +95,22 @@ BinaryToolsManager::~BinaryToolsManager()
     }
 }
 
-QSharedPointer<ToolProcess> BinaryToolsManager::createToolProcess(const QString &id)
+QSharedPointer<ToolProcess> BinaryToolsManager::createToolProcess(const ToolInfo &tool)
 {
     using namespace std::placeholders;
 
     QSharedPointer<ToolProcess> toolProcess { new ToolProcess };
     connect(toolProcess.data(), &ToolProcess::finished, this, &BinaryToolsManager::executeFinished, Qt::QueuedConnection);
-    connect(toolProcess.data(), &ToolProcess::readyReadStandardOutput, this, &BinaryToolsManager::handleReadOutput, Qt::QueuedConnection);
-    connect(toolProcess.data(), &ToolProcess::readyReadStandardError, this, &BinaryToolsManager::handleReadError, Qt::QueuedConnection);
+    if (tool.outputOption == ShowInApplicationOutput)
+        connect(toolProcess.data(), &ToolProcess::readyReadStandardOutput, this, &BinaryToolsManager::handleReadOutput, Qt::QueuedConnection);
+    if (tool.errorOutputOption == ShowInApplicationOutput)
+        connect(toolProcess.data(), &ToolProcess::readyReadStandardError, this, &BinaryToolsManager::handleReadError, Qt::QueuedConnection);
     connect(this, &BinaryToolsManager::execute, toolProcess.data(), &ToolProcess::start, Qt::QueuedConnection);
 
     QSharedPointer<QThread> toolThread { new QThread };
     toolProcess->moveToThread(toolThread.data());
     toolThread->start();
-    toolTaskMap.insert(id, std::make_tuple(toolProcess, toolThread));
+    toolTaskMap.insert(tool.id, std::make_tuple(toolProcess, toolThread));
 
     return toolProcess;
 }
@@ -262,7 +264,7 @@ void BinaryToolsManager::executeTool(const QString &id)
         return;
     }
 
-    auto toolProcess = createToolProcess(id);
+    auto toolProcess = createToolProcess(tool);
     QStringList argList = tool.arguments.split(" ", QString::SkipEmptyParts);
     toolProcess->setId(id);
     toolProcess->setProgram(tool.command);
