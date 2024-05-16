@@ -164,6 +164,7 @@ public:
 
     DPF_INTERFACE(void, addTopToolItem, AbstractAction *action, const QString &group, bool addSeparator);
     DPF_INTERFACE(void, addTopToolItemToRight, AbstractAction *action, bool addSeparator);
+    DPF_INTERFACE(void, removeTopToolItem, AbstractAction *action);
 
     DPF_INTERFACE(void, showTopToolBar, const QString &group);
     DPF_INTERFACE(void, hideTopToolBar);
