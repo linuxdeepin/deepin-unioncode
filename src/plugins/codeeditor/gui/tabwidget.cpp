@@ -10,7 +10,6 @@
 #include "settings/settingsdefine.h"
 
 #include "services/window/windowservice.h"
-#include "services/option/optionutils.h"
 
 #include <DFrame>
 #include <DGuiApplicationHelper>
@@ -211,10 +210,7 @@ TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
 
     editor->setFile(fileName);
     editor->setCursorPosition(0, 0);
-    QMap<QString, QVariant> map;
-    OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(), EditorConfig, Node::MimeTypeConfig, map);
     
-    editor->initCommentSettings(map);
     connect(editor, &TextEditor::textChanged, this,
             [this, fileName] {
                 onFileChanged(fileName);

@@ -161,6 +161,7 @@ void TextEditorPrivate::updateSettings()
 {
     fontName = EditorSettings::instance()->value(Node::FontColor, Group::FontGroup, Key::FontFamily, DEFAULT_FONT_NAME).toString();
     fontSize = EditorSettings::instance()->value(Node::FontColor, Group::FontGroup, Key::FontSize, 10).toInt();
+    commentSettings = EditorSettings::instance()->getMap(Node::MimeTypeConfig);
 
     QFont font(fontName, fontSize, QFont::Normal);
     if (q->lexer())
@@ -180,7 +181,6 @@ void TextEditorPrivate::updateSettings()
     q->setTabWidth(tabSize);
     q->setWhitespaceSize(3);
     q->setAutoIndent(autoIndent);
-
 
     // Highlight the current line
     q->setCaretLineVisible(true);
@@ -304,9 +304,6 @@ void TextEditorPrivate::showContextMenu()
     menu.addSeparator();
     action = menu.addAction(tr("Select All"), q, [this] { q->selectAll(true); });
     action->setEnabled(q->length() != 0);
-
-    action = menu.addAction(tr("Add/Del Comment"), q, [this] { q->commentOperation(); });
-    action->setEnabled(q->hasSelectedText());
 
     // notify other plugin to add action.
     editor.contextMenu(QVariant::fromValue(&menu));
