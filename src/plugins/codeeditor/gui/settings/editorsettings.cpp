@@ -37,6 +37,8 @@ EditorSettingsPrivate::EditorSettingsPrivate(EditorSettings *qq)
     : q(qq)
 {
     nodeList << Node::FontColor;
+    nodeList << Node::Behavior;
+    nodeList << Node::MimeTypeConfig;
 }
 
 EditorSettingsPrivate::~EditorSettingsPrivate()
@@ -145,3 +147,13 @@ QVariant EditorSettings::value(const QString &node, const QString &group, const 
 
     return iter->data.value(key, defaultValue);
 }
+
+QMap<QString, QVariant> EditorSettings::getMap(const QString &node) 
+{
+    const auto &stList = d->settingDatas.values(node);
+    QMap<QString, QVariant> map;
+    for (const auto &st : stList)
+        map.insert(st.group, st.data);
+    return map;
+}
+

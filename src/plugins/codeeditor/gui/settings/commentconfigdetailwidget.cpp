@@ -4,6 +4,7 @@
 
 #include "commentconfigdetailwidget.h"
 #include "settingsdefine.h"
+#include "editorsettings.h"
 
 #include <DLabel>
 #include <DLineEdit>
@@ -57,11 +58,11 @@ void CommentConfigDetailWidget::initUI()
     d->singleLineCommentEdit = new DLineEdit(this);
     d->singleLineCommentEdit->setText("//");
 
-    DLabel *startMultiLineComment = new DLabel(tr("Single-line comment start symbol:"), this);
+    DLabel *startMultiLineComment = new DLabel(tr("Multiline comment start symbol:"), this);
     d->startMultiLineCommentEdit = new DLineEdit(this);
     d->startMultiLineCommentEdit->setText("/*");
 
-    DLabel *endMultiLineComment = new DLabel(tr("Single-line comment end symbol:"), this);
+    DLabel *endMultiLineComment = new DLabel(tr("Multiline comment end symbol:"), this);
     d->endMultiLineCommentEdit = new DLineEdit(this);
     d->endMultiLineCommentEdit->setText("*/");
 
@@ -94,17 +95,23 @@ void CommentConfigDetailWidget::getUserConfig(QMap<QString, QVariant> &map)
     qVariantMap.insert(Key::EndMultiLineComment, d->endMultiLineCommentEdit->text());
 
     map.insert(QString::number(d->index), qVariantMap);
+    
+    EditorSettings::instance()->setValue(Node::MimeTypeConfig, QString::number(d->index), Key::MimeTypeGroupName, d->tabNameEdit->text());
+    EditorSettings::instance()->setValue(Node::MimeTypeConfig, QString::number(d->index), Key::MimeType, d->mimeTypeEdit->text());
+    EditorSettings::instance()->setValue(Node::MimeTypeConfig, QString::number(d->index), Key::SingleLineComment, d->singleLineCommentEdit->text());
+    EditorSettings::instance()->setValue(Node::MimeTypeConfig, QString::number(d->index), Key::StartMultiLineComment, d->startMultiLineCommentEdit->text());
+    EditorSettings::instance()->setValue(Node::MimeTypeConfig, QString::number(d->index), Key::EndMultiLineComment, d->endMultiLineCommentEdit->text());
 }
 
 void CommentConfigDetailWidget::setUserConfig(const QMap<QString, QVariant> &map)
 {
-    QVariantMap qVariantMap = map.value(QString::number(d->index)).toMap();
-    QVariant tabName = qVariantMap.value(Key::MimeTypeGroupName);
-    QVariant mimeType = qVariantMap.value(Key::MimeType);
-    QVariant singleLineComment = qVariantMap.value(Key::SingleLineComment);
-    QVariant startMultiLineComment = qVariantMap.value(Key::StartMultiLineComment);
-    QVariant endMultiLineComment = qVariantMap.value(Key::EndMultiLineComment);
-    
+    QVariantMap qVariantMap = EditorSettings::instance()->getMap(Node::MimeTypeConfig).value(QString::number(d->index)).toMap();
+    auto tabName = qVariantMap.value(Key::MimeTypeGroupName);
+    auto mimeType = qVariantMap.value(Key::MimeType);
+    auto singleLineComment = qVariantMap.value(Key::SingleLineComment);
+    auto startMultiLineComment = qVariantMap.value(Key::StartMultiLineComment);
+    auto endMultiLineComment = qVariantMap.value(Key::EndMultiLineComment);
+
     d->tabNameEdit->setText(tabName.toString());
     d->mimeTypeEdit->setText(mimeType.toString());
     d->singleLineCommentEdit->setText(singleLineComment.toString());

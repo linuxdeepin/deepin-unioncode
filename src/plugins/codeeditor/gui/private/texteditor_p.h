@@ -64,7 +64,6 @@ public slots:
 
 public:
     TextEditor *q { nullptr };
-    QStringList commentSettings = {};
 
     QString fileName;
     int preFirstLineNum { 0 };
@@ -81,6 +80,8 @@ public:
     int fontSize { 10 };
 
     CodeCompletionWidget *completionWidget { nullptr };
+    
+    QMap<QString, QVariant> commentSettings;
 };
 
 #endif   // TEXTEDITOR_P_H
