@@ -91,7 +91,16 @@ void CodeCompletionModel::executeCompletionItem(TextEditor *editor, int start, i
     if (index.row() >= d->completionDatas.size())
         return;
 
-    QString next = editor->text(end, end + 1);
+    int line = 0, col = 0;
+    editor->lineIndexFromPosition(end, &line, &col);
+    int lineEndPos = editor->SendScintilla(TextEditor::SCI_GETLINEENDPOSITION, line);
+
+    QString next;
+    if (end >= lineEndPos)
+        next = editor->text(lineEndPos - 1, lineEndPos);
+    else
+        next = editor->text(end, end + 1);
+
     QString matching = d->completionDatas.at(index.row()).insertText;
     if ((next == QLatin1Char('"') && matching.endsWith(QLatin1Char('"')))
         || (next == QLatin1Char('>') && matching.endsWith(QLatin1Char('>'))))

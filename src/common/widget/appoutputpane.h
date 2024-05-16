@@ -12,6 +12,8 @@
 
 #include <QPlainTextEdit>
 
+#include <functional>
+
 class OutputWindowPrivate;
 class AppOutputPane : public DTK_WIDGET_NAMESPACE::DFrame
 {
@@ -23,17 +25,20 @@ public:
     static AppOutputPane *instance();
     OutputPane *defaultPane();
 
-    Q_INVOKABLE void createApplicationPane(const quint64 &pid, const QString &program);
-    OutputPane *getOutputPaneByPid(const quint64 &pid);
-    void appendTextToApplication(const quint64 &pid,
+    Q_INVOKABLE void createApplicationPane(const QString &id, const QString &program);
+    OutputPane *getOutputPaneById(const QString &id);
+    void appendTextToApplication(const QString &id,
                                  const QString &text,
                                  OutputPane::OutputFormat format,
                                  OutputPane::AppendMode mode);
 
-    void setProcessFinished(const quint64 &pid);
+    void setProcessFinished(const QString &id);
+
+    using StopHandler = std::function<void()>;
+    void setStopHandler(const QString &id, StopHandler handler);
 
 signals:
-    void paneCreated(const quint64 &pid);
+    void paneCreated(const QString &id);
 
 public slots:
     void slotCloseOutputPane();
@@ -41,6 +46,7 @@ public slots:
 private:
     void initUi();
     void initTabWidget();
+    void stop(const QString &id);
 
     OutputWindowPrivate *d;
 };

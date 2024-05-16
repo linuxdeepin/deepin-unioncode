@@ -20,8 +20,8 @@ void ContextModule::initialize(Controller *_uiController)
     if (auto holder = PlaceHolderManager::instance()->createPlaceHolder(AppOutputPane::instance()->defaultPane(), docFind))
         AppOutputPane::instance()->defaultPane()->layout()->addWidget(holder);
 
-    connect(AppOutputPane::instance(), &AppOutputPane::paneCreated, this, [=](const quint64 &pid){
-        auto pane = AppOutputPane::instance()->getOutputPaneByPid(pid);
+    connect(AppOutputPane::instance(), &AppOutputPane::paneCreated, this, [=](const QString &id){
+        auto pane = AppOutputPane::instance()->getOutputPaneById(id);
         if (pane == AppOutputPane::instance()->defaultPane())
             return;
         auto docFind = new OutputDocumentFind(pane);
