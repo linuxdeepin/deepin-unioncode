@@ -26,7 +26,6 @@ public:
     void initUI();
     void saveConfig(PageWidget *page, const QString &node);
     void readConfig(PageWidget *page);
-    void readConfig(PageWidget *page, const QString &node);
 
     EditorSettingsWidget *q;
     FontColorWidget *fontColorWidget { nullptr };
@@ -75,13 +74,6 @@ void EditorSettingsWidgetPrivate::readConfig(PageWidget *page)
     page->setUserConfig({});
 }
 
-void EditorSettingsWidgetPrivate::readConfig(PageWidget *page, const QString &node)
-{
-    QMap<QString, QVariant> map;
-    OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(), EditorConfig, node, map);
-    page->setUserConfig(map);
-}
-
 EditorSettingsWidget::EditorSettingsWidget(QWidget *parent)
     : PageWidget(parent),
       d(new EditorSettingsWidgetPrivate(this))
@@ -106,5 +98,5 @@ void EditorSettingsWidget::readConfig()
 {
     d->readConfig(d->fontColorWidget);
     d->readConfig(d->behaviorWidget);
-    d->readConfig(d->commentConfigWidget, Node::MimeTypeConfig);
+    d->readConfig(d->commentConfigWidget);
 }
