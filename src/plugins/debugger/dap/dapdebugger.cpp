@@ -837,9 +837,8 @@ bool DAPDebugger::showStoppedBySignalMessageBox(QString meaning, QString name)
     return true;
 }
 
-void DAPDebugger::slotFrameSelected(const QModelIndex &index)
+void DAPDebugger::slotFrameSelected()
 {
-    Q_UNUSED(index)
     // update local variables.
     d->processingVariablesTimer.start(50);
     d->processingVariablesCount.ref();
@@ -958,7 +957,7 @@ void DAPDebugger::initializeView()
     mainLayout->addWidget(d->breakpointView);
     d->debugMainPane->setLayout(mainLayout);
 
-    connect(d->stackView, &QTreeView::doubleClicked, this, &DAPDebugger::slotFrameSelected);
+    connect(&d->stackModel, &StackFrameModel::currentIndexChanged, this, &DAPDebugger::slotFrameSelected);
     connect(d->breakpointView, &QTreeView::doubleClicked, this, &DAPDebugger::slotBreakpointSelected);
     connect(d->localsView, &QTreeView::expanded, this, &DAPDebugger::slotGetChildVariable);
     connect(this, &DAPDebugger::childVariablesUpdated, d->localsView, [=](LocalTreeItem *treeItem, IVariables vars){
