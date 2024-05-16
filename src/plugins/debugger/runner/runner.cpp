@@ -165,11 +165,12 @@ bool Runner::execCommand(const RunCommandInfo &info)
 
     process.start(info.program, info.arguments);
     quint64 pid = process.pid();
-    QMetaObject::invokeMethod(AppOutputPane::instance(), "createApplicationPane", Q_ARG(quint64, pid), Q_ARG(QString, info.program));
+    QMetaObject::invokeMethod(AppOutputPane::instance(), "createApplicationPane",
+                              Q_ARG(const QString &, QString::number(pid)), Q_ARG(QString, info.program));
     outputMsg(pid, startMsg, OutputPane::OutputFormat::NormalMessage);
     process.waitForFinished(-1);
 
-    AppOutputPane::instance()->setProcessFinished(pid);
+    AppOutputPane::instance()->setProcessFinished(QString::number(pid));
 
     outputMsg(pid, retMsg, ret ? OutputPane::OutputFormat::NormalMessage : OutputPane::OutputFormat::StdErr);
 
@@ -191,7 +192,7 @@ ProjectInfo Runner::getActiveProjectInfo() const
 
 void Runner::synOutputMsg(const quint64 &pid, const QString &content, OutputPane::OutputFormat format)
 {
-    auto outputPane = AppOutputPane::instance()->getOutputPaneByPid(pid);
+    auto outputPane = AppOutputPane::instance()->getOutputPaneById(QString::number(pid));
     QString outputContent = content;
     if (format == OutputPane::OutputFormat::NormalMessage) {
         QTextDocument *doc = outputPane->document();

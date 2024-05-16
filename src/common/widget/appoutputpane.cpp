@@ -19,9 +19,9 @@
 DGUI_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
 
-void killProcess(const quint64 pid)
+void defaultStopHandler(const QString &id)
 {
-    QProcess::startDetached("kill -9 " + QString::number(pid));
+    QProcess::startDetached("kill -9 " + id);
 }
 
 class OutputWindowPrivate
@@ -37,14 +37,15 @@ public:
     DToolButton *closePaneBtn { nullptr };
 
     DStackedWidget *stackWidget { nullptr };
-    QMap<quint64, OutputPane *> appPane; // pid-pane
-    QMap<quint64, bool> appIsRunning;
+    QMap<QString, OutputPane *> appPane;   // pid-pane
+    QMap<QString, bool> appIsRunning;
+    QMap<QString, AppOutputPane::StopHandler> stopHandlerMap;
 
     DDialog *checkCloseDialog { nullptr };
 };
 
 AppOutputPane::AppOutputPane(QWidget *parent)
-    :DFrame(parent), d(new OutputWindowPrivate)
+    : DFrame(parent), d(new OutputWindowPrivate)
 {
     initUi();
 }
@@ -81,7 +82,7 @@ void AppOutputPane::initUi()
     d->tabChosser->addItem(tr("default"));
     d->stackWidget->addWidget(d->defaultPane);
     d->stackWidget->setContentsMargins(10, 0, 0, 10);
-    
+
     d->hLine = new DFrame(this);
     d->hLine->setFrameShape(QFrame::HLine);
     d->hLine->hide();
@@ -119,37 +120,44 @@ void AppOutputPane::initTabWidget()
     tabLayout->addWidget(d->closePaneBtn);
     d->tabbar->hide();
 
-    connect(d->tabChosser, QOverload<int>::of(&DComboBox::currentIndexChanged), this, [=](int index){
+    connect(d->tabChosser, QOverload<int>::of(&DComboBox::currentIndexChanged), this, [=](int index) {
         d->stackWidget->setCurrentIndex(index);
         auto pane = qobject_cast<OutputPane *>(d->stackWidget->currentWidget());
-        auto pid = d->appPane.key(pane);
+        auto id = d->appPane.key(pane);
 
         d->closePaneBtn->setEnabled(index == 0 ? false : true);
 
-        if (d->appIsRunning.contains(pid) && d->appIsRunning[pid] == true)
+        if (d->appIsRunning.contains(id) && d->appIsRunning[id] == true)
             d->closeProcessBtn->setEnabled(true);
         else
             d->closeProcessBtn->setEnabled(false);
-
     });
-    connect(d->closeProcessBtn, &DToolButton::clicked, this, [=](){
+    connect(d->closeProcessBtn, &DToolButton::clicked, this, [=]() {
         auto pane = qobject_cast<OutputPane *>(d->stackWidget->currentWidget());
-        auto pid = d->appPane.key(pane);
-        killProcess(pid);
+        auto id = d->appPane.key(pane);
+        stop(id);
         d->closeProcessBtn->setEnabled(false);
     });
     connect(d->closePaneBtn, &DToolButton::clicked, this, &AppOutputPane::slotCloseOutputPane);
 }
 
-OutputPane *AppOutputPane::getOutputPaneByPid(const quint64 &pid)
+void AppOutputPane::stop(const QString &id)
 {
-    if (d->appPane.contains(pid))
-        return d->appPane[pid];
+    if (d->stopHandlerMap.contains(id))
+        d->stopHandlerMap[id]();
+    else
+        defaultStopHandler(id);
+}
+
+OutputPane *AppOutputPane::getOutputPaneById(const QString &id)
+{
+    if (d->appPane.contains(id))
+        return d->appPane[id];
 
     return d->defaultPane;
 }
 
-void AppOutputPane::createApplicationPane(const quint64 &pid, const QString &program)
+void AppOutputPane::createApplicationPane(const QString &id, const QString &program)
 {
     d->tabbar->show();
     d->hLine->show();
@@ -157,12 +165,12 @@ void AppOutputPane::createApplicationPane(const quint64 &pid, const QString &pro
     //check if exist avaliable pane of this name
     for (auto index = 0; index < d->stackWidget->count(); index++) {
         auto pane = qobject_cast<OutputPane *>(d->stackWidget->widget(index));
-        if( pane->property("program") == program) {
-            auto panePid = d->appPane.key(pane);
-            if(d->appIsRunning.contains(panePid) && !d->appIsRunning[panePid]) {
-                d->appIsRunning.insert(pid, true);
-                d->appPane.remove(panePid);
-                d->appPane.insert(pid, pane);
+        if (pane->property("program") == program) {
+            auto paneId = d->appPane.key(pane);
+            if (d->appIsRunning.contains(paneId) && !d->appIsRunning[paneId]) {
+                d->appIsRunning.insert(id, true);
+                d->appPane.remove(paneId);
+                d->appPane.insert(id, pane);
                 d->tabChosser->setCurrentIndex(index);
                 d->closeProcessBtn->setEnabled(true);
                 return;
@@ -172,8 +180,8 @@ void AppOutputPane::createApplicationPane(const quint64 &pid, const QString &pro
 
     auto pane = new OutputPane(this);
     pane->setProperty("program", program);
-    d->appPane.insert(pid, pane);
-    d->appIsRunning.insert(pid, true);
+    d->appPane.insert(id, pane);
+    d->appIsRunning.insert(id, true);
 
     auto file = QFileInfo(program);
     if (file.exists())
@@ -184,21 +192,30 @@ void AppOutputPane::createApplicationPane(const quint64 &pid, const QString &pro
     d->stackWidget->addWidget(pane);
     d->tabChosser->setCurrentIndex(d->tabChosser->count() - 1);
 
-    emit paneCreated(pid);
+    emit paneCreated(id);
 }
 
-void AppOutputPane::setProcessFinished(const quint64 &pid)
+void AppOutputPane::setProcessFinished(const QString &id)
 {
-    if (!d->appIsRunning.contains(pid))
+    if (!d->appIsRunning.contains(id))
         return;
-    d->appIsRunning[pid] = false;
-    if (d->stackWidget->currentWidget() == d->appPane[pid])
+    d->appIsRunning[id] = false;
+    if (d->stackWidget->currentWidget() == d->appPane[id])
         d->closeProcessBtn->setEnabled(false);
 }
 
-void AppOutputPane::appendTextToApplication(const quint64 &pid, const QString &text, OutputPane::OutputFormat format, OutputPane::AppendMode mode){
-    if (d->appPane.contains(pid))
-        d->appPane[pid]->appendText(text, format, mode);
+void AppOutputPane::setStopHandler(const QString &id, StopHandler handler)
+{
+    if (d->stopHandlerMap.contains(id))
+        return;
+
+    d->stopHandlerMap[id] = handler;
+}
+
+void AppOutputPane::appendTextToApplication(const QString &id, const QString &text, OutputPane::OutputFormat format, OutputPane::AppendMode mode)
+{
+    if (d->appPane.contains(id))
+        d->appPane[id]->appendText(text, format, mode);
     else
         d->defaultPane->appendText(text, format, mode);
 }
@@ -208,22 +225,22 @@ void AppOutputPane::slotCloseOutputPane()
     auto index = d->tabChosser->currentIndex();
     auto *pane = qobject_cast<OutputPane *>(d->stackWidget->widget(index));
     if (pane && d->appPane.values().contains(pane)) {
-        auto pid = d->appPane.key(pane);
+        auto id = d->appPane.key(pane);
         //check is running
-        if (d->appIsRunning.contains(pid) && d->appIsRunning[pid] == true) {
+        if (d->appIsRunning.contains(id) && d->appIsRunning[id] == true) {
             d->checkCloseDialog = new DDialog(this);
             d->checkCloseDialog->setIcon(QIcon::fromTheme("dialog-warning"));
             d->checkCloseDialog->setMessage(tr("Process is running, kill process?"));
             d->checkCloseDialog->insertButton(0, tr("kill", "button"), true, DDialog::ButtonWarning);
             d->checkCloseDialog->insertButton(1, tr("Cancel", "button"));
 
-            connect(d->checkCloseDialog, &DDialog::buttonClicked, this, [=](int buttonIndex){
+            connect(d->checkCloseDialog, &DDialog::buttonClicked, this, [=](int buttonIndex) {
                 if (buttonIndex == 0) {
-                    killProcess(pid);
+                    stop(id);
                     d->stackWidget->removeWidget(pane);
                     d->tabChosser->removeItem(index);
-                    d->appPane.remove(pid);
-                    d->appIsRunning.remove(pid);
+                    d->appPane.remove(id);
+                    d->appIsRunning.remove(id);
                     delete pane;
                 } else if (buttonIndex == 1) {
                     d->checkCloseDialog->reject();
