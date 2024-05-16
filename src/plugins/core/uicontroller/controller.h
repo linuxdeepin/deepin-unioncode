@@ -65,6 +65,7 @@ public slots:
     void addTopToolItem(AbstractAction *action, const QString &group, bool addSeparator);
     void addTopToolItemToRight(AbstractAction *action, bool addSeparator);
     void showTopToolBar(const QString &group);
+    void removeTopToolItem(AbstractAction *action);
 
     void openFileDialog();
 
