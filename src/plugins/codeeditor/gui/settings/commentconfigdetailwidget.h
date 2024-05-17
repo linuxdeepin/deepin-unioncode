@@ -10,6 +10,7 @@
 class CommentConfigDetailWidgetPrivate;
 class CommentConfigDetailWidget : public PageWidget
 {
+    Q_OBJECT
 public:
     CommentConfigDetailWidget(QWidget *parent, int index);
 
