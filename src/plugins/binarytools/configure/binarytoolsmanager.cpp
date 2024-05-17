@@ -38,12 +38,14 @@ using namespace dpfservice;
 
 QString ToolProcess::readAllStandardOutput()
 {
-    return stdOut;
+    QMutexLocker lk(&mutex);
+    return std::move(stdOut);
 }
 
 QString ToolProcess::readAllStandardError()
 {
-    return stdError;
+    QMutexLocker lk(&mutex);
+    return std::move(stdError);
 }
 
 void ToolProcess::start(const QString &id)
@@ -57,10 +59,12 @@ void ToolProcess::start(const QString &id)
     connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             this, std::bind(&ToolProcess::finished, this, id, std::placeholders::_1, std::placeholders::_2));
     connect(&process, &QProcess::readyReadStandardOutput, this, [=] {
+        QMutexLocker lk(&mutex);
         stdOut += process.readAllStandardOutput();
         Q_EMIT readyReadStandardOutput(id);
     });
     connect(&process, &QProcess::readyReadStandardError, this, [=] {
+        QMutexLocker lk(&mutex);
         stdError += process.readAllStandardError();
         Q_EMIT readyReadStandardError(id);
     });
