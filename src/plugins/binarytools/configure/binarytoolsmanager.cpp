@@ -38,12 +38,12 @@ using namespace dpfservice;
 
 QString ToolProcess::readAllStandardOutput()
 {
-    return std::move(stdOut);
+    return stdOut;
 }
 
 QString ToolProcess::readAllStandardError()
 {
-    return std::move(stdError);
+    return stdError;
 }
 
 void ToolProcess::start(const QString &id)
@@ -359,7 +359,8 @@ void BinaryToolsManager::handleReadOutput(const QString &id)
         return;
 
     auto task = toolTaskMap[id];
-    printOutput(id, std::get<0>(task)->readAllStandardOutput(), OutputPane::StdOut);
+    auto stdOut = std::get<0>(task)->readAllStandardOutput();
+    printOutput(id, stdOut, OutputPane::StdOut);
 }
 
 void BinaryToolsManager::handleReadError(const QString &id)
@@ -368,7 +369,8 @@ void BinaryToolsManager::handleReadError(const QString &id)
         return;
 
     auto task = toolTaskMap[id];
-    printOutput(id, std::get<0>(task)->readAllStandardError(), OutputPane::StdErr);
+    auto stdError = std::get<0>(task)->readAllStandardError();
+    printOutput(id, stdError, OutputPane::StdErr);
 }
 
 bool BinaryToolsManager::checkCommandExists(const QString &command)
@@ -399,7 +401,8 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
         windowSrv = dpfGetService(WindowService);
 
     if (!tool.addToToolbar && actMap.contains(tool.id)) {
-        // TODO: remove
+        windowSrv->removeTopToolItem(actMap[tool.id]);
+        actMap.remove(tool.id);
     } else if (tool.addToToolbar && !actMap.contains(tool.id)) {
         auto act = createAction(tool);
         actMap.insert(tool.id, act);
@@ -408,18 +411,14 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
         auto act = actMap[tool.id];
         auto qAct = act->qAction();
 
-        bool changed = false;
         if (tool.description != qAct->text()) {
-            changed = true;
             qAct->setText(tool.description);
         }
 
         if (tool.icon != qAct->iconText()) {
-            changed = true;
             qAct->setIconText(tool.icon);
             qAct->setIcon(QIcon::fromTheme(tool.icon));
         }
-        // TODO: update toolbar icon and tooltip
     }
 }
 
