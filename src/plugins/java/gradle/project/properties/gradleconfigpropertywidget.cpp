@@ -61,7 +61,7 @@ void GradleDetailPropertyWidget::setupUI()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    DLabel *label = new DLabel(DLabel::tr("JDK version："));
+    DLabel *label = new DLabel(QLabel::tr("JDK version："));
     label->setFixedWidth(kHeadlineWidth);
     d->jdkVersionComboBox = new DComboBox();
     hLayout->addWidget(label);
@@ -69,7 +69,7 @@ void GradleDetailPropertyWidget::setupUI()
     vLayout->addLayout(hLayout);
 
     hLayout = new QHBoxLayout();
-    label = new DLabel(DLabel::tr("Gradle Version: "));
+    label = new DLabel(QLabel::tr("Gradle Version: "));
     label->setFixedWidth(kHeadlineWidth);
     d->gradleVersionComboBox = new DComboBox();
     hLayout->addWidget(label);
@@ -77,7 +77,7 @@ void GradleDetailPropertyWidget::setupUI()
     vLayout->addLayout(hLayout);
 
     hLayout = new QHBoxLayout();
-    label = new DLabel(DLabel::tr("Main Class："));
+    label = new DLabel(QLabel::tr("Main Class："));
     label->setFixedWidth(kHeadlineWidth);
     d->mainClass = new DLineEdit();
     d->mainClass->setPlaceholderText(tr("Input main class"));
@@ -87,7 +87,7 @@ void GradleDetailPropertyWidget::setupUI()
     vLayout->addStretch(10);
 
     hLayout = new QHBoxLayout();
-    label = new DLabel(DLabel::tr("Detail output:"));
+    label = new DLabel(QLabel::tr("Detail output:"));
     label->setFixedWidth(kHeadlineWidth);
     d->detailBox = new DCheckBox();
     hLayout->addWidget(label);
