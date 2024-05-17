@@ -8,6 +8,7 @@
 #include "find/editordocumentfind.h"
 #include "common/common.h"
 #include "settings/settingsdefine.h"
+#include "base/abstractaction.h"
 
 #include "services/window/windowservice.h"
 
@@ -178,6 +179,7 @@ QWidget *TabWidgetPrivate::createSpaceWidget()
     addCommandLine("Find.findInDocument");
     addCommandLine("Editor.close");
     addCommandLine("locator.EnterCommand");
+    addCommandLine("Editor.addAndRemoveComment");
 
     vLayout->addStretch(1);
     vLayout->addWidget(titleLabel, 0, Qt::AlignHCenter);
