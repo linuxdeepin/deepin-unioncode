@@ -62,7 +62,7 @@ void JDKWidget::setupUi()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    DLabel *label = new DLabel(DLabel::tr("JDK version："));
+    DLabel *label = new DLabel(QLabel::tr("JDK version："));
     label->setFixedWidth(120);
     d->jdkDetail = new DComboBox();
     hLayout->addWidget(label);
