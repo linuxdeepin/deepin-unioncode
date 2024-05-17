@@ -5,7 +5,9 @@
 #include "iconcombobox.h"
 
 #include <DGuiApplicationHelper>
-#include <DPaletteHelper>
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
+#    include <DPaletteHelper>
+#endif
 
 #include <QHBoxLayout>
 #include <QStyledItemDelegate>
@@ -14,7 +16,9 @@
 #include <QStylePainter>
 
 DGUI_USE_NAMESPACE
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
 DWIDGET_USE_NAMESPACE
+#endif
 
 class IconItemDelegate : public QStyledItemDelegate
 {
@@ -84,7 +88,13 @@ void IconItemDelegate::paintItemBackgroundAndGeomerty(QPainter *painter,
     painter->save();
 
     bool isSelected = (option.state & QStyle::State_Selected);
-    DPalette pl(DPaletteHelper::instance()->palette(option.widget));
+    
+#ifdef DTKWIDGET_CLASS_DPaletteHelper
+        const DPalette &pl = DPaletteHelper::instance()->palette(option.widget);
+#else
+        const DPalette &pl = DGuiApplicationHelper::instance()->applicationPalette();
+#endif
+    
     QColor backgroundColor = pl.color(DPalette::ColorGroup::Active, DPalette::ColorType::ItemBackground);
     bool isHover = option.state & QStyle::StateFlag::State_MouseOver;
     if (isSelected || isHover)
