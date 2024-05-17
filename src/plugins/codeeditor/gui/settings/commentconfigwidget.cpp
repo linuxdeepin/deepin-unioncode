@@ -13,7 +13,7 @@
 #include <DFrame>
 #include <DPushButton>
 #include <DTabWidget>
-#include <DMessageBox>
+#include <DDialog>
 
 #include <QHBoxLayout>
 
@@ -51,12 +51,16 @@ void CommentConfigWidget::initUI()
     QMap<QString, QVariant> map;
             OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(),
                                          EditorConfig, Node::MimeTypeConfig, map);
-    if (map.count() == 0) {
-        d->tabWidget->addTab(new CommentConfigDetailWidget(this, 0), tr("Defualt"));
+    if (map.isEmpty() || map.value("0").toMap().value(Key::MimeTypeGroupName).toString().isEmpty()) {
+        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::MimeType, "text/x-c++src;text/x-c++hdr");
+        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::SingleLineComment, "//");
+        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::StartMultiLineComment, "/*");
+        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::EndMultiLineComment, "*/");
+        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::MimeTypeGroupName, "Default");
     }
 
     int currentTabWidgetCount = 0;
-    while (currentTabWidgetCount < map.count()) {
+    while (currentTabWidgetCount < EditorSettings::instance()->getMap(Node::MimeTypeConfig).count()) {
         QMap<QString, QVariant> mimeTypeMap = map.value(QString::number(currentTabWidgetCount)).toMap();
         d->tabWidget->addTab(new CommentConfigDetailWidget(this, currentTabWidgetCount), 
             mimeTypeMap.value(Key::MimeTypeGroupName).toString());
@@ -91,15 +95,27 @@ void CommentConfigWidget::initConnections()
     
     connect(d->delGroupBtn, &DPushButton::clicked, this, [ = ]() {
         if (d->tabWidget->count() > 1) {
-            d->tabWidget->removeTab(d->tabWidget->currentIndex());
+            DDialog dialog;
+            dialog.setMessage(tr("Are you sure to delete this group?"));
+            dialog.setWindowTitle(tr("Delete Warining"));
+            dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+            dialog.insertButton(0, tr("Ok"));
+            dialog.insertButton(1, tr("Cancel"));
+            if (dialog.exec() == 0) 
+                d->tabWidget->removeTab(d->tabWidget->currentIndex());
         } else {
-            DMessageBox::warning(this, tr("Warning"), tr("You can't delete the last group!"));
+            DDialog dialog;
+            dialog.setMessage(tr("You can't delete the last group!"));
+            dialog.setWindowTitle(tr("Delete Warining"));
+            dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+            dialog.insertButton(0, tr("Ok"));
+            dialog.exec();
         }
     });
 }
 
 void CommentConfigWidget::setUserConfig(const QMap<QString, QVariant> &map)
-{   
+{
     for (int index = 0; index < d->tabWidget->count(); index++) {
         d->tabWidget->setTabText(index, EditorSettings::instance()->getMap(Node::MimeTypeConfig)
             .value(QString::number(index)).toMap().value(Key::MimeTypeGroupName).toString());
