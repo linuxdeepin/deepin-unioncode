@@ -21,6 +21,11 @@ public:
     {
         int pos = 0;
         QString fileName;
+
+        bool operator==(const PosRecord &other)
+        {
+            return pos == other.pos && fileName == other.fileName;
+        }
     };
 
     explicit TabWidgetPrivate(TabWidget *qq);
@@ -44,7 +49,7 @@ public slots:
     void onTabSwitched(const QString &fileName);
     void onTabClosed(const QString &fileName);
     void onSpliterClicked(Qt::Orientation ori);
-    void onLinePositionChanged(int line, int index);
+    void onCursorRecordChanged(int pos);
     void onFileChanged(const QString &fileName);
     void handleAddAnnotation(const QString &fileName, const QString &title, const QString &content, int line, AnnotationType type);
     void handleRemoveAnnotation(const QString &fileName, const QString &title);

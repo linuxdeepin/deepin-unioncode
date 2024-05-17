@@ -461,6 +461,7 @@ void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int 
     Q_UNUSED(token);
     Q_UNUSED(annotationLinesAdded);
 
+    contentsChanged = true;
     if (isAutoCompletionEnabled && !text.isEmpty())
         editor.textChanged();
 
