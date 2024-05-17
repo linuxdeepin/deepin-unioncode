@@ -1,3 +1,11 @@
+deepin-unioncode (1.3.0) unstable; urgency=medium
+
+  * Add file manager plugin template
+  * Add git in editor
+  * Add process plugin
+
+ -- luzhen <luzhen@uniontech.com>  Fri, 17 May 2024 15:16:33 +0800
+
 deepin-unioncode (1.2.18) unstable; urgency=medium
 
   * Bug fix
