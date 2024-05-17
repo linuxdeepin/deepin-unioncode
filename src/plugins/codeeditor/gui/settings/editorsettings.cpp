@@ -78,9 +78,12 @@ void EditorSettingsPrivate::saveConfig()
     auto iter = settingDatas.begin();
     for (; iter != settingDatas.end(); ++iter) {
         QMap<QString, QVariant> map;
-        map.insert(iter.value().group, iter.value().data);
+        const auto &settingList = settingDatas.values(iter.key());
+        for (const auto &settings : settingList) {
+            map.insert(settings.group, settings.data);
+        }
         OptionUtils::writeJsonSection(OptionUtils::getJsonFilePath(),
-                                      EditorConfig, iter.key(), map);
+                                          EditorConfig, iter.key(), map);
     }
 }
 
