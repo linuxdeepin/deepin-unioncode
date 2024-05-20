@@ -22,9 +22,9 @@ public:
     virtual QString kill() = 0;
     virtual QString launchLocal() = 0;
 
-    virtual void updateBreakpoints(const QString &file, const QList<int> &lines) = 0;
+    virtual void updateBreakpoints(const QString &file, const QList<dap::SourceBreakpoint> &sourceBps) = 0;
     virtual QString breakRemoveAll() = 0;
-    virtual QString breakInsert(const QString& path) = 0;
+    virtual QString breakInsert(const QString& path, const QString &condition = "") = 0;
     virtual QString breakRemove(int bpid) = 0;
 
     virtual void pause() = 0;

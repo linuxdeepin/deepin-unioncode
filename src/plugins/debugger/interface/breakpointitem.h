@@ -16,6 +16,7 @@ enum StackColumns {
     kFunctionNameColumn,
     kFileNameColumn,
     kLineNumberColumn,
+    kCondition,
     kAddressColumn,
     kStackColumnCount
 };
@@ -41,6 +42,7 @@ public:
     bool isEnabled() const;
 
     void setEnabled(bool on);
+    void setCondition(const QString &expression);
 
     const Internal::Breakpoint &breakpoint() const {return bp;}
 

@@ -173,6 +173,11 @@ void TextEditor::setBreakpointEnabled(int line, bool enabled)
     editor.breakpointStatusChanged(d->fileName, line + 1, enabled);
 }
 
+void TextEditor::setBreakpointCondition(int line)
+{
+    editor.setBreakpointCondition(d->fileName, line + 1);
+}
+
 bool TextEditor::breakpointEnabled(int line)
 {
     int mask = static_cast<int>(markersAtLine(line));
