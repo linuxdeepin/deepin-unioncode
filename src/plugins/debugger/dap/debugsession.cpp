@@ -508,6 +508,7 @@ void DebugSession::sendBreakpoints(const QString &sourcePath, dap::array<IBreakp
         request.source = source;
         SourceBreakpoint bt;
         bt.line = it.lineNumber;
+        bt.condition = it.condition;
         breakpoints.push_back(bt);
     }
 

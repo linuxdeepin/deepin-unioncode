@@ -222,7 +222,7 @@ void DapSession::initializeDebugMgr()
     connect(DapProxy::instance(), &DapProxy::sigQuit, d->debugger, &DebugManager::quit, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigKill, d->debugger, &DebugManager::kill, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigStart, d->debugger, &DebugManager::execute, SequentialExecution);
-    connect(DapProxy::instance(), &DapProxy::sigBreakInsert, d->debugger, &DebugManager::breakInsert, SequentialExecution);
+    //connect(DapProxy::instance(), &DapProxy::sigBreakInsert, d->debugger, &DebugManager::breakInsert, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigUpdateBreakpoints, d->debugger, &DebugManager::updateBreakpoints, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigLaunchLocal, d->debugger, &DebugManager::launchLocal, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigContinue, d->debugger, &DebugManager::commandContinue, SequentialExecution);
@@ -689,7 +689,7 @@ dap::SetBreakpointsResponse DapSession::handleBreakpointReq(const SetBreakpoints
     const char *sourcePath = request.source.path->c_str();
     if (request.breakpoints.has_value()) {
         dap::array<dap::Breakpoint> breakpoints;
-        QList<int> lines;
+        QList<SourceBreakpoint> sourceBps;
         for (auto &breakpoint : request.breakpoints.value()) {
             dap::Breakpoint bp;
             dap::Source source;
@@ -699,11 +699,11 @@ dap::SetBreakpointsResponse DapSession::handleBreakpointReq(const SetBreakpoints
 
             bp.line = breakpoint.line;
             bp.source = request.source;
-            lines.append(breakpoint.line);
+            sourceBps.append(breakpoint);
             breakpoints.push_back(bp);
         }
 
-        emit DapProxy::instance()->sigUpdateBreakpoints(sourcePath, lines);
+        emit DapProxy::instance()->sigUpdateBreakpoints(sourcePath, sourceBps);
         // Generic response
         Log("--> Server sent  setBreakpoints response to client\n")
         response.breakpoints = breakpoints;
