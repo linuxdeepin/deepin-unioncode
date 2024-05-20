@@ -36,6 +36,7 @@ public:
     void removeBreakpoint(int line);
     void toggleBreakpoint();
     void setBreakpointEnabled(int line, bool enabled);
+    void setBreakpointCondition(int line);
     bool breakpointEnabled(int line);
     bool hasBreakpoint(int line);
     void gotoNextBreakpoint();

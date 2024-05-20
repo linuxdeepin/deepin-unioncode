@@ -47,6 +47,7 @@ public:
     QString module;
     BreakpointType type = BreakpointByFileAndLine;
     QString address;
+    QString condition;
 };
 
 using Breakpoints = QVector<Breakpoint>;

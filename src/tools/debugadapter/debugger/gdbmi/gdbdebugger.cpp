@@ -9,6 +9,7 @@
 
 #include <QTextStream>
 #include <QProcess>
+#include <QSet>
 
 class GDBDebuggerPrivate {
     friend class GDBDebugger;
@@ -113,9 +114,12 @@ QString GDBDebugger::breakRemoveAll()
     return ("-break-delete");
 }
 
-QString GDBDebugger::breakInsert(const QString &path)
+QString GDBDebugger::breakInsert(const QString &path, const QString &condition)
 {
-    return QString{"-break-insert -f %1"}.arg(path);
+    if (condition.isEmpty())
+        return QString{"-break-insert -f %1"}.arg(path);
+    else
+        return QString{"-break-insert -c \"%1\" -f %2"}.arg(condition, path);
 }
 
 QString GDBDebugger::breakRemove(int bpid)
@@ -184,10 +188,17 @@ QString GDBDebugger::listSourceFiles()
     return ("-file-list-exec-source-files");
 }
 
-void GDBDebugger::updateBreakpoints(const QString &file, const QList<int> &lines)
+void GDBDebugger::updateBreakpoints(const QString &file, const QList<dap::SourceBreakpoint> &sourceBps)
 {
-    QList<int> curLines;
-    //remove canceled bp
+    QSet<int> curLines;
+    QMap<int, QString> lineConditionMap;
+
+    for (auto bp : sourceBps) {
+        QString condition = bp.condition.has_value() ? QString::fromStdString(bp.condition.value()) : "";
+        lineConditionMap.insert(bp.line, condition);
+    }
+
+    //remove canceled bp   and   bp which have condition (to update)
     for (auto it = d->breakpoints.cbegin(); it != d->breakpoints.cend(); ++it) {
         auto& bp = it.value();
         if (bp.fullname == file || bp.originalLocation.split(":").first() == file) {
@@ -196,25 +207,24 @@ void GDBDebugger::updateBreakpoints(const QString &file, const QList<int> &lines
             bool ok = false;
             int line = originalLine.toInt(&ok);
             QString filePath = bp.fullname + ':' + QString::number(line);
-            if (ok && !lines.contains(line)) {
+
+            if ((ok && !lineConditionMap.keys().contains(line)) || !lineConditionMap.value(line).isEmpty()) {
                 if (d->breakpointsBuffer.contains(filePath))
                     d->breakpointsBuffer.removeOne(filePath);
                 DebugManager::instance()->breakRemove(bp.number);
             } else {
-                curLines.append(line);
+                curLines.insert(line);
             }
         }
     }
 
     //append new bp
-    for (auto line : lines) {
-        if (!curLines.contains(line)) {
-            auto filePath = file;
-            filePath.append(":");
-            filePath.append(QString::number(line));
+    for (const auto &bp : sourceBps) {
+        if (!curLines.contains(bp.line)) {
+            auto filePath = file + ":" + QString::number(bp.line);
             if (!d->breakpointsBuffer.contains(filePath)) {
-                d->breakpointsBuffer.append(filePath);    //filePath added to buffer immediately
-                DebugManager::instance()->breakInsert(filePath); //breakpoints added to d->breakpoints when gdb send
+                d->breakpointsBuffer.append(filePath);    //filePath added to buffer immediately. incase d->breakpoints havn`t update yet
+                DebugManager::instance()->breakInsert(filePath, lineConditionMap.value(bp.line)); //1.send to gdb 2.retrieve breakpoints from gdb`s response 3.save to d->breakpoints.
             }
         }
     }
