@@ -91,6 +91,11 @@ void BreakpointView::contextMenuEvent(QContextMenuEvent *event)
     if (!allDisabled)
         menu.addAction(tr("Disable all breakpoints"), this, [=](){disableBreakpoints(allRows);});
 
+    // select one item
+    if (rows.size() == 1) {
+        menu.addAction(tr("Edit Condition"), this, [=](){editBreakpointCondition(rows.at(0));});
+    }
+
     menu.exec(event->globalPos());
 }
 
@@ -119,6 +124,14 @@ void BreakpointView::removeBreakpoints(const QModelIndexList &rows)
         auto bp = bpModel->BreakpointAt(row.row());
         editor.removeBreakpoint(bp.filePath, bp.lineNumber);
     }
+}
+
+void BreakpointView::editBreakpointCondition(const QModelIndex &index)
+{
+    BreakpointModel* bpModel = static_cast<BreakpointModel *>(model());
+    auto bp = bpModel->BreakpointAt(index.row());
+
+    editor.setBreakpointCondition(bp.filePath, bp.lineNumber);
 }
 
 void BreakpointView::initHeaderView()
