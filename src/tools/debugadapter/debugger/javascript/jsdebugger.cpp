@@ -170,6 +170,19 @@ bool JSDebugger::fetchChildVariables(int64_t ref)
     return true;
 }
 
+void JSDebugger::traceWatchingVariable(const QString &expression, int frame)
+{
+    Q_UNUSED(expression);
+    Q_UNUSED(frame);
+    return;
+}
+
+dap::Variable JSDebugger::getWatchingVariable(const QString &expression)
+{
+    Q_UNUSED(expression);
+    return dap::Variable();
+}
+
 void JSDebugger::handleOutputRecord(const QString &text)
 {
     qInfo() << text;

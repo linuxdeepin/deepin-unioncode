@@ -54,6 +54,8 @@ public:
     dap::array<dap::Variable> getVariableListByRef(int64_t ref) override;
     bool fetchChildVariables(int64_t ref) override;
 
+    void traceWatchingVariable(const QString &expression, int frame) override;
+    dap::Variable getWatchingVariable(const QString &expression) override;
     void traceAddVariable(gdbmi::Variable *variable, int refrence = 0, int frame = -1);
     void delAllTraceVariable();
     void traceUpdateVariable(const QString &expression);

@@ -45,8 +45,10 @@ QVariant LocalTreeModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     LocalTreeItem *item = static_cast<LocalTreeItem *>(index.internalPointer());
+    QReadLocker locker(&mutex);
     if (!items.contains(item))
         return QVariant();
+    locker.unlock();
 
     if (role == Qt::ToolTipRole)
         QToolTip::showText(QCursor::pos(), item->data(index.column()).toString());

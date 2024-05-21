@@ -592,12 +592,25 @@ void DapSession::registerHanlder()
     });
 
     d->session->registerHandler([&](const dap::DisassembleRequest &request) {
-        Q_UNUSED(request)
         Log("<-- Server received disassemble request from client\n")
         if (!request.memoryReference.empty())
-                d->debugger->disassemble(request.memoryReference.c_str());
+            d->debugger->disassemble(request.memoryReference.c_str());
         Log("--> Server sent disassemble response to client\n")
         return dap::DisassembleResponse();
+    });
+
+    d->session->registerHandler([&](const dap::EvaluateRequest &request) {
+        Log("<-- Server received Evaluate request from client\n")
+        EvaluateResponse response;
+        if (request.context.value() == "watch") {
+            d->debugger->evaluateWatchingVariable(QString::fromStdString(request.expression), -1);
+            auto var = d->debugger->getWatchingVariable(QString::fromStdString(request.expression));
+            response.type = var.type;
+            response.result = var.value;
+            response.variablesReference = var.variablesReference;
+        }
+        Log("--> Server sent Evaluate response to client\n")
+        return response;
     });
 }
 
