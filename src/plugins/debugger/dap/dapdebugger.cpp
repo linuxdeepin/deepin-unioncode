@@ -32,6 +32,7 @@
 #include <DSpinner>
 #include <DDialog>
 #include <DLineEdit>
+#include <DSplitter>
 
 #include <QDateTime>
 #include <QTextBlock>
@@ -84,8 +85,12 @@ class DebuggerPrivate
     StackFrameModel stackModel;
     DComboBox *threadSelector = nullptr;
 
+    DSplitter *variablesPane = nullptr;
     DTreeView *localsView = nullptr;
+    DTreeView *watchsView = nullptr;
     LocalTreeModel localsModel;
+    LocalTreeModel watchsModel;
+    QMap<QString, IVariable> watchingVariables;
     DSpinner *variablesSpinner { nullptr };
     QTimer processingVariablesTimer;
     QAtomicInt processingVariablesCount = 0;
@@ -151,6 +156,12 @@ DAPDebugger::DAPDebugger(QObject *parent)
 DAPDebugger::~DAPDebugger()
 {
     delete d->alertBox;
+    if (d)
+        delete d;
+    if (d->variablesPane)
+        delete d->variablesPane;
+    if (d->debugMainPane)
+        delete d->debugMainPane;
     // all widgets in tabWidget will be deleted automatically.
 }
 
@@ -166,7 +177,7 @@ DWidget *DAPDebugger::getStackPane() const
 
 DWidget *DAPDebugger::getLocalsPane() const
 {
-    return d->localsView;
+    return d->variablesPane;
 }
 
 DWidget *DAPDebugger::getBreakpointPane() const
@@ -387,6 +398,27 @@ void DAPDebugger::setBreakpointCondition(const QString &filePath, int lineNumber
     }
 }
 
+void DAPDebugger::evaluateWatchVariable(const QString &expression)
+{
+    IVariable var;
+    var.name = expression.toStdString();
+    var.var.name = expression.toStdString();
+
+    if (d->runState == kStopped) {
+        auto response = d->currentSession->evaluate(var.name, d->currentValidFrame.frameId, "watch");
+        var.var.value = response.value().result;
+        var.var.type = response.value().type.has_value() ? response.value().type : "";
+        var.var.variablesReference = response.value().variablesReference;
+    } else {
+        var.var.value = "";
+        var.var.type = "";
+    }
+
+    d->watchingVariables[expression] = var;
+    auto vars = d->watchingVariables.values().toVector();
+    d->watchsModel.setDatas(vars);
+}
+
 bool DAPDebugger::getLocals(dap::integer frameId, IVariables *out)
 {
     return d->currentSession->getLocals(frameId, out);
@@ -464,7 +496,7 @@ void DAPDebugger::registerDapHandlers()
                 updateThreadList(curThreadID, threads);
                 switchCurrentThread(static_cast<int>(d->threadId));
             }
-            QApplication::setActiveWindow(d->localsView);
+            QApplication::setActiveWindow(d->variablesPane);
             updateRunState(DAPDebugger::RunState::kStopped);
         } else if (event.reason == "exception") {
             QString name;
@@ -769,6 +801,8 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
         d->localsModel.clearHighlightItems();
         d->localsModel.setDatas(locals);
         d->processingVariablesCount.deref();
+        updateWatchingVariables();
+
         emit processingVariablesDone();
     });
 }
@@ -899,7 +933,7 @@ void DAPDebugger::slotBreakpointSelected(const QModelIndex &index)
 void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
 {
     auto treeItem = static_cast<LocalTreeItem*>(index.internalPointer());
-    if(!treeItem->canFetchChildren() || !d->localsView->isExpanded(index))
+    if(!treeItem->canFetchChildren() || (!d->localsView->isExpanded(index) && !d->watchsView->isExpanded(index)))
         return;
 
     treeItem->setChildrenFetched(true);
@@ -921,6 +955,31 @@ void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
     });
 }
 
+void DAPDebugger::slotEvaluateWatchVariable()
+{
+    DDialog dialog;
+    DLineEdit *edit = new DLineEdit(d->watchsView);
+    dialog.setWindowTitle(tr("New Evaluator Expression"));
+    dialog.setMessage(tr("Enter an expression to evaluate"));
+    dialog.addContent(edit);
+    dialog.insertButton(0, tr("Cancel"));
+    dialog.insertButton(1, tr("Ok"));
+
+    if (dialog.exec() == 1) {
+        QString expression = edit->text();
+        evaluateWatchVariable(expression);
+    }
+}
+
+void DAPDebugger::slotRemoveEvaluator()
+{
+    auto rows = d->watchsView->selectionModel()->selectedRows();
+    auto expression = d->watchsModel.index(rows.at(0).row(), 0).data().toString();
+    d->watchingVariables.remove(expression);
+    auto vars = d->watchingVariables.values().toVector();
+    d->watchsModel.setDatas(vars);
+}
+
 void DAPDebugger::initializeView()
 {
     // initialize output pane.
@@ -933,7 +992,7 @@ void DAPDebugger::initializeView()
     vLayout->setContentsMargins(0, 6, 0, 0);
     d->stackPane->setLayout(vLayout);
 
-    d->stackView = new StackFrameView();
+    d->stackView = new StackFrameView(d->stackPane);
     d->stackView->setModel(d->stackModel.model());
 
     d->threadSelector = new DComboBox(d->stackPane);
@@ -952,22 +1011,12 @@ void DAPDebugger::initializeView()
     vLayout->addWidget(d->stackView);
 
     // intialize breakpint pane.
-    d->breakpointView = new BreakpointView();
+    d->breakpointView = new BreakpointView(d->stackPane);
     d->breakpointView->setMinimumWidth(300);
     d->breakpointView->setModel(d->breakpointModel.model());
 
-    d->localsView = new DTreeView();
-    d->localsView->setModel(&d->localsModel);
-    d->localsView->setUniformRowHeights(true);
-    d->localsView->setItemDelegate(new BaseItemDelegate(this));
+    initializeVairablesPane();
 
-    QStringList headers { tr("Name"), tr("Value"), tr("Type")/*, "Reference" */};
-    d->localsModel.setHeaders(headers);
-
-    d->variablesSpinner = new DSpinner(d->localsView);
-    d->variablesSpinner->setFixedSize(30, 30);
-    d->variablesSpinner->start();
-    d->variablesSpinner->hide();
     connect(&d->processingVariablesTimer, &QTimer::timeout, this, [=](){
         d->variablesSpinner->show();
         d->variablesSpinner->raise();
@@ -981,7 +1030,7 @@ void DAPDebugger::initializeView()
         handleUpdateDebugLine();
     });
 
-    d->debugMainPane = new DFrame();
+    d->debugMainPane = new DFrame;
     d->debugMainPane->setLineWidth(0);
     DStyle::setFrameRadius(d->debugMainPane, 0);
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -995,18 +1044,82 @@ void DAPDebugger::initializeView()
 
     connect(&d->stackModel, &StackFrameModel::currentIndexChanged, this, &DAPDebugger::slotFrameSelected);
     connect(d->breakpointView, &QTreeView::doubleClicked, this, &DAPDebugger::slotBreakpointSelected);
+    
     connect(d->localsView, &QTreeView::expanded, this, &DAPDebugger::slotGetChildVariable);
     connect(this, &DAPDebugger::childVariablesUpdated, d->localsView, [=](LocalTreeItem *treeItem, IVariables vars){
         d->localsModel.appendItem(treeItem, vars);
     });
     connect(&d->localsModel, &LocalTreeModel::updateChildVariables, this, &DAPDebugger::slotGetChildVariable);
+
+    connect(d->watchsView, &QTreeView::expanded, this, &DAPDebugger::slotGetChildVariable);
+    connect(this, &DAPDebugger::childVariablesUpdated, d->watchsView, [=](LocalTreeItem *treeItem, IVariables vars){
+        d->watchsModel.appendItem(treeItem, vars);
+    });
+    connect(&d->watchsModel, &LocalTreeModel::updateChildVariables, this, &DAPDebugger::slotGetChildVariable);
+}
+
+void DAPDebugger::initializeVairablesPane()
+{
+    d->variablesPane = new DSplitter;
+    d->localsView = new DTreeView(d->variablesPane);
+    d->localsView->setModel(&d->localsModel);
+    d->localsView->setUniformRowHeights(true);
+    d->localsView->setItemDelegate(new BaseItemDelegate(this));
+
+    d->watchsView = new DTreeView(d->variablesPane);
+    d->watchsView->setModel(&d->watchsModel);
+    d->watchsView->setUniformRowHeights(true);
+    d->watchsView->setItemDelegate(new BaseItemDelegate(this));
+    d->variablesPane->addWidget(d->localsView);
+    d->variablesPane->addWidget(d->watchsView);
+    d->variablesPane->setOrientation(Qt::Vertical);
+    d->variablesPane->setChildrenCollapsible(false);
+
+    d->watchsView->setContextMenuPolicy(Qt::CustomContextMenu);
+    d->watchsView->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    DMenu *menu = new DMenu(d->watchsView);
+    QAction *evaluateWatchVariable = new QAction(tr("Add New Expression Evaluator"), d->watchsView);
+    QAction *remove = new QAction(tr("Remove This Evaluator"), d->watchsView);
+
+    menu->addAction(evaluateWatchVariable);
+    menu->addAction(remove);
+    connect(d->watchsView, &DTreeView::customContextMenuRequested, this, [=](const QPoint &pos){
+        auto index = d->watchsView->indexAt(pos);
+        if (index.isValid() && d->watchsView->selectionModel()->selectedRows().size() == 1)
+            remove->setEnabled(true);
+        else
+            remove->setEnabled(false);
+        menu->exec(d->watchsView->mapToGlobal(pos));
+    });
+
+    connect(evaluateWatchVariable, &QAction::triggered, this, &DAPDebugger::slotEvaluateWatchVariable);
+    connect(remove, &QAction::triggered, this, &DAPDebugger::slotRemoveEvaluator);
+
+    QStringList headers { tr("Name"), tr("Value"), tr("Type")/*, "Reference" */};
+    d->localsModel.setHeaders(headers);
+    d->watchsModel.setHeaders(headers);
+
+    d->variablesSpinner = new DSpinner(d->localsView);
+    d->variablesSpinner->setFixedSize(30, 30);
+    d->variablesSpinner->start();
+    d->variablesSpinner->hide();
+}
+
+void DAPDebugger::updateWatchingVariables()
+{
+    if (d->watchingVariables.isEmpty())
+        return;
+
+    for (auto exp : d->watchingVariables.keys())
+        evaluateWatchVariable(exp);
 }
 
 void DAPDebugger::exitDebug()
 {
     // Change UI.
     editor.removeDebugLine();
-    d->localsView->hide();
+    d->variablesPane->hide();
 
     d->localsModel.clear();
     d->stackModel.removeAll();
@@ -1027,7 +1140,7 @@ void DAPDebugger::updateRunState(DAPDebugger::RunState state)
         case kRunning:
         case kCustomRunning:
             d->pausing = false;
-            QMetaObject::invokeMethod(d->localsView, "show");
+            QMetaObject::invokeMethod(d->variablesPane, "show");
             break;
         case kStopped:
             break;
@@ -1056,9 +1169,9 @@ QString DAPDebugger::requestBuild()
 
 void DAPDebugger::start()
 {
-    if(!d->localsView->isVisible())
-        d->localsView->show();
-    
+    if(!d->variablesPane->isVisible())
+        d->variablesPane->show();
+
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
     if (service) {
