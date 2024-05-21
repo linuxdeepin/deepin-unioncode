@@ -27,6 +27,9 @@ public Q_SLOTS:
     void findTextChanged();
     void hideAndResetFocus();
 
+protected:
+    virtual void showEvent(QShowEvent *event) override;
+
 private:
     void setFindText(const QString &text);
     static FindToolBarPlaceHolder *findToolBarPlaceHolder();
