@@ -84,6 +84,7 @@ void TextEditor::save()
     d->isSaved = true;
     setModified(false);
     emit fileSaved(d->fileName);
+    editor.fileSaved(d->fileName);
 }
 
 void TextEditor::saveAs()
