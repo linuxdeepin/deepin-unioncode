@@ -1,4 +1,5 @@
 {
+    "version" : "1.0",
     "groups": [
         {
             "name": "",
@@ -11,11 +12,16 @@
                     "environment": {},
                     "errorOutputOption": 1,
                     "icon": "binarytools_packing",
-                    "id": "",
+                    "id": "buildpackage",
                     "name": "打包工具",
                     "outputOption": 1,
                     "type": 0,
-                    "workingDirectory": ""
+                    "workingDirectory": "",
+                    "advance": {
+                        "missingHint": "",
+                        "installCommand": "",
+                        "triggerEvent" : 0
+                    }
                 },
                 {
                     "addToToolbar": false,
@@ -25,11 +31,16 @@
                     "environment": {},
                     "errorOutputOption": 1,
                     "icon": "binarytools_signature",
-                    "id": "",
+                    "id": "deb-verify",
                     "name": "签名验证工具",
                     "outputOption": 1,
                     "type": 0,
-                    "workingDirectory": ""
+                    "workingDirectory": "",
+                    "advance": {
+                        "missingHint": "工具执行程序未找到，请通过商店搜索“签名验证工具”进行下载",
+                        "installCommand": "",
+                        "triggerEvent" : 0
+                    }
                 },
                 {
                     "addToToolbar": false,
@@ -39,11 +50,16 @@
                     "environment": {},
                     "errorOutputOption": 1,
                     "icon": "binarytools_translate",
-                    "id": "",
+                    "id": "push-translation",
                     "name": "上传翻译",
                     "outputOption": 1,
                     "type": 0,
-                    "workingDirectory": ""
+                    "workingDirectory": "",
+                    "advance": {
+                        "missingHint": "",
+                        "installCommand": "",
+                        "triggerEvent" : 0
+                    }
                 },
                 {
                     "addToToolbar": false,
@@ -53,11 +69,16 @@
                     "environment": {},
                     "errorOutputOption": 1,
                     "icon": "binarytools_translate",
-                    "id": "",
+                    "id": "pull-translation",
                     "name": "拉取翻译",
                     "outputOption": 1,
                     "type": 0,
-                    "workingDirectory": ""
+                    "workingDirectory": "",
+                    "advance": {
+                        "missingHint": "",
+                        "installCommand": "",
+                        "triggerEvent" : 0
+                    }
                 },
                 {
                     "addToToolbar": true,
@@ -67,11 +88,16 @@
                     "environment": {},
                     "errorOutputOption": 1,
                     "icon": "binarytools_light",
-                    "id": "",
+                    "id": "qt-assistant",
                     "name": "Qt 助手",
                     "outputOption": 1,
                     "type": 0,
-                    "workingDirectory": ""
+                    "workingDirectory": "",
+                    "advance": {
+                        "missingHint": "",
+                        "installCommand": "",
+                        "triggerEvent" : 0
+                    }
                 },
                 {
                     "addToToolbar": false,
@@ -81,13 +107,40 @@
                     "environment": {},
                     "errorOutputOption": 1,
                     "icon": "binarytools_flag",
-                    "id": "",
+                    "id": "uos-development-platform",
                     "name": "统信UOS开发平台",
                     "outputOption": 1,
                     "type": 0,
-                    "workingDirectory": ""
+                    "workingDirectory": "",
+                    "advance": {
+                        "missingHint": "",
+                        "installCommand": "",
+                        "triggerEvent" : 0
+                    }
+                },
+                {
+                    "addToToolbar": false,
+                    "arguments": "",
+                    "command": "deepin-develop-tools",
+                    "description": "快速部署deepin系统开发环境的辅助工具，可一键式完成所选择开发环境的安装",
+                    "environment": {},
+                    "errorOutputOption": 1,
+                    "icon": "binarytools_flag",
+                    "id": "deploy-development-environment",
+                    "name": "一键部署开发环境工具",
+                    "outputOption": 1,
+                    "type": 0,
+                    "workingDirectory": "",
+                    "advance": {
+                        "missingHint": "工具执行程序未找到，请通过商店搜索“一键部署开发环境工具”进行下载",
+                        "installCommand": "",
+                        "triggerEvent" : 0
+                    }
                 }
             ]
         }
+    ],
+    "update": [
+        "deploy-development-environment"
     ]
 }
