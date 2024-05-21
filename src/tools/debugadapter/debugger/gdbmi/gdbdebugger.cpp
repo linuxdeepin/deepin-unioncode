@@ -20,6 +20,7 @@ class GDBDebuggerPrivate {
     QList<gdbmi::Thread> threadList;
 
     QMultiMap<int64_t, gdbmi::Variable *> variableListByReference;
+    QMap<QString, gdbmi::Variable *> watchingVariables;
     QList<QString> createdValue;
 
     std::atomic_bool inferiorRunning{false};
@@ -27,7 +28,7 @@ class GDBDebuggerPrivate {
     QStringList assemblers;
 
     int64_t reference = childVariablesReferenceBegin;
-    int64_t watchVariableCounter = 0;
+    int64_t traceVariableCounter = 0;
 
     int runningCommand = 0;
 };
@@ -633,7 +634,7 @@ void GDBDebugger::parseDisassembleData(const gdbmi::Record &record)
 void GDBDebugger::traceAddVariable(gdbmi::Variable *variable, int reference, int frame)
 {
     auto frameId = frame == -1 ? "@" : QString { "%1" }.arg(frame);
-    auto varName = QString("var%1").arg(d->watchVariableCounter++);
+    auto varName = QString("var%1").arg(d->traceVariableCounter++);
 
     d->variableListByReference.insert(reference, variable);
 
@@ -647,6 +648,8 @@ void GDBDebugger::traceAddVariable(gdbmi::Variable *variable, int reference, int
                                                          variable->numChild = v->numChild;
                                                          variable->hasMore = (v->dynamic && v->hasMore) || v->numChild;
                                                          variable->evaluateName = varName;
+                                                         if (variable->value.isEmpty())
+                                                             variable->value = v->value;
                                                      }
 
                                                      d->createdValue.append(varName);
@@ -663,6 +666,29 @@ void GDBDebugger::delAllTraceVariable()
     for (auto varName : d->createdValue)
         DebugManager::instance()->command(QString { "-var-delete %1" }.arg(varName));
     d->createdValue.clear();
+}
+
+void GDBDebugger::traceWatchingVariable(const QString &expression, int frame)
+{
+    gdbmi::Variable *var = new gdbmi::Variable;
+    d->watchingVariables.insert(expression, var);
+    var->name = expression;
+
+    d->runningCommand++;
+    traceAddVariable(var, ++d->reference, -1);
+}
+
+dap::Variable GDBDebugger::getWatchingVariable(const QString &expression)
+{
+    dap::Variable var;
+    if (!d->watchingVariables.contains(expression))
+        return var;
+    auto gdbVar = d->watchingVariables[expression];
+    var.evaluateName = expression.toStdString();
+    var.value = gdbVar->value.toStdString();
+    var.type = gdbVar->type.toStdString();
+    var.variablesReference = gdbVar->childRefrence;
+    return var;
 }
 
 void GDBDebugger::traceUpdateVariable(const QString &expression)
@@ -750,7 +776,8 @@ void GDBDebugger::resetVariables()
     d->variableListByReference.clear();
     d->runningCommand = 0;
     d->reference = childVariablesReferenceBegin;
-    d->watchVariableCounter = 0;
+    d->traceVariableCounter = 0;
+    d->watchingVariables.clear();
     if(!d->createdValue.isEmpty())
         delAllTraceVariable();
 }

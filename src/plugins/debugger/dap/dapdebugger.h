@@ -87,10 +87,14 @@ public slots:
     void slotReceivedDAPPort(const QString &uuid, int port, const QString &kitName, const QMap<QString, QVariant> &param);
     void slotOutputMsg(const QString &title, const QString &msg);
     void slotGetChildVariable(const QModelIndex &index);
+    void slotEvaluateWatchVariable();
+    void slotRemoveEvaluator();
 
 private:
     void launchBackend();
     void initializeView();
+    void initializeVairablesPane();
+    void updateWatchingVariables();
     void handleFrames(const StackFrames &stackFrames);
     void handleUpdateDebugLine();
     void updateThreadList(int curr, const dap::array<dap::Thread> &threads);
@@ -101,6 +105,7 @@ private:
     void removeBreakpoint(const QString &filepath, int lineNumber);
     void switchBreakpointsStatus(const QString &filePath, int lineNumber, bool enabled);
     void setBreakpointCondition(const QString &filePath, int lineNumber, const QString &expression);
+    void evaluateWatchVariable(const QString &expression);
 
     bool getLocals(dap::integer frameId, IVariables *out);
     void exitDebug();
