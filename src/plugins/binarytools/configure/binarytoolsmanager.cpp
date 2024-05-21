@@ -9,6 +9,7 @@
 #include "common/util/custompaths.h"
 #include "common/util/eventdefinitions.h"
 #include "services/window/windowservice.h"
+#include "services/terminal/terminalservice.h"
 #include "base/abstractaction.h"
 
 #include <QDir>
@@ -21,6 +22,9 @@
 
 constexpr char GroupObject[] { "groups" };
 constexpr char ToolObject[] { "tools" };
+constexpr char AdvanceObject[] { "advance" };
+constexpr char UpdateObject[] { "update" };
+constexpr char VersionKey[] { "version" };
 constexpr char NameKey[] { "name" };
 constexpr char IdKey[] { "id" };
 constexpr char DescriptionKey[] { "description" };
@@ -33,6 +37,9 @@ constexpr char ErrorOutputOptionKey[] { "errorOutputOption" };
 constexpr char AddToToolbarKey[] { "addToToolbar" };
 constexpr char IconKey[] { "icon" };
 constexpr char EnvironmentKey[] { "environment" };
+constexpr char MissingHintKey[] { "missingHint" };
+constexpr char InstallCommandKey[] { "installCommand" };
+constexpr char TriggerEventKey[] { "triggerEvent" };
 
 using namespace dpfservice;
 
@@ -97,6 +104,115 @@ BinaryToolsManager::~BinaryToolsManager()
     }
 }
 
+BinaryToolsManager::BinaryTools BinaryToolsManager::loadConfig(const QString &conf, QString &version)
+{
+    QFile file(conf);
+    if (!file.open(QIODevice::ReadOnly))
+        return {};
+
+    QJsonParseError error;
+    auto doc = QJsonDocument::fromJson(file.readAll(), &error);
+    if (error.error != QJsonParseError::NoError) {
+        qWarning() << error.errorString();
+        return {};
+    }
+
+    if (!doc.isObject())
+        return {};
+
+    BinaryTools tools;
+    QJsonObject jsonObj = doc.object();
+    QJsonArray groups = jsonObj[GroupObject].toArray();
+    version = jsonObj[VersionKey].toString();
+
+    for (const QJsonValue &groupVal : groups) {
+        QJsonObject groupObj = groupVal.toObject();
+        QString groupName = groupObj[NameKey].toString();
+        if (groupName.isEmpty())
+            groupName = tr("Default Group");
+
+        QJsonArray items = groupObj[ToolObject].toArray();
+        QList<ToolInfo> itemList;
+        for (const QJsonValue &itemVal : items) {
+            QJsonObject itemObj = itemVal.toObject();
+            ToolInfo itemInfo;
+
+            itemInfo.id = itemObj[IdKey].toString();
+            if (itemInfo.id.isEmpty())
+                itemInfo.id = QUuid::createUuid().toString(QUuid::WithoutBraces);
+
+            itemInfo.displyGroup = groupName;
+            itemInfo.name = itemObj[NameKey].toString();
+            itemInfo.description = itemObj[DescriptionKey].toString();
+            itemInfo.type = itemObj[TypeKey].toInt(0);
+            itemInfo.command = itemObj[CommandKey].toString();
+            itemInfo.arguments = itemObj[ArgumentsKey].toString();
+            itemInfo.workingDirectory = itemObj[WorkingDirectoryKey].toString();
+            itemInfo.outputOption = itemObj[OutputOptionKey].toInt(0);
+            itemInfo.errorOutputOption = itemObj[ErrorOutputOptionKey].toInt(0);
+            itemInfo.addToToolbar = itemObj[AddToToolbarKey].toBool(false);
+            itemInfo.icon = itemObj[IconKey].toString();
+            itemInfo.environment = itemObj[EnvironmentKey].toObject().toVariantMap();
+            if (itemInfo.environment.isEmpty())
+                itemInfo.environment = EnvironmentView::defaultEnvironment();
+
+            AdvancedSettings st;
+            auto advance = itemObj[AdvanceObject].toObject();
+            st.missingHint = advance[MissingHintKey].toString();
+            st.installCommand = advance[InstallCommandKey].toString();
+            st.triggerEvent = advance[TriggerEventKey].toInt();
+            itemInfo.advSettings = st;
+
+            itemList.append(itemInfo);
+        }
+
+        tools.insert(groupName, itemList);
+    }
+
+    return tools;
+}
+
+QStringList BinaryToolsManager::updateToolList()
+{
+    QFile file(":/configure/default_binarytools.json");
+    if (!file.open(QIODevice::ReadOnly))
+        return {};
+
+    auto doc = QJsonDocument::fromJson(file.readAll());
+    QJsonObject jsonObj = doc.object();
+    QJsonArray updateArray = jsonObj[UpdateObject].toArray();
+
+    QStringList toolList;
+    for (const QJsonValue &idVal : updateArray) {
+        toolList << idVal.toString();
+    }
+
+    return toolList;
+}
+
+BinaryToolsManager::BinaryTools BinaryToolsManager::mergeTools(const BinaryTools &defTools, const BinaryTools &localTools)
+{
+    const auto &updateList = updateToolList();
+    if (updateList.isEmpty())
+        return localTools;
+
+    auto tools = std::move(localTools);
+    for (const auto &id : updateList) {
+        const auto &tool = findTool(id, defTools);
+        if (!tool.isValid())
+            continue;
+
+        if (tools.contains(tool.displyGroup)) {
+            tools[tool.displyGroup].append(tool);
+            continue;
+        }
+
+        tools.insert(tool.displyGroup, QList<ToolInfo>() << tool);
+    }
+
+    return tools;
+}
+
 QSharedPointer<ToolProcess> BinaryToolsManager::createToolProcess(const ToolInfo &tool)
 {
     using namespace std::placeholders;
@@ -148,6 +264,12 @@ void BinaryToolsManager::save()
             itemObject[IconKey] = item.icon;
             itemObject[EnvironmentKey] = QJsonDocument::fromVariant(item.environment).object();
 
+            QJsonObject advObject;
+            advObject[MissingHintKey] = item.advSettings.missingHint;
+            advObject[InstallCommandKey] = item.advSettings.installCommand;
+            advObject[TriggerEventKey] = item.advSettings.triggerEvent;
+            itemObject[AdvanceObject] = advObject;
+
             itemsArray.append(itemObject);
         }
 
@@ -155,10 +277,11 @@ void BinaryToolsManager::save()
         groupsArray.append(groupObject);
     }
 
-    QJsonObject groupsObject;
-    groupsObject[GroupObject] = groupsArray;
+    QJsonObject obj;
+    obj[GroupObject] = groupsArray;
+    obj[VersionKey] = cfgVersion;
 
-    QJsonDocument doc(groupsObject);
+    QJsonDocument doc(obj);
     QString confPath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("binarytools.json");
     QFile file(confPath);
     if (file.open(QIODevice::WriteOnly)) {
@@ -167,15 +290,20 @@ void BinaryToolsManager::save()
     }
 }
 
-void BinaryToolsManager::setTools(const QMap<QString, QList<ToolInfo>> &dataMap)
+void BinaryToolsManager::setTools(const BinaryTools &dataMap)
 {
     allTools = dataMap;
 }
 
 ToolInfo BinaryToolsManager::findTool(const QString &id)
 {
-    auto iter = allTools.begin();
-    for (; iter != allTools.end(); ++iter) {
+    return findTool(id, allTools);
+}
+
+ToolInfo BinaryToolsManager::findTool(const QString &id, const BinaryTools &tools)
+{
+    auto iter = tools.begin();
+    for (; iter != tools.end(); ++iter) {
         auto &list = iter.value();
         auto result = std::find_if(list.begin(), list.end(), [&id](const ToolInfo &tool) {
             return tool.id == id;
@@ -188,68 +316,23 @@ ToolInfo BinaryToolsManager::findTool(const QString &id)
     return {};
 }
 
-QMap<QString, QList<ToolInfo>> BinaryToolsManager::tools()
+BinaryToolsManager::BinaryTools BinaryToolsManager::tools()
 {
     if (!allTools.isEmpty())
         return allTools;
 
-    QString confPath = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("binarytools.json");
-    if (!QFile::exists(confPath))
-        confPath = ":/configure/default_binarytools.json";
-
-    QFile file(confPath);
-    if (!file.open(QIODevice::ReadOnly))
-        return {};
-
-    QJsonParseError error;
-    auto doc = QJsonDocument::fromJson(file.readAll(), &error);
-    if (error.error != QJsonParseError::NoError) {
-        qWarning() << error.errorString();
-        return {};
+    QString defCfg = ":/configure/default_binarytools.json";
+    const auto &defTools = loadConfig(defCfg, cfgVersion);
+    QString localCfg = CustomPaths::user(CustomPaths::Flags::Configures) + QDir::separator() + QString("binarytools.json");
+    if (!QFile::exists(localCfg)) {
+        allTools = std::move(defTools);
+        return allTools;
     }
 
-    if (!doc.isObject())
-        return {};
-
-    QJsonObject jsonObj = doc.object();
-    QJsonArray groups = jsonObj[GroupObject].toArray();
-
-    for (const QJsonValue &groupVal : groups) {
-        QJsonObject groupObj = groupVal.toObject();
-        QString groupName = groupObj[NameKey].toString();
-        if (groupName.isEmpty())
-            groupName = tr("Default Group");
-
-        QJsonArray items = groupObj[ToolObject].toArray();
-        QList<ToolInfo> itemList;
-        for (const QJsonValue &itemVal : items) {
-            QJsonObject itemObj = itemVal.toObject();
-            ToolInfo itemInfo;
-
-            itemInfo.id = itemObj[IdKey].toString();
-            if (itemInfo.id.isEmpty())
-                itemInfo.id = QUuid::createUuid().toString(QUuid::WithoutBraces);
-
-            itemInfo.displyGroup = groupName;
-            itemInfo.name = itemObj[NameKey].toString();
-            itemInfo.description = itemObj[DescriptionKey].toString();
-            itemInfo.type = itemObj[TypeKey].toInt(0);
-            itemInfo.command = itemObj[CommandKey].toString();
-            itemInfo.arguments = itemObj[ArgumentsKey].toString();
-            itemInfo.workingDirectory = itemObj[WorkingDirectoryKey].toString();
-            itemInfo.outputOption = itemObj[OutputOptionKey].toInt(0);
-            itemInfo.errorOutputOption = itemObj[ErrorOutputOptionKey].toInt(0);
-            itemInfo.addToToolbar = itemObj[AddToToolbarKey].toBool(false);
-            itemInfo.icon = itemObj[IconKey].toString();
-            itemInfo.environment = itemObj[EnvironmentKey].toObject().toVariantMap();
-            if (itemInfo.environment.isEmpty())
-                itemInfo.environment = EnvironmentView::defaultEnvironment();
-
-            itemList.append(itemInfo);
-        }
-
-        allTools.insert(groupName, itemList);
-    }
+    QString localCfgVersion;
+    allTools = loadConfig(localCfg, localCfgVersion);
+    if (cfgVersion > localCfgVersion)
+        allTools = mergeTools(defTools, allTools);
 
     return allTools;
 }
@@ -260,11 +343,8 @@ void BinaryToolsManager::executeTool(const QString &id)
     if (!tool.isValid())
         return;
 
-    if (!checkCommandExists(tool.command)) {
-        QString msg = tr("The tool (%1) execution program does not exist. Install and run it again").arg(tool.name);
-        windowSrv->notify(2, "", msg, QStringList() << "ok_default" << tr("Ok"));
-        return;
-    }
+    if (!checkCommandExists(tool.command))
+        return toolMissingHint(tool);
 
     auto toolProcess = createToolProcess(tool);
     QStringList argList = tool.arguments.split(" ", QString::SkipEmptyParts);
@@ -285,12 +365,13 @@ void BinaryToolsManager::executeTool(const QString &id)
     AppOutputPane::instance()->setStopHandler(id, stopHandler);
     QString startMsg = tr("Start execute \"%1\": \"%2\" \"%3\" in workspace \"%4\".\n")
                                .arg(tool.name, tool.command, tool.arguments, tool.workingDirectory);
+    uiController.switchContext(tr("&Application Output"));
     printOutput(id, startMsg, OutputPane::NormalMessage);
 
     Q_EMIT execute(id);
 }
 
-void BinaryToolsManager::checkAndAddToToolbar(const QMap<QString, QList<ToolInfo>> &tools)
+void BinaryToolsManager::checkAndAddToToolbar(const BinaryTools &tools)
 {
     auto iter = tools.begin();
     for (; iter != tools.end(); ++iter) {
@@ -299,7 +380,7 @@ void BinaryToolsManager::checkAndAddToToolbar(const QMap<QString, QList<ToolInfo
     }
 }
 
-void BinaryToolsManager::updateToolMenu(const QMap<QString, QList<ToolInfo>> &tools)
+void BinaryToolsManager::updateToolMenu(const BinaryTools &tools)
 {
     if (!toolMenu)
         return;
@@ -329,6 +410,34 @@ void BinaryToolsManager::setToolMenu(QMenu *menu)
     toolMenu = menu;
 }
 
+void BinaryToolsManager::installTool(const QString &id)
+{
+    const auto &tool = findTool(id);
+    if (!tool.isValid())
+        return;
+
+    if (!terminalSrv)
+        terminalSrv = dpfGetService(TerminalService);
+
+    terminalSrv->executeCommand(tool.advSettings.installCommand);
+}
+
+void BinaryToolsManager::eventTriggered(EventType event, const QVariantList &args)
+{
+    Q_UNUSED(args)
+
+    auto iter = allTools.begin();
+    for (; iter != allTools.end(); ++iter) {
+        auto &list = iter.value();
+        for (const auto &tool : list) {
+            if (tool.advSettings.triggerEvent != event)
+                continue;
+
+            executeTool(tool.id);
+        }
+    }
+}
+
 void BinaryToolsManager::executeFinished(const QString &id, int exitCode, QProcess::ExitStatus exitStatus)
 {
     const auto &tool = findTool(id);
@@ -344,6 +453,7 @@ void BinaryToolsManager::executeFinished(const QString &id, int exitCode, QProce
         retMsg = tr("The tool \"%1\" crashed.\n").arg(tool.name);
     }
 
+    uiController.switchContext(tr("&Application Output"));
     printOutput(id, retMsg, OutputPane::OutputFormat::NormalMessage);
     QString endMsg = tr("Execute tool \"%1\" finished.\n").arg(tool.name);
     printOutput(id, endMsg, OutputPane::OutputFormat::NormalMessage);
@@ -389,6 +499,28 @@ bool BinaryToolsManager::checkCommandExists(const QString &command)
     return true;
 }
 
+void BinaryToolsManager::toolMissingHint(const ToolInfo &tool)
+{
+    if (!windowSrv)
+        windowSrv = dpfGetService(WindowService);
+
+    const auto &st = tool.advSettings;
+    QString msg = st.missingHint;
+    if (msg.isEmpty())
+        msg = tr("The tool (%1) execution program does not exist. Install and run it again").arg(tool.name);
+
+    QStringList actions { "ok_default", tr("Ok") };
+    if (!st.installCommand.isEmpty()) {
+        actions.clear();
+        actions << "cancel"
+                << tr("Cancel")
+                << tool.id + "_install_default"
+                << tr("Install");
+    }
+
+    windowSrv->notify(2, "", msg, actions);
+}
+
 void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
 {
     auto createAction = [this](const ToolInfo &tool) {
@@ -428,7 +560,6 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
 
 void BinaryToolsManager::printOutput(const QString &id, const QString &content, OutputPane::OutputFormat format)
 {
-    uiController.switchContext(tr("&Application Output"));
     auto outputPane = AppOutputPane::instance()->getOutputPaneById(id);
     QString outputContent = content;
     if (format == OutputPane::OutputFormat::NormalMessage) {

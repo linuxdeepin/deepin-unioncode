@@ -58,6 +58,7 @@ OPI_OBJECT(editor,
            // out
            OPI_INTERFACE(fileOpened, "fileName")
            OPI_INTERFACE(fileClosed, "fileName")
+           OPI_INTERFACE(fileSaved, "fileName")
            OPI_INTERFACE(switchedFile, "fileName")
            OPI_INTERFACE(breakpointAdded, "fileName", "line")
            OPI_INTERFACE(breakpointRemoved, "fileName", "line")
