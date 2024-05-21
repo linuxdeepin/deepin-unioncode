@@ -114,6 +114,26 @@ void FindToolBarPrivate::initActions()
                                             FindToolBar::tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
     windowService->addAction(FindToolBar::tr("&Find"), inputFindReplaceAction);
     q->connect(findReplaceAction, &QAction::triggered, q, [this] { q->openFindToolBar(); });
+
+    QAction *findNextAction = new QAction(FindToolBar::tr("Find/Replace"), q);
+    auto inputFindNextAction = new AbstractAction(findNextAction, q);
+    inputFindNextAction->setShortCutInfo("Find.findNext",
+                                         FindToolBar::tr("Find Next"), QKeySequence(Qt::Key_F3));
+    windowService->addAction(FindToolBar::tr("&Find"), inputFindNextAction);
+    q->connect(findNextAction, &QAction::triggered, q, [this] {
+        if (q->isVisible())
+            q->findNext();
+    });
+
+    QAction *findPreviousAction = new QAction(FindToolBar::tr("Find/Replace"), q);
+    auto inputFindPreviousAction = new AbstractAction(findPreviousAction, q);
+    inputFindPreviousAction->setShortCutInfo("Find.findPrevious",
+                                             FindToolBar::tr("Find Previous"), QKeySequence(Qt::Modifier::SHIFT | Qt::Key_F3));
+    windowService->addAction(FindToolBar::tr("&Find"), inputFindPreviousAction);
+    q->connect(findPreviousAction, &QAction::triggered, q, [this] {
+        if (q->isVisible())
+            q->findPrevious();
+    });
 }
 
 void FindToolBarPrivate::updateUI()
@@ -147,11 +167,11 @@ void FindToolBar::openFindToolBar()
     FindToolBarPlaceHolder *holder = findToolBarPlaceHolder();
     if (!holder)
         return;
-    
+
     d->docFind = PlaceHolderManager::instance()->findDocumentFind(holder);
     if (!d->docFind)
         return;
-    
+
     FindToolBarPlaceHolder *previousHolder = PlaceHolderManager::instance()->getCurrentHolder();
     if (previousHolder != holder) {
         if (previousHolder)
@@ -210,6 +230,12 @@ void FindToolBar::hideAndResetFocus()
     if (holder)
         holder->setFocus();
     hide();
+}
+
+void FindToolBar::showEvent(QShowEvent *event)
+{
+    findTextChanged();
+    DFloatingWidget::showEvent(event);
 }
 
 void FindToolBar::setFindText(const QString &text)
