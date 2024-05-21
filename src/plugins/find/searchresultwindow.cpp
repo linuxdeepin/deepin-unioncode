@@ -5,6 +5,7 @@
 #include "searchresultwindow.h"
 #include "common/common.h"
 #include "qobjectdefs.h"
+#include "base/baseitemdelegate.h"
 
 #include <DPushButton>
 #include <DMessageBox>
@@ -172,6 +173,7 @@ void SearchResultWindow::setupUi()
     d->treeView = new SearchResultTreeView(this);
     d->treeView->setHeaderHidden(true);
     d->treeView->setLineWidth(0);
+    d->treeView->setItemDelegate(new BaseItemDelegate(this));
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     // vLayout->setAlignment(Qt::AlignTop);
