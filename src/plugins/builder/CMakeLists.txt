@@ -7,6 +7,7 @@ set(CXX_CPP
     tasks/taskmanager.cpp
     tasks/taskdelegate.cpp
     tasks/taskview.cpp
+    tasks/taskfilterproxymodel.cpp
     transceiver/builderreceiver.cpp
     transceiver/buildersender.cpp
     mainframe/buildmanager.cpp
@@ -23,6 +24,7 @@ set(CXX_H
     tasks/taskmanager.h
     tasks/taskdelegate.h
     tasks/taskview.h
+    tasks/taskfilterproxymodel.h
     transceiver/builderreceiver.h
     transceiver/buildersender.h
     mainframe/buildmanager.h
