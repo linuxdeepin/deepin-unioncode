@@ -8,6 +8,7 @@
 #include "taskmodel.h"
 #include "taskdelegate.h"
 #include "taskview.h"
+#include "taskfilterproxymodel.h"
 
 /**
  * @brief Used to manage and display the information about build error,
@@ -38,7 +39,7 @@ private:
 
     TaskView *view = nullptr;
     QSharedPointer<TaskModel> model;
-    QList<Task> tasks;
+    QSharedPointer<TaskFilterProxyModel> filterModel;
 };
 
 #endif // TASKMANAGER_H
