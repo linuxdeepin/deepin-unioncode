@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "copilotapi.h"
+#include "src/common/supportfile/language.h"
+#include "src/services/editor/editorservice.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -13,6 +15,8 @@
 
 #include <QString>
 #include <QHash>
+
+using namespace dpfservice;
 
 namespace CodeGeeX {
 CopilotApi::CopilotApi(QObject *parent)
@@ -93,11 +97,13 @@ QNetworkReply *CopilotApi::postMessage(const QString &url,
 */
 QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString &suffix)
 {
+    auto file = getCurrentFileInfo();
+
     QJsonObject activeDocument;
-    activeDocument.insert("path", "main.cpp");
+    activeDocument.insert("path", file.first);
     activeDocument.insert("prefix", prefix);
     activeDocument.insert("suffix", suffix);
-    activeDocument.insert("lang", "C++");
+    activeDocument.insert("lang", file.second);
 
     QJsonObject contextItem;
     contextItem.insert("kind", "active_document");
@@ -109,7 +115,7 @@ QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString
     QJsonObject json;
     json.insert("context", context);
     json.insert("model", completionModel);
-    json.insert("lang", "C++");
+    json.insert("lang", file.second);
     json.insert("max_new_tokens", 64);
 
     QJsonDocument doc(json);
@@ -240,6 +246,22 @@ void CopilotApi::setModel(languageModel model)
         chatModel = chatModelPro;
         completionModel = completionModelPro;
     }
+}
+
+QPair<QString, QString> CopilotApi::getCurrentFileInfo()
+{
+    auto &ctx = dpfInstance.serviceContext();
+    EditorService *editorService = ctx.service<EditorService>(EditorService::name());
+    auto filePath = editorService->currentFile();
+    QString fileName;
+    if (QFileInfo(filePath).exists())
+        fileName = QFileInfo(filePath).fileName();
+    else
+        fileName = "main.cpp";
+    auto fileType = support_file::Language::id(filePath);
+    auto fileLang = support_file::Language::idAlias(fileType);
+
+    return qMakePair(fileName, fileLang);
 }
 
 }   // end namespace

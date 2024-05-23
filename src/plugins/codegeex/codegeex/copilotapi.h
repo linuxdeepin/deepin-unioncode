@@ -169,6 +169,7 @@ private:
                              const QString &command);
 
     void processResponse(QNetworkReply *reply);
+    QPair<QString, QString> getCurrentFileInfo();
 
     QNetworkAccessManager *manager = nullptr;
     QString chatModel = chatModelLite;
