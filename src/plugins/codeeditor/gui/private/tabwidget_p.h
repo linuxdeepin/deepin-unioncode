@@ -58,6 +58,7 @@ public slots:
     void handleResetLineBackground(const QString &fileName, int line);
     void handleClearLineBackground(const QString &fileName);
     void handleDoRename(const newlsp::WorkspaceEdit &info);
+    void handleOpenFiles(const QList<QUrl> &fileList);
 
 public:
     TabWidget *q;
