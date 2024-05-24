@@ -126,12 +126,14 @@ signals:
     void contextMenuRequested(QMenu *menu);
     void focusOut();
     void cursorRecordChanged(int pos);
+    void requestOpenFiles(const QList<QUrl> &fileList);
 
 private:
     void init();
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *event) override;
+    virtual void dropEvent(QDropEvent *event) override;
 
 private:
     TextEditorPrivate *d { nullptr };

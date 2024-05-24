@@ -209,6 +209,7 @@ TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
     connect(editor, &TextEditor::zoomValueChanged, q, &TabWidget::zoomValueChanged);
     connect(editor, &TextEditor::cursorRecordChanged, this, &TabWidgetPrivate::onCursorRecordChanged);
     connect(editor, &TextEditor::fileSaved, tabBar, &TabBar::onFileSaved);
+    connect(editor, &TextEditor::requestOpenFiles, this, &TabWidgetPrivate::handleOpenFiles);
 
     editor->setFile(fileName);
     editor->setCursorPosition(0, 0);
@@ -458,6 +459,17 @@ void TabWidgetPrivate::handleDoRename(const newlsp::WorkspaceEdit &info)
                 }
             }
         }
+    }
+}
+
+void TabWidgetPrivate::handleOpenFiles(const QList<QUrl> &fileList)
+{
+    for (const auto &file : fileList) {
+        QFileInfo info(file.toLocalFile());
+        if (info.isDir())
+            continue;
+
+        q->openFile(info.absoluteFilePath());
     }
 }
 
