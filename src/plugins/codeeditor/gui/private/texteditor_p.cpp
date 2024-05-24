@@ -48,7 +48,6 @@ TextEditorPrivate::TextEditorPrivate(TextEditor *qq)
 
 void TextEditorPrivate::init()
 {
-    q->setAcceptDrops(false);
     q->setFrameShape(QFrame::NoFrame);
     q->SendScintilla(TextEditor::SCI_SETMOUSEDWELLTIME, 20);
     q->setAnnotationDisplay(TextEditor::AnnotationStandard);
