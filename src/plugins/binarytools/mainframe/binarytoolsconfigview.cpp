@@ -12,6 +12,7 @@
 #include "constants.h"
 
 #include "base/baseitemdelegate.h"
+#include "common/widget/variablechooser.h"
 
 #include <DComboBox>
 #include <DCheckBox>
@@ -260,6 +261,10 @@ QWidget *BinaryToolsConfigViewPrivate::createRightWidget()
     advanceLabel->setText(format.arg(BinaryToolsConfigView::tr("Advanced Settings"), BinaryToolsConfigView::tr("Advanced Settings")));
     mainLayout->addWidget(advanceLabel, EnvironmentLabelRow, 1, 1, 2);
     mainLayout->addItem(new QSpacerItem(10, 0, QSizePolicy::Maximum, QSizePolicy::MinimumExpanding), EndRow, 0);
+
+    auto chooser = new VariableChooser(q);
+    chooser->addSupportedEdit(argsEdit->lineEdit());
+    chooser->addSupportedEdit(workingDirEdit->lineEdit());
 
     return widget;
 }

@@ -1,5 +1,5 @@
 {
-    "version" : "1.0",
+    "version" : "1.1",
     "groups": [
         {
             "name": "",
@@ -136,11 +136,41 @@
                         "installCommand": "",
                         "triggerEvent" : 0
                     }
+                },
+                {
+                    "addToToolbar": false,
+                    "arguments": "-u3 -i utf-8 -d en_US -p words %{CurrentDocument:FilePath}",
+                    "command": "hunspell",
+                    "description": "检测当前文档英文单词拼写",
+                    "environment": {},
+                    "errorOutputOption": 1,
+                    "icon": "binarytools_flag",
+                    "id": "hunspell",
+                    "name": "单词拼写检查",
+                    "outputOption": 1,
+                    "type": 0,
+                    "workingDirectory": "",
+                    "advance": {
+                        "missingHint": "工具执行程序未找到，请安装后重试",
+                        "installCommand": "sudo apt install hunspell",
+                        "triggerEvent" : 0
+                    }
                 }
             ]
         }
     ],
     "update": [
-        "deploy-development-environment"
+        {
+            "version": "1.0",
+            "list" : [
+                "deploy-development-environment"
+            ]
+        },
+        {
+            "version": "1.1",
+            "list" : [
+                "hunspell"
+            ]
+        }
     ]
 }

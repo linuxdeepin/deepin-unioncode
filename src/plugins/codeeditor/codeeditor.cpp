@@ -13,6 +13,7 @@
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
 #include "base/abstractwidget.h"
+#include "common/util/macroexpander.h"
 
 #include "services/window/windowservice.h"
 #include "services/language/languageservice.h"
@@ -61,6 +62,9 @@ bool CodeEditor::start()
     initEditorService();
     initOptionService();
 
+    globalMacroExpander()->registerFileVariables("CurrentDocument",
+                                                 tr("Current document"),
+                                                 [this] { return QFileInfo(workspaceWidget->currentFile()); });
     return true;
 }
 
