@@ -44,6 +44,10 @@ bool DebugManager::initialize(dpfservice::WindowService *windowService,
         debuggerService->registerDebugger = std::bind(&DebugManager::registerDebugger, this, _1, _2);
     }
 
+    if (!debuggerService->getDebugState) {
+        debuggerService->getDebugState = std::bind(&DebugManager::getRunState, this);
+    }
+
     return true;
 }
 
