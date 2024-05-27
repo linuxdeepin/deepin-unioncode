@@ -11,6 +11,7 @@
 #include "gui/settings/editorsettings.h"
 #include "gui/settings/settingsdefine.h"
 #include "services/option/optionutils.h"
+#include "services/debugger/debuggerservice.h"
 
 #include <Qsci/qsciapis.h>
 
@@ -326,6 +327,13 @@ void TextEditorPrivate::showMarginMenu()
     } else {
         static QString text("Add a breakpoint on line %1");
         menu.addAction(text.arg(line + 1), q, [this, line] { q->addBreakpoint(line); });
+    }
+
+    auto &ctx = dpfInstance.serviceContext();
+    DebuggerService *debuggerService = ctx.service<DebuggerService>(DebuggerService::name());
+    if (debuggerService->getDebugState() == AbstractDebugger::RunState::kStopped) {
+        menu.addSeparator();
+        menu.addAction(tr("jump to %1 line").arg(line + 1), q, [this, line] { editor.jumpToLine(fileName, line + 1); });
     }
 
     // notify other plugin to add action.

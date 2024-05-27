@@ -42,6 +42,8 @@ public:
      * @param debugger
      */
     DPF_INTERFACE(void, registerDebugger, const QString &kit, AbstractDebugger *debugger);
+
+    DPF_INTERFACE(AbstractDebugger::RunState, getDebugState);
 };
 
 } // namespace dpfservice
