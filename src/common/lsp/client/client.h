@@ -95,7 +95,7 @@ public slots:
     // textDocument/formatting
     void formatting(const newlsp::DocumentFormattingParams &params);
     // textDocument/rangeFormatting
-    void rangeFormatting(const newlsp::DocumentRangeFormattingParams &params);
+    void rangeFormatting(const QString &filePath, const newlsp::DocumentRangeFormattingParams &params);
     // textDocument/onTypeFormatting
     void onTypeFormatting(const newlsp::DocumentOnTypeFormattingParams &params);
     // textDocument/rename
@@ -178,7 +178,7 @@ signals:
     void definitionRes(const newlsp::Location &location, const QString &filePath);
     void definitionRes(const std::vector<newlsp::Location> &locations, const QString &filePath);
     void definitionRes(const std::vector<newlsp::LocationLink> &locations, const QString &filePath);
-    void rangeFormattingRes(const std::vector<TextEdit> &edits);
+    void rangeFormattingRes(const std::vector<TextEdit> &edits, const QString &filePath);
 
     /* server request */
     void publishDiagnostics(const newlsp::PublishDiagnosticsParams &diagnostics); // textDocument/publishDiagnostics
