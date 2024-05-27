@@ -367,3 +367,8 @@ void DebugManager::disassemble(const QString &address)
     if (command(d->debugger->disassemble(address)))
         waitLocker();
 }
+
+void DebugManager::gotoLine(const QString &fileLine)
+{
+    d->debugger->gotoLine(fileLine);
+}
