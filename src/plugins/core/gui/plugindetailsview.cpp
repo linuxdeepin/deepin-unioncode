@@ -18,6 +18,7 @@
 #include <QDesktopServices>
 #ifndef NOT_USE_WEBENGINE
 #include <QWebEngineView>
+#include <QWebEngineSettings>
 #endif
 #include <QDir>
 
@@ -28,17 +29,21 @@ using namespace dpfservice;
 class AutoZoomWebEngineView : public QWebEngineView {
 public:
     explicit AutoZoomWebEngineView(QWidget *parent = nullptr)
-        : QWebEngineView(parent) {}
+        : QWebEngineView(parent) {
+            page()->settings()->setAttribute(QWebEngineSettings::ShowScrollBars, false);
+            connect(page(), &QWebEnginePage::loadFinished, [this](bool ok) {
+                    if (ok) {
+                        page()->runJavaScript("document.body.scrollWidth", [this](const QVariant &widthResult) {
+                            pageWidth = widthResult.toInt();
+                        });
+                    }
+                }
+            );
+        }
 
 protected:
     void resizeEvent(QResizeEvent *event) override {
         QWebEngineView::resizeEvent(event);
-
-        // first resize is full screen
-        if (isFirstResize) {
-            isFirstResize = false;
-            return;
-        }
 
         QSize newSize = event->size();
         qreal zoomFactor = calculateZoomFactor(newSize);
@@ -46,14 +51,11 @@ protected:
     }
 
     qreal calculateZoomFactor(const QSize &size) {
-        if (size.width() > maxWidth)
-            maxWidth = size.width();
-        qreal zoomFactor = static_cast<qreal>(size.width()) / maxWidth;
+        qreal zoomFactor = static_cast<qreal>(size.width()) / pageWidth;
         return zoomFactor;
     }
 private:
-    int maxWidth = 0;
-    bool isFirstResize = true;
+    int pageWidth = 0;
 };
 #endif
 
