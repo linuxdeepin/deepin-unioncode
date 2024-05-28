@@ -225,6 +225,7 @@ QWidget *BinaryToolsConfigViewPrivate::createRightWidget()
     outputCB->setFixedWidth(240);
     outputCB->addItem(BinaryToolsConfigView::tr("Ignore"), Ignore);
     outputCB->addItem(BinaryToolsConfigView::tr("Show in application output"), ShowInApplicationOutput);
+    outputCB->addItem(BinaryToolsConfigView::tr("Replace current document"), ReplaceCurrentDocument);
     mainLayout->addWidget(outputLabel, OutputRow, 0);
     mainLayout->addWidget(outputCB, OutputRow, 1);
 
@@ -233,6 +234,7 @@ QWidget *BinaryToolsConfigViewPrivate::createRightWidget()
     errOutputCB->setFixedWidth(240);
     errOutputCB->addItem(BinaryToolsConfigView::tr("Ignore"), Ignore);
     errOutputCB->addItem(BinaryToolsConfigView::tr("Show in application output"), ShowInApplicationOutput);
+    errOutputCB->addItem(BinaryToolsConfigView::tr("Replace current document"), ReplaceCurrentDocument);
     mainLayout->addWidget(errOutputLabel, ErrorOutputRow, 0);
     mainLayout->addWidget(errOutputCB, ErrorOutputRow, 1);
 
