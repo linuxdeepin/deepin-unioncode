@@ -15,7 +15,8 @@ enum ToolType {
 
 enum OutputOption {
     Ignore,
-    ShowInApplicationOutput
+    ShowInApplicationOutput,
+    ReplaceCurrentDocument
 };
 
 enum EventType {
@@ -28,12 +29,14 @@ struct AdvancedSettings
 {
     QString missingHint;
     QString installCommand;
+    QString channelData;
     int triggerEvent { NoEvent };
 
     AdvancedSettings() = default;
     AdvancedSettings(const AdvancedSettings &st)
         : missingHint(st.missingHint),
           installCommand(st.installCommand),
+          channelData(st.channelData),
           triggerEvent(st.triggerEvent)
     {
     }
@@ -42,6 +45,7 @@ struct AdvancedSettings
     {
         missingHint = st.missingHint;
         installCommand = st.installCommand;
+        channelData = st.channelData;
         triggerEvent = st.triggerEvent;
 
         return *this;
