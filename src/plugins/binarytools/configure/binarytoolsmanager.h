@@ -16,6 +16,7 @@
 namespace dpfservice {
 class WindowService;
 class TerminalService;
+class EditorService;
 }
 class AbstractAction;
 
@@ -29,6 +30,7 @@ public:
     void setProgram(const QString &program) { this->program = program; }
     void setArguments(const QStringList &arguments) { this->arguments = arguments; }
     void setWorkingDirectory(const QString &dir) { workingDir = dir; }
+    void setChannelData(const QString &data) { channelData = data; }
     void setProcessEnvironment(const QProcessEnvironment &environment) { this->environment = environment; }
 
     QString readAllStandardOutput();
@@ -48,6 +50,7 @@ private:
     QString program;
     QStringList arguments;
     QString workingDir;
+    QString channelData;
     QProcessEnvironment environment;
 
     QMutex mutex;
@@ -97,6 +100,7 @@ private:
     void addToToolBar(const ToolInfo &tool);
     void printOutput(const QString &id, const QString &content, OutputPane::OutputFormat format);
     void stopTool(const QString &id);
+    void replaceCurrentDocument(const QString &id, int exitCode);
 
 private:
     QMap<QString, std::tuple<QSharedPointer<ToolProcess>, QSharedPointer<QThread>>> toolTaskMap;
@@ -104,6 +108,7 @@ private:
     BinaryTools allTools;
     dpfservice::WindowService *windowSrv { nullptr };
     dpfservice::TerminalService *terminalSrv { nullptr };
+    dpfservice::EditorService *editorSrv { nullptr };
     QMap<QString, AbstractAction *> actMap;
     QMenu *toolMenu { nullptr };
     QString cfgVersion;
