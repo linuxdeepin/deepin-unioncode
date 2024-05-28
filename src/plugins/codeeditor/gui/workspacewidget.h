@@ -16,10 +16,12 @@ public:
     explicit WorkspaceWidget(QWidget *parent = nullptr);
 
     QString currentFile() const;
+    QString currentDocumentContent() const;
     QString selectedText() const;
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
     QStringList modifiedFiles() const;
+    void setText(const QString &text);
     void saveAll() const;
     void saveAs(const QString &from, const QString &to = "");
     void replaceSelectedText(const QString &text);

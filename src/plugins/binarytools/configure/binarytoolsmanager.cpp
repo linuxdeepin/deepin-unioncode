@@ -11,6 +11,7 @@
 #include "common/util/macroexpander.h"
 #include "services/window/windowservice.h"
 #include "services/terminal/terminalservice.h"
+#include "services/editor/editorservice.h"
 #include "base/abstractaction.h"
 
 #include <QDir>
@@ -40,6 +41,7 @@ constexpr char IconKey[] { "icon" };
 constexpr char EnvironmentKey[] { "environment" };
 constexpr char MissingHintKey[] { "missingHint" };
 constexpr char InstallCommandKey[] { "installCommand" };
+constexpr char ChannelDataKey[] { "channelData" };
 constexpr char TriggerEventKey[] { "triggerEvent" };
 constexpr char UpdateListKey[] { "list" };
 
@@ -84,6 +86,10 @@ void ToolProcess::start(const QString &id)
     process.setProcessEnvironment(environment);
 
     process.start();
+    if (!channelData.isEmpty()) {
+        process.write(channelData.toLocal8Bit());
+        process.closeWriteChannel();
+    }
     process.waitForFinished(-1);
 }
 
@@ -162,6 +168,7 @@ BinaryToolsManager::BinaryTools BinaryToolsManager::loadConfig(const QString &co
             auto advance = itemObj[AdvanceObject].toObject();
             st.missingHint = advance[MissingHintKey].toString();
             st.installCommand = advance[InstallCommandKey].toString();
+            st.channelData = advance[ChannelDataKey].toString();
             st.triggerEvent = advance[TriggerEventKey].toInt();
             itemInfo.advSettings = st;
 
@@ -280,6 +287,7 @@ void BinaryToolsManager::save()
             QJsonObject advObject;
             advObject[MissingHintKey] = item.advSettings.missingHint;
             advObject[InstallCommandKey] = item.advSettings.installCommand;
+            advObject[ChannelDataKey] = item.advSettings.channelData;
             advObject[TriggerEventKey] = item.advSettings.triggerEvent;
             itemObject[AdvanceObject] = advObject;
 
@@ -367,6 +375,8 @@ void BinaryToolsManager::executeTool(const QString &id)
     toolProcess->setArguments(argList);
     auto workingDir = globalMacroExpander()->expand(tool.workingDirectory);
     toolProcess->setWorkingDirectory(workingDir);
+    auto channelData = globalMacroExpander()->expand(tool.advSettings.channelData);
+    toolProcess->setChannelData(channelData);
     QProcessEnvironment env;
     auto iterator = tool.environment.begin();
     while (iterator != tool.environment.end()) {
@@ -462,8 +472,14 @@ void BinaryToolsManager::executeFinished(const QString &id, int exitCode, QProce
 
     QString retMsg;
     if (0 == exitCode && exitStatus == QProcess::ExitStatus::NormalExit) {
+        if (tool.outputOption == ReplaceCurrentDocument)
+            replaceCurrentDocument(id, exitCode);
+
         retMsg = tr("The tool \"%1\" exited normally.\n").arg(tool.name);
     } else if (exitStatus == QProcess::NormalExit) {
+        if (tool.errorOutputOption == ReplaceCurrentDocument)
+            replaceCurrentDocument(id, exitCode);
+
         retMsg = tr("The tool \"%1\" exited with code %2.\n").arg(tool.name, QString::number(exitCode));
     } else {
         retMsg = tr("The tool \"%1\" crashed.\n").arg(tool.name);
@@ -604,4 +620,22 @@ void BinaryToolsManager::stopTool(const QString &id)
     std::get<0>(task)->stop();
     std::get<1>(task)->quit();
     std::get<1>(task)->wait();
+}
+
+void BinaryToolsManager::replaceCurrentDocument(const QString &id, int exitCode)
+{
+    if (!toolTaskMap.contains(id))
+        return;
+
+    QString text;
+    if (exitCode == 0)
+        text = std::get<0>(toolTaskMap[id])->readAllStandardOutput();
+    else
+        text = std::get<0>(toolTaskMap[id])->readAllStandardError();
+
+    if (!editorSrv)
+        editorSrv = dpfGetService(EditorService);
+
+    if (!text.isEmpty())
+        editorSrv->setText(text);
 }

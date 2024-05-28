@@ -4,6 +4,8 @@
 
 #include "advancedsettingsdialog.h"
 
+#include "common/widget/variablechooser.h"
+
 #include <DLineEdit>
 #include <DComboBox>
 
@@ -23,6 +25,7 @@ public:
 
     DLineEdit *hintEdit { nullptr };
     DLineEdit *installEdit { nullptr };
+    DLineEdit *channelEdit { nullptr };
     DComboBox *triggerEventCB { nullptr };
 };
 
@@ -41,7 +44,11 @@ void AdvancedSettingsDialogPrivate::initUI()
 
     layout->addRow(AdvancedSettingsDialog::tr("Missing Hint:"), hintEdit = new DLineEdit(q));
     layout->addRow(AdvancedSettingsDialog::tr("Install Command:"), installEdit = new DLineEdit(q));
+    layout->addRow(AdvancedSettingsDialog::tr("Channel Data:"), channelEdit = new DLineEdit(q));
     layout->addRow(AdvancedSettingsDialog::tr("Trigger Event:"), triggerEventCB = new DComboBox(q));
+
+    VariableChooser *chooser = new VariableChooser(q);
+    chooser->addSupportedEdit(channelEdit->lineEdit());
 
     triggerEventCB->addItem(AdvancedSettingsDialog::tr("None"), NoEvent);
     triggerEventCB->addItem(AdvancedSettingsDialog::tr("Document Saved"), DocumentSaveEvent);
@@ -62,6 +69,7 @@ void AdvancedSettingsDialog::setAdvancedSettings(const AdvancedSettings &setting
 {
     d->hintEdit->setText(settings.missingHint);
     d->installEdit->setText(settings.installCommand);
+    d->channelEdit->setText(settings.channelData);
     d->triggerEventCB->setCurrentIndex(d->triggerEventCB->findData(settings.triggerEvent));
 }
 
@@ -70,6 +78,7 @@ AdvancedSettings AdvancedSettingsDialog::advancedSettings()
     AdvancedSettings st;
     st.missingHint = d->hintEdit->text();
     st.installCommand = d->installEdit->text();
+    st.channelData = d->channelEdit->text();
     st.triggerEvent = d->triggerEventCB->currentData().toInt();
 
     return st;
