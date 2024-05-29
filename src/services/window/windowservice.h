@@ -21,6 +21,14 @@ class AbstractAction;
 class AbstractMenu;
 class AbstractWidget;
 
+namespace Priority {
+    const quint8 lowest = 255;
+    const quint8 low = 150;
+    const quint8 medium = 100;
+    const quint8 high = 50;
+    const quint8 highest = 5;
+}
+
 namespace dpfservice {
 // service interface
 class WindowService final : public dpf::PluginService, dpf::AutoServiceRegister<WindowService>
@@ -156,17 +164,17 @@ public:
     * widgets belongs to a group, you can show toptoolbar by group in swtichWidget event.
     * or you can add it to MWTG_EDIT/MWTG_DEBUG, it will automatically show shen switch to Edit/Debug mode
     * \param abstractWidget
-    * \param group
+    * \param group  "MWTG_EDIT" "MWTG_DEBUG" choost to display in edit mode or debug mode
     * \param addSeparator separator in front of this widget
     * \param addToLeft
     */
-    DPF_INTERFACE(void, addWidgetToTopTool, AbstractWidget *abstractWidget, const QString &group, bool addSeparator, bool addToLeft);
+    DPF_INTERFACE(void, addWidgetToTopTool, AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority);
 
-    DPF_INTERFACE(void, addTopToolItem, AbstractAction *action, const QString &group, bool addSeparator);
-    DPF_INTERFACE(void, addTopToolItemToRight, AbstractAction *action, bool addSeparator);
+    DPF_INTERFACE(void, addTopToolItem, AbstractAction *action, bool addSeparator, quint8 priority);
+    DPF_INTERFACE(void, addTopToolItemToRight, AbstractAction *action, bool addSeparator, quint8 priority);
     DPF_INTERFACE(void, removeTopToolItem, AbstractAction *action);
 
-    DPF_INTERFACE(void, showTopToolBar, const QString &group);
+    DPF_INTERFACE(void, showTopToolBar);
     DPF_INTERFACE(void, hideTopToolBar);
 
     DPF_INTERFACE(void, showStatusBar);
@@ -174,11 +182,12 @@ public:
     DPF_INTERFACE(void, addStatusBarItem, QWidget *item);
 
     /*!
-     * \brief addWidgetWorkspace
+     * \brief addWidgetWorkspace if the widget support fold/expand, set widget.property("canExpand") to show fold/expand button
      * \param AbstractWidget
      * \param widget
      */
     DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget, const QString &iconName);
+    DPF_INTERFACE(void, registerToolBtnToWorkspaceWidget, Dtk::Widget::DToolButton *btn, const QString &title);
 
     DPF_INTERFACE(void, switchWorkspaceArea, const QString &title);
 

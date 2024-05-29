@@ -73,7 +73,7 @@ bool OptionCore::start()
                                                         Qt::Key::Key_H));
 
         windowService->addAction(MWM_TOOLS, actionOptionsImpl);
-        windowService->addNavigationItemToBottom(actionOptionsImpl, 255);
+        windowService->addNavigationItemToBottom(actionOptionsImpl, Priority::lowest);
         QObject::connect(actionOptions, &QAction::triggered,
                          optionDialog, &QDialog::show);
     }

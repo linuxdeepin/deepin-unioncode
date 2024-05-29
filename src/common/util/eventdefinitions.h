@@ -23,7 +23,10 @@ OPI_OBJECT(project,
            OPI_INTERFACE(activedProject, "projectInfo")
            OPI_INTERFACE(deletedProject, "projectInfo")
            OPI_INTERFACE(createdProject, "projectInfo")
+           OPI_INTERFACE(projectUpdated, "projectInfo")
            OPI_INTERFACE(fileDeleted, "filePath", "kit")
+
+           OPI_INTERFACE(openProjectPropertys, "projectInfo")
            )
 
 OPI_OBJECT(debugger,

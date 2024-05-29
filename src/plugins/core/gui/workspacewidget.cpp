@@ -73,6 +73,24 @@ void WorkspaceWidget::addWorkspaceWidget(const QString &title, AbstractWidget *t
     switchWidgetWorkspace(title);
 }
 
+void WorkspaceWidget::registerToolBtnToWidget(DToolButton *btn, const QString &title)
+{
+    if (!btn)
+        return;
+
+    toolBtnOfWidget.insert(title, btn);
+}
+
+QList<DToolButton *> WorkspaceWidget::getAllToolBtn()
+{
+    return toolBtnOfWidget.values();
+}
+
+QList<DToolButton *> WorkspaceWidget::getToolBtnByTitle(const QString &title)
+{
+    return toolBtnOfWidget.values(title);
+}
+
 bool WorkspaceWidget::switchWidgetWorkspace(const QString &title)
 {
     auto widget = editWorkspaceWidgets[title];

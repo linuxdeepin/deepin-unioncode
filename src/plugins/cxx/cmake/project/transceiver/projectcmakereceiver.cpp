@@ -43,13 +43,26 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
 
     if (event.data() == project.fileDeleted.name) {
         QVariant varKit = event.property("kit");
-        QString kit = varKit.toString();
 
         if (varKit == "cmake") {
             QVariant varFilePath = event.property("filePath");
             QString filePath = varFilePath.toString();
             emit ProjectCmakeProxy::instance()->fileDeleted(filePath);
         }
+    }
+
+    if (event.data() == project.projectUpdated.name) {
+        QVariant proInfoVar = event.property("projectInfo");
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+
+        auto *param = config::ConfigUtil::instance()->getConfigureParamPointer();
+        auto iter = param->buildTypeConfigures.begin();
+        for (; iter != param->buildTypeConfigures.end(); ++iter) {
+            if (param->defaultType == iter->type)
+                iter->runConfigure.defaultTargetName = projectInfo.currentProgram();
+        }
+        config::ConfigUtil::instance()->updateProjectInfo(projectInfo, param);
+        dpfGetService(dpfservice::ProjectService)->updateProjectInfo(projectInfo);
     }
 }
 
