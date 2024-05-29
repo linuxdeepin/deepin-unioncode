@@ -15,7 +15,6 @@ public:
     static GitClient *instance();
 
     void init();
-    void setLastCentralWidget(const QString &name);
 
     QString gitBinaryPath() const;
     bool gitBinaryValid();
@@ -32,7 +31,6 @@ public:
 
 public Q_SLOTS:
     void instantBlame(const QString &workspace, const QString &filePath, int line);
-    void switchLastCentralWidget();
 
 private:
     explicit GitClient(QObject *parent = nullptr);

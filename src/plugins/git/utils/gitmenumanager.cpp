@@ -38,12 +38,10 @@ void GitMenuManager::actionHandler(QAction *act, GitType type)
     }
 
     if (ret) {
-        auto dockName = winSer->getCurrentDockName(Position::Central);
-        if (dockName == GitWindow)
-            return;
+        if (!editSrv)
+            editSrv = dpfGetService(EditorService);
 
-        GitClient::instance()->setLastCentralWidget(dockName);
-        winSer->showWidgetAtPosition(GitWindow, Position::Central, true);
+        editSrv->switchWidget(GitWindow);
     }
 }
 
@@ -58,7 +56,6 @@ void GitMenuManager::initialize(dpfservice::WindowService *service)
     if (!service)
         return;
 
-    winSer = service;
     auto initAction = [&](QAction *action, const QString &id = QString(),
                           const QString &description = QString(),
                           const QKeySequence &key = QKeySequence()) -> AbstractAction * {
@@ -98,11 +95,10 @@ void GitMenuManager::setupFileMenu(const QString &filePath)
 {
     QString file = filePath;
     if (file.isEmpty()) {
-        auto editorService = dpfGetService(EditorService);
-        if (!editorService)
-            return;
+        if (!editSrv)
+            editSrv = dpfGetService(EditorService);
 
-        file = editorService->currentFile();
+        file = editSrv->currentFile();
     }
 
     if (file.isEmpty() || !GitClient::instance()->checkRepositoryExist(file)) {
