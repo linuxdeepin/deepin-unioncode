@@ -3,10 +3,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "instantblamewidget.h"
+#include "client/gitclient.h"
+
+#include "services/editor/editorservice.h"
 
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QDateTime>
+#include <QMouseEvent>
+
+using namespace dpfservice;
 
 InstantBlameWidget::InstantBlameWidget(QWidget *parent)
     : QWidget(parent)
@@ -36,6 +42,7 @@ CommitInfo InstantBlameWidget::parserBlameOutput(const QStringList &blame)
     const uint timeStamp = blame.at(3).mid(12).toUInt();
     result.authorTime = QDateTime::fromSecsSinceEpoch(timeStamp);
     result.summary = blame.at(9).mid(8);
+    result.filePath = blame.at(10).mid(8);
     return result;
 }
 
@@ -46,4 +53,21 @@ void InstantBlameWidget::setInfo(const QString &info)
     QString format(tr("Blame %1 (%2)"));
     auto ret = parserBlameOutput(info.split('\n'));
     label->setText(format.arg(ret.author, ret.authorTime.toString("yyyy-MM-dd")));
+}
+
+void InstantBlameWidget::mousePressEvent(QMouseEvent *event)
+{
+    const auto &info = label->toolTip();
+    if (info.isEmpty() || event->button() != Qt::LeftButton)
+        return QWidget::mousePressEvent(event);
+
+    auto editSrv = dpfGetService(EditorService);
+    if (editSrv) {
+        auto file = editSrv->currentFile();
+        auto ret = parserBlameOutput(info.split('\n'));
+        GitClient::instance()->show(file, ret.sha1);
+        editSrv->switchWidget(GitWindow);
+    }
+
+    QWidget::mousePressEvent(event);
 }
