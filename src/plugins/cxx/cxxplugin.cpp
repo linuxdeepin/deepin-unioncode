@@ -110,8 +110,8 @@ void CxxPlugin::registEditorService()
         return;
 
     SciLexerCPP *lexerCpp = new SciLexerCPP;
-    editorSvc->registSciLexerProxy(lexerCpp->language(), lexerCpp);
+    editorSvc->registerSciLexerProxy(lexerCpp->language(), lexerCpp);
 
     SciLexerCMake *lexerCMake = new SciLexerCMake;
-    editorSvc->registSciLexerProxy(lexerCMake->language(), lexerCMake);
+    editorSvc->registerSciLexerProxy(lexerCMake->language(), lexerCMake);
 }

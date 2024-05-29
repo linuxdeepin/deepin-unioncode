@@ -7,7 +7,7 @@
 #include "client/gitclient.h"
 #include "utils/gitmenumanager.h"
 
-#include "base/abstractwidget.h"
+#include "services/editor/editorservice.h"
 #include "services/window/windowservice.h"
 
 using namespace dpfservice;
@@ -21,6 +21,15 @@ bool Git::start()
     GitClient::instance()->init();
 
     initWindowService();
+    connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
+        auto editSrv = dpfGetService(EditorService);
+        if (!editSrv)
+            return;
+
+        auto widget = qobject_cast<AbstractEditWidget *>(GitClient::instance()->gitTabWidget());
+        if (widget)
+            editSrv->registerWidget(GitWindow, widget);
+    });
 
     return true;
 }
@@ -39,5 +48,4 @@ void Git::initWindowService()
 
     GitMenuManager::instance()->initialize(windowService);
     windowService->addStatusBarItem(GitClient::instance()->instantBlameWidget());
-    windowService->registerWidget(GitWindow, new AbstractWidget(GitClient::instance()->gitTabWidget()));
 }
