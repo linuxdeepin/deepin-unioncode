@@ -5,29 +5,32 @@
 #ifndef SEARCHRESULTWINDOW_H
 #define SEARCHRESULTWINDOW_H
 
+#include "constants.h"
+
 #include <QWidget>
 #include <DTreeView>
 #include <DFileIconProvider>
+#include <QStandardItem>
 
 DWIDGET_USE_NAMESPACE
-typedef struct {
-    QStringList filePathList;
-    QString searchText;
-    bool sensitiveFlag;
-    bool wholeWordsFlag;
-    QStringList patternsList;
-    QStringList exPatternsList;
-    QMap<QString, QString> projectInfoMap;
-}SearchParams;
 
-typedef struct{
-    QString filePathName;
-    int lineNumber;
-    QString context;
-}FindItem;
+class ItemProxy : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ItemProxy(QObject *parent = nullptr);
 
-using FindItemList = QList<FindItem>;
-using ProjectInfo = QMap<QString, QString>;
+    void setRuningState(bool isRuning);
+
+public Q_SLOTS:
+    void addTask(const FindItemList &itemList);
+
+Q_SIGNALS:
+    void taskCompleted(const QList<QStandardItem *> &itemList);
+
+private:
+    QAtomicInteger<bool> isRuning { false };
+};
 
 class SearchResultTreeViewPrivate;
 class SearchResultTreeView : public DTreeView
@@ -39,11 +42,13 @@ public:
     explicit SearchResultTreeView(QWidget *parent = nullptr);
     ~SearchResultTreeView();
 
-    Q_INVOKABLE void setData(const FindItemList &itemList, ProjectInfo projectInfoMap);
+    void appendData(const FindItemList &itemList, const ProjectInfo &projectInfo);
     void clearData();
     virtual QIcon icon(const QString &data);
 
-signals:
+private Q_SLOTS:
+    void appendItems(const QList<QStandardItem *> &itemList);
+
 private:
     SearchResultTreeViewPrivate *const d;
 };
@@ -56,19 +61,16 @@ public:
     explicit SearchResultWindow(QWidget *parent = nullptr);
     ~SearchResultWindow();
 
-    void search(SearchParams *params);
+    void clear();
+    void appendResults(const FindItemList &itemList, const ProjectInfo &projectInfo);
+    void searchFinished();
+    void replaceFinished(bool success);
     void setRepalceWidgtVisible(bool hide);
-    void startSearch(const QString &cmd, const QString &filePath, QMap<QString, QString> projectInfoMap);
-    void startReplace(const QStringList &options);
-    void searchAgain();
     void showMsg(bool succeed, QString msg);
 
 signals:
-    void back();
-    void noResult();
-    void haveResult();
-    void searched();
-    void replaced();
+    void reqBack();
+    void reqReplace(const QString &text);
 
 private:
     void setupUi();
@@ -78,4 +80,4 @@ private:
     SearchResultWindowPrivate *const d;
 };
 
-#endif // SEARCHRESULTWINDOW_H
+#endif   // SEARCHRESULTWINDOW_H
