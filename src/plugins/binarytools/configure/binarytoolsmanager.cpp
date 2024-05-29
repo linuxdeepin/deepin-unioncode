@@ -575,7 +575,7 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
     } else if (tool.addToToolbar && !actMap.contains(tool.id)) {
         auto act = createAction(tool);
         actMap.insert(tool.id, act);
-        windowSrv->addTopToolItemToRight(act, false);
+        windowSrv->addTopToolItemToRight(act, false, Priority::high);
     } else if (tool.addToToolbar && actMap.contains(tool.id)) {
         auto act = actMap[tool.id];
         auto qAct = act->qAction();

@@ -17,6 +17,7 @@
 #include "common/widget/messagebox.h"
 #include "interface/breakpointmodel.h"
 #include "event/eventreceiver.h"
+#include "common/widget/appoutputpane.h"
 #include "common/common.h"
 #include "services/builder/builderservice.h"
 #include "services/option/optionmanager.h"
@@ -276,6 +277,7 @@ void DAPDebugger::abortDebug()
                 }
             }
         }
+        AppOutputPane::instance()->setProcessFinished("debugPane");
     }
 }
 
@@ -1362,6 +1364,16 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
     } else {
         debugService->getModel()->clear();
         debugService->getModel()->addSession(d->currentSession);
+        
+        auto appOutPutPane = AppOutputPane::instance();
+        appOutPutPane->createApplicationPane("debugPane", "debugTarget");
+        appOutPutPane->setStopHandler("debugPane", [=](){
+            abortDebug();
+            d->outputPane = appOutPutPane->defaultPane();
+        });
+        d->outputPane = appOutPutPane->getOutputPaneById("debugPane");
+
+        appOutPutPane->bindToolBarToPane(debugToolBarName, d->outputPane);
     }
 }
 
