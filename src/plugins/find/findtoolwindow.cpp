@@ -350,6 +350,7 @@ bool FindToolWindow::getSearchParams(SearchParams *searchParams)
     searchParams->wholeWordsFlag = d->wholeWordsCheckBtnFlag;
     searchParams->patternsList = d->patternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
     searchParams->exPatternsList = d->expatternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
+    searchParams->exPatternsList << "*.so" << "*.o";
     searchParams->projectInfoMap = d->projectInfoMap;
 
     return true;
