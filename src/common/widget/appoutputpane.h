@@ -37,6 +37,8 @@ public:
     using StopHandler = std::function<void()>;
     void setStopHandler(const QString &id, StopHandler handler);
 
+    void registerItemToToolBar(const QString& toolbarName, QAction *abstractAction, bool addSeparator);
+    void bindToolBarToPane(const QString &toolbarName, OutputPane *pane);
 signals:
     void paneCreated(const QString &id);
 

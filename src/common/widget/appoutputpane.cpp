@@ -3,18 +3,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "appoutputpane.h"
+#include "util/utils.h"
 
 #include <DTabBar>
 #include <DDialog>
 #include <DStackedWidget>
 #include <DPalette>
 #include <DComboBox>
-#include <DToolButton>
+#include <DGuiApplicationHelper>
 #include <DStyle>
 
 #include <QVBoxLayout>
 #include <QProcess>
 #include <QFileInfo>
+#include <QAction>
 
 DGUI_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
@@ -35,6 +37,8 @@ public:
     DComboBox *tabChosser { nullptr };
     DToolButton *closeProcessBtn { nullptr };
     DToolButton *closePaneBtn { nullptr };
+    QMap<QString, DWidget*> toolBars;
+    QMap<QString, OutputPane*> toolBarBindsToPane;
 
     DStackedWidget *stackWidget { nullptr };
     QMap<QString, OutputPane *> appPane;   // pid-pane
@@ -80,6 +84,7 @@ void AppOutputPane::initUi()
     initTabWidget();
     d->stackWidget = new DStackedWidget(this);
     d->tabChosser->addItem(tr("default"));
+
     d->stackWidget->addWidget(d->defaultPane);
     d->stackWidget->setContentsMargins(10, 0, 0, 10);
 
@@ -103,23 +108,30 @@ void AppOutputPane::initTabWidget()
     QHBoxLayout *tabLayout = new QHBoxLayout(d->tabbar);
     tabLayout->setContentsMargins(0, 0, 0, 0);
     tabLayout->setAlignment(Qt::AlignLeft);
+    tabLayout->setSpacing(0);
 
     d->tabChosser = new DComboBox(d->tabbar);
     d->tabChosser->setFixedSize(120, 28);
+    auto pal = d->tabChosser->palette();
+    pal.setColor(QPalette::Light, pal.color(QPalette::Base));
+    pal.setColor(QPalette::Dark, pal.color(QPalette::Base));
+    d->tabChosser->setPalette(pal);
 
     d->closeProcessBtn = new DToolButton(d->tabbar);
+    d->closeProcessBtn->setFixedSize(26, 26);
     d->closeProcessBtn->setIcon(QIcon::fromTheme("common_stop"));
     d->closeProcessBtn->setToolTip(tr("Stop Running Program"));
     d->closeProcessBtn->setEnabled(false);
 
     d->closePaneBtn = new DToolButton(d->tabbar);
+    d->closePaneBtn->setFixedSize(26, 26);
     d->closePaneBtn->setIcon(QIcon::fromTheme("common_close"));
     d->closePaneBtn->setToolTip(tr("Close OutputPane"));
     d->closePaneBtn->setEnabled(false);
 
     tabLayout->addWidget(d->tabChosser);
-    tabLayout->addWidget(d->closeProcessBtn);
     tabLayout->addWidget(d->closePaneBtn);
+    tabLayout->addWidget(d->closeProcessBtn);
     d->tabbar->hide();
 
     connect(d->tabChosser, QOverload<int>::of(&DComboBox::currentIndexChanged), this, [=](int index) {
@@ -133,6 +145,19 @@ void AppOutputPane::initTabWidget()
             d->closeProcessBtn->setEnabled(true);
         else
             d->closeProcessBtn->setEnabled(false);
+
+        for (auto toolbarName : d->toolBarBindsToPane.keys()) {
+            if (d->toolBarBindsToPane[toolbarName] == pane)
+                d->toolBars[toolbarName]->setVisible(true);
+            else
+                d->toolBars[toolbarName]->setVisible(false);
+        }
+    });
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=](){
+        auto pal = d->tabChosser->palette();
+        pal.setColor(QPalette::Light, pal.color(QPalette::Base));
+        pal.setColor(QPalette::Dark, pal.color(QPalette::Base));
+        d->tabChosser->setPalette(pal);
     });
     connect(d->closeProcessBtn, &DToolButton::clicked, this, [=]() {
         auto pane = qobject_cast<OutputPane *>(d->stackWidget->currentWidget());
@@ -256,6 +281,60 @@ void AppOutputPane::slotCloseOutputPane()
         }
     }
 
-    if (d->tabChosser->count() == 1 && d->stackWidget->currentWidget() == d->defaultPane)
+    if (d->toolBarBindsToPane.values().contains(pane))
+        d->toolBarBindsToPane.remove(d->toolBarBindsToPane.key(pane));
+
+    if (d->tabChosser->count() == 1 && d->stackWidget->currentWidget() == d->defaultPane) {
         d->tabbar->hide();
+        d->hLine->hide();
+    }
+}
+
+void AppOutputPane::registerItemToToolBar(const QString& toolbarName, QAction *action, bool addSeparator)
+{
+    if (!action)
+        return;
+
+    QHBoxLayout *hlayout = nullptr;
+    if (d->toolBars.contains(toolbarName)) {
+        auto toolbar = d->toolBars[toolbarName];
+        hlayout = qobject_cast<QHBoxLayout *>(toolbar->layout());
+    } else {
+        auto toolbar = new DWidget(d->tabbar);
+        hlayout = new QHBoxLayout(toolbar);
+        hlayout->setSpacing(0);
+        hlayout->setContentsMargins(0, 2, 0, 2);
+        toolbar->setVisible(false);
+        d->toolBars.insert(toolbarName, toolbar);
+    }
+
+    auto toolBtn = utils::createIconButton(action, d->tabbar);
+    toolBtn->setFixedSize(26, 26);
+    
+    if (addSeparator) {
+        DVerticalLine *line = new DVerticalLine(d->tabbar);
+        line->setFixedHeight(20);
+        line->setFixedWidth(1);
+        hlayout->addSpacing(5);
+        hlayout->addWidget(line);
+        hlayout->addSpacing(5);
+    }
+
+    hlayout->addWidget(toolBtn);
+}
+
+void AppOutputPane::bindToolBarToPane(const QString &toolbarName, OutputPane *pane)
+{
+    if (!d->toolBars.contains(toolbarName)) {
+        qWarning() << "no toolbar named :" << toolbarName;
+        return;
+    }
+
+    d->toolBarBindsToPane.insert(toolbarName, pane);
+    auto layout = qobject_cast<QHBoxLayout *>(d->tabbar->layout());
+    auto toolbar = d->toolBars[toolbarName];
+    layout->addWidget(toolbar);
+    if (d->stackWidget->currentWidget() == pane) {
+        toolbar->setVisible(true);
+    }
 }

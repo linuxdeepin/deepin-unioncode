@@ -18,6 +18,7 @@
 #include "modules/notificationmodule.h"
 #include "locator/locatormanager.h"
 #include "find/placeholdermanager.h"
+#include "common/util/utils.h"
 
 #include <DFrame>
 #include <DFileDialog>
@@ -73,10 +74,9 @@ class ControllerPrivate
     NavigationBar *navigationBar { nullptr };
     QMap<QString, QAction *> navigationActions;
 
-    DStackedWidget *leftTopToolBar { nullptr };
+    DWidget *leftTopToolBar { nullptr };
     DSearchEdit *locatorBar { nullptr };
     DWidget *rightTopToolBar { nullptr };
-    QMap<QString, DWidget *> topToolBarGroup;
     QMap<QAction *, DToolButton *> topToolBtn;
 
     QMap<QString, DWidget *> contextWidgets;
@@ -235,10 +235,10 @@ void Controller::registerService()
         windowService->addTopToolItem = std::bind(&Controller::addTopToolItem, this, _1, _2, _3);
     }
     if (!windowService->addTopToolItemToRight) {
-        windowService->addTopToolItemToRight = std::bind(&Controller::addTopToolItemToRight, this, _1, _2);
+        windowService->addTopToolItemToRight = std::bind(&Controller::addTopToolItemToRight, this, _1, _2, _3);
     }
     if (!windowService->showTopToolBar) {
-        windowService->showTopToolBar = std::bind(&Controller::showTopToolBar, this, _1);
+        windowService->showTopToolBar = std::bind(&Controller::showTopToolBar, this);
     }
     if (!windowService->removeTopToolItem) {
         windowService->removeTopToolItem = std::bind(&Controller::removeTopToolItem, this, _1);
@@ -257,6 +257,9 @@ void Controller::registerService()
     }
     if (!windowService->addWidgetWorkspace) {
         windowService->addWidgetWorkspace = std::bind(&WorkspaceWidget::addWorkspaceWidget, d->workspace, _1, _2, _3);
+    }
+    if (!windowService->registerToolBtnToWorkspaceWidget) {
+        windowService->registerToolBtnToWorkspaceWidget = std::bind(&WorkspaceWidget::registerToolBtnToWidget, d->workspace, _1, _2);
     }
     if (!windowService->createFindPlaceHolder) {
         windowService->createFindPlaceHolder = std::bind(&PlaceHolderManager::createPlaceHolder, PlaceHolderManager::instance(), _1, _2);
@@ -300,13 +303,10 @@ void Controller::raiseMode(const QString &mode)
         return;
     }
 
-    if (mode == CM_EDIT) {
-        showTopToolBar(MWTG_EDIT);
+    if (mode == CM_EDIT)
         showWorkspace();
-    } else if (mode == CM_DEBUG) {
-        showTopToolBar(MWTG_DEBUG);
-    }
 
+    showTopToolBar();
     showContextWidget();
     showStatusBar();
 
@@ -621,7 +621,7 @@ void Controller::addOpenProjectAction(const QString &name, AbstractAction *actio
     }
 }
 
-void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, const QString &group, bool addSeparator, bool addToLeft)
+void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority)
 {
     if (!abstractWidget)
         return;
@@ -630,36 +630,42 @@ void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, const QStrin
         return;
 
     QHBoxLayout *hlayout { nullptr };
-    DWidget *toolBar { nullptr };
 
     if (!addToLeft) {
         hlayout = qobject_cast<QHBoxLayout *>(d->rightTopToolBar->layout());
-    } else if (d->topToolBarGroup.contains(group)) {
-        toolBar = d->topToolBarGroup[group];
-        hlayout = qobject_cast<QHBoxLayout *>(toolBar->layout());
     } else {
-        toolBar = new DWidget(d->leftTopToolBar);
-        hlayout = new QHBoxLayout(toolBar);
-        hlayout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        hlayout->setSpacing(0);
-        hlayout->setContentsMargins(0, 0, 0, 0);
-        d->topToolBarGroup.insert(group, toolBar);
-        d->leftTopToolBar->addWidget(toolBar);
+        hlayout = qobject_cast<QHBoxLayout *>(d->leftTopToolBar->layout());
+    }
+    
+    //sort
+    auto index = 0;
+    widget->setProperty("toptool_priority", priority);
+    for (; index < hlayout->count(); index++) {
+        if (hlayout->itemAt(index)->isEmpty())
+            continue;
+        auto w = hlayout->itemAt(index)->widget();
+        if (priority <= w->property("toptool_priority").toInt())
+            break;
     }
 
     if (addSeparator) {
+        DWidget* separator = new DWidget(d->mainWindow);
         DVerticalLine *line = new DVerticalLine(d->mainWindow);
-        hlayout->addSpacing(5);
+        auto separatorLayout = new QHBoxLayout(separator);
+        separator->setProperty("toptool_priority", priority - 1);
         line->setFixedHeight(20);
         line->setFixedWidth(1);
-        hlayout->addWidget(line);
-        hlayout->addSpacing(5);
+
+        separatorLayout->setContentsMargins(5, 0, 5, 0);
+        separatorLayout->addWidget(line);
+
+        hlayout->insertWidget(index++, separator);
     }
 
-    hlayout->addWidget(widget);
+    hlayout->insertWidget(index, widget);
 }
 
-void Controller::addTopToolItem(AbstractAction *action, const QString &group, bool addSeparator)
+void Controller::addTopToolItem(AbstractAction *action, bool addSeparator, quint8 priority)
 {
     if (!action || !action->qAction())
         return;
@@ -668,10 +674,10 @@ void Controller::addTopToolItem(AbstractAction *action, const QString &group, bo
         registerActionShortCut(action);
 
     auto iconBtn = createIconButton(action->qAction());
-    addWidgetToTopTool(new AbstractWidget(iconBtn), group, addSeparator, true);
+    addWidgetToTopTool(new AbstractWidget(iconBtn), addSeparator, true, priority);
 }
 
-void Controller::addTopToolItemToRight(AbstractAction *action, bool addSeparator)
+void Controller::addTopToolItemToRight(AbstractAction *action, bool addSeparator, quint8 priority)
 {
     if (!action || !action->qAction())
         return;
@@ -680,16 +686,12 @@ void Controller::addTopToolItemToRight(AbstractAction *action, bool addSeparator
         registerActionShortCut(action);
 
     auto iconBtn = createIconButton(action->qAction());
-    addWidgetToTopTool(new AbstractWidget(iconBtn), "", addSeparator, false);
+    addWidgetToTopTool(new AbstractWidget(iconBtn), addSeparator, false, priority);
 }
 
-void Controller::showTopToolBar(const QString &group)
+void Controller::showTopToolBar()
 {
-    if (!d->topToolBarGroup.contains(group))
-        return;
-
     d->mainWindow->showTopToolBar();
-    d->leftTopToolBar->setCurrentWidget(d->topToolBarGroup[group]);
 }
 
 void Controller::openFileDialog()
@@ -899,7 +901,12 @@ void Controller::initWorkspaceWidget()
 
 void Controller::initTopToolBar()
 {
-    d->leftTopToolBar = new DStackedWidget(d->mainWindow);
+    d->leftTopToolBar = new DWidget(d->mainWindow);
+    auto hlayout = new QHBoxLayout(d->leftTopToolBar);
+    hlayout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    hlayout->setSpacing(0);
+    hlayout->setContentsMargins(0, 0, 0, 0);
+    
     d->locatorBar = LocatorManager::instance()->getInputEdit();
     d->rightTopToolBar = new DWidget(d->mainWindow);
 
@@ -982,6 +989,9 @@ void Controller::showWorkspace()
         d->addedWidget.insert(WN_WORKSPACE, d->workspace);
         d->showWorkspace = true;
 
+        for (auto btn : d->workspace->getAllToolBtn())
+            d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, btn);
+
         DToolButton *expandAll = new DToolButton(d->workspace);
         expandAll->setToolTip(tr("Expand All"));
         expandAll->setIcon(QIcon::fromTheme("expand_all"));
@@ -999,11 +1009,13 @@ void Controller::showWorkspace()
         d->mainWindow->setDockHeadername(WN_WORKSPACE, d->workspace->getCurrentTitle());
 
         connect(d->workspace, &WorkspaceWidget::expandStateChange, this, [=](bool canExpand){
-           expandAll->setVisible(canExpand);
-           foldAll->setVisible(canExpand);
+            expandAll->setVisible(canExpand);
+            foldAll->setVisible(canExpand);
         });
         connect(d->workspace, &WorkspaceWidget::workSpaceWidgeSwitched, this, [=](const QString &title){
-           d->mainWindow->setDockHeadername(WN_WORKSPACE, title);
+            d->mainWindow->setDockHeadername(WN_WORKSPACE, title);
+            for (auto btn : d->workspace->getAllToolBtn())
+                btn->setVisible(d->workspace->getToolBtnByTitle(title).contains(btn) ? true : false);
         });
     }
 
@@ -1012,27 +1024,7 @@ void Controller::showWorkspace()
 
 DToolButton *Controller::createIconButton(QAction *action)
 {
-    DToolButton *iconBtn = new DToolButton(d->mainWindow);
-    iconBtn->setFocusPolicy(Qt::NoFocus);
-    iconBtn->setEnabled(action->isEnabled());
-    iconBtn->setIcon(action->icon());
-    iconBtn->setFixedSize(QSize(36, 36));
-    iconBtn->setIconSize(QSize(16, 16));
-
-    QString toolTipStr = action->text() + " " + action->shortcut().toString();
-    iconBtn->setToolTip(toolTipStr);
-    iconBtn->setShortcut(action->shortcut());
-
-    connect(iconBtn, &DToolButton::clicked, action, &QAction::triggered);
-    connect(action, &QAction::changed, iconBtn, [=] {
-        QString toolTipStr = action->text() + " " + action->shortcut().toString();
-        iconBtn->setToolTip(toolTipStr);
-        iconBtn->setShortcut(action->shortcut());
-
-        iconBtn->setIcon(action->icon());
-        iconBtn->setEnabled(action->isEnabled());
-    });
-
+    auto iconBtn = utils::createIconButton(action, d->mainWindow);
     d->topToolBtn.insert(action, iconBtn);
     return iconBtn;
 }

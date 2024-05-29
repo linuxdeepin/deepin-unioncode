@@ -61,10 +61,10 @@ public slots:
     void addOpenProjectAction(const QString &name, AbstractAction *action);
 
     //topToolBar
-    void addWidgetToTopTool(AbstractWidget *abstractWidget, const QString &group, bool addSeparator, bool addToLeft);
-    void addTopToolItem(AbstractAction *action, const QString &group, bool addSeparator);
-    void addTopToolItemToRight(AbstractAction *action, bool addSeparator);
-    void showTopToolBar(const QString &group);
+    void addWidgetToTopTool(AbstractWidget *abstractWidget, bool addSeparator, bool addToLeft, quint8 priority);
+    void addTopToolItem(AbstractAction *action, bool addSeparator, quint8 priority);
+    void addTopToolItemToRight(AbstractAction *action, bool addSeparator, quint8 priority);
+    void showTopToolBar();
     void removeTopToolItem(AbstractAction *action);
 
     void openFileDialog();

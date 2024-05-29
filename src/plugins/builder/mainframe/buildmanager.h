@@ -63,6 +63,8 @@ private:
 
     void addMenu();
     void initCompileWidget();
+    void initIssueList();
+    void initCompileOutput();
     QWidget *createFindPlaceHolder();
 
     void outputLog(const QString &content, const OutputPane::OutputFormat format);

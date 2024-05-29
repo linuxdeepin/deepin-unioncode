@@ -47,7 +47,6 @@ PythonAsynParse::~PythonAsynParse()
 void PythonAsynParse::parseProject(const dpfservice::ProjectInfo &info)
 {
     createRows(info.workspaceFolder());
-
     emit itemsModified(d->rows);
 }
 

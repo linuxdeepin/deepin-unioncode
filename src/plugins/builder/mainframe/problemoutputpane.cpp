@@ -11,14 +11,11 @@
 #include <QVBoxLayout>
 
 ProblemOutputPane::ProblemOutputPane(QWidget *parent)
-    : DFrame (parent)
+    : DWidget (parent)
 {
-    DStyle::setFrameRadius(this, 0);
-    setLineWidth(0);
-
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(1, 1, 1, 1);
     layout->addWidget(TaskManager::instance()->getView());
-    setLayout(layout);
 }
 
 ProblemOutputPane::~ProblemOutputPane()
