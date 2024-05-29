@@ -163,6 +163,9 @@ void CodeEditor::initEditorService()
     editorService->setCompletion = std::bind(&WorkspaceWidget::setCompletion, workspaceWidget, _1, _2, _3);
     editorService->currentFile = std::bind(&WorkspaceWidget::currentFile, workspaceWidget);
     editorService->setText = std::bind(&WorkspaceWidget::setText, workspaceWidget, _1);
+    editorService->registerWidget = std::bind(&WorkspaceWidget::registerWidget, workspaceWidget, _1, _2);
+    editorService->switchWidget = std::bind(&WorkspaceWidget::switchWidget, workspaceWidget, _1);
+    editorService->switchDefaultWidget = std::bind(&WorkspaceWidget::switchDefaultWidget, workspaceWidget);
 
     LexerManager::instance()->init(editorService);
 }
