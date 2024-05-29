@@ -12,8 +12,8 @@
 #include "commonparser.h"
 #include "transceiver/buildersender.h"
 #include "compileoutputpane.h"
-#include "builderwidget.h"
 #include "tasks/taskmodel.h"
+#include "common/util/utils.h"
 
 #include "services/builder/builderservice.h"
 #include "services/editor/editorservice.h"
@@ -25,6 +25,7 @@
 
 #include <DGuiApplicationHelper>
 #include <DComboBox>
+#include <DFrame>
 
 #include <QSplitter>
 #include <QCoreApplication>
@@ -35,15 +36,18 @@ class BuildManagerPrivate
 {
     friend class BuildManager;
 
-    QSharedPointer<QAction> buildAction;
-    QSharedPointer<QAction> buildActionNoIcon;
-    QSharedPointer<QAction> rebuildAction;
-    QSharedPointer<QAction> cleanAction;
-    QSharedPointer<QAction> cancelAction;
-    QSharedPointer<QAction> cancelActionNoIcon;
+    QAction* buildAction;
+    QAction* buildActionNoIcon;
+    QAction* rebuildAction;
+    QAction* cleanAction;
+    QAction* cancelAction;
+    QAction* cancelActionNoIcon;
 
     CompileOutputPane *compileOutputPane = nullptr;
     ProblemOutputPane *problemOutputPane = nullptr;
+    DWidget *issuesWidget = nullptr;
+    DWidget *compileOutputWidget = nullptr;
+
     DWidget *compileWidget = nullptr;
 
     QString activedKitName;
@@ -107,82 +111,97 @@ void BuildManager::addMenu()
         return inputAction;
     };
 
-    d->buildAction.reset(new QAction(MWMBA_BUILD));
-    windowService->addTopToolItem(actionInit(d->buildAction.get(), "Build.Build",
+    d->buildAction = new QAction(MWMBA_BUILD, this);
+    windowService->addTopToolItem(actionInit(d->buildAction, "Build.Build",
                                 QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
-                                "build"), MWTG_EDIT, false);
+                                "build"), true, Priority::low);
 
-    d->cancelAction.reset(new QAction(MWMBA_CANCEL));
-    windowService->addTopToolItem(actionInit(d->cancelAction.get(), "Build.Cancel",
-                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
-                                "cancel"), MWTG_EDIT, false);
-    d->cancelActionNoIcon.reset(new QAction(MWMBA_CANCEL));
-    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->cancelActionNoIcon.get(), "Build.Cancel",
+    d->cancelActionNoIcon = new QAction(MWMBA_CANCEL, this);
+    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->cancelActionNoIcon, "Build.Cancel",
                                                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
                                                                ""));
 
-    d->buildActionNoIcon.reset(new QAction(MWMBA_BUILD));
-    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->buildActionNoIcon.get(), "Build.Build",
+    d->buildActionNoIcon = new QAction(MWMBA_BUILD, this);
+    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->buildActionNoIcon, "Build.Build",
                                                                QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
                                                                ""));
 
-    d->rebuildAction.reset(new QAction(MWMBA_REBUILD));
-    windowService->addTopToolItem(actionInit(d->rebuildAction.get(), "Build.Rebuild",
-                                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B),
-                                "rebuild"), MWTG_EDIT, false);
+    d->cancelAction = new QAction(MWMBA_CANCEL, this);
+    d->cancelAction->setIcon(QIcon::fromTheme("cancel"));
+    ActionManager::getInstance()->registerAction(d->rebuildAction, "Build.Cancel", MWMBA_CANCEL,
+                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace));
 
-    d->cleanAction.reset(new QAction(MWMBA_CLEAN));
-    windowService->addTopToolItem(actionInit(d->cleanAction.get(), "Build.Clean",
-                                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
-                                "clearall"), MWTG_EDIT, false);
+    d->rebuildAction = new QAction(MWMBA_REBUILD, this);
+    d->rebuildAction->setIcon(QIcon::fromTheme("rebuild"));
+    ActionManager::getInstance()->registerAction(d->rebuildAction, "Build.Rebuild", MWMBA_REBUILD,
+                                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B));
 
-    QObject::connect(d->buildAction.get(), &QAction::triggered,
+
+    d->cleanAction = new QAction(MWMBA_CLEAN, this);
+    d->cleanAction->setIcon(QIcon::fromTheme("clearall"));
+    ActionManager::getInstance()->registerAction(d->rebuildAction, "Build.Clean", MWMBA_CLEAN,
+                                QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C));
+
+
+    QObject::connect(d->buildAction, &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);
-    QObject::connect(d->buildActionNoIcon.get(), &QAction::triggered,
+    QObject::connect(d->buildActionNoIcon, &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);
-    QObject::connect(d->rebuildAction.get(), &QAction::triggered,
+    QObject::connect(d->rebuildAction, &QAction::triggered,
                      this, &BuildManager::rebuildProject, Qt::DirectConnection);
-    QObject::connect(d->cleanAction.get(), &QAction::triggered,
+    QObject::connect(d->cleanAction, &QAction::triggered,
                      this, &BuildManager::cleanProject, Qt::DirectConnection);
-    QObject::connect(d->cancelAction.get(), &QAction::triggered,
+    QObject::connect(d->cancelAction, &QAction::triggered,
                      this, &BuildManager::cancelBuild, Qt::DirectConnection);
-    QObject::connect(d->cancelActionNoIcon.get(), &QAction::triggered,
+    QObject::connect(d->cancelActionNoIcon, &QAction::triggered,
                      this, &BuildManager::cancelBuild, Qt::DirectConnection);
 }
 
 void BuildManager::initCompileWidget()
 {
     d->compileWidget = new DWidget();
-
-    d->problemOutputPane = new ProblemOutputPane(d->compileWidget);
-
     QVBoxLayout *mainLayout = new QVBoxLayout(d->compileWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *compileOutputText = new QLabel(d->compileWidget);
-    compileOutputText->setText(tr("Compile Output"));
-    compileOutputText->setContentsMargins(10, 3, 0, 0);
+    initIssueList();
+    initCompileOutput();
+
+    QSplitter *spl = new QSplitter(Qt::Horizontal);
+    spl->addWidget(d->compileOutputWidget);
+    spl->addWidget(d->issuesWidget);
+    spl->setHandleWidth(2);
+    mainLayout->setSpacing(0);
+    mainLayout->addWidget(spl);
+    if (auto holder = createFindPlaceHolder())
+        mainLayout->addWidget(holder);
+}
+
+void BuildManager::initIssueList()
+{
+    d->problemOutputPane = new ProblemOutputPane(d->compileWidget);
+
     QLabel *issusListText = new QLabel(d->compileWidget);
     issusListText->setText(tr("Issues list"));
+    issusListText->setContentsMargins(10, 0, 0, 0);
+
     DToolButton *filterButton = new DToolButton(d->compileWidget);
-
-    QHBoxLayout *hIssueTopLayout = new QHBoxLayout();
-    hIssueTopLayout->addWidget(issusListText);
-    hIssueTopLayout->addWidget(filterButton);
-
-    hIssueTopLayout->setMargin(0);
-    hIssueTopLayout->setSpacing(0);
-    hIssueTopLayout->setContentsMargins(0, 0, 5, 0);
-    hIssueTopLayout->setAlignment(Qt::AlignVCenter);
-    BuilderWidget *issueTopWidget = new BuilderWidget(d->compileWidget);
-    issueTopWidget->setLayout(hIssueTopLayout);
-    issueTopWidget->setFixedHeight(30);
-
-    filterButton->setFixedSize(28, 28);
+    filterButton->setFixedSize(26, 26);
     filterButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     filterButton->setIcon(QIcon::fromTheme("filter"));
     filterButton->setContentsMargins(0, 0, 0, 0);
     filterButton->setToolTip(tr("Filter"));
+
+    DFrame *issueTopWidget = new DFrame(d->compileWidget);
+    DStyle::setFrameRadius(issueTopWidget, 0);
+    issueTopWidget->setLineWidth(0);
+    issueTopWidget->setFixedHeight(36);
+    QHBoxLayout *hIssueTopLayout = new QHBoxLayout(issueTopWidget);
+    hIssueTopLayout->addWidget(issusListText);
+    hIssueTopLayout->addWidget(filterButton);
+    hIssueTopLayout->setSpacing(0);
+    hIssueTopLayout->setContentsMargins(0, 0, 5, 0);
+    hIssueTopLayout->setAlignment(Qt::AlignVCenter);
+
     DMenu* filterMenu = new DMenu(filterButton);
 
     QAction* showAllAction = new QAction(tr("All"), this);
@@ -197,6 +216,13 @@ void BuildManager::initCompileWidget()
     QAction* showWarningAction = new QAction(tr("Warning"), this);
     showWarningAction->setCheckable(true);
     filterMenu->addAction(showWarningAction);
+
+    d->issuesWidget = new DWidget(d->compileWidget);
+    QVBoxLayout *issuesListLayout = new QVBoxLayout(d->issuesWidget);
+    issuesListLayout->addWidget(issueTopWidget);
+    issuesListLayout->setContentsMargins(0, 0, 0, 0);
+    issuesListLayout->addWidget(d->problemOutputPane);
+    issuesListLayout->setSpacing(2);
 
     connect(filterMenu, &DMenu::triggered, [=](QAction *action) {
         if (action == showAllAction) {
@@ -221,70 +247,51 @@ void BuildManager::initCompileWidget()
         QPoint menuPos = buttonPos + QPoint(0, 5);
         filterMenu->popup(menuPos);
     });
+}
 
-    issusListText->setContentsMargins(10, 3, 0, 0);
+void BuildManager::initCompileOutput()
+{
+    d->compileOutputPane = new CompileOutputPane(d->compileWidget);
+
+    QLabel *compileOutputText = new QLabel(d->compileWidget);
+    compileOutputText->setText(tr("Compile Output"));
+    compileOutputText->setContentsMargins(10, 0, 0, 0);
 
     QHBoxLayout *hOutputTopLayout = new QHBoxLayout();
     hOutputTopLayout->addWidget(compileOutputText);
-
-    hOutputTopLayout->setMargin(0);
     hOutputTopLayout->setSpacing(0);
     hOutputTopLayout->setContentsMargins(0, 0, 5, 0);
-    hOutputTopLayout->setAlignment(Qt::AlignVCenter);
-    BuilderWidget *OutputTopWidget = new BuilderWidget(d->compileWidget);
+    hOutputTopLayout->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+
+    // init toolButton
+    DVerticalLine *vLine = new DVerticalLine(d->compileWidget);
+    vLine->setFixedHeight(20);
+    hOutputTopLayout->addSpacing(10);
+    hOutputTopLayout->addWidget(vLine);
+    hOutputTopLayout->addSpacing(10);
+
+    auto btn = utils::createIconButton(d->cancelAction, d->compileWidget);
+    btn->setFixedSize(QSize(26, 26));
+    hOutputTopLayout->addWidget(btn);
+    btn = utils::createIconButton(d->rebuildAction, d->compileWidget);
+    btn->setFixedSize(QSize(26, 26));
+    hOutputTopLayout->addWidget(btn);
+    btn = utils::createIconButton(d->cleanAction, d->compileWidget);
+    btn->setFixedSize(QSize(26, 26));
+    hOutputTopLayout->addWidget(btn);
+
+    DFrame *OutputTopWidget = new DFrame(d->compileWidget);
+    DStyle::setFrameRadius(OutputTopWidget, 0);
+    OutputTopWidget->setLineWidth(0);
     OutputTopWidget->setLayout(hOutputTopLayout);
-    OutputTopWidget->setFixedHeight(30);
+    OutputTopWidget->setFixedHeight(36);
 
-    DWidget *outputWidget = new DWidget(d->compileWidget);
-    QVBoxLayout *outputLayout = new QVBoxLayout();
+    d->compileOutputWidget = new DWidget(d->compileWidget);
+    auto outputLayout = new QVBoxLayout(d->compileOutputWidget);
+    outputLayout->setContentsMargins(0, 0, 0, 0);
     outputLayout->addWidget(OutputTopWidget);
-    DFrame *outputFrame = new DFrame(d->compileWidget);
-    outputFrame->setContentsMargins(0, 0, 0, 0);
-    outputFrame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    d->compileOutputPane = new CompileOutputPane(outputFrame);
-    QHBoxLayout *outputPaneLayout = new QHBoxLayout();
-    outputPaneLayout->setMargin(0);
-    outputPaneLayout->setSpacing(0);
-    outputPaneLayout->setContentsMargins(10, 0, 0, 0);
-    outputPaneLayout->addWidget(d->compileOutputPane);
-    outputFrame->setLayout(outputPaneLayout);
-    DStyle::setFrameRadius(outputFrame, 0);
-
-    outputLayout->addWidget(outputFrame);
-    outputLayout->setMargin(0);
-    outputLayout->setSpacing(0);
-    outputWidget->setLayout(outputLayout);
-
-    QHBoxLayout *outputLayoutWithLine = new QHBoxLayout();
-    BuilderWidget *outputWidgetWithLine = new BuilderWidget(d->compileWidget);
-    outputWidgetWithLine->setContentsMargins(0, 0, 0, 0);
-    DFrame *vLine = new DFrame(d->compileWidget);
-    vLine->setFrameShape(QFrame::VLine);
-    vLine->setLineWidth(1);
-    outputWidgetWithLine->setLayout(outputLayoutWithLine);
-    outputLayoutWithLine->addWidget(outputWidget);
-    outputLayoutWithLine->addWidget(vLine);
-    outputLayoutWithLine->setSpacing(0);
-    outputLayoutWithLine->setContentsMargins(0, 0, 0, 0);
-
-    BuilderWidget *issusWidget = new BuilderWidget(d->compileWidget);
-    QVBoxLayout *issusListLayout = new QVBoxLayout();
-    issusListLayout->addWidget(issueTopWidget);
-    issusListLayout->addWidget(d->problemOutputPane);
-    issusListLayout->setMargin(0);
-    issusListLayout->setSpacing(0);
-    issusWidget->setContentsMargins(0, 0, 0, 0);
-    issusWidget->setLayout(issusListLayout);
-
-    QSplitter *spl = new QSplitter(Qt::Horizontal);
-
-    spl->addWidget(outputWidgetWithLine);
-    spl->addWidget(issusWidget);
-    spl->setHandleWidth(0);
-    mainLayout->setSpacing(0);
-    mainLayout->addWidget(spl);
-    if (auto holder = createFindPlaceHolder())
-        mainLayout->addWidget(holder);
+    outputLayout->addWidget(d->compileOutputPane);
+    outputLayout->setSpacing(2);
 }
 
 QWidget *BuildManager::createFindPlaceHolder()

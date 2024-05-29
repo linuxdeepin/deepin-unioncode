@@ -4,18 +4,25 @@
 
 #include "runner.h"
 
+#include "base/baseitemdelegate.h"
 #include "debuggersignals.h"
 #include "debuggerglobals.h"
 #include "base/abstractmenu.h"
+#include "base/abstractwidget.h"
 #include "services/language/languageservice.h"
 #include "services/project/projectservice.h"
 #include "services/builder/builderservice.h"
 #include "services/window/windowservice.h"
 #include "services/editor/editorservice.h"
 
+#include <DComboBox>
+#include <DGuiApplicationHelper>
+
 #include <QMenu>
 #include <QTextBlock>
+#include <QLineEdit>
 
+DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
 class RunnerPrivate
@@ -24,6 +31,7 @@ class RunnerPrivate
     QString currentBuildUuid;
     QString currentOpenedFilePath;
     QSharedPointer<QAction> runAction;
+    DComboBox* runProgram;
     bool isRunning = false;
 };
 
@@ -41,7 +49,35 @@ Runner::Runner(QObject *parent)
     actionImpl->setShortCutInfo("Debug.Running",
                                 MWMDA_RUNNING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_F5));
     WindowService *service = dpfGetService(WindowService);
-    service->addTopToolItem(actionImpl, MWTG_EDIT, true);
+    service->addTopToolItem(actionImpl, false, Priority::high);
+    
+    d->runProgram = new DComboBox;
+    d->runProgram->setFixedSize(200, 36);
+    d->runProgram->setIconSize(QSize(16, 16));
+
+    auto pal = d->runProgram->palette();
+    pal.setColor(QPalette::Light, pal.color(QPalette::Base));
+    pal.setColor(QPalette::Dark, pal.color(QPalette::Base));
+    d->runProgram->setPalette(pal);
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=](){
+        auto pal = d->runProgram->palette();
+        pal.setColor(QPalette::Light, pal.color(QPalette::Base));
+        pal.setColor(QPalette::Dark, pal.color(QPalette::Base));
+        d->runProgram->setPalette(pal);
+    });
+
+    DWidget *spacer = new DWidget(d->runProgram);
+    spacer->setFixedWidth(10);
+
+    service->addWidgetToTopTool(new AbstractWidget(spacer), false, true, Priority::highest + 1);
+    service->addWidgetToTopTool(new AbstractWidget(d->runProgram), false, true, Priority::highest);
+    connect(d->runProgram, &DComboBox::currentTextChanged, this, [=](const QString &text){
+        auto prjInfo = getActiveProjectInfo();
+        prjInfo.setCurrentProgram(text);
+        dpfGetService(ProjectService)->updateProjectInfo(prjInfo);
+        project.projectUpdated(prjInfo);
+    });
 }
 
 Runner::~Runner()
@@ -95,6 +131,14 @@ void Runner::handleEvents(const dpf::Event &event)
         if (d->currentOpenedFilePath == filePath) {
             d->currentOpenedFilePath.clear();
         }
+    } else if (event.data() == project.activedProject.name) {
+        QVariant proInfoVar = event.property("projectInfo");
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+        auto programs = projectInfo.exePrograms();
+        d->runProgram->clear();
+        for (auto program : programs)
+            d->runProgram->addItem(QIcon::fromTheme("run"), program);
+        d->runProgram->setCurrentText(projectInfo.currentProgram());
     }
 }
 

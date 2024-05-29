@@ -11,6 +11,9 @@
 #include <QVector>
 #include <QMap>
 
+static const QString exeCurrent = QObject::tr("Current File");
+static const QString exeEntry = QObject::tr("Automatically obtain the entry file");
+
 namespace config {
 
 enum ExecuteFile {
@@ -58,6 +61,7 @@ struct ProjectConfigure {
         stream << data.language;
         stream << data.projectPath;
         stream << data.pythonVersion;
+        stream << static_cast<qint8>(data.executeFile);
 
         return stream;
     }
@@ -68,6 +72,9 @@ struct ProjectConfigure {
         stream >> data.language;
         stream >> data.projectPath;
         stream >> data.pythonVersion;
+        qint8 temp;
+        stream >> temp;
+        data.executeFile = static_cast<ExecuteFile>(temp);
 
         return stream;
     }
