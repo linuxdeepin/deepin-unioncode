@@ -56,7 +56,7 @@ private:
     QMutex mutex;
     QString stdOut;
     QString stdError;
-    QProcess process;
+    QSharedPointer<QProcess> process { nullptr };
 };
 
 class BinaryToolsManager : public QObject

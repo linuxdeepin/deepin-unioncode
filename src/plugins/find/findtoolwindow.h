@@ -21,6 +21,7 @@ signals:
 
 private:
     void setupUi();
+    void initWorker();
     void search();
     void searchText();
     void replace();
@@ -36,6 +37,11 @@ private:
 private slots:
     void onSenseCheckBtnClicked();
     void onwholeWordsCheckBtnClicked();
+
+    void handleSearchMatched();
+    void handleSearchFinished();
+    void handleReplace(const QString &text);
+    void handleReplaceFinished(int result);
 };
 
 #endif // FINDTOOLWINDOW_H
