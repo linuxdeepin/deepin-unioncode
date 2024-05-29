@@ -53,8 +53,10 @@ QString SearchReplaceWorkerPrivate::buildCommand(const SearchParams &params)
         patternList = " --include=" + params.patternsList.join(" --include=");
 
     QString exPatternList(" --exclude-dir=.*");
-    if (!params.exPatternsList.isEmpty())
-        exPatternList += " --exclude={" + params.exPatternsList.join(",") + "}";
+    if (!params.exPatternsList.isEmpty()) {
+        QString format(" --exclude={%1}");
+        exPatternList += format.arg(params.exPatternsList.join(','));
+    }
 
     QString cmd = QString("grep -rn " + sensitiveFlag + wholeWordsFlag
                           + "\"" + params.searchText + "\" "
