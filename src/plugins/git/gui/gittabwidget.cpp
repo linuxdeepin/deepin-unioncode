@@ -8,6 +8,8 @@
 #include "gitdiffwidget.h"
 #include "gitshowwidget.h"
 
+#include "services/editor/editorservice.h"
+
 #include <DTabBar>
 #include <DToolButton>
 
@@ -16,6 +18,7 @@
 #include <QVBoxLayout>
 
 DWIDGET_USE_NAMESPACE
+using namespace dpfservice;
 
 class GitTabWidgetPrivate : public QObject
 {
@@ -75,7 +78,10 @@ void GitTabWidgetPrivate::initConnection()
 {
     connect(tabBar, &DTabBar::currentChanged, this, &GitTabWidgetPrivate::tabSwitched);
     connect(tabBar, &DTabBar::tabCloseRequested, this, &GitTabWidgetPrivate::tabClosed);
-    connect(closeBtn, &DToolButton::clicked, q, &GitTabWidget::closeRequested);
+    connect(closeBtn, &DToolButton::clicked, this, [] {
+        auto editSrv = dpfGetService(EditorService);
+        editSrv->switchDefaultWidget();
+    });
 }
 
 int GitTabWidgetPrivate::indexOf(const QString &tip)
@@ -124,12 +130,14 @@ void GitTabWidgetPrivate::tabClosed(int index)
     auto w = stackedWidget->widget(index);
     stackedWidget->removeWidget(w);
 
-    if (stackedWidget->count() == 0)
-        Q_EMIT q->closeRequested();
+    if (stackedWidget->count() == 0) {
+        auto editSrv = dpfGetService(EditorService);
+        editSrv->switchDefaultWidget();
+    }
 }
 
 GitTabWidget::GitTabWidget(QWidget *parent)
-    : QWidget(parent),
+    : AbstractEditWidget(parent),
       d(new GitTabWidgetPrivate(this))
 {
     d->initUI();
@@ -195,4 +203,10 @@ void GitTabWidget::setErrorMessage(int index, const QString &msg)
 {
     if (auto widget = qobject_cast<GitBaseWidget *>(d->stackedWidget->widget(index)))
         widget->setReadyMessage(msg);
+}
+
+void GitTabWidget::closeWidget()
+{
+    auto index = d->tabBar->currentIndex();
+    Q_EMIT d->tabBar->tabCloseRequested(index);
 }

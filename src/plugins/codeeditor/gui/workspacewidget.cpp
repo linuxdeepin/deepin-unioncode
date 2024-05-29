@@ -29,6 +29,9 @@ WorkspaceWidgetPrivate::WorkspaceWidgetPrivate(WorkspaceWidget *qq)
 
 void WorkspaceWidgetPrivate::initUI()
 {
+    stackWidget = new QStackedWidget(q);
+    stackWidget->setContentsMargins(0, 0, 0, 0);
+
     QSplitter *splitter = new QSplitter(q);
     splitter->setHandleWidth(0);
     splitter->setOpaqueResize(true);
@@ -47,9 +50,10 @@ void WorkspaceWidgetPrivate::initUI()
     connectTabWidgetSignals(tabWidget);
     splitter->addWidget(tabWidget);
 
+    stackWidget->addWidget(scrollArea);
     QVBoxLayout *mainLayout = new QVBoxLayout(q);
     mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->addWidget(scrollArea);
+    mainLayout->addWidget(stackWidget);
 }
 
 void WorkspaceWidgetPrivate::initActions()
@@ -342,14 +346,8 @@ void WorkspaceWidgetPrivate::handleOpenFile(const QString &workspace, const QStr
 {
     Q_UNUSED(workspace)
 
-    if (!windowService)
-        windowService = dpfGetService(WindowService);
-
-    if (windowService) {
-        auto dockName = windowService->getCurrentDockName(Position::Central);
-        if (dockName != "editWindow")
-            windowService->showWidgetAtPosition("editWindow", Position::Central, true);
-    }
+    if (stackWidget->currentIndex() != 0)
+        stackWidget->setCurrentIndex(0);
 
     if (auto tabWidget = currentTabWidget())
         tabWidget->openFile(fileName);
@@ -429,11 +427,17 @@ void WorkspaceWidgetPrivate::handleGotoPosition(const QString &fileName, int lin
 
 void WorkspaceWidgetPrivate::handleCloseCurrentEditor()
 {
-    auto tabWidget = currentTabWidget();
-    if (!tabWidget)
-        return;
+    if (stackWidget->currentIndex() == 0) {
+        auto tabWidget = currentTabWidget();
+        if (!tabWidget || !tabWidget->hasFocus())
+            return;
 
-    tabWidget->closeFileEditor();
+        tabWidget->closeFileEditor();
+    } else {
+        auto widget = qobject_cast<AbstractEditWidget *>(stackWidget->currentWidget());
+        if (widget)
+            widget->closeWidget();
+    }
 }
 
 void WorkspaceWidgetPrivate::handleSwitchHeaderSource()
@@ -702,6 +706,25 @@ void WorkspaceWidget::closeFileEditor(const QString &fileName)
 {
     for (auto tabWidget : d->tabWidgetList)
         tabWidget->closeFileEditor(fileName);
+}
+
+void WorkspaceWidget::registerWidget(const QString &id, AbstractEditWidget *widget)
+{
+    d->registeredWidget.insert(id, widget);
+    d->stackWidget->addWidget(widget);
+}
+
+void WorkspaceWidget::switchWidget(const QString &id)
+{
+    if (!d->registeredWidget.contains(id))
+        return;
+
+    d->stackWidget->setCurrentWidget(d->registeredWidget[id]);
+}
+
+void WorkspaceWidget::switchDefaultWidget()
+{
+    d->stackWidget->setCurrentIndex(0);
 }
 
 bool WorkspaceWidget::event(QEvent *event)
