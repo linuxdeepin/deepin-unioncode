@@ -243,9 +243,17 @@ void AskApi::processResponse(QNetworkReply *reply)
                     event = value.trimmed();
                 } else if (key == "id") {
                     id = value.trimmed();
-                } else if (key == "data") { // value of 'data': "data:{"text":"a"}"    but only existed 'text' filed for now
-                    index = value.indexOf(':');
-                    data = value.mid(index + 2, value.length() - index - 4); // remove " "}
+                } else if (key == "data") {
+                    QJsonParseError error;
+                    QJsonDocument jsonDocument = QJsonDocument::fromJson(value.toUtf8(), &error);
+
+                    if (error.error != QJsonParseError::NoError) {
+                        qCritical() << "JSON parse error: " << error.errorString();
+                        return;
+                    }
+
+                    QJsonObject jsonObject = jsonDocument.object();
+                    data = jsonObject.value("text").toString();
 
                     emit response(id, data, event);
                 }
