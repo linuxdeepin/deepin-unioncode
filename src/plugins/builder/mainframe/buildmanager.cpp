@@ -128,7 +128,7 @@ void BuildManager::addMenu()
 
     d->cancelAction = new QAction(MWMBA_CANCEL, this);
     d->cancelAction->setIcon(QIcon::fromTheme("cancel"));
-    ActionManager::getInstance()->registerAction(d->rebuildAction, "Build.Cancel", MWMBA_CANCEL,
+    ActionManager::getInstance()->registerAction(d->cancelAction, "Build.Cancel", MWMBA_CANCEL,
                                 QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace));
 
     d->rebuildAction = new QAction(MWMBA_REBUILD, this);
@@ -139,7 +139,7 @@ void BuildManager::addMenu()
 
     d->cleanAction = new QAction(MWMBA_CLEAN, this);
     d->cleanAction->setIcon(QIcon::fromTheme("clearall"));
-    ActionManager::getInstance()->registerAction(d->rebuildAction, "Build.Clean", MWMBA_CLEAN,
+    ActionManager::getInstance()->registerAction(d->cleanAction, "Build.Clean", MWMBA_CLEAN,
                                 QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C));
 
 
