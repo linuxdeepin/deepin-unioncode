@@ -64,6 +64,13 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
         config::ConfigUtil::instance()->updateProjectInfo(projectInfo, param);
         dpfGetService(dpfservice::ProjectService)->updateProjectInfo(projectInfo);
     }
+
+    if (event.data() == project.openProjectPropertys.name) {
+        QVariant proInfoVar = event.property("projectInfo");
+        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+
+        emit ProjectCmakeProxy::instance()->openProjectPropertys(projectInfo);
+    }
 }
 
 void ProjectCmakeReceiver::builderEvent(const dpf::Event &event)
