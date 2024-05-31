@@ -117,7 +117,8 @@ class DebuggerPrivate
     RemoteInfo remoteInfo;
 };
 
-DebuggerPrivate::~DebuggerPrivate() {
+DebuggerPrivate::~DebuggerPrivate()
+{
     if (alertBox)
         delete alertBox;
     if (variablesPane)
