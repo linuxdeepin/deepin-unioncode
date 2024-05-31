@@ -8,12 +8,14 @@ set(CMAKE_INCLUDE_CURRENT_DIR true)
 
 set(CXX_CPP
     consolewidget.cpp
+    consolemanager.cpp
     console.cpp
     console.json
     )
 
 set(CXX_H
     consolewidget.h
+    consolemanager.h
     console.h
     )
 

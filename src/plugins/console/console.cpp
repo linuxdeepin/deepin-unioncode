@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "console.h"
+#include "consolemanager.h"
 #include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 #include "services/terminal/terminalservice.h"
 #include "common/util/eventdefinitions.h"
-#include "consolewidget.h"
 
 using namespace dpfservice;
 void Console::initialize()
@@ -31,16 +31,17 @@ bool Console::start()
     qInfo() << __FUNCTION__;
 
     auto &ctx = dpfInstance.serviceContext();
+    auto consoleManager = new ConsoleManager;
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (windowService) {
-        windowService->addContextWidget(QString(tr("&Console")), new AbstractWidget(ConsoleWidget::instance()), true);
+        windowService->addContextWidget(QString(tr("&Console")), new AbstractWidget(consoleManager), true);
     }
 
     // bind service.
     auto terminalService = ctx.service<TerminalService>(TerminalService::name());
     if (terminalService) {
         using namespace std::placeholders;
-        terminalService->executeCommand = std::bind(&ConsoleWidget::sendText, ConsoleWidget::instance(), _1);
+        terminalService->executeCommand = std::bind(&ConsoleManager::executeCommand, consoleManager, _1);
     }
     return true;
 }
