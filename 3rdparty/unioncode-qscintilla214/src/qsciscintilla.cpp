@@ -2003,6 +2003,11 @@ void QsciScintilla::handleIndicatorClick(int pos, int modifiers)
     int line, index;
 
     lineIndexFromPosition(pos, &line, &index);
+    if (pos != oldPos)
+    {
+        oldPos = pos;
+        emit cursorPositionChanged(line, index);
+    }
 
     emit indicatorClicked(line, index, Qt::KeyboardModifiers(state));
 }
