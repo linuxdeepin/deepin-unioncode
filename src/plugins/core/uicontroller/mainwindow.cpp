@@ -194,6 +194,7 @@ void MainWindow::initDockHeader(DDockWidget *dock, dpfservice::Position pos)
     auto closeBtn = new DToolButton(dock);
     closeBtn->setCheckable(true);
     closeBtn->setIcon(QIcon::fromTheme("hide_dock"));
+    closeBtn->setToolTip(tr("Hide Dock Widget"));
 
     addToolBtnToDockHeader(d->dockList.key(dock), closeBtn);
 
