@@ -634,14 +634,17 @@ void LSPStyle::renameSymbol(const QString &text)
 void LSPStyle::gotoDefinition()
 {
     if (d->definitionCache.getLocations().size() > 0) {
+        Q_EMIT d->editor->cursorRecordChanged(d->editor->cursorLastPosition());
         auto one = d->definitionCache.getLocations().front();
         EditorCallProxy::instance()->reqGotoPosition(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
                                                      one.range.start.line, one.range.start.character);
     } else if (d->definitionCache.getLocationLinks().size() > 0) {
+        Q_EMIT d->editor->cursorRecordChanged(d->editor->cursorLastPosition());
         auto one = d->definitionCache.getLocationLinks().front();
         EditorCallProxy::instance()->reqGotoPosition(QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
                                                      one.targetRange.end.line, one.targetRange.end.character);
     } else {
+        Q_EMIT d->editor->cursorRecordChanged(d->editor->cursorLastPosition());
         auto one = d->definitionCache.getLocation();
         EditorCallProxy::instance()->reqGotoPosition(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
                                                      one.range.start.line, one.range.start.character);
