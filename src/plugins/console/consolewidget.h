@@ -18,7 +18,6 @@ class ConsoleWidget : public QTermWidget
 {
     Q_OBJECT
 public:
-    static ConsoleWidget *instance();
     explicit ConsoleWidget(QWidget *parent = nullptr);
     virtual ~ConsoleWidget();
 
@@ -27,6 +26,8 @@ protected:
     void updateColorScheme(DGuiApplicationHelper::ColorType themetype);
 private:
     ConsoleWidgetPrivate *const d;
+
+    void enterCurrentProjectPath();
 };
 
 #endif // CONSOLEWIDGET_H
