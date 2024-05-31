@@ -3,14 +3,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "consolewidget.h"
+#include "services/project/projectservice.h"
 
 #include <DMenu>
 
 #include <QDebug>
 
 DWIDGET_USE_NAMESPACE
-
-static ConsoleWidget *ins{nullptr};
+using namespace dpfservice;
 
 class ConsoleWidgetPrivate
 {
@@ -18,21 +18,16 @@ public:
     DMenu *menu = nullptr;
     QAction *consoleCopy = nullptr;
     QAction *consolePaste = nullptr;
-};
+    QAction *enterCurrentPath = nullptr;
 
-ConsoleWidget *ConsoleWidget::instance()
-{
-    if (!ins)
-        ins = new ConsoleWidget;
-    return ins;
-}
+    ProjectService *prjService = nullptr;
+};
 
 ConsoleWidget::ConsoleWidget(QWidget *parent)
     : QTermWidget(parent),
      d(new ConsoleWidgetPrivate())
 {
     setMargin(0);
-    setTerminalOpacity(0);
     setForegroundRole(QPalette::ColorRole::Window);
     setAutoFillBackground(true);
     setTerminalOpacity(1);
@@ -45,13 +40,17 @@ ConsoleWidget::ConsoleWidget(QWidget *parent)
     setScrollBarPosition(QTermWidget::ScrollBarRight);
     setTerminalSizeHint(false);
     setAutoClose(false);
-    changeDir(QDir::homePath());
+
+    d->prjService = dpfGetService(ProjectService);
+    changeDir(d->prjService->getActiveProjectInfo().workspaceFolder());
     sendText("clear\n");
 
     d->consoleCopy = new QAction(tr("copy"), this);
     d->consolePaste = new QAction(tr("paste"), this);
+    d->enterCurrentPath = new QAction(tr("Enter current project root path"), this);
     QObject::connect(d->consoleCopy, &QAction::triggered, this, &QTermWidget::copyClipboard);
     QObject::connect(d->consolePaste, &QAction::triggered, this, &QTermWidget::pasteClipboard);
+    QObject::connect(d->enterCurrentPath, &QAction::triggered, this, &ConsoleWidget::enterCurrentProjectPath);
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
                      this, &ConsoleWidget::updateColorScheme);
 }
@@ -68,12 +67,19 @@ void ConsoleWidget::contextMenuEvent(QContextMenuEvent *event)
         d->menu->setParent(this);
         d->menu->addAction(d->consoleCopy);
         d->menu->addAction(d->consolePaste);
+        d->menu->addAction(d->enterCurrentPath);
     }
     if (selectedText().isEmpty()) {
         d->consoleCopy->setEnabled(false);
     } else {
         d->consoleCopy->setEnabled(true);
     }
+
+    if (d->prjService->getActiveProjectInfo().isEmpty())
+        d->enterCurrentPath->setEnabled(false);
+    else
+        d->enterCurrentPath->setEnabled(true);
+
     d->menu->exec(event->globalPos());
 }
 
@@ -84,4 +90,10 @@ void ConsoleWidget::updateColorScheme(DGuiApplicationHelper::ColorType themetype
         this->setColorScheme("Linux");
     else if (availableColorSchemes().contains("BlackOnWhite"))
         this->setColorScheme("BlackOnWhite");
+}
+
+void ConsoleWidget::enterCurrentProjectPath()
+{
+    auto path = d->prjService->getActiveProjectInfo().workspaceFolder();
+    changeDir(path);
 }
