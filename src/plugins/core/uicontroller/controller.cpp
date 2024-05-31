@@ -855,6 +855,7 @@ void Controller::initContextWidget()
     DToolButton *hideBtn = new DToolButton(d->contextTabBar);
     hideBtn->setFixedSize(35, 35);
     hideBtn->setIcon(QIcon::fromTheme("hide_dock"));
+    hideBtn->setToolTip(tr("Hide ContextWidget"));
     connect(hideBtn, &DToolButton::clicked, d->contextWidget, [=](){
         if (d->stackContextWidget->isVisible()) {
             d->stackContextWidget->hide();

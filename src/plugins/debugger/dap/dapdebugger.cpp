@@ -87,7 +87,7 @@ class DebuggerPrivate
     StackFrameModel stackModel;
     DComboBox *threadSelector = nullptr;
 
-    DSplitter *variablesPane = nullptr;
+    QSharedPointer<DSplitter> variablesPane = nullptr;
     DTreeView *localsView = nullptr;
     DTreeView *watchsView = nullptr;
     LocalTreeModel localsModel;
@@ -121,8 +121,6 @@ DebuggerPrivate::~DebuggerPrivate()
 {
     if (alertBox)
         delete alertBox;
-    if (variablesPane)
-        delete variablesPane;
 }
 
 DAPDebugger::DAPDebugger(QObject *parent)
@@ -180,7 +178,7 @@ DWidget *DAPDebugger::getStackPane() const
 
 DWidget *DAPDebugger::getLocalsPane() const
 {
-    return d->variablesPane;
+    return d->variablesPane.get();
 }
 
 DWidget *DAPDebugger::getBreakpointPane() const
@@ -519,7 +517,7 @@ void DAPDebugger::registerDapHandlers()
                 updateThreadList(curThreadID, threads);
                 switchCurrentThread(static_cast<int>(d->threadId));
             }
-            QApplication::setActiveWindow(d->variablesPane);
+            QApplication::setActiveWindow(d->variablesPane.get());
             updateRunState(DAPDebugger::RunState::kStopped);
         } else if (event.reason == "exception") {
             QString name;
@@ -1088,13 +1086,13 @@ void DAPDebugger::initializeView()
 
 void DAPDebugger::initializeVairablesPane()
 {
-    d->variablesPane = new DSplitter;
-    d->localsView = new DTreeView(d->variablesPane);
+    d->variablesPane.reset(new DSplitter);
+    d->localsView = new DTreeView(d->variablesPane.get());
     d->localsView->setModel(&d->localsModel);
     d->localsView->setUniformRowHeights(true);
     d->localsView->setItemDelegate(new BaseItemDelegate(this));
 
-    d->watchsView = new DTreeView(d->variablesPane);
+    d->watchsView = new DTreeView(d->variablesPane.get());
     d->watchsView->setModel(&d->watchsModel);
     d->watchsView->setUniformRowHeights(true);
     d->watchsView->setItemDelegate(new BaseItemDelegate(this));
@@ -1168,7 +1166,7 @@ void DAPDebugger::updateRunState(DAPDebugger::RunState state)
         case kRunning:
         case kCustomRunning:
             d->pausing = false;
-            QMetaObject::invokeMethod(d->variablesPane, "show");
+            QMetaObject::invokeMethod(d->variablesPane.get(), "show");
             break;
         case kStopped:
             break;
