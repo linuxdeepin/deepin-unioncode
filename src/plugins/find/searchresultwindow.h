@@ -42,7 +42,7 @@ public:
     explicit SearchResultTreeView(QWidget *parent = nullptr);
     ~SearchResultTreeView();
 
-    void appendData(const FindItemList &itemList, const ProjectInfo &projectInfo);
+    void appendData(const FindItemList &itemList);
     void clearData();
     virtual QIcon icon(const QString &data);
 
@@ -62,7 +62,7 @@ public:
     ~SearchResultWindow();
 
     void clear();
-    void appendResults(const FindItemList &itemList, const ProjectInfo &projectInfo);
+    void appendResults(const FindItemList &itemList);
     void searchFinished();
     void replaceFinished(bool success);
     void setRepalceWidgtVisible(bool hide);
