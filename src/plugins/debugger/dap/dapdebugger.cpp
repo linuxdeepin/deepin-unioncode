@@ -197,12 +197,12 @@ void DAPDebugger::startDebug()
     if (d->currentSession == d->remoteSession)
         d->currentSession = d->localSession;
     
-    updateRunState(kPreparing);
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
     if (service) {
         auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
         if (generator) {
+            updateRunState(kPreparing);
             if (generator->isNeedBuild()) {
                 d->currentBuildUuid = requestBuild();
             } else {
@@ -705,17 +705,15 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         }
     } else if (event.data() == debugger.prepareDebugProgress.name) {
         printOutput(event.property(debugger.prepareDebugProgress.pKeys[0]).toString());
-    } else if (event.data() == project.activedProject.name) {
-        getActiveProjectInfo() = qvariant_cast<ProjectInfo>(event.property(project.activedProject.pKeys[0]));
-        d->activeProjectKitName = getActiveProjectInfo().kitName();
-        updateRunState(kNoRun);
-    } else if (event.data() == project.createdProject.name) {
-        getActiveProjectInfo() = qvariant_cast<ProjectInfo>(event.property(project.createdProject.pKeys[0]));
-        d->activeProjectKitName = getActiveProjectInfo().kitName();
-        updateRunState(kNoRun);
+    } else if (event.data() == project.activatedProject.name) {
+        d->projectInfo = qvariant_cast<ProjectInfo>(event.property("projectInfo"));
+        d->activeProjectKitName = d->projectInfo.kitName();
     } else if (event.data() == project.deletedProject.name) {
-        d->activeProjectKitName.clear();
-        updateRunState(kNoRun);
+        auto prjInfo = event.property("projectInfo").value<dpfservice::ProjectInfo>();
+        if (d->projectInfo.isSame(prjInfo)) {
+            d->activeProjectKitName.clear();
+            updateRunState(kNoRun);
+        }
     } else if (event.data() == editor.switchedFile.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         if (d->currentOpenedFileName != filePath) {
@@ -1143,6 +1141,9 @@ void DAPDebugger::updateWatchingVariables()
 
 void DAPDebugger::exitDebug()
 {
+    //abort debugger
+    abortDebug();
+
     // Change UI.
     editor.removeDebugLine();
     d->variablesPane->hide();
