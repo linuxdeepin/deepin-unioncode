@@ -8,6 +8,12 @@
 #include <QMap>
 #include <QObject>
 
+enum SearchScope {
+    AllProjects,
+    CurrentProject,
+    CurrentDocument
+};
+
 struct SearchParams
 {
     QStringList filePathList;
@@ -16,7 +22,6 @@ struct SearchParams
     bool wholeWordsFlag;
     QStringList patternsList;
     QStringList exPatternsList;
-    QMap<QString, QString> projectInfoMap;
 };
 
 struct ReplaceParams
@@ -29,12 +34,11 @@ struct ReplaceParams
 struct FindItem
 {
     QString filePathName;
-    int lineNumber;
+    int lineNumber = -1;
     QString context;
 };
 
 using FindItemList = QList<FindItem>;
-using ProjectInfo = QMap<QString, QString>;
 
 Q_DECLARE_METATYPE(SearchParams)
 Q_DECLARE_METATYPE(ReplaceParams)
