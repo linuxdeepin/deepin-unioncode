@@ -26,7 +26,6 @@ public:
     QAtomicInteger<bool> isRuning { false };
     QSharedPointer<QProcess> searchProcess { nullptr };
     QSharedPointer<QProcess> replaceProcess { nullptr };
-    QString filePath;
 };
 
 SearchReplaceWorkerPrivate::SearchReplaceWorkerPrivate(SearchReplaceWorker *qq)
@@ -45,22 +44,22 @@ SearchReplaceWorkerPrivate::~SearchReplaceWorkerPrivate()
 
 QString SearchReplaceWorkerPrivate::buildCommand(const SearchParams &params)
 {
-    filePath = params.filePathList.join(" ");
+    QString searchPath = params.filePathList.join(" ");
     QString sensitiveFlag = params.sensitiveFlag ? "" : " -i ";
     QString wholeWordsFlag = params.wholeWordsFlag ? " -w " : "";
     QString patternList;
     if (!params.patternsList.isEmpty())
         patternList = " --include=" + params.patternsList.join(" --include=");
 
-    QString exPatternList(" --exclude-dir=.*");
+    QString exPatternList;
     if (!params.exPatternsList.isEmpty()) {
         QString format(" --exclude={%1}");
         exPatternList += format.arg(params.exPatternsList.join(','));
     }
 
-    QString cmd = QString("grep -rn " + sensitiveFlag + wholeWordsFlag
+    QString cmd = QString("grep -Hn " + sensitiveFlag + wholeWordsFlag
                           + "\"" + params.searchText + "\" "
-                          + patternList + exPatternList + " " + filePath);
+                          + patternList + exPatternList + " " + searchPath);
     return cmd;
 }
 
