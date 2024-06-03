@@ -17,7 +17,7 @@ GitReceiver::GitReceiver(QObject *parent)
     using namespace std::placeholders;
     eventHandleMap.insert(editor.switchedFile.name, std::bind(&GitReceiver::handleSwitchedFileEvent, this, _1));
     eventHandleMap.insert(editor.contextMenu.name, std::bind(&GitReceiver::handleContextMenuEvent, this, _1));
-    eventHandleMap.insert(project.activedProject.name, std::bind(&GitReceiver::handleProjectChangedEvent, this, _1));
+    eventHandleMap.insert(project.activatedProject.name, std::bind(&GitReceiver::handleProjectChangedEvent, this, _1));
     eventHandleMap.insert(project.deletedProject.name, std::bind(&GitReceiver::handleProjectChangedEvent, this, _1));
 }
 

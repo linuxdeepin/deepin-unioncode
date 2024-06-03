@@ -31,9 +31,9 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
     using namespace dpfservice;
     if (event.data() == project.activeProject.name) {
         auto infos = ProjectKeeper::instance()->treeView()->getAllProjectInfo();
-        QString kitName = event.property(project.openProject.pKeys[0]).toString();
-        QString language = event.property(project.openProject.pKeys[1]).toString();
-        QString workspace = event.property(project.openProject.pKeys[2]).toString();
+        QString kitName = event.property("kitName").toString();
+        QString language = event.property("language").toString();
+        QString workspace = event.property("workspace").toString();
         ProjectKeeper::instance()->treeView()->activeProjectInfo(kitName, language, workspace);
     } else if (event.data() == project.openProject.name) {
         uiController.doSwitch(dpfservice::MWNA_EDIT);
@@ -60,7 +60,7 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
         ProjectKeeper::instance()->treeView()->expandAll();
     } else if (event.data() == workspace.foldAll.name) {
         ProjectKeeper::instance()->treeView()->collapseAll();
-    } else if (event.data() == project.activedProject.name) {
+    } else if (event.data() == project.activatedProject.name) {
         QVariant proInfoVar = event.property("projectInfo");
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
 

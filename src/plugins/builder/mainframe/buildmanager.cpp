@@ -395,13 +395,13 @@ void BuildManager::slotResetBuildUI()
     uiController.switchContext(tr("&Build"));
 }
 
-void BuildManager::setActivedProjectInfo(const QString &kitName, const QString &workingDir)
+void BuildManager::setActivatedProjectInfo(const QString &kitName, const QString &workingDir)
 {
     d->activedKitName = kitName;
     d->activedWorkingDir = workingDir;
 }
 
-void BuildManager::clearActivedProjectInfo()
+void BuildManager::clearActivatedProjectInfo()
 {
     d->activedKitName.clear();
     d->activedWorkingDir.clear();

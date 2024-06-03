@@ -32,8 +32,8 @@ QStringList SymbolReceiver::topics()
 
 void SymbolReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.data() == project.activedProject.name) {
-        QString projectInfoKey = project.activedProject.pKeys[0];
+    if (event.data() == project.activatedProject.name) {
+        QString projectInfoKey = project.activatedProject.pKeys[0];
         dpfservice::ProjectInfo info = qvariant_cast<dpfservice::ProjectInfo>
                 (event.property(projectInfoKey));
         QString workspace = info.workspaceFolder();

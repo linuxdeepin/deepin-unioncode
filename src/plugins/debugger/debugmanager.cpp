@@ -200,8 +200,8 @@ void DebugManager::handleEvents(const dpf::Event &event)
     QString data = event.data().toString();
     if (event.data() == debugger.prepareDebugProgress.name) {
         // TODO(logan)
-    } else if (event.data() == project.activedProject.name) {
-        auto projectInfo = qvariant_cast<ProjectInfo>(event.property(project.activedProject.pKeys[0]));
+    } else if (event.data() == project.activatedProject.name) {
+        auto projectInfo = qvariant_cast<ProjectInfo>(event.property(project.activatedProject.pKeys[0]));
         activeProjectKitName = projectInfo.kitName();
     } else if (event.data() == project.createdProject.name) {
         auto projectInfo = qvariant_cast<ProjectInfo>(event.property(project.createdProject.pKeys[0]));
