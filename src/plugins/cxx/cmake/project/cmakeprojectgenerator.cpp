@@ -512,6 +512,8 @@ void CmakeProjectGenerator::targetInitialized(const QString& workspace)
             }
         }
     }
+
+    ConfigUtil::instance()->saveConfig(ConfigUtil::instance()->getConfigPath(workspace), *projectConfigure);
 }
 
 void CmakeProjectGenerator::createTargetsRunConfigure(const QString &workDirectory, config::RunConfigure &runConfigure)
