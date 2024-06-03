@@ -35,8 +35,8 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
         builderEvent(event);
     }
 
-    if (event.data() == project.activedProject.name) {
-        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+    if (event.data() == project.activatedProject.name) {
+        QVariant proInfoVar = event.property(project.activatedProject.pKeys[0]);
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
         TargetsManager::instance()->readTargets(projectInfo.buildFolder(), projectInfo.workspaceFolder());
     }

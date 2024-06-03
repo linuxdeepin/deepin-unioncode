@@ -33,8 +33,8 @@ public:
     ProblemOutputPane *getProblemOutputPane() const;
     DTK_WIDGET_NAMESPACE::DWidget *getCompileWidget() const;
 
-    void setActivedProjectInfo(const QString &kitName, const QString &workingDir);
-    void clearActivedProjectInfo();
+    void setActivatedProjectInfo(const QString &kitName, const QString &workingDir);
+    void clearActivatedProjectInfo();
 
     bool handleCommand(const QList<BuildCommandInfo> &info, bool isSynchronous);
 

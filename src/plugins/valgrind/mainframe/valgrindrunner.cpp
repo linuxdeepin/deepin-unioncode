@@ -24,7 +24,7 @@ class ValgrindRunnerPrivate
 
     QStringList ValgrindArgs;
     dpfservice::ProjectInfo projectInfo;
-    QString activedProjectKitName;
+    QString activatedProjectKitName;
     QString workingDir;
     QString currentFilePath;
     QString targetPath;
@@ -73,7 +73,7 @@ void ValgrindRunner::initialize()
         });
     });
 
-    setActionsStatus(d->activedProjectKitName);
+    setActionsStatus(d->activatedProjectKitName);
 }
 
 void ValgrindRunner::runValgrind(const QString &type)
@@ -157,13 +157,13 @@ void ValgrindRunner::setActionsStatus(const QString &kitName)
 void ValgrindRunner::saveCurrentProjectInfo(const ProjectInfo &projectInfo)
 {
     d->projectInfo = projectInfo;
-    d->activedProjectKitName = d->projectInfo.kitName();
-    setActionsStatus(d->activedProjectKitName);
+    d->activatedProjectKitName = d->projectInfo.kitName();
+    setActionsStatus(d->activatedProjectKitName);
 }
 
 void ValgrindRunner::removeProjectInfo()
 {
-    d->activedProjectKitName.clear();
+    d->activatedProjectKitName.clear();
     setActionsStatus("");
 }
 
@@ -182,7 +182,7 @@ void ValgrindRunner::runBuilding()
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
     if (service) {
-        auto generator = service->create<LanguageGenerator>(d->activedProjectKitName);
+        auto generator = service->create<LanguageGenerator>(d->activatedProjectKitName);
         if (generator) {
             if (generator->isNeedBuild()) {
                 generator->build(d->projectInfo.workspaceFolder());

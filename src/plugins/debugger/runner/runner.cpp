@@ -131,7 +131,7 @@ void Runner::handleEvents(const dpf::Event &event)
         if (d->currentOpenedFilePath == filePath) {
             d->currentOpenedFilePath.clear();
         }
-    } else if (event.data() == project.activedProject.name) {
+    } else if (event.data() == project.activatedProject.name) {
         QVariant proInfoVar = event.property("projectInfo");
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
         auto programs = projectInfo.exePrograms();
