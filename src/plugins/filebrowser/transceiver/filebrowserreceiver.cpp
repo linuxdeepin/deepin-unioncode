@@ -28,14 +28,14 @@ QStringList FileBrowserReceiver::topics()
 
 void FileBrowserReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.data() == project.activedProject.name) {
-        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+    if (event.data() == project.activatedProject.name) {
+        QVariant proInfoVar = event.property(project.activatedProject.pKeys[0]);
         dpfservice::ProjectInfo proInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
         TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
     } else if (event.data() == project.deletedProject.name) {
         TreeViewKeeper::instance()->treeView()->setProjectInfo({});
     } else if (event.data() == project.createdProject.name) {
-        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+        QVariant proInfoVar = event.property(project.activatedProject.pKeys[0]);
         dpfservice::ProjectInfo proInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
         TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
     }
