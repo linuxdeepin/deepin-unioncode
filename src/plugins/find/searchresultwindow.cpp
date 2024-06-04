@@ -89,7 +89,6 @@ class SearchResultTreeViewPrivate
     SearchResultTreeViewPrivate() {}
     ~SearchResultTreeViewPrivate();
 
-    QMap<QString, QString> projectInfoMap;
     QThread thread;
     QSharedPointer<ItemProxy> proxy;
     friend class SearchResultTreeView;
@@ -108,7 +107,7 @@ SearchResultTreeView::SearchResultTreeView(QWidget *parent)
     QAbstractItemModel *itemModel = new QStandardItemModel(this);
     setModel(itemModel);
 
-    QObject::connect(this, &DTreeView::doubleClicked, [=](const QModelIndex &index) {
+    connect(this, &DTreeView::doubleClicked, this, [=](const QModelIndex &index) {
         if (!index.isValid())
             return;
         if (!index.parent().isValid())
@@ -118,12 +117,7 @@ SearchResultTreeView::SearchResultTreeView(QWidget *parent)
         int lineNumber = index.data(Qt::UserRole + 1).toInt();
         qInfo() << filePath << lineNumber;
 
-        foreach (QString key, d->projectInfoMap.keys()) {
-            if (filePath.contains(key, Qt::CaseInsensitive)) {
-                editor.gotoLine(filePath, lineNumber);
-                break;
-            }
-        }
+        editor.gotoLine(filePath, lineNumber);
     });
 
     d->proxy.reset(new ItemProxy);
@@ -138,9 +132,8 @@ SearchResultTreeView::~SearchResultTreeView()
     delete d;
 }
 
-void SearchResultTreeView::appendData(const FindItemList &itemList, const ProjectInfo &projectInfo)
+void SearchResultTreeView::appendData(const FindItemList &itemList)
 {
-    d->projectInfoMap = projectInfo;
     d->proxy->setRuningState(true);
     metaObject()->invokeMethod(d->proxy.data(),
                                "addTask",
@@ -197,7 +190,6 @@ SearchResultWindow::SearchResultWindow(QWidget *parent)
     setupUi();
 
     qRegisterMetaType<FindItemList>("FindItemList");
-    qRegisterMetaType<ProjectInfo>("ProjectInfo");
 }
 
 SearchResultWindow::~SearchResultWindow()
@@ -274,11 +266,11 @@ void SearchResultWindow::setRepalceWidgtVisible(bool visible)
     d->replaceWidget->setVisible(visible);
 }
 
-void SearchResultWindow::appendResults(const FindItemList &itemList, const ProjectInfo &projectInfo)
+void SearchResultWindow::appendResults(const FindItemList &itemList)
 {
     d->treeView->setVisible(true);
     d->iconLabel->setVisible(false);
-    d->treeView->appendData(itemList, projectInfo);
+    d->treeView->appendData(itemList);
     d->resultCount += itemList.count();
     QString msg = tr("%1 matches found.").arg(d->resultCount);
     showMsg(true, msg);
