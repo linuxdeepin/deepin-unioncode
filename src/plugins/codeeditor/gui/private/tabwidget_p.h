@@ -8,6 +8,7 @@
 #include "gui/tabwidget.h"
 #include "gui/tabbar.h"
 #include "gui/texteditor.h"
+#include "gui/recentopenwidget.h"
 
 #include "common/util/eventdefinitions.h"
 
@@ -70,6 +71,9 @@ public:
     PosRecord curPosRecord;
     QList<PosRecord> prePosRecord;
     QList<PosRecord> nextPosRecord;
+
+    QVector<QString> recentOpenedFiles;
+    RecentOpenWidget *openedWidget { nullptr };
 };
 
 #endif   // TABWIDGET_P_H

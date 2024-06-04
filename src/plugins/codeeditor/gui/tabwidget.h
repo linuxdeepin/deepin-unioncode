@@ -55,6 +55,7 @@ public:
     void toggleBreakpoint();
     void clearAllBreakpoints();
     void handleSetComment();
+    void handleShowOpenedFiles(const int &x, const int &y, const QSize &size);
 
     int zoomValue();
     void updateZoomValue(int value);
