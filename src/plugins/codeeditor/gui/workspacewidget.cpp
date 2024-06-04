@@ -63,14 +63,23 @@ void WorkspaceWidgetPrivate::initActions()
     if (!windowService)
         return;
 
+    // add/del comment
     QAction *commentAction = new QAction(tr("Add/Delete Comment"), q);
 
     auto abstractCommentAction = new AbstractAction(commentAction, q);
     abstractCommentAction->setShortCutInfo("Editor.addAndRemoveComment",
                                            tr("Add/Remove Comment"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_Slash));
-
     windowService->addAction(tr("&Add/Remove Comment"), abstractCommentAction);
     connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
+
+    // show opened files
+    QAction *showOpenedAction = new QAction(tr("Show opened files"), q);
+
+    auto abstractShowOpenedAction = new AbstractAction(showOpenedAction, q);
+    abstractShowOpenedAction->setShortCutInfo("Editor.showOpened",
+                                            tr("Show opened files"), QKeySequence(Qt::CTRL | Qt::Key_Tab));
+    windowService->addAction(tr("&Show open files"), abstractShowOpenedAction);
+    connect(showOpenedAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleShowOpenedFiles);
 }
 
 void WorkspaceWidgetPrivate::handleSetComment()
@@ -79,6 +88,14 @@ void WorkspaceWidgetPrivate::handleSetComment()
         return;
 
     currentTabWidget()->handleSetComment();
+}
+
+void WorkspaceWidgetPrivate::handleShowOpenedFiles()
+{
+    if (!currentTabWidget())
+        return;
+
+    currentTabWidget()->handleShowOpenedFiles(q->pos().x() - q->mapFromGlobal(q->pos()).x(), q->pos().y() + q->mapToGlobal(q->pos()).y() - 100, q->size());
 }
 
 void WorkspaceWidgetPrivate::initConnection()

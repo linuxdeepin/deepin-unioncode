@@ -62,6 +62,7 @@ public slots:
     void handleRenameSymbol();
     void handleSetModifiedAutoReload(const QString &fileName, bool flag);
     void handleSetComment();
+    void handleShowOpenedFiles();
 
 public:
     WorkspaceWidget *q;

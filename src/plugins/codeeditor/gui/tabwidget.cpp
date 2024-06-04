@@ -9,6 +9,7 @@
 #include "common/common.h"
 #include "settings/settingsdefine.h"
 #include "base/abstractaction.h"
+#include "recentopenwidget.h"
 
 #include "services/window/windowservice.h"
 
@@ -123,6 +124,9 @@ void TabWidgetPrivate::initUI()
 
     mainLayout->addWidget(tabBar, 0, Qt::AlignTop);
     mainLayout->addLayout(editorLayout);
+    
+    openedWidget = new RecentOpenWidget(q);
+    openedWidget->hide();
 
     auto holder = createFindPlaceHolder();
     if (holder)
@@ -149,6 +153,28 @@ void TabWidget::handleSetComment()
 {
     if (auto editor = d->currentTextEditor())
         editor->commentOperation();
+}
+
+void TabWidget::handleShowOpenedFiles(const int &x, const int &y, const QSize &size)
+{
+    int count = d->tabBar->tabCount();
+    if (count < 2)
+        return;
+    
+    d->openedWidget->setWindowFlags(Qt::Popup);
+    QSize popupSize = d->openedWidget->size();
+
+    int posX = (size.width() - popupSize.width()) / 2 + x;
+    int posY = (size.height() - popupSize.height()) / 2 + y;
+
+    d->openedWidget->move(posX, posY);
+    d->openedWidget->setOpenedFiles(d->recentOpenedFiles);
+    d->openedWidget->setListViewSelection(1);
+    connect(d->openedWidget, &RecentOpenWidget::triggered, this, [=](const QModelIndex &index) {
+        d->tabBar->setCurrentIndex(d->tabBar->indexOf(index.data(RecentOpenWidget::RecentOpenedUserRole::FilePathRole).toString()));
+    });
+    d->openedWidget->show();
+    d->openedWidget->setFocusListView();
 }
 
 QWidget *TabWidgetPrivate::createSpaceWidget()
@@ -220,6 +246,7 @@ TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
             });
 
     editorMng.insert(fileName, editor);
+    recentOpenedFiles.prepend(fileName);
 
     return editor;
 }
@@ -333,6 +360,8 @@ void TabWidgetPrivate::onTabSwitched(const QString &fileName)
         return;
 
     editorLayout->setCurrentWidget(editorMng[fileName]);
+    recentOpenedFiles.removeOne(fileName);
+    recentOpenedFiles.prepend(fileName);
     changeFocusProxy();
 }
 
@@ -345,6 +374,7 @@ void TabWidgetPrivate::onTabClosed(const QString &fileName)
     Inotify::globalInstance()->removePath(fileName);
     removePositionRecord(fileName);
     editorMng.remove(fileName);
+    recentOpenedFiles.removeOne(fileName);
     editorLayout->removeWidget(editor);
     changeFocusProxy();
 
