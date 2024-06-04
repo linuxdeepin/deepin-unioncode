@@ -169,8 +169,11 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
     auto cbpParser = TargetsManager::instance()->cbpParser();
     // add cmakefile to tree first.
     auto cmakeList = cbpParser->getCmakeFileList();
+    QSet<QString> cmakeFiles {};
     for (auto &cmakeFile : cmakeList) {
         QString cmakeFilePath = cmakeFile.get()->getfilePath();
+        if (cmakeFilePath.endsWith("CMakeLists.txt"))
+            cmakeFiles.insert(cmakeFilePath);
         QFileInfo cmakeFileInfo(cmakeFilePath);
         if (cmakeFileInfo.fileName().toLower() == kProjectFile.toLower()) {
             auto cmakeParentItem = rootItem;
@@ -197,7 +200,7 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         }
     }
 
-    QSet<QString> allFiles {};
+    QSet<QString> commonFiles {};
     const QList<CMakeBuildTarget> &targets = cbpParser->getBuildTargets();
     for (auto target : targets) {
         if (target.type == kUtility) {
@@ -258,7 +261,7 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             if (parentItem)
                 parentItem->appendRow(srcItem);
 
-            allFiles.insert(src);
+            commonFiles.insert(src);
         }
     }
 
@@ -269,7 +272,8 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         tempInfo.setRunProgram(activeExecTarget.output);
         tempInfo.setRunWorkspaceDir(activeExecTarget.workingDir);
     }
-    tempInfo.setSourceFiles(allFiles);
+
+    tempInfo.setSourceFiles(commonFiles + cmakeFiles);
     tempInfo.setExePrograms(TargetsManager::instance()->getExeTargetNamesList());
     tempInfo.setCurrentProgram(TargetsManager::instance()->getActivedTargetByTargetType(TargetType::kActiveExecTarget).name);
     ProjectInfo::set(rootItem, tempInfo);

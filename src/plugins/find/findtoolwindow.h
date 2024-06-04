@@ -28,7 +28,7 @@ private:
     void addSearchParamWidget(QWidget *parentWidget);
     void addSearchResultWidget(QWidget *parentWidget);
     void switchSearchParamWidget();
-    bool checkSelectedScopeValid();
+    bool checkSelectedScopeValid(QStringList *searchPathList = nullptr);
     bool getSearchParams(SearchParams *searchParams);
     void createMessageDialog(const QString &message);
 
