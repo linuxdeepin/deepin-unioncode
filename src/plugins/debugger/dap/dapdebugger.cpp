@@ -34,6 +34,7 @@
 #include <DDialog>
 #include <DLineEdit>
 #include <DSplitter>
+#include <DIconTheme>
 
 #include <QDateTime>
 #include <QTextBlock>
@@ -897,7 +898,7 @@ QHBoxLayout *DAPDebugger::initFrameTitle(const QString &frameName)
 
     DPushButton *arrow = new DPushButton();
     arrow->setFocusPolicy(Qt::NoFocus);
-    arrow->setIcon(QIcon::fromTheme("go-down"));
+    arrow->setIcon(DIconTheme::findQIcon("go-down"));
     arrow->setFixedSize(QSize(18, 18));
     arrow->setIconSize(QSize(8, 8));
     arrow->setFlat(true);

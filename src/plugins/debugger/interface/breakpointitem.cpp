@@ -5,10 +5,14 @@
 #include "breakpointitem.h"
 #include "breakpoint.h"
 
+#include <DIconTheme>
+
 #include <QDir>
 #include <QTextStream>
 
 using namespace Internal;
+
+DGUI_USE_NAMESPACE
 
 const QString empty(QLatin1Char('-'));
 
@@ -52,7 +56,7 @@ QVariant BreakpointItem::data(int row, int column, int role) const
     }
 
     if (role == Qt::DecorationRole && column == kIsEnabled) {
-        return bp.enabled ? QIcon::fromTheme("breakpoint") : QIcon::fromTheme("disabled_breakpoint");
+        return bp.enabled ? DIconTheme::findQIcon("breakpoint") : DIconTheme::findQIcon("disabled_breakpoint");
     }
 
     if (role == Qt::ToolTipRole)

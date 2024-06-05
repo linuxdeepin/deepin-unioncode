@@ -12,6 +12,7 @@
 #include <DLabel>
 #include <DStackedWidget>
 #include <DSuggestButton>
+#include <DIconTheme>
 
 #include <QDebug>
 #include <QVBoxLayout>
@@ -134,7 +135,7 @@ void CodeGeeXWidget::initUI()
         verticalLayout->setContentsMargins(50, 0, 50, 50);
 
         auto label_icon = new DLabel(this);
-        label_icon->setPixmap(QIcon::fromTheme("codegeex_logo").pixmap(QSize(40, 26)));
+        label_icon->setPixmap(DIconTheme::findQIcon("codegeex_logo").pixmap(QSize(40, 26)));
         label_icon->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(label_icon);

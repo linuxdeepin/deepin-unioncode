@@ -12,6 +12,7 @@
 #include <DComboBox>
 #include <DGuiApplicationHelper>
 #include <DStyle>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QProcess>
@@ -119,13 +120,13 @@ void AppOutputPane::initTabWidget()
 
     d->closeProcessBtn = new DToolButton(d->tabbar);
     d->closeProcessBtn->setFixedSize(26, 26);
-    d->closeProcessBtn->setIcon(QIcon::fromTheme("common_stop"));
+    d->closeProcessBtn->setIcon(DIconTheme::findQIcon("common_stop"));
     d->closeProcessBtn->setToolTip(tr("Stop Running Program"));
     d->closeProcessBtn->setEnabled(false);
 
     d->closePaneBtn = new DToolButton(d->tabbar);
     d->closePaneBtn->setFixedSize(26, 26);
-    d->closePaneBtn->setIcon(QIcon::fromTheme("common_close"));
+    d->closePaneBtn->setIcon(DIconTheme::findQIcon("common_close"));
     d->closePaneBtn->setToolTip(tr("Close OutputPane"));
     d->closePaneBtn->setEnabled(false);
 
@@ -263,7 +264,7 @@ void AppOutputPane::slotCloseOutputPane()
         //check is running
         if (d->appIsRunning.contains(id) && d->appIsRunning[id] == true) {
             d->checkCloseDialog = new DDialog(this);
-            d->checkCloseDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+            d->checkCloseDialog->setIcon(DIconTheme::findQIcon("dialog-warning"));
             d->checkCloseDialog->setMessage(tr("Process is running, kill process?"));
             d->checkCloseDialog->insertButton(0, tr("kill", "button"), true, DDialog::ButtonWarning);
             d->checkCloseDialog->insertButton(1, tr("Cancel", "button"));

@@ -10,6 +10,8 @@
 #include "properties/targetsmanager.h"
 #include "common/common.h"
 
+#include <DIconTheme>
+
 #include <QAction>
 #include <QDebug>
 
@@ -224,7 +226,7 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         }
         QMetaObject::invokeMethod(this, [=](){
             // executable should different with library.
-            targetItem->setIcon(QIcon::fromTheme("project_executable"));
+            targetItem->setIcon(DIconTheme::findQIcon("project_executable"));
         });
         QString title = prefix + target.title;
         targetItem->setText(title);

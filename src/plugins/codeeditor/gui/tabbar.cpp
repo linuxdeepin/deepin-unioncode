@@ -10,6 +10,7 @@
 
 #include <DMenu>
 #include <DDesktopServices>
+#include <DIconTheme>
 
 #include <QSignalBlocker>
 #include <QFileInfo>
@@ -18,6 +19,7 @@
 #include <QGuiApplication>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 TabBarPrivate::TabBarPrivate(TabBar *qq)
     : QObject(qq),
@@ -33,11 +35,11 @@ void TabBarPrivate::initUI()
     tabBar->setEnabledEmbedStyle(true);
     tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
     hSplitBtn = new DToolButton(q);
-    hSplitBtn->setIcon(QIcon::fromTheme("edit-hSplit"));
+    hSplitBtn->setIcon(DIconTheme::findQIcon("edit-hSplit"));
     vSplitBtn = new DToolButton(q);
-    vSplitBtn->setIcon(QIcon::fromTheme("edit-vSplit"));
+    vSplitBtn->setIcon(DIconTheme::findQIcon("edit-vSplit"));
     closeBtn = new DToolButton(q);
-    closeBtn->setIcon(QIcon::fromTheme("edit-closeBtn"));
+    closeBtn->setIcon(DIconTheme::findQIcon("edit-closeBtn"));
 
     QHBoxLayout *mainLayout = new QHBoxLayout(q);
     mainLayout->setContentsMargins(0, 0, 0, 0);

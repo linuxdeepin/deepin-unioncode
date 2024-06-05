@@ -6,10 +6,12 @@
 
 #include <DPushButton>
 #include <DToolButton>
+#include <DIconTheme>
 
 #include <QHBoxLayout>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 SessionRecordItem::SessionRecordItem(QWidget *parent)
     : DWidget (parent)
@@ -75,7 +77,7 @@ void SessionRecordItem::initUI()
 
     deleteButton = new DToolButton(this);
     deleteButton->setFixedSize(QSize(30, 30));
-    deleteButton->setIcon(QIcon::fromTheme("codegeex_clear"));
+    deleteButton->setIcon(DIconTheme::findQIcon("codegeex_clear"));
     btnLayout->addWidget(deleteButton, 0);
 }
 

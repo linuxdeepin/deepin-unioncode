@@ -6,6 +6,8 @@
 #include "gui/texteditor.h"
 #include "lsp/lspstyle.h"
 
+#include <DIconTheme>
+
 class CodeCompletionModelPrivate
 {
 public:
@@ -29,24 +31,24 @@ QIcon CodeCompletionModelPrivate::iconForKind(lsp::CompletionItem::Kind k)
     case lsp::CompletionItem::Method:
     case lsp::CompletionItem::Function:
     case lsp::CompletionItem::Constructor:
-        return QIcon::fromTheme("func");
+        return DIconTheme::findQIcon("func");
     case lsp::CompletionItem::Class:
     case lsp::CompletionItem::Interface:
     case lsp::CompletionItem::Struct:
-        return QIcon::fromTheme("class");
+        return DIconTheme::findQIcon("class");
     case lsp::CompletionItem::Module:
-        return QIcon::fromTheme("namespace");
+        return DIconTheme::findQIcon("namespace");
     case lsp::CompletionItem::Field:
     case lsp::CompletionItem::Property:
     case lsp::CompletionItem::Variable:
-        return QIcon::fromTheme("var");
+        return DIconTheme::findQIcon("var");
     case lsp::CompletionItem::Enum:
     case lsp::CompletionItem::EnumMember:
-        return QIcon::fromTheme("enum");
+        return DIconTheme::findQIcon("enum");
     case lsp::CompletionItem::Keyword:
-        return QIcon::fromTheme("keyword");
+        return DIconTheme::findQIcon("keyword");
     case lsp::CompletionItem::Snippet:
-        return QIcon::fromTheme("snippet");
+        return DIconTheme::findQIcon("snippet");
     default:
         break;
     }

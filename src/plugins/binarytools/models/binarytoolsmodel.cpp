@@ -6,8 +6,12 @@
 #include "constants.h"
 #include "mainframe/environmentview.h"
 
+#include <DIconTheme>
+
 #include <QUuid>
 #include <QIcon>
+
+DGUI_USE_NAMESPACE
 
 const Qt::ItemFlags ITEM_FLAGS = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 
@@ -46,7 +50,7 @@ QVariant BinaryToolsModel::data(const ToolInfo &tool, int role) const
     case Qt::EditRole:
         return tool.name;
     case Qt::DecorationRole:
-        return QIcon::fromTheme(tool.icon);
+        return DIconTheme::findQIcon(tool.icon);
     default:
         break;
     }

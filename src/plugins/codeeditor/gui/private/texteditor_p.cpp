@@ -16,6 +16,7 @@
 #include <Qsci/qsciapis.h>
 
 #include <DGuiApplicationHelper>
+#include <DIconTheme>
 
 #include <QToolTip>
 #include <QScrollBar>
@@ -100,13 +101,13 @@ void TextEditorPrivate::initMargins()
 
 void TextEditorPrivate::updateColorTheme()
 {
-    auto bpIcon = QIcon::fromTheme("breakpoint");
+    auto bpIcon = DIconTheme::findQIcon("breakpoint");
     q->markerDefine(bpIcon.pixmap(14, 14), Breakpoint);
 
-    auto bpIconDis = QIcon::fromTheme("disabled_breakpoint");
+    auto bpIconDis = DIconTheme::findQIcon("disabled_breakpoint");
     q->markerDefine(bpIconDis.pixmap(14, 14), BreakpointDisabled);
 
-    auto rtIcon = QIcon::fromTheme("arrow");
+    auto rtIcon = DIconTheme::findQIcon("arrow");
     q->markerDefine(rtIcon.pixmap(14, 14), Runtime);
 
     auto palette = QToolTip::palette();

@@ -12,6 +12,7 @@
 #include <DTitlebar>
 #include <DLabel>
 #include <DFrame>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QFormLayout>
@@ -138,7 +139,7 @@ EventFilterDialog::EventFilterDialog(
     d->x11Flags = x11Flags;
     d->signalFlags = signalFlags;
     setWindowTitle(tr("Event Filter"));
-    setIcon(QIcon::fromTheme("ide"));
+    setIcon(DIconTheme::findQIcon("ide"));
 
     setupUi();
 }

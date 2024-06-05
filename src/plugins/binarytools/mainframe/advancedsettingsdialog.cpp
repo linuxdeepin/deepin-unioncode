@@ -8,10 +8,12 @@
 
 #include <DLineEdit>
 #include <DComboBox>
+#include <DIconTheme>
 
 #include <QFormLayout>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 class AdvancedSettingsDialogPrivate : public QObject
 {
@@ -36,7 +38,7 @@ AdvancedSettingsDialogPrivate::AdvancedSettingsDialogPrivate(AdvancedSettingsDia
 
 void AdvancedSettingsDialogPrivate::initUI()
 {
-    q->setIcon(QIcon::fromTheme("ide"));
+    q->setIcon(DIconTheme::findQIcon("ide"));
     q->setWindowTitle(AdvancedSettingsDialog::tr("Advanced Settings"));
 
     QWidget *widget = new QWidget(q);

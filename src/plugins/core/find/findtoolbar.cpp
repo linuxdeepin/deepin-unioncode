@@ -12,6 +12,7 @@
 #include <DLineEdit>
 #include <DIconButton>
 #include <DPushButton>
+#include <DIconTheme>
 
 #include <QAction>
 #include <QHBoxLayout>
@@ -61,10 +62,10 @@ void FindToolBarPrivate::initUI()
     replaceEdit->setMinimumWidth(100);
 
     findPrevButton = new DIconButton(q);
-    findPrevButton->setIcon(QIcon::fromTheme("go-up"));
+    findPrevButton->setIcon(DIconTheme::findQIcon("go-up"));
 
     findNextButton = new DIconButton(q);
-    findNextButton->setIcon(QIcon::fromTheme("go-down"));
+    findNextButton->setIcon(DIconTheme::findQIcon("go-down"));
 
     replaceButton = new DPushButton(FindToolBar::tr("Replace"), q);
     replaceAllButton = new DPushButton(FindToolBar::tr("Replace All"), q);

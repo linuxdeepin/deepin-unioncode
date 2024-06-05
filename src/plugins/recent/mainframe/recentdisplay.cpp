@@ -15,6 +15,7 @@
 #include <DFileDialog>
 #include <DStandardItem>
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QImageReader>
 #include <QList>
@@ -469,12 +470,12 @@ void RecentDisplay::initializeUi()
     d->docLabel->setContentsMargins(10, 5, 0, 10);
 
     d->docClear = new DPushButton();
-    d->docClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
+    d->docClear->setIcon(DIconTheme::findQIcon("ide_recent_delete"));
     d->docClear->setFlat(true);
     d->docClear->setToolTip(tr("clear all"));
 
     d->clearDocConfirm = new DDialog(this);
-    d->clearDocConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
+    d->clearDocConfirm->setIcon(DIconTheme::findQIcon("dialog-warning"));
     d->clearDocConfirm->setMessage(tr("Confirm to clear the record of the opened file?"));
     d->clearDocConfirm->insertButton(0, tr("Cancel", "button"));
     d->clearDocConfirm->insertButton(1, tr("Delete", "button"), true, DDialog::ButtonWarning);
@@ -502,12 +503,12 @@ void RecentDisplay::initializeUi()
     d->proLabel->setContentsMargins(10, 5, 0, 10);
     
     d->proClear = new DPushButton();
-    d->proClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
+    d->proClear->setIcon(DIconTheme::findQIcon("ide_recent_delete"));
     d->proClear->setFlat(true);
     d->proClear->setToolTip(tr("clear all"));
 
     d->clearProConfirm = new DDialog(this);
-    d->clearProConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
+    d->clearProConfirm->setIcon(DIconTheme::findQIcon("dialog-warning"));
     d->clearProConfirm->setMessage(tr("Confirm to clear the record of the opened project?"));
     d->clearProConfirm->insertButton(0, tr("Cancel", "button"));
     d->clearProConfirm->insertButton(1, tr("Delete", "button"), true, DDialog::ButtonWarning);

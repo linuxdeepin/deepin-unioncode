@@ -26,6 +26,7 @@
 #include <DGuiApplicationHelper>
 #include <DComboBox>
 #include <DFrame>
+#include <DIconTheme>
 
 #include <QSplitter>
 #include <QCoreApplication>
@@ -105,7 +106,7 @@ void BuildManager::addMenu()
 
     auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName)
             -> AbstractAction* {
-        action->setIcon(QIcon::fromTheme(iconFileName));
+        action->setIcon(DIconTheme::findQIcon(iconFileName));
         auto inputAction = new AbstractAction(action, this);
         inputAction->setShortCutInfo(actionID, action->text(), key);
         return inputAction;
@@ -127,18 +128,18 @@ void BuildManager::addMenu()
                                                                ""));
 
     d->cancelAction = new QAction(MWMBA_CANCEL, this);
-    d->cancelAction->setIcon(QIcon::fromTheme("cancel"));
+    d->cancelAction->setIcon(DIconTheme::findQIcon("cancel"));
     ActionManager::getInstance()->registerAction(d->cancelAction, "Build.Cancel", MWMBA_CANCEL,
                                 QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace));
 
     d->rebuildAction = new QAction(MWMBA_REBUILD, this);
-    d->rebuildAction->setIcon(QIcon::fromTheme("rebuild"));
+    d->rebuildAction->setIcon(DIconTheme::findQIcon("rebuild"));
     ActionManager::getInstance()->registerAction(d->rebuildAction, "Build.Rebuild", MWMBA_REBUILD,
                                 QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_B));
 
 
     d->cleanAction = new QAction(MWMBA_CLEAN, this);
-    d->cleanAction->setIcon(QIcon::fromTheme("clearall"));
+    d->cleanAction->setIcon(DIconTheme::findQIcon("clearall"));
     ActionManager::getInstance()->registerAction(d->cleanAction, "Build.Clean", MWMBA_CLEAN,
                                 QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C));
 
@@ -187,7 +188,7 @@ void BuildManager::initIssueList()
     DToolButton *filterButton = new DToolButton(d->compileWidget);
     filterButton->setFixedSize(26, 26);
     filterButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    filterButton->setIcon(QIcon::fromTheme("filter"));
+    filterButton->setIcon(DIconTheme::findQIcon("filter"));
     filterButton->setContentsMargins(0, 0, 0, 0);
     filterButton->setToolTip(tr("Filter"));
 

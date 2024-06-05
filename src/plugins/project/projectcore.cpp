@@ -17,6 +17,8 @@
 #include "locator/allprojectfilelocator.h"
 #include "locator/currentprojectlocator.h"
 
+#include <DIconTheme>
+
 #include <QProcess>
 #include <QAction>
 #include <QLabel>
@@ -45,7 +47,7 @@ bool ProjectCore::start()
             auto view = new AbstractWidget(ProjectKeeper::instance()->treeView());
             windowService->addWidgetWorkspace(MWCWT_PROJECTS, view, "project");
             DToolButton *projectProperty = new DToolButton(ProjectKeeper::instance()->treeView());
-            projectProperty->setIcon(QIcon::fromTheme("settings"));
+            projectProperty->setIcon(DIconTheme::findQIcon("settings"));
             projectProperty->setToolTip(tr("Open activted project`s property dialog"));
             connect(projectProperty, &DToolButton::clicked, this, [=](){
                 project.openProjectPropertys(ProjectKeeper::instance()->treeView()->getActiveProjectInfo());

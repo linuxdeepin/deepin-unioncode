@@ -8,12 +8,14 @@
 #include "common/util/custompaths.h"
 
 #include <DStandardItem>
+#include <DIconTheme>
 
 #include <QStandardItemModel>
 #include <QDir>
 
 DPF_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 PluginListView::PluginListView(QWidget *parent)
     : DListView(parent)
@@ -60,9 +62,9 @@ void PluginListView::display()
             QString pluginLogoPath = pluginPath + QDir::separator() + pluginName + ".svg";
             QIcon pluginLogo;
             if (QFile::exists(pluginLogoPath)) {
-                pluginLogo = QIcon::fromTheme(pluginLogoPath);
+                pluginLogo = DIconTheme::findQIcon(pluginLogoPath);
             } else {
-                pluginLogo = QIcon::fromTheme("default_plugin");
+                pluginLogo = DIconTheme::findQIcon("default_plugin");
             }
 
             auto rowItem = new DStandardItem(pluginLogo, pluginName);

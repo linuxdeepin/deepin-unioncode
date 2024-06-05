@@ -7,6 +7,7 @@
 
 #include <DIconButton>
 #include <DLabel>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 
@@ -124,13 +125,13 @@ void NotificationItemWidgetPrivate::updateContent()
     QIcon icon;
     switch (entity->type()) {
     case NotificationEntity::Information:
-        icon = QIcon::fromTheme("notification_info");
+        icon = DIconTheme::findQIcon("notification_info");
         break;
     case NotificationEntity::Warning:
-        icon = QIcon::fromTheme("notification_warning");
+        icon = DIconTheme::findQIcon("notification_warning");
         break;
     case NotificationEntity::Error:
-        icon = QIcon::fromTheme("notification_error");
+        icon = DIconTheme::findQIcon("notification_error");
         break;
     }
     iconBtn->setIcon(icon);

@@ -7,6 +7,8 @@
 #include "services/window/windowservice.h"
 #include "services/project/projectservice.h"
 
+#include <DIconTheme>
+
 #include <QMenu>
 #include <QDebug>
 #include <QTimer>
@@ -39,7 +41,7 @@ Copilot::Copilot(QObject *parent)
             mutexResponse.lock();
             generateResponse = response;
             if (editorService->setCompletion && responseValid(response)) {
-                editorService->setCompletion(generateResponse, QIcon::fromTheme("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
+                editorService->setCompletion(generateResponse, DIconTheme::findQIcon("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
             }
             mutexResponse.unlock();
             break;

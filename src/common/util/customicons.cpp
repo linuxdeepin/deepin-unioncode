@@ -6,6 +6,10 @@
 #include <QIcon>
 #include <QMimeDatabase>
 
+#include <DIconTheme>
+
+DGUI_USE_NAMESPACE
+
 namespace {
 QFileIconProvider provider;
 QMimeDatabase mimeDatabase;
@@ -20,9 +24,9 @@ QIcon CustomIcons::icon(CustomIcons::CustomIconType type)
 {
     switch (type) {
     case CustomIcons::Exe:
-        return QIcon::fromTheme("application/x-executable");
+        return DIconTheme::findQIcon("application/x-executable");
     case CustomIcons::Lib:
-        return QIcon::fromTheme("application/x-sharedlib");
+        return DIconTheme::findQIcon("application/x-sharedlib");
     }
     return {};
 }

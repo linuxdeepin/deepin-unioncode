@@ -13,6 +13,7 @@
 #include <DKeySequenceEdit>
 #include <DCommandLinkButton>
 #include <DBackgroundGroup>
+#include <DIconTheme>
 
 #include <QDebug>
 #include <QDir>
@@ -126,7 +127,7 @@ inline void ShortCut::showWarning(const QString& title, const QString& message){
     DDialog warningDialog;
     warningDialog.setWindowTitle(title);
     warningDialog.setMessage(message);
-    warningDialog.setIcon(QIcon::fromTheme("dialog-warning"));
+    warningDialog.setIcon(DIconTheme::findQIcon("dialog-warning"));
     warningDialog.addButton(tr("OK"));
     warningDialog.exec();
     return;

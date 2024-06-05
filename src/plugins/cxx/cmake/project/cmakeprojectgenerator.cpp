@@ -19,6 +19,8 @@
 #include "common/actionmanager/actionmanager.h"
 #include "base/abstractaction.h"
 
+#include <DIconTheme>
+
 #include <QtXml>
 #include <QFileIconProvider>
 #include <QPushButton>
@@ -309,7 +311,7 @@ void CmakeProjectGenerator::createDocument(const QStandardItem *item, const QStr
                        "Copy the path to the source files to the clipboard?"));
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->setWindowTitle(tr("Copy to Clipboard?"));
-    dlg->setIcon(QIcon::fromTheme("dialog-warning"));
+    dlg->setIcon(DIconTheme::findQIcon("dialog-warning"));
     dlg->resize(200, 100);
     dlg->addButton(tr("Ok"), false, DDialog::ButtonType::ButtonRecommend);
 

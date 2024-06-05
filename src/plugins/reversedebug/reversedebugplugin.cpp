@@ -11,8 +11,10 @@
 #include "reversedebuggermgr.h"
 
 #include <DMenu>
+#include <DIconTheme>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 using namespace ReverseDebugger::Internal;
 
@@ -30,7 +32,7 @@ bool ReverseDebugPlugin::start()
     }
 
     auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
-        action->setIcon(QIcon::fromTheme(iconFileName));
+        action->setIcon(DIconTheme::findQIcon(iconFileName));
         AbstractAction *actionImpl = new AbstractAction(action, this);
         actionImpl->setShortCutInfo(actionID, action->text(), key);
 

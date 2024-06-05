@@ -10,6 +10,7 @@
 #include "base/abstractaction.h"
 
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QVariant>
@@ -18,6 +19,7 @@
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 WorkspaceWidgetPrivate::WorkspaceWidgetPrivate(WorkspaceWidget *qq)
     : QObject(qq),
@@ -63,14 +65,23 @@ void WorkspaceWidgetPrivate::initActions()
     if (!windowService)
         return;
 
+    // add/del comment
     QAction *commentAction = new QAction(tr("Add/Delete Comment"), q);
 
     auto abstractCommentAction = new AbstractAction(commentAction, q);
     abstractCommentAction->setShortCutInfo("Editor.addAndRemoveComment",
                                            tr("Add/Remove Comment"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_Slash));
-
     windowService->addAction(tr("&Add/Remove Comment"), abstractCommentAction);
     connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
+
+    // show opened files
+    QAction *showOpenedAction = new QAction(tr("Show opened files"), q);
+
+    auto abstractShowOpenedAction = new AbstractAction(showOpenedAction, q);
+    abstractShowOpenedAction->setShortCutInfo("Editor.showOpened",
+                                            tr("Show opened files"), QKeySequence(Qt::CTRL | Qt::Key_Tab));
+    windowService->addAction(tr("&Show open files"), abstractShowOpenedAction);
+    connect(showOpenedAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleShowOpenedFiles);
 }
 
 void WorkspaceWidgetPrivate::handleSetComment()
@@ -79,6 +90,14 @@ void WorkspaceWidgetPrivate::handleSetComment()
         return;
 
     currentTabWidget()->handleSetComment();
+}
+
+void WorkspaceWidgetPrivate::handleShowOpenedFiles()
+{
+    if (!currentTabWidget())
+        return;
+
+    currentTabWidget()->handleShowOpenedFiles(q->pos().x() - q->mapFromGlobal(q->pos()).x(), q->pos().y() + q->mapToGlobal(q->pos()).y() - 100, q->size());
 }
 
 void WorkspaceWidgetPrivate::initConnection()
@@ -158,7 +177,7 @@ int WorkspaceWidgetPrivate::showFileChangedConfirmDialog(const QString &fileName
     buttonTexts.append(tr("No To All", "button"));
     buttonTexts.append(tr("Close", "button"));
 
-    d.setIcon(QIcon::fromTheme("ide"));
+    d.setIcon(DIconTheme::findQIcon("ide"));
     d.setTitle(title);
     d.setMessage(message);
     d.addButton(buttonTexts[0]);
@@ -188,7 +207,7 @@ int WorkspaceWidgetPrivate::showFileRemovedConfirmDialog(const QString &fileName
     buttonTexts.append(tr("Close", "button"));
     buttonTexts.append(tr("Close All", "button"));
 
-    d.setIcon(QIcon::fromTheme("ide"));
+    d.setIcon(DIconTheme::findQIcon("ide"));
     d.setTitle(title);
     d.setMessage(message);
     d.addButton(buttonTexts[0]);

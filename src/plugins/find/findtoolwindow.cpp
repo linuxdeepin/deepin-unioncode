@@ -4,8 +4,10 @@
 
 #include "findtoolwindow.h"
 #include "searchresultwindow.h"
-#include "transceiver/findreceiver.h"
 #include "util/searcreplacehworker.h"
+
+#include "services/project/projectservice.h"
+#include "services/editor/editorservice.h"
 
 #include <DLineEdit>
 #include <DLabel>
@@ -18,6 +20,7 @@
 #include <DSuggestButton>
 #include <DFrame>
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -26,6 +29,7 @@
 #include <QFormLayout>
 #include <QThread>
 
+using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
 class FindToolWindowPrivate
 {
@@ -34,10 +38,6 @@ class FindToolWindowPrivate
 
     DStackedWidget *stackedWidget { nullptr };
     SearchResultWindow *searchResultWindow { nullptr };
-    QSet<QString> allProjectsPathList { nullptr };
-    QString currentProjectPath;
-    QString currentFilePath;
-    QMap<QString, QString> projectInfoMap;
     QSharedPointer<SearchReplaceWorker> searchReplaceWorker { nullptr };
     QThread thread;
 
@@ -71,27 +71,6 @@ FindToolWindow::FindToolWindow(QWidget *parent)
 {
     setupUi();
     initWorker();
-    connect(FindEventTransmit::instance(), QOverload<const QString &, const QString &>::of(&FindEventTransmit::sendProjectPath),
-            [=](const QString &projectPath, const QString &language) {
-                d->currentProjectPath = projectPath;
-                d->projectInfoMap.insert(projectPath, language);
-                d->allProjectsPathList.insert(projectPath);
-            });
-
-    connect(FindEventTransmit::instance(), QOverload<const QString &>::of(&FindEventTransmit::sendRemovedProject),
-            [=](const QString &projectPath) {
-                d->currentProjectPath = "";
-                d->allProjectsPathList.remove(projectPath);
-                d->projectInfoMap.remove(projectPath);
-            });
-
-    connect(FindEventTransmit::instance(), QOverload<const QString &, bool>::of(&FindEventTransmit::sendCurrentEditFile),
-            [=](const QString &filePath, bool actived) {
-                if (actived) {
-                    d->currentFilePath = filePath;
-                } else
-                    d->currentFilePath = "";
-            });
 }
 
 FindToolWindow::~FindToolWindow()
@@ -118,8 +97,8 @@ void FindToolWindow::setupUi()
     scrollLayout->addWidget(scrollArea);
     mainPaneFrame->setLayout(scrollLayout);
 
-    QWidget *searchParamWidget = new QWidget();
-    QWidget *searchResultWidget = new QWidget();
+    QWidget *searchParamWidget = new QWidget(this);
+    QWidget *searchResultWidget = new QWidget(this);
 
     addSearchParamWidget(searchParamWidget);
     addSearchResultWidget(searchResultWidget);
@@ -149,9 +128,9 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 
     DLabel *scopeLabel = new DLabel(QLabel::tr("Scope:"));
     d->scopeComboBox = new DComboBox(parentWidget);
-    d->scopeComboBox->addItem(tr("All Projects"));
-    d->scopeComboBox->addItem(tr("Current Project"));
-    d->scopeComboBox->addItem(tr("Current File"));
+    d->scopeComboBox->addItem(tr("All Projects"), AllProjects);
+    d->scopeComboBox->addItem(tr("Current Project"), CurrentProject);
+    d->scopeComboBox->addItem(tr("Current File"), CurrentDocument);
     d->scopeComboBox->setFixedWidth(369);
 
     DLabel *searchLabel = new DLabel(QLabel::tr("Search for:"));
@@ -170,12 +149,12 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     d->senseCheckBtnOff->setFixedSize(36, 36);
 
     d->wholeWordsCheckBtnOn = new DSuggestButton(parentWidget);
-    d->wholeWordsCheckBtnOn->setIcon(QIcon::fromTheme("find_matchComplete"));
+    d->wholeWordsCheckBtnOn->setIcon(DIconTheme::findQIcon("find_matchComplete"));
     d->wholeWordsCheckBtnOn->setFixedSize(36, 36);
     d->wholeWordsCheckBtnOn->hide();
 
     d->wholeWordsCheckBtnOff = new DPushButton(parentWidget);
-    d->wholeWordsCheckBtnOff->setIcon(QIcon::fromTheme("find_matchComplete"));
+    d->wholeWordsCheckBtnOff->setIcon(DIconTheme::findQIcon("find_matchComplete"));
     d->wholeWordsCheckBtnOff->setFixedSize(36, 36);
 
     hlayout->addWidget(d->searchLineEdit);
@@ -271,7 +250,7 @@ void FindToolWindow::search()
 void FindToolWindow::createMessageDialog(const QString &message)
 {
     DDialog *messageDialog = new DDialog(this);
-    messageDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+    messageDialog->setIcon(DIconTheme::findQIcon("dialog-warning"));
     messageDialog->setMessage(message);
     messageDialog->insertButton(0, tr("Ok"));
     messageDialog->setAttribute(Qt::WA_DeleteOnClose);
@@ -284,29 +263,48 @@ void FindToolWindow::createMessageDialog(const QString &message)
     messageDialog->exec();
 }
 
-bool FindToolWindow::checkSelectedScopeValid()
+bool FindToolWindow::checkSelectedScopeValid(QStringList *searchPathList)
 {
-    int index = d->scopeComboBox->currentIndex();
-    switch (index) {
-    case 0: {
-        if (d->allProjectsPathList.isEmpty()) {
+    int scope = d->scopeComboBox->currentData().toInt();
+    switch (scope) {
+    case AllProjects: {
+        auto projectSrv = dpfGetService(ProjectService);
+        const auto &infoList = projectSrv->getAllProjectInfo();
+        if (infoList.isEmpty()) {
             createMessageDialog(tr("All projects path is empty, please import!"));
             return false;
         }
-        break;
-    }
-    case 1: {
-        if (d->currentProjectPath.isEmpty()) {
-            createMessageDialog(tr("Current project path is empty, please import!"));
-            return false;
+
+        if (!searchPathList)
+            break;
+
+        for (const auto &info : infoList) {
+            searchPathList->append(info.sourceFiles().toList());
         }
         break;
     }
-    case 2: {
-        if (d->currentFilePath.isEmpty()) {
+    case CurrentProject: {
+        auto projectSrv = dpfGetService(ProjectService);
+        const auto &info = projectSrv->getActiveProjectInfo();
+        if (info.isEmpty()) {
             createMessageDialog(tr("Current project path is empty, please import!"));
             return false;
         }
+
+        if (searchPathList)
+            *searchPathList = info.sourceFiles().toList();
+        break;
+    }
+    case CurrentDocument: {
+        auto editSrv = dpfGetService(EditorService);
+        auto curFile = editSrv->currentFile();
+        if (curFile.isEmpty()) {
+            createMessageDialog(tr("Current project path is empty, please import!"));
+            return false;
+        }
+
+        if (searchPathList)
+            searchPathList->append(curFile);
         break;
     }
     default: {
@@ -320,28 +318,13 @@ bool FindToolWindow::checkSelectedScopeValid()
 
 bool FindToolWindow::getSearchParams(SearchParams *searchParams)
 {
-    if (!checkSelectedScopeValid())
+    QStringList searchPathList;
+    if (!checkSelectedScopeValid(&searchPathList))
         return false;
     QString text = d->searchLineEdit->text();
     if (text.isEmpty()) {
         d->searchLineEdit->showAlertMessage(tr("Search for text is empty, please input!"));
         return false;
-    }
-
-    QStringList searchPathList;
-    int index = d->scopeComboBox->currentIndex();
-    switch (index) {
-    case 0:
-        searchPathList = d->allProjectsPathList.values();
-        break;
-    case 1:
-        searchPathList = QStringList { d->currentProjectPath };
-        break;
-    case 2:
-        searchPathList = QStringList { d->currentFilePath };
-        break;
-    default:
-        break;
     }
 
     searchParams->filePathList = searchPathList;
@@ -350,8 +333,6 @@ bool FindToolWindow::getSearchParams(SearchParams *searchParams)
     searchParams->wholeWordsFlag = d->wholeWordsCheckBtnFlag;
     searchParams->patternsList = d->patternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
     searchParams->exPatternsList = d->expatternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
-    searchParams->exPatternsList << "*.so" << "*.o";
-    searchParams->projectInfoMap = d->projectInfoMap;
 
     return true;
 }
@@ -392,7 +373,7 @@ void FindToolWindow::handleSearchMatched()
     if (results.isEmpty())
         return;
 
-    d->searchResultWindow->appendResults(results, d->projectInfoMap);
+    d->searchResultWindow->appendResults(results);
 }
 
 void FindToolWindow::handleSearchFinished()
@@ -405,20 +386,9 @@ void FindToolWindow::handleReplace(const QString &text)
     ReplaceParams params;
     params.replaceText = text;
     params.searchText = d->searchLineEdit->text();
-    int index = d->scopeComboBox->currentIndex();
-    switch (index) {
-    case 0:
-        params.filePathList = d->allProjectsPathList.values();
-        break;
-    case 1:
-        params.filePathList = QStringList { d->currentProjectPath };
-        break;
-    case 2:
-        params.filePathList = QStringList { d->currentFilePath };
-        break;
-    default:
-        break;
-    }
+    if (!checkSelectedScopeValid(&params.filePathList))
+        return;
+
     metaObject()->invokeMethod(d->searchReplaceWorker.data(),
                                "addReplaceTask",
                                Qt::QueuedConnection,

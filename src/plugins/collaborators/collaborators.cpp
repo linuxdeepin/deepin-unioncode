@@ -8,7 +8,11 @@
 #include "base/abstractaction.h"
 #include "base/abstractwidget.h"
 
+#include <DIconTheme>
+
 #include <QAction>
+
+DGUI_USE_NAMESPACE
 
 using namespace dpfservice;
 void Collaborators::initialize()
@@ -23,9 +27,9 @@ bool Collaborators::start()
     if (windowService) {
         if (windowService->addNavigationItem) {
             QAction *actionGit = new QAction(MWNA_GIT, this);
-            actionGit->setIcon(QIcon::fromTheme("git-navigation"));
+            actionGit->setIcon(DIconTheme::findQIcon("git-navigation"));
             QAction *actionSvn = new QAction(MWNA_SVN, this);
-            actionSvn->setIcon(QIcon::fromTheme("svn-navigation"));
+            actionSvn->setIcon(DIconTheme::findQIcon("svn-navigation"));
 
             windowService->addNavigationItem(new AbstractAction(actionGit), Priority::medium);
             windowService->addNavigationItem(new AbstractAction(actionSvn), Priority::medium);
