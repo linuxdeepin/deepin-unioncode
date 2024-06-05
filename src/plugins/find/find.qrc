@@ -1,7 +1,8 @@
 <RCC>
-    <qresource prefix="/icons/deepin/builtin">
-        <file>texts/search-find_16px.svg</file>
-        <file>actions/find_matchComplete_16px.svg</file>
-        <file>icons/find_noResults_96px.png</file>
+    <qresource prefix="/icons/deepin/builtin"/>
+    <qresource prefix="/">
+        <file>icons/deepin/builtin/icons/find_noResults_96px.png</file>
+        <file>icons/deepin/builtin/texts/find_matchComplete_16px.svg</file>
+        <file>icons/deepin/builtin/texts/search-find_16px.svg</file>
     </qresource>
 </RCC>

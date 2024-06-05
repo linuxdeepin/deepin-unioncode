@@ -41,6 +41,8 @@ public:
     DPF_INTERFACE(void, setText, const QString &text);
     DPF_INTERFACE(void, setCompletion, const QString &info, const QIcon &icon, const QKeySequence &key);
     DPF_INTERFACE(QString, currentFile);
+    DPF_INTERFACE(QStringList, openedFiles);
+    DPF_INTERFACE(QString, fileText, const QString &file);
 
     DPF_INTERFACE(void, registerSciLexerProxy, const QString &language, AbstractLexerProxy *proxy);
     DPF_INTERFACE(void, registerWidget, const QString &id, AbstractEditWidget *widget);

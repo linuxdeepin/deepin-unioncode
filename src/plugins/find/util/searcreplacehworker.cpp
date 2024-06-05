@@ -4,28 +4,57 @@
 
 #include "searcreplacehworker.h"
 
+#include "common/util/qtcassert.h"
+#include "services/editor/editorservice.h"
+
 #include <QProcess>
 #include <QMutex>
 #include <QSharedPointer>
 #include <QRegularExpression>
 
-class SearchReplaceWorkerPrivate
+using namespace dpfservice;
+
+class SearchReplaceWorkerPrivate : public QObject
 {
 public:
+    enum JobType {
+        SearchJob,
+        ReplaceJob
+    };
+
+    struct Job
+    {
+        JobType type;
+        QString cmd;
+        QString channelData;
+    };
+
     explicit SearchReplaceWorkerPrivate(SearchReplaceWorker *qq);
     ~SearchReplaceWorkerPrivate();
 
-    QString buildCommand(const SearchParams &params);
+    void startAll();
+    void startNextJob();
+
+    void createSearchJob(const SearchParams &params);
+    Job buildSearchJob(const QStringList &fileList,
+                       const QStringList &includeList,
+                       const QStringList &excludeList,
+                       const QString &keyword, SearchFlags flags,
+                       bool isOpenedFile);
     QString buildCommand(const ReplaceParams &params);
+
+    void processWorkingFiles(QStringList &projectFiles, QStringList &openedFiles);
 
 public:
     SearchReplaceWorker *q;
 
     QMutex mutex;
     FindItemList searchResults;
-    QAtomicInteger<bool> isRuning { false };
-    QSharedPointer<QProcess> searchProcess { nullptr };
+    QSharedPointer<QProcess> process { nullptr };
     QSharedPointer<QProcess> replaceProcess { nullptr };
+
+    QList<Job> jobList;
+    int currentJob = 0;
 };
 
 SearchReplaceWorkerPrivate::SearchReplaceWorkerPrivate(SearchReplaceWorker *qq)
@@ -35,32 +64,101 @@ SearchReplaceWorkerPrivate::SearchReplaceWorkerPrivate(SearchReplaceWorker *qq)
 
 SearchReplaceWorkerPrivate::~SearchReplaceWorkerPrivate()
 {
-    if (searchProcess && searchProcess->state() != QProcess::NotRunning)
-        searchProcess->kill();
-
-    if (replaceProcess && replaceProcess->state() != QProcess::NotRunning)
-        replaceProcess->kill();
+    q->stop();
 }
 
-QString SearchReplaceWorkerPrivate::buildCommand(const SearchParams &params)
+void SearchReplaceWorkerPrivate::startAll()
 {
-    QString searchPath = params.filePathList.join(" ");
-    QString sensitiveFlag = params.sensitiveFlag ? "" : " -i ";
-    QString wholeWordsFlag = params.wholeWordsFlag ? " -w " : "";
-    QString patternList;
-    if (!params.patternsList.isEmpty())
-        patternList = " --include=" + params.patternsList.join(" --include=");
+    QTC_ASSERT(!jobList.isEmpty(), return );
+    QTC_ASSERT(!process, return );
 
-    QString exPatternList;
-    if (!params.exPatternsList.isEmpty()) {
-        QString format(" --exclude={%1}");
-        exPatternList += format.arg(params.exPatternsList.join(','));
+    currentJob = 0;
+    startNextJob();
+}
+
+void SearchReplaceWorkerPrivate::startNextJob()
+{
+    QTC_ASSERT(currentJob < jobList.count(), return );
+
+    Job job = jobList.at(currentJob);
+    process.reset(new QProcess);
+    if (job.type == SearchJob)
+        connect(process.data(), &QProcess::readyReadStandardOutput, q, &SearchReplaceWorker::handleReadSearchResult);
+    connect(process.data(), qOverload<int>(&QProcess::finished),
+            q, std::bind(&SearchReplaceWorker::processDone, q, job.type));
+
+    process->start(job.cmd);
+    if (!job.channelData.isEmpty()) {
+        process->write(job.channelData.toUtf8());
+        process->closeWriteChannel();
+    }
+}
+
+void SearchReplaceWorkerPrivate::createSearchJob(const SearchParams &params)
+{
+    jobList.clear();
+    switch (params.baseParams.scope) {
+    case AllProjects:
+    case CurrentProject: {
+        auto tmpParams = params;
+        processWorkingFiles(tmpParams.baseParams.projectFileList, tmpParams.baseParams.openedFileList);
+        for (const auto &file : tmpParams.baseParams.openedFileList) {
+            const auto &job = buildSearchJob({ file }, tmpParams.includeList, tmpParams.excludeList,
+                                             tmpParams.baseParams.keyword, tmpParams.flags, true);
+            if (!job.cmd.isEmpty())
+                jobList << job;
+        }
+
+        const auto &job = buildSearchJob(tmpParams.baseParams.projectFileList, tmpParams.includeList, tmpParams.excludeList,
+                                         tmpParams.baseParams.keyword, tmpParams.flags, false);
+        if (!job.cmd.isEmpty())
+            jobList << job;
+    } break;
+    case CurrentFile: {
+        const auto &job = buildSearchJob(params.baseParams.openedFileList, params.includeList, params.excludeList,
+                                         params.baseParams.keyword, params.flags, true);
+        if (!job.cmd.isEmpty())
+            jobList << job;
+    } break;
+    default:
+        break;
+    }
+}
+
+SearchReplaceWorkerPrivate::Job SearchReplaceWorkerPrivate::buildSearchJob(const QStringList &fileList,
+                                                                           const QStringList &includeList,
+                                                                           const QStringList &excludeList,
+                                                                           const QString &keyword, SearchFlags flags,
+                                                                           bool isOpenedFile)
+{
+    if (fileList.isEmpty())
+        return {};
+
+    Job job;
+    job.type = SearchJob;
+    QStringList cmd;
+    cmd << "grep -Hn";
+    if (!flags.testFlag(SearchCaseSensitive))
+        cmd << "-i";
+    if (flags.testFlag(SearchWholeWord))
+        cmd << "-w";
+    if (!includeList.isEmpty())
+        cmd << "--include=" + includeList.join(" --include=");
+    if (!excludeList.isEmpty())
+        cmd << "--exclude=" + excludeList.join(" --exclude=");
+    cmd << "\"" + keyword + "\"";
+
+    if (isOpenedFile) {
+        auto editSrv = dpfGetService(EditorService);
+        job.channelData = editSrv->fileText(fileList.first());
+        cmd << "--label=" + fileList.first();
+    } else {
+        QString searchPath = fileList.join(' ');
+        cmd << searchPath;
     }
 
-    QString cmd = QString("grep -Hn " + sensitiveFlag + wholeWordsFlag
-                          + "\"" + params.searchText + "\" "
-                          + patternList + exPatternList + " " + searchPath);
-    return cmd;
+    job.cmd = cmd.join(' ');
+    return job;
 }
 
 QString SearchReplaceWorkerPrivate::buildCommand(const ReplaceParams &params)
@@ -68,10 +166,22 @@ QString SearchReplaceWorkerPrivate::buildCommand(const ReplaceParams &params)
     QString filePath = params.filePathList.join(' ');
 
     //exam: sed -i "s/main/main1/g" `grep -rl "main" /project/test`
-    QString cmd = "sed -i \"s/" + params.searchText
-            + "/" + params.replaceText + "/g\" `grep -rl \"" + params.searchText
+    QString cmd = "sed -i \"s/" + params.keyword
+            + "/" + params.replaceText + "/g\" `grep -rl \"" + params.keyword
             + "\" " + filePath + "`";
     return cmd;
+}
+
+void SearchReplaceWorkerPrivate::processWorkingFiles(QStringList &projectFiles, QStringList &openedFiles)
+{
+    for (int i = 0; i < openedFiles.size();) {
+        if (!projectFiles.contains(openedFiles.at(i))) {
+            openedFiles.removeAt(i);
+        } else {
+            projectFiles.removeOne(openedFiles.at(i));
+            ++i;
+        }
+    }
 }
 
 SearchReplaceWorker::SearchReplaceWorker(QObject *parent)
@@ -87,7 +197,11 @@ SearchReplaceWorker::~SearchReplaceWorker()
 
 void SearchReplaceWorker::stop()
 {
-    d->isRuning = false;
+    if (d->process) {
+        d->process->kill();
+        d->process->waitForFinished();
+        d->process.reset();
+    }
 }
 
 FindItemList SearchReplaceWorker::getResults()
@@ -98,26 +212,12 @@ FindItemList SearchReplaceWorker::getResults()
 
 void SearchReplaceWorker::addSearchTask(const SearchParams &params)
 {
-    d->isRuning = true;
-    if (!d->searchProcess)
-        d->searchProcess.reset(new QProcess);
-
-    connect(d->searchProcess.data(), &QProcess::readyReadStandardOutput,
-            this, &SearchReplaceWorker::handleReadSearchResult,
-            Qt::UniqueConnection);
-    connect(d->searchProcess.data(), qOverload<int>(&QProcess::finished),
-            this, &SearchReplaceWorker::searchFinished,
-            Qt::UniqueConnection);
-
-    const auto &cmd = d->buildCommand(params);
-    d->searchProcess->start(cmd);
-    d->searchProcess->waitForFinished(-1);
-    d->isRuning = false;
+    d->createSearchJob(params);
+    d->startAll();
 }
 
 void SearchReplaceWorker::addReplaceTask(const ReplaceParams &params)
 {
-    d->isRuning = true;
     if (!d->replaceProcess)
         d->replaceProcess.reset(new QProcess);
 
@@ -131,24 +231,13 @@ void SearchReplaceWorker::addReplaceTask(const ReplaceParams &params)
 
     d->replaceProcess->start("/bin/sh", options);
     d->replaceProcess->waitForFinished(-1);
-    d->isRuning = false;
 }
 
 void SearchReplaceWorker::handleReadSearchResult()
 {
-    if (!d->isRuning) {
-        d->searchProcess->terminate();
-        return;
-    }
-
     const auto resultLineRegex = QRegularExpression(R"((.+):([0-9]+):(.+))", QRegularExpression::NoPatternOption);
-    while (d->searchProcess->canReadLine()) {
-        const auto &line = d->searchProcess->readLine();
-        if (!d->isRuning) {
-            d->searchProcess->terminate();
-            return;
-        }
-
+    while (d->process->canReadLine()) {
+        const auto &line = d->process->readLine();
         QRegularExpressionMatch regMatch;
         if ((regMatch = resultLineRegex.match(line)).hasMatch()) {
             FindItem findItem;
@@ -164,4 +253,22 @@ void SearchReplaceWorker::handleReadSearchResult()
     QMutexLocker lk(&d->mutex);
     if (!d->searchResults.isEmpty())
         Q_EMIT matched();
+}
+
+void SearchReplaceWorker::processDone(int jobType)
+{
+    ++d->currentJob;
+    const bool success = d->process->exitCode() == 0;
+    if (d->currentJob < d->jobList.count() && success) {
+        d->process.reset();
+        d->startNextJob();
+        return;
+    }
+
+    if (jobType == SearchReplaceWorkerPrivate::SearchJob)
+        Q_EMIT searchFinished();
+    else
+        Q_EMIT replaceFinished(d->process->exitCode());
+
+    d->process.reset();
 }

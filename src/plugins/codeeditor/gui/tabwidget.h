@@ -25,6 +25,7 @@ public:
     QStringList modifiedFiles() const;
     QStringList openedFiles() const;
     void setText(const QString &text);
+    QString fileText(const QString &fileName, bool *success = nullptr);
     void saveAll() const;
     bool saveAs(const QString &from, const QString &to);
     void reloadFile(const QString &fileName);
@@ -68,7 +69,7 @@ public slots:
     void removeDebugLine();
     void gotoLine(int line);
     void gotoPosition(int line, int column);
-    
+
 signals:
     void closeRequested();
     void splitRequested(Qt::Orientation ori, const QString &fileName);

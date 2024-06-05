@@ -11,77 +11,182 @@
 #include <DMessageBox>
 #include <DLabel>
 #include <DLineEdit>
-#include <DTreeView>
 #include <DIconButton>
 #include <DDialog>
 
 #include <QVBoxLayout>
-#include <QStandardItemModel>
-#include <QProcess>
 #include <QDebug>
-#include <QtConcurrent>
 #include <QPalette>
 
-ItemProxy::ItemProxy(QObject *parent)
-    : QObject(parent)
+SearchResultModel::SearchResultModel(QObject *parent)
+    : QAbstractItemModel(parent)
 {
 }
 
-void ItemProxy::setRuningState(bool isRuning)
+int SearchResultModel::columnCount(const QModelIndex &parent) const
 {
-    this->isRuning = isRuning;
+    return 1;
 }
 
-void ItemProxy::addTask(const FindItemList &itemList)
+QVariant SearchResultModel::data(const QModelIndex &index, int role) const
 {
-    if (!isRuning)
-        return;
+    if (auto item = findItem(index))
+        return data(*item, role);
 
-    QHash<QString, QList<QPair<int, QString>>> findItemHash;
-    for (const FindItem &findItem : itemList) {
-        if (!isRuning)
-            return;
+    QString group = findGroup(index);
+    if (!group.isEmpty())
+        return data(group, role);
 
-        QString key = findItem.filePathName;
-        auto value = qMakePair(findItem.lineNumber, findItem.context);
-        if (findItemHash.contains(key)) {
-            QList<QPair<int, QString>> valueList = findItemHash.value(key);
-            valueList.append(value);
-            findItemHash[key] = valueList;
-        } else {
-            findItemHash.insert(key, { value });
-        }
-    }
+    return QVariant();
+}
 
-    QList<QStandardItem *> viewItemList;
-    auto iter = findItemHash.begin();
-    for (; iter != findItemHash.end(); ++iter) {
-        if (!isRuning) {
-            qDeleteAll(viewItemList);
-            return;
-        }
-
-        QList<QPair<int, QString>> contentList = iter.value();
-        QStandardItem *parentItem = new QStandardItem(iter.key() + " (" + QString::number(contentList.count()) + ")");
-        parentItem->setData(iter.key());
-        parentItem->setEditable(false);
-        viewItemList << parentItem;
-        for (const auto &content : contentList) {
-            if (!isRuning) {
-                qDeleteAll(viewItemList);
-                return;
+QModelIndex SearchResultModel::index(int row, int column, const QModelIndex &parent) const
+{
+    if (column == 0 && parent.isValid()) {
+        QString group = findGroup(parent);
+        if (!group.isEmpty()) {
+            auto items = resultData.value(group);
+            if (row < items.count()) {
+                auto &item = items.at(row);
+                return createIndex(row, 0, const_cast<FindItem *>(&item));
             }
+        }
+    } else if (column == 0 && row < resultData.size()) {
+        return createIndex(row, 0);
+    }
 
-            QString title = QString::number(content.first) + " " + content.second;
-            QStandardItem *childItem = new QStandardItem(title);
-            childItem->setEditable(false);
-            int lineNumber = content.first;
-            childItem->setData(lineNumber);
-            parentItem->appendRow(childItem);
+    return QModelIndex();
+}
+
+QModelIndex SearchResultModel::parent(const QModelIndex &child) const
+{
+    if (auto tool = findItem(child)) {
+        int groupIndex = 0;
+        for (const auto &itemsInGroup : resultData) {
+            if (itemsInGroup.contains(*tool))
+                return index(groupIndex, 0);
+            ++groupIndex;
+        }
+    }
+    return QModelIndex();
+}
+
+int SearchResultModel::rowCount(const QModelIndex &parent) const
+{
+    if (!parent.isValid())
+        return resultData.size();
+
+    if (findItem(parent))
+        return 0;
+
+    QString group = findGroup(parent);
+    if (!group.isEmpty())
+        return resultData.value(group).count();
+
+    return 0;
+}
+
+Qt::ItemFlags SearchResultModel::flags(const QModelIndex &index) const
+{
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+}
+
+void SearchResultModel::clear()
+{
+    beginResetModel();
+    resultData.clear();
+    endResetModel();
+}
+
+FindItem *SearchResultModel::findItem(const QModelIndex &index) const
+{
+    auto item = static_cast<FindItem *>(index.internalPointer());
+    return item;
+}
+
+QString SearchResultModel::findGroup(const QModelIndex &index) const
+{
+    if (index.isValid() && !index.parent().isValid() && index.column() == 0 && index.row() >= 0) {
+        const QList<QString> &keys = resultData.keys();
+        if (index.row() < keys.count())
+            return keys.at(index.row());
+    }
+
+    return QString();
+}
+
+void SearchResultModel::appendResult(const FindItemList &list)
+{
+    QMap<QString, FindItemList> result;
+    for (const auto &item : list) {
+        if (!resultData.contains(item.filePathName)) {
+            if (result.contains(item.filePathName)) {
+                addItem(item.filePathName, result[item.filePathName]);
+                result.clear();
+            }
+            addGroup(item.filePathName);
+            result[item.filePathName].append(item);
+        } else {
+            result[item.filePathName].append(item);
         }
     }
 
-    Q_EMIT taskCompleted(viewItemList);
+    for (auto iter = result.begin(); iter != result.end(); ++iter)
+        addItem(iter.key(), iter.value());
+}
+
+void SearchResultModel::addGroup(const QString &group)
+{
+    QList<QString> groupList = resultData.keys();
+    groupList.append(group);
+    std::stable_sort(std::begin(groupList), std::end(groupList));
+    int pos = groupList.indexOf(group);
+
+    beginInsertRows(QModelIndex(), pos, pos);
+    resultData.insert(group, FindItemList());
+    endInsertRows();
+}
+
+void SearchResultModel::addItem(const QString &group, const FindItemList &itemList)
+{
+    int pos = resultData.keys().indexOf(group);
+    auto parent = index(pos, 0);
+
+    beginInsertRows(parent, pos, pos + itemList.size());
+    resultData[group].append(itemList);
+    endInsertRows();
+}
+
+QVariant SearchResultModel::data(const FindItem &item, int role) const
+{
+    switch (role) {
+    case Qt::ToolTipRole:
+        return item.context;
+    case Qt::DisplayRole:
+        return QString::number(item.lineNumber) + "   " + item.context;
+    default:
+        break;
+    }
+
+    return QVariant();
+}
+
+QVariant SearchResultModel::data(const QString &group, int role) const
+{
+    switch (role) {
+    case Qt::ToolTipRole:
+        return group;
+    case Qt::DisplayRole: {
+        QString format("%1 (%2)");
+        return format.arg(group).arg(resultData.value(group).count());
+    }
+    case Qt::DecorationRole:
+        return DFileIconProvider::globalProvider()->icon(QFileInfo(group));
+    default:
+        break;
+    }
+
+    return QVariant();
 }
 
 class SearchResultTreeViewPrivate
@@ -89,42 +194,26 @@ class SearchResultTreeViewPrivate
     SearchResultTreeViewPrivate() {}
     ~SearchResultTreeViewPrivate();
 
-    QThread thread;
-    QSharedPointer<ItemProxy> proxy;
+    SearchResultModel model;
     friend class SearchResultTreeView;
 };
 
 SearchResultTreeViewPrivate::~SearchResultTreeViewPrivate()
 {
-    proxy->setRuningState(false);
-    thread.quit();
-    thread.wait();
 }
 
 SearchResultTreeView::SearchResultTreeView(QWidget *parent)
     : DTreeView(parent), d(new SearchResultTreeViewPrivate())
 {
-    QAbstractItemModel *itemModel = new QStandardItemModel(this);
-    setModel(itemModel);
+    setModel(&d->model);
 
     connect(this, &DTreeView::doubleClicked, this, [=](const QModelIndex &index) {
-        if (!index.isValid())
+        auto item = d->model.findItem(index);
+        if (!item)
             return;
-        if (!index.parent().isValid())
-            return;
-        QModelIndex parentIndex = index.parent();
-        QString filePath = parentIndex.data(Qt::UserRole + 1).toString().trimmed();
-        int lineNumber = index.data(Qt::UserRole + 1).toInt();
-        qInfo() << filePath << lineNumber;
 
-        editor.gotoLine(filePath, lineNumber);
+        editor.gotoLine(item->filePathName, item->lineNumber);
     });
-
-    d->proxy.reset(new ItemProxy);
-    connect(d->proxy.data(), &ItemProxy::taskCompleted, this, &SearchResultTreeView::appendItems, Qt::QueuedConnection);
-
-    d->proxy->moveToThread(&d->thread);
-    d->thread.start();
 }
 
 SearchResultTreeView::~SearchResultTreeView()
@@ -134,11 +223,7 @@ SearchResultTreeView::~SearchResultTreeView()
 
 void SearchResultTreeView::appendData(const FindItemList &itemList)
 {
-    d->proxy->setRuningState(true);
-    metaObject()->invokeMethod(d->proxy.data(),
-                               "addTask",
-                               Qt::QueuedConnection,
-                               Q_ARG(FindItemList, itemList));
+    d->model.appendResult(itemList);
 }
 
 QIcon SearchResultTreeView::icon(const QString &data)
@@ -147,23 +232,9 @@ QIcon SearchResultTreeView::icon(const QString &data)
     return iconProvider.icon(info);
 }
 
-void SearchResultTreeView::appendItems(const QList<QStandardItem *> &itemList)
-{
-    auto model = qobject_cast<QStandardItemModel *>(SearchResultTreeView::model());
-    if (!model)
-        return;
-
-    for (auto item : itemList) {
-        item->setIcon(icon(item->data().toString()));
-        model->appendRow(item);
-    }
-}
-
 void SearchResultTreeView::clearData()
 {
-    d->proxy->setRuningState(false);
-    auto model = qobject_cast<QStandardItemModel *>(SearchResultTreeView::model());
-    model->clear();
+    d->model.clear();
 }
 
 class SearchResultWindowPrivate
@@ -239,7 +310,6 @@ void SearchResultWindow::setupUi()
     d->treeView->setItemDelegate(new BaseItemDelegate(this));
 
     QVBoxLayout *vLayout = new QVBoxLayout();
-    // vLayout->setAlignment(Qt::AlignTop);
     vLayout->setContentsMargins(0, 0, 0, 0);
     vLayout->addLayout(hLayout);
     vLayout->addWidget(d->treeView, 1);

@@ -18,6 +18,7 @@ public:
     ~SearchReplaceWorker();
 
     void stop();
+
     FindItemList getResults();
 
 public Q_SLOTS:
@@ -31,8 +32,10 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void handleReadSearchResult();
+    void processDone(int jobType);
 
 private:
+    friend class SearchReplaceWorkerPrivate;
     SearchReplaceWorkerPrivate *const d;
 };
 

@@ -30,16 +30,32 @@
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
-class FindToolWindowPrivate
+class FindToolWindowPrivate : public QObject
 {
-    FindToolWindowPrivate() {}
+public:
+    explicit FindToolWindowPrivate(FindToolWindow *qq);
     ~FindToolWindowPrivate();
 
+    void initUI();
+    void initConnect();
+    void initWorker();
+
+    QWidget *createSearchParamWidget();
+    QWidget *createSearchResultWidget();
+
+    bool checkSelectedScopeValid();
+    bool setBaseParams(BaseParams *params);
+    void showMessage(const QString &message);
+
+public:
+    FindToolWindow *q;
     DStackedWidget *stackedWidget { nullptr };
     SearchResultWindow *searchResultWindow { nullptr };
     QSharedPointer<SearchReplaceWorker> searchReplaceWorker { nullptr };
     QThread thread;
 
+    DPushButton *searchBtn { nullptr };
+    DPushButton *replaceBtn { nullptr };
     DComboBox *scopeComboBox { nullptr };
     DLineEdit *searchLineEdit { nullptr };
     DCheckBox *senseCheckBox { nullptr };
@@ -57,6 +73,11 @@ class FindToolWindowPrivate
     friend class FindToolWindow;
 };
 
+FindToolWindowPrivate::FindToolWindowPrivate(FindToolWindow *qq)
+    : q(qq)
+{
+}
+
 FindToolWindowPrivate::~FindToolWindowPrivate()
 {
     searchReplaceWorker->stop();
@@ -64,30 +85,17 @@ FindToolWindowPrivate::~FindToolWindowPrivate()
     thread.wait();
 }
 
-FindToolWindow::FindToolWindow(QWidget *parent)
-    : QWidget(parent),
-      d(new FindToolWindowPrivate())
+void FindToolWindowPrivate::initUI()
 {
-    setupUi();
-    initWorker();
-}
-
-FindToolWindow::~FindToolWindow()
-{
-    delete d;
-}
-
-void FindToolWindow::setupUi()
-{
-    DFrame *mainPaneFrame = new DFrame(this);
+    DFrame *mainPaneFrame = new DFrame(q);
     DStyle::setFrameRadius(mainPaneFrame, 0);
-    d->stackedWidget = new DStackedWidget();
-    QHBoxLayout *hLayout = new QHBoxLayout();
+    stackedWidget = new DStackedWidget();
+    QHBoxLayout *hLayout = new QHBoxLayout(q);
     hLayout->setContentsMargins(0, 0, 0, 0);
 
     DScrollArea *scrollArea = new DScrollArea(mainPaneFrame);
     scrollArea->setWidgetResizable(true);
-    scrollArea->setWidget(d->stackedWidget);
+    scrollArea->setWidget(stackedWidget);
     scrollArea->setLineWidth(0);
 
     mainPaneFrame->setLineWidth(0);
@@ -96,113 +104,230 @@ void FindToolWindow::setupUi()
     scrollLayout->addWidget(scrollArea);
     mainPaneFrame->setLayout(scrollLayout);
 
-    QWidget *searchParamWidget = new QWidget(this);
-    QWidget *searchResultWidget = new QWidget(this);
-
-    addSearchParamWidget(searchParamWidget);
-    addSearchResultWidget(searchResultWidget);
-
-    d->stackedWidget->addWidget(searchParamWidget);
-    d->stackedWidget->addWidget(searchResultWidget);
-    d->stackedWidget->setCurrentIndex(0);
-
-    setLayout(hLayout);
+    stackedWidget->addWidget(createSearchParamWidget());
+    stackedWidget->addWidget(createSearchResultWidget());
+    stackedWidget->setCurrentIndex(0);
 }
 
-void FindToolWindow::initWorker()
+void FindToolWindowPrivate::initConnect()
 {
-    d->searchReplaceWorker.reset(new SearchReplaceWorker);
-    connect(d->searchReplaceWorker.data(), &SearchReplaceWorker::matched, this, &FindToolWindow::handleSearchMatched, Qt::QueuedConnection);
-    connect(d->searchReplaceWorker.data(), &SearchReplaceWorker::searchFinished, this, &FindToolWindow::handleSearchFinished, Qt::QueuedConnection);
-    connect(d->searchReplaceWorker.data(), &SearchReplaceWorker::replaceFinished, this, &FindToolWindow::handleReplaceFinished, Qt::QueuedConnection);
+    connect(searchBtn, &QAbstractButton::clicked, q, &FindToolWindow::search);
+    connect(replaceBtn, &QAbstractButton::clicked, q, &FindToolWindow::replace);
+    connect(senseCheckBtnOn, &QPushButton::clicked, q, &FindToolWindow::onSenseCheckBtnClicked);
+    connect(wholeWordsCheckBtnOn, &QPushButton::clicked, q, &FindToolWindow::onWholeWordsCheckBtnClicked);
+    connect(senseCheckBtnOff, &QPushButton::clicked, q, &FindToolWindow::onSenseCheckBtnClicked);
+    connect(wholeWordsCheckBtnOff, &QPushButton::clicked, q, &FindToolWindow::onWholeWordsCheckBtnClicked);
 
-    d->searchReplaceWorker->moveToThread(&d->thread);
-    d->thread.start();
+    connect(searchResultWindow, &SearchResultWindow::reqBack, q, &FindToolWindow::switchSearchParamWidget);
+    connect(searchResultWindow, &SearchResultWindow::reqReplace, q, &FindToolWindow::handleReplace);
 }
 
-void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
+void FindToolWindowPrivate::initWorker()
 {
-    QFormLayout *formLayout = new QFormLayout();
-    parentWidget->setLayout(formLayout);
+    searchReplaceWorker.reset(new SearchReplaceWorker);
+    connect(searchReplaceWorker.data(), &SearchReplaceWorker::matched, q, &FindToolWindow::handleSearchMatched, Qt::QueuedConnection);
+    connect(searchReplaceWorker.data(), &SearchReplaceWorker::searchFinished, q, &FindToolWindow::handleSearchFinished, Qt::QueuedConnection);
+    connect(searchReplaceWorker.data(), &SearchReplaceWorker::replaceFinished, q, &FindToolWindow::handleReplaceFinished, Qt::QueuedConnection);
 
-    DLabel *scopeLabel = new DLabel(QLabel::tr("Scope:"));
-    d->scopeComboBox = new DComboBox(parentWidget);
-    d->scopeComboBox->addItem(tr("All Projects"), AllProjects);
-    d->scopeComboBox->addItem(tr("Current Project"), CurrentProject);
-    d->scopeComboBox->addItem(tr("Current File"), CurrentDocument);
-    d->scopeComboBox->setFixedWidth(369);
+    searchReplaceWorker->moveToThread(&thread);
+    thread.start();
+}
 
-    DLabel *searchLabel = new DLabel(QLabel::tr("Search for:"));
+QWidget *FindToolWindowPrivate::createSearchParamWidget()
+{
+    QWidget *widget = new QWidget(q);
+    QHBoxLayout *mainLayout = new QHBoxLayout(widget);
+
+    DLabel *scopeLabel = new DLabel(FindToolWindow::tr("Scope:"));
+    scopeComboBox = new DComboBox(q);
+    scopeComboBox->addItem(tr("All Projects"), AllProjects);
+    scopeComboBox->addItem(tr("Current Project"), CurrentProject);
+    scopeComboBox->addItem(tr("Current File"), CurrentFile);
+    scopeComboBox->setFixedWidth(369);
+
+    DLabel *searchLabel = new DLabel(FindToolWindow::tr("Search for:"));
     QHBoxLayout *hlayout = new QHBoxLayout();
-    d->searchLineEdit = new DLineEdit(parentWidget);
-    d->searchLineEdit->setFixedWidth(277);
-    d->searchLineEdit->setPlaceholderText(tr("thread"));
+    searchLineEdit = new DLineEdit(q);
+    searchLineEdit->setFixedWidth(277);
+    searchLineEdit->setPlaceholderText(FindToolWindow::tr("thread"));
 
-    d->senseCheckBtnOn = new DSuggestButton(parentWidget);
-    d->senseCheckBtnOn->setText("Aa");
-    d->senseCheckBtnOn->setFixedSize(36, 36);
-    d->senseCheckBtnOn->hide();
+    senseCheckBtnOn = new DSuggestButton(q);
+    senseCheckBtnOn->setToolTip(FindToolWindow::tr("Click to case insensitive"));
+    senseCheckBtnOn->setText("Aa");
+    senseCheckBtnOn->setFixedSize(36, 36);
+    senseCheckBtnOn->hide();
 
-    d->senseCheckBtnOff = new DPushButton(parentWidget);
-    d->senseCheckBtnOff->setText("aa");
-    d->senseCheckBtnOff->setFixedSize(36, 36);
+    senseCheckBtnOff = new DPushButton(q);
+    senseCheckBtnOff->setToolTip(FindToolWindow::tr("Click to Case sensitive"));
+    senseCheckBtnOff->setText("aa");
+    senseCheckBtnOff->setFixedSize(36, 36);
 
-    d->wholeWordsCheckBtnOn = new DSuggestButton(parentWidget);
-    d->wholeWordsCheckBtnOn->setIcon(QIcon::fromTheme("find_matchComplete"));
-    d->wholeWordsCheckBtnOn->setFixedSize(36, 36);
-    d->wholeWordsCheckBtnOn->hide();
+    wholeWordsCheckBtnOn = new DSuggestButton(q);
+    wholeWordsCheckBtnOn->setToolTip(FindToolWindow::tr("Click to disable whole words matching"));
+    wholeWordsCheckBtnOn->setIcon(QIcon::fromTheme("find_matchComplete"));
+    wholeWordsCheckBtnOn->setFixedSize(36, 36);
+    wholeWordsCheckBtnOn->hide();
 
-    d->wholeWordsCheckBtnOff = new DPushButton(parentWidget);
-    d->wholeWordsCheckBtnOff->setIcon(QIcon::fromTheme("find_matchComplete"));
-    d->wholeWordsCheckBtnOff->setFixedSize(36, 36);
+    wholeWordsCheckBtnOff = new DPushButton(q);
+    wholeWordsCheckBtnOff->setToolTip(FindToolWindow::tr("Click to enable whole words matching"));
+    wholeWordsCheckBtnOff->setIcon(QIcon::fromTheme("find_matchComplete"));
+    wholeWordsCheckBtnOff->setFixedSize(36, 36);
 
-    hlayout->addWidget(d->searchLineEdit);
-    hlayout->addWidget(d->senseCheckBtnOn);
-    hlayout->addWidget(d->senseCheckBtnOff);
-    hlayout->addWidget(d->wholeWordsCheckBtnOn);
-    hlayout->addWidget(d->wholeWordsCheckBtnOff);
+    hlayout->addWidget(searchLineEdit);
+    hlayout->addWidget(senseCheckBtnOn);
+    hlayout->addWidget(senseCheckBtnOff);
+    hlayout->addWidget(wholeWordsCheckBtnOn);
+    hlayout->addWidget(wholeWordsCheckBtnOff);
 
-    DLabel *patternLabel = new DLabel(QLabel::tr("File pattern:"), parentWidget);
-    d->patternLineEdit = new DLineEdit(parentWidget);
-    d->patternLineEdit->setPlaceholderText(tr("e.g.*.ts,src/**/include"));
-    d->patternLineEdit->setFixedWidth(369);
+    DLabel *patternLabel = new DLabel(FindToolWindow::tr("File pattern:"), q);
+    patternLineEdit = new DLineEdit(q);
+    patternLineEdit->setPlaceholderText(FindToolWindow::tr("e.g.*.ts,src/**/include"));
+    patternLineEdit->setFixedWidth(369);
 
-    DLabel *expatternLabel = new DLabel(QLabel::tr("Exclusion pattern:"), parentWidget);
-    d->expatternLineEdit = new DLineEdit(parentWidget);
-    d->expatternLineEdit->setPlaceholderText(tr("e.g.*.ts,src/**/include"));
-    d->expatternLineEdit->setFixedWidth(369);
+    DLabel *expatternLabel = new DLabel(FindToolWindow::tr("Exclusion pattern:"), q);
+    expatternLineEdit = new DLineEdit(q);
+    expatternLineEdit->setPlaceholderText(FindToolWindow::tr("e.g.*.ts,src/**/include"));
+    expatternLineEdit->setFixedWidth(369);
+
+    searchBtn = new DPushButton(FindToolWindow::tr("Search"), q);
+    replaceBtn = new DPushButton(FindToolWindow::tr("Search && Replace"), q);
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
-    DPushButton *searchBtn = new DPushButton(QPushButton::tr("Search"), parentWidget);
-    searchBtn->setMinimumWidth(120);
-    searchBtn->setMaximumWidth(120);
-    searchBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-    DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Search && Replace"), parentWidget);
-    replaceBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    replaceBtn->setMinimumWidth(120);
-    replaceBtn->setMaximumWidth(120);
-
+    btnLayout->setContentsMargins(0, 0, 0, 0);
+    btnLayout->addStretch(1);
     btnLayout->addWidget(searchBtn);
     btnLayout->addWidget(replaceBtn);
-    btnLayout->setContentsMargins(213, 0, 0, 0);
 
-    connect(searchBtn, &QAbstractButton::clicked, this, &FindToolWindow::search);
-    connect(replaceBtn, &QAbstractButton::clicked, this, &FindToolWindow::replace);
-
-    connect(d->senseCheckBtnOn, &QPushButton::clicked, this, &FindToolWindow::onSenseCheckBtnClicked);
-    connect(d->wholeWordsCheckBtnOn, &QPushButton::clicked, this, &FindToolWindow::onwholeWordsCheckBtnClicked);
-    connect(d->senseCheckBtnOff, &QPushButton::clicked, this, &FindToolWindow::onSenseCheckBtnClicked);
-    connect(d->wholeWordsCheckBtnOff, &QPushButton::clicked, this, &FindToolWindow::onwholeWordsCheckBtnClicked);
-
+    QFormLayout *formLayout = new QFormLayout(widget);
     formLayout->setContentsMargins(26, 10, 0, 0);
     formLayout->setSpacing(10);
-    formLayout->addRow(scopeLabel, d->scopeComboBox);
+    formLayout->addRow(scopeLabel, scopeComboBox);
     formLayout->addRow(searchLabel, hlayout);
-    formLayout->addRow(patternLabel, d->patternLineEdit);
-    formLayout->addRow(expatternLabel, d->expatternLineEdit);
+    formLayout->addRow(patternLabel, patternLineEdit);
+    formLayout->addRow(expatternLabel, expatternLineEdit);
     formLayout->addRow(btnLayout);
     formLayout->setAlignment(btnLayout, Qt::AlignLeft);
+
+    mainLayout->addLayout(formLayout);
+    mainLayout->addStretch(1);
+    return widget;
+}
+
+QWidget *FindToolWindowPrivate::createSearchResultWidget()
+{
+    QWidget *widget = new QWidget(q);
+    QVBoxLayout *vLayout = new QVBoxLayout(widget);
+
+    searchResultWindow = new SearchResultWindow(q);
+    vLayout->addWidget(searchResultWindow);
+
+    return widget;
+}
+
+bool FindToolWindowPrivate::checkSelectedScopeValid()
+{
+    int scope = scopeComboBox->currentData().toInt();
+    switch (scope) {
+    case AllProjects: {
+        auto projectSrv = dpfGetService(ProjectService);
+        const auto &infoList = projectSrv->getAllProjectInfo();
+        if (infoList.isEmpty()) {
+            showMessage(FindToolWindow::tr("All projects path is empty, please import!"));
+            return false;
+        }
+        break;
+    }
+    case CurrentProject: {
+        auto projectSrv = dpfGetService(ProjectService);
+        const auto &info = projectSrv->getActiveProjectInfo();
+        if (info.isEmpty()) {
+            showMessage(FindToolWindow::tr("Current project path is empty, please import!"));
+            return false;
+        }
+        break;
+    }
+    case CurrentFile: {
+        auto editSrv = dpfGetService(EditorService);
+        auto curFile = editSrv->currentFile();
+        if (curFile.isEmpty()) {
+            showMessage(FindToolWindow::tr("No files are currently open, please open!"));
+            return false;
+        }
+        break;
+    }
+    default: {
+        showMessage(FindToolWindow::tr("Scope is not selected, please select!"));
+        return false;
+    }
+    }
+
+    return true;
+}
+
+bool FindToolWindowPrivate::setBaseParams(BaseParams *params)
+{
+    if (!params)
+        return false;
+
+    params->keyword = searchLineEdit->text();
+    if (params->keyword.isEmpty()) {
+        searchLineEdit->showAlertMessage(tr("Search for text is empty, please input!"));
+        return false;
+    }
+
+    auto projectSrv = dpfGetService(ProjectService);
+    auto editSrv = dpfGetService(EditorService);
+    params->scope = static_cast<SearchScope>(scopeComboBox->currentData().toInt());
+    switch (params->scope) {
+    case AllProjects: {
+        const auto &infoList = projectSrv->getAllProjectInfo();
+        for (const auto &info : infoList) {
+            params->projectFileList.append(info.sourceFiles().toList());
+        }
+        params->openedFileList = editSrv->openedFiles();
+        return true;
+    }
+    case CurrentProject: {
+        const auto &info = projectSrv->getActiveProjectInfo();
+        params->projectFileList.append(info.sourceFiles().toList());
+        params->openedFileList = editSrv->openedFiles();
+        return true;
+    }
+    case CurrentFile: {
+        auto curFile = editSrv->currentFile();
+        params->openedFileList << curFile;
+        return true;
+    }
+    default: {
+        break;
+    }
+    }
+
+    return false;
+}
+
+void FindToolWindowPrivate::showMessage(const QString &message)
+{
+    DDialog dlg(q);
+    dlg.setIcon(QIcon::fromTheme("dialog-warning"));
+    dlg.setMessage(message);
+    dlg.insertButton(0, FindToolWindow::tr("Ok"));
+
+    dlg.exec();
+}
+
+FindToolWindow::FindToolWindow(QWidget *parent)
+    : QWidget(parent),
+      d(new FindToolWindowPrivate(this))
+{
+    d->initUI();
+    d->initWorker();
+    d->initConnect();
+}
+
+FindToolWindow::~FindToolWindow()
+{
+    delete d;
 }
 
 void FindToolWindow::onSenseCheckBtnClicked()
@@ -217,7 +342,7 @@ void FindToolWindow::onSenseCheckBtnClicked()
     }
 }
 
-void FindToolWindow::onwholeWordsCheckBtnClicked()
+void FindToolWindow::onWholeWordsCheckBtnClicked()
 {
     d->wholeWordsCheckBtnFlag = !d->wholeWordsCheckBtnFlag;
     if (d->wholeWordsCheckBtnFlag) {
@@ -229,109 +354,24 @@ void FindToolWindow::onwholeWordsCheckBtnClicked()
     }
 }
 
-void FindToolWindow::addSearchResultWidget(QWidget *parentWidget)
-{
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    parentWidget->setLayout(vLayout);
-
-    d->searchResultWindow = new SearchResultWindow();
-    connect(d->searchResultWindow, &SearchResultWindow::reqBack, this, &FindToolWindow::switchSearchParamWidget);
-    connect(d->searchResultWindow, &SearchResultWindow::reqReplace, this, &FindToolWindow::handleReplace);
-    vLayout->addWidget(d->searchResultWindow);
-}
-
 void FindToolWindow::search()
 {
     searchText();
     d->searchResultWindow->setRepalceWidgtVisible(false);
 }
 
-void FindToolWindow::createMessageDialog(const QString &message)
-{
-    DDialog *messageDialog = new DDialog(this);
-    messageDialog->setIcon(QIcon::fromTheme("dialog-warning"));
-    messageDialog->setMessage(message);
-    messageDialog->insertButton(0, tr("Ok"));
-    messageDialog->setAttribute(Qt::WA_DeleteOnClose);
-    connect(messageDialog, &DDialog::buttonClicked, [=](int index) {
-        if (index == 0) {
-            messageDialog->reject();
-        }
-    });
-
-    messageDialog->exec();
-}
-
-bool FindToolWindow::checkSelectedScopeValid(QStringList *searchPathList)
-{
-    int scope = d->scopeComboBox->currentData().toInt();
-    switch (scope) {
-    case AllProjects: {
-        auto projectSrv = dpfGetService(ProjectService);
-        const auto &infoList = projectSrv->getAllProjectInfo();
-        if (infoList.isEmpty()) {
-            createMessageDialog(tr("All projects path is empty, please import!"));
-            return false;
-        }
-
-        if (!searchPathList)
-            break;
-
-        for (const auto &info : infoList) {
-            searchPathList->append(info.sourceFiles().toList());
-        }
-        break;
-    }
-    case CurrentProject: {
-        auto projectSrv = dpfGetService(ProjectService);
-        const auto &info = projectSrv->getActiveProjectInfo();
-        if (info.isEmpty()) {
-            createMessageDialog(tr("Current project path is empty, please import!"));
-            return false;
-        }
-
-        if (searchPathList)
-            *searchPathList = info.sourceFiles().toList();
-        break;
-    }
-    case CurrentDocument: {
-        auto editSrv = dpfGetService(EditorService);
-        auto curFile = editSrv->currentFile();
-        if (curFile.isEmpty()) {
-            createMessageDialog(tr("Current project path is empty, please import!"));
-            return false;
-        }
-
-        if (searchPathList)
-            searchPathList->append(curFile);
-        break;
-    }
-    default: {
-        createMessageDialog(tr("Scope is not selected, please select!"));
-        return false;
-    }
-    }
-
-    return true;
-}
-
 bool FindToolWindow::getSearchParams(SearchParams *searchParams)
 {
-    QStringList searchPathList;
-    if (!checkSelectedScopeValid(&searchPathList))
+    if (!d->checkSelectedScopeValid())
         return false;
-    QString text = d->searchLineEdit->text();
-    if (text.isEmpty()) {
-        d->searchLineEdit->showAlertMessage(tr("Search for text is empty, please input!"));
-        return false;
-    }
 
-    searchParams->filePathList = searchPathList;
-    searchParams->searchText = text;
-    searchParams->sensitiveFlag = d->senseCheckBtnFlag;
-    searchParams->wholeWordsFlag = d->wholeWordsCheckBtnFlag;
-    searchParams->patternsList = d->patternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
-    searchParams->exPatternsList = d->expatternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
+    if (!d->setBaseParams(&searchParams->baseParams))
+        return false;
+
+    searchParams->flags |= d->senseCheckBtnFlag ? SearchCaseSensitive : SearchNoFlag;
+    searchParams->flags |= d->wholeWordsCheckBtnFlag ? SearchWholeWord : SearchNoFlag;
+    searchParams->includeList = d->patternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
+    searchParams->excludeList = d->expatternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
 
     return true;
 }
@@ -354,8 +394,9 @@ void FindToolWindow::searchText()
 
 void FindToolWindow::replace()
 {
-    if (!checkSelectedScopeValid())
+    if (!d->checkSelectedScopeValid())
         return;
+
     searchText();
     d->searchResultWindow->setRepalceWidgtVisible(true);
 }
@@ -384,8 +425,8 @@ void FindToolWindow::handleReplace(const QString &text)
 {
     ReplaceParams params;
     params.replaceText = text;
-    params.searchText = d->searchLineEdit->text();
-    if (!checkSelectedScopeValid(&params.filePathList))
+    params.keyword = d->searchLineEdit->text();
+    if (!d->checkSelectedScopeValid())
         return;
 
     metaObject()->invokeMethod(d->searchReplaceWorker.data(),

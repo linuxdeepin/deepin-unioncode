@@ -9,25 +9,38 @@
 #include <QObject>
 
 enum SearchScope {
-    AllProjects,
+    AllProjects = 0,
     CurrentProject,
-    CurrentDocument
+    CurrentFile
+};
+
+enum SearchFlag {
+    SearchNoFlag = 0,
+    SearchCaseSensitive = 1,
+    SearchWholeWord = 1 << 1
+};
+Q_DECLARE_FLAGS(SearchFlags, SearchFlag)
+
+struct BaseParams
+{
+    QStringList projectFileList;
+    QStringList openedFileList;
+    QString keyword;
+    SearchScope scope;
 };
 
 struct SearchParams
 {
-    QStringList filePathList;
-    QString searchText;
-    bool sensitiveFlag;
-    bool wholeWordsFlag;
-    QStringList patternsList;
-    QStringList exPatternsList;
+    BaseParams baseParams;
+    QStringList includeList;
+    QStringList excludeList;
+    SearchFlags flags = SearchNoFlag;
 };
 
 struct ReplaceParams
 {
     QStringList filePathList;
-    QString searchText;
+    QString keyword;
     QString replaceText;
 };
 
@@ -36,6 +49,11 @@ struct FindItem
     QString filePathName;
     int lineNumber = -1;
     QString context;
+
+    inline bool operator==(const FindItem &other)
+    {
+        return filePathName == other.filePathName && lineNumber == other.lineNumber;
+    }
 };
 
 using FindItemList = QList<FindItem>;

@@ -65,8 +65,8 @@ void InstantBlameWidget::mousePressEvent(QMouseEvent *event)
     if (editSrv) {
         auto file = editSrv->currentFile();
         auto ret = parserBlameOutput(info.split('\n'));
-        GitClient::instance()->show(file, ret.sha1);
-        editSrv->switchWidget(GitWindow);
+        if (GitClient::instance()->show(file, ret.sha1))
+            editSrv->switchWidget(GitWindow);
     }
 
     QWidget::mousePressEvent(event);

@@ -10,26 +10,34 @@
 #include <QWidget>
 #include <DTreeView>
 #include <DFileIconProvider>
-#include <QStandardItem>
 
 DWIDGET_USE_NAMESPACE
 
-class ItemProxy : public QObject
+class SearchResultModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    explicit ItemProxy(QObject *parent = nullptr);
+    explicit SearchResultModel(QObject *parent = nullptr);
 
-    void setRuningState(bool isRuning);
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex parent(const QModelIndex &child) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-public Q_SLOTS:
-    void addTask(const FindItemList &itemList);
-
-Q_SIGNALS:
-    void taskCompleted(const QList<QStandardItem *> &itemList);
+    void clear();
+    FindItem *findItem(const QModelIndex &index) const;
+    QString findGroup(const QModelIndex &index) const;
+    void appendResult(const FindItemList &list);
 
 private:
-    QAtomicInteger<bool> isRuning { false };
+    void addGroup(const QString &group);
+    void addItem(const QString &group, const FindItemList &itemList);
+    QVariant data(const FindItem &item, int role = Qt::DisplayRole) const;
+    QVariant data(const QString &group, int role = Qt::DisplayRole) const;
+
+    QMap<QString, FindItemList> resultData;
 };
 
 class SearchResultTreeViewPrivate;
@@ -45,9 +53,6 @@ public:
     void appendData(const FindItemList &itemList);
     void clearData();
     virtual QIcon icon(const QString &data);
-
-private Q_SLOTS:
-    void appendItems(const QList<QStandardItem *> &itemList);
 
 private:
     SearchResultTreeViewPrivate *const d;
