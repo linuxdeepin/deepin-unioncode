@@ -593,6 +593,17 @@ void TabWidget::setText(const QString &text)
     }
 }
 
+QString TabWidget::fileText(const QString &fileName, bool *success)
+{
+    if (auto editor = d->findEditor(fileName)) {
+        if (success) *success = true;
+        return editor->text();
+    }
+
+    if (success) *success = false;
+    return {};
+}
+
 void TabWidget::saveAll() const
 {
     for (auto editor : d->editorMng.values())

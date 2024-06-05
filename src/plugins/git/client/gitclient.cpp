@@ -44,7 +44,7 @@ public:
 
 QString GitClientPrivate::findRepository(const QString &filePath)
 {
-    if (filePath == "/")
+    if (filePath == "/" || filePath.isEmpty())
         return {};
 
     QFileInfo info(filePath);
@@ -275,16 +275,17 @@ bool GitClient::gitDiff(const QString &filePath, bool isProject)
     return true;
 }
 
-void GitClient::show(const QString &source, const QString &commitId)
+bool GitClient::show(const QString &source, const QString &commitId)
 {
     if (!d->canShow(commitId))
-        return;
+        return false;
 
     QString repository;
     if (!checkRepositoryExist(source, &repository))
-        return;
+        return false;
 
     d->show(repository, commitId);
+    return true;
 }
 
 QWidget *GitClient::instantBlameWidget() const
