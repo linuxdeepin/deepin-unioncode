@@ -24,7 +24,7 @@ public:
     bool gitLog(const QString &filePath, bool isProject);
     bool blameFile(const QString &filePath);
     bool gitDiff(const QString &filePath, bool isProject);
-    void show(const QString &source, const QString &commitId);
+    bool show(const QString &source, const QString &commitId);
 
     QWidget *instantBlameWidget() const;
     QWidget *gitTabWidget() const;

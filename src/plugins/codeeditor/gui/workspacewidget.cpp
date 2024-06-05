@@ -725,6 +725,29 @@ void WorkspaceWidget::closeFileEditor(const QString &fileName)
         tabWidget->closeFileEditor(fileName);
 }
 
+QStringList WorkspaceWidget::openedFiles() const
+{
+    QStringList files;
+    for (auto tabWidget : d->tabWidgetList)
+        files << tabWidget->openedFiles();
+
+    // Delete duplicates
+    auto tmp = files.toSet();
+    return tmp.toList();
+}
+
+QString WorkspaceWidget::fileText(const QString &fileName) const
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        bool success = false;
+        const auto &text = tabWidget->fileText(fileName, &success);
+        if (success)
+            return text;
+    }
+
+    return {};
+}
+
 void WorkspaceWidget::registerWidget(const QString &id, AbstractEditWidget *widget)
 {
     d->registeredWidget.insert(id, widget);
