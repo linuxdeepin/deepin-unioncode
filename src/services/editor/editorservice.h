@@ -43,6 +43,8 @@ public:
     DPF_INTERFACE(QString, currentFile);
     DPF_INTERFACE(QStringList, openedFiles);
     DPF_INTERFACE(QString, fileText, const QString &file);
+    DPF_INTERFACE(void, replaceAll, const QString &file, const QString &oldText,
+                  const QString &newText, bool caseSensitive, bool wholeWords);
 
     DPF_INTERFACE(void, registerSciLexerProxy, const QString &language, AbstractLexerProxy *proxy);
     DPF_INTERFACE(void, registerWidget, const QString &id, AbstractEditWidget *widget);

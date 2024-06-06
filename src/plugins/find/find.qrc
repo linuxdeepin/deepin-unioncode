@@ -4,5 +4,6 @@
         <file>icons/deepin/builtin/icons/find_noResults_96px.png</file>
         <file>icons/deepin/builtin/texts/find_matchComplete_16px.svg</file>
         <file>icons/deepin/builtin/texts/search-find_16px.svg</file>
+        <file>icons/deepin/builtin/texts/match_case_16px.svg</file>
     </qresource>
 </RCC>
