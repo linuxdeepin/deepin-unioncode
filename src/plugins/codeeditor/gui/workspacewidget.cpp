@@ -77,7 +77,7 @@ void WorkspaceWidgetPrivate::initActions()
 
     auto abstractShowOpenedAction = new AbstractAction(showOpenedAction, q);
     abstractShowOpenedAction->setShortCutInfo("Editor.showOpened",
-                                            tr("Show opened files"), QKeySequence(Qt::CTRL | Qt::Key_Tab));
+                                              tr("Show opened files"), QKeySequence(Qt::CTRL | Qt::Key_Tab));
     windowService->addAction(tr("&Show open files"), abstractShowOpenedAction);
     connect(showOpenedAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleShowOpenedFiles);
 }
@@ -746,6 +746,14 @@ QString WorkspaceWidget::fileText(const QString &fileName) const
     }
 
     return {};
+}
+
+void WorkspaceWidget::replaceAll(const QString &fileName, const QString &oldText,
+                                 const QString &newText, bool caseSensitive, bool wholeWords)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        tabWidget->replaceAll(fileName, oldText, newText, caseSensitive, wholeWords);
+    }
 }
 
 void WorkspaceWidget::registerWidget(const QString &id, AbstractEditWidget *widget)

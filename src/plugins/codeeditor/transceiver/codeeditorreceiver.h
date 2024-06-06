@@ -23,6 +23,7 @@ private:
     void processBackEvent(const dpf::Event &event);
     void processForwardEvent(const dpf::Event &event);
     void processGotoLineEvent(const dpf::Event &event);
+    void processGotoPositionEvent(const dpf::Event &event);
     void processSetLineBackgroundColorEvent(const dpf::Event &event);
     void processResetLineBackgroundEvent(const dpf::Event &event);
     void processClearLineBackgroundEvent(const dpf::Event &event);
