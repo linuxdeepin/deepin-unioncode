@@ -8,6 +8,12 @@
 #include <QMap>
 #include <QObject>
 
+enum ResultRole {
+    LineRole = Qt::UserRole + 1,
+    ColumnRole,
+    KeywordRole
+};
+
 enum SearchScope {
     AllProjects = 0,
     CurrentProject,
@@ -23,10 +29,9 @@ Q_DECLARE_FLAGS(SearchFlags, SearchFlag)
 
 struct BaseParams
 {
-    QStringList projectFileList;
+    QStringList baseFileList;
     QStringList openedFileList;
     QString keyword;
-    SearchScope scope;
 };
 
 struct SearchParams
@@ -35,24 +40,28 @@ struct SearchParams
     QStringList includeList;
     QStringList excludeList;
     SearchFlags flags = SearchNoFlag;
+    SearchScope scope = AllProjects;
 };
 
 struct ReplaceParams
 {
-    QStringList filePathList;
-    QString keyword;
+    BaseParams baseParams;
     QString replaceText;
+    SearchFlags flags = SearchNoFlag;
 };
 
 struct FindItem
 {
     QString filePathName;
-    int lineNumber = -1;
+    int line = -1;
+    int column = -1;
+    QString keyword;
     QString context;
 
     inline bool operator==(const FindItem &other)
     {
-        return filePathName == other.filePathName && lineNumber == other.lineNumber;
+        return filePathName == other.filePathName && line == other.line
+                && column == other.column;
     }
 };
 

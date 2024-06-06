@@ -30,7 +30,8 @@ public:
     void adjustFindStartPosition(TextEditor *editor);
     void dealWithZeroFound(TextEditor *editor);
     bool findStep(const QString &text, bool isForward);
-    void doReplaceAll(TextEditor *editor, const QString &findText, const QString &replaceText);
+    void doReplaceAll(TextEditor *editor, const QString &findText,
+                      const QString &replaceText, bool caseSensitive = false, bool wholeWords = false);
     int buildSearchFlags(bool re, bool cs, bool wo, bool wrap, bool forward, FindNextType findNextType, bool posix, bool cxx11);
 
 public:
@@ -115,13 +116,14 @@ bool EditorDocumentFindPrivate::findStep(const QString &text, bool isForward)
     return ret;
 }
 
-void EditorDocumentFindPrivate::doReplaceAll(TextEditor *editor, const QString &findText, const QString &replaceText)
+void EditorDocumentFindPrivate::doReplaceAll(TextEditor *editor, const QString &findText,
+                                             const QString &replaceText, bool caseSensitive, bool wholeWords)
 {
     int srcPosition = editor->cursorPosition();
     int firstDisLineNum = editor->SendScintilla(TextEditor::SCI_GETFIRSTVISIBLELINE);
     editor->beginUndoAction();
 
-    int flags = buildSearchFlags(false, false, false, false, true, FINDNEXTTYPE_REPLACENEXT, 0, 0);
+    int flags = buildSearchFlags(false, caseSensitive, wholeWords, false, true, FINDNEXTTYPE_REPLACENEXT, 0, 0);
     editor->SendScintilla(TextEditor::SCI_SETSEARCHFLAGS, flags);
 
     FindReplaceInfo findReplaceInfo;
@@ -264,5 +266,18 @@ void EditorDocumentFind::replaceAll(const QString &before, const QString &after)
 
 void EditorDocumentFind::findStringChanged()
 {
+    d->isFindFirst = true;
+}
+
+void EditorDocumentFind::replaceAll(TextEditor *editor, const QString &before,
+                                    const QString &after, bool caseSensitive, bool wholeWords)
+{
+    if (before.isEmpty())
+        return;
+
+    if (!editor || editor->isReadOnly())
+        return;
+
+    d->doReplaceAll(editor, before, after, caseSensitive, wholeWords);
     d->isFindFirst = true;
 }

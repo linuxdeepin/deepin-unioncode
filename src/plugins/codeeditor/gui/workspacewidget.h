@@ -35,6 +35,7 @@ public:
     void closeFileEditor(const QString &fileName);
     QStringList openedFiles() const;
     QString fileText(const QString &fileName) const;
+    void replaceAll(const QString &fileName, const QString &oldText, const QString &newText, bool caseSensitive, bool wholeWords);
 
     void registerWidget(const QString &id, AbstractEditWidget *widget);
     void switchWidget(const QString &id);
