@@ -6,6 +6,7 @@
 #define RECENTOPENWIDGET_H
 
 #include "recentopenlistview.h"
+#include "recentopenlistdelegate.h"
 
 #include <DFrame>
 
@@ -20,7 +21,7 @@ public:
     enum RecentOpenedUserRole{
         FilePathRole = Qt::UserRole + 1
     };
-    RecentOpenWidget(QWidget *parent = nullptr);
+    explicit RecentOpenWidget(QWidget *parent = nullptr);
     ~RecentOpenWidget();
     
     void initUI();
@@ -36,7 +37,8 @@ protected:
 
 private:
     RecentOpenListView *listView = nullptr;
-    QStandardItemModel *model {nullptr};
+    QStandardItemModel *model = nullptr;
+    RecentOpenListDelegate *delegate = nullptr;
 };
 
 #endif // RECENTOPENWIDGET_H

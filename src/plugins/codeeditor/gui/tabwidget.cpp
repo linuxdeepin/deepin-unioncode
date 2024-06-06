@@ -9,7 +9,7 @@
 #include "common/common.h"
 #include "settings/settingsdefine.h"
 #include "base/abstractaction.h"
-#include "recentopenwidget.h"
+#include "recent/recentopenwidget.h"
 
 #include "services/window/windowservice.h"
 
