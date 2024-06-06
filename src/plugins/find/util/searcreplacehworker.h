@@ -31,7 +31,7 @@ Q_SIGNALS:
     void replaceFinished(int result);
 
 private Q_SLOTS:
-    void handleReadSearchResult();
+    void handleReadSearchResult(const QString &keyword, bool caseSensitive, bool wholeWords);
     void processDone(int jobType);
 
 private:

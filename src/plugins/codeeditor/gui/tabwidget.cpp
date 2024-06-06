@@ -5,7 +5,6 @@
 #include "tabwidget.h"
 #include "private/tabwidget_p.h"
 #include "transceiver/codeeditorreceiver.h"
-#include "find/editordocumentfind.h"
 #include "common/common.h"
 #include "settings/settingsdefine.h"
 #include "base/abstractaction.h"
@@ -124,7 +123,7 @@ void TabWidgetPrivate::initUI()
 
     mainLayout->addWidget(tabBar, 0, Qt::AlignTop);
     mainLayout->addLayout(editorLayout);
-    
+
     openedWidget = new RecentOpenWidget(q);
     openedWidget->hide();
 
@@ -160,7 +159,7 @@ void TabWidget::handleShowOpenedFiles(const int &x, const int &y, const QSize &s
     int count = d->tabBar->tabCount();
     if (count < 2)
         return;
-    
+
     d->openedWidget->setWindowFlags(Qt::Popup);
     QSize popupSize = d->openedWidget->size();
 
@@ -217,12 +216,12 @@ QWidget *TabWidgetPrivate::createSpaceWidget()
 
 QWidget *TabWidgetPrivate::createFindPlaceHolder()
 {
+    docFind = new EditorDocumentFind(q);
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (!windowService)
         return nullptr;
 
-    auto docFind = new EditorDocumentFind(q);
     return windowService->createFindPlaceHolder(q, docFind);
 }
 
@@ -602,6 +601,13 @@ QString TabWidget::fileText(const QString &fileName, bool *success)
 
     if (success) *success = false;
     return {};
+}
+
+void TabWidget::replaceAll(const QString &fileName, const QString &oldText,
+                           const QString &newText, bool caseSensitive, bool wholeWords)
+{
+    if (auto editor = d->findEditor(fileName))
+        d->docFind->replaceAll(editor, oldText, newText, caseSensitive, wholeWords);
 }
 
 void TabWidget::saveAll() const

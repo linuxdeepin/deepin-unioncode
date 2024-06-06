@@ -1,17 +1,13 @@
-// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef SEARCHRESULTWINDOW_H
-#define SEARCHRESULTWINDOW_H
+#ifndef SEARCHRESULTTREEVIEW_H
+#define SEARCHRESULTTREEVIEW_H
 
 #include "constants.h"
 
-#include <QWidget>
 #include <DTreeView>
-#include <DFileIconProvider>
-
-DWIDGET_USE_NAMESPACE
 
 class SearchResultModel : public QAbstractItemModel
 {
@@ -30,6 +26,7 @@ public:
     FindItem *findItem(const QModelIndex &index) const;
     QString findGroup(const QModelIndex &index) const;
     void appendResult(const FindItemList &list);
+    QStringList fileList() const;
 
 private:
     void addGroup(const QString &group);
@@ -41,48 +38,19 @@ private:
 };
 
 class SearchResultTreeViewPrivate;
-class SearchResultTreeView : public DTreeView
+class SearchResultTreeView : public DTK_WIDGET_NAMESPACE::DTreeView
 {
     Q_OBJECT
-    DFileIconProvider iconProvider;
-
 public:
     explicit SearchResultTreeView(QWidget *parent = nullptr);
     ~SearchResultTreeView();
 
     void appendData(const FindItemList &itemList);
     void clearData();
-    virtual QIcon icon(const QString &data);
+    QStringList resultFileList() const;
 
 private:
     SearchResultTreeViewPrivate *const d;
 };
 
-class SearchResultWindowPrivate;
-class SearchResultWindow : public DWidget
-{
-    Q_OBJECT
-public:
-    explicit SearchResultWindow(QWidget *parent = nullptr);
-    ~SearchResultWindow();
-
-    void clear();
-    void appendResults(const FindItemList &itemList);
-    void searchFinished();
-    void replaceFinished(bool success);
-    void setRepalceWidgtVisible(bool hide);
-    void showMsg(bool succeed, QString msg);
-
-signals:
-    void reqBack();
-    void reqReplace(const QString &text);
-
-private:
-    void setupUi();
-    void clean();
-    void replace();
-
-    SearchResultWindowPrivate *const d;
-};
-
-#endif   // SEARCHRESULTWINDOW_H
+#endif   // SEARCHRESULTTREEVIEW_H

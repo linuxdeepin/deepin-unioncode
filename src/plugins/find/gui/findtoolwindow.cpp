@@ -44,7 +44,7 @@ public:
     QWidget *createSearchResultWidget();
 
     bool checkSelectedScopeValid();
-    bool setBaseParams(BaseParams *params);
+    bool setBaseParams(BaseParams *params, bool onlyOpened = false);
     void showMessage(const QString &message);
 
 public:
@@ -58,9 +58,6 @@ public:
     DPushButton *replaceBtn { nullptr };
     DComboBox *scopeComboBox { nullptr };
     DLineEdit *searchLineEdit { nullptr };
-    DCheckBox *senseCheckBox { nullptr };
-    DCheckBox *wholeWordsCheckBox { nullptr };
-    DCheckBox *regularCheckBox { nullptr };
     DLineEdit *patternLineEdit { nullptr };
     DLineEdit *expatternLineEdit { nullptr };
     DSuggestButton *senseCheckBtnOn { nullptr };
@@ -152,24 +149,24 @@ QWidget *FindToolWindowPrivate::createSearchParamWidget()
     searchLineEdit->setPlaceholderText(FindToolWindow::tr("thread"));
 
     senseCheckBtnOn = new DSuggestButton(q);
-    senseCheckBtnOn->setToolTip(FindToolWindow::tr("Click to case insensitive"));
-    senseCheckBtnOn->setText("Aa");
+    senseCheckBtnOn->setToolTip(FindToolWindow::tr("Case sensitive"));
+    senseCheckBtnOn->setIcon(QIcon::fromTheme("match_case"));
     senseCheckBtnOn->setFixedSize(36, 36);
     senseCheckBtnOn->hide();
 
     senseCheckBtnOff = new DPushButton(q);
-    senseCheckBtnOff->setToolTip(FindToolWindow::tr("Click to Case sensitive"));
-    senseCheckBtnOff->setText("aa");
+    senseCheckBtnOff->setToolTip(FindToolWindow::tr("Case sensitive"));
+    senseCheckBtnOff->setIcon(QIcon::fromTheme("match_case"));
     senseCheckBtnOff->setFixedSize(36, 36);
 
     wholeWordsCheckBtnOn = new DSuggestButton(q);
-    wholeWordsCheckBtnOn->setToolTip(FindToolWindow::tr("Click to disable whole words matching"));
+    wholeWordsCheckBtnOn->setToolTip(FindToolWindow::tr("Whole words only"));
     wholeWordsCheckBtnOn->setIcon(QIcon::fromTheme("find_matchComplete"));
     wholeWordsCheckBtnOn->setFixedSize(36, 36);
     wholeWordsCheckBtnOn->hide();
 
     wholeWordsCheckBtnOff = new DPushButton(q);
-    wholeWordsCheckBtnOff->setToolTip(FindToolWindow::tr("Click to enable whole words matching"));
+    wholeWordsCheckBtnOff->setToolTip(FindToolWindow::tr("Whole words only"));
     wholeWordsCheckBtnOff->setIcon(QIcon::fromTheme("find_matchComplete"));
     wholeWordsCheckBtnOff->setFixedSize(36, 36);
 
@@ -189,8 +186,10 @@ QWidget *FindToolWindowPrivate::createSearchParamWidget()
     expatternLineEdit->setPlaceholderText(FindToolWindow::tr("e.g.*.ts,src/**/include"));
     expatternLineEdit->setFixedWidth(369);
 
-    searchBtn = new DPushButton(FindToolWindow::tr("Search"), q);
-    replaceBtn = new DPushButton(FindToolWindow::tr("Search && Replace"), q);
+    searchBtn = new DPushButton(FindToolWindow::tr("Search", "button"), q);
+    searchBtn->setMinimumWidth(120);
+    replaceBtn = new DPushButton(FindToolWindow::tr("Search && Replace", "button"), q);
+    replaceBtn->setMinimumWidth(120);
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->setContentsMargins(0, 0, 0, 0);
@@ -264,7 +263,7 @@ bool FindToolWindowPrivate::checkSelectedScopeValid()
     return true;
 }
 
-bool FindToolWindowPrivate::setBaseParams(BaseParams *params)
+bool FindToolWindowPrivate::setBaseParams(BaseParams *params, bool onlyOpened)
 {
     if (!params)
         return false;
@@ -277,20 +276,26 @@ bool FindToolWindowPrivate::setBaseParams(BaseParams *params)
 
     auto projectSrv = dpfGetService(ProjectService);
     auto editSrv = dpfGetService(EditorService);
-    params->scope = static_cast<SearchScope>(scopeComboBox->currentData().toInt());
-    switch (params->scope) {
+    int scope = scopeComboBox->currentData().toInt();
+    switch (scope) {
     case AllProjects: {
+        params->openedFileList = editSrv->openedFiles();
+        if (onlyOpened)
+            return true;
+
         const auto &infoList = projectSrv->getAllProjectInfo();
         for (const auto &info : infoList) {
-            params->projectFileList.append(info.sourceFiles().toList());
+            params->baseFileList.append(info.sourceFiles().toList());
         }
-        params->openedFileList = editSrv->openedFiles();
         return true;
     }
     case CurrentProject: {
-        const auto &info = projectSrv->getActiveProjectInfo();
-        params->projectFileList.append(info.sourceFiles().toList());
         params->openedFileList = editSrv->openedFiles();
+        if (onlyOpened)
+            return true;
+
+        const auto &info = projectSrv->getActiveProjectInfo();
+        params->baseFileList.append(info.sourceFiles().toList());
         return true;
     }
     case CurrentFile: {
@@ -368,6 +373,7 @@ bool FindToolWindow::getSearchParams(SearchParams *searchParams)
     if (!d->setBaseParams(&searchParams->baseParams))
         return false;
 
+    searchParams->scope = static_cast<SearchScope>(d->scopeComboBox->currentData().toInt());
     searchParams->flags |= d->senseCheckBtnFlag ? SearchCaseSensitive : SearchNoFlag;
     searchParams->flags |= d->wholeWordsCheckBtnFlag ? SearchWholeWord : SearchNoFlag;
     searchParams->includeList = d->patternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
@@ -423,12 +429,17 @@ void FindToolWindow::handleSearchFinished()
 
 void FindToolWindow::handleReplace(const QString &text)
 {
-    ReplaceParams params;
-    params.replaceText = text;
-    params.keyword = d->searchLineEdit->text();
     if (!d->checkSelectedScopeValid())
         return;
 
+    ReplaceParams params;
+    if (!d->setBaseParams(&params.baseParams, true))
+        return;
+
+    params.replaceText = text;
+    params.baseParams.baseFileList = d->searchResultWindow->resultFileList();
+    params.flags |= d->senseCheckBtnFlag ? SearchCaseSensitive : SearchNoFlag;
+    params.flags |= d->wholeWordsCheckBtnFlag ? SearchWholeWord : SearchNoFlag;
     metaObject()->invokeMethod(d->searchReplaceWorker.data(),
                                "addReplaceTask",
                                Qt::QueuedConnection,

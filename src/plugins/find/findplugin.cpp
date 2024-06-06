@@ -5,8 +5,8 @@
 #include "findplugin.h"
 
 #include "services/window/windowservice.h"
-#include "findtoolwindow.h"
-#include "searchresultwindow.h"
+#include "gui/findtoolwindow.h"
+#include "gui/searchresultwindow.h"
 #include "common/common.h"
 #include "base/abstractmenu.h"
 #include "base/abstractwidget.h"
