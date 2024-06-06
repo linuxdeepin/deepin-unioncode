@@ -45,6 +45,8 @@ _The **dev** branch is current development branch, build dependencies may change
 
 ## Installation
 
+   *If you install the IDE on Ubuntu by source code, please refer to the [DTK dependent installation](./docs/dtk-install-guide.en.md). After the installation of the dtk environment and the basic qt environment, you can install the IDE through the following source installation method.*
+
 1. Make sure you have installed all dependencies.
 
 ``` shell
