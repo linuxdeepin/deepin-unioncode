@@ -8,7 +8,7 @@
 #include "gui/tabwidget.h"
 #include "gui/tabbar.h"
 #include "gui/texteditor.h"
-#include "gui/recentopenwidget.h"
+#include "gui/recent/recentopenwidget.h"
 
 #include "common/util/eventdefinitions.h"
 
