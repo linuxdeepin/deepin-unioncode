@@ -38,6 +38,8 @@ class ProjectTreePrivate
     ProjectDelegate *delegate {nullptr};
     DDialog *messDialog = nullptr;
     QPoint startPos;
+    QString currentFile = "";
+    bool autoFocusState = true;
     int itemDepth(const QStandardItem *item)
     {
         int depth = 0;
@@ -264,6 +266,47 @@ void ProjectTree::expandedProjectAll(const QStandardItem *root)
             expandedProjectAll(childitem);
         }
     }
+}
+
+void ProjectTree::selectProjectFile(const QString &file)
+{
+    d->currentFile = file;
+    if (!d->autoFocusState)
+        return;
+    focusCurrentFile();
+}
+
+void ProjectTree::focusCurrentFile()
+{
+    QModelIndex root = d->itemModel->index(0, 0);
+    if (!root.isValid()) {
+        return;
+    }
+    if (d->currentFile.isEmpty()) {
+        clearSelection();
+        return;
+    }
+    QModelIndexList indices = model()->match(root, Qt::ToolTipRole, d->currentFile, 1, Qt::MatchExactly | Qt::MatchRecursive);
+    if (!indices.isEmpty()) {
+        QModelIndex index = indices.first();
+
+        QModelIndex parent = index.parent();
+        while (parent.isValid()) {
+            expand(parent);
+            parent = parent.parent();
+        }
+        setCurrentIndex(index);
+    }
+}
+
+void ProjectTree::setAutoFocusState(bool state)
+{
+    d->autoFocusState = state;
+}
+
+bool ProjectTree::getAutoFocusState() const
+{
+	return d->autoFocusState;
 }
 
 QList<dpfservice::ProjectInfo> ProjectTree::getAllProjectInfo()

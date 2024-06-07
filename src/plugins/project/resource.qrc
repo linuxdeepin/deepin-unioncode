@@ -2,5 +2,7 @@
     <qresource prefix="/icons/deepin/builtin">
         <file>texts/project_16px.svg</file>
         <file>texts/settings_16px.svg</file>
+        <file>texts/focus_16px.svg</file>
+        <file>texts/focus_auto_16px.svg</file>
     </qresource>
 </RCC>

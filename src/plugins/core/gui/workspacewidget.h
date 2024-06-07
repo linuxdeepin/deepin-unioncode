@@ -31,6 +31,7 @@ public:
 
 signals:
     void expandStateChange(bool canExpand);
+    void autoFocusStateChange(bool autoFocusState);
     void workSpaceWidgeSwitched(const QString &title);
 
 private:

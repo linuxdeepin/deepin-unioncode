@@ -23,7 +23,7 @@ dpf::EventHandler::Type ProjectCoreReceiver::type()
 
 QStringList ProjectCoreReceiver::topics()
 {
-    return {project.topic, workspace.topic}; //绑定menu 事件
+    return {project.topic, workspace.topic, editor.topic}; //绑定menu 事件
 }
 
 void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
@@ -65,6 +65,8 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
 
         emit ProjectProxy::instance()->projectActivated(projectInfo);
+    } else if (event.data() == editor.switchedFile.name) {
+        ProjectKeeper::instance()->treeView()->selectProjectFile(event.property("fileName").toString());
     }
 }
 
