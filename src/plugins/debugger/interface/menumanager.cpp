@@ -122,6 +122,13 @@ void MenuManager::initialize(WindowService *windowService)
                             MWMDA_REMOTE_DEBUG, QKeySequence(),
                             "debugger_remotedebug");
     windowService->addAction(MWM_DEBUG, actionImpl);
+
+    attachDebugging.reset(new QAction(MWMDA_ATTACH_DEBUG));
+    connect(attachDebugging.get(), &QAction::triggered, debugManager, &DebugManager::attachDebug);
+    actionImpl = initAction(attachDebugging.get(), "Debug.Attach.Debugging",
+                                 MWMDA_ATTACH_DEBUG, QKeySequence(),
+                                 "debugger_start");
+    windowService->addAction(MWM_DEBUG, actionImpl);
 }
 
 void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
@@ -141,6 +148,7 @@ void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
         stepOver->setEnabled(false);
         stepIn->setEnabled(false);
         stepOut->setEnabled(false);
+        attachDebugging->setEnabled(true);
         break;
 
     case AbstractDebugger::kRunning:
@@ -155,6 +163,7 @@ void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
         stepOver->setEnabled(false);
         stepIn->setEnabled(false);
         stepOut->setEnabled(false);
+        attachDebugging->setEnabled(false);
         break;
     case AbstractDebugger::kStopped:
         startDebugging->setEnabled(false);
@@ -168,6 +177,7 @@ void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
         stepOver->setEnabled(true);
         stepIn->setEnabled(true);
         stepOut->setEnabled(true);
+        attachDebugging->setEnabled(false);
         break;
     case AbstractDebugger::kCustomRunning:
         startDebugging->setEnabled(false);
@@ -178,6 +188,7 @@ void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
         stepOver->setEnabled(false);
         stepIn->setEnabled(false);
         stepOut->setEnabled(false);
+        attachDebugging->setEnabled(false);
         break;
 
     default:

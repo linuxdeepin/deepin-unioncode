@@ -505,8 +505,7 @@ void GDBDebugger::sendStoppedNotify(const gdbmi::AsyncContext &ctx)
 {
     if (gdbmi::AsyncContext::Reason::exitedNormally == ctx.reason
             || gdbmi::AsyncContext::Reason::exitedSignalled == ctx.reason
-            || gdbmi::AsyncContext::Reason::Unknown == ctx.reason
-            || gdbmi::AsyncContext::Reason::exited == ctx.reason) {
+            ||  gdbmi::AsyncContext::Reason::exited == ctx.reason) {
         dap::ExitedEvent exitedEvent;
         emit asyncExited(exitedEvent);
     }
