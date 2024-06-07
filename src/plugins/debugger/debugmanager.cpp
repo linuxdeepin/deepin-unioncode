@@ -7,6 +7,7 @@
 #include "debuggersignals.h"
 #include "debuggerglobals.h"
 #include "interface/menumanager.h"
+#include "interface/attachinfodialog.h"
 
 #include "services/debugger/debuggerservice.h"
 #include "services/language/languageservice.h"
@@ -138,6 +139,16 @@ void DebugManager::remoteDebug(RemoteInfo info)
     }
     
     AsynInvokeWithParam(currentDebugger->startDebugRemote, info);
+}
+
+void DebugManager::attachDebug()
+{
+    AttachInfoDialog dialog;
+    connect(&dialog, &AttachInfoDialog::attachToProcessId, this, [=](const QString &processId){
+        AsynInvokeWithParam(currentDebugger->attachDebug, processId);
+    });
+
+    dialog.exec();
 }
 
 void DebugManager::detachDebug()

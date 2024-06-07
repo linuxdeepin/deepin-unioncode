@@ -47,6 +47,7 @@ public:
 
     virtual void startDebug() = 0;
     virtual void startDebugRemote(const RemoteInfo &info) = 0;
+    virtual void attachDebug(const QString &processId) = 0;
     virtual void detachDebug() = 0;
 
     virtual void interruptDebug() = 0;

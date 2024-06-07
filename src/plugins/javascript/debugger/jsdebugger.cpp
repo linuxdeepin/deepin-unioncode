@@ -67,6 +67,11 @@ void JSDebugger::startDebugRemote(const RemoteInfo &info)
     Q_UNUSED(info)
 }
 
+void JSDebugger::attachDebug(const QString &processId)
+{
+    Q_UNUSED(processId);
+}
+
 void JSDebugger::detachDebug()
 {
 }
