@@ -514,6 +514,8 @@ void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
         return;
 
     focusTabWidget = tabWidget;
+    editor.switchedFile(focusTabWidget->currentFile());
+
 }
 
 void WorkspaceWidgetPrivate::onZoomValueChanged()

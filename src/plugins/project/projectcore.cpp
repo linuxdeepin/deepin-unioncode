@@ -47,6 +47,32 @@ bool ProjectCore::start()
             DToolButton *projectProperty = new DToolButton(ProjectKeeper::instance()->treeView());
             projectProperty->setIcon(QIcon::fromTheme("settings"));
             projectProperty->setToolTip(tr("Open activted project`s property dialog"));
+
+            DToolButton *autoFocusSwitcher = new DToolButton(ProjectKeeper::instance()->treeView());
+            autoFocusSwitcher->setToolTip(tr("Auto Focus"));
+            autoFocusSwitcher->setIcon(QIcon::fromTheme("focus_auto"));
+            autoFocusSwitcher->setCheckable(true);
+			autoFocusSwitcher->setChecked(true);
+
+            DToolButton *focusFile = new DToolButton(ProjectKeeper::instance()->treeView());
+            focusFile->setToolTip(tr("Focus File"));
+            focusFile->setIcon(QIcon::fromTheme("focus"));
+
+            connect(focusFile, &DToolButton::clicked, this, [](){
+                ProjectKeeper::instance()->treeView()->focusCurrentFile();
+            }, Qt::DirectConnection);
+            focusFile->hide();
+
+            connect(autoFocusSwitcher, &DToolButton::clicked, this, [=](){
+                bool state = ProjectKeeper::instance()->treeView()->getAutoFocusState();
+                ProjectKeeper::instance()->treeView()->setAutoFocusState(!state);
+                if (state) {
+                    focusFile->show();
+                } else {
+                    focusFile->hide();
+                }
+            }, Qt::DirectConnection);
+			
             connect(projectProperty, &DToolButton::clicked, this, [=](){
                 project.openProjectPropertys(ProjectKeeper::instance()->treeView()->getActiveProjectInfo());
             }, Qt::DirectConnection);
@@ -57,6 +83,8 @@ bool ProjectCore::start()
                 else
                     projectProperty->setEnabled(true);
             }, Qt::DirectConnection);
+            windowService->registerToolBtnToWorkspaceWidget(focusFile, MWCWT_PROJECTS);
+			windowService->registerToolBtnToWorkspaceWidget(autoFocusSwitcher, MWCWT_PROJECTS);
             windowService->registerToolBtnToWorkspaceWidget(projectProperty, MWCWT_PROJECTS);
         }
     }
