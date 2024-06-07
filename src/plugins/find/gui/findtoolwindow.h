@@ -28,9 +28,6 @@ private:
     FindToolWindowPrivate *const d;
 
 private slots:
-    void onSenseCheckBtnClicked();
-    void onWholeWordsCheckBtnClicked();
-
     void handleSearchMatched();
     void handleSearchFinished();
     void handleReplace(const QString &text);

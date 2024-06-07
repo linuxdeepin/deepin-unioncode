@@ -12,12 +12,9 @@
 #include <DLineEdit>
 #include <DLabel>
 #include <DComboBox>
-#include <DCheckBox>
 #include <DPushButton>
 #include <DStackedWidget>
-#include <DMessageBox>
 #include <DScrollArea>
-#include <DSuggestButton>
 #include <DFrame>
 #include <DDialog>
 
@@ -60,13 +57,9 @@ public:
     DLineEdit *searchLineEdit { nullptr };
     DLineEdit *patternLineEdit { nullptr };
     DLineEdit *expatternLineEdit { nullptr };
-    DSuggestButton *senseCheckBtnOn { nullptr };
-    DPushButton *senseCheckBtnOff { nullptr };
-    DSuggestButton *wholeWordsCheckBtnOn { nullptr };
-    DPushButton *wholeWordsCheckBtnOff { nullptr };
+    DPushButton *caseSensitiveCheckBtn { nullptr };
+    DPushButton *wholeWordsCheckBtn { nullptr };
 
-    bool senseCheckBtnFlag = false;
-    bool wholeWordsCheckBtnFlag = false;
     friend class FindToolWindow;
 };
 
@@ -110,10 +103,6 @@ void FindToolWindowPrivate::initConnect()
 {
     connect(searchBtn, &QAbstractButton::clicked, q, &FindToolWindow::search);
     connect(replaceBtn, &QAbstractButton::clicked, q, &FindToolWindow::replace);
-    connect(senseCheckBtnOn, &QPushButton::clicked, q, &FindToolWindow::onSenseCheckBtnClicked);
-    connect(wholeWordsCheckBtnOn, &QPushButton::clicked, q, &FindToolWindow::onWholeWordsCheckBtnClicked);
-    connect(senseCheckBtnOff, &QPushButton::clicked, q, &FindToolWindow::onSenseCheckBtnClicked);
-    connect(wholeWordsCheckBtnOff, &QPushButton::clicked, q, &FindToolWindow::onWholeWordsCheckBtnClicked);
 
     connect(searchResultWindow, &SearchResultWindow::reqBack, q, &FindToolWindow::switchSearchParamWidget);
     connect(searchResultWindow, &SearchResultWindow::reqReplace, q, &FindToolWindow::handleReplace);
@@ -148,33 +137,21 @@ QWidget *FindToolWindowPrivate::createSearchParamWidget()
     searchLineEdit->setFixedWidth(277);
     searchLineEdit->setPlaceholderText(FindToolWindow::tr("thread"));
 
-    senseCheckBtnOn = new DSuggestButton(q);
-    senseCheckBtnOn->setToolTip(FindToolWindow::tr("Case sensitive"));
-    senseCheckBtnOn->setIcon(QIcon::fromTheme("match_case"));
-    senseCheckBtnOn->setFixedSize(36, 36);
-    senseCheckBtnOn->hide();
+    caseSensitiveCheckBtn = new DPushButton(q);
+    caseSensitiveCheckBtn->setToolTip(FindToolWindow::tr("Case sensitive"));
+    caseSensitiveCheckBtn->setIcon(QIcon::fromTheme("match_case"));
+    caseSensitiveCheckBtn->setIconSize({ 16, 16 });
+    caseSensitiveCheckBtn->setCheckable(true);
 
-    senseCheckBtnOff = new DPushButton(q);
-    senseCheckBtnOff->setToolTip(FindToolWindow::tr("Case sensitive"));
-    senseCheckBtnOff->setIcon(QIcon::fromTheme("match_case"));
-    senseCheckBtnOff->setFixedSize(36, 36);
-
-    wholeWordsCheckBtnOn = new DSuggestButton(q);
-    wholeWordsCheckBtnOn->setToolTip(FindToolWindow::tr("Whole words only"));
-    wholeWordsCheckBtnOn->setIcon(QIcon::fromTheme("find_matchComplete"));
-    wholeWordsCheckBtnOn->setFixedSize(36, 36);
-    wholeWordsCheckBtnOn->hide();
-
-    wholeWordsCheckBtnOff = new DPushButton(q);
-    wholeWordsCheckBtnOff->setToolTip(FindToolWindow::tr("Whole words only"));
-    wholeWordsCheckBtnOff->setIcon(QIcon::fromTheme("find_matchComplete"));
-    wholeWordsCheckBtnOff->setFixedSize(36, 36);
+    wholeWordsCheckBtn = new DPushButton(q);
+    wholeWordsCheckBtn->setToolTip(FindToolWindow::tr("Whole words only"));
+    wholeWordsCheckBtn->setIcon(QIcon::fromTheme("find_matchComplete"));
+    wholeWordsCheckBtn->setIconSize({ 16, 16 });
+    wholeWordsCheckBtn->setCheckable(true);
 
     hlayout->addWidget(searchLineEdit);
-    hlayout->addWidget(senseCheckBtnOn);
-    hlayout->addWidget(senseCheckBtnOff);
-    hlayout->addWidget(wholeWordsCheckBtnOn);
-    hlayout->addWidget(wholeWordsCheckBtnOff);
+    hlayout->addWidget(caseSensitiveCheckBtn);
+    hlayout->addWidget(wholeWordsCheckBtn);
 
     DLabel *patternLabel = new DLabel(FindToolWindow::tr("File pattern:"), q);
     patternLineEdit = new DLineEdit(q);
@@ -335,30 +312,6 @@ FindToolWindow::~FindToolWindow()
     delete d;
 }
 
-void FindToolWindow::onSenseCheckBtnClicked()
-{
-    d->senseCheckBtnFlag = !d->senseCheckBtnFlag;
-    if (d->senseCheckBtnFlag) {
-        d->senseCheckBtnOff->hide();
-        d->senseCheckBtnOn->show();
-    } else {
-        d->senseCheckBtnOn->hide();
-        d->senseCheckBtnOff->show();
-    }
-}
-
-void FindToolWindow::onWholeWordsCheckBtnClicked()
-{
-    d->wholeWordsCheckBtnFlag = !d->wholeWordsCheckBtnFlag;
-    if (d->wholeWordsCheckBtnFlag) {
-        d->wholeWordsCheckBtnOff->hide();
-        d->wholeWordsCheckBtnOn->show();
-    } else {
-        d->wholeWordsCheckBtnOn->hide();
-        d->wholeWordsCheckBtnOff->show();
-    }
-}
-
 void FindToolWindow::search()
 {
     searchText();
@@ -374,8 +327,8 @@ bool FindToolWindow::getSearchParams(SearchParams *searchParams)
         return false;
 
     searchParams->scope = static_cast<SearchScope>(d->scopeComboBox->currentData().toInt());
-    searchParams->flags |= d->senseCheckBtnFlag ? SearchCaseSensitive : SearchNoFlag;
-    searchParams->flags |= d->wholeWordsCheckBtnFlag ? SearchWholeWord : SearchNoFlag;
+    searchParams->flags |= d->caseSensitiveCheckBtn->isChecked() ? SearchCaseSensitive : SearchNoFlag;
+    searchParams->flags |= d->wholeWordsCheckBtn->isChecked() ? SearchWholeWord : SearchNoFlag;
     searchParams->includeList = d->patternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
     searchParams->excludeList = d->expatternLineEdit->text().trimmed().split(",", QString::SkipEmptyParts);
 
@@ -438,8 +391,8 @@ void FindToolWindow::handleReplace(const QString &text)
 
     params.replaceText = text;
     params.baseParams.baseFileList = d->searchResultWindow->resultFileList();
-    params.flags |= d->senseCheckBtnFlag ? SearchCaseSensitive : SearchNoFlag;
-    params.flags |= d->wholeWordsCheckBtnFlag ? SearchWholeWord : SearchNoFlag;
+    params.flags |= d->caseSensitiveCheckBtn->isChecked() ? SearchCaseSensitive : SearchNoFlag;
+    params.flags |= d->wholeWordsCheckBtn->isChecked() ? SearchWholeWord : SearchNoFlag;
     metaObject()->invokeMethod(d->searchReplaceWorker.data(),
                                "addReplaceTask",
                                Qt::QueuedConnection,
