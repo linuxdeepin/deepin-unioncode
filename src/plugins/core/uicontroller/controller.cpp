@@ -1012,8 +1012,8 @@ void Controller::showWorkspace()
 
         expandAll->setVisible(d->workspace->getCurrentExpandState());
         foldAll->setVisible(d->workspace->getCurrentExpandState());
-        d->mainWindow->setDockHeadername(WN_WORKSPACE, d->workspace->getCurrentTitle());
 
+        d->mainWindow->setDockHeadername(WN_WORKSPACE, d->workspace->getCurrentTitle());
         connect(d->workspace, &WorkspaceWidget::expandStateChange, this, [=](bool canExpand){
             expandAll->setVisible(canExpand);
             foldAll->setVisible(canExpand);

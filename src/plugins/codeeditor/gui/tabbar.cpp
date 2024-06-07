@@ -215,6 +215,7 @@ void TabBar::removeTab(const QString &fileName)
     emit tabClosed(fileName);
     editor.fileClosed(fileName);
     d->tabBar->removeTab(index);
+    editor.switchedFile(this->currentFileName());
 }
 
 void TabBar::setCloseButtonVisible(bool visible)
