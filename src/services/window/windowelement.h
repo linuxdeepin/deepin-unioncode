@@ -53,6 +53,7 @@ inline const QString MWMBA_CANCEL { QAction::tr("Cancel") };
 // MWMDA = MWM Debug Action
 inline const QString MWM_DEBUG { QMenu::tr("&Debug") };
 inline const QString MWMDA_START_DEBUG { QAction::tr("Start Debugging") };
+inline const QString MWMDA_ATTACH_DEBUG { QAction::tr("Attaching to Running Program") };
 inline const QString MWMDA_RUNNING { QAction::tr("Running") };
 inline const QString MWMDA_INTERRUPT { QAction::tr("Interrupt") };
 inline const QString MWMDA_CONTINUE { QAction::tr("Continue") };
