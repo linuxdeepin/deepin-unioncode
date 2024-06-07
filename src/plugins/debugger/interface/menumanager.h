@@ -31,6 +31,7 @@ public slots:
 
 private:
     QSharedPointer<QAction> startDebugging;
+    QSharedPointer<QAction> attachDebugging;
     QSharedPointer<QAction> detachDebugger;
     QSharedPointer<QAction> interrupt;
     QSharedPointer<QAction> continueDebugging;

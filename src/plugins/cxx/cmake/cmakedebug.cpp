@@ -52,6 +52,7 @@ bool CMakeDebug::requestDAPPort(const QString &uuid, const QString &kit,
         << kit
         << targetPath
         << arguments;
+
     bool ret = QDBusConnection::sessionBus().send(msg);
     if (!ret) {
         retMsg = tr("Request cxx dap port failed, please retry.");
