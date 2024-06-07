@@ -29,6 +29,10 @@ public:
     void takeRootItem(QStandardItem *root);
     void expandedProjectDepth(const QStandardItem *root, int depth);
     void expandedProjectAll(const QStandardItem *root);
+    void selectProjectFile(const QString &file);
+    void setAutoFocusState(bool state);
+	bool getAutoFocusState() const;
+    void focusCurrentFile();
     QList<dpfservice::ProjectInfo> getAllProjectInfo();
     dpfservice::ProjectInfo getProjectInfo(const QString &kitName, const QString &workspace) const;
     dpfservice::ProjectInfo getActiveProjectInfo() const;
