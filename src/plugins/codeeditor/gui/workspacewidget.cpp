@@ -355,6 +355,11 @@ void WorkspaceWidgetPrivate::onCloseRequested()
     tabWidgetList.removeOne(tabWidget);
     tabWidget->deleteLater();
 
+    if (!tabWidgetList.isEmpty()) {
+        tabWidgetList.last()->setFocus();
+        editor.switchedFile(tabWidgetList.last()->currentFile());
+    }
+
     if (tabWidgetList.size() == 1)
         tabWidgetList.first()->setCloseButtonVisible(false);
 }

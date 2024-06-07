@@ -10,6 +10,7 @@
 #include "gui/settings/editorsettingswidget.h"
 #include "lexer/lexermanager.h"
 #include "utils/editorutils.h"
+#include "status/statusinfomanager.h"
 
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -193,6 +194,8 @@ void CodeEditor::initWindowService()
         windowService->addAction(MWM_FILE, new AbstractAction(sep));
 
         windowService->addContextWidget(QTabWidget::tr("Search &Results"), new AbstractWidget(CodeLens::instance()), true);
+
+        StatusInfoManager::instance()->init(windowService);
     }
 }
 
