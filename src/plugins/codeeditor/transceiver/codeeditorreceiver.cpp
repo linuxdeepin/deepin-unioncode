@@ -4,8 +4,6 @@
 
 #include "codeeditorreceiver.h"
 
-#include "common/common.h"
-#include "services/project/projectservice.h"
 #include "services/window/windowelement.h"
 
 #include "mainframe/texteditkeeper.h"
@@ -40,7 +38,7 @@ dpf::EventHandler::Type CodeEditorReceiver::type()
 
 QStringList CodeEditorReceiver::topics()
 {
-    return { editor.topic, actionanalyse.topic, project.topic };
+    return { editor.topic };
 }
 
 void CodeEditorReceiver::eventProcess(const dpf::Event &event)
