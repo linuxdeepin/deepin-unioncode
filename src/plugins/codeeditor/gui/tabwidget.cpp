@@ -138,6 +138,7 @@ void TabWidgetPrivate::initConnection()
     connect(tabBar, &TabBar::tabClosed, this, &TabWidgetPrivate::onTabClosed);
     connect(tabBar, &TabBar::spliterClicked, this, &TabWidgetPrivate::onSpliterClicked);
     connect(tabBar, &TabBar::closeRequested, q, &TabWidget::closeRequested);
+    connect(tabBar, &TabBar::saveFileRequested, q, &TabWidget::saveFile);
 
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqAddAnnotation, this, &TabWidgetPrivate::handleAddAnnotation);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveAnnotation, this, &TabWidgetPrivate::handleRemoveAnnotation);
@@ -917,6 +918,12 @@ void TabWidget::gotoPosition(int line, int column)
 {
     if (auto editor = d->currentTextEditor())
         editor->gotoPosition(editor->positionFromLineIndex(line, column));
+}
+
+void TabWidget::saveFile(const QString &fileName)
+{
+    if (auto editor = d->findEditor(fileName))
+        editor->save();
 }
 
 void TabWidget::dragEnterEvent(QDragEnterEvent *event)
