@@ -22,7 +22,7 @@ public:
 
 public Q_SLOTS:
     void handleClear();
-    void handleActionInvoked(const QString &actId);
+    void handleActionInvoked(EntityPtr ptr, const QString &actId);
     void handleProcessed(EntityPtr ptr);
 
 private:

@@ -11,10 +11,11 @@ public:
     QString message;
     QStringList actions;
     NotificationEntity::NotificationType type = NotificationEntity::Information;
+    NotifyCallback callback;
 };
 
 NotificationEntity::NotificationEntity(NotificationType type, const QString &name, const QString &msg,
-                                       const QStringList &actions, QObject *parent)
+                                       const QStringList &actions, NotifyCallback cb, QObject *parent)
     : QObject(parent),
       d(new NotificationEntityPrivate)
 {
@@ -22,6 +23,7 @@ NotificationEntity::NotificationEntity(NotificationType type, const QString &nam
     d->name = name;
     d->message = msg;
     d->actions = actions;
+    d->callback = cb;
 }
 
 NotificationEntity::~NotificationEntity()
@@ -67,4 +69,14 @@ NotificationEntity::NotificationType NotificationEntity::type() const
 void NotificationEntity::setType(NotificationType type)
 {
     d->type = type;
+}
+
+NotifyCallback NotificationEntity::callback() const
+{
+    return d->callback;
+}
+
+void NotificationEntity::setCallback(NotifyCallback cb)
+{
+    d->callback = cb;
 }
