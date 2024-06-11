@@ -20,6 +20,7 @@ public:
 
 public Q_SLOTS:
     void notify(uint type, const QString &name, const QString &msg, const QStringList &actions);
+    void notify(uint type, const QString &name, const QString &msg, const QStringList &actions, NotifyCallback cb);
     void show();
     void hide();
     void toggle();
