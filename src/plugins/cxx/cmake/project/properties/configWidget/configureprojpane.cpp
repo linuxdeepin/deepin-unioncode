@@ -7,7 +7,7 @@
 #include "cmakeasynparse.h"
 #include "cmakeprojectgenerator.h"
 
-#include "services/option/optionmanager.h"
+#include "cmake/option/kitmanager.h"
 
 #include <DCheckBox>
 #include <DLineEdit>
@@ -39,26 +39,25 @@ class ConfigureProjPanePrivate
 {
     friend class ConfigureProjPane;
 
-    DComboBox *kitComboBox{nullptr};
+    DComboBox *kitComboBox { nullptr };
 
-    DRadioButton *radioDebug{nullptr};
-    DRadioButton *radioRelease{nullptr};
+    DRadioButton *radioDebug { nullptr };
+    DRadioButton *radioRelease { nullptr };
 
-    DLineEdit *lineEditDebug{nullptr};
-    DLineEdit *lineEditRelease{nullptr};
+    DLineEdit *lineEditDebug { nullptr };
+    DLineEdit *lineEditRelease { nullptr };
 
-    DPushButton *btnRWithDInfo{nullptr};
+    DPushButton *btnRWithDInfo { nullptr };
 
-    QButtonGroup *group{nullptr};
+    QButtonGroup *group { nullptr };
 
-    ProjectConfigure *cfgItem{nullptr};
+    ProjectConfigure *cfgItem { nullptr };
 };
 
 ConfigureProjPane::ConfigureProjPane(const QString &language,
                                      const QString &workspace,
                                      QWidget *parent)
-    : DWidget(parent)
-    , d(new ConfigureProjPanePrivate)
+    : DWidget(parent), d(new ConfigureProjPanePrivate)
 {
     d->cfgItem = ConfigUtil::instance()->getConfigureParamPointer();
     d->cfgItem->clear();
@@ -70,12 +69,12 @@ ConfigureProjPane::ConfigureProjPane(const QString &language,
 
     connect(ConfigUtil::instance(), QOverload<const dpfservice::ProjectInfo &>::of(&ConfigUtil::configureDone),
             [this](const dpfservice::ProjectInfo &info) {
-        QString propertyPath = ConfigUtil::instance()->getConfigPath(d->cfgItem->workspace);
-        config::ConfigUtil::instance()->saveConfig(propertyPath, *d->cfgItem);
-        dpfservice::ProjectInfo projectInfo = info;
-        config::ConfigUtil::instance()->updateProjectInfo(projectInfo, d->cfgItem);
-        emit configureDone(projectInfo);
-    });
+                QString propertyPath = ConfigUtil::instance()->getConfigPath(d->cfgItem->workspace);
+                config::ConfigUtil::instance()->saveConfig(propertyPath, *d->cfgItem);
+                dpfservice::ProjectInfo projectInfo = info;
+                config::ConfigUtil::instance()->updateProjectInfo(projectInfo, d->cfgItem);
+                emit configureDone(projectInfo);
+            });
 }
 
 ConfigureProjPane::~ConfigureProjPane()
@@ -86,8 +85,8 @@ ConfigureProjPane::~ConfigureProjPane()
 
 void ConfigureProjPane::setupUI()
 {
-    auto btnSignalConnect = [this](DPushButton *btn, DLineEdit *lineEdit){
-        connect(btn, &DPushButton::clicked, [=](){
+    auto btnSignalConnect = [this](DPushButton *btn, DLineEdit *lineEdit) {
+        connect(btn, &DPushButton::clicked, [=]() {
             QString outputDirectory = DFileDialog::getExistingDirectory(this, "Output directory");
             if (!outputDirectory.isEmpty()) {
                 lineEdit->setText(outputDirectory);
@@ -150,7 +149,10 @@ void ConfigureProjPane::updateUI()
 {
     resetUI();
 
-    d->kitComboBox->addItem(kDefaultKitName);
+    const auto &kitList = KitManager::instance()->kitList();
+    for (const auto &kit : kitList) {
+        d->kitComboBox->addItem(kit.kitName(), kit.id());
+    }
 
     if (d->cfgItem->workspace.isEmpty())
         return;
@@ -170,7 +172,7 @@ void ConfigureProjPane::updateUI()
 
 void ConfigureProjPane::slotConfigure()
 {
-    QList<ConfigType> initType = {Debug, Release};
+    QList<ConfigType> initType = { Debug, Release };
     foreach (auto type, initType) {
         BuildTypeConfigure buildTypeConfigure;
         buildTypeConfigure.type = type;
@@ -203,6 +205,7 @@ void ConfigureProjPane::slotConfigure()
     d->cfgItem->defaultType = ConfigUtil::instance()->getTypeFromName(d->group->checkedButton()->text());
     d->cfgItem->tempSelType = d->cfgItem->defaultType;
     d->cfgItem->kit = d->kitComboBox->currentText();
+    d->cfgItem->kitId = d->kitComboBox->currentData().toString();
 
     ConfigUtil::instance()->configProject(d->cfgItem);
 }
