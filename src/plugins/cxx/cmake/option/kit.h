@@ -5,10 +5,7 @@
 #ifndef KIT_H
 #define KIT_H
 
-#include <QHash>
-#include <QVariant>
-
-#include <memory>
+#include "global_define.h"
 
 class KitPrivate;
 class Kit : public QObject
@@ -16,32 +13,34 @@ class Kit : public QObject
     Q_OBJECT
 public:
     explicit Kit(QString id = "", QObject *parent = nullptr);
-    explicit Kit(const QVariantMap &data);
+    Kit(const Kit &other);
     ~Kit();
 
-    QString displayName() const;
-    void setUnexpandedDisplayName(const QString &name);
     QString id() const;
-    QList<QString> allKeys() const;
-    QVariant value(QString key, const QVariant &unset = QVariant()) const;
-    bool hasValue(QString key) const;
-    void setValue(QString key, const QVariant &value);
+    void setId(const QString &id);
+    QString kitName() const;
+    void setKitName(const QString &name);
+    Option ccompiler() const;
+    void setCCompiler(const Option &opt);
+    Option cxxcompiler() const;
+    void setCXXCompiler(const Option &opt);
+    Option debugger() const;
+    void setDebugger(const Option &opt);
+    Option cmakeTool() const;
+    void setCMakeTool(const Option &opt);
+    QString cmakeGenerator() const;
+    void setCMakeGenerator(const QString &cg);
 
-    void setDefaultOutput(QString &defaultOutput);
-    const QString &getDefaultOutput() const;
+    void copyFrom(const Kit &other);
+    QVariantMap toVariantMap();
+    static QVariantMap toVariantMap(const Kit &kit);
+    static Kit fromVariantMap(const QVariantMap &map);
 
-    void copyFrom(const Kit &k);
-
-    Kit(const Kit &other);
     Kit &operator=(const Kit &other);
-signals:
-
-public slots:
+    bool operator==(const Kit &other);
 
 private:
-    QVariantMap toMap() const;
-
-    const std::unique_ptr<KitPrivate> d;
+    KitPrivate *const d;
 };
 
-#endif // KIT_H
+#endif   // KIT_H

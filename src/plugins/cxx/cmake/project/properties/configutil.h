@@ -25,7 +25,8 @@ enum StepType {
     StepCount
 };
 
-struct StepItem {
+struct StepItem
+{
     StepType type = Build;
     QString activeTargetName;
     QStringList allTargetNames;
@@ -54,18 +55,20 @@ struct StepItem {
     }
 };
 
-struct EnvironmentItem {
+struct EnvironmentItem
+{
     bool enable = true;
     QMap<QString, QString> environments;
 
-    EnvironmentItem() {
+    EnvironmentItem()
+    {
         initEnvironments();
     }
 
     QStringList toList() const
     {
         QStringList envList;
-        for (auto it = environments.begin() ; it != environments.end() ; it++) {
+        for (auto it = environments.begin(); it != environments.end(); it++) {
             envList.append(it.key() + "=" + it.value());
         }
         return envList;
@@ -98,7 +101,8 @@ struct EnvironmentItem {
     }
 };
 
-struct TargetRunConfigure {
+struct TargetRunConfigure
+{
     QString targetName;
     QString targetPath;
     QString arguments;
@@ -131,7 +135,8 @@ struct TargetRunConfigure {
     }
 };
 
-struct RunConfigure {
+struct RunConfigure
+{
     QString defaultTargetName;
     QVector<TargetRunConfigure> targetsRunConfigure;
 
@@ -152,7 +157,8 @@ struct RunConfigure {
     }
 };
 
-struct BuildConfigue {
+struct BuildConfigue
+{
     EnvironmentItem env;
     QVector<StepItem> steps;
 
@@ -173,7 +179,8 @@ struct BuildConfigue {
     }
 };
 
-struct BuildTypeConfigure {
+struct BuildTypeConfigure
+{
     ConfigType type = Unknown;
     QString directory;
     BuildConfigue buildConfigure;
@@ -203,17 +210,20 @@ struct BuildTypeConfigure {
 };
 
 using BuildTypeConfigures = QVector<BuildTypeConfigure>;
-struct ProjectConfigure {
+struct ProjectConfigure
+{
     QString kit;
+    QString kitId;
     QString language;
     QString workspace;
     ConfigType defaultType = Unknown;
     ConfigType tempSelType = Unknown;
-    BuildTypeConfigures buildTypeConfigures; // debug、release e.g
+    BuildTypeConfigures buildTypeConfigures;   // debug、release e.g
 
     friend QDataStream &operator<<(QDataStream &stream, const ProjectConfigure &data)
     {
         stream << data.kit;
+        stream << data.kitId;
         stream << data.language;
         stream << data.workspace;
         int type = data.defaultType;
@@ -228,6 +238,7 @@ struct ProjectConfigure {
     friend QDataStream &operator>>(QDataStream &stream, ProjectConfigure &data)
     {
         stream >> data.kit;
+        stream >> data.kitId;
         stream >> data.language;
         stream >> data.workspace;
         int type = 0;
@@ -252,7 +263,7 @@ struct ProjectConfigure {
 };
 
 class ConfigUtilPrivate;
-class ConfigUtil final: public QObject
+class ConfigUtil final : public QObject
 {
     Q_OBJECT
 public:
@@ -287,6 +298,6 @@ private:
     ConfigUtilPrivate *const d;
 };
 
-} //namespace config
+}   //namespace config
 
-#endif // CONFIGUTIL_H
+#endif   // CONFIGUTIL_H

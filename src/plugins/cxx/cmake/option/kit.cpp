@@ -6,10 +6,6 @@
 
 #include <QUuid>
 
-const char ID_KEY[] = "PE.Profile.Id";
-const char DISPLAYNAME_KEY[] = "PE.Profile.Name";
-const char DATA_KEY[] = "PE.Profile.Data";
-
 class KitPrivate
 {
 public:
@@ -20,60 +16,31 @@ public:
             id = QUuid::createUuid().toString();
     }
 
+public:
     QString id;
-    QString unexpandedDisplayName;
-
-    QHash<QString, QVariant> data;
-
-    QString defaultOutput;
+    QString kitName;
+    Option ccompiler;
+    Option cxxcompiler;
+    Option debugger;
+    Option cmakeTool;
+    QString cmakeGenerator;
 };
 
-Kit::Kit(QString id, QObject *parent) : QObject(parent)
-  , d(std::make_unique<KitPrivate>(id))
+Kit::Kit(QString id, QObject *parent)
+    : QObject(parent),
+      d(new KitPrivate(id))
 {
 }
 
-QString fromSetting(const QVariant &variant)
+Kit::Kit(const Kit &other)
+    : d(new KitPrivate(""))
 {
-    const QByteArray ba = variant.toString().toUtf8();
-    if (ba.isEmpty())
-        return {};
-    return ba;
+    copyFrom(other);
 }
 
-QString fromString(const QString &name)
+Kit::~Kit()
 {
-    if (name.isEmpty())
-        return {};
-    return name.toUtf8();
-}
-
-Kit::Kit(const QVariantMap &data)
-    : d(std::make_unique<KitPrivate>(""))
-{
-    d->id = fromSetting(data.value(QLatin1String(ID_KEY)));
-
-    d->unexpandedDisplayName = data.value(QLatin1String(DISPLAYNAME_KEY),
-                                            d->unexpandedDisplayName).toString();
-
-    QVariantMap extra = data.value(QLatin1String(DATA_KEY)).toMap();
-    d->data.clear(); // remove default values
-    const QVariantMap::ConstIterator cend = extra.constEnd();
-    for (QVariantMap::ConstIterator it = extra.constBegin(); it != cend; ++it)
-        d->data.insert(fromString(it.key()), it.value());
-}
-
-QString Kit::displayName() const
-{
-    return d->unexpandedDisplayName;
-}
-
-void Kit::setUnexpandedDisplayName(const QString &name)
-{
-    if (d->unexpandedDisplayName == name)
-        return;
-
-    d->unexpandedDisplayName = name;
+    delete d;
 }
 
 QString Kit::id() const
@@ -81,48 +48,128 @@ QString Kit::id() const
     return d->id;
 }
 
-QList<QString> Kit::allKeys() const
+void Kit::setId(const QString &id)
 {
-    return d->data.keys();
+    d->id = id;
 }
 
-QVariant Kit::value(QString key, const QVariant &unset) const
+QString Kit::kitName() const
 {
-    return d->data.value(key, unset);
+    return d->kitName;
 }
 
-bool Kit::hasValue(QString key) const
+void Kit::setKitName(const QString &name)
 {
-    return d->data.contains(key);
+    d->kitName = name;
 }
 
-void Kit::setValue(QString key, const QVariant &value)
+Option Kit::ccompiler() const
 {
-    if (d->data.value(key) == value)
-        return;
-    d->data.insert(key, value);
+    return d->ccompiler;
 }
 
-void Kit::setDefaultOutput(QString &defaultOutput)
+void Kit::setCCompiler(const Option &opt)
 {
-    d->defaultOutput = defaultOutput;
+    d->ccompiler = opt;
 }
 
-const QString &Kit::getDefaultOutput() const
+Option Kit::cxxcompiler() const
 {
-    return d->defaultOutput;
+    return d->cxxcompiler;
 }
 
-void Kit::copyFrom(const Kit &k)
+void Kit::setCXXCompiler(const Option &opt)
 {
-    d->data = k.d->data;
-    d->unexpandedDisplayName = k.d->unexpandedDisplayName;
-    d->defaultOutput = k.d->defaultOutput;
+    d->cxxcompiler = opt;
 }
 
-Kit::Kit(const Kit &other)
+Option Kit::debugger() const
 {
-    copyFrom(other);
+    return d->debugger;
+}
+
+void Kit::setDebugger(const Option &opt)
+{
+    d->debugger = opt;
+}
+
+Option Kit::cmakeTool() const
+{
+    return d->cmakeTool;
+}
+
+void Kit::setCMakeTool(const Option &opt)
+{
+    d->cmakeTool = opt;
+}
+
+QString Kit::cmakeGenerator() const
+{
+    return d->cmakeGenerator;
+}
+
+void Kit::setCMakeGenerator(const QString &cg)
+{
+    d->cmakeGenerator = cg;
+}
+
+void Kit::copyFrom(const Kit &other)
+{
+    d->id = other.d->id;
+    d->kitName = other.d->kitName;
+    d->ccompiler = other.d->ccompiler;
+    d->cxxcompiler = other.d->cxxcompiler;
+    d->debugger = other.d->debugger;
+    d->cmakeTool = other.d->cmakeTool;
+    d->cmakeGenerator = other.d->cmakeGenerator;
+}
+
+QVariantMap Kit::toVariantMap()
+{
+    return toVariantMap(*this);
+}
+
+QVariantMap Kit::toVariantMap(const Kit &kit)
+{
+    QMap<QString, QVariant> map;
+    auto optionToMap = [&map](const QString key, const Option &opt) {
+        QVariantMap optMap;
+        optMap.insert(Name, opt.name);
+        optMap.insert(Path, opt.path);
+        map.insert(key, optMap);
+    };
+
+    optionToMap(kCCompiler, kit.d->ccompiler);
+    optionToMap(kCXXCompiler, kit.d->cxxcompiler);
+    optionToMap(kDebugger, kit.d->debugger);
+    optionToMap(kCMakeTool, kit.d->cmakeTool);
+
+    map.insert(kCMakeGenerator, kit.d->cmakeGenerator);
+    map.insert(kID, kit.d->id);
+    return map;
+}
+
+Kit Kit::fromVariantMap(const QVariantMap &map)
+{
+    auto updateKit = [map](const QString key, Option &opt) {
+        const auto &item = map.value(key).toMap();
+        opt.name = item.value(Name).toString();
+        opt.path = item.value(Path).toString();
+    };
+
+    Kit kit;
+    updateKit(kCCompiler, kit.d->ccompiler);
+    updateKit(kCXXCompiler, kit.d->cxxcompiler);
+    updateKit(kDebugger, kit.d->debugger);
+    updateKit(kCMakeTool, kit.d->cmakeTool);
+
+    kit.d->kitName = map.value(Name).toString();
+    kit.d->cmakeGenerator = map.value(kCMakeGenerator).toString();
+    kit.d->id = map.value(kID).toString();
+    if (kit.d->id.isEmpty())
+        kit.d->id = QUuid::createUuid().toString();
+
+    return kit;
 }
 
 Kit &Kit::operator=(const Kit &other)
@@ -131,22 +178,7 @@ Kit &Kit::operator=(const Kit &other)
     return *this;
 }
 
-QVariantMap Kit::toMap() const
+bool Kit::operator==(const Kit &other)
 {
-    using IdVariantConstIt = QHash<QString, QVariant>::ConstIterator;
-
-    QVariantMap data;
-    data.insert(QLatin1String(ID_KEY), d->id);
-    data.insert(QLatin1String(DISPLAYNAME_KEY), d->unexpandedDisplayName);
-
-    QVariantMap extra;
-
-    const IdVariantConstIt cend = d->data.constEnd();
-    for (IdVariantConstIt it = d->data.constBegin(); it != cend; ++it)
-        extra.insert(it.key(), it.value());
-    data.insert(QLatin1String(DATA_KEY), extra);
-
-    return data;
+    return d->id == other.d->id;
 }
-
-Kit::~Kit() = default;

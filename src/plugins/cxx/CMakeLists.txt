@@ -33,7 +33,7 @@ add_library(${PROJECT_NAME}
     ${CXX_FILES}
     ${QT_THEME}
     ${CXX_QRC}
-    )
+)
 
 target_link_libraries(${PROJECT_NAME}
     framework

@@ -14,32 +14,16 @@ class KitManager : public QObject
     Q_OBJECT
 public:
     static KitManager *instance();
-    ~KitManager() override;
 
-    void save();
+    void setKitList(const QList<Kit> &list);
+    void removeKit(const Kit &kit);
+    QList<Kit> kitList() const;
+    Kit findKit(const QString &id);
 
-    void setSelectedKit(Kit &kit);
-    const Kit &getSelectedKit();
-
-    QString getDefaultOutputPath() const;
-
-signals:
-
-public slots:
 private:
     explicit KitManager(QObject *parent = nullptr);
 
-    void restoreKits();
-
-    class KitList
-    {
-    public:
-        KitList() {}
-        QString defaultKit;
-        std::vector<std::unique_ptr<Kit>> kits;
-    };
-
-    KitList restoreKits(const QString &fileName);
+    QList<Kit> allKit;
 };
 
-#endif // KITMANAGER_H
+#endif   // KITMANAGER_H
