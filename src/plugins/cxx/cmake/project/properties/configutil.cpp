@@ -6,8 +6,7 @@
 #include "cmakeasynparse.h"
 #include "cmakeprojectgenerator.h"
 #include "targetsmanager.h"
-
-#include "services/option/optionmanager.h"
+#include "cmake/option/kitmanager.h"
 
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -83,12 +82,14 @@ dpfservice::ProjectInfo ConfigUtil::createProjectInfo(const ProjectConfigure *pa
     dpfservice::ProjectInfo info;
     for (auto iter = param->buildTypeConfigures.begin(); iter != param->buildTypeConfigures.end(); ++iter) {
         if (d->configureParam.tempSelType == iter->type) {
+            Kit kit = KitManager::instance()->findKit(param->kitId);
+
             info.setLanguage(param->language);
             info.setKitName(CmakeProjectGenerator::toolKitName());
             info.setWorkspaceFolder(param->workspace);
             info.setBuildType(ConfigUtil::instance()->getNameFromType(iter->type));
             info.setBuildFolder(iter->directory);
-            info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
+            info.setBuildProgram(kit.cmakeTool().path);
 
             QStringList configArguments;
             configArguments << "-S";
@@ -139,7 +140,7 @@ void ConfigUtil::checkConfigInfo(const QString &buildType, const QString &direct
             QString cfgFile = iter->directory + QDir::separator() + TargetsManager::instance()->getCMakeConfigFile();
             if (!QFileInfo(cfgFile).isFile()) {
                 // not config
-//                configProject(&d->configureParam);
+                //                configProject(&d->configureParam);
             }
         }
     }
@@ -178,12 +179,14 @@ bool ConfigUtil::updateProjectInfo(dpfservice::ProjectInfo &info, const ProjectC
 
     for (auto iter = param->buildTypeConfigures.begin(); iter != param->buildTypeConfigures.end(); ++iter) {
         if (d->configureParam.defaultType == iter->type) {
+            Kit kit = KitManager::instance()->findKit(param->kitId);
+
             info.setLanguage(param->language);
             info.setKitName(CmakeProjectGenerator::toolKitName());
             info.setWorkspaceFolder(param->workspace);
             info.setBuildType(ConfigUtil::instance()->getNameFromType(iter->type));
             info.setBuildFolder(iter->directory);
-            info.setBuildProgram(OptionManager::getInstance()->getCMakeToolPath());
+            info.setBuildProgram(kit.cmakeTool().path);
 
             QStringList arguments;
             arguments << "-S";
