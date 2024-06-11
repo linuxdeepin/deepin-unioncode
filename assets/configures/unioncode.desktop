@@ -10,6 +10,6 @@ MimeType=text/plain;application/x-code-workspace;
 Name=Deepin Union Code
 Path=/usr/bin
 StartupNotify=false
-StartupWMClass=Code
+StartupWMClass=UnionCode
 Type=Application
 X-Deepin-Vendor=user-custom
