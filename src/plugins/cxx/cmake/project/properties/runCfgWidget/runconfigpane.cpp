@@ -58,7 +58,6 @@ void RunConfigPane::setupUi()
     // excutable label ui.
     d->excutableLabel = new DLineEdit(mainFrame);
     d->excutableLabel->setText(tr("Here is the executable path"));
-    d->excutableLabel->lineEdit()->setReadOnly(true);
     d->formLayout->addRow(tr("Executable path:"), d->excutableLabel);
     d->formLayout->setSpacing(10);
 
