@@ -18,7 +18,7 @@ public:
 
 Q_SIGNALS:
     void processed(EntityPtr ptr);
-    void actionInvoked(const QString &actId);
+    void actionInvoked(EntityPtr ptr, const QString &actId);
 };
 
 #endif   // NOTIFICATIONLISTVIEW_H

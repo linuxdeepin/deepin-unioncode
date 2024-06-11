@@ -140,9 +140,12 @@ void NotificationCenterWidget::handleClear()
     d->updateView();
 }
 
-void NotificationCenterWidget::handleActionInvoked(const QString &actId)
+void NotificationCenterWidget::handleActionInvoked(EntityPtr ptr, const QString &actId)
 {
-    notifyManager.actionInvoked(actId);
+    if (ptr->callback())
+        ptr->callback()(actId);
+    else
+        notifyManager.actionInvoked(actId);
 }
 
 void NotificationCenterWidget::handleProcessed(EntityPtr ptr)

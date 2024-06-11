@@ -40,7 +40,7 @@ QWidget *ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem 
     NotificationItemWidget *item = new NotificationItemWidget(parent, notify);
     layout->addWidget(item);
 
-    connect(item, &NotificationItemWidget::actionInvoked, view, &NotificationListView::actionInvoked);
+    connect(item, &NotificationItemWidget::actionInvoked, view, std::bind(&NotificationListView::actionInvoked, view, notify, std::placeholders::_1));
     connect(item, &NotificationItemWidget::processed, view, &NotificationListView::processed);
 
     return frame;

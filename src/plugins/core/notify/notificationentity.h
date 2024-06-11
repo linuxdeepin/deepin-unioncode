@@ -9,6 +9,9 @@
 #include <QDateTime>
 
 #include <memory>
+#include <functional>
+
+using NotifyCallback = std::function<void(const QString &actId)>;
 
 class NotificationEntityPrivate;
 class NotificationEntity : public QObject
@@ -23,7 +26,7 @@ public:
 
     explicit NotificationEntity(NotificationType type, const QString &name = QString(),
                                 const QString &msg = QString(), const QStringList &actions = QStringList(),
-                                QObject *parent = nullptr);
+                                NotifyCallback cb = nullptr, QObject *parent = nullptr);
     ~NotificationEntity();
 
     QString name() const;
@@ -37,6 +40,9 @@ public:
 
     NotificationType type() const;
     void setType(NotificationType type);
+
+    NotifyCallback callback() const;
+    void setCallback(NotifyCallback cb);
 
 private:
     NotificationEntityPrivate *const d;
