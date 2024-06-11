@@ -18,5 +18,9 @@ void NotificationModule::initialize(Controller *_uiController)
     Q_ASSERT(windowService);
 
     using namespace std::placeholders;
-    windowService->notify = std::bind(&NotificationManager::notify, NotificationManager::instance(), _1, _2, _3, _4);
+    auto notify = qOverload<uint, const QString &, const QString &, const QStringList &>(&NotificationManager::notify);
+    windowService->notify = std::bind(notify, NotificationManager::instance(), _1, _2, _3, _4);
+
+    auto notifyWithCb = qOverload<uint, const QString &, const QString &, const QStringList &, NotifyCallback>(&NotificationManager::notify);
+    windowService->notifyWithCallback = std::bind(notifyWithCb, NotificationManager::instance(), _1, _2, _3, _4, _5);
 }

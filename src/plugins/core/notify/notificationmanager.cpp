@@ -116,8 +116,13 @@ NotificationManager *NotificationManager::instance()
 
 void NotificationManager::notify(uint type, const QString &name, const QString &msg, const QStringList &actions)
 {
+    notify(type, name, msg, actions, nullptr);
+}
+
+void NotificationManager::notify(uint type, const QString &name, const QString &msg, const QStringList &actions, NotifyCallback cb)
+{
     EntityPtr notification = std::make_shared<NotificationEntity>(static_cast<NotificationEntity::NotificationType>(type),
-                                                                  name, msg, actions);
+                                                                  name, msg, actions, cb);
 
     if (d->ncWidget && d->ncWidget->isVisible()) {
         d->allEntities.push_front(notification);
@@ -198,12 +203,16 @@ void NotificationManager::bubbleDismissed(Bubble *bubble)
 
 void NotificationManager::bubbleActionInvoked(Bubble *bubble, const QString &actId)
 {
+    auto entity = bubble->entity();
     if (d->displayedBubbleList.contains(bubble)) {
         d->displayedBubbleList.removeOne(bubble);
         bubble->close();
     }
 
-    notifyManager.actionInvoked(actId);
+    if (entity->callback())
+        entity->callback()(actId);
+    else
+        notifyManager.actionInvoked(actId);
 }
 
 bool NotificationManager::eventFilter(QObject *watched, QEvent *event)

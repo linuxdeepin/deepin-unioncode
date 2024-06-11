@@ -22,11 +22,11 @@ class AbstractMenu;
 class AbstractWidget;
 
 namespace Priority {
-    const quint8 lowest = 255;
-    const quint8 low = 150;
-    const quint8 medium = 100;
-    const quint8 high = 50;
-    const quint8 highest = 5;
+const quint8 lowest = 255;
+const quint8 low = 150;
+const quint8 medium = 100;
+const quint8 high = 50;
+const quint8 highest = 5;
 }
 
 namespace dpfservice {
@@ -201,6 +201,8 @@ public:
      * @param actions {id, text, id, text, ...}
      */
     DPF_INTERFACE(void, notify, uint type, const QString &name, const QString &msg, const QStringList &actions);
+    using NotifyCallback = std::function<void(const QString &actId)>;
+    DPF_INTERFACE(void, notifyWithCallback, uint type, const QString &name, const QString &msg, const QStringList &actions, NotifyCallback cb);
 };
 
 }   // namespace dpfservice
