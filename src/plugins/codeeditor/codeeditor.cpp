@@ -102,6 +102,7 @@ void CodeEditor::initButtonBox()
     layout->addWidget(backBtn);
     layout->addWidget(forwardBtn);
     layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     windowService->addWidgetToTopTool(new AbstractWidget(btnWidget), false, false, Priority::low);
 }
