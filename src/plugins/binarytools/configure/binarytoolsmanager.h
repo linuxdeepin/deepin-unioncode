@@ -101,6 +101,7 @@ private:
     void printOutput(const QString &id, const QString &content, OutputPane::OutputFormat format);
     void stopTool(const QString &id);
     void replaceCurrentDocument(const QString &id, int exitCode);
+    bool checkAndSetProcessParams(QSharedPointer<ToolProcess> process, const ToolInfo &tool, QString &errorMsg);
 
 private:
     QMap<QString, std::tuple<QSharedPointer<ToolProcess>, QSharedPointer<QThread>>> toolTaskMap;
