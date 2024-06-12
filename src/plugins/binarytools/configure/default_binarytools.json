@@ -56,7 +56,7 @@
                     "type": 0,
                     "workingDirectory": "",
                     "advance": {
-                        "missingHint": "",
+                        "missingHint": "工具执行程序未找到，请通过浏览器访问“https://github.com/transifex”进行下载并配置",
                         "installCommand": "",
                         "triggerEvent" : 0
                     }
@@ -75,7 +75,7 @@
                     "type": 0,
                     "workingDirectory": "",
                     "advance": {
-                        "missingHint": "",
+                        "missingHint": "工具执行程序未找到，请通过浏览器访问“https://github.com/transifex”进行下载并配置",
                         "installCommand": "",
                         "triggerEvent" : 0
                     }
