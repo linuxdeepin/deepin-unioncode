@@ -126,12 +126,13 @@ void FileTreeView::selRemove()
     dialog.setMessage(message);
     dialog.setWindowTitle(tr("Delete Warining"));
     dialog.setIcon(QIcon::fromTheme("dialog-warning"));
-    dialog.insertButton(0, tr("Ok"));
-    dialog.insertButton(1, tr("Cancel"));
-    int code = dialog.exec();
+    dialog.insertButton(0, tr("Cancel"));
+    dialog.insertButton(1, tr("OK"));
+    dialog.exec();
 
-    if (code == 1)
+    if (dialog.result() != QDialog::Accepted) {
         return;
+    }
 
     bool hasError = false;
     QStringList errFilePaths;
