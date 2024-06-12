@@ -486,6 +486,10 @@ void Controller::switchContextWidget(const QString &title)
 {
     qInfo() << __FUNCTION__;
     d->stackContextWidget->setCurrentWidget(d->contextWidgets[title]);
+    if (d->stackContextWidget->isHidden()) {
+        d->contextWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        d->stackContextWidget->show();
+    }
     if (d->tabButtons.contains(title))
         d->tabButtons[title]->show();
 
