@@ -30,12 +30,21 @@ LSPStyle::LSPStyle(TextEditor *parent)
     d->diagnosticFormat = "%1\n%2:%3";
     d->textChangedTimer.setSingleShot(true);
     d->textChangedTimer.setInterval(200);
+    d->hoverTimer.setSingleShot(true);
 
     setIndicStyle();
 
     connect(d->editor, &TextEditor::textChanged, this, [this] { d->textChangedTimer.start(); });
-    connect(d->editor, &TextEditor::documentHovered, this, &LSPStyle::onHovered);
-    connect(d->editor, &TextEditor::documentHoverEnd, this, &LSPStyle::onHoverCleaned);
+    connect(d->editor, &TextEditor::documentHovered, this, [=](int pos){
+        int timeout = EditorSettings::instance()->value(Node::Behavior, Group::TipGroup, Key::TipActiveTime, 500).toInt();
+        d->hoverTimer.singleShot(timeout, [=](){
+            this->onHovered(pos);
+        });
+    });
+    connect(d->editor, &TextEditor::documentHoverEnd, this, [=](int pos){
+        d->hoverTimer.stop();
+        this->onHoverCleaned(pos);
+    });
     connect(d->editor, &TextEditor::documentHoveredWithCtrl, this, &LSPStyle::onDefinitionHover);
     connect(d->editor, &TextEditor::indicatorClicked, this, &LSPStyle::onIndicClicked);
     connect(d->editor, &TextEditor::contextMenuRequested, this, &LSPStyle::onShowContextMenu);
