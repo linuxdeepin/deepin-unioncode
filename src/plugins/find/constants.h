@@ -8,33 +8,64 @@
 #include <QMap>
 #include <QObject>
 
+enum ResultRole {
+    LineRole = Qt::UserRole + 1,
+    ColumnRole,
+    KeywordRole
+};
+
+enum SearchScope {
+    AllProjects = 0,
+    CurrentProject,
+    CurrentFile
+};
+
+enum SearchFlag {
+    SearchNoFlag = 0,
+    SearchCaseSensitive = 1,
+    SearchWholeWord = 1 << 1
+};
+Q_DECLARE_FLAGS(SearchFlags, SearchFlag)
+
+struct BaseParams
+{
+    QStringList baseFileList;
+    QStringList openedFileList;
+    QString keyword;
+};
+
 struct SearchParams
 {
-    QStringList filePathList;
-    QString searchText;
-    bool sensitiveFlag;
-    bool wholeWordsFlag;
-    QStringList patternsList;
-    QStringList exPatternsList;
-    QMap<QString, QString> projectInfoMap;
+    BaseParams baseParams;
+    QStringList includeList;
+    QStringList excludeList;
+    SearchFlags flags = SearchNoFlag;
+    SearchScope scope = AllProjects;
 };
 
 struct ReplaceParams
 {
-    QStringList filePathList;
-    QString searchText;
+    BaseParams baseParams;
     QString replaceText;
+    SearchFlags flags = SearchNoFlag;
 };
 
 struct FindItem
 {
     QString filePathName;
-    int lineNumber;
+    int line = -1;
+    int column = -1;
+    QString keyword;
     QString context;
+
+    inline bool operator==(const FindItem &other)
+    {
+        return filePathName == other.filePathName && line == other.line
+                && column == other.column;
+    }
 };
 
 using FindItemList = QList<FindItem>;
-using ProjectInfo = QMap<QString, QString>;
 
 Q_DECLARE_METATYPE(SearchParams)
 Q_DECLARE_METATYPE(ReplaceParams)

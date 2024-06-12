@@ -10,6 +10,7 @@
 #include "gui/settings/editorsettingswidget.h"
 #include "lexer/lexermanager.h"
 #include "utils/editorutils.h"
+#include "status/statusinfomanager.h"
 
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -166,6 +167,9 @@ void CodeEditor::initEditorService()
     editorService->registerWidget = std::bind(&WorkspaceWidget::registerWidget, workspaceWidget, _1, _2);
     editorService->switchWidget = std::bind(&WorkspaceWidget::switchWidget, workspaceWidget, _1);
     editorService->switchDefaultWidget = std::bind(&WorkspaceWidget::switchDefaultWidget, workspaceWidget);
+    editorService->openedFiles = std::bind(&WorkspaceWidget::openedFiles, workspaceWidget);
+    editorService->fileText = std::bind(&WorkspaceWidget::fileText, workspaceWidget, _1);
+    editorService->replaceAll = std::bind(&WorkspaceWidget::replaceAll, workspaceWidget, _1, _2, _3, _4, _5);
 
     LexerManager::instance()->init(editorService);
 }
@@ -190,6 +194,8 @@ void CodeEditor::initWindowService()
         windowService->addAction(MWM_FILE, new AbstractAction(sep));
 
         windowService->addContextWidget(QTabWidget::tr("Search &Results"), new AbstractWidget(CodeLens::instance()), true);
+
+        StatusInfoManager::instance()->init(windowService);
     }
 }
 

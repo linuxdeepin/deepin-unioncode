@@ -5,10 +5,10 @@
 #include "tabbar.h"
 #include "private/tabbar_p.h"
 
-#include "common/common.h"
-#include "services/editor/editorservice.h"
+#include "common/util/eventdefinitions.h"
 
 #include <DMenu>
+#include <DDialog>
 #include <DDesktopServices>
 
 #include <QSignalBlocker>
@@ -201,20 +201,25 @@ void TabBar::removeTab(const QString &fileName)
     QString text = d->tabBar->tabText(index);
     QFileInfo info(fileName);
     if (info.exists() && text.length() > 0 && text.at(0) == "*") {
-        int ret = QMessageBox::question(this, QMessageBox::tr("Save Changes"),
-                                        QMessageBox::tr("The file has unsaved changes, will save?"),
-                                        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel,
-                                        QMessageBox::Cancel);
-        if (QMessageBox::Yes != ret && QMessageBox::No != ret) {
-            return;
-        } else if (QMessageBox::Yes == ret) {
+        DDialog dialog(this);
+        dialog.setWindowTitle(tr("Save Changes"));
+        dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+        dialog.setMessage(tr("The file has unsaved changes, will save?"));
+        dialog.addButton(tr("Save", "button"), true, DDialog::ButtonRecommend);
+        dialog.addButton(tr("Do Not Save", "button"));
+        dialog.addButton(tr("Cancel"), "button");
+
+        int ret = dialog.exec();
+        if (ret == 0) // save
             emit saveFileRequested(fileName);
-        }
+        else if (ret == 2 || ret == -1) // cancel or close
+            return;
     }
 
     emit tabClosed(fileName);
     editor.fileClosed(fileName);
     d->tabBar->removeTab(index);
+    editor.switchedFile(this->currentFileName());
 }
 
 void TabBar::setCloseButtonVisible(bool visible)

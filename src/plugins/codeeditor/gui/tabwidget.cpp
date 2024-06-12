@@ -5,10 +5,10 @@
 #include "tabwidget.h"
 #include "private/tabwidget_p.h"
 #include "transceiver/codeeditorreceiver.h"
-#include "find/editordocumentfind.h"
 #include "common/common.h"
 #include "settings/settingsdefine.h"
 #include "base/abstractaction.h"
+#include "recent/recentopenwidget.h"
 
 #include "services/window/windowservice.h"
 
@@ -124,6 +124,9 @@ void TabWidgetPrivate::initUI()
     mainLayout->addWidget(tabBar, 0, Qt::AlignTop);
     mainLayout->addLayout(editorLayout);
 
+    openedWidget = new RecentOpenWidget(q);
+    openedWidget->hide();
+
     auto holder = createFindPlaceHolder();
     if (holder)
         mainLayout->addWidget(holder);
@@ -135,6 +138,7 @@ void TabWidgetPrivate::initConnection()
     connect(tabBar, &TabBar::tabClosed, this, &TabWidgetPrivate::onTabClosed);
     connect(tabBar, &TabBar::spliterClicked, this, &TabWidgetPrivate::onSpliterClicked);
     connect(tabBar, &TabBar::closeRequested, q, &TabWidget::closeRequested);
+    connect(tabBar, &TabBar::saveFileRequested, q, &TabWidget::saveFile);
 
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqAddAnnotation, this, &TabWidgetPrivate::handleAddAnnotation);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveAnnotation, this, &TabWidgetPrivate::handleRemoveAnnotation);
@@ -149,6 +153,28 @@ void TabWidget::handleSetComment()
 {
     if (auto editor = d->currentTextEditor())
         editor->commentOperation();
+}
+
+void TabWidget::handleShowOpenedFiles(const int &x, const int &y, const QSize &size)
+{
+    int count = d->tabBar->tabCount();
+    if (count < 2)
+        return;
+
+    d->openedWidget->setWindowFlags(Qt::Popup);
+    QSize popupSize = d->openedWidget->size();
+
+    int posX = (size.width() - popupSize.width()) / 2 + x;
+    int posY = (size.height() - popupSize.height()) / 2 + y;
+
+    d->openedWidget->move(posX, posY);
+    d->openedWidget->setOpenedFiles(d->recentOpenedFiles);
+    d->openedWidget->setListViewSelection(1);
+    connect(d->openedWidget, &RecentOpenWidget::triggered, this, [=](const QModelIndex &index) {
+        d->tabBar->setCurrentIndex(d->tabBar->indexOf(index.data(RecentOpenWidget::RecentOpenedUserRole::FilePathRole).toString()));
+    });
+    d->openedWidget->show();
+    d->openedWidget->setFocusListView();
 }
 
 QWidget *TabWidgetPrivate::createSpaceWidget()
@@ -191,12 +217,12 @@ QWidget *TabWidgetPrivate::createSpaceWidget()
 
 QWidget *TabWidgetPrivate::createFindPlaceHolder()
 {
+    docFind = new EditorDocumentFind(q);
     auto &ctx = dpfInstance.serviceContext();
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
     if (!windowService)
         return nullptr;
 
-    auto docFind = new EditorDocumentFind(q);
     return windowService->createFindPlaceHolder(q, docFind);
 }
 
@@ -220,6 +246,7 @@ TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
             });
 
     editorMng.insert(fileName, editor);
+    recentOpenedFiles.prepend(fileName);
 
     return editor;
 }
@@ -333,6 +360,8 @@ void TabWidgetPrivate::onTabSwitched(const QString &fileName)
         return;
 
     editorLayout->setCurrentWidget(editorMng[fileName]);
+    recentOpenedFiles.removeOne(fileName);
+    recentOpenedFiles.prepend(fileName);
     changeFocusProxy();
 }
 
@@ -345,6 +374,7 @@ void TabWidgetPrivate::onTabClosed(const QString &fileName)
     Inotify::globalInstance()->removePath(fileName);
     removePositionRecord(fileName);
     editorMng.remove(fileName);
+    recentOpenedFiles.removeOne(fileName);
     editorLayout->removeWidget(editor);
     changeFocusProxy();
 
@@ -561,6 +591,24 @@ void TabWidget::setText(const QString &text)
         editor->setText(text);
         editor->gotoPosition(pos);
     }
+}
+
+QString TabWidget::fileText(const QString &fileName, bool *success)
+{
+    if (auto editor = d->findEditor(fileName)) {
+        if (success) *success = true;
+        return editor->text();
+    }
+
+    if (success) *success = false;
+    return {};
+}
+
+void TabWidget::replaceAll(const QString &fileName, const QString &oldText,
+                           const QString &newText, bool caseSensitive, bool wholeWords)
+{
+    if (auto editor = d->findEditor(fileName))
+        d->docFind->replaceAll(editor, oldText, newText, caseSensitive, wholeWords);
 }
 
 void TabWidget::saveAll() const
@@ -870,6 +918,12 @@ void TabWidget::gotoPosition(int line, int column)
 {
     if (auto editor = d->currentTextEditor())
         editor->gotoPosition(editor->positionFromLineIndex(line, column));
+}
+
+void TabWidget::saveFile(const QString &fileName)
+{
+    if (auto editor = d->findEditor(fileName))
+        editor->save();
 }
 
 void TabWidget::dragEnterEvent(QDragEnterEvent *event)

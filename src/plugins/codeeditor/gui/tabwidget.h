@@ -25,6 +25,9 @@ public:
     QStringList modifiedFiles() const;
     QStringList openedFiles() const;
     void setText(const QString &text);
+    QString fileText(const QString &fileName, bool *success = nullptr);
+    void replaceAll(const QString &fileName, const QString &oldText,
+                    const QString &newText, bool caseSensitive, bool wholeWords);
     void saveAll() const;
     bool saveAs(const QString &from, const QString &to);
     void reloadFile(const QString &fileName);
@@ -55,6 +58,7 @@ public:
     void toggleBreakpoint();
     void clearAllBreakpoints();
     void handleSetComment();
+    void handleShowOpenedFiles(const int &x, const int &y, const QSize &size);
 
     int zoomValue();
     void updateZoomValue(int value);
@@ -67,7 +71,8 @@ public slots:
     void removeDebugLine();
     void gotoLine(int line);
     void gotoPosition(int line, int column);
-    
+    void saveFile(const QString &fileName);
+
 signals:
     void closeRequested();
     void splitRequested(Qt::Orientation ori, const QString &fileName);

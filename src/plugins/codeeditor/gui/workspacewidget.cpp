@@ -63,14 +63,23 @@ void WorkspaceWidgetPrivate::initActions()
     if (!windowService)
         return;
 
+    // add/del comment
     QAction *commentAction = new QAction(tr("Add/Delete Comment"), q);
 
     auto abstractCommentAction = new AbstractAction(commentAction, q);
     abstractCommentAction->setShortCutInfo("Editor.addAndRemoveComment",
                                            tr("Add/Remove Comment"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_Slash));
-
     windowService->addAction(tr("&Add/Remove Comment"), abstractCommentAction);
     connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
+
+    // show opened files
+    QAction *showOpenedAction = new QAction(tr("Show opened files"), q);
+
+    auto abstractShowOpenedAction = new AbstractAction(showOpenedAction, q);
+    abstractShowOpenedAction->setShortCutInfo("Editor.showOpened",
+                                              tr("Show opened files"), QKeySequence(Qt::CTRL | Qt::Key_Tab));
+    windowService->addAction(tr("&Show open files"), abstractShowOpenedAction);
+    connect(showOpenedAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleShowOpenedFiles);
 }
 
 void WorkspaceWidgetPrivate::handleSetComment()
@@ -79,6 +88,14 @@ void WorkspaceWidgetPrivate::handleSetComment()
         return;
 
     currentTabWidget()->handleSetComment();
+}
+
+void WorkspaceWidgetPrivate::handleShowOpenedFiles()
+{
+    if (!currentTabWidget())
+        return;
+
+    currentTabWidget()->handleShowOpenedFiles(q->pos().x() - q->mapFromGlobal(q->pos()).x(), q->pos().y() + q->mapToGlobal(q->pos()).y() - 100, q->size());
 }
 
 void WorkspaceWidgetPrivate::initConnection()
@@ -338,6 +355,11 @@ void WorkspaceWidgetPrivate::onCloseRequested()
     tabWidgetList.removeOne(tabWidget);
     tabWidget->deleteLater();
 
+    if (!tabWidgetList.isEmpty()) {
+        tabWidgetList.last()->setFocus();
+        editor.switchedFile(tabWidgetList.last()->currentFile());
+    }
+
     if (tabWidgetList.size() == 1)
         tabWidgetList.first()->setCloseButtonVisible(false);
 }
@@ -497,6 +519,8 @@ void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
         return;
 
     focusTabWidget = tabWidget;
+    editor.switchedFile(focusTabWidget->currentFile());
+
 }
 
 void WorkspaceWidgetPrivate::onZoomValueChanged()
@@ -706,6 +730,37 @@ void WorkspaceWidget::closeFileEditor(const QString &fileName)
 {
     for (auto tabWidget : d->tabWidgetList)
         tabWidget->closeFileEditor(fileName);
+}
+
+QStringList WorkspaceWidget::openedFiles() const
+{
+    QStringList files;
+    for (auto tabWidget : d->tabWidgetList)
+        files << tabWidget->openedFiles();
+
+    // Delete duplicates
+    auto tmp = files.toSet();
+    return tmp.toList();
+}
+
+QString WorkspaceWidget::fileText(const QString &fileName) const
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        bool success = false;
+        const auto &text = tabWidget->fileText(fileName, &success);
+        if (success)
+            return text;
+    }
+
+    return {};
+}
+
+void WorkspaceWidget::replaceAll(const QString &fileName, const QString &oldText,
+                                 const QString &newText, bool caseSensitive, bool wholeWords)
+{
+    for (auto tabWidget : d->tabWidgetList) {
+        tabWidget->replaceAll(fileName, oldText, newText, caseSensitive, wholeWords);
+    }
 }
 
 void WorkspaceWidget::registerWidget(const QString &id, AbstractEditWidget *widget)

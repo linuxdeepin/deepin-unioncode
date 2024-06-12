@@ -25,18 +25,18 @@ QStringList BuilderReceiver::topics()
 
 void BuilderReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.data() == project.activedProject.name) {
-        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+    if (event.data() == project.activatedProject.name) {
+        QVariant proInfoVar = event.property(project.activatedProject.pKeys[0]);
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
-        BuildManager::instance()->setActivedProjectInfo(projectInfo.kitName(), projectInfo.workspaceFolder());
+        BuildManager::instance()->setActivatedProjectInfo(projectInfo.kitName(), projectInfo.workspaceFolder());
     } else if (event.data() == project.createdProject.name) {
         QVariant proInfoVar = event.property(project.createdProject.pKeys[0]);
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
-        BuildManager::instance()->setActivedProjectInfo(projectInfo.kitName(), projectInfo.workspaceFolder());
+        BuildManager::instance()->setActivatedProjectInfo(projectInfo.kitName(), projectInfo.workspaceFolder());
     } else if (event.data() == project.deletedProject.name) {
         QVariant proInfoVar = event.property(project.deletedProject.pKeys[0]);
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
-        BuildManager::instance()->clearActivedProjectInfo();
+        BuildManager::instance()->clearActivatedProjectInfo();
     } else if (event.data() == symbol.parseDone.name) {
         bool bSuccess = event.property("success").toBool();
         if(!bSuccess) {
