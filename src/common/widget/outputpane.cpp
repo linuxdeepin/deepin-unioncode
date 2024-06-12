@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "outputpane.h"
-#include "common/common.h"
 
 #include <DPlainTextEdit>
 #include <DScrollBar>
@@ -12,6 +11,7 @@
 
 #include <QDebug>
 #include <QVBoxLayout>
+#include <QTimer>
 
 /**
  * @brief Output text color.
@@ -21,24 +21,30 @@ const QColor kMessageOutput(0, 135, 135);
 constexpr int kDefaultMaxCharCount = 10000000;
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 class OutputPanePrivate
 {
 public:
-    explicit OutputPanePrivate()
+    struct Output
     {
-    }
+        QString text;
+        OutputPane::AppendMode mode;
+        OutputPane::OutputFormat format;
+    };
 
-    ~OutputPanePrivate()
-    {
-    }
+    explicit OutputPanePrivate(){};
 
+public:
     bool enforceNewline = false;
     bool scrollToBottom = true;
     int maxCharCount = kDefaultMaxCharCount;
     QTextCursor cursor;
     DPlainTextEdit *outputEdit = nullptr;
     DMenu *menu = nullptr;
+
+    QList<Output> outputList;
+    QTimer outputTimer;
 };
 
 OutputPane::OutputPane(QWidget *parent)
@@ -46,6 +52,7 @@ OutputPane::OutputPane(QWidget *parent)
       d(new OutputPanePrivate())
 {
     initUI();
+    initTimer();
 }
 
 OutputPane::~OutputPane()
@@ -84,6 +91,13 @@ void OutputPane::initUI()
     mainLayout->addWidget(d->outputEdit);
 }
 
+void OutputPane::initTimer()
+{
+    d->outputTimer.setSingleShot(true);
+    d->outputTimer.setInterval(100);
+    connect(&d->outputTimer, &QTimer::timeout, this, &OutputPane::handleNextOutput);
+}
+
 void OutputPane::clearContents()
 {
     d->outputEdit->clear();
@@ -94,6 +108,43 @@ QString OutputPane::normalizeNewlines(const QString &text)
     QString res = text;
     res.replace(QLatin1String("\r\n"), QLatin1String("\n"));
     return res;
+}
+
+void OutputPane::handleNextOutput()
+{
+    auto &output = d->outputList.first();
+    QTextCharFormat textFormat;
+    switch (output.format) {
+    case OutputFormat::StdOut:
+        textFormat.setForeground(textColorNormal);
+        textFormat.setFontWeight(QFont::Normal);
+        break;
+    case OutputFormat::StdErr:
+        textFormat.setForeground(kErrorMessageTextColor);
+        textFormat.setFontWeight(QFont::Normal);
+        break;
+    case OutputFormat::NormalMessage:
+        textFormat.setForeground(kMessageOutput);
+        break;
+    case OutputFormat::ErrorMessage:
+        textFormat.setForeground(kErrorMessageTextColor);
+        textFormat.setFontWeight(QFont::Bold);
+        break;
+    default:
+        textFormat.setForeground(textColorNormal);
+        textFormat.setFontWeight(QFont::Normal);
+    }
+
+    if (output.text.size() <= d->maxCharCount) {
+        appendCustomText(output.text, output.mode, textFormat);
+        d->outputList.removeFirst();
+    } else {
+        appendCustomText(output.text.left(d->maxCharCount), output.mode, textFormat);
+        output.text.remove(0, d->maxCharCount);
+    }
+
+    if (!d->outputList.isEmpty())
+        d->outputTimer.start();
 }
 
 bool OutputPane::isScrollbarAtBottom() const
@@ -133,6 +184,7 @@ void OutputPane::appendCustomText(const QString &textIn, AppendMode mode, const 
         qDebug() << "Maximum limit exceeded : " << d->maxCharCount;
         return;
     }
+
     if (!d->cursor.atEnd())
         d->cursor.movePosition(QTextCursor::End);
 
@@ -141,7 +193,6 @@ void OutputPane::appendCustomText(const QString &textIn, AppendMode mode, const 
         d->cursor.removeSelectedText();
     }
 
-    d->cursor.beginEditBlock();
     auto text = mode == OverWrite ? textIn.trimmed() : normalizeNewlines(doNewlineEnforcement(textIn));
     d->cursor.insertText(text, format);
 
@@ -150,36 +201,23 @@ void OutputPane::appendCustomText(const QString &textIn, AppendMode mode, const 
         tmp.setFontWeight(QFont::Bold);
         d->cursor.insertText(doNewlineEnforcement(tr("Additional output omitted") + QLatin1Char('\n')), tmp);
     }
-    d->cursor.endEditBlock();
 
     scrollToBottom();
 }
 
 void OutputPane::appendText(const QString &text, OutputFormat format, AppendMode mode)
 {
-    QTextCharFormat textFormat;
-    switch (format) {
-    case OutputFormat::StdOut:
-        textFormat.setForeground(textColorNormal);
-        textFormat.setFontWeight(QFont::Normal);
-        break;
-    case OutputFormat::StdErr:
-        textFormat.setForeground(kErrorMessageTextColor);
-        textFormat.setFontWeight(QFont::Normal);
-        break;
-    case OutputFormat::NormalMessage:
-        textFormat.setForeground(kMessageOutput);
-        break;
-    case OutputFormat::ErrorMessage:
-        textFormat.setForeground(kErrorMessageTextColor);
-        textFormat.setFontWeight(QFont::Bold);
-        break;
-    default:
-        textFormat.setForeground(textColorNormal);
-        textFormat.setFontWeight(QFont::Normal);
+    if (d->outputList.isEmpty()
+        || d->outputList.last().mode != mode
+        || d->outputList.last().format != format) {
+        d->outputList.append({ text, mode, format });
+    } else {
+        auto &output = d->outputList.last();
+        output.text.append(text);
     }
 
-    appendCustomText(text, mode, textFormat);
+    if (!d->outputTimer.isActive())
+        d->outputTimer.start();
 }
 
 QTextDocument *OutputPane::document() const
