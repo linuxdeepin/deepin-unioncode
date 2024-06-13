@@ -112,6 +112,7 @@ public slots:
 protected:
     virtual void focusOutEvent(QFocusEvent *event) override;
     virtual void keyPressEvent(QKeyEvent *event) override;
+    virtual void mouseMoveEvent(QMouseEvent *event) override;
     virtual bool event(QEvent *event) override;
 
 signals:
@@ -121,8 +122,9 @@ signals:
     void textRemoved(int pos, int len, int removed, const QString &text, int line);
     void zoomValueChanged();
     void documentHovered(int pos);
-    void documentHoveredWithCtrl(int pos);
     void documentHoverEnd(int pos);
+    void requestFollowType(int pos);
+    void followTypeEnd();
     void contextMenuRequested(QMenu *menu);
     void focusOut();
     void cursorRecordChanged(int pos);
