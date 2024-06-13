@@ -171,7 +171,6 @@ public:
     CompletionCache completionCache;
     DefinitionCache definitionCache;
     QTimer textChangedTimer;
-    QTimer hoverTimer;
     HoverCache hoverCache;
     RenamePopup renamePopup;
     RenamePositionCache renameCache;
