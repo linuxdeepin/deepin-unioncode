@@ -166,6 +166,7 @@ public:
     QString formatDiagnosticMessage(const QString &message, int type);
     bool shouldStartCompletion(const QString &insertedText);
     int wordPostion();
+    newlsp::Client *getClient();
 
     CompletionCache completionCache;
     DefinitionCache definitionCache;
@@ -179,9 +180,10 @@ public:
     QList<DiagnosticCache> diagnosticCache;
     static QAction *rangeFormattingAction;
     static QString formattingFile;
-    friend class StyleLsp;
-    newlsp::Client *getClient() const;
     QString diagnosticFormat;
+    newlsp::Client *lspClient { nullptr };
+
+    friend class StyleLsp;
 };
 
 #endif   // LSPSTYLE_P_H
