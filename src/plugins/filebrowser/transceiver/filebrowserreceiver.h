@@ -14,6 +14,8 @@ public:
     explicit FileBrowserReceiver(QObject * parent = nullptr);
     static Type type();
     static QStringList topics();
+
+private:
     void eventProcess(const dpf::Event &event) override;
 };
 
