@@ -70,11 +70,10 @@ public:
     int lastCursorPos { 0 };
     QMultiHash<QString, int> annotationRecords;
 
-    QTimer hoverTimer;
-    int hoverPos { -1 };
     LSPStyle *lspStyle { nullptr };
     bool isSaved { false };
     bool isAutoCompletionEnabled { false };
+    bool isCtrlPressed { false };
 
     bool contentsChanged { false };
     bool lastCursorNeedRecord { true };

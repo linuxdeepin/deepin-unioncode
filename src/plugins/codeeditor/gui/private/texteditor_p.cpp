@@ -50,12 +50,9 @@ TextEditorPrivate::TextEditorPrivate(TextEditor *qq)
 void TextEditorPrivate::init()
 {
     q->setFrameShape(QFrame::NoFrame);
-    q->SendScintilla(TextEditor::SCI_SETMOUSEDWELLTIME, 20);
     q->setAnnotationDisplay(TextEditor::AnnotationStandard);
     q->SendScintilla(TextEditor::SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR,
                      TextEditor::SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE);
-
-    hoverTimer.setSingleShot(true);
 
     initMargins();
     updateColorTheme();
@@ -181,6 +178,9 @@ void TextEditorPrivate::updateSettings()
     q->setTabWidth(tabSize);
     q->setWhitespaceSize(3);
     q->setAutoIndent(autoIndent);
+
+    int hoverTime = EditorSettings::instance()->value(Node::Behavior, Group::TipGroup, Key::TipActiveTime, 500).toInt();
+    q->SendScintilla(TextEditor::SCI_SETMOUSEDWELLTIME, hoverTime);
 
     // Highlight the current line
     q->setCaretLineVisible(true);
@@ -443,11 +443,7 @@ void TextEditorPrivate::onDwellStart(int position, int x, int y)
     if (pos == -1)
         return;
 
-    bool isKeyCtrl = QApplication::keyboardModifiers().testFlag(Qt::ControlModifier);
-    if (isKeyCtrl)
-        emit q->documentHoveredWithCtrl(pos);
-    else
-        emit q->documentHovered(pos);
+    emit q->documentHovered(pos);
 }
 
 void TextEditorPrivate::onDwellEnd(int position, int x, int y)
