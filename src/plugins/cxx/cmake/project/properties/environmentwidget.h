@@ -53,6 +53,9 @@ public:
     void setValues(const config::EnvironmentItem &env);
     void updateEnvList(config::EnvironmentItem *env);
 
+signals:
+    void envUpdated();
+
 private slots:
     void onEnableQDebugLevel();
 
