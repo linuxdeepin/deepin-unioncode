@@ -302,6 +302,15 @@ bool WorkspaceWidgetPrivate::checkAndResetSaveState(const QString &fileName)
 
 void WorkspaceWidgetPrivate::checkFileState()
 {
+    for (const auto &file : removedFileList) {
+        if (!QFile::exists(file))
+            continue;
+
+        removedFileList.removeOne(file);
+        Inotify::globalInstance()->addPath(file);
+        modifiedFileList.append(file);
+    }
+
     handleFileChanged();
     handleFileRemoved();
 }
@@ -520,7 +529,6 @@ void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
 
     focusTabWidget = tabWidget;
     editor.switchedFile(focusTabWidget->currentFile());
-
 }
 
 void WorkspaceWidgetPrivate::onZoomValueChanged()
