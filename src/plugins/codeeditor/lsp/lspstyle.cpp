@@ -712,20 +712,30 @@ int LSPStylePrivate::wordPostion()
     return pos;
 }
 
-newlsp::Client *LSPStylePrivate::getClient() const
+newlsp::Client *LSPStylePrivate::getClient()
 {
-    auto activeProjInfo = dpfGetService(dpfservice::ProjectService)->getActiveProjectInfo();
-    auto langId = activeProjInfo.language();
-    auto workspaceFolder = activeProjInfo.workspaceFolder();
+    if (lspClient)
+        return lspClient;
 
-    newlsp::ProjectKey key(langId.toStdString(), workspaceFolder.toStdString());
     const auto &filePath = editor->getFile();
+    newlsp::ProjectKey prjKey;
+    const auto &allProject = dpfGetService(dpfservice::ProjectService)->getAllProjectInfo();
+    for (const auto &prj : allProject) {
+        const auto &files = prj.sourceFiles();
+        if (!files.contains(filePath))
+            continue;
+
+        prjKey.language = prj.language().toStdString();
+        prjKey.workspace = prj.workspaceFolder().toStdString();
+    }
+
     auto fileLangId = support_file::Language::id(filePath);
-    if (fileLangId != langId) {
+    if (fileLangId != prjKey.language.c_str()) {
         fileLangId = support_file::Language::idAlias(fileLangId);
-        if (fileLangId != langId)
+        if (fileLangId != prjKey.language.c_str())
             return nullptr;
     }
 
-    return LSPClientManager::instance()->get(key);
+    lspClient = LSPClientManager::instance()->get(prjKey);
+    return lspClient;
 }
