@@ -16,6 +16,7 @@
 #include <QDebug>
 #include <QContextMenuEvent>
 #include <QFileSystemModel>
+#include <QSortFilterProxyModel>
 #include <QStack>
 
 DWIDGET_USE_NAMESPACE
@@ -27,9 +28,37 @@ const QString DELETE_MESSAGE_TEXT { DTreeView::tr("The delete operation will be 
 
 const QString DELETE_WINDOW_TEXT { DTreeView::tr("Delete Warning") };
 
+class FileSortFilterProxyModel : public QSortFilterProxyModel
+{
+public:
+    explicit FileSortFilterProxyModel(QObject *parent = nullptr);
+
+protected:
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+};
+
+FileSortFilterProxyModel::FileSortFilterProxyModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+}
+
+bool FileSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    QFileSystemModel *fsModel = qobject_cast<QFileSystemModel *>(sourceModel());
+    // Folder always comes before file
+    if (fsModel && fsModel->fileInfo(left).isDir() && !fsModel->fileInfo(right).isDir()) {
+        return true;
+    } else if (fsModel && !fsModel->fileInfo(left).isDir() && fsModel->fileInfo(right).isDir()) {
+        return false;
+    }
+
+    return QSortFilterProxyModel::lessThan(left, right);
+}
+
 class TreeViewPrivate
 {
     friend class FileTreeView;
+    FileSortFilterProxyModel *sortModel { nullptr };
     QFileSystemModel *model { nullptr };
     DMenu *menu { nullptr };
     QStack<QStringList> moveToTrashStack;
@@ -42,7 +71,14 @@ FileTreeView::FileTreeView(QWidget *parent)
     setLineWidth(0);
     d->model = new QFileSystemModel(this);
     d->menu = new DMenu(this);
-    setModel(d->model);
+
+    d->sortModel = new FileSortFilterProxyModel(this);
+    d->sortModel->setSourceModel(d->model);
+    d->sortModel->sort(0);
+    d->sortModel->setDynamicSortFilter(true);
+    d->sortModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+
+    setModel(d->sortModel);
     setItemDelegate(new BaseItemDelegate(this));
     header()->setSectionResizeMode(DHeaderView::ResizeMode::ResizeToContents);
     setAlternatingRowColors(true);
@@ -61,9 +97,8 @@ void FileTreeView::setProjectInfo(const dpfservice::ProjectInfo &proInfo)
 {
     d->proInfo = proInfo;
     d->model->setRootPath(proInfo.workspaceFolder());
-    auto index = d->model->index(proInfo.workspaceFolder());
-    DTreeView::expand(index);
-    DTreeView::setRootIndex(index);
+    auto index = d->sortModel->mapFromSource(d->model->index(d->proInfo.workspaceFolder()));
+    setRootIndex(index);
     emit rootPathChanged(proInfo.workspaceFolder());
 }
 
@@ -72,7 +107,7 @@ void FileTreeView::selOpen()
     QModelIndexList indexs = selectedIndexes();
     QSet<QString> countPaths;
     for (auto index : indexs) {
-        countPaths << d->model->filePath(index);
+        countPaths << d->model->filePath(d->sortModel->mapToSource(index));
     }
 
     for (auto path : countPaths) {
@@ -86,7 +121,7 @@ void FileTreeView::selMoveToTrash()
     QModelIndexList indexs = selectedIndexes();
     QSet<QString> countPaths;
     for (auto index : indexs) {
-        countPaths << d->model->filePath(index);
+        countPaths << d->model->filePath(d->sortModel->mapToSource(index));
     }
 
     QStringList errFilePaths;
@@ -115,7 +150,7 @@ void FileTreeView::selRemove()
     QModelIndexList indexs = selectedIndexes();
     QStringList countPaths;
     for (auto index : indexs) {
-        countPaths << d->model->filePath(index);
+        countPaths << d->model->filePath(d->sortModel->mapToSource(index));
     }
     // Remove duplicates
     countPaths = countPaths.toSet().toList();
@@ -156,7 +191,7 @@ void FileTreeView::selRename()
     if (indexs.isEmpty())
         return;
 
-    QString filePath = d->model->filePath(indexs[0]);
+    QString filePath = d->model->filePath(d->sortModel->mapToSource(indexs.first()));
     QFileInfo fileInfo(filePath);
 
     auto dialog = new DDialog(this);
@@ -171,25 +206,25 @@ void FileTreeView::selRename()
     dialog->addContent(inputEdit);
     dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
 
-    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=](){
+    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=]() {
         QString newFileName = inputEdit->text();
-          QString newPath = fileInfo.absoluteDir().filePath(newFileName);
-          if (fileInfo.isFile()) {
-              QFile file(filePath);
-              if (file.rename(newPath)) {
-                  qDebug() << "File renamed successfully.";
-              } else {
-                  qDebug() << "Failed to rename file.";
-              }
-          } else if (fileInfo.isDir()) {
-              QDir dir(filePath);
-              if (dir.rename(filePath, newPath)) {
-                  qDebug() << "Directory renamed successfully.";
-              } else {
-                  qDebug() << "Failed to rename directory.";
-              }
-          }
-          dialog->accept();
+        QString newPath = fileInfo.absoluteDir().filePath(newFileName);
+        if (fileInfo.isFile()) {
+            QFile file(filePath);
+            if (file.rename(newPath)) {
+                qDebug() << "File renamed successfully.";
+            } else {
+                qDebug() << "Failed to rename file.";
+            }
+        } else if (fileInfo.isDir()) {
+            QDir dir(filePath);
+            if (dir.rename(filePath, newPath)) {
+                qDebug() << "Directory renamed successfully.";
+            } else {
+                qDebug() << "Failed to rename directory.";
+            }
+        }
+        dialog->accept();
     });
 
     dialog->exec();
@@ -235,7 +270,7 @@ void FileTreeView::createNewOperation(const QString &newName, NewType type)
         if (indexs.isEmpty())
             return;
 
-        QString Path = d->model->filePath(indexs[0]);
+        QString Path = d->model->filePath(d->sortModel->mapToSource(indexs.first()));
         QFileInfo upDirInfo(Path);
 
         if (upDirInfo.isDir()) {
@@ -266,7 +301,7 @@ void FileTreeView::recoverFromTrash()
 
 void FileTreeView::doDoubleClicked(const QModelIndex &index)
 {
-    QString filePath = d->model->filePath(index);
+    QString filePath = d->model->filePath(d->sortModel->mapToSource(index));
     if (QFileInfo(filePath).isFile())
         editor.openFile(QString(), filePath);
 }
@@ -289,7 +324,7 @@ DMenu *FileTreeView::createContextMenu(const QModelIndexList &indexs)
 
     DMenu *menu = new DMenu();
 
-    QString filePath = d->model->filePath(indexs[0]);
+    QString filePath = d->model->filePath(d->sortModel->mapToSource(indexs.first()));
     QFileInfo info(filePath);
 
     QAction *openAction = new QAction(tr("Open"));
