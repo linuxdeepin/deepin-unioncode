@@ -4,6 +4,7 @@
 
 #include "pythondebug.h"
 
+#include "project/properties/configutil.h"
 #include "services/option/optionmanager.h"
 #include "common/util/custompaths.h"
 
@@ -15,6 +16,7 @@
 class PythonDebugPrivate
 {
     friend class PythonDebug;
+    QString interpreterPath;
 };
 
 PythonDebug::PythonDebug(QObject *parent)
@@ -37,8 +39,10 @@ bool PythonDebug::prepareDebug(const QString &fileName, QString &retMsg)
         return false;
     }
 
-    QString pythonTool = OptionManager::getInstance()->getPythonToolPath();
-    if (!pythonTool.contains("python3")) {
+    d->interpreterPath = config::ConfigUtil::instance()->getConfigureParamPointer()->pythonVersion.path;
+    if (d->interpreterPath.isEmpty()) //project has not set interpreter to config. use default interpreter
+        d->interpreterPath = OptionManager::getInstance()->getPythonToolPath();
+    if (!d->interpreterPath.contains("python3")) {
         retMsg = tr("The python3 is needed, please select it in options dialog or install it.");
         return false;
     }
@@ -69,7 +73,7 @@ bool PythonDebug::requestDAPPort(const QString &uuid, const QString &kit,
     QString projectCachePath = CustomPaths::projectCachePath(projectPath);
     msg << uuid
         << kit
-        << OptionManager::getInstance()->getPythonToolPath()
+        << d->interpreterPath
         << fileName
         << projectPath
         << projectCachePath;

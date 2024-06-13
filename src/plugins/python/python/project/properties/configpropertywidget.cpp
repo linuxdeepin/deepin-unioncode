@@ -18,14 +18,13 @@ using namespace config;
 class DetailPropertyWidgetPrivate
 {
     friend class DetailPropertyWidget;
-    DComboBox *pyVersionComboBox{nullptr};
-    DComboBox *executeFileComboBox{nullptr};
+    DComboBox *pyVersionComboBox { nullptr };
+    DComboBox *executeFileComboBox { nullptr };
     QSharedPointer<ToolChainData> toolChainData;
 };
 
 DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
-    : QWidget(parent)
-    , d(new DetailPropertyWidgetPrivate())
+    : QWidget(parent), d(new DetailPropertyWidgetPrivate())
 {
     setupUI();
     initData();
@@ -95,6 +94,7 @@ QStringList getPythonAllVersion()
 
     QString pattern = "((\\d)|(\\d+.\\d+))($|\\s)";
     QStringList versions = findAll(pattern, pythonList.join(" "), true);
+
     return versions;
 }
 
@@ -119,7 +119,7 @@ void DetailPropertyWidget::initData()
         int index = 0;
         for (auto version : data) {
             ToolChainData::ToolChainParam param;
-            param.name =  QString("python%1").arg(version);
+            param.name = QString("python%1").arg(version);
             param.path = "/usr/bin/" + param.name;
             QString text = param.name + "(" + param.path + ")";
             comboBox->insertItem(index, text);
@@ -143,19 +143,21 @@ void DetailPropertyWidget::setValues(const config::ProjectConfigure *param)
     auto globalToolPath = OptionManager::getInstance()->getPythonToolPath();
     for (int i = 0; i < count; i++) {
         ToolChainData::ToolChainParam toolChainParam = qvariant_cast<ToolChainData::ToolChainParam>(d->pyVersionComboBox->itemData(i, Qt::UserRole + 1));
-        if ((param->pythonVersion.name == toolChainParam.name
-                   && param->pythonVersion.path == toolChainParam.path)
-                   || globalToolPath == toolChainParam.path) {
+        if (param->pythonVersion.name == toolChainParam.name
+            && param->pythonVersion.path == toolChainParam.path) {
             d->pyVersionComboBox->setCurrentIndex(i);
             break;
         }
+
+        if (globalToolPath == toolChainParam.path)
+            d->pyVersionComboBox->setCurrentIndex(i);
     }
 
     count = d->executeFileComboBox->count();
     for (int i = 0; i < count; i++) {
         if (param->executeFile == ExecuteFile::CURRENTFILE) {
             d->executeFileComboBox->setCurrentIndex(0);
-        } else if(param->executeFile == ExecuteFile::ENTRYFILE) {
+        } else if (param->executeFile == ExecuteFile::ENTRYFILE) {
             d->executeFileComboBox->setCurrentIndex(1);
         }
     }
@@ -175,9 +177,9 @@ void DetailPropertyWidget::getValues(config::ProjectConfigure *param)
     }
 
     index = d->executeFileComboBox->currentIndex();
-    if (index == 0) {    //current file
+    if (index == 0) {   //current file
         param->executeFile = ExecuteFile::CURRENTFILE;
-    } else if (index == 1) { //Entry file
+    } else if (index == 1) {   //Entry file
         param->executeFile = ExecuteFile::ENTRYFILE;
     }
 }
@@ -186,14 +188,13 @@ class ConfigPropertyWidgetPrivate
 {
     friend class ConfigPropertyWidget;
 
-    DetailPropertyWidget *detail{nullptr};
-    QStandardItem *item{nullptr};
+    DetailPropertyWidget *detail { nullptr };
+    QStandardItem *item { nullptr };
     dpfservice::ProjectInfo projectInfo;
 };
 
 ConfigPropertyWidget::ConfigPropertyWidget(const dpfservice::ProjectInfo &projectInfo, QStandardItem *item, DWidget *parent)
-    : PageWidget(parent)
-    , d(new ConfigPropertyWidgetPrivate())
+    : PageWidget(parent), d(new ConfigPropertyWidgetPrivate())
 {
     d->item = item;
     d->projectInfo = projectInfo;
