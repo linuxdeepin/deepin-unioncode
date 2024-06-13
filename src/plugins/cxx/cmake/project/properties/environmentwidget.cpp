@@ -168,6 +168,7 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
 
     if (!d->model)
         d->model = new EnvironmentModel();
+    connect(d->model, &EnvironmentModel::dataChanged, this, &EnvironmentWidget::envUpdated);
 
     d->tableView->setModel(d->model);
 
