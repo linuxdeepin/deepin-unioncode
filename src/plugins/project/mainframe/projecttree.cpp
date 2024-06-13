@@ -352,6 +352,7 @@ bool ProjectTree::updateProjectInfo(ProjectInfo &projectInfo)
             return true;
         }
     }
+
     return false;
 }
 

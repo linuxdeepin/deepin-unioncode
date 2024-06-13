@@ -30,6 +30,7 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
 bool PropertiesDialog::insertPropertyPanel(const QString &itemName, PageWidget *panel)
 {
     widgts.insert(itemName, panel);
+    panel->readConfig();
     leftBarModel->setStringList(leftBarModel->stringList() << itemName);
     int index = stackWidget->count();
     stackWidget->insertWidget(index, panel);

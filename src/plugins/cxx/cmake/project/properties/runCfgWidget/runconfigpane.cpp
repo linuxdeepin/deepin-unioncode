@@ -94,6 +94,9 @@ void RunConfigPane::setupUi()
     d->environmentWidget = new EnvironmentWidget(this);
     vLayout->addWidget(mainFrame);
     vLayout->addWidget(d->environmentWidget);
+    connect(d->environmentWidget, &EnvironmentWidget::envUpdated, this, [=](){
+        d->environmentWidget->getValues(d->targetRunParam->env);
+    });
 
     vLayout->setMargin(0);
 }
