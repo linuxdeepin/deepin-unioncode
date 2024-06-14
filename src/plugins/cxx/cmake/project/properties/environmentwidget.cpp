@@ -7,6 +7,8 @@
 #include <DFrame>
 #include <DCheckBox>
 #include <DTableView>
+#include <DIconButton>
+#include <DPushButton>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -108,11 +110,28 @@ QVariant EnvironmentModel::headerData(int section, Qt::Orientation orientation, 
     return {};
 }
 
-void EnvironmentModel::append(const QString &key, const QString &value)
+QModelIndex EnvironmentModel::append(const QString &key, const QString &value)
 {
-    beginInsertRows({}, d->envs.keys().count(), d->envs.keys().count());
+    beginResetModel();
     d->envs.insert(key, value);
-    endInsertRows();
+    endResetModel();
+
+    for (int row = 0; row < d->envs.count(); row++) {
+        if (index(row, 0).data() == key)
+            return index(row, 0);
+    }
+    return {};
+}
+
+void EnvironmentModel::remove(QModelIndex &index)
+{
+    if (d->envs.keys().isEmpty() || index.row() < 0 || index.row() >= d->envs.count())
+        return;
+
+    beginResetModel();
+    QString key = d->envs.keys()[index.row()];
+    d->envs.remove(key);
+    endResetModel();
 }
 
 void EnvironmentModel::update(const QMap<QString, QString> &data)
@@ -136,6 +155,9 @@ class EnvironmentWidgetPrivate
     DTableView *tableView{nullptr};
     DCheckBox *enableEnvCB{nullptr};
     DCheckBox *enableQDebugLevelCB{nullptr};
+    DIconButton *appendButton = nullptr;
+    DIconButton *deleteButton = nullptr;
+    DIconButton *resetButton = nullptr;
     EnvironmentModel *model{nullptr};
 
     config::EnvironmentItem *envShadow{nullptr};
@@ -193,10 +215,44 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     d->enableQDebugLevelCB->setText(tr("Enable Qt Debug Level"));
     d->enableQDebugLevelCB->setChecked(false);
 
+    //append
+    d->appendButton = new DIconButton(this);
+    d->appendButton->setIcon(QIcon::fromTheme("binarytools_add"));
+    d->appendButton->setIconSize({16, 16});
+    d->appendButton->setFlat(true);
+    d->appendButton->setToolTip(tr("append"));
+
+    //Delete
+    d->deleteButton = new DIconButton(this);
+    d->deleteButton->setIcon(QIcon::fromTheme("binarytools_reduce"));
+    d->deleteButton->setIconSize({16, 16});
+    d->deleteButton->setFlat(true);
+    d->deleteButton->setToolTip(tr("reduce"));
+
+    //Reset
+    d->resetButton = new DIconButton(this);
+    d->resetButton->setIcon(QIcon::fromTheme("binarytools_reset"));
+    d->resetButton->setIconSize({16, 16});
+    d->resetButton->setFlat(true);
+    d->resetButton->setToolTip(tr("reset"));
+
+    QHBoxLayout *btnLayout = new QHBoxLayout();
+    btnLayout->addWidget(d->appendButton);
+    btnLayout->addWidget(d->deleteButton);
+    btnLayout->addWidget(d->resetButton);
+    btnLayout->addStretch(1);
+    btnLayout->setSpacing(5);
+    btnLayout->setContentsMargins(5, 0, 0, 0);
+    
+    connect(d->appendButton, &DPushButton::clicked, this, &EnvironmentWidget::appendRow);
+    connect(d->deleteButton, &DPushButton::clicked, this, &EnvironmentWidget::deleteRow);
+    connect(d->resetButton, &DPushButton::clicked, this, &EnvironmentWidget::initModel);
+
     // instert to layout.
     d->vLayout->setSpacing(0);
     d->vLayout->setMargin(0);
     d->vLayout->addWidget(d->tableView);
+    d->vLayout->addLayout(btnLayout);
     d->vLayout->addWidget(d->enableEnvCB);
     d->vLayout->addWidget(d->enableQDebugLevelCB);
 }
@@ -205,6 +261,29 @@ EnvironmentWidget::~EnvironmentWidget()
 {
     if(d)
         delete d;
+}
+
+void EnvironmentWidget::appendRow()
+{
+    auto index = d->model->append("<KEY>", "<VALUE>");
+    d->tableView->setCurrentIndex(index);
+}
+
+void EnvironmentWidget::deleteRow()
+{
+    QModelIndex index = d->tableView->currentIndex();
+    d->model->remove(index);
+}
+
+void EnvironmentWidget::initModel()
+{
+    QMap<QString, QString> envs;
+    QStringList keys = QProcessEnvironment::systemEnvironment().keys();
+    for (auto key : keys) {
+        QString value = QProcessEnvironment::systemEnvironment().value(key);
+        envs.insert(key, value);
+    }
+    d->model->update(envs);
 }
 
 void EnvironmentWidget::getValues(config::EnvironmentItem &env)
