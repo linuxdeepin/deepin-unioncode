@@ -61,10 +61,12 @@ private slots:
     void doCloseProject(QStandardItem *root);
     void doShowProjectInfo(QStandardItem *root);
     void doActiveProject(QStandardItem *root);
+    void actionNewDirectory(const QStandardItem *item);
     void actionNewDocument(const QStandardItem *item);
     void actionRenameDocument(const QStandardItem *item);
     void actionDeleteDocument(QStandardItem *item);
     void actionOpenInTerminal(const QStandardItem *item);
+    bool createNewDirectory(const QStandardItem *item, const QString &dirName);
     void creatNewDocument(const QStandardItem *item, const QString &fileName);
     void renameDocument(const QStandardItem *item, const QString &fileName);
 };
