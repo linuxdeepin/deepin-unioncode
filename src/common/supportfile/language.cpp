@@ -86,6 +86,9 @@ QString Language::id(const QString &filePath)
         QJsonArray mimeArray = langObjChild.value(Key_2::get()->mimeType).toArray();
 
         for (auto suffix : suffixArray) {
+            if (suffix.toString().isEmpty())
+                continue;
+
             if (info.fileName().endsWith(suffix.toString()))
                 return id;
 
@@ -94,7 +97,6 @@ QString Language::id(const QString &filePath)
         }
 
         for (auto base : baseArray) {
-
             if (info.fileName() == base.toString()
                     || info.fileName().toLower() == base.toString().toLower()) {
                 return id;
