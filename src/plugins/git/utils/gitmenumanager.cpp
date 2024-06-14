@@ -56,17 +56,9 @@ void GitMenuManager::initialize(dpfservice::WindowService *service)
     if (!service)
         return;
 
-    auto initAction = [&](QAction *action, const QString &id = QString(),
-                          const QString &description = QString(),
-                          const QKeySequence &key = QKeySequence()) -> AbstractAction * {
-        auto actionImpl = new AbstractAction(action, this);
-        if (!key.isEmpty())
-            actionImpl->setShortCutInfo(id, description, key);
-        return actionImpl;
-    };
-
+    winSrv = service;
     gitAct = new QAction("&Git", this);
-    auto gitActImpl = initAction(gitAct);
+    auto gitActImpl = new AbstractAction(gitAct, this);
     service->addAction(MWM_TOOLS, gitActImpl);
 
     createGitSubMenu();
@@ -141,12 +133,15 @@ void GitMenuManager::createFileSubMenu()
 {
     fileLogAct = new QAction(this);
     connect(fileLogAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, fileLogAct, GitLog));
+    registerShortcut(fileLogAct, "Git.log", tr("Git Log"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_L));
 
     fileBlameAct = new QAction(this);
     connect(fileBlameAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, fileBlameAct, GitBlame));
+    registerShortcut(fileBlameAct, "Git.blame", tr("Git Blame"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_B));
 
     fileDiffAct = new QAction(this);
     connect(fileDiffAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, fileDiffAct, GitDiff));
+    registerShortcut(fileDiffAct, "Git.diff", tr("Git Diff"), QKeySequence(Qt::ALT | Qt::SHIFT | Qt::Key_D));
 
     fileSubMenu.addAction(fileLogAct);
     fileSubMenu.addAction(fileBlameAct);
@@ -165,4 +160,11 @@ void GitMenuManager::createProjectSubMenu()
 
     projectSubMenu.addAction(projectLogAct);
     projectSubMenu.addAction(projectDiffAct);
+}
+
+void GitMenuManager::registerShortcut(QAction *act, const QString &id, const QString &description, const QKeySequence &shortCut)
+{
+    auto actImpl = new AbstractAction(act, qApp);
+    actImpl->setShortCutInfo(id, description, shortCut);
+    winSrv->addAction(tr("&Git"), actImpl);
 }

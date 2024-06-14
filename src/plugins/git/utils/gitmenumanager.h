@@ -34,9 +34,11 @@ private:
     void createGitSubMenu();
     void createFileSubMenu();
     void createProjectSubMenu();
+    void registerShortcut(QAction *act, const QString &id, const QString &description, const QKeySequence &shortCut);
 
 private:
     dpfservice::EditorService *editSrv { nullptr };
+    dpfservice::WindowService *winSrv { nullptr };
 
     QMenu gitSubMenu;
     QMenu fileSubMenu;
