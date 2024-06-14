@@ -32,7 +32,8 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    void append(const QString &key, const QString &value);
+    QModelIndex append(const QString &key, const QString &value);
+    void remove(QModelIndex &index);
     void update(const QMap<QString, QString> &data);
     const QMap<QString, QString> getEnvironment() const;
 
@@ -48,6 +49,10 @@ class EnvironmentWidget : public DTK_WIDGET_NAMESPACE::DFrame
 public:
     explicit EnvironmentWidget(QWidget *parent = nullptr);
     virtual ~EnvironmentWidget();
+
+    void appendRow();
+    void deleteRow();
+    void initModel();
 
     void getValues(config::EnvironmentItem &env);
     void setValues(const config::EnvironmentItem &env);
