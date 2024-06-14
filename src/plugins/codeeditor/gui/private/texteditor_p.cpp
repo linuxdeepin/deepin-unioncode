@@ -106,6 +106,7 @@ void TextEditorPrivate::updateColorTheme()
     auto rtIcon = QIcon::fromTheme("arrow");
     q->markerDefine(rtIcon.pixmap(14, 14), Runtime);
 
+    q->setColor(q->palette().color(QPalette::WindowText));
     auto palette = QToolTip::palette();
     if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
         // editor
