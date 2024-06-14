@@ -257,6 +257,8 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             srcItem->setText(srcFileInfo.fileName());
             srcItem->setToolTip(srcFileInfo.filePath());
             srcItem->setIcon(CustomIcons::icon(srcFileInfo));
+            if (srcFileInfo.isDir())
+                emit directoryCreated(srcFileInfo.filePath());
 
             if (parentItem)
                 parentItem->appendRow(srcItem);
@@ -342,6 +344,7 @@ QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, const Q
             item->setIcon(::cmakeFolderIcon());
             // append to parent.
             QStandardItem *parentItem = findParentItem(rootItem, relative);
+            emit directoryCreated(basePath+relative);
             parentItem->appendRow(item);
             sortParentItem(parentItem);
         }
