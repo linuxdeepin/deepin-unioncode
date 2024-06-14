@@ -10,6 +10,7 @@
 #include <DMenu>
 #include <DDialog>
 #include <DDesktopServices>
+#include <DGuiApplicationHelper>
 
 #include <QSignalBlocker>
 #include <QFileInfo>
@@ -40,11 +41,25 @@ void TabBarPrivate::initUI()
     closeBtn->setIcon(QIcon::fromTheme("edit-closeBtn"));
 
     QHBoxLayout *mainLayout = new QHBoxLayout(q);
+    
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(tabBar, 1, Qt::AlignLeft);
     mainLayout->addWidget(hSplitBtn, 0, Qt::AlignRight);
     mainLayout->addWidget(vSplitBtn, 0, Qt::AlignRight);
     mainLayout->addWidget(closeBtn, 0, Qt::AlignRight);
+    
+    updateBackgroundColor();
+}
+
+void TabBarPrivate::updateBackgroundColor()
+{
+    q->setAutoFillBackground(true);
+    auto p = q->palette();
+    if (Dtk::Gui::DGuiApplicationHelper::instance()->themeType() == Dtk::Gui::DGuiApplicationHelper::LightType)
+        p.setColor(QPalette::Window, QColor(225, 225, 225));
+    else
+        p.setColor(QPalette::Window, QColor(47, 47, 47));
+    q->setPalette(p);
 }
 
 void TabBarPrivate::initConnection()
@@ -55,6 +70,7 @@ void TabBarPrivate::initConnection()
     connect(hSplitBtn, &DToolButton::clicked, this, [this] { emit q->spliterClicked(Qt::Horizontal); });
     connect(vSplitBtn, &DToolButton::clicked, this, [this] { emit q->spliterClicked(Qt::Vertical); });
     connect(closeBtn, &DToolButton::clicked, q, &TabBar::closeRequested);
+    connect(Dtk::Gui::DGuiApplicationHelper::instance(), &Dtk::Gui::DGuiApplicationHelper::themeTypeChanged, this, &TabBarPrivate::updateBackgroundColor);
 }
 
 void TabBarPrivate::onCurrentTabChanged(int index)
