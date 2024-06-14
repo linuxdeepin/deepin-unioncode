@@ -62,6 +62,7 @@ public:
 signals:
     void parseProjectEnd(const ParseInfo<QStandardItem *> &info);
     void parseActionsEnd(const ParseInfo<QList<TargetBuild>> &info);
+    void directoryCreated(const QString &path);
 
 public slots:
     QStandardItem *parseProject(QStandardItem *rootItem, const dpfservice::ProjectInfo &info);
