@@ -120,11 +120,12 @@ QModelIndex EnvironmentModel::append(const QString &key, const QVariant &value)
         if (index(row, 0).data() == key)
             return index(row, 0);
     }
+    return {};
 }
 
 void EnvironmentModel::remove(QModelIndex &index)
 {
-    if (d->envs.keys().isEmpty() || index.row() < 0)
+    if (d->envs.keys().isEmpty() || index.row() < 0 || index.row() >= d->envs.count())
         return;
 
     beginResetModel();
