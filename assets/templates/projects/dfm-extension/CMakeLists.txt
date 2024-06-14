@@ -5,7 +5,11 @@ project(%{ProjectName})
 set(CMAKE_CXX_STANDARD 17)
 
 # build
-find_package(dfm-extension REQUIRED)
+find_package(dfm-extension)
+if (NOT dfm-extension_FOUND)
+    message(FATAL_ERROR "Could not find the libdfm-extension-dev, please download it first and then try again")
+endif()
+
 file(GLOB_RECURSE SRCS CONFIGURE_DEPENDS
     "./*.h"
     "./*.cpp"
