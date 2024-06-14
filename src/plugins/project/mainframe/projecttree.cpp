@@ -401,6 +401,11 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childIte
     if (!menu)
         menu = new DMenu();
 
+    QAction *newDirAction = new QAction(tr("New Directory"), this);
+    QObject::connect(newDirAction, &QAction::triggered, this, [=](){
+        actionNewDirectory(childItem);
+    });
+
     QAction *newDocAction = new QAction(tr("New Document"), this);
     QObject::connect(newDocAction, &QAction::triggered, this, [=](){
         actionNewDocument(childItem);
@@ -421,8 +426,10 @@ DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childIte
         actionOpenInTerminal(childItem);
     });
 
-    if (info.isDir())
+    if (info.isDir()) {
         menu->addAction(newDocAction);
+        menu->addAction(newDirAction);
+    }
 
     if (info.isFile()) {
         newDocAction->setEnabled(false);
@@ -600,6 +607,34 @@ void ProjectTree::renameDocument(const QStandardItem *item, const QString &newFi
     file.rename(newFilePath);
 }
 
+void ProjectTree::actionNewDirectory(const QStandardItem *item)
+{
+    auto dialog = new DDialog(this);
+    auto inputEdit = new DLineEdit(dialog);
+
+    inputEdit->setPlaceholderText(tr("New Dirctory Name"));
+    inputEdit->lineEdit()->setAlignment(Qt::AlignLeft);
+
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setWindowTitle(tr("New Dirctory"));
+
+    dialog->addContent(inputEdit);
+    dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
+    dialog->setOnButtonClickedClose(false);
+
+    QObject::connect(dialog, &DDialog::buttonClicked, dialog, [=](){
+        auto ret = false;
+        if (!inputEdit->text().isEmpty()) {
+            ret = createNewDirectory(item, inputEdit->text());
+        }
+
+        if (ret)
+            dialog->close();
+    });
+
+    dialog->exec();
+}
+
 void ProjectTree::actionNewDocument(const QStandardItem *item)
 {
     auto dialog = new DDialog(this);
@@ -667,6 +702,40 @@ void ProjectTree::actionOpenInTerminal(const QStandardItem *menuItem)
         terminalService->executeCommand(QString("clear\n"));
         uiController.switchContext(CONSOLE_TAB_TEXT);
     }
+}
+
+bool ProjectTree::createNewDirectory(const QStandardItem *item, const QString &dirName)
+{
+    QModelIndex index = d->itemModel->indexFromItem(item);
+    QFileInfo info(index.data(Qt::ToolTipRole).toString());
+
+    auto root = ProjectGenerator::root(const_cast<QStandardItem *>(item));
+    QString toolKitName = ProjectInfo::get(root).kitName();
+
+    QString directoryPath;
+    if (info.isDir()) {
+        directoryPath = info.filePath() + QDir::separator() + dirName;
+    } else if (info.isFile()) {
+        directoryPath = info.path() + QDir::separator() + dirName;
+    }
+
+    if (QFile::exists(directoryPath)) {
+        d->messDialog = new DDialog();
+        d->messDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+        d->messDialog->setMessage(tr("A directory with name %1 already exists. please reanme it").arg(directoryPath));
+        d->messDialog->insertButton(0, tr("Cancel"));
+        d->messDialog->insertButton(1, tr("Ok"), true, DDialog::ButtonWarning);
+
+        d->messDialog->exec();
+        return false;
+    }
+
+    auto &ctx = dpfInstance.serviceContext();
+    ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
+    if (projectService->supportGeneratorName<ProjectGenerator>().contains(toolKitName)) {
+        projectService->createGenerator<ProjectGenerator>(toolKitName)->createDirectory(item, directoryPath);
+    }
+    return true;
 }
 
 void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fileName)
