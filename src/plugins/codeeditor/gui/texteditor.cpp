@@ -11,12 +11,16 @@
 
 #include "Qsci/qscistyledtext.h"
 
+#include <DDialog>
+
 #include <QFile>
 #include <QToolTip>
 #include <QScrollBar>
 #include <QFileDialog>
 #include <QApplication>
 #include <QContextMenuEvent>
+
+DWIDGET_USE_NAMESPACE
 
 TextEditor::TextEditor(QWidget *parent)
     : QsciScintilla(parent)
@@ -76,8 +80,16 @@ void TextEditor::save()
     if (!file.exists())
         return;
 
-    if (!file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate))
+    if (!file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate)) {
+        DDialog dialog;
+        dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+        dialog.setWindowTitle(tr("Save File"));
+        QString msg(tr("The file \"%1\" has no write permission. Please add write permission and try again"));
+        dialog.setMessage(msg.arg(d->fileName));
+        dialog.addButton(tr("Ok", "button"), true, DDialog::ButtonRecommend);
+        dialog.exec();
         return;
+    }
 
     file.write(text().toUtf8());
     file.close();
