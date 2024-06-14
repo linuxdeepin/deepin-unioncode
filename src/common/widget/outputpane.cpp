@@ -65,15 +65,6 @@ OutputPane::~OutputPane()
 
 void OutputPane::initUI()
 {
-    if(DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::ColorType::DarkType) {
-        textColorNormal = QColor(255, 255, 255, 180);
-    }else {
-        textColorNormal = QColor(0, 0, 0, 180);
-    }
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, [&](){
-        textColorNormal = QColor(255 - textColorNormal.red(), 255 - textColorNormal.green(), 255 - textColorNormal.blue(), 180);
-        this->update();
-    });
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
@@ -116,7 +107,6 @@ void OutputPane::handleNextOutput()
     QTextCharFormat textFormat;
     switch (output.format) {
     case OutputFormat::StdOut:
-        textFormat.setForeground(textColorNormal);
         textFormat.setFontWeight(QFont::Normal);
         break;
     case OutputFormat::StdErr:
@@ -131,7 +121,6 @@ void OutputPane::handleNextOutput()
         textFormat.setFontWeight(QFont::Bold);
         break;
     default:
-        textFormat.setForeground(textColorNormal);
         textFormat.setFontWeight(QFont::Normal);
     }
 
