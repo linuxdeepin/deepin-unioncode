@@ -24,6 +24,7 @@
 #include <QPushButton>
 #include <QClipboard>
 #include <QApplication>
+#include <QFileSystemWatcher>
 
 using namespace config;
 using namespace dpfservice;
@@ -39,6 +40,8 @@ class CmakeProjectGeneratorPrivate
     QHash<QStandardItem *, QThreadPool *> asynItemThreadPolls;
     QList<QStandardItem *> reloadCmakeFileItems;
     dpfservice::ProjectInfo configureProjectInfo;
+    QHash<QStandardItem *, QFileSystemWatcher *> projectWatchers;
+    QList<QStandardItem *> projectsWaitingUpdate;
 };
 
 CmakeProjectGenerator::CmakeProjectGenerator()
@@ -206,6 +209,8 @@ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectIn
     d->asynItemThreadPolls[rootItem] = new QThreadPool;
 
     auto parse = new CmakeAsynParse;
+    auto fileWatcher = new QFileSystemWatcher(this);
+    d->projectWatchers.insert(rootItem, fileWatcher);
 
     // asyn free parse, that .project file parse
     QObject::connect(parse, &CmakeAsynParse::parseProjectEnd,
@@ -220,6 +225,21 @@ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectIn
     QtConcurrent::run(d->asynItemThreadPolls[rootItem],
                       parse, &CmakeAsynParse::parseProject,
                       rootItem, info);
+
+    connect(parse, &CmakeAsynParse::directoryCreated, this, [=](const QString &path){
+        if (!fileWatcher->directories().contains(path))
+            fileWatcher->addPath(path);
+    });
+
+    auto thisProject = rootItem;
+    connect(fileWatcher, &QFileSystemWatcher::directoryChanged, this, [=](const QString &path){
+        if (d->projectsWaitingUpdate.contains(thisProject))
+            return;
+
+        auto windowService = dpfGetService(WindowService);
+        windowService->notify(0, "CMakeProject", tr("Files in project %1 have changed, needs to run cmake to update").arg(thisProject->text()), {});
+        d->projectsWaitingUpdate.append(thisProject);
+    });
 
     return rootItem;
 }
@@ -236,6 +256,12 @@ void CmakeProjectGenerator::removeRootItem(QStandardItem *root)
         delete threadPoll;
         d->asynItemThreadPolls.remove(root);
     }
+
+    auto watcher = d->projectWatchers[root];
+    if (watcher)
+        delete watcher;
+    if (d->projectsWaitingUpdate.contains(root))
+        d->projectsWaitingUpdate.removeOne(root);
 
     recursionRemoveItem(root);
 }
