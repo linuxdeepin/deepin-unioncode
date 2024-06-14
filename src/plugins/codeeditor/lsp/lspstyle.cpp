@@ -36,7 +36,8 @@ LSPStyle::LSPStyle(TextEditor *parent)
     connect(d->editor, &TextEditor::textChanged, this, [this] { d->textChangedTimer.start(); });
     connect(d->editor, &TextEditor::documentHovered, this, &LSPStyle::onHovered);
     connect(d->editor, &TextEditor::documentHoverEnd, this, &LSPStyle::onHoverCleaned);
-    connect(d->editor, &TextEditor::documentHoveredWithCtrl, this, &LSPStyle::onDefinitionHover);
+    connect(d->editor, &TextEditor::requestFollowType, this, &LSPStyle::onDefinitionHover);
+    connect(d->editor, &TextEditor::followTypeEnd, this, &LSPStyle::onDefinitionHoverCleaned);
     connect(d->editor, &TextEditor::indicatorClicked, this, &LSPStyle::onIndicClicked);
     connect(d->editor, &TextEditor::contextMenuRequested, this, &LSPStyle::onShowContextMenu);
     connect(d->editor, &TextEditor::fileClosed, this, &LSPStyle::onFileClosed);
@@ -457,13 +458,14 @@ void LSPStyle::onHoverCleaned(int position)
         d->editor->cancelTips();
         d->hoverCache.clean();
     }
-    onDefinitionHoverCleaned(position);
 }
 
 void LSPStyle::onDefinitionHover(int position)
 {
-    if (!d->editor)
+    if (!d->editor || d->editor->wordAtPosition(position).isEmpty()) {
+        onDefinitionHoverCleaned();
         return;
+    }
 
     auto startPos = d->editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(position), true);
     auto endPos = d->editor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(position), true);
@@ -472,10 +474,8 @@ void LSPStyle::onDefinitionHover(int position)
     if (d->definitionCache.getTextRange() == textRange)
         return;
 
-    if (!d->definitionCache.getTextRange().isEmpty())
-        onDefinitionHoverCleaned(position);
-
-    d->definitionCache.setPosition(position);
+    onDefinitionHoverCleaned();
+    d->definitionCache.setPosition((startPos + endPos) / 2);
     d->definitionCache.setTextRange(textRange);
     d->definitionCache.cleanFromLsp();
     d->definitionCache.setSwitchMode(DefinitionCache::ClickMode);
@@ -489,21 +489,13 @@ void LSPStyle::onDefinitionHover(int position)
     }
 }
 
-void LSPStyle::onDefinitionHoverCleaned(int position)
+void LSPStyle::onDefinitionHoverCleaned()
 {
     if (!d->editor || d->definitionCache.getTextRange().isEmpty())
         return;
 
-    auto startPos = d->editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(position), true);
-    auto endPos = d->editor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(position), true);
-    RangeCache textRange { static_cast<int>(startPos), static_cast<int>(endPos) };
-    bool isKeyCtrl = QApplication::keyboardModifiers().testFlag(Qt::ControlModifier);
-    bool isSameRange = d->definitionCache.getTextRange() == textRange;
-
-    if (!isSameRange || !isKeyCtrl) {
-        cleanDefinition(d->definitionCache.getPosition());
-        d->definitionCache.clean();
-    }
+    cleanDefinition(d->definitionCache.getPosition());
+    d->definitionCache.clean();
 }
 
 void LSPStyle::onIndicClicked(int line, int index)
@@ -703,20 +695,38 @@ int LSPStylePrivate::wordPostion()
     return pos;
 }
 
-newlsp::Client *LSPStylePrivate::getClient() const
+newlsp::Client *LSPStylePrivate::getClient()
 {
-    auto activeProjInfo = dpfGetService(dpfservice::ProjectService)->getActiveProjectInfo();
-    auto langId = activeProjInfo.language();
-    auto workspaceFolder = activeProjInfo.workspaceFolder();
+    if (lspClient)
+        return lspClient;
 
-    newlsp::ProjectKey key(langId.toStdString(), workspaceFolder.toStdString());
+    auto prjSrv = dpfGetService(dpfservice::ProjectService);
     const auto &filePath = editor->getFile();
+    newlsp::ProjectKey prjKey;
+
+    const auto &allProject = prjSrv->getAllProjectInfo();
+    for (const auto &prj : allProject) {
+        const auto &files = prj.sourceFiles();
+        if (!files.contains(filePath))
+            continue;
+
+        prjKey.language = prj.language().toStdString();
+        prjKey.workspace = prj.workspaceFolder().toStdString();
+    }
+
+    if (!prjKey.isValid()) {
+        auto prj = prjSrv->getActiveProjectInfo();
+        prjKey.language = prj.language().toStdString();
+        prjKey.workspace = prj.workspaceFolder().toStdString();
+    }
+
     auto fileLangId = support_file::Language::id(filePath);
-    if (fileLangId != langId) {
+    if (fileLangId != prjKey.language.c_str()) {
         fileLangId = support_file::Language::idAlias(fileLangId);
-        if (fileLangId != langId)
+        if (fileLangId != prjKey.language.c_str())
             return nullptr;
     }
 
-    return LSPClientManager::instance()->get(key);
+    lspClient = LSPClientManager::instance()->get(prjKey);
+    return lspClient;
 }

@@ -741,6 +741,7 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 
 void TextEditor::focusOutEvent(QFocusEvent *event)
 {
+    d->isCtrlPressed = false;
     emit focusOut();
     QsciScintilla::focusOutEvent(event);
 }
@@ -753,6 +754,17 @@ void TextEditor::keyPressEvent(QKeyEvent *event)
     QsciScintilla::keyPressEvent(event);
 }
 
+void TextEditor::mouseMoveEvent(QMouseEvent *event)
+{
+    if (d->isCtrlPressed) {
+        auto point = event->pos();
+        auto pos = positionFromPoint(point.x(), point.y());
+        Q_EMIT requestFollowType(pos);
+    }
+
+    QsciScintilla::mouseMoveEvent(event);
+}
+
 bool TextEditor::event(QEvent *event)
 {
     if (!d)
@@ -760,6 +772,15 @@ bool TextEditor::event(QEvent *event)
 
     if (event->type() != QEvent::InputMethodQuery)
         d->contentsChanged = false;
+
+    if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
+        auto keyEvent = static_cast<QKeyEvent *>(event);
+        if (keyEvent) {
+            d->isCtrlPressed = keyEvent->modifiers().testFlag(Qt::ControlModifier);
+            if (!d->isCtrlPressed)
+                Q_EMIT followTypeEnd();
+        }
+    }
 
     return QsciScintilla::event(event);
 }

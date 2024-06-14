@@ -24,25 +24,30 @@ bool Collaborators::start()
         if (windowService->addNavigationItem) {
             QAction *actionGit = new QAction(MWNA_GIT, this);
             actionGit->setIcon(QIcon::fromTheme("git-navigation"));
+            
+#ifdef ENABLE_SVN // TODO(Any): svn should not contained in this plugin.
             QAction *actionSvn = new QAction(MWNA_SVN, this);
             actionSvn->setIcon(QIcon::fromTheme("svn-navigation"));
-
-            windowService->addNavigationItem(new AbstractAction(actionGit), Priority::medium);
             windowService->addNavigationItem(new AbstractAction(actionSvn), Priority::medium);
-
-            AbstractWidget *gitMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->gitMainWidget());
             AbstractWidget *svnMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->svnMainWidget());
-
-            windowService->registerWidget(MWNA_GIT, gitMainWidgetImpl);
             windowService->registerWidget(MWNA_SVN, svnMainWidgetImpl);
-
-            connect(actionGit, &QAction::triggered, this, [=](){
-                windowService->replaceWidget(MWNA_GIT,
+            connect(actionSvn, &QAction::triggered, this, [=](){
+                windowService->replaceWidget(MWNA_SVN,
                                          Position::FullWindow);
                 windowService->hideStatusBar();
             }, Qt::DirectConnection);
-            connect(actionSvn, &QAction::triggered, this, [=](){
-                windowService->replaceWidget(MWNA_SVN,
+#endif
+
+            windowService->addNavigationItem(new AbstractAction(actionGit), Priority::medium);
+            
+            AbstractWidget *gitMainWidgetImpl = new AbstractWidget(CVSkeeper::instance()->gitMainWidget());
+           
+
+            windowService->registerWidget(MWNA_GIT, gitMainWidgetImpl);
+            
+
+            connect(actionGit, &QAction::triggered, this, [=](){
+                windowService->replaceWidget(MWNA_GIT,
                                          Position::FullWindow);
                 windowService->hideStatusBar();
             }, Qt::DirectConnection);

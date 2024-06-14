@@ -3,175 +3,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "searchresultwindow.h"
-#include "common/common.h"
-#include "qobjectdefs.h"
-#include "base/baseitemdelegate.h"
+#include "searchresulttreeview.h"
+#include "resulttemdelegate.h"
 
 #include <DPushButton>
 #include <DMessageBox>
 #include <DLabel>
 #include <DLineEdit>
-#include <DTreeView>
 #include <DIconButton>
 #include <DDialog>
 
 #include <QVBoxLayout>
-#include <QStandardItemModel>
-#include <QProcess>
 #include <QDebug>
-#include <QtConcurrent>
 #include <QPalette>
 
-ItemProxy::ItemProxy(QObject *parent)
-    : QObject(parent)
-{
-}
-
-void ItemProxy::setRuningState(bool isRuning)
-{
-    this->isRuning = isRuning;
-}
-
-void ItemProxy::addTask(const FindItemList &itemList)
-{
-    if (!isRuning)
-        return;
-
-    QHash<QString, QList<QPair<int, QString>>> findItemHash;
-    for (const FindItem &findItem : itemList) {
-        if (!isRuning)
-            return;
-
-        QString key = findItem.filePathName;
-        auto value = qMakePair(findItem.lineNumber, findItem.context);
-        if (findItemHash.contains(key)) {
-            QList<QPair<int, QString>> valueList = findItemHash.value(key);
-            valueList.append(value);
-            findItemHash[key] = valueList;
-        } else {
-            findItemHash.insert(key, { value });
-        }
-    }
-
-    QList<QStandardItem *> viewItemList;
-    auto iter = findItemHash.begin();
-    for (; iter != findItemHash.end(); ++iter) {
-        if (!isRuning) {
-            qDeleteAll(viewItemList);
-            return;
-        }
-
-        QList<QPair<int, QString>> contentList = iter.value();
-        QStandardItem *parentItem = new QStandardItem(iter.key() + " (" + QString::number(contentList.count()) + ")");
-        parentItem->setData(iter.key());
-        parentItem->setEditable(false);
-        viewItemList << parentItem;
-        for (const auto &content : contentList) {
-            if (!isRuning) {
-                qDeleteAll(viewItemList);
-                return;
-            }
-
-            QString title = QString::number(content.first) + " " + content.second;
-            QStandardItem *childItem = new QStandardItem(title);
-            childItem->setEditable(false);
-            int lineNumber = content.first;
-            childItem->setData(lineNumber);
-            parentItem->appendRow(childItem);
-        }
-    }
-
-    Q_EMIT taskCompleted(viewItemList);
-}
-
-class SearchResultTreeViewPrivate
-{
-    SearchResultTreeViewPrivate() {}
-    ~SearchResultTreeViewPrivate();
-
-    QMap<QString, QString> projectInfoMap;
-    QThread thread;
-    QSharedPointer<ItemProxy> proxy;
-    friend class SearchResultTreeView;
-};
-
-SearchResultTreeViewPrivate::~SearchResultTreeViewPrivate()
-{
-    proxy->setRuningState(false);
-    thread.quit();
-    thread.wait();
-}
-
-SearchResultTreeView::SearchResultTreeView(QWidget *parent)
-    : DTreeView(parent), d(new SearchResultTreeViewPrivate())
-{
-    QAbstractItemModel *itemModel = new QStandardItemModel(this);
-    setModel(itemModel);
-
-    QObject::connect(this, &DTreeView::doubleClicked, [=](const QModelIndex &index) {
-        if (!index.isValid())
-            return;
-        if (!index.parent().isValid())
-            return;
-        QModelIndex parentIndex = index.parent();
-        QString filePath = parentIndex.data(Qt::UserRole + 1).toString().trimmed();
-        int lineNumber = index.data(Qt::UserRole + 1).toInt();
-        qInfo() << filePath << lineNumber;
-
-        foreach (QString key, d->projectInfoMap.keys()) {
-            if (filePath.contains(key, Qt::CaseInsensitive)) {
-                editor.gotoLine(filePath, lineNumber);
-                break;
-            }
-        }
-    });
-
-    d->proxy.reset(new ItemProxy);
-    connect(d->proxy.data(), &ItemProxy::taskCompleted, this, &SearchResultTreeView::appendItems, Qt::QueuedConnection);
-
-    d->proxy->moveToThread(&d->thread);
-    d->thread.start();
-}
-
-SearchResultTreeView::~SearchResultTreeView()
-{
-    delete d;
-}
-
-void SearchResultTreeView::appendData(const FindItemList &itemList, const ProjectInfo &projectInfo)
-{
-    d->projectInfoMap = projectInfo;
-    d->proxy->setRuningState(true);
-    metaObject()->invokeMethod(d->proxy.data(),
-                               "addTask",
-                               Qt::QueuedConnection,
-                               Q_ARG(FindItemList, itemList));
-}
-
-QIcon SearchResultTreeView::icon(const QString &data)
-{
-    QFileInfo info(data);
-    return iconProvider.icon(info);
-}
-
-void SearchResultTreeView::appendItems(const QList<QStandardItem *> &itemList)
-{
-    auto model = qobject_cast<QStandardItemModel *>(SearchResultTreeView::model());
-    if (!model)
-        return;
-
-    for (auto item : itemList) {
-        item->setIcon(icon(item->data().toString()));
-        model->appendRow(item);
-    }
-}
-
-void SearchResultTreeView::clearData()
-{
-    d->proxy->setRuningState(false);
-    auto model = qobject_cast<QStandardItemModel *>(SearchResultTreeView::model());
-    model->clear();
-}
+DWIDGET_USE_NAMESPACE
 
 class SearchResultWindowPrivate
 {
@@ -197,7 +43,6 @@ SearchResultWindow::SearchResultWindow(QWidget *parent)
     setupUi();
 
     qRegisterMetaType<FindItemList>("FindItemList");
-    qRegisterMetaType<ProjectInfo>("ProjectInfo");
 }
 
 SearchResultWindow::~SearchResultWindow()
@@ -244,10 +89,9 @@ void SearchResultWindow::setupUi()
     d->treeView = new SearchResultTreeView(this);
     d->treeView->setHeaderHidden(true);
     d->treeView->setLineWidth(0);
-    d->treeView->setItemDelegate(new BaseItemDelegate(this));
+    d->treeView->setItemDelegate(new ResultItemDelegate(this));
 
     QVBoxLayout *vLayout = new QVBoxLayout();
-    // vLayout->setAlignment(Qt::AlignTop);
     vLayout->setContentsMargins(0, 0, 0, 0);
     vLayout->addLayout(hLayout);
     vLayout->addWidget(d->treeView, 1);
@@ -274,11 +118,11 @@ void SearchResultWindow::setRepalceWidgtVisible(bool visible)
     d->replaceWidget->setVisible(visible);
 }
 
-void SearchResultWindow::appendResults(const FindItemList &itemList, const ProjectInfo &projectInfo)
+void SearchResultWindow::appendResults(const FindItemList &itemList)
 {
     d->treeView->setVisible(true);
     d->iconLabel->setVisible(false);
-    d->treeView->appendData(itemList, projectInfo);
+    d->treeView->appendData(itemList);
     d->resultCount += itemList.count();
     QString msg = tr("%1 matches found.").arg(d->resultCount);
     showMsg(true, msg);
@@ -355,4 +199,9 @@ void SearchResultWindow::showMsg(bool succeed, QString msg)
     palette.setColor(QPalette::WindowText, newColor);
     d->resultLabel->setPalette(palette);
     d->resultLabel->setText(msg);
+}
+
+QStringList SearchResultWindow::resultFileList() const
+{
+    return d->treeView->resultFileList();
 }

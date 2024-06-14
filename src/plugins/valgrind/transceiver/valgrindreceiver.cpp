@@ -30,8 +30,8 @@ QStringList ValgrindReceiver::topics()
 
 void ValgrindReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.data() == project.activedProject.name) {
-        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+    if (event.data() == project.activatedProject.name) {
+        QVariant proInfoVar = event.property(project.activatedProject.pKeys[0]);
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
         QString buildFolder = projectInfo.buildFolder();
         ValgrindRunner::instance()->saveCurrentProjectInfo(projectInfo);

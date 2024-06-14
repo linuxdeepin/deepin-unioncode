@@ -24,8 +24,9 @@ class FileTreeView : public DTK_WIDGET_NAMESPACE::DTreeView
 public:
     explicit FileTreeView(QWidget *parent = nullptr);
     virtual ~FileTreeView();
-    void setProjectInfo(const dpfservice::ProjectInfo &proInfo);
+
 public slots:
+    void setProjectInfo(const dpfservice::ProjectInfo &proInfo);
     void selOpen();
     void selMoveToTrash();
     void selRemove();

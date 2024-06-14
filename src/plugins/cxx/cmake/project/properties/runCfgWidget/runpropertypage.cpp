@@ -8,6 +8,7 @@
 #include "runconfigpane.h"
 #include "configutil.h"
 #include "targetsmanager.h"
+#include "services/project/projectservice.h"
 
 #include <DListWidget>
 #include <DSplitter>
@@ -20,6 +21,7 @@
 #include <QStyleFactory>
 
 using namespace config;
+using namespace dpfservice;
 
 class RunPropertyWidgetPrivate
 {
@@ -107,6 +109,16 @@ void RunPropertyPage::saveConfig()
             iter->runConfigure.targetsRunConfigure = d->targetsRunConfigure;
             //do not update execute program when save config
             //iter->runConfigure.defaultTargetName = d->exeComboBox->currentText();
+        }
+        if (param->tempSelType == iter->type) {
+            d->projectInfo = dpfGetService(ProjectService)->getActiveProjectInfo();
+            auto activeTarget = TargetsManager::instance()->getActivedTargetByTargetType(kActiveExecTarget);
+            for (auto it : iter->runConfigure.targetsRunConfigure) {
+                if (it.targetName == activeTarget.name) {
+                    d->projectInfo.setRunEnvironment(it.env.toList());
+                    break;
+                }
+            }
         }
     }
 

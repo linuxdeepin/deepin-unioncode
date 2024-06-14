@@ -67,7 +67,6 @@ void TranslationPageWidget::initUI()
     inputEdit->showButtons(CodeEditComponent::None);
     inputEdit->setTitle(tr("Input Code"));
     inputEdit->setPlaceholderText(tr("Please input the code to be translated"));
-    inputEdit->setFixedHeight(280);
     layout->addWidget(inputEdit);
 
     QHBoxLayout *midLayout = new QHBoxLayout;

@@ -20,7 +20,7 @@ OPI_OBJECT(project,
            OPI_INTERFACE(openProject, "kitName", "language", "workspace")
            OPI_INTERFACE(activeProject, "kitName", "language", "workspace")
            // out
-           OPI_INTERFACE(activedProject, "projectInfo")
+           OPI_INTERFACE(activatedProject, "projectInfo")
            OPI_INTERFACE(deletedProject, "projectInfo")
            OPI_INTERFACE(createdProject, "projectInfo")
            OPI_INTERFACE(projectUpdated, "projectInfo")
@@ -43,6 +43,7 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(back)
            OPI_INTERFACE(forward)
            OPI_INTERFACE(gotoLine, "fileName", "line")
+           OPI_INTERFACE(gotoPosition, "fileName", "line", "column")
 
            // (AnnotationType)type
            OPI_INTERFACE(addAnnotation, "fileName", "title", "content", "line", "type")

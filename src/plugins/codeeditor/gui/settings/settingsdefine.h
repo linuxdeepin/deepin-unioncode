@@ -19,6 +19,7 @@ constexpr char MimeTypeConfig[] { "MimeType & Comments" };
 namespace Group {
 constexpr char FontGroup[] { "Font" };
 constexpr char TabGroup[] { "Tabs And Indentation" };
+constexpr char TipGroup[] { "Editor Tip" };
 }
 
 namespace Key {
@@ -29,6 +30,8 @@ constexpr char FontZoom[] { "fontZoom" };
 constexpr char TabPolicy[] { "tabPolicy" };
 constexpr char TabSize[] { "tabSize" };
 constexpr char EnableAutoIndentation[] { "enableAutoIndentation" };
+
+constexpr char TipActiveTime[] { "tipActiveTime" };
 
 constexpr char MimeTypeGroupName[] { "groupName" };
 constexpr char MimeType[] { "mimeType" };

@@ -21,6 +21,8 @@
 #include <QWebEngineSettings>
 #endif
 #include <QDir>
+#include <QScreen>
+#include <QGuiApplication>
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
@@ -29,33 +31,35 @@ using namespace dpfservice;
 class AutoZoomWebEngineView : public QWebEngineView {
 public:
     explicit AutoZoomWebEngineView(QWidget *parent = nullptr)
-        : QWebEngineView(parent) {
-            page()->settings()->setAttribute(QWebEngineSettings::ShowScrollBars, false);
-            connect(page(), &QWebEnginePage::loadFinished, [this](bool ok) {
-                    if (ok) {
-                        page()->runJavaScript("document.body.scrollWidth", [this](const QVariant &widthResult) {
-                            pageWidth = widthResult.toInt();
-                        });
-                    }
-                }
-            );
-        }
+        : QWebEngineView(parent)
+    {
+        page()->settings()->setAttribute(QWebEngineSettings::ShowScrollBars, false);
+    }
 
 protected:
     void resizeEvent(QResizeEvent *event) override {
         QWebEngineView::resizeEvent(event);
 
-        QSize newSize = event->size();
-        qreal zoomFactor = calculateZoomFactor(newSize);
+        int pageWidth = static_cast<int>(QGuiApplication::primaryScreen()->size().width() * webPageWidthScale);
+
+        qreal zoomFactor = calculateZoomFactor(event->size(), pageWidth);
         setZoomFactor(zoomFactor);
     }
 
-    qreal calculateZoomFactor(const QSize &size) {
+    qreal calculateZoomFactor(const QSize &size, int pageWidth)
+    {
+        if (pageWidth == 0)
+            return 1;
+
         qreal zoomFactor = static_cast<qreal>(size.width()) / pageWidth;
+        if (zoomFactor > 1) {
+            zoomFactor = 1;
+        }
         return zoomFactor;
     }
+
 private:
-    int pageWidth = 0;
+    qreal webPageWidthScale = 0.8;
 };
 #endif
 

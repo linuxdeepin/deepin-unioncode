@@ -4,8 +4,6 @@
 
 #include "codeeditorreceiver.h"
 
-#include "common/common.h"
-#include "services/project/projectservice.h"
 #include "services/window/windowelement.h"
 
 #include "mainframe/texteditkeeper.h"
@@ -18,6 +16,7 @@ CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
     eventHandleMap.insert(editor.back.name, std::bind(&CodeEditorReceiver::processBackEvent, this, _1));
     eventHandleMap.insert(editor.forward.name, std::bind(&CodeEditorReceiver::processForwardEvent, this, _1));
     eventHandleMap.insert(editor.gotoLine.name, std::bind(&CodeEditorReceiver::processGotoLineEvent, this, _1));
+    eventHandleMap.insert(editor.gotoPosition.name, std::bind(&CodeEditorReceiver::processGotoPositionEvent, this, _1));
     eventHandleMap.insert(editor.addAnnotation.name, std::bind(&CodeEditorReceiver::processAddAnnotationEvent, this, _1));
     eventHandleMap.insert(editor.removeAnnotation.name, std::bind(&CodeEditorReceiver::processRemoveAnnotationEvent, this, _1));
     eventHandleMap.insert(editor.clearAllAnnotation.name, std::bind(&CodeEditorReceiver::processClearAllAnnotationEvent, this, _1));
@@ -40,7 +39,7 @@ dpf::EventHandler::Type CodeEditorReceiver::type()
 
 QStringList CodeEditorReceiver::topics()
 {
-    return { editor.topic, actionanalyse.topic, project.topic };
+    return { editor.topic };
 }
 
 void CodeEditorReceiver::eventProcess(const dpf::Event &event)
@@ -79,6 +78,14 @@ void CodeEditorReceiver::processGotoLineEvent(const dpf::Event &event)
     QString filePath = event.property("fileName").toString();
     int line = event.property("line").toInt() - 1;
     Q_EMIT EditorCallProxy::instance()->reqGotoLine(filePath, line);
+}
+
+void CodeEditorReceiver::processGotoPositionEvent(const dpf::Event &event)
+{
+    QString filePath = event.property("fileName").toString();
+    int line = event.property("line").toInt() - 1;
+    int col = event.property("column").toInt();
+    Q_EMIT EditorCallProxy::instance()->reqGotoPosition(filePath, line, col);
 }
 
 void CodeEditorReceiver::processSetLineBackgroundColorEvent(const dpf::Event &event)

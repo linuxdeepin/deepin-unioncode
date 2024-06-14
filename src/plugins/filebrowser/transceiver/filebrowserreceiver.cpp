@@ -10,10 +10,8 @@
 #include "common/common.h"
 
 FileBrowserReceiver::FileBrowserReceiver(QObject *parent)
-    : dpf::EventHandler (parent)
-    , dpf::AutoEventHandlerRegister<FileBrowserReceiver> ()
+    : dpf::EventHandler(parent), dpf::AutoEventHandlerRegister<FileBrowserReceiver>()
 {
-
 }
 
 dpf::EventHandler::Type FileBrowserReceiver::type()
@@ -23,20 +21,31 @@ dpf::EventHandler::Type FileBrowserReceiver::type()
 
 QStringList FileBrowserReceiver::topics()
 {
-    return {project.topic}; //绑定menu 事件
+    return { project.topic };   //绑定menu 事件
 }
 
 void FileBrowserReceiver::eventProcess(const dpf::Event &event)
 {
-    if (event.data() == project.activedProject.name) {
-        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+    if (event.data() == project.activatedProject.name) {
+        QVariant proInfoVar = event.property(project.activatedProject.pKeys[0]);
         dpfservice::ProjectInfo proInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
-        TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
+
+        QMetaObject::invokeMethod(TreeViewKeeper::instance()->treeView(),
+                                  "setProjectInfo",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(dpfservice::ProjectInfo, proInfo));
     } else if (event.data() == project.deletedProject.name) {
-        TreeViewKeeper::instance()->treeView()->setProjectInfo({});
+        QMetaObject::invokeMethod(TreeViewKeeper::instance()->treeView(),
+                                  "setProjectInfo",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(dpfservice::ProjectInfo, {}));
     } else if (event.data() == project.createdProject.name) {
-        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+        QVariant proInfoVar = event.property(project.activatedProject.pKeys[0]);
         dpfservice::ProjectInfo proInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
-        TreeViewKeeper::instance()->treeView()->setProjectInfo(proInfo);
+
+        QMetaObject::invokeMethod(TreeViewKeeper::instance()->treeView(),
+                                  "setProjectInfo",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(dpfservice::ProjectInfo, proInfo));
     }
 }

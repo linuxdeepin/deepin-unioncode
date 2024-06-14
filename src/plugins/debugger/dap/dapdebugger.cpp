@@ -75,6 +75,7 @@ class DebuggerPrivate
     DEBUG::DebugSession *currentSession { nullptr };
 
     dap::integer threadId = 0;
+    QList<dap::integer> threads;
     StackFrameData currentValidFrame;
 
     /**
@@ -115,6 +116,8 @@ class DebuggerPrivate
     QMultiMap<QString, int> bps;
     bool isRemote = false;
     RemoteInfo remoteInfo;
+
+    bool startAttaching = false;
 };
 
 DebuggerPrivate::~DebuggerPrivate()
@@ -196,13 +199,13 @@ void DAPDebugger::startDebug()
     d->isRemote = false;
     if (d->currentSession == d->remoteSession)
         d->currentSession = d->localSession;
-    
-    updateRunState(kPreparing);
+
     auto &ctx = dpfInstance.serviceContext();
     LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
     if (service) {
         auto generator = service->create<LanguageGenerator>(d->activeProjectKitName);
         if (generator) {
+            updateRunState(kPreparing);
             if (generator->isNeedBuild()) {
                 d->currentBuildUuid = requestBuild();
             } else {
@@ -239,6 +242,45 @@ void DAPDebugger::startDebugRemote(const RemoteInfo &info)
     updateRunState(kPreparing);
 }
 
+void DAPDebugger::attachDebug(const QString &processId)
+{
+    if (d->runState != kNoRun) {
+        qWarning() << "can`t attaching to debugee when debuging other application";
+        DDialog dialog;
+        dialog.setMessage(tr("can`t attaching to debugee when debuging other application"));
+        dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+        dialog.addButton(tr("Cancel"));
+        dialog.exec();
+        return;
+    }
+
+    d->isRemote = false;
+    d->startAttaching = true;
+    d->currentSession = d->localSession;
+
+    // only support gdb for now
+    updateRunState(kStart);
+    QString debuggerTool = OptionManager::getInstance()->getCxxDebuggerToolPath();
+    if (!debuggerTool.contains("gdb")) {
+        auto msg = tr("The gdb is required, please install it in console with \"sudo apt install gdb\", "
+                    "and then restart the tool, reselect the CMake Debugger in Options Dialog...");
+        printOutput(msg, OutputPane::OutputFormat::ErrorMessage);
+    }
+
+    //todo : change signal to other debuger
+    QDBusMessage msg = QDBusMessage::createSignal("/path",
+                                                  "com.deepin.unioncode.interface",
+                                                  "getDebugPort");
+    d->requestDAPPortPpid = QString(getpid());
+    msg << d->requestDAPPortPpid
+        << "gdb"
+        << processId
+        << QStringList();
+    bool ret = QDBusConnection::sessionBus().send(msg);
+    if (!ret)
+        printOutput(tr("Request cxx dap port failed, please retry."), OutputPane::OutputFormat::ErrorMessage);
+}
+
 void DAPDebugger::detachDebug()
 {
 }
@@ -271,13 +313,14 @@ void DAPDebugger::abortDebug()
             if (generator) {
                 if (generator->isStopDAPManually()) {
                     stopDAP();
-                } else {
-                    d->currentSession->terminate();
                 }
             }
         }
-        AppOutputPane::instance()->setProcessFinished("debugPane");
     }
+
+    d->currentSession->terminate();
+    if (d->startAttaching)
+        d->startAttaching = false;
 }
 
 void DAPDebugger::restartDebug()
@@ -509,7 +552,16 @@ void DAPDebugger::registerDapHandlers()
                 || event.reason == "function-finished"
                 || event.reason == "end-stepping-range"
                 || (event.reason == "signal-received" && d->pausing)
-                || event.reason == "goto") {
+                || event.reason == "goto"
+                || (event.reason == "unknown" && d->startAttaching)) {
+            //when attaching to running program . it won`t receive initialized event and event`s reason is "unknwon"
+            //so initial breakpoints in here
+            if (d->startAttaching) {
+                d->currentSession->getRawSession()->setReadyForBreakpoints(true);
+                debugService->sendAllBreakpoints(d->currentSession);
+
+                d->startAttaching = false;
+            }
             if (event.threadId) {
                 d->threadId = event.threadId.value(0);
                 int curThreadID = static_cast<int>(d->threadId);
@@ -571,11 +623,19 @@ void DAPDebugger::registerDapHandlers()
         Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "ThreadEvent";
+
+        if (event.reason == "started")
+            d->threads.append(event.threadId);
+
+        if (event.reason == "exited") {
+            d->threads.removeOne(event.threadId);
+            if (d->threads.isEmpty())
+                updateRunState(kNoRun);
+        }
     });
 
     // The event indicates that the target has produced some output.
     dapSession->registerHandler([&](const OutputEvent &event) {
-        Q_UNUSED(event)
         qInfo() << "\n--> recv : "
                 << "OutputEvent\n"
                 << "content : " << event.output.c_str();
@@ -705,17 +765,15 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         }
     } else if (event.data() == debugger.prepareDebugProgress.name) {
         printOutput(event.property(debugger.prepareDebugProgress.pKeys[0]).toString());
-    } else if (event.data() == project.activedProject.name) {
-        getActiveProjectInfo() = qvariant_cast<ProjectInfo>(event.property(project.activedProject.pKeys[0]));
-        d->activeProjectKitName = getActiveProjectInfo().kitName();
-        updateRunState(kNoRun);
-    } else if (event.data() == project.createdProject.name) {
-        getActiveProjectInfo() = qvariant_cast<ProjectInfo>(event.property(project.createdProject.pKeys[0]));
-        d->activeProjectKitName = getActiveProjectInfo().kitName();
-        updateRunState(kNoRun);
+    } else if (event.data() == project.activatedProject.name) {
+        d->projectInfo = qvariant_cast<ProjectInfo>(event.property("projectInfo"));
+        d->activeProjectKitName = d->projectInfo.kitName();
     } else if (event.data() == project.deletedProject.name) {
-        d->activeProjectKitName.clear();
-        updateRunState(kNoRun);
+        auto prjInfo = event.property("projectInfo").value<dpfservice::ProjectInfo>();
+        if (d->projectInfo.isSame(prjInfo)) {
+            d->activeProjectKitName.clear();
+            updateRunState(kNoRun);
+        }
     } else if (event.data() == editor.switchedFile.name) {
         QString filePath = event.property(editor.switchedFile.pKeys[0]).toString();
         if (d->currentOpenedFileName != filePath) {
@@ -1143,6 +1201,9 @@ void DAPDebugger::updateWatchingVariables()
 
 void DAPDebugger::exitDebug()
 {
+    //abort debugger
+    abortDebug();
+
     // Change UI.
     editor.removeDebugLine();
     d->variablesPane->hide();
@@ -1162,6 +1223,7 @@ void DAPDebugger::updateRunState(DAPDebugger::RunState state)
         switch (state) {
         case kNoRun:
             exitDebug();
+            AppOutputPane::instance()->setProcessFinished("debugPane");
             break;
         case kRunning:
         case kCustomRunning:
@@ -1339,8 +1401,20 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
                                            port,
                                            iniRequet);
 
+    if (!bSuccess) {
+        qCritical() << "startDebug failed!";
+        return;
+    }
+
     // Launch debuggee.
-    if (bSuccess) {
+    if (d->startAttaching) {
+        dap::object obj;
+        obj["processId"] = param.value("targetPath").toString().toStdString();
+        dap::AttachRequest request;
+        request.name = kitName.toStdString(); //kitName: gdb
+        request.connect = obj;
+        bSuccess &= d->currentSession->attach(request);
+    } else {
         auto &ctx = dpfInstance.serviceContext();
         LanguageService *service = ctx.service<LanguageService>(LanguageService::name());
         if (service) {
@@ -1354,10 +1428,10 @@ void DAPDebugger::launchSession(int port, const QMap<QString, QVariant> &param, 
                     bSuccess &= d->currentSession->attach(request);
                 }
             }
-        } else
+        } else {
             bSuccess &= false;
+        }
     }
-
     if (!bSuccess) {
         qCritical() << "startDebug failed!";
     } else {

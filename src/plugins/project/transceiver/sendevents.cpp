@@ -8,7 +8,7 @@
 
 void SendEvents::projectActived(const dpfservice::ProjectInfo &info)
 {
-    project.activedProject(info);
+    project.activatedProject(info);
 }
 
 void SendEvents::projectCreated(const dpfservice::ProjectInfo &info)

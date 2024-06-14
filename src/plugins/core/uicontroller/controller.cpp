@@ -71,6 +71,7 @@ class ControllerPrivate
     QMap<QString, DWidget *> widgetWaitForAdd;
     QMap<QString, DWidget *> addedWidget;
 
+    DWidget *navigationToolBar { nullptr };
     NavigationBar *navigationBar { nullptr };
     QMap<QString, QAction *> navigationActions;
 
@@ -486,6 +487,10 @@ void Controller::switchContextWidget(const QString &title)
 {
     qInfo() << __FUNCTION__;
     d->stackContextWidget->setCurrentWidget(d->contextWidgets[title]);
+    if (d->stackContextWidget->isHidden()) {
+        d->contextWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        d->stackContextWidget->show();
+    }
     if (d->tabButtons.contains(title))
         d->tabButtons[title]->show();
 
@@ -718,8 +723,8 @@ void Controller::loading()
                      this, [=]() {
                          d->mainWindow->removeWidget(WN_LOADINGWIDGET);
 
-                         d->navigationBar->show();
-                         d->mainWindow->setToolbar(Qt::ToolBarArea::LeftToolBarArea, d->navigationBar);
+                         d->navigationToolBar->show();
+                         d->mainWindow->setToolbar(Qt::ToolBarArea::LeftToolBarArea, d->navigationToolBar);
                      });
 }
 
@@ -756,8 +761,12 @@ void Controller::initNavigationBar()
     qInfo() << __FUNCTION__;
     if (d->navigationBar)
         return;
+    d->navigationToolBar = new DWidget(d->mainWindow);
+    auto vLayout = new QVBoxLayout(d->navigationToolBar);
     d->navigationBar = new NavigationBar(d->mainWindow);
-    d->navigationBar->hide();
+    d->navigationToolBar->hide();
+    vLayout->addWidget(d->navigationBar);
+    vLayout->setContentsMargins(0, 0, 2, 0);
 }
 
 void Controller::initMenu()
@@ -1012,8 +1021,8 @@ void Controller::showWorkspace()
 
         expandAll->setVisible(d->workspace->getCurrentExpandState());
         foldAll->setVisible(d->workspace->getCurrentExpandState());
-        d->mainWindow->setDockHeadername(WN_WORKSPACE, d->workspace->getCurrentTitle());
 
+        d->mainWindow->setDockHeadername(WN_WORKSPACE, d->workspace->getCurrentTitle());
         connect(d->workspace, &WorkspaceWidget::expandStateChange, this, [=](bool canExpand){
             expandAll->setVisible(canExpand);
             foldAll->setVisible(canExpand);

@@ -58,7 +58,6 @@ void RunConfigPane::setupUi()
     // excutable label ui.
     d->excutableLabel = new DLineEdit(mainFrame);
     d->excutableLabel->setText(tr("Here is the executable path"));
-    d->excutableLabel->lineEdit()->setReadOnly(true);
     d->formLayout->addRow(tr("Executable path:"), d->excutableLabel);
     d->formLayout->setSpacing(10);
 
@@ -95,6 +94,9 @@ void RunConfigPane::setupUi()
     d->environmentWidget = new EnvironmentWidget(this);
     vLayout->addWidget(mainFrame);
     vLayout->addWidget(d->environmentWidget);
+    connect(d->environmentWidget, &EnvironmentWidget::envUpdated, this, [=](){
+        d->environmentWidget->getValues(d->targetRunParam->env);
+    });
 
     vLayout->setMargin(0);
 }

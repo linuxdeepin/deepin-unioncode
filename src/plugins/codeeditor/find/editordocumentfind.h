@@ -7,6 +7,7 @@
 
 #include "common/find/abstractdocumentfind.h"
 
+class TextEditor;
 class EditorDocumentFindPrivate;
 class EditorDocumentFind : public AbstractDocumentFind
 {
@@ -22,8 +23,11 @@ public:
     virtual void replaceAll(const QString &before, const QString &after) override;
     virtual void findStringChanged() override;
 
+    void replaceAll(TextEditor *editor, const QString &before,
+                    const QString &after, bool caseSensitive, bool wholeWords);
+
 private:
     EditorDocumentFindPrivate *const d;
 };
 
-#endif // EDITORDOCUMENTFIND_H
+#endif   // EDITORDOCUMENTFIND_H

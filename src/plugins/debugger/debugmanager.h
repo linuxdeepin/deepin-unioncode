@@ -51,6 +51,7 @@ public slots:
      */
     void remoteDebug(RemoteInfo info);
     void run();
+    void attachDebug();
     void detachDebug();
 
     void interruptDebug();

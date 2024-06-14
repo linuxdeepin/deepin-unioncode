@@ -205,7 +205,7 @@ void CodeGeeXWidget::initAskWidget()
     stackWidget = new QStackedWidget(this);
     stackWidget->setContentsMargins(0, 0, 0, 0);
     stackWidget->setFrameShape(QFrame::NoFrame);
-    stackWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    stackWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
 
     auto mainLayout = qobject_cast<QVBoxLayout *>(layout());
     mainLayout->setMargin(0);

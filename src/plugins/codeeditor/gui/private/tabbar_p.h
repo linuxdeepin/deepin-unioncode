@@ -21,6 +21,8 @@ public:
     void initUI();
     void initConnection();
 
+    void updateBackgroundColor();
+
 public slots:
     void onCurrentTabChanged(int index);
     void onTabColseRequested(int index);

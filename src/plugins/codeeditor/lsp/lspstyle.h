@@ -67,7 +67,7 @@ private slots:
     void onHovered(int position);
     void onHoverCleaned(int position);
     void onDefinitionHover(int position);
-    void onDefinitionHoverCleaned(int position);
+    void onDefinitionHoverCleaned();
     void onIndicClicked(int line, int index);
     void onShowContextMenu(QMenu *menu);
     void onFileClosed(const QString &file);

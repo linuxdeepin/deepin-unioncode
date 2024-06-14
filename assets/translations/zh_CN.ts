@@ -2668,7 +2668,7 @@ repos path: %0</source>
     <message>
         <location filename="../../src/common/widget/outputpane.cpp" line="228"/>
         <source>Clear</source>
-        <translation>清扫</translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location filename="../../src/common/widget/outputpane.cpp" line="238"/>

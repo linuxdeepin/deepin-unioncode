@@ -35,8 +35,8 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
         builderEvent(event);
     }
 
-    if (event.data() == project.activedProject.name) {
-        QVariant proInfoVar = event.property(project.activedProject.pKeys[0]);
+    if (event.data() == project.activatedProject.name) {
+        QVariant proInfoVar = event.property(project.activatedProject.pKeys[0]);
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
         TargetsManager::instance()->readTargets(projectInfo.buildFolder(), projectInfo.workspaceFolder());
     }
@@ -54,6 +54,8 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
     if (event.data() == project.projectUpdated.name) {
         QVariant proInfoVar = event.property("projectInfo");
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
+        if (projectInfo.kitName() != CmakeProjectGenerator::toolKitName())
+            return;
 
         auto *param = config::ConfigUtil::instance()->getConfigureParamPointer();
         auto iter = param->buildTypeConfigures.begin();

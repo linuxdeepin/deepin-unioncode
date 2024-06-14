@@ -236,6 +236,9 @@ BinaryToolsManager::BinaryTools BinaryToolsManager::mergeTools(const BinaryTools
 
 QSharedPointer<ToolProcess> BinaryToolsManager::createToolProcess(const ToolInfo &tool)
 {
+    if (toolTaskMap.contains(tool.id))
+        return nullptr;
+
     using namespace std::placeholders;
 
     QSharedPointer<ToolProcess> toolProcess { new ToolProcess };
@@ -368,31 +371,27 @@ void BinaryToolsManager::executeTool(const QString &id)
     if (!checkCommandExists(tool.command))
         return toolMissingHint(tool);
 
-    auto toolProcess = createToolProcess(tool);
-    toolProcess->setId(id);
-    toolProcess->setProgram(tool.command);
-    auto args = globalMacroExpander()->expandArguments(tool.arguments);
-    QStringList argList = args.split(" ", QString::SkipEmptyParts);
-    toolProcess->setArguments(argList);
-    auto workingDir = globalMacroExpander()->expand(tool.workingDirectory);
-    toolProcess->setWorkingDirectory(workingDir);
-    auto channelData = globalMacroExpander()->expand(tool.advSettings.channelData);
-    toolProcess->setChannelData(channelData);
-    QProcessEnvironment env;
-    auto iterator = tool.environment.begin();
-    while (iterator != tool.environment.end()) {
-        env.insert(iterator.key(), iterator.value().toString());
-        ++iterator;
-    }
-    toolProcess->setProcessEnvironment(env);
-
     AppOutputPane::instance()->createApplicationPane(id, tool.name);
     auto stopHandler = std::bind(&BinaryToolsManager::stopTool, this, id);
     AppOutputPane::instance()->setStopHandler(id, stopHandler);
-    QString startMsg = tr("Start execute \"%1\": \"%2\" \"%3\" in workspace \"%4\".\n")
-                               .arg(tool.name, tool.command, args, workingDir);
-    uiController.switchContext(tr("&Application Output"));
+    QString startMsg = tr("Start execute tool \"%1\".\n").arg(tool.name);
     printOutput(id, startMsg, OutputPane::NormalMessage);
+    uiController.switchContext(tr("&Application Output"));
+
+    auto toolProcess = createToolProcess(tool);
+    if (!toolProcess) {
+        printOutput(id, tr("The tool is running. Please stop it before running.\n"), OutputPane::ErrorMessage);
+        return;
+    }
+
+    QString errorMsg;
+    if (!checkAndSetProcessParams(toolProcess, tool, errorMsg)) {
+        printOutput(id, errorMsg, OutputPane::ErrorMessage);
+        stopTool(id);
+        toolTaskMap.remove(id);
+        AppOutputPane::instance()->setProcessFinished(id);
+        return;
+    }
 
     Q_EMIT execute(id);
 }
@@ -639,4 +638,41 @@ void BinaryToolsManager::replaceCurrentDocument(const QString &id, int exitCode)
 
     if (!text.isEmpty())
         editorSrv->setText(text);
+}
+
+bool BinaryToolsManager::checkAndSetProcessParams(QSharedPointer<ToolProcess> process, const ToolInfo &tool, QString &errorMsg)
+{
+    process->setId(tool.id);
+    process->setProgram(tool.command);
+    auto args = globalMacroExpander()->expandArguments(tool.arguments);
+    QStringList argList = args.split(" ", QString::SkipEmptyParts);
+    process->setArguments(argList);
+
+    if (!tool.workingDirectory.isEmpty()) {
+        auto workingDir = globalMacroExpander()->expand(tool.workingDirectory);
+        if (workingDir.isEmpty()) {
+            errorMsg = tr("The tool has set the working directory, but the working directory parsing is empty. Please check and try again.\n");
+            return false;
+        }
+        process->setWorkingDirectory(workingDir);
+    }
+
+    if (!tool.advSettings.channelData.isEmpty()) {
+        auto channelData = globalMacroExpander()->expand(tool.advSettings.channelData);
+        if (channelData.isEmpty()) {
+            errorMsg = tr("The tool has set the channel data, but the channel data parsing is empty. Please check and try again.\n");
+            return false;
+        }
+        process->setChannelData(channelData);
+    }
+
+    QProcessEnvironment env;
+    auto iterator = tool.environment.begin();
+    while (iterator != tool.environment.end()) {
+        env.insert(iterator.key(), iterator.value().toString());
+        ++iterator;
+    }
+    process->setProcessEnvironment(env);
+
+    return true;
 }

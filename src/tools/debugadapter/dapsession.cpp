@@ -366,6 +366,13 @@ void DapSession::registerHanlder()
         Q_UNUSED(request)
         Log("<-- Server received attach reqeust from client\n")
         d->isDebuggeIsStartWithAttachRequest = true;
+        if (request.name.has_value()) {
+            auto processId = request.connect.value().at("processId").get<dap::string>();
+            QStringList arg = {"attach", QString::fromStdString(processId)};
+            d->debugger->initDebugger(request.name.value().c_str(), arg);
+        }
+
+        emit DapProxy::instance()->sigStart();
         dap::AttachResponse response;
         Log("--> Server sent attach response to client\n")
         return response;

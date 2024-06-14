@@ -29,6 +29,7 @@ public:
 
     void startDebug() override;
     void startDebugRemote(const RemoteInfo &info) override;
+    void attachDebug(const QString &processId) override;
     void detachDebug() override;
 
     void interruptDebug() override;

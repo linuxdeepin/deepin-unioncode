@@ -47,9 +47,11 @@ protected:
 
 private:
     void initUI();
+    void initTimer();
     QWidget *createFindPlaceHolder();
     QString normalizeNewlines(const QString &text);
 
+    void handleNextOutput();
     void appendCustomText(const QString &text, AppendMode mode, const QTextCharFormat &format = QTextCharFormat());
     bool isScrollbarAtBottom() const;
     QString doNewlineEnforcement(const QString &out);
