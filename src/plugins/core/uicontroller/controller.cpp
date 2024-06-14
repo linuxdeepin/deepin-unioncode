@@ -71,6 +71,7 @@ class ControllerPrivate
     QMap<QString, DWidget *> widgetWaitForAdd;
     QMap<QString, DWidget *> addedWidget;
 
+    DWidget *navigationToolBar { nullptr };
     NavigationBar *navigationBar { nullptr };
     QMap<QString, QAction *> navigationActions;
 
@@ -722,8 +723,8 @@ void Controller::loading()
                      this, [=]() {
                          d->mainWindow->removeWidget(WN_LOADINGWIDGET);
 
-                         d->navigationBar->show();
-                         d->mainWindow->setToolbar(Qt::ToolBarArea::LeftToolBarArea, d->navigationBar);
+                         d->navigationToolBar->show();
+                         d->mainWindow->setToolbar(Qt::ToolBarArea::LeftToolBarArea, d->navigationToolBar);
                      });
 }
 
@@ -760,8 +761,12 @@ void Controller::initNavigationBar()
     qInfo() << __FUNCTION__;
     if (d->navigationBar)
         return;
+    d->navigationToolBar = new DWidget(d->mainWindow);
+    auto vLayout = new QVBoxLayout(d->navigationToolBar);
     d->navigationBar = new NavigationBar(d->mainWindow);
-    d->navigationBar->hide();
+    d->navigationToolBar->hide();
+    vLayout->addWidget(d->navigationBar);
+    vLayout->setContentsMargins(0, 0, 2, 0);
 }
 
 void Controller::initMenu()
