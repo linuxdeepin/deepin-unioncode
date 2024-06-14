@@ -211,6 +211,13 @@ QMenu *dpfservice::ProjectGenerator::createItemMenu(const QStandardItem *item)
     return nullptr;
 }
 
+void dpfservice::ProjectGenerator::createDirectory(const QStandardItem *item, const QString &dirPath)
+{
+    Q_UNUSED(item)
+    QDir directory(dirPath);
+    directory.mkpath(dirPath);
+}
+
 void dpfservice::ProjectGenerator::createDocument(const QStandardItem *item, const QString &filePath)
 {
     Q_UNUSED(item)
