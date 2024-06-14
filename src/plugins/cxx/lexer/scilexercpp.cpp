@@ -323,7 +323,7 @@ QColor SciLexerCPP::defaultColor(int style) const
     case InactivePreProcessorComment:
     case InactiveTaskMarker:
     case InactiveUserLiteral:
-        return isDarkTheme ? QColor("#969696") : QColor("#c0c0c0");
+        return isDarkTheme ? QColor("#969696") : QColor("#8a8a8a");
 
     case UserLiteral:
         return isDarkTheme ? QColor("#d6cf9a") : QColor("#c06000");
