@@ -220,7 +220,12 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
             QObject::connect(newDocAction, &QAction::triggered, this, [=](){
                 actionNewDocument(item);
             });
+            QAction *newDirAction = new QAction(tr("New Directory"), this);
+            QObject::connect(newDirAction, &QAction::triggered, this, [=](){
+                actionNewDirectory(item);
+            });
             menu->addAction(newDocAction);
+            menu->addAction(newDirAction);
         }
     } else {
         menu = childMenu(rootItem, item);
