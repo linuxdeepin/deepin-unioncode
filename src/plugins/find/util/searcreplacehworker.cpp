@@ -50,6 +50,7 @@ void SearchReplaceWorkerPrivate::startNextJob()
         process->write(job.channelData.toUtf8());
         process->closeWriteChannel();
     }
+    process->waitForFinished(-1);
 }
 
 void SearchReplaceWorkerPrivate::createSearchJob(const SearchParams &params)
