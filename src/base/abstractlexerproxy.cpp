@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
-//
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "abstractlexerproxy.h"
@@ -13,6 +12,12 @@ DGUI_USE_NAMESPACE
 AbstractLexerProxy::AbstractLexerProxy(QObject *parent)
     : QObject(parent)
 {
+}
+
+AbstractLexerProxy::~AbstractLexerProxy()
+{
+// Virtual destructor to allow correct release of resources
+ // in derived classes, if necessary.
 }
 
 const char *AbstractLexerProxy::lexer() const

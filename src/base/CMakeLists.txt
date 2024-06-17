@@ -1,5 +1,7 @@
+# Set the project name
 project(base)
 
+# Define header and source files
 set(CXX_H
     abstractmenu.h
     abstractaction.h
@@ -11,7 +13,7 @@ set(CXX_H
     basefilelocator.h
     baseitemdelegate.h
     abstracteditwidget.h
-    )
+)
 
 set(CXX_CPP
     abstractmenu.cpp
@@ -24,18 +26,34 @@ set(CXX_CPP
     basefilelocator.cpp
     baseitemdelegate.cpp
     abstracteditwidget.cpp
-    )
+)
 
+# Add the shared library target
 add_library(
     ${PROJECT_NAME}
-    SHARED
+    SHARED 
     ${CXX_H}
     ${CXX_CPP}
-    )
+)
 
+# Link with the DtkWidget library
 target_link_libraries(
     ${PROJECT_NAME}
-    ${DtkWidget_LIBRARIES}
-    )
+    ${DtkWidget_LIBRARIES}  # Assuming you have defined this variable elsewhere
+)
 
-install(TARGETS ${PROJECT_NAME} DESTINATION ${LIBRARY_INSTALL_PREFIX})
+# Set target properties (optional)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+)
+
+# Install the library (optional)
+install(TARGETS ${PROJECT_NAME}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+# (Optional) Install header files
+install(FILES ${CXX_H} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
+

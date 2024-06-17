@@ -1,49 +1,46 @@
 // SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
-//
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "abstractmenu.h"
 
 #include <QDebug>
+#include <QScopedPointer>  
 
-class AbstractMenuPrivate
-{
-    friend class AbstractMenu;
-    DMenu *menu;
-    QList<AbstractAction *> actionlist;
+// Clase privada para encapsular detalles de implementación
+class AbstractMenuPrivate {
+public:
+    QScopedPointer<DMenu> menu; // Usar QScopedPointer para gestionar la vida del menú
+    QList<AbstractAction*> actionList;
 };
 
-AbstractMenu::AbstractMenu(DMenu *qMenu)
-    : d(new AbstractMenuPrivate())
+// Constructor
+AbstractMenu::AbstractMenu(DMenu* qMenu)
+    : d(new AbstractMenuPrivate)
 {
     Q_ASSERT(qMenu);
+    d->menu.reset(qMenu); // Tomar propiedad del menú usando QScopedPointer
 
-    d->menu = qMenu;
-    DMenu::connect(d->menu, &DMenu::destroyed,
-                   d->menu, [this]() {
-        delete this;
-    },Qt::UniqueConnection);
+    connect(d->menu.data(), &QObject::destroyed, this, &QObject::deleteLater); // Conexión optimizada
 }
 
-AbstractMenu::~AbstractMenu()
+// Destructor
+AbstractMenu::~AbstractMenu() = default;  // El destructor por defecto es suficiente gracias a QScopedPointer
+
+// Getter
+DMenu* AbstractMenu::qMenu() const 
 {
-    if (d) {
-        delete d;
-    }
+    return d->menu.data();  
 }
 
-DMenu *AbstractMenu::qMenu()
+// Método para agregar una acción
+void AbstractMenu::addAction(AbstractAction* action)
 {
-    return d->menu;
-}
-
-void AbstractMenu::addAction(AbstractAction *action)
-{
-    d->actionlist.append(action);
+    d->actionList.append(action);
     d->menu->addAction(action->qAction());
 }
 
-QList<AbstractAction *> AbstractMenu::actionList()
+// Método para obtener la lista de acciones
+QList<AbstractAction*> AbstractMenu::actionList() const 
 {
-    return d->actionlist;
+    return d->actionList;
 }
