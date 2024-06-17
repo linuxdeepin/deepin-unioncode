@@ -43,10 +43,13 @@ void StatusInfoManagerPrivate::resetEditor(TextEditor *edit)
     if (currentEditor == edit)
         return;
 
-    if (currentEditor)
+    if (currentEditor) {
+        disconnect(currentEditor, &TextEditor::destroyed, this, 0);
         disconnect(currentEditor, &TextEditor::cursorPositionChanged, editorLabel, &EditorLabel::updateCursor);
+    }
 
     currentEditor = edit;
+    connect(edit, &TextEditor::destroyed, this, [this] { currentEditor = nullptr; });
     connect(currentEditor, &TextEditor::cursorPositionChanged, editorLabel, &EditorLabel::updateCursor);
     updateLabelInfo();
 }
