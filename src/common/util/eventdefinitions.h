@@ -24,6 +24,8 @@ OPI_OBJECT(project,
            OPI_INTERFACE(deletedProject, "projectInfo")
            OPI_INTERFACE(createdProject, "projectInfo")
            OPI_INTERFACE(projectUpdated, "projectInfo")
+           OPI_INTERFACE(projectNodeExpanded, "modelIndex")
+           OPI_INTERFACE(projectNodeCollapsed, "modelIndex")
            OPI_INTERFACE(fileDeleted, "filePath", "kit")
 
            OPI_INTERFACE(openProjectPropertys, "projectInfo")

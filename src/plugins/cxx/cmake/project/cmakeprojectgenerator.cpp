@@ -42,6 +42,10 @@ class CmakeProjectGeneratorPrivate
     dpfservice::ProjectInfo configureProjectInfo;
     QHash<QStandardItem *, QFileSystemWatcher *> projectWatchers;
     QList<QStandardItem *> projectsWaitingUpdate;
+
+    QMap<QStandardItem *, ProjectInfo> cmakeItems;
+    bool reConfigure = false;
+    QSet<QString> toExpand;
 };
 
 CmakeProjectGenerator::CmakeProjectGenerator()
@@ -63,6 +67,18 @@ CmakeProjectGenerator::CmakeProjectGenerator()
                      this, [this](const ProjectInfo &prjInfo){
         if (prjInfo.kitName() == toolKitName())
             actionProperties(prjInfo, this->rootItem);
+    });
+
+    QObject::connect(ProjectCmakeProxy::instance(),
+                     &ProjectCmakeProxy::nodeExpanded,
+                     this, [this](const QString &filePath){
+        d->toExpand.insert(filePath);
+    });
+
+    QObject::connect(ProjectCmakeProxy::instance(),
+                     &ProjectCmakeProxy::nodeCollapsed,
+                     this, [this](const QString &filePath){
+        d->toExpand.remove(filePath);
     });
 
     connect(TargetsManager::instance(), &TargetsManager::initialized, this, &CmakeProjectGenerator::targetInitialized);
@@ -89,7 +105,14 @@ CmakeProjectGenerator::CmakeProjectGenerator()
     inputAction->setShortCutInfo("Build.RunCMake", runCMake->text());
     dpfGetService(WindowService)->addAction(dpfservice::MWM_BUILD, inputAction);
 
-    QObject::connect(runCMake, &QAction::triggered, this,[this](){
+    QObject::connect(runCMake, &QAction::triggered, this, [this](){
+        auto prjService = dpfGetService(ProjectService);
+        auto activePrjInfo = prjService->getActiveProjectInfo();
+        for (auto item : d->cmakeItems.values()) {
+            if (item.isSame(activePrjInfo))
+                this->rootItem = d->cmakeItems.key(item);
+        }
+
         this->runCMake(this->rootItem, {});
     });
 
@@ -105,6 +128,13 @@ CmakeProjectGenerator::CmakeProjectGenerator()
     dpfGetService(WindowService)->addAction(dpfservice::MWM_BUILD, abstractClearCMake);
 
     QObject::connect(clearCMake, &QAction::triggered, this, [this](){
+        auto prjService = dpfGetService(ProjectService);
+        auto activePrjInfo = prjService->getActiveProjectInfo();
+        for (auto item : d->cmakeItems.values()) {
+            if (item.isSame(activePrjInfo))
+                this->rootItem = d->cmakeItems.key(item);
+        }
+
         this->clearCMake(this->rootItem);
     });
 }
@@ -188,7 +218,17 @@ bool CmakeProjectGenerator::configure(const dpfservice::ProjectInfo &projInfo)
         if (isSuccess) {
             ProjectCmakeProxy::instance()->setBuildCommandUuid(commandInfo.uuid);
             // display root item before everything is done.
-            rootItem = ProjectGenerator::createRootItem(projInfo);
+            // check if run cmake to a existed project by project root path
+            auto newRoot = ProjectGenerator::createRootItem(projInfo);
+            if (!rootItem || (rootItem->data(Qt::DisplayRole) != newRoot->data(Qt::DisplayRole)))
+                d->reConfigure = false;
+            else {
+                d->reConfigure = true;
+                rootItem->setData(ParsingState::Wait, Parsing_State_Role);
+            }
+
+            d->cmakeItems.insert(newRoot, projInfo);
+            rootItem = newRoot;
             setRootItemToView(rootItem);
 
             dpfservice::ProjectGenerator::configure(projInfo);
@@ -219,6 +259,14 @@ QStandardItem *CmakeProjectGenerator::createRootItem(const dpfservice::ProjectIn
                          // active after everything done.
                          project.activeProject(info.kitName(), info.language(), info.workspaceFolder());
                          delete parse;
+
+                         if (!d->reConfigure)
+                             return;
+
+                         QMetaObject::invokeMethod(this, [this]() {
+                             auto prjService = dpfGetService(ProjectService);
+                             prjService->expandItemByFile(d->toExpand.toList());
+                         });
                      });
 
     // asyn execute logic,  that .project file parse
@@ -256,6 +304,10 @@ void CmakeProjectGenerator::removeRootItem(QStandardItem *root)
         delete threadPoll;
         d->asynItemThreadPolls.remove(root);
     }
+
+    if (rootItem == root)
+        rootItem = nullptr;
+    d->cmakeItems.remove(root);
 
     auto watcher = d->projectWatchers[root];
     if (watcher)
@@ -401,21 +453,16 @@ void CmakeProjectGenerator::setRootItemToView(QStandardItem *root)
     using namespace dpfservice;
     auto &ctx = dpfInstance.serviceContext();
     ProjectService *projectService = ctx.service<ProjectService>(ProjectService::name());
-    if (!projectService)
-        return;
-
     WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (!windowService)
+    if (!windowService || !projectService)
         return;
 
     if (root) {
-        // setting item to view
-        if (projectService->addRootItem)
+        // check if run cmake to a existed project by project root path
+        if (!d->reConfigure) {
             projectService->addRootItem(root);
-
-        // expand view from tree two level
-        if (projectService->expandedDepth)
             projectService->expandedDepth(root, 2);
+        }
 
         uiController.doSwitch(MWNA_EDIT);
         uiController.switchWorkspace(MWCWT_PROJECTS);
@@ -445,8 +492,10 @@ void CmakeProjectGenerator::doBuildCmdExecuteEnd(const BuildCommandInfo &info, i
     }
     mutex.unlock();
 
-    if (reloadItem) {
+    if (reloadItem && d->reConfigure) {
+        projectService->addRootItem(rootItem);
         d->reloadCmakeFileItems.removeOne(reloadItem);   //clean cache
+
         if (status == 0) {
             projectService->removeRootItem(reloadItem);
             createRootItem(d->configureProjectInfo);
