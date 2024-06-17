@@ -45,7 +45,8 @@ Package: deepin-unioncode
 Architecture: any
 Depends:
  ${shlibs:Depends},
- ${misc:Depends}
+ ${misc:Depends},
+ python3-pip
 Recommends: cmake,
             make,
             gdb,
