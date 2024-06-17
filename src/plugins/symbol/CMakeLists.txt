@@ -13,6 +13,7 @@ set(CXX_CPP
     transceiver/symbolreceiver.cpp
     clangparser/clangcursor.cpp
     clangparser/clangparser.cpp
+    util/util.cpp
     symbol.cpp
     symbol.json
     )
@@ -26,6 +27,7 @@ set(CXX_H
     transceiver/symbolreceiver.h
     clangparser/clangcursor.h
     clangparser/clangparser.h
+    util/util.h
     symbol.h
     )
 
