@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
-//
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef ABSTRACTEDITWIDGET_H
@@ -11,9 +10,16 @@ class AbstractEditWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit AbstractEditWidget(QWidget *parent = nullptr);
+    explicit AbstractEditWidget(QWidget* parent = nullptr);
+    virtual ~AbstractEditWidget() = default;  // Virtual destructor
 
-    virtual void closeWidget() {}
+    // Use virtual for methods that are intended to be overridden in derived classes.
+    virtual void closeWidget() = 0; 
+
+signals:
+    // You can add custom signals here to notify other objects of events
+    // For example: void textChanged(const QString& newText);
 };
 
-#endif   // ABSTRACTEDITWIDGET_H
+#endif  // ABSTRACTEDITWIDGET_H
+

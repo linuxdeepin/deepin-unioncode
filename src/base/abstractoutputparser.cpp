@@ -1,106 +1,152 @@
-// SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
-//
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "abstractoutputparser.h"
+#include "basefilelocator.h"
+#include "services/editor/editorservice.h"
 
-AbstractOutputParser::~AbstractOutputParser()
+#include <DFileIconProvider>
+#include <QScopedPointer> 
+
+#include <QDebug>
+
+using namespace dpfservice;
+using Utils::FileName;
+
+class BaseFileLocatorPrivate {
+public:
+    BaseFileLocatorPrivate() = default;
+    ProjectService *projectService = nullptr;
+    QList<QString> fileList;
+    QList<QString> oldFileList; 
+    QList<baseLocatorItem> locatorItemList;
+};
+
+// aux
+static int matchLevelFor(const QRegularExpressionMatch &match, const QString &matchText)
 {
-    delete outParser;
+    const int consecutivePos = match.capturedStart(1);
+    if (consecutivePos == 0)
+        return 0;
+    if (consecutivePos > 0) {
+        const QChar prevChar = matchText.at(consecutivePos - 1);
+        if (prevChar == '_' || prevChar == '.')
+            return 1;
+    }
+    if (match.capturedStart() == 0)
+        return 2;
+    return 3;
 }
 
-void AbstractOutputParser::appendOutputParser(AbstractOutputParser *parser)
+baseFileLocator::baseFileLocator(QObject *parent)
+    : d(new BaseFileLocatorPrivate)
+    , abstractLocator(parent) 
 {
-    if (!parser)
+    auto &ctx = dpfInstance.serviceContext();
+    d->projectService = ctx.service<ProjectService>(ProjectService::name());
+}
+
+// Destructor
+baseFileLocator::~baseFileLocator() 
+{
+    delete d;
+}
+
+void baseFileLocator::prepareSearch(const QString &searchText)
+{
+    Q_UNUSED(searchText);
+    
+    if (d->fileList.isEmpty()) {
+        qWarning() << "BaseFileLocator: Empty file list.";  // Logging/Debugging
         return;
-    if (outParser) {
-        outParser->appendOutputParser(parser);
+    }
+
+    if (d->oldFileList == d->fileList && !d->locatorItemList.isEmpty()) {
         return;
     }
 
-    outParser = parser;
-    connect(parser, &AbstractOutputParser::addOutput,
-            this, &AbstractOutputParser::outputAdded, Qt::DirectConnection);
-    connect(parser, &AbstractOutputParser::addTask,
-            this, &AbstractOutputParser::taskAdded, Qt::DirectConnection);
-}
+    d->locatorItemList.clear();
+    for (const QString &filePath : d->fileList) { 
+        FileName file = FileName::fromUserInput(filePath);
+        baseLocatorItem item;
+        item.filePath = file;
+        item.id = QObject::tr(file.toString().toUtf8()); // Internacionalizaci¨®n
+        item.tooltip = QObject::tr(file.toString().toUtf8()); // Internacionalizaci¨®n
+        auto nativePath = toShortProjectPath(file.toString());
+        if (nativePath == file.toString()) {
+            nativePath = file.toShortNativePath();
+        }
+        item.extraInfo = nativePath;
+        QFileInfo fi(filePath);
+        if (!fi.exists()) {
+            qWarning() << "BaseFileLocator: File not found:" << filePath; //error handling
+            continue; //jump to the next int
+        }
+        item.displayName = fi.fileName();
 
-AbstractOutputParser *AbstractOutputParser::takeOutputParserChain()
-{
-    AbstractOutputParser *parser = outParser;
-    disconnect(parser, &AbstractOutputParser::addOutput, this, &AbstractOutputParser::outputAdded);
-    disconnect(parser, &AbstractOutputParser::addTask, this, &AbstractOutputParser::taskAdded);
-    outParser = nullptr;
-    return parser;
-}
+        auto iconProvider = DTK_WIDGET_NAMESPACE::DFileIconProvider::globalProvider();
+        item.icon = iconProvider->icon(fi);
 
-AbstractOutputParser *AbstractOutputParser::childParser() const
-{
-    return outParser;
-}
-
-void AbstractOutputParser::setChildParser(AbstractOutputParser *parser)
-{
-    if (outParser != parser)
-        delete outParser;
-    outParser = parser;
-    if (parser) {
-        connect(parser, &AbstractOutputParser::addOutput,
-                this, &AbstractOutputParser::outputAdded, Qt::DirectConnection);
-        connect(parser, &AbstractOutputParser::addTask,
-                this, &AbstractOutputParser::taskAdded, Qt::DirectConnection);
+        d->locatorItemList.append(item);
     }
+
+    // Order by name
+    std::sort(d->locatorItemList.begin(), d->locatorItemList.end(), 
+              [](const baseLocatorItem &itemA, const baseLocatorItem &itemB) {
+                  return itemA.displayName.toLower() < itemB.displayName.toLower();
+              });
+
+    d->oldFileList = d->fileList; 
 }
 
-void AbstractOutputParser::stdOutput(const QString &line, OutputPane::OutputFormat format)
+QList<baseLocatorItem> baseFileLocator::matchesFor(const QString &inputText) const
 {
-    if (outParser)
-        outParser->stdOutput(line, format);
-}
+    QList<baseLocatorItem> result[4];
+    auto regexp = createRegExp(inputText);
 
-void AbstractOutputParser::stdError(const QString &line)
-{
-    if (outParser)
-        outParser->stdError(line);
-}
-
-void AbstractOutputParser::outputAdded(const QString &string, OutputPane::OutputFormat format)
-{
-    emit addOutput(string, format);
-}
-
-void AbstractOutputParser::taskAdded(const Task &task, int linkedOutputLines, int skipLines)
-{
-    emit addTask(task, linkedOutputLines, skipLines);
-}
-
-void AbstractOutputParser::doFlush()
-{ }
-
-bool AbstractOutputParser::hasFatalErrors() const
-{
-    return outParser && outParser->hasFatalErrors();
-}
-
-void AbstractOutputParser::setWorkingDirectory(const QString &workingDirectory)
-{
-    if (outParser)
-        outParser->setWorkingDirectory(workingDirectory);
-}
-
-void AbstractOutputParser::flush()
-{
-    doFlush();
-    if (outParser)
-        outParser->flush();
-}
-
-QString AbstractOutputParser::rightTrimmed(const QString &in)
-{
-    int pos = in.length();
-    for (; pos > 0; --pos) {
-        if (!in.at(pos - 1).isSpace())
-            break;
+    for (const auto& item : d->locatorItemList) { 
+        QRegularExpressionMatch match = regexp.match(item.displayName);
+        if (match.hasMatch()) {
+            auto level = matchLevelFor(match, item.displayName);
+            result[level].append(item);
+        }
     }
-    return in.mid(0, pos);
+
+    return result[0] + result[1] + result[2] + result[3];
 }
+
+void baseFileLocator::accept(baseLocatorItem item)
+{
+    editor.openFile(QString(), item.id);
+}
+
+void baseFileLocator::setFileList(const QList<QString> &fileList)
+{
+    d->oldFileList = d->fileList;
+    d->fileList = fileList;
+}
+
+void baseFileLocator::clear()
+{
+    d->locatorItemList.clear();
+}
+
+QString baseFileLocator::toShortProjectPath(const QString &path) const
+{
+    QMap<QString, QString> projectList;
+    QString nativePath = path;
+    if (d->projectService->getAllProjectInfo) {
+        auto allProject = d->projectService->getAllProjectInfo();
+        for (const auto& project : allProject) { // Range-based for loop
+            auto projectRootPath = project.workspaceFolder();
+            if (path.startsWith(projectRootPath)) {
+                nativePath.replace(0, projectRootPath.size(), QFileInfo(projectRootPath).fileName() + ':');
+                break;
+            }
+        }
+    }
+
+    return nativePath;
+}
+
+
+

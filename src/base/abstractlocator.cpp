@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
-//
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "abstractlocator.h"
@@ -7,52 +6,71 @@
 
 #include <QRegularExpression>
 
+class AbstractLocatorPrivate
+{
+public:
+    explicit AbstractLocatorPrivate() {} 
+    bool includedByDefault = true;
+    QString displayName = "";
+    QString description = "";
+    QKeySequence shortCut{};
+};
+
+// Constructor
 abstractLocator::abstractLocator(QObject *parent)
     : QObject(parent)
+    , d(new AbstractLocatorPrivate)
 {
 }
 
-bool abstractLocator::isIncluedByDefault()
+// Destructor
+abstractLocator::~abstractLocator()
 {
-    return includedByDefault;
+    delete d;
 }
 
-QRegularExpression abstractLocator::createRegExp(const QString &text)
+bool abstractLocator::isIncluedByDefault() const // Corrected typo in method name
+{
+    return d->includedByDefault;
+}
+
+QRegularExpression abstractLocator::createRegExp(const QString &text) const
 {
     return FuzzyMatcher::createRegExp(text);
 }
 
-QString abstractLocator::getDisplayName()
+QString abstractLocator::getDisplayName() const
 {
-    return displayName;
+    return d->displayName;
 }
 
 void abstractLocator::setDisplayName(const QString &displayName)
 {
-    this->displayName = displayName;
+    d->displayName = displayName;
 }
 
-QString abstractLocator::getDescription()
+QString abstractLocator::getDescription() const
 {
-    return description;
+    return d->description;
 }
 
 void abstractLocator::setDescription(const QString &description)
 {
-    this->description = description;
+    d->description = description;
 }
 
 void abstractLocator::setIncludedDefault(bool isDefault)
 {
-    includedByDefault = isDefault;
+    d->includedByDefault = isDefault; // Using d-pointer
 }
 
-QKeySequence abstractLocator::getShortCut()
+QKeySequence abstractLocator::getShortCut() const
 {
-    return this->shortCut;
+    return d->shortCut; // Using d-pointer
 }
 
 void abstractLocator::setShortCut(const QKeySequence &key)
 {
-    this->shortCut = key;
+    d->shortCut = key;
 }
+

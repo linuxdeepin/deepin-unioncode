@@ -1,5 +1,4 @@
 // SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
-//
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "abstractwidget.h"
@@ -8,36 +7,29 @@
 
 #include <QDebug>
 #include <QApplication>
+#include <QScopedPointer> 
 
 DWIDGET_USE_NAMESPACE
 
-class AbstractWidgetPrivate
-{
-    friend class AbstractWidget;
-    DWidget *qWidget;
+//Private class to encapsulate implementation detailsclass AbstractWidgetPrivate {
+public:
+    QScopedPointer<DWidget> qWidget; // Use QScopedPointer for memory management
 };
 
-AbstractWidget::AbstractWidget(void *qWidget)
+AbstractWidget::AbstractWidget(DWidget* qWidget)
     : d(new AbstractWidgetPrivate)
 {
     Q_ASSERT(qWidget);
+    d->qWidget.reset(qWidget);  // Tomar posesión del widget usando QScopedPointer
 
-    d->qWidget = static_cast<DWidget*>(qWidget);
-    QObject::connect(d->qWidget, &DWidget::destroyed,
-                     d->qWidget, [this](QObject *obj){
-        if (obj == d->qWidget) {
-            delete this;
-        }
-    }, Qt::DirectConnection);
+    connect(d->qWidget.data(), &QObject::destroyed, this, &QObject::deleteLater); 
 }
 
-AbstractWidget::~AbstractWidget()
+// Destructorthanks to QScopedPointer ;3
+AbstractWidget::~AbstractWidget() = default;
+
+DWidget* AbstractWidget::qWidget() const 
 {
-    if (d)
-        delete d;
+    return d->qWidget.data(); // Devuelve un puntero al widget
 }
 
-void *AbstractWidget::qWidget()
-{
-    return d->qWidget;
-}
