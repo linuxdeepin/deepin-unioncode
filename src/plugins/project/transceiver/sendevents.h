@@ -16,6 +16,8 @@ public:
     static void projectActived(const dpfservice::ProjectInfo &info);
     static void projectCreated(const dpfservice::ProjectInfo &info);
     static void projectDeleted(const dpfservice::ProjectInfo &info);
+    static void projectNodeExpanded(const QModelIndex &index);
+    static void projectNodeCollapsed(const QModelIndex &index);
     static void collaboratorsOpenRepos(const QString &workspace);
 };
 

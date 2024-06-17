@@ -76,6 +76,12 @@ ProjectTree::ProjectTree(QWidget *parent)
     QObject::connect(this, &ProjectTree::doubleClicked,
                      this, &ProjectTree::doDoubleClicked);
 
+    QObject::connect(this, &ProjectTree::expanded,
+                     this, [=](const QModelIndex &index){SendEvents::projectNodeExpanded(index);});
+
+    QObject::connect(this, &ProjectTree::collapsed,
+                     this, [=](const QModelIndex &index){SendEvents::projectNodeCollapsed(index);});
+
     d->sectionModel = new ProjectSelectionModel(d->itemModel);
     setSelectionModel(d->sectionModel);
 
@@ -176,7 +182,7 @@ void ProjectTree::removeRootItem(QStandardItem *root)
 
     // 始终保持首选项
     int rowCount = d->itemModel->rowCount();
-    if ( 0 < rowCount) { // 存在其他工程时
+    if (0 < rowCount) { // 存在其他工程时
         auto index = d->itemModel->index(0, 0);
         doActiveProject(d->itemModel->itemFromIndex(index));
     }
@@ -274,6 +280,23 @@ void ProjectTree::selectProjectFile(const QString &file)
     if (!d->autoFocusState)
         return;
     focusCurrentFile();
+}
+
+void ProjectTree::expandItemByFile(const QStringList &filePaths)
+{
+    QModelIndex root = d->itemModel->index(0, 0);
+
+    if (!root.isValid()) {
+        return;
+    }
+    for (auto filePath : filePaths) {
+        // hints = 2 : project`s root and lib-node might use the same filePath
+        QModelIndexList indices = model()->match(root, Qt::ToolTipRole, filePath, 2, Qt::MatchExactly | Qt::MatchRecursive);
+        if (!indices.isEmpty()) {
+            for (auto index : indices)
+                expand(index);
+        }
+    }
 }
 
 void ProjectTree::focusCurrentFile()

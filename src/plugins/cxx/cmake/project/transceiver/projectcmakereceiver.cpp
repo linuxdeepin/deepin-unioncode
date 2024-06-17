@@ -73,6 +73,18 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
 
         emit ProjectCmakeProxy::instance()->openProjectPropertys(projectInfo);
     }
+
+    if (event.data() == project.projectNodeExpanded.name) {
+        auto index = event.property("modelIndex").value<QModelIndex>();
+        auto filePath = index.data(Qt::ToolTipRole).toString();
+        emit ProjectCmakeProxy::instance()->nodeExpanded(filePath);
+    }
+
+    if (event.data() == project.projectNodeCollapsed.name) {
+        auto index = event.property("modelIndex").value<QModelIndex>();
+        auto filePath = index.data(Qt::ToolTipRole).toString();
+        emit ProjectCmakeProxy::instance()->nodeCollapsed(filePath);
+    }
 }
 
 void ProjectCmakeReceiver::builderEvent(const dpf::Event &event)
