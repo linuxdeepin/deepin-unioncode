@@ -209,8 +209,13 @@ void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens, const QString &fileP
 
     QList<std::tuple<int, QString, QString>> textTokenList;
     int cacheLine = 0;
+    int cacheColumn = 0;
     for (auto val : tokens) {
         cacheLine += val.start.line;
+        if (val.start.line != 0)
+            cacheColumn = 0;
+
+        cacheColumn += val.start.character;
 #ifdef QT_DEBUG
         qInfo() << "line:" << cacheLine;
         qInfo() << "charStart:" << val.start.character;
@@ -218,7 +223,7 @@ void LSPStyle::setTokenFull(const QList<lsp::Data> &tokens, const QString &fileP
         qInfo() << "tokenType:" << val.tokenType;
         qInfo() << "tokenModifiers:" << val.tokenModifiers;
 #endif
-        auto startPos = d->editor->positionFromLineIndex(cacheLine, val.start.character);
+        auto startPos = d->editor->positionFromLineIndex(cacheLine, cacheColumn);
         auto wordEndPos = d->editor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(startPos), true);
         auto wordStartPos = d->editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(startPos), true);
         if (startPos == 0 || wordEndPos == d->editor->length() || wordStartPos != startPos)
