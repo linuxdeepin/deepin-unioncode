@@ -5,6 +5,8 @@
 #include "symbol.h"
 #include "mainframe/symbolkeeper.h"
 #include "mainframe/symboltreeview.h"
+#include "util/util.h"
+
 #include "common/common.h"
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -19,14 +21,10 @@
 using namespace dpfservice;
 void Symbol::initialize()
 {
-    QProcess process;
-    process.start("pip3 show esprima");
-    process.waitForFinished();
-
-    QString output = process.readAllStandardOutput();
-    if(output.isEmpty()) {
-        process.start("pip3 install esprima");
-        process.waitForFinished();
+    QStringList dependenceList {"esrima", "clang-5"};
+    for (const auto &dependence : dependenceList) {
+        if (!Util::checkPackageValid(dependence))
+            Util::installPackage(dependence);
     }
 }
 
