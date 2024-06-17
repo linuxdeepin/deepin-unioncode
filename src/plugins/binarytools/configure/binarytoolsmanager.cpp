@@ -14,6 +14,8 @@
 #include "services/editor/editorservice.h"
 #include "base/abstractaction.h"
 
+#include <DIconTheme>
+
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -45,6 +47,7 @@ constexpr char ChannelDataKey[] { "channelData" };
 constexpr char TriggerEventKey[] { "triggerEvent" };
 constexpr char UpdateListKey[] { "list" };
 
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 
 QString ToolProcess::readAllStandardOutput()
@@ -417,7 +420,7 @@ void BinaryToolsManager::updateToolMenu(const BinaryTools &tools)
         auto subMenu = new QMenu(toolMenu);
         groupAct->setMenu(subMenu);
         for (const auto &tool : iter.value()) {
-            auto act = subMenu->addAction(QIcon::fromTheme(tool.icon), tool.name);
+            auto act = subMenu->addAction(DIconTheme::findQIcon(tool.icon), tool.name);
             connect(act, &QAction::triggered, this, std::bind(&BinaryToolsManager::executeTool, this, tool.id));
         }
     }
@@ -558,7 +561,7 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
     auto createAction = [this](const ToolInfo &tool) {
         auto act = new QAction(tool.description, this);
         act->setIconText(tool.icon);
-        act->setIcon(QIcon::fromTheme(tool.icon));
+        act->setIcon(DIconTheme::findQIcon(tool.icon));
         connect(act, &QAction::triggered, this, std::bind(&BinaryToolsManager::executeTool, this, tool.id));
 
         auto actImpl = new AbstractAction(act, this);
@@ -585,7 +588,7 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
 
         if (tool.icon != qAct->iconText()) {
             qAct->setIconText(tool.icon);
-            qAct->setIcon(QIcon::fromTheme(tool.icon));
+            qAct->setIcon(DIconTheme::findQIcon(tool.icon));
         }
     }
 }

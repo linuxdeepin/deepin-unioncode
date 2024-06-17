@@ -17,6 +17,7 @@
 #include <DScrollArea>
 #include <DFrame>
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -27,6 +28,7 @@
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 class FindToolWindowPrivate : public QObject
 {
 public:
@@ -139,13 +141,13 @@ QWidget *FindToolWindowPrivate::createSearchParamWidget()
 
     caseSensitiveCheckBtn = new DPushButton(q);
     caseSensitiveCheckBtn->setToolTip(FindToolWindow::tr("Case sensitive"));
-    caseSensitiveCheckBtn->setIcon(QIcon::fromTheme("match_case"));
+    caseSensitiveCheckBtn->setIcon(DIconTheme::findQIcon("match_case"));
     caseSensitiveCheckBtn->setIconSize({ 16, 16 });
     caseSensitiveCheckBtn->setCheckable(true);
 
     wholeWordsCheckBtn = new DPushButton(q);
     wholeWordsCheckBtn->setToolTip(FindToolWindow::tr("Whole words only"));
-    wholeWordsCheckBtn->setIcon(QIcon::fromTheme("find_matchComplete"));
+    wholeWordsCheckBtn->setIcon(DIconTheme::findQIcon("find_matchComplete"));
     wholeWordsCheckBtn->setIconSize({ 16, 16 });
     wholeWordsCheckBtn->setCheckable(true);
 
@@ -291,7 +293,7 @@ bool FindToolWindowPrivate::setBaseParams(BaseParams *params, bool onlyOpened)
 void FindToolWindowPrivate::showMessage(const QString &message)
 {
     DDialog dlg(q);
-    dlg.setIcon(QIcon::fromTheme("dialog-warning"));
+    dlg.setIcon(DIconTheme::findQIcon("dialog-warning"));
     dlg.setMessage(message);
     dlg.insertButton(0, FindToolWindow::tr("Ok"));
 

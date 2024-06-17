@@ -26,6 +26,7 @@
 #include <DStackedWidget>
 #include <DSearchEdit>
 #include <DFontSizeManager>
+#include <DIconTheme>
 
 #include <QDebug>
 #include <QShortcut>
@@ -868,7 +869,7 @@ void Controller::initContextWidget()
 
     DToolButton *hideBtn = new DToolButton(d->contextTabBar);
     hideBtn->setFixedSize(35, 35);
-    hideBtn->setIcon(QIcon::fromTheme("hide_dock"));
+    hideBtn->setIcon(DIconTheme::findQIcon("hide_dock"));
     hideBtn->setToolTip(tr("Hide ContextWidget"));
     connect(hideBtn, &DToolButton::clicked, d->contextWidget, [=](){
         if (d->stackContextWidget->isVisible()) {
@@ -1009,13 +1010,13 @@ void Controller::showWorkspace()
 
         DToolButton *expandAll = new DToolButton(d->workspace);
         expandAll->setToolTip(tr("Expand All"));
-        expandAll->setIcon(QIcon::fromTheme("expand_all"));
+        expandAll->setIcon(DIconTheme::findQIcon("expand_all"));
         d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, expandAll);
         connect(expandAll, &DToolButton::clicked, this, [](){workspace.expandAll();});
 
         DToolButton *foldAll = new DToolButton(d->workspace);
         foldAll->setToolTip(tr("Fold All"));
-        foldAll->setIcon(QIcon::fromTheme("collapse_all"));
+        foldAll->setIcon(DIconTheme::findQIcon("collapse_all"));
         d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, foldAll);
         connect(foldAll, &DToolButton::clicked, this, [](){workspace.foldAll();});
 

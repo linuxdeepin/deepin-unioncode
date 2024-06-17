@@ -8,6 +8,7 @@
 #include <framework/lifecycle/pluginsetting.h>
 
 #include <DApplication>
+#include <DIconTheme>
 
 #include <QApplication>
 #include <QStyleFactory>
@@ -109,7 +110,7 @@ int main(int argc, char *argv[])
     a.setOrganizationName("deepin");
     a.setApplicationDisplayName(a.translate("Application", "deepin-unioncode"));
     a.setApplicationVersion(version());
-    a.setProductIcon(QIcon::fromTheme("about_logo"));
+    a.setProductIcon(DIconTheme::findQIcon("about_logo"));
     a.setApplicationDescription(a.translate("Application",
                                             "Deepin Union Code is a lightweight integrated development environment,\
                                             featured with multilingual and cross platform compatibility."

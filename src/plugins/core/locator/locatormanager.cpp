@@ -6,10 +6,13 @@
 #include "locatormanager.h"
 #include "common/actionmanager/actionmanager.h"
 
+#include <DIconTheme>
+
 #include <QEvent>
 #include <QKeyEvent>
 #include <QAction>
 
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 static LocatorManager *ins { nullptr };
 
@@ -36,7 +39,7 @@ void AllLocators::prepareSearch(const QString &searchText)
         item.displayName = locator->getDisplayName();
         item.extraInfo = locator->getDescription();
         item.id = locator->getDescription();
-        item.icon = QIcon::fromTheme("go-next");
+        item.icon = DIconTheme::findQIcon("go-next");
 
         itemList.append(item);
     }

@@ -12,12 +12,14 @@
 
 #include <DTabBar>
 #include <DToolButton>
+#include <DIconTheme>
 
 #include <QFileInfo>
 #include <QStackedWidget>
 #include <QVBoxLayout>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 
 class GitTabWidgetPrivate : public QObject
@@ -59,7 +61,7 @@ void GitTabWidgetPrivate::initUI()
     tabBar->setEnabledEmbedStyle(true);
 
     closeBtn = new DToolButton(q);
-    closeBtn->setIcon(QIcon::fromTheme("edit-closeBtn"));
+    closeBtn->setIcon(DIconTheme::findQIcon("edit-closeBtn"));
 
     stackedWidget = new QStackedWidget(q);
     stackedWidget->setContentsMargins(0, 0, 0, 0);

@@ -11,6 +11,7 @@
 #include <DFrame>
 #include <DPushButton>
 #include <DIconButton>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -192,21 +193,21 @@ EnvironmentView::EnvironmentView(DWidget *parent)
 
     //append
     d->appendButton = new DIconButton(this);
-    d->appendButton->setIcon(QIcon::fromTheme("binarytools_add"));
+    d->appendButton->setIcon(DIconTheme::findQIcon("binarytools_add"));
     d->appendButton->setIconSize({16, 16});
     d->appendButton->setFlat(true);
     d->appendButton->setToolTip(tr("append"));
 
     //Delete
     d->deleteButton = new DIconButton(this);
-    d->deleteButton->setIcon(QIcon::fromTheme("binarytools_reduce"));
+    d->deleteButton->setIcon(DIconTheme::findQIcon("binarytools_reduce"));
     d->deleteButton->setIconSize({16, 16});
     d->deleteButton->setFlat(true);
     d->deleteButton->setToolTip(tr("reduce"));
 
     //Reset
     d->resetButton = new DIconButton(this);
-    d->resetButton->setIcon(QIcon::fromTheme("binarytools_reset"));
+    d->resetButton->setIcon(DIconTheme::findQIcon("binarytools_reset"));
     d->resetButton->setIconSize({16, 16});
     d->resetButton->setFlat(true);
     d->resetButton->setToolTip(tr("reset"));

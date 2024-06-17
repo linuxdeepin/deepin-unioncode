@@ -12,6 +12,7 @@
 #include <DHeaderView>
 #include <DDialog>
 #include <DLineEdit>
+#include <DIconTheme>
 
 #include <QDebug>
 #include <QContextMenuEvent>
@@ -160,7 +161,7 @@ void FileTreeView::selRemove()
     DDialog dialog;
     dialog.setMessage(message);
     dialog.setWindowTitle(tr("Delete Warining"));
-    dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+    dialog.setIcon(DIconTheme::findQIcon("dialog-warning"));
     dialog.insertButton(0, tr("Cancel"));
     dialog.insertButton(1, tr("OK"));
     dialog.exec();

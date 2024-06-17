@@ -9,6 +9,7 @@
 #include "common/common.h"
 
 #include <DToolButton>
+#include <DIconTheme>
 
 DWIDGET_USE_NAMESPACE
 
@@ -30,11 +31,11 @@ WindowStatusBar::WindowStatusBar(QWidget *parent)
 
     d->notifyBtn = new DToolButton(this);
     d->notifyBtn->setIconSize({ 16, 16 });
-    d->notifyBtn->setIcon(QIcon::fromTheme("notification"));
+    d->notifyBtn->setIcon(DIconTheme::findQIcon("notification"));
     connect(d->notifyBtn, &DToolButton::clicked, this, &WindowStatusBar::requestNotify);
     connect(NotificationManager::instance(), &NotificationManager::updated, this,
             [this] {
-                d->notifyBtn->setIcon(QIcon::fromTheme("new_notification"));
+                d->notifyBtn->setIcon(DIconTheme::findQIcon("new_notification"));
             });
 
     addPermanentWidget(d->notifyBtn);
@@ -75,7 +76,7 @@ void WindowStatusBar::showProgress()
 
 void WindowStatusBar::requestNotify()
 {
-    d->notifyBtn->setIcon(QIcon::fromTheme("notification"));
+    d->notifyBtn->setIcon(DIconTheme::findQIcon("notification"));
     NotificationManager::instance()->toggle();
 }
 

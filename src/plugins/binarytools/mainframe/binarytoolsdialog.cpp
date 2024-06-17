@@ -9,6 +9,7 @@
 #include <DSuggestButton>
 #include <DLabel>
 #include <DFrame>
+#include <DIconTheme>
 
 #include <QIcon>
 #include <QHBoxLayout>
@@ -25,7 +26,7 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
 {
     setWindowTitle(tr("Binary Tools"));
     setFixedSize(730, 677);
-    setIcon(QIcon::fromTheme("ide"));
+    setIcon(DIconTheme::findQIcon("ide"));
 
     DWidget *mainFrame = new DWidget(this);
     addContent(mainFrame);

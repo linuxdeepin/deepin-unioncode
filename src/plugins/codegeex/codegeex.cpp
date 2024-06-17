@@ -16,6 +16,8 @@
 #include "base/abstractaction.h"
 #include "base/abstractmenu.h"
 
+#include <DIconTheme>
+
 #include <QAction>
 #include <QIcon>
 
@@ -31,7 +33,7 @@ bool CodeGeex::start()
     if (windowService) {
         if (windowService->addNavigationItem) {
             QAction *action = new QAction(MWNA_CODEGEEX, this);
-            action->setIcon(QIcon::fromTheme("codegeex-navigation"));
+            action->setIcon(DIconTheme::findQIcon("codegeex-navigation"));
 
             windowService->addNavigationItem(new AbstractAction(action), Priority::medium);
 

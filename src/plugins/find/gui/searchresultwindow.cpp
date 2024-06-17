@@ -12,13 +12,14 @@
 #include <DLineEdit>
 #include <DIconButton>
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QPalette>
 
 DWIDGET_USE_NAMESPACE
-
+DGUI_USE_NAMESPACE
 class SearchResultWindowPrivate
 {
     SearchResultWindowPrivate() {}
@@ -74,7 +75,7 @@ void SearchResultWindow::setupUi()
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     DIconButton *cleanBtn = new DIconButton(this);   //Clean && Return
-    cleanBtn->setIcon(QIcon::fromTheme("go-previous"));
+    cleanBtn->setIcon(DIconTheme::findQIcon("go-previous"));
     QSize iconSize(12, 12);
     cleanBtn->setIconSize(iconSize);
 
@@ -98,7 +99,7 @@ void SearchResultWindow::setupUi()
 
     d->iconLabel = new QLabel(this);
     QVBoxLayout *iconLayout = new QVBoxLayout();
-    d->iconLabel->setPixmap(QIcon::fromTheme("find_noResults").pixmap(QSize(96, 96)));
+    d->iconLabel->setPixmap(DIconTheme::findQIcon("find_noResults").pixmap(QSize(96, 96)));
     iconLayout->addWidget(d->iconLabel, Qt::AlignCenter);
 
     iconLayout->setAlignment(Qt::AlignCenter);
@@ -162,7 +163,7 @@ void SearchResultWindow::replace()
     if (replaceText.isEmpty()) {
         d->replaceTextFlag = false;
         d->replaceTextDialog = new DDialog(this);
-        d->replaceTextDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+        d->replaceTextDialog->setIcon(DIconTheme::findQIcon("dialog-warning"));
         d->replaceTextDialog->setMessage(tr("Repalce text is empty, will continue?"));
         d->replaceTextDialog->insertButton(0, tr("No"));
         d->replaceTextDialog->insertButton(1, tr("Yes"), true, DDialog::ButtonRecommend);

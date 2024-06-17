@@ -17,11 +17,14 @@
 #include "locator/allprojectfilelocator.h"
 #include "locator/currentprojectlocator.h"
 
+#include <DIconTheme>
+
 #include <QProcess>
 #include <QAction>
 #include <QLabel>
 #include <QTreeView>
 
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 void ProjectCore::initialize()
 {
@@ -45,18 +48,18 @@ bool ProjectCore::start()
             auto view = new AbstractWidget(ProjectKeeper::instance()->treeView());
             windowService->addWidgetWorkspace(MWCWT_PROJECTS, view, "project");
             DToolButton *projectProperty = new DToolButton(ProjectKeeper::instance()->treeView());
-            projectProperty->setIcon(QIcon::fromTheme("settings"));
+            projectProperty->setIcon(DIconTheme::findQIcon("settings"));
             projectProperty->setToolTip(tr("Open activted project`s property dialog"));
 
             DToolButton *autoFocusSwitcher = new DToolButton(ProjectKeeper::instance()->treeView());
             autoFocusSwitcher->setToolTip(tr("Auto Focus"));
-            autoFocusSwitcher->setIcon(QIcon::fromTheme("focus_auto"));
+            autoFocusSwitcher->setIcon(DIconTheme::findQIcon("focus_auto"));
             autoFocusSwitcher->setCheckable(true);
 			autoFocusSwitcher->setChecked(true);
 
             DToolButton *focusFile = new DToolButton(ProjectKeeper::instance()->treeView());
             focusFile->setToolTip(tr("Focus File"));
-            focusFile->setIcon(QIcon::fromTheme("focus"));
+            focusFile->setIcon(DIconTheme::findQIcon("focus"));
 
             connect(focusFile, &DToolButton::clicked, this, [](){
                 ProjectKeeper::instance()->treeView()->focusCurrentFile();

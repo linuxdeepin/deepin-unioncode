@@ -9,6 +9,9 @@
 #include "base/abstractaction.h"
 #include "common/actionmanager/actionmanager.h"
 
+#include <DIconTheme>
+
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 
 class TemplateManagerPrivate
@@ -51,7 +54,7 @@ void TemplateManager::addMenu()
         return;
 
     auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
-        action->setIcon(QIcon::fromTheme(iconFileName));
+        action->setIcon(DIconTheme::findQIcon(iconFileName));
         AbstractAction *actionImpl = new AbstractAction(action, this);
         actionImpl->setShortCutInfo(actionID, action->text(), key);
 

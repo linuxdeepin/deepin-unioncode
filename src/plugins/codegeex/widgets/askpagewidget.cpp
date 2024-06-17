@@ -14,6 +14,7 @@
 #include <DScrollBar>
 #include <DHorizontalLine>
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QDebug>
@@ -131,7 +132,7 @@ void AskPageWidget::onChatFinished()
 void AskPageWidget::onDeleteBtnClicked()
 {
     DDialog *confirmDialog = new DDialog(this);
-    confirmDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+    confirmDialog->setIcon(DIconTheme::findQIcon("dialog-warning"));
     confirmDialog->setMessage(tr("This operation will delete all the content of this session. confirm to delete it?"));
     confirmDialog->insertButton(0, tr("Cancel", "button"));
     confirmDialog->insertButton(1, tr("Delete", "button"), false, DDialog::ButtonWarning);
@@ -206,20 +207,20 @@ void AskPageWidget::initInputWidget()
 
     deleteBtn = new DToolButton(this);
     deleteBtn->setFixedSize(30, 30);
-    deleteBtn->setIcon(QIcon::fromTheme("codegeex_clear"));
+    deleteBtn->setIcon(DIconTheme::findQIcon("codegeex_clear"));
     deleteBtn->setToolTip(tr("delete this session"));
     btnLayout->addWidget(deleteBtn);
 
     btnLayout->addStretch(1);
 
     historyBtn = new DToolButton(this);
-    historyBtn->setIcon(QIcon::fromTheme("codegeex_history"));
+    historyBtn->setIcon(DIconTheme::findQIcon("codegeex_history"));
     historyBtn->setFixedSize(30, 30);
     historyBtn->setToolTip(tr("history sessions"));
     btnLayout->addWidget(historyBtn);
 
     createNewBtn = new DToolButton(this);
-    createNewBtn->setIcon(QIcon::fromTheme("codegeex_new"));
+    createNewBtn->setIcon(DIconTheme::findQIcon("codegeex_new"));
     createNewBtn->setFixedSize(30, 30);
     createNewBtn->setToolTip(tr("create new session"));
     btnLayout->addWidget(createNewBtn);
@@ -231,7 +232,7 @@ void AskPageWidget::initInputWidget()
 
     sendButton = new DFloatingButton(this);
     sendButton->setFixedSize(30, 30);
-    sendButton->setIcon(QIcon::fromTheme("codegeex_send").pixmap(16, QIcon::Selected));
+    sendButton->setIcon(DIconTheme::findQIcon("codegeex_send").pixmap(16, QIcon::Selected));
     sendButton->setEnabled(false);
 
     inputWidget->setFixedHeight(minInputWidgetHeight);

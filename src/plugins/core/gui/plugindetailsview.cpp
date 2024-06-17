@@ -13,6 +13,7 @@
 #include <DPushButton>
 #include <DSuggestButton>
 #include <DFrame>
+#include <DIconTheme>
 
 #include <QGridLayout>
 #include <QDesktopServices>
@@ -116,9 +117,9 @@ void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
     QString pluginLogoPath = pluginPath + QDir::separator() + pluginMetaInfo->name() + ".svg";
     QIcon pluginLogo;
     if (QFile::exists(pluginLogoPath)) {
-        pluginLogo = QIcon::fromTheme(pluginLogoPath);
+        pluginLogo = DIconTheme::findQIcon(pluginLogoPath);
     } else {
-        pluginLogo = QIcon::fromTheme("default_plugin");
+        pluginLogo = DIconTheme::findQIcon("default_plugin");
     }
 
     logoLabel->setPixmap(pluginLogo.pixmap(QSize(96, 96)));
@@ -170,13 +171,13 @@ void DetailsView::setupUi()
     operationLayout->addWidget(loadBtn, 0, Qt::AlignLeft);
 
     auto *cfgBtn = new DPushButton(this);
-    cfgBtn->setIcon(QIcon::fromTheme("options_setting"));
+    cfgBtn->setIcon(DIconTheme::findQIcon("options_setting"));
     cfgBtn->setFlat(true);
     connect(cfgBtn, &DPushButton::clicked, this, &DetailsView::showCfgWidget);
     operationLayout->addWidget(cfgBtn, 1, Qt::AlignLeft);
 
     logoLabel = new QLabel(this);
-    auto logo = QIcon::fromTheme("default_plugin");
+    auto logo = DIconTheme::findQIcon("default_plugin");
     logoLabel->setPixmap(logo.pixmap(QSize(96, 96)));
 
     auto webViewLayout = new QHBoxLayout();

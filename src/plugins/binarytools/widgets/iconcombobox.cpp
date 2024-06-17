@@ -9,6 +9,8 @@
 #    include <DPaletteHelper>
 #endif
 
+#include <DIconTheme>
+
 #include <QHBoxLayout>
 #include <QStyledItemDelegate>
 #include <QPainter>
@@ -181,16 +183,16 @@ void IconComboBox::initUI()
 
 void IconComboBox::initData()
 {
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_default"), "binarytools_default"));
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_file"), "binarytools_file"));
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_flag"), "binarytools_flag"));
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_light"), "binarytools_light"));
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_packing"), "binarytools_packing"));
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_combo"), "binarytools_combo"));
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_signature"), "binarytools_signature"));
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_translate"), "binarytools_translate"));
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_star"), "binarytools_star"));
-    iconModel.appendRow(new QStandardItem(QIcon::fromTheme("binarytools_command"), "binarytools_command"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_default"), "binarytools_default"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_file"), "binarytools_file"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_flag"), "binarytools_flag"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_light"), "binarytools_light"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_packing"), "binarytools_packing"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_combo"), "binarytools_combo"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_signature"), "binarytools_signature"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_translate"), "binarytools_translate"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_star"), "binarytools_star"));
+    iconModel.appendRow(new QStandardItem(DIconTheme::findQIcon("binarytools_command"), "binarytools_command"));
 }
 
 void IconComboBox::initConnections()
@@ -259,7 +261,7 @@ void IconComboBox::paintEvent(QPaintEvent *event)
     QStyleOptionComboBox opt;
     QComboBox::initStyleOption(&opt);
     painter.drawComplexControl(QStyle::CC_ComboBox, opt);
-    opt.currentIcon = QIcon::fromTheme(icon());
+    opt.currentIcon = DIconTheme::findQIcon(icon());
     // draw the icon and text
     painter.drawControl(QStyle::CE_ComboBoxLabel, opt);
 }

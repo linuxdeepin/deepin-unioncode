@@ -8,6 +8,7 @@
 #include <DPushButton>
 #include <DScrollArea>
 #include <DCommandLinkButton>
+#include <DIconTheme>
 
 #include <QAction>
 #include <QVBoxLayout>
@@ -48,7 +49,7 @@ void IntroPage::initLogo()
 
     DLabel *logo = new DLabel(this);
     logo->setAlignment(Qt::AlignHCenter);
-    logo->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(50));
+    logo->setPixmap(DIconTheme::findQIcon("codegeex_anwser_icon").pixmap(50));
     logoLayout->addWidget(logo);
 
     DLabel *logoLabel = new DLabel(this);
@@ -130,7 +131,7 @@ void IntroPage::appendSuggestButton(QVBoxLayout *layout, const QString &text, co
     suggestButton->setFixedHeight(36);
     suggestButton->setStyleSheet("text-align: left");
 
-    suggestButton->setIcon(QIcon::fromTheme(iconName));
+    suggestButton->setIcon(DIconTheme::findQIcon(iconName));
 
     suggestButton->setText(text);
     layout->addWidget(suggestButton);
@@ -145,7 +146,7 @@ void IntroPage::paintEvent(QPaintEvent *event)
     auto pa = QPainter(this);
     pa.setPen(QColor(30, 144, 255));
 
-    auto icon = QIcon::fromTheme("codegeex_indicate");
+    auto icon = DIconTheme::findQIcon("codegeex_indicate");
     for (auto index = 0; index < labelToPaint.count(); index++) {
         auto rect = labelToPaint[index]->geometry();
         icon.paint(&pa, rect);

@@ -7,6 +7,7 @@
 #include "codegeexmanager.h"
 
 #include <DLabel>
+#include <DIconTheme>
 #include <DPushButton>
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
 #include <DPaletteHelper>
@@ -118,7 +119,7 @@ void MessageComponent::initSenderInfo()
     senderName = new DLabel(this);
 
     editButton = new DPushButton(this);
-    editButton->setIcon(QIcon::fromTheme("codegeex_edit"));
+    editButton->setIcon(DIconTheme::findQIcon("codegeex_edit"));
     editButton->setFlat(true);
     editButton->setFixedSize(QSize(24, 24));
     editButton->setToolTip(tr("edit"));
@@ -126,12 +127,12 @@ void MessageComponent::initSenderInfo()
     switch (messageData.messageType()) {
     case MessageData::Ask: {
         senderName->setText("You");
-        senderHead->setPixmap(QIcon::fromTheme("codegeex_user").pixmap(24, 24));
+        senderHead->setPixmap(DIconTheme::findQIcon("codegeex_user").pixmap(24, 24));
         break;
     }
     case MessageData::Anwser:
         senderName->setText("CodeGeeX");
-        senderHead->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(24, 24));
+        senderHead->setPixmap(DIconTheme::findQIcon("codegeex_anwser_icon").pixmap(24, 24));
         editButton->setVisible(false);
         break;
     }

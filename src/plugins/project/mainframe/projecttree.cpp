@@ -17,6 +17,7 @@
 #include <DPushButton>
 #include <DLineEdit>
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QDebug>
 #include <QHeaderView>
@@ -28,6 +29,7 @@
 #include <QClipboard>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 
 class ProjectTreePrivate
@@ -581,7 +583,7 @@ void ProjectTree::renameDocument(const QStandardItem *item, const QString &newFi
             d->messDialog->setMessage(tr("A file with name %1 already exists. Would you like to overwrite it?").arg(newFileName));
         } else {
             d->messDialog = new DDialog(this);
-            d->messDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+            d->messDialog->setIcon(DIconTheme::findQIcon("dialog-warning"));
             d->messDialog->setMessage(tr("A file with name %1 already exists. Would you like to overwrite it?").arg(newFileName));
             d->messDialog->insertButton(0, tr("Cancel"));
             d->messDialog->insertButton(1, tr("Ok"), true, DDialog::ButtonWarning);
@@ -671,7 +673,7 @@ void ProjectTree::actionDeleteDocument(QStandardItem *item)
     DDialog dialog;
     dialog.setMessage(message);
     dialog.setWindowTitle(tr("Delete: ") + info.fileName());
-    dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+    dialog.setIcon(DIconTheme::findQIcon("dialog-warning"));
     dialog.insertButton(0, tr("Ok"));
     dialog.insertButton(1, tr("Cancel"));
     int code = dialog.exec();
@@ -721,7 +723,7 @@ bool ProjectTree::createNewDirectory(const QStandardItem *item, const QString &d
 
     if (QFile::exists(directoryPath)) {
         d->messDialog = new DDialog();
-        d->messDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+        d->messDialog->setIcon(DIconTheme::findQIcon("dialog-warning"));
         d->messDialog->setMessage(tr("A directory with name %1 already exists. please reanme it").arg(directoryPath));
         d->messDialog->insertButton(0, tr("Cancel"));
         d->messDialog->insertButton(1, tr("Ok"), true, DDialog::ButtonWarning);
@@ -760,7 +762,7 @@ void ProjectTree::creatNewDocument(const QStandardItem *item, const QString &fil
         };
 
         d->messDialog = new DDialog();
-        d->messDialog->setIcon(QIcon::fromTheme("dialog-warning"));
+        d->messDialog->setIcon(DIconTheme::findQIcon("dialog-warning"));
         d->messDialog->setMessage(tr("A file with name %1 already exists. Would you like to overwrite it?").arg(fileName));
         d->messDialog->insertButton(0, tr("Cancel"));
         d->messDialog->insertButton(1, tr("Ok"), true, DDialog::ButtonWarning);

@@ -4,6 +4,8 @@
 
 #include "loadingwidget.h"
 
+#include <DIconTheme>
+
 #include <QVBoxLayout>
 
 DWIDGET_USE_NAMESPACE
@@ -29,10 +31,10 @@ loadingWidget::loadingWidget(QWidget *parent)
 void loadingWidget::setLogo()
 {
     backgroundLogo = new DLabel(this);
-    backgroundLogo->setPixmap(QIcon::fromTheme("backgroundLogo").pixmap(128));
+    backgroundLogo->setPixmap(DIconTheme::findQIcon("backgroundLogo").pixmap(128));
 
     logo = new DLabel(backgroundLogo);
-    logo->setPixmap(QIcon::fromTheme("logo").pixmap(128));
+    logo->setPixmap(DIconTheme::findQIcon("logo").pixmap(128));
 
     QHBoxLayout *hlayout = new QHBoxLayout;
     hlayout->addWidget(logo);

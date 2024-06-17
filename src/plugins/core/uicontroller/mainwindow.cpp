@@ -7,6 +7,7 @@
 #include <DTitlebar>
 #include <DStatusBar>
 #include <DToolBar>
+#include <DIconTheme>
 
 #include <QHBoxLayout>
 using dpfservice::Position;
@@ -56,9 +57,9 @@ MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(parent), d(new MainWindowPrivate)
 {
     titlebar()->setTitle("Deepin Union Code");
-    titlebar()->setIcon(QIcon::fromTheme("ide"));
+    titlebar()->setIcon(DIconTheme::findQIcon("ide"));
 
-    setWindowIcon(QIcon::fromTheme("ide"));
+    setWindowIcon(DIconTheme::findQIcon("ide"));
     setAttribute(Qt::WA_DeleteOnClose);
 
     addTopToolBar();
@@ -193,7 +194,7 @@ void MainWindow::initDockHeader(DDockWidget *dock, dpfservice::Position pos)
 
     auto closeBtn = new DToolButton(dock);
     closeBtn->setCheckable(true);
-    closeBtn->setIcon(QIcon::fromTheme("hide_dock"));
+    closeBtn->setIcon(DIconTheme::findQIcon("hide_dock"));
     closeBtn->setToolTip(tr("Hide Dock Widget"));
 
     addToolBtnToDockHeader(d->dockList.key(dock), closeBtn);

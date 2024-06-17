@@ -12,6 +12,7 @@
 #include "Qsci/qscistyledtext.h"
 
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QFile>
 #include <QToolTip>
@@ -82,7 +83,7 @@ void TextEditor::save()
 
     if (!file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate)) {
         DDialog dialog;
-        dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+        dialog.setIcon(DIconTheme::findQIcon("dialog-warning"));
         dialog.setWindowTitle(tr("Save File"));
         QString msg(tr("The file \"%1\" has no write permission. Please add write permission and try again"));
         dialog.setMessage(msg.arg(d->fileName));

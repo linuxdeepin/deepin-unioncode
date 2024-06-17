@@ -12,6 +12,7 @@
 
 #include <DLabel>
 #include <DToolButton>
+#include <DIconTheme>
 
 #include <QStackedLayout>
 
@@ -53,11 +54,11 @@ void NotificationCenterWidgetPrivate::initUI()
     QLabel *titleLabel = new QLabel(NotificationCenterWidget::tr("Notification"), q);
     hideBtn = new DToolButton(q);
     hideBtn->setIconSize({ 16, 16 });
-    hideBtn->setIcon(QIcon::fromTheme("hide"));
+    hideBtn->setIcon(DIconTheme::findQIcon("hide"));
 
     clearBtn = new DToolButton(q);
     clearBtn->setIconSize({ 16, 16 });
-    clearBtn->setIcon(QIcon::fromTheme("clear_history"));
+    clearBtn->setIcon(DIconTheme::findQIcon("clear_history"));
 
     QHBoxLayout *titleLayout = new QHBoxLayout;
     titleLayout->setContentsMargins(10, 0, 10, 0);

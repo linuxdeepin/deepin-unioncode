@@ -19,11 +19,13 @@
 #include "framework/listener/listener.h"
 
 #include <DToolButton>
+#include <DIconTheme>
 
 static QStringList generalKits {};
 
 using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 void OptionCore::initialize()
 {
     auto &ctx = dpfInstance.serviceContext();
@@ -64,7 +66,7 @@ bool OptionCore::start()
 
     if (windowService && windowService->addAction) {
         auto actionOptions = new QAction(MWMTA_OPTIONS, this);
-        actionOptions->setIcon(QIcon::fromTheme("options_setting"));
+        actionOptions->setIcon(DIconTheme::findQIcon("options_setting"));
         auto actionOptionsImpl = new AbstractAction(actionOptions, this);
         actionOptionsImpl->setShortCutInfo("Tools.Options",
                                            MWMTA_OPTIONS,

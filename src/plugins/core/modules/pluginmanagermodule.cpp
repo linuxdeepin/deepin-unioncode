@@ -10,6 +10,8 @@
 #include "uicontroller/controller.h"
 #include "gui/pluginsui.h"
 
+#include <DIconTheme>
+
 #include <QAction>
 
 using namespace dpfservice;
@@ -32,7 +34,7 @@ void PluginManagerModule::initialize(Controller *_uiController)
     AbstractModule::initialize(_uiController);
 
     QAction *pluginManagerAction = new QAction(MWMTA_PLUGINS, this);
-    pluginManagerAction->setIcon(QIcon::fromTheme("plugins-navigation"));
+    pluginManagerAction->setIcon(DIconTheme::findQIcon("plugins-navigation"));
     ActionManager::getInstance()->registerAction(
             pluginManagerAction, "Help.AboutPlugins", MWM_ABOUT_PLUGINS, QKeySequence());
 

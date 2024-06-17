@@ -34,6 +34,7 @@
 #include <DDialog>
 #include <DLineEdit>
 #include <DSplitter>
+#include <DIconTheme>
 
 #include <QDateTime>
 #include <QTextBlock>
@@ -248,7 +249,7 @@ void DAPDebugger::attachDebug(const QString &processId)
         qWarning() << "can`t attaching to debugee when debuging other application";
         DDialog dialog;
         dialog.setMessage(tr("can`t attaching to debugee when debuging other application"));
-        dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+        dialog.setIcon(DIconTheme::findQIcon("dialog-warning"));
         dialog.addButton(tr("Cancel"));
         dialog.exec();
         return;
@@ -955,7 +956,7 @@ QHBoxLayout *DAPDebugger::initFrameTitle(const QString &frameName)
 
     DPushButton *arrow = new DPushButton();
     arrow->setFocusPolicy(Qt::NoFocus);
-    arrow->setIcon(QIcon::fromTheme("go-down"));
+    arrow->setIcon(DIconTheme::findQIcon("go-down"));
     arrow->setFixedSize(QSize(18, 18));
     arrow->setIconSize(QSize(8, 8));
     arrow->setFlat(true);

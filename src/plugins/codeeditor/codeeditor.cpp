@@ -25,6 +25,7 @@
 
 #include <DButtonBox>
 #include <DToolButton>
+#include <DIconTheme>
 
 #include <QAction>
 #include <QSplitter>
@@ -82,7 +83,7 @@ void CodeEditor::initButtonBox()
         return;
 
     DToolButton *backBtn = new DToolButton(workspaceWidget);
-    backBtn->setIcon(QIcon::fromTheme("edit-back"));
+    backBtn->setIcon(DIconTheme::findQIcon("edit-back"));
     backBtn->setToolTip(tr("backward"));
     backBtn->setFixedSize(36, 36);
     connect(backBtn, &DToolButton::clicked, [=]() {
@@ -90,7 +91,7 @@ void CodeEditor::initButtonBox()
     });
 
     DToolButton *forwardBtn = new DToolButton(workspaceWidget);
-    forwardBtn->setIcon(QIcon::fromTheme("edit-forward"));
+    forwardBtn->setIcon(DIconTheme::findQIcon("edit-forward"));
     forwardBtn->setToolTip(tr("forward"));
     forwardBtn->setFixedSize(36, 36);
     connect(forwardBtn, &DButtonBoxButton::clicked, [=]() {
@@ -184,7 +185,7 @@ void CodeEditor::initWindowService()
     using namespace std::placeholders;
     if (windowService) {
         QAction *action = new QAction(MWNA_EDIT, this);
-        action->setIcon(QIcon::fromTheme("edit-navigation"));
+        action->setIcon(DIconTheme::findQIcon("edit-navigation"));
         windowService->addNavigationItem(new AbstractAction(action), Priority::high);
 
         windowService->registerWidgetToMode("editWindow", new AbstractWidget(workspaceWidget), CM_EDIT, Position::Central, true, true);

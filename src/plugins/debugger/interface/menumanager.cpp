@@ -12,8 +12,11 @@
 #include "services/window/windowservice.h"
 #include "remotedebug/remotedebugdlg.h"
 
+#include <DIconTheme>
+
 #include <QMenu>
 
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 MenuManager::MenuManager(QObject *parent) : QObject(parent)
 {
@@ -26,7 +29,7 @@ void MenuManager::initialize(WindowService *windowService)
 
     auto initAction = [&](QAction *action, const QString &id, const QString &description,
             QKeySequence key, const QString &iconName) -> AbstractAction*{
-        action->setIcon(QIcon::fromTheme(iconName));
+        action->setIcon(DIconTheme::findQIcon(iconName));
         auto actionImpl = new AbstractAction(action, this);
         actionImpl->setShortCutInfo(id, description, key);
         return actionImpl;

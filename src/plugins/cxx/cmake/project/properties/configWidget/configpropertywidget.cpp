@@ -11,6 +11,7 @@
 #include <DSplitter>
 #include <DPushButton>
 #include <DFrame>
+#include <DIconTheme>
 
 #include <QStyleFactory>
 #include <QVBoxLayout>
@@ -30,7 +31,7 @@ ConfigPropertyWidget::ConfigPropertyWidget(const QString &language,
     , d(new ConfigPropertyWidgetPrivate())
 {
     setWindowTitle(tr("Config"));
-    setIcon(QIcon::fromTheme("ide"));
+    setIcon(DIconTheme::findQIcon("ide"));
 
     auto mainFrame = new DWidget(this);
     addContent(mainFrame);

@@ -13,8 +13,11 @@
 #include "base/abstractmenu.h"
 #include "base/abstractwidget.h"
 
+#include <DIconTheme>
+
 #include <QMenu>
 
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 inline constexpr char mainWindow[] = "debugMainWindow";
 inline constexpr char localsPane[] = "debuggerWatcher";
@@ -48,7 +51,7 @@ bool DebuggerPlugin::start()
 
     if (windowService->addNavigationItem) {
         QAction *action = new QAction(MWNA_DEBUG, this);
-        action->setIcon(QIcon::fromTheme("debug-navigation"));
+        action->setIcon(DIconTheme::findQIcon("debug-navigation"));
         windowService->addNavigationItem(new AbstractAction(action), Priority::high);
         windowService->registerWidgetToMode(mainWindow, new AbstractWidget(debugManager->getDebugMainPane()), CM_DEBUG, Position::Left, true, true);
         windowService->setDockHeaderName(mainWindow, tr("debug"));

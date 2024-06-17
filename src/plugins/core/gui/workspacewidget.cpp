@@ -9,6 +9,7 @@
 #include <DStyle>
 #include <DStackedWidget>
 #include <DPushButton>
+#include <DIconTheme>
 
 inline constexpr int kMinimumWidth = { 100 };
 
@@ -58,7 +59,7 @@ void WorkspaceWidget::addWorkspaceWidget(const QString &title, AbstractWidget *t
     tabBtn->setCheckable(true);
     tabBtn->setChecked(false);
     tabBtn->setToolTip(title);
-    tabBtn->setIcon(QIcon::fromTheme(iconName));
+    tabBtn->setIcon(DIconTheme::findQIcon(iconName));
     tabBtn->setMinimumSize(QSize(24, 24));
     tabBtn->setIconSize(QSize(16, 16));
     tabBtn->setFocusPolicy(Qt::NoFocus);

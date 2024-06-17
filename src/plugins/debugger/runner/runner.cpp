@@ -17,12 +17,14 @@
 
 #include <DComboBox>
 #include <DGuiApplicationHelper>
+#include <DIconTheme>
 
 #include <QMenu>
 #include <QTextBlock>
 #include <QLineEdit>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 
 class RunnerPrivate
@@ -42,7 +44,7 @@ Runner::Runner(QObject *parent)
     connect(debuggerSignals, &DebuggerSignals::receivedEvent, this, &Runner::handleEvents);
 
     d->runAction.reset(new QAction(MWMDA_RUNNING));
-    d->runAction.get()->setIcon(QIcon::fromTheme("run"));
+    d->runAction.get()->setIcon(DIconTheme::findQIcon("run"));
     connect(d->runAction.get(), &QAction::triggered, this, &Runner::run);
 
     auto actionImpl = new AbstractAction(d->runAction.get(), this);
@@ -137,7 +139,7 @@ void Runner::handleEvents(const dpf::Event &event)
         auto programs = projectInfo.exePrograms();
         d->runProgram->clear();
         for (auto program : programs)
-            d->runProgram->addItem(QIcon::fromTheme("run"), program);
+            d->runProgram->addItem(DIconTheme::findQIcon("run"), program);
         d->runProgram->setCurrentText(projectInfo.currentProgram());
     }
 }

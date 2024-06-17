@@ -14,13 +14,14 @@
 #include <DPushButton>
 #include <DTabWidget>
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QHBoxLayout>
 
 #include <iostream>
 
 DWIDGET_USE_NAMESPACE
-
+DGUI_USE_NAMESPACE
 class CommentConfigWidgetPrivate
 {
     DFrame *btnFrame = nullptr;
@@ -104,7 +105,7 @@ void CommentConfigWidget::initConnections()
             DDialog dialog;
             dialog.setMessage(tr("Are you sure to delete this group?"));
             dialog.setWindowTitle(tr("Delete Warining"));
-            dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+            dialog.setIcon(DIconTheme::findQIcon("dialog-warning"));
             dialog.insertButton(0, tr("Ok"));
             dialog.insertButton(1, tr("Cancel"));
             if (dialog.exec() == 0) 
@@ -113,7 +114,7 @@ void CommentConfigWidget::initConnections()
             DDialog dialog;
             dialog.setMessage(tr("You can't delete the last group!"));
             dialog.setWindowTitle(tr("Delete Warining"));
-            dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+            dialog.setIcon(DIconTheme::findQIcon("dialog-warning"));
             dialog.insertButton(0, tr("Ok"));
             dialog.exec();
         }

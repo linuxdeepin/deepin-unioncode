@@ -10,9 +10,12 @@
 #include "mainframe/recentdisplay.h"
 #include "transceiver/recentreceiver.h"
 
+#include <DIconTheme>
+
 #include <QAction>
 #include <QLabel>
 
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 
 void Recent::initialize()
@@ -33,7 +36,7 @@ bool Recent::start()
                          RecentDisplay::instance(), &RecentDisplay::addDocument);
 
         QAction *action = new QAction(MWNA_RECENT, this);
-        action->setIcon(QIcon::fromTheme("recent-navigation"));
+        action->setIcon(DIconTheme::findQIcon("recent-navigation"));
         windowService->addNavigationItem(new AbstractAction(action), Priority::highest);
 
         auto recentWidgetImpl = new AbstractWidget(RecentDisplay::instance());

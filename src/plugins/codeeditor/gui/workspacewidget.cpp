@@ -10,6 +10,7 @@
 #include "base/abstractaction.h"
 
 #include <DDialog>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QVariant>
@@ -175,7 +176,7 @@ int WorkspaceWidgetPrivate::showFileChangedConfirmDialog(const QString &fileName
     buttonTexts.append(tr("No To All", "button"));
     buttonTexts.append(tr("Close", "button"));
 
-    d.setIcon(QIcon::fromTheme("ide"));
+    d.setIcon(DIconTheme::findQIcon("ide"));
     d.setTitle(title);
     d.setMessage(message);
     d.addButton(buttonTexts[0]);
@@ -205,7 +206,7 @@ int WorkspaceWidgetPrivate::showFileRemovedConfirmDialog(const QString &fileName
     buttonTexts.append(tr("Close", "button"));
     buttonTexts.append(tr("Close All", "button"));
 
-    d.setIcon(QIcon::fromTheme("ide"));
+    d.setIcon(DIconTheme::findQIcon("ide"));
     d.setTitle(title);
     d.setMessage(message);
     d.addButton(buttonTexts[0]);

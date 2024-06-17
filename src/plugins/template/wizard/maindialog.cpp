@@ -18,6 +18,7 @@
 #include <DSuggestButton>
 #include <DButtonBox>
 #include <DFrame>
+#include <DIconTheme>
 
 #include <QStandardItemModel>
 #include <QDebug>
@@ -28,6 +29,7 @@
 const int widthPerBtn = 93;
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 using namespace dpfservice;
 
 class MainDialogPrivate
@@ -59,7 +61,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
 {
     DTitlebar *titleBar = new DTitlebar(this);
     titleBar->setMenuVisible(false);
-    titleBar->setIcon(QIcon::fromTheme("ide"));
+    titleBar->setIcon(DIconTheme::findQIcon("ide"));
 
     DButtonBoxButton *newFileButton = new DButtonBoxButton(QObject::tr("New File"), this);
     DButtonBoxButton *newProjectButton = new DButtonBoxButton(QObject::tr("New Project"), this);

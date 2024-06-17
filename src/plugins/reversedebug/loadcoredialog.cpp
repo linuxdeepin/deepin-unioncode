@@ -11,11 +11,13 @@
 #include <DFileDialog>
 #include <DSuggestButton>
 #include <DStyle>
+#include <DIconTheme>
 
 #include <QFormLayout>
 #include <QDir>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 namespace ReverseDebugger {
 namespace Internal {
 
@@ -32,7 +34,7 @@ LoadCoreDialog::LoadCoreDialog(QWidget *parent)
       d(new StartCoredumpDialogPrivate)
 {
     setWindowTitle(tr("Event Debugger Configure"));
-    setIcon(QIcon::fromTheme("ide"));
+    setIcon(DIconTheme::findQIcon("ide"));
 
     setupUi();
 }

@@ -11,6 +11,7 @@
 #include <DDialog>
 #include <DDesktopServices>
 #include <DGuiApplicationHelper>
+#include <DIconTheme>
 
 #include <QSignalBlocker>
 #include <QFileInfo>
@@ -19,7 +20,7 @@
 #include <QGuiApplication>
 
 DWIDGET_USE_NAMESPACE
-
+DGUI_USE_NAMESPACE
 TabBarPrivate::TabBarPrivate(TabBar *qq)
     : QObject(qq),
       q(qq)
@@ -34,11 +35,11 @@ void TabBarPrivate::initUI()
     tabBar->setEnabledEmbedStyle(true);
     tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
     hSplitBtn = new DToolButton(q);
-    hSplitBtn->setIcon(QIcon::fromTheme("edit-hSplit"));
+    hSplitBtn->setIcon(DIconTheme::findQIcon("edit-hSplit"));
     vSplitBtn = new DToolButton(q);
-    vSplitBtn->setIcon(QIcon::fromTheme("edit-vSplit"));
+    vSplitBtn->setIcon(DIconTheme::findQIcon("edit-vSplit"));
     closeBtn = new DToolButton(q);
-    closeBtn->setIcon(QIcon::fromTheme("edit-closeBtn"));
+    closeBtn->setIcon(DIconTheme::findQIcon("edit-closeBtn"));
 
     QHBoxLayout *mainLayout = new QHBoxLayout(q);
     
@@ -219,7 +220,7 @@ void TabBar::removeTab(const QString &fileName)
     if (info.exists() && text.length() > 0 && text.at(0) == "*") {
         DDialog dialog(this);
         dialog.setWindowTitle(tr("Save Changes"));
-        dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+        dialog.setIcon(DIconTheme::findQIcon("dialog-warning"));
         dialog.setMessage(tr("The file has unsaved changes, will save?"));
         dialog.addButton(tr("Save", "button"), true, DDialog::ButtonRecommend);
         dialog.addButton(tr("Do Not Save", "button"));

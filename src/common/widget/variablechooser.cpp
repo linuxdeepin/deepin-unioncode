@@ -7,6 +7,7 @@
 #include "util/macroexpander.h"
 
 #include <DIconButton>
+#include <DIconTheme>
 #include <DSearchEdit>
 #include <DGuiApplicationHelper>
 
@@ -118,7 +119,7 @@ VariableChooserPrivate::VariableChooserPrivate(VariableChooser *qq)
 void VariableChooserPrivate::initUI()
 {
     q->setWindowTitle(VariableChooser::tr("Variables"));
-    q->setIcon(QIcon::fromTheme("ide"));
+    q->setIcon(DIconTheme::findQIcon("ide"));
     q->setFixedSize(400, 500);
 
     QWidget *widget = new QWidget(q);
@@ -143,7 +144,7 @@ void VariableChooserPrivate::initUI()
     iconButton = new DIconButton(q);
     iconButton->setFlat(true);
     iconButton->setIconSize({ 24, 24 });
-    iconButton->setIcon(QIcon::fromTheme("binarytools_default"));
+    iconButton->setIcon(DIconTheme::findQIcon("binarytools_default"));
     iconButton->setToolTip(VariableChooser::tr("Insert Variable"));
     iconButton->hide();
     iconButton->setCursor(Qt::ArrowCursor);

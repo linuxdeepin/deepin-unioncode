@@ -9,6 +9,7 @@
 #include <DApplication>
 #include <DHorizontalLine>
 #include <DGuiApplicationHelper>
+#include <DIconTheme>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -263,12 +264,12 @@ void CodeEditComponent::initTitleWidgets()
 void CodeEditComponent::initButton()
 {
     copyButton = new DToolButton(this);
-    copyButton->setIcon(QIcon::fromTheme("codegeex_copy"));
+    copyButton->setIcon(DIconTheme::findQIcon("codegeex_copy"));
     copyButton->setFixedSize(QSize(24, 24));
     copyButton->setToolTip(tr("Copy"));
 
     insertButton = new DToolButton(this);
-    insertButton->setIcon(QIcon::fromTheme("codegeex_insert"));
+    insertButton->setIcon(DIconTheme::findQIcon("codegeex_insert"));
     insertButton->setFixedSize(QSize(24, 24));
     insertButton->setToolTip(tr("Insert into code area"));
 }

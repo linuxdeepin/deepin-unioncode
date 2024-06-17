@@ -8,6 +8,7 @@
 #include "common/util/custompaths.h"
 
 #include <DStandardItem>
+#include <DIconTheme>
 
 #include <QStandardItemModel>
 #include <QDir>
@@ -60,9 +61,9 @@ void PluginListView::display()
             QString pluginLogoPath = pluginPath + QDir::separator() + pluginName + ".svg";
             QIcon pluginLogo;
             if (QFile::exists(pluginLogoPath)) {
-                pluginLogo = QIcon::fromTheme(pluginLogoPath);
+                pluginLogo = DIconTheme::findQIcon(pluginLogoPath);
             } else {
-                pluginLogo = QIcon::fromTheme("default_plugin");
+                pluginLogo = DIconTheme::findQIcon("default_plugin");
             }
 
             auto rowItem = new DStandardItem(pluginLogo, pluginName);

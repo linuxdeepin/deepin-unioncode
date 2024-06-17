@@ -4,13 +4,17 @@
 
 #include "task.h"
 
+#include <DIconTheme>
+
+DGUI_USE_NAMESPACE
+
 unsigned int Task::s_nextId = 1;
 
 static QIcon taskTypeIcon(Task::TaskType t)
 {
     static QIcon icons[3] = {QIcon(),
-                             QIcon::fromTheme("error"),
-                             QIcon::fromTheme("warning")};
+                             DIconTheme::findQIcon("error"),
+                             DIconTheme::findQIcon("warning")};
 
     if (t < 0 || t > 2)
         t = Task::Unknown;

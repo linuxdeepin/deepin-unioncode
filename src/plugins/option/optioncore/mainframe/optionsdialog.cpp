@@ -11,6 +11,7 @@
 #include <DFrame>
 #include <DBackgroundGroup>
 #include <DSuggestButton>
+#include <DIconTheme>
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
 #include <DPaletteHelper>
 #endif
@@ -26,7 +27,7 @@
 static const int labelHeight = 30;
 
 using namespace dpfservice;
-
+DGUI_USE_NAMESPACE
 OptionsDialog::OptionsDialog(QWidget *parent)
     : DAbstractDialog(parent)
 {
@@ -112,7 +113,7 @@ void OptionsDialog::setupUi()
     DTitlebar *titlebar = new DTitlebar(this);
     titlebar->setMenuVisible(false);
     titlebar->setTitle(tr("Global Options"));
-    titlebar->setIcon(QIcon::fromTheme("ide"));
+    titlebar->setIcon(DIconTheme::findQIcon("ide"));
 
     QVBoxLayout *title = new QVBoxLayout(this);
     title->setContentsMargins(0, 0, 0, 0);
