@@ -21,6 +21,16 @@ void SendEvents::projectDeleted(const dpfservice::ProjectInfo &info)
     project.deletedProject(info);
 }
 
+void SendEvents::projectNodeExpanded(const QModelIndex &index)
+{
+    project.projectNodeExpanded(index);
+}
+
+void SendEvents::projectNodeCollapsed(const QModelIndex &index)
+{
+    project.projectNodeCollapsed(index);
+}
+
 void SendEvents::collaboratorsOpenRepos(const QString &workspace)
 {
     dpf::Event event;

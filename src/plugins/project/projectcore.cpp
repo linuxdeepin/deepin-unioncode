@@ -123,6 +123,9 @@ bool ProjectCore::start()
         if (!projectService->updateProjectInfo) {
             projectService->updateProjectInfo = std::bind(&ProjectTree::updateProjectInfo, treeView, _1);
         }
+        if (!projectService->expandItemByFile) {
+            projectService->expandItemByFile = std::bind(&ProjectTree::expandItemByFile, treeView, _1);
+        }
     }
 
     //init locator
