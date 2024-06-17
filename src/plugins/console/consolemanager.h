@@ -10,6 +10,7 @@
 class ConsoleManagerPrivate;
 class ConsoleManager : public QWidget
 {
+    Q_OBJECT
 public:
     ConsoleManager(QWidget *parent = nullptr);
     ~ConsoleManager();
@@ -19,6 +20,12 @@ public:
 
 private:
     void initDefaultConsole();
+    void initUI();
+    void initConnection();
+    void appendConsole();
+    void removeConsole();
+    void switchConsole(const QModelIndex &index);
+    void showDialog(const QString &msg);
     void showEvent(QShowEvent *event) override;
 
     ConsoleManagerPrivate *d;
