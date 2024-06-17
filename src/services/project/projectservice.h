@@ -161,6 +161,12 @@ public:
      */
     DPF_INTERFACE(bool, updateProjectInfo, ProjectInfo &projectInfo);
 
+    /*!
+     * \brief expandItemByFile
+     * \param filepath
+     */
+    DPF_INTERFACE(void, expandItemByFile, const QStringList &filePaths);
+
     /**
      * @brief getActiveProjectInfo
      */

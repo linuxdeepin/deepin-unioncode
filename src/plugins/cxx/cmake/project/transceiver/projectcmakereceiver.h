@@ -43,6 +43,8 @@ signals:
     void buildExecuteEnd(const BuildCommandInfo &commandInfo, int status = 0);
     void fileDeleted(const QString &filePath);
     void openProjectPropertys(const dpfservice::ProjectInfo &prjInfo);
+    void nodeExpanded(const QString &filePath);
+    void nodeCollapsed(const QString &filePath);
 
 private:
     QString buildCommandUuid;
