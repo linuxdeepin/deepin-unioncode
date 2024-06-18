@@ -180,7 +180,7 @@ public:
     static QAction *rangeFormattingAction;
     static QString formattingFile;
     QString diagnosticFormat;
-    newlsp::Client *lspClient { nullptr };
+    newlsp::ProjectKey prjectKey;
 
     friend class StyleLsp;
 };

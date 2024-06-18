@@ -79,6 +79,11 @@ OutputDocumentFind::OutputDocumentFind(OutputPane *parent)
     d->textEdit = parent->edit();
 }
 
+OutputDocumentFind::~OutputDocumentFind()
+{
+    delete d;
+}
+
 QString OutputDocumentFind::findString() const
 {
     QTextCursor cursor = d->textCursor();
