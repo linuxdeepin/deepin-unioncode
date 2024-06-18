@@ -6,7 +6,6 @@
 
 #include <DLineEdit>
 #include <DComboBox>
-#include <DIconTheme>
 #include <DHeaderView>
 #include <DPushButton>
 
@@ -52,8 +51,7 @@ void AttachInfoDialog::initUi()
     view->verticalHeader()->hide();
     view->setEditTriggers(QAbstractItemView::NoEditTriggers);
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
-
-    setIcon(DTK_GUI_NAMESPACE::DIconTheme::findQIcon("ide"));
+    setIcon(QIcon::fromTheme("ide"));
     insertContent(0, widget);
     insertContent(1, view);
 
