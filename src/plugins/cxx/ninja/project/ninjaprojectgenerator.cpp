@@ -130,6 +130,10 @@ void NinjaProjectGenerator::doProjectChildsModified(const QList<QStandardItem *>
         while (rootItem->hasChildren()) {
             rootItem->takeRow(0);
         }
+        for (auto &item : items) {
+            item->setIcon(CustomIcons::icon(item->toolTip()));
+        }
+
         rootItem->appendRows(items);
     }
     rootItem->setData(ParsingState::Done, Parsing_State_Role);
