@@ -31,15 +31,6 @@ if ((NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "sw_64")
 #    set(CMAKE_L_FLAGS "-fsanitize=thread")
 endif()
 
-# Setup install paths
-#   /usr/bin/dde-file-manager
-#       execute bin file
-#   /usr/lib/x86_64-linux-gnu/dde-file-manager
-#       dir plugins && dir tools abv thumbnail
-#   /usr/include/dde-file-manager
-#       public *.h && private dir *.h
-#   /usr/share/dde-file-manager
-#       subdir"database  mimetypeassociations  mimetypes  templates  translations"
 set(LIBRARY_INSTALL_PREFIX "/usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}/${PROJECT_NAME}")
 
 #set(ARCHIVE_INSTALL_RPEFIX "") undefined the static lib archive
@@ -66,7 +57,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE}
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/${CMAKE_BUILD_TYPE})
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
-# if no debug, can't out in code define key '__FUNCTION__' and so on
 add_definitions(-DQT_MESSAGELOGCONTEXT)
 
 # Setup the environment
@@ -105,17 +95,12 @@ foreach(QtModule ${QtFindModules})
     message("QtModule found ${QtModule} OK!")
 endforeach()
 
-# Use PkgConfig modules
-# You can setting mini version for "glib-2.0>=2.10 gtk+-2.0" in the list
 set(PkgConfigFindModules)
 include(FindPkgConfig)
 foreach(PkgConfigModule ${PkgConfigFindModules})
     pkg_check_modules(PkgUseModuleVal REQUIRED ${PkgConfigModule})
-    #can use target_link_libraries(xxx ${PkgUseModule})
     list(APPEND PkgUseModules ${PkgUseModuleVal_LDFLAGS})
     include_directories(${PkgUseModuleVal_INCLUDE_DIRS})
-    #    link_libraries(${PkgUseModuleVal_LIBRARIES})
-    #    link_directories(${PkgUseModuleVal_LINK_LIBRARIES})
 endforeach(PkgConfigModule)
 
 include_directories(${PROJECT_SOURCE_DIR}/src)
