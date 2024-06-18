@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "searcreplacehworker.h"
-#include "searchplaceworker_p.h"
+#include "searchreplaceworker.h"
+#include "searchreplaceworker_p.h"
 
 #include "common/util/qtcassert.h"
 
@@ -50,7 +50,6 @@ void SearchReplaceWorkerPrivate::startNextJob()
         process->write(job.channelData.toUtf8());
         process->closeWriteChannel();
     }
-    process->waitForFinished(-1);
 }
 
 void SearchReplaceWorkerPrivate::createSearchJob(const SearchParams &params)
@@ -308,6 +307,4 @@ void SearchReplaceWorker::processDone(int jobType)
         Q_EMIT searchFinished();
     else
         Q_EMIT replaceFinished(d->process->exitCode());
-
-    d->process.reset();
 }

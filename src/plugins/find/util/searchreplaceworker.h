@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef SEARCREPLACEHWORKER_H
-#define SEARCREPLACEHWORKER_H
+#ifndef SEARCHREPLACEWORKER_H
+#define SEARCHREPLACEWORKER_H
 
 #include "constants.h"
 
@@ -39,4 +39,4 @@ private:
     SearchReplaceWorkerPrivate *const d;
 };
 
-#endif   // SEARCREPLACEHWORKER_H
+#endif   // SEARCHREPLACEWORKER_H

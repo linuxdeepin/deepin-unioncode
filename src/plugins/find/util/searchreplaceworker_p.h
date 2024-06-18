@@ -2,10 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef SEARCHPLACEWORKER_P_H
-#define SEARCHPLACEWORKER_P_H
+#ifndef SEARCHREPLACEWORKER_P_H
+#define SEARCHREPLACEWORKER_P_H
 
-#include "searcreplacehworker.h"
+#include "searchreplaceworker.h"
 
 #include "services/editor/editorservice.h"
 
@@ -64,4 +64,4 @@ public:
     int currentJob = 0;
 };
 
-#endif   // SEARCHPLACEWORKER_P_H
+#endif   // SEARCHREPLACEWORKER_P_H
