@@ -13,9 +13,9 @@
 
 class NinjaAsynParsePrivate
 {
-    friend  class NinjaAsynParse;
+    friend class NinjaAsynParse;
     QDomDocument xmlDoc;
-    QThread *thread {nullptr};
+    QThread *thread { nullptr };
     QString rootPath;
     QList<QStandardItem *> rows {};
 };
@@ -82,7 +82,7 @@ void NinjaAsynParse::createRows(const QString &path)
     d->rootPath = rootPath;
     QFileSystemWatcher::addPath(d->rootPath);
 
-    {// 避免变量冲突 迭代文件夹
+    {   // 避免变量冲突 迭代文件夹
         QDir dir;
         dir.setPath(rootPath);
         dir.setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
@@ -92,19 +92,16 @@ void NinjaAsynParse::createRows(const QString &path)
             QString childPath = dirItera.next().remove(0, rootPath.size());
             QFileSystemWatcher::addPath(dirItera.filePath());
             QStandardItem *item = findItem(childPath);
-            QMetaObject::invokeMethod(this, [&](){
-                QIcon icon = CustomIcons::icon(dirItera.fileInfo());
-                auto newItem = new QStandardItem(icon, dirItera.fileName());
-                newItem->setToolTip(dirItera.filePath());
-                if (!item) {
-                    d->rows.append(newItem);
-                } else {
-                    item->appendRow(newItem);
-                }
-            });
+            auto newItem = new QStandardItem(dirItera.fileName());
+            newItem->setToolTip(dirItera.filePath());
+            if (!item) {
+                d->rows.append(newItem);
+            } else {
+                item->appendRow(newItem);
+            }
         }
     }
-    {// 避免变量冲突 迭代文件
+    {   // 避免变量冲突 迭代文件
         QDir dir;
         dir.setPath(rootPath);
         dir.setFilter(QDir::NoDotAndDotDot | QDir::Files);
@@ -113,17 +110,13 @@ void NinjaAsynParse::createRows(const QString &path)
         while (fileItera.hasNext()) {
             QString childPath = fileItera.next().remove(0, rootPath.size());
             QStandardItem *item = findItem(childPath);
-            // run in main thread.
-            QMetaObject::invokeMethod(this, [&](){
-                QIcon icon = CustomIcons::icon(fileItera.fileInfo());
-                auto newItem = new QStandardItem(icon, fileItera.fileName());
-                newItem->setToolTip(fileItera.filePath());
-                if (!item) {
-                    d->rows.append(newItem);
-                } else {
-                    item->appendRow(newItem);
-                }
-            });
+            auto newItem = new QStandardItem(fileItera.fileName());
+            newItem->setToolTip(fileItera.filePath());
+            if (!item) {
+                d->rows.append(newItem);
+            } else {
+                item->appendRow(newItem);
+            }
         }
     }
 }
@@ -138,7 +131,7 @@ QList<QStandardItem *> NinjaAsynParse::rows(const QStandardItem *item) const
 }
 
 QStandardItem *NinjaAsynParse::findItem(const QString &path,
-                                         QStandardItem *parent) const
+                                        QStandardItem *parent) const
 {
     QString pathTemp = path;
     if (pathTemp.endsWith(QDir::separator())) {
@@ -157,7 +150,7 @@ QStandardItem *NinjaAsynParse::findItem(const QString &path,
     QStringList splitPaths = pathTemp.split(QDir::separator());
     QString name = splitPaths.takeFirst();
 
-    QList<QStandardItem*> currRows{};
+    QList<QStandardItem *> currRows {};
     if (parent) {
         currRows = rows(parent);
     } else {
