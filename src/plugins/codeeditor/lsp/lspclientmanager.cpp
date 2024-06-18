@@ -14,8 +14,7 @@ LSPClientManager::LSPClientManager()
 
 LSPClientManager::~LSPClientManager()
 {
-    if (client)
-        delete client;
+    qDeleteAll(clientHash.values());
 }
 
 LSPClientManager *LSPClientManager::instance()
@@ -29,20 +28,17 @@ newlsp::Client *LSPClientManager::get(const newlsp::ProjectKey &key)
     if (!key.isValid())
         return nullptr;
 
-    if (client) {
-        qApp->metaObject()->invokeMethod(client, "selectLspServer", Q_ARG(const newlsp::ProjectKey &, key));
+    if (clientHash.contains(key)) {
+        qApp->metaObject()->invokeMethod(clientHash[key], "selectLspServer", Q_ARG(const newlsp::ProjectKey &, key));
     } else {
-        client = new newlsp::Client();
+        auto client = new newlsp::Client();
         qApp->metaObject()->invokeMethod(client, "selectLspServer", Q_ARG(const newlsp::ProjectKey &, key));
-    }
-
-    if (!projectKeys.contains(key)) {
         QString complieDB_Path = QString::fromStdString(key.workspace) + QDir::separator() + ".unioncode";
         qApp->metaObject()->invokeMethod(client, "initRequest", Q_ARG(const QString &, complieDB_Path));
-        projectKeys.append(key);
+        clientHash.insert(key, client);
     }
 
-    return client;
+    return clientHash[key];
 }
 
 QColor LSPClientManager::highlightColor(const QString &langId, lsp::SemanticTokenType::type_value token)

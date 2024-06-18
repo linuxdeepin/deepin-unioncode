@@ -194,6 +194,11 @@ EditorDocumentFind::EditorDocumentFind(QObject *parent)
 {
 }
 
+EditorDocumentFind::~EditorDocumentFind()
+{
+    delete d;
+}
+
 QString EditorDocumentFind::findString() const
 {
     auto w = d->autoAdjustCurrentEditor();

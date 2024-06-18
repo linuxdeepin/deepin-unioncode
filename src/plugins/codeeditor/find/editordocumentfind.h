@@ -14,6 +14,7 @@ class EditorDocumentFind : public AbstractDocumentFind
     Q_OBJECT
 public:
     explicit EditorDocumentFind(QObject *parent = nullptr);
+    ~EditorDocumentFind();
 
     virtual QString findString() const override;
     virtual void findNext(const QString &txt) override;
