@@ -20,9 +20,7 @@ private:
     explicit LSPClientManager();
     ~LSPClientManager();
 
-    QList<newlsp::ProjectKey> projectKeys;
-    newlsp::Client *client { nullptr };
-
+    QHash<newlsp::ProjectKey, newlsp::Client *> clientHash;
     QMap<QString, StyleSettings> styleMap;
 };
 
