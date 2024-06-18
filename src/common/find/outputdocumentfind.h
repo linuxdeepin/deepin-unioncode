@@ -14,6 +14,7 @@ class OutputDocumentFind : public AbstractDocumentFind
     Q_OBJECT
 public:
     explicit OutputDocumentFind(OutputPane *parent);
+    ~OutputDocumentFind();
 
     virtual QString findString() const override;
     virtual void findNext(const QString &txt) override;
