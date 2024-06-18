@@ -17,7 +17,7 @@ add_library(${PROJECT_NAME}
     ${PROJECT_SOURCES}
     ${QT_THEME}
     find.qrc
-    )
+)
 
 target_link_libraries(${PROJECT_NAME}
     framework

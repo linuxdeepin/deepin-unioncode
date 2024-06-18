@@ -4,7 +4,7 @@
 
 #include "findtoolwindow.h"
 #include "searchresultwindow.h"
-#include "util/searcreplacehworker.h"
+#include "util/searchreplaceworker.h"
 
 #include "services/project/projectservice.h"
 #include "services/editor/editorservice.h"
