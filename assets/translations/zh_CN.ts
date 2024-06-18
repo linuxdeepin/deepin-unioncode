@@ -5279,7 +5279,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/texteditor.cpp" line="87"/>
         <source>The file &quot;%1&quot; has no write permission. Please add write permission and try again</source>
-        <translation>文件“% 1”没有写权限。请添加写权限并重试</translation>
+        <translation>文件“%1”没有写权限。请添加写权限并重试</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/texteditor.cpp" line="89"/>
