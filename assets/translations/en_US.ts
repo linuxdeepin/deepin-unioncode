@@ -168,37 +168,37 @@
 <context>
     <name>AttachInfoDialog</name>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="37"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="36"/>
         <source>debugger:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="38"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="37"/>
         <source>filter:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="44"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="43"/>
         <source>Process Id</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="44"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="43"/>
         <source>Process Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="72"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="70"/>
         <source>Update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="73"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="71"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="74"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="72"/>
         <source>Attaching</source>
         <translation type="unfinished"></translation>
     </message>
@@ -800,7 +800,7 @@ storage: %2
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="302"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="304"/>
         <source>build</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4346,27 +4346,27 @@ not exists support files: %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="61"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="65"/>
         <source>Executable path:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="70"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="74"/>
         <source>Command line arguments:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="75"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="79"/>
         <source>Browse</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="84"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="88"/>
         <source>Working directory:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="86"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="90"/>
         <source>Working directory</source>
         <translation type="unfinished"></translation>
     </message>
