@@ -168,37 +168,37 @@
 <context>
     <name>AttachInfoDialog</name>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="37"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="36"/>
         <source>debugger:</source>
         <translation>调试器：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="38"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="37"/>
         <source>filter:</source>
         <translation>过滤器：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="44"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="43"/>
         <source>Process Id</source>
         <translation>进程ID</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="44"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="43"/>
         <source>Process Path</source>
         <translation>进程路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="72"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="70"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="73"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="71"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="74"/>
+        <location filename="../../src/plugins/debugger/interface/attachinfodialog.cpp" line="72"/>
         <source>Attaching</source>
         <translation>关联</translation>
     </message>
@@ -817,7 +817,7 @@ storage: %2
 <context>
     <name>CmakeAsynParse</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="302"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeasynparse.cpp" line="304"/>
         <source>build</source>
         <translation>编译</translation>
     </message>
@@ -4379,27 +4379,27 @@ not exists support files: %0</source>
         <translation>以下是可执行路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="61"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="65"/>
         <source>Executable path:</source>
         <translation>可执行文件路径：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="70"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="74"/>
         <source>Command line arguments:</source>
         <translation>命令行参数：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="75"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="79"/>
         <source>Browse</source>
         <translation>浏览</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="84"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="88"/>
         <source>Working directory:</source>
         <translation>工作目录：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="86"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/runCfgWidget/runconfigpane.cpp" line="90"/>
         <source>Working directory</source>
         <translation>工作目录</translation>
     </message>
