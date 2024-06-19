@@ -40,9 +40,9 @@ void SearchReplaceWorkerPrivate::startNextJob()
     Job job = jobList.at(currentJob);
     process.reset(new QProcess);
     if (job.type == SearchJob)
-        connect(process.data(), &QProcess::readyReadStandardOutput, q,
+        connect(process.get(), &QProcess::readyReadStandardOutput, q,
                 std::bind(&SearchReplaceWorker::handleReadSearchResult, q, job.keyword, job.caseSensitive, job.wholeWords));
-    connect(process.data(), qOverload<int>(&QProcess::finished),
+    connect(process.get(), qOverload<int>(&QProcess::finished),
             q, std::bind(&SearchReplaceWorker::processDone, q, job.type));
 
     process->start(job.cmd);
@@ -296,9 +296,8 @@ void SearchReplaceWorker::handleReadSearchResult(const QString &keyword, bool ca
 void SearchReplaceWorker::processDone(int jobType)
 {
     ++d->currentJob;
-    const bool success = d->process->exitCode() == 0;
-    if (d->currentJob < d->jobList.count() && success) {
-        d->process.reset();
+    if (d->currentJob < d->jobList.count()) {
+        d->process.release()->deleteLater();
         d->startNextJob();
         return;
     }
