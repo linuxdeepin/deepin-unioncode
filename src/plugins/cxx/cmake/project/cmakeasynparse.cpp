@@ -223,8 +223,10 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             prefix = CDT_TARGETS_TYPE::get()->Lib;
         }
         QMetaObject::invokeMethod(this, [=](){
-            // executable should different with library.
-            targetItem->setIcon(QIcon::fromTheme("project_executable"));
+            if (target.type == kExecutable)
+                targetItem->setIcon(QIcon::fromTheme("project_executable"));
+            else if (target.type == kStaticLibrary || target.type == kDynamicLibrary)
+                targetItem->setIcon(QIcon::fromTheme("library"));
         });
         QString title = prefix + target.title;
         targetItem->setText(title);
