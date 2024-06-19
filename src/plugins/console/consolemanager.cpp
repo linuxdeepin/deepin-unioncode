@@ -67,6 +67,7 @@ void ConsoleManager::initUI()
 
     d->addConsoleBtn->setIcon(QIcon::fromTheme("binarytools_add"));
     d->removeConsoleBtn->setIcon(QIcon::fromTheme("binarytools_reduce"));
+    d->removeConsoleBtn->setEnabled(false);
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addWidget(d->addConsoleBtn);
@@ -97,6 +98,10 @@ void ConsoleManager::initConnection()
     connect(d->consoleListView, &QListView::clicked, this, &ConsoleManager::switchConsole);
     connect(d->addConsoleBtn, &DToolButton::clicked, this, &ConsoleManager::appendConsole);
     connect(d->removeConsoleBtn, &DToolButton::clicked, this, &ConsoleManager::removeConsole);
+    connect(d->model, &QStandardItemModel::rowsRemoved, this, [=](){
+        bool enable = d->consoleList.count() > 1;
+        d->removeConsoleBtn->setEnabled(enable);
+    });
 }
 
 QTermWidget *ConsoleManager::getCurrentConsole()
@@ -141,34 +146,16 @@ void ConsoleManager::appendConsole()
     QStandardItem *item = new QStandardItem(tr("New Console"));
     d->model->appendRow(item);
     d->consoleListView->setCurrentIndex(d->model->index(d->model->rowCount() - 1, 0));
+    d->removeConsoleBtn->setEnabled(true);
 }
 
 void ConsoleManager::removeConsole()
 {
-    if (d->consoleListView->currentIndex().row() == -1) {
-        showDialog(tr("No console selected."));
-        return;
-    }
-    if (d->consoleList.count() <= 1) {
-        showDialog(tr("Cannot remove the last console."));
-        return;
-    }
     d->consoleStackedWidget->removeWidget(d->currentConsole);
     d->consoleList.removeOne(d->currentConsole);
     d->model->removeRow(d->consoleListView->currentIndex().row());
     delete d->currentConsole;
-
     d->currentConsole = d->consoleList.at(d->consoleListView->currentIndex().row());
-}
-
-void ConsoleManager::showDialog(const QString &msg)
-{
-    DDialog dialog;
-    dialog.setIcon(QIcon::fromTheme("dialog-warning"));
-    dialog.setWindowTitle(tr("Warning"));
-    dialog.setMessage(msg);
-    dialog.addButton(tr("OK"), true, DDialog::ButtonNormal);
-    dialog.exec();
 }
 
 void ConsoleManager::switchConsole(const QModelIndex &index)

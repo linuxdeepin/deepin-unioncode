@@ -25,7 +25,6 @@ private:
     void appendConsole();
     void removeConsole();
     void switchConsole(const QModelIndex &index);
-    void showDialog(const QString &msg);
     void showEvent(QShowEvent *event) override;
 
     ConsoleManagerPrivate *d;
