@@ -58,7 +58,7 @@ public:
     dpfservice::EditorService *editSrv { nullptr };
     QMutex mutex;
     FindItemList searchResults;
-    QSharedPointer<QProcess> process { nullptr };
+    std::unique_ptr<QProcess> process { nullptr };
 
     QList<Job> jobList;
     int currentJob = 0;
