@@ -26,7 +26,7 @@ class RunConfigPanePrivate
 
     DLineEdit *cmdArgsLineEdit{nullptr};
     DLineEdit *workingDirLineEdit{nullptr};
-    DLineEdit *excutableLabel{nullptr};
+    DLineEdit *executableEdit{nullptr};
     QFormLayout *formLayout{nullptr};
 
     EnvironmentWidget *environmentWidget{nullptr};
@@ -56,9 +56,13 @@ void RunConfigPane::setupUi()
     d->formLayout = new QFormLayout(mainFrame);
 
     // excutable label ui.
-    d->excutableLabel = new DLineEdit(mainFrame);
-    d->excutableLabel->setText(tr("Here is the executable path"));
-    d->formLayout->addRow(tr("Executable path:"), d->excutableLabel);
+    d->executableEdit = new DLineEdit(mainFrame);
+    d->executableEdit->setPlaceholderText(tr("Here is the executable path"));
+    connect(d->executableEdit, &DLineEdit::editingFinished, this, [this](){
+        if (d->targetRunParam)
+            d->targetRunParam->targetPath = d->executableEdit->text();
+    });
+    d->formLayout->addRow(tr("Executable path:"), d->executableEdit);
     d->formLayout->setSpacing(10);
 
     // command line ui.
@@ -107,7 +111,7 @@ void RunConfigPane::updateUi()
     d->cmdArgsLineEdit->setText(d->targetRunParam->arguments);
     d->workingDirLineEdit->setText(d->targetRunParam->workDirectory);
     d->currentTargetName = d->targetRunParam->targetName;
-    d->excutableLabel->setText(d->targetRunParam->targetPath);
+    d->executableEdit->setText(d->targetRunParam->targetPath);
 }
 
 void RunConfigPane::setTargetRunParam(config::TargetRunConfigure *targetRunParam)
