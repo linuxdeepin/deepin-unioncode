@@ -430,7 +430,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void NotifyHotSpotReleaseClick(Sci::Position position, int modifiers);
 	bool NotifyUpdateUI();
 	void NotifyPainted();
-	void NotifyIndicatorClick(bool click, Sci::Position position, int modifiers);
+    bool NotifyIndicatorClick(bool click, Sci::Position position, int modifiers);
 	bool NotifyMarginClick(Point pt, int modifiers);
 	bool NotifyMarginRightClick(Point pt, int modifiers);
 	void NotifyNeedShown(Sci::Position pos, Sci::Position len);

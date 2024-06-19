@@ -5,6 +5,7 @@
 // Copyright 1998-2011 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
+#include <bitset>
 #include <cstddef>
 #include <cstdlib>
 #include <cassert>
@@ -2403,7 +2404,7 @@ void Editor::NotifyPainted() {
 	NotifyParent(scn);
 }
 
-void Editor::NotifyIndicatorClick(bool click, Sci::Position position, int modifiers) {
+bool Editor::NotifyIndicatorClick(bool click, Sci::Position position, int modifiers) {
 	const int mask = pdoc->decorations->AllOnFor(position);
 	if ((click && mask) || pdoc->decorations->ClickNotified()) {
 		SCNotification scn = {};
@@ -2413,6 +2414,9 @@ void Editor::NotifyIndicatorClick(bool click, Sci::Position position, int modifi
 		scn.position = position;
 		NotifyParent(scn);
 	}
+
+    std::bitset<32> flags(static_cast<ulong>(mask));
+    return flags[INDIC_COMPOSITIONTHICK];
 }
 
 bool Editor::NotifyMarginClick(Point pt, int modifiers) {
@@ -4491,9 +4495,10 @@ void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifie
 	sel.SetMoveExtends(false);
 
 	if (NotifyMarginClick(pt, modifiers))
-		return;
+        return;
 
-	NotifyIndicatorClick(true, newPos.Position(), modifiers);
+    if (NotifyIndicatorClick(true, newPos.Position(), modifiers))
+       return;
 
 	const bool inSelMargin = PointInSelMargin(pt);
 	// In margin ctrl+(double)click should always select everything
