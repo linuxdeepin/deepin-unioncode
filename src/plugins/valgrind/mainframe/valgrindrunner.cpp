@@ -189,7 +189,7 @@ void ValgrindRunner::runBuilding()
             }
             RunCommandInfo args = generator->getRunArguments(d->projectInfo, d->currentFilePath);
             d->targetPath = args.program.trimmed();
-            d->workingDir = args.workingDir.trimmed();
+            d->workingDir = d->projectInfo.workspaceFolder();
         }
     }
 }
