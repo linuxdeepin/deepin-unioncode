@@ -103,7 +103,7 @@ void CodeCompletionDelegate::paintItemBackground(QPainter *painter, const QStyle
 
     // draw background
     if (option.widget) {
-#ifdef DTKWIDGET_CLASS_DPaletteHelper
+#ifndef DTKWIDGET_CLASS_DPaletteHelper
         DPalette pl(DPaletteHelper::instance()->palette(option.widget));
 #else
         const DPalette &pl = DGuiApplicationHelper::instance()->applicationPalette();
