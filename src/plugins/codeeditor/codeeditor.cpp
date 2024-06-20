@@ -62,8 +62,10 @@ bool CodeEditor::start()
     initButtonBox();
     initEditorService();
     initOptionService();
-    registerVariables();
 
+    globalMacroExpander()->registerFileVariables("CurrentDocument",
+                                                 tr("Current document"),
+                                                 [this] { return QFileInfo(workspaceWidget->currentFile()); });
     return true;
 }
 
@@ -162,7 +164,6 @@ void CodeEditor::initEditorService()
     editorService->saveAll = std::bind(&WorkspaceWidget::saveAll, workspaceWidget);
     editorService->setCompletion = std::bind(&WorkspaceWidget::setCompletion, workspaceWidget, _1, _2, _3);
     editorService->currentFile = std::bind(&WorkspaceWidget::currentFile, workspaceWidget);
-    editorService->setText = std::bind(&WorkspaceWidget::setText, workspaceWidget, _1);
 
     LexerManager::instance()->init(editorService);
 }
@@ -199,14 +200,4 @@ void CodeEditor::initOptionService()
         abort();
     }
     optionService->implGenerator<EditorSettingsWidgetGenerator>(option::GROUP_GENERAL, EditorSettingsWidgetGenerator::kitName());
-}
-
-void CodeEditor::registerVariables()
-{
-    globalMacroExpander()->registerFileVariables("CurrentDocument",
-                                                 tr("Current document"),
-                                                 [this] { return QFileInfo(workspaceWidget->currentFile()); });
-    globalMacroExpander()->registerVariable("CurrentDocument:Content",
-                                            tr("Current document content"),
-                                            [this] { return workspaceWidget->currentDocumentContent(); });
 }

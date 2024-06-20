@@ -63,7 +63,7 @@ void WorkspaceWidgetPrivate::initActions()
 
     auto abstractCommentAction = new AbstractAction(commentAction, q);
     abstractCommentAction->setShortCutInfo("Editor.addAndRemoveComment",
-                                           tr("Add/Remove Comment"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_Slash));
+                                            tr("Add/Remove Comment"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_Slash));
 
     windowService->addAction(tr("&Add/Remove Comment"), abstractCommentAction);
     connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
@@ -565,14 +565,6 @@ QString WorkspaceWidget::currentFile() const
     return {};
 }
 
-QString WorkspaceWidget::currentDocumentContent() const
-{
-    if (auto tabWidget = d->currentTabWidget())
-        return tabWidget->currentDocumentContent();
-
-    return {};
-}
-
 QString WorkspaceWidget::selectedText() const
 {
     Q_ASSERT(QThread::currentThread() == qApp->thread());
@@ -614,12 +606,6 @@ QStringList WorkspaceWidget::modifiedFiles() const
     // Delete duplicates
     auto tmp = files.toSet();
     return tmp.toList();
-}
-
-void WorkspaceWidget::setText(const QString &text)
-{
-    if (auto tabWidget = d->currentTabWidget())
-        tabWidget->setText(text);
 }
 
 void WorkspaceWidget::saveAll() const

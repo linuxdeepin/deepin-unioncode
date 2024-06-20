@@ -27,7 +27,6 @@ private:
     void initEditorService();
     void initWindowService();
     void initOptionService();
-    void registerVariables();
 
 private:
     WorkspaceWidget *workspaceWidget {nullptr};

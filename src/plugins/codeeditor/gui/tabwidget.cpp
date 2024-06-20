@@ -496,14 +496,6 @@ QString TabWidget::currentFile() const
     return d->tabBar->currentFileName();
 }
 
-QString TabWidget::currentDocumentContent() const
-{
-    if (auto editor = d->currentTextEditor())
-        return editor->text();
-
-    return "";
-}
-
 QString TabWidget::selectedText() const
 {
     if (auto editor = d->currentTextEditor())
@@ -548,15 +540,6 @@ QStringList TabWidget::openedFiles() const
         files << editor->getFile();
 
     return files;
-}
-
-void TabWidget::setText(const QString &text)
-{
-    if (auto editor = d->currentTextEditor()) {
-        int pos = editor->cursorPosition();
-        editor->setText(text);
-        editor->gotoPosition(pos);
-    }
 }
 
 void TabWidget::saveAll() const
