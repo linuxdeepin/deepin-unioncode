@@ -13,6 +13,7 @@
 #include <DPushButton>
 #include <DSuggestButton>
 #include <DFrame>
+#include <DPalette>
 
 #include <QGridLayout>
 #include <QDesktopServices>
@@ -153,6 +154,8 @@ void DetailsView::setupUi()
     mainLayout->setMargin(0);
     DFrame *detailFrame = new DFrame(this);
     auto detailLayout = new QHBoxLayout(detailFrame);
+    DStyle::setFrameRadius(detailFrame, 0);
+    detailFrame->setLineWidth(0);
 
     auto midLayout = new QVBoxLayout();
     midLayout->setSpacing(0);
@@ -170,10 +173,11 @@ void DetailsView::setupUi()
     operationLayout->addWidget(loadBtn, 0, Qt::AlignLeft);
 
     auto *cfgBtn = new DPushButton(this);
-    cfgBtn->setIcon(QIcon::fromTheme("options_setting"));
-    cfgBtn->setFlat(true);
+    cfgBtn->setIcon(QIcon::fromTheme("options_setting_black"));
+    cfgBtn->setFixedSize(36, 36);
     connect(cfgBtn, &DPushButton::clicked, this, &DetailsView::showCfgWidget);
     operationLayout->addWidget(cfgBtn, 1, Qt::AlignLeft);
+    operationLayout->setSpacing(10);
 
     logoLabel = new QLabel(this);
     auto logo = QIcon::fromTheme("default_plugin");
@@ -222,9 +226,35 @@ void DetailsView::initMetaInfoLayout()
     font.setPointSize(20);
     name->setFont(font);
 
-    version = new DLabel(this);
-    category = new DLabel(this);
+    versionFrame = new DFrame(this);
+    versionFrame->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    versionFrame->setBackgroundRole(DPalette::FrameBorder);
+    versionFrame->setLineWidth(0);
+    DStyle::setFrameRadius(versionFrame, 4);
+    QVBoxLayout *versionLayout = new QVBoxLayout(versionFrame);
+    version = new DLabel(versionFrame);
+    version->setContentsMargins(7, 0, 7, 0);
+    versionLayout->addWidget(version);
+    versionLayout->setAlignment(Qt::AlignCenter);
+    versionLayout->setSpacing(0);
+    versionLayout->setContentsMargins(0, 0, 0, 0);
+
+    categoryFrame = new DFrame(this);
+    categoryFrame->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    DPalette palette = categoryFrame->palette();
+    palette.setColor(DPalette::Base, QColor(0, 129, 255, 8));
+    categoryFrame->setPalette(palette);
+    categoryFrame->setLineWidth(0);
+    DStyle::setFrameRadius(categoryFrame, 4);
+    QVBoxLayout *categoryLayout = new QVBoxLayout(categoryFrame);
+    category = new DLabel(categoryFrame);
     category->setForegroundRole(DPalette::LightLively);
+    category->setContentsMargins(7, 0, 7, 0);
+    categoryLayout->addWidget(category);
+    categoryLayout->setAlignment(Qt::AlignCenter);
+    categoryLayout->setSpacing(0);
+    categoryLayout->setContentsMargins(0, 0, 0, 0);
+
     description = new DLabel(this);
     vendor = new DLabel(this);
     dependency = new DLabel(this);
@@ -233,8 +263,8 @@ void DetailsView::initMetaInfoLayout()
     hbox->setAlignment(Qt::AlignLeft);
     hbox->setSpacing(10);
     hbox->addWidget(name);
-    hbox->addWidget(version);
-    hbox->addWidget(category);
+    hbox->addWidget(versionFrame);
+    hbox->addWidget(categoryFrame);
 
     metaInfoLayout->addLayout(hbox);
     metaInfoLayout->addWidget(vendor);
