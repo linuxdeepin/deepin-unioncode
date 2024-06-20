@@ -46,9 +46,6 @@ public:
     void gotoPreviousBookmark();
     void clearAllBookmarks();
 
-    intptr_t searchInTarget(QByteArray & text2Find, size_t fromPos, size_t toPos) const;
-    intptr_t replaceTarget(QByteArray & str2replace, intptr_t fromTargetPos = -1, intptr_t toTargetPos = -1) const;
-
     // util
     int currentLineNumber();
     void gotoLine(int line);

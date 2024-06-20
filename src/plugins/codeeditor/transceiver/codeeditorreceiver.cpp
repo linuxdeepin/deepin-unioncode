@@ -29,6 +29,8 @@ CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
     eventHandleMap.insert(editor.addBreakpoint.name, std::bind(&CodeEditorReceiver::processAddBreakpointEvent, this, _1));
     eventHandleMap.insert(editor.removeBreakpoint.name, std::bind(&CodeEditorReceiver::processRemoveBreakpointEvent, this, _1));
     eventHandleMap.insert(editor.clearAllBreakpoint.name, std::bind(&CodeEditorReceiver::processClearAllBreakpointsEvent, this, _1));
+    eventHandleMap.insert(editor.searchText.name, std::bind(&CodeEditorReceiver::processSearchEvent, this, _1));
+    eventHandleMap.insert(editor.replaceText.name, std::bind(&CodeEditorReceiver::processReplaceEvent, this, _1));
 }
 
 dpf::EventHandler::Type CodeEditorReceiver::type()
@@ -56,6 +58,21 @@ void CodeEditorReceiver::processOpenFileEvent(const dpf::Event &event)
     QString workspace = event.property("workspace").toString();
     QString fileName = event.property("fileName").toString();
     EditorCallProxy::instance()->reqOpenFile(workspace, fileName);
+}
+
+void CodeEditorReceiver::processSearchEvent(const dpf::Event &event)
+{
+    QString srcText = event.property("keyword").toString();
+    int findType = event.property("findType").toInt();
+    EditorCallProxy::instance()->reqSearch(srcText, findType);
+}
+
+void CodeEditorReceiver::processReplaceEvent(const dpf::Event &event)
+{
+    QString srcText = event.property("text").toString();
+    QString targetText = event.property("target").toString();
+    int replaceType = event.property("repalceType").toInt();
+    EditorCallProxy::instance()->reqReplace(srcText, targetText, replaceType);
 }
 
 void CodeEditorReceiver::processBackEvent(const dpf::Event &event)

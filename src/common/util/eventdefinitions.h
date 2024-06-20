@@ -52,6 +52,10 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(addBreakpoint, "fileName", "line")
            OPI_INTERFACE(removeBreakpoint, "fileName", "line")
            OPI_INTERFACE(clearAllBreakpoint)
+           // (FindType)findType
+           OPI_INTERFACE(searchText, "keyword", "findType")
+           // (FindType)repalceType
+           OPI_INTERFACE(replaceText, "text", "target", "repalceType")
            // out
            OPI_INTERFACE(fileOpened, "fileName")
            OPI_INTERFACE(fileClosed, "fileName")

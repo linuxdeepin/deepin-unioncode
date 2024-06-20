@@ -48,35 +48,6 @@ class QsciStyle;
 class QsciStyledText;
 class QsciListBoxQt;
 
-struct FindState
-{
-    enum Status
-    {
-        Finding,
-        FindingInSelection,
-        Idle
-    };
-
-    FindState() : status(Idle) {}
-
-    Status status;
-    QString expr;
-    bool wrap;
-    bool forward;
-    int flags;
-    long startpos, startpos_orig;
-    long endpos, endpos_orig;
-    int linenum;
-    int targstart;
-    int targend;
-    bool show;
-};
-
-enum FindNextType {
-    FINDNEXTTYPE_FINDNEXT = 0,
-    FINDNEXTTYPE_REPLACENEXT,
-    FINDNEXTTYPE_FINDNEXTFORREPLACE
-};
 
 //! \brief The QsciScintilla class implements a higher level, more Qt-like,
 //! API to the Scintilla editor widget.
@@ -832,7 +803,7 @@ public:
     //!
     //! \sa cancelFind(), findFirstInSelection(), findNext(), replace()
     virtual bool findFirst(const QString &expr, bool re, bool cs, bool wo,
-            bool wrap, bool forward = true, FindNextType findNextType = FINDNEXTTYPE_FINDNEXT, int line = -1, int index = -1,
+            bool wrap, bool forward = true, int line = -1, int index = -1,
             bool show = true, bool posix = false, bool cxx11 = false);
 
     //! Find the first occurrence of the string \a expr in the current
@@ -2103,8 +2074,6 @@ public slots:
     //! \sa zoomIn(), zoomOut()
     virtual void zoomTo(int size);
 
-    FindState& getLastFindState();
-
 signals:
     //! This signal is emitted whenever the cursor position changes.  \a line
     //! contains the line number and \a index contains the character index
@@ -2278,6 +2247,27 @@ private:
 
     QByteArray styleText(const QList<QsciStyledText> &styled_text,
             char **styles, int style_offset = 0);
+
+    struct FindState
+    {
+        enum Status
+        {
+            Finding,
+            FindingInSelection,
+            Idle
+        };
+
+        FindState() : status(Idle) {}
+
+        Status status;
+        QString expr;
+        bool wrap;
+        bool forward;
+        int flags;
+        long startpos, startpos_orig;
+        long endpos, endpos_orig;
+        bool show;
+    };
 
     FindState findState;
 

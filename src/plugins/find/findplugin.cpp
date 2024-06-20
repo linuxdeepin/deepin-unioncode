@@ -5,6 +5,7 @@
 #include "findplugin.h"
 
 #include "services/window/windowservice.h"
+#include "findtoolbar.h"
 #include "findtoolwindow.h"
 #include "searchresultwindow.h"
 #include "common/common.h"
@@ -35,6 +36,14 @@ bool FindPlugin::start()
     DMenu *editMenu = new DMenu(QMenu::tr("&Edit"));
     AbstractMenu *menuImpl = new AbstractMenu(editMenu);
 
+    QAction *findAction = new QAction(tr("Find/Replace"), this);
+    findAction->setIcon(QIcon::fromTheme("search-find"));
+    auto findActionImpl = new AbstractAction(findAction);
+    findActionImpl->setShortCutInfo("Edit.Find",
+                                    tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
+
+    windowService->addTopToolItemToRight(findActionImpl, false);
+
     QAction *advancedFindAction = new QAction(this);
     auto advancedFindActionImpl = new AbstractAction(advancedFindAction);
     advancedFindActionImpl->setShortCutInfo("Edit.Advanced.Find",
@@ -43,6 +52,7 @@ bool FindPlugin::start()
         uiController.switchContext(tr("Advanced &Search"));
     });
 
+    menuImpl->addAction(findActionImpl);
     menuImpl->addAction(advancedFindActionImpl);
 
     windowService->addChildMenu(menuImpl);
@@ -50,6 +60,22 @@ bool FindPlugin::start()
     AbstractWidget *widgetImpl = new AbstractWidget(new FindToolWindow());
     windowService->addContextWidget(tr("Advanced &Search"), widgetImpl, true);
 
+    FindToolBar *findToolBar = new FindToolBar();
+    AbstractWidget *abstractFindToolBar = new AbstractWidget(findToolBar);
+
+    connect(this, &FindPlugin::onFindActionTriggered, findToolBar, &FindToolBar::handleFindActionTriggered);
+    connect(findAction, &QAction::triggered, findToolBar, [=] {
+        if (findToolBar->isVisible()) {
+            findToolBar->hide();
+        } else {
+            findToolBar->show();
+        }
+    });
+
+    if (windowService->registerWidgetToMode) {
+        windowService->registerWidgetToMode("findWidget", abstractFindToolBar, CM_EDIT, Position::Top, true, false);
+        windowService->registerWidgetToMode("findWidget", abstractFindToolBar, CM_DEBUG, Position::Top, true, false);
+    }
     return true;
 }
 

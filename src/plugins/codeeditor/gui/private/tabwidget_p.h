@@ -8,7 +8,6 @@
 #include "gui/tabwidget.h"
 #include "gui/tabbar.h"
 #include "gui/texteditor.h"
-#include "gui/find/findtoolbar.h"
 
 #include "common/util/eventdefinitions.h"
 
@@ -34,7 +33,7 @@ public:
     TextEditor *currentTextEditor() const;
     void changeFocusProxy();
     bool processKeyPressEvent(QKeyEvent *event);
-    void replaceRange(const QString &fileName, const newlsp::Range &range, const QString &text);
+    void replaceRange(const QString &fileName, const newlsp::Range &range,const QString &text);
 
     void doSave();
     void removePositionRecord(const QString &fileName);
@@ -58,7 +57,6 @@ public:
 
     QStackedLayout *editorLayout { nullptr };
     TabBar *tabBar { nullptr };
-    FindToolBar *findToolBar { nullptr };
     QHash<QString, TextEditor *> editorMng;
 
     PosRecord curPosRecord;

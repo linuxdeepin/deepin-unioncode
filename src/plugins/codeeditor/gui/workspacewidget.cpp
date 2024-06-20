@@ -66,7 +66,6 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource, this, &WorkspaceWidgetPrivate::handleSwitchHeaderSource);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqFollowSymbolUnderCursor, this, &WorkspaceWidgetPrivate::handleFollowSymbolUnderCursor);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint, this, &WorkspaceWidgetPrivate::handleToggleBreakpoint);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqShowFindToolBar, this, &WorkspaceWidgetPrivate::handleShowFindToolBar);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
@@ -398,15 +397,6 @@ void WorkspaceWidgetPrivate::handleFollowSymbolUnderCursor()
         return;
 
     tabWidget->followSymbolUnderCursor();
-}
-
-void WorkspaceWidgetPrivate::handleShowFindToolBar()
-{
-    auto tabWidget = currentTabWidget();
-    if (!tabWidget)
-        return;
-
-    tabWidget->showFindToolBar();
 }
 
 void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
