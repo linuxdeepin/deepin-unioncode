@@ -19,6 +19,7 @@ DListView *TaskManager::getView() const
 
 void TaskManager::clearTasks()
 {
+    tasks.clear();
     model->clearTasks();
 }
 
@@ -26,9 +27,7 @@ TaskManager::TaskManager(QObject *parent) : QObject(parent)
 {
     view = new TaskView();
     model.reset(new TaskModel());
-    filterModel.reset(new TaskFilterProxyModel());
-    filterModel->setSourceModel(model.get());
-    view->setModel(filterModel.get());
+    view->setModel(model.get());
     auto tld = new TaskDelegate(view);
     view->setItemDelegate(tld);
 
@@ -50,11 +49,23 @@ void TaskManager::slotAddTask(const Task &task, int linkedOutputLines, int skipL
     Q_UNUSED(skipLines)
 
     model->addTask(task);
+    tasks.push_back(task);
 }
 
 void TaskManager::showSpecificTasks(ShowType type)
 {
-    filterModel->setFilterType(type);
+    model->clearTasks();
+    if (type != ShowType::All) {
+        QList<Task> specificTasks;
+        for (const Task& task : tasks) {
+            if (task.type == type) {
+                specificTasks.push_back(task);
+            }
+        }
+        model->addTasks(specificTasks);
+    } else {
+        model->addTasks(tasks);
+    }
 }
 
 void TaskManager::currentChanged(const QModelIndex &index)

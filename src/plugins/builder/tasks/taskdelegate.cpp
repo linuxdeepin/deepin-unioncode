@@ -44,7 +44,7 @@ QSize TaskDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
     int fontHeight = fm.height();
     int fontLeading = fm.leading();
 
-    auto model = static_cast<TaskFilterProxyModel *>(view->model());
+    auto model = static_cast<TaskModel *>(view->model());
     Positions positions(option, model);
 
     if (selected) {
@@ -110,7 +110,7 @@ void TaskDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 
     auto view = qobject_cast<const QAbstractItemView *>(opt.widget);
     bool selected = view->selectionModel()->currentIndex() == index;
-    auto model = static_cast<TaskFilterProxyModel *>(view->model());
+    auto model = static_cast<TaskModel *>(view->model());
     Positions positions(opt, model);
 
     // Paint TaskIconArea:

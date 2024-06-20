@@ -5,7 +5,7 @@
 #ifndef TASKDELEGATE_H
 #define TASKDELEGATE_H
 
-#include "taskfilterproxymodel.h"
+#include "taskmodel.h"
 
 #include <DStyledItemDelegate>
 
@@ -44,20 +44,14 @@ private:
     class Positions
     {
     public:
-        Positions(const QStyleOptionViewItem &options, TaskFilterProxyModel *model) :
+        Positions(const QStyleOptionViewItem &options, TaskModel *model) :
             totalWidth(options.rect.width()),
+            maxFileLength(model->sizeOfFile(options.font)),
+            maxLineLength(model->getSizeOfLineNumber(options.font)),
             realFileLength(maxFileLength),
             top(options.rect.top()),
             bottom(options.rect.bottom())
         {
-            TaskModel *sourceModel = static_cast<TaskModel *>(model->sourceModel());
-            if (sourceModel) {
-                maxFileLength = sourceModel->sizeOfFile(options.font);
-                maxLineLength = sourceModel->getSizeOfLineNumber(options.font);
-            } else {
-                maxFileLength = 0;
-                maxLineLength = 0;
-            }
             fontHeight = QFontMetrics(options.font).height();
         }
 
