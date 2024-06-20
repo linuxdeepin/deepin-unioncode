@@ -39,17 +39,12 @@ void WorkspaceWidgetPrivate::initUI()
     tabWidget->setSplitButtonVisible(false);
     tabWidgetList.append(tabWidget);
 
-    QScrollArea *scrollArea = new QScrollArea(q);
-    scrollArea->setWidget(splitter);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setLineWidth(0);
-
     connectTabWidgetSignals(tabWidget);
     splitter->addWidget(tabWidget);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(q);
     mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->addWidget(scrollArea);
+    mainLayout->addWidget(splitter);
 }
 
 void WorkspaceWidgetPrivate::initActions()
