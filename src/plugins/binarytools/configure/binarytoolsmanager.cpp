@@ -4,7 +4,6 @@
 
 #include "binarytoolsmanager.h"
 #include "mainframe/environmentview.h"
-#include "mainframe/binarytoolsdialog.h"
 
 #include "common/util/custompaths.h"
 #include "common/util/eventdefinitions.h"
@@ -35,83 +34,6 @@ constexpr char IconKey[] { "icon" };
 constexpr char EnvironmentKey[] { "environment" };
 
 using namespace dpfservice;
-
-QString ToolProcess::readAllStandardOutput()
-{
-    return std::move(stdOut);
-}
-
-QString ToolProcess::readAllStandardError()
-{
-    return std::move(stdError);
-}
-
-void ToolProcess::start(const QString &id)
-{
-    if (this->id != id)
-        return;
-
-    stdOut.clear();
-    stdError.clear();
-
-    connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
-            this, std::bind(&ToolProcess::finished, this, id, std::placeholders::_1, std::placeholders::_2));
-    connect(&process, &QProcess::readyReadStandardOutput, this, [=] {
-        stdOut += process.readAllStandardOutput();
-        Q_EMIT readyReadStandardOutput(id);
-    });
-    connect(&process, &QProcess::readyReadStandardError, this, [=] {
-        stdError += process.readAllStandardError();
-        Q_EMIT readyReadStandardError(id);
-    });
-
-    process.setProgram(program);
-    process.setArguments(arguments);
-    process.setWorkingDirectory(workingDir);
-    process.setProcessEnvironment(environment);
-
-    process.start();
-    process.waitForFinished(-1);
-}
-
-void ToolProcess::stop()
-{
-    if (process.state() != QProcess::NotRunning)
-        process.kill();
-}
-
-BinaryToolsManager::BinaryToolsManager(QObject *parent)
-    : QObject(parent)
-{
-}
-
-BinaryToolsManager::~BinaryToolsManager()
-{
-    auto iter = toolTaskMap.begin();
-    for (; iter != toolTaskMap.end(); ++iter) {
-        std::get<0>(iter.value())->stop();
-        std::get<1>(iter.value())->quit();
-        std::get<1>(iter.value())->wait();
-    }
-}
-
-QSharedPointer<ToolProcess> BinaryToolsManager::createToolProcess(const QString &id)
-{
-    using namespace std::placeholders;
-
-    QSharedPointer<ToolProcess> toolProcess { new ToolProcess };
-    connect(toolProcess.data(), &ToolProcess::finished, this, &BinaryToolsManager::executeFinished, Qt::QueuedConnection);
-    connect(toolProcess.data(), &ToolProcess::readyReadStandardOutput, this, &BinaryToolsManager::handleReadOutput, Qt::QueuedConnection);
-    connect(toolProcess.data(), &ToolProcess::readyReadStandardError, this, &BinaryToolsManager::handleReadError, Qt::QueuedConnection);
-    connect(this, &BinaryToolsManager::execute, toolProcess.data(), &ToolProcess::start, Qt::QueuedConnection);
-
-    QSharedPointer<QThread> toolThread { new QThread };
-    toolProcess->moveToThread(toolThread.data());
-    toolThread->start();
-    toolTaskMap.insert(id, std::make_tuple(toolProcess, toolThread));
-
-    return toolProcess;
-}
 
 BinaryToolsManager *BinaryToolsManager::instance()
 {
@@ -262,25 +184,63 @@ void BinaryToolsManager::executeTool(const QString &id)
         return;
     }
 
-    auto toolProcess = createToolProcess(id);
+    QProcess proc;
+    QString retMsg = tr("Error: execute command error! The reason is unknown.\n");
+    connect(&proc, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished), this,
+            [&](int exitcode, QProcess::ExitStatus exitStatus) {
+                if (0 == exitcode && exitStatus == QProcess::ExitStatus::NormalExit) {
+                    retMsg = tr("The process \"%1\" exited normally.\n").arg(proc.program());
+                } else if (exitStatus == QProcess::NormalExit) {
+                    retMsg = tr("The process \"%1\" exited with code %2.\n")
+                                     .arg(proc.program(), QString::number(exitcode));
+                } else {
+                    retMsg = tr("The process \"%1\" crashed.\n").arg(proc.program());
+                }
+            });
+
+    if (tool.errorOutputOption == ShowInApplicationOutput) {
+        connect(&proc, &QProcess::readyReadStandardError, this, [&] {
+            proc.setReadChannel(QProcess::StandardError);
+            while (proc.canReadLine()) {
+                QString line = QString::fromUtf8(proc.readLine());
+                qInfo() << line;
+                printOutput(line, OutputPane::OutputFormat::StdErr);
+            }
+        });
+    }
+
+    if (tool.outputOption == ShowInApplicationOutput) {
+        connect(&proc, &QProcess::readyReadStandardOutput, this, [&] {
+            proc.setReadChannel(QProcess::StandardOutput);
+            while (proc.canReadLine()) {
+                QString line = QString::fromUtf8(proc.readLine());
+                qInfo() << line;
+                printOutput(line, OutputPane::OutputFormat::StdOut);
+            }
+        });
+    }
+
     QStringList argList = tool.arguments.split(" ", QString::SkipEmptyParts);
-    toolProcess->setId(id);
-    toolProcess->setProgram(tool.command);
-    toolProcess->setArguments(argList);
-    toolProcess->setWorkingDirectory(tool.workingDirectory);
+    proc.setProgram(tool.command);
+    proc.setArguments(argList);
+    proc.setWorkingDirectory(tool.workingDirectory);
     QProcessEnvironment env;
     auto iterator = tool.environment.begin();
     while (iterator != tool.environment.end()) {
         env.insert(iterator.key(), iterator.value().toString());
         ++iterator;
     }
-    toolProcess->setProcessEnvironment(env);
+    proc.setProcessEnvironment(env);
 
-    QString startMsg = tr("Start execute \"%1\": \"%2\" \"%3\" in workspace \"%4\".\n")
-                               .arg(tool.name, tool.command, tool.arguments, tool.workingDirectory);
-    printOutput(startMsg, OutputPane::NormalMessage);
+    QString startMsg = tr("Start execute command: \"%1\" \"%2\" in workspace \"%3\".\n")
+                               .arg(tool.command, tool.arguments, tool.workingDirectory);
+    printOutput(startMsg, OutputPane::OutputFormat::NormalMessage);
+    proc.startDetached();
+    proc.waitForFinished(-1);
 
-    Q_EMIT execute(id);
+    printOutput(retMsg, OutputPane::OutputFormat::NormalMessage);
+    QString endMsg = tr("Execute command finished.\n");
+    printOutput(endMsg, OutputPane::OutputFormat::NormalMessage);
 }
 
 void BinaryToolsManager::checkAndAddToToolbar(const QMap<QString, QList<ToolInfo>> &tools)
@@ -290,81 +250,6 @@ void BinaryToolsManager::checkAndAddToToolbar(const QMap<QString, QList<ToolInfo
         for (const auto &tool : iter.value())
             addToToolBar(tool);
     }
-}
-
-void BinaryToolsManager::updateToolMenu(const QMap<QString, QList<ToolInfo>> &tools)
-{
-    if (!toolMenu)
-        return;
-
-    toolMenu->clear();
-    auto iter = tools.begin();
-    for (; iter != tools.end(); ++iter) {
-        auto groupAct = toolMenu->addAction(iter.key());
-        auto subMenu = new QMenu(toolMenu);
-        groupAct->setMenu(subMenu);
-        for (const auto &tool : iter.value()) {
-            auto act = subMenu->addAction(QIcon::fromTheme(tool.icon), tool.name);
-            connect(act, &QAction::triggered, this, std::bind(&BinaryToolsManager::executeTool, this, tool.id));
-        }
-    }
-
-    toolMenu->addSeparator();
-    auto configureAct = toolMenu->addAction(tr("Configure..."));
-    connect(configureAct, &QAction::triggered, this, [=]() {
-        BinaryToolsDialog dlg;
-        dlg.exec();
-    });
-}
-
-void BinaryToolsManager::setToolMenu(QMenu *menu)
-{
-    toolMenu = menu;
-}
-
-void BinaryToolsManager::executeFinished(const QString &id, int exitCode, QProcess::ExitStatus exitStatus)
-{
-    const auto &tool = findTool(id);
-    if (!tool.isValid())
-        return;
-
-    QString retMsg;
-    if (0 == exitCode && exitStatus == QProcess::ExitStatus::NormalExit) {
-        retMsg = tr("The tool \"%1\" exited normally.\n").arg(tool.name);
-    } else if (exitStatus == QProcess::NormalExit) {
-        retMsg = tr("The tool \"%1\" exited with code %2.\n").arg(tool.name, QString::number(exitCode));
-    } else {
-        retMsg = tr("The tool \"%1\" crashed.\n").arg(tool.name);
-    }
-
-    printOutput(retMsg, OutputPane::OutputFormat::NormalMessage);
-    QString endMsg = tr("Execute tool \"%1\" finished.\n").arg(tool.name);
-    printOutput(endMsg, OutputPane::OutputFormat::NormalMessage);
-
-    if (toolTaskMap.contains(id)) {
-        auto task = toolTaskMap[id];
-        std::get<1>(task)->quit();
-        std::get<1>(task)->wait();
-        toolTaskMap.remove(id);
-    }
-}
-
-void BinaryToolsManager::handleReadOutput(const QString &id)
-{
-    if (!toolTaskMap.contains(id))
-        return;
-
-    auto task = toolTaskMap[id];
-    printOutput(std::get<0>(task)->readAllStandardOutput(), OutputPane::StdOut);
-}
-
-void BinaryToolsManager::handleReadError(const QString &id)
-{
-    if (!toolTaskMap.contains(id))
-        return;
-
-    auto task = toolTaskMap[id];
-    printOutput(std::get<0>(task)->readAllStandardError(), OutputPane::StdErr);
 }
 
 bool BinaryToolsManager::checkCommandExists(const QString &command)
@@ -382,11 +267,12 @@ bool BinaryToolsManager::checkCommandExists(const QString &command)
 void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
 {
     auto createAction = [this](const ToolInfo &tool) {
-        auto act = new QAction(tool.description, this);
+        auto act = new QAction(this);
         act->setIcon(QIcon::fromTheme(tool.icon));
         connect(act, &QAction::triggered, this, std::bind(&BinaryToolsManager::executeTool, this, tool.id));
 
         auto actImpl = new AbstractAction(act, this);
+        actImpl->setShortCutInfo(tool.id, tool.description);
         return actImpl;
     };
 

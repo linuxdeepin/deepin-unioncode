@@ -429,7 +429,6 @@ bool BinaryToolsConfigView::saveConfig()
 
     BinaryToolsManager::instance()->setTools(tools);
     BinaryToolsManager::instance()->checkAndAddToToolbar(tools);
-    BinaryToolsManager::instance()->updateToolMenu(tools);
     BinaryToolsManager::instance()->save();
     return true;
 }

@@ -7,9 +7,7 @@
 
 #include <framework/framework.h>
 
-#include <QMenu>
-
-class BinaryTools : public dpf::Plugin
+class BinaryTools: public dpf::Plugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.deepin.plugin.unioncode" FILE "binarytools.json")
@@ -17,9 +15,6 @@ public:
     virtual void initialize() override;
     virtual bool start() override;
     virtual dpf::Plugin::ShutdownFlag stop() override;
-
-private:
-    QMenu *toolMenu { nullptr };
 };
 
-#endif   // BINARYTOOLS_H
+#endif // BINARYTOOLS_H

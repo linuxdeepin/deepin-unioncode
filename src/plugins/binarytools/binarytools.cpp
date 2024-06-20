@@ -27,22 +27,19 @@ bool BinaryTools::start()
         inputAction->setShortCutInfo("Tools.Binary", action->text());
         windowService->addAction(MWM_TOOLS, inputAction);
 
-        toolMenu = new QMenu();
-        action->setMenu(toolMenu);
-        BinaryToolsManager::instance()->setToolMenu(toolMenu);
+        QObject::connect(action, &QAction::triggered, [=]() {
+            BinaryToolsDialog dlg;
+            dlg.exec();
+        });
     }
 
     const auto &tools = BinaryToolsManager::instance()->tools();
     BinaryToolsManager::instance()->checkAndAddToToolbar(tools);
-    BinaryToolsManager::instance()->updateToolMenu(tools);
 
     return true;
 }
 
 dpf::Plugin::ShutdownFlag BinaryTools::stop()
 {
-    if (toolMenu)
-        toolMenu->deleteLater();
-
     return Sync;
 }
