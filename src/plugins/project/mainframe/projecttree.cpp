@@ -205,15 +205,6 @@ void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *even
             menu->addSeparator();
             menu->addAction(runCommand->action());
         }
-        QFileInfo info(item->data(Qt::ToolTipRole).toString());
-        if (info.isDir()) {
-            menu->addSeparator();
-            QAction *newDocAction = new QAction(tr("New Document"), this);
-            QObject::connect(newDocAction, &QAction::triggered, this, [=](){
-                actionNewDocument(item);
-            });
-            menu->addAction(newDocAction);
-        }
     } else {
         menu = childMenu(rootItem, item);
     }
