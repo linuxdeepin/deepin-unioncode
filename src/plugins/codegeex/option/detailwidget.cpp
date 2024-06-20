@@ -56,13 +56,13 @@ void DetailWidget::setupUi()
     setLayout(vLayout);
 
     QHBoxLayout *completionLayout = new QHBoxLayout;
-    DLabel *completionLabel = new DLabel(QLabel::tr("Code Completion:"), this);
+    DLabel *completionLabel = new DLabel(DLabel::tr("Code Completion:"), this);
     d->cbCodeCompletion = new DCheckBox(this);
     completionLayout->addWidget(completionLabel);
     completionLayout->addWidget(d->cbCodeCompletion);
 
     QHBoxLayout *modelLayout = new QHBoxLayout;
-    DLabel *modelLabel = new DLabel(QLabel::tr("model"), this);
+    DLabel *modelLabel = new DLabel(DLabel::tr("model"), this);
     d->modelBox = new DComboBox(this);
     d->modelBox->addItem("CodeGeex Lite", CodeGeeX::Lite);
     d->modelBox->addItem("CodeGeex Pro", CodeGeeX::Pro);

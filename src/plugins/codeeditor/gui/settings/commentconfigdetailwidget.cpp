@@ -54,15 +54,15 @@ void CommentConfigDetailWidget::initUI()
     d->mimeTypeEdit = new DLineEdit(this);
     d->mimeTypeEdit->setText("text/x-c++src;text/x-c++hdr;");
 
-    DLabel *singleLineComment = new DLabel(tr("Line comment symbol:"), this);
+    DLabel *singleLineComment = new DLabel(tr("Single-line comment symbol:"), this);
     d->singleLineCommentEdit = new DLineEdit(this);
     d->singleLineCommentEdit->setText("//");
 
-    DLabel *startMultiLineComment = new DLabel(tr("Block comment start symbol:"), this);
+    DLabel *startMultiLineComment = new DLabel(tr("Multiline comment start symbol:"), this);
     d->startMultiLineCommentEdit = new DLineEdit(this);
     d->startMultiLineCommentEdit->setText("/*");
 
-    DLabel *endMultiLineComment = new DLabel(tr("Block comment end symbol:"), this);
+    DLabel *endMultiLineComment = new DLabel(tr("Multiline comment end symbol:"), this);
     d->endMultiLineCommentEdit = new DLineEdit(this);
     d->endMultiLineCommentEdit->setText("*/");
 
