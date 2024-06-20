@@ -261,9 +261,6 @@ dap::array<dap::Variable> GDBDebugger::getVariableListByRef(int64_t ref)
 
 bool GDBDebugger::fetchChildVariables(int64_t ref)
 {
-    if(d->variableListByReference.contains(ref))  //has alreay fetch children
-        return true;
-
     gdbmi::Variable *parent = nullptr;
     foreach (auto var, d->variableListByReference.values()) {
         if(var->childRefrence == ref) {
