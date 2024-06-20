@@ -81,6 +81,9 @@ void LSPStyle::initLspConnection()
     connect(d->getClient(), QOverload<const newlsp::WorkspaceEdit &>::of(&newlsp::Client::renameRes),
             EditorCallProxy::instance(), &EditorCallProxy::reqDoRename, Qt::UniqueConnection);
 
+    connect(d->getClient(), &newlsp::Client::rangeFormattingRes,
+            this, &LSPStyle::rangeFormattingReplace);
+
     /* to use QOverload cast virtual slot can't working */
     connect(d->getClient(), QOverload<const newlsp::Location &>::of(&newlsp::Client::definitionRes),
             this, QOverload<const newlsp::Location &>::of(&LSPStyle::setDefinition));
@@ -350,6 +353,21 @@ void LSPStyle::cleanDefinition(int pos)
     if (flags[TextEditor::INDIC_COMPOSITIONTHICK]) {
         d->editor->SendScintilla(TextEditor::SCI_SETCURSOR, d->definitionCache.getCursor());
         d->editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, d->editor->length());
+    }
+}
+
+void LSPStyle::rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits)
+{
+    if (edits.empty())
+        return;
+
+    for (auto iter = edits.rbegin(); iter != edits.rend(); iter++) {
+        int startPos = d->editor->positionFromLineIndex(iter->range.start.line, iter->range.start.character);
+        int endPos = d->editor->positionFromLineIndex(iter->range.end.line, iter->range.end.character);
+        auto newText = QString::fromStdString(iter->newText);
+        QString curFile = d->editor->getFile();
+        //        if (curFile == d->formattingFile)
+        //            d->editor->replaceRange(sciPosStart, sciPosEnd, newText);
     }
 }
 

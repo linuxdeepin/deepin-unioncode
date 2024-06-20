@@ -16,8 +16,8 @@
 #include <QMenu>
 
 using namespace dpfservice;
-inline constexpr char mainWindow[] = "debugMainWindow";
-inline constexpr char localsPane[] = "debuggerWatcher";
+inline constexpr char* mainWindow = "debugMainWindow";
+inline constexpr char* localsPane = "debuggerWatcher";
 
 void DebuggerPlugin::initialize()
 {

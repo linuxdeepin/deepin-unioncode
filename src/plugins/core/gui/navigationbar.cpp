@@ -144,5 +144,4 @@ quint8 NavigationBar::getPriorityOfNavigationItem(const QString &name)
             return topBtnsByPriority.key(btnList);
     }
 
-    return UCHAR_MAX;
 }
