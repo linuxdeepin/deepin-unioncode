@@ -36,7 +36,7 @@ public:
     virtual void setDiagnostics(const newlsp::PublishDiagnosticsParams &data);
     virtual void cleanDiagnostics();
 
-    virtual void setTokenFull(const QList<lsp::Data> &tokens, const QString &filePath);
+    virtual void setTokenFull(const QList<lsp::Data> &tokens);
     virtual void refreshTokens();
     virtual void cleanTokenFull();
 

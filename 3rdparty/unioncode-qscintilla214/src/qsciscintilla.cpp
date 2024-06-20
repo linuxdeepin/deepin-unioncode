@@ -74,8 +74,8 @@ QsciScintilla::QsciScintilla(QWidget *parent)
     connect(this,SIGNAL(SCN_MODIFYATTEMPTRO()),
              SIGNAL(modificationAttempted()));
 
-    connect(this,SIGNAL(SCN_MODIFIED(int,int,const QString &,int,int,int,int,int,int,int)),
-             SLOT(handleModified(int,int,const QString &,int,int,int,int,int,int,int)));
+    connect(this,SIGNAL(SCN_MODIFIED(int,int,const char *,int,int,int,int,int,int,int)),
+             SLOT(handleModified(int,int,const char *,int,int,int,int,int,int,int)));
     connect(this,SIGNAL(SCN_CALLTIPCLICK(int)),
              SLOT(handleCallTipClick(int)));
     connect(this,SIGNAL(SCN_CHARADDED(int)),
@@ -1655,7 +1655,7 @@ void QsciScintilla::setContractedFolds(const QList<int> &folds)
 
 
 // Handle the SCN_MODIFIED notification.
-void QsciScintilla::handleModified(int pos, int mtype, const QString &text,
+void QsciScintilla::handleModified(int pos, int mtype, const char *text,
         int len, int added, int line, int foldNow, int foldPrev, int token,
         int annotationLinesAdded)
 {

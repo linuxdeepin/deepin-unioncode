@@ -59,7 +59,7 @@ public slots:
     void onThemeTypeChanged();
     void onDwellStart(int position, int x, int y);
     void onDwellEnd(int position, int x, int y);
-    void onModified(int pos, int mtype, const QString &text, int len, int added,
+    void onModified(int pos, int mtype, const char *text, int len, int added,
                     int line, int foldNow, int foldPrev, int token, int annotationLinesAdded);
     void handleSearch(const QString &keyword, int operateType);
     void handleReplace(const QString &srcText, const QString &destText, int operateType);

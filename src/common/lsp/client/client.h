@@ -169,7 +169,7 @@ signals:
     void requestResult(const lsp::CompletionProvider &completionProvider);
     void requestResult(const lsp::SignatureHelps &signatureHelps);
     void requestResult(const lsp::Highlights &highlights);
-    void requestResult(const QList<lsp::Data> &tokensResult, const QString &filePath);
+    void requestResult(const QList<lsp::Data> &tokensResult);
     void requestResult(const lsp::References &refs);
     void renameRes(const newlsp::WorkspaceEdit &changes);
     void hoverRes(const newlsp::Hover &hover);
