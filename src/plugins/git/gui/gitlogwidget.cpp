@@ -67,12 +67,7 @@ void GitLogWidget::setGitInfo(const QString &info)
     d->gitEditor->setTextCursor(cursor);
 }
 
-void GitLogWidget::setReadyMessage(const QString &msg)
+QTextDocument *GitLogWidget::textDocument() const
 {
-    d->gitEditor->setPlainText(msg);
-}
-
-void GitLogWidget::setSourceFile(const QString &sf)
-{
-    d->gitEditor->setSourceFile(sf);
+    return d->gitEditor->document();
 }

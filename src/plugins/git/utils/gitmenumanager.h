@@ -5,8 +5,6 @@
 #ifndef GITMENUMANAGER_H
 #define GITMENUMANAGER_H
 
-#include "constants.h"
-
 #include <QObject>
 #include <QAction>
 #include <QMenu>
@@ -28,7 +26,6 @@ public:
 private:
     explicit GitMenuManager(QObject *parent = nullptr);
 
-    void actionHandler(QAction *act, GitType type);
     void createGitSubMenu();
     void createFileSubMenu();
     void createProjectSubMenu();
@@ -46,7 +43,6 @@ private:
     QAction *curFileAct { nullptr };
     QAction *fileLogAct { nullptr };
     QAction *fileBlameAct { nullptr };
-    QAction *fileDiffAct { nullptr };
 
     QAction *curProjectAct { nullptr };
 };

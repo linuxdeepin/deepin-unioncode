@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "gitmenumanager.h"
+#include "constants.h"
 #include "client/gitclient.h"
 
 #include "base/abstractaction.h"
@@ -15,31 +16,6 @@ using namespace dpfservice;
 GitMenuManager::GitMenuManager(QObject *parent)
     : QObject(parent)
 {
-}
-
-void GitMenuManager::actionHandler(QAction *act, GitType type)
-{
-    const auto &filePath = act->property(GitFilePath).toString();
-    bool ret = false;
-    switch (type) {
-    case GitLog:
-        ret = GitClient::instance()->logFile(filePath);
-        break;
-    case GitBlame:
-        ret = GitClient::instance()->blameFile(filePath);
-        break;
-    case GitDiff:
-        ret = GitClient::instance()->gitDiff(filePath);
-    }
-
-    if (ret) {
-        auto dockName = winSer->getCurrentDockName(Position::Central);
-        if (dockName == GitWindow)
-            return;
-
-        GitClient::instance()->setLastCentralWidget(dockName);
-        winSer->showWidgetAtPosition(GitWindow, Position::Central, true);
-    }
 }
 
 GitMenuManager *GitMenuManager::instance()
@@ -91,9 +67,6 @@ void GitMenuManager::setCurrentFile(const QString &file)
 
     fileBlameAct->setProperty(GitFilePath, file);
     fileBlameAct->setText(tr("Blame of \"%1\"").arg(info.fileName()));
-
-    fileDiffAct->setProperty(GitFilePath, file);
-    fileDiffAct->setText(tr("Diff of \"%1\"").arg(info.fileName()));
 }
 
 void GitMenuManager::createGitSubMenu()
@@ -112,17 +85,33 @@ void GitMenuManager::createGitSubMenu()
 void GitMenuManager::createFileSubMenu()
 {
     fileLogAct = new QAction(this);
-    connect(fileLogAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, fileLogAct, GitLog));
+    connect(fileLogAct, &QAction::triggered, this, [this] {
+        const auto &filePath = fileLogAct->property(GitFilePath).toString();
+        if (GitClient::instance()->logFile(filePath)) {
+            auto dockName = winSer->getCurrentDockName(Position::Central);
+            if (dockName == GitWindow)
+                return;
+
+            GitClient::instance()->setLastCentralWidget(dockName);
+            winSer->showWidgetAtPosition(GitWindow, Position::Central, true);
+        }
+    });
 
     fileBlameAct = new QAction(this);
-    connect(fileBlameAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, fileBlameAct, GitBlame));
+    connect(fileBlameAct, &QAction::triggered, this, [this] {
+        const auto &filePath = fileBlameAct->property(GitFilePath).toString();
+        if (GitClient::instance()->blameFile(filePath)) {
+            auto dockName = winSer->getCurrentDockName(Position::Central);
+            if (dockName == GitWindow)
+                return;
 
-    fileDiffAct = new QAction(this);
-    connect(fileDiffAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, fileDiffAct, GitDiff));
+            GitClient::instance()->setLastCentralWidget(dockName);
+            winSer->showWidgetAtPosition(GitWindow, Position::Central, true);
+        }
+    });
 
     fileSubMenu.addAction(fileLogAct);
     fileSubMenu.addAction(fileBlameAct);
-    fileSubMenu.addAction(fileDiffAct);
 }
 
 void GitMenuManager::createProjectSubMenu()

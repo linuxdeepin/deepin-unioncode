@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "giteditor.h"
-#include "constants.h"
-#include "handler/changetextcursorhandler.h"
 
 #include <DGuiApplicationHelper>
 
@@ -12,7 +10,6 @@
 #include <QPainter>
 #include <QTextBlock>
 #include <QCoreApplication>
-#include <QRegularExpression>
 
 DGUI_USE_NAMESPACE
 
@@ -62,7 +59,6 @@ public:
     void updateRequest(const QRect &r, int dy);
     QTextBlock nextVisibleBlock(const QTextBlock &block) const;
 
-    AbstractTextCursorHandler *findTextCursorHandler(const QTextCursor &cursor);
     void paintLineNumbers(QPainter &painter,
                           const ExtraAreaPaintEventData &data,
                           const QRectF &blockBoundingRect) const;
@@ -71,19 +67,13 @@ public:
     GitEditor *q;
 
     QWidget *extraArea { nullptr };
-    QRegularExpression changeNumberPattern;
-    QList<AbstractTextCursorHandler *> textCursorHandlers;
-    QString sourceFile;
 };
 
 GitEditorPrivate::GitEditorPrivate(GitEditor *qq)
-    : q(qq),
-      changeNumberPattern(QRegularExpression(ChangePattern))
+    : q(qq)
 {
     extraArea = new TextEditExtraArea(q);
     extraArea->setMouseTracking(true);
-
-    textCursorHandlers.append(new ChangeTextCursorHandler(q));
 
     initConnection();
 }
@@ -131,16 +121,6 @@ QTextBlock GitEditorPrivate::nextVisibleBlock(const QTextBlock &block) const
     }
 
     return nextVisibleBlock;
-}
-
-AbstractTextCursorHandler *GitEditorPrivate::findTextCursorHandler(const QTextCursor &cursor)
-{
-    for (AbstractTextCursorHandler *handler : std::as_const(textCursorHandlers)) {
-        if (handler->findContentsUnderCursor(cursor))
-            return handler;
-    }
-
-    return nullptr;
 }
 
 struct ExtraAreaPaintEventData
@@ -224,16 +204,6 @@ GitEditor::~GitEditor()
     delete d;
 }
 
-void GitEditor::setSourceFile(const QString &sf)
-{
-    d->sourceFile = sf;
-}
-
-QString GitEditor::sourceFile() const
-{
-    return d->sourceFile;
-}
-
 int GitEditor::extraAreaWidth() const
 {
     int space = 6;
@@ -270,19 +240,6 @@ void GitEditor::extraAreaPaintEvent(QPaintEvent *e)
     }
 }
 
-QString GitEditor::changeUnderCursor(const QTextCursor &c)
-{
-    QTextCursor cursor = c;
-    // Any number is regarded as change number.
-    cursor.select(QTextCursor::WordUnderCursor);
-    if (!cursor.hasSelection())
-        return {};
-    const QString change = cursor.selectedText();
-    if (d->changeNumberPattern.match(change).hasMatch())
-        return change;
-    return {};
-}
-
 QString GitEditor::lineNumber(int blockNumber) const
 {
     return QString::number(blockNumber + 1);
@@ -306,46 +263,4 @@ void GitEditor::resizeEvent(QResizeEvent *e)
     d->extraArea->setGeometry(QStyle::visualRect(layoutDirection(), cr,
                                                  QRect(cr.left() + frameWidth(), cr.top() + frameWidth(),
                                                        extraAreaWidth(), cr.height() - 2 * frameWidth())));
-}
-
-void GitEditor::mouseMoveEvent(QMouseEvent *e)
-{
-    if (e->button()) {
-        QPlainTextEdit::mouseMoveEvent(e);
-        return;
-    }
-
-    bool overrideCursor = false;
-    Qt::CursorShape cursorShape;
-    const QTextCursor cursor = cursorForPosition(e->pos());
-
-    AbstractTextCursorHandler *handler = d->findTextCursorHandler(cursor);
-    if (handler != nullptr) {
-        handler->highlightCurrentContents();
-        overrideCursor = true;
-        cursorShape = Qt::PointingHandCursor;
-    } else {
-        setExtraSelections(QList<QTextEdit::ExtraSelection>());
-        overrideCursor = true;
-        cursorShape = Qt::IBeamCursor;
-    }
-
-    QPlainTextEdit::mouseMoveEvent(e);
-    if (overrideCursor)
-        viewport()->setCursor(cursorShape);
-}
-
-void GitEditor::mouseReleaseEvent(QMouseEvent *e)
-{
-    if (e->button() == Qt::LeftButton && !(e->modifiers() & Qt::ShiftModifier)) {
-        const QTextCursor cursor = cursorForPosition(e->pos());
-        AbstractTextCursorHandler *handler = d->findTextCursorHandler(cursor);
-        if (handler != nullptr) {
-            handler->handleCurrentContents();
-            e->accept();
-            return;
-        }
-    }
-
-    QPlainTextEdit::mouseReleaseEvent(e);
 }

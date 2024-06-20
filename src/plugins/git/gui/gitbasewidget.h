@@ -16,8 +16,7 @@ public:
         : QWidget(parent) {}
 
     virtual void setGitInfo(const QString &info) = 0;
-    virtual void setReadyMessage(const QString &msg) = 0;
-    virtual void setSourceFile(const QString &sf) {}
+    virtual QTextDocument *textDocument() const = 0;
 };
 
 #endif   // GITBASEWIDGET_H

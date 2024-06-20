@@ -16,8 +16,7 @@ public:
     ~GitLogWidget();
 
     void setGitInfo(const QString &info) override;
-    void setReadyMessage(const QString &msg) override;
-    void setSourceFile(const QString &sf) override;
+    QTextDocument *textDocument() const override;
 
 private:
     GitLogWidgetPrivate *const d;

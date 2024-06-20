@@ -5,8 +5,6 @@
 #ifndef GITTABWIDGET_H
 #define GITTABWIDGET_H
 
-#include "constants.h"
-
 #include <QWidget>
 
 class GitTabWidgetPrivate;
@@ -14,10 +12,16 @@ class GitTabWidget : public QWidget
 {
     Q_OBJECT
 public:
+    enum Type {
+        GitLog,
+        GitBlame,
+        GitDiff
+    };
+
     explicit GitTabWidget(QWidget *parent = nullptr);
     ~GitTabWidget();
 
-    int addWidget(GitType type, const QString &name);
+    int addWidget(Type type, const QString &path);
     void setInfo(int index, const QString &info);
 
 Q_SIGNALS:

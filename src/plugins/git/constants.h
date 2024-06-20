@@ -8,6 +8,8 @@
 #include <QString>
 #include <QDateTime>
 
+#include <tuple>
+
 struct CommitInfo
 {
     QString sha1;
@@ -31,19 +33,6 @@ enum FormatCodes {
     DefaultBackgroundColor = 49
 };
 
-enum GitType {
-    GitLog,
-    GitBlame,
-    GitDiff
-};
-
-enum DiffSide {
-    LeftSide,
-    RightSide,
-    SideCount
-};
-
-
 constexpr char GitWindow[] { "GitWindow" };
 constexpr char GitFilePath[] { "FilePath" };
 
@@ -58,7 +47,6 @@ constexpr char GitShowFormat[] { "--pretty=format:commit %H%d%n"
                                  "%n"
                                  "%B" };
 
-constexpr char ChangePattern[] { "\\b[a-f0-9]{7,40}\\b" };
 constexpr char AnnotationEntryPattern[] { "^(\\b[a-f0-9]{7,40}\\b) " };
 
 #endif   // CONSTANTS_H

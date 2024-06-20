@@ -469,10 +469,8 @@ void WorkspaceWidgetPrivate::onZoomValueChanged()
 
 void WorkspaceWidgetPrivate::onFileDeleted(const QString &fileName)
 {
-    if (QFile::exists(fileName)) {
-        Inotify::globalInstance()->addPath(fileName);
+    if (QFile::exists(fileName))
         return onFileModified(fileName);
-    }
 
     if (removedFileList.contains(fileName))
         return;
