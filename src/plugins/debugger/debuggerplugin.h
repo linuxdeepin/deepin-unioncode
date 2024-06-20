@@ -19,6 +19,9 @@ public:
     virtual bool start() override;
     virtual dpf::Plugin::ShutdownFlag stop() override;
 
+public slots:
+    void slotDebugStarted();
+
 private:
     dpfservice::WindowService *windowService = nullptr;
 };

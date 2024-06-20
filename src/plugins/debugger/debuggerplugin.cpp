@@ -57,11 +57,12 @@ bool DebuggerPlugin::start()
                 windowService->showWidgetAtPosition(localsPane, Position::Right, true);
         }, Qt::DirectConnection);
         connect(debugManager, &DebugManager::debugStarted, this, [=](){
-            uiController.doSwitch(MWNA_DEBUG);
+            debugManager->getLocalsPane()->show();
             windowService->showWidgetAtPosition(localsPane, Position::Right, true);
-            uiController.switchContext(tr("&Application Output"));
         }, Qt::DirectConnection);
     }
+
+    connect(debugManager, &DebugManager::debugStarted, this, &DebuggerPlugin::slotDebugStarted);
 
     return true;
 }
@@ -70,4 +71,10 @@ dpf::Plugin::ShutdownFlag DebuggerPlugin::stop()
 {
     QProcess::execute("killall -9 debugadapter");
     return Sync;
+}
+
+void DebuggerPlugin::slotDebugStarted()
+{
+    uiController.doSwitch(MWNA_DEBUG);
+    uiController.switchContext(tr("&Application Output"));
 }
