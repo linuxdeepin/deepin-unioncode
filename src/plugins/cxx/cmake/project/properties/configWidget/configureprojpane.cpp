@@ -187,7 +187,7 @@ void ConfigureProjPane::slotConfigure()
             // default use max thread count
             int coreCount = QThread::idealThreadCount();
             if (coreCount > 1) {
-                item.buildArguments << QString("-j%1").arg(coreCount);
+                item.buildArguments = QString("-j%1").arg(coreCount);
             }
             buildTypeConfigure.buildConfigure.steps.push_back(item);
         }

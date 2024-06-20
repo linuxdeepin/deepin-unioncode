@@ -29,7 +29,7 @@ struct StepItem {
     StepType type = Build;
     QString activeTargetName;
     QStringList allTargetNames;
-    QStringList buildArguments;
+    QString buildArguments;
 
     friend QDataStream &operator<<(QDataStream &stream, const StepItem &data)
     {

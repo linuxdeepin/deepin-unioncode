@@ -276,7 +276,7 @@ void StepsPane::updateSummaryText()
 
 void StepsPane::setValues(const config::StepItem &item)
 {
-    d->toolArguments->setText(item.buildArguments.join(" "));
+    d->toolArguments->setText(item.buildArguments);
 
     QMap<QString, bool> data;
     foreach (auto targetName, item.allTargetNames) {
@@ -289,6 +289,6 @@ void StepsPane::setValues(const config::StepItem &item)
 
 void StepsPane::getValues(config::StepItem &item)
 {
-    item.buildArguments = d->toolArguments->text().split(" ");
+    item.buildArguments = d->toolArguments->text();
     item.activeTargetName = d->model->getSelectedTarget();
 }
