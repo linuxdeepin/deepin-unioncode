@@ -14,6 +14,7 @@ set(CXX_CPP
     mainframe/compileoutputpane.cpp
     mainframe/problemoutputpane.cpp
     mainframe/commonparser.cpp
+    mainframe/builderwidget.cpp
     buildercore.cpp
     buildercore.json
     )
@@ -30,6 +31,7 @@ set(CXX_H
     mainframe/compileoutputpane.h
     mainframe/problemoutputpane.h
     mainframe/commonparser.h
+    mainframe/builderwidget.h
     buildercore.h
     )
 

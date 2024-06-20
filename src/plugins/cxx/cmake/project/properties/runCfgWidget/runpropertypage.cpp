@@ -105,8 +105,7 @@ void RunPropertyPage::saveConfig()
     for (; iter != param->buildTypeConfigures.end(); ++iter) {
         if (param->defaultType == iter->type) {
             iter->runConfigure.targetsRunConfigure = d->targetsRunConfigure;
-            //do not update execute program when save config
-            //iter->runConfigure.defaultTargetName = d->exeComboBox->currentText();
+            iter->runConfigure.defaultTargetName = d->exeComboBox->currentText();
         }
     }
 

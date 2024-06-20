@@ -270,8 +270,6 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
         tempInfo.setRunWorkspaceDir(activeExecTarget.workingDir);
     }
     tempInfo.setSourceFiles(allFiles);
-    tempInfo.setExePrograms(TargetsManager::instance()->getExeTargetNamesList());
-    tempInfo.setCurrentProgram(TargetsManager::instance()->getActivedTargetByTargetType(TargetType::kActiveExecTarget).name);
     ProjectInfo::set(rootItem, tempInfo);
     emit parseProjectEnd({ rootItem, true });
     rootItem->setData(ParsingState::Done, Parsing_State_Role);

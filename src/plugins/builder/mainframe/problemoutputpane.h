@@ -8,12 +8,12 @@
 #include "common/type/task.h"
 #include "tasks/taskmodel.h"
 
-#include <DWidget>
+#include <DFrame>
 #include <DMenu>
 
 DWIDGET_USE_NAMESPACE
 
-class ProblemOutputPane : public DWidget
+class ProblemOutputPane : public DFrame
 {
     Q_OBJECT
 public:

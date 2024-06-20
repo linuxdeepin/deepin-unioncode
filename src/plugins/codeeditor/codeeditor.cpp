@@ -102,7 +102,7 @@ void CodeEditor::initButtonBox()
     layout->addWidget(forwardBtn);
     layout->setSpacing(0);
 
-    windowService->addWidgetToTopTool(new AbstractWidget(btnWidget), false, false, Priority::low);
+    windowService->addWidgetToTopTool(new AbstractWidget(btnWidget), "", false, false);
 }
 
 void CodeEditor::initActions()
@@ -180,7 +180,7 @@ void CodeEditor::initWindowService()
     if (windowService) {
         QAction *action = new QAction(MWNA_EDIT, this);
         action->setIcon(QIcon::fromTheme("edit-navigation"));
-        windowService->addNavigationItem(new AbstractAction(action), Priority::high);
+        windowService->addNavigationItem(new AbstractAction(action), 5);
 
         windowService->registerWidgetToMode("editWindow", new AbstractWidget(workspaceWidget), CM_EDIT, Position::Central, true, true);
         windowService->registerWidgetToMode("editWindow", new AbstractWidget(workspaceWidget), CM_DEBUG, Position::Central, true, true);

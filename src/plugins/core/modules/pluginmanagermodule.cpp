@@ -5,7 +5,6 @@
 #include "pluginmanagermodule.h"
 #include "common/actionmanager/actionmanager.h"
 #include "services/window/windowelement.h"
-#include "services/window/windowservice.h"
 #include "base/abstractaction.h"
 #include "uicontroller/controller.h"
 #include "gui/pluginsui.h"
@@ -41,7 +40,7 @@ void PluginManagerModule::initialize(Controller *_uiController)
                                        MWMTA_PLUGINS);
 
     uiController->addAction(MWM_HELP, actionOptionsImpl);
-    uiController->addNavigationItem(actionOptionsImpl, Priority::lowest);
+    uiController->addNavigationItem(actionOptionsImpl, 255);
 
     auto detailViewImpl = new AbstractWidget(pluginsUi->getPluginDetailView());
     auto storeWidgetImpl = new AbstractWidget(pluginsUi->getStoreWidget());

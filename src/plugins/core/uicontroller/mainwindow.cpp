@@ -466,7 +466,7 @@ void MainWindow::addTopToolBar()
     d->topToolbar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QHBoxLayout *hl = new QHBoxLayout(d->topToolbar);
-    hl->setContentsMargins(10, 0, 20, 0);
+    hl->setContentsMargins(20, 0, 20, 0);
     hl->addLayout(d->leftHlayout, 1);
     hl->addLayout(d->middleHlayout, 1);
     hl->addLayout(d->rightHlayout, 1);

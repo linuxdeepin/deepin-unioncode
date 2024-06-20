@@ -54,8 +54,6 @@ void DetailPropertyWidget::setupUI()
     label = new DLabel(tr("Executable File: "), this);
     label->setFixedWidth(120);
     d->executeFileComboBox = new DComboBox(this);
-    //todo: Provide default options in the properties window    no use for now
-    d->executeFileComboBox->setEnabled(false);
     hLayout->addWidget(label);
     hLayout->addWidget(d->executeFileComboBox);
     vLayout->addLayout(hLayout);
@@ -130,8 +128,8 @@ void DetailPropertyWidget::initData()
     };
     initPyVersionComboBox(d->pyVersionComboBox, getPythonAllVersion());
 
-    d->executeFileComboBox->insertItem(0, exeCurrent);
-    d->executeFileComboBox->insertItem(1, exeEntry);
+    d->executeFileComboBox->insertItem(0, tr("Current File"));
+    d->executeFileComboBox->insertItem(1, tr("Automatically obtain the entry file"));
 }
 
 void DetailPropertyWidget::setValues(const config::ProjectConfigure *param)

@@ -9,11 +9,6 @@
 #include <QColor>
 #include <QtConcurrent>
 
-/**
- * define AppOutPutPane`s toolbar name
- */
-const QString debugToolBarName = "debugTool";
-
 /*
  * Redefine global instance
  */

@@ -34,7 +34,7 @@ bool Recent::start()
 
         QAction *action = new QAction(MWNA_RECENT, this);
         action->setIcon(QIcon::fromTheme("recent-navigation"));
-        windowService->addNavigationItem(new AbstractAction(action), Priority::highest);
+        windowService->addNavigationItem(new AbstractAction(action), 0);
 
         auto recentWidgetImpl = new AbstractWidget(RecentDisplay::instance());
         windowService->registerWidgetToMode("recentWindow", recentWidgetImpl, CM_RECENT, Position::FullWindow, true, true);

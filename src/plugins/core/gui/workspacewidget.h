@@ -22,9 +22,6 @@ public:
     explicit WorkspaceWidget(QWidget *parent = nullptr);
 
     void addWorkspaceWidget(const QString &title, AbstractWidget *treeWidget, const QString &iconName);
-    void registerToolBtnToWidget(DToolButton *btn, const QString &title);
-    QList<DToolButton *> getAllToolBtn();
-    QList<DToolButton *> getToolBtnByTitle(const QString &title);
     bool switchWidgetWorkspace(const QString &title);
     bool getCurrentExpandState();
     QString getCurrentTitle() const;
@@ -43,7 +40,6 @@ private:
 
     QMap<QString, DWidget *> editWorkspaceWidgets;
     QMap<QString, DToolButton *> workspaceTabButtons;
-    QMultiMap<QString, DToolButton *> toolBtnOfWidget;
     DStackedWidget *stackEditWorkspaceWidget { nullptr };
     DFrame *workspaceTabBar { nullptr };
 };

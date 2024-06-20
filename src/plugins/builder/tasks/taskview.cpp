@@ -11,7 +11,6 @@ TaskView::TaskView(QWidget *parent) : DListView(parent)
 {
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-    setAutoFillBackground(true);
 
     QFontMetrics fm(font());
     int vStepSize = fm.height() + 3;

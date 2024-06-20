@@ -55,11 +55,11 @@ QDialog *PythonProjectGenerator::configureWidget(const QString &language,
 {
     using namespace dpfservice;
 
+
     ProjectInfo info;
     info.setLanguage(language);
     info.setKitName(PythonProjectGenerator::toolKitName());
     info.setWorkspaceFolder(projectPath);
-    info.setExePrograms({exeCurrent, exeEntry});
 
     configure(info);
 

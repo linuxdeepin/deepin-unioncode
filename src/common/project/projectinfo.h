@@ -46,10 +46,6 @@ public:
     inline QStringList cleanCustomArgs() const {return data["CleanCustomArgs"].toStringList();}
     inline void setRunProgram(const QString &program) {data["RunProgram"] = program;}
     inline QString runProgram() const {return data["RunProgram"].toString();}
-    inline void setExePrograms(const QStringList &args) {data["exePrograms"] = args;}
-    inline QStringList exePrograms() const {return data["exePrograms"].toStringList();}
-    inline void setCurrentProgram(const QString &arg) {data["currentProgram"] = arg;}
-    inline QString currentProgram() const {return data["currentProgram"].toString();}
     inline void setRunCustomArgs(const QStringList &args) {data["RunCustomArgs"] = args;}
     inline QStringList runCustomArgs() const {return data["RunCustomArgs"].toStringList();}
     inline void setRunWorkspaceDir(const QString &workspaceDir) {data["RunWorkspaceDir"] = workspaceDir;}

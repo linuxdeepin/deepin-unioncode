@@ -33,7 +33,7 @@ bool CodeGeex::start()
             QAction *action = new QAction(MWNA_CODEGEEX, this);
             action->setIcon(QIcon::fromTheme("codegeex-navigation"));
 
-            windowService->addNavigationItem(new AbstractAction(action), Priority::medium);
+            windowService->addNavigationItem(new AbstractAction(action), 10);
 
             auto codeGeex = new CodeGeeXWidget;
             auto codeGeexImpl = new AbstractWidget(codeGeex);
