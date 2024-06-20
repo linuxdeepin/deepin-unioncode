@@ -17,7 +17,6 @@
 #include <QStandardItemModel>
 #include <QVBoxLayout>
 #include <QStyledItemDelegate>
-#include <QApplication>
 
 DWIDGET_USE_NAMESPACE
 
