@@ -946,7 +946,7 @@ QsciScintilla::IndentState QsciScintilla::getIndentState(int line)
 
     // Get the styled text.
     long spos = SendScintilla(SCI_POSITIONFROMLINE, line);
-    long epos = SendScintilla(SCI_GETLINEENDPOSITION, line + 1);
+    long epos = SendScintilla(SCI_POSITIONFROMLINE, line + 1);
 
     char *text = new char[(epos - spos + 1) * 2];
 

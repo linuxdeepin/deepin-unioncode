@@ -133,7 +133,7 @@ void CodeEditor::initActions()
                                             tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
     auto inputFindUsageAction = new AbstractAction(findUsageAction, this);
     inputFindUsageAction->setShortCutInfo("Editor.findUsage",
-                                          tr("Find Usages"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_G));
+                                          tr("Find Usages"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_U));
     auto inputRenameAction = new AbstractAction(renameAction, this);
     inputRenameAction->setShortCutInfo("Editor.rename",
                                        tr("Rename Symbol Under Cursor"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_R));
