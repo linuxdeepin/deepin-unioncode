@@ -65,22 +65,13 @@ void CodeGeeXWidget::onNewSessionCreated()
 
 void CodeGeeXWidget::toTranslateCode(const QString &code)
 {
-    switchPage(pageState::TrasnlatePage);
-    transPage->setInputEditText(code);
-    transPage->cleanOutputEdit();
-}
-
-void CodeGeeXWidget::switchPage(pageState state)
-{
-    if (state == pageState::TrasnlatePage) {
+    if (stackWidget->currentWidget() != transPage) {
         tabBar->buttonList().at(0)->setChecked(false);
         tabBar->buttonList().at(1)->setChecked(true);
         stackWidget->setCurrentWidget(transPage);
-    } else {
-        tabBar->buttonList().at(0)->setChecked(true);
-        tabBar->buttonList().at(1)->setChecked(false);
-        stackWidget->setCurrentWidget(askPage);
     }
+    transPage->setInputEditText(code);
+    transPage->cleanOutputEdit();
 }
 
 void CodeGeeXWidget::onCloseHistoryWidget()
@@ -167,7 +158,6 @@ void CodeGeeXWidget::initConnection()
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::logoutSuccessed, this, &CodeGeeXWidget::onLogOut);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::createdNewSession, this, &CodeGeeXWidget::onNewSessionCreated);
     connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestToTransCode, this, &CodeGeeXWidget::toTranslateCode);
-    connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestMessageUpdate, this, [=](){switchPage(pageState::AskPage);});
 }
 
 void CodeGeeXWidget::initAskWidget()

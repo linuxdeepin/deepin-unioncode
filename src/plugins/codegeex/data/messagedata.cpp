@@ -18,15 +18,13 @@ MessageData::MessageData(const QString &id, Type type)
 
 void MessageData::updateData(const QString &data)
 {
-    auto modifiedData = data;
-    modifiedData.replace("\\n", "\n");
-    modifiedData.replace("\\\"", "\"");
+    QStringList lines = data.split("\n");
+    lines.removeAll("");
 
-    QStringList lines = modifiedData.split("\n", QString::SkipEmptyParts);
     if (lines.length() < msgDataLines.length())
         return;
 
-    msgData = modifiedData;
+    msgData = data;
     msgDataLines = lines;
     //    qInfo() << "update msg line" << msgDataLines;
 }

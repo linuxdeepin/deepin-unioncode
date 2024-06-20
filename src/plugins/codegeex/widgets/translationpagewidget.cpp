@@ -43,7 +43,6 @@ void TranslationPageWidget::onTranslateBtnClicked()
         spinner->move(outputEdit->x() + outputEdit->width() / 2, outputEdit->y() + outputEdit->height() / 2);
         spinner->show();
         spinner->start();
-        outputEdit->updateCode("");
         Copilot::instance()->translateCode(srcCode, dstLang);
     }
 }

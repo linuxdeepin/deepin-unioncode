@@ -15,127 +15,123 @@
 #include <QHash>
 
 namespace CodeGeeX {
+QHash<QString, CopilotApi::ResponseType> kResponseTypes {
+    { "multilingual_code_generate", CopilotApi::multilingual_code_generate },
+    { "multilingual_code_explain", CopilotApi::multilingual_code_explain },
+    { "multilingual_code_translate", CopilotApi::multilingual_code_translate },
+    { "multilingual_code_bugfix", CopilotApi::multilingual_code_bugfix }
+};
 CopilotApi::CopilotApi(QObject *parent)
     : QObject(parent), manager(new QNetworkAccessManager(this))
 {
 }
 
-void CopilotApi::postGenerate(const QString &url, const QString &code, const QString &suffix)
+void CopilotApi::postGenerate(const QString &url, const QString &apiKey, const QString &prompt, const QString &suffix)
 {
-    QByteArray body = assembleGenerateBody(code, suffix);
-    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
-    reply->setProperty("responseType", CopilotApi::inline_completions);
-    processResponse(reply);
-}
 
-void CopilotApi::postTranslate(const QString &url,
-                               const QString &code,
-                               const QString &dst_lang)
-{
-    QByteArray body = assembleTranslateBody(code, dst_lang);
-    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
-    reply->setProperty("responseType", CopilotApi::multilingual_code_translate);
+    QByteArray body = assembleGenerateBody(prompt, suffix, apiKey);
+    QNetworkReply *reply = postMessage(url, body);
     processResponse(reply);
 }
 
 void CopilotApi::postComment(const QString &url,
-                             const QString &code,
-                             const QString &locale)
-{
-    QByteArray body = assembleCommandBody(code, locale, "comment");
-    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
-    reply->setProperty("responseType", CopilotApi::multilingual_code_comment);
-
-    processResponse(reply);
-}
-
-void CopilotApi::postCommand(const QString &url,
-                             const QString &code,
+                             const QString &apiKey,
+                             const QString &prompt,
+                             const QString &lang,
                              const QString &locale,
-                             const QString &command)
+                             const QString &apisecret)
 {
-    if (CodeGeeXManager::instance()->checkRunningState(true))
-        return;
-    QByteArray body = assembleCommandBody(code, locale, command);
-    QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
-    reply->setProperty("responseType", CopilotApi::receiving_by_stream);
-
-    emit messageSended();
+    QByteArray body = assembleCommentBody(prompt, lang, locale, apiKey, apisecret);
+    QNetworkReply *reply = postMessage(url, body);
     processResponse(reply);
 }
 
-QNetworkReply *CopilotApi::postMessage(const QString &url,
-                                       const QString &token,
-                                       const QByteArray &body)
+void CopilotApi::postTranslate(const QString &url,
+                               const QString &apiKey,
+                               const QString &prompt,
+                               const QString &src_lang,
+                               const QString &dst_lang,
+                               const QString &apisecret)
+{
+    QByteArray body = assembleTranslateBody(prompt, src_lang, dst_lang, apiKey, apisecret);
+    QNetworkReply *reply = postMessage(url, body);
+    processResponse(reply);
+}
+
+void CopilotApi::postFixBug(const QString &url,
+                            const QString &apiKey,
+                            const QString &prompt,
+                            const QString &lang,
+                            const QString &apisecret)
+{
+    QByteArray body = assembleBugfixBody(prompt, lang, apiKey, apisecret);
+    QNetworkReply *reply = postMessage(url, body);
+    processResponse(reply);
+}
+
+QNetworkReply *CopilotApi::postMessage(const QString &url, const QByteArray &body)
 {
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request.setRawHeader("code-token", token.toUtf8());
 
     return manager->post(request, body);
 }
 
-/*
-    data = {
-        "context": [{
-            "kind":
-            "active_document":{}
-            },
-            {
-            "kind":
-            "document":{}
-            },
-            ],
-        "model":,
-        "lang":
-    }
-*/
-QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString &suffix)
+QByteArray CopilotApi::assembleGenerateBody(const QString &prompt,
+                                            const QString &suffix,
+                                            const QString &apikey,
+                                            int n,
+                                            const QString &apisecret)
 {
-    QJsonObject activeDocument;
-    activeDocument.insert("path", "main.cpp");
-    activeDocument.insert("prefix", prefix);
-    activeDocument.insert("suffix", suffix);
-    activeDocument.insert("lang", "C++");
-
-    QJsonObject contextItem;
-    contextItem.insert("kind", "active_document");
-    contextItem.insert("active_document", activeDocument);
-
-    QJsonArray context;
-    context.append(contextItem);
-
     QJsonObject json;
-    json.insert("context", context);
-    json.insert("model", completionModel);
-    json.insert("lang", "C++");
-    json.insert("max_new_tokens", 64);
+    json.insert("prompt", prompt);
+    json.insert("isFimEnabled", false);
+    json.insert("suffix", suffix);
+    json.insert("n", n);
+    json.insert("lang", "c++");
+    json.insert("apikey", apikey);
+    json.insert("apisecret", apisecret);
 
     QJsonDocument doc(json);
     return doc.toJson();
 }
 
-QByteArray CopilotApi::assembleTranslateBody(const QString &code, const QString &dst_lang)
+QByteArray CopilotApi::assembleCommentBody(const QString &prompt, const QString &lang, const QString &locale, const QString &apikey, const QString &apisecret)
 {
     QJsonObject json;
-    json.insert("lang", dst_lang);
-    json.insert("code", code);
-    json.insert("command", "translation");
-    json.insert("locale", "zh");
-    json.insert("model", chatModel);
-
-    QJsonDocument doc(json);
-    return doc.toJson();
-}
-
-QByteArray CopilotApi::assembleCommandBody(const QString &code, const QString &locale, const QString &command)
-{
-    QJsonObject json;
-    json.insert("command", command);
-    json.insert("code", code);
-    json.insert("talkId", CodeGeeXManager::instance()->getTalkId());
+    json.insert("prompt", prompt);
+    json.insert("lang", lang);
     json.insert("locale", locale);
-    json.insert("model", chatModel);
+    json.insert("apikey", apikey);
+    json.insert("apisecret", apisecret);
+
+    QJsonDocument doc(json);
+    return doc.toJson();
+}
+
+QByteArray CopilotApi::assembleTranslateBody(const QString &prompt, const QString &src_lang, const QString &dst_lang, const QString &apikey, const QString &apisecret)
+{
+    QJsonObject json;
+    json.insert("prompt", prompt);
+    json.insert("src_lang", src_lang);
+    json.insert("dst_lang", dst_lang);
+    json.insert("apikey", apikey);
+    json.insert("apisecret", apisecret);
+
+    QJsonDocument doc(json);
+    return doc.toJson();
+}
+
+QByteArray CopilotApi::assembleBugfixBody(const QString &prompt,
+                                          const QString &lang,
+                                          const QString &apikey,
+                                          const QString &apisecret)
+{
+    QJsonObject json;
+    json.insert("prompt", prompt);
+    json.insert("lang", lang);
+    json.insert("apikey", apikey);
+    json.insert("apisecret", apisecret);
 
     QJsonDocument doc(json);
     return doc.toJson();
@@ -143,102 +139,27 @@ QByteArray CopilotApi::assembleCommandBody(const QString &code, const QString &l
 
 void CopilotApi::processResponse(QNetworkReply *reply)
 {
-    if (reply->property("responseType") == CopilotApi::receiving_by_stream) {
-        connect(CodeGeeXManager::instance(), &CodeGeeXManager::requestStop, this, [=](){
-            reply->close();
-        });
-        connect(reply, &QNetworkReply::readyRead, this, [=]() {
-            slotReadReplyStream(reply);
-        });
-    } else {
-        connect(reply, &QNetworkReply::finished, this, [=](){
-            slotReadReply(reply);
-        });
-    }
-}
+    connect(reply, &QNetworkReply::finished, [=]() {
+        if (reply->error()) {
+            qCritical() << "Error:" << reply->errorString();
+        } else {
+            QString replyMsg = QString::fromUtf8(reply->readAll());
 
-void CopilotApi::slotReadReply(QNetworkReply *reply)
-{
-    if (reply->error()) {
-        qCritical() << "Error:" << reply->errorString();
-    } else {
-        QString replyMsg = QString::fromUtf8(reply->readAll());
-        QJsonParseError error;
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(replyMsg.toUtf8(), &error);
-
-        if (error.error != QJsonParseError::NoError) {
-            qCritical() << "JSON parse error: " << error.errorString();
-            return;
-        }
-
-        QJsonObject jsonObject = jsonDocument.object();
-        QString code {};
-
-        auto type = reply->property("responseType").value<CopilotApi::ResponseType>();
-        if (type == CopilotApi::inline_completions) {
-            auto content = jsonObject.value("inline_completions").toArray().at(0).toObject();
-            code = content.value("text").toString();
-            emit response(CopilotApi::inline_completions, code, "");
-        } else if (type == CopilotApi::multilingual_code_translate) {
-            auto codeLines = jsonObject.value("text").toString().split('\n');
-            QString lang = codeLines.first();
-
-            if (lang.startsWith("```"))
-                lang = lang.mid(3);
-            codeLines.removeFirst();
-            while (codeLines.last() == "")
-                codeLines.removeLast();
-            if (codeLines.last() == "```")
-                codeLines.removeLast();   //remove ```lang ```
-
-            code = codeLines.join('\n');
-            emit response(CopilotApi::multilingual_code_translate, code, lang);
-        } else if (type == CopilotApi::multilingual_code_comment) {
-            code = jsonObject.value("text").toString();
-            emit response(CopilotApi::multilingual_code_comment, code, "");
-        }
-    }
-}
-
-void CopilotApi::slotReadReplyStream(QNetworkReply *reply)
-{
-    if (reply->error()) {
-        qCritical() << "Error:" << reply->errorString();
-    } else {
-        QString replyMsg = QString::fromUtf8(reply->readAll());
-        QStringList lines = replyMsg.split('\n');
-        QString data;
-        QString event;
-        QString id;
-
-        for (const auto &line : lines) {
-            auto index = line.indexOf(':');
-            auto key = line.mid(0, index);
-            auto value = line.mid(index + 1);
-
-            if (key == "event") {
-                event = value.trimmed();
-            } else if (key == "id") {
-                id = value.trimmed();
-            } else if (key == "data") {   // value of 'data': "data:{"text":"a"}"    but only existed 'text' filed for now
-                index = value.indexOf(':');
-                data = value.mid(index + 2, value.length() - index - 4);   // remove " "}
-
-                emit responseByStream(id, data, event);
+            QJsonParseError error;
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(replyMsg.toUtf8(), &error);
+            if (error.error != QJsonParseError::NoError) {
+                qCritical() << "JSON parse error: " << error.errorString();
+                return;
             }
+
+            QJsonObject jsonObject = jsonDocument.object();
+            QString app = jsonObject.value("result").toObject().value("app").toString();
+            QJsonArray codeArray = jsonObject.value("result").toObject().value("output").toObject().value("code").toArray();
+            QString dstLang = jsonObject.value("result").toObject().value("input").toObject().value("dst_lang").toString();
+            QString code = codeArray.first().toString();
+
+            emit response(kResponseTypes.value(app), code, dstLang);
         }
-    }
+    });
 }
-
-void CopilotApi::setModel(languageModel model)
-{
-    if (model == CodeGeeX::Lite) {
-        chatModel = chatModelLite;
-        completionModel = completionModelLite;
-    } else if (model == CodeGeeX::Pro) {
-        chatModel = chatModelPro;
-        completionModel = completionModelPro;
-    }
-}
-
 }   // end namespace

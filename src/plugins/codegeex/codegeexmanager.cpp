@@ -15,8 +15,7 @@
 #include <QTimer>
 #include <QDateTime>
 
-static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatCodeSseV3/chat";
-//static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
+static const char *kUrlSSEChat = "https://codegeex.cn/prod/code/chatGlmSse/chat";
 static const char *kUrlNewSession = "https://codegeex.cn/prod/code/chatGlmTalk/insert";
 static const char *kUrlDeleteSession = "https://codegeex.cn/prod/code/chatGlmTalk/delete";
 static const char *kUrlQuerySession = "https://codegeex.cn/prod/code/chatGlmTalk/selectList";
@@ -76,15 +75,6 @@ void CodeGeeXManager::loadConfig()
     }
 }
 
-void CodeGeeXManager::setCurrentModel(languageModel model)
-{
-    Copilot::instance()->setCurrentModel(model);
-    if (model == Lite)
-        askApi.setModel(chatModelLite);
-    else if (model == Pro)
-        askApi.setModel(chatModelPro);
-}
-
 void CodeGeeXManager::createNewSession()
 {
     QString currentMSecsStr = QString::number(QDateTime::currentMSecsSinceEpoch());
@@ -119,17 +109,15 @@ void CodeGeeXManager::sendMessage(const QString &prompt)
     msgData.updateData(prompt);
     Q_EMIT requestMessageUpdate(msgData);
 
-    if (currentChat.first.isEmpty())
-        currentChat.first = prompt;
     QMultiMap<QString, QString> history {};
-    for (auto chat : chatHistory) {
-        history.insert(chat.first, chat.second);
+    for (auto msgData : curSessionMsg) {
+        history.insert(msgData.messageID(), msgData.messageData());
     }
     QString machineId = QSysInfo::machineUniqueId();
     QString talkId = currentTalkID;
     askApi.postSSEChat(kUrlSSEChat, sessionId, prompt, machineId, history, talkId);
 
-    startReceiving();
+    Q_EMIT chatStarted();
 }
 
 void CodeGeeXManager::onSessionCreated(const QString &talkId, bool isSuccessful)
@@ -146,27 +134,19 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
 {
     if (msgID.isEmpty())
         return;
-    
-    if (event == "finish") {
-        responseData.clear();
-        if (!currentChat.first.isEmpty() && currentChat.second.isEmpty()) {
-            currentChat.second = data;
-            chatHistory.append(currentChat);
-            chatRecord empty {};
-            currentChat.swap(empty);
-        }
-        isRunning = false;
-        emit chatFinished();
-        return;
-    } else if (event == "add") {
-        responseData += data;
-        if (!curSessionMsg.contains(msgID))
-            curSessionMsg.insert(msgID, MessageData(msgID, MessageData::Anwser));
 
-        if (!data.isEmpty()) {
-            curSessionMsg[msgID].updateData(responseData);
-            Q_EMIT requestMessageUpdate(curSessionMsg[msgID]);
-        }
+    //    qInfo() << "resp msg:" << msgID << data << event;
+    if (!curSessionMsg.contains(msgID))
+        curSessionMsg.insert(msgID, MessageData(msgID, MessageData::Anwser));
+
+    if (!data.isEmpty()) {
+        curSessionMsg[msgID].updateData(data);
+        Q_EMIT requestMessageUpdate(curSessionMsg[msgID]);
+    }
+
+    if (event == "finish") {
+        emit chatFinished();
+    } else if (event == "add") {
     }
 }
 
@@ -250,6 +230,11 @@ void CodeGeeXManager::recevieDeleteResult(const QStringList &talkIds, bool succe
     }
 }
 
+void CodeGeeXManager::stopReceive()
+{
+    Q_EMIT askApi.stopReceive();
+}
+
 CodeGeeXManager::CodeGeeXManager(QObject *parent)
     : QObject(parent)
 {
@@ -266,12 +251,7 @@ void CodeGeeXManager::initConnections()
     connect(&askApi, &AskApi::getSessionListResult, this, &CodeGeeXManager::recevieSessionRecords);
     connect(&askApi, &AskApi::sessionDeleted, this, &CodeGeeXManager::recevieDeleteResult);
     connect(&askApi, &AskApi::getMessageListResult, this, &CodeGeeXManager::showHistoryMessage);
-
     connect(Copilot::instance(), &Copilot::translatingText, this, &CodeGeeXManager::recevieToTranslate);
-    connect(Copilot::instance(), &Copilot::response,  this, &CodeGeeXManager::onResponse);
-    connect(Copilot::instance(), &Copilot::messageSended,  this, &CodeGeeXManager::startReceiving);
-
-    connect(this, &CodeGeeXManager::requestStop, &askApi, &AskApi::stopReceive);
 }
 
 void CodeGeeXManager::queryLoginState()
@@ -298,7 +278,6 @@ void CodeGeeXManager::logout()
 
 void CodeGeeXManager::cleanHistoryMessage()
 {
-    chatHistory.clear();
     curSessionMsg.clear();
 }
 
@@ -310,26 +289,6 @@ void CodeGeeXManager::fetchSessionRecords()
 void CodeGeeXManager::fetchMessageList(const QString &talkId)
 {
     askApi.getMessageList(kUrlQueryMessage, sessionId, 1, 50, talkId);
-}
-
-void CodeGeeXManager::startReceiving()
-{
-    isRunning = true;
-    emit chatStarted();
-}
-
-void CodeGeeXManager::stopReceiving()
-{
-    isRunning = false;
-    responseData.clear();
-    chatRecord empty {};
-    currentChat.swap(empty);
-    emit requestStop();
-}
-
-bool CodeGeeXManager::checkRunningState(bool state)
-{
-    return isRunning == state;
 }
 
 QList<RecordData> CodeGeeXManager::sessionRecords() const
@@ -346,14 +305,4 @@ QString CodeGeeXManager::uuid()
 {
     QUuid uuid = QUuid::createUuid();
     return uuid.toString().replace("{", "").replace("}", "").replace("-", "");
-}
-
-QString CodeGeeXManager::getSessionId() const
-{
-    return sessionId;
-}
-
-QString CodeGeeXManager::getTalkId() const
-{
-    return currentTalkID;
 }

@@ -4,11 +4,9 @@
 
 #include "detailwidget.h"
 #include "common/util/custompaths.h"
+#include "copilot.h"
 
 #include <DCheckBox>
-#include <DComboBox>
-#include <DLabel>
-#include <DLineEdit>
 
 #include <QJsonObject>
 #include <QJsonDocument>
@@ -17,23 +15,22 @@
 #include <QFile>
 #include <QDir>
 #include <QRadioButton>
+#include <DLineEdit>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <DLabel>
 #include <QHeaderView>
 #include <QDebug>
-#include <QAction>
 
 DWIDGET_USE_NAMESPACE
 
 static const char *kCodeCompletion = "codeCompletion";
-static const char *kModel = "model";
 
 class DetailWidgetPrivate
 {
     friend class DetailWidget;
 
     DCheckBox *cbCodeCompletion = nullptr;
-    DComboBox *modelBox = nullptr;
 };
 
 DetailWidget::DetailWidget(QWidget *parent)
@@ -55,29 +52,16 @@ void DetailWidget::setupUi()
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     setLayout(vLayout);
 
-    QHBoxLayout *completionLayout = new QHBoxLayout;
-    DLabel *completionLabel = new DLabel(DLabel::tr("Code Completion:"), this);
+    QHBoxLayout *hLayout = new QHBoxLayout(this);
+    DLabel *label = new DLabel(DLabel::tr("Code Completion:"));
     d->cbCodeCompletion = new DCheckBox(this);
-    completionLayout->addWidget(completionLabel);
-    completionLayout->addWidget(d->cbCodeCompletion);
-
-    QHBoxLayout *modelLayout = new QHBoxLayout;
-    DLabel *modelLabel = new DLabel(DLabel::tr("model"), this);
-    d->modelBox = new DComboBox(this);
-    d->modelBox->addItem("CodeGeex Lite", CodeGeeX::Lite);
-    d->modelBox->addItem("CodeGeex Pro", CodeGeeX::Pro);
-    modelLayout->addWidget(modelLabel);
-    modelLayout->addWidget(d->modelBox);
-
-    connect(d->modelBox, &DComboBox::currentTextChanged, this, [=](const QString &text){
-        if (text == "CodeGeex Lite")
-            d->modelBox->setToolTip(tr("Quickly Answer Questions"));
-        else if (text == "CodeGeex Pro")
-            d->modelBox->setToolTip(tr("Provide More Accurate Answers to Technical Questions"));
+    hLayout->addWidget(label);
+    hLayout->addWidget(d->cbCodeCompletion);
+    connect(d->cbCodeCompletion, &DCheckBox::clicked, this, [](bool checked){
+        Copilot::instance()->setGenerateCodeEnabled(checked);
     });
 
-    vLayout->addLayout(completionLayout);
-    vLayout->addLayout(modelLayout);
+    vLayout->addLayout(hLayout);
     vLayout->addStretch();
 }
 
@@ -85,11 +69,8 @@ bool DetailWidget::getControlValue(QMap<QString, QVariant> &map)
 {
     CodeGeeXConfig config;
     config.codeCompletionEnabled = d->cbCodeCompletion->isChecked();
-    config.model = d->modelBox->currentData().value<CodeGeeX::languageModel>();
     dataToMap(config, map);
 
-    Copilot::instance()->setGenerateCodeEnabled(config.codeCompletionEnabled);
-    CodeGeeXManager::instance()->setCurrentModel(config.model);
     return true;
 }
 
@@ -100,17 +81,14 @@ void DetailWidget::setControlValue(const QMap<QString, QVariant> &map)
     mapToData(map, config);
 
     d->cbCodeCompletion->setChecked(config.codeCompletionEnabled);
-    for (auto index = 0; index < d->modelBox->count(); index++) {
-        if (d->modelBox->itemData(index) == config.model)
-            d->modelBox->setCurrentIndex(index);
-    }
+
+    Copilot::instance()->setGenerateCodeEnabled(config.codeCompletionEnabled);
 }
 
 bool DetailWidget::dataToMap(const CodeGeeXConfig &config, QMap<QString, QVariant> &map)
 {
     QMap<QString, QVariant> apiKey;
     apiKey.insert(kCodeCompletion, config.codeCompletionEnabled);
-    apiKey.insert(kModel, config.model);
 
     map.insert("Detail", apiKey);
 
@@ -123,9 +101,6 @@ bool DetailWidget::mapToData(const QMap<QString, QVariant> &map, CodeGeeXConfig 
     auto var = detail.value(kCodeCompletion);
     if (var.isValid())
         config.codeCompletionEnabled = var.toBool();
-    var = detail.value(kModel);
-    if (var.isValid())
-        config.model = var.value<CodeGeeX::languageModel>();
 
     return true;
 }

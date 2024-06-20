@@ -4,15 +4,13 @@
 #ifndef COPILOTAPI_H
 #define COPILOTAPI_H
 
-#include "codegeexmanager.h"
-
 #include <QObject>
-#include <QMetaType>
 
 class QNetworkAccessManager;
 class QNetworkReply;
 
 namespace CodeGeeX {
+
 static QList<QString> SupportLanguage {
     "python",
     "go",
@@ -118,62 +116,71 @@ class CopilotApi : public QObject
 
 public:
     CopilotApi(QObject *parent = nullptr);
-    void setModel(languageModel model);
 
-    void postGenerate(const QString &url, const QString &code, const QString &suffix);
+    void postGenerate(const QString &url, const QString &apiKey, const QString &prompt, const QString &suffix);
 
     void postComment(const QString &url,
-                     const QString &code,
-                     const QString &locale);
+                     const QString &apiKey,
+                     const QString &prompt,
+                     const QString &lang,
+                     const QString &locale,
+                     const QString &apisecret = "");
 
     void postTranslate(const QString &url,
-                       const QString &code,
-                       const QString &dst_lang);
+                       const QString &apiKey,
+                       const QString &prompt,
+                       const QString &src_lang,
+                       const QString &dst_lang,
+                       const QString &apisecret = "");
 
-    void postCommand(const QString &url,
-                     const QString &code,
-                     const QString &locale,
-                     const QString &command);
+    void postFixBug(const QString &url,
+                    const QString &apiKey,
+                    const QString &prompt,
+                    const QString &lang,
+                    const QString &apisecret = "");
 
     enum ResponseType
     {
-        inline_completions,
-        multilingual_code_comment,
+        multilingual_code_generate,
+        multilingual_code_explain,
         multilingual_code_translate,
-        receiving_by_stream
+        multilingual_code_bugfix
     };
 
 signals:
     void response(ResponseType responseType, const QString &response, const QString &dstLang);
-    void responseByStream(const QString &msgID, const QString &response, const QString &event);
-
-    void messageSended();
-
-public slots:
-    void slotReadReply(QNetworkReply *reply);
-    void slotReadReplyStream(QNetworkReply *reply);
 
 private:
-    QNetworkReply *postMessage(const QString &url, const QString &token, const QByteArray &body);
+    QNetworkReply *postMessage(const QString &url, const QByteArray &body);
 
-    QByteArray assembleGenerateBody(const QString &prefix,
-                             const QString &suffix);
+    QByteArray assembleGenerateBody(const QString &prompt,
+                             const QString &suffix,
+                             const QString &apikey,
+                             int n = 1,
+                             const QString &apisecret = "");
 
-    QByteArray assembleTranslateBody(const QString &code,
-                             const QString &dst_lang);
-
-    QByteArray assembleCommandBody(const QString &code,
+    QByteArray assembleCommentBody(const QString &prompt,
+                             const QString &lang,
                              const QString &locale,
-                             const QString &command);
+                             const QString &apikey,
+                             const QString &apisecret = "");
+
+    QByteArray assembleTranslateBody(const QString &prompt,
+                             const QString &src_lang,
+                             const QString &dst_lang,
+                             const QString &apikey,
+                             const QString &apisecret = "");
+
+    QByteArray assembleBugfixBody(const QString &prompt,
+                             const QString &lang,
+                             const QString &apikey,
+                             const QString &apisecret = "");
 
     void processResponse(QNetworkReply *reply);
 
     QNetworkAccessManager *manager = nullptr;
-    QString chatModel = chatModelLite;
-    QString completionModel = completionModelLite;
 };
 
 }// end namespace
-Q_DECLARE_METATYPE(CodeGeeX::CopilotApi::ResponseType)
 
 #endif // COPILOT_H

@@ -195,11 +195,6 @@ void AskApi::deleteSessions(const QString &url, const QString &token, const QStr
     });
 }
 
-void AskApi::setModel(const QString &model)
-{
-    this->model = model;
-}
-
 QNetworkReply *AskApi::postMessage(const QString &url, const QString &token, const QByteArray &body)
 {
     QNetworkRequest request(url);
@@ -226,23 +221,21 @@ void AskApi::processResponse(QNetworkReply *reply)
         } else {
             QString replyMsg = QString::fromUtf8(reply->readAll());
             QStringList lines = replyMsg.split('\n');
-            QString data;
+            QByteArray data;
             QString event;
             QString id;
             for (const auto &line : lines) {
-                auto index = line.indexOf(':');
-                auto key = line.mid(0, index);
-                auto value = line.mid(index + 1);
-
-                if (key == "event") {
-                    event = value.trimmed();
-                } else if (key == "id") {
-                    id = value.trimmed();
-                } else if (key == "data") { // value of 'data': "data:{"text":"a"}"    but only existed 'text' filed for now
-                    index = value.indexOf(':');
-                    data = value.mid(index + 2, value.length() - index - 4); // remove " "}
-
+                if (line.startsWith("event:add")) {
+                    event = "add";
+                } else if (line.startsWith("event:finish")) {
+                    event = "finish";
+                } else if (line.startsWith("id:")) {
+                    id = line.mid(3);
+                } else if (line.startsWith("data:")) {
+                    data += line.mid(5) + '\n';
+                } else if (line == "") {
                     emit response(id, data, event);
+                    data.clear();
                 }
             }
         }
@@ -259,9 +252,6 @@ QByteArray AskApi::assembleSSEChatBody(const QString &prompt,
     jsonObject.insert("machineId", machineId);
     jsonObject.insert("client", "deepin-unioncode");
     jsonObject.insert("history", history);
-    //temp  support choose to use later
-    jsonObject.insert("locale", "zh");
-    jsonObject.insert("model", model);
     if(!talkId.isEmpty())
         jsonObject.insert("talkId", talkId);
 

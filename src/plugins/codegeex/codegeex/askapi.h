@@ -64,8 +64,6 @@ public:
                         const QString &token,
                         const QStringList &talkIds);
 
-    void setModel(const QString &model);
-
     enum LoginState {
         kLoginFailed,
         kLoginSuccess,
@@ -102,7 +100,6 @@ private:
     QJsonObject toJsonOBject(QNetworkReply *reply);
 
     QNetworkAccessManager *manager = nullptr;
-    QString model = "codegeex-chat-lite";
 };
 }   // end namespace
 
