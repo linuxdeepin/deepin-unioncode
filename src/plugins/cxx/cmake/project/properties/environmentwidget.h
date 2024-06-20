@@ -10,6 +10,11 @@
 
 #include <QAbstractTableModel>
 
+enum EnvType {
+    BuildCfg,
+    RunCfg
+};
+
 class EnvironmentModelPrivate;
 class EnvironmentModel : public QAbstractTableModel
 {
@@ -47,7 +52,7 @@ class EnvironmentWidget : public DTK_WIDGET_NAMESPACE::DFrame
     Q_OBJECT
 
 public:
-    explicit EnvironmentWidget(QWidget *parent = nullptr);
+    explicit EnvironmentWidget(QWidget *parent = nullptr, EnvType type = EnvType::BuildCfg);
     virtual ~EnvironmentWidget();
 
     void appendRow();

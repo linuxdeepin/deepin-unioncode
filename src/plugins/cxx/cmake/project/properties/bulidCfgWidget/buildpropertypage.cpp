@@ -63,7 +63,7 @@ DetailPropertyWidget::DetailPropertyWidget(QWidget *parent)
     btnBuild->setCheckable(true);
     btnBuild->setChecked(true);
     DButtonBoxButton *btnClean = new DButtonBoxButton(QObject::tr("Clean Steps"), this);
-    DButtonBoxButton *btnEnv = new DButtonBoxButton(QObject::tr("Runtime Env"), this);
+    DButtonBoxButton *btnEnv = new DButtonBoxButton(QObject::tr("Build Environment"), this);
     DButtonBoxButton *btnCMake = new DButtonBoxButton(QObject::tr("CMake config"), this);
 
     DButtonBox *btnbox = new DButtonBox(this);

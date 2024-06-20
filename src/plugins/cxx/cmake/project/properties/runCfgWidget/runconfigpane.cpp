@@ -91,7 +91,7 @@ void RunConfigPane::setupUi()
 
     mainFrame->setLayout(d->formLayout);
 
-    d->environmentWidget = new EnvironmentWidget(this);
+    d->environmentWidget = new EnvironmentWidget(this, EnvType::RunCfg);
     vLayout->addWidget(mainFrame);
     vLayout->addWidget(d->environmentWidget);
     connect(d->environmentWidget, &EnvironmentWidget::envUpdated, this, [=](){
