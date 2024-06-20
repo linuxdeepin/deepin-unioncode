@@ -65,8 +65,8 @@ GDBDebugger::~GDBDebugger()
 void GDBDebugger::init()
 {
     //use to debugging adapter
-//    DebugManager::instance()->command("set logging file /tmp/log.txt");
-//    DebugManager::instance()->command("set logging on");
+    DebugManager::instance()->command("set logging file /tmp/log.txt");
+    DebugManager::instance()->command("set logging on");
 
     QString prettyPrintersPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/prettyprinters";
     DebugManager::instance()->command(QString("python sys.path.insert(0, \"%1\")").arg(prettyPrintersPath));
@@ -680,7 +680,7 @@ void GDBDebugger::parseChildVariable(const QString &evaluateName, const gdbmi::V
     DebugManager::instance()->commandAndResponse(QString { "-var-list-children --all-values %1" }.arg(evaluateName), [=](const QVariant &r) {
         auto m = r.toMap();
         //children: [QMap(, QMap()), QMap(, QMap()) ···];
-        if ((m.value("numchild").toInt() > 0) && (m.value("children").toList().size() > 0)) {
+        if((m.value("numchild").toInt() > 0) && (m.value("children").toList().size() > 0)) {
             auto childList = m.value("children").toList()[0];
             foreach (auto child , childList.toMap()) {
                 auto childMap = child.toMap();

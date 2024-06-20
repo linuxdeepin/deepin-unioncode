@@ -14,8 +14,6 @@
 
 #include <QProcess>
 
-static int defaultTimeoutSeconds = 6;
-
 class DebugManagerPrivate {
     friend class DebugManager;
 
@@ -276,7 +274,7 @@ void DebugManager::stackListFrames()
 void DebugManager::stackListVariables()
 {
     if (command(d->debugger->stackListVariables()))
-        d->varibalelocker.wait(defaultTimeoutSeconds);
+        d->varibalelocker.wait();
 }
 
 void DebugManager::threadInfo()
@@ -346,8 +344,8 @@ dap::array<dap::Variable> DebugManager::getVariableList(int64_t reference)
 
 void DebugManager::fetchChildVariables(int64_t childReference)
 {
-    if (d->debugger->fetchChildVariables(childReference))
-        d->varibalelocker.wait(defaultTimeoutSeconds);
+    if(d->debugger->fetchChildVariables(childReference))
+        d->varibalelocker.wait();
 }
 
 void DebugManager::disassemble(const QString &address)
