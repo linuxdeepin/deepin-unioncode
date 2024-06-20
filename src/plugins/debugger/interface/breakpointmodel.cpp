@@ -61,19 +61,6 @@ void BreakpointModel::removeBreakpoint(const Internal::Breakpoint &breakpoint)
     emit breakpointChanged();
 }
 
-void BreakpointModel::switchBreakpointStatus(const Internal::Breakpoint &breakpoint)
-{
-    beginResetModel();
-    auto it = bps.begin();
-    for (; it != bps.end();) {
-        if (it->breakpoint() == breakpoint && it->isEnabled() != breakpoint.enabled)
-            it->setEnabled(breakpoint.enabled);
-        it++;
-    }
-    endResetModel();
-    emit breakpointChanged();
-}
-
 void BreakpointModel::setCurrentIndex(int level)
 {
     if (level == -1 || level == currentIndex)
@@ -143,8 +130,6 @@ QVariant BreakpointModel::headerData(int section, Qt::Orientation orient, int ro
         switch (section) {
         case kIndexColumn:
             return tr("Index");
-        case kIsEnabled:
-            return tr("Status");
         case kFunctionNameColumn:
             return tr("Function");
         case kFileNameColumn:

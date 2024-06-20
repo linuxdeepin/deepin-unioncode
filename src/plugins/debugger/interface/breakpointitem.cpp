@@ -34,21 +34,35 @@ BreakpointItem::~BreakpointItem()
 
 QVariant BreakpointItem::data(int row, int column, int role) const
 {
-    if (role == Qt::DisplayRole) {
-        switch (column) {
-            case kIndexColumn:
+    switch (column) {
+        case kIndexColumn:
+            if (role == Qt::DisplayRole)
                 return QString::number(row + 1);
-            case kIsEnabled:
-                return bp.enabled;
-            case kFunctionNameColumn:
+            break;
+        case kFunctionNameColumn:
+            if (role == Qt::DisplayRole)
+                return QString("-");
+            break;
+        case kFileNameColumn:
+            if (role == Qt::DisplayRole) {
+                QString str = bp.fileName;
+                if (!str.isEmpty())
+                    return QDir::toNativeSeparators(str);
                 return empty;
-            case kFileNameColumn:
-                return bp.fileName.isEmpty() ? empty : QDir::toNativeSeparators(bp.fileName);
-            case kLineNumberColumn:
-                return bp.lineNumber > 0 ? QString::number(bp.lineNumber) : empty;
-            case kAddressColumn:
+            }
+            break;
+        case kLineNumberColumn:
+            if (role == Qt::DisplayRole) {
+                if (bp.lineNumber > 0)
+                    return bp.lineNumber;
+                return empty;
+            }
+            break;
+        case kAddressColumn:
+            if (role == Qt::DisplayRole) {
                 return bp.address;
-        }
+            }
+            break;
     }
 
     if (role == Qt::ToolTipRole)

@@ -97,9 +97,6 @@ private:
 
     void addBreakpoint(const QString &filepath, int lineNumber);
     void removeBreakpoint(const QString &filepath, int lineNumber);
-
-    void enableBreakpoints(const QList<QPair<QString, int>> &breakpoints);
-    void disableBreakpoints(const QList<QPair<QString, int>> &breakpoints);
     bool getLocals(dap::integer frameId, IVariables *out);
     void exitDebug();
     void updateRunState(DAPDebugger::RunState state);

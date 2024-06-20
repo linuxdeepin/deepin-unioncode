@@ -22,7 +22,6 @@ public:
     void setBreakpoints(const Internal::Breakpoints &breakpoints, bool canExpand = false);
     void insertBreakpoint(const Internal::Breakpoint &breakpoint);
     void removeBreakpoint(const Internal::Breakpoint &breakpoint);
-    void switchBreakpointStatus(const Internal::Breakpoint &breakpoint);
 
     void setCurrentIndex(int index);
     const Internal::Breakpoint &BreakpointAt(int index) const{ return bps.at(index).breakpoint(); }

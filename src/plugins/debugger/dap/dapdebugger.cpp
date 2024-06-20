@@ -13,7 +13,6 @@
 #include "interface/appoutputpane.h"
 #include "interface/stackframemodel.h"
 #include "interface/stackframeview.h"
-#include "interface/breakpointview.h"
 #include "common/widget/messagebox.h"
 #include "interface/breakpointmodel.h"
 #include "event/eventreceiver.h"
@@ -86,7 +85,7 @@ class DebuggerPrivate
     QAtomicInt processingVariablesCount = 0;
     QFuture<void> getLocalsFuture;
 
-    BreakpointView *breakpointView = nullptr;
+    StackFrameView *breakpointView = nullptr;
     BreakpointModel breakpointModel;
 
     bool pausing = false;
@@ -311,44 +310,6 @@ void DAPDebugger::removeBreakpoint(const QString &filePath, int lineNumber)
         debugService->removeBreakpoints(filePath, lineNumber, d->session.get());
     } else {
         debugService->removeBreakpoints(filePath, lineNumber, undefined);
-    }
-}
-
-void DAPDebugger::enableBreakpoints(const QList<QPair<QString, int>> &breakpoints)
-{
-    for (auto breakpoint : breakpoints) {
-        Internal::Breakpoint bp;
-        bp.filePath = breakpoint.first;
-        bp.fileName = QFileInfo(breakpoint.first).fileName();
-        bp.lineNumber = breakpoint.second;
-        bp.enabled = true;
-        d->breakpointModel.switchBreakpointStatus(bp);
-    }
-
-    // send to backend.
-    if (d->runState == kStopped || d->runState == kRunning) {
-        debugService->switchBreakpointStatus(breakpoints, true, d->session.get());
-    } else {
-        debugService->switchBreakpointStatus(breakpoints, true, undefined);
-    }
-}
-
-void DAPDebugger::disableBreakpoints(const QList<QPair<QString, int>> &breakpoints)
-{
-    for (auto breakpoint : breakpoints) {
-        Internal::Breakpoint bp;
-        bp.filePath = breakpoint.first;
-        bp.fileName = QFileInfo(breakpoint.first).fileName();
-        bp.lineNumber = breakpoint.second;
-        bp.enabled = false;
-        d->breakpointModel.switchBreakpointStatus(bp);
-    }
-
-    // send to backend.
-    if (d->runState == kStopped || d->runState == kRunning) {
-        debugService->switchBreakpointStatus(breakpoints, false, d->session.get());
-    } else {
-        debugService->switchBreakpointStatus(breakpoints, false, undefined);
     }
 }
 
@@ -657,12 +618,6 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         int line = event.property(editor.breakpointRemoved.pKeys[1]).toInt();
         d->bps.remove(filePath, line);
         removeBreakpoint(filePath, line);
-    } else if (event.data() == debugger.enableBreakpoints.name) {
-        QList<QPair<QString, int>> breakpoints = event.property("breakpoints").value<QList<QPair<QString, int>>>();
-        enableBreakpoints(breakpoints);
-    } else if (event.data() == debugger.disableBreakpoints.name) {
-        QList<QPair<QString, int>> breakpoints = event.property("breakpoints").value<QList<QPair<QString, int>>>();
-        disableBreakpoints(breakpoints);
     }
 }
 
@@ -909,7 +864,7 @@ void DAPDebugger::initializeView()
     vLayout->addWidget(d->stackView);
 
     // intialize breakpint pane.
-    d->breakpointView = new BreakpointView();
+    d->breakpointView = new StackFrameView();
     d->breakpointView->setMinimumWidth(300);
     d->breakpointView->setModel(d->breakpointModel.model());
 
