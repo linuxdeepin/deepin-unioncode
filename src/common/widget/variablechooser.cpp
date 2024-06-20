@@ -78,7 +78,6 @@ public:
 
 class VariableChooserPrivate : public QObject
 {
-    Q_OBJECT
 public:
     VariableChooserPrivate(VariableChooser *qq);
 
@@ -325,4 +324,3 @@ bool VariableChooser::eventFilter(QObject *obj, QEvent *e)
 
     return false;
 }
-#include "variablechooser.moc"
