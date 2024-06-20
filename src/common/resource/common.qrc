@@ -4,9 +4,9 @@
         <file>icons/about_logo_128px.svg</file>
         <file>light/icons/warning_16px.svg</file>
         <file>light/icons/error_16px.svg</file>
+	 <file>light/icons/common_stop_16px.svg</file>
         <file>dark/icons/warning_16px.svg</file>
         <file>dark/icons/error_16px.svg</file>
-	 <file>actions/common_stop_16px.svg</file>
-	 <file>actions/common_close_16px.svg</file>
+	 <file>dark/icons/common_stop_16px.svg</file>
     </qresource>
 </RCC>

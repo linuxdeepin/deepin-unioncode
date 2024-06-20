@@ -112,7 +112,7 @@ void AppOutputPane::initTabWidget()
     d->closeProcessBtn->setEnabled(false);
 
     d->closePaneBtn = new DToolButton(d->tabbar);
-    d->closePaneBtn->setIcon(QIcon::fromTheme("common_close"));
+    d->closePaneBtn->setIcon(QIcon::fromTheme("error"));
     d->closePaneBtn->setEnabled(false);
 
     tabLayout->addWidget(d->tabChosser);
