@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "unistd.h"
 #include "debugengine.h"
 
 #include "dapsession.h"
@@ -18,8 +17,6 @@ DebugEngine::DebugEngine(QObject *parent)
     dapSession.reset(new DapSession());
     javaDebugger.reset(new JavaDebugger());
     pythonDebugger.reset(new PythonDebugger());
-
-    listeningIdeAlive();
 }
 
 bool DebugEngine::start()
@@ -44,12 +41,4 @@ bool DebugEngine::initialize()
     return true;
 }
 
-void DebugEngine::listeningIdeAlive()
-{
-    checkIdeAliveTimer.setInterval(1000);
-    connect(&checkIdeAliveTimer, &QTimer::timeout, this, [=](){
-        if(getppid() == 1)
-            ::exit(0);
-    });
-    checkIdeAliveTimer.start();
-}
+

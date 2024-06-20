@@ -85,6 +85,7 @@ public slots:
 
 private:
     void launchBackend();
+    void killBackend();
     void initializeView();
     void handleFrames(const StackFrames &stackFrames);
     void updateThreadList(int curr, const dap::array<dap::Thread> &threads);

@@ -5,9 +5,9 @@
 #ifndef DEBUGENGINE_H
 #define DEBUGENGINE_H
 
+
 #include <QSharedPointer>
 #include <QObject>
-#include <QTimer>
 
 class DapSession;
 class JavaDebugger;
@@ -27,14 +27,12 @@ signals:
 public slots:
 private:
     bool initialize();
-    void listeningIdeAlive();
 
     bool isRunning = false;
 
     QSharedPointer<DapSession> dapSession;
     QSharedPointer<JavaDebugger> javaDebugger;
     QSharedPointer<PythonDebugger> pythonDebugger;
-    QTimer checkIdeAliveTimer;
 };
 
 #endif   // DEBUGENGINE_H

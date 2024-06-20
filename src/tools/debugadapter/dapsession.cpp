@@ -8,7 +8,6 @@
 #include "debugmanager.h"
 #include "dapproxy.h"
 #include "locker.h"
-#include "unistd.h"
 
 #include "dap/protocol.h"
 #include "dap/session.h"
@@ -44,7 +43,7 @@ class DapSessionPrivate
     bool isThreadRequestReceived = false;
     bool isInferiorStopped = true;
 
-    QString ppid;
+    QString uuid;
 
     ConditionLock startedLock;
 };
@@ -79,12 +78,12 @@ void DapSession::registerDBusConnect()
                        this, SLOT(slotReceiveClientInfo(QString, QString, QString, QStringList)));
 
 
-    connect(this, &DapSession::sigSendToClient, [](const QString &ppid, int port, const QString &kit,
+    connect(this, &DapSession::sigSendToClient, [](const QString &uuid, int port, const QString &kit,
             const QMap<QString, QVariant> &param) {
         QDBusMessage msg = QDBusMessage::createSignal("/path",
                                                       "com.deepin.unioncode.interface",
                                                       "dapport");
-        msg << ppid
+        msg << uuid
             << port
             << kit
             << param;
@@ -92,14 +91,13 @@ void DapSession::registerDBusConnect()
     });
 }
 
-void DapSession::slotReceiveClientInfo(const QString &ppid, const QString &kit, const QString &targetPath, const QStringList &arguments)
+void DapSession::slotReceiveClientInfo(const QString &uuid, const QString &kit, const QString &targetPath, const QStringList &arguments)
 {
     QMap<QString, QVariant> param;
     param.insert("targetPath", targetPath);
     param.insert("arguments", arguments);
 
-    if(ppid == getppid())
-        emit sigSendToClient(ppid, d->serverInfo.port(), kit, param);
+    emit sigSendToClient(uuid, d->serverInfo.port(), kit, param);
 }
 
 bool DapSession::start()

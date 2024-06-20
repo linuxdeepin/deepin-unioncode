@@ -55,10 +55,10 @@ bool GradleGenerator::prepareDebug(const QMap<QString, QVariant> &param, QString
     return d->javaDebug->prepareDebug(projectPath, retMsg);
 }
 
-bool GradleGenerator::requestDAPPort(const QString &ppid, const QMap<QString, QVariant> &param, QString &retMsg)
+bool GradleGenerator::requestDAPPort(const QString &uuid, const QMap<QString, QVariant> &param, QString &retMsg)
 {
     QString projectPath = param.value("workspace").toString();
-    return d->javaDebug->requestDAPPort(ppid, toolKitName(),projectPath, retMsg);
+    return d->javaDebug->requestDAPPort(uuid, toolKitName(),projectPath, retMsg);
 }
 
 bool GradleGenerator::isLaunchNotAttach()
