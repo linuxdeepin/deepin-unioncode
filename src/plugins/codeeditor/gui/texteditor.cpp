@@ -79,7 +79,6 @@ void TextEditor::save()
     file.write(text().toUtf8());
     file.close();
     d->isSaved = true;
-    setModified(false);
     emit fileSaved(d->fileName);
 }
 
@@ -102,7 +101,6 @@ void TextEditor::saveAs(const QString &fileName)
     file.write(text().toUtf8());
     file.close();
     d->isSaved = true;
-    setModified(false);
 }
 
 void TextEditor::reload()
