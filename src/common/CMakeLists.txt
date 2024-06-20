@@ -9,22 +9,133 @@ find_package(Qt5Network)
 
 set(CMAKE_CXX_STANDARD 17)
 
-FILE(GLOB COMMON_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*/*/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*/*/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*/*/*/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*/*/*/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.json"
+set(CXX_H
+    common.h
+    inotify/private/inotify_hook.h
+    inotify/private/inotify_impl.h
+    inotify/private/inotify_linux.h
+    inotify/private/inotify_p.h
+    inotify/inotify.h
+    lsp/client/private/client_p.h
+    lsp/client/client.h
+    lsp/client/stdoutjsonrpcparser.h
+    lsp/server/servercmdparse.h
+    lsp/server/serverapplication.h
+    lsp/server/stdinreadloop.h
+    lsp/server/stdinjsonrpcparser.h
+    lsp/server/route.h
+    lsp/protocol/newprotocol.h
+    lsp/protocol/protocol.h
+    lsp/protocol/new/jsonrpcparser.h
+    lsp/protocol/new/basicjsonstructures.h
+    lsp/protocol/new/lifecyclemessage.h
+    lsp/protocol/new/documentsynchronization.h
+    lsp/protocol/new/languagefeatures.h
+    lsp/protocol/new/extendedproject.h
+    lsp/lsp.h
+    util/processutil.h
+    util/customicons.h
+    util/custompaths.h
+    util/eventdefinitions.h
+    util/singleton.h
+    util/polkit.h
+    util/shortcututil.h
+    util/fileoperation.h
+    util/qtcassert.h
+    util/downloadutil.h
+    util/environment.h
+    util/commandparser.h
+    util/themeparser.h
+    util/fileutils.h
+    util/fuzzymatcher.h
+    supportfile/editorstyle.h
+    supportfile/language.h
+    supportfile/windowstyle.h
+    supportfile/dapconfig.h
+    dialog/commondialog.h
+    dialog/propertiesdialog.h
+    dialog/pip3dialog.h
+    dialog/processdialog.h
+    dialog/wgetdialog.h
+    widget/configurewidget.h
+    widget/collapsewidget.h
+    widget/detailsbutton.h
+    widget/statuswidget.h
+    widget/singlechoicebox.h
+    widget/elidedlabel.h
+    widget/generator.h
+    widget/pagewidget.h
+    widget/outputpane.h
+    type/constants.h
+    type/menuext.h
+    type/task.h
+    toolchain/toolchain.h
+    actionmanager/actionmanager.h
+    actionmanager/command.h
+    unilog.h
+    project/projectinfo.h
+    )
+
+set(CXX_CPP
+    inotify/inotify.cpp
+    lsp/protocol/newprotocol.cpp
+    lsp/protocol/protocol.cpp
+    lsp/client/client.cpp
+    lsp/client/stdoutjsonrpcparser.cpp
+    lsp/server/servercmdparse.cpp
+    lsp/server/serverapplication.cpp
+    lsp/server/stdinreadloop.cpp
+    lsp/server/stdinjsonrpcparser.cpp
+    lsp/server/route.cpp
+    lsp/protocol/new/jsonrpcparser.cpp
+    lsp/protocol/new/basicjsonstructures.cpp
+    lsp/protocol/new/lifecyclemessage.cpp
+    lsp/protocol/new/documentsynchronization.cpp
+    lsp/protocol/new/languagefeatures.cpp
+    lsp/protocol/new/extendedproject.cpp
+    util/processutil.cpp
+    util/customicons.cpp
+    util/custompaths.cpp
+    util/polkit.cpp
+    util/eventdefinitions.cpp
+    util/shortcututil.cpp
+    util/fileoperation.cpp
+    util/downloadutil.cpp
+    util/environment.cpp
+    util/commandparser.cpp
+    util/themeparser.cpp
+    util/fileutils.cpp
+    util/fuzzymatcher.cpp
+    supportfile/language.cpp
+    supportfile/editorstyle.cpp
+    supportfile/windowstyle.cpp
+    supportfile/dapconfig.cpp
+    dialog/commondialog.cpp
+    dialog/propertiesdialog.cpp
+    dialog/pip3dialog.cpp
+    dialog/processdialog.cpp
+    dialog/wgetdialog.cpp
+    widget/configurewidget.cpp
+    widget/collapsewidget.cpp
+    widget/detailsbutton.cpp
+    widget/statuswidget.cpp
+    widget/elidedlabel.cpp
+    widget/singlechoicebox.cpp
+    widget/generator.cpp
+    widget/pagewidget.cpp
+    widget/outputpane.cpp
+    toolchain/toolchain.cpp
+    type/constants.cpp
+    type/task.cpp
+    actionmanager/actionmanager.cpp
+    actionmanager/command.cpp
     )
 
 add_library(
     ${PROJECT_NAME}
     SHARED
-    ${COMMON_FILES}
+    ${CXX_H}
+    ${CXX_CPP}
     resource/common.qrc
     )
 
