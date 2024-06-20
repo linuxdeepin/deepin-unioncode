@@ -5,7 +5,7 @@
 #include "findtoolbar.h"
 #include "placeholdermanager.h"
 
-#include "common/find/abstractdocumentfind.h"
+#include "base/abstractdocumentfind.h"
 #include "base/abstractaction.h"
 #include "services/window/windowservice.h"
 

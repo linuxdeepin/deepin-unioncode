@@ -14,7 +14,6 @@
 #include "modules/abstractmodule.h"
 #include "modules/pluginmanagermodule.h"
 #include "modules/documentfindmodule.h"
-#include "modules/contextmodule.h"
 #include "locator/locatormanager.h"
 #include "find/placeholdermanager.h"
 
@@ -127,7 +126,6 @@ Controller::Controller(QObject *parent)
 
     registerModule("pluginManagerModule", new PluginManagerModule());
     registerModule("docFindModule", new DocumentFindModule());
-    registerModule("contextModule", new ContextModule());
     initModules();
 }
 

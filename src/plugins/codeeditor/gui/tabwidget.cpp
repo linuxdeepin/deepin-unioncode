@@ -168,7 +168,7 @@ QWidget *TabWidgetPrivate::createSpaceWidget()
     };
 
     addCommandLine("File.Open.File");
-    addCommandLine("Find.findInDocument");
+    addCommandLine("Editor.findReplace");
     addCommandLine("Editor.close");
     addCommandLine("locator.EnterCommand");
 

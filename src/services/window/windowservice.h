@@ -7,7 +7,7 @@
 
 #include "windowcontroller.h"
 #include "windowelement.h"
-#include "common/find/abstractdocumentfind.h"
+#include "base/abstractdocumentfind.h"
 
 #include <framework/framework.h>
 

@@ -7,7 +7,6 @@
 #include "common/widget/outputpane.h"
 #include "common/util/commandparser.h"
 #include "common/project/projectinfo.h"
-#include "common/find/outputdocumentfind.h"
 #include "problemoutputpane.h"
 #include "commonparser.h"
 #include "transceiver/buildersender.h"
@@ -150,7 +149,7 @@ void BuildManager::initCompileWidget()
     d->problemOutputPane = new ProblemOutputPane();
     d->compileWidget = new DWidget();
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(d->compileWidget);
+    QHBoxLayout *mainLayout = new QHBoxLayout(d->compileWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     QLabel *compileOutputText = new QLabel();
@@ -178,19 +177,6 @@ void BuildManager::initCompileWidget()
 
     mainLayout->setSpacing(0);
     mainLayout->addWidget(spl);
-    if (auto holder = createFindPlaceHolder())
-        mainLayout->addWidget(holder);
-}
-
-QWidget *BuildManager::createFindPlaceHolder()
-{
-    auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (!windowService)
-        return nullptr;
-
-    auto docFind = new OutputDocumentFind(d->compileOutputPane);
-    return windowService->createFindPlaceHolder(d->compileOutputPane, docFind);
 }
 
 void BuildManager::buildProject()

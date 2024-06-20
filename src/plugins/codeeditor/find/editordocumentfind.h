@@ -5,7 +5,7 @@
 #ifndef EDITORDOCUMENTFIND_H
 #define EDITORDOCUMENTFIND_H
 
-#include "common/find/abstractdocumentfind.h"
+#include "base/abstractdocumentfind.h"
 
 class EditorDocumentFindPrivate;
 class EditorDocumentFind : public AbstractDocumentFind

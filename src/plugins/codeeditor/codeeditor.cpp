@@ -19,6 +19,7 @@
 #include "services/editor/editorservice.h"
 #include "services/option/optionservice.h"
 #include "services/option/optiondatastruct.h"
+#include "common/widget/outputpane.h"
 
 #include <DButtonBox>
 #include <DToolButton>
@@ -206,6 +207,7 @@ void CodeEditor::initWindowService()
         windowService->addAction(MWM_FILE, new AbstractAction(sep));
 
         windowService->addContextWidget(QTabWidget::tr("Search &Results"), new AbstractWidget(CodeLens::instance()), true);
+        windowService->addContextWidget(tr("&Application Output"), new AbstractWidget(OutputPane::instance()), true);
     }
 }
 

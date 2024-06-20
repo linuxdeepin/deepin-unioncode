@@ -5,11 +5,10 @@
 #ifndef OUTPUTPANE_H
 #define OUTPUTPANE_H
 
-#include <QWidget>
-#include <QPlainTextEdit>
+#include <DPlainTextEdit>
 
 class OutputPanePrivate;
-class OutputPane : public QWidget
+class OutputPane : public DTK_WIDGET_NAMESPACE::DPlainTextEdit
 {
     Q_OBJECT
 public:
@@ -36,9 +35,6 @@ public:
 
     void clearContents();
     void appendText(const QString &text, OutputPane::OutputFormat format, AppendMode mode = Normal);
-    QTextDocument *document() const;
-    QPlainTextEdit *edit() const;
-
     static OutputPane* instance();
 
 protected:
@@ -46,7 +42,6 @@ protected:
 
 private:
     void initUI();
-    QWidget *createFindPlaceHolder();
     QString normalizeNewlines(const QString &text);
 
     void appendCustomText(const QString &text, AppendMode mode, const QTextCharFormat &format = QTextCharFormat());

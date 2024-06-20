@@ -10,8 +10,6 @@
 #include "common/project/projectinfo.h"
 #include "common/widget/outputpane.h"
 
-#include <DWidget>
-
 #include <QObject>
 #include <QSharedPointer>
 #include <QMutex>
@@ -31,7 +29,7 @@ public:
 
     CompileOutputPane *getCompileOutputPane() const;
     ProblemOutputPane *getProblemOutputPane() const;
-    DTK_WIDGET_NAMESPACE::DWidget *getCompileWidget() const;
+    DTK_WIDGET_NAMESPACE::DWidget  *getCompileWidget() const;
 
     void setActivedProjectInfo(const QString &kitName, const QString &workingDir);
     void clearActivedProjectInfo();
@@ -63,7 +61,6 @@ private:
 
     void addMenu();
     void initCompileWidget();
-    QWidget *createFindPlaceHolder();
 
     void outputLog(const QString &content, const OutputPane::OutputFormat format);
     void outputError(const QString &content);
@@ -82,4 +79,5 @@ private:
     BuildManagerPrivate *const d;
 };
 
-#endif   // BUILDMANAGER_H
+#endif // BUILDMANAGER_H
+
