@@ -57,7 +57,6 @@ public:
     void addAnnotation(const QString &content, int line, int type);
     void removeAnnotation(const QString &title);
     QPoint pointFromPosition(int position);
-    int positionFromPoint(int x, int y);
     void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text);
     void insertText(const QString &text);
 

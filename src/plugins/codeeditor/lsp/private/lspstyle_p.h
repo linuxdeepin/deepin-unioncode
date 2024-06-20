@@ -23,7 +23,6 @@ public:
         end = 0;
     }
     bool isEmpty() { return !(start && end); }
-    bool contaions(int pos) { return pos >= start && pos <= end; }
     int getStart() const { return start; }
     void setStart(int value) { start = value; }
     int getEnd() const { return end; }
@@ -41,26 +40,15 @@ public:
 class PositionCache
 {
     int position = -1;
-    RangeCache textRange;
 
 public:
     PositionCache() {}
     PositionCache(int pos)
         : position(pos) {}
-    void clean()
-    {
-        position = -1;
-        textRange.clean();
-    }
-    bool isEmpty() { return position == -1 || textRange.isEmpty(); }
+    void clean() { position = -1; }
+    bool isEmpty() { return position == -1; }
     int getPosition() const { return position; }
     void setPosition(int value) { position = value; }
-    RangeCache getTextRange() const { return textRange; }
-    void setTextRange(int start, int end)
-    {
-        textRange.setStart(start);
-        textRange.setEnd(end);
-    }
 };
 
 class DefinitionCache : public PositionCache

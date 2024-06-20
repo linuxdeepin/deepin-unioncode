@@ -392,28 +392,28 @@ void TextEditorPrivate::onThemeTypeChanged()
 
 void TextEditorPrivate::onDwellStart(int position, int x, int y)
 {
-    Q_UNUSED(position)
+    Q_UNUSED(x)
+    Q_UNUSED(y)
 
-    int pos = q->positionFromPoint(x, y);
-    if (pos == -1)
+    if (position == -1)
         return;
 
     bool isKeyCtrl = QApplication::keyboardModifiers().testFlag(Qt::ControlModifier);
     if (isKeyCtrl)
-        emit q->documentHoveredWithCtrl(pos);
+        emit q->documentHoveredWithCtrl(position);
     else
-        emit q->documentHovered(pos);
+        emit q->documentHovered(position);
 }
 
 void TextEditorPrivate::onDwellEnd(int position, int x, int y)
 {
-    Q_UNUSED(position)
+    Q_UNUSED(x)
+    Q_UNUSED(y)
 
-    int pos = q->positionFromPoint(x, y);
-    if (pos == -1)
+    if (position == -1)
         return;
 
-    emit q->documentHoverEnd(pos);
+    emit q->documentHoverEnd(position);
 }
 
 void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int len, int added, int line,

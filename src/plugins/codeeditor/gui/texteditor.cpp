@@ -10,7 +10,6 @@
 #include "Qsci/qscistyledtext.h"
 
 #include <QFile>
-#include <QToolTip>
 #include <QScrollBar>
 #include <QFileDialog>
 #include <QApplication>
@@ -249,13 +248,13 @@ void TextEditor::showTips(int pos, const QString &tips)
     if (!hasFocus())
         return;
 
-    auto point = pointFromPosition(pos);
-    QToolTip::showText(mapToGlobal(point), tips, this);
+    auto data = tips.toLocal8Bit();
+    SendScintilla(SCI_CALLTIPSHOW, static_cast<uintptr_t>(pos), data.data());
 }
 
 void TextEditor::cancelTips()
 {
-    QToolTip::hideText();
+    SendScintilla(SCI_CALLTIPCANCEL);
 }
 
 void TextEditor::addAnnotation(const QString &title, const QString &content, int line, int type)
@@ -306,12 +305,6 @@ QPoint TextEditor::pointFromPosition(int position)
     int y = static_cast<int>(SendScintilla(SCI_POINTYFROMPOSITION, 0, position));
 
     return QPoint(x, y);
-}
-
-int TextEditor::positionFromPoint(int x, int y)
-{
-    int pos = static_cast<int>(SendScintilla(SCI_POSITIONFROMPOINT, static_cast<ulong>(x), y));
-    return pos;
 }
 
 void TextEditor::replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text)
@@ -410,13 +403,17 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 
 void TextEditor::contextMenuEvent(QContextMenuEvent *event)
 {
+    cancelTips();
     if (!contextMenuNeeded(event->pos().x(), event->pos().y()))
         return;
 
     int xPos = event->pos().x();
-    if (xPos <= d->marginsWidth()) {
-        d->showMarginMenu();
-    } else {
-        d->showContextMenu();
-    }
+    // Delay the display of the menu to ensure that tips can disappear normally
+    QTimer::singleShot(20, this, [this, xPos] {
+        if (xPos <= d->marginsWidth()) {
+            d->showMarginMenu();
+        } else {
+            d->showContextMenu();
+        }
+    });
 }

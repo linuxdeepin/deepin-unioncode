@@ -261,6 +261,10 @@ void LSPStyle::setHover(const newlsp::Hover &hover)
 {
     if (!d->editor || d->hoverCache.getPosition() == -1)
         return;
+    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+        d->editor->SendScintilla(TextEditor::SCI_CALLTIPSETBACK, TextEditor::STYLE_DEFAULT);
+    else
+        d->editor->SendScintilla(TextEditor::SCI_CALLTIPSETBACK, 0xffffff);
 
     std::string showText;
     if (newlsp::any_contrast<std::vector<newlsp::MarkedString>>(hover.contents)) {
@@ -287,6 +291,7 @@ void LSPStyle::setHover(const newlsp::Hover &hover)
 
     if (!showText.empty())
         d->editor->showTips(d->hoverCache.getPosition(), showText.c_str());
+    d->hoverCache.clean();
 }
 
 void LSPStyle::setDefinition(const newlsp::Location &data)
@@ -498,6 +503,7 @@ void LSPStyle::onHovered(int position)
                                      return cache.contains(position);
                                  });
         if (iter != d->diagnosticCache.end()) {
+            d->editor->SendScintilla(TextEditor::SCI_CALLTIPSETBACK, QColor(EditorColor::Table::get()->LemonChiffon));
             const auto &msg = d->formatDiagnosticMessage(iter->message, iter->type);
             d->editor->showTips(position, msg);
             return;
@@ -505,17 +511,6 @@ void LSPStyle::onHovered(int position)
     }
 
     d->hoverCache.setPosition(position);
-    auto textRange = d->hoverCache.getTextRange();
-    if (!textRange.isEmpty() && textRange.contaions(position))
-        return;
-
-    auto startPos = d->editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(position), true);
-    auto endPos = d->editor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(position), true);
-    // hover in the empty area
-    if (startPos == endPos)
-        return;
-
-    d->hoverCache.setTextRange(static_cast<int>(startPos), static_cast<int>(endPos));
     lsp::Position pos;
     d->editor->lineIndexFromPosition(position, &pos.line, &pos.character);
     qApp->metaObject()->invokeMethod(d->getClient(), "docHoverRequest",
@@ -525,14 +520,13 @@ void LSPStyle::onHovered(int position)
 
 void LSPStyle::onHoverCleaned(int position)
 {
+    Q_UNUSED(position)
+
     if (!d->editor)
         return;
 
-    auto textRange = d->hoverCache.getTextRange();
-    if (!textRange.isEmpty() && !d->hoverCache.getTextRange().contaions(position)) {
-        d->editor->cancelTips();
-        d->hoverCache.clean();
-    }
+    d->editor->cancelTips();
+    d->hoverCache.clean();
     onDefinitionHoverCleaned(position);
 }
 
