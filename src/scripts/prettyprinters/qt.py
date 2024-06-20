@@ -25,7 +25,7 @@ class QStringPrinter:
         # access error. Hence the try/catch.
         try:
             size = self.val['d']['size']
-            if size == 0 or size >= 50000:       #refer to QtCreator : limit 100000
+            if size == 0:
                 return ret
             isQt4 = has_field(self.val['d'], 'data') # Qt4 has d->data, Qt5 doesn't.
             isQt6 = has_field(self.val['d'], 'ptr') # Qt6 has d->ptr, Qt5 doesn't.
@@ -145,7 +145,6 @@ class QListPrinter:
                 else:
                     value = array
             self.count = self.count + 1
-
             return ('[%d]' % count, value.cast(self.nodetype.pointer()).dereference())
 
     def __init__(self, val, container, itype):
@@ -156,13 +155,10 @@ class QListPrinter:
         if self.isQt6:
             self.size = self.d['size']
         else:
-            if (self.d['end'] < 0 or self.d['begin'] < 0):    #may not initialize
+            if (self.d['end'] < 0 or self.d['begin'] < 0):    #QList not initialize
                 self.size = 0
             else:
                 self.size = self.d['end'] - self.d['begin']
-
-        if self.size < 0:
-            self.size = 0
 
         if itype == None:
             self.itype = val.type.template_argument(0)
@@ -375,9 +371,7 @@ class QMapPrinter:
         self.container = container
 
     def children(self):
-        refPointer = self.val['d'].cast(gdb.lookup_type('int').pointer())
-        ref = refPointer.referenced_value()  #ref = self.val['d']['ref']['atomic']['_q_value']['_M_i']
-        if self.val['d']['size'] == 0 or ref < -1 or ref > 100000:
+        if self.val['d']['size'] == 0:
             return []
 
         isQt4 = has_field(self.val, 'e') # Qt4 has 'e', Qt5 doesn't

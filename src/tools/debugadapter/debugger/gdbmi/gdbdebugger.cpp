@@ -63,13 +63,9 @@ GDBDebugger::~GDBDebugger()
 
 void GDBDebugger::init()
 {
-    //use to debugging adapter
-//    DebugManager::instance()->command("set logging file /tmp/log.txt");
-//    DebugManager::instance()->command("set logging on");
-
     QString prettyPrintersPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/prettyprinters";
-    DebugManager::instance()->command(QString("python sys.path.insert(0, \"%1\")").arg(prettyPrintersPath));
 
+    DebugManager::instance()->command(QString("python sys.path.insert(0, \"%1\")").arg(prettyPrintersPath));
     DebugManager::instance()->command("python from qt import register_qt_printers");
     DebugManager::instance()->command("python register_qt_printers(None)");
 
@@ -576,6 +572,7 @@ void GDBDebugger::traceAddVariable(gdbmi::Variable *variable, int reference, int
 
     d->variableListByReference.insert(reference, variable);
 
+    d->runningCommand++;
     DebugManager::instance()->commandAndResponse(QString { "-var-create \"%1\" %2 \"%3\"" }.arg(varName, frameId, variable->name),
                                                  [=](const QVariant &r) {
                                                      auto m = r.toMap();
@@ -625,7 +622,6 @@ void GDBDebugger::traceUpdateVariable(const QString &expression)
 
 void GDBDebugger::addVariablesWatched(const QList<gdbmi::Variable *> &variableList, int reference)
 {
-    d->runningCommand += variableList.size();
     foreach (auto variable, variableList) {
         traceAddVariable(variable, reference);
     }
