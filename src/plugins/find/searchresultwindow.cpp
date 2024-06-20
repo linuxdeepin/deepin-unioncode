@@ -207,7 +207,6 @@ SearchResultWindow::~SearchResultWindow()
 
 void SearchResultWindow::clear()
 {
-    d->iconLabel->setVisible(true);
     d->treeView->clearData();
 }
 
@@ -295,7 +294,7 @@ void SearchResultWindow::searchFinished()
 
     d->treeView->setVisible(false);
     d->iconLabel->setVisible(true);
-    showMsg(false, tr("No match found!"));
+    showMsg(false, tr("Search failed!"));
 }
 
 void SearchResultWindow::replaceFinished(bool success)

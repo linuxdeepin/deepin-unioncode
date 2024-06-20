@@ -18,9 +18,6 @@ public:
 
     void setInfo(const QString &info);
 
-protected:
-    void mousePressEvent(QMouseEvent *event) override;
-
 private:
     void initUI();
     CommitInfo parserBlameOutput(const QStringList &blame);
