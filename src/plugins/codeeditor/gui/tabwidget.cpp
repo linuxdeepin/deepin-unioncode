@@ -373,10 +373,6 @@ void TabWidgetPrivate::onCursorRecordChanged(int pos)
         return;
 
     prePosRecord.append({ pos, editor->getFile() });
-    for (const auto &record : nextPosRecord) {
-        prePosRecord.removeOne(record);
-    }
-    nextPosRecord.clear();
     if (prePosRecord.size() >= MAX_PRE_NEXT_TIMES)
         prePosRecord.takeFirst();
 }

@@ -78,7 +78,6 @@ public:
 
     bool contentsChanged { false };
     bool lastCursorNeedRecord { true };
-    bool postionChangedByGoto { false };
     QString fontName;
     int fontSize { 10 };
 

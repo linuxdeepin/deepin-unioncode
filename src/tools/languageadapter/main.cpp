@@ -153,6 +153,9 @@ void selectLspServer(const QJsonObject &params)
         proc = JsonRpcCallProxy::ins().createLspServ(projectKey);
         if (proc) {
             proc->setProcessChannelMode(QProcess::ForwardedOutputChannel);
+            QObject::connect(proc, &QProcess::readyReadStandardError, proc, [=]() {
+                lspServErr << "run lspServ error:" << proc->readAllStandardError().toStdString();
+            });
             proc->start();
             lspServOut << "save backend process";
             JsonRpcCallProxy::ins().save(projectKey, proc);

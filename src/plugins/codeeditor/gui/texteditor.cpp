@@ -274,22 +274,21 @@ int TextEditor::currentLineNumber()
 
 void TextEditor::gotoLine(int line)
 {
+    d->lastCursorNeedRecord = true;
     ensureLineVisible(line);
+
     SendScintilla(SCI_GOTOLINE, line);
     setFocus();
     d->adjustScrollBar();
-    d->lastCursorNeedRecord = false;
-    d->postionChangedByGoto = true;
 }
 
 void TextEditor::gotoPosition(int pos)
 {
+    d->lastCursorNeedRecord = true;
     SendScintilla(SCI_GOTOPOS, pos);
     ensureCursorVisible();
     setFocus();
     d->adjustScrollBar();
-    d->lastCursorNeedRecord = false;
-    d->postionChangedByGoto = true;
 }
 
 int TextEditor::cursorLastPosition()
@@ -728,15 +727,14 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 
     editor.cursorPositionChanged(d->fileName, line, index);
     int pos = positionFromLineIndex(line, index);
+    d->lastCursorPos = pos;
 
     if (!d->contentsChanged && d->lastCursorNeedRecord) {
-        emit cursorRecordChanged(d->lastCursorPos);
+        emit cursorRecordChanged(pos);
         d->lastCursorNeedRecord = false;
-    } else if (d->contentsChanged || d->postionChangedByGoto) {
+    } else if (d->contentsChanged) {
         d->lastCursorNeedRecord = true;
-        d->postionChangedByGoto = false;
     }
-    d->lastCursorPos = pos;
 }
 
 void TextEditor::focusOutEvent(QFocusEvent *event)

@@ -27,21 +27,21 @@ enum {
     CurrentValueDisplayRole
 };
 
-class VariableItemDelegate : public QStyledItemDelegate
+class ItemDelegate : public QStyledItemDelegate
 {
 public:
-    explicit VariableItemDelegate(QObject *parent = nullptr);
+    explicit ItemDelegate(QObject *parent = nullptr);
 
 protected:
     virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
-VariableItemDelegate::VariableItemDelegate(QObject *parent)
+ItemDelegate::ItemDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
 }
 
-void VariableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void ItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QStyleOptionViewItem iOption = option;
 
@@ -128,7 +128,7 @@ void VariableChooserPrivate::initUI()
     treeView->setIndentation(treeView->indentation() * 7 / 10);
     treeView->setHeaderHidden(true);
     treeView->setEditTriggers(QTreeView::NoEditTriggers);
-    treeView->setItemDelegate(new VariableItemDelegate(treeView));
+    treeView->setItemDelegate(new ItemDelegate(treeView));
 
     sortModel = new VariableSortFilterProxyModel(this);
     sortModel->setSourceModel(&model);
