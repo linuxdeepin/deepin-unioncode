@@ -54,8 +54,8 @@ bool CodeEditor::start()
 {
     qInfo() << __FUNCTION__;
 
-    initActions();
     initWindowService();
+    initActions();
     initButtonBox();
     initEditorService();
     initOptionService();
@@ -103,7 +103,7 @@ void CodeEditor::initActions()
 
     QAction *backAction = new QAction(tr("backward"), this);
     QAction *forwardAction = new QAction(tr("forward"), this);
-    QAction *closeAction = new QAction(tr("Close Current Editor"), this);
+    QAction *closeAction = new QAction(tr("Close"), this);
     QAction *switchHeaderSourceAction = new QAction(tr("Switch Header/Source"), this);
     QAction *follSymbolAction = new QAction(tr("Follow Symbol Under Cursor"), this);
     QAction *toggleBreakpointAction = new QAction(tr("Toggle Breakpoint"), this);
@@ -118,7 +118,7 @@ void CodeEditor::initActions()
                                         tr("Forward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Right));
     auto inputCloseAction = new AbstractAction(closeAction, this);
     inputCloseAction->setShortCutInfo("Editor.close",
-                                      tr("Close Current Editor"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_W));
+                                      tr("Close"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_W));
     auto inputSwitchHeaderSourceAction = new AbstractAction(switchHeaderSourceAction, this);
     inputSwitchHeaderSourceAction->setShortCutInfo("Editor.switchHS",
                                                    tr("Switch Header/Source"), QKeySequence(Qt::Key_F4));
