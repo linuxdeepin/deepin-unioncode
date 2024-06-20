@@ -61,7 +61,7 @@ void TextEditorPrivate::init()
 
 void TextEditorPrivate::initConnection()
 {
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::resetThemeColor);
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::onThemeTypeChanged);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSearch, this, &TextEditorPrivate::handleSearch);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqReplace, this, &TextEditorPrivate::handleReplace);
     connect(EditorSettings::instance(), &EditorSettings::valueChanged, this, &TextEditorPrivate::updateSettings);
@@ -151,9 +151,12 @@ void TextEditorPrivate::updateSettings()
     else
         q->setFont(font);
 
+    q->setMarginsFont(font);
+
     int fontZoom = EditorSettings::instance()->value(Node::FontColor, Group::FontGroup, Key::FontZoom, 100).toInt();
     int realFontZoom = (fontZoom - 100) / 10;
     q->zoomTo(realFontZoom);
+    q->updateLineNumberWidth(false);
 
     // Indentation
     q->SendScintilla(TextEditor::SCI_SETTABWIDTH, TAB_DEFAULT_WIDTH);
@@ -170,11 +173,6 @@ void TextEditorPrivate::updateSettings()
     q->setEolMode(TextEditor::EolUnix);
     q->setScrollWidth(1);
     q->setScrollWidthTracking(true);
-
-    resetThemeColor();
-
-    q->setMarginsFont(font);
-    q->updateLineNumberWidth(false);
 }
 
 void TextEditorPrivate::loadLexer()
@@ -401,7 +399,7 @@ void TextEditorPrivate::adjustScrollBar()
     scrollbar->setValue(scrollbar->value() + currentLine - halfEditorLines);
 }
 
-void TextEditorPrivate::resetThemeColor()
+void TextEditorPrivate::onThemeTypeChanged()
 {
     if (q->lexer()) {
         q->lexer()->resetStyle();

@@ -56,7 +56,7 @@ public:
     void adjustScrollBar();
 
 public slots:
-    void resetThemeColor();
+    void onThemeTypeChanged();
     void onDwellStart(int position, int x, int y);
     void onDwellEnd(int position, int x, int y);
     void onModified(int pos, int mtype, const QString &text, int len, int added,
