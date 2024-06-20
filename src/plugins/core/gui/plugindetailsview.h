@@ -26,6 +26,41 @@ class DetailsView : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:
+    struct MetaInfo
+    {
+        QString name;
+        QString version;
+        QString compatibleVersion;
+        QString vendor;
+        QString copyright;
+        QString category;
+        QString url;
+        QString license;
+        QString description;
+        QString dependency;
+
+        QString toHtml()
+        {
+            QString html = "<html>"
+                              "<body>"
+                              "<table>"
+                                  "<tr><td><strong>" + tr("Name") + "：</strong></td><td>" + name + "</td></tr>"
+                                  "<tr><td><strong>" + tr("Version") + "：</strong></td><td>" + version + "</td></tr>"
+                                  "<tr><td><strong>" + tr("Compatible Version") + "：</strong></td><td>" + compatibleVersion + "</td></tr>"
+                                  "<tr><td><strong>" + tr("Vendor") + "：</strong></td><td>" + vendor + "</td></tr>"
+//                                  "<tr><td><strong>" + tr("Copyright") + "：</strong></td><td>" + copyright + "</td></tr>"
+                                  "<tr><td><strong>" + tr("Category") + "：</strong></td><td>" + category + "</td></tr>"
+//                                  "<tr><td><strong>" + tr("URL") + "：</strong></td><td>" + url + "</td></tr>"
+                                  "<tr><td><strong>" + tr("License") + "：</strong></td><td>" + license + "</td></tr>"
+                                  "<tr><td><strong>" + tr("Description") + "：</strong></td><td>" + description + "</td></tr>"
+                                  "<tr><td><strong>" + tr("Dependency") + "：</strong></td><td>" + dependency + "</td></tr>"
+                              "</table><br>"
+                              "</body>"
+                              "</html>";
+            return html;
+        }
+    };
+
     explicit DetailsView(QWidget *parent = nullptr);
     ~DetailsView();
 
@@ -37,17 +72,9 @@ private slots:
 
 private:
     void setupUi();
-    void initMetaInfoLayout();
     void updateLoadBtnDisplay(bool isEnabled);
 
-    QVBoxLayout *metaInfoLayout {nullptr};
-    DTK_WIDGET_NAMESPACE::DLabel *name {nullptr};
-    DTK_WIDGET_NAMESPACE::DLabel *version {nullptr};
-    DTK_WIDGET_NAMESPACE::DLabel *category {nullptr};
-    DTK_WIDGET_NAMESPACE::DLabel *description {nullptr};
-    DTK_WIDGET_NAMESPACE::DLabel *vendor {nullptr};
-    DTK_WIDGET_NAMESPACE::DLabel *dependency {nullptr};
-
+    DTK_WIDGET_NAMESPACE::DLabel *metaInfoLabel {nullptr};
     DTK_WIDGET_NAMESPACE::DPushButton *loadBtn {nullptr};
     dpf::PluginMetaObjectPointer pluginMetaInfo;
     QWebEngineView *webView {nullptr};

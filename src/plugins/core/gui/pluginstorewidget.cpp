@@ -12,7 +12,7 @@
 DWIDGET_USE_NAMESPACE
 
 PluginStoreWidget::PluginStoreWidget(QWidget *parent)
-    : DFrame(parent)
+    : QWidget(parent)
     , pluginListView(new PluginListView(this))
 {
     initializeUi();
