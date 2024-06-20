@@ -97,8 +97,8 @@ void AskPageWidget::onDeleteBtnClicked()
     DDialog *confirmDialog = new DDialog(this);
     confirmDialog->setIcon(QIcon::fromTheme("dialog-warning"));
     confirmDialog->setMessage(tr("This operation will delete all the content of this session. confirm to delete it?"));
-    confirmDialog->insertButton(0, tr("Cancel", "button"));
-    confirmDialog->insertButton(1, tr("Delete", "button"), false, DDialog::ButtonWarning);
+    confirmDialog->insertButton(0, tr("cancel"));
+    confirmDialog->insertButton(1, tr("delete"), false, DDialog::ButtonWarning);
 
     connect(confirmDialog, &DDialog::buttonClicked, this, [](int index) {
         if (index == 1) {

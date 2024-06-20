@@ -14,7 +14,6 @@
 #include <DPushButton>
 #include <DFileDialog>
 #include <DStandardItem>
-#include <DDialog>
 
 #include <QImageReader>
 #include <QList>
@@ -210,11 +209,8 @@ class RecentDisplayPrivate
     DisplayDocView *docView{nullptr};
     DLabel *proLabel{nullptr};
     DPushButton *proClear{nullptr};
-    DDialog *clearProConfirm{nullptr};
-
     DLabel *docLabel{nullptr};
     DPushButton *docClear{nullptr};
-    DDialog *clearDocConfirm{nullptr};
 
     DFrame *navFrame{nullptr};
     DFrame *docFrame{nullptr};
@@ -471,12 +467,6 @@ void RecentDisplay::initializeUi()
     d->docClear->setFlat(true);
     d->docClear->setToolTip(tr("clear all"));
 
-    d->clearDocConfirm = new DDialog(this);
-    d->clearDocConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
-    d->clearDocConfirm->setMessage(tr("Confirm to clear the record of the opened file?"));
-    d->clearDocConfirm->insertButton(0, tr("Cancel", "button"));
-    d->clearDocConfirm->insertButton(1, tr("Delete", "button"), true, DDialog::ButtonWarning);
-
     QHBoxLayout *docHlayout = new QHBoxLayout;
     docHlayout->addWidget(d->docLabel);
     docHlayout->addWidget(d->docClear);
@@ -501,12 +491,6 @@ void RecentDisplay::initializeUi()
     d->proClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
     d->proClear->setFlat(true);
     d->proClear->setToolTip(tr("clear all"));
-
-    d->clearProConfirm = new DDialog(this);
-    d->clearProConfirm->setIcon(QIcon::fromTheme("dialog-warning"));
-    d->clearProConfirm->setMessage(tr("Confirm to clear the record of the opened project?"));
-    d->clearProConfirm->insertButton(0, tr("Cancel", "button"));
-    d->clearProConfirm->insertButton(1, tr("Delete", "button"), true, DDialog::ButtonWarning);
 
     QHBoxLayout *proHlayout = new QHBoxLayout;
     proHlayout->addWidget(d->proLabel);
@@ -570,26 +554,12 @@ void RecentDisplay::initConnect()
                      Qt::UniqueConnection);
 
     QObject::connect(d->docClear, &DPushButton::clicked,
-                     d->clearDocConfirm, &DDialog::exec,
+                     this, &RecentDisplay::clearDocList,
                      Qt::UniqueConnection);
 
     QObject::connect(d->proClear, &DPushButton::clicked,
-                     d->clearProConfirm, &DDialog::exec,
+                     this, &RecentDisplay::clearProList,
                      Qt::UniqueConnection);
-
-    QObject::connect(d->clearDocConfirm, &DDialog::buttonClicked, this, [=](int index) {
-        if (index == 0)
-            d->clearDocConfirm->reject();
-        else if (index == 1)
-            clearDocList();
-    });
-
-    QObject::connect(d->clearProConfirm, &DDialog::buttonClicked, this, [=](int index) {
-        if (index == 0)
-            d->clearProConfirm->reject();
-        else if (index == 1)
-            clearProList();
-    });
 }
 
 void RecentDisplay::showEvent(QShowEvent *event)
