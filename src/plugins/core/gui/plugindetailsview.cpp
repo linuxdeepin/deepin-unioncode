@@ -120,7 +120,7 @@ void DetailsView::setupUi()
     operationLayout->addWidget(cfgBtn, 1, Qt::AlignLeft);
 
     QLabel *logoLabel = new QLabel(this);
-    logoLabel->setPixmap(QIcon::fromTheme("defaultplugin").pixmap(QSize(128, 128)));
+    logoLabel->setPixmap(QIcon::fromTheme("plugins-navigation").pixmap(QSize(128, 128)));
 
     auto webViewLayout = new QHBoxLayout(this);
     webView = new QWebEngineView();
