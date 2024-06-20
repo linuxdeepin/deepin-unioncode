@@ -11,7 +11,6 @@
 
 #include <DLabel>
 #include <DStackedWidget>
-#include <DSuggestButton>
 
 #include <QDebug>
 #include <QVBoxLayout>
@@ -126,56 +125,38 @@ void CodeGeeXWidget::initUI()
     setContentsMargins(0, 0, 0, 0);
 
     auto initLoginUI = [this]() {
-        auto mainLayout = new QVBoxLayout(this);
-        auto loginWidget = new DWidget(this);
-        loginWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        auto verticalLayout = new QVBoxLayout(loginWidget);
+        auto verticalLayout = new QVBoxLayout(this);
+        verticalLayout->setMargin(0);
         verticalLayout->setAlignment(Qt::AlignCenter);
-        verticalLayout->setContentsMargins(50, 0, 50, 50);
+        auto verticalSpacer_top = new QSpacerItem(20, 200, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalLayout->addItem(verticalSpacer_top);
 
-        auto label_icon = new DLabel(this);
-        label_icon->setPixmap(QIcon::fromTheme("codegeex_logo").pixmap(QSize(40, 26)));
+        auto label_icon = new DLabel();
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        label_icon->setSizePolicy(sizePolicy);
+        label_icon->setPixmap(QIcon::fromTheme("codegeex_anwser_icon").pixmap(QSize(80, 80)));
         label_icon->setAlignment(Qt::AlignCenter);
 
-        verticalLayout->addWidget(label_icon);
+        verticalLayout->addWidget(label_icon, Qt::AlignCenter);
 
-        auto welcome_label = new DLabel(loginWidget);
-        welcome_label->setText(tr("Welcome to CodeGeeX"));//\nA must-have all-round AI tool for developers
-        welcome_label->setAlignment(Qt::AlignCenter);
+        auto label_text = new DLabel();
+        label_text->setSizePolicy(sizePolicy);
+        label_text->setText(tr("Welcome to CodeGeeX\nA must-have all-round AI tool for developers"));
+        label_text->setAlignment(Qt::AlignCenter);
 
-        auto font = welcome_label->font();
-        font.setPixelSize(14);
-        font.setWeight(500);
-        welcome_label->setFont(font);
+        verticalLayout->addWidget(label_text, Qt::AlignCenter);
 
-        auto descrption_label = new DLabel(loginWidget);
-        descrption_label->setText(tr("A must-have all-round AI tool for developers"));
-        descrption_label->setAlignment(Qt::AlignCenter);
-
-        font = descrption_label->font();
-        font.setPixelSize(12);
-        font.setWeight(400);
-        descrption_label->setFont(font);
-
-        verticalLayout->addSpacing(30);
-        verticalLayout->addWidget(welcome_label);
-        verticalLayout->addSpacing(5);
-        verticalLayout->addWidget(descrption_label);
-
-        auto btnLayout = new QHBoxLayout;     //make DSuggestBtn alignCenter
-        auto loginBtn = new DSuggestButton(loginWidget);
-        loginBtn->setFixedSize(200, 36);
+        auto loginBtn = new DPushButton();
+        loginBtn->setSizePolicy(sizePolicy);
         loginBtn->setText(tr("Go to login"));
-        connect(loginBtn, &DSuggestButton::clicked, this, [=] {
+        connect(loginBtn, &DPushButton::clicked, this, [=] {
             CodeGeeXManager::instance()->login();
         });
 
-        btnLayout->addWidget(loginBtn, Qt::AlignHCenter);
+        verticalLayout->addWidget(loginBtn);
 
-        verticalLayout->addSpacing(30);
-        verticalLayout->addLayout(btnLayout, Qt::AlignCenter);
-
-        mainLayout->addWidget(loginWidget);
+        auto verticalSpacer_bottom = new QSpacerItem(20, 500, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalLayout->addItem(verticalSpacer_bottom);
     };
     initLoginUI();
 }

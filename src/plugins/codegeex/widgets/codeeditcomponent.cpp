@@ -214,7 +214,7 @@ void CodeEditComponent::initUI()
     editFrame->setFrameRounded(true);
     editFrame->setLineWidth(2);
     auto editLayout = new QVBoxLayout(editFrame);
-    editLayout->setContentsMargins(3, 0, 3, 3);
+    editLayout->setContentsMargins(2, 0, 2, 2);
     editFrame->setLayout(editLayout);
 
     auto buttonLayout = new QHBoxLayout;
