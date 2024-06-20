@@ -23,7 +23,6 @@ public:
 
     bool setupInstantBlame(const QString &filePath);
     bool logFile(const QString &filePath);
-    bool blameFile(const QString &filePath);
 
     QWidget *instantBlameWidget() const;
     QWidget *gitTabWidget() const;

@@ -7,6 +7,8 @@
 
 #include "gitbasewidget.h"
 
+#include <QTextDocument>
+
 class GitLogWidgetPrivate;
 class GitLogWidget : public GitBaseWidget
 {
@@ -16,7 +18,7 @@ public:
     ~GitLogWidget();
 
     void setGitInfo(const QString &info) override;
-    QTextDocument *textDocument() const override;
+    QTextDocument *textDocument() const;
 
 private:
     GitLogWidgetPrivate *const d;

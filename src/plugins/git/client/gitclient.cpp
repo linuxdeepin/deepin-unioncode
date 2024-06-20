@@ -22,11 +22,9 @@ class GitClientPrivate : public QObject
 public:
     QString findRepository(const QString &filePath);
     QString normalLogArguments();
-    GitCommand *readyWork(GitTabWidget::Type type, const QString &workspace, const QString &filePath);
 
     void instantBlame();
     void logFile(const QString &workspace, const QString &filePath);
-    void blameFile(const QString &workspace, const QString &filePath);
 
 public:
     QString lastCentral;
@@ -75,24 +73,6 @@ QString GitClientPrivate::normalLogArguments()
     return logArgs;
 }
 
-GitCommand *GitClientPrivate::readyWork(GitTabWidget::Type type, const QString &workspace, const QString &filePath)
-{
-    int index = gitTabWidget->addWidget(type, filePath);
-    GitCommand *cmd = new GitCommand(workspace);
-    connect(cmd, &GitCommand::finished, this, [=](int code) {
-        if (code == 0) {
-            gitTabWidget->setInfo(index, cmd->cleanedStdOut());
-        } else {
-            gitTabWidget->setInfo(index, tr("Failed to retrieve data."));
-            qWarning() << cmd->cleanedStdErr();
-        }
-
-        cmd->deleteLater();
-    });
-
-    return cmd;
-}
-
 void GitClientPrivate::instantBlame()
 {
     GitCommand *cmd = new GitCommand(currentWorkspace);
@@ -115,22 +95,24 @@ void GitClientPrivate::instantBlame()
 
 void GitClientPrivate::logFile(const QString &workspace, const QString &filePath)
 {
-    auto cmd = readyWork(GitTabWidget::GitLog, workspace, filePath);
+    int index = gitTabWidget->addWidget(GitTabWidget::GitLog, filePath);
+    GitCommand *cmd = new GitCommand(workspace);
+    connect(cmd, &GitCommand::finished, this, [=](int code) {
+        if (code == 0) {
+            gitTabWidget->setInfo(index, cmd->cleanedStdOut());
+        } else {
+            gitTabWidget->setInfo(index, tr("Failed to retrieve data."));
+            qWarning() << cmd->cleanedStdErr();
+        }
+
+        cmd->deleteLater();
+    });
+
     QStringList arguments = { "log", DecorateOption,
                               "-n", QString::number(LogMaxCount),
                               "--patience", "--ignore-space-change",
                               ColorOption, "--follow",
                               normalLogArguments(), "--", filePath };
-
-    cmd->addJob(GitBinaryPath, arguments);
-    cmd->start();
-}
-
-void GitClientPrivate::blameFile(const QString &workspace, const QString &filePath)
-{
-    auto cmd = readyWork(GitTabWidget::GitBlame, workspace, filePath);
-    QStringList arguments = { "blame", "--root",
-                              "-w", "--", filePath };
 
     cmd->addJob(GitBinaryPath, arguments);
     cmd->start();
@@ -212,16 +194,6 @@ bool GitClient::logFile(const QString &filePath)
         return false;
 
     d->logFile(repository, filePath);
-    return true;
-}
-
-bool GitClient::blameFile(const QString &filePath)
-{
-    QString repository;
-    if (!checkRepositoryExist(filePath, &repository))
-        return false;
-
-    d->blameFile(repository, filePath);
     return true;
 }
 
