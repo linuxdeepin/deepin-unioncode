@@ -430,10 +430,6 @@ void CmakeProjectGenerator::actionProperties(const dpfservice::ProjectInfo &info
     dlg.insertPropertyPanel(tr("Build"), buildWidget);
     dlg.insertPropertyPanel(tr("Run"), runWidget);
 
-    connect(buildWidget, &BuildPropertyPage::cacheFileUpdated, this, [=](){
-        runCMake(this->rootItem, {});
-    });
-
     dlg.exec();
 }
 

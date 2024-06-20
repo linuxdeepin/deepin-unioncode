@@ -36,9 +36,6 @@ public:
     void readConfig() override;
     void saveConfig() override;
 
-signals:
-    void cacheFileUpdated();
-
 public slots:
     void updateDetail();
 
