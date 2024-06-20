@@ -77,7 +77,6 @@ class ControllerPrivate
     DSearchEdit *locatorBar { nullptr };
     DWidget *rightTopToolBar { nullptr };
     QMap<QString, DWidget *> topToolBarGroup;
-    QMap<QAction *, DToolButton *> topToolBtn;
 
     QMap<QString, DWidget *> contextWidgets;
     QMap<QString, DPushButton *> tabButtons;
@@ -239,9 +238,6 @@ void Controller::registerService()
     }
     if (!windowService->showTopToolBar) {
         windowService->showTopToolBar = std::bind(&Controller::showTopToolBar, this, _1);
-    }
-    if (!windowService->removeTopToolItem) {
-        windowService->removeTopToolItem = std::bind(&Controller::removeTopToolItem, this, _1);
     }
     if (!windowService->hideTopToolBar) {
         windowService->hideTopToolBar = std::bind(&MainWindow::hideTopTollBar, d->mainWindow);
@@ -1025,25 +1021,14 @@ DToolButton *Controller::createIconButton(QAction *action)
 
     connect(iconBtn, &DToolButton::clicked, action, &QAction::triggered);
     connect(action, &QAction::changed, iconBtn, [=] {
-        QString toolTipStr = action->text() + " " + action->shortcut().toString();
-        iconBtn->setToolTip(toolTipStr);
-        iconBtn->setShortcut(action->shortcut());
+        if (action->shortcut() != iconBtn->shortcut()) {
+            QString toolTipStr = action->text() + " " + action->shortcut().toString();
+            iconBtn->setToolTip(toolTipStr);
+            iconBtn->setShortcut(action->shortcut());
+        }
 
-        iconBtn->setIcon(action->icon());
         iconBtn->setEnabled(action->isEnabled());
     });
 
-    d->topToolBtn.insert(action, iconBtn);
     return iconBtn;
-}
-
-void Controller::removeTopToolItem(AbstractAction *action)
-{
-    if (!action || !action->qAction())
-        return;
-
-    auto iconBtn = d->topToolBtn.value(action->qAction());
-
-    delete iconBtn;
-    d->topToolBtn.remove(action->qAction());
 }
