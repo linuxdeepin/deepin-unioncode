@@ -15,7 +15,6 @@
 #include <QApplication>
 #include <QFileDialog>
 
-using namespace dpfservice;
 DWIDGET_USE_NAMESPACE
 
 WorkspaceWidgetPrivate::WorkspaceWidgetPrivate(WorkspaceWidget *qq)
@@ -310,15 +309,6 @@ void WorkspaceWidgetPrivate::onCloseRequested()
 void WorkspaceWidgetPrivate::handleOpenFile(const QString &workspace, const QString &fileName)
 {
     Q_UNUSED(workspace)
-
-    if (!windowService)
-        windowService = dpfGetService(WindowService);
-
-    if (windowService) {
-        auto dockName = windowService->getCurrentDockName(Position::Central);
-        if (dockName != "editWindow")
-            windowService->showWidgetAtPosition("editWindow", Position::Central, true);
-    }
 
     if (auto tabWidget = currentTabWidget())
         tabWidget->openFile(fileName);

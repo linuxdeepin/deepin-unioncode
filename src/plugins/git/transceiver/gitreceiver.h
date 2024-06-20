@@ -18,9 +18,7 @@ public:
 
 private:
     void handleCursorPositionChangedEvent(const dpf::Event &event);
-    void handleContextMenuEvent(const dpf::Event &event);
     void handleSwitchedFileEvent(const dpf::Event &event);
-    void handleProjectChangedEvent(const dpf::Event &event);
 
 private:
     QHash<QString, std::function<void(const dpf::Event &)>> eventHandleMap;

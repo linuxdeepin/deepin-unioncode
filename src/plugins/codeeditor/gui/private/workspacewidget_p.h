@@ -9,7 +9,6 @@
 #include "gui/tabwidget.h"
 
 #include "common/util/eventdefinitions.h"
-#include "services/window/windowservice.h"
 
 class WorkspaceWidgetPrivate : public QObject
 {
@@ -61,7 +60,6 @@ public slots:
 public:
     WorkspaceWidget *q;
 
-    dpfservice::WindowService *windowService { nullptr };
     TabWidget *focusTabWidget { nullptr };
     QList<TabWidget *> tabWidgetList;
 

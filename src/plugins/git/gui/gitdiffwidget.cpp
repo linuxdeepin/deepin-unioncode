@@ -119,7 +119,7 @@ void GitDiffWidget::setGitInfo(const QStringList &infos)
     if (infos.isEmpty())
         return;
 
-    const auto &info = infos.join("");
+    const auto &info = infos.first();
     d->fileDataList.clear();
     Q_EMIT reqParsePatch(info);
 }

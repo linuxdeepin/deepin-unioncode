@@ -7,8 +7,6 @@
 
 #include "base/abstractaction.h"
 #include "services/window/windowservice.h"
-#include "services/project/projectservice.h"
-#include "services/editor/editorservice.h"
 
 #include <QMenu>
 
@@ -22,19 +20,16 @@ GitMenuManager::GitMenuManager(QObject *parent)
 void GitMenuManager::actionHandler(QAction *act, GitType type)
 {
     const auto &filePath = act->property(GitFilePath).toString();
-    bool isProject = act->property(GitIsProject).toBool();
     bool ret = false;
     switch (type) {
     case GitLog:
-        ret = GitClient::instance()->gitLog(filePath, isProject);
+        ret = GitClient::instance()->logFile(filePath);
         break;
     case GitBlame:
         ret = GitClient::instance()->blameFile(filePath);
         break;
     case GitDiff:
-        ret = GitClient::instance()->gitDiff(filePath, isProject);
-    default:
-        break;
+        ret = GitClient::instance()->gitDiff(filePath);
     }
 
     if (ret) {
@@ -68,7 +63,7 @@ void GitMenuManager::initialize(dpfservice::WindowService *service)
         return actionImpl;
     };
 
-    gitAct = new QAction("&Git", this);
+    QAction *gitAct = new QAction("&Git", this);
     auto gitActImpl = initAction(gitAct);
     service->addAction(MWM_TOOLS, gitActImpl);
 
@@ -76,35 +71,13 @@ void GitMenuManager::initialize(dpfservice::WindowService *service)
     gitAct->setMenu(&gitSubMenu);
 }
 
-void GitMenuManager::setupProjectMenu()
+void GitMenuManager::setCurrentProject(const QString &project)
 {
-    auto activeProjInfo = dpfGetService(dpfservice::ProjectService)->getActiveProjectInfo();
-    if (!activeProjInfo.isVaild() || !GitClient::instance()->checkRepositoryExist(activeProjInfo.workspaceFolder())) {
-        curProjectAct->setEnabled(false);
-        return;
-    }
-
-    QFileInfo info(activeProjInfo.workspaceFolder());
-
-    curProjectAct->setEnabled(true);
-    projectLogAct->setProperty(GitFilePath, activeProjInfo.workspaceFolder());
-    projectLogAct->setText(tr("Log of \"%1\"").arg(info.fileName()));
-
-    projectDiffAct->setProperty(GitFilePath, activeProjInfo.workspaceFolder());
-    projectDiffAct->setText(tr("Diff of \"%1\"").arg(info.fileName()));
+    // TODO: act
 }
 
-void GitMenuManager::setupFileMenu(const QString &filePath)
+void GitMenuManager::setCurrentFile(const QString &file)
 {
-    QString file = filePath;
-    if (file.isEmpty()) {
-        auto editorService = dpfGetService(EditorService);
-        if (!editorService)
-            return;
-
-        file = editorService->currentFile();
-    }
-
     if (file.isEmpty() || !GitClient::instance()->checkRepositoryExist(file)) {
         curFileAct->setEnabled(false);
         return;
@@ -121,11 +94,6 @@ void GitMenuManager::setupFileMenu(const QString &filePath)
 
     fileDiffAct->setProperty(GitFilePath, file);
     fileDiffAct->setText(tr("Diff of \"%1\"").arg(info.fileName()));
-}
-
-QAction *GitMenuManager::gitAction() const
-{
-    return gitAct;
 }
 
 void GitMenuManager::createGitSubMenu()
@@ -159,14 +127,5 @@ void GitMenuManager::createFileSubMenu()
 
 void GitMenuManager::createProjectSubMenu()
 {
-    projectLogAct = new QAction(this);
-    projectLogAct->setProperty(GitIsProject, true);
-    connect(projectLogAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, projectLogAct, GitLog));
-
-    projectDiffAct = new QAction(this);
-    projectDiffAct->setProperty(GitIsProject, true);
-    connect(projectDiffAct, &QAction::triggered, this, std::bind(&GitMenuManager::actionHandler, this, projectDiffAct, GitDiff));
-
-    projectSubMenu.addAction(projectLogAct);
-    projectSubMenu.addAction(projectDiffAct);
+    // TODO: create
 }

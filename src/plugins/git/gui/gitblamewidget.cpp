@@ -119,7 +119,7 @@ void GitBlameWidget::setGitInfo(const QStringList &infos)
     if (infos.isEmpty())
         return d->gitEditor->clear();
 
-    const auto info = infos.join("");
+    const auto info = infos.first();
     const QChar space(' ');
     const int parenPos = info.indexOf(')');
     if (parenPos == -1)

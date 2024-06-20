@@ -22,9 +22,9 @@ public:
     bool checkRepositoryExist(const QString &filePath, QString *repository = nullptr);
 
     bool setupInstantBlame(const QString &filePath);
-    bool gitLog(const QString &filePath, bool isProject);
+    bool logFile(const QString &filePath);
     bool blameFile(const QString &filePath);
-    bool gitDiff(const QString &filePath, bool isProject);
+    bool gitDiff(const QString &filePath);
     void show(const QString &source, const QString &commitId);
 
     QWidget *instantBlameWidget() const;
