@@ -315,14 +315,6 @@ void TextEditor::replaceRange(int lineFrom, int indexFrom, int lineTo, int index
     replaceSelectedText(text);
 }
 
-void TextEditor::insertText(const QString &text)
-{
-    auto textData = text.toLocal8Bit();
-
-    SendScintilla(SCI_INSERTTEXT, static_cast<ulong>(d->cursorPosition()), textData.data());
-    SendScintilla(SCI_SETEMPTYSELECTION, d->cursorPosition() + textData.size());
-}
-
 QString TextEditor::cursorBeforeText() const
 {
     int pos = d->cursorPosition();

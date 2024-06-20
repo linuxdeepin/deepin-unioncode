@@ -21,10 +21,10 @@ public:
     QString selectedText() const;
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
-    Q_INVOKABLE void replaceSelectedText(const QString &text);
-    Q_INVOKABLE void showTips(const QString &tips);
-    Q_INVOKABLE void insertText(const QString &text);
-    Q_INVOKABLE void undo();
+    void replaceSelectedText(const QString &text);
+    void showTips(const QString &tips);
+    void insertText(const QString &text);
+    void undo();
     void gotoNextPosition();
     void gotoPreviousPosition();
 

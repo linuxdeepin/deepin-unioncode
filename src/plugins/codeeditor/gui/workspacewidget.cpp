@@ -227,8 +227,6 @@ WorkspaceWidget::WorkspaceWidget(QWidget *parent)
 
 QString WorkspaceWidget::selectedText() const
 {
-    Q_ASSERT(QThread::currentThread() == qApp->thread());
-
     if (auto tabWidget = d->currentTabWidget())
         return tabWidget->selectedText();
 
@@ -237,8 +235,6 @@ QString WorkspaceWidget::selectedText() const
 
 QString WorkspaceWidget::cursorBeforeText() const
 {
-    Q_ASSERT(QThread::currentThread() == qApp->thread());
-
     if (auto tabWidget = d->currentTabWidget())
         return tabWidget->cursorBeforeText();
 
@@ -247,8 +243,6 @@ QString WorkspaceWidget::cursorBeforeText() const
 
 QString WorkspaceWidget::cursorBehindText() const
 {
-    Q_ASSERT(QThread::currentThread() == qApp->thread());
-
     if (auto tabWidget = d->currentTabWidget())
         return tabWidget->cursorBehindText();
 
@@ -258,29 +252,23 @@ QString WorkspaceWidget::cursorBehindText() const
 void WorkspaceWidget::replaceSelectedText(const QString &text)
 {
     if (auto tabWidget = d->currentTabWidget())
-        QMetaObject::invokeMethod(tabWidget, "replaceSelectedText",
-                                  Qt::QueuedConnection,
-                                  Q_ARG(const QString &, text));
+        tabWidget->replaceSelectedText(text);
 }
 
 void WorkspaceWidget::showTips(const QString &tips)
 {
     if (auto tabWidget = d->currentTabWidget())
-        QMetaObject::invokeMethod(tabWidget, "showTips",
-                                  Qt::QueuedConnection,
-                                  Q_ARG(const QString &, tips));
+        tabWidget->showTips(tips);
 }
 
 void WorkspaceWidget::insertText(const QString &text)
 {
     if (auto tabWidget = d->currentTabWidget())
-        QMetaObject::invokeMethod(tabWidget, "insertText",
-                                  Qt::QueuedConnection,
-                                  Q_ARG(const QString &, text));
+        tabWidget->insertText(text);
 }
 
 void WorkspaceWidget::undo()
 {
     if (auto tabWidget = d->currentTabWidget())
-        QMetaObject::invokeMethod(tabWidget, "undo", Qt::QueuedConnection);
+        tabWidget->undo();
 }
