@@ -685,22 +685,16 @@ int TabWidget::editorScrollValue()
     return 0;
 }
 
-void TabWidget::addBreakpoint(const QString &fileName, int line, bool enabled)
+void TabWidget::addBreakpoint(const QString &fileName, int line)
 {
     if (auto editor = d->findEditor(fileName))
-        editor->addBreakpoint(line, enabled);
+        editor->addBreakpoint(line);
 }
 
 void TabWidget::removeBreakpoint(const QString &fileName, int line)
 {
     if (auto editor = d->findEditor(fileName))
         editor->removeBreakpoint(line);
-}
-
-void TabWidget::setBreakpointEnabled(const QString &fileName, int line, bool enabled)
-{
-    if (auto editor = d->findEditor(fileName))
-        editor->setBreakpointEnabled(line, enabled);
 }
 
 void TabWidget::toggleBreakpoint()

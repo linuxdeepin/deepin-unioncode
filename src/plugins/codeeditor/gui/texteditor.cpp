@@ -122,26 +122,18 @@ void TextEditor::reload()
     setCursorPosition(line, index);
 }
 
-void TextEditor::addBreakpoint(int line, bool enabled)
+void TextEditor::addBreakpoint(int line)
 {
     if (hasBreakpoint(line))
         return;
 
-    if (enabled) {
-        markerAdd(line, TextEditorPrivate::Breakpoint);
-        editor.breakpointAdded(d->fileName, line + 1);
-    } else {
-        markerAdd(line, TextEditorPrivate::BreakpointDisabled);
-    }
+    markerAdd(line, TextEditorPrivate::Breakpoint);
+    editor.breakpointAdded(d->fileName, line + 1);
 }
 
 void TextEditor::removeBreakpoint(int line)
 {
-    if (breakpointEnabled(line))
-        markerDelete(line, TextEditorPrivate::Breakpoint);
-    else
-        markerDelete(line, TextEditorPrivate::BreakpointDisabled);
-
+    markerDelete(line, TextEditorPrivate::Breakpoint);
     editor.breakpointRemoved(d->fileName, line + 1);
 }
 
@@ -151,35 +143,16 @@ void TextEditor::toggleBreakpoint()
     hasBreakpoint(line) ? removeBreakpoint(line) : addBreakpoint(line);
 }
 
-void TextEditor::setBreakpointEnabled(int line, bool enabled)
+void TextEditor::setBreakpointEnabled(int line)
 {
-    if (!hasBreakpoint(line))
-        return;
-
-    bool hasEnabled = breakpointEnabled(line);
-    if (hasEnabled == enabled)
-        return;
-
-    if (enabled) {
-        markerDelete(line, TextEditorPrivate::BreakpointDisabled);
-        markerAdd(line, TextEditorPrivate::Breakpoint);
-    } else {
-        markerDelete(line, TextEditorPrivate::Breakpoint);
-        markerAdd(line, TextEditorPrivate::BreakpointDisabled);
-    }
-    editor.breakpointStatusChanged(d->fileName, line + 1, enabled);
-}
-
-bool TextEditor::breakpointEnabled(int line)
-{
-    int mask = static_cast<int>(markersAtLine(line));
-    return (mask & (1 << TextEditorPrivate::Breakpoint));
+    Q_UNUSED(line)
+    // TODO:
 }
 
 bool TextEditor::hasBreakpoint(int line)
 {
     int mask = static_cast<int>(markersAtLine(line));
-    return (mask & (1 << TextEditorPrivate::Breakpoint) || mask & (1 << TextEditorPrivate::BreakpointDisabled));
+    return (mask & (1 << TextEditorPrivate::Breakpoint));
 }
 
 void TextEditor::gotoNextBreakpoint()
@@ -512,10 +485,10 @@ void TextEditor::onMarginClicked(int margin, int line, Qt::KeyboardModifiers sta
                 addBookmark(line);
             break;
         default:
-            if (hasBreakpoint(line))
-                removeBreakpoint(line);
+            if (mask & (1 << TextEditorPrivate::Breakpoint))
+                editor.removeBreakpoint(d->fileName, line + 1);
             else
-                addBreakpoint(line);
+                editor.addBreakpoint(d->fileName, line + 1);
         }
     }
 }

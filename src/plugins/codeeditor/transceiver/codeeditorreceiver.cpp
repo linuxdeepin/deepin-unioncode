@@ -28,7 +28,6 @@ CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
     eventHandleMap.insert(editor.clearLineBackgroundColor.name, std::bind(&CodeEditorReceiver::processClearLineBackgroundEvent, this, _1));
     eventHandleMap.insert(editor.addBreakpoint.name, std::bind(&CodeEditorReceiver::processAddBreakpointEvent, this, _1));
     eventHandleMap.insert(editor.removeBreakpoint.name, std::bind(&CodeEditorReceiver::processRemoveBreakpointEvent, this, _1));
-    eventHandleMap.insert(editor.setBreakpointEnabled.name, std::bind(&CodeEditorReceiver::processSetBreakpointEnabledEvent, this, _1));
     eventHandleMap.insert(editor.clearAllBreakpoint.name, std::bind(&CodeEditorReceiver::processClearAllBreakpointsEvent, this, _1));
     eventHandleMap.insert(editor.setModifiedAutoReload.name, std::bind(&CodeEditorReceiver::processSetModifiedAutoReloadEvent, this, _1));
 }
@@ -136,8 +135,7 @@ void CodeEditorReceiver::processAddBreakpointEvent(const dpf::Event &event)
 {
     QString filePath = event.property("fileName").toString();
     int line = event.property("line").toInt() - 1;
-    bool enabled = event.property("enabled").toBool();
-    Q_EMIT EditorCallProxy::instance()->reqAddBreakpoint(filePath, line, enabled);
+    Q_EMIT EditorCallProxy::instance()->reqAddBreakpoint(filePath, line);
 }
 
 void CodeEditorReceiver::processRemoveBreakpointEvent(const dpf::Event &event)
@@ -145,14 +143,6 @@ void CodeEditorReceiver::processRemoveBreakpointEvent(const dpf::Event &event)
     QString filePath = event.property("fileName").toString();
     int line = event.property("line").toInt() - 1;
     Q_EMIT EditorCallProxy::instance()->reqRemoveBreakpoint(filePath, line);
-}
-
-void CodeEditorReceiver::processSetBreakpointEnabledEvent(const dpf::Event &event)
-{
-    QString filePath = event.property("fileName").toString();
-    int line = event.property("line").toInt() - 1;
-    bool enabled = event.property("enabled").toBool();
-    Q_EMIT EditorCallProxy::instance()->reqSetBreakpointEnabled(filePath, line, enabled);
 }
 
 void CodeEditorReceiver::processClearAllBreakpointsEvent(const dpf::Event &event)

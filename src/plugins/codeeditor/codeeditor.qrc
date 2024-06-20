@@ -46,11 +46,5 @@
         <file>icons/deepin/builtin/light/icons/var_16px.svg</file>
         <file>icons/deepin/builtin/light/icons/var_priv_16px.svg</file>
         <file>icons/deepin/builtin/light/icons/var_prot_16px.svg</file>
-        <file>icons/deepin/builtin/dark/icons/arrow_14px.svg</file>
-        <file>icons/deepin/builtin/dark/icons/breakpoint_14px.svg</file>
-        <file>icons/deepin/builtin/dark/icons/disabled_breakpoint_14px.svg</file>
-        <file>icons/deepin/builtin/light/icons/arrow_14px.svg</file>
-        <file>icons/deepin/builtin/light/icons/breakpoint_14px.svg</file>
-        <file>icons/deepin/builtin/light/icons/disabled_breakpoint_14px.svg</file>
     </qresource>
 </RCC>

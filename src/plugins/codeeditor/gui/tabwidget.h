@@ -46,9 +46,8 @@ public:
     void setEditorScrollValue(int value);
     int editorScrollValue();
 
-    void addBreakpoint(const QString &fileName, int line, bool enabled);
+    void addBreakpoint(const QString &fileName, int line);
     void removeBreakpoint(const QString &fileName, int line);
-    void setBreakpointEnabled(const QString &fileName, int line, bool enabled);
     void toggleBreakpoint();
     void clearAllBreakpoints();
 

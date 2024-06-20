@@ -56,7 +56,6 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqOpenFile, this, &WorkspaceWidgetPrivate::handleOpenFile);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqAddBreakpoint, this, &WorkspaceWidgetPrivate::handleAddBreakpoint);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveBreakpoint, this, &WorkspaceWidgetPrivate::handleRemoveBreakpoint);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetBreakpointEnabled, this, &WorkspaceWidgetPrivate::handleSetBreakpointEnabled);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqBack, this, &WorkspaceWidgetPrivate::handleBack);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqForward, this, &WorkspaceWidgetPrivate::handleForward);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetDebugLine, this, &WorkspaceWidgetPrivate::handleSetDebugLine);
@@ -315,22 +314,16 @@ void WorkspaceWidgetPrivate::handleOpenFile(const QString &workspace, const QStr
         tabWidget->openFile(fileName);
 }
 
-void WorkspaceWidgetPrivate::handleAddBreakpoint(const QString &fileName, int line, bool enabled)
+void WorkspaceWidgetPrivate::handleAddBreakpoint(const QString &fileName, int line)
 {
     for (auto tabWidget : tabWidgetList)
-        tabWidget->addBreakpoint(fileName, line, enabled);
+        tabWidget->addBreakpoint(fileName, line);
 }
 
 void WorkspaceWidgetPrivate::handleRemoveBreakpoint(const QString &fileName, int line)
 {
     for (auto tabWidget : tabWidgetList)
         tabWidget->removeBreakpoint(fileName, line);
-}
-
-void WorkspaceWidgetPrivate::handleSetBreakpointEnabled(const QString &fileName, int line, bool enabled)
-{
-    for (auto tabWidget : tabWidgetList)
-        tabWidget->setBreakpointEnabled(fileName, line, enabled);
 }
 
 void WorkspaceWidgetPrivate::handleToggleBreakpoint()
