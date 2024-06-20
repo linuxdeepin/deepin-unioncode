@@ -118,7 +118,7 @@ static QString getEntryFilePath(const QDir &dir)
 RunCommandInfo PythonGenerator::getRunArguments(const ProjectInfo &projectInfo, const QString &currentFile)
 {
     // TODO(Any): put this flag to option config UI.
-    bool isRunCurrentFile = projectInfo.property("isRunCurrentFile").toBool();
+    bool isRunCurrentFile = false;
 
     RunCommandInfo runCommandInfo;
 

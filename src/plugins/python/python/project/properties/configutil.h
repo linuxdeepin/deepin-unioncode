@@ -13,11 +13,6 @@
 
 namespace config {
 
-enum ExecuteFile {
-    CURRENTFILE,
-    ENTRYFILE
-};
-
 struct ItemInfo {
     QString name;
     QString path;
@@ -50,7 +45,6 @@ struct ProjectConfigure {
     QString language;
     QString projectPath;
     ItemInfo pythonVersion;
-    ExecuteFile executeFile;
 
     friend QDataStream &operator<<(QDataStream &stream, const ProjectConfigure &data)
     {
