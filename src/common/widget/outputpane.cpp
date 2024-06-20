@@ -58,13 +58,11 @@ OutputPane::~OutputPane()
 
 void OutputPane::initUI()
 {
-    if(DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::ColorType::DarkType) {
-        textColorNormal = QColor(255, 255, 255, 180);
-    }else {
-        textColorNormal = QColor(0, 0, 0, 180);
-    }
+    QColor currentColor = this->palette().color(this->backgroundRole());
+    kTextColorNormal = QColor(255 - currentColor.red(), 255 - currentColor.green(), 255 - currentColor.blue());
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, [&](){
-        textColorNormal = QColor(255 - textColorNormal.red(), 255 - textColorNormal.green(), 255 - textColorNormal.blue(), 180);
+        QColor currentColor = this->palette().color(this->backgroundRole());
+        kTextColorNormal = QColor(255 - currentColor.red(), 255 - currentColor.green(), 255 - currentColor.blue());
         this->update();
     });
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -159,7 +157,7 @@ void OutputPane::appendText(const QString &text, OutputFormat format, AppendMode
     QTextCharFormat textFormat;
     switch (format) {
     case OutputFormat::StdOut:
-        textFormat.setForeground(textColorNormal);
+        textFormat.setForeground(kTextColorNormal);
         textFormat.setFontWeight(QFont::Normal);
         break;
     case OutputFormat::StdErr:
@@ -174,7 +172,7 @@ void OutputPane::appendText(const QString &text, OutputFormat format, AppendMode
         textFormat.setFontWeight(QFont::Bold);
         break;
     default:
-        textFormat.setForeground(textColorNormal);
+        textFormat.setForeground(kTextColorNormal);
         textFormat.setFontWeight(QFont::Normal);
     }
 

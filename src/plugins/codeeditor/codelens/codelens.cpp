@@ -4,9 +4,6 @@
 
 #include "codelens.h"
 #include "codelenstree.h"
-
-#include <DFrame>
-
 #include <QGridLayout>
 
 class CodeLensPrivate
@@ -34,17 +31,7 @@ CodeLens::CodeLens(QWidget *parent)
     d->gLayout = new QGridLayout();
     d->gLayout->addWidget(d->lens);
     d->gLayout->setMargin(0);
-    
-    QHBoxLayout *mainLayout = new QHBoxLayout();
-    DFrame *mainFrame = new DFrame(this);
-    mainLayout->addWidget(mainFrame);
-    mainLayout->setMargin(0);
-    mainFrame->setLayout(d->gLayout);
-    mainFrame->setLineWidth(0);
-    DStyle::setFrameRadius(mainFrame, 0);
-    setLayout(mainLayout);
-    
-    
+    setLayout(d->gLayout);
     QObject::connect(d->lens, &CodeLensTree::doubleClicked, this, &CodeLens::doubleClicked);
 }
 

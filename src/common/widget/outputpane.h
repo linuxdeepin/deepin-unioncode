@@ -57,7 +57,7 @@ private:
 
     OutputPanePrivate *d = nullptr;
 
-    QColor textColorNormal;
+    QColor kTextColorNormal;
 };
 
 #endif // OUTPUTPANE_H
