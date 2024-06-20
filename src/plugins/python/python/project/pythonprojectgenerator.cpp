@@ -167,6 +167,6 @@ void PythonProjectGenerator::actionProperties(const dpfservice::ProjectInfo &inf
 {
     PropertiesDialog dlg;
     ConfigPropertyWidget *property = new ConfigPropertyWidget(info, item);
-    dlg.insertPropertyPanel(tr("Config"), property);
+    dlg.insertPropertyPanel("Config", property);
     dlg.exec();
 }

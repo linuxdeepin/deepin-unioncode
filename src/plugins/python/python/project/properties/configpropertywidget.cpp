@@ -43,7 +43,7 @@ void DetailPropertyWidget::setupUI()
     setLayout(vLayout);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
-    DLabel *label = new DLabel(tr("Python interpreter: "), this);
+    DLabel *label = new DLabel(DLabel::tr("Python interpreter: "), this);
     label->setFixedWidth(120);
     d->pyVersionComboBox = new DComboBox(this);
     hLayout->addWidget(label);
@@ -51,7 +51,7 @@ void DetailPropertyWidget::setupUI()
     vLayout->addLayout(hLayout);
 
     hLayout = new QHBoxLayout;
-    label = new DLabel(tr("Executable File: "), this);
+    label = new DLabel(DLabel::tr("Executable File: "), this);
     label->setFixedWidth(120);
     d->executeFileComboBox = new DComboBox(this);
     hLayout->addWidget(label);

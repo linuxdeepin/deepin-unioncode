@@ -409,32 +409,32 @@
 <context>
     <name>BreakpointView</name>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="78"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="76"/>
         <source>Enable selected breakpoints</source>
         <translation>启用选中断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="80"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="78"/>
         <source>Disable selected breakpoints</source>
         <translation>禁用选中断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="84"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="82"/>
         <source>Remove selected breakpoints</source>
         <translation>删除选中断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="86"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="84"/>
         <source>Remove all breakpoints</source>
         <translation>删除所有断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="90"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="88"/>
         <source>Enable all breakpoints</source>
         <translation>启用所有断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="92"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="90"/>
         <source>Disable all breakpoints</source>
         <translation>禁用所有断点</translation>
     </message>
@@ -636,65 +636,71 @@ storage: %2
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="33"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="32"/>
         <source>Save All Documents</source>
         <translation>保存所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="34"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="33"/>
         <source>Close All Documents</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="35"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="34"/>
         <source>Print</source>
         <translation>打印</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="83"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="105"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="82"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="104"/>
         <source>backward</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="89"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="106"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="88"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="105"/>
         <source>forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="107"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="106"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="121"/>
         <source>Close Current Editor</source>
         <translation>关闭当前编辑器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="108"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="107"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="124"/>
         <source>Switch Header/Source</source>
         <translation>切换头文件/源文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="109"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="108"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="127"/>
         <source>Follow Symbol Under Cursor</source>
         <translation>跟随光标下符号</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="110"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="109"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="130"/>
         <source>Toggle Breakpoint</source>
         <translation>切换断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="111"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="110"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="133"/>
+        <source>Find/Replace</source>
+        <translation>查找/替换</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="111"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="136"/>
         <source>Find Usages</source>
         <translation>查找引用</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="112"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="136"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="139"/>
         <source>Rename Symbol Under Cursor</source>
         <translation>重命名</translation>
     </message>
@@ -709,19 +715,20 @@ storage: %2
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="138"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="139"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="140"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="141"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="142"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="143"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="144"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="145"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="146"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="147"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="148"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="149"/>
         <source>&amp;Edit</source>
         <translation>编辑(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="202"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="207"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
@@ -949,7 +956,7 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="662"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="658"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
@@ -978,8 +985,8 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>DAPDebugger</name>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="429"/>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="457"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="428"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="456"/>
         <source>
 The debugee has Terminated.
 </source>
@@ -988,88 +995,88 @@ The debugee has Terminated.
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="447"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="446"/>
         <source>The debugee has Exited.
 </source>
         <translation>调试已退出。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="789"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="795"/>
         <source>&lt;Unknown&gt;</source>
         <comment>name</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="791"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="797"/>
         <source>&lt;Unknown&gt;</source>
         <comment>meaning</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="792"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="798"/>
         <source>&lt;p&gt;The inferior stopped because it received a signal from the operating system.&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;Signal name : &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Signal meaning : &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;p&gt;下位机停止，因为它收到了来自操作系统的信号。&lt;p&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;信号名： &lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;信号含义： &lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="798"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="804"/>
         <source>Signal Received</source>
         <translation>信号已接收</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="868"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="882"/>
         <source>Threads:</source>
         <translation>线程：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="872"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="886"/>
         <source>Stack List</source>
         <translation>堆栈列表</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="886"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="899"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="886"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="899"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="886"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="899"/>
         <source>Type</source>
         <translation>类型</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="913"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="925"/>
         <source>Breakpoint List</source>
         <translation>断点列表</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="989"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1001"/>
         <source>Please build first.
  Build : Ctrl + B</source>
         <translation>请先编译工程。
 编译：Ctrl + B</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1001"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1013"/>
         <source>Is preparing dependence, please waiting for a moment</source>
         <translation>正在加载依赖项，请等待</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1027"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1039"/>
         <source>Is getting the dap port, please waiting for a moment</source>
         <translation>正在获取dap端口，请等待</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1039"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1051"/>
         <source>Requesting debug port...</source>
         <translation>请求调试端口...</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1101"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1113"/>
         <source>
 The dap port is not ready, please retry.
 </source>
@@ -1078,22 +1085,22 @@ dap端口未就绪，请重试。
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1105"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1117"/>
         <source>Debugging starts</source>
         <translation>调试开始</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1157"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1169"/>
         <source>Start debugging coredump file: </source>
         <translation>开始调试coredump文件： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1160"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1172"/>
         <source>The coredump target file is error: </source>
         <translation>coredump目标文件错误： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1166"/>
+        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="1178"/>
         <source>The coredump file is error: </source>
         <translation>coredump文件错误： </translation>
     </message>
@@ -1151,6 +1158,16 @@ dap端口未就绪，请重试。
         <translation>JS解释器： </translation>
     </message>
     <message>
+        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="46"/>
+        <source>Python interpreter: </source>
+        <translation>Python解释器： </translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="54"/>
+        <source>Executable File: </source>
+        <translation>执行文件:</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/codegeex/option/detailwidget.cpp" line="56"/>
         <source>Code Completion:</source>
         <translation>代码补全</translation>
@@ -1198,14 +1215,14 @@ dap端口未就绪，请重试。
 <context>
     <name>DTreeView</name>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="26"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="25"/>
         <source>The delete operation will be removed fromthe disk and will not be recoverable after this operation.
 Delete anyway?</source>
         <translation>删除操作将从磁盘中删除，此操作后将无法恢复。
 是否仍要删除？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="30"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="29"/>
         <source>Delete Warning</source>
         <translation>忽略警告</translation>
     </message>
@@ -1220,16 +1237,6 @@ Delete anyway?</source>
 </context>
 <context>
     <name>DetailPropertyWidget</name>
-    <message>
-        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="46"/>
-        <source>Python interpreter: </source>
-        <translation>Python解释器： </translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="54"/>
-        <source>Executable File: </source>
-        <translation>执行文件:</translation>
-    </message>
     <message>
         <location filename="../../src/plugins/python/python/project/properties/configpropertywidget.cpp" line="131"/>
         <source>Current File</source>
@@ -1408,78 +1415,78 @@ Delete anyway?</source>
 <context>
     <name>FileTreeView</name>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="110"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="109"/>
         <source>Error, Can&apos;t move to trash: </source>
         <translation>错误，无法移到废纸篓： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="152"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="151"/>
         <source>Error, Can&apos;t delete: </source>
         <translation>错误，无法删除:</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="169"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="168"/>
         <source>New Document Name</source>
         <translation>新文件名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="173"/>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="294"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="172"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="293"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="176"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="175"/>
         <source>Ok</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="216"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="215"/>
         <source>Error: Can&apos;t create New Document</source>
         <translation>错误：无法创建新文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="218"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="217"/>
         <source>Error: Create New Document, parent not&apos;s dir</source>
         <translation>错误：新建文件没有父级目录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="237"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="236"/>
         <source>Error: Can&apos;t create new folder</source>
         <translation>错误：无法创建新文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="240"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="239"/>
         <source>Error: Create new folder, parent not&apos;s dir</source>
         <translation>错误：新建文件夹没有父级目录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="286"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="285"/>
         <source>Open</source>
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="291"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="290"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="302"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="301"/>
         <source>Move To Trash</source>
         <translation>移到回收站</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="305"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="304"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="308"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="307"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="322"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/filetreeview.cpp" line="321"/>
         <source>Recover From Trash</source>
         <translation>恢复</translation>
     </message>
@@ -1497,45 +1504,6 @@ Delete anyway?</source>
         <location filename="../../src/plugins/find/findplugin.cpp" line="58"/>
         <source>Advanced &amp;Search</source>
         <translation>高级查找( &amp;S)</translation>
-    </message>
-</context>
-<context>
-    <name>FindToolBar</name>
-    <message>
-        <location filename="../../src/plugins/core/find/findtoolbar.cpp" line="56"/>
-        <source>Find</source>
-        <translation>查找</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/find/findtoolbar.cpp" line="60"/>
-        <source>Relace</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/find/findtoolbar.cpp" line="69"/>
-        <source>Replace</source>
-        <translation>替换</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/find/findtoolbar.cpp" line="70"/>
-        <source>Replace All</source>
-        <translation>替换全部</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/find/findtoolbar.cpp" line="71"/>
-        <source>Replace &amp;&amp; Find</source>
-        <translation>替换并查找</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/find/findtoolbar.cpp" line="111"/>
-        <location filename="../../src/plugins/core/find/findtoolbar.cpp" line="114"/>
-        <source>Find/Replace</source>
-        <translation>查找/替换</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/core/find/findtoolbar.cpp" line="115"/>
-        <source>&amp;Find</source>
-        <translation>&amp;查看</translation>
     </message>
 </context>
 <context>
@@ -2068,6 +2036,19 @@ repos path: %0</source>
     </message>
 </context>
 <context>
+    <name>OptionCore</name>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="60"/>
+        <source>General</source>
+        <translation>通用设置</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/option/optioncore/optioncore.cpp" line="94"/>
+        <source>Extended Settings</source>
+        <translation>扩展设置</translation>
+    </message>
+</context>
+<context>
     <name>OptionsDialog</name>
     <message>
         <location filename="../../src/plugins/option/optioncore/mainframe/optionsdialog.cpp" line="114"/>
@@ -2209,8 +2190,8 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="500"/>
-        <source>Delete operation not be recoverable, delete anyway?</source>
-        <translation>删除操作不可逆转，是否删除?</translation>
+        <source>Delete operation not be recoverable, delete anyway? </source>
+        <translation>删除操作不可逆转，是否删除？</translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="558"/>
@@ -2270,11 +2251,6 @@ repos path: %0</source>
         <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="137"/>
         <source>Properties</source>
         <translation>工程属性</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/python/project/pythonprojectgenerator.cpp" line="170"/>
-        <source>Config</source>
-        <translation>配置</translation>
     </message>
 </context>
 <context>
@@ -2890,21 +2866,6 @@ not exists support files: %0</source>
         <source>Target</source>
         <translation>目标</translation>
     </message>
-    <message>
-        <location filename="../../src/plugins/codegeex/codegeex.cpp" line="51"/>
-        <source>AI</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/services/option/optiondatastruct.h" line="21"/>
-        <source>General</source>
-        <translation>通用设置</translation>
-    </message>
-    <message>
-        <location filename="../../src/services/option/optiondatastruct.h" line="22"/>
-        <source>Language</source>
-        <translation>语言</translation>
-    </message>
 </context>
 <context>
     <name>QPushButton</name>
@@ -2953,7 +2914,7 @@ not exists support files: %0</source>
         <translation>控制台(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="201"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="206"/>
         <source>Search &amp;Results</source>
         <translation>查找结果(&amp;R)</translation>
     </message>
@@ -3003,6 +2964,44 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/filebrowser/filebrowser.cpp" line="29"/>
         <source>File Browser</source>
         <translation>文件浏览器</translation>
+    </message>
+</context>
+<context>
+    <name>QtC::Core</name>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/find/findtoolbar.cpp" line="82"/>
+        <source>Find:</source>
+        <translation>查找:</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/find/findtoolbar.cpp" line="87"/>
+        <source>Find Previous</source>
+        <translation>查找前一个</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/find/findtoolbar.cpp" line="90"/>
+        <source>Find Next</source>
+        <translation>查找下一个</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/find/findtoolbar.cpp" line="104"/>
+        <source>Replace with:</source>
+        <translation>替换为:</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/find/findtoolbar.cpp" line="109"/>
+        <source>Replace</source>
+        <translation>替换</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/find/findtoolbar.cpp" line="114"/>
+        <source>Replace &amp;&amp; Find</source>
+        <translation>替换并查找</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/find/findtoolbar.cpp" line="119"/>
+        <source>Replace All</source>
+        <translation>替换全部</translation>
     </message>
 </context>
 <context>
@@ -4095,27 +4094,27 @@ not exists support files: %0</source>
         <translation>&lt;More&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="87"/>
+        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="91"/>
         <source>Level</source>
         <translation>层级</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="89"/>
+        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="93"/>
         <source>Function</source>
         <translation>函数</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="91"/>
+        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="95"/>
         <source>File</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="93"/>
+        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="97"/>
         <source>Line</source>
         <translation>行</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="95"/>
+        <location filename="../../src/plugins/debugger/interface/stackframemodel.cpp" line="99"/>
         <source>Address</source>
         <translation>地址</translation>
     </message>
@@ -4259,7 +4258,7 @@ not exists support files: %0</source>
 <context>
     <name>TabWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="152"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="146"/>
         <source>File Operation</source>
         <translation>文件操作</translation>
     </message>
@@ -4412,70 +4411,70 @@ not exists support files: %0</source>
 <context>
     <name>WorkspaceWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="115"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="116"/>
         <source>The file &lt;i&gt;%1&lt;/i&gt; has been changed on disk.Do you want to reload it?</source>
         <translation>%1 被修改，是否重新加载？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="116"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="117"/>
         <source>File Has Been Changed</source>
         <translation>文件发生修改</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="119"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="120"/>
         <source>Yes</source>
         <comment>button</comment>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="120"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="121"/>
         <source>Yes To All</source>
         <comment>button</comment>
         <translation>应用所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="121"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="122"/>
         <source>No</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="122"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="123"/>
         <source>No To All</source>
         <comment>button</comment>
         <translation>取消所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="123"/>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="152"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="124"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="153"/>
         <source>Close</source>
         <comment>button</comment>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="143"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="144"/>
         <source>The file &lt;i&gt;%1&lt;/i&gt; has been removed from disk. Do you want to save it under a different name, or close the editor?</source>
         <translation>%1 被移除，是否需要另存为，或者关闭当前编辑页？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="147"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="148"/>
         <source>File Has Been Removed</source>
         <translation>文件被移除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="150"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="151"/>
         <source>Save</source>
         <comment>button</comment>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="151"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="152"/>
         <source>Save As</source>
         <comment>button</comment>
         <translation>另存为</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="153"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="154"/>
         <source>Close All</source>
         <comment>button</comment>
         <translation>关闭所有</translation>
