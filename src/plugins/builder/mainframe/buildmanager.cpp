@@ -187,7 +187,6 @@ void BuildManager::initCompileWidget()
 
     QAction* showAllAction = new QAction(tr("All"), this);
     showAllAction->setCheckable(true);
-    showAllAction->setChecked(true);
     filterMenu->addAction(showAllAction);
 
     QAction* showErrorAction = new QAction(tr("Error"), this);
@@ -198,23 +197,23 @@ void BuildManager::initCompileWidget()
     showWarningAction->setCheckable(true);
     filterMenu->addAction(showWarningAction);
 
-    connect(filterMenu, &DMenu::triggered, [=](QAction *action) {
-        if (action == showAllAction) {
-            d->problemOutputPane->showSpecificTasks(ShowType::All);
-            showAllAction->setChecked(true);
-            showErrorAction->setChecked(false);
-            showWarningAction->setChecked(false);
-        } else if (action == showErrorAction) {
-            d->problemOutputPane->showSpecificTasks(ShowType::Error);
-            showAllAction->setChecked(false);
-            showErrorAction->setChecked(true);
-            showWarningAction->setChecked(false);
-        } else {
-            d->problemOutputPane->showSpecificTasks(ShowType::Warning);
-            showAllAction->setChecked(false);
-            showErrorAction->setChecked(false);
-            showWarningAction->setChecked(true);
-        }
+    connect(showAllAction, &QAction::triggered, [=]() {
+        d->problemOutputPane->showSpecificTasks(ShowType::All);
+        showAllAction->setChecked(true);
+        showErrorAction->setChecked(false);
+        showWarningAction->setChecked(false);
+    });
+    connect(showErrorAction, &QAction::triggered, [=]() {
+        d->problemOutputPane->showSpecificTasks(ShowType::Error);
+        showAllAction->setChecked(false);
+        showErrorAction->setChecked(true);
+        showWarningAction->setChecked(false);
+    });
+    connect(showWarningAction, &QAction::triggered, [=]() {
+        d->problemOutputPane->showSpecificTasks(ShowType::Warning);
+        showAllAction->setChecked(false);
+        showErrorAction->setChecked(false);
+        showWarningAction->setChecked(true);
     });
     connect(filterButton, &DToolButton::clicked, [=]() {
         QPoint buttonPos = filterButton->mapToGlobal(QPoint(0, filterButton->height()));
