@@ -108,8 +108,6 @@ void CodeEditor::initActions()
     QAction *follSymbolAction = new QAction(tr("Follow Symbol Under Cursor"), this);
     QAction *toggleBreakpointAction = new QAction(tr("Toggle Breakpoint"), this);
     QAction *findReplaceAction = new QAction(tr("Find/Replace"), this);
-    QAction *findUsageAction = new QAction(tr("Find Usages"), this);
-    QAction *renameAction = new QAction(tr("Rename Symbol Under Cursor"), this);
 
     auto inputBackAction = new AbstractAction(backAction, this);
     inputBackAction->setShortCutInfo("Editor.back", tr("Backward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
@@ -128,15 +126,9 @@ void CodeEditor::initActions()
     auto inputToggleBreakpointAction = new AbstractAction(toggleBreakpointAction, this);
     inputToggleBreakpointAction->setShortCutInfo("Editor.toggleBreak",
                                                  tr("Toggle Breakpoint"), QKeySequence(Qt::Key_F9));
-    auto inputFindReplaceAction = new AbstractAction(findReplaceAction, this);
-    inputFindReplaceAction->setShortCutInfo("Editor.findReplace",
-                                            tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
-    auto inputFindUsageAction = new AbstractAction(findUsageAction, this);
-    inputFindUsageAction->setShortCutInfo("Editor.findUsage",
-                                          tr("Find Usages"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_U));
-    auto inputRenameAction = new AbstractAction(renameAction, this);
-    inputRenameAction->setShortCutInfo("Editor.rename",
-                                       tr("Rename Symbol Under Cursor"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_R));
+    auto inputFindReplaceActionAction = new AbstractAction(findReplaceAction, this);
+    inputFindReplaceActionAction->setShortCutInfo("Editor.findReplace",
+                                                  tr("Find/Replace"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_F));
 
     windowService->addAction(tr("&Edit"), inputBackAction);
     windowService->addAction(tr("&Edit"), inputForwardAction);
@@ -144,9 +136,7 @@ void CodeEditor::initActions()
     windowService->addAction(tr("&Edit"), inputSwitchHeaderSourceAction);
     windowService->addAction(tr("&Edit"), inputFollSymbolAction);
     windowService->addAction(tr("&Edit"), inputToggleBreakpointAction);
-    windowService->addAction(tr("&Edit"), inputFindReplaceAction);
-    windowService->addAction(tr("&Edit"), inputFindUsageAction);
-    windowService->addAction(tr("&Edit"), inputRenameAction);
+    windowService->addAction(tr("&Edit"), inputFindReplaceActionAction);
 
     connect(backAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqBack);
     connect(forwardAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqForward);
@@ -155,8 +145,6 @@ void CodeEditor::initActions()
     connect(follSymbolAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFollowSymbolUnderCursor);
     connect(toggleBreakpointAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint);
     connect(findReplaceAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqShowFindToolBar);
-    connect(findUsageAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqFindUsage);
-    connect(renameAction, &QAction::triggered, EditorCallProxy::instance(), &EditorCallProxy::reqRenameSymbol);
 }
 
 void CodeEditor::initEditorService()

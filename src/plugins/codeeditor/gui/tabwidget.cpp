@@ -453,24 +453,6 @@ void TabWidget::followSymbolUnderCursor()
     editor->followSymbolUnderCursor();
 }
 
-void TabWidget::findUsage()
-{
-    auto editor = d->currentTextEditor();
-    if (!editor || !editor->hasFocus())
-        return;
-
-    editor->findUsage();
-}
-
-void TabWidget::renameSymbol()
-{
-    auto editor = d->currentTextEditor();
-    if (!editor || !editor->hasFocus())
-        return;
-
-    editor->renameSymbol();
-}
-
 void TabWidget::replaceSelectedText(const QString &text)
 {
     if (auto editor = d->currentTextEditor())
