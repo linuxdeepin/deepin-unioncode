@@ -179,6 +179,8 @@ signals:
     void definitionRes(const std::vector<newlsp::Location> &locations, const QString &filePath);
     void definitionRes(const std::vector<newlsp::LocationLink> &locations, const QString &filePath);
     void rangeFormattingRes(const std::vector<TextEdit> &edits, const QString &filePath);
+    void symbolResult(const QList<DocumentSymbol> &docSymbols, const QString &filePath);
+    void symbolResult(const QList<SymbolInformation> &symbolInfos, const QString &filePath);
 
     /* server request */
     void publishDiagnostics(const newlsp::PublishDiagnosticsParams &diagnostics); // textDocument/publishDiagnostics

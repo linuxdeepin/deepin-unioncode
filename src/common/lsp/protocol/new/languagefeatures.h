@@ -407,22 +407,22 @@ struct DocumentSymbolParams : WorkDoneProgressParams,
 std::string toJsonValueStr(const DocumentSymbolParams &val);
 
 struct DocumentSymbol {
-    std::string name;
-    std::optional<std::string> detail;
+    QString name;
+    std::optional<QString> detail;
     newlsp::Enum::SymbolKind::type_value kind;
     std::optional<std::vector<newlsp::Enum::SymbolTag::type_value>> tags;
     std::optional<bool> deprecated;
     Range range;
     Range selectionRange;
-    std::optional<std::vector<DocumentSymbol>> children;
+    std::optional<QList<DocumentSymbol>> children;
 };
 struct SymbolInformation {
-    std::string name;
+    QString name;
     newlsp::Enum::SymbolKind::type_value kind;
     std::optional<std::vector<newlsp::Enum::SymbolTag::type_value>> tags;
     std::optional<bool> deprecated;
     Location location;
-    std::optional<std::string> containerName;
+    std::optional<QString> containerName;
 };
 
 /** Semantic Tokens

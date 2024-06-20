@@ -5,6 +5,8 @@
 #ifndef TEXTEDITOR_H
 #define TEXTEDITOR_H
 
+#include "common/lsp/protocol/new/languagefeatures.h"
+
 #include <Qsci/qsciscintilla.h>
 
 enum CommentSettings {
@@ -102,6 +104,9 @@ public:
 
     void setAutomaticInvocationEnabled(bool enabled);
     bool isAutomaticInvocationEnabled() const;
+
+    QList<newlsp::DocumentSymbol> documentSymbolList() const;
+    QList<newlsp::SymbolInformation> symbolInfoList() const;
 
 public slots:
     void onMarginClicked(int margin, int line, Qt::KeyboardModifiers state);
