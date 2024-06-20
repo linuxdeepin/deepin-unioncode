@@ -7,7 +7,6 @@
 
 #include "abstractlocator.h"
 #include "common/util/fileutils.h"
-#include "services/project/projectservice.h"
 
 #include <QObject>
 
@@ -36,9 +35,6 @@ private:
     QList<fileLocatorItem> locatorItemList {};
     QList<QString> oldFileList {};
     QList<QString> fileList {};
-
-    QString toShortProjectPath(const QString &path);
-    dpfservice::ProjectService *projectService { nullptr };
 };
 
 #endif   // BASEFILELOCATOR_H

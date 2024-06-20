@@ -32,7 +32,7 @@ QVariant locatorModel::data(const QModelIndex &index, int role) const
             return items.at(index.row()).extraInfo;
         break;
     case Qt::ToolTipRole:
-        QToolTip::showText(QCursor::pos(), items.at(index.row()).tooltip);
+        QToolTip::showText(QCursor::pos(), items.at(index.row()).extraInfo);
         break;
     case Qt::DecorationRole:
         if (index.column() == DisplayNameColumn)

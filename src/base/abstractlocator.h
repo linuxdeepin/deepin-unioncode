@@ -21,7 +21,6 @@ public:
     QString displayName;
     QString id;
     QString extraInfo;
-    QString tooltip;
     QVariant data;
     QIcon icon;
 

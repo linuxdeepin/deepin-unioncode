@@ -4,7 +4,6 @@
 
 #include "fileutils.h"
 #include <QDir>
-#include <QDebug>
 
 namespace Utils {
 FileName::FileName()
@@ -28,11 +27,7 @@ QString FileName::toShortNativePath()
 {
     auto home = QDir::cleanPath(QDir::homePath());
     auto nativePath = toString().mid(home.size() + 1);
-
-    if (toString().startsWith(home))
-        return QLatin1Char('~') + QDir::separator() + nativePath;
-    else
-        return toString();
+    return QLatin1Char('~') + QDir::separator() + nativePath;
 }
 
 const QString &FileName::toString() const
