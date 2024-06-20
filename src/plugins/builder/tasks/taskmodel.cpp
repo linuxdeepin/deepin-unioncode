@@ -84,12 +84,6 @@ void TaskModel::addTask(const Task &task)
     endInsertRows();
 }
 
-void TaskModel::addTasks(const QList<Task>& tasks) {
-    for (const Task& task : tasks) {
-        addTask(task);
-    }
-}
-
 void TaskModel::removeTask(const Task &task)
 {
     int index = tasks.indexOf(task);
