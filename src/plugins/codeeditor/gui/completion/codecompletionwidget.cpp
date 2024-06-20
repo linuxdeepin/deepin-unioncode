@@ -5,7 +5,6 @@
 #include "codecompletionwidget.h"
 #include "codecompletionmodel.h"
 #include "codecompletionview.h"
-#include "codecompletionextendwidget.h"
 
 #include "gui/texteditor.h"
 #include "Qsci/qscilexer.h"
@@ -25,6 +24,7 @@ void CodeCompletionWidget::initUI()
     setFocusPolicy(Qt::ClickFocus);
     setFrameStyle(QFrame::Box | QFrame::Raised);
     setLineWidth(1);
+    setMinimumWidth(500);
 
     automaticInvocationTimer = new QTimer(this);
     automaticInvocationTimer->setSingleShot(true);
@@ -32,27 +32,18 @@ void CodeCompletionWidget::initUI()
 
     completionView = new CodeCompletionView(this);
     completionModel = new CodeCompletionModel(this);
+
     completionView->setModel(completionModel);
-    completionView->setFixedWidth(500);
-    completionView->setVisible(false);
 
-    completionExtWidget = new CodeCompletionExtendWidget(this);
-    completionExtWidget->setFixedWidth(300);
-    completionExtWidget->setVisible(false);
-    completionExtWidget->setTextEditor(editor());
-
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(completionView);
-    layout->addWidget(completionExtWidget);
 }
 
 void CodeCompletionWidget::initConnection()
 {
     connect(completionView, &CodeCompletionView::doubleClicked, this, &CodeCompletionWidget::execute);
     connect(completionModel, &CodeCompletionModel::modelReset, this, &CodeCompletionWidget::modelContentChanged);
-    connect(completionExtWidget, &CodeCompletionExtendWidget::completionChanged, this, &CodeCompletionWidget::onCompletionChanged);
     connect(automaticInvocationTimer, &QTimer::timeout, this, &CodeCompletionWidget::automaticInvocation);
 
     connect(editor(), &TextEditor::textAdded, this, &CodeCompletionWidget::onTextAdded);
@@ -123,39 +114,15 @@ void CodeCompletionWidget::modelContentChanged()
         return;
 
     int realItemCount = completionModel->rowCount();
-    if ((completionView->isHidden() || needShow) && realItemCount != 0) {
+    if (((isHidden() && completionView->isHidden()) || needShow) && realItemCount != 0) {
         needShow = false;
-        completionView->setVisible(true);
         updateAndShow();
     }
 
-    if (completionModel->rowCount() == 0) {
-        completionView->setVisible(false);
-        if (!completionExtWidget->isVisible())
-            hide();
-        else
-            updateAndShow();
-    } else {
-        completionView->setCurrentIndex(completionModel->index(0, 0));
-    }
-}
+    if (completionModel->rowCount() == 0)
+        hide();
 
-void CodeCompletionWidget::onCompletionChanged()
-{
-    if (!editor()->hasFocus())
-        return;
-
-    if (!completionExtWidget->isValid()) {
-        completionExtWidget->setVisible(false);
-        if (completionView->isHidden())
-            hide();
-    } else {
-        if (completionModel->rowCount() == 0)
-            completionView->setVisible(false);
-
-        completionExtWidget->setVisible(true);
-        updateAndShow();
-    }
+    completionView->setCurrentIndex(completionModel->index(0, 0));
 }
 
 TextEditor *CodeCompletionWidget::editor() const
@@ -259,20 +226,10 @@ void CodeCompletionWidget::updatePosition(bool force)
     move(p);
 }
 
-void CodeCompletionWidget::setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key)
-{
-    completionExtWidget->setCompletionInfo(info, icon, key);
-}
-
 bool CodeCompletionWidget::processKeyPressEvent(QKeyEvent *event)
 {
     if (!isCompletionActive())
         return false;
-
-    if (completionExtWidget->processEvent(event)) {
-        abortCompletion();
-        return true;
-    }
 
     switch (event->key()) {
     case Qt::Key_Tab:

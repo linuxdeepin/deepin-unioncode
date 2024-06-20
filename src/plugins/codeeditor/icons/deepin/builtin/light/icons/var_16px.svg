@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>ICON / completions /var</title>
-    <g id="ICON-/-completions-/var" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <circle id="椭圆形" fill="#29A249" cx="8" cy="8" r="7"></circle>
-        <polygon id="路径" fill="#FFFFFF" fill-rule="nonzero" points="5.93164062 4.9 6.02583432 4.96642103 7.983 10.458 9.94193912 4.96642103 10.0361328 4.9 10.9238281 4.9 11.0177964 5.03420471 8.63596047 11.5776617 8.54199219 11.643457 7.38183594 11.643457 7.28786766 11.5776617 4.90603172 5.03420471 5 4.9"></polygon>
-        <path d="M8,1 C11.8659932,1 15,4.13400675 15,8 C15,11.8659932 11.8659932,15 8,15 C4.13400675,15 1,11.8659932 1,8 C1,4.13400675 4.13400675,1 8,1 Z M8,2 C4.6862915,2 2,4.6862915 2,8 C2,11.3137085 4.6862915,14 8,14 C11.3137085,14 14,11.3137085 14,8 C14,4.6862915 11.3137085,2 8,2 Z" id="椭圆形" fill-opacity="0.1" fill="#000000" fill-rule="nonzero"></path>
-    </g>
-</svg>

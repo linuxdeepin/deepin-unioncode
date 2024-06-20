@@ -23,7 +23,6 @@ public:
     void saveAs(const QString &from, const QString &to = "");
     void replaceSelectedText(const QString &text);
     void showTips(const QString &tips);
-    void setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key);
     void insertText(const QString &text);
     void undo();
     void reloadFile(const QString &fileName);

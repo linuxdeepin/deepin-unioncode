@@ -78,7 +78,6 @@ public:
     void followSymbolUnderCursor();
     void findUsage();
     void renameSymbol();
-    void setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key);
 
     QString cursorBeforeText() const;
     QString cursorBehindText() const;

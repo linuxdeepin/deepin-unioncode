@@ -38,8 +38,8 @@ Copilot::Copilot(QObject *parent)
         case CopilotApi::multilingual_code_generate:
             mutexResponse.lock();
             generateResponse = response;
-            if (editorService->setCompletion && responseValid(response)) {
-                editorService->setCompletion(generateResponse, QIcon::fromTheme("codegeex_anwser_icon"), QKeySequence(Qt::CTRL | Qt::Key_T));
+            if (editorService->showTips && responseValid(response)) {
+                editorService->showTips(generateResponse);
             }
             mutexResponse.unlock();
             break;
@@ -122,12 +122,12 @@ void Copilot::insterText(const QString &text)
 
 void Copilot::processKeyPressEvent(Qt::Key key)
 {
-    // mutexResponse.lock();
-    // if (key == Qt::Key_Tab && !generateResponse.isEmpty()) {
-    //     insterText(generateResponse);
-    //     generateResponse = "";
-    // }
-    // mutexResponse.unlock();
+    mutexResponse.lock();
+    if (key == Qt::Key_Tab && !generateResponse.isEmpty()) {
+        insterText(generateResponse);
+        generateResponse = "";
+    }
+    mutexResponse.unlock();
 
     // start generate code.
     QMetaObject::invokeMethod(this, [this]() {
