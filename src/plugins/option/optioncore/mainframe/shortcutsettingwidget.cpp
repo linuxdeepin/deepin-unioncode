@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "shortcutsettingwidget.h"
-#include "shortcutedit.h"
 #include "common/common.h"
 
 #include <DLabel>
@@ -72,7 +71,7 @@ void ShortCut::updateUi()
         QString description = valueList.first();
         QString shortcut = valueList.last();
 
-        auto keyEdit = new ShortCutEdit(this);
+        auto keyEdit = new DKeySequenceEdit(this);
         keyEdit->setKeySequence(QKeySequence(shortcut));
         keyEdit->setFixedWidth(300);
         keyEdit->ShortcutDirection(Qt::AlignLeft);
@@ -88,9 +87,6 @@ void ShortCut::updateUi()
         hlayout->setAlignment(keyEdit, Qt::AlignRight);
 
         d->bgGplayout->addWidget(wrapper);
-        connect(keyEdit, &ShortCutEdit::shortcutCleared, [=]() {
-            updateShortcut(id, "");
-        });
         connect(keyEdit, &DKeySequenceEdit::editingFinished, this, [=](const QKeySequence &sequence) {
             bool inValid = keySequenceIsInvalid(sequence);
             QString oldShortcut = d->shortcutItemMap.value(id).last();
