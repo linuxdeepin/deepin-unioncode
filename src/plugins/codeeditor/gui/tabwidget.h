@@ -52,7 +52,6 @@ public:
     void setBreakpointEnabled(const QString &fileName, int line, bool enabled);
     void toggleBreakpoint();
     void clearAllBreakpoints();
-    void handleSetComment();
 
     int zoomValue();
     void updateZoomValue(int value);
@@ -65,7 +64,8 @@ public slots:
     void removeDebugLine();
     void gotoLine(int line);
     void gotoPosition(int line, int column);
-    
+    void handleSetComment();
+
 signals:
     void closeRequested();
     void splitRequested(Qt::Orientation ori, const QString &fileName);

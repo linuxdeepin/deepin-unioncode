@@ -7,7 +7,6 @@
 #include "utils/editorutils.h"
 #include "common/common.h"
 #include "settings/settingsdefine.h"
-#include "services/option/optionutils.h"
 
 #include "Qsci/qscistyledtext.h"
 
@@ -372,66 +371,61 @@ void TextEditor::removeAnnotation(const QString &title)
 
 void TextEditor::commentOperation()
 {
-    QStringList fileCommentSettings = getFileCommentSettings(d->commentSettings);
-    if(fileCommentSettings.isEmpty())
-        return;
-
     int lineFrom = 0, indexFrom = 0;
     int lineTo = 0, indexTo = 0;
 
     getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
 
-    if (!hasSelectedText()) {
-        int cursorLine = 0, cursorIndex = 0;
-        getCursorPosition(&cursorLine, &cursorIndex);
-        int lineLastIndex = lineLength(cursorLine);
-        if (hasUncommentedLines(cursorLine, cursorLine, 0, lineLastIndex, fileCommentSettings))
-            addCommentToSelectedLines(cursorLine, cursorLine, 0, lineLastIndex - 1, fileCommentSettings);
-        else
-            delCommentToSelectedLines(cursorLine, cursorLine, 0, lineLastIndex - 1, fileCommentSettings);
-        return;
-    }
-
-    if (hasUncommentedLines(lineFrom, lineTo, indexFrom, indexTo, fileCommentSettings))
-        addCommentToSelectedLines(lineFrom, lineTo, indexFrom, indexTo, fileCommentSettings);
+    if (hasUncommentedLines(lineFrom, lineTo, indexFrom, indexTo))
+        addCommentToSelectedLines(lineFrom, lineTo, indexFrom, indexTo);
     else
-        delCommentToSelectedLines(lineFrom, lineTo, indexFrom, indexTo, fileCommentSettings);
+        delCommentToSelectedLines(lineFrom, lineTo, indexFrom, indexTo);
 }
 
-QString TextEditor::getFileType()
+QString TextEditor::getFileType(const QString& fileName)
 {
     QMimeDatabase mimeDatabase;
-    QString mimeTypeName = mimeDatabase.mimeTypeForFile(d->fileName).name();
+
+    QString mimeTypeName = mimeDatabase.mimeTypeForFile(fileName).name();
+
     return mimeTypeName;
 }
 
-QStringList TextEditor::getFileCommentSettings(const QMap<QString, QVariant>& commentSettings)
+void TextEditor::initCommentSettings(const QMap<QString, QVariant> &map)
 {
-    for (int i = 0; i < commentSettings.count(); i++) {
-        if (commentSettings[QString::number(i)].toMap().value(Key::MimeType).toString().split(";").contains(getFileType())) {
-            return QStringList() << commentSettings[QString::number(i)].toMap().value(Key::SingleLineComment).toString()
-                         << commentSettings[QString::number(i)].toMap().value(Key::StartMultiLineComment).toString()
-                         << commentSettings[QString::number(i)].toMap().value(Key::EndMultiLineComment).toString();
+    QString fileType = getFileType(this->getFile());
+    d->commentSettings.append(fileType);
+    for (int i = 0; i < map.count(); i++) {
+        QMap<QString, QVariant>commentMap = map[QString::number(i)].toMap();
+        if (parseString(commentMap[Key::MimeType].toString()).contains(fileType)) {
+            d->commentSettings.append(commentMap[Key::SingleLineComment].toString());
+            d->commentSettings.append(commentMap[Key::StartMultiLineComment].toString());
+            d->commentSettings.append(commentMap[Key::EndMultiLineComment].toString());
+            return;
         }
     }
-    return QStringList();
+    d->commentSettings.append("//");
+    d->commentSettings.append("/*");
+    d->commentSettings.append("*/");
 }
 
-
-bool TextEditor::hasUncommentedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo, const QStringList& settings)
+QStringList TextEditor::parseString(const QString &input) 
 {
-    if(selectionStatus(lineFrom, lineTo, indexFrom, indexTo)) {
-        if (selectedText().startsWith(settings.at(CommentSettings::BlockStart)) && selectedText().endsWith(settings.at(CommentSettings::BlockEnd)))
-            return false;
-        return true;
+    QStringList parts = input.split(";");  
+    parts.removeAll("");  
+    return parts;  
+}
+
+bool TextEditor::hasUncommentedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo)
+{
+    if(selectedText().startsWith(d->commentSettings.at(2)) && selectedText().endsWith(d->commentSettings.at(3))) {
+        return false;
     }
-    QStringList lines = selectedText().split(QRegExp("\\r\\n|\\n|\\r")); 
-    for (const QString &line : lines) {
-        if (line.trimmed().isEmpty())
-            continue;
+    for (int line = lineFrom; line <= lineTo; line++) {
+    QString lineText = this->text(line).trimmed();
         QRegularExpression regex;
-        regex.setPattern("^\\s*" + settings.at(CommentSettings::Line));
-        QRegularExpressionMatch match = regex.match(line);
+        regex.setPattern("^\\s*" + d->commentSettings.at(1));
+        QRegularExpressionMatch match = regex.match(lineText);
         if (!match.hasMatch()) {
             return true;
         }
@@ -439,79 +433,52 @@ bool TextEditor::hasUncommentedLines(const int& lineFrom, const int& lineTo, con
     return false;
 }
 
-void TextEditor::addCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo, const QStringList& settings)
+void TextEditor::addCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo)
 {
     QString selectedTexts = this->selectedText();
     if (selectionStatus(lineFrom, lineTo, indexFrom, indexTo)) {
-        selectedTexts.insert(0, settings.at(CommentSettings::BlockStart));
-        selectedTexts.append(settings.at(CommentSettings::BlockEnd));
+        selectedTexts.insert(0, d->commentSettings.at(2));
+        selectedTexts.append(d->commentSettings.at(3));
         this->replaceRange(lineFrom, indexFrom, lineTo, indexTo, selectedTexts);
-        if (lineFrom == lineTo)
-            setSelection(lineFrom, indexFrom, lineTo, indexTo + settings.at(CommentSettings::BlockEnd).size() + settings.at(1).size());
-        else
-            setSelection(lineFrom, indexFrom, lineTo, indexTo + settings.at(CommentSettings::BlockEnd).size());
     } else {
         setSelection(lineFrom, 0, lineTo, indexTo);
         selectedTexts = this->selectedText();
-        selectedTexts = addCommentPrefix(selectedTexts, settings.at(CommentSettings::Line));
+        selectedTexts = addCommentPrefix(selectedTexts, d->commentSettings.at(1));
         this->replaceRange(lineFrom, 0, lineTo, indexTo, selectedTexts);
-        if (text(lineTo).trimmed().isEmpty() || indexTo == 0)
-            setSelection(lineFrom, indexFrom, lineTo, indexTo);
-        else
-            setSelection(lineFrom, indexFrom, lineTo, indexTo + settings.at(CommentSettings::Line).size());
     }
 }
 
-QString TextEditor::addCommentPrefix(const QString &selectedTexts, const QString &commentSymbol)
-{
-    QStringList lines = selectedTexts.split(QRegExp("\\r\\n|\\n|\\r"));
-    QStringList prefixedLines;
-
-    for (const QString &line : lines) {
-        if (!line.trimmed().isEmpty()) {
-            QString prefixedLine = commentSymbol + line;
-            prefixedLines.append(prefixedLine);
-        } else {
-            prefixedLines.append(line);
-        }
-    }
-    QString result = prefixedLines.join("\n");
-    return result;
-}
-
-QString TextEditor::delCommentPrefix(const QString &selectedTexts, const QString &commentSymbol) {
+QString TextEditor::addCommentPrefix(const QString &selectedTexts, const QString &commentSymbol)   
+{    
     QStringList lines = selectedTexts.split(QRegExp("\\r\\n|\\n|\\r")); 
-    QStringList prefixedLines;
-    QRegularExpression regex(commentSymbol);
-
-    for (const QString &line : lines) {
-        QRegularExpressionMatch match = regex.match(line);
-        if (match.hasMatch()) {
-            QString delPrefixLine = line.mid(0, match.capturedStart()) + line.mid(match.capturedEnd());
-            prefixedLines.append(delPrefixLine);
-        } else {
-            prefixedLines.append(line);
-        }
-    }
+    QStringList prefixedLines;    
+    
+    for (const QString &line : lines) {    
+        QString prefixedLine = commentSymbol + line;    
+        prefixedLines.append(prefixedLine);    
+    }    
     QString result = prefixedLines.join("\n");
-    return result;
+    return result;    
 }
 
-void TextEditor::delCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo, const QStringList& settings) {
-    QString selectedTexts = this->selectedText();
+void TextEditor::delCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo) {
+
     if (selectionStatus(lineFrom, lineTo, indexFrom, indexTo)) {
-        selectedTexts.replace(settings.at(1), "");
-        selectedTexts.replace(settings.at(2), "");
+        QString selectedTexts = this->selectedText();
+        selectedTexts.replace(d->commentSettings.at(2), "");
+        selectedTexts.replace(d->commentSettings.at(3), "");
         this->replaceRange(lineFrom, indexFrom, lineTo, indexTo, selectedTexts);
-        if (lineFrom == lineTo)
-            setSelection(lineFrom, indexFrom, lineTo, indexTo - settings.at(CommentSettings::BlockEnd).size() - settings.at(1).size());
-        else
-            setSelection(lineFrom, indexFrom, lineTo, indexTo - settings.at(CommentSettings::BlockEnd).size());
     } else {
-        setSelection(lineFrom, 0, lineTo, indexTo);
-        selectedTexts = delCommentPrefix(this->selectedText(), settings.at(CommentSettings::Line));
-        this->replaceRange(lineFrom, 0, lineTo, indexTo, selectedTexts);
-        setSelection(lineFrom, indexFrom, lineTo, indexTo - settings.at(CommentSettings::Line).size());
+        for (int line = lineFrom; line <= lineTo; line++) {
+            QString lineText = this->text(line);
+            QRegularExpression regex;
+            regex.setPattern(d->commentSettings.at(1));
+            QRegularExpressionMatch match = regex.match(lineText);
+            if (match.hasMatch()) {
+                int startIndex = match.capturedStart();
+                this->replaceRange(line, startIndex, line, startIndex + d->commentSettings.at(1).size(), "");
+            }
+        }
     }
 }
 
@@ -520,9 +487,8 @@ bool TextEditor::selectionStatus(const int& lineFrom, const int& lineTo, const i
     QString startLineText = this->text(lineFrom);  
     QString endLineText = this->text(lineTo);  
     bool hasNonSpaceBeforeStart = !startLineText.left(indexFrom).trimmed().isEmpty();  
-    bool hasNonSpaceAfterEnd = !endLineText.mid(indexTo).trimmed().isEmpty();
-    bool res = hasNonSpaceBeforeStart || (hasNonSpaceAfterEnd && (indexTo != 0));
-    return res;
+    bool hasNonSpaceAfterEnd = !endLineText.mid(indexTo).trimmed().isEmpty();  
+    return hasNonSpaceBeforeStart || hasNonSpaceAfterEnd;
 }
 
 QPoint TextEditor::pointFromPosition(int position)

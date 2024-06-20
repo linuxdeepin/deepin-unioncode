@@ -8,7 +8,6 @@
 #include "services/option/optionutils.h"
 #include "services/option/optiondatastruct.h"
 #include "services/option/optionmanager.h"
-#include "editorsettings.h"
 
 #include <DFrame>
 #include <DPushButton>
@@ -101,8 +100,6 @@ void CommentConfigWidget::initConnections()
 void CommentConfigWidget::setUserConfig(const QMap<QString, QVariant> &map)
 {   
     for (int index = 0; index < d->tabWidget->count(); index++) {
-        d->tabWidget->setTabText(index, EditorSettings::instance()->getMap(Node::MimeTypeConfig)
-            .value(QString::number(index)).toMap().value(Key::MimeTypeGroupName).toString());
         PageWidget *detailWidget = dynamic_cast<CommentConfigDetailWidget *>(d->tabWidget->widget(index));
         if (detailWidget) {
             detailWidget->setUserConfig(map);

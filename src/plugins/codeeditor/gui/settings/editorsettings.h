@@ -18,7 +18,6 @@ public:
 
     void setValue(const QString &node, const QString &group, const QString &key, const QVariant &value, bool notify = true);
     QVariant value(const QString &node, const QString &group, const QString &key, const QVariant &defaultValue = {});
-    QMap<QString, QVariant> getMap(const QString &node);
 
 signals:
     void valueChanged();
