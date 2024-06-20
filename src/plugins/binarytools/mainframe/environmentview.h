@@ -30,7 +30,7 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-    QModelIndex append(const QString &key, const QVariant &value);
+    void append(const QString &key, const QVariant &value);
     void remove(QModelIndex &index);
     void update(const QMap<QString, QVariant> &data);
     const QMap<QString, QVariant> getEnvironment() const;
