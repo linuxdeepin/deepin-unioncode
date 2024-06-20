@@ -76,8 +76,6 @@ public:
     bool isSaved { false };
     bool isAutoCompletionEnabled { false };
 
-    bool contentsChanged { false };
-    bool lastCursorNeedRecord { true };
     QString fontName;
     int fontSize { 10 };
 

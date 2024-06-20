@@ -19,16 +19,15 @@
 #include <QContextMenuEvent>
 
 TextEditor::TextEditor(QWidget *parent)
-    : QsciScintilla(parent)
+    : QsciScintilla(parent),
+      d(new TextEditorPrivate(this))
 {
-    d = new TextEditorPrivate(this);
     horizontalScrollBar()->setVisible(false);
     init();
 }
 
 TextEditor::~TextEditor()
 {
-    delete d;
 }
 
 void TextEditor::init()
@@ -268,7 +267,6 @@ int TextEditor::currentLineNumber()
 
 void TextEditor::gotoLine(int line)
 {
-    d->lastCursorNeedRecord = true;
     ensureLineVisible(line);
 
     SendScintilla(SCI_GOTOLINE, line);
@@ -278,7 +276,6 @@ void TextEditor::gotoLine(int line)
 
 void TextEditor::gotoPosition(int pos)
 {
-    d->lastCursorNeedRecord = true;
     SendScintilla(SCI_GOTOPOS, pos);
     ensureCursorVisible();
     setFocus();
@@ -376,7 +373,7 @@ void TextEditor::removeAnnotation(const QString &title)
 void TextEditor::commentOperation()
 {
     QStringList fileCommentSettings = getFileCommentSettings(d->commentSettings);
-    if (fileCommentSettings.isEmpty())
+    if(fileCommentSettings.isEmpty())
         return;
 
     int lineFrom = 0, indexFrom = 0;
@@ -408,21 +405,22 @@ QString TextEditor::getFileType()
     return mimeTypeName;
 }
 
-QStringList TextEditor::getFileCommentSettings(const QMap<QString, QVariant> &commentSettings)
+QStringList TextEditor::getFileCommentSettings(const QMap<QString, QVariant>& commentSettings)
 {
     for (int i = 0; i < commentSettings.count(); i++) {
         if (commentSettings[QString::number(i)].toMap().value(Key::MimeType).toString().split(";").contains(getFileType())) {
             return QStringList() << commentSettings[QString::number(i)].toMap().value(Key::SingleLineComment).toString()
-                                 << commentSettings[QString::number(i)].toMap().value(Key::StartMultiLineComment).toString()
-                                 << commentSettings[QString::number(i)].toMap().value(Key::EndMultiLineComment).toString();
+                         << commentSettings[QString::number(i)].toMap().value(Key::StartMultiLineComment).toString()
+                         << commentSettings[QString::number(i)].toMap().value(Key::EndMultiLineComment).toString();
         }
     }
     return QStringList();
 }
 
-bool TextEditor::hasUncommentedLines(const int &lineFrom, const int &lineTo, const int &indexFrom, const int &indexTo, const QStringList &settings)
+
+bool TextEditor::hasUncommentedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo, const QStringList& settings)
 {
-    if (selectionStatus(lineFrom, lineTo, indexFrom, indexTo)) {
+    if(selectionStatus(lineFrom, lineTo, indexFrom, indexTo)) {
         if (selectedText().startsWith(settings.at(CommentSettings::BlockStart)) && selectedText().endsWith(settings.at(CommentSettings::BlockEnd)))
             return false;
         return true;
@@ -442,7 +440,7 @@ bool TextEditor::hasUncommentedLines(const int &lineFrom, const int &lineTo, con
     return false;
 }
 
-void TextEditor::addCommentToSelectedLines(const int &lineFrom, const int &lineTo, const int &indexFrom, const int &indexTo, const QStringList &settings)
+void TextEditor::addCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo, const QStringList& settings)
 {
     QString selectedTexts = this->selectedText();
     if (selectionStatus(lineFrom, lineTo, indexFrom, indexTo)) {
@@ -482,9 +480,8 @@ QString TextEditor::addCommentPrefix(const QString &selectedTexts, const QString
     return result;
 }
 
-QString TextEditor::delCommentPrefix(const QString &selectedTexts, const QString &commentSymbol)
-{
-    QStringList lines = selectedTexts.split(QRegExp("\\r\\n|\\n|\\r"));
+QString TextEditor::delCommentPrefix(const QString &selectedTexts, const QString &commentSymbol) {
+    QStringList lines = selectedTexts.split(QRegExp("\\r\\n|\\n|\\r")); 
     QStringList prefixedLines;
     QRegularExpression regex(commentSymbol);
 
@@ -501,8 +498,7 @@ QString TextEditor::delCommentPrefix(const QString &selectedTexts, const QString
     return result;
 }
 
-void TextEditor::delCommentToSelectedLines(const int &lineFrom, const int &lineTo, const int &indexFrom, const int &indexTo, const QStringList &settings)
-{
+void TextEditor::delCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo, const QStringList& settings) {
     QString selectedTexts = this->selectedText();
     if (selectionStatus(lineFrom, lineTo, indexFrom, indexTo)) {
         selectedTexts.replace(settings.at(1), "");
@@ -520,11 +516,11 @@ void TextEditor::delCommentToSelectedLines(const int &lineFrom, const int &lineT
     }
 }
 
-bool TextEditor::selectionStatus(const int &lineFrom, const int &lineTo, const int &indexFrom, const int &indexTo)
+bool TextEditor::selectionStatus(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo)
 {
-    QString startLineText = this->text(lineFrom);
-    QString endLineText = this->text(lineTo);
-    bool hasNonSpaceBeforeStart = !startLineText.left(indexFrom).trimmed().isEmpty();
+    QString startLineText = this->text(lineFrom);  
+    QString endLineText = this->text(lineTo);  
+    bool hasNonSpaceBeforeStart = !startLineText.left(indexFrom).trimmed().isEmpty();  
     bool hasNonSpaceAfterEnd = !endLineText.mid(indexTo).trimmed().isEmpty();
     bool res = hasNonSpaceBeforeStart || (hasNonSpaceAfterEnd && (indexTo != 0));
     return res;
@@ -722,13 +718,6 @@ void TextEditor::onCursorPositionChanged(int line, int index)
     editor.cursorPositionChanged(d->fileName, line, index);
     int pos = positionFromLineIndex(line, index);
     d->lastCursorPos = pos;
-
-    if (!d->contentsChanged && d->lastCursorNeedRecord) {
-        emit cursorRecordChanged(pos);
-        d->lastCursorNeedRecord = false;
-    } else if (d->contentsChanged) {
-        d->lastCursorNeedRecord = true;
-    }
 }
 
 void TextEditor::focusOutEvent(QFocusEvent *event)
@@ -743,17 +732,6 @@ void TextEditor::keyPressEvent(QKeyEvent *event)
         return;
 
     QsciScintilla::keyPressEvent(event);
-}
-
-bool TextEditor::event(QEvent *event)
-{
-    if (!d)
-        return QsciScintilla::event(event);
-
-    if (event->type() != QEvent::InputMethodQuery)
-        d->contentsChanged = false;
-
-    return QsciScintilla::event(event);
 }
 
 void TextEditor::contextMenuEvent(QContextMenuEvent *event)

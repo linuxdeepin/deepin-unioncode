@@ -53,8 +53,8 @@ public:
     void gotoPreviousBookmark();
     void clearAllBookmarks();
 
-    intptr_t searchInTarget(QByteArray &text2Find, size_t fromPos, size_t toPos) const;
-    intptr_t replaceTarget(QByteArray &str2replace, intptr_t fromTargetPos = -1, intptr_t toTargetPos = -1) const;
+    intptr_t searchInTarget(QByteArray & text2Find, size_t fromPos, size_t toPos) const;
+    intptr_t replaceTarget(QByteArray & str2replace, intptr_t fromTargetPos = -1, intptr_t toTargetPos = -1) const;
 
     // util
     int currentLineNumber();
@@ -73,13 +73,13 @@ public:
     void removeAnnotation(const QString &title);
     void commentOperation();
     QString getFileType();
-    QStringList getFileCommentSettings(const QMap<QString, QVariant> &commentSettings);
+    QStringList getFileCommentSettings(const QMap<QString, QVariant>& commentSettings);
     QString addCommentPrefix(const QString &selectedTexts, const QString &commentSymbol);
     QString delCommentPrefix(const QString &selectedTexts, const QString &commentSymbol);
-    bool hasUncommentedLines(const int &lineFrom, const int &lineTo, const int &indexFrom, const int &indexTo, const QStringList &settings);
-    void addCommentToSelectedLines(const int &lineFrom, const int &lineTo, const int &indexFrom, const int &indexTo, const QStringList &settings);
-    void delCommentToSelectedLines(const int &lineFrom, const int &lineTo, const int &indexFrom, const int &indexTo, const QStringList &settings);
-    bool selectionStatus(const int &lineFrom, const int &lineTo, const int &indexFrom, const int &indexTo);
+    bool hasUncommentedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo, const QStringList& settings);
+    void addCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo, const QStringList& settings);
+    void delCommentToSelectedLines(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo, const QStringList& settings);
+    bool selectionStatus(const int& lineFrom, const int& lineTo, const int& indexFrom, const int& indexTo);
     QPoint pointFromPosition(int position);
     int positionFromPoint(int x, int y);
     void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text);
@@ -111,7 +111,6 @@ public slots:
 protected:
     virtual void focusOutEvent(QFocusEvent *event) override;
     virtual void keyPressEvent(QKeyEvent *event) override;
-    virtual bool event(QEvent *event) override;
 
 signals:
     void fileSaved(const QString &fileName);
@@ -124,7 +123,6 @@ signals:
     void documentHoverEnd(int pos);
     void contextMenuRequested(QMenu *menu);
     void focusOut();
-    void cursorRecordChanged(int pos);
 
 private:
     void init();
@@ -133,6 +131,6 @@ protected:
     virtual void contextMenuEvent(QContextMenuEvent *event) override;
 
 private:
-    TextEditorPrivate *d { nullptr };
+    QSharedPointer<TextEditorPrivate> d { nullptr };
 };
 #endif   // TEXTEDITOR_H

@@ -205,12 +205,12 @@ TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
     editor->installEventFilter(q);
 
     connect(editor, &TextEditor::zoomValueChanged, q, &TabWidget::zoomValueChanged);
-    connect(editor, &TextEditor::cursorRecordChanged, this, &TabWidgetPrivate::onCursorRecordChanged);
+    connect(editor, &TextEditor::cursorPositionChanged, this, &TabWidgetPrivate::onLinePositionChanged);
     connect(editor, &TextEditor::fileSaved, tabBar, &TabBar::onFileSaved);
 
     editor->setFile(fileName);
     editor->setCursorPosition(0, 0);
-
+    
     connect(editor, &TextEditor::textChanged, this,
             [this, fileName] {
                 onFileChanged(fileName);
@@ -360,11 +360,13 @@ void TabWidgetPrivate::onSpliterClicked(Qt::Orientation ori)
     emit q->splitRequested(ori, fileName);
 }
 
-void TabWidgetPrivate::onCursorRecordChanged(int pos)
+void TabWidgetPrivate::onLinePositionChanged(int line, int index)
 {
     auto editor = qobject_cast<TextEditor *>(sender());
     if (!editor)
         return;
+
+    int pos = editor->positionFromLineIndex(line, index);
 
     if (curPosRecord.fileName == editor->getFile() && curPosRecord.pos == pos)
         return;
@@ -646,43 +648,30 @@ void TabWidget::gotoNextPosition()
     if (!editor)
         return;
 
-    d->curPosRecord = record;
     d->prePosRecord.append(record);
     d->tabBar->switchTab(record.fileName);
     editor->gotoPosition(record.pos);
+    d->curPosRecord = record;
 }
 
 void TabWidget::gotoPreviousPosition()
 {
-    if (d->prePosRecord.isEmpty())
+    if (d->prePosRecord.size() <= 1)
         return;
 
-    auto editor = d->currentTextEditor();
-    if (!editor)
-        return;
-
-    TabWidgetPrivate::PosRecord editRecord { editor->cursorPosition(), editor->getFile() };
-    auto record = d->prePosRecord.last();
-    if (record == editRecord) {
-        if (d->prePosRecord.size() <= 1)
-            return;
-        d->prePosRecord.removeLast();
-    } else {
-        record = editRecord;
-    }
-
+    auto record = d->prePosRecord.takeLast();
     d->nextPosRecord.push_front(record);
     if (d->nextPosRecord.size() >= MAX_PRE_NEXT_TIMES)
         d->nextPosRecord.takeLast();
 
     record = d->prePosRecord.last();
-    editor = d->findEditor(record.fileName);
+    auto editor = d->findEditor(record.fileName);
     if (!editor)
         return;
 
-    d->curPosRecord = record;
     d->tabBar->switchTab(record.fileName);
     editor->gotoPosition(record.pos);
+    d->curPosRecord = record;
 }
 
 bool TabWidget::checkAndResetSaveState(const QString &fileName)
