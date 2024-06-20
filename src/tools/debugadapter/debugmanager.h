@@ -41,13 +41,12 @@ public:
 
     qint64 getProcessId();
 
-    void updateBreakpoints(const QString &file, const QList<int> &lines);
     void breakRemoveAll();
     void breakInsert(const QString& path);
     void removeBreakpointInFile(const QString &filePath);
     void breakRemove(int bpid);
 
-    void pauseDebugger();
+    void commandPause();
     void commandContinue();
     void commandNext();
     void commandStep();
@@ -72,7 +71,6 @@ public:
 signals:
     void streamConsole(const QString& text);
     void streamDebugInternal(const QStringList &textList);
-    void asyncContinued(const dap::ContinuedEvent &continuedEvent);
     void asyncStopped(const dap::StoppedEvent &stoppedEvent);
     void asyncExited(const dap::ExitedEvent &exitedEvent);
     void asyncRunning(const QString& processName, const QString& theadId);
@@ -96,10 +94,9 @@ private:
 
     void initProcess();
 
-    bool command(const QString &cmd, bool interrupt = false);
+    bool command(const QString &cmd);
     void commandAndResponse(const QString& cmd,
                             const ResponseEntry::ResponseHandler_t& handler,
-                            bool interrupt = false,
                             ResponseEntry::ResponseAction_t action = ResponseEntry::ResponseAction_t::Temporal);
     bool isExecuting() const;
     void waitLocker();

@@ -33,7 +33,7 @@ public:
 
     QString launchLocal() override;
 
-    void pause() override;
+    QString commandPause() override;
     QString commandContinue() override;
     QString commandNext() override;
     QString commandStep() override;
@@ -61,7 +61,6 @@ public:
     void handleOutputRecord(const QString &text) override;
     void handleOutputStreamText(const QString &streamText) override;
 
-    void updateBreakpoints(const QString &file, const QList<int> &lines) override;
     void parseBreakPoint(const QVariant& var) override;
     void removeBreakPoint(const int bpid) override;
     void clearBreakPoint() override;
@@ -75,7 +74,6 @@ signals:
     void streamDebugInternal(const QStringList& textList);
     void streamConsole(const QString& text);
     void asyncStopped(const dap::StoppedEvent &stoppedEvent);
-    void asyncContinued(const dap::ContinuedEvent &continuedEvent);
     void asyncExited(const dap::ExitedEvent &exitedEvent);
     void asyncRunning(const QString& processName, const QString& theadId);
     void libraryLoaded(const dap::ModuleEvent &moduleEvent);

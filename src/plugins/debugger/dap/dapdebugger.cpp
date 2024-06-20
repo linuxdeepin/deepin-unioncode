@@ -87,8 +87,6 @@ class DebuggerPrivate
     StackFrameView *breakpointView = nullptr;
     BreakpointModel breakpointModel;
 
-    bool pausing = false;
-
     DFrame *debugMainPane = nullptr;
 
     QPointer<QWidget> alertBox;
@@ -194,7 +192,6 @@ void DAPDebugger::interruptDebug()
 {
     if (d->runState == kRunning) {
         // Just use temporary parameters now, same for the back
-        d->pausing = true;
         d->session->pause(d->threadId);
     }
 }
@@ -350,13 +347,6 @@ void DAPDebugger::registerDapHandlers()
         }
     });
 
-    dapSession->registerHandler([&](const ContinuedEvent &event) {
-        qInfo() << "\n--> recv : "
-                << "ContinuedEvent";
-
-        updateRunState(DAPDebugger::RunState::kRunning);
-    });
-
     // The event indicates that the execution of the debuggee has stopped due to some condition.
     dapSession->registerHandler([&](const StoppedEvent &event) {
         qInfo() << "\n--> recv : "
@@ -381,7 +371,7 @@ void DAPDebugger::registerDapHandlers()
                 || event.reason == "breakpoint-hit"
                 || event.reason == "function-finished"
                 || event.reason == "end-stepping-range"
-                || (event.reason == "signal-received" && d->pausing)) {
+                || event.reason == "signal-received") {
             if (event.threadId) {
                 d->threadId = event.threadId.value(0);
                 int curThreadID = static_cast<int>(d->threadId);
@@ -819,7 +809,7 @@ void DAPDebugger::slotBreakpointSelected(const QModelIndex &index)
 void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
 {
     auto treeItem = static_cast<LocalTreeItem*>(index.internalPointer());
-    if(!treeItem->canFetchChildren() || !d->localsView->isExpanded(index))
+    if(!treeItem->canFetchChildren())
         return;
 
     treeItem->setChildrenFetched(true);
@@ -937,7 +927,6 @@ void DAPDebugger::updateRunState(DAPDebugger::RunState state)
             break;
         case kRunning:
         case kCustomRunning:
-            d->pausing = false;
             QMetaObject::invokeMethod(d->localsView, "show");
             break;
         case kStopped:

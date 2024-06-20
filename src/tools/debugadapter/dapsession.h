@@ -38,7 +38,6 @@ private:
 
     void handleOutputTextEvent(const QStringList &textList);
     void handleStreamConsole(const QString &text);
-    void handleAsyncContinued(const dap::ContinuedEvent &continuedEvent);
     void handleAsyncStopped(const dap::StoppedEvent &stoppedevent);
     void handleAsyncExited(const dap::ExitedEvent &exitedEvent);
     void handleLibraryLoaded(const dap::ModuleEvent &moduleEvent);

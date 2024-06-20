@@ -55,17 +55,6 @@ QString JSDebugger::kill()
     RET_EMPTY
 }
 
-void JSDebugger::updateBreakpoints(const QString &file, const QList<int> &lines)
-{
-    DebugManager::instance()->breakRemoveAll();
-    auto filePath = file;
-    for (auto line : lines) {
-        filePath.append(":");
-        filePath.append(QString::number(line));
-        DebugManager::instance()->breakInsert(filePath);
-    }
-}
-
 QString JSDebugger::breakInsert(const QString &path)
 {
     return ".break " + path;
@@ -86,9 +75,9 @@ QString JSDebugger::launchLocal()
     return "";
 }
 
-void JSDebugger::pause()
+QString JSDebugger::commandPause()
 {
-    return;
+    RET_EMPTY
 }
 
 QString JSDebugger::commandContinue()

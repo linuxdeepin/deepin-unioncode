@@ -809,7 +809,7 @@ bool DebugSession::getLocals(dap::integer frameId, IVariables *out)
     for (auto scope : scopeRes.scopes) {
         if (scope.presentationHint.value("") == kLocals
                 || scope.name == "Local") {
-            return getVariables(scope.variablesReference, out);
+            return getVariables(frameId, out);
         }
     }
 

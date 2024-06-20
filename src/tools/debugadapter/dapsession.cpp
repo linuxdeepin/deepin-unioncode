@@ -172,11 +172,6 @@ void DapSession::initializeDebugMgr()
         handleOutputTextEvent(textList);
     });
 
-    connect(d->debugger, &DebugManager::asyncContinued, DapProxy::instance(), [this](const dap::ContinuedEvent &continuedEvent) mutable {
-        handleAsyncContinued(continuedEvent);
-        d->isInferiorStopped = false;
-    });
-
     connect(d->debugger, &DebugManager::asyncStopped, DapProxy::instance(), [this](const dap::StoppedEvent &stoppedEvent) mutable {
         handleAsyncStopped(stoppedEvent);
         d->isInferiorStopped = true;
@@ -223,10 +218,9 @@ void DapSession::initializeDebugMgr()
     connect(DapProxy::instance(), &DapProxy::sigKill, d->debugger, &DebugManager::kill, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigStart, d->debugger, &DebugManager::execute, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigBreakInsert, d->debugger, &DebugManager::breakInsert, SequentialExecution);
-    connect(DapProxy::instance(), &DapProxy::sigUpdateBreakpoints, d->debugger, &DebugManager::updateBreakpoints, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigLaunchLocal, d->debugger, &DebugManager::launchLocal, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigContinue, d->debugger, &DebugManager::commandContinue, SequentialExecution);
-    connect(DapProxy::instance(), &DapProxy::sigPause, d->debugger, &DebugManager::pauseDebugger, SequentialExecution);
+    connect(DapProxy::instance(), &DapProxy::sigPause, d->debugger, &DebugManager::commandPause, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigNext, d->debugger, &DebugManager::commandNext, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigStepin, d->debugger, &DebugManager::commandStep, SequentialExecution);
     connect(DapProxy::instance(), &DapProxy::sigStepout, d->debugger, &DebugManager::commandFinish, SequentialExecution);
@@ -526,7 +520,6 @@ void DapSession::registerHanlder()
         scopeLocals.name = "Locals";
         scopeLocals.expensive = false;
         scopeLocals.variablesReference = rootVariablesReference;
-        scopeLocals.variablesReference = 0;
         scopes.push_back(scopeLocals);
 
         // register
@@ -535,7 +528,6 @@ void DapSession::registerHanlder()
         scopeRegisters.name = "Registers";
         scopeRegisters.expensive = false;
         scopeRegisters.variablesReference = registersReference;
-        scopeLocals.variablesReference = 1;
         scopes.push_back(scopeRegisters);
         response.scopes = scopes;
         Log("--> Server sent Scopes response to the client\n")
@@ -599,12 +591,6 @@ void DapSession::registerHanlder()
         Log("--> Server sent disassemble response to client\n")
         return dap::DisassembleResponse();
     });
-}
-
-void DapSession::handleAsyncContinued(const dap::ContinuedEvent &continuedEvent)
-{
-    d->session->send(continuedEvent);
-    Log("--> Server sent continued event to client\n")
 }
 
 void DapSession::handleAsyncStopped(const dap::StoppedEvent &stoppedEvent)
@@ -687,28 +673,29 @@ dap::SetBreakpointsResponse DapSession::handleBreakpointReq(const SetBreakpoints
     }
 
     const char *sourcePath = request.source.path->c_str();
+    d->debugger->removeBreakpointInFile(sourcePath);
     if (request.breakpoints.has_value()) {
         dap::array<dap::Breakpoint> breakpoints;
-        QList<int> lines;
         for (auto &breakpoint : request.breakpoints.value()) {
             dap::Breakpoint bp;
             dap::Source source;
+            QString location;
             if (request.source.path.has_value()) {
                 source = request.source;
             }
+            location = source.path.value().c_str();
+            location.append(":");
+            location.append(QString::number(breakpoint.line));
+            emit DapProxy::instance()->sigBreakInsert(location);
 
             bp.line = breakpoint.line;
             bp.source = request.source;
-            lines.append(breakpoint.line);
             breakpoints.push_back(bp);
         }
 
-        emit DapProxy::instance()->sigUpdateBreakpoints(sourcePath, lines);
         // Generic response
         Log("--> Server sent  setBreakpoints response to client\n")
         response.breakpoints = breakpoints;
-    } else {
-        d->debugger->removeBreakpointInFile(sourcePath);
     }
 
     // return empty response to client, when lines and breakpoints all empty.

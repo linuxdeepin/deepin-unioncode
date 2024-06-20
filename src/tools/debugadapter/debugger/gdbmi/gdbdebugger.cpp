@@ -43,7 +43,6 @@ GDBDebugger::GDBDebugger(QObject *parent)
 {
     connect(this, &GDBDebugger::streamConsole, DebugManager::instance(), &DebugManager::streamConsole);
     connect(this, &GDBDebugger::streamDebugInternal, DebugManager::instance(), &DebugManager::streamDebugInternal);
-    connect(this, &GDBDebugger::asyncContinued, DebugManager::instance(), &DebugManager::asyncContinued);
     connect(this, &GDBDebugger::asyncStopped, DebugManager::instance(), &DebugManager::asyncStopped);
     connect(this, &GDBDebugger::asyncExited, DebugManager::instance(), &DebugManager::asyncExited);
     connect(this, &GDBDebugger::asyncRunning, DebugManager::instance(), &DebugManager::asyncRunning);
@@ -65,8 +64,8 @@ GDBDebugger::~GDBDebugger()
 void GDBDebugger::init()
 {
     //use to debugging adapter
-    DebugManager::instance()->command("set logging file /tmp/log.txt");
-    DebugManager::instance()->command("set logging on");
+//    DebugManager::instance()->command("set logging file /tmp/log.txt");
+//    DebugManager::instance()->command("set logging on");
 
     QString prettyPrintersPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/prettyprinters";
     DebugManager::instance()->command(QString("python sys.path.insert(0, \"%1\")").arg(prettyPrintersPath));
@@ -137,10 +136,9 @@ QString GDBDebugger::stackListVariables()
     return ("-stack-list-variables 1"); //0 or \"--no-values\", 1 or \"--all-values\", 2 or \"--simple-values\"
 }
 
-void GDBDebugger::pause()
+QString GDBDebugger::commandPause()
 {
-    d->inferiorRunning.store(false);
-    return;
+    return ("-exec-until");
 }
 
 QString GDBDebugger::commandContinue()
@@ -183,35 +181,6 @@ QString GDBDebugger::listSourceFiles()
     return ("-file-list-exec-source-files");
 }
 
-void GDBDebugger::updateBreakpoints(const QString &file, const QList<int> &lines)
-{
-    QList<int> curLines;
-    //remove canceled bp
-    for (auto it = d->breakpoints.cbegin(); it != d->breakpoints.cend(); ++it) {
-        auto& bp = it.value();
-        if (bp.fullname == file || bp.originalLocation.split(":").first() == file) {
-            //true line in editor
-            QString originalLine = bp.originalLocation.split(":").last();
-            bool ok = false;
-            int line = originalLine.toInt(&ok);
-            if (ok && !lines.contains(line))
-                DebugManager::instance()->breakRemove(bp.number);
-            else
-                curLines.append(line);
-        }
-    }
-
-    //append new bp
-    for (auto line : lines) {
-        if (!curLines.contains(line)) {
-            auto filePath = file;
-            filePath.append(":");
-            filePath.append(QString::number(line));
-            DebugManager::instance()->breakInsert(filePath);
-        }
-    }
-}
-
 void GDBDebugger::parseBreakPoint(const QVariant& var)
 {
     auto data = var.toMap();
@@ -237,8 +206,7 @@ QList<int> GDBDebugger::breakpointsForFile(const QString &filePath)
     QList<int> list;
     for (auto it = d->breakpoints.cbegin(); it != d->breakpoints.cend(); ++it) {
         auto& bp = it.value();
-        if (bp.fullname == filePath
-            || bp.originalLocation.split(":").first() == filePath)
+        if (bp.fullname == filePath)
             list.append(bp.number);
     }
     return list;
@@ -399,9 +367,6 @@ void GDBDebugger::parseNotifyData(gdbmi::Record &record)
         auto data = record.payload.toMap();
         auto thid = data.value("thread-id").toString();
         d->inferiorRunning.store(true);
-
-        dap::ContinuedEvent event;
-        emit asyncContinued(event);
         emit asyncRunning("gdb", thid);
     } else if (record.message == "breakpoint-modified") {
         // =breakpoint-modified,bkpt={...}
@@ -581,8 +546,8 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
                 d->breakpoints.insert(bp.number, bp);
                 emit breakpointInserted(bp);
             }
+            emit updateExceptResponse(record.token, record.payload);
         }
-        emit updateExceptResponse(record.token, record.payload);
     } else if (record.message == "connected") {
         emit targetRemoteConnected();
     } else if (record.message == "error") {
