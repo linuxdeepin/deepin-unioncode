@@ -6,7 +6,7 @@
 #define BINARYTOOLSMANAGER_H
 
 #include "constants.h"
-#include "common/widget/appoutputpane.h"
+#include "common/widget/outputpane.h"
 
 #include <QMenu>
 #include <QProcess>
@@ -84,8 +84,7 @@ private:
     QSharedPointer<ToolProcess> createToolProcess(const ToolInfo &tool);
     bool checkCommandExists(const QString &command);
     void addToToolBar(const ToolInfo &tool);
-    void printOutput(const QString &id, const QString &content, OutputPane::OutputFormat format);
-    void stopTool(const QString &id);
+    void printOutput(const QString &content, OutputPane::OutputFormat format);
 
 private:
     QMap<QString, std::tuple<QSharedPointer<ToolProcess>, QSharedPointer<QThread>>> toolTaskMap;

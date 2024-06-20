@@ -89,7 +89,9 @@ BinaryToolsManager::~BinaryToolsManager()
 {
     auto iter = toolTaskMap.begin();
     for (; iter != toolTaskMap.end(); ++iter) {
-        stopTool(iter.key());
+        std::get<0>(iter.value())->stop();
+        std::get<1>(iter.value())->quit();
+        std::get<1>(iter.value())->wait();
     }
 }
 
@@ -276,12 +278,9 @@ void BinaryToolsManager::executeTool(const QString &id)
     }
     toolProcess->setProcessEnvironment(env);
 
-    AppOutputPane::instance()->createApplicationPane(id, tool.name);
-    auto stopHandler = std::bind(&BinaryToolsManager::stopTool, this, id);
-    AppOutputPane::instance()->setStopHandler(id, stopHandler);
     QString startMsg = tr("Start execute \"%1\": \"%2\" \"%3\" in workspace \"%4\".\n")
                                .arg(tool.name, tool.command, tool.arguments, tool.workingDirectory);
-    printOutput(id, startMsg, OutputPane::NormalMessage);
+    printOutput(startMsg, OutputPane::NormalMessage);
 
     Q_EMIT execute(id);
 }
@@ -340,10 +339,9 @@ void BinaryToolsManager::executeFinished(const QString &id, int exitCode, QProce
         retMsg = tr("The tool \"%1\" crashed.\n").arg(tool.name);
     }
 
-    printOutput(id, retMsg, OutputPane::OutputFormat::NormalMessage);
+    printOutput(retMsg, OutputPane::OutputFormat::NormalMessage);
     QString endMsg = tr("Execute tool \"%1\" finished.\n").arg(tool.name);
-    printOutput(id, endMsg, OutputPane::OutputFormat::NormalMessage);
-    AppOutputPane::instance()->setProcessFinished(id);
+    printOutput(endMsg, OutputPane::OutputFormat::NormalMessage);
 
     if (toolTaskMap.contains(id)) {
         auto task = toolTaskMap[id];
@@ -359,7 +357,7 @@ void BinaryToolsManager::handleReadOutput(const QString &id)
         return;
 
     auto task = toolTaskMap[id];
-    printOutput(id, std::get<0>(task)->readAllStandardOutput(), OutputPane::StdOut);
+    printOutput(std::get<0>(task)->readAllStandardOutput(), OutputPane::StdOut);
 }
 
 void BinaryToolsManager::handleReadError(const QString &id)
@@ -368,7 +366,7 @@ void BinaryToolsManager::handleReadError(const QString &id)
         return;
 
     auto task = toolTaskMap[id];
-    printOutput(id, std::get<0>(task)->readAllStandardError(), OutputPane::StdErr);
+    printOutput(std::get<0>(task)->readAllStandardError(), OutputPane::StdErr);
 }
 
 bool BinaryToolsManager::checkCommandExists(const QString &command)
@@ -387,7 +385,6 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
 {
     auto createAction = [this](const ToolInfo &tool) {
         auto act = new QAction(tool.description, this);
-        act->setIconText(tool.icon);
         act->setIcon(QIcon::fromTheme(tool.icon));
         connect(act, &QAction::triggered, this, std::bind(&BinaryToolsManager::executeTool, this, tool.id));
 
@@ -404,29 +401,13 @@ void BinaryToolsManager::addToToolBar(const ToolInfo &tool)
         auto act = createAction(tool);
         actMap.insert(tool.id, act);
         windowSrv->addTopToolItemToRight(act, false);
-    } else if (tool.addToToolbar && actMap.contains(tool.id)) {
-        auto act = actMap[tool.id];
-        auto qAct = act->qAction();
-
-        bool changed = false;
-        if (tool.description != qAct->text()) {
-            changed = true;
-            qAct->setText(tool.description);
-        }
-
-        if (tool.icon != qAct->iconText()) {
-            changed = true;
-            qAct->setIconText(tool.icon);
-            qAct->setIcon(QIcon::fromTheme(tool.icon));
-        }
-        // TODO: update toolbar icon and tooltip
     }
 }
 
-void BinaryToolsManager::printOutput(const QString &id, const QString &content, OutputPane::OutputFormat format)
+void BinaryToolsManager::printOutput(const QString &content, OutputPane::OutputFormat format)
 {
     uiController.switchContext(tr("&Application Output"));
-    auto outputPane = AppOutputPane::instance()->getOutputPaneById(id);
+    auto outputPane = OutputPane::instance();
     QString outputContent = content;
     if (format == OutputPane::OutputFormat::NormalMessage) {
         QTextDocument *doc = outputPane->document();
@@ -443,15 +424,4 @@ void BinaryToolsManager::printOutput(const QString &id, const QString &content, 
 
     OutputPane::AppendMode mode = OutputPane::AppendMode::Normal;
     outputPane->appendText(outputContent, format, mode);
-}
-
-void BinaryToolsManager::stopTool(const QString &id)
-{
-    if (!toolTaskMap.contains(id))
-        return;
-
-    auto task = toolTaskMap[id];
-    std::get<0>(task)->stop();
-    std::get<1>(task)->quit();
-    std::get<1>(task)->wait();
 }
