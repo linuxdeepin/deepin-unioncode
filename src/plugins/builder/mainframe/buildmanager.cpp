@@ -105,15 +105,6 @@ void BuildManager::addMenu()
                                 QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
                                 "build"), MWTG_EDIT, false);
 
-    d->cancelAction.reset(new QAction(MWMBA_CANCEL));
-    windowService->addTopToolItem(actionInit(d->cancelAction.get(), "Build.Cancel",
-                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
-                                "cancel"), MWTG_EDIT, false);
-    d->cancelActionNoIcon.reset(new QAction(MWMBA_CANCEL));
-    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->cancelActionNoIcon.get(), "Build.Cancel",
-                                                               QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
-                                                               ""));
-
     d->buildActionNoIcon.reset(new QAction(MWMBA_BUILD));
     windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->buildActionNoIcon.get(), "Build.Build",
                                                                QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
@@ -128,6 +119,15 @@ void BuildManager::addMenu()
     windowService->addTopToolItem(actionInit(d->cleanAction.get(), "Build.Clean",
                                 QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C),
                                 "clearall"), MWTG_EDIT, false);
+
+    d->cancelAction.reset(new QAction(MWMBA_CANCEL));
+    windowService->addTopToolItem(actionInit(d->cancelAction.get(), "Build.Cancel",
+                                QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
+                                "cancel"), MWTG_EDIT, false);
+    d->cancelActionNoIcon.reset(new QAction(MWMBA_CANCEL));
+    windowService->addAction(dpfservice::MWM_BUILD, actionInit(d->cancelActionNoIcon.get(), "Build.Cancel",
+                                                               QKeySequence(Qt::Modifier::ALT | Qt::Key::Key_Backspace),
+                                                               ""));
 
     QObject::connect(d->buildAction.get(), &QAction::triggered,
                      this, &BuildManager::buildProject, Qt::DirectConnection);

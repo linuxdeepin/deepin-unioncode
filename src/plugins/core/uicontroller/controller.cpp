@@ -607,7 +607,7 @@ void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, const QStrin
         toolBar = new DWidget(d->leftTopToolBar);
         hlayout = new QHBoxLayout(toolBar);
         hlayout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        hlayout->setSpacing(0);
+        hlayout->setSpacing(10);
         hlayout->setContentsMargins(0, 0, 0, 0);
         d->topToolBarGroup.insert(group, toolBar);
         d->leftTopToolBar->addWidget(toolBar);
@@ -615,11 +615,9 @@ void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, const QStrin
 
     if (addSeparator) {
         DVerticalLine *line = new DVerticalLine(d->mainWindow);
-        hlayout->addSpacing(5);
         line->setFixedHeight(20);
         line->setFixedWidth(1);
         hlayout->addWidget(line);
-        hlayout->addSpacing(5);
     }
 
     hlayout->addWidget(widget);
@@ -918,20 +916,20 @@ void Controller::showWorkspace()
     d->mainWindow->showWidget(WN_WORKSPACE);
 }
 
-DToolButton *Controller::createIconButton(QAction *action)
+DIconButton *Controller::createIconButton(QAction *action)
 {
-    DToolButton *iconBtn = new DToolButton(d->mainWindow);
+    DIconButton *iconBtn = new DIconButton(d->mainWindow);
     iconBtn->setFocusPolicy(Qt::NoFocus);
     iconBtn->setEnabled(action->isEnabled());
     iconBtn->setIcon(action->icon());
     iconBtn->setFixedSize(QSize(36, 36));
-    iconBtn->setIconSize(QSize(16, 16));
+    iconBtn->setIconSize(QSize(15, 15));
 
     QString toolTipStr = action->text() + " " + action->shortcut().toString();
     iconBtn->setToolTip(toolTipStr);
     iconBtn->setShortcut(action->shortcut());
 
-    connect(iconBtn, &DToolButton::clicked, action, &QAction::triggered);
+    connect(iconBtn, &DIconButton::clicked, action, &QAction::triggered);
     connect(action, &QAction::changed, iconBtn, [=] {
         if (action->shortcut() != iconBtn->shortcut()) {
             QString toolTipStr = action->text() + " " + action->shortcut().toString();

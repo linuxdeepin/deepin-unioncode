@@ -12,13 +12,12 @@ NavigationBar::NavigationBar(QWidget *parent)
     : DFrame(parent)
 {
     setLineWidth(0);
-    setFixedWidth(52);
+    setFixedWidth(58);
     setContextMenuPolicy(Qt::NoContextMenu);
 
     DStyle::setFrameRadius(this, 0);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(8, 10, 8, 0);
     layout->setAlignment(Qt::AlignHCenter);
 
     topLayout = new QVBoxLayout;
@@ -86,8 +85,8 @@ DToolButton *NavigationBar::createToolBtn(QAction *action, bool isNavigationItem
     navBtn->setToolTip(action->text());
     navBtn->setIcon(action->icon());
 
-    navBtn->setMinimumSize(QSize(36, 36));
-    navBtn->setIconSize(QSize(22, 22));
+    navBtn->setMinimumSize(QSize(48, 48));
+    navBtn->setIconSize(QSize(20, 20));
     navBtn->setFocusPolicy(Qt::NoFocus);
 
     if (isNavigationItem) {

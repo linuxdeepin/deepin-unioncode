@@ -104,7 +104,7 @@ private:
 
     void showWorkspace();
 
-    DToolButton *createIconButton(QAction *action);
+    DIconButton *createIconButton(QAction *action);
 };
 
 #endif   // CONTROLLER_H
