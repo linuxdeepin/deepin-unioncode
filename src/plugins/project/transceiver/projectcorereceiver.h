@@ -5,7 +5,6 @@
 #ifndef PROJECTCORERECEIVER_H
 #define PROJECTCORERECEIVER_H
 
-#include "common/project/projectinfo.h"
 #include <framework/framework.h>
 
 class ProjectCoreReceiver : public dpf::EventHandler, dpf::AutoEventHandlerRegister<ProjectCoreReceiver>
@@ -35,7 +34,7 @@ public:
         return &ins;
     }
 signals:
-    void projectActivated(const dpfservice::ProjectInfo prjInfo);
+
 };
 
 #endif // PROJECTCORERECEIVER_H

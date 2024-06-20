@@ -42,7 +42,6 @@ public:
 signals:
     void buildExecuteEnd(const BuildCommandInfo &commandInfo, int status = 0);
     void fileDeleted(const QString &filePath);
-    void openProjectPropertys(const dpfservice::ProjectInfo &prjInfo);
 
 private:
     QString buildCommandUuid;

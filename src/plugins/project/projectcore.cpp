@@ -4,7 +4,6 @@
 
 #include "projectcore.h"
 #include "transceiver/sendevents.h"
-#include "transceiver/projectcorereceiver.h"
 #include "mainframe/projectkeeper.h"
 #include "mainframe/projecttree.h"
 #include "common/common.h"
@@ -46,17 +45,11 @@ bool ProjectCore::start()
             windowService->addWidgetWorkspace(MWCWT_PROJECTS, view, "project");
             DToolButton *projectProperty = new DToolButton(ProjectKeeper::instance()->treeView());
             projectProperty->setIcon(QIcon::fromTheme("settings"));
+            projectProperty->setEnabled(false);
             projectProperty->setToolTip(tr("Open activted project`s property dialog"));
-            connect(projectProperty, &DToolButton::clicked, this, [=](){
-                project.openProjectPropertys(ProjectKeeper::instance()->treeView()->getActiveProjectInfo());
-            }, Qt::DirectConnection);
-            // todo(zta :temp only supprt cmake project  do other kit later
-            connect(ProjectProxy::instance(), &ProjectProxy::projectActivated, this, [=](const ProjectInfo &prjInfo){
-                if (prjInfo.kitName() != "cmake")
-                    projectProperty->setEnabled(false);
-                else
-                    projectProperty->setEnabled(true);
-            }, Qt::DirectConnection);
+//            connect(projectProperty, &DToolButton::clicked, this, [=](){
+//                project.openProjectPropertys(ProjectKeeper::instance()->treeView()->getActiveProjectInfo());
+//            }, Qt::DirectConnection);
             windowService->registerToolBtnToWorkspaceWidget(projectProperty, MWCWT_PROJECTS);
         }
     }

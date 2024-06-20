@@ -55,13 +55,6 @@ CmakeProjectGenerator::CmakeProjectGenerator()
         runCMake(this->rootItem, {});
     });
 
-    QObject::connect(ProjectCmakeProxy::instance(),
-                     &ProjectCmakeProxy::openProjectPropertys,
-                     this, [this](const ProjectInfo &prjInfo){
-        if (prjInfo.kitName() == toolKitName())
-            actionProperties(prjInfo, this->rootItem);
-    });
-
     connect(TargetsManager::instance(), &TargetsManager::initialized, this, &CmakeProjectGenerator::targetInitialized);
 
     // main thread init watcher class

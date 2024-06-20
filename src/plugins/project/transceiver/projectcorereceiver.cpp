@@ -60,11 +60,6 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
         ProjectKeeper::instance()->treeView()->expandAll();
     } else if (event.data() == workspace.foldAll.name) {
         ProjectKeeper::instance()->treeView()->collapseAll();
-    } else if (event.data() == project.activedProject.name) {
-        QVariant proInfoVar = event.property("projectInfo");
-        dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
-
-        emit ProjectProxy::instance()->projectActivated(projectInfo);
     }
 }
 
