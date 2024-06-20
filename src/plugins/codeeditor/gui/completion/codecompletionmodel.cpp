@@ -35,7 +35,7 @@ QIcon CodeCompletionModelPrivate::iconForKind(lsp::CompletionItem::Kind k)
     case lsp::CompletionItem::Struct:
         return QIcon::fromTheme("class");
     case lsp::CompletionItem::Module:
-        return QIcon::fromTheme("namespace");
+        return QIcon::fromTheme("ide");
     case lsp::CompletionItem::Field:
     case lsp::CompletionItem::Property:
     case lsp::CompletionItem::Variable:

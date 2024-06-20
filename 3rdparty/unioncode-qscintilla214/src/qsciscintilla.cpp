@@ -837,16 +837,9 @@ void QsciScintilla::autoIndentation(char ch, long pos)
         // if we have inserted a new line above by pressing return at the start
         // of this line - in other words, if the previous line is empty.
         long prev_line_length = SendScintilla(SCI_GETLINEENDPOSITION, curr_line - 1) - SendScintilla(SCI_POSITIONFROMLINE, curr_line - 1);
-        if (prev_line_length == 0)
-            return;
 
-        if (start_single && blockWordContains(curr_line_start, SendScintilla(SCI_GETLINEENDPOSITION, curr_line), block_start[0]))
-            return autoIndentation(block_start[0], pos);
-
-        if (end_single && blockWordContains(curr_line_start, SendScintilla(SCI_GETLINEENDPOSITION, curr_line), block_end[0]))
-            return autoIndentation(block_end[0], pos);
-
-        autoIndentLine(pos, curr_line, blockIndent(curr_line - 1));
+        if (prev_line_length != 0)
+            autoIndentLine(pos, curr_line, blockIndent(curr_line - 1));
     }
 }
 
@@ -945,23 +938,6 @@ bool QsciScintilla::rangeIsWhitespace(long spos, long epos)
     return true;
 }
 
-bool QsciScintilla::blockWordContains(long spos, long epos, const char block)
-{
-    while (spos < epos) {
-        char ch = SendScintilla(SCI_GETCHARAT, spos);
-        if (ch == ' ' || ch == '\t') {
-            ++spos;
-            continue;
-        } else if (ch != block) {
-            return false;
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
 
 // Returns the indentation state of a line.
 QsciScintilla::IndentState QsciScintilla::getIndentState(int line)
@@ -970,7 +946,7 @@ QsciScintilla::IndentState QsciScintilla::getIndentState(int line)
 
     // Get the styled text.
     long spos = SendScintilla(SCI_POSITIONFROMLINE, line);
-    long epos = SendScintilla(SCI_POSITIONFROMLINE, line + 1);
+    long epos = SendScintilla(SCI_GETLINEENDPOSITION, line + 1);
 
     char *text = new char[(epos - spos + 1) * 2];
 

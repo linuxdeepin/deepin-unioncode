@@ -51,7 +51,6 @@ void TextEditor::setFile(const QString &fileName)
     }
 
     setText(text.toUtf8());
-    setModified(false);
     editor.fileOpened(fileName);
     d->loadLexer();
     d->loadLSPStyle();
