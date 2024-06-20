@@ -194,7 +194,10 @@ Command *ActionManager::registerAction(QAction *action, const QString &id,
 */
 void ActionManager::unregisterAction(QString id)
 {
-    d->removeOverrideAction(id);
+    Action *a = d->removeOverrideAction(id);
+    if (a) {
+        a->setKeySequence(QKeySequence());
+    }
 }
 
 Command *ActionManager::command(QString id)
