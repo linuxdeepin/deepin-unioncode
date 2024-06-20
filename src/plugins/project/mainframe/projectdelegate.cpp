@@ -19,7 +19,7 @@ class ProjectDelegatePrivate
 };
 
 ProjectDelegate::ProjectDelegate(QAbstractItemView *parent)
-    : BaseItemDelegate(parent), d(new ProjectDelegatePrivate)
+    : QStyledItemDelegate(parent), d(new ProjectDelegatePrivate)
 {
 }
 
@@ -48,7 +48,15 @@ void ProjectDelegate::paint(QPainter *painter,
         iOption.font.setBold(true);
     }
 
-    BaseItemDelegate::paint(painter, iOption, index);
+    if (!option.state.testFlag(QStyle::State_HasFocus)) {
+        QColor color;
+        DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType
+                ? color = Qt::black
+                : color = QColor("#c5c8c9");
+        iOption.palette.setColor(QPalette::Text, color);
+    }
+
+    QStyledItemDelegate::paint(painter, iOption, index);
 }
 
 QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const

@@ -9,7 +9,6 @@ set(CXX_H
     abstractoutputparser.h
     abstractlocator.h
     basefilelocator.h
-    baseitemdelegate.h
     )
 
 set(CXX_CPP
@@ -21,7 +20,6 @@ set(CXX_CPP
     abstractoutputparser.cpp
     abstractlocator.cpp
     basefilelocator.cpp
-    baseitemdelegate.cpp
     )
 
 add_library(

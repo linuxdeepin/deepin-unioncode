@@ -5,10 +5,10 @@
 #ifndef PROJECTDELEGATE_H
 #define PROJECTDELEGATE_H
 
-#include "base/baseitemdelegate.h"
+#include <QStyledItemDelegate>
 
 class ProjectDelegatePrivate;
-class ProjectDelegate : public BaseItemDelegate
+class ProjectDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
     ProjectDelegatePrivate *const d;
