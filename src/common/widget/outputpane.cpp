@@ -64,7 +64,6 @@ void OutputPane::initUI()
     d->outputEdit = new DPlainTextEdit(this);
     d->outputEdit->setReadOnly(true);
     d->outputEdit->setLineWidth(0);
-    d->outputEdit->setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 
     d->cursor = QTextCursor(d->outputEdit->document());
 
@@ -204,12 +203,10 @@ QList<QAction *> OutputPane::actionFactory()
     {
         auto action = new QAction(this);
         action->setText(tr("Copy"));
-        action->setEnabled(false);
         connect(action, &QAction::triggered, [this]() {
             if (!d->outputEdit->document()->toPlainText().isEmpty())
                 d->outputEdit->copy();
         });
-        connect(d->outputEdit, &QPlainTextEdit::copyAvailable, action, &QAction::setEnabled);
         list.append(action);
     }
 
