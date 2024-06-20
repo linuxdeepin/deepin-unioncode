@@ -112,26 +112,28 @@ QVariant EnvironmentModel::headerData(int section, Qt::Orientation orientation, 
 
 QModelIndex EnvironmentModel::append(const QString &key, const QString &value)
 {
-    beginResetModel();
-    d->envs.insert(key, value);
-    endResetModel();
+    auto list = d->envs.keys();
+    list.append(key);
+    qSort(list);
+    int pos = list.indexOf(key);
 
-    for (int row = 0; row < d->envs.count(); row++) {
-        if (index(row, 0).data() == key)
-            return index(row, 0);
-    }
-    return {};
+    beginInsertRows(QModelIndex(), pos, pos);
+    d->envs.insert(key, value);
+    endInsertRows();
+    emit dataChanged(index(pos, 0), index(pos, 1));
+    return index(pos, 0);
 }
 
 void EnvironmentModel::remove(QModelIndex &index)
 {
     if (d->envs.keys().isEmpty() || index.row() < 0 || index.row() >= d->envs.count())
         return;
-
-    beginResetModel();
+    int row = index.row();
+    beginRemoveRows(QModelIndex(), row, row);
     QString key = d->envs.keys()[index.row()];
     d->envs.remove(key);
-    endResetModel();
+    endRemoveRows();
+    emit dataChanged(index, index);
 }
 
 void EnvironmentModel::update(const QMap<QString, QString> &data)
@@ -140,6 +142,7 @@ void EnvironmentModel::update(const QMap<QString, QString> &data)
     d->envs.clear();
     d->envs = data;
     endResetModel();
+    emit dataChanged(index(0, 0), index(d->envs.count() - 1, 1));
 }
 
 const QMap<QString, QString> EnvironmentModel::getEnvironment() const
@@ -164,7 +167,7 @@ class EnvironmentWidgetPrivate
 };
 
 
-EnvironmentWidget::EnvironmentWidget(QWidget *parent)
+EnvironmentWidget::EnvironmentWidget(QWidget *parent, EnvType type)
     : DFrame(parent)
     , d(new EnvironmentWidgetPrivate)
 {
@@ -209,6 +212,8 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     // add enable qdebug level check box.
     if (!d->enableQDebugLevelCB)
         d->enableQDebugLevelCB = new DCheckBox(this);
+    if (type == EnvType::BuildCfg)
+        d->enableQDebugLevelCB->hide();
 
     connect(d->enableQDebugLevelCB, &DCheckBox::stateChanged, this, &EnvironmentWidget::onEnableQDebugLevel);
 
@@ -243,7 +248,7 @@ EnvironmentWidget::EnvironmentWidget(QWidget *parent)
     btnLayout->addStretch(1);
     btnLayout->setSpacing(5);
     btnLayout->setContentsMargins(5, 0, 0, 0);
-    
+
     connect(d->appendButton, &DPushButton::clicked, this, &EnvironmentWidget::appendRow);
     connect(d->deleteButton, &DPushButton::clicked, this, &EnvironmentWidget::deleteRow);
     connect(d->resetButton, &DPushButton::clicked, this, &EnvironmentWidget::initModel);
