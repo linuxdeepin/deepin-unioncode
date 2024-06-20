@@ -109,11 +109,11 @@ CmakeProjectGenerator::CmakeProjectGenerator()
         auto prjService = dpfGetService(ProjectService);
         auto activePrjInfo = prjService->getActiveProjectInfo();
         for (auto item : d->cmakeItems.values()) {
-            if (item.isSame(activePrjInfo))
-                this->rootItem = d->cmakeItems.key(item);
+            if (item.isSame(activePrjInfo)) {
+                this->runCMake(d->cmakeItems.key(item), {});
+                break;
+            }
         }
-
-        this->runCMake(this->rootItem, {});
     });
 
     QObject::connect(config::ConfigUtil::instance(), &config::ConfigUtil::configureDone,
@@ -516,6 +516,9 @@ void CmakeProjectGenerator::runCMake(QStandardItem *root, const QPair<QString, Q
 
     if (d->reloadCmakeFileItems.contains(root))
         return;
+
+    if (rootItem != root)
+        rootItem = root;
 
     // get current project info
     auto proInfo = dpfservice::ProjectInfo::get(root);
