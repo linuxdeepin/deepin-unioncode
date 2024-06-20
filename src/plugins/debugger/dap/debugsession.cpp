@@ -4,7 +4,6 @@
 
 #include "debugsession.h"
 
-#include "common/common.h"
 #include "rawdebugsession.h"
 #include "runtimecfgprovider.h"
 #include "debugservice.h"
@@ -475,7 +474,6 @@ void DebugSession::next(integer threadId, dap::optional<dap::SteppingGranularity
     NextRequest request;
     request.threadId = threadId;
     request.granularity = granularity;
-    editor.removeDebugLine();
     raw->next(request);
 }
 

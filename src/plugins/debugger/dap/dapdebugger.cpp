@@ -684,8 +684,15 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
         d->localsModel.clear();
     d->currentValidFrame = curFrame;
 
+    if (QFileInfo(curFrame.file).exists()) {
+        editor.setDebugLine(curFrame.file, curFrame.line);
+    } else if (!curFrame.address.isEmpty()) {
+        disassemble(curFrame.address);
+    }
+
     if(d->getLocalsFuture.isRunning())
         d->getLocalsFuture.cancel();
+
 
     // update local variables.
     d->processingVariablesTimer.start(50);     // if processing time < 50ms, do not show spinner
@@ -798,13 +805,21 @@ bool DAPDebugger::showStoppedBySignalMessageBox(QString meaning, QString name)
     return true;
 }
 
+//todo:  use InvalidatedEvent to select-frame, then get locals
 void DAPDebugger::slotFrameSelected(const QModelIndex &index)
 {
     Q_UNUSED(index)
+    auto curFrame = d->stackModel.currentFrame();
+
+    if (QFileInfo(curFrame.file).exists()) {
+        editor.gotoLine(curFrame.file, curFrame.line);
+    } else if (!curFrame.address.isEmpty()) {
+        disassemble(curFrame.address);
+    }
+
     // update local variables.
     d->processingVariablesTimer.start(50);
     d->processingVariablesCount.ref();
-    auto curFrame = d->stackModel.currentFrame();
     QtConcurrent::run([=](){
         IVariables locals;
         getLocals(curFrame.frameId, &locals);
@@ -898,7 +913,6 @@ void DAPDebugger::initializeView()
             return;
         d->processingVariablesTimer.stop();
         d->variablesSpinner->hide();
-        handleUpdateDebugLine();
     });
 
     d->debugMainPane = new DFrame();
@@ -1204,16 +1218,4 @@ void DAPDebugger::handleAssemble(const QString &content)
 ProjectInfo DAPDebugger::getActiveProjectInfo() const
 {
     return dpfGetService(ProjectService)->getActiveProjectInfo();
-}
-
-void DAPDebugger::handleUpdateDebugLine()
-{
-    auto curFrame = d->stackModel.currentFrame();
-    if (curFrame.line != -1) {
-        if (QFileInfo(curFrame.file).exists()) {
-           editor.setDebugLine(curFrame.file, curFrame.line);
-        } else if (!curFrame.address.isEmpty()) {
-            disassemble(curFrame.address);
-        }
-    }
 }

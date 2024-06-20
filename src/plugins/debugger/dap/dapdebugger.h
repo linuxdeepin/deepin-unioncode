@@ -91,7 +91,6 @@ private:
     void launchBackend();
     void initializeView();
     void handleFrames(const StackFrames &stackFrames);
-    void handleUpdateDebugLine();
     void updateThreadList(int curr, const dap::array<dap::Thread> &threads);
     void switchCurrentThread(int curThreadID);
     QHBoxLayout *initFrameTitle(const QString &frameName);
