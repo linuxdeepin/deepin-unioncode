@@ -449,10 +449,6 @@ void CmakeProjectGenerator::actionProperties(const dpfservice::ProjectInfo &info
 {
     PropertiesDialog dlg;
 
-    //update config by current project(not activated project
-    ProjectConfigure *projectConfigure = ConfigUtil::instance()->getConfigureParamPointer();
-    ConfigUtil::instance()->readConfig(ConfigUtil::instance()->getConfigPath(info.workspaceFolder()), *projectConfigure);
-
     BuildPropertyPage *buildWidget = new BuildPropertyPage(info);
     RunPropertyPage *runWidget = new RunPropertyPage(info, item);
 
