@@ -121,6 +121,8 @@ DebuggerPrivate::~DebuggerPrivate()
 {
     if (alertBox)
         delete alertBox;
+    if (variablesPane)
+        delete variablesPane;
 }
 
 DAPDebugger::DAPDebugger(QObject *parent)

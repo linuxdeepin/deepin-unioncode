@@ -346,8 +346,6 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
     }
 
     DWidget *qWidget = static_cast<DWidget *>(abstractWidget->qWidget());
-    if (!qWidget->parent())
-        qWidget->setParent(d->mainWindow);
 
     WidgetInfo widgetInfo;
     widgetInfo.name = name;
@@ -369,9 +367,6 @@ void Controller::registerWidget(const QString &name, AbstractWidget *abstractWid
         return;
 
     auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
-    if (!widget->parent())
-        widget->setParent(d->mainWindow);
-
     d->widgetWaitForAdd.insert(name, widget);
 }
 
