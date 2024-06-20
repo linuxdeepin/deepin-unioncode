@@ -6,21 +6,14 @@
 #include "private/workspacewidget_p.h"
 #include "transceiver/codeeditorreceiver.h"
 
-#include <DDialog>
-
 #include <QVBoxLayout>
 #include <QVariant>
 #include <QApplication>
-#include <QFileDialog>
-
-DWIDGET_USE_NAMESPACE
 
 WorkspaceWidgetPrivate::WorkspaceWidgetPrivate(WorkspaceWidget *qq)
     : QObject(qq),
       q(qq)
 {
-    fileCheckTimer.setInterval(500);
-    fileCheckTimer.setSingleShot(true);
 }
 
 void WorkspaceWidgetPrivate::initUI()
@@ -45,11 +38,7 @@ void WorkspaceWidgetPrivate::initUI()
 
 void WorkspaceWidgetPrivate::initConnection()
 {
-    connect(&fileCheckTimer, &QTimer::timeout, this, &WorkspaceWidgetPrivate::checkFileState);
     connect(qApp, &QApplication::focusChanged, this, &WorkspaceWidgetPrivate::onFocusChanged);
-    connect(Inotify::globalInstance(), &Inotify::deletedSelf, this, &WorkspaceWidgetPrivate::onFileDeleted);
-    connect(Inotify::globalInstance(), &Inotify::movedSelf, this, &WorkspaceWidgetPrivate::onFileDeleted);
-    connect(Inotify::globalInstance(), &Inotify::modified, this, &WorkspaceWidgetPrivate::onFileModified);
 
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqOpenFile, this, &WorkspaceWidgetPrivate::handleOpenFile);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqAddBreakpoint, this, &WorkspaceWidgetPrivate::handleAddBreakpoint);
@@ -91,153 +80,6 @@ void WorkspaceWidgetPrivate::doSplit(QSplitter *spliter, int index, const QStrin
     // Set the cursor and scroll position
     tabWidget->setEditorCursorPosition(pos);
     tabWidget->setEditorScrollValue(scroll);
-}
-
-int WorkspaceWidgetPrivate::showFileChangedConfirmDialog(const QString &fileName)
-{
-    DDialog d(qApp->activeWindow());
-    const int maxDisplayNameLength = 250;
-
-    QFileInfo info(fileName);
-    const QString &fileDisplayName = d.fontMetrics().elidedText(info.fileName(), Qt::ElideMiddle, maxDisplayNameLength);
-    const QString &message = tr("The file <i>%1</i> has been changed on disk.Do you want to reload it?").arg(fileDisplayName);
-    const QString &title = tr("File Has Been Changed");
-    QStringList buttonTexts;
-
-    buttonTexts.append(tr("Yes", "button"));
-    buttonTexts.append(tr("Yes To All", "button"));
-    buttonTexts.append(tr("No", "button"));
-    buttonTexts.append(tr("No To All", "button"));
-    buttonTexts.append(tr("Close", "button"));
-
-    d.setIcon(QIcon::fromTheme("ide"));
-    d.setTitle(title);
-    d.setMessage(message);
-    d.addButton(buttonTexts[0]);
-    d.addButton(buttonTexts[1], true, DDialog::ButtonRecommend);
-    d.addButton(buttonTexts[2]);
-    d.addButton(buttonTexts[3]);
-    d.addButton(buttonTexts[4]);
-    d.setFixedWidth(480);
-    return d.exec();
-}
-
-int WorkspaceWidgetPrivate::showFileRemovedConfirmDialog(const QString &fileName)
-{
-    DDialog d(qApp->activeWindow());
-    const int maxDisplayNameLength = 250;
-
-    const QString &fileDisplayName = d.fontMetrics().elidedText(fileName, Qt::ElideMiddle, maxDisplayNameLength);
-    const QString &message = tr("The file <i>%1</i> has been removed from disk."
-                                " Do you want to save it under a different name,"
-                                " or close the editor?")
-                                     .arg(fileDisplayName);
-    const QString &title = tr("File Has Been Removed");
-    QStringList buttonTexts;
-
-    buttonTexts.append(tr("Save", "button"));
-    buttonTexts.append(tr("Save As", "button"));
-    buttonTexts.append(tr("Close", "button"));
-    buttonTexts.append(tr("Close All", "button"));
-
-    d.setIcon(QIcon::fromTheme("ide"));
-    d.setTitle(title);
-    d.setMessage(message);
-    d.addButton(buttonTexts[0]);
-    d.addButton(buttonTexts[1], true, DDialog::ButtonRecommend);
-    d.addButton(buttonTexts[2]);
-    d.addButton(buttonTexts[3]);
-    d.setFixedWidth(480);
-    return d.exec();
-}
-
-void WorkspaceWidgetPrivate::handleFileChanged()
-{
-    if (modifiedFileList.isEmpty())
-        return;
-
-    auto fileName = modifiedFileList.takeFirst();
-    if (checkAndResetSaveState(fileName))
-        return handleFileChanged();
-
-    int ret = showFileChangedConfirmDialog(fileName);
-    switch (ret) {
-    case 0:   // yes
-        q->reloadFile(fileName);
-        handleFileChanged();
-        break;
-    case 1:   // yes to all
-        q->reloadFile(fileName);
-        while (!modifiedFileList.isEmpty()) {
-            fileName = modifiedFileList.takeFirst();
-            q->reloadFile(fileName);
-        }
-        break;
-    case 2:   // no
-        q->setFileModified(fileName, true);
-        handleFileChanged();
-        break;
-    case 3:   // no to all
-        q->setFileModified(fileName, true);
-        while (!modifiedFileList.isEmpty()) {
-            fileName = modifiedFileList.takeFirst();
-            q->setFileModified(fileName, true);
-        }
-        break;
-    case 4:   // close
-        q->closeFileEditor(fileName);
-        break;
-    default:
-        break;
-    }
-}
-
-void WorkspaceWidgetPrivate::handleFileRemoved()
-{
-    if (removedFileList.isEmpty())
-        return;
-
-    auto fileName = removedFileList.takeFirst();
-    int ret = showFileRemovedConfirmDialog(fileName);
-    switch (ret) {
-    case 0:   // save
-        q->saveAs(fileName, fileName);
-        handleFileRemoved();
-        break;
-    case 1:   // save as
-        q->saveAs(fileName);
-        handleFileRemoved();
-        break;
-    case 2:   // close
-        q->closeFileEditor(fileName);
-        handleFileRemoved();
-        break;
-    case 3:   // close all
-        q->closeFileEditor(fileName);
-        while (!removedFileList.isEmpty()) {
-            fileName = removedFileList.takeFirst();
-            q->closeFileEditor(fileName);
-        }
-        break;
-    default:
-        break;
-    }
-}
-
-bool WorkspaceWidgetPrivate::checkAndResetSaveState(const QString &fileName)
-{
-    auto iter = std::find_if(tabWidgetList.begin(), tabWidgetList.end(),
-                             [&fileName](TabWidget *w) {
-                                 return w->checkAndResetSaveState(fileName);
-                             });
-
-    return iter != tabWidgetList.end();
-}
-
-void WorkspaceWidgetPrivate::checkFileState()
-{
-    handleFileChanged();
-    handleFileRemoved();
 }
 
 void WorkspaceWidgetPrivate::onSplitRequested(Qt::Orientation ori, const QString &fileName)
@@ -387,44 +229,6 @@ void WorkspaceWidgetPrivate::onZoomValueChanged()
         tabWidget->updateZoomValue(zoomValue);
 }
 
-void WorkspaceWidgetPrivate::onFileDeleted(const QString &fileName)
-{
-    if (QFile::exists(fileName))
-        return onFileModified(fileName);
-
-    if (removedFileList.contains(fileName))
-        return;
-
-    QStringList openedFiles;
-    for (auto tabWidget : tabWidgetList)
-        openedFiles.append(tabWidget->openedFiles());
-
-    if (!openedFiles.contains(fileName))
-        return;
-
-    Inotify::globalInstance()->removePath(fileName);
-    removedFileList << fileName;
-    if (q->isActiveWindow())
-        fileCheckTimer.start();
-}
-
-void WorkspaceWidgetPrivate::onFileModified(const QString &fileName)
-{
-    if (modifiedFileList.contains(fileName))
-        return;
-
-    QStringList openedFiles;
-    for (auto tabWidget : tabWidgetList)
-        openedFiles.append(tabWidget->openedFiles());
-
-    if (!openedFiles.contains(fileName))
-        return;
-
-    modifiedFileList << fileName;
-    if (q->isActiveWindow())
-        fileCheckTimer.start();
-}
-
 WorkspaceWidget::WorkspaceWidget(QWidget *parent)
     : QWidget(parent),
       d(new WorkspaceWidgetPrivate(this))
@@ -484,22 +288,6 @@ void WorkspaceWidget::saveAll() const
         tabWidget->saveAll();
 }
 
-void WorkspaceWidget::saveAs(const QString &from, const QString &to)
-{
-    auto tmpTo = to;
-    if (tmpTo.isEmpty()) {
-        tmpTo = QFileDialog::getSaveFileName(this);
-        if (tmpTo.isEmpty())
-            return;
-    }
-
-    std::find_if(d->tabWidgetList.begin(), d->tabWidgetList.end(),
-                 [&](TabWidget *w) {
-                     return w->saveAs(from, tmpTo);
-                 });
-    Inotify::globalInstance()->addPath(tmpTo);
-}
-
 void WorkspaceWidget::replaceSelectedText(const QString &text)
 {
     if (auto tabWidget = d->currentTabWidget())
@@ -528,30 +316,4 @@ void WorkspaceWidget::undo()
 {
     if (auto tabWidget = d->currentTabWidget())
         QMetaObject::invokeMethod(tabWidget, "undo", Qt::QueuedConnection);
-}
-
-void WorkspaceWidget::reloadFile(const QString &fileName)
-{
-    for (auto tabWidget : d->tabWidgetList)
-        tabWidget->reloadFile(fileName);
-}
-
-void WorkspaceWidget::setFileModified(const QString &fileName, bool isModified)
-{
-    for (auto tabWidget : d->tabWidgetList)
-        tabWidget->setFileModified(fileName, isModified);
-}
-
-void WorkspaceWidget::closeFileEditor(const QString &fileName)
-{
-    for (auto tabWidget : d->tabWidgetList)
-        tabWidget->closeFileEditor(fileName);
-}
-
-bool WorkspaceWidget::event(QEvent *event)
-{
-    if (event->type() == QEvent::WindowActivate)
-        d->fileCheckTimer.start();
-
-    return QWidget::event(event);
 }

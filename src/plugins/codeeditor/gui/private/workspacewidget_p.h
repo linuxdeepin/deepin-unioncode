@@ -23,21 +23,11 @@ public:
     TabWidget *currentTabWidget() const;
     void doSplit(QSplitter *spliter, int index, const QString &fileName, int pos, int scroll);
 
-    int showFileChangedConfirmDialog(const QString &fileName);
-    int showFileRemovedConfirmDialog(const QString &fileName);
-
-    void handleFileChanged();
-    void handleFileRemoved();
-    bool checkAndResetSaveState(const QString &fileName);
-
-public slots:
-    void checkFileState();
+public:
     void onSplitRequested(Qt::Orientation ori, const QString &fileName);
     void onCloseRequested();
     void onFocusChanged(QWidget *old, QWidget *now);
     void onZoomValueChanged();
-    void onFileDeleted(const QString &fileName);
-    void onFileModified(const QString &fileName);
 
     void handleOpenFile(const QString &workspace, const QString &fileName);
     void handleAddBreakpoint(const QString &fileName, int line);
@@ -56,9 +46,6 @@ public:
     QList<TabWidget *> tabWidgetList;
 
     int zoomValue { 0 };
-    QStringList modifiedFileList;
-    QStringList removedFileList;
-    QTimer fileCheckTimer;
 };
 
 #endif   // WORKSPACEWIDGET_P_H
