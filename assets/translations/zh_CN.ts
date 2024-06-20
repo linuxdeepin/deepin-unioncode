@@ -309,7 +309,7 @@
 </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="427"/>
+        <location filename="../../src/plugins/binarytools/configure/binarytoolsmanager.cpp" line="428"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
@@ -751,65 +751,59 @@ storage: %2
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="114"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="129"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="128"/>
         <source>Close Current Editor</source>
         <translation>关闭当前编辑器</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="115"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="132"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="131"/>
         <source>Switch Header/Source</source>
         <translation>切换头文件/源文件</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="116"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="135"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="134"/>
         <source>Follow Symbol Under Cursor</source>
         <translation>跟随光标下符号</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="117"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="138"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="137"/>
         <source>Toggle Breakpoint</source>
         <translation>切换断点</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="118"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="141"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="140"/>
         <source>Find Usages</source>
         <translation>查找引用</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="119"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="144"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="143"/>
         <source>Rename Symbol Under Cursor</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="123"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="122"/>
         <source>Backward</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="126"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="125"/>
         <source>Forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="120"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="145"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="146"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="147"/>
-        <source>Add/Remove Comment</source>
-        <translation>添加/删除注释</translation>
-    </message>
-    <message>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="148"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="149"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="150"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="151"/>
         <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="152"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="153"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="154"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="155"/>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="156"/>
         <source>&amp;Edit</source>
         <translation>编辑(&amp;E)</translation>
     </message>
@@ -962,7 +956,7 @@ storage: %2
     </message>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigdetailwidget.cpp" line="57"/>
-        <source>Line comment symbol:</source>
+        <source>line comment symbol:</source>
         <translation>行注释符号：</translation>
     </message>
     <message>
@@ -984,44 +978,44 @@ storage: %2
 <context>
     <name>CommentConfigWidget</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="78"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="72"/>
         <source>Add Group</source>
         <translation>新增分组</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="79"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="73"/>
         <source>Delete Group</source>
         <translation>删除分组</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="99"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="93"/>
         <source>New Group</source>
         <translation>新分组</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="105"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="99"/>
         <source>Are you sure to delete this group?</source>
         <translation>确定要删除该分组吗？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="106"/>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="115"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="100"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="109"/>
         <source>Delete Warining</source>
         <translation>删除警告</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="108"/>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="117"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="102"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="111"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="109"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="103"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="114"/>
+        <location filename="../../src/plugins/codeeditor/gui/settings/commentconfigwidget.cpp" line="108"/>
         <source>You can&apos;t delete the last group!</source>
         <translation>无法删除最后一个分组！</translation>
     </message>
@@ -2571,69 +2565,68 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="223"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="214"/>
         <source>Show Contain Folder</source>
         <translation>显示包含目录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="211"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="360"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="568"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="351"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="559"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="365"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="491"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="356"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="482"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="374"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="365"/>
         <source>Open In Terminal</source>
         <translation>在终端打开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="386"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="377"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="487"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="564"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="478"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="555"/>
         <source>New Document Name</source>
         <translation>新文件名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="494"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="536"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="571"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="596"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="653"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="485"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="527"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="562"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="587"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="644"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="590"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="581"/>
         <source>Delete operation not be recoverable, delete anyway?</source>
         <translation>删除操作不可逆转，是否删除?</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="594"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="585"/>
         <source>Delete: </source>
         <translation>删除： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="530"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="534"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="651"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="521"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="525"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="642"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation>名称为&quot;%1&quot; 的文件已经存在，您想覆盖它吗？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="535"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="597"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="652"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="526"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="588"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="643"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -2730,17 +2723,17 @@ repos path: %0</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="412"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="403"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="413"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="404"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="414"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="405"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
@@ -3442,7 +3435,7 @@ not exists support files: %0</source>
         <translation>控制台(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="213"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="209"/>
         <source>Search &amp;Results</source>
         <translation>查找结果(&amp;R)</translation>
     </message>
@@ -4789,7 +4782,7 @@ not exists support files: %0</source>
 <context>
     <name>TabWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="160"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="159"/>
         <source>File Operation</source>
         <translation>文件操作</translation>
     </message>
@@ -4952,75 +4945,75 @@ not exists support files: %0</source>
         <translation>添加/删除注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="63"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="62"/>
         <source>&amp;Add/Remove Comment</source>
         <translation>&amp;添加/删除注释</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="142"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="141"/>
         <source>The file &lt;i&gt;%1&lt;/i&gt; has been changed on disk.Do you want to reload it?</source>
         <translation>%1 被修改，是否重新加载？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="143"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="142"/>
         <source>File Has Been Changed</source>
         <translation>文件发生修改</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="146"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="145"/>
         <source>Yes</source>
         <comment>button</comment>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="147"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="146"/>
         <source>Yes To All</source>
         <comment>button</comment>
         <translation>应用所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="148"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="147"/>
         <source>No</source>
         <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="149"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="148"/>
         <source>No To All</source>
         <comment>button</comment>
         <translation>取消所有</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="150"/>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="179"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="149"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="178"/>
         <source>Close</source>
         <comment>button</comment>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="170"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="169"/>
         <source>The file &lt;i&gt;%1&lt;/i&gt; has been removed from disk. Do you want to save it under a different name, or close the editor?</source>
         <translation>%1 被移除，是否需要另存为，或者关闭当前编辑页？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="174"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="173"/>
         <source>File Has Been Removed</source>
         <translation>文件被移除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="177"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="176"/>
         <source>Save</source>
         <comment>button</comment>
         <translation>保存</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="178"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="177"/>
         <source>Save As</source>
         <comment>button</comment>
         <translation>另存为</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="180"/>
+        <location filename="../../src/plugins/codeeditor/gui/workspacewidget.cpp" line="179"/>
         <source>Close All</source>
         <comment>button</comment>
         <translation>关闭所有</translation>

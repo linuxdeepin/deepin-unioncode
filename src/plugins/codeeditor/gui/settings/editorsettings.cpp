@@ -7,7 +7,7 @@
 
 #include "services/option/optionutils.h"
 
-#include <QMap>
+#include <QMultiMap>
 
 class EditorSettingsPrivate
 {
@@ -27,7 +27,7 @@ public:
 
     EditorSettings *q;
 
-    QMap<QString, QList<Settings>> settingDatas;
+    QMultiMap<QString, Settings> settingDatas;
     QTimer changeTimer;
     bool isLoad { false };
     QStringList nodeList;
@@ -78,7 +78,7 @@ void EditorSettingsPrivate::saveConfig()
     auto iter = settingDatas.begin();
     for (; iter != settingDatas.end(); ++iter) {
         QMap<QString, QVariant> map;
-        const auto &settingList = settingDatas.value(iter.key());
+        const auto &settingList = settingDatas.values(iter.key());
         for (const auto &settings : settingList) {
             map.insert(settings.group, settings.data);
         }
@@ -116,24 +116,19 @@ void EditorSettings::setValue(const QString &node, const QString &group, const Q
     st.data.insert(key, value);
 
     if (d->settingDatas.contains(node)) {
-        auto stList = d->settingDatas.value(node);
-        int index = -1;
+        auto stList = d->settingDatas.values(node);
         auto iter = std::find_if(stList.begin(), stList.end(),
-                                 [&group, &index](const EditorSettingsPrivate::Settings &st) {
-                                     ++index;
+                                 [&group](const EditorSettingsPrivate::Settings &st) {
                                      return st.group == group;
                                  });
         if (iter == stList.end()) {
-            stList.append(st);
-            d->settingDatas.insert(node, stList);
+            d->settingDatas.insert(node, st);
         } else {
             iter->data[key] = value;
-            stList.replace(index, *iter);
-            d->settingDatas.remove(node);
-            d->settingDatas.insert(node, stList);
+            d->settingDatas.replace(node, *iter);
         }
     } else {
-        d->settingDatas.insert(node, { st });
+        d->settingDatas.insert(node, st);
     }
 
     if (!d->isLoad && notify)
@@ -145,7 +140,7 @@ QVariant EditorSettings::value(const QString &node, const QString &group, const 
     if (!d->settingDatas.contains(node))
         return defaultValue;
 
-    const auto &stList = d->settingDatas.value(node);
+    const auto &stList = d->settingDatas.values(node);
     auto iter = std::find_if(stList.begin(), stList.end(),
                              [&group](const EditorSettingsPrivate::Settings &st) {
                                  return st.group == group;
@@ -158,7 +153,7 @@ QVariant EditorSettings::value(const QString &node, const QString &group, const 
 
 QMap<QString, QVariant> EditorSettings::getMap(const QString &node) 
 {
-    const auto &stList = d->settingDatas.value(node);
+    const auto &stList = d->settingDatas.values(node);
     QMap<QString, QVariant> map;
     for (const auto &st : stList)
         map.insert(st.group, st.data);

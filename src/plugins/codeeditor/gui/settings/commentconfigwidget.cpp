@@ -52,17 +52,11 @@ void CommentConfigWidget::initUI()
             OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(),
                                          EditorConfig, Node::MimeTypeConfig, map);
     if (map.isEmpty() || map.value("0").toMap().value(Key::MimeTypeGroupName).toString().isEmpty()) {
-        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::MimeType, "text/x-c++src;text/x-chdr;text/x-c++hdr;text/x-java;application/javascript");
+        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::MimeType, "text/x-c++src;text/x-c++hdr");
         EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::SingleLineComment, "//");
         EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::StartMultiLineComment, "/*");
         EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::EndMultiLineComment, "*/");
-        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::MimeTypeGroupName, "C++/Java/Javascript");
-        
-        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "1", Key::MimeType, "text/x-python;text/x-cmake;application/x-shellscript");
-        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "1", Key::SingleLineComment, "#");
-        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "1", Key::StartMultiLineComment, "\'\'\'");
-        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "1", Key::EndMultiLineComment, "\'\'\'");
-        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "1", Key::MimeTypeGroupName, "Python/CMake/Shell");
+        EditorSettings::instance()->setValue(Node::MimeTypeConfig, "0", Key::MimeTypeGroupName, "Default");
     }
 
     int currentTabWidgetCount = 0;

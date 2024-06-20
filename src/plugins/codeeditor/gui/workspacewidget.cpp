@@ -57,9 +57,8 @@ void WorkspaceWidgetPrivate::initActions()
     QAction *commentAction = new QAction(tr("Add/Delete Comment"), q);
 
     auto abstractCommentAction = new AbstractAction(commentAction, q);
-    abstractCommentAction->setShortCutInfo("Editor.addAndRemoveComment",
-                                            tr("Add/Remove Comment"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_Slash));
-
+    abstractCommentAction->setShortCutInfo("Comment.addAndRemoveComment",
+                                            tr("Add/Remove Comment"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_Slash));
     windowService->addAction(tr("&Add/Remove Comment"), abstractCommentAction);
     connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
 }
@@ -547,9 +546,9 @@ WorkspaceWidget::WorkspaceWidget(QWidget *parent)
     : QWidget(parent),
       d(new WorkspaceWidgetPrivate(this))
 {
-    d->initActions();
     d->initUI();
     d->initConnection();
+    d->initActions();
 }
 
 QString WorkspaceWidget::currentFile() const
