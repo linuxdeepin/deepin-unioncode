@@ -10,11 +10,6 @@
 #include <DTreeView>
 #include <DMenu>
 
-enum class NewType {
-    File,
-    Folder
-};
-
 class TreeViewPrivate;
 class FileTreeView : public DTK_WIDGET_NAMESPACE::DTreeView
 {
@@ -32,8 +27,6 @@ public slots:
     void selRename();
     void selNewDocument();
     void selNewFolder();
-    void createNew(NewType type);
-    void createNewOperation(const QString &newName, NewType type);
     void recoverFromTrash();
     void doDoubleClicked(const QModelIndex &index);
 signals:
