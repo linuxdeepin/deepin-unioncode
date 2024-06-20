@@ -208,9 +208,6 @@ EnvironmentWidget::~EnvironmentWidget()
 
 void EnvironmentWidget::getValues(config::EnvironmentItem &env)
 {
-    env.enable = d->enableEnvCB->isChecked();
-    env.environments = d->model->getEnvironment();
-    env.setQDebugLevel(d->enableQDebugLevelCB->isChecked());
 }
 
 void EnvironmentWidget::setValues(const config::EnvironmentItem &env)
