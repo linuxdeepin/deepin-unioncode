@@ -578,17 +578,20 @@ void ProjectTree::actionDeleteDocument(QStandardItem *item)
     if (!info.isFile())
         return;
 
+    bool doDelete = false;
+    auto okCallBack = [&](bool checked) {
+        Q_UNUSED(checked);
+        doDelete = true;
+    };
+
     QString message = tr("Delete operation not be recoverable, delete anyway?");
+    CommonDialog::okCancel(message,
+                            info.fileName(),
+                            QMessageBox::Warning,
+                            okCallBack,
+                            nullptr);
 
-    DDialog dialog;
-    dialog.setMessage(message);
-    dialog.setWindowTitle(tr("Delete: ") + info.fileName());
-    dialog.setIcon(QIcon::fromTheme("dialog-warning"));
-    dialog.insertButton(0, tr("Ok"));
-    dialog.insertButton(1, tr("Cancel"));
-    int code = dialog.exec();
-
-    if (code == 1)
+    if (!doDelete)
         return;
 
     QFile(info.filePath()).remove();
