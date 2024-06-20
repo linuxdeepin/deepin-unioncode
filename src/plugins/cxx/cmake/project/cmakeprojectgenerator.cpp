@@ -87,31 +87,6 @@ CmakeProjectGenerator::CmakeProjectGenerator()
                      [this](const dpfservice::ProjectInfo &info) {
         configure(info);
     });
-
-    // add clear cmake menu item
-    QAction *clearCMake = new QAction(tr("Clear CMake"));
-    auto abstractClearCMake = new AbstractAction(clearCMake, this);
-    abstractClearCMake->setShortCutInfo("Build.ClearCMake", clearCMake->text());
-    dpfGetService(WindowService)->addAction(dpfservice::MWM_BUILD, abstractClearCMake);
-
-    QObject::connect(clearCMake, &QAction::triggered, this, [this](){
-        this->clearCMake(this->rootItem);
-    });
-}
-
-void CmakeProjectGenerator::clearCMake(QStandardItem *root)
-{
-    auto path = dpfservice::ProjectInfo::get(root).buildFolder();
-    auto cmakeFiles = path + "/CMakeFiles";
-    auto cmakeCaches = path + "/CMakeCache.txt";
-    QFile(cmakeCaches).remove();
-
-    QDir dir(cmakeFiles);
-    if (dir.exists()) {
-        dir.removeRecursively();
-    } else {
-        qWarning() << "CMakeFiles directory does not exist.";
-    }
 }
 
 CmakeProjectGenerator::~CmakeProjectGenerator()
@@ -542,6 +517,5 @@ void CmakeProjectGenerator::createBuildMenu(QMenu *menu)
     addBuildMenu("Build.Clean");
     addBuildMenu("Build.Cancel");
     addBuildMenu("Build.RunCMake");
-    addBuildMenu("Build.ClearCMake");
     menu->addSeparator();
 }
