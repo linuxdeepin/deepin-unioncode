@@ -238,6 +238,7 @@ void StepsPane::setupUi()
     hLayout->addWidget(label);
     hLayout->addWidget(d->toolArguments);
 
+    vLayout->setMargin(10);
     vLayout->setSpacing(10);
     vLayout->addWidget(d->buildLabel);
     vLayout->addLayout(hLayout);

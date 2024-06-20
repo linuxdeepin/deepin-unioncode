@@ -153,7 +153,7 @@ void BuildPropertyPage::setupOverviewUI()
     setLayout(vLayout);
 
     QVBoxLayout *overviewLayout = new QVBoxLayout();
-    DWidget *overviewWidget = new DWidget(this);
+    DWidget *overviewWidget = new DWidget();
     overviewWidget->setLayout(overviewLayout);
 
     QHBoxLayout *configureLayout = new QHBoxLayout();
@@ -211,7 +211,6 @@ void BuildPropertyPage::setupOverviewUI()
     overviewLayout->setSpacing(5);
 
     auto formlayout = new QFormLayout(this);
-    formlayout->setContentsMargins(0, 0, 0, 0);
     formlayout->addRow(QLabel::tr("Build configuration:"), configureLayout);
     formlayout->addRow(tr("Output direcotry:"), hLayout);
 
