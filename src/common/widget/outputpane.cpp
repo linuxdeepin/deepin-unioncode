@@ -8,7 +8,6 @@
 #include <DPlainTextEdit>
 #include <DScrollBar>
 #include <DMenu>
-#include <DGuiApplicationHelper>
 
 #include <QDebug>
 #include <QVBoxLayout>
@@ -16,6 +15,7 @@
 /**
  * @brief Output text color.
  */
+const QColor kTextColorNormal(150, 150, 150);
 const QColor kErrorMessageTextColor(255, 108, 108);
 const QColor kMessageOutput(0, 135, 135);
 constexpr int kDefaultMaxCharCount = 10000000;
@@ -58,13 +58,6 @@ OutputPane::~OutputPane()
 
 void OutputPane::initUI()
 {
-    QColor currentColor = this->palette().color(this->backgroundRole());
-    kTextColorNormal = QColor(255 - currentColor.red(), 255 - currentColor.green(), 255 - currentColor.blue());
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, [&](){
-        QColor currentColor = this->palette().color(this->backgroundRole());
-        kTextColorNormal = QColor(255 - currentColor.red(), 255 - currentColor.green(), 255 - currentColor.blue());
-        this->update();
-    });
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 

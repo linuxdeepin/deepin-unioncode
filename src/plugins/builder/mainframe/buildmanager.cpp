@@ -181,7 +181,7 @@ void BuildManager::initCompileWidget()
     spl->addWidget(outputFrame);
     spl->addWidget(issusFrame);
 
-    mainLayout->setSpacing(1);
+    mainLayout->setSpacing(0);
     mainLayout->addWidget(spl);
     if (auto holder = createFindPlaceHolder())
         mainLayout->addWidget(holder);

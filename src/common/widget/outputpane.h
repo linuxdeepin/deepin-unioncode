@@ -56,8 +56,6 @@ private:
     QList<QAction*> actionFactory();
 
     OutputPanePrivate *d = nullptr;
-
-    QColor kTextColorNormal;
 };
 
 #endif // OUTPUTPANE_H
