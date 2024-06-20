@@ -50,9 +50,8 @@ public:
     dap::array<dap::Thread> allThreadList() override;
     dap::array<dap::Variable> allVariableList() override;
     dap::array<dap::Variable> getVariableListByRef(int64_t ref) override;
-    bool fetchChildVariables(int64_t ref) override;
 
-    void traceAddVariable(gdbmi::Variable *variable, int refrence = 0, int frame = -1);
+    void traceAddVariable(const gdbmi::Variable& variable, int refrence = 0, int frame = -1);
     void delAllTraceVariable();
     void traceUpdateVariable(const QString &expression);
 
@@ -93,7 +92,7 @@ signals:
     void updateThreads(int currentId, const QList<gdbmi::Thread>& threads);
     void updateCurrentFrame(const gdbmi::Frame& frame);
     void updateStackFrame(const QList<gdbmi::Frame>& stackFrames);
-    void updateLocalVariables(const QList<gdbmi::Variable *>& variableList);
+    void updateLocalVariables(const QList<gdbmi::Variable>& variableList);
 
     void targetRemoteConnected();
     void gdbError(const QString& msg);
@@ -111,10 +110,8 @@ private:
     void sendLibraryLoadedNotify(const gdbmi::Library &library, bool print);
     void sendLibraryUnloadedNotify(const gdbmi::Library &library, bool print);
     void parseDisassembleData(const gdbmi::Record &record);
-    void addVariablesWatched(const QList<gdbmi::Variable *> &variableList, int reference);
-    void parseChildVariable(const QString &evaluateName , const gdbmi::Variable *parentVariable);
-    void evaluateValue(gdbmi::Variable *variable);
-    void resetVariables();
+    void addVariablesWatched(const QList<gdbmi::Variable>& variableList, int reference);
+    void parseChildVariable(const QString &varName, const gdbmi::Variable &variable);
 
     GDBDebuggerPrivate *const d;
 };

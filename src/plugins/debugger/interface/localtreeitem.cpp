@@ -127,13 +127,3 @@ int LocalTreeItem::row() const
 
     return 0;
 }
-
-bool LocalTreeItem::hasChildren()
-{
-    return (itemVariable.variablesReference != 0) || (childCount() > 0);
-}
-
-int64_t LocalTreeItem::childReference()
-{
-    return itemVariable.variablesReference;
-}

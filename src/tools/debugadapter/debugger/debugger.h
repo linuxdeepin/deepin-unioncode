@@ -36,7 +36,6 @@ public:
 
     virtual QString stackListFrames() = 0;
     virtual QString stackListVariables() = 0;
-    virtual bool fetchChildVariables(int64_t ref) = 0;
 
     virtual QString listSourceFiles() = 0;
 

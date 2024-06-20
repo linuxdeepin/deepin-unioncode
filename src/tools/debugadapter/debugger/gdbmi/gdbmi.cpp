@@ -179,18 +179,17 @@ int strToInt(const QString& s, int def)
     return ok? v:def;
 }
 
-gdbmi::Variable *gdbmi::Variable::parseMap(const QVariantMap &data)
+gdbmi::Variable gdbmi::Variable::parseMap(const QVariantMap &data)
 {
-    gdbmi::Variable *v = new gdbmi::Variable;
-    v->evaluateName = data.value("name").toString();
-    v->name = data.value("name").toString();
-    v->numChild = data.value("numchild", 0).toInt();
-    v->value = data.value("value").toString();
-    v->type = data.value("type").toString();
-    v->threadId = data.value("thread-id").toString();
-    v->hasMore = data.value("has_more", false).toBool();
-    v->dynamic = data.value("dynamic", false).toBool();
-    v->displayhint = data.value("displayhint").toString();
+    gdbmi::Variable v;
+    v.name = data.value("name").toString();
+    v.numChild = data.value("numchild", 0).toInt();
+    v.value = data.value("value").toString();
+    v.type = data.value("type").toString();
+    v.threadId = data.value("thread-id").toString();
+    v.hasMore = data.value("has_more", false).toBool();
+    v.dynamic = data.value("dynamic", false).toBool();
+    v.displayhint = data.value("displayhint").toString();
     return v;
 }
 

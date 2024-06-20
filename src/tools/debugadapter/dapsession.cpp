@@ -542,9 +542,6 @@ void DapSession::registerHanlder()
         ResponseOrError<dap::VariablesResponse> response;
         if(variablesRef == 0)
             d->debugger->stackListVariables();
-        else
-            d->debugger->fetchChildVariables(variablesRef);
-
         response.response.variables = d->debugger->getVariableList(variablesRef);
 
         Log("--> Server sent Variables response to the client\n")

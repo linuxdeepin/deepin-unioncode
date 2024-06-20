@@ -18,7 +18,6 @@ struct VariableChange {
 };
 
 struct Variable {
-    QString evaluateName;
     QString name;
     int numChild = 0;
     int64_t childRefrence = 0;
@@ -33,7 +32,7 @@ struct Variable {
     bool haveType() const { return !type.isEmpty(); }
     bool isSimple() const { return isValid() && !haveType(); }
 
-    static Variable *parseMap(const QVariantMap &data);
+    static Variable parseMap(const QVariantMap &data);
 };
 
 struct Frame {

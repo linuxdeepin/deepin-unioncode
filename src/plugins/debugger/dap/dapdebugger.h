@@ -9,7 +9,6 @@
 #include "event/event.h"
 #include "interface/stackframemodel.h"
 #include "interface/localtreemodel.h"
-#include "interface/localtreeitem.h"
 #include "interface/breakpointmodel.h"
 #include "base/abstractdebugger.h"
 
@@ -81,7 +80,6 @@ public slots:
 
     void slotReceivedDAPPort(const QString &uuid, int port, const QString &kitName, const QMap<QString, QVariant> &param);
     void slotOutputMsg(const QString &title, const QString &msg);
-    void slotGetChildVariable(const QModelIndex &index);
 
 private:
     void launchBackend();

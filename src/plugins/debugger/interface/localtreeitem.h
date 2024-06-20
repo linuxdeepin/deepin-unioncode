@@ -37,8 +37,6 @@ public:
     void removeChildren();
     LocalTreeItem *parent() const;
     int indexOf(const LocalTreeItem *item) const;
-    bool hasChildren();
-    int64_t childReference();
 
     QModelIndex index() const;
 

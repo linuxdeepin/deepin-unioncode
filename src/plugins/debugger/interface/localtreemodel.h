@@ -31,16 +31,16 @@ public:
     QModelIndex parent(const QModelIndex &index) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    bool hasChildren(const QModelIndex &parent) const override;
 
     // Custumize functions.
     void setDatas(IVariables &datas);
-    void appendItem(LocalTreeItem* parent, IVariables &vars);
     void clear();
 
     QModelIndex indexForItem(const LocalTreeItem *needle) const;
 
 private:
+    void appendItem(LocalTreeItem* parent, IVariables &vars);
+
     LocalTreeItem *rootItem = nullptr;
     QList<LocalTreeItem *> items;
     QStringList headers;
