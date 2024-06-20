@@ -167,9 +167,6 @@ void Controller::registerService()
     if (!windowService->showWidgetAtPosition) {
         windowService->showWidgetAtPosition = std::bind(&Controller::showWidgetAtPosition, this, _1, _2, _3);
     }
-    if (!windowService->setDockHeaderName) {
-        windowService->setDockHeaderName = std::bind(&MainWindow::setDockHeadername, d->mainWindow, _1, _2);
-    }
     if (!windowService->deleteDockHeader) {
         windowService->deleteDockHeader = std::bind(&MainWindow::deleteDockHeader, d->mainWindow, _1);
     }
@@ -848,15 +845,17 @@ void Controller::initContextWidget()
 
     DToolButton *hideBtn = new DToolButton(d->contextTabBar);
     hideBtn->setFixedSize(35, 35);
-    hideBtn->setIcon(QIcon::fromTheme("hide_dock"));
+    hideBtn->setIcon(QIcon::fromTheme("expand"));
     connect(hideBtn, &DToolButton::clicked, d->contextWidget, [=](){
         if (d->stackContextWidget->isVisible()) {
             d->stackContextWidget->hide();
+            hideBtn->setIcon(QIcon::fromTheme("fold"));
             d->contextWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
             d->mainWindow->resizeDock(WN_CONTEXTWIDGET, d->contextTabBar->size());
         } else {
             d->contextWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
             d->stackContextWidget->show();
+            hideBtn->setIcon(QIcon::fromTheme("expand"));
         }
     });
 
@@ -980,26 +979,22 @@ void Controller::showWorkspace()
 
         DToolButton *expandAll = new DToolButton(d->workspace);
         expandAll->setToolTip(tr("Expand All"));
-        expandAll->setIcon(QIcon::fromTheme("expand_all"));
+        expandAll->setIcon(QIcon::fromTheme("ide"));
         d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, expandAll);
         connect(expandAll, &DToolButton::clicked, this, [](){workspace.expandAll();});
 
         DToolButton *foldAll = new DToolButton(d->workspace);
         foldAll->setToolTip(tr("Fold All"));
-        foldAll->setIcon(QIcon::fromTheme("collapse_all"));
+        foldAll->setIcon(QIcon::fromTheme("ide"));
         d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, foldAll);
         connect(foldAll, &DToolButton::clicked, this, [](){workspace.foldAll();});
 
         expandAll->setVisible(d->workspace->getCurrentExpandState());
         foldAll->setVisible(d->workspace->getCurrentExpandState());
-        d->mainWindow->setDockHeadername(WN_WORKSPACE, d->workspace->getCurrentTitle());
 
         connect(d->workspace, &WorkspaceWidget::expandStateChange, this, [=](bool canExpand){
            expandAll->setVisible(canExpand);
            foldAll->setVisible(canExpand);
-        });
-        connect(d->workspace, &WorkspaceWidget::workSpaceWidgeSwitched, this, [=](const QString &title){
-           d->mainWindow->setDockHeadername(WN_WORKSPACE, title);
         });
     }
 

@@ -8,7 +8,6 @@
 
 #include <QHBoxLayout>
 #include <QDebug>
-#include <QLabel>
 
 DWIDGET_USE_NAMESPACE
 
@@ -16,7 +15,6 @@ class DockHeaderPrivate{
     friend class DockHeader;
 
     QHBoxLayout *mainLayout { nullptr };
-    QLabel *headerName { nullptr };
 };
 
 DockHeader::DockHeader(QWidget *parent)
@@ -25,12 +23,9 @@ DockHeader::DockHeader(QWidget *parent)
     setAutoFillBackground(true);
     setBackgroundRole(DPalette::Base);
 
-    d->headerName = new QLabel(this);
-
     d->mainLayout = new QHBoxLayout(this);
-    d->mainLayout->setContentsMargins(10, 0, 10, 0);
+    d->mainLayout->setContentsMargins(0, 0, 0, 0);
     d->mainLayout->setAlignment(Qt::AlignRight);
-    d->mainLayout->addWidget(d->headerName, Qt::AlignLeft);
 }
 
 DockHeader::~DockHeader()
@@ -42,10 +37,5 @@ DockHeader::~DockHeader()
 void DockHeader::addToolButton(DToolButton *btn)
 {
     btn->setFixedSize(20, 20);
-    d->mainLayout->insertWidget(1, btn);
-}
-
-void DockHeader::setHeaderName(const QString &headerName)
-{
-    d->headerName->setText(headerName);
+    d->mainLayout->insertWidget(0, btn);
 }

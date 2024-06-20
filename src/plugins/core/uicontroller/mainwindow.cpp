@@ -90,18 +90,6 @@ DDockWidget *MainWindow::createDockWidget(DWidget *widget)
     return dock;
 }
 
-void MainWindow::setDockHeadername(const QString &dockName, const QString &headerName)
-{
-    if (!d->dockList.contains(dockName))
-        return;
-
-    auto dock = d->dockList[dockName];
-    auto titleBar = qobject_cast<DockHeader *>(dock->titleBarWidget());
-
-    if (titleBar)
-        titleBar->setHeaderName(headerName);
-}
-
 void MainWindow::deleteDockHeader(const QString &name)
 {
     if (!d->dockList.contains(name))
@@ -193,7 +181,7 @@ void MainWindow::initDockHeader(DDockWidget *dock, dpfservice::Position pos)
 
     auto closeBtn = new DToolButton(dock);
     closeBtn->setCheckable(true);
-    closeBtn->setIcon(QIcon::fromTheme("hide_dock").pixmap(20));
+    closeBtn->setIcon(QIcon::fromTheme("go-previous").pixmap(20));
 
     addToolBtnToDockHeader(d->dockList.key(dock), closeBtn);
 

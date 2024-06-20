@@ -44,7 +44,6 @@ public:
 
     QString getCurrentDockName(Position pos);
 
-    void setDockHeadername(const QString &dockName, const QString &headerName);
     void deleteDockHeader(const QString &name);
     void addToolBtnToDockHeader(const QString &dockName, DToolButton *btn);
     void setDockWidgetFeatures(const QString &name, QDockWidget::DockWidgetFeatures feature);

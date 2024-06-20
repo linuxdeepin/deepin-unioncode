@@ -84,7 +84,6 @@ bool WorkspaceWidget::switchWidgetWorkspace(const QString &title)
     }
 
     emit expandStateChange(widget->property("canExpand").toBool());
-    emit workSpaceWidgeSwitched(title);
 
     return false;
 }
@@ -92,13 +91,4 @@ bool WorkspaceWidget::switchWidgetWorkspace(const QString &title)
 bool WorkspaceWidget::getCurrentExpandState()
 {
     return stackEditWorkspaceWidget->currentWidget()->property("canExpand").toBool();
-}
-
-QString WorkspaceWidget::getCurrentTitle() const
-{
-    for (auto it = workspaceTabButtons.begin(); it != workspaceTabButtons.end(); ++it) {
-        if (it.value()->isChecked() == true)
-            return it.key();
-    }
-    return "";
 }
