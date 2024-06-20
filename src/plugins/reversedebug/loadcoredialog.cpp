@@ -10,7 +10,6 @@
 #include <DPushButton>
 #include <DFileDialog>
 #include <DSuggestButton>
-#include <DStyle>
 
 #include <QFormLayout>
 #include <QDir>
@@ -66,10 +65,7 @@ void LoadCoreDialog::setupUi()
     d->traceDir = new DLineEdit(this);
     d->traceDir->setPlaceholderText(tr("Trace directory."));
 
-    DSuggestButton *btnBrowser = new DSuggestButton(this);
-    btnBrowser->setIcon(DStyle::standardIcon(style(), DStyle::SP_SelectElement));
-    btnBrowser->setIconSize(QSize(24, 24));
-    btnBrowser->setFixedSize(36, 36);
+    DSuggestButton *btnBrowser = new DSuggestButton("···", this);
 
 
     // pid
@@ -96,7 +92,6 @@ void LoadCoreDialog::setupUi()
     formLayout->addRow(tr("recent："), d->historyComboBox);
     formLayout->setSpacing(10);
     formLayout->setMargin(0);
-    formLayout->setContentsMargins(10, 0, 0, 0);
 
     centerLayout->addLayout(formLayout);
     centerLayout->addStretch();
