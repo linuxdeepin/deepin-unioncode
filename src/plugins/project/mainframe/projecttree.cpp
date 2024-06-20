@@ -187,9 +187,6 @@ void ProjectTree::takeRootItem(QStandardItem *root)
 
 void ProjectTree::doItemMenuRequest(QStandardItem *item, QContextMenuEvent *event)
 {
-    if(!item)
-        return;
-
     auto rootItem = ProjectGenerator::root(item);
     DMenu *menu = nullptr;
 

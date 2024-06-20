@@ -54,7 +54,7 @@ void WorkspaceWidget::addWorkspaceWidget(const QString &title, AbstractWidget *t
 
     DToolButton *tabBtn = new DToolButton;
     tabBtn->setCheckable(true);
-    tabBtn->setChecked(false);
+    tabBtn->setChecked(true);
     tabBtn->setToolTip(title);
     tabBtn->setIcon(QIcon::fromTheme(iconName));
     tabBtn->setMinimumSize(QSize(24, 24));
@@ -68,7 +68,6 @@ void WorkspaceWidget::addWorkspaceWidget(const QString &title, AbstractWidget *t
         switchWidgetWorkspace(title);
     });
     workspaceTabButtons.insert(title, tabBtn);
-    switchWidgetWorkspace(title);
 }
 
 bool WorkspaceWidget::switchWidgetWorkspace(const QString &title)
