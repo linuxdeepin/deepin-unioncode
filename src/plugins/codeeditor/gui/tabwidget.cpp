@@ -426,21 +426,6 @@ void TabWidget::closeFileEditor(const QString &fileName)
     d->tabBar->removeTab(fileName);
 }
 
-void TabWidget::closeFileEditor()
-{
-    if (auto editor = d->currentTextEditor())
-        closeFileEditor(editor->getFile());
-}
-
-void TabWidget::switchHeaderSource()
-{
-    auto editor = d->currentTextEditor();
-    if (!editor->hasFocus())
-        return;
-
-    editor->switchHeaderSource();
-}
-
 void TabWidget::replaceSelectedText(const QString &text)
 {
     if (auto editor = d->currentTextEditor())

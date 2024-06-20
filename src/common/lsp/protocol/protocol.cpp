@@ -71,7 +71,6 @@ const QString V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT { "textDocument/documentHighlight
 const QString V_TEXTDOCUMENT_SEMANTICTOKENS { "textDocument/semanticTokens" };
 const QString V_TEXTDOCUMENT_SEMANTICTOKENS_FULL { "textDocument/semanticTokens/full" };
 const QString V_TEXTDOCUMENT_SEMANTICTOKENS_RANGE { "textDocument/semanticTokens/range" };
-const QString V_TEXTDOCUMENT_SWITCHHEADERSOURCE { "textDocument/switchSourceHeader" };
 const QString K_WORKSPACEFOLDERS { "workspaceFolders" };
 
 const QString K_CONTENTCHANGES { "contentChanges" };
@@ -939,14 +938,5 @@ bool isRequestError(const QJsonObject &object)
 QJsonObject exit()
 {
     return {};
-}
-
-QJsonObject switchHeaderSource(const QString &filePath)
-{
-    QJsonObject params {
-        { K_URI, QUrl::fromLocalFile(filePath).toString() }
-    };
-
-    return params;
 }
 }

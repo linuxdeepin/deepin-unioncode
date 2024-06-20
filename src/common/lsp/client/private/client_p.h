@@ -56,7 +56,6 @@ class ClientPrivate : public newlsp::StdoutJsonRpcParser
     bool closeResult(const QJsonObject &jsonObj); // client call server rpc return
     bool shutdownResult(const QJsonObject &jsonObj);
     bool exitResult(const QJsonObject &jsonObj);
-    bool switchHeaderSourceResult(const QJsonObject &jsonObj);
 
     /* server called method */
     bool serverCalled(const QJsonObject &jsonObj); // not found result key from json && found key method

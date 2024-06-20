@@ -60,8 +60,6 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveDebugLine, this, &WorkspaceWidgetPrivate::handleRemoveDebugLine);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqGotoLine, this, &WorkspaceWidgetPrivate::handleGotoLine);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqGotoPosition, this, &WorkspaceWidgetPrivate::handleGotoPosition);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqCloseCurrentEditor, this, &WorkspaceWidgetPrivate::handleCloseCurrentEditor);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSwitchHeaderSource, this, &WorkspaceWidgetPrivate::handleSwitchHeaderSource);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
@@ -361,24 +359,6 @@ void WorkspaceWidgetPrivate::handleGotoPosition(const QString &fileName, int lin
 
     tabWidget->openFile(fileName);
     tabWidget->gotoPosition(line, column);
-}
-
-void WorkspaceWidgetPrivate::handleCloseCurrentEditor()
-{
-    auto tabWidget = currentTabWidget();
-    if (!tabWidget)
-        return;
-
-    tabWidget->closeFileEditor();
-}
-
-void WorkspaceWidgetPrivate::handleSwitchHeaderSource()
-{
-    auto tabWidget = currentTabWidget();
-    if (!tabWidget)
-        return;
-
-    tabWidget->switchHeaderSource();
 }
 
 void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)

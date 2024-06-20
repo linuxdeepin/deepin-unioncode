@@ -48,8 +48,6 @@ public slots:
     void handleRemoveDebugLine();
     void handleGotoLine(const QString &fileName, int line);
     void handleGotoPosition(const QString &fileName, int line, int column);
-    void handleCloseCurrentEditor();
-    void handleSwitchHeaderSource();
 
 public:
     WorkspaceWidget *q;

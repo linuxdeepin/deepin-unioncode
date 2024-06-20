@@ -50,9 +50,6 @@ public:
 
     virtual void rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits);
 
-public slots:
-    void switchHeaderSource(const QString &file);
-
 signals:
     void completeFinished(const lsp::CompletionProvider &provider);
 
@@ -72,7 +69,6 @@ private slots:
     void renameActionTriggered();
     void renameSymbol(const QString &text);
     void gotoDefinition();
-    void handleSwitchHeaderSource(const QString &file);
 
 private:
     QSharedPointer<LSPStylePrivate> d { nullptr };
