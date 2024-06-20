@@ -21,8 +21,6 @@ public:
     QString selectedText() const;
     QString cursorBeforeText() const;
     QString cursorBehindText() const;
-    QStringList modifiedFiles() const;
-    void saveAll() const;
     Q_INVOKABLE void replaceSelectedText(const QString &text);
     Q_INVOKABLE void showTips(const QString &tips);
     Q_INVOKABLE void insertText(const QString &text);

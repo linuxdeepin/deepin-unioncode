@@ -12,15 +12,16 @@
 namespace dpfservice {
 
 class EditorService final : public dpf::PluginService,
-                            dpf::AutoServiceRegister<EditorService>
+        dpf::AutoServiceRegister<EditorService>
 {
     Q_OBJECT
     Q_DISABLE_COPY(EditorService)
 
 public:
     explicit EditorService(QObject *parent = nullptr)
-        : dpf::PluginService(parent)
+        : dpf::PluginService (parent)
     {
+
     }
 
     static QString name()
@@ -31,8 +32,6 @@ public:
     DPF_INTERFACE(QString, getSelectedText);
     DPF_INTERFACE(QString, getCursorBeforeText);
     DPF_INTERFACE(QString, getCursorBehindText);
-    DPF_INTERFACE(QStringList, modifiedFiles);
-    DPF_INTERFACE(void, saveAll);
     DPF_INTERFACE(void, replaceSelectedText, const QString &);
     DPF_INTERFACE(void, insertText, const QString &);
     DPF_INTERFACE(void, showTips, const QString &tips);
@@ -41,5 +40,5 @@ public:
     DPF_INTERFACE(void, registSciLexerProxy, const QString &language, AbstractLexerProxy *proxy);
 };
 
-}   // namespace dpfservice
-#endif   // EDITORSERVICE_H
+} // namespace dpfservice
+#endif // EDITORSERVICE_H
