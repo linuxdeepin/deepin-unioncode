@@ -6,15 +6,11 @@
 #include "findtoolbar.h"
 
 #include <QVBoxLayout>
-#include <QPalette>
 
 FindToolBarPlaceHolder::FindToolBarPlaceHolder(QWidget *owner, QWidget *parent)
     : QWidget(parent),
       owner(owner)
 {
-    setAutoFillBackground(true);
-    setBackgroundRole(QPalette::Base);
-
     setLayout(new QVBoxLayout);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
     layout()->setContentsMargins(0, 0, 4, 0);

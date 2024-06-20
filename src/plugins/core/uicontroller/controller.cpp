@@ -15,7 +15,6 @@
 #include "modules/pluginmanagermodule.h"
 #include "modules/documentfindmodule.h"
 #include "modules/contextmodule.h"
-#include "modules/notificationmodule.h"
 #include "locator/locatormanager.h"
 #include "find/placeholdermanager.h"
 
@@ -116,11 +115,6 @@ void Controller::registerModule(const QString &moduleName, AbstractModule *modul
     d->modules.insert(moduleName, module);
 }
 
-MainWindow *Controller::mainWindow() const
-{
-    return d->mainWindow;
-}
-
 Controller::Controller(QObject *parent)
     : QObject(parent), d(new ControllerPrivate)
 {
@@ -135,7 +129,6 @@ Controller::Controller(QObject *parent)
     registerModule("pluginManagerModule", new PluginManagerModule());
     registerModule("docFindModule", new DocumentFindModule());
     registerModule("contextModule", new ContextModule());
-    registerModule("notifyModule", new NotificationModule());
     initModules();
 }
 

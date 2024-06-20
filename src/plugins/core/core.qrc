@@ -1,25 +1,11 @@
 <RCC>
-    <qresource prefix="/icons/deepin/builtin"/>
-    <qresource prefix="/icons/deepin">
-        <file>builtin/actions/backgroundLogo_128px.png</file>
-        <file>builtin/actions/default_plugin_96px.svg</file>
-        <file>builtin/actions/ide_32px.svg</file>
-        <file>builtin/actions/logo_128px.png</file>
-        <file>builtin/dark/icons/new_notification_16px.svg</file>
-        <file>builtin/light/icons/new_notification_16px.svg</file>
-        <file>builtin/texts/clear_history_16px.svg</file>
-        <file>builtin/texts/expand_16px.svg</file>
-        <file>builtin/texts/fold_16px.svg</file>
-        <file>builtin/texts/hide_16px.svg</file>
-        <file>builtin/texts/notification_16px.svg</file>
-        <file>builtin/texts/options_setting_22px.svg</file>
-        <file>builtin/texts/plugins-navigation_22px.svg</file>
-        <file>builtin/texts/recent-navigation_22px.svg</file>
-        <file>builtin/light/icons/notification_info_20px.svg</file>
-        <file>builtin/light/icons/notification_warning_20px.svg</file>
-        <file>builtin/light/icons/notification_error_20px.svg</file>
-        <file>builtin/dark/icons/notification_error_20px.svg</file>
-        <file>builtin/dark/icons/notification_info_20px.svg</file>
-        <file>builtin/dark/icons/notification_warning_20px.svg</file>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>texts/recent-navigation_22px.svg</file>
+        <file>texts/options_setting_22px.svg</file>
+        <file>actions/ide_32px.svg</file>
+        <file>actions/default_plugin_96px.svg</file>
+        <file>actions/logo_128px.png</file>
+        <file>actions/backgroundLogo_128px.png</file>
+        <file>texts/plugins-navigation_22px.svg</file>
     </qresource>
 </RCC>

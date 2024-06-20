@@ -20,9 +20,6 @@ public:
     bool progressIsHidden();
     void hideProgress();
     void showProgress();
-
-public Q_SLOTS:
-    void requestNotify();
 };
 
 #endif // WINDOWSTATUSBAR_H

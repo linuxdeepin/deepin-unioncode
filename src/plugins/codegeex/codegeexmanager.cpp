@@ -44,11 +44,6 @@ void CodeGeeXManager::login()
     queryLoginState();
 }
 
-bool CodeGeeXManager::isLoggedIn() const
-{
-    return isLogin;
-}
-
 void CodeGeeXManager::saveConfig(const QString &sessionId, const QString &userId)
 {
     QJsonObject config;

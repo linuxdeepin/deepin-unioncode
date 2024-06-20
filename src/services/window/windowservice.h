@@ -175,15 +175,6 @@ public:
     DPF_INTERFACE(void, switchWorkspaceArea, const QString &title);
 
     DPF_INTERFACE(QWidget *, createFindPlaceHolder, QWidget *owner, AbstractDocumentFind *docFind);
-
-    /**
-     * @brief notify
-     * @param type 0-infomation, 1-warning, 2-error
-     * @param name
-     * @param msg
-     * @param actions {id, text, id, text, ...}
-     */
-    DPF_INTERFACE(void, notify, uint type, const QString &name, const QString &msg, const QStringList &actions);
 };
 
 }   // namespace dpfservice

@@ -39,11 +39,10 @@ bool CodeGeex::start()
             auto codeGeexImpl = new AbstractWidget(codeGeex);
             windowService->registerWidget(MWNA_CODEGEEX, codeGeexImpl);
 
-            connect(action, &QAction::triggered, this, [=]() {
+            connect(action, &QAction::triggered, this, [=](){
                 windowService->raiseMode(CM_EDIT);
                 windowService->showWidgetAtPosition(MWNA_CODEGEEX, Position::Left, true);
-            },
-                    Qt::DirectConnection);
+            }, Qt::DirectConnection);
         }
     }
 
@@ -53,17 +52,6 @@ bool CodeGeex::start()
     }
 
     Copilot::instance();
-
-    connect(&dpf::Listener::instance(), &dpf::Listener::pluginsStarted, [=] {
-        QTimer::singleShot(5000, windowService, [=] {
-            bool ret = CodeGeeXManager::instance()->isLoggedIn();
-            if (ret)
-                return;
-
-            QStringList actions { "codegeex_login_default", "Login" };
-            windowService->notify(0, "CodeGeex", CodeGeex::tr("Please login to use CodeGeeX."), actions);
-        });
-    });
 
     return true;
 }
