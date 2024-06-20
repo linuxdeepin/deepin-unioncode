@@ -5,7 +5,6 @@
 #include "gdbdebugger.h"
 
 #include "debugmanager.h"
-#include "common/util/custompaths.h"
 
 #include <QTextStream>
 #include <QProcess>
@@ -61,20 +60,6 @@ GDBDebugger::~GDBDebugger()
 
 }
 
-void GDBDebugger::init()
-{
-    QString prettyPrintersPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/prettyprinters";
-
-    DebugManager::instance()->command(QString("python sys.path.insert(0, \"%1\")").arg(prettyPrintersPath));
-    DebugManager::instance()->command("python from qt import register_qt_printers");
-    DebugManager::instance()->command("python register_qt_printers(None)");
-
-    DebugManager::instance()->command("set print sevenbit-strings off");
-    DebugManager::instance()->command("set breakpoint pending on");
-    DebugManager::instance()->command("set width 0");
-    DebugManager::instance()->command("set height 0");
-}
-
 QString GDBDebugger::program()
 {
     return ("gdb");
@@ -107,7 +92,7 @@ QString GDBDebugger::breakRemoveAll()
 
 QString GDBDebugger::breakInsert(const QString &path)
 {
-    return QString{"-break-insert -f %1"}.arg(path);
+    return QString{"-break-insert %1"}.arg(path);
 }
 
 QString GDBDebugger::breakRemove(int bpid)

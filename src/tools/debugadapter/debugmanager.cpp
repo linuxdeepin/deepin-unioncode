@@ -52,16 +52,15 @@ void DebugManager::initProcess()
 
     connect(d->process.data(), &QProcess::readyReadStandardOutput, [this]() {
         QString output = d->process->readAllStandardOutput();
-
+        d->tempBuffer.clear();
         for (const auto& c: output)
             switch (c.toLatin1()) {
             case '\r':
             case '\n':
             {
                 d->tempBuffer.append(c);
-                auto outPutRecord = d->tempBuffer;
+                d->debugger->handleOutputRecord(d->tempBuffer);
                 d->tempBuffer.clear();
-                d->debugger->handleOutputRecord(outPutRecord);
                 break;
             }
             default:
@@ -159,8 +158,11 @@ void DebugManager::execute()
     d->process->setProgram(d->debugger->program());
     d->process->start();
 
-    //init after process started
-    d->debugger->init();
+    QString prettyPrintersPath = CustomPaths::CustomPaths::global(CustomPaths::Scripts) + "/prettyprinters";
+
+    command(QString("python sys.path.insert(0, \"%1\")").arg(prettyPrintersPath));
+    command("python from qt import register_qt_printers");
+    command("python register_qt_printers(None)");
 }
 
 bool DebugManager::command(const QString &cmd)

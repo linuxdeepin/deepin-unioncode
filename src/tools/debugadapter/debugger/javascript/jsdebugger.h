@@ -17,7 +17,6 @@ public:
     explicit JSDebugger(QObject *parent = nullptr);
     ~JSDebugger();
 
-    void init() override;
     QString program() override;
     QStringList preArguments() override;
 

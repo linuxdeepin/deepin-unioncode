@@ -185,7 +185,7 @@ gdbmi::Variable *gdbmi::Variable::parseMap(const QVariantMap &data)
     v->evaluateName = data.value("name").toString();
     v->name = data.value("name").toString();
     v->numChild = data.value("numchild", 0).toInt();
-    v->value = QString::fromUtf8(data.value("value").toString().toUtf8());
+    v->value = data.value("value").toString();
     v->type = data.value("type").toString();
     v->threadId = data.value("thread-id").toString();
     v->hasMore = data.value("has_more", false).toBool();

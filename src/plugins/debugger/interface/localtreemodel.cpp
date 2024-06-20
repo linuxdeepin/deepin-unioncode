@@ -9,12 +9,11 @@
 
 #include <QStringList>
 #include <QToolTip>
-#include <QWriteLocker>
-#include <QReadLocker>
+#include <QMutexLocker>
 
 using namespace DEBUG_NAMESPACE;
 using namespace dap;
-QReadWriteLock mutex;
+QMutex mutex;
 
 LocalTreeModel::LocalTreeModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -127,8 +126,8 @@ int LocalTreeModel::rowCount(const QModelIndex &parent) const
             return 0;
     }
 
-    QReadLocker locker(&mutex);
-    if (parentItem && (items.contains(parentItem) || parentItem == rootItem ))
+    QMutexLocker locker(&mutex);
+    if (parentItem)
         return parentItem->childCount();
     return 0;
 }
@@ -150,22 +149,23 @@ bool LocalTreeModel::hasChildren(const QModelIndex &parent) const
 
 void LocalTreeModel::appendItem(LocalTreeItem *parent, IVariables &vars)
 {
-    QWriteLocker locker(&mutex);
-    if (!items.contains(parent) && parent != rootItem)
-        return;
-
     if (parent) {
         for (auto var : vars) {
             LocalTreeItem *item = new LocalTreeItem(this, parent);
             item->setVariable(var.var);
             parent->appendChild(item);
             items.append(item);
+            if (var.children.size() > 0) {
+                appendItem(item, var.children);
+            }
         }
     }
 }
 
 void LocalTreeModel::setDatas(IVariables &datas)
 {
+    QMutexLocker locker(&mutex);
+
     clear();
 
     appendItem(rootItem, datas);
@@ -173,7 +173,6 @@ void LocalTreeModel::setDatas(IVariables &datas)
 
 void LocalTreeModel::clear()
 {
-    QWriteLocker locker(&mutex);
     items.clear();
     if (rootItem) {
         beginRemoveRows(rootItem->index(), 0, rootItem->childCount() - 1);

@@ -15,7 +15,6 @@ public:
     explicit Debugger(QObject *parent = nullptr);
     virtual ~Debugger() = 0;
 
-    virtual void init() = 0;
     virtual QString program() = 0;
     virtual QStringList preArguments() = 0;
     virtual QString quit() = 0;

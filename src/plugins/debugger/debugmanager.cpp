@@ -158,8 +158,6 @@ void DebugManager::handleRunStateChanged(AbstractDebugger::RunState state)
 
     if(state == AbstractDebugger::kStart || state == AbstractDebugger::kRunning) {
         emit debugStarted();
-    } else if (state == AbstractDebugger::kNoRun) {
-        emit debugStopped();
     }
 }
 
