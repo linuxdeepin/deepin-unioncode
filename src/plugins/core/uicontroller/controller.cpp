@@ -1029,9 +1029,9 @@ void Controller::showWorkspace()
         });
         connect(d->workspace, &WorkspaceWidget::workSpaceWidgeSwitched, this, [=](const QString &title){
             d->mainWindow->setDockHeadername(WN_WORKSPACE, title);
-            for (auto btn : d->workspace->getAllToolBtn())
-                btn->setVisible(d->workspace->getToolBtnByTitle(title).contains(btn) ? true : false);
         });
+
+        d->workspace->addedToController = true;
     }
 
     d->mainWindow->showWidget(WN_WORKSPACE);
