@@ -5,15 +5,15 @@
 #ifndef TREEVIEWKEEPER_H
 #define TREEVIEWKEEPER_H
 
-#include "filetreeview.h"
+#include "treeview.h"
 
 class TreeViewKeeper final
 {
     TreeViewKeeper();
-    FileTreeView *iTreeView {nullptr};
+    TreeView *iTreeView {nullptr};
 public:
     static TreeViewKeeper *instance();
-    FileTreeView *treeView();
+    TreeView *treeView();
 };
 
 #endif // TREEVIEWKEEPER_H

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "filetreeview.h"
+#include "treeview.h"
 #include "filebrowserdelegate.h"
 #include "transceiver/sendevents.h"
 
@@ -30,14 +30,14 @@ const QString DELETE_WINDOW_TEXT { DTreeView::tr("Delete Warning") };
 
 class TreeViewPrivate
 {
-    friend class FileTreeView;
+    friend class TreeView;
     QFileSystemModel *model { nullptr };
     DMenu *menu { nullptr };
     QStack<QStringList> moveToTrashStack;
     dpfservice::ProjectInfo proInfo;
 };
 
-FileTreeView::FileTreeView(QWidget *parent)
+TreeView::TreeView(QWidget *parent)
     : DTreeView(parent), d(new TreeViewPrivate)
 {
     setLineWidth(0);
@@ -48,17 +48,17 @@ FileTreeView::FileTreeView(QWidget *parent)
     header()->setSectionResizeMode(DHeaderView::ResizeMode::ResizeToContents);
     setAlternatingRowColors(true);
     setSelectionMode(SingleSelection);
-    QObject::connect(this, &DTreeView::doubleClicked, this, &FileTreeView::doDoubleClicked);
+    QObject::connect(this, &DTreeView::doubleClicked, this, &TreeView::doDoubleClicked);
 }
 
-FileTreeView::~FileTreeView()
+TreeView::~TreeView()
 {
     if (d) {
         delete d;
     }
 }
 
-void FileTreeView::setProjectInfo(const dpfservice::ProjectInfo &proInfo)
+void TreeView::setProjectInfo(const dpfservice::ProjectInfo &proInfo)
 {
     d->proInfo = proInfo;
     d->model->setRootPath(proInfo.workspaceFolder());
@@ -68,7 +68,7 @@ void FileTreeView::setProjectInfo(const dpfservice::ProjectInfo &proInfo)
     emit rootPathChanged(proInfo.workspaceFolder());
 }
 
-void FileTreeView::selOpen()
+void TreeView::selOpen()
 {
     QModelIndexList indexs = selectedIndexes();
     QSet<QString> countPaths;
@@ -82,7 +82,7 @@ void FileTreeView::selOpen()
     }
 }
 
-void FileTreeView::selMoveToTrash()
+void TreeView::selMoveToTrash()
 {
     QModelIndexList indexs = selectedIndexes();
     QSet<QString> countPaths;
@@ -111,15 +111,13 @@ void FileTreeView::selMoveToTrash()
     }
 }
 
-void FileTreeView::selRemove()
+void TreeView::selRemove()
 {
     QModelIndexList indexs = selectedIndexes();
     QStringList countPaths;
     for (auto index : indexs) {
         countPaths << d->model->filePath(index);
     }
-    // Remove duplicates
-    countPaths = countPaths.toSet().toList();
 
     bool doDeleta = false;
     auto okCallBack = [&](bool checked) {
@@ -148,12 +146,12 @@ void FileTreeView::selRemove()
     }
 
     if (hasError) {
-        QString errMess = tr("Error, Can't delete: ") + "\n" + errFilePaths.join('\n');
+        QString errMess = tr("Error, Can't move to trash: ") + "\n" + errFilePaths.join('\n');
         CommonDialog::ok(errMess);
     }
 }
 
-void FileTreeView::selRename()
+void TreeView::selRename()
 {
     QModelIndexList indexs = selectedIndexes();
     if (indexs.isEmpty())
@@ -198,7 +196,7 @@ void FileTreeView::selRename()
     dialog->exec();
 }
 
-void FileTreeView::selNewDocument()
+void TreeView::selNewDocument()
 {
     QModelIndexList indexs = selectedIndexes();
     if (indexs.isEmpty())
@@ -222,7 +220,7 @@ void FileTreeView::selNewDocument()
     }
 }
 
-void FileTreeView::selNewFolder()
+void TreeView::selNewFolder()
 {
     QModelIndexList indexs = selectedIndexes();
     bool hasErr = false;
@@ -244,7 +242,7 @@ void FileTreeView::selNewFolder()
         CommonDialog::ok(errString);
 }
 
-void FileTreeView::recoverFromTrash()
+void TreeView::recoverFromTrash()
 {
     if (!d->moveToTrashStack.isEmpty()) {
         auto filePaths = d->moveToTrashStack.pop();
@@ -254,14 +252,14 @@ void FileTreeView::recoverFromTrash()
     }
 }
 
-void FileTreeView::doDoubleClicked(const QModelIndex &index)
+void TreeView::doDoubleClicked(const QModelIndex &index)
 {
     QString filePath = d->model->filePath(index);
     if (QFileInfo(filePath).isFile())
         editor.openFile(QString(), filePath);
 }
 
-void FileTreeView::contextMenuEvent(QContextMenuEvent *event)
+void TreeView::contextMenuEvent(QContextMenuEvent *event)
 {
     QModelIndex index = DTreeView::indexAt(event->pos());
     if (index.isValid()) {
@@ -272,7 +270,7 @@ void FileTreeView::contextMenuEvent(QContextMenuEvent *event)
     d->menu->exec(viewport()->mapToGlobal(event->pos()));
 }
 
-DMenu *FileTreeView::createContextMenu(const QModelIndexList &indexs)
+DMenu *TreeView::createContextMenu(const QModelIndexList &indexs)
 {
     if (indexs.isEmpty())
         return nullptr;
@@ -283,15 +281,15 @@ DMenu *FileTreeView::createContextMenu(const QModelIndexList &indexs)
     QFileInfo info(filePath);
 
     QAction *openAction = new QAction(tr("Open"));
-    QObject::connect(openAction, &QAction::triggered, this, &FileTreeView::selOpen);
+    QObject::connect(openAction, &QAction::triggered, this, &TreeView::selOpen);
     menu->addAction(openAction);
     if (info.isDir()) {
         openAction->setEnabled(false);
         QAction *newFolderAction = new QAction(tr("New Folder"));
-        connect(newFolderAction, &QAction::triggered, this, &FileTreeView::selNewFolder);
+        connect(newFolderAction, &QAction::triggered, this, &TreeView::selNewFolder);
 
         QAction *newDocumentAction = new QAction(tr("New Document"));
-        connect(newDocumentAction, &QAction::triggered, this, &FileTreeView::selNewDocument);
+        connect(newDocumentAction, &QAction::triggered, this, &TreeView::selNewDocument);
 
         menu->addSeparator();
         menu->addAction(newFolderAction);
@@ -299,13 +297,13 @@ DMenu *FileTreeView::createContextMenu(const QModelIndexList &indexs)
     }
 
     QAction *moveToTrashAction = new QAction(tr("Move To Trash"));
-    connect(moveToTrashAction, &QAction::triggered, this, &FileTreeView::selMoveToTrash);
+    connect(moveToTrashAction, &QAction::triggered, this, &TreeView::selMoveToTrash);
 
     QAction *removeAction = new QAction(tr("Remove"));
-    connect(removeAction, &QAction::triggered, this, &FileTreeView::selRemove);
+    connect(removeAction, &QAction::triggered, this, &TreeView::selRemove);
 
     QAction *rename = new QAction(tr("Rename"));
-    connect(rename, &QAction::triggered, this, &FileTreeView::selRename);
+    connect(rename, &QAction::triggered, this, &TreeView::selRename);
 
     menu->addSeparator();
     menu->addAction(moveToTrashAction);
@@ -315,12 +313,12 @@ DMenu *FileTreeView::createContextMenu(const QModelIndexList &indexs)
     return menu;
 }
 
-DMenu *FileTreeView::createEmptyMenu()
+DMenu *TreeView::createEmptyMenu()
 {
     DMenu *menu = new DMenu();
     QAction *recoverFromTrashAction = new QAction(tr("Recover From Trash"));
     QObject::connect(recoverFromTrashAction, &QAction::triggered,
-                     this, &FileTreeView::recoverFromTrash);
+                     this, &TreeView::recoverFromTrash);
     menu->addAction(recoverFromTrashAction);
     return menu;
 }

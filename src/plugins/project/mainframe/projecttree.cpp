@@ -330,7 +330,7 @@ void ProjectTree::mouseMoveEvent(QMouseEvent *event)
     DTreeView::mouseMoveEvent(event);
 }
 
-DMenu *ProjectTree::childMenu(const QStandardItem *root, QStandardItem *childItem)
+DMenu *ProjectTree::childMenu(const QStandardItem *root, const QStandardItem *childItem)
 {
     DMenu *menu = nullptr;
     QString toolKitName = ProjectInfo::get(root).kitName();
@@ -485,7 +485,15 @@ void ProjectTree::actionNewDocument(const QStandardItem *item)
     dialog->exec();
 }
 
-void ProjectTree::actionDeleteDocument(QStandardItem *item)
+void ProjectTree::runCMake()
+{
+    auto runCMake = ActionManager::getInstance()->command("Build.RunCMake");
+    if (runCMake && runCMake->action()) {
+        runCMake->action()->trigger();
+    }
+}
+
+void ProjectTree::actionDeleteDocument(const QStandardItem *item)
 {
     QModelIndex index = d->itemModel->indexFromItem(item);
     QFileInfo info(index.data(Qt::ToolTipRole).toString());
@@ -507,14 +515,9 @@ void ProjectTree::actionDeleteDocument(QStandardItem *item)
 
     if (!doDelete)
         return;
-
     QFile(info.filePath()).remove();
 
-    // notify file deleted event.
-    QStandardItem *root = ProjectGenerator::root(item);
-    auto projectInfo = ProjectInfo::get(root);
-
-    project.fileDeleted(info.filePath(), projectInfo.kitName());
+    runCMake();
 }
 
 void ProjectTree::actionOpenInTerminal(const QStandardItem *menuItem)

@@ -40,17 +40,6 @@ void ProjectCmakeReceiver::eventProcess(const dpf::Event &event)
         dpfservice::ProjectInfo projectInfo = qvariant_cast<dpfservice::ProjectInfo>(proInfoVar);
         TargetsManager::instance()->readTargets(projectInfo.buildFolder(), projectInfo.workspaceFolder());
     }
-
-    if (event.data() == project.fileDeleted.name) {
-        QVariant varKit = event.property("kit");
-        QString kit = varKit.toString();
-
-        if (varKit == "cmake") {
-            QVariant varFilePath = event.property("filePath");
-            QString filePath = varFilePath.toString();
-            emit ProjectCmakeProxy::instance()->fileDeleted(filePath);
-        }
-    }
 }
 
 void ProjectCmakeReceiver::builderEvent(const dpf::Event &event)

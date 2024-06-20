@@ -44,9 +44,11 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
-    DMenu *childMenu(const QStandardItem *root, QStandardItem *child);
+    DMenu *childMenu(const QStandardItem *root, const QStandardItem *child);
     DMenu *rootMenu(QStandardItem *root);
     void performDrag();
+
+    void runCMake();
 
 public slots:
     void itemModified(QStandardItem *item, const QList<QStandardItem *> &childs);
@@ -58,7 +60,7 @@ private slots:
     void doShowProjectInfo(QStandardItem *root);
     void doActiveProject(QStandardItem *root);
     void actionNewDocument(const QStandardItem *item);
-    void actionDeleteDocument(QStandardItem *item);
+    void actionDeleteDocument(const QStandardItem *item);
     void actionOpenInTerminal(const QStandardItem *item);
     void creatNewDocument(const QStandardItem *item, const QString &fileName);
 };
