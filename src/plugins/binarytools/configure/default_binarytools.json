@@ -72,20 +72,6 @@
                     "outputOption": 1,
                     "type": 0,
                     "workingDirectory": ""
-                },
-                {
-                    "addToToolbar": false,
-                    "arguments": "https://appstore-dev.uniontech.com/#/index",
-                    "command": "xdg-open",
-                    "description": "应用上架商店验证平台",
-                    "environment": {},
-                    "errorOutputOption": 1,
-                    "icon": "binarytools_flag",
-                    "id": "",
-                    "name": "统信UOS开发平台",
-                    "outputOption": 1,
-                    "type": 0,
-                    "workingDirectory": ""
                 }
             ]
         }
