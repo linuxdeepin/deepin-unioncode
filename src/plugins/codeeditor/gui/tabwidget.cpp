@@ -567,12 +567,6 @@ void TabWidget::gotoLine(int line)
         editor->gotoLine(line);
 }
 
-void TabWidget::gotoPosition(int line, int column)
-{
-    if (auto editor = d->currentTextEditor())
-        editor->gotoPosition(editor->positionFromLineIndex(line, column));
-}
-
 void TabWidget::dragEnterEvent(QDragEnterEvent *event)
 {
     if (!event->mimeData()->hasUrls())

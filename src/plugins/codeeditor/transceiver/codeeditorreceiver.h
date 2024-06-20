@@ -61,7 +61,6 @@ signals:
     void reqBack();
     void reqForward();
     void reqGotoLine(const QString &fileName, int line);
-    void reqGotoPosition(const QString &fileName, int line, int column);
     void reqSetLineBackgroundColor(const QString &fileName, int line, const QColor &color);
     void reqResetLineBackground(const QString &fileName, int line);
     void reqClearLineBackground(const QString &fileName);

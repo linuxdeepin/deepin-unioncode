@@ -48,7 +48,6 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetDebugLine, this, &WorkspaceWidgetPrivate::handleSetDebugLine);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveDebugLine, this, &WorkspaceWidgetPrivate::handleRemoveDebugLine);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqGotoLine, this, &WorkspaceWidgetPrivate::handleGotoLine);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqGotoPosition, this, &WorkspaceWidgetPrivate::handleGotoPosition);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
@@ -191,16 +190,6 @@ void WorkspaceWidgetPrivate::handleGotoLine(const QString &fileName, int line)
 
     tabWidget->openFile(fileName);
     tabWidget->gotoLine(line);
-}
-
-void WorkspaceWidgetPrivate::handleGotoPosition(const QString &fileName, int line, int column)
-{
-    auto tabWidget = currentTabWidget();
-    if (!tabWidget)
-        return;
-
-    tabWidget->openFile(fileName);
-    tabWidget->gotoPosition(line, column);
 }
 
 void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)

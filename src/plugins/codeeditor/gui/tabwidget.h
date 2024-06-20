@@ -48,7 +48,6 @@ public slots:
     void setDebugLine(int line);
     void removeDebugLine();
     void gotoLine(int line);
-    void gotoPosition(int line, int column);
 
 signals:
     void closeRequested();
