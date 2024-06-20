@@ -11,7 +11,6 @@
 #include "services/language/languageservice.h"
 #include "services/project/projectservice.h"
 #include "services/option/optionservice.h"
-#include "services/option/optiondatastruct.h"
 #include "services/editor/editorservice.h"
 
 using namespace dpfservice;
@@ -50,7 +49,7 @@ bool PythonPlugin::start()
         qCritical() << "Failed, not found OptionPython service!";
         abort();
     }
-    optionService->implGenerator<OptionPythonGenerator>(option::GROUP_LANGUAGE, OptionPythonGenerator::kitName());
+    optionService->implGenerator<OptionPythonGenerator>(OptionPythonGenerator::kitName());
 
     registEditorService();
     return true;

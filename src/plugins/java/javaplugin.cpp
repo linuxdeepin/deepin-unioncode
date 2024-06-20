@@ -17,7 +17,6 @@
 #include "services/language/languageservice.h"
 #include "services/project/projectservice.h"
 #include "services/option/optionservice.h"
-#include "services/option/optiondatastruct.h"
 #include "services/builder/builderservice.h"
 
 using namespace dpfservice;
@@ -67,9 +66,9 @@ bool JavaPlugin::start()
         qCritical() << "Failed, not found OptionGradle service!";
         abort();
     }
-    optionService->implGenerator<OptionGradleGenerator>(option::GROUP_LANGUAGE, OptionGradleGenerator::kitName());
-    optionService->implGenerator<OptionMavenGenerator>(option::GROUP_LANGUAGE, OptionMavenGenerator::kitName());
-    optionService->implGenerator<OptionJavaGenerator>(option::GROUP_LANGUAGE, OptionJavaGenerator::kitName());
+    optionService->implGenerator<OptionGradleGenerator>(OptionGradleGenerator::kitName());
+    optionService->implGenerator<OptionMavenGenerator>(OptionMavenGenerator::kitName());
+    optionService->implGenerator<OptionJavaGenerator>(OptionJavaGenerator::kitName());
 
     BuilderService *builderService = ctx.service<BuilderService>(BuilderService::name());
     if (builderService) {

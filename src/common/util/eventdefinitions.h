@@ -98,7 +98,6 @@ OPI_OBJECT(projectTemplate,
 
 OPI_OBJECT(options,
            OPI_INTERFACE(showCfgDialg, "itemName")
-           OPI_INTERFACE(configSaved)
            )
 
 struct AnalysedData
