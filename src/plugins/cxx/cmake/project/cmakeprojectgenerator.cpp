@@ -82,11 +82,6 @@ CmakeProjectGenerator::CmakeProjectGenerator()
     QObject::connect(runCMake, &QAction::triggered, this,[this](){
         this->runCMake(this->rootItem, {});
     });
-
-    QObject::connect(config::ConfigUtil::instance(), &config::ConfigUtil::configureDone,
-                     [this](const dpfservice::ProjectInfo &info) {
-        configure(info);
-    });
 }
 
 CmakeProjectGenerator::~CmakeProjectGenerator()
@@ -133,6 +128,10 @@ QDialog *CmakeProjectGenerator::configureWidget(const QString &language,
 
     // show build type config pane.
     ConfigPropertyWidget *configPropertyWidget = new ConfigPropertyWidget(language, workspace);
+    QObject::connect(config::ConfigUtil::instance(), &config::ConfigUtil::configureDone,
+                     [this](const dpfservice::ProjectInfo &info) {
+                         configure(info);
+                     });
 
     return configPropertyWidget;
 }
