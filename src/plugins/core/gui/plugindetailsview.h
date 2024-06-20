@@ -14,6 +14,7 @@ QT_BEGIN_NAMESPACE
 class QGridLayout;
 class QVBoxLayout;
 class QSpacerItem;
+class QWebEngineView;
 class QLabel;
 QT_END_NAMESPACE
 
@@ -21,8 +22,6 @@ DWIDGET_BEGIN_NAMESPACE
 class DTextEdit;
 class DLabel;
 DWIDGET_END_NAMESPACE
-
-class AutoZoomWebEngineView;
 class DetailsView : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
@@ -51,7 +50,7 @@ private:
 
     DTK_WIDGET_NAMESPACE::DPushButton *loadBtn {nullptr};
     dpf::PluginMetaObjectPointer pluginMetaInfo;
-    AutoZoomWebEngineView *webView {nullptr};
+    QWebEngineView *webView {nullptr};
     QLabel *logoLabel {nullptr};
 };
 
