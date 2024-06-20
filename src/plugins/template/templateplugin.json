@@ -8,7 +8,7 @@
         "GPL-3.0-or-later"
     ],
     "Category" : "Utils",
-    "Description" : "The template plugin for the unioncode.",
+    "Description" : "The cxx plugin for the unioncode.",
     "UrlLink" : "https://www.uniontech.com",
     "Depends" : [
         {"Name" : "core"}
