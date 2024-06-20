@@ -48,8 +48,8 @@ newlsp::Client *LSPClientManager::get(const newlsp::ProjectKey &key)
 QColor LSPClientManager::highlightColor(const QString &langId, lsp::SemanticTokenType::type_value token)
 {
     auto defaultColor = DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType
-            ? QColor("#000000")
-            : QColor("#d6cf9a");
+            ? Qt::black
+            : Qt::white;
 
     if (!styleMap.contains(langId)) {
         const auto &filePath = support_file::EditorStyle::globalPath(langId);

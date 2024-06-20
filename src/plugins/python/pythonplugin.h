@@ -19,7 +19,7 @@ public:
 signals:
 
 private:
-    void registEditorService();
+
 };
 
 #endif // PYTHONPLUGIN_H

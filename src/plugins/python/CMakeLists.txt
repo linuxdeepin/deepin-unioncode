@@ -17,7 +17,6 @@ set(CXX_CPP
     python/option/interperterwidget.cpp
     python/option/pythonoptionwidget.cpp
     python/option/optionpythongenerator.cpp
-    lexer/scilexerpython.cpp
     pythonplugin.cpp
     pythonplugin.json
     )
@@ -32,7 +31,6 @@ set(CXX_H
     python/option/interperterwidget.h
     python/option/pythonoptionwidget.h
     python/option/optionpythongenerator.h
-    lexer/scilexerpython.h
     pythonplugin.h
     )
 

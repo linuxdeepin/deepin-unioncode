@@ -32,11 +32,6 @@ const char *AbstractLexerProxy::blockEnd(int *style) const
     return nullptr;
 }
 
-int AbstractLexerProxy::blockLookback() const
-{
-    return 20;
-}
-
 const char *AbstractLexerProxy::blockStart(int *style) const
 {
     Q_UNUSED(style)

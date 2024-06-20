@@ -7,6 +7,7 @@
 
 #include <QObject>
 
+class QsciLexer;
 class AbstractLexerProxy : public QObject
 {
     Q_OBJECT
@@ -33,10 +34,6 @@ public:
     //! a particular style that define the end of a block for
     //! auto-indentation.  The styles is returned via \a style.
     virtual const char *blockEnd(int *style = nullptr) const;
-
-    //! Returns the number of lines prior to the current one when determining
-    //! the scope of a block when auto-indenting.
-    virtual int blockLookback() const;
 
     //! \internal Returns a space separated list of words or characters in
     //! a particular style that define the start of a block for

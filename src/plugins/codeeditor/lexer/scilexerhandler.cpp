@@ -35,11 +35,6 @@ const char *SciLexerHandler::blockEnd(int *style) const
     return proxy->blockEnd(style);
 }
 
-int SciLexerHandler::blockLookback() const
-{
-    return proxy->blockLookback();
-}
-
 const char *SciLexerHandler::blockStart(int *style) const
 {
     return proxy->blockStart(style);
