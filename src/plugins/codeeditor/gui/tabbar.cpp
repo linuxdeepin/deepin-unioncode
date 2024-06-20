@@ -11,7 +11,6 @@
 #include <DMenu>
 #include <DDesktopServices>
 
-#include <QSignalBlocker>
 #include <QFileInfo>
 #include <QHBoxLayout>
 #include <QClipboard>
@@ -136,14 +135,10 @@ void TabBar::setFileName(const QString &fileName)
         return;
     }
 
-    QSignalBlocker block(d->tabBar);
     QFileInfo info(fileName);
     index = d->tabBar->addTab(info.fileName());
     d->tabBar->setTabToolTip(index, fileName);
     d->tabBar->setCurrentIndex(index);
-
-    emit tabSwitched(fileName);
-    editor.switchedFile(fileName);
 }
 
 int TabBar::indexOf(const QString &fileName)

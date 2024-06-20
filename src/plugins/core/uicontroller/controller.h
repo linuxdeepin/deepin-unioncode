@@ -71,7 +71,6 @@ public slots:
     //statusBar
     void showStatusBar();
     void hideStatusBar();
-    void addStatusBarItem(QWidget *item);
 
     //workspace
     void switchWorkspace(const QString &titleName);

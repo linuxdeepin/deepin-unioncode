@@ -65,7 +65,6 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(contextMenu, "menu")
            OPI_INTERFACE(marginMenu, "menu")
            OPI_INTERFACE(textChanged)
-           OPI_INTERFACE(cursorPositionChanged, "fileName", "line", "index")
            )
 
 OPI_OBJECT(symbol,

@@ -557,7 +557,6 @@ void TextEditor::onCursorPositionChanged(int line, int index)
 {
     Q_UNUSED(line)
 
-    editor.cursorPositionChanged(d->fileName, line, index);
     int pos = positionFromLineIndex(line, index);
     d->lastCursorPos = pos;
 }
