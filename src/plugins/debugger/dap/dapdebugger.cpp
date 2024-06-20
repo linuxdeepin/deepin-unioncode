@@ -59,7 +59,6 @@ using DTK_WIDGET_NAMESPACE::DSpinner;
 class DebuggerPrivate
 {
     friend class DAPDebugger;
-    ~DebuggerPrivate();
 
     QString activeProjectKitName;
     dpfservice::ProjectInfo projectInfo;
@@ -116,13 +115,6 @@ class DebuggerPrivate
     RemoteInfo remoteInfo;
 };
 
-DebuggerPrivate::~DebuggerPrivate() {
-    if (alertBox)
-        delete alertBox;
-    if (variablesPane)
-        delete variablesPane;
-}
-
 DAPDebugger::DAPDebugger(QObject *parent)
     : AbstractDebugger(parent)
     , d(new DebuggerPrivate())
@@ -163,7 +155,14 @@ DAPDebugger::DAPDebugger(QObject *parent)
 
 DAPDebugger::~DAPDebugger()
 {
-    delete d;
+    delete d->alertBox;
+    if (d)
+        delete d;
+    if (d->variablesPane)
+        delete d->variablesPane;
+    if (d->debugMainPane)
+        delete d->debugMainPane;
+    // all widgets in tabWidget will be deleted automatically.
 }
 
 DWidget *DAPDebugger::getOutputPane() const
