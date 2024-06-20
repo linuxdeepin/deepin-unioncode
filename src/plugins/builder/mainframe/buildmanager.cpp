@@ -51,6 +51,10 @@ class BuildManagerPrivate
 
     BuildState currentState = BuildState::kNoBuild;
 
+    ~BuildManagerPrivate(){
+        delete compileWidget;
+        compileWidget = nullptr;
+    }
 };
 
 BuildManager *BuildManager::instance()
