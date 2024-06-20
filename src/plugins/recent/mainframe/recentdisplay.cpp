@@ -460,7 +460,6 @@ void RecentDisplay::initializeUi()
 
     //recent open document
     d->docFrame->setLineWidth(0);
-    DStyle::setFrameRadius(d->docFrame, 0);
     d->docView = new DisplayDocView();
 
     d->docLabel = new DLabel(tr("Documents"));
@@ -484,7 +483,7 @@ void RecentDisplay::initializeUi()
 
     DFontSizeManager::instance()->bind(d->docLabel, DFontSizeManager::T4, QFont::Medium);
     d->vLayoutDoc = new QVBoxLayout();
-    d->vLayoutDoc->setContentsMargins(20, 10, 10, 10);
+    d->vLayoutDoc->setContentsMargins(10, 10, 10, 10);
     d->vLayoutDoc->addLayout(docHlayout);
     d->vLayoutDoc->setSpacing(20);
     d->vLayoutDoc->addWidget(d->docView);
@@ -492,7 +491,6 @@ void RecentDisplay::initializeUi()
 
     //recent open projects
     d->proFrame->setLineWidth(0);
-    DStyle::setFrameRadius(d->proFrame, 0);
     d->proView = new DisplayProjectView();
 
     d->proLabel = new DLabel(tr("Projects"));
@@ -516,7 +514,7 @@ void RecentDisplay::initializeUi()
 
     DFontSizeManager::instance()->bind(d->proLabel, DFontSizeManager::T4, QFont::Medium);
     d->vLayoutPro = new QVBoxLayout();
-    d->vLayoutPro->setContentsMargins(20, 10, 10, 10);
+    d->vLayoutPro->setContentsMargins(10, 10, 10, 10);
     d->vLayoutPro->addLayout(proHlayout);
     d->vLayoutPro->setSpacing(20);
     d->vLayoutPro->addWidget(d->proView);
@@ -529,11 +527,11 @@ void RecentDisplay::initializeUi()
 
     d->recentOpen = new DWidget(this);
     QVBoxLayout *recentNavLayout = new QVBoxLayout(d->recentOpen);
-    recentNavLayout->setContentsMargins(15, 0, 25, 20);
-    recentNavLayout->addSpacing(10);
+    recentNavLayout->setContentsMargins(20, 0, 25, 20);
+    recentNavLayout->addSpacing(15);
     recentNavLayout->setAlignment(Qt::AlignTop);
     recentNavLayout->addWidget(recentTitle);
-    recentNavLayout->addSpacing(20);
+    recentNavLayout->addSpacing(15);
     recentNavLayout->addLayout(proAndDocLayout);
 
     d->hLayout = new QHBoxLayout(this);
