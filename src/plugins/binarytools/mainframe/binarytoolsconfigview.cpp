@@ -165,8 +165,6 @@ BinaryToolsConfigView::~BinaryToolsConfigView()
 {
     if (d)
         delete d;
-
-    hasRename = false;
 }
 
 bool BinaryToolsConfigView::saveConfig()
@@ -378,19 +376,29 @@ void BinaryToolsConfigView::renameCompatConfig()
         }else if(index == 1){
             QString name = searchLineEdit->text(); // 在按钮点击时获取文本框内容
 
-            QString oldname = d->runComandCombo->currentText();
-            if (name == oldname)
+            if (name == d->runComandCombo->currentText())
                 return;
 
             QString uniName = uniqueName(name);
             if (uniName.isEmpty())
                 return;
 
-            hasRename = true;
-            renameInfo.name = name;
-            renameInfo.oldName = oldname;
-            renameInfo.index = d->runComandCombo->currentIndex();
-            renameInfo.uniName = uniName;
+            QStringList allCommand = qvariant_cast<QStringList>(d->settings->getValue(ALL_COMMAND));
+            int index = allCommand.indexOf(d->runComandCombo->currentText());
+            if (index != -1) {
+                allCommand.replace(index, uniName);
+            } else {
+                allCommand.append(uniName);
+            }
+            d->settings->setValue(CURRENT_COMMAND, uniName);
+            d->settings->setValue(ALL_COMMAND, allCommand);
+            d->nameLabel->setText(name);
+            QStringList commandList = QStringList() << d->executableDirEdit->text()<< d->toolArgsEdit->text()
+                                                    << d->nameLabel->text() << d->workingDirEdit->text();
+            d->settings->setValue(uniName, commandList);
+            d->settings->setValue(uniName + ENVIRONMENT, d->envView->getEnvironment());
+            d->settings->deleteKey(d->runComandCombo->currentText());
+            d->settings->deleteKey(d->runComandCombo->currentText() + ENVIRONMENT);
 
             int itemIndex = d->runComandCombo->currentIndex();
             d->runComandCombo->insertItem(itemIndex + 1, uniName);
@@ -401,39 +409,6 @@ void BinaryToolsConfigView::renameCompatConfig()
     });
 
     d->renameDialog->exec();
-}
-
-void BinaryToolsConfigView::renameConfigOperation(const QString &name, const QString &oldname, const QString &uniName)
-{
-    if (oldname.isEmpty()){
-        return;
-    }
-    QStringList allCommand = qvariant_cast<QStringList>(d->settings->getValue(ALL_COMMAND));
-    int index = allCommand.indexOf(oldname);
-    if (index != -1) {
-        allCommand.replace(index, uniName);
-    } else {
-        allCommand.append(uniName);
-    }
-    d->settings->setValue(CURRENT_COMMAND, uniName);
-    d->settings->setValue(ALL_COMMAND, allCommand);
-    d->nameLabel->setText(name);
-    QStringList commandList = QStringList() << d->executableDirEdit->text()<< d->toolArgsEdit->text()
-                                            << d->nameLabel->text() << d->workingDirEdit->text();
-    d->settings->setValue(uniName, commandList);
-    d->settings->setValue(uniName + ENVIRONMENT, d->envView->getEnvironment());
-    d->settings->deleteKey(oldname);
-    d->settings->deleteKey(oldname + ENVIRONMENT);
-}
-
-void BinaryToolsConfigView::resetConfigOperation(const QString &oldname, int index)
-{
-    if (oldname.isEmpty()){
-        return;
-    }
-    d->runComandCombo->insertItem(index + 1, oldname);
-    d->runComandCombo->setCurrentText(oldname);
-    d->runComandCombo->removeItem(index);
 }
 
 void BinaryToolsConfigView::combineCompatConfig()

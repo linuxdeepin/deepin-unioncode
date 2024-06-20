@@ -12,23 +12,11 @@ class BinaryToolsConfigView : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:
-    struct RenameInfo{
-        QString oldName = "";
-        QString name = "";
-        int index = -1;
-        QString uniName = "";
-    };
-
     explicit BinaryToolsConfigView(QWidget *parent = nullptr);
     ~BinaryToolsConfigView();
 
     bool saveConfig();
     void readConfig();
-    void renameConfigOperation(const QString &name, const QString &oldname, const QString &uniName);
-    void resetConfigOperation(const QString &oldname, int index);
-
-    bool hasRename = false; // Whether the rename button was clicked
-    RenameInfo renameInfo;
 
     QList<QString> getProgramList();
     QList<QStringList> getArgumentsList();
