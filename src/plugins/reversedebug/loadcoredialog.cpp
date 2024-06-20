@@ -9,7 +9,6 @@
 #include <DLineEdit>
 #include <DPushButton>
 #include <DFileDialog>
-#include <DSuggestButton>
 
 #include <QFormLayout>
 #include <QDir>
@@ -30,7 +29,7 @@ LoadCoreDialog::LoadCoreDialog(QWidget *parent)
     : DDialog(parent),
       d(new StartCoredumpDialogPrivate)
 {
-    setWindowTitle(tr("Event Debugger Configure"));
+    setTitle(tr("Event Debugger Configure"));
     setIcon(QIcon::fromTheme("ide"));
 
     setupUi();
@@ -65,8 +64,8 @@ void LoadCoreDialog::setupUi()
     d->traceDir = new DLineEdit(this);
     d->traceDir->setPlaceholderText(tr("Trace directory."));
 
-    DSuggestButton *btnBrowser = new DSuggestButton("···", this);
-
+    DPushButton *btnBrowser = new DPushButton(this);
+    btnBrowser->setText(tr("Browse"));
 
     // pid
     d->pidInput = new DComboBox(mainFrame);
@@ -90,18 +89,14 @@ void LoadCoreDialog::setupUi()
     formLayout->addRow(tr("trace directory："), hLayout);
     formLayout->addRow(tr("process ID："), d->pidInput);
     formLayout->addRow(tr("recent："), d->historyComboBox);
-    formLayout->setSpacing(10);
-    formLayout->setMargin(0);
 
     centerLayout->addLayout(formLayout);
     centerLayout->addStretch();
-    centerLayout->setMargin(0);
-    centerLayout->setContentsMargins(0, 0, 0, 5);
 
     connect(d->traceDir, &DLineEdit::textChanged,
             this, &LoadCoreDialog::updatePid);
 
-    connect(btnBrowser, &DSuggestButton::clicked, this, &LoadCoreDialog::showFileDialog);
+    connect(btnBrowser, &DPushButton::clicked, this, &LoadCoreDialog::showFileDialog);
 
     connect(d->historyComboBox, static_cast<void (DComboBox::*)(int)>(&DComboBox::currentIndexChanged),
             this, &LoadCoreDialog::historyIndexChanged);
