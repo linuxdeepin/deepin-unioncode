@@ -42,10 +42,8 @@ class FindToolWindowPrivate
     DCheckBox *regularCheckBox{nullptr};
     DLineEdit *patternLineEdit{nullptr};
     DLineEdit *expatternLineEdit{nullptr};
-    DSuggestButton *senseCheckBtnOn{nullptr};
-    DPushButton *senseCheckBtnOff{nullptr};
-    DSuggestButton *wholeWordsCheckBtnOn{nullptr};
-    DPushButton *wholeWordsCheckBtnOff{nullptr};
+    DSuggestButton *senseCheckBtn{nullptr};
+    DPushButton *wholeWordsCheckBtn{nullptr};
 
     bool senseCheckBtnFlag = false;
     bool wholeWordsCheckBtnFlag = false;
@@ -98,12 +96,8 @@ void FindToolWindow::setupUi()
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(d->stackedWidget);
     scrollArea->setLineWidth(0);
-
     mainPaneFrame->setLineWidth(0);
     hLayout->addWidget(mainPaneFrame);
-    QHBoxLayout *scrollLayout = new QHBoxLayout();
-    scrollLayout->addWidget(scrollArea);
-    mainPaneFrame->setLayout(scrollLayout);
 
     QWidget *searchParamWidget = new QWidget();
     QWidget *searchResultWidget = new QWidget();
@@ -120,78 +114,59 @@ void FindToolWindow::setupUi()
 
 void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 {
+
     QFormLayout *formLayout = new QFormLayout();
     parentWidget->setLayout(formLayout);
 
     DLabel *scopeLabel = new DLabel(QLabel::tr("Scope:"));
-    d->scopeComboBox = new DComboBox(parentWidget);
+    d->scopeComboBox = new DComboBox();
     d->scopeComboBox->addItem(tr("All Projects"));
     d->scopeComboBox->addItem(tr("Current Project"));
     d->scopeComboBox->addItem(tr("Current File"));
-    d->scopeComboBox->setFixedWidth(369);
 
     DLabel *searchLabel = new DLabel(QLabel::tr("Search for:"));
     QHBoxLayout *hlayout = new QHBoxLayout();
-    d->searchLineEdit = new DLineEdit(parentWidget);
-    d->searchLineEdit->setFixedWidth(277);
+    d->searchLineEdit = new DLineEdit();
     d->searchLineEdit->setPlaceholderText(tr("thread"));
 
-    d->senseCheckBtnOn = new DSuggestButton(parentWidget);
-    d->senseCheckBtnOn->setText("Aa");
-    d->senseCheckBtnOn->setFixedSize(36, 36);
-    d->senseCheckBtnOn->hide();
-    
-    d->senseCheckBtnOff = new DPushButton(parentWidget);
-    d->senseCheckBtnOff->setText("aa");
-    d->senseCheckBtnOff->setFixedSize(36, 36);
-    
-    d->wholeWordsCheckBtnOn = new DSuggestButton(parentWidget);
-    d->wholeWordsCheckBtnOn->setIcon(QIcon::fromTheme("find_matchComplete"));
-    d->wholeWordsCheckBtnOn->setFixedSize(36, 36);
-    d->wholeWordsCheckBtnOn->hide();
-    
-    d->wholeWordsCheckBtnOff = new DPushButton(parentWidget);
-    d->wholeWordsCheckBtnOff->setIcon(QIcon::fromTheme("find_matchComplete"));
-    d->wholeWordsCheckBtnOff->setFixedSize(36, 36);
-    
+    d->senseCheckBtn = new DSuggestButton();
+    d->senseCheckBtn->setText("Aa");
+
+    d->senseCheckBtn->setFixedSize(36, 36);
+    d->wholeWordsCheckBtn = new DPushButton();
+    d->wholeWordsCheckBtn->setIcon(QIcon::fromTheme("find_matchComplete"));
+    d->wholeWordsCheckBtn->setFixedSize(36, 36);
     hlayout->addWidget(d->searchLineEdit);
-    hlayout->addWidget(d->senseCheckBtnOn);
-    hlayout->addWidget(d->senseCheckBtnOff);
-    hlayout->addWidget(d->wholeWordsCheckBtnOn);
-    hlayout->addWidget(d->wholeWordsCheckBtnOff);
+    hlayout->addWidget(d->senseCheckBtn);
+    hlayout->addWidget(d->wholeWordsCheckBtn);
 
-    DLabel *patternLabel = new DLabel(QLabel::tr("File pattern:"), parentWidget);
-    d->patternLineEdit = new DLineEdit(parentWidget);
+    DLabel *patternLabel = new DLabel(QLabel::tr("File pattern:"));
+    d->patternLineEdit = new DLineEdit();
     d->patternLineEdit->setPlaceholderText(tr("e.g.*.ts,src/**/include"));
-    d->patternLineEdit->setFixedWidth(369);
 
-    DLabel *expatternLabel = new DLabel(QLabel::tr("Exclusion pattern:"), parentWidget);
-    d->expatternLineEdit = new DLineEdit(parentWidget);
+    DLabel *expatternLabel = new DLabel(QLabel::tr("Exclusion pattern:"));
+    d->expatternLineEdit = new DLineEdit();
     d->expatternLineEdit->setPlaceholderText(tr("e.g.*.ts,src/**/include"));
-    d->expatternLineEdit->setFixedWidth(369);
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
-    DPushButton *searchBtn = new DPushButton(QPushButton::tr("Search"), parentWidget);
+    DPushButton *searchBtn = new DPushButton(QPushButton::tr("Search"));
     searchBtn->setMinimumWidth(120);
-    searchBtn->setMaximumWidth(120);
+    searchBtn->setMaximumWidth(130);
     searchBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Search && Replace"), parentWidget);
+    DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Search && Replace"));
     replaceBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     replaceBtn->setMinimumWidth(120);
-    replaceBtn->setMaximumWidth(120);
+    replaceBtn->setMaximumWidth(130);
 
     btnLayout->addWidget(searchBtn);
     btnLayout->addWidget(replaceBtn);
-    btnLayout->setContentsMargins(213, 0, 0, 0);
 
     connect(searchBtn, &QAbstractButton::clicked, this, &FindToolWindow::search);
     connect(replaceBtn, &QAbstractButton::clicked, this, &FindToolWindow::replace);
 
-    connect(d->senseCheckBtnOn, &QPushButton::clicked, this, &FindToolWindow::onSenseCheckBtnClicked);
-    connect(d->wholeWordsCheckBtnOn, &QPushButton::clicked, this, &FindToolWindow::onwholeWordsCheckBtnClicked);
-    connect(d->senseCheckBtnOff, &QPushButton::clicked, this, &FindToolWindow::onSenseCheckBtnClicked);
-    connect(d->wholeWordsCheckBtnOff, &QPushButton::clicked, this, &FindToolWindow::onwholeWordsCheckBtnClicked);
+    connect(d->senseCheckBtn, &QPushButton::clicked, this, &FindToolWindow::onSenseCheckBtnClicked);
+    connect(d->wholeWordsCheckBtn, &QPushButton::clicked, this, &FindToolWindow::onwholeWordsCheckBtnClicked);
 
     formLayout->setContentsMargins(26, 10, 0, 0);
     formLayout->setSpacing(10);
@@ -200,31 +175,17 @@ void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
     formLayout->addRow(patternLabel, d->patternLineEdit);
     formLayout->addRow(expatternLabel, d->expatternLineEdit);
     formLayout->addRow(btnLayout);
-    formLayout->setAlignment(btnLayout, Qt::AlignLeft);
+    formLayout->setAlignment(btnLayout, Qt::AlignRight);
 }
 
 void FindToolWindow::onSenseCheckBtnClicked()
 {
     d->senseCheckBtnFlag = !d->senseCheckBtnFlag;
-    if (d->senseCheckBtnFlag) {
-        d->senseCheckBtnOff->hide();
-        d->senseCheckBtnOn->show();
-    } else {
-        d->senseCheckBtnOn->hide();
-        d->senseCheckBtnOff->show();
-    }
 }
 
 void FindToolWindow::onwholeWordsCheckBtnClicked()
 {
     d->wholeWordsCheckBtnFlag = !d->wholeWordsCheckBtnFlag;
-    if (d->wholeWordsCheckBtnFlag) {
-        d->wholeWordsCheckBtnOff->hide();
-        d->wholeWordsCheckBtnOn->show();
-    } else {
-        d->wholeWordsCheckBtnOn->hide();
-        d->wholeWordsCheckBtnOff->show();
-    }
 }
 
 void FindToolWindow::addSearchResultWidget(QWidget *parentWidget)
