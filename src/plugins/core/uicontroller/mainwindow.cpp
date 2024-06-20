@@ -62,7 +62,6 @@ MainWindow::MainWindow(QWidget *parent)
     setAttribute(Qt::WA_DeleteOnClose);
 
     addTopToolBar();
-    setContextMenuPolicy(Qt::NoContextMenu);  //donot show left toolbar`s contextmenu
     //setStyleSheet("QMainWindow::separator { width: 2px; margin: 0px; padding: 0px; }");
 
     setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);

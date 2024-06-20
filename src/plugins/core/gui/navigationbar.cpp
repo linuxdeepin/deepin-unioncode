@@ -13,7 +13,6 @@ NavigationBar::NavigationBar(QWidget *parent)
 {
     setLineWidth(0);
     setFixedWidth(58);
-    setContextMenuPolicy(Qt::NoContextMenu);
 
     DStyle::setFrameRadius(this, 0);
 
