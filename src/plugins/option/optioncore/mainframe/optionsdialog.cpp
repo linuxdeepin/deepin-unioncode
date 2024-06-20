@@ -9,12 +9,9 @@
 
 #include <DTitlebar>
 #include <DFrame>
+#include <DPaletteHelper>
 #include <DBackgroundGroup>
 #include <DSuggestButton>
-#ifdef DTKWIDGET_CLASS_DPaletteHelper
-#include <DPaletteHelper>
-#endif
-#include <DGuiApplicationHelper>
 
 #include <QtDebug>
 #include <QtWidgets/QHBoxLayout>
@@ -132,15 +129,9 @@ void OptionsDialog::setupUi()
     leftSideBar->setBackgroundRole(QPalette::ColorRole::Light);
     leftSideBar->setItemDelegate(new NavigationDelegate(leftSideBar));
 
-#ifndef DTKWIDGET_CLASS_DPaletteHelper
     DPalette pa = DPaletteHelper::instance()->palette(leftSideBar);
     pa.setBrush(DPalette::ItemBackground, Qt::transparent);
     DPaletteHelper::instance()->setPalette(leftSideBar, pa);
-#else
-    DPalette pa = leftSideBar->palette();
-    pa.setBrush(DPalette::Window, Qt::transparent);
-    leftSideBar->setPalette(pa);
-#endif
 
     leftBarModel = new QStandardItemModel(leftSideBar);
     leftSideBar->setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);

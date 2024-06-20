@@ -9,10 +9,8 @@
 #include <DGuiApplicationHelper>
 #include <DStyle>
 #include <DStyleOptionViewItem>
-#include <DListView>
-#ifdef DTKWIDGET_CLASS_DPaletteHelper
 #include <DPaletteHelper>
-#endif
+#include <DListView>
 
 #include <QPainter>
 #include <QDebug>
@@ -78,11 +76,7 @@ void DisplayItemDelegate::paintItemBackground(QPainter *painter, const QStyleOpt
     painter->save();
 
     if (option.widget) {
-#ifdef DTKWIDGET_CLASS_DPaletteHelper
         DPalette pl(DPaletteHelper::instance()->palette(option.widget));
-#else
-        DPalette pl = DGuiApplicationHelper::instance()->applicationPalette();
-#endif
         QColor baseColor = pl.color(DPalette::ColorGroup::Active, DPalette::ColorType::ItemBackground);
         QColor adjustColor = baseColor;
 
