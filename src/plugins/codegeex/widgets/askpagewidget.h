@@ -10,7 +10,6 @@
 #include <DWidget>
 #include <DLineEdit>
 #include <DFloatingButton>
-#include <DTextEdit>
 
 #include <QMap>
 
@@ -19,19 +18,6 @@ class QScrollArea;
 class QPushButton;
 class QLineEdit;
 QT_END_NAMESPACE
-
-class InputEdit : public DTK_WIDGET_NAMESPACE::DTextEdit
-{
-    Q_OBJECT
-public:
-    explicit InputEdit(QWidget *parent = nullptr);
-
-signals:
-    void pressedEnter();
-
-protected:
-    void keyPressEvent(QKeyEvent *e) override;
-};
 
 class MessageComponent;
 class AskPageWidget : public DTK_WIDGET_NAMESPACE::DWidget
@@ -54,7 +40,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void onMessageUpdate(const MessageData &msgData);
-    void slotMessageSend();
+    void onSendBtnClicked();
     void onChatFinished();
     void onDeleteBtnClicked();
     void onHistoryBtnClicked();
@@ -79,7 +65,7 @@ private:
     DTK_WIDGET_NAMESPACE::DScrollArea *scrollArea { nullptr };
     DTK_WIDGET_NAMESPACE::DWidget *inputWidget { nullptr };
     DTK_WIDGET_NAMESPACE::DWidget *messageContainer { nullptr };
-    InputEdit *inputEdit { nullptr };
+    DTK_WIDGET_NAMESPACE::DLineEdit *inputEdit { nullptr };
 
     DTK_WIDGET_NAMESPACE::DFloatingButton *sendButton { nullptr };
     DTK_WIDGET_NAMESPACE::DPushButton *deleteBtn { nullptr };

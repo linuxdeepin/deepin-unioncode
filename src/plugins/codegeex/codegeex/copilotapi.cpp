@@ -30,10 +30,9 @@ void CopilotApi::postGenerate(const QString &url, const QString &code, const QSt
 
 void CopilotApi::postTranslate(const QString &url,
                                const QString &code,
-                               const QString &dst_lang,
-                               const QString &locale)
+                               const QString &dst_lang)
 {
-    QByteArray body = assembleTranslateBody(code, dst_lang, locale);
+    QByteArray body = assembleTranslateBody(code, dst_lang);
     QNetworkReply *reply = postMessage(url, CodeGeeXManager::instance()->getSessionId(), body);
     reply->setProperty("responseType", CopilotApi::multilingual_code_translate);
     processResponse(reply);
@@ -116,13 +115,13 @@ QByteArray CopilotApi::assembleGenerateBody(const QString &prefix, const QString
     return doc.toJson();
 }
 
-QByteArray CopilotApi::assembleTranslateBody(const QString &code, const QString &dst_lang, const QString &locale)
+QByteArray CopilotApi::assembleTranslateBody(const QString &code, const QString &dst_lang)
 {
     QJsonObject json;
     json.insert("lang", dst_lang);
     json.insert("code", code);
     json.insert("command", "translation");
-    json.insert("locale", locale);
+    json.insert("locale", "zh");
     json.insert("model", chatModel);
 
     QJsonDocument doc(json);

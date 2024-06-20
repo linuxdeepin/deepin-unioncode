@@ -76,18 +76,6 @@ void CodeGeeXManager::loadConfig()
     }
 }
 
-void CodeGeeXManager::setLocale(CodeGeeX::locale locale)
-{
-    if (locale == CodeGeeX::Zh) {
-        askApi.setLocale("zh");
-        Copilot::instance()->setLocale("zh");
-    } else if (locale == CodeGeeX::En) {
-        askApi.setLocale("cn");
-        Copilot::instance()->setLocale("cn");
-    }
-
-}
-
 void CodeGeeXManager::setCurrentModel(languageModel model)
 {
     Copilot::instance()->setCurrentModel(model);
