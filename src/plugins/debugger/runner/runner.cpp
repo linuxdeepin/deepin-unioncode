@@ -137,7 +137,7 @@ void Runner::handleEvents(const dpf::Event &event)
         auto programs = projectInfo.exePrograms();
         d->runProgram->clear();
         for (auto program : programs)
-            d->runProgram->addItem(QIcon::fromTheme("run"), program);
+            d->runProgram->addItem(QIcon::fromTheme("executable"), program);
         d->runProgram->setCurrentText(projectInfo.currentProgram());
     }
 }
