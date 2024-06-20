@@ -168,6 +168,7 @@ public:
     int wordPostion();
     newlsp::Client *getClient();
 
+public:
     CompletionCache completionCache;
     DefinitionCache definitionCache;
     QTimer textChangedTimer;
@@ -177,10 +178,10 @@ public:
     TextEditor *editor { nullptr };
     QList<lsp::Data> tokensCache;
     QList<DiagnosticCache> diagnosticCache;
-    static QAction *rangeFormattingAction;
-    static QString formattingFile;
     QString diagnosticFormat;
     newlsp::ProjectKey prjectKey;
+    QList<newlsp::SymbolInformation> symbolInfoList;
+    QList<newlsp::DocumentSymbol> docSymbolList;
 
     friend class StyleLsp;
 };

@@ -11,6 +11,7 @@
 #include "lexer/lexermanager.h"
 #include "utils/editorutils.h"
 #include "status/statusinfomanager.h"
+#include "symbol/symbollocator.h"
 
 #include "base/abstractmenu.h"
 #include "base/abstractaction.h"
@@ -22,6 +23,7 @@
 #include "services/editor/editorservice.h"
 #include "services/option/optionservice.h"
 #include "services/option/optiondatastruct.h"
+#include "services/locator/locatorservice.h"
 
 #include <DButtonBox>
 #include <DToolButton>
@@ -63,6 +65,7 @@ bool CodeEditor::start()
     initButtonBox();
     initEditorService();
     initOptionService();
+    initLocator();
     registerVariables();
 
     return true;
@@ -209,6 +212,17 @@ void CodeEditor::initOptionService()
         abort();
     }
     optionService->implGenerator<EditorSettingsWidgetGenerator>(option::GROUP_GENERAL, EditorSettingsWidgetGenerator::kitName());
+}
+
+void CodeEditor::initLocator()
+{
+    auto locatorSrv = dpfGetService(LocatorService);
+    if (!locatorSrv)
+        return;
+
+    SymbolLocator *locator = new SymbolLocator(workspaceWidget);
+    locator->setWorkspaceWidget(workspaceWidget);
+    locatorSrv->registerLocator(locator);
 }
 
 void CodeEditor::registerVariables()

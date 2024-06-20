@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QSplitter>
 
+class TabWidget;
 class AbstractEditWidget;
 class WorkspaceWidgetPrivate;
 class WorkspaceWidget : public QWidget
@@ -36,6 +37,7 @@ public:
     QStringList openedFiles() const;
     QString fileText(const QString &fileName) const;
     void replaceAll(const QString &fileName, const QString &oldText, const QString &newText, bool caseSensitive, bool wholeWords);
+    TabWidget *currentTabWidget() const;
 
     void registerWidget(const QString &id, AbstractEditWidget *widget);
     void switchWidget(const QString &id);

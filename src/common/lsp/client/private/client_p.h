@@ -62,6 +62,11 @@ class ClientPrivate : public newlsp::StdoutJsonRpcParser
     bool serverCalled(const QJsonObject &jsonObj); // not found result key from json && found key method
     bool diagnosticsCalled(const QJsonObject &jsonObj);
 
+    QList<DocumentSymbol> parseDocumentSymbol(const QJsonArray &array);
+    QList<SymbolInformation> parseDocumentSymbolInfo(const QJsonArray &array);
+    Range parseRange(const QJsonObject &obj);
+    Location parseLocation(const QJsonObject &obj);
+
 public Q_SLOTS:
     // readed parse
     void doReadStdoutLine();

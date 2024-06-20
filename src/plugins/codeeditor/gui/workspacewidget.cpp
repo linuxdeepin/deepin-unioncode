@@ -771,6 +771,11 @@ void WorkspaceWidget::replaceAll(const QString &fileName, const QString &oldText
     }
 }
 
+TabWidget *WorkspaceWidget::currentTabWidget() const
+{
+    return d->currentTabWidget();
+}
+
 void WorkspaceWidget::registerWidget(const QString &id, AbstractEditWidget *widget)
 {
     d->registeredWidget.insert(id, widget);
