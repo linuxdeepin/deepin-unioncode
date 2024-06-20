@@ -1,10 +1,4 @@
-deepin-unioncode (1.2.13) unstable; urgency=medium
-
-  * bug fix
-
- -- luzhen <mozart@mozart-PC>  Wed, 06 Mar 2024 14:46:49 +0800
-
-deepin-unioncode (1.2.12) unstable; urgency=medium
+deepin-unioncode (1.2.12) UNRELEASED; urgency=medium
 
   * Project tree optimization
   * LSP optimization
