@@ -320,7 +320,6 @@ QStandardItem *CmakeAsynParse::findParentItem(QStandardItem *rootItem, QString &
 QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, const QString &relativeName, const QString &absolutePath)
 {
     QStandardItem *retItem = nullptr;
-    QString basePath = absolutePath.mid(0, absolutePath.length() - relativeName.length());
     QStringList nameItems = relativeName.split("/");
     QString preItems;
     for (auto nameItem : nameItems) {
@@ -330,7 +329,7 @@ QStandardItem *CmakeAsynParse::createParentItem(QStandardItem *rootItem, const Q
             // create new one.
             item = new QStandardItem();
             item->setText(nameItem);
-            item->setToolTip(basePath + relative);
+            item->setToolTip(absolutePath);
             item->setIcon(::cmakeFolderIcon());
             // append to parent.
             QStandardItem *parentItem = findParentItem(rootItem, relative);
