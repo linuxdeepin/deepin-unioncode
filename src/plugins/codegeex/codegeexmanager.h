@@ -102,7 +102,6 @@ private:
     explicit CodeGeeXManager(QObject *parent = nullptr);
 
     void initConnections();
-    QString modifiedData(const QString &data);
 
     QString configFilePath() const;
     QString uuid();

@@ -159,11 +159,10 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
     if (msgID.isEmpty())
         return;
     
-    auto msgData = modifiedData(data);
     if (event == "finish") {
         responseData.clear();
         if (!currentChat.first.isEmpty() && currentChat.second.isEmpty()) {
-            currentChat.second = msgData;
+            currentChat.second = data;
             chatHistory.append(currentChat);
             chatRecord empty {};
             currentChat.swap(empty);
@@ -172,7 +171,7 @@ void CodeGeeXManager::onResponse(const QString &msgID, const QString &data, cons
         emit chatFinished();
         return;
     } else if (event == "add") {
-        responseData += msgData;
+        responseData += data;
         if (!curSessionMsg.contains(msgID))
             curSessionMsg.insert(msgID, MessageData(msgID, MessageData::Anwser));
 
@@ -369,13 +368,4 @@ QString CodeGeeXManager::getSessionId() const
 QString CodeGeeXManager::getTalkId() const
 {
     return currentTalkID;
-}
-
-QString CodeGeeXManager::modifiedData(const QString &data)
-{
-    auto retData = data;
-    retData.replace("\\n", "\n");
-    retData.replace("\\\"", "\"");
-
-    return retData;
 }

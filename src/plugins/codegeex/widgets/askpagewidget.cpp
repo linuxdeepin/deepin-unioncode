@@ -203,19 +203,21 @@ void AskPageWidget::initInputWidget()
     QHBoxLayout *btnLayout = new QHBoxLayout;
     layout->addLayout(btnLayout);
 
-    deleteBtn = new DToolButton(this);
+    deleteBtn = new DPushButton(this);
+    deleteBtn->setFlat(true);
     deleteBtn->setIcon(QIcon::fromTheme("codegeex_clear"));
     deleteBtn->setToolTip(tr("delete this session"));
     btnLayout->addWidget(deleteBtn);
 
     btnLayout->addStretch(1);
 
-    historyBtn = new DToolButton(this);
+    historyBtn = new DPushButton(this);
+    historyBtn->setFlat(true);
     historyBtn->setIcon(QIcon::fromTheme("codegeex_history"));
     historyBtn->setToolTip(tr("history sessions"));
     btnLayout->addWidget(historyBtn);
-
-    createNewBtn = new DToolButton(this);
+    createNewBtn = new DPushButton(this);
+    createNewBtn->setFlat(true);
     createNewBtn->setIcon(QIcon::fromTheme("codegeex_new"));
     createNewBtn->setToolTip(tr("create new session"));
     btnLayout->addWidget(createNewBtn);
@@ -249,9 +251,9 @@ void AskPageWidget::initConnection()
 
     connect(sendButton, &DFloatingButton::clicked, this, &AskPageWidget::slotMessageSend);
     connect(inputEdit, &InputEdit::pressedEnter, this, &AskPageWidget::slotMessageSend);
-    connect(deleteBtn, &DToolButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
-    connect(historyBtn, &DToolButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
-    connect(createNewBtn, &DToolButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
+    connect(deleteBtn, &DPushButton::clicked, this, &AskPageWidget::onDeleteBtnClicked);
+    connect(historyBtn, &DPushButton::clicked, this, &AskPageWidget::onHistoryBtnClicked);
+    connect(createNewBtn, &DPushButton::clicked, this, &AskPageWidget::onCreateNewBtnClicked);
     connect(inputEdit, &DTextEdit::textChanged, this, [this]() {
         if (inputEdit->toPlainText().isEmpty())
             sendButton->setEnabled(false);
@@ -287,7 +289,6 @@ void AskPageWidget::setSessionPage()
     scrollArea->setWidget(messageContainer);
 
     QVBoxLayout *layout = new QVBoxLayout(messageContainer);
-    layout->setContentsMargins(12, 0, 12, 20);
     layout->setSpacing(10);
     messageContainer->setLayout(layout);
 

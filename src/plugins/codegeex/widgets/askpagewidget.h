@@ -9,9 +9,8 @@
 
 #include <DWidget>
 #include <DLineEdit>
-#include <DTextEdit>
 #include <DFloatingButton>
-#include <DToolButton>
+#include <DTextEdit>
 
 #include <QMap>
 
@@ -83,9 +82,9 @@ private:
     InputEdit *inputEdit { nullptr };
 
     DTK_WIDGET_NAMESPACE::DFloatingButton *sendButton { nullptr };
-    DTK_WIDGET_NAMESPACE::DToolButton *deleteBtn { nullptr };
-    DTK_WIDGET_NAMESPACE::DToolButton *historyBtn { nullptr };
-    DTK_WIDGET_NAMESPACE::DToolButton *createNewBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *deleteBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *historyBtn { nullptr };
+    DTK_WIDGET_NAMESPACE::DPushButton *createNewBtn { nullptr };
     DTK_WIDGET_NAMESPACE::DWidget *stopWidget { nullptr };
     DTK_WIDGET_NAMESPACE::DPushButton *stopGenerate { nullptr };
 

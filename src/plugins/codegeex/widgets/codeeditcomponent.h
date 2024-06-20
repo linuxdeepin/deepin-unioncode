@@ -13,7 +13,6 @@
 #include <DLabel>
 #include <DTextEdit>
 #include <DFrame>
-#include <DToolButton>
 
 DWIDGET_USE_NAMESPACE
 
@@ -63,11 +62,11 @@ private:
     void updateDefinition(const QString &language);
 
     DWidget *titleWidget { nullptr };
-    DToolButton *copyButton { nullptr };
-    DToolButton *insertButton { nullptr };
+    DPushButton *copyButton { nullptr };
+    DPushButton *insertButton { nullptr };
     DFrame *editFrame { nullptr };
     DHorizontalLine *hLine { nullptr };
-    QTextEdit *codeEdit { nullptr };
+    DTextEdit *codeEdit { nullptr };
     DLabel *title { nullptr };
 
     KSyntaxHighlighting::SyntaxHighlighter *highLighter { nullptr };
