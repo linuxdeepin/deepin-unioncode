@@ -91,8 +91,9 @@ QList<DToolButton *> WorkspaceWidget::getToolBtnByTitle(const QString &title)
     return toolBtnOfWidget.values(title);
 }
 
-bool WorkspaceWidget::switchWidgetWorkspace(const QString &title)
+void WorkspaceWidget::switchWidgetWorkspace(const QString &title)
 {
+    auto lastTitle = getCurrentTitle();
     auto widget = editWorkspaceWidgets[title];
     stackEditWorkspaceWidget->setCurrentWidget(widget);
     for (auto it = workspaceTabButtons.begin(); it != workspaceTabButtons.end(); ++it) {
@@ -102,9 +103,22 @@ bool WorkspaceWidget::switchWidgetWorkspace(const QString &title)
     }
 
     emit expandStateChange(widget->property("canExpand").toBool());
-    emit workSpaceWidgeSwitched(title);
 
-    return false;
+    if (!addedToController || (lastTitle == title))
+        return;
+
+    //update toolbtn`s state at header
+    for (auto btn : getToolBtnByTitle(lastTitle)) {
+        toolBtnState[btn] = btn->isVisible();
+        btn->setVisible(false);
+    }
+
+    for (auto btn : getToolBtnByTitle(title)) {
+        if (toolBtnState.contains(btn))
+            btn->setVisible(toolBtnState[btn]);
+    }
+
+    emit workSpaceWidgeSwitched(title);
 }
 
 bool WorkspaceWidget::getCurrentExpandState()
@@ -114,9 +128,6 @@ bool WorkspaceWidget::getCurrentExpandState()
 
 QString WorkspaceWidget::getCurrentTitle() const
 {
-    for (auto it = workspaceTabButtons.begin(); it != workspaceTabButtons.end(); ++it) {
-        if (it.value()->isChecked() == true)
-            return it.key();
-    }
-    return "";
+    auto currentWidget = stackEditWorkspaceWidget->currentWidget();
+    return editWorkspaceWidgets.key(currentWidget);
 }
