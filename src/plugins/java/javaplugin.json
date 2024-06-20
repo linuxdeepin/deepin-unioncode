@@ -9,7 +9,7 @@
     ],
     "Category" : "Languages",
     "Description" : "The java plugin for the unioncode.",
-    "UrlLink" : "https://ecology.chinauos.com/adaptidentification/doc_new/#document3?dirid=664d969d685f572b03c2aca9&id=664d9716685f572b03c2acb1",
+    "UrlLink" : "https://ecology.chinauos.com/adaptidentification/doc_new/#document3?dirid=656d40cbbd766615b0b02e66&id=664d8dd3685f572b03c2aca5",
     "Depends" : [
         {"Name" : "codeeditor"}
     ]
