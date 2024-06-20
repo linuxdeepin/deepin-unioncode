@@ -4,6 +4,5 @@
         <file>texts/cancel_16px.svg</file>
         <file>texts/clearall_16px.svg</file>
         <file>texts/rebuild_16px.svg</file>
-        <file>texts/filter_16px.svg</file>
     </qresource>
 </RCC>
