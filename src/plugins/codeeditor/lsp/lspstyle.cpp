@@ -536,7 +536,7 @@ void LSPStyle::onShowContextMenu(QMenu *menu)
     auto act = menu->addAction(tr("Switch Header/Source"), this, std::bind(&LSPStyle::switchHeaderSource, this, d->editor->getFile()));
     menu->insertAction(actionList.first(), act);
 
-    act = menu->addAction(tr("Follow Symbol Under Cursor"), this, &LSPStyle::followSymbolUnderCursor);
+    act = menu->addAction(tr("Switch Between Function Declaration/Definition"), this, &LSPStyle::switchDeclarationOrDefinition);
     menu->insertAction(actionList.first(), act);
 
     act = menu->addAction(tr("Find Usages"), this, &LSPStyle::findUsagesActionTriggered);
@@ -550,9 +550,9 @@ void LSPStyle::onFileClosed(const QString &file)
         qApp->metaObject()->invokeMethod(d->getClient(), "closeRequest", Q_ARG(const QString &, file));
 }
 
-void LSPStyle::followSymbolUnderCursor()
+void LSPStyle::switchDeclarationOrDefinition()
 {
-    if (!d->editor || !d->editor->hasFocus() || !d->getClient())
+    if (!d->editor || !d->getClient())
         return;
 
     d->definitionCache.setSwitchMode(DefinitionCache::ActionMode);
@@ -611,16 +611,16 @@ void LSPStyle::gotoDefinition()
 {
     if (d->definitionCache.getLocations().size() > 0) {
         auto one = d->definitionCache.getLocations().front();
-        EditorCallProxy::instance()->reqGotoPosition(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                     one.range.start.line, one.range.start.character);
+        EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                 one.range.end.line);
     } else if (d->definitionCache.getLocationLinks().size() > 0) {
         auto one = d->definitionCache.getLocationLinks().front();
-        EditorCallProxy::instance()->reqGotoPosition(QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
-                                                     one.targetRange.end.line, one.targetRange.end.character);
+        EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.targetUri)).toLocalFile(),
+                                                 one.targetRange.end.line);
     } else {
         auto one = d->definitionCache.getLocation();
-        EditorCallProxy::instance()->reqGotoPosition(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
-                                                     one.range.start.line, one.range.start.character);
+        EditorCallProxy::instance()->reqGotoLine(QUrl(QString::fromStdString(one.uri)).toLocalFile(),
+                                                 one.range.end.line);
     }
 }
 

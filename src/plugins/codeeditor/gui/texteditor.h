@@ -28,7 +28,6 @@ public:
     // debug
     void addBreakpoint(int line);
     void removeBreakpoint(int line);
-    void toggleBreakpoint();
     void setBreakpointEnabled(int line);
     bool hasBreakpoint(int line);
     void gotoNextBreakpoint();
@@ -72,7 +71,6 @@ public:
     int wordStartPositoin(int position);
     int wordEndPosition(int position);
     void switchHeaderSource();
-    void followSymbolUnderCursor();
 
     QString cursorBeforeText() const;
     QString cursorBehindText() const;

@@ -132,12 +132,6 @@ void TextEditor::removeBreakpoint(int line)
     editor.breakpointRemoved(d->fileName, line + 1);
 }
 
-void TextEditor::toggleBreakpoint()
-{
-    int line = currentLineNumber();
-    hasBreakpoint(line) ? removeBreakpoint(line) : addBreakpoint(line);
-}
-
 void TextEditor::setBreakpointEnabled(int line)
 {
     Q_UNUSED(line)
@@ -394,14 +388,6 @@ void TextEditor::switchHeaderSource()
         return;
 
     d->lspStyle->switchHeaderSource(d->fileName);
-}
-
-void TextEditor::followSymbolUnderCursor()
-{
-    if (!d->lspStyle)
-        return;
-
-    d->lspStyle->followSymbolUnderCursor();
 }
 
 QString TextEditor::cursorBeforeText() const

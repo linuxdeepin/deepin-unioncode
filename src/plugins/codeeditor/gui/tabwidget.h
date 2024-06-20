@@ -30,7 +30,6 @@ public:
     void closeFileEditor(const QString &fileName);
     void closeFileEditor();
     void switchHeaderSource();
-    void followSymbolUnderCursor();
     Q_INVOKABLE void replaceSelectedText(const QString &text);
     Q_INVOKABLE void showTips(const QString &tips);
     Q_INVOKABLE void insertText(const QString &text);
@@ -46,7 +45,6 @@ public:
 
     void addBreakpoint(const QString &fileName, int line);
     void removeBreakpoint(const QString &fileName, int line);
-    void toggleBreakpoint();
     void clearAllBreakpoints();
 
     int zoomValue();
