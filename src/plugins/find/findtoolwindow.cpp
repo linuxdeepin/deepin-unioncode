@@ -86,17 +86,15 @@ FindToolWindow::~FindToolWindow()
 
 void FindToolWindow::setupUi()
 {
-    DFrame *mainPaneFrame = new DFrame(this);
     d->stackedWidget = new DStackedWidget();
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    hLayout->setContentsMargins(0, 0, 0, 0);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->setContentsMargins(0, 0, 0, 0);
 
-    DScrollArea *scrollArea = new DScrollArea(mainPaneFrame);
+    DScrollArea *scrollArea = new DScrollArea();
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(d->stackedWidget);
     scrollArea->setLineWidth(0);
-    mainPaneFrame->setLineWidth(0);
-    hLayout->addWidget(mainPaneFrame);
+    vLayout->addWidget(scrollArea);
 
     QWidget *searchParamWidget = new QWidget();
     QWidget *searchResultWidget = new QWidget();
@@ -108,11 +106,12 @@ void FindToolWindow::setupUi()
     d->stackedWidget->addWidget(searchResultWidget);
     d->stackedWidget->setCurrentIndex(0);
 
-    setLayout(hLayout);
+    setLayout(vLayout);
 }
 
 void FindToolWindow::addSearchParamWidget(QWidget *parentWidget)
 {
+    parentWidget->setFixedSize(458, 220);
 
     QFormLayout *formLayout = new QFormLayout();
     parentWidget->setLayout(formLayout);

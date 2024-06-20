@@ -50,11 +50,6 @@ class BuildManagerPrivate
     QFuture<void> buildThread;
 
     BuildState currentState = BuildState::kNoBuild;
-
-    ~BuildManagerPrivate(){
-        delete compileWidget;
-        compileWidget = nullptr;
-    }
 };
 
 BuildManager *BuildManager::instance()
@@ -151,39 +146,35 @@ void BuildManager::addMenu()
 
 void BuildManager::initCompileWidget()
 {
+    d->compileOutputPane = new CompileOutputPane();
+    d->problemOutputPane = new ProblemOutputPane();
     d->compileWidget = new DWidget();
-    DFrame *outputFrame = new DFrame(d->compileWidget);
-    DFrame *issusFrame = new DFrame(d->compileWidget);
-    d->compileOutputPane = new CompileOutputPane(outputFrame);
-    d->problemOutputPane = new ProblemOutputPane(issusFrame);
 
     QVBoxLayout *mainLayout = new QVBoxLayout(d->compileWidget);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
-    QLabel *compileOutputText = new QLabel(outputFrame);
+    QLabel *compileOutputText = new QLabel();
     compileOutputText->setText(tr("Compile Output"));
     compileOutputText->setContentsMargins(10, 0, 0, 0);
-    QLabel *issusListText = new QLabel(issusFrame);
+    QLabel *issusListText = new QLabel();
     issusListText->setText(tr("Issues list"));
     issusListText->setContentsMargins(10, 0, 0, 0);
 
+    DWidget *outputWidget = new DWidget();
     QVBoxLayout *outputLayout = new QVBoxLayout();
     outputLayout->addWidget(compileOutputText);
     outputLayout->addWidget(d->compileOutputPane);
-    outputFrame->setLayout(outputLayout);
-    DStyle::setFrameRadius(outputFrame, 0);
-    outputFrame->setLineWidth(0);
+    outputWidget->setLayout(outputLayout);
 
+    DWidget *issusWidget = new DWidget();
     QVBoxLayout *issusListLayout = new QVBoxLayout();
     issusListLayout->addWidget(issusListText);
     issusListLayout->addWidget(d->problemOutputPane);
-    issusFrame->setLayout(issusListLayout);
-    DStyle::setFrameRadius(issusFrame, 0);
-    issusFrame->setLineWidth(0);
+    issusWidget->setLayout(issusListLayout);
 
     QSplitter *spl = new QSplitter(Qt::Horizontal);
-    spl->addWidget(outputFrame);
-    spl->addWidget(issusFrame);
+    spl->addWidget(outputWidget);
+    spl->addWidget(issusWidget);
 
     mainLayout->setSpacing(0);
     mainLayout->addWidget(spl);

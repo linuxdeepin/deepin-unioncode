@@ -10,14 +10,12 @@
 #include <DHeaderView>
 #include <DStackedWidget>
 #include <DButtonBox>
-#include <DFrame>
 
 #include <QHBoxLayout>
 
 class ValgrindBarPrivate
 {
     friend class ValgrindBar;
-    DFrame *mainFrame {nullptr};
     DTreeWidget *memcheckWidget {nullptr};
     DTreeWidget *helgrindWidget {nullptr};
     QTabWidget *tabWidget {nullptr};
@@ -31,8 +29,7 @@ ValgrindBar::ValgrindBar(QWidget *parent)
     : QWidget(parent)
     , d(new ValgrindBarPrivate())
 {
-    d->mainFrame = new DFrame(this);
-    d->stackedWidget = new DStackedWidget(d->mainFrame);
+    d->stackedWidget = new DStackedWidget(this);
     d->memcheckWidget = new DTreeWidget(d->stackedWidget);
     d->helgrindWidget = new DTreeWidget(d->stackedWidget);
 
@@ -72,7 +69,7 @@ void ValgrindBar::initValgrindbar()
     d->helgrindWidget->header()->hide();
     d->helgrindWidget->setLineWidth(0);
 
-    d->btnBox = new DButtonBox(d->mainFrame);
+    d->btnBox = new DButtonBox(this);
     d->btnBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     d->memcheckBtn = new DButtonBoxButton(tr("memcheck"));
     d->helgrindBtn = new DButtonBoxButton(tr("helgrind"));
@@ -93,23 +90,13 @@ void ValgrindBar::initValgrindbar()
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget(d->btnBox);
     hLayout->setAlignment(Qt::AlignLeft);
-    hLayout->setMargin(0);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addLayout(hLayout);
     vLayout->addWidget(d->stackedWidget);
     vLayout->setContentsMargins(0, 0, 0, 0);
-    vLayout->setMargin(0);
-    d->mainFrame->setLayout(vLayout);
-    d->mainFrame->setLineWidth(0);
+    this->setLayout(vLayout);
     vLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->addWidget(d->mainFrame);
-    mainLayout->setMargin(0);
-    mainLayout->setContentsMargins(0, 0, 0, 5);
-    DStyle::setFrameRadius(d->mainFrame, 0);
-    this->setLayout(mainLayout);
 }
 
 void ValgrindBar::showResult(const QString &xmlFileName, const QString &type)
@@ -131,3 +118,4 @@ void ValgrindBar::showResult(const QString &xmlFileName, const QString &type)
     reader.readFile(xmlFileName);
     uiController.switchContext(tr("&Valgrind"));
 }
+
