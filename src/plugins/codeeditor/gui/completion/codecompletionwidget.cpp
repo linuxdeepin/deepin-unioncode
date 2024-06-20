@@ -338,10 +338,8 @@ void CodeCompletionWidget::automaticInvocation()
     if (automaticInvocationAt != editor()->cursorPosition())
         return;
 
-    if (!shouldStartCompletion(automaticInvocationLine)) {
-        completionModel->clear();
+    if (!shouldStartCompletion(automaticInvocationLine))
         return;
-    }
 
     startCompletion();
 }

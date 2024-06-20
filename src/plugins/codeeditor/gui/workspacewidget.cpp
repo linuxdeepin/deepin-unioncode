@@ -69,7 +69,6 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRenameSymbol, this, &WorkspaceWidgetPrivate::handleRenameSymbol);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint, this, &WorkspaceWidgetPrivate::handleToggleBreakpoint);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqShowFindToolBar, this, &WorkspaceWidgetPrivate::handleShowFindToolBar);
-    connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetModifiedAutoReload, this, &WorkspaceWidgetPrivate::handleSetModifiedAutoReload);
 }
 
 void WorkspaceWidgetPrivate::connectTabWidgetSignals(TabWidget *tabWidget)
@@ -104,9 +103,6 @@ void WorkspaceWidgetPrivate::doSplit(QSplitter *spliter, int index, const QStrin
 
 int WorkspaceWidgetPrivate::showFileChangedConfirmDialog(const QString &fileName)
 {
-    if (autoReloadList.contains(fileName))
-        return 0;
-
     DDialog d(qApp->activeWindow());
     const int maxDisplayNameLength = 250;
 
@@ -198,7 +194,6 @@ void WorkspaceWidgetPrivate::handleFileChanged()
         break;
     case 4:   // close
         q->closeFileEditor(fileName);
-        handleFileChanged();
         break;
     default:
         break;
@@ -432,14 +427,6 @@ void WorkspaceWidgetPrivate::handleShowFindToolBar()
         return;
 
     tabWidget->showFindToolBar();
-}
-
-void WorkspaceWidgetPrivate::handleSetModifiedAutoReload(const QString &fileName, bool flag)
-{
-    if (!flag)
-        autoReloadList.removeOne(fileName);
-    else if (!autoReloadList.contains(fileName))
-        autoReloadList << fileName;
 }
 
 void WorkspaceWidgetPrivate::onFocusChanged(QWidget *old, QWidget *now)
