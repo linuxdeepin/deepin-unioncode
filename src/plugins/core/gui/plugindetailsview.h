@@ -15,7 +15,6 @@ class QGridLayout;
 class QVBoxLayout;
 class QSpacerItem;
 class QWebEngineView;
-class QLabel;
 QT_END_NAMESPACE
 
 DWIDGET_BEGIN_NAMESPACE
@@ -78,7 +77,6 @@ private:
     DTK_WIDGET_NAMESPACE::DPushButton *loadBtn {nullptr};
     dpf::PluginMetaObjectPointer pluginMetaInfo;
     QWebEngineView *webView {nullptr};
-    QLabel *logoLabel {nullptr};
 };
 
 #endif // PLUGINDETAILSVIEW_H

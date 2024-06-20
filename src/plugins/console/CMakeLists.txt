@@ -31,6 +31,5 @@ target_link_libraries(${PROJECT_NAME}
     ${PkgUserModules}
     )
 
-install_logo(${PROJECT_NAME}.svg)
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
 

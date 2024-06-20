@@ -4,9 +4,9 @@
         <file>texts/edit-navigation_20px.svg</file>
         <file>texts/options_setting_32px.svg</file>
         <file>actions/ide_32px.svg</file>
-        <file>actions/default_plugin_96px.svg</file>
         <file>actions/logo_128px.png</file>
         <file>actions/backgroundLogo_128px.png</file>
         <file>texts/plugins-navigation_20px.svg</file>
+        <file>texts/defaultplugin_16px.svg</file>
     </qresource>
 </RCC>
