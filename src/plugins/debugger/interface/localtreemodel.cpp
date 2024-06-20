@@ -44,8 +44,6 @@ QVariant LocalTreeModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     LocalTreeItem *item = static_cast<LocalTreeItem*>(index.internalPointer());
-    if(!items.contains(item))
-        return QVariant();
 
     if (role == Qt::ToolTipRole)
         QToolTip::showText(QCursor::pos(), item->data(index.column()).toString());
@@ -100,8 +98,7 @@ QModelIndex LocalTreeModel::parent(const QModelIndex &index) const
         return QModelIndex();
 
     LocalTreeItem *childItem = static_cast<LocalTreeItem*>(index.internalPointer());
-
-    if (!childItem || !items.contains(childItem))
+    if (!childItem)
         return QModelIndex();
 
     LocalTreeItem *parentItem = childItem->getParentItem();
@@ -118,13 +115,10 @@ int LocalTreeModel::rowCount(const QModelIndex &parent) const
     if (parent.column() > 0)
         return 0;
 
-    if (!parent.isValid()) {
+    if (!parent.isValid())
         parentItem = rootItem;
-    } else {
+    else
         parentItem = static_cast<LocalTreeItem*>(parent.internalPointer());
-        if(!items.contains(parentItem))
-            return 0;
-    }
 
     QMutexLocker locker(&mutex);
     if (parentItem)
@@ -139,7 +133,7 @@ void LocalTreeModel::appendItem(LocalTreeItem* parent, IVariables &vars)
             LocalTreeItem *item = new LocalTreeItem(this, parent);
             item->setVariable(var.var);
             parent->appendChild(item);
-            items.append(item);
+
             if (var.children.size() > 0) {
                 appendItem(item, var.children);
             }
@@ -158,7 +152,6 @@ void LocalTreeModel::setDatas(IVariables &datas)
 
 void LocalTreeModel::clear()
 {
-    items.clear();
     if (rootItem) {
         beginRemoveRows(rootItem->index(), 0, rootItem->childCount() - 1);
         rootItem->removeChildren();
