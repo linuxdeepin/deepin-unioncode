@@ -69,7 +69,6 @@ void OutputPane::initUI()
     });
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->setSpacing(0);
 
     d->outputEdit = new DPlainTextEdit(this);
     d->outputEdit->setReadOnly(true);

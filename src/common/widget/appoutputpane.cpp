@@ -170,8 +170,6 @@ void AppOutputPane::createApplicationPane(const quint64 &pid, const QString &pro
 
     d->stackWidget->addWidget(pane);
     d->tabChosser->setCurrentIndex(d->tabChosser->count() - 1);
-
-    emit paneCreated(pid);
 }
 
 void AppOutputPane::setProcessFinished(const quint64 &pid)
