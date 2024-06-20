@@ -41,7 +41,6 @@ public:
 
     QString threadInfo() override;
     QString threadSelect(const int threadId) override;
-    QString frameSelect(const int threadId) override;
 
     QString listSourceFiles() override;
 

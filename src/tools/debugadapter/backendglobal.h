@@ -8,8 +8,4 @@
 //! May change output channal later.
 #define Log(message) printf("%s", message);
 
-static const int rootVariablesReference = 0;
-static const int registersReference = 1;
-static const int childVariablesReferenceBegin = 2;
-
 #endif // BACKENDGLOBAL_H

@@ -34,7 +34,6 @@ public:
 
     virtual QString threadInfo() = 0;
     virtual QString threadSelect(const int threadId) = 0;
-    virtual QString frameSelect(const int threadId) = 0;
 
     virtual QString stackListFrames() = 0;
     virtual QString stackListVariables() = 0;

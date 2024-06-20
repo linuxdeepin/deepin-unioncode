@@ -6,7 +6,6 @@
 #define DEBUGMANAGER_H
 
 #include "debugger/gdbmi/gdbdebugger.h"
-#include "backendglobal.h"
 
 #include "dap/protocol.h"
 
@@ -54,7 +53,6 @@ public:
 
     void threadInfo();
     void threadSelect(const int threadId);
-    void frameSelect(const int frameId);
 
     void stackListFrames();
     void stackListVariables();
