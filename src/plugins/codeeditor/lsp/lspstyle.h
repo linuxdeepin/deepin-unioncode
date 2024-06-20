@@ -43,9 +43,9 @@ public:
 
     virtual void setHover(const newlsp::Hover &hover);
 
-    virtual void setDefinition(const newlsp::Location &data, const QString &filePath);
-    virtual void setDefinition(const std::vector<newlsp::Location> &data, const QString &filePath);
-    virtual void setDefinition(const std::vector<newlsp::LocationLink> &data, const QString &filePath);
+    virtual void setDefinition(const newlsp::Location &data);
+    virtual void setDefinition(const std::vector<newlsp::Location> &data);
+    virtual void setDefinition(const std::vector<newlsp::LocationLink> &data);
     virtual void cleanDefinition(int pos);
 
 public slots:

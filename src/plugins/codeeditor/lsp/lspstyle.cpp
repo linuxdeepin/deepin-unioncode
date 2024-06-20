@@ -82,12 +82,12 @@ void LSPStyle::initLspConnection()
             EditorCallProxy::instance(), &EditorCallProxy::reqDoRename, Qt::UniqueConnection);
 
     /* to use QOverload cast virtual slot can't working */
-    connect(d->getClient(), QOverload<const newlsp::Location &, const QString &>::of(&newlsp::Client::definitionRes),
-            this, QOverload<const newlsp::Location &, const QString &>::of(&LSPStyle::setDefinition));
-    connect(d->getClient(), QOverload<const std::vector<newlsp::Location> &, const QString &>::of(&newlsp::Client::definitionRes),
-            this, QOverload<const std::vector<newlsp::Location> &, const QString &>::of(&LSPStyle::setDefinition));
-    connect(d->getClient(), QOverload<const std::vector<newlsp::LocationLink> &, const QString &>::of(&newlsp::Client::definitionRes),
-            this, QOverload<const std::vector<newlsp::LocationLink> &, const QString &>::of(&LSPStyle::setDefinition));
+    connect(d->getClient(), QOverload<const newlsp::Location &>::of(&newlsp::Client::definitionRes),
+            this, QOverload<const newlsp::Location &>::of(&LSPStyle::setDefinition));
+    connect(d->getClient(), QOverload<const std::vector<newlsp::Location> &>::of(&newlsp::Client::definitionRes),
+            this, QOverload<const std::vector<newlsp::Location> &>::of(&LSPStyle::setDefinition));
+    connect(d->getClient(), QOverload<const std::vector<newlsp::LocationLink> &>::of(&newlsp::Client::definitionRes),
+            this, QOverload<const std::vector<newlsp::LocationLink> &>::of(&LSPStyle::setDefinition));
 }
 
 void LSPStyle::requestCompletion(int line, int column)
@@ -301,9 +301,9 @@ void LSPStyle::setHover(const newlsp::Hover &hover)
         d->editor->showTips(d->hoverCache.getPosition(), showText.c_str());
 }
 
-void LSPStyle::setDefinition(const newlsp::Location &data, const QString &filePath)
+void LSPStyle::setDefinition(const newlsp::Location &data)
 {
-    if (!d->editor || d->editor->getFile() != filePath)
+    if (!d->editor)
         return;
 
     d->definitionCache.set(data);
@@ -312,29 +312,12 @@ void LSPStyle::setDefinition(const newlsp::Location &data, const QString &filePa
         setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
     } else {
         gotoDefinition();
-        d->definitionCache.clean();
     }
 }
 
-void LSPStyle::setDefinition(const std::vector<newlsp::Location> &data, const QString &filePath)
+void LSPStyle::setDefinition(const std::vector<newlsp::Location> &data)
 {
-    if (!d->editor || data.empty() || d->editor->getFile() != filePath)
-        return;
-
-    d->definitionCache.set(data);
-    if (d->definitionCache.switchMode() == DefinitionCache::ClickMode) {
-        auto textRange = d->definitionCache.getTextRange();
-        if (!textRange.isEmpty())
-            setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
-    } else {
-        gotoDefinition();
-        d->definitionCache.clean();
-    }
-}
-
-void LSPStyle::setDefinition(const std::vector<newlsp::LocationLink> &data, const QString &filePath)
-{
-    if (!d->editor || data.empty() || d->editor->getFile() != filePath)
+    if (!d->editor || data.empty())
         return;
 
     d->definitionCache.set(data);
@@ -343,7 +326,20 @@ void LSPStyle::setDefinition(const std::vector<newlsp::LocationLink> &data, cons
         setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
     } else {
         gotoDefinition();
-        d->definitionCache.clean();
+    }
+}
+
+void LSPStyle::setDefinition(const std::vector<newlsp::LocationLink> &data)
+{
+    if (!d->editor || data.empty())
+        return;
+
+    d->definitionCache.set(data);
+    if (d->definitionCache.switchMode() == DefinitionCache::ClickMode) {
+        auto textRange = d->definitionCache.getTextRange();
+        setDefinitionSelectedStyle(textRange.getStart(), textRange.getEnd());
+    } else {
+        gotoDefinition();
     }
 }
 

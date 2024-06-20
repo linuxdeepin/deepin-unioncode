@@ -74,10 +74,9 @@ public:
     void clean()
     {
         cleanFromLsp();
-        cursor = -1;
+        cursor = 0;
         PositionCache::clean();
         textRange.clean();
-        mode = ClickMode;
     }
     void cleanFromLsp()
     {
@@ -89,7 +88,7 @@ public:
     bool isEmpty()
     {
         return locations->empty() && !location.has_value() && locationLinks->empty()
-                && cursor == -1 && PositionCache::isEmpty()
+                && cursor == 0 && PositionCache::isEmpty()
                 && textRange.isEmpty();
     }
     std::vector<newlsp::Location> getLocations() const

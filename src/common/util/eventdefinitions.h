@@ -60,7 +60,7 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(breakpointRemoved, "fileName", "line")
            OPI_INTERFACE(contextMenu, "menu")
            OPI_INTERFACE(marginMenu, "menu")
-           OPI_INTERFACE(textChanged)
+           OPI_INTERFACE(keyPressEvent, "event")
            )
 
 OPI_OBJECT(symbol,

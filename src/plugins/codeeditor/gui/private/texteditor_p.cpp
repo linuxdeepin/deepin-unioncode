@@ -101,6 +101,9 @@ void TextEditorPrivate::initMargins()
     q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, Runtime);
 
     q->markerDefine(TextEditor::Background, RuntimeLineBackground);
+    q->setMarkerForegroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLineBackground);
+    q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLineBackground);
+
     q->markerDefine(TextEditor::Background, CustomLineBackground);
 }
 
@@ -119,11 +122,6 @@ void TextEditorPrivate::updateColorTheme()
 
         q->setMatchedBraceForegroundColor(QColor("#bec0c2"));
         q->setMatchedBraceBackgroundColor(QColor("#1d545c"));
-
-        QColor rlbColor = EditorColor::Table::get()->LightGreen;
-        rlbColor.setAlpha(qRound(255 * 0.3));
-        q->setMarkerForegroundColor(rlbColor, RuntimeLineBackground);
-        q->setMarkerBackgroundColor(rlbColor, RuntimeLineBackground);
     } else {
         // editor
         q->setPaper(QColor("#F8F8F8"));
@@ -137,9 +135,6 @@ void TextEditorPrivate::updateColorTheme()
 
         q->setMatchedBraceForegroundColor(QColor("#ff0000"));
         q->setMatchedBraceBackgroundColor(QColor("#b4eeb4"));
-
-        q->setMarkerForegroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLineBackground);
-        q->setMarkerBackgroundColor(EditorColor::Table::get()->YellowGreen, RuntimeLineBackground);
     }
 }
 
@@ -438,9 +433,6 @@ void TextEditorPrivate::onModified(int pos, int mtype, const QString &text, int 
     Q_UNUSED(foldPrev);
     Q_UNUSED(token);
     Q_UNUSED(annotationLinesAdded);
-
-    if (isAutoCompletionEnabled && !text.isEmpty())
-        editor.textChanged();
 
     if (mtype & TextEditor::SC_MOD_INSERTTEXT) {
         emit q->textAdded(pos, len, added, text, line);

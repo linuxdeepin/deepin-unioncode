@@ -111,6 +111,7 @@ void TabWidgetPrivate::changeFocusProxy()
 
 bool TabWidgetPrivate::processKeyPressEvent(QKeyEvent *event)
 {
+    editor.keyPressEvent(event->key());
     switch (event->modifiers()) {
     case Qt::ControlModifier: {
         switch (event->key()) {

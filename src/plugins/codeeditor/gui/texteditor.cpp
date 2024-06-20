@@ -40,7 +40,6 @@ void TextEditor::setFile(const QString &fileName)
     if (d->fileName == fileName)
         return;
 
-    beginUndoAction();
     d->isAutoCompletionEnabled = false;
     d->fileName = fileName;
     QString text;
@@ -55,7 +54,6 @@ void TextEditor::setFile(const QString &fileName)
     d->loadLexer();
     d->loadLSPStyle();
     d->isAutoCompletionEnabled = true;
-    endUndoAction();
 }
 
 QString TextEditor::getFile() const
