@@ -77,43 +77,16 @@ MainWindow::~MainWindow()
 DDockWidget *MainWindow::createDockWidget(DWidget *widget)
 {
     DDockWidget *dock = new DDockWidget(this);
-    dock->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
+    //todo(zta: set titleBar
     if (dock->titleBarWidget())
         delete dock->titleBarWidget();
-
-    auto header = new DockHeader(this);
-    dock->setTitleBarWidget(header);
+    dock->setTitleBarWidget(new DWidget(this));
 
     dock->setWidget(widget);
 
     return dock;
-}
-
-void MainWindow::deleteDockHeader(const QString &name)
-{
-    if (!d->dockList.contains(name))
-        return;
-
-    auto dock = d->dockList[name];
-    auto titleBar = dock->titleBarWidget();
-
-    if (titleBar)
-        delete titleBar;
-
-    dock->setTitleBarWidget(new QWidget());
-}
-
-void MainWindow::addToolBtnToDockHeader(const QString &dockName, DToolButton *btn)
-{
-    if (!d->dockList.contains(dockName))
-        return;
-
-    auto dock = d->dockList[dockName];
-    auto titleBar = qobject_cast<DockHeader *>(dock->titleBarWidget());
-
-    if (titleBar)
-        titleBar->addToolButton(btn);
 }
 
 void MainWindow::addWidget(const QString &name, QWidget *widget, Position pos)
@@ -138,15 +111,11 @@ void MainWindow::addWidget(const QString &name, QWidget *widget, Position pos)
 
     auto area = positionTodockArea(pos);
     auto dock = createDockWidget(widget);
-
     addDockWidget(area, dock);
 
     //initial dock size , modify it as other dock which on same position
     resizeDock(dock);
     d->dockList.insert(name, dock);
-
-    //add close btn to dock`s header
-    initDockHeader(dock, pos);
 }
 
 void MainWindow::addWidget(const QString &name, QWidget *widget, dpfservice::Position pos, Qt::Orientation orientation)
@@ -169,30 +138,6 @@ void MainWindow::addWidget(const QString &name, QWidget *widget, dpfservice::Pos
     //initial dock size , modify it as other dock which on same position
     resizeDock(dock);
     d->dockList.insert(name, dock);
-
-    //add close btn to dock`s header
-    initDockHeader(dock, pos);
-}
-
-void MainWindow::initDockHeader(DDockWidget *dock, dpfservice::Position pos)
-{
-    if (pos != Position::Left)
-        return;
-
-    auto closeBtn = new DToolButton(dock);
-    closeBtn->setCheckable(true);
-    closeBtn->setIcon(QIcon::fromTheme("go-previous").pixmap(20));
-
-    addToolBtnToDockHeader(d->dockList.key(dock), closeBtn);
-
-    connect(closeBtn, &DToolButton::clicked, dock, [=](){
-        if (dock->isVisible()) {
-            dock->hide();
-        } else {
-            dock->show();
-            resizeDock(d->dockList.key(dock), QSize(300, 300));
-        }
-    });
 }
 
 void MainWindow::resizeDock(QDockWidget *dock)

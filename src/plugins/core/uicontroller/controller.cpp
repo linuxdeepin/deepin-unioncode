@@ -83,7 +83,6 @@ class ControllerPrivate
     DWidget *contextWidget { nullptr };
     DStackedWidget *stackContextWidget { nullptr };
     DFrame *contextTabBar { nullptr };
-    QHBoxLayout *contextButtonLayout { nullptr };
     bool contextWidgetAdded { false };
 
     WindowStatusBar *statusBar { nullptr };
@@ -166,12 +165,6 @@ void Controller::registerService()
     }
     if (!windowService->showWidgetAtPosition) {
         windowService->showWidgetAtPosition = std::bind(&Controller::showWidgetAtPosition, this, _1, _2, _3);
-    }
-    if (!windowService->deleteDockHeader) {
-        windowService->deleteDockHeader = std::bind(&MainWindow::deleteDockHeader, d->mainWindow, _1);
-    }
-    if (!windowService->addToolBtnToDockHeader) {
-        windowService->addToolBtnToDockHeader = std::bind(&MainWindow::addToolBtnToDockHeader, d->mainWindow, _1, _2);
     }
     if (!windowService->setDockWidgetFeatures) {
         windowService->setDockWidgetFeatures = std::bind(&MainWindow::setDockWidgetFeatures, d->mainWindow, _1, _2);
@@ -436,7 +429,11 @@ void Controller::addContextWidget(const QString &title, AbstractWidget *contextW
     if (!isVisible)
         tabBtn->hide();
 
-    d->contextButtonLayout->addWidget(tabBtn);
+    QHBoxLayout *btnLayout = static_cast<QHBoxLayout *>(d->contextTabBar->layout());
+
+    btnLayout->addWidget(tabBtn);
+    btnLayout->setSpacing(0);
+    btnLayout->setContentsMargins(12, 6, 12, 6);
     connect(tabBtn, &DPushButton::clicked, qWidget, [=] {
         switchContextWidget(title);
     });
@@ -448,7 +445,6 @@ void Controller::showContextWidget()
 {
     if (!d->contextWidgetAdded) {
         d->mainWindow->addWidget(WN_CONTEXTWIDGET, d->contextWidget, Position::Bottom);
-        d->mainWindow->deleteDockHeader(WN_CONTEXTWIDGET);
         d->contextWidgetAdded = true;
     } else {
         d->mainWindow->showWidget(WN_CONTEXTWIDGET);
@@ -833,33 +829,10 @@ void Controller::initContextWidget()
     d->contextTabBar->setLineWidth(0);
     d->contextTabBar->setFixedHeight(40);
 
-    d->contextButtonLayout = new QHBoxLayout;
-    d->contextButtonLayout->setSpacing(0);
-    d->contextButtonLayout->setContentsMargins(12, 6, 12, 6);
-    d->contextButtonLayout->setAlignment(Qt::AlignLeft);
+    QHBoxLayout *contextTabLayout = new QHBoxLayout(d->contextTabBar);
+    contextTabLayout->setAlignment(Qt::AlignLeft);
 
-    DToolButton *hideBtn = new DToolButton(d->contextTabBar);
-    hideBtn->setFixedSize(35, 35);
-    hideBtn->setIcon(QIcon::fromTheme("expand"));
-    connect(hideBtn, &DToolButton::clicked, d->contextWidget, [=](){
-        if (d->stackContextWidget->isVisible()) {
-            d->stackContextWidget->hide();
-            hideBtn->setIcon(QIcon::fromTheme("fold"));
-            d->contextWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-            d->mainWindow->resizeDock(WN_CONTEXTWIDGET, d->contextTabBar->size());
-        } else {
-            d->contextWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-            d->stackContextWidget->show();
-            hideBtn->setIcon(QIcon::fromTheme("expand"));
-        }
-    });
-
-    QHBoxLayout *tabbarLayout = new QHBoxLayout(d->contextTabBar);
-    tabbarLayout->setContentsMargins(0, 0, 0, 0);
-    tabbarLayout->addLayout(d->contextButtonLayout);
-    tabbarLayout->addWidget(hideBtn, Qt::AlignRight);
-
-    QVBoxLayout *contextVLayout = new QVBoxLayout;
+    QVBoxLayout *contextVLayout = new QVBoxLayout();
     contextVLayout->setContentsMargins(0, 0, 0, 0);
     contextVLayout->setSpacing(0);
     contextVLayout->addWidget(d->contextTabBar);
@@ -968,28 +941,7 @@ void Controller::showWorkspace()
     if (d->showWorkspace != true) {
         d->mainWindow->addWidget(WN_WORKSPACE, d->workspace, Position::Left);
         d->mainWindow->resizeDock(WN_WORKSPACE, QSize(300, 300));
-
         d->showWorkspace = true;
-
-        DToolButton *expandAll = new DToolButton(d->workspace);
-        expandAll->setToolTip(tr("Expand All"));
-        expandAll->setIcon(QIcon::fromTheme("ide"));
-        d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, expandAll);
-        connect(expandAll, &DToolButton::clicked, this, [](){workspace.expandAll();});
-
-        DToolButton *foldAll = new DToolButton(d->workspace);
-        foldAll->setToolTip(tr("Fold All"));
-        foldAll->setIcon(QIcon::fromTheme("ide"));
-        d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, foldAll);
-        connect(foldAll, &DToolButton::clicked, this, [](){workspace.foldAll();});
-
-        expandAll->setVisible(d->workspace->getCurrentExpandState());
-        foldAll->setVisible(d->workspace->getCurrentExpandState());
-
-        connect(d->workspace, &WorkspaceWidget::expandStateChange, this, [=](bool canExpand){
-           expandAll->setVisible(canExpand);
-           foldAll->setVisible(canExpand);
-        });
     }
 
     d->mainWindow->showWidget(WN_WORKSPACE);
