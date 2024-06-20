@@ -4,7 +4,6 @@
 
 #include "binarytools.h"
 #include "mainframe/binarytoolsdialog.h"
-#include "configure/binarytoolsmanager.h"
 
 #include "common/common.h"
 #include "base/abstractaction.h"
@@ -27,14 +26,11 @@ bool BinaryTools::start()
         inputAction->setShortCutInfo("Tools.Binary", action->text());
         windowService->addAction(MWM_TOOLS, inputAction);
 
-        QObject::connect(action, &QAction::triggered, [=]() {
-            BinaryToolsDialog dlg;
-            dlg.exec();
+        QObject::connect(action, &QAction::triggered, [=](){
+           static BinaryToolsDialog dlg;
+           dlg.exec();
         });
     }
-
-    const auto &tools = BinaryToolsManager::instance()->tools();
-    BinaryToolsManager::instance()->checkAndAddToToolbar(tools);
 
     return true;
 }

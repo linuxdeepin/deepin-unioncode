@@ -165,7 +165,6 @@ class LSPStylePrivate
 public:
     QString formatDiagnosticMessage(const QString &message, int type);
     bool shouldStartCompletion(const QString &insertedText);
-    int wordPostion();
 
     CompletionCache completionCache;
     DefinitionCache definitionCache;

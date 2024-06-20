@@ -12,17 +12,47 @@ class BinaryToolsConfigView : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
 public:
+    struct RenameInfo{
+        QString oldName = "";
+        QString name = "";
+        int index = -1;
+        QString uniName = "";
+    };
+
     explicit BinaryToolsConfigView(QWidget *parent = nullptr);
     ~BinaryToolsConfigView();
 
     bool saveConfig();
+    void readConfig();
+    void renameConfigOperation(const QString &name, const QString &oldname, const QString &uniName);
+    void resetConfigOperation(const QString &oldname, int index);
 
-protected:
-    // bool eventFilter(QObject *obj, QEvent *e) override;
+    bool hasRename = false; // Whether the rename button was clicked
+    RenameInfo renameInfo;
+
+    QList<QString> getProgramList();
+    QList<QStringList> getArgumentsList();
+    QList<QString> getWorkingDirList();
+    QList<QMap<QString, QVariant>> getEnvironmentList();
+
+signals:
+    void comboChanged();
+    void useCombinationCommand();
 
 private:
+    void updateView(const QString &command);
+    void currentConfigChanged(const QString &text);
+    void initializeCombo();
+    void addCompatConfig();
+    void deleteCompatConfig();
+    void renameCompatConfig();
+    void combineCompatConfig();
+    void setConfigWidget();
+    void findWorkPath();
+    void appendCommand(const QString &name);
+    QString uniqueName(const QString &name);
+
     BinaryToolsConfigViewPrivate *const d = nullptr;
-    friend class BinaryToolsConfigViewPrivate;
 };
 
-#endif   // BINARYTOOLSCONFIGVIEW_H
+#endif // BINARYTOOLSCONFIGVIEW_H

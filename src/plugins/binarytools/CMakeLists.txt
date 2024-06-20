@@ -2,23 +2,30 @@ cmake_minimum_required(VERSION 3.0.2)
 
 project(binarytools)
 
-FILE(GLOB_RECURSE PROJECT_SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.json"
-)
+set(CXX_CPP
+    mainframe/binarytoolsconfigview.cpp
+    mainframe/binarytoolsdialog.cpp
+    mainframe/binarytoolssetting.cpp
+    mainframe/environmentview.cpp
+    binarytools.cpp
+    binarytools.json
+    )
 
-set (QRC_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/binarytools.qrc"
-)
+set(CXX_H
+    mainframe/binarytoolsconfigview.h
+    mainframe/binarytoolsdialog.h
+    mainframe/binarytoolssetting.h
+    mainframe/environmentview.h
+    binarytools.h
+    )
+
 
 add_library(${PROJECT_NAME}
     SHARED
-    ${PROJECT_SOURCES}
-    ${QRC_FILES}
-)
+    ${CXX_CPP}
+    ${CXX_H}
+    binarytools.qrc
+    )
 
 target_link_libraries(${PROJECT_NAME}
     framework
@@ -27,7 +34,7 @@ target_link_libraries(${PROJECT_NAME}
     services
     ${QtUseModules}
     ${PkgUserModules}
-)
+    )
 
 install_logo(${PROJECT_NAME}.svg)
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${PLUGIN_INSTALL_PATH})
