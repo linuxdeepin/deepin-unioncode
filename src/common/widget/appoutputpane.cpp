@@ -251,13 +251,6 @@ void AppOutputPane::slotCloseOutputPane()
 {
     auto index = d->tabChosser->currentIndex();
     auto *pane = qobject_cast<OutputPane *>(d->stackWidget->widget(index));
-    auto updateToolbar = [=](){
-        if (d->toolBarBindsToPane.values().contains(pane)) {
-            auto toolbarName = d->toolBarBindsToPane.key(pane);
-            d->toolBarBindsToPane.remove(toolbarName);
-            d->toolBars[toolbarName]->setVisible(false);
-        }
-    };
     if (pane && d->appPane.values().contains(pane)) {
         auto id = d->appPane.key(pane);
         //check is running
@@ -275,8 +268,6 @@ void AppOutputPane::slotCloseOutputPane()
                     d->tabChosser->removeItem(index);
                     d->appPane.remove(id);
                     d->appIsRunning.remove(id);
-                    updateToolbar();
-
                     delete pane;
                 } else if (buttonIndex == 1) {
                     d->checkCloseDialog->reject();
@@ -285,11 +276,13 @@ void AppOutputPane::slotCloseOutputPane()
             d->checkCloseDialog->setAttribute(Qt::WA_DeleteOnClose);
             d->checkCloseDialog->exec();
         } else {
-            d->stackWidget->removeWidget(pane);
             d->tabChosser->removeItem(index);
-            updateToolbar();
+            d->stackWidget->removeWidget(pane);
         }
     }
+
+    if (d->toolBarBindsToPane.values().contains(pane))
+        d->toolBarBindsToPane.remove(d->toolBarBindsToPane.key(pane));
 
     if (d->tabChosser->count() == 1 && d->stackWidget->currentWidget() == d->defaultPane) {
         d->tabbar->hide();
