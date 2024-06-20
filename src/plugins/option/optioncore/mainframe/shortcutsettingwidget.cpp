@@ -90,42 +90,22 @@ void ShortCut::updateUi()
         connect(keyEdit, &DKeySequenceEdit::editingFinished, this, [=](const QKeySequence &sequence) {
             bool inValid = keySequenceIsInvalid(sequence);
             QString oldShortcut = d->shortcutItemMap.value(id).last();
-            QKeySequence oldSequence(oldShortcut);
-
+            //todo(zta):
+                //异常情况下的警告：文本编辑器使用的弹窗，这里以前使用的是label来输出警告文字，但是现在整个窗口太大，警告文字会在下方，大部分情况下看不到。
             if (inValid) {
-                showWarning(tr("Shortcut Invalid"), tr("Shortcut Invalid, Please enter again!"));
                 qWarning() << "keySequence is invalid";
-                if (oldSequence.isEmpty()) {
-                    keyEdit->clear();
-                } else {
-                    keyEdit->setKeySequence(oldSequence);
-                }
+                keyEdit->setKeySequence(QKeySequence(oldShortcut));
                 return;
             }
             bool isRepeat = shortcutRepeat(sequence.toString());
             if (isRepeat) {
-                showWarning(tr("Shortcut Repeated"), tr("Shortcut Repeated, Please enter again!"));
                 qWarning() << "isRepeat!!";
-                if (oldSequence.isEmpty()){
-                    keyEdit->clear();
-                } else {
-                    keyEdit->setKeySequence(oldSequence);
-                }
+                keyEdit->setKeySequence(QKeySequence(oldShortcut));
                 return;
             }
             updateShortcut(id, sequence.toString());
         });
     }
-}
-
-inline void ShortCut::showWarning(const QString& title, const QString& message){
-    DDialog warningDialog;
-    warningDialog.setWindowTitle(title);
-    warningDialog.setMessage(message);
-    warningDialog.setIcon(QIcon::fromTheme("dialog-warning"));
-    warningDialog.addButton(tr("OK"));
-    warningDialog.exec();
-    return;
 }
 
 int ShortCut::rowCount() const
