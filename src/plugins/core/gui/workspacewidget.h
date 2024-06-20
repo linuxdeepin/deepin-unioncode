@@ -25,13 +25,14 @@ public:
     void registerToolBtnToWidget(DToolButton *btn, const QString &title);
     QList<DToolButton *> getAllToolBtn();
     QList<DToolButton *> getToolBtnByTitle(const QString &title);
-    bool switchWidgetWorkspace(const QString &title);
+    void switchWidgetWorkspace(const QString &title);
     bool getCurrentExpandState();
     QString getCurrentTitle() const;
 
+    bool addedToController { false };
+
 signals:
     void expandStateChange(bool canExpand);
-    void autoFocusStateChange(bool autoFocusState);
     void workSpaceWidgeSwitched(const QString &title);
 
 private:
@@ -45,6 +46,7 @@ private:
     QMap<QString, DWidget *> editWorkspaceWidgets;
     QMap<QString, DToolButton *> workspaceTabButtons;
     QMultiMap<QString, DToolButton *> toolBtnOfWidget;
+    QMap<DToolButton *, bool> toolBtnState;
     DStackedWidget *stackEditWorkspaceWidget { nullptr };
     DFrame *workspaceTabBar { nullptr };
 };
