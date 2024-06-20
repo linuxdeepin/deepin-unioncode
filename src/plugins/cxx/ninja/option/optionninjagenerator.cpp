@@ -24,11 +24,6 @@ OptionNinjaGenerator::OptionNinjaGenerator()
     d->widget = new NinjaOptionWidget();
 }
 
-OptionNinjaGenerator::~OptionNinjaGenerator()
-{
-    delete d;
-}
-
 QWidget *OptionNinjaGenerator::optionWidget()
 {
     return d->widget;

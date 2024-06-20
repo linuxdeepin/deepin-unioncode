@@ -26,7 +26,7 @@ static bool loadPlugins()
     // set plugin iid from qt style
     lifeCycle.setPluginIID(IID);
 
-    dpf::PluginSetting *setting = new dpf::PluginSetting(qApp);
+    dpf::PluginSetting *setting = new dpf::PluginSetting;
     lifeCycle.setSettings(setting);
 
     QString pluginsPath = CustomPaths::global(CustomPaths::Plugins);
@@ -63,7 +63,7 @@ static bool loadPlugins()
 
 void installTranslator(DApplication &a)
 {
-    QTranslator *translator = new QTranslator(&a);
+    QTranslator *translator = new QTranslator();
 
     auto result = CustomPaths::endSeparator(CustomPaths::global(CustomPaths::Translations));
     QFile file(CustomPaths::user(CustomPaths::Flags::Configures)

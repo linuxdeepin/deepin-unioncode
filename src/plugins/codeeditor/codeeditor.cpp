@@ -31,12 +31,6 @@ const QString SAVE_ALL_DOCUMENTS = CodeEditor::tr("Save All Documents");
 const QString CLOSE_ALL_DOCUMENTS = CodeEditor::tr("Close All Documents");
 const QString PRINT = CodeEditor::tr("Print");
 
-CodeEditor::CodeEditor()
-    :dpf::Plugin()
-{
-
-}
-
 void CodeEditor::initialize()
 {
     qInfo() << __FUNCTION__;
@@ -106,21 +100,21 @@ void CodeEditor::initActions()
     QAction *follSymbolAction = new QAction(tr("Follow Symbol Under Cursor"), this);
     QAction *toggleBreakpointAction = new QAction(tr("Toggle Breakpoint"), this);
 
-    auto inputBackAction = new AbstractAction(backAction, this);
+    auto inputBackAction = new AbstractAction(backAction);
     inputBackAction->setShortCutInfo("Editor.back", tr("Backward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Left));
-    auto inputForwardAction = new AbstractAction(forwardAction, this);
+    auto inputForwardAction = new AbstractAction(forwardAction);
     inputForwardAction->setShortCutInfo("Editor.forward",
                                         tr("Forward"), QKeySequence(Qt::Modifier::ALT | Qt::Key_Right));
-    auto inputCloseAction = new AbstractAction(closeAction, this);
+    auto inputCloseAction = new AbstractAction(closeAction);
     inputCloseAction->setShortCutInfo("Editor.close",
                                       tr("Close"), QKeySequence(Qt::Modifier::CTRL | Qt::Key_W));
-    auto inputswitchHeaderSourceAction = new AbstractAction(switchHeaderSourceAction, this);
+    auto inputswitchHeaderSourceAction = new AbstractAction(switchHeaderSourceAction);
     inputswitchHeaderSourceAction->setShortCutInfo("Editor.switchHS",
                                                    tr("Switch Header/Source"), QKeySequence(Qt::Key_F4));
-    auto inputfollSymbolAction = new AbstractAction(follSymbolAction, this);
+    auto inputfollSymbolAction = new AbstractAction(follSymbolAction);
     inputfollSymbolAction->setShortCutInfo("Editor.followSymbol",
                                            tr("Follow Symbol Under Cursor"), QKeySequence(Qt::Key_F2));
-    auto inputtoggleBreakpointAction = new AbstractAction(toggleBreakpointAction, this);
+    auto inputtoggleBreakpointAction = new AbstractAction(toggleBreakpointAction);
     inputtoggleBreakpointAction->setShortCutInfo("Editor.toggleBreak",
                                                  tr("Toggle Breakpoint"), QKeySequence(Qt::Key_F9));
 

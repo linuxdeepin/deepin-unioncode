@@ -11,9 +11,7 @@ class OptionGradleGeneratorPrivate;
 class OptionGradleGenerator : public dpfservice::OptionGenerator
 {
 public:
-    explicit OptionGradleGenerator();
-    ~OptionGradleGenerator() override;
-
+    OptionGradleGenerator();
     inline static QString kitName() {return "Gradle";}
     virtual QWidget *optionWidget() override;
 

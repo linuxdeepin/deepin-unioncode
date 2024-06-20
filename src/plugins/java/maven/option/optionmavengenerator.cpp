@@ -24,11 +24,6 @@ OptionMavenGenerator::OptionMavenGenerator()
     d->widget = new MavenOptionWidget();
 }
 
-OptionMavenGenerator::~OptionMavenGenerator()
-{
-    delete d;
-}
-
 QWidget *OptionMavenGenerator::optionWidget()
 {
     return d->widget;

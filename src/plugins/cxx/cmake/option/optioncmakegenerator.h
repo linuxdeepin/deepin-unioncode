@@ -11,9 +11,7 @@ class OptionCmakeGeneratorPrivate;
 class OptionCmakeGenerator : public dpfservice::OptionGenerator
 {
 public:
-    explicit OptionCmakeGenerator();
-    ~OptionCmakeGenerator() override;
-
+    OptionCmakeGenerator();
     inline static QString kitName() {return "CMake";}
     virtual QWidget *optionWidget() override;
 

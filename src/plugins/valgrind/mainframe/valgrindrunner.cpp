@@ -49,13 +49,13 @@ void ValgrindRunner::initialize()
         return;
 
     d->memcheckAction.reset(new QAction(MWMTA_VALGRIND_MEMCHECK, this));
-    auto memcheckActionImpl = new AbstractAction(d->memcheckAction.get(), this);
+    auto memcheckActionImpl = new AbstractAction(d->memcheckAction.get());
     memcheckActionImpl->setShortCutInfo("Analyze.ValgrindMemcheck",
                                         d->memcheckAction->text());
     windowService->addAction(MWM_TOOLS, memcheckActionImpl);
 
-    d->helgrindAction.reset(new QAction(MWMTA_VALGRIND_HELGRIND, this));
-    auto helgrindActionImpl = new AbstractAction(d->helgrindAction.get(), this);
+    d->helgrindAction.reset(new QAction(MWMTA_VALGRIND_HELGRIND, this));\
+    auto helgrindActionImpl = new AbstractAction(d->helgrindAction.get());
     helgrindActionImpl->setShortCutInfo("Analyze.ValgrindHelgrind",
                                         d->helgrindAction->text());
 

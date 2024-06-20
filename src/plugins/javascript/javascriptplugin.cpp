@@ -54,7 +54,7 @@ bool JavascriptPlugin::start()
     }
 
     // debugger register.
-    auto jsDebugger = new JSDebugger(qApp);
+    auto jsDebugger = new JSDebugger();
     auto debuggerService = dpfGetService(DebuggerService);
     if (debuggerService && debuggerService->registerDebugger) {
         debuggerService->registerDebugger("local", jsDebugger);

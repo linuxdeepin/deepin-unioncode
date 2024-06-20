@@ -35,7 +35,7 @@ void PluginManagerModule::initialize(Controller *_uiController)
     ActionManager::getInstance()->registerAction(
             pluginManagerAction, "Help.AboutPlugins", MWM_ABOUT_PLUGINS, QKeySequence());
 
-    auto actionOptionsImpl = new AbstractAction(pluginManagerAction, this);
+    auto actionOptionsImpl = new AbstractAction(pluginManagerAction);
     actionOptionsImpl->setShortCutInfo("Tools.Plugins",
                                        MWMTA_PLUGINS);
 

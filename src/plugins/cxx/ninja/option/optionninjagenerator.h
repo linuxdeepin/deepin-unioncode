@@ -11,9 +11,7 @@ class OptionNinjaGeneratorPrivate;
 class OptionNinjaGenerator : public dpfservice::OptionGenerator
 {
 public:
-    explicit OptionNinjaGenerator();
-    ~OptionNinjaGenerator() override;
-
+    OptionNinjaGenerator();
     inline static QString kitName() {return "Ninja";}
     virtual QWidget *optionWidget() override;
 

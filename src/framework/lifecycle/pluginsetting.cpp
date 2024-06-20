@@ -7,15 +7,11 @@
 
 DPF_USE_NAMESPACE
 
-PluginSetting::PluginSetting(QObject *parent)
-    : PluginSetting(Scope::UserScope, ORGANIZATION, QCoreApplication::applicationName(), parent)
-{
-}
-
 PluginSetting::PluginSetting(QSettings::Scope scope, const QString &organization,
                              const QString &application, QObject *parent)
-    : QSettings(scope, organization, application, parent)
+    : QSettings(scope,organization,application,parent)
 {
+
 }
 
 void PluginSetting::setPluginEnable(const PluginMetaObject &meta, bool enabled)

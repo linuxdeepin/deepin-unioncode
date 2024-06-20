@@ -15,7 +15,6 @@ class FindToolWindow : public QWidget
     Q_OBJECT
 public:
     explicit FindToolWindow(QWidget *parent = nullptr);
-    ~FindToolWindow() override;
 
 signals:
 

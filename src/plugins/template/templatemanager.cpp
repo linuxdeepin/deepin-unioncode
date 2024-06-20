@@ -52,7 +52,7 @@ void TemplateManager::addMenu()
 
     auto actionInit = [&](QAction *action, QString actionID, QKeySequence key, QString iconFileName){
         action->setIcon(QIcon::fromTheme(iconFileName));
-        AbstractAction *actionImpl = new AbstractAction(action, this);
+        AbstractAction *actionImpl = new AbstractAction(action);
         actionImpl->setShortCutInfo(actionID, action->text(), key);
 
         windowService->addAction(dpfservice::MWMFA_NEW_FILE_OR_PROJECT, actionImpl);

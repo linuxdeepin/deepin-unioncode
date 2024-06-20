@@ -31,7 +31,7 @@ bool ActionAnalyse::start()
         action->setChecked(Configure::enabled());
         QObject::connect(action, &QAction::toggled, Configure::setEnabled);
 
-        auto inputAction = new AbstractAction(action, this);
+        auto inputAction = new AbstractAction(action);
         inputAction->setShortCutInfo("Analyze.UsrActionAnalyze", action->text());
         windowService->addAction(MWM_TOOLS, inputAction);
     }

@@ -15,8 +15,6 @@ class ValgrindBar : public QWidget
     Q_OBJECT
 public:
     explicit ValgrindBar(QWidget *parent = nullptr);
-    ~ValgrindBar();
-
     void refreshDisplay(QTreeWidget *treeWidget);
 
 public slots:

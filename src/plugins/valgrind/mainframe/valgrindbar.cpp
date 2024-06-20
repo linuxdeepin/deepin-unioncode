@@ -39,11 +39,6 @@ ValgrindBar::ValgrindBar(QWidget *parent)
     QObject::connect(ValgrindRunner::instance(), &ValgrindRunner::clearValgrindBar, this, &ValgrindBar::clearDisplay);
 }
 
-ValgrindBar::~ValgrindBar()
-{
-    delete d;
-}
-
 void ValgrindBar::refreshDisplay(DTreeWidget *treeWidget)
 {
     treeWidget->clear();

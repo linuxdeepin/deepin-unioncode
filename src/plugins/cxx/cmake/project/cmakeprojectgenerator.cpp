@@ -75,7 +75,7 @@ CmakeProjectGenerator::CmakeProjectGenerator()
 
     // add run cmake menu item.
     QAction *runCMake = new QAction(tr("Run CMake"));
-    auto inputAction = new AbstractAction(runCMake, this);
+    auto inputAction = new AbstractAction(runCMake);
     inputAction->setShortCutInfo("Build.RunCMake", runCMake->text());
     dpfGetService(WindowService)->addAction(dpfservice::MWM_BUILD, inputAction);
 

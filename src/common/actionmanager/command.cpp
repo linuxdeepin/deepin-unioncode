@@ -29,22 +29,21 @@ ActionPrivate::ActionPrivate()
 
 ActionPrivate::~ActionPrivate()
 {
+
 }
 
-Action::Action(QString id, QAction *action, QObject *parent)
-    : Command(parent),
-      d(new ActionPrivate())
+Action::Action(QString id, QAction *action)
+    : d(new ActionPrivate())
 {
     d->id = id;
-
-    if (action && !action->parent())
-        action->setParent(this);
     d->action = action;
 }
 
 Action::~Action()
 {
-    delete d;
+    if (d) {
+        delete d;
+    }
 }
 
 QString Action::id() const

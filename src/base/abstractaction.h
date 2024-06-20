@@ -11,11 +11,11 @@
 #include <QAction>
 
 class AbstractActionPrivate;
-class AbstractAction : public QObject
+class AbstractAction
 {
     AbstractActionPrivate *const d;
 public:
-    explicit AbstractAction(QAction *qAction, QObject *parent = nullptr);
+    explicit AbstractAction(QAction *qAction);
     virtual ~AbstractAction();
     void setShortCutInfo(const QString &id, const QString &description, const QKeySequence defaultShortCut = QKeySequence());
     bool hasShortCut();

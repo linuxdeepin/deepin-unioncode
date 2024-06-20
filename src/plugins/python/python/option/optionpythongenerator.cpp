@@ -22,11 +22,6 @@ OptionPythonGenerator::OptionPythonGenerator()
     d->widget = new PythonOptionWidget();
 }
 
-OptionPythonGenerator::~OptionPythonGenerator()
-{
-    delete d;
-}
-
 DWidget *OptionPythonGenerator::optionWidget()
 {
     return d->widget;
