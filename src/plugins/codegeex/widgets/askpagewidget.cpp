@@ -202,10 +202,8 @@ void AskPageWidget::initInputWidget()
 
     QHBoxLayout *btnLayout = new QHBoxLayout;
     layout->addLayout(btnLayout);
-    btnLayout->setContentsMargins(0, 0, 0, 0);
 
     deleteBtn = new DToolButton(this);
-    deleteBtn->setFixedSize(30, 30);
     deleteBtn->setIcon(QIcon::fromTheme("codegeex_clear"));
     deleteBtn->setToolTip(tr("delete this session"));
     btnLayout->addWidget(deleteBtn);
@@ -214,13 +212,11 @@ void AskPageWidget::initInputWidget()
 
     historyBtn = new DToolButton(this);
     historyBtn->setIcon(QIcon::fromTheme("codegeex_history"));
-    historyBtn->setFixedSize(30, 30);
     historyBtn->setToolTip(tr("history sessions"));
     btnLayout->addWidget(historyBtn);
 
     createNewBtn = new DToolButton(this);
     createNewBtn->setIcon(QIcon::fromTheme("codegeex_new"));
-    createNewBtn->setFixedSize(30, 30);
     createNewBtn->setToolTip(tr("create new session"));
     btnLayout->addWidget(createNewBtn);
 
