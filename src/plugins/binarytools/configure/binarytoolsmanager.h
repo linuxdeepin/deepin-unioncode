@@ -11,7 +11,6 @@
 #include <QMenu>
 #include <QProcess>
 #include <QThread>
-#include <QMutex>
 
 namespace dpfservice {
 class WindowService;
@@ -49,7 +48,6 @@ private:
     QString workingDir;
     QProcessEnvironment environment;
 
-    QMutex mutex;
     QString stdOut;
     QString stdError;
     QProcess process;
