@@ -61,7 +61,6 @@ public:
     void stackListVariables();
     void fetchChildVariables(int64_t childReference);
     void evaluateWatchingVariable(const QString &expression, int frame);
-    void gotoLine(const QString &fileLine);
     dap::Variable getWatchingVariable(const QString &expression);
 
     void listSourceFiles();

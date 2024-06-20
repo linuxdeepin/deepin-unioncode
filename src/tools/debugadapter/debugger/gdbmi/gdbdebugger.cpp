@@ -263,12 +263,6 @@ QList<int> GDBDebugger::breakpointsForFile(const QString &filePath)
     return list;
 }
 
-void GDBDebugger::gotoLine(const QString &fileLine)
-{
-    DebugManager::instance()->command(QString("tbreak %1").arg(fileLine));
-    DebugManager::instance()->command(QString("jump %1").arg(fileLine));
-}
-
 dap::array<dap::StackFrame> GDBDebugger::allStackframes()
 {
     dap::array<dap::StackFrame> stackFrames;

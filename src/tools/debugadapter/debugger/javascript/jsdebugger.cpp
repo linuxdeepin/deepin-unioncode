@@ -213,12 +213,6 @@ QList<int> JSDebugger::breakpointsForFile(const QString &filePath)
     RET_EMPTY
 }
 
-void JSDebugger::gotoLine(const QString &fileLine)
-{
-    Q_UNUSED(fileLine)
-    return;
-}
-
 bool JSDebugger::isInferiorRunning() {
     return d->inferiorRunning;
 }

@@ -69,8 +69,6 @@ public:
     void clearBreakPoint() override;
     QList<int> breakpointsForFile(const QString &filePath) override;
 
-    void gotoLine(const QString &fileLine) override;
-
     bool isInferiorRunning() override;
 
     QString disassemble(const QString &address) override;

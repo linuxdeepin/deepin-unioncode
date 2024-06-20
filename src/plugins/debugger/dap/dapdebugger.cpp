@@ -398,24 +398,6 @@ void DAPDebugger::setBreakpointCondition(const QString &filePath, int lineNumber
     }
 }
 
-void DAPDebugger::jumpToLine(const QString &filePath, int lineNumber)
-{
-    if (!d->currentSession)
-        return;
-
-    dap::Source source;
-    source.path = filePath.toStdString();
-
-    if (d->runState == kStopped || d->runState == kRunning) {
-        auto response = d->currentSession->gotoTargets(source, lineNumber, 0);
-        for (auto target : response.value().targets) {
-            if (target.label == QString("%1:%2").arg(filePath, QString::number(lineNumber)).toStdString()) {
-                d->currentSession->goto_(d->threadId, target.id);
-            }
-        }
-    }
-}
-
 void DAPDebugger::evaluateWatchVariable(const QString &expression)
 {
     IVariable var;
@@ -494,7 +476,7 @@ void DAPDebugger::registerDapHandlers()
         details->threadId = event.threadId;
         details->text = event.text;
         //        details.totalFrames = event.;
-        details->allThreadsStopped = event.allThreadsStopped.has_value() ? event.allThreadsStopped.value() : dap::boolean(true);
+        details->allThreadsStopped = event.allThreadsStopped.value();
         //        details.framesErrorMessage = even;
         details->hitBreakpointIds = event.hitBreakpointIds;
         d->currentSession->getStoppedDetails().push_back(details);
@@ -506,8 +488,7 @@ void DAPDebugger::registerDapHandlers()
                 || event.reason == "breakpoint-hit"
                 || event.reason == "function-finished"
                 || event.reason == "end-stepping-range"
-                || (event.reason == "signal-received" && d->pausing)
-                || event.reason == "goto") {
+                || (event.reason == "signal-received" && d->pausing)) {
             if (event.threadId) {
                 d->threadId = event.threadId.value(0);
                 int curThreadID = static_cast<int>(d->threadId);
@@ -766,11 +747,6 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
             QString expression = edit->text();
             setBreakpointCondition(filePath, line, expression);
         }
-    } else if (event.data() == editor.jumpToLine.name) {
-        QString filePath = event.property("fileName").toString();
-        int line = event.property("line").toInt();
-
-        jumpToLine(filePath, line);
     }
 }
 

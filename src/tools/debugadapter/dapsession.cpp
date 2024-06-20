@@ -44,7 +44,6 @@ class DapSessionPrivate
     bool isThreadRequestReceived = false;
     bool isInferiorStopped = true;
 
-    QVector<GotoTarget> gotoTargets;
     QString ppid;
 
     ConditionLock startedLock;
@@ -613,32 +612,6 @@ void DapSession::registerHanlder()
         Log("--> Server sent Evaluate response to client\n")
         return response;
     });
-
-    d->session->registerHandler([&](const dap::GotoTargetsRequest &request) {
-        Log("<-- Server received GoToTargets request from client\n")
-        GotoTargetsResponse response;
-        GotoTarget target;
-        auto filePath = request.source.path.has_value() ? request.source.path.value() : "";
-        // label = filepath:line
-        target.label = filePath + ':' + QString::number(request.line).toStdString();
-        target.line = request.line;
-        target.id = 0;
-        d->gotoTargets.clear();
-        d->gotoTargets.push_back(target);
-        response.targets.push_back(target);
-        Log("--> Server sent GoToTargets response to client\n")
-        return response;
-    });
-
-    d->session->registerHandler([&](const dap::GotoRequest &request) {
-        Log("<-- Server received Goto request from client\n")
-        GotoResponse response;
-        auto target = d->gotoTargets.at(0);
-        d->debugger->gotoLine(QString::fromStdString(target.label));
-
-        Log("--> Server sent Goto response to client\n")
-        return response;
-    });
 }
 
 void DapSession::handleAsyncContinued(const dap::ContinuedEvent &continuedEvent)
@@ -773,7 +746,6 @@ InitializeResponse DapSession::handleInitializeReq(const InitializeRequest &requ
     response.supportTerminateDebuggee = true;
     response.supportsCompletionsRequest = true;
     response.supportsDisassembleRequest = true;
-    response.supportsGotoTargetsRequest = true;
 
     Log("--> Server sent initialize response to client\n")
     return response;

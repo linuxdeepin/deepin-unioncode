@@ -58,8 +58,6 @@ public:
     virtual void clearBreakPoint() = 0;
     virtual QList<int> breakpointsForFile(const QString &filePath) = 0;
 
-    virtual void gotoLine(const QString &fileLine) = 0;
-
     virtual bool isInferiorRunning() = 0;
 
     virtual QString disassemble(const QString &address) { Q_UNUSED(address) return "";}
