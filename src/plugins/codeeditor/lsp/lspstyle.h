@@ -16,39 +16,39 @@ class LSPStyle : public QObject
     Q_OBJECT
 public:
     explicit LSPStyle(TextEditor *parent);
-    virtual ~LSPStyle();
+    ~LSPStyle();
 
-    virtual void initLspConnection();   //setting main
+    void initLspConnection();   //setting main
     void requestCompletion(int line, int column);
     void updateTokens();
     void setIndicStyle();
-    virtual QColor symbolIndicColor(lsp::SemanticTokenType::type_value token,
-                                    QList<lsp::SemanticTokenType::type_index> modifier);
+    QList<newlsp::DocumentSymbol> documentSymbolList() const;
+    QList<newlsp::SymbolInformation> symbolInformationList() const;
+    QColor symbolIndicColor(lsp::SemanticTokenType::type_value token,
+                            QList<lsp::SemanticTokenType::type_index> modifier);
 
     /*!
      * \brief tokenFromServProvider find local token from lsp protocol init response provider data
      * \param token from token request (tokenFull) key
      * \return local key
      */
-    virtual lsp::SemanticTokenType::type_value tokenToDefine(int token);
+    lsp::SemanticTokenType::type_value tokenToDefine(int token);
 
-    virtual void setMargin();
+    void setDiagnostics(const newlsp::PublishDiagnosticsParams &data);
+    void cleanDiagnostics();
 
-    virtual void setDiagnostics(const newlsp::PublishDiagnosticsParams &data);
-    virtual void cleanDiagnostics();
+    void setTokenFull(const QList<lsp::Data> &tokens, const QString &filePath);
+    void refreshTokens();
+    void cleanTokenFull();
 
-    virtual void setTokenFull(const QList<lsp::Data> &tokens, const QString &filePath);
-    virtual void refreshTokens();
-    virtual void cleanTokenFull();
+    void setHover(const newlsp::Hover &hover);
 
-    virtual void setHover(const newlsp::Hover &hover);
+    void setDefinition(const newlsp::Location &data, const QString &filePath);
+    void setDefinition(const std::vector<newlsp::Location> &data, const QString &filePath);
+    void setDefinition(const std::vector<newlsp::LocationLink> &data, const QString &filePath);
+    void cleanDefinition(int pos);
 
-    virtual void setDefinition(const newlsp::Location &data, const QString &filePath);
-    virtual void setDefinition(const std::vector<newlsp::Location> &data, const QString &filePath);
-    virtual void setDefinition(const std::vector<newlsp::LocationLink> &data, const QString &filePath);
-    virtual void cleanDefinition(int pos);
-
-    virtual void rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits, const QString &filePath);
+    void rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits, const QString &filePath);
 
 public slots:
     void switchHeaderSource(const QString &file);
@@ -74,6 +74,8 @@ private slots:
     void renameSymbol(const QString &text);
     void gotoDefinition();
     void handleSwitchHeaderSource(const QString &file);
+    void handleDocumentSymbolResult(const QList<newlsp::DocumentSymbol> &docSymbols, const QString &filePath);
+    void handleSymbolInfomationResult(const QList<newlsp::SymbolInformation> &symbolInfos, const QString &filePath);
 
 private:
     QSharedPointer<LSPStylePrivate> d { nullptr };

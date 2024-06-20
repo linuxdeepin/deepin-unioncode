@@ -677,6 +677,22 @@ bool TextEditor::isAutomaticInvocationEnabled() const
     return d->isAutoCompletionEnabled;
 }
 
+QList<newlsp::DocumentSymbol> TextEditor::documentSymbolList() const
+{
+    if (!d->lspStyle)
+        return {};
+
+    return d->lspStyle->documentSymbolList();
+}
+
+QList<newlsp::SymbolInformation> TextEditor::symbolInfoList() const
+{
+    if (!d->lspStyle)
+        return {};
+
+    return d->lspStyle->symbolInformationList();
+}
+
 void TextEditor::onMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
 {
     Q_UNUSED(state)
