@@ -13,7 +13,6 @@
 #include <QTextLayout>
 #include <QPainter>
 #include <QDebug>
-#include <QPainterPath>
 
 DGUI_USE_NAMESPACE
 
