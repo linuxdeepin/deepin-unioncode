@@ -79,7 +79,7 @@ public slots:
     /**
      * interface triggered.
      */
-    void slotFrameSelected();
+    void slotFrameSelected(const QModelIndex &index);
     void slotBreakpointSelected(const QModelIndex &index);
     bool showStoppedBySignalMessageBox(QString meaning, QString name);
     void currentThreadChanged(const QString &text);
