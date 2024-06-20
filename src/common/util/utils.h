@@ -19,14 +19,9 @@ namespace utils {
         iconBtn->setIcon(action->icon());
         iconBtn->setFixedSize(QSize(36, 36));
 
-        QString toolTipStr = action->text();
-        if (!action->shortcut().isEmpty()) {
-            toolTipStr = toolTipStr + " " + action->shortcut().toString();
-            iconBtn->setShortcut(action->shortcut());
-        }
-
-        if (!toolTipStr.isEmpty())
-            iconBtn->setToolTip(toolTipStr);
+        QString toolTipStr = action->text() + " " + action->shortcut().toString();
+        iconBtn->setToolTip(toolTipStr);
+        iconBtn->setShortcut(action->shortcut());
 
         QObject::connect(iconBtn, &DToolButton::clicked, action, &QAction::triggered);
         QObject::connect(action, &QAction::changed, iconBtn, [=] {
