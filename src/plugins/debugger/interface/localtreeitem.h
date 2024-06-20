@@ -40,9 +40,6 @@ public:
     bool hasChildren();
     int64_t childReference();
 
-    bool canFetchChildren();
-    void setChildrenFetched(bool fetch);
-
     QModelIndex index() const;
 
 private:
@@ -56,7 +53,6 @@ private:
     dap::Variable itemVariable;
     LocalTreeItem *parentItem = nullptr;
     LocalTreeModel *model = nullptr;
-    bool childrenFetched = false;
 };
 
 #endif // TREEITEM_H
