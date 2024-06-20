@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(valgrind)
+project(plugin-valgrind)
 
 set(CXX_CPP
     mainframe/valgrindrunner.cpp

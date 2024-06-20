@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(codeporting)
+project(plugin-codeporting)
 
 set(CXX_CPP
     codeporting.json

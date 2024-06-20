@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(filebrowser)
+project(plugin-filebrowser)
 
 set(CXX_CPP
     transceiver/sendevents.cpp

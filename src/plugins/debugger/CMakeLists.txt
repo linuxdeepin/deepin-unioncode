@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(debugger)
+project(plugin-debugger)
 
 set(CPPDAP_DIR ${CMAKE_SOURCE_DIR}/3rdparty/cppdap)
 include_directories(${CPPDAP_DIR}/include)

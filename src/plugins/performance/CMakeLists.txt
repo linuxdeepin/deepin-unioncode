@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 include(${CMAKE_SOURCE_DIR}/3rdparty/unioncode-jsonrpccpp.cmake)
 
-project(performance)
+project(plugin-performance)
 
 configure_file(mainframe/config.h.in config.h)
 include_directories(${PROJECT_BINARY_DIR})

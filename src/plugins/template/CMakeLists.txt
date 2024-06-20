@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(template)
+project(plugin-template)
 
 set(CXX_CPP
     wizard/detailwidget.cpp
