@@ -8,9 +8,9 @@
 
 #include <QFile>
 #include <QJsonParseError>
+#include <QJsonObject>
 #include <QJsonArray>
 #include <QDir>
-#include <QDebug>
 
 namespace templateMgr {
 
@@ -107,47 +107,9 @@ bool TemplateParser::readWizardConfig(const QString &projectPath, WizardInfo &wi
     wizardInfo.language = rootObject.value("language").toString();
     wizardInfo.trDisplayName = rootObject.value("trDisplayName").toString();
     wizardInfo.trDescription = rootObject.value("trDescription").toString();
-    wizardInfo.wizardType = rootObject.value("wizardType").toString();
+    QJsonArray configures = rootObject.value("configures").toArray();
+    QJsonObject generator = rootObject.value("generator").toObject();
 
-    if (wizardInfo.wizardType == "QTCtype") {
-        parsePages(rootObject, wizardInfo);
-        parseGenerators(rootObject, wizardInfo);
-    } else {
-        parseConfigures(rootObject, wizardInfo);
-        parseGenerator(rootObject, wizardInfo);
-    }
-
-    return true;
-}
-
-void TemplateParser::parsePages(const QJsonObject &object, WizardInfo &wizardInfo)
-{
-    QJsonArray pages = object.value("pages").toArray();
-    foreach (auto page , pages) {
-        Page pageItem;
-        pageItem.displayName = page.toObject().value("trDisplayName").toString();
-        pageItem.shortTitle = page.toObject().value("trShortTitle").toString();
-        pageItem.typeId = page.toObject().value("typeId").toString();
-
-        QJsonArray datas = page.toObject().value("data").toArray();
-        foreach (auto data , datas) {
-            EditItem item;
-            item.key = data.toObject().value("name").toString();
-            item.displayName = data.toObject().value("trDisplayName").toString();
-            item.type = data.toObject().value("type").toString();
-            QJsonObject itemData = data.toObject().value("data").toObject();
-            item.data = itemData;
-            
-            pageItem.items.append(item);
-        }
-
-        wizardInfo.pages.push_back(pageItem);
-    }
-}
-
-void TemplateParser::parseConfigures(const QJsonObject &object, WizardInfo &wizardInfo)
-{
-    QJsonArray configures = object.value("configures").toArray();
     foreach (auto configure, configures) {
         EditItem editItem;
         editItem.key = configure.toObject().value("key").toString();
@@ -161,11 +123,6 @@ void TemplateParser::parseConfigures(const QJsonObject &object, WizardInfo &wiza
 
         wizardInfo.configures.push_back(editItem);
     }
-}
-
-void TemplateParser::parseGenerator(const QJsonObject &object, WizardInfo &wizardInfo)
-{
-    QJsonObject generator = object.value("generator").toObject();
 
     wizardInfo.generator.rootFolder = generator.value("rootFolder").toString();
     wizardInfo.generator.templateFile = generator.value("templateFile").toString();
@@ -182,25 +139,8 @@ void TemplateParser::parseGenerator(const QJsonObject &object, WizardInfo &wizar
 
         wizardInfo.generator.operations.push_back(op);
     }
-}
 
-void TemplateParser::parseGenerators(const QJsonObject &object, WizardInfo &wizardInfo)
-{
-    QJsonObject generator = object.value("generators").toArray().at(0).toObject();
-    
-    wizardInfo.generator.templateFile = generator.value("templateFile").toString();
-    QJsonArray dataArray = generator.value("data").toArray();
-    foreach (auto data, dataArray) {
-        FileOperator op;
-        op.sourceFile = data.toObject().value("source").toString();
-        op.newFile = data.toObject().value("target").toString();
-        QJsonArray replaceKeys = data.toObject().value("replaceKeys").toArray();
-        foreach (auto replaceKey, replaceKeys) {
-            op.replaceKeys.push_back(replaceKey.toString());
-        }
-
-        wizardInfo.generator.operations.push_back(op);
-    }
+    return true;
 }
 
 } //namespace templateMgr

@@ -48,16 +48,7 @@
                     "leafNode": true
                 }
             ]
-        },
-	 {
-	      "type": "Custom",
-	      "templates":[{
-			"name": "dfm-extension",
-			"path": "projects/dfm-extension",
-			"leafNode":true
-		  }
-	     ]	 
-	 }
+        }
     ],
     "Files": [{
         "type": "C++",

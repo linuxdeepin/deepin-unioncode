@@ -5,9 +5,6 @@
 #include "detailwidget.h"
 #include "templateparser.h"
 #include "maindialog.h"
-#include "projectpane.h"
-#include "fieldspane.h"
-#include "kitspane.h"
 #include "services/language/languageservice.h"
 
 #include "common/util/custompaths.h"
@@ -39,7 +36,7 @@ class DetailWidgetPrivate
     QMap<QString, DComboBox*> comboBoxMap;
     WizardInfo wizardInfo;
     DLabel *label = nullptr;
-    QList<AbstractPane *> paneList;
+
 };
 
 DetailWidget::DetailWidget(DWidget *parent)
@@ -53,13 +50,11 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     : DScrollArea(parent)
     , d(new DetailWidgetPrivate())
 {
-    setLineWidth(0);
+    this->setLineWidth(0);
     d->templatePath = templatePath;
     if (!TemplateParser::readWizardConfig(d->templatePath, d->wizardInfo))
         return;
-    
     QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->setContentsMargins(10, 0, 20, 0);
     vLayout->addSpacing(10);
 
     DWidget *widget = new DWidget(this);
@@ -76,117 +71,113 @@ DetailWidget::DetailWidget(const QString &templatePath, DWidget *parent)
     create->setFixedSize(173, 36);
 
     // 创建两按钮间的分割线
-    DVerticalLine *separator = new DVerticalLine(this);
+    DFrame *separator = new DFrame;
+    separator->setFrameShape(QFrame::VLine);
     separator->setMaximumHeight(28);
+    
 
+    bottomLayout->addStretch(15);
     bottomLayout->addWidget(cancel);
     bottomLayout->addWidget(separator);
     bottomLayout->addWidget(create);
 
     connect(create, &DSuggestButton::clicked, [&](){
-        PojectGenParam param;
-        if(this->getGenParams(param))
-        generate(param);
+            PojectGenParam param;
+            if(this->getGenParams(param))
+                generate(param);
     });
 
     connect(cancel, &DPushButton::clicked, this , &DetailWidget::closeSignal);
 
-    if (d->wizardInfo.wizardType == "QTCtype") {
-        auto page = d->wizardInfo.pages.begin();
-        for (; page != d->wizardInfo.pages.end(); ++page) {
-            if (page->typeId == "Project") {
-                auto pane = new ProjectPane(page->shortTitle, this);
-                d->paneList.append(pane);
-                vLayout->addWidget(pane);
-            } else if (page->typeId == "Fields") {
-                vLayout->addWidget(new DHorizontalLine(this));
-                auto pane = new FieldsPane(*page, this);
-                vLayout->addWidget(pane);
-                d->paneList.append(pane);
-            } else if (page->typeId == "Kits") {
-                vLayout->addWidget(new DHorizontalLine(this));
-                auto pane = new KitsPane(*page, this);
-                vLayout->addWidget(pane);
-                d->paneList.append(pane);
-            }
-        }
-    } else {
-        auto iter = d->wizardInfo.configures.begin();
+    //调整窗口的上边距
+    vLayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    auto iter = d->wizardInfo.configures.begin();
+    for (; iter != d->wizardInfo.configures.end(); ++iter) {
+        QHBoxLayout *hLayout = new QHBoxLayout();
         QFormLayout *fLayout = new QFormLayout();
-        fLayout->setSpacing(10);
 
-        for (; iter != d->wizardInfo.configures.end(); ++iter) {
-            QHBoxLayout *hLayout = new QHBoxLayout();
-            if (iter->displayName == "File Name")
-                d->label = new DLabel(tr("File Name:"), this);
-            else if(iter->displayName == "Project Name")
-                d->label = new DLabel(tr("Project Name:"), this);
-            else if(iter->displayName == "Location")
-                d->label = new DLabel(tr("Location:"), this);
+        if (iter->displayName == "File Name")
+            d->label = new DLabel(tr("File Name:"), this);
+        else if(iter->displayName == "Project Name")
+            d->label = new DLabel(tr("Project Name:"), this);
+        else if(iter->displayName == "Location")
+            d->label = new DLabel(tr("Location:"), this);
 
-            d->label->setMinimumSize(55, 20);
-            d->label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            d->label->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+        d->label->setMinimumSize(55, 20);
+        d->label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        d->label->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
 
-            if ("lineEdit" == iter->type) {
-                DLineEdit *lineEdit = new DLineEdit(this);
-                if (!iter->defaultValues.isEmpty()) {
-                    lineEdit->setText(iter->defaultValues.at(0));
-                }
-                hLayout->addWidget(lineEdit);
-                hLayout->setSpacing(10);
-
-                d->lineEditMap.insert(iter->key, lineEdit);
-                if (iter->browse) {
-                    lineEdit->lineEdit()->setReadOnly(true);
-
-                    DSuggestButton *browse = new DSuggestButton("...", this);
-                    browse->setFixedSize(36, 36);
-                    hLayout->addWidget(browse, 0);
-                    hLayout->setContentsMargins(0, 0, 0, 0);
-
-                    connect(browse, &DPushButton::clicked, [=]() {
-                        QString path = DFileDialog::getExistingDirectory(this, tr("Choose path"), QDir::homePath());
-                        if (!path.isEmpty()) {
-                            lineEdit->setText(path);
-                        }
-                    });
-                }
-
-                auto displayName = iter->displayName;
-                connect(create, &DSuggestButton::clicked, [this, lineEdit, displayName](){
-                     if(!lineEdit->text().isEmpty()) {
-                         return;
-                     }
-                     QString alertMsg;
-                     if (displayName == "File Name")
-                        alertMsg = tr("The filename can't be empty!");
-                     else if (displayName == "Project Name")
-                        alertMsg = tr("The project can't be empty!");
-                     else if (displayName == "Location")
-                        alertMsg = tr("The address can't be empty!");
-
-                     lineEdit->showAlertMessage(alertMsg);
-                });
-            } else if ("comboBox" == iter->type) {
-                DComboBox *comboBox = new DComboBox(this);
-                hLayout->addWidget(comboBox);
-
-                if (!iter->defaultValues.isEmpty()) {
-                    comboBox->addItems(iter->defaultValues);
-                    comboBox->setCurrentIndex(0);
-                }
-                d->comboBoxMap.insert(iter->key, comboBox);
+        if ("lineEdit" == iter->type) {
+            DLineEdit *lineEdit = new DLineEdit();
+            if (!iter->defaultValues.isEmpty()) {
+                lineEdit->setText(iter->defaultValues.at(0));
             }
+            hLayout->addWidget(d->label, 0, Qt::AlignRight);
+            hLayout->addWidget(lineEdit,Qt::AlignCenter);
+            hLayout->setSpacing(10);
 
-            fLayout->addRow(d->label, hLayout);
+            d->lineEditMap.insert(iter->key, lineEdit);
+            if (iter->browse) {
+                lineEdit->setFixedSize(244, 36);
+                lineEdit->lineEdit()->setReadOnly(true);  //设置lineedit是否为只读模式
+
+                DSuggestButton *browse = new DSuggestButton("...");
+                browse->setFixedSize(36, 36);
+                hLayout->addWidget(browse, 0);
+                lineEdit->lineEdit()->setAlignment(Qt::AlignCenter);
+                hLayout->setContentsMargins(0, 0, 0, 0);
+
+                connect(browse, &DPushButton::clicked, [=]() {
+                    QString path = DFileDialog::getExistingDirectory(this, tr("Choose path"), QDir::homePath());
+                    if (!path.isEmpty()) {
+                        lineEdit->setText(path);
+                    }
+                });
+            } else {
+                lineEdit->setFixedSize(290, 36);
+            }
+            // 使用传值方式捕获迭代器和displayName
+            auto displayName = iter->displayName;
+            connect(create, &DSuggestButton::clicked, [this, lineEdit, displayName](){
+                 if(!lineEdit->text().isEmpty()) {
+                     return;
+                 }
+                 QString alertMsg;
+                 if (displayName == "File Name")
+                    alertMsg = tr("The filename can't be empty!");
+                 else if(displayName == "Project Name")
+                    alertMsg = tr("The project can't be empty!");
+                 else if(displayName == "Location")
+                    alertMsg = tr("The address can't be empty!");
+
+                 lineEdit->showAlertMessage(alertMsg);
+            });
+
+        } else if ("comboBox" == iter->type) {
+            DComboBox *comboBox = new DComboBox();
+            comboBox->setFixedSize(400, 30);
+            hLayout->addWidget(comboBox, 0, Qt::AlignLeft);
+            hLayout->setStretchFactor(comboBox, 3);
+
+            if (!iter->defaultValues.isEmpty()) {
+                comboBox->addItems(iter->defaultValues);
+                comboBox->setCurrentIndex(0);
+            }
+            d->comboBoxMap.insert(iter->key, comboBox);
         }
+
+        fLayout->addRow(hLayout);
         vLayout->addLayout(fLayout);
+
+        // 用循环创建的二排label和lineedit， 用spacer控制上下间距
+        vLayout->addSpacerItem(new QSpacerItem(0, 13, QSizePolicy::Minimum, QSizePolicy::Expanding));
     }
-    //make the button at bottom
+
+    //将取消和创建按钮移至窗口底部
+    vLayout->addSpacerItem(new QSpacerItem(0, 160, QSizePolicy::Minimum, QSizePolicy::Expanding));
     vLayout->addWidget(bottomWidget);
     setWidget(widget);
-    setWidgetResizable(true);
 }
 
 DetailWidget::~DetailWidget()
@@ -224,12 +215,6 @@ void DetailWidget::generate(const PojectGenParam &param)
 
 bool DetailWidget::getGenParams(PojectGenParam &param)
 {
-    foreach (auto pane, d->paneList) {
-        auto value = pane->getValue();
-        foreach (auto key , value.keys())
-            param.settingParamMap.insert("%{" + key + "}", value.value(key).toString().trimmed());
-    }
-    
     foreach (auto key, d->lineEditMap.keys()) {
         auto lineEdit = d->lineEditMap.value(key);
         if (lineEdit->text().trimmed().isEmpty()) {
@@ -251,17 +236,8 @@ bool DetailWidget::getGenParams(PojectGenParam &param)
     } else if (d->wizardInfo.type == "file") {
         param.type = File;
     }
-
-    param.kit = d->wizardInfo.kit.isEmpty() ? param.settingParamMap.value("%{kit}") : getVariable(d->wizardInfo.kit, param);
-    param.language = d->wizardInfo.language.isEmpty() ? param.settingParamMap.value("%{language}") : getVariable(d->wizardInfo.language, param);
+    param.kit = d->wizardInfo.kit;
+    param.language = d->wizardInfo.language;
 
     return true;
-}
-
-QString DetailWidget::getVariable(const QString &variable, PojectGenParam &param)
-{
-    if (variable.startsWith("%{") && param.settingParamMap.contains(variable))
-        return param.settingParamMap.value(variable);
-    
-    return variable;
 }

@@ -97,14 +97,14 @@ bool ProjectGenerate::genProject(PojectGenResult &retResult, const PojectGenPara
         return false;
     }
 
-    QString dstPath = genParam.settingParamMap.value("%{Location}");
+    QString dstPath = genParam.settingParamMap.value(genParam.generator.destPath);
     if (dstPath.isEmpty()) {
         retResult.message = tr("Target path is empty!");
         return false;
     }
 
     QString projectPath = dstPath + QDir::separator() +
-            genParam.settingParamMap.value("%{ProjectName}");
+            genParam.settingParamMap.value(genParam.generator.rootFolder);
 
     if (QDir(projectPath).exists()) {
         retResult.message = projectPath + tr(" has existed, please remove it firstly.");
