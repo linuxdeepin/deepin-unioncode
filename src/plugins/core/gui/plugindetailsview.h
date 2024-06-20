@@ -22,15 +22,7 @@ class DTextEdit;
 class DLabel;
 DWIDGET_END_NAMESPACE
 
-// webengine could not used on some platform
-#ifdef LOONGARCH64
-#define NOT_USE_WEBENGINE
-#endif
-
-#ifndef NOT_USE_WEBENGINE
 class AutoZoomWebEngineView;
-#endif
-
 class DetailsView : public DTK_WIDGET_NAMESPACE::DWidget
 {
     Q_OBJECT
@@ -59,9 +51,7 @@ private:
 
     DTK_WIDGET_NAMESPACE::DPushButton *loadBtn {nullptr};
     dpf::PluginMetaObjectPointer pluginMetaInfo;
-#ifndef NOT_USE_WEBENGINE
     AutoZoomWebEngineView *webView {nullptr};
-#endif
     QLabel *logoLabel {nullptr};
 };
 

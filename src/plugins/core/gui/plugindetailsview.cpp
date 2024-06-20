@@ -16,15 +16,12 @@
 
 #include <QGridLayout>
 #include <QDesktopServices>
-#ifndef NOT_USE_WEBENGINE
 #include <QWebEngineView>
-#endif
 #include <QDir>
 
 DWIDGET_USE_NAMESPACE
 using namespace dpfservice;
 
-#ifndef NOT_USE_WEBENGINE
 class AutoZoomWebEngineView : public QWebEngineView {
 public:
     explicit AutoZoomWebEngineView(QWidget *parent = nullptr)
@@ -55,7 +52,6 @@ private:
     int maxWidth = 0;
     bool isFirstResize = true;
 };
-#endif
 
 DetailsView::DetailsView(QWidget *parent)
     : DWidget(parent)
@@ -65,13 +61,11 @@ DetailsView::DetailsView(QWidget *parent)
 
 DetailsView::~DetailsView()
 {
-#ifndef NOT_USE_WEBENGINE
     if (webView) {
         webView->stop();
         // delete webView will cause app cannot exit.
         webView->setParent(nullptr);
     }
-#endif
 }
 
 void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
@@ -117,9 +111,7 @@ void DetailsView::update(const dpf::PluginMetaObjectPointer &metaInfo)
 
     logoLabel->setPixmap(pluginLogo.pixmap(QSize(96, 96)));
 
-#ifndef NOT_USE_WEBENGINE
     webView->load(QUrl(metaInfo->urlLink()));
-#endif
 }
 
 void DetailsView::changeLoadBtnState()
@@ -174,27 +166,9 @@ void DetailsView::setupUi()
     logoLabel->setPixmap(logo.pixmap(QSize(96, 96)));
 
     auto webViewLayout = new QHBoxLayout();
-#ifndef NOT_USE_WEBENGINE
     webView = new AutoZoomWebEngineView(this);
     webView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     webViewLayout->addWidget(webView);
-#else
-    webViewLayout->addSpacerItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    QLabel *label = new QLabel(tr("This platform not support doc display!"));
-    webViewLayout->addWidget(label);
-
-    QFont font = label->font();
-    font.setPointSize(20);
-    font.setItalic(true);
-    label->setFont(font);
-    label->setAlignment(Qt::AlignCenter);
-
-    QPalette palette = label->palette();
-    palette.setColor(QPalette::WindowText, Qt::darkGray);
-    label->setPalette(palette);
-
-    label->setAutoFillBackground(true);
-#endif
 
     midLayout->addLayout(metaInfoLayout);
     midLayout->addSpacing(10);
