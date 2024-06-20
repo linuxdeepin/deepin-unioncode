@@ -15,26 +15,11 @@ class GDBDebuggerPrivate {
     QMap<int, gdbmi::Breakpoint> breakpoints;
     QList<gdbmi::Frame> stackFrames;
     QList<gdbmi::Thread> threadList;
-
-    QMultiMap<int64_t, gdbmi::Variable> variableListByReference;
-    QList<QString> createdValue;
-
+    QList<gdbmi::Variable> variableList;
     std::atomic_bool inferiorRunning{false};
     std::atomic_bool firstPromt{true};
     QStringList assemblers;
-
-    int64_t reference = 0;
-    int64_t watchVariableCounter = 0;
-
-    int unProcessedCount = 0;
 };
-
-bool isPointer(const gdbmi::Variable &variable)
-{
-    if(variable.value.startsWith("0x") && variable.type.endsWith("*"))
-        return true;
-    return false;
-}
 
 GDBDebugger::GDBDebugger(QObject *parent)
     : Debugger(parent)
@@ -49,7 +34,6 @@ GDBDebugger::GDBDebugger(QObject *parent)
     connect(this, &GDBDebugger::libraryUnloaded, DebugManager::instance(), &DebugManager::libraryUnloaded);
     connect(this, &GDBDebugger::fireLocker, DebugManager::instance(), &DebugManager::fireLocker);
     connect(this, &GDBDebugger::fireStackLocker, DebugManager::instance(), &DebugManager::fireStackLocker);
-    connect(this, &GDBDebugger::fireVariablesLocker, DebugManager::instance(), &DebugManager::fireVariablesLocker);
     connect(this, &GDBDebugger::updateExceptResponse, DebugManager::instance(), &DebugManager::updateExceptResponse);
     connect(this, &GDBDebugger::terminated, DebugManager::instance(), &DebugManager::terminated);
     connect(this, &GDBDebugger::assemblerData, DebugManager::instance(), &DebugManager::assemblerData);
@@ -112,7 +96,7 @@ QString GDBDebugger::stackListFrames()
 
 QString GDBDebugger::stackListVariables()
 {
-    return ("-stack-list-variables 1"); //0 or \"--no-values\", 1 or \"--all-values\", 2 or \"--simple-values\"
+    return ("-stack-list-variables 1");
 }
 
 QString GDBDebugger::commandPause()
@@ -220,21 +204,12 @@ dap::array<dap::Thread> GDBDebugger::allThreadList()
 
 dap::array<dap::Variable> GDBDebugger::allVariableList()
 {
-    return getVariableListByRef(0);
-}
-
-dap::array<dap::Variable> GDBDebugger::getVariableListByRef(int64_t ref)
-{
-    if(!d->variableListByReference.contains(ref))
-        return {};
-
     dap::array<dap::Variable> variables;
-    for (const auto &var : d->variableListByReference.values(ref)) {
+    for (const auto &var : d->variableList) {
         dap::Variable variable;
         variable.name = var.name.toStdString();
         variable.type = var.type.toStdString();
         variable.value = var.value.toStdString();
-        variable.variablesReference = var.childRefrence;
         variables.push_back(variable);
     }
 
@@ -463,13 +438,9 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
                 auto locals = record.payload.toMap().value("variables").toList();
                 for (const auto& e: locals)
                     variableList.append(gdbmi::Variable::parseMap(e.toMap()));
-                d->variableListByReference.clear();
-                d->reference = 0;
-                d->watchVariableCounter = 0;
-                if(!d->createdValue.isEmpty())
-                    delAllTraceVariable();
-                addVariablesWatched(variableList, d->reference);
+                d->variableList = variableList;
                 emit updateLocalVariables(variableList);
+                emit fireLocker();
             } else if(key == "threads") {
                  // -thread-info => Thread Request
                 QList<gdbmi::Thread> threadList;
@@ -501,6 +472,7 @@ void GDBDebugger::parseResultData(gdbmi::Record &record)
                 d->breakpoints.insert(bp.number, bp);
                 emit breakpointInserted(bp);
             }
+
             emit updateExceptResponse(record.token, record.payload);
         }
     } else if (record.message == "connected") {
@@ -530,92 +502,3 @@ void GDBDebugger::parseDisassembleData(const gdbmi::Record &record)
     }
 }
 
-void GDBDebugger::traceAddVariable(const gdbmi::Variable &variable, int reference, int frame)
-{
-    auto frameId = frame == -1 ? "@" : QString { "%1" }.arg(frame);
-    auto varName = QString("var%1").arg(d->watchVariableCounter++);
-
-    DebugManager::instance()->commandAndResponse(QString { "-var-create \"%1\" %2 \"%3\"" }.arg(varName, frameId, variable.name),
-                                                 [=](const QVariant &r) {
-                                                     auto m = r.toMap();
-                                                     auto v = gdbmi::Variable::parseMap(m);
-                                                     d->createdValue.append(v.name);
-
-                                                     v.name = variable.name;
-                                                     if (v.value == "{...}" || isPointer(variable))
-                                                         v.value = variable.value;
-
-                                                     if(v.numChild > 0) {
-                                                         d->reference++;
-                                                         v.childRefrence = d->reference;
-                                                         parseChildVariable(varName, v);
-                                                     } else {
-                                                         d->unProcessedCount--;
-                                                     }
-
-                                                     d->variableListByReference.insert(reference, v);
-                                                 });
-}
-
-void GDBDebugger::delAllTraceVariable()
-{
-    for (auto varName : d->createdValue)
-        DebugManager::instance()->command(QString { "-var-delete %1" }.arg(varName));
-    d->createdValue.clear();
-}
-
-void GDBDebugger::traceUpdateVariable(const QString &expression)
-{
-//    commandAndResponse(QString{"-var-update --all-values %1"}.arg(name), [this](const QVariant& r) {
-//        auto changeList = r.toMap().value("changelist").toList();
-//        QStringList changedNames;
-//        for(const auto& e: changeList) {
-//            auto m = e.toMap();
-//            auto name = m.value("name").toString();
-//            changedNames += name;
-//            auto var = self->varsWatched.value(name);
-//            if (m.contains("value"))
-//                var.value = m.value("value").toString();
-//            if (m.value("type_changed", false).toBool())
-//                var.type = m.value("new_type").toString();
-//            self->varsWatched.insert(name, var);
-//        }
-//        emit variablesChanged(changedNames);
-//    });
-}
-
-void GDBDebugger::addVariablesWatched(const QList<gdbmi::Variable> &variableList, int reference)
-{
-    d->unProcessedCount = variableList.size();
-    foreach (auto variable, variableList) {
-        traceAddVariable(variable, reference);
-    }
-}
-
-void GDBDebugger::parseChildVariable(const QString &varName, const gdbmi::Variable &variable)
-{
-    DebugManager::instance()->commandAndResponse(QString { "-var-list-children --all-values %1" }.arg(varName), [=](const QVariant &r) {
-        auto m = r.toMap();
-
-        //children: [QMap(, QMap()), QMap(, QMap()) ···];
-        if((m.value("numchild").toInt() > 0) && (m.value("children").toList().size() > 0)) {
-            auto childList = m.value("children").toList()[0];
-            foreach (auto child , childList.toMap()) {
-                auto childMap = child.toMap();
-                if(childMap.value("exp").toString() == "public"
-                        || childMap.value("exp").toString() == "private"
-                        || childMap.value("exp").toString() == "protected"){
-                    d->unProcessedCount++;
-                    parseChildVariable(childMap.value("name").toString(), variable);
-                } else {
-                    gdbmi::Variable var = gdbmi::Variable::parseMap(childMap);
-                    var.name = childMap.value("exp").toString();
-                    d->variableListByReference.insert(variable.childRefrence, var);
-                }
-            }
-        }
-        d->unProcessedCount--;
-        if (d->unProcessedCount == 0)
-            emit fireVariablesLocker();
-    });
-}

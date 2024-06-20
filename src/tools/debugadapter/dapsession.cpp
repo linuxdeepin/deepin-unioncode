@@ -536,14 +536,10 @@ void DapSession::registerHanlder()
     d->session->registerHandler([&](const dap::VariablesRequest &request)
                                      -> dap::ResponseOrError<dap::VariablesResponse> {
         Q_UNUSED(request)
-
         Log("<-- Server received Variables request from the client\n")
-        int64_t variablesRef = request.variablesReference;
         ResponseOrError<dap::VariablesResponse> response;
-        if(variablesRef == 0)
-            d->debugger->stackListVariables();
-        response.response.variables = d->debugger->getVariableList(variablesRef);
-
+        d->debugger->stackListVariables();
+        response.response.variables = d->debugger->allVariableList();
         Log("--> Server sent Variables response to the client\n")
         return response;
     });

@@ -20,7 +20,6 @@ struct VariableChange {
 struct Variable {
     QString name;
     int numChild = 0;
-    int64_t childRefrence = 0;
     QString value;
     QString type;
     QString threadId;

@@ -8,13 +8,9 @@
 #include "dap/protocol.h"
 
 #include <QStringList>
-#include <QToolTip>
-#include <QMutexLocker>
 
 using namespace DEBUG_NAMESPACE;
 using namespace dap;
-QMutex mutex;
-
 LocalTreeModel::LocalTreeModel(QObject *parent)
     : QAbstractItemModel(parent)
 {
@@ -43,16 +39,10 @@ QVariant LocalTreeModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    LocalTreeItem *item = static_cast<LocalTreeItem*>(index.internalPointer());
-
-    if (role == Qt::ToolTipRole)
-        QToolTip::showText(QCursor::pos(), item->data(index.column()).toString());
-
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    if (!item)
-        return QVariant();
+    LocalTreeItem *item = static_cast<LocalTreeItem*>(index.internalPointer());
 
     return item->data(index.column());
 }
@@ -89,7 +79,8 @@ QModelIndex LocalTreeModel::index(int row, int column, const QModelIndex &parent
     LocalTreeItem *childItem = parentItem->child(row);
     if (childItem)
         return createIndex(row, column, childItem);
-    return QModelIndex();
+    else
+        return QModelIndex();
 }
 
 QModelIndex LocalTreeModel::parent(const QModelIndex &index) const
@@ -98,9 +89,6 @@ QModelIndex LocalTreeModel::parent(const QModelIndex &index) const
         return QModelIndex();
 
     LocalTreeItem *childItem = static_cast<LocalTreeItem*>(index.internalPointer());
-    if (!childItem)
-        return QModelIndex();
-
     LocalTreeItem *parentItem = childItem->getParentItem();
 
     if (!parentItem || parentItem == rootItem)
@@ -120,10 +108,7 @@ int LocalTreeModel::rowCount(const QModelIndex &parent) const
     else
         parentItem = static_cast<LocalTreeItem*>(parent.internalPointer());
 
-    QMutexLocker locker(&mutex);
-    if (parentItem)
-        return parentItem->childCount();
-    return 0;
+    return parentItem->childCount();
 }
 
 void LocalTreeModel::appendItem(LocalTreeItem* parent, IVariables &vars)
@@ -139,12 +124,10 @@ void LocalTreeModel::appendItem(LocalTreeItem* parent, IVariables &vars)
             }
         }
     }
-}
+};
 
 void LocalTreeModel::setDatas(IVariables &datas)
 {
-    QMutexLocker locker(&mutex);
-
     clear();
 
     appendItem(rootItem, datas);

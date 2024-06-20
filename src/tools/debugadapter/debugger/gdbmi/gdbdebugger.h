@@ -49,11 +49,6 @@ public:
     dap::array<dap::StackFrame> allStackframes() override;
     dap::array<dap::Thread> allThreadList() override;
     dap::array<dap::Variable> allVariableList() override;
-    dap::array<dap::Variable> getVariableListByRef(int64_t ref) override;
-
-    void traceAddVariable(const gdbmi::Variable& variable, int refrence = 0, int frame = -1);
-    void delAllTraceVariable();
-    void traceUpdateVariable(const QString &expression);
 
     void handleOutputRecord(const QString &text) override;
     void handleOutputStreamText(const QString &streamText) override;
@@ -77,7 +72,6 @@ signals:
     void libraryUnloaded(const dap::ModuleEvent &moduleEvent);
     void fireLocker();
     void fireStackLocker();
-    void fireVariablesLocker();
     void updateExceptResponse(const int token, const QVariant& payload);
 
     void breakpointModified(const gdbmi::Breakpoint& bp);
@@ -110,8 +104,6 @@ private:
     void sendLibraryLoadedNotify(const gdbmi::Library &library, bool print);
     void sendLibraryUnloadedNotify(const gdbmi::Library &library, bool print);
     void parseDisassembleData(const gdbmi::Record &record);
-    void addVariablesWatched(const QList<gdbmi::Variable>& variableList, int reference);
-    void parseChildVariable(const QString &varName, const gdbmi::Variable &variable);
 
     GDBDebuggerPrivate *const d;
 };

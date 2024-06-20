@@ -782,15 +782,17 @@ bool DebugSession::getVariables(dap::integer variablesRef, IVariables *out, dap:
     }
 
     array<Variable> &&variables = response.get().response.variables;
-
     for (auto var : variables) {
         IVariable v;
         v.name = var.name;
         v.var = var;
         v.depth = depth + 1;
-        if (var.variablesReference > 0)
-            getVariables(var.variablesReference, &v.children, v.depth);
         out->push_back(v);
+        if (var.variablesReference > 0) {
+            if (!getVariables(var.variablesReference, &v.children, v.depth)) {
+                return false;
+            }
+        }
     }
     return true;
 }
@@ -810,7 +812,7 @@ bool DebugSession::getLocals(dap::integer frameId, IVariables *out)
     for (auto scope : scopeRes.scopes) {
         if (scope.presentationHint.value("") == kLocals
                 || scope.name == "Local") {
-            return getVariables(0, out);
+            return getVariables(scope.variablesReference, out);
         }
     }
 

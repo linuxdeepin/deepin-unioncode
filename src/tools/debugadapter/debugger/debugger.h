@@ -42,7 +42,6 @@ public:
     virtual dap::array<dap::StackFrame> allStackframes() = 0;
     virtual dap::array<dap::Thread> allThreadList() = 0;
     virtual dap::array<dap::Variable> allVariableList() = 0;
-    virtual dap::array<dap::Variable> getVariableListByRef(int64_t ref) = 0;
 
     virtual void handleOutputRecord(const QString &text) = 0;
     virtual void handleOutputStreamText(const QString &streamText) = 0;

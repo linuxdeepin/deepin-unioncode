@@ -16,7 +16,7 @@ class DebugManagerPrivate;
 class DebugManager : public QObject
 {
     Q_OBJECT
-    friend class GDBDebugger;
+
 public:
     static DebugManager *instance();
 
@@ -61,7 +61,7 @@ public:
 
     dap::array<dap::StackFrame> allStackframes();
     dap::array<dap::Thread> allThreadList();
-    dap::array<dap::Variable> getVariableList(int64_t reference);
+    dap::array<dap::Variable> allVariableList();
 
     void disassemble(const QString &address);
 
@@ -83,7 +83,6 @@ public slots:
     void updateExceptResponse(const int token, const QVariant& payload);
     void fireLocker();
     void fireStackLocker();
-    void fireVariablesLocker();
 
 private:
     explicit DebugManager(QObject *parent = nullptr);

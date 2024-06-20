@@ -41,7 +41,7 @@ int LocalTreeItem::childCount() const
 
 int LocalTreeItem::columnCount() const
 {
-    return kType + 1;
+    return KReference + 1;
 }
 
 QVariant LocalTreeItem::data(int column) const
@@ -60,20 +60,13 @@ QVariant LocalTreeItem::data(int column) const
         var = value;
         break;
     }
-    case ColumnType::kType:
-    {
-        QString type = itemVariable.type.value().c_str();
-        var = type;
-        break;
+    case ColumnType::KReference:
+        if (itemVariable.memoryReference) {
+            QString value = itemVariable.memoryReference.value().c_str();
+            var = value;
+            break;
+        }
     }
-    }
-//    case ColumnType::KReference:
-//        if (itemVariable.memoryReference) {
-//            QString value = itemVariable.memoryReference.value().c_str();
-//            var = value;
-//            break;
-//        }
-//    }
     return var;
 }
 
