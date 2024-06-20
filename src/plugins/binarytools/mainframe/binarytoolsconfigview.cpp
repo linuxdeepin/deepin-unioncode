@@ -10,8 +10,6 @@
 #include "widgets/iconcombobox.h"
 #include "constants.h"
 
-#include "base/baseitemdelegate.h"
-
 #include <DComboBox>
 #include <DCheckBox>
 #include <DLineEdit>
@@ -145,7 +143,6 @@ QWidget *BinaryToolsConfigViewPrivate::createLeftWidget()
     toolTree->setDragEnabled(false);
     toolTree->header()->setVisible(false);
     toolTree->setModel(&treeModel);
-    toolTree->setItemDelegate(new BaseItemDelegate(toolTree));
     toolTree->setIconSize({ 16, 16 });
     toolTree->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
 

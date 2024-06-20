@@ -81,7 +81,7 @@ private:
     explicit BinaryToolsManager(QObject *parent = nullptr);
     ~BinaryToolsManager();
 
-    QSharedPointer<ToolProcess> createToolProcess(const ToolInfo &tool);
+    QSharedPointer<ToolProcess> createToolProcess(const QString &id);
     bool checkCommandExists(const QString &command);
     void addToToolBar(const ToolInfo &tool);
     void printOutput(const QString &content, OutputPane::OutputFormat format);
