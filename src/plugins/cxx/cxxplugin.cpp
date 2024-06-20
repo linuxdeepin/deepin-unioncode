@@ -14,7 +14,6 @@
 #include "ninja/builder/mainframe/ninjabuildergenerator.h"
 #include "ninja/option/optionninjagenerator.h"
 #include "lexer/scilexercpp.h"
-#include "lexer/scilexercmake.h"
 
 #include "services/language/languageservice.h"
 #include "services/project/projectservice.h"
@@ -110,7 +109,4 @@ void CxxPlugin::registEditorService()
 
     SciLexerCPP *lexerCpp = new SciLexerCPP;
     editorSvc->registSciLexerProxy(lexerCpp->language(), lexerCpp);
-
-    SciLexerCMake *lexerCMake = new SciLexerCMake;
-    editorSvc->registSciLexerProxy(lexerCMake->language(), lexerCMake);
 }
