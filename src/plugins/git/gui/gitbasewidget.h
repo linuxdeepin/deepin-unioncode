@@ -15,7 +15,7 @@ public:
     explicit GitBaseWidget(QWidget *parent = nullptr)
         : QWidget(parent) {}
 
-    virtual void setGitInfo(const QStringList &infos) = 0;
+    virtual void setGitInfo(const QString &info) = 0;
     virtual void setReadyMessage(const QString &msg) = 0;
     virtual void setSourceFile(const QString &sf) {}
 };

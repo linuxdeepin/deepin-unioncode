@@ -19,7 +19,7 @@ public:
     void start();
     void cancel();
 
-    QStringList cleanedStdOut() const;
+    QString cleanedStdOut() const;
     QString cleanedStdErr() const;
 
 Q_SIGNALS:

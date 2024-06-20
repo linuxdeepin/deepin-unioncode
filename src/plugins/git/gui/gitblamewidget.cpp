@@ -114,12 +114,11 @@ GitBlameWidget::~GitBlameWidget()
     delete d;
 }
 
-void GitBlameWidget::setGitInfo(const QStringList &infos)
+void GitBlameWidget::setGitInfo(const QString &info)
 {
-    if (infos.isEmpty())
-        return d->gitEditor->clear();
+    if (info.isEmpty())
+        return d->gitEditor->setPlainText(info);
 
-    const auto info = infos.first();
     const QChar space(' ');
     const int parenPos = info.indexOf(')');
     if (parenPos == -1)

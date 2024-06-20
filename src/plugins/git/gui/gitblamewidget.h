@@ -15,7 +15,7 @@ public:
     explicit GitBlameWidget(QWidget *parent = nullptr);
     ~GitBlameWidget();
 
-    void setGitInfo(const QStringList &infos) override;
+    void setGitInfo(const QString &info) override;
     void setReadyMessage(const QString &msg) override;
     void setSourceFile(const QString &sf) override;
 

@@ -18,8 +18,7 @@ public:
     ~GitTabWidget();
 
     int addWidget(GitType type, const QString &name);
-    void setInfo(int index, const QStringList &infos);
-    void setErrorMessage(int index, const QString &msg);
+    void setInfo(int index, const QString &info);
 
 Q_SIGNALS:
     void closeRequested();

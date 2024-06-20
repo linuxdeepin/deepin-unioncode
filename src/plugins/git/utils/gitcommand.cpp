@@ -38,7 +38,7 @@ public:
 
     std::unique_ptr<QProcess> process;
     int currentJob = 0;
-    QStringList stdOut;
+    QString stdOut;
     QString stdErr;
 };
 
@@ -92,7 +92,7 @@ void GitCommandPrivate::processDone()
 
 void GitCommandPrivate::readStandardOutput()
 {
-    stdOut << process->readAllStandardOutput();
+    stdOut += process->readAllStandardOutput();
 }
 
 void GitCommandPrivate::readStandardError()
@@ -134,7 +134,7 @@ void GitCommand::cancel()
     d->process.reset();
 }
 
-QStringList GitCommand::cleanedStdOut() const
+QString GitCommand::cleanedStdOut() const
 {
     return d->stdOut;
 }

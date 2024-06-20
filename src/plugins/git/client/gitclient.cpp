@@ -29,7 +29,7 @@ public:
     void blameFile(const QString &workspace, const QString &filePath);
     void gitDiff(const QString &workspace, const QString &filePath);
     bool canShow(const QString &commitId);
-    void show(const QString &workspace, const QString &commitId);
+    void show(const QString &workspace, const QString &source, const QString &commitId);
 
 public:
     QString lastCentral;
@@ -86,7 +86,7 @@ GitCommand *GitClientPrivate::readyWork(GitType type, const QString &workspace, 
         if (code == 0) {
             gitTabWidget->setInfo(index, cmd->cleanedStdOut());
         } else {
-            gitTabWidget->setErrorMessage(index, tr("Failed to retrieve data."));
+            gitTabWidget->setInfo(index, tr("Failed to retrieve data."));
             qWarning() << cmd->cleanedStdErr();
         }
 
@@ -100,13 +100,10 @@ void GitClientPrivate::instantBlame()
 {
     GitCommand *cmd = new GitCommand(currentWorkspace);
     connect(cmd, &GitCommand::finished, this, [cmd, this](int code) {
-        if (code == 0) {
-            const auto &stdOut = cmd->cleanedStdOut();
-            if (!stdOut.isEmpty())
-                ibWidget->setInfo(stdOut.first());
-        } else {
+        if (code == 0)
+            ibWidget->setInfo(cmd->cleanedStdOut());
+        else
             qWarning() << cmd->cleanedStdErr();
-        }
 
         cmd->deleteLater();
     });
@@ -160,21 +157,9 @@ bool GitClientPrivate::canShow(const QString &commitId)
     return !commitId.startsWith('^') && commitId.count('0') != commitId.size();
 }
 
-void GitClientPrivate::show(const QString &workspace, const QString &commitId)
+void GitClientPrivate::show(const QString &workspace, const QString &source, const QString &commitId)
 {
-    auto cmd = readyWork(GitShow, workspace, commitId);
-    QStringList arguments1 = { "show", "-s", "--no-color",
-                               GitShowFormat, commitId };
-    QStringList arguments2 = { "-c", "diff.color=false",
-                               "show", "-m", "-M", "-C",
-                               "--first-parent", "--unified=3",
-                               "--src-prefix=a/", "--dst-prefix=b/",
-                               "--format=format:", "--no-color",
-                               DecorateOption, commitId };
-
-    cmd->addJob(GitBinaryPath, arguments1);
-    cmd->addJob(GitBinaryPath, arguments2);
-    cmd->start();
+    // TODO:
 }
 
 GitClient::GitClient(QObject *parent)
@@ -285,7 +270,7 @@ void GitClient::show(const QString &source, const QString &commitId)
     if (!checkRepositoryExist(source, &repository))
         return;
 
-    d->show(repository, commitId);
+    d->show(repository, source, commitId);
 }
 
 QWidget *GitClient::instantBlameWidget() const

@@ -57,7 +57,7 @@ public:
     explicit GitDiffWidget(QWidget *parent = nullptr);
     ~GitDiffWidget();
 
-    void setGitInfo(const QStringList &infos) override;
+    void setGitInfo(const QString &info) override;
     void setReadyMessage(const QString &msg) override;
 
 public Q_SLOTS:

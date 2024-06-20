@@ -6,7 +6,6 @@
 #include "gitlogwidget.h"
 #include "gitblamewidget.h"
 #include "gitdiffwidget.h"
-#include "gitshowwidget.h"
 
 #include <DTabBar>
 #include <DToolButton>
@@ -105,9 +104,6 @@ GitBaseWidget *GitTabWidgetPrivate::createWidget(GitType type)
     case GitDiff:
         widget = new GitDiffWidget(q);
         break;
-    case GitShow:
-        widget = new GitShowWidget(q);
-        break;
     }
 
     return widget;
@@ -158,10 +154,6 @@ int GitTabWidget::addWidget(GitType type, const QString &name)
         indexStr = tr("Git Diff \"%1\"").arg(name);
         title = tr("Git Diff \"%1\"").arg(info.fileName());
         break;
-    case GitShow:
-        indexStr = tr("Git Show \"%1\"").arg(name);
-        title = indexStr;
-        break;
     }
 
     int index = d->indexOf(indexStr);
@@ -185,14 +177,8 @@ int GitTabWidget::addWidget(GitType type, const QString &name)
     return index;
 }
 
-void GitTabWidget::setInfo(int index, const QStringList &infos)
+void GitTabWidget::setInfo(int index, const QString &info)
 {
     if (auto widget = qobject_cast<GitBaseWidget *>(d->stackedWidget->widget(index)))
-        widget->setGitInfo(infos);
-}
-
-void GitTabWidget::setErrorMessage(int index, const QString &msg)
-{
-    if (auto widget = qobject_cast<GitBaseWidget *>(d->stackedWidget->widget(index)))
-        widget->setReadyMessage(msg);
+        widget->setGitInfo(info);
 }
