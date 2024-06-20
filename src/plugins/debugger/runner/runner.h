@@ -8,7 +8,7 @@
 #include "event/event.h"
 #include "services/language/languagegenerator.h"
 #include "debuggerglobals.h"
-#include "common/widget/appoutputpane.h"
+#include "common/widget/outputpane.h"
 
 #include <QObject>
 #include <QAction>
@@ -24,12 +24,12 @@ public:
 public slots:
     void run();
     void handleEvents(const dpf::Event &event);
-    void synOutputMsg(const quint64 &pid, const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
+    void synOutputMsg(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
 
 private:
     void running();
     bool execCommand(const dpfservice::RunCommandInfo &info);
-    void outputMsg(const quint64 &pid, const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
+    void outputMsg(const QString &content, OutputPane::OutputFormat format = OutputPane::OutputFormat::NormalMessage);
     dpfservice::ProjectInfo getActiveProjectInfo() const;
 
 private:

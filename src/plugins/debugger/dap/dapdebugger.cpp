@@ -10,6 +10,7 @@
 #include "debuggerglobals.h"
 #include "debugmodel.h"
 #include "stackframe.h"
+#include "interface/appoutputpane.h"
 #include "interface/stackframemodel.h"
 #include "interface/stackframeview.h"
 #include "interface/breakpointview.h"

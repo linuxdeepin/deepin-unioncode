@@ -6,7 +6,7 @@
 #include "find/placeholdermanager.h"
 #include "uicontroller/controller.h"
 
-#include "common/widget/appoutputpane.h"
+#include "common/widget/outputpane.h"
 #include "common/find/outputdocumentfind.h"
 
 #include <QLayout>
@@ -15,10 +15,10 @@ void ContextModule::initialize(Controller *_uiController)
 {
     AbstractModule::initialize(_uiController);
 
-    auto outputWidget = new AbstractWidget(AppOutputPane::instance());
-    auto docFind = new OutputDocumentFind(AppOutputPane::instance()->defaultPane());
-    if (auto holder = PlaceHolderManager::instance()->createPlaceHolder(AppOutputPane::instance(), docFind))
-        AppOutputPane::instance()->layout()->addWidget(holder);
+    auto outputWidget = new AbstractWidget(OutputPane::instance());
+    auto docFind = new OutputDocumentFind(OutputPane::instance());
+    if (auto holder = PlaceHolderManager::instance()->createPlaceHolder(OutputPane::instance(), docFind))
+        OutputPane::instance()->layout()->addWidget(holder);
 
     uiController->addContextWidget(tr("&Application Output"), outputWidget, true);
 }
