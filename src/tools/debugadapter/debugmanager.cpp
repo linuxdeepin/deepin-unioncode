@@ -352,6 +352,5 @@ void DebugManager::fetchChildVariables(int64_t childReference)
 
 void DebugManager::disassemble(const QString &address)
 {
-    if (command(d->debugger->disassemble(address)))
-        waitLocker();
+    command(d->debugger->disassemble(address));
 }

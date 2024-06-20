@@ -4,12 +4,8 @@
 
 #include "stackframemodel.h"
 
-#include <DGuiApplicationHelper>
-
 #include <QFile>
-#include <QBrush>
 
-DGUI_USE_NAMESPACE
 enum StackColumns {
     kStackLevelColumn,
     kStackFunctionNameColumn,
@@ -50,13 +46,6 @@ QVariant StackFrameModel::data(const QModelIndex &index, int role) const
         if (role == Qt::DecorationRole && index.column() == kStackLevelColumn)
             return "";
         return QVariant();
-    }
-
-    if (role == Qt::ForegroundRole) {
-        if (index.row() != currentIndex && DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
-            return QBrush(Qt::lightGray);
-        if (index.row() == currentIndex && DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
-            return QBrush(Qt::white);
     }
 
     const StackFrameData &frame = stackFrames.at(index.row());

@@ -661,8 +661,10 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
 
     if (QFileInfo(curFrame.file).exists()) {
         editor.setDebugLine(curFrame.file, curFrame.line);
-    } else if (!curFrame.address.isEmpty()) {
-        disassemble(curFrame.address);
+    } else {
+        if (curFrame.address.isEmpty()) {
+            disassemble(curFrame.address);
+        }
     }
 
     if(d->getLocalsFuture.isRunning())
@@ -788,8 +790,10 @@ void DAPDebugger::slotFrameSelected(const QModelIndex &index)
 
     if (QFileInfo(curFrame.file).exists()) {
         editor.gotoLine(curFrame.file, curFrame.line);
-    } else if (!curFrame.address.isEmpty()) {
-        disassemble(curFrame.address);
+    } else {
+        if (!curFrame.address.isEmpty()) {
+            disassemble(curFrame.address);
+        }
     }
 
     // update local variables.
@@ -869,8 +873,6 @@ void DAPDebugger::initializeView()
 
     d->localsView = new DTreeView();
     d->localsView->setModel(&d->localsModel);
-    d->localsView->setUniformRowHeights(true);
-
     QStringList headers { tr("Name"), tr("Value"), tr("Type")/*, "Reference" */};
     d->localsModel.setHeaders(headers);
 
@@ -1165,7 +1167,7 @@ bool DAPDebugger::runCoredump(const QString &target, const QString &core, const 
 
 void DAPDebugger::disassemble(const QString &address)
 {
-    if (d->runState == kCustomRunning || d->runState == kStopped) {
+    if (d->runState == kCustomRunning) {
         d->session->disassemble(address.toStdString());
     }
 }
