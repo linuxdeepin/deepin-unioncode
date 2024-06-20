@@ -66,38 +66,37 @@ void ToolProcess::start(const QString &id)
 
     stdOut.clear();
     stdError.clear();
-    process.reset(new QProcess);
 
-    connect(process.data(), static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+    connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             this, std::bind(&ToolProcess::finished, this, id, std::placeholders::_1, std::placeholders::_2));
-    connect(process.data(), &QProcess::readyReadStandardOutput, this, [=] {
+    connect(&process, &QProcess::readyReadStandardOutput, this, [=] {
         QMutexLocker lk(&mutex);
-        stdOut += process->readAllStandardOutput();
+        stdOut += process.readAllStandardOutput();
         Q_EMIT readyReadStandardOutput(id);
     });
-    connect(process.data(), &QProcess::readyReadStandardError, this, [=] {
+    connect(&process, &QProcess::readyReadStandardError, this, [=] {
         QMutexLocker lk(&mutex);
-        stdError += process->readAllStandardError();
+        stdError += process.readAllStandardError();
         Q_EMIT readyReadStandardError(id);
     });
 
-    process->setProgram(program);
-    process->setArguments(arguments);
-    process->setWorkingDirectory(workingDir);
-    process->setProcessEnvironment(environment);
+    process.setProgram(program);
+    process.setArguments(arguments);
+    process.setWorkingDirectory(workingDir);
+    process.setProcessEnvironment(environment);
 
-    process->start();
+    process.start();
     if (!channelData.isEmpty()) {
-        process->write(channelData.toLocal8Bit());
-        process->closeWriteChannel();
+        process.write(channelData.toLocal8Bit());
+        process.closeWriteChannel();
     }
-    process->waitForFinished(-1);
+    process.waitForFinished(-1);
 }
 
 void ToolProcess::stop()
 {
-    if (process && process->state() != QProcess::NotRunning)
-        process->kill();
+    if (process.state() != QProcess::NotRunning)
+        process.kill();
 }
 
 BinaryToolsManager::BinaryToolsManager(QObject *parent)
