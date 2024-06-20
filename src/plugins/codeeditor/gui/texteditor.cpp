@@ -434,7 +434,7 @@ bool TextEditor::hasUncommentedLines(const int &lineFrom, const int &lineTo, con
         return true;
     }
     setSelection(lineFrom, indexFrom, lineTo, indexTo);
-    QStringList lines = selectedText().split(QRegExp("\\r\\n|\\n|\\r"));
+    QStringList lines = selectedText().split(QRegExp("\\r\\n|\\n|\\r")); 
     for (const QString &line : lines) {
         if (line.trimmed().isEmpty())
             continue;
@@ -773,16 +773,4 @@ void TextEditor::contextMenuEvent(QContextMenuEvent *event)
     } else {
         d->showContextMenu();
     }
-}
-
-void TextEditor::dropEvent(QDropEvent *event)
-{
-    const QMimeData *mimeData = event->mimeData();
-    if (mimeData->hasUrls()) {
-        const auto &urlList = mimeData->urls();
-        Q_EMIT requestOpenFiles(urlList);
-        return;
-    }
-
-    QsciScintilla::dropEvent(event);
 }
