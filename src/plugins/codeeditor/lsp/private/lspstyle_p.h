@@ -131,6 +131,20 @@ public:
     lsp::CompletionProvider provider;
 };
 
+struct TextChangeCache
+{
+    enum State {
+        Inserted,
+        Deleted
+    };
+    State state;
+    int positionCache;
+    int lengthCache;
+    int linesAddedCache;
+    QString textCache;
+    int lineCache;
+};
+
 struct RenamePositionCache
 {
     int line = -1;
@@ -163,7 +177,6 @@ class LSPStylePrivate
 {
 public:
     QString formatDiagnosticMessage(const QString &message, int type);
-    bool shouldStartCompletion(const QString &insertedText);
 
     CompletionCache completionCache;
     DefinitionCache definitionCache;
@@ -172,6 +185,7 @@ public:
     RenamePopup renamePopup;
     RenamePositionCache renameCache;
     TextEditor *editor { nullptr };
+    TextChangeCache textChangedCache;
     QList<lsp::Data> tokensCache;
     QList<DiagnosticCache> diagnosticCache;
     static QAction *rangeFormattingAction;

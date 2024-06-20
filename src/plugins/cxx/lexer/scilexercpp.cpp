@@ -210,14 +210,6 @@ bool SciLexerCPP::isSupport(const QString &fileName) const
     return id.compare(language()) == 0;
 }
 
-QStringList SciLexerCPP::autoCompletionWordSeparators() const
-{
-    QStringList wl;
-    wl << "::" << "->" << ".";
-
-    return wl;
-}
-
 const char *SciLexerCPP::blockEnd(int *style) const
 {
     if (style)

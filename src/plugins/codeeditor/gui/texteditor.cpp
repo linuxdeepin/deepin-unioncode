@@ -40,7 +40,6 @@ void TextEditor::setFile(const QString &fileName)
     if (d->fileName == fileName)
         return;
 
-    d->isAutoCompletionEnabled = false;
     d->fileName = fileName;
     QString text;
     QFile file(d->fileName);
@@ -53,7 +52,6 @@ void TextEditor::setFile(const QString &fileName)
     editor.fileOpened(fileName);
     d->loadLexer();
     d->loadLSPStyle();
-    d->isAutoCompletionEnabled = true;
 }
 
 QString TextEditor::getFile() const
@@ -228,14 +226,9 @@ void TextEditor::gotoPosition(int pos)
     d->adjustScrollBar();
 }
 
-int TextEditor::cursorLastPosition()
-{
-    return d->lastCursorPos;
-}
-
 int TextEditor::cursorPosition()
 {
-    return static_cast<int>(SendScintilla(TextEditor::SCI_GETCURRENTPOS));
+    return d->lastCursorPos;
 }
 
 void TextEditor::setLineBackgroundColor(int line, const QColor &color)
@@ -338,17 +331,6 @@ void TextEditor::replaceRange(int lineFrom, int indexFrom, int lineTo, int index
     replaceSelectedText(text);
 }
 
-void TextEditor::replaceRange(int startPosition, int endPosition, const QString &text)
-{
-    int startLine = 0, startIndex = 0;
-    int endLine = 0, endIndex = 0;
-
-    lineIndexFromPosition(startPosition, &startLine, &startIndex);
-    lineIndexFromPosition(endPosition, &endLine, &endIndex);
-
-    replaceRange(startLine, startIndex, endLine, endIndex, text);
-}
-
 void TextEditor::insertText(const QString &text)
 {
     auto textData = text.toLocal8Bit();
@@ -367,21 +349,6 @@ void TextEditor::resetSaveState()
     d->isSaved = false;
 }
 
-LSPStyle *TextEditor::lspStyle() const
-{
-    return d->lspStyle;
-}
-
-int TextEditor::wordStartPositoin(int position)
-{
-    return static_cast<int>(SendScintilla(SCI_WORDSTARTPOSITION, static_cast<ulong>(position), true));
-}
-
-int TextEditor::wordEndPosition(int position)
-{
-    return static_cast<int>(SendScintilla(SCI_WORDENDPOSITION, static_cast<ulong>(position), true));
-}
-
 QString TextEditor::cursorBeforeText() const
 {
     int pos = d->cursorPosition();
@@ -392,16 +359,6 @@ QString TextEditor::cursorBehindText() const
 {
     int pos = d->cursorPosition();
     return text(pos, length());
-}
-
-void TextEditor::setAutomaticInvocationEnabled(bool enabled)
-{
-    d->isAutoCompletionEnabled = enabled;
-}
-
-bool TextEditor::isAutomaticInvocationEnabled() const
-{
-    return d->isAutoCompletionEnabled;
 }
 
 void TextEditor::onMarginClicked(int margin, int line, Qt::KeyboardModifiers state)
@@ -466,21 +423,8 @@ void TextEditor::onCursorPositionChanged(int line, int index)
     Q_UNUSED(line)
 
     int pos = positionFromLineIndex(line, index);
-    d->lastCursorPos = pos;
-}
-
-void TextEditor::focusOutEvent(QFocusEvent *event)
-{
-    emit focusOut();
-    QsciScintilla::focusOutEvent(event);
-}
-
-void TextEditor::keyPressEvent(QKeyEvent *event)
-{
-    if (d->completionWidget->processKeyPressEvent(event))
-        return;
-
-    QsciScintilla::keyPressEvent(event);
+    if (d->lastCursorPos != pos)
+        d->lastCursorPos = pos;
 }
 
 void TextEditor::contextMenuEvent(QContextMenuEvent *event)
