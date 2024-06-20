@@ -272,8 +272,6 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
     tempInfo.setSourceFiles(allFiles);
     ProjectInfo::set(rootItem, tempInfo);
     emit parseProjectEnd({ rootItem, true });
-    rootItem->setData(ParsingState::Done, Parsing_State_Role);
-
     return rootItem;
 }
 
