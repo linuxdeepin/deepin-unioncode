@@ -89,8 +89,8 @@ private:
     ~BinaryToolsManager();
 
     BinaryTools loadConfig(const QString &conf, QString &version);
-    QMap<QString, QStringList> updateToolList();
-    BinaryTools mergeTools(const BinaryTools &defTools, const BinaryTools &localTools, const QString &localConfVersion);
+    QStringList updateToolList();
+    BinaryTools mergeTools(const BinaryTools &defTools, const BinaryTools &localTools);
     QSharedPointer<ToolProcess> createToolProcess(const ToolInfo &tool);
     bool checkCommandExists(const QString &command);
     void toolMissingHint(const ToolInfo &tool);

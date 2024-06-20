@@ -8,7 +8,6 @@
 
 #include "common/util/custompaths.h"
 #include "common/util/eventdefinitions.h"
-#include "common/util/macroexpander.h"
 #include "services/window/windowservice.h"
 #include "services/terminal/terminalservice.h"
 #include "base/abstractaction.h"
@@ -41,7 +40,6 @@ constexpr char EnvironmentKey[] { "environment" };
 constexpr char MissingHintKey[] { "missingHint" };
 constexpr char InstallCommandKey[] { "installCommand" };
 constexpr char TriggerEventKey[] { "triggerEvent" };
-constexpr char UpdateListKey[] { "list" };
 
 using namespace dpfservice;
 
@@ -174,7 +172,7 @@ BinaryToolsManager::BinaryTools BinaryToolsManager::loadConfig(const QString &co
     return tools;
 }
 
-QMap<QString, QStringList> BinaryToolsManager::updateToolList()
+QStringList BinaryToolsManager::updateToolList()
 {
     QFile file(":/configure/default_binarytools.json");
     if (!file.open(QIODevice::ReadOnly))
@@ -184,43 +182,32 @@ QMap<QString, QStringList> BinaryToolsManager::updateToolList()
     QJsonObject jsonObj = doc.object();
     QJsonArray updateArray = jsonObj[UpdateObject].toArray();
 
-    QMap<QString, QStringList> toolList;
-    for (const QJsonValue &val : updateArray) {
-        auto valObj = val.toObject();
-        auto version = valObj[VersionKey].toString();
-        auto idArray = valObj[UpdateListKey].toArray();
-        for (const auto &id : idArray) {
-            toolList[version].append(id.toString());
-        }
+    QStringList toolList;
+    for (const QJsonValue &idVal : updateArray) {
+        toolList << idVal.toString();
     }
 
     return toolList;
 }
 
-BinaryToolsManager::BinaryTools BinaryToolsManager::mergeTools(const BinaryTools &defTools, const BinaryTools &localTools, const QString &localConfVersion)
+BinaryToolsManager::BinaryTools BinaryToolsManager::mergeTools(const BinaryTools &defTools, const BinaryTools &localTools)
 {
     const auto &updateList = updateToolList();
     if (updateList.isEmpty())
         return localTools;
 
     auto tools = std::move(localTools);
-    auto iter = updateList.begin();
-    for (; iter != updateList.end(); ++iter) {
-        if (localConfVersion >= iter.key())
+    for (const auto &id : updateList) {
+        const auto &tool = findTool(id, defTools);
+        if (!tool.isValid())
             continue;
 
-        for (const auto &id : iter.value()) {
-            const auto &tool = findTool(id, defTools);
-            if (!tool.isValid())
-                continue;
-
-            if (tools.contains(tool.displyGroup)) {
-                tools[tool.displyGroup].append(tool);
-                continue;
-            }
-
-            tools.insert(tool.displyGroup, QList<ToolInfo>() << tool);
+        if (tools.contains(tool.displyGroup)) {
+            tools[tool.displyGroup].append(tool);
+            continue;
         }
+
+        tools.insert(tool.displyGroup, QList<ToolInfo>() << tool);
     }
 
     return tools;
@@ -345,7 +332,7 @@ BinaryToolsManager::BinaryTools BinaryToolsManager::tools()
     QString localCfgVersion;
     allTools = loadConfig(localCfg, localCfgVersion);
     if (cfgVersion > localCfgVersion)
-        allTools = mergeTools(defTools, allTools, localCfgVersion);
+        allTools = mergeTools(defTools, allTools);
 
     return allTools;
 }
@@ -360,13 +347,11 @@ void BinaryToolsManager::executeTool(const QString &id)
         return toolMissingHint(tool);
 
     auto toolProcess = createToolProcess(tool);
+    QStringList argList = tool.arguments.split(" ", QString::SkipEmptyParts);
     toolProcess->setId(id);
     toolProcess->setProgram(tool.command);
-    auto args = globalMacroExpander()->expandArguments(tool.arguments);
-    QStringList argList = args.split(" ", QString::SkipEmptyParts);
     toolProcess->setArguments(argList);
-    auto workingDir = globalMacroExpander()->expand(tool.workingDirectory);
-    toolProcess->setWorkingDirectory(workingDir);
+    toolProcess->setWorkingDirectory(tool.workingDirectory);
     QProcessEnvironment env;
     auto iterator = tool.environment.begin();
     while (iterator != tool.environment.end()) {
@@ -379,7 +364,7 @@ void BinaryToolsManager::executeTool(const QString &id)
     auto stopHandler = std::bind(&BinaryToolsManager::stopTool, this, id);
     AppOutputPane::instance()->setStopHandler(id, stopHandler);
     QString startMsg = tr("Start execute \"%1\": \"%2\" \"%3\" in workspace \"%4\".\n")
-                               .arg(tool.name, tool.command, args, workingDir);
+                               .arg(tool.name, tool.command, tool.arguments, tool.workingDirectory);
     uiController.switchContext(tr("&Application Output"));
     printOutput(id, startMsg, OutputPane::NormalMessage);
 
@@ -434,7 +419,6 @@ void BinaryToolsManager::installTool(const QString &id)
     if (!terminalSrv)
         terminalSrv = dpfGetService(TerminalService);
 
-    uiController.switchContext(tr("&Console"));
     terminalSrv->executeCommand(tool.advSettings.installCommand);
 }
 
