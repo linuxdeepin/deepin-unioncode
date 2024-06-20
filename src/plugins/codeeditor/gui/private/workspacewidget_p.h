@@ -19,7 +19,6 @@ public:
 
     void initUI();
     void initConnection();
-    void initActions();
     void connectTabWidgetSignals(TabWidget *tabWidget);
 
     TabWidget *currentTabWidget() const;
@@ -58,7 +57,6 @@ public slots:
     void handleFindUsage();
     void handleRenameSymbol();
     void handleSetModifiedAutoReload(const QString &fileName, bool flag);
-    void handleSetComment();
 
 public:
     WorkspaceWidget *q;

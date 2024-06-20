@@ -5,7 +5,6 @@
 #include "editorsettingswidget.h"
 #include "fontcolorwidget.h"
 #include "behaviorwidget.h"
-#include "commentconfigwidget.h"
 #include "settingsdefine.h"
 
 #include "services/option/optionutils.h"
@@ -26,12 +25,10 @@ public:
     void initUI();
     void saveConfig(PageWidget *page, const QString &node);
     void readConfig(PageWidget *page);
-    void readConfig(PageWidget *page, const QString &node);
 
     EditorSettingsWidget *q;
     FontColorWidget *fontColorWidget { nullptr };
     BehaviorWidget *behaviorWidget { nullptr };
-    CommentConfigWidget *commentConfigWidget { nullptr };
 };
 
 EditorSettingsWidgetPrivate::EditorSettingsWidgetPrivate(EditorSettingsWidget *qq)
@@ -52,15 +49,10 @@ void EditorSettingsWidgetPrivate::initUI()
 
     fontColorWidget = new FontColorWidget(q);
     behaviorWidget = new BehaviorWidget(q);
-    commentConfigWidget = new CommentConfigWidget(q);
 
     layout->addWidget(fontColorWidget);
     addHorizontalLine(layout);
     layout->addWidget(behaviorWidget);
-    addHorizontalLine(layout);
-    layout->addWidget(commentConfigWidget);
-    
-    q->setLayout(layout);
 }
 
 void EditorSettingsWidgetPrivate::saveConfig(PageWidget *page, const QString &node)
@@ -73,13 +65,6 @@ void EditorSettingsWidgetPrivate::saveConfig(PageWidget *page, const QString &no
 void EditorSettingsWidgetPrivate::readConfig(PageWidget *page)
 {
     page->setUserConfig({});
-}
-
-void EditorSettingsWidgetPrivate::readConfig(PageWidget *page, const QString &node)
-{
-    QMap<QString, QVariant> map;
-    OptionUtils::readJsonSection(OptionUtils::getJsonFilePath(), EditorConfig, node, map);
-    page->setUserConfig(map);
 }
 
 EditorSettingsWidget::EditorSettingsWidget(QWidget *parent)
@@ -98,7 +83,6 @@ void EditorSettingsWidget::saveConfig()
 {
     d->saveConfig(d->fontColorWidget, Node::FontColor);
     d->saveConfig(d->behaviorWidget, Node::Behavior);
-    d->saveConfig(d->commentConfigWidget, Node::MimeTypeConfig);
     OptionManager::getInstance()->updateData();
 }
 
@@ -106,5 +90,4 @@ void EditorSettingsWidget::readConfig()
 {
     d->readConfig(d->fontColorWidget);
     d->readConfig(d->behaviorWidget);
-    d->readConfig(d->commentConfigWidget, Node::MimeTypeConfig);
 }

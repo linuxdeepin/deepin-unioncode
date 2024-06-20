@@ -7,7 +7,6 @@
 #include "transceiver/codeeditorreceiver.h"
 #include "settings/editorsettings.h"
 #include "settings/settingsdefine.h"
-#include "base/abstractaction.h"
 
 #include <DDialog>
 
@@ -45,30 +44,6 @@ void WorkspaceWidgetPrivate::initUI()
     QVBoxLayout *mainLayout = new QVBoxLayout(q);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(splitter);
-}
-
-void WorkspaceWidgetPrivate::initActions()
-{
-    auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (!windowService)
-        return;
-
-    QAction *commentAction = new QAction(tr("Add/Delete Comment"), q);
-
-    auto abstractCommentAction = new AbstractAction(commentAction, q);
-    abstractCommentAction->setShortCutInfo("Comment.addAndRemoveComment",
-                                            tr("Add/Remove Comment"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key_Slash));
-    windowService->addAction(tr("&Add/Remove Comment"), abstractCommentAction);
-    connect(commentAction, &QAction::triggered, this, &WorkspaceWidgetPrivate::handleSetComment);
-}
-
-void WorkspaceWidgetPrivate::handleSetComment()
-{
-    if (!currentTabWidget())
-        return;
-
-    currentTabWidget()->handleSetComment();
 }
 
 void WorkspaceWidgetPrivate::initConnection()
@@ -548,7 +523,6 @@ WorkspaceWidget::WorkspaceWidget(QWidget *parent)
 {
     d->initUI();
     d->initConnection();
-    d->initActions();
 }
 
 QString WorkspaceWidget::currentFile() const

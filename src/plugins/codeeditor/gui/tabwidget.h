@@ -64,7 +64,6 @@ public slots:
     void removeDebugLine();
     void gotoLine(int line);
     void gotoPosition(int line, int column);
-    void handleSetComment();
 
 signals:
     void closeRequested();
