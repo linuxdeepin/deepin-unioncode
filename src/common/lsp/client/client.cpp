@@ -55,6 +55,8 @@ Client::Client()
     qRegisterMetaType<newlsp::Range>("newlsp::Range");
     qRegisterMetaType<newlsp::PublishDiagnosticsParams>("newlsp::PublishDiagnosticsParams");
     qRegisterMetaType<newlsp::DocumentColorParams>("newlsp::DocumentColorParams");
+    qRegisterMetaType<newlsp::DocumentSymbol>("newlsp::DocumentSymbol");
+    qRegisterMetaType<newlsp::SymbolInformation>("newlsp::SymbolInformation");
 }
 
 Client::~Client()
@@ -241,7 +243,8 @@ void Client::rangeFormatting(const QString &filePath, const DocumentRangeFormatt
     d->callMethod(lsp::V_TEXTDOCUMENT_RANGEFORMATTING,
                   QJsonDocument::fromJson(
                           QByteArray::fromStdString(toJsonValueStr(params)))
-                          .object(), filePath);
+                          .object(),
+                  filePath);
 }
 
 void Client::onTypeFormatting(const DocumentOnTypeFormattingParams &params)
@@ -506,7 +509,26 @@ bool ClientPrivate::symbolResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
         && requestSave.value(calledID).method == lsp::V_TEXTDOCUMENT_DOCUMENTSYMBOL) {
+        auto filePath = requestSave.value(calledID).file;
         requestSave.remove(calledID);
+
+        QList<DocumentSymbol> docSymbols;
+        QList<SymbolInformation> symbolInfos;
+        auto value = jsonObj.value(K_RESULT);
+        if (value.isArray()) {
+            auto array = value.toArray();
+            if (!array.isEmpty()) {
+                auto arrayObj = array.first().toObject();
+                if (arrayObj.contains("range")) {
+                    docSymbols = parseDocumentSymbol(array);
+                } else {
+                    symbolInfos = parseDocumentSymbolInfo(array);
+                }
+            }
+        }
+
+        emit q->symbolResult(docSymbols, filePath);
+        emit q->symbolResult(symbolInfos, filePath);
         return true;
     }
     return false;
@@ -1158,6 +1180,85 @@ bool ClientPrivate::diagnosticsCalled(const QJsonObject &jsonObj)
     return true;
 }
 
+QList<DocumentSymbol> ClientPrivate::parseDocumentSymbol(const QJsonArray &array)
+{
+    QList<DocumentSymbol> docSymbols;
+    for (const auto &value : array) {
+        if (!value.isObject())
+            continue;
+
+        auto obj = value.toObject();
+        DocumentSymbol symbol;
+        symbol.name = obj.value("name").toString();
+        symbol.kind = obj.value("kind").toInt();
+        symbol.range = parseRange(obj.value("range").toObject());
+        symbol.selectionRange = parseRange(obj.value("selectionRange").toObject());
+        symbol.children = parseDocumentSymbol(obj.value("children").toArray());
+
+        auto val = obj.value("detail");
+        symbol.detail = val.isUndefined() ? std::nullopt : std::make_optional(val.toString());
+        val = obj.value("deprecated");
+        symbol.deprecated = val.isUndefined() ? std::nullopt : std::make_optional(val.toBool());
+
+        docSymbols.append(symbol);
+    }
+
+    return docSymbols;
+}
+
+QList<SymbolInformation> ClientPrivate::parseDocumentSymbolInfo(const QJsonArray &array)
+{
+    QList<SymbolInformation> symbolInfos;
+    for (const auto &value : array) {
+        if (!value.isObject())
+            continue;
+
+        auto obj = value.toObject();
+        SymbolInformation info;
+        info.name = obj.value("name").toString();
+        info.kind = obj.value("kind").toInt();
+        info.location = parseLocation(obj.value("location").toObject());
+
+        auto val = obj.value("deprecated");
+        info.deprecated = val.isUndefined() ? std::nullopt : std::make_optional(val.toBool());
+        val = obj.value("containerName");
+        info.containerName = val.isUndefined() ? std::nullopt : std::make_optional(val.toString());
+
+        symbolInfos.append(info);
+    }
+
+    return symbolInfos;
+}
+
+Range ClientPrivate::parseRange(const QJsonObject &obj)
+{
+    Range range;
+    auto iter = obj.begin();
+    for (; iter != obj.end(); ++iter) {
+        const auto &valObj = iter.value().toObject();
+        int line = valObj.value("line").toInt();
+        int character = valObj.value("character").toInt();
+        if (iter.key() == "start") {
+            range.start.line = line;
+            range.start.character = character;
+        } else if (iter.key() == "end") {
+            range.end.line = line;
+            range.end.character = character;
+        }
+    }
+
+    return range;
+}
+
+Location ClientPrivate::parseLocation(const QJsonObject &obj)
+{
+    Location location;
+    location.range = parseRange(obj.value("range").toObject());
+    location.uri = obj.value("uri").toString().toStdString();
+
+    return location;
+}
+
 bool ClientPrivate::serverCalled(const QJsonObject &jsonObj)
 {
     if (diagnosticsCalled(jsonObj))
@@ -1273,4 +1374,5 @@ QStringList ClientPrivate::cvtStringList(const QJsonArray &array)
     }
     return ret;
 }
+
 }   // namespace newlsp

@@ -93,6 +93,12 @@ void LSPStyle::initLspConnection()
             this, QOverload<const std::vector<newlsp::Location> &, const QString &>::of(&LSPStyle::setDefinition));
     connect(d->getClient(), QOverload<const std::vector<newlsp::LocationLink> &, const QString &>::of(&newlsp::Client::definitionRes),
             this, QOverload<const std::vector<newlsp::LocationLink> &, const QString &>::of(&LSPStyle::setDefinition));
+
+    // symbol
+    connect(d->getClient(), qOverload<const QList<newlsp::DocumentSymbol> &, const QString &>(&newlsp::Client::symbolResult),
+            this, &LSPStyle::handleDocumentSymbolResult);
+    connect(d->getClient(), qOverload<const QList<newlsp::SymbolInformation> &, const QString &>(&newlsp::Client::symbolResult),
+            this, &LSPStyle::handleSymbolInfomationResult);
 }
 
 void LSPStyle::requestCompletion(int line, int column)
@@ -111,6 +117,7 @@ void LSPStyle::updateTokens()
     if (d->getClient()) {
         qApp->metaObject()->invokeMethod(d->getClient(), "openRequest", Qt::QueuedConnection, Q_ARG(const QString &, d->editor->getFile()));
         qApp->metaObject()->invokeMethod(d->getClient(), "docSemanticTokensFull", Qt::QueuedConnection, Q_ARG(const QString &, d->editor->getFile()));
+        qApp->metaObject()->invokeMethod(d->getClient(), "symbolRequest", Qt::QueuedConnection, Q_ARG(const QString &, d->editor->getFile()));
     }
 }
 
@@ -163,8 +170,14 @@ void LSPStyle::setIndicStyle()
     d->editor->indicatorDefine(TextEditor::TriangleCharacterIndicator, TextEditor::INDIC_POINTCHARACTER);
 }
 
-void LSPStyle::setMargin()
+QList<newlsp::DocumentSymbol> LSPStyle::documentSymbolList() const
 {
+    return d->docSymbolList;
+}
+
+QList<newlsp::SymbolInformation> LSPStyle::symbolInformationList() const
+{
+    return d->symbolInfoList;
 }
 
 void LSPStyle::setDiagnostics(const newlsp::PublishDiagnosticsParams &data)
@@ -414,6 +427,8 @@ void LSPStyle::onTextChanged()
                                          Q_ARG(const QByteArray &, content.toUtf8()));
         qApp->metaObject()->invokeMethod(d->getClient(), "docSemanticTokensFull",
                                          Q_ARG(const QString &, d->editor->getFile()));
+        qApp->metaObject()->invokeMethod(d->getClient(), "symbolRequest",
+                                         Q_ARG(const QString &, d->editor->getFile()));
     }
 }
 
@@ -656,6 +671,22 @@ void LSPStyle::handleSwitchHeaderSource(const QString &file)
     emit EditorCallProxy::instance()->reqOpenFile("", file);
 }
 
+void LSPStyle::handleDocumentSymbolResult(const QList<newlsp::DocumentSymbol> &docSymbols, const QString &filePath)
+{
+    if (!d->editor || d->editor->getFile() != filePath)
+        return;
+
+    d->docSymbolList = docSymbols;
+}
+
+void LSPStyle::handleSymbolInfomationResult(const QList<newlsp::SymbolInformation> &symbolInfos, const QString &filePath)
+{
+    if (!d->editor || d->editor->getFile() != filePath)
+        return;
+
+    d->symbolInfoList = symbolInfos;
+}
+
 QString LSPStylePrivate::formatDiagnosticMessage(const QString &message, int type)
 {
     auto result = message;
@@ -703,7 +734,7 @@ int LSPStylePrivate::wordPostion()
 newlsp::Client *LSPStylePrivate::getClient()
 {
     if (prjectKey.isValid())
-        return LSPClientManager::instance()->get(prjectKey);;
+        return LSPClientManager::instance()->get(prjectKey);
 
     auto prjSrv = dpfGetService(dpfservice::ProjectService);
     const auto &filePath = editor->getFile();
