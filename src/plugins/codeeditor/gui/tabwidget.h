@@ -56,6 +56,7 @@ public:
     void updateZoomValue(int value);
 
     QWidget *currentWidget() const;
+    void showFindToolBar();
 
 public slots:
     void openFile(const QString &fileName);

@@ -70,6 +70,7 @@ signals:
     void reqFollowSymbolUnderCursor();
     void reqFindUsage();
     void reqRenameSymbol();
+    void reqShowFindToolBar();
 
     // annotation
     void reqAddAnnotation(const QString &fileName, const QString &title, const QString &content,int line,  AnnotationType type);

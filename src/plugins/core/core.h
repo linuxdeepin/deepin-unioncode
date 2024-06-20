@@ -7,7 +7,6 @@
 
 #include <framework/framework.h>
 
-class FindToolBar;
 class Core : public dpf::Plugin
 {
     Q_OBJECT
@@ -18,4 +17,4 @@ public:
     virtual dpf::Plugin::ShutdownFlag stop() override;
 };
 
-#endif   // COREPLUGIN_H
+#endif // COREPLUGIN_H

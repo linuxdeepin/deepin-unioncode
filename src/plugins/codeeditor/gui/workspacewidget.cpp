@@ -69,6 +69,7 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqFindUsage, this, &WorkspaceWidgetPrivate::handleFindUsage);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRenameSymbol, this, &WorkspaceWidgetPrivate::handleRenameSymbol);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqToggleBreakpoint, this, &WorkspaceWidgetPrivate::handleToggleBreakpoint);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqShowFindToolBar, this, &WorkspaceWidgetPrivate::handleShowFindToolBar);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetModifiedAutoReload, this, &WorkspaceWidgetPrivate::handleSetModifiedAutoReload);
 }
 
@@ -429,6 +430,15 @@ void WorkspaceWidgetPrivate::handleRenameSymbol()
         return;
 
     tabWidget->renameSymbol();
+}
+
+void WorkspaceWidgetPrivate::handleShowFindToolBar()
+{
+    auto tabWidget = currentTabWidget();
+    if (!tabWidget)
+        return;
+
+    tabWidget->showFindToolBar();
 }
 
 void WorkspaceWidgetPrivate::handleSetModifiedAutoReload(const QString &fileName, bool flag)

@@ -7,7 +7,6 @@
 
 #include "windowcontroller.h"
 #include "windowelement.h"
-#include "base/abstractdocumentfind.h"
 
 #include <framework/framework.h>
 
@@ -173,8 +172,6 @@ public:
     DPF_INTERFACE(void, addWidgetWorkspace, const QString &title, AbstractWidget *widget, const QString &iconName);
 
     DPF_INTERFACE(void, switchWorkspaceArea, const QString &title);
-
-    DPF_INTERFACE(QWidget *, createFindPlaceHolder, QWidget *owner, AbstractDocumentFind *docFind);
 };
 
 }   // namespace dpfservice

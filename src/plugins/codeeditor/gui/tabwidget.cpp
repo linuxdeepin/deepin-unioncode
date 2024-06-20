@@ -5,15 +5,12 @@
 #include "tabwidget.h"
 #include "private/tabwidget_p.h"
 #include "transceiver/codeeditorreceiver.h"
-#include "find/editordocumentfind.h"
 #include "common/common.h"
-
-#include "services/window/windowservice.h"
 
 #include <DFrame>
 #include <DGuiApplicationHelper>
 #ifdef DTKWIDGET_CLASS_DPaletteHelper
-#    include <DPaletteHelper>
+#include <DPaletteHelper>
 #endif
 
 #include <QAction>
@@ -24,8 +21,6 @@
 #include <QScrollBar>
 
 static constexpr int MAX_PRE_NEXT_TIMES = 30;
-
-using namespace dpfservice;
 
 class KeyLabel : public DFrame
 {
@@ -107,7 +102,7 @@ void TabWidgetPrivate::initUI()
 
     QVBoxLayout *mainLayout = new QVBoxLayout(q);
     mainLayout->setSpacing(0);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setMargin(0);
     mainLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     auto spaceWidget = createSpaceWidget();
@@ -118,13 +113,12 @@ void TabWidgetPrivate::initUI()
     editorLayout->addWidget(spaceWidget);
 
     tabBar = new TabBar(q);
+    findToolBar = new FindToolBar(q);
+    findToolBar->setVisible(false);
 
     mainLayout->addWidget(tabBar, 0, Qt::AlignTop);
     mainLayout->addLayout(editorLayout);
-
-    auto holder = createFindPlaceHolder();
-    if (holder)
-        mainLayout->addWidget(holder);
+    mainLayout->addWidget(findToolBar);
 }
 
 void TabWidgetPrivate::initConnection()
@@ -178,17 +172,6 @@ QWidget *TabWidgetPrivate::createSpaceWidget()
     vLayout->addStretch(1);
 
     return widget;
-}
-
-QWidget *TabWidgetPrivate::createFindPlaceHolder()
-{
-    auto &ctx = dpfInstance.serviceContext();
-    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
-    if (!windowService)
-        return nullptr;
-
-    auto docFind = new EditorDocumentFind(q);
-    return windowService->createFindPlaceHolder(q, docFind);
 }
 
 TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
@@ -763,6 +746,19 @@ void TabWidget::updateZoomValue(int value)
 QWidget *TabWidget::currentWidget() const
 {
     return d->currentTextEditor();
+}
+
+void TabWidget::showFindToolBar()
+{
+    if (auto editor = d->currentTextEditor()) {
+        QString findText = editor->selectedText();
+        if (findText.isEmpty())
+            findText = editor->wordAtPosition(editor->cursorPosition());
+
+        d->findToolBar->setFindText(findText);
+    }
+
+    d->findToolBar->setVisible(true);
 }
 
 void TabWidget::openFile(const QString &fileName)
