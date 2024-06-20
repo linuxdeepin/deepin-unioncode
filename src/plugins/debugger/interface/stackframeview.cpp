@@ -4,7 +4,6 @@
 
 #include "stackframeview.h"
 #include "interface/stackframemodel.h"
-#include "base/baseitemdelegate.h"
 
 #include <QDebug>
 #include <QFontMetrics>
@@ -24,11 +23,12 @@ StackFrameView::StackFrameView(QWidget *parent)
     setHeader(headerView);
     setTextElideMode(Qt::TextElideMode::ElideLeft);
     setFrameStyle(QFrame::NoFrame);
-    setItemDelegate(new BaseItemDelegate(this));
     setAlternatingRowColors(true);
 
     connect(this, &QAbstractItemView::activated,
             this, &StackFrameView::rowActivated);
+    connect(this, &QAbstractItemView::clicked,
+            this, &StackFrameView::rowClicked);
 }
 
 StackFrameView::~StackFrameView()
@@ -38,6 +38,11 @@ StackFrameView::~StackFrameView()
 void StackFrameView::rowActivated(const QModelIndex &index)
 {
     model()->setData(index, QVariant(), ItemActivatedRole);
+}
+
+void StackFrameView::rowClicked(const QModelIndex &index)
+{
+    model()->setData(index, QVariant(), ItemClickedRole);
 }
 
 void StackFrameView::initHeaderView()
