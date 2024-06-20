@@ -161,14 +161,10 @@ void TextEditorPrivate::updateSettings()
     q->zoomTo(realFontZoom);
 
     // Indentation
-    auto tabPolicy = EditorSettings::instance()->value(Node::Behavior, Group::TabGroup, Key::TabPolicy, 0).toInt();
-    auto tabSize = EditorSettings::instance()->value(Node::Behavior, Group::TabGroup, Key::TabSize, 4).toInt();
-    auto autoIndent = EditorSettings::instance()->value(Node::Behavior, Group::TabGroup, Key::EnableAutoIndentation, true).toBool();
-    q->setIndentationsUseTabs(tabPolicy);
-    q->setTabWidth(tabSize);
+    q->SendScintilla(TextEditor::SCI_SETTABWIDTH, TAB_DEFAULT_WIDTH);
     q->setWhitespaceSize(3);
-    q->setAutoIndent(autoIndent);
-
+    q->setAutoIndent(true);
+    q->setIndentationsUseTabs(false);
 
     // Highlight the current line
     q->setCaretLineVisible(true);
