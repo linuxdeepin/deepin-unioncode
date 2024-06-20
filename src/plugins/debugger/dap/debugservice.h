@@ -27,7 +27,7 @@ public:
     dap::array<IBreakpoint> removeBreakpoints(const QString &filePath, int lineNumber,
                                            dap::optional<DebugSession *> session);
 
-    void switchBreakpointStatus(const QString &filePath, int lineNumber, bool status,
+    void switchBreakpointStatus(const QList<QPair<QString, int>> &breakpoints, bool status,
                                            dap::optional<DebugSession *> session);
 
     DebugModel *getModel() const;

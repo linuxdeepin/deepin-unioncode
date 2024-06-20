@@ -10,9 +10,5 @@
         <file>texts/debugger_stop_16px.svg</file>
         <file>texts/restart_debug_16px.svg</file>
         <file>texts/run_16px.svg</file>
-        <file>light/icons/breakpoint_14px.svg</file>
-        <file>light/icons/disabled_breakpoint_14px.svg</file>
-        <file>dark/icons/breakpoint_14px.svg</file>
-        <file>dark/icons/disabled_breakpoint_14px.svg</file>
     </qresource>
 </RCC>

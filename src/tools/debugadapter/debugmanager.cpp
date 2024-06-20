@@ -25,7 +25,6 @@ class DebugManagerPrivate {
     ConditionLockEx locker;
     ConditionLockEx stacklocker;
     ConditionLockEx varibalelocker;
-
     QHash<int, DebugManager::ResponseEntry> resposeExpected;
     QStringList arguments;
     int tokenCounter = 0;
@@ -187,7 +186,7 @@ bool DebugManager::command(const QString &cmd, bool interrupt)
     QTextStream(&sOut) << "Command:" << line << "\n";
     d->debugger->handleOutputStreamText(sOut);
 
-    if (restart)
+    if(restart)
         commandContinue();
 
     return true;
