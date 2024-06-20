@@ -43,8 +43,6 @@ void sortParentItem(QStandardItem *parentItem)
     QList<QStandardItem *> cmakeFileList;
     QList<QStandardItem *> fileList;
     QList<QStandardItem *> directoryList;
-    QList<QStandardItem *> others;
-
     int count = parentItem->rowCount();
 
     for (int row = 0; row < count; row++) {
@@ -60,9 +58,8 @@ void sortParentItem(QStandardItem *parentItem)
             fileList.append(parentItem->takeChild(row));
         else if (fileInfo.isDir())
             directoryList.append(parentItem->takeChild(row));
-        else
-            others.append(parentItem->takeChild(row));
     }
+
     parentItem->removeRows(0, parentItem->rowCount());
 
     //fileList is already sorted
@@ -76,9 +73,6 @@ void sortParentItem(QStandardItem *parentItem)
         parentItem->appendRow(item);
     for ( auto item : fileList )
         parentItem->appendRow(item);
-    for ( auto item : others )
-        parentItem->appendRow(item);
-
 }
 
 CmakeAsynParse::CmakeAsynParse()
@@ -204,8 +198,6 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             continue;
         }
         QString targetRootPath = getTargetRootPath(target, prjInfo);
-        if (!QFileInfo(targetRootPath).exists())
-            continue;
         QString relativePath = QDir(prjInfo.workspaceFolder()).relativeFilePath(QDir(targetRootPath).path());
         QString absolutePath = QDir(prjInfo.workspaceFolder()).absoluteFilePath(QDir(targetRootPath).path());
         QStandardItem *targetRootItem = rootItem;
