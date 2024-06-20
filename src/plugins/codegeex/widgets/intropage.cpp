@@ -68,7 +68,7 @@ void IntroPage::initIntroContent()
     introLayout->setSpacing(10);
     qobject_cast<QVBoxLayout *>(layout())->addLayout(introLayout);
 
-    appendDescLabel(introLayout, tr("CodeGeeX provides code completion suggestions in editor, Press %1 Ctrl + T %2 to accept.").arg("<font style='color:dodgerblue;'>", "</font>"));
+    appendDescLabel(introLayout, tr("CodeGeeX provides code completion suggestions in editor, Press %1 Tab %2 to accept.").arg("<font style='color:dodgerblue;'>", "</font>"));
     appendDescLabel(introLayout, tr("Select code and %1 right-click %2 to add comments or translate code.").arg("<font style='color:dodgerblue;'>", "</font>"));
     appendDescLabel(introLayout, tr("Also, you can directly %1 ask CodeGeeX any questions %2.").arg("<font style='color:dodgerblue;'>", "</font>"));
 }

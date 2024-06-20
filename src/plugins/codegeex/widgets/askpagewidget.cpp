@@ -22,7 +22,6 @@
 #include <QKeyEvent>
 
 static const int minInputEditHeight = 36;
-static const int maxInputEditHeight = 236;
 static const int minInputWidgetHeight = 86;
 
 InputEdit::InputEdit(QWidget *parent)
@@ -34,13 +33,7 @@ InputEdit::InputEdit(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(this, &DTextEdit::textChanged, this, [this]() {
-        auto adjustHeight = document()->size().height();
-        if (adjustHeight < minInputEditHeight)
-            setFixedHeight(minInputEditHeight);
-        else if (adjustHeight > maxInputEditHeight)
-            setFixedHeight(maxInputEditHeight);
-        else
-            setFixedHeight(adjustHeight);
+        setFixedHeight(document()->size().height());
     });
 }
 
@@ -196,7 +189,7 @@ void AskPageWidget::initUI()
 void AskPageWidget::initInputWidget()
 {
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->setContentsMargins(10, 0, 10, 0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     inputWidget->setLayout(layout);
 
@@ -229,7 +222,7 @@ void AskPageWidget::initInputWidget()
 
     sendButton = new DFloatingButton(this);
     sendButton->setFixedSize(30, 30);
-    sendButton->setIcon(QIcon::fromTheme("codegeex_send").pixmap(16, QIcon::Selected));
+    sendButton->setIcon(QIcon::fromTheme("codegeex_send").pixmap(16));
     sendButton->setEnabled(false);
 
     inputWidget->setFixedHeight(minInputWidgetHeight);
@@ -260,7 +253,7 @@ void AskPageWidget::initConnection()
         else
             sendButton->setEnabled(true);
 
-        inputWidget->setFixedHeight(inputEdit->height() + minInputWidgetHeight - minInputEditHeight);
+        inputWidget->setFixedHeight(inputEdit->document()->size().height() + minInputWidgetHeight - minInputEditHeight);
     });
     connect(stopGenerate, &DPushButton::clicked, this, [this]() {
         CodeGeeXManager::instance()->stopReceiving();
