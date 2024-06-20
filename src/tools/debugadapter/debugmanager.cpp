@@ -351,17 +351,6 @@ void DebugManager::fetchChildVariables(int64_t childReference)
         d->varibalelocker.wait(defaultTimeoutSeconds);
 }
 
-void DebugManager::evaluateWatchingVariable(const QString &expression, int frame)
-{
-    d->debugger->traceWatchingVariable(expression, frame);
-    d->varibalelocker.wait(defaultTimeoutSeconds);
-}
-
-dap::Variable DebugManager::getWatchingVariable(const QString &expression)
-{
-    return d->debugger->getWatchingVariable(expression);
-}
-
 void DebugManager::disassemble(const QString &address)
 {
     if (command(d->debugger->disassemble(address)))
