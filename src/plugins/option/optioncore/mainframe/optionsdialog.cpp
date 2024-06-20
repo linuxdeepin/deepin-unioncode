@@ -132,7 +132,7 @@ void OptionsDialog::setupUi()
     leftSideBar->setBackgroundRole(QPalette::ColorRole::Light);
     leftSideBar->setItemDelegate(new NavigationDelegate(leftSideBar));
 
-#ifdef DTKWIDGET_CLASS_DPaletteHelper
+#ifndef DTKWIDGET_CLASS_DPaletteHelper
     DPalette pa = DPaletteHelper::instance()->palette(leftSideBar);
     pa.setBrush(DPalette::ItemBackground, Qt::transparent);
     DPaletteHelper::instance()->setPalette(leftSideBar, pa);
