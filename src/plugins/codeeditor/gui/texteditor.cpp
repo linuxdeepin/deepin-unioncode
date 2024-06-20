@@ -425,7 +425,6 @@ bool TextEditor::hasUncommentedLines(const int& lineFrom, const int& lineTo, con
             return false;
         return true;
     }
-    setSelection(lineFrom, indexFrom, lineTo, indexTo);
     QStringList lines = selectedText().split(QRegExp("\\r\\n|\\n|\\r")); 
     for (const QString &line : lines) {
         if (line.trimmed().isEmpty())
