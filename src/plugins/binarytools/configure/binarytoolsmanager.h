@@ -15,7 +15,6 @@
 
 namespace dpfservice {
 class WindowService;
-class TerminalService;
 }
 class AbstractAction;
 
@@ -63,18 +62,14 @@ public:
     static BinaryToolsManager *instance();
 
     void save();
-    using BinaryTools = QMap<QString, QList<ToolInfo>>;
-    void setTools(const BinaryTools &dataMap);
+    void setTools(const QMap<QString, QList<ToolInfo>> &dataMap);
     ToolInfo findTool(const QString &id);
-    ToolInfo findTool(const QString &id, const BinaryTools &tools);
-    BinaryTools tools();
+    QMap<QString, QList<ToolInfo>> tools();
 
     void executeTool(const QString &id);
-    void checkAndAddToToolbar(const BinaryTools &tools);
-    void updateToolMenu(const BinaryTools &tools);
+    void checkAndAddToToolbar(const QMap<QString, QList<ToolInfo>> &tools);
+    void updateToolMenu(const QMap<QString, QList<ToolInfo>> &tools);
     void setToolMenu(QMenu *menu);
-    void installTool(const QString &id);
-    void eventTriggered(EventType event, const QVariantList &args);
 
 Q_SIGNALS:
     void execute(const QString &id);
@@ -88,12 +83,8 @@ private:
     explicit BinaryToolsManager(QObject *parent = nullptr);
     ~BinaryToolsManager();
 
-    BinaryTools loadConfig(const QString &conf, QString &version);
-    QStringList updateToolList();
-    BinaryTools mergeTools(const BinaryTools &defTools, const BinaryTools &localTools);
     QSharedPointer<ToolProcess> createToolProcess(const ToolInfo &tool);
     bool checkCommandExists(const QString &command);
-    void toolMissingHint(const ToolInfo &tool);
     void addToToolBar(const ToolInfo &tool);
     void printOutput(const QString &id, const QString &content, OutputPane::OutputFormat format);
     void stopTool(const QString &id);
@@ -101,12 +92,10 @@ private:
 private:
     QMap<QString, std::tuple<QSharedPointer<ToolProcess>, QSharedPointer<QThread>>> toolTaskMap;
 
-    BinaryTools allTools;
+    QMap<QString, QList<ToolInfo>> allTools;
     dpfservice::WindowService *windowSrv { nullptr };
-    dpfservice::TerminalService *terminalSrv { nullptr };
     QMap<QString, AbstractAction *> actMap;
     QMenu *toolMenu { nullptr };
-    QString cfgVersion;
 };
 
 #endif   // BINARYTOOLSMANAGER_H

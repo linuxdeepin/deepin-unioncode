@@ -41,7 +41,6 @@ QVariant BinaryToolsModel::data(const QModelIndex &index, int role) const
 QVariant BinaryToolsModel::data(const ToolInfo &tool, int role) const
 {
     switch (role) {
-    case Qt::ToolTipRole:
     case Qt::DisplayRole:
     case Qt::EditRole:
         return tool.name;
@@ -57,7 +56,6 @@ QVariant BinaryToolsModel::data(const ToolInfo &tool, int role) const
 QVariant BinaryToolsModel::data(const QString &group, int role) const
 {
     switch (role) {
-    case Qt::ToolTipRole:
     case Qt::DisplayRole:
     case Qt::EditRole:
         return group.isEmpty() ? tr("Default Group") : group;

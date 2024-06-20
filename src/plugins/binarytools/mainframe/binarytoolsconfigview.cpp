@@ -4,7 +4,6 @@
 
 #include "binarytoolsconfigview.h"
 #include "environmentview.h"
-#include "advancedsettingsdialog.h"
 #include "models/binarytoolsmodel.h"
 #include "configure/binarytoolsmanager.h"
 #include "widgets/combinationcomboxbox.h"
@@ -45,8 +44,7 @@ public:
         AddToToolbarRow,
         IconRow,
         EnvironmentLabelRow,
-        EnvironmentRow,
-        EndRow
+        EnvironmentRow
     };
 
     explicit BinaryToolsConfigViewPrivate(BinaryToolsConfigView *qq);
@@ -69,7 +67,6 @@ public:
     void handleRemove();
     void handleSelectCommand();
     void handleSelectWorkingDirectory();
-    void handleShowAdvanceSettings();
 
 public:
     BinaryToolsConfigView *q;
@@ -95,7 +92,6 @@ public:
     DCheckBox *addToolbarCB = nullptr;
     IconComboBox *iconCB = nullptr;
     EnvironmentView *envView = nullptr;
-    DLabel *advanceLabel = nullptr;
 };
 
 BinaryToolsConfigViewPrivate::BinaryToolsConfigViewPrivate(BinaryToolsConfigView *qq)
@@ -125,7 +121,6 @@ void BinaryToolsConfigViewPrivate::initConnections()
     connect(delBtn, &DToolButton::clicked, this, &BinaryToolsConfigViewPrivate::handleRemove);
     connect(selCmdBtn, &DSuggestButton::clicked, this, &BinaryToolsConfigViewPrivate::handleSelectCommand);
     connect(selWorkDirBtn, &DSuggestButton::clicked, this, &BinaryToolsConfigViewPrivate::handleSelectWorkingDirectory);
-    connect(advanceLabel, &DLabel::linkActivated, this, &BinaryToolsConfigViewPrivate::handleShowAdvanceSettings);
 }
 
 void BinaryToolsConfigViewPrivate::initModel()
@@ -235,7 +230,7 @@ QWidget *BinaryToolsConfigViewPrivate::createRightWidget()
     mainLayout->addWidget(errOutputLabel, ErrorOutputRow, 0);
     mainLayout->addWidget(errOutputCB, ErrorOutputRow, 1);
 
-    addToolbarCB = new DCheckBox(BinaryToolsConfigView::tr("Add this tool to the toolbar"), q);
+    addToolbarCB = new DCheckBox(BinaryToolsConfigView::tr("Add this command to the toolbar"), q);
     mainLayout->addWidget(addToolbarCB, AddToToolbarRow, 0, 1, 2);
 
     DLabel *cmdIconLabel = new DLabel(BinaryToolsConfigView::tr("Tool icon:"), q);
@@ -244,22 +239,16 @@ QWidget *BinaryToolsConfigViewPrivate::createRightWidget()
     mainLayout->addWidget(cmdIconLabel, IconRow, 0);
     mainLayout->addWidget(iconCB, IconRow, 1);
 
-    DLabel *envLabel = new DLabel(BinaryToolsConfigView::tr("Environment:"), q);
+    DLabel *envLabel = new DLabel(BinaryToolsConfigView::tr("Configuration environment for the current command:"), q);
     envView = new EnvironmentView(q);
     auto *envViewFrame = new DFrame(q);
     QVBoxLayout *envViewlayout = new QVBoxLayout(envViewFrame);
     envViewlayout->setContentsMargins(5, 5, 5, 5);
     envViewFrame->setLayout(envViewlayout);
     envViewlayout->addWidget(envView);
-    mainLayout->addWidget(envLabel, EnvironmentLabelRow, 0);
+    mainLayout->addWidget(envLabel, EnvironmentLabelRow, 0, 1, 3);
     mainLayout->addWidget(envViewFrame, EnvironmentRow, 0, 1, 3);
-
-    advanceLabel = new DLabel(q);
-    advanceLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    QString format = "<a href='%1' style='text-decoration: none; color: #0081FF;'>%2</a>";
-    advanceLabel->setText(format.arg(BinaryToolsConfigView::tr("Advanced Settings"), BinaryToolsConfigView::tr("Advanced Settings")));
-    mainLayout->addWidget(advanceLabel, EnvironmentLabelRow, 1, 1, 2);
-    mainLayout->addItem(new QSpacerItem(10, 0, QSizePolicy::Maximum, QSizePolicy::MinimumExpanding), EndRow, 0);
+    mainLayout->addItem(new QSpacerItem(10, 0, QSizePolicy::Maximum, QSizePolicy::MinimumExpanding), EnvironmentRow + 1, 0);
 
     return widget;
 }
@@ -419,21 +408,6 @@ void BinaryToolsConfigViewPrivate::handleSelectWorkingDirectory()
         return;
 
     workingDirEdit->setText(filePath);
-}
-
-void BinaryToolsConfigViewPrivate::handleShowAdvanceSettings()
-{
-    AdvancedSettingsDialog dialog(q);
-    const auto tool = treeModel.toolForIndex(currentIndex);
-    if (!tool)
-        return;
-    
-    dialog.setAdvancedSettings(tool->advSettings);
-    int code = dialog.exec();
-    if (code == 1) {
-        const auto &st = dialog.advancedSettings();
-        tool->advSettings = st;
-    }
 }
 
 BinaryToolsConfigView::BinaryToolsConfigView(QWidget *parent)

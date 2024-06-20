@@ -18,36 +18,6 @@ enum OutputOption {
     ShowInApplicationOutput
 };
 
-enum EventType {
-    NoEvent = 0,
-    DocumentSaveEvent
-    // TODO: add event
-};
-
-struct AdvancedSettings
-{
-    QString missingHint;
-    QString installCommand;
-    int triggerEvent { NoEvent };
-
-    AdvancedSettings() = default;
-    AdvancedSettings(const AdvancedSettings &st)
-        : missingHint(st.missingHint),
-          installCommand(st.installCommand),
-          triggerEvent(st.triggerEvent)
-    {
-    }
-
-    AdvancedSettings &operator=(const AdvancedSettings &st)
-    {
-        missingHint = st.missingHint;
-        installCommand = st.installCommand;
-        triggerEvent = st.triggerEvent;
-
-        return *this;
-    }
-};
-
 struct ToolInfo
 {
     QString id;
@@ -63,7 +33,6 @@ struct ToolInfo
     bool addToToolbar { false };
     QString icon { "binarytools_default" };
     QVariantMap environment;
-    AdvancedSettings advSettings;
 
     ToolInfo() = default;
     explicit ToolInfo(const ToolInfo &other)
@@ -79,8 +48,7 @@ struct ToolInfo
           errorOutputOption(other.errorOutputOption),
           addToToolbar(other.addToToolbar),
           icon(other.icon),
-          environment(other.environment),
-          advSettings(other.advSettings)
+          environment(other.environment)
     {
     }
 
@@ -101,7 +69,6 @@ struct ToolInfo
         addToToolbar = other.addToToolbar;
         icon = other.icon;
         environment = other.environment;
-        advSettings = other.advSettings;
 
         return *this;
     }
