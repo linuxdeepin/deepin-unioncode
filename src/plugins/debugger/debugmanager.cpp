@@ -116,26 +116,6 @@ void DebugManager::run()
     }
 }
 
-void DebugManager::remoteDebug(RemoteInfo info)
-{
-    if (!currentDebugger) {
-        LanguageService *service = dpfGetService(LanguageService);
-        if (service) {
-            auto generator = service->create<LanguageGenerator>(activeProjectKitName);
-            if (generator) {
-                QString debugger = generator->debugger();
-                if (debuggers.contains(debugger) && currentDebugger != debuggers[debugger]) {
-                    disconnect(currentDebugger, &AbstractDebugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
-                    currentDebugger = debuggers[debugger];
-                    connect(currentDebugger, &AbstractDebugger::runStateChanged, this, &DebugManager::handleRunStateChanged);
-                }
-            }
-        }
-    }
-    
-    AsynInvokeWithParam(currentDebugger->startDebugRemote, info);
-}
-
 void DebugManager::detachDebug()
 {
     AsynInvoke(currentDebugger->detachDebug());

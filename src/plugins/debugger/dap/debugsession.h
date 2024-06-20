@@ -39,10 +39,6 @@ public:
     bool launch(dap::LaunchRequest &config) override;
     bool attach(dap::AttachRequest &config) override;
 
-    void setRemote(bool on);
-    void setLocalProjectPath(const QString &path);
-    void setRemoteProjectPath(const QString &path);
-
     void restart() override;
     void terminate(bool restart = false) override;
     void disconnect(bool terminateDebuggee = true, bool restart = false) override;
@@ -128,7 +124,6 @@ private:
     void shutdown();
     void onBreakpointHit(const dap::StoppedEvent &event);
     void onStep(const dap::StoppedEvent &event);
-    QString transformLocalPath(const QString &localPath);
 
     dap::Source getRawSource(QUrl &uri);
     void cancelAllRequests();
@@ -156,10 +151,6 @@ private:
     std::map<dap::string, Source *> sources;
 
     QPointer<QWidget> alertBox;
-
-    bool isRemote = false;
-    QString localProjectPath;
-    QString remoteProjectPath;
 };
 }
 

@@ -132,21 +132,6 @@ bool DebugSession::attach(dap::AttachRequest &config)
     return ret.valid();
 }
 
-void DebugSession::setRemote(bool on)
-{
-    isRemote = on;
-}
-
-void DebugSession::setLocalProjectPath(const QString &path)
-{
-    localProjectPath = path;
-}
-
-void DebugSession::setRemoteProjectPath(const QString &path)
-{
-    remoteProjectPath = path;
-}
-
 void DebugSession::restart()
 {
     if (!raw)
@@ -503,7 +488,7 @@ void DebugSession::sendBreakpoints(const QString &sourcePath, dap::array<IBreakp
     dap::array<SourceBreakpoint> breakpoints;
     for (auto it : breakpointsToSend) {
         dap::Source source;
-        source.path = isRemote ? transformLocalPath(it.uri.toString()).toStdString() : it.uri.toString().toStdString();
+        source.path = it.uri.toString().toStdString();
         source.name = undefined;
         request.source = source;
         SourceBreakpoint bt;
@@ -878,19 +863,6 @@ void DebugSession::disassemble(const dap::string &address)
     DisassembleRequest request;
     request.memoryReference = address;
     raw->disassemble(request);
-}
-
-QString DebugSession::transformLocalPath(const QString &localPath)
-{
-    if (!isRemote || remoteProjectPath.isEmpty())
-        return localPath;
-
-    QString ret = localPath;
-    if (localPath.startsWith(localProjectPath)) {
-        ret.replace(0, localProjectPath.size(), remoteProjectPath);
-    }
-
-    return ret;
 }
 
 }   // endnamespace

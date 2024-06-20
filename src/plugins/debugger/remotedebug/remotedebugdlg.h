@@ -5,7 +5,6 @@
 #define REMOTEDEBUGDLG_H
 
 #include <DDialog>
-#include <DLineEdit>
 
 class RemoteDebugDlg : public DTK_WIDGET_NAMESPACE::DDialog
 {
@@ -22,12 +21,6 @@ private slots:
 
 private:
     void setupUi();
-
-    Dtk::Widget::DLineEdit *lePort = nullptr;
-    Dtk::Widget::DLineEdit *leIP = nullptr;
-    Dtk::Widget::DLineEdit *leDebugee = nullptr;
-    Dtk::Widget::DLineEdit *leProjectPath = nullptr;
-    Dtk::Widget::DLineEdit *leParameters = nullptr;
 };
 
 #endif // REMOTEDEBUGDLG_H

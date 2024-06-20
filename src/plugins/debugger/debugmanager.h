@@ -49,7 +49,6 @@ public slots:
     /**
      * UI triggered.
      */
-    void remoteDebug(RemoteInfo info);
     void run();
     void detachDebug();
 

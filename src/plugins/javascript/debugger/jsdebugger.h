@@ -28,7 +28,6 @@ public:
     DWidget *getDebugMainPane() const override;
 
     void startDebug() override;
-    void startDebugRemote(const RemoteInfo &info) override;
     void detachDebug() override;
 
     void interruptDebug() override;

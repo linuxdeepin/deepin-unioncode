@@ -62,11 +62,6 @@ void JSDebugger::startDebug()
     QMetaObject::invokeMethod(this, "setupDebugEnv");
 }
 
-void JSDebugger::startDebugRemote(const RemoteInfo &info)
-{
-    Q_UNUSED(info)
-}
-
 void JSDebugger::detachDebug()
 {
 }
