@@ -32,10 +32,10 @@ Version completion(Category category, Kit kit, const Version &version)
                 program += QString::number(version.major.value());
             }
             ProcessUtil::execute(program, {"-V"}, [&](const QByteArray &data){
-                QRegularExpression regExp {"Python\\s(?<" + RK_Major +">[0-9]+)"
-                                            + "\\.(?<"+ RK_Minor +">[0-9]+)"
-                                            + "\\.(?<"+ RK_Revision +">[0-9]+)"
-                                            + "(\\.(?<"+ RK_Build + ">[0-9]+))?"};
+                QRegularExpression regExp {"Python\\s(?<" + RK_Major +">[0-9])"
+                            + "\\.(?<"+ RK_Minor +">[0-9])"
+                            + "\\.(?<"+ RK_Revision +">[0-9])"
+                            + "(\\.(?<"+ RK_Build + ">[0-9]))?"};
                 auto matchs = regExp.match(data);
                 if (matchs.hasMatch()) {
                     auto major = matchs.captured(RK_Major);
@@ -73,16 +73,14 @@ Program search(Category category, Kit kit, const Version &version)
                 if (executeVersion.major) {
                     program + QString::number(executeVersion.major.value());
                 }
-
-                if (executeVersion.major.has_value() && executeVersion.minor.has_value())
-                    ret.pkgsPath = QDir::homePath() + QDir::separator()
-                            + ".local" + QDir::separator()
-                            + "lib" + QDir::separator()
-                            + QString("python") + QString::number(executeVersion.major.value())
-                            + "."
-                            + QString::number(executeVersion.minor.value())
-                            + QDir::separator()
-                            + "site-packages";
+                ret.pkgsPath = QDir::homePath() + QDir::separator()
+                        + ".local" + QDir::separator()
+                        + "lib" + QDir::separator()
+                        + QString("python") + QString::number(executeVersion.major.value())
+                        + "."
+                        + QString::number(executeVersion.minor.value())
+                        + QDir::separator()
+                        + "site-packages";
             }
         }
     }
