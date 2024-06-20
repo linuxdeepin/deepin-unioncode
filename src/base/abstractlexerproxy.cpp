@@ -77,6 +77,13 @@ bool AbstractLexerProxy::defaultEolFill(int style) const
     return false;
 }
 
+QFont AbstractLexerProxy::defaultFont(int style) const
+{
+    Q_UNUSED(style)
+    QFont font("Courier New", 10);
+    return font;
+}
+
 QColor AbstractLexerProxy::defaultPaper(int style) const
 {
     Q_UNUSED(style)

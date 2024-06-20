@@ -64,11 +64,6 @@ bool OptionUtils::convertMapToJson(const QMap<QString, QVariant> &map, QJsonObje
 void OptionUtils::convert(const QString &key, const QVariant &variant, QJsonObject &jsonObject)
 {
     switch (variant.type()) {
-    case QVariant::Int:
-    {
-        jsonObject.insert(key, variant.toInt());
-        break;
-    }
     case QVariant::Bool:
     {
         jsonObject.insert(key, variant.toBool());
@@ -117,11 +112,6 @@ bool OptionUtils::convertJsonToMap(const QJsonObject &jsonObject, QMap<QString, 
 void OptionUtils::convert(const QString &key, const QJsonValue &variant, QMap<QString, QVariant> &map)
 {
     switch (variant.type()) {
-    case QJsonValue::Double:
-    {
-        map.insert(key, variant.toDouble());
-        break;
-    }
     case QJsonValue::Bool:
     {
         map.insert(key, variant.toBool());

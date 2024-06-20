@@ -8,8 +8,6 @@
 #include "lexer/lexermanager.h"
 #include "transceiver/codeeditorreceiver.h"
 #include "common/common.h"
-#include "gui/settings/editorsettings.h"
-#include "gui/settings/settingsdefine.h"
 
 #include <Qsci/qsciapis.h>
 
@@ -20,7 +18,7 @@
 #include <QDebug>
 #include <QApplication>
 
-static constexpr char DEFAULT_FONT_NAME[] { "Noto Mono" };
+static constexpr char DEFAULT_FONT_NAME[] { "Courier New" };
 
 static constexpr int MARGIN_SYMBOLE_DEFAULT_WIDTH = 14;
 static constexpr int MARGIN_FOLDER_DEFAULT_WIDTH = 14;
@@ -64,7 +62,6 @@ void TextEditorPrivate::initConnection()
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::onThemeTypeChanged);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSearch, this, &TextEditorPrivate::handleSearch);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqReplace, this, &TextEditorPrivate::handleReplace);
-    connect(EditorSettings::instance(), &EditorSettings::valueChanged, this, &TextEditorPrivate::updateSettings);
 
     connect(q, &TextEditor::SCN_ZOOM, q, &TextEditor::zoomValueChanged);
     connect(q, &TextEditor::SCN_DWELLSTART, this, &TextEditorPrivate::onDwellStart);
@@ -142,21 +139,9 @@ void TextEditorPrivate::updateColorTheme()
 
 void TextEditorPrivate::updateSettings()
 {
-    fontName = EditorSettings::instance()->value(Node::FontColor, Group::FontGroup, Key::FontFamily, DEFAULT_FONT_NAME).toString();
-    fontSize = EditorSettings::instance()->value(Node::FontColor, Group::FontGroup, Key::FontSize, 10).toInt();
-
-    QFont font(fontName, fontSize, QFont::Normal);
-    if (q->lexer())
-        q->lexer()->setDefaultFont(font);
-    else
-        q->setFont(font);
-
+    QFont font(DEFAULT_FONT_NAME, 10, QFont::Normal);
+    q->setFont(font);
     q->setMarginsFont(font);
-
-    int fontZoom = EditorSettings::instance()->value(Node::FontColor, Group::FontGroup, Key::FontZoom, 100).toInt();
-    int realFontZoom = (fontZoom - 100) / 10;
-    q->zoomTo(realFontZoom);
-    q->updateLineNumberWidth(false);
 
     // Indentation
     q->SendScintilla(TextEditor::SCI_SETTABWIDTH, TAB_DEFAULT_WIDTH);
@@ -184,8 +169,6 @@ void TextEditorPrivate::loadLexer()
     auto id = Language::id(fileName);
     if (auto lexer = LexerManager::instance()->createSciLexer(id, fileName)) {
         lexer->setParent(q);
-        QFont font(fontName, fontSize, QFont::Normal);
-        lexer->setDefaultFont(font);
         q->setLexer(lexer);
         setMarginVisible(FoldingMargin, true);
     } else {

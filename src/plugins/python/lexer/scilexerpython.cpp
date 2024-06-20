@@ -174,6 +174,11 @@ bool SciLexerPython::defaultEolFill(int style) const
     return AbstractLexerProxy::defaultEolFill(style);
 }
 
+QFont SciLexerPython::defaultFont(int style) const
+{
+    return AbstractLexerProxy::defaultFont(style);
+}
+
 QColor SciLexerPython::defaultPaper(int style) const
 {
     if (style == UnclosedString) {

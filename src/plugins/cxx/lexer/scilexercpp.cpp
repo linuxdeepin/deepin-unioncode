@@ -354,6 +354,59 @@ bool SciLexerCPP::defaultEolFill(int style) const
     return AbstractLexerProxy::defaultEolFill(style);
 }
 
+QFont SciLexerCPP::defaultFont(int style) const
+{
+    QFont f;
+
+    switch (style) {
+    case Comment:
+    case InactiveComment:
+    case CommentLine:
+    case InactiveCommentLine:
+    case CommentDoc:
+    case InactiveCommentDoc:
+    case CommentLineDoc:
+    case InactiveCommentLineDoc:
+    case CommentDocKeyword:
+    case InactiveCommentDocKeyword:
+    case CommentDocKeywordError:
+    case InactiveCommentDocKeywordError:
+    case TaskMarker:
+    case InactiveTaskMarker:
+        f = QFont("Courier New", 10);
+        break;
+
+    case Keyword:
+    case InactiveKeyword:
+    case Operator:
+    case InactiveOperator:
+        f = AbstractLexerProxy::defaultFont(style);
+        break;
+
+    case DoubleQuotedString:
+    case InactiveDoubleQuotedString:
+    case SingleQuotedString:
+    case InactiveSingleQuotedString:
+    case UnclosedString:
+    case InactiveUnclosedString:
+    case VerbatimString:
+    case InactiveVerbatimString:
+    case Regex:
+    case InactiveRegex:
+    case TripleQuotedVerbatimString:
+    case InactiveTripleQuotedVerbatimString:
+    case HashQuotedString:
+    case InactiveHashQuotedString:
+        f = QFont("Courier New", 10);
+        break;
+
+    default:
+        f = AbstractLexerProxy::defaultFont(style);
+    }
+
+    return f;
+}
+
 QColor SciLexerCPP::defaultPaper(int style) const
 {
     switch (style) {

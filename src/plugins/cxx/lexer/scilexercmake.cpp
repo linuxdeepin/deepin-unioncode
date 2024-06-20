@@ -122,6 +122,11 @@ QColor SciLexerCMake::defaultColor(int style) const
     return AbstractLexerProxy::defaultColor(style);
 }
 
+QFont SciLexerCMake::defaultFont(int style) const
+{
+    return AbstractLexerProxy::defaultFont(style);
+}
+
 QColor SciLexerCMake::defaultPaper(int style) const
 {
     return AbstractLexerProxy::defaultPaper(style);

@@ -6,7 +6,6 @@
 #define ABSTRACTLEXERPROXY_H
 
 #include <QObject>
-#include <QFont>
 
 class AbstractLexerProxy : public QObject
 {
@@ -66,6 +65,9 @@ public:
 
     //! Returns the end-of-line fill for style number \a style.
     virtual bool defaultEolFill(int style) const;
+
+    //! Returns the font for style number \a style.
+    virtual QFont defaultFont(int style) const;
 
     //! Returns the background colour of the text for style number \a style.
     //!

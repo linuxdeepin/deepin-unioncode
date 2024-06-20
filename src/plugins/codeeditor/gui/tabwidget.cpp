@@ -65,6 +65,7 @@ void TabWidgetPrivate::initConnection()
 TextEditor *TabWidgetPrivate::createEditor(const QString &fileName)
 {
     TextEditor *editor = new TextEditor(q);
+    editor->zoomTo(zoomValue);
     editor->updateLineNumberWidth(false);
     editor->installEventFilter(q);
 
@@ -583,8 +584,14 @@ int TabWidget::zoomValue()
     return 0;
 }
 
+void TabWidget::setZoomValue(int value)
+{
+    d->zoomValue = value;
+}
+
 void TabWidget::updateZoomValue(int value)
 {
+    d->zoomValue = value;
     auto editor = d->currentTextEditor();
     if (editor->hasFocus())
         editor->updateLineNumberWidth(false);

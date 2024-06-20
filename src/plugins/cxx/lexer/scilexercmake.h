@@ -68,6 +68,7 @@ public:
     virtual QString description(int style) const override;
     virtual bool isSupport(const QString &file) const override;
     virtual QColor defaultColor(int style) const override;
+    virtual QFont defaultFont(int style) const override;
     virtual QColor defaultPaper(int style) const override;
     virtual const char *keywords(int set) const override;
     virtual void refreshProperties() override;

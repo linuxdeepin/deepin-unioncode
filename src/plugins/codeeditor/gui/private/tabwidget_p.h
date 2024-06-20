@@ -62,6 +62,8 @@ public:
     PosRecord curPosRecord;
     QList<PosRecord> prePosRecord;
     QList<PosRecord> nextPosRecord;
+
+    int zoomValue { 0 };
 };
 
 #endif   // TABWIDGET_P_H
