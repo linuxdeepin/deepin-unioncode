@@ -67,14 +67,12 @@
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="100"/>
-        <source>Cancel</source>
-        <comment>button</comment>
+        <source>cancel</source>
         <translation>取消</translation>
     </message>
     <message>
         <location filename="../../src/plugins/codegeex/widgets/askpagewidget.cpp" line="101"/>
-        <source>Delete</source>
-        <comment>button</comment>
+        <source>delete</source>
         <translation>删除</translation>
     </message>
     <message>
@@ -119,33 +117,6 @@
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="301"/>
         <source>Add new command</source>
         <translation>添加新命令</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="311"/>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="332"/>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="371"/>
-        <source>Cancel</source>
-        <comment>button</comment>
-        <translation>取消</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="312"/>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="372"/>
-        <source>Ok</source>
-        <comment>button</comment>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="333"/>
-        <source>Delete</source>
-        <comment>button</comment>
-        <translation>删除</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="433"/>
-        <source>Use Conbination Command</source>
-        <comment>button</comment>
-        <translation>使用组合命令</translation>
     </message>
     <message>
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="447"/>
@@ -203,9 +174,27 @@
         <translation>命令名称</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="311"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="332"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="371"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="312"/>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="372"/>
+        <source>Ok</source>
+        <translation>确定</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="331"/>
         <source>Sure you want to delete the configuration?</source>
         <translation>确定要删除配置吗？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="333"/>
+        <source>Delete</source>
+        <translation>删除</translation>
     </message>
     <message>
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="361"/>
@@ -221,6 +210,11 @@
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="424"/>
         <source>Combination Of Commands</source>
         <translation>组合命令</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="433"/>
+        <source>Use Conbination Command</source>
+        <translation>使用组合命令</translation>
     </message>
     <message>
         <location filename="../../src/plugins/binarytools/mainframe/binarytoolsconfigview.cpp" line="456"/>
@@ -879,7 +873,7 @@ A must-have all-round AI tool for developers</source>
 <context>
     <name>Controller</name>
     <message>
-        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="647"/>
+        <location filename="../../src/plugins/core/uicontroller/controller.cpp" line="644"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
@@ -965,11 +959,6 @@ The debugee has Terminated.
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
         <source>Value</source>
         <translation>值</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="820"/>
-        <source>Type</source>
-        <translation>类型</translation>
     </message>
     <message>
         <location filename="../../src/plugins/debugger/dap/dapdebugger.cpp" line="830"/>
@@ -1133,16 +1122,42 @@ dap端口未就绪，请重试。
 <context>
     <name>DTreeView</name>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="25"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="21"/>
         <source>The delete operation will be removed fromthe disk and will not be recoverable after this operation.
 Delete anyway?</source>
         <translation>删除操作将从磁盘中删除，此操作后将无法恢复。
 是否仍要删除？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="29"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="25"/>
         <source>Delete Warning</source>
         <translation>忽略警告</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="106"/>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="154"/>
+        <source>Error, Can&apos;t move to trash: </source>
+        <translation>错误，无法移到废纸篓： </translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="172"/>
+        <source>Error: Can&apos;t create New Document</source>
+        <translation>错误：无法创建新文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="175"/>
+        <source>Error: Create New Document, parent not&apos;s dir</source>
+        <translation>错误：新建文件没有父级目录</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="194"/>
+        <source>Error: Can&apos;t create new folder</source>
+        <translation>错误：无法创建新文件夹</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="197"/>
+        <source>Error: Create new folder, parent not&apos;s dir</source>
+        <translation>错误：新建文件夹没有父级目录</translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="30"/>
@@ -1153,7 +1168,7 @@ Delete anyway?</source>
 <context>
     <name>DebuggerPlugin</name>
     <message>
-        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="79"/>
+        <location filename="../../src/plugins/debugger/debuggerplugin.cpp" line="69"/>
         <source>&amp;Application Output</source>
         <translation>应用程序输出(&amp;A)</translation>
     </message>
@@ -1248,9 +1263,19 @@ Delete anyway?</source>
         <translation>发布者</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="50"/>
+        <source>Copyright</source>
+        <translation>版权</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="51"/>
         <source>Category</source>
         <translation>类别</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="52"/>
+        <source>URL</source>
+        <translation>链接</translation>
     </message>
     <message>
         <location filename="../../src/plugins/core/gui/plugindetailsview.h" line="53"/>
@@ -1286,7 +1311,7 @@ Delete anyway?</source>
 <context>
     <name>DisplayDocView</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="198"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="197"/>
         <source>Documents</source>
         <translation>文件</translation>
     </message>
@@ -1294,7 +1319,7 @@ Delete anyway?</source>
 <context>
     <name>DisplayProjectView</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="44"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="43"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
@@ -1700,22 +1725,22 @@ Delete anyway?</source>
 <context>
     <name>LSPStyle</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="599"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="578"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="601"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="580"/>
         <source>Rename Symbol Under Cursor</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="607"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="586"/>
         <source>Switch Between Function Declaration/Definition</source>
         <translation>在声明和定义之间切换</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="610"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="589"/>
         <source>Find Usages</source>
         <translation>查找引用</translation>
     </message>
@@ -2006,44 +2031,50 @@ repos path: %0</source>
 <context>
     <name>ProjectTree</name>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="207"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="210"/>
         <source>Show Contain Folder</source>
         <translation>显示包含目录</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="344"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="470"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="347"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="473"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="353"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="356"/>
         <source>Open In Terminal</source>
         <translation>在终端打开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="360"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="363"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="466"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="469"/>
         <source>New Document Name</source>
         <translation>新文件名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="473"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="561"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="478"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="490"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="568"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="559"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="488"/>
+        <source>File name cannot be empty!</source>
+        <translation>文件名不能为空！</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="566"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation>名称为&quot;%1&quot; 的文件已经存在，您想覆盖它吗？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="560"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="567"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -2110,14 +2141,36 @@ repos path: %0</source>
         <translation>打开仓库</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="243"/>
+        <source>Open</source>
+        <translation>打开</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="251"/>
         <location filename="../../src/services/window/windowelement.h" line="37"/>
         <source>New Folder</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="252"/>
         <location filename="../../src/services/window/windowelement.h" line="36"/>
         <source>New Document</source>
         <translation>新建文件</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="261"/>
+        <source>Move To Trash</source>
+        <translation>移到废纸篓</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="262"/>
+        <source>Remove</source>
+        <translation>移除</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="275"/>
+        <source>Recover From Trash</source>
+        <translation>恢复</translation>
     </message>
     <message>
         <location filename="../../src/services/window/windowelement.h" line="68"/>
@@ -2135,17 +2188,17 @@ repos path: %0</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="391"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="394"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="392"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="395"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="393"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="396"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
@@ -2828,72 +2881,48 @@ not exists support files: %0</source>
 <context>
     <name>RecentDisplay</name>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="283"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="279"/>
         <source>Open Document</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="441"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="437"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="442"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="438"/>
         <source>Open Project</source>
         <translation>打开工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="443"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="439"/>
         <source>New File or Project</source>
         <translation>新建文件或工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="456"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="452"/>
         <source>Recent Open</source>
         <translation>最近打开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="465"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="461"/>
         <source>Documents</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="472"/>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="503"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="468"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="493"/>
         <source>clear all</source>
         <translation>清除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="476"/>
-        <source>Confirm to clear the record of the opened file?</source>
-        <translation>确定清空`已打开文件`记录？</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="477"/>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="508"/>
-        <source>Cancel</source>
-        <comment>button</comment>
-        <translation>取消</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="478"/>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="509"/>
-        <source>Delete</source>
-        <comment>button</comment>
-        <translation>删除</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="496"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="486"/>
         <source>Projects</source>
         <translation>工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="507"/>
-        <source>Confirm to clear the record of the opened project?</source>
-        <translation>确定清空`已打开工程`记录？</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="444"/>
+        <location filename="../../src/plugins/recent/mainframe/recentdisplay.cpp" line="440"/>
         <source>No Project</source>
         <translation>无记录</translation>
     </message>
@@ -3319,84 +3348,6 @@ not exists support files: %0</source>
     </message>
 </context>
 <context>
-    <name>SciLexerCMake</name>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="34"/>
-        <source>Default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="37"/>
-        <source>Comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="40"/>
-        <source>String</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="43"/>
-        <source>Left quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="46"/>
-        <source>Right quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="49"/>
-        <source>Function</source>
-        <translation type="unfinished">函数</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="52"/>
-        <source>Variable</source>
-        <translation type="unfinished">变量名</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="55"/>
-        <source>Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="58"/>
-        <source>User defined</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="61"/>
-        <source>WHILE block</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="64"/>
-        <source>FOREACH block</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="67"/>
-        <source>IF block</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="70"/>
-        <source>MACRO block</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="73"/>
-        <source>Variable within a string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/cxx/lexer/scilexercmake.cpp" line="76"/>
-        <source>Number</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>SciLexerCPP</name>
     <message>
         <location filename="../../src/plugins/cxx/lexer/scilexercpp.cpp" line="34"/>
@@ -3680,109 +3631,6 @@ not exists support files: %0</source>
     </message>
 </context>
 <context>
-    <name>SciLexerPython</name>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="34"/>
-        <source>Default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="37"/>
-        <source>Comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="40"/>
-        <source>Number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="43"/>
-        <source>Double-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="46"/>
-        <source>Single-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="49"/>
-        <source>Keyword</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="52"/>
-        <source>Triple single-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="55"/>
-        <source>Triple double-quoted string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="58"/>
-        <source>Class name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="61"/>
-        <source>Function or method name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="64"/>
-        <source>Operator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="67"/>
-        <source>Identifier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="70"/>
-        <source>Comment block</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="73"/>
-        <source>Unclosed string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="76"/>
-        <source>Highlighted identifier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="79"/>
-        <source>Decorator</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="82"/>
-        <source>Double-quoted f-string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="85"/>
-        <source>Single-quoted f-string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="88"/>
-        <source>Triple single-quoted f-string</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/python/lexer/scilexerpython.cpp" line="91"/>
-        <source>Triple double-quoted f-string</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>SearchResultWindow</name>
     <message>
         <location filename="../../src/plugins/find/searchresultwindow.cpp" line="138"/>
@@ -4046,7 +3894,7 @@ not exists support files: %0</source>
 <context>
     <name>TabWidgetPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="35"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabwidget.cpp" line="34"/>
         <source>This is a blank page</source>
         <translation>这是空白页</translation>
     </message>
@@ -4062,47 +3910,47 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="234"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="225"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="239"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="230"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="242"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="233"/>
         <source>Redo</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="247"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="238"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="251"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="242"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="255"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="246"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="258"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="249"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="263"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="254"/>
         <source>Select All</source>
         <translation>选择全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="279"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="270"/>
         <source>Remove Breakpoint</source>
         <translation>移除断点</translation>
     </message>
@@ -4136,81 +3984,6 @@ not exists support files: %0</source>
         <location filename="../../src/plugins/codegeex/widgets/translationpagewidget.cpp" line="88"/>
         <source>Output Code</source>
         <translation>输出代码</translation>
-    </message>
-</context>
-<context>
-    <name>TreeView</name>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="109"/>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="149"/>
-        <source>Error, Can&apos;t move to trash: </source>
-        <translation type="unfinished">错误，无法移到废纸篓： </translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="166"/>
-        <source>New Document Name</source>
-        <translation type="unfinished">新文件名</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="170"/>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="291"/>
-        <source>New Document</source>
-        <translation type="unfinished">新建文件</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="173"/>
-        <source>Ok</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="213"/>
-        <source>Error: Can&apos;t create New Document</source>
-        <translation type="unfinished">错误：无法创建新文件</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="215"/>
-        <source>Error: Create New Document, parent not&apos;s dir</source>
-        <translation type="unfinished">错误：新建文件没有父级目录</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="234"/>
-        <source>Error: Can&apos;t create new folder</source>
-        <translation type="unfinished">错误：无法创建新文件夹</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="237"/>
-        <source>Error: Create new folder, parent not&apos;s dir</source>
-        <translation type="unfinished">错误：新建文件夹没有父级目录</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="283"/>
-        <source>Open</source>
-        <translation type="unfinished">打开</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="288"/>
-        <source>New Folder</source>
-        <translation type="unfinished">新建文件夹</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="299"/>
-        <source>Move To Trash</source>
-        <translation type="unfinished">移到废纸篓</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="302"/>
-        <source>Remove</source>
-        <translation type="unfinished">移除</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="305"/>
-        <source>Rename</source>
-        <translation type="unfinished">重命名</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/filebrowser/mainframe/treeview.cpp" line="319"/>
-        <source>Recover From Trash</source>
-        <translation type="unfinished">恢复</translation>
     </message>
 </context>
 <context>
