@@ -107,7 +107,7 @@ void ValgrindBar::initValgrindbar()
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->addWidget(d->mainFrame);
     mainLayout->setMargin(0);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setContentsMargins(0, 0, 0, 5);
     DStyle::setFrameRadius(d->mainFrame, 0);
     this->setLayout(mainLayout);
 }
