@@ -11,7 +11,6 @@
 #include "services/project/projectservice.h"
 #include "services/builder/builderservice.h"
 #include "services/window/windowservice.h"
-#include "services/editor/editorservice.h"
 
 #include <QMenu>
 #include <QTextBlock>
@@ -51,9 +50,6 @@ Runner::~Runner()
 
 void Runner::run()
 {
-    // save all modified files before running.
-    dpfGetService(EditorService)->saveAll();
-
     LanguageService *service = dpfGetService(LanguageService);
     if (service) {
         auto generator = service->create<LanguageGenerator>(getActiveProjectInfo().kitName());
