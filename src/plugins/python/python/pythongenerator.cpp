@@ -5,7 +5,6 @@
 #include "pythongenerator.h"
 #include "python/pythondebug.h"
 #include "project/properties/configutil.h"
-#include "services/option/optionmanager.h"
 
 using namespace dpfservice;
 using namespace config;
@@ -121,16 +120,10 @@ RunCommandInfo PythonGenerator::getRunArguments(const ProjectInfo &projectInfo, 
     bool isRunCurrentFile = false;
 
     RunCommandInfo runCommandInfo;
-
-    auto programOfProject = ConfigUtil::instance()->getConfigureParamPointer()->pythonVersion.path;
-    if(programOfProject.isEmpty()) // if this project has not set interpret of project. use default set
-        runCommandInfo.program = OptionManager::getInstance()->getPythonToolPath();
-    else
-        runCommandInfo.program = programOfProject;
-
+    runCommandInfo.program = ConfigUtil::instance()->getConfigureParamPointer()->pythonVersion.path;
     // TODO(Mozart): program got failed, use default version.
     if (runCommandInfo.program.isEmpty()) {
-        runCommandInfo.program = "python";
+        runCommandInfo.program = "python3.7";
     }
     runCommandInfo.workingDir = projectInfo.workspaceFolder();
     // get run file path.

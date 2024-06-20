@@ -89,16 +89,13 @@ QStandardItem *PythonProjectGenerator::createRootItem(const dpfservice::ProjectI
     using namespace dpfservice;
 
     QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
+    dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new PythonAsynParse();
     QObject::connect(d->projectParses[rootItem],
                      &PythonAsynParse::itemsModified,
                      this, &PythonProjectGenerator::doProjectChildsModified,
                      Qt::ConnectionType::UniqueConnection);
     d->projectParses[rootItem]->parseProject(info);
-    auto sourceFiles = d->projectParses[rootItem]->getFilelist();
-    dpfservice::ProjectInfo tempInfo = info;
-    tempInfo.setSourceFiles(sourceFiles);
-    dpfservice::ProjectInfo::set(rootItem, tempInfo);
 
     return rootItem;
 }

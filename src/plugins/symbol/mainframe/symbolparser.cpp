@@ -164,7 +164,7 @@ QString SymbolParser::getPython()
         dir.setNameFilters(filter);
         QStringList pythonList = dir.entryList();
 
-        QString pattern = "((\\d)|(\\d+.\\d+))($|\\s)";
+        QString pattern = "((\\d)|(\\d.\\d))($|\\s)";
         QStringList versions = findAll(pattern, pythonList.join(" "), true);
 
         double newVersion = 0;
