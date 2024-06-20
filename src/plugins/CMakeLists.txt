@@ -9,8 +9,7 @@ add_subdirectory(builder)
 #remove it until system lock issue resolved.
 #add_subdirectory(container)
 add_subdirectory(project)
-if (NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64"
-        AND NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "sw_64")
+if (NOT ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "mips64")
     add_subdirectory(symbol)
 endif()
 add_subdirectory(find)
