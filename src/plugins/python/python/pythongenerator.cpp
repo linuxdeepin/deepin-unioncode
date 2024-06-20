@@ -121,10 +121,6 @@ RunCommandInfo PythonGenerator::getRunArguments(const ProjectInfo &projectInfo, 
 
     RunCommandInfo runCommandInfo;
     runCommandInfo.program = ConfigUtil::instance()->getConfigureParamPointer()->pythonVersion.path;
-    // TODO(Mozart): program got failed, use default version.
-    if (runCommandInfo.program.isEmpty()) {
-        runCommandInfo.program = "python3.7";
-    }
     runCommandInfo.workingDir = projectInfo.workspaceFolder();
     // get run file path.
     QString runFilePath = currentFile;
