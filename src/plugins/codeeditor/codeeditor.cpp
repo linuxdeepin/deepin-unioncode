@@ -182,7 +182,6 @@ void CodeEditor::initEditorService()
     editorService->modifiedFiles = std::bind(&WorkspaceWidget::modifiedFiles, workspaceWidget);
     editorService->saveAll = std::bind(&WorkspaceWidget::saveAll, workspaceWidget);
     editorService->setCompletion = std::bind(&WorkspaceWidget::setCompletion, workspaceWidget, _1, _2, _3);
-    editorService->currentFile = std::bind(&WorkspaceWidget::currentFile, workspaceWidget);
 
     LexerManager::instance()->init(editorService);
 }

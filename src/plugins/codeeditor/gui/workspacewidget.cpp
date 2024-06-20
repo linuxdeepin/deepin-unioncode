@@ -513,14 +513,6 @@ WorkspaceWidget::WorkspaceWidget(QWidget *parent)
     d->initConnection();
 }
 
-QString WorkspaceWidget::currentFile() const
-{
-    if (auto tabWidget = d->currentTabWidget())
-        return tabWidget->currentFile();
-
-    return {};
-}
-
 QString WorkspaceWidget::selectedText() const
 {
     Q_ASSERT(QThread::currentThread() == qApp->thread());

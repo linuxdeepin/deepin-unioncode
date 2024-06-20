@@ -471,11 +471,6 @@ void TabWidget::setSplitButtonVisible(bool visible)
     d->tabBar->setSplitButtonVisible(visible);
 }
 
-QString TabWidget::currentFile() const
-{
-    return d->tabBar->currentFileName();
-}
-
 QString TabWidget::selectedText() const
 {
     if (auto editor = d->currentTextEditor())

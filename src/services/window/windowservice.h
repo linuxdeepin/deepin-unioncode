@@ -83,7 +83,6 @@ public:
      */
     DPF_INTERFACE(void, registerWidget, const QString &name, AbstractWidget *abstractWidget);
     DPF_INTERFACE(void, showWidgetAtPosition, const QString &name, Position pos, bool replace);
-    DPF_INTERFACE(QString, getCurrentDockName, Position pos);
 
     /*!
      * \brief split two windows in the specified direction

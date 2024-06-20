@@ -17,7 +17,6 @@ public:
     void setCloseButtonVisible(bool visible);
     void setSplitButtonVisible(bool visible);
 
-    QString currentFile() const;
     QString selectedText() const;
     QString cursorBeforeText() const;
     QString cursorBehindText() const;

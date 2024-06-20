@@ -3,11 +3,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "git.h"
-#include "constants.h"
 #include "client/gitclient.h"
-#include "utils/gitmenumanager.h"
 
-#include "base/abstractwidget.h"
 #include "services/window/windowservice.h"
 
 using namespace dpfservice;
@@ -37,7 +34,5 @@ void Git::initWindowService()
     if (!windowService)
         return;
 
-    GitMenuManager::instance()->initialize(windowService);
     windowService->addStatusBarItem(GitClient::instance()->instantBlameWidget());
-    windowService->registerWidget(GitWindow, new AbstractWidget(GitClient::instance()->gitTabWidget()));
 }

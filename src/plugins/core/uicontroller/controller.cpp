@@ -254,9 +254,6 @@ void Controller::registerService()
     if (!windowService->createFindPlaceHolder) {
         windowService->createFindPlaceHolder = std::bind(&PlaceHolderManager::createPlaceHolder, PlaceHolderManager::instance(), _1, _2);
     }
-    if (!windowService->getCurrentDockName) {
-        windowService->getCurrentDockName = std::bind(&MainWindow::getCurrentDockName, d->mainWindow, _1);
-    }
 }
 
 Controller::~Controller()
@@ -347,7 +344,6 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
     widgetInfo.widget = qWidget;
     widgetInfo.isVisible = isVisible;
 
-    d->addedWidget.insert(name, qWidget);
     d->mainWindow->addWidget(name, qWidget, pos);
     d->mainWindow->hideWidget(name);
 
@@ -452,7 +448,6 @@ void Controller::showContextWidget()
 {
     if (!d->contextWidgetAdded) {
         d->mainWindow->addWidget(WN_CONTEXTWIDGET, d->contextWidget, Position::Bottom);
-        d->addedWidget.insert(WN_CONTEXTWIDGET, d->contextWidget);
         d->mainWindow->deleteDockHeader(WN_CONTEXTWIDGET);
         d->contextWidgetAdded = true;
     } else {
@@ -974,7 +969,6 @@ void Controller::showWorkspace()
         d->mainWindow->addWidget(WN_WORKSPACE, d->workspace, Position::Left);
         d->mainWindow->resizeDock(WN_WORKSPACE, QSize(300, 300));
 
-        d->addedWidget.insert(WN_WORKSPACE, d->workspace);
         d->showWorkspace = true;
 
         DToolButton *expandAll = new DToolButton(d->workspace);
