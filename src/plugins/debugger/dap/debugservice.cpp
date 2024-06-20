@@ -64,15 +64,6 @@ void DebugService::switchBreakpointStatus(const QString &filePath, int lineNumbe
         sendBreakpoints(QUrl(filePath), session.value());
 }
 
-void DebugService::setBreakpointCondition(const QString &filePath, int lineNumber, const QString  &expression,
-                                                           dap::optional<DebugSession *> session)
-{
-    model->setBreakpointCondition(filePath, lineNumber, expression);
-    
-    if (session)
-        sendBreakpoints(QUrl(filePath), session.value());
-}
-
 DebugModel *DebugService::getModel() const
 {
     return model.get();

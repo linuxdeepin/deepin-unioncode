@@ -41,9 +41,9 @@ public:
 
     qint64 getProcessId();
 
-    void updateBreakpoints(const QString &file, const QList<dap::SourceBreakpoint> &sourceBps);
+    void updateBreakpoints(const QString &file, const QList<int> &lines);
     void breakRemoveAll();
-    void breakInsert(const QString& path, const QString &condition = "");
+    void breakInsert(const QString& path);
     void removeBreakpointInFile(const QString &filePath);
     void breakRemove(int bpid);
 

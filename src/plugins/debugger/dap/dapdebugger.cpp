@@ -30,8 +30,6 @@
 #include <DPushButton>
 #include <DSimpleListView>
 #include <DSpinner>
-#include <DDialog>
-#include <DLineEdit>
 
 #include <QDateTime>
 #include <QTextBlock>
@@ -370,23 +368,6 @@ void DAPDebugger::switchBreakpointsStatus(const QString &filePath, int lineNumbe
     }
 }
 
-void DAPDebugger::setBreakpointCondition(const QString &filePath, int lineNumber, const QString &expression)
-{
-    Internal::Breakpoint bp;
-    bp.filePath = filePath;
-    bp.fileName = QFileInfo(filePath).fileName();
-    bp.lineNumber = lineNumber;
-    bp.condition = expression;
-    d->breakpointModel.setBreakpointCondition(bp);
-    
-    // send to backend.
-    if (d->runState == kStopped || d->runState == kRunning) {
-        debugService->setBreakpointCondition(filePath, lineNumber, expression, d->currentSession);
-    } else {
-        debugService->setBreakpointCondition(filePath, lineNumber, expression, undefined);
-    }
-}
-
 bool DAPDebugger::getLocals(dap::integer frameId, IVariables *out)
 {
     return d->currentSession->getLocals(frameId, out);
@@ -698,23 +679,6 @@ void DAPDebugger::handleEvents(const dpf::Event &event)
         int line = event.property("line").toInt();
         bool enabled = event.property("enabled").toBool();
         switchBreakpointsStatus(filePath, line, enabled);
-    } else if (event.data() == editor.setBreakpointCondition.name) {
-        QString filePath = event.property("fileName").toString();
-        int line = event.property("line").toInt();
-        
-        DDialog condition;
-        DLineEdit *edit = new DLineEdit(d->breakpointView);
-        edit->setPlaceholderText(tr("Input Condition Expression"));
-        condition.addContent(edit);
-        condition.setWindowTitle(tr("Condition"));
-        condition.setMessage(tr("When the breakpoint is reached, it will be hit only when the expression is true"));
-        condition.insertButton(0, tr("Cancel"));
-        condition.insertButton(1, tr("Ok"));
-
-        if (condition.exec() == 1) {
-            QString expression = edit->text();
-            setBreakpointCondition(filePath, line, expression);
-        }
     }
 }
 

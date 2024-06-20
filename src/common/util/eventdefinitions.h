@@ -62,7 +62,6 @@ OPI_OBJECT(editor,
            OPI_INTERFACE(breakpointAdded, "fileName", "line")
            OPI_INTERFACE(breakpointRemoved, "fileName", "line")
            OPI_INTERFACE(breakpointStatusChanged, "fileName", "line", "enabled")
-           OPI_INTERFACE(setBreakpointCondition, "fileName", "line")
            OPI_INTERFACE(contextMenu, "menu")
            OPI_INTERFACE(marginMenu, "menu")
            OPI_INTERFACE(textChanged)

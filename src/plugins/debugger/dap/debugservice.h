@@ -30,9 +30,6 @@ public:
     void switchBreakpointStatus(const QString &filePath, int lineNumber, bool status,
                                            dap::optional<DebugSession *> session);
 
-    void setBreakpointCondition(const QString &filePath, int lineNumber, const QString &expression,
-                                           dap::optional<DebugSession *> session);
-
     DebugModel *getModel() const;
 
 signals:

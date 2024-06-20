@@ -230,27 +230,6 @@ dap::array<IBreakpoint> DebugModel::switchBreakpointStatus(const QString &filePa
     // fire event.
 }
 
-dap::array<IBreakpoint> DebugModel::setBreakpointCondition(const QString &filePath, int lineNumber, const QString &expression)
-{
-    for (auto bp = breakPoints.begin(); bp != breakPoints.end(); ) {
-        if (bp->lineNumber() == lineNumber
-                && bp->uri().toString() == filePath) {
-            bp->condition = expression.toStdString();
-            break;
-        } else {
-            ++bp;
-        }
-    }
-
-    dap::array<IBreakpoint> retBreakpoints;
-    for (auto bp : breakPoints) {
-        auto ibp = convertToIBreakpoint(bp);
-        retBreakpoints.push_back(ibp);
-    }
-    return retBreakpoints;
-    // fire event.
-}
-
 void DebugModel::updateBreakpoints(std::map<dap::string, IBreakpointUpdateData> &data)
 {
     Q_UNUSED(data)

@@ -230,9 +230,9 @@ void DebugManager::breakRemoveAll()
     }, true);
 }
 
-void DebugManager::breakInsert(const QString &path, const QString &condition)
+void DebugManager::breakInsert(const QString &path)
 {
-    commandAndResponse(d->debugger->breakInsert(path, condition), [this](const QVariant& r) {
+    commandAndResponse(d->debugger->breakInsert(path), [this](const QVariant& r) {
         d->debugger->parseBreakPoint(r);
     }, true);
 }
@@ -248,9 +248,9 @@ void DebugManager::updateExceptResponse(const int token, const QVariant& payload
     }
 }
 
-void DebugManager::updateBreakpoints(const QString &file, const QList<dap::SourceBreakpoint> &souceBps)
+void DebugManager::updateBreakpoints(const QString &file, const QList<int> &lines)
 {
-    d->debugger->updateBreakpoints(file, souceBps);
+    d->debugger->updateBreakpoints(file, lines);
 }
 
 void DebugManager::removeBreakpointInFile(const QString &filePath)

@@ -27,7 +27,7 @@ public:
     QString quit() override;
     QString kill() override;
 
-    QString breakInsert(const QString& path, const QString &condition = "") override;
+    QString breakInsert(const QString& path) override;
     QString breakRemove(int bpid) override;
     QString breakRemoveAll() override;
 
@@ -61,7 +61,7 @@ public:
     void handleOutputRecord(const QString &text) override;
     void handleOutputStreamText(const QString &streamText) override;
 
-    void updateBreakpoints(const QString &file, const QList<dap::SourceBreakpoint> &sourceBps) override;
+    void updateBreakpoints(const QString &file, const QList<int> &lines) override;
     void parseBreakPoint(const QVariant& var) override;
     void removeBreakPoint(const int bpid) override;
     void clearBreakPoint() override;

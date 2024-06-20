@@ -23,7 +23,6 @@ private:
     void enableBreakpoints(const QModelIndexList &rows);
     void disableBreakpoints(const QModelIndexList &rows);
     void removeBreakpoints(const QModelIndexList &rows);
-    void editBreakpointCondition(const QModelIndex &idnex);
 
     QHeaderView *headerView {nullptr};
 };

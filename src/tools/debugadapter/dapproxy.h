@@ -42,7 +42,7 @@ Q_SIGNALS:
     void sigSource();
     void sigStreamOutput(const QString &sOut);
     void sigBreakRemoveAll();
-    void sigUpdateBreakpoints(const QString &file, const QList<dap::SourceBreakpoint> &sourceBps);
+    void sigUpdateBreakpoints(const QString &file, const QList<int> &lines);
 
 private:
     explicit DapProxy(QObject *parent = nullptr);

@@ -74,21 +74,6 @@ void BreakpointModel::switchBreakpointStatus(const Internal::Breakpoint &breakpo
     emit breakpointChanged();
 }
 
-void BreakpointModel::setBreakpointCondition(const Internal::Breakpoint &breakpoint)
-{
-    beginResetModel();
-    auto it = bps.begin();
-    for (; it != bps.end();) {
-        if (it->breakpoint() == breakpoint) {
-            it->setCondition(breakpoint.condition);
-            break;
-        }
-        it++;
-    }
-    endResetModel();
-    emit breakpointChanged();
-}
-
 void BreakpointModel::setCurrentIndex(int level)
 {
     if (level == -1 || level == currentIndex)
@@ -166,8 +151,6 @@ QVariant BreakpointModel::headerData(int section, Qt::Orientation orient, int ro
             return tr("File");
         case kLineNumberColumn:
             return tr("Line");
-        case kCondition:
-            return tr("Condition");
         case kAddressColumn:
             return tr("Address");
         };

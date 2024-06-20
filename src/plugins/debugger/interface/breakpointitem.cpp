@@ -44,8 +44,6 @@ QVariant BreakpointItem::data(int row, int column, int role) const
                 return bp.fileName.isEmpty() ? empty : QDir::toNativeSeparators(bp.fileName);
             case kLineNumberColumn:
                 return bp.lineNumber > 0 ? QString::number(bp.lineNumber) : empty;
-            case kCondition:
-                return bp.condition;
             case kAddressColumn:
                 return bp.address;
         }
@@ -115,10 +113,7 @@ QString BreakpointItem::toolTip() const
         << "<tr><td>" << BreakpointItem::tr("State:")
         << "</td><td>" << (bp.enabled ? BreakpointItem::tr("Enabled") : BreakpointItem::tr("Disabled"))
         << "<tr><td>" << BreakpointItem::tr("Breakpoint Type:")
-        << "</td><td>" << typeToString(bp.type) << "</td></tr>"
-        << "<tr><td>" << BreakpointItem::tr("Condition :")
-        << "</td><td>" << bp.condition << "</td></tr>";
-
+        << "</td><td>" << typeToString(bp.type) << "</td></tr>";
     if (bp.type == BreakpointByFunction) {
         str << "<tr><td>" << BreakpointItem::tr("Function Name:")
         << "</td><td>" << bp.functionName
@@ -157,9 +152,4 @@ bool BreakpointItem::isEnabled() const
 void BreakpointItem::setEnabled(bool on)
 {
     bp.enabled = on;
-}
-
-void BreakpointItem::setCondition(const QString &expression)
-{
-    bp.condition = expression;
 }
