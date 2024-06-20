@@ -64,7 +64,6 @@ class DebuggerPrivate
     QSharedPointer<DEBUG::DebugSession> session;
 
     dap::integer threadId = 0;
-    StackFrameData currentValidFrame;
 
     /**
      * @brief interface objects.
@@ -642,11 +641,6 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
         return;
     }
 
-    //frame changed  reset localsmodel
-    if (d->currentValidFrame.function != curFrame.function || d->currentValidFrame.module != curFrame.module)
-        d->localsModel.clear();
-    d->currentValidFrame = curFrame;
-
     if (QFileInfo(curFrame.file).exists()) {
         editor.setDebugLine(curFrame.file, curFrame.line);
     } else {
@@ -663,7 +657,6 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
     d->getLocalsFuture = QtConcurrent::run([=](){
         IVariables locals;
         getLocals(curFrame.frameId, &locals);
-        d->localsModel.clearHighlightItems();
         d->localsModel.setDatas(locals);
         emit processingVariablesDone();
     });
@@ -786,7 +779,6 @@ void DAPDebugger::slotFrameSelected(const QModelIndex &index)
     QtConcurrent::run([=](){
         IVariables locals;
         getLocals(curFrame.frameId, &locals);
-        d->localsModel.clearHighlightItems();
         d->localsModel.setDatas(locals);
         emit processingVariablesDone();
     });
@@ -889,8 +881,8 @@ void DAPDebugger::initializeView()
     connect(d->localsView, &QTreeView::expanded, this, &DAPDebugger::slotGetChildVariable);
     connect(this, &DAPDebugger::childVariablesUpdated, d->localsView, [=](LocalTreeItem *treeItem, IVariables vars){
         d->localsModel.appendItem(treeItem, vars);
+        emit d->localsModel.layoutChanged();
     });
-    connect(&d->localsModel, &LocalTreeModel::updateChildVariables, this, &DAPDebugger::slotGetChildVariable);
 }
 
 void DAPDebugger::exitDebug()
