@@ -215,7 +215,7 @@ void CodeCompletionWidget::updatePosition(bool force)
     if (!force && !isCompletionActive())
         return;
 
-    auto cursorPosition = editor()->pointFromPosition(editor()->cursorPosition());
+    auto cursorPosition = editor()->pointFromPosition(automaticInvocationAt);
     if (cursorPosition == QPoint(-1, -1)) {
         abortCompletion();
         return;
@@ -263,11 +263,11 @@ bool CodeCompletionWidget::execute()
         return false;
     }
 
-    isCompletionInput = true;
     auto pos = editor()->cursorPosition();
     auto startPos = editor()->wordStartPositoin(pos);
     auto endPos = editor()->wordEndPosition(pos);
 
+    isCompletionInput = true;
     completionModel->executeCompletionItem(editor(), startPos, endPos, index);
     abortCompletion();
     isCompletionInput = false;
@@ -281,7 +281,6 @@ void CodeCompletionWidget::abortCompletion()
         editor()->setFocus();
     }
 
-    completionModel->clear();
     if (isVisible())
         hide();
 }
@@ -347,7 +346,4 @@ void CodeCompletionWidget::cursorPositionChanged()
 {
     if (!isCompletionActive())
         return;
-
-    if (editor()->cursorPosition() != automaticInvocationAt)
-        abortCompletion();
 }

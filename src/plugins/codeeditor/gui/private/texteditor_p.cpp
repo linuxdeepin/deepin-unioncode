@@ -372,14 +372,10 @@ QsciStyle TextEditorPrivate::createAnnotationStyle(int type)
 
 void TextEditorPrivate::adjustScrollBar()
 {
-    QScrollBar *scrollbar = q->verticalScrollBar();
-
-    int totalLinesOfView = q->rect().height() / q->textHeight(0);
-    auto cursorPoint = q->pointFromPosition(q->cursorPosition());
-
-    int currentLine = cursorPoint.y() * totalLinesOfView / q->rect().height();
-    int halfEditorLines = totalLinesOfView / 2;
-    scrollbar->setValue(scrollbar->value() + currentLine - halfEditorLines);
+    int currentRow = q->currentLineNumber();
+    double ratio = static_cast<double>(currentRow) / q->lines();
+    int scrollValue = static_cast<int>(ratio * q->verticalScrollBar()->maximum());
+    q->verticalScrollBar()->setValue(scrollValue);
 }
 
 void TextEditorPrivate::onThemeTypeChanged()

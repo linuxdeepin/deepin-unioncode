@@ -12,7 +12,6 @@ public:
     explicit CodeCompletionModelPrivate() {}
 
     bool isFunctionKind(lsp::CompletionItem::Kind k);
-    QIcon iconForKind(lsp::CompletionItem::Kind k);
 
     QList<lsp::CompletionItem> completionDatas;
     bool hasGroups = false;
@@ -21,34 +20,6 @@ public:
 bool CodeCompletionModelPrivate::isFunctionKind(lsp::CompletionItem::Kind k)
 {
     return k == lsp::CompletionItem::Function || k == lsp::CompletionItem::Method;
-}
-
-QIcon CodeCompletionModelPrivate::iconForKind(lsp::CompletionItem::Kind k)
-{
-    switch (k) {
-    case lsp::CompletionItem::Method:
-    case lsp::CompletionItem::Function:
-    case lsp::CompletionItem::Constructor:
-        return QIcon::fromTheme("ide");
-    case lsp::CompletionItem::Variable:
-        return QIcon::fromTheme("ide");
-    case lsp::CompletionItem::Class:
-    case lsp::CompletionItem::Interface:
-    case lsp::CompletionItem::Struct:
-        return QIcon::fromTheme("ide");
-    case lsp::CompletionItem::Module:
-        return QIcon::fromTheme("ide");
-    case lsp::CompletionItem::Field:
-    case lsp::CompletionItem::Property:
-        return QIcon::fromTheme("ide");
-    case lsp::CompletionItem::Enum:
-    case lsp::CompletionItem::EnumMember:
-        return QIcon::fromTheme("ide");
-    default:
-        break;
-    }
-
-    return QIcon();
 }
 
 CodeCompletionModel::CodeCompletionModel(QObject *parent)
@@ -60,13 +31,6 @@ CodeCompletionModel::CodeCompletionModel(QObject *parent)
 CodeCompletionModel::~CodeCompletionModel()
 {
     delete d;
-}
-
-void CodeCompletionModel::clear()
-{
-    beginResetModel();
-    d->completionDatas.clear();
-    endResetModel();
 }
 
 void CodeCompletionModel::completionInvoked(TextEditor *editor, int position)
@@ -149,7 +113,7 @@ QVariant CodeCompletionModel::data(const QModelIndex &index, int role) const
             return item.label;
         break;
     case Qt::DecorationRole:
-        return d->iconForKind(item.kind);
+        return QIcon::fromTheme("ide");
     default:
         break;
     }
@@ -162,7 +126,6 @@ void CodeCompletionModel::onCompleteFinished(const lsp::CompletionProvider &prov
     beginResetModel();
 
     d->completionDatas = provider.items;
-
     qSort(d->completionDatas.begin(), d->completionDatas.end(),
           [](const lsp::CompletionItem &item1, const lsp::CompletionItem &item2) {
               return item1.sortText < item2.sortText;
