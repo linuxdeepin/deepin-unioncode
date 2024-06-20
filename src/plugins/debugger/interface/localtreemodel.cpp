@@ -162,7 +162,6 @@ void LocalTreeModel::appendItem(LocalTreeItem *parent, const IVariables &vars)
     QWriteLocker locker(&mutex);
     if (!items.contains(parent) && parent != rootItem)
         return;
-    locker.unlock();
 
     if (parent) {
         QList<LocalTreeItem *> newItems;

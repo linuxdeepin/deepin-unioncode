@@ -36,7 +36,6 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QFileInfo>
-#include <QAtomicInt>
 
 #define PER_WAIT_MSEC (1000)
 #define MAX_WAIT_TIMES (10)
@@ -81,7 +80,6 @@ class DebuggerPrivate
     LocalTreeModel localsModel;
     DSpinner *variablesSpinner { nullptr };
     QTimer processingVariablesTimer;
-    QAtomicInt processingVariablesCount = 0;
     QFuture<void> getLocalsFuture;
 
     StackFrameView *breakpointView = nullptr;
@@ -244,21 +242,21 @@ void DAPDebugger::restartDebug()
 
 void DAPDebugger::stepOver()
 {
-    if (d->runState == kStopped && d->processingVariablesCount == 0) {
+    if (d->runState == kStopped) {
         d->session->next(d->threadId, undefined);
     }
 }
 
 void DAPDebugger::stepIn()
 {
-    if (d->runState == kStopped && d->processingVariablesCount == 0) {
+    if (d->runState == kStopped) {
         d->session->stepIn(d->threadId, undefined, undefined);
     }
 }
 
 void DAPDebugger::stepOut()
 {
-    if (d->runState == kStopped && d->processingVariablesCount == 0) {
+    if (d->runState == kStopped) {
         d->session->stepOut(d->threadId, undefined);
     }
 }
@@ -660,16 +658,13 @@ void DAPDebugger::handleFrames(const StackFrames &stackFrames)
     if(d->getLocalsFuture.isRunning())
         d->getLocalsFuture.cancel();
 
-
     // update local variables.
     d->processingVariablesTimer.start(50);     // if processing time < 50ms, do not show spinner
-    d->processingVariablesCount.ref();
     d->getLocalsFuture = QtConcurrent::run([=](){
         IVariables locals;
         getLocals(curFrame.frameId, &locals);
         d->localsModel.clearHighlightItems();
         d->localsModel.setDatas(locals);
-        d->processingVariablesCount.deref();
         emit processingVariablesDone();
     });
 }
@@ -788,13 +783,11 @@ void DAPDebugger::slotFrameSelected(const QModelIndex &index)
 
     // update local variables.
     d->processingVariablesTimer.start(50);
-    d->processingVariablesCount.ref();
     QtConcurrent::run([=](){
         IVariables locals;
         getLocals(curFrame.frameId, &locals);
         d->localsModel.clearHighlightItems();
         d->localsModel.setDatas(locals);
-        d->processingVariablesCount.deref();
         emit processingVariablesDone();
     });
 }
@@ -812,17 +805,14 @@ void DAPDebugger::slotGetChildVariable(const QModelIndex &index)
     if(!treeItem->canFetchChildren())
         return;
 
-    treeItem->setChildrenFetched(true);
-
     d->processingVariablesTimer.start(50);
-    d->processingVariablesCount.ref();
+    treeItem->setChildrenFetched(true);
     QtConcurrent::run([=](){
         IVariables variables;
         d->session->getVariables(treeItem->childReference(), &variables, 0);
 
-        d->processingVariablesCount.deref();
-        emit childVariablesUpdated(treeItem, variables);
         emit processingVariablesDone();
+        emit childVariablesUpdated(treeItem, variables);
     });
 }
 
@@ -871,13 +861,13 @@ void DAPDebugger::initializeView()
     d->variablesSpinner->start();
     d->variablesSpinner->hide();
     connect(&d->processingVariablesTimer, &QTimer::timeout, this, [=](){
+        d->localsView->setEnabled(false);
         d->variablesSpinner->show();
-        d->variablesSpinner->raise();
         d->variablesSpinner->move(d->localsView->width() / 2 - d->variablesSpinner->width(), d->localsView->height() / 3);
     });
     connect(this, &DAPDebugger::processingVariablesDone, this, [=](){
-        if (d->processingVariablesCount != 0)
-            return;
+        d->localsView->setEnabled(true);
+        d->localsView->setFocus();
         d->processingVariablesTimer.stop();
         d->variablesSpinner->hide();
     });

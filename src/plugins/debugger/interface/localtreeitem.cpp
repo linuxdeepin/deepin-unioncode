@@ -64,7 +64,6 @@ LocalTreeItem *LocalTreeItem::updateVariable(dap::Variable &var)
             child->setChildrenFetched(false);
             emit updateChildVariables(child->index());
         }
-        emit model->dataChanged(index(), index());
         return child;
     }
 
