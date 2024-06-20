@@ -86,7 +86,7 @@ std::string addValue(const std::string &src, const KV<T> &kv)
 template <class T>
 std::string addValue(const std::string &src, const KV<std::optional<T>> &kv)
 {
-    std::string ret = src;
+    std::string ret;
     if (kv.value) {
         ret = addValue(src, json::KV{kv.key, kv.value.value()});
     }

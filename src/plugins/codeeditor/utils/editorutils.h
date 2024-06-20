@@ -5,14 +5,10 @@
 #ifndef EDITORUTILS_H
 #define EDITORUTILS_H
 
-#include <QAction>
-
-class EditorUtils : public QObject
+class EditorUtils
 {
-    Q_OBJECT
 public:
     static int nbDigitsFromNbLines(long nbLines);
-    static void registerShortcut(QAction *act, const QString &id, const QKeySequence &shortCut);
 };
 
 #endif   // EDITORUTILS_H

@@ -235,13 +235,13 @@ void Client::formatting(const DocumentFormattingParams &params)
                           .object());
 }
 
-void Client::rangeFormatting(const QString &filePath, const DocumentRangeFormattingParams &params)
+void Client::rangeFormatting(const DocumentRangeFormattingParams &params)
 {
     qInfo() << QString::fromStdString(toJsonValueStr(params));
     d->callMethod(lsp::V_TEXTDOCUMENT_RANGEFORMATTING,
                   QJsonDocument::fromJson(
                           QByteArray::fromStdString(toJsonValueStr(params)))
-                          .object(), filePath);
+                          .object());
 }
 
 void Client::onTypeFormatting(const DocumentOnTypeFormattingParams &params)
@@ -688,7 +688,6 @@ bool ClientPrivate::rangeFormattingResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
         && requestSave.value(calledID).method == lsp::V_TEXTDOCUMENT_RANGEFORMATTING) {
-        auto filePath = requestSave.value(calledID).file;
         requestSave.remove(calledID);
 
         QJsonValue resultJV = jsonObj.value(K_RESULT);
@@ -711,7 +710,7 @@ bool ClientPrivate::rangeFormattingResult(const QJsonObject &jsonObj)
                                    endObj.value(lsp::K_CHARACTER).toInt() };
                 edits.push_back(edit);
             }
-            emit q->rangeFormattingRes(edits, filePath);
+            emit q->rangeFormattingRes(edits);
         }
     }
     return false;

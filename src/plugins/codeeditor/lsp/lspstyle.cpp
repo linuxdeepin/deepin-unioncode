@@ -5,10 +5,9 @@
 #include "lspstyle.h"
 #include "private/lspstyle_p.h"
 #include "gui/texteditor.h"
-#include "gui/settings/editorsettings.h"
-#include "gui/settings/settingsdefine.h"
 #include "lspclientmanager.h"
 #include "transceiver/codeeditorreceiver.h"
+#include "utils/colordefine.h"
 #include "codelens/codelens.h"
 
 #include "services/project/projectservice.h"
@@ -81,9 +80,6 @@ void LSPStyle::initLspConnection()
 
     connect(d->getClient(), QOverload<const newlsp::WorkspaceEdit &>::of(&newlsp::Client::renameRes),
             EditorCallProxy::instance(), &EditorCallProxy::reqDoRename, Qt::UniqueConnection);
-
-    connect(d->getClient(), &newlsp::Client::rangeFormattingRes,
-            this, &LSPStyle::rangeFormattingReplace);
 
     /* to use QOverload cast virtual slot can't working */
     connect(d->getClient(), QOverload<const newlsp::Location &, const QString &>::of(&newlsp::Client::definitionRes),
@@ -361,18 +357,6 @@ void LSPStyle::cleanDefinition(int pos)
     }
 }
 
-void LSPStyle::rangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits, const QString &filePath)
-{
-    if (edits.empty() || !d->editor || d->editor->getFile() != filePath)
-        return;
-
-    for (auto itera = edits.rbegin(); itera != edits.rend(); itera++) {
-        d->editor->replaceRange(itera->range.start.line, itera->range.start.character,
-                                itera->range.end.line, itera->range.end.character,
-                                QString::fromStdString(itera->newText));
-    }
-}
-
 void LSPStyle::switchHeaderSource(const QString &file)
 {
     if (!d->getClient())
@@ -543,9 +527,6 @@ void LSPStyle::onShowContextMenu(QMenu *menu)
 
     act = menu->addAction(tr("Find Usages"), this, &LSPStyle::findUsagesActionTriggered);
     menu->insertAction(actionList.first(), act);
-
-    act = menu->addAction(tr("Range Formatting"), this, &LSPStyle::formatSelections);
-    menu->insertAction(actionList.first(), act);
     menu->insertSeparator(actionList.first());
 }
 
@@ -597,25 +578,6 @@ void LSPStyle::renameActionTriggered()
 
     d->renamePopup.setOldName(symbol);
     d->renamePopup.exec(point);
-}
-
-void LSPStyle::formatSelections()
-{
-    if (!d->getClient() || !d->editor || !d->editor->hasSelectedText())
-        return;
-
-    int lineFrom, indexFrom, lineTo, indexTo;
-    d->editor->getSelection(&lineFrom, &indexFrom, &lineTo, &indexTo);
-
-    newlsp::Position selStart { lineFrom, indexFrom };
-    newlsp::Position selEnd { lineTo, indexTo };
-    newlsp::DocumentRangeFormattingParams params;
-    params.textDocument.uri = QUrl::fromLocalFile(d->editor->getFile()).toString().toStdString();
-    params.range = { selStart, selEnd };
-    params.options.tabSize = EditorSettings::instance()->value(Node::Behavior, Group::TabGroup, Key::TabSize, 4).toInt();
-    params.options.insertSpaces = true;
-
-    d->getClient()->rangeFormatting(d->editor->getFile(), params);
 }
 
 void LSPStyle::renameSymbol(const QString &text)

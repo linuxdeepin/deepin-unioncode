@@ -452,7 +452,7 @@ std::string toJsonValueStr(const FormattingOptions &val)
 {
     std::string ret;
     ret = json::addValue(ret, json::KV{"tabSize", val.tabSize});
-    ret = json::addValue(ret, json::KV{"insertSpace", val.insertSpaces});
+    ret = json::addValue(ret, json::KV{"insertSpaces", val.insertSpaces});
     ret = json::addValue(ret, json::KV{"trimTrailingWhitespace", val.trimTrailingWhitespace});
     ret = json::addValue(ret, json::KV{"insertFinalNewline", val.insertFinalNewline});
     ret = json::addValue(ret, json::KV{"trimFinalNewlines", val.trimFinalNewlines});
