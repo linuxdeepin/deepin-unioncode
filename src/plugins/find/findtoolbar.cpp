@@ -43,8 +43,8 @@ void FindToolBar::setupUi()
     d->replaceLineEdit = new DLineEdit();     //替换框
     d->replaceLineEdit->setPlaceholderText(tr("Replace"));
 
-    DIconButton *findPreBtn = new DIconButton(this);
-    DIconButton *findNextBtn = new DIconButton(this);
+    DIconButton *findPreBtn = new DIconButton();
+    DIconButton *findNextBtn = new DIconButton();
     findPreBtn->setIcon(QIcon::fromTheme("go-up"));
     findNextBtn->setIcon(QIcon::fromTheme("go-down"));
     DPushButton *replaceBtn = new DPushButton(QPushButton::tr("Replace"));     //替换按钮

@@ -10,6 +10,7 @@
 #include <DDialogButtonBox>
 #include <DFrame>
 #include <DSuggestButton>
+#include <DSizeMode>
 
 #include <QIcon>
 #include <QProcess>
@@ -50,11 +51,11 @@ BinaryToolsDialog::BinaryToolsDialog(QDialog *parent)
 
     DVerticalLine * lLine= new DVerticalLine;
     lLine->setObjectName("VLine");
-    lLine->setFixedHeight(30);
+    lLine->setFixedHeight(DSizeModeHelper::element(20, 30));
 
     DVerticalLine *rLine = new DVerticalLine;
     rLine->setObjectName("VLine");
-    rLine->setFixedHeight(30);
+    rLine->setFixedHeight(DSizeModeHelper::element(20, 30));
 
     buttonLayout->addWidget(cancelButton);
     buttonLayout->addWidget(lLine);

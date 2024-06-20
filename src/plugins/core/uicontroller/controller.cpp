@@ -680,8 +680,7 @@ void Controller::initMainWindow()
             loading();
         }
 
-        auto desktop = QApplication::desktop();
-        int currentScreenIndex = desktop->screenNumber(d->mainWindow);
+        int currentScreenIndex = qApp->desktop()->screenNumber(d->mainWindow);
         QList<QScreen *> screenList = QGuiApplication::screens();
 
         if (currentScreenIndex < screenList.count()) {

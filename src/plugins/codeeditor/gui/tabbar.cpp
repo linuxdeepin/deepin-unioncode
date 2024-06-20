@@ -14,7 +14,6 @@
 #include <QFileInfo>
 #include <QHBoxLayout>
 #include <QClipboard>
-#include <QGuiApplication>
 
 DWIDGET_USE_NAMESPACE
 
@@ -76,12 +75,12 @@ void TabBarPrivate::showMenu(QPoint pos)
 
     menu.addAction(tr("Copy File Path"), [=]() {
         auto file = tabBar->tabToolTip(curIndex);
-        QGuiApplication::clipboard()->setText(file);
+        qApp->clipboard()->setText(file);
     });
     menu.addAction(tr("Copy File Name"), [=]() {
         auto file = tabBar->tabToolTip(curIndex);
         auto fileName = QFileInfo(file).fileName();
-        QGuiApplication::clipboard()->setText(fileName);
+        qApp->clipboard()->setText(fileName);
     });
 
     menu.addSeparator();

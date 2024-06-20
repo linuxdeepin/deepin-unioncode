@@ -16,7 +16,6 @@
 #include <QScrollBar>
 #include <QMenu>
 #include <QDebug>
-#include <QApplication>
 
 static constexpr char DEFAULT_FONT_NAME[] { "Courier New" };
 
