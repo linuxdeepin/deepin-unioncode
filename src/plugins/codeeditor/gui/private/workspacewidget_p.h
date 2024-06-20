@@ -8,11 +8,8 @@
 #include "gui/workspacewidget.h"
 #include "gui/tabwidget.h"
 
-#include "base/abstracteditwidget.h"
 #include "common/util/eventdefinitions.h"
 #include "services/window/windowservice.h"
-
-#include <QStackedWidget>
 
 class WorkspaceWidgetPrivate : public QObject
 {
@@ -66,10 +63,9 @@ public slots:
 public:
     WorkspaceWidget *q;
 
+    dpfservice::WindowService *windowService { nullptr };
     TabWidget *focusTabWidget { nullptr };
     QList<TabWidget *> tabWidgetList;
-    QStackedWidget *stackWidget { nullptr };
-    QMap<QString, AbstractEditWidget *> registeredWidget;
 
     QStringList autoReloadList;
     QStringList modifiedFileList;

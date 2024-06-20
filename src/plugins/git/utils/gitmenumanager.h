@@ -13,7 +13,6 @@
 
 namespace dpfservice {
 class WindowService;
-class EditorService;
 }
 
 class GitMenuManager : public QObject
@@ -36,7 +35,7 @@ private:
     void createProjectSubMenu();
 
 private:
-    dpfservice::EditorService *editSrv { nullptr };
+    dpfservice::WindowService *winSer { nullptr };
 
     QMenu gitSubMenu;
     QMenu fileSubMenu;

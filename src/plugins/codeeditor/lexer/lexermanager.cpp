@@ -26,10 +26,10 @@ void LexerManager::init(EditorService *editorSvc)
 {
     using namespace std::placeholders;
     if (editorSvc)
-        editorSvc->registerSciLexerProxy = std::bind(&LexerManager::registerSciLexerProxy, this, _1, _2);
+        editorSvc->registSciLexerProxy = std::bind(&LexerManager::registSciLexerProxy, this, _1, _2);
 }
 
-void LexerManager::registerSciLexerProxy(const QString &language, AbstractLexerProxy *proxy)
+void LexerManager::registSciLexerProxy(const QString &language, AbstractLexerProxy *proxy)
 {
     if (sciLexerProxyMng.contains(language)) {
         qWarning() << "The lexer proxy of " << language << " has been registed!";

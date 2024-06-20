@@ -19,7 +19,7 @@ public:
     static LexerManager *instance();
 
     void init(dpfservice::EditorService *editorSvc);
-    void registerSciLexerProxy(const QString &language, AbstractLexerProxy *proxy);
+    void registSciLexerProxy(const QString &language, AbstractLexerProxy *proxy);
     QsciLexer *createSciLexer(const QString &language, const QString &fileName);
     QsciLexer *defaultSciLexer(const QString &language);
 

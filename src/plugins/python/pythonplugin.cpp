@@ -70,5 +70,5 @@ void PythonPlugin::registEditorService()
         return;
 
     SciLexerPython *lexerPython = new SciLexerPython;
-    editorSvc->registerSciLexerProxy(lexerPython->language(), lexerPython);
+    editorSvc->registSciLexerProxy(lexerPython->language(), lexerPython);
 }

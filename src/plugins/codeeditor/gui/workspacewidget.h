@@ -8,7 +8,6 @@
 #include <QWidget>
 #include <QSplitter>
 
-class AbstractEditWidget;
 class WorkspaceWidgetPrivate;
 class WorkspaceWidget : public QWidget
 {
@@ -33,10 +32,6 @@ public:
     void reloadFile(const QString &fileName);
     void setFileModified(const QString &fileName, bool isModified);
     void closeFileEditor(const QString &fileName);
-
-    void registerWidget(const QString &id, AbstractEditWidget *widget);
-    void switchWidget(const QString &id);
-    void switchDefaultWidget();
 
 protected:
     bool event(QEvent *event) override;

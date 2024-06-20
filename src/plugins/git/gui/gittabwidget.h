@@ -7,10 +7,10 @@
 
 #include "constants.h"
 
-#include "base/abstracteditwidget.h"
+#include <QWidget>
 
 class GitTabWidgetPrivate;
-class GitTabWidget : public AbstractEditWidget
+class GitTabWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -21,7 +21,8 @@ public:
     void setInfo(int index, const QStringList &infos);
     void setErrorMessage(int index, const QString &msg);
 
-    void closeWidget() override;
+Q_SIGNALS:
+    void closeRequested();
 
 private:
     GitTabWidgetPrivate *const d;

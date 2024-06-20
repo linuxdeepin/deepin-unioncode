@@ -32,6 +32,7 @@ public:
     void show(const QString &workspace, const QString &commitId);
 
 public:
+    QString lastCentral;
     QStringList gitRepositoryCache;
     QTimer *cursorPositionChangedTimer { nullptr };
     QString currentWorkspace;
@@ -204,6 +205,13 @@ void GitClient::init()
 {
     d->ibWidget = new InstantBlameWidget;
     d->gitTabWidget = new GitTabWidget;
+
+    connect(d->gitTabWidget, &GitTabWidget::closeRequested, this, &GitClient::switchLastCentralWidget);
+}
+
+void GitClient::setLastCentralWidget(const QString &name)
+{
+    d->lastCentral = name;
 }
 
 QString GitClient::gitBinaryPath() const
@@ -311,4 +319,18 @@ void GitClient::instantBlame(const QString &workspace, const QString &filePath, 
     d->currentFilePath = filePath;
     d->currentLine = line;
     d->cursorPositionChangedTimer->start();
+}
+
+void GitClient::switchLastCentralWidget()
+{
+    if (d->lastCentral.isEmpty())
+        return;
+
+    auto &ctx = dpfInstance.serviceContext();
+    WindowService *windowService = ctx.service<WindowService>(WindowService::name());
+    if (!windowService)
+        return;
+
+    windowService->showWidgetAtPosition(d->lastCentral, Position::Central, true);
+    d->lastCentral.clear();
 }
