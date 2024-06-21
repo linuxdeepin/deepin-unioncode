@@ -5,20 +5,45 @@
 #include "codelensdelegate.h"
 #include "codelenstype.h"
 
-#include <QApplication>
+#include <DGuiApplicationHelper>
+
+const int LinePadding = 4;
+const int LineDigits = 6;
+
+DGUI_USE_NAMESPACE
+
+static std::pair<int, QString> lineNumberInfo(const QStyleOptionViewItem &option,
+                                              const QModelIndex &index)
+{
+    int line = index.data(CodeLensItemRole::LineRole).toInt();
+    if (line < 1)
+        return { 0, {} };
+
+    const QString lineText = QString::number(line + 1);
+    const int lineDigits = qMax(LineDigits, lineText.size());
+    const int fontWidth = option.fontMetrics.horizontalAdvance(QString(lineDigits, QLatin1Char('0')));
+    const QStyle *style = option.widget ? option.widget->style() : QApplication::style();
+    return { LinePadding + fontWidth + LinePadding + style->pixelMetric(QStyle::PM_FocusFrameHMargin), lineText };
+}
+
+static QString itemText(const QModelIndex &index)
+{
+    QString text = index.data(Qt::DisplayRole).toString();
+    if (index.model()->hasChildren(index))
+        text += " (" + QString::number(index.model()->rowCount(index)) + ')';
+
+    return text;
+}
 
 CodeLensDelegate::CodeLensDelegate(QObject *parent)
-    : QStyledItemDelegate (parent)
-    , characterStart(-1)
-    , characterEnd(-1)
-    ,color(QColor(Qt::yellow))
+    : QItemDelegate(parent)
 {
-    color.setAlpha(95);
+    tabStr = QString(8, ' ');
 }
 
 QSize CodeLensDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QSize size = QStyledItemDelegate::sizeHint(option, index);
+    QSize size = QItemDelegate::sizeHint(option, index);
     size.setHeight(24);
     return size;
 }
@@ -26,76 +51,158 @@ QSize CodeLensDelegate::sizeHint(const QStyleOptionViewItem &option, const QMode
 void CodeLensDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                              const QModelIndex &index) const
 {
-    QString displayName = index.data().toString();  //从模型索引index中获取显示的文本。
-    QFont font = painter->font();                   //获取画笔的字体，并创建一个字体度量对象，用于后续计算文本的尺寸
-    QFontMetrics fontMetrics(font);                 //使用字体创建一个字体度量对象，用于计算文本的布局信息。
+    painter->save();
+    const LayoutInfo info = getLayoutInfo(option, index);
+    painter->setFont(info.option.font);
+    QItemDelegate::drawBackground(painter, info.option, index);
 
-    if (index.parent().isValid()){                  //如果是root item，就按默认绘制即可
-        // 获取数据用于绘制
-        lsp::Range range;
-        QString codeText;
-        QColor heightColor;
-        QVariant rangeVar = index.data(CodeLensItemRole::Range);
+    // line numbers
+    drawLineNumber(painter, info.option, info.lineNumberRect, index);
 
-        // 从一个可能包含不同数据类型的 QVariant 对象中提取出数据
-        if (rangeVar.canConvert<lsp::Range>()) {
-            range = rangeVar.value<lsp::Range>();
-        }
-        QVariant codeTextVar = index.data(CodeLensItemRole::CodeText);
-        if (codeTextVar.canConvert<QString>()) {
-            codeText = codeTextVar.value<QString>();
-        }
-        QVariant colorVar = index.data(CodeLensItemRole::HeightColor);
-        if (colorVar.canConvert<QColor>()) {
-            heightColor = colorVar.value<QColor>();
-        }
+    // text
+    drawText(painter, info.option, info.textRect, index);
+    QItemDelegate::drawFocus(painter, info.option, info.option.rect);
+    painter->restore();
+}
 
-        // 获取当前行号并计算相关尺寸
-        QString lineNumCurr = QString::number(range.start.line + 1); // 展示时line从1开始
-        int sepWidth = option.fontMetrics.horizontalAdvance(" ");   // 计算一个空格字符的宽度
-        int lineNumMaxWidth = option.fontMetrics.horizontalAdvance(QString("99999")); // 计算最大行号宽度
-        int lineNumCurrWidth = option.fontMetrics.horizontalAdvance(lineNumCurr); // 计算当前行号字符串的宽度
-        int lineNumOffset = lineNumMaxWidth - lineNumCurrWidth; // 计算行号的偏移量，对齐
-        int textHeight = 24; // 设置每行的绘制高度为24
-
-        // 开始绘制行号
-        QRect lineNumDrawRect = option.rect.adjusted(lineNumOffset, 0, 0, 0);
-        lineNumDrawRect.setHeight(textHeight);
-        painter->setPen(option.widget->palette().text().color());
-        painter->drawText(lineNumDrawRect, lineNumCurr);
-
-        // 计算高亮文本的位置和大小
-        int startCharacter = range.start.character;
-        int endCharacter = range.end.character;
-        QString heightText = codeText.mid(startCharacter, endCharacter - startCharacter);
-        QString frontText = codeText.mid(0, startCharacter);
-        int frontTextWidth = option.fontMetrics.horizontalAdvance(frontText);
-        int heightTextWidth = option.fontMetrics.horizontalAdvance(heightText);
-        QRect heightTextRect = option.rect.adjusted(sepWidth + lineNumMaxWidth + frontTextWidth, 0, 0, 0);
-        heightTextRect.setSize(QSize(heightTextWidth, textHeight));
-
-        // 绘制高亮文本的背景
-        painter->setBrush(CodeLensDelegate::color);
-        painter->setPen(Qt::NoPen);
-        painter->drawRect(heightTextRect);
-
-        // 绘制全部代码文本
-        painter->setPen(option.widget->palette().text().color());
-        QRect codeTextDrawRect = option.rect.adjusted(sepWidth + lineNumMaxWidth, 0, 0, 0);
-        codeTextDrawRect.setHeight(textHeight);
-        painter->drawText(codeTextDrawRect, codeText);
-    } else {
-        QStyledItemDelegate::paint(painter, option, index);
+LayoutInfo CodeLensDelegate::getLayoutInfo(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    auto op = option;
+    if (!option.state.testFlag(QStyle::State_HasFocus)) {
+        QColor color;
+        DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType
+                ? color = Qt::black
+                : color = QColor("#c5c8c9");
+        op.palette.setColor(QPalette::Text, color);
     }
+
+    LayoutInfo info;
+    info.option = setOptions(index, op);
+
+    // text
+    info.textRect = info.option.rect;
+
+    // do basic layout
+    QRect checkRect, iconRect;
+    doLayout(info.option, &checkRect, &iconRect, &info.textRect, false);
+
+    // adapt for line numbers
+    const int lineNumberWidth = lineNumberInfo(info.option, index).first;
+    info.lineNumberRect = info.textRect;
+    info.lineNumberRect.setWidth(lineNumberWidth);
+    info.textRect.adjust(lineNumberWidth, 0, 0, 0);
+    return info;
 }
 
-void CodeLensDelegate::setHeightColor(const QColor &color)
+int CodeLensDelegate::drawLineNumber(QPainter *painter, const QStyleOptionViewItem &option,
+                                     const QRect &rect, const QModelIndex &index) const
 {
-    CodeLensDelegate::color = color;
+    const bool isSelected = option.state & QStyle::State_Selected;
+    const std::pair<int, QString> numberInfo = lineNumberInfo(option, index);
+    if (numberInfo.first == 0)
+        return 0;
+
+    QRect lineNumberAreaRect(rect);
+    lineNumberAreaRect.setWidth(numberInfo.first);
+
+    QPalette::ColorGroup cg = QPalette::Normal;
+    if (!(option.state & QStyle::State_Active))
+        cg = QPalette::Inactive;
+    else if (!(option.state & QStyle::State_Enabled))
+        cg = QPalette::Disabled;
+
+    painter->fillRect(lineNumberAreaRect,
+                      QBrush(isSelected
+                                 ? option.palette.brush(cg, QPalette::Highlight)
+                                 : option.palette.color(cg, QPalette::Base).darker(111)));
+
+    QStyleOptionViewItem opt = option;
+    opt.displayAlignment = Qt::AlignRight | Qt::AlignVCenter;
+    opt.palette.setColor(cg, QPalette::Text, Qt::darkGray);
+
+    const QStyle *style = QApplication::style();
+    const int textMargin = style->pixelMetric(QStyle::PM_FocusFrameHMargin, nullptr, nullptr) + 1;
+
+    const QRect rowRect = lineNumberAreaRect.adjusted(-textMargin, 0, textMargin - LinePadding, 0);
+    QItemDelegate::drawDisplay(painter, opt, rowRect, numberInfo.second);
+
+    return numberInfo.first;
 }
 
-void CodeLensDelegate::setHeightRange(int characterStart, int characterEnd)
+void CodeLensDelegate::drawText(QPainter *painter, const QStyleOptionViewItem &option,
+                                const QRect &rect, const QModelIndex &index) const
 {
-    CodeLensDelegate::characterStart = characterStart;
-    CodeLensDelegate::characterEnd = characterEnd;
+    const auto text = itemText(index);
+    const int termStart = index.data(CodeLensItemRole::TermStartRole).toInt();
+    const auto termEnd = index.data(CodeLensItemRole::TermEndRole).toInt();
+    int termLength = termEnd - termStart;
+    if (termStart < 0 || termStart >= text.length() || termLength < 1) {
+        QItemDelegate::drawDisplay(painter,
+                                   option,
+                                   rect,
+                                   QString(text).replace(QLatin1Char('\t'), tabStr));
+        return;
+    }
+
+    // clip searchTermLength to end of line
+    termLength = qMin(termLength, text.length() - termStart);
+    const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
+    const QString textBefore = text.left(termStart).replace(QLatin1Char('\t'), tabStr);
+    const QString textHighlight = text.mid(termStart, termLength).replace(QLatin1Char('\t'), tabStr);
+    const QString textAfter = text.mid(termStart + termLength).replace(QLatin1Char('\t'), tabStr);
+    int searchTermStartPixels = option.fontMetrics.horizontalAdvance(textBefore);
+    int searchTermLengthPixels = option.fontMetrics.horizontalAdvance(textHighlight);
+    int textAfterLengthPixels = option.fontMetrics.horizontalAdvance(textAfter);
+
+    // rects
+    QRect beforeHighlightRect(rect);
+    beforeHighlightRect.setRight(beforeHighlightRect.left() + searchTermStartPixels);
+
+    QRect resultHighlightRect(rect);
+    resultHighlightRect.setLeft(beforeHighlightRect.right());
+    resultHighlightRect.setRight(resultHighlightRect.left() + searchTermLengthPixels);
+
+    QRect afterHighlightRect(rect);
+    afterHighlightRect.setLeft(resultHighlightRect.right());
+    afterHighlightRect.setRight(afterHighlightRect.left() + textAfterLengthPixels);
+
+    // paint all highlight backgrounds
+    bool isSelected = option.state & QStyle::State_Selected;
+    QPalette::ColorGroup cg = option.state & QStyle::State_Enabled
+                                  ? QPalette::Normal
+                                  : QPalette::Disabled;
+    if (cg == QPalette::Normal && !(option.state & QStyle::State_Active))
+        cg = QPalette::Inactive;
+    QStyleOptionViewItem baseOption = option;
+    baseOption.state &= ~QStyle::State_Selected;
+    if (isSelected) {
+        painter->fillRect(beforeHighlightRect.adjusted(textMargin, 0, textMargin, 0),
+                          option.palette.brush(cg, QPalette::Highlight));
+        painter->fillRect(afterHighlightRect.adjusted(textMargin, 0, textMargin, 0),
+                          option.palette.brush(cg, QPalette::Highlight));
+    }
+
+    QColor highlightBackground("#ffef0b");
+    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+        highlightBackground = QColor("#8a7f2c");
+    painter->fillRect(resultHighlightRect.adjusted(textMargin, 0, textMargin - 1, 0),
+                      QBrush(highlightBackground));
+
+    // Text before the highlighting
+    QColor textColor = baseOption.palette.color(QPalette::Text);
+    QStyleOptionViewItem noHighlightOpt = baseOption;
+    noHighlightOpt.rect = beforeHighlightRect;
+    noHighlightOpt.textElideMode = Qt::ElideNone;
+    if (isSelected)
+        noHighlightOpt.palette.setColor(QPalette::Text, noHighlightOpt.palette.color(cg, QPalette::HighlightedText));
+    QItemDelegate::drawDisplay(painter, noHighlightOpt, beforeHighlightRect, textBefore);
+
+    // Highlight text
+    QStyleOptionViewItem highlightOpt = noHighlightOpt;
+    highlightOpt.palette.setColor(QPalette::Text, textColor);
+    QItemDelegate::drawDisplay(painter, highlightOpt, resultHighlightRect, textHighlight);
+
+    // Text after the Highlight
+    noHighlightOpt.rect = afterHighlightRect;
+    QItemDelegate::drawDisplay(painter, noHighlightOpt, afterHighlightRect, textAfter);
 }
