@@ -18,9 +18,6 @@ public:
     explicit CodeLens(QWidget *parent = nullptr);
     virtual ~CodeLens();
     void displayReference(const lsp::References &data);
-
-signals:
-    void doubleClicked(const QString &filePath, const lsp::Range range);
 };
 
 #endif // REFACTORWIDGET_H
