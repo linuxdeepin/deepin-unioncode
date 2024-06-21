@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons/deepin/builtin"/>
+    <qresource prefix="/icons/deepin">
+        <file>builtin/texts/linglong_22px.svg</file>
+    </qresource>
+</RCC>
