@@ -9,9 +9,9 @@
 
 enum CodeLensItemRole
 {
-    Range = Qt::ItemDataRole::UserRole + 1,
-    CodeText,
-    HeightColor
+    LineRole = Qt::ItemDataRole::UserRole + 1,
+    TermStartRole,
+    TermEndRole
 };
 
 

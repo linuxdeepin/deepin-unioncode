@@ -11,6 +11,10 @@
 
 #include <QTreeView>
 
+namespace dpfservice {
+class EditorService;
+}
+
 class CodeLensTree : public QTreeView
 {
     Q_OBJECT
@@ -19,6 +23,13 @@ public:
     void setData(const lsp::References &refs);
 
 signals:
-    void doubleClicked(const QString &filePath, const lsp::Range &range);
+    void doubleClicked(const QString &filePath, int line, int column);
+
+private:
+    QString readLine(const QString &filePath, int line);
+    QString readFileLine(const QString &filePath, int line);
+
+    dpfservice::EditorService *editSrv { nullptr };
+    bool onceReadFlag { false };
 };
-#endif // CODELENS_H
+#endif   // CODELENS_H

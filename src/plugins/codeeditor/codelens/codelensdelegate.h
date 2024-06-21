@@ -7,23 +7,32 @@
 
 #include "common/common.h"
 
-#include <QObject>
-#include <QStyledItemDelegate>
+#include <QItemDelegate>
 
-class CodeLensDelegate : public QStyledItemDelegate
+struct LayoutInfo
+{
+    QRect textRect;
+    QRect lineNumberRect;
+    QStyleOptionViewItem option;
+};
+
+class CodeLensDelegate : public QItemDelegate
 {
     Q_OBJECT
-    int characterStart;
-    int characterEnd;
-    QColor color;
 public:
     explicit CodeLensDelegate(QObject *parent = nullptr);
     void paint(QPainter *painter, const QStyleOptionViewItem &option,
                const QModelIndex &index) const override;
-    void setHeightColor(const QColor &color);
-    void setHeightRange(int characterStart, int characterEnd);
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
+private:
+    LayoutInfo getLayoutInfo(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    int drawLineNumber(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QModelIndex &index) const;
+    void drawText(QPainter *painter, const QStyleOptionViewItem &option,
+                  const QRect &rect, const QModelIndex &index) const;
+
+private:
+    QString tabStr;
 };
 
-#endif // CODELENSDELEGATE_H
+#endif   // CODELENSDELEGATE_H
