@@ -43,10 +43,7 @@ LSPStyle::LSPStyle(TextEditor *parent)
     connect(d->editor, &TextEditor::fileClosed, this, &LSPStyle::onFileClosed);
     connect(&d->renamePopup, &RenamePopup::editingFinished, this, &LSPStyle::renameSymbol);
     connect(&d->textChangedTimer, &QTimer::timeout, this, &LSPStyle::onTextChanged);
-    connect(CodeLens::instance(), &CodeLens::doubleClicked,
-            this, [=](const QString &filePath, const lsp::Range &range) {
-                emit EditorCallProxy::instance()->reqGotoPosition(filePath, range.start.line, range.start.character);
-            });
+
     connect(qApp, &QApplication::applicationStateChanged, this, [=](Qt::ApplicationState state) {
         if (state == Qt::ApplicationState::ApplicationInactive)
             d->editor->cancelTips();

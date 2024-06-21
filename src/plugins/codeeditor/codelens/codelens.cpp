@@ -4,6 +4,7 @@
 
 #include "codelens.h"
 #include "codelenstree.h"
+#include "transceiver/codeeditorreceiver.h"
 
 #include <DFrame>
 
@@ -44,8 +45,7 @@ CodeLens::CodeLens(QWidget *parent)
     DStyle::setFrameRadius(mainFrame, 0);
     setLayout(mainLayout);
     
-    
-    QObject::connect(d->lens, &CodeLensTree::doubleClicked, this, &CodeLens::doubleClicked);
+    connect(d->lens, &CodeLensTree::doubleClicked, EditorCallProxy::instance(), &EditorCallProxy::reqGotoPosition);
 }
 
 CodeLens::~CodeLens()

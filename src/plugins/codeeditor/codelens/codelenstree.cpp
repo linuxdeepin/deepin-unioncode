@@ -5,28 +5,16 @@
 #include "codelenstree.h"
 #include "framework.h"
 #include "codelensdelegate.h"
+
+#include "services/editor/editorservice.h"
+
 #include <QStandardItem>
 #include <QFile>
 
-QByteArray readLine(const QString &filePath, int line)
-{
-    QByteArray array{};
-    QFile file(filePath);
-    if(!file.open(QFile::ReadOnly)) {
-        return array;
-    }
-
-    for(int i = 0; i <= line; i++) {
-        array = file.readLine();
-        if (i == line)
-            return array;
-    }
-    file.close();
-    return array;
-}
+using namespace dpfservice;
 
 CodeLensTree::CodeLensTree(QWidget *parent)
-    : QTreeView (parent)
+    : QTreeView(parent)
 {
     setModel(new QStandardItemModel(this));
     setEnabled(true);
@@ -35,21 +23,18 @@ CodeLensTree::CodeLensTree(QWidget *parent)
     setHeaderHidden(true);
     setLineWidth(0);
 
-    QObject::connect(this, &QTreeView::doubleClicked, [=](const QModelIndex &index){
-        if (!index.parent().isValid()) { //root return
+    QObject::connect(this, &QTreeView::doubleClicked, [=](const QModelIndex &index) {
+        if (!index.parent().isValid())   //root return
             return;
-        }
-        QVariant rangeVar = index.data(CodeLensItemRole::Range);
-        lsp::Range range;
-        if (rangeVar.canConvert<lsp::Range>()){
-            range = rangeVar.value<lsp::Range>();
-        }
+
+        int line = index.data(CodeLensItemRole::LineRole).toInt();
+        int column = index.data(CodeLensItemRole::TermStartRole).toInt();
         QModelIndex parentIndex = index;
         while (parentIndex.parent().isValid()) {
             parentIndex = index.parent();
         }
         QString filePath = parentIndex.data(Qt::DisplayRole).toString();
-        emit CodeLensTree::doubleClicked(filePath, range);
+        emit CodeLensTree::doubleClicked(filePath, line, column);
     });
 }
 
@@ -60,31 +45,78 @@ QString codeDataFormat(int line, const QString &codeText)
 
 void CodeLensTree::setData(const lsp::References &refs)
 {
-    auto model = qobject_cast<QStandardItemModel*>(CodeLensTree::model());
+    onceReadFlag = false;
+    auto model = qobject_cast<QStandardItemModel *>(CodeLensTree::model());
     model->clear();
-    QHash<QString, QStandardItem*> cache{};
-    for(auto ref : refs) {
-        QString file = ref.fileUrl.toLocalFile();
+    QHash<QString, QStandardItem *> cache {};
+    for (auto ref : refs) {
         lsp::Range range = ref.range;
-        if (range.start.line == range.end.line) {
-            QString filePath = ref.fileUrl.toLocalFile();
-            QStandardItem *fileItem = nullptr;
-            if (cache[filePath]) {
-                fileItem = cache[filePath];
-            } else {
-                fileItem = new QStandardItem(filePath);
-                cache[filePath] = fileItem;
-                model->appendRow(fileItem);
-            }
-            QString codeText = readLine(file, range.start.line);
-            QString displayText = codeDataFormat(range.start.line, codeText);
-            QColor hColor(Qt::yellow);
-            QStandardItem *codeChild = new QStandardItem(displayText);
-            codeChild->setData(QVariant::fromValue<lsp::Range>(range), CodeLensItemRole::Range);
-            codeChild->setData(QVariant::fromValue<QString>(codeText), CodeLensItemRole::CodeText);
-            codeChild->setData(QVariant::fromValue<QColor>(hColor), CodeLensItemRole::HeightColor);
-            codeChild->setTextAlignment(Qt::AlignVCenter);
-            fileItem->appendRow(codeChild);
+        if (range.start.line != range.end.line)
+            continue;
+
+        QString filePath = ref.fileUrl.toLocalFile();
+        QStandardItem *fileItem = nullptr;
+        if (cache.contains(filePath)) {
+            fileItem = cache[filePath];
+        } else {
+            fileItem = new QStandardItem(filePath);
+            cache[filePath] = fileItem;
+            model->appendRow(fileItem);
         }
+
+        QString text = readLine(filePath, range.start.line);
+        if (text.isEmpty())
+            continue;
+
+        QStandardItem *item = new QStandardItem(text);
+        item->setData(range.start.line, CodeLensItemRole::LineRole);
+        item->setData(range.start.character, CodeLensItemRole::TermStartRole);
+        item->setData(range.end.character, CodeLensItemRole::TermEndRole);
+        item->setTextAlignment(Qt::AlignVCenter);
+        fileItem->appendRow(item);
     }
+}
+
+QString CodeLensTree::readLine(const QString &filePath, int line)
+{
+    if (line < 0)
+        return {};
+
+    if (!editSrv)
+        editSrv = dpfGetService(EditorService);
+
+    static QStringList openedFileList;
+    if (!onceReadFlag) {
+        openedFileList = editSrv->openedFiles();
+        onceReadFlag = true;
+    }
+
+    if (!openedFileList.contains(filePath))
+        return readFileLine(filePath, line);
+
+    auto fileText = editSrv->fileText(filePath);
+    auto textLines = fileText.split('\n');
+    if (textLines.size() > line)
+        return textLines.at(line);
+
+    return {};
+}
+
+QString CodeLensTree::readFileLine(const QString &filePath, int line)
+{
+    QFile file(filePath);
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+        return {};
+
+    QTextStream in(&file);
+    int lineCount = 0;
+    while (!in.atEnd()) {
+        QString text = in.readLine();
+        if (line == lineCount)
+            return text;
+        lineCount++;
+    }
+
+    file.close();
+    return {};
 }
