@@ -160,18 +160,57 @@ public:
     }
 };
 
-class LSPStylePrivate
+class LSPStylePrivate : public QObject
 {
+    Q_OBJECT
 public:
+    explicit LSPStylePrivate(TextEditor *edit, LSPStyle *qq);
+
+    void initConnection();
+    void initLspConnection();
+    void initIndicStyle();
+
     QString formatDiagnosticMessage(const QString &message, int type);
     bool shouldStartCompletion(const QString &insertedText);
     int wordPostion();
     newlsp::Client *getClient();
 
+    QColor symbolIndicColor(lsp::SemanticTokenType::type_value token,
+                            QList<lsp::SemanticTokenType::type_index> modifier);
+    lsp::SemanticTokenType::type_value tokenToDefine(int token);
+    void cleanDiagnostics();
+    void cleanDefinition(int pos);
+    void setDefinitionSelectedStyle(int start, int end);
+    void gotoDefinition();
+
+public slots:
+    void handleTokenFull(const QList<lsp::Data> &tokens, const QString &filePath);
+    void handleShowHoverInfo(const newlsp::Hover &hover);
+    void handleCodeDefinition(const newlsp::Location &data, const QString &filePath);
+    void handleCodeDefinition(const std::vector<newlsp::Location> &data, const QString &filePath);
+    void handleCodeDefinition(const std::vector<newlsp::LocationLink> &data, const QString &filePath);
+    void handleDiagnostics(const newlsp::PublishDiagnosticsParams &data);
+    void handleRangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits, const QString &filePath);
+    void delayTextChanged();
+    void delayPositionChanged();
+    void handleHoveredStart(int position);
+    void handleHoverEnd(int position);
+    void handleFollowTypeStart(int position);
+    void handleFollowTypeEnd();
+    void handleIndicClicked(int line, int index);
+    void handleShowContextMenu(QMenu *menu);
+    void handleFileClosed(const QString &file);
+    void handleRename(const QString &text);
+    void handleSwitchHeaderSource(const QString &file);
+    void handleDocumentSymbolResult(const QList<newlsp::DocumentSymbol> &docSymbols, const QString &filePath);
+    void handleSymbolInfomationResult(const QList<newlsp::SymbolInformation> &symbolInfos, const QString &filePath);
+    void handleDocumentHighlight(const QList<newlsp::DocumentHighlight> &docHighlightList, const QString &filePath);
+
 public:
+    LSPStyle *q;
+
     CompletionCache completionCache;
     DefinitionCache definitionCache;
-    QTimer textChangedTimer;
     HoverCache hoverCache;
     RenamePopup renamePopup;
     RenamePositionCache renameCache;
@@ -182,6 +221,9 @@ public:
     newlsp::ProjectKey prjectKey;
     QList<newlsp::SymbolInformation> symbolInfoList;
     QList<newlsp::DocumentSymbol> docSymbolList;
+
+    QTimer textChangedTimer;
+    QTimer positionChangedTimer;
 
     friend class StyleLsp;
 };

@@ -63,6 +63,10 @@ void TextEditorPrivate::initConnection()
 {
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &TextEditorPrivate::resetThemeColor);
     connect(EditorSettings::instance(), &EditorSettings::valueChanged, this, &TextEditorPrivate::updateSettings);
+    connect(qApp, &QApplication::applicationStateChanged, this, [=](Qt::ApplicationState state) {
+        if (state == Qt::ApplicationState::ApplicationInactive)
+            q->cancelTips();
+    });
 
     connect(q, &TextEditor::SCN_ZOOM, q, &TextEditor::zoomValueChanged);
     connect(q, &TextEditor::SCN_DWELLSTART, this, &TextEditorPrivate::onDwellStart);
@@ -219,10 +223,8 @@ void TextEditorPrivate::loadLexer()
 
 void TextEditorPrivate::loadLSPStyle()
 {
-    if (!lspStyle) {
+    if (!lspStyle)
         lspStyle = new LSPStyle(q);
-        lspStyle->initLspConnection();
-    }
 
     lspStyle->updateTokens();
 }
