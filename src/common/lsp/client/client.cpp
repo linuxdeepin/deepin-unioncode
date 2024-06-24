@@ -42,7 +42,7 @@ Client::Client()
     qRegisterMetaType<lsp::Locations>("lsp::Locations");
     qRegisterMetaType<lsp::CompletionProvider>("lsp::CompletionProvider");
     qRegisterMetaType<lsp::SignatureHelps>("lsp::SignatureHelps");
-    qRegisterMetaType<lsp::Highlights>("lsp::Highlights");
+    qRegisterMetaType<lsp::DocumentHighlight>("lsp::DocumentHighlight");
     qRegisterMetaType<QList<lsp::Data>>("QList<lsp::Data>");
     qRegisterMetaType<lsp::DefinitionProvider>("lsp::DefinitionProvider");
     qRegisterMetaType<lsp::DiagnosticsParams>("lsp::DiagnosticsParams");
@@ -992,7 +992,15 @@ bool ClientPrivate::docHighlightResult(const QJsonObject &jsonObj)
     auto calledID = jsonObj.value(K_ID).toInt();
     if (requestSave.keys().contains(calledID)
         && requestSave.value(calledID).method == lsp::V_TEXTDOCUMENT_DOCUMENTHIGHLIGHT) {
+        auto filePath = requestSave.value(calledID).file;
         requestSave.remove(calledID);
+
+        auto result = jsonObj.value(K_RESULT);
+        QList<DocumentHighlight> docHighlightList;
+        if (result.isArray())
+            docHighlightList = parseDocumentHighlight(result.toArray());
+
+        emit q->documentHighlightResult(docHighlightList, filePath);
         return true;
     }
     return false;
@@ -1228,6 +1236,25 @@ QList<SymbolInformation> ClientPrivate::parseDocumentSymbolInfo(const QJsonArray
     }
 
     return symbolInfos;
+}
+
+QList<DocumentHighlight> ClientPrivate::parseDocumentHighlight(const QJsonArray &array)
+{
+    QList<DocumentHighlight> highlightList;
+    for (const auto &value : array) {
+        if (!value.isObject())
+            continue;
+
+        DocumentHighlight dh;
+        auto obj = value.toObject();
+        auto val = obj.value("kind");
+        dh.kind = value.isUndefined() ? std::nullopt : std::make_optional(val.toInt());
+        dh.range = parseRange(obj.value("range").toObject());
+
+        highlightList.append(dh);
+    }
+
+    return highlightList;
 }
 
 Range ClientPrivate::parseRange(const QJsonObject &obj)
