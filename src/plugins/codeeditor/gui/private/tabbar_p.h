@@ -22,6 +22,9 @@ public:
     void initConnection();
 
     void updateBackgroundColor();
+    bool isModified(int index) const;
+    int showConfirmDialog(const QString &filePath);
+    void closeAllTab(const QStringList &exceptList);
 
 public slots:
     void onCurrentTabChanged(int index);

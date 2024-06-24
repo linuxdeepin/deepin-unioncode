@@ -33,7 +33,6 @@ public:
 
     void handleFileChanged();
     void handleFileRemoved();
-    bool checkAndResetSaveState(const QString &fileName);
 
 public slots:
     void checkFileState();

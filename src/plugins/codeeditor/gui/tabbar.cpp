@@ -41,13 +41,13 @@ void TabBarPrivate::initUI()
     closeBtn->setIcon(QIcon::fromTheme("edit-closeBtn"));
 
     QHBoxLayout *mainLayout = new QHBoxLayout(q);
-    
+
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(tabBar, 1, Qt::AlignLeft);
     mainLayout->addWidget(hSplitBtn, 0, Qt::AlignRight);
     mainLayout->addWidget(vSplitBtn, 0, Qt::AlignRight);
     mainLayout->addWidget(closeBtn, 0, Qt::AlignRight);
-    
+
     updateBackgroundColor();
 }
 
@@ -60,6 +60,48 @@ void TabBarPrivate::updateBackgroundColor()
     else
         p.setColor(QPalette::Window, QColor(47, 47, 47));
     q->setPalette(p);
+}
+
+bool TabBarPrivate::isModified(int index) const
+{
+    QString text = tabBar->tabText(index);
+    return text.length() > 0 && text.at(0) == "*";
+}
+
+int TabBarPrivate::showConfirmDialog(const QString &filePath)
+{
+    DDialog dialog(q);
+    dialog.setWindowTitle(tr("Save Changes"));
+    dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+    dialog.setMessage(tr("The file %1 has unsaved changes, will save?").arg(QFileInfo(filePath).fileName()));
+    dialog.addButton(tr("Save", "button"), true, DDialog::ButtonRecommend);
+    dialog.addButton(tr("Do Not Save", "button"));
+    dialog.addButton(tr("Cancel"), "button");
+
+    return dialog.exec();
+}
+
+void TabBarPrivate::closeAllTab(const QStringList &exceptList)
+{
+    QStringList tabList;
+    for (int i = 0; i < tabBar->count(); ++i) {
+        auto file = tabBar->tabToolTip(i);
+        if (exceptList.contains(file))
+            continue;
+
+        if (isModified(i)) {
+            int ret = showConfirmDialog(file);
+            if (ret == 0)   // save
+                emit q->saveFileRequested(file);
+            else if (ret == 2 || ret == -1)   // cancel or close
+                return;
+        }
+
+        tabList << file;
+    }
+
+    for (const auto &tab : tabList)
+        q->removeTab(tab, true);
 }
 
 void TabBarPrivate::initConnection()
@@ -107,21 +149,12 @@ void TabBarPrivate::showMenu(QPoint pos)
         q->removeTab(file);
     });
     menu.addAction(tr("Close All Files"), [=]() {
-        while (tabBar->count() > 0) {
-            auto file = tabBar->tabToolTip(0);
-            q->removeTab(file);
-        };
+        closeAllTab({});
     });
     menu.addAction(tr("Close All Files Except This"), [=]() {
         auto curFile = tabBar->tabToolTip(curIndex);
-        int index = 0;
-        while (tabBar->count() > 1) {
-            auto file = tabBar->tabToolTip(index);
-            if (file != curFile)
-                q->removeTab(file);
-            else
-                index++;
-        };
+        QStringList exceptList { curFile };
+        closeAllTab(exceptList);
     });
 
     menu.addSeparator();
@@ -208,27 +241,18 @@ void TabBar::switchTab(const QString &fileName)
         d->tabBar->setCurrentIndex(index);
 }
 
-void TabBar::removeTab(const QString &fileName)
+void TabBar::removeTab(const QString &fileName, bool silent)
 {
     int index = indexOf(fileName);
     if (-1 == index)
         return;
 
-    QString text = d->tabBar->tabText(index);
     QFileInfo info(fileName);
-    if (info.exists() && text.length() > 0 && text.at(0) == "*") {
-        DDialog dialog(this);
-        dialog.setWindowTitle(tr("Save Changes"));
-        dialog.setIcon(QIcon::fromTheme("dialog-warning"));
-        dialog.setMessage(tr("The file has unsaved changes, will save?"));
-        dialog.addButton(tr("Save", "button"), true, DDialog::ButtonRecommend);
-        dialog.addButton(tr("Do Not Save", "button"));
-        dialog.addButton(tr("Cancel"), "button");
-
-        int ret = dialog.exec();
-        if (ret == 0) // save
+    if (!silent && info.exists() && d->isModified(index)) {
+        int ret = d->showConfirmDialog(fileName);
+        if (ret == 0)   // save
             emit saveFileRequested(fileName);
-        else if (ret == 2 || ret == -1) // cancel or close
+        else if (ret == 2 || ret == -1)   // cancel or close
             return;
     }
 
