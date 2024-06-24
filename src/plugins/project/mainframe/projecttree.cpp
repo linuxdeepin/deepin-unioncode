@@ -317,12 +317,6 @@ void ProjectTree::focusCurrentFile()
     QModelIndexList indices = model()->match(root, Qt::ToolTipRole, d->currentFile, 1, Qt::MatchExactly | Qt::MatchRecursive);
     if (!indices.isEmpty()) {
         QModelIndex index = indices.first();
-
-        QModelIndex parent = index.parent();
-        while (parent.isValid()) {
-            expand(parent);
-            parent = parent.parent();
-        }
         setCurrentIndex(index);
     }
 }
