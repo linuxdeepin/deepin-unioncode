@@ -18,8 +18,8 @@
                     "type": 0,
                     "workingDirectory": "",
                     "advance": {
-                        "missingHint": "",
-                        "installCommand": "",
+                        "missingHint": "工具执行程序未找到，请安装后重试",
+                        "installCommand": "sudo apt install dpkg-dev",
                         "triggerEvent" : 0
                     }
                 },
@@ -94,8 +94,8 @@
                     "type": 0,
                     "workingDirectory": "",
                     "advance": {
-                        "missingHint": "",
-                        "installCommand": "",
+                        "missingHint": "工具执行程序未找到，请安装后重试",
+                        "installCommand": "sudo apt install qtchooser",
                         "triggerEvent" : 0
                     }
                 },
@@ -113,8 +113,8 @@
                     "type": 0,
                     "workingDirectory": "",
                     "advance": {
-                        "missingHint": "",
-                        "installCommand": "",
+                        "missingHint": "工具执行程序未找到，请安装后重试",
+                        "installCommand": "sudo apt install xdg-utils",
                         "triggerEvent" : 0
                     }
                 },
@@ -165,7 +165,7 @@
                     "errorOutputOption": 1,
                     "icon": "binarytools_flag",
                     "id": "clang-format",
-                    "name": "代码格式化",
+                    "name": "C++代码格式化",
                     "outputOption": 2,
                     "type": 0,
                     "workingDirectory": "",
