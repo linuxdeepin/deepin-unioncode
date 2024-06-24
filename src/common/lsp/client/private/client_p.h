@@ -64,6 +64,7 @@ class ClientPrivate : public newlsp::StdoutJsonRpcParser
 
     QList<DocumentSymbol> parseDocumentSymbol(const QJsonArray &array);
     QList<SymbolInformation> parseDocumentSymbolInfo(const QJsonArray &array);
+    QList<DocumentHighlight> parseDocumentHighlight(const QJsonArray &array);
     Range parseRange(const QJsonObject &obj);
     Location parseLocation(const QJsonObject &obj);
 
