@@ -45,7 +45,6 @@ public:
     Q_INVOKABLE void setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key);
     void gotoNextPosition();
     void gotoPreviousPosition();
-    bool checkAndResetSaveState(const QString &fileName);
 
     void setEditorCursorPosition(int pos);
     int editorCursorPosition();

@@ -88,8 +88,6 @@ public:
     void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text);
     void replaceRange(int startPosition, int endPosition, const QString &text);
     void insertText(const QString &text);
-    bool isSaved() const;
-    void resetSaveState();
     LSPStyle *lspStyle() const;
     int wordStartPositoin(int position);
     int wordEndPosition(int position);

@@ -71,7 +71,6 @@ public:
     QMultiHash<QString, int> annotationRecords;
 
     LSPStyle *lspStyle { nullptr };
-    bool isSaved { false };
     bool isAutoCompletionEnabled { false };
     bool isCtrlPressed { false };
 

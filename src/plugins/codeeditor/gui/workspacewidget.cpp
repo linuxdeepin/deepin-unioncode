@@ -222,9 +222,6 @@ void WorkspaceWidgetPrivate::handleFileChanged()
         return;
 
     auto fileName = modifiedFileList.takeFirst();
-    if (checkAndResetSaveState(fileName))
-        return handleFileChanged();
-
     int ret = showFileChangedConfirmDialog(fileName);
     switch (ret) {
     case 0:   // yes
@@ -288,16 +285,6 @@ void WorkspaceWidgetPrivate::handleFileRemoved()
     default:
         break;
     }
-}
-
-bool WorkspaceWidgetPrivate::checkAndResetSaveState(const QString &fileName)
-{
-    auto iter = std::find_if(tabWidgetList.begin(), tabWidgetList.end(),
-                             [&fileName](TabWidget *w) {
-                                 return w->checkAndResetSaveState(fileName);
-                             });
-
-    return iter != tabWidgetList.end();
 }
 
 void WorkspaceWidgetPrivate::checkFileState()
