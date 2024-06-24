@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "gradleprojectgenerator.h"
+#include "transceiver/projectgradlereciver.h"
 #include "gradleasynparse.h"
 #include "properties/gradleconfigpropertywidget.h"
 
@@ -53,6 +54,7 @@ class GradleProjectGeneratorPrivate
     QMenu *gradleMenu {nullptr};
     QProcess *menuGenProcess {nullptr};
     QHash<QStandardItem*, GradleAsynParse*> projectParses {};
+    QSet<QString> toExpand;
 private:
 
     GradleTasks parseTasks(const QByteArray &data)
@@ -89,6 +91,17 @@ GradleProjectGenerator::GradleProjectGenerator()
         qCritical() << "Failed, not found service : projectService";
         abort();
     }
+    QObject::connect(ProjectGradleProxy::instance(),
+                     &ProjectGradleProxy::nodeExpanded,
+                     this, [this](const QString &filePath){
+        d->toExpand.insert(filePath);
+    });
+
+    QObject::connect(ProjectGradleProxy::instance(),
+                     &ProjectGradleProxy::nodeCollapsed,
+                     this, [this](const QString &filePath){
+        d->toExpand.remove(filePath);
+    });
 }
 
 GradleProjectGenerator::~GradleProjectGenerator()
@@ -149,10 +162,15 @@ QStandardItem *GradleProjectGenerator::createRootItem(const dpfservice::ProjectI
     QStandardItem * rootItem = ProjectGenerator::createRootItem(info);
     dpfservice::ProjectInfo::set(rootItem, info);
     d->projectParses[rootItem] = new GradleAsynParse();
-    QObject::connect(d->projectParses[rootItem], &GradleAsynParse::itemsModified,
-                     this, &GradleProjectGenerator::doProjectChildsModified);
+
+    QObject::connect(d->projectParses[rootItem], &GradleAsynParse::itemsModified, this, [=](const QList<QStandardItem *> &items){
+        doProjectChildsModified(items);
+        auto prjService = dpfGetService(ProjectService);
+        prjService->expandItemByFile(d->toExpand.toList());
+    });
     QMetaObject::invokeMethod(d->projectParses[rootItem], "parseProject",
                               Q_ARG(const dpfservice::ProjectInfo &, info));
+
     return rootItem;
 }
 
