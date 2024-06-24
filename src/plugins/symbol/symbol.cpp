@@ -21,7 +21,7 @@
 using namespace dpfservice;
 void Symbol::initialize()
 {
-    QStringList dependenceList {"esrima", "clang-5"};
+    QStringList dependenceList {"esprima", "clang-5"};
     for (const auto &dependence : dependenceList) {
         if (!Util::checkPackageValid(dependence))
             Util::installPackage(dependence);
