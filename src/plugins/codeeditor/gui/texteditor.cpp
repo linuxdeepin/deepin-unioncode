@@ -93,7 +93,6 @@ void TextEditor::save()
 
     file.write(text().toUtf8());
     file.close();
-    d->isSaved = true;
     setModified(false);
     emit fileSaved(d->fileName);
     editor.fileSaved(d->fileName);
@@ -117,7 +116,6 @@ void TextEditor::saveAs(const QString &fileName)
     d->fileName = fileName;
     file.write(text().toUtf8());
     file.close();
-    d->isSaved = true;
     setModified(false);
 }
 
@@ -588,16 +586,6 @@ void TextEditor::insertText(const QString &text)
 
     SendScintilla(SCI_INSERTTEXT, static_cast<ulong>(d->cursorPosition()), textData.constData());
     SendScintilla(SCI_SETEMPTYSELECTION, d->cursorPosition() + textData.size());
-}
-
-bool TextEditor::isSaved() const
-{
-    return d->isSaved;
-}
-
-void TextEditor::resetSaveState()
-{
-    d->isSaved = false;
 }
 
 LSPStyle *TextEditor::lspStyle() const

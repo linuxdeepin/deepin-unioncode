@@ -336,7 +336,7 @@ void TabWidgetPrivate::replaceRange(const QString &fileName, const newlsp::Range
 void TabWidgetPrivate::doSave()
 {
     if (auto editor = currentTextEditor())
-        editor->save();
+        q->saveFile(editor->getFile());
 }
 
 void TabWidgetPrivate::removePositionRecord(const QString &fileName)
@@ -613,8 +613,11 @@ void TabWidget::replaceAll(const QString &fileName, const QString &oldText,
 
 void TabWidget::saveAll() const
 {
-    for (auto editor : d->editorMng.values())
+    for (auto editor : d->editorMng.values()) {
+        Inotify::globalInstance()->removePath(editor->getFile());
         editor->save();
+        Inotify::globalInstance()->addPath(editor->getFile());
+    }
 }
 
 bool TabWidget::saveAs(const QString &from, const QString &to)
@@ -768,19 +771,6 @@ void TabWidget::gotoPreviousPosition()
     editor->gotoPosition(record.pos);
 }
 
-bool TabWidget::checkAndResetSaveState(const QString &fileName)
-{
-    if (auto editor = d->findEditor(fileName)) {
-        bool ret = editor->isSaved();
-        if (ret)
-            editor->resetSaveState();
-
-        return ret;
-    }
-
-    return false;
-}
-
 void TabWidget::setEditorCursorPosition(int pos)
 {
     if (auto editor = d->currentTextEditor())
@@ -922,8 +912,11 @@ void TabWidget::gotoPosition(int line, int column)
 
 void TabWidget::saveFile(const QString &fileName)
 {
-    if (auto editor = d->findEditor(fileName))
+    if (auto editor = d->findEditor(fileName)) {
+        Inotify::globalInstance()->removePath(fileName);
         editor->save();
+        Inotify::globalInstance()->addPath(fileName);
+    }
 }
 
 void TabWidget::dragEnterEvent(QDragEnterEvent *event)
