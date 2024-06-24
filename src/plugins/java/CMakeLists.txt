@@ -24,6 +24,7 @@ set(CXX_CPP
     gradle/project/gradleprojectgenerator.cpp
     gradle/project/properties/gradleconfigpropertywidget.cpp
     gradle/project/properties/gradleconfigutil.cpp
+    gradle/project/transceiver/projectgradlereciver.cpp
     gradle/option/gradlewidget.cpp
     gradle/option/gradleoptionwidget.cpp
     gradle/option/optiongradlegenerator.cpp
@@ -57,6 +58,7 @@ set(CXX_H
     gradle/project/gradleprojectgenerator.h
     gradle/project/properties/gradleconfigpropertywidget.h
     gradle/project/properties/gradleconfigutil.h
+    gradle/project/transceiver/projectgradlereciver.h
     gradle/option/gradlewidget.h
     gradle/option/gradleoptionwidget.h
     gradle/option/optiongradlegenerator.h
