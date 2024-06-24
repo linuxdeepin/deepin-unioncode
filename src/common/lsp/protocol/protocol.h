@@ -279,11 +279,18 @@ struct Hover //暂时留空
     Range range;
 };
 
-struct Highlight //暂时留空
+struct DocumentHighlight
 {
+    enum DocumentHighlightKind {
+        Text = 1,
+        Read = 2,
+        Write = 3
+    };
 
+    std::optional<int> kind;
+    Range range;
 };
-typedef QList<Highlight> Highlights;
+typedef QList<DocumentHighlight> DocumentHighlights;
 
 struct Data //from result key "data"
 {

@@ -169,7 +169,6 @@ signals:
     void requestResult(const lsp::Locations &locations);
     void requestResult(const lsp::CompletionProvider &completionProvider);
     void requestResult(const lsp::SignatureHelps &signatureHelps);
-    void requestResult(const lsp::Highlights &highlights);
     void requestResult(const QList<lsp::Data> &tokensResult, const QString &filePath);
     void requestResult(const lsp::References &refs);
     void switchHeaderSourceResult(const QString &filePath);
@@ -181,6 +180,7 @@ signals:
     void rangeFormattingRes(const std::vector<TextEdit> &edits, const QString &filePath);
     void symbolResult(const QList<DocumentSymbol> &docSymbols, const QString &filePath);
     void symbolResult(const QList<SymbolInformation> &symbolInfos, const QString &filePath);
+    void documentHighlightResult(const QList<DocumentHighlight> &docHighlightLsit, const QString &filePath);
 
     /* server request */
     void publishDiagnostics(const newlsp::PublishDiagnosticsParams &diagnostics); // textDocument/publishDiagnostics
