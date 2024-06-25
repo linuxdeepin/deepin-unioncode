@@ -221,6 +221,7 @@ QStandardItem *CmakeAsynParse::parseProject(QStandardItem *rootItem, const dpfse
             prefix = CDT_TARGETS_TYPE::get()->Exe;
         } else if (target.type == kStaticLibrary || target.type == kDynamicLibrary) {
             prefix = CDT_TARGETS_TYPE::get()->Lib;
+            absolutePath = absolutePath.replace("//", "/");
         }
         QMetaObject::invokeMethod(this, [=](){
             if (target.type == kExecutable)
