@@ -328,7 +328,7 @@ void TextEditorPrivate::showMarginMenu()
             menu.addAction(tr("Enable Breakpoint"), q, [this, line] { q->setBreakpointEnabled(line, true); });
         menu.addAction(tr("Add Condition"), q, [this, line] { q->setBreakpointCondition(line); });
     } else {
-        static QString text("Add a breakpoint on line %1");
+        static QString text(tr("Add a breakpoint on line %1"));
         menu.addAction(text.arg(line + 1), q, [this, line] { q->addBreakpoint(line); });
     }
 
