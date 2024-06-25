@@ -15,7 +15,8 @@
 #include <QMenu>
 
 using namespace dpfservice;
-MenuManager::MenuManager(QObject *parent) : QObject(parent)
+MenuManager::MenuManager(QObject *parent)
+    : QObject(parent)
 {
 }
 
@@ -25,7 +26,7 @@ void MenuManager::initialize(WindowService *windowService)
         return;
 
     auto initAction = [&](QAction *action, const QString &id, const QString &description,
-            QKeySequence key, const QString &iconName) -> AbstractAction*{
+                          QKeySequence key, const QString &iconName) -> AbstractAction * {
         action->setIcon(QIcon::fromTheme(iconName));
         auto actionImpl = new AbstractAction(action, this);
         actionImpl->setShortCutInfo(id, description, key);
@@ -39,7 +40,7 @@ void MenuManager::initialize(WindowService *windowService)
                                  "debugger_start");
     windowService->addAction(MWM_DEBUG, actionImpl);
     windowService->addTopToolItem(actionImpl, false, Priority::medium);
-#if 0 // not used yet.
+#if 0   // not used yet.
     detachDebugger.reset(new QAction("Detach Debugger"));
     connect(detachDebugger.get(), &QAction::triggered, debugManager, &DebugManager::detachDebug);
     actionImpl = new AbstractAction(detachDebugger.get());
@@ -80,7 +81,7 @@ void MenuManager::initialize(WindowService *windowService)
     restartDebugging->setEnabled(false);
     connect(restartDebugging.get(), &QAction::triggered, debugManager, &DebugManager::restartDebug);
     actionImpl = initAction(restartDebugging.get(), "Debug.Restart.Debugging",
-                            MWMDA_RESTART_DEBUGGING, QKeySequence(Qt::Modifier::CTRL | Qt::Key::Key_B),
+                            MWMDA_RESTART_DEBUGGING, QKeySequence(Qt::Modifier::SHIFT | Qt::Key::Key_B),
                             "restart_debug");
     windowService->addAction(MWM_DEBUG, actionImpl);
     appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->qAction(), false);
@@ -111,9 +112,9 @@ void MenuManager::initialize(WindowService *windowService)
                             "debugger_stepout");
     windowService->addAction(MWM_DEBUG, actionImpl);
     appOutPutPane->registerItemToToolBar(debugToolBarName, actionImpl->qAction(), false);
-    
+
     remoteDebug.reset(new QAction(MWMDA_REMOTE_DEBUG));
-    connect(remoteDebug.get(), &QAction::triggered, debugManager, [=](){
+    connect(remoteDebug.get(), &QAction::triggered, debugManager, [=]() {
         auto remoteDlg = new RemoteDebugDlg();
         remoteDlg->setAttribute(Qt::WA_DeleteOnClose);
         remoteDlg->exec();
@@ -126,8 +127,8 @@ void MenuManager::initialize(WindowService *windowService)
     attachDebugging.reset(new QAction(MWMDA_ATTACH_DEBUG));
     connect(attachDebugging.get(), &QAction::triggered, debugManager, &DebugManager::attachDebug);
     actionImpl = initAction(attachDebugging.get(), "Debug.Attach.Debugging",
-                                 MWMDA_ATTACH_DEBUG, QKeySequence(),
-                                 "debugger_start");
+                            MWMDA_ATTACH_DEBUG, QKeySequence(),
+                            "debugger_start");
     windowService->addAction(MWM_DEBUG, actionImpl);
 }
 
@@ -138,7 +139,7 @@ void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
     case AbstractDebugger::kPreparing:
     case AbstractDebugger::kStart:
         startDebugging->setEnabled(true);
-#if 0 // not used yet.
+#if 0   // not used yet.
         detachDebugger->setEnabled(true);
 #endif
         interrupt->setEnabled(false);
@@ -153,7 +154,7 @@ void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
 
     case AbstractDebugger::kRunning:
         startDebugging->setEnabled(false);
-#if 0 // not used yet.
+#if 0   // not used yet.
         detachDebugger->setEnabled(false);
 #endif
         interrupt->setEnabled(true);
@@ -167,7 +168,7 @@ void MenuManager::handleRunStateChanged(AbstractDebugger::RunState state)
         break;
     case AbstractDebugger::kStopped:
         startDebugging->setEnabled(false);
-#if 0 // not used yet.
+#if 0   // not used yet.
         detachDebugger->setEnabled(false);
 #endif
         interrupt->setEnabled(false);
