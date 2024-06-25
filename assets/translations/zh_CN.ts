@@ -860,12 +860,12 @@ storage: %2
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="541"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="544"/>
         <source>Build</source>
         <translation>编译</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="542"/>
+        <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="545"/>
         <source>Run</source>
         <translation>运行</translation>
     </message>
@@ -899,77 +899,77 @@ storage: %2
 <context>
     <name>CodeEditor</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="36"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="38"/>
         <source>Save All Documents</source>
         <translation>保存所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="37"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="39"/>
         <source>Close All Documents</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="38"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="40"/>
         <source>Print</source>
         <translation>打印</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="86"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="89"/>
         <source>backward</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="94"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="97"/>
         <source>forward</source>
         <translation>前进</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="120"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="123"/>
         <source>Close Current Editor</source>
         <translation>关闭当前编辑器</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="124"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="127"/>
         <source>Switch Header/Source</source>
         <translation>切换头文件/源文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="128"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="131"/>
         <source>Follow Symbol Under Cursor</source>
         <translation>跟随光标下符号</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="132"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="135"/>
         <source>Toggle Breakpoint</source>
         <translation>切换断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="136"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="139"/>
         <source>Find Usages</source>
         <translation>查找引用</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="140"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="143"/>
         <source>Rename Symbol Under Cursor</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="217"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="231"/>
         <source>Current document</source>
         <translation>当前文档</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="220"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="234"/>
         <source>Current document content</source>
         <translation>当前文档内容</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="112"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="115"/>
         <source>Backward</source>
         <translation>后退</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="116"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="119"/>
         <source>Forward</source>
         <translation>前进</translation>
     </message>
@@ -1274,34 +1274,14 @@ storage: %2
 <context>
     <name>ConsoleManager</name>
     <message>
-        <location filename="../../src/plugins/console/consolemanager.cpp" line="129"/>
+        <location filename="../../src/plugins/console/consolemanager.cpp" line="134"/>
         <source>Console</source>
         <translation>控制台</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/console/consolemanager.cpp" line="141"/>
+        <location filename="../../src/plugins/console/consolemanager.cpp" line="146"/>
         <source>New Console</source>
         <translation>新控制台</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/console/consolemanager.cpp" line="149"/>
-        <source>No console selected.</source>
-        <translation>没有选择控制台。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/console/consolemanager.cpp" line="153"/>
-        <source>Cannot remove the last console.</source>
-        <translation>无法删除最后一个控制台。</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/console/consolemanager.cpp" line="168"/>
-        <source>Warning</source>
-        <translation>警告</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/console/consolemanager.cpp" line="170"/>
-        <source>OK</source>
-        <translation>确定</translation>
     </message>
 </context>
 <context>
@@ -1319,7 +1299,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/console/consolewidget.cpp" line="50"/>
         <source>Enter current project root path</source>
-        <translation>输入当前项目根路径</translation>
+        <translation>进入到当前项目的根目录</translation>
     </message>
 </context>
 <context>
@@ -1761,32 +1741,37 @@ Delete anyway?</source>
 <context>
     <name>DetailsView</name>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="109"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="110"/>
         <source>Description</source>
         <translation>描述</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="110"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="111"/>
         <source>Dependency</source>
         <translation>依赖</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="167"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="170"/>
         <source>reLaunch when changed!</source>
         <translation>修改后请重启！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="189"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="182"/>
+        <source>Relaunch required!</source>
+        <translation>需要重启！</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="204"/>
         <source>This platform not support doc display!</source>
         <translation>该平台不支持doc显示！</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="248"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="291"/>
         <source>unload</source>
         <translation>卸载</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="248"/>
+        <location filename="../../src/plugins/core/gui/plugindetailsview.cpp" line="291"/>
         <source>load</source>
         <translation>加载</translation>
     </message>
@@ -1865,28 +1850,28 @@ Delete anyway?</source>
 <context>
     <name>EnvironmentWidget</name>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="206"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="209"/>
         <location filename="../../src/plugins/option/optioncore/mainframe/environmentwidget.cpp" line="16"/>
         <source>Enable All Environment</source>
         <translation>启用所有环境</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="215"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="220"/>
         <source>Enable Qt Debug Level</source>
         <translation>启用Qt Debug调试等级</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="223"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="228"/>
         <source>append</source>
         <translation>增加</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="230"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="235"/>
         <source>reduce</source>
         <translation>减少</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="237"/>
+        <location filename="../../src/plugins/cxx/cmake/project/properties/environmentwidget.cpp" line="242"/>
         <source>reset</source>
         <translation>重置</translation>
     </message>
@@ -2377,7 +2362,7 @@ Delete anyway?</source>
 <context>
     <name>GradleProjectGenerator</name>
     <message>
-        <location filename="../../src/plugins/java/gradle/project/gradleprojectgenerator.cpp" line="200"/>
+        <location filename="../../src/plugins/java/gradle/project/gradleprojectgenerator.cpp" line="218"/>
         <source>Properties</source>
         <translation>工程属性</translation>
     </message>
@@ -2616,34 +2601,34 @@ Delete anyway?</source>
     </message>
 </context>
 <context>
-    <name>LSPStyle</name>
+    <name>LSPStylePrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="527"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="547"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="529"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="549"/>
         <source>Rename Symbol Under Cursor</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="535"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="555"/>
         <source>Switch Header/Source</source>
         <translation>切换头文件/源文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="538"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="558"/>
         <source>Follow Symbol Under Cursor</source>
         <translation>跟随光标下符号</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="541"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="561"/>
         <source>Find Usages</source>
         <translation>查找引用</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="544"/>
+        <location filename="../../src/plugins/codeeditor/lsp/lspstyle.cpp" line="564"/>
         <source>Range Formatting</source>
         <translation>范围格式</translation>
     </message>
@@ -2806,7 +2791,7 @@ repos path: %0</source>
     <message>
         <location filename="../../src/plugins/cxx/ninja/builder/mainframe/ninjabuildergenerator.cpp" line="62"/>
         <source>The build command of %1 project is null! please install it in console with &quot;sudo apt install ninja-build&quot;, and then restart the tool.</source>
-        <translation>%1项目的生成命令为空！请使用“sudo apt install ninja build”在控制台中安装它，然后重新启动该工具。</translation>
+        <translation>%1项目的生成命令为空！请使用“sudo apt install ninja-build”在控制台中安装它，然后重新启动该工具。</translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/ninja/builder/mainframe/ninjabuildergenerator.cpp" line="69"/>
@@ -2927,9 +2912,17 @@ repos path: %0</source>
     </message>
 </context>
 <context>
+    <name>PluginManagerModule</name>
+    <message>
+        <location filename="../../src/plugins/core/modules/pluginmanagermodule.cpp" line="57"/>
+        <source>Extensions</source>
+        <translation>扩展</translation>
+    </message>
+</context>
+<context>
     <name>PluginStoreWidget</name>
     <message>
-        <location filename="../../src/plugins/core/gui/pluginstorewidget.cpp" line="34"/>
+        <location filename="../../src/plugins/core/gui/pluginstorewidget.cpp" line="36"/>
         <source>Search Extension</source>
         <translation>查找扩展</translation>
     </message>
@@ -3010,87 +3003,87 @@ repos path: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="219"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="437"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="675"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="431"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="669"/>
         <source>New Document</source>
         <translation>新建文件</translation>
     </message>
     <message>
         <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="223"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="432"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="426"/>
         <source>New Directory</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="442"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="570"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="436"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="564"/>
         <source>Rename</source>
         <translation>重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="451"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="445"/>
         <source>Open In Terminal</source>
         <translation>在终端打开</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="465"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="459"/>
         <source>Delete Document</source>
         <translation>删除文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="566"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="671"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="560"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="665"/>
         <source>New Document Name</source>
         <translation>新文件名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="573"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="615"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="650"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="678"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="703"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="755"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="794"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="567"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="609"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="644"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="672"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="697"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="749"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="788"/>
         <source>Ok</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="643"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="637"/>
         <source>New Dirctory Name</source>
         <translation>新文件夹名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="647"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="641"/>
         <source>New Dirctory</source>
         <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="697"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="691"/>
         <source>Delete operation not be recoverable, delete anyway?</source>
         <translation>删除操作不可逆转，是否删除?</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="701"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="695"/>
         <source>Delete: </source>
         <translation>删除： </translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="753"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="747"/>
         <source>A directory with name %1 already exists. please reanme it</source>
         <translation>名称为% 1的目录已经存在。请将其重命名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="609"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="613"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="792"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="603"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="607"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="786"/>
         <source>A file with name %1 already exists. Would you like to overwrite it?</source>
         <translation>名称为&quot;%1&quot; 的文件已经存在，您想覆盖它吗？</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="614"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="704"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="754"/>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="793"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="608"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="698"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="748"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="787"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -3152,12 +3145,12 @@ repos path: %0</source>
 <context>
     <name>QAction</name>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="41"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="40"/>
         <source>Checkout repository</source>
         <translation>检出仓库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="46"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="45"/>
         <source>Open repository</source>
         <translation>打开仓库</translation>
     </message>
@@ -3192,17 +3185,17 @@ repos path: %0</source>
         <translation>程序</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="491"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="485"/>
         <source>Project Active</source>
         <translation>激活工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="492"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="486"/>
         <source>Project Close</source>
         <translation>关闭工程</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="493"/>
+        <location filename="../../src/plugins/project/mainframe/projecttree.cpp" line="487"/>
         <source>Project Info</source>
         <translation>工程信息</translation>
     </message>
@@ -3397,7 +3390,7 @@ Delete anyway?</source>
         <translation>从远程仓库检出</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="60"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="59"/>
         <source>Open path failed, current repos not svn subdir</source>
         <translation>打开路径失败，当前远程仓库不是svn子目录</translation>
     </message>
@@ -3698,8 +3691,8 @@ not exists support files: %0</source>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="66"/>
-        <source>Runtime Env</source>
-        <translation>运行时环境</translation>
+        <source>Build Environment</source>
+        <translation>编译环境</translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/properties/bulidCfgWidget/buildpropertypage.cpp" line="67"/>
@@ -3879,7 +3872,7 @@ not exists support files: %0</source>
         <translation>控制台(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="197"/>
+        <location filename="../../src/plugins/codeeditor/codeeditor.cpp" line="200"/>
         <source>Search &amp;Results</source>
         <translation>查找结果(&amp;R)</translation>
     </message>
@@ -5175,80 +5168,85 @@ not exists support files: %0</source>
 <context>
     <name>SvnClientWidget</name>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="43"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="42"/>
         <source>Checkout repository</source>
         <translation>检出仓库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="48"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="47"/>
         <source>Open repository</source>
         <translation>打开仓库</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="90"/>
+        <location filename="../../src/plugins/collaborators/mainframe/svn/svnclientwidget.cpp" line="89"/>
         <source>select local reops</source>
         <translation>选择本地reops</translation>
     </message>
 </context>
 <context>
-    <name>TabBar</name>
+    <name>SymbolLocator</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="221"/>
-        <source>Save Changes</source>
-        <translation>保存更改</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="223"/>
-        <source>The file has unsaved changes, will save?</source>
-        <translation>该文件有未保存的更改，是否保存？</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="224"/>
-        <source>Save</source>
-        <comment>button</comment>
-        <translation>保存</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="225"/>
-        <source>Do Not Save</source>
-        <comment>button</comment>
-        <translation>不保存</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="226"/>
-        <source>Cancel</source>
-        <translation>取消</translation>
+        <location filename="../../src/plugins/codeeditor/symbol/symbollocator.cpp" line="204"/>
+        <source>Symbols in Current Document</source>
+        <translation>当前文档的符号</translation>
     </message>
 </context>
 <context>
     <name>TabBarPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="94"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="74"/>
+        <source>Save Changes</source>
+        <translation>保存更改</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="76"/>
+        <source>The file %1 has unsaved changes, will save?</source>
+        <translation>文件 %1 有未保存的更改，是否保存？</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="77"/>
+        <source>Save</source>
+        <comment>button</comment>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="78"/>
+        <source>Do Not Save</source>
+        <comment>button</comment>
+        <translation>不保存</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="79"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="136"/>
         <source>Copy File Path</source>
         <translation>拷贝文件路径</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="98"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="140"/>
         <source>Copy File Name</source>
         <translation>拷贝文件名</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="105"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="147"/>
         <source>Close This File</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="109"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="151"/>
         <source>Close All Files</source>
         <translation>关闭所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="115"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="154"/>
         <source>Close All Files Except This</source>
         <translation>关闭除该文件的所有文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="128"/>
+        <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="161"/>
         <source>Open File Location</source>
         <translation>打开文件位置</translation>
     </message>
@@ -5291,67 +5289,72 @@ not exists support files: %0</source>
 <context>
     <name>TextEditorPrivate</name>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="277"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="279"/>
         <source>Refactor</source>
         <translation>重构</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="282"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="284"/>
         <source>Undo</source>
         <translation>撤销</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="285"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="287"/>
         <source>Redo</source>
         <translation>恢复</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="290"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="292"/>
         <source>Cut</source>
         <translation>剪切</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="294"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="296"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="298"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="300"/>
         <source>Paste</source>
         <translation>粘贴</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="301"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="303"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="306"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="308"/>
         <source>Select All</source>
         <translation>选择全部</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="322"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="324"/>
         <source>Remove Breakpoint</source>
         <translation>移除断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="324"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="326"/>
         <source>Disable Breakpoint</source>
         <translation>禁用断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="326"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="328"/>
         <source>Enable Breakpoint</source>
         <translation>启用断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="327"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="329"/>
         <source>Add Condition</source>
         <translation>添加条件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="337"/>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="331"/>
+        <source>Add a breakpoint on line %1</source>
+        <translation>在第 %1 行添加断点</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/codeeditor/gui/private/texteditor_p.cpp" line="339"/>
         <source>jump to %1 line</source>
         <translation>跳转到 %1 行</translation>
     </message>
