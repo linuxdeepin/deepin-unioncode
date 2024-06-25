@@ -9,7 +9,7 @@
     ],
     "Category" : "Version Management",
     "Description" : "The git plugin for the unioncode.",
-    "UrlLink" : "https://ecology.chinauos.com/adaptidentification/doc_new/#document3?dirid=656d40c5bd766615b0b02e64&id=664d802b685f572b03c2ac96",
+    "UrlLink" : "https://usdn.uniontech.com/#document3?dirid=656d40c5bd766615b0b02e64&id=664d802b685f572b03c2ac96",
     "Depends" : [
         {"Name" : "codeeditor"}
     ]
