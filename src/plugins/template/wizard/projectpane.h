@@ -13,9 +13,11 @@
 using DTK_WIDGET_NAMESPACE::DWidget;
 class ProjectPane : public AbstractPane
 {
+    Q_OBJECT
 public:
     explicit ProjectPane(const QString &title, DWidget *parent = nullptr);
     QMap<QString, QVariant> getValue() override;
+
 private:
     void setupUi() override;
 
@@ -25,4 +27,4 @@ private:
     QMap<QString, QVariant> value;
 };
 
-#endif // PROJECTPANE_H
+#endif   // PROJECTPANE_H
