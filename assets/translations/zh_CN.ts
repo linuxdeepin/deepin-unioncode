@@ -72,7 +72,7 @@
     <message>
         <location filename="../../src/common/widget/appoutputpane.cpp" line="86"/>
         <source>default</source>
-        <translation>default</translation>
+        <translation>默认</translation>
     </message>
     <message>
         <location filename="../../src/common/widget/appoutputpane.cpp" line="123"/>
@@ -837,7 +837,7 @@ storage: %2
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="288"/>
         <source>Files in project %1 have changed, needs to run cmake to update</source>
-        <translation>项目% 1中的文件已经更改，需要运行 cmake 来更新</translation>
+        <translation>项目%1中的文件已经更改，需要运行 cmake 来更新</translation>
     </message>
     <message>
         <location filename="../../src/plugins/cxx/cmake/project/cmakeprojectgenerator.cpp" line="363"/>
@@ -2075,6 +2075,21 @@ Delete anyway?</source>
         <translation>范围：</translation>
     </message>
     <message>
+        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="129"/>
+        <source>All Projects</source>
+        <translation>所有工程</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="130"/>
+        <source>Current Project</source>
+        <translation>当前工程</translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="131"/>
+        <source>Current File</source>
+        <translation>当前文件</translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="134"/>
         <source>Search for:</source>
         <translation>搜索：</translation>
@@ -2134,21 +2149,6 @@ Delete anyway?</source>
 </context>
 <context>
     <name>FindToolWindowPrivate</name>
-    <message>
-        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="129"/>
-        <source>All Projects</source>
-        <translation>所有工程</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="130"/>
-        <source>Current Project</source>
-        <translation>当前工程</translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="131"/>
-        <source>Current File</source>
-        <translation>当前文件</translation>
-    </message>
     <message>
         <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="250"/>
         <source>Search for text is empty, please input!</source>
@@ -5218,6 +5218,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="79"/>
         <source>Cancel</source>
+        <comment>button</comment>
         <translation>取消</translation>
     </message>
     <message>

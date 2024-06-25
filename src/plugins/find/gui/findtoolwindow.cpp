@@ -126,9 +126,9 @@ QWidget *FindToolWindowPrivate::createSearchParamWidget()
 
     DLabel *scopeLabel = new DLabel(FindToolWindow::tr("Scope:"));
     scopeComboBox = new DComboBox(q);
-    scopeComboBox->addItem(tr("All Projects"), AllProjects);
-    scopeComboBox->addItem(tr("Current Project"), CurrentProject);
-    scopeComboBox->addItem(tr("Current File"), CurrentFile);
+    scopeComboBox->addItem(FindToolWindow::tr("All Projects"), AllProjects);
+    scopeComboBox->addItem(FindToolWindow::tr("Current Project"), CurrentProject);
+    scopeComboBox->addItem(FindToolWindow::tr("Current File"), CurrentFile);
     scopeComboBox->setFixedWidth(369);
 
     DLabel *searchLabel = new DLabel(FindToolWindow::tr("Search for:"));

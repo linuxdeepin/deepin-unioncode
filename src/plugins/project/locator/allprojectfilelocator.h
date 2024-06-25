@@ -12,6 +12,7 @@
 
 class AllProjectFileLocator : public baseFileLocator
 {
+    Q_OBJECT
 public:
     AllProjectFileLocator(QObject *parent = nullptr);
 
