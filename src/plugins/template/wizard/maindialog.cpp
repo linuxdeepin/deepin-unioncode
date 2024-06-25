@@ -33,17 +33,16 @@ using namespace dpfservice;
 class MainDialogPrivate
 {
     friend class MainDialog;
-    QMap<QString, DetailWidget*> detailWidgetMap;
+    QMap<QString, DetailWidget *> detailWidgetMap;
     DStackedWidget *detailStackedWidget = nullptr;
     DStackedWidget *StackedWidget = nullptr;
     DFrame *blankWidget = nullptr;
 };
 
 MainDialog::MainDialog(DWidget *parent)
-    : DAbstractDialog(parent)
-    , d(new MainDialogPrivate())
+    : DAbstractDialog(parent), d(new MainDialogPrivate())
 {
-    setMinimumSize(611, 427);
+    setMinimumSize(800, 600);
     TemplateVector templateVec;
     TemplateParser::readTemplateConfig(templateVec);
     setupUI(templateVec);
@@ -64,7 +63,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     DButtonBoxButton *newFileButton = new DButtonBoxButton(QObject::tr("New File"), this);
     DButtonBoxButton *newProjectButton = new DButtonBoxButton(QObject::tr("New Project"), this);
     DButtonBox *btnbox = new DButtonBox(this);
-    QList<DButtonBoxButton *> list { newFileButton, newProjectButton};
+    QList<DButtonBoxButton *> list { newFileButton, newProjectButton };
     btnbox->setButtonList(list, true);
     btnbox->setFixedWidth(widthPerBtn * btnbox->buttonList().size());
     titleBar->addWidget(btnbox);
@@ -86,7 +85,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     d->StackedWidget->setLineWidth(0);
 
     DFrame *leftFrame = new DFrame(this);
-    DTreeView * treeView =  new DTreeView(leftFrame);
+    DTreeView *treeView = new DTreeView(leftFrame);
     QHBoxLayout *leftFrameLayout = new QHBoxLayout();
     treeView->setHeaderHidden(true);
 
@@ -104,7 +103,7 @@ void MainDialog::setupUI(TemplateVector &templateVec)
 
     //deafult new file显示
     QStandardItemModel *StandardModel = new QStandardItemModel();
-    QStandardItem * rootItem = StandardModel->invisibleRootItem();
+    QStandardItem *rootItem = StandardModel->invisibleRootItem();
 
     auto iterTpl = templateVec.begin();
 
@@ -128,9 +127,9 @@ void MainDialog::setupUI(TemplateVector &templateVec)
     treeView->expandAll();
 
     connect(btnbox, &DButtonBox::buttonClicked, this, [=](QAbstractButton *button) {
-        if (button == newFileButton){
+        if (button == newFileButton) {
             QStandardItemModel *StandardModel = new QStandardItemModel();
-            QStandardItem * rootItem = StandardModel->invisibleRootItem();
+            QStandardItem *rootItem = StandardModel->invisibleRootItem();
 
             auto iterTpl = templateVec.begin();
 
@@ -156,8 +155,8 @@ void MainDialog::setupUI(TemplateVector &templateVec)
         }
         if (button == newProjectButton) {
             QStandardItemModel *StandardModel = new QStandardItemModel();
-            QStandardItem * rootItem = StandardModel->invisibleRootItem();
-            auto iterTpl = templateVec.begin() +1 ;
+            QStandardItem *rootItem = StandardModel->invisibleRootItem();
+            auto iterTpl = templateVec.begin() + 1;
 
             QVector<TemplateCategory> tplVec = iterTpl->templateVec;
             for (auto iterCate = tplVec.begin(); iterCate != tplVec.end(); ++iterCate) {
@@ -183,15 +182,15 @@ void MainDialog::setupUI(TemplateVector &templateVec)
         }
     });
 
-    connect(treeView, &DTreeView::clicked, [=](){
+    connect(treeView, &DTreeView::clicked, [=]() {
         QModelIndex index = treeView->selectionModel()->currentIndex();
-        if (!index.isValid()){
+        if (!index.isValid()) {
             d->detailStackedWidget->setCurrentWidget(d->blankWidget);
             return;
         }
 
         QVariant varDetail = index.data(Qt::UserRole + 1);
-        if (!varDetail.isValid()){
+        if (!varDetail.isValid()) {
             d->detailStackedWidget->setCurrentWidget(d->blankWidget);
             return;
         }
@@ -203,31 +202,30 @@ void MainDialog::setupUI(TemplateVector &templateVec)
         }
 
         QVariant varUuid = index.data(Qt::UserRole + 2);
-        if (!varUuid.isValid()){
+        if (!varUuid.isValid()) {
             d->detailStackedWidget->setCurrentWidget(d->blankWidget);
             return;
         }
 
         QString uuid = varUuid.value<QString>();
         if (d->detailWidgetMap.contains(uuid)) {
-            DetailWidget * detailWidget = d->detailWidgetMap.value(uuid);
+            DetailWidget *detailWidget = d->detailWidgetMap.value(uuid);
             if (detailWidget) {
                 d->detailStackedWidget->setCurrentWidget(detailWidget);
             }
         } else {
-            DetailWidget * detailWidget = new DetailWidget(detail.path, this);
+            DetailWidget *detailWidget = new DetailWidget(detail.path, this);
 
             d->detailWidgetMap.insert(uuid, detailWidget);
             d->detailStackedWidget->addWidget(detailWidget);
             d->detailStackedWidget->setCurrentWidget(detailWidget);
 
             //关闭主窗口
-            connect(detailWidget, &DetailWidget::closeSignal, this, [this](){
+            connect(detailWidget, &DetailWidget::closeSignal, this, [this]() {
                 close();
             });
         }
     });
-
 
     QVBoxLayout *leftLayout = new QVBoxLayout();
     leftLayout->addWidget(leftFrame);
