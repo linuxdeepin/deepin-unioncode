@@ -12,7 +12,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-inline constexpr int kRectRadius = { 5 }; // do not show rounded corners.
+inline constexpr int kRectRadius = { 8 }; // do not show rounded corners.
 inline constexpr int kIconWidth = { 30 };
 inline constexpr int kIconHeight = { 30 };
 inline constexpr int kIconLeftMargin = { 10 };
@@ -191,7 +191,10 @@ void PluginItemDelegate::paintItemColumn(QPainter *painter,
 
     painter->save();
     // display description.
-    painter->setOpacity(0.7);
+    if (isSelected)
+        painter->setPen(Qt::white);
+    else
+        painter->setOpacity(0.7);
     QString description = index.data(PluginListView::Description).toString();
     QFontMetrics fm(option.font);
     description = fm.elidedText(description, Qt::ElideRight,

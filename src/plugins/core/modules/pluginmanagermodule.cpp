@@ -52,5 +52,8 @@ void PluginManagerModule::initialize(Controller *_uiController)
     QObject::connect(pluginManagerAction, &QAction::triggered, this, [this]() {
         uiController->showWidgetAtPosition("pluginDetail", Position::Central);
         uiController->showWidgetAtPosition(MWMTA_PLUGINS, Position::Left);
+        auto windowService = dpfGetService(dpfservice::WindowService);
+        if (windowService)
+            windowService->setDockHeaderName(MWMTA_PLUGINS, tr("Extensions"));
     });
 }

@@ -169,16 +169,27 @@ void DetailsView::setupUi()
     loadBtn->setFixedSize(86, 36);
     loadBtn->setToolTip(tr("reLaunch when changed!"));
     loadBtn->setChecked(true);
-    connect(loadBtn, &DSuggestButton::clicked, this, &DetailsView::changeLoadBtnState);
-    operationLayout->addWidget(loadBtn, 0, Qt::AlignLeft);
+    operationLayout->addWidget(loadBtn);
 
     auto *cfgBtn = new DPushButton(this);
     cfgBtn->setIcon(QIcon::fromTheme("options_setting_black"));
     cfgBtn->setFixedSize(36, 36);
     connect(cfgBtn, &DPushButton::clicked, this, &DetailsView::showCfgWidget);
-    operationLayout->addWidget(cfgBtn, 1, Qt::AlignLeft);
+    operationLayout->addWidget(cfgBtn);
     operationLayout->setSpacing(10);
 
+    DLabel *tipLabel = new DLabel(this);
+    tipLabel->setText(tr("Relaunch required!"));
+    tipLabel->setForegroundRole(DPalette::TextWarning);
+    operationLayout->addWidget(tipLabel);
+    operationLayout->setAlignment(Qt::AlignLeft);
+    tipLabel->hide();
+
+    connect(loadBtn, &DSuggestButton::clicked, this, [=](){
+        changeLoadBtnState();
+        tipLabel->show();
+    });
+    
     logoLabel = new QLabel(this);
     auto logo = QIcon::fromTheme("default_plugin");
     logoLabel->setPixmap(logo.pixmap(QSize(96, 96)));
@@ -242,7 +253,9 @@ void DetailsView::initMetaInfoLayout()
     categoryFrame = new DFrame(this);
     categoryFrame->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     DPalette palette = categoryFrame->palette();
-    palette.setColor(DPalette::Base, QColor(0, 129, 255, 8));
+    QColor color = palette.color(QPalette::Highlight);
+    color.setAlpha(20);
+    palette.setColor(QPalette::Base, color);
     categoryFrame->setPalette(palette);
     categoryFrame->setLineWidth(0);
     DStyle::setFrameRadius(categoryFrame, 4);
