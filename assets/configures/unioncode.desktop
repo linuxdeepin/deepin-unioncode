@@ -1,5 +1,4 @@
 [Desktop Entry]
-Actions=new-empty-window;
 Categories=Utility;TextEditor;Development;IDE;
 Comment=Code Editing. Redefined.
 Exec=/usr/bin/deepin-unioncode
