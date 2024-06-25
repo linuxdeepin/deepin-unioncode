@@ -13,9 +13,11 @@
 using DTK_WIDGET_NAMESPACE::DWidget;
 class KitsPane : public AbstractPane
 {
+    Q_OBJECT
 public:
     explicit KitsPane(const templateMgr::Page &pageInfo, DWidget *parent = nullptr);
     QMap<QString, QVariant> getValue() override;
+
 private:
     void setupUi() override;
 
@@ -23,4 +25,4 @@ private:
     QMap<QString, QVariant> value;
 };
 
-#endif // KITSPANE_H
+#endif   // KITSPANE_H
