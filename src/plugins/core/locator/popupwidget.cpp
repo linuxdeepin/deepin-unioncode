@@ -83,6 +83,7 @@ PopupWidget::PopupWidget(QWidget *parent)
     tree->setHeaderHidden(true);
     tree->setRootIsDecorated(false);
     tree->setUniformRowHeights(true);
+    tree->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     tree->header()->setStretchLastSection(true);
 
     connect(tree, &QTreeView::activated, this, [this](const QModelIndex &index) {
