@@ -62,7 +62,15 @@
 			"leafNode":true
 		  }
 	     ]	 
-	 }
+	 },
+	 {
+        	"type": "Qt",
+		"templates":[{
+			"name": "QtConsoleApplication",
+			"path": "projects/qtconsoleapp",
+                    "leafNode": true
+		}]
+        }
     ],
     "Files": [{
         "type": "C++",
