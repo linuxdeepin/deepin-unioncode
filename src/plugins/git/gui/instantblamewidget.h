@@ -17,6 +17,7 @@ public:
     explicit InstantBlameWidget(QWidget *parent = nullptr);
 
     void setInfo(const QString &info);
+    void clear();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
