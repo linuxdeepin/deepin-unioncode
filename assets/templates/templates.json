@@ -55,6 +55,11 @@
 			"name": "dfm-extension",
 			"path": "projects/dfm-extension",
 			"leafNode":true
+		  },
+		  {
+			"name": "dtk-application",
+			"path": "projects/dtkapplication",
+			"leafNode":true
 		  }
 	     ]	 
 	 }
