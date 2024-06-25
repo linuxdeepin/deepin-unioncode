@@ -76,7 +76,7 @@ int TabBarPrivate::showConfirmDialog(const QString &filePath)
     dialog.setMessage(tr("The file %1 has unsaved changes, will save?").arg(QFileInfo(filePath).fileName()));
     dialog.addButton(tr("Save", "button"), true, DDialog::ButtonRecommend);
     dialog.addButton(tr("Do Not Save", "button"));
-    dialog.addButton(tr("Cancel"), "button");
+    dialog.addButton(tr("Cancel", "button"));
 
     return dialog.exec();
 }

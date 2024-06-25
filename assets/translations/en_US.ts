@@ -2045,6 +2045,21 @@ Delete anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="129"/>
+        <source>All Projects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="130"/>
+        <source>Current Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="131"/>
+        <source>Current File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="134"/>
         <source>Search for:</source>
         <translation type="unfinished"></translation>
@@ -2104,21 +2119,6 @@ Delete anyway?</source>
 </context>
 <context>
     <name>FindToolWindowPrivate</name>
-    <message>
-        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="129"/>
-        <source>All Projects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="130"/>
-        <source>Current Project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="131"/>
-        <source>Current File</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="../../src/plugins/find/gui/findtoolwindow.cpp" line="250"/>
         <source>Search for text is empty, please input!</source>
@@ -5179,6 +5179,7 @@ not exists support files: %0</source>
     <message>
         <location filename="../../src/plugins/codeeditor/gui/tabbar.cpp" line="79"/>
         <source>Cancel</source>
+        <comment>button</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -12,6 +12,7 @@
 
 class CurrentProjectLocator : public baseFileLocator
 {
+    Q_OBJECT
 public:
     CurrentProjectLocator(QObject *parent = nullptr);
 
