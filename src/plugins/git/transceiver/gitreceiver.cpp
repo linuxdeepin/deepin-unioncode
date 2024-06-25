@@ -67,6 +67,7 @@ void GitReceiver::handleSwitchedFileEvent(const dpf::Event &event)
             eventHandleMap.insert(editor.cursorPositionChanged.name, std::bind(&GitReceiver::handleCursorPositionChangedEvent, this, std::placeholders::_1));
     } else if (eventHandleMap.contains(editor.cursorPositionChanged.name)) {
         eventHandleMap.remove(editor.cursorPositionChanged.name);
+        GitClient::instance()->clearInstantBlame();
     }
 }
 

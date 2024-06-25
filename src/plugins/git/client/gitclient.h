@@ -21,6 +21,7 @@ public:
     bool checkRepositoryExist(const QString &filePath, QString *repository = nullptr);
 
     bool setupInstantBlame(const QString &filePath);
+    void clearInstantBlame();
     bool gitLog(const QString &filePath, bool isProject);
     bool blameFile(const QString &filePath);
     bool gitDiff(const QString &filePath, bool isProject);

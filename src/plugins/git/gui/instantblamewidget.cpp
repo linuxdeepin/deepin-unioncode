@@ -55,6 +55,12 @@ void InstantBlameWidget::setInfo(const QString &info)
     label->setText(format.arg(ret.author, ret.authorTime.toString("yyyy-MM-dd")));
 }
 
+void InstantBlameWidget::clear()
+{
+    label->clear();
+    label->setToolTip("");
+}
+
 void InstantBlameWidget::mousePressEvent(QMouseEvent *event)
 {
     const auto &info = label->toolTip();
