@@ -245,6 +245,11 @@ bool GitClient::setupInstantBlame(const QString &filePath)
     return checkRepositoryExist(filePath);
 }
 
+void GitClient::clearInstantBlame()
+{
+    d->ibWidget->clear();
+}
+
 bool GitClient::gitLog(const QString &filePath, bool isProject)
 {
     QString repository;
