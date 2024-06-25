@@ -9,7 +9,7 @@
     ],
     "Category" : "Utils",
     "Description" : "The binary compatibility tool plugin for the unioncode.",
-    "UrlLink" : "https://ecology.chinauos.com/adaptidentification/doc_new/#document3?dirid=656d40c5bd766615b0b02e64&id=656d417abd766615b0b02e7e",
+    "UrlLink" : "https://usdn.uniontech.com/#document3?dirid=656d40c5bd766615b0b02e64&id=656d417abd766615b0b02e7e",
     "Depends" : [
         {"Name" : "core"}
     ]
