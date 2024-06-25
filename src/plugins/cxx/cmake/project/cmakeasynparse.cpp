@@ -103,7 +103,7 @@ QString getTargetRootPath(const CMakeBuildTarget &target, const dpfservice::Proj
     auto buildDirectory = prjInfo.buildFolder();
     if(workingDirectory.startsWith(buildDirectory)) {
         workingDirectory.remove(buildDirectory);
-        return topPath + QDir::separator() + workingDirectory;
+        return topPath + workingDirectory;
     }
 
     //get target root path by srcFiles path
