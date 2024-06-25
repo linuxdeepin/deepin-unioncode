@@ -24,8 +24,7 @@
 
 DWIDGET_USE_NAMESPACE
 SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
-    : QMainWindow (parent, flags)
-    , mRepos(new QPinnableTabWidget())
+    : QMainWindow(parent, flags), mRepos(new QPinnableTabWidget())
 {
     mRepos = new QPinnableTabWidget();
     const auto homeMenu = new DPushButton();
@@ -40,12 +39,12 @@ SvnClientWidget::SvnClientWidget(QWidget *parent, Qt::WindowFlags flags)
 
     const auto clone = menu->addAction(QAction::tr("Checkout repository"));
     ActionManager::getInstance()->registerAction(clone, "SVN.Checkout.Repository",
-                                                 tr("Checkout repository"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_C));
+                                                 tr("Checkout repository"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::ALT | Qt::Key::Key_C));
     connect(clone, &QAction::triggered, this, &SvnClientWidget::showCheckoutDialog);
 
     const auto open = menu->addAction(QAction::tr("Open repository"));
     ActionManager::getInstance()->registerAction(open, "SVN.Open.Repository",
-                                                 tr("Open repository"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::SHIFT | Qt::Key::Key_R));
+                                                 tr("Open repository"), QKeySequence(Qt::Modifier::CTRL | Qt::Modifier::ALT | Qt::Key::Key_R));
     connect(open, &QAction::triggered, this, &SvnClientWidget::showOpenLocalRepos);
 
     mRepos->setObjectName("GitQlientTab");
@@ -89,13 +88,13 @@ void SvnClientWidget::showOpenLocalRepos()
 {
     QUrl url = QFileDialog::getExistingDirectoryUrl(nullptr, tr("select local reops"));
     if (!url.isEmpty()) {
-       addRepoTab(url.toLocalFile());
+        addRepoTab(url.toLocalFile());
     }
 }
 
 void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &local, const QString &user, const QString &passwd)
 {
-    auto dialog = qobject_cast<CheckoutDialog*>(sender());
+    auto dialog = qobject_cast<CheckoutDialog *>(sender());
     if (svnProgram().isEmpty()) {
         return;
     }
@@ -103,11 +102,11 @@ void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &loca
     QEventLoop eventLoop;
     connect(&process, static_cast<void (QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
             [&]() {
-        eventLoop.exit();
-    });
+                eventLoop.exit();
+            });
 
     process.setProgram(svnProgram());
-    process.setArguments({"checkout", remote, local, "--username", user, "--password", passwd});
+    process.setArguments({ "checkout", remote, local, "--username", user, "--password", passwd });
     process.start();
     process.waitForStarted();
     StatusWidget *status = new StatusWidget(StatusWidget::Simple, dialog);
@@ -123,13 +122,13 @@ void SvnClientWidget::doCheckoutRepos(const QString &remote, const QString &loca
         return;
     }
 
-    auto okCb = [=](bool checked){
+    auto okCb = [=](bool checked) {
         Q_UNUSED(checked)
         addRepoTab(local, user, passwd);
     };
 
     CommonDialog::okCancel(QString("checkout repos successful, now to open with user %0?").arg(user),
-                            "Message", QMessageBox::Icon::Question, okCb);
+                           "Message", QMessageBox::Icon::Question, okCb);
 }
 
 bool SvnClientWidget::isSvnDir(const QString &repoPath)
