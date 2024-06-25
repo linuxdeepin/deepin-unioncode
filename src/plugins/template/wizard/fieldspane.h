@@ -13,9 +13,11 @@
 using DTK_WIDGET_NAMESPACE::DWidget;
 class FieldsPane : public AbstractPane
 {
+    Q_OBJECT
 public:
     explicit FieldsPane(const templateMgr::Page &pageInfo, DWidget *parent = nullptr);
     QMap<QString, QVariant> getValue() override;
+
 private:
     void setupUi() override;
 
@@ -23,4 +25,4 @@ private:
     QMap<QString, QVariant> value;
 };
 
-#endif // FIELDSPANE_H
+#endif   // FIELDSPANE_H

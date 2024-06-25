@@ -637,37 +637,37 @@
 <context>
     <name>BreakpointView</name>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="78"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="80"/>
         <source>Enable selected breakpoints</source>
         <translation>启用选中断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="80"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="82"/>
         <source>Disable selected breakpoints</source>
         <translation>禁用选中断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="84"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="86"/>
         <source>Remove selected breakpoints</source>
         <translation>删除选中断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="86"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="88"/>
         <source>Remove all breakpoints</source>
         <translation>删除所有断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="90"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="92"/>
         <source>Enable all breakpoints</source>
         <translation>启用所有断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="92"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="94"/>
         <source>Disable all breakpoints</source>
         <translation>禁用所有断点</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="96"/>
+        <location filename="../../src/plugins/debugger/interface/breakpointview.cpp" line="98"/>
         <source>Edit Condition</source>
         <translation>编辑条件</translation>
     </message>
@@ -2683,13 +2683,13 @@ repos path: %0</source>
 <context>
     <name>MainDialog</name>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="258"/>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="271"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="256"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="269"/>
         <source>Tip</source>
         <translation>提示</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="271"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="269"/>
         <source>Can not find kit.</source>
         <translation>找不到配套工具。</translation>
     </message>
@@ -2989,7 +2989,7 @@ repos path: %0</source>
         <translation>路径：</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/projectpane.cpp" line="45"/>
+        <location filename="../../src/plugins/template/wizard/projectpane.cpp" line="44"/>
         <source>Choose path</source>
         <translation>选择路径</translation>
     </message>
@@ -3765,12 +3765,12 @@ not exists support files: %0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="64"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="63"/>
         <source>New File</source>
         <translation>新建文件</translation>
     </message>
     <message>
-        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="65"/>
+        <location filename="../../src/plugins/template/wizard/maindialog.cpp" line="64"/>
         <source>New Project</source>
         <translation>新建工程</translation>
     </message>

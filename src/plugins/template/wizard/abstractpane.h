@@ -13,8 +13,9 @@ class AbstractPane : public DWidget
 public:
     explicit AbstractPane(DWidget *parent = nullptr) {}
     virtual QMap<QString, QVariant> getValue() = 0;
+
 private:
     virtual void setupUi() = 0;
 };
 
-#endif // ABSTRACTPANE_H
+#endif   // ABSTRACTPANE_H
