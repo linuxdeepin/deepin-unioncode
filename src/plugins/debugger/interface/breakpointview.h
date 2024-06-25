@@ -9,6 +9,10 @@
 
 #include <QHeaderView>
 
+namespace dpfservice {
+class EditorService;
+}
+
 class BreakpointView : public DTK_WIDGET_NAMESPACE::DTreeView
 {
 public:
@@ -25,7 +29,8 @@ private:
     void removeBreakpoints(const QModelIndexList &rows);
     void editBreakpointCondition(const QModelIndex &idnex);
 
-    QHeaderView *headerView {nullptr};
+    QHeaderView *headerView { nullptr };
+    dpfservice::EditorService *editService { nullptr };
 };
 
-#endif // BREAKPOINTVIEW_H
+#endif   // BREAKPOINTVIEW_H
