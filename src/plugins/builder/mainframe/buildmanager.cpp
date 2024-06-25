@@ -185,10 +185,8 @@ void BuildManager::initIssueList()
     issusListText->setContentsMargins(10, 0, 0, 0);
 
     DToolButton *filterButton = new DToolButton(d->compileWidget);
-    filterButton->setFixedSize(26, 26);
-    filterButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    filterButton->setIconSize(QSize(16, 16));
     filterButton->setIcon(QIcon::fromTheme("filter"));
-    filterButton->setContentsMargins(0, 0, 0, 0);
     filterButton->setToolTip(tr("Filter"));
 
     DFrame *issueTopWidget = new DFrame(d->compileWidget);
@@ -223,6 +221,10 @@ void BuildManager::initIssueList()
     issuesListLayout->setContentsMargins(0, 0, 0, 0);
     issuesListLayout->addWidget(d->problemOutputPane);
     issuesListLayout->setSpacing(2);
+    filterButton->setMenu(filterMenu);
+    filterButton->setPopupMode(QToolButton::InstantPopup);
+    filterButton->setStyleSheet("QToolButton::menu-indicator{image:none;}");
+    filterButton->setFixedSize(34, 34);
 
     connect(filterMenu, &DMenu::triggered, [=](QAction *action) {
         if (action == showAllAction) {
@@ -241,11 +243,6 @@ void BuildManager::initIssueList()
             showErrorAction->setChecked(false);
             showWarningAction->setChecked(true);
         }
-    });
-    connect(filterButton, &DToolButton::clicked, [=]() {
-        QPoint buttonPos = filterButton->mapToGlobal(QPoint(0, filterButton->height()));
-        QPoint menuPos = buttonPos + QPoint(0, 5);
-        filterMenu->popup(menuPos);
     });
 }
 
