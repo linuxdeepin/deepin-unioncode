@@ -28,6 +28,7 @@ class DebugManagerPrivate {
 
     QHash<int, DebugManager::ResponseEntry> resposeExpected;
     QStringList arguments;
+    QStringList environment;
     int tokenCounter = 0;
 };
 
@@ -123,6 +124,11 @@ void DebugManager::initDebugger(const QString &program, const QStringList &argum
     }
 }
 
+void DebugManager::setEnvironment(const QStringList &env)
+{
+    d->environment = env;
+}
+
 qint64 DebugManager::getProcessId()
 {
     return d->process->processId();
@@ -162,6 +168,7 @@ void DebugManager::execute()
     }
     d->process->setArguments(d->arguments);
     d->process->setProgram(d->debugger->program());
+    d->process->setEnvironment(d->environment);
     d->process->start();
 
     //init after process started

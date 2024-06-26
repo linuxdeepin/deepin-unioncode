@@ -5,11 +5,13 @@
 #include "cmakedebug.h"
 
 #include "services/option/optionmanager.h"
+#include "services/project/projectservice.h"
 
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QUuid>
 
+using namespace dpfservice;
 class CMakeDebugPrivate
 {
     friend class CMakeDebug;
@@ -69,12 +71,21 @@ bool CMakeDebug::isLaunchNotAttach()
 
 dap::LaunchRequest CMakeDebug::launchDAP(const QString &targetPath, const QStringList &argments)
 {
+    auto prjService = dpfGetService(ProjectService);
+    dap::array<dap::string> env;
+    if (prjService) {
+        ProjectInfo prjInfo = prjService->getActiveProjectInfo();
+        for (QString envItem : prjInfo.runEnvironment())
+            env.push_back(envItem.toStdString());
+    }
+
     dap::LaunchRequest request;
     request.name = "(gdb) Launch";
     request.type = "cppdbg";
     request.request = "launch";
     request.program = targetPath.toStdString();
     request.stopAtEntry = false;
+    request.environment = env;
     dap::array<dap::string> arrayArg;
     foreach (QString arg, argments) {
         arrayArg.push_back(arg.toStdString());
