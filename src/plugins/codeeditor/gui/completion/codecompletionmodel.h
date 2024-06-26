@@ -33,7 +33,8 @@ public:
         IconRole = Qt::UserRole + 1,
         NameRole,
         InsertTextRole,
-        KindRole
+        KindRole,
+        SortTextRole
     };
 
     void clear();
