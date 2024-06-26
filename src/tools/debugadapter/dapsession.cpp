@@ -347,6 +347,13 @@ void DapSession::registerHanlder()
                 }
             }
             d->debugger->initDebugger(request.name.value().c_str(), arguments);
+            if (request.environment.has_value()) {
+                QStringList envList;
+                for (auto envItem : request.environment.value())
+                    envList.append(QString::fromStdString(envItem));
+                d->debugger->setEnvironment(envList);
+            }
+
         }
         emit DapProxy::instance()->sigStart();
         auto message = QString{"gdb process started with pid: %1\n"}.arg(d->debugger->getProcessId());

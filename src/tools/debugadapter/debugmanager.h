@@ -32,6 +32,7 @@ public:
     };
 
     void initDebugger(const QString &program, const QStringList &arguments);
+    void setEnvironment(const QStringList &env);
 
     void quit();
     void terminate();
