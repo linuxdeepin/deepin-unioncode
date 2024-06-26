@@ -2,27 +2,30 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef LSPSTYLE_H
-#define LSPSTYLE_H
+#ifndef LANGUAGECLIENTHANDLER_H
+#define LANGUAGECLIENTHANDLER_H
 
 #include "common/common.h"
 
 #include <QObject>
 
 class TextEditor;
-class LSPStylePrivate;
-class LSPStyle : public QObject
+class LanguageClientHandlerPrivate;
+class LanguageClientHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit LSPStyle(TextEditor *parent);
-    ~LSPStyle();
+    explicit LanguageClientHandler(TextEditor *parent);
+    ~LanguageClientHandler();
 
     void requestCompletion(int line, int column);
     void updateTokens();
     void refreshTokens();
     QList<newlsp::DocumentSymbol> documentSymbolList() const;
     QList<newlsp::SymbolInformation> symbolInformationList() const;
+    lsp::SemanticTokenType::type_value tokenToDefine(int token);
+    QColor symbolIndicColor(lsp::SemanticTokenType::type_value token,
+                            QList<lsp::SemanticTokenType::type_index> modifier);
 
 public slots:
     void switchHeaderSource(const QString &file);
@@ -35,7 +38,7 @@ signals:
     void completeFinished(const lsp::CompletionProvider &provider);
 
 private:
-    QSharedPointer<LSPStylePrivate> d { nullptr };
+    QSharedPointer<LanguageClientHandlerPrivate> d { nullptr };
 };
 
-#endif   // LSPSTYLE_H
+#endif   // LANGUAGECLIENTHANDLER_H

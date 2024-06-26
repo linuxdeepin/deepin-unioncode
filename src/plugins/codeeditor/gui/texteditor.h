@@ -16,7 +16,7 @@ enum CommentSettings {
 };
 
 class CodeCompletionWidget;
-class LSPStyle;
+class LanguageClientHandler;
 class TextEditorPrivate;
 class TextEditor : public QsciScintilla
 {
@@ -88,7 +88,7 @@ public:
     void replaceRange(int lineFrom, int indexFrom, int lineTo, int indexTo, const QString &text);
     void replaceRange(int startPosition, int endPosition, const QString &text);
     void insertText(const QString &text);
-    LSPStyle *lspStyle() const;
+    LanguageClientHandler *languageClient() const;
     int wordStartPositoin(int position);
     int wordEndPosition(int position);
     void switchHeaderSource();
