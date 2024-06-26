@@ -131,8 +131,8 @@ enum_def(SemanticTokenModifier, QString)
 
 struct Position
 {
-    int line;
-    int character;
+    int line = -1;
+    int character = -1;
 };
 
 struct Range

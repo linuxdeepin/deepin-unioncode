@@ -8,7 +8,17 @@
 #include "common/common.h"
 
 #include <QAbstractItemModel>
-#include <QKeySequence>
+#include <QSortFilterProxyModel>
+
+class CompletionSortFilterProxyModel : public QSortFilterProxyModel
+{
+public:
+    explicit CompletionSortFilterProxyModel(QObject *parent = nullptr);
+
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+    bool lessThan(const QModelIndex &sourceLeft, const QModelIndex &sourceRight) const override;
+};
 
 class TextEditor;
 class CodeCompletionModelPrivate;
@@ -19,15 +29,16 @@ public:
     explicit CodeCompletionModel(QObject *parent = nullptr);
     ~CodeCompletionModel() override;
 
-    enum Columns {
-        Icon,
-        Name
+    enum ItemRole {
+        IconRole = Qt::UserRole + 1,
+        NameRole,
+        InsertTextRole,
+        KindRole
     };
-    static const int ColumnCount = Name + 1;
 
     void clear();
     void completionInvoked(TextEditor *editor, int position);
-    void executeCompletionItem(TextEditor *editor, int start, int end, const QModelIndex &index);
+    lsp::Range range() const;
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
