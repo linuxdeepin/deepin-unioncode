@@ -33,7 +33,11 @@ void CodeCompletionWidget::initUI()
 
     completionView = new CodeCompletionView(this);
     completionModel = new CodeCompletionModel(this);
-    completionView->setModel(completionModel);
+    proxyModel = new CompletionSortFilterProxyModel(this);
+    proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    proxyModel->sort(0);
+    proxyModel->setSourceModel(completionModel);
+    completionView->setModel(proxyModel);
     completionView->setFixedWidth(500);
     completionView->setVisible(false);
 
@@ -52,7 +56,8 @@ void CodeCompletionWidget::initUI()
 void CodeCompletionWidget::initConnection()
 {
     connect(completionView, &CodeCompletionView::doubleClicked, this, &CodeCompletionWidget::execute);
-    connect(completionModel, &CodeCompletionModel::modelReset, this, &CodeCompletionWidget::modelContentChanged);
+    connect(proxyModel, &CodeCompletionModel::modelReset, this, &CodeCompletionWidget::modelContentChanged);
+    connect(proxyModel, &CodeCompletionModel::layoutChanged, this, &CodeCompletionWidget::modelContentChanged);
     connect(completionExtWidget, &CodeCompletionExtendWidget::completionChanged, this, &CodeCompletionWidget::onCompletionChanged);
     connect(automaticInvocationTimer, &QTimer::timeout, this, &CodeCompletionWidget::automaticInvocation);
 
@@ -104,12 +109,12 @@ void CodeCompletionWidget::updateAndShow()
 bool CodeCompletionWidget::hasAtLeastNRows(int rows)
 {
     int count = 0;
-    for (int row = 0; row < completionModel->rowCount(); ++row) {
+    for (int row = 0; row < proxyModel->rowCount(); ++row) {
         ++count;
 
-        QModelIndex index(completionModel->index(row, 0));
+        QModelIndex index(proxyModel->index(row, 0));
         if (index.isValid())
-            count += completionModel->rowCount(index);
+            count += proxyModel->rowCount(index);
 
         if (count > rows)
             return true;
@@ -118,26 +123,77 @@ bool CodeCompletionWidget::hasAtLeastNRows(int rows)
     return false;
 }
 
+QString CodeCompletionWidget::filterString()
+{
+    const auto &word = editor()->wordAtPosition(editor()->cursorPosition());
+    if (word.isEmpty())
+        return {};
+
+    auto range = completionModel->range();
+    if (range.start.line == -1 || range.start.character == -1)
+        return {};
+
+    int startPos = editor()->positionFromLineIndex(range.start.line, range.start.character);
+    return editor()->text(startPos, automaticInvocationAt);
+}
+
+bool CodeCompletionWidget::isFunctionKind(int kind)
+{
+    return kind == lsp::CompletionItem::Function || kind == lsp::CompletionItem::Method;
+}
+
+void CodeCompletionWidget::executeCompletionItem(int start, int end, const QModelIndex &index)
+{
+    if (!index.isValid() || index.row() >= proxyModel->rowCount())
+        return;
+
+    int line = 0, col = 0;
+    editor()->lineIndexFromPosition(end, &line, &col);
+    int lineEndPos = editor()->SendScintilla(TextEditor::SCI_GETLINEENDPOSITION, line);
+
+    QString next;
+    if (end >= lineEndPos)
+        next = editor()->text(lineEndPos - 1, lineEndPos);
+    else
+        next = editor()->text(end, end + 1);
+
+    auto srcIndex = proxyModel->mapToSource(index);
+    QString matching = srcIndex.data(CodeCompletionModel::InsertTextRole).toString();
+    if ((next == QLatin1Char('"') && matching.endsWith(QLatin1Char('"')))
+        || (next == QLatin1Char('>') && matching.endsWith(QLatin1Char('>'))))
+        matching.chop(1);
+
+    auto kind = srcIndex.data(CodeCompletionModel::KindRole).toInt();
+    bool addParens = next != QLatin1Char('(') && isFunctionKind(kind);
+    if (addParens)
+        matching += QStringLiteral("()");
+
+    editor()->replaceRange(start, end, matching);
+    if (addParens) {
+        int curLine = 0, curIndex = 0;
+        editor()->lineIndexFromPosition(editor()->cursorPosition(), &curLine, &curIndex);
+        editor()->setCursorPosition(curLine, curIndex - 1);
+    }
+}
+
 void CodeCompletionWidget::modelContentChanged()
 {
     if (!editor()->hasFocus())
         return;
 
-    int realItemCount = completionModel->rowCount();
-    if ((completionView->isHidden() || needShow) && realItemCount != 0) {
+    if ((completionView->isHidden() || needShow) && proxyModel->rowCount() != 0) {
         needShow = false;
         completionView->setVisible(true);
         updateAndShow();
-    }
-
-    if (completionModel->rowCount() == 0) {
+    } else if (proxyModel->rowCount() == 0) {
         completionView->setVisible(false);
         if (!completionExtWidget->isVisible())
             hide();
         else
             updateAndShow();
     } else {
-        completionView->setCurrentIndex(completionModel->index(0, 0));
+        updateHeight();
+        completionView->setCurrentIndex(proxyModel->index(0, 0));
     }
 }
 
@@ -151,11 +207,13 @@ void CodeCompletionWidget::onCompletionChanged()
         if (completionView->isHidden())
             hide();
     } else {
-        if (completionModel->rowCount() == 0)
+        if (proxyModel->rowCount() == 0)
             completionView->setVisible(false);
 
-        completionExtWidget->setVisible(true);
-        updateAndShow();
+        if (!completionExtWidget->isVisible()) {
+            completionExtWidget->setVisible(true);
+            updateAndShow();
+        }
     }
 }
 
@@ -166,7 +224,7 @@ TextEditor *CodeCompletionWidget::editor() const
 
 bool CodeCompletionWidget::isCompletionActive() const
 {
-    return (!isHidden() && isVisible()) || (!completionView->isHidden() && completionView->isVisible());
+    return isVisible();
 }
 
 void CodeCompletionWidget::startCompletion()
@@ -188,15 +246,15 @@ void CodeCompletionWidget::updateHeight()
         baseHeight = maxBaseHeight;
     } else {
         // Calculate size-hints to determine the best height
-        for (int row = 0; row < completionModel->rowCount(); ++row) {
+        for (int row = 0; row < proxyModel->rowCount(); ++row) {
             baseHeight += completionView->sizeHintForRow(row);
 
-            QModelIndex index(completionModel->index(row, 0));
+            QModelIndex index(proxyModel->index(row, 0));
             if (index.isValid()) {
-                for (int row2 = 0; row2 < completionModel->rowCount(index); ++row2) {
+                for (int row2 = 0; row2 < proxyModel->rowCount(index); ++row2) {
                     int h = 0;
-                    for (int a = 0; a < completionModel->columnCount(index); ++a) {
-                        const QModelIndex child = completionModel->index(row2, a, index);
+                    for (int a = 0; a < proxyModel->columnCount(index); ++a) {
+                        const QModelIndex child = proxyModel->index(row2, a, index);
                         int localHeight = completionView->sizeHintForIndex(child).height();
                         if (localHeight > h)
                             h = localHeight;
@@ -316,7 +374,7 @@ bool CodeCompletionWidget::execute()
     auto startPos = editor()->wordStartPositoin(pos);
     auto endPos = editor()->wordEndPosition(pos);
 
-    completionModel->executeCompletionItem(editor(), startPos, endPos, index);
+    executeCompletionItem(startPos, endPos, index);
     abortCompletion();
     isCompletionInput = false;
     return true;
@@ -344,7 +402,11 @@ void CodeCompletionWidget::automaticInvocation()
         return;
     }
 
-    startCompletion();
+    const auto &word = editor()->wordAtPosition(editor()->cursorPosition());
+    if (completionModel->rowCount() == 0 || word.isEmpty()) {
+        proxyModel->setFilterRegExp("");
+        startCompletion();
+    }
 }
 
 void CodeCompletionWidget::focusOutEvent(QFocusEvent *event)
@@ -399,5 +461,12 @@ void CodeCompletionWidget::cursorPositionChanged()
         return;
 
     if (editor()->cursorPosition() != automaticInvocationAt)
-        abortCompletion();
+        return abortCompletion();
+
+    QString filter = filterString();
+    if (filter.isEmpty())
+        return;
+
+    proxyModel->setFilterRegExp(filter);
+    proxyModel->invalidate();
 }
