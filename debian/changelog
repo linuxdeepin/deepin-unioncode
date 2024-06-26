@@ -1,3 +1,10 @@
+deepin-unioncode (1.3.4) unstable; urgency=medium
+
+  * Bug fix
+  * Optimize LSP
+
+ -- luzhen <luzhen@uniontech.com>  Wed, 26 Jun 2024 15:31:26 +0800
+
 deepin-unioncode (1.3.1) unstable; urgency=medium
 
   * Change toolbar layout
