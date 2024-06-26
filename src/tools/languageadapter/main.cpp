@@ -40,6 +40,7 @@ QProcess *createCxxServ(const newlsp::ProjectKey &key)
     procAs << QString("--compile-commands-dir=%0").arg(compileDB_Path);
     procAs << "--clang-tidy";
     procAs << "--completion-style=bundled";
+    procAs << "--limit-results=500";
     procAs << "-j=$(nproc)";
 
     auto proc = new QProcess();

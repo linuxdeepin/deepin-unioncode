@@ -10,6 +10,7 @@
 class TextEditor;
 class CodeCompletionView;
 class CodeCompletionModel;
+class CompletionSortFilterProxyModel;
 class CodeCompletionExtendWidget;
 
 class CodeCompletionWidget : public QFrame
@@ -44,6 +45,9 @@ private:
     bool shouldStartCompletion(const QString &insertedText);
     void updateAndShow();
     bool hasAtLeastNRows(int rows);
+    QString filterString();
+    bool isFunctionKind(int kind);
+    void executeCompletionItem(int start, int end, const QModelIndex &index);
 
 private slots:
     void modelContentChanged();
@@ -56,6 +60,7 @@ private slots:
 private:
     CodeCompletionView *completionView { nullptr };
     CodeCompletionModel *completionModel { nullptr };
+    CompletionSortFilterProxyModel *proxyModel { nullptr };
     CodeCompletionExtendWidget *completionExtWidget { nullptr };
 
     QTimer *automaticInvocationTimer { nullptr };

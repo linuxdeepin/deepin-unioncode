@@ -70,7 +70,7 @@ CodeCompletionView *CodeCompletionDelegate::view() const
 
 void CodeCompletionDelegate::paintItemText(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QString text = index.sibling(index.row(), CodeCompletionModel::Name).data().toString();
+    QString text = index.data(CodeCompletionModel::NameRole).toString();
     // set formats
     QTextLayout textLayout(text, option.font, painter->device());
 
@@ -156,8 +156,6 @@ void CodeCompletionDelegate::paintItemBackground(QPainter *painter, const QStyle
 
 QRect CodeCompletionDelegate::paintItemIcon(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    Q_UNUSED(index)
-
     if (!view())
         return {};
 
@@ -169,7 +167,7 @@ QRect CodeCompletionDelegate::paintItemIcon(QPainter *painter, const QStyleOptio
     iconRect.moveTop(iconRect.top() + ((option.rect.bottom() - iconRect.bottom()) / 2));
 
     bool isEnabled = option.state & QStyle::State_Enabled;
-    const QPixmap &px = getIconPixmap(option.icon, iconRect.size(),
+    const QPixmap &px = getIconPixmap(index.data(CodeCompletionModel::IconRole).value<QIcon>(), iconRect.size(),
                                       isEnabled ? QIcon::Normal : QIcon::Disabled, QIcon::Off);
     qreal x = iconRect.x();
     qreal y = iconRect.y();

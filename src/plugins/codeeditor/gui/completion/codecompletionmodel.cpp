@@ -6,22 +6,51 @@
 #include "gui/texteditor.h"
 #include "lsp/lspstyle.h"
 
+CompletionSortFilterProxyModel::CompletionSortFilterProxyModel(QObject *parent)
+    : QSortFilterProxyModel(parent)
+{
+}
+
+bool CompletionSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+{
+    const QModelIndex index = sourceModel()->index(sourceRow, filterKeyColumn(), sourceParent);
+    if (!index.isValid())
+        return false;
+
+    const QRegExp regexp = filterRegExp();
+    if (regexp.pattern().isEmpty() || sourceModel()->rowCount(index) > 0)
+        return true;
+
+    const QString insertText = index.data(CodeCompletionModel::InsertTextRole).toString();
+    return insertText.contains(regexp);
+}
+
+bool CompletionSortFilterProxyModel::lessThan(const QModelIndex &sourceLeft, const QModelIndex &sourceRight) const
+{
+    auto leftStr = sourceLeft.data(CodeCompletionModel::InsertTextRole).toString();
+    auto rightStr = sourceRight.data(CodeCompletionModel::InsertTextRole).toString();
+    bool ret = leftStr.toLower() < rightStr.toLower();
+
+    const QRegExp regexp = filterRegExp();
+    if (regexp.pattern().isEmpty())
+        return ret;
+
+    if (ret && rightStr.startsWith(regexp.pattern(), Qt::CaseInsensitive))
+        return false;
+
+    return ret;
+}
+
 class CodeCompletionModelPrivate
 {
 public:
     explicit CodeCompletionModelPrivate() {}
 
-    bool isFunctionKind(lsp::CompletionItem::Kind k);
     QIcon iconForKind(lsp::CompletionItem::Kind k);
 
     QList<lsp::CompletionItem> completionDatas;
     bool hasGroups = false;
 };
-
-bool CodeCompletionModelPrivate::isFunctionKind(lsp::CompletionItem::Kind k)
-{
-    return k == lsp::CompletionItem::Function || k == lsp::CompletionItem::Method;
-}
 
 QIcon CodeCompletionModelPrivate::iconForKind(lsp::CompletionItem::Kind k)
 {
@@ -86,49 +115,24 @@ void CodeCompletionModel::completionInvoked(TextEditor *editor, int position)
     endResetModel();
 }
 
-void CodeCompletionModel::executeCompletionItem(TextEditor *editor, int start, int end, const QModelIndex &index)
+lsp::Range CodeCompletionModel::range() const
 {
-    if (index.row() >= d->completionDatas.size())
-        return;
+    if (d->completionDatas.isEmpty())
+        return {};
 
-    int line = 0, col = 0;
-    editor->lineIndexFromPosition(end, &line, &col);
-    int lineEndPos = editor->SendScintilla(TextEditor::SCI_GETLINEENDPOSITION, line);
-
-    QString next;
-    if (end >= lineEndPos)
-        next = editor->text(lineEndPos - 1, lineEndPos);
-    else
-        next = editor->text(end, end + 1);
-
-    QString matching = d->completionDatas.at(index.row()).insertText;
-    if ((next == QLatin1Char('"') && matching.endsWith(QLatin1Char('"')))
-        || (next == QLatin1Char('>') && matching.endsWith(QLatin1Char('>'))))
-        matching.chop(1);
-
-    auto kind = d->completionDatas.at(index.row()).kind;
-    bool addParens = next != QLatin1Char('(') && d->isFunctionKind(kind);
-    if (addParens)
-        matching += QStringLiteral("()");
-
-    editor->replaceRange(start, end, matching);
-    if (addParens) {
-        int curLine = 0, curIndex = 0;
-        editor->lineIndexFromPosition(editor->cursorPosition(), &curLine, &curIndex);
-        editor->setCursorPosition(curLine, curIndex - 1);
-    }
+    return d->completionDatas.first().textEdit.range;
 }
 
 int CodeCompletionModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
-    return ColumnCount;
+    return 2;
 }
 
 QModelIndex CodeCompletionModel::index(int row, int column, const QModelIndex &parent) const
 {
-    if (row < 0 || row >= rowCount(parent) || column < 0 || column >= ColumnCount || parent.isValid())
+    if (row < 0 || row >= rowCount(parent) || column < 0 || column >= 2 || parent.isValid())
         return QModelIndex();
 
     return createIndex(row, column);
@@ -156,12 +160,14 @@ QVariant CodeCompletionModel::data(const QModelIndex &index, int role) const
 
     const auto &item = d->completionDatas.at(index.row());
     switch (role) {
-    case Qt::DisplayRole:
-        if (index.column() == Name)
-            return item.label;
-        break;
-    case Qt::DecorationRole:
+    case NameRole:
+        return item.label;
+    case IconRole:
         return d->iconForKind(item.kind);
+    case InsertTextRole:
+        return item.insertText;
+    case KindRole:
+        return item.kind;
     default:
         break;
     }
@@ -172,13 +178,6 @@ QVariant CodeCompletionModel::data(const QModelIndex &index, int role) const
 void CodeCompletionModel::onCompleteFinished(const lsp::CompletionProvider &provider)
 {
     beginResetModel();
-
     d->completionDatas = provider.items;
-
-    qSort(d->completionDatas.begin(), d->completionDatas.end(),
-          [](const lsp::CompletionItem &item1, const lsp::CompletionItem &item2) {
-              return item1.sortText < item2.sortText;
-          });
-
     endResetModel();
 }
