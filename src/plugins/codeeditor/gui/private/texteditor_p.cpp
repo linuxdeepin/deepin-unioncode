@@ -22,6 +22,7 @@
 #include <QMenu>
 #include <QDebug>
 #include <QApplication>
+#include <QSignalBlocker>
 
 static constexpr char DEFAULT_FONT_NAME[] { "Noto Mono" };
 
@@ -173,7 +174,11 @@ void TextEditorPrivate::updateSettings()
 
     int fontZoom = EditorSettings::instance()->value(Node::FontColor, Group::FontGroup, Key::FontZoom, 100).toInt();
     int realFontZoom = (fontZoom - 100) / 10;
-    q->zoomTo(realFontZoom);
+    {
+        // Avoid triggering the `zoomChanged` signal.
+        QSignalBlocker blk(q);
+        q->zoomTo(realFontZoom);
+    }
 
     // Indentation
     auto tabPolicy = EditorSettings::instance()->value(Node::Behavior, Group::TabGroup, Key::TabPolicy, 0).toInt();
@@ -221,12 +226,12 @@ void TextEditorPrivate::loadLexer()
     }
 }
 
-void TextEditorPrivate::loadLSPStyle()
+void TextEditorPrivate::initLanguageClient()
 {
-    if (!lspStyle)
-        lspStyle = new LSPStyle(q);
+    if (!languageClient)
+        languageClient = new LanguageClientHandler(q);
 
-    lspStyle->updateTokens();
+    languageClient->updateTokens();
 }
 
 int TextEditorPrivate::cursorPosition() const
@@ -432,8 +437,8 @@ void TextEditorPrivate::resetThemeColor()
         q->setLexer(q->lexer());
     }
 
-    if (lspStyle)
-        lspStyle->refreshTokens();
+    if (languageClient)
+        languageClient->refreshTokens();
 
     updateColorTheme();
 }

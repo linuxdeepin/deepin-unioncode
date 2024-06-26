@@ -151,6 +151,7 @@ void FontColorWidget::setUserConfig(const QMap<QString, QVariant> &map)
     d->fontSizeComboBox->setCurrentText(QString::number(d->fontSize));
     d->fontComboBox->setCurrentText(fontFamily);
     d->zoomSpinBox->setValue(fontZoom);
+    d->updatePointSizes();
 }
 
 void FontColorWidget::getUserConfig(QMap<QString, QVariant> &map)

@@ -61,7 +61,7 @@ void TextEditor::setFile(const QString &fileName)
     setModified(false);
     editor.fileOpened(fileName);
     d->loadLexer();
-    d->loadLSPStyle();
+    d->initLanguageClient();
     d->isAutoCompletionEnabled = true;
     endUndoAction();
 }
@@ -588,9 +588,9 @@ void TextEditor::insertText(const QString &text)
     SendScintilla(SCI_SETEMPTYSELECTION, d->cursorPosition() + textData.size());
 }
 
-LSPStyle *TextEditor::lspStyle() const
+LanguageClientHandler *TextEditor::languageClient() const
 {
-    return d->lspStyle;
+    return d->languageClient;
 }
 
 int TextEditor::wordStartPositoin(int position)
@@ -605,34 +605,34 @@ int TextEditor::wordEndPosition(int position)
 
 void TextEditor::switchHeaderSource()
 {
-    if (!d->lspStyle)
+    if (!d->languageClient)
         return;
-
-    d->lspStyle->switchHeaderSource(d->fileName);
+    
+    d->languageClient->switchHeaderSource(d->fileName);
 }
 
 void TextEditor::followSymbolUnderCursor()
 {
-    if (!d->lspStyle)
+    if (!d->languageClient)
         return;
-
-    d->lspStyle->followSymbolUnderCursor();
+    
+    d->languageClient->followSymbolUnderCursor();
 }
 
 void TextEditor::findUsage()
 {
-    if (!d->lspStyle)
+    if (!d->languageClient)
         return;
-
-    d->lspStyle->findUsagesActionTriggered();
+    
+    d->languageClient->findUsagesActionTriggered();
 }
 
 void TextEditor::renameSymbol()
 {
-    if (!d->lspStyle)
+    if (!d->languageClient)
         return;
-
-    d->lspStyle->renameActionTriggered();
+    
+    d->languageClient->renameActionTriggered();
 }
 
 void TextEditor::setCompletion(const QString &info, const QIcon &icon, const QKeySequence &key)
@@ -667,18 +667,18 @@ bool TextEditor::isAutomaticInvocationEnabled() const
 
 QList<newlsp::DocumentSymbol> TextEditor::documentSymbolList() const
 {
-    if (!d->lspStyle)
+    if (!d->languageClient)
         return {};
-
-    return d->lspStyle->documentSymbolList();
+    
+    return d->languageClient->documentSymbolList();
 }
 
 QList<newlsp::SymbolInformation> TextEditor::symbolInfoList() const
 {
-    if (!d->lspStyle)
+    if (!d->languageClient)
         return {};
-
-    return d->lspStyle->symbolInformationList();
+    
+    return d->languageClient->symbolInformationList();
 }
 
 void TextEditor::onMarginClicked(int margin, int line, Qt::KeyboardModifiers state)

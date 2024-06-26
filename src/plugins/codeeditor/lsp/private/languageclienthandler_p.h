@@ -2,11 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#ifndef LSPSTYLE_P_H
-#define LSPSTYLE_P_H
+#ifndef LANGUAGECLIENTHANDLER_P_H
+#define LANGUAGECLIENTHANDLER_P_H
 
-#include "lsp/lspstyle.h"
+#include "lsp/languageclienthandler.h"
 #include "renamepopup/renamepopup.h"
+#include "lsp/languageworker.h"
 
 class RangeCache
 {
@@ -160,12 +161,14 @@ public:
     }
 };
 
-class LSPStylePrivate : public QObject
+class LanguageClientHandlerPrivate : public QObject
 {
     Q_OBJECT
 public:
-    explicit LSPStylePrivate(TextEditor *edit, LSPStyle *qq);
+    explicit LanguageClientHandlerPrivate(TextEditor *edit, LanguageClientHandler *qq);
+    ~LanguageClientHandlerPrivate();
 
+    void init();
     void initConnection();
     void initLspConnection();
     void initIndicStyle();
@@ -175,9 +178,6 @@ public:
     int wordPostion();
     newlsp::Client *getClient();
 
-    QColor symbolIndicColor(lsp::SemanticTokenType::type_value token,
-                            QList<lsp::SemanticTokenType::type_index> modifier);
-    lsp::SemanticTokenType::type_value tokenToDefine(int token);
     void cleanDiagnostics();
     void cleanDefinition(int pos);
     void setDefinitionSelectedStyle(int start, int end);
@@ -205,9 +205,10 @@ public slots:
     void handleDocumentSymbolResult(const QList<newlsp::DocumentSymbol> &docSymbols, const QString &filePath);
     void handleSymbolInfomationResult(const QList<newlsp::SymbolInformation> &symbolInfos, const QString &filePath);
     void handleDocumentHighlight(const QList<newlsp::DocumentHighlight> &docHighlightList, const QString &filePath);
+    void handleHighlightToken(const QList<LanguageWorker::DocumentToken> &tokenList);
 
 public:
-    LSPStyle *q;
+    LanguageClientHandler *q;
 
     CompletionCache completionCache;
     DefinitionCache definitionCache;
@@ -225,7 +226,8 @@ public:
     QTimer textChangedTimer;
     QTimer positionChangedTimer;
 
-    friend class StyleLsp;
+    QThread thread;
+    LanguageWorker *languageWorker { nullptr };
 };
 
-#endif   // LSPSTYLE_P_H
+#endif   // LANGUAGECLIENTHANDLER_P_H
