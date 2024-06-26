@@ -83,6 +83,7 @@ DDockWidget *MainWindow::createDockWidget(DWidget *widget)
         delete dock->titleBarWidget();
 
     auto header = new DockHeader(this);
+    header->setContentsMargins(10, 8, 8, 8);
     dock->setTitleBarWidget(header);
 
     dock->setWidget(widget);
