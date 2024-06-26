@@ -6,8 +6,13 @@
 #define CODEEDITCOMPONENT_H
 #include <KSyntaxHighlighting/Repository>
 #include <KSyntaxHighlighting/Definition>
-#include <SyntaxHighlighter>
-#include <Theme>
+
+#include <KSyntaxHighlighting/syntaxhighlighter.h>
+#include <KSyntaxHighlighting/theme.h>
+
+// Use this when in low version.
+//#include <SyntaxHighlighter>
+//#include <Theme>
 
 #include <DWidget>
 #include <DLabel>
