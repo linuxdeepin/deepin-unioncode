@@ -637,9 +637,13 @@ void LSPStylePrivate::handleDocumentHighlight(const QList<newlsp::DocumentHighli
     editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_FULLBOX);
     editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, editor->length());
     QColor forgColor(0, 0, 0, 30);
-    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
-        forgColor.setRgb(138, 64, 44, 40);
+    QColor lineColor(0, 0, 0, 100);
+    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+        forgColor.setRgb(200, 200, 200, 40);
+        lineColor.setRgb(200, 200, 200, 100);
+    }
     editor->setIndicatorForegroundColor(forgColor, TextEditor::INDIC_FULLBOX);
+    editor->setIndicatorOutlineColor(lineColor, TextEditor::INDIC_FULLBOX);
     for (const auto &dh : docHighlightList) {
         int startPos = editor->positionFromLineIndex(dh.range.start.line, dh.range.start.character);
         int endPos = editor->positionFromLineIndex(dh.range.end.line, dh.range.end.character);
