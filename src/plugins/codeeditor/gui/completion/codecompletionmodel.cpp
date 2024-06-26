@@ -35,7 +35,11 @@ bool CompletionSortFilterProxyModel::lessThan(const QModelIndex &sourceLeft, con
     if (regexp.pattern().isEmpty())
         return ret;
 
-    if (ret && rightStr.startsWith(regexp.pattern(), Qt::CaseInsensitive))
+    bool leftStartsWith = leftStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
+    bool rightStartsWith = rightStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
+    if (leftStartsWith && !rightStartsWith)
+        return true;
+     else if (!leftStartsWith && rightStartsWith)
         return false;
 
     return ret;

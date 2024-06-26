@@ -185,7 +185,9 @@ void CodeCompletionWidget::modelContentChanged()
         needShow = false;
         completionView->setVisible(true);
         updateAndShow();
-    } else if (proxyModel->rowCount() == 0) {
+    }
+
+    if (proxyModel->rowCount() == 0) {
         completionView->setVisible(false);
         if (!completionExtWidget->isVisible())
             hide();
