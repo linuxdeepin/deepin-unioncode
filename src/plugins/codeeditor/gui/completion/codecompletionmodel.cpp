@@ -4,7 +4,7 @@
 
 #include "codecompletionmodel.h"
 #include "gui/texteditor.h"
-#include "lsp/lspstyle.h"
+#include "lsp/languageclienthandler.h"
 
 CompletionSortFilterProxyModel::CompletionSortFilterProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
@@ -109,14 +109,14 @@ void CodeCompletionModel::clear()
 
 void CodeCompletionModel::completionInvoked(TextEditor *editor, int position)
 {
-    connect(editor->lspStyle(), &LSPStyle::completeFinished, this, &CodeCompletionModel::onCompleteFinished, Qt::UniqueConnection);
+    connect(editor->languageClient(), &LanguageClientHandler::completeFinished, this, &CodeCompletionModel::onCompleteFinished, Qt::UniqueConnection);
 
     beginResetModel();
     d->completionDatas.clear();
 
     int line = 0, col = 0;
     editor->lineIndexFromPosition(position, &line, &col);
-    editor->lspStyle()->requestCompletion(line, col);
+    editor->languageClient()->requestCompletion(line, col);
 
     endResetModel();
 }

@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "lspstyle.h"
-#include "private/lspstyle_p.h"
+#include "languageclienthandler.h"
+#include "private/languageclienthandler_p.h"
 #include "gui/texteditor.h"
 #include "gui/settings/editorsettings.h"
 #include "gui/settings/settingsdefine.h"
@@ -22,9 +22,21 @@
 
 DGUI_USE_NAMESPACE
 
-LSPStylePrivate::LSPStylePrivate(TextEditor *edit, LSPStyle *qq)
+LanguageClientHandlerPrivate::LanguageClientHandlerPrivate(TextEditor *edit, LanguageClientHandler *qq)
     : q(qq),
       editor(edit)
+{
+}
+
+LanguageClientHandlerPrivate::~LanguageClientHandlerPrivate()
+{
+    languageWorker->stop();
+    thread.quit();
+    thread.wait();
+    languageWorker->deleteLater();
+}
+
+void LanguageClientHandlerPrivate::init()
 {
     diagnosticFormat = "%1\n%2:%3";
     textChangedTimer.setSingleShot(true);
@@ -32,25 +44,35 @@ LSPStylePrivate::LSPStylePrivate(TextEditor *edit, LSPStyle *qq)
 
     positionChangedTimer.setSingleShot(true);
     positionChangedTimer.setInterval(250);
+
+    languageWorker = new LanguageWorker(q);
+    languageWorker->setTextEditor(editor);
+    languageWorker->moveToThread(&thread);
+    thread.start();
+
+    initConnection();
+    initLspConnection();
+    initIndicStyle();
 }
 
-void LSPStylePrivate::initConnection()
+void LanguageClientHandlerPrivate::initConnection()
 {
     connect(editor, &TextEditor::textChanged, this, [this] { textChangedTimer.start(); });
     connect(editor, &TextEditor::cursorPositionChanged, this, [this] { positionChangedTimer.start(); });
-    connect(editor, &TextEditor::documentHovered, this, &LSPStylePrivate::handleHoveredStart);
-    connect(editor, &TextEditor::documentHoverEnd, this, &LSPStylePrivate::handleHoverEnd);
-    connect(editor, &TextEditor::requestFollowType, this, &LSPStylePrivate::handleFollowTypeStart);
-    connect(editor, &TextEditor::followTypeEnd, this, &LSPStylePrivate::handleFollowTypeEnd);
-    connect(editor, &TextEditor::indicatorClicked, this, &LSPStylePrivate::handleIndicClicked);
-    connect(editor, &TextEditor::contextMenuRequested, this, &LSPStylePrivate::handleShowContextMenu);
-    connect(editor, &TextEditor::fileClosed, this, &LSPStylePrivate::handleFileClosed);
-    connect(&renamePopup, &RenamePopup::editingFinished, this, &LSPStylePrivate::handleRename);
-    connect(&textChangedTimer, &QTimer::timeout, this, &LSPStylePrivate::delayTextChanged);
-    connect(&positionChangedTimer, &QTimer::timeout, this, &LSPStylePrivate::delayPositionChanged);
+    connect(editor, &TextEditor::documentHovered, this, &LanguageClientHandlerPrivate::handleHoveredStart);
+    connect(editor, &TextEditor::documentHoverEnd, this, &LanguageClientHandlerPrivate::handleHoverEnd);
+    connect(editor, &TextEditor::requestFollowType, this, &LanguageClientHandlerPrivate::handleFollowTypeStart);
+    connect(editor, &TextEditor::followTypeEnd, this, &LanguageClientHandlerPrivate::handleFollowTypeEnd);
+    connect(editor, &TextEditor::indicatorClicked, this, &LanguageClientHandlerPrivate::handleIndicClicked);
+    connect(editor, &TextEditor::contextMenuRequested, this, &LanguageClientHandlerPrivate::handleShowContextMenu);
+    connect(editor, &TextEditor::fileClosed, this, &LanguageClientHandlerPrivate::handleFileClosed);
+    connect(&renamePopup, &RenamePopup::editingFinished, this, &LanguageClientHandlerPrivate::handleRename);
+    connect(&textChangedTimer, &QTimer::timeout, this, &LanguageClientHandlerPrivate::delayTextChanged);
+    connect(&positionChangedTimer, &QTimer::timeout, this, &LanguageClientHandlerPrivate::delayPositionChanged);
+    connect(languageWorker, &LanguageWorker::highlightToken, this, &LanguageClientHandlerPrivate::handleHighlightToken);
 }
 
-void LSPStylePrivate::initLspConnection()
+void LanguageClientHandlerPrivate::initLspConnection()
 {
     auto client = getClient();
     if (!editor || !client)
@@ -58,38 +80,38 @@ void LSPStylePrivate::initLspConnection()
 
     auto referencesResult = qOverload<const lsp::References &>(&newlsp::Client::requestResult);
     connect(client, referencesResult, CodeLens::instance(), &CodeLens::displayReference, Qt::UniqueConnection);
-    connect(client, &newlsp::Client::switchHeaderSourceResult, this, &LSPStylePrivate::handleSwitchHeaderSource, Qt::UniqueConnection);
+    connect(client, &newlsp::Client::switchHeaderSourceResult, this, &LanguageClientHandlerPrivate::handleSwitchHeaderSource, Qt::UniqueConnection);
 
     //bind signals to file diagnostics
-    connect(client, &newlsp::Client::publishDiagnostics, this, &LSPStylePrivate::handleDiagnostics);
+    connect(client, &newlsp::Client::publishDiagnostics, this, &LanguageClientHandlerPrivate::handleDiagnostics);
 
     auto tokenResult = qOverload<const QList<lsp::Data> &, const QString &>(&newlsp::Client::requestResult);
-    connect(client, tokenResult, this, &LSPStylePrivate::handleTokenFull);
+    connect(client, tokenResult, this, &LanguageClientHandlerPrivate::handleTokenFull);
 
     auto completeResult = qOverload<const lsp::CompletionProvider &>(&newlsp::Client::requestResult);
-    connect(client, completeResult, q, &LSPStyle::completeFinished);
+    connect(client, completeResult, q, &LanguageClientHandler::completeFinished);
 
-    connect(client, &newlsp::Client::hoverRes, this, &LSPStylePrivate::handleShowHoverInfo);
+    connect(client, &newlsp::Client::hoverRes, this, &LanguageClientHandlerPrivate::handleShowHoverInfo);
     connect(client, &newlsp::Client::renameRes, EditorCallProxy::instance(), &EditorCallProxy::reqDoRename, Qt::UniqueConnection);
-    connect(client, &newlsp::Client::rangeFormattingRes, this, &LSPStylePrivate::handleRangeFormattingReplace);
-    connect(client, &newlsp::Client::documentHighlightResult, this, &LSPStylePrivate::handleDocumentHighlight);
+    connect(client, &newlsp::Client::rangeFormattingRes, this, &LanguageClientHandlerPrivate::handleRangeFormattingReplace);
+    connect(client, &newlsp::Client::documentHighlightResult, this, &LanguageClientHandlerPrivate::handleDocumentHighlight);
 
     /* to use QOverload cast virtual slot can't working */
     connect(client, qOverload<const newlsp::Location &, const QString &>(&newlsp::Client::definitionRes),
-            this, qOverload<const newlsp::Location &, const QString &>(&LSPStylePrivate::handleCodeDefinition));
+            this, qOverload<const newlsp::Location &, const QString &>(&LanguageClientHandlerPrivate::handleCodeDefinition));
     connect(client, qOverload<const std::vector<newlsp::Location> &, const QString &>(&newlsp::Client::definitionRes),
-            this, qOverload<const std::vector<newlsp::Location> &, const QString &>(&LSPStylePrivate::handleCodeDefinition));
+            this, qOverload<const std::vector<newlsp::Location> &, const QString &>(&LanguageClientHandlerPrivate::handleCodeDefinition));
     connect(client, qOverload<const std::vector<newlsp::LocationLink> &, const QString &>(&newlsp::Client::definitionRes),
-            this, qOverload<const std::vector<newlsp::LocationLink> &, const QString &>(&LSPStylePrivate::handleCodeDefinition));
+            this, qOverload<const std::vector<newlsp::LocationLink> &, const QString &>(&LanguageClientHandlerPrivate::handleCodeDefinition));
 
     // symbol
     auto docSymbolResult = qOverload<const QList<newlsp::DocumentSymbol> &, const QString &>(&newlsp::Client::symbolResult);
-    connect(client, docSymbolResult, this, &LSPStylePrivate::handleDocumentSymbolResult);
+    connect(client, docSymbolResult, this, &LanguageClientHandlerPrivate::handleDocumentSymbolResult);
     auto symbolInfoResult = qOverload<const QList<newlsp::SymbolInformation> &, const QString &>(&newlsp::Client::symbolResult);
-    connect(client, symbolInfoResult, this, &LSPStylePrivate::handleSymbolInfomationResult);
+    connect(client, symbolInfoResult, this, &LanguageClientHandlerPrivate::handleSymbolInfomationResult);
 }
 
-void LSPStylePrivate::initIndicStyle()
+void LanguageClientHandlerPrivate::initIndicStyle()
 {
     editor->indicatorDefine(TextEditor::PlainIndicator, TextEditor::INDIC_PLAIN);
     editor->indicatorDefine(TextEditor::SquiggleIndicator, TextEditor::INDIC_SQUIGGLE);
@@ -115,7 +137,7 @@ void LSPStylePrivate::initIndicStyle()
     editor->indicatorDefine(TextEditor::TriangleCharacterIndicator, TextEditor::INDIC_POINTCHARACTER);
 }
 
-QString LSPStylePrivate::formatDiagnosticMessage(const QString &message, int type)
+QString LanguageClientHandlerPrivate::formatDiagnosticMessage(const QString &message, int type)
 {
     auto result = message;
     switch (type) {
@@ -129,7 +151,7 @@ QString LSPStylePrivate::formatDiagnosticMessage(const QString &message, int typ
     return result;
 }
 
-bool LSPStylePrivate::shouldStartCompletion(const QString &insertedText)
+bool LanguageClientHandlerPrivate::shouldStartCompletion(const QString &insertedText)
 {
     if (insertedText.isEmpty())
         return false;
@@ -150,7 +172,7 @@ bool LSPStylePrivate::shouldStartCompletion(const QString &insertedText)
     return false;
 }
 
-int LSPStylePrivate::wordPostion()
+int LanguageClientHandlerPrivate::wordPostion()
 {
     int pos = editor->cursorPosition();
     if (editor->hasSelectedText())
@@ -159,7 +181,7 @@ int LSPStylePrivate::wordPostion()
     return pos;
 }
 
-newlsp::Client *LSPStylePrivate::getClient()
+newlsp::Client *LanguageClientHandlerPrivate::getClient()
 {
     if (prjectKey.isValid())
         return LSPClientManager::instance()->get(prjectKey);
@@ -193,30 +215,7 @@ newlsp::Client *LSPStylePrivate::getClient()
     return LSPClientManager::instance()->get(prjectKey);
 }
 
-QColor LSPStylePrivate::symbolIndicColor(lsp::SemanticTokenType::type_value token,
-                                         QList<lsp::SemanticTokenType::type_index> modifier)
-{
-    Q_UNUSED(modifier);
-    QMap<int, QColor> result;
-
-    const auto &filePath = editor->getFile();
-    auto langId = support_file::Language::id(filePath);
-
-    return LSPClientManager::instance()->highlightColor(langId, token);
-}
-
-lsp::SemanticTokenType::type_value LSPStylePrivate::tokenToDefine(int token)
-{
-    auto client = getClient();
-    if (!client)
-        return {};
-    auto initSecTokensProvider = client->initSecTokensProvider();
-    if (0 <= token && token < initSecTokensProvider.legend.tokenTypes.size())
-        return initSecTokensProvider.legend.tokenTypes[token];
-    return {};
-}
-
-void LSPStylePrivate::handleDiagnostics(const newlsp::PublishDiagnosticsParams &data)
+void LanguageClientHandlerPrivate::handleDiagnostics(const newlsp::PublishDiagnosticsParams &data)
 {
     if (!editor)
         return;
@@ -245,68 +244,23 @@ void LSPStylePrivate::handleDiagnostics(const newlsp::PublishDiagnosticsParams &
     }
 }
 
-void LSPStylePrivate::cleanDiagnostics()
+void LanguageClientHandlerPrivate::cleanDiagnostics()
 {
     diagnosticCache.clear();
 }
 
-void LSPStylePrivate::handleTokenFull(const QList<lsp::Data> &tokens, const QString &filePath)
+void LanguageClientHandlerPrivate::handleTokenFull(const QList<lsp::Data> &tokens, const QString &filePath)
 {
-    qInfo() << Q_FUNC_INFO << tokens.size();
     if (!editor || editor->getFile() != filePath || !editor->lexer())
         return;
 
-    QList<std::tuple<int, QString, QString>> textTokenList;
-    int cacheLine = 0;
-    int cacheColumn = 0;
-    for (auto val : tokens) {
-        cacheLine += val.start.line;
-        if (val.start.line != 0)
-            cacheColumn = 0;
-
-        cacheColumn += val.start.character;
-#ifdef QT_DEBUG
-        qInfo() << "line:" << cacheLine;
-        qInfo() << "charStart:" << val.start.character;
-        qInfo() << "charLength:" << val.length;
-        qInfo() << "tokenType:" << val.tokenType;
-        qInfo() << "tokenModifiers:" << val.tokenModifiers;
-#endif
-        auto startPos = editor->positionFromLineIndex(cacheLine, cacheColumn);
-        auto wordEndPos = editor->SendScintilla(TextEditor::SCI_WORDENDPOSITION, static_cast<ulong>(startPos), true);
-        auto wordStartPos = editor->SendScintilla(TextEditor::SCI_WORDSTARTPOSITION, static_cast<ulong>(startPos), true);
-        if (startPos == 0 || wordEndPos == editor->length() || wordStartPos != startPos)
-            continue;
-
-        QString sourceText = editor->text(static_cast<int>(wordStartPos), static_cast<int>(wordEndPos));
-#ifdef QT_DEBUG
-        qInfo() << "text:" << sourceText;
-#endif
-        if (!sourceText.isEmpty() && sourceText.length() == val.length) {
-            QString tokenValue = tokenToDefine(val.tokenType);
-#ifdef QT_DEBUG
-            qInfo() << "tokenValue:" << tokenValue;
-#endif
-            textTokenList << std::make_tuple(startPos, sourceText, tokenValue);
-        }
-    }
-
-    if (textTokenList.isEmpty())
-        return;
-
-    // clear all text color
-    editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_TEXTFORE);
-    editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, editor->length());
-    for (const auto &value : textTokenList) {
-        auto color = symbolIndicColor(std::get<2>(value), {});
-        editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_TEXTFORE);
-        editor->SendScintilla(TextEditor::SCI_INDICSETFLAGS, TextEditor::INDIC_TEXTFORE, 1);
-        editor->SendScintilla(TextEditor::SCI_SETINDICATORVALUE, color);
-        editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE, static_cast<ulong>(std::get<0>(value)), std::get<1>(value).length());
-    }
+    metaObject()->invokeMethod(languageWorker,
+                               "handleDocumentSemanticTokens",
+                               Qt::QueuedConnection,
+                               Q_ARG(QList<lsp::Data>, tokens));
 }
 
-void LSPStylePrivate::handleShowHoverInfo(const newlsp::Hover &hover)
+void LanguageClientHandlerPrivate::handleShowHoverInfo(const newlsp::Hover &hover)
 {
     if (!editor || hoverCache.getPosition() == -1)
         return;
@@ -338,7 +292,7 @@ void LSPStylePrivate::handleShowHoverInfo(const newlsp::Hover &hover)
         editor->showTips(hoverCache.getPosition(), showText.c_str());
 }
 
-void LSPStylePrivate::handleCodeDefinition(const newlsp::Location &data, const QString &filePath)
+void LanguageClientHandlerPrivate::handleCodeDefinition(const newlsp::Location &data, const QString &filePath)
 {
     if (!editor || editor->getFile() != filePath)
         return;
@@ -353,7 +307,7 @@ void LSPStylePrivate::handleCodeDefinition(const newlsp::Location &data, const Q
     }
 }
 
-void LSPStylePrivate::handleCodeDefinition(const std::vector<newlsp::Location> &data, const QString &filePath)
+void LanguageClientHandlerPrivate::handleCodeDefinition(const std::vector<newlsp::Location> &data, const QString &filePath)
 {
     if (!editor || data.empty() || editor->getFile() != filePath)
         return;
@@ -369,7 +323,7 @@ void LSPStylePrivate::handleCodeDefinition(const std::vector<newlsp::Location> &
     }
 }
 
-void LSPStylePrivate::handleCodeDefinition(const std::vector<newlsp::LocationLink> &data, const QString &filePath)
+void LanguageClientHandlerPrivate::handleCodeDefinition(const std::vector<newlsp::LocationLink> &data, const QString &filePath)
 {
     if (!editor || data.empty() || editor->getFile() != filePath)
         return;
@@ -384,7 +338,7 @@ void LSPStylePrivate::handleCodeDefinition(const std::vector<newlsp::LocationLin
     }
 }
 
-void LSPStylePrivate::cleanDefinition(int pos)
+void LanguageClientHandlerPrivate::cleanDefinition(int pos)
 {
     auto data = editor->SendScintilla(TextEditor::SCI_INDICATORALLONFOR, pos);
     std::bitset<32> flags(static_cast<ulong>(data));
@@ -394,7 +348,7 @@ void LSPStylePrivate::cleanDefinition(int pos)
     }
 }
 
-void LSPStylePrivate::handleRangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits, const QString &filePath)
+void LanguageClientHandlerPrivate::handleRangeFormattingReplace(const std::vector<newlsp::TextEdit> &edits, const QString &filePath)
 {
     if (edits.empty() || !editor || editor->getFile() != filePath)
         return;
@@ -406,7 +360,7 @@ void LSPStylePrivate::handleRangeFormattingReplace(const std::vector<newlsp::Tex
     }
 }
 
-void LSPStylePrivate::setDefinitionSelectedStyle(int start, int end)
+void LanguageClientHandlerPrivate::setDefinitionSelectedStyle(int start, int end)
 {
     editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_COMPOSITIONTHICK);
     editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE, static_cast<ulong>(start), end - start);
@@ -418,7 +372,7 @@ void LSPStylePrivate::setDefinitionSelectedStyle(int start, int end)
     }
 }
 
-void LSPStylePrivate::delayTextChanged()
+void LanguageClientHandlerPrivate::delayTextChanged()
 {
     if (!editor)
         return;
@@ -432,7 +386,7 @@ void LSPStylePrivate::delayTextChanged()
     }
 }
 
-void LSPStylePrivate::delayPositionChanged()
+void LanguageClientHandlerPrivate::delayPositionChanged()
 {
     if (!editor || !getClient())
         return;
@@ -442,7 +396,7 @@ void LSPStylePrivate::delayPositionChanged()
     getClient()->docHighlightRequest(editor->getFile(), pos);
 }
 
-void LSPStylePrivate::handleHoveredStart(int position)
+void LanguageClientHandlerPrivate::handleHoveredStart(int position)
 {
     if (!editor || !getClient())
         return;
@@ -476,7 +430,7 @@ void LSPStylePrivate::handleHoveredStart(int position)
     getClient()->docHoverRequest(editor->getFile(), pos);
 }
 
-void LSPStylePrivate::handleHoverEnd(int position)
+void LanguageClientHandlerPrivate::handleHoverEnd(int position)
 {
     if (!editor)
         return;
@@ -488,7 +442,7 @@ void LSPStylePrivate::handleHoverEnd(int position)
     }
 }
 
-void LSPStylePrivate::handleFollowTypeStart(int position)
+void LanguageClientHandlerPrivate::handleFollowTypeStart(int position)
 {
     if (!editor || editor->wordAtPosition(position).isEmpty()) {
         handleFollowTypeEnd();
@@ -514,7 +468,7 @@ void LSPStylePrivate::handleFollowTypeStart(int position)
         getClient()->definitionRequest(editor->getFile(), pos);
 }
 
-void LSPStylePrivate::handleFollowTypeEnd()
+void LanguageClientHandlerPrivate::handleFollowTypeEnd()
 {
     if (!editor || definitionCache.getTextRange().isEmpty())
         return;
@@ -523,7 +477,7 @@ void LSPStylePrivate::handleFollowTypeEnd()
     definitionCache.clean();
 }
 
-void LSPStylePrivate::handleIndicClicked(int line, int index)
+void LanguageClientHandlerPrivate::handleIndicClicked(int line, int index)
 {
     if (!editor)
         return;
@@ -537,7 +491,7 @@ void LSPStylePrivate::handleIndicClicked(int line, int index)
     }
 }
 
-void LSPStylePrivate::handleShowContextMenu(QMenu *menu)
+void LanguageClientHandlerPrivate::handleShowContextMenu(QMenu *menu)
 {
     if (!editor)
         return;
@@ -546,33 +500,33 @@ void LSPStylePrivate::handleShowContextMenu(QMenu *menu)
     for (auto act : actionList) {
         if (act->text() == tr("Refactor")) {
             QMenu *subMenu = new QMenu(menu);
-            subMenu->addAction(tr("Rename Symbol Under Cursor"), q, &LSPStyle::renameActionTriggered);
+            subMenu->addAction(tr("Rename Symbol Under Cursor"), q, &LanguageClientHandler::renameActionTriggered);
             act->setMenu(subMenu);
             break;
         }
     }
 
-    auto act = menu->addAction(tr("Switch Header/Source"), q, std::bind(&LSPStyle::switchHeaderSource, q, editor->getFile()));
+    auto act = menu->addAction(tr("Switch Header/Source"), q, std::bind(&LanguageClientHandler::switchHeaderSource, q, editor->getFile()));
     menu->insertAction(actionList.first(), act);
 
-    act = menu->addAction(tr("Follow Symbol Under Cursor"), q, &LSPStyle::followSymbolUnderCursor);
+    act = menu->addAction(tr("Follow Symbol Under Cursor"), q, &LanguageClientHandler::followSymbolUnderCursor);
     menu->insertAction(actionList.first(), act);
 
-    act = menu->addAction(tr("Find Usages"), q, &LSPStyle::findUsagesActionTriggered);
+    act = menu->addAction(tr("Find Usages"), q, &LanguageClientHandler::findUsagesActionTriggered);
     menu->insertAction(actionList.first(), act);
 
-    act = menu->addAction(tr("Range Formatting"), q, &LSPStyle::formatSelections);
+    act = menu->addAction(tr("Range Formatting"), q, &LanguageClientHandler::formatSelections);
     menu->insertAction(actionList.first(), act);
     menu->insertSeparator(actionList.first());
 }
 
-void LSPStylePrivate::handleFileClosed(const QString &file)
+void LanguageClientHandlerPrivate::handleFileClosed(const QString &file)
 {
     if (getClient())
         getClient()->closeRequest(file);
 }
 
-void LSPStylePrivate::handleRename(const QString &text)
+void LanguageClientHandlerPrivate::handleRename(const QString &text)
 {
     if (!editor || !getClient() || !renameCache.isValid())
         return;
@@ -582,7 +536,7 @@ void LSPStylePrivate::handleRename(const QString &text)
     renameCache.clear();
 }
 
-void LSPStylePrivate::gotoDefinition()
+void LanguageClientHandlerPrivate::gotoDefinition()
 {
     if (definitionCache.getLocations().size() > 0) {
         Q_EMIT editor->cursorRecordChanged(editor->cursorLastPosition());
@@ -602,7 +556,7 @@ void LSPStylePrivate::gotoDefinition()
     }
 }
 
-void LSPStylePrivate::handleSwitchHeaderSource(const QString &file)
+void LanguageClientHandlerPrivate::handleSwitchHeaderSource(const QString &file)
 {
     if (file.isEmpty())
         return;
@@ -610,8 +564,8 @@ void LSPStylePrivate::handleSwitchHeaderSource(const QString &file)
     emit EditorCallProxy::instance()->reqOpenFile("", file);
 }
 
-void LSPStylePrivate::handleDocumentSymbolResult(const QList<newlsp::DocumentSymbol> &docSymbols,
-                                                 const QString &filePath)
+void LanguageClientHandlerPrivate::handleDocumentSymbolResult(const QList<newlsp::DocumentSymbol> &docSymbols,
+                                                              const QString &filePath)
 {
     if (!editor || editor->getFile() != filePath)
         return;
@@ -619,8 +573,8 @@ void LSPStylePrivate::handleDocumentSymbolResult(const QList<newlsp::DocumentSym
     docSymbolList = docSymbols;
 }
 
-void LSPStylePrivate::handleSymbolInfomationResult(const QList<newlsp::SymbolInformation> &symbolInfos,
-                                                   const QString &filePath)
+void LanguageClientHandlerPrivate::handleSymbolInfomationResult(const QList<newlsp::SymbolInformation> &symbolInfos,
+                                                                const QString &filePath)
 {
     if (!editor || editor->getFile() != filePath)
         return;
@@ -628,8 +582,8 @@ void LSPStylePrivate::handleSymbolInfomationResult(const QList<newlsp::SymbolInf
     symbolInfoList = symbolInfos;
 }
 
-void LSPStylePrivate::handleDocumentHighlight(const QList<newlsp::DocumentHighlight> &docHighlightList,
-                                              const QString &filePath)
+void LanguageClientHandlerPrivate::handleDocumentHighlight(const QList<newlsp::DocumentHighlight> &docHighlightList,
+                                                           const QString &filePath)
 {
     if (!editor || editor->getFile() != filePath)
         return;
@@ -651,20 +605,33 @@ void LSPStylePrivate::handleDocumentHighlight(const QList<newlsp::DocumentHighli
     }
 }
 
-LSPStyle::LSPStyle(TextEditor *parent)
+void LanguageClientHandlerPrivate::handleHighlightToken(const QList<LanguageWorker::DocumentToken> &tokenList)
+{
+    // clear all text color
+    editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_TEXTFORE);
+    editor->SendScintilla(TextEditor::SCI_INDICATORCLEARRANGE, 0, editor->length());
+    for (const auto &token : tokenList) {
+        editor->SendScintilla(TextEditor::SCI_SETINDICATORCURRENT, TextEditor::INDIC_TEXTFORE);
+        editor->SendScintilla(TextEditor::SCI_INDICSETFLAGS, TextEditor::INDIC_TEXTFORE, 1);
+        editor->SendScintilla(TextEditor::SCI_SETINDICATORVALUE, token.color);
+        editor->SendScintilla(TextEditor::SCI_INDICATORFILLRANGE,
+                              static_cast<ulong>(token.startPostion),
+                              token.field.length());
+    }
+}
+
+LanguageClientHandler::LanguageClientHandler(TextEditor *parent)
     : QObject(parent),
-      d(new LSPStylePrivate(parent, this))
+      d(new LanguageClientHandlerPrivate(parent, this))
 {
-    d->initConnection();
-    d->initLspConnection();
-    d->initIndicStyle();
+    d->init();
 }
 
-LSPStyle::~LSPStyle()
+LanguageClientHandler::~LanguageClientHandler()
 {
 }
 
-void LSPStyle::requestCompletion(int line, int column)
+void LanguageClientHandler::requestCompletion(int line, int column)
 {
     if (!d->getClient())
         return;
@@ -673,7 +640,7 @@ void LSPStyle::requestCompletion(int line, int column)
     d->getClient()->completionRequest(d->editor->getFile(), pos);
 }
 
-void LSPStyle::updateTokens()
+void LanguageClientHandler::updateTokens()
 {
     if (auto client = d->getClient()) {
         client->openRequest(d->editor->getFile());
@@ -682,17 +649,40 @@ void LSPStyle::updateTokens()
     }
 }
 
-QList<newlsp::DocumentSymbol> LSPStyle::documentSymbolList() const
+QList<newlsp::DocumentSymbol> LanguageClientHandler::documentSymbolList() const
 {
     return d->docSymbolList;
 }
 
-QList<newlsp::SymbolInformation> LSPStyle::symbolInformationList() const
+QList<newlsp::SymbolInformation> LanguageClientHandler::symbolInformationList() const
 {
     return d->symbolInfoList;
 }
 
-void LSPStyle::refreshTokens()
+lsp::SemanticTokenType::type_value LanguageClientHandler::tokenToDefine(int token)
+{
+    auto client = d->getClient();
+    if (!client)
+        return {};
+    auto initSecTokensProvider = client->initSecTokensProvider();
+    if (0 <= token && token < initSecTokensProvider.legend.tokenTypes.size())
+        return initSecTokensProvider.legend.tokenTypes[token];
+    return {};
+}
+
+QColor LanguageClientHandler::symbolIndicColor(lsp::SemanticTokenType::type_value token,
+                                               QList<lsp::SemanticTokenType::type_index> modifier)
+{
+    Q_UNUSED(modifier);
+    QMap<int, QColor> result;
+
+    const auto &filePath = d->editor->getFile();
+    auto langId = support_file::Language::id(filePath);
+
+    return LSPClientManager::instance()->highlightColor(langId, token);
+}
+
+void LanguageClientHandler::refreshTokens()
 {
     if (!d->editor || !d->getClient())
         return;
@@ -700,7 +690,7 @@ void LSPStyle::refreshTokens()
     d->getClient()->docSemanticTokensFull(d->editor->getFile());
 }
 
-void LSPStyle::switchHeaderSource(const QString &file)
+void LanguageClientHandler::switchHeaderSource(const QString &file)
 {
     if (!d->getClient())
         return;
@@ -708,7 +698,7 @@ void LSPStyle::switchHeaderSource(const QString &file)
     d->getClient()->switchHeaderSource(file);
 }
 
-void LSPStyle::followSymbolUnderCursor()
+void LanguageClientHandler::followSymbolUnderCursor()
 {
     if (!d->editor || !d->editor->hasFocus() || !d->getClient())
         return;
@@ -720,7 +710,7 @@ void LSPStyle::followSymbolUnderCursor()
     d->getClient()->definitionRequest(d->editor->getFile(), pos);
 }
 
-void LSPStyle::findUsagesActionTriggered()
+void LanguageClientHandler::findUsagesActionTriggered()
 {
     if (!d->editor || !d->getClient())
         return;
@@ -730,7 +720,7 @@ void LSPStyle::findUsagesActionTriggered()
     d->getClient()->referencesRequest(d->editor->getFile(), pos);
 }
 
-void LSPStyle::renameActionTriggered()
+void LanguageClientHandler::renameActionTriggered()
 {
     if (!d->editor)
         return;
@@ -748,7 +738,7 @@ void LSPStyle::renameActionTriggered()
     d->renamePopup.exec(point);
 }
 
-void LSPStyle::formatSelections()
+void LanguageClientHandler::formatSelections()
 {
     if (!d->getClient() || !d->editor || !d->editor->hasSelectedText())
         return;

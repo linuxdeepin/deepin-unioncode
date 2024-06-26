@@ -7,7 +7,7 @@
 
 #include "gui/texteditor.h"
 #include "common/util/eventdefinitions.h"
-#include "lsp/lspstyle.h"
+#include "lsp/languageclienthandler.h"
 #include "gui/completion/codecompletionwidget.h"
 
 #include <Qsci/qscistyle.h>
@@ -39,7 +39,7 @@ public:
     void initMargins();
     void updateColorTheme();
     void loadLexer();
-    void loadLSPStyle();
+    void initLanguageClient();
 
     int cursorPosition() const;
     int marginsWidth();
@@ -69,8 +69,8 @@ public:
     int preFirstLineNum { 0 };
     int lastCursorPos { 0 };
     QMultiHash<QString, int> annotationRecords;
-
-    LSPStyle *lspStyle { nullptr };
+    
+    LanguageClientHandler *languageClient { nullptr };
     bool isAutoCompletionEnabled { false };
     bool isCtrlPressed { false };
 
