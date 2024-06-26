@@ -6,6 +6,7 @@
 #include "codelenstype.h"
 
 #include <DGuiApplicationHelper>
+#include <QApplication>
 
 const int LinePadding = 4;
 const int LineDigits = 6;
