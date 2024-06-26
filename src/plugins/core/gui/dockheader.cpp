@@ -24,12 +24,12 @@ DockHeader::DockHeader(QWidget *parent)
 {
     setAutoFillBackground(true);
     setBackgroundRole(DPalette::Base);
-
     d->headerName = new QLabel(this);
 
     d->mainLayout = new QHBoxLayout(this);
-    d->mainLayout->setContentsMargins(10, 0, 10, 0);
+    d->mainLayout->setContentsMargins(0, 0, 0, 5);
     d->mainLayout->setAlignment(Qt::AlignRight);
+    d->mainLayout->setSpacing(2);
     d->mainLayout->addWidget(d->headerName, Qt::AlignLeft);
 }
 
@@ -41,11 +41,15 @@ DockHeader::~DockHeader()
 
 void DockHeader::addToolButton(DToolButton *btn)
 {
-    btn->setFixedSize(20, 20);
+    btn->setIconSize(QSize(16, 16));
+    btn->setFixedSize(QSize(24, 24));
     d->mainLayout->insertWidget(1, btn);
 }
 
 void DockHeader::setHeaderName(const QString &headerName)
 {
     d->headerName->setText(headerName);
+    QFont font = d->headerName->font();
+    font.setWeight(QFont::Bold);
+    d->headerName->setFont(font);
 }
