@@ -56,7 +56,10 @@ void CodeCompletionWidget::initUI()
 void CodeCompletionWidget::initConnection()
 {
     connect(completionView, &CodeCompletionView::doubleClicked, this, &CodeCompletionWidget::execute);
-    connect(proxyModel, &CodeCompletionModel::modelReset, this, &CodeCompletionWidget::modelContentChanged);
+    connect(proxyModel, &CodeCompletionModel::modelReset, this, [this] {
+        proxyModel->setFilterRegExp(filterString());
+        modelContentChanged();
+    });
     connect(proxyModel, &CodeCompletionModel::layoutChanged, this, &CodeCompletionWidget::modelContentChanged);
     connect(completionExtWidget, &CodeCompletionExtendWidget::completionChanged, this, &CodeCompletionWidget::onCompletionChanged);
     connect(automaticInvocationTimer, &QTimer::timeout, this, &CodeCompletionWidget::automaticInvocation);
@@ -131,6 +134,10 @@ QString CodeCompletionWidget::filterString()
 
     auto range = completionModel->range();
     if (range.start.line == -1 || range.start.character == -1)
+        return {};
+
+    int pos = editor()->wordStartPositoin(editor()->cursorPosition());
+    if (pos != editor()->positionFromLineIndex(range.start.line, range.start.character))
         return {};
 
     int startPos = editor()->positionFromLineIndex(range.start.line, range.start.character);
@@ -405,9 +412,13 @@ void CodeCompletionWidget::automaticInvocation()
     }
 
     const auto &word = editor()->wordAtPosition(editor()->cursorPosition());
-    if (completionModel->rowCount() == 0 || word.isEmpty()) {
-        proxyModel->setFilterRegExp("");
+    if (!completionView->isVisible() || completionModel->rowCount() == 0 || word.isEmpty()) {
         startCompletion();
+    } else if (!word.isEmpty()) {
+        int pos = editor()->wordStartPositoin(editor()->cursorPosition());
+        const auto &range = completionModel->range();
+        if (pos != editor()->positionFromLineIndex(range.start.line, range.start.character))
+            startCompletion();
     }
 }
 

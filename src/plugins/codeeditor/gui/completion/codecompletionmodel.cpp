@@ -27,16 +27,18 @@ bool CompletionSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QMode
 
 bool CompletionSortFilterProxyModel::lessThan(const QModelIndex &sourceLeft, const QModelIndex &sourceRight) const
 {
-    auto leftStr = sourceLeft.data(CodeCompletionModel::InsertTextRole).toString();
-    auto rightStr = sourceRight.data(CodeCompletionModel::InsertTextRole).toString();
-    bool ret = leftStr.toLower() < rightStr.toLower();
+    auto leftStr = sourceLeft.data(CodeCompletionModel::SortTextRole).toString();
+    auto rightStr = sourceRight.data(CodeCompletionModel::SortTextRole).toString();
+    bool ret = leftStr < rightStr;
 
     const QRegExp regexp = filterRegExp();
     if (regexp.pattern().isEmpty())
         return ret;
 
-    bool leftStartsWith = leftStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
-    bool rightStartsWith = rightStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
+    auto leftInsertStr = sourceLeft.data(CodeCompletionModel::InsertTextRole).toString();
+    auto rightInsertStr = sourceRight.data(CodeCompletionModel::InsertTextRole).toString();
+    bool leftStartsWith = leftInsertStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
+    bool rightStartsWith = rightInsertStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
     if (leftStartsWith && !rightStartsWith)
         return true;
      else if (!leftStartsWith && rightStartsWith)
@@ -172,6 +174,8 @@ QVariant CodeCompletionModel::data(const QModelIndex &index, int role) const
         return item.insertText;
     case KindRole:
         return item.kind;
+    case SortTextRole:
+        return item.sortText;
     default:
         break;
     }
