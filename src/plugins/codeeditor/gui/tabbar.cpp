@@ -160,7 +160,7 @@ void TabBarPrivate::showMenu(QPoint pos)
     menu.addSeparator();
     menu.addAction(tr("Open File Location"), [=]() {
         auto file = tabBar->tabToolTip(curIndex);
-        DDesktopServices::showFileItem(file);
+        Dtk::Widget::DDesktopServices::showFileItem(file);
     });
 
     menu.exec(QCursor::pos());
