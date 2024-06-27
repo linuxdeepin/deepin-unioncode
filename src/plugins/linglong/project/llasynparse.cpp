@@ -14,11 +14,16 @@ class LLAsynParsePrivate
     QString rootPath;
     QSet<QString> fileList {};
     QList<QStandardItem *> rows {};
+
+    QStandardItem *rootItem { nullptr };
+
+    bool stop { false };
 };
 
-LLAsynParse::LLAsynParse()
+LLAsynParse::LLAsynParse(QStandardItem *root)
     : d(new LLAsynParsePrivate)
 {
+    d->rootItem = root;
     QObject::connect(this, &QFileSystemWatcher::directoryChanged,
                      this, &LLAsynParse::doDirectoryChanged);
     d->thread = new QThread();
@@ -30,6 +35,7 @@ LLAsynParse::~LLAsynParse()
 {
     if (d) {
         if (d->thread) {
+            d->stop = true;
             if (d->thread->isRunning())
                 d->thread->quit();
             d->thread->wait();
@@ -55,6 +61,11 @@ void LLAsynParse::doDirectoryChanged(const QString &path)
 {
     if (!path.startsWith(d->rootPath))
         return;
+
+    if (d->rootItem) {
+        while (d->rootItem->hasChildren())
+            d->rootItem->takeRow(0);
+    }
 
     d->rows.clear();
 
@@ -89,17 +100,18 @@ void LLAsynParse::createRows(const QString &path)
         dir.setSorting(QDir::Name);
         QDirIterator dirItera(dir, QDirIterator::Subdirectories);
         while (dirItera.hasNext()) {
+            if (d->stop)
+                return;
             QString childPath = dirItera.next().remove(0, rootPath.size());
             QFileSystemWatcher::addPath(dirItera.filePath());
             QStandardItem *item = findItem(childPath);
-            QIcon icon = CustomIcons::icon(dirItera.fileInfo());
-            auto newItem = new QStandardItem(icon, dirItera.fileName());
+            auto newItem = new QStandardItem(dirItera.fileName());
             newItem->setToolTip(dirItera.filePath());
-            if (!item) {
-                d->rows.append(newItem);
-            } else {
+            if (item)
                 item->appendRow(newItem);
-            }
+            else
+                d->rootItem->appendRow(newItem);
+            d->rows.append(newItem);
         }
     }
     {
@@ -109,16 +121,17 @@ void LLAsynParse::createRows(const QString &path)
         dir.setSorting(QDir::Name);
         QDirIterator fileItera(dir, QDirIterator::Subdirectories);
         while (fileItera.hasNext()) {
+            if (d->stop)
+                return;
             QString childPath = fileItera.next().remove(0, rootPath.size());
             QStandardItem *item = findItem(childPath);
-            QIcon icon = CustomIcons::icon(fileItera.fileInfo());
-            auto newItem = new QStandardItem(icon, fileItera.fileName());
+            auto newItem = new QStandardItem(fileItera.fileName());
             newItem->setToolTip(fileItera.filePath());
-            if (!item) {
-                d->rows.append(newItem);
-            } else {
+            if (item)
                 item->appendRow(newItem);
-            }
+            else
+                d->rootItem->appendRow(newItem);
+            d->rows.append(newItem);
             d->fileList.insert(fileItera.filePath());
         }
     }

@@ -69,12 +69,13 @@ QStandardItem *LLProjectGenerator::createRootItem(const dpfservice::ProjectInfo 
     using namespace dpfservice;
 
     QStandardItem *rootItem = ProjectGenerator::createRootItem(info);
-    d->projectParses[rootItem] = new LLAsynParse();
+    d->projectParses[rootItem] = new LLAsynParse(rootItem);
     QObject::connect(d->projectParses[rootItem],
                      &LLAsynParse::itemsModified,
                      this, &LLProjectGenerator::doProjectChildsModified,
                      Qt::ConnectionType::UniqueConnection);
-    d->projectParses[rootItem]->parseProject(info);
+    QMetaObject::invokeMethod(d->projectParses[rootItem], "parseProject",
+                              Q_ARG(const dpfservice::ProjectInfo &, info));
     auto sourceFiles = d->projectParses[rootItem]->getFilelist();
     dpfservice::ProjectInfo tempInfo = info;
     tempInfo.setSourceFiles(sourceFiles);
@@ -123,14 +124,14 @@ QMenu *LLProjectGenerator::createItemMenu(const QStandardItem *item)
     return menu;
 }
 
-void LLProjectGenerator::doProjectChildsModified(const QList<QStandardItem *> &info)
+void LLProjectGenerator::doProjectChildsModified(const QList<QStandardItem *> &items)
 {
     auto rootItem = d->projectParses.key(qobject_cast<LLAsynParse *>(sender()));
-    if (rootItem) {
-        while (rootItem->hasChildren()) {
-            rootItem->takeRow(0);
-        }
-        rootItem->appendRows(info);
+    if (!rootItem)
+        return;
+
+    for (auto &item : items) {
+        item->setIcon(CustomIcons::icon(item->toolTip()));
     }
 
     rootItem->setData(ParsingState::Done, Parsing_State_Role);
