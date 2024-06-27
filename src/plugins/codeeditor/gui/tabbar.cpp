@@ -9,7 +9,6 @@
 
 #include <DMenu>
 #include <DDialog>
-#include <DDesktopServices>
 #include <DGuiApplicationHelper>
 
 #include <QSignalBlocker>
@@ -160,7 +159,8 @@ void TabBarPrivate::showMenu(QPoint pos)
     menu.addSeparator();
     menu.addAction(tr("Open File Location"), [=]() {
         auto file = tabBar->tabToolTip(curIndex);
-        Dtk::Widget::DDesktopServices::showFileItem(file);
+        QString openCommand = "xdg-open " + QFileInfo(file).dir().path();
+        QProcess::startDetached(openCommand);
     });
 
     menu.exec(QCursor::pos());
