@@ -36,6 +36,7 @@ public:
     }
 signals:
     void projectActivated(const dpfservice::ProjectInfo prjInfo);
+    void switchedFile(const QString &file);
 };
 
 #endif // PROJECTCORERECEIVER_H

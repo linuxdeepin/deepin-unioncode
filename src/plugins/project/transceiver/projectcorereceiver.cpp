@@ -66,6 +66,7 @@ void ProjectCoreReceiver::eventProcess(const dpf::Event &event)
 
         emit ProjectProxy::instance()->projectActivated(projectInfo);
     } else if (event.data() == editor.switchedFile.name) {
+        emit ProjectProxy::instance()->switchedFile(event.property("fileName").toString());
         ProjectKeeper::instance()->treeView()->selectProjectFile(event.property("fileName").toString());
     }
 }
