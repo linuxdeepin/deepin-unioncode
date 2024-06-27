@@ -10,6 +10,7 @@
 #include <QSize>
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 RecentOpenListDelegate::RecentOpenListDelegate(QAbstractItemView *parent) :
     QStyledItemDelegate(parent)
