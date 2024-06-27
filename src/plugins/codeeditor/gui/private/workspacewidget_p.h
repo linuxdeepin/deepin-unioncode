@@ -44,6 +44,7 @@ public slots:
     void onFileModified(const QString &fileName);
 
     void handleOpenFile(const QString &workspace, const QString &fileName);
+    void handleCloseFile(const QString &fileName);
     void handleAddBreakpoint(const QString &fileName, int line, bool enabled);
     void handleRemoveBreakpoint(const QString &fileName, int line);
     void handleSetBreakpointEnabled(const QString &fileName, int line, bool enabled);

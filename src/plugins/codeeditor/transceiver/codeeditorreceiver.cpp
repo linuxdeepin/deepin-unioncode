@@ -13,6 +13,7 @@ CodeEditorReceiver::CodeEditorReceiver(QObject *parent)
 {
     using namespace std::placeholders;
     eventHandleMap.insert(editor.openFile.name, std::bind(&CodeEditorReceiver::processOpenFileEvent, this, _1));
+    eventHandleMap.insert(editor.closeFile.name, std::bind(&CodeEditorReceiver::processCloseFileEvent, this, _1));
     eventHandleMap.insert(editor.back.name, std::bind(&CodeEditorReceiver::processBackEvent, this, _1));
     eventHandleMap.insert(editor.forward.name, std::bind(&CodeEditorReceiver::processForwardEvent, this, _1));
     eventHandleMap.insert(editor.gotoLine.name, std::bind(&CodeEditorReceiver::processGotoLineEvent, this, _1));
@@ -57,6 +58,12 @@ void CodeEditorReceiver::processOpenFileEvent(const dpf::Event &event)
     QString workspace = event.property("workspace").toString();
     QString fileName = event.property("fileName").toString();
     Q_EMIT EditorCallProxy::instance()->reqOpenFile(workspace, fileName);
+}
+
+void CodeEditorReceiver::processCloseFileEvent(const dpf::Event &event)
+{
+    QString fileName = event.property("fileName").toString();
+    Q_EMIT EditorCallProxy::instance()->reqCloseFile(fileName);
 }
 
 void CodeEditorReceiver::processBackEvent(const dpf::Event &event)
