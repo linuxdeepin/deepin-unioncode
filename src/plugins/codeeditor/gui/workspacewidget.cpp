@@ -107,6 +107,7 @@ void WorkspaceWidgetPrivate::initConnection()
     connect(Inotify::globalInstance(), &Inotify::modified, this, &WorkspaceWidgetPrivate::onFileModified);
 
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqOpenFile, this, &WorkspaceWidgetPrivate::handleOpenFile);
+    connect(EditorCallProxy::instance(), &EditorCallProxy::reqCloseFile, this, &WorkspaceWidgetPrivate::handleCloseFile);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqAddBreakpoint, this, &WorkspaceWidgetPrivate::handleAddBreakpoint);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqRemoveBreakpoint, this, &WorkspaceWidgetPrivate::handleRemoveBreakpoint);
     connect(EditorCallProxy::instance(), &EditorCallProxy::reqSetBreakpointEnabled, this, &WorkspaceWidgetPrivate::handleSetBreakpointEnabled);
@@ -247,7 +248,7 @@ void WorkspaceWidgetPrivate::handleFileChanged()
         }
         break;
     case 4:   // close
-        q->closeFileEditor(fileName);
+        handleCloseFile(fileName);
         handleFileChanged();
         break;
     default:
@@ -272,14 +273,14 @@ void WorkspaceWidgetPrivate::handleFileRemoved()
         handleFileRemoved();
         break;
     case 2:   // close
-        q->closeFileEditor(fileName);
+        handleCloseFile(fileName);
         handleFileRemoved();
         break;
     case 3:   // close all
-        q->closeFileEditor(fileName);
+        handleCloseFile(fileName);
         while (!removedFileList.isEmpty()) {
             fileName = removedFileList.takeFirst();
-            q->closeFileEditor(fileName);
+            handleCloseFile(fileName);
         }
         break;
     default:
@@ -369,6 +370,12 @@ void WorkspaceWidgetPrivate::handleOpenFile(const QString &workspace, const QStr
 
     if (auto tabWidget = currentTabWidget())
         tabWidget->openFile(fileName);
+}
+
+void WorkspaceWidgetPrivate::handleCloseFile(const QString &fileName)
+{
+    if (auto tabWidget = currentTabWidget())
+        tabWidget->closeFileEditor(fileName);
 }
 
 void WorkspaceWidgetPrivate::handleAddBreakpoint(const QString &fileName, int line, bool enabled)
@@ -719,12 +726,6 @@ void WorkspaceWidget::setFileModified(const QString &fileName, bool isModified)
 {
     for (auto tabWidget : d->tabWidgetList)
         tabWidget->setFileModified(fileName, isModified);
-}
-
-void WorkspaceWidget::closeFileEditor(const QString &fileName)
-{
-    for (auto tabWidget : d->tabWidgetList)
-        tabWidget->closeFileEditor(fileName);
 }
 
 QStringList WorkspaceWidget::openedFiles() const
