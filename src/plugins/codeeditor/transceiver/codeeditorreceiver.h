@@ -20,6 +20,7 @@ public:
 
 private:
     void processOpenFileEvent(const dpf::Event &event);
+    void processCloseFileEvent(const dpf::Event &event);
     void processBackEvent(const dpf::Event &event);
     void processForwardEvent(const dpf::Event &event);
     void processGotoLineEvent(const dpf::Event &event);
@@ -57,6 +58,7 @@ public:
 
 signals:
     void reqOpenFile(const QString &workspace, const QString &fileName);
+    void reqCloseFile(const QString &fileName);
     void reqBack();
     void reqForward();
     void reqGotoLine(const QString &fileName, int line);
