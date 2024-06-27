@@ -22,12 +22,12 @@ public:
     virtual QDialog *configureWidget(const QString &language,
                                      const QString &projectPath) override;
     virtual bool configure(const dpfservice::ProjectInfo &info = {}) override;
-    virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &info) override;
+    virtual QStandardItem *createRootItem(const dpfservice::ProjectInfo &items) override;
     virtual void removeRootItem(QStandardItem *root) override;
     virtual QMenu *createItemMenu(const QStandardItem *item) override;
 
 private slots:
-    void doProjectChildsModified(const QList<QStandardItem *> &info);
+    void doProjectChildsModified(const QList<QStandardItem *> &items);
     void actionProperties(const dpfservice::ProjectInfo &info, QStandardItem *item);
 
 private:

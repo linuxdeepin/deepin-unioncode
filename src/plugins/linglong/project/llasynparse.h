@@ -23,7 +23,7 @@ public:
 
     QSet<QString> getFilelist();
 
-    LLAsynParse();
+    LLAsynParse(QStandardItem *rootItem);
     virtual ~LLAsynParse();
 
 signals:
