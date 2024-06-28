@@ -28,7 +28,7 @@ ConfigureWidget::ConfigureWidget(QWidget *parent)
     d->centrelWidget->setObjectName("ConfigureCentrelWidget");
     d->centrelWidget->setAutoFillBackground(true);
     d->layout = new QVBoxLayout(d->centrelWidget);
-    d->layout->setContentsMargins(20, 20, 20, 20);
+    d->layout->setContentsMargins(10, 10, 10, 10);
     d->centrelWidget->setLayout(d->layout);
     setWidget(d->centrelWidget);
 }
