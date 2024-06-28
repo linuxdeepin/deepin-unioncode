@@ -12,6 +12,7 @@
 #include <DFrame>
 #include <DStyle>
 #include <DPushButton>
+#include <DToolButton>
 #include <DFileDialog>
 #include <DStandardItem>
 #include <DDialog>
@@ -209,11 +210,11 @@ class RecentDisplayPrivate
     DisplayProjectView *proView{nullptr};
     DisplayDocView *docView{nullptr};
     DLabel *proLabel{nullptr};
-    DPushButton *proClear{nullptr};
+    DToolButton *proClear{nullptr};
     DDialog *clearProConfirm{nullptr};
 
     DLabel *docLabel{nullptr};
-    DPushButton *docClear{nullptr};
+    DToolButton *docClear{nullptr};
     DDialog *clearDocConfirm{nullptr};
 
     DFrame *navFrame{nullptr};
@@ -461,16 +462,15 @@ void RecentDisplay::initializeUi()
     //recent open document
     d->docFrame->setLineWidth(0);
     DStyle::setFrameRadius(d->docFrame, 0);
-    d->docView = new DisplayDocView();
+    d->docView = new DisplayDocView(this);
 
     d->docLabel = new DLabel(tr("Documents"));
     d->docLabel->setForegroundRole(QPalette::BrightText);
     d->docLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d->docLabel->setContentsMargins(10, 5, 0, 10);
 
-    d->docClear = new DPushButton();
+    d->docClear = new DToolButton(this);
     d->docClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
-    d->docClear->setFlat(true);
     d->docClear->setToolTip(tr("clear all"));
 
     d->clearDocConfirm = new DDialog(this);
@@ -494,16 +494,15 @@ void RecentDisplay::initializeUi()
     //recent open projects
     d->proFrame->setLineWidth(0);
     DStyle::setFrameRadius(d->proFrame, 0);
-    d->proView = new DisplayProjectView();
+    d->proView = new DisplayProjectView(this);
 
-    d->proLabel = new DLabel(tr("Projects"));
+    d->proLabel = new DLabel(tr("Projects"), this);
     d->proLabel->setForegroundRole(QPalette::BrightText);
     d->proLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     d->proLabel->setContentsMargins(10, 5, 0, 10);
     
-    d->proClear = new DPushButton();
+    d->proClear = new DToolButton(this);
     d->proClear->setIcon(QIcon::fromTheme("ide_recent_delete"));
-    d->proClear->setFlat(true);
     d->proClear->setToolTip(tr("clear all"));
 
     d->clearProConfirm = new DDialog(this);
