@@ -55,7 +55,7 @@ void RunPropertyPage::setupUi()
     ConfigureWidget *runCfgWidget = new ConfigureWidget(this);
     runCfgWidget->setFrameShape(QFrame::Shape::NoFrame);
 
-    DLabel *runCfgLabel = new DLabel(tr("Run configuration:"));
+    DLabel *runCfgLabel = new DLabel(tr("Run configuration:"), this);
     d->exeComboBox = new DComboBox();
     d->exeComboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     d->exeComboBox->setFixedWidth(220);
