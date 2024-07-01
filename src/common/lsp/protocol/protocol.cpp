@@ -85,6 +85,8 @@ const QString K_CHARACTER { "character" };
 const QString K_LINE { "line" };
 const QString K_CONTEXT { "context" };
 const QString K_INCLUDEDECLARATION { "includeDeclaration" };
+const QString K_TRIGGERKIND { "triggerKind" };
+const QString K_TRIGGERCHARACTER { "triggerCharacter" };
 
 const QString K_ERROR { "error" };
 const QString K_CODE { "code" };
@@ -237,7 +239,8 @@ QJsonObject initialize(const QString &workspaceFolder, const QString &language, 
                                             { "colorProvider", QJsonObject { { "dynamicRegistration", true } } },
                                             { "declaration", QJsonObject { { "dynamicRegistration", true }, { "linkSupport", true } } },
                                             { "semanticHighlightingCapabilities", QJsonObject { { "semanticHighlighting", true } } },
-                                            { "semanticTokens", capabilitiesSemanticTokens } } },
+                                            { "semanticTokens", capabilitiesSemanticTokens },
+                                            { "completion", QJsonObject { { "editsNearCursor", true } } } } },
             { "workspace", workspace() },
             {
                     "foldingRangeProvider",
@@ -900,7 +903,7 @@ QJsonObject rename(const QString &filePath, const Position &pos, const QString &
     return params;
 }
 
-QJsonObject completion(const QString &filePath, const Position &pos)
+QJsonObject completion(const QString &filePath, const Position &pos, const CompletionContext &context)
 {
     QJsonObject textDocument {
         { K_URI, QUrl::fromLocalFile(filePath).toString() }
@@ -911,9 +914,15 @@ QJsonObject completion(const QString &filePath, const Position &pos)
         { K_LINE, pos.line }
     };
 
+    QJsonObject completionContext {
+        { K_TRIGGERCHARACTER, context.triggerCharacter.value_or(QString()) },
+        { K_TRIGGERKIND, context.kind }
+    };
+
     QJsonObject params {
         { K_TEXTDOCUMENT, textDocument },
-        { K_POSITION, position }
+        { K_POSITION, position },
+        { K_CONTEXT, completionContext }
     };
 
     return params;
