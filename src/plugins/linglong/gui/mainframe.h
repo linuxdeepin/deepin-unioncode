@@ -15,6 +15,7 @@ class MainFrame : public DTK_WIDGET_NAMESPACE::DFrame
 public:
     MainFrame(QWidget *parent = nullptr);
     ~MainFrame();
+    static bool checkToolInstalled(const QString &tool);
 
 private slots:
     void runApp(const QString &appId);

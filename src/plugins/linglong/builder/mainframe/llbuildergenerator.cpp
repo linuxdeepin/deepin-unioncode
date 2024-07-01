@@ -2,6 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include <DDialog>
+
 #include "llbuildergenerator.h"
 #include "builder/parser/llparser.h"
 #include "services/window/windowservice.h"
@@ -9,6 +11,7 @@
 #include "services/option/optionmanager.h"
 
 using namespace dpfservice;
+using DTK_WIDGET_NAMESPACE::DDialog;
 
 LLBuilderGenerator::LLBuilderGenerator()
 {
@@ -40,6 +43,18 @@ void LLBuilderGenerator::appendOutputParser(std::unique_ptr<AbstractOutputParser
 
 bool LLBuilderGenerator::checkCommandValidity(const BuildCommandInfo &info, QString &retMsg)
 {
+    QProcess process;
+    process.start("which", { "ll-builder" });
+    process.waitForFinished();
+    if (process.exitCode() != 0) {
+        DDialog dialog;
+        dialog.setWindowTitle("Warning");
+        dialog.setIcon(QIcon::fromTheme("dialog-warning"));
+        dialog.setMessage(tr("Can`t find linglong-builder tool"));
+        dialog.exec();
+        return false;
+    }
+
     if (!QFileInfo(info.workingDir.trimmed()).exists()) {
         retMsg = tr("The path of \"%1\" is not exist! "
                     "please check and reopen the project.")
