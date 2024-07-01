@@ -146,40 +146,61 @@ QString CodeCompletionWidget::filterString()
 
 bool CodeCompletionWidget::isFunctionKind(int kind)
 {
-    return kind == lsp::CompletionItem::Function || kind == lsp::CompletionItem::Method;
+    return kind == lsp::CompletionItem::Function || kind == lsp::CompletionItem::Method
+            || kind == lsp::CompletionItem::Constructor;
 }
 
-void CodeCompletionWidget::executeCompletionItem(int start, int end, const QModelIndex &index)
+void CodeCompletionWidget::executeCompletionItem(const QModelIndex &index)
 {
     if (!index.isValid() || index.row() >= proxyModel->rowCount())
         return;
 
-    int line = 0, col = 0;
-    editor()->lineIndexFromPosition(end, &line, &col);
-    int lineEndPos = editor()->SendScintilla(TextEditor::SCI_GETLINEENDPOSITION, line);
-
-    QString next;
-    if (end >= lineEndPos)
-        next = editor()->text(lineEndPos - 1, lineEndPos);
-    else
-        next = editor()->text(end, end + 1);
-
     auto srcIndex = proxyModel->mapToSource(index);
-    QString matching = srcIndex.data(CodeCompletionModel::InsertTextRole).toString();
-    if ((next == QLatin1Char('"') && matching.endsWith(QLatin1Char('"')))
-        || (next == QLatin1Char('>') && matching.endsWith(QLatin1Char('>'))))
-        matching.chop(1);
+    auto item = completionModel->item(srcIndex);
+    if (!item)
+        return;
 
-    auto kind = srcIndex.data(CodeCompletionModel::KindRole).toInt();
-    bool addParens = next != QLatin1Char('(') && isFunctionKind(kind);
-    if (addParens)
-        matching += QStringLiteral("()");
+    int labelOpenParenOffset = item->label.indexOf('(');
+    int labelClosingParenOffset = item->label.indexOf(')');
+    bool isMacroCall = item->kind == lsp::CompletionItem::Text && labelOpenParenOffset != -1
+            && labelClosingParenOffset > labelOpenParenOffset;
+    bool isFunctionLike = isFunctionKind(item->kind) || isMacroCall;
+    QString rawInsertText = item->textEdit.newText;
+    if (isFunctionLike && !rawInsertText.contains('(')) {
+        if (labelOpenParenOffset != -1) {
+            // function takes no arguments
+            if (labelClosingParenOffset == labelOpenParenOffset + 1)
+                rawInsertText += "()";
+            else   // function takes arguments
+                rawInsertText += "( )";
+        }
+    }
 
-    editor()->replaceRange(start, end, matching);
-    if (addParens) {
-        int curLine = 0, curIndex = 0;
+    int firstParenOffset = rawInsertText.indexOf('(');
+    int lastParenOffset = rawInsertText.lastIndexOf(')');
+    QString textToBeInserted = rawInsertText.left(firstParenOffset);
+    QString extraCharacters;
+    int cursorOffset = 0;
+    if (isFunctionLike) {
+        extraCharacters += '(';
+        // If the function takes no arguments, automatically place the closing parenthesis
+        if (firstParenOffset + 1 == lastParenOffset) {
+            extraCharacters += QLatin1Char(')');
+        } else {
+            extraCharacters += ')';
+            --cursorOffset;
+        }
+    }
+
+    int curLine = 0, curIndex = 0;
+    editor()->lineIndexFromPosition(editor()->cursorPosition(), &curLine, &curIndex);
+    textToBeInserted += extraCharacters;
+    auto range = item->textEdit.range;
+    editor()->replaceRange(range.start.line, range.start.character,
+                           curLine, curIndex, textToBeInserted);
+    if (cursorOffset) {
         editor()->lineIndexFromPosition(editor()->cursorPosition(), &curLine, &curIndex);
-        editor()->setCursorPosition(curLine, curIndex - 1);
+        editor()->setCursorPosition(curLine, curIndex + cursorOffset);
     }
 }
 
@@ -379,11 +400,7 @@ bool CodeCompletionWidget::execute()
     }
 
     isCompletionInput = true;
-    auto pos = editor()->cursorPosition();
-    auto startPos = editor()->wordStartPositoin(pos);
-    auto endPos = editor()->wordEndPosition(pos);
-
-    executeCompletionItem(startPos, endPos, index);
+    executeCompletionItem(index);
     abortCompletion();
     isCompletionInput = false;
     return true;
