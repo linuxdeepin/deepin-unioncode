@@ -47,7 +47,7 @@ private:
     bool hasAtLeastNRows(int rows);
     QString filterString();
     bool isFunctionKind(int kind);
-    void executeCompletionItem(int start, int end, const QModelIndex &index);
+    void executeCompletionItem(const QModelIndex &index);
 
 private slots:
     void modelContentChanged();
