@@ -21,8 +21,8 @@ bool CompletionSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QMode
     if (regexp.pattern().isEmpty() || sourceModel()->rowCount(index) > 0)
         return true;
 
-    const QString insertText = index.data(CodeCompletionModel::InsertTextRole).toString();
-    return insertText.contains(regexp);
+    const QString filterText = index.data(CodeCompletionModel::FilterTextRole).toString();
+    return filterText.contains(regexp);
 }
 
 bool CompletionSortFilterProxyModel::lessThan(const QModelIndex &sourceLeft, const QModelIndex &sourceRight) const
@@ -35,13 +35,13 @@ bool CompletionSortFilterProxyModel::lessThan(const QModelIndex &sourceLeft, con
     if (regexp.pattern().isEmpty())
         return ret;
 
-    auto leftInsertStr = sourceLeft.data(CodeCompletionModel::InsertTextRole).toString();
-    auto rightInsertStr = sourceRight.data(CodeCompletionModel::InsertTextRole).toString();
-    bool leftStartsWith = leftInsertStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
-    bool rightStartsWith = rightInsertStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
+    auto leftTextStr = sourceLeft.data(CodeCompletionModel::FilterTextRole).toString();
+    auto rightTextStr = sourceRight.data(CodeCompletionModel::FilterTextRole).toString();
+    bool leftStartsWith = leftTextStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
+    bool rightStartsWith = rightTextStr.startsWith(regexp.pattern(), Qt::CaseInsensitive);
     if (leftStartsWith && !rightStartsWith)
         return true;
-     else if (!leftStartsWith && rightStartsWith)
+    else if (!leftStartsWith && rightStartsWith)
         return false;
 
     return ret;
@@ -129,6 +129,11 @@ lsp::Range CodeCompletionModel::range() const
     return d->completionDatas.first().textEdit.range;
 }
 
+lsp::CompletionItem *CodeCompletionModel::item(const QModelIndex &index) const
+{
+    return static_cast<lsp::CompletionItem *>(index.internalPointer());
+}
+
 int CodeCompletionModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
@@ -141,7 +146,7 @@ QModelIndex CodeCompletionModel::index(int row, int column, const QModelIndex &p
     if (row < 0 || row >= rowCount(parent) || column < 0 || column >= 2 || parent.isValid())
         return QModelIndex();
 
-    return createIndex(row, column);
+    return createIndex(row, column, &d->completionDatas[row]);
 }
 
 QModelIndex CodeCompletionModel::parent(const QModelIndex &child) const
@@ -176,6 +181,8 @@ QVariant CodeCompletionModel::data(const QModelIndex &index, int role) const
         return item.kind;
     case SortTextRole:
         return item.sortText;
+    case FilterTextRole:
+        return item.filterText;
     default:
         break;
     }
