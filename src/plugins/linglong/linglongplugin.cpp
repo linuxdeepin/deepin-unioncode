@@ -72,6 +72,7 @@ bool LinglongPlugin::start()
     connect(action, &QAction::triggered, this, [=]() {
         windowService->showWidgetAtPosition(LL_NAME, Position::FullWindow, true);
         windowService->showContextWidget();
+        MainFrame::checkToolInstalled("ll-cli");
     },
             Qt::DirectConnection);
 
