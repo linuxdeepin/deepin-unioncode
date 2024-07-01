@@ -45,6 +45,21 @@ class MainFramePrivate
     std::unique_ptr<QProcess> process;
 };
 
+bool MainFrame::checkToolInstalled(const QString &tool)
+{
+    QProcess process;
+    process.start("which", QStringList() << tool);
+    process.waitForFinished();
+    if (process.exitCode() != 0) {
+        QString message = QString("Can not find tool named: %1\n").arg(tool);
+        AppOutputPane::instance()->defaultPane()->appendText(message, OutputPane::ErrorMessage);
+        message = "Check the repository source, and install the linglong-builder, linglong-box, and linglong-bin tools.\n";
+        AppOutputPane::instance()->defaultPane()->appendText(message, OutputPane::ErrorMessage);
+        return false;
+    }
+    return true;
+}
+
 MainFrame::MainFrame(QWidget *parent)
     : DFrame(parent),
       d(new MainFramePrivate())
@@ -245,6 +260,9 @@ void MainFrame::updateInstalled()
 
 void MainFrame::updateRepository(const QString &text)
 {
+    if (!checkToolInstalled("ll-cli"))
+        return;
+
     d->repTable->clearContents();
     d->repTable->setRowCount(0);
 
