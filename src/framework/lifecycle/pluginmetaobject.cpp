@@ -99,6 +99,11 @@ QList<PluginDepend> PluginMetaObject::depends() const
     return d->depends;
 }
 
+QList<PluginInstallDepend> PluginMetaObject::installDepends() const
+{
+    return d->installDepends;
+}
+
 /**
  * @brief PluginMetaObject::pluginState
  * 获取插件当前状态
@@ -172,6 +177,7 @@ PluginMetaObject::PluginMetaObject(const PluginMetaObject &meta)
     d->description = meta.description();
     d->urlLink = meta.urlLink();
     d->depends = meta.depends();
+    d->installDepends = meta.installDepends();
     d->state = pluginState();
     d->plugin = plugin();
     d->loader = meta.d->loader;
@@ -190,6 +196,7 @@ PluginMetaObject &PluginMetaObject::operator =(const PluginMetaObject &meta)
     d->description = meta.description();
     d->urlLink = meta.urlLink();
     d->depends = meta.depends();
+    d->installDepends = meta.installDepends();
     d->state = pluginState();
     d->plugin = plugin();
     d->loader = meta.d->loader;
@@ -259,6 +266,22 @@ PluginDepend &PluginDepend::operator =(const PluginDepend &depend)
     return *this;
 }
 
+PluginInstallDepend::PluginInstallDepend()
+{
+}
+
+PluginInstallDepend::PluginInstallDepend(const PluginInstallDepend &depend)
+{
+    installerName = depend.installer();
+    packageList = depend.packages();
+}
+
+PluginInstallDepend &PluginInstallDepend::operator=(const PluginInstallDepend &depend)
+{
+    installerName = depend.installer();
+    packageList = depend.packages();
+    return *this;
+}
 
 QT_BEGIN_NAMESPACE
 /**
@@ -274,6 +297,16 @@ Q_CORE_EXPORT QDebug operator<<(QDebug out, const DPF_NAMESPACE::PluginDepend &d
     out << "PluginDepend(" <<  QString("0x%0").arg(qint64(&depend),0,16) << "){";
     out << PLUGIN_NAME << " : " << depend.name() << "; ";
     out << PLUGIN_VERSION << " : " << depend.version() << "; ";
+    out << "}";
+    return out;
+}
+
+Q_CORE_EXPORT QDebug operator<<(QDebug out, const DPF_NAMESPACE::PluginInstallDepend &depend)
+{
+    DPF_USE_NAMESPACE
+    out << "PluginInstallDepend(" <<  QString("0x%0").arg(qint64(&depend),0,16) << "){";
+    out << PLUGIN_INSTALLERNAME << " : " << depend.installer() << "; ";
+    out << PLUGIN_PACKAGES << " : " << depend.packages() << "; ";
     out << "}";
     return out;
 }
@@ -300,6 +333,7 @@ Q_CORE_EXPORT QDebug operator<< (QDebug out, const DPF_NAMESPACE::PluginMetaObje
     out << PLUGIN_LICENSE << ":" << metaObj.license() << "; ";
     out << PLUGIN_URLLINK << ":" << metaObj.urlLink() << "; ";
     out << PLUGIN_DEPENDS << ":" << metaObj.depends() << ";";
+    out << PLUGIN_INSTALLDEPENDS << ":" << metaObj.installDepends() << ";";
     out << "}";
     return out;
 }

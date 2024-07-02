@@ -224,6 +224,7 @@ SearchReplaceWorker::~SearchReplaceWorker()
 void SearchReplaceWorker::stop()
 {
     if (d->process) {
+        disconnect(d->process.get());
         d->process->kill();
         d->process->waitForFinished();
         d->process.reset();

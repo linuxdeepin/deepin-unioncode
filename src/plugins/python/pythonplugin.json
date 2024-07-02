@@ -12,5 +12,14 @@
     "UrlLink" : "https://usdn.uniontech.com/#document3?dirid=664d969d685f572b03c2aca9&id=664d96f8685f572b03c2acae",
     "Depends" : [
         {"Name" : "codeeditor"}
+    ],
+    "InstallDepends" : [
+        {
+            "InstallerName" : "pip",
+            "Packages" : [
+                "debugpy",
+                "python-language-server"
+            ]
+        }
     ]
 }

@@ -439,6 +439,24 @@ void PluginManagerPrivate::readJsonToMeta(const PluginMetaObjectPointer &metaObj
         ++ itera;
     }
 
+    QJsonArray &&installDependsArray = metaData.value(PLUGIN_INSTALLDEPENDS).toArray();
+    auto iter = installDependsArray.begin();
+    while (iter != installDependsArray.end()) {
+        QJsonObject &&dependObj = iter->toObject();
+        QString &&installerName = dependObj.value(PLUGIN_INSTALLERNAME).toString();
+        QJsonArray &&packageArray = dependObj.value(PLUGIN_PACKAGES).toArray();
+        PluginInstallDepend depend;
+        depend.installerName = installerName;
+
+        auto packageIter = packageArray.begin();
+        while (packageIter != packageArray.end()) {
+            depend.packageList.append(packageIter->toString());
+            ++packageIter;
+        }
+        metaObject->d->installDepends.append(depend);
+        ++iter;
+    }
+
     metaObject->d->state = PluginMetaObject::Readed;
 
     dpfCheckTimeEnd();
