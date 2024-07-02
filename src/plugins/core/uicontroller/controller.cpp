@@ -47,7 +47,7 @@ inline const QString WN_WORKSPACE = "workspaceWidget";
 inline constexpr int MW_WIDTH { 1280 };
 inline constexpr int MW_HEIGHT { 860 };
 
-inline constexpr int MW_MIN_WIDTH { 1280 };
+inline constexpr int MW_MIN_WIDTH { 1080 };
 inline constexpr int MW_MIN_HEIGHT { 600 };
 using namespace dpfservice;
 
@@ -56,10 +56,13 @@ DWIDGET_USE_NAMESPACE
 struct WidgetInfo
 {
     QString name;
-    DWidget *widget;
-    Position pos;
-    bool replace;
-    bool isVisible;
+    DWidget *widget { nullptr };
+    QDockWidget *dockWidget { nullptr };
+    QString headerName;
+    Position defaultPos;   //set position after create dock
+    bool replace { false };   //hide current position`s dock before show
+    bool defaultVisible { true };
+    bool created { false };   //has already create dock
 };
 
 class ControllerPrivate
@@ -67,10 +70,6 @@ class ControllerPrivate
     MainWindow *mainWindow { nullptr };
     loadingWidget *loadingwidget { nullptr };
     WorkspaceWidget *workspace { nullptr };
-    bool showWorkspace { nullptr };
-
-    QMap<QString, DWidget *> widgetWaitForAdd;
-    QMap<QString, DWidget *> addedWidget;
 
     DWidget *navigationToolBar { nullptr };
     NavigationBar *navigationBar { nullptr };
@@ -87,13 +86,10 @@ class ControllerPrivate
     DStackedWidget *stackContextWidget { nullptr };
     DFrame *contextTabBar { nullptr };
     QHBoxLayout *contextButtonLayout { nullptr };
-    bool contextWidgetAdded { false };
 
     WindowStatusBar *statusBar { nullptr };
 
     DMenu *menu { nullptr };
-
-    QStringList hiddenWidgetList;
 
     QStringList validModeList { CM_EDIT, CM_DEBUG, CM_RECENT };
     QMap<QString, QString> modePluginMap { { CM_EDIT, MWNA_EDIT }, { CM_RECENT, MWNA_RECENT }, { CM_DEBUG, MWNA_DEBUG } };
@@ -102,6 +98,7 @@ class ControllerPrivate
     QString currentNavigation { "" };
 
     QMap<QString, AbstractModule *> modules;
+    QMap<QString, WidgetInfo> allWidgets;
 
     friend class Controller;
 };
@@ -172,7 +169,7 @@ void Controller::registerService()
         windowService->showWidgetAtPosition = std::bind(&Controller::showWidgetAtPosition, this, _1, _2, _3);
     }
     if (!windowService->setDockHeaderName) {
-        windowService->setDockHeaderName = std::bind(&MainWindow::setDockHeadername, d->mainWindow, _1, _2);
+        windowService->setDockHeaderName = std::bind(&Controller::setDockHeaderName, this, _1, _2);
     }
     if (!windowService->deleteDockHeader) {
         windowService->deleteDockHeader = std::bind(&MainWindow::deleteDockHeader, d->mainWindow, _1);
@@ -267,8 +264,14 @@ void Controller::registerService()
     if (!windowService->createFindPlaceHolder) {
         windowService->createFindPlaceHolder = std::bind(&PlaceHolderManager::createPlaceHolder, PlaceHolderManager::instance(), _1, _2);
     }
+    if (!windowService->getCentralWidgetName) {
+        windowService->getCentralWidgetName = std::bind(&MainWindow::getCentralWidgetName, d->mainWindow);
+    }
     if (!windowService->getCurrentDockName) {
         windowService->getCurrentDockName = std::bind(&MainWindow::getCurrentDockName, d->mainWindow, _1);
+    }
+    if (!windowService->resizeDocks) {
+        windowService->resizeDocks = std::bind(&Controller::resizeDocks, this, _1, _2, _3);
     }
 }
 
@@ -284,6 +287,16 @@ Controller::~Controller()
         delete d;
 }
 
+void Controller::createDockWidget(WidgetInfo &info)
+{
+    auto dock = d->mainWindow->addWidget(info.name, info.widget, info.defaultPos);
+    info.dockWidget = dock;
+    info.created = true;
+
+    if (!info.headerName.isEmpty())
+        d->mainWindow->setDockHeadername(info.name, info.headerName);
+}
+
 void Controller::raiseMode(const QString &mode)
 {
     if (!d->validModeList.contains(mode)) {
@@ -294,15 +307,16 @@ void Controller::raiseMode(const QString &mode)
     auto widgetInfoList = d->modeInfo[mode];
     foreach (auto widgetInfo, widgetInfoList) {
         if (widgetInfo.replace)
-            d->mainWindow->hideWidget(widgetInfo.pos);
+            d->mainWindow->hideWidget(widgetInfo.defaultPos);
         d->mainWindow->showWidget(widgetInfo.name);
-        //widget in mainWindow is Dock(widget), show dock and hide widget.
-        if (!widgetInfo.isVisible)
+        //widget in mainWindow is Dock(widget), show dock and hide widget
+        if (!widgetInfo.defaultVisible)
             widgetInfo.widget->hide();
     }
 
     if (mode == CM_RECENT) {
         d->mode = mode;
+        uiController.modeRaised(CM_RECENT);
         return;
     }
 
@@ -314,6 +328,7 @@ void Controller::raiseMode(const QString &mode)
     showStatusBar();
 
     d->mode = mode;
+    uiController.modeRaised(mode);
 }
 
 void Controller::replaceWidget(const QString &name, Position pos)
@@ -323,17 +338,20 @@ void Controller::replaceWidget(const QString &name, Position pos)
 
 void Controller::insertWidget(const QString &name, Position pos, Qt::Orientation orientation)
 {
-    if (d->widgetWaitForAdd.contains(name)) {
-        d->mainWindow->addWidget(name, d->widgetWaitForAdd[name], pos, orientation);
-    } else if (d->addedWidget.contains(name)) {
-        d->mainWindow->showWidget(name);
-    } else {
+    if (d->allWidgets.contains(name)) {
         qWarning() << "no widget named:" << name;
         return;
     }
 
-    d->addedWidget.insert(name, d->widgetWaitForAdd[name]);
-    d->widgetWaitForAdd.remove(name);
+    auto &info = d->allWidgets[name];
+    if (!info.created) {
+        auto dock = d->mainWindow->addWidget(name, info.widget, pos, orientation);
+        info.dockWidget = dock;
+        info.created = true;
+        info.replace = false;
+    } else {
+        d->mainWindow->showWidget(name);
+    }
 }
 
 void Controller::hideWidget(const QString &name)
@@ -348,34 +366,43 @@ void Controller::registerWidgetToMode(const QString &name, AbstractWidget *abstr
         return;
     }
 
+    if (d->allWidgets.contains(name)) {
+        qWarning() << "widget named: " << name << "has alreay registed";
+        return;
+    }
+
     DWidget *qWidget = static_cast<DWidget *>(abstractWidget->qWidget());
     if (!qWidget->parent())
         qWidget->setParent(d->mainWindow);
 
     WidgetInfo widgetInfo;
     widgetInfo.name = name;
-    widgetInfo.pos = pos;
+    widgetInfo.defaultPos = pos;
     widgetInfo.replace = replace;
     widgetInfo.widget = qWidget;
-    widgetInfo.isVisible = isVisible;
+    widgetInfo.defaultVisible = isVisible;
 
-    d->addedWidget.insert(name, qWidget);
-    d->mainWindow->addWidget(name, qWidget, pos);
+    createDockWidget(widgetInfo);
     d->mainWindow->hideWidget(name);
-
+    
+    d->allWidgets.insert(name, widgetInfo);
     d->modeInfo[mode].append(widgetInfo);
 }
 
 void Controller::registerWidget(const QString &name, AbstractWidget *abstractWidget)
 {
-    if (d->widgetWaitForAdd.contains(name) || d->addedWidget.contains(name))
+    if (d->allWidgets.contains(name))
         return;
 
     auto widget = static_cast<DWidget *>(abstractWidget->qWidget());
     if (!widget->parent())
         widget->setParent(d->mainWindow);
 
-    d->widgetWaitForAdd.insert(name, widget);
+    WidgetInfo widgetInfo;
+    widgetInfo.name = name;
+    widgetInfo.widget = widget;
+
+    d->allWidgets.insert(name, widgetInfo);
 }
 
 void Controller::showWidgetAtPosition(const QString &name, Position pos, bool replace)
@@ -383,16 +410,47 @@ void Controller::showWidgetAtPosition(const QString &name, Position pos, bool re
     if (replace)
         d->mainWindow->hideWidget(pos);
 
-    if (d->widgetWaitForAdd.contains(name)) {
-        d->mainWindow->addWidget(name, d->widgetWaitForAdd[name], pos);
-        d->addedWidget.insert(name, d->widgetWaitForAdd[name]);
-        d->widgetWaitForAdd.remove(name);
-    } else if (d->addedWidget.contains(name)) {
-        d->mainWindow->showWidget(name);
-    } else {
-        qWarning() << "no widget named:" << name;
+    if (!d->allWidgets.contains(name)) {
+        qWarning() << "no widget named: " << name;
         return;
     }
+
+    auto &info = d->allWidgets[name];
+    if (!info.created) {
+        info.defaultPos = pos;
+        info.replace = replace;
+        createDockWidget(info);
+    } else {
+        d->mainWindow->showWidget(name);
+    }
+}
+
+void Controller::resizeDocks(const QList<QString> &docks, const QList<int> &sizes, Qt::Orientation orientation)
+{
+    QList<QDockWidget *> dockWidgets;
+    for (auto dockName : docks) {
+        if (d->allWidgets.contains(dockName) && d->allWidgets[dockName].created)
+            dockWidgets.append(d->allWidgets[dockName].dockWidget);
+        else
+            qWarning() << "Dock named: " << dockName << "has not created!";
+    }
+    
+    d->mainWindow->resizeDocks(dockWidgets, sizes, orientation);
+    QApplication::processEvents(); // process layout update
+}
+
+void Controller::setDockHeaderName(const QString &dockName, const QString &headerName)
+{
+    if (!d->allWidgets.contains(dockName)) {
+        qWarning() << "No widget named: " << dockName;
+        return;
+    }
+
+    auto &info = d->allWidgets[dockName];
+    info.headerName = headerName;
+    
+    if (info.created)
+        d->mainWindow->setDockHeadername(dockName, headerName);
 }
 
 void Controller::addNavigationItem(AbstractAction *action, quint8 priority)
@@ -465,11 +523,9 @@ void Controller::addContextWidget(const QString &title, AbstractWidget *contextW
 
 void Controller::showContextWidget()
 {
-    if (!d->contextWidgetAdded) {
-        d->mainWindow->addWidget(WN_CONTEXTWIDGET, d->contextWidget, Position::Bottom);
-        d->addedWidget.insert(WN_CONTEXTWIDGET, d->contextWidget);
+    if (!d->allWidgets[WN_CONTEXTWIDGET].created) {
+        createDockWidget(d->allWidgets[WN_CONTEXTWIDGET]);
         d->mainWindow->deleteDockHeader(WN_CONTEXTWIDGET);
-        d->contextWidgetAdded = true;
     } else {
         d->mainWindow->showWidget(WN_CONTEXTWIDGET);
     }
@@ -648,7 +704,7 @@ void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, bool addSepa
     } else {
         hlayout = qobject_cast<QHBoxLayout *>(d->leftTopToolBar->layout());
     }
-    
+
     //sort
     auto index = 0;
     widget->setProperty("toptool_priority", priority);
@@ -661,7 +717,7 @@ void Controller::addWidgetToTopTool(AbstractWidget *abstractWidget, bool addSepa
     }
 
     if (addSeparator) {
-        DWidget* separator = new DWidget(d->mainWindow);
+        DWidget *separator = new DWidget(d->mainWindow);
         DVerticalLine *line = new DVerticalLine(d->mainWindow);
         auto separatorLayout = new QHBoxLayout(separator);
         separator->setProperty("toptool_priority", priority - 1);
@@ -872,7 +928,7 @@ void Controller::initContextWidget()
     hideBtn->setFixedSize(35, 35);
     hideBtn->setIcon(QIcon::fromTheme("hide_dock"));
     hideBtn->setToolTip(tr("Hide ContextWidget"));
-    connect(hideBtn, &DToolButton::clicked, d->contextWidget, [=](){
+    connect(hideBtn, &DToolButton::clicked, d->contextWidget, [=]() {
         if (d->stackContextWidget->isVisible()) {
             d->stackContextWidget->hide();
             d->contextWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -897,7 +953,11 @@ void Controller::initContextWidget()
     d->contextWidget->setLayout(contextVLayout);
 
     //add contextWidget after add centralWidget or it`s height is incorrect
-    //d->mainWindow->addWidget(WN_CONTEXTWIDGET, d->contextWidget, Position::Bottom);
+    WidgetInfo info;
+    info.name = WN_CONTEXTWIDGET;
+    info.widget = d->contextWidget;
+    info.defaultPos = Position::Bottom;
+    d->allWidgets.insert(WN_CONTEXTWIDGET, info);
 }
 
 void Controller::initStatusBar()
@@ -913,7 +973,15 @@ void Controller::initWorkspaceWidget()
 {
     if (d->workspace)
         return;
+
     d->workspace = new WorkspaceWidget(d->mainWindow);
+
+    WidgetInfo info;
+    info.name = WN_WORKSPACE;
+    info.widget = d->workspace;
+    info.defaultPos = Position::Left;
+    info.replace = true;
+    d->allWidgets.insert(WN_WORKSPACE, info);
 }
 
 void Controller::initTopToolBar()
@@ -923,7 +991,7 @@ void Controller::initTopToolBar()
     hlayout->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     hlayout->setSpacing(0);
     hlayout->setContentsMargins(0, 0, 0, 0);
-    
+
     d->locatorBar = LocatorManager::instance()->getInputEdit();
     d->rightTopToolBar = new DWidget(d->mainWindow);
 
@@ -999,12 +1067,10 @@ void Controller::registerActionShortCut(AbstractAction *action)
 
 void Controller::showWorkspace()
 {
-    if (d->showWorkspace != true) {
-        d->mainWindow->addWidget(WN_WORKSPACE, d->workspace, Position::Left);
+    if (!d->allWidgets[WN_WORKSPACE].created) {
+        createDockWidget(d->allWidgets[WN_WORKSPACE]);
+        d->mainWindow->showWidget(WN_WORKSPACE);
         d->mainWindow->resizeDock(WN_WORKSPACE, QSize(300, 300));
-
-        d->addedWidget.insert(WN_WORKSPACE, d->workspace);
-        d->showWorkspace = true;
 
         for (auto btn : d->workspace->getAllToolBtn())
             d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, btn);
@@ -1013,30 +1079,30 @@ void Controller::showWorkspace()
         expandAll->setToolTip(tr("Expand All"));
         expandAll->setIcon(QIcon::fromTheme("expand_all"));
         d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, expandAll);
-        connect(expandAll, &DToolButton::clicked, this, [](){workspace.expandAll();});
+        connect(expandAll, &DToolButton::clicked, this, []() { workspace.expandAll(); });
 
         DToolButton *foldAll = new DToolButton(d->workspace);
         foldAll->setToolTip(tr("Fold All"));
         foldAll->setIcon(QIcon::fromTheme("collapse_all"));
         d->mainWindow->addToolBtnToDockHeader(WN_WORKSPACE, foldAll);
-        connect(foldAll, &DToolButton::clicked, this, [](){workspace.foldAll();});
+        connect(foldAll, &DToolButton::clicked, this, []() { workspace.foldAll(); });
 
         expandAll->setVisible(d->workspace->getCurrentExpandState());
         foldAll->setVisible(d->workspace->getCurrentExpandState());
 
-        d->mainWindow->setDockHeadername(WN_WORKSPACE, d->workspace->getCurrentTitle());
-        connect(d->workspace, &WorkspaceWidget::expandStateChange, this, [=](bool canExpand){
+        setDockHeaderName(WN_WORKSPACE, d->workspace->getCurrentTitle());
+        connect(d->workspace, &WorkspaceWidget::expandStateChange, this, [=](bool canExpand) {
             expandAll->setVisible(canExpand);
             foldAll->setVisible(canExpand);
         });
-        connect(d->workspace, &WorkspaceWidget::workSpaceWidgeSwitched, this, [=](const QString &title){
-            d->mainWindow->setDockHeadername(WN_WORKSPACE, title);
+        connect(d->workspace, &WorkspaceWidget::workSpaceWidgeSwitched, this, [=](const QString &title) {
+            setDockHeaderName(WN_WORKSPACE, title);
         });
 
         d->workspace->addedToController = true;
+    } else {
+        d->mainWindow->showWidget(WN_WORKSPACE);
     }
-
-    d->mainWindow->showWidget(WN_WORKSPACE);
 }
 
 DToolButton *Controller::createIconButton(QAction *action)
